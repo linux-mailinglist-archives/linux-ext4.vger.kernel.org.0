@@ -2,83 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7274E176
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2019 13:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D8DD9F3
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2019 01:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbfD2Ljv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Apr 2019 07:39:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47594 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727872AbfD2Ljv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 29 Apr 2019 07:39:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6F930AE84;
-        Mon, 29 Apr 2019 11:39:50 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 87F711E3BFD; Sun, 28 Apr 2019 22:21:54 +0200 (CEST)
-Date:   Sun, 28 Apr 2019 22:21:54 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Debabrata Banerjee <dbanerje@akamai.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, Dmitry Monakhov <dmonakhov@openvz.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: bad mount opts in no journal mode
-Message-ID: <20190428202154.GE7441@quack2>
-References: <20190411214917.1899-1-dbanerje@akamai.com>
+        id S1726535AbfD1Xiz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 28 Apr 2019 19:38:55 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41871 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726393AbfD1Xiz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 28 Apr 2019 19:38:55 -0400
+Received: from callcc.thunk.org (adsl-173-228-226-134.prtc.net [173.228.226.134])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x3SNcmeD008140
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Apr 2019 19:38:50 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id ED791420023; Sun, 28 Apr 2019 19:38:47 -0400 (EDT)
+Date:   Sun, 28 Apr 2019 19:38:47 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, alexey.lyashkov@gmail.com,
+        Alexey Lyashkov <c17817@cray.com>
+Subject: Re: [PATCH] e2fsck: Do not to be quiet if verbose option used.
+Message-ID: <20190428233847.GA31999@mit.edu>
+References: <20190426130913.9288-1-c17828@cray.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190411214917.1899-1-dbanerje@akamai.com>
+In-Reply-To: <20190426130913.9288-1-c17828@cray.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 11-04-19 17:49:17, Debabrata Banerjee wrote:
-> Fixes:
-> commit 1e381f60dad9 ("ext4: do not allow journal_opts for fs w/o journal")
+On Fri, Apr 26, 2019 at 04:09:13PM +0300, Artem Blagodarenko wrote:
+> From: Alexey Lyashkov <c17817@cray.com>
 > 
-> Instead of removing EXT4_MOUNT_JOURNAL_CHECKSUM from s_def_mount_opt as
-> I assume was intended, all other options were blown away leading to
-> _ext4_show_options() output being incorrect. I don't see why this or
-> other journal related flags should be removed from s_def_mount_opt
-> regardless, it is only used for comparison to display opts, and we
-> already made sure they couldn't be set.
+> e2fsck don't print a message if 'p' option used and error can be fixed without
+> user assistance,  but 'v' option asks to be more verbose, so user expect to
+> see any output. But not.
+> Fix this, by avoid message suppress with verbose option used.
 > 
-> Signed-off-by: Debabrata Banerjee <dbanerje@akamai.com>
+> Change-Id: I358e9b04e44dd33fdb124c5663b2df0bf54ce370
+> Signed-off-by: Alexey Lyashkov <c17817@cray.com>
+> Cray-bug-id: LUS-6890
 
-So I agree that the clearing is wrong. But I don't agree with just deleting
-the line. We could have JOURNAL_CHECKSUM in s_def_mount_opt in nojournal
-mode and in such case we don't want to show in /proc/mounts
-nojournal_checksum as a mount option. So the line should be really fixed
-to:
+I need to understand the use case of what you are trying to do here.
+The preen and verbose options were never intended to be mixed and this
+patch changes what the verbose flag does at a fairly fundamental
+level.  I'm not sure the results will be correct and they will almost
+certainly be surprising.
 
-	sbi->s_def_mount_opt &= ~EXT4_MOUNT_JOURNAL_CHECKSUM;
+So (a) what is the user trying to do, and (b) what does the user want
+to be trying to do?  Preen was intended to be used as part of the boot
+process, when multiple e2fsck's would be running in parallel, and so
+you don't *want* much in the way of verbosity.
 
-								Honza
-
-> ---
->  fs/ext4/super.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 6ed4eb81e674..63eef29666e0 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -4238,7 +4238,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  				 "data=, fs mounted w/o journal");
->  			goto failed_mount_wq;
->  		}
-> -		sbi->s_def_mount_opt &= EXT4_MOUNT_JOURNAL_CHECKSUM;
->  		clear_opt(sb, JOURNAL_CHECKSUM);
->  		clear_opt(sb, DATA_FLAGS);
->  		sbi->s_journal = NULL;
-> -- 
-> 2.21.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+    	  	      	     	    - Ted
