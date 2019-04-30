@@ -2,85 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D166FD21
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Apr 2019 17:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83790FE2A
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Apr 2019 18:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbfD3Pp1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Apr 2019 11:45:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37584 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725906AbfD3Pp0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 30 Apr 2019 11:45:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 47528AD94;
-        Tue, 30 Apr 2019 15:45:25 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2CC4DDA88B; Tue, 30 Apr 2019 17:46:25 +0200 (CEST)
-Date:   Tue, 30 Apr 2019 17:46:23 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2 0/8] vfs: make immutable files actually immutable
-Message-ID: <20190430154622.GA20156@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org
-References: <155552786671.20411.6442426840435740050.stgit@magnolia>
+        id S1726056AbfD3QvS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Apr 2019 12:51:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725942AbfD3QvS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 30 Apr 2019 12:51:18 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52DF92147A;
+        Tue, 30 Apr 2019 16:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1556643077;
+        bh=3A7w+7LZPtm+9FWKjAgeHNtIX9e4JIDaC+A4dd4ARQ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ac5F7t0j6x24hq3IoaAVr5vKg3sOed28k6SV2U+v0kOOicvbQ9Bo+Z8sR/VlBjaY4
+         Wt7nXL7vV9xnSg1i4wF3IeXYBaH/rsVuS3+KuNG778bEP5XGmZt+kTV/rN1VaGl+Gr
+         MGfC0vxfwf3QR6eLBLVcoQPWxrmliOTjA5P2PDsM=
+Date:   Tue, 30 Apr 2019 09:51:15 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chandan Rajendra <chandan@linux.ibm.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, yuchao0@huawei.com,
+        hch@infradead.org
+Subject: Re: [PATCH V2 12/13] fscrypt_zeroout_range: Encrypt all zeroed out
+ blocks of a page
+Message-ID: <20190430165114.GA48973@gmail.com>
+References: <20190428043121.30925-1-chandan@linux.ibm.com>
+ <20190428043121.30925-13-chandan@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <155552786671.20411.6442426840435740050.stgit@magnolia>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <20190428043121.30925-13-chandan@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 17, 2019 at 12:04:26PM -0700, Darrick J. Wong wrote:
-> Hi all,
+On Sun, Apr 28, 2019 at 10:01:20AM +0530, Chandan Rajendra wrote:
+> For subpage-sized blocks, this commit adds code to encrypt all zeroed
+> out blocks mapped by a page.
 > 
-> The chattr(1) manpage has this to say about the immutable bit that
-> system administrators can set on files:
+> Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
+> ---
+>  fs/crypto/bio.c | 40 ++++++++++++++++++----------------------
+>  1 file changed, 18 insertions(+), 22 deletions(-)
 > 
-> "A file with the 'i' attribute cannot be modified: it cannot be deleted
-> or renamed, no link can be created to this file, most of the file's
-> metadata can not be modified, and the file can not be opened in write
-> mode."
+> diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
+> index 856f4694902d..46dd2ec50c7d 100644
+> --- a/fs/crypto/bio.c
+> +++ b/fs/crypto/bio.c
+> @@ -108,29 +108,23 @@ EXPORT_SYMBOL(fscrypt_pullback_bio_page);
+>  int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+>  				sector_t pblk, unsigned int len)
+>  {
+> -	struct fscrypt_ctx *ctx;
+>  	struct page *ciphertext_page = NULL;
+>  	struct bio *bio;
+> +	u64 total_bytes, page_bytes;
+
+page_bytes should be 'unsigned int', since it's <= PAGE_SIZE.
+
+>  	int ret, err = 0;
+>  
+> -	BUG_ON(inode->i_sb->s_blocksize != PAGE_SIZE);
+> -
+> -	ctx = fscrypt_get_ctx(inode, GFP_NOFS);
+> -	if (IS_ERR(ctx))
+> -		return PTR_ERR(ctx);
+> +	total_bytes = len << inode->i_blkbits;
+
+Should cast len to 'u64' here, in case it's greater than UINT_MAX / blocksize.
+
+>  
+> -	ciphertext_page = fscrypt_alloc_bounce_page(ctx, GFP_NOWAIT);
+> -	if (IS_ERR(ciphertext_page)) {
+> -		err = PTR_ERR(ciphertext_page);
+> -		goto errout;
+> -	}
+> +	while (total_bytes) {
+> +		page_bytes = min_t(u64, total_bytes, PAGE_SIZE);
+>  
+> -	while (len--) {
+> -		err = fscrypt_do_page_crypto(inode, FS_ENCRYPT, lblk,
+> -					     ZERO_PAGE(0), ciphertext_page,
+> -					     PAGE_SIZE, 0, GFP_NOFS);
+> -		if (err)
+> +		ciphertext_page = fscrypt_encrypt_page(inode, ZERO_PAGE(0),
+> +						page_bytes, 0, lblk, GFP_NOFS);
+> +		if (IS_ERR(ciphertext_page)) {
+> +			err = PTR_ERR(ciphertext_page);
+> +			ciphertext_page = NULL;
+>  			goto errout;
+> +		}
+
+'ciphertext_page' is leaked after each loop iteration.  Did you mean to free it,
+or did you mean to reuse it for subsequent iterations?
+
+>  
+>  		bio = bio_alloc(GFP_NOWAIT, 1);
+>  		if (!bio) {
+> @@ -141,9 +135,8 @@ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+>  		bio->bi_iter.bi_sector =
+>  			pblk << (inode->i_sb->s_blocksize_bits - 9);
+
+This line uses ->s_blocksize_bits, but your new code uses ->i_blkbits.  AFAIK
+they'll always be the same, but please pick one or the other to use.
+
+>  		bio_set_op_attrs(bio, REQ_OP_WRITE, 0);
+> -		ret = bio_add_page(bio, ciphertext_page,
+> -					inode->i_sb->s_blocksize, 0);
+> -		if (ret != inode->i_sb->s_blocksize) {
+> +		ret = bio_add_page(bio, ciphertext_page, page_bytes, 0);
+> +		if (ret != page_bytes) {
+>  			/* should never happen! */
+>  			WARN_ON(1);
+>  			bio_put(bio);
+> @@ -156,12 +149,15 @@ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+>  		bio_put(bio);
+>  		if (err)
+>  			goto errout;
+> -		lblk++;
+> -		pblk++;
+> +
+> +		lblk += page_bytes >> inode->i_blkbits;
+> +		pblk += page_bytes >> inode->i_blkbits;
+> +		total_bytes -= page_bytes;
+>  	}
+>  	err = 0;
+>  errout:
+> -	fscrypt_release_ctx(ctx);
+> +	if (!IS_ERR_OR_NULL(ciphertext_page))
+> +		fscrypt_restore_control_page(ciphertext_page);
+>  	return err;
+>  }
+>  EXPORT_SYMBOL(fscrypt_zeroout_range);
+> -- 
+> 2.19.1
 > 
-> Given the clause about how the file 'cannot be modified', it is
-> surprising that programs holding writable file descriptors can continue
-> to write to and truncate files after the immutable flag has been set,
-> but they cannot call other things such as utimes, fallocate, unlink,
-> link, setxattr, or reflink.
-> 
-> Since the immutable flag is only settable by administrators, resolve
-> this inconsistent behavior in favor of the documented behavior -- once
-> the flag is set, the file cannot be modified, period.
-
-The manual page leaves the case undefined, though the word 'modified'
-can be interpreted in the same sense as 'mtime' ie. modifying the file
-data. The enumerated file operations that don't work on an immutable
-file suggest that it's more like the 'ctime',  ie. (state) changes are
-forbidden.
-
-Tthe patchset makes some sense, but it changes the semantics a bit. From
-'not changed but still modified' to 'neither changed nor modified'. It
-starts to sound like a word game, but I think both are often used
-interchangeably in the language. See the changelog of 1/8 where you used
-them in the other meaning regarding ctime and mtime.
-
-I personally doubt there's a real use of the undefined case, though
-something artificial like 'a process opens a fd, sets up file in a very
-specific way, sets immutable and hands the fd to an unprivileged
-process' can be made up. The overhead of the new checks seems to be
-small so performance is not the concern here.
-
-Overall, I don't see a strong reason for either semantics. As long as
-it's documented possibly with some of the corner cases described in more
-detail, fine.
