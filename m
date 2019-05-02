@@ -2,46 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F108212015
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2019 18:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A886120CC
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2019 19:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbfEBQZe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 May 2019 12:25:34 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57793 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726381AbfEBQZe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 May 2019 12:25:34 -0400
-Received: from callcc.thunk.org (adsl-173-228-226-134.prtc.net [173.228.226.134])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x42GPRZB027151
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 2 May 2019 12:25:29 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 76992420024; Thu,  2 May 2019 12:25:27 -0400 (EDT)
-Date:   Thu, 2 May 2019 12:25:27 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+        id S1726297AbfEBRDs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 May 2019 13:03:48 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41632 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbfEBRDs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 May 2019 13:03:48 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 18F0227E9A0
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org
-Subject: Change feature name from fname_encoding to casefold?
-Message-ID: <20190502162527.GC25007@mit.edu>
+Subject: Re: Change feature name from fname_encoding to casefold?
+Organization: Collabora
 References: <20190413054317.7388-1-krisman@collabora.com>
- <20190413054317.7388-9-krisman@collabora.com>
+        <20190413054317.7388-9-krisman@collabora.com>
+        <20190502162527.GC25007@mit.edu>
+Date:   Thu, 02 May 2019 13:03:42 -0400
+In-Reply-To: <20190502162527.GC25007@mit.edu> (Theodore Ts'o's message of
+        "Thu, 2 May 2019 12:25:27 -0400")
+Message-ID: <85woj8kcup.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190413054317.7388-9-krisman@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Given how we've simplified how we handle Unicode --- in particular,
-not doing any kind of normalization unless we are doing case-folding
-compares, I think it will be more user-friendly if we rename the
-feature from fname_encoding to casefold.
+"Theodore Ts'o" <tytso@mit.edu> writes:
 
-What do you think?  Any objections?
+> Given how we've simplified how we handle Unicode --- in particular,
+> not doing any kind of normalization unless we are doing case-folding
+> compares, I think it will be more user-friendly if we rename the
+> feature from fname_encoding to casefold.
+>
+> What do you think?  Any objections?
 
-					- Ted
+I don't object at all, but I'll need to update some test
+packages/documentation already published to customers in order to change
+it. So I'd need a final decision to be taken quickly on it. :)
+
+-- 
+Gabriel Krisman Bertazi
