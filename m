@@ -2,53 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF82142E3
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2019 00:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A897D14908
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2019 13:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727615AbfEEWen (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 5 May 2019 18:34:43 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49952 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727325AbfEEWen (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 May 2019 18:34:43 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x45MYcx7003170
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 5 May 2019 18:34:39 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 93334420024; Sun,  5 May 2019 18:34:38 -0400 (EDT)
-Date:   Sun, 5 May 2019 18:34:38 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] mke2fs: fix check for absurdly large devices
-Message-ID: <20190505223438.GD10038@mit.edu>
-References: <1556227470-47076-1-git-send-email-adilger@dilger.ca>
+        id S1726037AbfEFLe6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 May 2019 07:34:58 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51568 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725852AbfEFLe6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 May 2019 07:34:58 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x46BYiTU126482
+        for <linux-ext4@vger.kernel.org>; Mon, 6 May 2019 07:34:56 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2sam0489wu-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Mon, 06 May 2019 07:34:55 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <chandan@linux.ibm.com>;
+        Mon, 6 May 2019 12:33:36 +0100
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 6 May 2019 12:33:33 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x46BXWb446465208
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 May 2019 11:33:32 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8CA04AE056;
+        Mon,  6 May 2019 11:33:32 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20D5FAE04D;
+        Mon,  6 May 2019 11:33:31 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.70.42])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  6 May 2019 11:33:30 +0000 (GMT)
+From:   Chandan Rajendra <chandan@linux.ibm.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 04/13] fscrypt: clean up some BUG_ON()s in block encryption/decryption
+Date:   Mon, 06 May 2019 13:54:45 +0530
+Organization: IBM
+In-Reply-To: <20190501224515.43059-5-ebiggers@kernel.org>
+References: <20190501224515.43059-1-ebiggers@kernel.org> <20190501224515.43059-5-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1556227470-47076-1-git-send-email-adilger@dilger.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-TM-AS-GCONF: 00
+x-cbid: 19050611-4275-0000-0000-00000331DF52
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19050611-4276-0000-0000-000038414613
+Message-Id: <4366146.XrkeSAOiMl@dhcp-9-109-212-164>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-06_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=581 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905060102
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 25, 2019 at 11:24:30PM +0200, Andreas Dilger wrote:
-> The check in mke2fs is intended to be for the number of blocks in the
-> filesystem exceeding the maximum number of addressable blocks in 2^32
-> bitmaps, which is (2^32 * 8 bits/byte * blocksize) = 2^47 blocks,
-> or 2^59 bytes = 512PiB for the common 4KiB blocksize.
+On Thursday, May 2, 2019 4:15:06 AM IST Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> However, s_log_blocksize holds log2(blocksize_in_kb), so the current
-> calculation is a factor of 2^10 too small.  This caused mke2fs to fail
-> while trying to format a 900TB filesystem.
-> 
-> Fixes: 101ef2e93c25 ("mke2fs: Avoid crashes / infinite loops for absurdly large devices")
-> Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+> Replace some BUG_ON()s with WARN_ON_ONCE() and returning an error code,
+> and move the check for len divisible by FS_CRYPTO_BLOCK_SIZE into
+> fscrypt_crypt_block() so that it's done for both encryption and
+> decryption, not just encryption.
 
-Thanks, applied.
+Looks good to me,
 
-					- Ted
+Reviewed-by: Chandan Rajendra <chandan@linux.ibm.com>
+
+-- 
+chandan
+
+
+
