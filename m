@@ -2,32 +2,28 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BD816DD0
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2019 01:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EECB16DE9
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2019 01:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbfEGX2a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 May 2019 19:28:30 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41306 "EHLO
+        id S1726362AbfEGXml (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 May 2019 19:42:41 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44619 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726256AbfEGX2a (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 May 2019 19:28:30 -0400
+        with ESMTP id S1726091AbfEGXml (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 May 2019 19:42:41 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x47NSN2r013232
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x47NgaPe016919
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 7 May 2019 19:28:26 -0400
+        Tue, 7 May 2019 19:42:37 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 6FB15420024; Tue,  7 May 2019 19:28:23 -0400 (EDT)
-Date:   Tue, 7 May 2019 19:28:23 -0400
+        id AA43E420024; Tue,  7 May 2019 19:42:36 -0400 (EDT)
+Date:   Tue, 7 May 2019 19:42:36 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 changes for 5.2
-Message-ID: <20190507232823.GA28416@mit.edu>
-Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [ANNOUNCE] e2fsprogs v1.45.1-rc1
+Message-ID: <20190507234236.GA29445@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -37,123 +33,91 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 79a3aaa7b82e3106be97842dedfd8429248896e6:
+PTAL.  I hope to release v1.45.1 in a few days.  This is pushed out to
+the usual git repos, as well at:
 
-  Linux 5.1-rc3 (2019-03-31 14:39:29 -0700)
+https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/testing/v1.45.1-rc1/
 
-are available in the Git repository at:
+       	      	 	 	    - Ted
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+E2fsprogs 1.45.1-rc1 (May 6, 2019)
+==================================
 
-for you to fetch changes up to db90f41916cf04c020062f8d8b0385942248283e:
+Updates/Fixes since v1.45.0:
 
-  ext4: export /sys/fs/ext4/feature/casefold if Unicode support is present (2019-05-06 14:03:52 -0400)
+UI and Features
+---------------
 
-----------------------------------------------------------------
-Add as a feature case-insensitive directories (the casefold feature)
-using Unicode 12.1.  Also, the usual largish number of cleanups and bug
-fixes.
+Teach the e2scrub and e2scub_all commands the -n option, which prints
+what these commands would do.
 
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      ext4: use BUG() instead of BUG_ON(1)
+Finalize the casefold support so it is synchronized with what we
+actually shipped in the kernel.  This includes updating to Unicode 12.1,
+dropping ASCII casefolding support, and switching from NFKD to NFD.  The
+the ext4 feature name also changed from fname_encoding to casefold.
+Add support for casefold to dumpe2fs and debugfs.
 
-Barret Rhoden (1):
-      ext4: fix use-after-free race with debug_want_extra_isize
+Debugfs now prints non-printable characters using C-style hex escape
+sequences (e.g., "\xc1" instead of M-A).  The old scheme printed
+filenames in an ambiguous way, which complicated using debugfs for ext4
+encryption regression tests.
 
-Debabrata Banerjee (1):
-      ext4: fix ext4_show_options for file systems w/o journal
+E2fsck now checks to make sure that all unused bits in the block
+allocation bitmaps are set; if there are some unset bits in the block
+bitmaps for file systems where the blocks_per_group is less than
+8*blocksize (not the default), this can confuse the kernel's multi-block
+allocator and return a bogus free extent.  E2fsprogs guarantees this
+when it writes out the bitmap blocks, but it's possible that file system
+blocks could have gotten corrupted since the last time e2fsprogs wrote
+out the bitmap blocks.
 
-Eric Biggers (1):
-      ext4: remove incorrect comment for NEXT_ORPHAN()
+E2fsck now has support write out a problem code log which can provide
+more debugging and monitoring information.  This can be configured using
+/etc/e2fsck.conf.
 
-Gabriel Krisman Bertazi (8):
-      unicode: introduce UTF-8 character database
-      unicode: implement higher level API for string handling
-      unicode: introduce test module for normalized utf8 implementation
-      unicode: update unicode database unicode version 12.1.0
-      MAINTAINERS: add Unicode subsystem entry
-      ext4: include charset encoding information in the superblock
-      ext4: Support case-insensitive file name lookups
-      docs: ext4.rst: document case-insensitive directories
 
-Jan Kara (1):
-      ext4: make sanity check in mballoc more strict
+Fixes
+-----
 
-Jiufei Xue (1):
-      jbd2: check superblock mapped prior to committing
+Teach e2scrub and e2scrub to give more intelligible error messages when
+the lvm2 and util-linux packages are not installed, or if the commands
+are not run as root.
 
-Khazhismel Kumykov (1):
-      ext4: cond_resched in work-heavy group loops
+Teach e2scrub_all to skip trying to run e2scrub on a logical volume if
+its volume group did not have enough space to create a snapshot.
+(Addresses Debian Bug: #924301)
 
-Kirill Tkhai (1):
-      ext4: actually request zeroing of inode table after grow
+E2scrub will tag its snapshots with UDISK_IGNORE so they do not show up
+in GUI's.   (Addresses Debian Bug: #926112)
 
-Liu Song (1):
-      jbd2: remove repeated assignments in __jbd2_log_wait_for_space()
+Mark the e2scrub service files to indicate that CAP_SYS_ADMIN and
+CAP_SYS_RAWIO are required.  This avoids errors when e2scrub is run an
+container where root does not have these capabilities.  (Addresses
+Debian Bug: #926138)
 
-Liu Xiang (1):
-      ext4: fix prefetchw of NULL page
+Fix mke2fs's check for absurdly large disks.  Previously check was 2^10
+too small, so mke2fs would fail when trying to format a 900TB file
+system.
 
-Masahiro Yamada (1):
-      unicode: refactor the rule for regenerating utf8data.h
+Fixed debugfs so it correctly prints ea_in_inode xattr values.
 
-Olaf Weber (2):
-      unicode: introduce code for UTF-8 normalization
-      unicode: reduce the size of utf8data[]
+Fixed various casefold bugs.
 
-Pan Bian (1):
-      ext4: avoid drop reference to iloc.bh twice
 
-Theodore Ts'o (3):
-      ext4: protect journal inode's blocks using block_validity
-      ext4: ignore e_value_offs for xattrs with value-in-ea-inode
-      ext4: export /sys/fs/ext4/feature/casefold if Unicode support is present
+Performance, Internal Implementation, Development Support etc.
+--------------------------------------------------------------
 
- Documentation/admin-guide/ext4.rst |   38 +
- Documentation/dontdiff             |    2 +
- MAINTAINERS                        |    6 +
- fs/Kconfig                         |    1 +
- fs/Makefile                        |    1 +
- fs/ext4/block_validity.c           |   49 +
- fs/ext4/dir.c                      |   48 +
- fs/ext4/ext4.h                     |   45 +-
- fs/ext4/extents_status.c           |    4 +-
- fs/ext4/hash.c                     |   34 +-
- fs/ext4/ialloc.c                   |    2 +-
- fs/ext4/inline.c                   |    2 +-
- fs/ext4/inode.c                    |   12 +-
- fs/ext4/ioctl.c                    |   20 +-
- fs/ext4/mballoc.c                  |    4 +-
- fs/ext4/namei.c                    |  107 +-
- fs/ext4/readpage.c                 |    3 +-
- fs/ext4/resize.c                   |    1 +
- fs/ext4/super.c                    |  151 ++-
- fs/ext4/sysfs.c                    |    6 +
- fs/ext4/xattr.c                    |    2 +-
- fs/jbd2/checkpoint.c               |    1 -
- fs/jbd2/journal.c                  |    4 +
- fs/unicode/.gitignore              |    2 +
- fs/unicode/Kconfig                 |   13 +
- fs/unicode/Makefile                |   38 +
- fs/unicode/README.utf8data         |   71 ++
- fs/unicode/mkutf8data.c            | 3419 ++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/unicode/utf8-core.c             |  187 +++
- fs/unicode/utf8-norm.c             |  799 ++++++++++++
- fs/unicode/utf8-selftest.c         |  320 +++++
- fs/unicode/utf8data.h_shipped      | 4109 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/unicode/utf8n.h                 |  117 ++
- include/linux/fs.h                 |    2 +
- include/linux/unicode.h            |   30 +
- 35 files changed, 9591 insertions(+), 59 deletions(-)
- create mode 100644 fs/unicode/.gitignore
- create mode 100644 fs/unicode/Kconfig
- create mode 100644 fs/unicode/Makefile
- create mode 100644 fs/unicode/README.utf8data
- create mode 100644 fs/unicode/mkutf8data.c
- create mode 100644 fs/unicode/utf8-core.c
- create mode 100644 fs/unicode/utf8-norm.c
- create mode 100644 fs/unicode/utf8-selftest.c
- create mode 100644 fs/unicode/utf8data.h_shipped
- create mode 100644 fs/unicode/utf8n.h
- create mode 100644 include/linux/unicode.h
+Synchronized changes from Android's AOSP e2fsprogs tree.
+
+Fix autoheader warnings caused by a missing template in AC_CHECK_LIB.
+
+Fix the the "make install-strip" command.
+
+Dropped utf8_* and nls_* symbols from the libext2fs shared library, to
+avoid namespace contamination.
+
+Fix the f_valid_ea_in_inode test so actually tests the ea_in_inode
+feature.
+
+Fixed various debian packaging issues.  (Addresses Debian Bug: #924275)
+
