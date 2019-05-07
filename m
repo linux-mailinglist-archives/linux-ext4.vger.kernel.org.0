@@ -2,96 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9ED154EB
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2019 22:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11EA15AA3
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 May 2019 07:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbfEFUc2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 May 2019 16:32:28 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:33344 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbfEFUc2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 May 2019 16:32:28 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 55CFF26398A
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH xfstests 1/2] common/casefold: Add infrastructure to test filename casefold feature
-Organization: Collabora
-References: <20190506185941.10570-1-krisman@collabora.com>
-        <20190506200325.GA3985@mit.edu>
-Date:   Mon, 06 May 2019 16:32:23 -0400
-In-Reply-To: <20190506200325.GA3985@mit.edu> (Theodore Ts'o's message of "Mon,
-        6 May 2019 16:03:25 -0400")
-Message-ID: <875zqn1fzc.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.1 (gnu/linux)
+        id S1729142AbfEGFko (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 May 2019 01:40:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729168AbfEGFko (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 7 May 2019 01:40:44 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15757206A3;
+        Tue,  7 May 2019 05:40:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557207643;
+        bh=sr0fZASfak6ElNor1dSUQ6Ch8QcfbkoAmu36P/qWnoI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nb4fWFOx6j0vuPSe1f3L/TojrJCxUaf4CgcAKOk159dSRJuEL6abiAXeEDbKpGL2A
+         3M2NYBTs4+2WlogK7ZdRIc7Q0Oz0CbG/Cdao0DQJS5wMNwtqhfBSWeTbMi9oS81FRx
+         f4Dnuj5RaNIkHA1q00ahmzjtKdsFitzH3NAV4SNA=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     yangerkun <yangerkun@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
+        stable@kernel.org, Sasha Levin <alexander.levin@microsoft.com>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 76/95] ext4: cleanup pagecache before swap i_data
+Date:   Tue,  7 May 2019 01:38:05 -0400
+Message-Id: <20190507053826.31622-76-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190507053826.31622-1-sashal@kernel.org>
+References: <20190507053826.31622-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-"Theodore Ts'o" <tytso@mit.edu> writes:
+From: yangerkun <yangerkun@huawei.com>
 
-> On Mon, May 06, 2019 at 02:59:40PM -0400, Gabriel Krisman Bertazi wrote:
->> +_require_test_casefold_feature () {
->> +    _has_casefold_feature $TEST_DEV || \
->> +	_notrun "Feature casefold required for this test"
->> +}
->> +_require_scratch_casefold_feature () {
->> +    _has_casefold_feature $SCRATCH_DEV || \
->> +	_notrun "Feature casefold required for this test"
->> +}
->
-> I've just pushed out a commit to ext4.git tree which will cause
-> /sys/fs/ext4/features/casefold will exist iff CONFIG_UNICODE is
-> present.  This will allow the test to check whether or not the kernel
-> version and configuration will support the casefold feature.
->
-> Could you add a check for this flag if the file system type is ext4?
+[ Upstream commit a46c68a318b08f819047843abf349aeee5d10ac2 ]
 
-Hello Ted,
+While do swap, we should make sure there has no new dirty page since we
+should swap i_data between two inode:
+1.We should lock i_mmap_sem with write to avoid new pagecache from mmap
+read/write;
+2.Change filemap_flush to filemap_write_and_wait and move them to the
+space protected by inode lock to avoid new pagecache from buffer read/write.
 
-I will follow up with this change on a v2.
+Signed-off-by: yangerkun <yangerkun@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
+Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
+---
+ fs/ext4/ioctl.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-> A file system independent way of doing this would be to create a test
-> file system on the test file system, calling "chattr +F" on the
-> directory.  If it fails, then either the file system doesn't support
-> it or the chattr program is too old and doesn't support casefold.  If
-> the chattr +F succeeds, then the test should call lsattr -d on the
-> directory and make sure the request to set casefold flag was actually
-> honored; some file systems will simply fail to set flags that they
-> don't support, so we do need to do a SETFLAGS followed by a GETFLAGS
-> to be sure that it was supported.
-
-> Speaking of file system independent casefold, I believe that it will
-> be likely that the casefold feature will be supported by f2fs in the
-> fullness of time.  If that happens, how to test for the file system
-> feature will be different (since dumpe2fs is ext4-specific), but I
-> would expect "chattr +F" interface to be the same between ext4 and
-> f2fs.
-
-I planned to add the per-filesystem test inside common/casefold.  Not
-sure how it would be done for f2fs, but i don't think we'd have a
-unified interface other than SETFLAGS followed by GETFLAGS to test
-this.  I think I could make this method the fallback.
-
->
-> This might mean that we should add casefold tests to either generic/
-> or shared/ instead of ext4/ --- I think it would be shared since at
-> least initially it would only be ext4 and f2fs, and I haven't seen any
-> indication than other file systems would be interested in adding
-> casefold support.  Or we can move the casefold tests later from ext4/
-> to shared/ once the f2fs support materializes.
-
-Last thing I did before submitting this series was moving from generic/
-to ext4/.  I plan to move it back into generic/ or shared/ once another
-filesystem uses it.
-
-I didn't have a chance to discuss with xfs folks yet, but I spoke to
-Chris Mason and I plan to propose this feature for xfs and btrfs soon.
-
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 3dbf4e414706..ca6d27bfcdd8 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -116,9 +116,6 @@ static long swap_inode_boot_loader(struct super_block *sb,
+ 		return PTR_ERR(inode_bl);
+ 	ei_bl = EXT4_I(inode_bl);
+ 
+-	filemap_flush(inode->i_mapping);
+-	filemap_flush(inode_bl->i_mapping);
+-
+ 	/* Protect orig inodes against a truncate and make sure,
+ 	 * that only 1 swap_inode_boot_loader is running. */
+ 	lock_two_nondirectories(inode, inode_bl);
+@@ -126,6 +123,15 @@ static long swap_inode_boot_loader(struct super_block *sb,
+ 	truncate_inode_pages(&inode->i_data, 0);
+ 	truncate_inode_pages(&inode_bl->i_data, 0);
+ 
++	down_write(&EXT4_I(inode)->i_mmap_sem);
++	err = filemap_write_and_wait(inode->i_mapping);
++	if (err)
++		goto err_out;
++
++	err = filemap_write_and_wait(inode_bl->i_mapping);
++	if (err)
++		goto err_out;
++
+ 	/* Wait for all existing dio workers */
+ 	ext4_inode_block_unlocked_dio(inode);
+ 	ext4_inode_block_unlocked_dio(inode_bl);
+@@ -135,7 +141,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
+ 	handle = ext4_journal_start(inode_bl, EXT4_HT_MOVE_EXTENTS, 2);
+ 	if (IS_ERR(handle)) {
+ 		err = -EINVAL;
+-		goto journal_err_out;
++		goto err_out;
+ 	}
+ 
+ 	/* Protect extent tree against block allocations via delalloc */
+@@ -190,6 +196,8 @@ static long swap_inode_boot_loader(struct super_block *sb,
+ 	ext4_journal_stop(handle);
+ 	ext4_double_up_write_data_sem(inode, inode_bl);
+ 
++err_out:
++	up_write(&EXT4_I(inode)->i_mmap_sem);
+ journal_err_out:
+ 	ext4_inode_resume_unlocked_dio(inode);
+ 	ext4_inode_resume_unlocked_dio(inode_bl);
 -- 
-Gabriel Krisman Bertazi
+2.20.1
+
