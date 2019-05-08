@@ -2,144 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B6118035
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2019 21:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB58180D5
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2019 22:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727343AbfEHTFn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 May 2019 15:05:43 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:41494 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727328AbfEHTFn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 May 2019 15:05:43 -0400
-Received: by mail-pf1-f195.google.com with SMTP id l132so1478403pfc.8
-        for <linux-ext4@vger.kernel.org>; Wed, 08 May 2019 12:05:43 -0700 (PDT)
+        id S1727221AbfEHUIa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 May 2019 16:08:30 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:34193 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726709AbfEHUI3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 May 2019 16:08:29 -0400
+Received: by mail-io1-f68.google.com with SMTP id g84so10162835ioa.1;
+        Wed, 08 May 2019 13:08:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Xx1nBdwm/fMIaQ+XRMTVvJx4homKW8vOYVCrjJQah8c=;
-        b=u2CwdPBWUhvunu491lhDVH7O10yitnzRdNYTDcNKNGaaMw+pYsmkpn0J9MsT99d39Y
-         Q/Wk7PGyXcjoc1tha4UuyE89T0rOnD72kAWNnjYRKkjCa0DELX1ElQVVB5fGF3jmFGkX
-         uLZw9HuRYb+PEeZ/PPFrro1K3Iw9vCnd+ELZuZL2OKCDNAb8u9QKbTbbytR8kbwE4FBI
-         Zo/dlYVRRbaMO0EpBIfmHWL9EiKzdxDQc7t8r9e2EKWR9k2JLXoh6H4LfMbZMUTXsaF+
-         muQoMtmzSSBP8hE/rlSXFu27Me96rPxVPBbMGgvYpGy27lg+hjZKYMbf9BMngu5WO2ck
-         kXNg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=fO0KWnimMpo8SBCLE4EyOOofpfWQrLjsWFfvlM20p+U=;
+        b=dYd+rQORDN+M7OSLpC0QH70WCdWVklZkT/b9XrcsRudrPsK1e/WSGZwJ2fPkwhMWBj
+         8LWikOVzwnBKBt0kF6yhfvOLSlMVgiL6MuVwWZM9l76xFLsmh1N844gqH7rj27Nsb9e4
+         iFUwF3gRpRdj1Q0DGPMmuvxd1kELfqwqSUYFdmMNqRHOTs7KVVNUwfwEt9tXgOzGip0m
+         t+S67L0sEvyKsge6zq9pnIjINxq/96ioroRl+K4tj4ReIH6Md0WuFHN/jU/ppim8VeDk
+         StgIXhUWzrKLLls8Tj0WiiBCNfMobIrg1K8WnQiG6i6sn1HijIAeR8RhZeXwy41I1tin
+         C9sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xx1nBdwm/fMIaQ+XRMTVvJx4homKW8vOYVCrjJQah8c=;
-        b=Nq8pn9Iw4+yddN470FOCUAuVocxfhONNzGkR83WQLCPeq3ctxGrBtGjAWP5n75OUft
-         1SyHXqYdwHQIMYz6zgt999ue4RZs0zH/yeA6yU0ZbRQF8EonARluiFT5tQ0O55AMHFEq
-         WzG4oxPiYQS5C1VYrntIS/Cj00pMdAiMtZ0dBqCS6+VnxTqNhP798zIXLkmMqkiIGDkU
-         zgAVvaCfzQj8LUjYjagBXcijtYiTHH55HZLi2zrh4G8yfkZkhe3jm6e0gmjzMEyA8Z6u
-         dl65H3APNfmeUmS5nAMoqgKvOVWhIo3Rx1IjxQ+LGEIdXmYCfRRI9yPqYffo0+8mCNwP
-         fkTg==
-X-Gm-Message-State: APjAAAWMo6eGFItl0Gm2ZWd6+114c1UN5cd4OlF/FhDRKyBRRxiOjGxl
-        35HrN1cm1fu9g6bNUP129E1Csg==
-X-Google-Smtp-Source: APXvYqzypNLQt7uc54cFtZOQcJp0DaX+ClanYsAzKwneRj68EqOnfHTAe97HizrDj+ZvHjUmPOl5NA==
-X-Received: by 2002:a65:5cc8:: with SMTP id b8mr47363166pgt.36.1557342342253;
-        Wed, 08 May 2019 12:05:42 -0700 (PDT)
-Received: from jstaron2.mtv.corp.google.com ([2620:15c:202:201:b94f:2527:c39f:ca2d])
-        by smtp.gmail.com with ESMTPSA id 129sm23470533pff.140.2019.05.08.12.05.40
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 May 2019 12:05:41 -0700 (PDT)
-From:   =?UTF-8?Q?Jakub_Staro=c5=84?= <jstaron@google.com>
-Subject: Re: [Qemu-devel] [PATCH v7 2/6] virtio-pmem: Add virtio pmem driver
-To:     Pankaj Gupta <pagupta@redhat.com>
-Cc:     linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        qemu-devel@nongnu.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, jack@suse.cz, mst@redhat.com,
-        jasowang@redhat.com, david@fromorbit.com, lcapitulino@redhat.com,
-        adilger kernel <adilger.kernel@dilger.ca>, zwisler@kernel.org,
-        aarcange@redhat.com, dave jiang <dave.jiang@intel.com>,
-        darrick wong <darrick.wong@oracle.com>,
-        vishal l verma <vishal.l.verma@intel.com>, david@redhat.com,
-        willy@infradead.org, hch@infradead.org, jmoyer@redhat.com,
-        nilal@redhat.com, lenb@kernel.org, kilobyte@angband.pl,
-        riel@surriel.com, yuval shaia <yuval.shaia@oracle.com>,
-        stefanha@redhat.com, pbonzini@redhat.com,
-        dan j williams <dan.j.williams@intel.com>, kwolf@redhat.com,
-        tytso@mit.edu, xiaoguangrong eric <xiaoguangrong.eric@gmail.com>,
-        cohuck@redhat.com, rjw@rjwysocki.net, imammedo@redhat.com,
-        smbarber@google.com
-References: <20190426050039.17460-1-pagupta@redhat.com>
- <20190426050039.17460-3-pagupta@redhat.com>
- <3d6479ae-6c39-d614-f1d9-aa1978e2e438@google.com>
- <1555943483.27247564.1557313967518.JavaMail.zimbra@redhat.com>
-Message-ID: <3d643ac5-ea1b-efba-9f42-31b2ed3ab5b0@google.com>
-Date:   Wed, 8 May 2019 12:05:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <1555943483.27247564.1557313967518.JavaMail.zimbra@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fO0KWnimMpo8SBCLE4EyOOofpfWQrLjsWFfvlM20p+U=;
+        b=QEdQ/4x/QlmtJUjU4HhfX4Wt8pJP0Lq+iPt04z2W8LnLjo3wFeQDGEBpvVSO3e+Z3N
+         jGbpdX/2sQuRNCQ4t96AGlyg0YHc+2YYLhdJ/+/KU7KSjfzRQ0Sf8PdD48wXoSR5gv1z
+         NJMvPmkOf2xhp5abSm3mKHVQbddHBuhJpjGIIguobedE4Qw2w1trWzQ1Tg7+W8o6OXbS
+         x7LQD9TENGy93kmO1yM2F1vhWYV58QvyHzSYN/jQFPLgyhe5KtAHZAdGf5AOd9jlGnc3
+         Kz+yCDE2qgBb/88ly7VeQmfGAlomwyQtYGMbyt5y0CGgXMq3A2MR0wrTA2NrSn4ZX4hc
+         Y2+A==
+X-Gm-Message-State: APjAAAW8OZoVzA0mL3ge21WI3R4flNts/lrmop9QEcDau55aw4OPXpOJ
+        9f44LkSFyOKZoqgh9ddVnVt9lc4me7k=
+X-Google-Smtp-Source: APXvYqwkAgLczpi8tdZK/LeU5anvflI3b3b1dummkV5A9JA/iRkPqLw0ZXE1OkxOPucc8pFO6bN71w==
+X-Received: by 2002:a6b:7112:: with SMTP id q18mr13022991iog.9.1557346108661;
+        Wed, 08 May 2019 13:08:28 -0700 (PDT)
+Received: from ubu (2600-6c48-437f-c81d-f514-433e-0658-d461.dhcp6.chtrptr.net. [2600:6c48:437f:c81d:f514:433e:658:d461])
+        by smtp.gmail.com with ESMTPSA id u26sm6946iob.78.2019.05.08.13.08.27
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 08 May 2019 13:08:27 -0700 (PDT)
+From:   Kimberly Brown <kimbrownkd@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, gregkh@linuxfoundation.org
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ext4: replace ktype default_attrs with default_groups
+Date:   Wed,  8 May 2019 16:07:48 -0400
+Message-Id: <20190508200748.3907-1-kimbrownkd@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 5/8/19 4:12 AM, Pankaj Gupta wrote:
-> 
->>
->> On 4/25/19 10:00 PM, Pankaj Gupta wrote:
->>
->>> +void host_ack(struct virtqueue *vq)
->>> +{
->>> +	unsigned int len;
->>> +	unsigned long flags;
->>> +	struct virtio_pmem_request *req, *req_buf;
->>> +	struct virtio_pmem *vpmem = vq->vdev->priv;
->>> +
->>> +	spin_lock_irqsave(&vpmem->pmem_lock, flags);
->>> +	while ((req = virtqueue_get_buf(vq, &len)) != NULL) {
->>> +		req->done = true;
->>> +		wake_up(&req->host_acked);
->>> +
->>> +		if (!list_empty(&vpmem->req_list)) {
->>> +			req_buf = list_first_entry(&vpmem->req_list,
->>> +					struct virtio_pmem_request, list);
->>> +			list_del(&vpmem->req_list);
->>
->> Shouldn't it be rather `list_del(vpmem->req_list.next)`? We are trying to
->> unlink
->> first element of the list and `vpmem->req_list` is just the list head.
-> 
-> This looks correct. We are not deleting head but first entry in 'req_list'
-> which is device corresponding list of pending requests.
-> 
-> Please see below:
-> 
-> /**
->  * Retrieve the first list entry for the given list pointer.
->  *
->  * Example:
->  * struct foo *first;
->  * first = list_first_entry(&bar->list_of_foos, struct foo, list_of_foos);
->  *
->  * @param ptr The list head
->  * @param type Data type of the list element to retrieve
->  * @param member Member name of the struct list_head field in the list element.
->  * @return A pointer to the first list element.
->  */
-> #define list_first_entry(ptr, type, member) \
->     list_entry((ptr)->next, type, member)
+The kobj_type default_attrs field is being replaced by the
+default_groups field. Replace the default_attrs field in ext4_sb_ktype
+and ext4_feat_ktype with default_groups. Use the ATTRIBUTE_GROUPS macro
+to create ext4_groups and ext4_feat_groups.
 
-Please look at this StackOverflow question:
-https://stackoverflow.com/questions/19675419/deleting-first-element-of-a-list-h-list
+Signed-off-by: Kimberly Brown <kimbrownkd@gmail.com>
+---
 
-Author asks about deleting first element of the queue. In our case
-(and also in the question's author case), `vpmem->req_list` is not element
-of any request struct and not an element of the list. It's just a list head storing 
-`next` and `prev` pointers which are then pointing to respectively first and
-last element of the list. We want to unlink the first element of the list,
-so we need to pass pointer to the first element of the list to
-the `list_del` function - that is, the `vpmem->req_list.next`.
+This patch depends on a patch in the driver-core tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-next&id=aa30f47cf666111f6bbfd15f290a27e8a7b9d854
 
-Thank you,
-Jakub Staron
+Greg KH can take this patch through the driver-core tree, or this patch
+can wait a release cycle and go through the subsystem's tree, whichever
+the subsystem maintainer is more comfortable with.
+
+
+ fs/ext4/sysfs.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 616c075da062..ef3b82dba59b 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -230,6 +230,7 @@ static struct attribute *ext4_attrs[] = {
+ 	ATTR_LIST(journal_task),
+ 	NULL,
+ };
++ATTRIBUTE_GROUPS(ext4);
+ 
+ /* Features this copy of ext4 supports */
+ EXT4_ATTR_FEATURE(lazy_itable_init);
+@@ -250,6 +251,7 @@ static struct attribute *ext4_feat_attrs[] = {
+ 	ATTR_LIST(metadata_csum_seed),
+ 	NULL,
+ };
++ATTRIBUTE_GROUPS(ext4_feat);
+ 
+ static void *calc_ptr(struct ext4_attr *a, struct ext4_sb_info *sbi)
+ {
+@@ -368,13 +370,13 @@ static const struct sysfs_ops ext4_attr_ops = {
+ };
+ 
+ static struct kobj_type ext4_sb_ktype = {
+-	.default_attrs	= ext4_attrs,
++	.default_groups = ext4_groups,
+ 	.sysfs_ops	= &ext4_attr_ops,
+ 	.release	= ext4_sb_release,
+ };
+ 
+ static struct kobj_type ext4_feat_ktype = {
+-	.default_attrs	= ext4_feat_attrs,
++	.default_groups = ext4_feat_groups,
+ 	.sysfs_ops	= &ext4_attr_ops,
+ 	.release	= (void (*)(struct kobject *))kfree,
+ };
+-- 
+2.17.1
+
