@@ -2,74 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1BF18877
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2019 12:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB99189AE
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2019 14:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbfEIKmb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 May 2019 06:42:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54898 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725869AbfEIKmb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 9 May 2019 06:42:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 66003AC11;
-        Thu,  9 May 2019 10:42:30 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 223751E3C7F; Thu,  9 May 2019 12:42:28 +0200 (CEST)
-Date:   Thu, 9 May 2019 12:42:28 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "sunny.s.zhang" <sunny.s.zhang@oracle.com>
-Cc:     Chengguang Xu <cgxu519@gmail.com>, jack@suse.com, tytso@mit.edu,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] jbd2: fix potential double free
-Message-ID: <20190509104228.GD23589@quack2.suse.cz>
-References: <1557054064-3504-1-git-send-email-cgxu519@gmail.com>
- <a931ed92-763c-0a18-ed3d-4ac1c4fbcb8d@oracle.com>
+        id S1726533AbfEIMY0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 May 2019 08:24:26 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33290 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726438AbfEIMY0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 9 May 2019 08:24:26 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 2D91C307D98F;
+        Thu,  9 May 2019 12:24:26 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AA6435C226;
+        Thu,  9 May 2019 12:24:25 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 257BD41F58;
+        Thu,  9 May 2019 12:24:25 +0000 (UTC)
+Date:   Thu, 9 May 2019 08:24:24 -0400 (EDT)
+From:   Pankaj Gupta <pagupta@redhat.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        KVM list <kvm@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Ross Zwisler <zwisler@kernel.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Christoph Hellwig <hch@infradead.org>,
+        Len Brown <lenb@kernel.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        lcapitulino@redhat.com, Kevin Wolf <kwolf@redhat.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        jmoyer <jmoyer@redhat.com>,
+        Nitesh Narayan Lal <nilal@redhat.com>,
+        Rik van Riel <riel@surriel.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        david <david@fromorbit.com>, cohuck@redhat.com,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kilobyte@angband.pl,
+        yuval shaia <yuval.shaia@oracle.com>
+Message-ID: <511098535.27565704.1557404664499.JavaMail.zimbra@redhat.com>
+In-Reply-To: <CAPcyv4hRdvypEj4LBTMfUFm80BdpRYbOugrkkj-3Kk_LErXPqQ@mail.gmail.com>
+References: <20190426050039.17460-1-pagupta@redhat.com> <20190426050039.17460-4-pagupta@redhat.com> <CAPcyv4hRdvypEj4LBTMfUFm80BdpRYbOugrkkj-3Kk_LErXPqQ@mail.gmail.com>
+Subject: Re: [PATCH v7 3/6] libnvdimm: add dax_dev sync flag
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a931ed92-763c-0a18-ed3d-4ac1c4fbcb8d@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.116.88, 10.4.195.16]
+Thread-Topic: libnvdimm: add dax_dev sync flag
+Thread-Index: ojaRi4mgEPnvOvl3Gx+91mTiXiceZg==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.48]); Thu, 09 May 2019 12:24:26 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 08-05-19 14:38:22, sunny.s.zhang wrote:
-> Hi Chengguang,
+
+> >
+> > This patch adds 'DAXDEV_SYNC' flag which is set
+> > for nd_region doing synchronous flush. This later
+> > is used to disable MAP_SYNC functionality for
+> > ext4 & xfs filesystem for devices don't support
+> > synchronous flush.
+> >
+> > Signed-off-by: Pankaj Gupta <pagupta@redhat.com>
+> [..]
+> > diff --git a/include/linux/dax.h b/include/linux/dax.h
+> > index 0dd316a74a29..c97fc0cc7167 100644
+> > --- a/include/linux/dax.h
+> > +++ b/include/linux/dax.h
+> > @@ -7,6 +7,9 @@
+> >  #include <linux/radix-tree.h>
+> >  #include <asm/pgtable.h>
+> >
+> > +/* Flag for synchronous flush */
+> > +#define DAXDEV_F_SYNC true
 > 
-> 在 2019年05月05日 19:01, Chengguang Xu 写道:
-> > When fail from creating cache jbd2_inode_cache, we will
-> > destroy previously created cache jbd2_handle_cache twice.
-> > This patch fixes it by removing first destroy in error path.
-> > 
-> > Signed-off-by: Chengguang Xu <cgxu519@gmail.com>
-> > ---
-> >   fs/jbd2/journal.c | 1 -
-> >   1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> > index 382c030cc78b..49797854ccb8 100644
-> > --- a/fs/jbd2/journal.c
-> > +++ b/fs/jbd2/journal.c
-> > @@ -2642,7 +2642,6 @@ static int __init jbd2_journal_init_handle_cache(void)
-> >   	jbd2_inode_cache = KMEM_CACHE(jbd2_inode, 0);
-> >   	if (jbd2_inode_cache == NULL) {
-> >   		printk(KERN_EMERG "JBD2: failed to create inode cache\n");
-> > -		kmem_cache_destroy(jbd2_handle_cache);
-> Maybe we should keep it, and set the jbd2_handle_cache to NULL.
-> If there are some changes in the future,  we may forget to change the
-> function
-> of jbd2_journal_destroy_handle_cache.
+> I'd feel better, i.e. it reads more canonically, if this was defined
+> as (1UL << 0) and the argument to alloc_dax() was changed to 'unsigned
+> long flags' rather than a bool.
 
-So what I'd do is that I'd split initialization of jbd2_inode_cache into a
-separate function (and the same for destruction). That more aligns with how
-things are currently done in jbd2 and also fixes the problem with double
-destruction.
+Sure, Will send a v8 with suggested changes.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thank You,
+Pankaj
+
+> 
