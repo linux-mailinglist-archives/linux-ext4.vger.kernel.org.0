@@ -2,52 +2,29 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EF11A3DC
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 May 2019 22:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33361A58F
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2019 01:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbfEJUPl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 May 2019 16:15:41 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:33914 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727832AbfEJUPl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 May 2019 16:15:41 -0400
-Received: by mail-ot1-f65.google.com with SMTP id l17so6730753otq.1
-        for <linux-ext4@vger.kernel.org>; Fri, 10 May 2019 13:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=haQb/JJEXbzGwY8djXGgfBZiIn+/x5Yv5AUgQ4m38OM=;
-        b=WEeqre45hj7sSv58I/e7A5coRY+GxRJHinyFbk3h7U4aJrBJYpdYkhq9T1r4+5or5d
-         jRR3GR4Z+c950AiPGFzXe4QQXlx4J3RcgRXk7RadE4sRSsQK7+mC+RHs2IEhRwKUI7Zy
-         /T1NcmREZZ/qpW4sfz6npTMRE2tie3uif+puXikMYRBthExnMytzYTF00hoiHxBr5/P0
-         7jNqauenyRbY3EQ6raNfL+QovOy++Rd9rquniNrMmi7pGZFEPwXRnlT7u+kZ42rUMzcD
-         v4eAUwbD5Njo6W9aRbjgU1OhGsIT/fgW+T3LVLT6M51FFHqJTii+xqDcL8xDANdQWGtc
-         2Dxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=haQb/JJEXbzGwY8djXGgfBZiIn+/x5Yv5AUgQ4m38OM=;
-        b=Lujr52bUMDkRKeX4fL3jO43EalatZS54d2U1Jd3LOhAJtxbbcMzhH2fSAr1cwly78r
-         qCNLdWUwRrREXSr7Wpwi6VNF611l7WL8ieqsb7ny0hN0rcSeD+rh/mGDPnNdeseA6DIs
-         PLD5hHVPMq6Ew2dGz4qJAbMcaROUXu+gOqEp4WR94Vvw1gvXOQACZcbn+WZjQ0cdJ4Te
-         wARn10oaj3ADrjDKHOfGw6qylfQtYbug2atFKwr4ftg3y336G5jaL6uHwgd4T/EITnau
-         M9Ps9+8W3LI24iWMMMcNdiFz9JPMZO8TywhJXwWTiFMzTONY/pjGJBFLGRK6eZWW+wkN
-         JaYw==
-X-Gm-Message-State: APjAAAWZO38G8+q70UKV5C4wraHx7r/Lbo+60U1GiKbyaNboxJ8wJCmC
-        2HfVxyHC7uwTjenPfdrSNZUBeyAy1RWCP5XMRyoENQ==
-X-Google-Smtp-Source: APXvYqzGzV4vCYOWqp7L7v2b9h2jjvTQectDwMiq79aWZo81gT17ipgMl7EwlMGGL3BIVEygxWA2BmYfTI9FLFAVAXk=
-X-Received: by 2002:a9d:6f19:: with SMTP id n25mr2918893otq.367.1557519340452;
- Fri, 10 May 2019 13:15:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190510155202.14737-1-pagupta@redhat.com>
-In-Reply-To: <20190510155202.14737-1-pagupta@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 10 May 2019 13:15:29 -0700
-Message-ID: <CAPcyv4joEZaePvzc__N9Q3nozoHgQn7hNFPjBVo5BP6cc4rkEA@mail.gmail.com>
-Subject: Re: [PATCH v8 0/6] virtio pmem driver
-To:     Pankaj Gupta <pagupta@redhat.com>
+        id S1728046AbfEJXdG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 May 2019 19:33:06 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:47624 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727959AbfEJXdG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 10 May 2019 19:33:06 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 5778B81DEB;
+        Fri, 10 May 2019 23:33:05 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C15C86013A;
+        Fri, 10 May 2019 23:33:04 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id E768741F56;
+        Fri, 10 May 2019 23:33:03 +0000 (UTC)
+Date:   Fri, 10 May 2019 19:33:03 -0400 (EDT)
+From:   Pankaj Gupta <pagupta@redhat.com>
+To:     Dan Williams <dan.j.williams@intel.com>
 Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         virtualization@lists.linux-foundation.org,
@@ -66,7 +43,7 @@ Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
         "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Christoph Hellwig <hch@infradead.org>,
         Len Brown <lenb@kernel.org>, Jan Kara <jack@suse.cz>,
-        "Theodore Ts'o" <tytso@mit.edu>,
+        Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
         lcapitulino@redhat.com, Kevin Wolf <kwolf@redhat.com>,
@@ -82,19 +59,42 @@ Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Adam Borowski <kilobyte@angband.pl>,
         yuval shaia <yuval.shaia@oracle.com>, jstaron@google.com
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <1909759746.28039539.1557531183427.JavaMail.zimbra@redhat.com>
+In-Reply-To: <CAPcyv4joEZaePvzc__N9Q3nozoHgQn7hNFPjBVo5BP6cc4rkEA@mail.gmail.com>
+References: <20190510155202.14737-1-pagupta@redhat.com> <CAPcyv4joEZaePvzc__N9Q3nozoHgQn7hNFPjBVo5BP6cc4rkEA@mail.gmail.com>
+Subject: Re: [PATCH v8 0/6] virtio pmem driver
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.116.14, 10.4.195.9]
+Thread-Topic: virtio pmem driver
+Thread-Index: rsQ5JHWz0G3j576+ZiuD0XgeGIYzZQ==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Fri, 10 May 2019 23:33:05 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 10, 2019 at 8:52 AM Pankaj Gupta <pagupta@redhat.com> wrote:
->
->  Hi Michael & Dan,
->
->  Please review/ack the patch series from LIBNVDIMM & VIRTIO side.
->  We have ack on ext4, xfs patches(4, 5 & 6) patch 2. Still need
->  your ack on nvdimm patches(1 & 3) & virtio patch 2.
 
-I was planning to merge these via the nvdimm tree, not ack them. Did
-you have another maintainer lined up to take these patches?
+> >
+> >  Hi Michael & Dan,
+> >
+> >  Please review/ack the patch series from LIBNVDIMM & VIRTIO side.
+> >  We have ack on ext4, xfs patches(4, 5 & 6) patch 2. Still need
+> >  your ack on nvdimm patches(1 & 3) & virtio patch 2.
+> 
+> I was planning to merge these via the nvdimm tree, not ack them. Did
+> you have another maintainer lined up to take these patches?
+
+Sorry! for not being clear on this. I wanted to say same.
+
+Proposed the patch series to be merged via nvdimm tree as kindly agreed
+by you. We only need an ack on virtio patch 2 from Micahel.
+
+Thank you for all your help.
+
+Best regards,
+Pankaj Gupta
+
+> 
