@@ -2,198 +2,296 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F17419814
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 May 2019 07:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BDB19BC0
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 May 2019 12:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbfEJFcG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 May 2019 01:32:06 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:44090 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726561AbfEJFcG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 May 2019 01:32:06 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20190510053204epoutp027c71868d43f20dfddade9c266e163ee2~dO16v3bzS2453824538epoutp02B
-        for <linux-ext4@vger.kernel.org>; Fri, 10 May 2019 05:32:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20190510053204epoutp027c71868d43f20dfddade9c266e163ee2~dO16v3bzS2453824538epoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1557466324;
-        bh=KakuJdCn1X04cvo+OPpSwDWAoomNlnwTJIRTnYYBv6U=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=r+Hu5PS0BK6fvvWLaanScq6bC0wz55yHmXEn3RDv0VeqcWuENuPw57SSrEnk2kcWc
-         Geb1YjRitdP0yUNJxsCkDpwwhYrnpm9lUVoqzvyfUhzrzlXwlMoO4+O67pR2EHible
-         FlwphkxiVsi8NQ8eCBjtgCM8lyVOLN+3w4npXCwg=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20190510053203epcas5p13c5af3d4e765a7620fd7b80b356dd51c~dO16f0SwO1510415104epcas5p1J;
-        Fri, 10 May 2019 05:32:03 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        69.68.04067.3DC05DC5; Fri, 10 May 2019 14:32:03 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20190510053203epcas5p39e4eb4a5996e0461da380399c5322f6c~dO16N2q8S1408014080epcas5p3J;
-        Fri, 10 May 2019 05:32:03 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20190510053203epsmtrp266e4f71343665729e467acaaadbad96d~dO16NNTab2509725097epsmtrp2p;
-        Fri, 10 May 2019 05:32:03 +0000 (GMT)
-X-AuditID: b6c32a4b-78bff70000000fe3-0e-5cd50cd31896
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        50.C3.03692.3DC05DC5; Fri, 10 May 2019 14:32:03 +0900 (KST)
-Received: from JOSHIK01 (unknown [107.111.93.135]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20190510053202epsmtip21bdeaf626cdde8d26da59cb5caeab57c~dO15Nik400291002910epsmtip2J;
-        Fri, 10 May 2019 05:32:02 +0000 (GMT)
-From:   "kanchan" <joshi.k@samsung.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-nvme@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-ext4@vger.kernel.org>
-In-Reply-To: <1556191202-3245-1-git-send-email-joshi.k@samsung.com>
-Subject: RE: [PATCH v5 0/7] Extend write-hint framework, and add write-hint
- for Ext4 journal
-Date:   Fri, 10 May 2019 11:01:47 +0530
-Message-ID: <031601d506f1$b2956d80$17c04880$@samsung.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQJoSeMIlXjPMuci1lQDnd0IsY+e8wLu+qiYpSXTDJA=
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKKsWRmVeSWpSXmKPExsWy7bCmuu5lnqsxBs/vaFvsvaVtMXPeHTaL
-        PXtPslhc3jWHzWL+sqfsDqwem5fUe3zeJBfAFMVlk5Kak1mWWqRvl8CV8WP/B7aCXTIVX/5s
-        YW1gvCPWxcjJISFgIrFh7ReWLkYuDiGB3YwSOxauhnI+MUocOX+UEcL5xiix7+JqZpiW478m
-        sEEk9jJK9J69AVX1nFHizpYFLCBVbAKqEvd+9IJViQgsY5Q49/kJG0iCU8BZYsPie2CjhAXi
-        JBruTmAHsVmAGrZ3NoE18wpYSqw9coYdwhaUODnzCVicWUBbYtnC11BnKEjs/nSUFcQWEbCS
-        aOqazAZRIy7x8ugRdpDFEgIb2CT+3emGanCR6Di5hRXCFpZ4dXwLO4QtJfH53V42CLtY4ted
-        o8wQzR2MEtcbZrJAJOwlLu75y9TFyAG0QVNi/S59iGV8Er2/n4CFJQR4JTrahCCqFSXuTXoK
-        tUpc4uGMJVC2h8TDt5uhoTWNUWLKlsusExgVZiH5cxaSP2ch+WcWwuYFjCyrGCVTC4pz01OL
-        TQuM81LL9YoTc4tL89L1kvNzNzGCE4uW9w7GTed8DjEKcDAq8fBa8F+JEWJNLCuuzD3EKMHB
-        rCTCW6QDFOJNSaysSi3Kjy8qzUktPsQozcGiJM47ifVqjJBAemJJanZqakFqEUyWiYNTqoGx
-        9+g9RclDM3QvrdF+3ybNXTP96qPICbo++WV8bp93C9j5X1PgOPmxx/ynN9Mj5t+75sin1u1p
-        2yq2+0YPxy9O14vNyfmyrze//7hm35nd7SL3bUW/BqinXNCveCArIq29yDfv2tmy05Ke4pHv
-        st6I2796Nmf3+Q1Mx5Z8nbSIoVnI2Gt+z9swJZbijERDLeai4kQAxrKziygDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNLMWRmVeSWpSXmKPExsWy7bCSvO5lnqsxBjfPC1nsvaVtMXPeHTaL
-        PXtPslhc3jWHzWL+sqfsDqwem5fUe3zeJBfAFMVlk5Kak1mWWqRvl8CVcejdCsaCNpmKr7se
-        sDQwLhHrYuTkkBAwkTj+awJbFyMXh5DAbkaJHWsXs0MkxCWar/2AsoUlVv57zg5R9JRR4uWW
-        AywgCTYBVYl7P3rBukUEVjFKLD6+G2rUFEaJzSufsoFUcQo4S2xYfI8ZxBYWiJFYP3khWJwF
-        qHt7ZxPYJF4BS4m1R86wQ9iCEidnPgGLMwtoS/Q+bGWEsZctfM0McZKCxO5PR1lBbBEBK4mm
-        rslsEDXiEi+PHmGfwCg0C8moWUhGzUIyahaSlgWMLKsYJVMLinPTc4sNCwzzUsv1ihNzi0vz
-        0vWS83M3MYKjQEtzB+PlJfGHGAU4GJV4eC34r8QIsSaWFVfmHmKU4GBWEuEt0gEK8aYkVlal
-        FuXHF5XmpBYfYpTmYFES532adyxSSCA9sSQ1OzW1ILUIJsvEwSnVwOgoemRRXfusT+fm+0SV
-        nbmarRxXcqa3P3grY89aO9VL09x15yzXkloRN1V0VVfreuvyHcYLQrSUV3QwXrM1P88RrM+7
-        OrBXf6d7mN+t9fyfLr6r8Nm7OIulyFm0W7H+ZlSu4+y5+evYmlui16yeuf7n/6CUGm6nyUkf
-        uX3dwr+/e946naH/khJLcUaioRZzUXEiAH7U1ld+AgAA
-X-CMS-MailID: 20190510053203epcas5p39e4eb4a5996e0461da380399c5322f6c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20190425112347epcas2p1f7be48b8f0d2203252b8c9dd510c1b61
-References: <CGME20190425112347epcas2p1f7be48b8f0d2203252b8c9dd510c1b61@epcas2p1.samsung.com>
-        <1556191202-3245-1-git-send-email-joshi.k@samsung.com>
+        id S1727477AbfEJKg7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 May 2019 06:36:59 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:40331 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727053AbfEJKg7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 May 2019 06:36:59 -0400
+Received: by mail-pf1-f194.google.com with SMTP id u17so3015641pfn.7;
+        Fri, 10 May 2019 03:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=34gwlOJkeJY6G5wyiRP5dNE8+dAulYaywrUwBHw8bTk=;
+        b=ZMJ3FJjgW09dJz9YFZ6K1KzMjJhN/CZxz/kNMsncir9e1GgiKfoeWjuGqwaRZ+bI0f
+         pkOmmAAB1nA/vN3LsgdH52mY08OlmodQT8eUgy+kNiD4d5XFnVuK5F/DvnZrhYStcIxc
+         uqWVk0722pQccw0jSU5DJbn2Nz3Ytha2wWoJWfRiOn790MtGs/xTge5pXTo6JJYciQtk
+         /ApRo/D8SBuJiDkEieEEM6Hq+vfCnhQSFvy62JvGA0oAaaW0VymaYykNObLWiKjgwG81
+         Iafj4kw4jHQJ+O9XxdsRaywgEhDhuXOekouVIYuzXo/SnBFteqJFG2CL7HL+1S6Nlnzy
+         pRrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=34gwlOJkeJY6G5wyiRP5dNE8+dAulYaywrUwBHw8bTk=;
+        b=FUNT3YlLHSsjexFmaHL4ZZ2tj6dFU1QaCCW1HwFgFgRZotLRzrarSgm6V3w7KVoAod
+         F3CH/NtlmWD6IAtT0Z2kijGStHfkSoxuB9zOJNxVUhc289C67ovax5yXyJmJ5b6hdUZA
+         tim5PJB9vE6SMEo1EE8Yg191LbFRpNj1zuFc5oKvfh3hjjJg2/OM8IIviA/JDYcheGQy
+         eUP0hiKl4FiU0TloZyaRD3yhZZq8uEhVunCTI+gA05hhZfLVA2b1gsxPf4wbQRTw6bV1
+         e7XVzjoNgttm/JOgMPR57kLoeh4sJ7i3E5QT3KfhL+FC0l9a/eCvNaKWnUU9ctD+rilM
+         Mozg==
+X-Gm-Message-State: APjAAAURXbQYNU+iL4ESnFIkHz+RLRMNACgjMS0kNktbxo9IalyckXrG
+        Q/pWDClrJGgN9eZNX6Ni7T8=
+X-Google-Smtp-Source: APXvYqyJs1YtnUEAHdWkGq2tkD8ZzY3OjX+2cl8yCH9+xdqT90MJfrEXdvFz7JRQvVvgLq/uix+CDg==
+X-Received: by 2002:a63:b70f:: with SMTP id t15mr9956239pgf.351.1557484618110;
+        Fri, 10 May 2019 03:36:58 -0700 (PDT)
+Received: from izt4n3nohp3b5a1z8j8uuaz.localdomain ([149.129.49.136])
+        by smtp.gmail.com with ESMTPSA id m21sm14750938pff.146.2019.05.10.03.36.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 May 2019 03:36:57 -0700 (PDT)
+From:   Chengguang Xu <cgxu519@gmail.com>
+To:     jack@suse.com, tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chengguang Xu <cgxu519@gmail.com>
+Subject: [PATCH v2] jbd2: fix potential double free
+Date:   Fri, 10 May 2019 18:36:48 +0800
+Message-Id: <1557484608-23514-1-git-send-email-cgxu519@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Jens & other maintainers,
+When fail from creating cache jbd2_inode_cache, we will
+destroy previously created cache jbd2_handle_cache twice.
+This patch fixes it by sperating each cache
+initialization/destruction to individual function.
 
-If this patch-set is in fine shape now, can it please be considered for mer=
-ge in near future?
+Signed-off-by: Chengguang Xu <cgxu519@gmail.com>
+---
+v2:
+- Seperate cache initialization/destruction to individual function.
 
-Thanks,
+ fs/jbd2/journal.c     | 51 +++++++++++++++++++++++++++----------------
+ fs/jbd2/revoke.c      | 32 +++++++++++++++++----------
+ fs/jbd2/transaction.c |  8 ++++---
+ include/linux/jbd2.h  |  8 ++++---
+ 4 files changed, 62 insertions(+), 37 deletions(-)
 
------Original Message-----
-From: Kanchan Joshi =5Bmailto:joshi.k=40samsung.com=5D=20
-Sent: Thursday, April 25, 2019 4:50 PM
-To: linux-kernel=40vger.kernel.org; linux-block=40vger.kernel.org; linux-nv=
-me=40lists.infradead.org; linux-fsdevel=40vger.kernel.org; linux-ext4=40vge=
-r.kernel.org
-Cc: prakash.v=40samsung.com; anshul=40samsung.com; Kanchan Joshi <joshi.k=
-=40samsung.com>
-Subject: =5BPATCH v5 0/7=5D Extend write-hint framework, and add write-hint=
- for Ext4 journal
-
-V5 series, towards extending write-hint/streams infrastructure for kernel-c=
-omponents, and adding support for sending write-hint with Ext4/JBD2 journal=
-.
-
-Here is the history/changelog -
-
-Changes since v4:
-- Removed write-hint field from request. bi_write_hint in bio is used for
-  merging checks now.
-- Modified write-hint-to-stream conversion logic. Now, kernel hints are map=
-ped
-  to upper range of stream-ids, while user-hints continue to remain mapped =
-to
-  lower range of stream-ids.
-
-Changes since v3:
-- Correction in grouping related changes into patches
-- Rectification in commit text at places
-
-Changes since v2:
-- Introduce API in block layer so that drivers can register stream info. Ad=
-ded
-  new limit in request queue for this purpose.
-- Block layer does the conversion from write-hint to stream-id.
-- Stream feature is not disabled anymore if device reports less streams tha=
-n
-  a particular number (which was set as 4 earlier).
-- Any write-hint beyond reported stream-count turn to 0.
-- New macro =22WRITE_LIFE_KERN_MIN=22 can be used as base by kernel mode co=
-mponents.
-
-Changes since v1:
-- introduce four more hints for in-kernel use, as recommended by Dave chinn=
-er
-  & Jens axboe. This isolates kernel-mode hints from user-mode ones.
-- remove mount-option to specify write-hint, as recommended by Jan kara &
-  Dave chinner. Rather, FS always sets write-hint for journal. This gets ig=
-nored
-  if device does not support stream.
-- Removed code-redundancy for write_dirty_buffer (Jan kara's review comment=
-)
-
-V4 patch:
-https://lkml.org/lkml/2019/4/17/870
-
-V3 patch:
-https://marc.info/?l=3Dlinux-block&m=3D155384631909082&w=3D2
-
-V2 patch:
-https://patchwork.kernel.org/cover/10754405/
-
-V1 patch:
-https://marc.info/?l=3Dlinux-fsdevel&m=3D154444637519020&w=3D2
-
-
-Kanchan Joshi (7):
-  fs: introduce write-hint start point for in-kernel hints
-  block: increase stream count for in-kernel use
-  block: introduce API to register stream information with block-layer
-  block: introduce write-hint to stream-id conversion
-  nvme: register stream info with block layer
-  fs: introduce APIs to enable passing write-hint with buffer-head
-  fs/ext4,jbd2: add support for sending write-hint with journal
-
- block/blk-core.c            =7C 29 ++++++++++++++++++++++++++++-
- block/blk-merge.c           =7C  4 ++--
- block/blk-settings.c        =7C 12 ++++++++++++
- drivers/nvme/host/core.c    =7C 23 ++++++-----------------
- fs/buffer.c                 =7C 18 ++++++++++++++++--
- fs/ext4/ext4_jbd2.h         =7C  1 +
- fs/ext4/super.c             =7C  2 ++
- fs/jbd2/commit.c            =7C 11 +++++++----
- fs/jbd2/journal.c           =7C  3 ++-
- fs/jbd2/revoke.c            =7C  3 ++-
- include/linux/blkdev.h      =7C  8 ++++++--
- include/linux/buffer_head.h =7C  3 +++
- include/linux/fs.h          =7C  2 ++
- include/linux/jbd2.h        =7C  8 ++++++++
- 14 files changed, 97 insertions(+), 30 deletions(-)
-
---
-2.7.4
-
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 37e16d969925..0f1ac43d0560 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -2299,7 +2299,7 @@ static void jbd2_journal_destroy_slabs(void)
+ 	}
+ }
+ 
+-static int jbd2_journal_create_slab(size_t size)
++static int __init jbd2_journal_create_slab(size_t size)
+ {
+ 	static DEFINE_MUTEX(jbd2_slab_create_mutex);
+ 	int i = order_base_2(size) - 10;
+@@ -2375,22 +2375,19 @@ static struct kmem_cache *jbd2_journal_head_cache;
+ static atomic_t nr_journal_heads = ATOMIC_INIT(0);
+ #endif
+ 
+-static int jbd2_journal_init_journal_head_cache(void)
++static int __init jbd2_journal_init_journal_head_cache(void)
+ {
+-	int retval;
+-
+-	J_ASSERT(jbd2_journal_head_cache == NULL);
++	J_ASSERT(!jbd2_journal_head_cache);
+ 	jbd2_journal_head_cache = kmem_cache_create("jbd2_journal_head",
+ 				sizeof(struct journal_head),
+ 				0,		/* offset */
+ 				SLAB_TEMPORARY | SLAB_TYPESAFE_BY_RCU,
+ 				NULL);		/* ctor */
+-	retval = 0;
+ 	if (!jbd2_journal_head_cache) {
+-		retval = -ENOMEM;
+ 		printk(KERN_EMERG "JBD2: no memory for journal_head cache\n");
++		return -ENOMEM;
+ 	}
+-	return retval;
++	return 0;
+ }
+ 
+ static void jbd2_journal_destroy_journal_head_cache(void)
+@@ -2636,28 +2633,38 @@ static void __exit jbd2_remove_jbd_stats_proc_entry(void)
+ 
+ struct kmem_cache *jbd2_handle_cache, *jbd2_inode_cache;
+ 
++static int __init jbd2_journal_init_inode_cache(void)
++{
++	J_ASSERT(!jbd2_inode_cache);
++	jbd2_inode_cache = KMEM_CACHE(jbd2_inode, 0);
++	if (!jbd2_inode_cache) {
++		pr_emerg("JBD2: failed to create inode cache\n");
++		return -ENOMEM;
++	}
++	return 0;
++}
++
+ static int __init jbd2_journal_init_handle_cache(void)
+ {
++	J_ASSERT(!jbd2_handle_cache);
+ 	jbd2_handle_cache = KMEM_CACHE(jbd2_journal_handle, SLAB_TEMPORARY);
+-	if (jbd2_handle_cache == NULL) {
++	if (!jbd2_handle_cache) {
+ 		printk(KERN_EMERG "JBD2: failed to create handle cache\n");
+ 		return -ENOMEM;
+ 	}
+-	jbd2_inode_cache = KMEM_CACHE(jbd2_inode, 0);
+-	if (jbd2_inode_cache == NULL) {
+-		printk(KERN_EMERG "JBD2: failed to create inode cache\n");
+-		kmem_cache_destroy(jbd2_handle_cache);
+-		return -ENOMEM;
+-	}
+ 	return 0;
+ }
+ 
++static void jbd2_journal_destroy_inode_cache(void)
++{
++	kmem_cache_destroy(jbd2_inode_cache);
++	jbd2_inode_cache = NULL;
++}
++
+ static void jbd2_journal_destroy_handle_cache(void)
+ {
+ 	kmem_cache_destroy(jbd2_handle_cache);
+ 	jbd2_handle_cache = NULL;
+-	kmem_cache_destroy(jbd2_inode_cache);
+-	jbd2_inode_cache = NULL;
+ }
+ 
+ /*
+@@ -2668,11 +2675,15 @@ static int __init journal_init_caches(void)
+ {
+ 	int ret;
+ 
+-	ret = jbd2_journal_init_revoke_caches();
++	ret = jbd2_journal_init_revoke_record_cache();
++	if (ret == 0)
++		ret = jbd2_journal_init_revoke_table_cache();
+ 	if (ret == 0)
+ 		ret = jbd2_journal_init_journal_head_cache();
+ 	if (ret == 0)
+ 		ret = jbd2_journal_init_handle_cache();
++	if (ret == 0)
++		ret = jbd2_journal_init_inode_cache();
+ 	if (ret == 0)
+ 		ret = jbd2_journal_init_transaction_cache();
+ 	return ret;
+@@ -2680,9 +2691,11 @@ static int __init journal_init_caches(void)
+ 
+ static void jbd2_journal_destroy_caches(void)
+ {
+-	jbd2_journal_destroy_revoke_caches();
++	jbd2_journal_destroy_revoke_record_cache();
++	jbd2_journal_destroy_revoke_table_cache();
+ 	jbd2_journal_destroy_journal_head_cache();
+ 	jbd2_journal_destroy_handle_cache();
++	jbd2_journal_destroy_inode_cache();
+ 	jbd2_journal_destroy_transaction_cache();
+ 	jbd2_journal_destroy_slabs();
+ }
+diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
+index a1143e57a718..69b9bc329964 100644
+--- a/fs/jbd2/revoke.c
++++ b/fs/jbd2/revoke.c
+@@ -178,33 +178,41 @@ static struct jbd2_revoke_record_s *find_revoke_record(journal_t *journal,
+ 	return NULL;
+ }
+ 
+-void jbd2_journal_destroy_revoke_caches(void)
++void jbd2_journal_destroy_revoke_record_cache(void)
+ {
+ 	kmem_cache_destroy(jbd2_revoke_record_cache);
+ 	jbd2_revoke_record_cache = NULL;
++}
++
++void jbd2_journal_destroy_revoke_table_cache(void)
++{
+ 	kmem_cache_destroy(jbd2_revoke_table_cache);
+ 	jbd2_revoke_table_cache = NULL;
+ }
+ 
+-int __init jbd2_journal_init_revoke_caches(void)
++int __init jbd2_journal_init_revoke_record_cache(void)
+ {
+ 	J_ASSERT(!jbd2_revoke_record_cache);
+-	J_ASSERT(!jbd2_revoke_table_cache);
+-
+ 	jbd2_revoke_record_cache = KMEM_CACHE(jbd2_revoke_record_s,
+ 					SLAB_HWCACHE_ALIGN|SLAB_TEMPORARY);
+-	if (!jbd2_revoke_record_cache)
+-		goto record_cache_failure;
+ 
++	if (!jbd2_revoke_record_cache) {
++		pr_emerg("JBD2: failed to create revoke_record cache\n");
++		return -ENOMEM;
++	}
++	return 0;
++}
++
++int __init jbd2_journal_init_revoke_table_cache(void)
++{
++	J_ASSERT(!jbd2_revoke_table_cache);
+ 	jbd2_revoke_table_cache = KMEM_CACHE(jbd2_revoke_table_s,
+ 					     SLAB_TEMPORARY);
+-	if (!jbd2_revoke_table_cache)
+-		goto table_cache_failure;
+-	return 0;
+-table_cache_failure:
+-	jbd2_journal_destroy_revoke_caches();
+-record_cache_failure:
++	if (!jbd2_revoke_table_cache) {
++		pr_emerg("JBD2: failed to create revoke_table cache\n");
+ 		return -ENOMEM;
++	}
++	return 0;
+ }
+ 
+ static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index f940d31c2adc..8ca4fddc705f 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -42,9 +42,11 @@ int __init jbd2_journal_init_transaction_cache(void)
+ 					0,
+ 					SLAB_HWCACHE_ALIGN|SLAB_TEMPORARY,
+ 					NULL);
+-	if (transaction_cache)
+-		return 0;
+-	return -ENOMEM;
++	if (!transaction_cache) {
++		pr_emerg("JBD2: failed to create transaction cache\n");
++		return -ENOMEM;
++	}
++	return 0;
+ }
+ 
+ void jbd2_journal_destroy_transaction_cache(void)
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index c2ffff5f9ae2..6c9870e16b19 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1318,7 +1318,7 @@ extern void		__wait_on_journal (journal_t *);
+ 
+ /* Transaction cache support */
+ extern void jbd2_journal_destroy_transaction_cache(void);
+-extern int  jbd2_journal_init_transaction_cache(void);
++extern int __init jbd2_journal_init_transaction_cache(void);
+ extern void jbd2_journal_free_transaction(transaction_t *);
+ 
+ /*
+@@ -1446,8 +1446,10 @@ static inline void jbd2_free_inode(struct jbd2_inode *jinode)
+ /* Primary revoke support */
+ #define JOURNAL_REVOKE_DEFAULT_HASH 256
+ extern int	   jbd2_journal_init_revoke(journal_t *, int);
+-extern void	   jbd2_journal_destroy_revoke_caches(void);
+-extern int	   jbd2_journal_init_revoke_caches(void);
++extern void	   jbd2_journal_destroy_revoke_record_cache(void);
++extern void	   jbd2_journal_destroy_revoke_table_cache(void);
++extern int __init jbd2_journal_init_revoke_record_cache(void);
++extern int __init jbd2_journal_init_revoke_table_cache(void);
+ 
+ extern void	   jbd2_journal_destroy_revoke(journal_t *);
+ extern int	   jbd2_journal_revoke (handle_t *, unsigned long long, struct buffer_head *);
+-- 
+2.20.1
 
