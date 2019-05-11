@@ -2,137 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C211A656
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2019 04:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AC61A7DE
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2019 14:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbfEKCqV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 May 2019 22:46:21 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:36043 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728255AbfEKCqV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 May 2019 22:46:21 -0400
-Received: by mail-pl1-f196.google.com with SMTP id d21so3660748plr.3
-        for <linux-ext4@vger.kernel.org>; Fri, 10 May 2019 19:46:21 -0700 (PDT)
+        id S1728520AbfEKMna (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 11 May 2019 08:43:30 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:55813 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbfEKMna (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 May 2019 08:43:30 -0400
+Received: by mail-wm1-f66.google.com with SMTP id y2so9833260wmi.5;
+        Sat, 11 May 2019 05:43:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=PuqHWwbUC1NSz/HxzJs8gEPDUdL9OSsHw6iGoCx59+g=;
-        b=wlgeLqCffWMH2yd9vw4+wx9wjl4LwrzvhgIIvx4QZJ5a0RJhLeOh3o+6N8Stmfg7iX
-         v7E6whB+EDmSFwBpLShUgWCOMtbVndDCeG0iBCZgRnBfQj5cNjiI8/I4yLP5amrJVeui
-         2FJOvgzBXdzSoWpVKGLsSUDT4bBnIcduVDMQC2PLl5CfeHW4qMzL/InRTkKx5vY7M5a0
-         2EDJi1fiyo6RXzPQwyLrBQX2XaqIhZUaCbhSdw5LxZUQ8BRGds3XLlpn1dDUjeqSrTzo
-         vAkOgEIyXvFiLS6JndXVvqW6Ns0fUIBDCR57JZqR3+8n2dB6raky2Pi1DbOwODAAsHBk
-         ntpg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nOvKsBn/LkqXY5E0wRAnpgOTDwuv3IaXSaUHRvhtbCw=;
+        b=ujr0npfLjDrpG3SDlbPpizkVHDvCrYVbU+O2WOtXzHQgaDLNRc2NvY+6hjUuVcuwTF
+         MEIWSK+FksTw4nQouZDfGz3Ikw8aQWg7FPaoG+kdbxDX00Crro/BhqUno68SesPCAd4m
+         S1DB6LOHrZ//7Wl5VMyoeUWByg5O3UDWTMjoiqRHzUmQNCEptvSy6FDXTyz+K4CSOaH1
+         Gyle+Os6rMxCKt0icjzZKeNo3U9fplGzIDB5LSMu+PDox9WbcypAZsCrEuPwuNvHxDPs
+         85RAePnX3uQavrz6leqU3KEMj9r+dxkXP9KCu5wsryNaITDxeC2x7TGNGTeNNPAHN5yO
+         /n0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=PuqHWwbUC1NSz/HxzJs8gEPDUdL9OSsHw6iGoCx59+g=;
-        b=n8cCu02JXKuxeygKrkucbxOJbG6uwDX6QpDuJZjU/Ian3BXXhppJQqnqYNx8ROB3XT
-         hSlQY2mxTTB8jPTUa4np9cs2PdBNSAsKqCAXBTUvP4PmVwaYAN7Ijt1y2ec7xKxBfmND
-         CoxcWevSZGwpDm1iQvQTys8P0ynlqDo/QjUk6Oqw09uxqzOxlft5oCsLkTiuwsIra46y
-         9RLhYxcNDNysp5w9VU9WYBTlnOArv6TByxL7m/QghA1LulXoqwg/LJyXloJineA/edBk
-         8UX+AsiZMNvenXTfFty3CQMkHFysBAq+lST6/dUVKbre/hG7lZlvzo09d/2NcTUIf/vq
-         xfUw==
-X-Gm-Message-State: APjAAAWOkb7gUy6FvXbeDrtyeiYXc6HosQfWWov1BF44z1mo7s6hILy9
-        w63BibJ0zvbuP0Hiq7US+gq+24UfcRs=
-X-Google-Smtp-Source: APXvYqxRjJuGUkm+QF0Y/AhiueULNqoahqX1A3bzk/lCMn4eEGwZlyl2UA2dihW+PWQXerGB9WaMuw==
-X-Received: by 2002:a17:902:2a28:: with SMTP id i37mr16167597plb.47.1557542780434;
-        Fri, 10 May 2019 19:46:20 -0700 (PDT)
-Received: from ?IPv6:2605:8d80:420:3459:4d49:2e8c:9e3:f11d? ([2605:8d80:420:3459:4d49:2e8c:9e3:f11d])
-        by smtp.gmail.com with ESMTPSA id i22sm8203821pfa.127.2019.05.10.19.46.19
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 May 2019 19:46:19 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 2/2] ext2: introduce helper for xattr entry validation
-From:   Andreas Dilger <adilger@dilger.ca>
-X-Mailer: iPhone Mail (16E227)
-In-Reply-To: <1557484666-23562-2-git-send-email-cgxu519@gmail.com>
-Date:   Fri, 10 May 2019 20:46:18 -0600
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5648047B-F38D-4246-8C4C-902A44E89108@dilger.ca>
-References: <1557484666-23562-1-git-send-email-cgxu519@gmail.com> <1557484666-23562-2-git-send-email-cgxu519@gmail.com>
-To:     Chengguang Xu <cgxu519@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nOvKsBn/LkqXY5E0wRAnpgOTDwuv3IaXSaUHRvhtbCw=;
+        b=a71lCQxD0rp4HGqqM3XSe0LpUyrpLBTPOfynsK3yuRvclBSgN6h3w9G0UGhkwTafRw
+         M54s3tom9PGJ5zMYnO5H2uOSV9Ye4mioD5cTfhIg//3E98T/8F22toM6NtTSQq7XcW19
+         zKVmzg3w5d3b6bS0/VwuGTp4+u/81ASqdx5QjYZom6SGmwdMMH7PA8g5ahz0ktv/v5mZ
+         z2oxC5RC0+VuiSCTJEYx4m2ty+DATGbobHI9++UOHCH85Ch3SMFPbWJbJFXpNOrEMOP+
+         GXNHieFaKzlqjNzldvL8sEQsdmbw046QcuJXulFBch7HtqhUoGCYUp67ViTF5zGtnnI/
+         MPeQ==
+X-Gm-Message-State: APjAAAX94qKM9bzPyqq9lVdKRYpjCMya+1qD3e7zgp6DUfFQ/33e0dsM
+        z8oMfoQ0iQ2bV2FJRf4ZR61UKDXoas8feZYq2XPWAmGL
+X-Google-Smtp-Source: APXvYqwXQpWoN3eXZifOwnGZf9xC6qeNNgfkIo4PC6WVGSAgbUe1HRX8kzrFow2kxA7rdy2P7axfLQc/S/vZB5b1FrQ=
+X-Received: by 2002:a1c:494:: with SMTP id 142mr10613231wme.115.1557578608236;
+ Sat, 11 May 2019 05:43:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <48BA4A6E-5E2A-478E-A96E-A31FA959964C@internode.on.net>
+In-Reply-To: <48BA4A6E-5E2A-478E-A96E-A31FA959964C@internode.on.net>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Sat, 11 May 2019 14:43:16 +0200
+Message-ID: <CAFLxGvwnKKHOnM2w8i9hn7LTVYKh5PQP2zYMBmma2k9z7HBpzw@mail.gmail.com>
+Subject: Re: ext3/ext4 filesystem corruption under post 5.1.0 kernels
+To:     Arthur Marsh <arthur.marsh@internode.on.net>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Similarly, this would be more useful if it took the blocksize directly as an=
+[CC'in linux-ext4]
 
-argument rather than the inode. That would allow it to be used to check
-entries in the extended inode space or an external inode.=20
+On Sat, May 11, 2019 at 1:47 PM Arthur Marsh
+<arthur.marsh@internode.on.net> wrote:
+>
+> I have yet to bisect, but have had trouble with recent, post 5.1.0 kernels built from Linus' git head on both i386 (Pentium 4 pc) and amd64 (Athlon II X4 640).
+>
+> The easiest way to trigger the problem is:
+>
+> git gc
+>
+> on the kernel source tree, although the problem can occur without doing a git gc.
+>
+> The filesystem with the kernel source tree is the root file system, ext3, mounted as:
+>
+> /dev/sdb7 on / type ext3 (rw,relatime,errors=remount-ro)
+>
+> After the "Compressing objects" stage, the following appears in dmesg:
+>
+> [  848.968550] EXT4-fs error (device sdb7): ext4_get_branch:171: inode #8: block 30343695: comm jbd2/sdb7-8: invalid block
+> [  849.077426] Aborting journal on device sdb7-8.
+> [  849.100963] EXT4-fs (sdb7): Remounting filesystem read-only
+> [  849.100976] jbd2_journal_bmap: journal block not found at offset 989 on sdb7-8
+>
+> fsck -yv
+>
+> then reports:
+>
+> # fsck -yv
+> fsck from util-linux 2.33.1
+> e2fsck 1.45.0 (6-Mar-2019)
+> /dev/sdb7: recovering journal
+> /dev/sdb7 contains a file system with errors, check forced.
+> Pass 1: Checking inodes, blocks, and sizes
+> Pass 2: Checking directory structure
+> Pass 3: Checking directory connectivity
+> Pass 4: Checking reference counts
+> Pass 5: Checking group summary information
+> Free blocks count wrong (4619656, counted=4619444).
+> Fix? yes
+>
+> Free inodes count wrong (15884075, counted=15884058).
+> Fix? yes
+>
+>
+> /dev/sdb7: ***** FILE SYSTEM WAS MODIFIED *****
+>
+> Other times, I have gotten:
+>
+> "Inodes that were part of a corrupted orphan linked list found."
+> "Block bitmap differences:"
+> "Free blocks sound wrong for group"
+>
+> No problems have been observed with the 5.1.0 release kernel.
+>
+> Any suggestions for narrowing down the issue welcome.
 
-Cheers, Andreas
+Can you git-bisect it?
 
-> On May 10, 2019, at 04:37, Chengguang Xu <cgxu519@gmail.com> wrote:
->=20
-> Introduce helper function ext2_xattr_entry_valid()
-> for xattr entry validation and clean up the entry
-> check ralated code.
->=20
-> Signed-off-by: Chengguang Xu <cgxu519@gmail.com>
-> ---
-> fs/ext2/xattr.c | 22 ++++++++++++++++------
-> 1 file changed, 16 insertions(+), 6 deletions(-)
->=20
-> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-> index 6e0b2b0f333f..e40fff8ab543 100644
-> --- a/fs/ext2/xattr.c
-> +++ b/fs/ext2/xattr.c
-> @@ -144,6 +144,20 @@ ext2_xattr_header_valid(struct buffer_head *bh)
->   return true;
-> }
->=20
-> +static bool
-> +ext2_xattr_entry_valid(struct inode *inode, struct ext2_xattr_entry *entr=
-y,
-> +               size_t size)
-> +{
-> +    if (entry->e_value_block !=3D 0)
-> +        return false;
-> +
-> +    if (size > inode->i_sb->s_blocksize ||
-> +        le16_to_cpu(entry->e_value_offs) + size > inode->i_sb->s_blocksiz=
-e)
-> +        return false;
-> +
-> +    return true;
-> +}
-> +
-> /*
-> * ext2_xattr_get()
-> *
-> @@ -214,11 +228,8 @@ ext2_xattr_get(struct inode *inode, int name_index, c=
-onst char *name,
->   goto cleanup;
-> found:
->   /* check the buffer size */
-> -    if (entry->e_value_block !=3D 0)
-> -        goto bad_block;
->   size =3D le32_to_cpu(entry->e_value_size);
-> -    if (size > inode->i_sb->s_blocksize ||
-> -        le16_to_cpu(entry->e_value_offs) + size > inode->i_sb->s_blocksiz=
-e)
-> +    if (!ext2_xattr_entry_valid(inode, entry, size))
->       goto bad_block;
->=20
->   if (ext2_xattr_cache_insert(ea_block_cache, bh))
-> @@ -483,8 +494,7 @@ ext2_xattr_set(struct inode *inode, int name_index, co=
-nst char *name,
->       if (!here->e_value_block && here->e_value_size) {
->           size_t size =3D le32_to_cpu(here->e_value_size);
->=20
-> -            if (le16_to_cpu(here->e_value_offs) + size >=20
-> -                sb->s_blocksize || size > sb->s_blocksize)
-> +            if (!ext2_xattr_entry_valid(inode, here, size))
->               goto bad_block;
->           free +=3D EXT2_XATTR_SIZE(size);
->       }
-> --=20
-> 2.20.1
->=20
+-- 
+Thanks,
+//richard
