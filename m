@@ -2,107 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B3E1AD7C
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 May 2019 19:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BCD1AD80
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 May 2019 19:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbfELRV6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Sun, 12 May 2019 13:21:58 -0400
-Received: from mail.wl.linuxfoundation.org ([198.145.29.98]:33082 "EHLO
-        mail.wl.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726669AbfELRV6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 12 May 2019 13:21:58 -0400
-Received: from mail.wl.linuxfoundation.org (localhost [127.0.0.1])
-        by mail.wl.linuxfoundation.org (Postfix) with ESMTP id 5F4742675C
-        for <linux-ext4@vger.kernel.org>; Sun, 12 May 2019 17:21:57 +0000 (UTC)
-Received: by mail.wl.linuxfoundation.org (Postfix, from userid 486)
-        id 536A926AE3; Sun, 12 May 2019 17:21:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on
-        pdx-wl-mail.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=2.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS autolearn=unavailable version=3.3.1
-From:   bugzilla-daemon@bugzilla.kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 203585] New: Feature Request for filesystems that support
- noexec/exec mount options
-Date:   Sun, 12 May 2019 17:21:56 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: enhancement
-X-Bugzilla-Who: Speeddymon@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression
-Message-ID: <bug-203585-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1726825AbfELR0b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 12 May 2019 13:26:31 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52154 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726478AbfELR0b (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 May 2019 13:26:31 -0400
+Received: from callcc.thunk.org ([91.207.175.60])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4CHQOQV025911
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 12 May 2019 13:26:27 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 21DCE420024; Sun, 12 May 2019 13:26:23 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: [PATCH] unicode: update to Unicode 12.1.0 final
+Date:   Sun, 12 May 2019 13:26:20 -0400
+Message-Id: <20190512172620.10462-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=203585
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
+---
+ fs/unicode/README.utf8data | 28 +++++++---------------------
+ 1 file changed, 7 insertions(+), 21 deletions(-)
 
-            Bug ID: 203585
-           Summary: Feature Request for filesystems that support
-                    noexec/exec mount options
-           Product: File System
-           Version: 2.5
-    Kernel Version: all
-          Hardware: All
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: enhancement
-          Priority: P1
-         Component: ext4
-          Assignee: fs_ext4@kernel-bugs.osdl.org
-          Reporter: Speeddymon@gmail.com
-        Regression: No
-
-Greetings,
-
-I want to ask for a new mount flag to be considered which enhances the
-noexec/exec flag for filesystems that support those flags.
-
-What I would like to do is to designate in /etc/fstab that a filesystem with
-either flag can be bypassed by certain users.
-
-For example, there is a web app that insists on writing a file to the root of
-/tmp, (a shared object library) in order to then load that file into memory to
-perform some operation. Why it is done this way, I don't know, but we have /tmp
-set to noexec for security reasons. The app is required to be able to execute
-the file in order to load it into memory it seems, because the app fails when
-we have noexec flag set on the /tmp filesystem, and it works fine without that
-flag.
-
-So, I was hoping that in the future, we might be able to work around this
-dilemma by having a "exec_users=/noexec_users=" type mount option. Where, if a
-filesystem has "noexec", you could do: "noexec,exec_user=john", and conversely
-if a filesystem has "exec" and you want to lock down a certain user/set of
-users, you could do "exec,noexec_user=paul"
-
-If this is considered useful enough, and is able to be implemented without much
-fuss -- BTW I'm HOPING that since the kernel does permissions checks for
-file/directory access, it can also do those checks for noexec/exec access --
-then could you please also extend the mount options to have
-group_noexec/group_exec flags as well?
-
+diff --git a/fs/unicode/README.utf8data b/fs/unicode/README.utf8data
+index 9307cf0727de..c73786807d3b 100644
+--- a/fs/unicode/README.utf8data
++++ b/fs/unicode/README.utf8data
+@@ -5,29 +5,15 @@ The full set of files can be found here:
+ 
+   http://www.unicode.org/Public/12.1.0/ucd/
+ 
+-Note!
+-
+-The URL's listed below are not stable.  That's because Unicode 12.1.0
+-has not been officially released yet; it is scheduled to be released
+-on May 8, 2019.  We taking Unicode 12.1.0 a few weeks early because it
+-contains a new Japanese character which is required in order to
+-specify Japenese dates after May 1, 2019, when Crown Prince Naruhito
+-ascends to the Chrysanthemum Throne.  (Isn't internationalization fun?
+-The abdication of Emperor Akihito of Japan is requiring dozens of
+-software packages to be updated with only a month's notice.  :-)
+-
+-We will update the URL's (and any needed changes to the checksums)
+-after the final Unicode 12.1.0 is released.
+-
+ Individual source links:
+ 
+-  https://www.unicode.org/Public/12.1.0/ucd/CaseFolding-12.1.0d2.txt
+-  https://www.unicode.org/Public/12.1.0/ucd/DerivedAge-12.1.0d3.txt
+-  https://www.unicode.org/Public/12.1.0/ucd/extracted/DerivedCombiningClass-12.1.0d2.txt
+-  https://www.unicode.org/Public/12.1.0/ucd/DerivedCoreProperties-12.1.0d2.txt
+-  https://www.unicode.org/Public/12.1.0/ucd/NormalizationCorrections-12.1.0d1.txt
+-  https://www.unicode.org/Public/12.1.0/ucd/NormalizationTest-12.1.0d3.txt
+-  https://www.unicode.org/Public/12.1.0/ucd/UnicodeData-12.1.0d2.txt
++  https://www.unicode.org/Public/12.1.0/ucd/CaseFolding.txt
++  https://www.unicode.org/Public/12.1.0/ucd/DerivedAge.txt
++  https://www.unicode.org/Public/12.1.0/ucd/extracted/DerivedCombiningClass.txt
++  https://www.unicode.org/Public/12.1.0/ucd/DerivedCoreProperties.txt
++  https://www.unicode.org/Public/12.1.0/ucd/NormalizationCorrections.txt
++  https://www.unicode.org/Public/12.1.0/ucd/NormalizationTest.txt
++  https://www.unicode.org/Public/12.1.0/ucd/UnicodeData.txt
+ 
+ md5sums (verify by running "md5sum -c README.utf8data"):
+ 
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+2.19.1
+
