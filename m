@@ -2,47 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E807E1B41B
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2019 12:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A4C1BC01
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2019 19:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbfEMKbP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 13 May 2019 06:31:15 -0400
-Received: from ipmail03.adl6.internode.on.net ([150.101.137.143]:18084 "EHLO
-        ipmail03.adl6.internode.on.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728536AbfEMKbP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 13 May 2019 06:31:15 -0400
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AFAACO3/JbAKmCfQENVQ4LAQEBAQEBA?=
- =?us-ascii?q?QEBAQEBBwEBAQEBAYFUAQEBAQEBCwGICoJekx6Xb4FmhHkChA83Bg0BAwEBAgE?=
- =?us-ascii?q?BAhABNIYNAgEDI1YQCw0NAiYCAlcGAQ2DJqhZcIEvGoUmhFyBC4Fzil4/gTgME?=
- =?us-ascii?q?4JMhF4BAQcXgwQxggQiApAFj2oHAoIaBI8hgUkBDoUIgxEDhwmZcoF3MxoubwG?=
- =?us-ascii?q?CQpAfSo0Agj4BAQ?=
-Received: from unknown (HELO [10.135.5.170]) ([1.125.130.169])
-  by ipmail03.adl6.internode.on.net with ESMTP; 13 May 2019 20:01:11 +0930
-Date:   Mon, 13 May 2019 20:01:07 +0930
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20190511220659.GB8507@mit.edu>
-References: <48BA4A6E-5E2A-478E-A96E-A31FA959964C@internode.on.net> <CAFLxGvwnKKHOnM2w8i9hn7LTVYKh5PQP2zYMBmma2k9z7HBpzw@mail.gmail.com> <20190511220659.GB8507@mit.edu>
+        id S1729491AbfEMRcl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 May 2019 13:32:41 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:42674 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728708AbfEMRck (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 13 May 2019 13:32:40 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 8EF1530832E3;
+        Mon, 13 May 2019 17:32:35 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 36EDE9CC8;
+        Mon, 13 May 2019 17:32:33 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 7495018089CA;
+        Mon, 13 May 2019 17:32:28 +0000 (UTC)
+Date:   Mon, 13 May 2019 13:32:28 -0400 (EDT)
+From:   Pankaj Gupta <pagupta@redhat.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     cohuck@redhat.com, Jan Kara <jack@suse.cz>,
+        KVM list <kvm@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, david <david@fromorbit.com>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        virtualization@lists.linux-foundation.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ross Zwisler <zwisler@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>, jstaron@google.com,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        jmoyer <jmoyer@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Rik van Riel <riel@surriel.com>,
+        yuval shaia <yuval.shaia@oracle.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, lcapitulino@redhat.com,
+        Kevin Wolf <kwolf@redhat.com>,
+        Nitesh Narayan Lal <nilal@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Igor Mammedov <imammedo@redhat.com>
+Message-ID: <116369545.28425569.1557768748009.JavaMail.zimbra@redhat.com>
+In-Reply-To: <2003480558.28042237.1557537797923.JavaMail.zimbra@redhat.com>
+References: <20190510155202.14737-1-pagupta@redhat.com> <20190510155202.14737-4-pagupta@redhat.com> <CAPcyv4hbVNRFSyS2CTbmO88uhnbeH4eiukAng2cxgbDzLfizwg@mail.gmail.com> <864186878.28040999.1557535549792.JavaMail.zimbra@redhat.com> <CAPcyv4gL3ODfOr52Ztgq7BM4gVf1cih6cj0271gcpVvpi9aFSA@mail.gmail.com> <2003480558.28042237.1557537797923.JavaMail.zimbra@redhat.com>
+Subject: Re: [Qemu-devel] [PATCH v8 3/6] libnvdimm: add dax_dev sync flag
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Subject: Re: ext3/ext4 filesystem corruption under post 5.1.0 kernels
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Richard Weinberger <richard.weinberger@gmail.com>
-CC:     LKML <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org
-From:   Arthur Marsh <arthur.marsh@internode.on.net>
-Message-ID: <09D87554-6795-4AEA-B8D0-FEBCB45673A9@internode.on.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.65.16.148, 10.4.196.23, 10.5.101.130, 10.4.195.13]
+Thread-Topic: libnvdimm: add dax_dev sync flag
+Thread-Index: ptJfczfofLn7Sapjrtn0VT/vVA1TgWbBtP+u
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Mon, 13 May 2019 17:32:40 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-After a git bisect reset and updating to the current Linus git head, the problem no longer occurs.
 
-Thanks for the feedback on the problem that I experienced.
+Hi Dan,
 
-Arthur. 
--- 
-Sent from my Android device with K-9 Mail. Please excuse my brevity.
+While testing device mapper with DAX, I faced a bug with the commit:
+
+commit ad428cdb525a97d15c0349fdc80f3d58befb50df
+Author: Dan Williams <dan.j.williams@intel.com>
+Date:   Wed Feb 20 21:12:50 2019 -0800
+
+When I reverted the condition to old code[1] it worked for me. I 
+am thinking when we map two different devices (e.g with device mapper), will 
+start & end pfn still point to same pgmap? Or there is something else which
+I am missing here. 
+
+Note: I tested only EXT4.
+
+[1]
+
+-               if (pgmap && pgmap->type == MEMORY_DEVICE_FS_DAX)
++               end_pgmap = get_dev_pagemap(pfn_t_to_pfn(end_pfn), NULL);
++               if (pgmap && pgmap == end_pgmap && pgmap->type == MEMORY_DEVICE_FS_DAX
++                               && pfn_t_to_page(pfn)->pgmap == pgmap
++                               && pfn_t_to_page(end_pfn)->pgmap == pgmap
++                               && pfn_t_to_pfn(pfn) == PHYS_PFN(__pa(kaddr))
++                               && pfn_t_to_pfn(end_pfn) == PHYS_PFN(__pa(end_kaddr)))
+                        dax_enabled = true;
+                put_dev_pagemap(pgmap);
+
+Thanks,
+Pankaj
+
+
+
+
