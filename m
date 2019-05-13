@@ -2,205 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A39091BD9B
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2019 21:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E211BFB0
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 May 2019 00:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbfEMTMJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 May 2019 15:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728745AbfEMTMJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 13 May 2019 15:12:09 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CA61208C3;
-        Mon, 13 May 2019 19:12:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557774727;
-        bh=ELixTRGlJ2G2OWOG+eGZO1I+rdx28ZmdP7l5SUAl7Is=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tF8yQ63gnC5B0Mrjfy24phxpWv5rf1PxRDSZyBnUrBYjs6NLlU9MsNFqmVbFLQm6X
-         kCAT1BaFYCQY/WqmUOUnDEqkuKby3Acc3E8Or26IX7r1tYUNCHS64mPoaTj8a8OkUR
-         f3mMwO0wElYXIsoxY326syepp1yzZIIo+LFG6hf8=
-Date:   Mon, 13 May 2019 12:12:05 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Eryu Guan <guaneryu@gmail.com>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [RFC PATCH 4/7] common/encrypt: add helper for ciphertext
- verification tests
-Message-ID: <20190513191204.GA142816@gmail.com>
-References: <20190426204153.101861-1-ebiggers@kernel.org>
- <20190426204153.101861-5-ebiggers@kernel.org>
- <20190512122703.GJ15846@desktop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190512122703.GJ15846@desktop>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726482AbfEMW4J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 May 2019 18:56:09 -0400
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25909 "EHLO
+        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726265AbfEMW4J (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 May 2019 18:56:09 -0400
+X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 May 2019 18:56:07 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1557787261; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=VnWEKtlyQM7qLz7O7d6S5bUXUFJ7gosgbPpg5gQZUsW4V0NHY3kpu7YyGDH3ewYOgsWTHyn43w+x5o2mpD/dYrWv4/L5zN6FAcSmVjFudcSx2bTrKiREJK5ZV8RYhvUdb5vOUQKcCmSyihV6FvVCSxrndjwZxfP5N/1jUaSXyFE=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1557787261; h=Cc:Date:From:Message-ID:Subject:To:ARC-Authentication-Results; 
+        bh=vN62waYVjSvHo7g9VLoeQ8yjw8aOq+bOMf33BZLw4pc=; 
+        b=cII3yBlfUFjyobp9B2UvwoQIc3y2TWLiVIm8cgkF1YQRVOtbMpef15ugzA4k5VoA0xjv2BvJoKMUgbvcUOMItVQtsdGUyMHv7yDKX6SbM+tRL+n0cK8Ztka3H69wcdCUd5lTqHLrM5hL7Otcyr9nNkD4A32IYVr8AS3PR+78Dqg=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=zoho.com.cn;
+        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
+        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
+Received: from localhost.localdomain (113.116.158.181 [113.116.158.181]) by mx.zoho.com.cn
+        with SMTPS id 1557787258928688.4716896184108; Tue, 14 May 2019 06:40:58 +0800 (CST)
+From:   Chengguang Xu <cgxu519@zoho.com.cn>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@zoho.com.cn>
+Subject: [PATCH v2 1/2] ext2: introduce helper for xattr header validation
+Date:   Tue, 14 May 2019 06:40:41 +0800
+Message-Id: <20190513224042.23377-1-cgxu519@zoho.com.cn>
+X-Mailer: git-send-email 2.17.2
+X-ZohoCNMailClient: External
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Eryu,
+Introduce helper function ext2_xattr_header_valid()
+for xattr header validation and clean up the header
+check ralated code.
 
-On Sun, May 12, 2019 at 08:27:03PM +0800, Eryu Guan wrote:
-> > +# Retrieve the filename stored on-disk for the given file.
-> > +# The name is printed to stdout in binary.
-> > +_get_on_disk_filename()
-> > +{
-> > +	local device=$1
-> > +	local inode=$2
-> > +	local dir_inode=$3
-> > +
-> > +	case $FSTYP in
-> > +	ext4)
-> > +		# Extract the filename from the debugfs output line like:
-> > +		#
-> > +		#  131075  100644 (1)      0      0       0 22-Apr-2019 16:54 \xa2\x85\xb0z\x13\xe9\x09\x86R\xed\xdc\xce\xad\x14d\x19
-> > +		#
-> > +		$DEBUGFS_PROG $device -R "ls -l -r <$dir_inode>" \
-> > +					2>>$seqres.full | perl -ne '
-> > +			next if not /^\s*'$inode'\s+/;
-> > +			s/.*?\d\d:\d\d //;
-> > +			chomp;
-> > +			s/\\x([[:xdigit:]]{2})/chr hex $1/eg;
-> > +			print;'
-> > +		;;
-> > +	f2fs)
-> > +		# Extract the filename from the dump.f2fs output line like:
-> > +		#
-> > +		#  i_name                        		[UpkzIPuts9by1oDmE+Ivfw]
-> > +		#
-> > +		# The name is base64-encoded, so we have to decode it here.
-> > +		#
-> > +		$DUMP_F2FS_PROG $device -i $inode | perl -ne '
-> > +			next if not /^i_name\s+\[([A-Za-z0-9+,]+)\]/;
-> > +			chomp $1;
-> > +			my @chars = split //, $1;
-> > +			my $ac = 0;
-> > +			my $bits = 0;
-> > +			my $table = join "", (A..Z, a..z, 0..9, "+", ",");
-> > +			foreach (@chars) {
-> > +				$ac += index($table, $_) << $bits;
-> > +				$bits += 6;
-> > +				if ($bits >= 8) {
-> > +					print chr($ac & 0xff);
-> > +					$ac >>= 8;
-> > +					$bits -= 8;
-> > +				}
-> > +			}
-> > +			if ($ac != 0) {
-> > +				print STDERR "Invalid base64-encoded string!\n";
-> > +			}'
-> > +		;;
-> > +	*)
-> > +		_notrun "_get_on_disk_filename() isn't implemented on $FSTYP"
-> 
-> And looks like this function has nothing to do with fs encryption, move it to
-> common/rc?
+Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
+---
+v1->v2:
+- Pass xattr header to ext2_xattr_header_valid().
+- Change signed-off mail address.
 
-For ext4 that's true, but for f2fs the name is assumed to be base64-encoded,
-which f2fs-tools only does for encrypted filenames.  I'll update the comment to
-clarify that the function assumes the directory is encrypted.
+ fs/ext2/xattr.c | 31 ++++++++++++++++++++-----------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
 
-> 
-> > +		;;
-> > +	esac
-> > +}
-> > +
-> > +# Require support for _get_on_disk_filename()
-> > +_require_get_on_disk_filename_support()
-> > +{
-> > +	echo "Checking for _get_on_disk_filename() support for $FSTYP" >> $seqres.full
-> > +	case $FSTYP in
-> > +	ext4)
-> > +		# Verify that the "ls -l -r" debugfs command is supported and
-> > +		# hex-encodes non-ASCII characters, rather than using an
-> > +		# ambiguous escaping method.  This requires the e2fsprogs patch
-> > +		# "debugfs: avoid ambiguity when printing filenames"
-> > +		# (https://marc.info/?l=linux-ext4&m=155596495624232&w=2).
-> > +		# TODO: once merged, list the minimum e2fsprogs version here.
-> > +		_require_command "$DEBUGFS_PROG" debugfs
-> > +		_scratch_mount
-> > +		touch $SCRATCH_MNT/$'\xc1'
-> > +		_scratch_unmount
-> > +		if ! $DEBUGFS_PROG $SCRATCH_DEV -R "ls -l -r /" 2>&1 \
-> > +			| tee -a $seqres.full | grep -E -q '\s+\\xc1\s*$'; then
-> > +			_notrun "debugfs (e2fsprogs) is too old; doesn't support showing unambiguous on-disk filenames"
-> > +		fi
-> > +		;;
-> > +	f2fs)
-> > +		# Verify that dump.f2fs shows encrypted filenames in full.  This
-> > +		# requires the patch "f2fs-tools: improve filename printing"
-> > +		# (https://sourceforge.net/p/linux-f2fs/mailman/message/36648641/).
-> > +		# TODO: once merged, list the minimum f2fs-tools version here.
-> > +
-> > +		_require_command "$DUMP_F2FS_PROG" dump.f2fs
-> > +		_require_command "$KEYCTL_PROG" keyctl
-> > +		_scratch_mount
-> > +		_new_session_keyring
-> > +
-> > +		local keydesc=$(_generate_encryption_key)
-> > +		local dir=$SCRATCH_MNT/test.${FUNCNAME[0]}
-> > +		local file=$dir/$(perl -e 'print "A" x 255')
-> > +		mkdir $dir
-> > +		_set_encpolicy $dir $keydesc
-> > +		touch $file
-> > +		local inode=$(stat -c %i $file)
-> > +
-> > +		_scratch_unmount
-> > +		$KEYCTL_PROG clear @s
-> > +
-> > +		# 255-character filename should result in 340 base64 characters.
-> > +		if ! $DUMP_F2FS_PROG -i $inode $SCRATCH_DEV \
-> > +			| grep -E -q '^i_name[[:space:]]+\[[A-Za-z0-9+,]{340}\]'; then
-> > +			_notrun "dump.f2fs (f2fs-tools) is too old; doesn't support showing unambiguous on-disk filenames"
-> > +		fi
-> > +		;;
-> > +	*)
-> > +		_notrun "_get_on_disk_filename() isn't implemented on $FSTYP"
-> > +		;;
-> > +	esac
-> > +}
-> > +
-> > +# Get the file's list of on-disk blocks as a comma-separated list of block
-> > +# offsets from the start of the device.  "Blocks" are 512 bytes each here.
-> > +_get_file_block_list()
-> > +{
-> > +	local file=$1
-> > +
-> > +	sync
-> > +	$XFS_IO_PROG -c fiemap $file | perl -ne '
-> > +		next if not /^\s*\d+: \[\d+\.\.\d+\]: (\d+)\.\.(\d+)/;
-> > +		print $_ . "," foreach $1..$2;' | sed 's/,$//'
-> > +}
-> > +
-> > +# Dump a block list that was previously saved by _get_file_block_list().
-> > +_dump_file_blocks()
-> > +{
-> > +	local device=$1
-> > +	local blocklist=$2
-> > +	local block
-> > +
-> > +	for block in $(tr ',' ' ' <<< $blocklist); do
-> > +		dd if=$device bs=512 count=1 skip=$block status=none
-> > +	done
-> > +}
-> 
-> Above two functions seem generic enough to be moved to common/rc
+diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+index 1e33e0ac8cf1..db27260d6a5b 100644
+--- a/fs/ext2/xattr.c
++++ b/fs/ext2/xattr.c
+@@ -134,6 +134,16 @@ ext2_xattr_handler(int name_index)
+ 	return handler;
+ }
+ 
++static bool
++ext2_xattr_header_valid(struct ext2_xattr_header *header)
++{
++	if (header->h_magic != cpu_to_le32(EXT2_XATTR_MAGIC) ||
++	    header->h_blocks != cpu_to_le32(1))
++		return false;
++
++	return true;
++}
++
+ /*
+  * ext2_xattr_get()
+  *
+@@ -176,9 +186,9 @@ ext2_xattr_get(struct inode *inode, int name_index, const char *name,
+ 	ea_bdebug(bh, "b_count=%d, refcount=%d",
+ 		atomic_read(&(bh->b_count)), le32_to_cpu(HDR(bh)->h_refcount));
+ 	end = bh->b_data + bh->b_size;
+-	if (HDR(bh)->h_magic != cpu_to_le32(EXT2_XATTR_MAGIC) ||
+-	    HDR(bh)->h_blocks != cpu_to_le32(1)) {
+-bad_block:	ext2_error(inode->i_sb, "ext2_xattr_get",
++	if (!ext2_xattr_header_valid(HDR(bh))) {
++bad_block:
++		ext2_error(inode->i_sb, "ext2_xattr_get",
+ 			"inode %ld: bad block %d", inode->i_ino,
+ 			EXT2_I(inode)->i_file_acl);
+ 		error = -EIO;
+@@ -266,9 +276,9 @@ ext2_xattr_list(struct dentry *dentry, char *buffer, size_t buffer_size)
+ 	ea_bdebug(bh, "b_count=%d, refcount=%d",
+ 		atomic_read(&(bh->b_count)), le32_to_cpu(HDR(bh)->h_refcount));
+ 	end = bh->b_data + bh->b_size;
+-	if (HDR(bh)->h_magic != cpu_to_le32(EXT2_XATTR_MAGIC) ||
+-	    HDR(bh)->h_blocks != cpu_to_le32(1)) {
+-bad_block:	ext2_error(inode->i_sb, "ext2_xattr_list",
++	if (!ext2_xattr_header_valid(HDR(bh))) {
++bad_block:
++		ext2_error(inode->i_sb, "ext2_xattr_list",
+ 			"inode %ld: bad block %d", inode->i_ino,
+ 			EXT2_I(inode)->i_file_acl);
+ 		error = -EIO;
+@@ -406,9 +416,9 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
+ 			le32_to_cpu(HDR(bh)->h_refcount));
+ 		header = HDR(bh);
+ 		end = bh->b_data + bh->b_size;
+-		if (header->h_magic != cpu_to_le32(EXT2_XATTR_MAGIC) ||
+-		    header->h_blocks != cpu_to_le32(1)) {
+-bad_block:		ext2_error(sb, "ext2_xattr_set",
++		if (!ext2_xattr_header_valid(header)) {
++bad_block:
++			ext2_error(sb, "ext2_xattr_set",
+ 				"inode %ld: bad block %d", inode->i_ino, 
+ 				   EXT2_I(inode)->i_file_acl);
+ 			error = -EIO;
+@@ -784,8 +794,7 @@ ext2_xattr_delete_inode(struct inode *inode)
+ 		goto cleanup;
+ 	}
+ 	ea_bdebug(bh, "b_count=%d", atomic_read(&(bh->b_count)));
+-	if (HDR(bh)->h_magic != cpu_to_le32(EXT2_XATTR_MAGIC) ||
+-	    HDR(bh)->h_blocks != cpu_to_le32(1)) {
++	if (!ext2_xattr_header_valid(HDR(bh))) {
+ 		ext2_error(inode->i_sb, "ext2_xattr_delete_inode",
+ 			"inode %ld: bad block %d", inode->i_ino,
+ 			EXT2_I(inode)->i_file_acl);
+-- 
+2.17.2
 
-I feel that would be premature because common/rc is kind of bloated, and there's
-a good chance these functions will only ever be used for encryption tests.
-Normally, xfstests only test for user-visible behavior, so tests just 'cat' the
-file contents, or 'ls' the filenames.  The encryption tests are somewhat special
-in that they really care about what's *actually* stored on-disk.
 
-So I think that common/encrypt is the most logical location for now.  But I
-don't feel too strongly, and I can move it if you prefer.
-
-Thanks for the review!
-
-- Eric
