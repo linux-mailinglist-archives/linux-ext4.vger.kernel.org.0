@@ -2,131 +2,205 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C29D1BC4D
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2019 19:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39091BD9B
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2019 21:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731921AbfEMRww (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 May 2019 13:52:52 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:34023 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731913AbfEMRwv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 May 2019 13:52:51 -0400
-Received: by mail-oi1-f193.google.com with SMTP id v10so10043722oib.1
-        for <linux-ext4@vger.kernel.org>; Mon, 13 May 2019 10:52:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y9X01Pkq0XXte5z0O4rYu6NU6lcDo0STfPmFKCJpwI4=;
-        b=MeRY+QdGFjfDKUSuf7dAOysOfrk9IX/j0cXEQeRSHYHXItna9fFtGcb80/8yDKWYkg
-         kEPTsia824fjKznGv99pekCCmDAbBmu8zC8ES2wNtrw9iGNZzpMC40Dc0waTtukABlou
-         DiMjy3wekDMZv+rEku5zj5N9lua8h+E9NR26CrKLNtsmzHWBp5Dk25a7+ZFTFlXvp5bn
-         CKgC360dEZCMTiYCVvVNHBz83ANXriwcLt3Kp71GNpJ+aE+ylpXoUdrY8187QZo8pUjo
-         MSFx+LZTKoW3yj60OEeZpgD+/UaXJIXSDimXFG17gPEeJljKEDt4VY/2RYHjnGTmH4Sh
-         vvCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y9X01Pkq0XXte5z0O4rYu6NU6lcDo0STfPmFKCJpwI4=;
-        b=mpPwUNt0a3thpdfEk04Gi68Zq/tVHi8E0KYnDMTFcroFBOlxjZqBfT7zmG7FEeo9LY
-         WoqNTU0W7DFjp7+bfVtIBBrb8Eq1/FcuVbYoNcppScJj0WcedfxLWtU8vX4Ev6fTpaTo
-         Nes+dx8D7C5BWFj4J0qU77Wp1yW66dtz8inKxlmaxL05gIITXwULRXVWrZ4qlcFaZDcR
-         2v2QKmoKocdTy0vBcPBd1GC26lY6wCdCz/E/PM56M2xrc2GMMJSokjfBV4cogflB6egk
-         6nAespvRFdswgyuzkj6Oa2sqm2srCKw+CTbfD19xUEcjdVG2qJ++UoYOdpFG5eDe/TbC
-         ENXg==
-X-Gm-Message-State: APjAAAUMh8OQcNScGjv8JdtH30lwSioIIkPOwkedW8kru76hABu3fmEk
-        XYLGx2xym23fXgcLiQi8lchkMvJ6GiZ+Km/tf2ZlnA==
-X-Google-Smtp-Source: APXvYqyHlb4HK4pDjcMSgSQt8NqfXMPz+kR7QQEkSBVnAow9XkYo/o3V5df/EMWF1DvMzRr9ptTlw2tfnEJV3YCdJtY=
-X-Received: by 2002:aca:dfc4:: with SMTP id w187mr254128oig.70.1557769970924;
- Mon, 13 May 2019 10:52:50 -0700 (PDT)
+        id S1728856AbfEMTMJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 May 2019 15:12:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728745AbfEMTMJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 13 May 2019 15:12:09 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6CA61208C3;
+        Mon, 13 May 2019 19:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557774727;
+        bh=ELixTRGlJ2G2OWOG+eGZO1I+rdx28ZmdP7l5SUAl7Is=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tF8yQ63gnC5B0Mrjfy24phxpWv5rf1PxRDSZyBnUrBYjs6NLlU9MsNFqmVbFLQm6X
+         kCAT1BaFYCQY/WqmUOUnDEqkuKby3Acc3E8Or26IX7r1tYUNCHS64mPoaTj8a8OkUR
+         f3mMwO0wElYXIsoxY326syepp1yzZIIo+LFG6hf8=
+Date:   Mon, 13 May 2019 12:12:05 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Eryu Guan <guaneryu@gmail.com>
+Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [RFC PATCH 4/7] common/encrypt: add helper for ciphertext
+ verification tests
+Message-ID: <20190513191204.GA142816@gmail.com>
+References: <20190426204153.101861-1-ebiggers@kernel.org>
+ <20190426204153.101861-5-ebiggers@kernel.org>
+ <20190512122703.GJ15846@desktop>
 MIME-Version: 1.0
-References: <20190510155202.14737-1-pagupta@redhat.com> <20190510155202.14737-4-pagupta@redhat.com>
- <CAPcyv4hbVNRFSyS2CTbmO88uhnbeH4eiukAng2cxgbDzLfizwg@mail.gmail.com>
- <864186878.28040999.1557535549792.JavaMail.zimbra@redhat.com>
- <CAPcyv4gL3ODfOr52Ztgq7BM4gVf1cih6cj0271gcpVvpi9aFSA@mail.gmail.com>
- <2003480558.28042237.1557537797923.JavaMail.zimbra@redhat.com> <116369545.28425569.1557768748009.JavaMail.zimbra@redhat.com>
-In-Reply-To: <116369545.28425569.1557768748009.JavaMail.zimbra@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 13 May 2019 10:52:39 -0700
-Message-ID: <CAPcyv4genJtCt6dp6N07_6RfPTwC6xXMhLp-dr0GWQy5q52YoA@mail.gmail.com>
-Subject: Re: [Qemu-devel] [PATCH v8 3/6] libnvdimm: add dax_dev sync flag
-To:     Pankaj Gupta <pagupta@redhat.com>
-Cc:     cohuck@redhat.com, Jan Kara <jack@suse.cz>,
-        KVM list <kvm@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, david <david@fromorbit.com>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        virtualization@lists.linux-foundation.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ross Zwisler <zwisler@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>, jstaron@google.com,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        jmoyer <jmoyer@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Rik van Riel <riel@surriel.com>,
-        yuval shaia <yuval.shaia@oracle.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, lcapitulino@redhat.com,
-        Kevin Wolf <kwolf@redhat.com>,
-        Nitesh Narayan Lal <nilal@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Igor Mammedov <imammedo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190512122703.GJ15846@desktop>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 13, 2019 at 10:32 AM Pankaj Gupta <pagupta@redhat.com> wrote:
->
->
-> Hi Dan,
->
-> While testing device mapper with DAX, I faced a bug with the commit:
->
-> commit ad428cdb525a97d15c0349fdc80f3d58befb50df
-> Author: Dan Williams <dan.j.williams@intel.com>
-> Date:   Wed Feb 20 21:12:50 2019 -0800
->
-> When I reverted the condition to old code[1] it worked for me. I
-> am thinking when we map two different devices (e.g with device mapper), will
-> start & end pfn still point to same pgmap? Or there is something else which
-> I am missing here.
->
-> Note: I tested only EXT4.
->
-> [1]
->
-> -               if (pgmap && pgmap->type == MEMORY_DEVICE_FS_DAX)
-> +               end_pgmap = get_dev_pagemap(pfn_t_to_pfn(end_pfn), NULL);
-> +               if (pgmap && pgmap == end_pgmap && pgmap->type == MEMORY_DEVICE_FS_DAX
-> +                               && pfn_t_to_page(pfn)->pgmap == pgmap
-> +                               && pfn_t_to_page(end_pfn)->pgmap == pgmap
-> +                               && pfn_t_to_pfn(pfn) == PHYS_PFN(__pa(kaddr))
-> +                               && pfn_t_to_pfn(end_pfn) == PHYS_PFN(__pa(end_kaddr)))
+Hi Eryu,
 
-Ugh, yes, device-mapper continues to be an awkward fit for dax (or
-vice versa). We would either need a way to have a multi-level pfn to
-pagemap lookup for composite devices, or a way to discern that even
-though the pagemap is different that the result is still valid / not
-an indication that we have leaked into an unassociated address range.
-Perhaps a per-daxdev callback for ->dax_supported() so that
-device-mapper internals can be used for this validation.
+On Sun, May 12, 2019 at 08:27:03PM +0800, Eryu Guan wrote:
+> > +# Retrieve the filename stored on-disk for the given file.
+> > +# The name is printed to stdout in binary.
+> > +_get_on_disk_filename()
+> > +{
+> > +	local device=$1
+> > +	local inode=$2
+> > +	local dir_inode=$3
+> > +
+> > +	case $FSTYP in
+> > +	ext4)
+> > +		# Extract the filename from the debugfs output line like:
+> > +		#
+> > +		#  131075  100644 (1)      0      0       0 22-Apr-2019 16:54 \xa2\x85\xb0z\x13\xe9\x09\x86R\xed\xdc\xce\xad\x14d\x19
+> > +		#
+> > +		$DEBUGFS_PROG $device -R "ls -l -r <$dir_inode>" \
+> > +					2>>$seqres.full | perl -ne '
+> > +			next if not /^\s*'$inode'\s+/;
+> > +			s/.*?\d\d:\d\d //;
+> > +			chomp;
+> > +			s/\\x([[:xdigit:]]{2})/chr hex $1/eg;
+> > +			print;'
+> > +		;;
+> > +	f2fs)
+> > +		# Extract the filename from the dump.f2fs output line like:
+> > +		#
+> > +		#  i_name                        		[UpkzIPuts9by1oDmE+Ivfw]
+> > +		#
+> > +		# The name is base64-encoded, so we have to decode it here.
+> > +		#
+> > +		$DUMP_F2FS_PROG $device -i $inode | perl -ne '
+> > +			next if not /^i_name\s+\[([A-Za-z0-9+,]+)\]/;
+> > +			chomp $1;
+> > +			my @chars = split //, $1;
+> > +			my $ac = 0;
+> > +			my $bits = 0;
+> > +			my $table = join "", (A..Z, a..z, 0..9, "+", ",");
+> > +			foreach (@chars) {
+> > +				$ac += index($table, $_) << $bits;
+> > +				$bits += 6;
+> > +				if ($bits >= 8) {
+> > +					print chr($ac & 0xff);
+> > +					$ac >>= 8;
+> > +					$bits -= 8;
+> > +				}
+> > +			}
+> > +			if ($ac != 0) {
+> > +				print STDERR "Invalid base64-encoded string!\n";
+> > +			}'
+> > +		;;
+> > +	*)
+> > +		_notrun "_get_on_disk_filename() isn't implemented on $FSTYP"
+> 
+> And looks like this function has nothing to do with fs encryption, move it to
+> common/rc?
 
-We need to get that fixed up, but I don't see it as a blocker /
-pre-requisite for virtio-pmem.
+For ext4 that's true, but for f2fs the name is assumed to be base64-encoded,
+which f2fs-tools only does for encrypted filenames.  I'll update the comment to
+clarify that the function assumes the directory is encrypted.
+
+> 
+> > +		;;
+> > +	esac
+> > +}
+> > +
+> > +# Require support for _get_on_disk_filename()
+> > +_require_get_on_disk_filename_support()
+> > +{
+> > +	echo "Checking for _get_on_disk_filename() support for $FSTYP" >> $seqres.full
+> > +	case $FSTYP in
+> > +	ext4)
+> > +		# Verify that the "ls -l -r" debugfs command is supported and
+> > +		# hex-encodes non-ASCII characters, rather than using an
+> > +		# ambiguous escaping method.  This requires the e2fsprogs patch
+> > +		# "debugfs: avoid ambiguity when printing filenames"
+> > +		# (https://marc.info/?l=linux-ext4&m=155596495624232&w=2).
+> > +		# TODO: once merged, list the minimum e2fsprogs version here.
+> > +		_require_command "$DEBUGFS_PROG" debugfs
+> > +		_scratch_mount
+> > +		touch $SCRATCH_MNT/$'\xc1'
+> > +		_scratch_unmount
+> > +		if ! $DEBUGFS_PROG $SCRATCH_DEV -R "ls -l -r /" 2>&1 \
+> > +			| tee -a $seqres.full | grep -E -q '\s+\\xc1\s*$'; then
+> > +			_notrun "debugfs (e2fsprogs) is too old; doesn't support showing unambiguous on-disk filenames"
+> > +		fi
+> > +		;;
+> > +	f2fs)
+> > +		# Verify that dump.f2fs shows encrypted filenames in full.  This
+> > +		# requires the patch "f2fs-tools: improve filename printing"
+> > +		# (https://sourceforge.net/p/linux-f2fs/mailman/message/36648641/).
+> > +		# TODO: once merged, list the minimum f2fs-tools version here.
+> > +
+> > +		_require_command "$DUMP_F2FS_PROG" dump.f2fs
+> > +		_require_command "$KEYCTL_PROG" keyctl
+> > +		_scratch_mount
+> > +		_new_session_keyring
+> > +
+> > +		local keydesc=$(_generate_encryption_key)
+> > +		local dir=$SCRATCH_MNT/test.${FUNCNAME[0]}
+> > +		local file=$dir/$(perl -e 'print "A" x 255')
+> > +		mkdir $dir
+> > +		_set_encpolicy $dir $keydesc
+> > +		touch $file
+> > +		local inode=$(stat -c %i $file)
+> > +
+> > +		_scratch_unmount
+> > +		$KEYCTL_PROG clear @s
+> > +
+> > +		# 255-character filename should result in 340 base64 characters.
+> > +		if ! $DUMP_F2FS_PROG -i $inode $SCRATCH_DEV \
+> > +			| grep -E -q '^i_name[[:space:]]+\[[A-Za-z0-9+,]{340}\]'; then
+> > +			_notrun "dump.f2fs (f2fs-tools) is too old; doesn't support showing unambiguous on-disk filenames"
+> > +		fi
+> > +		;;
+> > +	*)
+> > +		_notrun "_get_on_disk_filename() isn't implemented on $FSTYP"
+> > +		;;
+> > +	esac
+> > +}
+> > +
+> > +# Get the file's list of on-disk blocks as a comma-separated list of block
+> > +# offsets from the start of the device.  "Blocks" are 512 bytes each here.
+> > +_get_file_block_list()
+> > +{
+> > +	local file=$1
+> > +
+> > +	sync
+> > +	$XFS_IO_PROG -c fiemap $file | perl -ne '
+> > +		next if not /^\s*\d+: \[\d+\.\.\d+\]: (\d+)\.\.(\d+)/;
+> > +		print $_ . "," foreach $1..$2;' | sed 's/,$//'
+> > +}
+> > +
+> > +# Dump a block list that was previously saved by _get_file_block_list().
+> > +_dump_file_blocks()
+> > +{
+> > +	local device=$1
+> > +	local blocklist=$2
+> > +	local block
+> > +
+> > +	for block in $(tr ',' ' ' <<< $blocklist); do
+> > +		dd if=$device bs=512 count=1 skip=$block status=none
+> > +	done
+> > +}
+> 
+> Above two functions seem generic enough to be moved to common/rc
+
+I feel that would be premature because common/rc is kind of bloated, and there's
+a good chance these functions will only ever be used for encryption tests.
+Normally, xfstests only test for user-visible behavior, so tests just 'cat' the
+file contents, or 'ls' the filenames.  The encryption tests are somewhat special
+in that they really care about what's *actually* stored on-disk.
+
+So I think that common/encrypt is the most logical location for now.  But I
+don't feel too strongly, and I can move it if you prefer.
+
+Thanks for the review!
+
+- Eric
