@@ -2,235 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 502641C08A
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 May 2019 04:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D011C132
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 May 2019 06:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbfENCUw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 May 2019 22:20:52 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:40831 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbfENCUv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 May 2019 22:20:51 -0400
-Received: by mail-pl1-f194.google.com with SMTP id g69so24866plb.7;
-        Mon, 13 May 2019 19:20:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Pp9TXTB0i7hj2m3Uf4rQUkxh2ShQtY3xKqp9vjDgHDs=;
-        b=Wu8/9UnUV3BA0ooglD0X5JmYaJJMMIcCwUPyHk7B+9cnBhor18GeQjyVS7l+G46yTC
-         EkB17R6cKF7yS+6/ViDrlfitxc71ygr9jvrBovyw49zMwILT+0fLSuxhklV02WKHrIBN
-         0evuQ54yYLs6F0O49A6SEV2isT7DA96+1KgZa6zUPNqSXEU+oM2kAZG/PrZBxlDOpQTN
-         ohxvPeMyKFJt6erPJ7DRcgsPJ/3nytbV8SNW7lF7Hiymhgi25E1CgGDwxuEgPtU6dFHA
-         Sl+ai3dS7KxEvOmuQqaTBYQxZI0ibAsT5sP85pCRwqcc5sYYyl3KrI8PK1G5AJ/s19RB
-         3QsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Pp9TXTB0i7hj2m3Uf4rQUkxh2ShQtY3xKqp9vjDgHDs=;
-        b=bBeEYvAY/Cnm9S8JYR3oh+JmmOcZkIf0Ako8YeIfhKKKDCKDgM9SZVNWPwhIZ50tOD
-         6wYWLts6zE41+rcsm7z2yxcmEszWeCpPMVkeC6EzwLUghFQAJ/1IyYGg00INy15PTv6c
-         1vpQZMz4NiuKPiO0q9NHEV+8MNSn+fFEEJUuDozosRYE38wVf2h/S3hlJ/aKgoLbe2XG
-         8sRZjrK+X0TwoGZOrT0p3ob2yriAx2avWpGG3i4Lv37Z4/dnihx22Poiwj/jUBGj3wp4
-         WUmtfsAoDyZ56uvd+zeTH7zmDW0JQLVAZVR7UTarn5FJ+JxWi59uzx9Oeq5w8ERwUo9K
-         WZRw==
-X-Gm-Message-State: APjAAAV6PYARymXlX2NCvJP+eqThvpNg1Ep/97Tm11s4rs53+ULFI0ZT
-        bT5M5o9n+OEwxsR1qC0hO6o=
-X-Google-Smtp-Source: APXvYqzTiSqTTWQ9PZy1goFbxVypnSrz9+OGYy+npJ5RJSjeNCmUsoAk2XeotQFaK3NlWIs3xt7b4w==
-X-Received: by 2002:a17:902:7b8d:: with SMTP id w13mr34247471pll.252.1557800450807;
-        Mon, 13 May 2019 19:20:50 -0700 (PDT)
-Received: from localhost ([128.199.137.77])
-        by smtp.gmail.com with ESMTPSA id i15sm26994103pfj.167.2019.05.13.19.20.48
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 May 2019 19:20:49 -0700 (PDT)
-Date:   Tue, 14 May 2019 10:20:44 +0800
-From:   Eryu Guan <guaneryu@gmail.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     fstests@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [RFC PATCH 4/7] common/encrypt: add helper for ciphertext
- verification tests
-Message-ID: <20190514022044.GL15846@desktop>
-References: <20190426204153.101861-1-ebiggers@kernel.org>
- <20190426204153.101861-5-ebiggers@kernel.org>
- <20190512122703.GJ15846@desktop>
- <20190513191204.GA142816@gmail.com>
+        id S1726134AbfENETX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 May 2019 00:19:23 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46850 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725562AbfENETW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 14 May 2019 00:19:22 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 90CB874CE27CF099816A;
+        Tue, 14 May 2019 12:19:20 +0800 (CST)
+Received: from RH5885H-V3.huawei.com (10.90.53.225) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.439.0; Tue, 14 May 2019 12:19:10 +0800
+From:   ZhangXiaoxu <zhangxiaoxu5@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <zhangxiaoxu5@huawei.com>
+Subject: [PATCH] ext4: Fix entry corruption when disk online and offline frequently
+Date:   Tue, 14 May 2019 12:23:37 +0800
+Message-ID: <1557807817-121893-1-git-send-email-zhangxiaoxu5@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190513191204.GA142816@gmail.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Type: text/plain
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 13, 2019 at 12:12:05PM -0700, Eric Biggers wrote:
-> Hi Eryu,
-> 
-> On Sun, May 12, 2019 at 08:27:03PM +0800, Eryu Guan wrote:
-> > > +# Retrieve the filename stored on-disk for the given file.
-> > > +# The name is printed to stdout in binary.
-> > > +_get_on_disk_filename()
-> > > +{
-> > > +	local device=$1
-> > > +	local inode=$2
-> > > +	local dir_inode=$3
-> > > +
-> > > +	case $FSTYP in
-> > > +	ext4)
-> > > +		# Extract the filename from the debugfs output line like:
-> > > +		#
-> > > +		#  131075  100644 (1)      0      0       0 22-Apr-2019 16:54 \xa2\x85\xb0z\x13\xe9\x09\x86R\xed\xdc\xce\xad\x14d\x19
-> > > +		#
-> > > +		$DEBUGFS_PROG $device -R "ls -l -r <$dir_inode>" \
-> > > +					2>>$seqres.full | perl -ne '
-> > > +			next if not /^\s*'$inode'\s+/;
-> > > +			s/.*?\d\d:\d\d //;
-> > > +			chomp;
-> > > +			s/\\x([[:xdigit:]]{2})/chr hex $1/eg;
-> > > +			print;'
-> > > +		;;
-> > > +	f2fs)
-> > > +		# Extract the filename from the dump.f2fs output line like:
-> > > +		#
-> > > +		#  i_name                        		[UpkzIPuts9by1oDmE+Ivfw]
-> > > +		#
-> > > +		# The name is base64-encoded, so we have to decode it here.
-> > > +		#
-> > > +		$DUMP_F2FS_PROG $device -i $inode | perl -ne '
-> > > +			next if not /^i_name\s+\[([A-Za-z0-9+,]+)\]/;
-> > > +			chomp $1;
-> > > +			my @chars = split //, $1;
-> > > +			my $ac = 0;
-> > > +			my $bits = 0;
-> > > +			my $table = join "", (A..Z, a..z, 0..9, "+", ",");
-> > > +			foreach (@chars) {
-> > > +				$ac += index($table, $_) << $bits;
-> > > +				$bits += 6;
-> > > +				if ($bits >= 8) {
-> > > +					print chr($ac & 0xff);
-> > > +					$ac >>= 8;
-> > > +					$bits -= 8;
-> > > +				}
-> > > +			}
-> > > +			if ($ac != 0) {
-> > > +				print STDERR "Invalid base64-encoded string!\n";
-> > > +			}'
-> > > +		;;
-> > > +	*)
-> > > +		_notrun "_get_on_disk_filename() isn't implemented on $FSTYP"
-> > 
-> > And looks like this function has nothing to do with fs encryption, move it to
-> > common/rc?
-> 
-> For ext4 that's true, but for f2fs the name is assumed to be base64-encoded,
-> which f2fs-tools only does for encrypted filenames.  I'll update the comment to
-> clarify that the function assumes the directory is encrypted.
-> 
-> > 
-> > > +		;;
-> > > +	esac
-> > > +}
-> > > +
-> > > +# Require support for _get_on_disk_filename()
-> > > +_require_get_on_disk_filename_support()
-> > > +{
-> > > +	echo "Checking for _get_on_disk_filename() support for $FSTYP" >> $seqres.full
-> > > +	case $FSTYP in
-> > > +	ext4)
-> > > +		# Verify that the "ls -l -r" debugfs command is supported and
-> > > +		# hex-encodes non-ASCII characters, rather than using an
-> > > +		# ambiguous escaping method.  This requires the e2fsprogs patch
-> > > +		# "debugfs: avoid ambiguity when printing filenames"
-> > > +		# (https://marc.info/?l=linux-ext4&m=155596495624232&w=2).
-> > > +		# TODO: once merged, list the minimum e2fsprogs version here.
-> > > +		_require_command "$DEBUGFS_PROG" debugfs
-> > > +		_scratch_mount
-> > > +		touch $SCRATCH_MNT/$'\xc1'
-> > > +		_scratch_unmount
-> > > +		if ! $DEBUGFS_PROG $SCRATCH_DEV -R "ls -l -r /" 2>&1 \
-> > > +			| tee -a $seqres.full | grep -E -q '\s+\\xc1\s*$'; then
-> > > +			_notrun "debugfs (e2fsprogs) is too old; doesn't support showing unambiguous on-disk filenames"
-> > > +		fi
-> > > +		;;
-> > > +	f2fs)
-> > > +		# Verify that dump.f2fs shows encrypted filenames in full.  This
-> > > +		# requires the patch "f2fs-tools: improve filename printing"
-> > > +		# (https://sourceforge.net/p/linux-f2fs/mailman/message/36648641/).
-> > > +		# TODO: once merged, list the minimum f2fs-tools version here.
-> > > +
-> > > +		_require_command "$DUMP_F2FS_PROG" dump.f2fs
-> > > +		_require_command "$KEYCTL_PROG" keyctl
-> > > +		_scratch_mount
-> > > +		_new_session_keyring
-> > > +
-> > > +		local keydesc=$(_generate_encryption_key)
-> > > +		local dir=$SCRATCH_MNT/test.${FUNCNAME[0]}
-> > > +		local file=$dir/$(perl -e 'print "A" x 255')
-> > > +		mkdir $dir
-> > > +		_set_encpolicy $dir $keydesc
-> > > +		touch $file
-> > > +		local inode=$(stat -c %i $file)
-> > > +
-> > > +		_scratch_unmount
-> > > +		$KEYCTL_PROG clear @s
-> > > +
-> > > +		# 255-character filename should result in 340 base64 characters.
-> > > +		if ! $DUMP_F2FS_PROG -i $inode $SCRATCH_DEV \
-> > > +			| grep -E -q '^i_name[[:space:]]+\[[A-Za-z0-9+,]{340}\]'; then
-> > > +			_notrun "dump.f2fs (f2fs-tools) is too old; doesn't support showing unambiguous on-disk filenames"
-> > > +		fi
-> > > +		;;
-> > > +	*)
-> > > +		_notrun "_get_on_disk_filename() isn't implemented on $FSTYP"
-> > > +		;;
-> > > +	esac
-> > > +}
-> > > +
-> > > +# Get the file's list of on-disk blocks as a comma-separated list of block
-> > > +# offsets from the start of the device.  "Blocks" are 512 bytes each here.
-> > > +_get_file_block_list()
-> > > +{
-> > > +	local file=$1
-> > > +
-> > > +	sync
-> > > +	$XFS_IO_PROG -c fiemap $file | perl -ne '
-> > > +		next if not /^\s*\d+: \[\d+\.\.\d+\]: (\d+)\.\.(\d+)/;
-> > > +		print $_ . "," foreach $1..$2;' | sed 's/,$//'
-> > > +}
-> > > +
-> > > +# Dump a block list that was previously saved by _get_file_block_list().
-> > > +_dump_file_blocks()
-> > > +{
-> > > +	local device=$1
-> > > +	local blocklist=$2
-> > > +	local block
-> > > +
-> > > +	for block in $(tr ',' ' ' <<< $blocklist); do
-> > > +		dd if=$device bs=512 count=1 skip=$block status=none
-> > > +	done
-> > > +}
-> > 
-> > Above two functions seem generic enough to be moved to common/rc
-> 
-> I feel that would be premature because common/rc is kind of bloated, and there's
-> a good chance these functions will only ever be used for encryption tests.
-> Normally, xfstests only test for user-visible behavior, so tests just 'cat' the
-> file contents, or 'ls' the filenames.  The encryption tests are somewhat special
-> in that they really care about what's *actually* stored on-disk.
-> 
-> So I think that common/encrypt is the most logical location for now.  But I
+I got some errors when I repair an ext4 volume which stacked by an
+iscsi target:
+    Entry 'test60' in / (2) has deleted/unused inode 73750.  Clear?
+It can be reproduced when the network not good enough.
 
-Yeah, that makes sense to me. Perhaps the functions should be renamed to
-reflect that they're encryption-related?
+When I debug this I found ext4 will read entry buffer from disk and
+the buffer is marked with write_io_error.
 
-Thanks,
-Eryu
+If the buffer is marked with write_io_error, it means it already
+wroten to journal, and not checked out to disk. IOW, the journal
+is newer than the data in disk.
+If this journal record 'delete test60', it means the 'test60' still
+on the disk metadata.
 
-> don't feel too strongly, and I can move it if you prefer.
-> 
-> Thanks for the review!
-> 
-> - Eric
+In this case, if we read the buffer from disk successfully and create
+file continue, the new journal record will overwrite the journal
+which record 'delete test60', then the entry corruptioned.
+
+So, use the buffer rather than read from disk if the buffer marked
+with write_io_error
+
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+---
+ fs/ext4/ext4.h  | 13 +++++++++++++
+ fs/ext4/inode.c |  4 ++--
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 1cb6785..5ebb36d 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3301,6 +3301,19 @@ static inline void ext4_clear_io_unwritten_flag(ext4_io_end_t *io_end)
+ 
+ extern const struct iomap_ops ext4_iomap_ops;
+ 
++static inline int ext4_buffer_uptodate(struct buffer_head *bh)
++{
++	/*
++	 * If the buffer has the write error flag, we have failed
++	 * to write out data in the block.  In this  case, we don't
++	 * have to read the block because we may read the old data
++	 * successfully.
++	 */
++	if (!buffer_uptodate(bh) && buffer_write_io_error(bh))
++		set_buffer_uptodate(bh);
++	return buffer_uptodate(bh);
++}
++
+ #endif	/* __KERNEL__ */
+ 
+ #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 82298c6..3546388 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1018,7 +1018,7 @@ struct buffer_head *ext4_bread(handle_t *handle, struct inode *inode,
+ 	bh = ext4_getblk(handle, inode, block, map_flags);
+ 	if (IS_ERR(bh))
+ 		return bh;
+-	if (!bh || buffer_uptodate(bh))
++	if (!bh || ext4_buffer_uptodate(bh))
+ 		return bh;
+ 	ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1, &bh);
+ 	wait_on_buffer(bh);
+@@ -1045,7 +1045,7 @@ int ext4_bread_batch(struct inode *inode, ext4_lblk_t block, int bh_count,
+ 
+ 	for (i = 0; i < bh_count; i++)
+ 		/* Note that NULL bhs[i] is valid because of holes. */
+-		if (bhs[i] && !buffer_uptodate(bhs[i]))
++		if (bhs[i] && !ext4_buffer_uptodate(bhs[i]))
+ 			ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1,
+ 				    &bhs[i]);
+ 
+-- 
+2.7.4
+
