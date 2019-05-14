@@ -2,110 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D011C132
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 May 2019 06:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F21E31C1D3
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 May 2019 07:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbfENETX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 May 2019 00:19:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:46850 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725562AbfENETW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 14 May 2019 00:19:22 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 90CB874CE27CF099816A;
-        Tue, 14 May 2019 12:19:20 +0800 (CST)
-Received: from RH5885H-V3.huawei.com (10.90.53.225) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.439.0; Tue, 14 May 2019 12:19:10 +0800
-From:   ZhangXiaoxu <zhangxiaoxu5@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <zhangxiaoxu5@huawei.com>
-Subject: [PATCH] ext4: Fix entry corruption when disk online and offline frequently
-Date:   Tue, 14 May 2019 12:23:37 +0800
-Message-ID: <1557807817-121893-1-git-send-email-zhangxiaoxu5@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726713AbfENF1W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 May 2019 01:27:22 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:43248 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbfENF1V (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 14 May 2019 01:27:21 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 09F663092670;
+        Tue, 14 May 2019 05:27:21 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F3478600C6;
+        Tue, 14 May 2019 05:27:19 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 9997218089C8;
+        Tue, 14 May 2019 05:27:18 +0000 (UTC)
+Date:   Tue, 14 May 2019 01:27:17 -0400 (EDT)
+From:   Pankaj Gupta <pagupta@redhat.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, KVM list <kvm@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, david <david@fromorbit.com>,
+        Qemu Developers <qemu-devel@nongnu.org>,
+        virtualization@lists.linux-foundation.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ross Zwisler <zwisler@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>, jstaron@google.com,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        jmoyer <jmoyer@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Rik van Riel <riel@surriel.com>,
+        yuval shaia <yuval.shaia@oracle.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Igor Mammedov <imammedo@redhat.com>, lcapitulino@redhat.com,
+        Kevin Wolf <kwolf@redhat.com>,
+        Nitesh Narayan Lal <nilal@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        cohuck@redhat.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Message-ID: <676644679.28490825.1557811637861.JavaMail.zimbra@redhat.com>
+In-Reply-To: <CAPcyv4genJtCt6dp6N07_6RfPTwC6xXMhLp-dr0GWQy5q52YoA@mail.gmail.com>
+References: <20190510155202.14737-1-pagupta@redhat.com> <20190510155202.14737-4-pagupta@redhat.com> <CAPcyv4hbVNRFSyS2CTbmO88uhnbeH4eiukAng2cxgbDzLfizwg@mail.gmail.com> <864186878.28040999.1557535549792.JavaMail.zimbra@redhat.com> <CAPcyv4gL3ODfOr52Ztgq7BM4gVf1cih6cj0271gcpVvpi9aFSA@mail.gmail.com> <2003480558.28042237.1557537797923.JavaMail.zimbra@redhat.com> <116369545.28425569.1557768748009.JavaMail.zimbra@redhat.com> <CAPcyv4genJtCt6dp6N07_6RfPTwC6xXMhLp-dr0GWQy5q52YoA@mail.gmail.com>
+Subject: Re: [Qemu-devel] [PATCH v8 3/6] libnvdimm: add dax_dev sync flag
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.65.16.148, 10.4.195.17]
+Thread-Topic: libnvdimm: add dax_dev sync flag
+Thread-Index: wQqDJDTh4d6BDzUQZjrFKazK6E2QhQ==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Tue, 14 May 2019 05:27:21 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I got some errors when I repair an ext4 volume which stacked by an
-iscsi target:
-    Entry 'test60' in / (2) has deleted/unused inode 73750.  Clear?
-It can be reproduced when the network not good enough.
 
-When I debug this I found ext4 will read entry buffer from disk and
-the buffer is marked with write_io_error.
+> >
+> >
+> > Hi Dan,
+> >
+> > While testing device mapper with DAX, I faced a bug with the commit:
+> >
+> > commit ad428cdb525a97d15c0349fdc80f3d58befb50df
+> > Author: Dan Williams <dan.j.williams@intel.com>
+> > Date:   Wed Feb 20 21:12:50 2019 -0800
+> >
+> > When I reverted the condition to old code[1] it worked for me. I
+> > am thinking when we map two different devices (e.g with device mapper),
+> > will
+> > start & end pfn still point to same pgmap? Or there is something else which
+> > I am missing here.
+> >
+> > Note: I tested only EXT4.
+> >
+> > [1]
+> >
+> > -               if (pgmap && pgmap->type == MEMORY_DEVICE_FS_DAX)
+> > +               end_pgmap = get_dev_pagemap(pfn_t_to_pfn(end_pfn), NULL);
+> > +               if (pgmap && pgmap == end_pgmap && pgmap->type ==
+> > MEMORY_DEVICE_FS_DAX
+> > +                               && pfn_t_to_page(pfn)->pgmap == pgmap
+> > +                               && pfn_t_to_page(end_pfn)->pgmap == pgmap
+> > +                               && pfn_t_to_pfn(pfn) ==
+> > PHYS_PFN(__pa(kaddr))
+> > +                               && pfn_t_to_pfn(end_pfn) ==
+> > PHYS_PFN(__pa(end_kaddr)))
+> 
+> Ugh, yes, device-mapper continues to be an awkward fit for dax (or
+> vice versa). We would either need a way to have a multi-level pfn to
+> pagemap lookup for composite devices, or a way to discern that even
+> though the pagemap is different that the result is still valid / not
+> an indication that we have leaked into an unassociated address range.
+> Perhaps a per-daxdev callback for ->dax_supported() so that
+> device-mapper internals can be used for this validation.
 
-If the buffer is marked with write_io_error, it means it already
-wroten to journal, and not checked out to disk. IOW, the journal
-is newer than the data in disk.
-If this journal record 'delete test60', it means the 'test60' still
-on the disk metadata.
+Yes, Will look at it.
 
-In this case, if we read the buffer from disk successfully and create
-file continue, the new journal record will overwrite the journal
-which record 'delete test60', then the entry corruptioned.
+> 
+> We need to get that fixed up, but I don't see it as a blocker /
+> pre-requisite for virtio-pmem.
 
-So, use the buffer rather than read from disk if the buffer marked
-with write_io_error
+Agree. Will send virtio-pmem patch series.
 
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
----
- fs/ext4/ext4.h  | 13 +++++++++++++
- fs/ext4/inode.c |  4 ++--
- 2 files changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 1cb6785..5ebb36d 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3301,6 +3301,19 @@ static inline void ext4_clear_io_unwritten_flag(ext4_io_end_t *io_end)
- 
- extern const struct iomap_ops ext4_iomap_ops;
- 
-+static inline int ext4_buffer_uptodate(struct buffer_head *bh)
-+{
-+	/*
-+	 * If the buffer has the write error flag, we have failed
-+	 * to write out data in the block.  In this  case, we don't
-+	 * have to read the block because we may read the old data
-+	 * successfully.
-+	 */
-+	if (!buffer_uptodate(bh) && buffer_write_io_error(bh))
-+		set_buffer_uptodate(bh);
-+	return buffer_uptodate(bh);
-+}
-+
- #endif	/* __KERNEL__ */
- 
- #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 82298c6..3546388 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1018,7 +1018,7 @@ struct buffer_head *ext4_bread(handle_t *handle, struct inode *inode,
- 	bh = ext4_getblk(handle, inode, block, map_flags);
- 	if (IS_ERR(bh))
- 		return bh;
--	if (!bh || buffer_uptodate(bh))
-+	if (!bh || ext4_buffer_uptodate(bh))
- 		return bh;
- 	ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1, &bh);
- 	wait_on_buffer(bh);
-@@ -1045,7 +1045,7 @@ int ext4_bread_batch(struct inode *inode, ext4_lblk_t block, int bh_count,
- 
- 	for (i = 0; i < bh_count; i++)
- 		/* Note that NULL bhs[i] is valid because of holes. */
--		if (bhs[i] && !buffer_uptodate(bhs[i]))
-+		if (bhs[i] && !ext4_buffer_uptodate(bhs[i]))
- 			ll_rw_block(REQ_OP_READ, REQ_META | REQ_PRIO, 1,
- 				    &bhs[i]);
- 
--- 
-2.7.4
-
+Thank you,
+Pankaj
+> 
+> 
