@@ -2,186 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4298A1FC13
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 May 2019 23:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFAEA1FD9F
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 04:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbfEOVHh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 May 2019 17:07:37 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:35600 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726780AbfEOVHh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 May 2019 17:07:37 -0400
-Received: by mail-ot1-f67.google.com with SMTP id n14so1425053otk.2
-        for <linux-ext4@vger.kernel.org>; Wed, 15 May 2019 14:07:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zEAiaEFTDEo5AHTXNi1igG//m3yl73MYATUt/TyQM/s=;
-        b=JldDYW+LTAR5BoMmvzt3GhFBKSNFCQljO95A7CQF8h7lezT59wkCmoZR8HlZNeo3ZX
-         ACz18is11PqZLJkpbZTbPrVApVsXuwCwQzpumDKhMYUGYyeEKSs4shc89Funjj7rmnrR
-         zPCblVOMVW4B/FdfDdDBm0eQtlDpcEoDreFJYHB2TrhXh9porw+VCF0gkgtOPIdPF4AY
-         hPK/m0cAXNVhKubNUJt+B+Ge41ks183CJ7yggGXayFgFqQhy+nfr59BSRoNiAIUor77P
-         UmqXqpMAHdjAUWsPGhNLbi9iUpZ9FsKZwds3Nd3zmasJxQ+15Rm38l4yGAgNrmpf7grH
-         OFBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zEAiaEFTDEo5AHTXNi1igG//m3yl73MYATUt/TyQM/s=;
-        b=UseWMYJQUEB6toXTAMuA7z3SOUxYIBtI95vrQYM4sjc49HFjE6jICE2A1dj8QDXAiD
-         huVk6kszqHDALcd5GAcxqNKwZvg+lvTPDkSTCJ4DXBLPPYKG+XsP6VwS6ogtD/Yb0rrL
-         5gSE16cybEmmqMemmPW3l/uJG8O4ktLrDjI6CK/kh+4Amhan/LkqTyowe9i+mynHpCNG
-         2fPs7nfBpFtcVQh/8KeiIVS53yCdEmOS509xcdmMIJhMDBUOMuPbxMEueflGwDat2WcV
-         eN3zczAMr1VbbM6uaLCq40nU7FjMDK0sUXCBd+vvFWNM3kT9pDdBBcBwTB0B7Pid95Xv
-         dy4Q==
-X-Gm-Message-State: APjAAAUnoihbBzjXIxmLHwpBudJr8nYIVnhI3lnANBDBtYzXV22PYu2p
-        yotKA1qH24MVNXZm1tzvklXD/YLeV1l+Aui6MlaVSQ==
-X-Google-Smtp-Source: APXvYqyDA/EWUSXzmLh3QyRTwliJkHZQ726n1NRYV2Be3duzD6pV8jVLvRmpMo63mBrfvCQmmCONZIUwdUcOhHdo8aI=
-X-Received: by 2002:a05:6830:14d3:: with SMTP id t19mr27993804otq.57.1557954454945;
- Wed, 15 May 2019 14:07:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190514145422.16923-1-pagupta@redhat.com> <20190514145422.16923-2-pagupta@redhat.com>
-In-Reply-To: <20190514145422.16923-2-pagupta@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 15 May 2019 14:07:23 -0700
-Message-ID: <CAPcyv4gEr_zPJEQp3k89v2UXfHp9PQwnJXY+W99HwXfxpvua_w@mail.gmail.com>
-Subject: Re: [PATCH v9 1/7] libnvdimm: nd_region flush callback support
-To:     Pankaj Gupta <pagupta@redhat.com>
-Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        KVM list <kvm@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Qemu Developers <qemu-devel@nongnu.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Ross Zwisler <zwisler@kernel.org>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Christoph Hellwig <hch@infradead.org>,
-        Len Brown <lenb@kernel.org>, Jan Kara <jack@suse.cz>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        lcapitulino@redhat.com, Kevin Wolf <kwolf@redhat.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        jmoyer <jmoyer@redhat.com>,
-        Nitesh Narayan Lal <nilal@redhat.com>,
-        Rik van Riel <riel@surriel.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        david <david@fromorbit.com>, cohuck@redhat.com,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Adam Borowski <kilobyte@angband.pl>,
-        yuval shaia <yuval.shaia@oracle.com>, jstaron@google.com
+        id S1726400AbfEPCFM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 May 2019 22:05:12 -0400
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25852 "EHLO
+        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726157AbfEPCFM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 May 2019 22:05:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1557969227; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=gxLfazM6U39H0EerEH7mpfBVWJbp6/qkhV7yBhKbWXKJeWhRAZSDv5CPAt4ygXGmgYjgqYP32FH+9udCZIQXmzx6D7xSJV259mM1DMdq0v0+byWpyAVNmW1EBTH5dH08FxvQyU9YEATjo7348Rlvxcxx9g8vx9SIyzyh/kLunmA=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1557969227; h=Content-Type:Content-Transfer-Encoding:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To:ARC-Authentication-Results; 
+        bh=lt64Im3MAfWyXP/AetiFnsStHLb2QjMqY7o6IDxn4sk=; 
+        b=hY1u7n+2zG6+IcEe1wZHnnCBFKcREbSu6w/PpeaFZ6F5pEynZ06Jt2A253ql7oYnKiniJa3Rg6FmdHPg8dk1u0pbv0AnXxxtbyTaJqh+knS1s87Q+KnaglB0w0btIeNB2prXHdMZ04mknXHSuU6aEYR5hVEYbAabBIRiNbhRxnU=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=zoho.com.cn;
+        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
+        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
+Received: from hades (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
+        with SMTPS id 1557969225407162.07974578306607; Thu, 16 May 2019 09:13:45 +0800 (CST)
+Message-ID: <6340e88cfb57aadef737ba882d342cd922555a95.camel@zoho.com.cn>
+Subject: Re: [PATCH 2/3] ext2: Merge loops in ext2_xattr_set()
+From:   "cgxu519@zoho.com.cn" <cgxu519@zoho.com.cn>
+Reply-To: cgxu519@zoho.com.cn
+To:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Date:   Thu, 16 May 2019 09:13:34 +0800
+In-Reply-To: <20190515140144.1183-3-jack@suse.cz>
+References: <20190515140144.1183-1-jack@suse.cz>
+         <20190515140144.1183-3-jack@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-ZohoCNMailClient: External
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 14, 2019 at 7:55 AM Pankaj Gupta <pagupta@redhat.com> wrote:
->
-> This patch adds functionality to perform flush from guest
-> to host over VIRTIO. We are registering a callback based
-> on 'nd_region' type. virtio_pmem driver requires this special
-> flush function. For rest of the region types we are registering
-> existing flush function. Report error returned by host fsync
-> failure to userspace.
->
-> Signed-off-by: Pankaj Gupta <pagupta@redhat.com>
+On Wed, 2019-05-15 at 16:01 +0200, Jan Kara wrote:
+> There are two very similar loops when searching xattr to set. Just merge
+> them.
+> 
+> Signed-off-by: Jan Kara <jack@suse.cz>
 > ---
->  drivers/acpi/nfit/core.c     |  4 ++--
->  drivers/nvdimm/claim.c       |  6 ++++--
->  drivers/nvdimm/nd.h          |  1 +
->  drivers/nvdimm/pmem.c        | 13 ++++++++-----
->  drivers/nvdimm/region_devs.c | 26 ++++++++++++++++++++++++--
->  include/linux/libnvdimm.h    |  8 +++++++-
->  6 files changed, 46 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-> index 5a389a4f4f65..08dde76cf459 100644
-> --- a/drivers/acpi/nfit/core.c
-> +++ b/drivers/acpi/nfit/core.c
-> @@ -2434,7 +2434,7 @@ static void write_blk_ctl(struct nfit_blk *nfit_blk=
-, unsigned int bw,
->                 offset =3D to_interleave_offset(offset, mmio);
->
->         writeq(cmd, mmio->addr.base + offset);
-> -       nvdimm_flush(nfit_blk->nd_region);
-> +       nvdimm_flush(nfit_blk->nd_region, NULL);
->
->         if (nfit_blk->dimm_flags & NFIT_BLK_DCR_LATCH)
->                 readq(mmio->addr.base + offset);
-> @@ -2483,7 +2483,7 @@ static int acpi_nfit_blk_single_io(struct nfit_blk =
-*nfit_blk,
->         }
->
->         if (rw)
-> -               nvdimm_flush(nfit_blk->nd_region);
-> +               nvdimm_flush(nfit_blk->nd_region, NULL);
->
->         rc =3D read_blk_stat(nfit_blk, lane) ? -EIO : 0;
->         return rc;
-> diff --git a/drivers/nvdimm/claim.c b/drivers/nvdimm/claim.c
-> index fb667bf469c7..13510bae1e6f 100644
-> --- a/drivers/nvdimm/claim.c
-> +++ b/drivers/nvdimm/claim.c
-> @@ -263,7 +263,7 @@ static int nsio_rw_bytes(struct nd_namespace_common *=
-ndns,
->         struct nd_namespace_io *nsio =3D to_nd_namespace_io(&ndns->dev);
->         unsigned int sz_align =3D ALIGN(size + (offset & (512 - 1)), 512)=
-;
->         sector_t sector =3D offset >> 9;
-> -       int rc =3D 0;
-> +       int rc =3D 0, ret =3D 0;
->
->         if (unlikely(!size))
->                 return 0;
-> @@ -301,7 +301,9 @@ static int nsio_rw_bytes(struct nd_namespace_common *=
-ndns,
->         }
->
->         memcpy_flushcache(nsio->addr + offset, buf, size);
-> -       nvdimm_flush(to_nd_region(ndns->dev.parent));
-> +       ret =3D nvdimm_flush(to_nd_region(ndns->dev.parent), NULL);
-> +       if (ret)
-> +               rc =3D ret;
->
->         return rc;
->  }
-> diff --git a/drivers/nvdimm/nd.h b/drivers/nvdimm/nd.h
-> index a5ac3b240293..0c74d2428bd7 100644
-> --- a/drivers/nvdimm/nd.h
-> +++ b/drivers/nvdimm/nd.h
-> @@ -159,6 +159,7 @@ struct nd_region {
->         struct badblocks bb;
->         struct nd_interleave_set *nd_set;
->         struct nd_percpu_lane __percpu *lane;
-> +       int (*flush)(struct nd_region *nd_region, struct bio *bio);
+>  fs/ext2/xattr.c | 32 +++++++++++---------------------
+>  1 file changed, 11 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+> index fb2e008d4406..26a049ca89fb 100644
+> --- a/fs/ext2/xattr.c
+> +++ b/fs/ext2/xattr.c
+> @@ -437,27 +437,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const
+> char *name,
+>  			goto cleanup;
+>  		}
+>  		/* Find the named attribute. */
+> -		here = FIRST_ENTRY(bh);
+> -		while (!IS_LAST_ENTRY(here)) {
+> -			struct ext2_xattr_entry *next = EXT2_XATTR_NEXT(here);
+> -			if ((char *)next >= end)
+> -				goto bad_block;
+> -			if (!here->e_value_block && here->e_value_size) {
+> -				size_t offs = le16_to_cpu(here->e_value_offs);
+> -				if (offs < min_offs)
+> -					min_offs = offs;
+> -			}
+> -			not_found = name_index - here->e_name_index;
+> -			if (!not_found)
+> -				not_found = name_len - here->e_name_len;
+> -			if (!not_found)
+> -				not_found = memcmp(name, here->e_name,name_len);
+> -			if (not_found <= 0)
+> -				break;
+> -			here = next;
+> -		}
+> -		last = here;
+> -		/* We still need to compute min_offs and last. */
+> +		last = FIRST_ENTRY(bh);
+>  		while (!IS_LAST_ENTRY(last)) {
+>  			struct ext2_xattr_entry *next = EXT2_XATTR_NEXT(last);
+>  			if ((char *)next >= end)
+> @@ -467,8 +447,18 @@ ext2_xattr_set(struct inode *inode, int name_index, const
+> char *name,
+>  				if (offs < min_offs)
+>  					min_offs = offs;
+>  			}
+> +			if (not_found) {
+> +				if (name_index == last->e_name_index &&
+> +				    name_len == last->e_name_len &&
+> +				    !memcmp(name, last->e_name,name_len)) {
+> +					not_found = 0;
+> +					here = last;
+> +				}
+> +			}
+>  			last = next;
+>  		}
+> +		if (not_found)
+> +			here = last;
 
-So this triggers:
+Entry name is sorted so I think for new entry we should find right place for it
+not just appending to last.
 
-In file included from drivers/nvdimm/e820.c:7:
-./include/linux/libnvdimm.h:140:51: warning: =E2=80=98struct bio=E2=80=99 d=
-eclared
-inside parameter list will not be visible outside of this definition
-or declaration
-  int (*flush)(struct nd_region *nd_region, struct bio *bio);
-                                                   ^~~
-I was already feeling uneasy about trying to squeeze this into v5.2,
-but this warning and the continued drip of comments leads me to
-conclude that this driver would do well to wait one more development
-cycle. Lets close out the final fixups and let this driver soak in
--next. Then for the v5.3 cycle I'll redouble my efforts towards the
-goal of closing patch acceptance at the -rc6 / -rc7 development
-milestone.
+Thanks,
+Chengguang
+
+>  
+>  		/* Check whether we have enough space left. */
+>  		free = min_offs - ((char*)last - (char*)header) - sizeof(__u32);
+
+
+
