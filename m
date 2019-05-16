@@ -2,68 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E55691FDD4
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 04:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C91B51FDFC
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 05:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726259AbfEPC4v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 May 2019 22:56:51 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36638 "EHLO
+        id S1726261AbfEPDRu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 May 2019 23:17:50 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40987 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726084AbfEPC4u (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 May 2019 22:56:50 -0400
+        with ESMTP id S1726218AbfEPDRu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 May 2019 23:17:50 -0400
 Received: from callcc.thunk.org (168-215-239-3.static.ctl.one [168.215.239.3] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4G2udBn009305
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4G3Hc1v014818
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 May 2019 22:56:42 -0400
+        Wed, 15 May 2019 23:17:41 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 1F19C420024; Wed, 15 May 2019 22:56:39 -0400 (EDT)
-Date:   Wed, 15 May 2019 22:56:39 -0400
+        id AF305420024; Wed, 15 May 2019 23:17:37 -0400 (EDT)
+Date:   Wed, 15 May 2019 23:17:37 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Arthur Marsh <arthur.marsh@internode.on.net>
-Cc:     Richard Weinberger <richard.weinberger@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org
-Subject: Re: ext3/ext4 filesystem corruption under post 5.1.0 kernels
-Message-ID: <20190516025639.GC5394@mit.edu>
+To:     Liu Song <fishland@aliyun.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liu.song11@zte.com.cn
+Subject: Re: [PATCH] ext4: always set inode of deleted entry to zero
+Message-ID: <20190516031737.GA24832@mit.edu>
 Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
-        Arthur Marsh <arthur.marsh@internode.on.net>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org
-References: <48BA4A6E-5E2A-478E-A96E-A31FA959964C@internode.on.net>
- <CAFLxGvwnKKHOnM2w8i9hn7LTVYKh5PQP2zYMBmma2k9z7HBpzw@mail.gmail.com>
- <20190511220659.GB8507@mit.edu>
- <09D87554-6795-4AEA-B8D0-FEBCB45673A9@internode.on.net>
- <850EDDE2-5B82-4354-AF1C-A2D0B8571093@internode.on.net>
- <17C30FA3-1AB3-4DAD-9B86-9FA9088F11C9@internode.on.net>
- <20190515045717.GB5394@mit.edu>
- <C24BBE18-1665-4343-9C98-5AF64BACDCA3@internode.on.net>
+        Liu Song <fishland@aliyun.com>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liu.song11@zte.com.cn
+References: <20190515140000.3611-1-fishland@aliyun.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <C24BBE18-1665-4343-9C98-5AF64BACDCA3@internode.on.net>
+In-Reply-To: <20190515140000.3611-1-fishland@aliyun.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 15, 2019 at 09:42:11PM +0930, Arthur Marsh wrote:
-> I have built kernels with the attached patch applied and run git gc
-> on the patched kernels (both the 32 bit kernel on the Pentium-D and
-> the 64 bit kernel on the Athlon II X4 640).
+On Wed, May 15, 2019 at 10:00:00PM +0800, Liu Song wrote:
+> Although the deleted entry can not be seen by changing
+> the rec_len of the parent directory entry. However we
+> can piggyback set the entry's inode to 0. There is no
+> harm and an entry with an inode of 0 means that the
+> entry has been deleted and more reliable.
 > 
-> There were a couple of warnings from other processes being blocked
-> while the git gc was taking place but no filesystem corruption
-> detected. (I ran forced fsck checks on the root filesystems after
-> the git gc runs to check for corruption).
-> 
-> Thanks for the patch!
+> Signed-off-by: Liu Song <liu.song11@zte.com.cn>
 
-Thanks for the bug report!  My apologies for the inconvenience; I'm
-going to take a look at improving my regression test configurations so
-I would have noticed this earlier.
+What are the circumstances where this is "more reliable"?  In other
+words, what problem are you trying to solve?  The fact that we don't
+zero the inode number, but simply make the directory entry "disappear"
+if possible is actually deliberate.
 
-Cheers,
+The goal was to give careless sytem administrators one last saving
+throw (sorry, American English figure of speach; see [1] for an
+explanation) against accidental mistakes, ifh they can shutdown their
+system fast enough.
+
+[1] https://en.wikipedia.org/wiki/Saving_throw
+
+This doesn't actually work all that well these days, admittedly
+because of how ext4_truncate works.  (See the debugfs man page for
+lsdel for more details.)  However, I've always had the thought that if
+someone wanted to implement a hack where all of the bitmap blocks that
+would need to be zero could fit in a transaction, we wouldn't need to
+update the extent tree blocks and indirect blocks, and could
+significantly simplify the how many blocks might need to be modified
+when deleting a file --- and make lsdel something that could work in
+emergency circumstances again.
 
 						- Ted
