@@ -2,117 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8806520152
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 10:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA4B2028A
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 11:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbfEPI3p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 May 2019 04:29:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57938 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725975AbfEPI3p (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 May 2019 04:29:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7D57DAE84;
-        Thu, 16 May 2019 08:29:44 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 361F61E3ED6; Thu, 16 May 2019 10:29:44 +0200 (CEST)
-Date:   Thu, 16 May 2019 10:29:44 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "cgxu519@zoho.com.cn" <cgxu519@zoho.com.cn>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/3] ext2: Strengthen xattr block checks
-Message-ID: <20190516082944.GB13274@quack2.suse.cz>
-References: <20190515140144.1183-1-jack@suse.cz>
- <20190515140144.1183-4-jack@suse.cz>
- <e0252f7d378e8de5cadea28ad3c4765a541c2c69.camel@zoho.com.cn>
+        id S1726950AbfEPJaY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 May 2019 05:30:24 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51817 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726374AbfEPJaY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 May 2019 05:30:24 -0400
+Received: from callcc.thunk.org (168-215-239-3.static.ctl.one [168.215.239.3] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4G9U8Rv029692
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 May 2019 05:30:12 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 3F4BD420024; Thu, 16 May 2019 05:28:48 -0400 (EDT)
+Date:   Thu, 16 May 2019 05:28:48 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jack@suse.cz,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
+Message-ID: <20190516092848.GA6975@mit.edu>
+References: <20190515150221.16647-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e0252f7d378e8de5cadea28ad3c4765a541c2c69.camel@zoho.com.cn>
+In-Reply-To: <20190515150221.16647-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 16-05-19 09:16:06, cgxu519@zoho.com.cn wrote:
-> On Wed, 2019-05-15 at 16:01 +0200, Jan Kara wrote:
-> > Check every entry in xattr block for validity in ext2_xattr_set() to
-> > detect on disk corruption early. Also since e_value_block field in xattr
-> > entry is never != 0 in a valid filesystem, just remove checks for it
-> > once we have established entries are valid.
-> > 
-> > Signed-off-by: Jan Kara <jack@suse.cz>
+On Wed, May 15, 2019 at 04:02:21PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Could we do the entry check in the loop of get/list operation too?
+> Run fsstress, fsync every file and directory, simulate a power failure and
+> then verify the all files and directories exist, with the same data and
+> metadata they had before the power failure.
+> 
+> This tes has found already 2 bugs in btrfs, that caused mtime and ctime of
+> directories not being preserved after replaying the log/journal and loss
+> of a directory's attributes (such a UID and GID) after replaying the log.
+> The patches that fix the btrfs issues are titled:
+> 
+>   "Btrfs: fix wrong ctime and mtime of a directory after log replay"
+>   "Btrfs: fix fsync not persisting changed attributes of a directory"
+> 
+> Running this test 1000 times:
+> 
+> - on ext4 it has resulted in about a dozen journal checksum errors (on a
+>   5.0 kernel) that resulted in failure to mount the filesystem after the
+>   simulated power failure with dmflakey, which produces the following
+>   error in dmesg/syslog:
+> 
+>     [Mon May 13 12:51:37 2019] JBD2: journal checksum error
+>     [Mon May 13 12:51:37 2019] EXT4-fs (dm-0): error loading journal
 
-Yes, makes sense. Will add for v2. Thanks for review.
+I'm curious what configuration you used when you ran the test.  I
+tried to reproduce it, and had no luck:
 
-								Honza
+TESTRUNID: tytso-20190516042341
+KERNEL:    kernel 5.1.0-rc3-xfstests-00034-g0c72924ef346 #999 SMP Wed May 15 00:56:08 EDT 2019 x86_64
+CMDLINE:   -c 4k -C 1000 generic/547
+CPUS:      2
+MEM:       7680
 
-> 
-> Thanks,
-> Chengguang
-> 
-> > ---
-> >  fs/ext2/xattr.c | 15 ++++++---------
-> >  1 file changed, 6 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-> > index 26a049ca89fb..04a4148d04b3 100644
-> > --- a/fs/ext2/xattr.c
-> > +++ b/fs/ext2/xattr.c
-> > @@ -442,7 +442,9 @@ ext2_xattr_set(struct inode *inode, int name_index, const
-> > char *name,
-> >  			struct ext2_xattr_entry *next = EXT2_XATTR_NEXT(last);
-> >  			if ((char *)next >= end)
-> >  				goto bad_block;
-> > -			if (!last->e_value_block && last->e_value_size) {
-> > +			if (!ext2_xattr_entry_valid(last, sb->s_blocksize))
-> > +				goto bad_block;
-> > +			if (last->e_value_size) {
-> >  				size_t offs = le16_to_cpu(last->e_value_offs);
-> >  				if (offs < min_offs)
-> >  					min_offs = offs;
-> > @@ -482,12 +484,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const
-> > char *name,
-> >  		error = -EEXIST;
-> >  		if (flags & XATTR_CREATE)
-> >  			goto cleanup;
-> > -		if (!here->e_value_block && here->e_value_size) {
-> > -			if (!ext2_xattr_entry_valid(here, sb->s_blocksize))
-> > -				goto bad_block;
-> > -			free += EXT2_XATTR_SIZE(
-> > -					le32_to_cpu(here->e_value_size));
-> > -		}
-> > +		free += EXT2_XATTR_SIZE(le32_to_cpu(here->e_value_size));
-> >  		free += EXT2_XATTR_LEN(name_len);
-> >  	}
-> >  	error = -ENOSPC;
-> > @@ -552,7 +549,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const
-> > char *name,
-> >  		here->e_name_len = name_len;
-> >  		memcpy(here->e_name, name, name_len);
-> >  	} else {
-> > -		if (!here->e_value_block && here->e_value_size) {
-> > +		if (here->e_value_size) {
-> >  			char *first_val = (char *)header + min_offs;
-> >  			size_t offs = le16_to_cpu(here->e_value_offs);
-> >  			char *val = (char *)header + offs;
-> > @@ -579,7 +576,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const
-> > char *name,
-> >  			last = ENTRY(header+1);
-> >  			while (!IS_LAST_ENTRY(last)) {
-> >  				size_t o = le16_to_cpu(last->e_value_offs);
-> > -				if (!last->e_value_block && o < offs)
-> > +				if (o < offs)
-> >  					last->e_value_offs =
-> >  						cpu_to_le16(o + size);
-> >  				last = EXT2_XATTR_NEXT(last);
-> 
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ext4/4k: 1000 tests, 1855 seconds
+Totals: 1000 tests, 0 skipped, 0 failures, 0 errors, 1855s
+
+FSTESTPRJ: gce-xfstests
+FSTESTVER: blktests baccddc (Wed, 13 Mar 2019 00:06:50 -0700)
+FSTESTVER: fio  fio-3.2 (Fri, 3 Nov 2017 15:23:49 -0600)
+FSTESTVER: fsverity bdebc45 (Wed, 5 Sep 2018 21:32:22 -0700)
+FSTESTVER: ima-evm-utils 0267fa1 (Mon, 3 Dec 2018 06:11:35 -0500)
+FSTESTVER: nvme-cli v1.7-35-g669d759 (Tue, 12 Mar 2019 11:22:16 -0600)
+FSTESTVER: quota  62661bd (Tue, 2 Apr 2019 17:04:37 +0200)
+FSTESTVER: stress-ng 7d0353cf (Sun, 20 Jan 2019 03:30:03 +0000)
+FSTESTVER: syzkaller bab43553 (Fri, 15 Mar 2019 09:08:49 +0100)
+FSTESTVER: xfsprogs v5.0.0 (Fri, 3 May 2019 12:14:36 -0500)
+FSTESTVER: xfstests-bld 9582562 (Sun, 12 May 2019 00:38:51 -0400)
+FSTESTVER: xfstests linux-v3.8-2390-g64233614 (Thu, 16 May 2019 00:12:52 -0400)
+FSTESTCFG: 4k
+FSTESTSET: generic/547
+FSTESTOPT: count 1000 aex
+GCE ID:    8592267165157073108
