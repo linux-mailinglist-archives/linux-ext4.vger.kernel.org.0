@@ -2,115 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7521FDA7
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 04:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55691FDD4
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 04:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbfEPCHb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 May 2019 22:07:31 -0400
-Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25709 "EHLO
-        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725953AbfEPCHb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 May 2019 22:07:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1557969370; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=ndvlJ+QjY+o3dq29Jt7bDsU7gT4Bs0dTQ3ET6RJNkkMk/WatZnRBEqCu7rwVYOb+212xfFjR+3nvLq2ZcY3WjrwMdR12YhkjlMq+F8GQKPdtiH1/epvkOIIvqmBen/smGqgxDRZbFAxJxkJ2MHDG9mEmJ3mmojj/6WrqPykNzxM=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1557969370; h=Content-Type:Content-Transfer-Encoding:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To:ARC-Authentication-Results; 
-        bh=IDigYKbsj+6R+kkbD/0QxrSWvHBJf1OOVlGD2OdVh7U=; 
-        b=eMb/57QhYrOX0yXlgiVrJpBE/zdUxIGhI3TokME+Dn/QBF3z9keiediHdI0wi2+Xd9YtmF7XwJnB5KaMDcMy5PXNVJIKM+TPJgfmjZdegq39pspi24XOACoZBXU8DnBrM1qQHDNswNHHa1CBin7nxvUZKeYt6IshsMzbITgNTHM=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=zoho.com.cn;
-        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
-        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
-Received: from hades (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1557969368772393.8452859325248; Thu, 16 May 2019 09:16:08 +0800 (CST)
-Message-ID: <e0252f7d378e8de5cadea28ad3c4765a541c2c69.camel@zoho.com.cn>
-Subject: Re: [PATCH 3/3] ext2: Strengthen xattr block checks
-From:   "cgxu519@zoho.com.cn" <cgxu519@zoho.com.cn>
-Reply-To: cgxu519@zoho.com.cn
-To:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
-Date:   Thu, 16 May 2019 09:16:06 +0800
-In-Reply-To: <20190515140144.1183-4-jack@suse.cz>
-References: <20190515140144.1183-1-jack@suse.cz>
-         <20190515140144.1183-4-jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        id S1726259AbfEPC4v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 May 2019 22:56:51 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36638 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726084AbfEPC4u (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 May 2019 22:56:50 -0400
+Received: from callcc.thunk.org (168-215-239-3.static.ctl.one [168.215.239.3] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4G2udBn009305
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 May 2019 22:56:42 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 1F19C420024; Wed, 15 May 2019 22:56:39 -0400 (EDT)
+Date:   Wed, 15 May 2019 22:56:39 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Arthur Marsh <arthur.marsh@internode.on.net>
+Cc:     Richard Weinberger <richard.weinberger@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org
+Subject: Re: ext3/ext4 filesystem corruption under post 5.1.0 kernels
+Message-ID: <20190516025639.GC5394@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        Arthur Marsh <arthur.marsh@internode.on.net>,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org
+References: <48BA4A6E-5E2A-478E-A96E-A31FA959964C@internode.on.net>
+ <CAFLxGvwnKKHOnM2w8i9hn7LTVYKh5PQP2zYMBmma2k9z7HBpzw@mail.gmail.com>
+ <20190511220659.GB8507@mit.edu>
+ <09D87554-6795-4AEA-B8D0-FEBCB45673A9@internode.on.net>
+ <850EDDE2-5B82-4354-AF1C-A2D0B8571093@internode.on.net>
+ <17C30FA3-1AB3-4DAD-9B86-9FA9088F11C9@internode.on.net>
+ <20190515045717.GB5394@mit.edu>
+ <C24BBE18-1665-4343-9C98-5AF64BACDCA3@internode.on.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C24BBE18-1665-4343-9C98-5AF64BACDCA3@internode.on.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2019-05-15 at 16:01 +0200, Jan Kara wrote:
-> Check every entry in xattr block for validity in ext2_xattr_set() to
-> detect on disk corruption early. Also since e_value_block field in xattr
-> entry is never != 0 in a valid filesystem, just remove checks for it
-> once we have established entries are valid.
+On Wed, May 15, 2019 at 09:42:11PM +0930, Arthur Marsh wrote:
+> I have built kernels with the attached patch applied and run git gc
+> on the patched kernels (both the 32 bit kernel on the Pentium-D and
+> the 64 bit kernel on the Athlon II X4 640).
 > 
-> Signed-off-by: Jan Kara <jack@suse.cz>
-
-Could we do the entry check in the loop of get/list operation too?
-
-Thanks,
-Chengguang
-
-> ---
->  fs/ext2/xattr.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
+> There were a couple of warnings from other processes being blocked
+> while the git gc was taking place but no filesystem corruption
+> detected. (I ran forced fsck checks on the root filesystems after
+> the git gc runs to check for corruption).
 > 
-> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-> index 26a049ca89fb..04a4148d04b3 100644
-> --- a/fs/ext2/xattr.c
-> +++ b/fs/ext2/xattr.c
-> @@ -442,7 +442,9 @@ ext2_xattr_set(struct inode *inode, int name_index, const
-> char *name,
->  			struct ext2_xattr_entry *next = EXT2_XATTR_NEXT(last);
->  			if ((char *)next >= end)
->  				goto bad_block;
-> -			if (!last->e_value_block && last->e_value_size) {
-> +			if (!ext2_xattr_entry_valid(last, sb->s_blocksize))
-> +				goto bad_block;
-> +			if (last->e_value_size) {
->  				size_t offs = le16_to_cpu(last->e_value_offs);
->  				if (offs < min_offs)
->  					min_offs = offs;
-> @@ -482,12 +484,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const
-> char *name,
->  		error = -EEXIST;
->  		if (flags & XATTR_CREATE)
->  			goto cleanup;
-> -		if (!here->e_value_block && here->e_value_size) {
-> -			if (!ext2_xattr_entry_valid(here, sb->s_blocksize))
-> -				goto bad_block;
-> -			free += EXT2_XATTR_SIZE(
-> -					le32_to_cpu(here->e_value_size));
-> -		}
-> +		free += EXT2_XATTR_SIZE(le32_to_cpu(here->e_value_size));
->  		free += EXT2_XATTR_LEN(name_len);
->  	}
->  	error = -ENOSPC;
-> @@ -552,7 +549,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const
-> char *name,
->  		here->e_name_len = name_len;
->  		memcpy(here->e_name, name, name_len);
->  	} else {
-> -		if (!here->e_value_block && here->e_value_size) {
-> +		if (here->e_value_size) {
->  			char *first_val = (char *)header + min_offs;
->  			size_t offs = le16_to_cpu(here->e_value_offs);
->  			char *val = (char *)header + offs;
-> @@ -579,7 +576,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const
-> char *name,
->  			last = ENTRY(header+1);
->  			while (!IS_LAST_ENTRY(last)) {
->  				size_t o = le16_to_cpu(last->e_value_offs);
-> -				if (!last->e_value_block && o < offs)
-> +				if (o < offs)
->  					last->e_value_offs =
->  						cpu_to_le16(o + size);
->  				last = EXT2_XATTR_NEXT(last);
+> Thanks for the patch!
 
+Thanks for the bug report!  My apologies for the inconvenience; I'm
+going to take a look at improving my regression test configurations so
+I would have noticed this earlier.
 
+Cheers,
 
+						- Ted
