@@ -2,99 +2,169 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 437A120DC8
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 19:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01BC20FC8
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 22:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbfEPRSQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 May 2019 13:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49176 "EHLO mail.kernel.org"
+        id S1727509AbfEPUzc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 May 2019 16:55:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:57142 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726943AbfEPRSP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 May 2019 13:18:15 -0400
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DACE420848;
-        Thu, 16 May 2019 17:18:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558027095;
-        bh=E6FuDq4ZEhJ0whJY8iLzeoTQeoYTjcI9Scr+CE+5PMo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R5U5A1TZYsPm7jp+A9fLeBth7dePmY2mA40hZ4p6q6oDxDJTwTnGsRzVs576dITkh
-         rjxxCCKyG24WKVqpDLdj/MY5iN+MhlTTWmAoGs1UBGETekVWIdg0KNg0PxLJB/uuEw
-         I9Z7+5eKrY8YxjPxOsfoLMZd3SGUKOcbcM6u0uJ4=
-Received: by mail-vs1-f48.google.com with SMTP id j184so2797796vsd.11;
-        Thu, 16 May 2019 10:18:14 -0700 (PDT)
-X-Gm-Message-State: APjAAAWOAPLHPc7BKAAHai+IWzG0wRGA3miI0+pMr0ttIAlHzi+tIV1N
-        tB70iYchrkB0Jmyr0y3JGDhvKW+C75ZwMqz15rA=
-X-Google-Smtp-Source: APXvYqz1RV8s1QJ3CVTGiY2RhVMONNipWOC3z/MEM9S1fmxq3V7rI1IhNzndXEnr4ydOdL4gyK/A2svcT0QbNYoqQw8=
-X-Received: by 2002:a67:f34d:: with SMTP id p13mr22894146vsm.95.1558027094032;
- Thu, 16 May 2019 10:18:14 -0700 (PDT)
+        id S1726785AbfEPUzc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 16 May 2019 16:55:32 -0400
+X-Amp-Result: UNSCANNABLE
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 May 2019 13:55:31 -0700
+X-ExtLoop1: 1
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga005.fm.intel.com with ESMTP; 16 May 2019 13:55:31 -0700
+Date:   Thu, 16 May 2019 13:56:15 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Cc:     Dan Williams <dan.j.williams@intel.com>
+Subject: Can ext4_break_layouts() ever fail?
+Message-ID: <20190516205615.GA2926@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-References: <20190515150221.16647-1-fdmanana@kernel.org> <20190516092848.GA6975@mit.edu>
- <CAL3q7H7q5Xphhax3qPdt1fnjaWrekMgMKzKfDyOLm+bbgsw6Aw@mail.gmail.com> <20190516165921.GA4023@mit.edu>
-In-Reply-To: <20190516165921.GA4023@mit.edu>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 16 May 2019 18:18:02 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6gvdhSweJH1W7dbvOtwu8RmzbMRMb9MsSv0D8g+Cm40g@mail.gmail.com>
-Message-ID: <CAL3q7H6gvdhSweJH1W7dbvOtwu8RmzbMRMb9MsSv0D8g+Cm40g@mail.gmail.com>
-Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 16, 2019 at 5:59 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Thu, May 16, 2019 at 10:54:57AM +0100, Filipe Manana wrote:
-> >
-> > Haven't tried ext4 with 1 process only (instead of 4), but I can try
-> > to see if it happens without concurrency as well.
->
-> How many CPU's and how much memory were you using?  And I assume this
-> was using KVM/QEMU?  How was it configured?
 
-Yep, kvm and qemu (3.0.0). The qemu config:
+While testing truncate failure options for FS DAX with GUP pins; I discovered
+that if ext4_break_layouts() returns an error it can result in orphan'ed inodes
+being left on the orphan list resulting in the following error when the FS is
+unmounted.
 
-https://pastebin.com/KNigeXXq
+        EXT4-fs (pmem0): Inode 12 (00000000d274c438): orphan list check failed!
+        00000000d274c438: 0001f30a 00000004 00000000 00000000 ................
+        000000001fa30de6: 0000000a 00008600 00000000 00000000 ................
+        000000003948cb2f: 00000000 00000000 00000000 00000000 ................
 
-TEST_DEV is the drive with ID "drive1" and SCRATCH_DEV is the drive
-with ID "drive2".
+        [snip]
 
-The host has:
+        000000009acf82ac: 00000003 00000003 00000000 00000000 ................
+        00000000d0cb8f52: 00000000 00000000 00000000 00000000 ................
+        000000001edc0c35: bf718fee 00000000 ..q.....
+        CPU: 5 PID: 1806 Comm: umount Not tainted 5.1.0-rc2+ #56
+        Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20180724_192412-buildhw-07.phx2.fedoraproject.org-1.fc29 04/01/4
+        Call Trace:
+         dump_stack+0x5c/0x80
+         ext4_destroy_inode+0x86/0x90
+         dispose_list+0x48/0x60
+         evict_inodes+0x160/0x1b0
+         generic_shutdown_super+0x3f/0x100
+         kill_block_super+0x21/0x50
+         deactivate_locked_super+0x34/0x70
+         cleanup_mnt+0x3b/0x70
+         task_work_run+0x8a/0xb0
+         exit_to_usermode_loop+0xb9/0xc0
+         do_syscall_64+0x153/0x180
+         entry_SYSCALL_64_after_hwframe+0x44/0xa9
+        RIP: 0033:0x7fc5ed56f6bb
+        Code: 27 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 008
+        RSP: 002b:00007ffd524be128 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+        RAX: 0000000000000000 RBX: 000055867f9b2fb0 RCX: 00007fc5ed56f6bb
+        RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055867f9b3190
+        RBP: 0000000000000000 R08: 000055867f9b31b0 R09: 00007fc5ed5f1e80
+        R10: 0000000000000000 R11: 0000000000000246 R12: 000055867f9b3190
+        R13: 00007fc5ed7261a4 R14: 0000000000000000 R15: 00007ffd524be398
+        EXT4-fs (pmem0): sb orphan head is 12
+        sb_info orphan list:
+          inode pmem0:12 at 00000000120c1727: mode 100644, nlink 1, next 0
 
-Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz
-64Gb of ram
-crappy seagate hdd:
+Followed by this panic:
 
-Device Model:     ST3000DM008-2DM166
-Serial Number:    Z5053T2R
-LU WWN Device Id: 5 000c50 0a46f7ecb
-Firmware Version: CC26
-User Capacity:    3,000,592,982,016 bytes [3,00 TB]
-Sector Sizes:     512 bytes logical, 4096 bytes physical
-Rotation Rate:    7200 rpm
-Form Factor:      3.5 inches
-Device is:        Not in smartctl database [for details use: -P showall]
-ATA Version is:   ACS-2, ACS-3 T13/2161-D revision 3b
-SATA Version is:  SATA 3.1, 6.0 Gb/s (current: 6.0 Gb/s)
+        ------------[ cut here ]------------
+        kernel BUG at fs/ext4/super.c:1022!
+        invalid opcode: 0000 [#1] SMP PTI
+        CPU: 5 PID: 1806 Comm: umount Not tainted 5.1.0-rc2+ #56
+        Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20180724_192412-buildhw-07.phx2.fedoraproject.org-1.fc29 04/01/4
+        RIP: 0010:ext4_put_super+0x369/0x370
+        Code: 24 d0 03 00 00 48 8b 40 68 83 60 60 fb 0f b7 83 a0 00 00 00 66 41 89 46 3a 41 f6 44 24 50 01 0f 85 71 fd ff ff e9 5f fd8
+        RSP: 0018:ffffc900029cfe68 EFLAGS: 00010206
+        RAX: ffff888000691dd0 RBX: ffff88800e78f800 RCX: 0000000000000000
+        RDX: 0000000000000000 RSI: ffff88800fc96838 RDI: ffff88800fc96838
+        RBP: ffff88800e78f9f8 R08: 0000000000000603 R09: 0000000000aaaaaa
+        R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800e78e800
+        R13: ffff88800e78f9f8 R14: ffffffff820b3a50 R15: ffff888016521f70
+        FS:  00007fc5ed3b8080(0000) GS:ffff88800fc80000(0000) knlGS:0000000000000000
+        CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+        CR2: 00007f55f82181a0 CR3: 0000000015e9a000 CR4: 00000000000006e0
+        Call Trace:
+         generic_shutdown_super+0x6c/0x100
+         kill_block_super+0x21/0x50
+         deactivate_locked_super+0x34/0x70
+         cleanup_mnt+0x3b/0x70
+         task_work_run+0x8a/0xb0
+         exit_to_usermode_loop+0xb9/0xc0
+         do_syscall_64+0x153/0x180
+         entry_SYSCALL_64_after_hwframe+0x44/0xa9
+        RIP: 0033:0x7fc5ed56f6bb
+        Code: 27 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 008
+        RSP: 002b:00007ffd524be128 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+        RAX: 0000000000000000 RBX: 000055867f9b2fb0 RCX: 00007fc5ed56f6bb
+        RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055867f9b3190
+        RBP: 0000000000000000 R08: 000055867f9b31b0 R09: 00007fc5ed5f1e80
+        R10: 0000000000000000 R11: 0000000000000246 R12: 000055867f9b3190
+        R13: 00007fc5ed7261a4 R14: 0000000000000000 R15: 00007ffd524be398
+        Modules linked in: xfs libcrc32c ib_isert iscsi_target_mod rpcrdma ib_iser libiscsi scsi_transport_iscsi ib_srpt target_core_c
+        ---[ end trace c300122aad5fcd86 ]---
+        RIP: 0010:ext4_put_super+0x369/0x370
+        Code: 24 d0 03 00 00 48 8b 40 68 83 60 60 fb 0f b7 83 a0 00 00 00 66 41 89 46 3a 41 f6 44 24 50 01 0f 85 71 fd ff ff e9 5f fd8
+        RSP: 0018:ffffc900029cfe68 EFLAGS: 00010206
+        RAX: ffff888000691dd0 RBX: ffff88800e78f800 RCX: 0000000000000000
+        RDX: 0000000000000000 RSI: ffff88800fc96838 RDI: ffff88800fc96838
+        RBP: ffff88800e78f9f8 R08: 0000000000000603 R09: 0000000000aaaaaa
+        R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800e78e800
+        R13: ffff88800e78f9f8 R14: ffffffff820b3a50 R15: ffff888016521f70
+        FS:  00007fc5ed3b8080(0000) GS:ffff88800fc80000(0000) knlGS:0000000000000000
+        CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+        CR2: 00007f55f82181a0 CR3: 0000000015e9a000 CR4: 00000000000006e0
+        Kernel panic - not syncing: Fatal exception
+        Kernel Offset: disabled
+        ---[ end Kernel panic - not syncing: Fatal exception ]---
+        ------------[ cut here ]------------
 
-It hosts 3 qemu instances, all with the same configuration.
+I kind of worked around this by removing the orphan inode from the orphan list
+if ext4_break_layouts() fails.[1]  But I don't think this unwinds everything
+properly.
 
-I left the test running earlier today for about 1 hour on ext4 with
-only 1 fsstress process. Didn't manage to reproduce.
-With 4 or more processes, those journal checksum failures happen sporadically.
-I can leave it running with 1 process during this evening and see what
-we get here, if it happens with 1 process, it should be trivial to
-reproduce anywhere.
+Failing the truncate for GUP'ed pages could be done outside of
+ext4_break_layouts() so it is not absolutely necessary that it return an error.
 
->
-> Thanks,
->
->                                         - Ted
+But this begs the question can ext4_break_layouts() fail?
+
+It looks to me like it is possible for ext4_break_layouts() to fail if
+prepare_to_wait_event() sees a pending signal.  Therefore I think this is a bug
+in ext4 regardless of how I may implement a truncate failure.
+
+Is that true?
+Ira
+
+
+
+[1] as shown here.
+
+---
+ fs/ext4/inode.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 41eb643d75ff..134f5eebee4a 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -5648,6 +5648,8 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
+                if (rc) {  
+                        up_write(&EXT4_I(inode)->i_mmap_sem);
+                        error = rc;
++                       if (orphan)
++                               ext4_orphan_del(NULL, inode);
+                        goto err_out;
+                }
+
+
