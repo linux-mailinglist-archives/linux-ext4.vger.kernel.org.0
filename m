@@ -2,127 +2,214 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 941B221135
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2019 02:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157DE2129D
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2019 05:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbfEQATM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 May 2019 20:19:12 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:46616 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726241AbfEQATL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 May 2019 20:19:11 -0400
-Received: by mail-pg1-f196.google.com with SMTP id t187so2340129pgb.13
-        for <linux-ext4@vger.kernel.org>; Thu, 16 May 2019 17:19:11 -0700 (PDT)
+        id S1727313AbfEQDm5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 May 2019 23:42:57 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:34998 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726757AbfEQDm5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 May 2019 23:42:57 -0400
+Received: by mail-pl1-f194.google.com with SMTP id g5so2670681plt.2;
+        Thu, 16 May 2019 20:42:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=grI6nIUF/mMOBdv6LrPvHsdNVES0yai/LfFYIZ4bkWY=;
-        b=trB5X+v2CFHJR5/h5Ogo8pnGEbixSq/5SbMCfW0BvmcDG2zeRdzxHL4lknPMI8JsaG
-         91o9aNowjUtiTckfyBLWY/pZJBmRERl33EcI9dq0zR0lXd+XHl45wImJtwD6qTmBiD3C
-         YvIdILOfNr02D208IUOgX7xjB1B80gLQERVK/akSkqvFqS79gmXpU/duephS4OxkvMCj
-         iFkaZbcWb+04sJYfOvlYsPNWM7LK/oP8HkDOryS8f1XdKVoMLZUlQ8YVZMbBQiMDnraB
-         fYXacmGWn0btEdYeftIv0rPSsHpeCBXpkkAwnfL+k2zqdhfQJ6WS6TGQ7DeGxI98ZyT1
-         d5aw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5iP545AgQCgaGGAv0oOLLIrrv4tC3nnx8nSFIGlTWXk=;
+        b=Fq0PZU4o2CRakOX8822+7+/EctNpG/LAHIOcrh9ww5a/PoAUi7EMlYp/z7fAydyZgl
+         KRRvALvJMWjWMXlHVR2/kwWB5Mi88GZcvfgf04ZdQqdHRaxSLVzBcKkOHUmav0GAWL44
+         EGi2ceQPQUxy6YrNqdHm7P2Sevly+hSVTUDTr7T37IN023VsRzjXHiCPEAvLwamH2cNM
+         tt6Otobz1UizKheYEXUhJ0dMSShrd/X47bOGWhULc4LrNpQAIUNJsm2S/Wcy3a2nYMVZ
+         UBZt5lCH/Lo1r8zNgQDHy5OEmdYyQ4V+pEqOZYDGrxOEwq9/cAMvaJljU2qMT0mwaKQ8
+         QaWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=grI6nIUF/mMOBdv6LrPvHsdNVES0yai/LfFYIZ4bkWY=;
-        b=mW5C8xL4kEYP70AhMNeDzTo+pJcTnUh0zCN4OjKzwe3vFGXaReF/xeDFxeaMXULYHI
-         ZyvahDMvg2wNDj2OtYWeCTorMOZUXyMTCvDdDNaHDek8sIWGuaadmTTon7zDiXmYhc0+
-         iVSLhclz1UNux4r6/vivIGIYegQYmuiGAwzfMjli7j0rqYkAI9UnBL44nrUj5OeRC/Q/
-         Wg89UWb3MDDRVY8u0FFP7nVYXOAbPXOVNC7q9WQtEHcBRX7RzjKqvzwr1D53CxeR/BlY
-         p5ymJj2/i3o0LzxWLlCdgM9lBirpSfYGtDc5U/fl0mPnWF4zphMmglj9YGSqm3JPwsdV
-         k78A==
-X-Gm-Message-State: APjAAAV9EDQ16w/qA8vo/lA5Wm6mdHv2WMuLBiaFjxWXiulun14udppy
-        CzKPUjxTuKajMncw5r8Nrn59ew==
-X-Google-Smtp-Source: APXvYqyv1iVBQbL6jyOdYGu6UtPQiwVBUuqofcSXUoK/ck1DMyLzSDgzGJaT2Ro5WErOmsiHR9V/gQ==
-X-Received: by 2002:a63:d816:: with SMTP id b22mr52619479pgh.16.1558051959951;
-        Thu, 16 May 2019 17:12:39 -0700 (PDT)
-Received: from jstaron2.mtv.corp.google.com ([2620:15c:202:201:b94f:2527:c39f:ca2d])
-        by smtp.gmail.com with ESMTPSA id a6sm7245768pgd.67.2019.05.16.17.12.37
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 May 2019 17:12:39 -0700 (PDT)
-Subject: Re: [PATCH v9 2/7] virtio-pmem: Add virtio pmem driver
-To:     Pankaj Gupta <pagupta@redhat.com>, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        qemu-devel@nongnu.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Cc:     dan.j.williams@intel.com, zwisler@kernel.org,
-        vishal.l.verma@intel.com, dave.jiang@intel.com, mst@redhat.com,
-        jasowang@redhat.com, willy@infradead.org, rjw@rjwysocki.net,
-        hch@infradead.org, lenb@kernel.org, jack@suse.cz, tytso@mit.edu,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com,
-        lcapitulino@redhat.com, kwolf@redhat.com, imammedo@redhat.com,
-        jmoyer@redhat.com, nilal@redhat.com, riel@surriel.com,
-        stefanha@redhat.com, aarcange@redhat.com, david@redhat.com,
-        david@fromorbit.com, cohuck@redhat.com,
-        xiaoguangrong.eric@gmail.com, pbonzini@redhat.com,
-        kilobyte@angband.pl, yuval.shaia@oracle.com, smbarber@google.com
-References: <20190514145422.16923-1-pagupta@redhat.com>
- <20190514145422.16923-3-pagupta@redhat.com>
-From:   =?UTF-8?Q?Jakub_Staro=c5=84?= <jstaron@google.com>
-Message-ID: <c06514fd-8675-ba74-4b7b-ff0eb4a91605@google.com>
-Date:   Thu, 16 May 2019 17:12:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5iP545AgQCgaGGAv0oOLLIrrv4tC3nnx8nSFIGlTWXk=;
+        b=Lc1Y139e100n6jQQP+8D84oHq2IGLMq6qNJDukynSbQJNJifluGXcAO6qGKsp1MERF
+         cP423xrqI5aP2R6ZrYyzvhReFfV6QMTUtpWyt8UHNQjWUoKpZFdb4LITYtCCsNMr5gGz
+         P/hsOdPSUv46x89zKl2QJoKpMOVant3r9FaJsY2SwKQ4TNlIEPJQPEYE3T13QcdegcQT
+         2Q8776Phuyg+7Zxsw2tCNpRB9plBRyk7DtcO1KP8OcB7KbRwy1IZfIfOfZQIUQtje5WY
+         h/UlvXGUc+NoroTAskrtdv4hfVEClVNktW+y3jSwyPnyVWz3Lhz2m6nKWxyzeukWGwcX
+         C4PA==
+X-Gm-Message-State: APjAAAUTo2T/BAA0z6DoxbOlTdBXz/ufA1Aqpkog5Vycnnfe3S9+ff/n
+        b9mUqYzqtUyoMkDkls/Llgw/qOsVrUs=
+X-Google-Smtp-Source: APXvYqwGO/piSeywYWH0CuWYFTmSqmwZJmVdog8uCpID9Enm3pb7XeWq3gJ+4/uiV0nlQKlj4Ah1DA==
+X-Received: by 2002:a17:902:8609:: with SMTP id f9mr52252009plo.32.1558064576099;
+        Thu, 16 May 2019 20:42:56 -0700 (PDT)
+Received: from localhost ([128.199.137.77])
+        by smtp.gmail.com with ESMTPSA id a7sm12685883pgj.42.2019.05.16.20.42.54
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 16 May 2019 20:42:55 -0700 (PDT)
+Date:   Fri, 17 May 2019 11:42:49 +0800
+From:   Eryu Guan <guaneryu@gmail.com>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jack@suse.cz,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
+Message-ID: <20190517034249.GM15846@desktop>
+References: <20190515150221.16647-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20190514145422.16923-3-pagupta@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190515150221.16647-1-fdmanana@kernel.org>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 5/14/19 7:54 AM, Pankaj Gupta wrote:
-> +		if (!list_empty(&vpmem->req_list)) {
-> +			req_buf = list_first_entry(&vpmem->req_list,
-> +					struct virtio_pmem_request, list);
-> +			req_buf->wq_buf_avail = true;
-> +			wake_up(&req_buf->wq_buf);
-> +			list_del(&req_buf->list);
-Yes, this change is the right one, thank you!
+On Wed, May 15, 2019 at 04:02:21PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Run fsstress, fsync every file and directory, simulate a power failure and
+> then verify the all files and directories exist, with the same data and
+> metadata they had before the power failure.
+> 
+> This tes has found already 2 bugs in btrfs, that caused mtime and ctime of
+> directories not being preserved after replaying the log/journal and loss
+> of a directory's attributes (such a UID and GID) after replaying the log.
+> The patches that fix the btrfs issues are titled:
+> 
+>   "Btrfs: fix wrong ctime and mtime of a directory after log replay"
+>   "Btrfs: fix fsync not persisting changed attributes of a directory"
+> 
+> Running this test 1000 times:
+> 
+> - on xfs, no issues were found
+> 
+> - on ext4 it has resulted in about a dozen journal checksum errors (on a
+>   5.0 kernel) that resulted in failure to mount the filesystem after the
+>   simulated power failure with dmflakey, which produces the following
+>   error in dmesg/syslog:
+> 
+>     [Mon May 13 12:51:37 2019] JBD2: journal checksum error
+>     [Mon May 13 12:51:37 2019] EXT4-fs (dm-0): error loading journal
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  tests/generic/547     | 72 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/547.out |  2 ++
+>  tests/generic/group   |  1 +
+>  3 files changed, 75 insertions(+)
+>  create mode 100755 tests/generic/547
+>  create mode 100644 tests/generic/547.out
+> 
+> diff --git a/tests/generic/547 b/tests/generic/547
+> new file mode 100755
+> index 00000000..577b0e9b
+> --- /dev/null
+> +++ b/tests/generic/547
+> @@ -0,0 +1,72 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test No. 547
+> +#
+> +# Run fsstress, fsync every file and directory, simulate a power failure and
+> +# then verify the all files and directories exist, with the same data and
+> +# metadata they had before the power failure.
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +	_cleanup_flakey
+> +	cd /
+> +	rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +. ./common/dmflakey
+> +
+> +# real QA test starts here
+> +_supported_fs generic
+> +_supported_os Linux
+> +_require_scratch
 
-> +	 /*
-> +	  * If virtqueue_add_sgs returns -ENOSPC then req_vq virtual
-> +	  * queue does not have free descriptor. We add the request
-> +	  * to req_list and wait for host_ack to wake us up when free
-> +	  * slots are available.
-> +	  */
-> +	while ((err = virtqueue_add_sgs(vpmem->req_vq, sgs, 1, 1, req,
-> +					GFP_ATOMIC)) == -ENOSPC) {
-> +
-> +		dev_err(&vdev->dev, "failed to send command to virtio pmem" \
-> +			"device, no free slots in the virtqueue\n");
-> +		req->wq_buf_avail = false;
-> +		list_add_tail(&req->list, &vpmem->req_list);
-> +		spin_unlock_irqrestore(&vpmem->pmem_lock, flags);
-> +
-> +		/* A host response results in "host_ack" getting called */
-> +		wait_event(req->wq_buf, req->wq_buf_avail);
-> +		spin_lock_irqsave(&vpmem->pmem_lock, flags);
-> +	}
-> +	err1 = virtqueue_kick(vpmem->req_vq);
-> +	spin_unlock_irqrestore(&vpmem->pmem_lock, flags);
-> +
-> +	/*
-> +	 * virtqueue_add_sgs failed with error different than -ENOSPC, we can't
-> +	 * do anything about that.
-> +	 */
-> +	if (err || !err1) {
-> +		dev_info(&vdev->dev, "failed to send command to virtio pmem device\n");
-> +		err = -EIO;
-> +	} else {
-> +		/* A host repsonse results in "host_ack" getting called */
-> +		wait_event(req->host_acked, req->done);
-> +		err = req->ret;
-> +I confirm that the failures I was facing with the `-ENOSPC` error path are not present in v9.
+As we save fssum file to $TEST_DIR, it'd be better to _require_test too.
 
-Best,
-Jakub Staron
+> +_require_fssum
+> +_require_dm_target flakey
+> +
+> +rm -f $seqres.full
+> +
+> +fssum_files_dir=$TEST_DIR/generic-test-$seq
+> +rm -fr $fssum_files_dir
+> +mkdir $fssum_files_dir
+> +
+> +_scratch_mkfs >>$seqres.full 2>&1
+> +_require_metadata_journaling $SCRATCH_DEV
+> +_init_flakey
+> +_mount_flakey
+> +
+> +mkdir $SCRATCH_MNT/test
+> +args=`_scale_fsstress_args -p 4 -n 100 $FSSTRESS_AVOID -d $SCRATCH_MNT/test`
+> +args="$args -f mknod=0 -f symlink=0"
+> +echo "Running fsstress with arguments: $args" >>$seqres.full
+> +$FSSTRESS_PROG $args >>$seqres.full
+> +
+> +# Fsync every file and directory.
+> +find $SCRATCH_MNT/test -type f,d -exec $XFS_IO_PROG -c "fsync" {} \;
+
+My 'find' on Fedora 29 vm (find (GNU findutils) 4.6.0) doesn't support
+"-type f,d" syntax
+
+find: Arguments to -type should contain only one letter
+
+I have to change this to
+
+find $SCRATCH_MNT/test \( -type f -o -type d \) -exec $XFS_IO_PROG -c "fsync" {} \;
+
+Otherwise looks good to me, thanks!
+
+Eryu
+
+> +# Compute a digest of the filesystem (using the test directory only, to skip
+> +# fs specific directories such as "lost+found" on ext4 for example).
+> +$FSSUM_PROG -A -f -w $fssum_files_dir/fs_digest $SCRATCH_MNT/test
+> +
+> +# Simulate a power failure and mount the filesystem to check that all files and
+> +# directories exist and have all data and metadata preserved.
+> +_flakey_drop_and_remount
+> +
+> +# Compute a new digest and compare it to the one we created previously, they
+> +# must match.
+> +$FSSUM_PROG -r $fssum_files_dir/fs_digest $SCRATCH_MNT/test
+> +
+> +_unmount_flakey
+> +
+> +status=0
+> +exit
+> diff --git a/tests/generic/547.out b/tests/generic/547.out
+> new file mode 100644
+> index 00000000..0f6f1131
+> --- /dev/null
+> +++ b/tests/generic/547.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 547
+> +OK
+> diff --git a/tests/generic/group b/tests/generic/group
+> index 47e81d96..49639fc9 100644
+> --- a/tests/generic/group
+> +++ b/tests/generic/group
+> @@ -549,3 +549,4 @@
+>  544 auto quick clone
+>  545 auto quick cap
+>  546 auto quick clone enospc log
+> +547 auto quick log
+> -- 
+> 2.11.0
+> 
