@@ -2,114 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB2622061
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2019 00:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D5C2209A
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2019 01:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbfEQWhI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 May 2019 18:37:08 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:38982 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728179AbfEQWhI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 17 May 2019 18:37:08 -0400
-X-Greylist: delayed 1255 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 May 2019 18:37:06 EDT
-Received: from [4.30.142.84] (helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hRl91-000BD0-LI; Fri, 17 May 2019 18:16:03 -0400
-To:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     axboe@kernel.dk, paolo.valente@linaro.org, jack@suse.cz,
-        jmoyer@redhat.com, tytso@mit.edu, amakhalov@vmware.com,
-        anishs@vmware.com, srivatsab@vmware.com,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: CFQ idling kills I/O performance on ext4 with blkio cgroup controller
-Message-ID: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
-Date:   Fri, 17 May 2019 15:16:01 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
+        id S1727544AbfEQXAE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 May 2019 19:00:04 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41812 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726519AbfEQXAE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 May 2019 19:00:04 -0400
+Received: from callcc.thunk.org (75-104-86-155.mobility.exede.net [75.104.86.155] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4HMxgTC030420
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 May 2019 18:59:50 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 68209420027; Fri, 17 May 2019 18:59:40 -0400 (EDT)
+Date:   Fri, 17 May 2019 18:59:40 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     ZhangXiaoxu <zhangxiaoxu5@huawei.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: Fix entry corruption when disk online and offline
+ frequently
+Message-ID: <20190517225940.GC21961@mit.edu>
+References: <1557807817-121893-1-git-send-email-zhangxiaoxu5@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1557807817-121893-1-git-send-email-zhangxiaoxu5@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue, May 14, 2019 at 12:23:37PM +0800, ZhangXiaoxu wrote:
+> I got some errors when I repair an ext4 volume which stacked by an
+> iscsi target:
+>     Entry 'test60' in / (2) has deleted/unused inode 73750.  Clear?
+> It can be reproduced when the network not good enough.
+> 
+> When I debug this I found ext4 will read entry buffer from disk and
+> the buffer is marked with write_io_error.
+> 
+> If the buffer is marked with write_io_error, it means it already
+> wroten to journal, and not checked out to disk. IOW, the journal
+> is newer than the data in disk.
+> If this journal record 'delete test60', it means the 'test60' still
+> on the disk metadata.
+> 
+> In this case, if we read the buffer from disk successfully and create
+> file continue, the new journal record will overwrite the journal
+> which record 'delete test60', then the entry corruptioned.
+> 
+> So, use the buffer rather than read from disk if the buffer marked
+> with write_io_error
 
-Hi,
+You've raised a number of issues about how we handle write errors,
+especially when they occur due to a flaky transport --- in your case,
+due to iSCSI.  As such, your patch isn't wrong, so much as it is
+incomplete.
 
-One of my colleagues noticed upto 10x - 30x drop in I/O throughput
-running the following command, with the CFQ I/O scheduler:
+For example, your assumption that if the buffer is marked
+write_io_error, it's safe to clear write_io_error and reset
+buffer_uptodate assumes that journalling is enabled.  If the file
+system does not have the journal, there is no journal to fall back
+upon.  For file systems which do have a journal, if you are using a
+flaky iSCSI transport, there is no protection from write errors which
+occur when the journal is replayed.  (fs/jbd2/recovery.c simply marks
+the buffer dirty and allows the writeback code take care of writing
+the buffer.)  This means that the buffer could have write_io_error set
+due to a failure to write the buffer during recovery, in which case
+relying on the journal having a uptodate copy block is invalid.
 
-dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflags=dsync
+Also, this patch only patches the ex4_bread() path, which is only used
+by directories.  It doesn't deal with metadata reads for allocation
+bitmaps or extent tree blocks.  We are doing this hack for inode table
+blocks, already; perhaps you got the idea to do this for ext4_bread()
+from __ext4_get_inode_loc()?
 
-Throughput with CFQ: 60 KB/s
-Throughput with noop or deadline: 1.5 MB/s - 2 MB/s
+We could add some kind of callback from the buffer cache layer when an
+aysnchronous writeback fails --- or we could use a synchronous write
+in the journal recovery code (which would be bad from a performance
+perspective, but ignore that for the moment) --- however, what do we
+do when we discover that there is an error?  Right now, we do nothing
+until we try to read the inode table block (and after your patch,
+reading a directory block).  Under memory pressure, though, the data
+will get lost and we don't even mark the file system as needing to be
+checked.  We could retry the write, but if it's due to a flaky iSCSI
+or FC transport, this write could fail yet again --- and then what?
 
-I spent some time looking into it and found that this is caused by the
-undesirable interaction between 4 different components:
+So while I could apply this patch, since it doesn't make things worse,
+I want to make sure you are aware that if you have problems with your
+iSCSI device, this patch is far from a complete solution.  At the very
+least, we should handle reads for other metadata block.  
 
-- blkio cgroup controller enabled
-- ext4 with the jbd2 kthread running in the root blkio cgroup
-- dd running on ext4, in any other blkio cgroup than that of jbd2
-- CFQ I/O scheduler with defaults for slice_idle and group_idle
-
-
-When docker is enabled, systemd creates a blkio cgroup called
-system.slice to run system services (and docker) under it, and a
-separate blkio cgroup called user.slice for user processes. So, when
-dd is invoked, it runs under user.slice.
-
-The dd command above includes the dsync flag, which performs an
-fdatasync after every write to the output file. Since dd is writing to
-a file on ext4, jbd2 will be active, committing transactions
-corresponding to those fdatasync requests from dd. (In other words, dd
-depends on jdb2, in order to make forward progress). But jdb2 being a
-kernel thread, runs in the root blkio cgroup, as opposed to dd, which
-runs under user.slice.
-
-Now, if the I/O scheduler in use for the underlying block device is
-CFQ, then its inter-queue/inter-group idling takes effect (via the
-slice_idle and group_idle parameters, both of which default to 8ms).
-Therefore, everytime CFQ switches between processing requests from dd
-vs jbd2, this 8ms idle time is injected, which slows down the overall
-throughput tremendously!
-
-To verify this theory, I tried various experiments, and in all cases,
-the 4 pre-conditions mentioned above were necessary to reproduce this
-performance drop. For example, if I used an XFS filesystem (which
-doesn't use a separate kthread like jbd2 for journaling), or if I dd'ed
-directly to a block device, I couldn't reproduce the performance
-issue. Similarly, running dd in the root blkio cgroup (where jbd2
-runs) also gets full performance; as does using the noop or deadline
-I/O schedulers; or even CFQ itself, with slice_idle and group_idle set
-to zero.
-
-These results were reproduced on a Linux VM (kernel v4.19) on ESXi,
-both with virtualized storage as well as with disk pass-through,
-backed by a rotational hard disk in both cases. The same problem was
-also seen with the BFQ I/O scheduler in kernel v5.1.
-
-Searching for any earlier discussions of this problem, I found an old
-thread on LKML that encountered this behavior [1], as well as a docker
-github issue [2] with similar symptoms (mentioned later in the
-thread).
-
-So, I'm curious to know if this is a well-understood problem and if
-anybody has any thoughts on how to fix it.
-
-Thank you very much!
-
-
-[1]. https://lkml.org/lkml/2015/11/19/359
-
-[2]. https://github.com/moby/moby/issues/21485
-     https://github.com/moby/moby/issues/21485#issuecomment-222941103
-
-Regards,
-Srivatsa
+      	      	   	    	       		  - Ted
