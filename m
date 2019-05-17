@@ -2,183 +2,228 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 042AC215DC
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2019 11:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919BE21634
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2019 11:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728346AbfEQJC6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 May 2019 05:02:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55068 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727338AbfEQJC6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 17 May 2019 05:02:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1ABE3ADCE;
-        Fri, 17 May 2019 09:02:55 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 77B531E3ED6; Fri, 17 May 2019 11:02:52 +0200 (CEST)
-Date:   Fri, 17 May 2019 11:02:52 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: Can ext4_break_layouts() ever fail?
-Message-ID: <20190517090252.GC20550@quack2.suse.cz>
-References: <20190516205615.GA2926@iweiny-DESK2.sc.intel.com>
+        id S1728394AbfEQJXo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 May 2019 05:23:44 -0400
+Received: from mail-vs1-f50.google.com ([209.85.217.50]:37101 "EHLO
+        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727309AbfEQJXo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 May 2019 05:23:44 -0400
+Received: by mail-vs1-f50.google.com with SMTP id o5so4203077vsq.4;
+        Fri, 17 May 2019 02:23:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=dBZe0GhTJDosRRgHuciwby6XIBrRrD/9ldTdjrtfLqE=;
+        b=j2Xp+ikEcutYQYfeTKzVgiD0tMfjb8IiKWK7Thy8kbzqDdzAD6kXgzDTOy/UYImREH
+         yYElunRlNeXlIobzU3Q+Kz0A18iEyIBqKlCioFJxHMhhBThoDiocz+HiL8fT5jVCK6bo
+         S2yMxvdkQ6AOY79r9kBMlkl4bNkgcc+26oFGXQFziEVpAF41m7LDXA78W3snfXXR41El
+         mu/xD6x9eEG/OPiRW7vfc01oU7qjoxiXy1YBb+UACaU+9+WR1eCZnmJgeq4mjxqXrswm
+         yTmnAjvNB/gaAzX66f2l6UVsvGn484QUkujYGZ6aPFPJBZPY5byg7YjGrlkHg1ZhcL6t
+         gkLg==
+X-Gm-Message-State: APjAAAUSY7ffwC8i59PVEHwSn+nj37WMA0AcdihuRdBKC0eFmPbyGR5T
+        j4B1ehfllDqeFPCLraSvNBwes7r+MSCgIgwbIaBb8TVS
+X-Google-Smtp-Source: APXvYqyDW2dGLUYFe8TuVccjD8H4FxnSJSk++tWNOrMv2kXMZqXexag5/ShWcGn/j3eC42hCvyvQt60NbOANBxa0a5k=
+X-Received: by 2002:a67:7c93:: with SMTP id x141mr18356348vsc.96.1558085022896;
+ Fri, 17 May 2019 02:23:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190516205615.GA2926@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <48BA4A6E-5E2A-478E-A96E-A31FA959964C@internode.on.net>
+ <CAFLxGvwnKKHOnM2w8i9hn7LTVYKh5PQP2zYMBmma2k9z7HBpzw@mail.gmail.com> <20190511220659.GB8507@mit.edu>
+In-Reply-To: <20190511220659.GB8507@mit.edu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 17 May 2019 11:23:31 +0200
+Message-ID: <CAMuHMdWH4Q6YoE1yV8_KhW4ChK+8RMuAqW25o1pg47Yz5f9nYg@mail.gmail.com>
+Subject: Re: ext3/ext4 filesystem corruption under post 5.1.0 kernels
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        Arthur Marsh <arthur.marsh@internode.on.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 16-05-19 13:56:15, Ira Weiny wrote:
-> While testing truncate failure options for FS DAX with GUP pins; I discovered
-> that if ext4_break_layouts() returns an error it can result in orphan'ed inodes
-> being left on the orphan list resulting in the following error when the FS is
-> unmounted.
-> 
->         EXT4-fs (pmem0): Inode 12 (00000000d274c438): orphan list check failed!
->         00000000d274c438: 0001f30a 00000004 00000000 00000000 ................
->         000000001fa30de6: 0000000a 00008600 00000000 00000000 ................
->         000000003948cb2f: 00000000 00000000 00000000 00000000 ................
-> 
->         [snip]
-> 
->         000000009acf82ac: 00000003 00000003 00000000 00000000 ................
->         00000000d0cb8f52: 00000000 00000000 00000000 00000000 ................
->         000000001edc0c35: bf718fee 00000000 ..q.....
->         CPU: 5 PID: 1806 Comm: umount Not tainted 5.1.0-rc2+ #56
->         Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20180724_192412-buildhw-07.phx2.fedoraproject.org-1.fc29 04/01/4
->         Call Trace:
->          dump_stack+0x5c/0x80
->          ext4_destroy_inode+0x86/0x90
->          dispose_list+0x48/0x60
->          evict_inodes+0x160/0x1b0
->          generic_shutdown_super+0x3f/0x100
->          kill_block_super+0x21/0x50
->          deactivate_locked_super+0x34/0x70
->          cleanup_mnt+0x3b/0x70
->          task_work_run+0x8a/0xb0
->          exit_to_usermode_loop+0xb9/0xc0
->          do_syscall_64+0x153/0x180
->          entry_SYSCALL_64_after_hwframe+0x44/0xa9
->         RIP: 0033:0x7fc5ed56f6bb
->         Code: 27 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 008
->         RSP: 002b:00007ffd524be128 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
->         RAX: 0000000000000000 RBX: 000055867f9b2fb0 RCX: 00007fc5ed56f6bb
->         RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055867f9b3190
->         RBP: 0000000000000000 R08: 000055867f9b31b0 R09: 00007fc5ed5f1e80
->         R10: 0000000000000000 R11: 0000000000000246 R12: 000055867f9b3190
->         R13: 00007fc5ed7261a4 R14: 0000000000000000 R15: 00007ffd524be398
->         EXT4-fs (pmem0): sb orphan head is 12
->         sb_info orphan list:
->           inode pmem0:12 at 00000000120c1727: mode 100644, nlink 1, next 0
-> 
-> Followed by this panic:
-> 
->         ------------[ cut here ]------------
->         kernel BUG at fs/ext4/super.c:1022!
->         invalid opcode: 0000 [#1] SMP PTI
->         CPU: 5 PID: 1806 Comm: umount Not tainted 5.1.0-rc2+ #56
->         Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20180724_192412-buildhw-07.phx2.fedoraproject.org-1.fc29 04/01/4
->         RIP: 0010:ext4_put_super+0x369/0x370
->         Code: 24 d0 03 00 00 48 8b 40 68 83 60 60 fb 0f b7 83 a0 00 00 00 66 41 89 46 3a 41 f6 44 24 50 01 0f 85 71 fd ff ff e9 5f fd8
->         RSP: 0018:ffffc900029cfe68 EFLAGS: 00010206
->         RAX: ffff888000691dd0 RBX: ffff88800e78f800 RCX: 0000000000000000
->         RDX: 0000000000000000 RSI: ffff88800fc96838 RDI: ffff88800fc96838
->         RBP: ffff88800e78f9f8 R08: 0000000000000603 R09: 0000000000aaaaaa
->         R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800e78e800
->         R13: ffff88800e78f9f8 R14: ffffffff820b3a50 R15: ffff888016521f70
->         FS:  00007fc5ed3b8080(0000) GS:ffff88800fc80000(0000) knlGS:0000000000000000
->         CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->         CR2: 00007f55f82181a0 CR3: 0000000015e9a000 CR4: 00000000000006e0
->         Call Trace:
->          generic_shutdown_super+0x6c/0x100
->          kill_block_super+0x21/0x50
->          deactivate_locked_super+0x34/0x70
->          cleanup_mnt+0x3b/0x70
->          task_work_run+0x8a/0xb0
->          exit_to_usermode_loop+0xb9/0xc0
->          do_syscall_64+0x153/0x180
->          entry_SYSCALL_64_after_hwframe+0x44/0xa9
->         RIP: 0033:0x7fc5ed56f6bb
->         Code: 27 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 008
->         RSP: 002b:00007ffd524be128 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
->         RAX: 0000000000000000 RBX: 000055867f9b2fb0 RCX: 00007fc5ed56f6bb
->         RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055867f9b3190
->         RBP: 0000000000000000 R08: 000055867f9b31b0 R09: 00007fc5ed5f1e80
->         R10: 0000000000000000 R11: 0000000000000246 R12: 000055867f9b3190
->         R13: 00007fc5ed7261a4 R14: 0000000000000000 R15: 00007ffd524be398
->         Modules linked in: xfs libcrc32c ib_isert iscsi_target_mod rpcrdma ib_iser libiscsi scsi_transport_iscsi ib_srpt target_core_c
->         ---[ end trace c300122aad5fcd86 ]---
->         RIP: 0010:ext4_put_super+0x369/0x370
->         Code: 24 d0 03 00 00 48 8b 40 68 83 60 60 fb 0f b7 83 a0 00 00 00 66 41 89 46 3a 41 f6 44 24 50 01 0f 85 71 fd ff ff e9 5f fd8
->         RSP: 0018:ffffc900029cfe68 EFLAGS: 00010206
->         RAX: ffff888000691dd0 RBX: ffff88800e78f800 RCX: 0000000000000000
->         RDX: 0000000000000000 RSI: ffff88800fc96838 RDI: ffff88800fc96838
->         RBP: ffff88800e78f9f8 R08: 0000000000000603 R09: 0000000000aaaaaa
->         R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800e78e800
->         R13: ffff88800e78f9f8 R14: ffffffff820b3a50 R15: ffff888016521f70
->         FS:  00007fc5ed3b8080(0000) GS:ffff88800fc80000(0000) knlGS:0000000000000000
->         CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->         CR2: 00007f55f82181a0 CR3: 0000000015e9a000 CR4: 00000000000006e0
->         Kernel panic - not syncing: Fatal exception
->         Kernel Offset: disabled
->         ---[ end Kernel panic - not syncing: Fatal exception ]---
->         ------------[ cut here ]------------
-> 
-> I kind of worked around this by removing the orphan inode from the orphan list
-> if ext4_break_layouts() fails.[1]  But I don't think this unwinds everything
-> properly.
-> 
-> Failing the truncate for GUP'ed pages could be done outside of
-> ext4_break_layouts() so it is not absolutely necessary that it return an error.
-> 
-> But this begs the question can ext4_break_layouts() fail?
+Hi Ted,
 
-Yes, it can fail e.g. due to a signal and yes, ext4_setattr() should handle
-that failure.
+On Sun, May 12, 2019 at 12:07 AM Theodore Ts'o <tytso@mit.edu> wrote:
+> On Sat, May 11, 2019 at 02:43:16PM +0200, Richard Weinberger wrote:
+> > [CC'in linux-ext4]
+> >
+> > On Sat, May 11, 2019 at 1:47 PM Arthur Marsh
+> > <arthur.marsh@internode.on.net> wrote:
+> > >
+> > >
+> > > The filesystem with the kernel source tree is the root file system, ext3, mounted as:
+> > >
+> > > /dev/sdb7 on / type ext3 (rw,relatime,errors=remount-ro)
+> > >
+> > > After the "Compressing objects" stage, the following appears in dmesg:
+> > >
+> > > [  848.968550] EXT4-fs error (device sdb7): ext4_get_branch:171: inode #8: block 30343695: comm jbd2/sdb7-8: invalid block
+> > > [  849.077426] Aborting journal on device sdb7-8.
+> > > [  849.100963] EXT4-fs (sdb7): Remounting filesystem read-only
+> > > [  849.100976] jbd2_journal_bmap: journal block not found at offset 989 on sdb7-8
+>
+> This indicates that the extent tree blocks for the journal was found
+> to be corrupt; so the journal couldn't be found.
+>
+> > > # fsck -yv
+> > > fsck from util-linux 2.33.1
+> > > e2fsck 1.45.0 (6-Mar-2019)
+> > > /dev/sdb7: recovering journal
+> > > /dev/sdb7 contains a file system with errors, check forced.
+>
+> But e2fsck had no problem finding the journal.
+>
+> > > Pass 1: Checking inodes, blocks, and sizes
+> > > Pass 2: Checking directory structure
+> > > Pass 3: Checking directory connectivity
+> > > Pass 4: Checking reference counts
+> > > Pass 5: Checking group summary information
+> > > Free blocks count wrong (4619656, counted=4619444).
+> > > Fix? yes
+> > >
+> > > Free inodes count wrong (15884075, counted=15884058).
+> > > Fix? yes
+>
+> And no other significant problems were found.  (Ext4 never updates or
+> relies on the summary number of free blocks and free inodes, since
+> updating it is a scalability bottleneck and these values can be
+> calculated from the per block group free block/inodes count.  So the
+> fact that e2fsck needed to update them is not an issue.)
+>
+> So that implies that we got one set of values when we read the journal
+> inode when attempting to mount the file system, and a *different* set
+> of values when e2fsck was run.  Which makes means that we need
+> consider the possibility that the problem is below the file system
+> layer (e.g., the block layer, device drivers, etc.).
+>
+>
+> > > /dev/sdb7: ***** FILE SYSTEM WAS MODIFIED *****
+> > >
+> > > Other times, I have gotten:
+> > >
+> > > "Inodes that were part of a corrupted orphan linked list found."
+> > > "Block bitmap differences:"
+> > > "Free blocks sound wrong for group"
+> > >
+>
+> This variety of issues also implies that the issue may be in the data
+> read by the file system, as opposed to an issue in the file system.
+>
+> Arthur, can you give us the full details of your hardware
+> configuration and your kernel config file?  Also, what kernel git
+> commit ID were you testing?
 
-> It looks to me like it is possible for ext4_break_layouts() to fail if
-> prepare_to_wait_event() sees a pending signal.  Therefore I think this is a bug
-> in ext4 regardless of how I may implement a truncate failure.
+I'm seeing similar things running post v5.1 on ARAnyM (Atari emulator):
 
-Yes, it's a bug in ext4.
+    EXT4-fs (sda1): mounting ext3 file system using the ext4 subsystem
+    ...
+    EXT4-fs error (device sda1): ext4_get_branch:171: inode #1980:
+block 27550: comm jbd2/sda1-1980: invalid block
 
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5648,6 +5648,8 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
->                 if (rc) {  
->                         up_write(&EXT4_I(inode)->i_mmap_sem);
->                         error = rc;
-> +                       if (orphan)
-> +                               ext4_orphan_del(NULL, inode);
+and userspace hung somewhere during initial system startup, so I had to
+kill the instance.
 
-This isn't quite correct. This would silence the warning but leave the
-inode in on-disk orphan list. That is OK in case of fs-meltdown types of
-failures like IO errors for metadata, aborted journal, or stuff like that.
-But failing ext4_break_layouts() needs to be handled gracefully maintaining
-fs consistency. So you rather need something like:
+-----
 
-			if (orphan && inode->i_nlink > 0) {
-				handle_t *handle;
+    EXT4-fs (sda1): mounting ext3 file system using the ext4 subsystem
+    EXT4-fs (sda1): INFO: recovery required on readonly filesystem
+    EXT4-fs (sda1): write access will be enabled during recovery
+    EXT4-fs warning (device sda1): ext4_clear_journal_err:5078:
+Filesystem error recorded from previous mount: IO failure
+    EXT4-fs warning (device sda1): ext4_clear_journal_err:5079:
+Marking fs in need of filesystem check.
+    EXT4-fs (sda1): recovery complete
+    EXT4-fs (sda1): mounted filesystem with ordered data mode. Opts: (null)
+    VFS: Mounted root (ext3 filesystem) readonly on device 8:1.
+    ...
+    Run /sbin/init as init process
+    random: fast init done
+    EXT4-fs (sda1): re-mounted. Opts:
+    random: crng init done
+    EXT4-fs (sda1): re-mounted. Opts: errors=remount-ro
+    EXT4-fs (sda1): error count since last fsck: 1
+    EXT4-fs (sda1): initial error at time 1557931133:
+ext4_get_branch:171: inode 1980: block 27550
+    EXT4-fs (sda1): last error at time 1557931133:
+ext4_get_branch:171: inode 1980: block 27550
 
-				handle = ext4_journal_start(inode,
-						EXT4_HT_INODE, 3);
-				if (IS_ERR(handle)) {
-					ext4_orphan_del(NULL, inode);
-					goto err_out;
-				}
-				ext4_orphan_del(handle, inode);
-				ext4_journal_stop(handle);
-			}
+-----
 
-								Honza
+    EXT4-fs (sda1): mounting ext3 file system using the ext4 subsystem
+    EXT4-fs (sda1): mounted filesystem with ordered data mode. Opts: (null)
+    VFS: Mounted root (ext3 filesystem) readonly on device 8:1.
+    ...
+    Run /sbin/init as init process
+    random: fast init done
+    EXT4-fs (sda1): re-mounted. Opts:
+    EXT4-fs (sda1): re-mounted. Opts: errors=remount-ro
+    random: crng init done
+    EXT4-fs error (device sda1): ext4_get_branch:171: inode #1980:
+block 27550: comm jbd2/sda1-1980: invalid block
+    Aborting journal on device sda1-1980.
+    EXT4-fs (sda1): Remounting filesystem read-only
+    jbd2_journal_bmap: journal block not found at offset 426 on sda1-1980
+    EXT4-fs error (device sda1): ext4_journal_check_start:61: Detected
+aborted journal
+    EXT4-fs (sda1): error count since last fsck: 3
+    EXT4-fs (sda1): initial error at time 1557931133:
+ext4_get_branch:171: inode 1980: block 27550
+    EXT4-fs (sda1): last error at time 1558083596:
+ext4_journal_check_start:61: inode 1980: block 27550
+    EXT4-fs error (device sda1): ext4_remount:5328: Abort forced by user
+
+---
+
+    EXT4-fs (sda1): mounting ext3 file system using the ext4 subsystem
+    EXT4-fs (sda1): INFO: recovery required on readonly filesystem
+    EXT4-fs (sda1): write access will be enabled during recovery
+    random: fast init done
+    EXT4-fs warning (device sda1): ext4_clear_journal_err:5078:
+Filesystem error recorded from previous mount: IO failure
+    EXT4-fs warning (device sda1): ext4_clear_journal_err:5079:
+Marking fs in need of filesystem check.
+    EXT4-fs (sda1): recovery complete
+    EXT4-fs (sda1): mounted filesystem with ordered data mode. Opts: (null)
+    ...
+    Run /sbin/init as init process
+    random: crng init done
+    EXT4-fs (sda1): re-mounted. Opts:
+    EXT4-fs (sda1): re-mounted. Opts: errors=remount-ro
+    EXT4-fs (sda1): error count since last fsck: 4
+    EXT4-fs (sda1): initial error at time 1557931133:
+ext4_get_branch:171: inode 1980: block 27550
+    EXT4-fs (sda1): last error at time 1558083665: ext4_remount:5328:
+inode 1980: block 27550
+
+Notes:
+  - It's always the same block,
+  - Block device is an image file, accessed using
+    arch/m68k/emu/nfblock.c, which did not receive any recent (bvec)
+    updates.
+  - There are no reported errors for the device containing the image
+    file on the host,
+  - Given Arthur sees the issue on a different class of machines, it's
+    unlikely the issue is related to a problem with the block device
+    (driver). It may still be an issue with the block layer, though,
+  - Both Arthur and I are mounting an ext3 file system using the ext4
+    subsystem.
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
