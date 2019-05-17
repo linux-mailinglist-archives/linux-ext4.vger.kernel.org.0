@@ -2,228 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 919BE21634
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2019 11:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D22216E6
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2019 12:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbfEQJXo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 May 2019 05:23:44 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:37101 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbfEQJXo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 May 2019 05:23:44 -0400
-Received: by mail-vs1-f50.google.com with SMTP id o5so4203077vsq.4;
-        Fri, 17 May 2019 02:23:43 -0700 (PDT)
+        id S1728405AbfEQKZL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 May 2019 06:25:11 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:44005 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728103AbfEQKZK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 May 2019 06:25:10 -0400
+Received: by mail-wr1-f67.google.com with SMTP id r4so6513920wro.10
+        for <linux-ext4@vger.kernel.org>; Fri, 17 May 2019 03:25:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=C0Cpfr3qIzMoBN9F7dCRlBuwVDMbdHyBOSFIiovRDi4=;
+        b=lGozGAVT6NV578F1RzGEJ5j0qtWiEnKG9sCciG36mQ5KGoqMzsGXouPGu0l5/5ZjNx
+         LEfjrg6DYvdDac55rlSbZa0a2hG/EFFUxxPfmDo30nI3yPErbz+CbgWyjTiyUQ1QAvR0
+         0+N4vMHrt/gewYJXOxAubvB/1rbfhaNlqEq9uuO5KpGWOkjWGHWrYUUtuw3fZbj7l9kh
+         /DdfQP0nSQallHVUc3QNn59Rgejbavp4WEqYDtgdFEu7mr26XUmZrOC6qaUtS/99kWH5
+         MjsdlMEDs5LI0e+GaojmtgCYTfG7ffayRs4wL85zCnmBvJuYj8ohcgVraOUapX0YnC8L
+         9zZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=dBZe0GhTJDosRRgHuciwby6XIBrRrD/9ldTdjrtfLqE=;
-        b=j2Xp+ikEcutYQYfeTKzVgiD0tMfjb8IiKWK7Thy8kbzqDdzAD6kXgzDTOy/UYImREH
-         yYElunRlNeXlIobzU3Q+Kz0A18iEyIBqKlCioFJxHMhhBThoDiocz+HiL8fT5jVCK6bo
-         S2yMxvdkQ6AOY79r9kBMlkl4bNkgcc+26oFGXQFziEVpAF41m7LDXA78W3snfXXR41El
-         mu/xD6x9eEG/OPiRW7vfc01oU7qjoxiXy1YBb+UACaU+9+WR1eCZnmJgeq4mjxqXrswm
-         yTmnAjvNB/gaAzX66f2l6UVsvGn484QUkujYGZ6aPFPJBZPY5byg7YjGrlkHg1ZhcL6t
-         gkLg==
-X-Gm-Message-State: APjAAAUSY7ffwC8i59PVEHwSn+nj37WMA0AcdihuRdBKC0eFmPbyGR5T
-        j4B1ehfllDqeFPCLraSvNBwes7r+MSCgIgwbIaBb8TVS
-X-Google-Smtp-Source: APXvYqyDW2dGLUYFe8TuVccjD8H4FxnSJSk++tWNOrMv2kXMZqXexag5/ShWcGn/j3eC42hCvyvQt60NbOANBxa0a5k=
-X-Received: by 2002:a67:7c93:: with SMTP id x141mr18356348vsc.96.1558085022896;
- Fri, 17 May 2019 02:23:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=C0Cpfr3qIzMoBN9F7dCRlBuwVDMbdHyBOSFIiovRDi4=;
+        b=TKZJ88M99OSuy2WYfOG9zmFRrgseCMGObbfBI/6TujXQgVH2DM+/S3PEvL8r0Iarh+
+         6MoY5kDysv08eHPITNJlBmF5kA1ZurMZLpdmLkMNBr0lqYxbBmZyWjF4KxNmnm1zr1Qb
+         U5K9CZPaQMI5ssmXNBYo5f6jliqqmpJ9ZoGujMxRtcmGK/D9xOJoaASSx5vvgiZrSJAC
+         aTZy0CUKL5eU38fSrY8H0Dn+G6+AcEsiJr65YBogRByFb5DuiHC0NGmJzDXiFcR62FMF
+         FwQPwr/sjVVrHP7w4yfzjIEWhXtFQgGd66brPjiusyVTWtW9Y/pfuGx5aZNo4GnC2FnX
+         lOyQ==
+X-Gm-Message-State: APjAAAXLTk80gFNXpCsI3dP+pMS1kN1/XSzg7sYBowPt2F7pN5uEp/lE
+        mUbC52AyBDZZ+TzTp6x5p1cm9Q==
+X-Google-Smtp-Source: APXvYqwOb+X2mA+dOQaG0YzpsW0k9MJlUgWO6AvHUfV9BtYZjbQHVhkNioaQSFSv0axslgMmgyq0tw==
+X-Received: by 2002:a5d:6b03:: with SMTP id v3mr3589289wrw.309.1558088709007;
+        Fri, 17 May 2019 03:25:09 -0700 (PDT)
+Received: from dell ([2.27.167.43])
+        by smtp.gmail.com with ESMTPSA id a128sm7769973wma.23.2019.05.17.03.25.07
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 17 May 2019 03:25:08 -0700 (PDT)
+Date:   Fri, 17 May 2019 11:25:06 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Philippe Mazenauer <philippe.mazenauer@outlook.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ext4: Variable to signed to check return code
+Message-ID: <20190517102506.GU4319@dell>
+References: <AM0PR07MB4417C1C3A4E55EFE47027CA2FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
 MIME-Version: 1.0
-References: <48BA4A6E-5E2A-478E-A96E-A31FA959964C@internode.on.net>
- <CAFLxGvwnKKHOnM2w8i9hn7LTVYKh5PQP2zYMBmma2k9z7HBpzw@mail.gmail.com> <20190511220659.GB8507@mit.edu>
-In-Reply-To: <20190511220659.GB8507@mit.edu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 17 May 2019 11:23:31 +0200
-Message-ID: <CAMuHMdWH4Q6YoE1yV8_KhW4ChK+8RMuAqW25o1pg47Yz5f9nYg@mail.gmail.com>
-Subject: Re: ext3/ext4 filesystem corruption under post 5.1.0 kernels
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        Arthur Marsh <arthur.marsh@internode.on.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AM0PR07MB4417C1C3A4E55EFE47027CA2FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ted,
+On Fri, 17 May 2019, Philippe Mazenauer wrote:
 
-On Sun, May 12, 2019 at 12:07 AM Theodore Ts'o <tytso@mit.edu> wrote:
-> On Sat, May 11, 2019 at 02:43:16PM +0200, Richard Weinberger wrote:
-> > [CC'in linux-ext4]
-> >
-> > On Sat, May 11, 2019 at 1:47 PM Arthur Marsh
-> > <arthur.marsh@internode.on.net> wrote:
-> > >
-> > >
-> > > The filesystem with the kernel source tree is the root file system, ext3, mounted as:
-> > >
-> > > /dev/sdb7 on / type ext3 (rw,relatime,errors=remount-ro)
-> > >
-> > > After the "Compressing objects" stage, the following appears in dmesg:
-> > >
-> > > [  848.968550] EXT4-fs error (device sdb7): ext4_get_branch:171: inode #8: block 30343695: comm jbd2/sdb7-8: invalid block
-> > > [  849.077426] Aborting journal on device sdb7-8.
-> > > [  849.100963] EXT4-fs (sdb7): Remounting filesystem read-only
-> > > [  849.100976] jbd2_journal_bmap: journal block not found at offset 989 on sdb7-8
->
-> This indicates that the extent tree blocks for the journal was found
-> to be corrupt; so the journal couldn't be found.
->
-> > > # fsck -yv
-> > > fsck from util-linux 2.33.1
-> > > e2fsck 1.45.0 (6-Mar-2019)
-> > > /dev/sdb7: recovering journal
-> > > /dev/sdb7 contains a file system with errors, check forced.
->
-> But e2fsck had no problem finding the journal.
->
-> > > Pass 1: Checking inodes, blocks, and sizes
-> > > Pass 2: Checking directory structure
-> > > Pass 3: Checking directory connectivity
-> > > Pass 4: Checking reference counts
-> > > Pass 5: Checking group summary information
-> > > Free blocks count wrong (4619656, counted=4619444).
-> > > Fix? yes
-> > >
-> > > Free inodes count wrong (15884075, counted=15884058).
-> > > Fix? yes
->
-> And no other significant problems were found.  (Ext4 never updates or
-> relies on the summary number of free blocks and free inodes, since
-> updating it is a scalability bottleneck and these values can be
-> calculated from the per block group free block/inodes count.  So the
-> fact that e2fsck needed to update them is not an issue.)
->
-> So that implies that we got one set of values when we read the journal
-> inode when attempting to mount the file system, and a *different* set
-> of values when e2fsck was run.  Which makes means that we need
-> consider the possibility that the problem is below the file system
-> layer (e.g., the block layer, device drivers, etc.).
->
->
-> > > /dev/sdb7: ***** FILE SYSTEM WAS MODIFIED *****
-> > >
-> > > Other times, I have gotten:
-> > >
-> > > "Inodes that were part of a corrupted orphan linked list found."
-> > > "Block bitmap differences:"
-> > > "Free blocks sound wrong for group"
-> > >
->
-> This variety of issues also implies that the issue may be in the data
-> read by the file system, as opposed to an issue in the file system.
->
-> Arthur, can you give us the full details of your hardware
-> configuration and your kernel config file?  Also, what kernel git
-> commit ID were you testing?
+> Variables 'n' and 'err' are both used for less-than-zero error checking,
+> however both are declared as unsigned. Ensure ext4_map_blocks() and
+> add_system_zone() are able to have their return values propagated
+> correctly by redefining them both as signed integers.
+> 
+> ../fs/ext4/block_validity.c:158:9: warning: comparison of unsigned
+> expression < 0 is always false [-Wtype-limits]
+>     if (n < 0) {
+>         ^
+> 
+> ../fs/ext4/block_validity.c:173:12: warning: comparison of unsigned
+> expression < 0 is always false [-Wtype-limits]
+>     if (err < 0)
+>         ^
+> 
+> Signed-off-by: Philippe Mazenauer <philippe.mazenauer@outlook.de>
+> ---
+>  fs/ext4/block_validity.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-I'm seeing similar things running post v5.1 on ARAnyM (Atari emulator):
-
-    EXT4-fs (sda1): mounting ext3 file system using the ext4 subsystem
-    ...
-    EXT4-fs error (device sda1): ext4_get_branch:171: inode #1980:
-block 27550: comm jbd2/sda1-1980: invalid block
-
-and userspace hung somewhere during initial system startup, so I had to
-kill the instance.
-
------
-
-    EXT4-fs (sda1): mounting ext3 file system using the ext4 subsystem
-    EXT4-fs (sda1): INFO: recovery required on readonly filesystem
-    EXT4-fs (sda1): write access will be enabled during recovery
-    EXT4-fs warning (device sda1): ext4_clear_journal_err:5078:
-Filesystem error recorded from previous mount: IO failure
-    EXT4-fs warning (device sda1): ext4_clear_journal_err:5079:
-Marking fs in need of filesystem check.
-    EXT4-fs (sda1): recovery complete
-    EXT4-fs (sda1): mounted filesystem with ordered data mode. Opts: (null)
-    VFS: Mounted root (ext3 filesystem) readonly on device 8:1.
-    ...
-    Run /sbin/init as init process
-    random: fast init done
-    EXT4-fs (sda1): re-mounted. Opts:
-    random: crng init done
-    EXT4-fs (sda1): re-mounted. Opts: errors=remount-ro
-    EXT4-fs (sda1): error count since last fsck: 1
-    EXT4-fs (sda1): initial error at time 1557931133:
-ext4_get_branch:171: inode 1980: block 27550
-    EXT4-fs (sda1): last error at time 1557931133:
-ext4_get_branch:171: inode 1980: block 27550
-
------
-
-    EXT4-fs (sda1): mounting ext3 file system using the ext4 subsystem
-    EXT4-fs (sda1): mounted filesystem with ordered data mode. Opts: (null)
-    VFS: Mounted root (ext3 filesystem) readonly on device 8:1.
-    ...
-    Run /sbin/init as init process
-    random: fast init done
-    EXT4-fs (sda1): re-mounted. Opts:
-    EXT4-fs (sda1): re-mounted. Opts: errors=remount-ro
-    random: crng init done
-    EXT4-fs error (device sda1): ext4_get_branch:171: inode #1980:
-block 27550: comm jbd2/sda1-1980: invalid block
-    Aborting journal on device sda1-1980.
-    EXT4-fs (sda1): Remounting filesystem read-only
-    jbd2_journal_bmap: journal block not found at offset 426 on sda1-1980
-    EXT4-fs error (device sda1): ext4_journal_check_start:61: Detected
-aborted journal
-    EXT4-fs (sda1): error count since last fsck: 3
-    EXT4-fs (sda1): initial error at time 1557931133:
-ext4_get_branch:171: inode 1980: block 27550
-    EXT4-fs (sda1): last error at time 1558083596:
-ext4_journal_check_start:61: inode 1980: block 27550
-    EXT4-fs error (device sda1): ext4_remount:5328: Abort forced by user
-
----
-
-    EXT4-fs (sda1): mounting ext3 file system using the ext4 subsystem
-    EXT4-fs (sda1): INFO: recovery required on readonly filesystem
-    EXT4-fs (sda1): write access will be enabled during recovery
-    random: fast init done
-    EXT4-fs warning (device sda1): ext4_clear_journal_err:5078:
-Filesystem error recorded from previous mount: IO failure
-    EXT4-fs warning (device sda1): ext4_clear_journal_err:5079:
-Marking fs in need of filesystem check.
-    EXT4-fs (sda1): recovery complete
-    EXT4-fs (sda1): mounted filesystem with ordered data mode. Opts: (null)
-    ...
-    Run /sbin/init as init process
-    random: crng init done
-    EXT4-fs (sda1): re-mounted. Opts:
-    EXT4-fs (sda1): re-mounted. Opts: errors=remount-ro
-    EXT4-fs (sda1): error count since last fsck: 4
-    EXT4-fs (sda1): initial error at time 1557931133:
-ext4_get_branch:171: inode 1980: block 27550
-    EXT4-fs (sda1): last error at time 1558083665: ext4_remount:5328:
-inode 1980: block 27550
-
-Notes:
-  - It's always the same block,
-  - Block device is an image file, accessed using
-    arch/m68k/emu/nfblock.c, which did not receive any recent (bvec)
-    updates.
-  - There are no reported errors for the device containing the image
-    file on the host,
-  - Given Arthur sees the issue on a different class of machines, it's
-    unlikely the issue is related to a problem with the block device
-    (driver). It may still be an issue with the block layer, though,
-  - Both Arthur and I are mounting an ext3 file system using the ext4
-    subsystem.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
