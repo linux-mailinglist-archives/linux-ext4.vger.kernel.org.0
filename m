@@ -2,124 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C52221379
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2019 07:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E60D213A8
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2019 08:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727904AbfEQFgA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 May 2019 01:36:00 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:51660 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727317AbfEQFgA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 17 May 2019 01:36:00 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7DB4D81DE6;
-        Fri, 17 May 2019 05:35:59 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 58AE01001DD2;
-        Fri, 17 May 2019 05:35:59 +0000 (UTC)
-Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 0AB9A1806B10;
-        Fri, 17 May 2019 05:35:59 +0000 (UTC)
-Date:   Fri, 17 May 2019 01:35:58 -0400 (EDT)
-From:   Pankaj Gupta <pagupta@redhat.com>
-To:     Jakub =?utf-8?Q?Staro=C5=84?= <jstaron@google.com>
-Cc:     linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        qemu-devel@nongnu.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, jack@suse.cz, mst@redhat.com,
-        jasowang@redhat.com, david@fromorbit.com, lcapitulino@redhat.com,
-        adilger kernel <adilger.kernel@dilger.ca>, smbarber@google.com,
-        zwisler@kernel.org, aarcange@redhat.com,
-        dave jiang <dave.jiang@intel.com>,
-        darrick wong <darrick.wong@oracle.com>,
-        vishal l verma <vishal.l.verma@intel.com>, david@redhat.com,
-        willy@infradead.org, hch@infradead.org, jmoyer@redhat.com,
-        nilal@redhat.com, lenb@kernel.org, kilobyte@angband.pl,
-        riel@surriel.com, yuval shaia <yuval.shaia@oracle.com>,
-        stefanha@redhat.com, pbonzini@redhat.com,
-        dan j williams <dan.j.williams@intel.com>, kwolf@redhat.com,
-        tytso@mit.edu, xiaoguangrong eric <xiaoguangrong.eric@gmail.com>,
-        cohuck@redhat.com, rjw@rjwysocki.net, imammedo@redhat.com
-Message-ID: <1954162775.29408078.1558071358974.JavaMail.zimbra@redhat.com>
-In-Reply-To: <c06514fd-8675-ba74-4b7b-ff0eb4a91605@google.com>
-References: <20190514145422.16923-1-pagupta@redhat.com> <20190514145422.16923-3-pagupta@redhat.com> <c06514fd-8675-ba74-4b7b-ff0eb4a91605@google.com>
-Subject: Re: [Qemu-devel] [PATCH v9 2/7] virtio-pmem: Add virtio pmem driver
+        id S1727615AbfEQGT7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 May 2019 02:19:59 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:39453 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726871AbfEQGT7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 May 2019 02:19:59 -0400
+Received: by mail-pg1-f193.google.com with SMTP id w22so2786139pgi.6;
+        Thu, 16 May 2019 23:19:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xuFZm74Z9l79xdJ/4Cl+h92bWI5KTm3zMpzIFt8UcTc=;
+        b=Fox3LYtQlUW/RHf9SwWPrSo2GXNwyu9Zt552dBGMs0u8IBCNHNEjr36P5WBXBvEOKR
+         kPdgF4gEFz+qFGTGbp4v3lLawdbOB1fRL6XwN/HC8zQ7S2gcLiCum3/gOWz0wJtZn9O9
+         0i+3fl6v+4hJKaNC280xfAbCRB/SNAIdYqY0t6npcXjwRbb1NY/GcgXhg6ClniKITqYQ
+         /Ridv2I8OcNoMfeeaAKWjraeIjgmdSFhQIWJPzjHWjdShIMHKzLtSQZ0PRG79ZCVXZZZ
+         3UO+W/LQL9LJpX+awK373z5wSX3DPG/Lm1A4VnBm+assU0qPFozAwNkwiXPcYsGt/zyl
+         ThmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xuFZm74Z9l79xdJ/4Cl+h92bWI5KTm3zMpzIFt8UcTc=;
+        b=PXWcpGGX23SXqj0+DVWsZUu3XQMUVE8HZLCU3PBDzA3TRXj6/xLDnD53sZTbjDxW9F
+         LStKOLDGaCh/zNqJzjX0sKsDqb9kxPiB9apWq4LORlCedfS7DSnHBoj8bjzOVGf63vTm
+         Fz2rtSwto5DQi4pPmVavlaP1WTMobnebKXKAvbH3tG9NAn6w9amBI53hEukIcjl6IMwM
+         TSsCeq6hPmqusY1sqWMHhHvU/Lhm2VQxd7uMXzAqXb44g+QtEqg2BfzTFLqHvjkA/eIg
+         /aoQAf+cl4yTzgBbyxxh2yX5dRA+rdLpHHxpPTwaVqRgICwzfFIN6rua6g2f9GVSh4Hf
+         7kGg==
+X-Gm-Message-State: APjAAAV91KF3wkWv92AHDu7jXLHzvI19MnVEtLznCitFSXsbIj+xMw2M
+        Y2hteielsEf2UYR6g6B/9wU5SHTYf7DEhA==
+X-Google-Smtp-Source: APXvYqw+WA3bfurFok2ai8+oJuWkBrHiGtx4UAn3M/gDpJbWNusoI2ceJp9Piqiguu8FH3vSKiv1lg==
+X-Received: by 2002:a63:7:: with SMTP id 7mr55679570pga.108.1558073998643;
+        Thu, 16 May 2019 23:19:58 -0700 (PDT)
+Received: from localhost.localdomain ([123.139.57.210])
+        by smtp.gmail.com with ESMTPSA id 63sm9412858pfu.95.2019.05.16.23.19.56
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 16 May 2019 23:19:58 -0700 (PDT)
+From:   Gaowei Pu <pugaowei@gmail.com>
+To:     tytso@mit.edu
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] jbd2: fix some print format mistakes
+Date:   Fri, 17 May 2019 14:19:51 +0800
+Message-Id: <20190517061951.13730-1-pugaowei@gmail.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.116.188, 10.4.195.1]
-Thread-Topic: virtio-pmem: Add virtio pmem driver
-Thread-Index: Jfq72a6Lppgn6G/na6kHvdhmTQkM6g==
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Fri, 17 May 2019 05:35:59 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+There are some print format mistakes in debug messages. Fix them.
 
+Signed-off-by: Gaowei Pu <pugaowei@gmail.com>
+---
+ fs/jbd2/journal.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Hi Jakub,
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 37e16d969925..565e99b67b30 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -203,7 +203,7 @@ static int kjournald2(void *arg)
+ 	if (journal->j_flags & JBD2_UNMOUNT)
+ 		goto end_loop;
+ 
+-	jbd_debug(1, "commit_sequence=%d, commit_request=%d\n",
++	jbd_debug(1, "commit_sequence=%u, commit_request=%u\n",
+ 		journal->j_commit_sequence, journal->j_commit_request);
+ 
+ 	if (journal->j_commit_sequence != journal->j_commit_request) {
+@@ -324,7 +324,7 @@ static void journal_kill_thread(journal_t *journal)
+  * IO is in progress. do_get_write_access() handles this.
+  *
+  * The function returns a pointer to the buffer_head to be used for IO.
+- * 
++ *
+  *
+  * Return value:
+  *  <0: Error
+@@ -500,7 +500,7 @@ int __jbd2_log_start_commit(journal_t *journal, tid_t target)
+ 		 */
+ 
+ 		journal->j_commit_request = target;
+-		jbd_debug(1, "JBD2: requesting commit %d/%d\n",
++		jbd_debug(1, "JBD2: requesting commit %u/%u\n",
+ 			  journal->j_commit_request,
+ 			  journal->j_commit_sequence);
+ 		journal->j_running_transaction->t_requested = jiffies;
+@@ -513,7 +513,7 @@ int __jbd2_log_start_commit(journal_t *journal, tid_t target)
+ 		WARN_ONCE(1, "JBD2: bad log_start_commit: %u %u %u %u\n",
+ 			  journal->j_commit_request,
+ 			  journal->j_commit_sequence,
+-			  target, journal->j_running_transaction ? 
++			  target, journal->j_running_transaction ?
+ 			  journal->j_running_transaction->t_tid : 0);
+ 	return 0;
+ }
+@@ -698,12 +698,12 @@ int jbd2_log_wait_commit(journal_t *journal, tid_t tid)
+ #ifdef CONFIG_JBD2_DEBUG
+ 	if (!tid_geq(journal->j_commit_request, tid)) {
+ 		printk(KERN_ERR
+-		       "%s: error: j_commit_request=%d, tid=%d\n",
++		       "%s: error: j_commit_request=%u, tid=%u\n",
+ 		       __func__, journal->j_commit_request, tid);
+ 	}
+ #endif
+ 	while (tid_gt(tid, journal->j_commit_sequence)) {
+-		jbd_debug(1, "JBD2: want %d, j_commit_sequence=%d\n",
++		jbd_debug(1, "JBD2: want %u, j_commit_sequence=%u\n",
+ 				  tid, journal->j_commit_sequence);
+ 		read_unlock(&journal->j_state_lock);
+ 		wake_up(&journal->j_wait_commit);
+@@ -944,7 +944,7 @@ int __jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block)
+ 
+ 	trace_jbd2_update_log_tail(journal, tid, block, freed);
+ 	jbd_debug(1,
+-		  "Cleaning journal tail from %d to %d (offset %lu), "
++		  "Cleaning journal tail from %u to %u (offset %lu), "
+ 		  "freeing %lu\n",
+ 		  journal->j_tail_sequence, tid, block, freed);
+ 
+@@ -1318,7 +1318,7 @@ static int journal_reset(journal_t *journal)
+ 	 */
+ 	if (sb->s_start == 0) {
+ 		jbd_debug(1, "JBD2: Skipping superblock update on recovered sb "
+-			"(start %ld, seq %d, errno %d)\n",
++			"(start %ld, seq %u, errno %d)\n",
+ 			journal->j_tail, journal->j_tail_sequence,
+ 			journal->j_errno);
+ 		journal->j_flags |= JBD2_FLUSHED;
+@@ -1453,7 +1453,7 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+ 		return;
+ 	}
+ 
+-	jbd_debug(1, "JBD2: Marking journal as empty (seq %d)\n",
++	jbd_debug(1, "JBD2: Marking journal as empty (seq %u)\n",
+ 		  journal->j_tail_sequence);
+ 
+ 	sb->s_sequence = cpu_to_be32(journal->j_tail_sequence);
+-- 
+2.21.0
 
-> 
-> On 5/14/19 7:54 AM, Pankaj Gupta wrote:
-> > +		if (!list_empty(&vpmem->req_list)) {
-> > +			req_buf = list_first_entry(&vpmem->req_list,
-> > +					struct virtio_pmem_request, list);
-> > +			req_buf->wq_buf_avail = true;
-> > +			wake_up(&req_buf->wq_buf);
-> > +			list_del(&req_buf->list);
-> Yes, this change is the right one, thank you!
-
-Thank you for the confirmation.
-
-> 
-> > +	 /*
-> > +	  * If virtqueue_add_sgs returns -ENOSPC then req_vq virtual
-> > +	  * queue does not have free descriptor. We add the request
-> > +	  * to req_list and wait for host_ack to wake us up when free
-> > +	  * slots are available.
-> > +	  */
-> > +	while ((err = virtqueue_add_sgs(vpmem->req_vq, sgs, 1, 1, req,
-> > +					GFP_ATOMIC)) == -ENOSPC) {
-> > +
-> > +		dev_err(&vdev->dev, "failed to send command to virtio pmem" \
-> > +			"device, no free slots in the virtqueue\n");
-> > +		req->wq_buf_avail = false;
-> > +		list_add_tail(&req->list, &vpmem->req_list);
-> > +		spin_unlock_irqrestore(&vpmem->pmem_lock, flags);
-> > +
-> > +		/* A host response results in "host_ack" getting called */
-> > +		wait_event(req->wq_buf, req->wq_buf_avail);
-> > +		spin_lock_irqsave(&vpmem->pmem_lock, flags);
-> > +	}
-> > +	err1 = virtqueue_kick(vpmem->req_vq);
-> > +	spin_unlock_irqrestore(&vpmem->pmem_lock, flags);
-> > +
-> > +	/*
-> > +	 * virtqueue_add_sgs failed with error different than -ENOSPC, we can't
-> > +	 * do anything about that.
-> > +	 */
-> > +	if (err || !err1) {
-> > +		dev_info(&vdev->dev, "failed to send command to virtio pmem device\n");
-> > +		err = -EIO;
-> > +	} else {
-> > +		/* A host repsonse results in "host_ack" getting called */
-> > +		wait_event(req->host_acked, req->done);
-> > +		err = req->ret;
-> > +I confirm that the failures I was facing with the `-ENOSPC` error path are
-> > not present in v9.
-
-Can I take it your reviewed/acked-by? or tested-by tag? for the virtio patch :)
-
-Thank you,
-Pankaj
-
-> 
-> Best,
-> Jakub Staron
-> 
-> 
