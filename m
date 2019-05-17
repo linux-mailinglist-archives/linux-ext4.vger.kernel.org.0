@@ -2,169 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C01BC20FC8
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2019 22:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941B221135
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2019 02:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727509AbfEPUzc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 May 2019 16:55:32 -0400
-Received: from mga02.intel.com ([134.134.136.20]:57142 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726785AbfEPUzc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 May 2019 16:55:32 -0400
-X-Amp-Result: UNSCANNABLE
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 May 2019 13:55:31 -0700
-X-ExtLoop1: 1
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga005.fm.intel.com with ESMTP; 16 May 2019 13:55:31 -0700
-Date:   Thu, 16 May 2019 13:56:15 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Cc:     Dan Williams <dan.j.williams@intel.com>
-Subject: Can ext4_break_layouts() ever fail?
-Message-ID: <20190516205615.GA2926@iweiny-DESK2.sc.intel.com>
+        id S1726286AbfEQATM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 May 2019 20:19:12 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:46616 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726241AbfEQATL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 May 2019 20:19:11 -0400
+Received: by mail-pg1-f196.google.com with SMTP id t187so2340129pgb.13
+        for <linux-ext4@vger.kernel.org>; Thu, 16 May 2019 17:19:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=grI6nIUF/mMOBdv6LrPvHsdNVES0yai/LfFYIZ4bkWY=;
+        b=trB5X+v2CFHJR5/h5Ogo8pnGEbixSq/5SbMCfW0BvmcDG2zeRdzxHL4lknPMI8JsaG
+         91o9aNowjUtiTckfyBLWY/pZJBmRERl33EcI9dq0zR0lXd+XHl45wImJtwD6qTmBiD3C
+         YvIdILOfNr02D208IUOgX7xjB1B80gLQERVK/akSkqvFqS79gmXpU/duephS4OxkvMCj
+         iFkaZbcWb+04sJYfOvlYsPNWM7LK/oP8HkDOryS8f1XdKVoMLZUlQ8YVZMbBQiMDnraB
+         fYXacmGWn0btEdYeftIv0rPSsHpeCBXpkkAwnfL+k2zqdhfQJ6WS6TGQ7DeGxI98ZyT1
+         d5aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=grI6nIUF/mMOBdv6LrPvHsdNVES0yai/LfFYIZ4bkWY=;
+        b=mW5C8xL4kEYP70AhMNeDzTo+pJcTnUh0zCN4OjKzwe3vFGXaReF/xeDFxeaMXULYHI
+         ZyvahDMvg2wNDj2OtYWeCTorMOZUXyMTCvDdDNaHDek8sIWGuaadmTTon7zDiXmYhc0+
+         iVSLhclz1UNux4r6/vivIGIYegQYmuiGAwzfMjli7j0rqYkAI9UnBL44nrUj5OeRC/Q/
+         Wg89UWb3MDDRVY8u0FFP7nVYXOAbPXOVNC7q9WQtEHcBRX7RzjKqvzwr1D53CxeR/BlY
+         p5ymJj2/i3o0LzxWLlCdgM9lBirpSfYGtDc5U/fl0mPnWF4zphMmglj9YGSqm3JPwsdV
+         k78A==
+X-Gm-Message-State: APjAAAV9EDQ16w/qA8vo/lA5Wm6mdHv2WMuLBiaFjxWXiulun14udppy
+        CzKPUjxTuKajMncw5r8Nrn59ew==
+X-Google-Smtp-Source: APXvYqyv1iVBQbL6jyOdYGu6UtPQiwVBUuqofcSXUoK/ck1DMyLzSDgzGJaT2Ro5WErOmsiHR9V/gQ==
+X-Received: by 2002:a63:d816:: with SMTP id b22mr52619479pgh.16.1558051959951;
+        Thu, 16 May 2019 17:12:39 -0700 (PDT)
+Received: from jstaron2.mtv.corp.google.com ([2620:15c:202:201:b94f:2527:c39f:ca2d])
+        by smtp.gmail.com with ESMTPSA id a6sm7245768pgd.67.2019.05.16.17.12.37
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Thu, 16 May 2019 17:12:39 -0700 (PDT)
+Subject: Re: [PATCH v9 2/7] virtio-pmem: Add virtio pmem driver
+To:     Pankaj Gupta <pagupta@redhat.com>, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        qemu-devel@nongnu.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org
+Cc:     dan.j.williams@intel.com, zwisler@kernel.org,
+        vishal.l.verma@intel.com, dave.jiang@intel.com, mst@redhat.com,
+        jasowang@redhat.com, willy@infradead.org, rjw@rjwysocki.net,
+        hch@infradead.org, lenb@kernel.org, jack@suse.cz, tytso@mit.edu,
+        adilger.kernel@dilger.ca, darrick.wong@oracle.com,
+        lcapitulino@redhat.com, kwolf@redhat.com, imammedo@redhat.com,
+        jmoyer@redhat.com, nilal@redhat.com, riel@surriel.com,
+        stefanha@redhat.com, aarcange@redhat.com, david@redhat.com,
+        david@fromorbit.com, cohuck@redhat.com,
+        xiaoguangrong.eric@gmail.com, pbonzini@redhat.com,
+        kilobyte@angband.pl, yuval.shaia@oracle.com, smbarber@google.com
+References: <20190514145422.16923-1-pagupta@redhat.com>
+ <20190514145422.16923-3-pagupta@redhat.com>
+From:   =?UTF-8?Q?Jakub_Staro=c5=84?= <jstaron@google.com>
+Message-ID: <c06514fd-8675-ba74-4b7b-ff0eb4a91605@google.com>
+Date:   Thu, 16 May 2019 17:12:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20190514145422.16923-3-pagupta@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On 5/14/19 7:54 AM, Pankaj Gupta wrote:
+> +		if (!list_empty(&vpmem->req_list)) {
+> +			req_buf = list_first_entry(&vpmem->req_list,
+> +					struct virtio_pmem_request, list);
+> +			req_buf->wq_buf_avail = true;
+> +			wake_up(&req_buf->wq_buf);
+> +			list_del(&req_buf->list);
+Yes, this change is the right one, thank you!
 
-While testing truncate failure options for FS DAX with GUP pins; I discovered
-that if ext4_break_layouts() returns an error it can result in orphan'ed inodes
-being left on the orphan list resulting in the following error when the FS is
-unmounted.
+> +	 /*
+> +	  * If virtqueue_add_sgs returns -ENOSPC then req_vq virtual
+> +	  * queue does not have free descriptor. We add the request
+> +	  * to req_list and wait for host_ack to wake us up when free
+> +	  * slots are available.
+> +	  */
+> +	while ((err = virtqueue_add_sgs(vpmem->req_vq, sgs, 1, 1, req,
+> +					GFP_ATOMIC)) == -ENOSPC) {
+> +
+> +		dev_err(&vdev->dev, "failed to send command to virtio pmem" \
+> +			"device, no free slots in the virtqueue\n");
+> +		req->wq_buf_avail = false;
+> +		list_add_tail(&req->list, &vpmem->req_list);
+> +		spin_unlock_irqrestore(&vpmem->pmem_lock, flags);
+> +
+> +		/* A host response results in "host_ack" getting called */
+> +		wait_event(req->wq_buf, req->wq_buf_avail);
+> +		spin_lock_irqsave(&vpmem->pmem_lock, flags);
+> +	}
+> +	err1 = virtqueue_kick(vpmem->req_vq);
+> +	spin_unlock_irqrestore(&vpmem->pmem_lock, flags);
+> +
+> +	/*
+> +	 * virtqueue_add_sgs failed with error different than -ENOSPC, we can't
+> +	 * do anything about that.
+> +	 */
+> +	if (err || !err1) {
+> +		dev_info(&vdev->dev, "failed to send command to virtio pmem device\n");
+> +		err = -EIO;
+> +	} else {
+> +		/* A host repsonse results in "host_ack" getting called */
+> +		wait_event(req->host_acked, req->done);
+> +		err = req->ret;
+> +I confirm that the failures I was facing with the `-ENOSPC` error path are not present in v9.
 
-        EXT4-fs (pmem0): Inode 12 (00000000d274c438): orphan list check failed!
-        00000000d274c438: 0001f30a 00000004 00000000 00000000 ................
-        000000001fa30de6: 0000000a 00008600 00000000 00000000 ................
-        000000003948cb2f: 00000000 00000000 00000000 00000000 ................
-
-        [snip]
-
-        000000009acf82ac: 00000003 00000003 00000000 00000000 ................
-        00000000d0cb8f52: 00000000 00000000 00000000 00000000 ................
-        000000001edc0c35: bf718fee 00000000 ..q.....
-        CPU: 5 PID: 1806 Comm: umount Not tainted 5.1.0-rc2+ #56
-        Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20180724_192412-buildhw-07.phx2.fedoraproject.org-1.fc29 04/01/4
-        Call Trace:
-         dump_stack+0x5c/0x80
-         ext4_destroy_inode+0x86/0x90
-         dispose_list+0x48/0x60
-         evict_inodes+0x160/0x1b0
-         generic_shutdown_super+0x3f/0x100
-         kill_block_super+0x21/0x50
-         deactivate_locked_super+0x34/0x70
-         cleanup_mnt+0x3b/0x70
-         task_work_run+0x8a/0xb0
-         exit_to_usermode_loop+0xb9/0xc0
-         do_syscall_64+0x153/0x180
-         entry_SYSCALL_64_after_hwframe+0x44/0xa9
-        RIP: 0033:0x7fc5ed56f6bb
-        Code: 27 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 008
-        RSP: 002b:00007ffd524be128 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-        RAX: 0000000000000000 RBX: 000055867f9b2fb0 RCX: 00007fc5ed56f6bb
-        RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055867f9b3190
-        RBP: 0000000000000000 R08: 000055867f9b31b0 R09: 00007fc5ed5f1e80
-        R10: 0000000000000000 R11: 0000000000000246 R12: 000055867f9b3190
-        R13: 00007fc5ed7261a4 R14: 0000000000000000 R15: 00007ffd524be398
-        EXT4-fs (pmem0): sb orphan head is 12
-        sb_info orphan list:
-          inode pmem0:12 at 00000000120c1727: mode 100644, nlink 1, next 0
-
-Followed by this panic:
-
-        ------------[ cut here ]------------
-        kernel BUG at fs/ext4/super.c:1022!
-        invalid opcode: 0000 [#1] SMP PTI
-        CPU: 5 PID: 1806 Comm: umount Not tainted 5.1.0-rc2+ #56
-        Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20180724_192412-buildhw-07.phx2.fedoraproject.org-1.fc29 04/01/4
-        RIP: 0010:ext4_put_super+0x369/0x370
-        Code: 24 d0 03 00 00 48 8b 40 68 83 60 60 fb 0f b7 83 a0 00 00 00 66 41 89 46 3a 41 f6 44 24 50 01 0f 85 71 fd ff ff e9 5f fd8
-        RSP: 0018:ffffc900029cfe68 EFLAGS: 00010206
-        RAX: ffff888000691dd0 RBX: ffff88800e78f800 RCX: 0000000000000000
-        RDX: 0000000000000000 RSI: ffff88800fc96838 RDI: ffff88800fc96838
-        RBP: ffff88800e78f9f8 R08: 0000000000000603 R09: 0000000000aaaaaa
-        R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800e78e800
-        R13: ffff88800e78f9f8 R14: ffffffff820b3a50 R15: ffff888016521f70
-        FS:  00007fc5ed3b8080(0000) GS:ffff88800fc80000(0000) knlGS:0000000000000000
-        CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-        CR2: 00007f55f82181a0 CR3: 0000000015e9a000 CR4: 00000000000006e0
-        Call Trace:
-         generic_shutdown_super+0x6c/0x100
-         kill_block_super+0x21/0x50
-         deactivate_locked_super+0x34/0x70
-         cleanup_mnt+0x3b/0x70
-         task_work_run+0x8a/0xb0
-         exit_to_usermode_loop+0xb9/0xc0
-         do_syscall_64+0x153/0x180
-         entry_SYSCALL_64_after_hwframe+0x44/0xa9
-        RIP: 0033:0x7fc5ed56f6bb
-        Code: 27 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 008
-        RSP: 002b:00007ffd524be128 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-        RAX: 0000000000000000 RBX: 000055867f9b2fb0 RCX: 00007fc5ed56f6bb
-        RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000055867f9b3190
-        RBP: 0000000000000000 R08: 000055867f9b31b0 R09: 00007fc5ed5f1e80
-        R10: 0000000000000000 R11: 0000000000000246 R12: 000055867f9b3190
-        R13: 00007fc5ed7261a4 R14: 0000000000000000 R15: 00007ffd524be398
-        Modules linked in: xfs libcrc32c ib_isert iscsi_target_mod rpcrdma ib_iser libiscsi scsi_transport_iscsi ib_srpt target_core_c
-        ---[ end trace c300122aad5fcd86 ]---
-        RIP: 0010:ext4_put_super+0x369/0x370
-        Code: 24 d0 03 00 00 48 8b 40 68 83 60 60 fb 0f b7 83 a0 00 00 00 66 41 89 46 3a 41 f6 44 24 50 01 0f 85 71 fd ff ff e9 5f fd8
-        RSP: 0018:ffffc900029cfe68 EFLAGS: 00010206
-        RAX: ffff888000691dd0 RBX: ffff88800e78f800 RCX: 0000000000000000
-        RDX: 0000000000000000 RSI: ffff88800fc96838 RDI: ffff88800fc96838
-        RBP: ffff88800e78f9f8 R08: 0000000000000603 R09: 0000000000aaaaaa
-        R10: 0000000000000000 R11: 0000000000000001 R12: ffff88800e78e800
-        R13: ffff88800e78f9f8 R14: ffffffff820b3a50 R15: ffff888016521f70
-        FS:  00007fc5ed3b8080(0000) GS:ffff88800fc80000(0000) knlGS:0000000000000000
-        CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-        CR2: 00007f55f82181a0 CR3: 0000000015e9a000 CR4: 00000000000006e0
-        Kernel panic - not syncing: Fatal exception
-        Kernel Offset: disabled
-        ---[ end Kernel panic - not syncing: Fatal exception ]---
-        ------------[ cut here ]------------
-
-I kind of worked around this by removing the orphan inode from the orphan list
-if ext4_break_layouts() fails.[1]  But I don't think this unwinds everything
-properly.
-
-Failing the truncate for GUP'ed pages could be done outside of
-ext4_break_layouts() so it is not absolutely necessary that it return an error.
-
-But this begs the question can ext4_break_layouts() fail?
-
-It looks to me like it is possible for ext4_break_layouts() to fail if
-prepare_to_wait_event() sees a pending signal.  Therefore I think this is a bug
-in ext4 regardless of how I may implement a truncate failure.
-
-Is that true?
-Ira
-
-
-
-[1] as shown here.
-
----
- fs/ext4/inode.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 41eb643d75ff..134f5eebee4a 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5648,6 +5648,8 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
-                if (rc) {  
-                        up_write(&EXT4_I(inode)->i_mmap_sem);
-                        error = rc;
-+                       if (orphan)
-+                               ext4_orphan_del(NULL, inode);
-                        goto err_out;
-                }
-
-
+Best,
+Jakub Staron
