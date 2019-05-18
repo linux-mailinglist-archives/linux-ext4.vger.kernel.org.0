@@ -2,71 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCC922489
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2019 20:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DAE224AF
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2019 21:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729206AbfERS7n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 18 May 2019 14:59:43 -0400
-Received: from sonic305-20.consmr.mail.gq1.yahoo.com ([98.137.64.83]:42951
-        "EHLO sonic305-20.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727600AbfERS7n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 18 May 2019 14:59:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1558205980; bh=IrP9JerFDA30T99wGhjSoOscFHB4QdQuHUSO9iAJ0E8=; h=Date:From:Subject:To:References:In-Reply-To:From:Subject; b=Iet3PjehhQBbEs4XCbdacbB24/PhbWqtk7nTcR7GgDwDc7NI6YbGiHm+D0sIeK5qk1IPA7V8O9QoBfEauAZLoEWN6z0IAUSD3KvzVEpMhJWC3dtgUf5tj3kEd/kVm8CNZXuxXZEnDMe9eyWV/ZoCQDj+SOSvyh6DAOFTi6HogsogoJEJe8wyl3oREXdNGQf3j+95b7FGs2NDnBuruVX5lAzTPCD7QY9Opy7QTpuHfxrlxGvBcE3GGFzbjAgcOg2uGhBbwCYcaiDEbr9WWNqp4zVm1/GU5oBT+HBGJrkNeMvBjV8Q034TjNzFZ4r1YUbiaK0LeCvP/sIt3QYkSV+Eew==
-X-YMail-OSG: 6Bx4DOQVM1kM1pI_028vHt1dPHOjOYDqiNJCVJLTW0vgnfMUTHJ4N2Y3es84Q1n
- hJiCzBtTjhQE0mxorBkFefHzmFzW_.mnNEXrdqePIUNnWGbwd6R2uo4_nNubuMjsjDnmOhEUyKdW
- _Ji.NHGU91OEA9UmoPUtZ.Io4RIspApRi74LzA0kUeS2j_A0tW3DnD_xwYkBnLOinujEqNpnX.J7
- Bzx72FxQbbY.j.ZfvFCk76G1qswIoXAE9kVigICiENIEq.d3wBIjNDByiH.KiET04Rydj6xRjv0Q
- kIAW.qxJpSMGKTPwm9LJQhpZXHAAqmiePY3XmFTOmcG50heLD89OWXqmADLhDaoqu6m4od9JCDG3
- F1oFX4673TGl0Od_9g8dE3kckkCjxvsir346jIAvOrWUZguTVKP3YUHgQiyYq7YbgqYHujToX42x
- 9QSmTpcyP6DKZqI6cWebegiEcFZtE42QlIDudtik3SGZ2Etw3mSBKyJdtoNj2We1cLRp8cBADjLi
- 9PHaTCKrYuoNDcitkA4JMkdAXBDZTXwlYYvkDPE8tAk4xp1X2Iw9te1MJaeCw6Ur18oQi3srYyjt
- snQ8WSdVq0UB_zDna4IVifydRYrJxjicVfK4Ez_1hExSa9YUdQDwkHiuksvp1tzZWARX0oq0GV2G
- wjEylQF6MUny9kqCxL.Erq1h9Pc4csbjoZ0FHfVvSWsz9u5.eH6vp4NThHOHjYq82GGAN10.kwNC
- YPWblmBuxpaEh5XEzmwLxFfFSbgsWKXF.K5WCLQy9Su7Bmtnuh5IDMIID.SsdbyV_VTcEOILSzt0
- xNSLh.UWkapx3gUqW9v3fW3Sa09hIyE5QeTZgsqWPWuYc8jDJ4Ik0stgJOmOu6izk.FFJ6Dp5c9s
- 7D9q99cmeKRcoQ3HMgki5hobgaWaVH6wFrYpYMxr5pWwTZqXNpV8z7zyzKVT.aLSZuTQAIcdvuRH
- EfcxAI9mVAXE9vz3wJj366n612YGNjKXMZsHT4cGfTV81qf.JRZRx1sIoFr5pN.fVOmBekvnOAQm
- Fjp6l2lcI61QRmKrdKh1pSDfoqgK18FQ4p7Hu3_5vcoIn4igUhUVZVwG4e5zrt8aHvqWIHns5AIt
- NJq5T3xM7xwCyN.qIUKPBG1zX4Yc6wHViZHhtxFz2ttttFpCeRow.yW9Q8hnZ9om_r9E1j9m1pxw
- utO3SL54hMHJoDEXEDQ9k.Mh8KQyMFH2hM0IXzj2yxpwG7eFfFHQzN85clOxA_gN3jXRfHQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.gq1.yahoo.com with HTTP; Sat, 18 May 2019 18:59:40 +0000
-Received: from CPE00fc8de26033-CM00fc8de26030.cpe.net.cable.rogers.com (EHLO localhost) ([99.228.156.240])
-          by smtp410.mail.gq1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID 38d8e7f99c75f9e57aa7564c5ea29efe;
-          Sat, 18 May 2019 18:59:37 +0000 (UTC)
-Date:   Sat, 18 May 2019 14:59:29 -0400
-From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Subject: Re: [bugreport] kernel 5.2 pblk bad header/extent: invalid extent
- entries
-To:     linux-ext4@vger.kernel.org,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-References: <CABXGCsNPMSQgBjnFarYaxuQEGpA1G=U4U9OHqT0E53pNL2BK8g@mail.gmail.com>
-        <CABXGCsNV6EQq0EG=iO8mWCCv9da__9iyLmwyzS3nGtjjvhShfg@mail.gmail.com>
-In-Reply-To: <CABXGCsNV6EQq0EG=iO8mWCCv9da__9iyLmwyzS3nGtjjvhShfg@mail.gmail.com>
+        id S1729911AbfERT3s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 18 May 2019 15:29:48 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52260 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729206AbfERT3s (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 18 May 2019 15:29:48 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4IJT0Gx030129
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 18 May 2019 15:29:01 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 5DC5E420027; Sat, 18 May 2019 15:28:47 -0400 (EDT)
+Date:   Sat, 18 May 2019 15:28:47 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, jack@suse.cz,
+        jmoyer@redhat.com, amakhalov@vmware.com, anishs@vmware.com,
+        srivatsab@vmware.com
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Message-ID: <20190518192847.GB14277@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, jack@suse.cz,
+        jmoyer@redhat.com, amakhalov@vmware.com, anishs@vmware.com,
+        srivatsab@vmware.com
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
 MIME-Version: 1.0
-User-Agent: astroid/0.14.0 (https://github.com/astroidmail/astroid)
-Message-Id: <1558205941.pbpzbe25nt.astroid@alex-desktop.none>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Excerpts from Mikhail Gavrilov's message of May 18, 2019 7:07 am:
-> On Sat, 18 May 2019 at 11:44, Mikhail Gavrilov
-> <mikhail.v.gavrilov@gmail.com> wrote:
->> [28616.429757] EXT4-fs error (device nvme0n1p2): ext4_find_extent:908:
->> inode #8: comm jbd2/nvme0n1p2-: pblk 23101439 bad header/extent:
->> invalid extent entries - magic f30a, entries 8, max 340(340), depth
->> 0(0)
+On Sat, May 18, 2019 at 08:39:54PM +0200, Paolo Valente wrote:
+> I've addressed these issues in my last batch of improvements for
+> BFQ, which landed in the upcoming 5.2. If you give it a try, and
+> still see the problem, then I'll be glad to reproduce it, and
+> hopefully fix it for you.
 
+Hi Paolo, I'm curious if you could give a quick summary about what you
+changed in BFQ?
 
-I had a similar problem today:
+I was considering adding support so that if userspace calls fsync(2)
+or fdatasync(2), to attach the process's CSS to the transaction, and
+then charge all of the journal metadata writes the process's CSS.  If
+there are multiple fsync's batched into the transaction, the first
+process which forced the early transaction commit would get charged
+the entire journal write.  OTOH, journal writes are sequential I/O, so
+the amount of disk time for writing the journal is going to be
+relatively small, and especially, the fact that work from other
+cgroups is going to be minimal, especially if hadn't issued an
+fsync().
 
-EXT4-fs error (device dm-0): ext4_find_extent:908: inode #8: comm jbd2/dm-0=
--8: pblk 117997567 bad header/extent: invalid extent entries - magic f30a, =
-entries 8, max 340(340), depth 0(0)
+In the case where you have three cgroups all issuing fsync(2) and they
+all landed in the same jbd2 transaction thanks to commit batching, in
+the ideal world we would split up the disk time usage equally across
+those three cgroups.  But it's probably not worth doing that...
 
-I am using dm-crypt on SATA disk.
+That being said, we probably do need some BFQ support, since in the
+case where we have multiple processes doing buffered writes w/o fsync,
+we do charnge the data=ordered writeback to each block cgroup.  Worse,
+the commit can't complete until the all of the data integrity
+writebacks have completed.  And if there are N cgroups with dirty
+inodes, and slice_idle set to 8ms, there is going to be 8*N ms worth
+of idle time tacked onto the commit time.
+
+If we charge the journal I/O to the cgroup, and there's only one
+process doing the 
+
+   dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflags=dsync
+
+then we don't need to worry about this failure mode, since both the
+journal I/O and the data writeback will be hitting the same cgroup.
+But that's arguably an artificial use case, and much more commonly
+there will be multiple cgroups all trying to at least some file system
+I/O.
+
+						- Ted
