@@ -2,99 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DAE224AF
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2019 21:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889FF224BA
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2019 21:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729911AbfERT3s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 18 May 2019 15:29:48 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52260 "EHLO
+        id S1729206AbfERTys (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 18 May 2019 15:54:48 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56015 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729206AbfERT3s (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 18 May 2019 15:29:48 -0400
+        with ESMTP id S1729182AbfERTys (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 18 May 2019 15:54:48 -0400
 Received: from callcc.thunk.org ([66.31.38.53])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4IJT0Gx030129
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4IJsc9g004184
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 18 May 2019 15:29:01 -0400
+        Sat, 18 May 2019 15:54:39 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 5DC5E420027; Sat, 18 May 2019 15:28:47 -0400 (EDT)
-Date:   Sat, 18 May 2019 15:28:47 -0400
+        id D70C6420027; Sat, 18 May 2019 15:54:24 -0400 (EDT)
+Date:   Sat, 18 May 2019 15:54:24 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, jack@suse.cz,
-        jmoyer@redhat.com, amakhalov@vmware.com, anishs@vmware.com,
-        srivatsab@vmware.com
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Message-ID: <20190518192847.GB14277@mit.edu>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Philippe Mazenauer <philippe.mazenauer@outlook.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ext4: Variable to signed to check return code
+Message-ID: <20190518195424.GC14277@mit.edu>
 Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, jack@suse.cz,
-        jmoyer@redhat.com, amakhalov@vmware.com, anishs@vmware.com,
-        srivatsab@vmware.com
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+        Lee Jones <lee.jones@linaro.org>,
+        Philippe Mazenauer <philippe.mazenauer@outlook.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <AM0PR07MB4417C1C3A4E55EFE47027CA2FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
+ <20190517102506.GU4319@dell>
+ <20190517202810.GA21961@mit.edu>
+ <20190518063834.GX4319@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+In-Reply-To: <20190518063834.GX4319@dell>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, May 18, 2019 at 08:39:54PM +0200, Paolo Valente wrote:
-> I've addressed these issues in my last batch of improvements for
-> BFQ, which landed in the upcoming 5.2. If you give it a try, and
-> still see the problem, then I'll be glad to reproduce it, and
-> hopefully fix it for you.
+On Sat, May 18, 2019 at 07:38:34AM +0100, Lee Jones wrote:
+>   "- Acked-by: indicates an agreement by another developer (often a
+>      maintainer of the relevant code) that the patch is appropriate for
+>      inclusion into the kernel."
+> 
+> And I, as a developer (and not a Maintainer in this case) do indicate
+> that this patch is appropriate for inclusion into the kernel.
+> 
+> Reviewed-by has stronger connotations and implies I have in-depth
+> knowledge of the subsystem/driver AND agree to the Reviewer's
+> Statement.  I use Acked-by in this case as a weaker agreement after a
+> shallow review of the patch based on its merits alone.
 
-Hi Paolo, I'm curious if you could give a quick summary about what you
-changed in BFQ?
+Note the "often a maintainer of the relevant code" bit.  And
+"appropriate for inclusion into the kernel" means to me that you've
+done the same level of review as Reviewed-by.  So I have very
+different understanding of how Acked-by and Reviewed-by than you do.
 
-I was considering adding support so that if userspace calls fsync(2)
-or fdatasync(2), to attach the process's CSS to the transaction, and
-then charge all of the journal metadata writes the process's CSS.  If
-there are multiple fsync's batched into the transaction, the first
-process which forced the early transaction commit would get charged
-the entire journal write.  OTOH, journal writes are sequential I/O, so
-the amount of disk time for writing the journal is going to be
-relatively small, and especially, the fact that work from other
-cgroups is going to be minimal, especially if hadn't issued an
-fsync().
+That being said, no offence to you, but any kind of Acked-by or
+Reviewed-by from you is not going to have as much weight as say, a
+Reviewed-by: from someone like Jan Kara.  That's just because I don't
+have a good sense to your technical ability, and so I'd be doing a
+full review myself and not rely on your review at all....
 
-In the case where you have three cgroups all issuing fsync(2) and they
-all landed in the same jbd2 transaction thanks to commit batching, in
-the ideal world we would split up the disk time usage equally across
-those three cgroups.  But it's probably not worth doing that...
+Cheers,
 
-That being said, we probably do need some BFQ support, since in the
-case where we have multiple processes doing buffered writes w/o fsync,
-we do charnge the data=ordered writeback to each block cgroup.  Worse,
-the commit can't complete until the all of the data integrity
-writebacks have completed.  And if there are N cgroups with dirty
-inodes, and slice_idle set to 8ms, there is going to be 8*N ms worth
-of idle time tacked onto the commit time.
+					- Ted
 
-If we charge the journal I/O to the cgroup, and there's only one
-process doing the 
+P.S.  And if I find a problem in the patch, and someone had attached
+their Acked-by or Reviewed-by to it, it would have the same negative
+hit to their reputation either way.  Not a big deal if it happens only
+once, or it's an esepcially tricky issue, but it if happens more than
+once or is really blatent, I as the maintainer definitely do remember.
 
-   dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflags=dsync
-
-then we don't need to worry about this failure mode, since both the
-journal I/O and the data writeback will be hitting the same cgroup.
-But that's arguably an artificial use case, and much more commonly
-there will be multiple cgroups all trying to at least some file system
-I/O.
-
-						- Ted
