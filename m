@@ -2,190 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E816122486
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2019 20:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCC922489
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2019 20:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729425AbfERSkA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 18 May 2019 14:40:00 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38733 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729163AbfERSkA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 18 May 2019 14:40:00 -0400
-Received: by mail-wr1-f66.google.com with SMTP id d18so10308442wrs.5
-        for <linux-ext4@vger.kernel.org>; Sat, 18 May 2019 11:39:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=ouEAfY4fVdVHhS9xR65IP6Zu3YZKMcX1yK26/K9YRUY=;
-        b=nlp7cHJt2SjtBL+lyV4uwEHDsEea6nRrWx5BU9r3PG8LieJX1ROiQDyxQpLG1WdGm/
-         2TrUP8Z6n6D2ouN6A/3sw7WZysGcv73ll6ZTXI8RyL+ntXWvd5wHWzQ0o6aS92tqPJju
-         C1rGQW9JCxQuhs7CQOqrLPbJWm4aEiqDd41KQhAWZirqNKSNz9MAlQOMB68cUxn0UUTe
-         KIP/emPF1QPcyA/CLxVNJXMr1X2h46CgI12jfOyhBlI++DQErsG3wj3NPXfXWYj9glIE
-         wEEPycLptPZkBPIoyZqcaurC/U5Ltp6ZOOnPhW8BvqdYLnVBza6XzYvD+pPkgWf02k+g
-         eK+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=ouEAfY4fVdVHhS9xR65IP6Zu3YZKMcX1yK26/K9YRUY=;
-        b=fdU+XW89+ZSGxunpQ0JpGzFkxX5QWtkqpnwa1Fh9e315HIt5wU0g8bqYbdM6J3sgWg
-         hKxXbG8PPgR4uOSpaIADAgWW7FloRqw3uLo92Fjlba5CFpdn4P3B2PwERK1L9y8XmhnW
-         YXMBPq17NEaEuVIyG5K9eLNoZnkbGh67NOCBlpfsFXcFV82r8ByS5qY4MUc3n5g0bS5d
-         ohWiCMGF2gPcGBqGxkbdT839XCby+nkcn9RY+k11I6yOQWgg897LT+6FD2Tz2yk7EHUi
-         OWoPUbfGdM8h22M8wOgbW+tEINcp/TRSMq0fPC6qkqYwPnSSma7APRWcqFJC4K4tejD6
-         /hTQ==
-X-Gm-Message-State: APjAAAX7EyT9BonD+v086M/sjXeCEr7w4kxvf/6/8cCDUw67evCcuiH/
-        x04tDTZ9W7SUbeQOrOElfeJg7g==
-X-Google-Smtp-Source: APXvYqzVK8BV5Of9EvEM1INCvl8U4K12CuUulfyj9lY9OcHKvXPf2OwHmZNC0FvObtMXpR/7vHW8IA==
-X-Received: by 2002:a5d:5701:: with SMTP id a1mr40449129wrv.52.1558204797886;
-        Sat, 18 May 2019 11:39:57 -0700 (PDT)
-Received: from [192.168.0.104] (146-241-112-39.dyn.eolo.it. [146.241.112.39])
-        by smtp.gmail.com with ESMTPSA id m206sm16520509wmf.21.2019.05.18.11.39.55
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 18 May 2019 11:39:56 -0700 (PDT)
-From:   Paolo Valente <paolo.valente@linaro.org>
-Message-Id: <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_2AB4EAF8-8BC4-47A0-9500-56DE63C63E62";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Date:   Sat, 18 May 2019 20:39:54 +0200
-In-Reply-To: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, jack@suse.cz,
-        jmoyer@redhat.com, tytso@mit.edu, amakhalov@vmware.com,
-        anishs@vmware.com, srivatsab@vmware.com
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
-X-Mailer: Apple Mail (2.3445.104.8)
+        id S1729206AbfERS7n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 18 May 2019 14:59:43 -0400
+Received: from sonic305-20.consmr.mail.gq1.yahoo.com ([98.137.64.83]:42951
+        "EHLO sonic305-20.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727600AbfERS7n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 18 May 2019 14:59:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1558205980; bh=IrP9JerFDA30T99wGhjSoOscFHB4QdQuHUSO9iAJ0E8=; h=Date:From:Subject:To:References:In-Reply-To:From:Subject; b=Iet3PjehhQBbEs4XCbdacbB24/PhbWqtk7nTcR7GgDwDc7NI6YbGiHm+D0sIeK5qk1IPA7V8O9QoBfEauAZLoEWN6z0IAUSD3KvzVEpMhJWC3dtgUf5tj3kEd/kVm8CNZXuxXZEnDMe9eyWV/ZoCQDj+SOSvyh6DAOFTi6HogsogoJEJe8wyl3oREXdNGQf3j+95b7FGs2NDnBuruVX5lAzTPCD7QY9Opy7QTpuHfxrlxGvBcE3GGFzbjAgcOg2uGhBbwCYcaiDEbr9WWNqp4zVm1/GU5oBT+HBGJrkNeMvBjV8Q034TjNzFZ4r1YUbiaK0LeCvP/sIt3QYkSV+Eew==
+X-YMail-OSG: 6Bx4DOQVM1kM1pI_028vHt1dPHOjOYDqiNJCVJLTW0vgnfMUTHJ4N2Y3es84Q1n
+ hJiCzBtTjhQE0mxorBkFefHzmFzW_.mnNEXrdqePIUNnWGbwd6R2uo4_nNubuMjsjDnmOhEUyKdW
+ _Ji.NHGU91OEA9UmoPUtZ.Io4RIspApRi74LzA0kUeS2j_A0tW3DnD_xwYkBnLOinujEqNpnX.J7
+ Bzx72FxQbbY.j.ZfvFCk76G1qswIoXAE9kVigICiENIEq.d3wBIjNDByiH.KiET04Rydj6xRjv0Q
+ kIAW.qxJpSMGKTPwm9LJQhpZXHAAqmiePY3XmFTOmcG50heLD89OWXqmADLhDaoqu6m4od9JCDG3
+ F1oFX4673TGl0Od_9g8dE3kckkCjxvsir346jIAvOrWUZguTVKP3YUHgQiyYq7YbgqYHujToX42x
+ 9QSmTpcyP6DKZqI6cWebegiEcFZtE42QlIDudtik3SGZ2Etw3mSBKyJdtoNj2We1cLRp8cBADjLi
+ 9PHaTCKrYuoNDcitkA4JMkdAXBDZTXwlYYvkDPE8tAk4xp1X2Iw9te1MJaeCw6Ur18oQi3srYyjt
+ snQ8WSdVq0UB_zDna4IVifydRYrJxjicVfK4Ez_1hExSa9YUdQDwkHiuksvp1tzZWARX0oq0GV2G
+ wjEylQF6MUny9kqCxL.Erq1h9Pc4csbjoZ0FHfVvSWsz9u5.eH6vp4NThHOHjYq82GGAN10.kwNC
+ YPWblmBuxpaEh5XEzmwLxFfFSbgsWKXF.K5WCLQy9Su7Bmtnuh5IDMIID.SsdbyV_VTcEOILSzt0
+ xNSLh.UWkapx3gUqW9v3fW3Sa09hIyE5QeTZgsqWPWuYc8jDJ4Ik0stgJOmOu6izk.FFJ6Dp5c9s
+ 7D9q99cmeKRcoQ3HMgki5hobgaWaVH6wFrYpYMxr5pWwTZqXNpV8z7zyzKVT.aLSZuTQAIcdvuRH
+ EfcxAI9mVAXE9vz3wJj366n612YGNjKXMZsHT4cGfTV81qf.JRZRx1sIoFr5pN.fVOmBekvnOAQm
+ Fjp6l2lcI61QRmKrdKh1pSDfoqgK18FQ4p7Hu3_5vcoIn4igUhUVZVwG4e5zrt8aHvqWIHns5AIt
+ NJq5T3xM7xwCyN.qIUKPBG1zX4Yc6wHViZHhtxFz2ttttFpCeRow.yW9Q8hnZ9om_r9E1j9m1pxw
+ utO3SL54hMHJoDEXEDQ9k.Mh8KQyMFH2hM0IXzj2yxpwG7eFfFHQzN85clOxA_gN3jXRfHQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.gq1.yahoo.com with HTTP; Sat, 18 May 2019 18:59:40 +0000
+Received: from CPE00fc8de26033-CM00fc8de26030.cpe.net.cable.rogers.com (EHLO localhost) ([99.228.156.240])
+          by smtp410.mail.gq1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID 38d8e7f99c75f9e57aa7564c5ea29efe;
+          Sat, 18 May 2019 18:59:37 +0000 (UTC)
+Date:   Sat, 18 May 2019 14:59:29 -0400
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: Re: [bugreport] kernel 5.2 pblk bad header/extent: invalid extent
+ entries
+To:     linux-ext4@vger.kernel.org,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+References: <CABXGCsNPMSQgBjnFarYaxuQEGpA1G=U4U9OHqT0E53pNL2BK8g@mail.gmail.com>
+        <CABXGCsNV6EQq0EG=iO8mWCCv9da__9iyLmwyzS3nGtjjvhShfg@mail.gmail.com>
+In-Reply-To: <CABXGCsNV6EQq0EG=iO8mWCCv9da__9iyLmwyzS3nGtjjvhShfg@mail.gmail.com>
+MIME-Version: 1.0
+User-Agent: astroid/0.14.0 (https://github.com/astroidmail/astroid)
+Message-Id: <1558205941.pbpzbe25nt.astroid@alex-desktop.none>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
---Apple-Mail=_2AB4EAF8-8BC4-47A0-9500-56DE63C63E62
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-I've addressed these issues in my last batch of improvements for BFQ, =
-which landed in the upcoming 5.2. If you give it a try, and still see =
-the problem, then I'll be glad to reproduce it, and hopefully fix it for =
-you.
-
-Thanks,
-Paolo
-
-> Il giorno 18 mag 2019, alle ore 00:16, Srivatsa S. Bhat =
-<srivatsa@csail.mit.edu> ha scritto:
->=20
->=20
-> Hi,
->=20
-> One of my colleagues noticed upto 10x - 30x drop in I/O throughput
-> running the following command, with the CFQ I/O scheduler:
->=20
-> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
-oflags=3Ddsync
->=20
-> Throughput with CFQ: 60 KB/s
-> Throughput with noop or deadline: 1.5 MB/s - 2 MB/s
->=20
-> I spent some time looking into it and found that this is caused by the
-> undesirable interaction between 4 different components:
->=20
-> - blkio cgroup controller enabled
-> - ext4 with the jbd2 kthread running in the root blkio cgroup
-> - dd running on ext4, in any other blkio cgroup than that of jbd2
-> - CFQ I/O scheduler with defaults for slice_idle and group_idle
->=20
->=20
-> When docker is enabled, systemd creates a blkio cgroup called
-> system.slice to run system services (and docker) under it, and a
-> separate blkio cgroup called user.slice for user processes. So, when
-> dd is invoked, it runs under user.slice.
->=20
-> The dd command above includes the dsync flag, which performs an
-> fdatasync after every write to the output file. Since dd is writing to
-> a file on ext4, jbd2 will be active, committing transactions
-> corresponding to those fdatasync requests from dd. (In other words, dd
-> depends on jdb2, in order to make forward progress). But jdb2 being a
-> kernel thread, runs in the root blkio cgroup, as opposed to dd, which
-> runs under user.slice.
->=20
-> Now, if the I/O scheduler in use for the underlying block device is
-> CFQ, then its inter-queue/inter-group idling takes effect (via the
-> slice_idle and group_idle parameters, both of which default to 8ms).
-> Therefore, everytime CFQ switches between processing requests from dd
-> vs jbd2, this 8ms idle time is injected, which slows down the overall
-> throughput tremendously!
->=20
-> To verify this theory, I tried various experiments, and in all cases,
-> the 4 pre-conditions mentioned above were necessary to reproduce this
-> performance drop. For example, if I used an XFS filesystem (which
-> doesn't use a separate kthread like jbd2 for journaling), or if I =
-dd'ed
-> directly to a block device, I couldn't reproduce the performance
-> issue. Similarly, running dd in the root blkio cgroup (where jbd2
-> runs) also gets full performance; as does using the noop or deadline
-> I/O schedulers; or even CFQ itself, with slice_idle and group_idle set
-> to zero.
->=20
-> These results were reproduced on a Linux VM (kernel v4.19) on ESXi,
-> both with virtualized storage as well as with disk pass-through,
-> backed by a rotational hard disk in both cases. The same problem was
-> also seen with the BFQ I/O scheduler in kernel v5.1.
->=20
-> Searching for any earlier discussions of this problem, I found an old
-> thread on LKML that encountered this behavior [1], as well as a docker
-> github issue [2] with similar symptoms (mentioned later in the
-> thread).
->=20
-> So, I'm curious to know if this is a well-understood problem and if
-> anybody has any thoughts on how to fix it.
->=20
-> Thank you very much!
->=20
->=20
-> [1]. https://lkml.org/lkml/2015/11/19/359
->=20
-> [2]. https://github.com/moby/moby/issues/21485
->     https://github.com/moby/moby/issues/21485#issuecomment-222941103
->=20
-> Regards,
-> Srivatsa
+Excerpts from Mikhail Gavrilov's message of May 18, 2019 7:07 am:
+> On Sat, 18 May 2019 at 11:44, Mikhail Gavrilov
+> <mikhail.v.gavrilov@gmail.com> wrote:
+>> [28616.429757] EXT4-fs error (device nvme0n1p2): ext4_find_extent:908:
+>> inode #8: comm jbd2/nvme0n1p2-: pblk 23101439 bad header/extent:
+>> invalid extent entries - magic f30a, entries 8, max 340(340), depth
+>> 0(0)
 
 
---Apple-Mail=_2AB4EAF8-8BC4-47A0-9500-56DE63C63E62
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+I had a similar problem today:
 
------BEGIN PGP SIGNATURE-----
+EXT4-fs error (device dm-0): ext4_find_extent:908: inode #8: comm jbd2/dm-0=
+-8: pblk 117997567 bad header/extent: invalid extent entries - magic f30a, =
+entries 8, max 340(340), depth 0(0)
 
-iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzgUXoACgkQOAkCLQGo
-9oPNXw//edQtNFa1ZbM3WUODyCQi7cKAIh4ducAKO16wY4cr3eaXmlDO++GEBBos
-cPdrh1eqQUs6ARuLbmwyLSCZpm3dyJFuK6RBqWYAPdM8vExd4cl6xAHzCK271grv
-2+HvBk5p9/fR+TZoKKz/fv6gJG1qBW6/sdVwLGY7pb6J9iTYjRO6t2faRhc6LXFE
-LrsLOwF4OzYYhYbbU1tvTu34VxDycloASVdaYUQsqA9B3C5NO1VeMVhoPRFXL6fK
-8ZOiXkpOZLaqldXk6sctyg7yWFmzjUFS/PfnG3ZBSOGWYhA0T7aIEzOddQy39Ckx
-iEFl6DCCsUrzCw7kWZRjitVeDZp1itdANtNmqBBwcv/ccW1ag4Hryt08F9LSNKp/
-P4JDKOLezZ39VQyLoOnYVT/HeCQjx1uQpmilE3lU6+KFEjq61lD5y072Wz8Nw8AE
-qVjwv7Z2FPAROe8JGVpHn6YMvFzrl79nKa+ji9BlQWm1JVvgDcHoZGdVyuaznNyV
-NXOpSbi2BnsQvyfhNYwSc9/Jkopfbx/3fMkTK7LnLLSiPo1snzC2bMdICJPWtsYx
-Vqd4II1J1ZcvSmllZ7lOHpAi3JsPbuemcx0fvA8CXdBST0ZgEuaJLzb2MM5+X8uP
-SJwBn7Vy3TlM6kio9mtr4W3x2341l/FmpxnHWDZiCFsS6A/EQ6c=
-=FzRW
------END PGP SIGNATURE-----
-
---Apple-Mail=_2AB4EAF8-8BC4-47A0-9500-56DE63C63E62--
+I am using dm-crypt on SATA disk.
