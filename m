@@ -2,140 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0A823C40
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2019 17:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B46823D2D
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2019 18:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388989AbfETPgu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 May 2019 11:36:50 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38844 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732280AbfETPgu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 May 2019 11:36:50 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4KFaePI015626
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 May 2019 11:36:41 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id EF219420027; Mon, 20 May 2019 11:36:39 -0400 (EDT)
-Date:   Mon, 20 May 2019 11:36:39 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Philippe Mazenauer <philippe.mazenauer@outlook.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
+        id S2391241AbfETQYc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 20 May 2019 12:24:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:46179 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389259AbfETQYc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 20 May 2019 12:24:32 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 May 2019 09:24:31 -0700
+X-ExtLoop1: 1
+Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
+  by orsmga003.jf.intel.com with ESMTP; 20 May 2019 09:24:31 -0700
+Received: from fmsmsx122.amr.corp.intel.com (10.18.125.37) by
+ fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
+ id 14.3.408.0; Mon, 20 May 2019 09:24:31 -0700
+Received: from crsmsx104.amr.corp.intel.com (172.18.63.32) by
+ fmsmsx122.amr.corp.intel.com (10.18.125.37) with Microsoft SMTP Server (TLS)
+ id 14.3.408.0; Mon, 20 May 2019 09:24:30 -0700
+Received: from crsmsx101.amr.corp.intel.com ([169.254.1.116]) by
+ CRSMSX104.amr.corp.intel.com ([169.254.6.192]) with mapi id 14.03.0415.000;
+ Mon, 20 May 2019 10:24:28 -0600
+From:   "Weiny, Ira" <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+CC:     Theodore Ts'o <tytso@mit.edu>,
         "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ext4: Variable to signed to check return code
-Message-ID: <20190520153639.GB3933@mit.edu>
-Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philippe Mazenauer <philippe.mazenauer@outlook.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <AM0PR07MB4417C1C3A4E55EFE47027CA2FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
- <20190517102506.GU4319@dell>
- <20190517202810.GA21961@mit.edu>
- <20190518063834.GX4319@dell>
- <20190518195424.GC14277@mit.edu>
- <20190520082402.GZ4319@dell>
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: RE: Can ext4_break_layouts() ever fail?
+Thread-Topic: Can ext4_break_layouts() ever fail?
+Thread-Index: AdUMKbLCbEtFBcIaSfOpe+6ZL3lGpQAl+awAAAjm/AAAjJpZAAAEIN1g
+Date:   Mon, 20 May 2019 16:24:27 +0000
+Message-ID: <2807E5FD2F6FDA4886F6618EAC48510E79D2A98C@CRSMSX101.amr.corp.intel.com>
+References: <20190516205615.GA2926@iweiny-DESK2.sc.intel.com>
+ <20190517090252.GC20550@quack2.suse.cz>
+ <20190517201746.GA14175@iweiny-DESK2.sc.intel.com>
+ <20190520082340.GB30972@quack2.suse.cz>
+In-Reply-To: <20190520082340.GB30972@quack2.suse.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-titus-metadata-40: eyJDYXRlZ29yeUxhYmVscyI6IiIsIk1ldGFkYXRhIjp7Im5zIjoiaHR0cDpcL1wvd3d3LnRpdHVzLmNvbVwvbnNcL0ludGVsMyIsImlkIjoiNTRjMWQwYjktYjQzOC00NjIwLWE2ZTUtODczZGY3MDljZGI3IiwicHJvcHMiOlt7Im4iOiJDVFBDbGFzc2lmaWNhdGlvbiIsInZhbHMiOlt7InZhbHVlIjoiQ1RQX05UIn1dfV19LCJTdWJqZWN0TGFiZWxzIjpbXSwiVE1DVmVyc2lvbiI6IjE3LjEwLjE4MDQuNDkiLCJUcnVzdGVkTGFiZWxIYXNoIjoiVDgzbG9kYXdoeEhGQlNWOGdMR3BPbGtSekViMk9nTnJaY1g3cHRXTUw3NVVuQ0lldVNNejBYSXhmN0x5NnlERCJ9
+x-ctpclassification: CTP_NT
+dlp-product: dlpe-windows
+dlp-version: 11.0.600.7
+dlp-reaction: no-action
+x-originating-ip: [172.18.205.10]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190520082402.GZ4319@dell>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 20, 2019 at 09:24:02AM +0100, Lee Jones wrote:
-> > "appropriate for inclusion into the kernel" means to me that you've
-> > done the same level of review as Reviewed-by.  So I have very
+> On Fri 17-05-19 13:17:47, Ira Weiny wrote:
+> > On Fri, May 17, 2019 at 11:02:52AM +0200, Jan Kara wrote:
+> > > On Thu 16-05-19 13:56:15, Ira Weiny wrote:
+> > >
+> > > > It looks to me like it is possible for ext4_break_layouts() to
+> > > > fail if
+> > > > prepare_to_wait_event() sees a pending signal.  Therefore I think
+> > > > this is a bug in ext4 regardless of how I may implement a truncate
+> failure.
+> > >
+> > > Yes, it's a bug in ext4.
+> > >
+> > > > --- a/fs/ext4/inode.c
+> > > > +++ b/fs/ext4/inode.c
+> > > > @@ -5648,6 +5648,8 @@ int ext4_setattr(struct dentry *dentry,
+> struct iattr *attr)
+> > > >                 if (rc) {
+> > > >                         up_write(&EXT4_I(inode)->i_mmap_sem);
+> > > >                         error = rc;
+> > > > +                       if (orphan)
+> > > > +                               ext4_orphan_del(NULL, inode);
+> > >
+> > > This isn't quite correct. This would silence the warning but leave
+> > > the inode in on-disk orphan list. That is OK in case of fs-meltdown
+> > > types of failures like IO errors for metadata, aborted journal, or stuff like
+> that.
+> > > But failing ext4_break_layouts() needs to be handled gracefully
+> > > maintaining fs consistency. So you rather need something like:
+> > >
+> > > 			if (orphan && inode->i_nlink > 0) {
+> > > 				handle_t *handle;
+> > >
+> > > 				handle = ext4_journal_start(inode,
+> > > 						EXT4_HT_INODE, 3);
+> > > 				if (IS_ERR(handle)) {
+> > > 					ext4_orphan_del(NULL, inode);
+> > > 					goto err_out;
+> > > 				}
+> > > 				ext4_orphan_del(handle, inode);
+> > > 				ext4_journal_stop(handle);
+> > > 			}
+> > >
+> >
+> > Thanks!  Unfortunately, even with your suggestion something is still
+> > wrong with my code.
+> >
+> > For some reason this does not seem to be "canceling" the truncate
+> > completely.  With my test code for FS DAX which fails
+> > ext4_break_layout() the file is being truncated and an application
+> > which is writing past that truncation is getting a SIGBUS.
 > 
-> Actually it doesn't, or else the documentation text for Acked-by would
-> be just as intense as it is for Reviewed-by.  Reviewed-by IMHO has a
-> much stronger standing than an Acked-by (caveat: when not provided by
-> a maintainer of the appropriate subsystem).
-
-Well quoting from submitting-patches: "It [Acked-by: ] is a record
-that the acker has AT LEAST REVIEWED THE PATCH" (emphasis mine).
-
-The primary use of it is to "signify and record their approval of it".
-And...
-
-    Acked-by: does not necessarily indicate acknowledgement of the
-    entire patch.  For example, if a patch affects multiple subsystems
-    and has an Acked-by: from one subsystem maintainer then this
-    usually indicates acknowledgement of just the part which affects
-    that maintainer's code.  Judgement should be used here.  When in
-    doubt people should refer to the original discussion in the
-    mailing list archives.
-
-My question is what is the *point* of including a non-maintainer's
-Acked-by: to the git record?  And if it's not the maintainer (or a
-core developer for a subsystem), then it becomes unclear what portion
-of the patch the non-Maintainer has reviewed.  So at that point, how
-can a Maintainer rely on a non-Maintainer Acked-by at all in the first
-place?
-
-> > and so I'd be doing a full review myself
+> Looking at the code again, I'm not really surprised. The path bailing out of
+> truncate in case ext4_break_layouts() fails is really hosed. The problem is
+> that when we get to ext4_break_layouts(), we have already updated i_size
+> and i_disksize and we happily leave them at their new values when bailing
+> out. So we need to somewhat reorder the stuff we do in ext4_setattr(). I'll
+> send a patch for that since it needs some considerations for proper lock
+> ordering etc... Thanks for experimenting with this :)
 > 
-> I'd think a great deal less of you if you didn't.
-> 
-> > and not rely on your review at all....
-> 
-> "at all" - wow!  What kind of message do you think this gives to first
-> time contributors (like Philippe here), or would-be reviewers?  That
-> there isn't any point in attempting to review patches, since
-> Maintainers are unlikely to take it into consideration "at all"?  I
-> know that when I come to review a patch, if *any* contributor has
-> taken the time to review a patch, it always plays an important role.
 
-So if I'm going to have to do a full review (which you approve), that
-by definition means I'm not relying on the review at all, right?
+I should have sent something last night but yes I came to the same conclusion through some simple experiments.
 
-The way I handle things is that while I'm not going to rely on a
-Reviewed-by from an unknown reviewer, I do remember who provides
-reviews, and this will bump up their reputation so that perhaps in the
-future, I will rely on their reviews.  Reviews that including some
-kind of substantive comments (if correct) will enhance the reviewer's
-reputation much more than a blind "Reviewd-by: ".
+I agree that the locking and other considerations would trip me up.  So I'm not opposed to you helping here.  I had more than 1 problem with either crashes or hangs while playing with the code.  :-/
 
-BTW, empty reviews for a patch authored by alice@company-foo.com,
-coming from bob@company-foo.com (e.g., where the only content of the
-review is Reviewed-by: bob@company-foo.com) are things that I give
-much less weight, especially when bob@company-foo.com is not a known
-developer to me.
+Thanks,
+Ira
 
-(Yes, I know that sometimes patches get developed behind closed doors,
-and then squirt out fully formed with a four or five Reviewed-by:
-lines.  But if I haven't seen the process, it doesn't give much value
-to the maintainer trying to judge the suitability of the patch.  Red
-Hat's approach to do all patch discussions in the open is highly to be
-commended here.)
-
-> Again, not really sure of your intentions when you write this out, or
-> what it has to do with this patch submission or the review there
-> after, but IMHO this is sending the wrong message to new and would-be
-> contributors.  As a community we're supposed to be providing a
-> supportive, encouraging atmosphere.  This paragraph is likely to do
-> nothing more than scare off people who would otherwise be willing
-> to have a go [at submitting or reviewing a patch].
-
-One of the things that I worry about are people who game git
-statistics by submitting a lot of empty Reviewed-by or Acked-by lines.
-It's right up there with people who send huge numbers of whitespace
-fixes.  So my personal approach is to not include Reviewed-by or
-Acked-by if it didn't add any value to the project.  It may indeed
-still value to the reviewer's reputation, and if the reviewer has
-helped to improve the patch, I'll make sure they get credit.
-
-I do agree that we should provide a supportive atmosphere.  But we
-also need provide encouragement that contributors provide more
-substantive patches and more substantive reviewes.
-
-Cheers,
-
-					- Ted
+> 								Honza
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
