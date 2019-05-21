@@ -2,87 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B8E24B07
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 11:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF7F24B35
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 11:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbfEUI77 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 04:59:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbfEUI77 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 May 2019 04:59:59 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F112521019;
-        Tue, 21 May 2019 08:59:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558429198;
-        bh=x2txS7THJ/jBJV//3EMAJkSBNNOz38X4KjsVyAnhXbk=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=ew4tLmbmotAgpQjV+fNEjPc/ciP624arxTYzgxJsLp5p5jkTp2ReHb+hjY/n1cfCs
-         SYEetbeK0fa32deeRRi4YuP5AYq7/I4JVjuuIn0kZORxUmi99el1aoVWfUpedvx8Or
-         /0Wxujb52We2XULIIBpyEOqYUiyahDeGF5wjLeMw=
-Date:   Tue, 21 May 2019 10:59:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
-        linux-ext4@vger.kernel.org,
-        Arthur Marsh <arthur.marsh@internode.on.net>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH 4.19 000/105] 4.19.45-stable review
-Message-ID: <20190521085956.GC31445@kroah.com>
-References: <20190520115247.060821231@linuxfoundation.org>
- <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
+        id S1727261AbfEUJK3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 05:10:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46344 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726289AbfEUJK3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 May 2019 05:10:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id D5BFBAC0C;
+        Tue, 21 May 2019 09:10:26 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 33C381E3C72; Tue, 21 May 2019 11:10:26 +0200 (CEST)
+Date:   Tue, 21 May 2019 11:10:26 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Message-ID: <20190521091026.GA17019@quack2.suse.cz>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+ <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+ <238e14ff-68d1-3b21-a291-28de4f2d77af@csail.mit.edu>
+ <6EB6C9D2-E774-48FA-AC95-BC98D97645D0@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <6EB6C9D2-E774-48FA-AC95-BC98D97645D0@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 20, 2019 at 05:23:42PM -0500, Dan Rue wrote:
-> On Mon, May 20, 2019 at 02:13:06PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.19.45 release.
-> > There are 105 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
+On Tue 21-05-19 08:23:05, Paolo Valente wrote:
+> > Il giorno 21 mag 2019, alle ore 00:45, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
 > > 
-> > Responses should be made by Wed 22 May 2019 11:50:49 AM UTC.
-> > Anything received after that time might be too late.
+> > On 5/20/19 3:19 AM, Paolo Valente wrote:
+> >> 
+> >> 
+> >>> Il giorno 18 mag 2019, alle ore 22:50, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
+> >>> 
+> >>> On 5/18/19 11:39 AM, Paolo Valente wrote:
+> >>>> I've addressed these issues in my last batch of improvements for BFQ,
+> >>>> which landed in the upcoming 5.2. If you give it a try, and still see
+> >>>> the problem, then I'll be glad to reproduce it, and hopefully fix it
+> >>>> for you.
+> >>>> 
+> >>> 
+> >>> Hi Paolo,
+> >>> 
+> >>> Thank you for looking into this!
+> >>> 
+> >>> I just tried current mainline at commit 72cf0b07, but unfortunately
+> >>> didn't see any improvement:
+> >>> 
+> >>> dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflag=dsync
+> >>> 
+> >>> With mq-deadline, I get:
+> >>> 
+> >>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 3.90981 s, 1.3 MB/s
+> >>> 
+> >>> With bfq, I get:
+> >>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 84.8216 s, 60.4 kB/s
+> >>> 
+> >> 
+> >> Hi Srivatsa,
+> >> thanks for reproducing this on mainline.  I seem to have reproduced a
+> >> bonsai-tree version of this issue.  Before digging into the block
+> >> trace, I'd like to ask you for some feedback.
+> >> 
+> >> First, in my test, the total throughput of the disk happens to be
+> >> about 20 times as high as that enjoyed by dd, regardless of the I/O
+> >> scheduler.  I guess this massive overhead is normal with dsync, but
+> >> I'd like know whether it is about the same on your side.  This will
+> >> help me understand whether I'll actually be analyzing about the same
+> >> problem as yours.
+> >> 
+> > 
+> > Do you mean to say the throughput obtained by dd'ing directly to the
+> > block device (bypassing the filesystem)?
 > 
-> We're seeing an ext4 issue previously reported at
-> https://lore.kernel.org/lkml/20190514092054.GA6949@osiris.
+> No no, I mean simply what follows.
 > 
-> [ 1916.032087] EXT4-fs error (device sda): ext4_find_extent:909: inode #8: comm jbd2/sda-8: pblk 121667583 bad header/extent: invalid extent entries - magic f30a, entries 8, max 340(340), depth 0(0)
-> [ 1916.073840] jbd2_journal_bmap: journal block not found at offset 4455 on sda-8
-> [ 1916.081071] Aborting journal on device sda-8.
-> [ 1916.348652] EXT4-fs error (device sda): ext4_journal_check_start:61: Detected aborted journal
-> [ 1916.357222] EXT4-fs (sda): Remounting filesystem read-only
+> 1) in one terminal:
+> [root@localhost tmp]# dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflag=dsync
+> 10000+0 record dentro
+> 10000+0 record fuori
+> 5120000 bytes (5,1 MB, 4,9 MiB) copied, 14,6892 s, 349 kB/s
 > 
-> This is seen on 4.19-rc, 5.0-rc, mainline, and next. We don't have data
-> for 5.1-rc yet, which is presumably also affected in this RC round.
+> 2) In a second terminal, while the dd is in progress in the first
+> terminal:
+> $ iostat -tmd /dev/sda 3
+> Linux 5.1.0+ (localhost.localdomain) 	20/05/2019 	_x86_64_	(2 CPU)
 > 
-> We only see this on x86_64 and i386 devices - though our hardware setups
-> vary so it could be coincidence.
+> ...
+> 20/05/2019 11:40:17
+> Device             tps    MB_read/s    MB_wrtn/s    MB_read    MB_wrtn
+> sda            2288,00         0,00         9,77          0         29
 > 
-> I have to run out now, but I'll come back and work on a reproducer and
-> bisection later tonight and tomorrow.
+> 20/05/2019 11:40:20
+> Device             tps    MB_read/s    MB_wrtn/s    MB_read    MB_wrtn
+> sda            2325,33         0,00         9,93          0         29
 > 
-> Here is an example test run; link goes to the spot in the ltp syscalls
-> test where the disk goes into read-only mode.
-> https://lkft.validation.linaro.org/scheduler/job/735468#L8081
+> 20/05/2019 11:40:23
+> Device             tps    MB_read/s    MB_wrtn/s    MB_read    MB_wrtn
+> sda            2351,33         0,00        10,05          0         30
+> ...
+> 
+> As you can see, the overall throughput (~10 MB/s) is more than 20
+> times as high as the dd throughput (~350 KB/s).  But the dd is the
+> only source of I/O.
 
-Odd, I keep hearing rumors of ext4 issues right now, but nothing
-actually solid that I can point to.  Any help you can provide here would
-be great.
+Yes and that's expected. It just shows how inefficient small synchronous IO
+is. Look, dd(1) writes 512-bytes. From FS point of view we have to write:
+full fs block with data (+4KB), inode to journal (+4KB), journal descriptor
+block (+4KB), journal superblock (+4KB), transaction commit block (+4KB) -
+so that's 20KB just from top of my head to write 512 bytes...
 
-thanks,
+								Honza
 
-greg k-h
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
