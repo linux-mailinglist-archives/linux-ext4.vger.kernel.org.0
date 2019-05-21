@@ -2,128 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E04F225721
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 19:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B3825742
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 20:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729223AbfEUR5g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 13:57:36 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:37362 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbfEUR5f (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 13:57:35 -0400
-Received: by mail-lj1-f194.google.com with SMTP id h19so643494ljj.4
-        for <linux-ext4@vger.kernel.org>; Tue, 21 May 2019 10:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=13iR66s35EeUhXp2Ectoi0OYdgpCcLBjgrRmPgISBoM=;
-        b=uH9I6b0JCQbUYvD1LQ/glpe/cwjIy5fEvVhCo7mSI3nnWN8qaC32ctzL3bx4y9FHx1
-         8b6JffttjvceV7oO33hEAchiQ141RYZOda/yElKfLKngnwq7bfAIT8x1KuEn9d8sZAYm
-         ArSJM9+nF6Zm+FJdKPJtCR4kBp/zvoi/e2Rqc+DZAlxoQLLHBSA18HY6yUjTMAWRUX38
-         WyPhja20hFXrXImDxpdjqmJTjoSwPIR54QrpmJE3SYs488Csl26LxlYhI5g8PNBDAVuw
-         RSQ6ZxhJJqT0VbQ1ZfvEeaXUdXasb0L1jbiXU11exgVIx0Lv+whO/t376N1UiGC9ID/i
-         S4DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=13iR66s35EeUhXp2Ectoi0OYdgpCcLBjgrRmPgISBoM=;
-        b=SxT/tEwZRNURLAOrM722n4PIfoCV/+uDTrS+vKgfywf04Ueuus72EXAZmc7yy8AtZD
-         zWVrLygIX4qsNHiZ5S1ZUBzbaa6BT/8OW1cSTtfDgRRWbHLO+9zxsiHq99P+oYx99IO+
-         doe4T+cf4PfCqUo1R1TMnoXQsIeY9igeIrrzOOtl736G40lOzXJOtctVq46HnGmeFlvg
-         pljfBVZEmXFvcFCNIudprXviFZ0VjbcOkpr6CT8i7X90E6KebBXdXcc8mMyYvwE312kW
-         jvFbBt6lH7QgaLUpGkpTUUDM01o9cXHwQ8dwIPLMTkcPDGOJgmMk7NCV/6SWNnhMWO8m
-         fs0g==
-X-Gm-Message-State: APjAAAVuJH2JfMPVjCkFK7UUBdpXC+gvjeZXNDtnVrVv8onyye4ESafS
-        yh5D27JQcRN+E9O+87+jQMWCMJohXxWdkuNo2v8P/A==
-X-Google-Smtp-Source: APXvYqxoVhtW6+H2OrjfsFNbhD7UYzdFtNxwmWLYrzO83Xt+JIlW+jv9qAzgJgpe0LduUYpYcryZKFWuLW7FD/A8aw8=
-X-Received: by 2002:a2e:7411:: with SMTP id p17mr26016219ljc.24.1558461453024;
- Tue, 21 May 2019 10:57:33 -0700 (PDT)
+        id S1729112AbfEUSGs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 14:06:48 -0400
+Received: from mga11.intel.com ([192.55.52.93]:19875 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727898AbfEUSGs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 May 2019 14:06:48 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 May 2019 11:06:48 -0700
+X-ExtLoop1: 1
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga005.jf.intel.com with ESMTP; 21 May 2019 11:06:47 -0700
+Date:   Tue, 21 May 2019 11:07:38 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] ext4: Wait for outstanding dio during truncate in
+ nojournal mode
+Message-ID: <20190521180737.GA31888@iweiny-DESK2.sc.intel.com>
+References: <20190521074358.17186-1-jack@suse.cz>
+ <20190521074358.17186-2-jack@suse.cz>
 MIME-Version: 1.0
-References: <20190520115247.060821231@linuxfoundation.org> <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
- <20190521085956.GC31445@kroah.com> <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
- <20190521093849.GA9806@kroah.com> <CA+G9fYveeg_FMsL31aunJ2A9XLYk908Y1nSFw4kwkFk3h3uEiA@mail.gmail.com>
- <20190521162142.GA2591@mit.edu>
-In-Reply-To: <20190521162142.GA2591@mit.edu>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 21 May 2019 23:27:21 +0530
-Message-ID: <CA+G9fYunxonkqmkhz+zmZYuMTfyRMVBxn6PkTFfjd8tTT+bzHQ@mail.gmail.com>
-Subject: Re: ext4 regression (was Re: [PATCH 4.19 000/105] 4.19.45-stable review)
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        linux-ext4@vger.kernel.org,
-        Arthur Marsh <arthur.marsh@internode.on.net>,
-        Richard Weinberger <richard.weinberger@gmail.com>
-Cc:     ltp@lists.linux.it, Jan Stancek <jstancek@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190521074358.17186-2-jack@suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 21 May 2019 at 21:52, Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Tue, May 21, 2019 at 03:58:15PM +0530, Naresh Kamboju wrote:
-> > > Ted, any ideas here?  Should I drop this from the stable trees, and you
-> > > revert it from Linus's?  Or something else?
->
-> It's safe to drop this from the stable trees while we investigate.  It
-> was always borderline for stable anyway.  (See below).
->
-> > >
-> > > Note, I do also have 170417c8c7bb ("ext4: fix block validity checks for
-> > > journal inodes using indirect blocks") in the trees, which was supposed
-> > > to fix the problem with this patch, am I missing another one as well?
-> >
-> > FYI,
-> > I have applied fix patch 170417c8c7bb ("ext4: fix block validity checks for
-> >  journal inodes using indirect blocks") but did not fix this problem.
->
-> Hmm... are you _sure_?  This bug was reported to me versus the
-> mainline, and the person who reported it confirmed that it did fix the
-> problem, he was seeing, and the symptoms are identical to yours.  Can
-> you double check, please?  I can't reproduce it either with that patch applied.
+On Tue, May 21, 2019 at 09:43:56AM +0200, Jan Kara wrote:
+> We didn't wait for outstanding direct IO during truncate in nojournal
+> mode (as we skip orphan handling in that case). This can lead to fs
+> corruption or stale data exposure if truncate ends up freeing blocks
+> and these get reallocated before direct IO finishes. Fix the condition
+> determining whether the wait is necessary.
+> 
+> CC: stable@vger.kernel.org
+> Fixes: 1c9114f9c0f1 ("ext4: serialize unlocked dio reads with truncate")
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-This bug is specific to x86_64 and i386.
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-Steps to reproduce is,
-running LTP three test cases in sequence on x86 device.
-# cd ltp/runtest
-# cat syscalls ( only three test case)
-open12 open12
-madvise06 madvise06
-poll02 poll02
-#
-
-as Dan referring to,
-
-LTP is run using '/opt/ltp/runltp -d /scratch -f syscalls', where the
-syscalls file has been replaced with three test case names, and
-/scratch is an ext4 SATA drive. /scratch is created using 'mkfs -t ext4
-/dev/disk/by-id/ata-TOSHIBA_MG03ACA100_37O9KGKWF' and mounted to
-/scratch.
-
-Please find full test log,
-https://lkft.validation.linaro.org/scheduler/job/738661#L1356
-
-And you notice dmesg log,
-[   53.897001] EXT4-fs error (device sda): ext4_find_extent:909: inode
-#8: comm jbd2/sda-8: pblk 121667583 bad header/extent: invalid extent
-entries - magic f30a, entries 8, max 340(340), depth 0(0)
-[   53.931430] jbd2_journal_bmap: journal block not found at offset 49 on sda-8
-[   53.938480] Aborting journal on device sda-8.
-[   55.431382] EXT4-fs error (device sda):
-ext4_journal_check_start:61: Detected aborted journal
-[   55.439947] EXT4-fs (sda): Remounting filesystem read-only
-
-- Naresh
+> ---
+>  fs/ext4/inode.c | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 82298c63ea6d..9bcb7f2b86dd 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5630,20 +5630,17 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
+>  				goto err_out;
+>  			}
+>  		}
+> -		if (!shrink)
+> +		if (!shrink) {
+>  			pagecache_isize_extended(inode, oldsize, inode->i_size);
+> -
+> -		/*
+> -		 * Blocks are going to be removed from the inode. Wait
+> -		 * for dio in flight.  Temporarily disable
+> -		 * dioread_nolock to prevent livelock.
+> -		 */
+> -		if (orphan) {
+> -			if (!ext4_should_journal_data(inode)) {
+> -				inode_dio_wait(inode);
+> -			} else
+> -				ext4_wait_for_tail_page_commit(inode);
+> +		} else {
+> +			/*
+> +			 * Blocks are going to be removed from the inode. Wait
+> +			 * for dio in flight.
+> +			 */
+> +			inode_dio_wait(inode);
+>  		}
+> +		if (orphan && ext4_should_journal_data(inode))
+> +			ext4_wait_for_tail_page_commit(inode);
+>  		down_write(&EXT4_I(inode)->i_mmap_sem);
+>  
+>  		rc = ext4_break_layouts(inode);
+> -- 
+> 2.16.4
+> 
