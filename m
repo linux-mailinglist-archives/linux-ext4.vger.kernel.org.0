@@ -2,138 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF7F24B35
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 11:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B2024B81
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 11:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbfEUJK3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 05:10:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46344 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726289AbfEUJK3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 May 2019 05:10:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D5BFBAC0C;
-        Tue, 21 May 2019 09:10:26 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 33C381E3C72; Tue, 21 May 2019 11:10:26 +0200 (CEST)
-Date:   Tue, 21 May 2019 11:10:26 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Message-ID: <20190521091026.GA17019@quack2.suse.cz>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
- <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
- <238e14ff-68d1-3b21-a291-28de4f2d77af@csail.mit.edu>
- <6EB6C9D2-E774-48FA-AC95-BC98D97645D0@linaro.org>
+        id S1726557AbfEUJ3M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 05:29:12 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:44305 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbfEUJ3M (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 05:29:12 -0400
+Received: by mail-lf1-f68.google.com with SMTP id n134so12483530lfn.11
+        for <linux-ext4@vger.kernel.org>; Tue, 21 May 2019 02:29:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5bDhuqyWQOugAB2J2IW4o9KvvRVuCaOEFqCaZHsR2lo=;
+        b=qrm95ot6Cg+5UvFW4o/vicOnL7utM3Fk1hl2VAQvbAcWY3DaDiHAbMJUfNbSbmBGKP
+         bS+/eAmBn2Et6qNt9R0c4JmZdZuovSkHdtbqsGegevZ6aVtUp0qINvXQ5PnmDY/nhmTH
+         l5LX9UNjoleeXiVDFmA2axbTca9t8BWSiLqgy7cuq3gaWopo36mV8A307+JirXMj8jPg
+         WxH2v7bc3wY6rXn+7OCF2ZKUfg2AKczNbALEwWYCGEQThrITWHaYLr27FVPDnVj7Gjea
+         tMTgi94jYOvtWGlfvS+olWwnozp47LjfG7GEpdw9iE8g/7jlCe69c5+Gc+0U3fayOTGQ
+         pJQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5bDhuqyWQOugAB2J2IW4o9KvvRVuCaOEFqCaZHsR2lo=;
+        b=U1XbQtodQEJ7wVdtLMU7ywqBYH3xIfiG5RKe6kceUAxQlN0tfwQO4bVBWo6If+j0s/
+         5d9pgfam/4lYRjSWvGKQqZMxXtYc1oD9Twgfvb/QbJ7bjT4HPzJLOPf1NTsMMhOkwdKK
+         Wa9g9IC9C8VD0SYjgJxxYyqf0FsRoGvG25V+PPKOKPLJxjsOOfEf5m8nF5IAiT4Ez3Cj
+         nYgQVh2CgN3BdZQTRDIhdRPGtvS3uRyqX+qt8O4RCfJ338fxUTs7v9wlObpeO7r8WBDl
+         ANmGkBEHdekOG44SGJ9LrRX8L20Q95TGWQyTIeZTdtdtvR3d/39LB6eaEEHQRvaAFbNb
+         c8Mw==
+X-Gm-Message-State: APjAAAUy7Jr0z0yc9ynhBtPWZTGHaptI+m2vk6YfsNQGdYf3VcQkBRVU
+        lX4TspJoMooUzqweciUaRYk85vR6pX1SE5c3AJi1Bg==
+X-Google-Smtp-Source: APXvYqx+IN2EjSUfvaaTz/kgVZcP6y31/EIWrDgZcpvYvTh3XkDT9atG8F4bORoEemzmNXf/5z4b0FkkJySERKhSUZo=
+X-Received: by 2002:a19:ee0a:: with SMTP id g10mr3722695lfb.127.1558430950013;
+ Tue, 21 May 2019 02:29:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6EB6C9D2-E774-48FA-AC95-BC98D97645D0@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190520115247.060821231@linuxfoundation.org> <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
+ <20190521085956.GC31445@kroah.com>
+In-Reply-To: <20190521085956.GC31445@kroah.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 21 May 2019 14:58:58 +0530
+Message-ID: <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/105] 4.19.45-stable review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        Arthur Marsh <arthur.marsh@internode.on.net>,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 21-05-19 08:23:05, Paolo Valente wrote:
-> > Il giorno 21 mag 2019, alle ore 00:45, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
-> > 
-> > On 5/20/19 3:19 AM, Paolo Valente wrote:
-> >> 
-> >> 
-> >>> Il giorno 18 mag 2019, alle ore 22:50, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
-> >>> 
-> >>> On 5/18/19 11:39 AM, Paolo Valente wrote:
-> >>>> I've addressed these issues in my last batch of improvements for BFQ,
-> >>>> which landed in the upcoming 5.2. If you give it a try, and still see
-> >>>> the problem, then I'll be glad to reproduce it, and hopefully fix it
-> >>>> for you.
-> >>>> 
-> >>> 
-> >>> Hi Paolo,
-> >>> 
-> >>> Thank you for looking into this!
-> >>> 
-> >>> I just tried current mainline at commit 72cf0b07, but unfortunately
-> >>> didn't see any improvement:
-> >>> 
-> >>> dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflag=dsync
-> >>> 
-> >>> With mq-deadline, I get:
-> >>> 
-> >>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 3.90981 s, 1.3 MB/s
-> >>> 
-> >>> With bfq, I get:
-> >>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 84.8216 s, 60.4 kB/s
-> >>> 
-> >> 
-> >> Hi Srivatsa,
-> >> thanks for reproducing this on mainline.  I seem to have reproduced a
-> >> bonsai-tree version of this issue.  Before digging into the block
-> >> trace, I'd like to ask you for some feedback.
-> >> 
-> >> First, in my test, the total throughput of the disk happens to be
-> >> about 20 times as high as that enjoyed by dd, regardless of the I/O
-> >> scheduler.  I guess this massive overhead is normal with dsync, but
-> >> I'd like know whether it is about the same on your side.  This will
-> >> help me understand whether I'll actually be analyzing about the same
-> >> problem as yours.
-> >> 
-> > 
-> > Do you mean to say the throughput obtained by dd'ing directly to the
-> > block device (bypassing the filesystem)?
-> 
-> No no, I mean simply what follows.
-> 
-> 1) in one terminal:
-> [root@localhost tmp]# dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflag=dsync
-> 10000+0 record dentro
-> 10000+0 record fuori
-> 5120000 bytes (5,1 MB, 4,9 MiB) copied, 14,6892 s, 349 kB/s
-> 
-> 2) In a second terminal, while the dd is in progress in the first
-> terminal:
-> $ iostat -tmd /dev/sda 3
-> Linux 5.1.0+ (localhost.localdomain) 	20/05/2019 	_x86_64_	(2 CPU)
-> 
-> ...
-> 20/05/2019 11:40:17
-> Device             tps    MB_read/s    MB_wrtn/s    MB_read    MB_wrtn
-> sda            2288,00         0,00         9,77          0         29
-> 
-> 20/05/2019 11:40:20
-> Device             tps    MB_read/s    MB_wrtn/s    MB_read    MB_wrtn
-> sda            2325,33         0,00         9,93          0         29
-> 
-> 20/05/2019 11:40:23
-> Device             tps    MB_read/s    MB_wrtn/s    MB_read    MB_wrtn
-> sda            2351,33         0,00        10,05          0         30
-> ...
-> 
-> As you can see, the overall throughput (~10 MB/s) is more than 20
-> times as high as the dd throughput (~350 KB/s).  But the dd is the
-> only source of I/O.
+On Tue, 21 May 2019 at 14:30, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, May 20, 2019 at 05:23:42PM -0500, Dan Rue wrote:
+> > On Mon, May 20, 2019 at 02:13:06PM +0200, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 4.19.45 release.
+> > > There are 105 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > >
+> > > Responses should be made by Wed 22 May 2019 11:50:49 AM UTC.
+> > > Anything received after that time might be too late.
+> >
+> > We're seeing an ext4 issue previously reported at
+> > https://lore.kernel.org/lkml/20190514092054.GA6949@osiris.
+> >
+> > [ 1916.032087] EXT4-fs error (device sda): ext4_find_extent:909: inode #8: comm jbd2/sda-8: pblk 121667583 bad header/extent: invalid extent entries - magic f30a, entries 8, max 340(340), depth 0(0)
+> > [ 1916.073840] jbd2_journal_bmap: journal block not found at offset 4455 on sda-8
+> > [ 1916.081071] Aborting journal on device sda-8.
+> > [ 1916.348652] EXT4-fs error (device sda): ext4_journal_check_start:61: Detected aborted journal
+> > [ 1916.357222] EXT4-fs (sda): Remounting filesystem read-only
+> >
+> > This is seen on 4.19-rc, 5.0-rc, mainline, and next. We don't have data
+> > for 5.1-rc yet, which is presumably also affected in this RC round.
+> >
+> > We only see this on x86_64 and i386 devices - though our hardware setups
+> > vary so it could be coincidence.
+> >
+> > I have to run out now, but I'll come back and work on a reproducer and
+> > bisection later tonight and tomorrow.
+> >
+> > Here is an example test run; link goes to the spot in the ltp syscalls
+> > test where the disk goes into read-only mode.
+> > https://lkft.validation.linaro.org/scheduler/job/735468#L8081
+>
+> Odd, I keep hearing rumors of ext4 issues right now, but nothing
+> actually solid that I can point to.  Any help you can provide here would
+> be great.
+>
 
-Yes and that's expected. It just shows how inefficient small synchronous IO
-is. Look, dd(1) writes 512-bytes. From FS point of view we have to write:
-full fs block with data (+4KB), inode to journal (+4KB), journal descriptor
-block (+4KB), journal superblock (+4KB), transaction commit block (+4KB) -
-so that's 20KB just from top of my head to write 512 bytes...
+git bisect helped me to land on this commit,
 
-								Honza
+# git bisect bad
+e8fd3c9a5415f9199e3fc5279e0f1dfcc0a80ab2 is the first bad commit
+commit e8fd3c9a5415f9199e3fc5279e0f1dfcc0a80ab2
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Tue Apr 9 23:37:08 2019 -0400
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+    ext4: protect journal inode's blocks using block_validity
+
+    commit 345c0dbf3a30872d9b204db96b5857cd00808cae upstream.
+
+    Add the blocks which belong to the journal inode to block_validity's
+    system zone so attempts to deallocate or overwrite the journal due a
+    corrupted file system where the journal blocks are also claimed by
+    another inode.
+
+    Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202879
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+    Cc: stable@kernel.org
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+:040000 040000 b8b6ce2577d60c65021e5cc1c3a38b32e0cbb2ff
+747c67b159b33e4e1da414b1d33567a5da9ae125 M fs
+
+- Naresh
+
+> thanks,
+>
+> greg k-h
