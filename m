@@ -2,70 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8A525592
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 18:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0177255AC
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 18:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbfEUQaP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 12:30:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57024 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726900AbfEUQaP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 May 2019 12:30:15 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D5B9208C3;
-        Tue, 21 May 2019 16:30:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558456214;
-        bh=80+x1wYVzAInFNDmRNx1g3qJ61uzzAjRrmAnmhXxVE8=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=VutVlFFQQf6IyVI5F/Zq8qBoJwND7QXZ7Au/VhzYHcBIEcPdm8XXtAcTQndIE3Ras
-         +v0lPXJvXOrXJc8S7hphCCPou69Yey2QE6+/4713gs7ulQmDLrXWtQN80LXbL4rGLN
-         dsxGHznezLYFHbvdFxlfAdrh6Ag6tHPQLIGiVi5w=
-Date:   Tue, 21 May 2019 18:30:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        linux-ext4@vger.kernel.org,
-        Arthur Marsh <arthur.marsh@internode.on.net>,
-        Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: ext4 regression (was Re: [PATCH 4.19 000/105] 4.19.45-stable
- review)
-Message-ID: <20190521163012.GA19986@kroah.com>
-References: <20190520115247.060821231@linuxfoundation.org>
- <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
- <20190521085956.GC31445@kroah.com>
- <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
- <20190521093849.GA9806@kroah.com>
- <CA+G9fYveeg_FMsL31aunJ2A9XLYk908Y1nSFw4kwkFk3h3uEiA@mail.gmail.com>
- <20190521162142.GA2591@mit.edu>
+        id S1728289AbfEUQcB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 12:32:01 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41432 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728055AbfEUQcB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 12:32:01 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4LGV973024567
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 May 2019 12:31:10 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id DF045420481; Tue, 21 May 2019 12:31:08 -0400 (EDT)
+Date:   Tue, 21 May 2019 12:31:08 -0400
+To:     Jan Kara <jack@suse.cz>
+Cc:     Paolo Valente <paolo.valente@linaro.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, jmoyer@redhat.com,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Message-ID: <20190521163108.GB2591@mit.edu>
+Mail-Followup-To: tytso@mit.edu, Jan Kara <jack@suse.cz>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, jmoyer@redhat.com,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+ <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+ <238e14ff-68d1-3b21-a291-28de4f2d77af@csail.mit.edu>
+ <6EB6C9D2-E774-48FA-AC95-BC98D97645D0@linaro.org>
+ <20190521091026.GA17019@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190521162142.GA2591@mit.edu>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <20190521091026.GA17019@quack2.suse.cz>
+>From:  Theodore Ts'o <tytso@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   "Theodore Ts'o" <tytso@mit.edu>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 21, 2019 at 12:21:42PM -0400, Theodore Ts'o wrote:
-> On Tue, May 21, 2019 at 03:58:15PM +0530, Naresh Kamboju wrote:
-> > > Ted, any ideas here?  Should I drop this from the stable trees, and you
-> > > revert it from Linus's?  Or something else?
+On Tue, May 21, 2019 at 11:10:26AM +0200, Jan Kara wrote:
+> > [root@localhost tmp]# dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflag=dsync
 > 
-> It's safe to drop this from the stable trees while we investigate.  It
-> was always borderline for stable anyway.  (See below).
+> Yes and that's expected. It just shows how inefficient small synchronous IO
+> is. Look, dd(1) writes 512-bytes. From FS point of view we have to write:
+> full fs block with data (+4KB), inode to journal (+4KB), journal descriptor
+> block (+4KB), journal superblock (+4KB), transaction commit block (+4KB) -
+> so that's 20KB just from top of my head to write 512 bytes...
 
-Ok, will go drop both of these now, thanks.
+Well, it's not *that* bad.  With fdatasync(), we're only having to do
+this worse case thing every 8 writes.  The other writes, we don't
+actually need to do any file-system level block allocation, so it's
+only a 512 byte write to the disk[1] seven out of eight writes.
 
-greg k-h
+That's also true for the slice_idle hit, of course, We only need to do
+a jbd2 transaction when there is a block allocation, and that's only
+going to happen one in eight writes.
+
+       	   	      	     	     	   - Ted
+
+[1] Of course, small synchronous writes to a HDD are *also* terrible
+for performance, just from the HDD's perspective.  For a random write
+workload, if you are using disks with a 4k physical sector size, it's
+having to do a read/modify/write for each 512 byte write.  And HDD
+vendors are talking about wanting to go to a 32k or 64k physical
+sector size...  In this sequential write workload, you'll mostly be
+shielded from this by the HDD's cache, but the fact that you have to
+wait for the bits to hit the platter is always going to be painful.
