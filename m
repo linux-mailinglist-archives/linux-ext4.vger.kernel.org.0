@@ -2,131 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0313D25583
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 18:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8A525592
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 18:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbfEUQYk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 12:24:40 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:39834 "EHLO mx1.redhat.com"
+        id S1728273AbfEUQaP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 12:30:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728858AbfEUQYk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 May 2019 12:24:40 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726900AbfEUQaP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 May 2019 12:30:15 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 4368830833AF;
-        Tue, 21 May 2019 16:24:29 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1465F4387;
-        Tue, 21 May 2019 16:24:24 +0000 (UTC)
-Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id C3F6A5B423;
-        Tue, 21 May 2019 16:24:14 +0000 (UTC)
-Date:   Tue, 21 May 2019 12:24:14 -0400 (EDT)
-From:   Pankaj Gupta <pagupta@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     cohuck@redhat.com, jack@suse.cz, kvm@vger.kernel.org,
-        david@redhat.com, jasowang@redhat.com, david@fromorbit.com,
-        qemu-devel@nongnu.org, virtualization@lists.linux-foundation.org,
-        dm-devel@redhat.com, adilger kernel <adilger.kernel@dilger.ca>,
-        zwisler@kernel.org, aarcange@redhat.com,
-        dave jiang <dave.jiang@intel.com>, jstaron@google.com,
-        linux-nvdimm@lists.01.org,
-        vishal l verma <vishal.l.verma@intel.com>,
-        willy@infradead.org, hch@infradead.org, linux-acpi@vger.kernel.org,
-        jmoyer@redhat.com, linux-ext4@vger.kernel.org, lenb@kernel.org,
-        kilobyte@angband.pl, rdunlap@infradead.org, riel@surriel.com,
-        yuval shaia <yuval.shaia@oracle.com>, stefanha@redhat.com,
-        pbonzini@redhat.com, dan j williams <dan.j.williams@intel.com>,
-        lcapitulino@redhat.com, kwolf@redhat.com, nilal@redhat.com,
-        tytso@mit.edu, xiaoguangrong eric <xiaoguangrong.eric@gmail.com>,
-        snitzer@redhat.com, darrick wong <darrick.wong@oracle.com>,
-        rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        imammedo@redhat.com
-Message-ID: <176786650.30122184.1558455854322.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20190521094543-mutt-send-email-mst@kernel.org>
-References: <20190521133713.31653-1-pagupta@redhat.com> <20190521133713.31653-3-pagupta@redhat.com> <20190521094543-mutt-send-email-mst@kernel.org>
-Subject: Re: [Qemu-devel] [PATCH v10 2/7] virtio-pmem: Add virtio pmem
- driver
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D5B9208C3;
+        Tue, 21 May 2019 16:30:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1558456214;
+        bh=80+x1wYVzAInFNDmRNx1g3qJ61uzzAjRrmAnmhXxVE8=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=VutVlFFQQf6IyVI5F/Zq8qBoJwND7QXZ7Au/VhzYHcBIEcPdm8XXtAcTQndIE3Ras
+         +v0lPXJvXOrXJc8S7hphCCPou69Yey2QE6+/4713gs7ulQmDLrXWtQN80LXbL4rGLN
+         dsxGHznezLYFHbvdFxlfAdrh6Ag6tHPQLIGiVi5w=
+Date:   Tue, 21 May 2019 18:30:12 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        Arthur Marsh <arthur.marsh@internode.on.net>,
+        Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: ext4 regression (was Re: [PATCH 4.19 000/105] 4.19.45-stable
+ review)
+Message-ID: <20190521163012.GA19986@kroah.com>
+References: <20190520115247.060821231@linuxfoundation.org>
+ <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
+ <20190521085956.GC31445@kroah.com>
+ <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
+ <20190521093849.GA9806@kroah.com>
+ <CA+G9fYveeg_FMsL31aunJ2A9XLYk908Y1nSFw4kwkFk3h3uEiA@mail.gmail.com>
+ <20190521162142.GA2591@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.116.105, 10.4.195.14]
-Thread-Topic: virtio-pmem: Add virtio pmem driver
-Thread-Index: 3AiQ7PJb9jLe5p+DRlEZBNdQ18HFYA==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Tue, 21 May 2019 16:24:39 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190521162142.GA2591@mit.edu>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue, May 21, 2019 at 12:21:42PM -0400, Theodore Ts'o wrote:
+> On Tue, May 21, 2019 at 03:58:15PM +0530, Naresh Kamboju wrote:
+> > > Ted, any ideas here?  Should I drop this from the stable trees, and you
+> > > revert it from Linus's?  Or something else?
+> 
+> It's safe to drop this from the stable trees while we investigate.  It
+> was always borderline for stable anyway.  (See below).
 
-> > diff --git a/include/uapi/linux/virtio_pmem.h
-> > b/include/uapi/linux/virtio_pmem.h
-> > new file mode 100644
-> > index 000000000000..7a3e2fe52415
-> > --- /dev/null
-> > +++ b/include/uapi/linux/virtio_pmem.h
-> > @@ -0,0 +1,35 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-> > +/*
-> > + * Definitions for virtio-pmem devices.
-> > + *
-> > + * Copyright (C) 2019 Red Hat, Inc.
-> > + *
-> > + * Author(s): Pankaj Gupta <pagupta@redhat.com>
-> > + */
-> > +
-> > +#ifndef _UAPI_LINUX_VIRTIO_PMEM_H
-> > +#define _UAPI_LINUX_VIRTIO_PMEM_H
-> > +
-> > +#include <linux/types.h>
-> > +#include <linux/virtio_types.h>
-> > +#include <linux/virtio_ids.h>
-> > +#include <linux/virtio_config.h>
-> > +
-> > +struct virtio_pmem_config {
-> > +	__le64 start;
-> > +	__le64 size;
-> > +};
-> > +
-> 
-> config generally should be __u64.
-> Are you sure sparse does not complain?
+Ok, will go drop both of these now, thanks.
 
-I used this because VIRTIO 1.1 spec says: 
-"The device configuration space uses the little-endian format for multi-byte fields. "
-
-and __le64 looks ok to me. Also, its used in other driver config as welle.g virtio-vsock
-
-> 
-> 
-> > +#define VIRTIO_PMEM_REQ_TYPE_FLUSH      0
-> > +
-> > +struct virtio_pmem_resp {
-> > +	/* Host return status corresponding to flush request */
-> > +	__virtio32 ret;
-> > +};
-> > +
-> > +struct virtio_pmem_req {
-> > +	/* command type */
-> > +	__virtio32 type;
-> > +};
-> > +
-> > +#endif
-> > --
-> > 2.20.1
-> 
-> Sorry why are these __virtio32 not __le32?
-
-I used __virtio32 for data fields for guest and host supporting different endianess.
- 
-Thanks,
-Pankaj
-> 
-> --
-> MST
-> 
-> 
+greg k-h
