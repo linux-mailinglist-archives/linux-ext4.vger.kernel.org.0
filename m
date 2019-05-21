@@ -2,78 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFEF255E9
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 18:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8898325604
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 18:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728500AbfEUQoL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 12:44:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728103AbfEUQoK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 May 2019 12:44:10 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A44D5217F5;
-        Tue, 21 May 2019 16:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558457050;
-        bh=cnhJrPpeJuzusBIhFXegbzFOtTFC0S7R/WX16vsOaT8=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=aNdUcuUT7jtsNc6sRDguYTPaHbpT5BTFukGRE3CA7L9/NIBIi0z6PWdPt0cjsXSYX
-         N0bDMp+2T5BoM3gAijBhen3HPJCYsK8qEyhlNPBqBISqkFADzybVgC7XF+0nnuzUWO
-         tlsS+4mrNjqFRxgYNR0pzlGM4wW4suSu5zMIMWc0=
-Date:   Tue, 21 May 2019 18:44:07 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        linux-ext4@vger.kernel.org,
-        Arthur Marsh <arthur.marsh@internode.on.net>,
-        Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: ext4 regression (was Re: [PATCH 4.19 000/105] 4.19.45-stable
- review)
-Message-ID: <20190521164407.GA20674@kroah.com>
-References: <20190520115247.060821231@linuxfoundation.org>
- <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
- <20190521085956.GC31445@kroah.com>
- <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
- <20190521093849.GA9806@kroah.com>
- <CA+G9fYveeg_FMsL31aunJ2A9XLYk908Y1nSFw4kwkFk3h3uEiA@mail.gmail.com>
- <20190521162142.GA2591@mit.edu>
- <20190521163012.GA19986@kroah.com>
+        id S1728114AbfEUQtS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 12:49:18 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47396 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727817AbfEUQtS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 12:49:18 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4LGmFdg004334
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 May 2019 12:48:16 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 184C4420481; Tue, 21 May 2019 12:48:15 -0400 (EDT)
+Date:   Tue, 21 May 2019 12:48:14 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Paolo Valente <paolo.valente@linaro.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, jmoyer@redhat.com,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Message-ID: <20190521164814.GC2591@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, jmoyer@redhat.com,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <20190518192847.GB14277@mit.edu>
+ <20190520091558.GC2172@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190521163012.GA19986@kroah.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <20190520091558.GC2172@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 21, 2019 at 06:30:12PM +0200, Greg Kroah-Hartman wrote:
-> On Tue, May 21, 2019 at 12:21:42PM -0400, Theodore Ts'o wrote:
-> > On Tue, May 21, 2019 at 03:58:15PM +0530, Naresh Kamboju wrote:
-> > > > Ted, any ideas here?  Should I drop this from the stable trees, and you
-> > > > revert it from Linus's?  Or something else?
-> > 
-> > It's safe to drop this from the stable trees while we investigate.  It
-> > was always borderline for stable anyway.  (See below).
-> 
-> Ok, will go drop both of these now, thanks.
+On Mon, May 20, 2019 at 11:15:58AM +0200, Jan Kara wrote:
+> But this makes priority-inversion problems with ext4 journal worse, doesn't
+> it? If we submit journal commit in blkio cgroup of some random process, it
+> may get throttled which then effectively blocks the whole filesystem. Or do
+> you want to implement a more complex back-pressure mechanism where you'd
+> just account to different blkio cgroup during journal commit and then
+> throttle as different point where you are not blocking other tasks from
+> progress?
 
-I have now pushed out -rc2 releases for 5.1, 5.0, and 4.19 with 3 ext4
-patches dropped from each series as there was the original patch here,
-and then 2 others on top of that.
+Good point, yes, it can.  It depends in what cgroup the file system is
+mounted (and hence what cgroup the jbd2 kernel thread is on).  If it
+was mounted in the root cgroup, then jbd2 thread is going to be
+completely unthrottled (except for the data=ordered writebacks, which
+will be charged to the cgroup which write those pages) so the only
+thing which is nuking us will be the slice_idle timeout --- both for
+the writebacks (which could get charged to N different cgroups, with
+disastrous effects --- and this is going to be true for any file
+system on a syncfs(2) call as well) and switching between the jbd2
+thread's cgroup and the writeback cgroup.
 
-thanks,
+One thing the I/O scheduler could do is use the synchronous flag as a
+hint that it should ix-nay on the idle-way.  Or maybe we need to have
+a different way to signal this to the jbd2 thread, since I do
+recognize that this issue is ext4-specific, *because* we do the
+transaction handling in a separate thread, and because of the
+data=ordered scheme, both of which are unique to ext4.  So exempting
+synchronous writes from cgroup control doesn't make sense for other
+file systems.
 
-greg k-h
+So maybe a special flag meaning "entangled writes", where the
+sched_idle hacks should get suppressed for the data=ordered
+writebacks, but we still charge the block I/O to the relevant CSS's?
+
+I could also imagine if there was some way that file system could
+track whether all of the file system modifications were charged to a
+single cgroup, we could in that case charge it to that cgroup?
+
+> Yeah. At least in some cases, we know there won't be any more IO from a
+> particular cgroup in the near future (e.g. transaction commit completing,
+> or when the layers above IO scheduler already know which IO they are going
+> to submit next) and in that case idling is just a waste of time. But so far
+> I haven't decided how should look a reasonably clean interface for this
+> that isn't specific to a particular IO scheduler implementation.
+
+The best I've come up with is some way of signalling that all of the
+writes coming from the jbd2 commit are entangled, probably via a bio
+flag.
+
+If we don't have cgroup support, the other thing we could do is assume
+that the jbd2 thread should always be in the root (unconstrained)
+cgroup, and then force all writes, include data=ordered writebacks, to
+be in the jbd2's cgroup.  But that would make the block cgroup
+controls trivially bypassable by an application, which could just be
+fsync-happy and exempt all of its buffered I/O writes from cgroup
+control.  So that's probably not a great way to go --- but it would at
+least fix this particular performance issue.  :-/
+
+						- Ted
