@@ -2,113 +2,162 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8898325604
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 18:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00512566B
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 19:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbfEUQtS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 12:49:18 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47396 "EHLO
+        id S1728271AbfEURQa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 13:16:30 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55465 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727817AbfEUQtS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 12:49:18 -0400
+        with ESMTP id S1727898AbfEURQa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 13:16:30 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4LGmFdg004334
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4LHGJuA022351
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 May 2019 12:48:16 -0400
+        Tue, 21 May 2019 13:16:20 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 184C4420481; Tue, 21 May 2019 12:48:15 -0400 (EDT)
-Date:   Tue, 21 May 2019 12:48:14 -0400
+        id 14474420481; Tue, 21 May 2019 13:16:19 -0400 (EDT)
+Date:   Tue, 21 May 2019 13:16:18 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Paolo Valente <paolo.valente@linaro.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, jmoyer@redhat.com,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Message-ID: <20190521164814.GC2591@mit.edu>
-Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, jmoyer@redhat.com,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <20190518192847.GB14277@mit.edu>
- <20190520091558.GC2172@quack2.suse.cz>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Philippe Mazenauer <philippe.mazenauer@outlook.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ext4: Variable to signed to check return code
+Message-ID: <20190521171618.GD2591@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philippe Mazenauer <philippe.mazenauer@outlook.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <AM0PR07MB4417C1C3A4E55EFE47027CA2FD0B0@AM0PR07MB4417.eurprd07.prod.outlook.com>
+ <20190517102506.GU4319@dell>
+ <20190517202810.GA21961@mit.edu>
+ <20190518063834.GX4319@dell>
+ <20190518195424.GC14277@mit.edu>
+ <20190520082402.GZ4319@dell>
+ <20190520153639.GB3933@mit.edu>
+ <20190521072553.GA4319@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190520091558.GC2172@quack2.suse.cz>
+In-Reply-To: <20190521072553.GA4319@dell>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 20, 2019 at 11:15:58AM +0200, Jan Kara wrote:
-> But this makes priority-inversion problems with ext4 journal worse, doesn't
-> it? If we submit journal commit in blkio cgroup of some random process, it
-> may get throttled which then effectively blocks the whole filesystem. Or do
-> you want to implement a more complex back-pressure mechanism where you'd
-> just account to different blkio cgroup during journal commit and then
-> throttle as different point where you are not blocking other tasks from
-> progress?
+On Tue, May 21, 2019 at 08:25:53AM +0100, Lee Jones wrote:
+> A Reviewed-by to me means that a person knows the area, including
+> possible side-effects a patch may cause.  In this EXTx case, I do not
+> consider myself a domain expert and thus am not in a position to
+> provide that level of review.  Instead, the patch was reviewed on its
+> own merits, and since it looked good (which it still does), an
+> Acked-by was provided.
 
-Good point, yes, it can.  It depends in what cgroup the file system is
-mounted (and hence what cgroup the jbd2 kernel thread is on).  If it
-was mounted in the root cgroup, then jbd2 thread is going to be
-completely unthrottled (except for the data=ordered writebacks, which
-will be charged to the cgroup which write those pages) so the only
-thing which is nuking us will be the slice_idle timeout --- both for
-the writebacks (which could get charged to N different cgroups, with
-disastrous effects --- and this is going to be true for any file
-system on a syncfs(2) call as well) and switching between the jbd2
-thread's cgroup and the writeback cgroup.
+So that kind of "review", where "I'm not an expert, but it looks good
+to me", has very, very little value as far as I'm concerned.  A
+computer program can do a "it builds, ship it" test, and checkpatch
+can find the whitespace nits.  So what value does a "I can't consider
+side-effects" review have?  Again, as a maintainer, I can put very
+little (read: zero) reliance on it.
 
-One thing the I/O scheduler could do is use the synchronous flag as a
-hint that it should ix-nay on the idle-way.  Or maybe we need to have
-a different way to signal this to the jbd2 thread, since I do
-recognize that this issue is ext4-specific, *because* we do the
-transaction handling in a separate thread, and because of the
-data=ordered scheme, both of which are unique to ext4.  So exempting
-synchronous writes from cgroup control doesn't make sense for other
-file systems.
+> Exactly, there's that *if* I was talking about.  "IF, a patch affects
+> multiple subsystems".  This patch does not.  The Acked by is also not
+> coming from a maintainer from this subsystem, thus this statement does
+> not come into play.
 
-So maybe a special flag meaning "entangled writes", where the
-sched_idle hacks should get suppressed for the data=ordered
-writebacks, but we still charge the block I/O to the relevant CSS's?
+And my assertion is that if a patch does not affect multiple
+subsystems, an Acked-by has close to zero value.  So why do it?  In my
+opinion, we should tighten up the documentation to only use it for the
+Maintainer reviewing a patch that's not flowing through the
+Maintainer's tree.
 
-I could also imagine if there was some way that file system could
-track whether all of the file system modifications were charged to a
-single cgroup, we could in that case charge it to that cgroup?
+> > > "at all" - wow!  What kind of message do you think this gives to first
+> > > time contributors (like Philippe here), or would-be reviewers?  That
+> > > there isn't any point in attempting to review patches, since
+> > > Maintainers are unlikely to take it into consideration "at all"?  I
+> > > know that when I come to review a patch, if *any* contributor has
+> > > taken the time to review a patch, it always plays an important role.
+> > 
+> > So if I'm going to have to do a full review (which you approve), that
+> > by definition means I'm not relying on the review at all, right?
+> 
+> Your review should not replace and over-ride another review (unless
+> you disagree with it, obviously), it should compliment it.  Both *-bys
+> should be added to the patch when/if it is applied.
 
-> Yeah. At least in some cases, we know there won't be any more IO from a
-> particular cgroup in the near future (e.g. transaction commit completing,
-> or when the layers above IO scheduler already know which IO they are going
-> to submit next) and in that case idling is just a waste of time. But so far
-> I haven't decided how should look a reasonably clean interface for this
-> that isn't specific to a particular IO scheduler implementation.
+We're using "reviewed" in two different ways.  I'm talking about an
+empty "reviewed-by" or "acked-by", for which if it's an developer
+unknown to me, I have no way of telling how much time they spent on
+the review.  Was it 5 seconds?  Or 5 minutes?  Or something in
+between?
 
-The best I've come up with is some way of signalling that all of the
-writes coming from the jbd2 commit are entangled, probably via a bio
-flag.
+You're saying that if someone sends a "Reviewed-by" or "Acked-by", I
+*must* never drop it, even if I have no idea how much value it has
+(and therefore, as far as I'm concerned, it has no value).  Sorry, I'm
+not going to play things that way.  Feel free to call me bad if you
+want, it's not going to change how I do things.
 
-If we don't have cgroup support, the other thing we could do is assume
-that the jbd2 thread should always be in the root (unconstrained)
-cgroup, and then force all writes, include data=ordered writebacks, to
-be in the jbd2's cgroup.  But that would make the block cgroup
-controls trivially bypassable by an application, which could just be
-fsync-happy and exempt all of its buffered I/O writes from cgroup
-control.  So that's probably not a great way to go --- but it would at
-least fix this particular performance issue.  :-/
+Worse, what value does it add if we record it for all posterity?  What
+should someone who is reviewing the git log after the fact, perhaps a
+year later, take from the fact that there is an unknowned Reviewed-By
+or Acked-By attached to the commit?  Do you think someone reviewing a
+commit year later will spend time crawling over the git history to
+determine how many reviews someone has done?
 
-						- Ted
+(And if all maintainer's add empty Reviewed-by to their commit,
+looking at Git histories might not tell you much anyway.  It cheapens
+the Reviewed-by and Acked-by headers.  I consider part of the
+maintianer's job to curate not just patches, but Reviewed-By and
+Acked-by headers.)
+
+And BTW, if the maintainer is using a non-rewinding git tree, and the
+git has already been published on git.kernel.org, it's physically not
+*possible* for them to add a late Reviewed-by, or Acked-by.  And I
+think that's perfectly justifiable, since if the decision has already
+been made to accept the commit, the Reviewed-By or Acked-By has no
+value to the project.
+
+> > So my personal approach is to not include Reviewed-by or
+> > Acked-by if it didn't add any value to the project.
+> 
+> That's wrong of you.  I do not support this behaviour at all.  If
+> someone has gone to the trouble to review a patch and provide a
+> suitable *-by, you, as the maintainer have a duty to credit this work
+> by applying it to the patch (if accepted).
+
+But I don't *know* that someone has gone to the trouble to review a
+patch.  If they made any kind of comment (positive or negative, or
+evaluating tradeoffs), then I have some kind of signal about how much
+time they spent reviewing the patch, and how much comprehension they
+have about the patch.  This is why my metric is "value to the
+subsystem / value to the project as a whole".
+
+You yourself have asked me to count the number of Reviewed-by you have
+as a sign of your technical ability.  Would you then want to make sure
+that that signal isn't cheapened?
+
+> That policy is crazy.  You are saying that people should only be
+> providing negative reviews?  So what happens if someone conducts a
+> review and they cannot find anything wrong with the submission?  You
+> are suggesting that you are not going to apply their tag anyway, so
+> what would be the point in them providing one?  You are essentially
+> saying that unless they have previously given a patch a NACK, then
+> don't bother to provide an ACK.  Bonkers!
+
+It's a question of developer history.  Not just of a particular patch,
+but their reviewer history as a whole.  If Jan Kara or Andreas Dilger
+or Lukas Czerner sends me a empty Reviewed-By, it has great weight,
+because they've found issues with other patches in the past, and we've
+had design discussions about what is the right way to fix a particular
+issue.  But for a someone with whom I've never interacted before, and
+all I get is a drive-by, empty Acked-by?  No, it's not going to get
+included by me.  Sorry.
+
+					- Ted
