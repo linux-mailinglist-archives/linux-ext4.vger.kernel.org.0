@@ -2,90 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D46C524A28
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 10:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FAF24A47
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 10:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbfEUIWF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 21 May 2019 04:22:05 -0400
-Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25329 "EHLO
-        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726006AbfEUIWF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 04:22:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1558426920; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=JJQYIKJRP23buI1v9tRq43Na8SWg2GaS5K5BzblUcIckdTemvMj/L7krMnRfxjVQHkgBfyXaKCt8JbhKOXUZv20PUEMCG4MC0sjOUmOU4my5TH+Lt+vLlEyE/41TBXorU5lb+E56kN1snpJg93nBVd0G8P/xqiS6TJeqkuEPO8M=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1558426920; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
-        bh=G2prlBlgR5vzLkKOrsuhSA7dLPSWrLTx6UuM5BNoZu4=; 
-        b=RNePn5luhTzndN/2XUJk9puKEF+XOh7NT4mR6mafs+dzq7mFF1biMTyjPVjKv9iz4+JR8zZWIe40qgtu8uUhiZQHFdBzUwvqLiHgLpobfOwMAHez5s1YUHrU8b2LS1ACzYKhLdnRU9PFGvw3Ex/ud+5NZowuq/HJuCwruesoaYM=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=zoho.com.cn;
-        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
-        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
-Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1558426916615867.6926716142767; Tue, 21 May 2019 16:21:56 +0800 (CST)
-From:   Chengguang Xu <cgxu519@zoho.com.cn>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@zoho.com.cn>
-Message-ID: <20190521082140.19992-1-cgxu519@zoho.com.cn>
-Subject: [PATCH] ext2: optimize ext2_xattr_get()
-Date:   Tue, 21 May 2019 16:21:39 +0800
-X-Mailer: git-send-email 2.20.1
+        id S1726829AbfEUIZb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 04:25:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50394 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726767AbfEUIZb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 May 2019 04:25:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id AA0DAAD94;
+        Tue, 21 May 2019 08:25:29 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id EF1FD1E3C72; Tue, 21 May 2019 10:25:28 +0200 (CEST)
+Date:   Tue, 21 May 2019 10:25:28 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     'Christoph Hellwig' <hch@infradead.org>
+Cc:     kanchan <joshi.k@samsung.com>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        prakash.v@samsung.com, anshul@samsung.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH v5 0/7] Extend write-hint framework, and add write-hint
+ for Ext4 journal
+Message-ID: <20190521082528.GA17709@quack2.suse.cz>
+References: <CGME20190425112347epcas2p1f7be48b8f0d2203252b8c9dd510c1b61@epcas2p1.samsung.com>
+ <1556191202-3245-1-git-send-email-joshi.k@samsung.com>
+ <20190510170249.GA26907@infradead.org>
+ <00fb01d50c71$dd358e50$97a0aaf0$@samsung.com>
+ <20190520142719.GA15705@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190520142719.GA15705@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Since xattr entry names are sorted, we don't have
-to continue when current entry name is greater than
-target.
+On Mon 20-05-19 07:27:19, 'Christoph Hellwig' wrote:
+> On Fri, May 17, 2019 at 11:01:55AM +0530, kanchan wrote:
+> > Sorry but can you please elaborate the issue? I do not get what is being
+> > statically allocated which was globally available earlier.
+> > If you are referring to nvme driver,  available streams at subsystem level
+> > are being reflected for all namespaces. This is same as earlier. 
+> > There is no attempt to explicitly allocate (using dir-receive) or reserve
+> > streams for any namespace.  
+> > Streams will continue to get allocated/released implicitly as and when
+> > writes (with stream id) arrive.
+> 
+> We have made a concious decision that we do not want to expose streams
+> as an awkward not fish not flesh interface, but instead life time hints.
+> 
+> I see no reason to change from and burden the whole streams complexity
+> on other in-kernel callers.
 
-Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
----
- fs/ext2/xattr.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+I'm not following the "streams complexity" you talk about. At least the
+usecase Kanchan speaks about here is pretty simple for the filesystem -
+tagging journal writes with special stream id. I agree that something like
+dynamically allocating available stream ids to different purposes is
+complex and has uncertain value but this "static stream id for particular
+purpose" looks simple and sensible to me and Kanchan has shown significant
+performance benefits for some drives. After all you can just think about it
+like RWH_WRITE_LIFE_JOURNAL type of hint available for the kernel...
 
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index d21dbf297b74..f1f857b83b45 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -178,7 +178,7 @@ ext2_xattr_get(struct inode *inode, int name_index, const char *name,
- 	struct ext2_xattr_entry *entry;
- 	size_t name_len, size;
- 	char *end;
--	int error;
-+	int error, not_found;
- 	struct mb_cache *ea_block_cache = EA_BLOCK_CACHE(inode);
- 
- 	ea_idebug(inode, "name=%d.%s, buffer=%p, buffer_size=%ld",
-@@ -220,10 +220,18 @@ ext2_xattr_get(struct inode *inode, int name_index, const char *name,
- 			goto bad_block;
- 		if (!ext2_xattr_entry_valid(entry, inode->i_sb->s_blocksize))
- 			goto bad_block;
--		if (name_index == entry->e_name_index &&
--		    name_len == entry->e_name_len &&
--		    memcmp(name, entry->e_name, name_len) == 0)
-+
-+		not_found = name_index - entry->e_name_index;
-+		if (!not_found)
-+			not_found = name_len - entry->e_name_len;
-+		if (!not_found)
-+			not_found = memcmp(name, entry->e_name,
-+						   name_len);
-+		if (!not_found)
- 			goto found;
-+		if (not_found < 0)
-+			break;
-+
- 		entry = next;
- 	}
- 	if (ext2_xattr_cache_insert(ea_block_cache, bh))
+								Honza
+
 -- 
-2.20.1
-
-
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
