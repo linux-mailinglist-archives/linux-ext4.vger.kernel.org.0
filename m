@@ -2,170 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 860B72578C
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 20:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B67A2580D
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 21:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728500AbfEUS2f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 14:28:35 -0400
-Received: from mga02.intel.com ([134.134.136.20]:2851 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728457AbfEUS2f (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 May 2019 14:28:35 -0400
-X-Amp-Result: UNSCANNABLE
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 May 2019 11:26:41 -0700
-X-ExtLoop1: 1
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga005.jf.intel.com with ESMTP; 21 May 2019 11:26:41 -0700
-Date:   Tue, 21 May 2019 11:27:32 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/3] ext4: Gracefully handle ext4_break_layouts() failure
- during truncate
-Message-ID: <20190521182731.GC31888@iweiny-DESK2.sc.intel.com>
-References: <20190521074358.17186-1-jack@suse.cz>
- <20190521074358.17186-4-jack@suse.cz>
+        id S1726766AbfEUTLO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 15:11:14 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43247 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726419AbfEUTLN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 15:11:13 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4LJAYLu009279
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 May 2019 15:10:35 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 0FC18420481; Tue, 21 May 2019 15:10:34 -0400 (EDT)
+Date:   Tue, 21 May 2019 15:10:33 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Jan Kara <jack@suse.cz>, Paolo Valente <paolo.valente@linaro.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, jmoyer@redhat.com,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Message-ID: <20190521191033.GA4855@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        Josef Bacik <josef@toxicpanda.com>, Jan Kara <jack@suse.cz>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, jmoyer@redhat.com,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <20190518192847.GB14277@mit.edu>
+ <20190520091558.GC2172@quack2.suse.cz>
+ <20190521164814.GC2591@mit.edu>
+ <20190521181952.4vpruone2mzbczpw@MacBook-Pro-91.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190521074358.17186-4-jack@suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20190521181952.4vpruone2mzbczpw@MacBook-Pro-91.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 21, 2019 at 09:43:58AM +0200, Jan Kara wrote:
-> ext4_break_layouts() may fail e.g. due to a signal being delivered.
-> Thus we need to handle its failure gracefully and not by taking the
-> filesystem down. Currently ext4_break_layouts() failure is rare but it
-> may become more common once RDMA uses layout leases for handling
-> long-term page pins for DAX mappings.
-> 
-> To handle the failure we need to move ext4_break_layouts() earlier
-> during setattr handling before we do hard to undo changes such as
-> modifying inode size. To be able to do that we also have to move some
-> other checks which are better done without holding i_mmap_sem earlier.
-> 
-> Reported-by: "Weiny, Ira" <ira.weiny@intel.com>
-> Signed-off-by: Jan Kara <jack@suse.cz>
+On Tue, May 21, 2019 at 02:19:53PM -0400, Josef Bacik wrote:
+> Chris is adding a REQ_ROOT (or something) flag that means don't throttle me now,
+> but the the blkcg attached to the bio is the one that is responsible for this
+> IO.  Then for io.latency we'll let the io go through unmolested but it gets
+> counted to the right cgroup, and if then we're exceeding latency guarantees we
+> have the ability to schedule throttling for that cgroup in a safer place.  This
+> would eliminate the data=ordered issue for ext4, you guys keep doing what you
+> are doing and we'll handle throttling elsewhere, just so long as the bio's are
+> tagged with the correct source then all is well.  Thanks,
 
+Great, it sounds like Chris also came up with the the entangled writes
+flag idea (although with probably a better name than I did :-).  So
+now all we need to do is to plumb a flag through the writeback code so
+that file systems (or the VFS player) implementing syncfs(2) or
+fsync(2) can arrange to have that flag set if necessary.
 
-This fixes the bug I was seeing WRT ext4_break_layouts().  Thanks for the help!
-One more NIT comment below.
+Speaking of syncfs(2), something which we considered doing at Google
+many years ago (but never did) was to implement a hack so that someone
+calling syncfs(2) or sync(2) when they were not root, would make that
+sys call be a no-op.  The reason for this was on heavy loaded
+machines, an SRE logged in as a non-root user might absent-mindly type
+"sync", and that would cause a storm of I/O traffic that would really
+mess up the machine.  The jobs that were in the low latency bucket
+would be protected (since we didn't run with journalling), but those
+that were in the best efforts bucket would be really unhappy.
 
-> ---
->  fs/ext4/inode.c | 55 ++++++++++++++++++++++++++++---------------------------
->  1 file changed, 28 insertions(+), 27 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index c7f77c643008..979570b42e18 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5571,7 +5571,7 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
->  	if (attr->ia_valid & ATTR_SIZE) {
->  		handle_t *handle;
->  		loff_t oldsize = inode->i_size;
-> -		int shrink = (attr->ia_size <= inode->i_size);
-> +		int shrink = (attr->ia_size < inode->i_size);
->  
->  		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
->  			struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-> @@ -5585,18 +5585,35 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
->  		if (IS_I_VERSION(inode) && attr->ia_size != inode->i_size)
->  			inode_inc_iversion(inode);
->  
-> -		if (ext4_should_order_data(inode) &&
-> -		    (attr->ia_size < inode->i_size)) {
-> -			error = ext4_begin_ordered_truncate(inode,
-> +		if (shrink) {
-> +			if (ext4_should_order_data(inode)) {
-> +				error = ext4_begin_ordered_truncate(inode,
->  							    attr->ia_size);
-> -			if (error)
-> -				goto err_out;
-> +				if (error)
-> +					goto err_out;
-> +			}
-> +			/*
-> +			 * Blocks are going to be removed from the inode. Wait
-> +			 * for dio in flight.
-> +			 */
-> +			inode_dio_wait(inode);
-> +		} else {
-> +			pagecache_isize_extended(inode, oldsize, inode->i_size);
->  		}
-> +
-> +		down_write(&EXT4_I(inode)->i_mmap_sem);
-> +
-> +		rc = ext4_break_layouts(inode);
-> +		if (rc) {
-> +			up_write(&EXT4_I(inode)->i_mmap_sem);
-> +			return rc;
-> +		}
-> +
->  		if (attr->ia_size != inode->i_size) {
->  			handle = ext4_journal_start(inode, EXT4_HT_INODE, 3);
->  			if (IS_ERR(handle)) {
->  				error = PTR_ERR(handle);
-> -				goto err_out;
-> +				goto out_mmap_sem;
->  			}
->  			if (ext4_handle_valid(handle) && shrink) {
->  				error = ext4_orphan_add(handle, inode);
-> @@ -5627,29 +5644,12 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
->  			if (error) {
->  				if (orphan && inode->i_nlink)
->  					ext4_orphan_del(NULL, inode);
-> -				goto err_out;
-> +				goto out_mmap_sem;
+If we have a "don't throttle me now" REQ_ROOT flag combined with
+journalling, then someone running "sync", even if it's by accident,
+could really ruin a low-latency job's day, and in a container
+environment, there really is no reason for a non-root user to be
+wanting to request a syncfs(2) or sync(2).  So maybe we should have a
+way to make it be a no-op (or return an error, but that might surprise
+some applications) for non-privileged users.  Maybe as a per-mount
+flag/option, or via some other tunable?
 
-This goto flows through a second ext4_orphan_del() call which threw me at
-first.  But I think this is ok.
-
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-
-And with the series applied.
-
-Tested-by: Ira Weiny <ira.weiny@intel.com>
-
->  			}
->  		}
-> -		if (!shrink) {
-> -			pagecache_isize_extended(inode, oldsize, inode->i_size);
-> -		} else {
-> -			/*
-> -			 * Blocks are going to be removed from the inode. Wait
-> -			 * for dio in flight.
-> -			 */
-> -			inode_dio_wait(inode);
-> -		}
-> -		if (orphan && ext4_should_journal_data(inode))
-> -			ext4_wait_for_tail_page_commit(inode);
-> -		down_write(&EXT4_I(inode)->i_mmap_sem);
-> -
-> -		rc = ext4_break_layouts(inode);
-> -		if (rc) {
-> -			up_write(&EXT4_I(inode)->i_mmap_sem);
-> -			error = rc;
-> -			goto err_out;
-> -		}
->  
-> +		if (shrink && ext4_should_journal_data(inode))
-> +			ext4_wait_for_tail_page_commit(inode);
->  		/*
->  		 * Truncate pagecache after we've waited for commit
->  		 * in data=journal mode to make pages freeable.
-> @@ -5660,6 +5660,7 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
->  			if (rc)
->  				error = rc;
->  		}
-> +out_mmap_sem:
->  		up_write(&EXT4_I(inode)->i_mmap_sem);
->  	}
->  
-> -- 
-> 2.16.4
-> 
+						- Ted
