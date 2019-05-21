@@ -2,121 +2,197 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD5A25125
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 15:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF792535C
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2019 17:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbfEUNvk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 09:51:40 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:39233 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728194AbfEUNvj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 09:51:39 -0400
-Received: by mail-qt1-f195.google.com with SMTP id y42so20540753qtk.6
-        for <linux-ext4@vger.kernel.org>; Tue, 21 May 2019 06:51:39 -0700 (PDT)
+        id S1728876AbfEUPC5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 May 2019 11:02:57 -0400
+Received: from mail-it1-f196.google.com ([209.85.166.196]:52012 "EHLO
+        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727941AbfEUPC4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 May 2019 11:02:56 -0400
+Received: by mail-it1-f196.google.com with SMTP id m3so5549730itl.1
+        for <linux-ext4@vger.kernel.org>; Tue, 21 May 2019 08:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aXGZlwZ2utpr5fuCxQ1nwKS/KyyL22WxIEG+biDA5Fk=;
+        b=zKFYFWcdGJPTep5yVlaByZqDz4Dsi4C/RTBpJ6d1qCT6RerXGP7iqtkdCSKuShpi8C
+         cqoPPmd3f9grUiCdU0hFlwOQuRVmBcn7e/aiyQ/7dDY6OZzhNDB3JL1K+zWrhxTczlgk
+         Jvi08OoVhDB+4FJ44GU5yEqXDtUqpg5cUFURDKzIFpT7saDPae54WUN3W2wZqoUQGZq6
+         h6G+4M5TsWO0z0VFjOqswy6E5c3+pgKVf69Mne5Py+K33rqSG1p5y3CLRYnpX9zfK/XO
+         NU4SSuAOF+pwIOpj8fgPqHOziw91Zbo62fN8irBpktjZqobbdNLwZLIvltCSYg9durzA
+         G8Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TK1+q9ordzXuZZneT1jdBLnWaxfhFR3So8YN5DgmZPE=;
-        b=snkZOpTOTQ+hPcANbq2MSbB5Y8/Je8xB4Xk07wH2bEtdjUbCMinHmodfrGRC6qPrcf
-         G/ckBFkmxK5cgbQGhMOwCRupn2u/MZVNgLR045OnpGr/glAplVJPXGutx6UvSGaAVaVS
-         2S3mVspVl3f+21C26KMwljuy9K38v3QJSkeWVoHik4cua1r6AS8tuxPPG8GUMxcJk36D
-         ZXU1jwsVCdd0fipXE1707LwqoSUMqgESkEsYxIlfiYpKPRc0s48jUZL7GxUcS0uIrjfE
-         BqWSK7qicTTVv3oGn0IgxDoLQb+scBONb99OOswHaNif1Gknuxb6+892D2FnuGzu8j0P
-         25xQ==
-X-Gm-Message-State: APjAAAU5eIiLWYblDd1opxIrkqDCPuWds6+OACdKycITDGaTzViq0iiq
-        79GwdrIZSS/515hWBIxjD+Vl6wKPR14=
-X-Google-Smtp-Source: APXvYqyh4Hn5uFOLIUZJ6Or+HOPTIpSiSFn1uSWJgwWbt4T3Cy3pGgBfYiLTVuICBM9UJLxQWjWXvw==
-X-Received: by 2002:ac8:5218:: with SMTP id r24mr28772252qtn.177.1558446698964;
-        Tue, 21 May 2019 06:51:38 -0700 (PDT)
-Received: from redhat.com (pool-173-76-105-71.bstnma.fios.verizon.net. [173.76.105.71])
-        by smtp.gmail.com with ESMTPSA id q27sm13106373qtf.27.2019.05.21.06.51.36
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 21 May 2019 06:51:37 -0700 (PDT)
-Date:   Tue, 21 May 2019 09:51:35 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Pankaj Gupta <pagupta@redhat.com>
-Cc:     linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        qemu-devel@nongnu.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
-        dan.j.williams@intel.com, zwisler@kernel.org,
-        vishal.l.verma@intel.com, dave.jiang@intel.com,
-        jasowang@redhat.com, willy@infradead.org, rjw@rjwysocki.net,
-        hch@infradead.org, lenb@kernel.org, jack@suse.cz, tytso@mit.edu,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com,
-        lcapitulino@redhat.com, kwolf@redhat.com, imammedo@redhat.com,
-        jmoyer@redhat.com, nilal@redhat.com, riel@surriel.com,
-        stefanha@redhat.com, aarcange@redhat.com, david@redhat.com,
-        david@fromorbit.com, cohuck@redhat.com,
-        xiaoguangrong.eric@gmail.com, pbonzini@redhat.com,
-        yuval.shaia@oracle.com, kilobyte@angband.pl, jstaron@google.com,
-        rdunlap@infradead.org, snitzer@redhat.com
-Subject: Re: [PATCH v10 2/7] virtio-pmem: Add virtio pmem driver
-Message-ID: <20190521094543-mutt-send-email-mst@kernel.org>
-References: <20190521133713.31653-1-pagupta@redhat.com>
- <20190521133713.31653-3-pagupta@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=aXGZlwZ2utpr5fuCxQ1nwKS/KyyL22WxIEG+biDA5Fk=;
+        b=H34KFlrxtAWhgzSAGzhg4NYu/LTaF4Z9Uov+ss/ZMtFjUs1duHGjq4A0uF5Rxiprh4
+         L/kOxWRQZYWnaTJfqoJ9XXmC/BmbgTh8c1sk4KvfV59qpUv/Ok/3p1HYYC0kBwlUVWsA
+         zTc6tKkuZYZTugycirU6eGc+OAr1PSxzDG6MPo7O46KULWwsSqjXjdf3syXEZnCvLkTG
+         PupZAEOovx0crdm//0Z40/1k54J0v1iQcfDvW5PWH0g0i2MQSvokvrKgAocCsRgfKHtI
+         Wxl93WPIgFS53PCw/u+vbwG8DaealHFiPCpJ2TsuxV9TvAbWEsdjYJ1yRpdyVybX4Gmv
+         xh4g==
+X-Gm-Message-State: APjAAAV6a2J/j8qR4m1kmBIMjVDfAsjkmoguzPRVm0X+psiq4GiBAv5u
+        n974roXEDdgT8xaitIOEGTf7iqOt1fo=
+X-Google-Smtp-Source: APXvYqybOSduGZ+saGdI5xBZLJnD+XEmDMa3Dfrrjt4EW/+/wagQX/n2F5nZHSso4dIPO8EzjTnxzg==
+X-Received: by 2002:a24:aa42:: with SMTP id y2mr4458662iti.23.1558450975703;
+        Tue, 21 May 2019 08:02:55 -0700 (PDT)
+Received: from localhost (c-75-72-120-115.hsd1.mn.comcast.net. [75.72.120.115])
+        by smtp.gmail.com with ESMTPSA id z18sm6983012ioi.33.2019.05.21.08.02.54
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 21 May 2019 08:02:54 -0700 (PDT)
+Date:   Tue, 21 May 2019 10:02:53 -0500
+From:   Dan Rue <dan.rue@linaro.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        Arthur Marsh <arthur.marsh@internode.on.net>,
+        Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: ext4 regression (was Re: [PATCH 4.19 000/105] 4.19.45-stable
+ review)
+Message-ID: <20190521150253.coawunplbqjqf4n3@xps.therub.org>
+Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>, Shuah Khan <shuah@kernel.org>,
+        patches@kernelci.org, Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        Arthur Marsh <arthur.marsh@internode.on.net>,
+        Richard Weinberger <richard.weinberger@gmail.com>
+References: <20190520115247.060821231@linuxfoundation.org>
+ <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
+ <20190521085956.GC31445@kroah.com>
+ <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
+ <20190521093849.GA9806@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190521133713.31653-3-pagupta@redhat.com>
+In-Reply-To: <20190521093849.GA9806@kroah.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, May 21, 2019 at 07:07:08PM +0530, Pankaj Gupta wrote:
-> diff --git a/include/uapi/linux/virtio_pmem.h b/include/uapi/linux/virtio_pmem.h
-> new file mode 100644
-> index 000000000000..7a3e2fe52415
-> --- /dev/null
-> +++ b/include/uapi/linux/virtio_pmem.h
-> @@ -0,0 +1,35 @@
-> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-> +/*
-> + * Definitions for virtio-pmem devices.
-> + *
-> + * Copyright (C) 2019 Red Hat, Inc.
-> + *
-> + * Author(s): Pankaj Gupta <pagupta@redhat.com>
-> + */
-> +
-> +#ifndef _UAPI_LINUX_VIRTIO_PMEM_H
-> +#define _UAPI_LINUX_VIRTIO_PMEM_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/virtio_types.h>
-> +#include <linux/virtio_ids.h>
-> +#include <linux/virtio_config.h>
-> +
-> +struct virtio_pmem_config {
-> +	__le64 start;
-> +	__le64 size;
-> +};
-> +
+On Tue, May 21, 2019 at 11:38:49AM +0200, Greg Kroah-Hartman wrote:
+> On Tue, May 21, 2019 at 02:58:58PM +0530, Naresh Kamboju wrote:
+> > On Tue, 21 May 2019 at 14:30, Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Mon, May 20, 2019 at 05:23:42PM -0500, Dan Rue wrote:
+> > > > On Mon, May 20, 2019 at 02:13:06PM +0200, Greg Kroah-Hartman wrote:
+> > > > > This is the start of the stable review cycle for the 4.19.45 release.
+> > > > > There are 105 patches in this series, all will be posted as a response
+> > > > > to this one.  If anyone has any issues with these being applied, please
+> > > > > let me know.
+> > > > >
+> > > > > Responses should be made by Wed 22 May 2019 11:50:49 AM UTC.
+> > > > > Anything received after that time might be too late.
+> > > >
+> > > > We're seeing an ext4 issue previously reported at
+> > > > https://lore.kernel.org/lkml/20190514092054.GA6949@osiris.
+> > > >
+> > > > [ 1916.032087] EXT4-fs error (device sda): ext4_find_extent:909: inode #8: comm jbd2/sda-8: pblk 121667583 bad header/extent: invalid extent entries - magic f30a, entries 8, max 340(340), depth 0(0)
+> > > > [ 1916.073840] jbd2_journal_bmap: journal block not found at offset 4455 on sda-8
+> > > > [ 1916.081071] Aborting journal on device sda-8.
+> > > > [ 1916.348652] EXT4-fs error (device sda): ext4_journal_check_start:61: Detected aborted journal
+> > > > [ 1916.357222] EXT4-fs (sda): Remounting filesystem read-only
+> > > >
+> > > > This is seen on 4.19-rc, 5.0-rc, mainline, and next. We don't have data
+> > > > for 5.1-rc yet, which is presumably also affected in this RC round.
+> > > >
+> > > > We only see this on x86_64 and i386 devices - though our hardware setups
+> > > > vary so it could be coincidence.
+> > > >
+> > > > I have to run out now, but I'll come back and work on a reproducer and
+> > > > bisection later tonight and tomorrow.
+> > > >
+> > > > Here is an example test run; link goes to the spot in the ltp syscalls
+> > > > test where the disk goes into read-only mode.
+> > > > https://lkft.validation.linaro.org/scheduler/job/735468#L8081
+> > >
+> > > Odd, I keep hearing rumors of ext4 issues right now, but nothing
+> > > actually solid that I can point to.  Any help you can provide here would
+> > > be great.
+> > >
+> > 
+> > git bisect helped me to land on this commit,
+> > 
+> > # git bisect bad
+> > e8fd3c9a5415f9199e3fc5279e0f1dfcc0a80ab2 is the first bad commit
+> > commit e8fd3c9a5415f9199e3fc5279e0f1dfcc0a80ab2
+> > Author: Theodore Ts'o <tytso@mit.edu>
+> > Date:   Tue Apr 9 23:37:08 2019 -0400
+> > 
+> >     ext4: protect journal inode's blocks using block_validity
+> > 
+> >     commit 345c0dbf3a30872d9b204db96b5857cd00808cae upstream.
+> > 
+> >     Add the blocks which belong to the journal inode to block_validity's
+> >     system zone so attempts to deallocate or overwrite the journal due a
+> >     corrupted file system where the journal blocks are also claimed by
+> >     another inode.
+> > 
+> >     Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202879
+> >     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> >     Cc: stable@kernel.org
+> >     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > 
+> > :040000 040000 b8b6ce2577d60c65021e5cc1c3a38b32e0cbb2ff
+> > 747c67b159b33e4e1da414b1d33567a5da9ae125 M fs
+> 
+> Ah, many thanks for this bisection.
+> 
+> Ted, any ideas here?  Should I drop this from the stable trees, and you
+> revert it from Linus's?  Or something else?
+> 
+> Note, I do also have 170417c8c7bb ("ext4: fix block validity checks for
+> journal inodes using indirect blocks") in the trees, which was supposed
+> to fix the problem with this patch, am I missing another one as well?
+> 
+> (side note, it was mean not to mark 170417c8c7bb for stable, when the
+> patch it was fixing was marked for stable, I'm lucky I caught it...)
 
-config generally should be __u64.
-Are you sure sparse does not complain?
+My independent bisection agrees that e8fd3c9a5415 ("ext4: protect
+journal inode's blocks using block_validity") is the root cause. I was
+able to revert it along with 18b3c1c2827c ("ext4: unsigned int compared
+against zero") on 4.19 and then the issue went away.
 
+I tested the same revert on mainline v5.2-rc1 and it fixed the issue
+there as well (git revert fbbbbd2f28ae 345c0dbf3a30).
 
-> +#define VIRTIO_PMEM_REQ_TYPE_FLUSH      0
-> +
-> +struct virtio_pmem_resp {
-> +	/* Host return status corresponding to flush request */
-> +	__virtio32 ret;
-> +};
-> +
-> +struct virtio_pmem_req {
-> +	/* command type */
-> +	__virtio32 type;
-> +};
-> +
-> +#endif
-> -- 
-> 2.20.1
+The problem reproduces in our environment 100% of the time, but creating
+a reproducer is troublesome; it happens while running LTP syscalls, and
+requires some combination of syscall tests to happen. So far, we've been
+able to reduce it to the following ltp runfile:
+https://gist.github.com/danrue/61c663e1dc50dc7c13a232f0a062bdc6
 
-Sorry why are these __virtio32 not __le32?
+LTP is run using '/opt/ltp/runltp -d /scratch -f syscalls', where the
+syscalls file has been replaced with the version in the gist, and
+/scratch is an ext4 SATA drive. /scratch is created using 'mkfs -t ext4
+/dev/disk/by-id/ata-TOSHIBA_MG03ACA100_37O9KGKWF' and mounted to
+/scratch.
+
+I'll update the gist as we reduce it further.
+
+Dan
 
 -- 
-MST
+Linaro - Kernel Validation
