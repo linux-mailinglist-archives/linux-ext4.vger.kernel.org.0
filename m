@@ -2,100 +2,145 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EF525A7E
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 00:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486F125D4F
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 07:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbfEUWwT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 May 2019 18:52:19 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:41586 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726218AbfEUWwS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 May 2019 18:52:18 -0400
-Received: from [4.30.142.84] (helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hTDbq-0003mv-2S; Tue, 21 May 2019 18:52:13 -0400
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
- <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
- <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
- <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
- <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
- <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Message-ID: <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
-Date:   Tue, 21 May 2019 15:51:46 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
+        id S1726770AbfEVFGL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 May 2019 01:06:11 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38451 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725796AbfEVFGL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 May 2019 01:06:11 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4M55BVA020853
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 May 2019 01:05:12 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 61574420481; Wed, 22 May 2019 01:05:11 -0400 (EDT)
+Date:   Wed, 22 May 2019 01:05:11 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        Arthur Marsh <arthur.marsh@internode.on.net>,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        ltp@lists.linux.it, Jan Stancek <jstancek@redhat.com>
+Subject: Re: ext4 regression (was Re: [PATCH 4.19 000/105] 4.19.45-stable
+ review)
+Message-ID: <20190522050511.GB4943@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>, Shuah Khan <shuah@kernel.org>,
+        patches@kernelci.org, Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        Arthur Marsh <arthur.marsh@internode.on.net>,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        ltp@lists.linux.it, Jan Stancek <jstancek@redhat.com>
+References: <20190520115247.060821231@linuxfoundation.org>
+ <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
+ <20190521085956.GC31445@kroah.com>
+ <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
+ <20190521093849.GA9806@kroah.com>
+ <CA+G9fYveeg_FMsL31aunJ2A9XLYk908Y1nSFw4kwkFk3h3uEiA@mail.gmail.com>
+ <20190521162142.GA2591@mit.edu>
+ <CA+G9fYunxonkqmkhz+zmZYuMTfyRMVBxn6PkTFfjd8tTT+bzHQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYunxonkqmkhz+zmZYuMTfyRMVBxn6PkTFfjd8tTT+bzHQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[ Resending this mail with a dropbox link to the traces (instead
-of a file attachment), since it didn't go through the last time. ]
-
-On 5/21/19 10:38 AM, Paolo Valente wrote:
+On Tue, May 21, 2019 at 11:27:21PM +0530, Naresh Kamboju wrote:
+> Steps to reproduce is,
+> running LTP three test cases in sequence on x86 device.
+> # cd ltp/runtest
+> # cat syscalls ( only three test case)
+> open12 open12
+> madvise06 madvise06
+> poll02 poll02
+> #
 > 
->> So, instead of only sending me a trace, could you please:
->> 1) apply this new patch on top of the one I attached in my previous email
->> 2) repeat your test and report results
+> as Dan referring to,
 > 
-> One last thing (I swear!): as you can see from my script, I tested the
-> case low_latency=0 so far.  So please, for the moment, do your test
-> with low_latency=0.  You find the whole path to this parameter in,
-> e.g., my script.
-> 
-No problem! :) Thank you for sharing patches for me to test!
+> LTP is run using '/opt/ltp/runltp -d /scratch -f syscalls', where the
+> syscalls file has been replaced with three test case names, and
+> /scratch is an ext4 SATA drive. /scratch is created using 'mkfs -t ext4
+> /dev/disk/by-id/ata-TOSHIBA_MG03ACA100_37O9KGKWF' and mounted to
+> /scratch.
 
-I have good news :) Your patch improves the throughput significantly
-when low_latency = 0.
+I'm still having trouble reproducing the problem.  I've followed the
+above exactly, and it doesn't trigger on my system.  I think I know
+what is happening, but even given my theory, I'm still not able to
+trigger it.  So, I'm not 100% sure this is the appropriate fix.  If
+you can reproduce it, can you see if this patch, applied on top of the
+Linus's tip, fixes the problem for you?
 
-Without any patch:
+					- Ted
 
-dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflag=dsync
-10000+0 records in
-10000+0 records out
-5120000 bytes (5.1 MB, 4.9 MiB) copied, 58.0915 s, 88.1 kB/s
+commit 3ad7621bfff343b16d59ed418f6d4420d4ec3e63
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Tue May 21 17:01:01 2019 -0400
 
+    ext4: don't perform block validity checks on the journal inode
+    
+    Since the journal inode is already checked when we added it to the
+    block validity's system zone, if we check it again, we'll just trigger
+    a failure.
+    
+    This was causing failures like this:
+    
+    [   53.897001] EXT4-fs error (device sda): ext4_find_extent:909: inode
+    #8: comm jbd2/sda-8: pblk 121667583 bad header/extent: invalid extent entries - magic f30a, entries 8, max 340(340), depth 0(0)
+    [   53.931430] jbd2_journal_bmap: journal block not found at offset 49 on sda-8
+    [   53.938480] Aborting journal on device sda-8.
+    
+    ... but only if the system was under enough memory pressure that
+    logical->physical mapping for the journal inode gets pushed out of the
+    extent cache.  (This is why it wasn't noticed earlier.)
+    
+    Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using block_validity")
+    Reported-by: Dan Rue <dan.rue@linaro.org>
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-With both patches applied:
-
-dd if=/dev/zero of=/root/test0.img bs=512 count=10000 oflag=dsync
-10000+0 records in
-10000+0 records out
-5120000 bytes (5.1 MB, 4.9 MiB) copied, 3.87487 s, 1.3 MB/s
-
-The performance is still not as good as mq-deadline (which achieves
-1.6 MB/s), but this is a huge improvement for BFQ nonetheless!
-
-A tarball with the trace output from the 2 scenarios you requested,
-one with only the debug patch applied (trace-bfq-add-logs-and-BUG_ONs),
-and another with both patches applied (trace-bfq-boost-injection) is
-available here:
-
-https://www.dropbox.com/s/pdf07vi7afido7e/bfq-traces.tar.gz?dl=0
-
-Thank you!
- 
-Regards,
-Srivatsa
-VMware Photon OS
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index f2c62e2a0c98..d40ed940001e 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -518,10 +518,14 @@ __read_extent_tree_block(const char *function, unsigned int line,
+ 	}
+ 	if (buffer_verified(bh) && !(flags & EXT4_EX_FORCE_CACHE))
+ 		return bh;
+-	err = __ext4_ext_check(function, line, inode,
+-			       ext_block_hdr(bh), depth, pblk);
+-	if (err)
+-		goto errout;
++	if (!ext4_has_feature_journal(inode->i_sb) ||
++	    (inode->i_ino !=
++	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum))) {
++		err = __ext4_ext_check(function, line, inode,
++				       ext_block_hdr(bh), depth, pblk);
++		if (err)
++			goto errout;
++	}
+ 	set_buffer_verified(bh);
+ 	/*
+ 	 * If this is a leaf block, cache all of its entries
