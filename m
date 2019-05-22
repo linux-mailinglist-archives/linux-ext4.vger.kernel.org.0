@@ -2,88 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BCC26146
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 12:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D552D2619F
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 12:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbfEVKCc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 May 2019 06:02:32 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:48310 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728602AbfEVKCc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 May 2019 06:02:32 -0400
-Received: from c-73-193-85-113.hsd1.wa.comcast.net ([73.193.85.113] helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hTO4p-000DVo-GO; Wed, 22 May 2019 06:02:27 -0400
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
- <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
- <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
- <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
- <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
- <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
- <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
- <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
- <f4b11315-144c-c67d-5143-50b5be950ede@csail.mit.edu>
- <9E95BE27-2167-430F-9C7F-6D4A0E255FF3@linaro.org>
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Message-ID: <ebe43a35-87d3-11c6-5928-3f90055367ed@csail.mit.edu>
-Date:   Wed, 22 May 2019 03:02:25 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
+        id S1729005AbfEVKUz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 May 2019 06:20:55 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:44177 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728802AbfEVKUu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 May 2019 06:20:50 -0400
+Received: by mail-lj1-f195.google.com with SMTP id e13so1531953ljl.11
+        for <linux-ext4@vger.kernel.org>; Wed, 22 May 2019 03:20:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=I6Y5uva2ZOylkepfkW7JjoryC+I9mnJT08CLLH1/zB4=;
+        b=zavVrEDe37Qme7JszDwtBit8a9goL7Xf7lo7dzYs9F/s32qJMMV7ciqBvmraiaXv0z
+         1z3SGu/sXwQJ1PJmUaUHUlv2qKFBXe95+hZWV3jIDL13S66YAp9x3vdJ+Fn6BuT9VU8u
+         NOBZwoAp6T7manfujvUuR9RbpVzziZD+GjSMxlsGQWytCUClTW4rehuBUJjupvskHUr5
+         kkJC7rbA7qka6A7HM8y0PHco+9oNkv0LZrTNeFi/W/MkRmVZ39mK5bOW4nSVp1i03h5/
+         0214MndB/t3uNnBA7L4B/uS6WoXe29jOMrI0wiGoFHJkTYyz2kReyg2TfKgbDZfWpW6q
+         QOZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=I6Y5uva2ZOylkepfkW7JjoryC+I9mnJT08CLLH1/zB4=;
+        b=afaYxmFcBx8OzqlSd4lvdrLUmuT3+T640w8W7qMB0JL9krJOCOKb9gCGvPAbZeoe5d
+         Pi18Y7ZzTwd1/ppz/ojzHD5k4+QiXajlTBXcbWoPpE+9iIgTa4UGztSDv10l3I/tviCE
+         q/gNiqcZiy0yhvXj/HWkvoRfkKIFJuWnq1ALKgaOF+0EOx05lT8EJYMzVNH2G7EJaQda
+         IlUiQAjVQPdyHi/Srn2GLNq10Qs6ky5gfLyNjT0CjvSXOMiF8X6WGxZN5Aibn39KDU0p
+         LLHcASpS8MC2aUKN3gxgfzooUfu0C/D6SQhLiD3SDp704jifYTNHjadI+jSPhkJnRKV5
+         WRPg==
+X-Gm-Message-State: APjAAAX3mKpKs9KJSUeeXH8mG3sGXqMWLEtTloGw+Ir6UIBlVOS8dCIZ
+        frv7efjfyA84Ay7udlYUxJ48bZoHivqZ4jbjjesrTw==
+X-Google-Smtp-Source: APXvYqw2FkuDKjiOL0U5uxbmW7MBLTaBuIHCxmZceyZcoQRr1MyCfA1j64zoamAnH8hiGk5sO35Kb1+BFqH+Lu24ZA0=
+X-Received: by 2002:a2e:7411:: with SMTP id p17mr2152330ljc.24.1558520448161;
+ Wed, 22 May 2019 03:20:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9E95BE27-2167-430F-9C7F-6D4A0E255FF3@linaro.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20190520115247.060821231@linuxfoundation.org> <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
+ <20190521085956.GC31445@kroah.com> <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
+ <20190521093849.GA9806@kroah.com> <CA+G9fYveeg_FMsL31aunJ2A9XLYk908Y1nSFw4kwkFk3h3uEiA@mail.gmail.com>
+ <20190521162142.GA2591@mit.edu> <CA+G9fYunxonkqmkhz+zmZYuMTfyRMVBxn6PkTFfjd8tTT+bzHQ@mail.gmail.com>
+ <20190522050511.GB4943@mit.edu>
+In-Reply-To: <20190522050511.GB4943@mit.edu>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 22 May 2019 15:50:37 +0530
+Message-ID: <CA+G9fYsA6BWh+W+U-9BSQWq63WZMKGXGbsh92LS94ZCempgm5A@mail.gmail.com>
+Subject: Re: ext4 regression (was Re: [PATCH 4.19 000/105] 4.19.45-stable review)
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        Arthur Marsh <arthur.marsh@internode.on.net>,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        ltp@lists.linux.it, Jan Stancek <jstancek@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 5/22/19 2:12 AM, Paolo Valente wrote:
-> 
->> Il giorno 22 mag 2019, alle ore 11:02, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
->>
->>
->> Let's continue here on LKML itself.
-> 
-> Just done :)
-> 
->> The only reason I created the
->> bugzilla entry is to attach the tarball of the traces, assuming
->> that it would allow me to upload a 20 MB file (since email attachment
->> didn't work). But bugzilla's file restriction is much smaller than
->> that, so it didn't work out either, and I resorted to using dropbox.
->> So we don't need the bugzilla entry anymore; I might as well close it
->> to avoid confusion.
->>
-> 
-> No no, don't close it: it can reach people that don't use LKML.  We
-> just have to remember to report back at the end of this.
+On Wed, 22 May 2019 at 10:36, Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Tue, May 21, 2019 at 11:27:21PM +0530, Naresh Kamboju wrote:
+> > Steps to reproduce is,
+> > running LTP three test cases in sequence on x86 device.
+> > # cd ltp/runtest
+> > # cat syscalls ( only three test case)
+> > open12 open12
+> > madvise06 madvise06
+> > poll02 poll02
+> > #
+> >
+> > as Dan referring to,
+> >
+> > LTP is run using '/opt/ltp/runltp -d /scratch -f syscalls', where the
+> > syscalls file has been replaced with three test case names, and
+> > /scratch is an ext4 SATA drive. /scratch is created using 'mkfs -t ext4
+> > /dev/disk/by-id/ata-TOSHIBA_MG03ACA100_37O9KGKWF' and mounted to
+> > /scratch.
+>
+> I'm still having trouble reproducing the problem.  I've followed the
+> above exactly, and it doesn't trigger on my system.  I think I know
+> what is happening, but even given my theory, I'm still not able to
+> trigger it.  So, I'm not 100% sure this is the appropriate fix.  If
+> you can reproduce it, can you see if this patch, applied on top of the
+> Linus's tip, fixes the problem for you?
 
-Ah, good point!
+Applied your patch on mainline master branch and tested on x86_64 and
+confirms that the reported problem fixed.
 
->  BTW, I also
-> think that the bug is incorrectly filed against 5.1, while all these
-> tests and results concern 5.2-rcX.
-> 
+Thanks for your fix patch.
 
-Fixed now, thank you for pointing out!
- 
-Regards,
-Srivatsa
-VMware Photon OS
+LTP syscalls full test output log,
+https://lkft.validation.linaro.org/scheduler/job/739075
+
+---
+Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using
+block_validity")
+    Reported-by: Dan Rue <dan.rue@linaro.org>
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index f2c62e2a0c98..d40ed940001e 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -518,10 +518,14 @@ __read_extent_tree_block(const char *function,
+unsigned int line,
+        }
+        if (buffer_verified(bh) && !(flags & EXT4_EX_FORCE_CACHE))
+                return bh;
+-       err = __ext4_ext_check(function, line, inode,
+-                              ext_block_hdr(bh), depth, pblk);
+-       if (err)
+-               goto errout;
++       if (!ext4_has_feature_journal(inode->i_sb) ||
++           (inode->i_ino !=
++            le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum))) {
++               err = __ext4_ext_check(function, line, inode,
++                                      ext_block_hdr(bh), depth, pblk);
++               if (err)
++                       goto errout;
++       }
+        set_buffer_verified(bh);
+        /*
+         * If this is a leaf block, cache all of its entries
+
+
+- Naresh
