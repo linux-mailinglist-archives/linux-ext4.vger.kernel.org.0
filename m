@@ -2,202 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 228B82627E
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 12:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B62B262CE
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 13:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729321AbfEVKyN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 May 2019 06:54:13 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:53210 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729290AbfEVKyN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 May 2019 06:54:13 -0400
-Received: by mail-wm1-f48.google.com with SMTP id y3so1734151wmm.2
-        for <linux-ext4@vger.kernel.org>; Wed, 22 May 2019 03:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=CNhkQEJls3nT3iMkh1/CUssdVTSurGv5Rigbx0wo7U4=;
-        b=Oru7bhxHELgGgoBi4ETh1p8HocPNWexprBV9cag2KIgoyMzmaiNQwjb/C9rBPs3ZAI
-         1P+sgXAq+LJ7ARtyNTI4NCxWWJc6H0XdbdS3gzpWGbzWqv2mLRxF3XBKnfPksvNy4bmf
-         Z2N4R5yg3IW6OCechLbsRxdHCdJwHtT86JuAGc5439Udl1VwIBq11R8j6O3p7r2AEC/L
-         y1v3u8BSe0ElkJjp4CXNQJbH5m1IP5ENonLLsP0JZ/gAU5M5ED3KOUsrtv1TabKpJpZO
-         8pKF7hu2w25OO7PxveAEep+kbBQOfRiYMA7x6Nz3poDzw9PJimXfPoy8tpcYkqHNm+8K
-         Mrtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=CNhkQEJls3nT3iMkh1/CUssdVTSurGv5Rigbx0wo7U4=;
-        b=Ue1QTg88wHjnVAh9crVesZfOVYh5bRxJFVeXkF5TFKWmqKZajNxJexyaPQOCFBwsxe
-         cdlLabJkDV9/cGvi6kwuRFPjKEtbzS7fT8lqseCHtUI0oplDs08Tj1U+pwTaps32oZG9
-         3GQHXXjSRRj0QCJbbIpIabBluoUGUaE+lRs37kbX04pFGP1MFy6ZiDuvxa6Hm3KEGYXL
-         YjJzx5m9k5Z3UNbh/a0YTZpKT9eUP1zzxQ/0RCS29BTlxF08pNJ45TFH03rMnUizaKls
-         Si2v39H0d9xrE/KH0LPk5vij9w2jp+JT0vYXDz+kIHa1EdJaEgdO/5MmfSAF//TMwzB/
-         ehdg==
-X-Gm-Message-State: APjAAAV4HAuQu2+5aAIjYkFnxKzam+JMMQMo64dQqWamnwPGABf+NCiN
-        weMS1peRFWIEUdHNpThwpqTYGw==
-X-Google-Smtp-Source: APXvYqxxWhUiT/XYL68wetT0/Xm1tLz2ltHVCg3kd/rCLbdKFVY5j4a0s9Q2rPyucIGz4zDbxnBm5Q==
-X-Received: by 2002:a7b:c458:: with SMTP id l24mr6858233wmi.53.1558522451312;
-        Wed, 22 May 2019 03:54:11 -0700 (PDT)
-Received: from [192.168.0.100] (88-147-40-42.dyn.eolo.it. [88.147.40.42])
-        by smtp.gmail.com with ESMTPSA id w9sm5480053wmg.7.2019.05.22.03.54.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 May 2019 03:54:10 -0700 (PDT)
-From:   Paolo Valente <paolo.valente@linaro.org>
-Message-Id: <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_53A52072-8428-4910-8FA8-7AAC6D010D2E";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Date:   Wed, 22 May 2019 12:54:07 +0200
-In-Reply-To: <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
- <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
- <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
- <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
- <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
- <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
- <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
- <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
- <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
- <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
-X-Mailer: Apple Mail (2.3445.104.8)
+        id S1728743AbfEVLN7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 May 2019 07:13:59 -0400
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25728 "EHLO
+        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728406AbfEVLN7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 May 2019 07:13:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1558523627; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=NwFcnV4DyUZrflW1hkGH6ioplGzYIhODVZ42X9z7QJUThGImnKyzkXpbuwfE1J/rWzJsM0q/Sp1PtVK+RkqY2kjOodnOYQzGS93WHKqdD3zx8cengQFsyGfUiV5BIn32jlchMJ3ceM4KtYSJ4ESn5Urf+73LklDdl7wx3y7nN8k=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1558523627; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To:ARC-Authentication-Results; 
+        bh=Aq2Y4JW4WDXbp4+j1+i3PQYY6L6F/VBRxHSo3hvsLQI=; 
+        b=pG0Fgma/ZpKiNu5vOTh5jDZ/jqrJICSxDGHmBzAcrRnMOOH/CItWte15m76IYDsIQp2Kj6HNbcqTqYS4+WFykakMhUynJQ/IaAYX/PdY3oehto8hjApb8wPFq9a5guo06o9tGs7yPerTqC2WHXEfxfli4RZBTb6STgZc2XZ4j1E=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=zoho.com.cn;
+        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
+        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
+Received: from hades (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
+        with SMTPS id 155852362380062.582868141699464; Wed, 22 May 2019 19:13:43 +0800 (CST)
+Message-ID: <9777b34af1f4d3a79f8f6b1bdc1144e83d737086.camel@zoho.com.cn>
+Subject: Re: [PATCH] ext2: strengthen value length check in ext2_xattr_set()
+From:   "cgxu519@zoho.com.cn" <cgxu519@zoho.com.cn>
+Reply-To: cgxu519@zoho.com.cn
+To:     Jan Kara <jack@suse.cz>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org
+Date:   Wed, 22 May 2019 19:13:43 +0800
+In-Reply-To: <20190522095057.GH17019@quack2.suse.cz>
+References: <20190522082846.22296-1-cgxu519@zoho.com.cn>
+         <20190522095057.GH17019@quack2.suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-ZohoCNMailClient: External
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, 2019-05-22 at 11:50 +0200, Jan Kara wrote:
+> On Wed 22-05-19 16:28:46, Chengguang Xu wrote:
+> > Actually maximum length of a valid entry value is not
+> > ->s_blocksize because header, last entry and entry
+> > name will also occupy some spaces. This patch
+> > strengthens the value length check and return -ERANGE
+> > when the length is larger than allowed maximum length.
+> > 
+> > Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
+> 
+> Thanks for the patch! But what's the point of this change? We would return
+> ERANGE instead of ENOSPC? I don't think that's serious enough to warrant
+> changing existing behavior...
 
---Apple-Mail=_53A52072-8428-4910-8FA8-7AAC6D010D2E
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Hi Jan,
 
+Thanks for the review. 
 
-
-> Il giorno 22 mag 2019, alle ore 12:01, Srivatsa S. Bhat =
-<srivatsa@csail.mit.edu> ha scritto:
->=20
-> On 5/22/19 2:09 AM, Paolo Valente wrote:
->>=20
->> First, thank you very much for testing my patches, and, above all, =
-for
->> sharing those huge traces!
->>=20
->> According to the your traces, the residual 20% lower throughput that =
-you
->> record is due to the fact that the BFQ injection mechanism takes a =
-few
->> hundredths of seconds to stabilize, at the beginning of the workload.
->> During that setup time, the throughput is equal to the dreadful =
-~60-90 KB/s
->> that you see without this new patch.  After that time, there
->> seems to be no loss according to the trace.
->>=20
->> The problem is that a loss lasting only a few hundredths of seconds =
-is
->> however not negligible for a write workload that lasts only 3-4
->> seconds.  Could you please try writing a larger file?
->>=20
->=20
-> I tried running dd for longer (about 100 seconds), but still saw =
-around
-> 1.4 MB/s throughput with BFQ, and between 1.5 MB/s - 1.6 MB/s with
-> mq-deadline and noop.
-
-Ok, then now the cause is the periodic reset of the mechanism.
-
-It would be super easy to fill this gap, by just gearing the mechanism
-toward a very aggressive injection.  The problem is maintaining
-control.  As you can imagine from the performance gap between CFQ (or
-BFQ with malfunctioning injection) and BFQ with this fix, it is very
-hard to succeed in maximizing the throughput while at the same time
-preserving control on per-group I/O.
-
-On the bright side, you might be interested in one of the benefits
-that BFQ gives in return for this ~10% loss of throughput, in a
-scenario that may be important for you (according to affiliation you
-report): from ~500% to ~1000% higher throughput when you have to serve
-the I/O of multiple VMs, and to guarantee at least no starvation to
-any VM [1].  The same holds with multiple clients or containers, and
-in general with any set of entities that may compete for storage.
-
-[1] =
-https://www.linaro.org/blog/io-bandwidth-management-for-production-quality=
--services/
-
-> But I'm not too worried about that difference.
->=20
->> In addition, I wanted to ask you whether you measured BFQ throughput
->> with traces disabled.  This may make a difference.
->>=20
->=20
-> The above result (1.4 MB/s) was obtained with traces disabled.
->=20
->> After trying writing a larger file, you can try with low_latency on.
->> On my side, it causes results to become a little unstable across
->> repetitions (which is expected).
->>=20
-> With low_latency on, I get between 60 KB/s - 100 KB/s.
->=20
-
-Gosh, full regression.  Fortunately, it is simply meaningless to use
-low_latency in a scenario where the goal is to guarantee per-group
-bandwidths.  Low-latency heuristics, to reach their (low-latency)
-goals, modify the I/O schedule compared to the best schedule for
-honoring group weights and boosting throughput.  So, as recommended in
-BFQ documentation, just switch low_latency off if you want to control
-I/O with groups.  It may still make sense to leave low_latency on
-in some specific case, which I don't want to bother you about.
-
-However, I feel bad with such a low throughput :)  Would you be so
-kind to provide me with a trace?
+The motivation is seprating error situations of ENOSPC/ERANGE
+because ENOSPC is giving a hint that we can save an EA entry
+(name+value > allowed maximum length) by deleting some existing
+entries. However, as you has pointed out, I also think the
+difference is not so important because some EA entries
+(like security index) is invisible for user...
 
 Thanks,
-Paolo
-
-> Regards,
-> Srivatsa
-> VMware Photon OS
+Chengguang
 
 
---Apple-Mail=_53A52072-8428-4910-8FA8-7AAC6D010D2E
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+> 
+> > @@ -423,7 +423,10 @@ ext2_xattr_set(struct inode *inode, int name_index,
+> > const char *name,
+> >  	if (name == NULL)
+> >  		return -EINVAL;
+> >  	name_len = strlen(name);
+> > -	if (name_len > 255 || value_len > sb->s_blocksize)
+> > +	max_len = sb->s_blocksize - sizeof(struct ext2_xattr_header)
+> > +			- sizeof(__u32);
+> > +	if (name_len > 255 ||
+> > +	    EXT2_XATTR_LEN(name_len) + EXT2_XATTR_SIZE(value_len) > max_len)
+> >  		return -ERANGE;
+> >  	down_write(&EXT2_I(inode)->xattr_sem);
+> >  	if (EXT2_I(inode)->i_file_acl) {
+> 
+> 								Honza
+> 
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzlKk8ACgkQOAkCLQGo
-9oM6/A//WCuWEiR1JltuM5aklvJR+eYW/8xLJ3rbu8+0GrZIuuF1iPSXcB9p5yBP
-Wv3z5VUoumSlsb9aQlq6M0TPc5htnj00mIIuKaOAXZOhLNjTCvIEaSm1K8CtAW2B
-03MrWYTQw50jvR6OxpKtU0SKcMQQLPweiJPdTjy4tWUGgYoswDXFg+en8HNgSLv4
-sNGJQ8NrBQHU13P2WBm/j0ikPdKUfrM5yt6SdP7fDiYxemuMCecvUHMQOqhS7bua
-bgzZ9Y0DJfNtkELmGxsrNgTehctLCc7AEaViSzQVZxLs+FPa7pFIv30D8Nt8Hx3b
-e9x2zS/LXryo/Nx5NFgeMCISd1FbU2+eVqNmJhnjdCzDFiMUEM4GaQ7MbDNKZ1sO
-6ud0S49AOKvX4AXp5W+lufgRhQIw6OmIopPcXmzhUI3NZ9AqK430a5PwMjaUMn67
-PL9RYaLBU3p/POExsr5beMhc7Z6yGPtWF/tTFZuzQx0j3SXNoLjolpHLc3T0R/06
-eC8iUx+IUhkcOKrlmq2p1cLHpqzCVX8wPa/2xxcDveg5MiKo/U8dxQ5xmGEa8sSs
-nuZKPU7SJKeXae0UtOB3H74NIJU0joKCKhRherD7zYiJdx9RwSAv40Vbbhnq1DBo
-XI57SYyx53LQmwIKLdHXOgE0EKCnxBzPxZIK3CQIuSR8bzYRe8o=
-=WeX3
------END PGP SIGNATURE-----
 
---Apple-Mail=_53A52072-8428-4910-8FA8-7AAC6D010D2E--
