@@ -2,154 +2,219 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E34F326013
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 11:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2058826024
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 11:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbfEVJD3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 May 2019 05:03:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42782 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728536AbfEVJD3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 May 2019 05:03:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 247D5B052;
-        Wed, 22 May 2019 09:03:27 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 71C591E3C81; Wed, 22 May 2019 11:03:27 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Ira Weiny <ira.weiny@intel.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH 3/3] ext4: Gracefully handle ext4_break_layouts() failure during truncate
-Date:   Wed, 22 May 2019 11:03:17 +0200
-Message-Id: <20190522090317.28716-4-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20190522090317.28716-1-jack@suse.cz>
-References: <20190522090317.28716-1-jack@suse.cz>
+        id S1728728AbfEVJJd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 May 2019 05:09:33 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55343 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728743AbfEVJJc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 May 2019 05:09:32 -0400
+Received: by mail-wm1-f65.google.com with SMTP id x64so1363818wmb.5
+        for <linux-ext4@vger.kernel.org>; Wed, 22 May 2019 02:09:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=Fs6G449Jswk/hH7c/uX6tzFFhtWXUq58A/0uXZEuWts=;
+        b=IiDefu5bqQEPWNEoq67LbPmJCSQoTwMZJxGkSqwRJ+Exp/XLQT5ktDPQpue90UV2VM
+         cwEl8DUj55krmLv7r9mUW/DR7BPIWxxJFg4I9eMMNZwBTjd+5HOtk7Otov9tMfse3Eb0
+         USrMI0mQORY3d1nVFZQTsqKVl+dRrTlUpDOaRZUMIPw81XSVNUqorUm1cJS/ecmDIbyr
+         kotvYGe77OXjbOIocNFZhNGfDjH5AEeY6Y22+R2lX5ffdDXhWdqyz1rkSiPuh3BuMIzY
+         TNdxCYTEIt7jM4zryq+udmPxM6TmxUZ7Cb5jSN6y738c1C4Zyf10ECyEMjF05J5b8KNX
+         5khQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=Fs6G449Jswk/hH7c/uX6tzFFhtWXUq58A/0uXZEuWts=;
+        b=k0Rwla3Yta+HGwH3BrLU5H3kHtlR8CRcXUnGa30OZ2bWC9bYP5YjjCpl/hbC+DJg3+
+         wLvRRz7mRewSM117coEtN1Za70PhzWLAtIZwl5CE0xKCCeLl1IsLatn4wmR7sNzL7jUG
+         kpDRqSdUd/GZreuxiiTabfGvfzK8Z4fGmkoEEm0om8myb3MCR045h+QH69ox1ugwriEg
+         IYM+zo7leq15IWKGuhEQva6C7OxyfDTCKrC46auwKUGWjl4eG5Wplhbh4z7cPPDT0YQB
+         XMKKFRNvA7fvrqcD9JlLVmOSsY9Wh2w8cnAfppSy1qttbcX36HD6FCyWjjgLv/vneWtl
+         Z9lg==
+X-Gm-Message-State: APjAAAVzblnnl+C/zt7tzoXuYp4FS7d3WERRcJcOjH/trGnbfyWJIhQ2
+        LfEY8v1hK1w3c+Ej5tUFrBEcJA==
+X-Google-Smtp-Source: APXvYqwsdLWKTXlecXjTTY5sTEfZl/5WfZLsQZ++SMUSfStJ/qLyrQyz4ydIavTKGPfGzldSqDDplw==
+X-Received: by 2002:a1c:dc86:: with SMTP id t128mr6259490wmg.64.1558516169471;
+        Wed, 22 May 2019 02:09:29 -0700 (PDT)
+Received: from [192.168.0.100] (88-147-40-42.dyn.eolo.it. [88.147.40.42])
+        by smtp.gmail.com with ESMTPSA id u7sm13503722wmg.25.2019.05.22.02.09.28
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 22 May 2019 02:09:28 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+Message-Id: <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_3DB989E2-874B-47C2-B6CC-3F154F79180F";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Date:   Wed, 22 May 2019 11:09:26 +0200
+In-Reply-To: <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+ <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+ <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+ <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+ <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
+ <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+ <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ext4_break_layouts() may fail e.g. due to a signal being delivered.
-Thus we need to handle its failure gracefully and not by taking the
-filesystem down. Currently ext4_break_layouts() failure is rare but it
-may become more common once RDMA uses layout leases for handling
-long-term page pins for DAX mappings.
 
-To handle the failure we need to move ext4_break_layouts() earlier
-during setattr handling before we do hard to undo changes such as
-modifying inode size. To be able to do that we also have to move some
-other checks which are better done without holding i_mmap_sem earlier.
+--Apple-Mail=_3DB989E2-874B-47C2-B6CC-3F154F79180F
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Reported-and-tested-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 60 ++++++++++++++++++++++++++++-----------------------------
- 1 file changed, 29 insertions(+), 31 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index c7f77c643008..33411ba4546a 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5571,7 +5571,7 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (attr->ia_valid & ATTR_SIZE) {
- 		handle_t *handle;
- 		loff_t oldsize = inode->i_size;
--		int shrink = (attr->ia_size <= inode->i_size);
-+		int shrink = (attr->ia_size < inode->i_size);
- 
- 		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
- 			struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-@@ -5585,18 +5585,35 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 		if (IS_I_VERSION(inode) && attr->ia_size != inode->i_size)
- 			inode_inc_iversion(inode);
- 
--		if (ext4_should_order_data(inode) &&
--		    (attr->ia_size < inode->i_size)) {
--			error = ext4_begin_ordered_truncate(inode,
-+		if (shrink) {
-+			if (ext4_should_order_data(inode)) {
-+				error = ext4_begin_ordered_truncate(inode,
- 							    attr->ia_size);
--			if (error)
--				goto err_out;
-+				if (error)
-+					goto err_out;
-+			}
-+			/*
-+			 * Blocks are going to be removed from the inode. Wait
-+			 * for dio in flight.
-+			 */
-+			inode_dio_wait(inode);
-+		} else {
-+			pagecache_isize_extended(inode, oldsize, inode->i_size);
- 		}
-+
-+		down_write(&EXT4_I(inode)->i_mmap_sem);
-+
-+		rc = ext4_break_layouts(inode);
-+		if (rc) {
-+			up_write(&EXT4_I(inode)->i_mmap_sem);
-+			return rc;
-+		}
-+
- 		if (attr->ia_size != inode->i_size) {
- 			handle = ext4_journal_start(inode, EXT4_HT_INODE, 3);
- 			if (IS_ERR(handle)) {
- 				error = PTR_ERR(handle);
--				goto err_out;
-+				goto out_mmap_sem;
- 			}
- 			if (ext4_handle_valid(handle) && shrink) {
- 				error = ext4_orphan_add(handle, inode);
-@@ -5624,32 +5641,12 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 				i_size_write(inode, attr->ia_size);
- 			up_write(&EXT4_I(inode)->i_data_sem);
- 			ext4_journal_stop(handle);
--			if (error) {
--				if (orphan && inode->i_nlink)
--					ext4_orphan_del(NULL, inode);
--				goto err_out;
--			}
--		}
--		if (!shrink) {
--			pagecache_isize_extended(inode, oldsize, inode->i_size);
--		} else {
--			/*
--			 * Blocks are going to be removed from the inode. Wait
--			 * for dio in flight.
--			 */
--			inode_dio_wait(inode);
--		}
--		if (orphan && ext4_should_journal_data(inode))
--			ext4_wait_for_tail_page_commit(inode);
--		down_write(&EXT4_I(inode)->i_mmap_sem);
--
--		rc = ext4_break_layouts(inode);
--		if (rc) {
--			up_write(&EXT4_I(inode)->i_mmap_sem);
--			error = rc;
--			goto err_out;
-+			if (error)
-+				goto out_mmap_sem;
- 		}
- 
-+		if (shrink && ext4_should_journal_data(inode))
-+			ext4_wait_for_tail_page_commit(inode);
- 		/*
- 		 * Truncate pagecache after we've waited for commit
- 		 * in data=journal mode to make pages freeable.
-@@ -5660,6 +5657,7 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 			if (rc)
- 				error = rc;
- 		}
-+out_mmap_sem:
- 		up_write(&EXT4_I(inode)->i_mmap_sem);
- 	}
- 
--- 
-2.16.4
 
+> Il giorno 22 mag 2019, alle ore 10:05, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
+>=20
+>=20
+>=20
+>> Il giorno 22 mag 2019, alle ore 00:51, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>>=20
+>> [ Resending this mail with a dropbox link to the traces (instead
+>> of a file attachment), since it didn't go through the last time. ]
+>>=20
+>> On 5/21/19 10:38 AM, Paolo Valente wrote:
+>>>=20
+>>>> So, instead of only sending me a trace, could you please:
+>>>> 1) apply this new patch on top of the one I attached in my previous =
+email
+>>>> 2) repeat your test and report results
+>>>=20
+>>> One last thing (I swear!): as you can see from my script, I tested =
+the
+>>> case low_latency=3D0 so far.  So please, for the moment, do your =
+test
+>>> with low_latency=3D0.  You find the whole path to this parameter in,
+>>> e.g., my script.
+>>>=20
+>> No problem! :) Thank you for sharing patches for me to test!
+>>=20
+>> I have good news :) Your patch improves the throughput significantly
+>> when low_latency =3D 0.
+>>=20
+>> Without any patch:
+>>=20
+>> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
+oflag=3Ddsync
+>> 10000+0 records in
+>> 10000+0 records out
+>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 58.0915 s, 88.1 kB/s
+>>=20
+>>=20
+>> With both patches applied:
+>>=20
+>> dd if=3D/dev/zero of=3D/root/test0.img bs=3D512 count=3D10000 =
+oflag=3Ddsync
+>> 10000+0 records in
+>> 10000+0 records out
+>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 3.87487 s, 1.3 MB/s
+>>=20
+>> The performance is still not as good as mq-deadline (which achieves
+>> 1.6 MB/s), but this is a huge improvement for BFQ nonetheless!
+>>=20
+>> A tarball with the trace output from the 2 scenarios you requested,
+>> one with only the debug patch applied =
+(trace-bfq-add-logs-and-BUG_ONs),
+>> and another with both patches applied (trace-bfq-boost-injection) is
+>> available here:
+>>=20
+>> https://www.dropbox.com/s/pdf07vi7afido7e/bfq-traces.tar.gz?dl=3D0
+>>=20
+>=20
+> Hi Srivatsa,
+> I've seen the bugzilla you've created.  I'm a little confused on how
+> to better proceed.  Shall we move this discussion to the bugzilla, or
+> should we continue this discussion here, where it has started, and
+> then update the bugzilla?
+>=20
+
+Ok, I've received some feedback on this point, and I'll continue the
+discussion here.  Then I'll report back on the bugzilla.
+
+First, thank you very much for testing my patches, and, above all, for
+sharing those huge traces!
+
+According to the your traces, the residual 20% lower throughput that you
+record is due to the fact that the BFQ injection mechanism takes a few
+hundredths of seconds to stabilize, at the beginning of the workload.
+During that setup time, the throughput is equal to the dreadful ~60-90 =
+KB/s
+that you see without this new patch.  After that time, there
+seems to be no loss according to the trace.
+
+The problem is that a loss lasting only a few hundredths of seconds is
+however not negligible for a write workload that lasts only 3-4
+seconds.  Could you please try writing a larger file?
+
+In addition, I wanted to ask you whether you measured BFQ throughput
+with traces disabled.  This may make a difference.
+
+After trying writing a larger file, you can try with low_latency on.
+On my side, it causes results to become a little unstable across
+repetitions (which is expected).
+
+Thanks,
+Paolo
+
+
+> Let me know,
+> Paolo
+>=20
+>> Thank you!
+>>=20
+>> Regards,
+>> Srivatsa
+>> VMware Photon OS
+
+
+--Apple-Mail=_3DB989E2-874B-47C2-B6CC-3F154F79180F
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzlEcYACgkQOAkCLQGo
+9oNJ3Q//Sg7XcjVaaf3n1snyQH02p5UlfydhClnm/MruZLDVt8oB0HJMiP23IUwC
+m3LhFiSCOgV2+knSjwbk3jtUR2tnvkBVcko/G2luqxPxJrq7v5GjSfEb/hLjgwpB
+U7ufv14kR2EbE5C+2Qz9/JMsco9EOnGpCr3hO6/iWYkGBScu79iqoIH3wUuRdpg2
+m1SkP/NWcrtc4kydA09RHjQTeSFNLZeO9PLjAVR6tkUGEmwopqqE+toWYiqBtScs
+1Bf+eoQqAIxDr2OA98HpvUN6hYQxsDTNNbNn04wRLb+fK2BChcDDkM5MaJ/09YpK
+s4DXMjs+ifvLi3PTTbAscjujOLDnsWaAmmY/rufox97lXPxxt6UySkdENFUBFLNd
+bWvWMAb438p0Pz3hwNrU/tZh+nGYvqQT11oXq1Dlrks6kXS+iEfuZms34vz9tGfr
+r8XlqfImvkUSn4NI7YocIyqg76Rf2t5VGr59mR+7cN58y/vBbkPr7FkjXl/1LfGm
+bQsHL+D+NHb7NXgX91Jp97bKIX0yHnXdxrGZsjCH27C/HOzhtrncBzjcU2TPMEw+
+T9JmOJf8G2vXfR5G5voKot2wX1qZ9Nnpd9T5U0rHd4ami2oiOv0BV1rAkbjaH5Qd
+RcWZyGaSRBpzHuQQPi/jG18YzPbNt6szIflujQfdX38sPRcTXyk=
+=qTPQ
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_3DB989E2-874B-47C2-B6CC-3F154F79180F--
