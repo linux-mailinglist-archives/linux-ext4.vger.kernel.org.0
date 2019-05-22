@@ -2,140 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D552D2619F
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 12:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB0B261B6
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 12:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729005AbfEVKUz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 May 2019 06:20:55 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:44177 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728802AbfEVKUu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 May 2019 06:20:50 -0400
-Received: by mail-lj1-f195.google.com with SMTP id e13so1531953ljl.11
-        for <linux-ext4@vger.kernel.org>; Wed, 22 May 2019 03:20:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=I6Y5uva2ZOylkepfkW7JjoryC+I9mnJT08CLLH1/zB4=;
-        b=zavVrEDe37Qme7JszDwtBit8a9goL7Xf7lo7dzYs9F/s32qJMMV7ciqBvmraiaXv0z
-         1z3SGu/sXwQJ1PJmUaUHUlv2qKFBXe95+hZWV3jIDL13S66YAp9x3vdJ+Fn6BuT9VU8u
-         NOBZwoAp6T7manfujvUuR9RbpVzziZD+GjSMxlsGQWytCUClTW4rehuBUJjupvskHUr5
-         kkJC7rbA7qka6A7HM8y0PHco+9oNkv0LZrTNeFi/W/MkRmVZ39mK5bOW4nSVp1i03h5/
-         0214MndB/t3uNnBA7L4B/uS6WoXe29jOMrI0wiGoFHJkTYyz2kReyg2TfKgbDZfWpW6q
-         QOZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=I6Y5uva2ZOylkepfkW7JjoryC+I9mnJT08CLLH1/zB4=;
-        b=afaYxmFcBx8OzqlSd4lvdrLUmuT3+T640w8W7qMB0JL9krJOCOKb9gCGvPAbZeoe5d
-         Pi18Y7ZzTwd1/ppz/ojzHD5k4+QiXajlTBXcbWoPpE+9iIgTa4UGztSDv10l3I/tviCE
-         q/gNiqcZiy0yhvXj/HWkvoRfkKIFJuWnq1ALKgaOF+0EOx05lT8EJYMzVNH2G7EJaQda
-         IlUiQAjVQPdyHi/Srn2GLNq10Qs6ky5gfLyNjT0CjvSXOMiF8X6WGxZN5Aibn39KDU0p
-         LLHcASpS8MC2aUKN3gxgfzooUfu0C/D6SQhLiD3SDp704jifYTNHjadI+jSPhkJnRKV5
-         WRPg==
-X-Gm-Message-State: APjAAAX3mKpKs9KJSUeeXH8mG3sGXqMWLEtTloGw+Ir6UIBlVOS8dCIZ
-        frv7efjfyA84Ay7udlYUxJ48bZoHivqZ4jbjjesrTw==
-X-Google-Smtp-Source: APXvYqw2FkuDKjiOL0U5uxbmW7MBLTaBuIHCxmZceyZcoQRr1MyCfA1j64zoamAnH8hiGk5sO35Kb1+BFqH+Lu24ZA0=
-X-Received: by 2002:a2e:7411:: with SMTP id p17mr2152330ljc.24.1558520448161;
- Wed, 22 May 2019 03:20:48 -0700 (PDT)
+        id S1728881AbfEVKZd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 May 2019 06:25:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60474 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727464AbfEVKZc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 May 2019 06:25:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 35A53AEB6;
+        Wed, 22 May 2019 10:25:31 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 804F91E3C5F; Wed, 22 May 2019 12:25:30 +0200 (CEST)
+Date:   Wed, 22 May 2019 12:25:30 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     'Christoph Hellwig' <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, kanchan <joshi.k@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, prakash.v@samsung.com,
+        anshul@samsung.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH v5 0/7] Extend write-hint framework, and add write-hint
+ for Ext4 journal
+Message-ID: <20190522102530.GK17019@quack2.suse.cz>
+References: <CGME20190425112347epcas2p1f7be48b8f0d2203252b8c9dd510c1b61@epcas2p1.samsung.com>
+ <1556191202-3245-1-git-send-email-joshi.k@samsung.com>
+ <20190510170249.GA26907@infradead.org>
+ <00fb01d50c71$dd358e50$97a0aaf0$@samsung.com>
+ <20190520142719.GA15705@infradead.org>
+ <20190521082528.GA17709@quack2.suse.cz>
+ <20190521082846.GA11024@infradead.org>
 MIME-Version: 1.0
-References: <20190520115247.060821231@linuxfoundation.org> <20190520222342.wtsjx227c6qbkuua@xps.therub.org>
- <20190521085956.GC31445@kroah.com> <CA+G9fYvHmUimtwszwo=9fDQLn+MNh8Vq3UGPaPUdhH=dEKzqxg@mail.gmail.com>
- <20190521093849.GA9806@kroah.com> <CA+G9fYveeg_FMsL31aunJ2A9XLYk908Y1nSFw4kwkFk3h3uEiA@mail.gmail.com>
- <20190521162142.GA2591@mit.edu> <CA+G9fYunxonkqmkhz+zmZYuMTfyRMVBxn6PkTFfjd8tTT+bzHQ@mail.gmail.com>
- <20190522050511.GB4943@mit.edu>
-In-Reply-To: <20190522050511.GB4943@mit.edu>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 22 May 2019 15:50:37 +0530
-Message-ID: <CA+G9fYsA6BWh+W+U-9BSQWq63WZMKGXGbsh92LS94ZCempgm5A@mail.gmail.com>
-Subject: Re: ext4 regression (was Re: [PATCH 4.19 000/105] 4.19.45-stable review)
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        linux-ext4@vger.kernel.org,
-        Arthur Marsh <arthur.marsh@internode.on.net>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        ltp@lists.linux.it, Jan Stancek <jstancek@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190521082846.GA11024@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 22 May 2019 at 10:36, Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Tue, May 21, 2019 at 11:27:21PM +0530, Naresh Kamboju wrote:
-> > Steps to reproduce is,
-> > running LTP three test cases in sequence on x86 device.
-> > # cd ltp/runtest
-> > # cat syscalls ( only three test case)
-> > open12 open12
-> > madvise06 madvise06
-> > poll02 poll02
-> > #
-> >
-> > as Dan referring to,
-> >
-> > LTP is run using '/opt/ltp/runltp -d /scratch -f syscalls', where the
-> > syscalls file has been replaced with three test case names, and
-> > /scratch is an ext4 SATA drive. /scratch is created using 'mkfs -t ext4
-> > /dev/disk/by-id/ata-TOSHIBA_MG03ACA100_37O9KGKWF' and mounted to
-> > /scratch.
->
-> I'm still having trouble reproducing the problem.  I've followed the
-> above exactly, and it doesn't trigger on my system.  I think I know
-> what is happening, but even given my theory, I'm still not able to
-> trigger it.  So, I'm not 100% sure this is the appropriate fix.  If
-> you can reproduce it, can you see if this patch, applied on top of the
-> Linus's tip, fixes the problem for you?
+On Tue 21-05-19 01:28:46, 'Christoph Hellwig' wrote:
+> On Tue, May 21, 2019 at 10:25:28AM +0200, Jan Kara wrote:
+> > performance benefits for some drives. After all you can just think about it
+> > like RWH_WRITE_LIFE_JOURNAL type of hint available for the kernel...
+> 
+> Except that it actuallys adds a parallel insfrastructure.  A
+> RWH_WRITE_LIFE_JOURNAL would be much more palatable, but someone needs
+> to explain how that is:
+> 
+>  a) different from RWH_WRITE_LIFE_SHORT
 
-Applied your patch on mainline master branch and tested on x86_64 and
-confirms that the reported problem fixed.
+The problem I have with this is: What does "short" mean? What if
+userspace's notion of short differs from the kernel notion? Also the
+journal block lifetime is somewhat hard to predict. It depends on the size
+of the journal and metadata load on the filesystem so there's big variance.
+So all we really know is that all journal blocks are the same.
 
-Thanks for your fix patch.
+>  b) would not apply to a log/journal maintained in userspace that works
+>     exactly the same
 
-LTP syscalls full test output log,
-https://lkft.validation.linaro.org/scheduler/job/739075
+Lifetime of userspace journal/log may be significantly different from the
+lifetime of the filesystem journal. So using the same hint for them does
+not look like a great idea?
 
----
-Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using
-block_validity")
-    Reported-by: Dan Rue <dan.rue@linaro.org>
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index f2c62e2a0c98..d40ed940001e 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -518,10 +518,14 @@ __read_extent_tree_block(const char *function,
-unsigned int line,
-        }
-        if (buffer_verified(bh) && !(flags & EXT4_EX_FORCE_CACHE))
-                return bh;
--       err = __ext4_ext_check(function, line, inode,
--                              ext_block_hdr(bh), depth, pblk);
--       if (err)
--               goto errout;
-+       if (!ext4_has_feature_journal(inode->i_sb) ||
-+           (inode->i_ino !=
-+            le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum))) {
-+               err = __ext4_ext_check(function, line, inode,
-+                                      ext_block_hdr(bh), depth, pblk);
-+               if (err)
-+                       goto errout;
-+       }
-        set_buffer_verified(bh);
-        /*
-         * If this is a leaf block, cache all of its entries
-
-
-- Naresh
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
