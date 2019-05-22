@@ -2,82 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB9A25F7D
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 10:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86B925FE0
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2019 10:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbfEVI25 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 22 May 2019 04:28:57 -0400
-Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25346 "EHLO
-        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728525AbfEVI25 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 May 2019 04:28:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1558513733; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=QXOxlcyb0xWm5UmWF0fhCvKzfaudTpeVoTtR8UBH/lKL+k8cAm4LU5Zhh/s8vmnwdJrnOqTF/DmZUL4EoVGXh5qszOU/tVMKqlQ+Xc/VjjoeNRyU5GJBP8sxYvZH3LYmM/my6y+FJrv8EOIx4Ssz7g+DiuaD2KYJXsMTgaK27G8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1558513733; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
-        bh=50yJu5N8UlW2XLpAfHmVboNt2TktCFuZeCLTmoYA/cE=; 
-        b=HRnPgI2ua0Cf75qte3eRstCVmDMmIRqafBofrL6ZfrRd8MVGiX0fObemfMy0UdlTsn7NqO53012pM1ylS6cJRGxf7p+vneFckNSXQYqk5/S7tPnajCKOsjMzR1I+TlXxk1hI4LmkSh7uKUI8DBE7DcjXUC0hFRVRZ0BevCfh0fA=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=zoho.com.cn;
-        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
-        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
-Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1558513729645173.3668879941324; Wed, 22 May 2019 16:28:49 +0800 (CST)
-From:   Chengguang Xu <cgxu519@zoho.com.cn>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@zoho.com.cn>
-Message-ID: <20190522082846.22296-1-cgxu519@zoho.com.cn>
-Subject: [PATCH] ext2: strengthen value length check in ext2_xattr_set()
-Date:   Wed, 22 May 2019 16:28:46 +0800
-X-Mailer: git-send-email 2.20.1
+        id S1728502AbfEVI5a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 May 2019 04:57:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40462 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727796AbfEVI5a (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 May 2019 04:57:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E0AFDB016;
+        Wed, 22 May 2019 08:57:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3DD561E3C69; Wed, 22 May 2019 10:57:29 +0200 (CEST)
+Date:   Wed, 22 May 2019 10:57:29 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 3/3] ext4: Gracefully handle ext4_break_layouts() failure
+ during truncate
+Message-ID: <20190522085729.GC17019@quack2.suse.cz>
+References: <20190521074358.17186-1-jack@suse.cz>
+ <20190521074358.17186-4-jack@suse.cz>
+ <20190521182731.GC31888@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190521182731.GC31888@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Actually maximum length of a valid entry value is not
-->s_blocksize because header, last entry and entry
-name will also occupy some spaces. This patch
-strengthens the value length check and return -ERANGE
-when the length is larger than allowed maximum length.
+On Tue 21-05-19 11:27:32, Ira Weiny wrote:
+> On Tue, May 21, 2019 at 09:43:58AM +0200, Jan Kara wrote:
+> > ext4_break_layouts() may fail e.g. due to a signal being delivered.
+> > Thus we need to handle its failure gracefully and not by taking the
+> > filesystem down. Currently ext4_break_layouts() failure is rare but it
+> > may become more common once RDMA uses layout leases for handling
+> > long-term page pins for DAX mappings.
+> > 
+> > To handle the failure we need to move ext4_break_layouts() earlier
+> > during setattr handling before we do hard to undo changes such as
+> > modifying inode size. To be able to do that we also have to move some
+> > other checks which are better done without holding i_mmap_sem earlier.
+> > 
+> > Reported-by: "Weiny, Ira" <ira.weiny@intel.com>
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> 
+> 
+> This fixes the bug I was seeing WRT ext4_break_layouts().  Thanks for the help!
+> One more NIT comment below.
+> 
+> > @@ -5627,29 +5644,12 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
+> >  			if (error) {
+> >  				if (orphan && inode->i_nlink)
+> >  					ext4_orphan_del(NULL, inode);
+> > -				goto err_out;
+> > +				goto out_mmap_sem;
+> 
+> This goto flows through a second ext4_orphan_del() call which threw me at
+> first.  But I think this is ok.
 
-Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
----
- fs/ext2/xattr.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+It is OK but unnecessary. I've deleted this ext4_orphan_del() call. Thanks
+for testing and review!
 
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index f1f857b83b45..425c8e29d3cb 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -399,7 +399,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
- 	struct buffer_head *bh = NULL;
- 	struct ext2_xattr_header *header = NULL;
- 	struct ext2_xattr_entry *here, *last;
--	size_t name_len, free, min_offs = sb->s_blocksize;
-+	size_t name_len, free, min_offs = sb->s_blocksize, max_len;
- 	int not_found = 1, error;
- 	char *end;
- 	
-@@ -423,7 +423,10 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
- 	if (name == NULL)
- 		return -EINVAL;
- 	name_len = strlen(name);
--	if (name_len > 255 || value_len > sb->s_blocksize)
-+	max_len = sb->s_blocksize - sizeof(struct ext2_xattr_header)
-+			- sizeof(__u32);
-+	if (name_len > 255 ||
-+	    EXT2_XATTR_LEN(name_len) + EXT2_XATTR_SIZE(value_len) > max_len)
- 		return -ERANGE;
- 	down_write(&EXT2_I(inode)->xattr_sem);
- 	if (EXT2_I(inode)->i_file_acl) {
+								Honza
 -- 
-2.20.1
-
-
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
