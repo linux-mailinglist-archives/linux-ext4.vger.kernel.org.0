@@ -2,100 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBF628023
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2019 16:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B94428134
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2019 17:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730902AbfEWOqP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 May 2019 10:46:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33112 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730853AbfEWOqO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 23 May 2019 10:46:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1C5EEAF0C;
-        Thu, 23 May 2019 14:46:13 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id BE2E91E3C69; Thu, 23 May 2019 16:46:12 +0200 (CEST)
-Date:   Thu, 23 May 2019 16:46:12 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@zoho.com.cn>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext2: optimize ext2_xattr_get()
-Message-ID: <20190523144612.GA18841@quack2.suse.cz>
-References: <20190521082140.19992-1-cgxu519@zoho.com.cn>
+        id S1730859AbfEWPbN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 May 2019 11:31:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730760AbfEWPbM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 May 2019 11:31:12 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59C08206BA
+        for <linux-ext4@vger.kernel.org>; Thu, 23 May 2019 15:31:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1558625472;
+        bh=R6OUXHozVu/WNCgm4mjk6EqcMyrY+AYZqwiaXY3xGX0=;
+        h=From:To:Subject:Date:From;
+        b=ycSJAVVmMqy8Q1v8L3uc8wIc8X43ZK1bMuDOXOfV3FBZZjFhoM3acpBbtX3Svu9Mt
+         vtAdcJ0x3nMZr/9t81ck+vgcU7QzE5PKifaTlZ3QCuB5/YWAgWDk4lgxYFdTNEPROg
+         2ePXfLQPBTviZBK5h4aUJ1LVEBY2AYTICiFtDBak=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Subject: [PATCH] e2fsck: handle verity files in scan_extent_node()
+Date:   Thu, 23 May 2019 08:30:33 -0700
+Message-Id: <20190523153033.22487-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190521082140.19992-1-cgxu519@zoho.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 21-05-19 16:21:39, Chengguang Xu wrote:
-> Since xattr entry names are sorted, we don't have
-> to continue when current entry name is greater than
-> target.
-> 
-> Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
+From: Eric Biggers <ebiggers@google.com>
 
-Thanks for the patch! If we are going to do these comparisons in multiple
-places, then please create a helper function to do the comparison (so that
-we have the same comparison in every place). Something like:
+Don't report PR_1_EXTENT_END_OUT_OF_BOUNDS on verity files during
+scan_extent_node(), since they will have blocks stored past i_size.
 
-int ext2_xattr_cmp(int name_index, size_t name_len, const char *name,
-		   struct ext2_xattr_entry *entry)
+This was missed during the earlier fix because this check only triggers
+if the inode has enough extents to need at least one extent index node.
 
-Thanks!
+This bug is causing one of the fs-verity xfstests to fail with the
+reworked fs-verity patchset.
 
-								Honza
-> ---
->  fs/ext2/xattr.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-> index d21dbf297b74..f1f857b83b45 100644
-> --- a/fs/ext2/xattr.c
-> +++ b/fs/ext2/xattr.c
-> @@ -178,7 +178,7 @@ ext2_xattr_get(struct inode *inode, int name_index, const char *name,
->  	struct ext2_xattr_entry *entry;
->  	size_t name_len, size;
->  	char *end;
-> -	int error;
-> +	int error, not_found;
->  	struct mb_cache *ea_block_cache = EA_BLOCK_CACHE(inode);
->  
->  	ea_idebug(inode, "name=%d.%s, buffer=%p, buffer_size=%ld",
-> @@ -220,10 +220,18 @@ ext2_xattr_get(struct inode *inode, int name_index, const char *name,
->  			goto bad_block;
->  		if (!ext2_xattr_entry_valid(entry, inode->i_sb->s_blocksize))
->  			goto bad_block;
-> -		if (name_index == entry->e_name_index &&
-> -		    name_len == entry->e_name_len &&
-> -		    memcmp(name, entry->e_name, name_len) == 0)
-> +
-> +		not_found = name_index - entry->e_name_index;
-> +		if (!not_found)
-> +			not_found = name_len - entry->e_name_len;
-> +		if (!not_found)
-> +			not_found = memcmp(name, entry->e_name,
-> +						   name_len);
-> +		if (!not_found)
->  			goto found;
-> +		if (not_found < 0)
-> +			break;
-> +
->  		entry = next;
->  	}
->  	if (ext2_xattr_cache_insert(ea_block_cache, bh))
-> -- 
-> 2.20.1
-> 
-> 
-> 
-> 
+Fixes: 3baafde6a8ae ("e2fsck: allow verity files to have initialized blocks past i_size")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ e2fsck/pass1.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+index 5c413610..524577ae 100644
+--- a/e2fsck/pass1.c
++++ b/e2fsck/pass1.c
+@@ -2812,8 +2812,9 @@ static void scan_extent_node(e2fsck_t ctx, struct problem_context *pctx,
+ 		else if (extent.e_lblk < start_block)
+ 			problem = PR_1_OUT_OF_ORDER_EXTENTS;
+ 		else if ((end_block && last_lblk > end_block) &&
+-			 (!(extent.e_flags & EXT2_EXTENT_FLAGS_UNINIT &&
+-				last_lblk > eof_block)))
++			 !(last_lblk > eof_block &&
++			   ((extent.e_flags & EXT2_EXTENT_FLAGS_UNINIT) ||
++			    (pctx->inode->i_flags & EXT4_VERITY_FL))))
+ 			problem = PR_1_EXTENT_END_OUT_OF_BOUNDS;
+ 		else if (is_leaf && extent.e_len == 0)
+ 			problem = PR_1_EXTENT_LENGTH_ZERO;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.21.0
+
