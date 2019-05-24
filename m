@@ -2,74 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD3128EFA
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 May 2019 04:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFF728FB1
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 May 2019 05:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387465AbfEXCHU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 May 2019 22:07:20 -0400
-Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25907 "EHLO
-        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731708AbfEXCHU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 May 2019 22:07:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1558663629; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=Vi3CK/7q2NJmaoE7M1durxoWtOk6MQT7owcQ0wr0HUk/wBIMoXcnDirXqB+BCN6VbaKmTKDEN4Y0g3PC2279X2ldmEWvSLHfyWXCrkjBnUVXeT1/QCafQI/m6wbVkO+jWuDcTmvhcy7LSVOUzOsb38/5Y6mzB7YinrVKOAKjm2s=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1558663629; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To:ARC-Authentication-Results; 
-        bh=QYj9ny+JDgYrQsRWseOKBXd42kYLCGLL+fweYsgL83o=; 
-        b=g4J1Fz6z0VxAamNY5dBtVzpMThpL4lEG4p94xV0+AAdWLYFiNEAGVZ3dWXi6ivnQFQkQYIRAAU1UqQx4mHkfNBkvayLikbZS0+M9auW5rtIJ2VpmPFJtIFvOZ1Ac8I4VsBrmIJmtS9reKBP/jOmI+b5fbr3CjnauRGf/IqWsShQ=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=zoho.com.cn;
-        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
-        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
-Received: from hades (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1558663626468140.65912124378826; Fri, 24 May 2019 10:07:06 +0800 (CST)
-Message-ID: <afa54281eaf134b892d5f93d281d7ddf75bfe3a5.camel@zoho.com.cn>
-Subject: Re: [PATCH] ext2: optimize ext2_xattr_get()
-From:   "cgxu519@zoho.com.cn" <cgxu519@zoho.com.cn>
-Reply-To: cgxu519@zoho.com.cn
+        id S2388505AbfEXDql (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 May 2019 23:46:41 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58070 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387454AbfEXDql (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 May 2019 23:46:41 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4O3kSkw010622
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 May 2019 23:46:28 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id BC0E8420481; Thu, 23 May 2019 23:46:27 -0400 (EDT)
+Date:   Thu, 23 May 2019 23:46:27 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Jan Kara <jack@suse.cz>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-Date:   Fri, 24 May 2019 10:07:05 +0800
-In-Reply-To: <20190523144612.GA18841@quack2.suse.cz>
-References: <20190521082140.19992-1-cgxu519@zoho.com.cn>
-         <20190523144612.GA18841@quack2.suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+Cc:     linux-ext4@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] ext4: Wait for outstanding dio during truncate in
+ nojournal mode
+Message-ID: <20190524034627.GB2532@mit.edu>
+References: <20190522090317.28716-1-jack@suse.cz>
+ <20190522090317.28716-2-jack@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190522090317.28716-2-jack@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 2019-05-23 at 16:46 +0200, Jan Kara wrote:
-> On Tue 21-05-19 16:21:39, Chengguang Xu wrote:
-> > Since xattr entry names are sorted, we don't have
-> > to continue when current entry name is greater than
-> > target.
-> > 
-> > Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
+On Wed, May 22, 2019 at 11:03:15AM +0200, Jan Kara wrote:
+> We didn't wait for outstanding direct IO during truncate in nojournal
+> mode (as we skip orphan handling in that case). This can lead to fs
+> corruption or stale data exposure if truncate ends up freeing blocks
+> and these get reallocated before direct IO finishes. Fix the condition
+> determining whether the wait is necessary.
 > 
-> Thanks for the patch! If we are going to do these comparisons in multiple
-> places, then please create a helper function to do the comparison (so that
-> we have the same comparison in every place). Something like:
-> 
-> int ext2_xattr_cmp(int name_index, size_t name_len, const char *name,
-> 		   struct ext2_xattr_entry *entry)
-> 
+> CC: stable@vger.kernel.org
+> Fixes: 1c9114f9c0f1 ("ext4: serialize unlocked dio reads with truncate")
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-Hi Jan,
+Thanks, applied.
 
-Thanks for the review and advice. 
-
-You are right we should introduce a helper to handle this part of work
-and personally I think maybe implementing a helper to find target entry
-will be more useful, do you think it makes sense?
-
-
-Thanks,
-Chengguang
-
-
+					- Ted
