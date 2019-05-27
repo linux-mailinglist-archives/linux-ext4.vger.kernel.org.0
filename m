@@ -2,106 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6CE2B7EE
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 May 2019 16:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E20E2B8D4
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 May 2019 18:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbfE0Oxc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 May 2019 10:53:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46218 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726279AbfE0Oxc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 27 May 2019 10:53:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2F5C6AE74;
-        Mon, 27 May 2019 14:53:31 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 52B0D1E3C2F; Mon, 27 May 2019 16:53:29 +0200 (CEST)
-Date:   Mon, 27 May 2019 16:53:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH 3/3] ext4: Gracefully handle ext4_break_layouts() failure
- during truncate
-Message-ID: <20190527145329.GG20440@quack2.suse.cz>
-References: <20190522090317.28716-1-jack@suse.cz>
- <20190522090317.28716-4-jack@suse.cz>
- <20190525033235.GB4225@mit.edu>
+        id S1726733AbfE0QQt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 May 2019 12:16:49 -0400
+Received: from mail-it1-f193.google.com ([209.85.166.193]:33156 "EHLO
+        mail-it1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726432AbfE0QQt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 May 2019 12:16:49 -0400
+Received: by mail-it1-f193.google.com with SMTP id j17so368631itk.0;
+        Mon, 27 May 2019 09:16:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=9xDAwoI14/9ZYf/NXEzFCRhJD2vdXKzdCYZgn3dwG9c=;
+        b=fioESLalSZte/6pGVrPhmwkcedTyJNAh21o0VvUXg/NCVTVLWZrDZVHqiqCmo41BjF
+         zujazUnpEbpaS+2DaHH3r6u/SxOunOMFdB3ObQZQODVDBMw7iKSHDPWwOS3DFfhlxcxW
+         xjfx/l5kEBTdYobSUKh5VTUr5a2+558Aeyr6lKGOH7iTRpKP6Y85Mq2YZdKJ/o1CGrwc
+         eRBZer0e6cjWPs5cPpA87TXf7uoYCUhzv/4ABrXwcSIVhwNlLxu33Ty4WhtnbLKT6j84
+         MfdD+wLYUGNs7n84Q248bReDfjvuKlByQQ5HMhslGu1XIk/jN+ZIuHymMy2Hi2XYLflz
+         hz5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=9xDAwoI14/9ZYf/NXEzFCRhJD2vdXKzdCYZgn3dwG9c=;
+        b=q3NnNmTWJ9aYFPYSV4IPVmtFoKd7dJJ3j59GqA8U2ot6j41k8OtZs7pxkPA1ghBf3V
+         an0EY0XoO1XKRCn2pcwwGgV9pbrvoU5TXuw62mCHOPK3gYviAhhBEFxGd7XUzdS7kFJR
+         qxBxhqzkFBfcE8Efe29TUDiLSAb8pdlVg9DQVzKjJtiOK7nl4NQ8eazKVAklW2cNUq2s
+         fsDcQ7oPywd5cjD/aSBRXciY57eD2RqyG4w7wom8cX2RwsDU9Q+ymS605tX0v4YCLONb
+         wshgUrMVyjvYrZEQqjGKCNlcLWX/DbdlcESXEUtQghPkkPqBP1BYjfO/8m6huWXewWoR
+         YIwA==
+X-Gm-Message-State: APjAAAVAm29vlh+jcOBwWBEq66tSlNYivF1Yw0tvlEJddULYtEoixitJ
+        YRBUPQhnAsOZvopgo8MeFSPbF+euH6Q5s1H3o5co8bOfrWw=
+X-Google-Smtp-Source: APXvYqzRXf38xNC+au+U1m814eLrxKw2rddbi7IL09Ns5wR82DpB0x50xtGD7bLMglfxOckXxjtoDpxOqRUZL4EsfZg=
+X-Received: by 2002:a02:bb05:: with SMTP id y5mr5651010jan.93.1558973807970;
+ Mon, 27 May 2019 09:16:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190525033235.GB4225@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CABXGCsNPMSQgBjnFarYaxuQEGpA1G=U4U9OHqT0E53pNL2BK8g@mail.gmail.com>
+ <CABXGCsNV6EQq0EG=iO8mWCCv9da__9iyLmwyzS3nGtjjvhShfg@mail.gmail.com>
+In-Reply-To: <CABXGCsNV6EQq0EG=iO8mWCCv9da__9iyLmwyzS3nGtjjvhShfg@mail.gmail.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Mon, 27 May 2019 21:16:36 +0500
+Message-ID: <CABXGCsNvYVL6SMO_0PXxiZwWJyBi3rD-jjxnmnY3KL0M7haJbA@mail.gmail.com>
+Subject: Re: [bugreport] kernel 5.2 pblk bad header/extent: invalid extent entries
+To:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 24-05-19 23:32:35, Theodore Ts'o wrote:
-> On Wed, May 22, 2019 at 11:03:17AM +0200, Jan Kara wrote:
-> > ext4_break_layouts() may fail e.g. due to a signal being delivered.
-> > Thus we need to handle its failure gracefully and not by taking the
-> > filesystem down. Currently ext4_break_layouts() failure is rare but it
-> > may become more common once RDMA uses layout leases for handling
-> > long-term page pins for DAX mappings.
-> > 
-> > To handle the failure we need to move ext4_break_layouts() earlier
-> > during setattr handling before we do hard to undo changes such as
-> > modifying inode size. To be able to do that we also have to move some
-> > other checks which are better done without holding i_mmap_sem earlier.
-> > 
-> > Reported-and-tested-by: Ira Weiny <ira.weiny@intel.com>
-> > Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> 
-> When doing some final testing before sending a pull request to Linus,
-> I found a regression.  After bisecting, this patch fails reliably
-> under gce-xfstests:
-> 
-> TESTRUNID: tytso-20190524230226
-> KERNEL:    kernel 5.1.0-rc3-xfstests-00039-g079f9927c7bf #1016 SMP Fri May 24 23:00:47 EDT 2019 x86_64
-> CMDLINE:   -c 4k generic/092
-> CPUS:      2
-> MEM:       7680
-> 
-> ext4/4k: 1 tests, 1 failures, 2 seconds
->   generic/092  Failed   1s
-> Totals: 1 tests, 0 skipped, 1 failures, 0 errors, 1s
-> 
-> FSTESTPRJ: gce-xfstests
-> FSTESTVER: fio  fio-3.2 (Fri, 3 Nov 2017 15:23:49 -0600)
-> FSTESTVER: quota  62661bd (Tue, 2 Apr 2019 17:04:37 +0200)
-> FSTESTVER: xfsprogs v5.0.0 (Fri, 3 May 2019 12:14:36 -0500)
-> FSTESTVER: xfstests-bld 9582562 (Sun, 12 May 2019 00:38:51 -0400)
-> FSTESTVER: xfstests linux-v3.8-2390-g64233614 (Thu, 16 May 2019 00:12:52 -0400)
-> FSTESTCFG: 4k
-> FSTESTSET: generic/092
-> FSTESTOPT: aex
-> GCE ID:    343197219467628221
-> 
-> generic/092 0s ... 	[23:05:07] [23:05:08]- output mismatch (see /results/ext4/results-4k/generic/092
-> .out.bad)
-> % diff -u /tmp/results-tytso-20190524230226/ext4/results-4k/generic/092.out.bad /usr/projects/xfstests-bld/build-64/xfstests-dev/tests/generic/092.out 
-> --- /tmp/results-tytso-20190524230226/ext4/results-4k/generic/092.out.bad	2019-05-24 23:05:08.000000000 -0400
-> +++ /usr/projects/xfstests-bld/build-64/xfstests-dev/tests/generic/092.out	2018-02-13 23:37:20.330097382 -0500
-> @@ -2,6 +2,5 @@
->  wrote 5242880/5242880 bytes at offset 0
->  XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
->  0: [0..10239]: data
-> -1: [10240..20479]: unwritten
->  0: [0..10239]: data
->  1: [10240..20479]: unwritten
-> 
-> 
-> Dropping this patch makes the test failure go away.  So I'm going to
-> drop it for now.  Jan, can you take a look?  Thanks!!
+On Sat, 18 May 2019 at 16:07, Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
+>
+> It happens today again.
+>
+> [18018.969636] EXT4-fs error (device nvme0n1p2): ext4_find_extent:908:
+> inode #8: comm jbd2/nvme0n1p2-: pblk 23101439 bad header/extent:
+> invalid extent entries - magic f30a, entries 8, max 340(340), depth
+> 0(0)
+> [18018.970071] jbd2_journal_bmap: journal block not found at offset
+> 4799 on nvme0n1p2-8
+> [18018.970076] Aborting journal on device nvme0n1p2-8.
+> [18018.970269] EXT4-fs error (device nvme0n1p2):
+> ext4_journal_check_start:61: Detected aborted journal
+> [18018.970316] EXT4-fs (nvme0n1p2): Remounting filesystem read-only
+>
 
-Ah, right. I wonder how I missed that failure in my test run. Anyway I see
-what is the problem. I'll send updated patch.
+I am bisected issue. I hope it help understand what is happened on my computer.
 
-								Honza
+$ git bisect log
+git bisect start
+# good: [e93c9c99a629c61837d5a7fc2120cd2b6c70dbdd] Linux 5.1
+git bisect good e93c9c99a629c61837d5a7fc2120cd2b6c70dbdd
+# bad: [7e9890a3500d95c01511a4c45b7e7192dfa47ae2] Merge tag
+'ovl-update-5.2' of
+git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs
+git bisect bad 7e9890a3500d95c01511a4c45b7e7192dfa47ae2
+# good: [80f232121b69cc69a31ccb2b38c1665d770b0710] Merge
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next
+git bisect good 80f232121b69cc69a31ccb2b38c1665d770b0710
+# good: [a2d635decbfa9c1e4ae15cb05b68b2559f7f827c] Merge tag
+'drm-next-2019-05-09' of git://anongit.freedesktop.org/drm/drm
+git bisect good a2d635decbfa9c1e4ae15cb05b68b2559f7f827c
+# good: [ea5aee6d97fd2d4499b1eebc233861c1def70f06] Merge tag
+'clk-for-linus' of
+git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux
+git bisect good ea5aee6d97fd2d4499b1eebc233861c1def70f06
+# good: [47782361aca21a32ad4198f1b72f1655a7c9f7e5] Merge tag
+'tag-chrome-platform-for-v5.2' of
+ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux
+git bisect good 47782361aca21a32ad4198f1b72f1655a7c9f7e5
+# bad: [55472bae5331f33582d9f0e8919fed8bebcda0da] Merge tag
+'linux-watchdog-5.2-rc1' of
+git://www.linux-watchdog.org/linux-watchdog
+git bisect bad 55472bae5331f33582d9f0e8919fed8bebcda0da
+# good: [4dbf09fea60d158e60a30c419e0cfa1ea138dd57] Merge tag
+'mtd/for-5.2' of
+ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/mtd/linux
+git bisect good 4dbf09fea60d158e60a30c419e0cfa1ea138dd57
+# good: [44affc086e6d5ea868c1184cdc5e1159e90ffb71] watchdog:
+ts4800_wdt: Convert to use device managed functions and other
+improvements
+git bisect good 44affc086e6d5ea868c1184cdc5e1159e90ffb71
+# good: [5c09980d9f9de2dc6b255f4f0229aeff0eb2c723] watchdog:
+imx_sc_wdt: drop warning after calling watchdog_init_timeout
+git bisect good 5c09980d9f9de2dc6b255f4f0229aeff0eb2c723
+# good: [345f16251063bcef5828f17fe90aa7f7a5019aab] watchdog: Improve
+Kconfig entry ordering and dependencies
+git bisect good 345f16251063bcef5828f17fe90aa7f7a5019aab
+# good: [988bec41318f3fa897e2f8af271bd456936d6caf] ubifs: orphan:
+Handle xattrs like files
+git bisect good 988bec41318f3fa897e2f8af271bd456936d6caf
+# good: [a65d10f3ce657aa4542b5de78933053f6d1a9e97] ubifs: Drop
+unnecessary setting of zbr->znode
+git bisect good a65d10f3ce657aa4542b5de78933053f6d1a9e97
+# good: [a9f0bda567e32a2b44165b067adfc4a4f56d1815] watchdog: Enforce
+that at least one pretimeout governor is enabled
+git bisect good a9f0bda567e32a2b44165b067adfc4a4f56d1815
+# bad: [d7a02fa0a8f9ec1b81d57628ca9834563208ef33] Merge tag
+'upstream-5.2-rc1' of
+ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/rw/ubifs
+git bisect bad d7a02fa0a8f9ec1b81d57628ca9834563208ef33
+# good: [04d37e5a8b1fad2d625727af3d738c6fd9491720] ubi: wl: Fix
+uninitialized variable
+git bisect good 04d37e5a8b1fad2d625727af3d738c6fd9491720
+# first bad commit: [d7a02fa0a8f9ec1b81d57628ca9834563208ef33] Merge
+tag 'upstream-5.2-rc1' of
+ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/rw/ubifs
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+--
+Best Regards,
+Mike Gavrilov.
