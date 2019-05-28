@@ -2,163 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C230B2C0EF
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2019 10:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068702C156
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2019 10:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbfE1ILQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 May 2019 04:11:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35476 "EHLO mx1.suse.de"
+        id S1726711AbfE1IaY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 May 2019 04:30:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38630 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726282AbfE1ILP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 28 May 2019 04:11:15 -0400
+        id S1726532AbfE1IaY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 May 2019 04:30:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BD982AEBF;
-        Tue, 28 May 2019 08:11:13 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 27E6FAFE8;
+        Tue, 28 May 2019 08:30:22 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DDF801E3C0C; Tue, 28 May 2019 10:05:48 +0200 (CEST)
+        id C78AD1E3C0C; Tue, 28 May 2019 10:30:21 +0200 (CEST)
+Date:   Tue, 28 May 2019 10:30:21 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Ira Weiny <ira.weiny@intel.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH v2] ext4: Gracefully handle ext4_break_layouts() failure during truncate
-Date:   Tue, 28 May 2019 10:05:45 +0200
-Message-Id: <20190528080545.10444-1-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
+To:     Chengguang Xu <cgxu519@zoho.com.cn>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] ext2: merge xattr next entry check to
+ ext2_xattr_entry_valid()
+Message-ID: <20190528083021.GB9607@quack2.suse.cz>
+References: <20190528025947.18373-1-cgxu519@zoho.com.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190528025947.18373-1-cgxu519@zoho.com.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ext4_break_layouts() may fail e.g. due to a signal being delivered.
-Thus we need to handle its failure gracefully and not by taking the
-filesystem down. Currently ext4_break_layouts() failure is rare but it
-may become more common once RDMA uses layout leases for handling
-long-term page pins for DAX mappings.
+On Tue 28-05-19 10:59:45, Chengguang Xu wrote:
+> We have introduced ext2_xattr_entry_valid() for xattr
+> entry sanity check, so it's better to do relevant things
+> in one place.
+> 
+> Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
 
-To handle the failure we need to move ext4_break_layouts() earlier
-during setattr handling before we do hard to undo changes such as
-modifying inode size. To be able to do that we also have to move some
-other checks which are better done without holding i_mmap_sem earlier.
+Thanks! I've applied all three patches to my tree.
 
-Reported-and-tested-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 66 ++++++++++++++++++++++++++++++---------------------------
- 1 file changed, 35 insertions(+), 31 deletions(-)
+								Honza
 
-A version of the fix that passes also generic/092 test.
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index c7f77c643008..c16071547c9c 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5571,7 +5571,7 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 	if (attr->ia_valid & ATTR_SIZE) {
- 		handle_t *handle;
- 		loff_t oldsize = inode->i_size;
--		int shrink = (attr->ia_size <= inode->i_size);
-+		int shrink = (attr->ia_size < inode->i_size);
- 
- 		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
- 			struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-@@ -5585,18 +5585,33 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 		if (IS_I_VERSION(inode) && attr->ia_size != inode->i_size)
- 			inode_inc_iversion(inode);
- 
--		if (ext4_should_order_data(inode) &&
--		    (attr->ia_size < inode->i_size)) {
--			error = ext4_begin_ordered_truncate(inode,
-+		if (shrink) {
-+			if (ext4_should_order_data(inode)) {
-+				error = ext4_begin_ordered_truncate(inode,
- 							    attr->ia_size);
--			if (error)
--				goto err_out;
-+				if (error)
-+					goto err_out;
-+			}
-+			/*
-+			 * Blocks are going to be removed from the inode. Wait
-+			 * for dio in flight.
-+			 */
-+			inode_dio_wait(inode);
-+		}
-+
-+		down_write(&EXT4_I(inode)->i_mmap_sem);
-+
-+		rc = ext4_break_layouts(inode);
-+		if (rc) {
-+			up_write(&EXT4_I(inode)->i_mmap_sem);
-+			return rc;
- 		}
-+
- 		if (attr->ia_size != inode->i_size) {
- 			handle = ext4_journal_start(inode, EXT4_HT_INODE, 3);
- 			if (IS_ERR(handle)) {
- 				error = PTR_ERR(handle);
--				goto err_out;
-+				goto out_mmap_sem;
- 			}
- 			if (ext4_handle_valid(handle) && shrink) {
- 				error = ext4_orphan_add(handle, inode);
-@@ -5624,42 +5639,31 @@ int ext4_setattr(struct dentry *dentry, struct iattr *attr)
- 				i_size_write(inode, attr->ia_size);
- 			up_write(&EXT4_I(inode)->i_data_sem);
- 			ext4_journal_stop(handle);
--			if (error) {
--				if (orphan && inode->i_nlink)
--					ext4_orphan_del(NULL, inode);
--				goto err_out;
-+			if (error)
-+				goto out_mmap_sem;
-+			if (!shrink) {
-+				pagecache_isize_extended(inode, oldsize,
-+							 inode->i_size);
-+			} else if (ext4_should_journal_data(inode)) {
-+				ext4_wait_for_tail_page_commit(inode);
- 			}
- 		}
--		if (!shrink) {
--			pagecache_isize_extended(inode, oldsize, inode->i_size);
--		} else {
--			/*
--			 * Blocks are going to be removed from the inode. Wait
--			 * for dio in flight.
--			 */
--			inode_dio_wait(inode);
--		}
--		if (orphan && ext4_should_journal_data(inode))
--			ext4_wait_for_tail_page_commit(inode);
--		down_write(&EXT4_I(inode)->i_mmap_sem);
--
--		rc = ext4_break_layouts(inode);
--		if (rc) {
--			up_write(&EXT4_I(inode)->i_mmap_sem);
--			error = rc;
--			goto err_out;
--		}
- 
- 		/*
- 		 * Truncate pagecache after we've waited for commit
- 		 * in data=journal mode to make pages freeable.
- 		 */
- 		truncate_pagecache(inode, inode->i_size);
--		if (shrink) {
-+		/*
-+		 * Call ext4_truncate() even if i_size didn't change to
-+		 * truncate possible preallocated blocks.
-+		 */
-+		if (attr->ia_size <= oldsize) {
- 			rc = ext4_truncate(inode);
- 			if (rc)
- 				error = rc;
- 		}
-+out_mmap_sem:
- 		up_write(&EXT4_I(inode)->i_mmap_sem);
- 	}
- 
+> ---
+>  fs/ext2/xattr.c | 36 ++++++++++++++++--------------------
+>  1 file changed, 16 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+> index d21dbf297b74..28503979696d 100644
+> --- a/fs/ext2/xattr.c
+> +++ b/fs/ext2/xattr.c
+> @@ -145,10 +145,16 @@ ext2_xattr_header_valid(struct ext2_xattr_header *header)
+>  }
+>  
+>  static bool
+> -ext2_xattr_entry_valid(struct ext2_xattr_entry *entry, size_t end_offs)
+> +ext2_xattr_entry_valid(struct ext2_xattr_entry *entry,
+> +		       char *end, size_t end_offs)
+>  {
+> +	struct ext2_xattr_entry *next;
+>  	size_t size;
+>  
+> +	next = EXT2_XATTR_NEXT(entry);
+> +	if ((char *)next >= end)
+> +		return false;
+> +
+>  	if (entry->e_value_block != 0)
+>  		return false;
+>  
+> @@ -214,17 +220,14 @@ ext2_xattr_get(struct inode *inode, int name_index, const char *name,
+>  	/* find named attribute */
+>  	entry = FIRST_ENTRY(bh);
+>  	while (!IS_LAST_ENTRY(entry)) {
+> -		struct ext2_xattr_entry *next =
+> -			EXT2_XATTR_NEXT(entry);
+> -		if ((char *)next >= end)
+> -			goto bad_block;
+> -		if (!ext2_xattr_entry_valid(entry, inode->i_sb->s_blocksize))
+> +		if (!ext2_xattr_entry_valid(entry, end,
+> +		    inode->i_sb->s_blocksize))
+>  			goto bad_block;
+>  		if (name_index == entry->e_name_index &&
+>  		    name_len == entry->e_name_len &&
+>  		    memcmp(name, entry->e_name, name_len) == 0)
+>  			goto found;
+> -		entry = next;
+> +		entry = EXT2_XATTR_NEXT(entry);
+>  	}
+>  	if (ext2_xattr_cache_insert(ea_block_cache, bh))
+>  		ea_idebug(inode, "cache insert failed");
+> @@ -299,13 +302,10 @@ ext2_xattr_list(struct dentry *dentry, char *buffer, size_t buffer_size)
+>  	/* check the on-disk data structure */
+>  	entry = FIRST_ENTRY(bh);
+>  	while (!IS_LAST_ENTRY(entry)) {
+> -		struct ext2_xattr_entry *next = EXT2_XATTR_NEXT(entry);
+> -
+> -		if ((char *)next >= end)
+> -			goto bad_block;
+> -		if (!ext2_xattr_entry_valid(entry, inode->i_sb->s_blocksize))
+> +		if (!ext2_xattr_entry_valid(entry, end,
+> +		    inode->i_sb->s_blocksize))
+>  			goto bad_block;
+> -		entry = next;
+> +		entry = EXT2_XATTR_NEXT(entry);
+>  	}
+>  	if (ext2_xattr_cache_insert(ea_block_cache, bh))
+>  		ea_idebug(inode, "cache insert failed");
+> @@ -390,7 +390,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
+>  	struct super_block *sb = inode->i_sb;
+>  	struct buffer_head *bh = NULL;
+>  	struct ext2_xattr_header *header = NULL;
+> -	struct ext2_xattr_entry *here, *last;
+> +	struct ext2_xattr_entry *here = NULL, *last = NULL;
+>  	size_t name_len, free, min_offs = sb->s_blocksize;
+>  	int not_found = 1, error;
+>  	char *end;
+> @@ -444,10 +444,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
+>  		 */
+>  		last = FIRST_ENTRY(bh);
+>  		while (!IS_LAST_ENTRY(last)) {
+> -			struct ext2_xattr_entry *next = EXT2_XATTR_NEXT(last);
+> -			if ((char *)next >= end)
+> -				goto bad_block;
+> -			if (!ext2_xattr_entry_valid(last, sb->s_blocksize))
+> +			if (!ext2_xattr_entry_valid(last, end, sb->s_blocksize))
+>  				goto bad_block;
+>  			if (last->e_value_size) {
+>  				size_t offs = le16_to_cpu(last->e_value_offs);
+> @@ -465,7 +462,7 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
+>  				if (not_found <= 0)
+>  					here = last;
+>  			}
+> -			last = next;
+> +			last = EXT2_XATTR_NEXT(last);
+>  		}
+>  		if (not_found > 0)
+>  			here = last;
+> @@ -476,7 +473,6 @@ ext2_xattr_set(struct inode *inode, int name_index, const char *name,
+>  		/* We will use a new extended attribute block. */
+>  		free = sb->s_blocksize -
+>  			sizeof(struct ext2_xattr_header) - sizeof(__u32);
+> -		here = last = NULL;  /* avoid gcc uninitialized warning. */
+>  	}
+>  
+>  	if (not_found) {
+> -- 
+> 2.20.1
+> 
+> 
+> 
+> 
 -- 
-2.16.4
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
