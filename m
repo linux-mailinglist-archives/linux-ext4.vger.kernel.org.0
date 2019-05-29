@@ -2,114 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 050B22E671
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2019 22:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479842E996
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 May 2019 02:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbfE2Ur5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 May 2019 16:47:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbfE2Ur5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 29 May 2019 16:47:57 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B60E2419D;
-        Wed, 29 May 2019 20:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559162876;
-        bh=/h0YRele2HgHkOZgeVioQRed572yyLTKQ40p6fvDYw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lb1DvaJJHbk0WgcihUPP6WKeOKiLCST6LBMU309vMD6yXyT/o/4JTHPxrFxkTU9EO
-         NSM/ONxEZ81Yu4WnG7Vh6YfH08T4wiXKKCHwNySkJGtxqZE5k4Ys/uctQ+Tlzg3Jug
-         K6XB6SwDdiK2V2HU79sMV/UvG7D8wgagV6puSOcg=
-Date:   Wed, 29 May 2019 13:47:54 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Chandan Rajendra <chandan@linux.ibm.com>,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2 00/14] fscrypt, ext4: prepare for blocksize !=
- PAGE_SIZE
-Message-ID: <20190529204753.GB141639@gmail.com>
-References: <20190520162952.156212-1-ebiggers@kernel.org>
+        id S1726963AbfE3AAQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 May 2019 20:00:16 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47928 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726628AbfE3AAQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 May 2019 20:00:16 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4TNxn3B030108
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 May 2019 19:59:50 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id C1401420481; Wed, 29 May 2019 19:59:48 -0400 (EDT)
+Date:   Wed, 29 May 2019 19:59:48 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>
+Subject: Re: How to package e2scrub
+Message-ID: <20190529235948.GB3671@mit.edu>
+References: <20190529120603.xuet53xgs6ahfvpl@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190520162952.156212-1-ebiggers@kernel.org>
+In-Reply-To: <20190529120603.xuet53xgs6ahfvpl@work>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, May 20, 2019 at 09:29:38AM -0700, Eric Biggers wrote:
-> Hello,
+On Wed, May 29, 2019 at 02:06:03PM +0200, Lukas Czerner wrote:
+> Hi guys,
 > 
-> This patchset prepares fs/crypto/, and partially ext4, for the
-> 'blocksize != PAGE_SIZE' case.
+> I am about to release 1.45.2 for Fedora rawhide, but I was thinking
+> about how to package the e2scrub cron job/systemd service.
 > 
-> This basically contains the encryption changes from Chandan Rajendra's
-> patchset "[V2,00/13] Consolidate FS read I/O callbacks code"
-> (https://patchwork.kernel.org/project/linux-fscrypt/list/?series=111039)
-> that don't require introducing the read_callbacks and don't depend on
-> fsverity stuff.  But they've been reworked to clean things up a lot.
+> I really do not like the idea of installing cron job and/or the service as
+> a part of regular e2fsprogs package. This can potentially really surprise
+> people in a bad way.
 > 
-> I'd like to apply this patchset for 5.3 in order to make things forward
-> for ext4 encryption with 'blocksize != PAGE_SIZE'.
-> 
-> AFAICT, after this patchset the only thing stopping ext4 encryption from
-> working with blocksize != PAGE_SIZE is the lack of encryption support in
-> block_read_full_page(), which the read_callbacks will address.
-> 
-> This patchset applies to v5.2-rc1, and it can also be retrieved from git
-> at https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
-> branch "fscrypt-subpage-blocks-prep".
-> 
-> Changed since v1 (minor cleanups only):
-> 
-> - In "fscrypt: simplify bounce page handling", also remove
->   the definition of FS_CTX_HAS_BOUNCE_BUFFER_FL.
-> 
-> - In "ext4: decrypt only the needed blocks in ext4_block_write_begin()",
->   simplify the code slightly by moving the IS_ENCRYPTED() check.
-> 
-> - Change __fscrypt_decrypt_bio() in a separate patch rather than as part
->   of "fscrypt: support decrypting multiple filesystem blocks per page".
->   The resulting code is the same, so I kept Chandan's Reviewed-by.
-> 
-> - Improve the commit message of
->   "fscrypt: introduce fscrypt_decrypt_block_inplace()".
-> 
-> Chandan Rajendra (3):
->   ext4: clear BH_Uptodate flag on decryption error
->   ext4: decrypt only the needed blocks in ext4_block_write_begin()
->   ext4: decrypt only the needed block in __ext4_block_zero_page_range()
-> 
-> Eric Biggers (11):
->   fscrypt: simplify bounce page handling
->   fscrypt: remove the "write" part of struct fscrypt_ctx
->   fscrypt: rename fscrypt_do_page_crypto() to fscrypt_crypt_block()
->   fscrypt: clean up some BUG_ON()s in block encryption/decryption
->   fscrypt: introduce fscrypt_encrypt_block_inplace()
->   fscrypt: support encrypting multiple filesystem blocks per page
->   fscrypt: handle blocksize < PAGE_SIZE in fscrypt_zeroout_range()
->   fscrypt: introduce fscrypt_decrypt_block_inplace()
->   fscrypt: support decrypting multiple filesystem blocks per page
->   fscrypt: decrypt only the needed blocks in __fscrypt_decrypt_bio()
->   ext4: encrypt only up to last block in ext4_bio_write_page()
-> 
->  fs/crypto/bio.c             |  73 +++------
->  fs/crypto/crypto.c          | 299 ++++++++++++++++++++----------------
->  fs/crypto/fscrypt_private.h |  15 +-
->  fs/ext4/inode.c             |  37 +++--
->  fs/ext4/page-io.c           |  44 +++---
->  fs/f2fs/data.c              |  17 +-
->  fs/ubifs/crypto.c           |  19 +--
->  include/linux/fscrypt.h     |  96 ++++++++----
->  8 files changed, 319 insertions(+), 281 deletions(-)
-> 
+> Note that I've already heard some complaints from debian users about the
+> systemd service being installed on their system after the e2fsprogs
+> update.
 
-I've applied this series to fscrypt.git for 5.3.
+One of the reasons I deliberately decided to enable it for Debian
+Unstable was it was the best way to flush out the bugs.  :-)
 
-- Eric
+Yeah, Debian Unstable users are my guinea pigs. :-)   Doesn't it work
+that way with Fedora and RHEL?  :-)
+
+BTW, The complaints were mostly from e2scrub_all not working correctly
+if certain packages weren't installed, or if the LVM package was
+installed, but there were no LVM volumes present, etc.  The other
+complaint I got was when there was no free space for the snapshot.
+I'm kind of hopeful that I've gotten them all at this point, but we'll
+see....
+
+> What I am going to do is to split the systemd service into a separate
+> package and I'd like to come to some agreement about the name of the
+> package so that we can have the same name across distributions (at least
+> Fedora/Debian/Suse).
+
+Hmm.... what keeping the service as part of the e2fsprogs package, but
+then not enabling out of the box.  That is, require that user run:
+
+systemctl enable e2scrub_all.timer
+
+in order to actually get the feature?  (They can also disable it using
+"systemctl disable e2scrub_all.timer".)
+
+As far as the cron job is concerned, we could just leave the crontab
+entry commented out by default, and require that the user go in and
+edit the /etc/cron.d/e2scrub_all file if they want to enable it.  Not
+packaging it also seems fine; Debian's support for non-systemd
+configurations is at best marginal at this point, and while I'm not a
+fan of systemd, I'm also a realist...
+
+What do folks think?
+
+					- Ted
