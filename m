@@ -2,282 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C09162E4D4
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2019 20:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050B22E671
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2019 22:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbfE2Syx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 May 2019 14:54:53 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54630 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbfE2Syw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 May 2019 14:54:52 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 114A127FDAE
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH] ext4: Optimize case-insensitive lookups
-Date:   Wed, 29 May 2019 14:54:46 -0400
-Message-Id: <20190529185446.22757-1-krisman@collabora.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726253AbfE2Ur5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 May 2019 16:47:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726139AbfE2Ur5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 29 May 2019 16:47:57 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B60E2419D;
+        Wed, 29 May 2019 20:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559162876;
+        bh=/h0YRele2HgHkOZgeVioQRed572yyLTKQ40p6fvDYw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lb1DvaJJHbk0WgcihUPP6WKeOKiLCST6LBMU309vMD6yXyT/o/4JTHPxrFxkTU9EO
+         NSM/ONxEZ81Yu4WnG7Vh6YfH08T4wiXKKCHwNySkJGtxqZE5k4Ys/uctQ+Tlzg3Jug
+         K6XB6SwDdiK2V2HU79sMV/UvG7D8wgagV6puSOcg=
+Date:   Wed, 29 May 2019 13:47:54 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Chandan Rajendra <chandan@linux.ibm.com>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2 00/14] fscrypt, ext4: prepare for blocksize !=
+ PAGE_SIZE
+Message-ID: <20190529204753.GB141639@gmail.com>
+References: <20190520162952.156212-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190520162952.156212-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Temporarily cache a casefolded version of the file name under lookup in
-ext4_filename, to avoid repeatedly casefolding it.
+On Mon, May 20, 2019 at 09:29:38AM -0700, Eric Biggers wrote:
+> Hello,
+> 
+> This patchset prepares fs/crypto/, and partially ext4, for the
+> 'blocksize != PAGE_SIZE' case.
+> 
+> This basically contains the encryption changes from Chandan Rajendra's
+> patchset "[V2,00/13] Consolidate FS read I/O callbacks code"
+> (https://patchwork.kernel.org/project/linux-fscrypt/list/?series=111039)
+> that don't require introducing the read_callbacks and don't depend on
+> fsverity stuff.  But they've been reworked to clean things up a lot.
+> 
+> I'd like to apply this patchset for 5.3 in order to make things forward
+> for ext4 encryption with 'blocksize != PAGE_SIZE'.
+> 
+> AFAICT, after this patchset the only thing stopping ext4 encryption from
+> working with blocksize != PAGE_SIZE is the lack of encryption support in
+> block_read_full_page(), which the read_callbacks will address.
+> 
+> This patchset applies to v5.2-rc1, and it can also be retrieved from git
+> at https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
+> branch "fscrypt-subpage-blocks-prep".
+> 
+> Changed since v1 (minor cleanups only):
+> 
+> - In "fscrypt: simplify bounce page handling", also remove
+>   the definition of FS_CTX_HAS_BOUNCE_BUFFER_FL.
+> 
+> - In "ext4: decrypt only the needed blocks in ext4_block_write_begin()",
+>   simplify the code slightly by moving the IS_ENCRYPTED() check.
+> 
+> - Change __fscrypt_decrypt_bio() in a separate patch rather than as part
+>   of "fscrypt: support decrypting multiple filesystem blocks per page".
+>   The resulting code is the same, so I kept Chandan's Reviewed-by.
+> 
+> - Improve the commit message of
+>   "fscrypt: introduce fscrypt_decrypt_block_inplace()".
+> 
+> Chandan Rajendra (3):
+>   ext4: clear BH_Uptodate flag on decryption error
+>   ext4: decrypt only the needed blocks in ext4_block_write_begin()
+>   ext4: decrypt only the needed block in __ext4_block_zero_page_range()
+> 
+> Eric Biggers (11):
+>   fscrypt: simplify bounce page handling
+>   fscrypt: remove the "write" part of struct fscrypt_ctx
+>   fscrypt: rename fscrypt_do_page_crypto() to fscrypt_crypt_block()
+>   fscrypt: clean up some BUG_ON()s in block encryption/decryption
+>   fscrypt: introduce fscrypt_encrypt_block_inplace()
+>   fscrypt: support encrypting multiple filesystem blocks per page
+>   fscrypt: handle blocksize < PAGE_SIZE in fscrypt_zeroout_range()
+>   fscrypt: introduce fscrypt_decrypt_block_inplace()
+>   fscrypt: support decrypting multiple filesystem blocks per page
+>   fscrypt: decrypt only the needed blocks in __fscrypt_decrypt_bio()
+>   ext4: encrypt only up to last block in ext4_bio_write_page()
+> 
+>  fs/crypto/bio.c             |  73 +++------
+>  fs/crypto/crypto.c          | 299 ++++++++++++++++++++----------------
+>  fs/crypto/fscrypt_private.h |  15 +-
+>  fs/ext4/inode.c             |  37 +++--
+>  fs/ext4/page-io.c           |  44 +++---
+>  fs/f2fs/data.c              |  17 +-
+>  fs/ubifs/crypto.c           |  19 +--
+>  include/linux/fscrypt.h     |  96 ++++++++----
+>  8 files changed, 319 insertions(+), 281 deletions(-)
+> 
 
-This gives me some performance gains on the lookup patch, when
-performing cold dcache case-insensitive lookups on directories with a
-high number of entries.
+I've applied this series to fscrypt.git for 5.3.
 
-Below is a measure of average speedup of several runs with the patch
-applied; where the baseline is the currently ext4 code, and the rows are
-for different number of directory entries/number of lookup performed.
-The speedup is not linear with the number of dentries, which I believe
-is because of the changing format of the htree.
-
-| entries | avg speedup |
-| 1000    |  1.15	|
-| 10000   |  1.19	|
-| 50000   |  1.25	|
-| 70000   |  1.20	|
-| 100000  |  1.13	|
-
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
----
- fs/ext4/dir.c           |  2 +-
- fs/ext4/ext4.h          | 32 +++++++++++++++++++++++++++++---
- fs/ext4/namei.c         | 41 +++++++++++++++++++++++++++++++++++------
- fs/unicode/utf8-core.c  | 25 +++++++++++++++++++++++++
- include/linux/unicode.h |  3 +++
- 5 files changed, 93 insertions(+), 10 deletions(-)
-
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index c7843b149a1e..0a427e18584a 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -674,7 +674,7 @@ static int ext4_d_compare(const struct dentry *dentry, unsigned int len,
- 		return memcmp(str, name->name, len);
- 	}
- 
--	return ext4_ci_compare(dentry->d_parent->d_inode, name, &qstr);
-+	return ext4_ci_compare(dentry->d_parent->d_inode, name, &qstr, false);
- }
- 
- static int ext4_d_hash(const struct dentry *dentry, struct qstr *str)
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index c18ab748d20d..e3809cfda9f4 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2078,6 +2078,10 @@ struct ext4_filename {
- #ifdef CONFIG_FS_ENCRYPTION
- 	struct fscrypt_str crypto_buf;
- #endif
-+#ifdef CONFIG_UNICODE
-+	int cf_len;
-+	unsigned char cf_name[EXT4_NAME_LEN];
-+#endif
- };
- 
- #define fname_name(p) ((p)->disk_name.name)
-@@ -2303,6 +2307,12 @@ extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
- 					      struct ext4_group_desc *gdp);
- ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
- 
-+#ifdef CONFIG_UNICODE
-+extern void ext4_setup_ci_filename(struct inode *dir,
-+				   const struct qstr *iname,
-+				   struct ext4_filename *fname);
-+#endif
-+
- #ifdef CONFIG_FS_ENCRYPTION
- static inline int ext4_fname_setup_filename(struct inode *dir,
- 			const struct qstr *iname,
-@@ -2313,6 +2323,9 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
- 
- 	memset(fname, 0, sizeof(struct ext4_filename));
- 
-+#ifdef CONFIG_UNICODE
-+	ext4_setup_ci_filename(dir, iname, fname);
-+#endif
- 	err = fscrypt_setup_filename(dir, iname, lookup, &name);
- 
- 	fname->usr_fname = name.usr_fname;
-@@ -2333,18 +2346,31 @@ static inline void ext4_fname_free_filename(struct ext4_filename *fname)
- 	fname->crypto_buf.name = NULL;
- 	fname->usr_fname = NULL;
- 	fname->disk_name.name = NULL;
-+#ifdef CONFIG_UNICODE
-+	fname->cf_len = 0;
-+#endif
- }
- #else
- static inline int ext4_fname_setup_filename(struct inode *dir,
- 		const struct qstr *iname,
- 		int lookup, struct ext4_filename *fname)
- {
-+
-+#ifdef CONFIG_UNICODE
-+	ext4_setup_ci_filename(dir, iname, fname);
-+#endif
- 	fname->usr_fname = iname;
- 	fname->disk_name.name = (unsigned char *) iname->name;
- 	fname->disk_name.len = iname->len;
- 	return 0;
- }
--static inline void ext4_fname_free_filename(struct ext4_filename *fname) { }
-+
-+static inline void ext4_fname_free_filename(struct ext4_filename *fname)
-+{
-+#ifdef CONFIG_UNICODE
-+	fname->cf_len = 0;
-+#endif
-+}
- 
- #endif
- 
-@@ -3088,8 +3114,8 @@ extern int ext4_handle_dirty_dirent_node(handle_t *handle,
- 					 struct inode *inode,
- 					 struct buffer_head *bh);
- extern int ext4_ci_compare(const struct inode *parent,
--			   const struct qstr *name,
--			   const struct qstr *entry);
-+			   const struct qstr *fname,
-+			   const struct qstr *entry, bool quick);
- 
- #define S_SHIFT 12
- static const unsigned char ext4_type_by_mode[(S_IFMT >> S_SHIFT) + 1] = {
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index ac7457fef9e6..082f941520f3 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1259,19 +1259,25 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
- #ifdef CONFIG_UNICODE
- /*
-  * Test whether a case-insensitive directory entry matches the filename
-- * being searched for.
-+ * being searched for.  If quick is set, assume the name being looked up
-+ * is already in the casefolded form.
-  *
-  * Returns: 0 if the directory entry matches, more than 0 if it
-  * doesn't match or less than zero on error.
-  */
--int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
--		    const struct qstr *entry)
-+int ext4_ci_compare(const struct inode *parent,
-+		    const struct qstr *name,
-+		    const struct qstr *entry, bool quick)
- {
- 	const struct ext4_sb_info *sbi = EXT4_SB(parent->i_sb);
- 	const struct unicode_map *um = sbi->s_encoding;
- 	int ret;
- 
--	ret = utf8_strncasecmp(um, name, entry);
-+	if (quick)
-+		ret = utf8_strncasecmp_folded(um, name, entry);
-+	else
-+		ret = utf8_strncasecmp(um, name, entry);
-+
- 	if (ret < 0) {
- 		/* Handle invalid character sequence as either an error
- 		 * or as an opaque byte sequence.
-@@ -1287,6 +1293,21 @@ int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
- 
- 	return ret;
- }
-+
-+void ext4_setup_ci_filename(struct inode *dir,
-+			    const struct qstr *iname,
-+			    struct ext4_filename *fname)
-+{
-+	int len = EXT4_NAME_LEN;
-+
-+	fname->cf_len = 0;
-+	if (IS_CASEFOLDED(dir)) {
-+		len = utf8_casefold(EXT4_SB(dir->i_sb)->s_encoding,
-+				    iname, fname->cf_name, len);
-+		if (len >= 0)
-+			fname->cf_len = len;
-+	}
-+}
- #endif
- 
- /*
-@@ -1313,8 +1334,16 @@ static inline bool ext4_match(const struct inode *parent,
- #endif
- 
- #ifdef CONFIG_UNICODE
--	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent))
--		return (ext4_ci_compare(parent, fname->usr_fname, &entry) == 0);
-+	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
-+		if (fname->cf_len) {
-+			struct qstr cf = {.name = fname->cf_name,
-+					  .len = fname->cf_len};
-+			return !ext4_ci_compare(parent, &cf,
-+						&entry, true);
-+		}
-+		return !ext4_ci_compare(parent, fname->usr_fname,
-+						&entry, false);
-+	}
- #endif
- 
- 	return fscrypt_match_name(&f, de->name, de->name_len);
-diff --git a/fs/unicode/utf8-core.c b/fs/unicode/utf8-core.c
-index 6afab4fdce90..1d74de2778e9 100644
---- a/fs/unicode/utf8-core.c
-+++ b/fs/unicode/utf8-core.c
-@@ -73,6 +73,31 @@ int utf8_strncasecmp(const struct unicode_map *um,
- }
- EXPORT_SYMBOL(utf8_strncasecmp);
- 
-+int utf8_strncasecmp_folded(const struct unicode_map *um,
-+			    const struct qstr *normalized,
-+			    const struct qstr *s1)
-+{
-+	const struct utf8data *data = utf8nfdicf(um->version);
-+	struct utf8cursor cur1;
-+	int c1, c2;
-+	int i = 0;
-+
-+	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
-+		return -EINVAL;
-+
-+	do {
-+		c1 = utf8byte(&cur1);
-+		c2 = normalized->name[i++];
-+		if (c1 < 0)
-+			return -EINVAL;
-+		if (c1 != c2)
-+			return 1;
-+	} while (c1);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(utf8_strncasecmp_folded);
-+
- int utf8_casefold(const struct unicode_map *um, const struct qstr *str,
- 		  unsigned char *dest, size_t dlen)
- {
-diff --git a/include/linux/unicode.h b/include/linux/unicode.h
-index aec2c6d800aa..e89bf3ecef21 100644
---- a/include/linux/unicode.h
-+++ b/include/linux/unicode.h
-@@ -17,6 +17,9 @@ int utf8_strncmp(const struct unicode_map *um,
- 
- int utf8_strncasecmp(const struct unicode_map *um,
- 		 const struct qstr *s1, const struct qstr *s2);
-+int utf8_strncasecmp_folded(const struct unicode_map *um,
-+			    const struct qstr *normalized,
-+			    const struct qstr *s1);
- 
- int utf8_normalize(const struct unicode_map *um, const struct qstr *str,
- 		   unsigned char *dest, size_t dlen);
--- 
-2.20.1
-
+- Eric
