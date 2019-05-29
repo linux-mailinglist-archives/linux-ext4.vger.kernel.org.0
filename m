@@ -2,110 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F14B2D50F
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2019 07:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3742D521
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2019 07:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbfE2FXn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 May 2019 01:23:43 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58919 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725855AbfE2FXm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 May 2019 01:23:42 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4T5NWrr009418
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 May 2019 01:23:33 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 40ECE420481; Wed, 29 May 2019 01:23:32 -0400 (EDT)
-Date:   Wed, 29 May 2019 01:23:32 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Sahitya Tummala <stummala@codeaurora.org>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Subject: Re: fsync_mode mount option for ext4
-Message-ID: <20190529052332.GB6210@mit.edu>
-References: <20190528032257.GF10043@codeaurora.org>
- <20190528034007.GA19149@mit.edu>
- <20190528034830.GH10043@codeaurora.org>
- <20190528131356.GB19149@mit.edu>
- <20190529040757.GI10043@codeaurora.org>
+        id S1726155AbfE2FjC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 May 2019 01:39:02 -0400
+Received: from mail-yb1-f195.google.com ([209.85.219.195]:45716 "EHLO
+        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725880AbfE2FjB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 May 2019 01:39:01 -0400
+Received: by mail-yb1-f195.google.com with SMTP id e128so327076ybc.12;
+        Tue, 28 May 2019 22:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vXawYOoYL3iVXFsDCoGpoazEsaewREIFtZ87X0NznBo=;
+        b=UOFBRy2khHWgEKicbD1a2E+aZAQGkNify5UGBgYZa3y+sdQzXJ3Yyi0HX5hO4Da8PQ
+         2APyB3WrMNTWjkYSDhODjmiUNivOY8ESI5ydrxy4WLkFlIjpbpE0YPS1xUYgn+8tg+Tz
+         +3cZtZRoTU9CwJ2Vt4N2xIpXHAqBvj8F9UDfT3DD+Fk6fX4xIvKyIco2JcWai3rc2nGp
+         poXBKSbQ4oJ8FsFlGv5Pv+xScvrn6QEJEAcQHlmV0Y0bIqmpZw8nOHRf2SG+GoFkotNf
+         RjpVGrsOGEXAnFqIgIiOlqEF0rhZ3D1gIMnocfEDPk0lW6h/lNhrAuBBRKBQhHMuv9Wu
+         T1CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vXawYOoYL3iVXFsDCoGpoazEsaewREIFtZ87X0NznBo=;
+        b=dusDDpiTB6sQOPQ0jg8S/K3C/7NAVnJkBdx0ygZmMiSIVkkMPvSME6E4bxMtCFS9ir
+         J3UT8/4cSf1WnIIOl1BFEqHfUGlTX4oDmTkO42RyJ+TFrFpu4tzyFeNMA4Sv+C53aL2w
+         CLEomFpU5gSTKQrrSC5+jmrT9n43EFC9X6F6YlivO9Ts6Dknc2W9KhpfzFQ7EG5mL0yX
+         DOMBlD43sWEkhTDBktjGCIMP3x1jGX9081oxjl8catjNAXwsh8I30tGsKr4chIx87Jz8
+         VkHBTX/+k7UBdJOd/k0/iFOfabpaLbxqokIBz/hQ6qwDbbKpRsouDUgSQ5rkAJkygTF0
+         Q8Cg==
+X-Gm-Message-State: APjAAAWog2cToNaA899H1orSWdBiCyq1IkLPGsfQqXaAIfOG9SRgXg3a
+        19rzQkeNLfzDg8yuVCrY50NvOIl2gQuM/B3DIoY=
+X-Google-Smtp-Source: APXvYqxedQWc5ndnnoOxgtJO+TWkV1HPjz/HUq1qcE4fouHr3mtFf6yvJ3r27cgAVJe+Bai7FhvdiKsNYVjx8IGuwXs=
+X-Received: by 2002:a25:d946:: with SMTP id q67mr3637755ybg.126.1559108340796;
+ Tue, 28 May 2019 22:39:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190529040757.GI10043@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190527172655.9287-1-amir73il@gmail.com> <20190528202659.GA12412@mit.edu>
+In-Reply-To: <20190528202659.GA12412@mit.edu>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 29 May 2019 08:38:49 +0300
+Message-ID: <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <david@fromorbit.com>, Chris Mason <clm@fb.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        linux-api@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 29, 2019 at 09:37:58AM +0530, Sahitya Tummala wrote:
-> 
-> Here is what I think on these mount options. Please correct me if my
-> understanding is wrong.
-> 
-> The nobarrier mount option poses risk even if there is a battery
-> protection against sudden power down, as it doesn't guarantee the ordering
-> of important data such as journal writes on the disk. On the storage
-> devices with internal cache, if the cache flush policy is out-of-order,
-> then the places where FS is trying to enforce barriers will be at risk,
-> causing FS to be inconsistent.
+On Tue, May 28, 2019 at 11:27 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Mon, May 27, 2019 at 08:26:55PM +0300, Amir Goldstein wrote:
+> >
+> > Following our discussions on LSF/MM and beyond [1][2], here is
+> > an RFC documentation patch.
+> >
+> > Ted, I know we discussed limiting the API for linking an O_TMPFILE
+> > to avert the hardlinks issue, but I decided it would be better to
+> > document the hardlinks non-guaranty instead. This will allow me to
+> > replicate the same semantics and documentation to renameat(2).
+> > Let me know how that works out for you.
+> >
+> > I also decided to try out two separate flags for data and metadata.
+> > I do not find any of those flags very useful without the other, but
+> > documenting them seprately was easier, because of the fsync/fdatasync
+> > reference.  In the end, we are trying to solve a social engineering
+> > problem, so this is the least confusing way I could think of to describe
+> > the new API.
+>
+> The way you have stated thigs is very confusing, and prone to be
+> misunderstood.  I think it would be helpful to state things in the
+> positive, instead of the negative.
+>
+> Let's review what you had wanted:
+>
+>         *If* the filename is visible in the directory after the crash,
+>         *then* all of the metadata/data that had been written to the file
+>         before the linkat(2) would be visible.
+>
+>         HOWEVER, you did not want to necessarily force an fsync(2) in
+>         order to provide that guarantee.  That is, the filename would
+>         not necessarily be guaranteed to be visible after a crash when
+>         linkat(2) returns, but if the existence of the filename is
+>         persisted, then the data would be too.
+>
+>         Also, at least initially we talked about this only making
+>         sense for O_TMPFILE file desacriptors.  I believe you were
+>         trying to generalize things so it wouldn't necessarily have to
+>         be a file created using O_TMPFILE.  Is that correct?
 
-If you have protection against sudden shutdown, then nobarrier is
-perfectly safe --- which is to say, if it is guaranteed that any
-writes sent to device will be persisted after a crash, then nobarrier
-is perfectly safe.  So for example, if you are using ext4 connected to
-a million dollar EMC Storage Array, which has battery backup, using
-nobarrier is perfectly safe.
+That is correct. I felt we were limiting ourselves only to avert the
+hardlinks issue, so decided its better to explain that "nlink is not
+part of the inode metadata" that this guarantee refers to.
+I would be happy to get your feedback about the hardlink disclaimer
+since you brought up the concern. It the disclaimer enough?
+Not needed at all?
 
-That's because we still send writes to the device in an appropriate
-order in nobarrier mode --- in particular, we send the journal updates
-to the device in order.  The cache flush policy on the HDD is
-out-of-order, but so long as they all make it out to persistant store
-in the end, it'll be fine.
+>
+> So instead of saying "A filesystem that accepts this flag will
+> guaranty, that old inode data will not be exposed in the new linked
+> name."  It's much clearer to state this in the affirmative:
+>
+>         A filesystem which accepts this flag will guarantee that if
+>         the new pathname exists after a crash, all of the data written
+>         to the file at the time of the linkat(2) call will be visible.
+>
 
-> But whereas with fsync_mode=nobarrier, FS is not trying to enforce
-> any ordering of data on the disk except to ensure the data is flushed
-> from the internal cache to non-volatile memory. Thus, I see this
-> fsync_mode=nobarrier is much better than a general nobarrier. And it
-> provides better performance too as with nobarrier but without
-> compromising much on FS consistency.
+Sounds good to me. I will take a swing at another patch.
 
-"without compomising much on FS consistency" doesn't have any meaning.
-If you care about FS consistency, and you don't have power fail
-protection, then at least for ext4, you *must* send a CACHE FLUSH
-after any time that you modify any file system metadata block --- and
-that's true for 99% of all fsync(2)'s.
-
-I suppose you could do something where if there are times when no
-metadata updates are necessary, but just data block writes, the CACHE
-FLUSH could be suppressed.  But (a) this won't actually provide much
-performance improvements for the vast majority of workloads,
-especially on an Android system, and (b) you're making a value
-judgement that FS consistency is more important than application data
-consistency.
-
-
-You didn't answer my question directly --- exactly what is your goal
-that you are trying to achieve, and what assumptions you are willing
-to make?  If you have power fail protection (this might require making
-some adjustments to the EC), then you can use nobarrier and just not
-worry about it.
-
-If you don't have power fail protection, and you care about FS
-consistency, then you pretty much have to leave the CACHE FLUSH
-commands in.
-
-If the problem is that some applications are fsync-happy, then I'd
-suggest fixing the applications.  Or if you really don't care about
-the applications working correctly or users suffering application data
-loss after a crash, you could hack in a mode, so that for non-root
-users, or maybe certain specific users, fsync is turned into a no-op,
-or a background, asynchronous (non-integrity) writeback.
-
-Are you trying to hit some benchmark target?  I'm really confused why
-you would want to be so cavalier with application data safety.
-
-    	       	     		      - Ted
+Thanks for the review!
+Amir.
