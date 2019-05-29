@@ -2,169 +2,167 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 093972D24B
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2019 01:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE992D317
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2019 03:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbfE1XNs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 May 2019 19:13:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726463AbfE1XNs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 28 May 2019 19:13:48 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87F8B20989
-        for <linux-ext4@vger.kernel.org>; Tue, 28 May 2019 23:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559085226;
-        bh=OyLfWHPPXzaZzqmIC/KJdKCkAaN0fDnemk19P19bgd8=;
-        h=From:To:Subject:Date:From;
-        b=zghF678uWBkG6d60sdlywb4nxnIe3xfg79ZRsw19XugTb18M0upqnE6++ve7eSHY0
-         W08a7gUp3lqo4xLD0h6Qpqhq9W/AP08Ww0Vp3he5QRBXwWMVNIx36Z4L0Jjcd5MtTy
-         8k0wEBazZz1CjRxLV7weTdST3U+7C4OA73J9AgYo=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Subject: [PATCH e2fsprogs] tests: add test for e2fsck of verity file
-Date:   Tue, 28 May 2019 16:12:30 -0700
-Message-Id: <20190528231230.234342-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.22.0.rc1.257.g3120a18244-goog
+        id S1725936AbfE2BKA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 May 2019 21:10:00 -0400
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:59816 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725816AbfE2BKA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 May 2019 21:10:00 -0400
+Received: from [4.30.142.84] (helo=srivatsab-a01.vmware.com)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1hVn6E-0002Ws-FE; Tue, 28 May 2019 21:09:50 -0400
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+ <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+ <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+ <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+ <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
+ <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+ <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+ <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+ <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
+ <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
+ <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
+ <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
+ <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
+ <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
+ <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Message-ID: <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
+Date:   Tue, 28 May 2019 18:09:45 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On 5/23/19 11:51 PM, Paolo Valente wrote:
+> 
+>> Il giorno 24 mag 2019, alle ore 01:43, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
+>>
+>> When trying to run multiple dd tasks simultaneously, I get the kernel
+>> panic shown below (mainline is fine, without these patches).
+>>
+> 
+> Could you please provide me somehow with a list *(bfq_serv_to_charge+0x21) ?
+> 
 
-Test that e2fsck doesn't report errors when an inode with the 'verity'
-flag has blocks past i_size.
+Hi Paolo,
 
-This is a regression test for commits 3baafde6a8ae ("e2fsck: allow
-verity files to have initialized blocks past i_size") and 43466d039689
-("e2fsck: handle verity files in scan_extent_node()").
+Sorry for the delay! Here you go:
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- tests/f_verity/expect.1   |   7 +++++++
- tests/f_verity/image.gz   | Bin 0 -> 2247 bytes
- tests/f_verity/mkimage.sh |  28 ++++++++++++++++++++++++++++
- tests/f_verity/name       |   1 +
- tests/f_verity/script     |   2 ++
- 5 files changed, 38 insertions(+)
- create mode 100644 tests/f_verity/expect.1
- create mode 100644 tests/f_verity/image.gz
- create mode 100755 tests/f_verity/mkimage.sh
- create mode 100644 tests/f_verity/name
- create mode 100644 tests/f_verity/script
+(gdb) list *(bfq_serv_to_charge+0x21)
+0xffffffff814bad91 is in bfq_serv_to_charge (./include/linux/blkdev.h:919).
+914	
+915	extern unsigned int blk_rq_err_bytes(const struct request *rq);
+916	
+917	static inline unsigned int blk_rq_sectors(const struct request *rq)
+918	{
+919		return blk_rq_bytes(rq) >> SECTOR_SHIFT;
+920	}
+921	
+922	static inline unsigned int blk_rq_cur_sectors(const struct request *rq)
+923	{
+(gdb) 
 
-diff --git a/tests/f_verity/expect.1 b/tests/f_verity/expect.1
-new file mode 100644
-index 00000000..07059677
---- /dev/null
-+++ b/tests/f_verity/expect.1
-@@ -0,0 +1,7 @@
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+test_filesys: 12/128 files (8.3% non-contiguous), 58/128 blocks
-+Exit status is 0
-diff --git a/tests/f_verity/image.gz b/tests/f_verity/image.gz
-new file mode 100644
-index 0000000000000000000000000000000000000000..72dfd8169ace0e2a2ace35f5d2c010601623b168
-GIT binary patch
-literal 2247
-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
 
-literal 0
-HcmV?d00001
+For some reason, I've not been able to reproduce this issue after
+reporting it here. (Perhaps I got lucky when I hit the kernel panic
+a bunch of times last week).
 
-diff --git a/tests/f_verity/mkimage.sh b/tests/f_verity/mkimage.sh
-new file mode 100755
-index 00000000..565083e2
---- /dev/null
-+++ b/tests/f_verity/mkimage.sh
-@@ -0,0 +1,28 @@
-+#!/bin/bash
-+
-+# This is the script that was used to create the image.gz in this directory.
-+
-+set -e -u
-+
-+mkdir -p mnt
-+umount mnt &> /dev/null || true
-+
-+dd if=/dev/zero of=image bs=4096 count=128
-+mke2fs -O 'verity,extents' -b 4096 -N 128 image
-+mount image mnt
-+
-+# Create a verity file, but make it fragmented so that it needs at least one
-+# extent tree index node, in order to cover the scan_extent_node() case.
-+for i in {1..80}; do
-+	head -c 4096 /dev/zero > mnt/tmp_$i
-+done
-+for i in {1..80..2}; do
-+	rm mnt/tmp_$i
-+done
-+head -c $((40 * 4096)) /dev/zero > mnt/file
-+fsverity enable mnt/file
-+rm mnt/tmp_*
-+
-+umount mnt
-+rmdir mnt
-+gzip -9 -f image
-diff --git a/tests/f_verity/name b/tests/f_verity/name
-new file mode 100644
-index 00000000..f43910fc
---- /dev/null
-+++ b/tests/f_verity/name
-@@ -0,0 +1 @@
-+verity file
-diff --git a/tests/f_verity/script b/tests/f_verity/script
-new file mode 100644
-index 00000000..8ab2b9c6
---- /dev/null
-+++ b/tests/f_verity/script
-@@ -0,0 +1,2 @@
-+ONE_PASS_ONLY="true"
-+. $cmd_dir/run_e2fsck
--- 
-2.22.0.rc1.257.g3120a18244-goog
+I'll test with your fix applied and see how it goes.
 
+Thank you!
+
+Regards,
+Srivatsa
+
+> 
+>> [  568.232231] BUG: kernel NULL pointer dereference, address: 0000000000000024
+>> [  568.232257] #PF: supervisor read access in kernel mode
+>> [  568.232273] #PF: error_code(0x0000) - not-present page
+>> [  568.232289] PGD 0 P4D 0
+>> [  568.232299] Oops: 0000 [#1] SMP PTI
+>> [  568.232312] CPU: 0 PID: 1029 Comm: dd Tainted: G            E     5.1.0-io-dbg-4+ #6
+>> [  568.232334] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 04/05/2016
+>> [  568.232388] RIP: 0010:bfq_serv_to_charge+0x21/0x50
+>> [  568.232404] Code: ff e8 c3 5e bc ff 0f 1f 00 0f 1f 44 00 00 48 8b 86 20 01 00 00 55 48 89 e5 53 48 89 fb a8 40 75 09 83 be a0 01 00 00 01 76 09 <8b> 43 24 c1 e8 09 5b 5d c3 48 8b 7e 08 e8 5d fd ff ff 84 c0 75 ea
+>> [  568.232473] RSP: 0018:ffffa73a42dab750 EFLAGS: 00010002
+>> [  568.232489] RAX: 0000000000001052 RBX: 0000000000000000 RCX: ffffa73a42dab7a0
+>> [  568.232510] RDX: ffffa73a42dab657 RSI: ffff8b7b6ba2ab70 RDI: 0000000000000000
+>> [  568.232530] RBP: ffffa73a42dab758 R08: 0000000000000000 R09: 0000000000000001
+>> [  568.232551] R10: 0000000000000000 R11: ffffa73a42dab7a0 R12: ffff8b7b6aed3800
+>> [  568.232571] R13: 0000000000000000 R14: 0000000000000000 R15: ffff8b7b6aed3800
+>> [  568.232592] FS:  00007fb5b0724540(0000) GS:ffff8b7b6f800000(0000) knlGS:0000000000000000
+>> [  568.232615] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [  568.232632] CR2: 0000000000000024 CR3: 00000004266be002 CR4: 00000000001606f0
+>> [  568.232690] Call Trace:
+>> [  568.232703]  bfq_select_queue+0x781/0x1000
+>> [  568.232717]  bfq_dispatch_request+0x1d7/0xd60
+>> [  568.232731]  ? bfq_bfqq_handle_idle_busy_switch.isra.36+0x2cd/0xb20
+>> [  568.232751]  blk_mq_do_dispatch_sched+0xa8/0xe0
+>> [  568.232765]  blk_mq_sched_dispatch_requests+0xe3/0x150
+>> [  568.232783]  __blk_mq_run_hw_queue+0x56/0x100
+>> [  568.232798]  __blk_mq_delay_run_hw_queue+0x107/0x160
+>> [  568.232814]  blk_mq_run_hw_queue+0x75/0x190
+>> [  568.232828]  blk_mq_sched_insert_requests+0x7a/0x100
+>> [  568.232844]  blk_mq_flush_plug_list+0x1d7/0x280
+>> [  568.232859]  blk_flush_plug_list+0xc2/0xe0
+>> [  568.232872]  blk_finish_plug+0x2c/0x40
+>> [  568.232886]  ext4_writepages+0x592/0xe60
+>> [  568.233381]  ? ext4_mark_iloc_dirty+0x52b/0x860
+>> [  568.233851]  do_writepages+0x3c/0xd0
+>> [  568.234304]  ? ext4_mark_inode_dirty+0x1a0/0x1a0
+>> [  568.234748]  ? do_writepages+0x3c/0xd0
+>> [  568.235197]  ? __generic_write_end+0x4e/0x80
+>> [  568.235644]  __filemap_fdatawrite_range+0xa5/0xe0
+>> [  568.236089]  ? __filemap_fdatawrite_range+0xa5/0xe0
+>> [  568.236533]  ? ext4_da_write_end+0x13c/0x280
+>> [  568.236983]  file_write_and_wait_range+0x5a/0xb0
+>> [  568.237407]  ext4_sync_file+0x11e/0x3e0
+>> [  568.237819]  vfs_fsync_range+0x48/0x80
+>> [  568.238217]  ext4_file_write_iter+0x234/0x3d0
+>> [  568.238610]  ? _cond_resched+0x19/0x40
+>> [  568.238982]  new_sync_write+0x112/0x190
+>> [  568.239347]  __vfs_write+0x29/0x40
+>> [  568.239705]  vfs_write+0xb1/0x1a0
+>> [  568.240078]  ksys_write+0x89/0xc0
+>> [  568.240428]  __x64_sys_write+0x1a/0x20
+>> [  568.240771]  do_syscall_64+0x5b/0x140
+>> [  568.241115]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>> [  568.241456] RIP: 0033:0x7fb5b02325f4
+>> [  568.241787] Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b3 0f 1f 80 00 00 00 00 48 8d 05 09 11 2d 00 8b 00 85 c0 75 13 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 54 f3 c3 66 90 41 54 55 49 89 d4 53 48 89 f5
+>> [  568.242842] RSP: 002b:00007ffcb12e2968 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+>> [  568.243220] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb5b02325f4
+>> [  568.243616] RDX: 0000000000000200 RSI: 000055698f2ad000 RDI: 0000000000000001
+>> [  568.244026] RBP: 0000000000000200 R08: 0000000000000004 R09: 0000000000000003
+>> [  568.244401] R10: 00007fb5b04feca0 R11: 0000000000000246 R12: 000055698f2ad000
+>> [  568.244775] R13: 0000000000000000 R14: 0000000000000000 R15: 000055698f2ad000
+>> [  568.245154] Modules linked in: xt_MASQUERADE(E) nf_conntrack_netlink(E) nfnetlink(E) xfrm_user(E) xfrm_algo(E) xt_addrtype(E) br_netfilter(E) bridge(E) stp(E) llc(E) overlay(E) vmw_vsock_vmci_transport(E) vsock(E) ip6table_filter(E) ip6_tables(E) xt_conntrack(E) iptable_mangle(E) iptable_nat(E) nf_nat(E) iptable_filter
+>> [  568.248651] CR2: 0000000000000024
+>> [  568.249142] ---[ end trace 0ddd315e0a5bdfba ]---
+>>
