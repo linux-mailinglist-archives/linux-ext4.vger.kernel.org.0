@@ -2,72 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7684C2F9EA
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 May 2019 11:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E4B2F9FE
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 May 2019 12:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727263AbfE3J7L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 May 2019 05:59:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44128 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725913AbfE3J7K (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 30 May 2019 05:59:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id AFF7DAF59;
-        Thu, 30 May 2019 09:59:09 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 346BC1E3C08; Thu, 30 May 2019 11:59:07 +0200 (CEST)
-Date:   Thu, 30 May 2019 11:59:07 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.com>
-Subject: Re: How to package e2scrub
-Message-ID: <20190530095907.GA29237@quack2.suse.cz>
-References: <20190529120603.xuet53xgs6ahfvpl@work>
- <20190529235948.GB3671@mit.edu>
+        id S1727914AbfE3KK5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 30 May 2019 06:10:57 -0400
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25600 "EHLO
+        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726540AbfE3KK5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 May 2019 06:10:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1559211053; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=TYvnd1i6N+wj0o1/9lfuBpLqA7dBHvpcB8Rmrs4GyKnSn4OT/QD/24gfr8U1bzzJIzqEQk2qeRrSGAo7gXojNaP0pd5UIJrnu8VIkVSy/FT3oWZAqpKTL+ymE4IR4MncJDBsauHdaOzLOmwvVw6q6vuwpPuw2lMBXesLEIFCDf8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1559211053; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
+        bh=iVT5py7ZXzsjfNNeRjRLKcSJZ8f6vaO99+wUktgX/Bw=; 
+        b=GTjJ37FtulP8T2+12tpuKBxOHyi2NkKxR8DBmYwg6R/Ek0DsQ98mH46d+xPmauMHHryVgckVWmBRr4AjsGHoYKeLX0r/F/4SyVwtO+Ouu/UuRnigPg3cEpR6rhwzcHUqNVhhOkVQ053wsFjYTG4whgdb9AQWAauEuG96L5+r51o=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=zoho.com.cn;
+        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
+        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
+Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
+        with SMTPS id 1559211050837961.0793955546817; Thu, 30 May 2019 18:10:50 +0800 (CST)
+From:   Chengguang Xu <cgxu519@zoho.com.cn>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@zoho.com.cn>
+Message-ID: <20190530101042.32197-1-cgxu519@zoho.com.cn>
+Subject: [PATCH] ext2: add missing brelse() in ext2_new_inode()
+Date:   Thu, 30 May 2019 18:10:42 +0800
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190529235948.GB3671@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 29-05-19 19:59:48, Theodore Ts'o wrote:
-> On Wed, May 29, 2019 at 02:06:03PM +0200, Lukas Czerner wrote:
-> > What I am going to do is to split the systemd service into a separate
-> > package and I'd like to come to some agreement about the name of the
-> > package so that we can have the same name across distributions (at least
-> > Fedora/Debian/Suse).
-> 
-> Hmm.... what keeping the service as part of the e2fsprogs package, but
-> then not enabling out of the box.  That is, require that user run:
-> 
-> systemctl enable e2scrub_all.timer
-> 
-> in order to actually get the feature?  (They can also disable it using
-> "systemctl disable e2scrub_all.timer".)
-> 
-> As far as the cron job is concerned, we could just leave the crontab
-> entry commented out by default, and require that the user go in and
-> edit the /etc/cron.d/e2scrub_all file if they want to enable it.  Not
-> packaging it also seems fine; Debian's support for non-systemd
-> configurations is at best marginal at this point, and while I'm not a
-> fan of systemd, I'm also a realist...
-> 
-> What do folks think?
+There is a missing brelse of bitmap_bh in an error
+path of ext2_new_inode().
 
-Yeah, my plan is to just not package cron bits at all since openSUSE / SLES
-support only systemd init anyway these days (and in fact our distro people
-want to deprecate cron in favor of systemd). I guess I'll split off the
-scrub bits into a separate sub-package (likely e2fsprogs will suggest
-installation of this sub-package) and the service will be disabled by
-default.
+Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
+---
+ fs/ext2/ialloc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-								Honza
+diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
+index 334dea4e499d..fda7d3f5b4be 100644
+--- a/fs/ext2/ialloc.c
++++ b/fs/ext2/ialloc.c
+@@ -509,6 +509,7 @@ struct inode *ext2_new_inode(struct inode *dir, umode_t mode,
+ 	/*
+ 	 * Scanned all blockgroups.
+ 	 */
++	brelse(bitmap_bh);
+ 	err = -ENOSPC;
+ 	goto fail;
+ got:
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.20.1
+
+
+
