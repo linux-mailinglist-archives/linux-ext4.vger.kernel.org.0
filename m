@@ -2,69 +2,49 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5DF2FAF9
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 May 2019 13:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0552FB76
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 May 2019 14:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbfE3Lfv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 May 2019 07:35:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53642 "EHLO mx1.suse.de"
+        id S1727080AbfE3MQ6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 May 2019 08:16:58 -0400
+Received: from ns317680.ip-94-23-251.eu ([94.23.251.149]:35374 "EHLO gcdb.top"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726065AbfE3Lfu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 30 May 2019 07:35:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5F18EAEFF;
-        Thu, 30 May 2019 11:35:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 0D28E1E3C08; Thu, 30 May 2019 13:35:47 +0200 (CEST)
-Date:   Thu, 30 May 2019 13:35:47 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@zoho.com.cn>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext2: add missing brelse() in ext2_new_inode()
-Message-ID: <20190530113547.GD29237@quack2.suse.cz>
-References: <20190530101042.32197-1-cgxu519@zoho.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190530101042.32197-1-cgxu519@zoho.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726935AbfE3MQ5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 30 May 2019 08:16:57 -0400
+X-Greylist: delayed 12714 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 May 2019 08:16:57 EDT
+To:     linux-ext4@vger.kernel.org
+From:   info <info@gcdb.top>
+Subject: FW: AW: Kontakt.
+Date:   Thu, 30 May 2019 13:38:27 +0200
+Message-ID: <20190530_113827_070612.info@gcdb.top>
+X-Mailer: WEBMAIL
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 30-05-19 18:10:42, Chengguang Xu wrote:
-> There is a missing brelse of bitmap_bh in an error
-> path of ext2_new_inode().
-> 
-> Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
+Sehr geehrte Damen und Herren,
 
-Thanks for the fix! Applied.
+ich wende mich an Sie, da ich der Meinung bin, dass sich die von Ihnen auf der Webseite angebotenen Produkte ausgezeichnet dazu eignen, im Internet gefördert zu werden.
+Deshalb möchte ich Ihnen die Tools anbieten, die es erlauben, den Verkauf von Ihren Produkten und Dienstleistungen beinahe mit sofortiger Wirkung und auch mehrfach zu erhöhen.
 
-								Honza
-> ---
->  fs/ext2/ialloc.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
-> index 334dea4e499d..fda7d3f5b4be 100644
-> --- a/fs/ext2/ialloc.c
-> +++ b/fs/ext2/ialloc.c
-> @@ -509,6 +509,7 @@ struct inode *ext2_new_inode(struct inode *dir, umode_t mode,
->  	/*
->  	 * Scanned all blockgroups.
->  	 */
-> +	brelse(bitmap_bh);
->  	err = -ENOSPC;
->  	goto fail;
->  got:
-> -- 
-> 2.20.1
-> 
-> 
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Die Firmenangaben beinhalten: Name der Firma, Ansprechpartner, E-mail Adresse, Tel. + Fax-Nr., PLZ, Ort, Straße etc. 
+
+1. Gesamtpaket 2019 DE - 1,4 Mio. Firmenadressen ( 1 457 620 ) - 190 € ( bis zum 30.05.2019 ) 
+2. Gesamtpaket 2019 DE,AT,CH - 1,7 Mio. Firmenadressen ( 1 747 921 ) - 240 € ( bis zum 30.05.2019 )
+3. Schweiz 2019 ( 187 911 ) - 149 € ( bis zum 30.05.2019 )
+4. Österreich 2019 ( 104 000 ) - 149 € ( bis zum 30.05.2019 )
+
+Die Verwendungsmöglichkeiten der Datenbanken sind praktisch unbegrenzt und Sie können durch Verwendung der von uns entwickelten 
+Programme des personalisierten Versendens von Angeboten u.ä. mittels E-mailing bzw. Fax effektive und sichere Werbekampagnen damit durchführen. 
+
+Bitte informieren Sie sich über die weiteren Details einmal unverbindlich auf unseren Webseiten: 
+
+http://www.gmcmarketing.top/?page=catalog
+
+Mit freundlichen Grüßen
+GMTeam
+
