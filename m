@@ -2,34 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 306B52F7C8
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 May 2019 09:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3B82F886
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 May 2019 10:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727083AbfE3HNd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 May 2019 03:13:33 -0400
-Received: from relay.sw.ru ([185.231.240.75]:60636 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726512AbfE3HNc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 30 May 2019 03:13:32 -0400
-Received: from [172.16.24.21]
-        by relay.sw.ru with esmtp (Exim 4.91)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1hWFFf-0004zw-9e; Thu, 30 May 2019 10:13:27 +0300
-Subject: Re: [PATCH v2] ext4: remove code duplication in free_ind_block()
-To:     Jan Kara <jack@suse.cz>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-References: <7751907d-738f-a533-8be9-78c6aff5c8be@virtuozzo.com>
- <20190529150142.GA2081@quack2.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <9f64b443-3344-1fd0-ac3b-75887eb1e629@virtuozzo.com>
-Date:   Thu, 30 May 2019 10:13:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726716AbfE3I3d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 May 2019 04:29:33 -0400
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:56488 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726439AbfE3I3c (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 30 May 2019 04:29:32 -0400
+Received: from c-73-193-85-113.hsd1.wa.comcast.net ([73.193.85.113] helo=srivatsab-a01.vmware.com)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1hWGRC-000QA7-QF; Thu, 30 May 2019 04:29:26 -0400
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+ <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+ <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+ <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+ <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
+ <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+ <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+ <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+ <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
+ <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
+ <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
+ <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
+ <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
+ <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
+ <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
+ <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
+ <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Message-ID: <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
+Date:   Thu, 30 May 2019 01:29:23 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190529150142.GA2081@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
@@ -37,177 +61,67 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 5/29/19 6:01 PM, Jan Kara wrote:
-> On Tue 12-03-19 16:09:12, Vasily Averin wrote:
->> free_ind_block(), free_dind_blocks() and free_tind_blocks() are replaced
->> by a single recursive function.
->> v2: rebase to v5.0
->>
->> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+On 5/29/19 12:41 AM, Paolo Valente wrote:
 > 
-> Thanks for the patch! Nice cleanup. The patch looks good to me. Feel free
-> to add:
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+>> Il giorno 29 mag 2019, alle ore 03:09, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
+>>
+>> On 5/23/19 11:51 PM, Paolo Valente wrote:
+>>>
+>>>> Il giorno 24 mag 2019, alle ore 01:43, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
+>>>>
+>>>> When trying to run multiple dd tasks simultaneously, I get the kernel
+>>>> panic shown below (mainline is fine, without these patches).
+>>>>
+>>>
+>>> Could you please provide me somehow with a list *(bfq_serv_to_charge+0x21) ?
+>>>
+>>
+>> Hi Paolo,
+>>
+>> Sorry for the delay! Here you go:
+>>
+>> (gdb) list *(bfq_serv_to_charge+0x21)
+>> 0xffffffff814bad91 is in bfq_serv_to_charge (./include/linux/blkdev.h:919).
+>> 914
+>> 915	extern unsigned int blk_rq_err_bytes(const struct request *rq);
+>> 916
+>> 917	static inline unsigned int blk_rq_sectors(const struct request *rq)
+>> 918	{
+>> 919		return blk_rq_bytes(rq) >> SECTOR_SHIFT;
+>> 920	}
+>> 921
+>> 922	static inline unsigned int blk_rq_cur_sectors(const struct request *rq)
+>> 923	{
+>> (gdb)
+>>
+>>
+>> For some reason, I've not been able to reproduce this issue after
+>> reporting it here. (Perhaps I got lucky when I hit the kernel panic
+>> a bunch of times last week).
+>>
+>> I'll test with your fix applied and see how it goes.
+>>
 > 
-> Just one question. How did you test this? And if you have a testcase for
-> this code, can you please add it to fstests so that it gets excercised?
+> Great!  the offending line above gives me hope that my fix is correct.
+> If no more failures occur, then I'm eager (and a little worried ...)
+> to see how it goes with throughput :)
+> 
 
-Frankly speaking I've very carefully reviewed these changes,
-complied and booted, but not tested it under any real load.
+Your fix held up well under my testing :)
 
-Thank you,
-	Vasily Averin
+As for throughput, with low_latency = 1, I get around 1.4 MB/s with
+bfq (vs 1.6 MB/s with mq-deadline). This is a huge improvement
+compared to what it was before (70 KB/s).
 
->> ---
->>  fs/ext4/migrate.c | 115 +++++++++++++---------------------------------
->>  1 file changed, 32 insertions(+), 83 deletions(-)
->>
->> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
->> index fde2f1bc96b0..6b811b7d110c 100644
->> --- a/fs/ext4/migrate.c
->> +++ b/fs/ext4/migrate.c
->> @@ -157,100 +157,43 @@ static int extend_credit_for_blkdel(handle_t *handle, struct inode *inode)
->>  	return retval;
->>  }
->>  
->> -static int free_dind_blocks(handle_t *handle,
->> -				struct inode *inode, __le32 i_data)
->> +static int free_ind_blocks(handle_t *handle,
->> +				struct inode *inode, __le32 i_data, int ind)
->>  {
->> -	int i;
->> -	__le32 *tmp_idata;
->> -	struct buffer_head *bh;
->> -	unsigned long max_entries = inode->i_sb->s_blocksize >> 2;
->> -
->> -	bh = ext4_sb_bread(inode->i_sb, le32_to_cpu(i_data), 0);
->> -	if (IS_ERR(bh))
->> -		return PTR_ERR(bh);
->> -
->> -	tmp_idata = (__le32 *)bh->b_data;
->> -	for (i = 0; i < max_entries; i++) {
->> -		if (tmp_idata[i]) {
->> -			extend_credit_for_blkdel(handle, inode);
->> -			ext4_free_blocks(handle, inode, NULL,
->> -					 le32_to_cpu(tmp_idata[i]), 1,
->> -					 EXT4_FREE_BLOCKS_METADATA |
->> -					 EXT4_FREE_BLOCKS_FORGET);
->> -		}
->> -	}
->> -	put_bh(bh);
->> -	extend_credit_for_blkdel(handle, inode);
->> -	ext4_free_blocks(handle, inode, NULL, le32_to_cpu(i_data), 1,
->> -			 EXT4_FREE_BLOCKS_METADATA |
->> -			 EXT4_FREE_BLOCKS_FORGET);
->> -	return 0;
->> -}
->> -
->> -static int free_tind_blocks(handle_t *handle,
->> -				struct inode *inode, __le32 i_data)
->> -{
->> -	int i, retval = 0;
->> -	__le32 *tmp_idata;
->> -	struct buffer_head *bh;
->> -	unsigned long max_entries = inode->i_sb->s_blocksize >> 2;
->> -
->> -	bh = ext4_sb_bread(inode->i_sb, le32_to_cpu(i_data), 0);
->> -	if (IS_ERR(bh))
->> -		return PTR_ERR(bh);
->> -
->> -	tmp_idata = (__le32 *)bh->b_data;
->> -	for (i = 0; i < max_entries; i++) {
->> -		if (tmp_idata[i]) {
->> -			retval = free_dind_blocks(handle,
->> -					inode, tmp_idata[i]);
->> -			if (retval) {
->> -				put_bh(bh);
->> -				return retval;
->> +	if (ind > 0) {
->> +		int retval = 0;
->> +		__le32 *tmp_idata;
->> +		ext4_lblk_t i, max_entries;
->> +		struct buffer_head *bh;
->> +
->> +		bh = ext4_sb_bread(inode->i_sb, le32_to_cpu(i_data), 0);
->> +		if (IS_ERR(bh))
->> +			return PTR_ERR(bh);
->> +
->> +		tmp_idata = (__le32 *)bh->b_data;
->> +		max_entries = inode->i_sb->s_blocksize >> 2;
->> +		for (i = 0; i < max_entries; i++) {
->> +			if (tmp_idata[i]) {
->> +				retval = free_ind_blocks(handle,
->> +						inode, tmp_idata[i], ind - 1);
->> +				if (retval) {
->> +					put_bh(bh);
->> +					return retval;
->> +				}
->>  			}
->>  		}
->> +		put_bh(bh);
->>  	}
->> -	put_bh(bh);
->>  	extend_credit_for_blkdel(handle, inode);
->>  	ext4_free_blocks(handle, inode, NULL, le32_to_cpu(i_data), 1,
->> -			 EXT4_FREE_BLOCKS_METADATA |
->> -			 EXT4_FREE_BLOCKS_FORGET);
->> -	return 0;
->> -}
->> -
->> -static int free_ind_block(handle_t *handle, struct inode *inode, __le32 *i_data)
->> -{
->> -	int retval;
->> -
->> -	/* ei->i_data[EXT4_IND_BLOCK] */
->> -	if (i_data[0]) {
->> -		extend_credit_for_blkdel(handle, inode);
->> -		ext4_free_blocks(handle, inode, NULL,
->> -				le32_to_cpu(i_data[0]), 1,
->> -				 EXT4_FREE_BLOCKS_METADATA |
->> -				 EXT4_FREE_BLOCKS_FORGET);
->> -	}
->> -
->> -	/* ei->i_data[EXT4_DIND_BLOCK] */
->> -	if (i_data[1]) {
->> -		retval = free_dind_blocks(handle, inode, i_data[1]);
->> -		if (retval)
->> -			return retval;
->> -	}
->> -
->> -	/* ei->i_data[EXT4_TIND_BLOCK] */
->> -	if (i_data[2]) {
->> -		retval = free_tind_blocks(handle, inode, i_data[2]);
->> -		if (retval)
->> -			return retval;
->> -	}
->> +			 EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET);
->>  	return 0;
->>  }
->>  
->>  static int ext4_ext_swap_inode_data(handle_t *handle, struct inode *inode,
->>  						struct inode *tmp_inode)
->>  {
->> -	int retval;
->> +	int i, retval;
->>  	__le32	i_data[3];
->>  	struct ext4_inode_info *ei = EXT4_I(inode);
->>  	struct ext4_inode_info *tmp_ei = EXT4_I(tmp_inode);
->> @@ -307,7 +250,13 @@ static int ext4_ext_swap_inode_data(handle_t *handle, struct inode *inode,
->>  	 * We mark the inode dirty after, because we decrement the
->>  	 * i_blocks when freeing the indirect meta-data blocks
->>  	 */
->> -	retval = free_ind_block(handle, inode, i_data);
->> +	for (i = 0; i < ARRAY_SIZE(i_data); i++) {
->> +		if (i_data[i]) {
->> +			retval = free_ind_blocks(handle, inode, i_data[i], i);
->> +			if (retval)
->> +				break;
->> +		}
->> +	}
->>  	ext4_mark_inode_dirty(handle, inode);
->>  
->>  err_out:
->> -- 
->> 2.17.1
->>
+With tracing on, the throughput is a bit lower (as expected I guess),
+about 1 MB/s, and the corresponding trace file
+(trace-waker-detection-1MBps) is available at:
+
+https://www.dropbox.com/s/3roycp1zwk372zo/bfq-traces.tar.gz?dl=0
+
+Thank you so much for your tireless efforts in fixing this issue!
+
+Regards,
+Srivatsa
+VMware Photon OS
