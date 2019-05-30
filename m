@@ -2,53 +2,212 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8992F75D
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 May 2019 08:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306B52F7C8
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 May 2019 09:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbfE3GEf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 May 2019 02:04:35 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:39240 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbfE3GEf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 30 May 2019 02:04:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ukdzhaLkbFrU+94WV3nmOVSVdvK3CFipHYlKptliEno=; b=KJ8Fy06NSZFpqC94Gnwq0Go6+
-        5z5XOMjY9VHg4BSrttOMxLs3GFjpJU69L8I2Zp7vro8Ccv0GWoMM4aK+z7b/fJr058JEZQKHyZF6M
-        TXWkOo9osOhfy3/oxT4T6tBqNwVSpNXHSwYviKcveIhO/CHym72LFarerzzOe7Zw4XcE+nzLI/50h
-        lMzp06S/deuQ73KU0/9OjoTyayJD8JfIzpy/R0dmeYDaSpo8RwQ/UoUWBzNl/o5mRrDJhESq6b7hx
-        XnB5l2dI2P0BqpTNVonyRyzsPSzOWUVlA6uDm269+82/Tq4rEnGX/pQwemO/EAgvuST+Z1Y73Rj4m
-        DGWcurRLA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1hWEAs-0008Ap-7A; Thu, 30 May 2019 06:04:26 +0000
-Date:   Wed, 29 May 2019 23:04:26 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        xfs <linux-xfs@vger.kernel.org>,
-        Eric Sandeen <sandeen@redhat.com>
-Subject: Re: How to package e2scrub
-Message-ID: <20190530060426.GA30438@infradead.org>
-References: <20190529120603.xuet53xgs6ahfvpl@work>
- <20190529182111.GA5220@magnolia>
+        id S1727083AbfE3HNd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 May 2019 03:13:33 -0400
+Received: from relay.sw.ru ([185.231.240.75]:60636 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726512AbfE3HNc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 30 May 2019 03:13:32 -0400
+Received: from [172.16.24.21]
+        by relay.sw.ru with esmtp (Exim 4.91)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1hWFFf-0004zw-9e; Thu, 30 May 2019 10:13:27 +0300
+Subject: Re: [PATCH v2] ext4: remove code duplication in free_ind_block()
+To:     Jan Kara <jack@suse.cz>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+References: <7751907d-738f-a533-8be9-78c6aff5c8be@virtuozzo.com>
+ <20190529150142.GA2081@quack2.suse.cz>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <9f64b443-3344-1fd0-ac3b-75887eb1e629@virtuozzo.com>
+Date:   Thu, 30 May 2019 10:13:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190529182111.GA5220@magnolia>
-User-Agent: Mutt/1.9.2 (2017-12-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20190529150142.GA2081@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 29, 2019 at 11:21:11AM -0700, Darrick J. Wong wrote:
-> Indeed.  Eric picked "xfsprogs-xfs_scrub" for Rawhide, though I find
-> that name to be very clunky and would have preferred "xfs_scrub".
+On 5/29/19 6:01 PM, Jan Kara wrote:
+> On Tue 12-03-19 16:09:12, Vasily Averin wrote:
+>> free_ind_block(), free_dind_blocks() and free_tind_blocks() are replaced
+>> by a single recursive function.
+>> v2: rebase to v5.0
+>>
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> 
+> Thanks for the patch! Nice cleanup. The patch looks good to me. Feel free
+> to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> Just one question. How did you test this? And if you have a testcase for
+> this code, can you please add it to fstests so that it gets excercised?
 
-Why not just xfs-scrub?
+Frankly speaking I've very carefully reviewed these changes,
+complied and booted, but not tested it under any real load.
+
+Thank you,
+	Vasily Averin
+
+>> ---
+>>  fs/ext4/migrate.c | 115 +++++++++++++---------------------------------
+>>  1 file changed, 32 insertions(+), 83 deletions(-)
+>>
+>> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+>> index fde2f1bc96b0..6b811b7d110c 100644
+>> --- a/fs/ext4/migrate.c
+>> +++ b/fs/ext4/migrate.c
+>> @@ -157,100 +157,43 @@ static int extend_credit_for_blkdel(handle_t *handle, struct inode *inode)
+>>  	return retval;
+>>  }
+>>  
+>> -static int free_dind_blocks(handle_t *handle,
+>> -				struct inode *inode, __le32 i_data)
+>> +static int free_ind_blocks(handle_t *handle,
+>> +				struct inode *inode, __le32 i_data, int ind)
+>>  {
+>> -	int i;
+>> -	__le32 *tmp_idata;
+>> -	struct buffer_head *bh;
+>> -	unsigned long max_entries = inode->i_sb->s_blocksize >> 2;
+>> -
+>> -	bh = ext4_sb_bread(inode->i_sb, le32_to_cpu(i_data), 0);
+>> -	if (IS_ERR(bh))
+>> -		return PTR_ERR(bh);
+>> -
+>> -	tmp_idata = (__le32 *)bh->b_data;
+>> -	for (i = 0; i < max_entries; i++) {
+>> -		if (tmp_idata[i]) {
+>> -			extend_credit_for_blkdel(handle, inode);
+>> -			ext4_free_blocks(handle, inode, NULL,
+>> -					 le32_to_cpu(tmp_idata[i]), 1,
+>> -					 EXT4_FREE_BLOCKS_METADATA |
+>> -					 EXT4_FREE_BLOCKS_FORGET);
+>> -		}
+>> -	}
+>> -	put_bh(bh);
+>> -	extend_credit_for_blkdel(handle, inode);
+>> -	ext4_free_blocks(handle, inode, NULL, le32_to_cpu(i_data), 1,
+>> -			 EXT4_FREE_BLOCKS_METADATA |
+>> -			 EXT4_FREE_BLOCKS_FORGET);
+>> -	return 0;
+>> -}
+>> -
+>> -static int free_tind_blocks(handle_t *handle,
+>> -				struct inode *inode, __le32 i_data)
+>> -{
+>> -	int i, retval = 0;
+>> -	__le32 *tmp_idata;
+>> -	struct buffer_head *bh;
+>> -	unsigned long max_entries = inode->i_sb->s_blocksize >> 2;
+>> -
+>> -	bh = ext4_sb_bread(inode->i_sb, le32_to_cpu(i_data), 0);
+>> -	if (IS_ERR(bh))
+>> -		return PTR_ERR(bh);
+>> -
+>> -	tmp_idata = (__le32 *)bh->b_data;
+>> -	for (i = 0; i < max_entries; i++) {
+>> -		if (tmp_idata[i]) {
+>> -			retval = free_dind_blocks(handle,
+>> -					inode, tmp_idata[i]);
+>> -			if (retval) {
+>> -				put_bh(bh);
+>> -				return retval;
+>> +	if (ind > 0) {
+>> +		int retval = 0;
+>> +		__le32 *tmp_idata;
+>> +		ext4_lblk_t i, max_entries;
+>> +		struct buffer_head *bh;
+>> +
+>> +		bh = ext4_sb_bread(inode->i_sb, le32_to_cpu(i_data), 0);
+>> +		if (IS_ERR(bh))
+>> +			return PTR_ERR(bh);
+>> +
+>> +		tmp_idata = (__le32 *)bh->b_data;
+>> +		max_entries = inode->i_sb->s_blocksize >> 2;
+>> +		for (i = 0; i < max_entries; i++) {
+>> +			if (tmp_idata[i]) {
+>> +				retval = free_ind_blocks(handle,
+>> +						inode, tmp_idata[i], ind - 1);
+>> +				if (retval) {
+>> +					put_bh(bh);
+>> +					return retval;
+>> +				}
+>>  			}
+>>  		}
+>> +		put_bh(bh);
+>>  	}
+>> -	put_bh(bh);
+>>  	extend_credit_for_blkdel(handle, inode);
+>>  	ext4_free_blocks(handle, inode, NULL, le32_to_cpu(i_data), 1,
+>> -			 EXT4_FREE_BLOCKS_METADATA |
+>> -			 EXT4_FREE_BLOCKS_FORGET);
+>> -	return 0;
+>> -}
+>> -
+>> -static int free_ind_block(handle_t *handle, struct inode *inode, __le32 *i_data)
+>> -{
+>> -	int retval;
+>> -
+>> -	/* ei->i_data[EXT4_IND_BLOCK] */
+>> -	if (i_data[0]) {
+>> -		extend_credit_for_blkdel(handle, inode);
+>> -		ext4_free_blocks(handle, inode, NULL,
+>> -				le32_to_cpu(i_data[0]), 1,
+>> -				 EXT4_FREE_BLOCKS_METADATA |
+>> -				 EXT4_FREE_BLOCKS_FORGET);
+>> -	}
+>> -
+>> -	/* ei->i_data[EXT4_DIND_BLOCK] */
+>> -	if (i_data[1]) {
+>> -		retval = free_dind_blocks(handle, inode, i_data[1]);
+>> -		if (retval)
+>> -			return retval;
+>> -	}
+>> -
+>> -	/* ei->i_data[EXT4_TIND_BLOCK] */
+>> -	if (i_data[2]) {
+>> -		retval = free_tind_blocks(handle, inode, i_data[2]);
+>> -		if (retval)
+>> -			return retval;
+>> -	}
+>> +			 EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET);
+>>  	return 0;
+>>  }
+>>  
+>>  static int ext4_ext_swap_inode_data(handle_t *handle, struct inode *inode,
+>>  						struct inode *tmp_inode)
+>>  {
+>> -	int retval;
+>> +	int i, retval;
+>>  	__le32	i_data[3];
+>>  	struct ext4_inode_info *ei = EXT4_I(inode);
+>>  	struct ext4_inode_info *tmp_ei = EXT4_I(tmp_inode);
+>> @@ -307,7 +250,13 @@ static int ext4_ext_swap_inode_data(handle_t *handle, struct inode *inode,
+>>  	 * We mark the inode dirty after, because we decrement the
+>>  	 * i_blocks when freeing the indirect meta-data blocks
+>>  	 */
+>> -	retval = free_ind_block(handle, inode, i_data);
+>> +	for (i = 0; i < ARRAY_SIZE(i_data); i++) {
+>> +		if (i_data[i]) {
+>> +			retval = free_ind_blocks(handle, inode, i_data[i], i);
+>> +			if (retval)
+>> +				break;
+>> +		}
+>> +	}
+>>  	ext4_mark_inode_dirty(handle, inode);
+>>  
+>>  err_out:
+>> -- 
+>> 2.17.1
+>>
