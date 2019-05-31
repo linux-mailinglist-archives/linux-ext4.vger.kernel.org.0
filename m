@@ -2,206 +2,173 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3D031684
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2019 23:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5A7316B3
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2019 23:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727715AbfEaVSR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 31 May 2019 17:18:17 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:47624 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727578AbfEaVSH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 May 2019 17:18:07 -0400
-Received: by mail-io1-f72.google.com with SMTP id r27so8610411iob.14
-        for <linux-ext4@vger.kernel.org>; Fri, 31 May 2019 14:18:07 -0700 (PDT)
+        id S1726483AbfEaVn5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 31 May 2019 17:43:57 -0400
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:41584 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbfEaVn5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 May 2019 17:43:57 -0400
+Received: by mail-pf1-f181.google.com with SMTP id q17so6958302pfq.8
+        for <linux-ext4@vger.kernel.org>; Fri, 31 May 2019 14:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=OqPSb0m2mrEyE30ZZdo4WWYoY9S6C4+fBQiUIBj9XMM=;
+        b=GRMX/JJaS2Zz4zfKme+cZ34zxaVRLXg+LV9KNBEYGDks7tcNHqLjYSO6ugWrlMzC2K
+         upMwR52a0bbw2MOY9a4Ztw57hB/WinZmVNoEzGvkzqvvptzT9JYPib/gj8pEScz5M2o+
+         JxE+QOT9d7C8ha5u3SIaA/bkCDb0VN4KG09OIPi2FvK2WzniRYumewVi8qt7S3zXpUvd
+         bhRNDROpFiya3tINsed1YZ0QHyZH509ly2Xo7IysbvtgpbSBV0tzIxGMfZRIbfmb+cV3
+         vSyeIZB455c8TuV809s5UJ7422zkRlkChoVymYBo/PPqjGajMdX31Zc0E3QIZW4aayty
+         iGWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=isy/jIJwPd6VHnKckEuFUtsTDm5Rvv7z/w34KMToNWc=;
-        b=TYC5YKwezs7shAMmtgzy8Mp7QCW8c4sviMP+sn8cDUWKEM5Jj662LnsWcHnjB2vNZ+
-         GZrBdjC0+2Goqr5fLrUe3cXV+rnz93qdYpXr5i8pnqFIm818pwYbbTM+xafmFHYyd1BB
-         qPlBFXvTN8umG8EEvuZCmyNA5Kf9YAH5dFRFq1TRbc+pvkx0Qe5JmRi3KCiqcbuR469Q
-         93PLmOcbLB5B8JbnRY/aFwl+bN4KNfez3lO6rKMxD/fis+qzTwcvFGejm1xIbiPAbuYJ
-         ZJiCe12dbHEkU4N1oMFF1KVNOAidIiJxJJDeoH8ZQp+LzHcu/5Y12cvYt/75S8PycEu6
-         Sm4w==
-X-Gm-Message-State: APjAAAVBFeJ8J+lzsXoewPywgOICq4xsNVGsqK8WEocXCT3hE0VfcH3t
-        d5uLfalxBGgTV3hP8u51MYCPzoSE1/OJsS6uic80V47yc39d
-X-Google-Smtp-Source: APXvYqzEXs79XyHRPP6NMZR02QjtOzL2veFSEW7TC2XM5AukiOY+51CD5mOX15G0I/3GMFAQJrsfK7muVBs1XQoLuI/LlwsGYx34
-MIME-Version: 1.0
-X-Received: by 2002:a24:1416:: with SMTP id 22mr8613868itg.144.1559337486682;
- Fri, 31 May 2019 14:18:06 -0700 (PDT)
-Date:   Fri, 31 May 2019 14:18:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fa91e1058a358cd5@google.com>
-Subject: possible deadlock in __do_page_fault (2)
-From:   syzbot <syzbot+606e524a3ca9617cf8c0@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=OqPSb0m2mrEyE30ZZdo4WWYoY9S6C4+fBQiUIBj9XMM=;
+        b=cNCJtZfmlB5bIR3bUAcPXSDev24/z/yF8hdrmcSpXsmI+vZdgolHcAOloXxiHOEHSY
+         kdjlSCrOCi4dOoqFvQycon2+4KuR3jlpmK9Vt96YDlXhK/f5eJTlfJSo98tU5IxKVLrZ
+         wolFNgmzzkbCLobu4Qb2WuFckNKWnRWQnvfHEzBS/zl36iuHrnxxGNIkdmx6oonL4A+s
+         9OV56LtjVE/6ajcbbXj8l80rbGcJrtLJ0tEFdxq8qFSdNH2Kuu3RRh1PEYWKHwkveKIY
+         LupkZ7dkBfiYAL/ot9v8HduX0JAmUETHWIJtvKEIzcOAQjADZU+xoCqyionTecar8JH0
+         Ahcg==
+X-Gm-Message-State: APjAAAV1eluC3aTviUoUC0LOdyVW8ydyk2fSgXauEt24Bl5sMeByDnzI
+        NrImQ3htPBGPOsI/tq2hydcUTQ==
+X-Google-Smtp-Source: APXvYqzrpnTDvhFbBCT1ZHVpWDO9I83nB4xvi47VXwIkjw01QGxg8OldfbXlWJHi8qIPa5DBnggyew==
+X-Received: by 2002:a17:90a:cb10:: with SMTP id z16mr11716721pjt.81.1559339036052;
+        Fri, 31 May 2019 14:43:56 -0700 (PDT)
+Received: from cabot.adilger.ext (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id u20sm11969207pfm.145.2019.05.31.14.43.54
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 31 May 2019 14:43:55 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <FDA5DE5F-41AE-4B56-9BD7-462E344ECD1A@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_41B88020-7AB4-4155-890B-6AF2391D0737";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: How to package e2scrub
+Date:   Fri, 31 May 2019 15:43:53 -0600
+In-Reply-To: <20190531141019.GC8123@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, Lukas Czerner <lczerner@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+References: <20190529120603.xuet53xgs6ahfvpl@work>
+ <20190529235948.GB3671@mit.edu> <20190530095907.GA29237@quack2.suse.cz>
+ <20190530135155.GD2751@mit.edu> <20190531100713.GA14773@quack2.suse.cz>
+ <20190531141019.GC8123@mit.edu>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
 
-syzbot found the following crash on:
+--Apple-Mail=_41B88020-7AB4-4155-890B-6AF2391D0737
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-HEAD commit:    3c09c195 Add linux-next specific files for 20190531
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=100a5f26a00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6cfb24468280cd5c
-dashboard link: https://syzkaller.appspot.com/bug?extid=606e524a3ca9617cf8c0
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+On May 31, 2019, at 8:10 AM, Theodore Ts'o <tytso@mit.edu> wrote:
+>=20
+> On Fri, May 31, 2019 at 12:07:13PM +0200, Jan Kara wrote:
+>> On Thu 30-05-19 09:51:55, Theodore Ts'o wrote:
+>>> On Thu, May 30, 2019 at 11:59:07AM +0200, Jan Kara wrote:
+>>>> Yeah, my plan is to just not package cron bits at all since =
+openSUSE / SLES
+>>>> support only systemd init anyway these days (and in fact our distro =
+people
+>>>> want to deprecate cron in favor of systemd). I guess I'll split off =
+the
+>>>> scrub bits into a separate sub-package (likely e2fsprogs will =
+suggest
+>>>> installation of this sub-package) and the service will be disabled =
+by
+>>>> default.
+>>>=20
+>>> I'm not super-fond of extra sub-packages for their own sake, and the
+>>> extra e2scrub bits are small enough (about 32k?) that I don't =
+believe
+>>> it justifies an extra sub-package; but that's a distribution-level
+>>> packaging decision, so it's certainly fine if we're not completely =
+aligned.
+>>=20
+>> Yes, size is not a big concern but the scrub bits require util-linux, =
+lvm,
+>> and mailer to work correctly and I don't want to add these =
+dependencies to
+>> stock e2fsprogs package because some minimal installations do not =
+want e.g.
+>> lvm at all. Granted these are just scripts so I could get away with =
+not
+>> requiring e.g. lvm at all but it seems user-unfriendly to leave it up =
+to
+>> user to determine that his systemd-service fails due to missing =
+packages.
+>=20
+> So you're using an extra package to force the installation of the
+> necessary prerequisite packages, instead of the current approach where
+> we don't require them, but we just skip running the scrub if lvm and
+> util-linux are not present.  I think both approaches makes sense.
+>=20
+> It's also a good point that we need to handle the case of a missing
+> sendmail intelligently.  It looks like we currently skip sending mail
+> at all in the cron case, and in the case systemd case, we'll spew a
+> warning (which won't get mailed since there's no sendmail, but it does
+> mean some extra lines in the logfile).  All of this being said, it's
+> not _completely_ useless to scrub without an mailer; we still mark the
+> file system as needing to be checked on the next boot.  But it's
+> another argument that we shouldn't enable the service by default.
+>=20
+> For that reason, I'm not sure I'd want to force the installation of a
+> mailer, since someone might want to run e2scrub by hand, and
+> e2scrub_all every week w/o isn't a completely insane thing.  But we
+> certainly should handle that case gracefully.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+If sendmail is unavailable (and maybe even if it *is* available), =
+e2scrub
+can use logger to write a short message to syslog if there is an error.
+Something like:
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+606e524a3ca9617cf8c0@syzkaller.appspotmail.com
+    e2scrub: $device errors detected, needs offline e2fsck to correct
+    e2scrub: $device logs in /var/log/e2scrub....
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.2.0-rc2-next-20190531 #4 Not tainted
-------------------------------------------------------
-syz-executor.1/28460 is trying to acquire lock:
-000000007749dcbb (&mm->mmap_sem#2){++++}, at: do_user_addr_fault  
-arch/x86/mm/fault.c:1407 [inline]
-000000007749dcbb (&mm->mmap_sem#2){++++}, at: __do_page_fault+0x9e9/0xda0  
-arch/x86/mm/fault.c:1522
+in mark_corrupt() or from e2scrub_fail.
 
-but task is already holding lock:
-000000000005b591 (&sb->s_type->i_mutex_key#10){++++}, at: inode_trylock  
-include/linux/fs.h:798 [inline]
-000000000005b591 (&sb->s_type->i_mutex_key#10){++++}, at:  
-ext4_file_write_iter+0x246/0x1070 fs/ext4/file.c:232
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&sb->s_type->i_mutex_key#10){++++}:
-        down_write+0x38/0xa0 kernel/locking/rwsem.c:66
-        inode_lock include/linux/fs.h:778 [inline]
-        process_measurement+0x15ae/0x15e0  
-security/integrity/ima/ima_main.c:228
-        ima_file_mmap+0x11a/0x130 security/integrity/ima/ima_main.c:370
-        security_file_mprotect+0xd5/0x100 security/security.c:1430
-        do_mprotect_pkey+0x537/0xa30 mm/mprotect.c:550
-        __do_sys_pkey_mprotect mm/mprotect.c:590 [inline]
-        __se_sys_pkey_mprotect mm/mprotect.c:587 [inline]
-        __x64_sys_pkey_mprotect+0x97/0xf0 mm/mprotect.c:587
-        do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
--> #0 (&mm->mmap_sem#2){++++}:
-        lock_acquire+0x16f/0x3f0 kernel/locking/lockdep.c:4300
-        down_read+0x3f/0x1e0 kernel/locking/rwsem.c:24
-        do_user_addr_fault arch/x86/mm/fault.c:1407 [inline]
-        __do_page_fault+0x9e9/0xda0 arch/x86/mm/fault.c:1522
-        do_page_fault+0x71/0x57d arch/x86/mm/fault.c:1553
-        page_fault+0x1e/0x30 arch/x86/entry/entry_64.S:1156
-        fault_in_pages_readable include/linux/pagemap.h:600 [inline]
-        iov_iter_fault_in_readable+0x377/0x450 lib/iov_iter.c:426
-        generic_perform_write+0x186/0x520 mm/filemap.c:3197
-        __generic_file_write_iter+0x25e/0x630 mm/filemap.c:3336
-        ext4_file_write_iter+0x332/0x1070 fs/ext4/file.c:266
-        call_write_iter include/linux/fs.h:1870 [inline]
-        new_sync_write+0x4d3/0x770 fs/read_write.c:483
-        __vfs_write+0xe1/0x110 fs/read_write.c:496
-        vfs_write+0x268/0x5d0 fs/read_write.c:558
-        ksys_write+0x14f/0x290 fs/read_write.c:611
-        __do_sys_write fs/read_write.c:623 [inline]
-        __se_sys_write fs/read_write.c:620 [inline]
-        __x64_sys_write+0x73/0xb0 fs/read_write.c:620
-        do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-other info that might help us debug this:
-
-  Possible unsafe locking scenario:
-
-        CPU0                    CPU1
-        ----                    ----
-   lock(&sb->s_type->i_mutex_key#10);
-                                lock(&mm->mmap_sem#2);
-                                lock(&sb->s_type->i_mutex_key#10);
-   lock(&mm->mmap_sem#2);
-
-  *** DEADLOCK ***
-
-3 locks held by syz-executor.1/28460:
-  #0: 00000000f0dc03f3 (&f->f_pos_lock){+.+.}, at: __fdget_pos+0xee/0x110  
-fs/file.c:801
-  #1: 000000001d3176fb (sb_writers#3){.+.+}, at: file_start_write  
-include/linux/fs.h:2836 [inline]
-  #1: 000000001d3176fb (sb_writers#3){.+.+}, at: vfs_write+0x485/0x5d0  
-fs/read_write.c:557
-  #2: 000000000005b591 (&sb->s_type->i_mutex_key#10){++++}, at:  
-inode_trylock include/linux/fs.h:798 [inline]
-  #2: 000000000005b591 (&sb->s_type->i_mutex_key#10){++++}, at:  
-ext4_file_write_iter+0x246/0x1070 fs/ext4/file.c:232
-
-stack backtrace:
-CPU: 1 PID: 28460 Comm: syz-executor.1 Not tainted 5.2.0-rc2-next-20190531  
-#4
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  print_circular_bug.cold+0x1cc/0x28f kernel/locking/lockdep.c:1566
-  check_prev_add kernel/locking/lockdep.c:2311 [inline]
-  check_prevs_add kernel/locking/lockdep.c:2419 [inline]
-  validate_chain kernel/locking/lockdep.c:2801 [inline]
-  __lock_acquire+0x3755/0x5490 kernel/locking/lockdep.c:3790
-  lock_acquire+0x16f/0x3f0 kernel/locking/lockdep.c:4300
-  down_read+0x3f/0x1e0 kernel/locking/rwsem.c:24
-  do_user_addr_fault arch/x86/mm/fault.c:1407 [inline]
-  __do_page_fault+0x9e9/0xda0 arch/x86/mm/fault.c:1522
-  do_page_fault+0x71/0x57d arch/x86/mm/fault.c:1553
-  page_fault+0x1e/0x30 arch/x86/entry/entry_64.S:1156
-RIP: 0010:fault_in_pages_readable include/linux/pagemap.h:600 [inline]
-RIP: 0010:iov_iter_fault_in_readable+0x377/0x450 lib/iov_iter.c:426
-Code: 89 f6 41 88 57 e0 e8 48 e5 3c fe 45 85 f6 74 c1 e9 70 fe ff ff e8 b9  
-e3 3c fe 0f 1f 00 0f ae e8 44 89 f0 48 8b 8d 68 ff ff ff <8a> 11 89 c3 0f  
-1f 00 41 88 57 d0 31 ff 89 de e8 15 e5 3c fe 85 db
-RSP: 0018:ffff88803dde7918 EFLAGS: 00010212
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000002008a17f
-RDX: 000000000003eb3f RSI: ffffffff833406b7 RDI: 0000000000000007
-RBP: ffff88803dde79b8 R08: ffff8880a83d03c0 R09: 0000000000000004
-R10: ffffed1015d26be7 R11: ffff8880ae935f3b R12: 0000000000001000
-R13: 0000000000001000 R14: 0000000000000000 R15: ffff88803dde7990
-  generic_perform_write+0x186/0x520 mm/filemap.c:3197
-  __generic_file_write_iter+0x25e/0x630 mm/filemap.c:3336
-  ext4_file_write_iter+0x332/0x1070 fs/ext4/file.c:266
-  call_write_iter include/linux/fs.h:1870 [inline]
-  new_sync_write+0x4d3/0x770 fs/read_write.c:483
-  __vfs_write+0xe1/0x110 fs/read_write.c:496
-  vfs_write+0x268/0x5d0 fs/read_write.c:558
-  ksys_write+0x14f/0x290 fs/read_write.c:611
-  __do_sys_write fs/read_write.c:623 [inline]
-  __se_sys_write fs/read_write.c:620 [inline]
-  __x64_sys_write+0x73/0xb0 fs/read_write.c:620
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x459279
-Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f506babec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459279
-RDX: 00000000fffffcad RSI: 0000000020000180 RDI: 0000000000000004
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f506babf6d4
-R13: 00000000004c8838 R14: 00000000004df120 R15: 00000000ffffffff
+Cheers, Andreas
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+
+
+--Apple-Mail=_41B88020-7AB4-4155-890B-6AF2391D0737
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAlzxoBkACgkQcqXauRfM
+H+Cyrw/8ClmvfJvUmZcQY1hR2YHksW6R2IqvieYmQ9GO69AkV7UenqOh2y44GSDA
+SDf5uweb3+M6NMhlJlaH8AD7uGBt7EY3sm1LR3jyyMLw3aNibdM13y24I4gilGzc
+KTQWECwbjFiiz7AUOnN+EBD4u2OHljmaS9o0+UUaGM1t5+LnWM3clUB4jLwDHntp
+9AVQaoh322mxIHgjUX+xOthnmk6MvjLH+iPJwrdlh2xZpm1ALKb6QE5yBYlhqNBs
+OoRpK0yb2VFi6TssA8cokh6BRcvct39a0Mf6gw0Zjlywuk0bM6nkEUN9bcI75Jj3
+qlcGf+iF2RrJeVsUNT8q/b5AjsfIfN5wuhNWErBvQ8L30O0nXIXjpBuEE+CJfAkn
+r/z5L+zyb/YYXE4mjePoI1jPS9Jk/5I26g6LWFR6tNRzhRyCV3VYPw3BFfyeMCWf
+g1zC0B8IVXWEywkWFBFd88+Ms096ZsDrFf/P5Le0pV/T7HLzlducguKiu4+biwa5
+sBlsw2r2yM83Xinx9D7NsTNZqdGX7tSHuAXpSrrzDFZqXR2XeL4dv7t1FLRJzyog
+ynsl3hgrnuNBXc8/YnIFf6Q6KadCe0camQH30caxxjt7hu2soIGE/iSBl9porBZ8
+lAGeSGxaL+1EedGLHwUM6zT5485ADAvUfuK1bA2RYYUsGAglJg4=
+=DBie
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_41B88020-7AB4-4155-890B-6AF2391D0737--
