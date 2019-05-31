@@ -2,84 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E64230FAC
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2019 16:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057153112E
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2019 17:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbfEaOLh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 31 May 2019 10:11:37 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53830 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726386AbfEaOLh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 May 2019 10:11:37 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4VEAJWw020207
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 31 May 2019 10:10:20 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id C20DD420481; Fri, 31 May 2019 10:10:19 -0400 (EDT)
-Date:   Fri, 31 May 2019 10:10:19 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.com>
-Subject: Re: How to package e2scrub
-Message-ID: <20190531141019.GC8123@mit.edu>
-References: <20190529120603.xuet53xgs6ahfvpl@work>
- <20190529235948.GB3671@mit.edu>
- <20190530095907.GA29237@quack2.suse.cz>
- <20190530135155.GD2751@mit.edu>
- <20190531100713.GA14773@quack2.suse.cz>
+        id S1726818AbfEaPV5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 31 May 2019 11:21:57 -0400
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:33810 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726531AbfEaPV5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 May 2019 11:21:57 -0400
+Received: by mail-yw1-f68.google.com with SMTP id n76so4287627ywd.1;
+        Fri, 31 May 2019 08:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hVB+3wva8lYYaR85t5N42o/6t3+e71DhQnwd4VnHZ2s=;
+        b=cauG1fiQiQ8aQQCenQLcHSPvx0I4gcwkiAsElwldIFkEwXd6bYpDga4KE1UvqPxFYC
+         C8/0vrf8SnlO5U59qZrpnpGjhw5zk8B7tlhZVZRPNe5eBn8+dsEMlymmRjxE6XAUo8Rw
+         89R6HOiMiLK/x6SZZLku+9dBLsBrO0EkuRiGBtzTpuZ9T8+dsuYh+F8koLzFKFj9gxLV
+         rSNEGiJfEK1+a7Ch9m7iB8v80YQyb7g3nwL86B6ImAWB8wkibU6jLHFhJZt0rhlwAYfe
+         VZa78TlWWnngrFEhPzRJrqciRm+n6AvzQdvQckUGzVxmq3lL+wpgUSSQAn2bGqKQRwEe
+         t82w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hVB+3wva8lYYaR85t5N42o/6t3+e71DhQnwd4VnHZ2s=;
+        b=H72TB05u5pYQneDC07Bvl1/fvkhke8w1+dqcJa64WBg0Z8uD5Lghd1F8qIXdRT1LAa
+         gZr20WdGv184b0Ce6F8v/+Jd5BdfkHzvFgStUUyIIfwf7Y+7E5L1JYtvQ9m9V3iALTFh
+         YSU7sF/1el3tnswVj8A7Pz10vgysfL604fif/owBMaBTOSpMg12Z+a0os9UX9xu+0A3o
+         EG63JExlaaA821n1v1nDzvfg0508CSIG4jmEH9ebOTTmefIDCeN6NnmklOQtxv2mepYu
+         0AhtpjetvZMRooUgAnRhWOlP+kThhPF0PXZvWHrpHogXR8zDdaXTWIuy87TA6wzNbUe5
+         8MjQ==
+X-Gm-Message-State: APjAAAXgALxsnD6DPRzB7h+wj8Uxl77P20VpCdsUL8Fq9MyJiSHu/M+I
+        AhM00izP88U5skJjcgOoXSIv3lJqjEN/QH1aYtA=
+X-Google-Smtp-Source: APXvYqzweoHJN024aJFPsVRMFJeZ7erwv8ogr3cR1VHrvMTSMSfOoUXoORxVBwUVuv3Wftm9yea1zNU3KdGTZeHMwbg=
+X-Received: by 2002:a81:7096:: with SMTP id l144mr6198986ywc.294.1559316116397;
+ Fri, 31 May 2019 08:21:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190531100713.GA14773@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190527172655.9287-1-amir73il@gmail.com> <20190528202659.GA12412@mit.edu>
+ <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 31 May 2019 18:21:45 +0300
+Message-ID: <CAOQ4uxgj94WR82iHE4PDGSD0UDxG5sCtr+Sv+t1sOHHmnXFYzQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <david@fromorbit.com>, Chris Mason <clm@fb.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 31, 2019 at 12:07:13PM +0200, Jan Kara wrote:
-> On Thu 30-05-19 09:51:55, Theodore Ts'o wrote:
-> > On Thu, May 30, 2019 at 11:59:07AM +0200, Jan Kara wrote:
-> > > Yeah, my plan is to just not package cron bits at all since openSUSE / SLES
-> > > support only systemd init anyway these days (and in fact our distro people
-> > > want to deprecate cron in favor of systemd). I guess I'll split off the
-> > > scrub bits into a separate sub-package (likely e2fsprogs will suggest
-> > > installation of this sub-package) and the service will be disabled by
-> > > default.
-> > 
-> > I'm not super-fond of extra sub-packages for their own sake, and the
-> > extra e2scrub bits are small enough (about 32k?) that I don't believe
-> > it justifies an extra sub-package; but that's a distribution-level
-> > packaging decision, so it's certainly fine if we're not completely aligned.
-> 
-> Yes, size is not a big concern but the scrub bits require util-linux, lvm,
-> and mailer to work correctly and I don't want to add these dependencies to
-> stock e2fsprogs package because some minimal installations do not want e.g.
-> lvm at all. Granted these are just scripts so I could get away with not
-> requiring e.g. lvm at all but it seems user-unfriendly to leave it up to
-> user to determine that his systemd-service fails due to missing packages.
+> >
+> > So instead of saying "A filesystem that accepts this flag will
+> > guaranty, that old inode data will not be exposed in the new linked
+> > name."  It's much clearer to state this in the affirmative:
+> >
+> >         A filesystem which accepts this flag will guarantee that if
+> >         the new pathname exists after a crash, all of the data written
+> >         to the file at the time of the linkat(2) call will be visible.
+> >
+>
+> Sounds good to me. I will take a swing at another patch.
+>
 
-So you're using an extra package to force the installation of the
-necessary prerequisite packages, instead of the current approach where
-we don't require them, but we just skip running the scrub if lvm and
-util-linux are not present.  I think both approaches makes sense.
+So I am down to single flag documented with 3 tweets ;-)
 
-It's also a good point that we need to handle the case of a missing
-sendmail intelligently.  It looks like we currently skip sending mail
-at all in the cron case, and in the case systemd case, we'll spew a
-warning (which won't get mailed since there's no sendmail, but it does
-mean some extra lines in the logfile).  All of this being said, it's
-not _completely_ useless to scrub without an mailer; we still mark the
-file system as needing to be checked on the next boot.  But it's
-another argument that we shouldn't enable the service by default.
+What do you think of:
 
-For that reason, I'm not sure I'd want to force the installation of a
-mailer, since someone might want to run e2scrub by hand, and
-e2scrub_all every week w/o isn't a completely insane thing.  But we
-certainly should handle that case gracefully.
+"AT_ATOMIC_DATA (since Linux 5.x)
+A filesystem which accepts this flag will guarantee that if the linked file
+name exists after a system crash, then all of the data written to the file
+and all of the file's metadata at the time of the linkat(2) call will be
+visible.
 
-     	     	      	      		- Ted
+The way to achieve this guarantee on old kernels is to call fsync (2)
+before linking the file, but doing so will also results in flushing of
+volatile disk caches.
+
+A filesystem which accepts this flag does NOT
+guarantee that any of the file hardlinks will exist after a system crash,
+nor that the last observed value of st_nlink (see stat (2)) will persist."
+
+
+Thanks,
+Amir.
