@@ -2,111 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 204ED313B4
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2019 19:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39392314A1
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2019 20:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbfEaRWT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 31 May 2019 13:22:19 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:46243 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbfEaRWT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 May 2019 13:22:19 -0400
-Received: by mail-yb1-f194.google.com with SMTP id p8so3812873ybo.13;
-        Fri, 31 May 2019 10:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QHZuXAv9RV6nMzfrTXtRIJSW9h335fj0yWw3txPwqfY=;
-        b=j++pochL7pXVLsGaoWRuDYI3pTo6sjXULgmG5F82dJl8z3Vr2FQa5m+gmV/CKurquK
-         rfPSoas+McnMH5y0BdJLMI31vAVsJ+etJTSP+7+9ZVW6+KHy7bsTsb2g7VoHsIKJUGTe
-         AMemqMqz+x4fNVC+ozw202Q7xgbgUFZuIRy8Pb8rOgQ6DeH+6obAzUvQvJd0hEn0bRiz
-         Zn6yP6WaWDcHj638zteTnm5vsCzVcmYuDmdYIpHCbNnH/GBXpO17i7ee06Ah5KNAFQlQ
-         7VLRVGEXgiurPryMNoB5I6GtCljWlDKNskLxRum5sRlzeQbH5GdiqmpGCPFvxYuukOQT
-         zecQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QHZuXAv9RV6nMzfrTXtRIJSW9h335fj0yWw3txPwqfY=;
-        b=XXIsDiG6ikDOLljtWlFB6NpiAD45Neeplv/ARc7Zb59DrQUmgJJDwvAewuVMVw7sXw
-         tmxi6PqwDQGAlsuuywjc6bMVPCyb7TnGfK/teYyfeqX6QwcjEGPxpMVLjTPwJfTB61n4
-         QZZG5tqRLU9CaGylJcTCFQLOc4KHWIMISj1NfYUX94LCVYGOCDTBQm1+6dTUAbGZvhwM
-         AacnQIX9xHInL9gYMRMQSOgZbWT8dIDDXvD9Sj4Sa+oAv9W7pv1yRoX1LyVM72qPFr0S
-         mp7W7aLtfb/+eU/il5GENlMSvoc5bmepEib9RLnPtz/MWQ6M7Na/a0mklRDuThvD4t2W
-         k2mw==
-X-Gm-Message-State: APjAAAViIO0dumVfHQXEuPLLB0HQup1NkITC3akhB22HfOx0jP7nlm6y
-        tp7yP4VccmIO8c1tPt2A9At5P6RwdkHvuQkLa787dYwf
-X-Google-Smtp-Source: APXvYqyb7ZGEmSQufUFHFc2hhMicBtacsy9sHfewm3MYn7xKT3f5qFhup6r5dW9Ww4PhnJdWlED4fXrkI7ndW2uIJSw=
-X-Received: by 2002:a25:4489:: with SMTP id r131mr5400286yba.14.1559323338223;
- Fri, 31 May 2019 10:22:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190527172655.9287-1-amir73il@gmail.com> <20190528202659.GA12412@mit.edu>
- <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
- <CAOQ4uxgj94WR82iHE4PDGSD0UDxG5sCtr+Sv+t1sOHHmnXFYzQ@mail.gmail.com> <20190531164136.GA3066@mit.edu>
-In-Reply-To: <20190531164136.GA3066@mit.edu>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 31 May 2019 20:22:06 +0300
-Message-ID: <CAOQ4uxjp5psDBLXBu+26xRLpV50txqksVFe6ZhUo0io8kgoH4A@mail.gmail.com>
-Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
+        id S1726985AbfEaS3J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 31 May 2019 14:29:09 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41702 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726640AbfEaS3I (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 May 2019 14:29:08 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 7056B261164
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
 To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>, Chris Mason <clm@fb.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH] ext4: Optimize case-insensitive lookups
+Organization: Collabora
+References: <20190529185446.22757-1-krisman@collabora.com>
+        <20190530210156.GI2998@mit.edu>
+Date:   Fri, 31 May 2019 14:29:04 -0400
+In-Reply-To: <20190530210156.GI2998@mit.edu> (Theodore Ts'o's message of "Thu,
+        30 May 2019 17:01:56 -0400")
+Message-ID: <851s0eiikv.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 31, 2019 at 7:41 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Fri, May 31, 2019 at 06:21:45PM +0300, Amir Goldstein wrote:
-> > What do you think of:
-> >
-> > "AT_ATOMIC_DATA (since Linux 5.x)
-> > A filesystem which accepts this flag will guarantee that if the linked file
-> > name exists after a system crash, then all of the data written to the file
-> > and all of the file's metadata at the time of the linkat(2) call will be
-> > visible.
->
-> ".... will be visible after the the file system is remounted".  (Never
-> hurts to be explicit.)
->
-> > The way to achieve this guarantee on old kernels is to call fsync (2)
-> > before linking the file, but doing so will also results in flushing of
-> > volatile disk caches.
-> >
-> > A filesystem which accepts this flag does NOT
-> > guarantee that any of the file hardlinks will exist after a system crash,
-> > nor that the last observed value of st_nlink (see stat (2)) will persist."
-> >
->
-> This is I think more precise:
->
->     This guarantee can be achieved by calling fsync(2) before linking
->     the file, but there may be more performant ways to provide these
->     semantics.  In particular, note that the use of the AT_ATOMIC_DATA
->     flag does *not* guarantee that the new link created by linkat(2)
->     will be persisted after a crash.
+"Theodore Ts'o" <tytso@mit.edu> writes:
 
-OK. Just to be clear, mentioning hardlinks and st_link is not needed
-in your opinion?
+> On Wed, May 29, 2019 at 02:54:46PM -0400, Gabriel Krisman Bertazi wrote:
+>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>> index c18ab748d20d..e3809cfda9f4 100644
+>> --- a/fs/ext4/ext4.h
+>> +++ b/fs/ext4/ext4.h
+>> @@ -2078,6 +2078,10 @@ struct ext4_filename {
+>>  #ifdef CONFIG_FS_ENCRYPTION
+>>  	struct fscrypt_str crypto_buf;
+>>  #endif
+>> +#ifdef CONFIG_UNICODE
+>> +	int cf_len;
+>> +	unsigned char cf_name[EXT4_NAME_LEN];
+>> +#endif
+>>  };
+>>  
+>>  #define fname_name(p) ((p)->disk_name.name)
+>
+> EXT4_NAME_LEN is 256, and struct ext4_filename is allocated on the
+> stack.  So this is going to increase the stack usage by 258 bytes.
+> Perhaps should we just kmalloc the temporary buffer when it's needed?
+
+I wanted to avoid adding an allocation to this path, but maybe that was
+misguided, since this is out of the dcache critical path.  I also wanted
+to remove the allocation from d_hash, but we'd require a similar size
+allocation in the stack. Is that a good idea?
+
+> The other thing that this patch reminds me is that there is great
+> interest in supporting case folded directories and fscrypt at the same
+> time.  Today fscrypt works by encrypting the filename, and stashes it
+> in fname->crypto_buf, and this allows for a byte-for-byte comparison
+> of the encrypted name.  To support fscrypt && casefold, what we would
+> need to do is to change the htree hash so that the hash is caluclated
+> on the normalized form, and then we'll have to decrypt each filename
+> in the directory block and then compare it against the normalized form
+> that stashed in cf_name.  So that means we'll never need to allocate
+> memory for cf_name and crypto_buf at the same time.
+
+fscrypt and case-insensitive is getting to the top of my to-do list,
+i'll something there early next week.  Thanks for the explanation on
+it.
 
 >
-> We should also document that a file system which does not implement
-> this flag MUST return EINVAL if it is passed this flag to linkat(2).
+> We can also use struct fscrypt_str for cf_name; it's defined as a
+> combined unsighed char *name and u32 len.  We already use fscrypt_str
+> even the !CONFIG_FS_ENCRYPTION case, since it's a convenient way of
+> handling a non-NULL terminated filename blob.  And this will hopefully
+> make it simpler to deal with integrating casefolding and fscrypt in
+> the future.
+
+I will send a v2 with this change already, to simplify
+fscrypt+casefolding support.
 >
+> Cheers,
+>
+> 					- Ted
 
-OK. I think this part can be documented as possible reason for EINVAL
-As in renameat(2) man page:
-       EINVAL The filesystem does not support one of the flags in flags.
-
-Thanks,
-Amir.
+-- 
+Gabriel Krisman Bertazi
