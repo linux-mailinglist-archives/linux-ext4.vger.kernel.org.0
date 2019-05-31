@@ -2,176 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7620D316B8
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2019 23:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86961317D4
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Jun 2019 01:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbfEaVq5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 31 May 2019 17:46:57 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:39305 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726649AbfEaVq5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 May 2019 17:46:57 -0400
-Received: by mail-pg1-f196.google.com with SMTP id 196so4740210pgc.6
-        for <linux-ext4@vger.kernel.org>; Fri, 31 May 2019 14:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=oLThzkzBE2yZ99mGcWuJK1ZVpwpz5C/kqr251y2sc5U=;
-        b=jvPgk2ZIUMRQExsCU/xVThBINbgLItegNCTr14Bwj9bXzZTd+sxBkOBlHeZ1pqF6h3
-         Rgn7FhhnTPMikxXNXimI3e5sb9DeJgJ7+da/ClkBc1Uw4n1W+rpToIeN+8EQVND+Stwg
-         FoFM6+ffKSxOiNRuliKxzTQXyKR2md5yF8gz8uyGcX7tPyzVjgdOIEpXNa4DPV3in126
-         1bv21pd82SYzX5WmrOEeVE/sSHKnWq0eIXWt1a+hHa4UCQTKtGnRGKDS9F+dpN9VAxW4
-         vFr5ZzTTGZmobDrHpDS7piT2f3jqv6id8KCJMX+a5ldeIu2On9UGHn4bj8dC+kzNcAxI
-         y7sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=oLThzkzBE2yZ99mGcWuJK1ZVpwpz5C/kqr251y2sc5U=;
-        b=E3NOA/7MJSHV2cwDlZUpy0M1TO0l9QzWv8sN59rzLwbfNLr6lbU54Fi4MXZaAxCXbo
-         +nScmy/ueLBcBIfzRJpVyxrvNnesP7ioe6jYgeBbssi2F1bMQIu7vdfatLwAuIxTz7ED
-         7CGhLGtUxIIic2Yd4AXI1nxtZaF+uodG834y7JFDZR9i+TYYG1CbHPMxlniugWeq54x9
-         PMLfTZBHU8wDpIVEDoJe9Zuj1A3e6GpcL/12L/CPbQFIiM/azb5Kx8NpKJI9QS4cKPZy
-         1frTDqEOiKbMU+RxrV5e3vhQLNnYr0+wLHAw4VBdxJ3RKEjwM1mTYrYLGBnZoBg9E5ib
-         ZT+w==
-X-Gm-Message-State: APjAAAV90j+p9SXy5NJ9bbvr/3R89uc3p1PBmLYRsXQlRdrMYP3hgo40
-        CldUbyeAbTGXqhGEXX81uVKhGA==
-X-Google-Smtp-Source: APXvYqze/KHV5sj0rVoXVCpynupdbutBmIihHj//q8lnOWHCXog0QcdlmYHafD9Qj0+l/cbmhDknhg==
-X-Received: by 2002:aa7:9212:: with SMTP id 18mr12976936pfo.120.1559339216612;
-        Fri, 31 May 2019 14:46:56 -0700 (PDT)
-Received: from cabot.adilger.ext (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id c9sm6166899pje.3.2019.05.31.14.46.55
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 31 May 2019 14:46:55 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <01FB1966-0466-4AB2-913B-F53E8CA816BE@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_16DD8B08-042F-434D-9811-EE0461B6A933";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: remove unnecessary gotos in ext4_xattr_set_entry
-Date:   Fri, 31 May 2019 15:46:54 -0600
-In-Reply-To: <20190531121016.11727-1-ptikhomirov@virtuozzo.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-References: <20190531121016.11727-1-ptikhomirov@virtuozzo.com>
-X-Mailer: Apple Mail (2.3273)
+        id S1726816AbfEaXSn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 31 May 2019 19:18:43 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:58225 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726804AbfEaXSm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 31 May 2019 19:18:42 -0400
+X-Greylist: delayed 1966 seconds by postgrey-1.27 at vger.kernel.org; Fri, 31 May 2019 19:18:40 EDT
+Received: from dread.disaster.area (pa49-180-144-61.pa.nsw.optusnet.com.au [49.180.144.61])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id C77533DCAFB;
+        Sat,  1 Jun 2019 08:45:50 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hWqHV-0000lu-7s; Sat, 01 Jun 2019 08:45:49 +1000
+Date:   Sat, 1 Jun 2019 08:45:49 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Chris Mason <clm@fb.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
+Message-ID: <20190531224549.GF29573@dread.disaster.area>
+References: <20190527172655.9287-1-amir73il@gmail.com>
+ <20190528202659.GA12412@mit.edu>
+ <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
+ <CAOQ4uxgj94WR82iHE4PDGSD0UDxG5sCtr+Sv+t1sOHHmnXFYzQ@mail.gmail.com>
+ <20190531164136.GA3066@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190531164136.GA3066@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0 cx=a_idp_d
+        a=8RU0RCro9O0HS2ezTvitPg==:117 a=8RU0RCro9O0HS2ezTvitPg==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
+        a=7-415B0cAAAA:8 a=zFZ6myeN1Ekg2b9OktAA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Fri, May 31, 2019 at 12:41:36PM -0400, Theodore Ts'o wrote:
+> On Fri, May 31, 2019 at 06:21:45PM +0300, Amir Goldstein wrote:
+> > What do you think of:
+> > 
+> > "AT_ATOMIC_DATA (since Linux 5.x)
+> > A filesystem which accepts this flag will guarantee that if the linked file
+> > name exists after a system crash, then all of the data written to the file
+> > and all of the file's metadata at the time of the linkat(2) call will be
+> > visible.
+> 
+> ".... will be visible after the the file system is remounted".  (Never
+> hurts to be explicit.)
+> 
+> > The way to achieve this guarantee on old kernels is to call fsync (2)
+> > before linking the file, but doing so will also results in flushing of
+> > volatile disk caches.
+> >
+> > A filesystem which accepts this flag does NOT
+> > guarantee that any of the file hardlinks will exist after a system crash,
+> > nor that the last observed value of st_nlink (see stat (2)) will persist."
+> > 
+> 
+> This is I think more precise:
+> 
+>     This guarantee can be achieved by calling fsync(2) before linking
+>     the file, but there may be more performant ways to provide these
+>     semantics.  In particular, note that the use of the AT_ATOMIC_DATA
+>     flag does *not* guarantee that the new link created by linkat(2)
+>     will be persisted after a crash.
 
---Apple-Mail=_16DD8B08-042F-434D-9811-EE0461B6A933
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+So here's the *implementation* problem I see with this definition of
+AT_ATOMIC_DATA. After linkat(dirfd, name, AT_ATOMIC_DATA), there is
+no guarantee that the data is on disk or that the link is present.
 
-On May 31, 2019, at 6:10 AM, Pavel Tikhomirov =
-<ptikhomirov@virtuozzo.com> wrote:
->=20
-> In the "out" label we only iput old/new_ea_inode-s, in all these =
-places
-> these variables are always NULL so there is no point in goto to "out".
->=20
-> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+However:
 
-I'm not a fan of changes like this, since it adds potential =
-complexity/bugs
-if the error handling path is changed in the future.  That is one of the =
-major
-benefits of the "goto out_*" model of error handling is that you only =
-need to
-add one new label to the end of the function when some new state is =
-added that
-needs to be cleaned up, compared to having to check each individual =
-error to
-see if something needs to be cleaned up.
+	linkat(dirfd, name, AT_ATOMIC_DATA);
+	fsync(dirfd);
 
-Cheers, Andreas
+Suddenly changes all that.
 
-> ---
-> fs/ext4/xattr.c | 9 +++------
-> 1 file changed, 3 insertions(+), 6 deletions(-)
->=20
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 491f9ee4040e..ac2ddd4446b3 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -1601,8 +1601,7 @@ static int ext4_xattr_set_entry(struct =
-ext4_xattr_info *i,
-> 		next =3D EXT4_XATTR_NEXT(last);
-> 		if ((void *)next >=3D s->end) {
-> 			EXT4_ERROR_INODE(inode, "corrupted xattr =
-entries");
-> -			ret =3D -EFSCORRUPTED;
-> -			goto out;
-> +			return -EFSCORRUPTED;
-> 		}
-> 		if (!last->e_value_inum && last->e_value_size) {
-> 			size_t offs =3D le16_to_cpu(last->e_value_offs);
-> @@ -1620,8 +1619,7 @@ static int ext4_xattr_set_entry(struct =
-ext4_xattr_info *i,
-> 			free +=3D EXT4_XATTR_LEN(name_len) + old_size;
->=20
-> 		if (free < EXT4_XATTR_LEN(name_len) + new_size) {
-> -			ret =3D -ENOSPC;
-> -			goto out;
-> +			return -ENOSPC;
-> 		}
->=20
-> 		/*
-> @@ -1634,8 +1632,7 @@ static int ext4_xattr_set_entry(struct =
-ext4_xattr_info *i,
-> 		    new_size && is_block &&
-> 		    (min_offs + old_size - new_size) <
-> 					EXT4_XATTR_BLOCK_RESERVE(inode)) =
-{
-> -			ret =3D -ENOSPC;
-> -			goto out;
-> +			return -ENOSPC;
-> 		}
-> 	}
->=20
-> --
-> 2.20.1
->=20
+i.e. when we fsync(dirfd) we guarantee that "name" is present in the
+directory and because we used AT_ATOMIC_DATA it implies that the
+data pointed to by "name" must be present on disk. IOWs, what was
+once a pure directory sync operation now *must* fsync all the child
+inodes that have been linkat(AT_ATOMIC_DATA) since the last time the
+direct has been made stable. 
 
+IOWs, the described AT_ATOMIC_DATA "we don't have to write the data
+during linkat() go-fast-get-out-of-gaol-free" behaviour isn't worth
+the pixels it is written on - it just moves all the complexity to
+directory fsync, and that's /already/ a behavioural minefield.
 
-Cheers, Andreas
+IMO, the "work-around" of forcing filesystems to write back
+destination inodes during a link() operation is just nasty and will
+just end up with really weird performance anomalies occurring in
+production systems. That's not really a solution, either, especially
+as it is far, far faster for applications to use AIO_FSYNC and then
+on the completion callback run a normal linkat() operation...
 
+Hence, if I've understood these correctly, then I'll be recommending
+that XFS follows this:
 
+> We should also document that a file system which does not implement
+> this flag MUST return EINVAL if it is passed this flag to linkat(2).
 
+and returns -EINVAL to these flags because we do not have the change
+tracking infrastructure to handle these directory fsync semantics.
+I also suspect that, even if we could track this efficiently, we
+can't do the flushing atomically because of locking order
+constraints between directories, regular files, pages in the page
+cache, etc.
 
+Given that we can already use AIO to provide this sort of ordering,
+and AIO is vastly faster than synchronous IO, I don't see any point
+in adding complex barrier interfaces that can be /easily implemented
+in userspace/ using existing AIO primitives. You should start
+thinking about expanding libaio with stuff like
+"link_after_fdatasync()" and suddenly the whole problem of
+filesystem data vs metadata ordering goes away because the
+application directly controls all ordering without blocking and
+doesn't need to care what the filesystem under it does....
 
+Cheers,
 
---Apple-Mail=_16DD8B08-042F-434D-9811-EE0461B6A933
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAlzxoM4ACgkQcqXauRfM
-H+ANJhAAodfLf6tuPqM2yx/F5U3yyHxxq5g+PUeL+KT17j09lpJqBVlsgNNjzCDX
-ENDLhPndZZugNwMlz2XxZOzH/2OIsHSeeWKU/RfH+x/5KYtMraeM6nC9yZanH2zq
-xzeNQHnCQmg2IVPf9Qo7IaLiAHs3KVzKEBIGJj7SHDYHeif+Yb3m5Bw/s4NJbu36
-m5DiPktWEUk0KJ0VH5cbNvSy90mR4GX6XrQVfhJj+MOwUeD07pMlUxdcpOj9iZ3a
-FTWDRWETzlpYin8gAsZB3e9pgtSlCkttWj5WtGV07Wt/R3MBxa9k33F+iH2DcofC
-ymZ2tvoT4yPmpZtJTDy/iojOKVenlc9CyxwJ12qJub/zXi/xCDaszGOcMtHx7pPO
-kHQUHqVSkbPrHUmm+NwHRULtmvjmNpkKQCfOXdywWtZL6wBJN38rAGjBX23itbX0
-ZFXDN/o/I9O2l95DliOVLRurD7c2K4c8HUkL2Q7SlcLj6TI81OiltclnxOqOYZib
-Wohb+5ZmQANpfD7b5ffw3+P2uPGlXwD3Ia2RKoI1vs5c7IgXuVxO7l83cX4GNzit
-OHhlSAG3olDXcLIGgs/jxOyc9A8/zjY/PK8elNoG2wScjGNw44+GJkDjuqbeJGng
-XWMc8ELyzpa6xJV76EunFcoCqjzQ/dj9zhzygOXI/Q5/8bNUz3k=
-=mP8+
------END PGP SIGNATURE-----
-
---Apple-Mail=_16DD8B08-042F-434D-9811-EE0461B6A933--
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
