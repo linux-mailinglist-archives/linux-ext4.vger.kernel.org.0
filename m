@@ -2,130 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1A532258
-	for <lists+linux-ext4@lfdr.de>; Sun,  2 Jun 2019 09:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB1C3227A
+	for <lists+linux-ext4@lfdr.de>; Sun,  2 Jun 2019 09:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726649AbfFBHIy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 2 Jun 2019 03:08:54 -0400
-Received: from mail-yw1-f42.google.com ([209.85.161.42]:37425 "EHLO
-        mail-yw1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbfFBHIy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 2 Jun 2019 03:08:54 -0400
-Received: by mail-yw1-f42.google.com with SMTP id 186so6036514ywo.4;
-        Sun, 02 Jun 2019 00:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X84XQkIIhbzI/1DrC38YNb+tCYYcuI5s2GMEjO0K2to=;
-        b=OxNu1MMI2QkEm+n3L6Rbku4wAiO2MmO64eCgYg81FhnHH/YrXNPeP2g/U5UjYP8ffD
-         sxO3+I8wVG1Up1X/yvP0tXl0kK21lQIYxtspWDCVgOlgNd+6i8mft1A3d5CeLOz6ZHH3
-         TdGWpP+FvpTBtoeFPRYLPk/FUTJ3mFPvMD/E1zRnssiooScmuumrV0nTxyUHi1d0mM4P
-         MjmWvDRfD8Zsnaym5+bzrjN+YP09IPdwGU5Se/IEdoAi0KnRZd0h5CkSz+c2ih9i8FuZ
-         0Om86L5wMFq+adq6ZO2HwfaPmIHDbV3E040eOSrsPwoxpF4LEh4d8MqKo71vdM0329B7
-         egCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X84XQkIIhbzI/1DrC38YNb+tCYYcuI5s2GMEjO0K2to=;
-        b=h3Kr4WoeFD6ycf3PLHYG9T9R6x9WWK2ouxsBelEtMxkYJCHXdR01rbo5tvA5XbgTRx
-         8jqyMKG6VVpVuic299EwLpcSkbqV9ETWFGeLDtW6BNFLleQjEs4NCBBYcnIaLX33CipM
-         negRY8TSTpKBH1HM+sMuweIxyXXoI6mMEqicVs4/QdqIQRreBWbRfxFcefiEjP7hS6uk
-         kgDwFpzvnWvBLvgfkXaeENxuuUMKmB7ANT54PqICpbCQ1+TwYJ9AaJL2+NoL16TPb9nq
-         1Fj0GFw+009OjncIEx3IBuo7sxncJLCSiI97jptmZgbj5xOPhM4L0aQGkcHM7gN7+mLk
-         d6Pg==
-X-Gm-Message-State: APjAAAUVJ14zEXsKtMRohkmJ6d+5WK6jG1A1CNN/MOAra6OPF1zbFAOD
-        Qav+/8VxnGMLTpdgr1mGt0kVceQavOnIlY6wVzk=
-X-Google-Smtp-Source: APXvYqxc5K/+oFNG6Dgba9/QmX9G0xdErSwsOyQfQGXHLb2n5OaNmAowf5jl/7CUMBNGLhJ90VbKp2NUAoQEm05wySk=
-X-Received: by 2002:a81:3956:: with SMTP id g83mr10411312ywa.183.1559457785607;
- Sat, 01 Jun 2019 23:43:05 -0700 (PDT)
+        id S1726124AbfFBHfK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 2 Jun 2019 03:35:10 -0400
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:45621 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725875AbfFBHfJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 2 Jun 2019 03:35:09 -0400
+Received: from c-73-193-85-113.hsd1.wa.comcast.net ([73.193.85.113] helo=srivatsab-a01.vmware.com)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1hXKXo-000XZY-I5; Sun, 02 Jun 2019 03:04:40 -0400
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+ <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+ <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
+ <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+ <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+ <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+ <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
+ <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
+ <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
+ <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
+ <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
+ <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
+ <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
+ <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
+ <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
+ <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
+ <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Message-ID: <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
+Date:   Sun, 2 Jun 2019 00:04:34 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <CAH2+hP4Q3i4LdKL2Cz=1uWq0+JSD1RnzcdmicDtCeqEUqLo+hg@mail.gmail.com>
-In-Reply-To: <CAH2+hP4Q3i4LdKL2Cz=1uWq0+JSD1RnzcdmicDtCeqEUqLo+hg@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sun, 2 Jun 2019 09:42:54 +0300
-Message-ID: <CAOQ4uxgPXBazE-g2v=T_vOvnr_f0ZHyKYZ4wvn7A3ePatZrhnQ@mail.gmail.com>
-Subject: Re: which lower filesystems are actually supported?
-To:     Marco Nelissen <marco.nelissen@gmail.com>
-Cc:     overlayfs <linux-unionfs@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>, Theodore Tso <tytso@mit.edu>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[+cc ext4] Heads up on bug reports "Overlayfs fails to mount with ext4"
+On 5/30/19 3:45 AM, Paolo Valente wrote:
+> 
+> 
+>> Il giorno 30 mag 2019, alle ore 10:29, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
+>>
+[...]
+>>
+>> Your fix held up well under my testing :)
+>>
+> 
+> Great!
+> 
+>> As for throughput, with low_latency = 1, I get around 1.4 MB/s with
+>> bfq (vs 1.6 MB/s with mq-deadline). This is a huge improvement
+>> compared to what it was before (70 KB/s).
+>>
+> 
+> That's beautiful news!
+> 
+> So, now we have the best of the two worlds: maximum throughput and
+> total control on I/O (including minimum latency for interactive and
+> soft real-time applications).  Besides, no manual configuration
+> needed.  Of course, this holds unless/until you find other flaws ... ;)
+> 
 
-On Sat, Jun 1, 2019 at 11:02 PM Marco Nelissen <marco.nelissen@gmail.com> wrote:
+Indeed, that's awesome! :)
+
+>> With tracing on, the throughput is a bit lower (as expected I guess),
+>> about 1 MB/s, and the corresponding trace file
+>> (trace-waker-detection-1MBps) is available at:
+>>
+>> https://www.dropbox.com/s/3roycp1zwk372zo/bfq-traces.tar.gz?dl=0
+>>
+> 
+> Thank you for the new trace.  I've analyzed it carefully, and, as I
+> imagined, this residual 12% throughput loss is due to a couple of
+> heuristics that occasionally get something wrong.  Most likely, ~12%
+> is the worst-case loss, and if one repeats the tests, the loss may be
+> much lower in some runs.
 >
-> According to the documentation, "The lower filesystem can be any filesystem
-> supported by Linux", however this appears to not actually be the case, since
-> using a vfat filesystem results in the mount command printing "mount:
-> wrong fs type, bad option, bad superblock on overlay, missing codepage or
-> helper program, or other error", with dmesg saying "overlayfs: filesystem on
-> '/boot' not supported".
-> (that's from ovl_mount_dir_noesc(), when ovl_dentry_weird() returns nonzero)
 
-Specifically for vfat it is weird because of
-dentry->d_flags & (DCACHE_OP_HASH | DCACHE_OP_COMPARE)
-because it is case insensitive.
+Ah, I see.
+ 
+> I think it is very hard to eliminate this fluctuation while keeping
+> full I/O control.  But, who knows, I might have some lucky idea in the
+> future.
+> 
 
->
-> Should vfat be supported, or is the documentation wrong? If the documentation
+:)
 
-Documentation is wrong.
+> At any rate, since you pointed out that you are interested in
+> out-of-the-box performance, let me complete the context: in case
+> low_latency is left set, one gets, in return for this 12% loss,
+> a) at least 1000% higher responsiveness, e.g., 1000% lower start-up
+> times of applications under load [1];
+> b) 500-1000% higher throughput in multi-client server workloads, as I
+> already pointed out [2].
+> 
 
-> is wrong, what other filesystems are (not) supported?
+I'm very happy that you could solve the problem without having to
+compromise on any of the performance characteristics/features of BFQ!
 
-There are some special cases like /proc/sys and auto mount points,
-but the most common reason for unsupported lower is case insensitive filesystems
-and filesystems that support unicode character folding.
-Those filesystems MAY be case insensitive/unicode, depending on
-mkfs/mount options:
- adfs affs cifs efivarfs fat hfs hfsplus hpfs isofs isofs jfs xfs(*) ext4(**)
 
-(*) xfs case insensitive-ness feature is hidden from dcache (dcache is
-disabled), so
-overlayfs mount won't fail, but it may have unexpected behaviors.
+> I'm going to prepare complete patches.  In addition, if ok for you,
+> I'll report these results on the bug you created.  Then I guess we can
+> close it.
+> 
 
-(**) ext4 supports per directory case insensitive and unicode folding
-since v5.2-rc1,
-if the filesystem was configured that way with mkfs/tune2fs. In this
-case, regardless of
-whether the lower dir is case insensitive or not, overlayfs mount will fail.
+Sounds great!
 
-I am guessing when people start using case insensitive enabled ext4,
-this problem
-is going to surface, because the same ext4 (e.g. root fs) could be
-used for samba
-export (case insensitive) and docker storage (overlayfs).
+> [1] https://algo.ing.unimo.it/people/paolo/disk_sched/results.php
+> [2] https://www.linaro.org/blog/io-bandwidth-management-for-production-quality-services/
+> 
+>> Thank you so much for your tireless efforts in fixing this issue!
+>>
+> 
+> I did enjoy working on this with you: your test case and your support
+> enabled me to make important improvements.  So, thank you very much
+> for your collaboration so far,
+> Paolo
 
-I can think of some solutions for the private case of same case
-insensitive fs used
-for upper and lower, but let's see that the problem is real before
-discussing a solution.
-
-Ted, Gabriel,
-
-I didn't see that xfstests-bld was updated with case folding configs for ext4,
-nor that xfstests has any new case folding tests (saw some posted), so I guess
-that is still in the works (?).
-
-Did you happen to try out overlayfs/docker over a case insensitive enabled fs?
-
-I wonder if you could spare a few extra GCE instances per pre-release tests
-to run an overlay over ext4 config?
-I was nagging Darrick about this for a while and now I think the
-overlay/xfs config
-is being tested regularly.
-
-Beyond the fact that there are vast number of users using docker with overlay
-over ext4, overlayfs tends to find rare filesystem bugs because of its special
-use patterns (e.g. acd1d71598f7 "xfs: preserve i_rdev when recycling...").
-
-Thanks,
-Amir.
+My pleasure! :)
+ 
+Regards,
+Srivatsa
+VMware Photon OS
