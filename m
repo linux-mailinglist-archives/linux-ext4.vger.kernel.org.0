@@ -2,69 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3383831A9C
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Jun 2019 10:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316CE32145
+	for <lists+linux-ext4@lfdr.de>; Sun,  2 Jun 2019 02:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726818AbfFAIt4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 1 Jun 2019 04:49:56 -0400
-Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25748 "EHLO
-        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726058AbfFAIt4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 1 Jun 2019 04:49:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1559378991; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=gxm0x66jP6eYcz4rRLmfkP2tD0yjRkfCZxiAEyT1QxZTBK6ugT7Fmo2VX1wT0jrDZdCpJiMUTqKIjfmuQo0j4AzccGA+8wPTRQBHAfszhiCPnBVpdldOuoq4bgJs9OEhUsnc/ZyXlXZOl+GYWd9gqRIvuMKp3VszR+sZwY5ZOu4=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1559378991; h=Cc:Date:From:Message-ID:Subject:To:ARC-Authentication-Results; 
-        bh=59uL/ZmJqKQPqkp32zb+M9Got93eG8nKExiBaqJgcDM=; 
-        b=cBstIBjBGxOVowKGQK96ESajJUwcOJEdF1FMleZoP5YysymOQj7FOI4fvEY7WAUSGO2S7aWxvv/wlHH4v6xcaBe9gGOtTDQD1JNqbd4UzE9Au3bLFg+jS1NDg5xmt4G8C71+vd8UVw0Ue4HdD2xBT95pCcURUz83ooWSMaOiPNM=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=zoho.com.cn;
-        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
-        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
-Received: from localhost.localdomain (116.30.193.185 [116.30.193.185]) by mx.zoho.com.cn
-        with SMTPS id 1559378989636115.68480972131044; Sat, 1 Jun 2019 16:49:49 +0800 (CST)
-From:   Chengguang Xu <cgxu519@zoho.com.cn>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@zoho.com.cn>
-Subject: [PATCH] ext2: start from parent blockgroup when trying linear search for a free inode
-Date:   Sat,  1 Jun 2019 16:49:41 +0800
-Message-Id: <20190601084941.22792-1-cgxu519@zoho.com.cn>
-X-Mailer: git-send-email 2.17.2
-X-ZohoCNMailClient: External
+        id S1726601AbfFBAPV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 1 Jun 2019 20:15:21 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50993 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726343AbfFBAPU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 1 Jun 2019 20:15:20 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x520FFpP024883
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 1 Jun 2019 20:15:16 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 972BA420481; Sat,  1 Jun 2019 20:15:15 -0400 (EDT)
+Date:   Sat, 1 Jun 2019 20:15:15 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: remove unnecessary gotos in ext4_xattr_set_entry
+Message-ID: <20190602001515.GB15741@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20190531121016.11727-1-ptikhomirov@virtuozzo.com>
+ <01FB1966-0466-4AB2-913B-F53E8CA816BE@dilger.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01FB1966-0466-4AB2-913B-F53E8CA816BE@dilger.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Start from parent blockgroup when trying linear search
-for a free indoe because for non directory inode it's
-better to keep in same blockgroup with parent.
+On Fri, May 31, 2019 at 03:46:54PM -0600, Andreas Dilger wrote:
+> On May 31, 2019, at 6:10 AM, Pavel Tikhomirov <ptikhomirov@virtuozzo.com> wrote:
+> > 
+> > In the "out" label we only iput old/new_ea_inode-s, in all these places
+> > these variables are always NULL so there is no point in goto to "out".
+> > 
+> > Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+> 
+> I'm not a fan of changes like this, since it adds potential complexity/bugs
+> if the error handling path is changed in the future.  That is one of the major
+> benefits of the "goto out_*" model of error handling is that you only need to
+> add one new label to the end of the function when some new state is added that
+> needs to be cleaned up, compared to having to check each individual error to
+> see if something needs to be cleaned up.
 
-Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
----
- fs/ext2/ialloc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I'm not a fan either, for the reasons Andreas stated; if you ever move
+code around, it's much more hazardous because you now have to check if
+what had previously been a "return ret" now has to change into "goto
+outl".  In some case, it's really obvious, if the code is at the very
+beginning of the function, but when you're 35 lines down, well over
+the size of many of an editor window, it's no longer quite so obvious
+whether or not "goto out" is necessary.
 
-diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
-index fda7d3f5b4be..435463a255e6 100644
---- a/fs/ext2/ialloc.c
-+++ b/fs/ext2/ialloc.c
-@@ -411,11 +411,11 @@ static int find_group_other(struct super_block *sb, struct inode *parent)
- 	 */
- 	group = parent_group;
- 	for (i = 0; i < ngroups; i++) {
--		if (++group >= ngroups)
--			group = 0;
- 		desc = ext2_get_group_desc (sb, group, NULL);
- 		if (desc && le16_to_cpu(desc->bg_free_inodes_count))
- 			goto found;
-+		if (++group >= ngroups)
-+			group = 0;
- 	}
- 
- 	return -1;
--- 
-2.17.2
-
-
+						- Ted
