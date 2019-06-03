@@ -2,142 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 542B632862
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2019 08:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D707D32CDF
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2019 11:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbfFCGRc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 Jun 2019 02:17:32 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:40913 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726314AbfFCGRb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Jun 2019 02:17:31 -0400
-Received: by mail-yb1-f194.google.com with SMTP id g62so6200581ybg.7;
-        Sun, 02 Jun 2019 23:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AzzBr8p6pAFhPQ4nWb4WT925fUHe7nxuKy6xqODD/EU=;
-        b=Xb3ar0Aa0M7FubHFZCK9tCXx/zPB3ksaeJ++pG/3IezUuXmn6WS07+MfTIuQL6T3WQ
-         DCoBxJtq42XP8GhmVdjTVubt2TbMIA7lcjwHzY/1sWCbnZYPYbmx7N4uWVGPA0YhWTTK
-         bquiJlMZXC8ghiTpKGYa3oQPdGWnmo0X2oYF2fXr1HnLtOBoeW4yYjVNWS3/VSQMqJWd
-         c7dKUXrQMwRLQGcs17S3dKmPq6RizEhc8dv3TX9vSZ14DBfZP+t6XKUlQ5TZwO2LK9eK
-         UlDCUjSmXu/1s6NXMLkVgSTD4kn0uoEJTIJ3g/f2O6q/Ffv5iwRp7rpYm8iqkwgJLHrT
-         AqGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AzzBr8p6pAFhPQ4nWb4WT925fUHe7nxuKy6xqODD/EU=;
-        b=aBL5BjebUnQ3Dv01hhdCMKGJKG+nlDLLNUwPrdvAXzE3bDXpAOrcjojYRH1TVJysjc
-         5PsXLepny58wAlkB1ZKUqhdAIBNfnHIobdOFCNBEGXmDTXBJJE2HF49tP0FrIo32gDlw
-         nPyfIcSmR4d2UKz2Qt9pWKfVOVc9zcOXnM9H2FzZk5F2MsLVoYy88GyIxAxODxdkmtmu
-         ESksRtKQgIAeug3yiTApsL6pEFzNMdMLC2kti4srBVva2eC+yoeXbGWnAKy7tQBzerFv
-         J6rG59p1V5y/DzFmU4TXT7xq+ON1fmc87MSJpRIW9t8uLGgwEyEWDTgszR9wRge1Wvad
-         zt6g==
-X-Gm-Message-State: APjAAAUDlrJB7TXjSftwjggJdv3fOX9kofj/TusydeECK+zadzCbgnxX
-        12XQKI9eA0R8Hz7+0Do7LR/L8rfXGW8JifvY4R0=
-X-Google-Smtp-Source: APXvYqxUiGPrUIOAaEzrGoQGkNMo/lWx7FazJWFNhcVG5sAgy7dd9/YQJahBlF65ALIqHqZpqTnlgtDDFpDqYugx+zo=
-X-Received: by 2002:a25:c983:: with SMTP id z125mr11338526ybf.45.1559542650351;
- Sun, 02 Jun 2019 23:17:30 -0700 (PDT)
+        id S1726809AbfFCJag (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 3 Jun 2019 05:30:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44646 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726555AbfFCJaf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 3 Jun 2019 05:30:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id CC46FAE5A;
+        Mon,  3 Jun 2019 09:30:34 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5F31F1E3C24; Mon,  3 Jun 2019 11:30:32 +0200 (CEST)
+Date:   Mon, 3 Jun 2019 11:30:32 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, Lukas Czerner <lczerner@redhat.com>,
+        linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>
+Subject: Re: How to package e2scrub
+Message-ID: <20190603093032.GA27933@quack2.suse.cz>
+References: <20190529120603.xuet53xgs6ahfvpl@work>
+ <20190529235948.GB3671@mit.edu>
+ <20190530095907.GA29237@quack2.suse.cz>
+ <20190530135155.GD2751@mit.edu>
+ <20190531100713.GA14773@quack2.suse.cz>
+ <20190531141019.GC8123@mit.edu>
 MIME-Version: 1.0
-References: <20190527172655.9287-1-amir73il@gmail.com> <20190528202659.GA12412@mit.edu>
- <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
- <CAOQ4uxgj94WR82iHE4PDGSD0UDxG5sCtr+Sv+t1sOHHmnXFYzQ@mail.gmail.com>
- <20190531164136.GA3066@mit.edu> <20190531224549.GF29573@dread.disaster.area>
- <20190531232852.GG29573@dread.disaster.area> <CAOQ4uxi99NDYMrz-Q7xKta4beQiYFX3-MipZ_RxFNktFTA=vMA@mail.gmail.com>
- <20190603042540.GH29573@dread.disaster.area>
-In-Reply-To: <20190603042540.GH29573@dread.disaster.area>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 3 Jun 2019 09:17:19 +0300
-Message-ID: <CAOQ4uxhqJJvr=uHmn_vPPPwZDCQoL2GFug30quFScNORT5Fw=w@mail.gmail.com>
-Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190531141019.GC8123@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> > Actually, one of my use cases is "atomic rename" of files with
-> > no data (looking for atomicity w.r.t xattr and mtime), so this "atomic rename"
-> > thread should not be interfering with other workloads at all.
->
-> Which should already guaranteed because a) rename is supposed to be
-> atomic, and b) metadata ordering requirements in journalled
-> filesystems. If they lose xattrs across rename, there's something
-> seriously wrong with the filesystem implementation.  I'm really not
-> sure what you think filesystems are actually doing with metadata
-> across rename operations....
->
+On Fri 31-05-19 10:10:19, Theodore Ts'o wrote:
+> On Fri, May 31, 2019 at 12:07:13PM +0200, Jan Kara wrote:
+> > On Thu 30-05-19 09:51:55, Theodore Ts'o wrote:
+> > > On Thu, May 30, 2019 at 11:59:07AM +0200, Jan Kara wrote:
+> > > > Yeah, my plan is to just not package cron bits at all since openSUSE / SLES
+> > > > support only systemd init anyway these days (and in fact our distro people
+> > > > want to deprecate cron in favor of systemd). I guess I'll split off the
+> > > > scrub bits into a separate sub-package (likely e2fsprogs will suggest
+> > > > installation of this sub-package) and the service will be disabled by
+> > > > default.
+> > > 
+> > > I'm not super-fond of extra sub-packages for their own sake, and the
+> > > extra e2scrub bits are small enough (about 32k?) that I don't believe
+> > > it justifies an extra sub-package; but that's a distribution-level
+> > > packaging decision, so it's certainly fine if we're not completely aligned.
+> > 
+> > Yes, size is not a big concern but the scrub bits require util-linux, lvm,
+> > and mailer to work correctly and I don't want to add these dependencies to
+> > stock e2fsprogs package because some minimal installations do not want e.g.
+> > lvm at all. Granted these are just scripts so I could get away with not
+> > requiring e.g. lvm at all but it seems user-unfriendly to leave it up to
+> > user to determine that his systemd-service fails due to missing packages.
+> 
+> So you're using an extra package to force the installation of the
+> necessary prerequisite packages, instead of the current approach where
+> we don't require them, but we just skip running the scrub if lvm and
+> util-linux are not present.  I think both approaches makes sense.
+> 
+> It's also a good point that we need to handle the case of a missing
+> sendmail intelligently.  It looks like we currently skip sending mail
+> at all in the cron case, and in the case systemd case, we'll spew a
+> warning (which won't get mailed since there's no sendmail, but it does
+> mean some extra lines in the logfile).  All of this being said, it's
+> not _completely_ useless to scrub without an mailer; we still mark the
+> file system as needing to be checked on the next boot.  But it's
+> another argument that we shouldn't enable the service by default.
+> 
+> For that reason, I'm not sure I'd want to force the installation of a
+> mailer, since someone might want to run e2scrub by hand, and
+> e2scrub_all every week w/o isn't a completely insane thing.  But we
+> certainly should handle that case gracefully.
 
-Dave,
+Yeah, if the scripts can handle missing mailer and do something useful in
+that case, I think I will switch the RPM dependency on postfix to just
+Recommends and not Requires.
 
-We are going in circles so much that my head is spinning.
-I don't blame anyone for having a hard time to keep up with the plot, because
-it spans many threads and subjects, so let me re-iterate:
-
-- I *do* know that rename provides me the needed "metadata barrier"
-  w.r.t. xattr on xfs/ext4 today.
-- I *do* know the sync_file_range()+rename() callback provides the
-"data barrier"
-  I need on xfs/ext4 today.
-- I *do* use this internal fs knowledge in my applications
-- I even fixed up sync_file_range() per your suggestion, so I won't need to use
-  the FIEMAP_FLAG_SYNC hack
-- At attempt from CrashMonkey developers to document this behavior was
-  "shot down" for many justified reasons
-- Without any documentation nor explicit API with a clean guarantee, users
-  cannot write efficient applications without being aware of the filesystem
-  underneath and follow that filesystem development to make sure behavior
-  has not changed
-- The most recent proposal I have made in LSF, based on Jan's suggestion is
-  to change nothing in filesystem implementation, but use a new *explicit* verb
-  to communicate the expectation of the application, so that
-filesystems are free
-  the change behavior in the future in the absence of the new verb
-
-Once again, ATOMIC_METADATA is a noop in preset xfs/ext4.
-ATOMIC_DATA is sync_file_range() in present xfs/ext4.
-The APIs I *need* from the kernel *do* exist, but the filesystem developers
-(except xfs) are not willing to document the guarantee that the existing
-interfaces provide in the present.
-
-[...]
-> So, in the interests of /informed debate/, please implement what you
-> want using batched AIO_FSYNC + rename/linkat completion callback and
-> measure what it acheives. Then implement a sync_file_range/linkat
-> thread pool that provides the same functionality to the application
-> (i.e. writeback concurrency in userspace) and measure it. Then we
-> can discuss what the relative overhead is with numbers and can
-> perform analysis to determine what the cause of the performance
-> differential actually is.
->
-
-Fare enough.
-
-> Neither of these things require kernel modifications, but you need
-> to provide the evidence that existing APIs are insufficient.
-
-APIs are sufficient if I know which filesystem I am running on.
-btrfs needs a different set of syscalls to get the same thing done.
-
-> Indeed, we now have the new async ioring stuff that can run async
-> sync_file_range calls, so you probably need to benchmark replacing
-> AIO_FSYNC with that interface as well. This new API likely does
-> exactly what you want without the journal/device cache flush
-> overhead of AIO_FSYNC....
->
-
-Indeed, I am keeping a close watch on io_uring.
-
-Thanks,
-Amir.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
