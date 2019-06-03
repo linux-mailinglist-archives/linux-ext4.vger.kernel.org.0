@@ -2,107 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EAA32FB2
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2019 14:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC0A32FD1
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2019 14:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbfFCMck (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 Jun 2019 08:32:40 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:56380 "EHLO mx1.redhat.com"
+        id S1726713AbfFCMjP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 3 Jun 2019 08:39:15 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:46702 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726270AbfFCMcj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 3 Jun 2019 08:32:39 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        id S1726137AbfFCMjP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 3 Jun 2019 08:39:15 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id C535D309266E;
-        Mon,  3 Jun 2019 12:32:39 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id F291B3086227;
+        Mon,  3 Jun 2019 12:39:09 +0000 (UTC)
 Received: from work (ovpn-204-95.brq.redhat.com [10.40.204.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 981A366845;
-        Mon,  3 Jun 2019 12:32:38 +0000 (UTC)
-Date:   Mon, 3 Jun 2019 14:32:35 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C68D15D9D2;
+        Mon,  3 Jun 2019 12:39:03 +0000 (UTC)
+Date:   Mon, 3 Jun 2019 14:39:00 +0200
 From:   Lukas Czerner <lczerner@redhat.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>,
+        Theodore Ts'o <tytso@mit.edu>, xfs <linux-xfs@vger.kernel.org>,
+        Eric Sandeen <sandeen@redhat.com>
 Subject: Re: How to package e2scrub
-Message-ID: <20190603123235.ajoa4b54w75xvppu@work>
+Message-ID: <20190603123900.gzwwltgt2bj7gyfa@work>
 References: <20190529120603.xuet53xgs6ahfvpl@work>
- <20190529235948.GB3671@mit.edu>
+ <20190529182111.GA5220@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190529235948.GB3671@mit.edu>
+In-Reply-To: <20190529182111.GA5220@magnolia>
 User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Mon, 03 Jun 2019 12:32:39 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Mon, 03 Jun 2019 12:39:15 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 29, 2019 at 07:59:48PM -0400, Theodore Ts'o wrote:
+On Wed, May 29, 2019 at 11:21:11AM -0700, Darrick J. Wong wrote:
 > On Wed, May 29, 2019 at 02:06:03PM +0200, Lukas Czerner wrote:
 > > Hi guys,
 > > 
 > > I am about to release 1.45.2 for Fedora rawhide, but I was thinking
 > > about how to package the e2scrub cron job/systemd service.
-> > 
+> 
+> Funny, xfs has the same conundrum.  Adding Eric & xfs list to cc...
+> 
 > > I really do not like the idea of installing cron job and/or the service as
 > > a part of regular e2fsprogs package. This can potentially really surprise
 > > people in a bad way.
-> > 
+> >
 > > Note that I've already heard some complaints from debian users about the
 > > systemd service being installed on their system after the e2fsprogs
 > > update.
 > 
-> One of the reasons I deliberately decided to enable it for Debian
-> Unstable was it was the best way to flush out the bugs.  :-)
-> 
-> Yeah, Debian Unstable users are my guinea pigs. :-)   Doesn't it work
-> that way with Fedora and RHEL?  :-)
-> 
-> BTW, The complaints were mostly from e2scrub_all not working correctly
-> if certain packages weren't installed, or if the LVM package was
-> installed, but there were no LVM volumes present, etc.  The other
-> complaint I got was when there was no free space for the snapshot.
-> I'm kind of hopeful that I've gotten them all at this point, but we'll
-> see....
-
-Yeah, I've heard from two people and it was all about the service being
-enabled by default when installing/updating e2fsprogs which for them was
-very much unexpected. They were the types of people what want to have as
-much controll as they can so they were annoyed by that and immediatelly
-disabled the service :)
-
+> Yeah, e2scrub is bitrotting rather faster than I had thought it
+> would... but it's only available in Debian unstable.
 > 
 > > What I am going to do is to split the systemd service into a separate
 > > package and I'd like to come to some agreement about the name of the
 > > package so that we can have the same name across distributions (at least
 > > Fedora/Debian/Suse).
 > 
-> Hmm.... what keeping the service as part of the e2fsprogs package, but
-> then not enabling out of the box.  That is, require that user run:
+> Indeed.  Eric picked "xfsprogs-xfs_scrub" for Rawhide, though I find
+> that name to be very clunky and would have preferred "xfs_scrub".
 > 
-> systemctl enable e2scrub_all.timer
+> > I was thinking about e2scrub-service for systemd service or e2scrub-cron
+> > for the cron job. What do you think ?
 > 
-> in order to actually get the feature?  (They can also disable it using
-> "systemctl disable e2scrub_all.timer".)
+> In /theory/ the cronjob support in e2scrub (and xfs_scrub) were designed
+> to step out of the way if systemd is running, so at least in theory (on
+> Debian anyway) the two can be in the same package with the end result
+> being that e2scrub runs weekly in the background.  I've not tried in
+> rhel/suse environments, however.
+> 
+> I also don't see the point of supporting cron *while* systemd is active.
+> That increases the amount of corner-case testing we have to do, for
+> little gain.  It's enough work to maintain the systemd-with-timers and
+> sysvinit-with-cron scenarios.
 
-That's the suggestion for rpm packages in fedora - not enabling services by
-default. I am still not decided about this since installing separate service
-package is strong enough of a hint that user probably want to enable it.
+Yeah, you're probably right. I just wanted to give people some options
+if they do not want (for whatever reason) to use systemd. Container
+environment might be a good example of that, but I am not at all sure
+how well is lvm2 supported in containers.
 
 > 
-> As far as the cron job is concerned, we could just leave the crontab
-> entry commented out by default, and require that the user go in and
-> edit the /etc/cron.d/e2scrub_all file if they want to enable it.  Not
-> packaging it also seems fine; Debian's support for non-systemd
-> configurations is at best marginal at this point, and while I'm not a
-> fan of systemd, I'm also a realist...
+> If you're worried about the stability of systemd timer code, systemd's
+> timer support has been stable enough to run e2scrub_all/xfs_scrub_all on
+> my systems since late 2015, and I have no interest in supporting either
+> on a pre-2016 distro.  Practically speaking, I guess that RHEL8, SLES16,
+> and Ubuntu 20.04 will be the first LTS distros to support e2scrub at
+> all.
+> 
+> (As for xfs_scrub, it'll barely achieve alpha status in Linux 5.2...)
+> 
+> > Also I decided not to package the cron job for now. But if I decide to
+> > package it in the future I'd like to change the e2scrub cron
+> > configuration so that it can run on the systems with systemd but make
+> > the package conflict with the e2scrub-service so that users are free to
+> > decide how they want to use it.
+> 
+> If you do end up creating two packages I'd name the systemd one
+> e2scrub-systemd over e2scrub-service.
 
-Yeah, commenting out the crontab entry sounds like a good way to go
-about it.
+Ok, thanks for suggestion. Andreas was suggesting naming it as part of
+e2fsprogs, that is - e2fsprogs-scrub but then it would be
+e2fsprogs-scrub-systemd and that sounds a bit convoluted to me.
+
+Thanks!
+-Lukas
 
 > 
-> What do folks think?
+> --D
 > 
-> 					- Ted
+> > Thoughts ?
+> > 
+> > Thanks!
+> > -Lukas
