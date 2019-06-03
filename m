@@ -2,133 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE2E330EF
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2019 15:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD6E33249
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2019 16:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728606AbfFCNWF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 3 Jun 2019 09:22:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40902 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726336AbfFCNWF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 3 Jun 2019 09:22:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 04D2BAD31;
-        Mon,  3 Jun 2019 13:22:03 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 50CEE1E3C9A; Mon,  3 Jun 2019 15:22:00 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     <linux-ext4@vger.kernel.org>
-Cc:     Ted Tso <tytso@mit.edu>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
-        stable@vger.kernel.org
-Subject: [PATCH 2/2] ext4: Fix stale data exposure when read races with hole punch
-Date:   Mon,  3 Jun 2019 15:21:55 +0200
-Message-Id: <20190603132155.20600-3-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20190603132155.20600-1-jack@suse.cz>
-References: <20190603132155.20600-1-jack@suse.cz>
+        id S1728891AbfFCOiM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 3 Jun 2019 10:38:12 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42161 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728681AbfFCOiM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 3 Jun 2019 10:38:12 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x53Ec258023477
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 3 Jun 2019 10:38:02 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id CA561420481; Mon,  3 Jun 2019 10:38:01 -0400 (EDT)
+Date:   Mon, 3 Jun 2019 10:38:01 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca
+Subject: Re: [RFC] jbd2: add new "stats" proc file
+Message-ID: <20190603143801.GA3048@mit.edu>
+References: <20190603124238.9050-1-xiaoguang.wang@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190603124238.9050-1-xiaoguang.wang@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hole puching currently evicts pages from page cache and then goes on to
-remove blocks from the inode. This happens under both i_mmap_sem and
-i_rwsem held exclusively which provides appropriate serialization with
-racing page faults. However there is currently nothing that prevents
-ordinary read(2) from racing with the hole punch and instantiating page
-cache page after hole punching has evicted page cache but before it has
-removed blocks from the inode. This page cache page will be mapping soon
-to be freed block and that can lead to returning stale data to userspace
-or even filesystem corruption.
+On Mon, Jun 03, 2019 at 08:42:38PM +0800, Xiaoguang Wang wrote:
+> /proc/fs/jbd2/${device}/info only shows whole average statistical
+> info about jbd2's life cycle, but it can not show jbd2 info in
+> specified time interval and sometimes this capability is very useful
+> for trouble shooting. For example, we can not see how rs_locked and
+> rs_flushing grows in specified time interval, but these two indexes
+> can explain some reasons for app's behaviours.
 
-Fix the problem by protecting reads as well as readahead requests with
-i_mmap_sem.
+We actually had something like this, but we removed it in commit
+bf6993276f7: "jbd2: Use tracepoints for history file".  The idea was
+that you can get the same information using the jbd2_run_tracepoints
 
-CC: stable@vger.kernel.org
-Reported-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/file.c | 35 +++++++++++++++++++++++++++++++----
- 1 file changed, 31 insertions(+), 4 deletions(-)
+# echo jbd2_run_stats > /sys/kernel/debug/tracing/set_event
+# cat /sys/kernel/debug/tracing/trace_pipe 
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 2c5baa5e8291..a21fa9f8fb5d 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -34,6 +34,17 @@
- #include "xattr.h"
- #include "acl.h"
- 
-+static ssize_t ext4_file_buffered_read(struct kiocb *iocb, struct iov_iter *to)
-+{
-+	ssize_t ret;
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+
-+	down_read(&EXT4_I(inode)->i_mmap_sem);
-+	ret = generic_file_read_iter(iocb, to);
-+	up_read(&EXT4_I(inode)->i_mmap_sem);
-+	return ret;
-+}
-+
- #ifdef CONFIG_FS_DAX
- static ssize_t ext4_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
-@@ -52,7 +63,7 @@ static ssize_t ext4_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 	if (!IS_DAX(inode)) {
- 		inode_unlock_shared(inode);
- 		/* Fallback to buffered IO in case we cannot support DAX */
--		return generic_file_read_iter(iocb, to);
-+		return ext4_file_buffered_read(iocb, to);
- 	}
- 	ret = dax_iomap_rw(iocb, to, &ext4_iomap_ops);
- 	inode_unlock_shared(inode);
-@@ -64,17 +75,32 @@ static ssize_t ext4_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 
- static ssize_t ext4_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
--	if (unlikely(ext4_forced_shutdown(EXT4_SB(file_inode(iocb->ki_filp)->i_sb))))
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+
-+	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
- 		return -EIO;
- 
- 	if (!iov_iter_count(to))
- 		return 0; /* skip atime */
- 
- #ifdef CONFIG_FS_DAX
--	if (IS_DAX(file_inode(iocb->ki_filp)))
-+	if (IS_DAX(inode))
- 		return ext4_dax_read_iter(iocb, to);
- #endif
--	return generic_file_read_iter(iocb, to);
-+	if (iocb->ki_flags & IOCB_DIRECT)
-+		return generic_file_read_iter(iocb, to);
-+	return ext4_file_buffered_read(iocb, to);
-+}
-+
-+static int ext4_readahead(struct file *filp, loff_t start, loff_t end)
-+{
-+	struct inode *inode = file_inode(filp);
-+	int ret;
-+
-+	down_read(&EXT4_I(inode)->i_mmap_sem);
-+	ret = generic_readahead(filp, start, end);
-+	up_read(&EXT4_I(inode)->i_mmap_sem);
-+	return ret;
- }
- 
- /*
-@@ -518,6 +544,7 @@ const struct file_operations ext4_file_operations = {
- 	.splice_read	= generic_file_splice_read,
- 	.splice_write	= iter_file_splice_write,
- 	.fallocate	= ext4_fallocate,
-+	.readahead	= ext4_readahead,
- };
- 
- const struct inode_operations ext4_file_inode_operations = {
--- 
-2.16.4
+... which will produce output like this:
 
+      jbd2/vdg-8-293   [000] ...2   122.822487: jbd2_run_stats: dev 254,96 tid 4403 wait 0 request_delay 0 running 4 locked 0 flushing 0 logging 7 handle_count 98 blocks 3 blocks_logged 4
+      jbd2/vdg-8-293   [000] ...2   122.833101: jbd2_run_stats: dev 254,96 tid 4404 wait 0 request_delay 0 running 14 locked 0 flushing 0 logging 4 handle_count 198 blocks 1 blocks_logged 2
+      jbd2/vdg-8-293   [000] ...2   122.839325: jbd2_run_stats: dev 254,96 tid 4405 wait
+
+With eBPF, we should be able to do something even more user friendly.
+
+BTW, if you are looking to try to optimize jbd2, a good thing to do is
+to take a look at jbd2_handle_stats, filtered on ones where the
+interval is larger than some cut-off.  Ideally, the time between a
+handle getting started and stopped should be as small as possible,
+because if a transaction is trying to close, an open handle will get
+in the way of that, and other CPU's will be stuck waiting for handle
+to complete.  This means that pre-reading blocks before starting a
+handle, etc., is a really good idea.  And monitoring jbd2_handle_stats
+is a good way to find potential spots to topimize in ext4.
+
+     	      	      		      	 	  - Ted
