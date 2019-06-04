@@ -2,91 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E02D0340FD
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2019 10:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB1834578
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2019 13:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727179AbfFDIAp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Jun 2019 04:00:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32862 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726792AbfFDIAp (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 4 Jun 2019 04:00:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D685AAEB5;
-        Tue,  4 Jun 2019 08:00:43 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 76BD51E3C24; Tue,  4 Jun 2019 10:00:43 +0200 (CEST)
-Date:   Tue, 4 Jun 2019 10:00:43 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Ext4 <linux-ext4@vger.kernel.org>,
-        Ted Tso <tytso@mit.edu>, Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [PATCH 1/2] mm: Add readahead file operation
-Message-ID: <20190604080043.GL27933@quack2.suse.cz>
-References: <20190603132155.20600-1-jack@suse.cz>
- <20190603132155.20600-2-jack@suse.cz>
- <CAOQ4uxibr6_k2T_0BeC7XAOnuX1PHmEmBjFwfzkVJVh17YAqrw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxibr6_k2T_0BeC7XAOnuX1PHmEmBjFwfzkVJVh17YAqrw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727320AbfFDLds (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Jun 2019 07:33:48 -0400
+Received: from mail.thorholdings.com ([201.218.124.195]:60337 "EHLO
+        escontact.top" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727248AbfFDLds (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jun 2019 07:33:48 -0400
+To:     linux-ext4@vger.kernel.org
+From:   GMC <info@escontact.top>
+Subject: Ihre Firmenwebseite
+Date:   Tue, 4 Jun 2019 06:33:48 -0500
+Message-ID: <20190604_113348_067573.info@escontact.top>
+X-Mailer: WEBMAIL
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 03-06-19 19:16:59, Amir Goldstein wrote:
-> On Mon, Jun 3, 2019 at 4:22 PM Jan Kara <jack@suse.cz> wrote:
-> >
-> > Some filesystems need to acquire locks before pages are read into page
-> > cache to protect from races with hole punching. The lock generally
-> > cannot be acquired within readpage as it ranks above page lock so we are
-> > left with acquiring the lock within filesystem's ->read_iter
-> > implementation for normal reads and ->fault implementation during page
-> > faults. That however does not cover all paths how pages can be
-> > instantiated within page cache - namely explicitely requested readahead.
-> > Add new ->readahead file operation which filesystem can use for this.
-> >
-> > CC: stable@vger.kernel.org # Needed by following ext4 fix
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> > ---
-> >  include/linux/fs.h |  5 +++++
-> >  include/linux/mm.h |  3 ---
-> >  mm/fadvise.c       | 12 +-----------
-> >  mm/madvise.c       |  3 ++-
-> >  mm/readahead.c     | 26 ++++++++++++++++++++++++--
-> >  5 files changed, 32 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index f7fdfe93e25d..9968abcd06ea 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -1828,6 +1828,7 @@ struct file_operations {
-> >                                    struct file *file_out, loff_t pos_out,
-> >                                    loff_t len, unsigned int remap_flags);
-> >         int (*fadvise)(struct file *, loff_t, loff_t, int);
-> > +       int (*readahead)(struct file *, loff_t, loff_t);
-> 
-> The new method is redundant, because it is a subset of fadvise.
-> When overlayfs needed to implement both methods, Miklos
-> suggested that we unite them into one, hence:
-> 3d8f7615319b vfs: implement readahead(2) using POSIX_FADV_WILLNEED
+Sehr geehrte Damen und Herren,
 
-Yes, I've noticed this.
+wir haben Ihre Firmenwebseite besucht und wir sind der Meinung, sie sieht ausgezeichnet aus!
 
-> So you can accomplish the ext4 fix without the new method.
-> All you need extra is implementing madvise_willneed() with vfs_fadvise().
+Wenn Ihnen daran liegt, neue Kunden zu gewinnen, dann haben wir für Sie ein Angebot.
 
-Ah, that's an interesting idea. I'll try that out. It will require some
-dance in madvise() to drop mmap_sem but we already do that for
-madvise_free() so I can just duplicate that.
+Wir verfügen über den neusten, stets aktualisierten Firmenkatalog 2019. In wenigen Augenblicken können Sie die interessanten Branchen / Wirtschaftssektoren aussuchen und die Kontakte exportieren.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Alle unsere Kontakte entsprechen den GDPR-Regeln. Wir verfügen nur über Firmenangaben oder Firmenkontaktdaten.
+
+Wir möchten Sie gerne dazu einladen, unsere Webseite zu besuchen: 
+
+http://www.db-gc.net/?page=catalog
+
+Mit freundlichen Grüßen
+GMC - Team
+
