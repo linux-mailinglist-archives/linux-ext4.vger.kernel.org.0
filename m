@@ -2,174 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3066C33E10
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2019 06:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2417C340E3
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2019 09:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726373AbfFDE1T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Jun 2019 00:27:19 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:48960 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726078AbfFDE1T (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jun 2019 00:27:19 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x544NYCo182673;
-        Tue, 4 Jun 2019 04:27:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
- bh=jzjUsAZw7DxTFMyoFJ85Ydv0FB6fi91DyAlmtUqSeGE=;
- b=Gmto3INNSc/0i1UfqrwkiRXQjwWndxEyFFOuHOxldkc+osS/3hmTLGhvWmhwAZsOanjP
- dp3S//fw/LVo4zU+Ohx9M0JqaDqmfjIvha5oOP9iaqwWvDOySz3y7QNOf51AnnsvfN/d
- qmYblkEGNJrbRP2u4tRBXJqspHxhhURkmcmqdONsaYhWVzripyPgfFYcOiJiMdKtpM0Q
- 8emoBbiJ8Ykj5D+xyd+7gYWpFFqFfENreVxH/jG7sOyLBWRM4cCeZvgWO3oDJWMJUSXJ
- 9F8w9+MfOAP4U9c/IJO/qLsaMdir3Uf2VRg24m3cU7jPv5uPhA6RPo9yFSEoLNE8t+uh Ag== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2sugstak10-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 04 Jun 2019 04:27:15 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x544Q5RM065040;
-        Tue, 4 Jun 2019 04:27:15 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2supp7frc0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 04 Jun 2019 04:27:15 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x544RDt3000429;
-        Tue, 4 Jun 2019 04:27:14 GMT
-Received: from localhost (/10.159.151.29)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 03 Jun 2019 21:27:13 -0700
-Date:   Mon, 3 Jun 2019 21:27:12 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [PATCH] e2scrub: remove -C from e2scrub_all
-Message-ID: <20190604042712.GB5378@magnolia>
+        id S1727100AbfFDH5x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Jun 2019 03:57:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60184 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727011AbfFDH5w (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 4 Jun 2019 03:57:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 651CDAE21;
+        Tue,  4 Jun 2019 07:57:51 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 0F6A11E3C24; Tue,  4 Jun 2019 09:57:51 +0200 (CEST)
+Date:   Tue, 4 Jun 2019 09:57:51 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Ext4 <linux-ext4@vger.kernel.org>,
+        Ted Tso <tytso@mit.edu>, Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 2/2] ext4: Fix stale data exposure when read races with
+ hole punch
+Message-ID: <20190604075751.GK27933@quack2.suse.cz>
+References: <20190603132155.20600-1-jack@suse.cz>
+ <20190603132155.20600-3-jack@suse.cz>
+ <CAOQ4uxgn7_tY35KVE6c-na2skXtxXhrM8-2wRNUe2CtmYACZrg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9277 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=9 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906040029
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9277 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=9 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906040029
+In-Reply-To: <CAOQ4uxgn7_tY35KVE6c-na2skXtxXhrM8-2wRNUe2CtmYACZrg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+On Mon 03-06-19 19:33:50, Amir Goldstein wrote:
+> On Mon, Jun 3, 2019 at 4:22 PM Jan Kara <jack@suse.cz> wrote:
+> >
+> > Hole puching currently evicts pages from page cache and then goes on to
+> > remove blocks from the inode. This happens under both i_mmap_sem and
+> > i_rwsem held exclusively which provides appropriate serialization with
+> > racing page faults. However there is currently nothing that prevents
+> > ordinary read(2) from racing with the hole punch and instantiating page
+> > cache page after hole punching has evicted page cache but before it has
+> > removed blocks from the inode. This page cache page will be mapping soon
+> > to be freed block and that can lead to returning stale data to userspace
+> > or even filesystem corruption.
+> >
+> > Fix the problem by protecting reads as well as readahead requests with
+> > i_mmap_sem.
+> >
+> 
+> So ->write_iter() does not take  i_mmap_sem right?
+> and therefore mixed randrw workload is not expected to regress heavily
+> because of this change?
 
-We already have the "SERVICE_MODE=1" feature that signals to e2scrub
-that we're running as a background daemon and therefore we should exit
-quietly if conditions aren't right.
+Yes. i_mmap_sem is taken in exclusive mode only for truncate, punch hole,
+and similar operations removing blocks from file. So reads will now be more
+serialized with such operations. But not with writes. There may be some
+regression still visible due to the fact that although readers won't block
+one another or with writers, they'll still contend on updating the cacheline
+with i_mmap_sem and that's going to be visible for cache hot readers
+running from multiple NUMA nodes.
 
-It's therefore unnecessary to have a separate -C flag to achieve the
-same outcome for cron jobs.  Merge the two together.
+> Did you test performance diff?
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- scrub/e2scrub_all.cron.in     |    4 ++--
- scrub/e2scrub_all.in          |   12 +++---------
- scrub/e2scrub_all.service.in  |    2 +-
- scrub/e2scrub_all_cron.in     |    2 +-
- scrub/e2scrub_reap.service.in |    3 ++-
- 5 files changed, 9 insertions(+), 14 deletions(-)
+No, not really. But I'll queue up some test to see the difference.
 
-diff --git a/scrub/e2scrub_all.cron.in b/scrub/e2scrub_all.cron.in
-index 5bf83ec97..395fb2ab4 100644
---- a/scrub/e2scrub_all.cron.in
-+++ b/scrub/e2scrub_all.cron.in
-@@ -1,2 +1,2 @@
--30 3 * * 0 root test -e /run/systemd/system || @pkglibdir@/e2scrub_all_cron
--10 3 * * * root test -e /run/systemd/system || @root_sbindir@/e2scrub_all -C -A -r
-+30 3 * * 0 root test -e /run/systemd/system || SERVICE_MODE=1 @pkglibdir@/e2scrub_all_cron
-+10 3 * * * root test -e /run/systemd/system || SERVICE_MODE=1 @root_sbindir@/e2scrub_all -A -r
-diff --git a/scrub/e2scrub_all.in b/scrub/e2scrub_all.in
-index d99c81978..cdc37ced4 100644
---- a/scrub/e2scrub_all.in
-+++ b/scrub/e2scrub_all.in
-@@ -26,7 +26,6 @@ if (( $EUID != 0 )); then
- fi
- 
- scrub_all=0
--run_from_cron=0
- snap_size_mb=256
- reap=0
- conffile="@root_sysconfdir@/e2scrub.conf"
-@@ -69,12 +68,11 @@ exitcode() {
- 	exit "${ret}"
- }
- 
--while getopts "nrACV" opt; do
-+while getopts "nrAV" opt; do
- 	case "${opt}" in
- 	"n") DBG="echo Would execute: " ;;
- 	"r") scrub_args="${scrub_args} -r"; reap=1;;
- 	"A") scrub_all=1;;
--	"C") run_from_cron=1;;
- 	"V") print_version; exitcode 0;;
- 	*) print_help; exitcode 2;;
- 	esac
-@@ -86,17 +84,13 @@ shift "$((OPTIND - 1))"
- # when e2scrub_all is run out of cron or a systemd timer.
- 
- if ! type lsblk >& /dev/null ; then
--    if [ "${run_from_cron}" -eq 1 ] ; then
--	exitcode 0
--    fi
-+    test -n "${SERVICE_MODE}" && exitcode 0
-     echo "e2scrub_all: can't find lsblk --- is util-linux installed?"
-     exitcode 1
- fi
- 
- if ! type lvcreate >& /dev/null ; then
--    if [ "${run_from_cron}" -eq 1 ] ; then
--	exitcode 0
--    fi
-+    test -n "${SERVICE_MODE}" && exitcode 0
-     echo "e2scrub_all: can't find lvcreate --- is lvm2 installed?"
-     exitcode 1
- fi
-diff --git a/scrub/e2scrub_all.service.in b/scrub/e2scrub_all.service.in
-index 77b6ad599..20f42bfe3 100644
---- a/scrub/e2scrub_all.service.in
-+++ b/scrub/e2scrub_all.service.in
-@@ -8,5 +8,5 @@ Documentation=man:e2scrub_all(8)
- [Service]
- Type=oneshot
- Environment=SERVICE_MODE=1
--ExecStart=@root_sbindir@/e2scrub_all -C
-+ExecStart=@root_sbindir@/e2scrub_all
- SyslogIdentifier=e2scrub_all
-diff --git a/scrub/e2scrub_all_cron.in b/scrub/e2scrub_all_cron.in
-index bc26fee3d..f9cff878c 100644
---- a/scrub/e2scrub_all_cron.in
-+++ b/scrub/e2scrub_all_cron.in
-@@ -65,4 +65,4 @@ on_ac_power() {
- test -e /run/systemd/system && exit 0
- on_ac_power || exit 0
- 
--exec @root_sbindir@/e2scrub_all -C
-+exec @root_sbindir@/e2scrub_all
-diff --git a/scrub/e2scrub_reap.service.in b/scrub/e2scrub_reap.service.in
-index 40511f735..10d25f06f 100644
---- a/scrub/e2scrub_reap.service.in
-+++ b/scrub/e2scrub_reap.service.in
-@@ -16,7 +16,8 @@ NoNewPrivileges=yes
- User=root
- IOSchedulingClass=idle
- CPUSchedulingPolicy=idle
--ExecStart=@root_sbindir@/e2scrub_all -C -A -r
-+Environment=SERVICE_MODE=1
-+ExecStart=@root_sbindir@/e2scrub_all -A -r
- SyslogIdentifier=%N
- RemainAfterExit=no
- 
+> Here [1] I posted results of fio test that did x5 worse in xfs vs.
+> ext4, but I've seen much worse cases.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
