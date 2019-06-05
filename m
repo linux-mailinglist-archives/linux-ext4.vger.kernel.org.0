@@ -2,99 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D02350A2
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2019 22:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF342354F2
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Jun 2019 03:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbfFDUIy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Jun 2019 16:08:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50162 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726261AbfFDUIy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jun 2019 16:08:54 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x54K8G4H065914
-        for <linux-ext4@vger.kernel.org>; Tue, 4 Jun 2019 16:08:53 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2swvs6egu0-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Tue, 04 Jun 2019 16:08:52 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <zohar@linux.ibm.com>;
-        Tue, 4 Jun 2019 21:08:51 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 4 Jun 2019 21:08:48 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x54K8l4Y47448096
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 4 Jun 2019 20:08:47 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7DDFEA4040;
-        Tue,  4 Jun 2019 20:08:47 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6F0A2A4057;
-        Tue,  4 Jun 2019 20:08:46 +0000 (GMT)
-Received: from dhcp-9-31-103-88.watson.ibm.com (unknown [9.31.103.88])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  4 Jun 2019 20:08:46 +0000 (GMT)
-Subject: Re: possible deadlock in __do_page_fault (2)
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     syzbot <syzbot+606e524a3ca9617cf8c0@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, hdanton@sina.com, jmorris@namei.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Date:   Tue, 04 Jun 2019 16:08:45 -0400
-In-Reply-To: <000000000000a7a51a058a728a6c@google.com>
-References: <000000000000a7a51a058a728a6c@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 19060420-4275-0000-0000-0000033CE1D0
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19060420-4276-0000-0000-0000384CF220
-Message-Id: <1559678925.4237.2.camel@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-04_13:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=784 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906040127
+        id S1726427AbfFEBZ7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Jun 2019 21:25:59 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:34580 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726179AbfFEBZ7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Jun 2019 21:25:59 -0400
+Received: from dread.disaster.area (pa49-180-144-61.pa.nsw.optusnet.com.au [49.180.144.61])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 5D1B53DC6C3;
+        Wed,  5 Jun 2019 11:25:54 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hYKgZ-0003fG-MR; Wed, 05 Jun 2019 11:25:51 +1000
+Date:   Wed, 5 Jun 2019 11:25:51 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, Ted Tso <tytso@mit.edu>,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Amir Goldstein <amir73il@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] ext4: Fix stale data exposure when read races with
+ hole punch
+Message-ID: <20190605012551.GJ16786@dread.disaster.area>
+References: <20190603132155.20600-1-jack@suse.cz>
+ <20190603132155.20600-3-jack@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190603132155.20600-3-jack@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0 cx=a_idp_d
+        a=8RU0RCro9O0HS2ezTvitPg==:117 a=8RU0RCro9O0HS2ezTvitPg==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
+        a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8 a=dBuVX4ejtxO155pZRcAA:9
+        a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 2019-06-03 at 15:04 -0700, syzbot wrote:
-> syzbot has bisected this bug to:
+On Mon, Jun 03, 2019 at 03:21:55PM +0200, Jan Kara wrote:
+> Hole puching currently evicts pages from page cache and then goes on to
+> remove blocks from the inode. This happens under both i_mmap_sem and
+> i_rwsem held exclusively which provides appropriate serialization with
+> racing page faults. However there is currently nothing that prevents
+> ordinary read(2) from racing with the hole punch and instantiating page
+> cache page after hole punching has evicted page cache but before it has
+> removed blocks from the inode. This page cache page will be mapping soon
+> to be freed block and that can lead to returning stale data to userspace
+> or even filesystem corruption.
 > 
-> commit 69d61f577d147b396be0991b2ac6f65057f7d445
-> Author: Mimi Zohar <zohar@linux.ibm.com>
-> Date:   Wed Apr 3 21:47:46 2019 +0000
+> Fix the problem by protecting reads as well as readahead requests with
+> i_mmap_sem.
 > 
->      ima: verify mprotect change is consistent with mmap policy
+> CC: stable@vger.kernel.org
+> Reported-by: Amir Goldstein <amir73il@gmail.com>
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/ext4/file.c | 35 +++++++++++++++++++++++++++++++----
+>  1 file changed, 31 insertions(+), 4 deletions(-)
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16461c5aa00000
-> start commit:   3c09c195 Add linux-next specific files for 20190531
-> git tree:       linux-next
-> final crash:    https://syzkaller.appspot.com/x/report.txt?x=15461c5aa00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11461c5aa00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6cfb24468280cd5c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=606e524a3ca9617cf8c0
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10572ca6a00000
-> 
-> Reported-by: syzbot+606e524a3ca9617cf8c0@syzkaller.appspotmail.com
-> Fixes: 69d61f577d14 ("ima: verify mprotect change is consistent with mmap  
-> policy")
-> 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 2c5baa5e8291..a21fa9f8fb5d 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -34,6 +34,17 @@
+>  #include "xattr.h"
+>  #include "acl.h"
+>  
+> +static ssize_t ext4_file_buffered_read(struct kiocb *iocb, struct iov_iter *to)
+> +{
+> +	ssize_t ret;
+> +	struct inode *inode = file_inode(iocb->ki_filp);
+> +
+> +	down_read(&EXT4_I(inode)->i_mmap_sem);
+> +	ret = generic_file_read_iter(iocb, to);
+> +	up_read(&EXT4_I(inode)->i_mmap_sem);
+> +	return ret;
 
-Thank you for the report.
+Isn't i_mmap_sem taken in the page fault path? What makes it safe
+to take here both outside and inside the mmap_sem at the same time?
+I mean, the whole reason for i_mmap_sem existing is that the inode
+i_rwsem can't be taken both outside and inside the i_mmap_sem at the
+same time, so what makes the i_mmap_sem different?
 
-Mimi
+Cheers,
 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
