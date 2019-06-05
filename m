@@ -2,96 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B77DC359A3
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Jun 2019 11:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2521436121
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Jun 2019 18:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbfFEJ1a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Jun 2019 05:27:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33230 "EHLO mx1.suse.de"
+        id S1728632AbfFEQWJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 5 Jun 2019 12:22:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58560 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726862AbfFEJ1a (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 5 Jun 2019 05:27:30 -0400
+        id S1726670AbfFEQWI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 5 Jun 2019 12:22:08 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 19441AEA3;
-        Wed,  5 Jun 2019 09:27:29 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 556701E3C2F; Wed,  5 Jun 2019 11:27:28 +0200 (CEST)
-Date:   Wed, 5 Jun 2019 11:27:28 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-        Ted Tso <tytso@mit.edu>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] ext4: Fix stale data exposure when read races with
- hole punch
-Message-ID: <20190605092728.GB7433@quack2.suse.cz>
-References: <20190603132155.20600-1-jack@suse.cz>
- <20190603132155.20600-3-jack@suse.cz>
- <20190605012551.GJ16786@dread.disaster.area>
+        by mx1.suse.de (Postfix) with ESMTP id 537BDAD81;
+        Wed,  5 Jun 2019 16:22:07 +0000 (UTC)
+Date:   Wed, 5 Jun 2019 11:22:04 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        lsf-pc@lists.linux-foundation.org,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Subject: Re: [Lsf-pc] [LSF/MM TOPIC] The end of the DAX experiment
+Message-ID: <20190605162204.jzou5hry5exly5wx@fiona>
+References: <CAPcyv4jyCDJTpGZB6qVX7_FiaxJfDzWA1cw8dfPjHM2j3j3yqQ@mail.gmail.com>
+ <20190214134622.GG4525@dhcp22.suse.cz>
+ <CAPcyv4gxFKBQ9eVdn+pNEzBXRfw6Qwfmu21H2i5uj-PyFmRAGQ@mail.gmail.com>
+ <20190214191013.GA3420@redhat.com>
+ <CAPcyv4jLTdJyTOy715qvBL_j_deiLoBmu_thkUnFKZKMvZL6hA@mail.gmail.com>
+ <20190214200840.GB12668@bombadil.infradead.org>
+ <CAPcyv4hsDqvrV5yiDq8oWPuWb3WpuCEk_HB4qBxfiDpUwo75QQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190605012551.GJ16786@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAPcyv4hsDqvrV5yiDq8oWPuWb3WpuCEk_HB4qBxfiDpUwo75QQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 05-06-19 11:25:51, Dave Chinner wrote:
-> On Mon, Jun 03, 2019 at 03:21:55PM +0200, Jan Kara wrote:
-> > Hole puching currently evicts pages from page cache and then goes on to
-> > remove blocks from the inode. This happens under both i_mmap_sem and
-> > i_rwsem held exclusively which provides appropriate serialization with
-> > racing page faults. However there is currently nothing that prevents
-> > ordinary read(2) from racing with the hole punch and instantiating page
-> > cache page after hole punching has evicted page cache but before it has
-> > removed blocks from the inode. This page cache page will be mapping soon
-> > to be freed block and that can lead to returning stale data to userspace
-> > or even filesystem corruption.
-> > 
-> > Fix the problem by protecting reads as well as readahead requests with
-> > i_mmap_sem.
-> > 
-> > CC: stable@vger.kernel.org
-> > Reported-by: Amir Goldstein <amir73il@gmail.com>
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> > ---
-> >  fs/ext4/file.c | 35 +++++++++++++++++++++++++++++++----
-> >  1 file changed, 31 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> > index 2c5baa5e8291..a21fa9f8fb5d 100644
-> > --- a/fs/ext4/file.c
-> > +++ b/fs/ext4/file.c
-> > @@ -34,6 +34,17 @@
-> >  #include "xattr.h"
-> >  #include "acl.h"
-> >  
-> > +static ssize_t ext4_file_buffered_read(struct kiocb *iocb, struct iov_iter *to)
-> > +{
-> > +	ssize_t ret;
-> > +	struct inode *inode = file_inode(iocb->ki_filp);
-> > +
-> > +	down_read(&EXT4_I(inode)->i_mmap_sem);
-> > +	ret = generic_file_read_iter(iocb, to);
-> > +	up_read(&EXT4_I(inode)->i_mmap_sem);
-> > +	return ret;
+Hi Dan/Jerome,
+
+On 12:20 14/02, Dan Williams wrote:
+> On Thu, Feb 14, 2019 at 12:09 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Thu, Feb 14, 2019 at 11:31:24AM -0800, Dan Williams wrote:
+> > > On Thu, Feb 14, 2019 at 11:10 AM Jerome Glisse <jglisse@redhat.com> wrote:
+> > > > I am just again working on my struct page mapping patchset as well as
+> > > > the generic page write protection that sits on top. I hope to be able
+> > > > to post the v2 in couple weeks. You can always look at my posting last
+> > > > year to see more details.
+> > >
+> > > Yes, I have that in mind as one of the contenders. However, it's not
+> > > clear to me that its a suitable fit for filesystem-reflink. Others
+> > > have floated the 'page proxy' idea, so it would be good to discuss the
+> > > merits of the general approaches.
+> >
+> > ... and my preferred option of putting pfn entries in the page cache.
 > 
-> Isn't i_mmap_sem taken in the page fault path? What makes it safe
-> to take here both outside and inside the mmap_sem at the same time?
-> I mean, the whole reason for i_mmap_sem existing is that the inode
-> i_rwsem can't be taken both outside and inside the i_mmap_sem at the
-> same time, so what makes the i_mmap_sem different?
+> Another option to include the discussion.
+> 
+> > Or is that what you meant by "page proxy"?
+> 
+> Page proxy would be an object that a filesystem could allocate to
+> point back to a single physical 'struct page *'. The proxy would
+> contain an override for page->index.
 
-Drat, you're right that read path may take page fault which will cause lock
-inversion with mmap_sem. Just my xfstests run apparently didn't trigger
-this as I didn't get any lockdep splat. Thanks for catching this!
+Was there any outcome on this and its implementation? I am specifically
+interested in this for DAX support on btrfs/CoW: The TODO comment on
+top of dax_associate_entry() :)
 
-								Honza
+If there are patches/git tree I could use to base my patches on, it would
+be nice.
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Goldwyn
