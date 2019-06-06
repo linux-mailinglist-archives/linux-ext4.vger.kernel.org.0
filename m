@@ -2,84 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4C737245
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 12:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9A6373B4
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 14:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727669AbfFFK66 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jun 2019 06:58:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32798 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727324AbfFFK66 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 6 Jun 2019 06:58:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7F9F6AF21;
-        Thu,  6 Jun 2019 10:58:56 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id ED0EC1E3F51; Thu,  6 Jun 2019 12:58:55 +0200 (CEST)
-Date:   Thu, 6 Jun 2019 12:58:55 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH RFC 07/10] fs/ext4: Fail truncate if pages are GUP pinned
-Message-ID: <20190606105855.GG7433@quack2.suse.cz>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606014544.8339-8-ira.weiny@intel.com>
+        id S1727693AbfFFMDq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jun 2019 08:03:46 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:37771 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727287AbfFFMDq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 08:03:46 -0400
+Received: by mail-ed1-f68.google.com with SMTP id w13so2994993eds.4
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Jun 2019 05:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=dps99h7ztfh0VFzuOM+26r1LfEQfcnOZfSRrXgVOlYA=;
+        b=V4Mmc5aoKMA9GelKVjQEg2HZgbVn8eWYVZZ3/uE+38nVuoRrOQtNee3GaMFCUEBbi3
+         x/LJxfwj8O2Aijgnh7EQ2uEJS4rBp+OzzcpOzW2NufkXYkHae4Ra8txeXRvhDirygapj
+         ctDOc2h3qpkGRXQBS3jRLAQHN9sKoir2QCiSKBLdwQVbJ1h7DZLcHmZ4R12NUzZiSGQw
+         g1D7u6duNZ6VUGyB89ToZ60FZZEVSJ5NoKHT5pLE74+uKcBe9rE7qzEBtUZsX8yS5+Oi
+         Jc0r3mcxATlRc4nWaedZP1c7jFM48YaLVM9FwIms8YEnwcyG6oHshdjsG2WoY6MECikM
+         dfaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=dps99h7ztfh0VFzuOM+26r1LfEQfcnOZfSRrXgVOlYA=;
+        b=qHX2szg/6xNN4/D5l58h6fbC1fgIRDxbL74UZV1+V6+LavMjsOLe06+Okhab0eMasE
+         HKftFwkhtR6RpHy0GSCNsJ3EH7mLTOjEpuxe59X0ubx4iM0/X4t/C5hVU/zoa34FX/r7
+         GiwW1J53WMQDWdXcdIqq5BgScwQgX1k1CMkIzibS1RjB3M0LEO13azwHizba3rQzzSbP
+         W31eUIs5fj2kT7rongtsvE31naLbsV2TMPBKOFIZmgVBczTsP8ZMUJi8p/elyjH2avbf
+         nspEqa61TJTSEivCDF8UcU1BQfA5qgYiLKAVAiixFpvmsSso1WCxc+owks9xQtQH8tEN
+         kYMg==
+X-Gm-Message-State: APjAAAVsMveGNgBSel8IchIqVftCdiLkBiU9R3H6fOdEZ01c395m4PIh
+        eX1WuybNz4QTRGKtTmttE/VGtvXlFLyCKUlOn4I=
+X-Google-Smtp-Source: APXvYqwydz95WMg0/uwxwKHMvpABi2kGR5ecV2mPlMGJyagCzjAUpUS1I1B+74FIqg9FynmoE2F8K1VeBwJHK1cUUEk=
+X-Received: by 2002:a17:906:4acc:: with SMTP id u12mr9974089ejt.41.1559822624824;
+ Thu, 06 Jun 2019 05:03:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190606014544.8339-8-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a50:b66c:0:0:0:0:0 with HTTP; Thu, 6 Jun 2019 05:03:44 -0700 (PDT)
+From:   Western Union <officee633@gmail.com>
+Date:   Thu, 6 Jun 2019 05:03:44 -0700
+Message-ID: <CAPzKHac6JbT8P9WRikaoCDF-SKuKRLT6+r9j+cxPaBM2e+6u1g@mail.gmail.com>
+Subject: Urgent Message
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 05-06-19 18:45:40, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> If pages are actively gup pinned fail the truncate operation.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  fs/ext4/inode.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 75f543f384e4..1ded83ec08c0 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -4250,6 +4250,9 @@ int ext4_break_layouts(struct inode *inode, loff_t offset, loff_t len)
->  		if (!page)
->  			return 0;
->  
-> +		if (page_gup_pinned(page))
-> +			return -ETXTBSY;
-> +
->  		error = ___wait_var_event(&page->_refcount,
->  				atomic_read(&page->_refcount) == 1,
->  				TASK_INTERRUPTIBLE, 0, 0,
+Dear Western Union Customer,
 
-This caught my eye. Does this mean that now truncate for a file which has
-temporary gup users (such buffers for DIO) can fail with ETXTBUSY? That
-doesn't look desirable. If we would mandate layout lease while pages are
-pinned as I suggested, this could be dealt with by checking for leases with
-pins (breaking such lease would return error and not break it) and if
-breaking leases succeeds (i.e., there are no long-term pinned pages), we'd
-just wait for the remaining references as we do now.
+You have been awarded with the sum of $50,000 USD by our office as one
+of our customers who use Western Union in their daily business
+transaction. This award was been selected through the internet, where
+your name and information's was indicated and notified. Please provide
+Mr. Samuel Amar with the following details listed below so that your
+fund will be remitted to you through Western Union.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+1. Name:
+2. Address:
+3. Country:
+4. Phone Number:
+5. Occupation:
+6. Sex:
+7. Age:
+
+Mr. Samuel Amar  E-mail: westernunionagency@aol.com
+
+As soon as these details are received and verified, your fund will be
+transferred to you.Thank you, for using western union.
