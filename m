@@ -2,212 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A153697F
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 03:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE1C36AF3
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 06:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbfFFBp2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 5 Jun 2019 21:45:28 -0400
-Received: from mga03.intel.com ([134.134.136.65]:36145 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726950AbfFFBp2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 5 Jun 2019 21:45:28 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Jun 2019 18:45:27 -0700
-X-ExtLoop1: 1
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga002.jf.intel.com with ESMTP; 05 Jun 2019 18:45:26 -0700
-From:   ira.weiny@intel.com
-To:     Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH RFC 10/10] mm/gup: Remove FOLL_LONGTERM DAX exclusion
-Date:   Wed,  5 Jun 2019 18:45:43 -0700
-Message-Id: <20190606014544.8339-11-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190606014544.8339-1-ira.weiny@intel.com>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1725784AbfFFEcj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jun 2019 00:32:39 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:39083 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725769AbfFFEcj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 00:32:39 -0400
+Received: by mail-pl1-f195.google.com with SMTP id g9so387100plm.6
+        for <linux-ext4@vger.kernel.org>; Wed, 05 Jun 2019 21:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=bsZifgz0SIlDcXcSo3Ws+LcOmMza89DsMDLo0jxX0mY=;
+        b=iqnSianw8jj6n3YvYj4BoeqYUzGQFttsmePpo2Xa7qRsjxDdHfwPayxO8qot8vHGtp
+         ezAw7DHRwi8/wb7cVZowLav5POX7P5MuNWMUEn+HZ7qo9ROXOTxoshR0wHQVCF8DFDv7
+         3jpd5FDPTBl+8r33hf6J6FPXrJXa3lK4r5eLYg1UbprusnFWdjGIzQogiKCBQY7efs32
+         hbohwI8dCG0rYZmi8HZ1eBOSNJMbtdyh1PENUoaPM72IL3LRpzQtggZGnk6n4hmSaw3w
+         +R+arcscxzXomdhqFYnbZoLuaz2ALLIOGAJzzG/Es9jPdcuMJpn5fcFQN72C166zCFDB
+         1Gig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bsZifgz0SIlDcXcSo3Ws+LcOmMza89DsMDLo0jxX0mY=;
+        b=lCMlNPhS3zqZ1EblNeU4jlvfH+5G6T2v29V1NOf/ro0eNDavyQmx6VrIkRQPlVjf+W
+         A0hnHx9eIkMfPIJ8QuoaT5RBDQ23mtM4W/WxBSD7K8oJodWN7DQ9FOLKOgQLuEj7ONr/
+         ljxpMozygBe1EZbVgg0dbWVEs4OdCxa2IkbtyqIf/KvWAqM8KqXy3jebwS2/2HbJeXmr
+         TWU268+EaJcXy50pr6EoftaBFUq7Ll2a3VWkjh4C1W2cZJvuQPzFAFcQM47oP3J12rf4
+         PzNeTdbCKxH0d55ON3+Pn498AYV9eCc+5AdZFxr5zI+34bIPvk79p65924E/X+TG1INd
+         reSQ==
+X-Gm-Message-State: APjAAAXz03140ZKJq5CsmEUg2odM4I5/DuyiaUNdoinlwKIuoH6juyi7
+        G9t2tkCwsB8199aeJjcmLrsdfpoj
+X-Google-Smtp-Source: APXvYqz8ZG4YsAqNUtDCsSY7OsdffZpO/uBq/9ITkVOMlwJV6SfZjN1yRmvoV+hHdsDXjpOSMbinPg==
+X-Received: by 2002:a17:902:7e0f:: with SMTP id b15mr40026886plm.237.1559795558655;
+        Wed, 05 Jun 2019 21:32:38 -0700 (PDT)
+Received: from localhost.localdomain (fs276ec80e.tkyc203.ap.nuro.jp. [39.110.200.14])
+        by smtp.gmail.com with ESMTPSA id f17sm445069pgv.16.2019.06.05.21.32.36
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 05 Jun 2019 21:32:37 -0700 (PDT)
+From:   Wang Shilong <wangshilong1991@gmail.com>
+X-Google-Original-From: Wang Shilong <wshilong1991@gmail.com>
+To:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Cc:     Wang Shilong <wshilong@ddn.com>, Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH 1/2] ext4: only set project inherit bit for directory
+Date:   Thu,  6 Jun 2019 13:32:24 +0900
+Message-Id: <1559795545-17290-1-git-send-email-wshilong1991@gmail.com>
+X-Mailer: git-send-email 1.7.1
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+From: Wang Shilong <wshilong@ddn.com>
 
-Now that there is a mechanism for users to safely take LONGTERM pins on
-FS DAX pages, remove the FS DAX exclusion from GUP with FOLL_LONGTERM.
+It doesn't make any sense to have project inherit bits
+for regular files, even though this won't cause any
+problem, but it is better fix this.
 
-Special processing remains in effect for CONFIG_CMA
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Cc: Andreas Dilger <adilger@dilger.ca>
+Signed-off-by: Wang Shilong <wshilong@ddn.com>
 ---
- mm/gup.c | 78 ++++++--------------------------------------------------
- 1 file changed, 8 insertions(+), 70 deletions(-)
+ fs/ext4/ext4.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index d06cc5b14c0b..4f6e5606b81e 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1392,26 +1392,6 @@ long get_user_pages_remote(struct task_struct *tsk, struct mm_struct *mm,
- }
- EXPORT_SYMBOL(get_user_pages_remote);
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 1cb67859e051..ceb74093e138 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -421,7 +421,8 @@ struct flex_groups {
+ 			   EXT4_PROJINHERIT_FL | EXT4_CASEFOLD_FL)
  
--#if defined(CONFIG_FS_DAX) || defined (CONFIG_CMA)
--static bool check_dax_vmas(struct vm_area_struct **vmas, long nr_pages)
--{
--	long i;
--	struct vm_area_struct *vma_prev = NULL;
--
--	for (i = 0; i < nr_pages; i++) {
--		struct vm_area_struct *vma = vmas[i];
--
--		if (vma == vma_prev)
--			continue;
--
--		vma_prev = vma;
--
--		if (vma_is_fsdax(vma))
--			return true;
--	}
--	return false;
--}
--
- #ifdef CONFIG_CMA
- static struct page *new_non_cma_page(struct page *page, unsigned long private)
- {
-@@ -1542,18 +1522,6 @@ static long check_and_migrate_cma_pages(struct task_struct *tsk,
+ /* Flags that are appropriate for regular files (all but dir-specific ones). */
+-#define EXT4_REG_FLMASK (~(EXT4_DIRSYNC_FL | EXT4_TOPDIR_FL | EXT4_CASEFOLD_FL))
++#define EXT4_REG_FLMASK (~(EXT4_DIRSYNC_FL | EXT4_TOPDIR_FL | EXT4_CASEFOLD_FL |\
++			   EXT4_PROJINHERIT_FL))
  
- 	return nr_pages;
- }
--#else
--static long check_and_migrate_cma_pages(struct task_struct *tsk,
--					struct mm_struct *mm,
--					unsigned long start,
--					unsigned long nr_pages,
--					struct page **pages,
--					struct vm_area_struct **vmas,
--					unsigned int gup_flags)
--{
--	return nr_pages;
--}
--#endif
- 
- /*
-  * __gup_longterm_locked() is a wrapper for __get_user_pages_locked which
-@@ -1567,49 +1535,28 @@ static long __gup_longterm_locked(struct task_struct *tsk,
- 				  struct vm_area_struct **vmas,
- 				  unsigned int gup_flags)
- {
--	struct vm_area_struct **vmas_tmp = vmas;
- 	unsigned long flags = 0;
--	long rc, i;
-+	long rc;
- 
--	if (gup_flags & FOLL_LONGTERM) {
--		if (!pages)
--			return -EINVAL;
--
--		if (!vmas_tmp) {
--			vmas_tmp = kcalloc(nr_pages,
--					   sizeof(struct vm_area_struct *),
--					   GFP_KERNEL);
--			if (!vmas_tmp)
--				return -ENOMEM;
--		}
-+	if (flags & FOLL_LONGTERM)
- 		flags = memalloc_nocma_save();
--	}
- 
- 	rc = __get_user_pages_locked(tsk, mm, start, nr_pages, pages,
--				     vmas_tmp, NULL, gup_flags);
-+				     vmas, NULL, gup_flags);
- 
- 	if (gup_flags & FOLL_LONGTERM) {
- 		memalloc_nocma_restore(flags);
- 		if (rc < 0)
- 			goto out;
- 
--		if (check_dax_vmas(vmas_tmp, rc)) {
--			for (i = 0; i < rc; i++)
--				put_page(pages[i]);
--			rc = -EOPNOTSUPP;
--			goto out;
--		}
--
- 		rc = check_and_migrate_cma_pages(tsk, mm, start, rc, pages,
--						 vmas_tmp, gup_flags);
-+						 vmas, gup_flags);
- 	}
- 
- out:
--	if (vmas_tmp != vmas)
--		kfree(vmas_tmp);
- 	return rc;
- }
--#else /* !CONFIG_FS_DAX && !CONFIG_CMA */
-+#else /* !CONFIG_CMA */
- static __always_inline long __gup_longterm_locked(struct task_struct *tsk,
- 						  struct mm_struct *mm,
- 						  unsigned long start,
-@@ -1621,7 +1568,7 @@ static __always_inline long __gup_longterm_locked(struct task_struct *tsk,
- 	return __get_user_pages_locked(tsk, mm, start, nr_pages, pages, vmas,
- 				       NULL, flags);
- }
--#endif /* CONFIG_FS_DAX || CONFIG_CMA */
-+#endif /* CONFIG_CMA */
- 
- /*
-  * This is the same as get_user_pages_remote(), just with a
-@@ -1882,9 +1829,6 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
- 			goto pte_unmap;
- 
- 		if (pte_devmap(pte)) {
--			if (unlikely(flags & FOLL_LONGTERM))
--				goto pte_unmap;
--
- 			pgmap = get_dev_pagemap(pte_pfn(pte), pgmap);
- 			if (unlikely(!pgmap)) {
- 				undo_dev_pagemap(nr, nr_start, pages);
-@@ -2057,12 +2001,9 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- 	if (!pmd_access_permitted(orig, flags & FOLL_WRITE))
- 		return 0;
- 
--	if (pmd_devmap(orig)) {
--		if (unlikely(flags & FOLL_LONGTERM))
--			return 0;
-+	if (pmd_devmap(orig))
- 		return __gup_device_huge_pmd(orig, pmdp, addr, end, pages, nr,
- 					     flags);
--	}
- 
- 	refs = 0;
- 	page = pmd_page(orig) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
-@@ -2101,12 +2042,9 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
- 	if (!pud_access_permitted(orig, flags & FOLL_WRITE))
- 		return 0;
- 
--	if (pud_devmap(orig)) {
--		if (unlikely(flags & FOLL_LONGTERM))
--			return 0;
-+	if (pud_devmap(orig))
- 		return __gup_device_huge_pud(orig, pudp, addr, end, pages, nr,
- 					     flags);
--	}
- 
- 	refs = 0;
- 	page = pud_page(orig) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
+ /* Flags that are appropriate for non-directories/regular files. */
+ #define EXT4_OTHER_FLMASK (EXT4_NODUMP_FL | EXT4_NOATIME_FL)
 -- 
-2.20.1
+2.21.0
 
