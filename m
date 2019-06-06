@@ -2,100 +2,156 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DD237AE4
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 19:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574FD37D3F
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 21:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730109AbfFFRVc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jun 2019 13:21:32 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:42518 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728086AbfFFRVc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 13:21:32 -0400
-Received: by mail-lj1-f195.google.com with SMTP id t28so2784843lje.9
-        for <linux-ext4@vger.kernel.org>; Thu, 06 Jun 2019 10:21:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fSh9JeAYZqEFU07GFlcm4g2RwNfVCw5VkJKLPgvFgpM=;
-        b=GXSY8IkFrWa7J8B6PJEPqJ0gkrWF9aF2wuVJ0wQ40ziAUSXofomBUgMg2tSIClx+89
-         +trdK2/MhDj4EjpP2yv3Xn8pX3rA48qk6bQhrjbIVV9fY3W5uHsxoW6S3hiV1u6bue1h
-         +WQ8hOkagCs/4IfWuZtcPZAZi6BK/PN2CpG1Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fSh9JeAYZqEFU07GFlcm4g2RwNfVCw5VkJKLPgvFgpM=;
-        b=bOACeuLd4HI2SYvCrahhhi1SXu5Mt0wJ4YfUdzyavFZrH5QhRPMYDJoPkpXb5n6UqU
-         tLTjxW/YH+ttcszpWNY18D8Sxa9mVZp7lktKw3eRNgAJLdtTvM+YTYRZxqsxwR9XW77p
-         BBUJ2zIdtXGZNBF943B4iksrWgdcHINR5VokUww3gTpWwl9o05jCAdxZc4wnPlxAcIiW
-         Cz1SEI2U86oCh+b6zwHJoRjEnrl0Ji9+usKu6rDVUlthi28aksaoN07n2ERwF/EDpdzT
-         DFEM1u0sUjSq5nWIzfCl0j8JuWEIcUM8345r2SpBd2x4Thai5SU7TLQPPf5fFhuJlwco
-         ENdA==
-X-Gm-Message-State: APjAAAVHIiKUQEOqv1GnwvqoVUqahbv6iKq/ljjG4ErnYpGK+ooOaBpt
-        d0xxrYpCCwYtpWs/NJ/rz++1sHT0NZU=
-X-Google-Smtp-Source: APXvYqz2ElXC9ahzdil4yaxz3mj98mLgZWoxgz6kJBqhPOmj6rIwru3o8Oz3+4j+xCdWmqcFak41Yg==
-X-Received: by 2002:a2e:3013:: with SMTP id w19mr13068900ljw.73.1559841689566;
-        Thu, 06 Jun 2019 10:21:29 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id u22sm499575ljd.18.2019.06.06.10.21.28
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 Jun 2019 10:21:28 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id s21so2793352lji.8
-        for <linux-ext4@vger.kernel.org>; Thu, 06 Jun 2019 10:21:28 -0700 (PDT)
-X-Received: by 2002:a2e:9ad1:: with SMTP id p17mr26100221ljj.147.1559841687851;
- Thu, 06 Jun 2019 10:21:27 -0700 (PDT)
+        id S1726406AbfFFTbw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jun 2019 15:31:52 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60352 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbfFFTbw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 15:31:52 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 37662283DB8
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     tytso@mit.edu
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: [PATCH v2 1/2] common/casefold: Add infrastructure to test filename casefold feature
+Date:   Thu,  6 Jun 2019 15:31:37 -0400
+Message-Id: <20190606193138.25852-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20190606155205.2872-1-ebiggers@kernel.org>
-In-Reply-To: <20190606155205.2872-1-ebiggers@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 6 Jun 2019 10:21:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgSzRzoro8ATO5xb6OFxN1A0fjUCQSAHfGuEPbEu+zWvA@mail.gmail.com>
-Message-ID: <CAHk-=wgSzRzoro8ATO5xb6OFxN1A0fjUCQSAHfGuEPbEu+zWvA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/16] fs-verity: read-only file-based authenticity protection
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 6, 2019 at 8:54 AM Eric Biggers <ebiggers@kernel.org> wrote:
->
-> This is a redesigned version of the fs-verity patchset, implementing
-> Ted's suggestion to build the Merkle tree in the kernel
-> (https://lore.kernel.org/linux-fsdevel/20190207031101.GA7387@mit.edu/).
-> This greatly simplifies the UAPI, since the verity metadata no longer
-> needs to be transferred to the kernel.
+Add a set of basic helper functions to simplify the testing of
+casefolding capable filesystems.
 
-Interfaces look sane to me. My only real concern is whether it would
-make sense to make the FS_IOC_ENABLE_VERITY ioctl be something that
-could be done incrementally, since the way it is done now it looks
-like any random user could create a big file and then do the
-FS_IOC_ENABLE_VERITY to make the kernel do a _very_ expensive
-operation.
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+---
+ common/casefold | 108 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 108 insertions(+)
+ create mode 100644 common/casefold
 
-Yes, I see the
+diff --git a/common/casefold b/common/casefold
+new file mode 100644
+index 000000000000..34c1d4ae1af1
+--- /dev/null
++++ b/common/casefold
+@@ -0,0 +1,108 @@
++#-----------------------------------------------------------------------
++#
++# Common functions for testing filename casefold feature
++#
++#-----------------------------------------------------------------------
++# Copyright (c) 2018 Collabora, Ltd.  All Rights Reserved.
++#
++# Author: Gabriel Krisman Bertazi <krisman@collabora.com>
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write the Free Software Foundation,
++# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#-----------------------------------------------------------------------
++
++_has_casefold_feature_kernel_support() {
++    case $FSTYP in
++	ext4)
++	    test -f '/sys/fs/ext4/features/casefold'
++	    ;;
++	*)
++	    # defaults to unsupported
++	    false
++	    ;;
++    esac
++}
++
++_require_casefold_support() {
++    if ! _has_casefold_feature_kernel_support ; then
++	_notrun "$FSTYP does not support casefold feature"
++    fi
++
++    if ! _scratch_mkfs_casefold &>>seqres.full; then
++	_notrun "$FSTYP userspace tools do not support casefold"
++    fi
++
++    # Make sure the kernel can mount a filesystem with the encoding
++    # defined by the userspace tools.  This will fail if
++    # the userspace tool used a more recent encoding than the one
++    # supported in kernel space.
++    if ! _try_scratch_mount &>>seqres.full; then
++	_notrun \
++	    "kernel can't mount filesystem using the encoding set by userspace"
++    fi
++    _scratch_unmount
++}
++
++_scratch_mkfs_casefold () {
++    case $FSTYP in
++	ext4)
++	    _scratch_mkfs -O casefold $*
++	    ;;
++	*)
++	    _notrun "Don't know how to mkfs with casefold support on $FSTYP"
++	    ;;
++	esac
++}
++
++_scratch_mkfs_casefold_strict () {
++    case $FSTYP in
++	ext4)
++	    _scratch_mkfs -O casefold -E encoding_flags=strict
++	    ;;
++	*)
++	    _notrun \
++		"Don't know how to mkfs with casefold-strict support on $FSTYP"
++	    ;;
++	esac
++}
++
++_casefold_check_exact_name () {
++    # To get the exact disk name, we need some method that does a
++    # getdents() on the parent directory, such that we don't get
++    # normalized/casefolded results.  'Find' works ok.
++    basedir=$1
++    exact_name=$2
++    find ${basedir} | grep -q ${exact_name}
++}
++
++_try_set_casefold_attr () {
++    chattr +F "${1}" &>/dev/null
++}
++
++_try_unset_casefold_attr () {
++    chattr -F "${1}" &>/dev/null
++}
++
++_set_casefold_attr () {
++    _try_set_casefold_attr "${1}" || \
++	_fail "Unable to set casefold attribute on ${1}"
++}
++
++_unset_casefold_attr () {
++    _try_unset_casefold_attr "${1}" || \
++	_fail "Unable to unset casefold attribute on ${1}"
++}
++
++_is_casefolded_dir () {
++    lsattr -ld "${1}" | grep -q "Casefold"
++}
+-- 
+2.20.1
 
-+               if (fatal_signal_pending(current))
-+                       return -EINTR;
-+               cond_resched();
-
-in there, so it's not like it's some entirely unkillable thing, and
-maybe we don't care as a result. But maybe the ioctl interface could
-be fundamentally restartable?
-
-If that was already considered and people just went "too complex", never mind.
-
-               Linus
