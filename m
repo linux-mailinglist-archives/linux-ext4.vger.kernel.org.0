@@ -2,104 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E426A37D6D
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 21:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFAA37D8D
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 21:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbfFFTnr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jun 2019 15:43:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726830AbfFFTnr (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 6 Jun 2019 15:43:47 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBD36206BB;
-        Thu,  6 Jun 2019 19:43:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559850226;
-        bh=Fege0efxE/bsHjarKcgO1NRvY4phBlvmuwpR58JTZgk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HgJAtXXa+H7X3BCggX8tzS8k3dpOhCm7dRBrPabKkhiRglFoiu/8HtgJPlN9xmnyy
-         Gp2M1DQt0DA1J57r+n0aOjWprz5ItKFbCPegohLbpQoEr+QpGd1CCtY6w6aBC2nbsx
-         rEupwgxDdkpH8akd0Ifm9wSECTgZZq2LBh8a8N1M=
-Date:   Thu, 6 Jun 2019 12:43:44 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Victor Hsieh <victorhsieh@google.com>,
+        id S1727436AbfFFTqy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jun 2019 15:46:54 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:40446 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726997AbfFFTqy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 15:46:54 -0400
+Received: by mail-qt1-f194.google.com with SMTP id a15so4125915qtn.7
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Jun 2019 12:46:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qajFXRwDSumJ1VBt1nbVb8YwByztvxS980sXRo7osmo=;
+        b=eoZ3O1RetGytNaHJt1/lQ055Dyp4yKlZbucZb+BvUi5davTaqNwzsojRJaEX3o7YBt
+         pW3kUz6Q6eZ28rLtA9Jjv3JM9Jbd8rpL+tsDn7iM2UqXOLGkn166O+4yvLdC3Kj1J1Kw
+         EN/awr72rkEt7yQR+AiRXrTbLCAXuw/PReh8Jee8gULLsUma+/gjV4ptkpnFqaWY9ScQ
+         pfzfEEURVPjfvQ17a2N2djx/e2F+JgvAKdq7T0ZC0+SYGMwKMi53TV6yqzPwuSf8v+9u
+         LYyAO6rl9kNxn5WFf8W3yFzNwERteSui2pJz14BOr2RQ5bfl/hj47SMCT66KbVbY4Rcp
+         hJzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qajFXRwDSumJ1VBt1nbVb8YwByztvxS980sXRo7osmo=;
+        b=n3TaN9co5N1F/gRqSWmvzrUT6NJOYkTnS9IqO0OlNwxxwyFOg/6WBBWi/+MaIh/1s5
+         QqlVfsiLH8T3I7s+M7ihIAKjhdpPWQeIM6VGzqiUmyQ0cRnNWiLchG6QFxXkvMHSgfz3
+         hZGhrr+Q9XXWHQl/oxAebYAUFQjm9+d6rORGqI0AIiyuR//Tu+1+1Oz0a+S1nUOJw1pQ
+         vH57fAVHFJegJV9nqjlMdsVEfpxB1RN0YOyO1YMydcLryEqHx6XxauJoxi0G4kf0xz/1
+         7037ULd5K5zApT4klsnR1R2tVdeuqy8i8IF+3EnYfJmBvX9NLvmcagx/X05adBmJYBNW
+         5mjQ==
+X-Gm-Message-State: APjAAAXWExmRdWzHWY0zR4PhgQUhep7pmmT8y9+vLl0tcv+dhflMBIAr
+        BhWjIJZsn55cxVJXn1AEwV21IA==
+X-Google-Smtp-Source: APXvYqzAxBsAbtmAf/N2gWiDpLiwySAazMdlavwrTbL7etxy94AKJa3CMpYnlx0qPyIVzWATublI1w==
+X-Received: by 2002:a0c:d0b6:: with SMTP id z51mr27514879qvg.3.1559850413173;
+        Thu, 06 Jun 2019 12:46:53 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id t197sm1407918qke.2.2019.06.06.12.46.52
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Jun 2019 12:46:52 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hYyLc-0007zs-5h; Thu, 06 Jun 2019 16:46:52 -0300
+Date:   Thu, 6 Jun 2019 16:46:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>,
         Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>
-Subject: Re: [PATCH v4 00/16] fs-verity: read-only file-based authenticity
- protection
-Message-ID: <20190606194343.GA84833@gmail.com>
-References: <20190606155205.2872-1-ebiggers@kernel.org>
- <CAHk-=wgSzRzoro8ATO5xb6OFxN1A0fjUCQSAHfGuEPbEu+zWvA@mail.gmail.com>
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190606194652.GI17373@ziepe.ca>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <c559c2ce-50dc-d143-5741-fe3d21d0305c@nvidia.com>
+ <20190606171158.GB11374@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgSzRzoro8ATO5xb6OFxN1A0fjUCQSAHfGuEPbEu+zWvA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190606171158.GB11374@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 06, 2019 at 10:21:12AM -0700, Linus Torvalds wrote:
-> On Thu, Jun 6, 2019 at 8:54 AM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > This is a redesigned version of the fs-verity patchset, implementing
-> > Ted's suggestion to build the Merkle tree in the kernel
-> > (https://lore.kernel.org/linux-fsdevel/20190207031101.GA7387@mit.edu/).
-> > This greatly simplifies the UAPI, since the verity metadata no longer
-> > needs to be transferred to the kernel.
-> 
-> Interfaces look sane to me. My only real concern is whether it would
-> make sense to make the FS_IOC_ENABLE_VERITY ioctl be something that
-> could be done incrementally, since the way it is done now it looks
-> like any random user could create a big file and then do the
-> FS_IOC_ENABLE_VERITY to make the kernel do a _very_ expensive
-> operation.
-> 
-> Yes, I see the
-> 
-> +               if (fatal_signal_pending(current))
-> +                       return -EINTR;
-> +               cond_resched();
-> 
-> in there, so it's not like it's some entirely unkillable thing, and
-> maybe we don't care as a result. But maybe the ioctl interface could
-> be fundamentally restartable?
-> 
-> If that was already considered and people just went "too complex", never mind.
-> 
->                Linus
+On Thu, Jun 06, 2019 at 10:11:58AM -0700, Ira Weiny wrote:
 
-Making it incremental would be complex.  We could make FS_IOC_ENABLE_VERITY
-write checkpoints periodically, and make it resume from the checkpoint if
-present.  But then we'd have to worry about sync'ing the Merkle tree before
-writing each checkpoint, and storing the Merkle tree parameters in each
-checkpoint so that if the second call to FS_IOC_ENABLE_VERITY is made with
-different parameters it knows to delete everything and restart from scratch.
+> 2) This is a bit more subtle and something I almost delayed sending these out
+>    for.  Currently the implementation of a lease break actually removes the
+>    lease from the file.  I did not want this to happen and I was thinking of
+>    delaying this patch set to implement something which keeps the lease around
+>    but I figured I should get something out for comments.  Jan has proposed
+>    something along these lines and I agree with him so I'm going to ask you to
+>    read my response to him about the details.
+>
+> 
+>    Anyway so the key here is that currently an app needs the SIGIO to retake
+>    the lease if they want to map the file again or in parts based on usage.
+>    For example, they may only want to map some of the file for when they are
+>    using it and then map another part later.  Without the SIGIO they would lose
+>    their lease or would have to just take the lease for each GUP pin (which
+>    adds overhead).  Like I said I did not like this but I left it to get
+>    something which works out.
 
-Or we could make it explicit in the UAPI, where userspace calls ioctls to build
-blocks 0 through 9999, then 10000 through 19999, etc.  But that would make the
-UAPI much more complex, and the kernel would need to do lots of extra validation
-of the parameters passed in.  This approach would also not be crash-safe unless
-userspace did its own checkpointing, whereas the all-or-nothing API naturally
-avoids inconsistent states.
+So to be clear.. 
 
-And either way of making it incremental, the "partial Merkle tree" would also
-become a valid on-disk state.  Conceptually that adds a lot of complexity, and
-probably people would want fsck to support removing all the partial trees,
-similar to how e2fsck supports optimizing directories and extent trees.
+Even though the lease is broken the GUP remains, the pages remain
+pined, and truncate/etc continues to fail? 
 
-So in the end, it's not something I decided to add.
+I like Jan's take on this actually.. see other email.
 
-- Eric
+Jason
