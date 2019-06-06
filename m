@@ -2,176 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E1337A9D
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 19:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DD237AE4
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 19:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729893AbfFFRKs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jun 2019 13:10:48 -0400
-Received: from mga05.intel.com ([192.55.52.43]:20370 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727512AbfFFRKs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 6 Jun 2019 13:10:48 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Jun 2019 10:10:47 -0700
-X-ExtLoop1: 1
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga001.jf.intel.com with ESMTP; 06 Jun 2019 10:10:46 -0700
-Date:   Thu, 6 Jun 2019 10:11:58 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190606171158.GB11374@iweiny-DESK2.sc.intel.com>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <c559c2ce-50dc-d143-5741-fe3d21d0305c@nvidia.com>
+        id S1730109AbfFFRVc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jun 2019 13:21:32 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:42518 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728086AbfFFRVc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 13:21:32 -0400
+Received: by mail-lj1-f195.google.com with SMTP id t28so2784843lje.9
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Jun 2019 10:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fSh9JeAYZqEFU07GFlcm4g2RwNfVCw5VkJKLPgvFgpM=;
+        b=GXSY8IkFrWa7J8B6PJEPqJ0gkrWF9aF2wuVJ0wQ40ziAUSXofomBUgMg2tSIClx+89
+         +trdK2/MhDj4EjpP2yv3Xn8pX3rA48qk6bQhrjbIVV9fY3W5uHsxoW6S3hiV1u6bue1h
+         +WQ8hOkagCs/4IfWuZtcPZAZi6BK/PN2CpG1Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fSh9JeAYZqEFU07GFlcm4g2RwNfVCw5VkJKLPgvFgpM=;
+        b=bOACeuLd4HI2SYvCrahhhi1SXu5Mt0wJ4YfUdzyavFZrH5QhRPMYDJoPkpXb5n6UqU
+         tLTjxW/YH+ttcszpWNY18D8Sxa9mVZp7lktKw3eRNgAJLdtTvM+YTYRZxqsxwR9XW77p
+         BBUJ2zIdtXGZNBF943B4iksrWgdcHINR5VokUww3gTpWwl9o05jCAdxZc4wnPlxAcIiW
+         Cz1SEI2U86oCh+b6zwHJoRjEnrl0Ji9+usKu6rDVUlthi28aksaoN07n2ERwF/EDpdzT
+         DFEM1u0sUjSq5nWIzfCl0j8JuWEIcUM8345r2SpBd2x4Thai5SU7TLQPPf5fFhuJlwco
+         ENdA==
+X-Gm-Message-State: APjAAAVHIiKUQEOqv1GnwvqoVUqahbv6iKq/ljjG4ErnYpGK+ooOaBpt
+        d0xxrYpCCwYtpWs/NJ/rz++1sHT0NZU=
+X-Google-Smtp-Source: APXvYqz2ElXC9ahzdil4yaxz3mj98mLgZWoxgz6kJBqhPOmj6rIwru3o8Oz3+4j+xCdWmqcFak41Yg==
+X-Received: by 2002:a2e:3013:: with SMTP id w19mr13068900ljw.73.1559841689566;
+        Thu, 06 Jun 2019 10:21:29 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id u22sm499575ljd.18.2019.06.06.10.21.28
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Jun 2019 10:21:28 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id s21so2793352lji.8
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Jun 2019 10:21:28 -0700 (PDT)
+X-Received: by 2002:a2e:9ad1:: with SMTP id p17mr26100221ljj.147.1559841687851;
+ Thu, 06 Jun 2019 10:21:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c559c2ce-50dc-d143-5741-fe3d21d0305c@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20190606155205.2872-1-ebiggers@kernel.org>
+In-Reply-To: <20190606155205.2872-1-ebiggers@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 6 Jun 2019 10:21:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgSzRzoro8ATO5xb6OFxN1A0fjUCQSAHfGuEPbEu+zWvA@mail.gmail.com>
+Message-ID: <CAHk-=wgSzRzoro8ATO5xb6OFxN1A0fjUCQSAHfGuEPbEu+zWvA@mail.gmail.com>
+Subject: Re: [PATCH v4 00/16] fs-verity: read-only file-based authenticity protection
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Victor Hsieh <victorhsieh@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 05, 2019 at 10:52:12PM -0700, John Hubbard wrote:
-> On 6/5/19 6:45 PM, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ... V1,000,000   ;-)
-> > 
-> > Pre-requisites:
-> > 	John Hubbard's put_user_pages() patch series.[1]
-> > 	Jan Kara's ext4_break_layouts() fixes[2]
-> > 
-> > Based on the feedback from LSFmm and the LWN article which resulted.  I've
-> > decided to take a slightly different tack on this problem.
-> > 
-> > The real issue is that there is no use case for a user to have RDMA pinn'ed
-> > memory which is then truncated.  So really any solution we present which:
-> > 
-> > A) Prevents file system corruption or data leaks
-> > ...and...
-> > B) Informs the user that they did something wrong
-> > 
-> > Should be an acceptable solution.
-> > 
-> > Because this is slightly new behavior.  And because this is gonig to be
-> > specific to DAX (because of the lack of a page cache) we have made the user
-> > "opt in" to this behavior.
-> > 
-> > The following patches implement the following solution.
-> > 
-> > 1) The user has to opt in to allowing GUP pins on a file with a layout lease
-> >    (now made visible).
-> > 2) GUP will fail (EPERM) if a layout lease is not taken
-> > 3) Any truncate or hole punch operation on a GUP'ed DAX page will fail.
-> > 4) The user has the option of holding the layout lease to receive a SIGIO for
-> >    notification to the original thread that another thread has tried to delete
-> >    their data.  Furthermore this indicates that if the user needs to GUP the
-> >    file again they will need to retake the Layout lease before doing so.
-> > 
-> > 
-> > NOTE: If the user releases the layout lease or if it has been broken by another
-> > operation further GUP operations on the file will fail without re-taking the
-> > lease.  This means that if a user would like to register pieces of a file and
-> > continue to register other pieces later they would be advised to keep the
-> > layout lease, get a SIGIO notification, and retake the lease.
-> > 
-> > NOTE2: Truncation of pages which are not actively pinned will succeed.  Similar
-> > to accessing an mmap to this area GUP pins of that memory may fail.
-> > 
-> 
-> Hi Ira,
-> 
-> Wow, great to see this. This looks like basically the right behavior, IMHO.
-> 
-> 1. We'll need man page additions, to explain it. In fact, even after a quick first
-> pass through, I'm vague on two points:
+On Thu, Jun 6, 2019 at 8:54 AM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> This is a redesigned version of the fs-verity patchset, implementing
+> Ted's suggestion to build the Merkle tree in the kernel
+> (https://lore.kernel.org/linux-fsdevel/20190207031101.GA7387@mit.edu/).
+> This greatly simplifies the UAPI, since the verity metadata no longer
+> needs to be transferred to the kernel.
 
-Of course.  But I was not going to go through and attempt to write man pages
-and other docs without some agreement on the final mechanisms.  This works
-which was the basic requirement I had to send an RFC.  :-D  But yes man pages
-and updates to headers etc all have to be done.
+Interfaces look sane to me. My only real concern is whether it would
+make sense to make the FS_IOC_ENABLE_VERITY ioctl be something that
+could be done incrementally, since the way it is done now it looks
+like any random user could create a big file and then do the
+FS_IOC_ENABLE_VERITY to make the kernel do a _very_ expensive
+operation.
 
-> 
-> a) I'm not sure how this actually provides "opt-in to new behavior", because I 
-> don't see any CONFIG_* or boot time choices, and it looks like the new behavior 
-> just is there. That is, if user space doesn't set F_LAYOUT on a range, 
-> GUP FOLL_LONGTERM will now fail, which is new behavior. (Did I get that right?)
+Yes, I see the
 
-The opt in is at run time.  Currently GUP FOLL_LONGTERM is _not_ _allowed_ on
-the FS DAX pages at all.  So the default behavior is the same, GUP fails.  (Or
-specifically ibv_reg_mr() fails.  This fails as before, not change there.
++               if (fatal_signal_pending(current))
++                       return -EINTR;
++               cond_resched();
 
-The Opt in is that if a user knows what is involved they can take the lease and
-the GUP will not fail.  This comes with the price of knowing that other
-processes can't truncate those pages in use.
+in there, so it's not like it's some entirely unkillable thing, and
+maybe we don't care as a result. But maybe the ioctl interface could
+be fundamentally restartable?
 
-> 
-> b) Truncate and hole punch behavior, with and without user space having a SIGIO
-> handler. (I'm sure this is obvious after another look through, but it might go
-> nicely in a man page.)
+If that was already considered and people just went "too complex", never mind.
 
-Sorry this was not clear.  There are 2 points for this patch set which requires
-the use of catching SIGIO.
-
-1) If an application _actually_ does (somehow, somewhere, in some unforseen use
-   case) want to allow a truncate to happen.  They can catch the SIGIO, finish
-   their use of the pages, and release them.  As long as they can do this within
-   the <sysfs>/lease-time-break time they are ok and the truncate can proceed.
-
-2) This is a bit more subtle and something I almost delayed sending these out
-   for.  Currently the implementation of a lease break actually removes the
-   lease from the file.  I did not want this to happen and I was thinking of
-   delaying this patch set to implement something which keeps the lease around
-   but I figured I should get something out for comments.  Jan has proposed
-   something along these lines and I agree with him so I'm going to ask you to
-   read my response to him about the details.
-
-   Anyway so the key here is that currently an app needs the SIGIO to retake
-   the lease if they want to map the file again or in parts based on usage.
-   For example, they may only want to map some of the file for when they are
-   using it and then map another part later.  Without the SIGIO they would lose
-   their lease or would have to just take the lease for each GUP pin (which
-   adds overhead).  Like I said I did not like this but I left it to get
-   something which works out.
-
-> 
-> 2. It *seems* like ext4, xfs are taken care of here, not just for the DAX case,
-> but for general RDMA on them? Or is there more that must be done?
-
-This is limited to DAX.  All the functionality is limited to *_devmap or "is
-DAX" cases.  I'm still thinking that page cache backed files can have a better
-solution for the user.
-
-> 
-> 3. Christophe Hellwig's unified gup patchset wreaks havoc in gup.c, and will
-> conflict violently, as I'm sure you noticed. :)
-
-Yep...  But I needed to get the conversation started on this idea.
-
-Thanks for the feedback!
-Ira
-
-> 
-> 
-> thanks,
-> -- 
-> John Hubbard
-> NVIDIA
-> 
+               Linus
