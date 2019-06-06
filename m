@@ -2,110 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E536377F0
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 17:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FAA3781F
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 17:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729312AbfFFPan (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jun 2019 11:30:43 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:47508 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729521AbfFFPam (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 11:30:42 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56FSllQ173914;
-        Thu, 6 Jun 2019 15:30:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=F9Pe8iiITRC+INv7Pb3oZ7h6kOB6KWbAP6291TG+Zps=;
- b=woOcfrQufGMFhDFP1y2RTDa8qUN6eNckHuSAFHtdE26srtOt4qwqJPE//u5Pe/aQ7fXU
- bkobW/2YdeqgCFqkeX2bu74Ebm9h14iWXDCWVA9No3CqnPeaYRHM1RFpdUGfnLBo0Zkk
- Pnp7OgOVY4gpO9KBEyWkfSlGz7Ym8DNL5+WKIGG1hbVuA9N110w9x8hY8m/KKPM+6MZu
- QQMR+zsS64u8AQB+Xf6oogPTnDXzIS0p6F3+IBDC0pz47ReV33SX4HW83RiGjrjb9sJm
- 9oK/sL9/Qj1elqbpYh8a6fzRHeWKph10G7AgtIEgthb7919AMfjJ9gpHOVe2ay9sZ6Wf AQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 2suevdsfxa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Jun 2019 15:30:26 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x56FT4ex139851;
-        Thu, 6 Jun 2019 15:30:25 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2swngmjmnn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 Jun 2019 15:30:25 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x56FUOAI023747;
-        Thu, 6 Jun 2019 15:30:24 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 Jun 2019 08:30:24 -0700
-Date:   Thu, 6 Jun 2019 08:30:21 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Wang Shilong <wangshilong1991@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Wang Shilong <wshilong@ddn.com>,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [PATCH 1/2] ext4: only set project inherit bit for directory
-Message-ID: <20190606153021.GA1700170@magnolia>
-References: <1559795545-17290-1-git-send-email-wshilong1991@gmail.com>
+        id S1729356AbfFFPf4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jun 2019 11:35:56 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:42057 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729137AbfFFPf4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 11:35:56 -0400
+Received: by mail-oi1-f196.google.com with SMTP id s184so1861611oie.9
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Jun 2019 08:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1uRCmoXjULyV6kNTp2XKoB1qQmxkPSNDXYL9A3FHXFA=;
+        b=QHJOC2ZZhCoDsF3kkt0jD8pflX+D1g9wOGO30jisMp6VkS20cZbHhajfwYZJVXdiNh
+         JvAq7go3CRc5C+qomPxstLKznxkYPvd1O8ef7VHSAdG1rMnaPbbiOm9MuPNkCt7QxXaR
+         tW2MckCN4CHKIL8N13EVae4FrQAMJth8VAaKv/3gRwubZltnT7kNI3PWIXvq1c0vgZdi
+         L4XQGyBb2kkKpfIMhfb2YWP8o3M95HB+am83dkZODoLq1I1UWGrX6Sp8tjJSrVa2UG3+
+         kN4AXQu3lycB826+fr4/pUl5FixrZTURACJPQlnP2NuCi+p38m+p145UkX/P89XlKLdK
+         QHrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1uRCmoXjULyV6kNTp2XKoB1qQmxkPSNDXYL9A3FHXFA=;
+        b=mf9GoT79b8d3gnAdo7yCvutk8MjhrYjtzEVR6wp3IUF5oWhvE5/UL+xX3Hx5aOMI9O
+         Q7VmV+O/S3GQVag4LNxknftxaAT2uTSoVKQ4WU+ohlBoIgibROldKMUOe56YwW65g/mH
+         FtbgA4qC5mqzTWYeryWI64ZOt64C0kVL3y5pCy2LxNCtxAfzAMQSRD6onXWpm+XXnHVe
+         VmyMlxRvBChg5chPIvlzWHzzF2fE+JNIB5UAwa15t9U1yzvHz+DZYJ0H/c7kWkO6HcBW
+         CTe0QkYUwdCo/pK331QenlqEdKeZ/RLCn8jil/niSxCr1h82urc3yCbxtNdsBTfmrZk6
+         kHmQ==
+X-Gm-Message-State: APjAAAXiCRUY2T/oKtth9+uxKjfC3i2eWN4fZigZWKqJ8Lv7RLWvlbUt
+        BXqKmtySr6J3zzayKHcVVKH9CHBFZ0GRG69d9wox+Q==
+X-Google-Smtp-Source: APXvYqwQgzrGrWeJ2qr6zRt1Kh72wsL96qCKSVk7C2TBZflDvhLK6wlI/C4trmZ0QEDDo8Q9KA4CrwRdXYqf7oGmgHc=
+X-Received: by 2002:aca:bbc5:: with SMTP id l188mr410988oif.73.1559835355090;
+ Thu, 06 Jun 2019 08:35:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1559795545-17290-1-git-send-email-wshilong1991@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9280 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906060105
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9280 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906060106
+References: <20190606014544.8339-1-ira.weiny@intel.com> <20190606104203.GF7433@quack2.suse.cz>
+In-Reply-To: <20190606104203.GF7433@quack2.suse.cz>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 6 Jun 2019 08:35:42 -0700
+Message-ID: <CAPcyv4h-k_5T39fDY+SVrLXG_XETmgz-6N3NjQUteYG7g9NdDQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 06, 2019 at 01:32:24PM +0900, Wang Shilong wrote:
-> From: Wang Shilong <wshilong@ddn.com>
-> 
-> It doesn't make any sense to have project inherit bits
-> for regular files, even though this won't cause any
-> problem, but it is better fix this.
-> 
-> Cc: Andreas Dilger <adilger@dilger.ca>
-> Signed-off-by: Wang Shilong <wshilong@ddn.com>
+On Thu, Jun 6, 2019 at 3:42 AM Jan Kara <jack@suse.cz> wrote:
+>
+> On Wed 05-06-19 18:45:33, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> >
+> > ... V1,000,000   ;-)
+> >
+> > Pre-requisites:
+> >       John Hubbard's put_user_pages() patch series.[1]
+> >       Jan Kara's ext4_break_layouts() fixes[2]
+> >
+> > Based on the feedback from LSFmm and the LWN article which resulted.  I've
+> > decided to take a slightly different tack on this problem.
+> >
+> > The real issue is that there is no use case for a user to have RDMA pinn'ed
+> > memory which is then truncated.  So really any solution we present which:
+> >
+> > A) Prevents file system corruption or data leaks
+> > ...and...
+> > B) Informs the user that they did something wrong
+> >
+> > Should be an acceptable solution.
+> >
+> > Because this is slightly new behavior.  And because this is gonig to be
+> > specific to DAX (because of the lack of a page cache) we have made the user
+> > "opt in" to this behavior.
+> >
+> > The following patches implement the following solution.
+> >
+> > 1) The user has to opt in to allowing GUP pins on a file with a layout lease
+> >    (now made visible).
+> > 2) GUP will fail (EPERM) if a layout lease is not taken
+> > 3) Any truncate or hole punch operation on a GUP'ed DAX page will fail.
+> > 4) The user has the option of holding the layout lease to receive a SIGIO for
+> >    notification to the original thread that another thread has tried to delete
+> >    their data.  Furthermore this indicates that if the user needs to GUP the
+> >    file again they will need to retake the Layout lease before doing so.
+> >
+> >
+> > NOTE: If the user releases the layout lease or if it has been broken by
+> > another operation further GUP operations on the file will fail without
+> > re-taking the lease.  This means that if a user would like to register
+> > pieces of a file and continue to register other pieces later they would
+> > be advised to keep the layout lease, get a SIGIO notification, and retake
+> > the lease.
+> >
+> > NOTE2: Truncation of pages which are not actively pinned will succeed.
+> > Similar to accessing an mmap to this area GUP pins of that memory may
+> > fail.
+>
+> So after some through I'm willing accept the fact that pinned DAX pages
+> will just make truncate / hole punch fail and shove it into a same bucket
+> of situations like "user can open a file and unlink won't delete it" or
+> "ETXTBUSY when user is executing a file being truncated".  The problem I
+> have with this proposal is a lack of visibility from sysadmin POV. For
+> ETXTBUSY or "unlinked but open file" sysadmin can just do lsof, find the
+> problematic process and kill it. There's nothing like that with your
+> proposal since currently once you hold page reference, you can unmap the
+> file, drop layout lease, close the file, and there's no trace that you're
+> responsible for the pinned page anymore.
+>
+> So I'd like to actually mandate that you *must* hold the file lease until
+> you unpin all pages in the given range (not just that you have an option to
+> hold a lease). And I believe the kernel should actually enforce this. That
+> way we maintain a sane state that if someone uses a physical location of
+> logical file offset on disk, he has a layout lease. Also once this is done,
+> sysadmin has a reasonably easy way to discover run-away RDMA application
+> and kill it if he wishes so.
 
-It's good to be maintaining consistent behavior with XFS.
+Yes, this satisfies the primary concern that made me oppose failing
+truncate. If the administrator determines that reclaiming capacity is
+more important than maintaining active RDMA mappings "lsof + kill" is
+a reasonable way to recover. I'd go so far as to say that anything
+less is an abdication of the kernel's responsibility as an arbiter of
+platform resources.
 
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+> The question is on how to exactly enforce that lease is taken until all
+> pages are unpinned. I belive it could be done by tracking number of
+> long-term pinned pages within a lease. Gup_longterm could easily increment
+> the count when verifying the lease exists, gup_longterm users will somehow
+> need to propagate corresponding 'filp' (struct file pointer) to
+> put_user_pages_longterm() callsites so that they can look up appropriate
+> lease to drop reference - probably I'd just transition all gup_longterm()
+> users to a saner API similar to the one we have in mm/frame_vector.c where
+> we don't hand out page pointers but an encapsulating structure that does
+> all the necessary tracking. Removing a lease would need to block until all
+> pins are released - this is probably the most hairy part since we need to
+> handle a case if application just closes the file descriptor which would
+> release the lease but OTOH we need to make sure task exit does not deadlock.
+> Maybe we could block only on explicit lease unlock and just drop the layout
+> lease on file close and if there are still pinned pages, send SIGKILL to an
+> application as a reminder it did something stupid...
+>
+> What do people think about this?
 
-(applies to both ext4 & f2fs patches)
-
---D
-
-> ---
->  fs/ext4/ext4.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 1cb67859e051..ceb74093e138 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -421,7 +421,8 @@ struct flex_groups {
->  			   EXT4_PROJINHERIT_FL | EXT4_CASEFOLD_FL)
->  
->  /* Flags that are appropriate for regular files (all but dir-specific ones). */
-> -#define EXT4_REG_FLMASK (~(EXT4_DIRSYNC_FL | EXT4_TOPDIR_FL | EXT4_CASEFOLD_FL))
-> +#define EXT4_REG_FLMASK (~(EXT4_DIRSYNC_FL | EXT4_TOPDIR_FL | EXT4_CASEFOLD_FL |\
-> +			   EXT4_PROJINHERIT_FL))
->  
->  /* Flags that are appropriate for non-directories/regular files. */
->  #define EXT4_OTHER_FLMASK (EXT4_NODUMP_FL | EXT4_NOATIME_FL)
-> -- 
-> 2.21.0
-> 
+SIGKILL on close() without explicit unlock and wait-on-last-pin with
+explicit unlock sounds reasonable to me.
