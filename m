@@ -2,105 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DC8380C5
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jun 2019 00:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAB83812A
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jun 2019 00:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729355AbfFFW37 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jun 2019 18:29:59 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:41593 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727297AbfFFW36 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 18:29:58 -0400
-Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 868484EA85D;
-        Fri,  7 Jun 2019 08:29:50 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hZ0sP-0000g2-35; Fri, 07 Jun 2019 08:28:53 +1000
-Date:   Fri, 7 Jun 2019 08:28:53 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190606222853.GD14308@dread.disaster.area>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+        id S1727048AbfFFWp2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jun 2019 18:45:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbfFFWp2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 6 Jun 2019 18:45:28 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66C1D20868;
+        Thu,  6 Jun 2019 22:45:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559861127;
+        bh=IpeP4llY6H8KG7+vBFY5WZTqeGaAD5HxVZl5eZNKYbc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EjEhdUByVca2KOEz9p6NHR2DzDlvCiSfwrexPZ54Ql+CrCOEMFlgSCRsBsssPLMPl
+         bff+yIbFliFhncDBeyopUAVMVuUiq8mYp9QVZZX2Vp899XXpO+bK6s/dnzReJXP77D
+         ILdIA0wDj5XPOIjoU8HT4qu9g7iBgEi7CLt0SLLA=
+Date:   Thu, 6 Jun 2019 15:45:25 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Wang Shilong <wangshilong1991@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Andreas Dilger <adilger@dilger.ca>,
+        Wang Shilong <wshilong@ddn.com>
+Subject: Re: [f2fs-dev] [PATCH 1/2] ext4: only set project inherit bit for
+ directory
+Message-ID: <20190606224525.GB84833@gmail.com>
+References: <1559795545-17290-1-git-send-email-wshilong1991@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <1559795545-17290-1-git-send-email-wshilong1991@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0 cx=a_idp_d
-        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
-        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=-fIxr7oOWDDygYgkAT8A:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 06, 2019 at 03:03:30PM -0700, Ira Weiny wrote:
-> On Thu, Jun 06, 2019 at 12:42:03PM +0200, Jan Kara wrote:
-> > On Wed 05-06-19 18:45:33, ira.weiny@intel.com wrote:
-> > So I'd like to actually mandate that you *must* hold the file lease until
-> > you unpin all pages in the given range (not just that you have an option to
-> > hold a lease). And I believe the kernel should actually enforce this. That
-> > way we maintain a sane state that if someone uses a physical location of
-> > logical file offset on disk, he has a layout lease. Also once this is done,
-> > sysadmin has a reasonably easy way to discover run-away RDMA application
-> > and kill it if he wishes so.
+On Thu, Jun 06, 2019 at 01:32:24PM +0900, Wang Shilong wrote:
+> From: Wang Shilong <wshilong@ddn.com>
 > 
-> Fair enough.
+> It doesn't make any sense to have project inherit bits
+> for regular files, even though this won't cause any
+> problem, but it is better fix this.
 > 
-> I was kind of heading that direction but had not thought this far forward.  I
-> was exploring how to have a lease remain on the file even after a "lease
-> break".  But that is incompatible with the current semantics of a "layout"
-> lease (as currently defined in the kernel).  [In the end I wanted to get an RFC
-> out to see what people think of this idea so I did not look at keeping the
-> lease.]
+> Cc: Andreas Dilger <adilger@dilger.ca>
+> Signed-off-by: Wang Shilong <wshilong@ddn.com>
+> ---
+>  fs/ext4/ext4.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Also hitch is that currently a lease is forcefully broken after
-> <sysfs>/lease-break-time.  To do what you suggest I think we would need a new
-> lease type with the semantics you describe.
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 1cb67859e051..ceb74093e138 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -421,7 +421,8 @@ struct flex_groups {
+>  			   EXT4_PROJINHERIT_FL | EXT4_CASEFOLD_FL)
+>  
+>  /* Flags that are appropriate for regular files (all but dir-specific ones). */
+> -#define EXT4_REG_FLMASK (~(EXT4_DIRSYNC_FL | EXT4_TOPDIR_FL | EXT4_CASEFOLD_FL))
+> +#define EXT4_REG_FLMASK (~(EXT4_DIRSYNC_FL | EXT4_TOPDIR_FL | EXT4_CASEFOLD_FL |\
+> +			   EXT4_PROJINHERIT_FL))
+>  
+>  /* Flags that are appropriate for non-directories/regular files. */
+>  #define EXT4_OTHER_FLMASK (EXT4_NODUMP_FL | EXT4_NOATIME_FL)
+> -- 
+> 2.21.0
 
-That just requires a flag when gaining the layout lease to say it is
-an "unbreakable layout lease". That gives the kernel the information
-needed to determine whether it should attempt to break the lease on
-truncate or just return ETXTBSY....
+Won't this break 'chattr' on files that already have this flag set?
+FS_IOC_GETFLAGS will return this flag, so 'chattr' will pass it back to
+FS_IOC_SETFLAGS which will return EOPNOTSUPP due to this:
 
-i.e. it allows gup-pinning applications that want to behave nicely
-with other users to drop their gup pins and release the lease when
-something else wants to truncate/hole punch the file rather than
-have truncate return an error. e.g. to allow apps to cleanly interop
-with other breakable layout leases (e.g. pNFS) on the same
-filesystem.
+	if (ext4_mask_flags(inode->i_mode, flags) != flags)
+		return -EOPNOTSUPP;
 
-FWIW, I'd also like to see the "truncate fails when unbreakable
-layout lease is held" behaviour to be common across all
-filesystem/storage types, not be confined to DAX only. i.e. truncate
-should return ETXTBSY when an unbreakable layout lease is held
-by an application, not just when "DAX+gup-pinned" is triggered....
-
-Whatever we decide, the behaviour of truncate et al needs to be
-predictable, consistent and easily discoverable...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+- Eric
