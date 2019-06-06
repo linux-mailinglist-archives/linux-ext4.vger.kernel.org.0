@@ -2,70 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D455936C20
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 08:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCD3371E3
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2019 12:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbfFFGSZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Jun 2019 02:18:25 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:44600 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbfFFGSZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 02:18:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=U8rF1uP19dnET207DcY9H/fsoaYvyqbT8DVHn5K5oRM=; b=hh3vfV36YrLiF3AZvb2T4/Qsm
-        ZGpgeScpxKnNf0aS2baD3ki47trw/uHctB3wKBpv6V6SbCMpk2PfbKUk/5XgM8HNDjclepJ9Zdbz6
-        2GcqhtFfRtwgOlRsLz0gTHbH/QD8c0RD1Nwv73lkSzrx4ZW4CsWVtPnTSaYKb7q2DM4NJWtdmuwyk
-        Ib935aW8MHP3OauCGnonYIxkH5L3VSyJFRXG0U2YAfTuXHF11OiwL/C6RfAmS9J4JPPN67De362rW
-        nJke29YpqUQ+h0Q/HmV6zGVwwZQCpJPnOD1sInPHpqtie3EXgVS+P5THX1FahoL367+4HTT4+qz1H
-        qcJ4t2xpQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.90_1 #2 (Red Hat Linux))
-        id 1hYljA-0005QG-0s; Thu, 06 Jun 2019 06:18:20 +0000
-Date:   Wed, 5 Jun 2019 23:18:19 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     ira.weiny@intel.com
-Cc:     Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH RFC 03/10] mm/gup: Pass flags down to __gup_device_huge*
- calls
-Message-ID: <20190606061819.GA20520@infradead.org>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606014544.8339-4-ira.weiny@intel.com>
+        id S1727124AbfFFKlq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Jun 2019 06:41:46 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:40601 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726935AbfFFKlq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Jun 2019 06:41:46 -0400
+Received: by mail-pf1-f193.google.com with SMTP id u17so1256700pfn.7
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Jun 2019 03:41:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=C2Xwg0LTcVtWta6MedAqslGdpCP35r6qoFQeBUfFvJs=;
+        b=XRdCqkli/2iJYos16PDRy8iKn4VDYMfWZmYiaBxMpJcGQgKnbogQv8DpdyzArAd2ZC
+         +zvQQslFRVkp9Df9iYHOjA4vURm6eOBNJkmNfyRa50kgrBL+1yU1di5HZ8Hey+BWxbvO
+         qE3csgFw6eoAQ6l84npYMRtukRfHJvoYHzOoYKHyBhZb4jX2DNaDfQpTtK4ri5CC+XFG
+         nSJPbRtlYIxzbIF9LdNA42QOA7c3lANuIpWRFum9D6aNY1aScUlzAbVWv5X4SwEuIDW4
+         0JBOt4bBiBOOnuZ0xySEPsQipUaMoG70OPPILH8VHsHPNUFN9SZS1rDLQAkmQhzq81Im
+         eySA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=C2Xwg0LTcVtWta6MedAqslGdpCP35r6qoFQeBUfFvJs=;
+        b=Pzto8qzA84GTBV4uTPS8LUpdIrhQ4pHzXHNp1H1IiP4LCY7yaxaZKLn9Nyqs4z8M9A
+         GsaycT3DwLyIVxiPv7w2RVaaftGhdruhi7v5Xr0ey8rA2IC0NQYlH6ShgUyJHUSyG1MR
+         dg5+GO7+VhWP5fMNdZGsBz9WKYQLy+3HoI831CgDsHmjHqhLfZcqUFreVZavk93/n8UT
+         3nF9uorIagTYEQaGSj+z226r2ItRa0vU/WghKWVn3lYVM2j/EkDnF5+Wnds08M3DhQIl
+         hGR+TTQFoBD27j8/ZQ4PIuMNJSows/PWnCE/F4y3z95espee5HUcMOuESQr+hLDzP5a9
+         OmsQ==
+X-Gm-Message-State: APjAAAXXaS5bLYA67/BARKMangC5eSWcPEMHSP3Wd6XQSdwFtCYTrHQa
+        HX3hlDMcD3YdDhTjfzNhaT+tdO32
+X-Google-Smtp-Source: APXvYqyhKB7Rp2Uuzl/91/8BlWPBwoEQqKZ2PXU2ynVM8EFemgV0KeHqvldrbTWVxhvOW7DYkNBvww==
+X-Received: by 2002:a17:90a:ac11:: with SMTP id o17mr42070328pjq.134.1559817705342;
+        Thu, 06 Jun 2019 03:41:45 -0700 (PDT)
+Received: from [0.0.0.0] ([47.244.216.228])
+        by smtp.gmail.com with ESMTPSA id b23sm1853562pfi.6.2019.06.06.03.41.43
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Jun 2019 03:41:44 -0700 (PDT)
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca
+From:   Jianchao Wang <jianchao.wan9@gmail.com>
+Subject: [HELP] What are the allocated blocks on a newly created ext4 fs ?
+Message-ID: <b64110a4-8112-a230-2179-5095aa943af9@gmail.com>
+Date:   Thu, 6 Jun 2019 18:41:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101
+ Thunderbird/67.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190606014544.8339-4-ira.weiny@intel.com>
-User-Agent: Mutt/1.9.2 (2017-12-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 05, 2019 at 06:45:36PM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> In order to support checking for a layout lease on a FS DAX inode these
-> calls need to know if FOLL_LONGTERM was specified.
-> 
-> Prepare for this with this patch.
+Dear all
 
-The GUP fast argument passing is a mess.  That is why I've come up
-with this as part of the (not ready) get_user_pages_fast_bvec
-implementation:
+After I newly created a ext4 fs and check the mb_group,
 
-http://git.infradead.org/users/hch/misc.git/commitdiff/c3d019802dbde5a4cc4160e7ec8ccba479b19f97
+       #group: free  frags first [ 2^0   2^1   2^2   2^3   2^4   2^5   2^6   2^7   2^8   2^9   2^10  2^11  2^12  2^13  ]
+       #0    : 23513 1     9255  [ 1     0     0     1     1     0     1     1     1     1     0     1     1     2     ]
+       #1    : 31743 1     1025  [ 1     1     1     1     1     1     1     1     1     1     0     1     1     3     ]
+                           ^^^^
+       #2    : 32768 1     0     [ 0     0     0     0     0     0     0     0     0     0     0     0     0     4     ]
+       #3    : 31743 1     1025  [ 1     1     1     1     1     1     1     1     1     1     0     1     1     3     ]
+       #4    : 32768 1     0     [ 0     0     0     0     0     0     0     0     0     0     0     0     0     4     ]
+       #5    : 31743 1     1025  [ 1     1     1     1     1     1     1     1     1     1     0     1     1     3     ]
+       #6    : 32768 1     0     [ 0     0     0     0     0     0     0     0     0     0     0     0     0     4     ]
+       #7    : 31743 1     1025  [ 1     1     1     1     1     1     1     1     1     1     0     1     1     3     ]
+       #8    : 32768 1     0     [ 0     0     0     0     0     0     0     0     0     0     0     0     0     4     ]
+       #9    : 31743 1     1025  [ 1     1     1     1     1     1     1     1     1     1     0     1     1     3     ]
+       #10   : 32768 1     0     [ 0     0     0     0     0     0     0     0     0     0     0     0     0     4     ]
+       #11   : 32768 1     0     [ 0     0     0     0     0     0     0     0     0     0     0     0     0     4     ]
+
+There are some bgs that have 1024 blocks allocated. What are they for ?
+
+Many thanks in advance
+Jianchao
