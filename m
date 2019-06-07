@@ -2,94 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D02B6385B8
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jun 2019 09:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3D338829
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jun 2019 12:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727917AbfFGHvV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Jun 2019 03:51:21 -0400
-Received: from mail-eopbgr700087.outbound.protection.outlook.com ([40.107.70.87]:59744
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        id S1728127AbfFGKqj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Jun 2019 06:46:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54822 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726668AbfFGHvU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 7 Jun 2019 03:51:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6cSWUm3ysr5+RNRb7RKW9RTe5YYg8e5nPGwdOzPJypw=;
- b=rR2sy65mGMjxcldvkuRv6S0yMQcnULTLx9aRxpo/23v+58E4myDwVMvDOpAfz9BSh0+rZM/bh8Kzojm6G/o1BUVOhqq/BwJWM+nfvORkqh3TzANHVk/74q9zDmaUWC3RkPiB+6RPKCDOVqchIWVehwttBRdm6jXey1F98fj8mp0=
-Received: from MN2PR19MB3167.namprd19.prod.outlook.com (10.255.181.16) by
- MN2PR19MB2735.namprd19.prod.outlook.com (20.178.253.76) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.13; Fri, 7 Jun 2019 07:51:18 +0000
-Received: from MN2PR19MB3167.namprd19.prod.outlook.com
- ([fe80::dc80:b43c:bae8:93ac]) by MN2PR19MB3167.namprd19.prod.outlook.com
- ([fe80::dc80:b43c:bae8:93ac%6]) with mapi id 15.20.1943.026; Fri, 7 Jun 2019
- 07:51:18 +0000
-From:   Wang Shilong <wshilong@ddn.com>
-To:     Eric Biggers <ebiggers@kernel.org>,
-        Wang Shilong <wangshilong1991@gmail.com>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: =?utf-8?B?5Zue5aSNOiBbZjJmcy1kZXZdIFtQQVRDSCAxLzJdIGV4dDQ6IG9ubHkgc2V0?=
- =?utf-8?Q?_project_inherit_bit_for_directory?=
-Thread-Topic: =?utf-8?B?5Zue5aSNOiBbZjJmcy1kZXZdIFtQQVRDSCAxLzJdIGV4dDQ6IG9ubHkgc2V0?=
- =?utf-8?Q?_project_inherit_bit_for_directory?=
-Thread-Index: AQHVHCDgP31HN+WHkUOSSixxIe14jqaPOs2AgAEcVks=
-Date:   Fri, 7 Jun 2019 07:51:18 +0000
-Message-ID: <MN2PR19MB3167ED3E8C9C85AE510F7BF4D4100@MN2PR19MB3167.namprd19.prod.outlook.com>
-References: <1559795545-17290-1-git-send-email-wshilong1991@gmail.com>,<20190606224525.GB84833@gmail.com>
-In-Reply-To: <20190606224525.GB84833@gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=wshilong@ddn.com; 
-x-originating-ip: [36.62.197.185]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a2640f44-2521-491f-52af-08d6eb1ced0a
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR19MB2735;
-x-ms-traffictypediagnostic: MN2PR19MB2735:
-x-microsoft-antispam-prvs: <MN2PR19MB27352A172E408ED1BC881488D4100@MN2PR19MB2735.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0061C35778
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39850400004)(376002)(366004)(136003)(346002)(396003)(189003)(199004)(43544003)(4326008)(476003)(14454004)(26005)(53936002)(446003)(66066001)(6506007)(99286004)(76176011)(52536014)(102836004)(224303003)(68736007)(7696005)(86362001)(11346002)(2906002)(25786009)(71190400001)(71200400001)(186003)(486006)(54906003)(110136005)(478600001)(33656002)(316002)(6436002)(66446008)(66556008)(64756008)(66476007)(305945005)(7736002)(8936002)(81166006)(55016002)(74316002)(5660300002)(81156014)(6116002)(73956011)(3846002)(76116006)(9686003)(4744005)(66946007)(256004);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR19MB2735;H:MN2PR19MB3167.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: ddn.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: qVZM2XaB7Ael6yTX4efDK5+OJja/aGK9DiqI2PhFbXoHZQtVXALOW4JcOh6jK0AjMHagxIhpUgASjPuYV1yRVeMzSp3JrAAQnJqzQ9R0VpsdXZEnwhe4/AtssdITAtsiPiWT9gEGXUBaBp2odnFYLLGaxVhYoA/7/kDreiEO0uj4JI5eh8E2prhLKWQ8Q83CK9gdK6OV/M4r8kPa5NWIQrLnm63I9Ef/cG+iVfavUgR1v04t/3br5iklEGbqOpzeFHtgmENxWhSLLfpy5Np2qbbiTT+knkeJMzbRjyKlBRj3inmlPaJgwo8LZ3o8hSnw8uTDV57xtKVpBaC6hkqi3cQY5qPKczO8bu2Umo0il1k2yd4v/1EnxW5xTWsBLTJLh3dN4xw43ZdpU2DCdIXJ63p6AAthTrtvqY05zMk47DE=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727537AbfFGKqi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 7 Jun 2019 06:46:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 471C9AF0A;
+        Fri,  7 Jun 2019 10:46:36 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DDD771E3FCA; Fri,  7 Jun 2019 12:36:36 +0200 (CEST)
+Date:   Fri, 7 Jun 2019 12:36:36 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190607103636.GA12765@quack2.suse.cz>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606195114.GA30714@ziepe.ca>
+ <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: ddn.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2640f44-2521-491f-52af-08d6eb1ced0a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jun 2019 07:51:18.5603
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wshilong@ddn.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR19MB2735
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-SGksCgo+IC0tCj4gMi4yMS4wCgpXb24ndCB0aGlzIGJyZWFrICdjaGF0dHInIG9uIGZpbGVzIHRo
-YXQgYWxyZWFkeSBoYXZlIHRoaXMgZmxhZyBzZXQ/CkZTX0lPQ19HRVRGTEFHUyB3aWxsIHJldHVy
-biB0aGlzIGZsYWcsIHNvICdjaGF0dHInIHdpbGwgcGFzcyBpdCBiYWNrIHRvCkZTX0lPQ19TRVRG
-TEFHUyB3aGljaCB3aWxsIHJldHVybiBFT1BOT1RTVVBQIGR1ZSB0byB0aGlzOgoKwqAgwqAgwqAg
-wqAgaWYgKGV4dDRfbWFza19mbGFncyhpbm9kZS0+aV9tb2RlLCBmbGFncykgIT0gZmxhZ3MpCsKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiAtRU9QTk9UU1VQUDsKCj4+Pj4KCllvdSBhcmUg
-cmlnaHQgZm9yIHRoaXMgYW5kIHdlIGFsc28gbmVlZCB0YWtlIGNhcmUgb2YgdGhpcyBpbiBFWFQ0
-X0lPQ19GU1NFVFhBVFRSLwp0aGlzIGlzIGEgYml0IHN0cmFuZ2UgYmVoYXZpb3IgYXMgY2hhdHRy
-IHJlYWQgZXhpc3RlZCBmbGFncwpidXQgY291bGQgbm90IHNldCB0aGVtIGFnYWluLCB0aGVyZSBh
-cmUgc2V2ZXJhbCBwb3NzaWJsZSB3YXlzIHRoYXQgSSBjb3VsZCB0aGluawpvZiB0byBmaXggdGhl
-IGlzc3VlPwoKMSkgY2hhbmdlIGNoYXR0ciB0byBmaWx0ZXIgUHJvamVjdCBpbmhlcml0IGJpdCBi
-ZWZvcmUgY2FsbCBGU19JT0NfU0VURkxBR1MKCjIpIHdlIGF1dG9tYXRpY2FsbHkgZml4ZWQgdGhl
-IGZsYWcgYmVmb3JlIG1hc2sgY2hlY2ssIHNvbWV0aGluZyBsaWtlOgppZiByZWc6CiAgICAgZmxh
-Z3MgJj0gflBST0pFQ1RfSU5IRVJUOwogICAgICBpZiAoZXh0NF9tYXNrX2ZsYWdzKGlub2RlLT5p
-X21vZGUsIGZsYWdzKSAhPSBmbGFncykKwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIC1F
-T1BOT1RTVVBQOwpCdXQgdGhpcyBtaWdodCBiZSBub3QgZ29vZC4uCgpJIHdvdWxkIHByZWZlciBz
-b2x1dGlvbiAxKQpXaGF0IGRvIHlvdSB0aGluaz8K
+On Thu 06-06-19 15:22:28, Ira Weiny wrote:
+> On Thu, Jun 06, 2019 at 04:51:15PM -0300, Jason Gunthorpe wrote:
+> > On Thu, Jun 06, 2019 at 12:42:03PM +0200, Jan Kara wrote:
+> > 
+> > > So I'd like to actually mandate that you *must* hold the file lease until
+> > > you unpin all pages in the given range (not just that you have an option to
+> > > hold a lease). And I believe the kernel should actually enforce this. That
+> > > way we maintain a sane state that if someone uses a physical location of
+> > > logical file offset on disk, he has a layout lease. Also once this is done,
+> > > sysadmin has a reasonably easy way to discover run-away RDMA application
+> > > and kill it if he wishes so.
+> > > 
+> > > The question is on how to exactly enforce that lease is taken until all
+> > > pages are unpinned. I belive it could be done by tracking number of
+> > > long-term pinned pages within a lease. Gup_longterm could easily increment
+> > > the count when verifying the lease exists, gup_longterm users will somehow
+> > > need to propagate corresponding 'filp' (struct file pointer) to
+> > > put_user_pages_longterm() callsites so that they can look up appropriate
+> > > lease to drop reference - probably I'd just transition all gup_longterm()
+> > > users to a saner API similar to the one we have in mm/frame_vector.c where
+> > > we don't hand out page pointers but an encapsulating structure that does
+> > > all the necessary tracking. Removing a lease would need to block until all
+> > > pins are released - this is probably the most hairy part since we need to
+> > > handle a case if application just closes the file descriptor which
+> > > would
+> > 
+> > I think if you are going to do this then the 'struct filp' that
+> > represents the lease should be held in the kernel (ie inside the RDMA
+> > umem) until the kernel is done with it.
+> 
+> Yea there seems merit to this.  I'm still not resolving how this helps track
+> who has the pin across a fork.
+
+Yes, my thought was that gup_longterm() would return a structure that would
+be tracking filp (or whatever is needed) and that would be embedded inside
+RDMA umem.
+
+> > Actually does someone have a pointer to this userspace lease API, I'm
+> > not at all familiar with it, thanks
+> 
+> man fcntl
+> 	search for SETLEASE
+> 
+> But I had to add the F_LAYOUT lease type.  (Personally I'm for calling it
+> F_LONGTERM at this point.  I don't think LAYOUT is compatible with what we are
+> proposing here.)
+
+I think F_LAYOUT still expresses it pretty well. The lease is pinning
+logical->physical file offset mapping, i.e. the file layout.
+
+> > 
+> > And yes, a better output format from GUP would be great..
+> > 
+> > > Maybe we could block only on explicit lease unlock and just drop the layout
+> > > lease on file close and if there are still pinned pages, send SIGKILL to an
+> > > application as a reminder it did something stupid...
+> > 
+> > Which process would you SIGKILL? At least for the rdma case a FD is
+> > holding the GUP, so to do the put_user_pages() the kernel needs to
+> > close the FD. I guess it would have to kill every process that has the
+> > FD open? Seems complicated...
+> 
+> Tending to agree...  But I'm still not opposed to killing bad actors...  ;-)
+> 
+> NOTE: Jason I think you need to be more clear about the FD you are speaking of.
+> I believe you mean the FD which refers to the RMDA context.  That is what I
+> called it in my other email.
+
+I keep forgetting that the file with RDMA context may be held by multiple
+processes so thanks for correcting me. My proposal with SIGKILL was jumping
+to conclusion too quickly :) We have two struct files here: A file with RDMA
+context that effectively is the owner of the page pins (let's call it
+"context file") and a file which is mapped and on which we hold the lease and
+whose blocks (pages) we are pinning (let's call it "buffer file"). Now once
+buffer file is closed (and this means that all file descriptors pointing to
+this struct file are closed - so just one child closing the file descriptor
+won't trigger this) we need to release the lease and I want to have a way
+of safely releasing remaining pins associated with this lease as well.
+Because the pins would be invisible to sysadmin from that point on. Now if
+the context file would be open only by the process closing the buffer file,
+SIGKILL would work as that would close the buffer file as a side effect.
+But as you properly pointed out, that's not necessarily the case. Walking
+processes that have the context file open is technically complex and too
+ugly to live so we have to come up with something better. The best I can
+currently come up with is to have a method associated with the lease that
+would invalidate the RDMA context that holds the pins in the same way that
+a file close would do it.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
