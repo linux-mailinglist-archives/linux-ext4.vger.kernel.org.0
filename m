@@ -2,68 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 755EC394A0
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Jun 2019 20:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F78F399D6
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Jun 2019 02:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730471AbfFGSuW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Jun 2019 14:50:22 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:41949 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730801AbfFGSuV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jun 2019 14:50:21 -0400
-Received: by mail-qt1-f195.google.com with SMTP id s57so3467613qte.8
-        for <linux-ext4@vger.kernel.org>; Fri, 07 Jun 2019 11:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=981lOBbF7NntqOPGnU+wDEqlWf7ONqp9B0Ou4FbjqoU=;
-        b=oZC9a6nvcosvTmp2Xz2vW0f9gvXIuh4kitLGI6CjsLXK1+Gnu0mccx6TNO5esZKRWN
-         jpusXhxZ6diyXP/2IvDfe4Sozh6aFMls99kKfV0Oh9uEVYvzKsy1COSoqZhzVVpYwP9K
-         DlLyyRWwMTfr89qP7WlB75o9IQD+x/cE6xx3qucV0uEUL41Hb7JpWs/wMh4hLxr3HoJx
-         fc49CEJVp4R714dI4okPWcziniOd2LBG5fbQY9h/Cjd9k+Pglq+pi5j+zKX1QlmTE64r
-         wbxNASKedhU1orq0qO6Me5wbL2KGqE9NauEFAABsOyUfWfONSs2MlnU6mWezKlVjNiry
-         8Hvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=981lOBbF7NntqOPGnU+wDEqlWf7ONqp9B0Ou4FbjqoU=;
-        b=Aror7tr4UnIGSRn6tv1kw3Q8PxF+kPyeknHgDWeNvQle07WJ/xcIz1IlBKkC22ygdT
-         3pKt+pfnoxBidnVBhSQrXu3mdwAHQFCRtURNH14fQwEkl2pOnY30iMwIQkAXxdZ2RqU1
-         6jt1/KrCuewgRERB52AY+yDNrM3QwTfhzhZdIrZRSTFWLr4cWEdc4u2Ey4m56CYcpYaj
-         Ekp5mGbK7GBV3Qf5WR/byEtWJUkvzBMQDSJRrTXZsP3kZiwZtSDeYP9oL9/Xywpd3353
-         GBX5rs1umPMXrrazof9V2hdF+XBY+jAJ3nxGyeHysAalWuGGJr5T8mJEgi7BuT5wGDed
-         HMuQ==
-X-Gm-Message-State: APjAAAXwT2FZZrmA9vCXMjO1o5RsXlQZim7ErhbhFB18Hw99aAPzFoUT
-        eDBbtkL1G68sVLHweC+uX2+Sjx0HsKRujw==
-X-Google-Smtp-Source: APXvYqxHzZOVD73PAZq/gC6oUmCxE3JRfnnnGXli2ogTGkWJxAu+ueWdhS//gQBOh+cGCpWnmaBbVg==
-X-Received: by 2002:ac8:444c:: with SMTP id m12mr48345365qtn.306.1559933420780;
-        Fri, 07 Jun 2019 11:50:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id q2sm1527313qkf.44.2019.06.07.11.50.20
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jun 2019 11:50:20 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hZJwR-0007vm-HB; Fri, 07 Jun 2019 15:50:19 -0300
-Date:   Fri, 7 Jun 2019 15:50:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
+        id S1730935AbfFHALo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Jun 2019 20:11:44 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:38024 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729685AbfFHALo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Jun 2019 20:11:44 -0400
+Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 946BC43E794;
+        Sat,  8 Jun 2019 10:11:34 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hZOwO-0001iX-35; Sat, 08 Jun 2019 10:10:36 +1000
+Date:   Sat, 8 Jun 2019 10:10:36 +1000
+From:   Dave Chinner <david@fromorbit.com>
 To:     Ira Weiny <ira.weiny@intel.com>
 Cc:     Jan Kara <jack@suse.cz>, Dan Williams <dan.j.williams@intel.com>,
         Theodore Ts'o <tytso@mit.edu>,
         Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
         Matthew Wilcox <willy@infradead.org>,
         linux-xfs@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
         John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-rdma@vger.kernel.org
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
 Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190607185019.GP14802@ziepe.ca>
+Message-ID: <20190608001036.GF14308@dread.disaster.area>
 References: <20190606014544.8339-1-ira.weiny@intel.com>
  <20190606104203.GF7433@quack2.suse.cz>
  <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
@@ -73,51 +43,78 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
+        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
+        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=q-LccRbQMXva6PWEi7oA:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
+> On Fri, Jun 07, 2019 at 01:04:26PM +0200, Jan Kara wrote:
+> > On Thu 06-06-19 15:03:30, Ira Weiny wrote:
+> > > On Thu, Jun 06, 2019 at 12:42:03PM +0200, Jan Kara wrote:
+> > > > On Wed 05-06-19 18:45:33, ira.weiny@intel.com wrote:
+> > > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > 
+> > > > So I'd like to actually mandate that you *must* hold the file lease until
+> > > > you unpin all pages in the given range (not just that you have an option to
+> > > > hold a lease). And I believe the kernel should actually enforce this. That
+> > > > way we maintain a sane state that if someone uses a physical location of
+> > > > logical file offset on disk, he has a layout lease. Also once this is done,
+> > > > sysadmin has a reasonably easy way to discover run-away RDMA application
+> > > > and kill it if he wishes so.
+> > > 
+> > > Fair enough.
+> > > 
+> > > I was kind of heading that direction but had not thought this far forward.  I
+> > > was exploring how to have a lease remain on the file even after a "lease
+> > > break".  But that is incompatible with the current semantics of a "layout"
+> > > lease (as currently defined in the kernel).  [In the end I wanted to get an RFC
+> > > out to see what people think of this idea so I did not look at keeping the
+> > > lease.]
+> > > 
+> > > Also hitch is that currently a lease is forcefully broken after
+> > > <sysfs>/lease-break-time.  To do what you suggest I think we would need a new
+> > > lease type with the semantics you describe.
+> > 
+> > I'd do what Dave suggested - add flag to mark lease as unbreakable by
+> > truncate and teach file locking core to handle that. There actually is
+> > support for locks that are not broken after given timeout so there
+> > shouldn't be too many changes need.
+> >  
+> > > Previously I had thought this would be a good idea (for other reasons).  But
+> > > what does everyone think about using a "longterm lease" similar to [1] which
+> > > has the semantics you proppose?  In [1] I was not sure "longterm" was a good
+> > > name but with your proposal I think it makes more sense.
+> > 
+> > As I wrote elsewhere in this thread I think FL_LAYOUT name still makes
+> > sense and I'd add there FL_UNBREAKABLE to mark unusal behavior with
+> > truncate.
+> 
+> Ok I want to make sure I understand what you and Dave are suggesting.
+> 
+> Are you suggesting that we have something like this from user space?
+> 
+> 	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
 
-> And I think this is related to what Christoph Hellwig is doing with bio_vec and
-> dma.  Really we want drivers out of the page processing business.
+Rather than "unbreakable", perhaps a clearer description of the
+policy it entails is "exclusive"?
 
-At least for RDMA, and a few other places I've noticed, I'd really
-like to get totally out of the handling struct pages game.
+i.e. what we are talking about here is an exclusive lease that
+prevents other processes from changing the layout. i.e. the
+mechanism used to guarantee a lease is exclusive is that the layout
+becomes "unbreakable" at the filesystem level, but the policy we are
+actually presenting to uses is "exclusive access"...
 
-We are DMA based and really only want DMA addresses for the target
-device. I know other places need CPU pages or more complicated
-things.. But I also know there are other drivers like RDMA..
+Cheers,
 
-So I think it would be very helpful to have a driver API something
-like:
-
-int get_user_mem_for_dma(struct device *dma_device,
-                void __user *mem, size_t length,
-                struct gup_handle *res,
-                struct 'bio dma list' *dma_list,
-                const struct dma_params *params);
-void put_user_mem_for_dma(struct gup_handle *res, 
-                 struct 'bio dma list' *dma_list);
-
-And we could hope to put in there all the specialty logic we want to
-have for this flow:
- - The weird HMM stuff in hmm_range_dma_map()
- - Interaction with DAX
- - Interaction with DMA BUF
- - Holding file leases
- - PCI peer 2 peer features
- - Optimizations for huge pages
- - Handling page dirtying from DMA
- - etc
-
-I think Matthew was suggesting something like this at LS/MM, so +1
-from here..
-
-When Christoph sends his BIO dma work I was thinking of investigating
-this avenue, as we already have something quite similiar in RDMA that
-could perhaps be hoisted out for re-use into mm/
-
-Jason
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
