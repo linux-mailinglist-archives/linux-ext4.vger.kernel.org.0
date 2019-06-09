@@ -2,121 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0173A2CD
-	for <lists+linux-ext4@lfdr.de>; Sun,  9 Jun 2019 03:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4058F3A58E
+	for <lists+linux-ext4@lfdr.de>; Sun,  9 Jun 2019 14:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbfFIB2S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 8 Jun 2019 21:28:18 -0400
-Received: from mga03.intel.com ([134.134.136.65]:55288 "EHLO mga03.intel.com"
+        id S1728516AbfFIMw1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 9 Jun 2019 08:52:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727577AbfFIB2S (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 8 Jun 2019 21:28:18 -0400
-X-Amp-Result: UNSCANNABLE
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Jun 2019 18:28:17 -0700
-X-ExtLoop1: 1
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Jun 2019 18:28:16 -0700
-Date:   Sat, 8 Jun 2019 18:29:32 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jan Kara <jack@suse.cz>, Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
+        id S1728319AbfFIMw1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 9 Jun 2019 08:52:27 -0400
+Received: from vulcan (047-135-017-034.res.spectrum.com [47.135.17.34])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0543520644;
+        Sun,  9 Jun 2019 12:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560084746;
+        bh=Jp7kr5DJqAmzvLis1iU/kH5HcxTG0RVYIAF+Rpsd6qw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Fb0/d1TPF/IYByoPE3/h+/h5Nml1u3pYuNxucYdi3Pa7jHKQWf5ff6iC0gdj4ClyR
+         1+mbW/akKAyRuHM4gDoX0wazMyWkrtb2zYBHWqsFXVnAUf4YOmYBHdBPzbKX96kB2U
+         oP2KgGTk8o+FmZtKSAhFyGm8i96fdLia2YEod7hM=
+Message-ID: <dbc19013b6f2a654541980edd1a00b72331645f9.camel@kernel.org>
+Subject: Re: [PATCH RFC 01/10] fs/locks: Add trace_leases_conflict
+From:   Jeff Layton <jlayton@kernel.org>
+To:     ira.weiny@intel.com, Dan Williams <dan.j.williams@intel.com>,
+        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-xfs@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
         John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        =?ISO-8859-1?Q?J=E9r=F4me?= Glisse <jglisse@redhat.com>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190609012931.GA19825@iweiny-DESK2.sc.intel.com>
+        linux-mm@kvack.org
+Date:   Sun, 09 Jun 2019 08:52:20 -0400
+In-Reply-To: <20190606014544.8339-2-ira.weiny@intel.com>
 References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
- <20190608001036.GF14308@dread.disaster.area>
+         <20190606014544.8339-2-ira.weiny@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.2 (3.32.2-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190608001036.GF14308@dread.disaster.area>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Jun 08, 2019 at 10:10:36AM +1000, Dave Chinner wrote:
-> On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
-> > On Fri, Jun 07, 2019 at 01:04:26PM +0200, Jan Kara wrote:
-> > > On Thu 06-06-19 15:03:30, Ira Weiny wrote:
-> > > > On Thu, Jun 06, 2019 at 12:42:03PM +0200, Jan Kara wrote:
-> > > > > On Wed 05-06-19 18:45:33, ira.weiny@intel.com wrote:
-> > > > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > > > 
-> > > > > So I'd like to actually mandate that you *must* hold the file lease until
-> > > > > you unpin all pages in the given range (not just that you have an option to
-> > > > > hold a lease). And I believe the kernel should actually enforce this. That
-> > > > > way we maintain a sane state that if someone uses a physical location of
-> > > > > logical file offset on disk, he has a layout lease. Also once this is done,
-> > > > > sysadmin has a reasonably easy way to discover run-away RDMA application
-> > > > > and kill it if he wishes so.
-> > > > 
-> > > > Fair enough.
-> > > > 
-> > > > I was kind of heading that direction but had not thought this far forward.  I
-> > > > was exploring how to have a lease remain on the file even after a "lease
-> > > > break".  But that is incompatible with the current semantics of a "layout"
-> > > > lease (as currently defined in the kernel).  [In the end I wanted to get an RFC
-> > > > out to see what people think of this idea so I did not look at keeping the
-> > > > lease.]
-> > > > 
-> > > > Also hitch is that currently a lease is forcefully broken after
-> > > > <sysfs>/lease-break-time.  To do what you suggest I think we would need a new
-> > > > lease type with the semantics you describe.
-> > > 
-> > > I'd do what Dave suggested - add flag to mark lease as unbreakable by
-> > > truncate and teach file locking core to handle that. There actually is
-> > > support for locks that are not broken after given timeout so there
-> > > shouldn't be too many changes need.
-> > >  
-> > > > Previously I had thought this would be a good idea (for other reasons).  But
-> > > > what does everyone think about using a "longterm lease" similar to [1] which
-> > > > has the semantics you proppose?  In [1] I was not sure "longterm" was a good
-> > > > name but with your proposal I think it makes more sense.
-> > > 
-> > > As I wrote elsewhere in this thread I think FL_LAYOUT name still makes
-> > > sense and I'd add there FL_UNBREAKABLE to mark unusal behavior with
-> > > truncate.
-> > 
-> > Ok I want to make sure I understand what you and Dave are suggesting.
-> > 
-> > Are you suggesting that we have something like this from user space?
-> > 
-> > 	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
+On Wed, 2019-06-05 at 18:45 -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Rather than "unbreakable", perhaps a clearer description of the
-> policy it entails is "exclusive"?
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  fs/locks.c                      | 20 ++++++++++++++-----
+>  include/trace/events/filelock.h | 35 +++++++++++++++++++++++++++++++++
+>  2 files changed, 50 insertions(+), 5 deletions(-)
 > 
-> i.e. what we are talking about here is an exclusive lease that
-> prevents other processes from changing the layout. i.e. the
-> mechanism used to guarantee a lease is exclusive is that the layout
-> becomes "unbreakable" at the filesystem level, but the policy we are
-> actually presenting to uses is "exclusive access"...
+> diff --git a/fs/locks.c b/fs/locks.c
+> index ec1e4a5df629..0cc2b9f30e22 100644
+> --- a/fs/locks.c
+> +++ b/fs/locks.c
+> @@ -1534,11 +1534,21 @@ static void time_out_leases(struct inode *inode, struct list_head *dispose)
+>  
+>  static bool leases_conflict(struct file_lock *lease, struct file_lock *breaker)
+>  {
+> -	if ((breaker->fl_flags & FL_LAYOUT) != (lease->fl_flags & FL_LAYOUT))
+> -		return false;
+> -	if ((breaker->fl_flags & FL_DELEG) && (lease->fl_flags & FL_LEASE))
+> -		return false;
+> -	return locks_conflict(breaker, lease);
+> +	bool rc;
+> +
+> +	if ((breaker->fl_flags & FL_LAYOUT) != (lease->fl_flags & FL_LAYOUT)) {
+> +		rc = false;
+> +		goto trace;
+> +	}
+> +	if ((breaker->fl_flags & FL_DELEG) && (lease->fl_flags & FL_LEASE)) {
+> +		rc = false;
+> +		goto trace;
+> +	}
+> +
+> +	rc = locks_conflict(breaker, lease);
+> +trace:
+> +	trace_leases_conflict(rc, lease, breaker);
+> +	return rc;
+>  }
+>  
+>  static bool
+> diff --git a/include/trace/events/filelock.h b/include/trace/events/filelock.h
+> index fad7befa612d..4b735923f2ff 100644
+> --- a/include/trace/events/filelock.h
+> +++ b/include/trace/events/filelock.h
+> @@ -203,6 +203,41 @@ TRACE_EVENT(generic_add_lease,
+>  		show_fl_type(__entry->fl_type))
+>  );
+>  
+> +TRACE_EVENT(leases_conflict,
+> +	TP_PROTO(bool conflict, struct file_lock *lease, struct file_lock *breaker),
+> +
+> +	TP_ARGS(conflict, lease, breaker),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(void *, lease)
+> +		__field(void *, breaker)
+> +		__field(unsigned int, l_fl_flags)
+> +		__field(unsigned int, b_fl_flags)
+> +		__field(unsigned char, l_fl_type)
+> +		__field(unsigned char, b_fl_type)
+> +		__field(bool, conflict)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->lease = lease;
+> +		__entry->l_fl_flags = lease->fl_flags;
+> +		__entry->l_fl_type = lease->fl_type;
+> +		__entry->breaker = breaker;
+> +		__entry->b_fl_flags = breaker->fl_flags;
+> +		__entry->b_fl_type = breaker->fl_type;
+> +		__entry->conflict = conflict;
+> +	),
+> +
+> +	TP_printk("conflict %d: lease=0x%p fl_flags=%s fl_type=%s; breaker=0x%p fl_flags=%s fl_type=%s",
+> +		__entry->conflict,
+> +		__entry->lease,
+> +		show_fl_flags(__entry->l_fl_flags),
+> +		show_fl_type(__entry->l_fl_type),
+> +		__entry->breaker,
+> +		show_fl_flags(__entry->b_fl_flags),
+> +		show_fl_type(__entry->b_fl_type))
+> +);
+> +
+>  #endif /* _TRACE_FILELOCK_H */
+>  
+>  /* This part must be outside protection */
 
-That sounds good.
+This looks useful. I'll plan to merge this one for v5.3 unless there
+are objections.
 
-Ira
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
