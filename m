@@ -2,120 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A66DC3B908
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jun 2019 18:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654D23BB0F
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jun 2019 19:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391467AbfFJQJo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Jun 2019 12:09:44 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:36720 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389392AbfFJQJo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Jun 2019 12:09:44 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5AG8dYb186787;
-        Mon, 10 Jun 2019 16:09:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=q/XqjsUkDq6xevue9zs57YIabmhhkQKl2VGDHiV5jq4=;
- b=z113WwHcxX3n/yhODGaHV37Y8Y2xpZmcyhxxxXzJA/k/rxOYXjF2MjD/1uhcbfhftRYf
- 5pqMjh5K3CtHPhzszPk3sJvtarblaJBFXn+SMzznHbGaB/24N8rQCO6FIzIJiYWF5Jmy
- 0Ctn3AGwZpPxskUF74cndxv7urz5f3+PcDqCnsdci1pwvBGZZ6ksWHEShe2xXI4W3GG/
- zsFwGRTeohmYJJragnO65tWk+/TgIVgAHp17i7Qzmiy9ZuC84qzcwRNBXZbhGeO1dq1K
- Yw1OMGx7ZEqHS/69RztKNiTCeLKDWlHFChndJrLK17c0MsRVkQQFuAzKKwCH+BVYyVom Lg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2t04etfvt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Jun 2019 16:09:37 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5AG9TMe154450;
-        Mon, 10 Jun 2019 16:09:37 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2t024twpwf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Jun 2019 16:09:37 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5AG9aDJ022183;
-        Mon, 10 Jun 2019 16:09:36 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 10 Jun 2019 09:09:36 -0700
-Date:   Mon, 10 Jun 2019 09:09:34 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/8] mm/fs: don't allow writes to immutable files
-Message-ID: <20190610160934.GH1871505@magnolia>
-References: <155552786671.20411.6442426840435740050.stgit@magnolia>
- <155552787330.20411.11893581890744963309.stgit@magnolia>
- <20190610015145.GB3266@mit.edu>
- <20190610044144.GA1872750@magnolia>
- <20190610131417.GD15963@mit.edu>
+        id S2388136AbfFJRft (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Jun 2019 13:35:49 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58558 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387750AbfFJRft (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Jun 2019 13:35:49 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 759AF260195
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     tytso@mit.edu
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: [PATCH v3 1/2] common/casefold: Add infrastructure to test filename casefold feature
+Date:   Mon, 10 Jun 2019 13:35:40 -0400
+Message-Id: <20190610173541.20511-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190610131417.GD15963@mit.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906100110
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906100110
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 09:14:17AM -0400, Theodore Ts'o wrote:
-> On Sun, Jun 09, 2019 at 09:41:44PM -0700, Darrick J. Wong wrote:
-> > On Sun, Jun 09, 2019 at 09:51:45PM -0400, Theodore Ts'o wrote:
-> > > On Wed, Apr 17, 2019 at 12:04:33PM -0700, Darrick J. Wong wrote:
-> >
-> > > Shouldn't this check be moved before the modification of vmf->flags?
-> > > It looks like do_page_mkwrite() isn't supposed to be returning with
-> > > vmf->flags modified, lest "the caller gets surprised".
-> > 
-> > Yeah, I think that was a merge error during a rebase... :(
-> > 
-> > Er ... if you're still planning to take this patch through your tree,
-> > can you move it to above the "vmf->flags = FAULT_FLAG_WRITE..." ?
-> 
-> I was planning on only taking 8/8 through the ext4 tree.  I also added
-> a patch which filtered writes, truncates, and page_mkwrites (but not
-> mmap) for immutable files at the ext4 level.
+Add a set of basic helper functions to simplify the testing of
+casefolding capable filesystems.
 
-*Oh*.  I saw your reply attached to the 1/8 patch and thought that was
-the one you were taking.  I was sort of surprised, tbh. :)
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+---
+ common/casefold | 92 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 92 insertions(+)
+ create mode 100644 common/casefold
 
-> I *could* take this patch through the mm/fs tree, but I wasn't sure
-> what your plans were for the rest of the patch series, and it seemed
-> like it hadn't gotten much review/attention from other fs or mm folks
-> (well, I guess Brian Foster weighed in).
+diff --git a/common/casefold b/common/casefold
+new file mode 100644
+index 000000000000..43f2d77d706c
+--- /dev/null
++++ b/common/casefold
+@@ -0,0 +1,92 @@
++# SPDX-License-Identifier: GPL-2.0+
++# Copyright (c) 2019 Collabora, Ltd.  All Rights Reserved.
++#
++# Common functions for testing filename casefold feature
++
++_has_casefold_kernel_support()
++{
++	case $FSTYP in
++		ext4)
++			test -f '/sys/fs/ext4/features/casefold'
++			;;
++		*)
++			# defaults to unsupported
++			false
++			;;
++	esac
++}
++
++_require_scratch_casefold()
++{
++	if ! _has_casefold_kernel_support ; then
++		_notrun "$FSTYP does not support casefold feature"
++	fi
++
++	if ! _scratch_mkfs_casefold &>>seqres.full; then
++		_notrun "$FSTYP userspace tools do not support casefold"
++	fi
++
++	# Make sure the kernel can mount a filesystem with the encoding
++	# defined by the userspace tools.  This will fail if
++	# the userspace tool used a more recent encoding than the one
++	# supported in kernel space.
++	if ! _try_scratch_mount &>>seqres.full; then
++		_notrun \
++		    "kernel can't mount filesystem with the encoding set by userspace"
++	fi
++	_scratch_unmount
++
++	# utilities used by casefold
++	_require_command "$CHATTR_PROG" chattr
++	_require_command "$LSATTR_PROG" lsattr
++}
++
++_scratch_mkfs_casefold()
++{
++	case $FSTYP in
++		ext4)
++			_scratch_mkfs -O casefold $*
++			;;
++		*)
++			_notrun "Don't know how to mkfs with casefold support on $FSTYP"
++			;;
++	esac
++}
++
++_scratch_mkfs_casefold_strict()
++{
++	case $FSTYP in
++		ext4)
++			_scratch_mkfs -O casefold -E encoding_flags=strict
++			;;
++		*)
++			_notrun \
++			    "Don't know how to mkfs with casefold-strict support on $FSTYP"
++			;;
++	esac
++}
++
++# To get the exact disk name, we need some method that does a
++# getdents() on the parent directory, such that we don't get
++# normalized/casefolded results.  'Find' works ok.
++_casefold_check_exact_name()
++{
++	local basedir=$1
++	local exact_name=$2
++	find ${basedir} | grep -q ${exact_name}
++}
++
++_casefold_set_attr()
++{
++	$CHATTR_PROG +F "${1}"
++}
++
++_casefold_unset_attr()
++{
++	$CHATTR_PROG -F "${1}"
++}
++
++_casefold_lsattr_dir()
++{
++	$LSATTR_PROG -ld "${1}"
++}
+-- 
+2.20.1
 
-> What do you think?
-
-Not sure.  The comments attached to the LWN story were sort of nasty,
-and now that a couple of people said "Oh, well, Debian documented the
-inconsistent behavior so just let it be" I haven't felt like
-resurrecting the series for 5.3.
-
-I do want to clean up the parameter validation for the VFS SETFLAGS and
-FSSETXATTR ioctls though... eh, maybe I'll just send out the series as
-it stands now.  I'm still maintaining it, so all that work might as well
-go somewhere.
-
---D
-
-> 
-> 						- Ted
-> 
-> 
-> 
