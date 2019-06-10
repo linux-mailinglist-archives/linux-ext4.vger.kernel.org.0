@@ -2,87 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D7A3B1C3
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jun 2019 11:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829853B5D5
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jun 2019 15:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388940AbfFJJON (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Jun 2019 05:14:13 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:56390 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388816AbfFJJON (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 10 Jun 2019 05:14:13 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id CC4253082E3F;
-        Mon, 10 Jun 2019 09:13:46 +0000 (UTC)
-Received: from dhcp201-121.englab.pnq.redhat.com (ovpn-116-103.sin2.redhat.com [10.67.116.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D4A4C60BF1;
-        Mon, 10 Jun 2019 09:13:07 +0000 (UTC)
-From:   Pankaj Gupta <pagupta@redhat.com>
-To:     dm-devel@redhat.com, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        qemu-devel@nongnu.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Cc:     dan.j.williams@intel.com, zwisler@kernel.org,
-        vishal.l.verma@intel.com, dave.jiang@intel.com, mst@redhat.com,
-        jasowang@redhat.com, willy@infradead.org, rjw@rjwysocki.net,
-        hch@infradead.org, lenb@kernel.org, jack@suse.cz, tytso@mit.edu,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com,
-        lcapitulino@redhat.com, kwolf@redhat.com, imammedo@redhat.com,
-        jmoyer@redhat.com, nilal@redhat.com, riel@surriel.com,
-        stefanha@redhat.com, aarcange@redhat.com, david@redhat.com,
-        david@fromorbit.com, cohuck@redhat.com,
-        xiaoguangrong.eric@gmail.com, pbonzini@redhat.com,
-        yuval.shaia@oracle.com, kilobyte@angband.pl, jstaron@google.com,
-        rdunlap@infradead.org, snitzer@redhat.com, pagupta@redhat.com
-Subject: [PATCH v11 7/7] xfs: disable map_sync for async flush
-Date:   Mon, 10 Jun 2019 14:37:30 +0530
-Message-Id: <20190610090730.8589-8-pagupta@redhat.com>
-In-Reply-To: <20190610090730.8589-1-pagupta@redhat.com>
-References: <20190610090730.8589-1-pagupta@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Mon, 10 Jun 2019 09:14:13 +0000 (UTC)
+        id S2390273AbfFJNOd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Jun 2019 09:14:33 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51506 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388848AbfFJNOd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Jun 2019 09:14:33 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5ADEILt032203
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Jun 2019 09:14:18 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id E4DDE420481; Mon, 10 Jun 2019 09:14:17 -0400 (EDT)
+Date:   Mon, 10 Jun 2019 09:14:17 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 1/8] mm/fs: don't allow writes to immutable files
+Message-ID: <20190610131417.GD15963@mit.edu>
+References: <155552786671.20411.6442426840435740050.stgit@magnolia>
+ <155552787330.20411.11893581890744963309.stgit@magnolia>
+ <20190610015145.GB3266@mit.edu>
+ <20190610044144.GA1872750@magnolia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190610044144.GA1872750@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dont support 'MAP_SYNC' with non-DAX files and DAX files
-with asynchronous dax_device. Virtio pmem provides
-asynchronous host page cache flush mechanism. We don't
-support 'MAP_SYNC' with virtio pmem and xfs.
+On Sun, Jun 09, 2019 at 09:41:44PM -0700, Darrick J. Wong wrote:
+> On Sun, Jun 09, 2019 at 09:51:45PM -0400, Theodore Ts'o wrote:
+> > On Wed, Apr 17, 2019 at 12:04:33PM -0700, Darrick J. Wong wrote:
+>
+> > Shouldn't this check be moved before the modification of vmf->flags?
+> > It looks like do_page_mkwrite() isn't supposed to be returning with
+> > vmf->flags modified, lest "the caller gets surprised".
+> 
+> Yeah, I think that was a merge error during a rebase... :(
+> 
+> Er ... if you're still planning to take this patch through your tree,
+> can you move it to above the "vmf->flags = FAULT_FLAG_WRITE..." ?
 
-Signed-off-by: Pankaj Gupta <pagupta@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/xfs/xfs_file.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+I was planning on only taking 8/8 through the ext4 tree.  I also added
+a patch which filtered writes, truncates, and page_mkwrites (but not
+mmap) for immutable files at the ext4 level.
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index a7ceae90110e..f17652cca5ff 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -1203,11 +1203,14 @@ xfs_file_mmap(
- 	struct file	*filp,
- 	struct vm_area_struct *vma)
- {
-+	struct dax_device 	*dax_dev;
-+
-+	dax_dev = xfs_find_daxdev_for_inode(file_inode(filp));
- 	/*
--	 * We don't support synchronous mappings for non-DAX files. At least
--	 * until someone comes with a sensible use case.
-+	 * We don't support synchronous mappings for non-DAX files and
-+	 * for DAX files if underneath dax_device is not synchronous.
- 	 */
--	if (!IS_DAX(file_inode(filp)) && (vma->vm_flags & VM_SYNC))
-+	if (!daxdev_mapping_supported(vma, dax_dev))
- 		return -EOPNOTSUPP;
- 
- 	file_accessed(filp);
--- 
-2.20.1
+I *could* take this patch through the mm/fs tree, but I wasn't sure
+what your plans were for the rest of the patch series, and it seemed
+like it hadn't gotten much review/attention from other fs or mm folks
+(well, I guess Brian Foster weighed in).
+
+What do you think?
+
+						- Ted
+
+
 
