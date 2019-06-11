@@ -2,168 +2,280 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB08416DF
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2019 23:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9093C416FB
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2019 23:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407633AbfFKV2E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Jun 2019 17:28:04 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:44338 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391613AbfFKV2E (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Jun 2019 17:28:04 -0400
-Received: by mail-pf1-f193.google.com with SMTP id t16so8219017pfe.11
-        for <linux-ext4@vger.kernel.org>; Tue, 11 Jun 2019 14:28:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=kHOmEXm44ofEStTL89clw86zKCfMK7pxZweKkVj60zc=;
-        b=BNyH/I0aTFapdWvAUe1tA6vh4V7SGGnKW9i2iryYsCgfyNFoPcnfrRh6ENitI8pQJy
-         ceJmUE14+hVNBM9WC+xAjbbK0ncjBtDNhZsREXS8wFJSFtJTAC+2kp/Gx/2pDb6cUMf8
-         JpUjBxKEfOQvrL9m9kMePR3M4fWdfHCrRVaSTbbHZtX1SELIRUg9HXb/1sKatJNSwuF+
-         QO1DomLI907tfm1bq218gSHTCncrOyxsRkBkmStrHKSsQYkjWyIsW3ZSK9J+lpNXxDiR
-         oojDQ9O14TWNGl2rGOpuLibgYG5bNECymjz1Ygn5Bb6fBc1ArnndD5ref2xpl4j3WuJU
-         Jxfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=kHOmEXm44ofEStTL89clw86zKCfMK7pxZweKkVj60zc=;
-        b=Oa2dCOmfU+xthisetSxyGtlULYhr3vsAC0SSO8DcRXY/7wX6RhqG9NaTSKGiWXWgdj
-         gQ/I0/XkB0Idm88hWC69jX/kUqcRZu6vX4s6mfrJtlLza/y6Df7JhcVf/oAbsNWU0Snr
-         5lZq2IwKfwEEpF8sFBCY2wQ0BW3rZWXAlhKCVrrpBel95tQ6BScjAAjHjKJHtdvDmiCz
-         LvoglV39PWWF2XHWQ/DhYgYYc/lm61fwmjNL/mNmy70XPVhdDzx83G75wv6iF0oihl+3
-         kkBlm9O3iFKWMGQLMfWIqKxn1OXXoiO4U7uisZRjCEGvoZLG6isIiEuZVhS0KGuDdUKu
-         zfWQ==
-X-Gm-Message-State: APjAAAVRt5BO1TQnZAiJ0z+V3kx5BHH7jZcUq8r48Fexa8Ks9oUH988e
-        lHMSR7mpS2Pfk78CThAgVuJUDQ==
-X-Google-Smtp-Source: APXvYqx8fSWzb0HB5KPULCR4fAdvphiu+yCLRaPJ3mwALDMWZWEo99vzBDgf+T6A9kZ8B2J2ELLLxQ==
-X-Received: by 2002:a17:90a:a505:: with SMTP id a5mr29364827pjq.27.1560288483342;
-        Tue, 11 Jun 2019 14:28:03 -0700 (PDT)
-Received: from cabot.adilger.ext (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id a192sm6068716pfa.84.2019.06.11.14.28.01
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 11 Jun 2019 14:28:02 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <315FEA4D-41B1-4C5B-89AA-7ABA93D66E0A@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_5B427BF6-3A60-46C7-A8F9-EE572E3F0487";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH V2] include: linux: Regularise the use of FIELD_SIZEOF
- macro
-Date:   Tue, 11 Jun 2019 15:28:00 -0600
-In-Reply-To: <20190611140907.899bebb12a3d731da24a9ad1@linux-foundation.org>
-Cc:     Shyam Saini <shyam.saini@amarulasolutions.com>,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        keescook@chromium.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        netdev@vger.kernel.org, linux-ext4 <linux-ext4@vger.kernel.org>,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-sctp@vger.kernel.org, bpf@vger.kernel.org,
-        kvm@vger.kernel.org, mayhs11saini@gmail.com,
-        Alexey Dobriyan <adobriyan@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-References: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
- <20190611134831.a60c11f4b691d14d04a87e29@linux-foundation.org>
- <6DCAE4F8-3BEC-45F2-A733-F4D15850B7F3@dilger.ca>
- <20190611140907.899bebb12a3d731da24a9ad1@linux-foundation.org>
-X-Mailer: Apple Mail (2.3273)
+        id S2436565AbfFKVgz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Jun 2019 17:36:55 -0400
+Received: from mga17.intel.com ([192.55.52.151]:36483 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403793AbfFKVgz (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 11 Jun 2019 17:36:55 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Jun 2019 14:36:54 -0700
+X-ExtLoop1: 1
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga007.fm.intel.com with ESMTP; 11 Jun 2019 14:36:53 -0700
+Date:   Tue, 11 Jun 2019 14:38:13 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH RFC 02/10] fs/locks: Export F_LAYOUT lease to user space
+Message-ID: <20190611213812.GC14336@iweiny-DESK2.sc.intel.com>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606014544.8339-3-ira.weiny@intel.com>
+ <4e5eb31a41b91a28fbc83c65195a2c75a59cfa24.camel@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e5eb31a41b91a28fbc83c65195a2c75a59cfa24.camel@kernel.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Sun, Jun 09, 2019 at 09:00:24AM -0400, Jeff Layton wrote:
+> On Wed, 2019-06-05 at 18:45 -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > GUP longterm pins of non-pagecache file system pages (eg FS DAX) are
+> > currently disallowed because they are unsafe.
+> > 
+> > The danger for pinning these pages comes from the fact that hole punch
+> > and/or truncate of those files results in the pages being mapped and
+> > pinned by a user space process while DAX has potentially allocated those
+> > pages to other processes.
+> > 
+> > Most (All) users who are mapping FS DAX pages for long term pin purposes
+> > (such as RDMA) are not going to want to deallocate these pages while
+> > those pages are in use.  To do so would mean the application would lose
+> > data.  So the use case for allowing truncate operations of such pages
+> > is limited.
+> > 
+> > However, the kernel must protect itself and users from potential
+> > mistakes and/or malicious user space code.  Rather than disabling long
+> > term pins as is done now.   Allow for users who know they are going to
+> > be pinning this memory to alert the file system of this intention.
+> > Furthermore, allow users to be alerted such that they can react if a
+> > truncate operation occurs for some reason.
+> > 
+> > Example user space pseudocode for a user using RDMA and wanting to allow
+> > a truncate would look like this:
+> > 
+> > lease_break_sigio_handler() {
+> > ...
+> > 	if (sigio.fd == rdma_fd) {
+> > 		complete_rdma_operations(...);
+> > 		ibv_dereg_mr(mr);
+> > 		close(rdma_fd);
+> > 		fcntl(rdma_fd, F_SETLEASE, F_UNLCK);
+> > 	}
+> > }
+> > 
+> > setup_rdma_to_dax_file() {
+> > ...
+> > 	rdma_fd = open(...)
+> > 	fcntl(rdma_fd, F_SETLEASE, F_LAYOUT);
+> 
+> I'm not crazy about this interface. F_LAYOUT doesn't seem to be in the
+> same category as F_RDLCK/F_WRLCK/F_UNLCK.
+> 
+> Maybe instead of F_SETLEASE, this should use new
+> F_SETLAYOUT/F_GETLAYOUT cmd values? There is nothing that would prevent
+> you from setting both a lease and a layout on a file, and indeed knfsd
+> can set both.
+> 
+> This interface seems to conflate the two.
 
---Apple-Mail=_5B427BF6-3A60-46C7-A8F9-EE572E3F0487
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+I've been feeling the same way.  This is why I was leaning toward a new lease
+type.  I called it "F_LONGTERM" but the name is not important.
 
-On Jun 11, 2019, at 3:09 PM, Andrew Morton <akpm@linux-foundation.org> =
-wrote:
->=20
-> On Tue, 11 Jun 2019 15:00:10 -0600 Andreas Dilger <adilger@dilger.ca> =
-wrote:
->=20
->>>> to FIELD_SIZEOF
->>>=20
->>> As Alexey has pointed out, C structs and unions don't have fields -
->>> they have members.  So this is an opportunity to switch everything =
-to
->>> a new member_sizeof().
->>>=20
->>> What do people think of that and how does this impact the patch =
-footprint?
->>=20
->> I did a check, and FIELD_SIZEOF() is used about 350x, while =
-sizeof_field()
->> is about 30x, and SIZEOF_FIELD() is only about 5x.
->=20
-> Erk.  Sorry, I should have grepped.
->=20
->> That said, I'm much more in favour of "sizeof_field()" or =
-"sizeof_member()"
->> than FIELD_SIZEOF().  Not only does that better match "offsetof()", =
-with
->> which it is closely related, but is also closer to the original =
-"sizeof()".
->>=20
->> Since this is a rather trivial change, it can be split into a number =
-of
->> patches to get approval/landing via subsystem maintainers, and there =
-is no
->> huge urgency to remove the original macros until the users are gone.  =
-It
->> would make sense to remove SIZEOF_FIELD() and sizeof_field() quickly =
-so
->> they don't gain more users, and the remaining FIELD_SIZEOF() users =
-can be
->> whittled away as the patches come through the maintainer trees.
->=20
-> In that case I'd say let's live with FIELD_SIZEOF() and remove
-> sizeof_field() and SIZEOF_FIELD().
+I think the concept of adding "exclusive" to the layout lease can fix this
+because the NFS lease is non-exclusive where the user space one (for the
+purpose of GUP pinning) would need to be.
 
-The real question is whether we want to live with a sub-standard macro =
-for
-the next 20 years rather than taking the opportunity to clean it up now?
+FWIW I have not worked out exactly what this new "exclusive" code will look
+like.  Jan said:
 
-> I'm a bit surprised that the FIELD_SIZEOF() definition ends up in
-> stddef.h rather than in kernel.h where such things are normally
-> defined.  Why is that?
+	"There actually is support for locks that are not broken after given
+	timeout so there shouldn't be too many changes need."
 
-Cheers, Andreas
+But I'm not seeing that for Lease code.  So I'm working on something for the
+lease code now.
 
+Ira
 
-
-
-
-
---Apple-Mail=_5B427BF6-3A60-46C7-A8F9-EE572E3F0487
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl0AHOAACgkQcqXauRfM
-H+BPvRAAvxlKWQUZz2tRSIBu/vtfIKMWVyY8fctru8Y1oH+Slx4hWvJ/xxYWjMIa
-LJJgybj3MjwTd30FmSWmmQmKDyjo5oWGelOeLzVfueI8blZIaDcUYT1rrM9h7F4G
-RD22ST6XCWjj5oAmVBW/XHxRIFD6uHtwOnby9a4LgkFOehdkDBhopfAMduEZrW7P
-qNa2T0M660SXtmt8dy89Ynb+sge7iinnRyPKkxNaweIXYGVtZzoScRFNK0vSZjbm
-TgVIKwFyLDbdX1bJFQHZDWnfchCRqQrrmHyIl+wAGTccpfen4bGhDqW0wU1+rQpv
-G2RL1z+N2WiWwKx/TmdPatglD2Hqr73jKfvi7X+DzkJ0nJdYMKnNRpe3S2rZwFjf
-MHpmP35Ql2/96bDulYuirHOVvSrrXF/RXZLUp6MuTu2rGankXETXgiP0lkKcmOZW
-gvA0pFTKFD8YaGf0NU9jS/OUOjYpqhMkBSK2C3d0UdRMCQzRWAudLzM9quRH7vCm
-SfRD6QWHQfOELlKMenRptxYEi8IM3+3R4G1g3VmR7YCegpayslXiSKpgnBAqw4W0
-Z4q6nJ/YOwNTjwzs9ndgCZfGpW6JxKYY0DuQe7ld+ngnXNdVrH1X5pZz9ASV9Wli
-CowwSgwFlqOSkmcy52L7pRGDGSI/yWwzl6QHtjT8o0e30S27eCs=
-=UFIV
------END PGP SIGNATURE-----
-
---Apple-Mail=_5B427BF6-3A60-46C7-A8F9-EE572E3F0487--
+> 
+> > 	sigaction(SIGIO, ...  lease_break ...);
+> > 	ptr = mmap(rdma_fd, ...);
+> > 	mr = ibv_reg_mr(ptr, ...);
+> > 	do_rdma_stuff(...);
+> > }
+> > 
+> > Follow on patches implement the notification of the lease holder on
+> > truncate as well as failing the truncate if the GUP pin is not released.
+> > 
+> > This first patch exports the F_LAYOUT lease type and allows the user to set
+> > and get it.
+> > 
+> > After the complete series:
+> > 
+> > 1) Failure to obtain a F_LAYOUT lease on an open FS DAX file will result
+> >    in a failure to GUP pin any pages in that file.  An example of a call
+> >    which results in GUP pin is ibv_reg_mr().
+> > 2) While the GUP pin is in place (eg MR is in use) truncates of the
+> >    affected pages will fail.
+> > 3) If the user registers a sigaction they will be notified of the
+> >    truncate so they can react.  Failure to react will result in the
+> >    lease being revoked after <sysfs>/lease-break-time seconds.  After
+> >    this time new GUP pins will fail without a new lease being taken.
+> > 4) A truncate will work if the pages being truncated are not actively
+> >    pinned at the time of truncate.  Attempts to pin these pages after
+> >    will result in a failure.
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > ---
+> >  fs/locks.c                       | 36 +++++++++++++++++++++++++++-----
+> >  include/linux/fs.h               |  2 +-
+> >  include/uapi/asm-generic/fcntl.h |  3 +++
+> >  3 files changed, 35 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/fs/locks.c b/fs/locks.c
+> > index 0cc2b9f30e22..de9761c068de 100644
+> > --- a/fs/locks.c
+> > +++ b/fs/locks.c
+> > @@ -191,6 +191,8 @@ static int target_leasetype(struct file_lock *fl)
+> >  		return F_UNLCK;
+> >  	if (fl->fl_flags & FL_DOWNGRADE_PENDING)
+> >  		return F_RDLCK;
+> > +	if (fl->fl_flags & FL_LAYOUT)
+> > +		return F_LAYOUT;
+> >  	return fl->fl_type;
+> >  }
+> >  
+> > @@ -611,7 +613,8 @@ static const struct lock_manager_operations lease_manager_ops = {
+> >  /*
+> >   * Initialize a lease, use the default lock manager operations
+> >   */
+> > -static int lease_init(struct file *filp, long type, struct file_lock *fl)
+> > +static int lease_init(struct file *filp, long type, unsigned int flags,
+> > +		      struct file_lock *fl)
+> >  {
+> >  	if (assign_type(fl, type) != 0)
+> >  		return -EINVAL;
+> > @@ -621,6 +624,8 @@ static int lease_init(struct file *filp, long type, struct file_lock *fl)
+> >  
+> >  	fl->fl_file = filp;
+> >  	fl->fl_flags = FL_LEASE;
+> > +	if (flags & FL_LAYOUT)
+> > +		fl->fl_flags |= FL_LAYOUT;
+> >  	fl->fl_start = 0;
+> >  	fl->fl_end = OFFSET_MAX;
+> >  	fl->fl_ops = NULL;
+> > @@ -629,7 +634,8 @@ static int lease_init(struct file *filp, long type, struct file_lock *fl)
+> >  }
+> >  
+> >  /* Allocate a file_lock initialised to this type of lease */
+> > -static struct file_lock *lease_alloc(struct file *filp, long type)
+> > +static struct file_lock *lease_alloc(struct file *filp, long type,
+> > +				     unsigned int flags)
+> >  {
+> >  	struct file_lock *fl = locks_alloc_lock();
+> >  	int error = -ENOMEM;
+> > @@ -637,7 +643,7 @@ static struct file_lock *lease_alloc(struct file *filp, long type)
+> >  	if (fl == NULL)
+> >  		return ERR_PTR(error);
+> >  
+> > -	error = lease_init(filp, type, fl);
+> > +	error = lease_init(filp, type, flags, fl);
+> >  	if (error) {
+> >  		locks_free_lock(fl);
+> >  		return ERR_PTR(error);
+> > @@ -1588,7 +1594,7 @@ int __break_lease(struct inode *inode, unsigned int mode, unsigned int type)
+> >  	int want_write = (mode & O_ACCMODE) != O_RDONLY;
+> >  	LIST_HEAD(dispose);
+> >  
+> > -	new_fl = lease_alloc(NULL, want_write ? F_WRLCK : F_RDLCK);
+> > +	new_fl = lease_alloc(NULL, want_write ? F_WRLCK : F_RDLCK, 0);
+> >  	if (IS_ERR(new_fl))
+> >  		return PTR_ERR(new_fl);
+> >  	new_fl->fl_flags = type;
+> > @@ -1725,6 +1731,8 @@ EXPORT_SYMBOL(lease_get_mtime);
+> >   *
+> >   *	%F_UNLCK to indicate no lease is held.
+> >   *
+> > + *	%F_LAYOUT to indicate a layout lease is held.
+> > + *
+> >   *	(if a lease break is pending):
+> >   *
+> >   *	%F_RDLCK to indicate an exclusive lease needs to be
+> > @@ -2015,8 +2023,26 @@ static int do_fcntl_add_lease(unsigned int fd, struct file *filp, long arg)
+> >  	struct file_lock *fl;
+> >  	struct fasync_struct *new;
+> >  	int error;
+> > +	unsigned int flags = 0;
+> > +
+> > +	/*
+> > +	 * NOTE on F_LAYOUT lease
+> > +	 *
+> > +	 * LAYOUT lease types are taken on files which the user knows that
+> > +	 * they will be pinning in memory for some indeterminate amount of
+> > +	 * time.  Such as for use with RDMA.  While we don't know what user
+> > +	 * space is going to do with the file we still use a F_RDLOCK level of
+> > +	 * lease.  This ensures that there are no conflicts between
+> > +	 * 2 users.  The conflict should only come from the File system wanting
+> > +	 * to revoke the lease in break_layout()  And this is done by using
+> > +	 * F_WRLCK in the break code.
+> > +	 */
+> > +	if (arg == F_LAYOUT) {
+> > +		arg = F_RDLCK;
+> > +		flags = FL_LAYOUT;
+> > +	}
+> >  
+> > -	fl = lease_alloc(filp, arg);
+> > +	fl = lease_alloc(filp, arg, flags);
+> >  	if (IS_ERR(fl))
+> >  		return PTR_ERR(fl);
+> >  
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index f7fdfe93e25d..9e9d8d35ee93 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -998,7 +998,7 @@ static inline struct file *get_file(struct file *f)
+> >  #define FL_DOWNGRADE_PENDING	256 /* Lease is being downgraded */
+> >  #define FL_UNLOCK_PENDING	512 /* Lease is being broken */
+> >  #define FL_OFDLCK	1024	/* lock is "owned" by struct file */
+> > -#define FL_LAYOUT	2048	/* outstanding pNFS layout */
+> > +#define FL_LAYOUT	2048	/* outstanding pNFS layout or user held pin */
+> >  
+> >  #define FL_CLOSE_POSIX (FL_POSIX | FL_CLOSE)
+> >  
+> > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
+> > index 9dc0bf0c5a6e..baddd54f3031 100644
+> > --- a/include/uapi/asm-generic/fcntl.h
+> > +++ b/include/uapi/asm-generic/fcntl.h
+> > @@ -174,6 +174,9 @@ struct f_owner_ex {
+> >  #define F_SHLCK		8	/* or 4 */
+> >  #endif
+> >  
+> > +#define F_LAYOUT	16      /* layout lease to allow longterm pins such as
+> > +				   RDMA */
+> > +
+> >  /* operations for bsd flock(), also used by the kernel implementation */
+> >  #define LOCK_SH		1	/* shared lock */
+> >  #define LOCK_EX		2	/* exclusive lock */
+> 
