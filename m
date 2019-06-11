@@ -2,90 +2,207 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EC03CADE
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2019 14:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD563CCA5
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2019 15:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbfFKMPv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Jun 2019 08:15:51 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51416 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726713AbfFKMPv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Jun 2019 08:15:51 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5BCFkcI031853
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 11 Jun 2019 08:15:47 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 9AC17420481; Tue, 11 Jun 2019 08:15:46 -0400 (EDT)
-Date:   Tue, 11 Jun 2019 08:15:46 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.co.uk>
-Subject: Re: [PATCH v3 2/2] shared/012: Add tests for filename casefolding
- feature
-Message-ID: <20190611121546.GC2774@mit.edu>
-References: <20190610173541.20511-1-krisman@collabora.com>
- <20190610173541.20511-2-krisman@collabora.com>
+        id S2389923AbfFKNLf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Jun 2019 09:11:35 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:41482 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726713AbfFKNLf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 11 Jun 2019 09:11:35 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 875513082E6A;
+        Tue, 11 Jun 2019 13:11:19 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 374A45D704;
+        Tue, 11 Jun 2019 13:11:08 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 4A3B74EBC9;
+        Tue, 11 Jun 2019 13:10:59 +0000 (UTC)
+Date:   Tue, 11 Jun 2019 09:10:58 -0400 (EDT)
+From:   Pankaj Gupta <pagupta@redhat.com>
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     cohuck@redhat.com, jack@suse.cz, kvm@vger.kernel.org,
+        mst@redhat.com, jasowang@redhat.com, david@fromorbit.com,
+        qemu-devel@nongnu.org, virtualization@lists.linux-foundation.org,
+        dm-devel@redhat.com, adilger kernel <adilger.kernel@dilger.ca>,
+        zwisler@kernel.org, aarcange@redhat.com,
+        dave jiang <dave.jiang@intel.com>, jstaron@google.com,
+        linux-nvdimm@lists.01.org,
+        vishal l verma <vishal.l.verma@intel.com>, david@redhat.com,
+        willy@infradead.org, hch@infradead.org, linux-acpi@vger.kernel.org,
+        jmoyer@redhat.com, linux-ext4@vger.kernel.org, lenb@kernel.org,
+        kilobyte@angband.pl, rdunlap@infradead.org, riel@surriel.com,
+        yuval shaia <yuval.shaia@oracle.com>, stefanha@redhat.com,
+        pbonzini@redhat.com, dan j williams <dan.j.williams@intel.com>,
+        lcapitulino@redhat.com, kwolf@redhat.com, nilal@redhat.com,
+        tytso@mit.edu, xiaoguangrong eric <xiaoguangrong.eric@gmail.com>,
+        darrick wong <darrick.wong@oracle.com>, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, imammedo@redhat.com
+Message-ID: <1206355816.34396746.1560258658768.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20190610192803.GA29002@redhat.com>
+References: <20190610090730.8589-1-pagupta@redhat.com> <20190610090730.8589-5-pagupta@redhat.com> <20190610192803.GA29002@redhat.com>
+Subject: Re: [Qemu-devel] [PATCH v11 4/7] dm: enable synchronous dax
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190610173541.20511-2-krisman@collabora.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.116.33, 10.4.195.27]
+Thread-Topic: enable synchronous dax
+Thread-Index: 9TyGIIOSkuHn9exFInDwoSOU8/oLjA==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Tue, 11 Jun 2019 13:11:34 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 01:35:41PM -0400, Gabriel Krisman Bertazi wrote:
-> From: "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.co.uk>
+Hi Mike,
+
+Thanks for the review Please find my reply inline.
+
 > 
-> This new test implements verification for the per-directory
-> case-insensitive feature, as supported by the reference implementation
-> in Ext4.
+> dm_table_supports_dax() is called multiple times (from
+> dm_table_set_restrictions and dm_table_determine_type).  It is strange
+> to have a getter have a side-effect of being a setter too.  Overloading
+> like this could get you in trouble in the future.
 > 
-> Signed-off-by: Lakshmipathi.G <lakshmipathi.ganapathi@collabora.co.uk>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->   [Rewrite to support feature design]
->   [Refactor to simplify implementation]
+> Are you certain this is what you want?
 
-I tried out this test, and it's apparently failing for me using
-e2fsprogs 1.45.2; it looks like it's a whitespace issue?
+I agree with you.
 
-shared/012		[08:14:07][  146.388509] run fstests shared/012 at 2019-06-11 08:14:07
- [08:14:08]- output mismatch (see /results/ext4/results-4k/shared/012.out.bad)
-    --- tests/shared/012.out	2019-06-10 00:02:54.000000000 -0400
-    +++ /results/ext4/results-4k/shared/012.out.bad	2019-06-11 08:14:08.487418272 -0400
-    @@ -1,8 +1,8 @@
-     QA output created by 012
-    -SCRATCH_MNT/basic           Extents, Casefold
-    -SCRATCH_MNT/basic           Extents
-    -SCRATCH_MNT/casefold_flag_removal Extents, Casefold
-    -SCRATCH_MNT/casefold_flag_removal Extents, Casefold
-    +SCRATCH_MNT/basic                   Extents, Casefold
-    +SCRATCH_MNT/basic                   Extents
-    ...
-    (Run 'diff -u /root/xfstests/tests/shared/012.out /results/ext4/results-4k/shared/012.out.bad'  to see the entire diff)
-Ran: shared/012
-Failures: shared/012
-Failed 1 of 1 tests
-Xunit report: /results/ext4/results-4k/result.xml
+> 
+> Or would it be better to refactor dm_table_supports_dax() to take an
+> iterate_devices_fn arg and have callers pass the appropriate function?
+> Then have dm_table_set_restrictions() caller do:
+> 
+>      if (dm_table_supports_dax(t, device_synchronous, NULL))
+>                set_dax_synchronous(t->md->dax_dev);
+> 
+> (NULL arg implies dm_table_supports_dax() refactoring would take a int
+> *data pointer rather than int type).
+> 
+> Mike
+> 
 
-root@kvm-xfstests:~# diff -u /root/xfstests/tests/shared/012.out /results/ext4/results-4k/shared/012.out.bad
---- /root/xfstests/tests/shared/012.out	2019-06-10 00:02:54.000000000 -0400
-+++ /results/ext4/results-4k/shared/012.out.bad	2019-06-11 08:14:08.487418272 -0400
-@@ -1,8 +1,8 @@
- QA output created by 012
--SCRATCH_MNT/basic           Extents, Casefold
--SCRATCH_MNT/basic           Extents
--SCRATCH_MNT/casefold_flag_removal Extents, Casefold
--SCRATCH_MNT/casefold_flag_removal Extents, Casefold
-+SCRATCH_MNT/basic                   Extents, Casefold
-+SCRATCH_MNT/basic                   Extents
-+SCRATCH_MNT/casefold_flag_removal   Extents, Casefold
-+SCRATCH_MNT/casefold_flag_removal   Extents, Casefold
- SCRATCH_MNT/flag_inheritance/d1/d2/d3 Extents, Casefold
- SCRATCH_MNT/symlink/ind1/TARGET
- mv: cannot stat 'SCRATCH_MNT/rename/rename': No such file or directory
+I am sending below patch as per your suggestion. Does it look
+near to what you have in mind?
+
+Thank you,
+Pankaj
+
+===============
+
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 350cf0451456..8d89acc8b8c2 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -881,7 +881,7 @@ void dm_table_set_type(struct dm_table *t, enum dm_queue_mode type)
+ EXPORT_SYMBOL_GPL(dm_table_set_type);
+
+ /* validate the dax capability of the target device span */
+-static int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
++int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
+                                       sector_t start, sector_t len, void *data)
+ {
+        int blocksize = *(int *) data;
+@@ -890,7 +890,15 @@ static int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
+                        start, len);
+ }
+
+-bool dm_table_supports_dax(struct dm_table *t, int blocksize)
++/* Check devices support synchronous DAX */
++static int device_synchronous(struct dm_target *ti, struct dm_dev *dev,
++                                      sector_t start, sector_t len, void *data)
++{
++       return dax_synchronous(dev->dax_dev);
++}
++
++bool dm_table_supports_dax(struct dm_table *t,
++                         iterate_devices_callout_fn iterate_fn, int *blocksize)
+ {
+        struct dm_target *ti;
+        unsigned i;
+@@ -903,8 +911,7 @@ bool dm_table_supports_dax(struct dm_table *t, int blocksize)
+                        return false;
+
+                if (!ti->type->iterate_devices ||
+-                   !ti->type->iterate_devices(ti, device_supports_dax,
+-                           &blocksize))
++                       !ti->type->iterate_devices(ti, iterate_fn, blocksize))
+                        return false;
+        }
+
+@@ -940,6 +947,7 @@ static int dm_table_determine_type(struct dm_table *t)
+        struct dm_target *tgt;
+        struct list_head *devices = dm_table_get_devices(t);
+        enum dm_queue_mode live_md_type = dm_get_md_type(t->md);
++       int page_size = PAGE_SIZE;
+
+        if (t->type != DM_TYPE_NONE) {
+                /* target already set the table's type */
+@@ -984,7 +992,7 @@ static int dm_table_determine_type(struct dm_table *t)
+ verify_bio_based:
+                /* We must use this table as bio-based */
+                t->type = DM_TYPE_BIO_BASED;
+-               if (dm_table_supports_dax(t, PAGE_SIZE) ||
++               if (dm_table_supports_dax(t, device_supports_dax, &page_size) ||
+                    (list_empty(devices) && live_md_type == DM_TYPE_DAX_BIO_BASED)) {
+                        t->type = DM_TYPE_DAX_BIO_BASED;
+                } else {
+@@ -1883,6 +1891,7 @@ void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
+                               struct queue_limits *limits)
+ {
+        bool wc = false, fua = false;
++       int page_size = PAGE_SIZE;
+
+        /*
+         * Copy table's limits to the DM device's request_queue
+@@ -1910,8 +1919,13 @@ void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
+        }
+        blk_queue_write_cache(q, wc, fua);
+
+-       if (dm_table_supports_dax(t, PAGE_SIZE))
++       if (dm_table_supports_dax(t, device_supports_dax, &page_size)) {
++
+                blk_queue_flag_set(QUEUE_FLAG_DAX, q);
++               if (dm_table_supports_dax(t, device_synchronous, NULL))
++                       set_dax_synchronous(t->md->dax_dev);
++       }
+        else
+                blk_queue_flag_clear(QUEUE_FLAG_DAX, q);
+
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index b1caa7188209..b92c42a72ad4 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -1119,7 +1119,7 @@ static bool dm_dax_supported(struct dax_device *dax_dev, struct block_device *bd
+        if (!map)
+                return false;
+
+-       ret = dm_table_supports_dax(map, blocksize);
++       ret = dm_table_supports_dax(map, device_supports_dax, &blocksize);
+
+        dm_put_live_table(md, srcu_idx);
+
+diff --git a/drivers/md/dm.h b/drivers/md/dm.h
+index 17e3db54404c..0475673337f3 100644
+--- a/drivers/md/dm.h
++++ b/drivers/md/dm.h
+@@ -72,7 +72,10 @@ bool dm_table_bio_based(struct dm_table *t);
+ bool dm_table_request_based(struct dm_table *t);
+ void dm_table_free_md_mempools(struct dm_table *t);
+ struct dm_md_mempools *dm_table_get_md_mempools(struct dm_table *t);
+-bool dm_table_supports_dax(struct dm_table *t, int blocksize);
++bool dm_table_supports_dax(struct dm_table *t, iterate_devices_callout_fn fn,
++                          int *blocksize);
++int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
++                          sector_t start, sector_t len, void *data);
+
+ void dm_lock_md_type(struct mapped_device *md);
+ void dm_unlock_md_type(struct mapped_device *md);
+--
+2.20.1
