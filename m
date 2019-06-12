@@ -2,87 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEC9426A6
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 14:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFAC426F1
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 15:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436814AbfFLMum (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Jun 2019 08:50:42 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:39946 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728774AbfFLMum (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 12 Jun 2019 08:50:42 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7DFA08553D;
-        Wed, 12 Jun 2019 12:50:41 +0000 (UTC)
-Received: from dhcp201-121.englab.pnq.redhat.com (ovpn-116-228.sin2.redhat.com [10.67.116.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F8FD7B000;
-        Wed, 12 Jun 2019 12:49:45 +0000 (UTC)
-From:   Pankaj Gupta <pagupta@redhat.com>
-To:     dm-devel@redhat.com, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        qemu-devel@nongnu.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Cc:     dan.j.williams@intel.com, zwisler@kernel.org,
-        vishal.l.verma@intel.com, dave.jiang@intel.com, mst@redhat.com,
-        jasowang@redhat.com, willy@infradead.org, rjw@rjwysocki.net,
-        hch@infradead.org, lenb@kernel.org, jack@suse.cz, tytso@mit.edu,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com,
-        lcapitulino@redhat.com, kwolf@redhat.com, imammedo@redhat.com,
-        jmoyer@redhat.com, nilal@redhat.com, riel@surriel.com,
-        stefanha@redhat.com, aarcange@redhat.com, david@redhat.com,
-        david@fromorbit.com, cohuck@redhat.com,
-        xiaoguangrong.eric@gmail.com, pagupta@redhat.com,
-        pbonzini@redhat.com, yuval.shaia@oracle.com, kilobyte@angband.pl,
-        jstaron@google.com, rdunlap@infradead.org, snitzer@redhat.com
-Subject: [PATCH v13 7/7] xfs: disable map_sync for async flush
-Date:   Wed, 12 Jun 2019 18:15:27 +0530
-Message-Id: <20190612124527.3763-8-pagupta@redhat.com>
-In-Reply-To: <20190612124527.3763-1-pagupta@redhat.com>
-References: <20190612124527.3763-1-pagupta@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.28]); Wed, 12 Jun 2019 12:50:41 +0000 (UTC)
+        id S1731393AbfFLNEt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Jun 2019 09:04:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55104 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728322AbfFLNEs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 12 Jun 2019 09:04:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id D5E70AF8F;
+        Wed, 12 Jun 2019 13:04:46 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 1FBB21E4328; Wed, 12 Jun 2019 15:04:46 +0200 (CEST)
+Date:   Wed, 12 Jun 2019 15:04:46 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Cc:     Paolo Valente <paolo.valente@linaro.org>,
+        linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Message-ID: <20190612130446.GD14578@quack2.suse.cz>
+References: <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
+ <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
+ <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
+ <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
+ <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
+ <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
+ <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
+ <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
+ <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
+ <7c5e9d11-4a3d-7df4-c1e6-7c95919522ab@csail.mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c5e9d11-4a3d-7df4-c1e6-7c95919522ab@csail.mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dont support 'MAP_SYNC' with non-DAX files and DAX files
-with asynchronous dax_device. Virtio pmem provides
-asynchronous host page cache flush mechanism. We don't
-support 'MAP_SYNC' with virtio pmem and xfs.
+On Tue 11-06-19 15:34:48, Srivatsa S. Bhat wrote:
+> On 6/2/19 12:04 AM, Srivatsa S. Bhat wrote:
+> > On 5/30/19 3:45 AM, Paolo Valente wrote:
+> >>
+> [...]
+> >> At any rate, since you pointed out that you are interested in
+> >> out-of-the-box performance, let me complete the context: in case
+> >> low_latency is left set, one gets, in return for this 12% loss,
+> >> a) at least 1000% higher responsiveness, e.g., 1000% lower start-up
+> >> times of applications under load [1];
+> >> b) 500-1000% higher throughput in multi-client server workloads, as I
+> >> already pointed out [2].
+> >>
+> > 
+> > I'm very happy that you could solve the problem without having to
+> > compromise on any of the performance characteristics/features of BFQ!
+> > 
+> > 
+> >> I'm going to prepare complete patches.  In addition, if ok for you,
+> >> I'll report these results on the bug you created.  Then I guess we can
+> >> close it.
+> >>
+> > 
+> > Sounds great!
+> >
+> 
+> Hi Paolo,
+> 
+> Hope you are doing great!
+> 
+> I was wondering if you got a chance to post these patches to LKML for
+> review and inclusion... (No hurry, of course!)
+> 
+> Also, since your fixes address the performance issues in BFQ, do you
+> have any thoughts on whether they can be adapted to CFQ as well, to
+> benefit the older stable kernels that still support CFQ?
 
-Signed-off-by: Pankaj Gupta <pagupta@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/xfs/xfs_file.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Since CFQ doesn't exist in current upstream kernel anymore, I seriously
+doubt you'll be able to get any performance improvements for it in the
+stable kernels...
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index a7ceae90110e..f17652cca5ff 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -1203,11 +1203,14 @@ xfs_file_mmap(
- 	struct file	*filp,
- 	struct vm_area_struct *vma)
- {
-+	struct dax_device 	*dax_dev;
-+
-+	dax_dev = xfs_find_daxdev_for_inode(file_inode(filp));
- 	/*
--	 * We don't support synchronous mappings for non-DAX files. At least
--	 * until someone comes with a sensible use case.
-+	 * We don't support synchronous mappings for non-DAX files and
-+	 * for DAX files if underneath dax_device is not synchronous.
- 	 */
--	if (!IS_DAX(file_inode(filp)) && (vma->vm_flags & VM_SYNC))
-+	if (!daxdev_mapping_supported(vma, dax_dev))
- 		return -EOPNOTSUPP;
- 
- 	file_accessed(filp);
+								Honza
+
 -- 
-2.20.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
