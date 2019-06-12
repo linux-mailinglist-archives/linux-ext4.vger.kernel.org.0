@@ -2,81 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E584193A
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 02:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3F14198A
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 02:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403831AbfFLAFV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Jun 2019 20:05:21 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:41495 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387864AbfFLAFV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Jun 2019 20:05:21 -0400
-Received: by mail-lj1-f193.google.com with SMTP id s21so13434812lji.8;
-        Tue, 11 Jun 2019 17:05:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=twnhTVYd7tn35O7vvlIa3XEgKYk2/zieh7kgQ5Ms1VY=;
-        b=iDBd+Nyh60vWHvSGtVHWVETugM2fnnm+FqmmiJZ56NZHl6V9Aty9AmjFW8CRdEnVVB
-         aGKuXc3BMI1WRmMN59ZmT1r6kVO7qzb4q1bDpYmpS/ZUrVuenxbQGoF2Qv4WS5P5xTYu
-         MgUGL2vvXlsZ04GvxKv4oWOnyz8mNGE24H+bdBFJTo0aHTJ0k0u+7bh9tcE9VNAMwAtH
-         iKtxqCy1DSmKDdJUUU93WbsyygyX8RtwvZ5Owd5cCDJ9ZU6yAlx8+gKU6PDNIGy1Yrds
-         5FOvUqOWwAWAd5bt0eEYz6DGK7Ot7sHrl6lNbuwYOmPXTEQ7T1WTuP7Qnyr0A/A07xpx
-         QkCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=twnhTVYd7tn35O7vvlIa3XEgKYk2/zieh7kgQ5Ms1VY=;
-        b=fqEU0XMyfNflfhQT79oxZghavXpJ1dAzYWSMm/qb4gmos8iA2TeNBJ0PUDAE/Hziuc
-         bcmkQUVGTodSXW4WmUcE9UbCbklB1P7Hfg+uvtOj6dEzEdotDAAFyArOd3ScHgIQNVs5
-         0JS9pIniFAgDhZ4tXvbDA5Wd7OJm5Til/+3lHBMc+FZ4Th9Uj7DK21wcJRIHCksoumid
-         oyUuStSybwP7edfVFrdhM6JvHk+DDVpdY1QTx93zhasPNw8m+Rv31ORF54nq/akB0sbh
-         SVkLKb03VXRyP+j7I9Yb4Iqiz7BHFYtNrpDNWePKx+aosKbJYg7P7LG1/Z8/MzWuKwy8
-         Zlbw==
-X-Gm-Message-State: APjAAAVdLDPQZSMGnTI0GPYm3j5E17tzyOWa4m4EfXM7tVCJe8oCX3/+
-        qfJ4ROah2uLK8s8qnMM5gMeTz+fyeeBSbUV9JBw=
-X-Google-Smtp-Source: APXvYqyO/Oi3PmoK5iJ0YzdPrMw5xZcqUF1R75rhMCOs6SLJy8NUkUXX4LUB1wFJr6ZxPQT0SJAlgxYZrwxAPMCixo8=
-X-Received: by 2002:a2e:298a:: with SMTP id p10mr12710225ljp.74.1560297918252;
- Tue, 11 Jun 2019 17:05:18 -0700 (PDT)
+        id S2392179AbfFLAgk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Jun 2019 20:36:40 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:51566 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391522AbfFLAgk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Jun 2019 20:36:40 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5C0U2aL172563;
+        Wed, 12 Jun 2019 00:35:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=9gKawnpnm3eYTlbJSmpS31BgWCZu6yO6zvRDwLNExMc=;
+ b=vHQc7RiwFlRopnBcV6yXscL30ZNdwN/v/B17eINRtpQHvUvgM6epdVedyPbAKdmcBBV3
+ cpQKUJvANpmF9rest4EECBPlFj+c/6FFyA1MB+Y7QHfaviX1SgktsC/OuLuEeHTjfJfn
+ IHVrIivC0Er8GlXskbXJ6t5OZcUHTAMhyEJ0O8MOVdKDEgKTHfWtz59o9kiNq/kqTY6E
+ 4hAomBRtHJLX3EPEAvdgUe3wJJHguniVZBFYytUSwIeEiPqdsoMO2S6x/RCI4kCCEC8X
+ 5tzrNpCpeUTAjMu2i0Q0axAMVtIdwT/+kMGJyGR6ACAIOztQv/pzRx3K8FTZ+teYFImj 5Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2t04etrany-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 Jun 2019 00:35:50 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5C0YsTE041414;
+        Wed, 12 Jun 2019 00:35:50 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2t1jphr047-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 12 Jun 2019 00:35:50 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5C0Zn8q043221;
+        Wed, 12 Jun 2019 00:35:49 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2t1jphr042-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 Jun 2019 00:35:49 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5C0ZfCm005680;
+        Wed, 12 Jun 2019 00:35:41 GMT
+Received: from localhost (/10.145.179.81)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 11 Jun 2019 17:35:41 -0700
+Date:   Tue, 11 Jun 2019 17:35:38 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        shaggy@kernel.org, ard.biesheuvel@linaro.org, josef@toxicpanda.com,
+        clm@fb.com, adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk,
+        linux-xfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, ocfs2-devel@oss.oracle.com
+Subject: Re: [Jfs-discussion] [PATCH 1/4] vfs: create a generic checking
+ function for FS_IOC_SETFLAGS
+Message-ID: <20190612003538.GW1871505@magnolia>
+References: <156022833285.3227089.11990489625041926920.stgit@magnolia>
+ <156022834076.3227089.14763553158562888103.stgit@magnolia>
+ <fb974a33-2192-30ab-9f31-885c3796360b@oracle.com>
 MIME-Version: 1.0
-References: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
-In-Reply-To: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 11 Jun 2019 17:05:06 -0700
-Message-ID: <CAADnVQKwvfuoyDEu+rB8=btOi33LdrUvk4EkQM86sDpDG61kew@mail.gmail.com>
-Subject: Re: [PATCH V2] include: linux: Regularise the use of FIELD_SIZEOF macro
-To:     Shyam Saini <shyam.saini@amarulasolutions.com>
-Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Network Development <netdev@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, devel@lists.orangefs.org,
-        linux-mm <linux-mm@kvack.org>, linux-sctp@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, kvm@vger.kernel.org,
-        mayhs11saini@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb974a33-2192-30ab-9f31-885c3796360b@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9285 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906120001
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jun 11, 2019 at 5:00 PM Shyam Saini
-<shyam.saini@amarulasolutions.com> wrote:
->
-> Currently, there are 3 different macros, namely sizeof_field, SIZEOF_FIELD
-> and FIELD_SIZEOF which are used to calculate the size of a member of
-> structure, so to bring uniformity in entire kernel source tree lets use
-> FIELD_SIZEOF and replace all occurrences of other two macros with this.
->
-> For this purpose, redefine FIELD_SIZEOF in include/linux/stddef.h and
-> tools/testing/selftests/bpf/bpf_util.h and remove its defination from
-> include/linux/kernel.h
+On Tue, Jun 11, 2019 at 08:41:06AM -0500, Dave Kleikamp wrote:
+> On 6/10/19 11:45 PM, Darrick J. Wong wrote:
+> > From: Darrick J. Wong <darrick.wong@oracle.com>
+> > 
+> > Create a generic checking function for the incoming FS_IOC_SETFLAGS flag
+> > values so that we can standardize the implementations that follow ext4's
+> > flag values.
+> > 
+> > Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> 
+>  -- clip --
+> 
+> > diff --git a/fs/jfs/ioctl.c b/fs/jfs/ioctl.c
+> > index ba34dae8bd9f..c8446d2cd0c7 100644
+> > --- a/fs/jfs/ioctl.c
+> > +++ b/fs/jfs/ioctl.c
+> > @@ -98,6 +98,12 @@ long jfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+> >  		/* Lock against other parallel changes of flags */
+> >  		inode_lock(inode);
+> >  
+> > +		oldflags = jfs_map_ext2(jfs_inode->mode2 & JFS_FL_USER_VISIBLE,
+> > +					0);
+> > +		err = vfs_ioc_setflags_check(inode, oldflags, flags);
+> > +		if (err)
+> > +			goto setflags_out;
+> 
+> inode_unlock(inode) is not called on the error path.
+> 
+> > +
+> >  		oldflags = jfs_inode->mode2;
+> >  
+> >  		/*
+> 
+> This patch leaves jfs's open-coded version of the same check.
 
-please dont. bpf_util.h is a user space header.
-Please leave it as-is.
+Heh, thanks for pointing that out.  I'll fix both of those things.
+
+--D
+
+> Thanks,
+> Shaggy
