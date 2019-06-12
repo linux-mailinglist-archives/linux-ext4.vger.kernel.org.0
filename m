@@ -2,57 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DBA42F37
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 20:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F9C42F51
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 20:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbfFLSmG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Jun 2019 14:42:06 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:41600 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727683AbfFLSmF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jun 2019 14:42:05 -0400
-Received: by mail-oi1-f195.google.com with SMTP id g7so9268734oia.8
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Jun 2019 11:42:05 -0700 (PDT)
+        id S1726948AbfFLSuD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Jun 2019 14:50:03 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:43028 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726830AbfFLSuD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jun 2019 14:50:03 -0400
+Received: by mail-oi1-f193.google.com with SMTP id w79so12470587oif.10
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Jun 2019 11:50:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tLkmphJnLjEku4wPa26GqmShS2e5likwCcmpQlFLS9E=;
-        b=zfGP+t+9ivTiw9crHzyoG37UKVT39+ZjMSRc6i4RLF5qzgoEzM0PJJFpTl3UpomLM/
-         kX7wxsRh/bfXL05Kn2SjQT8PDTQbpZvw2lUD2P17lgifKk9462SiGOzy9eolZxENP8tF
-         +j8h3CL4xbOvN0NcXJng0ZhfijbK4zlpWlo5g45OKeiNBbSWh4j6EO8XjD4uzxYBWXSc
-         XQXw6jfUAUrXoISJcc1nasZDsCw2vNnJrgvivK5m8U97df7yj+O0/KKRytyMUK2vV5wL
-         CVPInnibqz35AZHLe+QENPOC6d6PXPPLQ6FBHTljTMKMRhnltIiFojDH2RTb0H3+DeCQ
-         awHA==
+        bh=oLKBk3Q7ccO0NJJMRJYYFBU09UJHS0/ornRP0j3Fxnk=;
+        b=gmeYon7zauy3OQh0dds8NZYm6t5UDisLz6yhyFv+zAHzAQld3I1PlASf7zsZM+CaaZ
+         CehQMBgQdj6gortTquDOB3N7bsSZoRiiIPq0F65TSYhGSEiVglTlgXcZdamdruNK0EZE
+         L4hW+NB6I/OXN8FIUSFL51bNjJWJFW8hzlwgXFjesNuMtfLc6oA7+M/3K2vidJa0br9V
+         czG4Eoe/orE9D++K3+lLCE4n/UgTBq+X11qW/QB7IGhWEAbaQV6NagrYsJ8UOQey3FsU
+         R4uBxwDIf6zhdzoruyQQmgKdtCNWOHRzy7IMkgSp8cIYB925DCaZB8zX5lMCi8WnCkui
+         Earw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tLkmphJnLjEku4wPa26GqmShS2e5likwCcmpQlFLS9E=;
-        b=RJAJrLeiLFe6gwmW5z50/uo+U5xrl0IICpDExhBIswTTqOlQiWTefxxB0A6MDHaq/L
-         E0XsntknzjtYUXCbq+DD/MF0Scz1j2ZNlDqKBputP9Dhwq/3UoazuHTaMeGTE6aEuR7y
-         I4xosYspBuMtIqKeSjosRm+vKcuO/nNGx107Q4S11jPIlhdnXHHpSl1OkHj+8fvCZ5An
-         CPuwkZrcWGB57W9l4pCq5KLLkyZ6vQCyfsZpnD/gbxJMLMSXcykIuCSj/kkxUWyAMyDe
-         A0jD1iVAJCBOBjf+7Iz/XpJS6Xn18KenIRV36wi80Djxgnu5p/2FixUw1+kL97XXqOS2
-         HGZw==
-X-Gm-Message-State: APjAAAXFUBfYuYkU1J9LmKKUGVrYWCuKTTTqYZerEgpXBA+je09J26Uh
-        VVTdp1xo+MbvgAyN8ghljWjTW76Ccoe1DqUKIZ7dng==
-X-Google-Smtp-Source: APXvYqxw8Jxg8VjrdgkzfIw+Yn35hC16YxwrfmO4tE9KRMFgYTyKNK9pqaozSKJ82RqVYk9X5Uls8HWSSM7jkwOY/uo=
-X-Received: by 2002:aca:ed4c:: with SMTP id l73mr412323oih.149.1560364924898;
- Wed, 12 Jun 2019 11:42:04 -0700 (PDT)
+        bh=oLKBk3Q7ccO0NJJMRJYYFBU09UJHS0/ornRP0j3Fxnk=;
+        b=GX2g32yQOzkq2BjB/Ib9m+KDPuNDZotJwkWb2xZCypfQ1Xt4NX0Pv7scpyqvr48P/G
+         M0sbmOA3pdqRM2qp+TsvTwkIvMhxCUm4rvQXm1rIZZ3oLCvcjeIwIfTpua8zUbq50If2
+         WhsQEwibkYZY5SriM6TFuSfCFDV6fYEHTO0yx2jOyUMPhi1iHfwo3g1oiU/MS0IPkcXc
+         5hrCGeOlZpIRtZTPF3SV7qBSQed9/W05fSFx19eB0ywMXyUxSW3C1TBuCrFtnezF3uo/
+         x68BFXdT+ROpg0lqb+HtyPU/du2ESsD0XFAG/7GYB48S7MeNYVcVsJk9b8GC/BSUhTbM
+         e6RQ==
+X-Gm-Message-State: APjAAAV7QROwL+SfMwgAVt6L7H602vkaUIc3RG0Dcd1ttNkYn0UUqLdD
+        7qW2MHL6I0LiwaxcuJza84W+8wTkZfIEECoOAxMmFQ==
+X-Google-Smtp-Source: APXvYqxnUAltCxrDlkjMuVh0Fis6UXRXzk4ak5OCGI7cs5NoWVrVaXVk3zYCAPwY8b7pSu88qbXHjB+1CYR77yxpUws=
+X-Received: by 2002:aca:ec82:: with SMTP id k124mr420099oih.73.1560365403007;
+ Wed, 12 Jun 2019 11:50:03 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190606014544.8339-1-ira.weiny@intel.com> <20190606104203.GF7433@quack2.suse.cz>
  <20190606195114.GA30714@ziepe.ca> <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
  <20190607103636.GA12765@quack2.suse.cz> <20190607121729.GA14802@ziepe.ca>
  <20190607145213.GB14559@iweiny-DESK2.sc.intel.com> <20190612102917.GB14578@quack2.suse.cz>
- <20190612114721.GB3876@ziepe.ca> <20190612120907.GC14578@quack2.suse.cz>
-In-Reply-To: <20190612120907.GC14578@quack2.suse.cz>
+In-Reply-To: <20190612102917.GB14578@quack2.suse.cz>
 From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 12 Jun 2019 11:41:53 -0700
-Message-ID: <CAPcyv4ikn219XUgHwsPdYp06vBNAJB9Rk-hjZA-fYT4GB3gi+w@mail.gmail.com>
+Date:   Wed, 12 Jun 2019 11:49:52 -0700
+Message-ID: <CAPcyv4jSyTjC98UsWb3-FnZekV0oyboiSe9n1NYDC2TSKAqiqw@mail.gmail.com>
 Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
 To:     Jan Kara <jack@suse.cz>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Ira Weiny <ira.weiny@intel.com>,
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         "Theodore Ts'o" <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>,
         Dave Chinner <david@fromorbit.com>,
         Matthew Wilcox <willy@infradead.org>,
@@ -71,40 +70,55 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 5:09 AM Jan Kara <jack@suse.cz> wrote:
+On Wed, Jun 12, 2019 at 3:29 AM Jan Kara <jack@suse.cz> wrote:
 >
-> On Wed 12-06-19 08:47:21, Jason Gunthorpe wrote:
-> > On Wed, Jun 12, 2019 at 12:29:17PM +0200, Jan Kara wrote:
-> >
-> > > > > The main objection to the current ODP & DAX solution is that very
-> > > > > little HW can actually implement it, having the alternative still
-> > > > > require HW support doesn't seem like progress.
-> > > > >
-> > > > > I think we will eventually start seein some HW be able to do this
-> > > > > invalidation, but it won't be universal, and I'd rather leave it
-> > > > > optional, for recovery from truely catastrophic errors (ie my DAX is
-> > > > > on fire, I need to unplug it).
-> > > >
-> > > > Agreed.  I think software wise there is not much some of the devices can do
-> > > > with such an "invalidate".
+> On Fri 07-06-19 07:52:13, Ira Weiny wrote:
+> > On Fri, Jun 07, 2019 at 09:17:29AM -0300, Jason Gunthorpe wrote:
+> > > On Fri, Jun 07, 2019 at 12:36:36PM +0200, Jan Kara wrote:
 > > >
-> > > So out of curiosity: What does RDMA driver do when userspace just closes
-> > > the file pointing to RDMA object? It has to handle that somehow by aborting
-> > > everything that's going on... And I wanted similar behavior here.
+> > > > Because the pins would be invisible to sysadmin from that point on.
+> > >
+> > > It is not invisible, it just shows up in a rdma specific kernel
+> > > interface. You have to use rdma netlink to see the kernel object
+> > > holding this pin.
+> > >
+> > > If this visibility is the main sticking point I suggest just enhancing
+> > > the existing MR reporting to include the file info for current GUP
+> > > pins and teaching lsof to collect information from there as well so it
+> > > is easy to use.
+> > >
+> > > If the ownership of the lease transfers to the MR, and we report that
+> > > ownership to userspace in a way lsof can find, then I think all the
+> > > concerns that have been raised are met, right?
 > >
-> > It aborts *everything* connected to that file descriptor. Destroying
-> > everything avoids creating inconsistencies that destroying a subset
-> > would create.
-> >
-> > What has been talked about for lease break is not destroying anything
-> > but very selectively saying that one memory region linked to the GUP
-> > is no longer functional.
+> > I was contemplating some new lsof feature yesterday.  But what I don't
+> > think we want is sysadmins to have multiple tools for multiple
+> > subsystems.  Or even have to teach lsof something new for every potential
+> > new subsystem user of GUP pins.
 >
-> OK, so what I had in mind was that if RDMA app doesn't play by the rules
-> and closes the file with existing pins (and thus layout lease) we would
-> force it to abort everything. Yes, it is disruptive but then the app didn't
-> obey the rule that it has to maintain file lease while holding pins. Thus
-> such situation should never happen unless the app is malicious / buggy.
+> Agreed.
+>
+> > I was thinking more along the lines of reporting files which have GUP
+> > pins on them directly somewhere (dare I say procfs?) and teaching lsof to
+> > report that information.  That would cover any subsystem which does a
+> > longterm pin.
+>
+> So lsof already parses /proc/<pid>/maps to learn about files held open by
+> memory mappings. It could parse some other file as well I guess. The good
+> thing about that would be that then "longterm pin" structure would just hold
+> struct file reference. That would avoid any needs of special behavior on
+> file close (the file reference in the "longterm pin" structure would make
+> sure struct file and thus the lease stays around, we'd just need to make
+> explicit lease unlock block until the "longterm pin" structure is freed).
+> The bad thing is that it requires us to come up with a sane new proc
+> interface for reporting "longterm pins" and associated struct file. Also we
+> need to define what this interface shows if the pinned pages are in DRAM
+> (either page cache or anon) and not on NVDIMM.
 
-When you say 'close' do you mean the final release of the fd? The vma
-keeps a reference to a 'struct file' live even after the fd is closed.
+The anon vs shared detection case is important because a longterm pin
+might be blocking a memory-hot-unplug operation if it is pinning
+ZONE_MOVABLE memory, but I don't think we want DRAM vs NVDIMM to be an
+explicit concern of the interface. For the anon / cached case I expect
+it might be useful to put that communication under the memory-blocks
+sysfs interface. I.e. a list of pids that are pinning that
+memory-block from being hot-unplugged.
