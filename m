@@ -2,92 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5200C4250F
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 14:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885E3425E2
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 14:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438620AbfFLMJN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Jun 2019 08:09:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44682 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405581AbfFLMJM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 12 Jun 2019 08:09:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 83424AE27;
-        Wed, 12 Jun 2019 12:09:09 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A86331E4328; Wed, 12 Jun 2019 14:09:07 +0200 (CEST)
-Date:   Wed, 12 Jun 2019 14:09:07 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jan Kara <jack@suse.cz>, Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190612120907.GC14578@quack2.suse.cz>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606195114.GA30714@ziepe.ca>
- <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
- <20190607103636.GA12765@quack2.suse.cz>
- <20190607121729.GA14802@ziepe.ca>
- <20190607145213.GB14559@iweiny-DESK2.sc.intel.com>
- <20190612102917.GB14578@quack2.suse.cz>
- <20190612114721.GB3876@ziepe.ca>
+        id S2438997AbfFLMcG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Jun 2019 08:32:06 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48390 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2438952AbfFLMcF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jun 2019 08:32:05 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5CCW0Ri020181
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 Jun 2019 08:32:01 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 6EEBC420484; Wed, 12 Jun 2019 08:32:00 -0400 (EDT)
+Date:   Wed, 12 Jun 2019 08:32:00 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.co.uk>
+Subject: Re: [PATCH v3 2/2] shared/012: Add tests for filename casefolding
+ feature
+Message-ID: <20190612123200.GA2736@mit.edu>
+References: <20190610173541.20511-1-krisman@collabora.com>
+ <20190610173541.20511-2-krisman@collabora.com>
+ <20190611121546.GC2774@mit.edu>
+ <85y327z9ad.fsf@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190612114721.GB3876@ziepe.ca>
+In-Reply-To: <85y327z9ad.fsf@collabora.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 12-06-19 08:47:21, Jason Gunthorpe wrote:
-> On Wed, Jun 12, 2019 at 12:29:17PM +0200, Jan Kara wrote:
+On Wed, Jun 12, 2019 at 01:01:46AM -0400, Gabriel Krisman Bertazi wrote:
+> > I tried out this test, and it's apparently failing for me using
+> > e2fsprogs 1.45.2; it looks like it's a whitespace issue?
 > 
-> > > > The main objection to the current ODP & DAX solution is that very
-> > > > little HW can actually implement it, having the alternative still
-> > > > require HW support doesn't seem like progress.
-> > > > 
-> > > > I think we will eventually start seein some HW be able to do this
-> > > > invalidation, but it won't be universal, and I'd rather leave it
-> > > > optional, for recovery from truely catastrophic errors (ie my DAX is
-> > > > on fire, I need to unplug it).
-> > > 
-> > > Agreed.  I think software wise there is not much some of the devices can do
-> > > with such an "invalidate".
-> > 
-> > So out of curiosity: What does RDMA driver do when userspace just closes
-> > the file pointing to RDMA object? It has to handle that somehow by aborting
-> > everything that's going on... And I wanted similar behavior here.
+> Hi Ted,
 > 
-> It aborts *everything* connected to that file descriptor. Destroying
-> everything avoids creating inconsistencies that destroying a subset
-> would create.
-> 
-> What has been talked about for lease break is not destroying anything
-> but very selectively saying that one memory region linked to the GUP
-> is no longer functional.
+> Yes, definitely just whitespace.  But i don't understand why you are
+> getting this behavior.  I tried both with the master branch of e2fsprogs
+> and the tagged commit of v1.45.2 and on both occasions the test succeed
+> in my system.  For sure I can use filter_spaces but I'm puzzled why I
+> can't reproduce this.
 
-OK, so what I had in mind was that if RDMA app doesn't play by the rules
-and closes the file with existing pins (and thus layout lease) we would
-force it to abort everything. Yes, it is disruptive but then the app didn't
-obey the rule that it has to maintain file lease while holding pins. Thus
-such situation should never happen unless the app is malicious / buggy.
+That's wierd.  The kvm-xfstests appliance VM that's uploaded to
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/kvm-xfstests/
+
+shows the problem.  With your patch applied to the xfstests-dev
+directory after checking out xfstests-bld (see [1] for more
+information if you haven't used kvm-xfstests before), it's reproducible via:
+
+kvm-xfstests -I ../out_dir/root_fs.img.amd64 --update-xfstests-tar -c 4k shared/012
+
+[1] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+
+						- Ted
