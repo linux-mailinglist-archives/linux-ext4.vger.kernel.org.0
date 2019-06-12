@@ -2,137 +2,224 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 106A043050
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 21:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C1A4310B
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 22:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbfFLThA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Jun 2019 15:37:00 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:49613 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727496AbfFLThA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 12 Jun 2019 15:37:00 -0400
-Received: from [4.30.142.84] (helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hb93J-000Cx6-6M; Wed, 12 Jun 2019 15:36:57 -0400
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-To:     Jan Kara <jack@suse.cz>
-Cc:     Paolo Valente <paolo.valente@linaro.org>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Moyer <jmoyer@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>, amakhalov@vmware.com,
-        anishs@vmware.com, srivatsab@vmware.com,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stable <stable@vger.kernel.org>
-References: <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
- <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
- <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
- <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
- <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
- <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
- <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
- <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
- <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
- <7c5e9d11-4a3d-7df4-c1e6-7c95919522ab@csail.mit.edu>
- <20190612130446.GD14578@quack2.suse.cz>
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Message-ID: <dd32ed59-a543-fc76-9a9a-2462f0119270@csail.mit.edu>
-Date:   Wed, 12 Jun 2019 12:36:53 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <20190612130446.GD14578@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2388879AbfFLUkX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Jun 2019 16:40:23 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:41739 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388336AbfFLUkW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jun 2019 16:40:22 -0400
+Received: by mail-pf1-f193.google.com with SMTP id m30so9835181pff.8
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Jun 2019 13:40:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=VlPEcmst0CYRlRshN2RIWjTTM4YgbYOdNEM+OJeaprA=;
+        b=sxTZjPEeGlJ8Se8Oi8Y1wsNVHbsxski8YIb57diaSefr0ZKJqgDVmR6GWn38LAaIaV
+         dXgcbz4Afqb0KaxifNG6DECqHHVgg+HgTO2LeSBu7zhfg79hIl8uJuunQPX8/Y2ZZb/g
+         DSAPt859PP2GCXx0HORJ5Cf38FoBaIHQAnioLDXZRhoGahcu8b2PrnLWiLt5ginBMB6u
+         HhfoH1Fw13Sog21WcHpv3+gtzynyuxgbS4c6wJ9gxiSP6J8Curjmqu/STvwuIK2/9CuH
+         xC6sEiym/4b7J5kJ6PvEPQih5c7sbbHksAWullMPRrU2HZxVFIaVc/AYkZ33wMeMH0ji
+         ehrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=VlPEcmst0CYRlRshN2RIWjTTM4YgbYOdNEM+OJeaprA=;
+        b=EyUlM4q2qNQqxCUESUv/+ywA6VPjVXK8oExujzYJwaksv2zwoKlp7sTgGMKcQn7Izm
+         Z2AXLqETPyJim4KrY1uW1aXGpBTofA0RTjmCZIa0hs2yQ7yTf9DUndmDRkY4kcf7mw1h
+         q6OXojE9jRTilBg6L7WXtFG8rAMpBY0uhaOXNbJN9CJu1BcpAoO1lu1gbFS5PjeAttbe
+         5ZrXIuSkTeWjcIuggAqhicWg+SltpK0nlvEZhY9twbqw0NlyreqbWO4PsQy5asw0Sc3n
+         iLWl53NJ6vwphbMJUyJaeTHF5B0MlW5FrMacsFNrtSFMNenV4Vcd1zpUITBkbLmBm0Jl
+         tACQ==
+X-Gm-Message-State: APjAAAX+ImpiFMpHKBfJFUjrjhwc8hGv9doLxFe001bSJAZYqllJ4SZL
+        RuaspfzAWvM2xczqj1Htc1L5Qdthz13QqQ==
+X-Google-Smtp-Source: APXvYqzRo/swIjA5qvicIUHq9st+Arak9v/IEFTj4ALgQYBP+lbTa9T66i4vrnAWc9sjD/dWaE9zwg==
+X-Received: by 2002:a63:c508:: with SMTP id f8mr27214665pgd.48.1560372021547;
+        Wed, 12 Jun 2019 13:40:21 -0700 (PDT)
+Received: from cabot.adilger.ext (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id z11sm90727pjn.2.2019.06.12.13.40.20
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 Jun 2019 13:40:20 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <044ADDD7-D7C0-4E27-B9E7-E576CDEDD1C4@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_018AF451-3F80-4D65-B644-31EBD05EFA25";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: fsck doesn't seem to understand inline directories
+Date:   Wed, 12 Jun 2019 14:40:18 -0600
+In-Reply-To: <ee4ad9f4-6706-136d-4cd8-dcf1b58e4229@rasmusvillemoes.dk>
+Cc:     linux-ext4 <linux-ext4@vger.kernel.org>,
+        Li Dongyang <dongyangli@ddn.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+References: <ee4ad9f4-6706-136d-4cd8-dcf1b58e4229@rasmusvillemoes.dk>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
-[ Adding Greg to CC ]
+--Apple-Mail=_018AF451-3F80-4D65-B644-31EBD05EFA25
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-On 6/12/19 6:04 AM, Jan Kara wrote:
-> On Tue 11-06-19 15:34:48, Srivatsa S. Bhat wrote:
->> On 6/2/19 12:04 AM, Srivatsa S. Bhat wrote:
->>> On 5/30/19 3:45 AM, Paolo Valente wrote:
->>>>
->> [...]
->>>> At any rate, since you pointed out that you are interested in
->>>> out-of-the-box performance, let me complete the context: in case
->>>> low_latency is left set, one gets, in return for this 12% loss,
->>>> a) at least 1000% higher responsiveness, e.g., 1000% lower start-up
->>>> times of applications under load [1];
->>>> b) 500-1000% higher throughput in multi-client server workloads, as I
->>>> already pointed out [2].
->>>>
->>>
->>> I'm very happy that you could solve the problem without having to
->>> compromise on any of the performance characteristics/features of BFQ!
->>>
->>>
->>>> I'm going to prepare complete patches.  In addition, if ok for you,
->>>> I'll report these results on the bug you created.  Then I guess we can
->>>> close it.
->>>>
->>>
->>> Sounds great!
->>>
->>
->> Hi Paolo,
->>
->> Hope you are doing great!
->>
->> I was wondering if you got a chance to post these patches to LKML for
->> review and inclusion... (No hurry, of course!)
->>
->> Also, since your fixes address the performance issues in BFQ, do you
->> have any thoughts on whether they can be adapted to CFQ as well, to
->> benefit the older stable kernels that still support CFQ?
-> 
-> Since CFQ doesn't exist in current upstream kernel anymore, I seriously
-> doubt you'll be able to get any performance improvements for it in the
-> stable kernels...
-> 
+On Jun 12, 2019, at 8:07 AM, Rasmus Villemoes <linux@rasmusvillemoes.dk> =
+wrote:
+>=20
+> Doing a forced check on an ext4 file system with inline_data results =
+in
+> lots of warnings - and I think answering yes to "fixing" those would
+> actually corrupt the fs.
 
-I suspected as much, but that seems unfortunate though. The latest LTS
-kernel is based on 4.19, which still supports CFQ. It would have been
-great to have a process to address significant issues on older
-kernels too.
+Rasmus,
+This definitely seems like a bug in e2fsck.  It isn't totally =
+surprising, since
+the inline_data feature is not widely used.  We are currently =
+investigating using
+it for regular files, but it doesn't seem worthwhile for directories to =
+me.
 
-Greg, do you have any thoughts on this? The context is that both CFQ
-and BFQ I/O schedulers have issues that cause I/O throughput to suffer
-upto 10x - 30x on certain workloads and system configurations, as
-reported in [1].
+Would you be interested to take a look at fixing this?  It seems like it =
+would be
+mostly a matter of adding checks for the EXT2_INLINE_DATA_FL in the =
+various parts
+of e2fsck that are generating the errors, then encapsulating the test =
+script below
+into a new test case for e2fsck.
 
-In this thread, Paolo posted patches to fix BFQ performance on
-mainline. However CFQ suffers from the same performance collapse, but
-CFQ was removed from the kernel in v5.0. So obviously the usual stable
-backporting path won't work here for several reasons:
+While there are a few test cases for inline_data =
+(tests/f_inline{data,dir}_*),
+it seems they are all checking for corrupted inline files or =
+directories, and
+not for "valid" inline directories.
 
-  1. There won't be a mainline commit to backport from, as CFQ no
-     longer exists in mainline.
+It _may_ also be that this is a recent regression, so it wouldn't hurt =
+to try
+your test case with an older version (e.g. 1.43.1 or 1.42.13) to see if =
+it was
+working, and if yes use "git bisect" to track it down.  That would make =
+it pretty
+urgent to fix, since the new e2fsck-1.45.2 release would suddenly =
+corrupt any
+existing inline_data filesystems.
 
-  2. This is not a security/stability fix, and is likely to involve
-     invasive changes.
+If this didn't work in 1.43.1 or 1.42.13 then it seems unlikely that =
+anyone is
+using inline_data at all, so while it would be good to fix this bug it =
+isn't
+nearly as urgent.
 
-I was wondering if there was a way to address the performance issues
-in CFQ in the older stable kernels (including the latest LTS 4.19),
-despite the above constraints, since the performance drop is much too
-significant. I guess not, but thought I'd ask :-)
+Cheers, Andreas
 
-[1]. https://lore.kernel.org/lkml/8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu/ 
+> To reproduce:
+>=20
+> truncate -s 100000000 ext4.img
+> misc/mke2fs -t ext4 -b 4096 -I 512 -O
+> =
+'^dir_nlink,extra_isize,filetype,^huge_file,inline_data,large_file,large_d=
+ir,^meta_bg,^project,^quota,^resize_inode,sparse_super,64bit,metadata_csum=
+_seed,metadata_csum'
+> -U random -v ext4.img
+> mkdir m
+> sudo mount ext4.img m
+> sudo chown $USER:$USER m
+> mkdir m/aa
+> echo 123 > m/aa/123
+> touch m/aa/empty
+> seq 10000 > m/aa/largefile
+> mkdir m/aa/bb
+> mkdir m/cc
+> sudo umount m
+> e2fsck/e2fsck -f -n ext4.img
+>=20
+> The last command gives this output:
+>=20
+> -----
+> e2fsck 1.45.2 (27-May-2019)
+> Pass 1: Checking inodes, blocks, and sizes
+> Pass 2: Checking directory structure
+> Pass 3: Checking directory connectivity
+> '..' in /aa (12) is <The NULL inode> (0), should be / (2).
+> Fix? no
+>=20
+> Unconnected directory inode 16 (/aa/bb)
+> Connect to /lost+found? no
+>=20
+> '..' in /cc (17) is <The NULL inode> (0), should be / (2).
+> Fix? no
+>=20
+> Pass 4: Checking reference counts
+> Inode 2 ref count is 5, should be 3.  Fix? no
+>=20
+> Inode 12 ref count is 3, should be 1.  Fix? no
+>=20
+> Unattached inode 13
+> Connect to /lost+found? no
+>=20
+> Unattached zero-length inode 14.  Clear? no
+>=20
+> Unattached inode 14
+> Connect to /lost+found? no
+>=20
+> Unattached inode 15
+> Connect to /lost+found? no
+>=20
+> Unattached inode 16
+> Connect to /lost+found? no
+>=20
+> Inode 17 ref count is 2, should be 1.  Fix? no
+>=20
+> Pass 5: Checking group summary information
+>=20
+> ext4.img: ********** WARNING: Filesystem still has errors **********
+>=20
+> ext4.img: 17/24416 files (5.9% non-contiguous), 4096/24414 blocks
+> -----
+>=20
+> Am I doing something wrong? The kernel mounting the fs above is 4.15, =
+in
+> case that matters.
+>=20
+> Rasmus
 
 
-Regards,
-Srivatsa
-VMware Photon OS
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_018AF451-3F80-4D65-B644-31EBD05EFA25
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl0BYzIACgkQcqXauRfM
+H+Av8xAAl1g8fGXNQ1VGziWN4R+NarkYblEa3+TUCPMN98kZQx0S+2LrTV4Ty/5/
+1DbSPZOOV5CKlAztBjwCBIwece6icRTB2cvQGXXxbtJG2gtz4mfKYsN3rH4NeVEk
+ztnjqYNjiBxpBbPEYbjKOAzHreGmD/KdgAqr1SsCR0HIaQSSxv2pBmW1KY07lboO
+Pl6Y5Tks7bKQE/xmBSwilnG6ogedLSOk3ljPcoRcXVtEW1yTZwFiVPY5hJz4pJOW
+B8EzRMTluI3aThhzi7VDs5R3T7i2f8UMJNQM1F0j7bF3R+7tG5RNVW7obXOUA99U
+WToh+S2Q/G1SCYHR87O+mgRBgzUifmflxLDlQYoFrDc/QEd5K8CEY6gZ9REvwcol
+AiL9uhTEENTrEFgibTe8s+n4CDjpNda4wcXcMJjsCcXFy7U+kOXDAZrtkKfmdQWZ
+VTCKLlpL14g3qRDEKUlyHnHw2/j4Q2BX5nMqfkIj+s3ERMCnazEWN/JyOfDQY1sh
+ukaw+KknlfX1iB3Fo0D5jl5jGH5mdOWq/ncL71NMJAxv3JgjK8fnMHYdrZ1UGwk1
+TwEdrBt+4yowQcRLl6ZamDzVl8xCoRzpmLAL6xAD2YgKLd1Jj7CuLT+MblPE5TH6
+BCXi9Q9TDW81bbvHr/U3DOZ6poL81waljLGzq8iErC4rKze7pFk=
+=0Rlg
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_018AF451-3F80-4D65-B644-31EBD05EFA25--
