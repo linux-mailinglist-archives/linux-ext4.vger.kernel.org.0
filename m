@@ -2,105 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A6741843
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 00:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E584193A
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2019 02:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405946AbfFKWfG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Jun 2019 18:35:06 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:35276 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405174AbfFKWfG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 11 Jun 2019 18:35:06 -0400
-Received: from [4.30.142.84] (helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hapM2-0004FG-TW; Tue, 11 Jun 2019 18:34:59 -0400
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
- <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
- <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
- <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
- <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
- <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
- <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
- <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
- <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
- <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
- <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
- <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
- <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
- <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
- <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
- <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
- <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
- <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
-Message-ID: <7c5e9d11-4a3d-7df4-c1e6-7c95919522ab@csail.mit.edu>
-Date:   Tue, 11 Jun 2019 15:34:48 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.0
+        id S2403831AbfFLAFV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Jun 2019 20:05:21 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:41495 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387864AbfFLAFV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Jun 2019 20:05:21 -0400
+Received: by mail-lj1-f193.google.com with SMTP id s21so13434812lji.8;
+        Tue, 11 Jun 2019 17:05:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=twnhTVYd7tn35O7vvlIa3XEgKYk2/zieh7kgQ5Ms1VY=;
+        b=iDBd+Nyh60vWHvSGtVHWVETugM2fnnm+FqmmiJZ56NZHl6V9Aty9AmjFW8CRdEnVVB
+         aGKuXc3BMI1WRmMN59ZmT1r6kVO7qzb4q1bDpYmpS/ZUrVuenxbQGoF2Qv4WS5P5xTYu
+         MgUGL2vvXlsZ04GvxKv4oWOnyz8mNGE24H+bdBFJTo0aHTJ0k0u+7bh9tcE9VNAMwAtH
+         iKtxqCy1DSmKDdJUUU93WbsyygyX8RtwvZ5Owd5cCDJ9ZU6yAlx8+gKU6PDNIGy1Yrds
+         5FOvUqOWwAWAd5bt0eEYz6DGK7Ot7sHrl6lNbuwYOmPXTEQ7T1WTuP7Qnyr0A/A07xpx
+         QkCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=twnhTVYd7tn35O7vvlIa3XEgKYk2/zieh7kgQ5Ms1VY=;
+        b=fqEU0XMyfNflfhQT79oxZghavXpJ1dAzYWSMm/qb4gmos8iA2TeNBJ0PUDAE/Hziuc
+         bcmkQUVGTodSXW4WmUcE9UbCbklB1P7Hfg+uvtOj6dEzEdotDAAFyArOd3ScHgIQNVs5
+         0JS9pIniFAgDhZ4tXvbDA5Wd7OJm5Til/+3lHBMc+FZ4Th9Uj7DK21wcJRIHCksoumid
+         oyUuStSybwP7edfVFrdhM6JvHk+DDVpdY1QTx93zhasPNw8m+Rv31ORF54nq/akB0sbh
+         SVkLKb03VXRyP+j7I9Yb4Iqiz7BHFYtNrpDNWePKx+aosKbJYg7P7LG1/Z8/MzWuKwy8
+         Zlbw==
+X-Gm-Message-State: APjAAAVdLDPQZSMGnTI0GPYm3j5E17tzyOWa4m4EfXM7tVCJe8oCX3/+
+        qfJ4ROah2uLK8s8qnMM5gMeTz+fyeeBSbUV9JBw=
+X-Google-Smtp-Source: APXvYqyO/Oi3PmoK5iJ0YzdPrMw5xZcqUF1R75rhMCOs6SLJy8NUkUXX4LUB1wFJr6ZxPQT0SJAlgxYZrwxAPMCixo8=
+X-Received: by 2002:a2e:298a:: with SMTP id p10mr12710225ljp.74.1560297918252;
+ Tue, 11 Jun 2019 17:05:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
+In-Reply-To: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 11 Jun 2019 17:05:06 -0700
+Message-ID: <CAADnVQKwvfuoyDEu+rB8=btOi33LdrUvk4EkQM86sDpDG61kew@mail.gmail.com>
+Subject: Re: [PATCH V2] include: linux: Regularise the use of FIELD_SIZEOF macro
+To:     Shyam Saini <shyam.saini@amarulasolutions.com>
+Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Network Development <netdev@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, devel@lists.orangefs.org,
+        linux-mm <linux-mm@kvack.org>, linux-sctp@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, kvm@vger.kernel.org,
+        mayhs11saini@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 6/2/19 12:04 AM, Srivatsa S. Bhat wrote:
-> On 5/30/19 3:45 AM, Paolo Valente wrote:
->>
-[...]
->> At any rate, since you pointed out that you are interested in
->> out-of-the-box performance, let me complete the context: in case
->> low_latency is left set, one gets, in return for this 12% loss,
->> a) at least 1000% higher responsiveness, e.g., 1000% lower start-up
->> times of applications under load [1];
->> b) 500-1000% higher throughput in multi-client server workloads, as I
->> already pointed out [2].
->>
-> 
-> I'm very happy that you could solve the problem without having to
-> compromise on any of the performance characteristics/features of BFQ!
-> 
-> 
->> I'm going to prepare complete patches.  In addition, if ok for you,
->> I'll report these results on the bug you created.  Then I guess we can
->> close it.
->>
-> 
-> Sounds great!
+On Tue, Jun 11, 2019 at 5:00 PM Shyam Saini
+<shyam.saini@amarulasolutions.com> wrote:
 >
+> Currently, there are 3 different macros, namely sizeof_field, SIZEOF_FIELD
+> and FIELD_SIZEOF which are used to calculate the size of a member of
+> structure, so to bring uniformity in entire kernel source tree lets use
+> FIELD_SIZEOF and replace all occurrences of other two macros with this.
+>
+> For this purpose, redefine FIELD_SIZEOF in include/linux/stddef.h and
+> tools/testing/selftests/bpf/bpf_util.h and remove its defination from
+> include/linux/kernel.h
 
-Hi Paolo,
-
-Hope you are doing great!
-
-I was wondering if you got a chance to post these patches to LKML for
-review and inclusion... (No hurry, of course!)
-
-Also, since your fixes address the performance issues in BFQ, do you
-have any thoughts on whether they can be adapted to CFQ as well, to
-benefit the older stable kernels that still support CFQ?
-
-Thank you!
-
-Regards,
-Srivatsa
-VMware Photon OS
+please dont. bpf_util.h is a user space header.
+Please leave it as-is.
