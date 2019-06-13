@@ -2,121 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38073443FF
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:34:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1139443F0
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730803AbfFMQeO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 12:34:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40610 "EHLO mx1.suse.de"
+        id S1730813AbfFMQdm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 12:33:42 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59024 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730782AbfFMHxk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Jun 2019 03:53:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B6CC4AD1E;
-        Thu, 13 Jun 2019 07:53:37 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4A7821E4328; Thu, 13 Jun 2019 09:53:33 +0200 (CEST)
-Date:   Thu, 13 Jun 2019 09:53:33 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190613075333.GC26505@quack2.suse.cz>
-References: <20190606195114.GA30714@ziepe.ca>
- <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
- <20190607103636.GA12765@quack2.suse.cz>
- <20190607121729.GA14802@ziepe.ca>
- <20190607145213.GB14559@iweiny-DESK2.sc.intel.com>
- <20190612102917.GB14578@quack2.suse.cz>
- <20190612114721.GB3876@ziepe.ca>
- <20190612120907.GC14578@quack2.suse.cz>
- <20190612191421.GM3876@ziepe.ca>
- <20190612221336.GA27080@iweiny-DESK2.sc.intel.com>
+        id S1730815AbfFMIBu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 13 Jun 2019 04:01:50 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 563692C18C391158D724;
+        Thu, 13 Jun 2019 16:01:47 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.439.0; Thu, 13 Jun
+ 2019 16:01:46 +0800
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: only set project inherit bit for
+ directory
+To:     Wang Shilong <wangshilong1991@gmail.com>,
+        <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+CC:     Andreas Dilger <adilger@dilger.ca>, Wang Shilong <wshilong@ddn.com>
+References: <1560410993-26330-1-git-send-email-wshilong1991@gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <fd3c0e10-cfed-d924-5948-eb2a4fd89c63@huawei.com>
+Date:   Thu, 13 Jun 2019 16:01:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190612221336.GA27080@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1560410993-26330-1-git-send-email-wshilong1991@gmail.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 12-06-19 15:13:36, Ira Weiny wrote:
-> On Wed, Jun 12, 2019 at 04:14:21PM -0300, Jason Gunthorpe wrote:
-> > On Wed, Jun 12, 2019 at 02:09:07PM +0200, Jan Kara wrote:
-> > > On Wed 12-06-19 08:47:21, Jason Gunthorpe wrote:
-> > > > On Wed, Jun 12, 2019 at 12:29:17PM +0200, Jan Kara wrote:
-> > > > 
-> > > > > > > The main objection to the current ODP & DAX solution is that very
-> > > > > > > little HW can actually implement it, having the alternative still
-> > > > > > > require HW support doesn't seem like progress.
-> > > > > > > 
-> > > > > > > I think we will eventually start seein some HW be able to do this
-> > > > > > > invalidation, but it won't be universal, and I'd rather leave it
-> > > > > > > optional, for recovery from truely catastrophic errors (ie my DAX is
-> > > > > > > on fire, I need to unplug it).
-> > > > > > 
-> > > > > > Agreed.  I think software wise there is not much some of the devices can do
-> > > > > > with such an "invalidate".
-> > > > > 
-> > > > > So out of curiosity: What does RDMA driver do when userspace just closes
-> > > > > the file pointing to RDMA object? It has to handle that somehow by aborting
-> > > > > everything that's going on... And I wanted similar behavior here.
-> > > > 
-> > > > It aborts *everything* connected to that file descriptor. Destroying
-> > > > everything avoids creating inconsistencies that destroying a subset
-> > > > would create.
-> > > > 
-> > > > What has been talked about for lease break is not destroying anything
-> > > > but very selectively saying that one memory region linked to the GUP
-> > > > is no longer functional.
-> > > 
-> > > OK, so what I had in mind was that if RDMA app doesn't play by the rules
-> > > and closes the file with existing pins (and thus layout lease) we would
-> > > force it to abort everything. Yes, it is disruptive but then the app didn't
-> > > obey the rule that it has to maintain file lease while holding pins. Thus
-> > > such situation should never happen unless the app is malicious / buggy.
-> > 
-> > We do have the infrastructure to completely revoke the entire
-> > *content* of a FD (this is called device disassociate). It is
-> > basically close without the app doing close. But again it only works
-> > with some drivers. However, this is more likely something a driver
-> > could support without a HW change though.
-> > 
-> > It is quite destructive as it forcibly kills everything RDMA related
-> > the process(es) are doing, but it is less violent than SIGKILL, and
-> > there is perhaps a way for the app to recover from this, if it is
-> > coded for it.
+On 2019/6/13 15:29, Wang Shilong wrote:
+> From: Wang Shilong <wshilong@ddn.com>
 > 
-> I don't think many are...  I think most would effectively be "killed" if this
-> happened to them.
+> It doesn't make any sense to have project inherit bits
+> for regular files, even though this won't cause any
+> problem, but it is better fix this.
+> 
+> Cc: Andreas Dilger <adilger@dilger.ca>
+> Signed-off-by: Wang Shilong <wshilong@ddn.com>
 
-Yes, I repeat we are in a situation when the application has a bug and
-didn't propely manage its long term pins which are fully under its control.
-So in my mind a situation similar to application using memory it has
-already freed. The kernel has to manage that but we don't really care
-what's left from the application when this happens.
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-That being said I'm not insisting this has to happen - tracking associated
-"RDMA file" with a layout lease and somehow invalidating it on close of a
-leased file is somewhat ugly anyway. But it is still an option if exposing
-pins to userspace for lsof to consume proves even worse...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
