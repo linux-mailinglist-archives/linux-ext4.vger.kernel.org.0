@@ -2,121 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6FE43B88
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 17:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1310F442D1
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbfFMPaE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 11:30:04 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:46020 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731696AbfFMP3z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 11:29:55 -0400
-Received: by mail-qt1-f196.google.com with SMTP id j19so23007005qtr.12
-        for <linux-ext4@vger.kernel.org>; Thu, 13 Jun 2019 08:29:55 -0700 (PDT)
+        id S2392285AbfFMQ0G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 12:26:06 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:43153 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730967AbfFMQ0G (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 12:26:06 -0400
+Received: by mail-oi1-f195.google.com with SMTP id w79so14882214oif.10
+        for <linux-ext4@vger.kernel.org>; Thu, 13 Jun 2019 09:26:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zI+cml8WbrmbJ9toyFXRrApWdKeWP1klnItjSAKRPGg=;
-        b=ez3y4b43vsN45W2H2bDstmo6Om2wBZpYtJKgMMjQ9NBoecm8EqzxMc/rNSpmMUBedy
-         80Ex/NCrVk0GjamXc8tFY6oZxMeqGSAa2XxliMKTTtJWm/Hdv+7/O2TlnSRLVmYLMjc1
-         8QLaCJlqlQNIG4Wtw5O1fja9ybK4S3vwEG6x4PLpKGnKhfBKyUDjUSuJ7Daf2FmV0ukB
-         Fiy/FGLk6V0O5Od1WI6hEe1YQb2rKTshssT0ZDeknDIfsjbY9xOSOCaaERP1VJPOdnB9
-         Me1HNUVA3ivb0wrw4Jz0PdvTbXzAgXVoN/LwODHkV6bcRV7ByakROGDgfhqlpDrkzCce
-         zwyA==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wjBnZv2pCLDEwG4yb+2F3joyqEyCgCcLuoiul4+lDtg=;
+        b=KHbKhiCEqP27YRm90NCLuB4c2IplNhmcOcBL7/TKZlk3SiaZQfwA9S0uY/GsQv03Pr
+         aBL2AWfi8XTIFaky9LKQqE+K/NfNYYNrlmFC/I9jOaxHcs4tAfHfjcUQbqcl3RnXxild
+         Tu3HngJ2BWQbjHKSA518A7LMdZsRAI0y2xoRezHhz45e3uyBcpgMb0voTy98I6u2hRnp
+         NYEu7LcFVoYX1llZ3PhX+HJY3OdLwk1vk8E00NF1S8iWedYKuEKJl7E8AOFKwK6O5TC3
+         f4HIkh3G/dWUfgrFHj9h1Gd+qxz3edzqRbXtlNTkaPme0fjX3JDzh/8PrIf6qw6dZLSg
+         gtaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zI+cml8WbrmbJ9toyFXRrApWdKeWP1klnItjSAKRPGg=;
-        b=PViMIYv6Wem1Zc9lr6roYA+SNLggBMsmvgr1slrkYIOespOcwsCcL1vFiDgMfblG2x
-         tLwlhP/IV1CNTwqWAI3VqV1rRJPJN68clWWSR5sOEu4OUsOjXbBm04jiJuhmk4BNKGqV
-         SNPWxy1J/oaVYpvBdBA9v3TH+QSI9l0N3K746N0N5fkgE6asV51ikq9JqfVkBtAOD5n7
-         3+dfQ5dzhYnRQ92uwEzDPsGtqj67ydYGTPZn/kKUxdza4nxcEfLohPMbcvbIC8pJlKci
-         YurXwx32ZnaDrwr2D0hbej+v+B/tWqOlZ8s1bHnSSpTAiLtz2G5j/Oqf7FNtNLSMUT3+
-         UgMw==
-X-Gm-Message-State: APjAAAV+/rPbezGwOOKoLQQmAqDaMNT/fIzjo2EOAFIrpZBU11gWzjm7
-        AndN43Bb8V4pwfWjb/5ao6y/kw==
-X-Google-Smtp-Source: APXvYqxumou76h8DgPuXHGACUFtVz1bj3RAtdr2UUPeKh8lpCv3ZK4QnjNs+8s/8x74HDjzAfBeu7Q==
-X-Received: by 2002:a0c:b163:: with SMTP id r32mr4246320qvc.169.1560439794791;
-        Thu, 13 Jun 2019 08:29:54 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id s66sm1645906qkh.17.2019.06.13.08.29.54
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Jun 2019 08:29:54 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hbRfl-0001zA-RQ; Thu, 13 Jun 2019 12:29:53 -0300
-Date:   Thu, 13 Jun 2019 12:29:53 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wjBnZv2pCLDEwG4yb+2F3joyqEyCgCcLuoiul4+lDtg=;
+        b=gn+wKKnyh5L6U6IFUZN6K3OLacZyBlsUTP32uGZDFr/vJYoSiFywiq5YfxB9saSIzI
+         4m80KqyygnAbObASAEH57M3t6uSvPkf/+SJN6ZwnGXnNx8EqkS7aELTiXftky1yt7XqV
+         1OuiNCwBNWf4Y1YynyqwgjrKyR1PU2EMZv+PAZ8K0oPARJ6yHr6Hnm6MO84pSHtA8DZD
+         i2R3jqtikXwDTkdh091PflE1gXjb5K7/jfQ4OenatZAabxbanwwpE7iowUtG0lg7Hz+W
+         wca2DlewyDU8KZNKoShlGlOsOBuhLdHZfo7D5H9WLsQvXmcOK6EKMdSUA3Q2ZMcyCHc3
+         FqLA==
+X-Gm-Message-State: APjAAAVINZ8zWp5+clLLFwyPK3jbNaT4pArzX5oJuU60gamVqKs2HUww
+        36Bi+flFeCMkrh8SEI/UkOfkblP+heSB46zHLgFFAg==
+X-Google-Smtp-Source: APXvYqyIpO3hOidIsXLbc4Y7aCrEkKlPPSiQhXNkmA/XJwYbaL526BswBcBQAMtK33IEuzEN5c+1wA+6c6zViqiveWY=
+X-Received: by 2002:aca:7c5:: with SMTP id 188mr3423005oih.70.1560443165189;
+ Thu, 13 Jun 2019 09:26:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190607121729.GA14802@ziepe.ca> <20190607145213.GB14559@iweiny-DESK2.sc.intel.com>
+ <20190612102917.GB14578@quack2.suse.cz> <20190612114721.GB3876@ziepe.ca>
+ <20190612120907.GC14578@quack2.suse.cz> <20190612191421.GM3876@ziepe.ca>
+ <20190612221336.GA27080@iweiny-DESK2.sc.intel.com> <CAPcyv4gkksnceCV-p70hkxAyEPJWFvpMezJA1rEj6TEhKAJ7qQ@mail.gmail.com>
+ <20190612233324.GE14336@iweiny-DESK2.sc.intel.com> <CAPcyv4jf19CJbtXTp=ag7Ns=ZQtqeQd3C0XhV9FcFCwd9JCNtQ@mail.gmail.com>
+ <20190613151354.GC22901@ziepe.ca>
+In-Reply-To: <20190613151354.GC22901@ziepe.ca>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 13 Jun 2019 09:25:54 -0700
+Message-ID: <CAPcyv4hZsxd+eUrVCQmm-O8Zcu16O5R1d0reTM+JBBn7oP7Uhw@mail.gmail.com>
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190613152953.GD22901@ziepe.ca>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
- <20190608001036.GF14308@dread.disaster.area>
- <20190612123751.GD32656@bombadil.infradead.org>
- <20190613002555.GH14363@dread.disaster.area>
- <20190613032320.GG32656@bombadil.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190613032320.GG32656@bombadil.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 08:23:20PM -0700, Matthew Wilcox wrote:
-> On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
-> > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
-> > > That's rather different from the normal meaning of 'exclusive' in the
-> > > context of locks, which is "only one user can have access to this at
-> > > a time".
-> > 
-> > Layout leases are not locks, they are a user access policy object.
-> > It is the process/fd which holds the lease and it's the process/fd
-> > that is granted exclusive access.  This is exactly the same semantic
-> > as O_EXCL provides for granting exclusive access to a block device
-> > via open(), yes?
-> 
-> This isn't my understanding of how RDMA wants this to work, so we should
-> probably clear that up before we get too far down deciding what name to
-> give it.
-> 
-> For the RDMA usage case, it is entirely possible that both process A
-> and process B which don't know about each other want to perform RDMA to
-> file F.  So there will be two layout leases active on this file at the
-> same time.  It's fine for IOs to simultaneously be active to both leases.
-> But if the filesystem wants to move blocks around, it has to break
-> both leases.
-> 
-> If Process C tries to do a write to file F without a lease, there's no
-> problem, unless a side-effect of the write would be to change the block
-> mapping, in which case either the leases must break first, or the write
-> must be denied.
-> 
-> Jason, please correct me if I've misunderstood the RDMA needs here.
+On Thu, Jun 13, 2019 at 8:14 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Jun 12, 2019 at 06:14:46PM -0700, Dan Williams wrote:
+> > > Effectively, we would need a way for an admin to close a specific file
+> > > descriptor (or set of fds) which point to that file.  AFAIK there is no way to
+> > > do that at all, is there?
+> >
+> > Even if there were that gets back to my other question, does RDMA
+> > teardown happen at close(fd), or at final fput() of the 'struct
+> > file'?
+>
+> AFAIK there is no kernel side driver hook for close(fd).
+>
+> rdma uses a normal chardev so it's lifetime is linked to the file_ops
+> release, which is called on last fput. So all the mmaps, all the dups,
+> everything must go before it releases its resources.
 
-Yes, I think you've captured it
-
-Based on Dave's remarks how frequently a filesystem needs to break the
-lease will determine if it is usuable to be combined with RDMA or
-not...
-
-Jason
+Oh, I must have missed where this conversation started talking about
+the driver-device fd. I thought we were talking about the close /
+release of the target file that is MAP_SHARED for the memory
+registration. A release of the driver fd is orthogonal to coordinating
+/ signalling actions relative to the leased file.
