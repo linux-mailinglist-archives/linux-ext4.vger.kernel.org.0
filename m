@@ -2,58 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1310F442D1
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3E6446BC
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392285AbfFMQ0G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 12:26:06 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:43153 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730967AbfFMQ0G (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 12:26:06 -0400
-Received: by mail-oi1-f195.google.com with SMTP id w79so14882214oif.10
-        for <linux-ext4@vger.kernel.org>; Thu, 13 Jun 2019 09:26:05 -0700 (PDT)
+        id S1732309AbfFMQyK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 12:54:10 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:44896 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729075AbfFMQyJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 12:54:09 -0400
+Received: by mail-oi1-f193.google.com with SMTP id e189so14937841oib.11
+        for <linux-ext4@vger.kernel.org>; Thu, 13 Jun 2019 09:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wjBnZv2pCLDEwG4yb+2F3joyqEyCgCcLuoiul4+lDtg=;
-        b=KHbKhiCEqP27YRm90NCLuB4c2IplNhmcOcBL7/TKZlk3SiaZQfwA9S0uY/GsQv03Pr
-         aBL2AWfi8XTIFaky9LKQqE+K/NfNYYNrlmFC/I9jOaxHcs4tAfHfjcUQbqcl3RnXxild
-         Tu3HngJ2BWQbjHKSA518A7LMdZsRAI0y2xoRezHhz45e3uyBcpgMb0voTy98I6u2hRnp
-         NYEu7LcFVoYX1llZ3PhX+HJY3OdLwk1vk8E00NF1S8iWedYKuEKJl7E8AOFKwK6O5TC3
-         f4HIkh3G/dWUfgrFHj9h1Gd+qxz3edzqRbXtlNTkaPme0fjX3JDzh/8PrIf6qw6dZLSg
-         gtaQ==
+        bh=K5QgKSw4Z6Xg8aYYXT+LBjYPe44CbIinLwHH3dcmWHs=;
+        b=JPkB0BV6X6JhIXM15mmuE6WMYycZpu9oR7r0I7K/LQCBr9DwAP6ai9HZjnhDeAYv4q
+         TiZo9rDNmnnfaiz17BD3uxFdbeSL7Y/8LOiTSNry6at9hQCVwGCeToNG6Ex+J8u5/KQP
+         rSeVmghdMiyUulN3yC6UXoG+jamCw6Iq9RQa6hVQWk/7tpob4VyGK5isoLBgPG5+8CMc
+         oA3+NEhNWRx5DhX8fFS+ibJYngtPEXnpdgd2MSVqUjHZLmRvj+vJ+ceFOp5MLrQ4oEX/
+         0Rx8uu+6IN2lNuQ5sNTppCrMvyeKhRIg9ncvGbzO5FXYhJ6K3FlfiHQBnhAn2M8BLSYe
+         /S4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wjBnZv2pCLDEwG4yb+2F3joyqEyCgCcLuoiul4+lDtg=;
-        b=gn+wKKnyh5L6U6IFUZN6K3OLacZyBlsUTP32uGZDFr/vJYoSiFywiq5YfxB9saSIzI
-         4m80KqyygnAbObASAEH57M3t6uSvPkf/+SJN6ZwnGXnNx8EqkS7aELTiXftky1yt7XqV
-         1OuiNCwBNWf4Y1YynyqwgjrKyR1PU2EMZv+PAZ8K0oPARJ6yHr6Hnm6MO84pSHtA8DZD
-         i2R3jqtikXwDTkdh091PflE1gXjb5K7/jfQ4OenatZAabxbanwwpE7iowUtG0lg7Hz+W
-         wca2DlewyDU8KZNKoShlGlOsOBuhLdHZfo7D5H9WLsQvXmcOK6EKMdSUA3Q2ZMcyCHc3
-         FqLA==
-X-Gm-Message-State: APjAAAVINZ8zWp5+clLLFwyPK3jbNaT4pArzX5oJuU60gamVqKs2HUww
-        36Bi+flFeCMkrh8SEI/UkOfkblP+heSB46zHLgFFAg==
-X-Google-Smtp-Source: APXvYqyIpO3hOidIsXLbc4Y7aCrEkKlPPSiQhXNkmA/XJwYbaL526BswBcBQAMtK33IEuzEN5c+1wA+6c6zViqiveWY=
-X-Received: by 2002:aca:7c5:: with SMTP id 188mr3423005oih.70.1560443165189;
- Thu, 13 Jun 2019 09:26:05 -0700 (PDT)
+        bh=K5QgKSw4Z6Xg8aYYXT+LBjYPe44CbIinLwHH3dcmWHs=;
+        b=VHGOlqxEgtxiudvxLEmpJGxOKp6iDlE4kdxPiTl+DqFBkvoHoh8ySvnTjR95Pwuib6
+         vhB3wZPYVnrXBUeI5GD887w7UA0FW7TMkuES1xVEEAMrdW0BxoMsGVg8by8sExSetiwE
+         lEcUukXK28mw++OGn+G57VTN1nEf9wjbsniMXut6bEGinajbnXH0PavWwB94Le9627Dz
+         GJSEXt6kCEGc/RXSd3xGik+P+O8//iAi9spfZE2VkmW3Cl81Z2IRGt8Ccjg6h4WvAn49
+         KFO7AT6BjuJBN/QWVbUnxkyDURKti88xBLfal6Djh0F9VZDqUWiiPFNG+n/vbLBHwkxI
+         YjXw==
+X-Gm-Message-State: APjAAAXgj+P12/Zdg58/bPjUOadD3ZNv9nBYuZBdbDR7KxA0HMVSmxXj
+        9d1MM6a1T+YD7wbwCbVg96Sr7cXQNvyZSNmn4LarkQ==
+X-Google-Smtp-Source: APXvYqw1WkLu6931wraGkR43kxA852RaajLizs6v5Jy3HNf2qRKdqa2zWoPAYJUPvBUNSayLXHYwfeMfsWWcQaOonts=
+X-Received: by 2002:aca:4208:: with SMTP id p8mr3752304oia.105.1560444848738;
+ Thu, 13 Jun 2019 09:54:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190607121729.GA14802@ziepe.ca> <20190607145213.GB14559@iweiny-DESK2.sc.intel.com>
- <20190612102917.GB14578@quack2.suse.cz> <20190612114721.GB3876@ziepe.ca>
- <20190612120907.GC14578@quack2.suse.cz> <20190612191421.GM3876@ziepe.ca>
- <20190612221336.GA27080@iweiny-DESK2.sc.intel.com> <CAPcyv4gkksnceCV-p70hkxAyEPJWFvpMezJA1rEj6TEhKAJ7qQ@mail.gmail.com>
- <20190612233324.GE14336@iweiny-DESK2.sc.intel.com> <CAPcyv4jf19CJbtXTp=ag7Ns=ZQtqeQd3C0XhV9FcFCwd9JCNtQ@mail.gmail.com>
- <20190613151354.GC22901@ziepe.ca>
-In-Reply-To: <20190613151354.GC22901@ziepe.ca>
+References: <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
+ <20190607103636.GA12765@quack2.suse.cz> <20190607121729.GA14802@ziepe.ca>
+ <20190607145213.GB14559@iweiny-DESK2.sc.intel.com> <20190612102917.GB14578@quack2.suse.cz>
+ <20190612114721.GB3876@ziepe.ca> <20190612120907.GC14578@quack2.suse.cz>
+ <20190612191421.GM3876@ziepe.ca> <20190612221336.GA27080@iweiny-DESK2.sc.intel.com>
+ <CAPcyv4gkksnceCV-p70hkxAyEPJWFvpMezJA1rEj6TEhKAJ7qQ@mail.gmail.com> <20190612233324.GE14336@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20190612233324.GE14336@iweiny-DESK2.sc.intel.com>
 From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 13 Jun 2019 09:25:54 -0700
-Message-ID: <CAPcyv4hZsxd+eUrVCQmm-O8Zcu16O5R1d0reTM+JBBn7oP7Uhw@mail.gmail.com>
+Date:   Thu, 13 Jun 2019 09:53:57 -0700
+Message-ID: <CAPcyv4hKw7owf+Jpxiu+V7DE+U4GkQ1Hr3korZvgSve-LPexNA@mail.gmail.com>
 Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
         "Theodore Ts'o" <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>,
         Dave Chinner <david@fromorbit.com>,
         Matthew Wilcox <willy@infradead.org>,
@@ -72,25 +72,93 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 8:14 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Wed, Jun 12, 2019 at 4:32 PM Ira Weiny <ira.weiny@intel.com> wrote:
 >
-> On Wed, Jun 12, 2019 at 06:14:46PM -0700, Dan Williams wrote:
-> > > Effectively, we would need a way for an admin to close a specific file
-> > > descriptor (or set of fds) which point to that file.  AFAIK there is no way to
-> > > do that at all, is there?
+> On Wed, Jun 12, 2019 at 03:54:19PM -0700, Dan Williams wrote:
+> > On Wed, Jun 12, 2019 at 3:12 PM Ira Weiny <ira.weiny@intel.com> wrote:
+> > >
+> > > On Wed, Jun 12, 2019 at 04:14:21PM -0300, Jason Gunthorpe wrote:
+> > > > On Wed, Jun 12, 2019 at 02:09:07PM +0200, Jan Kara wrote:
+> > > > > On Wed 12-06-19 08:47:21, Jason Gunthorpe wrote:
+> > > > > > On Wed, Jun 12, 2019 at 12:29:17PM +0200, Jan Kara wrote:
+> > > > > >
+> > > > > > > > > The main objection to the current ODP & DAX solution is that very
+> > > > > > > > > little HW can actually implement it, having the alternative still
+> > > > > > > > > require HW support doesn't seem like progress.
+> > > > > > > > >
+> > > > > > > > > I think we will eventually start seein some HW be able to do this
+> > > > > > > > > invalidation, but it won't be universal, and I'd rather leave it
+> > > > > > > > > optional, for recovery from truely catastrophic errors (ie my DAX is
+> > > > > > > > > on fire, I need to unplug it).
+> > > > > > > >
+> > > > > > > > Agreed.  I think software wise there is not much some of the devices can do
+> > > > > > > > with such an "invalidate".
+> > > > > > >
+> > > > > > > So out of curiosity: What does RDMA driver do when userspace just closes
+> > > > > > > the file pointing to RDMA object? It has to handle that somehow by aborting
+> > > > > > > everything that's going on... And I wanted similar behavior here.
+> > > > > >
+> > > > > > It aborts *everything* connected to that file descriptor. Destroying
+> > > > > > everything avoids creating inconsistencies that destroying a subset
+> > > > > > would create.
+> > > > > >
+> > > > > > What has been talked about for lease break is not destroying anything
+> > > > > > but very selectively saying that one memory region linked to the GUP
+> > > > > > is no longer functional.
+> > > > >
+> > > > > OK, so what I had in mind was that if RDMA app doesn't play by the rules
+> > > > > and closes the file with existing pins (and thus layout lease) we would
+> > > > > force it to abort everything. Yes, it is disruptive but then the app didn't
+> > > > > obey the rule that it has to maintain file lease while holding pins. Thus
+> > > > > such situation should never happen unless the app is malicious / buggy.
+> > > >
+> > > > We do have the infrastructure to completely revoke the entire
+> > > > *content* of a FD (this is called device disassociate). It is
+> > > > basically close without the app doing close. But again it only works
+> > > > with some drivers. However, this is more likely something a driver
+> > > > could support without a HW change though.
+> > > >
+> > > > It is quite destructive as it forcibly kills everything RDMA related
+> > > > the process(es) are doing, but it is less violent than SIGKILL, and
+> > > > there is perhaps a way for the app to recover from this, if it is
+> > > > coded for it.
+> > >
+> > > I don't think many are...  I think most would effectively be "killed" if this
+> > > happened to them.
+> > >
+> > > >
+> > > > My preference would be to avoid this scenario, but if it is really
+> > > > necessary, we could probably build it with some work.
+> > > >
+> > > > The only case we use it today is forced HW hot unplug, so it is rarely
+> > > > used and only for an 'emergency' like use case.
+> > >
+> > > I'd really like to avoid this as well.  I think it will be very confusing for
+> > > RDMA apps to have their context suddenly be invalid.  I think if we have a way
+> > > for admins to ID who is pinning a file the admin can take more appropriate
+> > > action on those processes.   Up to and including killing the process.
 > >
-> > Even if there were that gets back to my other question, does RDMA
-> > teardown happen at close(fd), or at final fput() of the 'struct
-> > file'?
+> > Can RDMA context invalidation, "device disassociate", be inflicted on
+> > a process from the outside? Identifying the pid of a pin holder only
+> > leaves SIGKILL of the entire process as the remediation for revoking a
+> > pin, and I assume admins would use the finer grained invalidation
+> > where it was available.
 >
-> AFAIK there is no kernel side driver hook for close(fd).
+> No not in the way you are describing it.  As Jason said you can hotplug the
+> device which is "from the outside" but this would affect all users of that
+> device.
 >
-> rdma uses a normal chardev so it's lifetime is linked to the file_ops
-> release, which is called on last fput. So all the mmaps, all the dups,
-> everything must go before it releases its resources.
+> Effectively, we would need a way for an admin to close a specific file
+> descriptor (or set of fds) which point to that file.  AFAIK there is no way to
+> do that at all, is there?
 
-Oh, I must have missed where this conversation started talking about
-the driver-device fd. I thought we were talking about the close /
-release of the target file that is MAP_SHARED for the memory
-registration. A release of the driver fd is orthogonal to coordinating
-/ signalling actions relative to the leased file.
+You can certainly give the lease holder the option to close the file
+voluntarily via the siginfo_t that can be attached to a lease break
+signal. But it's not really "close" you want as much as a finer
+grained disassociate.
+
+All that said you could require the lease taker opt-in to SIGKILL via
+F_SETSIG before marking the lease "exclusive". That effectively
+precludes failing truncate, but it's something we can enforce today
+and work on finer grained / less drastic escalations over time for
+something that should "never" happen.
