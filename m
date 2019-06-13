@@ -2,149 +2,206 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFB044616
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FD2445B3
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbfFMQtF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 12:49:05 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:41045 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727662AbfFMEhz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Jun 2019 00:37:55 -0400
-Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id BEAB014A744;
-        Thu, 13 Jun 2019 14:37:47 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hbHTl-0005bp-W0; Thu, 13 Jun 2019 14:36:49 +1000
-Date:   Thu, 13 Jun 2019 14:36:49 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190613043649.GJ14363@dread.disaster.area>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
- <20190608001036.GF14308@dread.disaster.area>
- <20190612123751.GD32656@bombadil.infradead.org>
- <20190613002555.GH14363@dread.disaster.area>
- <20190613032320.GG32656@bombadil.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190613032320.GG32656@bombadil.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0 cx=a_idp_d
-        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
-        a=7-415B0cAAAA:8 a=VVmKscACqtQWyMykWwEA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+        id S1730343AbfFMQpy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 12:45:54 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:43909 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730320AbfFMFqU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 01:46:20 -0400
+Received: by mail-wr1-f43.google.com with SMTP id p13so9167166wru.10
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Jun 2019 22:46:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=+KC+G8mdsFHRq3fTO8qSFdNuM/o8bUU5Ws1W0tY9nMQ=;
+        b=fcMHhd8SlQkGpmu4B4nnHAcWQF7KwY2oVV3mNcGcuZAm4mu6blLKC7FPW5p4xwO0k4
+         ElkPvnrtllGvpBASvZHiwuIorqIrmYPY1qDm4otU9sYAlokfFwYlR4PR2pE8qjSxJ2bv
+         Cc+n3yEeKCFqbEXJLo7edU2gB4dYlbZHfUPcT4pMQ8U0cZqodb/v5NPuEnuAp7VrL9N0
+         bZEESFOJmsJ97ksQTSUutEBELnFtWGZo8oAQ+JLQxVoFeSB81OPPH9JWwTl3JqqBruas
+         4CREGmjevp7mkIo8lNxjmg3TZAzNDJaThvyulLFtw+2h+imVMSsk2+eDbUEoGTrUF22T
+         NjIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=+KC+G8mdsFHRq3fTO8qSFdNuM/o8bUU5Ws1W0tY9nMQ=;
+        b=WmKV4cG6fDwpTJPoO7H8xCQuCWG7HIP22FgGOPyZGKkbocY4pCShVXqyveWb+d2ONO
+         iTjlhwtg8Z7Bvwymx21b4pdCLis+Ki22wJdYv2N5FUxyBOm+fEfHTOe5f0QBs5d8N1jk
+         CanXWJtafw+P0LK0BgWYFvC3+3RotyBFTNywiNFsunN4p2LZOKcOXz6TC1I7eIYIll9i
+         imRPVDMX67KtRoTLk+Nl1Zkw7C9puMH+rCO5tO79oN2tcrpQPzSlPA4mq3sQbF644jdC
+         tJ/jRARzuwTvvUJ993ikl5naNwzaIOlDfvu8zoHm6Z4hADNBxKU4mzNULvUQ73M3lqy4
+         4D5w==
+X-Gm-Message-State: APjAAAXGOE3+PMDmdzhpA97yFsZXhCYgM/Ecx0q84K69S7yUSdh9oqen
+        V5eqUmlEB0/gYwTSnJn5h/QxQg==
+X-Google-Smtp-Source: APXvYqw/aYOTu9cU/Ok5QkUUC38n3D+JffJJRYpP42j/6jsR85bV4Vha18mx5IR6w74L0iQ1L9eZ9A==
+X-Received: by 2002:adf:ebc6:: with SMTP id v6mr14275239wrn.222.1560404777633;
+        Wed, 12 Jun 2019 22:46:17 -0700 (PDT)
+Received: from [192.168.0.102] (88-147-71-233.dyn.eolo.it. [88.147.71.233])
+        by smtp.gmail.com with ESMTPSA id z14sm3164273wre.96.2019.06.12.22.46.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 Jun 2019 22:46:16 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+Message-Id: <43486E4F-2237-4E40-BDFE-07CFCCFFFA25@linaro.org>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_C82715EC-E52D-48BB-975D-458C5D643A93";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Date:   Thu, 13 Jun 2019 07:46:12 +0200
+In-Reply-To: <7c5e9d11-4a3d-7df4-c1e6-7c95919522ab@csail.mit.edu>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+ <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+ <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
+ <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+ <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+ <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+ <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
+ <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
+ <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
+ <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
+ <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
+ <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
+ <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
+ <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
+ <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
+ <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
+ <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
+ <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
+ <7c5e9d11-4a3d-7df4-c1e6-7c95919522ab@csail.mit.edu>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 08:23:20PM -0700, Matthew Wilcox wrote:
-> On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
-> > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
-> > > That's rather different from the normal meaning of 'exclusive' in the
-> > > context of locks, which is "only one user can have access to this at
-> > > a time".
-> > 
-> > Layout leases are not locks, they are a user access policy object.
-> > It is the process/fd which holds the lease and it's the process/fd
-> > that is granted exclusive access.  This is exactly the same semantic
-> > as O_EXCL provides for granting exclusive access to a block device
-> > via open(), yes?
-> 
-> This isn't my understanding of how RDMA wants this to work, so we should
-> probably clear that up before we get too far down deciding what name to
-> give it.
-> 
-> For the RDMA usage case, it is entirely possible that both process A
-> and process B which don't know about each other want to perform RDMA to
-> file F.  So there will be two layout leases active on this file at the
-> same time.  It's fine for IOs to simultaneously be active to both leases.
 
-Yes, it is.
+--Apple-Mail=_C82715EC-E52D-48BB-975D-458C5D643A93
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-> But if the filesystem wants to move blocks around, it has to break
-> both leases.
 
-No, the _lease layer_ needs to break both leases when the filesystem
-calls break_layout().
 
-The filesystem is /completely unaware/ of whether a lease is held,
-how many leases are held, what is involved in revoking leases or
-whether they are exclusive or not. The filesystem only knows that it
-is about to perform an operation that may require a layout lease to
-be broken, so it's _asking permission_ from the layout lease layer
-whether it is OK to go ahead with the operation.
+> Il giorno 12 giu 2019, alle ore 00:34, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>=20
+> On 6/2/19 12:04 AM, Srivatsa S. Bhat wrote:
+>> On 5/30/19 3:45 AM, Paolo Valente wrote:
+>>>=20
+> [...]
+>>> At any rate, since you pointed out that you are interested in
+>>> out-of-the-box performance, let me complete the context: in case
+>>> low_latency is left set, one gets, in return for this 12% loss,
+>>> a) at least 1000% higher responsiveness, e.g., 1000% lower start-up
+>>> times of applications under load [1];
+>>> b) 500-1000% higher throughput in multi-client server workloads, as =
+I
+>>> already pointed out [2].
+>>>=20
+>>=20
+>> I'm very happy that you could solve the problem without having to
+>> compromise on any of the performance characteristics/features of BFQ!
+>>=20
+>>=20
+>>> I'm going to prepare complete patches.  In addition, if ok for you,
+>>> I'll report these results on the bug you created.  Then I guess we =
+can
+>>> close it.
+>>>=20
+>>=20
+>> Sounds great!
+>>=20
+>=20
+> Hi Paolo,
+>=20
 
-See what I mean about the layout lease being an /access arbitration/
-layer? It's the layer that decides whether a modification can be
-made or not, not the filesystem. The layout lease layer tells the
-filesystem what it should do, the filesystem just has to ensure it
-adds layout breaking callouts in places that can block safely and
-are serialised to ensure operations from new layouts can't race with
-the operation that broke the existing layouts.
+Hi
 
-> If Process C tries to do a write to file F without a lease, there's no
-> problem, unless a side-effect of the write would be to change the block
-> mapping,
+> Hope you are doing great!
+>=20
 
-That's a side effect we cannot predict ahead of time. But it's
-also _completely irrelevant_ to the layout lease layer API and
-implementation.(*)
+Sort of, thanks :)
 
-> in which case either the leases must break first, or the write
-> must be denied.
+> I was wondering if you got a chance to post these patches to LKML for
+> review and inclusion... (No hurry, of course!)
+>=20
 
-Which is exactly how I'm saying layout leases already interact with
-the filesystem: that if the lease cannot be broken, break_layout()
-returns -ETXTBSY to the filesystem, and the filesystem returns that
-to the application having made no changes at all. Layout leases are
-the policy engine, the filesystem just has to implement the
-break_layout() callouts such that layout breaking is consistent,
-correct, and robust....
 
-Cheers,
+I'm having troubles testing these new patches on 5.2-rc4.  As it
+happened with the first release candidates for 5.1, the CPU of my test
+machine (Intel Core i7-2760QM@2.40GHz) is so slowed down that results
+are heavily distorted with every I/O scheduler.
 
-Dave.
+Unfortunately, I'm not competent enough to spot the cause of this
+regression in a feasible amount of time.  I hope it'll go away with
+next release candidates, or I'll test on 5.1.
 
-(*) In the case of XFS, we don't know if a layout change will be
-necessary until we are deep inside the actual IO path and hold inode
-metadata locks. We can't block here to break the layout because IO
-completion and metadata commits need to occur to allow the
-application to release it's lease and IO completion requires that
-same inode metadata lock. i.e. if we block once we know a layout
-change needs to occur, we will deadlock the filesystem on the inode
-metadata lock.
+> Also, since your fixes address the performance issues in BFQ, do you
+> have any thoughts on whether they can be adapted to CFQ as well, to
+> benefit the older stable kernels that still support CFQ?
+>=20
 
-Hence the filesystem implementation dictates when the filesystem
-issues layout lease break notifications. However, these filesystem
-implementation issues do not dictate how applications interact with
-layout leases, how layout leases are managed, whether concurrent
-leases are allowed, whether leases can be broken, etc.  That's all
-managed by the layout lease layer and that's where the go/no go
-decision is made and communicated to the filesystem as the return
-value from the break_layout() call.
+I have implanted my fixes on the existing throughput-boosting
+infrastructure of BFQ.  CFQ doesn't have such an infrastructure.
 
--- 
-Dave Chinner
-david@fromorbit.com
+If you need I/O control with older kernels, you may want to check my
+version of BFQ for legacy block, named bfq-sq and available in this
+repo:
+https://github.com/Algodev-github/bfq-mq/
+
+I'm willing to provide you with any information or help if needed.
+
+Thanks,
+Paolo
+
+
+> Thank you!
+>=20
+> Regards,
+> Srivatsa
+> VMware Photon OS
+
+
+--Apple-Mail=_C82715EC-E52D-48BB-975D-458C5D643A93
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAl0B4yQACgkQOAkCLQGo
+9oNOVg/+KTDsN0F9V0g74Et2TxDdqnhABWgQ3HrajfUnRzmLdMR0Tx0C0YUBZM5t
+S3xp4ofC2oP3HItm6gJ+z+Pw/6K+C5k8cd09zRh9W9wkw4dLGXTuotakmMupTpyT
+XTymYIUfHt72H42arlX0dxtoPkhMMRuP7PXKtvbLun4dLiErjGh03Lvs139EQvyJ
+L65pJTeoIaTT7r+MlblZkmaVRpqG/XF8yRzRNg5/pSbkvPhegZsJC7pMMdjwLsK8
+1skizw2Nt1G24RqGSuofRti9lCDPKLSND2t4xBUZ1BWN93f9Nz3Zm8m9ylWiCNGE
+c0G3RpRTknqxbYtkPUr71MJZ63Hl2d5F/02XUkZGkSo7EtOoMKiKCg6VzzIq24JP
+gxL/lMoVO27+JM9DWBUBvdWxkOHtvD1JRAaGX9VWqTi7ksUFDlFHOF83Udyj5HBz
+PJS2TL5dQ+X+l3G7nD3YHJCwSD2+DC1rZPQhj75BGu1CBnGXaEHtEMn3CfmVVQpL
+H0pVqIyF7lnJJu+vEYuea73RfnfSi4FU+MpFFYFCG6fElqUik9X7IzCQRcB6ianK
+vqNbdqMwq9BeFgwm3f09fKzc6JdkBu0YApmPJp9mxeYkvQLJYLxGlyYnUU7ottDL
+4QlYZevYyTv9G+O8HM/l8PuET7+X66xi8Dlj5oGnURXNmRLh64g=
+=PUTU
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_C82715EC-E52D-48BB-975D-458C5D643A93--
