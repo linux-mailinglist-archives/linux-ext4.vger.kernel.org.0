@@ -2,169 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E414428C
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4042943BF4
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 17:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731027AbfFMQX3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 12:23:29 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:33993 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731020AbfFMIhj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 04:37:39 -0400
-Received: by mail-yb1-f194.google.com with SMTP id x32so7514776ybh.1
-        for <linux-ext4@vger.kernel.org>; Thu, 13 Jun 2019 01:37:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xQyhQbksvj61RPrZv6HE/27WZ2p7zM6vRmq6wqbq8Qs=;
-        b=Fx7IJ3Rn6+Ui58vZZjWSalUo87E2IkSKQDLMUtkgAPO4CmSr7POvW2xsqzpKzq5uhF
-         0f7g+rHnj3GBTKOCeRKhjRPPjQ4GVn+bwZdVpu+vrj/dOJr4Jj1ZIkTbJ3YLMTlyMxMN
-         dFMsKo5sE6beFBhyxH44nY5lY9n2acrQ4g7CdoyFqTBJVwOr6pTnEnT5NOllmkVF9RP6
-         IgCU7hIvmaN/Y+hE5quNLy9iXnlQ2onRzC1oZrgFYiPOaJytXxn79iHsne5eQcZMRhvR
-         OnUqbsrKe5fbWBuAfzOebwrdLBXouzVannJlsiiYbLyWJKuNqhB0elmrcQ+PNSaiuFsW
-         y3Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xQyhQbksvj61RPrZv6HE/27WZ2p7zM6vRmq6wqbq8Qs=;
-        b=YXUEDJ9nkwLxlMWUYf3ylabB0y7mkfYDjY4rRNSXySngCYK3ri4Z6fLedaXcfhGvZh
-         t2AUEil8t+G72/GsazNmVGaDKeBd0RggOL5Ydx3xCvs3DiurnQY2rkBfpx4D3qGGAKn5
-         Gt+f5qaByMzuWNYXpvm0BVq43/jQrx+qbBHJC2vxy1KZE18ScnL3/HH3NAgGhG5s0Aca
-         LKfGtbxDDI5Uh9qYBnYf//x/WqONaYoZOx9KjEfZe9Yt4Lkp7/yGaWkmz4LMMfx69w5c
-         nptaU4G0/C0FiySBX8HGY/7nfNTHGy0KwJ9VofdlN+e26qTE/ZNLMIzsRbZPwSo9ecGL
-         aQ2A==
-X-Gm-Message-State: APjAAAVW1Rwhifc9jOxeJcX0ftersw8df2CUvz3ZzQ7VtZfxWIYEFew1
-        vNYp5Z+6w0NMx7SAWg8L8GhMsA==
-X-Google-Smtp-Source: APXvYqyCnK2ALhwLtTPvX0AEYshPEqUIKjRxcqh3pgRhqVo+A2spmhGkm2WC+o0o7oMW27T55jkwSw==
-X-Received: by 2002:a25:7413:: with SMTP id p19mr39487999ybc.310.1560415057147;
-        Thu, 13 Jun 2019 01:37:37 -0700 (PDT)
-Received: from ?IPv6:2600:380:9e2c:9b66:68e0:4c59:dc75:6d4b? ([2600:380:9e2c:9b66:68e0:4c59:dc75:6d4b])
-        by smtp.gmail.com with ESMTPSA id r6sm597826ywd.47.2019.06.13.01.37.30
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 13 Jun 2019 01:37:36 -0700 (PDT)
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        Jan Kara <jack@suse.cz>
-Cc:     Paolo Valente <paolo.valente@linaro.org>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jeff Moyer <jmoyer@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stable <stable@vger.kernel.org>
-References: <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
- <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
- <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
- <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
- <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
- <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
- <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
- <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
- <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
- <7c5e9d11-4a3d-7df4-c1e6-7c95919522ab@csail.mit.edu>
- <20190612130446.GD14578@quack2.suse.cz>
- <dd32ed59-a543-fc76-9a9a-2462f0119270@csail.mit.edu>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <aca00f05-4d71-7db0-52d6-7aa0932cc5c0@kernel.dk>
-Date:   Thu, 13 Jun 2019 02:37:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1728837AbfFMPcj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 11:32:39 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:41576 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728462AbfFMKrr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 06:47:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=GEs9TuIKz96lXRS7FnLGyqSMFlOm6a6Nuvp5RkrDbpg=; b=iMC2hvEIOcyryH8ttvBTFCIwJ
+        +/UTOZxleRRIx/Qk3yqPfUzPCOda7GErke13ZzFQak5ewSoRm8WulpfqNH7Zcz8Q/4E8j/T6eNEmH
+        zqn/a0VQTD+joB/VdqCU1xYbOG/t0Yt1iH7D4MVcM+JnmapUwUFZ9n9jOt8V0iESGcP+afyjOL9pH
+        +Z800XzTY/YS/+CM4flrqhchMwkDHfagPOomV5WMld5ChIy1boYvTjVntNNzTcy5LKpr/Bsx2mf7S
+        S446zK0y8A3V0fwGhTmnFSvXqbCAHfkut7f3C9ZExu7tOQe+5MbplKDwi6MAkqGaZIAtnEYCa3p8M
+        bMZjvH0qQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hbNGh-0007DC-6o; Thu, 13 Jun 2019 10:47:43 +0000
+Date:   Thu, 13 Jun 2019 03:47:43 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190613104743.GH32656@bombadil.infradead.org>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+ <20190607110426.GB12765@quack2.suse.cz>
+ <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+ <20190608001036.GF14308@dread.disaster.area>
+ <20190612123751.GD32656@bombadil.infradead.org>
+ <20190613002555.GH14363@dread.disaster.area>
+ <20190613032320.GG32656@bombadil.infradead.org>
+ <20190613043649.GJ14363@dread.disaster.area>
 MIME-Version: 1.0
-In-Reply-To: <dd32ed59-a543-fc76-9a9a-2462f0119270@csail.mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190613043649.GJ14363@dread.disaster.area>
+User-Agent: Mutt/1.9.2 (2017-12-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 6/12/19 1:36 PM, Srivatsa S. Bhat wrote:
+On Thu, Jun 13, 2019 at 02:36:49PM +1000, Dave Chinner wrote:
+> On Wed, Jun 12, 2019 at 08:23:20PM -0700, Matthew Wilcox wrote:
+> > On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
+> > > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
+> > > > That's rather different from the normal meaning of 'exclusive' in the
+> > > > context of locks, which is "only one user can have access to this at
+> > > > a time".
+> > > 
+> > > Layout leases are not locks, they are a user access policy object.
+> > > It is the process/fd which holds the lease and it's the process/fd
+> > > that is granted exclusive access.  This is exactly the same semantic
+> > > as O_EXCL provides for granting exclusive access to a block device
+> > > via open(), yes?
+> > 
+> > This isn't my understanding of how RDMA wants this to work, so we should
+> > probably clear that up before we get too far down deciding what name to
+> > give it.
+> > 
+> > For the RDMA usage case, it is entirely possible that both process A
+> > and process B which don't know about each other want to perform RDMA to
+> > file F.  So there will be two layout leases active on this file at the
+> > same time.  It's fine for IOs to simultaneously be active to both leases.
 > 
-> [ Adding Greg to CC ]
+> Yes, it is.
 > 
-> On 6/12/19 6:04 AM, Jan Kara wrote:
->> On Tue 11-06-19 15:34:48, Srivatsa S. Bhat wrote:
->>> On 6/2/19 12:04 AM, Srivatsa S. Bhat wrote:
->>>> On 5/30/19 3:45 AM, Paolo Valente wrote:
->>>>>
->>> [...]
->>>>> At any rate, since you pointed out that you are interested in
->>>>> out-of-the-box performance, let me complete the context: in case
->>>>> low_latency is left set, one gets, in return for this 12% loss,
->>>>> a) at least 1000% higher responsiveness, e.g., 1000% lower start-up
->>>>> times of applications under load [1];
->>>>> b) 500-1000% higher throughput in multi-client server workloads, as I
->>>>> already pointed out [2].
->>>>>
->>>>
->>>> I'm very happy that you could solve the problem without having to
->>>> compromise on any of the performance characteristics/features of BFQ!
->>>>
->>>>
->>>>> I'm going to prepare complete patches.  In addition, if ok for you,
->>>>> I'll report these results on the bug you created.  Then I guess we can
->>>>> close it.
->>>>>
->>>>
->>>> Sounds great!
->>>>
->>>
->>> Hi Paolo,
->>>
->>> Hope you are doing great!
->>>
->>> I was wondering if you got a chance to post these patches to LKML for
->>> review and inclusion... (No hurry, of course!)
->>>
->>> Also, since your fixes address the performance issues in BFQ, do you
->>> have any thoughts on whether they can be adapted to CFQ as well, to
->>> benefit the older stable kernels that still support CFQ?
->>
->> Since CFQ doesn't exist in current upstream kernel anymore, I seriously
->> doubt you'll be able to get any performance improvements for it in the
->> stable kernels...
->>
+> > But if the filesystem wants to move blocks around, it has to break
+> > both leases.
 > 
-> I suspected as much, but that seems unfortunate though. The latest LTS
-> kernel is based on 4.19, which still supports CFQ. It would have been
-> great to have a process to address significant issues on older
-> kernels too.
-> 
-> Greg, do you have any thoughts on this? The context is that both CFQ
-> and BFQ I/O schedulers have issues that cause I/O throughput to suffer
-> upto 10x - 30x on certain workloads and system configurations, as
-> reported in [1].
-> 
-> In this thread, Paolo posted patches to fix BFQ performance on
-> mainline. However CFQ suffers from the same performance collapse, but
-> CFQ was removed from the kernel in v5.0. So obviously the usual stable
-> backporting path won't work here for several reasons:
-> 
->    1. There won't be a mainline commit to backport from, as CFQ no
->       longer exists in mainline.
-> 
->    2. This is not a security/stability fix, and is likely to involve
->       invasive changes.
-> 
-> I was wondering if there was a way to address the performance issues
-> in CFQ in the older stable kernels (including the latest LTS 4.19),
-> despite the above constraints, since the performance drop is much too
-> significant. I guess not, but thought I'd ask :-)
-> 
-> [1]. https://lore.kernel.org/lkml/8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu/
+> No, the _lease layer_ needs to break both leases when the filesystem
+> calls break_layout().
 
-This issue has always been there. There will be no specific patches made
-for stable for something that doesn't even exist in the newer kernels.
+That's a distinction without a difference as far as userspace is
+concerned.  If process A asks for an exclusive lease (and gets it),
+then process B asks for an exclusive lease (and gets it), that lease
+isn't exclusive!  It's shared.
 
--- 
-Jens Axboe
+I think the example you give of O_EXCL is more of a historical accident.
+It's a relatively recent Linuxism that O_EXCL on a block device means
+"this block device is not part of a filesystem", and I don't think
+most userspace programmers are aware of what it means when not paired
+with O_CREAT.
+
+> > If Process C tries to do a write to file F without a lease, there's no
+> > problem, unless a side-effect of the write would be to change the block
+> > mapping,
+> 
+> That's a side effect we cannot predict ahead of time. But it's
+> also _completely irrelevant_ to the layout lease layer API and
+> implementation.(*)
+
+It's irrelevant to the naming, but you brought it up as part of the
+semantics.
 
