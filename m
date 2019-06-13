@@ -2,52 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEC14393D
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 17:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA9843976
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 17:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732806AbfFMPMb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 11:12:31 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:44914 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388153AbfFMPMU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 11:12:20 -0400
-Received: by mail-qk1-f195.google.com with SMTP id p144so845752qke.11
-        for <linux-ext4@vger.kernel.org>; Thu, 13 Jun 2019 08:12:20 -0700 (PDT)
+        id S2388063AbfFMPN5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 11:13:57 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:42921 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732368AbfFMPN4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 11:13:56 -0400
+Received: by mail-qt1-f194.google.com with SMTP id s15so22934329qtk.9
+        for <linux-ext4@vger.kernel.org>; Thu, 13 Jun 2019 08:13:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=R4sEx9DRCkbOcqkLsi6Jkv1GflPMZb75UMnrOJnbtJI=;
-        b=JRz6imxOTGsNuMS76M162KvumiMVyYkKXhz/IAFwKjp3Igi0hICl/m4BUGOuw61YG6
-         Pf3He7hg9Kt6x6X1WZuq8bUrqc1a1W2UmAo8VaUwVPA2GdvPEx7a5YMbLY0nfJoFWaQM
-         YEbV9dRjW/drtmRraCujxYyThEP6QtwiSJs3iYcbutlXVk7Z5dASy1/Oy0G/oorjue0j
-         RzaH6Drn7BTg39I+BUiwTL6fije0cyR1reQqzW1AIca5v1agyVprI5RgkLHLmKlYW9Fi
-         0n1zTcJtV1luwZoUboeqFK2xDSzt81BhwHG/KONzmn78w16+WuqvsJOUxxwdcX8amTie
-         g0WA==
+        bh=KkKhR2elMbqIQhtMNyRPKfFVISR0bn0T2g34f2r/Vr8=;
+        b=SfHInPm3DzZYLPoEmUVQqUjB5LScF9DsUpJ4xj+NyGtlotEBCDOd7k0OAiLknLgpy1
+         UwRMpQmGSzJF0gJD/kcFMjRmesoOZkKPKtk3EWMStIXtk1BSmgVZYNk1p6EKmXc4imPv
+         1V1hEuNESlphnwH9Ffq42vPqvIo/88Zh85Tr1f4Tsa8YuL7Uls35977s64dpr/1WcL8J
+         ZbYx/FYbcjhIEQbbmhQgdZInCU3g7QIDiBsNO/6qOPrD5yA2TBMRXmDe20WR5bhjdxVZ
+         hMtmCv3lKFvdGH4OgmFjKOdFtkKSEmGywoQe1a2KSSYQTb19JMjkAlD66sOEA23ZLtm9
+         d4ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=R4sEx9DRCkbOcqkLsi6Jkv1GflPMZb75UMnrOJnbtJI=;
-        b=S4GXW9Gmtp+nZbd6kowt7nQq6yrL/HXVgpTEp5MeKqRfzjMA50PASqcHCL3KR/o5fc
-         Z0LweGEpvgSvAUoqmOK9jiSgTTF3TDDA6wBplCV8XNxw8NYcfgQuv6tSYgqhFjUiF+i0
-         O0F1dU/8CPbQkFUPCEs7H/Aqw5RqhxvVSsDrX5tNA4rpuiVSMeejpUSlIoXmLPA8TAK3
-         QLMUEsLt9SYi+FAanRo0qJJYz8QIVunqTS3dWYpPUeHew17gXgaj0ASIh7HmuLoWtlv5
-         QRxXHgs92sa0brq0xrAchvgwCUhIubCOzIP1iz/E8N+SmUEvp6JpcbLqjg1YsZU2rCC5
-         eT2A==
-X-Gm-Message-State: APjAAAVFfiU8o5LyxaFCBhlhQAJTdCeWdeFANoZTxi9KRH26cOf4iM+k
-        EcCEcuwHehMxu1uCP6la6PyR8w==
-X-Google-Smtp-Source: APXvYqzM9yCChTgMP3KlIhiG1BK19OOrfQlMOx6JZlNrolhLErYOjGfGuCWD8w4PBuxWllsDgHA6QA==
-X-Received: by 2002:a37:e506:: with SMTP id e6mr3810214qkg.229.1560438740039;
-        Thu, 13 Jun 2019 08:12:20 -0700 (PDT)
+        bh=KkKhR2elMbqIQhtMNyRPKfFVISR0bn0T2g34f2r/Vr8=;
+        b=SN6JaAVtDDiv6MWG/X71rABao/q+ZJAbAg67G31Lg0YkVBwsFDNJhn8kG7+naoeQOF
+         4nVxtiw2jEDMgxsBt1L/G9dQQmBWwQ0J7PknwwUS4tiAoRZvcg36MHfu9CClpnZwvLTS
+         gaqVP5MGIc59lFRI2f+w0lAjI8rPo0RkgYukZN5tzF4pMVGjdMq6YMH6mrphT65Eomq/
+         SNSlR4vKCM2QIxzW/m4aCT+u+gYTdmnO7ITVG1DjHLZCQzBa7ysOSJI4Rim+yVlWIkyk
+         qKC8lvMo3b2x5flzJdXtrKsCrlmINjvUB0kE5MWKRjGLx3NUiqxvB2nM7Y9ehpD3AXbN
+         /jWg==
+X-Gm-Message-State: APjAAAWtdDufqUxVTPNlfkMfqPKHyIGkbNZHEOU1SOYfZg2zx1IHtXKC
+        Xmwi57POXyYgg133O5vzjN3LCw==
+X-Google-Smtp-Source: APXvYqxrIgS7SEgThFO4xWkROTtAeKu9gS/7k/Y8mWYSTA6O8BjyUZUk4XGZHPcLg6c7oSu9BznGCA==
+X-Received: by 2002:ac8:2f90:: with SMTP id l16mr60699198qta.12.1560438835818;
+        Thu, 13 Jun 2019 08:13:55 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id n10sm1577550qke.72.2019.06.13.08.12.19
+        by smtp.gmail.com with ESMTPSA id c18sm1546907qkk.73.2019.06.13.08.13.55
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 13 Jun 2019 08:12:19 -0700 (PDT)
+        Thu, 13 Jun 2019 08:13:55 -0700 (PDT)
 Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
         (envelope-from <jgg@ziepe.ca>)
-        id 1hbROk-0001qR-Po; Thu, 13 Jun 2019 12:12:18 -0300
-Date:   Thu, 13 Jun 2019 12:12:18 -0300
+        id 1hbRQI-0001rX-U0; Thu, 13 Jun 2019 12:13:54 -0300
+Date:   Thu, 13 Jun 2019 12:13:54 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Dan Williams <dan.j.williams@intel.com>
 Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
@@ -65,10 +65,8 @@ Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
         linux-ext4 <linux-ext4@vger.kernel.org>,
         Linux MM <linux-mm@kvack.org>
 Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190613151218.GB22901@ziepe.ca>
-References: <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
- <20190607103636.GA12765@quack2.suse.cz>
- <20190607121729.GA14802@ziepe.ca>
+Message-ID: <20190613151354.GC22901@ziepe.ca>
+References: <20190607121729.GA14802@ziepe.ca>
  <20190607145213.GB14559@iweiny-DESK2.sc.intel.com>
  <20190612102917.GB14578@quack2.suse.cz>
  <20190612114721.GB3876@ziepe.ca>
@@ -76,35 +74,31 @@ References: <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
  <20190612191421.GM3876@ziepe.ca>
  <20190612221336.GA27080@iweiny-DESK2.sc.intel.com>
  <CAPcyv4gkksnceCV-p70hkxAyEPJWFvpMezJA1rEj6TEhKAJ7qQ@mail.gmail.com>
+ <20190612233324.GE14336@iweiny-DESK2.sc.intel.com>
+ <CAPcyv4jf19CJbtXTp=ag7Ns=ZQtqeQd3C0XhV9FcFCwd9JCNtQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4gkksnceCV-p70hkxAyEPJWFvpMezJA1rEj6TEhKAJ7qQ@mail.gmail.com>
+In-Reply-To: <CAPcyv4jf19CJbtXTp=ag7Ns=ZQtqeQd3C0XhV9FcFCwd9JCNtQ@mail.gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 03:54:19PM -0700, Dan Williams wrote:
-> > > My preference would be to avoid this scenario, but if it is really
-> > > necessary, we could probably build it with some work.
-> > >
-> > > The only case we use it today is forced HW hot unplug, so it is rarely
-> > > used and only for an 'emergency' like use case.
-> >
-> > I'd really like to avoid this as well.  I think it will be very confusing for
-> > RDMA apps to have their context suddenly be invalid.  I think if we have a way
-> > for admins to ID who is pinning a file the admin can take more appropriate
-> > action on those processes.   Up to and including killing the process.
+On Wed, Jun 12, 2019 at 06:14:46PM -0700, Dan Williams wrote:
+> > Effectively, we would need a way for an admin to close a specific file
+> > descriptor (or set of fds) which point to that file.  AFAIK there is no way to
+> > do that at all, is there?
 > 
-> Can RDMA context invalidation, "device disassociate", be inflicted on
-> a process from the outside? 
+> Even if there were that gets back to my other question, does RDMA
+> teardown happen at close(fd), or at final fput() of the 'struct
+> file'?
 
-Yes, but it is currently only applied to the entire device - ie you do
-'rmmod mlx5_ib' and all the running user space process see that their
-FD has moved to some error and the device is broken.
+AFAIK there is no kernel side driver hook for close(fd). 
 
-Targetting the disassociate of only a single FD would be a new thing.
+rdma uses a normal chardev so it's lifetime is linked to the file_ops
+release, which is called on last fput. So all the mmaps, all the dups,
+everything must go before it releases its resources.
 
 Jason
