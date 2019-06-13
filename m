@@ -2,115 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4042943BF4
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 17:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEC14393D
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 17:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbfFMPcj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 11:32:39 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:41576 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728462AbfFMKrr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 06:47:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=GEs9TuIKz96lXRS7FnLGyqSMFlOm6a6Nuvp5RkrDbpg=; b=iMC2hvEIOcyryH8ttvBTFCIwJ
-        +/UTOZxleRRIx/Qk3yqPfUzPCOda7GErke13ZzFQak5ewSoRm8WulpfqNH7Zcz8Q/4E8j/T6eNEmH
-        zqn/a0VQTD+joB/VdqCU1xYbOG/t0Yt1iH7D4MVcM+JnmapUwUFZ9n9jOt8V0iESGcP+afyjOL9pH
-        +Z800XzTY/YS/+CM4flrqhchMwkDHfagPOomV5WMld5ChIy1boYvTjVntNNzTcy5LKpr/Bsx2mf7S
-        S446zK0y8A3V0fwGhTmnFSvXqbCAHfkut7f3C9ZExu7tOQe+5MbplKDwi6MAkqGaZIAtnEYCa3p8M
-        bMZjvH0qQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hbNGh-0007DC-6o; Thu, 13 Jun 2019 10:47:43 +0000
-Date:   Thu, 13 Jun 2019 03:47:43 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
+        id S1732806AbfFMPMb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 11:12:31 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:44914 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388153AbfFMPMU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Jun 2019 11:12:20 -0400
+Received: by mail-qk1-f195.google.com with SMTP id p144so845752qke.11
+        for <linux-ext4@vger.kernel.org>; Thu, 13 Jun 2019 08:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=R4sEx9DRCkbOcqkLsi6Jkv1GflPMZb75UMnrOJnbtJI=;
+        b=JRz6imxOTGsNuMS76M162KvumiMVyYkKXhz/IAFwKjp3Igi0hICl/m4BUGOuw61YG6
+         Pf3He7hg9Kt6x6X1WZuq8bUrqc1a1W2UmAo8VaUwVPA2GdvPEx7a5YMbLY0nfJoFWaQM
+         YEbV9dRjW/drtmRraCujxYyThEP6QtwiSJs3iYcbutlXVk7Z5dASy1/Oy0G/oorjue0j
+         RzaH6Drn7BTg39I+BUiwTL6fije0cyR1reQqzW1AIca5v1agyVprI5RgkLHLmKlYW9Fi
+         0n1zTcJtV1luwZoUboeqFK2xDSzt81BhwHG/KONzmn78w16+WuqvsJOUxxwdcX8amTie
+         g0WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=R4sEx9DRCkbOcqkLsi6Jkv1GflPMZb75UMnrOJnbtJI=;
+        b=S4GXW9Gmtp+nZbd6kowt7nQq6yrL/HXVgpTEp5MeKqRfzjMA50PASqcHCL3KR/o5fc
+         Z0LweGEpvgSvAUoqmOK9jiSgTTF3TDDA6wBplCV8XNxw8NYcfgQuv6tSYgqhFjUiF+i0
+         O0F1dU/8CPbQkFUPCEs7H/Aqw5RqhxvVSsDrX5tNA4rpuiVSMeejpUSlIoXmLPA8TAK3
+         QLMUEsLt9SYi+FAanRo0qJJYz8QIVunqTS3dWYpPUeHew17gXgaj0ASIh7HmuLoWtlv5
+         QRxXHgs92sa0brq0xrAchvgwCUhIubCOzIP1iz/E8N+SmUEvp6JpcbLqjg1YsZU2rCC5
+         eT2A==
+X-Gm-Message-State: APjAAAVFfiU8o5LyxaFCBhlhQAJTdCeWdeFANoZTxi9KRH26cOf4iM+k
+        EcCEcuwHehMxu1uCP6la6PyR8w==
+X-Google-Smtp-Source: APXvYqzM9yCChTgMP3KlIhiG1BK19OOrfQlMOx6JZlNrolhLErYOjGfGuCWD8w4PBuxWllsDgHA6QA==
+X-Received: by 2002:a37:e506:: with SMTP id e6mr3810214qkg.229.1560438740039;
+        Thu, 13 Jun 2019 08:12:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id n10sm1577550qke.72.2019.06.13.08.12.19
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 13 Jun 2019 08:12:19 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hbROk-0001qR-Po; Thu, 13 Jun 2019 12:12:18 -0300
+Date:   Thu, 13 Jun 2019 12:12:18 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Williams <dan.j.williams@intel.com>
 Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
         Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
 Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190613104743.GH32656@bombadil.infradead.org>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
- <20190608001036.GF14308@dread.disaster.area>
- <20190612123751.GD32656@bombadil.infradead.org>
- <20190613002555.GH14363@dread.disaster.area>
- <20190613032320.GG32656@bombadil.infradead.org>
- <20190613043649.GJ14363@dread.disaster.area>
+Message-ID: <20190613151218.GB22901@ziepe.ca>
+References: <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
+ <20190607103636.GA12765@quack2.suse.cz>
+ <20190607121729.GA14802@ziepe.ca>
+ <20190607145213.GB14559@iweiny-DESK2.sc.intel.com>
+ <20190612102917.GB14578@quack2.suse.cz>
+ <20190612114721.GB3876@ziepe.ca>
+ <20190612120907.GC14578@quack2.suse.cz>
+ <20190612191421.GM3876@ziepe.ca>
+ <20190612221336.GA27080@iweiny-DESK2.sc.intel.com>
+ <CAPcyv4gkksnceCV-p70hkxAyEPJWFvpMezJA1rEj6TEhKAJ7qQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190613043649.GJ14363@dread.disaster.area>
-User-Agent: Mutt/1.9.2 (2017-12-15)
+In-Reply-To: <CAPcyv4gkksnceCV-p70hkxAyEPJWFvpMezJA1rEj6TEhKAJ7qQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 02:36:49PM +1000, Dave Chinner wrote:
-> On Wed, Jun 12, 2019 at 08:23:20PM -0700, Matthew Wilcox wrote:
-> > On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
-> > > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
-> > > > That's rather different from the normal meaning of 'exclusive' in the
-> > > > context of locks, which is "only one user can have access to this at
-> > > > a time".
-> > > 
-> > > Layout leases are not locks, they are a user access policy object.
-> > > It is the process/fd which holds the lease and it's the process/fd
-> > > that is granted exclusive access.  This is exactly the same semantic
-> > > as O_EXCL provides for granting exclusive access to a block device
-> > > via open(), yes?
-> > 
-> > This isn't my understanding of how RDMA wants this to work, so we should
-> > probably clear that up before we get too far down deciding what name to
-> > give it.
-> > 
-> > For the RDMA usage case, it is entirely possible that both process A
-> > and process B which don't know about each other want to perform RDMA to
-> > file F.  So there will be two layout leases active on this file at the
-> > same time.  It's fine for IOs to simultaneously be active to both leases.
+On Wed, Jun 12, 2019 at 03:54:19PM -0700, Dan Williams wrote:
+> > > My preference would be to avoid this scenario, but if it is really
+> > > necessary, we could probably build it with some work.
+> > >
+> > > The only case we use it today is forced HW hot unplug, so it is rarely
+> > > used and only for an 'emergency' like use case.
+> >
+> > I'd really like to avoid this as well.  I think it will be very confusing for
+> > RDMA apps to have their context suddenly be invalid.  I think if we have a way
+> > for admins to ID who is pinning a file the admin can take more appropriate
+> > action on those processes.   Up to and including killing the process.
 > 
-> Yes, it is.
-> 
-> > But if the filesystem wants to move blocks around, it has to break
-> > both leases.
-> 
-> No, the _lease layer_ needs to break both leases when the filesystem
-> calls break_layout().
+> Can RDMA context invalidation, "device disassociate", be inflicted on
+> a process from the outside? 
 
-That's a distinction without a difference as far as userspace is
-concerned.  If process A asks for an exclusive lease (and gets it),
-then process B asks for an exclusive lease (and gets it), that lease
-isn't exclusive!  It's shared.
+Yes, but it is currently only applied to the entire device - ie you do
+'rmmod mlx5_ib' and all the running user space process see that their
+FD has moved to some error and the device is broken.
 
-I think the example you give of O_EXCL is more of a historical accident.
-It's a relatively recent Linuxism that O_EXCL on a block device means
-"this block device is not part of a filesystem", and I don't think
-most userspace programmers are aware of what it means when not paired
-with O_CREAT.
+Targetting the disassociate of only a single FD would be a new thing.
 
-> > If Process C tries to do a write to file F without a lease, there's no
-> > problem, unless a side-effect of the write would be to change the block
-> > mapping,
-> 
-> That's a side effect we cannot predict ahead of time. But it's
-> also _completely irrelevant_ to the layout lease layer API and
-> implementation.(*)
-
-It's irrelevant to the naming, but you brought it up as part of the
-semantics.
-
+Jason
