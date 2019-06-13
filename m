@@ -2,123 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 225B444BDF
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 21:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B4C44D7B
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 22:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727538AbfFMTNO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 15:13:14 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:36676 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725842AbfFMTNN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Jun 2019 15:13:13 -0400
-Received: from [4.30.142.84] (helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hbV9n-0009Ya-TR; Thu, 13 Jun 2019 15:13:08 -0400
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
- <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
- <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
- <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
- <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
- <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
- <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
- <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
- <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
- <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
- <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
- <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
- <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
- <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
- <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
- <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
- <7c5e9d11-4a3d-7df4-c1e6-7c95919522ab@csail.mit.edu>
- <43486E4F-2237-4E40-BDFE-07CFCCFFFA25@linaro.org>
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Message-ID: <72856150-d678-42bd-0377-82dbee6513ba@csail.mit.edu>
-Date:   Thu, 13 Jun 2019 12:13:05 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.0
+        id S1729143AbfFMUcr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 16:32:47 -0400
+Received: from mga17.intel.com ([192.55.52.151]:5160 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726289AbfFMUco (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 13 Jun 2019 16:32:44 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Jun 2019 13:32:43 -0700
+X-ExtLoop1: 1
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Jun 2019 13:32:43 -0700
+Date:   Thu, 13 Jun 2019 13:34:05 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190613203404.GA30404@iweiny-DESK2.sc.intel.com>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+ <20190607110426.GB12765@quack2.suse.cz>
+ <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+ <20190608001036.GF14308@dread.disaster.area>
+ <20190612123751.GD32656@bombadil.infradead.org>
+ <20190613002555.GH14363@dread.disaster.area>
 MIME-Version: 1.0
-In-Reply-To: <43486E4F-2237-4E40-BDFE-07CFCCFFFA25@linaro.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190613002555.GH14363@dread.disaster.area>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 6/12/19 10:46 PM, Paolo Valente wrote:
+On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
+> On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
+> > On Sat, Jun 08, 2019 at 10:10:36AM +1000, Dave Chinner wrote:
+> > > On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
+> > > > Are you suggesting that we have something like this from user space?
+> > > > 
+> > > > 	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
+> > > 
+> > > Rather than "unbreakable", perhaps a clearer description of the
+> > > policy it entails is "exclusive"?
+> > > 
+> > > i.e. what we are talking about here is an exclusive lease that
+> > > prevents other processes from changing the layout. i.e. the
+> > > mechanism used to guarantee a lease is exclusive is that the layout
+> > > becomes "unbreakable" at the filesystem level, but the policy we are
+> > > actually presenting to uses is "exclusive access"...
+> > 
+> > That's rather different from the normal meaning of 'exclusive' in the
+> > context of locks, which is "only one user can have access to this at
+> > a time".
 > 
->> Il giorno 12 giu 2019, alle ore 00:34, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
->>
-[...]
->>
->> Hi Paolo,
->>
 > 
-> Hi
+> Layout leases are not locks, they are a user access policy object.
+> It is the process/fd which holds the lease and it's the process/fd
+> that is granted exclusive access.  This is exactly the same semantic
+> as O_EXCL provides for granting exclusive access to a block device
+> via open(), yes?
 > 
->> Hope you are doing great!
->>
+> > As I understand it, this is rather more like a 'shared' or
+> > 'read' lock.  The filesystem would be the one which wants an exclusive
+> > lock, so it can modify the mapping of logical to physical blocks.
 > 
-> Sort of, thanks :)
+> ISTM that you're conflating internal filesystem implementation with
+> application visible semantics. Yes, the filesystem uses internal
+> locks to serialise the modification of the things the lease manages
+> access too, but that has nothing to do with the access policy the
+> lease provides to users.
 > 
->> I was wondering if you got a chance to post these patches to LKML for
->> review and inclusion... (No hurry, of course!)
->>
+> e.g. Process A has an exclusive layout lease on file F. It does an
+> IO to file F. The filesystem IO path checks that Process A owns the
+> lease on the file and so skips straight through layout breaking
+> because it owns the lease and is allowed to modify the layout. It
+> then takes the inode metadata locks to allocate new space and write
+> new data.
 > 
+> Process B now tries to write to file F. The FS checks whether
+> Process B owns a layout lease on file F. It doesn't, so then it
+> tries to break the layout lease so the IO can proceed. The layout
+> breaking code sees that process A has an exclusive layout lease
+> granted, and so returns -ETXTBSY to process B - it is not allowed to
+> break the lease and so the IO fails with -ETXTBSY.
 > 
-> I'm having troubles testing these new patches on 5.2-rc4.  As it
-> happened with the first release candidates for 5.1, the CPU of my test
-> machine (Intel Core i7-2760QM@2.40GHz) is so slowed down that results
-> are heavily distorted with every I/O scheduler.
-> 
+> i.e. the exclusive layout lease prevents other processes from
+> performing operations that may need to modify the layout from
+> performing those operations. It does not "lock" the file/inode in
+> any way, it just changes how the layout lease breaking behaves.
 
-Oh, that's unfortunate!
+Question: Do we expect Process A to get notified that Process B was attempting
+to change the layout?
 
-> Unfortunately, I'm not competent enough to spot the cause of this
-> regression in a feasible amount of time.  I hope it'll go away with
-> next release candidates, or I'll test on 5.1.
+This changes the exclusivity semantics.  While Process A has an exclusive lease
+it could release it if notified to allow process B temporary exclusivity.
+
+Question 2: Do we expect other process' (say Process C) to also be able to map
+and pin the file?  I believe users will need this and for layout purposes it is
+ok to do so.  But this means that Process A does not have "exclusive" access to
+the lease.
+
+So given Process C has also placed a layout lease on the file.  Indicating
+that it does not want the layout to change.  Both A and C need to be "broken"
+by Process B to change the layout.  If there is no Process B; A and C can run
+just fine with a "locked" layout.
+
+Ira
+
 > 
-
-Sounds good to me!
-
->> Also, since your fixes address the performance issues in BFQ, do you
->> have any thoughts on whether they can be adapted to CFQ as well, to
->> benefit the older stable kernels that still support CFQ?
->>
+> Further, the "exclusiveness" of a layout lease is completely
+> irrelevant to the filesystem that is indicating that an operation
+> that may need to modify the layout is about to be performed. All the
+> filesystem has to do is handle failures to break the lease
+> appropriately.  Yes, XFS serialises the layout lease validation
+> against other IO to the same file via it's IO locks, but that's an
+> internal data IO coherency requirement, not anything to do with
+> layout lease management.
 > 
-> I have implanted my fixes on the existing throughput-boosting
-> infrastructure of BFQ.  CFQ doesn't have such an infrastructure.
+> Note that I talk about /writes/ here. This is interchangable with
+> any other operation that may need to modify the extent layout of the
+> file, be it truncate, fallocate, etc: the attempt to break the
+> layout lease by a non-owner should fail if the lease is "exclusive"
+> to the owner.
 > 
-> If you need I/O control with older kernels, you may want to check my
-> version of BFQ for legacy block, named bfq-sq and available in this
-> repo:
-> https://github.com/Algodev-github/bfq-mq/
->
-
-Great! Thank you for sharing this!
- 
-> I'm willing to provide you with any information or help if needed.
+> > The complication being that by default the filesystem has an exclusive
+> > lock on the mapping, and what we're trying to add is the ability for
+> > readers to ask the filesystem to give up its exclusive lock.
 > 
-Thank you!
-
-Regards,
-Srivatsa
-VMware Photon OS
+> The filesystem doesn't even lock the "mapping" until after the
+> layout lease has been validated or broken.
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
+> 
