@@ -2,139 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2BE447BF
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 19:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242654476C
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729569AbfFMRBh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 13:01:37 -0400
-Received: from mga01.intel.com ([192.55.52.88]:46452 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729566AbfFLXcF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 12 Jun 2019 19:32:05 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Jun 2019 16:32:05 -0700
-X-ExtLoop1: 1
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Jun 2019 16:32:04 -0700
-Date:   Wed, 12 Jun 2019 16:33:25 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        id S1731663AbfFMQ7U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 12:59:20 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:36961 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729826AbfFMA1B (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 12 Jun 2019 20:27:01 -0400
+Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id D76D33DB9FA;
+        Thu, 13 Jun 2019 10:26:52 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hbDYx-00046z-Ci; Thu, 13 Jun 2019 10:25:55 +1000
+Date:   Thu, 13 Jun 2019 10:25:55 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
         Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
         John Hubbard <jhubbard@nvidia.com>,
         =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
 Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190612233324.GE14336@iweiny-DESK2.sc.intel.com>
-References: <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
- <20190607103636.GA12765@quack2.suse.cz>
- <20190607121729.GA14802@ziepe.ca>
- <20190607145213.GB14559@iweiny-DESK2.sc.intel.com>
- <20190612102917.GB14578@quack2.suse.cz>
- <20190612114721.GB3876@ziepe.ca>
- <20190612120907.GC14578@quack2.suse.cz>
- <20190612191421.GM3876@ziepe.ca>
- <20190612221336.GA27080@iweiny-DESK2.sc.intel.com>
- <CAPcyv4gkksnceCV-p70hkxAyEPJWFvpMezJA1rEj6TEhKAJ7qQ@mail.gmail.com>
+Message-ID: <20190613002555.GH14363@dread.disaster.area>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+ <20190607110426.GB12765@quack2.suse.cz>
+ <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+ <20190608001036.GF14308@dread.disaster.area>
+ <20190612123751.GD32656@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4gkksnceCV-p70hkxAyEPJWFvpMezJA1rEj6TEhKAJ7qQ@mail.gmail.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20190612123751.GD32656@bombadil.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
+        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
+        a=7-415B0cAAAA:8 a=0tDtZe7MyfZ8QGwI5qwA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 03:54:19PM -0700, Dan Williams wrote:
-> On Wed, Jun 12, 2019 at 3:12 PM Ira Weiny <ira.weiny@intel.com> wrote:
-> >
-> > On Wed, Jun 12, 2019 at 04:14:21PM -0300, Jason Gunthorpe wrote:
-> > > On Wed, Jun 12, 2019 at 02:09:07PM +0200, Jan Kara wrote:
-> > > > On Wed 12-06-19 08:47:21, Jason Gunthorpe wrote:
-> > > > > On Wed, Jun 12, 2019 at 12:29:17PM +0200, Jan Kara wrote:
-> > > > >
-> > > > > > > > The main objection to the current ODP & DAX solution is that very
-> > > > > > > > little HW can actually implement it, having the alternative still
-> > > > > > > > require HW support doesn't seem like progress.
-> > > > > > > >
-> > > > > > > > I think we will eventually start seein some HW be able to do this
-> > > > > > > > invalidation, but it won't be universal, and I'd rather leave it
-> > > > > > > > optional, for recovery from truely catastrophic errors (ie my DAX is
-> > > > > > > > on fire, I need to unplug it).
-> > > > > > >
-> > > > > > > Agreed.  I think software wise there is not much some of the devices can do
-> > > > > > > with such an "invalidate".
-> > > > > >
-> > > > > > So out of curiosity: What does RDMA driver do when userspace just closes
-> > > > > > the file pointing to RDMA object? It has to handle that somehow by aborting
-> > > > > > everything that's going on... And I wanted similar behavior here.
-> > > > >
-> > > > > It aborts *everything* connected to that file descriptor. Destroying
-> > > > > everything avoids creating inconsistencies that destroying a subset
-> > > > > would create.
-> > > > >
-> > > > > What has been talked about for lease break is not destroying anything
-> > > > > but very selectively saying that one memory region linked to the GUP
-> > > > > is no longer functional.
-> > > >
-> > > > OK, so what I had in mind was that if RDMA app doesn't play by the rules
-> > > > and closes the file with existing pins (and thus layout lease) we would
-> > > > force it to abort everything. Yes, it is disruptive but then the app didn't
-> > > > obey the rule that it has to maintain file lease while holding pins. Thus
-> > > > such situation should never happen unless the app is malicious / buggy.
-> > >
-> > > We do have the infrastructure to completely revoke the entire
-> > > *content* of a FD (this is called device disassociate). It is
-> > > basically close without the app doing close. But again it only works
-> > > with some drivers. However, this is more likely something a driver
-> > > could support without a HW change though.
-> > >
-> > > It is quite destructive as it forcibly kills everything RDMA related
-> > > the process(es) are doing, but it is less violent than SIGKILL, and
-> > > there is perhaps a way for the app to recover from this, if it is
-> > > coded for it.
-> >
-> > I don't think many are...  I think most would effectively be "killed" if this
-> > happened to them.
-> >
-> > >
-> > > My preference would be to avoid this scenario, but if it is really
-> > > necessary, we could probably build it with some work.
-> > >
-> > > The only case we use it today is forced HW hot unplug, so it is rarely
-> > > used and only for an 'emergency' like use case.
-> >
-> > I'd really like to avoid this as well.  I think it will be very confusing for
-> > RDMA apps to have their context suddenly be invalid.  I think if we have a way
-> > for admins to ID who is pinning a file the admin can take more appropriate
-> > action on those processes.   Up to and including killing the process.
+On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
+> On Sat, Jun 08, 2019 at 10:10:36AM +1000, Dave Chinner wrote:
+> > On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
+> > > Are you suggesting that we have something like this from user space?
+> > > 
+> > > 	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
+> > 
+> > Rather than "unbreakable", perhaps a clearer description of the
+> > policy it entails is "exclusive"?
+> > 
+> > i.e. what we are talking about here is an exclusive lease that
+> > prevents other processes from changing the layout. i.e. the
+> > mechanism used to guarantee a lease is exclusive is that the layout
+> > becomes "unbreakable" at the filesystem level, but the policy we are
+> > actually presenting to uses is "exclusive access"...
 > 
-> Can RDMA context invalidation, "device disassociate", be inflicted on
-> a process from the outside? Identifying the pid of a pin holder only
-> leaves SIGKILL of the entire process as the remediation for revoking a
-> pin, and I assume admins would use the finer grained invalidation
-> where it was available.
+> That's rather different from the normal meaning of 'exclusive' in the
+> context of locks, which is "only one user can have access to this at
+> a time".
 
-No not in the way you are describing it.  As Jason said you can hotplug the
-device which is "from the outside" but this would affect all users of that
-device.
 
-Effectively, we would need a way for an admin to close a specific file
-descriptor (or set of fds) which point to that file.  AFAIK there is no way to
-do that at all, is there?
+Layout leases are not locks, they are a user access policy object.
+It is the process/fd which holds the lease and it's the process/fd
+that is granted exclusive access.  This is exactly the same semantic
+as O_EXCL provides for granting exclusive access to a block device
+via open(), yes?
 
-Ira
+> As I understand it, this is rather more like a 'shared' or
+> 'read' lock.  The filesystem would be the one which wants an exclusive
+> lock, so it can modify the mapping of logical to physical blocks.
 
+ISTM that you're conflating internal filesystem implementation with
+application visible semantics. Yes, the filesystem uses internal
+locks to serialise the modification of the things the lease manages
+access too, but that has nothing to do with the access policy the
+lease provides to users.
+
+e.g. Process A has an exclusive layout lease on file F. It does an
+IO to file F. The filesystem IO path checks that Process A owns the
+lease on the file and so skips straight through layout breaking
+because it owns the lease and is allowed to modify the layout. It
+then takes the inode metadata locks to allocate new space and write
+new data.
+
+Process B now tries to write to file F. The FS checks whether
+Process B owns a layout lease on file F. It doesn't, so then it
+tries to break the layout lease so the IO can proceed. The layout
+breaking code sees that process A has an exclusive layout lease
+granted, and so returns -ETXTBSY to process B - it is not allowed to
+break the lease and so the IO fails with -ETXTBSY.
+
+i.e. the exclusive layout lease prevents other processes from
+performing operations that may need to modify the layout from
+performing those operations. It does not "lock" the file/inode in
+any way, it just changes how the layout lease breaking behaves.
+
+Further, the "exclusiveness" of a layout lease is completely
+irrelevant to the filesystem that is indicating that an operation
+that may need to modify the layout is about to be performed. All the
+filesystem has to do is handle failures to break the lease
+appropriately.  Yes, XFS serialises the layout lease validation
+against other IO to the same file via it's IO locks, but that's an
+internal data IO coherency requirement, not anything to do with
+layout lease management.
+
+Note that I talk about /writes/ here. This is interchangable with
+any other operation that may need to modify the extent layout of the
+file, be it truncate, fallocate, etc: the attempt to break the
+layout lease by a non-owner should fail if the lease is "exclusive"
+to the owner.
+
+> The complication being that by default the filesystem has an exclusive
+> lock on the mapping, and what we're trying to add is the ability for
+> readers to ask the filesystem to give up its exclusive lock.
+
+The filesystem doesn't even lock the "mapping" until after the
+layout lease has been validated or broken.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
