@@ -2,187 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E96AE446DB
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F2044678
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387865AbfFMQzD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 12:55:03 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:46624 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730037AbfFMCWZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jun 2019 22:22:25 -0400
-Received: by mail-pf1-f194.google.com with SMTP id 81so10769301pfy.13
-        for <linux-ext4@vger.kernel.org>; Wed, 12 Jun 2019 19:22:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=zU2n0N0/t9kv4ObudgO4R33NHBrij+YDzTMHpRNMpuQ=;
-        b=gcb6BqukwbaFIllCeQ8Ifucr7BKDQ7aGWH/ETYF8U1sKNcaGJ5cJqAcwT94TrK0ICw
-         w78vSF0RVG4HoxfRI2xQ+kAJNO3pRAgVgepXOBYbWgLnbQBRhMp1dFWN89q+UzSEPrLP
-         NNuB9E+AaKUx43SUZa6l+5qnA0GOqKLh+tPK22PQ06oTprFiezNG8rJDkXkNAbGn080q
-         d7BmHslYD2hAToJaujx53q9ztSeKIt0QbhXYsL9FS8BfApUye6i5vSt/Bey9hC13UE0c
-         sJm/BnzTUtr0yKjEQyh1HOVpSO09ECT4/csUJjrPM7SQGSTYdwpiLY+57ZC1VVo9MJHr
-         0GqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=zU2n0N0/t9kv4ObudgO4R33NHBrij+YDzTMHpRNMpuQ=;
-        b=VvQXQVKFoLNWg76M7nWD0pMeLdfYnYMLGLY6NsMj8hEd2sudotgGtp1W8Ry+beyAW/
-         RMuBJsIKQbwnKKN0KOWGV9nVXkKQASNejFNZcj9UuLGpuYtVkaPohTKrlhD7I2jVsHV+
-         Y80mr4VTX3xXEsWZW/kdlamyaS6Z4FLDk1fOG7DHU9qKP+uEGJ/mB6ww5IAlb4AlW935
-         5EXXG/h2MKCYylQ3/2F82N0YJa9KQy+bnlNy1WkL8huFBGQhbRgTjbUFal5zpl4c2UTu
-         cdq/19tT3S70HtK873PMTEZwbV/CXISg0IShIld6sfwy7JWtN8kxMiOgD+oxQg6pAcxf
-         bJNw==
-X-Gm-Message-State: APjAAAXPil0R4s8DbzTkBNd1f4YdOFVXawjS4tCtMVWCWoBepolMRjbM
-        97dBGvtj03oclHMMyNYBpbRhLg==
-X-Google-Smtp-Source: APXvYqwJNUbfP2m3hTuUAktlsM7bxrdJkWqfyNMfEu9icihy8Jeq3fVnO9uJqwC6oiOvLbPH9H5DYg==
-X-Received: by 2002:a63:52:: with SMTP id 79mr27649573pga.381.1560392543628;
-        Wed, 12 Jun 2019 19:22:23 -0700 (PDT)
-Received: from ?IPv6:2605:8d80:4a0:413d:1867:1e8:50bf:35d0? ([2605:8d80:4a0:413d:1867:1e8:50bf:35d0])
-        by smtp.gmail.com with ESMTPSA id 128sm869732pff.16.2019.06.12.19.22.21
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 12 Jun 2019 19:22:22 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <AC3B5A45-B5AB-461B-82BD-DDEB0FF6BF3A@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_19761DF3-B4FC-46ED-8855-85F052F5B1AE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: fsck doesn't seem to understand inline directories
-Date:   Wed, 12 Jun 2019 20:22:18 -0600
-In-Reply-To: <20190613015056.GA2956@mit.edu>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Li Dongyang <dongyangli@ddn.com>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Artem Blagodarenko <artem.blagodarenko@gmail.com>
-References: <ee4ad9f4-6706-136d-4cd8-dcf1b58e4229@rasmusvillemoes.dk>
- <044ADDD7-D7C0-4E27-B9E7-E576CDEDD1C4@dilger.ca>
- <20190613015056.GA2956@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+        id S2393032AbfFMQwB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 12:52:01 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:60620 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730127AbfFMDX2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jun 2019 23:23:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=QaIPZk5fG08PMipK2ZOjFgNMkP7/mE5EU+2hsa7y6lY=; b=VCF/wqwvWCkPBIrvCaL/D3G8l
+        tHqc/P5TR0jF4odv4tFa+eZycXtANJYw8npQGw1u7+6Uv8D3dPL6PSPWSss02vOD3RMl8SN9UE9tE
+        pgdev89Cvk50mX8MdLQMFzWKjT9ybPnHlvymKlhrDcAdtq9BjKibIVkW+vernB9b/39/CVM/w8KPZ
+        7eNO6yjjUerdEhluGAkQcubSLK9G/8N4d5w54XxHTAPHR/5HqmRB4lPvHLnyja2+Z1QV2Pr2MBWyz
+        OHrDRVCwX8aCx5s1LcyskUetCbhRrlq1e3Hk4+o+Gp2Qi2Fokqvsf6H+CAZFG91Ylp4HPDaT6v01i
+        r9dkL+CUQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hbGKe-0003os-RJ; Thu, 13 Jun 2019 03:23:20 +0000
+Date:   Wed, 12 Jun 2019 20:23:20 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
+        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190613032320.GG32656@bombadil.infradead.org>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
+ <20190607110426.GB12765@quack2.suse.cz>
+ <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
+ <20190608001036.GF14308@dread.disaster.area>
+ <20190612123751.GD32656@bombadil.infradead.org>
+ <20190613002555.GH14363@dread.disaster.area>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190613002555.GH14363@dread.disaster.area>
+User-Agent: Mutt/1.9.2 (2017-12-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
+> On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
+> > That's rather different from the normal meaning of 'exclusive' in the
+> > context of locks, which is "only one user can have access to this at
+> > a time".
+> 
+> Layout leases are not locks, they are a user access policy object.
+> It is the process/fd which holds the lease and it's the process/fd
+> that is granted exclusive access.  This is exactly the same semantic
+> as O_EXCL provides for granting exclusive access to a block device
+> via open(), yes?
 
---Apple-Mail=_19761DF3-B4FC-46ED-8855-85F052F5B1AE
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+This isn't my understanding of how RDMA wants this to work, so we should
+probably clear that up before we get too far down deciding what name to
+give it.
 
-On Jun 12, 2019, at 7:50 PM, Theodore Ts'o <tytso@mit.edu> wrote:
->=20
-> On Wed, Jun 12, 2019 at 02:40:18PM -0600, Andreas Dilger wrote:
->> On Jun 12, 2019, at 8:07 AM, Rasmus Villemoes =
-<linux@rasmusvillemoes.dk> wrote:
->>>=20
->>> Doing a forced check on an ext4 file system with inline_data results =
-in
->>> lots of warnings - and I think answering yes to "fixing" those would
->>> actually corrupt the fs.
->>=20
->> Rasmus,
->> This definitely seems like a bug in e2fsck.  It isn't totally =
-surprising, since
->> the inline_data feature is not widely used.  We are currently =
-investigating using
->> it for regular files, but it doesn't seem worthwhile for directories =
-to me.
->=20
-> It looks like the problem is the combination of large_dir and
-> inline_data, and it does look like the problem is in e2fsck (as
-> opposed to the kernel).
->=20
-> Large_dir is a new feature (even newer than inline_data, and it looks
-> like the support for large_dir didn't handle the combination with
-> inline_data correctly).
+For the RDMA usage case, it is entirely possible that both process A
+and process B which don't know about each other want to perform RDMA to
+file F.  So there will be two layout leases active on this file at the
+same time.  It's fine for IOs to simultaneously be active to both leases.
+But if the filesystem wants to move blocks around, it has to break
+both leases.
 
-Strange.
+If Process C tries to do a write to file F without a lease, there's no
+problem, unless a side-effect of the write would be to change the block
+mapping, in which case either the leases must break first, or the write
+must be denied.
 
-Artem, any chance you could look into this?
-
-Cheers, Andreas
-
-> # mke2fs -t ext4 -O inline_data -Fq /tmp/ext4.img 1G
-> /tmp/ext4.img contains a ext4 file system
-> 	last mounted on Wed Jun 12 21:47:25 2019
-> # mount /tmp/ext4.img /mnt ; mkdir /mnt/aa ; umount /mnt
-> # e2fsck -fn /tmp/ext4.img
-> e2fsck 1.45.2 (27-May-2019)
-> Pass 1: Checking inodes, blocks, and sizes
-> Pass 2: Checking directory structure
-> Pass 3: Checking directory connectivity
-> Pass 4: Checking reference counts
-> Pass 5: Checking group summary information
-> /tmp/ext4.img: 12/65536 files (0.0% non-contiguous), 12954/262144 =
-blocks
->=20
-> ### So everything is fine with just inline_data, but when you
-> ### enable the large_dir features, and rerun e2fsck....
->=20
-> # debugfs -w -R "features large_dir" /tmp/ext4.img
-> debugfs 1.45.2 (27-May-2019)
-> Filesystem features: has_journal ext_attr resize_inode dir_index =
-filetype extent 64bit flex_bg large_dir inline_data sparse_super =
-large_file huge_file dir_nlink extra_isize metadata_csum
-> # e2fsck -fn /tmp/ext4.img
-> e2fsck 1.45.2 (27-May-2019)
-> Pass 1: Checking inodes, blocks, and sizes
-> Pass 2: Checking directory structure
-> Pass 3: Checking directory connectivity
-> '..' in /aa (12) is <The NULL inode> (0), should be / (2).
-> Fix? no
->=20
-> Pass 4: Checking reference counts
-> Inode 2 ref count is 4, should be 3.  Fix? no
->=20
-> Inode 12 ref count is 2, should be 1.  Fix? no
->=20
-> Pass 5: Checking group summary information
->=20
-> /tmp/ext4.img: ********** WARNING: Filesystem still has errors =
-**********
->=20
-> /tmp/ext4.img: 12/65536 files (0.0% non-contiguous), 12954/262144 =
-blocks
->=20
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_19761DF3-B4FC-46ED-8855-85F052F5B1AE
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl0Bs1oACgkQcqXauRfM
-H+BX4A/9EVEfKHnLFlwA3e/26mUPXCdXCPvHi7FWVHolwOyj5DRItRhxGCYEg331
-gRx7hSsaXQNcArGmrswtRbeqQB8NS5q4gny4h1NB2PrHM+eR76tLiOwd2+JJpb7F
-svWrnJ9bV9YZDXESrxAbXCnz7Fgmp4b8Sb4De3yfayvoeCa86qmF/EweE8yWuJCt
-xUR2xQPppMsII6zuEdPu1ySx8iBU0zsk2X2Zf0zER4JyPHirEewJkXyzAEf2O2kv
-8jQDC0ZjG2URb45NwBl4KvpFVkVN8ORhgLHzAinwq8JRCbkzi8I8/q/wTd4FQaqo
-Hv0J3ZoQdL0soEUz7g1/MjJ+yVcdiQpoWjZmCRQAW+MYN2g/ZhfVRx2RoqdM+dkO
-0JMN4z4TYIGSSdvLZgS/tNM/QZJtwjn4Mp39GOVD8PpIud+0LuB/Ipd01bbw9MEL
-RynYqqkymuUMzH5zwxKhdvhiIpUr03rC9SV8pkQMnqTFSTGqdCQ4UlJOg78vr+Ti
-Zo87JyYzFsCCXWTrxNODwf65yyBLcLkT4Cm31ZhfGSR4tUrwh94+Z/nVkv+xzd+S
-+kRIJemy/GzpnJU0t2RQ1aTP9bRvTCA9OgtJnboHefYsiKNCnAlVNdXM7XXfpSg4
-tdiqgw13BUIQonTV3EJ1D20AOsJAWgZUOsrj6IL2UYaAyWerRtk=
-=3fFR
------END PGP SIGNATURE-----
-
---Apple-Mail=_19761DF3-B4FC-46ED-8855-85F052F5B1AE--
+Jason, please correct me if I've misunderstood the RDMA needs here.
