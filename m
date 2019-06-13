@@ -2,119 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A399F44459
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11DF4442B
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731528AbfFMQg1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 12:36:27 -0400
-Received: from mail-eopbgr740079.outbound.protection.outlook.com ([40.107.74.79]:17376
-        "EHLO NAM01-BN3-obe.outbound.protection.outlook.com"
+        id S1730729AbfFMQfR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 12:35:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38932 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727176AbfFMHeO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Jun 2019 03:34:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=61kvRBY7Sb/+631jV1snlv0jDD40Yfex/sO0GjRVvQc=;
- b=Xz4hcMwqUT3RdZ78k0vQg/b8Q8WQVQB3P6R/3akrwduWhm8THrzAZqjo2Y0IRioG9nxriQvjJDESN461MXAr6T/S7Gpsx7tFjBkyHN3OgKf4bgNdS2OBNYywqY12KffpVyxx4dOeOYC5QpufozxmXMISyQObT9yA6iiYvILxz50=
-Received: from MN2PR19MB3167.namprd19.prod.outlook.com (10.255.181.16) by
- MN2PR19MB2717.namprd19.prod.outlook.com (20.178.253.161) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1987.10; Thu, 13 Jun 2019 07:34:09 +0000
-Received: from MN2PR19MB3167.namprd19.prod.outlook.com
- ([fe80::dc80:b43c:bae8:93ac]) by MN2PR19MB3167.namprd19.prod.outlook.com
- ([fe80::dc80:b43c:bae8:93ac%6]) with mapi id 15.20.1987.010; Thu, 13 Jun 2019
- 07:34:09 +0000
-From:   Wang Shilong <wshilong@ddn.com>
-To:     Chao Yu <yuchao0@huawei.com>,
-        Wang Shilong <wangshilong1991@gmail.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>
-CC:     Andreas Dilger <adilger@dilger.ca>
-Subject: =?gb2312?B?u9i4tDogW1BBVENIIDIvMl0gZjJmczogb25seSBzZXQgcHJvamVjdCBpbmhl?=
- =?gb2312?Q?rit_bit_for_directory?=
-Thread-Topic: =?gb2312?B?u9i4tDogW1BBVENIIDIvMl0gZjJmczogb25seSBzZXQgcHJvamVjdCBpbmhl?=
- =?gb2312?Q?rit_bit_for_directory?=
-Thread-Index: AQHVHCDhgH+VuQHB00eQdWW5nGRidqaZLF6AgACVXgI=
-Date:   Thu, 13 Jun 2019 07:34:09 +0000
-Message-ID: <MN2PR19MB3167496236BA4D366EAF5D36D4EF0@MN2PR19MB3167.namprd19.prod.outlook.com>
-References: <1559795545-17290-1-git-send-email-wshilong1991@gmail.com>
- <1559795545-17290-2-git-send-email-wshilong1991@gmail.com>,<73fb9e88-d3f5-9420-d6d8-82ff4354e4d6@huawei.com>
-In-Reply-To: <73fb9e88-d3f5-9420-d6d8-82ff4354e4d6@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=wshilong@ddn.com; 
-x-originating-ip: [36.62.199.127]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 31fd6d66-302b-4882-fb19-08d6efd18621
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR19MB2717;
-x-ms-traffictypediagnostic: MN2PR19MB2717:
-x-microsoft-antispam-prvs: <MN2PR19MB271724AB294366F66A2208A9D4EF0@MN2PR19MB2717.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0067A8BA2A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39850400004)(396003)(366004)(346002)(376002)(136003)(189003)(199004)(316002)(14444005)(7696005)(305945005)(3846002)(99286004)(256004)(33656002)(6116002)(224303003)(53546011)(6506007)(476003)(76176011)(81156014)(74316002)(9686003)(6436002)(8936002)(110136005)(53936002)(55016002)(11346002)(446003)(486006)(81166006)(71190400001)(71200400001)(26005)(7736002)(66066001)(25786009)(4326008)(5660300002)(186003)(102836004)(64756008)(66556008)(14454004)(86362001)(2501003)(52536014)(2906002)(66446008)(76116006)(66946007)(73956011)(2201001)(68736007)(66476007)(478600001);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR19MB2717;H:MN2PR19MB3167.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: ddn.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: GaybPuLU7fxcESrnlUxJPe/UqqFEQ4GicKxdpkttb2ZAHu1Rhx8cQhUx+T6o2DFs3C/H5Mo8T/y1yD7FpVoaTCwCXPY1pxHvtwMgDxnRVVLfQ9Thn9UIkViD4z7FyhKN2iCcchzjguUOh+sJJ1vO4rj+J169AFaiCd80BZEh2TAyveGLU1G8u/XzhQRh261gCGjjOs0yNRay9u/n/I8bsyz3kTIjOwH7Nukw+1bdA9meVBGuC46/61fWxi8YZIIFL0HiOMLcSo1ilzNU2JCP0z97cp6knVTTEiw3aZDVr3/XE5FlQbPDG6yTzFMwjE6Rz2xzxEj+lcjAiIrbQyC++LbfXJo/gzdAuJ1yg904Msg9mm7BurOsJuZnFscGKSxbrWIrPSrGQI6fN191rcVwxjXwMcXbld0cMKduuj2mDdg=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1730730AbfFMHoD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 13 Jun 2019 03:44:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 920EBAB91;
+        Thu, 13 Jun 2019 07:44:00 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id B5C631E4328; Thu, 13 Jun 2019 09:43:59 +0200 (CEST)
+Date:   Thu, 13 Jun 2019 09:43:59 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Theodore Ts'o <tytso@mit.edu>,
+        Jeff Layton <jlayton@kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
+Message-ID: <20190613074359.GB26505@quack2.suse.cz>
+References: <20190606014544.8339-1-ira.weiny@intel.com>
+ <20190606104203.GF7433@quack2.suse.cz>
+ <20190606195114.GA30714@ziepe.ca>
+ <20190606222228.GB11698@iweiny-DESK2.sc.intel.com>
+ <20190607103636.GA12765@quack2.suse.cz>
+ <20190607121729.GA14802@ziepe.ca>
+ <20190607145213.GB14559@iweiny-DESK2.sc.intel.com>
+ <20190612102917.GB14578@quack2.suse.cz>
+ <CAPcyv4jSyTjC98UsWb3-FnZekV0oyboiSe9n1NYDC2TSKAqiqw@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: ddn.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 31fd6d66-302b-4882-fb19-08d6efd18621
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jun 2019 07:34:09.5202
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wshilong@ddn.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR19MB2717
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jSyTjC98UsWb3-FnZekV0oyboiSe9n1NYDC2TSKAqiqw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-SGkgQ2hhbywNCg0KIEkganVzdCBzZW50IGEgVjIsIGJ1dCBJIHRoaW5rIHdlJ2QgYmV0dGVyIGRv
-IHRoYXQgd2hlbiByZWFkaW5nIGlub2RlLCBmb3IgdHdvIHJlYXNvbnM6DQoNCjEpIG5vdCBvbmx5
-IEYyRlNfSU9DX0dFVEZMQUdTIG5lZWQgZmlsdGVyIGZsYWdzIGJ1dCBhbHNvIEYyRlNfSU9DX0ZT
-R0VUWEFUVFIgbmVlZCB0aGF0LCBzbyB0aGUgYW1lbmRlZCBwYXJ0cyBpcyBub3QgZW5vdWdoIElN
-Ty4NCg0KMikgZG9pbmcgdGhhdCBieSByZWFkaW5nIGlub2RlIGdpdmUgYSBiZW5lZml0IHRoYXQg
-d2UgY291bGQgY29ycmVjdCBvbiBkaXNrIGZsYWdzIGZvciByZWd1bGFyIGZpbGUgbmV4dCBkaXJ0
-eWluZyBpbm9kZSBoYXBwZW4uDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18NCreivP7IyzogQ2hhbyBZdSA8eXVjaGFvMEBodWF3ZWkuY29tPg0Kt6LLzcqxvOQ6IDIw
-MTnE6jbUwjEzyNUgMTQ6MzYNCsrVvP7IyzogV2FuZyBTaGlsb25nOyBsaW51eC1leHQ0QHZnZXIu
-a2VybmVsLm9yZzsgbGludXgtZjJmcy1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQNCrOty806
-IFdhbmcgU2hpbG9uZzsgQW5kcmVhcyBEaWxnZXINCtb3zOI6IFJlOiBbUEFUQ0ggMi8yXSBmMmZz
-OiBvbmx5IHNldCBwcm9qZWN0IGluaGVyaXQgYml0IGZvciBkaXJlY3RvcnkNCg0KT24gMjAxOS82
-LzYgMTI6MzIsIFdhbmcgU2hpbG9uZyB3cm90ZToNCj4gRnJvbTogV2FuZyBTaGlsb25nIDx3c2hp
-bG9uZ0BkZG4uY29tPg0KPg0KPiBJdCBkb2Vzbid0IG1ha2UgYW55IHNlbnNlIHRvIGhhdmUgcHJv
-amVjdCBpbmhlcml0IGJpdHMNCj4gZm9yIHJlZ3VsYXIgZmlsZXMsIGV2ZW4gdGhvdWdoIHRoaXMg
-d29uJ3QgY2F1c2UgYW55DQo+IHByb2JsZW0sIGJ1dCBpdCBpcyBiZXR0ZXIgZml4IHRoaXMuDQo+
-DQo+IENjOiBBbmRyZWFzIERpbGdlciA8YWRpbGdlckBkaWxnZXIuY2E+DQo+IFNpZ25lZC1vZmYt
-Ynk6IFdhbmcgU2hpbG9uZyA8d3NoaWxvbmdAZGRuLmNvbT4NCj4gLS0tDQo+ICBmcy9mMmZzL2Yy
-ZnMuaCB8IDMgKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0
-aW9uKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9mcy9mMmZzL2YyZnMuaCBiL2ZzL2YyZnMvZjJmcy5o
-DQo+IGluZGV4IDA2Yjg5YTk4NjJhYi4uZjAyZWJlY2I2OGVhIDEwMDY0NA0KPiAtLS0gYS9mcy9m
-MmZzL2YyZnMuaA0KPiArKysgYi9mcy9mMmZzL2YyZnMuaA0KPiBAQCAtMjM3MCw3ICsyMzcwLDgg
-QEAgc3RhdGljIGlubGluZSB2b2lkIGYyZnNfY2hhbmdlX2JpdCh1bnNpZ25lZCBpbnQgbnIsIGNo
-YXIgKmFkZHIpDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICBGMkZTX1BST0pJTkhFUklUX0ZM
-KQ0KPg0KPiAgLyogRmxhZ3MgdGhhdCBhcmUgYXBwcm9wcmlhdGUgZm9yIHJlZ3VsYXIgZmlsZXMg
-KGFsbCBidXQgZGlyLXNwZWNpZmljIG9uZXMpLiAqLw0KPiAtI2RlZmluZSBGMkZTX1JFR19GTE1B
-U0sgICAgICAgICAgICAgICh+KEYyRlNfRElSU1lOQ19GTCB8IEYyRlNfVE9QRElSX0ZMKSkNCj4g
-KyNkZWZpbmUgRjJGU19SRUdfRkxNQVNLICAgICAgKH4oRjJGU19ESVJTWU5DX0ZMIHwgRjJGU19U
-T1BESVJfRkwgfFwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRjJGU19QUk9K
-SU5IRVJJVF9GTCkpDQoNCkhpIFNoaWxvbmcsDQoNCkNvdWxkIHlvdSBwbGVhc2UgYWRkIGJlbG93
-IGRpZmYgYXMgZXh0NCBkaWQ/DQoNCmRpZmYgLS1naXQgYS9mcy9mMmZzL2ZpbGUuYyBiL2ZzL2Yy
-ZnMvZmlsZS5jDQppbmRleCBlZmRhZmE4ODY1MTAuLjI5NWNhNWVkNDJkOSAxMDA2NDQNCi0tLSBh
-L2ZzL2YyZnMvZmlsZS5jDQorKysgYi9mcy9mMmZzL2ZpbGUuYw0KQEAgLTE3NTksNiArMTc1OSw5
-IEBAIHN0YXRpYyBpbnQgZjJmc19pb2NfZ2V0ZmxhZ3Moc3RydWN0IGZpbGUgKmZpbHAsIHVuc2ln
-bmVkDQpsb25nIGFyZykNCg0KICAgICAgICBmc2ZsYWdzICY9IEYyRlNfR0VUVEFCTEVfRlNfRkw7
-DQoNCisgICAgICAgaWYgKFNfSVNSRUcoaW5vZGUtPmlfbW9kZSkpDQorICAgICAgICAgICAgICAg
-ZnNmbGFncyAmPSB+RlNfUFJPSklOSEVSSVRfRkw7DQorDQogICAgICAgIHJldHVybiBwdXRfdXNl
-cihmc2ZsYWdzLCAoaW50IF9fdXNlciAqKWFyZyk7DQogfQ0KDQpUaGFua3MsDQoNCj4NCj4gIC8q
-IEZsYWdzIHRoYXQgYXJlIGFwcHJvcHJpYXRlIGZvciBub24tZGlyZWN0b3JpZXMvcmVndWxhciBm
-aWxlcy4gKi8NCj4gICNkZWZpbmUgRjJGU19PVEhFUl9GTE1BU0sgICAgKEYyRlNfTk9EVU1QX0ZM
-IHwgRjJGU19OT0FUSU1FX0ZMKQ0KPg0K
+On Wed 12-06-19 11:49:52, Dan Williams wrote:
+> On Wed, Jun 12, 2019 at 3:29 AM Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Fri 07-06-19 07:52:13, Ira Weiny wrote:
+> > > On Fri, Jun 07, 2019 at 09:17:29AM -0300, Jason Gunthorpe wrote:
+> > > > On Fri, Jun 07, 2019 at 12:36:36PM +0200, Jan Kara wrote:
+> > > >
+> > > > > Because the pins would be invisible to sysadmin from that point on.
+> > > >
+> > > > It is not invisible, it just shows up in a rdma specific kernel
+> > > > interface. You have to use rdma netlink to see the kernel object
+> > > > holding this pin.
+> > > >
+> > > > If this visibility is the main sticking point I suggest just enhancing
+> > > > the existing MR reporting to include the file info for current GUP
+> > > > pins and teaching lsof to collect information from there as well so it
+> > > > is easy to use.
+> > > >
+> > > > If the ownership of the lease transfers to the MR, and we report that
+> > > > ownership to userspace in a way lsof can find, then I think all the
+> > > > concerns that have been raised are met, right?
+> > >
+> > > I was contemplating some new lsof feature yesterday.  But what I don't
+> > > think we want is sysadmins to have multiple tools for multiple
+> > > subsystems.  Or even have to teach lsof something new for every potential
+> > > new subsystem user of GUP pins.
+> >
+> > Agreed.
+> >
+> > > I was thinking more along the lines of reporting files which have GUP
+> > > pins on them directly somewhere (dare I say procfs?) and teaching lsof to
+> > > report that information.  That would cover any subsystem which does a
+> > > longterm pin.
+> >
+> > So lsof already parses /proc/<pid>/maps to learn about files held open by
+> > memory mappings. It could parse some other file as well I guess. The good
+> > thing about that would be that then "longterm pin" structure would just hold
+> > struct file reference. That would avoid any needs of special behavior on
+> > file close (the file reference in the "longterm pin" structure would make
+> > sure struct file and thus the lease stays around, we'd just need to make
+> > explicit lease unlock block until the "longterm pin" structure is freed).
+> > The bad thing is that it requires us to come up with a sane new proc
+> > interface for reporting "longterm pins" and associated struct file. Also we
+> > need to define what this interface shows if the pinned pages are in DRAM
+> > (either page cache or anon) and not on NVDIMM.
+> 
+> The anon vs shared detection case is important because a longterm pin
+> might be blocking a memory-hot-unplug operation if it is pinning
+> ZONE_MOVABLE memory, but I don't think we want DRAM vs NVDIMM to be an
+> explicit concern of the interface. For the anon / cached case I expect
+> it might be useful to put that communication under the memory-blocks
+> sysfs interface. I.e. a list of pids that are pinning that
+> memory-block from being hot-unplugged.
+
+Yes, I was thinking of memory hotplug as well. But I don't think the
+distinction is really shared vs anon - a pinned page cache page can be
+blocking your memory unplug / migration the same way as a pinned anon page.
+So the information for a pin we need to convey is the "location of
+resources" being pinned - that is pfn (both for DRAM and NVDIMM) - but then
+also additional mapping information (which is filename for DAX page, not
+sure about DRAM). Also a separate question is how to expose this
+information so that it is efficiently usable by userspace. For lsof, a file
+in /proc/<pid>/xxx with information would be probably the easiest to use
+plus all the issues with file access permissions and visibility among
+different user namespaces is solved out of the box. And I believe it would
+be reasonably usable for memory hotplug usecase as well. A file in sysfs
+would be OK for memory hotplug I guess, but not really usable for lsof and
+so I'm not sure we really need it when we are going to have one in procfs.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
