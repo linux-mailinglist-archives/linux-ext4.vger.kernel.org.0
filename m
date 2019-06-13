@@ -2,89 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F2044678
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D714465A
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2019 18:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393032AbfFMQwB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 12:52:01 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:60620 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730127AbfFMDX2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Jun 2019 23:23:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=QaIPZk5fG08PMipK2ZOjFgNMkP7/mE5EU+2hsa7y6lY=; b=VCF/wqwvWCkPBIrvCaL/D3G8l
-        tHqc/P5TR0jF4odv4tFa+eZycXtANJYw8npQGw1u7+6Uv8D3dPL6PSPWSss02vOD3RMl8SN9UE9tE
-        pgdev89Cvk50mX8MdLQMFzWKjT9ybPnHlvymKlhrDcAdtq9BjKibIVkW+vernB9b/39/CVM/w8KPZ
-        7eNO6yjjUerdEhluGAkQcubSLK9G/8N4d5w54XxHTAPHR/5HqmRB4lPvHLnyja2+Z1QV2Pr2MBWyz
-        OHrDRVCwX8aCx5s1LcyskUetCbhRrlq1e3Hk4+o+Gp2Qi2Fokqvsf6H+CAZFG91Ylp4HPDaT6v01i
-        r9dkL+CUQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hbGKe-0003os-RJ; Thu, 13 Jun 2019 03:23:20 +0000
-Date:   Wed, 12 Jun 2019 20:23:20 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190613032320.GG32656@bombadil.infradead.org>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
- <20190608001036.GF14308@dread.disaster.area>
- <20190612123751.GD32656@bombadil.infradead.org>
- <20190613002555.GH14363@dread.disaster.area>
+        id S1730175AbfFMQu6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 12:50:58 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:56558 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730157AbfFMDmZ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 12 Jun 2019 23:42:25 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 92B14B0ABB;
+        Thu, 13 Jun 2019 03:42:24 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6CCCD5DA34;
+        Thu, 13 Jun 2019 03:42:24 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 300A31806B16;
+        Thu, 13 Jun 2019 03:42:19 +0000 (UTC)
+Date:   Wed, 12 Jun 2019 23:42:18 -0400 (EDT)
+From:   Pankaj Gupta <pagupta@redhat.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     rdunlap@infradead.org, jack@suse.cz, kvm@vger.kernel.org,
+        mst@redhat.com, jasowang@redhat.com, david@fromorbit.com,
+        qemu-devel@nongnu.org, virtualization@lists.linux-foundation.org,
+        dm-devel@redhat.com, adilger kernel <adilger.kernel@dilger.ca>,
+        zwisler@kernel.org, aarcange@redhat.com,
+        dave jiang <dave.jiang@intel.com>, jstaron@google.com,
+        linux-nvdimm@lists.01.org,
+        vishal l verma <vishal.l.verma@intel.com>, david@redhat.com,
+        willy@infradead.org, hch@infradead.org, linux-acpi@vger.kernel.org,
+        jmoyer@redhat.com, linux-ext4@vger.kernel.org, lenb@kernel.org,
+        kilobyte@angband.pl, riel@surriel.com,
+        yuval shaia <yuval.shaia@oracle.com>, stefanha@redhat.com,
+        pbonzini@redhat.com, dan j williams <dan.j.williams@intel.com>,
+        lcapitulino@redhat.com, kwolf@redhat.com, nilal@redhat.com,
+        tytso@mit.edu, xiaoguangrong eric <xiaoguangrong.eric@gmail.com>,
+        snitzer@redhat.com, darrick wong <darrick.wong@oracle.com>,
+        rjw@rjwysocki.net, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        imammedo@redhat.com
+Message-ID: <165204827.34945594.1560397338620.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20190612162012.06b4af7f.cohuck@redhat.com>
+References: <20190612124527.3763-1-pagupta@redhat.com> <20190612124527.3763-3-pagupta@redhat.com> <20190612162012.06b4af7f.cohuck@redhat.com>
+Subject: Re: [Qemu-devel] [PATCH v13 2/7] virtio-pmem: Add virtio pmem
+ driver
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190613002555.GH14363@dread.disaster.area>
-User-Agent: Mutt/1.9.2 (2017-12-15)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.116.133, 10.4.195.21]
+Thread-Topic: virtio-pmem: Add virtio pmem driver
+Thread-Index: fhRQKNWPndesm/uRD8iV/XnY9gJKfQ==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.38]); Thu, 13 Jun 2019 03:42:24 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 10:25:55AM +1000, Dave Chinner wrote:
-> On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
-> > That's rather different from the normal meaning of 'exclusive' in the
-> > context of locks, which is "only one user can have access to this at
-> > a time".
+
 > 
-> Layout leases are not locks, they are a user access policy object.
-> It is the process/fd which holds the lease and it's the process/fd
-> that is granted exclusive access.  This is exactly the same semantic
-> as O_EXCL provides for granting exclusive access to a block device
-> via open(), yes?
+> > This patch adds virtio-pmem driver for KVM guest.
+> > 
+> > Guest reads the persistent memory range information from
+> > Qemu over VIRTIO and registers it on nvdimm_bus. It also
+> > creates a nd_region object with the persistent memory
+> > range information so that existing 'nvdimm/pmem' driver
+> > can reserve this into system memory map. This way
+> > 'virtio-pmem' driver uses existing functionality of pmem
+> > driver to register persistent memory compatible for DAX
+> > capable filesystems.
+> > 
+> > This also provides function to perform guest flush over
+> > VIRTIO from 'pmem' driver when userspace performs flush
+> > on DAX memory range.
+> > 
+> > Signed-off-by: Pankaj Gupta <pagupta@redhat.com>
+> > Reviewed-by: Yuval Shaia <yuval.shaia@oracle.com>
+> > Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> > Acked-by: Jakub Staron <jstaron@google.com>
+> > Tested-by: Jakub Staron <jstaron@google.com>
+> > ---
+> >  drivers/nvdimm/Makefile          |   1 +
+> >  drivers/nvdimm/nd_virtio.c       | 125 +++++++++++++++++++++++++++++++
+> >  drivers/nvdimm/virtio_pmem.c     | 122 ++++++++++++++++++++++++++++++
+> >  drivers/nvdimm/virtio_pmem.h     |  55 ++++++++++++++
+> >  drivers/virtio/Kconfig           |  11 +++
+> >  include/uapi/linux/virtio_ids.h  |   1 +
+> >  include/uapi/linux/virtio_pmem.h |  35 +++++++++
+> >  7 files changed, 350 insertions(+)
+> >  create mode 100644 drivers/nvdimm/nd_virtio.c
+> >  create mode 100644 drivers/nvdimm/virtio_pmem.c
+> >  create mode 100644 drivers/nvdimm/virtio_pmem.h
+> >  create mode 100644 include/uapi/linux/virtio_pmem.h
+> 
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
-This isn't my understanding of how RDMA wants this to work, so we should
-probably clear that up before we get too far down deciding what name to
-give it.
+Thank you Cornelia for the review.
 
-For the RDMA usage case, it is entirely possible that both process A
-and process B which don't know about each other want to perform RDMA to
-file F.  So there will be two layout leases active on this file at the
-same time.  It's fine for IOs to simultaneously be active to both leases.
-But if the filesystem wants to move blocks around, it has to break
-both leases.
-
-If Process C tries to do a write to file F without a lease, there's no
-problem, unless a side-effect of the write would be to change the block
-mapping, in which case either the leases must break first, or the write
-must be denied.
-
-Jason, please correct me if I've misunderstood the RDMA needs here.
+Best regards,
+Pankaj
+> 
+> 
