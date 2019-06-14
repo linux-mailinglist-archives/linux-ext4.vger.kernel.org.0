@@ -2,256 +2,297 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 147404531F
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Jun 2019 05:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0093E45BA7
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Jun 2019 13:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbfFNDws (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 23:52:48 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:35560 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725789AbfFNDwr (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Jun 2019 23:52:47 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 25BBB3082E4D;
-        Fri, 14 Jun 2019 03:52:47 +0000 (UTC)
-Received: from localhost (dhcp-12-102.nay.redhat.com [10.66.12.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6ADE019C67;
-        Fri, 14 Jun 2019 03:52:45 +0000 (UTC)
-Date:   Fri, 14 Jun 2019 11:57:54 +0800
-From:   Zorro Lang <zlang@redhat.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [PATCH] generic: test statfs on project quota directory
-Message-ID: <20190614035754.GC30864@dhcp-12-102.nay.redhat.com>
-References: <20190513014951.4357-1-zlang@redhat.com>
- <01F47CA1-E737-4F52-8FF2-A3E0DCD8EB1B@dilger.ca>
- <20190612073213.GA30864@dhcp-12-102.nay.redhat.com>
- <20190612150507.GB3773859@magnolia>
+        id S1727389AbfFNLqA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 14 Jun 2019 07:46:00 -0400
+Received: from mail-eopbgr730068.outbound.protection.outlook.com ([40.107.73.68]:33120
+        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727164AbfFNLp7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 14 Jun 2019 07:45:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PlqwACHmrnJmflKHGNOGSJQbEjMXXUJz3ttmS/1NKVw=;
+ b=qpuiTPxaapsstRe8+pRTLXCaAFE0Ywf44goVAIVM4LjL3KHPzvxM7xS3FoFMpnEAvI0hMATqRJ5HqzCZgvHm8HynJwsRuI8nDkLtcALz1MgaEsg4wf2n0RXdBqQ3t+rTTu2/XCX29ZLa44m8Ia/iARfk0alKP0LictzuE4VJb3c=
+Received: from MN2PR19MB2592.namprd19.prod.outlook.com (20.179.82.160) by
+ MN2PR19MB2573.namprd19.prod.outlook.com (20.179.80.84) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1965.15; Fri, 14 Jun 2019 11:45:55 +0000
+Received: from MN2PR19MB2592.namprd19.prod.outlook.com
+ ([fe80::f19e:764d:aba7:c6c]) by MN2PR19MB2592.namprd19.prod.outlook.com
+ ([fe80::f19e:764d:aba7:c6c%5]) with mapi id 15.20.1987.013; Fri, 14 Jun 2019
+ 11:45:55 +0000
+From:   Dongyang Li <dongyangli@ddn.com>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+CC:     "adilger@dilger.ca" <adilger@dilger.ca>
+Subject: [PATCH] e2fsck: allow deleting or zeroing shared blocks
+Thread-Topic: [PATCH] e2fsck: allow deleting or zeroing shared blocks
+Thread-Index: AQHVIqa5WgjG1URFrEmS3agW9WZdAA==
+Date:   Fri, 14 Jun 2019 11:45:54 +0000
+Message-ID: <20190614114530.5663-1-dongyangli@ddn.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: SYBPR01CA0113.ausprd01.prod.outlook.com
+ (2603:10c6:10:1::29) To MN2PR19MB2592.namprd19.prod.outlook.com
+ (2603:10b6:208:102::32)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=dongyangli@ddn.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.22.0
+x-originating-ip: [220.233.199.190]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b2f5e452-b0a9-4a65-c281-08d6f0bddba0
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR19MB2573;
+x-ms-traffictypediagnostic: MN2PR19MB2573:
+x-microsoft-antispam-prvs: <MN2PR19MB25735F8676F5CFBEE30A06F7CDEE0@MN2PR19MB2573.namprd19.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2803;
+x-forefront-prvs: 0068C7E410
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(346002)(136003)(396003)(376002)(39850400004)(199004)(189003)(4326008)(86362001)(52116002)(5660300002)(71200400001)(186003)(2906002)(476003)(14454004)(99286004)(316002)(2616005)(36756003)(26005)(5640700003)(486006)(6506007)(3846002)(2501003)(386003)(71190400001)(66446008)(53936002)(6512007)(6436002)(6116002)(6486002)(102836004)(305945005)(50226002)(478600001)(1076003)(66066001)(7736002)(64756008)(6916009)(14444005)(68736007)(81166006)(256004)(66476007)(66946007)(81156014)(30864003)(25786009)(73956011)(66556008)(2351001)(8936002)(8676002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR19MB2573;H:MN2PR19MB2592.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: ddn.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: JtMADAYkCLmTW2Be7hzu5bqj8bm9TwciO/mBmLk24fLKUFgGfQYlOUTnagTLVAzaFtc/W982oZfrYYmpmM+wCM0ucjiCsuAMvdzws1JkGTMtG7J8zYsED1CmijBwKo8xlR51IN9uZcqDRznp2f1+174EM4oX34Iy3iherAFw9snpIGx/dAbwIMRAZ2tmT+ifLagO1MTV1I7Yf+A3uit4KjyhOhVIUhHoawD69Rn2BQhGxSKF5FyhQr0ucY1XIlEz7IVL9Adb85rv/2hniqmooolmZPbMqt+Po4H8YV86ix3Lr3UCsik5rr3QmaA5d0k7Izv2Fv/VKZuSzjdClr5bCwCt2PfwWy1fbcgy3bOiRUJrZBrcsNQv8dAgPIcsSz/WBTgRWU3oNc9BjM543ycHBSOSoSuXCVIy9Ev5PFlN+YU=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190612150507.GB3773859@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Fri, 14 Jun 2019 03:52:47 +0000 (UTC)
+X-OriginatorOrg: ddn.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2f5e452-b0a9-4a65-c281-08d6f0bddba0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2019 11:45:54.9201
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dli@ddn.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR19MB2573
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 08:05:07AM -0700, Darrick J. Wong wrote:
-> On Wed, Jun 12, 2019 at 03:32:13PM +0800, Zorro Lang wrote:
-> > On Tue, May 14, 2019 at 09:28:38AM -0600, Andreas Dilger wrote:
-> > > On May 12, 2019, at 7:49 PM, Zorro Lang <zlang@redhat.com> wrote:
-> > > > 
-> > > > There's a bug on xfs cause statfs get negative f_ffree value from
-> > > > a project quota directory. It's fixed by "de7243057 fs/xfs: fix
-> > > > f_ffree value for statfs when project quota is set". So add statfs
-> > > > testing on project quota block and inode count limit.
-> > > > 
-> > > > For testing foreign fs quota, change _qmount() function, turn on
-> > > > project if quotaon support.
-> > > > 
-> > > > Signed-off-by: Zorro Lang <zlang@redhat.com>
-> > > > ---
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > (Long time passed, re-send this patch again to get reviewing)
-> > > > 
-> > > > There's one thing I don't understand, so CC ext4 mail list. Please
-> > > > feel free to reply, if anyone knows that:
-> > > > 
-> > > > $ mkfs.ext4 $SCRATCH_DEV
-> > > > $ tune2fs -O quota,project $SCRATCH_DEV
-> > > > $ mount $SCRATCH_DEV $SCRATCH_MNT -o prjquota
-> > > > $ quotaon -P $SCRATCH_MNT
-> > > > $ mkdir $SCRATCH_MNT/t
-> > > > $ xfs_quota -f -x -c "project -p $SCRATCH_MNT/t -s 42" $SCRATCH_MNT
-> > > > $ xfs_quota -f -x -c "limit -p bsoft=100m answer" $SCRATCH_MNT
-> > > > $ df -k $SCRATCH_MNT/t
-> > > > Filesystem    1K-blocks  Used Available Use% Mounted on
-> > > > SCRATCH_DEV    102400     4    102396   1% SCRATCH_MNT
-> > > > 
-> > > > On XFS, the 'Used' field always shows '0'. But why ext4 always has
-> > > > more 4k? Is it a bug or expected.
-> > > 
-> > > Each directory in ext4 consumes a 4KB block, so setting the project
-> > > quota on a directory always consumes at least one block.
-> > 
-> > Ping fstests@vger.kernel.org.
-> > 
-> > One month passed. Is there anything else block this patch merge?
-> 
-> If this is a regression test for an xfs bug, why isn't this in
-> tests/xfs/ ?  Especially because ext4 has different behaviors that clash
-> with the golden output -- what happens if you run this with inline data
-> enabled?
-
-Hi Darrick,
-
-Yes, it's a regression test for xfs bug:
-de7243057e7c fs/xfs: fix f_ffree value for statfs when project quota is set
-
-It's not a xfs only case, due to I thought the test steps are common. If I
-change it to a generic case, it can cover more. Do you think I should change
-it back to XFS only case?
-
-Thanks,
-Zorro
-
-> 
-> --D
-> 
-> > Thanks,
-> > Zorro
-> > 
-> > > 
-> > > Cheers, Andreas
-> > > 
-> > > > common/quota          |  4 +++
-> > > > tests/generic/999     | 74 +++++++++++++++++++++++++++++++++++++++++++
-> > > > tests/generic/999.out |  3 ++
-> > > > tests/generic/group   |  1 +
-> > > > 4 files changed, 82 insertions(+)
-> > > > create mode 100755 tests/generic/999
-> > > > create mode 100644 tests/generic/999.out
-> > > > 
-> > > > diff --git a/common/quota b/common/quota
-> > > > index f19f81a1..315df8cb 100644
-> > > > --- a/common/quota
-> > > > +++ b/common/quota
-> > > > @@ -200,6 +200,10 @@ _qmount()
-> > > >    if [ "$FSTYP" != "xfs" ]; then
-> > > >        quotacheck -ug $SCRATCH_MNT >>$seqres.full 2>&1
-> > > >        quotaon -ug $SCRATCH_MNT >>$seqres.full 2>&1
-> > > > +	# try to turn on project quota if it's supported
-> > > > +	if quotaon --help 2>&1 | grep -q '\-\-project'; then
-> > > > +		quotaon --project $SCRATCH_MNT >>$seqres.full 2>&1
-> > > > +	fi
-> > > >    fi
-> > > >    chmod ugo+rwx $SCRATCH_MNT
-> > > > }
-> > > > diff --git a/tests/generic/999 b/tests/generic/999
-> > > > new file mode 100755
-> > > > index 00000000..555341f1
-> > > > --- /dev/null
-> > > > +++ b/tests/generic/999
-> > > > @@ -0,0 +1,74 @@
-> > > > +#! /bin/bash
-> > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > +# Copyright (c) 2019 Red Hat, Inc.  All Rights Reserved.
-> > > > +#
-> > > > +# FS QA Test No. 999
-> > > > +#
-> > > > +# Test statfs when project quota is set.
-> > > > +# Uncover de7243057 fs/xfs: fix f_ffree value for statfs when project quota is set
-> > > > +#
-> > > > +seq=`basename $0`
-> > > > +seqres=$RESULT_DIR/$seq
-> > > > +echo "QA output created by $seq"
-> > > > +
-> > > > +here=`pwd`
-> > > > +tmp=/tmp/$$
-> > > > +status=1	# failure is the default!
-> > > > +trap "_cleanup; exit \$status" 0 1 2 3 15
-> > > > +
-> > > > +_cleanup()
-> > > > +{
-> > > > +	cd /
-> > > > +	_scratch_unmount
-> > > > +	rm -f $tmp.*
-> > > > +}
-> > > > +
-> > > > +# get standard environment, filters and checks
-> > > > +. ./common/rc
-> > > > +. ./common/filter
-> > > > +. ./common/quota
-> > > > +
-> > > > +# remove previous $seqres.full before test
-> > > > +rm -f $seqres.full
-> > > > +
-> > > > +# real QA test starts here
-> > > > +_supported_fs generic
-> > > > +_supported_os Linux
-> > > > +_require_scratch
-> > > > +_require_quota
-> > > > +_require_xfs_quota_foreign
-> > > > +
-> > > > +_scratch_mkfs >/dev/null 2>&1
-> > > > +_scratch_enable_pquota
-> > > > +_qmount_option "prjquota"
-> > > > +_qmount
-> > > > +_require_prjquota $SCRATCH_DEV
-> > > > +
-> > > > +# Create a directory to be project object, and create a file to take 64k space
-> > > > +mkdir $SCRATCH_MNT/t
-> > > > +$XFS_IO_PROG -f -c "pwrite 0 65536" -c sync $SCRATCH_MNT/t/file >>$seqres.full
-> > > > +
-> > > > +# Setup temporary replacements for /etc/projects and /etc/projid
-> > > > +cat >$tmp.projects <<EOF
-> > > > +42:$SCRATCH_MNT/t
-> > > > +EOF
-> > > > +
-> > > > +cat >$tmp.projid <<EOF
-> > > > +answer:42
-> > > > +EOF
-> > > > +
-> > > > +quota_cmd="$XFS_QUOTA_PROG -D $tmp.projects -P $tmp.projid"
-> > > > +$quota_cmd -x -c 'project -s answer' $SCRATCH_MNT >/dev/null 2>&1
-> > > > +$quota_cmd -x -c 'limit -p isoft=53 bsoft=100m answer' $SCRATCH_MNT
-> > > > +
-> > > > +# The itotal and size should be 53 and 102400(k), as above project quota limit.
-> > > > +# The isued and used should be 2 and 64(k), as this case takes. But ext4 always
-> > > > +# shows more 4k 'used' space than XFS, it prints 68k at here. So filter the
-> > > > +# 6[48] at the end.
-> > > > +df -k --output=file,itotal,iused,size,used $SCRATCH_MNT/t | \
-> > > > +	_filter_scratch | _filter_spaces | \
-> > > > +	sed -e "/SCRATCH_MNT/s/6[48]/N/"
-> > > > +
-> > > > +# success, all done
-> > > > +status=0
-> > > > +exit
-> > > > diff --git a/tests/generic/999.out b/tests/generic/999.out
-> > > > new file mode 100644
-> > > > index 00000000..1bebabd4
-> > > > --- /dev/null
-> > > > +++ b/tests/generic/999.out
-> > > > @@ -0,0 +1,3 @@
-> > > > +QA output created by 999
-> > > > +File Inodes IUsed 1K-blocks Used
-> > > > +SCRATCH_MNT/t 53 2 102400 N
-> > > > diff --git a/tests/generic/group b/tests/generic/group
-> > > > index 9f4845c6..35da10a5 100644
-> > > > --- a/tests/generic/group
-> > > > +++ b/tests/generic/group
-> > > > @@ -542,3 +542,4 @@
-> > > > 537 auto quick trim
-> > > > 538 auto quick aio
-> > > > 539 auto quick punch seek
-> > > > +999 auto quick quota
-> > > > --
-> > > > 2.17.2
-> > > > 
-> > > 
-> > > 
-> > > Cheers, Andreas
-> > > 
-> > > 
-> > > 
-> > > 
-> > > 
-> > > 
-> > > 
-> > > 
-> > > Cheers, Andreas
-> > > 
-> > > 
-> > > 
-> > > 
-> > > 
-> > 
-> > 
+RnJvbTogSmltIEdhcmxpY2sgPGdhcmxpY2tAbGxubC5nb3Y+DQoNCkUyZnNjayBmaXhlcyBmaWxl
+cyB0aGF0IGFyZSBmb3VuZCB0byBiZSBzaGFyaW5nIGJsb2NrcyBieSBjbG9uaW5nDQp0aGUgc2hh
+cmVkIGJsb2NrcyBhbmQgZ2l2aW5nIGVhY2ggZmlsZSBhIHByaXZhdGUgY29weSBpbiBwYXNzIDFE
+Lg0KDQpBbGxvd2luZyBhbGwgZmlsZXMgY2xhaW1pbmcgdGhlIHNoYXJlZCBibG9ja3MgdG8gaGF2
+ZSBjb3BpZXMgY2FuDQppbmFkdmVydGFudGx5IGJ5cGFzcyBhY2Nlc3MgcmVzdHJpY3Rpb25zLiAg
+RGVsZXRpbmcgYWxsIHRoZSBmaWxlcywNCnplcm9pbmcgdGhlIGNsb25lZCBibG9ja3MsIG9yIHBs
+YWNpbmcgdGhlIGZpbGVzIGluIHRoZSAvbG9zdCtmb3VuZA0KZGlyZWN0b3J5IGFmdGVyIGNsb25p
+bmcgbWF5IGJlIHByZWZlcmFibGUgaW4gc29tZSBzZWN1cmUgZW52aXJvbm1lbnRzLg0KDQpUaGUg
+Zm9sbG93aW5nIHBhdGNoZXMgaW1wbGVtZW50IGNvbmZpZyBmaWxlIGFuZCBjb21tYW5kIGxpbmUg
+b3B0aW9ucw0KaW4gZTJmc2NrIHRoYXQgYWxsb3cgcGFzcyAxRCBiZWhhdmlvciB0byBiZSB0dW5l
+ZCBhY2NvcmRpbmcgdG8gc2l0ZQ0KcG9saWN5LiAgSXQgYWRkcyB0d28gZXh0ZW5kZWQgb3B0aW9u
+cyBhbmQgY29uZmlnIGZpbGUgY291bnRlcnBhcnRzLg0KT24gdGhlIGNvbW1hbmQgbGluZToNCg0K
+IC1FIGNsb25lPWR1cHx6ZXJvDQoNCiAgICBTZWxlY3QgdGhlIGJsb2NrIGNsb25pbmcgbWV0aG9k
+LiAgImR1cCIgaXMgb2xkIGJlaGF2aW9yLA0KICAgIGFuZCBpcyB0aGUgZGVmYXVsdC4gICJ6ZXJv
+IiBpcyBhIG5ldyBtZXRob2QgdGhhdCBzdWJzdGl0dXRlcw0KICAgIHplcm8tZmlsbGVkIGJsb2Nr
+cyBmb3IgdGhlIHNoYXJlZCBibG9ja3MgaW4gYWxsIHRoZSBmaWxlcw0KICAgIHRoYXQgY2xhaW0g
+dGhlbS4NCg0KIC1FIHNoYXJlZD1wcmVzZXJ2ZXxsb3N0K2ZvdW5kfGRlbGV0ZQ0KDQogICAgU2Vs
+ZWN0IHRoZSBkaXNwb3NpdGlvbiBvZiBmaWxlcyBjb250YWluaW5nIHNoYXJlZCBibG9ja3MuDQog
+ICAgInByZXNlcnZlIiBpcyB0aGUgb2xkIGJlaGF2aW9yIHdoaWNoIHJlbWFpbnMgdGhlIGRlZmF1
+bHQuDQogICAgImxvc3QrZm91bmQiIGNhdXNlcyBmaWxlcyB0byBiZSB1bmxpbmtlZCBhZnRlciBj
+bG9uaW5nIHNvDQogICAgdGhleSB3aWxsIGJlIHJlY29ubmVjdGVkIHRvIC9sb3N0K2ZvdW5kIGlu
+IHBhc3MgMy4NCiAgICAiZGVsZXRlIiBza2lwcyBjbG9uaW5nIGVudGlyZWx5IGFuZCBzaW1wbHkg
+ZGVsZXRlcyB0aGUgZmlsZXMuDQoNCkluIHRoZSBjb25maWcgZmlsZToNCiAgW29wdGlvbnNdDQog
+ICAgICBjbG9uZT1kdXB8emVybw0KICAgICAgc2hhcmVkPXByZXNlcnZlfGxvc3QrZm91bmR8ZGVs
+ZXRlDQoNCkNoYW5nZS1JZDogSTFkMGZlNmY0NzZlNTAyNTdlNWMzNGU0NmYxYTFjZGNkNDI2NTE2
+ZWMNClNpZ25lZC1vZmYtYnk6IEppbSBHYXJsaWNrIDxnYXJsaWNrQGxsbmwuZ292Pg0KU2lnbmVk
+LW9mZi1ieTogQW5kcmVhcyBEaWxnZXIgPGFuZHJlYXMuZGlsZ2VyQGludGVsLmNvbT4NClNpZ25l
+ZC1vZmYtYnk6IExpIERvbmd5YW5nIDxkb25neWFuZ2xpQGRkbi5jb20+DQotLS0NCiBlMmZzY2sv
+ZTJmc2NrLjguaW4gICAgICB8IDE1ICsrKysrKysNCiBlMmZzY2svZTJmc2NrLmNvbmYuNS5pbiB8
+IDEzICsrKysrKysNCiBlMmZzY2svZTJmc2NrLmggICAgICAgICB8IDEzICsrKysrKysNCiBlMmZz
+Y2svcGFzczFiLmMgICAgICAgICB8IDQ4ICsrKysrKysrKysrKysrKysrKy0tLS0tDQogZTJmc2Nr
+L3Byb2JsZW0uYyAgICAgICAgfCAgOCArKysrDQogZTJmc2NrL3Byb2JsZW0uaCAgICAgICAgfCAg
+NyArKysrDQogZTJmc2NrL3VuaXguYyAgICAgICAgICAgfCA4NiArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKw0KIDcgZmlsZXMgY2hhbmdlZCwgMTgxIGluc2VydGlvbnMo
+KyksIDkgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9lMmZzY2svZTJmc2NrLjguaW4gYi9l
+MmZzY2svZTJmc2NrLjguaW4NCmluZGV4IDRlMzg5MGIyLi43YThlOTYxYyAxMDA2NDQNCi0tLSBh
+L2UyZnNjay9lMmZzY2suOC5pbg0KKysrIGIvZTJmc2NrL2UyZnNjay44LmluDQpAQCAtMTk4LDYg
+KzE5OCwyMSBAQCBzZXBhcmF0ZWQsIGFuZCBtYXkgdGFrZSBhbiBhcmd1bWVudCB1c2luZyB0aGUg
+ZXF1YWxzICgnPScpIHNpZ24uICBUaGUNCiBmb2xsb3dpbmcgb3B0aW9ucyBhcmUgc3VwcG9ydGVk
+Og0KIC5SUyAxLjJpDQogLlRQDQorLkJJIGNsb25lPSBkdXB8emVybw0KK1Jlc29sdmUgZmlsZXMg
+d2l0aCBzaGFyZWQgYmxvY2tzIGluIHBhc3MgMUQgYnkgZ2l2aW5nIGVhY2ggZmlsZSBhIHByaXZh
+dGUNCitjb3B5IG9mIHRoZSBibG9ja3MgKGR1cCk7DQorb3IgcmVwbGFjaW5nIHRoZSBzaGFyZWQg
+YmxvY2tzIHdpdGggcHJpdmF0ZSwgemVyby1maWxsZWQgYmxvY2tzICh6ZXJvKS4NCitUaGUgZGVm
+YXVsdCBpcyBkdXAuIHplcm8gb3B0aW9uIGlzIGluY29tcGF0aWJsZSB3aXRoIC1FIHVuc2hhcmVf
+YmxvY2tzDQorb3B0aW9uLg0KKy5UUA0KKy5CSSBzaGFyZWQ9IHByZXNlcnZlfGxvc3QrZm91bmR8
+ZGVsZXRlDQorRmlsZXMgd2l0aCBzaGFyZWQgYmxvY2tzIGRpc2NvdmVyZWQgaW4gcGFzcyAxRCBh
+cmUgY2xvbmVkIGFuZCB0aGVuIGxlZnQNCitpbiBwbGFjZSAocHJlc2VydmUpOw0KK2Nsb25lZCBh
+bmQgdGhlbiBkaXNjb25uZWN0ZWQgZnJvbSB0aGVpciBwYXJlbnQgZGlyZWN0b3J5LA0KK3RoZW4g
+cmVjb25uZWN0ZWQgdG8gL2xvc3QrZm91bmQgaW4gcGFzcyAzIChsb3N0K2ZvdW5kKTsNCitvciBz
+aW1wbHkgZGVsZXRlZCAoZGVsZXRlKS4gIFRoZSBkZWZhdWx0IGlzIHByZXNlcnZlLg0KK2xvc3Qr
+Zm91bmQgYW5kIGRlbGV0ZSBhcmUgaW5jb21wYXRpYmxlIHdpdGggLUUgdW5zaGFyZV9ibG9ja3Mg
+b3B0aW9uLg0KKy5UUA0KIC5CSSBlYV92ZXI9IGV4dGVuZGVkX2F0dHJpYnV0ZV92ZXJzaW9uDQog
+U2V0IHRoZSB2ZXJzaW9uIG9mIHRoZSBleHRlbmRlZCBhdHRyaWJ1dGUgYmxvY2tzIHdoaWNoDQog
+LkIgZTJmc2NrDQpkaWZmIC0tZ2l0IGEvZTJmc2NrL2UyZnNjay5jb25mLjUuaW4gYi9lMmZzY2sv
+ZTJmc2NrLmNvbmYuNS5pbg0KaW5kZXggNDhhZDBmZGUuLjkwZGRiYTE1IDEwMDY0NA0KLS0tIGEv
+ZTJmc2NrL2UyZnNjay5jb25mLjUuaW4NCisrKyBiL2UyZnNjay9lMmZzY2suY29uZi41LmluDQpA
+QCAtMTQ3LDYgKzE0NywxOSBAQCB3aWxsIG9mZmVyIHRvIGNsZWFyDQogdGhlIHRlc3RfZnMgZmxh
+ZyBpZiB0aGUgZXh0NCBmaWxlc3lzdGVtIGlzIGF2YWlsYWJsZSBvbiB0aGUgc3lzdGVtLiAgSXQN
+CiBkZWZhdWx0cyB0byB0cnVlLg0KIC5UUA0KKy5JIGNsb25lDQorVGhpcyBzdHJpbmcgcmVsYXRp
+b24gY29udHJvbHMgdGhlIGRlZmF1bHQgaGFuZGxpbmcgb2Ygc2hhcmVkIGJsb2NrcyBpbiBwYXNz
+IDFELg0KK0l0IGNhbiBiZSBzZXQgdG8gZHVwIG9yIHplcm8uICBTZWUgdGhlDQorLkkgIi1FIGNs
+b25lIg0KK29wdGlvbiBkZXNjcmlwdGlvbiBpbiBlMmZzY2soOCkuDQorLlRQDQorLkkgc2hhcmVk
+DQorVGhpcyBzdHJpbmcgcmVsYXRpb24gY29udHJvbHMgdGhlIGRlZmF1bHQgZGlzcG9zaXRpb24g
+b2YgZmlsZXMgZGlzY292ZXJlZCB0bw0KK2hhdmUgc2hhcmVkIGJsb2NrcyBpbiBwYXNzIDFELiAg
+SXQgY2FuIGJlIHNldCB0byBwcmVzZXJ2ZSwgbG9zdCtmb3VuZCwNCitvciBkZWxldGUuICBTZWUg
+dGhlDQorLkkgIi1FIHNoYXJlZCINCitvcHRpb24gZGVzY3JpcHRpb24gaW4gZTJmc2NrKDgpLg0K
+Ky5UUA0KIC5JIGRlZmVyX2NoZWNrX29uX2JhdHRlcnkNCiBUaGlzIGJvb2xlYW4gcmVsYXRpb24g
+Y29udHJvbHMgd2hldGhlciBvciBub3QgdGhlIGludGVydmFsIGJldHdlZW4NCiBmaWxlc3lzdGVt
+IGNoZWNrcyAoZWl0aGVyIGJhc2VkIG9uIHRpbWUgb3IgbnVtYmVyIG9mIG1vdW50cykgc2hvdWxk
+DQpkaWZmIC0tZ2l0IGEvZTJmc2NrL2UyZnNjay5oIGIvZTJmc2NrL2UyZnNjay5oDQppbmRleCAy
+ZDM1OWIzOC4uMmM2NGExNDUgMTAwNjQ0DQotLS0gYS9lMmZzY2svZTJmc2NrLmgNCisrKyBiL2Uy
+ZnNjay9lMmZzY2suaA0KQEAgLTIxMSw2ICsyMTEsMTcgQEAgc3RydWN0IHJlc291cmNlX3RyYWNr
+IHsNCiAjZGVmaW5lIEUyRl9QQVNTXzUJNQ0KICNkZWZpbmUgRTJGX1BBU1NfMUIJNg0KIA0KK2Vu
+dW0gc2hhcmVkX29wdCB7DQorCUUyRl9TSEFSRURfUFJFU0VSVkUgPSAwLA0KKwlFMkZfU0hBUkVE
+X0RFTEVURSwNCisJRTJGX1NIQVJFRF9MUEYNCit9Ow0KKw0KK2VudW0gY2xvbmVfb3B0IHsNCisJ
+RTJGX0NMT05FX0RVUCA9IDAsDQorCUUyRl9DTE9ORV9aRVJPDQorfTsNCisNCiAvKg0KICAqIERl
+ZmluZSB0aGUgZXh0ZW5kZWQgYXR0cmlidXRlIHJlZmNvdW50IHN0cnVjdHVyZQ0KICAqLw0KQEAg
+LTM4Nyw2ICszOTgsOCBAQCBzdHJ1Y3QgZTJmc2NrX3N0cnVjdCB7DQogCXRpbWVfdCBub3c7DQog
+CXRpbWVfdCB0aW1lX2Z1ZGdlOwkvKiBGb3Igd29ya2luZyBhcm91bmQgYnVnZ3kgaW5pdCBzY3Jp
+cHRzICovDQogCWludCBleHRfYXR0cl92ZXI7DQorCWVudW0gc2hhcmVkX29wdCBzaGFyZWQ7DQor
+CWVudW0gY2xvbmVfb3B0IGNsb25lOw0KIAlwcm9maWxlX3QJcHJvZmlsZTsNCiAJaW50IGJsb2Nr
+c19wZXJfcGFnZTsNCiAJZXh0Ml91MzJfbGlzdCBlbmNyeXB0ZWRfZGlyczsNCmRpZmYgLS1naXQg
+YS9lMmZzY2svcGFzczFiLmMgYi9lMmZzY2svcGFzczFiLmMNCmluZGV4IDU2OTNiOWNmLi5mNDFi
+ZDkxMyAxMDA2NDQNCi0tLSBhL2UyZnNjay9wYXNzMWIuYw0KKysrIGIvZTJmc2NrL3Bhc3MxYi5j
+DQpAQCAtNTQxLDYgKzU0MSw5IEBAIHN0YXRpYyB2b2lkIHBhc3MxZChlMmZzY2tfdCBjdHgsIGNo
+YXIgKmJsb2NrX2J1ZikNCiAJCQlxID0gKHN0cnVjdCBkdXBfY2x1c3RlciAqKSBkbm9kZV9nZXQo
+bSk7DQogCQkJaWYgKHEtPm51bV9iYWQgPiAxKQ0KIAkJCQlmaWxlX29rID0gMDsNCisJCQlpZiAo
+cS0+bnVtX2JhZCA9PSAxICYmIChjdHgtPmNsb25lID09IEUyRl9DTE9ORV9aRVJPIHx8DQorCQkJ
+ICAgIGN0eC0+c2hhcmVkICE9IEUyRl9TSEFSRURfUFJFU0VSVkUpKQ0KKwkJCQlmaWxlX29rID0g
+MDsNCiAJCQlpZiAoY2hlY2tfaWZfZnNfY2x1c3RlcihjdHgsIHMtPmNsdXN0ZXIpKSB7DQogCQkJ
+CWZpbGVfb2sgPSAwOw0KIAkJCQltZXRhX2RhdGEgPSAxOw0KQEAgLTYwMSwxMyArNjA0LDI2IEBA
+IHN0YXRpYyB2b2lkIHBhc3MxZChlMmZzY2tfdCBjdHgsIGNoYXIgKmJsb2NrX2J1ZikNCiAJCQlj
+b250aW51ZTsNCiAJCX0NCiAJCWlmICgoY3R4LT5vcHRpb25zICYgRTJGX09QVF9VTlNIQVJFX0JM
+T0NLUykgfHwNCi0gICAgICAgICAgICAgICAgICAgIGZpeF9wcm9ibGVtKGN0eCwgUFJfMURfQ0xP
+TkVfUVVFU1RJT04sICZwY3R4KSkgew0KKwkJICAgIChjdHgtPnNoYXJlZCAhPSBFMkZfU0hBUkVE
+X0RFTEVURSAmJg0KKwkJICAgICBmaXhfcHJvYmxlbShjdHgsIFBSXzFEX0NMT05FX1FVRVNUSU9O
+LCAmcGN0eCkpKSB7DQogCQkJcGN0eC5lcnJjb2RlID0gY2xvbmVfZmlsZShjdHgsIGlubywgcCwg
+YmxvY2tfYnVmKTsNCi0JCQlpZiAocGN0eC5lcnJjb2RlKQ0KKwkJCWlmIChwY3R4LmVycmNvZGUp
+IHsNCiAJCQkJZml4X3Byb2JsZW0oY3R4LCBQUl8xRF9DTE9ORV9FUlJPUiwgJnBjdHgpOw0KLQkJ
+CWVsc2UNCi0JCQkJY29udGludWU7DQorCQkJCWdvdG8gZGVsZXRlOw0KKwkJCX0NCisJCQlpZiAo
+Y3R4LT5zaGFyZWQgPT0gRTJGX1NIQVJFRF9MUEYgJiYNCisJCQkgICAgZml4X3Byb2JsZW0oY3R4
+LCBQUl8xRF9ESVNDT05ORUNUX1FVRVNUSU9OLCAmcGN0eCkpew0KKwkJCQlwY3R4LmVycmNvZGUg
+PSBleHQyZnNfdW5saW5rKGZzLCBwLT5kaXIsDQorCQkJCQkJCSAgICAgTlVMTCwgaW5vLCAwKTsN
+CisJCQkJaWYgKHBjdHguZXJyY29kZSkgew0KKwkJCQkJZml4X3Byb2JsZW0oY3R4LCBQUl8xRF9E
+SVNDT05ORUNUX0VSUk9SLA0KKwkJCQkJCSAgICAmcGN0eCk7DQorCQkJCQlnb3RvIGRlbGV0ZTsN
+CisJCQkJfQ0KKwkJCX0NCisJCQljb250aW51ZTsNCiAJCX0NCitkZWxldGU6DQogCQkvKg0KIAkJ
+ICogTm90ZTogV2hlbiB1bnNoYXJpbmcgYmxvY2tzLCB3ZSBkb24ndCBwcm9tcHQgdG8gZGVsZXRl
+DQogCQkgKiBmaWxlcy4gSWYgdGhlIGNsb25lIG9wZXJhdGlvbiBmYWlscyB0aGFuIHRoZSB1bnNo
+YXJlDQpAQCAtNjMxLDcgKzY0Nyw4IEBAIHN0YXRpYyB2b2lkIGRlY3JlbWVudF9iYWRjb3VudChl
+MmZzY2tfdCBjdHgsIGJsazY0X3QgYmxvY2ssDQogew0KIAlwLT5udW1fYmFkLS07DQogCWlmIChw
+LT5udW1fYmFkIDw9IDAgfHwNCi0JICAgIChwLT5udW1fYmFkID09IDEgJiYgIWNoZWNrX2lmX2Zz
+X2Jsb2NrKGN0eCwgYmxvY2spKSkgew0KKwkgICAgKHAtPm51bV9iYWQgPT0gMSAmJiAhY2hlY2tf
+aWZfZnNfYmxvY2soY3R4LCBibG9jaykgJiYNCisJICAgIGN0eC0+Y2xvbmUgPT0gRTJGX0NMT05F
+X0RVUCkpIHsNCiAJCWlmIChjaGVja19pZl9mc19jbHVzdGVyKGN0eCwgRVhUMkZTX0IyQyhjdHgt
+PmZzLCBibG9jaykpKQ0KIAkJCXJldHVybjsNCiAJCWV4dDJmc191bm1hcmtfYmxvY2tfYml0bWFw
+MihjdHgtPmJsb2NrX2R1cF9tYXAsIGJsb2NrKTsNCkBAIC04MzAsNiArODQ3LDE0IEBAIHN0YXRp
+YyBpbnQgY2xvbmVfZmlsZV9ibG9jayhleHQyX2ZpbHN5cyBmcywNCiANCiAJCXAgPSAoc3RydWN0
+IGR1cF9jbHVzdGVyICopIGRub2RlX2dldChuKTsNCiANCisJCWlmICghaXNfbWV0YSkgew0KKwkJ
+CWlmIChjdHgtPmNsb25lID09IEUyRl9DTE9ORV9aRVJPICYmIHAtPm51bV9iYWQgPT0gMCkgew0K
+KwkJCQlleHQyZnNfdW5tYXJrX2Jsb2NrX2JpdG1hcDIoY3R4LT5ibG9ja19mb3VuZF9tYXAsDQor
+CQkJCQkJCSAgICAqYmxvY2tfbnIpOw0KKwkJCQlleHQyZnNfYmxvY2tfYWxsb2Nfc3RhdHMoZnMs
+ICpibG9ja19uciwgLTEpOw0KKwkJCX0NCisJCX0NCisNCiAJCWNzLT5kdXBfY2x1c3RlciA9IGM7
+DQogCQkvKg0KIAkJICogTGV0J3MgdHJ5IGFuIGltcGxpZWQgY2x1c3RlciBhbGxvY2F0aW9uLiAg
+SWYgd2UgZ2V0IHRoZSBzYW1lDQpAQCAtODc2LDEwICs5MDEsMTUgQEAgY2x1c3Rlcl9hbGxvY19v
+azoNCiAgCQlwcmludGYoIkNsb25pbmcgYmxvY2sgIyVsbGQgZnJvbSAlbGx1IHRvICVsbHVcbiIs
+DQogCQkgICAgICAgYmxvY2tjbnQsICpibG9ja19uciwgbmV3X2Jsb2NrKTsNCiAjZW5kaWYNCi0J
+CXJldHZhbCA9IGlvX2NoYW5uZWxfcmVhZF9ibGs2NChmcy0+aW8sICpibG9ja19uciwgMSwgY3Mt
+PmJ1Zik7DQotCQlpZiAocmV0dmFsKSB7DQotCQkJY3MtPmVycmNvZGUgPSByZXR2YWw7DQotCQkJ
+cmV0dXJuIEJMT0NLX0FCT1JUOw0KKwkJaWYgKGN0eC0+Y2xvbmUgPT0gRTJGX0NMT05FX1pFUk8p
+IHsNCisJCQltZW1zZXQoY3MtPmJ1ZiwgMCwgZnMtPmJsb2Nrc2l6ZSk7DQorCQl9IGVsc2Ugew0K
+KwkJCXJldHZhbCA9IGlvX2NoYW5uZWxfcmVhZF9ibGs2NChmcy0+aW8sICpibG9ja19uciwgMSwN
+CisJCQkJCQkgICAgICAgY3MtPmJ1Zik7DQorCQkJaWYgKHJldHZhbCkgew0KKwkJCQljcy0+ZXJy
+Y29kZSA9IHJldHZhbDsNCisJCQkJcmV0dXJuIEJMT0NLX0FCT1JUOw0KKwkJCX0NCiAJCX0NCiAJ
+CWlmIChzaG91bGRfd3JpdGUpIHsNCiAJCQlyZXR2YWwgPSBpb19jaGFubmVsX3dyaXRlX2JsazY0
+KGZzLT5pbywgbmV3X2Jsb2NrLCAxLCBjcy0+YnVmKTsNCmRpZmYgLS1naXQgYS9lMmZzY2svcHJv
+YmxlbS5jIGIvZTJmc2NrL3Byb2JsZW0uYw0KaW5kZXggNzViNDliYTMuLjE2NzljZmFlIDEwMDY0
+NA0KLS0tIGEvZTJmc2NrL3Byb2JsZW0uYw0KKysrIGIvZTJmc2NrL3Byb2JsZW0uYw0KQEAgLTEy
+ODEsNiArMTI4MSwxNCBAQCBzdGF0aWMgc3RydWN0IGUyZnNja19wcm9ibGVtIHByb2JsZW1fdGFi
+bGVbXSA9IHsNCiAJeyBQUl8xRF9DTE9ORV9FUlJPUiwNCiAJICBOXygiQ291bGRuJ3QgY2xvbmUg
+ZmlsZTogJW1cbiIpLCBQUk9NUFRfTk9ORSwgMCwgMCwgMCwgMCB9LA0KIA0KKwkvKiBGaWxlIHdp
+dGggc2hhcmVkIGJsb2NrcyBmb3VuZCAqLw0KKwl7IFBSXzFEX0RJU0NPTk5FQ1RfUVVFU1RJT04s
+DQorCSAgTl8oIkZpbGUgd2l0aCBzaGFyZWQgYmxvY2tzIGZvdW5kXG4iKSwgUFJPTVBUX0NPTk5F
+Q1QsIDAgfSwNCisNCisJLyogQ291bGRuJ3QgdW5saW5rIGZpbGUgKGVycm9yKSAqLw0KKwl7IFBS
+XzFEX0RJU0NPTk5FQ1RfRVJST1IsDQorCSAgTl8oIkNvdWxkbid0IHVubGluayBmaWxlOiAlbVxu
+IiksIFBST01QVF9OT05FLCAwIH0sDQorDQogCS8qIFBhc3MgMUUgRXh0ZW50IHRyZWUgb3B0aW1p
+emF0aW9uCSovDQogDQogCS8qIFBhc3MgMUU6IE9wdGltaXppbmcgZXh0ZW50IHRyZWVzICovDQpk
+aWZmIC0tZ2l0IGEvZTJmc2NrL3Byb2JsZW0uaCBiL2UyZnNjay9wcm9ibGVtLmgNCmluZGV4IDJj
+NzkxNjllLi5lZmRiOGQ1NCAxMDA2NDQNCi0tLSBhL2UyZnNjay9wcm9ibGVtLmgNCisrKyBiL2Uy
+ZnNjay9wcm9ibGVtLmgNCkBAIC03NTYsNiArNzU2LDEzIEBAIHN0cnVjdCBwcm9ibGVtX2NvbnRl
+eHQgew0KIC8qIENvdWxkbid0IGNsb25lIGZpbGUgKGVycm9yKSAqLw0KICNkZWZpbmUgUFJfMURf
+Q0xPTkVfRVJST1IJMHgwMTMwMDgNCiANCisvKiBGaWxlIHdpdGggc2hhcmVkIGJsb2NrcyBmb3Vu
+ZCAqLw0KKyNkZWZpbmUgUFJfMURfRElTQ09OTkVDVF9RVUVTVElPTiAweDAxMzAwOQ0KKw0KKy8q
+IENvdWxkbid0IHVubGluayBmaWxlIChlcnJvcikgKi8NCisjZGVmaW5lIFBSXzFEX0RJU0NPTk5F
+Q1RfRVJST1IJMHgwMTMwMEENCisNCisNCiAvKg0KICAqIFBhc3MgMWUgLS0tIHJlYnVpbGRpbmcg
+ZXh0ZW50IHRyZWVzDQogICovDQpkaWZmIC0tZ2l0IGEvZTJmc2NrL3VuaXguYyBiL2UyZnNjay91
+bml4LmMNCmluZGV4IDY4ZjQ5ODczLi40MjVlYTQ0YiAxMDA2NDQNCi0tLSBhL2UyZnNjay91bml4
+LmMNCisrKyBiL2UyZnNjay91bml4LmMNCkBAIC02NTcsNiArNjU3LDQ5IEBAIHN0YXRpYyB2b2lk
+IHNpZ25hbF9jYW5jZWwoaW50IHNpZyBFWFQyRlNfQVRUUigodW51c2VkKSkpDQogfQ0KICNlbmRp
+Zg0KIA0KK3N0YXRpYyB2b2lkIGluaXRpYWxpemVfcHJvZmlsZV9vcHRpb25zKGUyZnNja190IGN0
+eCkNCit7DQorCWNoYXIgKnRtcDsNCisNCisJLyogW29wdGlvbnNdIHNoYXJlZD1wcmVzZXJ2ZXxs
+b3N0K2ZvdW5kfGRlbGV0ZSAqLw0KKwl0bXAgPSBOVUxMOw0KKwljdHgtPnNoYXJlZCA9IEUyRl9T
+SEFSRURfUFJFU0VSVkU7DQorCXByb2ZpbGVfZ2V0X3N0cmluZyhjdHgtPnByb2ZpbGUsICJvcHRp
+b25zIiwgInNoYXJlZCIsIDAsDQorCQkJICAgInByZXNlcnZlIiwgJnRtcCk7DQorCWlmICh0bXAp
+IHsNCisJCWlmIChzdHJjbXAodG1wLCAicHJlc2VydmUiKSA9PSAwKQ0KKwkJCWN0eC0+c2hhcmVk
+ID0gRTJGX1NIQVJFRF9QUkVTRVJWRTsNCisJCWVsc2UgaWYgKHN0cmNtcCh0bXAsICJkZWxldGUi
+KSA9PSAwKQ0KKwkJCWN0eC0+c2hhcmVkID0gRTJGX1NIQVJFRF9ERUxFVEU7DQorCQllbHNlIGlm
+IChzdHJjbXAodG1wLCAibG9zdCtmb3VuZCIpID09IDApDQorCQkJY3R4LT5zaGFyZWQgPSBFMkZf
+U0hBUkVEX0xQRjsNCisJCWVsc2Ugew0KKwkJCWNvbV9lcnIoY3R4LT5wcm9ncmFtX25hbWUsIDAs
+DQorCQkJCV8oImNvbmZpZ3VyYXRpb24gZXJyb3I6ICdzaGFyZWQ9JXMnIiksIHRtcCk7DQorCQkJ
+ZmF0YWxfZXJyb3IoY3R4LCAwKTsNCisJCX0NCisJCWZyZWUodG1wKTsNCisJfQ0KKw0KKwkvKiBb
+b3B0aW9uc10gY2xvbmU9ZHVwfHplcm8gKi8NCisJdG1wID0gTlVMTDsNCisJY3R4LT5jbG9uZSA9
+IEUyRl9DTE9ORV9EVVA7DQorCXByb2ZpbGVfZ2V0X3N0cmluZyhjdHgtPnByb2ZpbGUsICJvcHRp
+b25zIiwgImNsb25lIiwgMCwNCisJCQkgICAiZHVwIiwgJnRtcCk7DQorCWlmICh0bXApIHsNCisJ
+CWlmIChzdHJjbXAodG1wLCAiZHVwIikgPT0gMCkNCisJCQljdHgtPmNsb25lID0gRTJGX0NMT05F
+X0RVUDsNCisJCWVsc2UgaWYgKHN0cmNtcCh0bXAsICJ6ZXJvIikgPT0gMCkNCisJCQljdHgtPmNs
+b25lID0gRTJGX0NMT05FX1pFUk87DQorCQllbHNlIHsNCisJCQljb21fZXJyKGN0eC0+cHJvZ3Jh
+bV9uYW1lLCAwLA0KKwkJCQlfKCJjb25maWd1cmF0aW9uIGVycm9yOiAnY2xvbmU9JXMnIiksIHRt
+cCk7DQorCQkJZmF0YWxfZXJyb3IoY3R4LCAwKTsNCisJCX0NCisJCWZyZWUodG1wKTsNCisJfQ0K
+K30NCisNCiBzdGF0aWMgdm9pZCBwYXJzZV9leHRlbmRlZF9vcHRzKGUyZnNja190IGN0eCwgY29u
+c3QgY2hhciAqb3B0cykNCiB7DQogCWNoYXIJKmJ1ZiwgKnRva2VuLCAqbmV4dCwgKnAsICphcmc7
+DQpAQCAtNzA3LDYgKzc1MCwzNiBAQCBzdGF0aWMgdm9pZCBwYXJzZV9leHRlbmRlZF9vcHRzKGUy
+ZnNja190IGN0eCwgY29uc3QgY2hhciAqb3B0cykNCiAJCX0gZWxzZSBpZiAoc3RyY21wKHRva2Vu
+LCAiZnJhZ2NoZWNrIikgPT0gMCkgew0KIAkJCWN0eC0+b3B0aW9ucyB8PSBFMkZfT1BUX0ZSQUdD
+SEVDSzsNCiAJCQljb250aW51ZTsNCisJCS8qIC1FIHNoYXJlZD1wcmVzZXJ2ZXxsb3N0K2ZvdW5k
+fGRlbGV0ZSAqLw0KKwkJfSBlbHNlIGlmIChzdHJjbXAodG9rZW4sICJzaGFyZWQiKSA9PSAwKSB7
+DQorCQkJaWYgKCFhcmcpIHsNCisJCQkJZXh0ZW5kZWRfdXNhZ2UrKzsNCisJCQkJY29udGludWU7
+DQorCQkJfQ0KKwkJCWlmIChzdHJjbXAoYXJnLCAicHJlc2VydmUiKSA9PSAwKSB7DQorCQkJCWN0
+eC0+c2hhcmVkID0gRTJGX1NIQVJFRF9QUkVTRVJWRTsNCisJCQl9IGVsc2UgaWYgKHN0cmNtcChh
+cmcsICJsb3N0K2ZvdW5kIikgPT0gMCkgew0KKwkJCQljdHgtPnNoYXJlZCA9IEUyRl9TSEFSRURf
+TFBGOw0KKwkJCX0gZWxzZSBpZiAoc3RyY21wKGFyZywgImRlbGV0ZSIpID09IDApIHsNCisJCQkJ
+Y3R4LT5zaGFyZWQgPSBFMkZfU0hBUkVEX0RFTEVURTsNCisJCQl9IGVsc2Ugew0KKwkJCQlleHRl
+bmRlZF91c2FnZSsrOw0KKwkJCQljb250aW51ZTsNCisJCQl9DQorCQkvKiAtRSBjbG9uZT1kdXB8
+emVybyAqLw0KKwkJfSBlbHNlIGlmIChzdHJjbXAodG9rZW4sICJjbG9uZSIpID09IDApIHsNCisJ
+CQlpZiAoIWFyZykgew0KKwkJCQlleHRlbmRlZF91c2FnZSsrOw0KKwkJCQljb250aW51ZTsNCisJ
+CQl9DQorCQkJaWYgKHN0cmNtcChhcmcsICJkdXAiKSA9PSAwKSB7DQorCQkJCWN0eC0+Y2xvbmUg
+PSBFMkZfQ0xPTkVfRFVQOw0KKwkJCX0gZWxzZSBpZiAoc3RyY21wKGFyZywgInplcm8iKSA9PSAw
+KSB7DQorCQkJCWN0eC0+Y2xvbmUgPSBFMkZfQ0xPTkVfWkVSTzsNCisJCQl9IGVsc2Ugew0KKwkJ
+CQlleHRlbmRlZF91c2FnZSsrOw0KKwkJCQljb250aW51ZTsNCisJCQl9DQogCQl9IGVsc2UgaWYg
+KHN0cmNtcCh0b2tlbiwgImpvdXJuYWxfb25seSIpID09IDApIHsNCiAJCQlpZiAoYXJnKSB7DQog
+CQkJCWV4dGVuZGVkX3VzYWdlKys7DQpAQCAtNzcxLDYgKzg0NCw4IEBAIHN0YXRpYyB2b2lkIHBh
+cnNlX2V4dGVuZGVkX29wdHMoZTJmc2NrX3QgY3R4LCBjb25zdCBjaGFyICpvcHRzKQ0KIAkJZnB1
+dHMoIlx0am91cm5hbF9vbmx5XG4iLCBzdGRlcnIpOw0KIAkJZnB1dHMoIlx0ZGlzY2FyZFxuIiwg
+c3RkZXJyKTsNCiAJCWZwdXRzKCJcdG5vZGlzY2FyZFxuIiwgc3RkZXJyKTsNCisJCWZwdXRzKF8o
+Ilx0c2hhcmVkPTxwcmVzZXJ2ZXxsb3N0K2ZvdW5kfGRlbGV0ZT5cbiIpLCBzdGRlcnIpOw0KKwkJ
+ZnB1dHMoXygiXHRjbG9uZT08ZHVwfHplcm8+XG4iKSwgc3RkZXJyKTsNCiAJCWZwdXRzKCJcdG9w
+dGltaXplX2V4dGVudHNcbiIsIHN0ZGVycik7DQogCQlmcHV0cygiXHRub19vcHRpbWl6ZV9leHRl
+bnRzXG4iLCBzdGRlcnIpOw0KIAkJZnB1dHMoIlx0aW5vZGVfY291bnRfZnVsbG1hcFxuIiwgc3Rk
+ZXJyKTsNCkBAIC04NDAsNiArOTE1LDggQEAgc3RhdGljIGVycmNvZGVfdCBQUlMoaW50IGFyZ2Ms
+IGNoYXIgKmFyZ3ZbXSwgZTJmc2NrX3QgKnJldF9jdHgpDQogCWVsc2UNCiAJCWN0eC0+cHJvZ3Jh
+bV9uYW1lID0gImUyZnNjayI7DQogDQorCWluaXRpYWxpemVfcHJvZmlsZV9vcHRpb25zKGN0eCk7
+DQorDQogCXBoeXNfbWVtX2tiID0gZ2V0X21lbW9yeV9zaXplKCkgLyAxMDI0Ow0KIAljdHgtPnJl
+YWRhaGVhZF9rYiA9IH4wVUxMOw0KIAl3aGlsZSAoKGMgPSBnZXRvcHQoYXJnYywgYXJndiwgInBh
+bnlyY0M6QjpkRTpmdnRGVk06YjpJOmo6UDpsOkw6TjpTc0RrejoiKSkgIT0gRU9GKQ0KQEAgLTEw
+MzIsNiArMTEwOSwxNSBAQCBzdGF0aWMgZXJyY29kZV90IFBSUyhpbnQgYXJnYywgY2hhciAqYXJn
+dltdLCBlMmZzY2tfdCAqcmV0X2N0eCkNCiAJCWZhdGFsX2Vycm9yKGN0eCwgMCk7DQogCX0NCiAN
+CisJaWYgKChjdHgtPm9wdGlvbnMgJiBFMkZfT1BUX1VOU0hBUkVfQkxPQ0tTKSAmJg0KKwkgICAg
+KGN0eC0+Y2xvbmUgIT0gRTJGX0NMT05FX0RVUCB8fA0KKwkgICAgIGN0eC0+c2hhcmVkICE9IEUy
+Rl9TSEFSRURfUFJFU0VSVkUpKSB7DQorCQljb21fZXJyKGN0eC0+cHJvZ3JhbV9uYW1lLCAwLCAi
+JXMiLA0KKwkJCV8oIlRoZSAtRSB1bnNoYXJlX2Jsb2NrcyBhbmQgc3BlY2lmaWVkIGNsb25lL3No
+YXJlZCAiDQorCQkJICAib3B0aW9ucyBhcmUgaW5jb21wYXRpYmxlIikpOw0KKwkJZmF0YWxfZXJy
+b3IoY3R4LCAwKTsNCisJfQ0KKw0KIAlpZiAoKGNwID0gZ2V0ZW52KCJFMkZTQ0tfQ09ORklHIikp
+ICE9IE5VTEwpDQogCQljb25maWdfZm5bMF0gPSBjcDsNCiAJcHJvZmlsZV9zZXRfc3ludGF4X2Vy
+cl9jYihzeW50YXhfZXJyX3JlcG9ydCk7DQotLSANCjIuMjIuMA0KDQo=
