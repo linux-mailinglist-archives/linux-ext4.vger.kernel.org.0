@@ -2,182 +2,256 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD7745313
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Jun 2019 05:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147404531F
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Jun 2019 05:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725891AbfFNDne (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Jun 2019 23:43:34 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:53103 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725616AbfFNDnd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Jun 2019 23:43:33 -0400
-Received: from dread.disaster.area (pa49-195-189-25.pa.nsw.optusnet.com.au [49.195.189.25])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 505E11AD622;
-        Fri, 14 Jun 2019 13:43:28 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hbd6k-0005oM-Ah; Fri, 14 Jun 2019 13:42:30 +1000
-Date:   Fri, 14 Jun 2019 13:42:30 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jeff Layton <jlayton@kernel.org>, linux-xfs@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH RFC 00/10] RDMA/FS DAX truncate proposal
-Message-ID: <20190614034230.GP14363@dread.disaster.area>
-References: <20190606014544.8339-1-ira.weiny@intel.com>
- <20190606104203.GF7433@quack2.suse.cz>
- <20190606220329.GA11698@iweiny-DESK2.sc.intel.com>
- <20190607110426.GB12765@quack2.suse.cz>
- <20190607182534.GC14559@iweiny-DESK2.sc.intel.com>
- <20190608001036.GF14308@dread.disaster.area>
- <20190612123751.GD32656@bombadil.infradead.org>
- <20190612233024.GD14336@iweiny-DESK2.sc.intel.com>
- <20190613005552.GI14363@dread.disaster.area>
- <20190613203406.GB32404@iweiny-DESK2.sc.intel.com>
+        id S1725819AbfFNDws (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Jun 2019 23:52:48 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:35560 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725789AbfFNDwr (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 13 Jun 2019 23:52:47 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 25BBB3082E4D;
+        Fri, 14 Jun 2019 03:52:47 +0000 (UTC)
+Received: from localhost (dhcp-12-102.nay.redhat.com [10.66.12.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6ADE019C67;
+        Fri, 14 Jun 2019 03:52:45 +0000 (UTC)
+Date:   Fri, 14 Jun 2019 11:57:54 +0800
+From:   Zorro Lang <zlang@redhat.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
+Subject: Re: [PATCH] generic: test statfs on project quota directory
+Message-ID: <20190614035754.GC30864@dhcp-12-102.nay.redhat.com>
+References: <20190513014951.4357-1-zlang@redhat.com>
+ <01F47CA1-E737-4F52-8FF2-A3E0DCD8EB1B@dilger.ca>
+ <20190612073213.GA30864@dhcp-12-102.nay.redhat.com>
+ <20190612150507.GB3773859@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190613203406.GB32404@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20190612150507.GB3773859@magnolia>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
-        a=K5LJ/TdJMXINHCwnwvH1bQ==:117 a=K5LJ/TdJMXINHCwnwvH1bQ==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
-        a=7-415B0cAAAA:8 a=k35vKodN1J5BDQ_Sz-4A:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.46]); Fri, 14 Jun 2019 03:52:47 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 01:34:06PM -0700, Ira Weiny wrote:
-> On Thu, Jun 13, 2019 at 10:55:52AM +1000, Dave Chinner wrote:
-> > On Wed, Jun 12, 2019 at 04:30:24PM -0700, Ira Weiny wrote:
-> > > On Wed, Jun 12, 2019 at 05:37:53AM -0700, Matthew Wilcox wrote:
-> > > > On Sat, Jun 08, 2019 at 10:10:36AM +1000, Dave Chinner wrote:
-> > > > > On Fri, Jun 07, 2019 at 11:25:35AM -0700, Ira Weiny wrote:
-> > > > > > Are you suggesting that we have something like this from user space?
-> > > > > > 
-> > > > > > 	fcntl(fd, F_SETLEASE, F_LAYOUT | F_UNBREAKABLE);
-> > > > > 
-> > > > > Rather than "unbreakable", perhaps a clearer description of the
-> > > > > policy it entails is "exclusive"?
-> > > > > 
-> > > > > i.e. what we are talking about here is an exclusive lease that
-> > > > > prevents other processes from changing the layout. i.e. the
-> > > > > mechanism used to guarantee a lease is exclusive is that the layout
-> > > > > becomes "unbreakable" at the filesystem level, but the policy we are
-> > > > > actually presenting to uses is "exclusive access"...
+On Wed, Jun 12, 2019 at 08:05:07AM -0700, Darrick J. Wong wrote:
+> On Wed, Jun 12, 2019 at 03:32:13PM +0800, Zorro Lang wrote:
+> > On Tue, May 14, 2019 at 09:28:38AM -0600, Andreas Dilger wrote:
+> > > On May 12, 2019, at 7:49 PM, Zorro Lang <zlang@redhat.com> wrote:
 > > > > 
-> > > > That's rather different from the normal meaning of 'exclusive' in the
-> > > > context of locks, which is "only one user can have access to this at
-> > > > a time".  As I understand it, this is rather more like a 'shared' or
-> > > > 'read' lock.  The filesystem would be the one which wants an exclusive
-> > > > lock, so it can modify the mapping of logical to physical blocks.
+> > > > There's a bug on xfs cause statfs get negative f_ffree value from
+> > > > a project quota directory. It's fixed by "de7243057 fs/xfs: fix
+> > > > f_ffree value for statfs when project quota is set". So add statfs
+> > > > testing on project quota block and inode count limit.
 > > > > 
-> > > > The complication being that by default the filesystem has an exclusive
-> > > > lock on the mapping, and what we're trying to add is the ability for
-> > > > readers to ask the filesystem to give up its exclusive lock.
+> > > > For testing foreign fs quota, change _qmount() function, turn on
+> > > > project if quotaon support.
+> > > > 
+> > > > Signed-off-by: Zorro Lang <zlang@redhat.com>
+> > > > ---
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > (Long time passed, re-send this patch again to get reviewing)
+> > > > 
+> > > > There's one thing I don't understand, so CC ext4 mail list. Please
+> > > > feel free to reply, if anyone knows that:
+> > > > 
+> > > > $ mkfs.ext4 $SCRATCH_DEV
+> > > > $ tune2fs -O quota,project $SCRATCH_DEV
+> > > > $ mount $SCRATCH_DEV $SCRATCH_MNT -o prjquota
+> > > > $ quotaon -P $SCRATCH_MNT
+> > > > $ mkdir $SCRATCH_MNT/t
+> > > > $ xfs_quota -f -x -c "project -p $SCRATCH_MNT/t -s 42" $SCRATCH_MNT
+> > > > $ xfs_quota -f -x -c "limit -p bsoft=100m answer" $SCRATCH_MNT
+> > > > $ df -k $SCRATCH_MNT/t
+> > > > Filesystem    1K-blocks  Used Available Use% Mounted on
+> > > > SCRATCH_DEV    102400     4    102396   1% SCRATCH_MNT
+> > > > 
+> > > > On XFS, the 'Used' field always shows '0'. But why ext4 always has
+> > > > more 4k? Is it a bug or expected.
 > > > 
-> > > This is an interesting view...
-> > > 
-> > > And after some more thought, exclusive does not seem like a good name for this
-> > > because technically F_WRLCK _is_ an exclusive lease...
-> > > 
-> > > In addition, the user does not need to take the "exclusive" write lease to be
-> > > notified of (broken by) an unexpected truncate.  A "read" lease is broken by
-> > > truncate.  (And "write" leases really don't do anything different WRT the
-> > > interaction of the FS and the user app.  Write leases control "exclusive"
-> > > access between other file descriptors.)
+> > > Each directory in ext4 consumes a 4KB block, so setting the project
+> > > quota on a directory always consumes at least one block.
 > > 
-> > I've been assuming that there is only one type of layout lease -
-> > there is no use case I've heard of for read/write layout leases, and
-> > like you say there is zero difference in behaviour at the filesystem
-> > level - they all have to be broken to allow a non-lease truncate to
-> > proceed.
+> > Ping fstests@vger.kernel.org.
 > > 
-> > IMO, taking a "read lease" to be able to modify and write to the
-> > underlying mapping of a file makes absolutely no sense at all.
-> > IOWs, we're talking exaclty about a revokable layout lease vs an
-> > exclusive layout lease here, and so read/write really doesn't match
-> > the policy or semantics we are trying to provide.
+> > One month passed. Is there anything else block this patch merge?
 > 
-> I humbly disagree, at least depending on how you look at it...  :-D
+> If this is a regression test for an xfs bug, why isn't this in
+> tests/xfs/ ?  Especially because ext4 has different behaviors that clash
+> with the golden output -- what happens if you run this with inline data
+> enabled?
+
+Hi Darrick,
+
+Yes, it's a regression test for xfs bug:
+de7243057e7c fs/xfs: fix f_ffree value for statfs when project quota is set
+
+It's not a xfs only case, due to I thought the test steps are common. If I
+change it to a generic case, it can cover more. Do you think I should change
+it back to XFS only case?
+
+Thanks,
+Zorro
+
 > 
-> The patches as they stand expect the user to take a "read" layout lease which
-> indicates they are currently using "reading" the layout as is.
-> They are not
-> changing ("writing" to) the layout.
-
-As I said in a another email in the thread, a layout lease does not
-make the layout "read only". It just means the lease owner will be
-notified when someone else is about to modify it. The lease owner
-can modify the mapping themselves, and they will not get notified
-about their own modifications.
-
-> They then pin pages which locks parts of
-> the layout and therefore they expect no "writers" to change the layout.
-
-Except they can change the layout themselves. It's perfectly valid
-to get a layout lease, write() from offset 0 to EOF and fsync() to
-intiialise the file and allocate all the space in the file, then
-mmap() it and hand to off to RMDA, all while holding the layout
-lease.
-
-> The "write" layout lease breaks the "read" layout lease indicating that the
-> layout is being written to.
-
-Layout leases do not work this way.
-
-> In fact, this is what NFS does right now.  The lease it puts on the file is of
-> "read" type.
+> --D
 > 
-> nfs4layouts.c:
-> static int
-> nfsd4_layout_setlease(struct nfs4_layout_stateid *ls)
-> {
-> ...
->         fl->fl_flags = FL_LAYOUT;
->         fl->fl_type = F_RDLCK;
-> ...
-> }
-
-Yes, the existing /implementation/ uses F_RDLCK, but that doesn't
-mean the layout is "read only". Look at the pNFS mapping layout code
-- the ->map_blocks export operation:
-
-       int (*map_blocks)(struct inode *inode, loff_t offset,
-                          u64 len, struct iomap *iomap,
-                          bool write, u32 *device_generation);
-                          ^^^^^^^^^^
-
-Yup, it has a write variable that, when set, causes the filesystem
-to _allocate_ blocks if the range to be written to falls over a hole
-in the file.  IOWs, a pNFS layout lease can modify the file layout -
-you're conflating use of a "read lock" API to mean that what the
-lease _manages_ is "read only". That is not correct.
-
-Layouts are /always writeable/ by the lease owner(s), the question
-here is what we do with third parties attempting to modify a layout
-covered by an "exclusive" layout lease. Hence, I'll repeat:
-
-> > we're talking exaclty about a revokable layout lease vs an
-> > exclusive layout lease here, and so read/write really doesn't match
-> > the policy or semantics we are trying to provide.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> > Thanks,
+> > Zorro
+> > 
+> > > 
+> > > Cheers, Andreas
+> > > 
+> > > > common/quota          |  4 +++
+> > > > tests/generic/999     | 74 +++++++++++++++++++++++++++++++++++++++++++
+> > > > tests/generic/999.out |  3 ++
+> > > > tests/generic/group   |  1 +
+> > > > 4 files changed, 82 insertions(+)
+> > > > create mode 100755 tests/generic/999
+> > > > create mode 100644 tests/generic/999.out
+> > > > 
+> > > > diff --git a/common/quota b/common/quota
+> > > > index f19f81a1..315df8cb 100644
+> > > > --- a/common/quota
+> > > > +++ b/common/quota
+> > > > @@ -200,6 +200,10 @@ _qmount()
+> > > >    if [ "$FSTYP" != "xfs" ]; then
+> > > >        quotacheck -ug $SCRATCH_MNT >>$seqres.full 2>&1
+> > > >        quotaon -ug $SCRATCH_MNT >>$seqres.full 2>&1
+> > > > +	# try to turn on project quota if it's supported
+> > > > +	if quotaon --help 2>&1 | grep -q '\-\-project'; then
+> > > > +		quotaon --project $SCRATCH_MNT >>$seqres.full 2>&1
+> > > > +	fi
+> > > >    fi
+> > > >    chmod ugo+rwx $SCRATCH_MNT
+> > > > }
+> > > > diff --git a/tests/generic/999 b/tests/generic/999
+> > > > new file mode 100755
+> > > > index 00000000..555341f1
+> > > > --- /dev/null
+> > > > +++ b/tests/generic/999
+> > > > @@ -0,0 +1,74 @@
+> > > > +#! /bin/bash
+> > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > +# Copyright (c) 2019 Red Hat, Inc.  All Rights Reserved.
+> > > > +#
+> > > > +# FS QA Test No. 999
+> > > > +#
+> > > > +# Test statfs when project quota is set.
+> > > > +# Uncover de7243057 fs/xfs: fix f_ffree value for statfs when project quota is set
+> > > > +#
+> > > > +seq=`basename $0`
+> > > > +seqres=$RESULT_DIR/$seq
+> > > > +echo "QA output created by $seq"
+> > > > +
+> > > > +here=`pwd`
+> > > > +tmp=/tmp/$$
+> > > > +status=1	# failure is the default!
+> > > > +trap "_cleanup; exit \$status" 0 1 2 3 15
+> > > > +
+> > > > +_cleanup()
+> > > > +{
+> > > > +	cd /
+> > > > +	_scratch_unmount
+> > > > +	rm -f $tmp.*
+> > > > +}
+> > > > +
+> > > > +# get standard environment, filters and checks
+> > > > +. ./common/rc
+> > > > +. ./common/filter
+> > > > +. ./common/quota
+> > > > +
+> > > > +# remove previous $seqres.full before test
+> > > > +rm -f $seqres.full
+> > > > +
+> > > > +# real QA test starts here
+> > > > +_supported_fs generic
+> > > > +_supported_os Linux
+> > > > +_require_scratch
+> > > > +_require_quota
+> > > > +_require_xfs_quota_foreign
+> > > > +
+> > > > +_scratch_mkfs >/dev/null 2>&1
+> > > > +_scratch_enable_pquota
+> > > > +_qmount_option "prjquota"
+> > > > +_qmount
+> > > > +_require_prjquota $SCRATCH_DEV
+> > > > +
+> > > > +# Create a directory to be project object, and create a file to take 64k space
+> > > > +mkdir $SCRATCH_MNT/t
+> > > > +$XFS_IO_PROG -f -c "pwrite 0 65536" -c sync $SCRATCH_MNT/t/file >>$seqres.full
+> > > > +
+> > > > +# Setup temporary replacements for /etc/projects and /etc/projid
+> > > > +cat >$tmp.projects <<EOF
+> > > > +42:$SCRATCH_MNT/t
+> > > > +EOF
+> > > > +
+> > > > +cat >$tmp.projid <<EOF
+> > > > +answer:42
+> > > > +EOF
+> > > > +
+> > > > +quota_cmd="$XFS_QUOTA_PROG -D $tmp.projects -P $tmp.projid"
+> > > > +$quota_cmd -x -c 'project -s answer' $SCRATCH_MNT >/dev/null 2>&1
+> > > > +$quota_cmd -x -c 'limit -p isoft=53 bsoft=100m answer' $SCRATCH_MNT
+> > > > +
+> > > > +# The itotal and size should be 53 and 102400(k), as above project quota limit.
+> > > > +# The isued and used should be 2 and 64(k), as this case takes. But ext4 always
+> > > > +# shows more 4k 'used' space than XFS, it prints 68k at here. So filter the
+> > > > +# 6[48] at the end.
+> > > > +df -k --output=file,itotal,iused,size,used $SCRATCH_MNT/t | \
+> > > > +	_filter_scratch | _filter_spaces | \
+> > > > +	sed -e "/SCRATCH_MNT/s/6[48]/N/"
+> > > > +
+> > > > +# success, all done
+> > > > +status=0
+> > > > +exit
+> > > > diff --git a/tests/generic/999.out b/tests/generic/999.out
+> > > > new file mode 100644
+> > > > index 00000000..1bebabd4
+> > > > --- /dev/null
+> > > > +++ b/tests/generic/999.out
+> > > > @@ -0,0 +1,3 @@
+> > > > +QA output created by 999
+> > > > +File Inodes IUsed 1K-blocks Used
+> > > > +SCRATCH_MNT/t 53 2 102400 N
+> > > > diff --git a/tests/generic/group b/tests/generic/group
+> > > > index 9f4845c6..35da10a5 100644
+> > > > --- a/tests/generic/group
+> > > > +++ b/tests/generic/group
+> > > > @@ -542,3 +542,4 @@
+> > > > 537 auto quick trim
+> > > > 538 auto quick aio
+> > > > 539 auto quick punch seek
+> > > > +999 auto quick quota
+> > > > --
+> > > > 2.17.2
+> > > > 
+> > > 
+> > > 
+> > > Cheers, Andreas
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > > Cheers, Andreas
+> > > 
+> > > 
+> > > 
+> > > 
+> > > 
+> > 
+> > 
