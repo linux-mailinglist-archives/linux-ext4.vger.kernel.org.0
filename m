@@ -2,126 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D208B475CE
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Jun 2019 18:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7B0476C4
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 Jun 2019 22:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727410AbfFPQIb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 16 Jun 2019 12:08:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41786 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727394AbfFPQIb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 16 Jun 2019 12:08:31 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5GG6T6B091760
-        for <linux-ext4@vger.kernel.org>; Sun, 16 Jun 2019 12:08:30 -0400
-Received: from e35.co.us.ibm.com (e35.co.us.ibm.com [32.97.110.153])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2t5dwxpxhw-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Sun, 16 Jun 2019 12:08:30 -0400
-Received: from localhost
-        by e35.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <chandan@linux.ibm.com>;
-        Sun, 16 Jun 2019 17:08:29 +0100
-Received: from b03cxnp08026.gho.boulder.ibm.com (9.17.130.18)
-        by e35.co.us.ibm.com (192.168.1.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Sun, 16 Jun 2019 17:08:26 +0100
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x5GG8PYa35455322
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 16 Jun 2019 16:08:25 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C06076E04E;
-        Sun, 16 Jun 2019 16:08:25 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C49546E053;
-        Sun, 16 Jun 2019 16:08:21 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.102.1.181])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sun, 16 Jun 2019 16:08:21 +0000 (GMT)
-From:   Chandan Rajendra <chandan@linux.ibm.com>
-To:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org
-Cc:     Chandan Rajendra <chandan@linux.ibm.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ebiggers@kernel.org, jaegeuk@kernel.org,
-        yuchao0@huawei.com, hch@infradead.org
-Subject: [PATCH V3 7/7] ext4: Enable encryption for subpage-sized blocks
-Date:   Sun, 16 Jun 2019 21:38:13 +0530
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20190616160813.24464-1-chandan@linux.ibm.com>
-References: <20190616160813.24464-1-chandan@linux.ibm.com>
+        id S1726054AbfFPUkb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 16 Jun 2019 16:40:31 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34788 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbfFPUkb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Jun 2019 16:40:31 -0400
+X-Greylist: delayed 13981 seconds by postgrey-1.27 at vger.kernel.org; Sun, 16 Jun 2019 16:40:30 EDT
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5GGioCo153666;
+        Sun, 16 Jun 2019 16:47:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=qukdqfmNSk79RZod8Tg0Eg7bhULnpBRMWfxmlI6TPvI=;
+ b=Eu5ObC2rZtrziFSEmrWqq5ji48llXqQ4VaywcH78N1VNZ/2yKlbIJfm9Ebh8WH8sICJk
+ GpMakvlDmln3LzU70wlhDh8SNs4H92sgZwZStGkPwXG52UfUzZbE7U+Ji7R/hY479uJk
+ QjXi8cFZwzfZ3/R4p+i3qsUUmo2+Ou8ymANswI1pwAhI5tbMBsEOF6O/ZqhFFZ0Cpna2
+ TawDqQPF/s7ZAvjTAqU55cNqeJzbTg347wLBLBwZbdWYQsTf6swqNBG+B3xQ4Uw5Jnho
+ hsf00aXIBbQxZzg6JXyZ4th3gRurZ5tNM2ozPW9Q9DfwaG6LT5hgo3Yw/eYYWTktcNg1 4g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2t4rmnu6ec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 16 Jun 2019 16:47:25 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5GGj2Vu182074;
+        Sun, 16 Jun 2019 16:45:24 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2t5h5sts9u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 16 Jun 2019 16:45:24 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5GGjNlv031729;
+        Sun, 16 Jun 2019 16:45:23 GMT
+Received: from localhost (/70.95.137.242)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 16 Jun 2019 09:45:22 -0700
+Date:   Sun, 16 Jun 2019 09:45:21 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Chengguang Xu <cgxu519@zoho.com.cn>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext2: add missing brelse() in ext2_iget()
+Message-ID: <20190616164521.GB1872750@magnolia>
+References: <20190616150801.2652-1-cgxu519@zoho.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19061616-0012-0000-0000-00001744B050
-X-IBM-SpamModules-Scores: 
-X-IBM-SpamModules-Versions: BY=3.00011273; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000286; SDB=6.01218855; UDB=6.00641061; IPR=6.00999987;
- MB=3.00027334; MTD=3.00000008; XFM=3.00000015; UTC=2019-06-16 16:08:29
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19061616-0013-0000-0000-000057B6E856
-Message-Id: <20190616160813.24464-8-chandan@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-16_07:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906160155
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190616150801.2652-1-cgxu519@zoho.com.cn>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9290 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906160161
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9290 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906160161
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now that we have the code to support encryption for subpage-sized
-blocks, this commit removes the conditional check in filesystem mount
-code.
+On Sun, Jun 16, 2019 at 11:08:01PM +0800, Chengguang Xu wrote:
+> Add missing brelse() on error path of ext2_iget().
+> 
+> Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
 
-The commit also changes the support statement in
-Documentation/filesystems/fscrypt.rst to reflect the fact that
-encryption of filesystems with blocksize less than page size now works.
+/me wonders if the brelse ought to be moved down to bad_inode so that
+each error branch only has to set @ret and then jump (thereby
+eliminating the possibility of making this mistake again), but for a
+oneliner quick fix I guess it's fine:
 
-Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
----
- Documentation/filesystems/fscrypt.rst | 4 ++--
- fs/ext4/super.c                       | 7 -------
- 2 files changed, 2 insertions(+), 9 deletions(-)
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 08c23b60e016..c3efe86bf2b2 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -213,8 +213,8 @@ Contents encryption
- -------------------
- 
- For file contents, each filesystem block is encrypted independently.
--Currently, only the case where the filesystem block size is equal to
--the system's page size (usually 4096 bytes) is supported.
-+Starting from Linux kernel 5.4, encryption of filesystems with block
-+size less than system's page size is supported.
- 
- Each block's IV is set to the logical block number within the file as
- a little endian number, except that:
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 4079605d437a..63661a86d148 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4412,13 +4412,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		}
- 	}
- 
--	if ((DUMMY_ENCRYPTION_ENABLED(sbi) || ext4_has_feature_encrypt(sb)) &&
--	    (blocksize != PAGE_SIZE)) {
--		ext4_msg(sb, KERN_ERR,
--			 "Unsupported blocksize for fs encryption");
--		goto failed_mount_wq;
--	}
--
- 	if (DUMMY_ENCRYPTION_ENABLED(sbi) && !sb_rdonly(sb) &&
- 	    !ext4_has_feature_encrypt(sb)) {
- 		ext4_set_feature_encrypt(sb);
--- 
-2.19.1
+--D
 
+> ---
+>  fs/ext2/inode.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+> index e474127dd255..fb3611f02051 100644
+> --- a/fs/ext2/inode.c
+> +++ b/fs/ext2/inode.c
+> @@ -1473,6 +1473,7 @@ struct inode *ext2_iget (struct super_block *sb, unsigned long ino)
+>  	else
+>  		ei->i_dir_acl = le32_to_cpu(raw_inode->i_dir_acl);
+>  	if (i_size_read(inode) < 0) {
+> +		brelse(bh);
+>  		ret = -EFSCORRUPTED;
+>  		goto bad_inode;
+>  	}
+> -- 
+> 2.21.0
+> 
+> 
+> 
