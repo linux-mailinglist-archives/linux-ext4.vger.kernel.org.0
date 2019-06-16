@@ -2,85 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C6747545
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Jun 2019 16:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C596747569
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 Jun 2019 17:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727177AbfFPOoq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 16 Jun 2019 10:44:46 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:40157 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725879AbfFPOop (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Jun 2019 10:44:45 -0400
-Received: by mail-pf1-f194.google.com with SMTP id p184so4221566pfp.7;
-        Sun, 16 Jun 2019 07:44:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xOfBr7JlTH8fkki7imo8wyZIoxB0rfRm5CNLFhWSL4A=;
-        b=eFYrWKiYTgoK0+0dLdC93eQqbojj5RLZB3X71Dk+0SJKgps+XrkwzlSUSb587/1kDf
-         hlYhiXbRKOzvjm0rFUFJXICxZkhFcHR0thEOyKgB9iKwQ8/96aoL/1UFaMIjL5lwzxdp
-         AF0M16ItSFMCpEehvOd2mV11D8ExZ5JqB2q3tMTUWctdhzypIiL3bGXvavFQHouUQ5Rv
-         F3a1W74YsxJ9K/5KQK8rjKL7bngT0oKaZOL6+Hl4uWJ2MNt0Yrrp3GCZEJ2jeUkGy5cp
-         l6CAPxKHOzt4dGqcl8Ih407diDxBjuihLrV2iyql05esS+PBHfZn7RSrW3RLCCRHtaOD
-         i3AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xOfBr7JlTH8fkki7imo8wyZIoxB0rfRm5CNLFhWSL4A=;
-        b=NyyPOhOl0JD1h840nsK/8pZwJN3Izw0QE7HaoMPiRRvzaXhTmDHq4dY2XnwGMPhyvG
-         YZyzjaLs1zZvmQDUeaP2iLErSyQHgo7Oi+YqAjNKOD2baswsF/Lh1d1/ij4r9mAHAdBV
-         wZkHbnkpE40idYo/dg+eaYzGRciCY7JFlHfOWZbP5MSknkgkfBZgGsNpccJ3+mtH6B2l
-         uU4NO3PERfMl4nZ3HldvTLbqrl4HAYZGSoz0R/3aQkYLu3OZUSuY+7gz/d5UX9u5iU8p
-         05aSIwiSrvsr3E+wrfgGc7b63OcF/k3/bCIXQrcW84Hh83b8pdVh3NXiUlAL4cQ1YQRs
-         4khw==
-X-Gm-Message-State: APjAAAUY3hKk1bxceOEYirq8npc39+s4t4CMsUWBIjgdBlHk03pCye6K
-        XFT66gnzgTFZy4+irgdoIRQ=
-X-Google-Smtp-Source: APXvYqw9Zr6DG/QcykUYxry3nmZ7Yv88xSbwGYxsegWEtbVZBNs+xov5Iu9o9EvXMVFKtVibkJaIyQ==
-X-Received: by 2002:a17:90a:19d:: with SMTP id 29mr22006213pjc.71.1560696285178;
-        Sun, 16 Jun 2019 07:44:45 -0700 (PDT)
-Received: from localhost ([47.254.35.144])
-        by smtp.gmail.com with ESMTPSA id q129sm3861806pfb.89.2019.06.16.07.44.43
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sun, 16 Jun 2019 07:44:44 -0700 (PDT)
-Date:   Sun, 16 Jun 2019 22:44:40 +0800
-From:   Eryu Guan <guaneryu@gmail.com>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     tytso@mit.edu, fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.co.uk>
-Subject: Re: [PATCH v3 2/2] shared/012: Add tests for filename casefolding
- feature
-Message-ID: <20190616144440.GD15846@desktop>
-References: <20190612184033.21845-1-krisman@collabora.com>
- <20190612184033.21845-2-krisman@collabora.com>
+        id S1727291AbfFPPIR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Sun, 16 Jun 2019 11:08:17 -0400
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25451 "EHLO
+        sender1.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725879AbfFPPIQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Jun 2019 11:08:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1560697690; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=dwYP+DCOLbLdGLQdcGzvXkM6HxK9jzIlcu6Udj7qcK0eFiwqODsk2b2CqaL4oevLPw+Sy8q95+5bVGeussAGxPHABBbsI005kBha4/6NQ94aFce9ZZvFxtx9fmD0sJVioTPDU6cx6qkG/ViwHdFra+BvxsLRnRFLb8Hjek3IyWw=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1560697690; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
+        bh=Wf53hg+okz/TcqIQqrT1mVPw9mXz0q2TDkW3doCD21s=; 
+        b=blAsj0+YVicmkEh/605jELL4v8BMWnXPPtS3Yt5bPcL1hhkXhStK1pPrz8atPiToBOqODbwtnicf5X2zSbfwW7q9xUSpmIngduDqD5GpYgTHjRCZd9E/d3h9eXn8uimWa/1b+usk/EH9CXAo1As9m5AtWh9QCfdeF/2hxhWBGRY=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=zoho.com.cn;
+        spf=pass  smtp.mailfrom=cgxu519@zoho.com.cn;
+        dmarc=pass header.from=<cgxu519@zoho.com.cn> header.from=<cgxu519@zoho.com.cn>
+Received: from localhost.localdomain.localdomain (113.116.51.202 [113.116.51.202]) by mx.zoho.com.cn
+        with SMTPS id 1560697688293629.3553326145355; Sun, 16 Jun 2019 23:08:08 +0800 (CST)
+From:   Chengguang Xu <cgxu519@zoho.com.cn>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@zoho.com.cn>
+Message-ID: <20190616150801.2652-1-cgxu519@zoho.com.cn>
+Subject: [PATCH] ext2: add missing brelse() in ext2_iget()
+Date:   Sun, 16 Jun 2019 23:08:01 +0800
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190612184033.21845-2-krisman@collabora.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Transfer-Encoding: 8BIT
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 02:40:33PM -0400, Gabriel Krisman Bertazi wrote:
-> From: "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.co.uk>
-> 
-> This new test implements verification for the per-directory
-> case-insensitive feature, as supported by the reference implementation
-> in Ext4.
-> 
-> Signed-off-by: Lakshmipathi.G <lakshmipathi.ganapathi@collabora.co.uk>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->   [Rewrite to support feature design]
->   [Refactor to simplify implementation]
+Add missing brelse() on error path of ext2_iget().
 
-Test looks good to me, and test passes for me with v5.2-rc4 kernel and
-latest e2fsprogs, thanks! Just that, I moved the test to generic, as we
-have all the needed _require rules ready to _notrun on unsupported fs,
-so it's ready to be generic. (Sorry I was not involved with the
-ext4-shared-generic discussion in the first place)
+Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
+---
+ fs/ext2/inode.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks,
-Eryu
+diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+index e474127dd255..fb3611f02051 100644
+--- a/fs/ext2/inode.c
++++ b/fs/ext2/inode.c
+@@ -1473,6 +1473,7 @@ struct inode *ext2_iget (struct super_block *sb, unsigned long ino)
+ 	else
+ 		ei->i_dir_acl = le32_to_cpu(raw_inode->i_dir_acl);
+ 	if (i_size_read(inode) < 0) {
++		brelse(bh);
+ 		ret = -EFSCORRUPTED;
+ 		goto bad_inode;
+ 	}
+-- 
+2.21.0
+
+
+
