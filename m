@@ -2,73 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCFC47AF4
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Jun 2019 09:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB19484EF
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Jun 2019 16:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbfFQH24 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Jun 2019 03:28:56 -0400
-Received: from slot0.nejknio.cf ([89.32.41.233]:42729 "EHLO slot0.nejknio.cf"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726622AbfFQH2y (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 17 Jun 2019 03:28:54 -0400
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=nejknio.cf;
- h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID; i=trade1@nejknio.cf;
- bh=73Xs4LxjK+lP+h5mKCyFyWTpkoQ=;
- b=S9i3uZIHCvNPh+2KCuDjUmEgXYjgkD9k3bocwEMM2hTh5yWaBM1BDsNO+YXh7kZlJhCcbc3kpCO8
-   we8/wWPEk/rthM27WMKwQx/80CHJ82BDf6ndqeDwB/InRAksEp/XN8Wo/SM2fSxOr98evbDlHgMH
-   BVFYqvDu6RbkMhtCRRQXQ7+6weL/tVdWHLhOAvO789Izzm6K86+x5HKx/Mwj6llKmzeJzInK89Lc
-   27f9xBClDvR11MvWxlsf3G/ZtM8jg7hBGPzNVp1f8LbPysLF0XjpNXtRiVuS4xw92ERAldV6vkTA
-   I/P+JSUgzsn2S0V1b+OVHIcaH5cUVKWofHjLcg==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=nejknio.cf;
- b=e2UTiYFb6zoXBkqAMt8J3YnGfakrR1lWKCvkb5YEl0gGFg3PlHvMK/AfNNysWp3GID2QaqnbVGFW
-   JAvo2oasLSUCnxDX6NmER2RCU6fBS/yLTKQrBDMJXYUe1sbAtXMQGk6/mm721GjOJb43WSZcHy7r
-   BB4r7PkbstdMWE4NhnP2d7ifrcILKvjn/ultZLSkGL7kutnC+r2pZoHyFHlSUNdFkRJbrRlt8yNl
-   O/+nStwN6vy2hU6VgOA4KqMx/+p4ooNHPObSUH9WEE1PfgJ7BjwktQJn6NiyZRhC48lWgPx7cGRW
-   OXreGjEFO78k1tueFH6OaYU4PrWelwsuEYjzzg==;
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726489AbfFQOKI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Jun 2019 10:10:08 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59006 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725906AbfFQOKI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jun 2019 10:10:08 -0400
+Received: from callcc.thunk.org (rrcs-74-87-88-165.west.biz.rr.com [74.87.88.165])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5HE9qft017594
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jun 2019 10:09:54 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 69A45420484; Mon, 17 Jun 2019 10:09:52 -0400 (EDT)
+Date:   Mon, 17 Jun 2019 10:09:52 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Zhangjs Jinshui <leozhangjs@gmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zachary@baishancloud.com
+Subject: Re: [PATCH] ext4: make __ext4_get_inode_loc plug
+Message-ID: <20190617140952.GF4358@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        Zhangjs Jinshui <leozhangjs@gmail.com>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zachary@baishancloud.com
+References: <CAEKGrW601HBKVA+FsoeCPMXFZnzv8r0_96FaLDnVKCp=KmcvtA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: PRODUCT INQUIRY FOR EXPORT SHIPMENT
-To:     Recipients <trade1@nejknio.cf>
-From:   "Mark Maths" <trade1@nejknio.cf>
-Date:   Mon, 17 Jun 2019 10:08:51 +0300
-Reply-To: purchase_m.maths@aol.com
-Message-ID: <0.0.1.D19.1D524DB794AE0AC.0@slot0.nejknio.cf>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEKGrW601HBKVA+FsoeCPMXFZnzv8r0_96FaLDnVKCp=KmcvtA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dear Sales team,
- =
+On Mon, Jun 17, 2019 at 03:11:21PM +0800, Zhangjs Jinshui wrote:
+> If the task is unplugged when called, the inode_readahead_blks may not be
+> merged,
+> these will cause small pieces of io, It should be plugged.
+> 
+> Signed-off-by: zhangjs <zachary@baishancloud.com>
 
-In furtherance to our market research, we have reviewed all your products t=
-ypes and we have finally interested in your product for our market here in =
+This patch is white space damaged.   Please see:
 
+https://www.kernel.org/doc/html/latest/process/email-clients.html
 
-United State for your production. We introduce ourselves as Emilxa Tram SRL=
-, A general group of company located in the United State. =
+for more information.  Could you resend using an appropriate mail
+client?
 
+Many thanks!
 
-We are sourcing for new suppliers from your location =
-
-
-Kindly advice us if you accept new purchase orders, I will forward our PO f=
-or urgent order.
-
-Waiting for your response to send order. Reply to ( purchase_m.maths@aol.co=
-m)
-
-Best regards.
-Mark Maths
-Company Address:
-Emilxa Tram SRL Company Limited
-P.O. Box 978
-Road Town
-Tortola
-British Virgin Islands
-Contact information:
-Tel: +1 (284) 493 7235
-Email: purchase_m.maths@aol.com
-https://meridianbvi.com/contact-us/
+					- Ted
