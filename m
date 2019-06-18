@@ -2,294 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3355548D59
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Jun 2019 21:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1D24A410
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Jun 2019 16:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbfFQTCt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Jun 2019 15:02:49 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55868 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725497AbfFQTCt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Jun 2019 15:02:49 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 448532614E9
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH] ext4: Optimize case-insensitive lookups
-Date:   Mon, 17 Jun 2019 15:02:40 -0400
-Message-Id: <20190617190240.30996-1-krisman@collabora.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729465AbfFROb1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Jun 2019 10:31:27 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:34295 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbfFROb1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Jun 2019 10:31:27 -0400
+Received: by mail-pg1-f194.google.com with SMTP id p10so7817232pgn.1
+        for <linux-ext4@vger.kernel.org>; Tue, 18 Jun 2019 07:31:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=7vNl+QpgeqILPU7ttqIKXZfgU4Hj37fGfAcLb0DSlhs=;
+        b=IEqwOE6n3Ae8lWXZfTcctbK+gaRj2opo7ah3sklQd5Wn9GTnfJFM2JbDnORwZEoq48
+         qhR5or/O/xr2LDwwW5CpItVAAlRBETsENe5tg6NI1whgL+5oW07A53cP1SEYng1M9dW3
+         0BT9F9rZH/jHFbxndD3dhhkn0Xk9bKCQCXP1StnrSgX7XQ8NVSUCoZtcYOSEzgd1VhSN
+         495nWwghd+eFwNAgj+s+ixHiNPrKQAhhMGS4ubR1XU3w7R5ZrivL81oxUIKxOH2IKRWx
+         Dyx/c5g327qOo0B/YQsEq/iZ/6MuNgr17j1IMTpR17sWHIC6E6Nl9s1DMcyZxuEZEgDB
+         Pe6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=7vNl+QpgeqILPU7ttqIKXZfgU4Hj37fGfAcLb0DSlhs=;
+        b=gJVU2y1ipNHl21bjF6x1uRBtoF7XzwdPjDzJhNxCypXZXpNZQbGz+Kva6ul0bTVMPP
+         QUcqahi8ngvAzoWD/HAKNvpd60NkOUwyjBryVXqd6371QKnTjhcIDFaJMoJsdNbSlH2n
+         6yEbklqQCPvJX/b6NTZ9JdsvUP+bVz6CjABco23boJnwMYIr/72Up18vSZqzBj/xgZoU
+         RxdxXsUgflwvwPyuBy408Miaf553vvpoTJAtIH2mKYPyALbQgQD/KlbWM1VR20Rg9u9g
+         1KYOFh+K4t17m/ajURTqn9zqsWcoE8l+CyU3HgD6DbgJg1L2HuPe5E2VrLTqNnXHTd57
+         byYA==
+X-Gm-Message-State: APjAAAWyK+iGf2mW9k2nYvRKc0BZB1iRdEFke/xvxidx7MU+XzPd8toL
+        oO5qjhjwxf49gJ3pOY+sT/nf8wwT
+X-Google-Smtp-Source: APXvYqxVpskqjyuS9q0VWqTyqZe3BAkMNqoX52Eqz+8+TuR8582drwQ955SdvC3T6RNe5v8K0TPRVw==
+X-Received: by 2002:a63:1d53:: with SMTP id d19mr2997544pgm.152.1560868286661;
+        Tue, 18 Jun 2019 07:31:26 -0700 (PDT)
+Received: from deepa-ubuntu.lan (c-98-234-52-230.hsd1.ca.comcast.net. [98.234.52.230])
+        by smtp.gmail.com with ESMTPSA id g13sm14957637pfi.93.2019.06.18.07.31.25
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 Jun 2019 07:31:26 -0700 (PDT)
+From:   Deepa Dinamani <deepa.kernel@gmail.com>
+To:     arnd@arndb.de
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH 08/16] ext4: Initialize timestamps limits
+Date:   Tue, 18 Jun 2019 07:31:02 -0700
+Message-Id: <20190618143110.6720-8-deepa.kernel@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190618143110.6720-1-deepa.kernel@gmail.com>
+References: <20190618143110.6720-1-deepa.kernel@gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Temporarily cache a casefolded version of the file name under lookup in
-ext4_filename, to avoid repeatedly casefolding it.  I got up to 30%
-speedup on lookups of large directories (>100k entries), depending on
-the length of the string under lookup.
+ext4 has different overflow limits for max filesystem
+timestamps based on the extra bytes available.
 
-v2:
-  - Dinamically allocate space for the casefolded version.
+The timestamp limits are calculated according to the
+encoding table in
+a4dad1ae24f85i(ext4: Fix handling of extended tv_sec):
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+* extra  msb of                         adjust for signed
+* epoch  32-bit                         32-bit tv_sec to
+* bits   time    decoded 64-bit tv_sec  64-bit tv_sec      valid time range
+* 0 0    1    -0x80000000..-0x00000001  0x000000000   1901-12-13..1969-12-31
+* 0 0    0    0x000000000..0x07fffffff  0x000000000   1970-01-01..2038-01-19
+* 0 1    1    0x080000000..0x0ffffffff  0x100000000   2038-01-19..2106-02-07
+* 0 1    0    0x100000000..0x17fffffff  0x100000000   2106-02-07..2174-02-25
+* 1 0    1    0x180000000..0x1ffffffff  0x200000000   2174-02-25..2242-03-16
+* 1 0    0    0x200000000..0x27fffffff  0x200000000   2242-03-16..2310-04-04
+* 1 1    1    0x280000000..0x2ffffffff  0x300000000   2310-04-04..2378-04-22
+* 1 1    0    0x300000000..0x37fffffff  0x300000000   2378-04-22..2446-05-10
+
+Note that the time limits are not correct for deletion times.
+
+Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org
 ---
- fs/ext4/dir.c           |  2 +-
- fs/ext4/ext4.h          | 39 ++++++++++++++++++++++++++++++++++---
- fs/ext4/namei.c         | 43 ++++++++++++++++++++++++++++++++++++-----
- fs/unicode/utf8-core.c  | 28 +++++++++++++++++++++++++++
- include/linux/unicode.h |  3 +++
- 5 files changed, 106 insertions(+), 9 deletions(-)
+ fs/ext4/ext4.h  |  4 ++++
+ fs/ext4/super.c | 16 ++++++++++++++--
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index c7843b149a1e..0a427e18584a 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -674,7 +674,7 @@ static int ext4_d_compare(const struct dentry *dentry, unsigned int len,
- 		return memcmp(str, name->name, len);
- 	}
- 
--	return ext4_ci_compare(dentry->d_parent->d_inode, name, &qstr);
-+	return ext4_ci_compare(dentry->d_parent->d_inode, name, &qstr, false);
- }
- 
- static int ext4_d_hash(const struct dentry *dentry, struct qstr *str)
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 1cb67859e051..c0793d9e5d12 100644
+index 1cb67859e051..3f13cf12ae7f 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -2077,6 +2077,9 @@ struct ext4_filename {
- #ifdef CONFIG_FS_ENCRYPTION
- 	struct fscrypt_str crypto_buf;
- #endif
-+#ifdef CONFIG_UNICODE
-+	struct fscrypt_str cf_name;
-+#endif
- };
+@@ -1631,6 +1631,10 @@ static inline void ext4_clear_state_flags(struct ext4_inode_info *ei)
  
- #define fname_name(p) ((p)->disk_name.name)
-@@ -2302,6 +2305,12 @@ extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
- 					      struct ext4_group_desc *gdp);
- ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
+ #define EXT4_GOOD_OLD_INODE_SIZE 128
  
-+#ifdef CONFIG_UNICODE
-+extern void ext4_fname_setup_ci_filename(struct inode *dir,
-+					 const struct qstr *iname,
-+					 struct fscrypt_str *fname);
-+#endif
++#define EXT4_EXTRA_TIMESTAMP_MAX	(((s64)1 << 34) - 1  + S32_MIN)
++#define EXT4_NON_EXTRA_TIMESTAMP_MAX	S32_MAX
++#define EXT4_TIMESTAMP_MIN		S32_MIN
 +
- #ifdef CONFIG_FS_ENCRYPTION
- static inline void ext4_fname_from_fscrypt_name(struct ext4_filename *dst,
- 						const struct fscrypt_name *src)
-@@ -2328,6 +2337,10 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
- 		return err;
- 
- 	ext4_fname_from_fscrypt_name(fname, &name);
-+
-+#ifdef CONFIG_UNICODE
-+	ext4_fname_setup_ci_filename(dir, iname, &fname->cf_name);
-+#endif
- 	return 0;
- }
- 
-@@ -2343,6 +2356,10 @@ static inline int ext4_fname_prepare_lookup(struct inode *dir,
- 		return err;
- 
- 	ext4_fname_from_fscrypt_name(fname, &name);
-+
-+#ifdef CONFIG_UNICODE
-+	ext4_fname_setup_ci_filename(dir, &dentry->d_name, &fname->cf_name);
-+#endif
- 	return 0;
- }
- 
-@@ -2356,6 +2373,11 @@ static inline void ext4_fname_free_filename(struct ext4_filename *fname)
- 	fname->crypto_buf.name = NULL;
- 	fname->usr_fname = NULL;
- 	fname->disk_name.name = NULL;
-+
-+#ifdef CONFIG_UNICODE
-+	kfree(fname->cf_name.name);
-+	fname->cf_name.name = NULL;
-+#endif
- }
- #else /* !CONFIG_FS_ENCRYPTION */
- static inline int ext4_fname_setup_filename(struct inode *dir,
-@@ -2366,6 +2388,11 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
- 	fname->usr_fname = iname;
- 	fname->disk_name.name = (unsigned char *) iname->name;
- 	fname->disk_name.len = iname->len;
-+
-+#ifdef CONFIG_UNICODE
-+	ext4_fname_setup_ci_filename(dir, iname, &fname->cf_name);
-+#endif
-+
- 	return 0;
- }
- 
-@@ -2376,7 +2403,13 @@ static inline int ext4_fname_prepare_lookup(struct inode *dir,
- 	return ext4_fname_setup_filename(dir, &dentry->d_name, 1, fname);
- }
- 
--static inline void ext4_fname_free_filename(struct ext4_filename *fname) { }
-+static inline void ext4_fname_free_filename(struct ext4_filename *fname)
-+{
-+#ifdef CONFIG_UNICODE
-+	kfree(fname->cf_name.name);
-+	fname->cf_name.name = NULL;
-+#endif
-+}
- #endif /* !CONFIG_FS_ENCRYPTION */
- 
- /* dir.c */
-@@ -3119,8 +3152,8 @@ extern int ext4_handle_dirty_dirent_node(handle_t *handle,
- 					 struct inode *inode,
- 					 struct buffer_head *bh);
- extern int ext4_ci_compare(const struct inode *parent,
--			   const struct qstr *name,
--			   const struct qstr *entry);
-+			   const struct qstr *fname,
-+			   const struct qstr *entry, bool quick);
- 
- #define S_SHIFT 12
- static const unsigned char ext4_type_by_mode[(S_IFMT >> S_SHIFT) + 1] = {
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index cd01c4a67ffb..4909ced4e672 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1259,19 +1259,24 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
- #ifdef CONFIG_UNICODE
  /*
-  * Test whether a case-insensitive directory entry matches the filename
-- * being searched for.
-+ * being searched for.  If quick is set, assume the name being looked up
-+ * is already in the casefolded form.
-  *
-  * Returns: 0 if the directory entry matches, more than 0 if it
-  * doesn't match or less than zero on error.
+  * Feature set definitions
   */
- int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
--		    const struct qstr *entry)
-+		    const struct qstr *entry, bool quick)
- {
- 	const struct ext4_sb_info *sbi = EXT4_SB(parent->i_sb);
- 	const struct unicode_map *um = sbi->s_encoding;
- 	int ret;
- 
--	ret = utf8_strncasecmp(um, name, entry);
-+	if (quick)
-+		ret = utf8_strncasecmp_folded(um, name, entry);
-+	else
-+		ret = utf8_strncasecmp(um, name, entry);
-+
- 	if (ret < 0) {
- 		/* Handle invalid character sequence as either an error
- 		 * or as an opaque byte sequence.
-@@ -1287,6 +1292,27 @@ int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
- 
- 	return ret;
- }
-+
-+void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
-+				  struct fscrypt_str *cf_name)
-+{
-+	if (!IS_CASEFOLDED(dir)) {
-+		cf_name->name = NULL;
-+		return;
-+	}
-+
-+	cf_name->name = kmalloc(EXT4_NAME_LEN, GFP_NOFS);
-+	if (!cf_name->name)
-+		return;
-+
-+	cf_name->len = utf8_casefold(EXT4_SB(dir->i_sb)->s_encoding,
-+				     iname, cf_name->name,
-+				     EXT4_NAME_LEN);
-+	if (cf_name->len <= 0) {
-+		kfree(cf_name->name);
-+		cf_name->name = NULL;
-+	}
-+}
- #endif
- 
- /*
-@@ -1313,8 +1339,15 @@ static inline bool ext4_match(const struct inode *parent,
- #endif
- 
- #ifdef CONFIG_UNICODE
--	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent))
--		return (ext4_ci_compare(parent, fname->usr_fname, &entry) == 0);
-+	if (EXT4_SB(parent->i_sb)->s_encoding && IS_CASEFOLDED(parent)) {
-+		if (fname->cf_name.name) {
-+			struct qstr cf = {.name = fname->cf_name.name,
-+					  .len = fname->cf_name.len};
-+			return !ext4_ci_compare(parent, &cf, &entry, true);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 4079605d437a..0357acdeb6d3 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4035,8 +4035,20 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 			       sbi->s_inode_size);
+ 			goto failed_mount;
+ 		}
+-		if (sbi->s_inode_size > EXT4_GOOD_OLD_INODE_SIZE)
+-			sb->s_time_gran = 1 << (EXT4_EPOCH_BITS - 2);
++		/* i_atime_extra is the last extra field available for [acm]times in
++		 * struct ext4_inode. Checking for that field should suffice to ensure
++		 * we have extra spaces for all three.
++		 */
++		if (sbi->s_inode_size >= offsetof(struct ext4_inode, i_atime_extra) +
++			sizeof(((struct ext4_inode *)0)->i_atime_extra)) {
++			sb->s_time_gran = 1;
++			sb->s_time_max = EXT4_EXTRA_TIMESTAMP_MAX;
++		} else {
++			sb->s_time_gran = 0;
++			sb->s_time_max = EXT4_NON_EXTRA_TIMESTAMP_MAX;
 +		}
-+		return !ext4_ci_compare(parent, fname->usr_fname, &entry,
-+					false);
-+	}
- #endif
- 
- 	return fscrypt_match_name(&f, de->name, de->name_len);
-diff --git a/fs/unicode/utf8-core.c b/fs/unicode/utf8-core.c
-index 6afab4fdce90..71ca4d047d65 100644
---- a/fs/unicode/utf8-core.c
-+++ b/fs/unicode/utf8-core.c
-@@ -73,6 +73,34 @@ int utf8_strncasecmp(const struct unicode_map *um,
- }
- EXPORT_SYMBOL(utf8_strncasecmp);
- 
-+/* String cf is expected to be a valid UTF-8 casefolded
-+ * string.
-+ */
-+int utf8_strncasecmp_folded(const struct unicode_map *um,
-+			    const struct qstr *cf,
-+			    const struct qstr *s1)
-+{
-+	const struct utf8data *data = utf8nfdicf(um->version);
-+	struct utf8cursor cur1;
-+	int c1, c2;
-+	int i = 0;
 +
-+	if (utf8ncursor(&cur1, data, s1->name, s1->len) < 0)
-+		return -EINVAL;
-+
-+	do {
-+		c1 = utf8byte(&cur1);
-+		c2 = cf->name[i++];
-+		if (c1 < 0)
-+			return -EINVAL;
-+		if (c1 != c2)
-+			return 1;
-+	} while (c1);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(utf8_strncasecmp_folded);
-+
- int utf8_casefold(const struct unicode_map *um, const struct qstr *str,
- 		  unsigned char *dest, size_t dlen)
- {
-diff --git a/include/linux/unicode.h b/include/linux/unicode.h
-index aec2c6d800aa..990aa97d8049 100644
---- a/include/linux/unicode.h
-+++ b/include/linux/unicode.h
-@@ -17,6 +17,9 @@ int utf8_strncmp(const struct unicode_map *um,
++		sb->s_time_min = EXT4_TIMESTAMP_MIN;
+ 	}
  
- int utf8_strncasecmp(const struct unicode_map *um,
- 		 const struct qstr *s1, const struct qstr *s2);
-+int utf8_strncasecmp_folded(const struct unicode_map *um,
-+			    const struct qstr *cf,
-+			    const struct qstr *s1);
- 
- int utf8_normalize(const struct unicode_map *um, const struct qstr *str,
- 		   unsigned char *dest, size_t dlen);
+ 	sbi->s_desc_size = le16_to_cpu(es->s_desc_size);
 -- 
-2.20.1
+2.17.1
 
