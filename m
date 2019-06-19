@@ -2,156 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5D44BF86
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Jun 2019 19:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B994C127
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Jun 2019 21:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730298AbfFSRWg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Jun 2019 13:22:36 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:35237 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730188AbfFSRW0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Jun 2019 13:22:26 -0400
-Received: by mail-io1-f66.google.com with SMTP id m24so184668ioo.2
-        for <linux-ext4@vger.kernel.org>; Wed, 19 Jun 2019 10:22:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PDc3/t6pQgXRlrbpZdKVEwq+X2f/5QLw6zNH6ghEEMo=;
-        b=WPhIzrHu8MmV20787TkEtOfYm8/d2xp1ifATc3YV0/Rsg0RGf7SNVNtMk1uBr3yM3O
-         ZzONv6mp3+uKgsCWGg7j7qWkPxVOAYs+9VPxean7qbw9ydspDA8iJKMeRoICmmyuPYCL
-         Gs68n8T05do8PZDva2U27cwXM3i99K4Y387kg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PDc3/t6pQgXRlrbpZdKVEwq+X2f/5QLw6zNH6ghEEMo=;
-        b=ExuJBShfBeGuOfrTDmldx864iGeVSnHV/g+zxZbj4JYTfSOBOta+br4LPaK2RyEboI
-         lHsaB+vDMgDOeYSPnIOSSDJRSGYX3RsYSw0LBKzgSvZrO61cladoKGh6j79Ne8Bi9XOk
-         pZqSucjTBNZCb4WdQtE7M6NkacvUo1bxF8DF6b38Vd60Ewu3he5AleAuTFsNSa2a19eG
-         5YNq3plqQ9ONpRegqR3J4YgBonK4Xs3dms7bKMxjXuCA+Y65dQG711KfsxhpuyllersE
-         LRYQ70uGTGptPmQl5aE5Wqb9T1+uPZJpNZEWfOwpJ4fNfh70LMFxmc96wswab5yEwBSQ
-         8krA==
-X-Gm-Message-State: APjAAAVeLeQNRsm2QnDuTkCPvhwwNDNqT3CB0YExNZEhpbqbIG+DdChT
-        KvR3NgdrWo1pLVciP1OOann3DA==
-X-Google-Smtp-Source: APXvYqyww/nXaKClg6oe4jKe1+QWUCyNtR9Nkjre2Tn+D5wwr4oCZC/khTMy8wbQr3InQ0out2BhWw==
-X-Received: by 2002:a6b:cf17:: with SMTP id o23mr3506984ioa.176.1560964945770;
-        Wed, 19 Jun 2019 10:22:25 -0700 (PDT)
-Received: from localhost ([2620:15c:183:200:855f:8919:84a7:4794])
-        by smtp.gmail.com with ESMTPSA id u26sm22681456iol.1.2019.06.19.10.22.24
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 19 Jun 2019 10:22:25 -0700 (PDT)
-From:   Ross Zwisler <zwisler@chromium.org>
-X-Google-Original-From: Ross Zwisler <zwisler@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ross Zwisler <zwisler@google.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Fletcher Woodruff <fletcherw@google.com>,
-        Justin TerAvest <teravest@google.com>
-Subject: [PATCH 3/3] ext4: use jbd2_inode dirty range scoping
-Date:   Wed, 19 Jun 2019 11:21:56 -0600
-Message-Id: <20190619172156.105508-4-zwisler@google.com>
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-In-Reply-To: <20190619172156.105508-1-zwisler@google.com>
-References: <20190619172156.105508-1-zwisler@google.com>
+        id S1730168AbfFSTAg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Jun 2019 15:00:36 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42071 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726449AbfFSTAf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Jun 2019 15:00:35 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5JJ0U1h016837
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Jun 2019 15:00:31 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id EE544420484; Wed, 19 Jun 2019 15:00:29 -0400 (EDT)
+Date:   Wed, 19 Jun 2019 15:00:29 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH] e2fsck: process empty directory if large_dir and
+ inline_data set
+Message-ID: <20190619190029.GA3383@mit.edu>
+References: <20190614144237.6010-1-c17828@cray.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190614144237.6010-1-c17828@cray.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Use the newly introduced jbd2_inode dirty range scoping to prevent us
-from waiting forever when trying to complete a journal transaction.
+On Fri, Jun 14, 2019 at 05:42:37PM +0300, Artem Blagodarenko wrote:
+> Doing a forced check on an ext4 file system with inline_data and
+> large_dir results in lots of fsck messages. To reproduce:
+> ...
+> 
+> Rootcause of this issue is large_dir optimization that is not
+> appropriate for inline_data.
+> 
+> Let's not optimize it if inline_data is set.
+> 
+> Reported-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Signed-off-by: Artem Blagodarenko <c17828@cray.com>
 
-Signed-off-by: Ross Zwisler <zwisler@google.com>
----
- fs/ext4/ext4_jbd2.h   | 12 ++++++------
- fs/ext4/inode.c       | 13 ++++++++++---
- fs/ext4/move_extent.c |  3 ++-
- 3 files changed, 18 insertions(+), 10 deletions(-)
+Thanks, applied, although I corrected the commit description.  The
+initial description now reads:
 
-diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-index 75a5309f22315..ef8fcf7d0d3b3 100644
---- a/fs/ext4/ext4_jbd2.h
-+++ b/fs/ext4/ext4_jbd2.h
-@@ -361,20 +361,20 @@ static inline int ext4_journal_force_commit(journal_t *journal)
- }
- 
- static inline int ext4_jbd2_inode_add_write(handle_t *handle,
--					    struct inode *inode)
-+		struct inode *inode, loff_t start_byte, loff_t length)
- {
- 	if (ext4_handle_valid(handle))
--		return jbd2_journal_inode_add_write(handle,
--						    EXT4_I(inode)->jinode);
-+		return jbd2_journal_inode_ranged_write(handle,
-+				EXT4_I(inode)->jinode, start_byte, length);
- 	return 0;
- }
- 
- static inline int ext4_jbd2_inode_add_wait(handle_t *handle,
--					   struct inode *inode)
-+		struct inode *inode, loff_t start_byte, loff_t length)
- {
- 	if (ext4_handle_valid(handle))
--		return jbd2_journal_inode_add_wait(handle,
--						   EXT4_I(inode)->jinode);
-+		return jbd2_journal_inode_ranged_wait(handle,
-+				EXT4_I(inode)->jinode, start_byte, length);
- 	return 0;
- }
- 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index c7f77c6430085..27fec5c594459 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -731,10 +731,16 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 		    !(flags & EXT4_GET_BLOCKS_ZERO) &&
- 		    !ext4_is_quota_file(inode) &&
- 		    ext4_should_order_data(inode)) {
-+			loff_t start_byte =
-+				(loff_t)map->m_lblk << inode->i_blkbits;
-+			loff_t length = (loff_t)map->m_len << inode->i_blkbits;
-+
- 			if (flags & EXT4_GET_BLOCKS_IO_SUBMIT)
--				ret = ext4_jbd2_inode_add_wait(handle, inode);
-+				ret = ext4_jbd2_inode_add_wait(handle, inode,
-+						start_byte, length);
- 			else
--				ret = ext4_jbd2_inode_add_write(handle, inode);
-+				ret = ext4_jbd2_inode_add_write(handle, inode,
-+						start_byte, length);
- 			if (ret)
- 				return ret;
- 		}
-@@ -4085,7 +4091,8 @@ static int __ext4_block_zero_page_range(handle_t *handle,
- 		err = 0;
- 		mark_buffer_dirty(bh);
- 		if (ext4_should_order_data(inode))
--			err = ext4_jbd2_inode_add_write(handle, inode);
-+			err = ext4_jbd2_inode_add_write(handle, inode, from,
-+					length);
- 	}
- 
- unlock:
-diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-index 1083a9f3f16a1..c7ded4e2adff5 100644
---- a/fs/ext4/move_extent.c
-+++ b/fs/ext4/move_extent.c
-@@ -390,7 +390,8 @@ move_extent_per_page(struct file *o_filp, struct inode *donor_inode,
- 
- 	/* Even in case of data=writeback it is reasonable to pin
- 	 * inode to transaction, to prevent unexpected data loss */
--	*err = ext4_jbd2_inode_add_write(handle, orig_inode);
-+	*err = ext4_jbd2_inode_add_write(handle, orig_inode,
-+			(loff_t)orig_page_offset << PAGE_SHIFT, replaced_size);
- 
- unlock_pages:
- 	unlock_page(pagep[0]);
--- 
-2.22.0.410.gd8fdbe21b5-goog
+    e2fsck: correctly handle inline directories when large_dir is enabled.
+    
+    Historically, e2fsck has required that directories not contain holes.
+    (In fact, as of this writing, ext4 still requires this to be the
+    case.)  Commit ae9efd05a98 ("e2fsck: 3 level hash tree directory
+    optimization") removed this requirement if the large_dir feature is
+    enabled; however, the way it was done caused it to incorrectly handle
+    inline directories.
 
+    To reproduce the problem fixed by this commit:
+    ...
+
+BTW, Removing the directory hole check in commit ae9efd05a98 for file
+systems with the large_dir feature enabled was a wee bit optimistic,
+since the kernel will still mark the file system as corrupted.
+
+Fixing the kernel so that it doesn't complain about directories with
+holes is going to be a bit more complicated than just removing the
+check in __ext4_read_dirblock():
+
+	if (!bh) {
+		ext4_error_inode(inode, func, line, block,
+				 "Directory hole found");
+		return ERR_PTR(-EFSCORRUPTED);
+	}
+
+(That's because we have to fix all of the callers of
+ext4_read_dirblock() to handle the case where it returns NULL if there
+is no directory block at that specified location.)
+
+I should have caught that when reviewing the e2fsprogs commit; my bad.
+At this point, we should just fix the kernel so it can handle
+directories with holes (both for large_dir and non-large_dir
+directories).
+
+      		      	      		- Ted
