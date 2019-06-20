@@ -2,115 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1D94DC9E
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2019 23:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C06E4DCAF
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2019 23:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726010AbfFTVfA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jun 2019 17:35:00 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:41874 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbfFTVfA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jun 2019 17:35:00 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5KLYHC0097277;
-        Thu, 20 Jun 2019 21:34:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=8/hP1gZbSChvwo7mSZDi/irfCoSiD/XJYR7/7zJjjjM=;
- b=egULdwdm2jA4bh3r3Zs9OELL0UW7onVVnPL6kcKK5HYWKILolxg8UeoozktxnWbtNyho
- VZjV4tZVtgZdfgpbAA3ydMBu/29u0JFPt6BeppdLibQuw2QMod61BxT+N+FSoM83rz/m
- 29LpRONzW55S2L/gvkz3jSpiPw0NFiCJiXoui4FhTf5AbYyKi4qAznKkzkipu7hmD6vS
- d5xzyKxtLU9YmHMnH1rG3hHfLPLVs42+Ils6mxUs87RZK6WxbtJo8bVXcXSUoP1rcB4F
- cErCXjnRvei+YBEKjJrDJSPWjveWgpYcSYgIj636y07DS5W8jpw8USEvq75znDKTgMph OQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2t7809kcav-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 Jun 2019 21:34:56 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5KLYlTQ145879;
-        Thu, 20 Jun 2019 21:34:55 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2t77ypkqwq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 Jun 2019 21:34:55 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5KLYtBE001306;
-        Thu, 20 Jun 2019 21:34:55 GMT
-Received: from localhost (/10.145.179.81)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 20 Jun 2019 14:34:55 -0700
-Date:   Thu, 20 Jun 2019 14:34:54 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] jbd2: drop declaration of journal_sync_buffer()
-Message-ID: <20190620213454.GA5375@magnolia>
-References: <20190620213228.8191-1-tytso@mit.edu>
+        id S1726115AbfFTVii (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Jun 2019 17:38:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725815AbfFTVii (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 20 Jun 2019 17:38:38 -0400
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C455220657;
+        Thu, 20 Jun 2019 21:38:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1561066717;
+        bh=yEG3vC7ixbuXelNYA7seRr/QNRJr1EicOmlE5fCxzFQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c4ZCFhbiDByOiTH43+vW/ggstzPGjebtsiDTS//cWSPMyRgzEjX9xlmMJdeEiS9Lu
+         gtiaqFtR7dfrk5bT/3EKMtTLAvaHwsTH7NVDkKgNWjcVo3W/b8GS0TrG4A5as/1qtv
+         xLE9QjGXP85PvgRlL1lFrR+X5jz5TGpDcBXm+xrU=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Victor Hsieh <victorhsieh@google.com>
+Subject: [RFC PATCH v2 0/8] xfstests: add fs-verity tests
+Date:   Thu, 20 Jun 2019 14:36:06 -0700
+Message-Id: <20190620213614.113685-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190620213228.8191-1-tytso@mit.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9294 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906200154
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9294 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906200154
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 20, 2019 at 05:32:28PM -0400, Theodore Ts'o wrote:
-> The journal_sync_buffer() function was never carried over from jbd to
-> jbd2.  So get rid of the vestigal declaration of this (non-existent)
-> function.
-> 
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Add tests for fs-verity, a new feature for read-only file-based
+authenticity protection.  fs-verity will be supported by ext4 and f2fs,
+and perhaps by other filesystems later.  Running these tests requires:
 
-Looks ok,
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+- A kernel with the fs-verity patches applied and configured with
+  CONFIG_FS_VERITY.  Specifically, this version of the xfstests patchset
+  is compatible with version 5 of the kernel patchset, which can be
+  retrieved from tag "fsverity_2019-06-20" of
+  https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
 
---D
+- The fsverity utility program from
+  https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/fsverity-utils.git
 
-> ---
->  fs/jbd2/journal.c    | 3 ---
->  include/linux/jbd2.h | 1 -
->  2 files changed, 4 deletions(-)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 17f679aeba7c..953990eb70a9 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -66,9 +66,6 @@ EXPORT_SYMBOL(jbd2_journal_get_undo_access);
->  EXPORT_SYMBOL(jbd2_journal_set_triggers);
->  EXPORT_SYMBOL(jbd2_journal_dirty_metadata);
->  EXPORT_SYMBOL(jbd2_journal_forget);
-> -#if 0
-> -EXPORT_SYMBOL(journal_sync_buffer);
-> -#endif
->  EXPORT_SYMBOL(jbd2_journal_flush);
->  EXPORT_SYMBOL(jbd2_journal_revoke);
->  
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 0e0393e7f41a..df03825ad1a1 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -1373,7 +1373,6 @@ void		 jbd2_journal_set_triggers(struct buffer_head *,
->  					   struct jbd2_buffer_trigger_type *type);
->  extern int	 jbd2_journal_dirty_metadata (handle_t *, struct buffer_head *);
->  extern int	 jbd2_journal_forget (handle_t *, struct buffer_head *);
-> -extern void	 journal_sync_buffer (struct buffer_head *);
->  extern int	 jbd2_journal_invalidatepage(journal_t *,
->  				struct page *, unsigned int, unsigned int);
->  extern int	 jbd2_journal_try_to_free_buffers(journal_t *, struct page *, gfp_t);
-> -- 
-> 2.22.0
-> 
+- e2fsprogs v1.45.2 or later for ext4 tests, or f2fs-tools v1.11.0 or
+  later for f2fs tests.
+
+Example with kvm-xfstests:
+
+	$ kvm-xfstests -c ext4,f2fs -g verity
+
+For more information about fs-verity, see the file
+Documentation/filesystems/fsverity.rst from the kernel patchset.
+
+This version of the xfstests patchset can also be retrieved from tag
+"fsverity_2019-06-20" of
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git
+
+Changed since v1 (Dec. 2018):
+
+  - Updated all tests to use the new fs-verity kernel API.
+
+  - Many cleanups, additional checks in the tests, and other improvements.
+
+  - Addressed review comments from Eryu Guan.
+
+  - Added a test for the built-in signature verification feature.
+
+  - Removed the fs-verity descriptor validation test, since the on-disk
+    format of this part was greatly simplified and made fs-specific.
+
+Eric Biggers (8):
+  common/filter: add _filter_xfs_io_fiemap()
+  common/verity: add common functions for testing fs-verity
+  generic: test general behavior of verity files
+  generic: test access controls on the fs-verity ioctls
+  generic: test corrupting verity files
+  generic: test that fs-verity is using the correct measurement values
+  generic: test using fs-verity and fscrypt simultaneously
+  generic: test the fs-verity built-in signature verification support
+
+ common/config         |   2 +
+ common/filter         |  24 +++++
+ common/verity         | 200 ++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/900     | 190 +++++++++++++++++++++++++++++++++++++++
+ tests/generic/900.out |  71 +++++++++++++++
+ tests/generic/901     |  73 +++++++++++++++
+ tests/generic/901.out |  14 +++
+ tests/generic/902     | 154 ++++++++++++++++++++++++++++++++
+ tests/generic/902.out |  91 +++++++++++++++++++
+ tests/generic/903     | 112 +++++++++++++++++++++++
+ tests/generic/903.out |   5 ++
+ tests/generic/904     |  80 +++++++++++++++++
+ tests/generic/904.out |  12 +++
+ tests/generic/905     | 141 +++++++++++++++++++++++++++++
+ tests/generic/905.out |  34 +++++++
+ tests/generic/group   |   6 ++
+ 16 files changed, 1209 insertions(+)
+ create mode 100644 common/verity
+ create mode 100755 tests/generic/900
+ create mode 100644 tests/generic/900.out
+ create mode 100755 tests/generic/901
+ create mode 100644 tests/generic/901.out
+ create mode 100755 tests/generic/902
+ create mode 100644 tests/generic/902.out
+ create mode 100755 tests/generic/903
+ create mode 100644 tests/generic/903.out
+ create mode 100755 tests/generic/904
+ create mode 100644 tests/generic/904.out
+ create mode 100755 tests/generic/905
+ create mode 100644 tests/generic/905.out
+
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
