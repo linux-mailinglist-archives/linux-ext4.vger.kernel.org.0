@@ -2,295 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A0F4DCB9
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2019 23:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273DF4DCE1
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2019 23:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbfFTVim (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jun 2019 17:38:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726554AbfFTVil (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 20 Jun 2019 17:38:41 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E485521530;
-        Thu, 20 Jun 2019 21:38:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561066720;
-        bh=tD13SQPiq6U//Di45+l/aLXBU1zkuW4qczDAR3KDkUg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OHRKAUozrSLQsYLc+Vn9OWH/pKZWtrUwNpbkGoIc6ngnZUxSmkx0Cv0OzmA4eYuPL
-         zc6dpyYI7P1ohPcYsAgLTsfxsQ42hQdtrcuAJbw7txyT+3r4HlfINrFI3CioLYXPtC
-         bhnYKW4PJKS/lur1AfMSSKKpCkvvwLtfFcL6u8Fs=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Victor Hsieh <victorhsieh@google.com>
-Subject: [RFC PATCH v2 8/8] generic: test the fs-verity built-in signature verification support
-Date:   Thu, 20 Jun 2019 14:36:14 -0700
-Message-Id: <20190620213614.113685-9-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-In-Reply-To: <20190620213614.113685-1-ebiggers@kernel.org>
-References: <20190620213614.113685-1-ebiggers@kernel.org>
+        id S1726192AbfFTVkE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Jun 2019 17:40:04 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:39864 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726034AbfFTVkD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jun 2019 17:40:03 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5KLYHVn088700;
+        Thu, 20 Jun 2019 21:38:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=D3CnJNHOIgWdUG1TcE81fq/bsWj72ILMBiE1tAPqQwo=;
+ b=HKn791tbDcSyV5tTwA4L7n0iz31Dp5T+PYftD80uW1HfTEOKSjNNo8ILTMjO1/Rv8cOI
+ hpROCjBB23fPljyiuqdvwYxNy/xpAecXOJ97+qJXUbuQysBIXp6+kq1M1NohTdSt2o5m
+ bdEHlQfhcUcK9Q2VlmkUVsRBf7mVWZm2yOm4eXP0y5gikqkZmSL3eKCbJdvsPzjLY50k
+ BfxiWb1VEIm42WU1tUp/bKXk3/F6YlHbkAbzrc8pKPgHNgEvkWIV2bY4z7UBJVZQfH8/
+ ZSoTLiWzgKluhc0l9SvuD6uztH108WS7lGdHTqumoJ0SNSOf6qr9qij979gZkZoaMzEB qg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2t7809kdj1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Jun 2019 21:38:38 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5KLacer151050;
+        Thu, 20 Jun 2019 21:36:38 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 2t77ypkrr0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 20 Jun 2019 21:36:38 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5KLabeL151041;
+        Thu, 20 Jun 2019 21:36:37 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2t77ypkrqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Jun 2019 21:36:37 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5KLaWqH007037;
+        Thu, 20 Jun 2019 21:36:32 GMT
+Received: from localhost (/10.145.179.81)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 20 Jun 2019 14:36:31 -0700
+Date:   Thu, 20 Jun 2019 14:36:29 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
+        adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
+        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/6] vfs: don't allow most setxattr to immutable files
+Message-ID: <20190620213629.GB5375@magnolia>
+References: <156022836912.3227213.13598042497272336695.stgit@magnolia>
+ <156022840560.3227213.4776913678782966728.stgit@magnolia>
+ <20190620140345.GI30243@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190620140345.GI30243@quack2.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9294 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906200154
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Jun 20, 2019 at 04:03:45PM +0200, Jan Kara wrote:
+> On Mon 10-06-19 21:46:45, Darrick J. Wong wrote:
+> > From: Darrick J. Wong <darrick.wong@oracle.com>
+> > 
+> > The chattr manpage has this to say about immutable files:
+> > 
+> > "A file with the 'i' attribute cannot be modified: it cannot be deleted
+> > or renamed, no link can be created to this file, most of the file's
+> > metadata can not be modified, and the file can not be opened in write
+> > mode."
+> > 
+> > However, we don't actually check the immutable flag in the setattr code,
+> > which means that we can update inode flags and project ids and extent
+> > size hints on supposedly immutable files.  Therefore, reject setflags
+> > and fssetxattr calls on an immutable file if the file is immutable and
+> > will remain that way.
+> > 
+> > Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> > ---
+> >  fs/inode.c |   31 +++++++++++++++++++++++++++++++
+> >  1 file changed, 31 insertions(+)
+> > 
+> > 
+> > diff --git a/fs/inode.c b/fs/inode.c
+> > index a3757051fd55..adfb458bf533 100644
+> > --- a/fs/inode.c
+> > +++ b/fs/inode.c
+> > @@ -2184,6 +2184,17 @@ int vfs_ioc_setflags_check(struct inode *inode, int oldflags, int flags)
+> >  	    !capable(CAP_LINUX_IMMUTABLE))
+> >  		return -EPERM;
+> >  
+> > +	/*
+> > +	 * We aren't allowed to change any other flags if the immutable flag is
+> > +	 * already set and is not being unset.
+> > +	 */
+> > +	if ((oldflags & FS_IMMUTABLE_FL) &&
+> > +	    (flags & FS_IMMUTABLE_FL)) {
+> > +		if ((oldflags & ~FS_IMMUTABLE_FL) !=
+> > +		    (flags & ~FS_IMMUTABLE_FL))
+> 
+> This check looks a bit strange when you've just check FS_IMMUTABLE_FL isn't
+> changing... Why not just oldflags != flags?
+> 
+> > +	if ((old_fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
+> > +	    (fa->fsx_xflags & FS_XFLAG_IMMUTABLE)) {
+> > +		if ((old_fa->fsx_xflags & ~FS_XFLAG_IMMUTABLE) !=
+> > +		    (fa->fsx_xflags & ~FS_XFLAG_IMMUTABLE))
+> 
+> Ditto here...
 
-Add a basic test for the fs-verity built-in signature verification
-support, which is an optional feature where the kernel can be configured
-to enforce that all verity files are accompanied with a valid signature
-by a key that has been loaded into the fs-verity keyring.
+Good point!  I'll fix it.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- common/config         |   1 +
- common/verity         |  11 ++++
- tests/generic/905     | 141 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/905.out |  34 ++++++++++
- tests/generic/group   |   1 +
- 5 files changed, 188 insertions(+)
- create mode 100755 tests/generic/905
- create mode 100644 tests/generic/905.out
+--D
 
-diff --git a/common/config b/common/config
-index 001ddc45..1aaf0a75 100644
---- a/common/config
-+++ b/common/config
-@@ -213,6 +213,7 @@ export XFS_INFO_PROG="$(type -P xfs_info)"
- export DUPEREMOVE_PROG="$(type -P duperemove)"
- export CC_PROG="$(type -P cc)"
- export FSVERITY_PROG="$(type -P fsverity)"
-+export OPENSSL_PROG="$(type -P openssl)"
- 
- # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
- # newer systems have udevadm command but older systems like RHEL5 don't.
-diff --git a/common/verity b/common/verity
-index 86fb6585..edd7e523 100644
---- a/common/verity
-+++ b/common/verity
-@@ -35,6 +35,17 @@ _require_scratch_verity()
- 	FSV_BLOCK_SIZE=$(get_page_size)
- }
- 
-+# Check for CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y.
-+_require_fsverity_builtin_signatures()
-+{
-+	if [ ! -e /proc/keys ]; then
-+		_notrun "kernel doesn't support keyrings"
-+	fi
-+	if ! awk '{print $9}' /proc/keys | grep -q '^\.fs-verity:$'; then
-+		_notrun "kernel doesn't support fs-verity builtin signatures"
-+	fi
-+}
-+
- _scratch_mkfs_verity()
- {
- 	case $FSTYP in
-diff --git a/tests/generic/905 b/tests/generic/905
-new file mode 100755
-index 00000000..db83d221
---- /dev/null
-+++ b/tests/generic/905
-@@ -0,0 +1,141 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2019 Google LLC
-+#
-+# FS QA Test generic/905
-+#
-+# Test the fs-verity built-in signature verification support.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	sysctl -w fs.verity.require_signatures=0 &>/dev/null
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/verity
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+_require_scratch_verity
-+_require_fsverity_builtin_signatures
-+_require_command "$OPENSSL_PROG" openssl
-+_require_command "$KEYCTL_PROG" keyctl
-+
-+_scratch_mkfs_verity &>> $seqres.full
-+_scratch_mount
-+
-+fsv_file=$SCRATCH_MNT/file.fsv
-+fsv_orig_file=$SCRATCH_MNT/file
-+keyfile=$tmp.key.pem
-+certfile=$tmp.cert.pem
-+certfileder=$tmp.cert.der
-+sigfile=$tmp.sig
-+othersigfile=$tmp.othersig
-+tmpfile=$tmp.tmp
-+
-+# Setup
-+
-+echo -e "\n# Generating certificates and private keys"
-+for suffix in '' '.2'; do
-+	if ! $OPENSSL_PROG req -newkey rsa:4096 -nodes -batch -x509 \
-+			-keyout $keyfile$suffix -out $certfile$suffix \
-+			&>> $seqres.full; then
-+		_fail "Failed to generate certificate and private key (see $seqres.full)"
-+	fi
-+	$OPENSSL_PROG x509 -in $certfile$suffix -out $certfileder$suffix \
-+		-outform der
-+done
-+
-+echo -e "\n# Clearing fs-verity keyring"
-+$KEYCTL_PROG clear %keyring:.fs-verity
-+
-+echo -e "\n# Loading first certificate into fs-verity keyring"
-+$KEYCTL_PROG padd asymmetric '' %keyring:.fs-verity \
-+	< $certfileder >> $seqres.full
-+
-+echo -e "\n# Enabling fs.verity.require_signatures"
-+sysctl -w fs.verity.require_signatures=1
-+
-+echo -e "\n# Generating file and signing it for fs-verity"
-+head -c 100000 /dev/urandom > $fsv_orig_file
-+for suffix in '' '.2'; do
-+	$FSVERITY_PROG sign $fsv_orig_file $sigfile$suffix \
-+		--key=$keyfile$suffix --cert=$certfile$suffix
-+done
-+
-+echo -e "\n# Signing a different file for fs-verity"
-+head -c 100000 /dev/zero > $tmpfile
-+$FSVERITY_PROG sign $tmpfile $othersigfile --key=$keyfile --cert=$certfile
-+
-+# Actual tests
-+
-+reset_fsv_file()
-+{
-+	rm -f $fsv_file
-+	cp $fsv_orig_file $fsv_file
-+}
-+
-+echo -e "\n# Enabling verity with valid signature (should succeed)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$sigfile
-+cmp $fsv_file $fsv_orig_file
-+
-+echo -e "\n# Enabling verity without signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file |& _filter_scratch
-+
-+echo -e "\n# Opening verity file without signature (should fail)"
-+reset_fsv_file
-+sysctl -w fs.verity.require_signatures=0 &>> $seqres.full
-+_fsv_enable $fsv_file
-+sysctl -w fs.verity.require_signatures=1 &>> $seqres.full
-+_scratch_cycle_mount
-+md5sum $fsv_file |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with wrong file's signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$othersigfile |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with untrusted signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$sigfile.2 |& _filter_scratch
-+
-+echo -e "\n# Testing salt"
-+reset_fsv_file
-+$FSVERITY_PROG sign $fsv_orig_file $sigfile.salted \
-+	--key=$keyfile --cert=$certfile --salt=abcd
-+_fsv_enable $fsv_file --signature=$sigfile.salted --salt=abcd
-+
-+echo -e "\n# Testing non-default hash algorithm"
-+if _fsv_have_hash_algorithm sha512 $fsv_file; then
-+	reset_fsv_file
-+	$FSVERITY_PROG sign $fsv_orig_file $sigfile.sha512 \
-+		--key=$keyfile --cert=$certfile --hash-alg=sha512
-+	_fsv_enable $fsv_file --signature=$sigfile.sha512 --hash-alg=sha512
-+fi
-+
-+echo -e "\n# Testing empty file"
-+echo -n > $fsv_file
-+$FSVERITY_PROG sign $fsv_file $sigfile.emptyfile --key=$keyfile --cert=$certfile
-+_fsv_enable $fsv_file --signature=$sigfile.emptyfile
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/905.out b/tests/generic/905.out
-new file mode 100644
-index 00000000..76707b5c
---- /dev/null
-+++ b/tests/generic/905.out
-@@ -0,0 +1,34 @@
-+QA output created by 905
-+
-+# Generating certificates and private keys
-+
-+# Clearing fs-verity keyring
-+
-+# Loading first certificate into fs-verity keyring
-+
-+# Enabling fs.verity.require_signatures
-+fs.verity.require_signatures = 1
-+
-+# Generating file and signing it for fs-verity
-+
-+# Signing a different file for fs-verity
-+
-+# Enabling verity with valid signature (should succeed)
-+
-+# Enabling verity without signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Bad message
-+
-+# Opening verity file without signature (should fail)
-+md5sum: SCRATCH_MNT/file.fsv: Bad message
-+
-+# Enabling verity with wrong file's signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Bad message
-+
-+# Enabling verity with untrusted signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Required key not available
-+
-+# Testing salt
-+
-+# Testing non-default hash algorithm
-+
-+# Testing empty file
-diff --git a/tests/generic/group b/tests/generic/group
-index 5b4c32ff..bfbb4957 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -564,3 +564,4 @@
- 902 auto quick verity
- 903 auto quick verity
- 904 auto quick verity encrypt
-+905 auto quick verity
--- 
-2.22.0.410.gd8fdbe21b5-goog
-
+> 
+> > +			return -EPERM;
+> > +		if (old_fa->fsx_projid != fa->fsx_projid)
+> > +			return -EPERM;
+> > +		if ((fa->fsx_xflags & (FS_XFLAG_EXTSIZE |
+> > +				       FS_XFLAG_EXTSZINHERIT)) &&
+> > +		    old_fa->fsx_extsize != fa->fsx_extsize)
+> > +			return -EPERM;
+> > +		if ((old_fa->fsx_xflags & FS_XFLAG_COWEXTSIZE) &&
+> > +		    old_fa->fsx_cowextsize != fa->fsx_cowextsize)
+> > +			return -EPERM;
+> > +	}
+> > +
+> >  	/* Extent size hints of zero turn off the flags. */
+> >  	if (fa->fsx_extsize == 0)
+> >  		fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
