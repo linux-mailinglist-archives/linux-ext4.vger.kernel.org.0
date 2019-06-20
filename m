@@ -2,64 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA51D4DCFF
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2019 23:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034B04DD14
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2019 23:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726145AbfFTVqo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jun 2019 17:46:44 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57617 "EHLO
+        id S1726245AbfFTVxn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Jun 2019 17:53:43 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58782 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725921AbfFTVqo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jun 2019 17:46:44 -0400
+        with ESMTP id S1725905AbfFTVxn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Jun 2019 17:53:43 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5KLkVQl013281
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5KLqDCc014930
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 Jun 2019 17:46:33 -0400
+        Thu, 20 Jun 2019 17:52:14 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id A92D0420484; Thu, 20 Jun 2019 17:46:31 -0400 (EDT)
-Date:   Thu, 20 Jun 2019 17:46:31 -0400
+        id EC0F4420484; Thu, 20 Jun 2019 17:52:12 -0400 (EDT)
+Date:   Thu, 20 Jun 2019 17:52:12 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Eryu Guan <guaneryu@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.co.uk>
-Subject: Re: Removing the shared class of tests
-Message-ID: <20190620214631.GF4650@mit.edu>
-References: <20190612184033.21845-1-krisman@collabora.com>
- <20190612184033.21845-2-krisman@collabora.com>
- <20190616144440.GD15846@desktop>
- <20190616200154.GA7251@mit.edu>
- <20190620112903.GF15846@desktop>
- <20190620162116.GA4650@mit.edu>
- <20190620175035.GA5380@magnolia>
+Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com,
+        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
+        adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
+        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/6] mm/fs: don't allow writes to immutable files
+Message-ID: <20190620215212.GG4650@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        matthew.garrett@nebula.com, yuchao0@huawei.com,
+        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
+        adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
+        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <156022836912.3227213.13598042497272336695.stgit@magnolia>
+ <156022837711.3227213.11787906519006016743.stgit@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190620175035.GA5380@magnolia>
+In-Reply-To: <156022837711.3227213.11787906519006016743.stgit@magnolia>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jun 20, 2019 at 10:50:35AM -0700, Darrick J. Wong wrote:
-> > The shared/006 test needs some way of descriminating which inodes have
-> > a fixed number of inodes, since it fills a small file system until it
-> > runs out of space and then runs fsck on it.  Actually, if we make the
-> > test file system smaller, so it runs in finite time, we could probably
-> > just run it on all file systems, since checking to see what file
-> > systems which don't have a fixed inode table (e.g., btrfs) do under
-> > ENOSPC when creating tons of inodes probably makes sense there for
-> > those file systems as well.
+On Mon, Jun 10, 2019 at 09:46:17PM -0700, Darrick J. Wong wrote:
+> From: Darrick J. Wong <darrick.wong@oracle.com>
 > 
-> xfs doesn't have a fixed inode table either, so ... that sounds like a
-> good idea.
+> The chattr manpage has this to say about immutable files:
+> 
+> "A file with the 'i' attribute cannot be modified: it cannot be deleted
+> or renamed, no link can be created to this file, most of the file's
+> metadata can not be modified, and the file can not be opened in write
+> mode."
+> 
+> Once the flag is set, it is enforced for quite a few file operations,
+> such as fallocate, fpunch, fzero, rm, touch, open, etc.  However, we
+> don't check for immutability when doing a write(), a PROT_WRITE mmap(),
+> a truncate(), or a write to a previously established mmap.
+> 
+> If a program has an open write fd to a file that the administrator
+> subsequently marks immutable, the program still can change the file
+> contents.  Weird!
+> 
+> The ability to write to an immutable file does not follow the manpage
+> promise that immutable files cannot be modified.  Worse yet it's
+> inconsistent with the behavior of other syscalls which don't allow
+> modifications of immutable files.
+> 
+> Therefore, add the necessary checks to make the write, mmap, and
+> truncate behavior consistent with what the manpage says and consistent
+> with other syscalls on filesystems which support IMMUTABLE.
+> 
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-Which is amusing, given that shared/006 declares that it is supported
-for xfs.  So it might just work on btrfs w/o any changes; although
-maybe it just takes too long to run.  :-)
+I note that this patch doesn't allow writes to swap files.  So Amir's
+generic/554 test will still fail for those file systems that don't use
+copy_file_range.
 
-	      	      	    	- Ted
+I'm indifferent as to whether you add a new patch, or include that
+change in this patch, but perhaps we should fix this while we're
+making changes in these code paths?
+
+				- Ted
