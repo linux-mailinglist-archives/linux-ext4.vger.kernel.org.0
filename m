@@ -2,87 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8450F4E99E
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jun 2019 15:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9804EB2E
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jun 2019 16:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbfFUNlG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jun 2019 09:41:06 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:24053 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbfFUNlG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 21 Jun 2019 09:41:06 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id D5C503086208;
-        Fri, 21 Jun 2019 13:41:05 +0000 (UTC)
-Received: from dhcp201-121.englab.pnq.redhat.com (ovpn-116-60.sin2.redhat.com [10.67.116.60])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CC28D5B690;
-        Fri, 21 Jun 2019 13:40:27 +0000 (UTC)
-From:   Pankaj Gupta <pagupta@redhat.com>
-To:     dm-devel@redhat.com, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        qemu-devel@nongnu.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Cc:     dan.j.williams@intel.com, zwisler@kernel.org,
-        vishal.l.verma@intel.com, dave.jiang@intel.com, mst@redhat.com,
-        jasowang@redhat.com, willy@infradead.org, rjw@rjwysocki.net,
-        hch@infradead.org, lenb@kernel.org, jack@suse.cz, tytso@mit.edu,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com,
-        lcapitulino@redhat.com, kwolf@redhat.com, imammedo@redhat.com,
-        jmoyer@redhat.com, nilal@redhat.com, riel@surriel.com,
-        stefanha@redhat.com, aarcange@redhat.com, david@redhat.com,
-        david@fromorbit.com, cohuck@redhat.com,
-        xiaoguangrong.eric@gmail.com, pagupta@redhat.com,
-        pbonzini@redhat.com, yuval.shaia@oracle.com, kilobyte@angband.pl,
-        jstaron@google.com, rdunlap@infradead.org, snitzer@redhat.com
-Subject: [PATCH v14 7/7] xfs: disable map_sync for async flush
-Date:   Fri, 21 Jun 2019 19:04:55 +0530
-Message-Id: <20190621133455.3303-8-pagupta@redhat.com>
-In-Reply-To: <20190621133455.3303-1-pagupta@redhat.com>
-References: <20190621133455.3303-1-pagupta@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.42]); Fri, 21 Jun 2019 13:41:06 +0000 (UTC)
+        id S1726049AbfFUOwE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 21 Jun 2019 10:52:04 -0400
+Received: from mail.wl.linuxfoundation.org ([198.145.29.98]:55966 "EHLO
+        mail.wl.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726031AbfFUOwE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 Jun 2019 10:52:04 -0400
+Received: from mail.wl.linuxfoundation.org (localhost [127.0.0.1])
+        by mail.wl.linuxfoundation.org (Postfix) with ESMTP id 9493828ABC
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Jun 2019 14:52:03 +0000 (UTC)
+Received: by mail.wl.linuxfoundation.org (Postfix, from userid 486)
+        id 8141628ACD; Fri, 21 Jun 2019 14:52:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on
+        pdx-wl-mail.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=2.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS autolearn=unavailable version=3.3.1
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 203943] ext4 corruption after RAID6 degraded; e2fsck skips
+ block checks and fails
+Date:   Fri, 21 Jun 2019 14:52:01 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: yann@ormanns.net
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-203943-13602-TNwOaykekc@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-203943-13602@https.bugzilla.kernel.org/>
+References: <bug-203943-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dont support 'MAP_SYNC' with non-DAX files and DAX files
-with asynchronous dax_device. Virtio pmem provides
-asynchronous host page cache flush mechanism. We don't
-support 'MAP_SYNC' with virtio pmem and xfs.
+https://bugzilla.kernel.org/show_bug.cgi?id=203943
 
-Signed-off-by: Pankaj Gupta <pagupta@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/xfs/xfs_file.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+--- Comment #3 from Yann Ormanns (yann@ormanns.net) ---
+Andreas & Ted, thank you for your replies.
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index a7ceae90110e..f17652cca5ff 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -1203,11 +1203,14 @@ xfs_file_mmap(
- 	struct file	*filp,
- 	struct vm_area_struct *vma)
- {
-+	struct dax_device 	*dax_dev;
-+
-+	dax_dev = xfs_find_daxdev_for_inode(file_inode(filp));
- 	/*
--	 * We don't support synchronous mappings for non-DAX files. At least
--	 * until someone comes with a sensible use case.
-+	 * We don't support synchronous mappings for non-DAX files and
-+	 * for DAX files if underneath dax_device is not synchronous.
- 	 */
--	if (!IS_DAX(file_inode(filp)) && (vma->vm_flags & VM_SYNC))
-+	if (!daxdev_mapping_supported(vma, dax_dev))
- 		return -EOPNOTSUPP;
- 
- 	file_accessed(filp);
+(In reply to Andreas Dilger from comment #1)
+> This seems like a RAID problem and not an ext4 problem. The RAID array
+> shouldn't be returning random garbage if one of the drives is unavailable.
+> Maybe it is not doing data parity verification on reads, so that it is
+> blindly returning bad blocks from the failed drive rather than
+> reconstructing valid data from parity if the drive does not fail completely?
+
+How can I check that? At least running "checkarray" did not find anything new
+or helpful.
+
+(In reply to Theodore Tso from comment #2)
+> Did you resync the disks *before* you ran e2fsck?   Or only afterwards?
+
+1. my RAID6 got degraded and ext4 errors showed up
+2. I ran e2fsck, it consumed all  memory and showed only "Inode %$i block %$b
+conflicts with critical metadata, skipping block checks."
+3. I replaced the faulty disk and resynced the RAID6
+4. e2fsck was able to clean the filesystem
+5. I simulated a drive fault (so my RAID6 had n+1 working disks left)
+6. the ext4 FS got corrupted again
+7. although the RAID is clean again, e2fsck is not able to clean the FS (like
+in step 2)
+
 -- 
-2.20.1
-
+You are receiving this mail because:
+You are watching the assignee of the bug.
