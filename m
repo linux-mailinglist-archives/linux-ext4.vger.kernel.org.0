@@ -2,27 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AAE5ADA9
-	for <lists+linux-ext4@lfdr.de>; Sun, 30 Jun 2019 00:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA4E4E0A0
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jun 2019 08:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726953AbfF2WvM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 29 Jun 2019 18:51:12 -0400
-Received: from tako.kondi.net ([192.166.219.46]:38932 "EHLO
-        grzegorz.bedra.webh.me" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726937AbfF2WvM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 29 Jun 2019 18:51:12 -0400
-Received: from tako.kondi.net (localhost [IPv6:::1])
-        by grzegorz.bedra.webh.me (Postfix) with SMTP id 471E92535B4D
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Jun 2019 06:52:42 +0200 (CEST)
-From:   linux-ext4@vger.kernel.org
-To:     IGWcdqRPslinux-ext4@vger.kernel.org
-Reply-To: prodawez@armyspy.com
-Subject: Klientskie bazy. Email: prodawez@armyspy.com Uznajte podrobnee.
-Message-Id: <20190621045242.471E92535B4D@grzegorz.bedra.webh.me>
-Date:   Fri, 21 Jun 2019 06:52:42 +0200 (CEST)
+        id S1726219AbfFUGoq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jun 2019 02:44:46 -0400
+Received: from mail.vodokanal.poltava.ua ([91.219.220.27]:38733 "EHLO
+        mail.vodokanal.poltava.ua" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725911AbfFUGop (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jun 2019 02:44:45 -0400
+Received: by mail.vodokanal.poltava.ua (Postfix, from userid 80)
+        id A173E229AC8; Fri, 21 Jun 2019 09:18:28 +0300 (EEST)
+Received: from 192.168.0.119
+        (SquirrelMail authenticated user test@vodokanal.poltava.ua)
+        by mail.vodokanal.poltava.ua with HTTP;
+        Fri, 21 Jun 2019 07:18:28 +0100
+Message-ID: <022af39b07a2cc81bd072b96ced29599.squirrel@mail.vodokanal.poltava.ua>
+Date:   Fri, 21 Jun 2019 07:18:28 +0100
+Subject: LOANS !!!
+From:   "DIAL DIRECT LOANS SA" <dialdirect@info.org>
+Reply-To: dialdirectloanssa@mail2consultant.com
+User-Agent: SquirrelMail/1.4.21
+MIME-Version: 1.0
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Priority: 3 (Normal)
+Importance: Normal
+To:     undisclosed-recipients:;
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Klientskie bazy. Email: prodawez@armyspy.com Uznajte podrobnee.
+
+Dial Direct Loan SA
+
+
+Consolidate your debts with Dial Direct Loan SA for your peace of
+mind at a fixed interest rate of 4.75%,personal and business loans
+are also welcome.For details file in your applications by sending an email
+to:dialdirectloanssa@mail2consultant.com.
+
+
+
+Yours in Service,
+Susan Muller (Mrs.),
+Senior Consultant,
+Loan Application Team
+Dial Direct Loan SA
+Tel No: +27717231058
+
+
