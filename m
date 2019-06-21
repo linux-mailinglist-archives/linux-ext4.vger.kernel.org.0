@@ -2,176 +2,189 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 569294DF4B
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jun 2019 05:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D6F4DF89
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jun 2019 06:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbfFUDRk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Jun 2019 23:17:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbfFUDRj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 20 Jun 2019 23:17:39 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBC9020679;
-        Fri, 21 Jun 2019 03:17:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561087058;
-        bh=8upGiMNBTtWDElF9gjCLmVIbeZJwV8B0qLNbePNiBiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i7NAHT3Z7Kbuc4XrtwXOF81T38DWmrfYNGoBYndscZEb0luoJO0t/EdZKKvzbOvX0
-         ndbZtCx8sjRpIUemKoBxuF9qRXD3gVk9mg4H3uF3Xx1mOpmgmVa2tgoCOCaVDe5DIG
-         xBvf1lzHH0jscgF3GCUVG9dpoP8HuP1RtKSkB8qc=
-Date:   Thu, 20 Jun 2019 20:17:36 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v5 14/16] ext4: add basic fs-verity support
-Message-ID: <20190621031736.GA742@sol.localdomain>
-References: <20190620205043.64350-1-ebiggers@kernel.org>
- <20190620205043.64350-15-ebiggers@kernel.org>
- <20190620235938.GE5375@magnolia>
+        id S1726049AbfFUEKr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jun 2019 00:10:47 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58091 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725818AbfFUEKr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jun 2019 00:10:47 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5L4Afon016223
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 Jun 2019 00:10:42 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 57CBA420484; Fri, 21 Jun 2019 00:10:41 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH] ext4: allow directory holes
+Date:   Fri, 21 Jun 2019 00:10:39 -0400
+Message-Id: <20190621041039.25337-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190620235938.GE5375@magnolia>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Darrick,
+The largedir feature was intended to allow ext4 directories to have
+unmapped directory blocks (e.g., directory holes).  And so the
+released e2fsprogs no longer enforces this for largedir file systems;
+however, the corresponding change to the kernel-side code was not made.
 
-On Thu, Jun 20, 2019 at 04:59:38PM -0700, Darrick J. Wong wrote:
-> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > index 1cb67859e0518b..5a1deea3fb3e37 100644
-> > --- a/fs/ext4/ext4.h
-> > +++ b/fs/ext4/ext4.h
-> > @@ -41,6 +41,7 @@
-> >  #endif
-> >  
-> >  #include <linux/fscrypt.h>
-> > +#include <linux/fsverity.h>
-> >  
-> >  #include <linux/compiler.h>
-> >  
-> > @@ -395,6 +396,7 @@ struct flex_groups {
-> >  #define EXT4_TOPDIR_FL			0x00020000 /* Top of directory hierarchies*/
-> >  #define EXT4_HUGE_FILE_FL               0x00040000 /* Set to each huge file */
-> >  #define EXT4_EXTENTS_FL			0x00080000 /* Inode uses extents */
-> > +#define EXT4_VERITY_FL			0x00100000 /* Verity protected inode */
-> 
-> Hmm, a new inode flag, superblock rocompat feature flag, and
-> (presumably) the Merkle tree has some sort of well defined format which
-> starts at the next 64k boundary past EOF.
-> 
-> Would you mind updating the relevant parts of the ondisk format
-> documentation in Documentation/filesystems/ext4/, please?
-> 
-> I saw that the Merkle tree and verity descriptor formats themselves are
-> documented in the first patch, so you could simply link the ext4
-> documentation to it.
-> 
+This commit fixes this oversight.
 
-Sure, I'll update the ext4 documentation.
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
+---
+ fs/ext4/dir.c   |  8 --------
+ fs/ext4/namei.c | 35 +++++++++++++++++++++++++++--------
+ 2 files changed, 27 insertions(+), 16 deletions(-)
 
-> > +/*
-> > + * Read some verity metadata from the inode.  __vfs_read() can't be used because
-> > + * we need to read beyond i_size.
-> > + */
-> > +static int pagecache_read(struct inode *inode, void *buf, size_t count,
-> > +			  loff_t pos)
-> > +{
-> > +	while (count) {
-> > +		size_t n = min_t(size_t, count,
-> > +				 PAGE_SIZE - offset_in_page(pos));
-> > +		struct page *page;
-> > +		void *addr;
-> > +
-> > +		page = read_mapping_page(inode->i_mapping, pos >> PAGE_SHIFT,
-> > +					 NULL);
-> > +		if (IS_ERR(page))
-> > +			return PTR_ERR(page);
-> > +
-> > +		addr = kmap_atomic(page);
-> > +		memcpy(buf, addr + offset_in_page(pos), n);
-> > +		kunmap_atomic(addr);
-> > +
-> > +		put_page(page);
-> > +
-> > +		buf += n;
-> > +		pos += n;
-> > +		count -= n;
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> > +/*
-> > + * Write some verity metadata to the inode for FS_IOC_ENABLE_VERITY.
-> > + * kernel_write() can't be used because the file descriptor is readonly.
-> > + */
-> > +static int pagecache_write(struct inode *inode, const void *buf, size_t count,
-> > +			   loff_t pos)
-> > +{
-> > +	while (count) {
-> > +		size_t n = min_t(size_t, count,
-> > +				 PAGE_SIZE - offset_in_page(pos));
-> > +		struct page *page;
-> > +		void *fsdata;
-> > +		void *addr;
-> > +		int res;
-> > +
-> > +		res = pagecache_write_begin(NULL, inode->i_mapping, pos, n, 0,
-> > +					    &page, &fsdata);
-> > +		if (res)
-> > +			return res;
-> > +
-> > +		addr = kmap_atomic(page);
-> > +		memcpy(addr + offset_in_page(pos), buf, n);
-> > +		kunmap_atomic(addr);
-> > +
-> > +		res = pagecache_write_end(NULL, inode->i_mapping, pos, n, n,
-> > +					  page, fsdata);
-> > +		if (res < 0)
-> > +			return res;
-> > +		if (res != n)
-> > +			return -EIO;
-> > +
-> > +		buf += n;
-> > +		pos += n;
-> > +		count -= n;
-> > +	}
-> > +	return 0;
-> > +}
-> 
-> This same code is duplicated in the f2fs patch.  Is there a reason why
-> they don't share this common code?  Even if you have to hide it under
-> fs/verity/ ?
-> 
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index 770a1e6d4672..935dc52380fc 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -112,7 +112,6 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
+ 	struct inode *inode = file_inode(file);
+ 	struct super_block *sb = inode->i_sb;
+ 	struct buffer_head *bh = NULL;
+-	int dir_has_error = 0;
+ 	struct fscrypt_str fstr = FSTR_INIT(NULL, 0);
+ 
+ 	if (IS_ENCRYPTED(inode)) {
+@@ -179,13 +178,6 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
+ 		}
+ 
+ 		if (!bh) {
+-			if (!dir_has_error) {
+-				EXT4_ERROR_FILE(file, 0,
+-						"directory contains a "
+-						"hole at offset %llu",
+-					   (unsigned long long) ctx->pos);
+-				dir_has_error = 1;
+-			}
+ 			/* corrupt size?  Maybe no more blocks to read */
+ 			if (ctx->pos > inode->i_blocks << 9)
+ 				break;
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 4909ced4e672..f3140ff330c6 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -83,7 +83,7 @@ static int ext4_dx_csum_verify(struct inode *inode,
+ 			       struct ext4_dir_entry *dirent);
+ 
+ typedef enum {
+-	EITHER, INDEX, DIRENT
++	EITHER, INDEX, DIRENT, DIRENT_HTREE
+ } dirblock_type_t;
+ 
+ #define ext4_read_dirblock(inode, block, type) \
+@@ -109,11 +109,14 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
+ 
+ 		return bh;
+ 	}
+-	if (!bh) {
++	if (!bh && (type == INDEX || type == DIRENT_HTREE)) {
+ 		ext4_error_inode(inode, func, line, block,
+-				 "Directory hole found");
++				 "Directory hole found for htree %s block",
++				 (type == INDEX) ? "index" : "leaf");
+ 		return ERR_PTR(-EFSCORRUPTED);
+ 	}
++	if (!bh)
++		return NULL;
+ 	dirent = (struct ext4_dir_entry *) bh->b_data;
+ 	/* Determine whether or not we have an index block */
+ 	if (is_dx(inode)) {
+@@ -980,7 +983,7 @@ static int htree_dirblock_to_tree(struct file *dir_file,
+ 
+ 	dxtrace(printk(KERN_INFO "In htree dirblock_to_tree: block %lu\n",
+ 							(unsigned long)block));
+-	bh = ext4_read_dirblock(dir, block, DIRENT);
++	bh = ext4_read_dirblock(dir, block, DIRENT_HTREE);
+ 	if (IS_ERR(bh))
+ 		return PTR_ERR(bh);
+ 
+@@ -1619,7 +1622,7 @@ static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
+ 		return (struct buffer_head *) frame;
+ 	do {
+ 		block = dx_get_block(frame->at);
+-		bh = ext4_read_dirblock(dir, block, DIRENT);
++		bh = ext4_read_dirblock(dir, block, DIRENT_HTREE);
+ 		if (IS_ERR(bh))
+ 			goto errout;
+ 
+@@ -2203,6 +2206,11 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+ 	blocks = dir->i_size >> sb->s_blocksize_bits;
+ 	for (block = 0; block < blocks; block++) {
+ 		bh = ext4_read_dirblock(dir, block, DIRENT);
++		if (bh == NULL) {
++			bh = ext4_bread(handle, dir, block,
++					EXT4_GET_BLOCKS_CREATE);
++			goto add_to_new_block;
++		}
+ 		if (IS_ERR(bh)) {
+ 			retval = PTR_ERR(bh);
+ 			bh = NULL;
+@@ -2223,6 +2231,7 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+ 		brelse(bh);
+ 	}
+ 	bh = ext4_append(handle, dir, &block);
++add_to_new_block:
+ 	if (IS_ERR(bh)) {
+ 		retval = PTR_ERR(bh);
+ 		bh = NULL;
+@@ -2267,7 +2276,7 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
+ 		return PTR_ERR(frame);
+ 	entries = frame->entries;
+ 	at = frame->at;
+-	bh = ext4_read_dirblock(dir, dx_get_block(frame->at), DIRENT);
++	bh = ext4_read_dirblock(dir, dx_get_block(frame->at), DIRENT_HTREE);
+ 	if (IS_ERR(bh)) {
+ 		err = PTR_ERR(bh);
+ 		bh = NULL;
+@@ -2815,7 +2824,10 @@ bool ext4_empty_dir(struct inode *inode)
+ 		EXT4_ERROR_INODE(inode, "invalid size");
+ 		return true;
+ 	}
+-	bh = ext4_read_dirblock(inode, 0, EITHER);
++	/* The first directory block must not be a hole,
++	 * so treat it as DIRENT_HTREE
++	 */
++	bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
+ 	if (IS_ERR(bh))
+ 		return true;
+ 
+@@ -2837,6 +2849,10 @@ bool ext4_empty_dir(struct inode *inode)
+ 			brelse(bh);
+ 			lblock = offset >> EXT4_BLOCK_SIZE_BITS(sb);
+ 			bh = ext4_read_dirblock(inode, lblock, EITHER);
++			if (bh == NULL) {
++				offset += sb->s_blocksize;
++				continue;
++			}
+ 			if (IS_ERR(bh))
+ 				return true;
+ 			de = (struct ext4_dir_entry_2 *) bh->b_data;
+@@ -3402,7 +3418,10 @@ static struct buffer_head *ext4_get_first_dir_block(handle_t *handle,
+ 	struct buffer_head *bh;
+ 
+ 	if (!ext4_has_inline_data(inode)) {
+-		bh = ext4_read_dirblock(inode, 0, EITHER);
++		/* The first directory block must not be a hole, so
++		 * treat it as DIRENT_HTREE
++		 */
++		bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
+ 		if (IS_ERR(bh)) {
+ 			*retval = PTR_ERR(bh);
+ 			return NULL;
+-- 
+2.22.0
 
-Yes, pagecache_read() and pagecache_write() are identical between ext4 and f2fs.
-I didn't put them in fs/verity/ because the "metadata past EOF" approach is a
-choice of ext4 and f2fs and not intrinsic to the fs-verity feature itself, so to
-avoid confusion I made the fs/verity/ support layer be completely clean of any
-assumption that that's the way filesystems implement fs-verity.
-
-Also, making the fsverity_operations call back into fs/verity/ adds a little
-extra conceptual complexity about what belongs where, since then we'd have a
-call stack of filesystem => fs/verity/ => filesystem => fs/verity/.
-
-But if people would rather that ext4 and f2fs share these two functions anyway,
-then sure, we could move them into fs/verity/, and other filesystems (if they
-take a different approach to fs-verity) simply won't use them.
-
-- Eric
