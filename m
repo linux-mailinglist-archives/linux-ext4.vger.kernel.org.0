@@ -2,168 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1421A4F126
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jun 2019 01:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F994F167
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jun 2019 01:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbfFUX1P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Jun 2019 19:27:15 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:58784 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726049AbfFUX1P (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 21 Jun 2019 19:27:15 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7A2B8309174E;
-        Fri, 21 Jun 2019 23:27:14 +0000 (UTC)
-Received: from [IPv6:::1] (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C8885C21A;
-        Fri, 21 Jun 2019 23:27:13 +0000 (UTC)
-From:   Eric Sandeen <sandeen@redhat.com>
-Subject: [PATCH] quota: honor quote type in Q_XGETQSTAT[V] calls
-To:     fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-xfs <linux-xfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Bob Peterson <rpeterso@redhat.com>
-Message-ID: <0b96d49c-3c0b-eb71-dd87-750a6a48f1ef@redhat.com>
-Date:   Fri, 21 Jun 2019 18:27:13 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.1
+        id S1726198AbfFUX5G (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Jun 2019 19:57:06 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:48302 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbfFUX5F (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Jun 2019 19:57:05 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5LNsGrX052403;
+        Fri, 21 Jun 2019 23:56:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2018-07-02;
+ bh=cAdDQjLmw3paRsCYayAMtBFRH59fRNc4vYLBHuqjsSA=;
+ b=TzR6Wru1xSjTTRJAS5YLkE/BrGnsLOB3oXc++TPNZTilrEotX+w/PXZSlo2GmgalFn6q
+ EFIn2g7OnCMHKiU/KYZQjoVVDHvaifoE42AmpxsuNL7wnDmrtZhKVTyFzOJI7etrK4kK
+ KEBGejr346UOlFcuSkyuDnIO/5wd6UqT/S/KQGVF+NHJ5J7mmhYyVd5c2jc+HbQbg3wB
+ wa4pvaZQ8fS5HuyXYBN1pV+PfgLDpbPcaxs+KsA+sgcG7mAhRxGd5p97mdMZnG6Ft3yd
+ IEh9EmQpStxpaanEvQR/EobOi//ZfTjzIl0oWYndnxgPHklvyg0k1RPOB0QGCH15ATwX mw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2t7809rsvw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Jun 2019 23:56:27 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5LNtFqW105530;
+        Fri, 21 Jun 2019 23:56:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2t77ypet01-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 Jun 2019 23:56:27 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5LNuRFa107024;
+        Fri, 21 Jun 2019 23:56:27 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2t77ypesyw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Jun 2019 23:56:27 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5LNuGUs018756;
+        Fri, 21 Jun 2019 23:56:16 GMT
+Received: from localhost (/10.159.131.214)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 21 Jun 2019 16:56:16 -0700
+Subject: [PATCH v2 0/4] vfs: clean up SETFLAGS and FSSETXATTR option
+ processing
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        darrick.wong@oracle.com, shaggy@kernel.org,
+        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
+        adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk
+Cc:     cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-efi@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
+Date:   Fri, 21 Jun 2019 16:56:07 -0700
+Message-ID: <156116136742.1664814.17093419199766834123.stgit@magnolia>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Fri, 21 Jun 2019 23:27:14 +0000 (UTC)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9295 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=851 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906210182
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The code in quota_getstate and quota_getstatev is strange; it
-says the returned fs_quota_stat[v] structure has room for only
-one type of time limits, so fills it in with the first enabled
-quota, even though every quotactl command must have a type sent
-in by the user.
+Hi all,
 
-Instead of just picking the first enabled quota, fill in the
-reply with the timers for the quota type that was actually
-requested.
+The FS_IOC_SETFLAGS and FS_IOC_FSSETXATTR ioctls were promoted from ext4
+and XFS, respectively, into the VFS.  However, we didn't promote any of
+the parameter checking code from those filesystems, which lead to a mess
+where each filesystem open-codes whatever parameter checks they want and
+the behavior across filesystems is no longer consistent.
 
-Signed-off-by: Eric Sandeen <sandeen@redhat.com>
----
+Therefore, create some generic checking functions in the VFS and remove
+all the open-coded pieces in each filesystem.  This preserves the
+current behavior where a filesystem can choose to ignore fields it
+doesn't understand.
 
-I guess this is a change in behavior, but it goes from a rather
-unexpected and unpredictable behavior to something more expected,
-so I hope it's ok.
+If you're going to start using this mess, you probably ought to just
+pull from my git trees, which are linked below.
 
-I'm working on breaking out xfs quota timers by type as well
-(they are separate on disk, but not in memory) so I'll work
-up an xfstest to go with this...
+This has been lightly tested with fstests.  Enjoy!
+Comments and questions are, as always, welcome.
 
-diff --git a/fs/quota/quota.c b/fs/quota/quota.c
-index fd5dd806f1b9..cb13fb76dbee 100644
---- a/fs/quota/quota.c
-+++ b/fs/quota/quota.c
-@@ -331,9 +331,9 @@ static int quota_state_to_flags(struct qc_state *state)
- 	return flags;
- }
- 
--static int quota_getstate(struct super_block *sb, struct fs_quota_stat *fqs)
-+static int quota_getstate(struct super_block *sb, int type,
-+			  struct fs_quota_stat *fqs)
- {
--	int type;
- 	struct qc_state state;
- 	int ret;
- 
-@@ -349,14 +349,7 @@ static int quota_getstate(struct super_block *sb, struct fs_quota_stat *fqs)
- 	if (!fqs->qs_flags)
- 		return -ENOSYS;
- 	fqs->qs_incoredqs = state.s_incoredqs;
--	/*
--	 * GETXSTATE quotactl has space for just one set of time limits so
--	 * report them for the first enabled quota type
--	 */
--	for (type = 0; type < MAXQUOTAS; type++)
--		if (state.s_state[type].flags & QCI_ACCT_ENABLED)
--			break;
--	BUG_ON(type == MAXQUOTAS);
-+
- 	fqs->qs_btimelimit = state.s_state[type].spc_timelimit;
- 	fqs->qs_itimelimit = state.s_state[type].ino_timelimit;
- 	fqs->qs_rtbtimelimit = state.s_state[type].rt_spc_timelimit;
-@@ -391,22 +384,22 @@ static int quota_getstate(struct super_block *sb, struct fs_quota_stat *fqs)
- 	return 0;
- }
- 
--static int quota_getxstate(struct super_block *sb, void __user *addr)
-+static int quota_getxstate(struct super_block *sb, int type, void __user *addr)
- {
- 	struct fs_quota_stat fqs;
- 	int ret;
- 
- 	if (!sb->s_qcop->get_state)
- 		return -ENOSYS;
--	ret = quota_getstate(sb, &fqs);
-+	ret = quota_getstate(sb, type, &fqs);
- 	if (!ret && copy_to_user(addr, &fqs, sizeof(fqs)))
- 		return -EFAULT;
- 	return ret;
- }
- 
--static int quota_getstatev(struct super_block *sb, struct fs_quota_statv *fqs)
-+static int quota_getstatev(struct super_block *sb, int type,
-+			   struct fs_quota_statv *fqs)
- {
--	int type;
- 	struct qc_state state;
- 	int ret;
- 
-@@ -422,14 +415,7 @@ static int quota_getstatev(struct super_block *sb, struct fs_quota_statv *fqs)
- 	if (!fqs->qs_flags)
- 		return -ENOSYS;
- 	fqs->qs_incoredqs = state.s_incoredqs;
--	/*
--	 * GETXSTATV quotactl has space for just one set of time limits so
--	 * report them for the first enabled quota type
--	 */
--	for (type = 0; type < MAXQUOTAS; type++)
--		if (state.s_state[type].flags & QCI_ACCT_ENABLED)
--			break;
--	BUG_ON(type == MAXQUOTAS);
-+
- 	fqs->qs_btimelimit = state.s_state[type].spc_timelimit;
- 	fqs->qs_itimelimit = state.s_state[type].ino_timelimit;
- 	fqs->qs_rtbtimelimit = state.s_state[type].rt_spc_timelimit;
-@@ -455,7 +441,7 @@ static int quota_getstatev(struct super_block *sb, struct fs_quota_statv *fqs)
- 	return 0;
- }
- 
--static int quota_getxstatev(struct super_block *sb, void __user *addr)
-+static int quota_getxstatev(struct super_block *sb, int type, void __user *addr)
- {
- 	struct fs_quota_statv fqs;
- 	int ret;
-@@ -474,7 +460,7 @@ static int quota_getxstatev(struct super_block *sb, void __user *addr)
- 	default:
- 		return -EINVAL;
- 	}
--	ret = quota_getstatev(sb, &fqs);
-+	ret = quota_getstatev(sb, type, &fqs);
- 	if (!ret && copy_to_user(addr, &fqs, sizeof(fqs)))
- 		return -EFAULT;
- 	return ret;
-@@ -744,9 +730,9 @@ static int do_quotactl(struct super_block *sb, int type, int cmd, qid_t id,
- 	case Q_XQUOTARM:
- 		return quota_rmxquota(sb, addr);
- 	case Q_XGETQSTAT:
--		return quota_getxstate(sb, addr);
-+		return quota_getxstate(sb, type, addr);
- 	case Q_XGETQSTATV:
--		return quota_getxstatev(sb, addr);
-+		return quota_getxstatev(sb, type, addr);
- 	case Q_XSETQLIM:
- 		return quota_setxquota(sb, type, id, addr);
- 	case Q_XGETQUOTA:
+--D
 
+kernel git tree:
+https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git/log/?h=file-ioctl-cleanups
