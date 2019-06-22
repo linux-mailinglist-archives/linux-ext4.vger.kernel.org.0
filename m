@@ -2,21 +2,21 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CED514F439
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jun 2019 09:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236DC4F441
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Jun 2019 10:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbfFVHst convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 22 Jun 2019 03:48:49 -0400
-Received: from mail.wl.linuxfoundation.org ([198.145.29.98]:45374 "EHLO
+        id S1726187AbfFVIGM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 22 Jun 2019 04:06:12 -0400
+Received: from mail.wl.linuxfoundation.org ([198.145.29.98]:45838 "EHLO
         mail.wl.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726092AbfFVHst (ORCPT
+        by vger.kernel.org with ESMTP id S1726100AbfFVIGM (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 22 Jun 2019 03:48:49 -0400
+        Sat, 22 Jun 2019 04:06:12 -0400
 Received: from mail.wl.linuxfoundation.org (localhost [127.0.0.1])
-        by mail.wl.linuxfoundation.org (Postfix) with ESMTP id 8E7D328BAA
-        for <linux-ext4@vger.kernel.org>; Sat, 22 Jun 2019 07:48:48 +0000 (UTC)
+        by mail.wl.linuxfoundation.org (Postfix) with ESMTP id 74E0828BB6
+        for <linux-ext4@vger.kernel.org>; Sat, 22 Jun 2019 08:06:11 +0000 (UTC)
 Received: by mail.wl.linuxfoundation.org (Postfix, from userid 486)
-        id 8063928BC1; Sat, 22 Jun 2019 07:48:48 +0000 (UTC)
+        id 6210228BBA; Sat, 22 Jun 2019 08:06:11 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on
         pdx-wl-mail.web.codeaurora.org
 X-Spam-Level: 
@@ -26,7 +26,7 @@ From:   bugzilla-daemon@bugzilla.kernel.org
 To:     linux-ext4@vger.kernel.org
 Subject: [Bug 203943] ext4 corruption after RAID6 degraded; e2fsck skips
  block checks and fails
-Date:   Sat, 22 Jun 2019 07:48:47 +0000
+Date:   Sat, 22 Jun 2019 08:06:09 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -42,7 +42,7 @@ X-Bugzilla-Priority: P1
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
 X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-203943-13602-W8IXdDUfWA@https.bugzilla.kernel.org/>
+Message-ID: <bug-203943-13602-jz1S1GkxC7@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-203943-13602@https.bugzilla.kernel.org/>
 References: <bug-203943-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -58,19 +58,15 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 https://bugzilla.kernel.org/show_bug.cgi?id=203943
 
---- Comment #7 from Yann Ormanns (yann@ormanns.net) ---
-I changed the locale to en_GB and got now the actual 5 or 6 inodes, which
-caused the extremely slow procedure of e2fsck. I zeroed them with debugfs and
-afterwards, e2fsck was able to fix many, many errors.
-lost+found contains 934G of data (53190 entries). During the next days, I will
-try to examine them.
+--- Comment #8 from Yann Ormanns (yann@ormanns.net) ---
+It seems, as if the data corruption only affects the directories and files,
+that the system wrote to while the ext4 FS was not clean.
+A quick rsync between my backup fileserver copied nothing of the static data
+back to the productive system - so I assume, that these files should be okay
+(but of course, I will test that at least randomly).
 
-While copying files out of my backup, I re-tested a failure of a disk an
-removed it from the array. After a while I re-added it and now the array is
-rsyncing. I will watch the logs for possible FS errors - for now, all seems
-clean.
-
-Thanks a lot for your support!
+To sum it up: the data loss affects my backup files locally on this system and
+my tv recordings - 934G of total data size are just about right for that.
 
 -- 
 You are receiving this mail because:
