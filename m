@@ -2,101 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D4950B7C
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 15:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8013851006
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 17:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730682AbfFXNHw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Jun 2019 09:07:52 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59950 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728927AbfFXNHw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jun 2019 09:07:52 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5OD7V3V003440
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 24 Jun 2019 09:07:31 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id E484742002B; Mon, 24 Jun 2019 09:07:30 -0400 (EDT)
-Date:   Mon, 24 Jun 2019 09:07:30 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Eryu Guan <guaneryu@gmail.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.co.uk>
-Subject: Re: Removing the shared class of tests
-Message-ID: <20190624130730.GD1805@mit.edu>
-References: <20190612184033.21845-1-krisman@collabora.com>
- <20190612184033.21845-2-krisman@collabora.com>
- <20190616144440.GD15846@desktop>
- <20190616200154.GA7251@mit.edu>
- <20190620112903.GF15846@desktop>
- <20190620162116.GA4650@mit.edu>
- <20190620175035.GA5380@magnolia>
- <20190624071610.GA10195@infradead.org>
+        id S1730621AbfFXPMV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Jun 2019 11:12:21 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:32960 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728172AbfFXPMV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jun 2019 11:12:21 -0400
+Received: by mail-io1-f65.google.com with SMTP id u13so1204893iop.0
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Jun 2019 08:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=i6RP5sEIUQVe7K2Xxca+vDWdrwxXZnb7gXo4fjhFOrI=;
+        b=jvgv4lXqQaoTaUCCgSqFt7dA1UG8exJvGDZ8+KtKxJ/F1Y3nXoRjm3mDxBFqek2yPa
+         6+vxZZK7y20j65gwxGP1TZgLx/GKaAMRMeotexYhGiKkgr37FscTGeHpnWfkup4MQBr7
+         kVxvBPx8VMwMyBZCYCSMzStUhOKfpSYUOOQNP1hG5P9YNsNt6Hqx3aziwKkU0BVMlqW5
+         XwuM0TSzS42G1XJIYxd1+xd1q7vW9P7SovoLT4e4ilPznQYjhpoSBkE7NXsIzj1AHE0l
+         W1m+hPlUxfwPUS1qbPsmfFXhOaK94yklTADYhpuaQtZALjOAMeIsSx6O8N77qkEgoEW0
+         dCVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i6RP5sEIUQVe7K2Xxca+vDWdrwxXZnb7gXo4fjhFOrI=;
+        b=lDtDeMmph4BAQGrg0C0zHwH2P3gKcUEC2KPphp2Qy1F1uLBZ8cNTLxF58Tfy75mOqK
+         mZYZrcRTWQhYVhZi5Mdba40c88m1xleeHSrlp27y4DFZH+Blp+O/vHo5QgvkbYPXxkCZ
+         ahdQwNNbzeT48uiQ0v5kqEB1/XrA70iPufA9RC7lC23QMVnO5SySMb/dVaAUbtujHVb4
+         lqt+mQuSo/yEc70m11RApScQR7aLvzk8bd2ho1eFSRAxG7ZsTgbAHg1GmRTIGLJHdZu2
+         2/HZq+kPIvw2Po7uQGKiFPEbn3oE9nWBGZYAc1OoXJDGbhPXVPa87peZHNF9JuOYsqde
+         TvRA==
+X-Gm-Message-State: APjAAAUQPI5gApHGXcVLLYC4AOwNA29SEbr63rUQT+j/ZuPj0+1paick
+        tcrrVhDBhi23cIV2xErCV+C/+g==
+X-Google-Smtp-Source: APXvYqxhCdDitnoCJq15metdrBXJXKIUUa7soKbJdiR2x1Uo/Def9XZLDCqSPhNc0JhCX6SVb8UL6w==
+X-Received: by 2002:a02:2a8f:: with SMTP id w137mr127594244jaw.50.1561389140370;
+        Mon, 24 Jun 2019 08:12:20 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:855f:8919:84a7:4794])
+        by smtp.gmail.com with ESMTPSA id f17sm25760614ioc.2.2019.06.24.08.12.19
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 24 Jun 2019 08:12:19 -0700 (PDT)
+Date:   Mon, 24 Jun 2019 09:12:17 -0600
+From:   Ross Zwisler <zwisler@google.com>
+To:     kbuild test robot <lkp@intel.com>
+Cc:     Ross Zwisler <zwisler@chromium.org>, kbuild-all@01.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Fletcher Woodruff <fletcherw@google.com>,
+        Justin TerAvest <teravest@google.com>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] ext4: use jbd2_inode dirty range scoping
+Message-ID: <20190624151217.GA249955@google.com>
+References: <20190620151839.195506-4-zwisler@google.com>
+ <201906240244.12r4nktI%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190624071610.GA10195@infradead.org>
+In-Reply-To: <201906240244.12r4nktI%lkp@intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 12:16:10AM -0700, Christoph Hellwig wrote:
+On Mon, Jun 24, 2019 at 02:54:49AM +0800, kbuild test robot wrote:
+> Hi Ross,
 > 
-> As for the higher level question?  The shared tests always confused the
-> heck out of me.  generic with the right feature checks seem like a much
-> better idea.
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on v5.2-rc6 next-20190621]
+> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Ross-Zwisler/mm-add-filemap_fdatawait_range_keep_errors/20190623-181603
+> config: x86_64-rhel-7.6 (attached as .config)
+> compiler: gcc-7 (Debian 7.3.0-1) 7.3.0
+> reproduce:
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kbuild test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> ERROR: "jbd2_journal_inode_ranged_wait" [fs/ext4/ext4.ko] undefined!
+> >> ERROR: "jbd2_journal_inode_ranged_write" [fs/ext4/ext4.ko] undefined!
 
-Agreed.  I've sent out a patch series to bring the number of patches
-in shared down to four.  Here's what's left:
+Yep, this is caused by the lack of EXPORT_SYMBOL() calls for these two new
+jbd2 functions.  Ted also pointed this out and fixed this up when he was
+committing:
 
-shared/002 --- needs a feature test to somehow determine whether a
-	file system supports thousads of xattrs in a file (currently
-	on btrfs and xfs)
+https://patchwork.kernel.org/patch/11007139/#22717091
 
-shared/011 --- needs some way of determining that a file system
-	supports cgroup-aware writeback (currently enabled only for
-	ext4 and btrfs).  Do we consider lack of support of
-	cgroup-aware writeback a bug?  If so, maybe it doesn't need a
-	feature test at all?
-
-shared/032 --- needs a feature test to determine whether or not a file
-	system's mkfs supports detection of "foreign file systems".
-	e.g., whether or not it warns if you try overwrite a file
-	system w/o another file system.  (Currently enabled by xfs and
-	btrfs; it doesn't work for ext[234] because e2fsprogs, because
-	I didn't want to break existing shell scripts, only warns when
-	it is used interactively.  We could a way to force it to be
-	activated it points out this tests is fundamentally testing
-	implementation choices of the userspace utilities of a file
-	system.  Does it belong in xfstests?   : ¯\_(ツ)_/¯ )
-
-shared/289 --- contains ext4, xfs, and btrfs mechanisms for
-	determining blocks which are unallocated.  Has hard-coded
-	invocations to dumpe2fs, xfs_db, and /bin/btrfs.
-
-These don't have obvious solutions.  We could maybe add a _notrun if
-adding the thousands of xattrs fails with an ENOSPC or related error
-(f2fs uses something else).
-
-Maybe we just move shared/011 and move it generic/ w/o a feature test.
-
-Maybe we remove shared/032 altogether, since for e2fsprogs IMHO
-the right place to put it is the regression test in e2fsprogs --- but
-I know xfs has a different test philosophy for xfsprogs; and tha begs
-the question of what to do for mkfs.btrfs.
-
-And maybe we just split up shared/289 to three different tests in
-ext4/, xfs/, and btrfs/, since it would make the test script much
-simpler to understand?
-
-What do people think?
-
-						- Ted
+Thank you for the report!
