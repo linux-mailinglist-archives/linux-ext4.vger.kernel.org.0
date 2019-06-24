@@ -2,96 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 41769509DF
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 13:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FF450AAF
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 14:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728612AbfFXLhm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Jun 2019 07:37:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55440 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727608AbfFXLhm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Jun 2019 07:37:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0EF03AE79;
-        Mon, 24 Jun 2019 11:37:40 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DBCD31E2F23; Mon, 24 Jun 2019 13:37:37 +0200 (CEST)
-Date:   Mon, 24 Jun 2019 13:37:37 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
-        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
-        adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
-        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
-        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/7] vfs: flush and wait for io when setting the
- immutable flag via SETFLAGS
-Message-ID: <20190624113737.GG32376@quack2.suse.cz>
-References: <156116141046.1664939.11424021489724835645.stgit@magnolia>
- <156116142734.1664939.5074567130774423066.stgit@magnolia>
+        id S1728303AbfFXM3S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Jun 2019 08:29:18 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45710 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726453AbfFXM3R (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jun 2019 08:29:17 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5OCO7dZ020665;
+        Mon, 24 Jun 2019 12:29:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
+ bh=8TbQfYtvNSshTBr0ZvMlZv89p6dCExr2E7LXtartAAk=;
+ b=Bq7UkG8GedUeAevBp9S94JysQch+Jh6eNcgIPXrWTUqt/uHaWYHLVAkYObNlKFTLYh26
+ VOB87xP8id0qvKEAkD8mjSJtmGtOCANucYG4mNoLA8U6IXRLs0Hpc2Yrf7P2Brnf9xJ7
+ +K7bZ5fbZ8g3R0XVfChfns1+eGZiV/tHLaXZ86/wgncPX4EPGvV3k2jEYQloZboAvqr9
+ LMTuoK64UoD+xzgJBX0ZKzoMRswZ62ajq9UOFdSnqRgrJZ5tC6nX2uT/ohTIyRWyKHhP
+ 77Tesf3LEuGtTZWN4miVaOqe+EipIJIjqy2R1p/hE2qe6jueuIlmuCn9z2tQVnLowKRR 1w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2t9c9pe2qd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Jun 2019 12:29:14 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5OCRoZW171386;
+        Mon, 24 Jun 2019 12:29:13 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2t9acbfswd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Jun 2019 12:29:13 +0000
+Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5OCTCmx004921;
+        Mon, 24 Jun 2019 12:29:13 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Jun 2019 05:29:11 -0700
+Date:   Mon, 24 Jun 2019 15:29:06 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     krisman@collabora.com
+Cc:     linux-ext4@vger.kernel.org
+Subject: [bug report] ext4: optimize case-insensitive lookups
+Message-ID: <20190624122906.GA30836@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <156116142734.1664939.5074567130774423066.stgit@magnolia>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9297 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=601
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906240103
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9297 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=646 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906240102
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 21-06-19 16:57:07, Darrick J. Wong wrote:
-> From: Darrick J. Wong <darrick.wong@oracle.com>
-> 
-> When we're using FS_IOC_SETFLAGS to set the immutable flag on a file, we
-> need to ensure that userspace can't continue to write the file after the
-> file becomes immutable.  To make that happen, we have to flush all the
-> dirty pagecache pages to disk to ensure that we can fail a page fault on
-> a mmap'd region, wait for pending directio to complete, and hope the
-> caller locked out any new writes by holding the inode lock.
-> 
-> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Hello Gabriel Krisman Bertazi,
 
-Seeing the way this worked out, is there a reason to have separate
-vfs_ioc_setflags_flush_data() instead of folding the functionality in
-vfs_ioc_setflags_check() (possibly renaming it to
-vfs_ioc_setflags_prepare() to indicate it does already some changes)? I
-don't see any place that would need these two separated...
+The patch 3ae72562ad91: "ext4: optimize case-insensitive lookups"
+from Jun 19, 2019, leads to the following static checker warning:
 
-> +/*
-> + * Flush all pending IO and dirty mappings before setting S_IMMUTABLE on an
-> + * inode via FS_IOC_SETFLAGS.  If the flush fails we'll clear the flag before
-> + * returning error.
-> + *
-> + * Note: the caller should be holding i_mutex, or else be sure that
-> + * they have exclusive access to the inode structure.
-> + */
-> +static inline int vfs_ioc_setflags_flush_data(struct inode *inode, int flags)
-> +{
-> +	int ret;
-> +
-> +	if (!vfs_ioc_setflags_need_flush(inode, flags))
-> +		return 0;
-> +
-> +	inode_set_flags(inode, S_IMMUTABLE, S_IMMUTABLE);
-> +	ret = inode_flush_data(inode);
-> +	if (ret)
-> +		inode_set_flags(inode, 0, S_IMMUTABLE);
-> +	return ret;
-> +}
+	fs/ext4/namei.c:1311 ext4_fname_setup_ci_filename()
+	warn: 'cf_name->len' unsigned <= 0
 
-Also this sets S_IMMUTABLE whenever vfs_ioc_setflags_need_flush() returns
-true. That is currently the right thing but seems like a landmine waiting
-to trip? So I'd just drop the vfs_ioc_setflags_need_flush() abstraction to
-make it clear what's going on.
+fs/ext4/namei.c
+  1296  void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
+  1297                                    struct fscrypt_str *cf_name)
+  1298  {
+  1299          if (!IS_CASEFOLDED(dir)) {
+  1300                  cf_name->name = NULL;
+  1301                  return;
+  1302          }
+  1303  
+  1304          cf_name->name = kmalloc(EXT4_NAME_LEN, GFP_NOFS);
+  1305          if (!cf_name->name)
+  1306                  return;
+  1307  
+  1308          cf_name->len = utf8_casefold(EXT4_SB(dir->i_sb)->s_encoding,
+  1309                                       iname, cf_name->name,
+  1310                                       EXT4_NAME_LEN);
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+utf8_casefold() returns negative error codes
+
+  1311          if (cf_name->len <= 0) {
+
+but "cf_name->len" is a u32.
+
+  1312                  kfree(cf_name->name);
+  1313                  cf_name->name = NULL;
+  1314          }
+  1315  }
+
+
+regards,
+dan carpenter
