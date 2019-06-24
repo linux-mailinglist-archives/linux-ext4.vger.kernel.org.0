@@ -2,105 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FF450AAF
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 14:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B09750B09
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 14:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbfFXM3S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Jun 2019 08:29:18 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45710 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726453AbfFXM3R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Jun 2019 08:29:17 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5OCO7dZ020665;
-        Mon, 24 Jun 2019 12:29:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
- bh=8TbQfYtvNSshTBr0ZvMlZv89p6dCExr2E7LXtartAAk=;
- b=Bq7UkG8GedUeAevBp9S94JysQch+Jh6eNcgIPXrWTUqt/uHaWYHLVAkYObNlKFTLYh26
- VOB87xP8id0qvKEAkD8mjSJtmGtOCANucYG4mNoLA8U6IXRLs0Hpc2Yrf7P2Brnf9xJ7
- +K7bZ5fbZ8g3R0XVfChfns1+eGZiV/tHLaXZ86/wgncPX4EPGvV3k2jEYQloZboAvqr9
- LMTuoK64UoD+xzgJBX0ZKzoMRswZ62ajq9UOFdSnqRgrJZ5tC6nX2uT/ohTIyRWyKHhP
- 77Tesf3LEuGtTZWN4miVaOqe+EipIJIjqy2R1p/hE2qe6jueuIlmuCn9z2tQVnLowKRR 1w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2t9c9pe2qd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Jun 2019 12:29:14 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5OCRoZW171386;
-        Mon, 24 Jun 2019 12:29:13 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2t9acbfswd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Jun 2019 12:29:13 +0000
-Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5OCTCmx004921;
-        Mon, 24 Jun 2019 12:29:13 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Jun 2019 05:29:11 -0700
-Date:   Mon, 24 Jun 2019 15:29:06 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     krisman@collabora.com
-Cc:     linux-ext4@vger.kernel.org
-Subject: [bug report] ext4: optimize case-insensitive lookups
-Message-ID: <20190624122906.GA30836@mwanda>
+        id S1728221AbfFXMp2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Jun 2019 08:45:28 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:54146 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725916AbfFXMp2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Jun 2019 08:45:28 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 892E35F793;
+        Mon, 24 Jun 2019 12:45:28 +0000 (UTC)
+Received: from [IPv6:::1] (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DA739600D1;
+        Mon, 24 Jun 2019 12:45:27 +0000 (UTC)
+Subject: Re: [PATCH] quota: honor quote type in Q_XGETQSTAT[V] calls
+To:     Jan Kara <jack@suse.cz>
+Cc:     fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Bob Peterson <rpeterso@redhat.com>
+References: <0b96d49c-3c0b-eb71-dd87-750a6a48f1ef@redhat.com>
+ <20190624105800.GD32376@quack2.suse.cz>
+From:   Eric Sandeen <sandeen@redhat.com>
+Message-ID: <c5b47955-4771-e883-4e72-11810141eb19@redhat.com>
+Date:   Mon, 24 Jun 2019 07:45:27 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9297 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=601
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906240103
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9297 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=646 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906240102
+In-Reply-To: <20190624105800.GD32376@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Mon, 24 Jun 2019 12:45:28 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Gabriel Krisman Bertazi,
+On 6/24/19 5:58 AM, Jan Kara wrote:
+> On Fri 21-06-19 18:27:13, Eric Sandeen wrote:
+>> The code in quota_getstate and quota_getstatev is strange; it
+>> says the returned fs_quota_stat[v] structure has room for only
+>> one type of time limits, so fills it in with the first enabled
+>> quota, even though every quotactl command must have a type sent
+>> in by the user.
+>>
+>> Instead of just picking the first enabled quota, fill in the
+>> reply with the timers for the quota type that was actually
+>> requested.
+>>
+>> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+>> ---
+>>
+>> I guess this is a change in behavior, but it goes from a rather
+>> unexpected and unpredictable behavior to something more expected,
+>> so I hope it's ok.
+>>
+>> I'm working on breaking out xfs quota timers by type as well
+>> (they are separate on disk, but not in memory) so I'll work
+>> up an xfstest to go with this...
+> 
+> Yeah, makes sense. I've added the patch to my tree.
+> 
+> 								Honza
+> 
 
-The patch 3ae72562ad91: "ext4: optimize case-insensitive lookups"
-from Jun 19, 2019, leads to the following static checker warning:
+Thanks Jan - if you'd like to fix my "quote" for "quota" in the
+subject line, please feel free.  ;)
 
-	fs/ext4/namei.c:1311 ext4_fname_setup_ci_filename()
-	warn: 'cf_name->len' unsigned <= 0
-
-fs/ext4/namei.c
-  1296  void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
-  1297                                    struct fscrypt_str *cf_name)
-  1298  {
-  1299          if (!IS_CASEFOLDED(dir)) {
-  1300                  cf_name->name = NULL;
-  1301                  return;
-  1302          }
-  1303  
-  1304          cf_name->name = kmalloc(EXT4_NAME_LEN, GFP_NOFS);
-  1305          if (!cf_name->name)
-  1306                  return;
-  1307  
-  1308          cf_name->len = utf8_casefold(EXT4_SB(dir->i_sb)->s_encoding,
-  1309                                       iname, cf_name->name,
-  1310                                       EXT4_NAME_LEN);
-
-utf8_casefold() returns negative error codes
-
-  1311          if (cf_name->len <= 0) {
-
-but "cf_name->len" is a u32.
-
-  1312                  kfree(cf_name->name);
-  1313                  cf_name->name = NULL;
-  1314          }
-  1315  }
-
-
-regards,
-dan carpenter
+-Eric
