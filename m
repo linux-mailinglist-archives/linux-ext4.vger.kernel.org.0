@@ -2,65 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4289F51093
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 17:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62ED517B9
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 17:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730366AbfFXPeC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Jun 2019 11:34:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35898 "EHLO mx1.suse.de"
+        id S1731053AbfFXPy1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Jun 2019 11:54:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41680 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726263AbfFXPeC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Jun 2019 11:34:02 -0400
+        id S1728725AbfFXPy1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Jun 2019 11:54:27 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id CB7C9ACAC;
-        Mon, 24 Jun 2019 15:33:59 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id EABABAD94;
+        Mon, 24 Jun 2019 15:54:25 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 408D11E2F23; Mon, 24 Jun 2019 17:33:58 +0200 (CEST)
-Date:   Mon, 24 Jun 2019 17:33:58 +0200
+        id 5B4111E2F23; Mon, 24 Jun 2019 17:54:25 +0200 (CEST)
+Date:   Mon, 24 Jun 2019 17:54:25 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
-        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
-        adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
-        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
-        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/7] vfs: flush and wait for io when setting the
- immutable flag via SETFLAGS
-Message-ID: <20190624153358.GH32376@quack2.suse.cz>
-References: <156116141046.1664939.11424021489724835645.stgit@magnolia>
- <156116142734.1664939.5074567130774423066.stgit@magnolia>
+To:     Eric Sandeen <sandeen@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Bob Peterson <rpeterso@redhat.com>
+Subject: Re: [PATCH] quota: honor quote type in Q_XGETQSTAT[V] calls
+Message-ID: <20190624155425.GJ32376@quack2.suse.cz>
+References: <0b96d49c-3c0b-eb71-dd87-750a6a48f1ef@redhat.com>
+ <20190624105800.GD32376@quack2.suse.cz>
+ <c5b47955-4771-e883-4e72-11810141eb19@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <156116142734.1664939.5074567130774423066.stgit@magnolia>
+In-Reply-To: <c5b47955-4771-e883-4e72-11810141eb19@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 21-06-19 16:57:07, Darrick J. Wong wrote:
-> +/*
-> + * Flush file data before changing attributes.  Caller must hold any locks
-> + * required to prevent further writes to this file until we're done setting
-> + * flags.
-> + */
-> +static inline int inode_flush_data(struct inode *inode)
-> +{
-> +	inode_dio_wait(inode);
-> +	return filemap_write_and_wait(inode->i_mapping);
-> +}
+On Mon 24-06-19 07:45:27, Eric Sandeen wrote:
+> On 6/24/19 5:58 AM, Jan Kara wrote:
+> > On Fri 21-06-19 18:27:13, Eric Sandeen wrote:
+> >> The code in quota_getstate and quota_getstatev is strange; it
+> >> says the returned fs_quota_stat[v] structure has room for only
+> >> one type of time limits, so fills it in with the first enabled
+> >> quota, even though every quotactl command must have a type sent
+> >> in by the user.
+> >>
+> >> Instead of just picking the first enabled quota, fill in the
+> >> reply with the timers for the quota type that was actually
+> >> requested.
+> >>
+> >> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+> >> ---
+> >>
+> >> I guess this is a change in behavior, but it goes from a rather
+> >> unexpected and unpredictable behavior to something more expected,
+> >> so I hope it's ok.
+> >>
+> >> I'm working on breaking out xfs quota timers by type as well
+> >> (they are separate on disk, but not in memory) so I'll work
+> >> up an xfstest to go with this...
+> > 
+> > Yeah, makes sense. I've added the patch to my tree.
+> > 
+> > 								Honza
+> > 
+> 
+> Thanks Jan - if you'd like to fix my "quote" for "quota" in the
+> subject line, please feel free.  ;)
 
-BTW, how about calling this function inode_drain_writes() instead? The
-'flush_data' part is more a detail of implementation of write draining than
-what we need to do to set immutable flag.
+Done :) Thanks for the patch.
 
 								Honza
 -- 
