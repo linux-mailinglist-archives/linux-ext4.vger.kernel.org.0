@@ -2,62 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 028195005D
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 05:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960275005E
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2019 05:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727529AbfFXDv3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 23 Jun 2019 23:51:29 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:38748 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727010AbfFXDv3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 23 Jun 2019 23:51:29 -0400
-Received: by mail-pg1-f196.google.com with SMTP id z75so3739074pgz.5
-        for <linux-ext4@vger.kernel.org>; Sun, 23 Jun 2019 20:51:28 -0700 (PDT)
+        id S1727559AbfFXDwh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 23 Jun 2019 23:52:37 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:38732 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbfFXDwg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 23 Jun 2019 23:52:36 -0400
+Received: by mail-pl1-f196.google.com with SMTP id g4so6074369plb.5
+        for <linux-ext4@vger.kernel.org>; Sun, 23 Jun 2019 20:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=ZRPgvApNcs4ezbwx7YEe0VcSdQZPQ9xjVhok4QMrTWA=;
-        b=iURgSdTskOAx7PIWyNmQeuYLqu7TrnTO/ZgqSrE77Q29gm79wkSOfRJFukFvrNm/Ht
-         LZelNoEawXnhmc26DsLQSI3w6XurJCWXoz78szo1Pgb0syGDgjqvmC5n0kAhET7GHeYi
-         tlgH435gMFM8ujZz7N6zfnyIAg8jo0fUcO0IiDaACuYOoa8C1UwdTR/y0/PjQaVyE9U+
-         MTWm8wFwbWN4ELG+Uat3LJt9qNjV4BOvZSRyf1Dowgm4TLuTq3g4PR2436MvDR8/8en8
-         5x5/6IyAFHebliVCxyCGGL0D5VH4dmpxDB26B7kdeRo2NnahUK2nbBL3rl4d2x9RE8eC
-         odpA==
+        bh=5e2VHlWdPA4aSmpVGqTleBRGIntM2FAj5Oeba+xH80U=;
+        b=x+V7cx0jkLLIdOadVDTHckvquovpqPfu5Z15fJYQNJOuO8HSfKPR37nbl3Clmp4P7g
+         eQpVs20RdV+wgy5AhNzTsL5Z5QSc04/g1+Do04074YaFHAjIOV2NhleogFpuKsgXA3Uh
+         N/hQUkAwf9LbfKK1vAQ8hXX/8SWVxNgUA5h6w2/3+K5zZZVhDlPiLy1HD7Ny4vAxguqC
+         350Cb4LFnNuqK4mktbKrKdUfZxZkyKovzd3meORaNd7z9WaRTWOy5OmFxSgBD7ouUEqy
+         JiwBbB2WKdyVyiNJh1A6HBwzWrNSid0i2IBUQfaeeaosxJb6qdhLeO46XI6FqRfbyASD
+         WWOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=ZRPgvApNcs4ezbwx7YEe0VcSdQZPQ9xjVhok4QMrTWA=;
-        b=lHkQlwkkMEqvyBtn62n2NoSmmQbbpEw8SRet5spp93KyYUB8jMfv8YfTqWATi03gcJ
-         Ml9ZxFEgusKxs922Oe1kFCf1GRjcTHHIvwyvqzLF7hZIiHanqCSky2P57TnTc966KPUg
-         0rU8ruuMkzO8il3KYRiUbhY3n25y+zW8y91UEpiiO+TsN3nqVqWNSgthySAJNuKAUsjF
-         BhM7whpPsuYp/4sALQeJ2IN2IYjyYoNGaBSJJefSSzvk7Y/SqB1gAE+DevnUEyWY2yBi
-         0uW+vGcb8ES8HszpvoXHAEqMNTwFIYXn83FqQ5uV/0qrRJngQXWlqhVaezmE4ZKS/DJU
-         voPw==
-X-Gm-Message-State: APjAAAV8r73nD/Du8Omv1W+Y1RkRmGR4qlpzR0iSgjwysB0KCKRqGfUs
-        J3XK66ebIsA3Ad80pDPZUdb7MQ==
-X-Google-Smtp-Source: APXvYqz4ccn3VE0EOYchiz070hMv4Nvl8T1odKSZB9+p3I5FZslKAfncdKLvVr6dPr0nnIYSHszfpA==
-X-Received: by 2002:a65:4cce:: with SMTP id n14mr30913346pgt.246.1561348288017;
-        Sun, 23 Jun 2019 20:51:28 -0700 (PDT)
+        bh=5e2VHlWdPA4aSmpVGqTleBRGIntM2FAj5Oeba+xH80U=;
+        b=YcMxMq/PPydmVkgQM3GhogiPF1UPN/OpA0fYjKfLFlqj+UqYqX6la2dsMAG2zdbo+I
+         dYPQv2YaAhQ5Ji8I0wgkhVGuH5qUgOIzhVkKCXsrfm7szUBP4ygVSx+0yRhMaLX3jYL8
+         ilXpNMyfGfWITWRPAbHvrGHF7WvfgQATgbeMzaCDCCIEae04CcuEpyrId/4v54PbRW07
+         LlcKrAV6OT1G0tDgm8Kf70brRcvqk24WGzN3FnefcHQgq+NgE/NZJGtzhJUV1kDAzT7Y
+         bFG78tmjPfL71QRYM7n1TE7o/onZePiKqSg8x/VTOSAouLQhMwMPsVQDTcOIdzLzdfxP
+         8UbQ==
+X-Gm-Message-State: APjAAAUw1DKn5U6cRLhNktin5eWlxiXt2wpTRCAadQJtO8DuUmNSGzQs
+        2pJwehfmjumA7dK4iuDK7zMlGQ==
+X-Google-Smtp-Source: APXvYqzEEUzM2SZmGRtDzADgmWe0FbZfBXh0uOmrLk5pM2LiMMX1m3ARSAlqGZiKF/C9XkndrKUGKg==
+X-Received: by 2002:a17:902:7791:: with SMTP id o17mr5529405pll.162.1561348355802;
+        Sun, 23 Jun 2019 20:52:35 -0700 (PDT)
 Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id j11sm9950633pfa.2.2019.06.23.20.51.26
+        by smtp.gmail.com with ESMTPSA id i8sm6484618pjk.12.2019.06.23.20.52.34
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 23 Jun 2019 20:51:27 -0700 (PDT)
+        Sun, 23 Jun 2019 20:52:34 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <962DF4E5-4D71-45BD-A41F-05BDB0A2B599@dilger.ca>
+Message-Id: <62E29989-4C01-405D-B36B-B47FAAD90794@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_904608D4-9C02-4CC9-A921-9213D219460B";
+ boundary="Apple-Mail=_C350F6B6-1BEC-4CE1-9ECE-35A87569311C";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: allow directory holes
-Date:   Sun, 23 Jun 2019 21:52:15 -0600
-In-Reply-To: <20190621041039.25337-1-tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        stable@kernel.org
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Artem Blagodarenko <artem.blagodarenko@gmail.com>
-References: <20190621041039.25337-1-tytso@mit.edu>
+Subject: Re: [PATCH 08/16] ext4: Initialize timestamps limits
+Date:   Sun, 23 Jun 2019 21:53:26 -0600
+In-Reply-To: <20190618143110.6720-8-deepa.kernel@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Theodore Ts'o <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     Deepa Dinamani <deepa.kernel@gmail.com>
+References: <20190618143110.6720-1-deepa.kernel@gmail.com>
+ <20190618143110.6720-8-deepa.kernel@gmail.com>
 X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -65,219 +65,105 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_904608D4-9C02-4CC9-A921-9213D219460B
+--Apple-Mail=_C350F6B6-1BEC-4CE1-9ECE-35A87569311C
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Jun 20, 2019, at 10:10 PM, Theodore Ts'o <tytso@mit.edu> wrote:
+On Jun 18, 2019, at 8:31 AM, Deepa Dinamani <deepa.kernel@gmail.com> =
+wrote:
 >=20
-> The largedir feature was intended to allow ext4 directories to have
-> unmapped directory blocks (e.g., directory holes).  And so the
-> released e2fsprogs no longer enforces this for largedir file systems;
-> however, the corresponding change to the kernel-side code was not =
-made.
+> ext4 has different overflow limits for max filesystem
+> timestamps based on the extra bytes available.
 >=20
-> This commit fixes this oversight.
+> The timestamp limits are calculated according to the
+> encoding table in
+> a4dad1ae24f85i(ext4: Fix handling of extended tv_sec):
+>=20
+> * extra  msb of                         adjust for signed
+> * epoch  32-bit                         32-bit tv_sec to
+> * bits   time    decoded 64-bit tv_sec  64-bit tv_sec      valid time =
+range
+> * 0 0    1    -0x80000000..-0x00000001  0x000000000   =
+1901-12-13..1969-12-31
+> * 0 0    0    0x000000000..0x07fffffff  0x000000000   =
+1970-01-01..2038-01-19
+> * 0 1    1    0x080000000..0x0ffffffff  0x100000000   =
+2038-01-19..2106-02-07
+> * 0 1    0    0x100000000..0x17fffffff  0x100000000   =
+2106-02-07..2174-02-25
+> * 1 0    1    0x180000000..0x1ffffffff  0x200000000   =
+2174-02-25..2242-03-16
+> * 1 0    0    0x200000000..0x27fffffff  0x200000000   =
+2242-03-16..2310-04-04
+> * 1 1    1    0x280000000..0x2ffffffff  0x300000000   =
+2310-04-04..2378-04-22
+> * 1 1    0    0x300000000..0x37fffffff  0x300000000   =
+2378-04-22..2446-05-10
+>=20
+> Note that the time limits are not correct for deletion times.
+>=20
+> Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
+> Cc: "Theodore Ts'o" <tytso@mit.edu>
 
-This should include a label:
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-Fixes: e08ac99fa2a2 ("ext4: add largedir feature")
-
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-
-I've also added Artem to the CC list, since he submitted the patch.
-
-> Cc: stable@kernel.org
+> Cc: linux-ext4@vger.kernel.org
 > ---
-> fs/ext4/dir.c   |  8 --------
-> fs/ext4/namei.c | 35 +++++++++++++++++++++++++++--------
-> 2 files changed, 27 insertions(+), 16 deletions(-)
+> fs/ext4/ext4.h  |  4 ++++
+> fs/ext4/super.c | 16 ++++++++++++++--
+> 2 files changed, 18 insertions(+), 2 deletions(-)
 >=20
-> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-> index 770a1e6d4672..935dc52380fc 100644
-> --- a/fs/ext4/dir.c
-> +++ b/fs/ext4/dir.c
-> @@ -112,7 +112,6 @@ static int ext4_readdir(struct file *file, struct =
-dir_context *ctx)
-> 	struct inode *inode =3D file_inode(file);
-> 	struct super_block *sb =3D inode->i_sb;
-> 	struct buffer_head *bh =3D NULL;
-> -	int dir_has_error =3D 0;
-> 	struct fscrypt_str fstr =3D FSTR_INIT(NULL, 0);
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 1cb67859e051..3f13cf12ae7f 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -1631,6 +1631,10 @@ static inline void =
+ext4_clear_state_flags(struct ext4_inode_info *ei)
 >=20
-> 	if (IS_ENCRYPTED(inode)) {
-> @@ -179,13 +178,6 @@ static int ext4_readdir(struct file *file, struct =
-dir_context *ctx)
+> #define EXT4_GOOD_OLD_INODE_SIZE 128
+>=20
+> +#define EXT4_EXTRA_TIMESTAMP_MAX	(((s64)1 << 34) - 1  + S32_MIN)
+> +#define EXT4_NON_EXTRA_TIMESTAMP_MAX	S32_MAX
+> +#define EXT4_TIMESTAMP_MIN		S32_MIN
+> +
+> /*
+>  * Feature set definitions
+>  */
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 4079605d437a..0357acdeb6d3 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -4035,8 +4035,20 @@ static int ext4_fill_super(struct super_block =
+*sb, void *data, int silent)
+> 			       sbi->s_inode_size);
+> 			goto failed_mount;
 > 		}
->=20
-> 		if (!bh) {
-> -			if (!dir_has_error) {
-> -				EXT4_ERROR_FILE(file, 0,
-> -						"directory contains a "
-> -						"hole at offset %llu",
-> -					   (unsigned long long) =
-ctx->pos);
-> -				dir_has_error =3D 1;
-> -			}
-
-> 			/* corrupt size?  Maybe no more blocks to read =
-*/
-> 			if (ctx->pos > inode->i_blocks << 9)
-> 				break;
->                         ctx->pos +=3D sb->s_blocksize - offset;
-
-It seems that ext4_map_blocks() will return m_len with the length of the =
-hole,
-so it would make sense to skip all of the blocks in the hole rather than =
-trying
-to read all of them, in case the directory is mostly sparse.  This could =
-avoid
-a bunch of kernel spinning.
-
-Also, there is a separate question of whether ext4_map_blocks() will =
-return 0
-in the case of a hole, according to the function comment:
-
- * It returns 0 if plain look up failed (blocks have not been =
-allocated), in
- * that case, @map is returned as unmapped but we still do fill =
-map->m_len to
- * indicate the length of a hole starting at map->m_lblk.
-
-in which case "bh" is not reset from the previous loop?
-
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 4909ced4e672..f3140ff330c6 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -83,7 +83,7 @@ static int ext4_dx_csum_verify(struct inode *inode,
-> 			       struct ext4_dir_entry *dirent);
->=20
-> typedef enum {
-> -	EITHER, INDEX, DIRENT
-> +	EITHER, INDEX, DIRENT, DIRENT_HTREE
-
-It would be useful to put these one-per-line with a comment explaining =
-each.
-
-> } dirblock_type_t;
->=20
-> #define ext4_read_dirblock(inode, block, type) \
-> @@ -109,11 +109,14 @@ static struct buffer_head =
-*__ext4_read_dirblock(struct inode *inode,
->=20
-> 		return bh;
-> 	}
-> -	if (!bh) {
-> +	if (!bh && (type =3D=3D INDEX || type =3D=3D DIRENT_HTREE)) {
-> 		ext4_error_inode(inode, func, line, block,
-> -				 "Directory hole found");
-> +				 "Directory hole found for htree %s =
-block",
-> +				 (type =3D=3D INDEX) ? "index" : =
-"leaf");
-> 		return ERR_PTR(-EFSCORRUPTED);
-> 	}
-> +	if (!bh)
-> +		return NULL;
-> 	dirent =3D (struct ext4_dir_entry *) bh->b_data;
-> 	/* Determine whether or not we have an index block */
-> 	if (is_dx(inode)) {
-> @@ -980,7 +983,7 @@ static int htree_dirblock_to_tree(struct file =
-*dir_file,
->=20
-> 	dxtrace(printk(KERN_INFO "In htree dirblock_to_tree: block =
-%lu\n",
-> 							(unsigned =
-long)block));
-> -	bh =3D ext4_read_dirblock(dir, block, DIRENT);
-> +	bh =3D ext4_read_dirblock(dir, block, DIRENT_HTREE);
-> 	if (IS_ERR(bh))
-> 		return PTR_ERR(bh);
->=20
-> @@ -1619,7 +1622,7 @@ static struct buffer_head * =
-ext4_dx_find_entry(struct inode *dir,
-> 		return (struct buffer_head *) frame;
-> 	do {
-> 		block =3D dx_get_block(frame->at);
-> -		bh =3D ext4_read_dirblock(dir, block, DIRENT);
-> +		bh =3D ext4_read_dirblock(dir, block, DIRENT_HTREE);
-> 		if (IS_ERR(bh))
-> 			goto errout;
->=20
-> @@ -2203,6 +2206,11 @@ static int ext4_add_entry(handle_t *handle, =
-struct dentry *dentry,
-> 	blocks =3D dir->i_size >> sb->s_blocksize_bits;
-> 	for (block =3D 0; block < blocks; block++) {
-> 		bh =3D ext4_read_dirblock(dir, block, DIRENT);
-> +		if (bh =3D=3D NULL) {
-> +			bh =3D ext4_bread(handle, dir, block,
-> +					EXT4_GET_BLOCKS_CREATE);
-> +			goto add_to_new_block;
-> +		}
-> 		if (IS_ERR(bh)) {
-> 			retval =3D PTR_ERR(bh);
-> 			bh =3D NULL;
-> @@ -2223,6 +2231,7 @@ static int ext4_add_entry(handle_t *handle, =
-struct dentry *dentry,
-> 		brelse(bh);
-> 	}
-> 	bh =3D ext4_append(handle, dir, &block);
-> +add_to_new_block:
-> 	if (IS_ERR(bh)) {
-> 		retval =3D PTR_ERR(bh);
-> 		bh =3D NULL;
-> @@ -2267,7 +2276,7 @@ static int ext4_dx_add_entry(handle_t *handle, =
-struct ext4_filename *fname,
-> 		return PTR_ERR(frame);
-> 	entries =3D frame->entries;
-> 	at =3D frame->at;
-> -	bh =3D ext4_read_dirblock(dir, dx_get_block(frame->at), DIRENT);
-> +	bh =3D ext4_read_dirblock(dir, dx_get_block(frame->at), =
-DIRENT_HTREE);
-> 	if (IS_ERR(bh)) {
-> 		err =3D PTR_ERR(bh);
-> 		bh =3D NULL;
-> @@ -2815,7 +2824,10 @@ bool ext4_empty_dir(struct inode *inode)
-> 		EXT4_ERROR_INODE(inode, "invalid size");
-> 		return true;
-> 	}
-> -	bh =3D ext4_read_dirblock(inode, 0, EITHER);
-> +	/* The first directory block must not be a hole,
-> +	 * so treat it as DIRENT_HTREE
-> +	 */
-> +	bh =3D ext4_read_dirblock(inode, 0, DIRENT_HTREE);
-> 	if (IS_ERR(bh))
-> 		return true;
->=20
-> @@ -2837,6 +2849,10 @@ bool ext4_empty_dir(struct inode *inode)
-> 			brelse(bh);
-> 			lblock =3D offset >> EXT4_BLOCK_SIZE_BITS(sb);
-> 			bh =3D ext4_read_dirblock(inode, lblock, =
-EITHER);
-> +			if (bh =3D=3D NULL) {
-> +				offset +=3D sb->s_blocksize;
-> +				continue;
-> +			}
-> 			if (IS_ERR(bh))
-> 				return true;
-> 			de =3D (struct ext4_dir_entry_2 *) bh->b_data;
-> @@ -3402,7 +3418,10 @@ static struct buffer_head =
-*ext4_get_first_dir_block(handle_t *handle,
-> 	struct buffer_head *bh;
->=20
-> 	if (!ext4_has_inline_data(inode)) {
-> -		bh =3D ext4_read_dirblock(inode, 0, EITHER);
-> +		/* The first directory block must not be a hole, so
-> +		 * treat it as DIRENT_HTREE
+> -		if (sbi->s_inode_size > EXT4_GOOD_OLD_INODE_SIZE)
+> -			sb->s_time_gran =3D 1 << (EXT4_EPOCH_BITS - 2);
+> +		/* i_atime_extra is the last extra field available for =
+[acm]times in
+> +		 * struct ext4_inode. Checking for that field should =
+suffice to ensure
+> +		 * we have extra spaces for all three.
 > +		 */
-> +		bh =3D ext4_read_dirblock(inode, 0, DIRENT_HTREE);
-> 		if (IS_ERR(bh)) {
-> 			*retval =3D PTR_ERR(bh);
-> 			return NULL;
+> +		if (sbi->s_inode_size >=3D offsetof(struct ext4_inode, =
+i_atime_extra) +
+> +			sizeof(((struct ext4_inode *)0)->i_atime_extra)) =
+{
+> +			sb->s_time_gran =3D 1;
+> +			sb->s_time_max =3D EXT4_EXTRA_TIMESTAMP_MAX;
+> +		} else {
+> +			sb->s_time_gran =3D 0;
+> +			sb->s_time_max =3D EXT4_NON_EXTRA_TIMESTAMP_MAX;
+> +		}
+> +
+> +		sb->s_time_min =3D EXT4_TIMESTAMP_MIN;
+> 	}
+>=20
+> 	sbi->s_desc_size =3D le16_to_cpu(es->s_desc_size);
 > --
-> 2.22.0
+> 2.17.1
 >=20
 
 
@@ -288,7 +174,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_904608D4-9C02-4CC9-A921-9213D219460B
+--Apple-Mail=_C350F6B6-1BEC-4CE1-9ECE-35A87569311C
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -299,19 +185,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl0QSO8ACgkQcqXauRfM
-H+BaJhAAvHPGVu2WKTOxFwgmQygFl0xQoczbtx2g8dFckGoYyscU0FdlgPF79p++
-zAD1A9pB4qjWHW6ZFaT6yPh8+giuhjchfJAppG4mxQ0B4J+SECx2LB6J+y6+np5a
-qjPXVmydzgnBmJVyS9wQG4lea6P5+krgPjHsfW2wLklspNP1vzDYHN36of3WCjmp
-w4uRjsdFJME94g18nRuIASuQeXaCc7ql/PmK3oY9QTCGh6YI6Sr9ZWpxvyBuoguu
-BXUiavLqxjbi+/PdyadGWEinZvHpGobfQuOZlPij30FyfFvr5FJFXiJlFHLQ5STR
-A2xhRP98ibJ7hKj2wy0takKBwnHM1Ouq1KjzZd36/mHjQHXSkhvz3lKDD5ZiswjZ
-D7l0od/FXuCBCb1VPvfsO+kMXWb2wt8b4XHKsFPIp8HvzNer2L0/8Bb4lbgoFL0w
-6VKmTW2O7kFc4Q2XhVMzlLKV7l0uiXtnf+OJv9fiG+PY9Qyx4pmdUGIHTzw3wxT8
-vIRGeFbqGDLEYUFIioviJiI8XmHZupaXGc79EHE0oBbaOd3vsjNxZjnys9yvqx03
-wgNT5jvRrrRQcp5ZctWU9WEb/cmh8QVnajHeZoKfsT2qQU0qIRFeXPFw7GWnx0OH
-HlMb32GRcZX+sJAaKzNfzVJiGyrIe96dCZGWcZG0yy6fpsKNAxk=
-=0vtY
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl0QSTYACgkQcqXauRfM
+H+AvGBAArX+4Z27UrSx/23J0d4+SDwbnQ0NT/zkXoYpQHR4JNvGLWmWioQXx7ccn
+NYB9BB9SlNXiF2rhjrHVNH2vjRjAJ6b4udc/WeZMhgJqUAAMMXaeM6jpF5DRIsvx
+6kuNJWdkiq+tvP9MOnCyPuOijqEqqcBMA7H5dOxW7P1xHSsIWcWh/ny22yYzOLc9
+YD610aHYWIN9L54mUOzA6ceDePJQJG4LqVDfkvyULgAbwOB90a3rucZe4KzkTebR
+WNco07rw5TFplUysjEnHrLt6KrFrL/I0wZjNj2jn53cBpy6FM34XJ5r8dgJZZ86Q
+oDrl7fwE2BBuQq9BZLrtEulkAJrtKL+T+OPnM5YU5YvsAETo4mb9I9QMrVXVEq9Q
+BWXIzg2QzeyEtMrwgHDhGtIFYOCORUQ/ZuMLd/CTvkmA4bGZSVefcx4LCA+bvQZ3
+xfiItILSYQZvXY+g5UQxRuFeaoCXJLU1F4Ixvy2ktNyM0kH3GeVM52zOo1X9e6dj
+lPrMGAqHkstWobtUoPZC3qFSPWCjA8QzDvKpceUcRTqLs3MVMYdlvGzpN00fUV7a
+UtumF+AoScqhje6aVZwjhu1bDd0cnPx1Jut5OE1PQxHHmcE7cdS3mU8f+mpBos5G
+tWv0AD2wODfEq9g6mJSGWXd3lp+8fQiWjtcrIhTmMTtnxFhPV+M=
+=Yb4r
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_904608D4-9C02-4CC9-A921-9213D219460B--
+--Apple-Mail=_C350F6B6-1BEC-4CE1-9ECE-35A87569311C--
