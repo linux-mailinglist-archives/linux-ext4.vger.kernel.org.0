@@ -2,82 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 009CF52583
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jun 2019 09:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DAF53039
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jun 2019 12:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbfFYH4H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jun 2019 03:56:07 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33800 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726543AbfFYH4G (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 Jun 2019 03:56:06 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 3AEB77001CAEBEF3AD3F;
-        Tue, 25 Jun 2019 15:56:03 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 25 Jun
- 2019 15:55:58 +0800
-Subject: Re: [PATCH v5 16/16] f2fs: add fs-verity support
-To:     Eric Biggers <ebiggers@kernel.org>, <linux-fscrypt@vger.kernel.org>
-CC:     <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-fsdevel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <linux-integrity@vger.kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20190620205043.64350-1-ebiggers@kernel.org>
- <20190620205043.64350-17-ebiggers@kernel.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <90495fb1-72eb-ca42-8457-ef8e969eda51@huawei.com>
-Date:   Tue, 25 Jun 2019 15:55:57 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1729660AbfFYKg5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Jun 2019 06:36:57 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:55772 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728377AbfFYKg5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jun 2019 06:36:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=1VNqATdiMZjRjBl/SX9aDfK/cY5ROrczskzh7bEhyqQ=; b=ZpriNPniMtQfF3PzrXrZFLu9+
+        swp27pwzGA3dKtOql8ByZMlmC5XAUIK6Dd+GMHjf0qKANtiVkMY+kP24emwMCRR8Bd7PMgTyLe9QA
+        5OqMw/nvM9U3sRjirT+3roDKm/2t058rf3DiyN7fkLSlwMZ0SYle68bvh+fdV+mCDEdE0F8PxUYpO
+        6uADPC1wdetL3m6crno/ECGMbIBw4GF5RRX2ugGr6ltI3bjWVADicfMYipFtp/ocudq1CWBwDRZB8
+        y8f1S9n0qHQVZzv6yurSepPmJiIiCIwpzAKGBbc00350emRHfZhiQtGnClIv9oYZsJs4CbEdnWkcx
+        MCg3FRwHw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hfioR-0001Ln-BN; Tue, 25 Jun 2019 10:36:31 +0000
+Date:   Tue, 25 Jun 2019 03:36:31 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
+        adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
+        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v4 0/7] vfs: make immutable files actually immutable
+Message-ID: <20190625103631.GB30156@infradead.org>
+References: <156116141046.1664939.11424021489724835645.stgit@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20190620205043.64350-17-ebiggers@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <156116141046.1664939.11424021489724835645.stgit@magnolia>
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Eric,
+On Fri, Jun 21, 2019 at 04:56:50PM -0700, Darrick J. Wong wrote:
+> Hi all,
+> 
+> The chattr(1) manpage has this to say about the immutable bit that
+> system administrators can set on files:
+> 
+> "A file with the 'i' attribute cannot be modified: it cannot be deleted
+> or renamed, no link can be created to this file, most of the file's
+> metadata can not be modified, and the file can not be opened in write
+> mode."
+> 
+> Given the clause about how the file 'cannot be modified', it is
+> surprising that programs holding writable file descriptors can continue
+> to write to and truncate files after the immutable flag has been set,
+> but they cannot call other things such as utimes, fallocate, unlink,
+> link, setxattr, or reflink.
 
-On 2019/6/21 4:50, Eric Biggers wrote:
-> +static int f2fs_begin_enable_verity(struct file *filp)
-> +{
-> +	struct inode *inode = file_inode(filp);
-> +	int err;
-> +
+I still think living code beats documentation.  And as far as I can
+tell the immutable bit never behaved as documented or implemented
+in this series on Linux, and it originated on Linux.
 
-I think we'd better add condition here (under inode lock) to disallow enabling
-verity on atomic/volatile inode, as we may fail to write merkle tree data due to
-atomic/volatile inode's special writeback method.
-
-> +	err = f2fs_convert_inline_inode(inode);
-> +	if (err)
-> +		return err;
-> +
-> +	err = dquot_initialize(inode);
-> +	if (err)
-> +		return err;
-
-We can get rid of dquot_initialize() here, since f2fs_file_open() ->
-dquot_file_open() should has initialized quota entry previously, right?
-
-Thanks,
-
-> +
-> +	set_inode_flag(inode, FI_VERITY_IN_PROGRESS);
-> +	return 0;
-> +}
-> +
+If you want  hard cut off style immutable flag it should really be a
+new API, but I don't really see the point.  It isn't like the usual
+workload is to set the flag on a file actively in use.
