@@ -2,43 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 197A454CAB
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jun 2019 12:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F8054CCE
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jun 2019 12:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729055AbfFYKtL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jun 2019 06:49:11 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:59312 "EHLO
+        id S1732169AbfFYKyi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Jun 2019 06:54:38 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:60734 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbfFYKtL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jun 2019 06:49:11 -0400
+        with ESMTP id S1728078AbfFYKyi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jun 2019 06:54:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
         Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=sw5AQ1CngqSn+ZUl/GIUBor1j
-        qH/z7Cl5HGojMC+ChAg666tiva8y6WcI1ri3Xch2LxvnfKl6O7g1IjDxR53KtzYr/DoUVDRYQhzIu
-        Y0Nbhn2n4dZEAwmBKUUWfckLqQXhSsaEMofTOxkwPuOsLn5Opracjl2XU6Xl+DhzYyFytH5YPRa8d
-        /LaZNO7OiR/AxDHOxeaj4I9/ZZVfgjqb/1b4eHX12p/qU1INSJ9aT4/478BmxcEvoXss+Qjb+l43Q
-        fRFqTWr8P8tqazui7lUvB5pR+HTTrLvgROJN7IevKSLO9Xcg49mpgsJ7okGUL0+5erMP16HPuztmq
-        1xlR78tzQ==;
+         bh=Vz9EsU+BMp1qYPkPo0lwQQ2lWPTJmqiFxShSC5HxZL8=; b=nBAVGkdglPHpmuYQqFSATJHvp
+        qEilF7DPQiyEZIpSQIzZMPcCB19ggY2hEx92EbZD+IfkhXJZyak79h1VGJHrDEiGWkV7vWdHEwcvG
+        Uia30K8CsEe4KciVwAx9Ueh3ZNWdw+WX0rQuV/+mv6RSULDepJH0TpBhp34CvQXHIF+E3SqeKl+h1
+        M4x4LTLyO9xuSOKuIZjfQoumHfSjD2nHSXzSH8N5h1GHiAmRxpvVGMpCPUokV0wdUvCNSLjPRhyX1
+        eWkvzLLvA59dhTbrV/Jxp6kiY1qeMWIK1b2QPellvvFdOmIPR/rA0YufkoNWt9HeRFDAWMeB3mZv2
+        /tv3kTYFQ==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hfj0h-0005Js-9G; Tue, 25 Jun 2019 10:49:11 +0000
-Date:   Tue, 25 Jun 2019 03:49:11 -0700
+        id 1hfj5c-00078N-JV; Tue, 25 Jun 2019 10:54:16 +0000
+Date:   Tue, 25 Jun 2019 03:54:16 -0700
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Sandeen <sandeen@redhat.com>
-Cc:     fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Bob Peterson <rpeterso@redhat.com>
-Subject: Re: [PATCH] quota: honor quote type in Q_XGETQSTAT[V] calls
-Message-ID: <20190625104911.GI30156@infradead.org>
-References: <0b96d49c-3c0b-eb71-dd87-750a6a48f1ef@redhat.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        shaggy@kernel.org, ard.biesheuvel@linaro.org, josef@toxicpanda.com,
+        clm@fb.com, adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk,
+        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-efi@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/4] vfs: create a generic checking function for
+ FS_IOC_SETFLAGS
+Message-ID: <20190625105416.GA26085@infradead.org>
+References: <156116136742.1664814.17093419199766834123.stgit@magnolia>
+ <156116138140.1664814.9610454726122206157.stgit@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0b96d49c-3c0b-eb71-dd87-750a6a48f1ef@redhat.com>
+In-Reply-To: <156116138140.1664814.9610454726122206157.stgit@magnolia>
 User-Agent: Mutt/1.11.4 (2019-03-13)
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
@@ -46,6 +55,16 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Looks good,
+On Fri, Jun 21, 2019 at 04:56:21PM -0700, Darrick J. Wong wrote:
+> From: Darrick J. Wong <darrick.wong@oracle.com>
+> 
+> Create a generic checking function for the incoming FS_IOC_SETFLAGS flag
+> values so that we can standardize the implementations that follow ext4's
+> flag values.
+> 
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+
+Looks fine:
 
 Reviewed-by: Christoph Hellwig <hch@lst.de>
