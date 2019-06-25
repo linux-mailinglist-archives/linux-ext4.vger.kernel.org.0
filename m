@@ -2,33 +2,26 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7432A54D07
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jun 2019 12:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558B555556
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Jun 2019 19:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732421AbfFYK7R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jun 2019 06:59:17 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:36820 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729618AbfFYK7R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jun 2019 06:59:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Wwjd99RoXuSnHJKoAHqWgUdarmES3VQyay6SQK/R1Zo=; b=UwU0highZEA/FGERbHhOX+NGj
-        wbOEOfYCrykn4i/NMFvP0XQWLaO76P5pTHVLBqJkG76euT9OEwHgRthOqNy2+bpGfoQffYe+VSjUn
-        QLbNyICQ73+5wpZ67NnuWDRQEVMjMQ9n+ScMYd+VXjhbz8KGNZJ7arzmVhIfPVZ6AqQzv7e6MuDSa
-        aGu3nC2IVp/W+ZNu5JgLyHLadtwk9OKFT74gLui/zAk4qpMo1UK4kcsXrMvY0K5yWKTJkGWyq3w6u
-        d68URRrxr9HRoeZ3xU0m2oIIkykZy8SnVCCE4rPDUJESqTKtzeQYumA5/zO5K0UZUKNm4pEvUaMY8
-        Hwh6CeXHA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hfjA7-0000tm-GM; Tue, 25 Jun 2019 10:58:55 +0000
-Date:   Tue, 25 Jun 2019 03:58:55 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        id S1730278AbfFYRCI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Jun 2019 13:02:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57674 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727540AbfFYRCH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 25 Jun 2019 13:02:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 75B9FAF7A;
+        Tue, 25 Jun 2019 17:02:04 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DA730DA8F6; Tue, 25 Jun 2019 19:02:48 +0200 (CEST)
+Date:   Tue, 25 Jun 2019 19:02:48 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
         shaggy@kernel.org, ard.biesheuvel@linaro.org, josef@toxicpanda.com,
         clm@fb.com, adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
         dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk,
@@ -39,30 +32,77 @@ Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
         linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
         ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/4] vfs: teach vfs_ioc_fssetxattr_check to check extent
- size hints
-Message-ID: <20190625105855.GD26085@infradead.org>
+Subject: Re: [PATCH 2/4] vfs: create a generic checking function for
+ FS_IOC_FSSETXATTR
+Message-ID: <20190625170248.GS8917@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        shaggy@kernel.org, ard.biesheuvel@linaro.org, josef@toxicpanda.com,
+        clm@fb.com, adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk,
+        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-efi@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
 References: <156116136742.1664814.17093419199766834123.stgit@magnolia>
- <156116140570.1664814.4607468365269898575.stgit@magnolia>
+ <156116138952.1664814.16552129914959122837.stgit@magnolia>
+ <20190625105725.GB26085@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <156116140570.1664814.4607468365269898575.stgit@magnolia>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20190625105725.GB26085@infradead.org>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jun 21, 2019 at 04:56:45PM -0700, Darrick J. Wong wrote:
-> From: Darrick J. Wong <darrick.wong@oracle.com>
+On Tue, Jun 25, 2019 at 03:57:25AM -0700, Christoph Hellwig wrote:
+> On Fri, Jun 21, 2019 at 04:56:29PM -0700, Darrick J. Wong wrote:
+> > From: Darrick J. Wong <darrick.wong@oracle.com>
+> > 
+> > Create a generic checking function for the incoming FS_IOC_FSSETXATTR
+> > fsxattr values so that we can standardize some of the implementation
+> > behaviors.
+> > 
+> > Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/btrfs/ioctl.c   |   21 +++++++++-------
+> >  fs/ext4/ioctl.c    |   27 ++++++++++++++------
+> >  fs/f2fs/file.c     |   26 ++++++++++++++-----
+> >  fs/inode.c         |   17 +++++++++++++
+> >  fs/xfs/xfs_ioctl.c |   70 ++++++++++++++++++++++++++++++----------------------
+> >  include/linux/fs.h |    3 ++
+> >  6 files changed, 111 insertions(+), 53 deletions(-)
+> > 
+> > 
+> > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > index f408aa93b0cf..7ddda5b4b6a6 100644
+> > --- a/fs/btrfs/ioctl.c
+> > +++ b/fs/btrfs/ioctl.c
+> > @@ -366,6 +366,13 @@ static int check_xflags(unsigned int flags)
+> >  	return 0;
+> >  }
+> >  
+> > +static void __btrfs_ioctl_fsgetxattr(struct btrfs_inode *binode,
+> > +				     struct fsxattr *fa)
+> > +{
+> > +	memset(fa, 0, sizeof(*fa));
+> > +	fa->fsx_xflags = btrfs_inode_flags_to_xflags(binode->flags);
 > 
-> Move the extent size hint checks that aren't xfs-specific to the vfs.
+> Is there really much of a point in this helper? Epeciall as
+> the zeroing could easily be done in the variable declaration
+> line using
 > 
-> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> 	struct fsxattr fa = { };
 
-Looks good,
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Agreed, not counting the initialization the wrapper is merely another
+name for btrfs_inode_flags_to_xflags. I also find it slightly confusing
+that __btrfs_ioctl_fsgetxattr name is too close to the ioctl callback
+implementation btrfs_ioctl_fsgetxattr but only does some initialization.
