@@ -2,82 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D79E15707E
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jun 2019 20:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B85570EA
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jun 2019 20:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbfFZSVo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Jun 2019 14:21:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726223AbfFZSVm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 26 Jun 2019 14:21:42 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07DA221726;
-        Wed, 26 Jun 2019 18:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561573301;
-        bh=pNDy9ibt9Htg2aMIkROB6dLLyxI5mmHvZKejgIZn7Oc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TuI1lc8jAO4MB0RfvPP/3xjShwRJ5zX3E3hM3QnXjDNiYK2hkpbKcuEqrrq4t9f3Y
-         HFbcTFROptxFb6vvrHInrM7dcrlL86yIu0vDiQ9n7kCmvyRn/xKjMfwDx6VqIJcthL
-         KS8lIu7/J75DGlTa501xa6kZdnbnaUIMVJWVth/M=
-Date:   Wed, 26 Jun 2019 11:21:39 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Victor Hsieh <victorhsieh@google.com>,
-        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v5 16/16] f2fs: add fs-verity support
-Message-ID: <20190626182138.GA30296@gmail.com>
-References: <20190620205043.64350-1-ebiggers@kernel.org>
- <20190620205043.64350-17-ebiggers@kernel.org>
- <90495fb1-72eb-ca42-8457-ef8e969eda51@huawei.com>
- <20190625175225.GC81914@gmail.com>
- <68c5a15f-f6a8-75e2-b485-0f1b51471995@huawei.com>
+        id S1726545AbfFZSnS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jun 2019 14:43:18 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34866 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726227AbfFZSnR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jun 2019 14:43:17 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5QIgrkG019522
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jun 2019 14:42:54 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id E3B1A42002B; Wed, 26 Jun 2019 14:42:51 -0400 (EDT)
+Date:   Wed, 26 Jun 2019 14:42:51 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     syzbot <syzbot+4bfbbf28a2e50ab07368@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, davem@davemloft.net, eladr@mellanox.com,
+        idosch@mellanox.com, jiri@mellanox.com, john.stultz@linaro.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+Subject: Re: INFO: rcu detected stall in ext4_write_checks
+Message-ID: <20190626184251.GE3116@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
+        syzbot <syzbot+4bfbbf28a2e50ab07368@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, davem@davemloft.net, eladr@mellanox.com,
+        idosch@mellanox.com, jiri@mellanox.com, john.stultz@linaro.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+References: <000000000000d3f34b058c3d5a4f@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <68c5a15f-f6a8-75e2-b485-0f1b51471995@huawei.com>
+In-Reply-To: <000000000000d3f34b058c3d5a4f@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 03:34:35PM +0800, Chao Yu wrote:
-> >>> +	err = f2fs_convert_inline_inode(inode);
-> >>> +	if (err)
-> >>> +		return err;
-> >>> +
-> >>> +	err = dquot_initialize(inode);
-> >>> +	if (err)
-> >>> +		return err;
-> >>
-> >> We can get rid of dquot_initialize() here, since f2fs_file_open() ->
-> >> dquot_file_open() should has initialized quota entry previously, right?
-> > 
-> > We still need it because dquot_file_open() only calls dquot_initialize() if the
-> > file is being opened for writing.  But here the file descriptor is readonly.
-> > I'll add a comment explaining this here and in the ext4 equivalent.
+On Wed, Jun 26, 2019 at 10:27:08AM -0700, syzbot wrote:
+> Hello,
 > 
-> Ah, you're right.
+> syzbot found the following crash on:
 > 
-> f2fs_convert_inline_inode() may grab one more block during conversion, so we
-> need to call dquot_initialize() before inline conversion?
+> HEAD commit:    abf02e29 Merge tag 'pm-5.2-rc6' of git://git.kernel.org/pu..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1435aaf6a00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e5c77f8090a3b96b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=4bfbbf28a2e50ab07368
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11234c41a00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d7f026a00000
 > 
-> Thanks,
+> The bug was bisected to:
 > 
+> commit 0c81ea5db25986fb2a704105db454a790c59709c
+> Author: Elad Raz <eladr@mellanox.com>
+> Date:   Fri Oct 28 19:35:58 2016 +0000
+> 
+>     mlxsw: core: Add port type (Eth/IB) set API
 
-Good point.  I'll fix that here and in ext4.
+Um, so this doesn't pass the laugh test.
 
-- Eric
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10393a89a00000
+
+It looks like the automated bisection machinery got confused by two
+failures getting triggered by the same repro; the symptoms changed
+over time.  Initially, the failure was:
+
+crashed: INFO: rcu detected stall in {sys_sendfile64,ext4_file_write_iter}
+
+Later, the failure changed to something completely different, and much
+earlier (before the test was even started):
+
+run #5: basic kernel testing failed: failed to copy test binary to VM: failed to run ["scp" "-P" "22" "-F" "/dev/null" "-o" "UserKnownHostsFile=/dev/null" "-o" "BatchMode=yes" "-o" "IdentitiesOnly=yes" "-o" "StrictHostKeyChecking=no" "-o" "ConnectTimeout=10" "-i" "/syzkaller/jobs/linux/workdir/image/key" "/tmp/syz-executor216456474" "root@10.128.15.205:./syz-executor216456474"]: exit status 1
+Connection timed out during banner exchange
+lost connection
+
+Looks like an opportunity to improve the bisection engine?
+
+							- Ted
