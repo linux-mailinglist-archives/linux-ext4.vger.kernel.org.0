@@ -2,100 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D10356AAF
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jun 2019 15:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7985C56D93
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jun 2019 17:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbfFZNfR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Jun 2019 09:35:17 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:53646 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726484AbfFZNfR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jun 2019 09:35:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=PDR0OUH+l8W0FfPhG2cU875eCqJsbiz49DJrT3EzeCU=; b=V9gh8c4t3lX2HIkwVst972Iau
-        zCEUoYDJaoZ5CX9KtXrABCuI00mqavwLcNiE5RxFA8+Gl7xUu+/Xthw/ZdjSE4TUSdJgQaCQXjTN/
-        FQ3sIFmjDGVM3y58fESFFkvJt3muS7uXDCDbms1yoqpj4JSFxCgpQQUW9OV9Rtn9oYvOufD+/YnSn
-        I6uSFAgIEXqFT9K4tzncR05AlKlv5b+4wFtjgwpgcQD0EhlwiP1ewsjzeMU8T1Fh1hkOWFbRiUGee
-        Fdfa4neKgWKW1z1f5BUBFiMmgX1QEng7nLqQ+9CP7ebB8/W3f1MSddS2N2Ldo81EgmLt577OQswtr
-        l5csJc6Vw==;
-Received: from 177.205.71.220.dynamic.adsl.gvt.net.br ([177.205.71.220] helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hg84w-0003uf-SL; Wed, 26 Jun 2019 13:35:14 +0000
-Received: from mchehab by bombadil.infradead.org with local (Exim 4.92)
-        (envelope-from <mchehab@bombadil.infradead.org>)
-        id 1hg84t-0003Pb-Vz; Wed, 26 Jun 2019 10:35:12 -0300
-From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@infradead.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        NeilBrown <neilb@suse.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH] docs: filesystems: Remove uneeded .rst extension on toctables
-Date:   Wed, 26 Jun 2019 10:35:11 -0300
-Message-Id: <d2e4dfee7708a3ef6130d3ffcc579429de6a05c9.1561556105.git.mchehab+samsung@kernel.org>
-X-Mailer: git-send-email 2.21.0
+        id S1726723AbfFZPYW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Jun 2019 11:24:22 -0400
+Received: from mxo1.dft.dmz.twosigma.com ([208.77.212.183]:45389 "EHLO
+        mxo1.dft.dmz.twosigma.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725958AbfFZPYW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Jun 2019 11:24:22 -0400
+X-Greylist: delayed 384 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 Jun 2019 11:24:21 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mxo1.dft.dmz.twosigma.com (Postfix) with ESMTP id 45Ymqm4sq4z7t8V;
+        Wed, 26 Jun 2019 15:17:56 +0000 (GMT)
+X-Virus-Scanned: Debian amavisd-new at twosigma.com
+Received: from mxo1.dft.dmz.twosigma.com ([127.0.0.1])
+        by localhost (mxo1.dft.dmz.twosigma.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id XhBvqCTbyQMp; Wed, 26 Jun 2019 15:17:56 +0000 (GMT)
+Received: from EXMBNJE7.ad.twosigma.com (exmbnje7.ad.twosigma.com [172.20.45.147])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxo1.dft.dmz.twosigma.com (Postfix) with ESMTPS id 45Ymqm49vsz3wZB;
+        Wed, 26 Jun 2019 15:17:56 +0000 (GMT)
+Received: from EXMBNJE10.ad.twosigma.com (172.20.2.246) by
+ EXMBNJE7.ad.twosigma.com (172.20.45.147) with Microsoft SMTP Server (TLS) id
+ 15.0.1365.1; Wed, 26 Jun 2019 15:17:56 +0000
+Received: from EXMBNJE6.ad.twosigma.com (172.20.45.169) by
+ EXMBNJE10.ad.twosigma.com (172.20.2.246) with Microsoft SMTP Server (TLS) id
+ 15.0.1365.1; Wed, 26 Jun 2019 15:17:56 +0000
+Received: from twosigma.com (192.168.147.188) by EXMBNJE6.ad.twosigma.com
+ (172.20.45.169) with Microsoft SMTP Server (TLS) id 15.0.1365.1 via Frontend
+ Transport; Wed, 26 Jun 2019 15:17:56 +0000
+Date:   Wed, 26 Jun 2019 11:17:54 -0400
+From:   Thomas Walker <Thomas.Walker@twosigma.com>
+To:     "'linux-ext4@vger.kernel.org'" <linux-ext4@vger.kernel.org>
+CC:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "'tytso@mit.edu'" <tytso@mit.edu>,
+        Geoffrey Thomas <Geoffrey.Thomas@twosigma.com>
+Subject: Re: Phantom full ext4 root filesystems on 4.1 through 4.14 kernels
+Message-ID: <20190626151754.GA2789@twosigma.com>
+References: <9abbdde6145a4887a8d32c65974f7832@exmbdft5.ad.twosigma.com>
+ <20181108184722.GB27852@magnolia>
+ <c7cfeaf451d7438781da95b01f21116e@exmbdft5.ad.twosigma.com>
+ <20190123195922.GA16927@twosigma.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20190123195922.GA16927@twosigma.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-There's no need to use a .rst on Sphinx toc tables. As most of
-the Documentation don't use, remove the remaing occurrences.
+Sorry to revive a rather old thread, but Elana mentioned that there might have been a related fix recently?  Possibly something to do with truncate? 
+A quick scan of the last month or so turned up https://www.spinics.net/lists/linux-ext4/msg65772.html but none of these seemed obviously applicable to me.
+We do still experience this phantom space usage quite frequently (although the remount workaround below has lowered the priority). 
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
----
- Documentation/filesystems/ext4/index.rst | 8 ++++----
- Documentation/filesystems/index.rst      | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/filesystems/ext4/index.rst b/Documentation/filesystems/ext4/index.rst
-index 3be3e54d480d..705d813d558f 100644
---- a/Documentation/filesystems/ext4/index.rst
-+++ b/Documentation/filesystems/ext4/index.rst
-@@ -8,7 +8,7 @@ ext4 Data Structures and Algorithms
-    :maxdepth: 6
-    :numbered:
- 
--   about.rst
--   overview.rst
--   globals.rst
--   dynamic.rst
-+   about
-+   overview
-+   globals
-+   dynamic
-diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index 35644840a690..1651173f1118 100644
---- a/Documentation/filesystems/index.rst
-+++ b/Documentation/filesystems/index.rst
-@@ -17,7 +17,7 @@ algorithms work.
-    :maxdepth: 2
- 
-    vfs
--   path-lookup.rst
-+   path-lookup
-    api-summary
-    splice
- 
-@@ -41,4 +41,4 @@ Documentation for individual filesystem types can be found here.
- .. toctree::
-    :maxdepth: 2
- 
--   binderfs.rst
-+   binderfs
--- 
-2.21.0
-
+On Wed, Jan 23, 2019 at 02:59:22PM -0500, Thomas Walker wrote:
+> Unfortunately this still continues to be a persistent problem for us.  On another example system:
+> 
+> # uname -a
+> Linux <hostname> 4.14.67-ts1 #1 SMP Wed Aug 29 13:28:25 UTC 2018 x86_64 GNU/Linux
+> 
+> # df -h /
+> Filesystem                                              Size  Used Avail Use% Mounted on
+> /dev/disk/by-uuid/<uuid>                                 50G   46G  1.1G  98% /
+> 
+> # df -hi /
+> Filesystem                                             Inodes IUsed IFree IUse% Mounted on
+> /dev/disk/by-uuid/<uuid>                                 3.2M  306K  2.9M   10% /
+> 
+> # du -hsx  /
+> 14G     /
+> 
+> And confirmed not to be due to sparse files or deleted but still open files.
+> 
+> The most interesting thing that I've been able to find so far is this:
+> 
+> # mount -o remount,ro /
+> mount: / is busy
+> # df -h /
+> Filesystem                                              Size  Used Avail Use% Mounted on
+> /dev/disk/by-uuid/<uuid>                                 50G   14G   33G  30% /
+> 
+> Something about attempting (and failing) to remount read-only frees up all of the phantom space usage.
+> Curious whether that sparks ideas in anyone's mind?
+> 
+> I've tried all manner of other things without success.  Unmounting all of the overlays.  Killing off virtually all of usersapce (dropping to single user).  Dropping page/inode/dentry caches.Nothing else (short of a reboot) seems to give us the space back.
