@@ -2,187 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E776F55EF6
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jun 2019 04:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2E455F05
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Jun 2019 04:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbfFZCgp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Jun 2019 22:36:45 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:59564 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbfFZCgp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jun 2019 22:36:45 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5Q2Z0Zp120740;
-        Wed, 26 Jun 2019 02:35:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=RDkQFwhFFQ2vI5qz0xIqaf4zf8uM8p//mWlaoaNYF+I=;
- b=Qi2NwHnVvWi7uetKAFrtDLbEc7vBEztBO544xnn041sSZ7Fd3ocayxJrgUVLY5aWK0nf
- Ite4JKYpy0UTn6/XETb7boW3RhaAdXiKa1fL2V5TysE/aV9BaTPrGmv7gGnaw4E3aPVd
- h1eAr0iXSQgZ8bt1cz+Y/aA8/0mIndivv/2HisCjrSY7yBaaGjEge4/5om9TBbv2jvW3
- eOfa1J2vXFZDfhPdb+EttM0EV/jAq/YuGxJoz8dMa6tkFMJao88u3rFVpg9bj4ZNDBKS
- k6bGwT+rfiYQyJ1DPmadzn9S646qAfU1gSQw1fIjxewe/fI4Upnp6HJpT25nXB2TRGu8 EA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2t9brt7mt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jun 2019 02:35:36 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5Q2XQY8081296;
-        Wed, 26 Jun 2019 02:33:36 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 2tat7cjp2n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Jun 2019 02:33:36 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5Q2XZtv081761;
-        Wed, 26 Jun 2019 02:33:35 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2tat7cjp28-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jun 2019 02:33:35 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5Q2XY3k021348;
-        Wed, 26 Jun 2019 02:33:34 GMT
-Received: from localhost (/10.159.230.235)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 25 Jun 2019 19:33:34 -0700
-Subject: [PATCH 5/5] vfs: don't allow writes to swap files
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
-        darrick.wong@oracle.com, ard.biesheuvel@linaro.org,
-        josef@toxicpanda.com, hch@infradead.org, clm@fb.com,
-        adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
-        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org
-Cc:     reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Date:   Tue, 25 Jun 2019 19:33:31 -0700
-Message-ID: <156151641177.2283603.7806026378321236401.stgit@magnolia>
-In-Reply-To: <156151637248.2283603.8458727861336380714.stgit@magnolia>
-References: <156151637248.2283603.8458727861336380714.stgit@magnolia>
-User-Agent: StGit/0.17.1-dirty
+        id S1726687AbfFZChV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Jun 2019 22:37:21 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:37438 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbfFZChU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Jun 2019 22:37:20 -0400
+Received: by mail-pg1-f196.google.com with SMTP id y8so415348pgl.4;
+        Tue, 25 Jun 2019 19:37:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=grlVAwsoHm6qiNKeKxEtNH2ATBws2Wr1IWeBaz5cOck=;
+        b=QviN5Lz3QKExaZRbMMxDWfFQLC7wZt58uJRrAvmzq6e+Jeb3IuozjH/q07w9APIy4v
+         Zwf6Yj+I5M+acGFH3xZnLsBOHkV+lItcZX6G2xiUDLdwbDb3dBpByToMwYjyUXgz+nif
+         Db8M6l5AhBJEa2YfSllwJ0fLT60+eSpRpgWiPFTUsPN/ax/QQolKdB1PI8HJIg68IL+0
+         +c9mclfKWao5WNaDhp24x58Kbynd7CIpkS5pDYDrEzQhxjCbohV4WeDmmw0mneFSBs8l
+         EBLwMiGl9rxWxBWMBheOQaYtB4yEqR/ZyDsqej696TLNp/tGJr7UNUKHuPfBMgOTmjCF
+         rwSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=grlVAwsoHm6qiNKeKxEtNH2ATBws2Wr1IWeBaz5cOck=;
+        b=rlBxaWwoucfg8x0OP/ugF4nlwHY2PWAw27gsmF/KMDwCZvuqxYM4AOMmWbesZ38qdk
+         YWNoWhTJ/Fy8zqv75ajSGvk4XZceq+uOww/t1ouIWKJEPAlsSM6JvZJh96W4BEYskwVy
+         Me4j+REa90ZOO7Humje56vZR1m7cs4u/0TJqKJEt2xPHKEL9aVOsP/9eszKJgqaJVg57
+         UJQzaDnJZBDREWubVf/3RC62WJlksOvI2FkWtJj8KkY8Xsfqp1pGJ0Oq2H2dWJy6E8aa
+         TP+nf4n3zFTLWW00bF1JocbFDgm5f8y6Iqg6xVk9Rf4vx0BTs9TmNekTsZOIzSvXhFOj
+         /QZQ==
+X-Gm-Message-State: APjAAAUNjCJeJNNMac6aS/JwZFiEyd5Ff8gzTvjCz1VVIv3hM3aLXmvu
+        BJNsu6br1Tt0Jroo5/KMR8k=
+X-Google-Smtp-Source: APXvYqxkVg2DHEVLT/xevqx3R8fu7W9UlpkcAeeVbs+Xiv14ji5chXoNWu6JnRG9vagPoLhJl5Vv/A==
+X-Received: by 2002:a17:90a:be0d:: with SMTP id a13mr1339867pjs.84.1561516640089;
+        Tue, 25 Jun 2019 19:37:20 -0700 (PDT)
+Received: from localhost ([178.128.102.47])
+        by smtp.gmail.com with ESMTPSA id l2sm14479234pgs.33.2019.06.25.19.37.18
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 25 Jun 2019 19:37:19 -0700 (PDT)
+Date:   Wed, 26 Jun 2019 10:37:13 +0800
+From:   Eryu Guan <guaneryu@gmail.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.co.uk>
+Subject: Re: Removing the shared class of tests
+Message-ID: <20190626023713.GA7943@desktop>
+References: <20190612184033.21845-1-krisman@collabora.com>
+ <20190612184033.21845-2-krisman@collabora.com>
+ <20190616144440.GD15846@desktop>
+ <20190616200154.GA7251@mit.edu>
+ <20190620112903.GF15846@desktop>
+ <20190620162116.GA4650@mit.edu>
+ <20190620175035.GA5380@magnolia>
+ <20190624071610.GA10195@infradead.org>
+ <20190624130730.GD1805@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9299 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906260028
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190624130730.GD1805@mit.edu>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+On Mon, Jun 24, 2019 at 09:07:30AM -0400, Theodore Ts'o wrote:
+> On Mon, Jun 24, 2019 at 12:16:10AM -0700, Christoph Hellwig wrote:
+> > 
+> > As for the higher level question?  The shared tests always confused the
+> > heck out of me.  generic with the right feature checks seem like a much
+> > better idea.
+> 
+> Agreed.  I've sent out a patch series to bring the number of patches
+> in shared down to four.  Here's what's left:
+> 
+> shared/002 --- needs a feature test to somehow determine whether a
+> 	file system supports thousads of xattrs in a file (currently
+> 	on btrfs and xfs)
 
-Don't let userspace write to an active swap file because the kernel
-effectively has a long term lease on the storage and things could get
-seriously corrupted if we let this happen.
+Another option would be just whitelist btrfs and xfs in a require rule,
+we already have few require rules work like that, e.g.
+_fstyp_has_non_default_seek_data_hole(), this is not ideal, but works in
+such corner cases.
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/attr.c     |    3 +++
- mm/filemap.c  |    3 +++
- mm/memory.c   |    4 +++-
- mm/mmap.c     |    2 ++
- mm/swapfile.c |   15 +++++++++++++--
- 5 files changed, 24 insertions(+), 3 deletions(-)
+Thanks,
+Eryu
 
-
-diff --git a/fs/attr.c b/fs/attr.c
-index 1fcfdcc5b367..42f4d4fb0631 100644
---- a/fs/attr.c
-+++ b/fs/attr.c
-@@ -236,6 +236,9 @@ int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **de
- 	if (IS_IMMUTABLE(inode))
- 		return -EPERM;
- 
-+	if (IS_SWAPFILE(inode))
-+		return -ETXTBSY;
-+
- 	if ((ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID | ATTR_TIMES_SET)) &&
- 	    IS_APPEND(inode))
- 		return -EPERM;
-diff --git a/mm/filemap.c b/mm/filemap.c
-index dad85e10f5f8..fd80bc20e30a 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2938,6 +2938,9 @@ inline ssize_t generic_write_checks(struct kiocb *iocb, struct iov_iter *from)
- 	if (IS_IMMUTABLE(inode))
- 		return -EPERM;
- 
-+	if (IS_SWAPFILE(inode))
-+		return -ETXTBSY;
-+
- 	if (!iov_iter_count(from))
- 		return 0;
- 
-diff --git a/mm/memory.c b/mm/memory.c
-index 4311cfdade90..c04c6a689995 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2235,7 +2235,9 @@ static vm_fault_t do_page_mkwrite(struct vm_fault *vmf)
- 
- 	vmf->flags = FAULT_FLAG_WRITE|FAULT_FLAG_MKWRITE;
- 
--	if (vmf->vma->vm_file && IS_IMMUTABLE(file_inode(vmf->vma->vm_file)))
-+	if (vmf->vma->vm_file &&
-+	    (IS_IMMUTABLE(file_inode(vmf->vma->vm_file)) ||
-+	     IS_SWAPFILE(file_inode(vmf->vma->vm_file))))
- 		return VM_FAULT_SIGBUS;
- 
- 	ret = vmf->vma->vm_ops->page_mkwrite(vmf);
-diff --git a/mm/mmap.c b/mm/mmap.c
-index ac1e32205237..031807339869 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1488,6 +1488,8 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 					return -EACCES;
- 				if (IS_IMMUTABLE(file_inode(file)))
- 					return -EPERM;
-+				if (IS_SWAPFILE(file_inode(file)))
-+					return -ETXTBSY;
- 			}
- 
- 			/*
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 596ac98051c5..1ca4ee8c2d60 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3165,6 +3165,19 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	if (error)
- 		goto bad_swap;
- 
-+	/*
-+	 * Flush any pending IO and dirty mappings before we start using this
-+	 * swap file.
-+	 */
-+	if (S_ISREG(inode->i_mode)) {
-+		inode->i_flags |= S_SWAPFILE;
-+		error = inode_drain_writes(inode);
-+		if (error) {
-+			inode->i_flags &= ~S_SWAPFILE;
-+			goto bad_swap;
-+		}
-+	}
-+
- 	mutex_lock(&swapon_mutex);
- 	prio = -1;
- 	if (swap_flags & SWAP_FLAG_PREFER)
-@@ -3185,8 +3198,6 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	atomic_inc(&proc_poll_event);
- 	wake_up_interruptible(&proc_poll_wait);
- 
--	if (S_ISREG(inode->i_mode))
--		inode->i_flags |= S_SWAPFILE;
- 	error = 0;
- 	goto out;
- bad_swap:
-
+> 
+> shared/011 --- needs some way of determining that a file system
+> 	supports cgroup-aware writeback (currently enabled only for
+> 	ext4 and btrfs).  Do we consider lack of support of
+> 	cgroup-aware writeback a bug?  If so, maybe it doesn't need a
+> 	feature test at all?
+> 
+> shared/032 --- needs a feature test to determine whether or not a file
+> 	system's mkfs supports detection of "foreign file systems".
+> 	e.g., whether or not it warns if you try overwrite a file
+> 	system w/o another file system.  (Currently enabled by xfs and
+> 	btrfs; it doesn't work for ext[234] because e2fsprogs, because
+> 	I didn't want to break existing shell scripts, only warns when
+> 	it is used interactively.  We could a way to force it to be
+> 	activated it points out this tests is fundamentally testing
+> 	implementation choices of the userspace utilities of a file
+> 	system.  Does it belong in xfstests?   : ¯\_(ツ)_/¯ )
+> 
+> shared/289 --- contains ext4, xfs, and btrfs mechanisms for
+> 	determining blocks which are unallocated.  Has hard-coded
+> 	invocations to dumpe2fs, xfs_db, and /bin/btrfs.
+> 
+> These don't have obvious solutions.  We could maybe add a _notrun if
+> adding the thousands of xattrs fails with an ENOSPC or related error
+> (f2fs uses something else).
+> 
+> Maybe we just move shared/011 and move it generic/ w/o a feature test.
+> 
+> Maybe we remove shared/032 altogether, since for e2fsprogs IMHO
+> the right place to put it is the regression test in e2fsprogs --- but
+> I know xfs has a different test philosophy for xfsprogs; and tha begs
+> the question of what to do for mkfs.btrfs.
+> 
+> And maybe we just split up shared/289 to three different tests in
+> ext4/, xfs/, and btrfs/, since it would make the test script much
+> simpler to understand?
+> 
+> What do people think?
+> 
+> 						- Ted
