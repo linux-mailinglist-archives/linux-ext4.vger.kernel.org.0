@@ -2,97 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD965A5CC
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jun 2019 22:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE405A95B
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Jun 2019 09:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727140AbfF1UTh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Jun 2019 16:19:37 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58102 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727042AbfF1UTh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Jun 2019 16:19:37 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id D8D97284D58
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, kernel@collabora.com
-Subject: [PATCH] ext4: Fix coverity warning on error path of filename setup
-Organization: Collabora
-References: <20190624122906.GA30836@mwanda>
-Date:   Fri, 28 Jun 2019 16:19:32 -0400
-In-Reply-To: <20190624122906.GA30836@mwanda> (Dan Carpenter's message of "Mon,
-        24 Jun 2019 15:29:06 +0300")
-Message-ID: <85r27dlay3.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.1 (gnu/linux)
+        id S1726801AbfF2HFD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 29 Jun 2019 03:05:03 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:39144 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbfF2HFD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 29 Jun 2019 03:05:03 -0400
+Received: by mail-yb1-f193.google.com with SMTP id k4so6253324ybo.6;
+        Sat, 29 Jun 2019 00:05:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xM/xcvkzohmQdtVDVPIgTFxuHjb4HOBVLFjrfhylohA=;
+        b=Gfu5Pz78tLVKvI8Q9WtRwxoZiso9oqghADUZOQqtlF6a4PF4ZC24i4bhdxEFOWT9mb
+         ogpxVnV34CUKT9Hp3X/zqMkMMajHb+ZB117iqrYsimXsLjh5l46Ev8rT8yc8cIX3yIvp
+         pPvNValE4fvXkmuBjtLVOlUXgnPgouNfZrFrcwZJP2fDEoyBu6UDZfe0+vDH3DvWwhm2
+         zDFMbFYJkqZlfRqwPcIjOiXLiRHvuGtOYey5wWMnlJCELzFsocHIwB5e56zebm7P/vZi
+         S6f79kvT8PuUPJTo2r7gwPTQl2Z6a4vDBem6y6JYpyyoLzjF+dqkakkpoHJf+XnufEOL
+         I8qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xM/xcvkzohmQdtVDVPIgTFxuHjb4HOBVLFjrfhylohA=;
+        b=fGTYzuL+oud727aBlwsLu8xlR47mCfqDSocu+JWOhrYD2fHsRWOtTibjFpG8h+mVmc
+         LtLngKxWk47XmZ/oa/3K+HkWSveSf/fb2Ma9xhmx+aVgZHISopq/ncJ/T6X9WzbpkcG3
+         dH9EKfZuD+w+FsHAfxetAUTkotnokSJGFD9VpbPqMjWz/peR6pe32b9aXzVdIq+RRJ77
+         /YUo0m+e1Fm396bGZKB6HUm7IUde/BxIrtlTkAWwftTDEFXzD2CUHwacQnoagOvALwfX
+         NMz19469BVNfR+LGzqXfF6dNKepBthCmGhaLuPvbz4x78llROCFXnmc5D1YfkQQT1lZ+
+         MMNg==
+X-Gm-Message-State: APjAAAXwKeIIADgcELt2dsFQUJIT/iHki71NzdiXHp7+ZbW3+Bb2Buaz
+        7+5dq0/1ux2psCOMQQ12p1t5yjmNHaA+WJvfpEc=
+X-Google-Smtp-Source: APXvYqxU4FPLSq/gM1nVlP+fbK0BmSrMY2hESytnxCDMdjqY3j5BqEk3eirFdcbLmu5rTiIZzzGPOTH2wPbd9PuZuhY=
+X-Received: by 2002:a25:8489:: with SMTP id v9mr8918225ybk.144.1561791901221;
+ Sat, 29 Jun 2019 00:05:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <156174687561.1557469.7505651950825460767.stgit@magnolia> <156174690758.1557469.9258105121276292687.stgit@magnolia>
+In-Reply-To: <156174690758.1557469.9258105121276292687.stgit@magnolia>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sat, 29 Jun 2019 10:04:50 +0300
+Message-ID: <CAOQ4uxgG5Kijx=nzFRB0uFPMghJXDfCqxKEWQoePwKZTGO+NMg@mail.gmail.com>
+Subject: Re: [PATCH 4/4] vfs: don't allow most setxattr to immutable files
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     matthew.garrett@nebula.com, Chao Yu <yuchao0@huawei.com>,
+        Theodore Tso <tytso@mit.edu>, ard.biesheuvel@linaro.org,
+        Josef Bacik <josef@toxicpanda.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chris Mason <clm@fb.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, jk@ozlabs.org,
+        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devel@lists.orangefs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, linux-nilfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dan Carpenter <dan.carpenter@oracle.com> writes:
-
-> Hello Gabriel Krisman Bertazi,
+On Fri, Jun 28, 2019 at 9:37 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
 >
-> The patch 3ae72562ad91: "ext4: optimize case-insensitive lookups"
-> from Jun 19, 2019, leads to the following static checker warning:
+> From: Darrick J. Wong <darrick.wong@oracle.com>
+>
+> The chattr manpage has this to say about immutable files:
+>
+> "A file with the 'i' attribute cannot be modified: it cannot be deleted
+> or renamed, no link can be created to this file, most of the file's
+> metadata can not be modified, and the file can not be opened in write
+> mode."
+>
+> However, we don't actually check the immutable flag in the setattr code,
+> which means that we can update inode flags and project ids and extent
+> size hints on supposedly immutable files.  Therefore, reject setflags
+> and fssetxattr calls on an immutable file if the file is immutable and
+> will remain that way.
+>
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> ---
+>  fs/inode.c |   27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>
+>
+> diff --git a/fs/inode.c b/fs/inode.c
+> index cf07378e5731..4261c709e50e 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2214,6 +2214,14 @@ int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
+>             !capable(CAP_LINUX_IMMUTABLE))
+>                 return -EPERM;
+>
+> +       /*
+> +        * We aren't allowed to change any other flags if the immutable flag is
+> +        * already set and is not being unset.
+> +        */
+> +       if ((oldflags & FS_IMMUTABLE_FL) && (flags & FS_IMMUTABLE_FL) &&
+> +           oldflags != flags)
+> +               return -EPERM;
+> +
+>         /*
+>          * Now that we're done checking the new flags, flush all pending IO and
+>          * dirty mappings before setting S_IMMUTABLE on an inode via
+> @@ -2284,6 +2292,25 @@ int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
+>             !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
+>                 return -EINVAL;
+>
+> +       /*
+> +        * We aren't allowed to change any fields if the immutable flag is
+> +        * already set and is not being unset.
+> +        */
+> +       if ((old_fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
+> +           (fa->fsx_xflags & FS_XFLAG_IMMUTABLE)) {
+> +               if (old_fa->fsx_xflags != fa->fsx_xflags)
+> +                       return -EPERM;
+> +               if (old_fa->fsx_projid != fa->fsx_projid)
+> +                       return -EPERM;
+> +               if ((fa->fsx_xflags & (FS_XFLAG_EXTSIZE |
+> +                                      FS_XFLAG_EXTSZINHERIT)) &&
+> +                   old_fa->fsx_extsize != fa->fsx_extsize)
+> +                       return -EPERM;
+> +               if ((old_fa->fsx_xflags & FS_XFLAG_COWEXTSIZE) &&
+> +                   old_fa->fsx_cowextsize != fa->fsx_cowextsize)
+> +                       return -EPERM;
+> +       }
+> +
 
-Hi,
+I would like to reject this for the sheer effort on my eyes, but
+I'll try harder to rationalize.
 
-The patch below should fix this issue.
+How about memcmp(fa, old_fa, offsetof(struct fsxattr, fsx_pad))?
 
--- >8 --
-Subject: [PATCH] ext4: Fix coverity warning on error path of filename setup
+Would be more robust to future struct fsxattr changes and generally
+more easy on the eyes.
 
-Fix the following coverity warning reported by Dan Carpenter:
+Sure, there is the possibility of userspace passing uninitialized
+fsx_extsize/fsx_cowextsize without setting the flag, but is that
+a real concern for the very few tools that are used to chattr?
+Those tools, when asked to set an attribute, will first get
+struct fsxattr from fs, then change the requested attr and set the
+fsxattr struct. So IMO the chances of this causing any regression
+or unexpected behavior are ridiculously low.
 
-fs/ext4/namei.c:1311 ext4_fname_setup_ci_filename()
-	  warn: 'cf_name->len' unsigned <= 0
-
-Fixes: 3ae72562ad91 ("ext4: optimize case-insensitive lookups")
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- fs/ext4/namei.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 4909ced4e672..898295286676 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1296,6 +1296,8 @@ int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
- void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
- 				  struct fscrypt_str *cf_name)
- {
-+	int len;
-+
- 	if (!IS_CASEFOLDED(dir)) {
- 		cf_name->name = NULL;
- 		return;
-@@ -1305,13 +1307,16 @@ void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
- 	if (!cf_name->name)
- 		return;
- 
--	cf_name->len = utf8_casefold(EXT4_SB(dir->i_sb)->s_encoding,
--				     iname, cf_name->name,
--				     EXT4_NAME_LEN);
--	if (cf_name->len <= 0) {
-+	len = utf8_casefold(EXT4_SB(dir->i_sb)->s_encoding,
-+			    iname, cf_name->name,
-+			    EXT4_NAME_LEN);
-+	if (len <= 0) {
- 		kfree(cf_name->name);
- 		cf_name->name = NULL;
-+		return;
- 	}
-+	cf_name->len = (unsigned) len;
-+
- }
- #endif
- 
--- 
-2.20.1
-
-
+Thanks,
+Amir.
