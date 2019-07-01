@@ -2,121 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C215C1DF
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2019 19:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57A85C2F6
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2019 20:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbfGARU7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Jul 2019 13:20:59 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:34109 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbfGARU7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Jul 2019 13:20:59 -0400
-Received: by mail-wm1-f67.google.com with SMTP id w9so518855wmd.1
-        for <linux-ext4@vger.kernel.org>; Mon, 01 Jul 2019 10:20:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=plexistor-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RMtO9zTMwULPwpFiTkeooNGzR9zKo/UB7YgL+t4fgzA=;
-        b=1wUdmopYsOTGEBPctCCQBJNp/Weny3U0OdMAgIX7XMpDLNjX7yi2BQKVOeIOZfgf1b
-         I2dQPvs1YcMd4MKfGasxoR1vUF57n1uWvGfOwCBn+dFFXqdtzk7+nDTMfgxaIC1cMqAd
-         CyXSD5wWJrsSE7f66iNNQpS8suPAgj9SNlBFoRgvaYPLl2O9hulyvjxbO8s6Guhj4y1S
-         Nf6nnLqhsslQUJQ8lQjHCR002MedRLPvKNFje/NywIlwBVxr1dbYLS/Ag6d45MoLEFLA
-         TB43Jl9ECXn6C3ClznsgSlBckfDR8AQM1se/327D0FreZlmY9S9DkHpcHai8gVFUiAbk
-         jAnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RMtO9zTMwULPwpFiTkeooNGzR9zKo/UB7YgL+t4fgzA=;
-        b=XyrWa0S522F7/UcajGEYzCG0Yrz/I3VEvOuu+Yr19sSasbqinN4HacEc58AYZSS+bN
-         iEJcif0KhQwCKg5vJ0mBaiUccMYUA0Lg8DAjX71W2giPstw78upcmGLHG99fo7KDKf7O
-         zts3qsNbTcQfhyhHdB7pi++rrCg9/RqrcFO+QjjiinPVraWjeEwiE2ck8SOUeAjS+Xyp
-         gO75f2/vYmaAzcEDTIHM0ly+T2TqAalItnI78DPrsIuv6dq7emqW7HLRChV+jeZhgfMA
-         CyFi24LEmsvZee6cNbpvg1lIGfTu9ZuUgn/Rl+7Fn9odlmwjFAV0KF6Iq/GgKXGr8o4T
-         vC/A==
-X-Gm-Message-State: APjAAAXcs4r+Ex1wLqHcWi3gssU1IL/3hRq5V5y4ZundGQhMbLyFSAHh
-        aCiPkOGv2qk4EFFuhaRgKreSfA==
-X-Google-Smtp-Source: APXvYqyJIZEjZ99B+K6R50DPm7lq0IHr/E/1lfJMHdrHDPCDWuYMn1JV6lQAB5xdWdZjMaq23hnwbA==
-X-Received: by 2002:a1c:f009:: with SMTP id a9mr234245wmb.32.1562001657000;
-        Mon, 01 Jul 2019 10:20:57 -0700 (PDT)
-Received: from [10.68.217.182] ([217.70.211.18])
-        by smtp.googlemail.com with ESMTPSA id q193sm269299wme.8.2019.07.01.10.20.53
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Jul 2019 10:20:56 -0700 (PDT)
-Subject: Re: [PATCH v6 0/4] vfs: make immutable files actually immutable
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
-        ard.biesheuvel@linaro.org, josef@toxicpanda.com, hch@infradead.org,
-        clm@fb.com, adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk,
-        jack@suse.com, dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org
-Cc:     reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <156174687561.1557469.7505651950825460767.stgit@magnolia>
-From:   Boaz Harrosh <boaz@plexistor.com>
-Message-ID: <72f01c73-a1eb-efde-58fa-7667221255c7@plexistor.com>
-Date:   Mon, 1 Jul 2019 20:20:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726691AbfGAS1a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Jul 2019 14:27:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726316AbfGAS13 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 1 Jul 2019 14:27:29 -0400
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8133E2146F;
+        Mon,  1 Jul 2019 18:27:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1562005647;
+        bh=n9HcezWaSPlpcASpI2bH07EeRES7gEyf5lL/IOSWc8E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=g1Qo0ee2j38/uPs7qrsS9ErwaCGySuFiLPsChKtm4i6DxU+to9SFsNegQrvFhJ5zL
+         EznJeRRngWVGRYa6ULrkomHuYjRC6RtjAHjNCgjDJ+kilosq+APZ1ymZPJyItH2CVP
+         41gLjnyCZL65dqUwPD0A/jBNGuy6iNLyt6zFAfNU=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Victor Hsieh <victorhsieh@google.com>
+Subject: [RFC PATCH v3 0/8] xfstests: add fs-verity tests
+Date:   Mon,  1 Jul 2019 11:25:39 -0700
+Message-Id: <20190701182547.165856-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
 MIME-Version: 1.0
-In-Reply-To: <156174687561.1557469.7505651950825460767.stgit@magnolia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-MW
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 28/06/2019 21:34, Darrick J. Wong wrote:
-> Hi all,
-> 
-> The chattr(1) manpage has this to say about the immutable bit that
-> system administrators can set on files:
-> 
-> "A file with the 'i' attribute cannot be modified: it cannot be deleted
-> or renamed, no link can be created to this file, most of the file's
-> metadata can not be modified, and the file can not be opened in write
-> mode."
-> 
-> Given the clause about how the file 'cannot be modified', it is
-> surprising that programs holding writable file descriptors can continue
-> to write to and truncate files after the immutable flag has been set,
-> but they cannot call other things such as utimes, fallocate, unlink,
-> link, setxattr, or reflink.
-> 
-> Since the immutable flag is only settable by administrators, resolve
-> this inconsistent behavior in favor of the documented behavior -- once
-> the flag is set, the file cannot be modified, period.  We presume that
-> administrators must be trusted to know what they're doing, and that
-> cutting off programs with writable fds will probably break them.
-> 
+Add tests for fs-verity, a new feature for read-only file-based
+authenticity protection.  fs-verity will be supported by ext4 and f2fs,
+and perhaps by other filesystems later.  Running these tests requires:
 
-This effort sounds very logical to me and sound. But are we allowed to
-do it? IE: Is it not breaking ABI. I do agree previous ABI was evil but
-are we allowed to break it?
+- A kernel with the fs-verity patches applied and configured with
+  CONFIG_FS_VERITY.  Specifically, this version of the xfstests patchset
+  is compatible with version 6 of the kernel patchset, which can be
+  retrieved from tag "fsverity_2019-07-01" of
+  https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git
 
-I would not mind breaking it if %99.99 of the time the immutable bit
-was actually set manually by a human administrator. But what if there
-are automated systems that set it relying on the current behaviour?
+- The fsverity utility program from
+  https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/fsverity-utils.git
+  It needs to be commit 2151209ce1da or later.
 
-For example I have a very distant and vague recollection of a massive
-camera capture system, that was DMAing directly to file (splice). And setting
-the immutable bit right away on start. Then once the capture is done
-(capture file recycled) the file becomes immutable. Such program is now
-broken. Who's fault is it?
+- e2fsprogs v1.45.2 or later for ext4 tests, or f2fs-tools v1.11.0 or
+  later for f2fs tests.
 
-I'm totally not sure and maybe you are right. But have you made a
-survey of the majority of immutable uses, and are positive that
-the guys are not broken after this change?
+Example with kvm-xfstests:
 
-For me this is kind of scary. Yes I am known to be a SW coward ;-)
+	$ kvm-xfstests -c ext4,f2fs -g verity
 
-Thanks
-Boaz
+For more information about fs-verity, see the file
+Documentation/filesystems/fsverity.rst from the kernel patchset.
+
+This version of the xfstests patchset can also be retrieved from tag
+"fsverity_2019-07-01" of
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git
+
+Changed since v2 (Jun. 2019):
+
+  - Updated the signature verification test (generic/905) to match the
+    latest kernel and fsverity-utils changes.
+
+  - Added _fsv_sign() utility function.
+
+  - Correctly skip the fs-verity tests on ext3-style filesystems.
+
+Changed since v1 (Dec. 2018):
+
+  - Updated all tests to use the new fs-verity kernel API.
+
+  - Many cleanups, additional checks in the tests, and other improvements.
+
+  - Addressed review comments from Eryu Guan.
+
+  - Added a test for the built-in signature verification feature.
+
+  - Removed the fs-verity descriptor validation test, since the on-disk
+    format of this part was greatly simplified and made fs-specific.
+
+Eric Biggers (8):
+  common/filter: add _filter_xfs_io_fiemap()
+  common/verity: add common functions for testing fs-verity
+  generic: test general behavior of verity files
+  generic: test access controls on the fs-verity ioctls
+  generic: test corrupting verity files
+  generic: test that fs-verity is using the correct measurement values
+  generic: test using fs-verity and fscrypt simultaneously
+  generic: test the fs-verity built-in signature verification support
+
+ common/config         |   2 +
+ common/filter         |  24 +++++
+ common/verity         | 215 ++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/900     | 190 +++++++++++++++++++++++++++++++++++++
+ tests/generic/900.out |  71 ++++++++++++++
+ tests/generic/901     |  73 ++++++++++++++
+ tests/generic/901.out |  14 +++
+ tests/generic/902     | 154 ++++++++++++++++++++++++++++++
+ tests/generic/902.out |  91 ++++++++++++++++++
+ tests/generic/903     | 112 ++++++++++++++++++++++
+ tests/generic/903.out |   5 +
+ tests/generic/904     |  80 ++++++++++++++++
+ tests/generic/904.out |  12 +++
+ tests/generic/905     | 150 +++++++++++++++++++++++++++++
+ tests/generic/905.out |  42 +++++++++
+ tests/generic/group   |   6 ++
+ 16 files changed, 1241 insertions(+)
+ create mode 100644 common/verity
+ create mode 100755 tests/generic/900
+ create mode 100644 tests/generic/900.out
+ create mode 100755 tests/generic/901
+ create mode 100644 tests/generic/901.out
+ create mode 100755 tests/generic/902
+ create mode 100644 tests/generic/902.out
+ create mode 100755 tests/generic/903
+ create mode 100644 tests/generic/903.out
+ create mode 100755 tests/generic/904
+ create mode 100644 tests/generic/904.out
+ create mode 100755 tests/generic/905
+ create mode 100644 tests/generic/905.out
+
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
