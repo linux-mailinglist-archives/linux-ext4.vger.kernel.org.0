@@ -2,324 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 592AB5C2F0
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2019 20:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5875C5C0
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2019 00:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbfGAS1d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Jul 2019 14:27:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726731AbfGAS1b (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 1 Jul 2019 14:27:31 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726636AbfGAWoc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 1 Jul 2019 18:44:32 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:35740 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726341AbfGAWoc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Jul 2019 18:44:32 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 36CE98EE0E3;
+        Mon,  1 Jul 2019 15:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1562021072;
+        bh=m0tNNukF7xF3egFzci432mYmOW/txTHRHkDLaD3r0gI=;
+        h=Subject:From:To:Cc:Date:From;
+        b=eEISfa5LQLXOvG/SkdKV8GqMYVDg089+LHRoPt6gSY58WROr08Ldy+H+/gcksv3nZ
+         oNdVjQq5d4PpYU0Y3gTaoHUCPB+iWOHbN7oHQGodV7ckv321IRgL5vbE74F4D3EOYl
+         n+gx45e2HRCThUZw4joEq0yG5zpIk1+z31pPft4g=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id cl_bLoQOAoej; Mon,  1 Jul 2019 15:44:32 -0700 (PDT)
+Received: from jarvis.lan (unknown [50.35.68.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24C862184E;
-        Mon,  1 Jul 2019 18:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562005650;
-        bh=LW1cLobwlu4UZ3TbH32CQVjHGPAq9KW+Q1sSn2ZIHfM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ER7i0UGRYJcqw70OZO3ohEnIpncPf/uDVCzrZJtupa1tWPxqE+gtRCtIIVdKtFDx2
-         sALnx7XFGq1Ke8LdI1Ry099fMJcJaUUavCK7eewRi6aA1BYvla/anFaD+h62/s1pWF
-         FbxZLRzoeex7cystlPieHWUHNLn8JR4mEC8H4EOg=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Victor Hsieh <victorhsieh@google.com>
-Subject: [RFC PATCH v3 8/8] generic: test the fs-verity built-in signature verification support
-Date:   Mon,  1 Jul 2019 11:25:47 -0700
-Message-Id: <20190701182547.165856-9-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
-In-Reply-To: <20190701182547.165856-1-ebiggers@kernel.org>
-References: <20190701182547.165856-1-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id B583C8EE0E0;
+        Mon,  1 Jul 2019 15:44:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1562021071;
+        bh=m0tNNukF7xF3egFzci432mYmOW/txTHRHkDLaD3r0gI=;
+        h=Subject:From:To:Cc:Date:From;
+        b=jsX6GdVXxECfcsXbXJMNy0nT+o4FuyJdpvwVdu2IhWxU/0psLUo+4BYvEG9cXXGNV
+         ssQu01I7rxO8KGLpOOEgjcpkaFDBY26SSRpPojpaMsJuliaNLL52KBLz0FsHHbp5Wg
+         i8Y5JvONLVeitVymW91F7DYazx1BUOoWCIJwKjiA=
+Message-ID: <1562021070.2762.36.camel@HansenPartnership.com>
+Subject: [BUG] mke2fs produces corrupt filesystem if badblock list contains
+ a block under 251
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     Parisc List <linux-parisc@vger.kernel.org>
+Date:   Mon, 01 Jul 2019 15:44:30 -0700
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Background: we actually use the badblocks feature of the ext filesystem
+group to do a poorman's boot filesystem for parisc: Our system chunks
+up the disk searching for an Initial Program Loader (IPL) signature and
+then executes it, so we poke a hole in an ext3 filesystem at creation
+time and place the IPL into it.  Our IP can read ext3 files and
+directories, so it allows us to load the kernel directly from the file.
 
-Add a basic test for the fs-verity built-in signature verification
-support, which is an optional feature where the kernel can be configured
-to enforce that all verity files are accompanied with a valid signature
-by a key that has been loaded into the fs-verity keyring.
+The problem is that our IPL needs to be aligned at 256k in absolute
+terms on the disk, so, in the usual situation of having a 64k partition
+label and the boot partition being the first one we usually end up
+poking the badblock hole beginning at block 224 (using a 1k block
+size).
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+The problem is that this used to work long ago (where the value of long
+seems to be some time before 2011) but no longer does.  The problem can
+be illustrated simply by doing
+
 ---
- common/config         |   1 +
- common/verity         |  16 +++++
- tests/generic/905     | 150 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/905.out |  42 ++++++++++++
- tests/generic/group   |   1 +
- 5 files changed, 210 insertions(+)
- create mode 100755 tests/generic/905
- create mode 100644 tests/generic/905.out
+# dd if=/dev/zero of=bbtest.img bs=1M count=100
+# losetup /dev/loop0 bbtest.img
+# a=237; while [ $a -le 450 ]; do echo $a >> bblist.txt; a=$[$a+1]; done
+# mke2fs -b 1024 -l /home/jejb/bblist.txt  /dev/loop0
+---
 
-diff --git a/common/config b/common/config
-index 001ddc45..1aaf0a75 100644
---- a/common/config
-+++ b/common/config
-@@ -213,6 +213,7 @@ export XFS_INFO_PROG="$(type -P xfs_info)"
- export DUPEREMOVE_PROG="$(type -P duperemove)"
- export CC_PROG="$(type -P cc)"
- export FSVERITY_PROG="$(type -P fsverity)"
-+export OPENSSL_PROG="$(type -P openssl)"
- 
- # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
- # newer systems have udevadm command but older systems like RHEL5 don't.
-diff --git a/common/verity b/common/verity
-index a8aae51e..bcb5670d 100644
---- a/common/verity
-+++ b/common/verity
-@@ -45,6 +45,17 @@ _require_scratch_verity()
- 	FSV_BLOCK_SIZE=$(get_page_size)
- }
- 
-+# Check for CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y.
-+_require_fsverity_builtin_signatures()
-+{
-+	if [ ! -e /proc/keys ]; then
-+		_notrun "kernel doesn't support keyrings"
-+	fi
-+	if ! awk '{print $9}' /proc/keys | grep -q '^\.fs-verity:$'; then
-+		_notrun "kernel doesn't support fs-verity builtin signatures"
-+	fi
-+}
-+
- _scratch_mkfs_verity()
- {
- 	case $FSTYP in
-@@ -92,6 +103,11 @@ _fsv_measure()
-         $FSVERITY_PROG measure "$@" | awk '{print $1}'
- }
- 
-+_fsv_sign()
-+{
-+	$FSVERITY_PROG sign "$@"
-+}
-+
- # Generate a file, then enable verity on it.
- _fsv_create_enable_file()
- {
-diff --git a/tests/generic/905 b/tests/generic/905
-new file mode 100755
-index 00000000..e42b012d
---- /dev/null
-+++ b/tests/generic/905
-@@ -0,0 +1,150 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2019 Google LLC
-+#
-+# FS QA Test generic/905
-+#
-+# Test the fs-verity built-in signature verification support.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	sysctl -w fs.verity.require_signatures=0 &>/dev/null
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/verity
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+_require_scratch_verity
-+_require_fsverity_builtin_signatures
-+_require_command "$OPENSSL_PROG" openssl
-+_require_command "$KEYCTL_PROG" keyctl
-+
-+_scratch_mkfs_verity &>> $seqres.full
-+_scratch_mount
-+
-+fsv_file=$SCRATCH_MNT/file.fsv
-+fsv_orig_file=$SCRATCH_MNT/file
-+keyfile=$tmp.key.pem
-+certfile=$tmp.cert.pem
-+certfileder=$tmp.cert.der
-+sigfile=$tmp.sig
-+otherfile=$SCRATCH_MNT/otherfile
-+othersigfile=$tmp.othersig
-+
-+# Setup
-+
-+echo -e "\n# Generating certificates and private keys"
-+for suffix in '' '.2'; do
-+	if ! $OPENSSL_PROG req -newkey rsa:4096 -nodes -batch -x509 \
-+			-keyout $keyfile$suffix -out $certfile$suffix \
-+			&>> $seqres.full; then
-+		_fail "Failed to generate certificate and private key (see $seqres.full)"
-+	fi
-+	$OPENSSL_PROG x509 -in $certfile$suffix -out $certfileder$suffix \
-+		-outform der
-+done
-+
-+echo -e "\n# Clearing fs-verity keyring"
-+$KEYCTL_PROG clear %keyring:.fs-verity
-+
-+echo -e "\n# Loading first certificate into fs-verity keyring"
-+$KEYCTL_PROG padd asymmetric '' %keyring:.fs-verity \
-+	< $certfileder >> $seqres.full
-+
-+echo -e "\n# Enabling fs.verity.require_signatures"
-+sysctl -w fs.verity.require_signatures=1
-+
-+echo -e "\n# Generating file and signing it for fs-verity"
-+head -c 100000 /dev/zero > $fsv_orig_file
-+for suffix in '' '.2'; do
-+	_fsv_sign $fsv_orig_file $sigfile$suffix --key=$keyfile$suffix \
-+		--cert=$certfile$suffix | _filter_scratch
-+done
-+
-+echo -e "\n# Signing a different file for fs-verity"
-+head -c 100000 /dev/zero | tr '\0' 'X' > $otherfile
-+_fsv_sign $otherfile $othersigfile --key=$keyfile --cert=$certfile \
-+	| _filter_scratch
-+
-+# Actual tests
-+
-+reset_fsv_file()
-+{
-+	rm -f $fsv_file
-+	cp $fsv_orig_file $fsv_file
-+}
-+
-+echo -e "\n# Enabling verity with valid signature (should succeed)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$sigfile
-+cmp $fsv_file $fsv_orig_file
-+
-+echo -e "\n# Enabling verity without signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file |& _filter_scratch
-+
-+echo -e "\n# Opening verity file without signature (should fail)"
-+reset_fsv_file
-+sysctl -w fs.verity.require_signatures=0 &>> $seqres.full
-+_fsv_enable $fsv_file
-+sysctl -w fs.verity.require_signatures=1 &>> $seqres.full
-+_scratch_cycle_mount
-+md5sum $fsv_file |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with untrusted signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$sigfile.2 |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with wrong file's signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$othersigfile |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with malformed signature (should fail)"
-+echo foobarbaz > $tmp.malformed_sig
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$tmp.malformed_sig |& _filter_scratch
-+
-+echo -e "\n# Testing salt"
-+reset_fsv_file
-+_fsv_sign $fsv_orig_file $sigfile.salted --key=$keyfile --cert=$certfile \
-+	--salt=abcd | _filter_scratch
-+_fsv_enable $fsv_file --signature=$sigfile.salted --salt=abcd
-+cmp $fsv_file $fsv_orig_file
-+
-+echo -e "\n# Testing non-default hash algorithm"
-+if _fsv_have_hash_algorithm sha512 $fsv_file; then
-+	reset_fsv_file
-+	_fsv_sign $fsv_orig_file $sigfile.sha512 --key=$keyfile \
-+		--cert=$certfile --hash-alg=sha512 > /dev/null
-+	_fsv_enable $fsv_file --signature=$sigfile.sha512 --hash-alg=sha512
-+	cmp $fsv_file $fsv_orig_file
-+fi
-+
-+echo -e "\n# Testing empty file"
-+echo -n > $fsv_file
-+_fsv_sign $fsv_file $sigfile.emptyfile --key=$keyfile --cert=$certfile | \
-+		_filter_scratch
-+_fsv_enable $fsv_file --signature=$sigfile.emptyfile
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/905.out b/tests/generic/905.out
-new file mode 100644
-index 00000000..4b28757a
---- /dev/null
-+++ b/tests/generic/905.out
-@@ -0,0 +1,42 @@
-+QA output created by 905
-+
-+# Generating certificates and private keys
-+
-+# Clearing fs-verity keyring
-+
-+# Loading first certificate into fs-verity keyring
-+
-+# Enabling fs.verity.require_signatures
-+fs.verity.require_signatures = 1
-+
-+# Generating file and signing it for fs-verity
-+Signed file 'SCRATCH_MNT/file' (sha256:ecabbfca4efd69a721be824965da10d27900b109549f96687b35a4d91d810dac)
-+Signed file 'SCRATCH_MNT/file' (sha256:ecabbfca4efd69a721be824965da10d27900b109549f96687b35a4d91d810dac)
-+
-+# Signing a different file for fs-verity
-+Signed file 'SCRATCH_MNT/otherfile' (sha256:b2a419c5a8c767a78c6275d6729794bf51e52ddf8713e31d12a93d61d961f49f)
-+
-+# Enabling verity with valid signature (should succeed)
-+
-+# Enabling verity without signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Operation not permitted
-+
-+# Opening verity file without signature (should fail)
-+md5sum: SCRATCH_MNT/file.fsv: Operation not permitted
-+
-+# Enabling verity with untrusted signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Required key not available
-+
-+# Enabling verity with wrong file's signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Key was rejected by service
-+
-+# Enabling verity with malformed signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Bad message
-+
-+# Testing salt
-+Signed file 'SCRATCH_MNT/file' (sha256:1cb173bcd199133eb80e9ea4f0f741001b9e73227aa8812685156f2bc8ff45f5)
-+
-+# Testing non-default hash algorithm
-+
-+# Testing empty file
-+Signed file 'SCRATCH_MNT/file.fsv' (sha256:3d248ca542a24fc62d1c43b916eae5016878e2533c88238480b26128a1f1af95)
-diff --git a/tests/generic/group b/tests/generic/group
-index cc30a30b..a24fc997 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -565,3 +565,4 @@
- 902 auto quick verity
- 903 auto quick verity
- 904 auto quick verity encrypt
-+905 auto quick verity
--- 
-2.22.0.410.gd8fdbe21b5-goog
+Now if you try to do an e2fsck on the partition you'll get this
+
+---
+# e2fsck  -f /dev/loop0
+e2fsck 1.45.2 (27-May-2019)
+Pass 1: Checking inodes, blocks, and sizes
+Programming error?  block #237 claimed for no reason in process_bad_block.
+Programming error?  block #238 claimed for no reason in process_bad_block.
+Programming error?  block #239 claimed for no reason in process_bad_block.
+Programming error?  block #240 claimed for no reason in process_bad_block.
+Programming error?  block #241 claimed for no reason in process_bad_block.
+Programming error?  block #242 claimed for no reason in process_bad_block.
+Programming error?  block #243 claimed for no reason in process_bad_block.
+Programming error?  block #244 claimed for no reason in process_bad_block.
+Programming error?  block #245 claimed for no reason in process_bad_block.
+Programming error?  block #246 claimed for no reason in process_bad_block.
+Programming error?  block #247 claimed for no reason in process_bad_block.
+Programming error?  block #248 claimed for no reason in process_bad_block.
+Programming error?  block #249 claimed for no reason in process_bad_block.
+Programming error?  block #250 claimed for no reason in process_bad_block.
+Programming error?  block #251 claimed for no reason in process_bad_block.
+Programming error?  block #252 claimed for no reason in process_bad_block.
+Programming error?  block #253 claimed for no reason in process_bad_block.
+Programming error?  block #254 claimed for no reason in process_bad_block.
+Programming error?  block #255 claimed for no reason in process_bad_block.
+Programming error?  block #256 claimed for no reason in process_bad_block.
+Programming error?  block #257 claimed for no reason in process_bad_block.
+Programming error?  block #258 claimed for no reason in process_bad_block.
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+Free blocks count wrong for group #0 (7556, counted=7578).
+Fix<y>? 
+---
+
+So mke2fs has created an ab-inito corrupt filesystem.  Empirically,
+this only seems to happen if there is a block in the bad block list
+under 251, but I haven't verified this extensively.
+
+James
 
