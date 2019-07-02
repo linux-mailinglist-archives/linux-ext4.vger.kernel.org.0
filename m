@@ -2,153 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC41D5C679
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2019 02:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3025CDCB
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2019 12:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbfGBAxh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 1 Jul 2019 20:53:37 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:37284 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726866AbfGBAxh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 1 Jul 2019 20:53:37 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 928818EE0E3;
-        Mon,  1 Jul 2019 17:53:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1562028816;
-        bh=ziuFwfAaAOaRzTAhLJllzPXRQqxz5i1F923x1o9A8AM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Pvi8aPJMuGWkjN+Z/TudR8FB0jB7oFESWDQMxbJY6361yvwQHnwj5VsIqTtnZxzrf
-         Coi0i1ifWiHKIaoqCfF2xbtm32c+tFnmeL7VZqePa9uYrJzWn0UYOEKMO6vCNJjxeS
-         Hj3fLLi5intkUpYoD4H7GqocYRuJWOVE/o2AOSyA=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YGa9hrlhEUxS; Mon,  1 Jul 2019 17:53:36 -0700 (PDT)
-Received: from jarvis.lan (unknown [50.35.68.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 224E68EE0E0;
-        Mon,  1 Jul 2019 17:53:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1562028816;
-        bh=ziuFwfAaAOaRzTAhLJllzPXRQqxz5i1F923x1o9A8AM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Pvi8aPJMuGWkjN+Z/TudR8FB0jB7oFESWDQMxbJY6361yvwQHnwj5VsIqTtnZxzrf
-         Coi0i1ifWiHKIaoqCfF2xbtm32c+tFnmeL7VZqePa9uYrJzWn0UYOEKMO6vCNJjxeS
-         Hj3fLLi5intkUpYoD4H7GqocYRuJWOVE/o2AOSyA=
-Message-ID: <1562028814.2762.50.camel@HansenPartnership.com>
-Subject: Re: [BUG] mke2fs produces corrupt filesystem if badblock list
- contains a block under 251
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>
-Date:   Mon, 01 Jul 2019 17:53:34 -0700
-In-Reply-To: <20190702002355.GB3315@mit.edu>
-References: <1562021070.2762.36.camel@HansenPartnership.com>
-         <20190702002355.GB3315@mit.edu>
+        id S1726702AbfGBKpp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Jul 2019 06:45:45 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:41634 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbfGBKpp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jul 2019 06:45:45 -0400
+Received: by mail-yb1-f193.google.com with SMTP id y67so1127843yba.8;
+        Tue, 02 Jul 2019 03:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
+        b=kdVby+/PzZu5i6Y9UcQYatHEHHsEPhAQY+mjVHF6xlggt8o+nszbdHXCHfEBil5H5H
+         UL+/28eYKfUAOv8AvNzRMQHWK/y4MABFSamQhRwNZH1hpEc5BUQCjqITvhev6DLWRzG3
+         uOgpinFcBt7pSePpbwiWspS3cbj7dBXMod+4Z94YngJ+nIPc3qdhbsYftXAC3oBGhakE
+         Bt+6iCjbrfqQEg0SzB1WdrzlyuHEb0JfhuYdop7KFU8fbo4QPvOCj4+Z+NVkWFYsg5RT
+         IRHHoit1jxeDZWaJHULPmpdSPTutxwczS9nSE3h7MYk2MPhM/kHniCv9ovLGXWy3LfTv
+         lmfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
+        b=kOQko23Rc0IeST7t53H2gjWohdZk/9tmrCy9j0Rme3aK0mIIU5LjQKBiS+ejJnCJLr
+         eXv3MY5B5zssNxt6ivw3b3ZBvK1ZL89h6U4Y+3AIy7lCyyPMsPb/G6izNdRCpd06xd6E
+         pLh/ruAZmfaEUtviP+xATCFMGfeg5ePmN+63xu/FldL9ljRQfqyluhxF2LBRFjCNOzmg
+         NH1VOREpBkgGMKCPlQ1BVPd3q1TOF4cF+KqV12p2Ladm8UDSa0rsfY1id/BS+Xr1YQRm
+         UvHTCY97g7hTBu2cu7OTDhNjAo9ZikyO8JHLd7mxjGRiEsZr/AWbSs/fESX06x1R833k
+         KGPw==
+X-Gm-Message-State: APjAAAV+qRNH++e6+G9m8S/OV+UlGtYWnV7DHAfM2HUbmIWLZUzkYUAg
+        YebvmfFBvHMYW+g+t12VT1xBFQeakkjTeDO9KTg=
+X-Google-Smtp-Source: APXvYqzMdrjXgWGhi/zPaZxEj+t8DhHrW56qP/YMhmryxOT2o02rqdhc3hQ5y4gjPvsnd8KwypjTK3Tgmn2Zfydvxjo=
+X-Received: by 2002:a25:8109:: with SMTP id o9mr16913558ybk.132.1562064343920;
+ Tue, 02 Jul 2019 03:45:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <156174687561.1557469.7505651950825460767.stgit@magnolia>
+ <156174690758.1557469.9258105121276292687.stgit@magnolia> <20190701154200.GK1404256@magnolia>
+In-Reply-To: <20190701154200.GK1404256@magnolia>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 2 Jul 2019 13:45:32 +0300
+Message-ID: <CAOQ4uxizFXgSa4KzkwxmoPAvpiENg=y0=fsxEC1PkCX5J1ybag@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] vfs: don't allow most setxattr to immutable files
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     matthew.garrett@nebula.com, Chao Yu <yuchao0@huawei.com>,
+        Theodore Tso <tytso@mit.edu>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chris Mason <clm@fb.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, jk@ozlabs.org,
+        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devel@lists.orangefs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, linux-nilfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 2019-07-01 at 20:23 -0400, Theodore Ts'o wrote:
-> On Mon, Jul 01, 2019 at 03:44:30PM -0700, James Bottomley wrote:
-> > Background: we actually use the badblocks feature of the ext
-> > filesystem group to do a poorman's boot filesystem for parisc: Our
-> > system chunks up the disk searching for an Initial Program Loader
-> > (IPL) signature and then executes it, so we poke a hole in an ext3
-> > filesystem at creation time and place the IPL into it.  Our IP can
-> > read ext3 files and directories, so it allows us to load the kernel
-> > directly from the file.
-> > 
-> > The problem is that our IPL needs to be aligned at 256k in absolute
-> > terms on the disk, so, in the usual situation of having a 64k
-> > partition label and the boot partition being the first one we
-> > usually end up poking the badblock hole beginning at block 224
-> > (using a 1k block size).
-> > 
-> > The problem is that this used to work long ago (where the value of
-> > long seems to be some time before 2011) but no longer does.  The
-> > problem can be illustrated simply by doing
-> 
-> It broke sometime around 2006.  E2fsprogs 1.39 is when we started
-> creating file systems with the resize inode to support the online
-> resize feature.
-> 
-> And the problem is with a 100M file system using 1k blocks, when you
-> reserve blocks 237 -- 258, you're conflicting with the reserved
-> blocks used for online resizing:
-> 
-> Group 0: (Blocks 1-8192)
->   Primary superblock at 1, Group descriptors at 2-2
->   Reserved GDT blocks at 3-258 <========= THIS
->   Block bitmap at 451 (+450)
->   Inode bitmap at 452 (+451)
->   Inode table at 453-699 (+452)
->   7456 free blocks, 1965 free inodes, 2 directories
->   Free blocks: 715-8192
->   Free inodes: 12-1976
-> 
-> It's a bug that mke2fs didn't notice this issue and give an error
-> message ("HAHAHAHA... NO.").  And it's also a bug that e2fsck didn't
-> correctly diagnose the nature of the corruption.  Both of these bugs
-> are because how the reserved blocks for online resizing are handled
-> is a bit of a special case.
-> 
-> In any case, the workaround is to do this:
-> 
-> # mke2fs -b 1024 -O ^resize_inode -l
-> /home/jejb/bblist.txt  /dev/loop0
-> 
-> For bonus points, you could even add something like this to
-> /etc/mke2fs.conf:
-> 
-> [fs_types]
->      parisc_boot = {
-> 	features = ^resize_inode
-> 	blocksize = 1024
-> 	inode_size = 128
->     }
-> 
-> Then all you would need to do something like this:
-> 
-> # mke2fs -T parisc_boot -l bblist.txt /dev/sda1
+On Mon, Jul 1, 2019 at 7:31 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+>
+> From: Darrick J. Wong <darrick.wong@oracle.com>
+>
+> The chattr manpage has this to say about immutable files:
+>
+> "A file with the 'i' attribute cannot be modified: it cannot be deleted
+> or renamed, no link can be created to this file, most of the file's
+> metadata can not be modified, and the file can not be opened in write
+> mode."
+>
+> However, we don't actually check the immutable flag in the setattr code,
+> which means that we can update inode flags and project ids and extent
+> size hints on supposedly immutable files.  Therefore, reject setflags
+> and fssetxattr calls on an immutable file if the file is immutable and
+> will remain that way.
+>
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> ---
+> v2: use memcmp instead of open coding a bunch of checks
 
-Actually, we control the location of the IPL, so as long as mke2fs
-errors out if we get it wrong I can add an offset so it begins at >
-sector 258.  Palo actually executed mke2fs when you initialize the
-partition so it can add any options it likes. I was also thinking I
-should update palo to support ext4 as well.
 
-> Also, I guess this answers the other question that had recently
-> crossed my mind, which is I had been thinking of deprecating and
-> eventually removing the badblock feature in e2fsprogs altogether,
-> since no sane user of badblocks should exist in 2019.  I guess I
-> stand corrected.  :-)
+Thanks,
 
-Well, we don't have to use badblocks to achieve this, but we would like
-a way to make an inode cover the reserved physical area of the IPL. 
-Effectively it's a single contiguous area on disk with specific
-absolute alignment constraints.  It doesn't actually matter if it
-appears in the directory tree.
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-> 					- Ted
-> 
-> P.S.  Does this mean parisc has been using an amazingly obsolete
-> version of e2fsprogs, which is why no one had noticed?  Or was there
-> a static image file of the 100M boot partition, which you hadn't
-> regenerated until now.... ?
 
-Yes, since we only do this at boot, and we can actually update the IPL
-on the fly when we need to because the space reserved is the maximum,
-it only gets invoked on a reinitialization, which I haven't done for a
-very long time.  The only reason I did it this time is because I have a
-spare disk in a pa8800 which I used as an install target.
-
-James
-
+> ---
+>  fs/inode.c |   17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/fs/inode.c b/fs/inode.c
+> index cf07378e5731..31f694e405fe 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2214,6 +2214,14 @@ int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
+>             !capable(CAP_LINUX_IMMUTABLE))
+>                 return -EPERM;
+>
+> +       /*
+> +        * We aren't allowed to change any other flags if the immutable flag is
+> +        * already set and is not being unset.
+> +        */
+> +       if ((oldflags & FS_IMMUTABLE_FL) && (flags & FS_IMMUTABLE_FL) &&
+> +           oldflags != flags)
+> +               return -EPERM;
+> +
+>         /*
+>          * Now that we're done checking the new flags, flush all pending IO and
+>          * dirty mappings before setting S_IMMUTABLE on an inode via
+> @@ -2284,6 +2292,15 @@ int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
+>             !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
+>                 return -EINVAL;
+>
+> +       /*
+> +        * We aren't allowed to change any fields if the immutable flag is
+> +        * already set and is not being unset.
+> +        */
+> +       if ((old_fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
+> +           (fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
+> +           memcmp(fa, old_fa, offsetof(struct fsxattr, fsx_pad)))
+> +               return -EPERM;
+> +
+>         /* Extent size hints of zero turn off the flags. */
+>         if (fa->fsx_extsize == 0)
+>                 fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
