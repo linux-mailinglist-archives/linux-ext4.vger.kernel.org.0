@@ -2,61 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 065E95D8B4
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2019 02:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740415D8B1
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2019 02:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727172AbfGCA1g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Jul 2019 20:27:36 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32965 "EHLO
+        id S1727082AbfGCA1f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Jul 2019 20:27:35 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32964 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726150AbfGCA1f (ORCPT
+        with ESMTP id S1726291AbfGCA1f (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jul 2019 20:27:35 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x62Lfp30025320
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x62LvS8G031701
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 2 Jul 2019 17:41:52 -0400
+        Tue, 2 Jul 2019 17:57:29 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 65FDB42002E; Tue,  2 Jul 2019 17:41:51 -0400 (EDT)
-Date:   Tue, 2 Jul 2019 17:41:51 -0400
+        id 8CE0E42002E; Tue,  2 Jul 2019 17:57:28 -0400 (EDT)
+Date:   Tue, 2 Jul 2019 17:57:28 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kimberly Brown <kimbrownkd@gmail.com>
-Cc:     adilger.kernel@dilger.ca, gregkh@linuxfoundation.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: replace ktype default_attrs with default_groups
-Message-ID: <20190702214151.GA28833@mit.edu>
-Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>,
-        Kimberly Brown <kimbrownkd@gmail.com>, adilger.kernel@dilger.ca,
-        gregkh@linuxfoundation.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20190508200748.3907-1-kimbrownkd@gmail.com>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-ext4@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH] ext4: Fix coverity warning on error path of filename
+ setup
+Message-ID: <20190702215728.GI3032@mit.edu>
+References: <20190624122906.GA30836@mwanda>
+ <85r27dlay3.fsf@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190508200748.3907-1-kimbrownkd@gmail.com>
+In-Reply-To: <85r27dlay3.fsf@collabora.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 08, 2019 at 04:07:48PM -0400, Kimberly Brown wrote:
-> The kobj_type default_attrs field is being replaced by the
-> default_groups field. Replace the default_attrs field in ext4_sb_ktype
-> and ext4_feat_ktype with default_groups. Use the ATTRIBUTE_GROUPS macro
-> to create ext4_groups and ext4_feat_groups.
+On Fri, Jun 28, 2019 at 04:19:32PM -0400, Gabriel Krisman Bertazi wrote:
+> Dan Carpenter <dan.carpenter@oracle.com> writes:
 > 
-> Signed-off-by: Kimberly Brown <kimbrownkd@gmail.com>
-> ---
+> > Hello Gabriel Krisman Bertazi,
+> >
+> > The patch 3ae72562ad91: "ext4: optimize case-insensitive lookups"
+> > from Jun 19, 2019, leads to the following static checker warning:
 > 
-> This patch depends on a patch in the driver-core tree:
-> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-next&id=aa30f47cf666111f6bbfd15f290a27e8a7b9d854
+> Hi,
 > 
-> Greg KH can take this patch through the driver-core tree, or this patch
-> can wait a release cycle and go through the subsystem's tree, whichever
-> the subsystem maintainer is more comfortable with.
+> The patch below should fix this issue.
+> 
+> -- >8 --
+> Subject: [PATCH] ext4: Fix coverity warning on error path of filename setup
+> 
+> Fix the following coverity warning reported by Dan Carpenter:
+> 
+> fs/ext4/namei.c:1311 ext4_fname_setup_ci_filename()
+> 	  warn: 'cf_name->len' unsigned <= 0
+> 
+> Fixes: 3ae72562ad91 ("ext4: optimize case-insensitive lookups")
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Thanks, since that commit is in 5.2-rc2, I've applied this patch.
+Applied, thanks.
 
-	      	   	     	- Ted
+					- Ted
