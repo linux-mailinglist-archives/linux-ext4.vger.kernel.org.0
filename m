@@ -2,120 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CED5DA1C
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2019 03:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41265D54E
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2019 19:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbfGCBBa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Jul 2019 21:01:30 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:45607 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbfGCBBa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jul 2019 21:01:30 -0400
-Received: by mail-pg1-f196.google.com with SMTP id o13so245575pgp.12
-        for <linux-ext4@vger.kernel.org>; Tue, 02 Jul 2019 18:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a6DSR9zMVNSIPOHutOGYYowzxyygnNjjAgHH6t/fH3Q=;
-        b=ZMFtd4fnwBhjqDgEcmMPYqwTfM3scvxup6E9ES0eTl1QBLbkm4L+EYQQqrUrDt7I0f
-         1W7i7K4qFAKEM9FkLZbBvOwEPA2KShqct0FnQuEtwjRtbN+49uyAwET1ta2fkPFntUdL
-         d1HKAJ/XrkEjycdCCsfgQI1lqoOc8poLOC7Ys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a6DSR9zMVNSIPOHutOGYYowzxyygnNjjAgHH6t/fH3Q=;
-        b=Quc1paZT3wcU4E4hJiigQxGla/5HlspT4OsMd4NwsYK2DZzveZKeXcG44R3ghLXuZh
-         ahKEr8Pn46LD5SENrRyG5RttfMPJMTn2TRCkeq4Y7kI5SIpXCADz12+QQH1qta990RQK
-         WxM18837J4Gfg5Io+iYf19Y3e6fJiAgH9bqagljsE6bmpDTqAiRmKAzNzhFAWHz5DrvV
-         i7lMR7aifch8CYzAVVpp5NZH3Oc74wq+YX85Arhqf2rJD6F+TcqHADN5yUrROecVZdl3
-         Yf61HO9OGflW8VsTdFTkHfgxRVdRHsgX9IPA4mPXcZ2qvS1yLGy/UXoWCQ2PfvhxVdlW
-         L6gw==
-X-Gm-Message-State: APjAAAUJzjjRnwhPY68BJrtWTFt6Fh+m14JawCb6UkD+++0L1gLQCvpN
-        ny0VqGtPMZ2lwB9hQ2GUfEVALA==
-X-Google-Smtp-Source: APXvYqxbnDf0epA4zxEVMf+KQtiS47h5ZVi4HVl0lxeY8pfHVzHmCshNhotvWTcEjEQC+XEnSbkkRg==
-X-Received: by 2002:a17:90a:b908:: with SMTP id p8mr7901348pjr.94.1562101447970;
-        Tue, 02 Jul 2019 14:04:07 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g1sm52207pgg.27.2019.07.02.14.04.02
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Jul 2019 14:04:03 -0700 (PDT)
-Date:   Tue, 2 Jul 2019 09:33:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shyam Saini <shyam.saini@amarulasolutions.com>,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        netdev@vger.kernel.org, linux-ext4 <linux-ext4@vger.kernel.org>,
-        devel@lists.orangefs.org, linux-mm@kvack.org,
-        linux-sctp@vger.kernel.org, bpf@vger.kernel.org,
-        kvm@vger.kernel.org, mayhs11saini@gmail.com
-Subject: Re: [PATCH V2] include: linux: Regularise the use of FIELD_SIZEOF
- macro
-Message-ID: <201907020931.2170BAB@keescook>
-References: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
- <20190611134831.a60c11f4b691d14d04a87e29@linux-foundation.org>
- <6DCAE4F8-3BEC-45F2-A733-F4D15850B7F3@dilger.ca>
- <20190629142510.GA10629@avx2>
- <c3b83ba7f9b003dd4fb9cad885461ce93165dc04.camel@perches.com>
+        id S1726732AbfGBRdK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Jul 2019 13:33:10 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39746 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726150AbfGBRdK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jul 2019 13:33:10 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x62HX2i8005893
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 2 Jul 2019 13:33:03 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id C545142002E; Tue,  2 Jul 2019 13:33:01 -0400 (EDT)
+Date:   Tue, 2 Jul 2019 13:33:01 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Parisc List <linux-parisc@vger.kernel.org>
+Subject: Re: [BUG] mke2fs produces corrupt filesystem if badblock list
+ contains a block under 251
+Message-ID: <20190702173301.GA3032@mit.edu>
+References: <1562021070.2762.36.camel@HansenPartnership.com>
+ <20190702002355.GB3315@mit.edu>
+ <1562028814.2762.50.camel@HansenPartnership.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c3b83ba7f9b003dd4fb9cad885461ce93165dc04.camel@perches.com>
+In-Reply-To: <1562028814.2762.50.camel@HansenPartnership.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Jun 29, 2019 at 09:45:10AM -0700, Joe Perches wrote:
-> On Sat, 2019-06-29 at 17:25 +0300, Alexey Dobriyan wrote:
-> > On Tue, Jun 11, 2019 at 03:00:10PM -0600, Andreas Dilger wrote:
-> > > On Jun 11, 2019, at 2:48 PM, Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > > On Wed, 12 Jun 2019 01:08:36 +0530 Shyam Saini <shyam.saini@amarulasolutions.com> wrote:
-> > > I did a check, and FIELD_SIZEOF() is used about 350x, while sizeof_field()
-> > > is about 30x, and SIZEOF_FIELD() is only about 5x.
-> > > 
-> > > That said, I'm much more in favour of "sizeof_field()" or "sizeof_member()"
-> > > than FIELD_SIZEOF().  Not only does that better match "offsetof()", with
-> > > which it is closely related, but is also closer to the original "sizeof()".
-> > > 
-> > > Since this is a rather trivial change, it can be split into a number of
-> > > patches to get approval/landing via subsystem maintainers, and there is no
-> > > huge urgency to remove the original macros until the users are gone.  It
-> > > would make sense to remove SIZEOF_FIELD() and sizeof_field() quickly so
-> > > they don't gain more users, and the remaining FIELD_SIZEOF() users can be
-> > > whittled away as the patches come through the maintainer trees.
-> > 
-> > The signature should be
-> > 
-> > 	sizeof_member(T, m)
-> > 
-> > it is proper English,
-> > it is lowercase, so is easier to type,
-> > it uses standard term (member, not field),
-> > it blends in with standard "sizeof" operator,
+On Mon, Jul 01, 2019 at 05:53:34PM -0700, James Bottomley wrote:
 > 
-> yes please.
-> 
-> Also, a simple script conversion applied
-> immediately after an rc1 might be easiest
-> rather than individual patches.
+> Actually, we control the location of the IPL, so as long as mke2fs
+> errors out if we get it wrong I can add an offset so it begins at
+> sector 258.  Palo actually executed mke2fs when you initialize the
+> partition so it can add any options it likes. I was also thinking I
+> should update palo to support ext4 as well.
 
-This seems reasonable to me. I think the patch steps would be:
+If you never going to resize the boot partition, because it's fixed
+size, you might as we not waste space on the reserving blocks for
+online resize.  So having the palo bootloader be very restrictive
+about what features it enables probably makes sense.
 
-1) implement sizeof_member(T, m) as a stand-alone macro
-2) do a scripted replacement of all identical macros.
-3) remove all the identical macros.
+> Well, we don't have to use badblocks to achieve this, but we would like
+> a way to make an inode cover the reserved physical area of the IPL. 
+> Effectively it's a single contiguous area on disk with specific
+> absolute alignment constraints.  It doesn't actually matter if it
+> appears in the directory tree.
 
-Step 2 can be a patch that includes the script used to do the
-replacement. That way Linus can choose to just run the script instead of
-taking the patch.
+If you don't mind that it is visible in the namespace, you could take
+advantage of the existing mk_hugefile feature[1][2]
 
--- 
-Kees Cook
+[1] http://man7.org/linux/man-pages/man5/mke2fs.conf.5.html
+[2] https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/tree/misc/mk_hugefiles.c
+
+# cat >> /etc/mke2fs.conf < EOF
+
+[fs_types]
+    palo_boot = {
+    	features = ^resize_inode
+	blocksize = 1024		 
+    	make_hugefiles = true
+	num_hugefiles = 1
+	hugefiles_dir = /palo
+	hugefiles_name = IPL
+	hugefiles_size = 214k
+	hugefiles_align = 256k
+	hugefiles_align_disk = true
+    }
+EOF
+# mke2fs -T palo_boot /dev/sda1
+
+Something like this will create a 1k block file system, containing a
+zero-filled /palo/IPL which is 214k long, aligned with respect to the
+beginning of the disk at an 256k boundary.  (This feature was
+sponsored by the letters, 'S', 'M', and 'R'.  :-)
+
+If you wanted it to be hidden from the file system you could just drop
+the hugefiles_dir line above, and then after mounting the file system
+run open the /IPL file and then execute the EXT4_IOC_SWAP_BOOT ioctl
+on it.  This will move those blocks so they are owned by inode #5, an
+inode reserved for the boot loader.
+
+Cheers,
+
+       	       	    	       - Ted
