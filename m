@@ -2,142 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3025CDCB
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2019 12:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CED5DA1C
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2019 03:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbfGBKpp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Jul 2019 06:45:45 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:41634 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbfGBKpp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jul 2019 06:45:45 -0400
-Received: by mail-yb1-f193.google.com with SMTP id y67so1127843yba.8;
-        Tue, 02 Jul 2019 03:45:44 -0700 (PDT)
+        id S1727116AbfGCBBa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Jul 2019 21:01:30 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45607 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbfGCBBa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jul 2019 21:01:30 -0400
+Received: by mail-pg1-f196.google.com with SMTP id o13so245575pgp.12
+        for <linux-ext4@vger.kernel.org>; Tue, 02 Jul 2019 18:01:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
-        b=kdVby+/PzZu5i6Y9UcQYatHEHHsEPhAQY+mjVHF6xlggt8o+nszbdHXCHfEBil5H5H
-         UL+/28eYKfUAOv8AvNzRMQHWK/y4MABFSamQhRwNZH1hpEc5BUQCjqITvhev6DLWRzG3
-         uOgpinFcBt7pSePpbwiWspS3cbj7dBXMod+4Z94YngJ+nIPc3qdhbsYftXAC3oBGhakE
-         Bt+6iCjbrfqQEg0SzB1WdrzlyuHEb0JfhuYdop7KFU8fbo4QPvOCj4+Z+NVkWFYsg5RT
-         IRHHoit1jxeDZWaJHULPmpdSPTutxwczS9nSE3h7MYk2MPhM/kHniCv9ovLGXWy3LfTv
-         lmfQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a6DSR9zMVNSIPOHutOGYYowzxyygnNjjAgHH6t/fH3Q=;
+        b=ZMFtd4fnwBhjqDgEcmMPYqwTfM3scvxup6E9ES0eTl1QBLbkm4L+EYQQqrUrDt7I0f
+         1W7i7K4qFAKEM9FkLZbBvOwEPA2KShqct0FnQuEtwjRtbN+49uyAwET1ta2fkPFntUdL
+         d1HKAJ/XrkEjycdCCsfgQI1lqoOc8poLOC7Ys=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
-        b=kOQko23Rc0IeST7t53H2gjWohdZk/9tmrCy9j0Rme3aK0mIIU5LjQKBiS+ejJnCJLr
-         eXv3MY5B5zssNxt6ivw3b3ZBvK1ZL89h6U4Y+3AIy7lCyyPMsPb/G6izNdRCpd06xd6E
-         pLh/ruAZmfaEUtviP+xATCFMGfeg5ePmN+63xu/FldL9ljRQfqyluhxF2LBRFjCNOzmg
-         NH1VOREpBkgGMKCPlQ1BVPd3q1TOF4cF+KqV12p2Ladm8UDSa0rsfY1id/BS+Xr1YQRm
-         UvHTCY97g7hTBu2cu7OTDhNjAo9ZikyO8JHLd7mxjGRiEsZr/AWbSs/fESX06x1R833k
-         KGPw==
-X-Gm-Message-State: APjAAAV+qRNH++e6+G9m8S/OV+UlGtYWnV7DHAfM2HUbmIWLZUzkYUAg
-        YebvmfFBvHMYW+g+t12VT1xBFQeakkjTeDO9KTg=
-X-Google-Smtp-Source: APXvYqzMdrjXgWGhi/zPaZxEj+t8DhHrW56qP/YMhmryxOT2o02rqdhc3hQ5y4gjPvsnd8KwypjTK3Tgmn2Zfydvxjo=
-X-Received: by 2002:a25:8109:: with SMTP id o9mr16913558ybk.132.1562064343920;
- Tue, 02 Jul 2019 03:45:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a6DSR9zMVNSIPOHutOGYYowzxyygnNjjAgHH6t/fH3Q=;
+        b=Quc1paZT3wcU4E4hJiigQxGla/5HlspT4OsMd4NwsYK2DZzveZKeXcG44R3ghLXuZh
+         ahKEr8Pn46LD5SENrRyG5RttfMPJMTn2TRCkeq4Y7kI5SIpXCADz12+QQH1qta990RQK
+         WxM18837J4Gfg5Io+iYf19Y3e6fJiAgH9bqagljsE6bmpDTqAiRmKAzNzhFAWHz5DrvV
+         i7lMR7aifch8CYzAVVpp5NZH3Oc74wq+YX85Arhqf2rJD6F+TcqHADN5yUrROecVZdl3
+         Yf61HO9OGflW8VsTdFTkHfgxRVdRHsgX9IPA4mPXcZ2qvS1yLGy/UXoWCQ2PfvhxVdlW
+         L6gw==
+X-Gm-Message-State: APjAAAUJzjjRnwhPY68BJrtWTFt6Fh+m14JawCb6UkD+++0L1gLQCvpN
+        ny0VqGtPMZ2lwB9hQ2GUfEVALA==
+X-Google-Smtp-Source: APXvYqxbnDf0epA4zxEVMf+KQtiS47h5ZVi4HVl0lxeY8pfHVzHmCshNhotvWTcEjEQC+XEnSbkkRg==
+X-Received: by 2002:a17:90a:b908:: with SMTP id p8mr7901348pjr.94.1562101447970;
+        Tue, 02 Jul 2019 14:04:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g1sm52207pgg.27.2019.07.02.14.04.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 02 Jul 2019 14:04:03 -0700 (PDT)
+Date:   Tue, 2 Jul 2019 09:33:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shyam Saini <shyam.saini@amarulasolutions.com>,
+        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        netdev@vger.kernel.org, linux-ext4 <linux-ext4@vger.kernel.org>,
+        devel@lists.orangefs.org, linux-mm@kvack.org,
+        linux-sctp@vger.kernel.org, bpf@vger.kernel.org,
+        kvm@vger.kernel.org, mayhs11saini@gmail.com
+Subject: Re: [PATCH V2] include: linux: Regularise the use of FIELD_SIZEOF
+ macro
+Message-ID: <201907020931.2170BAB@keescook>
+References: <20190611193836.2772-1-shyam.saini@amarulasolutions.com>
+ <20190611134831.a60c11f4b691d14d04a87e29@linux-foundation.org>
+ <6DCAE4F8-3BEC-45F2-A733-F4D15850B7F3@dilger.ca>
+ <20190629142510.GA10629@avx2>
+ <c3b83ba7f9b003dd4fb9cad885461ce93165dc04.camel@perches.com>
 MIME-Version: 1.0
-References: <156174687561.1557469.7505651950825460767.stgit@magnolia>
- <156174690758.1557469.9258105121276292687.stgit@magnolia> <20190701154200.GK1404256@magnolia>
-In-Reply-To: <20190701154200.GK1404256@magnolia>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 2 Jul 2019 13:45:32 +0300
-Message-ID: <CAOQ4uxizFXgSa4KzkwxmoPAvpiENg=y0=fsxEC1PkCX5J1ybag@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] vfs: don't allow most setxattr to immutable files
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     matthew.garrett@nebula.com, Chao Yu <yuchao0@huawei.com>,
-        Theodore Tso <tytso@mit.edu>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chris Mason <clm@fb.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, jk@ozlabs.org,
-        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3b83ba7f9b003dd4fb9cad885461ce93165dc04.camel@perches.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jul 1, 2019 at 7:31 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
->
-> From: Darrick J. Wong <darrick.wong@oracle.com>
->
-> The chattr manpage has this to say about immutable files:
->
-> "A file with the 'i' attribute cannot be modified: it cannot be deleted
-> or renamed, no link can be created to this file, most of the file's
-> metadata can not be modified, and the file can not be opened in write
-> mode."
->
-> However, we don't actually check the immutable flag in the setattr code,
-> which means that we can update inode flags and project ids and extent
-> size hints on supposedly immutable files.  Therefore, reject setflags
-> and fssetxattr calls on an immutable file if the file is immutable and
-> will remain that way.
->
-> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-> ---
-> v2: use memcmp instead of open coding a bunch of checks
+On Sat, Jun 29, 2019 at 09:45:10AM -0700, Joe Perches wrote:
+> On Sat, 2019-06-29 at 17:25 +0300, Alexey Dobriyan wrote:
+> > On Tue, Jun 11, 2019 at 03:00:10PM -0600, Andreas Dilger wrote:
+> > > On Jun 11, 2019, at 2:48 PM, Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > > On Wed, 12 Jun 2019 01:08:36 +0530 Shyam Saini <shyam.saini@amarulasolutions.com> wrote:
+> > > I did a check, and FIELD_SIZEOF() is used about 350x, while sizeof_field()
+> > > is about 30x, and SIZEOF_FIELD() is only about 5x.
+> > > 
+> > > That said, I'm much more in favour of "sizeof_field()" or "sizeof_member()"
+> > > than FIELD_SIZEOF().  Not only does that better match "offsetof()", with
+> > > which it is closely related, but is also closer to the original "sizeof()".
+> > > 
+> > > Since this is a rather trivial change, it can be split into a number of
+> > > patches to get approval/landing via subsystem maintainers, and there is no
+> > > huge urgency to remove the original macros until the users are gone.  It
+> > > would make sense to remove SIZEOF_FIELD() and sizeof_field() quickly so
+> > > they don't gain more users, and the remaining FIELD_SIZEOF() users can be
+> > > whittled away as the patches come through the maintainer trees.
+> > 
+> > The signature should be
+> > 
+> > 	sizeof_member(T, m)
+> > 
+> > it is proper English,
+> > it is lowercase, so is easier to type,
+> > it uses standard term (member, not field),
+> > it blends in with standard "sizeof" operator,
+> 
+> yes please.
+> 
+> Also, a simple script conversion applied
+> immediately after an rc1 might be easiest
+> rather than individual patches.
 
+This seems reasonable to me. I think the patch steps would be:
 
-Thanks,
+1) implement sizeof_member(T, m) as a stand-alone macro
+2) do a scripted replacement of all identical macros.
+3) remove all the identical macros.
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+Step 2 can be a patch that includes the script used to do the
+replacement. That way Linus can choose to just run the script instead of
+taking the patch.
 
-
-> ---
->  fs/inode.c |   17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff --git a/fs/inode.c b/fs/inode.c
-> index cf07378e5731..31f694e405fe 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -2214,6 +2214,14 @@ int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
->             !capable(CAP_LINUX_IMMUTABLE))
->                 return -EPERM;
->
-> +       /*
-> +        * We aren't allowed to change any other flags if the immutable flag is
-> +        * already set and is not being unset.
-> +        */
-> +       if ((oldflags & FS_IMMUTABLE_FL) && (flags & FS_IMMUTABLE_FL) &&
-> +           oldflags != flags)
-> +               return -EPERM;
-> +
->         /*
->          * Now that we're done checking the new flags, flush all pending IO and
->          * dirty mappings before setting S_IMMUTABLE on an inode via
-> @@ -2284,6 +2292,15 @@ int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
->             !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
->                 return -EINVAL;
->
-> +       /*
-> +        * We aren't allowed to change any fields if the immutable flag is
-> +        * already set and is not being unset.
-> +        */
-> +       if ((old_fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
-> +           (fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
-> +           memcmp(fa, old_fa, offsetof(struct fsxattr, fsx_pad)))
-> +               return -EPERM;
-> +
->         /* Extent size hints of zero turn off the flags. */
->         if (fa->fsx_extsize == 0)
->                 fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
+-- 
+Kees Cook
