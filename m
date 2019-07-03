@@ -2,151 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EED5DD1B
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2019 05:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED48B5DF8D
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2019 10:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbfGCDup (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Jul 2019 23:50:45 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:45470 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbfGCDup (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jul 2019 23:50:45 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x633mWpR016057;
-        Wed, 3 Jul 2019 03:50:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=gxqRflvnos0bbWQJwJH6irArDAU/9Jbk6+4JEOv0Ca8=;
- b=fOYjRbFV0uZQvvfLKA9KVGZDE/TmMVAnAWhO6HjWq2Jev+cJqJLfp6xVdlYQ5Er4C/hf
- 5cbR0m92/cX82WcgHQan7DpWv7zaCKKYjEGWbZa8WEe9ERBck6C/sq1OLCVtPETruS2V
- n2HP6vXEVSuXaBAe5nmuHS0io6HuDK5y8D6s4G9YgyLQnVBjKUAiU9/PSR0xlUGW1e1f
- HExFRVVQAPiAFNHqm3/fXvsx8NffaURdOjTjXTzvxUt+eSYEqth5H0YUb7PhjvdpMz7c
- YlkbCUjvoO+w9BX0rASvmLPfnVyZhjarGHINZAjrep6ynqfEUk7wI28IUFeDRMEoEFfJ pA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2te61e6y6y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jul 2019 03:50:42 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x633m3Ll060282;
-        Wed, 3 Jul 2019 03:50:41 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2tebkumj2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jul 2019 03:50:41 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x633oewV021159;
-        Wed, 3 Jul 2019 03:50:40 GMT
-Received: from localhost (/10.159.225.186)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jul 2019 20:50:40 -0700
-Date:   Tue, 2 Jul 2019 20:50:32 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 3/3] ext4: rename htree_inline_dir_to_tree() to
- ext4_inlinedir_to_tree()
-Message-ID: <20190703035032.GC5161@magnolia>
-References: <20190702212925.29989-1-tytso@mit.edu>
- <20190702212925.29989-3-tytso@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190702212925.29989-3-tytso@mit.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9306 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907030046
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9306 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907030046
+        id S1727204AbfGCIRB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 3 Jul 2019 04:17:01 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:43724 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726670AbfGCIRB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 3 Jul 2019 04:17:01 -0400
+Received: by mail-pg1-f196.google.com with SMTP id f25so807581pgv.10;
+        Wed, 03 Jul 2019 01:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=jOWLuTX5Ou8xPNstVGBSyqvjX18CMNLeXqk+tck3OIc=;
+        b=klhHxOiWT4KNUKOQ9Oah2yuZNp6k2xIklSiHE+F67MTiMu/ynw9r2L/him13p+b+/f
+         P97oWgXmZCWvTpR6u/Ej+LywOxjwdboL5BCnLlUqq/vv/Unp4CvcGS6n0+z9PAzwyecu
+         cMsSGBNxTJOZM2aI0nPS65T4Bw6N/RxRXoC7RggW98XmMWoVpwin4KWlhWwuYDTVx/Io
+         /112NVeXq+fbzE44KVYGiDu7ZJMGC285olVGI2ciYVGTubUgSPV4gpO6SfczfTx+/ASg
+         48IKedZigT7QFrChtFh04cCl2CAreZUABDv+yi7dSSO7KmwpUiSyy+aQ+H/A17QSO8vL
+         ideg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=jOWLuTX5Ou8xPNstVGBSyqvjX18CMNLeXqk+tck3OIc=;
+        b=ilNNGvaIotOPneNAO/PMuz5G71Riut8B+tcpQjGrvNaoz69m8fWdjSDBSZbU94RSZ7
+         7sH/r0xoNn6c9GEic6Qp7bTzckD4sMLcRW/7+TigvXJEPIFo38eL/yztmXkkSZPEny+F
+         mPQUuv5sNowF0MSsOM8KBndfofWLTZAX9VD9Ke0FPAHFFKvpLWR5+Lr2qfb6XFjndvtS
+         Z/qY8cVR7wOajgIZBjuq4XLq6rJ8Qa77c8qAR5SF/TMS7BzKhdBiAMlnPk/Uf7otk0AD
+         bBU5gzPR/q29ELS0PlY833lJzW2WNUyvPzSrL/NyQPCRL9BeEhu/zSi2+VJqN6GZnOZp
+         gYWQ==
+X-Gm-Message-State: APjAAAULiW+xD0zBWes0cZLAyl2nEBTspH7qBD1VyJyqPnJCf2r7ZsxD
+        bpYM9sfS2praxj11PgICEWQ=
+X-Google-Smtp-Source: APXvYqwknUlps8fIQe2uk4KehVaWwmgexJShPq/GwnwXiBJWbDYAEj9go2VxxJTNdFaFbeiKh9JI3w==
+X-Received: by 2002:a17:90a:20c6:: with SMTP id f64mr11315789pjg.57.1562141820942;
+        Wed, 03 Jul 2019 01:17:00 -0700 (PDT)
+Received: from ssy-OptiPlex-7050.mioffice.cn ([43.224.245.181])
+        by smtp.gmail.com with ESMTPSA id a4sm1431539pff.9.2019.07.03.01.16.59
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Wed, 03 Jul 2019 01:17:00 -0700 (PDT)
+From:   Shi Siyuan <shisiyuan19870131@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shisiyuan <shisiyuan@xiaomi.com>
+Subject: [PATCH] ext4: remove unnecessary error check
+Date:   Wed,  3 Jul 2019 16:16:54 +0800
+Message-Id: <f4c9a68280d23b43f8949265d33244012e2b40e4.1562138716.git.shisiyuan@xiaomi.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <cover.1562138716.git.shisiyuan@xiaomi.com>
+References: <cover.1562138716.git.shisiyuan@xiaomi.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jul 02, 2019 at 05:29:25PM -0400, Theodore Ts'o wrote:
-> Clean up namespace pollution by the inline_data code.
-> 
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+From: shisiyuan <shisiyuan@xiaomi.com>
 
-Looks ok,
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Remove unnecessary error check in ext4_file_write_iter(),
+because this check will be done in upcoming later function --
+ext4_write_checks() -> generic_write_checks()
 
---D
+Change-Id: I7b0ab27f693a50765c15b5eaa3f4e7c38f42e01e
+Signed-off-by: shisiyuan <shisiyuan@xiaomi.com>
+---
+ fs/ext4/file.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> ---
->  fs/ext4/ext4.h   | 10 +++++-----
->  fs/ext4/inline.c | 10 +++++-----
->  fs/ext4/namei.c  |  8 ++++----
->  3 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 83128bdd7abb..bf660aa7a9e0 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -3104,11 +3104,11 @@ extern int ext4_try_create_inline_dir(handle_t *handle,
->  extern int ext4_read_inline_dir(struct file *filp,
->  				struct dir_context *ctx,
->  				int *has_inline_data);
-> -extern int htree_inlinedir_to_tree(struct file *dir_file,
-> -				   struct inode *dir, ext4_lblk_t block,
-> -				   struct dx_hash_info *hinfo,
-> -				   __u32 start_hash, __u32 start_minor_hash,
-> -				   int *has_inline_data);
-> +extern int ext4_inlinedir_to_tree(struct file *dir_file,
-> +				  struct inode *dir, ext4_lblk_t block,
-> +				  struct dx_hash_info *hinfo,
-> +				  __u32 start_hash, __u32 start_minor_hash,
-> +				  int *has_inline_data);
->  extern struct buffer_head *ext4_find_inline_entry(struct inode *dir,
->  					struct ext4_filename *fname,
->  					struct ext4_dir_entry_2 **res_dir,
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index 796137bb7dfa..88cdf3c90bd1 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -1324,11 +1324,11 @@ int ext4_try_add_inline_entry(handle_t *handle, struct ext4_filename *fname,
->   * inlined dir.  It returns the number directory entries loaded
->   * into the tree.  If there is an error it is returned in err.
->   */
-> -int htree_inlinedir_to_tree(struct file *dir_file,
-> -			    struct inode *dir, ext4_lblk_t block,
-> -			    struct dx_hash_info *hinfo,
-> -			    __u32 start_hash, __u32 start_minor_hash,
-> -			    int *has_inline_data)
-> +int ext4_inlinedir_to_tree(struct file *dir_file,
-> +			   struct inode *dir, ext4_lblk_t block,
-> +			   struct dx_hash_info *hinfo,
-> +			   __u32 start_hash, __u32 start_minor_hash,
-> +			   int *has_inline_data)
->  {
->  	int err = 0, count = 0;
->  	unsigned int parent_ino;
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 183ad614ae3d..c9568fee9e11 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -1104,10 +1104,10 @@ int ext4_htree_fill_tree(struct file *dir_file, __u32 start_hash,
->  		hinfo.seed = EXT4_SB(dir->i_sb)->s_hash_seed;
->  		if (ext4_has_inline_data(dir)) {
->  			int has_inline_data = 1;
-> -			count = htree_inlinedir_to_tree(dir_file, dir, 0,
-> -							&hinfo, start_hash,
-> -							start_minor_hash,
-> -							&has_inline_data);
-> +			count = ext4_inlinedir_to_tree(dir_file, dir, 0,
-> +						       &hinfo, start_hash,
-> +						       start_minor_hash,
-> +						       &has_inline_data);
->  			if (has_inline_data) {
->  				*next_hash = ~0;
->  				return count;
-> -- 
-> 2.22.0
-> 
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 5cb9aa3..9e4c39e 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -224,8 +224,6 @@ ext4_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	if (IS_DAX(inode))
+ 		return ext4_dax_write_iter(iocb, from);
+ #endif
+-	if (!o_direct && (iocb->ki_flags & IOCB_NOWAIT))
+-		return -EOPNOTSUPP;
+ 
+ 	if (!inode_trylock(inode)) {
+ 		if (iocb->ki_flags & IOCB_NOWAIT)
+-- 
+2.7.4
+
