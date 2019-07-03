@@ -2,97 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 153055D933
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2019 02:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE745DABB
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2019 03:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbfGCAhe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 2 Jul 2019 20:37:34 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:59280 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727025AbfGCAhe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 2 Jul 2019 20:37:34 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 48BE28EE1D2;
-        Tue,  2 Jul 2019 17:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1562114254;
-        bh=uyzX6BoE1CwDs0CD6pnhs6F4/+UpRopcnU/hOzBnNNw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=vQyDZzWW3sZnLm6fLKFB04mnrY7TaJBg9G//u7FKHiUAnX2V912X26EJRk/KmTvcn
-         jJIsM6mRZZ2kmRUzeBDhzzvsWS0sUfyvdTLOe1EzswmTn2GT/3NsvAjo1Vda+yYgVg
-         COlvz7XL50US3q2NEesSe7p2LrfMTOpSD/mUzxyM=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8bT_NPhGTwR4; Tue,  2 Jul 2019 17:37:34 -0700 (PDT)
-Received: from jarvis.lan (unknown [50.35.68.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id BAAF18EE0CC;
-        Tue,  2 Jul 2019 17:37:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1562114253;
-        bh=uyzX6BoE1CwDs0CD6pnhs6F4/+UpRopcnU/hOzBnNNw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YpJyr7JsuVvGT1ykRzxd9h2/EEh1dPbfQKip40Wx6lDwrObnlS+tSy27iSu5DqwhP
-         fX4CrrGlhUxZcLrv6fVTDHkSL9SSUMRzu3NDnxPT0C3K4k34KaEDkahutoDjOS7oZM
-         1qdtKsMME+Hty5mWf4bdJB7ZeS8WyVmk0Jc5O+K0=
-Message-ID: <1562114252.29304.64.camel@HansenPartnership.com>
-Subject: Re: [BUG] mke2fs produces corrupt filesystem if badblock list
- contains a block under 251
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>
-Date:   Tue, 02 Jul 2019 17:37:32 -0700
-In-Reply-To: <20190702203937.GG3032@mit.edu>
-References: <1562021070.2762.36.camel@HansenPartnership.com>
-         <20190702002355.GB3315@mit.edu>
-         <1562028814.2762.50.camel@HansenPartnership.com>
-         <20190702173301.GA3032@mit.edu>
-         <1562095894.3321.52.camel@HansenPartnership.com>
-         <20190702203937.GG3032@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
+        id S1727251AbfGCBZc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 2 Jul 2019 21:25:32 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8126 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726329AbfGCBZc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 2 Jul 2019 21:25:32 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id D2E50B732F0DD8067CD1;
+        Wed,  3 Jul 2019 09:25:28 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.439.0; Wed, 3 Jul 2019
+ 09:25:24 +0800
+Subject: Re: [f2fs-dev] [PATCH v6 17/17] f2fs: add fs-verity support
+To:     Eric Biggers <ebiggers@kernel.org>, <linux-fscrypt@vger.kernel.org>
+CC:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        <linux-api@vger.kernel.org>, Dave Chinner <david@fromorbit.com>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-fsdevel@vger.kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        <linux-integrity@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Victor Hsieh <victorhsieh@google.com>
+References: <20190701153237.1777-1-ebiggers@kernel.org>
+ <20190701153237.1777-18-ebiggers@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <b9b6d387-b893-18cc-b574-7775607ec5b3@huawei.com>
+Date:   Wed, 3 Jul 2019 09:25:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <20190701153237.1777-18-ebiggers@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2019-07-02 at 16:39 -0400, Theodore Ts'o wrote:
-> On Tue, Jul 02, 2019 at 12:31:34PM -0700, James Bottomley wrote:
-> > Actually, this is giving me:
-> > 
-> > mke2fs: Operation not supported for inodes containing extents while
-> > creating huge files
-> > 
-> > Is that because it's an ext4 only feature?
+On 2019/7/1 23:32, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> That'll teach me not to send out a sequence like that without testing
-> it myself first.  :-)
+> Add fs-verity support to f2fs.  fs-verity is a filesystem feature that
+> enables transparent integrity protection and authentication of read-only
+> files.  It uses a dm-verity like mechanism at the file level: a Merkle
+> tree is used to verify any block in the file in log(filesize) time.  It
+> is implemented mainly by helper functions in fs/verity/.  See
+> Documentation/filesystems/fsverity.rst for the full documentation.
+> 
+> The f2fs support for fs-verity consists of:
+> 
+> - Adding a filesystem feature flag and an inode flag for fs-verity.
+> 
+> - Implementing the fsverity_operations to support enabling verity on an
+>   inode and reading/writing the verity metadata.
+> 
+> - Updating ->readpages() to verify data as it's read from verity files
+>   and to support reading verity metadata pages.
+> 
+> - Updating ->write_begin(), ->write_end(), and ->writepages() to support
+>   writing verity metadata pages.
+> 
+> - Calling the fs-verity hooks for ->open(), ->setattr(), and ->ioctl().
+> 
+> Like ext4, f2fs stores the verity metadata (Merkle tree and
+> fsverity_descriptor) past the end of the file, starting at the first 64K
+> boundary beyond i_size.  This approach works because (a) verity files
+> are readonly, and (b) pages fully beyond i_size aren't visible to
+> userspace but can be read/written internally by f2fs with only some
+> relatively small changes to f2fs.  Extended attributes cannot be used
+> because (a) f2fs limits the total size of an inode's xattr entries to
+> 4096 bytes, which wouldn't be enough for even a single Merkle tree
+> block, and (b) f2fs encryption doesn't encrypt xattrs, yet the verity
+> metadata *must* be encrypted when the file is because it contains hashes
+> of the plaintext data.
+> 
+> Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Heh, join the club ... it has a very large membership ... I've got a
-frequent flier card for it ...
+Acked-by: Chao Yu <yuchao0@huawei.com>
 
-> Yeah, because one of the requirements was to make the file
-> contiguous, without any intervening indirect block or extent tree
-> blocks, the creation of the file is done manually, and at the time, I
-> only implemented it for extents, since the original goal of the goal
-> was to create really big files (hence the name of the feature
-> "mk_hugefile"), and using indirect blocks would be a huge waste of
-> disk space.
-
-I guessed as much.
-
-> It wouldn't be that hard for me to add support for indirect block
-> maps, or if you were going to convert things over so that the pa_risc
-> 2nd stage boot loader can understand how to read from extents,
-> that'll allow this to work as well.
-
-Let me look at it.  I think I can just take routines out of lib/ext2fs
-and graft them into the IPL, but our own home grown ext2/3 handling
-routines are slightly eccentric so it's not as simple as that.
-
-James
-
+Thanks,
