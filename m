@@ -2,110 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3B55FA58
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jul 2019 16:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5380C5FA82
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jul 2019 17:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727342AbfGDOzR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 Jul 2019 10:55:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47306 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727314AbfGDOzR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 4 Jul 2019 10:55:17 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 63872AD69;
-        Thu,  4 Jul 2019 14:55:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C90FD1E3F56; Thu,  4 Jul 2019 16:55:14 +0200 (CEST)
-Date:   Thu, 4 Jul 2019 16:55:14 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     yangerkun <yangerkun@huawei.com>
-Cc:     tytso@mit.edu, Jan Kara <jack@suse.com>, houtao1@huawei.com,
-        miaoxie@huawei.com, yi.zhang@huawei.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix warning when turn on dioread_nolock and
- inline_data
-Message-ID: <20190704145514.GC31037@quack2.suse.cz>
-References: <1562244632-134963-1-git-send-email-yangerkun@huawei.com>
+        id S1727314AbfGDPDB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 4 Jul 2019 11:03:01 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:33516 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727066AbfGDPDA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jul 2019 11:03:00 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x64EwxYK062120;
+        Thu, 4 Jul 2019 15:02:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=m9zOiaZ6RGBsOAj4Llb6iyw+aAk7VcW0sg3VM08shQI=;
+ b=M5sUpz5q+2ZMPfVs2HKlaJBv9ZTMuRWzcUeDjbqODn9JPnN+XoyJshkMBZ4qc97CDycN
+ TrhqKoeE+ZGUFK9v1Hf8oy4aNV+T5TrLTqowOVQjV+RJCFGH94CpYyr4x1ramdO/Geui
+ QtW+PIAIJzZ/NzaIEtZ0S/kxUVqSdsULNMrOVMQPdydBBH1PXpOzJEAZ82ky4gVkpYIF
+ dYYV2FKGnCd1qZIVrFMUcnVpzfB6QonC8Yqdnnobj+oUDD0ex7m8O8OiB70B107w/gNx
+ g8ROaEjab1OY22jK5lcQMW5OdEUtemSOaEGyHHEdYwZQW/+9IFWT8onnCMVgcGCcG44u 1g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2te61q7abv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Jul 2019 15:02:59 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x64F2wG1183576;
+        Thu, 4 Jul 2019 15:02:58 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2th9ec0xcm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 04 Jul 2019 15:02:58 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x64F2vXs011526;
+        Thu, 4 Jul 2019 15:02:57 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 04 Jul 2019 08:02:57 -0700
+Date:   Thu, 4 Jul 2019 08:02:58 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>
+Subject: [ANNOUNCE] xfs-linux: vfs-for-next updated to 7e328e5930ad
+Message-ID: <20190704150258.GA1404256@magnolia>
+References: <20190701160656.GM1404256@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1562244632-134963-1-git-send-email-yangerkun@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190701160656.GM1404256@magnolia>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9307 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1907040190
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9307 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1907040189
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 04-07-19 20:50:32, yangerkun wrote:
-> mkfs.ext4 -O inline_data /dev/vdb
-> mount -o dioread_nolock /dev/vdb /mnt
-> echo "some inline data..." >> /mnt/test-file
-> echo "some inline data..." >> /mnt/test-file
-> sync
-> 
-> With upon script, system will trigger
-> "WARN_ON(!io_end->handle && sbi->s_journal)" since the wrong order
-> between rsv_blocks calculate and destroy inline data for dealloc.
+Hi folks,
 
-Thanks for the patch! Good catch! I'd just rephrase the last paragraph as:
+The vfs-for-next branch of the xfs-linux repository at:
 
-The above script will trigger "WARN_ON(!io_end->handle && sbi->s_journal)"
-because ext4_should_dioread_nolock() returns false for a file with inline
-data. Move the check to a place after we have already removed the inline
-data and prepared inode to write normal pages.
+	git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
 
-Otherwise the patch looks good to me so feel free to add:
+has just been updated.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Patches often get missed, so please check if your outstanding patches
+were in this update. If they have not been in this update, please
+resubmit them to linux-xfs@vger.kernel.org so they can be picked up in
+the next update.  This is a resend of an earlier announcement about the
+SETFLAGS and FSSETXATTR refactoring that I've started for 5.3 and will
+continue for 5.4 so that these ioctls will have more consistent
+behavior with the filesystems that originally created them.
 
-								Honza
+The new head of the vfs-for-next branch is commit:
 
-> 
-> Signed-off-by: yangerkun <yangerkun@huawei.com>
-> ---
->  fs/ext4/inode.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index c7f77c6..3f2a366 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -2769,15 +2769,6 @@ static int ext4_writepages(struct address_space *mapping,
->  		goto out_writepages;
->  	}
->  
-> -	if (ext4_should_dioread_nolock(inode)) {
-> -		/*
-> -		 * We may need to convert up to one extent per block in
-> -		 * the page and we may dirty the inode.
-> -		 */
-> -		rsv_blocks = 1 + ext4_chunk_trans_blocks(inode,
-> -						PAGE_SIZE >> inode->i_blkbits);
-> -	}
-> -
->  	/*
->  	 * If we have inline data and arrive here, it means that
->  	 * we will soon create the block for the 1st page, so
-> @@ -2796,6 +2787,15 @@ static int ext4_writepages(struct address_space *mapping,
->  		ext4_journal_stop(handle);
->  	}
->  
-> +	if (ext4_should_dioread_nolock(inode)) {
-> +		/*
-> +		 * We may need to convert up to one extent per block in
-> +		 * the page and we may dirty the inode.
-> +		 */
-> +		rsv_blocks = 1 + ext4_chunk_trans_blocks(inode,
-> +						PAGE_SIZE >> inode->i_blkbits);
-> +	}
-> +
->  	if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
->  		range_whole = 1;
->  
-> -- 
-> 2.7.4
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+7e328e5930ad mm/fs: don't allow writes to immutable files
+
+New Commits:
+
+Darrick J. Wong (6):
+      [5aca284210ce] vfs: create a generic checking and prep function for FS_IOC_SETFLAGS
+      [7b0e492e6b80] vfs: create a generic checking function for FS_IOC_FSSETXATTR
+      [f991492ed110] vfs: teach vfs_ioc_fssetxattr_check to check project id info
+      [ca29be753445] vfs: teach vfs_ioc_fssetxattr_check to check extent size hints
+      [dbc77f31e58b] vfs: only allow FSSETXATTR to set DAX flag on files and dirs
+      [7e328e5930ad] mm/fs: don't allow writes to immutable files
+
+
+Code Diffstat:
+
+ fs/attr.c           |  13 ++---
+ fs/btrfs/ioctl.c    |  30 ++++------
+ fs/efivarfs/file.c  |  26 ++++++---
+ fs/ext2/ioctl.c     |  16 ++----
+ fs/ext4/ioctl.c     |  51 +++++------------
+ fs/gfs2/file.c      |  42 +++++++++-----
+ fs/hfsplus/ioctl.c  |  21 ++++---
+ fs/inode.c          |  86 +++++++++++++++++++++++++++++
+ fs/jfs/ioctl.c      |  22 +++-----
+ fs/nilfs2/ioctl.c   |   9 +--
+ fs/ocfs2/ioctl.c    |  13 +----
+ fs/orangefs/file.c  |  37 ++++++++++---
+ fs/reiserfs/ioctl.c |  10 ++--
+ fs/ubifs/ioctl.c    |  13 +----
+ fs/xfs/xfs_ioctl.c  | 154 +++++++++++++++++++++++-----------------------------
+ include/linux/fs.h  |  12 ++++
+ mm/filemap.c        |   3 +
+ mm/memory.c         |   4 ++
+ mm/mmap.c           |   8 ++-
+ 19 files changed, 319 insertions(+), 251 deletions(-)
