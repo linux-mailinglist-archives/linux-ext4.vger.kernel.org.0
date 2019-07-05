@@ -2,85 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D8260A3B
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 18:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B597960B1D
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 19:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728442AbfGEQZw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Jul 2019 12:25:52 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:56512 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728384AbfGEQZv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Jul 2019 12:25:51 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 5EA708EE1F7;
-        Fri,  5 Jul 2019 09:25:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1562343951;
-        bh=j5siNec8f0KH3zaO1peKSkgc0P9jF/HcPXFGD6ywRP4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=H1ikrP/GE4tzcp7wG8mCbdPi/qV/0kxUTTuDwIGAhFh/cIQEXPiCi1YbHJ0pZe9EV
-         hPQgOUtB7mST5pqwnsODhYaKRGKTlsrl7oFkSKWh2gIaAb6ReSLlsoWmBwDW7htwXG
-         ugKnzzrZZa9YbCOw4FSolNKMibLpecJf/VO+pDGk=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hhg3ZBtRYrRg; Fri,  5 Jul 2019 09:25:51 -0700 (PDT)
-Received: from jarvis.lan (unknown [50.35.68.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id E1A488EE0CF;
-        Fri,  5 Jul 2019 09:25:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1562343951;
-        bh=j5siNec8f0KH3zaO1peKSkgc0P9jF/HcPXFGD6ywRP4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=H1ikrP/GE4tzcp7wG8mCbdPi/qV/0kxUTTuDwIGAhFh/cIQEXPiCi1YbHJ0pZe9EV
-         hPQgOUtB7mST5pqwnsODhYaKRGKTlsrl7oFkSKWh2gIaAb6ReSLlsoWmBwDW7htwXG
-         ugKnzzrZZa9YbCOw4FSolNKMibLpecJf/VO+pDGk=
-Message-ID: <1562343948.2953.8.camel@HansenPartnership.com>
-Subject: Question about ext4 testing: need to produce a high depth extent
- tree to verify mapping code
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        id S1728133AbfGERjJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Jul 2019 13:39:09 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:53722 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728000AbfGERjJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Jul 2019 13:39:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=/uC5M3ierRS+Hhs1DpFJF+UTUe2DRAKcMjsTpsN7uZU=; b=PIZNiJ1WxKKIRw+vM1xmzPDsL
+        sos6egHIMaJUiMNPTIuMXWSQ37rv6LOoI+JVLpTJ8X73yb8qeUREX3Ec7OesnOKF0USoCH3iC+LR0
+        2w1ENFIGOYQDbVL3vMwOjBlrXLTWp3oKFhTmcv1+O4eQcFIx0zQuGXvJwu05JnBPuZDtvg0MqVG5O
+        FfsrPh6pURk8BqtN/JPBvgNNr3g7r/02ag/RkW/R++nWwo2NJF17XXyJPr472WQ/1o5NySoaF15BR
+        aT9dpouC9xEof94S20lQs3Qa7jeXW5CqJizZIuoo/jU/Rpqa/Qi6EkxlM0HsnldJ6M/RTdSZ2LQH3
+        0Cmlqc4OA==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hjSAs-0006Q6-3F; Fri, 05 Jul 2019 17:39:06 +0000
+Date:   Fri, 5 Jul 2019 10:39:06 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>
-Date:   Fri, 05 Jul 2019 09:25:48 -0700
-In-Reply-To: <20190702203937.GG3032@mit.edu>
+Subject: Re: Question about ext4 testing: need to produce a high depth extent
+ tree to verify mapping code
+Message-ID: <20190705173905.GA32320@bombadil.infradead.org>
 References: <1562021070.2762.36.camel@HansenPartnership.com>
-         <20190702002355.GB3315@mit.edu>
-         <1562028814.2762.50.camel@HansenPartnership.com>
-         <20190702173301.GA3032@mit.edu>
-         <1562095894.3321.52.camel@HansenPartnership.com>
-         <20190702203937.GG3032@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ <20190702002355.GB3315@mit.edu>
+ <1562028814.2762.50.camel@HansenPartnership.com>
+ <20190702173301.GA3032@mit.edu>
+ <1562095894.3321.52.camel@HansenPartnership.com>
+ <20190702203937.GG3032@mit.edu>
+ <1562343948.2953.8.camel@HansenPartnership.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1562343948.2953.8.camel@HansenPartnership.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I've got preliminary ext4 support for palo completed.  My original plan
-was to switch our boot loader (iplboot) to using libext2fs, but that
-proved to be impossible due to the external dependencies libext2fs
-needs which we simply can't provide in a tiny bootloader, so I switched
-to simply adding support for variable sized groups and handling extent
-based files in our original code.  Right at the moment we only support
-reading files for the kernel and the initrd, so we have a simple
-routine that loads blocks monotonically by mapping from inode relative
-to partition absolute.  It's fairly simple to cache the extent tree at
-all depths and use a similar resolution scheme for extent based
-filesystems.  I'll add this list on cc to the initial patch so you can
-check it.
+On Fri, Jul 05, 2019 at 09:25:48AM -0700, James Bottomley wrote:
+> Now the problem: I'd like to do some testing with high depth extent
+> trees to make sure I got this right, but the files we load at boot are
+> ~20MB in size and I'm having a hard time fragmenting the filesystem
+> enough to produce a reasonable extent (I've basically only got to a two
+> level tree with two entries at the top).  Is there an easy way of
+> producing a high depth extent tree for a 20MB file?
 
-Now the problem: I'd like to do some testing with high depth extent
-trees to make sure I got this right, but the files we load at boot are
-~20MB in size and I'm having a hard time fragmenting the filesystem
-enough to produce a reasonable extent (I've basically only got to a two
-level tree with two entries at the top).  Is there an easy way of
-producing a high depth extent tree for a 20MB file?
-
-Thanks,
-
-James
-
+Create a series of 4kB files numbered sequentially, each 4kB in size
+until you fill the partition.  Delete the even numbered ones.  Create a
+20MB file.
