@@ -2,115 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F06F55FAA2
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jul 2019 17:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0099600AA
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 07:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbfGDPIA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 4 Jul 2019 11:08:00 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:48028 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727289AbfGDPIA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 4 Jul 2019 11:08:00 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x64F3Z8o054674;
-        Thu, 4 Jul 2019 15:07:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to :
- subject : message-id : mime-version : content-type; s=corp-2018-07-02;
- bh=NerSHqkgECmmoe/b+//AoS3dONJv7y+iAkspLeXM4AM=;
- b=oEPoS0WhcRAg4le/eliMvJjiaKQkcf53SbVWJl81WOTkTiz0F9/b5keaazIIfsD2BpTp
- h9Y3r4QkkU1kOYrHYELbcThBkZhbO95gpOq0MB6KnkkTe8QYR/T4+/g9590emBWQ8KUa
- f/x0SjHNpQHiRm0sJEtg26luwKGMIR3niHamDAjGgqb9Oc5ArKkVBo37JbFG8CYT7E0X
- 6vF2AdeR6JMxtevL4UWnpWrsd1SrCLjfNWPovnLtCZcqVP/f+KgW0sgbODC5Q1TowPWA
- YN3JKJCZpnXd0YRcn0JcN9pW9osEKmxkPz9a9ymWvng31idA+n+nu/Gib47jxB9zcuFx ZA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2te61ef9yn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Jul 2019 15:07:58 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x64F7gua078651;
-        Thu, 4 Jul 2019 15:07:57 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2th5qmbchq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 04 Jul 2019 15:07:57 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x64F7vwY010452;
-        Thu, 4 Jul 2019 15:07:57 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 04 Jul 2019 08:07:57 -0700
-Date:   Thu, 4 Jul 2019 08:07:58 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: [ANNOUNCE RESEND] xfs-linux: vfs-for-next updated to 7e328e5930ad
-Message-ID: <20190704150758.GD5164@magnolia>
+        id S1727436AbfGEFfI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Jul 2019 01:35:08 -0400
+Received: from mout.gmx.net ([212.227.17.22]:43989 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725772AbfGEFfI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 5 Jul 2019 01:35:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1562304907;
+        bh=q+upXtoDKWAafgAygSsjZhLobm4fhgszI1IhuproTzs=;
+        h=X-UI-Sender-Class:To:Cc:From:Subject:Date;
+        b=VPVhEFJXt3y6tBujHTigv/9v3V9jwOMzvPYStDVaLK17WjnV61kbORGV054Q2oUvt
+         gXB/XHgfgx6+XcUXcUuZywoY3oC0ZlLPecnAflrim6X5Z3ViOP77gwV6SZ2TuFQJ9+
+         9ZuPhBBV8RIgjAtwVuEf8SONq49aKUi20XNeVKBU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx103
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0MJjUO-1hiAwf3sY8-0017xO; Fri, 05
+ Jul 2019 07:35:06 +0200
+To:     linux-ext4@vger.kernel.org
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Subject: mke2fs accepts block size not mentioned in its man page
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <ce9edecb-6f04-77d3-32f1-2b9de6cd3d7e@gmx.com>
+Date:   Fri, 5 Jul 2019 13:35:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9307 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907040191
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9307 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907040190
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="lfZJoZCPRYDoYTEwzYP8xtj9QfdVl9SxZ"
+X-Provags-ID: V03:K1:OYwE119fPogEpRzMvTVPfLn5sJZ3rLTxh+0C4Of2Jss42TkjatC
+ /FqtcQoKO4CpBrBIWXSIZDjzlUmpTkO83wk82yh2/ksLWrSmD6elY7Xdfnyt/radCVZ79Rm
+ l7a6aLpV5vPQds2pnrwfpjeQ6zQGNGTTdPcWcy+HI2bSUL5ai34fsF/8cVNqu7zjCBJmbhb
+ PZPMSM+NM1BHnqfnVbUyA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qW3735Nl0bQ=:8EXN84aCgnl0ZFC860CGL3
+ A2I/tyZ13PvL4+D23Bnkv/7iTtITnoin1FuWAR5GgiYX1m54iHo+r4uKlike8WDu8Xyb90j2X
+ gSmbpHFRFLN8p+M658RQ1MGWwj6y1xSGZT1sxWAQOwKnSTHbkHzxrPlhQQq58xWqBmHr9slFs
+ oorX9IejOkdL66ScdUPwbP8TvtcZ0tjBCz2GqsKuz0THTQ57j7TOYjPQXdgjW2OaLiIkbKp2N
+ NwPSqUA4BHeYktnQwM35AxU5t98NPSZCH8by/w92DjApYcpgrkHSPHhzpbIDKSo6IsQQdth4M
+ iBm9JD9rgD478G0RSVFVCEmdU0+USFlrhooWU94F4hC7Y8LSjc8YcQDRmdlAw/NSdzgPqFTS8
+ wGgCRtiU4WOZOrZ9ARKo+8AbPCrRoswqE8PorPaemPZIs7PEa7zdmuaXb2qNom7AEA7a9dKrK
+ jxDiKwjiNfq2c0r+jH0vBOrgrAALZoZuXrb6O0D5Ee9XL2XnIitiX+xPEUdtiIUztTIflGBRl
+ qCHcYKFNLCQbhSGeaA/bo7dZNKbZH2osJB4JaFOEgN8UCra0OFaGfK0pfNaOUp58bisqdTEua
+ WB2sK4AnnqD+GfBHan7kZh0qilgFMcY9OjiM8tgLYg4GXyEpTXBQiSiOlZHLXImeGyiDCp8/F
+ 4PM4oQoVqNw9281bZTJlRWfU3fssZ2druFaP9EX91yTsX1FQZuUBEqFSF+0ev3GCLBWZLIM6t
+ xHqzKt0QMCkPmLIGgrZhk6OWkC9oS3Hh/V+0zw5oOP1DVUCGYXnUqx0Clxp70G9todKT8C6fP
+ LHxCv39bjGlI0XRRJrvnbcvYXq5fG8cU00Uw3uAcWx8O3k2A1ASwFLuunFjTydlyO4XihRnCJ
+ la2b5/9nddndHQ2RRlm81aDSQEAL4e+jZkCoOjStObgPjB2LmXY/LBKSJNBNu4/DDA5NF17NC
+ ik9ogDbeaB1/lYIJHBOO2LEyKvS+O550h5ccc0c5TNyQf3HLsM42rDfiZGL6lK1H1luEa2msC
+ gQ+K4AT8Li5hdVHqPJFj9CPnwNw8RhVRs6LBN+CEYfg4jLbntMMnw+MGEgGYbnBUK3C+aHlsB
+ AdW9zI9uKGcn+A=
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi folks,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--lfZJoZCPRYDoYTEwzYP8xtj9QfdVl9SxZ
+Content-Type: multipart/mixed; boundary="ZO9s4Sft2yVHXfC5Nym17WH9jvJ54JfPp";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: linux-ext4@vger.kernel.org
+Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Message-ID: <ce9edecb-6f04-77d3-32f1-2b9de6cd3d7e@gmx.com>
+Subject: mke2fs accepts block size not mentioned in its man page
 
-The vfs-for-next branch of the xfs-linux repository at:
+--ZO9s4Sft2yVHXfC5Nym17WH9jvJ54JfPp
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-	git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
+Hi,
 
-has (not) been updated.  This is a resend of previous announcements
-about the SETFLAGS and FSSETXATTR refactoring that I've started for 5.3
-and will continue for 5.4 so that these ioctls will have more consistent
-behavior with the filesystems that originally created them.
+Just doing some tests on aarch64 with 64K page size.
 
-The new head of the vfs-for-next branch is commit:
+Man page of mke2fs only mentions 3 valid block size: 1k, 2k, 4k.
+But in real world, we can pass 64K as block size for it without any probl=
+em:
 
-7e328e5930ad mm/fs: don't allow writes to immutable files
+  $mke2fs -F -t ext3 -b 65536 /dev/loop1
+  Warning: blocksize 65536 not usable on most systems.
+  mke2fs 1.45.2 (27-May-2019)
+  /dev/loop1 contains a btrfs file system
+  Discarding device blocks: done
+  Creating filesystem with 81920 64k blocks and 81920 inodes
+  Filesystem UUID: 311bb224-6d2d-44a7-9790-92c4878d6549
+  [...]
 
-New Commits:
-
-Darrick J. Wong (6):
-      [5aca284210ce] vfs: create a generic checking and prep function for FS_IOC_SETFLAGS
-      [7b0e492e6b80] vfs: create a generic checking function for FS_IOC_FSSETXATTR
-      [f991492ed110] vfs: teach vfs_ioc_fssetxattr_check to check project id info
-      [ca29be753445] vfs: teach vfs_ioc_fssetxattr_check to check extent size hints
-      [dbc77f31e58b] vfs: only allow FSSETXATTR to set DAX flag on files and dirs
-      [7e328e5930ad] mm/fs: don't allow writes to immutable files
+It's great to see mke2fs accepts 64K as nodesize, which allows
+btrfs-convert to work.
+(If blocksize is default to 4K or doesn't accept 64K page size,
+btrfs-convert can work but can't be mounted on system with 64K page size)=
 
 
-Code Diffstat:
+Shouldn't the man page mention all valid values?
 
- fs/attr.c           |  13 ++---
- fs/btrfs/ioctl.c    |  30 ++++------
- fs/efivarfs/file.c  |  26 ++++++---
- fs/ext2/ioctl.c     |  16 ++----
- fs/ext4/ioctl.c     |  51 +++++------------
- fs/gfs2/file.c      |  42 +++++++++-----
- fs/hfsplus/ioctl.c  |  21 ++++---
- fs/inode.c          |  86 +++++++++++++++++++++++++++++
- fs/jfs/ioctl.c      |  22 +++-----
- fs/nilfs2/ioctl.c   |   9 +--
- fs/ocfs2/ioctl.c    |  13 +----
- fs/orangefs/file.c  |  37 ++++++++++---
- fs/reiserfs/ioctl.c |  10 ++--
- fs/ubifs/ioctl.c    |  13 +----
- fs/xfs/xfs_ioctl.c  | 154 +++++++++++++++++++++++-----------------------------
- include/linux/fs.h  |  12 ++++
- mm/filemap.c        |   3 +
- mm/memory.c         |   4 ++
- mm/mmap.c           |   8 ++-
- 19 files changed, 319 insertions(+), 251 deletions(-)
+Thanks,
+Qu
+
+
+--ZO9s4Sft2yVHXfC5Nym17WH9jvJ54JfPp--
+
+--lfZJoZCPRYDoYTEwzYP8xtj9QfdVl9SxZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0e4YYACgkQwj2R86El
+/qheSwf8DPxd2eOlBmMHFJC3Ike9CwhGE0kg8LTnNWVi9PIsrnytwVU4LlTVB7mt
+qVt6SqrFpdBo7jp7xWAQbuV2zX0kKXwzNLiCogy2GsMixy6og/RGpz/gvVh7ZluK
+jtJ0WDNxN5ZZkjiPBJ+ydLv36BQ4JhYv0Etat1tj/2piQ8wyiMerovB+Qiz+LOzo
+YugFsA9LiJkwjeR9JMDhLnhMpvhpysiYhkAQ+pCXKfDZnaVFWYJz6TUptI8QlhK1
+B8IY7p6jsLHhl3h3XKkZ1buxFqtgB7MDdW88a2DIvKHrGoMJBNxA+H1HUaBGO2lJ
+v+cKeCLbq5yi2HkJr2pQ/XKQo9qQ2g==
+=i33W
+-----END PGP SIGNATURE-----
+
+--lfZJoZCPRYDoYTEwzYP8xtj9QfdVl9SxZ--
