@@ -2,91 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACDA601DC
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 09:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9876067C
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 15:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727649AbfGEH5M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Jul 2019 03:57:12 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:60604 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725862AbfGEH5M (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 5 Jul 2019 03:57:12 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E9BC33A2414B546C86F8;
-        Fri,  5 Jul 2019 15:57:09 +0800 (CST)
-Received: from RH5885H-V3.huawei.com (10.90.53.225) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.439.0; Fri, 5 Jul 2019 15:55:52 +0800
-From:   yangerkun <yangerkun@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>, <yangerkun@huawei.com>,
-        <houtao1@huawei.com>, <yi.zhang@huawei.com>, <miaoxie@huawei.com>
-Subject: [PATCH v2] ext4: fix warning when turn on dioread_nolock and inline_data
-Date:   Fri, 5 Jul 2019 16:01:34 +0800
-Message-ID: <1562313694-60126-1-git-send-email-yangerkun@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728806AbfGENSS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Jul 2019 09:18:18 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:43367 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728102AbfGENSS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Jul 2019 09:18:18 -0400
+Received: by mail-io1-f65.google.com with SMTP id k20so19037156ios.10
+        for <linux-ext4@vger.kernel.org>; Fri, 05 Jul 2019 06:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=pRtQGOFldLgGE7qJqe1c/CUsqsRLF9F1riuLbw6yyJs=;
+        b=lJIBBAa4dahLP/b9AXN6UgjzFVq0DrkIuIt64/jaRG20TBTpO3CnEPoPccNo6QbN51
+         Rn889prtBvG0KxRt98TgSvQSWsDPFicrLqsuVPEN7IwewqSzO5TvAUG/87lLsqDH5tw4
+         ejt7pCK0lFDN0EOFSf9x3L02OlEYPq3w5ZHv/+z7da0E+d/CNtKw45lIKPhTpZrQ2nYt
+         C6YBCClsw8L58BDpl3mJ2RUk1UnMxKFQPopYvw83EAfI4S1Se/H61yPYj3UQFbsx3nBi
+         lwojRqpap0CC6R14IJyex23CYqqVBmQy5r02PRJG4HhZDR4aoQY2qiQOyJvTapTakmNS
+         sTmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=pRtQGOFldLgGE7qJqe1c/CUsqsRLF9F1riuLbw6yyJs=;
+        b=NOU3VDLhX//wehRtpxP69mDsGOxSlZvBP+WLQ2hTVgRoVd/gP6zgQDD19dH4RcH67f
+         /MdPHkDN1Iw8ytIgB7frkGF9Wq3uBY7aIaZVuZG7HfQSLQ+W+n+rv3T0ShkQU72COxLI
+         jpcIYJtxA+lJPBODWpJzphTlxuroFygfMS7pA20kGUufYs7DIH+RLqJgmEX7gTTZw+24
+         U56r1WD/KaQV6ToU2OKAjh9PIZX92m3YZ/7Wv7QQaswZYSNmGF2KbULrkxMEDOXDIJkN
+         V5Q5lGkqNe2EYuBJUqpbvDz+hqy1x9y0GkGm2/NGMB7ohP4BvHd4vDILj5eZ832D71h3
+         E1Qw==
+X-Gm-Message-State: APjAAAVwsEl/mRP1/PFYomTMgOF1XY9qhDqxOGtue65AfbtmaoX70+Kk
+        zkjQP2i8PDXkm5rKRnnLrwZmmIa848gpk2zCNCAtFQ==
+X-Google-Smtp-Source: APXvYqwHcTdVO68Zki0+63QSWBONxJLklr7LXnf8O1UNup1dM0NT4WpEphqYVGaOt5adDzriIMut7G9Wn7lr0NEz8U0=
+X-Received: by 2002:a6b:641a:: with SMTP id t26mr4198845iog.3.1562332697230;
+ Fri, 05 Jul 2019 06:18:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+References: <000000000000d3f34b058c3d5a4f@google.com> <20190626184251.GE3116@mit.edu>
+In-Reply-To: <20190626184251.GE3116@mit.edu>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 5 Jul 2019 15:18:06 +0200
+Message-ID: <CACT4Y+aHgz9cPa7OnVsNeHim72i6zVdjnbvVb0Z1oN2B8QLZqg@mail.gmail.com>
+Subject: Re: INFO: rcu detected stall in ext4_write_checks
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        syzbot <syzbot+4bfbbf28a2e50ab07368@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        David Miller <davem@davemloft.net>, eladr@mellanox.com,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-mkfs.ext4 -O inline_data /dev/vdb
-mount -o dioread_nolock /dev/vdb /mnt
-echo "some inline data..." >> /mnt/test-file
-echo "some inline data..." >> /mnt/test-file
-sync
+On Wed, Jun 26, 2019 at 8:43 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Wed, Jun 26, 2019 at 10:27:08AM -0700, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following crash on:
+> >
+> > HEAD commit:    abf02e29 Merge tag 'pm-5.2-rc6' of git://git.kernel.org=
+/pu..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D1435aaf6a00=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3De5c77f8090a=
+3b96b
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D4bfbbf28a2e50=
+ab07368
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D11234c41a=
+00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D15d7f026a00=
+000
+> >
+> > The bug was bisected to:
+> >
+> > commit 0c81ea5db25986fb2a704105db454a790c59709c
+> > Author: Elad Raz <eladr@mellanox.com>
+> > Date:   Fri Oct 28 19:35:58 2016 +0000
+> >
+> >     mlxsw: core: Add port type (Eth/IB) set API
+>
+> Um, so this doesn't pass the laugh test.
+>
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D10393a89=
+a00000
+>
+> It looks like the automated bisection machinery got confused by two
+> failures getting triggered by the same repro; the symptoms changed
+> over time.  Initially, the failure was:
+>
+> crashed: INFO: rcu detected stall in {sys_sendfile64,ext4_file_write_iter=
+}
+>
+> Later, the failure changed to something completely different, and much
+> earlier (before the test was even started):
+>
+> run #5: basic kernel testing failed: failed to copy test binary to VM: fa=
+iled to run ["scp" "-P" "22" "-F" "/dev/null" "-o" "UserKnownHostsFile=3D/d=
+ev/null" "-o" "BatchMode=3Dyes" "-o" "IdentitiesOnly=3Dyes" "-o" "StrictHos=
+tKeyChecking=3Dno" "-o" "ConnectTimeout=3D10" "-i" "/syzkaller/jobs/linux/w=
+orkdir/image/key" "/tmp/syz-executor216456474" "root@10.128.15.205:./syz-ex=
+ecutor216456474"]: exit status 1
+> Connection timed out during banner exchange
+> lost connection
+>
+> Looks like an opportunity to improve the bisection engine?
 
-The above script will trigger "WARN_ON(!io_end->handle && sbi->s_journal)"
-because ext4_should_dioread_nolock() returns false for a file with inline
-data. Move the check to a place after we have already removed the inline
-data and prepared inode to write normal pages.
+Hi Ted,
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: yangerkun <yangerkun@huawei.com>
----
- fs/ext4/inode.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Yes, these infrastructure errors plague bisections episodically.
+That's https://github.com/google/syzkaller/issues/1250
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index c7f77c6..3f2a366 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -2769,15 +2769,6 @@ static int ext4_writepages(struct address_space *mapping,
- 		goto out_writepages;
- 	}
- 
--	if (ext4_should_dioread_nolock(inode)) {
--		/*
--		 * We may need to convert up to one extent per block in
--		 * the page and we may dirty the inode.
--		 */
--		rsv_blocks = 1 + ext4_chunk_trans_blocks(inode,
--						PAGE_SIZE >> inode->i_blkbits);
--	}
--
- 	/*
- 	 * If we have inline data and arrive here, it means that
- 	 * we will soon create the block for the 1st page, so
-@@ -2796,6 +2787,15 @@ static int ext4_writepages(struct address_space *mapping,
- 		ext4_journal_stop(handle);
- 	}
- 
-+	if (ext4_should_dioread_nolock(inode)) {
-+		/*
-+		 * We may need to convert up to one extent per block in
-+		 * the page and we may dirty the inode.
-+		 */
-+		rsv_blocks = 1 + ext4_chunk_trans_blocks(inode,
-+						PAGE_SIZE >> inode->i_blkbits);
-+	}
-+
- 	if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
- 		range_whole = 1;
- 
--- 
-2.7.4
+It did not confuse bisection explicitly as it understands that these
+are infrastructure failures rather then a kernel crash, e.g. here you
+may that it correctly identified that this run was OK and started
+bisection in v4.10 v4.9 range besides 2 scp failures:
 
+testing release v4.9
+testing commit 69973b830859bc6529a7a0468ba0d80ee5117826 with gcc (GCC) 5.5.=
+0
+run #0: basic kernel testing failed: failed to copy test binary to VM:
+failed to run ["scp" ...]: exit status 1
+Connection timed out during banner exchange
+run #1: basic kernel testing failed: failed to copy test binary to VM:
+failed to run ["scp" ....]: exit status 1
+Connection timed out during banner exchange
+run #2: OK
+run #3: OK
+run #4: OK
+run #5: OK
+run #6: OK
+run #7: OK
+run #8: OK
+run #9: OK
+# git bisect start v4.10 v4.9
+
+Though, of course, it may confuse bisection indirectly by reducing
+number of tests per commit.
+
+So far I wasn't able to gather any significant info about these
+failures. We gather console logs, but on these runs they are empty.
+It's easy to blame everything onto GCE but I don't have any bit of
+information that would point either way. These failures just appear
+randomly in production and usually in batches...
