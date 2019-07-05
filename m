@@ -2,87 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13AB660786
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 16:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EE160911
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 17:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727727AbfGEOLB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Jul 2019 10:11:01 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:53028 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725983AbfGEOLB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 5 Jul 2019 10:11:01 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 11A9B3084034;
-        Fri,  5 Jul 2019 14:10:51 +0000 (UTC)
-Received: from dhcp201-121.englab.pnq.redhat.com (ovpn-116-58.sin2.redhat.com [10.67.116.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D5AB860F4;
-        Fri,  5 Jul 2019 14:10:04 +0000 (UTC)
-From:   Pankaj Gupta <pagupta@redhat.com>
-To:     dm-devel@redhat.com, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        qemu-devel@nongnu.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Cc:     dan.j.williams@intel.com, zwisler@kernel.org,
-        vishal.l.verma@intel.com, dave.jiang@intel.com, mst@redhat.com,
-        jasowang@redhat.com, willy@infradead.org, rjw@rjwysocki.net,
-        hch@infradead.org, lenb@kernel.org, jack@suse.cz, tytso@mit.edu,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com,
-        lcapitulino@redhat.com, kwolf@redhat.com, imammedo@redhat.com,
-        jmoyer@redhat.com, nilal@redhat.com, riel@surriel.com,
-        stefanha@redhat.com, aarcange@redhat.com, david@redhat.com,
-        david@fromorbit.com, cohuck@redhat.com,
-        xiaoguangrong.eric@gmail.com, pagupta@redhat.com,
-        pbonzini@redhat.com, yuval.shaia@oracle.com, kilobyte@angband.pl,
-        jstaron@google.com, rdunlap@infradead.org, snitzer@redhat.com
-Subject: [PATCH v15 7/7] xfs: disable map_sync for async flush
-Date:   Fri,  5 Jul 2019 19:33:28 +0530
-Message-Id: <20190705140328.20190-8-pagupta@redhat.com>
-In-Reply-To: <20190705140328.20190-1-pagupta@redhat.com>
-References: <20190705140328.20190-1-pagupta@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Fri, 05 Jul 2019 14:10:56 +0000 (UTC)
+        id S1727624AbfGEPRG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Jul 2019 11:17:06 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36156 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727350AbfGEPRF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Jul 2019 11:17:05 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x65FDQs2059114
+        for <linux-ext4@vger.kernel.org>; Fri, 5 Jul 2019 11:17:04 -0400
+Received: from e13.ny.us.ibm.com (e13.ny.us.ibm.com [129.33.205.203])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2tj8dghtsy-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Fri, 05 Jul 2019 11:17:04 -0400
+Received: from localhost
+        by e13.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <paulmck@linux.vnet.ibm.com>;
+        Fri, 5 Jul 2019 16:17:03 +0100
+Received: from b01cxnp22034.gho.pok.ibm.com (9.57.198.24)
+        by e13.ny.us.ibm.com (146.89.104.200) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 5 Jul 2019 16:16:57 +0100
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x65FGulm38011348
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Jul 2019 15:16:56 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A237CB2067;
+        Fri,  5 Jul 2019 15:16:56 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6C56AB2064;
+        Fri,  5 Jul 2019 15:16:56 +0000 (GMT)
+Received: from paulmck-ThinkPad-W541 (unknown [9.80.225.224])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Jul 2019 15:16:56 +0000 (GMT)
+Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
+        id 7E18316C40FB; Fri,  5 Jul 2019 08:16:58 -0700 (PDT)
+Date:   Fri, 5 Jul 2019 08:16:58 -0700
+From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        syzbot <syzbot+4bfbbf28a2e50ab07368@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        David Miller <davem@davemloft.net>, eladr@mellanox.com,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: INFO: rcu detected stall in ext4_write_checks
+Reply-To: paulmck@linux.ibm.com
+References: <000000000000d3f34b058c3d5a4f@google.com>
+ <20190626184251.GE3116@mit.edu>
+ <20190626210351.GF3116@mit.edu>
+ <20190626224709.GH3116@mit.edu>
+ <CACT4Y+YTpUErjEmjrqki-tJ0Lyx0c53MQDGVS4CixfmcAnuY=A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+YTpUErjEmjrqki-tJ0Lyx0c53MQDGVS4CixfmcAnuY=A@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+x-cbid: 19070515-0064-0000-0000-000003F79AE7
+X-IBM-SpamModules-Scores: 
+X-IBM-SpamModules-Versions: BY=3.00011383; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000286; SDB=6.01227834; UDB=6.00646515; IPR=6.01009075;
+ MB=3.00027598; MTD=3.00000008; XFM=3.00000015; UTC=2019-07-05 15:17:01
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19070515-0065-0000-0000-00003E269009
+Message-Id: <20190705151658.GP26519@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-05_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907050185
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dont support 'MAP_SYNC' with non-DAX files and DAX files
-with asynchronous dax_device. Virtio pmem provides
-asynchronous host page cache flush mechanism. We don't
-support 'MAP_SYNC' with virtio pmem and xfs.
+On Fri, Jul 05, 2019 at 03:24:26PM +0200, Dmitry Vyukov wrote:
+> On Thu, Jun 27, 2019 at 12:47 AM Theodore Ts'o <tytso@mit.edu> wrote:
+> >
+> > More details about what is going on.  First, it requires root, because
+> > one of that is required is using sched_setattr (which is enough to
+> > shoot yourself in the foot):
+> >
+> > sched_setattr(0, {size=0, sched_policy=0x6 /* SCHED_??? */, sched_flags=0, sched_nice=0, sched_priority=0, sched_runtime=2251799813724439, sched_deadline=4611686018427453437, sched_period=0}, 0) = 0
+> >
+> > This is setting the scheduler policy to be SCHED_DEADLINE, with a
+> > runtime parameter of 2251799.813724439 seconds (or 26 days) and a
+> > deadline of 4611686018.427453437 seconds (or 146 *years*).  This means
+> > a particular kernel thread can run for up to 26 **days** before it is
+> > scheduled away, and if a kernel reads gets woken up or sent a signal,
+> > no worries, it will wake up roughly seven times the interval that Rip
+> > Van Winkle spent snoozing in a cave in the Catskill Mountains (in
+> > Washington Irving's short story).
+> >
+> > We then kick off a half-dozen threads all running:
+> >
+> >    sendfile(fd, fd, &pos, 0x8080fffffffe);
+> >
+> > (and since count is a ridiculously large number, this gets cut down to):
+> >
+> >    sendfile(fd, fd, &pos, 2147479552);
+> >
+> > Is it any wonder that we are seeing RCU stalls?   :-)
+> 
+> +Peter, Ingo for sched_setattr and +Paul for rcu
+> 
+> First of all: is it a semi-intended result of a root (CAP_SYS_NICE)
+> doing local DoS abusing sched_setattr? It would perfectly reasonable
+> to starve other processes, but I am not sure about rcu. In the end the
+> high prio process can use rcu itself, and then it will simply blow
+> system memory by stalling rcu. So it seems that rcu stalls should not
+> happen as a result of weird sched_setattr values. If that is the case,
+> what needs to be fixed? sched_setattr? rcu? sendfile?
 
-Signed-off-by: Pankaj Gupta <pagupta@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/xfs/xfs_file.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Does the (untested, probably does not even build) patch shown below help?
+This patch assumes that the kernel was built with CONFIG_PREEMPT=n.
+And that I found all the tight loops on the do_sendfile() code path.
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index a7ceae90110e..f17652cca5ff 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -1203,11 +1203,14 @@ xfs_file_mmap(
- 	struct file	*filp,
- 	struct vm_area_struct *vma)
- {
-+	struct dax_device 	*dax_dev;
-+
-+	dax_dev = xfs_find_daxdev_for_inode(file_inode(filp));
- 	/*
--	 * We don't support synchronous mappings for non-DAX files. At least
--	 * until someone comes with a sensible use case.
-+	 * We don't support synchronous mappings for non-DAX files and
-+	 * for DAX files if underneath dax_device is not synchronous.
- 	 */
--	if (!IS_DAX(file_inode(filp)) && (vma->vm_flags & VM_SYNC))
-+	if (!daxdev_mapping_supported(vma, dax_dev))
- 		return -EOPNOTSUPP;
+> If this is semi-intended, the only option I see is to disable
+> something in syzkaller: sched_setattr entirely, or drop CAP_SYS_NICE,
+> or ...? Any preference either way?
+
+Long-running tight loops in the kernel really should contain
+cond_resched() or better.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/fs/splice.c b/fs/splice.c
+index 25212dcca2df..50aa3286764a 100644
+--- a/fs/splice.c
++++ b/fs/splice.c
+@@ -985,6 +985,7 @@ ssize_t splice_direct_to_actor(struct file *in, struct splice_desc *sd,
+ 			sd->pos = prev_pos + ret;
+ 			goto out_release;
+ 		}
++		cond_resched();
+ 	}
  
- 	file_accessed(filp);
--- 
-2.20.1
+ done:
 
