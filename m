@@ -2,89 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD5760C2B
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 22:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F83460D75
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 23:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbfGEURV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Jul 2019 16:17:21 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:59920 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725813AbfGEURV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Jul 2019 16:17:21 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 7EED28EE1F7;
-        Fri,  5 Jul 2019 13:17:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1562357841;
-        bh=Rr0/c3YY6b7M6XGt7eOf4jjmV2d3TMURmcZoEpYrahY=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=FOFnX6fsexFCfW5mVUquzMC+bE32BwR1CPHjvlO4jFuhi/W5UwqdXK99onoRuLSlD
-         vPV4PeI6GTA25+sQ+tDl9kUxG7ZGE8Bx6Owp9UlW/go1GD22tDCYa0f/VEnIOtJPql
-         9AAD+80Vj6CtXPqU0XebDXt9F4MGG3Vuj7/a/8Nk=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3-_X30Ba98IQ; Fri,  5 Jul 2019 13:17:21 -0700 (PDT)
-Received: from jarvis.lan (unknown [50.35.68.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 27D648EE0CF;
-        Fri,  5 Jul 2019 13:17:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1562357841;
-        bh=Rr0/c3YY6b7M6XGt7eOf4jjmV2d3TMURmcZoEpYrahY=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=FOFnX6fsexFCfW5mVUquzMC+bE32BwR1CPHjvlO4jFuhi/W5UwqdXK99onoRuLSlD
-         vPV4PeI6GTA25+sQ+tDl9kUxG7ZGE8Bx6Owp9UlW/go1GD22tDCYa0f/VEnIOtJPql
-         9AAD+80Vj6CtXPqU0XebDXt9F4MGG3Vuj7/a/8Nk=
-Message-ID: <1562357840.10899.9.camel@HansenPartnership.com>
-Subject: [PATCH 4/4] palo: add support for formatting as ext4
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Parisc List <linux-parisc@vger.kernel.org>
-Date:   Fri, 05 Jul 2019 13:17:20 -0700
-In-Reply-To: <1562357231.10899.5.camel@HansenPartnership.com>
-References: <1562357231.10899.5.camel@HansenPartnership.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1727949AbfGEV7q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 5 Jul 2019 17:59:46 -0400
+Received: from out12.masterobox.work ([178.156.202.12]:48304 "EHLO
+        slot0.mathewsons.ga" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbfGEV7q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Jul 2019 17:59:46 -0400
+X-Greylist: delayed 627 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Jul 2019 17:59:45 EDT
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=mathewsons.ga;
+ h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID; i=purchase@mathewsons.ga;
+ bh=onxYcir3NvpNjk2I/gjm/O+ljxo=;
+ b=WrJB4oBOvLtf3vJ5q/jhIp/iCJ9LZA79ErWVoRlywxdS1dnnKml3C1/o8HtpTnqV6AWoj9Fs2NCg
+   A2V0nwgL2wmDppe9I7BzxzoAoHffjw3DZV6IEVEzziRnQPWroVyi47hkYZ3sJdmTK1o38PZmMFPS
+   Jl23BvZJvJ3CMxykNq+1GgaZTOlh7WUYWkeh3Y+jJQqLAW9ggZJe2R8hrWr1xpW5FdItBfDN/lDI
+   K/xKFL4eB6dY652xai9l2XwajOR+3MyKteKXit+RZ0SOVD32IMiMTZB0pOhAGiNe/cd7j518fsj4
+   GK2Rz1dAAViwG2hrFC2Bf+W/3YZWZQP6Wt9VzA==
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=mathewsons.ga;
+ b=gcEQmNp1yW+cITpryKFd+qHpvi3ypZ8wm+Hb8BP14n01qWXlOBf72XbxIZTJIN3lUEqcIFJVIi8z
+   +0LHgvpXomaNu3Z70brIJkTHm0Dr9nz1pGNHdaSftalsz0OfhqMWwGyp7pVMmPI9x7syBdVXZlCg
+   CA/mJ7cvSJ1vLKegLxtx6le93tvdntnAVC4UmLmd+UDGjzs01dDL6LfxXLGbYw1UdyECgMhYwlhR
+   vXM30OdWnwh6UEyRdugRq5ibcCD3x8IFKVLhaL04E2TeoyxJHQUC+8utQMJ2BXcIXd7h5ScHQ8Ah
+   OsaZw8ZZtkoPqhnxF/sE5gCdPHhoqQXm9kg6vQ==;
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Quotes needed For July Shipments
+To:     Recipients <purchase@mathewsons.ga>
+From:   "Sales -Jpexcc." <purchase@mathewsons.ga>
+Date:   Sat, 06 Jul 2019 00:39:14 +0300
+Reply-To: jpexcc@aol.com
+Message-ID: <0.0.4D.13D.1D53379E5670D72.0@slot0.mathewsons.ga>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now that iplboot can read ext4 filesystem, allow palo to create them
-with the palo --format-as=4 option.
+Hello dear,
+ =
 
-Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
----
- palo/palo.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+We are in the market for your products after meeting at your stand during l=
+ast expo.
+ =
 
-diff --git a/palo/palo.c b/palo/palo.c
-index e088993..26da01b 100644
---- a/palo/palo.c
-+++ b/palo/palo.c
-@@ -506,8 +506,8 @@ do_formatted(int init, int media, const char *medianame, int partition,
- 	    }
- 	}
- 
--	sprintf(cmd, "mke2fs %s -O^resize_inode -b %d -l %s %s", do_format == 3 ? "-j" : "",
--		EXT2_BLOCKSIZE, badblockfilename, partitionname);
-+	sprintf(cmd, "mke2fs -t ext%d -O^resize_inode -b %d -l %s %s",
-+		do_format, EXT2_BLOCKSIZE, badblockfilename, partitionname);
- 
- 	if (verbose)
- 	    printf("Executing: %s\n", cmd);
-@@ -868,6 +868,8 @@ main(int argc, char *argv[])
- 		format_as = 2;
- 	    else if(strcmp(optarg, "3") == 0)
- 		format_as = 3;
-+	    else if (strcmp(optarg, "4") == 0)
-+		format_as = 4;
- 	    else
- 		error(0, argv[0]);
- 	    break;
--- 
-2.16.4
+Please kindly send us your latest catalog and price list so as to start a n=
+ew project/order as promised during the exhibition. =
 
+ =
+
+I would appreciate your response about the above details required so we can=
+ revert back to you asap.
+ =
+
+Kind regards
+ =
+
+Rhema Zoeh
