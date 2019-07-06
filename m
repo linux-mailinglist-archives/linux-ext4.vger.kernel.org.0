@@ -2,54 +2,32 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2224960D3A
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2019 23:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6800E60EA7
+	for <lists+linux-ext4@lfdr.de>; Sat,  6 Jul 2019 06:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbfGEVnU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 5 Jul 2019 17:43:20 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:59946 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726559AbfGEVnU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 5 Jul 2019 17:43:20 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x65LdCZ4047322;
-        Fri, 5 Jul 2019 21:43:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=N0Xj0V7McXFWZJIEb4PS0gMpz9E6oJverdvCiNgsT24=;
- b=1fHUiSCgQ3/Oo4+qpeQZhYdPyQESNPPEJgin9+woFwEllfl3Y8W2NiWeY8CRSH7GDhjR
- 9FMmzL4Tnwxxt7WYreRInEZBUqf28NtDmK6HinaBkuJcqSKrHud/Hk8xqKJhryFu93as
- xOR6YmYnsOJcHpUoUGbxmmhYWykth6++sioTy3U9HzVveds09MKxOi0sLqdtlh8Lftba
- 9UXVZ3sh0AwvC6h6RWzR1kin015MUAKl+fRZZv94LR5K5AVOIlLMX5BLAgUc+caDuVw/
- rqQfHYbkBmp0FirdYxDi7Dgasgwbu6YoADadt+yQ4f9l6wQEe5R1/O6kSov6S5zfouz2 qw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2te5tc4mb9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Jul 2019 21:43:02 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x65LbRX8036346;
-        Fri, 5 Jul 2019 21:41:02 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2th5qmxfqs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 05 Jul 2019 21:41:02 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x65LexAA014956;
-        Fri, 5 Jul 2019 21:40:59 GMT
-Received: from localhost (/10.159.235.234)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 05 Jul 2019 14:40:59 -0700
-Date:   Fri, 5 Jul 2019 14:40:58 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+        id S1725883AbfGFECl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 6 Jul 2019 00:02:41 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43473 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725826AbfGFECl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 6 Jul 2019 00:02:41 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6642MTo014588
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 6 Jul 2019 00:02:24 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id EEBD342002E; Sat,  6 Jul 2019 00:02:21 -0400 (EDT)
+Date:   Sat, 6 Jul 2019 00:02:21 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org,
         Parisc List <linux-parisc@vger.kernel.org>
 Subject: Re: Question about ext4 testing: need to produce a high depth extent
  tree to verify mapping code
-Message-ID: <20190705214058.GD5161@magnolia>
+Message-ID: <20190706040221.GC11665@mit.edu>
 References: <1562021070.2762.36.camel@HansenPartnership.com>
  <20190702002355.GB3315@mit.edu>
  <1562028814.2762.50.camel@HansenPartnership.com>
@@ -63,34 +41,13 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <1562352542.2953.10.camel@HansenPartnership.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9309 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907050274
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9309 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907050274
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 On Fri, Jul 05, 2019 at 11:49:02AM -0700, James Bottomley wrote:
-> On Fri, 2019-07-05 at 10:39 -0700, Matthew Wilcox wrote:
-> > On Fri, Jul 05, 2019 at 09:25:48AM -0700, James Bottomley wrote:
-> > > Now the problem: I'd like to do some testing with high depth extent
-> > > trees to make sure I got this right, but the files we load at boot
-> > > are ~20MB in size and I'm having a hard time fragmenting the
-> > > filesystem enough to produce a reasonable extent (I've basically
-> > > only got to a two level tree with two entries at the top).  Is
-> > > there an easy way of producing a high depth extent tree for a 20MB
-> > > file?
-> > 
 > > Create a series of 4kB files numbered sequentially, each 4kB in size
 > > until you fill the partition.  Delete the even numbered ones.  Create
 > > a 20MB file.
@@ -99,14 +56,22 @@ On Fri, Jul 05, 2019 at 11:49:02AM -0700, James Bottomley wrote:
 > creative laziness, that someone else had produced a script for this
 > before I had to ... particularly one which leaves more randomized gaps.
 
-If you don't care about the contents of the file you could just build
-src/punch-alternating.c from xfstests and use it to turn your 20M file
-into holy cheese.
+You mean something like this?  It doesn't do randomized gaps, since
+usually I'm trying to stress test block allocations.
 
-(Granted if you actually need 5,120 extents then you probably ought to
-make it a 40M file and /then/ run it through the cheese grater....)
+#!/bin/bash
 
---D
+DEV=/dev/lambda/scratch
+SIZE=10M
 
-> James
-> 
+mke2fs -Fq -t ext4 -i 4096 -b 4096 $DEV $SIZE
+max=$(dumpe2fs -h $DEV 2>/dev/null | awk -F: '/^Free blocks:/{print $2}')
+mount $DEV /mnt
+cd /mnt
+mkdir -p d{0,1,2,3,4,5,6,7,8,9}/{0,1,2,3,4,5,6,7,8,9}
+seq 1 $max | sed -E -e 's;^([[:digit:]])([[:digit:]])([[:digit:]]);d\1/\2/\3;' > /tmp/files$$
+cat /tmp/files$$ | xargs -n 1 fallocate -l 4096 2>/dev/null
+sed -ne 'p;n' < /tmp/files$$ | xargs rm -f
+cd /
+umount $DEV
+rm /tmp/files$$
