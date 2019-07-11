@@ -2,99 +2,218 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 497E8653B3
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2019 11:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E141F65867
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2019 16:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbfGKJXS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Jul 2019 05:23:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37820 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728121AbfGKJXS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 11 Jul 2019 05:23:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 3BE18ADF1;
-        Thu, 11 Jul 2019 09:23:17 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E07FB1E3C3B; Thu, 11 Jul 2019 11:23:15 +0200 (CEST)
-Date:   Thu, 11 Jul 2019 11:23:15 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Thomas Walker <Thomas.Walker@twosigma.com>
-Cc:     "'linux-ext4@vger.kernel.org'" <linux-ext4@vger.kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "'tytso@mit.edu'" <tytso@mit.edu>,
-        Geoffrey Thomas <Geoffrey.Thomas@twosigma.com>
-Subject: Re: Phantom full ext4 root filesystems on 4.1 through 4.14 kernels
-Message-ID: <20190711092315.GA10473@quack2.suse.cz>
-References: <9abbdde6145a4887a8d32c65974f7832@exmbdft5.ad.twosigma.com>
- <20181108184722.GB27852@magnolia>
- <c7cfeaf451d7438781da95b01f21116e@exmbdft5.ad.twosigma.com>
- <20190123195922.GA16927@twosigma.com>
- <20190626151754.GA2789@twosigma.com>
+        id S1728178AbfGKOCa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Jul 2019 10:02:30 -0400
+Received: from relay.sw.ru ([185.231.240.75]:55998 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728055AbfGKOCa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 11 Jul 2019 10:02:30 -0400
+Received: from [172.16.24.21]
+        by relay.sw.ru with esmtp (Exim 4.92)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1hlZeT-0001YX-Il; Thu, 11 Jul 2019 17:02:25 +0300
+Subject: Re: [PATCH v2] ext4: remove code duplication in free_ind_block()
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+References: <7751907d-738f-a533-8be9-78c6aff5c8be@virtuozzo.com>
+ <20190529150142.GA2081@quack2.suse.cz>
+ <9f64b443-3344-1fd0-ac3b-75887eb1e629@virtuozzo.com>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <686585ba-cd18-5187-0a3f-9eac4833be49@virtuozzo.com>
+Date:   Thu, 11 Jul 2019 17:02:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190626151754.GA2789@twosigma.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <9f64b443-3344-1fd0-ac3b-75887eb1e629@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 26-06-19 11:17:54, Thomas Walker wrote:
-> Sorry to revive a rather old thread, but Elana mentioned that there might
-> have been a related fix recently?  Possibly something to do with
-> truncate?  A quick scan of the last month or so turned up
-> https://www.spinics.net/lists/linux-ext4/msg65772.html but none of these
-> seemed obviously applicable to me.  We do still experience this phantom
-> space usage quite frequently (although the remount workaround below has
-> lowered the priority). 
+Dear Ted,
+could you please comment the state of this patch?
+Should I re-new or resend it?
+Do you probably have some objections or may be expect some troubles related to this patch?
 
-I don't recall any fix for this. But seeing that remount "fixes" the issue
-for you can you try whether one of the following has a similar effect?
-
-1) Try "sync"
-2) Try "fsfreeze -f / && fsfreeze -u /"
-3) Try "echo 3 >/proc/sys/vm/drop_caches"
-
-Also what is the contents of
-/sys/fs/ext4/<problematic-device>/delayed_allocation_blocks
-when the issue happens?
-
-								Honza
-
+On 5/30/19 10:13 AM, Vasily Averin wrote:
+> On 5/29/19 6:01 PM, Jan Kara wrote:
+>> On Tue 12-03-19 16:09:12, Vasily Averin wrote:
+>>> free_ind_block(), free_dind_blocks() and free_tind_blocks() are replaced
+>>> by a single recursive function.
+>>> v2: rebase to v5.0
+>>>
+>>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>>
+>> Thanks for the patch! Nice cleanup. The patch looks good to me. Feel free
+>> to add:
+>>
+>> Reviewed-by: Jan Kara <jack@suse.cz>
+>>
+>> Just one question. How did you test this? And if you have a testcase for
+>> this code, can you please add it to fstests so that it gets excercised?
 > 
-> On Wed, Jan 23, 2019 at 02:59:22PM -0500, Thomas Walker wrote:
-> > Unfortunately this still continues to be a persistent problem for us.  On another example system:
-> > 
-> > # uname -a
-> > Linux <hostname> 4.14.67-ts1 #1 SMP Wed Aug 29 13:28:25 UTC 2018 x86_64 GNU/Linux
-> > 
-> > # df -h /
-> > Filesystem                                              Size  Used Avail Use% Mounted on
-> > /dev/disk/by-uuid/<uuid>                                 50G   46G  1.1G  98% /
-> > 
-> > # df -hi /
-> > Filesystem                                             Inodes IUsed IFree IUse% Mounted on
-> > /dev/disk/by-uuid/<uuid>                                 3.2M  306K  2.9M   10% /
-> > 
-> > # du -hsx  /
-> > 14G     /
-> > 
-> > And confirmed not to be due to sparse files or deleted but still open files.
-> > 
-> > The most interesting thing that I've been able to find so far is this:
-> > 
-> > # mount -o remount,ro /
-> > mount: / is busy
-> > # df -h /
-> > Filesystem                                              Size  Used Avail Use% Mounted on
-> > /dev/disk/by-uuid/<uuid>                                 50G   14G   33G  30% /
-> > 
-> > Something about attempting (and failing) to remount read-only frees up all of the phantom space usage.
-> > Curious whether that sparks ideas in anyone's mind?
-> > 
-> > I've tried all manner of other things without success.  Unmounting all of the overlays.  Killing off virtually all of usersapce (dropping to single user).  Dropping page/inode/dentry caches.Nothing else (short of a reboot) seems to give us the space back.
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Frankly speaking I've very carefully reviewed these changes,
+> complied and booted, but not tested it under any real load.
+> 
+> Thank you,
+> 	Vasily Averin
+> 
+>>> ---
+>>>  fs/ext4/migrate.c | 115 +++++++++++++---------------------------------
+>>>  1 file changed, 32 insertions(+), 83 deletions(-)
+>>>
+>>> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+>>> index fde2f1bc96b0..6b811b7d110c 100644
+>>> --- a/fs/ext4/migrate.c
+>>> +++ b/fs/ext4/migrate.c
+>>> @@ -157,100 +157,43 @@ static int extend_credit_for_blkdel(handle_t *handle, struct inode *inode)
+>>>  	return retval;
+>>>  }
+>>>  
+>>> -static int free_dind_blocks(handle_t *handle,
+>>> -				struct inode *inode, __le32 i_data)
+>>> +static int free_ind_blocks(handle_t *handle,
+>>> +				struct inode *inode, __le32 i_data, int ind)
+>>>  {
+>>> -	int i;
+>>> -	__le32 *tmp_idata;
+>>> -	struct buffer_head *bh;
+>>> -	unsigned long max_entries = inode->i_sb->s_blocksize >> 2;
+>>> -
+>>> -	bh = ext4_sb_bread(inode->i_sb, le32_to_cpu(i_data), 0);
+>>> -	if (IS_ERR(bh))
+>>> -		return PTR_ERR(bh);
+>>> -
+>>> -	tmp_idata = (__le32 *)bh->b_data;
+>>> -	for (i = 0; i < max_entries; i++) {
+>>> -		if (tmp_idata[i]) {
+>>> -			extend_credit_for_blkdel(handle, inode);
+>>> -			ext4_free_blocks(handle, inode, NULL,
+>>> -					 le32_to_cpu(tmp_idata[i]), 1,
+>>> -					 EXT4_FREE_BLOCKS_METADATA |
+>>> -					 EXT4_FREE_BLOCKS_FORGET);
+>>> -		}
+>>> -	}
+>>> -	put_bh(bh);
+>>> -	extend_credit_for_blkdel(handle, inode);
+>>> -	ext4_free_blocks(handle, inode, NULL, le32_to_cpu(i_data), 1,
+>>> -			 EXT4_FREE_BLOCKS_METADATA |
+>>> -			 EXT4_FREE_BLOCKS_FORGET);
+>>> -	return 0;
+>>> -}
+>>> -
+>>> -static int free_tind_blocks(handle_t *handle,
+>>> -				struct inode *inode, __le32 i_data)
+>>> -{
+>>> -	int i, retval = 0;
+>>> -	__le32 *tmp_idata;
+>>> -	struct buffer_head *bh;
+>>> -	unsigned long max_entries = inode->i_sb->s_blocksize >> 2;
+>>> -
+>>> -	bh = ext4_sb_bread(inode->i_sb, le32_to_cpu(i_data), 0);
+>>> -	if (IS_ERR(bh))
+>>> -		return PTR_ERR(bh);
+>>> -
+>>> -	tmp_idata = (__le32 *)bh->b_data;
+>>> -	for (i = 0; i < max_entries; i++) {
+>>> -		if (tmp_idata[i]) {
+>>> -			retval = free_dind_blocks(handle,
+>>> -					inode, tmp_idata[i]);
+>>> -			if (retval) {
+>>> -				put_bh(bh);
+>>> -				return retval;
+>>> +	if (ind > 0) {
+>>> +		int retval = 0;
+>>> +		__le32 *tmp_idata;
+>>> +		ext4_lblk_t i, max_entries;
+>>> +		struct buffer_head *bh;
+>>> +
+>>> +		bh = ext4_sb_bread(inode->i_sb, le32_to_cpu(i_data), 0);
+>>> +		if (IS_ERR(bh))
+>>> +			return PTR_ERR(bh);
+>>> +
+>>> +		tmp_idata = (__le32 *)bh->b_data;
+>>> +		max_entries = inode->i_sb->s_blocksize >> 2;
+>>> +		for (i = 0; i < max_entries; i++) {
+>>> +			if (tmp_idata[i]) {
+>>> +				retval = free_ind_blocks(handle,
+>>> +						inode, tmp_idata[i], ind - 1);
+>>> +				if (retval) {
+>>> +					put_bh(bh);
+>>> +					return retval;
+>>> +				}
+>>>  			}
+>>>  		}
+>>> +		put_bh(bh);
+>>>  	}
+>>> -	put_bh(bh);
+>>>  	extend_credit_for_blkdel(handle, inode);
+>>>  	ext4_free_blocks(handle, inode, NULL, le32_to_cpu(i_data), 1,
+>>> -			 EXT4_FREE_BLOCKS_METADATA |
+>>> -			 EXT4_FREE_BLOCKS_FORGET);
+>>> -	return 0;
+>>> -}
+>>> -
+>>> -static int free_ind_block(handle_t *handle, struct inode *inode, __le32 *i_data)
+>>> -{
+>>> -	int retval;
+>>> -
+>>> -	/* ei->i_data[EXT4_IND_BLOCK] */
+>>> -	if (i_data[0]) {
+>>> -		extend_credit_for_blkdel(handle, inode);
+>>> -		ext4_free_blocks(handle, inode, NULL,
+>>> -				le32_to_cpu(i_data[0]), 1,
+>>> -				 EXT4_FREE_BLOCKS_METADATA |
+>>> -				 EXT4_FREE_BLOCKS_FORGET);
+>>> -	}
+>>> -
+>>> -	/* ei->i_data[EXT4_DIND_BLOCK] */
+>>> -	if (i_data[1]) {
+>>> -		retval = free_dind_blocks(handle, inode, i_data[1]);
+>>> -		if (retval)
+>>> -			return retval;
+>>> -	}
+>>> -
+>>> -	/* ei->i_data[EXT4_TIND_BLOCK] */
+>>> -	if (i_data[2]) {
+>>> -		retval = free_tind_blocks(handle, inode, i_data[2]);
+>>> -		if (retval)
+>>> -			return retval;
+>>> -	}
+>>> +			 EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET);
+>>>  	return 0;
+>>>  }
+>>>  
+>>>  static int ext4_ext_swap_inode_data(handle_t *handle, struct inode *inode,
+>>>  						struct inode *tmp_inode)
+>>>  {
+>>> -	int retval;
+>>> +	int i, retval;
+>>>  	__le32	i_data[3];
+>>>  	struct ext4_inode_info *ei = EXT4_I(inode);
+>>>  	struct ext4_inode_info *tmp_ei = EXT4_I(tmp_inode);
+>>> @@ -307,7 +250,13 @@ static int ext4_ext_swap_inode_data(handle_t *handle, struct inode *inode,
+>>>  	 * We mark the inode dirty after, because we decrement the
+>>>  	 * i_blocks when freeing the indirect meta-data blocks
+>>>  	 */
+>>> -	retval = free_ind_block(handle, inode, i_data);
+>>> +	for (i = 0; i < ARRAY_SIZE(i_data); i++) {
+>>> +		if (i_data[i]) {
+>>> +			retval = free_ind_blocks(handle, inode, i_data[i], i);
+>>> +			if (retval)
+>>> +				break;
+>>> +		}
+>>> +	}
+>>>  	ext4_mark_inode_dirty(handle, inode);
+>>>  
+>>>  err_out:
+>>> -- 
+>>> 2.17.1
+>>>
