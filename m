@@ -2,31 +2,32 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C053465A49
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2019 17:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7442065E3D
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2019 19:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbfGKPXa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Jul 2019 11:23:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58150 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728026AbfGKPX3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 11 Jul 2019 11:23:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BDEDEAF57;
-        Thu, 11 Jul 2019 15:23:28 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2D2A41E43CB; Thu, 11 Jul 2019 17:23:28 +0200 (CEST)
-Date:   Thu, 11 Jul 2019 17:23:28 +0200
-From:   Jan Kara <jack@suse.cz>
+        id S1728690AbfGKRLJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Jul 2019 13:11:09 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34377 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728639AbfGKRLJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jul 2019 13:11:09 -0400
+Received: from callcc.thunk.org (guestnat-104-133-8-97.corp.google.com [104.133.8.97] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6BHAlKL001626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Jul 2019 13:10:48 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 75987420036; Thu, 11 Jul 2019 13:10:46 -0400 (EDT)
+Date:   Thu, 11 Jul 2019 13:10:46 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Geoffrey Thomas <Geoffrey.Thomas@twosigma.com>
-Cc:     'Jan Kara' <jack@suse.cz>,
+Cc:     "'Jan Kara'" <jack@suse.cz>,
         Thomas Walker <Thomas.Walker@twosigma.com>,
         "'linux-ext4@vger.kernel.org'" <linux-ext4@vger.kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "'tytso@mit.edu'" <tytso@mit.edu>
+        "Darrick J. Wong" <darrick.wong@oracle.com>
 Subject: Re: Phantom full ext4 root filesystems on 4.1 through 4.14 kernels
-Message-ID: <20190711152328.GB2449@quack2.suse.cz>
+Message-ID: <20190711171046.GA13966@mit.edu>
 References: <9abbdde6145a4887a8d32c65974f7832@exmbdft5.ad.twosigma.com>
  <20181108184722.GB27852@magnolia>
  <c7cfeaf451d7438781da95b01f21116e@exmbdft5.ad.twosigma.com>
@@ -44,49 +45,35 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 11-07-19 14:40:43, Geoffrey Thomas wrote:
-> On Thursday, July 11, 2019 5:23 AM, Jan Kara <jack@suse.cz> wrote: 
-> > On Wed 26-06-19 11:17:54, Thomas Walker wrote:
-> > > Sorry to revive a rather old thread, but Elana mentioned that there might
-> > > have been a related fix recently?  Possibly something to do with
-> > > truncate?  A quick scan of the last month or so turned up
-> > > https://www.spinics.net/lists/linux-ext4/msg65772.html but none of these
-> > > seemed obviously applicable to me.  We do still experience this phantom
-> > > space usage quite frequently (although the remount workaround below has
-> > > lowered the priority).
-> > 
-> > I don't recall any fix for this. But seeing that remount "fixes" the issue
-> > for you can you try whether one of the following has a similar effect?
-> > 
-> > 1) Try "sync"
-> > 2) Try "fsfreeze -f / && fsfreeze -u /"
-> > 3) Try "echo 3 >/proc/sys/vm/drop_caches"
-> > 
-> > Also what is the contents of
-> > /sys/fs/ext4/<problematic-device>/delayed_allocation_blocks
-> > when the issue happens?
-> 
-> We just had one of these today, and no luck from any of those.
-> delayed_allocation_blocks is 1:
+Can you try using "df -i" when the file system looks full, and then
+reboot, and look at the results of "df -i" afterwards?
 
+Also interesting would be to grab a metadata-only snapshot of the file
+system when it is in its mysteriously full state, writing that
+snapshot on some other file system *other* than on /dev/sda3:
+
+     e2image -r /dev/sda3 /mnt/sda3.e2i
+
+Then run e2fsck on it:
+
+e2fsck -fy /mnt/sda3.e2i
+
+What I'm curious about is how many "orphaned inodes" are reported, and
+how much space they are taking up.  That will look like this:
+
+% gunzip < /usr/src/e2fsprogs/tests/f_orphan/image.gz  > /tmp/foo.img
+% e2fsck -fy /tmp/foo.img
+e2fsck 1.45.2 (27-May-2019)
+Clearing orphaned inode 15 (uid=0, gid=0, mode=040755, size=1024)
+Clearing orphaned inode 17 (uid=0, gid=0, mode=0100644, size=0)
+Clearing orphaned inode 16 (uid=0, gid=0, mode=040755, size=1024)
+Clearing orphaned inode 14 (uid=0, gid=0, mode=0100644, size=69)
+Clearing orphaned inode 13 (uid=0, gid=0, mode=040755, size=1024)
 ...
 
-This is very strange because failed remount read-only (with EBUSY) doesn't
-really do more than what "sync; echo 3 >/proc/sys/vm/drop_caches" does. I
-suspect there's really some userspace taking up space and cleaning up on
-umount. Anyway once this happens again, can you do:
+It's been theorized the bug is in overlayfs, where it's holding inodes
+open so the space isn't released.  IIRC somewhat had reported a
+similar problem with overlayfs on top of xfs.  (BTW, are you using
+overlayfs or aufs with your Docker setup?)
 
-fsfreeze -f /
-e2image -r /dev/disk/by-uuid/523c8243-5a25-40eb-8627-f3bbf98ec299 - | \
-  xz >some_storage.xz
-fsfreeze -u /
-
-some_storage.xz can be on some usb stick or so. It will dump ext4 metadata
-to the file. Then please provide some_storage.xz for download somewhere.
-Thanks! BTW I'll be on vacation next two weeks so it will take a while to
-get to this...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+		     	       	      - Ted
