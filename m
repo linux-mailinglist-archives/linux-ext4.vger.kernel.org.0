@@ -2,78 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7442065E3D
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2019 19:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ED06624B
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jul 2019 01:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728690AbfGKRLJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Jul 2019 13:11:09 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34377 "EHLO
+        id S1729113AbfGKXnq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 11 Jul 2019 19:43:46 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59137 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728639AbfGKRLJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jul 2019 13:11:09 -0400
+        with ESMTP id S1729098AbfGKXnq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jul 2019 19:43:46 -0400
 Received: from callcc.thunk.org (guestnat-104-133-8-97.corp.google.com [104.133.8.97] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6BHAlKL001626
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6BNhfgR031122
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jul 2019 13:10:48 -0400
+        Thu, 11 Jul 2019 19:43:43 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 75987420036; Thu, 11 Jul 2019 13:10:46 -0400 (EDT)
-Date:   Thu, 11 Jul 2019 13:10:46 -0400
+        id 4F233420036; Thu, 11 Jul 2019 19:43:41 -0400 (EDT)
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Geoffrey Thomas <Geoffrey.Thomas@twosigma.com>
-Cc:     "'Jan Kara'" <jack@suse.cz>,
-        Thomas Walker <Thomas.Walker@twosigma.com>,
-        "'linux-ext4@vger.kernel.org'" <linux-ext4@vger.kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: Re: Phantom full ext4 root filesystems on 4.1 through 4.14 kernels
-Message-ID: <20190711171046.GA13966@mit.edu>
-References: <9abbdde6145a4887a8d32c65974f7832@exmbdft5.ad.twosigma.com>
- <20181108184722.GB27852@magnolia>
- <c7cfeaf451d7438781da95b01f21116e@exmbdft5.ad.twosigma.com>
- <20190123195922.GA16927@twosigma.com>
- <20190626151754.GA2789@twosigma.com>
- <20190711092315.GA10473@quack2.suse.cz>
- <96c4e04f8d5146c49ee9f4478c161dcb@EXMBDFT10.ad.twosigma.com>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>
+Subject: [PATCH] e2scrub_all: fix "e2scurb_all -r"
+Date:   Thu, 11 Jul 2019 19:43:39 -0400
+Message-Id: <20190711234339.30389-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96c4e04f8d5146c49ee9f4478c161dcb@EXMBDFT10.ad.twosigma.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Can you try using "df -i" when the file system looks full, and then
-reboot, and look at the results of "df -i" afterwards?
+The e2scrub_all program was broken by commit c7d6525ecaab
+("e2scrub_all: refactor device probe loop") so that it would use the
+path of the snapshot volume instead of the base volume.  This caused
+"e2scrub_all -r" to pass the wrong pathname to e2scrub, with the
+result that e2scrub would abort with an error instead of removing the
+snapshot volume.
 
-Also interesting would be to grab a metadata-only snapshot of the file
-system when it is in its mysteriously full state, writing that
-snapshot on some other file system *other* than on /dev/sda3:
+Fixes: c7d6525ecaab ("e2scrub_all: refactor device probe loop")
+Addresses-Debian-Bug: #931679
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ scrub/e2scrub_all.in | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-     e2image -r /dev/sda3 /mnt/sda3.e2i
+diff --git a/scrub/e2scrub_all.in b/scrub/e2scrub_all.in
+index 24b2c681..f342faf2 100644
+--- a/scrub/e2scrub_all.in
++++ b/scrub/e2scrub_all.in
+@@ -115,7 +115,8 @@ ls_scan_targets() {
+ 
+ # Find leftover scrub snapshots
+ ls_reap_targets() {
+-	lvs -o lv_path -S lv_role=snapshot -S lv_name=~\(e2scrub$\) --noheadings
++    lvs -o lv_path -S lv_role=snapshot -S lv_name=~\(e2scrub$\) \
++	--noheadings | sed -e 's/.e2scrub$//'
+ }
+ 
+ # Figure out what we're targeting
+-- 
+2.22.0
 
-Then run e2fsck on it:
-
-e2fsck -fy /mnt/sda3.e2i
-
-What I'm curious about is how many "orphaned inodes" are reported, and
-how much space they are taking up.  That will look like this:
-
-% gunzip < /usr/src/e2fsprogs/tests/f_orphan/image.gz  > /tmp/foo.img
-% e2fsck -fy /tmp/foo.img
-e2fsck 1.45.2 (27-May-2019)
-Clearing orphaned inode 15 (uid=0, gid=0, mode=040755, size=1024)
-Clearing orphaned inode 17 (uid=0, gid=0, mode=0100644, size=0)
-Clearing orphaned inode 16 (uid=0, gid=0, mode=040755, size=1024)
-Clearing orphaned inode 14 (uid=0, gid=0, mode=0100644, size=69)
-Clearing orphaned inode 13 (uid=0, gid=0, mode=040755, size=1024)
-...
-
-It's been theorized the bug is in overlayfs, where it's holding inodes
-open so the space isn't released.  IIRC somewhat had reported a
-similar problem with overlayfs on top of xfs.  (BTW, are you using
-overlayfs or aufs with your Docker setup?)
-
-		     	       	      - Ted
