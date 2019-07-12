@@ -2,84 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BDE6624C
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jul 2019 01:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F182B66764
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jul 2019 09:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729136AbfGKXnx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 11 Jul 2019 19:43:53 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59157 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729127AbfGKXnx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 11 Jul 2019 19:43:53 -0400
-Received: from callcc.thunk.org (guestnat-104-133-8-97.corp.google.com [104.133.8.97] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6BNhnEN031151
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Jul 2019 19:43:50 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 9EF29420036; Thu, 11 Jul 2019 19:43:48 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH] e2scrub_all: only run in service mode when periodic_e2scrub=1
-Date:   Thu, 11 Jul 2019 19:43:46 -0400
-Message-Id: <20190711234346.30454-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.22.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726128AbfGLHC4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 12 Jul 2019 03:02:56 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:57569 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725866AbfGLHC4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 12 Jul 2019 03:02:56 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0TWgg66T_1562914972;
+Received: from localhost(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TWgg66T_1562914972)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 12 Jul 2019 15:02:52 +0800
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     Theodore Ts'o <tytso@mit.edu>, Ross Zwisler <zwisler@chromium.org>,
+        linux-ext4@vger.kernel.org, ocfs2-devel@oss.oracle.com
+Subject: [PATCH 1/2] ocfs2: use jbd2_inode dirty range scoping
+Date:   Fri, 12 Jul 2019 15:02:51 +0800
+Message-Id: <1562914972-97318-1-git-send-email-joseph.qi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-By default, e2scrub_all will not actually trigger online scrubs unless
-periodic_e2scrub=1 is set in /etc/e2scrub.conf.
+commit 6ba0e7dc64a5 ("jbd2: introduce jbd2_inode dirty range scoping")
+allow us scoping each of the inode dirty ranges associated with a given
+transaction, and ext4 already does this way.
+Now let's also use the newly introduced jbd2_inode dirty range scoping
+to prevent us from waiting forever when trying to complete a journal
+transaction in ocfs2.
 
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
 ---
- scrub/e2scrub.conf.in | 4 ++++
- scrub/e2scrub_all.in  | 6 ++++++
- 2 files changed, 10 insertions(+)
+ fs/ocfs2/alloc.c   |  4 +++-
+ fs/ocfs2/aops.c    |  6 ++++--
+ fs/ocfs2/file.c    | 10 +++++++---
+ fs/ocfs2/journal.h |  6 ++++--
+ 4 files changed, 18 insertions(+), 8 deletions(-)
 
-diff --git a/scrub/e2scrub.conf.in b/scrub/e2scrub.conf.in
-index 5c030877..661fc13f 100644
---- a/scrub/e2scrub.conf.in
-+++ b/scrub/e2scrub.conf.in
-@@ -1,5 +1,9 @@
- # e2scrub configuration file
+diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+index d1348fc..2a58ca4 100644
+--- a/fs/ocfs2/alloc.c
++++ b/fs/ocfs2/alloc.c
+@@ -6792,6 +6792,8 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
+ 			      struct page *page, int zero, u64 *phys)
+ {
+ 	int ret, partial = 0;
++	loff_t start_byte = ((loff_t)page->index << PAGE_SHIFT) + from;
++	loff_t length = to - from;
  
-+# Uncomment to enable automatic periodic runs of e2scrub_all
-+# (either via cron or via a systemd timer)
-+# periodic_e2scrub=1
-+
- # e-mail destination used by e2scrub_fail when problems are found with
- # the file system.
- # recipient=root
-diff --git a/scrub/e2scrub_all.in b/scrub/e2scrub_all.in
-index f342faf2..5bdbd116 100644
---- a/scrub/e2scrub_all.in
-+++ b/scrub/e2scrub_all.in
-@@ -25,6 +25,7 @@ if (( $EUID != 0 )); then
-     exit 1
- fi
+ 	ret = ocfs2_map_page_blocks(page, phys, inode, from, to, 0);
+ 	if (ret)
+@@ -6811,7 +6813,7 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
+ 	if (ret < 0)
+ 		mlog_errno(ret);
+ 	else if (ocfs2_should_order_data(inode)) {
+-		ret = ocfs2_jbd2_file_inode(handle, inode);
++		ret = ocfs2_jbd2_file_inode(handle, inode, start_byte, length);
+ 		if (ret < 0)
+ 			mlog_errno(ret);
+ 	}
+diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
+index a4c905d..bbb508a 100644
+--- a/fs/ocfs2/aops.c
++++ b/fs/ocfs2/aops.c
+@@ -942,7 +942,7 @@ static void ocfs2_write_failure(struct inode *inode,
  
-+periodic_e2scrub=0
- scrub_all=0
- snap_size_mb=256
- reap=0
-@@ -79,6 +80,11 @@ while getopts "nrAV" opt; do
- done
- shift "$((OPTIND - 1))"
+ 		if (tmppage && page_has_buffers(tmppage)) {
+ 			if (ocfs2_should_order_data(inode))
+-				ocfs2_jbd2_file_inode(wc->w_handle, inode);
++				ocfs2_jbd2_file_inode(wc->w_handle, inode, user_pos, user_len);
  
-+if [ -n "${SERVICE_MODE}" -a "${reap}" -ne 1 -a "${periodic_e2scrub}" -ne 1 ]
-+then
-+    exitcode 0
-+fi
-+
- # If some prerequisite packages are not installed, exit with a code
- # indicating success to avoid spamming the sysadmin with fail messages
- # when e2scrub_all is run out of cron or a systemd timer.
+ 			block_commit_write(tmppage, from, to);
+ 		}
+@@ -2024,7 +2024,9 @@ int ocfs2_write_end_nolock(struct address_space *mapping,
+ 
+ 		if (page_has_buffers(tmppage)) {
+ 			if (handle && ocfs2_should_order_data(inode))
+-				ocfs2_jbd2_file_inode(handle, inode);
++				ocfs2_jbd2_file_inode(handle, inode,
++						      ((loff_t)tmppage->index << PAGE_SHIFT) + from,
++						      to - from);
+ 			block_commit_write(tmppage, from, to);
+ 		}
+ 	}
+diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
+index 4435df3..43e6c28 100644
+--- a/fs/ocfs2/file.c
++++ b/fs/ocfs2/file.c
+@@ -706,7 +706,9 @@ static int ocfs2_extend_allocation(struct inode *inode, u32 logical_start,
+  * Thus, we need to explicitly order the zeroed pages.
+  */
+ static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
+-						struct buffer_head *di_bh)
++						      struct buffer_head *di_bh,
++						      loff_t start_bytes,
++						      loff_t length)
+ {
+ 	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
+ 	handle_t *handle = NULL;
+@@ -722,7 +724,7 @@ static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
+ 		goto out;
+ 	}
+ 
+-	ret = ocfs2_jbd2_file_inode(handle, inode);
++	ret = ocfs2_jbd2_file_inode(handle, inode, start_bytes, length);
+ 	if (ret < 0) {
+ 		mlog_errno(ret);
+ 		goto out;
+@@ -761,7 +763,9 @@ static int ocfs2_write_zero_page(struct inode *inode, u64 abs_from,
+ 	BUG_ON(abs_to > (((u64)index + 1) << PAGE_SHIFT));
+ 	BUG_ON(abs_from & (inode->i_blkbits - 1));
+ 
+-	handle = ocfs2_zero_start_ordered_transaction(inode, di_bh);
++	handle = ocfs2_zero_start_ordered_transaction(inode, di_bh,
++						      abs_from,
++						      abs_to - abs_from);
+ 	if (IS_ERR(handle)) {
+ 		ret = PTR_ERR(handle);
+ 		goto out;
+diff --git a/fs/ocfs2/journal.h b/fs/ocfs2/journal.h
+index c0fe6ed..932e6a8 100644
+--- a/fs/ocfs2/journal.h
++++ b/fs/ocfs2/journal.h
+@@ -603,9 +603,11 @@ static inline int ocfs2_calc_tree_trunc_credits(struct super_block *sb,
+ 	return credits;
+ }
+ 
+-static inline int ocfs2_jbd2_file_inode(handle_t *handle, struct inode *inode)
++static inline int ocfs2_jbd2_file_inode(handle_t *handle, struct inode *inode,
++					loff_t start_byte, loff_t length)
+ {
+-	return jbd2_journal_inode_add_write(handle, &OCFS2_I(inode)->ip_jinode);
++	return jbd2_journal_inode_ranged_write(handle, &OCFS2_I(inode)->ip_jinode,
++					       start_byte, length);
+ }
+ 
+ static inline int ocfs2_begin_ordered_truncate(struct inode *inode,
 -- 
-2.22.0
+1.8.3.1
 
