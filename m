@@ -2,169 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5236701B
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jul 2019 15:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53B767555
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jul 2019 21:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727551AbfGLNcX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 12 Jul 2019 09:32:23 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38857 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726466AbfGLNcX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 12 Jul 2019 09:32:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0TWiD7pF_1562938335;
-Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TWiD7pF_1562938335)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 12 Jul 2019 21:32:15 +0800
-Subject: Re: [PATCH 1/2] ocfs2: use jbd2_inode dirty range scoping
-To:     Changwei Ge <chge@linux.alibaba.com>, akpm@linux-foundation.org
-Cc:     Theodore Ts'o <tytso@mit.edu>, Ross Zwisler <zwisler@chromium.org>,
-        linux-ext4@vger.kernel.org, ocfs2-devel@oss.oracle.com
-References: <1562914972-97318-1-git-send-email-joseph.qi@linux.alibaba.com>
- <30d43b0b-2cb6-916d-d514-268493a6691e@linux.alibaba.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <2d0bb5bf-c963-6ddb-3134-d0868640016e@linux.alibaba.com>
-Date:   Fri, 12 Jul 2019 21:32:15 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+        id S1727261AbfGLTTH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 12 Jul 2019 15:19:07 -0400
+Received: from mxo2.dft.dmz.twosigma.com ([208.77.212.182]:49165 "EHLO
+        mxo2.dft.dmz.twosigma.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727141AbfGLTTG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 12 Jul 2019 15:19:06 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mxo2.dft.dmz.twosigma.com (Postfix) with ESMTP id 45ljQd5rLZz7t8y;
+        Fri, 12 Jul 2019 19:19:05 +0000 (GMT)
+X-Virus-Scanned: Debian amavisd-new at twosigma.com
+Received: from mxo2.dft.dmz.twosigma.com ([127.0.0.1])
+        by localhost (mxo2.dft.dmz.twosigma.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id GjnLjQ2Ivb1b; Fri, 12 Jul 2019 19:19:05 +0000 (GMT)
+Received: from exmbdft7.ad.twosigma.com (exmbdft7.ad.twosigma.com [172.22.2.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxo2.dft.dmz.twosigma.com (Postfix) with ESMTPS id 45ljQd4sMNz3wZ5;
+        Fri, 12 Jul 2019 19:19:05 +0000 (GMT)
+Received: from EXMBDFT10.ad.twosigma.com (172.23.127.159) by
+ exmbdft7.ad.twosigma.com (172.22.2.43) with Microsoft SMTP Server (TLS) id
+ 15.0.1365.1; Fri, 12 Jul 2019 19:19:05 +0000
+Received: from exmbdft6.ad.twosigma.com (172.22.1.5) by
+ EXMBDFT10.ad.twosigma.com (172.23.127.159) with Microsoft SMTP Server (TLS)
+ id 15.0.1365.1; Fri, 12 Jul 2019 19:19:05 +0000
+Received: from twosigma.com (192.168.147.188) by exmbdft6.ad.twosigma.com
+ (172.22.1.5) with Microsoft SMTP Server (TLS) id 15.0.1365.1 via Frontend
+ Transport; Fri, 12 Jul 2019 19:19:05 +0000
+Date:   Fri, 12 Jul 2019 15:19:03 -0400
+From:   Thomas Walker <Thomas.Walker@twosigma.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     Geoffrey Thomas <Geoffrey.Thomas@twosigma.com>,
+        'Jan Kara' <jack@suse.cz>,
+        "'linux-ext4@vger.kernel.org'" <linux-ext4@vger.kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Subject: Re: Phantom full ext4 root filesystems on 4.1 through 4.14 kernels
+Message-ID: <20190712191903.GP2772@twosigma.com>
+References: <9abbdde6145a4887a8d32c65974f7832@exmbdft5.ad.twosigma.com>
+ <20181108184722.GB27852@magnolia>
+ <c7cfeaf451d7438781da95b01f21116e@exmbdft5.ad.twosigma.com>
+ <20190123195922.GA16927@twosigma.com> <20190626151754.GA2789@twosigma.com>
+ <20190711092315.GA10473@quack2.suse.cz>
+ <96c4e04f8d5146c49ee9f4478c161dcb@EXMBDFT10.ad.twosigma.com>
+ <20190711171046.GA13966@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <30d43b0b-2cb6-916d-d514-268493a6691e@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20190711171046.GA13966@mit.edu>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Changwei,
+On Thu, Jul 11, 2019 at 01:10:46PM -0400, Theodore Ts'o wrote:
+> Can you try using "df -i" when the file system looks full, and then
+> reboot, and look at the results of "df -i" afterwards?
 
-On 19/7/12 17:45, Changwei Ge wrote:
-> Hi Joseph,
-> 
-> 
-> Originally, ocfs2_jbd2_file_inode() is a wrapper of jbd2 routine jbd2_journal_file_inode() which has been renamed
-> 
-> by Jan Kara long ago. (41617e1a8dec9fe082ba5dec26bacb154eb55482)
-> 
-> 
-> So how about we change ocfs2_jbd2_file_inode to ocfs2_jbd2_inode_add_write() this time within your patch?
+inode usage doesn't change appreciably between the state with "lost" space, after the remount workaround, or after a reboot.
 
-Sure, I'll make this change along with other opinions in v2.
+> Also interesting would be to grab a metadata-only snapshot of the file
+> system when it is in its mysteriously full state, writing that
+> snapshot on some other file system *other* than on /dev/sda3:
+> 
+>      e2image -r /dev/sda3 /mnt/sda3.e2i
+> 
+> Then run e2fsck on it:
+> 
+> e2fsck -fy /mnt/sda3.e2i
+> 
+> What I'm curious about is how many "orphaned inodes" are reported, and
+> how much space they are taking up.  That will look like this:
+
+<..>
+Clearing orphaned inode 2360177 (uid=0, gid=0, mode=0100644, size=1035390)
+Clearing orphaned inode 2360181 (uid=0, gid=0, mode=0100644, size=185522)
+Clearing orphaned inode 2360176 (uid=0, gid=0, mode=0100644, size=1924512)
+Clearing orphaned inode 2360180 (uid=0, gid=0, mode=0100644, size=3621978)
+Clearing orphaned inode 1048838 (uid=0, gid=4, mode=0100640, size=39006841856)
+release_inode_blocks: Corrupt extent header while calling ext2fs_block_iterate for inode 1048838
+<..>
+
+Of particular note, ino 1048838 matches the size of the space that we "lost".
+A few months ago I was poking at this with kprobes to try to understand what was happening with the attempt to remount read-only and noticed that it triggered hundreds of:
+
+           <...>-78273 [000] .... 5186888.917840: ext4_remove_blocks: dev 8,3 ino 2889535 extent [0(11384832), 2048]from 0 to 2047 partial_cluster 0
+           <...>-78273 [000] .... 5186888.917841: <stack trace>
+ => ext4_ext_truncate
+ => ext4_truncate
+ => ext4_evict_inode
+ => evict
+ => iput
+ => dentry_unlink_inode
+ => __dentry_kill
+ => dput.part.23
+ => dput
+ => SyS_rename
+ => do_syscall_64
+ => entry_SYSCALL_64_after_hwframe
+
+With all the same inode numbers whose sizes added up to the same amount of space that we had "lost" and got back.  But the inode didn't map to any file or open filehandle though.
+Obviously the inode numbers match here and, if I total up all of the ext4_remove_blocks lines, the number of blocks match both what fsck reports and what we "lost"
+
+> 
+> ...
+> 
+> It's been theorized the bug is in overlayfs, where it's holding inodes
+> open so the space isn't released.  IIRC somewhat had reported a
+> similar problem with overlayfs on top of xfs.  (BTW, are you using
+> overlayfs or aufs with your Docker setup?)
+> 
+
+Yes, we are using overlayfs and had also heard similar reports.  But the ext4 fs here is the root filesystem,
+while all of the overlays are using a separate partition using XFS.  The only interplay between our root fs and
+the docker containers is the occasional ro bind mount from root into the container.
+
+Unfortunately, we've not been able to reproduce this outside of our production plant running real workload with real data.  I did capture a metadata dump (with dirents scrambled) as Jan asked, but I suspect it will take some work to get past our security team.  I can certainly do that if we think there is anything valuable though.
+
 
 Thanks,
-Joseph
-> 
-> 
-> Thanks,
-> 
-> Changwei
-> 
-> 
-> On 2019/7/12 3:02 下午, Joseph Qi wrote:
->> commit 6ba0e7dc64a5 ("jbd2: introduce jbd2_inode dirty range scoping")
->> allow us scoping each of the inode dirty ranges associated with a given
->> transaction, and ext4 already does this way.
->> Now let's also use the newly introduced jbd2_inode dirty range scoping
->> to prevent us from waiting forever when trying to complete a journal
->> transaction in ocfs2.
->>
->> Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
->> ---
->>   fs/ocfs2/alloc.c   |  4 +++-
->>   fs/ocfs2/aops.c    |  6 ++++--
->>   fs/ocfs2/file.c    | 10 +++++++---
->>   fs/ocfs2/journal.h |  6 ++++--
->>   4 files changed, 18 insertions(+), 8 deletions(-)
->>
->> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
->> index d1348fc..2a58ca4 100644
->> --- a/fs/ocfs2/alloc.c
->> +++ b/fs/ocfs2/alloc.c
->> @@ -6792,6 +6792,8 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
->>                     struct page *page, int zero, u64 *phys)
->>   {
->>       int ret, partial = 0;
->> +    loff_t start_byte = ((loff_t)page->index << PAGE_SHIFT) + from;
->> +    loff_t length = to - from;
->>         ret = ocfs2_map_page_blocks(page, phys, inode, from, to, 0);
->>       if (ret)
->> @@ -6811,7 +6813,7 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
->>       if (ret < 0)
->>           mlog_errno(ret);
->>       else if (ocfs2_should_order_data(inode)) {
->> -        ret = ocfs2_jbd2_file_inode(handle, inode);
->> +        ret = ocfs2_jbd2_file_inode(handle, inode, start_byte, length);
->>           if (ret < 0)
->>               mlog_errno(ret);
->>       }
->> diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
->> index a4c905d..bbb508a 100644
->> --- a/fs/ocfs2/aops.c
->> +++ b/fs/ocfs2/aops.c
->> @@ -942,7 +942,7 @@ static void ocfs2_write_failure(struct inode *inode,
->>             if (tmppage && page_has_buffers(tmppage)) {
->>               if (ocfs2_should_order_data(inode))
->> -                ocfs2_jbd2_file_inode(wc->w_handle, inode);
->> +                ocfs2_jbd2_file_inode(wc->w_handle, inode, user_pos, user_len);
->>                 block_commit_write(tmppage, from, to);
->>           }
->> @@ -2024,7 +2024,9 @@ int ocfs2_write_end_nolock(struct address_space *mapping,
->>             if (page_has_buffers(tmppage)) {
->>               if (handle && ocfs2_should_order_data(inode))
->> -                ocfs2_jbd2_file_inode(handle, inode);
->> +                ocfs2_jbd2_file_inode(handle, inode,
->> +                              ((loff_t)tmppage->index << PAGE_SHIFT) + from,
->> +                              to - from);
->>               block_commit_write(tmppage, from, to);
->>           }
->>       }
->> diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
->> index 4435df3..43e6c28 100644
->> --- a/fs/ocfs2/file.c
->> +++ b/fs/ocfs2/file.c
->> @@ -706,7 +706,9 @@ static int ocfs2_extend_allocation(struct inode *inode, u32 logical_start,
->>    * Thus, we need to explicitly order the zeroed pages.
->>    */
->>   static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
->> -                        struct buffer_head *di_bh)
->> +                              struct buffer_head *di_bh,
->> +                              loff_t start_bytes,
->> +                              loff_t length)
->>   {
->>       struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
->>       handle_t *handle = NULL;
->> @@ -722,7 +724,7 @@ static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
->>           goto out;
->>       }
->>   -    ret = ocfs2_jbd2_file_inode(handle, inode);
->> +    ret = ocfs2_jbd2_file_inode(handle, inode, start_bytes, length);
->>       if (ret < 0) {
->>           mlog_errno(ret);
->>           goto out;
->> @@ -761,7 +763,9 @@ static int ocfs2_write_zero_page(struct inode *inode, u64 abs_from,
->>       BUG_ON(abs_to > (((u64)index + 1) << PAGE_SHIFT));
->>       BUG_ON(abs_from & (inode->i_blkbits - 1));
->>   -    handle = ocfs2_zero_start_ordered_transaction(inode, di_bh);
->> +    handle = ocfs2_zero_start_ordered_transaction(inode, di_bh,
->> +                              abs_from,
->> +                              abs_to - abs_from);
->>       if (IS_ERR(handle)) {
->>           ret = PTR_ERR(handle);
->>           goto out;
->> diff --git a/fs/ocfs2/journal.h b/fs/ocfs2/journal.h
->> index c0fe6ed..932e6a8 100644
->> --- a/fs/ocfs2/journal.h
->> +++ b/fs/ocfs2/journal.h
->> @@ -603,9 +603,11 @@ static inline int ocfs2_calc_tree_trunc_credits(struct super_block *sb,
->>       return credits;
->>   }
->>   -static inline int ocfs2_jbd2_file_inode(handle_t *handle, struct inode *inode)
->> +static inline int ocfs2_jbd2_file_inode(handle_t *handle, struct inode *inode,
->> +                    loff_t start_byte, loff_t length)
->>   {
->> -    return jbd2_journal_inode_add_write(handle, &OCFS2_I(inode)->ip_jinode);
->> +    return jbd2_journal_inode_ranged_write(handle, &OCFS2_I(inode)->ip_jinode,
->> +                           start_byte, length);
->>   }
->>     static inline int ocfs2_begin_ordered_truncate(struct inode *inode,
+Tom.
