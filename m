@@ -2,59 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D90A67742
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Jul 2019 02:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC42A67AEC
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Jul 2019 17:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbfGMAaD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 12 Jul 2019 20:30:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727118AbfGMAaD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 12 Jul 2019 20:30:03 -0400
-Subject: Re: [GIT PULL] vfs: standardize parameter checking for
- SETFLAGS/FSSETXATTR ioctls
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562977802;
-        bh=iJbSToUKeVYGNujDmnFLtUwMKQq+JLbjdgAreetA7s0=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=lOZr7A+dZnT0PMtb2rXLyPCdO+SwOB5lZ92s0flb/WbGU18CxJZjJUqXjOoniJH11
-         ajIEAS1i1x8CjvYZW+ZZetSPpYNb6UDdeJneEseTK/zcqcBX4bhvKUEkMUaiuOjdC1
-         agBPmUihym+eQoWJIBnR0nRnebu/v4pjRsg7Sd9o=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20190711141825.GV1404256@magnolia>
-References: <20190711141825.GV1404256@magnolia>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20190711141825.GV1404256@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
- tags/vfs-fix-ioctl-checking-3
-X-PR-Tracked-Commit-Id: dbc77f31e58b2902a5e7643761c04bf69f57a32a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5010fe9f095414b959fd6fda63986dc90fd0c419
-Message-Id: <156297780234.21817.9681885311019311111.pr-tracker-bot@kernel.org>
-Date:   Sat, 13 Jul 2019 00:30:02 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
+        id S1727706AbfGMPcg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 13 Jul 2019 11:32:36 -0400
+Received: from mail.iara.government.bg ([95.43.208.99]:57004 "EHLO
+        iara.government.bg" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727626AbfGMPcf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 13 Jul 2019 11:32:35 -0400
+X-Greylist: delayed 9661 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Jul 2019 11:32:34 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by iara.government.bg (Postfix) with ESMTP id 450012CC607;
+        Sat, 13 Jul 2019 13:36:36 +0300 (EEST)
+Received: from iara.government.bg ([127.0.0.1])
+        by localhost (iara.government.bg [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id V5rKAA6cdIri; Sat, 13 Jul 2019 13:36:36 +0300 (EEST)
+Received: from localhost (localhost [127.0.0.1])
+        by iara.government.bg (Postfix) with ESMTP id B9694350793;
+        Sat, 13 Jul 2019 10:42:55 +0300 (EEST)
+X-Virus-Scanned: amavisd-new at iara.government.bg
+Received: from iara.government.bg ([127.0.0.1])
+        by localhost (iara.government.bg [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gHcb9_JGh2am; Sat, 13 Jul 2019 10:42:55 +0300 (EEST)
+Received: from [10.108.11.57] (unknown [105.12.6.226])
+        by iara.government.bg (Postfix) with ESMTPSA id E3C49329F55;
+        Sat, 13 Jul 2019 03:22:37 +0300 (EEST)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?b?RndkOiBSZTog4oKsIDIsMDAwLDAwMC4wMCBFdXJv?=
+To:     Recipients <silistra@iara.government.bg>
+From:   silistra@iara.government.bg
+Date:   Fri, 12 Jul 2019 17:22:23 -0700
+Reply-To: carfleon@gmail.com
+Message-Id: <20190713002238.E3C49329F55@iara.government.bg>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Thu, 11 Jul 2019 07:18:25 -0700:
+Lieber Freund,
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/vfs-fix-ioctl-checking-3
+Ich bin Herr Richard Wahl der Mega-Gewinner von $ 533M In Mega Millions Jackpot spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt. Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt. Ich habe mich freiwillig dazu entschieden, Ihnen den Betrag von € 2.000.000,00 zu spenden eine der ausgewählten 5, um meine Gewinne zu überprüfen, finden Sie auf meiner You Tube Seite unten.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5010fe9f095414b959fd6fda63986dc90fd0c419
+UHR MICH HIER: https://www.youtube.com/watch?v=tne02ExNDrw
 
-Thank you!
+Das ist dein Spendencode: [DF00430342018]
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Antworten Sie mit dem Spendencode auf diese E-Mail: liezlnatashavanessa@gmail.com
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+
+Herr Richard Wahl
