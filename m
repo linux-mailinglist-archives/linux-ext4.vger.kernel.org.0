@@ -2,209 +2,182 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2867568271
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2019 05:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6B1682B4
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2019 05:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727721AbfGODKy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 14 Jul 2019 23:10:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34760 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726074AbfGODKy (ORCPT
+        id S1727006AbfGODmb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 14 Jul 2019 23:42:31 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:44609 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726074AbfGODmb (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 14 Jul 2019 23:10:54 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6F37UCd087037;
-        Sun, 14 Jul 2019 23:10:29 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tradytypd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Jul 2019 23:10:29 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x6F386AO088799;
-        Sun, 14 Jul 2019 23:10:29 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2tradytynp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 14 Jul 2019 23:10:29 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x6F34Nr3011789;
-        Mon, 15 Jul 2019 03:10:27 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma01wdc.us.ibm.com with ESMTP id 2tq6x5mng1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Jul 2019 03:10:27 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x6F3ARWb34669020
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Jul 2019 03:10:27 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E978B2065;
-        Mon, 15 Jul 2019 03:10:27 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B7773B205F;
-        Mon, 15 Jul 2019 03:10:26 +0000 (GMT)
-Received: from paulmck-ThinkPad-W541 (unknown [9.85.203.247])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 15 Jul 2019 03:10:26 +0000 (GMT)
-Received: by paulmck-ThinkPad-W541 (Postfix, from userid 1000)
-        id 3781416C8F3E; Sun, 14 Jul 2019 20:10:27 -0700 (PDT)
-Date:   Sun, 14 Jul 2019 20:10:27 -0700
-From:   "Paul E. McKenney" <paulmck@linux.ibm.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+4bfbbf28a2e50ab07368@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        David Miller <davem@davemloft.net>, eladr@mellanox.com,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: INFO: rcu detected stall in ext4_write_checks
-Message-ID: <20190715031027.GA3336@linux.ibm.com>
-Reply-To: paulmck@linux.ibm.com
-References: <CACT4Y+aNLHrYj1pYbkXO7CKESLeB-5enkSDK7ksgkMA3KtwJ+w@mail.gmail.com>
- <20190705191055.GT26519@linux.ibm.com>
- <20190706042801.GD11665@mit.edu>
- <20190706061631.GV26519@linux.ibm.com>
- <20190706150226.GG11665@mit.edu>
- <20190706180311.GW26519@linux.ibm.com>
- <20190707011655.GA22081@linux.ibm.com>
- <CACT4Y+asYe-uH9OV5R0Nkb-JKP4erYUZ68S9gYNnGg6v+fD20w@mail.gmail.com>
- <20190714190522.GA24049@mit.edu>
- <20190714192951.GM26519@linux.ibm.com>
+        Sun, 14 Jul 2019 23:42:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=chge@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0TWuGjBV_1563162146;
+Received: from IT-C02YD3Q7JG5H.local(mailfrom:chge@linux.alibaba.com fp:SMTPD_---0TWuGjBV_1563162146)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 15 Jul 2019 11:42:27 +0800
+Subject: Re: [PATCH 1/2] ocfs2: use jbd2_inode dirty range scoping
+To:     Joseph Qi <joseph.qi@linux.alibaba.com>, akpm@linux-foundation.org
+Cc:     Theodore Ts'o <tytso@mit.edu>, mark@fasheh.com, jlbec@evilplan.org,
+        Ross Zwisler <zwisler@google.com>, linux-ext4@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com
+References: <1562977611-8412-1-git-send-email-joseph.qi@linux.alibaba.com>
+From:   Changwei Ge <chge@linux.alibaba.com>
+Message-ID: <d110c8c3-8da3-c1d6-82fc-71ea02dc2ef5@linux.alibaba.com>
+Date:   Mon, 15 Jul 2019 11:42:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190714192951.GM26519@linux.ibm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-14_08:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907150037
+In-Reply-To: <1562977611-8412-1-git-send-email-joseph.qi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Jul 14, 2019 at 12:29:51PM -0700, Paul E. McKenney wrote:
-> On Sun, Jul 14, 2019 at 03:05:22PM -0400, Theodore Ts'o wrote:
-> > On Sun, Jul 14, 2019 at 05:48:00PM +0300, Dmitry Vyukov wrote:
-> > > But short term I don't see any other solution than stop testing
-> > > sched_setattr because it does not check arguments enough to prevent
-> > > system misbehavior. Which is a pity because syzkaller has found some
-> > > bad misconfigurations that were oversight on checking side.
-> > > Any other suggestions?
-> > 
-> > Or maybe syzkaller can put its own limitations on what parameters are
-> > sent to sched_setattr?  In practice, there are any number of ways a
-> > root user can shoot themselves in the foot when using sched_setattr or
-> > sched_setaffinity, for that matter.  I imagine there must be some such
-> > constraints already --- or else syzkaller might have set a kernel
-> > thread to run with priority SCHED_BATCH, with similar catastrophic
-> > effects --- or do similar configurations to make system threads
-> > completely unschedulable.
-> > 
-> > Real time administrators who know what they are doing --- and who know
-> > that their real-time threads are well behaved --- will always want to
-> > be able to do things that will be catastrophic if the real-time thread
-> > is *not* well behaved.  I don't it is possible to add safety checks
-> > which would allow the kernel to automatically detect and reject unsafe
-> > configurations.
-> > 
-> > An apt analogy might be civilian versus military aircraft.  Most
-> > airplanes are designed to be "inherently stable"; that way, modulo
-> > buggy/insane control systems like on the 737 Max, the airplane will
-> > automatically return to straight and level flight.  On the other hand,
-> > some military planes (for example, the F-16, F-22, F-36, the
-> > Eurofighter, etc.) are sometimes designed to be unstable, since that
-> > way they can be more maneuverable.
-> > 
-> > There are use cases for real-time Linux where this flexibility/power
-> > vs. stability tradeoff is going to argue for giving root the
-> > flexibility to crash the system.  Some of these systems might
-> > literally involve using real-time Linux in military applications,
-> > something for which Paul and I have had some experience.  :-)
-> > 
-> > Speaking of sched_setaffinity, one thing which we can do is have
-> > syzkaller move all of the system threads to they run on the "system
-> > CPU's", and then move the syzkaller processes which are testing the
-> > kernel to be on the "system under test CPU's".  Then regardless of
-> > what priority the syzkaller test programs try to run themselves at,
-> > they can't crash the system.
-> > 
-> > Some real-time systems do actually run this way, and it's a
-> > recommended configuration which is much safer than letting the
-> > real-time threads take over the whole system:
-> > 
-> > http://linuxrealtime.org/index.php/Improving_the_Real-Time_Properties#Isolating_the_Application
-> 
-> Good point!  We might still have issues with some per-CPU kthreads,
-> but perhaps use of nohz_full would help at least reduce these sorts
-> of problems.  (There could still be issues on CPUs with more than
-> one runnable threads.)
+Looks good to me.
 
-I looked at testing limitations in a bit more detail from an RCU
-viewpoint, and came up with the following rough rule of thumb (which of
-course might or might not survive actual testing experience, but should at
-least be a good place to start).  I believe that the sched_setaffinity()
-testing rule should be that the SCHED_DEADLINE cycle be no more than
-two-thirds of the RCU CPU stall warning timeout, which defaults to 21
-seconds in mainline and 60 seconds in many distro kernels.
-
-That is, the SCHED_DEADLINE cycle should never exceed 14 seconds when
-testing mainline on the one hand or 40 seconds when testing enterprise
-distros on the other.
-
-This assumes quite a bit, though:
-
-o	The system has ample memory to spare, and isn't running a
-	callback-hungry workload.  For example, if you "only" have 100MB
-	of spare memory and you are also repeatedly and concurrently
-	expanding (say) large source trees from tarballs and then deleting
-	those source trees, the system might OOM.  The reason OOM might
-	happen is that each close() of a file generates an RCU callback,
-	and 40 seconds worth of waiting-for-a-grace-period structures
-	takes up a surprisingly large amount of memory.
-
-	So please be careful when combining tests.  ;-)
-
-o	There are no aggressive real-time workloads on the system.
-	The reason for this is that RCU is going to start sending IPIs
-	halfway to the RCU CPU stall timeout, and, in certain situations
-	on CONFIG_NO_HZ_FULL kernels, much earlier.  (These situations
-	constitute abuse of CONFIG_NO_HZ_FULL, but then again carefully
-	calibrated abuse is what stress testing is all about.)
-
-o	The various RCU kthreads will get a chance to run at least once
-	during the SCHED_DEADLINE cycle.  If in real life, they only
-	get a chance to run once per two SCHED_DEADLINE cycles, then of
-	course the 14 seconds becomes 7 and the 40 seconds becomes 20.
-
-o	The current RCU CPU stall warning defaults remain in
-	place.	These are set by the CONFIG_RCU_CPU_STALL_TIMEOUT
-	Kconfig parameter, which may in turn be overridden by the
-	rcupdate.rcu_cpu_stall_timeout kernel boot parameter.
-
-o	The current SCHED_DEADLINE default for providing spare cycles
-	for other uses remains in place.
-
-o	Other kthreads might have other constraints, but given that you
-	were seeing RCU CPU stall warnings instead of other failures,
-	the needs of RCU's kthreads seem to be a good place to start.
-
-Again, the candidate rough rule of thumb is that the the SCHED_DEADLINE
-cycle be no more than 14 seconds when testing mainline kernels on the one
-hand and 40 seconds when testing enterprise distro kernels on the other.
-
-Dmitry, does that help?
-
-							Thanx, Paul
+On 2019/7/13 8:26 上午, Joseph Qi wrote:
+> commit 6ba0e7dc64a5 ("jbd2: introduce jbd2_inode dirty range scoping")
+> allow us scoping each of the inode dirty ranges associated with a given
+> transaction, and ext4 already does this way.
+> Now let's also use the newly introduced jbd2_inode dirty range scoping
+> to prevent us from waiting forever when trying to complete a journal
+> transaction in ocfs2.
+>
+> Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Reviewed-by: Ross Zwisler <zwisler@google.com>
+Reviewed-by: Changwei Ge <chge@linux.alibaba.com>
+> ---
+> v1 -> v2:
+>    rename ocfs2_jbd2_file_inode() to ocfs2_jbd2_inode_add_write() to keep
+>    consistent with ext4.
+>    wrap several long lines.
+>
+>   fs/ocfs2/alloc.c   |  5 ++++-
+>   fs/ocfs2/aops.c    | 13 ++++++++++---
+>   fs/ocfs2/file.c    | 10 +++++++---
+>   fs/ocfs2/journal.h | 11 +++++++----
+>   4 files changed, 28 insertions(+), 11 deletions(-)
+>
+> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+> index d1348fc..54f72ad 100644
+> --- a/fs/ocfs2/alloc.c
+> +++ b/fs/ocfs2/alloc.c
+> @@ -6792,6 +6792,8 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
+>   			      struct page *page, int zero, u64 *phys)
+>   {
+>   	int ret, partial = 0;
+> +	loff_t start_byte = ((loff_t)page->index << PAGE_SHIFT) + from;
+> +	loff_t length = to - from;
+>   
+>   	ret = ocfs2_map_page_blocks(page, phys, inode, from, to, 0);
+>   	if (ret)
+> @@ -6811,7 +6813,8 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
+>   	if (ret < 0)
+>   		mlog_errno(ret);
+>   	else if (ocfs2_should_order_data(inode)) {
+> -		ret = ocfs2_jbd2_file_inode(handle, inode);
+> +		ret = ocfs2_jbd2_inode_add_write(handle, inode,
+> +						 start_byte, length);
+>   		if (ret < 0)
+>   			mlog_errno(ret);
+>   	}
+> diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
+> index a4c905d..8de1c9d 100644
+> --- a/fs/ocfs2/aops.c
+> +++ b/fs/ocfs2/aops.c
+> @@ -942,7 +942,8 @@ static void ocfs2_write_failure(struct inode *inode,
+>   
+>   		if (tmppage && page_has_buffers(tmppage)) {
+>   			if (ocfs2_should_order_data(inode))
+> -				ocfs2_jbd2_file_inode(wc->w_handle, inode);
+> +				ocfs2_jbd2_inode_add_write(wc->w_handle, inode,
+> +							   user_pos, user_len);
+>   
+>   			block_commit_write(tmppage, from, to);
+>   		}
+> @@ -2023,8 +2024,14 @@ int ocfs2_write_end_nolock(struct address_space *mapping,
+>   		}
+>   
+>   		if (page_has_buffers(tmppage)) {
+> -			if (handle && ocfs2_should_order_data(inode))
+> -				ocfs2_jbd2_file_inode(handle, inode);
+> +			if (handle && ocfs2_should_order_data(inode)) {
+> +				loff_t start_byte =
+> +					((loff_t)tmppage->index << PAGE_SHIFT) +
+> +					from;
+> +				loff_t length = to - from;
+> +				ocfs2_jbd2_inode_add_write(handle, inode,
+> +							   start_byte, length);
+> +			}
+>   			block_commit_write(tmppage, from, to);
+>   		}
+>   	}
+> diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
+> index 4435df3..efe9988 100644
+> --- a/fs/ocfs2/file.c
+> +++ b/fs/ocfs2/file.c
+> @@ -706,7 +706,9 @@ static int ocfs2_extend_allocation(struct inode *inode, u32 logical_start,
+>    * Thus, we need to explicitly order the zeroed pages.
+>    */
+>   static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
+> -						struct buffer_head *di_bh)
+> +						      struct buffer_head *di_bh,
+> +						      loff_t start_byte,
+> +						      loff_t length)
+>   {
+>   	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
+>   	handle_t *handle = NULL;
+> @@ -722,7 +724,7 @@ static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
+>   		goto out;
+>   	}
+>   
+> -	ret = ocfs2_jbd2_file_inode(handle, inode);
+> +	ret = ocfs2_jbd2_inode_add_write(handle, inode, start_byte, length);
+>   	if (ret < 0) {
+>   		mlog_errno(ret);
+>   		goto out;
+> @@ -761,7 +763,9 @@ static int ocfs2_write_zero_page(struct inode *inode, u64 abs_from,
+>   	BUG_ON(abs_to > (((u64)index + 1) << PAGE_SHIFT));
+>   	BUG_ON(abs_from & (inode->i_blkbits - 1));
+>   
+> -	handle = ocfs2_zero_start_ordered_transaction(inode, di_bh);
+> +	handle = ocfs2_zero_start_ordered_transaction(inode, di_bh,
+> +						      abs_from,
+> +						      abs_to - abs_from);
+>   	if (IS_ERR(handle)) {
+>   		ret = PTR_ERR(handle);
+>   		goto out;
+> diff --git a/fs/ocfs2/journal.h b/fs/ocfs2/journal.h
+> index c0fe6ed..f37473c 100644
+> --- a/fs/ocfs2/journal.h
+> +++ b/fs/ocfs2/journal.h
+> @@ -232,8 +232,8 @@ static inline void ocfs2_checkpoint_inode(struct inode *inode)
+>    *                          ocfs2_journal_access_*() unless you intend to
+>    *                          manage the checksum by hand.
+>    *  ocfs2_journal_dirty    - Mark a journalled buffer as having dirty data.
+> - *  ocfs2_jbd2_file_inode  - Mark an inode so that its data goes out before
+> - *                           the current handle commits.
+> + *  ocfs2_jbd2_inode_add_write  - Mark an inode with range so that its data goes
+> + *                                out before the current handle commits.
+>    */
+>   
+>   /* You must always start_trans with a number of buffs > 0, but it's
+> @@ -603,9 +603,12 @@ static inline int ocfs2_calc_tree_trunc_credits(struct super_block *sb,
+>   	return credits;
+>   }
+>   
+> -static inline int ocfs2_jbd2_file_inode(handle_t *handle, struct inode *inode)
+> +static inline int ocfs2_jbd2_inode_add_write(handle_t *handle, struct inode *inode,
+> +					     loff_t start_byte, loff_t length)
+>   {
+> -	return jbd2_journal_inode_add_write(handle, &OCFS2_I(inode)->ip_jinode);
+> +	return jbd2_journal_inode_ranged_write(handle,
+> +					       &OCFS2_I(inode)->ip_jinode,
+> +					       start_byte, length);
+>   }
+>   
+>   static inline int ocfs2_begin_ordered_truncate(struct inode *inode,
