@@ -2,109 +2,186 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EC569829
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2019 17:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B521F6A728
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jul 2019 13:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730768AbfGONrN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 15 Jul 2019 09:47:13 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:47044 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730713AbfGONrM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 15 Jul 2019 09:47:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=jlRSv6D32c5vRgHqG1BblcMnQppOzwlRdfFs2cDSlTY=; b=jZsVdfxZVvLDnNWNxhTCEYX97
-        b+vx/mwLNqKzRu3S3A5Q4kkc1PBiOknjKNykafyh5/2DyNfYagltlpWR+G9n1XYEDOfUvJp9XUxin
-        kKL2IrJkvoSwIn3O8KW5/gXdqxPrZTAPeyzXSPglSLNvdZsNRW/kOomMzWD/urwiVWkWeX5HxCTLS
-        D6Wutv/X76bDSV7LcDjtc2PDs/Gw2OnB2asCrtEKNUDRWgQqmLDRNkNC7tYs8ye156KQOa1iZD0FF
-        I2TPDeYtmFEzGboruzQ0raXHJyx3VzrslVevbVONRkhjFibG6BQqiKLu8GQsZEDGkj8bc/bvdwCw+
-        pd9YAeHow==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hn1Jc-00036x-Ty; Mon, 15 Jul 2019 13:46:53 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 975A72013A7FA; Mon, 15 Jul 2019 15:46:51 +0200 (CEST)
-Date:   Mon, 15 Jul 2019 15:46:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        syzbot <syzbot+4bfbbf28a2e50ab07368@syzkaller.appspotmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        David Miller <davem@davemloft.net>, eladr@mellanox.com,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: INFO: rcu detected stall in ext4_write_checks
-Message-ID: <20190715134651.GI3419@hirez.programming.kicks-ass.net>
-References: <20190705191055.GT26519@linux.ibm.com>
- <20190706042801.GD11665@mit.edu>
- <20190706061631.GV26519@linux.ibm.com>
- <20190706150226.GG11665@mit.edu>
- <20190706180311.GW26519@linux.ibm.com>
- <20190707011655.GA22081@linux.ibm.com>
- <CACT4Y+asYe-uH9OV5R0Nkb-JKP4erYUZ68S9gYNnGg6v+fD20w@mail.gmail.com>
- <20190714184915.GK26519@linux.ibm.com>
- <20190715132911.GG3419@hirez.programming.kicks-ass.net>
- <CACT4Y+bmgdOExBHnLJ+jgWKWQzNK9CFT6_eTxFE3hoK=0YresQ@mail.gmail.com>
+        id S2387493AbfGPLPx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 16 Jul 2019 07:15:53 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37015 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733200AbfGPLPx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 16 Jul 2019 07:15:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07486;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0TX2nRfs_1563275742;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TX2nRfs_1563275742)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Jul 2019 19:15:43 +0800
+Subject: Re: [Ocfs2-devel] [PATCH 1/2] ocfs2: use jbd2_inode dirty range
+ scoping
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     Theodore Ts'o <tytso@mit.edu>, Ross Zwisler <zwisler@google.com>,
+        linux-ext4@vger.kernel.org, ocfs2-devel@oss.oracle.com
+References: <1562977611-8412-1-git-send-email-joseph.qi@linux.alibaba.com>
+Message-ID: <1a6e9c7b-b5ac-d745-17f2-7ef2073e9e8b@linux.alibaba.com>
+Date:   Tue, 16 Jul 2019 19:15:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+bmgdOExBHnLJ+jgWKWQzNK9CFT6_eTxFE3hoK=0YresQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1562977611-8412-1-git-send-email-joseph.qi@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jul 15, 2019 at 03:33:11PM +0200, Dmitry Vyukov wrote:
-> On Mon, Jul 15, 2019 at 3:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Sun, Jul 14, 2019 at 11:49:15AM -0700, Paul E. McKenney wrote:
-> > > On Sun, Jul 14, 2019 at 05:48:00PM +0300, Dmitry Vyukov wrote:
-> > > > But short term I don't see any other solution than stop testing
-> > > > sched_setattr because it does not check arguments enough to prevent
-> > > > system misbehavior. Which is a pity because syzkaller has found some
-> > > > bad misconfigurations that were oversight on checking side.
-> > > > Any other suggestions?
-> > >
-> > > Keep the times down to a few seconds?  Of course, that might also
-> > > fail to find interesting bugs.
-> >
-> > Right, if syzcaller can put a limit on the period/deadline parameters
-> > (and make sure to not write "-1" to
-> > /proc/sys/kernel/sched_rt_runtime_us) then per the in-kernel
-> > access-control should not allow these things to happen.
+Hi Andrew,
+Could you please pick up these 2 patches?
+
+Thanks,
+Joseph
+
+On 19/7/13 08:26, Joseph Qi wrote:
+> commit 6ba0e7dc64a5 ("jbd2: introduce jbd2_inode dirty range scoping")
+> allow us scoping each of the inode dirty ranges associated with a given
+> transaction, and ext4 already does this way.
+> Now let's also use the newly introduced jbd2_inode dirty range scoping
+> to prevent us from waiting forever when trying to complete a journal
+> transaction in ocfs2.
 > 
-> Since we are racing with emails, could you suggest a 100% safe
-> parameters? Because I only hear people saying "safe", "sane",
-> "well-behaving" :)
-> If we move the check to user-space, it does not mean that we can get
-> away without actually defining what that means.
-
-Right, well, that's part of the problem. I think Paul just did the
-reverse math and figured that 95% of X must not be larger than my
-watchdog timeout and landed on 14 seconds.
-
-I'm thinking 4 seconds (or rather 4.294967296) would be a very nice
-number.
-
-> Now thinking of this, if we come up with some simple criteria, could
-> we have something like a sysctl that would allow only really "safe"
-> parameters?
-
-I suppose we could do that, something like:
-sysctl_deadline_period_{min,max}. I'll have to dig back a bit on where
-we last talked about that and what the problems where.
-
-For one, setting the min is a lot harder, but I suppose we can start at
-TICK_NSEC or something.
+> Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Reviewed-by: Ross Zwisler <zwisler@google.com>
+> ---
+> v1 -> v2:
+>   rename ocfs2_jbd2_file_inode() to ocfs2_jbd2_inode_add_write() to keep
+>   consistent with ext4.
+>   wrap several long lines.
+> 
+>  fs/ocfs2/alloc.c   |  5 ++++-
+>  fs/ocfs2/aops.c    | 13 ++++++++++---
+>  fs/ocfs2/file.c    | 10 +++++++---
+>  fs/ocfs2/journal.h | 11 +++++++----
+>  4 files changed, 28 insertions(+), 11 deletions(-)
+> 
+> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+> index d1348fc..54f72ad 100644
+> --- a/fs/ocfs2/alloc.c
+> +++ b/fs/ocfs2/alloc.c
+> @@ -6792,6 +6792,8 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
+>  			      struct page *page, int zero, u64 *phys)
+>  {
+>  	int ret, partial = 0;
+> +	loff_t start_byte = ((loff_t)page->index << PAGE_SHIFT) + from;
+> +	loff_t length = to - from;
+>  
+>  	ret = ocfs2_map_page_blocks(page, phys, inode, from, to, 0);
+>  	if (ret)
+> @@ -6811,7 +6813,8 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
+>  	if (ret < 0)
+>  		mlog_errno(ret);
+>  	else if (ocfs2_should_order_data(inode)) {
+> -		ret = ocfs2_jbd2_file_inode(handle, inode);
+> +		ret = ocfs2_jbd2_inode_add_write(handle, inode,
+> +						 start_byte, length);
+>  		if (ret < 0)
+>  			mlog_errno(ret);
+>  	}
+> diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
+> index a4c905d..8de1c9d 100644
+> --- a/fs/ocfs2/aops.c
+> +++ b/fs/ocfs2/aops.c
+> @@ -942,7 +942,8 @@ static void ocfs2_write_failure(struct inode *inode,
+>  
+>  		if (tmppage && page_has_buffers(tmppage)) {
+>  			if (ocfs2_should_order_data(inode))
+> -				ocfs2_jbd2_file_inode(wc->w_handle, inode);
+> +				ocfs2_jbd2_inode_add_write(wc->w_handle, inode,
+> +							   user_pos, user_len);
+>  
+>  			block_commit_write(tmppage, from, to);
+>  		}
+> @@ -2023,8 +2024,14 @@ int ocfs2_write_end_nolock(struct address_space *mapping,
+>  		}
+>  
+>  		if (page_has_buffers(tmppage)) {
+> -			if (handle && ocfs2_should_order_data(inode))
+> -				ocfs2_jbd2_file_inode(handle, inode);
+> +			if (handle && ocfs2_should_order_data(inode)) {
+> +				loff_t start_byte =
+> +					((loff_t)tmppage->index << PAGE_SHIFT) +
+> +					from;
+> +				loff_t length = to - from;
+> +				ocfs2_jbd2_inode_add_write(handle, inode,
+> +							   start_byte, length);
+> +			}
+>  			block_commit_write(tmppage, from, to);
+>  		}
+>  	}
+> diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
+> index 4435df3..efe9988 100644
+> --- a/fs/ocfs2/file.c
+> +++ b/fs/ocfs2/file.c
+> @@ -706,7 +706,9 @@ static int ocfs2_extend_allocation(struct inode *inode, u32 logical_start,
+>   * Thus, we need to explicitly order the zeroed pages.
+>   */
+>  static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
+> -						struct buffer_head *di_bh)
+> +						      struct buffer_head *di_bh,
+> +						      loff_t start_byte,
+> +						      loff_t length)
+>  {
+>  	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
+>  	handle_t *handle = NULL;
+> @@ -722,7 +724,7 @@ static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
+>  		goto out;
+>  	}
+>  
+> -	ret = ocfs2_jbd2_file_inode(handle, inode);
+> +	ret = ocfs2_jbd2_inode_add_write(handle, inode, start_byte, length);
+>  	if (ret < 0) {
+>  		mlog_errno(ret);
+>  		goto out;
+> @@ -761,7 +763,9 @@ static int ocfs2_write_zero_page(struct inode *inode, u64 abs_from,
+>  	BUG_ON(abs_to > (((u64)index + 1) << PAGE_SHIFT));
+>  	BUG_ON(abs_from & (inode->i_blkbits - 1));
+>  
+> -	handle = ocfs2_zero_start_ordered_transaction(inode, di_bh);
+> +	handle = ocfs2_zero_start_ordered_transaction(inode, di_bh,
+> +						      abs_from,
+> +						      abs_to - abs_from);
+>  	if (IS_ERR(handle)) {
+>  		ret = PTR_ERR(handle);
+>  		goto out;
+> diff --git a/fs/ocfs2/journal.h b/fs/ocfs2/journal.h
+> index c0fe6ed..f37473c 100644
+> --- a/fs/ocfs2/journal.h
+> +++ b/fs/ocfs2/journal.h
+> @@ -232,8 +232,8 @@ static inline void ocfs2_checkpoint_inode(struct inode *inode)
+>   *                          ocfs2_journal_access_*() unless you intend to
+>   *                          manage the checksum by hand.
+>   *  ocfs2_journal_dirty    - Mark a journalled buffer as having dirty data.
+> - *  ocfs2_jbd2_file_inode  - Mark an inode so that its data goes out before
+> - *                           the current handle commits.
+> + *  ocfs2_jbd2_inode_add_write  - Mark an inode with range so that its data goes
+> + *                                out before the current handle commits.
+>   */
+>  
+>  /* You must always start_trans with a number of buffs > 0, but it's
+> @@ -603,9 +603,12 @@ static inline int ocfs2_calc_tree_trunc_credits(struct super_block *sb,
+>  	return credits;
+>  }
+>  
+> -static inline int ocfs2_jbd2_file_inode(handle_t *handle, struct inode *inode)
+> +static inline int ocfs2_jbd2_inode_add_write(handle_t *handle, struct inode *inode,
+> +					     loff_t start_byte, loff_t length)
+>  {
+> -	return jbd2_journal_inode_add_write(handle, &OCFS2_I(inode)->ip_jinode);
+> +	return jbd2_journal_inode_ranged_write(handle,
+> +					       &OCFS2_I(inode)->ip_jinode,
+> +					       start_byte, length);
+>  }
+>  
+>  static inline int ocfs2_begin_ordered_truncate(struct inode *inode,
+> 
