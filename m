@@ -2,87 +2,200 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E96626C08F
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jul 2019 19:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007756C3EE
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jul 2019 02:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388377AbfGQRnO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 17 Jul 2019 13:43:14 -0400
-Received: from [185.234.218.148] ([185.234.218.148]:11741 "EHLO webmail.co.za"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727271AbfGQRnO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 17 Jul 2019 13:43:14 -0400
-Reply-To: clinton.morgan@opendoorssecurities.co.uk
-From:   opendoorssecurities1@webmail.co.za
-To:     linux-ext4@vger.kernel.org
-Subject: Your diplomatic luggage
-Date:   17 Jul 2019 10:43:07 -0700
-Message-ID: <20190717104307.D7BBE69C1F880EBD@webmail.co.za>
+        id S1728079AbfGRAyj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 17 Jul 2019 20:54:39 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:41393 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727773AbfGRAyj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 17 Jul 2019 20:54:39 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07487;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0TX9szVo_1563411275;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TX9szVo_1563411275)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 18 Jul 2019 08:54:35 +0800
+Subject: Re: [Ocfs2-devel] [PATCH 1/2] ocfs2: use jbd2_inode dirty range
+ scoping
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     Ross Zwisler <zwisler@google.com>, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, ocfs2-devel@oss.oracle.com
+References: <1562977611-8412-1-git-send-email-joseph.qi@linux.alibaba.com>
+ <1a6e9c7b-b5ac-d745-17f2-7ef2073e9e8b@linux.alibaba.com>
+Message-ID: <aa1380c2-01d2-1142-b712-9f7ff01d0b2d@linux.alibaba.com>
+Date:   Thu, 18 Jul 2019 08:54:35 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <1a6e9c7b-b5ac-d745-17f2-7ef2073e9e8b@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I'm Clinton Morgan, I have been instructed to notify you of the 
-availability of a package deposited by your relative (our client) 
-in your name at the event of demise. We are entrusted and 
-empowered with diplomatic immunity and status to safe keep 
-valuable packages and baggage in trust for our reputable clients.
- 
-We work in collaboration with top firms and government bodies of 
-various countries as we have earned a reputation as a service 
-whose hallmarks in reliability and confidentiality are revered. 
-Our clienteles also includes international missions, fellow 
-diplomats as well as embassies of different countries.
- 
-A financial security package was deposited by a benefactor whose 
-identity can not be disclosed due to a binding Non-Disclosure 
-Agreement, specifically instructing us to contact you in the 
-event of demise. The Non Circumvention and Non Disclosure 
-Agreement signed with the benefactor  mandates and authorises us 
-to fully divulge and disclose the benefactor's identity 18 months 
-after the beneficiary has received the funds. We confirm that 
-these funds are fully free of any liens or encumbrances and are 
-clean, clear and non-criminal origin and are available in the 
-form of
-CASH.
- 
-By this notice, you are hereby advised to send your Full Contact 
-Information as well as the name of the closest airport to your 
-city in the format stated below. The funds with the 
-documentations of origin will be brought to your country of 
-residence by 3 Diplomats. You will be accompanied to your bank 
-(solely by your request) to deposit the funds in your name with 
-the documentations of its origin which authenticates the facts 
-that the funds are clean with no link to terrorism or drugs as 
-well as exonerates you from any form of investigations and 
-interrogation.
- 
- 
-Kindly ensure that no mistake or error is made in the information 
-provide below and it should be forwarded in the manner stated 
-below:
- 
-Your Full Name: ______________________________
- 
-Your cell number:______________________________
- 
-Your Complete Address: ________________________________
- 
-Name of City of Residence: ____________________
- 
-Name of Closest Airport to your city of 
-Residence:_________________________________
- 
-I hereby confirm the the information provided above is correct 
-and accurate to the best of my knowledge.
-Congratulations in advance.
- 
-Thank you and I sincerely Remain,
- 
- 
-Clinton Morgan
-Email: clinton.morgan@opendoorssecurities.co.uk
+Ping...
+If something else should be updated, please let me know.
+
+Thanks,
+Joseph
+
+On 19/7/16 19:15, Joseph Qi wrote:
+> Hi Andrew,
+> Could you please pick up these 2 patches?
+> 
+> Thanks,
+> Joseph
+> 
+> On 19/7/13 08:26, Joseph Qi wrote:
+>> commit 6ba0e7dc64a5 ("jbd2: introduce jbd2_inode dirty range scoping")
+>> allow us scoping each of the inode dirty ranges associated with a given
+>> transaction, and ext4 already does this way.
+>> Now let's also use the newly introduced jbd2_inode dirty range scoping
+>> to prevent us from waiting forever when trying to complete a journal
+>> transaction in ocfs2.
+>>
+>> Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+>> Reviewed-by: Ross Zwisler <zwisler@google.com>
+>> ---
+>> v1 -> v2:
+>>   rename ocfs2_jbd2_file_inode() to ocfs2_jbd2_inode_add_write() to keep
+>>   consistent with ext4.
+>>   wrap several long lines.
+>>
+>>  fs/ocfs2/alloc.c   |  5 ++++-
+>>  fs/ocfs2/aops.c    | 13 ++++++++++---
+>>  fs/ocfs2/file.c    | 10 +++++++---
+>>  fs/ocfs2/journal.h | 11 +++++++----
+>>  4 files changed, 28 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+>> index d1348fc..54f72ad 100644
+>> --- a/fs/ocfs2/alloc.c
+>> +++ b/fs/ocfs2/alloc.c
+>> @@ -6792,6 +6792,8 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
+>>  			      struct page *page, int zero, u64 *phys)
+>>  {
+>>  	int ret, partial = 0;
+>> +	loff_t start_byte = ((loff_t)page->index << PAGE_SHIFT) + from;
+>> +	loff_t length = to - from;
+>>  
+>>  	ret = ocfs2_map_page_blocks(page, phys, inode, from, to, 0);
+>>  	if (ret)
+>> @@ -6811,7 +6813,8 @@ void ocfs2_map_and_dirty_page(struct inode *inode, handle_t *handle,
+>>  	if (ret < 0)
+>>  		mlog_errno(ret);
+>>  	else if (ocfs2_should_order_data(inode)) {
+>> -		ret = ocfs2_jbd2_file_inode(handle, inode);
+>> +		ret = ocfs2_jbd2_inode_add_write(handle, inode,
+>> +						 start_byte, length);
+>>  		if (ret < 0)
+>>  			mlog_errno(ret);
+>>  	}
+>> diff --git a/fs/ocfs2/aops.c b/fs/ocfs2/aops.c
+>> index a4c905d..8de1c9d 100644
+>> --- a/fs/ocfs2/aops.c
+>> +++ b/fs/ocfs2/aops.c
+>> @@ -942,7 +942,8 @@ static void ocfs2_write_failure(struct inode *inode,
+>>  
+>>  		if (tmppage && page_has_buffers(tmppage)) {
+>>  			if (ocfs2_should_order_data(inode))
+>> -				ocfs2_jbd2_file_inode(wc->w_handle, inode);
+>> +				ocfs2_jbd2_inode_add_write(wc->w_handle, inode,
+>> +							   user_pos, user_len);
+>>  
+>>  			block_commit_write(tmppage, from, to);
+>>  		}
+>> @@ -2023,8 +2024,14 @@ int ocfs2_write_end_nolock(struct address_space *mapping,
+>>  		}
+>>  
+>>  		if (page_has_buffers(tmppage)) {
+>> -			if (handle && ocfs2_should_order_data(inode))
+>> -				ocfs2_jbd2_file_inode(handle, inode);
+>> +			if (handle && ocfs2_should_order_data(inode)) {
+>> +				loff_t start_byte =
+>> +					((loff_t)tmppage->index << PAGE_SHIFT) +
+>> +					from;
+>> +				loff_t length = to - from;
+>> +				ocfs2_jbd2_inode_add_write(handle, inode,
+>> +							   start_byte, length);
+>> +			}
+>>  			block_commit_write(tmppage, from, to);
+>>  		}
+>>  	}
+>> diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
+>> index 4435df3..efe9988 100644
+>> --- a/fs/ocfs2/file.c
+>> +++ b/fs/ocfs2/file.c
+>> @@ -706,7 +706,9 @@ static int ocfs2_extend_allocation(struct inode *inode, u32 logical_start,
+>>   * Thus, we need to explicitly order the zeroed pages.
+>>   */
+>>  static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
+>> -						struct buffer_head *di_bh)
+>> +						      struct buffer_head *di_bh,
+>> +						      loff_t start_byte,
+>> +						      loff_t length)
+>>  {
+>>  	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
+>>  	handle_t *handle = NULL;
+>> @@ -722,7 +724,7 @@ static handle_t *ocfs2_zero_start_ordered_transaction(struct inode *inode,
+>>  		goto out;
+>>  	}
+>>  
+>> -	ret = ocfs2_jbd2_file_inode(handle, inode);
+>> +	ret = ocfs2_jbd2_inode_add_write(handle, inode, start_byte, length);
+>>  	if (ret < 0) {
+>>  		mlog_errno(ret);
+>>  		goto out;
+>> @@ -761,7 +763,9 @@ static int ocfs2_write_zero_page(struct inode *inode, u64 abs_from,
+>>  	BUG_ON(abs_to > (((u64)index + 1) << PAGE_SHIFT));
+>>  	BUG_ON(abs_from & (inode->i_blkbits - 1));
+>>  
+>> -	handle = ocfs2_zero_start_ordered_transaction(inode, di_bh);
+>> +	handle = ocfs2_zero_start_ordered_transaction(inode, di_bh,
+>> +						      abs_from,
+>> +						      abs_to - abs_from);
+>>  	if (IS_ERR(handle)) {
+>>  		ret = PTR_ERR(handle);
+>>  		goto out;
+>> diff --git a/fs/ocfs2/journal.h b/fs/ocfs2/journal.h
+>> index c0fe6ed..f37473c 100644
+>> --- a/fs/ocfs2/journal.h
+>> +++ b/fs/ocfs2/journal.h
+>> @@ -232,8 +232,8 @@ static inline void ocfs2_checkpoint_inode(struct inode *inode)
+>>   *                          ocfs2_journal_access_*() unless you intend to
+>>   *                          manage the checksum by hand.
+>>   *  ocfs2_journal_dirty    - Mark a journalled buffer as having dirty data.
+>> - *  ocfs2_jbd2_file_inode  - Mark an inode so that its data goes out before
+>> - *                           the current handle commits.
+>> + *  ocfs2_jbd2_inode_add_write  - Mark an inode with range so that its data goes
+>> + *                                out before the current handle commits.
+>>   */
+>>  
+>>  /* You must always start_trans with a number of buffs > 0, but it's
+>> @@ -603,9 +603,12 @@ static inline int ocfs2_calc_tree_trunc_credits(struct super_block *sb,
+>>  	return credits;
+>>  }
+>>  
+>> -static inline int ocfs2_jbd2_file_inode(handle_t *handle, struct inode *inode)
+>> +static inline int ocfs2_jbd2_inode_add_write(handle_t *handle, struct inode *inode,
+>> +					     loff_t start_byte, loff_t length)
+>>  {
+>> -	return jbd2_journal_inode_add_write(handle, &OCFS2_I(inode)->ip_jinode);
+>> +	return jbd2_journal_inode_ranged_write(handle,
+>> +					       &OCFS2_I(inode)->ip_jinode,
+>> +					       start_byte, length);
+>>  }
+>>  
+>>  static inline int ocfs2_begin_ordered_truncate(struct inode *inode,
+>>
+> 
+> _______________________________________________
+> Ocfs2-devel mailing list
+> Ocfs2-devel@oss.oracle.com
+> https://oss.oracle.com/mailman/listinfo/ocfs2-devel
+> 
