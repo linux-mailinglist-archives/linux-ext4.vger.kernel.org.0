@@ -2,198 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D96866ECDB
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 Jul 2019 01:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F306F01A
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 Jul 2019 18:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732451AbfGSX64 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 19 Jul 2019 19:58:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728939AbfGSX64 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 19 Jul 2019 19:58:56 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D03312082C;
-        Fri, 19 Jul 2019 23:58:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563580734;
-        bh=/yQ3KgpojU3ziG6gyfMBQPn0/dM7OGlR/vkzzBpZDLY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vaq0qaI2PjsMhiNDDLgBN5HDftymwCMG216s/gv4fibRzAqgavsquOgPYRlENECEO
-         fR30KuVerIT8tiFhTGx5mYofnnx4O6E0iDNKQxh40sMDgGMA9ONGfsrEppbeRx07M5
-         swBb3fscCX0Y86vrO0fBI/VN5jp5JKjyTPuxYrcU=
-Date:   Fri, 19 Jul 2019 16:58:53 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH] e2fsck: check for consistent encryption policies
-Message-ID: <20190719235852.GI1422@gmail.com>
-Mail-Followup-To: Andreas Dilger <adilger@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org
-References: <20190718011325.19516-1-ebiggers@kernel.org>
- <D9B442DB-51C2-4AAC-8113-AE462E7DA637@dilger.ca>
+        id S1726709AbfGTQxW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 20 Jul 2019 12:53:22 -0400
+Received: from mail.wl.linuxfoundation.org ([198.145.29.98]:41606 "EHLO
+        mail.wl.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726221AbfGTQxW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 20 Jul 2019 12:53:22 -0400
+Received: from mail.wl.linuxfoundation.org (localhost [127.0.0.1])
+        by mail.wl.linuxfoundation.org (Postfix) with ESMTP id 3376D288E4
+        for <linux-ext4@vger.kernel.org>; Sat, 20 Jul 2019 16:53:21 +0000 (UTC)
+Received: by mail.wl.linuxfoundation.org (Postfix, from userid 486)
+        id 2663B288E0; Sat, 20 Jul 2019 16:53:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on
+        pdx-wl-mail.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=2.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS autolearn=unavailable version=3.3.1
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 203317] WARNING: CPU: 2 PID: 925 at fs/ext4/inode.c:3897
+ ext4_set_page_dirty+0x39/0x50
+Date:   Sat, 20 Jul 2019 16:53:20 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: slacker702@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-203317-13602-8FKJBkQhTg@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-203317-13602@https.bugzilla.kernel.org/>
+References: <bug-203317-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D9B442DB-51C2-4AAC-8113-AE462E7DA637@dilger.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 18, 2019 at 12:25:42AM -0600, Andreas Dilger wrote:
-> On Jul 17, 2019, at 7:13 PM, Eric Biggers <ebiggers@kernel.org> wrote:
-> > 
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > By design, the kernel enforces that all files in an encrypted directory
-> > use the same encryption policy as the directory.  It's not possible to
-> > violate this constraint using syscalls.  Lookups of files that violate
-> > this constraint also fail, in case the disk was manipulated.
-> > 
-> > But this constraint can also be violated by accidental filesystem
-> > corruption.  E.g., a power cut when using ext4 without a journal might
-> > leave new files without the encryption bit and/or xattr.  Thus, it's
-> > important that e2fsck correct this condition.
-> > 
-> > Therefore, this patch makes the following changes to e2fsck:
-> > 
-> > - During pass 1 (inode table scan), create a map from inode number to
-> >  encryption xattr for all encrypted inodes.  If an encrypted inode has
-> >  a missing or clearly invalid xattr, offer to clear the inode.
-> > 
-> > - During pass 2 (directory structure check), verify that all regular
-> >  files, directories, and symlinks in encrypted directories use the
-> >  directory's encryption policy.  Offer to clear any directory entries
-> >  for which this isn't the case.
-> > 
-> > Add a new test "f_bad_encryption" to test the new behavior.
-> > 
-> > Due to the new checks, it was also necessary to update the existing test
-> > "f_short_encrypted_dirent" to add an encryption xattr to the test file,
-> > since it was missing one before, which is now considered invalid.
-> > 
-> > Google-Bug-Id: 135138675
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > ---
-> > diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
-> > index 2d359b38..10dcb582 100644
-> > --- a/e2fsck/e2fsck.h
-> > +++ b/e2fsck/e2fsck.h
-> > @@ -135,6 +135,22 @@ struct dx_dirblock_info {
-> > #define DX_FLAG_FIRST		4
-> > #define DX_FLAG_LAST		8
-> > 
-> > +/*
-> > + * The encrypted file information structure; stores information for files which
-> > + * are encrypted.
-> > + */
-> > +struct encrypted_file {
-> > +	ext2_ino_t ino;
-> > +	void *xattr_value;
-> > +	size_t xattr_size;
-> > +};
-> 
-> This structure is pretty memory inefficient.  4 byte ino, 8 bytes pointer, then a
-> 8 byte size. I don't think that we need a full size_t to store a valid xattr size,
-> given that is limited to 64KB currently, while size_t is an unsigned long.
-> 
-> It would save 8 bytes per inode to rearrange these,
+https://bugzilla.kernel.org/show_bug.cgi?id=203317
 
-Yes, it can be reduced to 16 bytes.  Probably we should go with the 8 bytes
-(ino, id) as you suggested elsewhere, though.
+slack3r (slacker702@gmail.com) changed:
 
-> and add a unique prefix to make
-> the fields easier to find:
-> 
-> struct e2fsck_encrypted_file {
-> 	ext2_ino_t   eef_ino;
-> 	unsigned int eef_xattr_size;
-> 	void        *eef_xattr_value;
-> };
-> 
-> > +struct encrypted_files {
-> > +	size_t count;
-> > +	size_t capacity;
-> > +	struct encrypted_file *files;
-> > +};
-> 
-> Searching for "encrypted_file" vs. "encrypted_files" is not great.  Maybe
-> "e2fsck_encrypted_(file_)list" or "e2fsck_encrypted_(file_)array"?  As above,
-> better to have a prefix for these structure fields, like "eel_" or "eea_".
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |slacker702@gmail.com
 
-I can change it to *_file_list.  However, did you see that all the other structs
-in e2fsck/e2fsck.h besides e2fsck_struct already have names like:
+--- Comment #3 from slack3r (slacker702@gmail.com) ---
+Got similar here:
+[ 3651.932517] WARNING: CPU: 3 PID: 3625 at fs/ext4/inode.c:3925
+ext4_set_page_dirty+0x3e/0x50 [ext4]
+[ 3651.932522] Modules linked in: fuse ebtable_filter ebtables ip6table_filter
+ip6_tables iptable_filter nct6775 msr hwmon_vid sunrpc intel_rapl
+x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm mousedev joydev
+crct10dif_pclmul crc32_pclmul ghash_clmulni_intel snd_hda_codec_hdmi
+aesni_intel snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio
+aes_x86_64 crypto_simd snd_hda_intel iTCO_wdt iTCO_vendor_support cryptd
+snd_hda_codec glue_helper snd_hda_core i2c_i801 snd_hwdep snd_pcm snd_timer snd
+e1000e mxm_wmi soundcore intel_pch_thermal mei_me mei input_leds intel_cstate
+led_class evdev intel_uncore mac_hid pcc_cpufreq intel_rapl_perf wmi loop sg
+ip_tables x_tables ext4 crc32c_generic crc16 mbcache jbd2 sd_mod serio_raw
+atkbd libps2 ahci libahci libata crc32c_intel scsi_mod i8042 serio hid_logitech
+ff_memless i915 intel_gtt i2c_algo_bit cec rc_core drm_kms_helper syscopyarea
+sysfillrect sysimgblt fb_sys_fops drm agpgart
+[ 3651.932597] CPU: 3 PID: 3625 Comm: kworker/u8:3 Not tainted 5.2.1-1-mainline
+#1
+[ 3651.932599] Hardware name: To Be Filled By O.E.M. To Be Filled By
+O.E.M./Z170M Extreme4, BIOS P7.20 12/13/2016
+[ 3651.932610] Workqueue: writeback wb_workfn (flush-8:0)
+[ 3651.932662] RIP: 0010:ext4_set_page_dirty+0x3e/0x50 [ext4]
+[ 3651.932669] Code: 48 8b 00 a8 01 75 16 48 8b 57 08 48 8d 42 ff 83 e2 01 48
+0f 44 c7 48 8b 00 a8 08 74 0d 48 8b 07 f6 c4 20 74 0f e9 72 75 8d f1 <0f> 0b 48
+8b 07 f6 c4 20 75 f1 0f 0b e9 61 75 8d f1 90 0f 1f 44 00
+[ 3651.932672] RSP: 0018:ffffb250c86ab700 EFLAGS: 00010246
+[ 3651.932677] RAX: 02ffff0000002036 RBX: ffff9ee52c494880 RCX:
+0000000000000000
+[ 3651.932679] RDX: 0000000000000000 RSI: 0000000206000000 RDI:
+ffffe7a6481cdc40
+[ 3651.932684] RBP: ffffe7a6481cdc40 R08: 0000000206000000 R09:
+0000000000000000
+[ 3651.932686] R10: ffff9ee55baacb98 R11: 0000000000000000 R12:
+0000000000207371
+[ 3651.932688] R13: ffff9ee52c7556c0 R14: ffff9ee54e66a790 R15:
+0000000000000000
+[ 3651.932692] FS:  0000000000000000(0000) GS:ffff9ee56eb80000(0000)
+knlGS:0000000000000000
+[ 3651.932695] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 3651.932697] CR2: 0000556097c527c0 CR3: 0000000159a0a003 CR4:
+00000000003606e0
+[ 3651.932699] Call Trace:
+[ 3651.932888]  i915_gem_userptr_put_pages+0x13f/0x1c0 [i915]
+[ 3651.933030]  __i915_gem_object_put_pages+0x5e/0xa0 [i915]
+[ 3651.933187]  userptr_mn_invalidate_range_start+0x209/0x260 [i915]
+[ 3651.933212]  __mmu_notifier_invalidate_range_start+0x57/0xa0
+[ 3651.933229]  page_mkclean_one+0x1b6/0x1d0
+[ 3651.933243]  rmap_walk_file+0xf4/0x260
+[ 3651.933253]  page_mkclean+0xa4/0xc0
+[ 3651.933261]  ? page_referenced_one+0x170/0x170
+[ 3651.933269]  ? pmdp_collapse_flush+0x10/0x10
+[ 3651.933276]  clear_page_dirty_for_io+0x9c/0x240
+[ 3651.933353]  mpage_submit_page+0x1f/0x70 [ext4]
+[ 3651.933410]  mpage_process_page_bufs+0xe7/0xf0 [ext4]
+[ 3651.933458]  mpage_prepare_extent_to_map+0x1c4/0x280 [ext4]
+[ 3651.933513]  ext4_writepages+0x4f7/0xef0 [ext4]
+[ 3651.933527]  ? update_blocked_averages+0x894/0xa90
+[ 3651.933538]  ? cpumask_next_and+0x19/0x20
+[ 3651.933547]  ? do_writepages+0x43/0xd0
+[ 3651.933599]  ? ext4_mark_inode_dirty+0x1e0/0x1e0 [ext4]
+[ 3651.933606]  do_writepages+0x43/0xd0
+[ 3651.933645]  __writeback_single_inode+0x3d/0x3d0
+[ 3651.933653]  writeback_sb_inodes+0x1f0/0x430
+[ 3651.933666]  __writeback_inodes_wb+0x4c/0xc0
+[ 3651.933674]  wb_writeback+0x28f/0x340
+[ 3651.933688]  ? get_nr_inodes+0x32/0x50
+[ 3651.933695]  wb_workfn+0x3b6/0x480
+[ 3651.933714]  process_one_work+0x1d1/0x3e0
+[ 3651.933730]  worker_thread+0x4a/0x3d0
+[ 3651.933752]  kthread+0xfb/0x130
+[ 3651.933761]  ? process_one_work+0x3e0/0x3e0
+[ 3651.933774]  ? kthread_park+0x90/0x90
+[ 3651.933786]  ret_from_fork+0x35/0x40
+[ 3651.933799] ---[ end trace 7a0001b6900a9f55 ]---
 
-	struct dir_info
-	struct dx_dir_info
-	struct dx_dirblock_info
-	struct resource_track
-	struct ea_refcount
-	struct extent_tree_level
-	struct extent_tree_info
+Kernel version: 5.2.1
 
-So for consistency, I'm not sure the "e2fsck_" prefix is warranted.
-
-> 
-> > +int add_encrypted_file(e2fsck_t ctx, struct problem_context *pctx)
-> > +{
-> > +	pctx->errcode = get_encryption_xattr(ctx, ino, &file->xattr_value,
-> > +					     &file->xattr_size);
-> > +	if (pctx->errcode) {
-> > +		if (fix_problem(ctx, PR_1_MISSING_ENCRYPTION_XATTR, pctx))
-> > +			return -1;
-> 
-> At this point, you don't really know if the inode _should_ be encrypted,
-> or if it is a stray bit flip in the EXT4_ENCRYPT_STATE that resulted in
-> add_encrypted_file being called.  This results in the inode being deleted,
-> even though it is possible that it was never encrypted.  This determination
-> should be made later when the inode's parent directory is known.  Either
-> the parent also has an encryption flag+xattr and it _should_ have been
-> encrypted and should be cleared, or the parent doesn't have an encryption
-> flag+xattr and only the child inode flag should be cleared...
-
-How about simply clearing the encrypt flag instead in this case?
-
-That does the right thing in the bit flip case.  It also does the right thing
-when the file is in an encrypted directory (so it's supposed to be encrypted),
-as then the file will be deleted during the encryption policy check in pass 2
-due to PR_2_UNENCRYPTED_FILE.
-
-It wouldn't properly handle the rare case where a new encryption policy was just
-set on a top level directory, and encrypted entries were already created in it
-before the encryption xattr was persisted.  The directory would be marked as
-unencrypted, not deleted as expected.  Though this should be a really rare case,
-and hard to distinguish from a bitflip anyway, so probably not worth worrying
-about...  (And it could also go the other way: xattr was persisted but not the
-encrypt flag, which would be inconvenient to check for.)
-
-> 
-> > +	} else if (!possibly_valid_encryption_xattr(file->xattr_value,
-> > +						    file->xattr_size)) {
-> > +		ext2fs_free_mem(&file->xattr_value);
-> > +		file->xattr_size = 0;
-> > +		if (fix_problem(ctx, PR_1_CORRUPT_ENCRYPTION_XATTR, pctx))
-> > +			return -1;
-> > +	}
-> 
-> 
-> I can see in this case, where the inode is flagged and the encryption xattr
-> exists (named "c" if I read correctly?), but is corrupt, then there isn't
-> much to do for the file.
-> 
-> > @@ -1415,18 +1478,21 @@ skip_checksum:
-> > 			}
-> > 
-> > -		if (encrypted && (dot_state) > 1 &&
-> > -		    encrypted_check_name(ctx, dirent, &cd->pctx)) {
-> 
-> No need for () around "dot_state".
-
-This patch actually removes those unnecessary ().
-
-- Eric
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
