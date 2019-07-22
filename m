@@ -2,39 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA77270AF7
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jul 2019 23:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670C270B86
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jul 2019 23:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730102AbfGVVDI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Jul 2019 17:03:08 -0400
-Received: from mga02.intel.com ([134.134.136.20]:28317 "EHLO mga02.intel.com"
+        id S1731338AbfGVVfY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Jul 2019 17:35:24 -0400
+Received: from mga11.intel.com ([192.55.52.93]:6680 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729059AbfGVVDI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 22 Jul 2019 17:03:08 -0400
-X-Amp-Result: UNSCANNABLE
+        id S1729004AbfGVVfU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 22 Jul 2019 17:35:20 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Jul 2019 14:03:04 -0700
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Jul 2019 14:35:17 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.64,296,1559545200"; 
-   d="gz'50?scan'50,208,50";a="196879069"
+   d="gz'50?scan'50,208,50";a="170977740"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Jul 2019 14:03:02 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 22 Jul 2019 14:35:15 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1hpfSY-000G2S-3Y; Tue, 23 Jul 2019 05:03:02 +0800
-Date:   Tue, 23 Jul 2019 05:02:43 +0800
+        id 1hpfxj-000I8r-2Q; Tue, 23 Jul 2019 05:35:15 +0800
+Date:   Tue, 23 Jul 2019 05:34:47 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 Cc:     kbuild-all@01.org, linux-ext4@vger.kernel.org,
         Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: Re: [PATCH 05/11] jbd2: fast-commit commit path new APIs
-Message-ID: <201907230431.AkHYAOGu%lkp@intel.com>
-References: <20190722040011.18892-5-harshadshirwadkar@gmail.com>
+Subject: Re: [PATCH 11/11] ext4: fast-commit recovery path changes
+Message-ID: <201907230519.FTcCEAVK%lkp@intel.com>
+References: <20190722040011.18892-11-harshadshirwadkar@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="nhsiveojxtyezi2b"
+Content-Type: multipart/mixed; boundary="e5hr7jecab356qul"
 Content-Disposition: inline
-In-Reply-To: <20190722040011.18892-5-harshadshirwadkar@gmail.com>
+In-Reply-To: <20190722040011.18892-11-harshadshirwadkar@gmail.com>
 X-Patchwork-Hint: ignore
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-ext4-owner@vger.kernel.org
@@ -43,7 +44,7 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---nhsiveojxtyezi2b
+--e5hr7jecab356qul
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -69,163 +70,37 @@ Reported-by: kbuild test robot <lkp@intel.com>
 
 All warnings (new ones prefixed by >>):
 
-   In file included from include/linux/linkage.h:7:0,
-                    from include/linux/kernel.h:8,
+   In file included from include/linux/byteorder/big_endian.h:5:0,
+                    from arch/mips/include/uapi/asm/byteorder.h:13,
+                    from arch/mips/include/asm/bitops.h:19,
+                    from include/linux/bitops.h:19,
+                    from include/linux/kernel.h:12,
                     from include/linux/list.h:9,
                     from include/linux/module.h:9,
-                    from fs/jbd2/journal.c:22:
-   include/linux/export.h:81:20: error: redefinition of '__kstrtab_jbd2_complete_transaction'
-     static const char __kstrtab_##sym[]    \
-                       ^
-   include/linux/export.h:120:25: note: in expansion of macro '___EXPORT_SYMBOL'
-    #define __EXPORT_SYMBOL ___EXPORT_SYMBOL
-                            ^~~~~~~~~~~~~~~~
-   include/linux/export.h:124:2: note: in expansion of macro '__EXPORT_SYMBOL'
-     __EXPORT_SYMBOL(sym, "")
-     ^~~~~~~~~~~~~~~
-   fs/jbd2/journal.c:839:1: note: in expansion of macro 'EXPORT_SYMBOL'
-    EXPORT_SYMBOL(jbd2_complete_transaction);
-    ^~~~~~~~~~~~~
-   include/linux/export.h:81:20: note: previous definition of '__kstrtab_jbd2_complete_transaction' was here
-     static const char __kstrtab_##sym[]    \
-                       ^
-   include/linux/export.h:120:25: note: in expansion of macro '___EXPORT_SYMBOL'
-    #define __EXPORT_SYMBOL ___EXPORT_SYMBOL
-                            ^~~~~~~~~~~~~~~~
-   include/linux/export.h:124:2: note: in expansion of macro '__EXPORT_SYMBOL'
-     __EXPORT_SYMBOL(sym, "")
-     ^~~~~~~~~~~~~~~
-   fs/jbd2/journal.c:812:1: note: in expansion of macro 'EXPORT_SYMBOL'
-    EXPORT_SYMBOL(jbd2_complete_transaction);
-    ^~~~~~~~~~~~~
-   include/linux/export.h:67:36: error: redefinition of '__ksymtab_jbd2_complete_transaction'
-     static const struct kernel_symbol __ksymtab_##sym  \
-                                       ^
->> include/linux/export.h:84:2: note: in expansion of macro '__KSYMTAB_ENTRY'
-     __KSYMTAB_ENTRY(sym, sec)
-     ^~~~~~~~~~~~~~~
-   include/linux/export.h:120:25: note: in expansion of macro '___EXPORT_SYMBOL'
-    #define __EXPORT_SYMBOL ___EXPORT_SYMBOL
-                            ^~~~~~~~~~~~~~~~
-   include/linux/export.h:124:2: note: in expansion of macro '__EXPORT_SYMBOL'
-     __EXPORT_SYMBOL(sym, "")
-     ^~~~~~~~~~~~~~~
-   fs/jbd2/journal.c:839:1: note: in expansion of macro 'EXPORT_SYMBOL'
-    EXPORT_SYMBOL(jbd2_complete_transaction);
-    ^~~~~~~~~~~~~
-   include/linux/export.h:67:36: note: previous definition of '__ksymtab_jbd2_complete_transaction' was here
-     static const struct kernel_symbol __ksymtab_##sym  \
-                                       ^
->> include/linux/export.h:84:2: note: in expansion of macro '__KSYMTAB_ENTRY'
-     __KSYMTAB_ENTRY(sym, sec)
-     ^~~~~~~~~~~~~~~
-   include/linux/export.h:120:25: note: in expansion of macro '___EXPORT_SYMBOL'
-    #define __EXPORT_SYMBOL ___EXPORT_SYMBOL
-                            ^~~~~~~~~~~~~~~~
-   include/linux/export.h:124:2: note: in expansion of macro '__EXPORT_SYMBOL'
-     __EXPORT_SYMBOL(sym, "")
-     ^~~~~~~~~~~~~~~
-   fs/jbd2/journal.c:812:1: note: in expansion of macro 'EXPORT_SYMBOL'
-    EXPORT_SYMBOL(jbd2_complete_transaction);
-    ^~~~~~~~~~~~~
+                    from fs/ext4/super.c:20:
+   fs/ext4/super.c: In function 'ext4_fc_add_block':
+>> include/uapi/linux/byteorder/big_endian.h:33:26: warning: large integer implicitly truncated to unsigned type [-Woverflow]
+    #define __cpu_to_le32(x) ((__force __le32)__swab32((x)))
+                             ^
+   include/linux/byteorder/generic.h:88:21: note: in expansion of macro '__cpu_to_le32'
+    #define cpu_to_le32 __cpu_to_le32
+                        ^~~~~~~~~~~~~
+>> fs/ext4/super.c:430:14: note: in expansion of macro 'cpu_to_le32'
+     ex.ee_len = cpu_to_le32(0x1);
+                 ^~~~~~~~~~~
 
-vim +/__KSYMTAB_ENTRY +84 include/linux/export.h
-
-7290d58095712a8 Ard Biesheuvel  2018-08-21   76  
-f50169324df4ad9 Paul Gortmaker  2011-05-23   77  /* For every exported symbol, place a struct in the __ksymtab section */
-f235541699bcf14 Nicolas Pitre   2016-01-22   78  #define ___EXPORT_SYMBOL(sym, sec)					\
-f50169324df4ad9 Paul Gortmaker  2011-05-23   79  	extern typeof(sym) sym;						\
-f50169324df4ad9 Paul Gortmaker  2011-05-23   80  	__CRC_SYMBOL(sym, sec)						\
-f50169324df4ad9 Paul Gortmaker  2011-05-23   81  	static const char __kstrtab_##sym[]				\
-7290d58095712a8 Ard Biesheuvel  2018-08-21   82  	__attribute__((section("__ksymtab_strings"), used, aligned(1)))	\
-94e58e0ac31284f Masahiro Yamada 2018-05-09   83  	= #sym;								\
-7290d58095712a8 Ard Biesheuvel  2018-08-21  @84  	__KSYMTAB_ENTRY(sym, sec)
-f50169324df4ad9 Paul Gortmaker  2011-05-23   85  
-f922c4abdf76485 Ard Biesheuvel  2018-08-21   86  #if defined(__DISABLE_EXPORTS)
-f922c4abdf76485 Ard Biesheuvel  2018-08-21   87  
-f922c4abdf76485 Ard Biesheuvel  2018-08-21   88  /*
-f922c4abdf76485 Ard Biesheuvel  2018-08-21   89   * Allow symbol exports to be disabled completely so that C code may
-f922c4abdf76485 Ard Biesheuvel  2018-08-21   90   * be reused in other execution contexts such as the UEFI stub or the
-f922c4abdf76485 Ard Biesheuvel  2018-08-21   91   * decompressor.
-f922c4abdf76485 Ard Biesheuvel  2018-08-21   92   */
-f922c4abdf76485 Ard Biesheuvel  2018-08-21   93  #define __EXPORT_SYMBOL(sym, sec)
-f922c4abdf76485 Ard Biesheuvel  2018-08-21   94  
-bbda5ec671d3fe6 Masahiro Yamada 2018-11-30   95  #elif defined(CONFIG_TRIM_UNUSED_KSYMS)
-bbda5ec671d3fe6 Masahiro Yamada 2018-11-30   96  
-bbda5ec671d3fe6 Masahiro Yamada 2018-11-30   97  #include <generated/autoksyms.h>
-c1a95fda2a40ae8 Nicolas Pitre   2016-01-22   98  
-c1a95fda2a40ae8 Nicolas Pitre   2016-01-22   99  /*
-c1a95fda2a40ae8 Nicolas Pitre   2016-01-22  100   * For fine grained build dependencies, we want to tell the build system
-c1a95fda2a40ae8 Nicolas Pitre   2016-01-22  101   * about each possible exported symbol even if they're not actually exported.
-bbda5ec671d3fe6 Masahiro Yamada 2018-11-30  102   * We use a symbol pattern __ksym_marker_<symbol> that the build system filters
-bbda5ec671d3fe6 Masahiro Yamada 2018-11-30  103   * from the $(NM) output (see scripts/gen_ksymdeps.sh). These symbols are
-bbda5ec671d3fe6 Masahiro Yamada 2018-11-30  104   * discarded in the final link stage.
-c1a95fda2a40ae8 Nicolas Pitre   2016-01-22  105   */
-bbda5ec671d3fe6 Masahiro Yamada 2018-11-30  106  #define __ksym_marker(sym)	\
-bbda5ec671d3fe6 Masahiro Yamada 2018-11-30  107  	static int __ksym_marker_##sym[0] __section(".discard.ksym") __used
-f235541699bcf14 Nicolas Pitre   2016-01-22  108  
-f235541699bcf14 Nicolas Pitre   2016-01-22  109  #define __EXPORT_SYMBOL(sym, sec)				\
-bbda5ec671d3fe6 Masahiro Yamada 2018-11-30  110  	__ksym_marker(sym);					\
-6023d2369ba7b82 Masahiro Yamada 2016-06-14  111  	__cond_export_sym(sym, sec, __is_defined(__KSYM_##sym))
-f235541699bcf14 Nicolas Pitre   2016-01-22  112  #define __cond_export_sym(sym, sec, conf)			\
-f235541699bcf14 Nicolas Pitre   2016-01-22  113  	___cond_export_sym(sym, sec, conf)
-f235541699bcf14 Nicolas Pitre   2016-01-22  114  #define ___cond_export_sym(sym, sec, enabled)			\
-f235541699bcf14 Nicolas Pitre   2016-01-22  115  	__cond_export_sym_##enabled(sym, sec)
-f235541699bcf14 Nicolas Pitre   2016-01-22  116  #define __cond_export_sym_1(sym, sec) ___EXPORT_SYMBOL(sym, sec)
-f235541699bcf14 Nicolas Pitre   2016-01-22  117  #define __cond_export_sym_0(sym, sec) /* nothing */
-f235541699bcf14 Nicolas Pitre   2016-01-22  118  
-f235541699bcf14 Nicolas Pitre   2016-01-22  119  #else
-f235541699bcf14 Nicolas Pitre   2016-01-22  120  #define __EXPORT_SYMBOL ___EXPORT_SYMBOL
-f235541699bcf14 Nicolas Pitre   2016-01-22  121  #endif
-f235541699bcf14 Nicolas Pitre   2016-01-22  122  
-f50169324df4ad9 Paul Gortmaker  2011-05-23  123  #define EXPORT_SYMBOL(sym)					\
-f50169324df4ad9 Paul Gortmaker  2011-05-23 @124  	__EXPORT_SYMBOL(sym, "")
-f50169324df4ad9 Paul Gortmaker  2011-05-23  125  
-f50169324df4ad9 Paul Gortmaker  2011-05-23  126  #define EXPORT_SYMBOL_GPL(sym)					\
-f50169324df4ad9 Paul Gortmaker  2011-05-23  127  	__EXPORT_SYMBOL(sym, "_gpl")
-f50169324df4ad9 Paul Gortmaker  2011-05-23  128  
-f50169324df4ad9 Paul Gortmaker  2011-05-23  129  #define EXPORT_SYMBOL_GPL_FUTURE(sym)				\
-f50169324df4ad9 Paul Gortmaker  2011-05-23  130  	__EXPORT_SYMBOL(sym, "_gpl_future")
-f50169324df4ad9 Paul Gortmaker  2011-05-23  131  
-f50169324df4ad9 Paul Gortmaker  2011-05-23  132  #ifdef CONFIG_UNUSED_SYMBOLS
-f50169324df4ad9 Paul Gortmaker  2011-05-23  133  #define EXPORT_UNUSED_SYMBOL(sym) __EXPORT_SYMBOL(sym, "_unused")
-f50169324df4ad9 Paul Gortmaker  2011-05-23  134  #define EXPORT_UNUSED_SYMBOL_GPL(sym) __EXPORT_SYMBOL(sym, "_unused_gpl")
-f50169324df4ad9 Paul Gortmaker  2011-05-23  135  #else
-f50169324df4ad9 Paul Gortmaker  2011-05-23  136  #define EXPORT_UNUSED_SYMBOL(sym)
-f50169324df4ad9 Paul Gortmaker  2011-05-23  137  #define EXPORT_UNUSED_SYMBOL_GPL(sym)
-f50169324df4ad9 Paul Gortmaker  2011-05-23  138  #endif
-f50169324df4ad9 Paul Gortmaker  2011-05-23  139  
-f50169324df4ad9 Paul Gortmaker  2011-05-23  140  #endif	/* __GENKSYMS__ */
-f50169324df4ad9 Paul Gortmaker  2011-05-23  141  
-f50169324df4ad9 Paul Gortmaker  2011-05-23  142  #else /* !CONFIG_MODULES... */
-f50169324df4ad9 Paul Gortmaker  2011-05-23  143  
-f50169324df4ad9 Paul Gortmaker  2011-05-23  144  #define EXPORT_SYMBOL(sym)
-f50169324df4ad9 Paul Gortmaker  2011-05-23  145  #define EXPORT_SYMBOL_GPL(sym)
-f50169324df4ad9 Paul Gortmaker  2011-05-23  146  #define EXPORT_SYMBOL_GPL_FUTURE(sym)
-f50169324df4ad9 Paul Gortmaker  2011-05-23  147  #define EXPORT_UNUSED_SYMBOL(sym)
-f50169324df4ad9 Paul Gortmaker  2011-05-23  148  #define EXPORT_UNUSED_SYMBOL_GPL(sym)
-f50169324df4ad9 Paul Gortmaker  2011-05-23  149  
-f50169324df4ad9 Paul Gortmaker  2011-05-23  150  #endif /* CONFIG_MODULES */
-b92021b09df70c1 Rusty Russell   2013-03-15  151  #endif /* !__ASSEMBLY__ */
-f50169324df4ad9 Paul Gortmaker  2011-05-23  152  
-f50169324df4ad9 Paul Gortmaker  2011-05-23  153  #endif /* _LINUX_EXPORT_H */
-
-:::::: The code at line 84 was first introduced by commit
-:::::: 7290d58095712a89f845e1bca05334796dd49ed2 module: use relative references for __ksymtab entries
-
-:::::: TO: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+vim +/cpu_to_le32 +430 fs/ext4/super.c
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---nhsiveojxtyezi2b
+--e5hr7jecab356qul
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICJkgNl0AAy5jb25maWcAjDzZcty2su/5iin74SZ14kSbZefe0gMIghxkSIIGwFn0wlLk
+H4sICNQnNl0AAy5jb25maWcAjDzZcty2su/5iin74SZ14kSbZefe0gMIghxkSIIGwFn0wlLk
 saOKFtdIPon//naDGzaOkzp1ZHY3GlujNzTm9Q+vF+Try9PDzcvd7c39/bfF5/3j/nDzsv+4
 +HR3v/+/RSoWldALlnL9CxAXd49f//n14e7L8+LtL+e/nLw53J4uVvvD4/5+QZ8eP919/gqt
 754ef3j9A/zvNQAfvgCjw/8usNGbe2z/5vPt7eLHnNKfFu9+ufjlBAipqDKet5S2XLWAufo2
@@ -1365,4 +1240,4 @@ osPorm3QoPvxOg0nu814iN4tyd6GkzUeI4gzB6I5P9GiPZ0m/5TjgPid5cvu1n3lMcwjeqdj
 KY73BpS5BFo+nDjqlAeLsZYWZ1nlAeb5vmZ4xrvpi2ZxenJy4JTsk3HjfzBLbtZpgqYw/8qo
 dPcjSwS9foD3BsuwyweF6f8AMD9aLEfaAwA=
 
---nhsiveojxtyezi2b--
+--e5hr7jecab356qul--
