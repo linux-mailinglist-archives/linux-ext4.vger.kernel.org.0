@@ -2,146 +2,224 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F306F01A
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 Jul 2019 18:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0036F82A
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jul 2019 06:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbfGTQxW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 20 Jul 2019 12:53:22 -0400
-Received: from mail.wl.linuxfoundation.org ([198.145.29.98]:41606 "EHLO
-        mail.wl.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726221AbfGTQxW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 20 Jul 2019 12:53:22 -0400
-Received: from mail.wl.linuxfoundation.org (localhost [127.0.0.1])
-        by mail.wl.linuxfoundation.org (Postfix) with ESMTP id 3376D288E4
-        for <linux-ext4@vger.kernel.org>; Sat, 20 Jul 2019 16:53:21 +0000 (UTC)
-Received: by mail.wl.linuxfoundation.org (Postfix, from userid 486)
-        id 2663B288E0; Sat, 20 Jul 2019 16:53:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on
-        pdx-wl-mail.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=2.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS autolearn=unavailable version=3.3.1
-From:   bugzilla-daemon@bugzilla.kernel.org
+        id S1725795AbfGVECR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Jul 2019 00:02:17 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:38013 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbfGVECQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Jul 2019 00:02:16 -0400
+Received: by mail-pf1-f196.google.com with SMTP id y15so16714739pfn.5
+        for <linux-ext4@vger.kernel.org>; Sun, 21 Jul 2019 21:02:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EGeL7vpMOjlhKYSaJcgTzKyZukwGpMIUMcYHdoU+exE=;
+        b=r2OUjGBFR2dFn3xs6GUFAKuzvqMy12y0MoVCLiCxyERrqhazDFOfYMI4aTpmtu9BaT
+         h49vl6Tsr0lHigzwtAC6a3Jqoy7uv8fL5WBr3jdMyB1QGN3fgrc2AM84Ot4B8qD01ueY
+         O+o9hNBW6edZBty0nbLSh3aUkmXSZKbC6OyU/ucdasqAHlmC1RaLvdDEyf2PhRz2Kkr4
+         B/Jv0xUW+di9+MJJ6Xmj240g8sHwFmN3tc5qqwXc38xk6tO51mB4iclzOce4nETV9Qk9
+         NAGHHo507Lp+b0SW3BelqE9ZkixeLeupe63Le25HiM7Mqu42QqoRo3VM1d5TTnmfKiRA
+         kYTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EGeL7vpMOjlhKYSaJcgTzKyZukwGpMIUMcYHdoU+exE=;
+        b=CYmgQbxB8Eipv//SmjANmdyhX/zXdhxNY0459bM0xTznwKUc1V2EFp/ccB/fd3e7uN
+         fzJYkjUc6kws63TFGUXcAxESWCVmgfBqSYI3VV2GPRj8NX4cBLkDoOdVkwmPfQ//R9a0
+         L1ONeGrYkw7AIxWXWOUvCUV89shHaXgpx5g+6WQ7mG3C8/x9gAG9bVb9v0qhPUOySa9C
+         KRvl+R2vQvZFXcP92wD30PuHrXn+bTakLpWr8/mpeMRVVCSsMfRG2Ht/n/PO42dOSKAs
+         3LFKG9iVDJC6WQ7/TQdVERWo49UM293zUwIEg+L0sqX7ZcezVW7IVwcOmtwt8Ysh7jtb
+         qyOA==
+X-Gm-Message-State: APjAAAXaBA82EEsAL05cdjx+88v/+Mf2F8U9jeddm6eeDRQRYeZq0vRo
+        hAM+tb5j0ciR4u5Igtff3RXkrp08
+X-Google-Smtp-Source: APXvYqwP3wSGFcMs4pimohefCx35HAR2o3tZ6T4b8ipjxsm+HKhqKiME4tfvHsHWYkOsbQEuSea2/g==
+X-Received: by 2002:a17:90a:ae12:: with SMTP id t18mr76225474pjq.32.1563768135574;
+        Sun, 21 Jul 2019 21:02:15 -0700 (PDT)
+Received: from harshads0.svl.corp.google.com ([2620:15c:2cd:202:ec1e:207a:e951:9a5b])
+        by smtp.googlemail.com with ESMTPSA id f14sm37420625pfn.53.2019.07.21.21.02.14
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 21 Jul 2019 21:02:15 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
-Subject: [Bug 203317] WARNING: CPU: 2 PID: 925 at fs/ext4/inode.c:3897
- ext4_set_page_dirty+0x39/0x50
-Date:   Sat, 20 Jul 2019 16:53:20 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: slacker702@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-203317-13602-8FKJBkQhTg@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-203317-13602@https.bugzilla.kernel.org/>
-References: <bug-203317-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH 01/11] ext4: add handling for extended mount options
+Date:   Sun, 21 Jul 2019 21:00:01 -0700
+Message-Id: <20190722040011.18892-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.22.0.657.g960e92d24f-goog
 MIME-Version: 1.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=203317
+We are running out of mount option bits. This patch adds handling for
+using s_mount_opt2 and also adds ability to turn on / off the fast
+commit feature. In order to use fast commits, new version e2fsprogs
+needs to set the fast feature commit flag. This also makes sure that
+we have fast commit compatible e2fsprogs before starting to use the
+feature. Mount flag "no_fastcommit", introuced in this patch, can be
+passed to disable the feature at mount time.
 
-slack3r (slacker702@gmail.com) changed:
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+---
+ fs/ext4/ext4.h       |  4 ++++
+ fs/ext4/super.c      | 27 ++++++++++++++++++++++-----
+ include/linux/jbd2.h |  5 ++++-
+ 3 files changed, 30 insertions(+), 6 deletions(-)
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |slacker702@gmail.com
-
---- Comment #3 from slack3r (slacker702@gmail.com) ---
-Got similar here:
-[ 3651.932517] WARNING: CPU: 3 PID: 3625 at fs/ext4/inode.c:3925
-ext4_set_page_dirty+0x3e/0x50 [ext4]
-[ 3651.932522] Modules linked in: fuse ebtable_filter ebtables ip6table_filter
-ip6_tables iptable_filter nct6775 msr hwmon_vid sunrpc intel_rapl
-x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm mousedev joydev
-crct10dif_pclmul crc32_pclmul ghash_clmulni_intel snd_hda_codec_hdmi
-aesni_intel snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio
-aes_x86_64 crypto_simd snd_hda_intel iTCO_wdt iTCO_vendor_support cryptd
-snd_hda_codec glue_helper snd_hda_core i2c_i801 snd_hwdep snd_pcm snd_timer snd
-e1000e mxm_wmi soundcore intel_pch_thermal mei_me mei input_leds intel_cstate
-led_class evdev intel_uncore mac_hid pcc_cpufreq intel_rapl_perf wmi loop sg
-ip_tables x_tables ext4 crc32c_generic crc16 mbcache jbd2 sd_mod serio_raw
-atkbd libps2 ahci libahci libata crc32c_intel scsi_mod i8042 serio hid_logitech
-ff_memless i915 intel_gtt i2c_algo_bit cec rc_core drm_kms_helper syscopyarea
-sysfillrect sysimgblt fb_sys_fops drm agpgart
-[ 3651.932597] CPU: 3 PID: 3625 Comm: kworker/u8:3 Not tainted 5.2.1-1-mainline
-#1
-[ 3651.932599] Hardware name: To Be Filled By O.E.M. To Be Filled By
-O.E.M./Z170M Extreme4, BIOS P7.20 12/13/2016
-[ 3651.932610] Workqueue: writeback wb_workfn (flush-8:0)
-[ 3651.932662] RIP: 0010:ext4_set_page_dirty+0x3e/0x50 [ext4]
-[ 3651.932669] Code: 48 8b 00 a8 01 75 16 48 8b 57 08 48 8d 42 ff 83 e2 01 48
-0f 44 c7 48 8b 00 a8 08 74 0d 48 8b 07 f6 c4 20 74 0f e9 72 75 8d f1 <0f> 0b 48
-8b 07 f6 c4 20 75 f1 0f 0b e9 61 75 8d f1 90 0f 1f 44 00
-[ 3651.932672] RSP: 0018:ffffb250c86ab700 EFLAGS: 00010246
-[ 3651.932677] RAX: 02ffff0000002036 RBX: ffff9ee52c494880 RCX:
-0000000000000000
-[ 3651.932679] RDX: 0000000000000000 RSI: 0000000206000000 RDI:
-ffffe7a6481cdc40
-[ 3651.932684] RBP: ffffe7a6481cdc40 R08: 0000000206000000 R09:
-0000000000000000
-[ 3651.932686] R10: ffff9ee55baacb98 R11: 0000000000000000 R12:
-0000000000207371
-[ 3651.932688] R13: ffff9ee52c7556c0 R14: ffff9ee54e66a790 R15:
-0000000000000000
-[ 3651.932692] FS:  0000000000000000(0000) GS:ffff9ee56eb80000(0000)
-knlGS:0000000000000000
-[ 3651.932695] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 3651.932697] CR2: 0000556097c527c0 CR3: 0000000159a0a003 CR4:
-00000000003606e0
-[ 3651.932699] Call Trace:
-[ 3651.932888]  i915_gem_userptr_put_pages+0x13f/0x1c0 [i915]
-[ 3651.933030]  __i915_gem_object_put_pages+0x5e/0xa0 [i915]
-[ 3651.933187]  userptr_mn_invalidate_range_start+0x209/0x260 [i915]
-[ 3651.933212]  __mmu_notifier_invalidate_range_start+0x57/0xa0
-[ 3651.933229]  page_mkclean_one+0x1b6/0x1d0
-[ 3651.933243]  rmap_walk_file+0xf4/0x260
-[ 3651.933253]  page_mkclean+0xa4/0xc0
-[ 3651.933261]  ? page_referenced_one+0x170/0x170
-[ 3651.933269]  ? pmdp_collapse_flush+0x10/0x10
-[ 3651.933276]  clear_page_dirty_for_io+0x9c/0x240
-[ 3651.933353]  mpage_submit_page+0x1f/0x70 [ext4]
-[ 3651.933410]  mpage_process_page_bufs+0xe7/0xf0 [ext4]
-[ 3651.933458]  mpage_prepare_extent_to_map+0x1c4/0x280 [ext4]
-[ 3651.933513]  ext4_writepages+0x4f7/0xef0 [ext4]
-[ 3651.933527]  ? update_blocked_averages+0x894/0xa90
-[ 3651.933538]  ? cpumask_next_and+0x19/0x20
-[ 3651.933547]  ? do_writepages+0x43/0xd0
-[ 3651.933599]  ? ext4_mark_inode_dirty+0x1e0/0x1e0 [ext4]
-[ 3651.933606]  do_writepages+0x43/0xd0
-[ 3651.933645]  __writeback_single_inode+0x3d/0x3d0
-[ 3651.933653]  writeback_sb_inodes+0x1f0/0x430
-[ 3651.933666]  __writeback_inodes_wb+0x4c/0xc0
-[ 3651.933674]  wb_writeback+0x28f/0x340
-[ 3651.933688]  ? get_nr_inodes+0x32/0x50
-[ 3651.933695]  wb_workfn+0x3b6/0x480
-[ 3651.933714]  process_one_work+0x1d1/0x3e0
-[ 3651.933730]  worker_thread+0x4a/0x3d0
-[ 3651.933752]  kthread+0xfb/0x130
-[ 3651.933761]  ? process_one_work+0x3e0/0x3e0
-[ 3651.933774]  ? kthread_park+0x90/0x90
-[ 3651.933786]  ret_from_fork+0x35/0x40
-[ 3651.933799] ---[ end trace 7a0001b6900a9f55 ]---
-
-Kernel version: 5.2.1
-
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index bf660aa7a9e0..becbda38b7db 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1146,6 +1146,8 @@ struct ext4_inode_info {
+ #define EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM	0x00000008 /* User explicitly
+ 						specified journal checksum */
+ 
++#define EXT4_MOUNT2_JOURNAL_FAST_COMMIT	0x00000010 /* Journal fast commit */
++
+ #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
+ 						~EXT4_MOUNT_##opt
+ #define set_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt |= \
+@@ -1643,6 +1645,7 @@ static inline void ext4_clear_state_flags(struct ext4_inode_info *ei)
+ #define EXT4_FEATURE_COMPAT_RESIZE_INODE	0x0010
+ #define EXT4_FEATURE_COMPAT_DIR_INDEX		0x0020
+ #define EXT4_FEATURE_COMPAT_SPARSE_SUPER2	0x0200
++#define EXT4_FEATURE_COMPAT_FAST_COMMIT		0x0400
+ 
+ #define EXT4_FEATURE_RO_COMPAT_SPARSE_SUPER	0x0001
+ #define EXT4_FEATURE_RO_COMPAT_LARGE_FILE	0x0002
+@@ -1743,6 +1746,7 @@ EXT4_FEATURE_COMPAT_FUNCS(xattr,		EXT_ATTR)
+ EXT4_FEATURE_COMPAT_FUNCS(resize_inode,		RESIZE_INODE)
+ EXT4_FEATURE_COMPAT_FUNCS(dir_index,		DIR_INDEX)
+ EXT4_FEATURE_COMPAT_FUNCS(sparse_super2,	SPARSE_SUPER2)
++EXT4_FEATURE_COMPAT_FUNCS(fast_commit,		FAST_COMMIT)
+ 
+ EXT4_FEATURE_RO_COMPAT_FUNCS(sparse_super,	SPARSE_SUPER)
+ EXT4_FEATURE_RO_COMPAT_FUNCS(large_file,	LARGE_FILE)
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 4079605d437a..e376ac040cce 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1455,6 +1455,7 @@ enum {
+ 	Opt_dioread_nolock, Opt_dioread_lock,
+ 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
+ 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
++	Opt_no_fastcommit
+ };
+ 
+ static const match_table_t tokens = {
+@@ -1537,6 +1538,7 @@ static const match_table_t tokens = {
+ 	{Opt_init_itable, "init_itable=%u"},
+ 	{Opt_init_itable, "init_itable"},
+ 	{Opt_noinit_itable, "noinit_itable"},
++	{Opt_no_fastcommit, "no_fastcommit"},
+ 	{Opt_max_dir_size_kb, "max_dir_size_kb=%u"},
+ 	{Opt_test_dummy_encryption, "test_dummy_encryption"},
+ 	{Opt_nombcache, "nombcache"},
+@@ -1659,6 +1661,7 @@ static int clear_qf_name(struct super_block *sb, int qtype)
+ #define MOPT_NO_EXT3	0x0200
+ #define MOPT_EXT4_ONLY	(MOPT_NO_EXT2 | MOPT_NO_EXT3)
+ #define MOPT_STRING	0x0400
++#define MOPT_2		0x0800
+ 
+ static const struct mount_opts {
+ 	int	token;
+@@ -1751,6 +1754,8 @@ static const struct mount_opts {
+ 	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
+ 	{Opt_test_dummy_encryption, 0, MOPT_GTE0},
+ 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
++	{Opt_no_fastcommit, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
++	 MOPT_CLEAR | MOPT_2 | MOPT_EXT4_ONLY},
+ 	{Opt_err, 0, 0}
+ };
+ 
+@@ -1858,8 +1863,9 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
+ 			set_opt2(sb, EXPLICIT_DELALLOC);
+ 		} else if (m->mount_opt & EXT4_MOUNT_JOURNAL_CHECKSUM) {
+ 			set_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM);
+-		} else
++		} else if (m->mount_opt) {
+ 			return -1;
++		}
+ 	}
+ 	if (m->flags & MOPT_CLEAR_ERR)
+ 		clear_opt(sb, ERRORS_MASK);
+@@ -2027,10 +2033,17 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
+ 			WARN_ON(1);
+ 			return -1;
+ 		}
+-		if (arg != 0)
+-			sbi->s_mount_opt |= m->mount_opt;
+-		else
+-			sbi->s_mount_opt &= ~m->mount_opt;
++		if (m->flags & MOPT_2) {
++			if (arg != 0)
++				sbi->s_mount_opt2 |= m->mount_opt;
++			else
++				sbi->s_mount_opt2 &= ~m->mount_opt;
++		} else {
++			if (arg != 0)
++				sbi->s_mount_opt |= m->mount_opt;
++			else
++				sbi->s_mount_opt &= ~m->mount_opt;
++		}
+ 	}
+ 	return 1;
+ }
+@@ -3733,6 +3746,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ #ifdef CONFIG_EXT4_FS_POSIX_ACL
+ 	set_opt(sb, POSIX_ACL);
+ #endif
++	if (ext4_has_feature_fast_commit(sb))
++		set_opt2(sb, JOURNAL_FAST_COMMIT);
++
+ 	/* don't forget to enable journal_csum when metadata_csum is enabled. */
+ 	if (ext4_has_metadata_csum(sb))
+ 		set_opt(sb, JOURNAL_CHECKSUM);
+@@ -4334,6 +4350,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 		sbi->s_def_mount_opt &= ~EXT4_MOUNT_JOURNAL_CHECKSUM;
+ 		clear_opt(sb, JOURNAL_CHECKSUM);
+ 		clear_opt(sb, DATA_FLAGS);
++		clear_opt2(sb, JOURNAL_FAST_COMMIT);
+ 		sbi->s_journal = NULL;
+ 		needs_recovery = 0;
+ 		goto no_journal;
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index df03825ad1a1..b7eed49b8ecd 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -288,6 +288,7 @@ typedef struct journal_superblock_s
+ #define JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT	0x00000004
+ #define JBD2_FEATURE_INCOMPAT_CSUM_V2		0x00000008
+ #define JBD2_FEATURE_INCOMPAT_CSUM_V3		0x00000010
++#define JBD2_FEATURE_INCOMPAT_FAST_COMMIT	0x00000020
+ 
+ /* See "journal feature predicate functions" below */
+ 
+@@ -298,7 +299,8 @@ typedef struct journal_superblock_s
+ 					JBD2_FEATURE_INCOMPAT_64BIT | \
+ 					JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT | \
+ 					JBD2_FEATURE_INCOMPAT_CSUM_V2 | \
+-					JBD2_FEATURE_INCOMPAT_CSUM_V3)
++					JBD2_FEATURE_INCOMPAT_CSUM_V3 | \
++					JBD2_FEATURE_INCOMPAT_FAST_COMMIT)
+ 
+ #ifdef __KERNEL__
+ 
+@@ -1235,6 +1237,7 @@ JBD2_FEATURE_INCOMPAT_FUNCS(64bit,		64BIT)
+ JBD2_FEATURE_INCOMPAT_FUNCS(async_commit,	ASYNC_COMMIT)
+ JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
+ JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
++JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
+ 
+ /*
+  * Journal flag definitions
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+2.22.0.657.g960e92d24f-goog
+
