@@ -2,297 +2,420 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F327083A
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jul 2019 20:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC0F70A71
+	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jul 2019 22:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731207AbfGVSPL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Jul 2019 14:15:11 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:45918 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728594AbfGVSPL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Jul 2019 14:15:11 -0400
-Received: by mail-pl1-f195.google.com with SMTP id y8so19525289plr.12
-        for <linux-ext4@vger.kernel.org>; Mon, 22 Jul 2019 11:15:10 -0700 (PDT)
+        id S1730214AbfGVUNk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 22 Jul 2019 16:13:40 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:41760 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729799AbfGVUNk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 22 Jul 2019 16:13:40 -0400
+Received: by mail-pf1-f193.google.com with SMTP id m30so17910542pff.8
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Jul 2019 13:13:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=w3DI0BB6GYPm5oWPb+PQZdXIBLTUy6mAYmBlBQD2jtQ=;
-        b=0Y9l5k2+5SJ5eKsdOsmn3oqsULEzzYx+Netj4ijTet2bS/Muiu5DK2b17MYjieCC0V
-         /yIIhRP7ws6xQM7Uuu2ZR6VlJkW6SOtLhnqWiJljxHsGvbcrdZPNME5WuT8rcQkOW22Z
-         VxnPhBPODzYLOsubZzct0zuLrbB7axkwBf+5lX2SfzuRZdayR/TSTaC/7fJ1QDOeAgla
-         OO2WRa+OAGJFw6fe8l2yjMFD8aKtZyVtw80ZA111RyGpbHMzjHkz1O7dC6B51Su396JV
-         l6O09S3szwTfU7C7lSwvf72uWmQa6oWTZSewaHybZiASYffO32NVOUCt1GwHWoO/ULGp
-         CFjQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MBGXoEQOWEoS+pbE8WDgU6eaM9JwlPKYmsQ8uHe+ttk=;
+        b=mgvA6dvVpsSaAJwSrYoBJ8sO2zK9oMVEl920BIbYhhvZFMXbxZ63GL01SDviu+rqrx
+         wBW2IycmqAZWic5EYWRq0K5401vu4EJh7ECzEeZpfwNUZnUQUCQQpJi708i6pY65DF5u
+         EZS1vBkRR7DbQnsULHXCpZvzdvYiHduNLzt7My/NTa4Iow8ojUpcpwQRlQVYiSFTdiUZ
+         YEcxq0BqA6GfZgnv76apux2buXziZb4c0q5rBykIekW/Y4+wkgmlVA2qu3hiGskCO7XY
+         Dgv3dj1PeNR2Xv5033GQQQA7u54BCDoZIvD62U8CKBQ7iJK3G6RtKWAVXQcLt8AXl0pk
+         PLPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=w3DI0BB6GYPm5oWPb+PQZdXIBLTUy6mAYmBlBQD2jtQ=;
-        b=DYbXEceg/bPrQQNU9gMTmBLqZn8WV4CaiLlPNYShht++LiDtq/Dhp8EOhHLCdZuycf
-         MaMyE4tXDY133J/ypPRDxD20Bx0XJIapMwfffS6RblDYHFuFk0wi49bKvmzlTHw+HCG0
-         YUUi6CZDgoQs6ncNYxLly65OyhIsoSehKdAKjPJbBPpa9VOQlM+t7JtujQmY35EN9V4U
-         NdJ/WCZ8Vkk3S2EX22g4vnBuo2WpAn1cOIzXmV42OMGGNygR/Hm/f0+fiKdpOrIErtmz
-         Xq9JTqFH/fqUEAC3NJHJFE6S8nQRYHDeBao6U3tggWznGuRQxveuNriW/GUAl4i5aOHk
-         xmHw==
-X-Gm-Message-State: APjAAAWQESidocB04m4jv3EpOs1RsIx6NgziV1y11zPc2D8kcGyoFmwQ
-        ShpKD+MotOj6Br1vY9/4TkY=
-X-Google-Smtp-Source: APXvYqzzPj56bvQ+YtL1O0AsDzh3GfO8/05saJCprS0YI1t+ib0QJRpZicya4zoeAHPgquYdWC/FhA==
-X-Received: by 2002:a17:902:e282:: with SMTP id cf2mr77555069plb.301.1563819310161;
-        Mon, 22 Jul 2019 11:15:10 -0700 (PDT)
-Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id f64sm42727885pfa.115.2019.07.22.11.15.08
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Jul 2019 11:15:09 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <41522E01-D5E5-4DC6-8AD4-09E3FA19F112@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_7E851EE6-9C1A-4AAB-8CEA-02923A9A5BCA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 01/11] ext4: add handling for extended mount options
-Date:   Mon, 22 Jul 2019 12:15:11 -0600
-In-Reply-To: <20190722040011.18892-1-harshadshirwadkar@gmail.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-References: <20190722040011.18892-1-harshadshirwadkar@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MBGXoEQOWEoS+pbE8WDgU6eaM9JwlPKYmsQ8uHe+ttk=;
+        b=D/h+NW8BUYIh/UDiPdLsXwEZPOk+FVuKkyLatL7nMWsy0TsGQpIxwOKclpvNSsEmNu
+         DypBJcT+3TIF3/ffMF5l08sumHWc9J4aL0uCMsGqZ0NkCfFIxZalr1xuAIBVGTbwdV+Z
+         R6cbdKprH6dGb3RHxQS+ja1r1nC7XtGIcB9eNfJrp3g5Fqx8Edz4l/DszPYEIEntsi88
+         pH4zK9+EiEKuFxng+W7ba/ngv6sUa0lSDKN4eeEfHTAJ3lwDp5v9NJUE3EA9H/7FFW9C
+         R2AwbYicmLWBpEMg01hnN6sR5dIRDZFiwbmQHsxV0s4M4ghaRh7o29i8Elg50mJOaM5d
+         M9Kg==
+X-Gm-Message-State: APjAAAUd2/Y1D22yDMaRvOcoyq3Lb9DK2F8o5dw2CNC+QYATNxZvDGz/
+        oEF8dTErW0usWFLZQNgZFPvgbDOR
+X-Google-Smtp-Source: APXvYqw/Um+g/iT+9qb/uPFGojm/jNklGnE7v4+XD0EyF+itpqQx1L3l0yRsC/Xzq9vpOqzw8+BjBA==
+X-Received: by 2002:a17:90a:e397:: with SMTP id b23mr78935506pjz.117.1563826419241;
+        Mon, 22 Jul 2019 13:13:39 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::3:c914])
+        by smtp.gmail.com with ESMTPSA id 137sm50328560pfz.112.2019.07.22.13.13.38
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 22 Jul 2019 13:13:38 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] psi: annotate refault stalls from IO submission
+Date:   Mon, 22 Jul 2019 16:13:37 -0400
+Message-Id: <20190722201337.19180-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+psi tracks the time tasks wait for refaulting pages to become
+uptodate, but it does not track the time spent submitting the IO. The
+submission part can be significant if backing storage is contended or
+when cgroup throttling (io.latency) is in effect - a lot of time is
+spent in submit_bio(). In that case, we underreport memory pressure.
 
---Apple-Mail=_7E851EE6-9C1A-4AAB-8CEA-02923A9A5BCA
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Annotate the submit_bio() paths (or the indirection through readpage)
+for refaults and swapin to get proper psi coverage of delays there.
 
-Unless I missed it, this patch series needs a 00/11 email that describes
-*what* "fast commit" is, and why we want it.  This should include some
-benchmark results, since (I'd assume) that the "fast" part of the =
-feature
-name implies a performance improvement?
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ fs/btrfs/extent_io.c | 14 ++++++++++++--
+ fs/ext4/readpage.c   |  9 +++++++++
+ fs/f2fs/data.c       |  8 ++++++++
+ fs/mpage.c           |  9 +++++++++
+ mm/filemap.c         | 20 ++++++++++++++++++++
+ mm/page_io.c         | 11 ++++++++---
+ mm/readahead.c       | 24 +++++++++++++++++++++++-
+ 7 files changed, 89 insertions(+), 6 deletions(-)
 
-Cheers, Andreas
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 1eb671c16ff1..2d2b3239965a 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -13,6 +13,7 @@
+ #include <linux/pagevec.h>
+ #include <linux/prefetch.h>
+ #include <linux/cleancache.h>
++#include <linux/psi.h>
+ #include "extent_io.h"
+ #include "extent_map.h"
+ #include "ctree.h"
+@@ -4267,6 +4268,9 @@ int extent_readpages(struct address_space *mapping, struct list_head *pages,
+ 	struct extent_io_tree *tree = &BTRFS_I(mapping->host)->io_tree;
+ 	int nr = 0;
+ 	u64 prev_em_start = (u64)-1;
++	int ret = 0;
++	bool refault = false;
++	unsigned long pflags;
+ 
+ 	while (!list_empty(pages)) {
+ 		u64 contig_end = 0;
+@@ -4281,6 +4285,10 @@ int extent_readpages(struct address_space *mapping, struct list_head *pages,
+ 				put_page(page);
+ 				break;
+ 			}
++			if (PageWorkingset(page) && !refault) {
++				psi_memstall_enter(&pflags);
++				refault = true;
++			}
+ 
+ 			pagepool[nr++] = page;
+ 			contig_end = page_offset(page) + PAGE_SIZE - 1;
+@@ -4301,8 +4309,10 @@ int extent_readpages(struct address_space *mapping, struct list_head *pages,
+ 		free_extent_map(em_cached);
+ 
+ 	if (bio)
+-		return submit_one_bio(bio, 0, bio_flags);
+-	return 0;
++		ret = submit_one_bio(bio, 0, bio_flags);
++	if (refault)
++		psi_memstall_leave(&pflags);
++	return ret;
+ }
+ 
+ /*
+diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
+index c916017db334..f28385900b64 100644
+--- a/fs/ext4/readpage.c
++++ b/fs/ext4/readpage.c
+@@ -44,6 +44,7 @@
+ #include <linux/backing-dev.h>
+ #include <linux/pagevec.h>
+ #include <linux/cleancache.h>
++#include <linux/psi.h>
+ 
+ #include "ext4.h"
+ 
+@@ -116,6 +117,8 @@ int ext4_mpage_readpages(struct address_space *mapping,
+ 	int length;
+ 	unsigned relative_block = 0;
+ 	struct ext4_map_blocks map;
++	bool refault = false;
++	unsigned long pflags;
+ 
+ 	map.m_pblk = 0;
+ 	map.m_lblk = 0;
+@@ -134,6 +137,10 @@ int ext4_mpage_readpages(struct address_space *mapping,
+ 			if (add_to_page_cache_lru(page, mapping, page->index,
+ 				  readahead_gfp_mask(mapping)))
+ 				goto next_page;
++			if (PageWorkingset(page) && !refault) {
++				psi_memstall_enter(&pflags);
++				refault = true;
++			}
+ 		}
+ 
+ 		if (page_has_buffers(page))
+@@ -291,5 +298,7 @@ int ext4_mpage_readpages(struct address_space *mapping,
+ 	BUG_ON(pages && !list_empty(pages));
+ 	if (bio)
+ 		submit_bio(bio);
++	if (refault)
++		psi_memstall_leave(&pflags);
+ 	return 0;
+ }
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 2d0a1a97d3fd..fe9c34247be4 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1699,6 +1699,8 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
+ 	sector_t last_block_in_bio = 0;
+ 	struct inode *inode = mapping->host;
+ 	struct f2fs_map_blocks map;
++	bool refault = false;
++	unsigned long pflags;
+ 	int ret = 0;
+ 
+ 	map.m_pblk = 0;
+@@ -1720,6 +1722,10 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
+ 						  page_index(page),
+ 						  readahead_gfp_mask(mapping)))
+ 				goto next_page;
++			if (PageWorkingset(page) && !refault) {
++				psi_memstall_enter(&pflags);
++				refault = true;
++			}
+ 		}
+ 
+ 		ret = f2fs_read_single_page(inode, page, nr_pages, &map, &bio,
+@@ -1736,6 +1742,8 @@ static int f2fs_mpage_readpages(struct address_space *mapping,
+ 	BUG_ON(pages && !list_empty(pages));
+ 	if (bio)
+ 		__submit_bio(F2FS_I_SB(inode), bio, DATA);
++	if (refault)
++		psi_memstall_leave(&pflags);
+ 	return pages ? 0 : ret;
+ }
+ 
+diff --git a/fs/mpage.c b/fs/mpage.c
+index 436a85260394..f4ef57f1ea06 100644
+--- a/fs/mpage.c
++++ b/fs/mpage.c
+@@ -30,6 +30,7 @@
+ #include <linux/backing-dev.h>
+ #include <linux/pagevec.h>
+ #include <linux/cleancache.h>
++#include <linux/psi.h>
+ #include "internal.h"
+ 
+ /*
+@@ -389,6 +390,8 @@ mpage_readpages(struct address_space *mapping, struct list_head *pages,
+ 		.get_block = get_block,
+ 		.is_readahead = true,
+ 	};
++	bool refault = false;
++	unsigned long pflags;
+ 	unsigned page_idx;
+ 
+ 	for (page_idx = 0; page_idx < nr_pages; page_idx++) {
+@@ -404,10 +407,16 @@ mpage_readpages(struct address_space *mapping, struct list_head *pages,
+ 			args.bio = do_mpage_readpage(&args);
+ 		}
+ 		put_page(page);
++		if (PageWorkingset(page) && !refault) {
++			psi_memstall_enter(&pflags);
++			refault = true;
++		}
+ 	}
+ 	BUG_ON(!list_empty(pages));
+ 	if (args.bio)
+ 		mpage_bio_submit(REQ_OP_READ, REQ_RAHEAD, args.bio);
++	if (refault)
++		psi_memstall_leave(&pflags);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(mpage_readpages);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 8129eaa5f257..667fbd3f7eb2 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2009,6 +2009,8 @@ static ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 		pgoff_t end_index;
+ 		loff_t isize;
+ 		unsigned long nr, ret;
++		unsigned long pflags;
++		bool refault;
+ 
+ 		cond_resched();
+ find_page:
+@@ -2157,9 +2159,17 @@ static ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 		 * PG_error will be set again if readpage fails.
+ 		 */
+ 		ClearPageError(page);
++
++		refault = PageWorkingset(page);
++		if (refault)
++			psi_memstall_enter(&pflags);
++
+ 		/* Start the actual read. The read will unlock the page. */
+ 		error = mapping->a_ops->readpage(filp, page);
+ 
++		if (refault)
++			psi_memstall_leave(&pflags);
++
+ 		if (unlikely(error)) {
+ 			if (error == AOP_TRUNCATED_PAGE) {
+ 				put_page(page);
+@@ -2753,11 +2763,14 @@ static struct page *do_read_cache_page(struct address_space *mapping,
+ 				void *data,
+ 				gfp_t gfp)
+ {
++	bool refault = false;
+ 	struct page *page;
+ 	int err;
+ repeat:
+ 	page = find_get_page(mapping, index);
+ 	if (!page) {
++		unsigned long pflags;
++
+ 		page = __page_cache_alloc(gfp);
+ 		if (!page)
+ 			return ERR_PTR(-ENOMEM);
+@@ -2770,12 +2783,19 @@ static struct page *do_read_cache_page(struct address_space *mapping,
+ 			return ERR_PTR(err);
+ 		}
+ 
++		refault = PageWorkingset(page);
+ filler:
++		if (refault)
++			psi_memstall_enter(&pflags);
++
+ 		if (filler)
+ 			err = filler(data, page);
+ 		else
+ 			err = mapping->a_ops->readpage(data, page);
+ 
++		if (refault)
++			psi_memstall_leave(&pflags);
++
+ 		if (err < 0) {
+ 			put_page(page);
+ 			return ERR_PTR(err);
+diff --git a/mm/page_io.c b/mm/page_io.c
+index 24ee600f9131..e878e9559015 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -24,6 +24,7 @@
+ #include <linux/blkdev.h>
+ #include <linux/uio.h>
+ #include <linux/sched/task.h>
++#include <linux/psi.h>
+ #include <asm/pgtable.h>
+ 
+ static struct bio *get_swap_bio(gfp_t gfp_flags,
+@@ -354,10 +355,14 @@ int swap_readpage(struct page *page, bool synchronous)
+ 	struct swap_info_struct *sis = page_swap_info(page);
+ 	blk_qc_t qc;
+ 	struct gendisk *disk;
++	unsigned long pflags;
+ 
+ 	VM_BUG_ON_PAGE(!PageSwapCache(page) && !synchronous, page);
+ 	VM_BUG_ON_PAGE(!PageLocked(page), page);
+ 	VM_BUG_ON_PAGE(PageUptodate(page), page);
++
++	psi_memstall_enter(&pflags);
++
+ 	if (frontswap_load(page) == 0) {
+ 		SetPageUptodate(page);
+ 		unlock_page(page);
+@@ -371,7 +376,7 @@ int swap_readpage(struct page *page, bool synchronous)
+ 		ret = mapping->a_ops->readpage(swap_file, page);
+ 		if (!ret)
+ 			count_vm_event(PSWPIN);
+-		return ret;
++		goto out;
+ 	}
+ 
+ 	ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
+@@ -382,7 +387,7 @@ int swap_readpage(struct page *page, bool synchronous)
+ 		}
+ 
+ 		count_vm_event(PSWPIN);
+-		return 0;
++		goto out;
+ 	}
+ 
+ 	ret = 0;
+@@ -416,8 +421,8 @@ int swap_readpage(struct page *page, bool synchronous)
+ 	}
+ 	__set_current_state(TASK_RUNNING);
+ 	bio_put(bio);
+-
+ out:
++	psi_memstall_leave(&pflags);
+ 	return ret;
+ }
+ 
+diff --git a/mm/readahead.c b/mm/readahead.c
+index 2fe72cd29b47..a89522a053ce 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -22,6 +22,7 @@
+ #include <linux/mm_inline.h>
+ #include <linux/blk-cgroup.h>
+ #include <linux/fadvise.h>
++#include <linux/psi.h>
+ 
+ #include "internal.h"
+ 
+@@ -92,6 +93,9 @@ int read_cache_pages(struct address_space *mapping, struct list_head *pages,
+ 	int ret = 0;
+ 
+ 	while (!list_empty(pages)) {
++		unsigned long pflags;
++		bool refault;
++
+ 		page = lru_to_page(pages);
+ 		list_del(&page->lru);
+ 		if (add_to_page_cache_lru(page, mapping, page->index,
+@@ -101,7 +105,15 @@ int read_cache_pages(struct address_space *mapping, struct list_head *pages,
+ 		}
+ 		put_page(page);
+ 
++		refault = PageWorkingset(page);
++		if (refault)
++			psi_memstall_enter(&pflags);
++
+ 		ret = filler(data, page);
++
++		if (refault)
++			psi_memstall_leave(&pflags);
++
+ 		if (unlikely(ret)) {
+ 			read_cache_pages_invalidate_pages(mapping, pages);
+ 			break;
+@@ -132,8 +144,18 @@ static int read_pages(struct address_space *mapping, struct file *filp,
+ 	for (page_idx = 0; page_idx < nr_pages; page_idx++) {
+ 		struct page *page = lru_to_page(pages);
+ 		list_del(&page->lru);
+-		if (!add_to_page_cache_lru(page, mapping, page->index, gfp))
++		if (!add_to_page_cache_lru(page, mapping, page->index, gfp)) {
++			bool refault = PageWorkingset(page);
++			unsigned long pflags;
++
++			if (refault)
++				psi_memstall_enter(&pflags);
++
+ 			mapping->a_ops->readpage(filp, page);
++
++			if (refault)
++				psi_memstall_leave(&pflags);
++		}
+ 		put_page(page);
+ 	}
+ 	ret = 0;
+-- 
+2.22.0
 
-> On Jul 21, 2019, at 10:00 PM, Harshad Shirwadkar =
-<harshadshirwadkar@gmail.com> wrote:
->=20
-> We are running out of mount option bits. This patch adds handling for
-> using s_mount_opt2 and also adds ability to turn on / off the fast
-> commit feature. In order to use fast commits, new version e2fsprogs
-> needs to set the fast feature commit flag. This also makes sure that
-> we have fast commit compatible e2fsprogs before starting to use the
-> feature. Mount flag "no_fastcommit", introuced in this patch, can be
-> passed to disable the feature at mount time.
->=20
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> ---
-> fs/ext4/ext4.h       |  4 ++++
-> fs/ext4/super.c      | 27 ++++++++++++++++++++++-----
-> include/linux/jbd2.h |  5 ++++-
-> 3 files changed, 30 insertions(+), 6 deletions(-)
->=20
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index bf660aa7a9e0..becbda38b7db 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1146,6 +1146,8 @@ struct ext4_inode_info {
-> #define EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM	0x00000008 /* User =
-explicitly
-> 						specified journal =
-checksum */
->=20
-> +#define EXT4_MOUNT2_JOURNAL_FAST_COMMIT	0x00000010 /* Journal =
-fast commit */
-> +
-> #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &=3D \
-> 						~EXT4_MOUNT_##opt
-> #define set_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt |=3D \
-> @@ -1643,6 +1645,7 @@ static inline void ext4_clear_state_flags(struct =
-ext4_inode_info *ei)
-> #define EXT4_FEATURE_COMPAT_RESIZE_INODE	0x0010
-> #define EXT4_FEATURE_COMPAT_DIR_INDEX		0x0020
-> #define EXT4_FEATURE_COMPAT_SPARSE_SUPER2	0x0200
-> +#define EXT4_FEATURE_COMPAT_FAST_COMMIT		0x0400
->=20
-> #define EXT4_FEATURE_RO_COMPAT_SPARSE_SUPER	0x0001
-> #define EXT4_FEATURE_RO_COMPAT_LARGE_FILE	0x0002
-> @@ -1743,6 +1746,7 @@ EXT4_FEATURE_COMPAT_FUNCS(xattr,		=
-EXT_ATTR)
-> EXT4_FEATURE_COMPAT_FUNCS(resize_inode,		RESIZE_INODE)
-> EXT4_FEATURE_COMPAT_FUNCS(dir_index,		DIR_INDEX)
-> EXT4_FEATURE_COMPAT_FUNCS(sparse_super2,	SPARSE_SUPER2)
-> +EXT4_FEATURE_COMPAT_FUNCS(fast_commit,		FAST_COMMIT)
->=20
-> EXT4_FEATURE_RO_COMPAT_FUNCS(sparse_super,	SPARSE_SUPER)
-> EXT4_FEATURE_RO_COMPAT_FUNCS(large_file,	LARGE_FILE)
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 4079605d437a..e376ac040cce 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1455,6 +1455,7 @@ enum {
-> 	Opt_dioread_nolock, Opt_dioread_lock,
-> 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
-> 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
-> +	Opt_no_fastcommit
-> };
->=20
-> static const match_table_t tokens =3D {
-> @@ -1537,6 +1538,7 @@ static const match_table_t tokens =3D {
-> 	{Opt_init_itable, "init_itable=3D%u"},
-> 	{Opt_init_itable, "init_itable"},
-> 	{Opt_noinit_itable, "noinit_itable"},
-> +	{Opt_no_fastcommit, "no_fastcommit"},
-> 	{Opt_max_dir_size_kb, "max_dir_size_kb=3D%u"},
-> 	{Opt_test_dummy_encryption, "test_dummy_encryption"},
-> 	{Opt_nombcache, "nombcache"},
-> @@ -1659,6 +1661,7 @@ static int clear_qf_name(struct super_block *sb, =
-int qtype)
-> #define MOPT_NO_EXT3	0x0200
-> #define MOPT_EXT4_ONLY	(MOPT_NO_EXT2 | MOPT_NO_EXT3)
-> #define MOPT_STRING	0x0400
-> +#define MOPT_2		0x0800
->=20
-> static const struct mount_opts {
-> 	int	token;
-> @@ -1751,6 +1754,8 @@ static const struct mount_opts {
-> 	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
-> 	{Opt_test_dummy_encryption, 0, MOPT_GTE0},
-> 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
-> +	{Opt_no_fastcommit, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
-> +	 MOPT_CLEAR | MOPT_2 | MOPT_EXT4_ONLY},
-> 	{Opt_err, 0, 0}
-> };
->=20
-> @@ -1858,8 +1863,9 @@ static int handle_mount_opt(struct super_block =
-*sb, char *opt, int token,
-> 			set_opt2(sb, EXPLICIT_DELALLOC);
-> 		} else if (m->mount_opt & EXT4_MOUNT_JOURNAL_CHECKSUM) {
-> 			set_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM);
-> -		} else
-> +		} else if (m->mount_opt) {
-> 			return -1;
-> +		}
-> 	}
-> 	if (m->flags & MOPT_CLEAR_ERR)
-> 		clear_opt(sb, ERRORS_MASK);
-> @@ -2027,10 +2033,17 @@ static int handle_mount_opt(struct super_block =
-*sb, char *opt, int token,
-> 			WARN_ON(1);
-> 			return -1;
-> 		}
-> -		if (arg !=3D 0)
-> -			sbi->s_mount_opt |=3D m->mount_opt;
-> -		else
-> -			sbi->s_mount_opt &=3D ~m->mount_opt;
-> +		if (m->flags & MOPT_2) {
-> +			if (arg !=3D 0)
-> +				sbi->s_mount_opt2 |=3D m->mount_opt;
-> +			else
-> +				sbi->s_mount_opt2 &=3D ~m->mount_opt;
-> +		} else {
-> +			if (arg !=3D 0)
-> +				sbi->s_mount_opt |=3D m->mount_opt;
-> +			else
-> +				sbi->s_mount_opt &=3D ~m->mount_opt;
-> +		}
-> 	}
-> 	return 1;
-> }
-> @@ -3733,6 +3746,9 @@ static int ext4_fill_super(struct super_block =
-*sb, void *data, int silent)
-> #ifdef CONFIG_EXT4_FS_POSIX_ACL
-> 	set_opt(sb, POSIX_ACL);
-> #endif
-> +	if (ext4_has_feature_fast_commit(sb))
-> +		set_opt2(sb, JOURNAL_FAST_COMMIT);
-> +
-> 	/* don't forget to enable journal_csum when metadata_csum is =
-enabled. */
-> 	if (ext4_has_metadata_csum(sb))
-> 		set_opt(sb, JOURNAL_CHECKSUM);
-> @@ -4334,6 +4350,7 @@ static int ext4_fill_super(struct super_block =
-*sb, void *data, int silent)
-> 		sbi->s_def_mount_opt &=3D ~EXT4_MOUNT_JOURNAL_CHECKSUM;
-> 		clear_opt(sb, JOURNAL_CHECKSUM);
-> 		clear_opt(sb, DATA_FLAGS);
-> +		clear_opt2(sb, JOURNAL_FAST_COMMIT);
-> 		sbi->s_journal =3D NULL;
-> 		needs_recovery =3D 0;
-> 		goto no_journal;
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index df03825ad1a1..b7eed49b8ecd 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -288,6 +288,7 @@ typedef struct journal_superblock_s
-> #define JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT	0x00000004
-> #define JBD2_FEATURE_INCOMPAT_CSUM_V2		0x00000008
-> #define JBD2_FEATURE_INCOMPAT_CSUM_V3		0x00000010
-> +#define JBD2_FEATURE_INCOMPAT_FAST_COMMIT	0x00000020
->=20
-> /* See "journal feature predicate functions" below */
->=20
-> @@ -298,7 +299,8 @@ typedef struct journal_superblock_s
-> 					JBD2_FEATURE_INCOMPAT_64BIT | \
-> 					=
-JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT | \
-> 					JBD2_FEATURE_INCOMPAT_CSUM_V2 | =
-\
-> -					JBD2_FEATURE_INCOMPAT_CSUM_V3)
-> +					JBD2_FEATURE_INCOMPAT_CSUM_V3 | =
-\
-> +					=
-JBD2_FEATURE_INCOMPAT_FAST_COMMIT)
->=20
-> #ifdef __KERNEL__
->=20
-> @@ -1235,6 +1237,7 @@ JBD2_FEATURE_INCOMPAT_FUNCS(64bit,		=
-64BIT)
-> JBD2_FEATURE_INCOMPAT_FUNCS(async_commit,	ASYNC_COMMIT)
-> JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
-> JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
-> +JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
->=20
-> /*
->  * Journal flag definitions
-> --
-> 2.22.0.657.g960e92d24f-goog
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_7E851EE6-9C1A-4AAB-8CEA-02923A9A5BCA
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl01/S8ACgkQcqXauRfM
-H+DQjg/9Gu/wpMn6Fw2X9KgRng1eLIaBeFQPpo12TxBSLcbrElzTGnjhp8A0mVHV
-xZapXO+rDlA4JayKG7S1xaqMokyVrTf2Acc3Ly3dvFTgCEqjdpwZBQL/swaOGGX6
-95peZn8q9M7KWpiS0QfuIY+o8D0pkyWEKgCNhIDrnMFyu9Q7lHsFQAJ5lEdAnlKZ
-Ey9j+PTlTn+uEA77kQsENmJlurWTN4pDmghG/3B6p81avf3Qm2jxv8lI8ZEveEgO
-+YbIJp67JcEUPyJ6G2E7uzLTvYaYt5k791qsqx1VEFb9L0EOJ5TNAlJ6cKKKoALm
-EyfxMVyyfqjHFnhvgJgJgN4QrslPoh8truBNXQVi5X0LMEr1isp9J9MNnU5L1EIR
-EE0zUrxG0NnQrxveJOn3RBfTHh0cpjrALYBoDjmNYBZLrymZmHMZOo5hQhUTgFdA
-ipkV4+R0mPwK1bDDH8lTDOZH+BKMv6IZRUWzLBF0uDhaPAYyfGXIBGAdlAgJX8AI
-AqyAHx0/HzXRxrPRhrE595To5qN3pbdSZqTH1g0ggAMf348QzfmyZlmDl4uMayOU
-BrHTyKwqoULIPv1xNwGinP6d77x4cBT9qR9AiSMJusWunGmqax3H0CjiupddJ61J
-oHL1hCgU3t0LA11v5eVTCp4jXRiuFtwkUBjoOk9IT+SVSZRgNRE=
-=vv1O
------END PGP SIGNATURE-----
-
---Apple-Mail=_7E851EE6-9C1A-4AAB-8CEA-02923A9A5BCA--
