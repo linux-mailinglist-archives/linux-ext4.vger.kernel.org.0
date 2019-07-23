@@ -2,160 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB147721E4
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2019 23:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E73B72207
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2019 00:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392245AbfGWV7r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 23 Jul 2019 17:59:47 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:43052 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389331AbfGWV7r (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Jul 2019 17:59:47 -0400
-Received: by mail-pf1-f195.google.com with SMTP id i189so19804494pfg.10
-        for <linux-ext4@vger.kernel.org>; Tue, 23 Jul 2019 14:59:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=JvatPS91EAjLyYj/evZYqLCKU+WXleNOP+uX7IhZT3E=;
-        b=xysqSpan6pE68yPtjQQZmIQ7Z/0rnSEAgh8FM7UOAyyTtUfqNdep5IQoHXe54Gdm8p
-         7vK1cg2O8Fsyq/JoDNEyPovySOoqEU3pq4jhtgcp8vwIhMC26q80VGiMqTyS/4LDNKkI
-         WOh7DyZhLaFPmKKQlVuIN+3oenpRDTwQO/GJHVgHuViBfoz7p95hO1ppz0wbSwoxeqav
-         U5nhg/QYyKJQ4LBm3ED4VfRaYEb7SMSAFzgccZCfntbxXylGL3eLq97KHfkpishDuKor
-         h9aC8rcHV/0X7+xsTWzOuFX6QI8CyOjfGV4a2iXOHXYLg5W6Bxf85+ukR1AfP2a9bYNW
-         kN1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=JvatPS91EAjLyYj/evZYqLCKU+WXleNOP+uX7IhZT3E=;
-        b=Jk+C6x3KwmeaqAL3ISN6ARxDj7Pe0qixiA4WR+3m/fIDhXOtjbmzflnuIkgEMTHzer
-         wRHBf2BkxzDKCpvCHl68yIv6vSTVwCuTdtrV4SjorAwwdqbwtv83WbBCH8+4cKv2vuRu
-         g+uRpFDIES2bZwjVnYGCpGyvV0Vi00wvQSKZ5EL8hSgn/prktJsTjXRxYWvNImLBxbDd
-         y38AshfMq7bloCYoUczhNTSd7N8Hg974L7bSj903k6XQWLVis5i9+dvE6q3EZcZyIkvg
-         Ejmv/7ZKUTu0cpqhkjJ8ZLP6mo0a8CLLgItpV5GtYetjKX3rqJ54zbJphCKDyH4hPsVw
-         e9tA==
-X-Gm-Message-State: APjAAAX8ml9us2o5nrFOt3SmhonAuw64s83mWKa8KDVucRHqjRhhfKRL
-        UAqB9DFMRedutMOmjFQk2pI=
-X-Google-Smtp-Source: APXvYqwINxUpi13XhdKCykVV3LHyGDHwGwbZWedRzzo4tXo9S+Cac4RsHWwpwPzm2LmVtTni3EU7xA==
-X-Received: by 2002:a62:4d85:: with SMTP id a127mr7886299pfb.148.1563919186228;
-        Tue, 23 Jul 2019 14:59:46 -0700 (PDT)
-Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id a16sm46444855pfd.68.2019.07.23.14.59.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Jul 2019 14:59:45 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <7AD1A611-9BD2-4F32-9568-D0A517047EF0@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_ADF40E20-376C-457C-AF89-F9A9D489C316";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 01/11] ext4: add handling for extended mount options
-Date:   Tue, 23 Jul 2019 15:59:42 -0600
-In-Reply-To: <20190722210235.GE16313@mit.edu>
-Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-References: <20190722040011.18892-1-harshadshirwadkar@gmail.com>
- <41522E01-D5E5-4DC6-8AD4-09E3FA19F112@dilger.ca>
- <20190722210235.GE16313@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+        id S2392322AbfGWWLt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 Jul 2019 18:11:49 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:49837 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731838AbfGWWLt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 23 Jul 2019 18:11:49 -0400
+Received: from dread.disaster.area (pa49-195-139-63.pa.nsw.optusnet.com.au [49.195.139.63])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id E2B522AA6CE;
+        Wed, 24 Jul 2019 08:11:43 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hq2zU-0003lk-Ea; Wed, 24 Jul 2019 08:10:36 +1000
+Date:   Wed, 24 Jul 2019 08:10:36 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] psi: annotate refault stalls from IO submission
+Message-ID: <20190723221036.GY7777@dread.disaster.area>
+References: <20190722201337.19180-1-hannes@cmpxchg.org>
+ <20190723000226.GV7777@dread.disaster.area>
+ <20190723190438.GA22541@cmpxchg.org>
+ <2d80cfdb-f5e0-54f1-29a3-a05dee5b94eb@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d80cfdb-f5e0-54f1-29a3-a05dee5b94eb@kernel.dk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
+        a=fNT+DnnR6FjB+3sUuX8HHA==:117 a=fNT+DnnR6FjB+3sUuX8HHA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=0o9FgrsRnhwA:10
+        a=7-415B0cAAAA:8 a=RvhrQjGMwq6Bl1CCUxgA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue, Jul 23, 2019 at 01:34:50PM -0600, Jens Axboe wrote:
+> On 7/23/19 1:04 PM, Johannes Weiner wrote:
+> > CCing Jens for bio layer stuff
+> > 
+> > On Tue, Jul 23, 2019 at 10:02:26AM +1000, Dave Chinner wrote:
+> >> Even better: If this memstall and "refault" check is needed to
+> >> account for bio submission blocking, then page cache iteration is
+> >> the wrong place to be doing this check. It should be done entirely
+> >> in the bio code when adding pages to the bio because we'll only ever
+> >> be doing page cache read IO on page cache misses. i.e. this isn't
+> >> dependent on adding a new page to the LRU or not - if we add a new
+> >> page then we are going to be doing IO and so this does not require
+> >> magic pixie dust at the page cache iteration level
+> > 
+> > That could work. I had it at the page cache level because that's
+> > logically where the refault occurs. But PG_workingset encodes
+> > everything we need from the page cache layer and is available where
+> > the actual stall occurs, so we should be able to push it down.
+> > 
+> >> e.g. bio_add_page_memstall() can do the working set check and then
+> >> set a flag on the bio to say it contains a memstall page. Then on
+> >> submission of the bio the memstall condition can be cleared.
+> > 
+> > A separate bio_add_page_memstall() would have all the problems you
+> > pointed out with the original patch: it's magic, people will get it
+> > wrong, and it'll be hard to verify and notice regressions.
+> > 
+> > How about just doing it in __bio_add_page()? PG_workingset is not
+> > overloaded - when we see it set, we can generally and unconditionally
+> > flag the bio as containing userspace workingset pages.
+> > 
+> > At submission time, in conjunction with the IO direction, we can
+> > clearly tell whether we are reloading userspace workingset data,
+> > i.e. stalling on memory.
+> > 
+> > This?
+> 
+> Not vehemently opposed to it, even if it sucks having to test page flags
+> in the hot path.
 
---Apple-Mail=_ADF40E20-376C-457C-AF89-F9A9D489C316
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+That's kinda why I suggested the bio_add_page_memstall() variant for
+the page cache read IO paths where this check would be required.
 
-On Jul 22, 2019, at 3:02 PM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
->=20
-> On Mon, Jul 22, 2019 at 12:15:11PM -0600, Andreas Dilger wrote:
->> Unless I missed it, this patch series needs a 00/11 email that =
-describes
->> *what* "fast commit" is, and why we want it.  This should include =
-some
->> benchmark results, since (I'd assume) that the "fast" part of the =
-feature
->> name implies a performance improvement?
->=20
-> For background, it's a simplified version of the scheme proposed by
-> Park and Shin, in their paper, "iJournaling: Fine-Grained Journaling
-> for Improving the Latency of Fsync System Call"[1]
->=20
-> [1] =
-https://www.usenix.org/conference/atc17/technical-sessions/presentation/pa=
-rk
->=20
-> I agree we should have a cover letter for this patch series.  Also, we
-> should add documentation to Documentation/filesystems/journaling.rst
-> about this feature; what it does, how it works, its basic on-disk
-> format changes, etc.
+Not fussed either way, this is much cleaner and easier to maintain
+IMO....
 
-Thanks for the link, I hadn't read that paper previously.  =46rom =
-reading the
-paper, it seems there are some things that should be addressed before =
-the
-patch is committed to the tree in order to maintain proper disk format
-compatibility:
-- the ijournal header shows a 256-byte inode.  In Lustre today (and also
-  Samba and other xattr-intensive workloads) 512- or 1024-byte inodes =
-are used
-  in order to store more xattrs within the inode, so the size of the =
-inode
-  data in the ijournal header needs to match the actual inode size of =
-the
-  filesystem and not be a fixed size.  What if the inode size =3D=3D =
-blocksize?
-- the ijournal header also shows a 4-byte inode number.  It would be =
-prudent
-  to reserve space for 64-bit inode numbers, or at least have some =
-mechanism
-  (flag) to indicate that a 64-bit inode is stored instead of a 32-bit =
-inode.
-- if there are many cores in a system, say 96, how much space will be =
-used
-  from the journal file by the per-core ijournal?
-- what happens if multiple threads are writing to the same file with =
-ijournal
-  and per-core ijournal areas?  Will the same inode information be =
-recorded
-  in multiple ijournal areas?
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_ADF40E20-376C-457C-AF89-F9A9D489C316
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl03g04ACgkQcqXauRfM
-H+AnBBAAqW4PcWWVoiKAbsD38Mh4JdOMlzg4IkfpbURTw5ZRw2ld1nZ4JKjn4WcH
-9mPI8T4uwWM6JxU6PafjB12/8g30bD2VVSUStUuc9fUNvX2dxn0UxmPfphluVLwn
-e38tN6O6r5QdADIvaIQ3EKEKD6bcfTqCEDzpFqwV2eGvcf87sxQIJT48pMiyjpp3
-eT1ODzBkh32JIgZdemEv3sg6jPlhkxHj7Tyqhi0IyBsVafaKcEJijoMnAxaKDOpS
-+Q2UvzAdh7nNcDXQ6f46n6Julps9km6EOccuAm7T+PMS7PAJM05McIWXo+mRbbyb
-xpsOOLVD92ky7TWnhZlHW1xF7dIMvDiy5tlFRkvf9YdYztyIG7M031Q2+RWSlXlk
-1XBZXorL+kHSGio3ZY6wKlITwbXSEx+/VfLBa+27d+UqrnkrqaFKubssLu0umzLh
-62RiQeJQ/Rb2K1ztEMlxu0Ddgqh31TTpkKpn3dkpM0qb2Y5Z9/dJ3uWQ3aPh2E1o
-D/SeRPpcMHnhptr6VNYO0+6Exufn0Elwu+b30yBdUATGbM/aPyrrhDcLhJFbeGZG
-00l7bwKd3gD8f0PysHd/JnLTD7kUoUHeQjI3uJPJBPPzQ8PrYjpwcLx5RfxI+Ytu
-jX7W1aHm2ZDhzPl8zJvD2o7Pk1rLS8AMFXZDq/Z2Yb+DRQDcb5A=
-=ug/G
------END PGP SIGNATURE-----
-
---Apple-Mail=_ADF40E20-376C-457C-AF89-F9A9D489C316--
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
