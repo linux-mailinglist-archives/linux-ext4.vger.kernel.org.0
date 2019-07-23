@@ -2,143 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 986F970E15
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2019 02:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F5D71466
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2019 10:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732013AbfGWAWB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 22 Jul 2019 20:22:01 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:43712 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731854AbfGWAWB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 22 Jul 2019 20:22:01 -0400
-X-Greylist: delayed 1102 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Jul 2019 20:21:58 EDT
-Received: from dread.disaster.area (pa49-195-139-63.pa.nsw.optusnet.com.au [49.195.139.63])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 4C6C843B788;
-        Tue, 23 Jul 2019 10:03:33 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hpiGA-0001mL-5I; Tue, 23 Jul 2019 10:02:26 +1000
-Date:   Tue, 23 Jul 2019 10:02:26 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] psi: annotate refault stalls from IO submission
-Message-ID: <20190723000226.GV7777@dread.disaster.area>
-References: <20190722201337.19180-1-hannes@cmpxchg.org>
+        id S1731144AbfGWIvs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 23 Jul 2019 04:51:48 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:46524 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727994AbfGWIvs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 23 Jul 2019 04:51:48 -0400
+Received: by mail-io1-f68.google.com with SMTP id i10so80087973iol.13
+        for <linux-ext4@vger.kernel.org>; Tue, 23 Jul 2019 01:51:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jKZWXKcNg9v61aofsNn7pfpi8sojhmIuCOYr5uBtJUg=;
+        b=dDyLgy1taxrD1RQdm4eNI7DbTMaTOveTgtYMehR7CdFTrjX1XO8CA+xfe5ohyJWLAU
+         Rd9xcdsur+HnbAR5rLAij2rlF6gI1u1tNFGHOMfORwdj6FzeAhrs6UZ0ADqtJgwjTAk7
+         Bhe5YMDVH2LcpRqkd/rNORTEgRE/JInjfMSa5cdP+CICGc8uMu6WJucKRy0ZasUYJJGw
+         EarEt3cYsqMAjoZtG9B9dZZRJ9lYANPRG64iWrYP+XUAs/PmSq/Ta2qGMIp1TZA7vHJE
+         wF6It7t2maBptfOsCxFH/RviFu935z7HOih0Nx/LcFZaS2beai0xXul5BbGRJ0UAtT4h
+         ZE3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jKZWXKcNg9v61aofsNn7pfpi8sojhmIuCOYr5uBtJUg=;
+        b=aogmi0kUt9AzGwf11uReK/XDB87eLjB+y5hGz6d5uUcwYBck2k/MiWmxV2y/3LHibf
+         xht+q1aOYC6NuCVeoATHsr9adGsXX1DKixEHeF3nLnwSlkXp69UBYDSVs4eM9IN5ze3j
+         /eSMjUvoWiP3FQojkEjA6T2WlPAH9e2gR40jmvbQkMr3+5K5Est+i4l1C3ULf1bR6cYU
+         vy10p9egt5wTT0Chf2CGgNjy5wnG9aPtNlw4Yb5G2cxFYmI5mnO1f5DA7q9rlWOTkTe8
+         KPEtU1Zr35iAd2qsVDiMR+onFNJIRjDyEk7fL8wXzuTV7SEn2+uBWlOOJLFrl6W58YLl
+         RG8g==
+X-Gm-Message-State: APjAAAUMqfrXemnxn0TmjxcBDRPxR08cK+VctNZR8ulXEboeKihmnn1Q
+        FCGMwUMisaL/HS0pEFQG7qFHJ648fcUqeBdF7tfsAA==
+X-Google-Smtp-Source: APXvYqywWFoajhq50ncpggzq1ue+aVOnNrhhF9uTgVHieKTwX0+kkYCQEU7rQ44IVmTYd0uj3MNjIRxN3y6hiPzyrMI=
+X-Received: by 2002:a5e:c241:: with SMTP id w1mr65555660iop.58.1563871907136;
+ Tue, 23 Jul 2019 01:51:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190722201337.19180-1-hannes@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
-        a=fNT+DnnR6FjB+3sUuX8HHA==:117 a=fNT+DnnR6FjB+3sUuX8HHA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=0o9FgrsRnhwA:10
-        a=ufHFDILaAAAA:8 a=7-415B0cAAAA:8 a=o-jcnmsilH93K4pHmdQA:9
-        a=EdKfoW5OtvoDdtON:21 a=SJvZlBx9A85TV0R8:21 a=CjuIK1q_8ugA:10
-        a=ZmIg1sZ3JBWsdXgziEIF:22 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <20190705191055.GT26519@linux.ibm.com> <20190706042801.GD11665@mit.edu>
+ <20190706061631.GV26519@linux.ibm.com> <20190706150226.GG11665@mit.edu>
+ <20190706180311.GW26519@linux.ibm.com> <20190707011655.GA22081@linux.ibm.com>
+ <CACT4Y+asYe-uH9OV5R0Nkb-JKP4erYUZ68S9gYNnGg6v+fD20w@mail.gmail.com>
+ <20190714184915.GK26519@linux.ibm.com> <20190715132911.GG3419@hirez.programming.kicks-ass.net>
+ <CACT4Y+bmgdOExBHnLJ+jgWKWQzNK9CFT6_eTxFE3hoK=0YresQ@mail.gmail.com>
+ <20190715134651.GI3419@hirez.programming.kicks-ass.net> <CACT4Y+bGgyZWbRQ7QNCHRLU0Zq2+cONSbyaycfzwvToqMwiwBQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+bGgyZWbRQ7QNCHRLU0Zq2+cONSbyaycfzwvToqMwiwBQ@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 23 Jul 2019 10:51:35 +0200
+Message-ID: <CACT4Y+biWSJvia2rcS9-Q0-GCiaQ9U7Qq=vDA+MY2Gz5mbxTNA@mail.gmail.com>
+Subject: Re: INFO: rcu detected stall in ext4_write_checks
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        syzbot <syzbot+4bfbbf28a2e50ab07368@syzkaller.appspotmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        David Miller <davem@davemloft.net>, eladr@mellanox.com,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        John Stultz <john.stultz@linaro.org>,
+        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jul 22, 2019 at 04:13:37PM -0400, Johannes Weiner wrote:
-> psi tracks the time tasks wait for refaulting pages to become
-> uptodate, but it does not track the time spent submitting the IO. The
-> submission part can be significant if backing storage is contended or
-> when cgroup throttling (io.latency) is in effect - a lot of time is
-> spent in submit_bio(). In that case, we underreport memory pressure.
-> 
-> Annotate the submit_bio() paths (or the indirection through readpage)
-> for refaults and swapin to get proper psi coverage of delays there.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  fs/btrfs/extent_io.c | 14 ++++++++++++--
->  fs/ext4/readpage.c   |  9 +++++++++
->  fs/f2fs/data.c       |  8 ++++++++
->  fs/mpage.c           |  9 +++++++++
->  mm/filemap.c         | 20 ++++++++++++++++++++
->  mm/page_io.c         | 11 ++++++++---
->  mm/readahead.c       | 24 +++++++++++++++++++++++-
->  7 files changed, 89 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 1eb671c16ff1..2d2b3239965a 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -13,6 +13,7 @@
->  #include <linux/pagevec.h>
->  #include <linux/prefetch.h>
->  #include <linux/cleancache.h>
-> +#include <linux/psi.h>
->  #include "extent_io.h"
->  #include "extent_map.h"
->  #include "ctree.h"
-> @@ -4267,6 +4268,9 @@ int extent_readpages(struct address_space *mapping, struct list_head *pages,
->  	struct extent_io_tree *tree = &BTRFS_I(mapping->host)->io_tree;
->  	int nr = 0;
->  	u64 prev_em_start = (u64)-1;
-> +	int ret = 0;
-> +	bool refault = false;
-> +	unsigned long pflags;
->  
->  	while (!list_empty(pages)) {
->  		u64 contig_end = 0;
-> @@ -4281,6 +4285,10 @@ int extent_readpages(struct address_space *mapping, struct list_head *pages,
->  				put_page(page);
->  				break;
->  			}
-> +			if (PageWorkingset(page) && !refault) {
-> +				psi_memstall_enter(&pflags);
-> +				refault = true;
-> +			}
->  
->  			pagepool[nr++] = page;
->  			contig_end = page_offset(page) + PAGE_SIZE - 1;
-> @@ -4301,8 +4309,10 @@ int extent_readpages(struct address_space *mapping, struct list_head *pages,
->  		free_extent_map(em_cached);
->  
->  	if (bio)
-> -		return submit_one_bio(bio, 0, bio_flags);
-> -	return 0;
-> +		ret = submit_one_bio(bio, 0, bio_flags);
-> +	if (refault)
-> +		psi_memstall_leave(&pflags);
-> +	return ret;
+On Mon, Jul 22, 2019 at 12:03 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Mon, Jul 15, 2019 at 3:46 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Mon, Jul 15, 2019 at 03:33:11PM +0200, Dmitry Vyukov wrote:
+> > > On Mon, Jul 15, 2019 at 3:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > >
+> > > > On Sun, Jul 14, 2019 at 11:49:15AM -0700, Paul E. McKenney wrote:
+> > > > > On Sun, Jul 14, 2019 at 05:48:00PM +0300, Dmitry Vyukov wrote:
+> > > > > > But short term I don't see any other solution than stop testing
+> > > > > > sched_setattr because it does not check arguments enough to prevent
+> > > > > > system misbehavior. Which is a pity because syzkaller has found some
+> > > > > > bad misconfigurations that were oversight on checking side.
+> > > > > > Any other suggestions?
+> > > > >
+> > > > > Keep the times down to a few seconds?  Of course, that might also
+> > > > > fail to find interesting bugs.
+> > > >
+> > > > Right, if syzcaller can put a limit on the period/deadline parameters
+> > > > (and make sure to not write "-1" to
+> > > > /proc/sys/kernel/sched_rt_runtime_us) then per the in-kernel
+> > > > access-control should not allow these things to happen.
+> > >
+> > > Since we are racing with emails, could you suggest a 100% safe
+> > > parameters? Because I only hear people saying "safe", "sane",
+> > > "well-behaving" :)
+> > > If we move the check to user-space, it does not mean that we can get
+> > > away without actually defining what that means.
+> >
+> > Right, well, that's part of the problem. I think Paul just did the
+> > reverse math and figured that 95% of X must not be larger than my
+> > watchdog timeout and landed on 14 seconds.
+> >
+> > I'm thinking 4 seconds (or rather 4.294967296) would be a very nice
+> > number.
+> >
+> > > Now thinking of this, if we come up with some simple criteria, could
+> > > we have something like a sysctl that would allow only really "safe"
+> > > parameters?
+> >
+> > I suppose we could do that, something like:
+> > sysctl_deadline_period_{min,max}. I'll have to dig back a bit on where
+> > we last talked about that and what the problems where.
+> >
+> > For one, setting the min is a lot harder, but I suppose we can start at
+> > TICK_NSEC or something.
+>
+>
+> Now syzkaller will drop CAP_SYS_NICE for the test process:
+> https://github.com/google/syzkaller/commit/f3ad68446455acbe562e0057931e6256b8b991e8
+> I will close this bug report as invalid once the change reaches all
+> syzbot instances, if nobody plans any other on this bug.
 
-This all seems extremely fragile to me. Sprinkling magic,
-undocumented pixie dust through the IO paths to account for
-something nobody can actually determine is working correctly is a
-bad idea.  People are going to break this without knowing it, nobody
-is going to notice because there are no regression tests for it,
-and this will all end up in frustration for users because it
-constantly gets broken and doesn't work reliably.
-
-e.g. If this is needed around all calls to ->readpage(), then please
-write a readpage wrapper function and convert all the callers to use
-that wrapper.
-
-Even better: If this memstall and "refault" check is needed to
-account for bio submission blocking, then page cache iteration is
-the wrong place to be doing this check. It should be done entirely
-in the bio code when adding pages to the bio because we'll only ever
-be doing page cache read IO on page cache misses. i.e. this isn't
-dependent on adding a new page to the LRU or not - if we add a new
-page then we are going to be doing IO and so this does not require
-magic pixie dust at the page cache iteration level
-
-e.g. bio_add_page_memstall() can do the working set check and then
-set a flag on the bio to say it contains a memstall page. Then on
-submission of the bio the memstall condition can be cleared.
-
-Cheers,
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+#syz invalid
