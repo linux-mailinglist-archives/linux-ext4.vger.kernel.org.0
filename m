@@ -2,27 +2,28 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A607741E
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Jul 2019 00:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416F8774BF
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 Jul 2019 00:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728738AbfGZWpf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 26 Jul 2019 18:45:35 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:59677 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726581AbfGZWpf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 26 Jul 2019 18:45:35 -0400
-Received: from dread.disaster.area (pa49-195-139-63.pa.nsw.optusnet.com.au [49.195.139.63])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 7730543BE65;
-        Sat, 27 Jul 2019 08:45:30 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hr8wp-0007Jx-2T; Sat, 27 Jul 2019 08:44:23 +1000
-Date:   Sat, 27 Jul 2019 08:44:23 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
-        Theodore Ts'o <tytso@mit.edu>,
+        id S1727899AbfGZWzc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 26 Jul 2019 18:55:32 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44565 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727368AbfGZWzc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 26 Jul 2019 18:55:32 -0400
+Received: from callcc.thunk.org ([209.117.102.182])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6QMt9eZ010885
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Jul 2019 18:55:11 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 7AF1D4202F5; Fri, 26 Jul 2019 18:55:08 -0400 (EDT)
+Date:   Fri, 26 Jul 2019 18:55:08 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
@@ -30,60 +31,45 @@ Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
         Naohiro Aota <naohiro.aota@wdc.com>,
         Masato Suzuki <masato.suzuki@wdc.com>
 Subject: Re: [PATCH] ext4: Fix deadlock on page reclaim
-Message-ID: <20190726224423.GE7777@dread.disaster.area>
+Message-ID: <20190726225508.GA13729@mit.edu>
+Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Masato Suzuki <masato.suzuki@wdc.com>
 References: <20190725093358.30679-1-damien.lemoal@wdc.com>
  <20190725115442.GA15733@infradead.org>
+ <20190726224423.GE7777@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190725115442.GA15733@infradead.org>
+In-Reply-To: <20190726224423.GE7777@dread.disaster.area>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0 cx=a_idp_d
-        a=fNT+DnnR6FjB+3sUuX8HHA==:117 a=fNT+DnnR6FjB+3sUuX8HHA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=0o9FgrsRnhwA:10
-        a=7-415B0cAAAA:8 a=zFaflo0CMpuWMedRxgwA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jul 25, 2019 at 04:54:42AM -0700, Christoph Hellwig wrote:
-> On Thu, Jul 25, 2019 at 06:33:58PM +0900, Damien Le Moal wrote:
-> > +	gfp_t gfp_mask;
-> > +
-> >  	switch (ext4_inode_journal_mode(inode)) {
-> >  	case EXT4_INODE_ORDERED_DATA_MODE:
-> >  	case EXT4_INODE_WRITEBACK_DATA_MODE:
-> > @@ -4019,6 +4019,14 @@ void ext4_set_aops(struct inode *inode)
-> >  		inode->i_mapping->a_ops = &ext4_da_aops;
-> >  	else
-> >  		inode->i_mapping->a_ops = &ext4_aops;
-> > +
-> > +	/*
-> > +	 * Ensure all page cache allocations are done from GFP_NOFS context to
-> > +	 * prevent direct reclaim recursion back into the filesystem and blowing
-> > +	 * stacks or deadlocking.
-> > +	 */
-> > +	gfp_mask = mapping_gfp_mask(inode->i_mapping);
-> > +	mapping_set_gfp_mask(inode->i_mapping, (gfp_mask & ~(__GFP_FS)));
+On Sat, Jul 27, 2019 at 08:44:23AM +1000, Dave Chinner wrote:
+> > 
+> > This looks like something that could hit every file systems, so
+> > shouldn't we fix this in common code?  We could also look into
+> > just using memalloc_nofs_save for the page cache allocation path
+> > instead of the per-mapping gfp_mask.
 > 
-> This looks like something that could hit every file systems, so
-> shouldn't we fix this in common code?  We could also look into
-> just using memalloc_nofs_save for the page cache allocation path
-> instead of the per-mapping gfp_mask.
+> I think it has to be the entire IO path - any allocation from the
+> underlying filesystem could recurse into the top level filesystem
+> and then deadlock if the memory reclaim submits IO or blocks on
+> IO completion from the upper filesystem. That's a bloody big hammer
+> for something that is only necessary when there are stacked
+> filesystems like this....
 
-I think it has to be the entire IO path - any allocation from the
-underlying filesystem could recurse into the top level filesystem
-and then deadlock if the memory reclaim submits IO or blocks on
-IO completion from the upper filesystem. That's a bloody big hammer
-for something that is only necessary when there are stacked
-filesystems like this....
+Yeah.... that's why using memalloc_nofs_save() probably makes the most
+sense, and dm_zoned should use that before it calls into ext4.
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+       	   	    	       	    	   - Ted
