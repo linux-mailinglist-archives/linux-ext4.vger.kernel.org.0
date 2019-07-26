@@ -2,91 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BA075970
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jul 2019 23:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D901075C6C
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Jul 2019 03:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbfGYVW3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 25 Jul 2019 17:22:29 -0400
-Received: from mxo2.dft.dmz.twosigma.com ([208.77.212.182]:33033 "EHLO
-        mxo2.dft.dmz.twosigma.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726585AbfGYVW3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 25 Jul 2019 17:22:29 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mxo2.dft.dmz.twosigma.com (Postfix) with ESMTP id 45vlY05R0bz7t8t;
-        Thu, 25 Jul 2019 21:22:28 +0000 (GMT)
-X-Virus-Scanned: Debian amavisd-new at twosigma.com
-Received: from mxo2.dft.dmz.twosigma.com ([127.0.0.1])
-        by localhost (mxo2.dft.dmz.twosigma.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 4_rYKg-GfsKT; Thu, 25 Jul 2019 21:22:28 +0000 (GMT)
-Received: from exmbdft6.ad.twosigma.com (exmbdft6.ad.twosigma.com [172.22.1.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mxo2.dft.dmz.twosigma.com (Postfix) with ESMTPS id 45vlY04rNXz3wZ5;
-        Thu, 25 Jul 2019 21:22:28 +0000 (GMT)
-Received: from EXMBDFT10.ad.twosigma.com (172.23.127.159) by
- exmbdft6.ad.twosigma.com (172.22.1.5) with Microsoft SMTP Server (TLS) id
- 15.0.1365.1; Thu, 25 Jul 2019 21:22:28 +0000
-Received: from EXMBDFT11.ad.twosigma.com (172.23.162.14) by
- EXMBDFT10.ad.twosigma.com (172.23.127.159) with Microsoft SMTP Server (TLS)
- id 15.0.1365.1; Thu, 25 Jul 2019 21:22:28 +0000
-Received: from EXMBDFT11.ad.twosigma.com ([fe80::8d66:2326:5416:86a9]) by
- EXMBDFT11.ad.twosigma.com ([fe80::8d66:2326:5416:86a9%19]) with mapi id
- 15.00.1365.000; Thu, 25 Jul 2019 21:22:28 +0000
-From:   Geoffrey Thomas <Geoffrey.Thomas@twosigma.com>
-To:     'Theodore Ts'o' <tytso@mit.edu>,
-        Thomas Walker <Thomas.Walker@twosigma.com>
-CC:     'Jan Kara' <jack@suse.cz>,
-        "'linux-ext4@vger.kernel.org'" <linux-ext4@vger.kernel.org>,
-        "'Darrick J. Wong'" <darrick.wong@oracle.com>
-Subject: RE: Phantom full ext4 root filesystems on 4.1 through 4.14 kernels
-Thread-Topic: Phantom full ext4 root filesystems on 4.1 through 4.14 kernels
-Thread-Index: AQHVLDJVDWy5GscrLU+Z6omBu3PDnabFPCSAgABXnMCAACsDAIABti2AgAATZICAABR0YIAUWz0Q
-Date:   Thu, 25 Jul 2019 21:22:28 +0000
-Message-ID: <865a6dad983e4dedb9836075c210a782@EXMBDFT11.ad.twosigma.com>
-References: <9abbdde6145a4887a8d32c65974f7832@exmbdft5.ad.twosigma.com>
- <20181108184722.GB27852@magnolia>
- <c7cfeaf451d7438781da95b01f21116e@exmbdft5.ad.twosigma.com>
- <20190123195922.GA16927@twosigma.com> <20190626151754.GA2789@twosigma.com>
- <20190711092315.GA10473@quack2.suse.cz>
- <96c4e04f8d5146c49ee9f4478c161dcb@EXMBDFT10.ad.twosigma.com>
- <20190711171046.GA13966@mit.edu> <20190712191903.GP2772@twosigma.com>
- <20190712202827.GA16730@mit.edu>
- <7cc876ae264c495e9868717f33a63a77@EXMBDFT10.ad.twosigma.com>
-In-Reply-To: <7cc876ae264c495e9868717f33a63a77@EXMBDFT10.ad.twosigma.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [192.168.147.160]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726980AbfGZBML (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 25 Jul 2019 21:12:11 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:46903 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726920AbfGZBMK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 25 Jul 2019 21:12:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0TXo1h7U_1564103527;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TXo1h7U_1564103527)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 26 Jul 2019 09:12:07 +0800
+Subject: Re: [RFC] performance regression with "ext4: Allow parallel DIO
+ reads"
+To:     Andreas Dilger <adilger@dilger.ca>,
+        Joseph Qi <jiangqi903@gmail.com>, Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
+        Liu Bo <bo.liu@linux.alibaba.com>
+References: <ab7cf51b-6b52-d151-e22c-6f4400a14589@linux.alibaba.com>
+ <29d50d24-f8e7-5ef4-d4d8-3ea6fb1c6ed3@gmail.com>
+ <6DADA28C-542F-45F6-ADB0-870A81ABED23@dilger.ca>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <15112e38-94fe-39d6-a8e2-064ff47187d5@linux.alibaba.com>
+Date:   Fri, 26 Jul 2019 09:12:07 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <6DADA28C-542F-45F6-ADB0-870A81ABED23@dilger.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Friday, July 12, 2019 5:47 PM, Geoffrey Thomas <Geoffrey.Thomas@twosigma.com> wrote:
-> On Friday, July 12, 2019 4:28 PM, Theodore Ts'o <tytso@mit.edu> wrote:
-> > Hmmm... what's gid 4?  Is that a hint of where the inode might have come
-> > from?
+
+
+On 19/7/26 05:20, Andreas Dilger wrote:
 > 
-> Good call, gid 4 is `adm`. And now that we have an inode number we can see
-> the file's contents, it's from /var/log/account.
+>> On Jul 23, 2019, at 5:17 AM, Joseph Qi <jiangqi903@gmail.com> wrote:
+>>
+>> Hi Ted & Jan,
+>> Could you please give your valuable comments?
 > 
-> I bet that this is acct(2) holding onto a reference in some weird way
-> (possibly involving logrotate?), which also explains why we couldn't find
-> a userspace process holding onto the inode. We'll investigate a bit....
+> It seems like the original patches should be reverted?  There is no data
 
-To close this out - yes, this was process accounting. Debian has a nightly cronjob which rotates the pacct logs, runs `invoke-rc.d acct restart` to reopen the file, and compresses the old log. Due to a stray policy-rc.d file from an old provisioning script, however, the restart was being skipped, and so we were unlinking and compressing the pacct file while the kernel still had it open. So it was the classic problem of an open file handle to a large deleted file, except that the open file handle was being held by the kernel.
+From my test result, yes.
+I've also tested libaio with iodepth 16, it behaves the same. Here is the test
+data for libaio 4k randrw:
 
-`accton off` solved our immediate problems and freed the space. I'm not totally sure why a failed umount had that effect, too, but I suppose it turned off process accounting.
+-------------------------------------------------------------------------------------------
+w/ parallel dio reads | READ 78313KB/s, 19578, 1698.70us  | WRITE 78313KB/s, 19578, 4837.60us
+-------------------------------------------------------------------------------------------
+w/o parallel dio reads| READ 387774KB/s, 96943, 1009.73us | WRITE 387656KB/s，96914, 308.87us
+-------------------------------------------------------------------------------------------
 
-It's a little frustrating to me that the file opened by acct(2) doesn't show up to userspace (lsof doesn't seem to find it) - it'd be nice if it could show up in /proc/$some_kernel_thread/fd or somewhere, if possible.
+Since this commit went into upstream long time ago，to be precise, Linux
+4.9, I wonder if someone else has also observed this regression, or
+anything I missed?
 
-Thanks for the help - the e2image + fsck trick is great!
+Thanks,
+Joseph
 
--- 
-Geoffrey Thomas
-geofft@twosigma.com
+> in the original commit message that indicates there is an actual performance
+> improvement from that patch, but there is data here showing it hurts both
+> read and write performance quite significantly.
+> > Cheers, Andreas
+> 
+>> On 19/7/19 17:22, Joseph Qi wrote:
+>>> Hi Ted & Jan,
+>>> I've observed an significant performance regression with the following
+>>> commit in my Intel P3600 NVMe SSD.
+>>> 16c54688592c ext4: Allow parallel DIO reads
+>>>
+>>> From my initial investigation, it may be because of the
+>>> inode_lock_shared (down_read) consumes more than inode_lock (down_write)
+>>> in mixed random read write workload.
+>>>
+>>> Here is my test result.
+>>>
+>>> ioengine=psync
+>>> direct=1
+>>> rw=randrw
+>>> iodepth=1
+>>> numjobs=8
+>>> size=20G
+>>> runtime=600
+>>>
+>>> w/ parallel dio reads : kernel 5.2.0
+>>> w/o parallel dio reads: kernel 5.2.0, then revert the following commits:
+>>>  1d39834fba99 ext4: remove EXT4_STATE_DIOREAD_LOCK flag (related)
+>>>  e5465795cac4 ext4: fix off-by-one error when writing back pages before dio read (related)
+>>>  16c54688592c ext4: Allow parallel DIO reads
+>>>
+>>> bs=4k:
+>>> -------------------------------------------------------------------------------------------
+>>> w/ parallel dio reads | READ 30898KB/s, 7724, 555.00us   | WRITE 30875KB/s, 7718, 479.70us
+>>> -------------------------------------------------------------------------------------------
+>>> w/o parallel dio reads| READ 117915KB/s, 29478, 248.18us | WRITE 117854KB/s，29463, 21.91us
+>>> -------------------------------------------------------------------------------------------
+>>>
+>>> bs=16k:
+>>> -------------------------------------------------------------------------------------------
+>>> w/ parallel dio reads | READ 58961KB/s, 3685, 835.28us   | WRITE 58877KB/s, 3679, 1335.98us
+>>> -------------------------------------------------------------------------------------------
+>>> w/o parallel dio reads| READ 218409KB/s, 13650, 554.46us | WRITE 218257KB/s，13641, 29.22us
+>>> -------------------------------------------------------------------------------------------
+>>>
+>>> bs=64k:
+>>> -------------------------------------------------------------------------------------------
+>>> w/ parallel dio reads | READ 119396KB/s, 1865, 1759.38us | WRITE 119159KB/s, 1861, 2532.26us
+>>> -------------------------------------------------------------------------------------------
+>>> w/o parallel dio reads| READ 422815KB/s, 6606, 1146.05us | WRITE 421619KB/s, 6587, 60.72us
+>>> -------------------------------------------------------------------------------------------
+>>>
+>>> bs=512k:
+>>> -------------------------------------------------------------------------------------------
+>>> w/ parallel dio reads | READ 392973KB/s, 767, 5046.35us  | WRITE 393165KB/s, 767, 5359.86us
+>>> -------------------------------------------------------------------------------------------
+>>> w/o parallel dio reads| READ 590266KB/s, 1152, 4312.01us | WRITE 590554KB/s, 1153, 2606.82us
+>>> -------------------------------------------------------------------------------------------
+>>>
+>>> bs=1M:
+>>> -------------------------------------------------------------------------------------------
+>>> w/ parallel dio reads | READ 487779KB/s, 476, 8058.55us  | WRITE 485592KB/s, 474, 8630.51us
+>>> -------------------------------------------------------------------------------------------
+>>> w/o parallel dio reads| READ 593927KB/s, 580, 7623.63us  | WRITE 591265KB/s, 577, 6163.42us
+>>> -------------------------------------------------------------------------------------------
+>>>
+>>> Thanks,
+>>> Joseph
+>>>
+> 
+> 
+> Cheers, Andreas
+> 
+> 
+> 
+> 
+> 
