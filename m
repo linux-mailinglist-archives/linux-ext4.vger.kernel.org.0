@@ -2,109 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6523D78489
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2019 07:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4464A78945
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2019 12:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbfG2FpG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Jul 2019 01:45:06 -0400
-Received: from ozlabs.org ([203.11.71.1]:57713 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbfG2FpG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 29 Jul 2019 01:45:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 45xpYW5HDSz9s3l;
-        Mon, 29 Jul 2019 15:45:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1564379104;
-        bh=OjBusjBmTh3FC4xRu9En+9wxMY50HFlVLJk9zi826S4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=W0TtNsAfdUakVjiM74Pczb6qE3AsCA0cEovBZfUuRobtddOZgA2Gj6EjoHLX3ykNn
-         D7vwk/Z380Xs30VsSEiNJ0hOnb93FSic7iHJtBeTrph+PQpVEABb9nW/6riMOgJJ3s
-         lQvs3WSZAyK/3mlwZNFIwa2a7ESffhfqqgM7EOTaio+NoIlb97rlbfsczGg4VPUxAs
-         9GQLl63BsXe7huyGckksi2aLaTqm8v6D5bUXtJ36fHvvrM/+3n8wDd8CQsMvhfE5Zw
-         CI8hjYC+m1YtS/R21G1qSdo93snh6cpaLRVDLk/lZnQ3DpyFMXT3JD64VD5P+fsLvA
-         1MfSwEGpYvTMg==
-Date:   Mon, 29 Jul 2019 15:45:03 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-next@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Subject: Re: Add fsverity tree to linux-next
-Message-ID: <20190729154503.13aed678@canb.auug.org.au>
-In-Reply-To: <20190729031226.GA2252@sol.localdomain>
-References: <20190729031226.GA2252@sol.localdomain>
+        id S1728153AbfG2KJS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Jul 2019 06:09:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49272 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726358AbfG2KJS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 29 Jul 2019 06:09:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 30933AF4E;
+        Mon, 29 Jul 2019 10:09:17 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D59F51E4379; Mon, 29 Jul 2019 12:09:14 +0200 (CEST)
+Date:   Mon, 29 Jul 2019 12:09:14 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Geoffrey Thomas <Geoffrey.Thomas@twosigma.com>
+Cc:     'Theodore Ts'o' <tytso@mit.edu>,
+        Thomas Walker <Thomas.Walker@twosigma.com>,
+        'Jan Kara' <jack@suse.cz>,
+        "'linux-ext4@vger.kernel.org'" <linux-ext4@vger.kernel.org>,
+        "'Darrick J. Wong'" <darrick.wong@oracle.com>
+Subject: Re: Phantom full ext4 root filesystems on 4.1 through 4.14 kernels
+Message-ID: <20190729100914.GB17833@quack2.suse.cz>
+References: <c7cfeaf451d7438781da95b01f21116e@exmbdft5.ad.twosigma.com>
+ <20190123195922.GA16927@twosigma.com>
+ <20190626151754.GA2789@twosigma.com>
+ <20190711092315.GA10473@quack2.suse.cz>
+ <96c4e04f8d5146c49ee9f4478c161dcb@EXMBDFT10.ad.twosigma.com>
+ <20190711171046.GA13966@mit.edu>
+ <20190712191903.GP2772@twosigma.com>
+ <20190712202827.GA16730@mit.edu>
+ <7cc876ae264c495e9868717f33a63a77@EXMBDFT10.ad.twosigma.com>
+ <865a6dad983e4dedb9836075c210a782@EXMBDFT11.ad.twosigma.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/o/A/oFcwBKxzLJmh1WMQYp.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <865a6dad983e4dedb9836075c210a782@EXMBDFT11.ad.twosigma.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---Sig_/o/A/oFcwBKxzLJmh1WMQYp.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu 25-07-19 21:22:28, Geoffrey Thomas wrote:
+> On Friday, July 12, 2019 5:47 PM, Geoffrey Thomas <Geoffrey.Thomas@twosigma.com> wrote:
+> > On Friday, July 12, 2019 4:28 PM, Theodore Ts'o <tytso@mit.edu> wrote:
+> > > Hmmm... what's gid 4?  Is that a hint of where the inode might have come
+> > > from?
+> > 
+> > Good call, gid 4 is `adm`. And now that we have an inode number we can see
+> > the file's contents, it's from /var/log/account.
+> > 
+> > I bet that this is acct(2) holding onto a reference in some weird way
+> > (possibly involving logrotate?), which also explains why we couldn't find
+> > a userspace process holding onto the inode. We'll investigate a bit....
+> 
+> To close this out - yes, this was process accounting. Debian has a nightly cronjob which rotates the pacct logs, runs `invoke-rc.d acct restart` to reopen the file, and compresses the old log. Due to a stray policy-rc.d file from an old provisioning script, however, the restart was being skipped, and so we were unlinking and compressing the pacct file while the kernel still had it open. So it was the classic problem of an open file handle to a large deleted file, except that the open file handle was being held by the kernel.
+> 
+> `accton off` solved our immediate problems and freed the space. I'm not totally sure why a failed umount had that effect, too, but I suppose it turned off process accounting.
+> 
+> It's a little frustrating to me that the file opened by acct(2) doesn't show up to userspace (lsof doesn't seem to find it) - it'd be nice if it could show up in /proc/$some_kernel_thread/fd or somewhere, if possible.
+> 
+> Thanks for the help - the e2image + fsck trick is great!
 
-Hi Eric,
+Glad to hear you were able to solve the problem in the end :)
 
-On Sun, 28 Jul 2019 20:12:26 -0700 Eric Biggers <ebiggers@kernel.org> wrote:
->
-> Can you please add the fsverity tree to linux-next?
->=20
->         https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git#fsverity
->=20
-> This branch contains the latest fs-verity patches
-> (https://lore.kernel.org/linux-fsdevel/20190722165101.12840-1-ebiggers@ke=
-rnel.org/T/#u).
-> We are planning a pull request for 5.4.
->=20
-> Please use as contacts:
->=20
->         Eric Biggers <ebiggers@kernel.org>
->         Theodore Y. Ts'o <tytso@mit.edu>
-
-Added from tomorrow.
-
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgement of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
-
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-        Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
-
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
-
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
-
---Sig_/o/A/oFcwBKxzLJmh1WMQYp.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl0+h98ACgkQAVBC80lX
-0GzVDgf/d55c2rZLDeEKeui7XemWo7U4YCJZVQsO2Ye1k4OURh8KuPB4OHFAxnrm
-FXjilOcrXCqrXaNyoo4xaRfy2oZesdGslLLxjZL8Jnf6DLm5sxbA/JbxR+95wMkH
-O4MxF5R7r5SbzzTt7j1DGlfn5SGW7xkNHmOPhurdtyyqq0J5ag6rk+U/nNn2TpAM
-eZ9C+mJrmjIage8ogA2P8XGWZOU6nNJs+4nQ1pB79MiJyK9IkPJBH+dpC+TG9Rpy
-Z6Z49aJa1DSBlM+FX2kRCpRlkBwsVg5yBDzYjyk6J5ODYInzCpdHsCXTjM2nvmST
-+qr2gMk47+PWDhcI9yomBWndRIdLwg==
-=p76q
------END PGP SIGNATURE-----
-
---Sig_/o/A/oFcwBKxzLJmh1WMQYp.--
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
