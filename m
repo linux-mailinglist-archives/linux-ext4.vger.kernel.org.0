@@ -2,128 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F9A79A33
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2019 22:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A214D79AB3
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2019 23:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729567AbfG2Uqb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Jul 2019 16:46:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48640 "EHLO mail.kernel.org"
+        id S2388360AbfG2VMg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Jul 2019 17:12:36 -0400
+Received: from de1.gusev.co ([84.16.227.28]:37766 "EHLO mail.gusev.co"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729079AbfG2Uqb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 29 Jul 2019 16:46:31 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D6B0206A2;
-        Mon, 29 Jul 2019 20:46:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564433190;
-        bh=DNMh2YRc0dQISTUq/gkVxZiJ3MfUwE+LBvvMLd0sx0w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K79oGysDbp1R9KcVqj1mKpfGB23D0dx9KzJwL1URFJI/8PotFaTXB1QXv/9jPmJ5e
-         cd4dzd2ixOf8QsiHSDEd5r1iJBny2qYoC0vd1z0wpsTIbfCpr52p94FTMkHI78oJ2t
-         NisulN2mchZN4cYXAX27Nu925MXHkVW50WusaYRo=
-Date:   Mon, 29 Jul 2019 13:46:28 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
+        id S2387510AbfG2VMg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 29 Jul 2019 17:12:36 -0400
+Received: from [10.0.0.5] (78-57-160-222.static.zebra.lt [78.57.160.222])
+        by mail.gusev.co (Postfix) with ESMTPSA id 4C11623F04;
+        Tue, 30 Jul 2019 00:12:34 +0300 (EEST)
+Subject: Re: ext4 file system is constantly writing to the block device with
+ no activity from the applications, is it a bug?
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v7 10/16] fscrypt: v2 encryption policy support
-Message-ID: <20190729204627.GH169027@gmail.com>
-Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Satya Tangirala <satyat@google.com>
-References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-11-ebiggers@kernel.org>
- <20190728211730.GK6088@mit.edu>
+Cc:     "'linux-ext4@vger.kernel.org'" <linux-ext4@vger.kernel.org>
+References: <20190626151754.GA2789@twosigma.com>
+ <20190711092315.GA10473@quack2.suse.cz>
+ <96c4e04f8d5146c49ee9f4478c161dcb@EXMBDFT10.ad.twosigma.com>
+ <20190711171046.GA13966@mit.edu> <20190712191903.GP2772@twosigma.com>
+ <20190712202827.GA16730@mit.edu>
+ <7cc876ae264c495e9868717f33a63a77@EXMBDFT10.ad.twosigma.com>
+ <865a6dad983e4dedb9836075c210a782@EXMBDFT11.ad.twosigma.com>
+ <20190729100914.GB17833@quack2.suse.cz>
+ <b19e976b-097e-0b94-23c3-e0f27a97a64c@gusev.co>
+ <20190729125505.GA10639@mit.edu>
+From:   Dmitrij Gusev <dmitrij@gusev.co>
+Message-ID: <632c1ef5-a0cb-30e2-4d1c-08e6463d6cda@gusev.co>
+Date:   Tue, 30 Jul 2019 00:12:33 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190728211730.GK6088@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190729125505.GA10639@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Jul 28, 2019 at 05:17:30PM -0400, Theodore Y. Ts'o wrote:
-> On Fri, Jul 26, 2019 at 03:41:35PM -0700, Eric Biggers wrote:
-> > @@ -319,6 +329,31 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
-> >  	if (!capable(CAP_SYS_ADMIN))
-> >  		goto out_wipe_secret;
-> >  
-> > +	if (arg.key_spec.type != FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR) {
-> 
-> This should be "== FSCRYPT_KEY_SPEC_TYPE_INDENTIFIER" instead.  That's
-> because you use the identifier part of the union:
-> 
-> > +		/* Calculate the key identifier and return it to userspace. */
-> > +		err = fscrypt_hkdf_expand(&secret.hkdf,
-> > +					  HKDF_CONTEXT_KEY_IDENTIFIER,
-> > +					  NULL, 0, arg.key_spec.u.identifier,
-> 
-> If we ever add a new key specifier type, and alternative in the union,
-> this is going to come back to bite us.
+Hello.
 
-Well, I did it this way because the next patch changes the code to:
+Yes, this is the lazy inode table initialization.
 
-	if (arg.key_spec.type == FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR) {
-		...
-	} else {
-		...
-	}
+After I remounted the FS with a "noinit_itable" option the activity has 
+stopped (then I remounted it back to continue initialization).
 
-We already validated that it's either TYPE_DESCRIPTOR or TYPE_IDENTIFIER.
+Appreciate your help.
 
-But I guess to be more clear I'll just make it handle the default case again.
+P.S.
 
-	switch (arg.key_spec.type) {
-	case FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR:
-		...
-		break;
-	case FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER:
-		...
-		break;
-	default:
-		err = -EINVAL;
-		break;
-	}
+Thank you, Theodore and the development team involved for the great ext4 
+filesystem.
 
-> 
-> > +	if (policy->version == FSCRYPT_POLICY_V1) {
-> > +		/*
-> > +		 * The original encryption policy version provided no way of
-> > +		 * verifying that the correct master key was supplied, which was
-> > +		 * insecure in scenarios where multiple users have access to the
-> > +		 * same encrypted files (even just read-only access).
-> 
-> Which scenario do you have in mind?  With read-only access, Alice can
-> fetch the encryption policy for a directory, and introduce a key with
-> the same descriptor, but the "wrong" key, but that's only going to
-> affect Alice's use of the key.  It won't affect what key is used by
-> Bob, since Alice doesn't have write access to Bob's keyrings.
-> 
-> If what you mean is the risk when there is a single global
-> filesystem-specific keyring, where Alice could introduce a "wrong" key
-> identified with a specific descriptor, then sure, Alice could trick
-> Bob into encrypting his data with the wrong key (one known to Alice).
-> But we don't allow keys usable by V1 policies to be used in the
-> filesystem-specific keyring, do we?
-> 
+It is a reliable, high-performance file system. It always served me well 
+for many years and continues to do so.
 
-The scenario is that Alice lists the directory with the wrong key, then Bob
-lists the directory too and gets the wrong filenames.  This happens because the
-inode, fscrypt_info, dentry cache, page cache, etc. are the same for everyone.
-Bob's key is never looked up because the inode already has a key cached.
+I had never lost any data using it, even though some systems experienced 
+many crashes or power losses.
 
-This also applies to regular files and symlinks.
+Sincerely,
 
-- Eric
+Dmitrij
+
+On 2019-07-29 15:55, Theodore Y. Ts'o wrote:
+> On Mon, Jul 29, 2019 at 02:18:22PM +0300, Dmitrij Gusev wrote:
+>> A ext4 file system is constantly writing to the block device with no
+>> activity from the applications, is it a bug?
+>>
+>> Write speed is about 64k bytes (almost always exactly 64k bytes) per second
+>> every 1-2 seconds (I've discovered it after a RAID sync finished). Please
+>> the check activity log sample below.
+> Is this a freshly created file system?  It could be the lazy inode
+> table initialization.  You can suppress it using "mount -o
+> noinit_itable", but it will leave portions of the inode table
+> unzeroed, which can lead to confusion if the system crashes and e2fsck
+> has to try to recover the file system.
+>
+> Or you can not enable lazy inode table initialization when the file
+> system is created, using "mke2fs -t ext4 -E lazy_itable_init=0
+> /dev/XXX".  (See the manual page for mke2fs.conf for another way to
+> turn it off by default.)
+>
+> Turning off lazy inode table initialization mke2fs to take **much**
+> longer, especially on large RAID arrays.  The idea is to trade off
+> mkfs time with background activity to initialize the inode table when
+> the file system is mounted.  The noinit_itable mount option was added
+> so that a distro installer can temporarily suppress the background
+> inode table initialization to speed up the install; but then when the
+> system is booted, it can run in the background later.
+>
+>
+> If that's not it, try installing the blktrace package and then run
+> "btrace /dev/<vg>/home", and see what it reports.  For example, here's
+> the output from running "touch /mnt/test" (comments prefixed by '#'):
+>
+> # here's the touch process reading the inode...
+> 259,0    2        1    37.115679608  6646  Q  RM 4232 + 8 [touch]
+> 259,0    2        2    37.115682891  6646  C  RM 4232 + 8 [0]
+> # here's the journal commit, 5 seconds later
+> 259,0    1       11    42.543705759  6570  Q  WS 3932216 + 8 [jbd2/pmem0-8]
+> 259,0    1       12    42.543709184  6570  C  WS 3932216 + 8 [0]
+> 259,0    1       13    42.543713049  6570  Q  WS 3932224 + 8 [jbd2/pmem0-8]
+> 259,0    1       14    42.543714248  6570  C  WS 3932224 + 8 [0]
+> 259,0    1       15    42.543717049  6570  Q  WS 3932232 + 8 [jbd2/pmem0-8]
+> 259,0    1       16    42.543718193  6570  C  WS 3932232 + 8 [0]
+> 259,0    1       17    42.543720895  6570  Q  WS 3932240 + 8 [jbd2/pmem0-8]
+> 259,0    1       18    42.543722028  6570  C  WS 3932240 + 8 [0]
+> 259,0    1       19    42.543724806  6570  Q  WS 3932248 + 8 [jbd2/pmem0-8]
+> 259,0    1       20    42.543725952  6570  C  WS 3932248 + 8 [0]
+> 259,0    1       21    42.543728697  6570  Q  WS 3932256 + 8 [jbd2/pmem0-8]
+> 259,0    1       22    42.543729799  6570  C  WS 3932256 + 8 [0]
+> 259,0    1       23    42.543745380  6570  Q FWFS 3932264 + 8 [jbd2/pmem0-8]
+> 259,0    1       24    42.543746836  6570  C FWFS 3932264 + 8 [0]
+> # and here's the writeback to the inode table and superblock,
+> # 30 seconds later
+> 259,0    1       25    72.836967205    91  Q   W 0 + 8 [kworker/u8:3]
+> 259,0    1       26    72.836970861    91  C   W 0 + 8 [0]
+> 259,0    1       27    72.836984218    91  Q  WM 8 + 8 [kworker/u8:3]
+> 259,0    1       28    72.836985929    91  C  WM 8 + 8 [0]
+> 259,0    1       29    72.836992108    91  Q  WM 4232 + 8 [kworker/u8:3]
+> 259,0    1       30    72.836993953    91  C  WM 4232 + 8 [0]
+> 259,0    1       31    72.837001370    91  Q  WM 4360 + 8 [kworker/u8:3]
+> 259,0    1       32    72.837003210    91  C  WM 4360 + 8 [0]
+> 259,0    1       33    72.837010993    91  Q  WM 69896 + 8 [kworker/u8:3]
+> 259,0    1       34    72.837012564    91  C  WM 69896 + 8 [0]
+>
+> Cheers,
+>
+> 						- Ted
