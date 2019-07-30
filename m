@@ -2,142 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C195A7A7B5
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2019 14:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8AB7AD4C
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2019 18:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbfG3MIr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 30 Jul 2019 08:08:47 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56565 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727561AbfG3MIr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 30 Jul 2019 08:08:47 -0400
-Received: from localhost ([127.0.0.1] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtp (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1hsQuN-0006QO-69; Tue, 30 Jul 2019 14:07:11 +0200
-Message-Id: <20190730120321.489374435@linutronix.de>
-User-Agent: quilt/0.65
-Date:   Tue, 30 Jul 2019 13:24:56 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julia Cartwright <julia@ni.com>, linux-ext4@vger.kernel.org,
-        "Theodore Tso" <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Subject: [patch 4/4] fs: jbd/jbd2: Substitute BH locks for RT and lock
- debugging
-References: <20190730112452.871257694@linutronix.de>
+        id S1728474AbfG3QKV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 30 Jul 2019 12:10:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55830 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728686AbfG3QKV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 30 Jul 2019 12:10:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5BC2BAF27;
+        Tue, 30 Jul 2019 16:10:20 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id EC6D31E435C; Tue, 30 Jul 2019 18:10:19 +0200 (CEST)
+Date:   Tue, 30 Jul 2019 18:10:19 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Chengguang Xu <cgxu519@zoho.com.cn>
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 2/2] ext2: code cleanup for ext2_free_blocks()
+Message-ID: <20190730161019.GH28829@quack2.suse.cz>
+References: <20190723112155.20329-1-cgxu519@zoho.com.cn>
+ <20190723112155.20329-2-cgxu519@zoho.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190723112155.20329-2-cgxu519@zoho.com.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Bit spinlocks are problematic if PREEMPT_RT is enabled. They disable
-preemption, which is undesired for latency reasons and breaks when regular
-spinlocks are taken within the bit_spinlock locked region because regular
-spinlocks are converted to 'sleeping spinlocks' on RT.
+On Tue 23-07-19 19:21:55, Chengguang Xu wrote:
+> Call ext2_data_block_valid() for block range validity.
+> 
+> Signed-off-by: Chengguang Xu <cgxu519@zoho.com.cn>
 
-Substitute the BH_State and BH_JournalHead bit spinlocks with regular
-spinlock for PREEMPT_RT enabled kernels.
+Thanks for both patches. I've added them to my tree.
 
-Bit spinlocks are also not covered by lock debugging, e.g. lockdep. With
-the spinlock substitution in place, they can be exposed via
-CONFIG_DEBUG_BIT_SPINLOCKS.
+								Honza
 
-Originally-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-ext4@vger.kernel.org
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.com>
---
- include/linux/buffer_head.h |    8 ++++++++
- include/linux/jbd2.h        |   36 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+)
-
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -79,6 +79,10 @@ struct buffer_head {
- 
- #if defined(CONFIG_PREEMPT_RT) || defined(CONFIG_DEBUG_BIT_SPINLOCKS)
- 	spinlock_t b_uptodate_lock;
-+# if IS_ENABLED(CONFIG_JBD2)
-+	spinlock_t b_state_lock;
-+	spinlock_t b_journal_head_lock;
-+# endif
- #endif
- };
- 
-@@ -101,6 +105,10 @@ bh_uptodate_unlock_irqrestore(struct buf
- static inline void buffer_head_init_locks(struct buffer_head *bh)
- {
- 	spin_lock_init(&bh->b_uptodate_lock);
-+#if IS_ENABLED(CONFIG_JBD2)
-+	spin_lock_init(&bh->b_state_lock);
-+	spin_lock_init(&bh->b_journal_head_lock);
-+#endif
- }
- 
- #else /* PREEMPT_RT || DEBUG_BIT_SPINLOCKS */
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -342,6 +342,40 @@ static inline struct journal_head *bh2jh
- 	return bh->b_private;
- }
- 
-+#if defined(CONFIG_PREEMPT_RT) || defined(CONFIG_DEBUG_BIT_SPINLOCKS)
-+
-+static inline void jbd_lock_bh_state(struct buffer_head *bh)
-+{
-+	spin_lock(&bh->b_state_lock);
-+}
-+
-+static inline int jbd_trylock_bh_state(struct buffer_head *bh)
-+{
-+	return spin_trylock(&bh->b_state_lock);
-+}
-+
-+static inline int jbd_is_locked_bh_state(struct buffer_head *bh)
-+{
-+	return spin_is_locked(&bh->b_state_lock);
-+}
-+
-+static inline void jbd_unlock_bh_state(struct buffer_head *bh)
-+{
-+	spin_unlock(&bh->b_state_lock);
-+}
-+
-+static inline void jbd_lock_bh_journal_head(struct buffer_head *bh)
-+{
-+	spin_lock(&bh->b_journal_head_lock);
-+}
-+
-+static inline void jbd_unlock_bh_journal_head(struct buffer_head *bh)
-+{
-+	spin_unlock(&bh->b_journal_head_lock);
-+}
-+
-+#else /* PREEMPT_RT || DEBUG_BIT_SPINLOCKS */
-+
- static inline void jbd_lock_bh_state(struct buffer_head *bh)
- {
- 	bit_spin_lock(BH_State, &bh->b_state);
-@@ -372,6 +406,8 @@ static inline void jbd_unlock_bh_journal
- 	bit_spin_unlock(BH_JournalHead, &bh->b_state);
- }
- 
-+#endif /* !PREEMPT_RT && !DEBUG_BIT_SPINLOCKS */
-+
- #define J_ASSERT(assert)	BUG_ON(!(assert))
- 
- #define J_ASSERT_BH(bh, expr)	J_ASSERT(expr)
-
-
+> ---
+>  fs/ext2/balloc.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
+> index 92e9a7489174..e0cc55164505 100644
+> --- a/fs/ext2/balloc.c
+> +++ b/fs/ext2/balloc.c
+> @@ -490,9 +490,7 @@ void ext2_free_blocks (struct inode * inode, unsigned long block,
+>  	struct ext2_super_block * es = sbi->s_es;
+>  	unsigned freed = 0, group_freed;
+>  
+> -	if (block < le32_to_cpu(es->s_first_data_block) ||
+> -	    block + count < block ||
+> -	    block + count > le32_to_cpu(es->s_blocks_count)) {
+> +	if (!ext2_data_block_valid(sbi, block, count)) {
+>  		ext2_error (sb, "ext2_free_blocks",
+>  			    "Freeing blocks not in datazone - "
+>  			    "block = %lu, count = %lu", block, count);
+> -- 
+> 2.20.1
+> 
+> 
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
