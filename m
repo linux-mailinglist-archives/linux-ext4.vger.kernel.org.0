@@ -2,291 +2,356 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1388379E22
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2019 03:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BBF79E5B
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2019 03:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730746AbfG3Btr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 29 Jul 2019 21:49:47 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:43482 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730720AbfG3Btq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Jul 2019 21:49:46 -0400
-Received: by mail-pg1-f193.google.com with SMTP id r22so1564301pgk.10;
-        Mon, 29 Jul 2019 18:49:45 -0700 (PDT)
+        id S1731069AbfG3Bvn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 29 Jul 2019 21:51:43 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43567 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730837AbfG3Bu1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 29 Jul 2019 21:50:27 -0400
+Received: by mail-pf1-f194.google.com with SMTP id i189so28949610pfg.10;
+        Mon, 29 Jul 2019 18:50:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=inYutnH31FgDtfYuWWOFZ2I7YPGQBonCBQAoTuJNcqQ=;
-        b=u8Kamqa8djI35d/rQjguXHjF/370ksTiQHvT1LK1dRly1tChoKAieuB5vqE5HXzO1p
-         7A9E5BvvBfJy7IW30E2jik91mUj7sRCqooPUjEWFXlVOltQFUY3KhoE/v9BZ7D2HsLwr
-         7G5QVohyAwrrFCK2bESvweN3ZlXNLdqvVaZQFBaHZlrj2N5Mp9jLYxf6OOvn34gG9bi6
-         0Vl/aIMZWSbbf8lyYp+b37NGiw5+PXD0N2oL2BkG5amyCtEe3JPzh6tz4MZPoVu4T2le
-         lPbySQtYKgSeJxjjnX+M7FYmI0qKAVHfiel42DYNwZVSJ97ijOK2AKRDPJPd+B0yb8OH
-         G4bw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=CJvht37EZemmcnBgtlNiz9+F+TMC9CP5JC3nxpy4VdY=;
+        b=GYkm93F1cJJjois+RV8eMjig9xIYQGk+SUnlQDx43S+Uu/41dHNKq90eVf618tDeUr
+         WEhiGiy+V5MiKxL76vvoq57Fv52TCb6McUeald2lUzRsAlH+djZTCx912xz1xe/0uhYF
+         raBQiGP750m/gqcyG2+H2THhlCHvYbdV9cbIZ5XSHgORnKCeuL6V7rrfuzm7WbifsB/e
+         G0zvOt+LVA9KtaEu6+9piTZLiIDyeuqyGnhvHXnLUfRKpsjGvo2fnsVCgoerB7LL2t1j
+         DkiSzSFuxoUY16+Xnrx6oiR20x5Cq+JMCahtn/DNTqBOsUs+1/tmZeAf61XUNw7gdTOR
+         tE4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=inYutnH31FgDtfYuWWOFZ2I7YPGQBonCBQAoTuJNcqQ=;
-        b=pauq5GN4XLIRgLz5Q4KWQZ5gpQvszUlrKwcgfM5meTvL0uVvlUKLzH1DbZXgjekl1t
-         gU6ANoFNzRGrzA2a93JatRy3hPZxoAatCVpFk5HZ4EsSCP1TRvBXzmzeO3V3nenHDq8d
-         tHIOnvXhpUBF92/XwbHnX8wurg47f9uvvgmZQHT3V6Mkd/XNt/09MRxERQucPNscSrzF
-         gP5mHVLPQT/9uBJsoHbGT3/Rb0n5Yo07GNzTumRBZvh86G6w63aUxw0e80hV+z25b8uv
-         JviDq2YzvEX4ZgANeO0LXm0l+msRdcA1dL8AdtHhBldStTXGQvG3i60tKr57v3Rsldu+
-         GQvQ==
-X-Gm-Message-State: APjAAAWpDptZWfj77yRDCVK5pWoFV3qfbb40wBf90Fs4Pt/l5e+hqk9W
-        egvpfaHrQNFdhh+mpcZX+KE=
-X-Google-Smtp-Source: APXvYqwvVXXv7AaDXGLnZYVyM1yVLtOSmgJe3iUIeXs3gryHPyfVxVrXXPhvkNq7utK5BPGGbVNkwQ==
-X-Received: by 2002:a62:7994:: with SMTP id u142mr40048632pfc.39.1564451385329;
-        Mon, 29 Jul 2019 18:49:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=CJvht37EZemmcnBgtlNiz9+F+TMC9CP5JC3nxpy4VdY=;
+        b=c++eOynR/75hAdNEql4xAgHunXxIBT+8EGE07x4qh7Ucp1Gnq0easXXS4ZrJN7N0O8
+         uWtSETtaZALUQaBh9dupvKV3UPlJHrjHFU4FLfVDoKUTw1rkLuLEY3HylviYu+jR6jEm
+         70OJ8inwjyLZgQmDKsuCbmt2m0K/Adjj3fsijx3a84VgEdcl/+cVFB4RHjRv9bm3E+H+
+         sG8vC9IiXmrswO3XQFXnlBKGnF/ymtT+y567iWO21ehoEOAMZ31CefRQNZam5DGTRE7d
+         D+/wNeSNq7TLtX1zFwoXUDc6rM8szU1zoeC/q+mXceXH/3Ex5rMou+KjwXz9e9GXCbFG
+         ByOg==
+X-Gm-Message-State: APjAAAUV74SSj7Px5abA2h87lpafIpkSjbsOvzBIMa5twm2zMT9V2xWM
+        iv7J6BMSvYxRIyOrlnUjpRU=
+X-Google-Smtp-Source: APXvYqw9HM2FyYpOSBZ+oV02s33RW4zpOn3lB0rMSooqL418lTjpdNtWteRxv46hIS/3Tw3gww5h6Q==
+X-Received: by 2002:a62:e315:: with SMTP id g21mr40609144pfh.225.1564451426354;
+        Mon, 29 Jul 2019 18:50:26 -0700 (PDT)
 Received: from deepa-ubuntu.lan (c-98-234-52-230.hsd1.ca.comcast.net. [98.234.52.230])
-        by smtp.gmail.com with ESMTPSA id r6sm138807156pjb.22.2019.07.29.18.49.41
+        by smtp.gmail.com with ESMTPSA id r6sm138807156pjb.22.2019.07.29.18.50.24
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 29 Jul 2019 18:49:44 -0700 (PDT)
+        Mon, 29 Jul 2019 18:50:25 -0700 (PDT)
 From:   Deepa Dinamani <deepa.kernel@gmail.com>
 To:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org
 Cc:     linux-fsdevel@vger.kernel.org, arnd@arndb.de,
-        y2038@lists.linaro.org, adilger.kernel@dilger.ca,
-        adrian.hunter@intel.com, aivazian.tigran@gmail.com, al@alarsen.net,
-        anna.schumaker@netapp.com, anton@enomsg.org, anton@tuxera.com,
-        asmadeus@codewreck.org, ccross@android.com,
-        ceph-devel@vger.kernel.org, coda@cs.cmu.edu,
-        codalist@coda.cs.cmu.edu, darrick.wong@oracle.com,
-        dedekind1@gmail.com, devel@lists.orangefs.org, dsterba@suse.com,
-        dushistov@mail.ru, dwmw2@infradead.org, ericvh@gmail.com,
-        gregkh@linuxfoundation.org, hch@infradead.org, hch@lst.de,
-        hirofumi@mail.parknet.co.jp, hubcap@omnibond.com,
-        idryomov@gmail.com, jack@suse.com, jaegeuk@kernel.org,
-        jaharkes@cs.cmu.edu, jfs-discussion@lists.sourceforge.net,
-        jlbec@evilplan.org, keescook@chromium.org,
-        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-karma-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        lucho@ionkov.net, luisbg@kernel.org, martin@omnibond.com,
-        me@bobcopeland.com, mikulas@artax.karlin.mff.cuni.cz,
-        nico@fluxnic.net, phillip@squashfs.org.uk,
-        reiserfs-devel@vger.kernel.org, richard@nod.at, sage@redhat.com,
-        salah.triki@gmail.com, sfrench@samba.org, shaggy@kernel.org,
-        tj@kernel.org, tony.luck@intel.com,
-        trond.myklebust@hammerspace.com, tytso@mit.edu,
-        v9fs-developer@lists.sourceforge.net, yuchao0@huawei.com,
-        zyan@redhat.com
-Subject: [PATCH 00/20] vfs: Add support for timestamp limits
-Date:   Mon, 29 Jul 2019 18:49:04 -0700
-Message-Id: <20190730014924.2193-1-deepa.kernel@gmail.com>
+        y2038@lists.linaro.org, aivazian.tigran@gmail.com, al@alarsen.net,
+        coda@cs.cmu.edu, darrick.wong@oracle.com, dushistov@mail.ru,
+        dwmw2@infradead.org, hch@infradead.org, jack@suse.com,
+        jaharkes@cs.cmu.edu, luisbg@kernel.org, nico@fluxnic.net,
+        phillip@squashfs.org.uk, richard@nod.at, salah.triki@gmail.com,
+        shaggy@kernel.org, linux-xfs@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, linux-ext4@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        jfs-discussion@lists.sourceforge.net,
+        reiserfs-devel@vger.kernel.org
+Subject: [PATCH 06/20] fs: Fill in max and min timestamps in superblock
+Date:   Mon, 29 Jul 2019 18:49:10 -0700
+Message-Id: <20190730014924.2193-7-deepa.kernel@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190730014924.2193-1-deepa.kernel@gmail.com>
+References: <20190730014924.2193-1-deepa.kernel@gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The series is an update and a more complete version of the
-previously posted series at
-https://lore.kernel.org/linux-fsdevel/20180122020426.2988-1-deepa.kernel@gmail.com/
+Fill in the appropriate limits to avoid inconsistencies
+in the vfs cached inode times when timestamps are
+outside the permitted range.
 
-Thanks to Arnd Bergmann for doing a few preliminary reviews.
-They helped me fix a few issues I had overlooked.
+Even though some filesystems are read-only, fill in the
+timestamps to reflect the on-disk representation.
 
-The limits (sometimes granularity also) for the filesystems updated here are according to the
-following table:
+Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: aivazian.tigran@gmail.com
+Cc: al@alarsen.net
+Cc: coda@cs.cmu.edu
+Cc: darrick.wong@oracle.com
+Cc: dushistov@mail.ru
+Cc: dwmw2@infradead.org
+Cc: hch@infradead.org
+Cc: jack@suse.com
+Cc: jaharkes@cs.cmu.edu
+Cc: luisbg@kernel.org
+Cc: nico@fluxnic.net
+Cc: phillip@squashfs.org.uk
+Cc: richard@nod.at
+Cc: salah.triki@gmail.com
+Cc: shaggy@kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: codalist@coda.cs.cmu.edu
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: jfs-discussion@lists.sourceforge.net
+Cc: reiserfs-devel@vger.kernel.org
+---
+ fs/befs/linuxvfs.c       | 2 ++
+ fs/bfs/inode.c           | 2 ++
+ fs/coda/inode.c          | 3 +++
+ fs/cramfs/inode.c        | 2 ++
+ fs/efs/super.c           | 2 ++
+ fs/ext2/super.c          | 2 ++
+ fs/freevxfs/vxfs_super.c | 2 ++
+ fs/jffs2/fs.c            | 3 +++
+ fs/jfs/super.c           | 2 ++
+ fs/minix/inode.c         | 2 ++
+ fs/qnx4/inode.c          | 2 ++
+ fs/qnx6/inode.c          | 2 ++
+ fs/reiserfs/super.c      | 3 +++
+ fs/romfs/super.c         | 2 ++
+ fs/squashfs/super.c      | 2 ++
+ fs/ufs/super.c           | 7 +++++++
+ fs/xfs/xfs_super.c       | 2 ++
+ 17 files changed, 42 insertions(+)
 
-File system   Time type                      Start year Expiration year Granularity
-cramfs        fixed                          0          0
-romfs         fixed                          0          0
-pstore        ascii seconds (27 digit ascii) S64_MIN    S64_MAX         NSEC_PER_USEC
-coda          INT64                          S64_MIN    S64_MAX         1
-omfs          64-bit milliseconds            0          U64_MAX/ 1000   NSEC_PER_MSEC
-befs          unsigned 48-bit seconds        0          0xffffffffffff  alloc_super
-bfs           unsigned 32-bit seconds        0          U32_MAX         alloc_super
-efs           unsigned 32-bit seconds        0          U32_MAX         alloc_super
-ext2          signed 32-bit seconds          S32_MIN    S32_MAX         alloc_super
-ext3          signed 32-bit seconds          S32_MIN    S32_MAX         alloc_super
-ext4 (old)    signed 32-bit seconds          S32_MIN    S32_MAX         alloc_super
-ext4 (extra)  34-bit seconds, 30-bit ns      S32_MIN    0x37fffffff	1
-freevxfs      u32 secs/usecs                 0          U32_MAX         alloc_super
-jffs2         unsigned 32-bit seconds        0          U32_MAX         alloc_super
-jfs           unsigned 32-bit seconds/ns     0          U32_MAX         1
-minix         unsigned 32-bit seconds        0          U32_MAX         alloc_super
-orangefs      u64 seconds                    0          U64_MAX         alloc_super
-qnx4          unsigned 32-bit seconds        0          U32_MAX         alloc_super
-qnx6          unsigned 32-bit seconds        0          U32_MAX         alloc_super
-reiserfs      unsigned 32-bit seconds        0          U32_MAX         alloc_super
-squashfs      unsigned 32-bit seconds        0          U32_MAX         alloc_super
-ufs1          signed 32-bit seconds          S32_MIN    S32_MAX         NSEC_PER_SEC
-ufs2          signed 64-bit seconds/u32 ns   S64_MIN    S64_MAX         1
-xfs           signed 32-bit seconds/ns       S32_MIN    S32_MAX         1
-ceph          unsigned 32-bit second/ns      0          U32_MAX         1000
-sysv          unsigned 32-bit seconds        0          U32_MAX         alloc_super
-affs          u32 day, min, ticks            1978       u32_max days    NSEC_PER_SEC
-nfsv2         unsigned 32-bit seconds/ns     0          U32_MAX         1
-nfsv3         unsigned 32-bit seconds/ns     0          U32_MAX         1000
-nfsv4         u64 seconds/u32 ns             S64_MIN    S64_MAX         1000
-isofs         u8 year since 1900 (fixable)   1900       2155            alloc_super
-hpfs          unsigned 32-bit seconds        1970       2106            alloc_super
-fat           7-bit years, 2s resolution     1980       2107
-cifs (smb)    7-bit years                    1980       2107
-cifs (modern) 64-bit 100ns since 1601        1601       30828
-adfs          40-bit cs since 1900           1900       2248
-9p (9P2000)   unsigned 32-bit seconds        1970       2106
-9p (9P2000.L) signed 64-bit seconds, ns      1970       S64_MAX
-
-Granularity column filled in by the alloc_super() in the above table indicates that
-the granularity is NSEC_PER_SEC.
-Note that anything not mentioned above still has the default limits
-S64_MIN..S64_MAX.
-
-The patches in the series are as structured below:
-1. Add vfs support to maintain the limits per filesystem.
-2. Add a new timestamp_truncate() api for clamping timestamps
-   according to the filesystem limits.
-3. Add a warning for mount syscall to indicate the impending
-   expiry of timestamps.
-4. Modify utimes to clamp the timestamps.
-5. Fill in limits for filesystems.
-
-An updated version of the test for checking file system timestamp limits has been posted
-at https://www.spinics.net/lists/fstests/msg12262.html
-
-Changes from previous version:
-* No change in mount behavior because of expiry of timestamps.
-* Included limits for more filesystems.
-
-Deepa Dinamani (20):
-  vfs: Add file timestamp range support
-  vfs: Add timestamp_truncate() api
-  timestamp_truncate: Replace users of timespec64_trunc
-  mount: Add mount warning for impending timestamp expiry
-  utimes: Clamp the timestamps before update
-  fs: Fill in max and min timestamps in superblock
-  9p: Fill min and max timestamps in sb
-  adfs: Fill in max and min timestamps in sb
-  ext4: Initialize timestamps limits
-  fs: nfs: Initialize filesystem timestamp ranges
-  fs: cifs: Initialize filesystem timestamp ranges
-  fs: fat: Initialize filesystem timestamp ranges
-  fs: affs: Initialize filesystem timestamp ranges
-  fs: sysv: Initialize filesystem timestamp ranges
-  fs: ceph: Initialize filesystem timestamp ranges
-  fs: orangefs: Initialize filesystem timestamp ranges
-  fs: hpfs: Initialize filesystem timestamp ranges
-  fs: omfs: Initialize filesystem timestamp ranges
-  pstore: fs superblock limits
-  isofs: Initialize filesystem timestamp ranges
-
- fs/9p/vfs_super.c        |  6 +++++-
- fs/adfs/adfs.h           | 13 +++++++++++++
- fs/adfs/inode.c          |  8 ++------
- fs/adfs/super.c          |  2 ++
- fs/affs/amigaffs.c       |  2 +-
- fs/affs/amigaffs.h       |  3 +++
- fs/affs/inode.c          |  4 ++--
- fs/affs/super.c          |  4 ++++
- fs/attr.c                | 21 ++++++++++++---------
- fs/befs/linuxvfs.c       |  2 ++
- fs/bfs/inode.c           |  2 ++
- fs/ceph/super.c          |  2 ++
- fs/cifs/cifsfs.c         | 22 ++++++++++++++++++++++
- fs/cifs/netmisc.c        | 14 +++++++-------
- fs/coda/inode.c          |  3 +++
- fs/configfs/inode.c      | 12 ++++++------
- fs/cramfs/inode.c        |  2 ++
- fs/efs/super.c           |  2 ++
- fs/ext2/super.c          |  2 ++
- fs/ext4/ext4.h           |  4 ++++
- fs/ext4/super.c          | 17 +++++++++++++++--
- fs/f2fs/file.c           | 21 ++++++++++++---------
- fs/fat/inode.c           | 12 ++++++++++++
- fs/fat/misc.c            |  5 +++--
- fs/freevxfs/vxfs_super.c |  2 ++
- fs/hpfs/hpfs_fn.h        |  6 ++----
- fs/hpfs/super.c          |  2 ++
- fs/inode.c               | 33 ++++++++++++++++++++++++++++++++-
- fs/isofs/inode.c         |  7 +++++++
- fs/jffs2/fs.c            |  3 +++
- fs/jfs/super.c           |  2 ++
- fs/kernfs/inode.c        |  6 +++---
- fs/minix/inode.c         |  2 ++
- fs/namespace.c           | 11 +++++++++++
- fs/nfs/super.c           | 20 +++++++++++++++++++-
- fs/ntfs/inode.c          | 21 ++++++++++++---------
- fs/omfs/inode.c          |  4 ++++
- fs/orangefs/super.c      |  2 ++
- fs/pstore/inode.c        |  4 +++-
- fs/qnx4/inode.c          |  2 ++
- fs/qnx6/inode.c          |  2 ++
- fs/reiserfs/super.c      |  3 +++
- fs/romfs/super.c         |  2 ++
- fs/squashfs/super.c      |  2 ++
- fs/super.c               |  2 ++
- fs/sysv/super.c          |  5 ++++-
- fs/ubifs/file.c          | 21 ++++++++++++---------
- fs/ufs/super.c           |  7 +++++++
- fs/utimes.c              | 17 +++++++++++++----
- fs/xfs/xfs_super.c       |  2 ++
- include/linux/fs.h       |  5 +++++
- include/linux/time64.h   |  2 ++
- 52 files changed, 304 insertions(+), 78 deletions(-)
-
+diff --git a/fs/befs/linuxvfs.c b/fs/befs/linuxvfs.c
+index 462d096ff3e9..64cdf4d8e424 100644
+--- a/fs/befs/linuxvfs.c
++++ b/fs/befs/linuxvfs.c
+@@ -893,6 +893,8 @@ befs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb_set_blocksize(sb, (ulong) befs_sb->block_size);
+ 	sb->s_op = &befs_sops;
+ 	sb->s_export_op = &befs_export_operations;
++	sb->s_time_min = 0;
++	sb->s_time_max = 0xffffffffffffll;
+ 	root = befs_iget(sb, iaddr2blockno(sb, &(befs_sb->root_dir)));
+ 	if (IS_ERR(root)) {
+ 		ret = PTR_ERR(root);
+diff --git a/fs/bfs/inode.c b/fs/bfs/inode.c
+index 5e97bed073d7..f8ce1368218b 100644
+--- a/fs/bfs/inode.c
++++ b/fs/bfs/inode.c
+@@ -324,6 +324,8 @@ static int bfs_fill_super(struct super_block *s, void *data, int silent)
+ 		return -ENOMEM;
+ 	mutex_init(&info->bfs_lock);
+ 	s->s_fs_info = info;
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+ 
+ 	sb_set_blocksize(s, BFS_BSIZE);
+ 
+diff --git a/fs/coda/inode.c b/fs/coda/inode.c
+index 321f56e487cb..b1c70e2b9b1e 100644
+--- a/fs/coda/inode.c
++++ b/fs/coda/inode.c
+@@ -188,6 +188,9 @@ static int coda_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_magic = CODA_SUPER_MAGIC;
+ 	sb->s_op = &coda_super_operations;
+ 	sb->s_d_op = &coda_dentry_operations;
++	sb->s_time_gran = 1;
++	sb->s_time_min = S64_MIN;
++	sb->s_time_max = S64_MAX;
+ 
+ 	error = super_setup_bdi(sb);
+ 	if (error)
+diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+index 9352487bd0fc..4d1d8b7761ed 100644
+--- a/fs/cramfs/inode.c
++++ b/fs/cramfs/inode.c
+@@ -597,6 +597,8 @@ static int cramfs_finalize_super(struct super_block *sb,
+ 
+ 	/* Set it all up.. */
+ 	sb->s_flags |= SB_RDONLY;
++	sb->s_time_min = 0;
++	sb->s_time_max = 0;
+ 	sb->s_op = &cramfs_ops;
+ 	root = get_cramfs_inode(sb, cramfs_root, 0);
+ 	if (IS_ERR(root))
+diff --git a/fs/efs/super.c b/fs/efs/super.c
+index 867fc24dee20..4a6ebff2af76 100644
+--- a/fs/efs/super.c
++++ b/fs/efs/super.c
+@@ -257,6 +257,8 @@ static int efs_fill_super(struct super_block *s, void *d, int silent)
+ 	if (!sb)
+ 		return -ENOMEM;
+ 	s->s_fs_info = sb;
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+  
+ 	s->s_magic		= EFS_SUPER_MAGIC;
+ 	if (!sb_set_blocksize(s, EFS_BLOCKSIZE)) {
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index 44eb6e7eb492..baa36c6fb71e 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -1002,6 +1002,8 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	sb->s_maxbytes = ext2_max_size(sb->s_blocksize_bits);
+ 	sb->s_max_links = EXT2_LINK_MAX;
++	sb->s_time_min = S32_MIN;
++	sb->s_time_max = S32_MAX;
+ 
+ 	if (le32_to_cpu(es->s_rev_level) == EXT2_GOOD_OLD_REV) {
+ 		sbi->s_inode_size = EXT2_GOOD_OLD_INODE_SIZE;
+diff --git a/fs/freevxfs/vxfs_super.c b/fs/freevxfs/vxfs_super.c
+index a89f68c3cbed..578a5062706e 100644
+--- a/fs/freevxfs/vxfs_super.c
++++ b/fs/freevxfs/vxfs_super.c
+@@ -229,6 +229,8 @@ static int vxfs_fill_super(struct super_block *sbp, void *dp, int silent)
+ 
+ 	sbp->s_op = &vxfs_super_ops;
+ 	sbp->s_fs_info = infp;
++	sbp->s_time_min = 0;
++	sbp->s_time_max = U32_MAX;
+ 
+ 	if (!vxfs_try_sb_magic(sbp, silent, 1,
+ 			(__force __fs32)cpu_to_le32(VXFS_SUPER_MAGIC))) {
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 8a20ddd25f2d..d0b59d03a7a9 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -590,6 +590,9 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_blocksize = PAGE_SIZE;
+ 	sb->s_blocksize_bits = PAGE_SHIFT;
+ 	sb->s_magic = JFFS2_SUPER_MAGIC;
++	sb->s_time_min = 0;
++	sb->s_time_max = U32_MAX;
++
+ 	if (!sb_rdonly(sb))
+ 		jffs2_start_garbage_collect_thread(c);
+ 	return 0;
+diff --git a/fs/jfs/super.c b/fs/jfs/super.c
+index f4e10cb9f734..b2dc4d1f9dcc 100644
+--- a/fs/jfs/super.c
++++ b/fs/jfs/super.c
+@@ -503,6 +503,8 @@ static int jfs_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	sb->s_fs_info = sbi;
+ 	sb->s_max_links = JFS_LINK_MAX;
++	sb->s_time_min = 0;
++	sb->s_time_max = U32_MAX;
+ 	sbi->sb = sb;
+ 	sbi->uid = INVALID_UID;
+ 	sbi->gid = INVALID_GID;
+diff --git a/fs/minix/inode.c b/fs/minix/inode.c
+index f96073f25432..7cb5fd38eb14 100644
+--- a/fs/minix/inode.c
++++ b/fs/minix/inode.c
+@@ -277,6 +277,8 @@ static int minix_fill_super(struct super_block *s, void *data, int silent)
+ 
+ 	/* set up enough so that it can read an inode */
+ 	s->s_op = &minix_sops;
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+ 	root_inode = minix_iget(s, MINIX_ROOT_INO);
+ 	if (IS_ERR(root_inode)) {
+ 		ret = PTR_ERR(root_inode);
+diff --git a/fs/qnx4/inode.c b/fs/qnx4/inode.c
+index 922d083bbc7c..e8da1cde87b9 100644
+--- a/fs/qnx4/inode.c
++++ b/fs/qnx4/inode.c
+@@ -201,6 +201,8 @@ static int qnx4_fill_super(struct super_block *s, void *data, int silent)
+ 	s->s_op = &qnx4_sops;
+ 	s->s_magic = QNX4_SUPER_MAGIC;
+ 	s->s_flags |= SB_RDONLY;	/* Yup, read-only yet */
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+ 
+ 	/* Check the superblock signature. Since the qnx4 code is
+ 	   dangerous, we should leave as quickly as possible
+diff --git a/fs/qnx6/inode.c b/fs/qnx6/inode.c
+index 0f8b0ff1ba43..345db56c98fd 100644
+--- a/fs/qnx6/inode.c
++++ b/fs/qnx6/inode.c
+@@ -429,6 +429,8 @@ static int qnx6_fill_super(struct super_block *s, void *data, int silent)
+ 	s->s_op = &qnx6_sops;
+ 	s->s_magic = QNX6_SUPER_MAGIC;
+ 	s->s_flags |= SB_RDONLY;        /* Yup, read-only yet */
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
+ 
+ 	/* ease the later tree level calculations */
+ 	sbi = QNX6_SB(s);
+diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
+index ab028ea0e561..d69b4ac0ae2f 100644
+--- a/fs/reiserfs/super.c
++++ b/fs/reiserfs/super.c
+@@ -1976,6 +1976,9 @@ static int reiserfs_fill_super(struct super_block *s, void *data, int silent)
+ 		goto error_unlocked;
+ 	}
+ 
++	s->s_time_min = 0;
++	s->s_time_max = U32_MAX;
++
+ 	rs = SB_DISK_SUPER_BLOCK(s);
+ 	/*
+ 	 * Let's do basic sanity check to verify that underlying device is not
+diff --git a/fs/romfs/super.c b/fs/romfs/super.c
+index 7d580f7c3f1d..a42c0e3079dc 100644
+--- a/fs/romfs/super.c
++++ b/fs/romfs/super.c
+@@ -478,6 +478,8 @@ static int romfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sb->s_maxbytes = 0xFFFFFFFF;
+ 	sb->s_magic = ROMFS_MAGIC;
+ 	sb->s_flags |= SB_RDONLY | SB_NOATIME;
++	sb->s_time_min = 0;
++	sb->s_time_max = 0;
+ 	sb->s_op = &romfs_super_ops;
+ 
+ #ifdef CONFIG_ROMFS_ON_MTD
+diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
+index effa638d6d85..a9e9837617a9 100644
+--- a/fs/squashfs/super.c
++++ b/fs/squashfs/super.c
+@@ -183,6 +183,8 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
+ 		(u64) le64_to_cpu(sblk->id_table_start));
+ 
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
++	sb->s_time_min = 0;
++	sb->s_time_max = U32_MAX;
+ 	sb->s_flags |= SB_RDONLY;
+ 	sb->s_op = &squashfs_super_ops;
+ 
+diff --git a/fs/ufs/super.c b/fs/ufs/super.c
+index 4ed0dca52ec8..1da0be667409 100644
+--- a/fs/ufs/super.c
++++ b/fs/ufs/super.c
+@@ -843,6 +843,10 @@ static int ufs_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
+ 
++	sb->s_time_gran = NSEC_PER_SEC;
++	sb->s_time_min = S32_MIN;
++	sb->s_time_max = S32_MAX;
++
+ 	switch (sbi->s_mount_opt & UFS_MOUNT_UFSTYPE) {
+ 	case UFS_MOUNT_UFSTYPE_44BSD:
+ 		UFSD("ufstype=44bsd\n");
+@@ -861,6 +865,9 @@ static int ufs_fill_super(struct super_block *sb, void *data, int silent)
+ 		uspi->s_fshift = 9;
+ 		uspi->s_sbsize = super_block_size = 1536;
+ 		uspi->s_sbbase =  0;
++		sb->s_time_gran = 1;
++		sb->s_time_min = S64_MIN;
++		sb->s_time_max = S64_MAX;
+ 		flags |= UFS_TYPE_UFS2 | UFS_DE_44BSD | UFS_UID_44BSD | UFS_ST_44BSD | UFS_CG_44BSD;
+ 		break;
+ 		
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index a14d11d78bd8..1a0daf46bae8 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -1685,6 +1685,8 @@ xfs_fs_fill_super(
+ 	sb->s_maxbytes = xfs_max_file_offset(sb->s_blocksize_bits);
+ 	sb->s_max_links = XFS_MAXLINK;
+ 	sb->s_time_gran = 1;
++	sb->s_time_min = S32_MIN;
++	sb->s_time_max = S32_MAX;
+ 	set_posix_acl_flag(sb);
+ 
+ 	/* version 5 superblocks support inode version counters. */
 -- 
 2.17.1
 
-Cc: adilger.kernel@dilger.ca
-Cc: adrian.hunter@intel.com
-Cc: aivazian.tigran@gmail.com
-Cc: al@alarsen.net
-Cc: anna.schumaker@netapp.com
-Cc: anton@enomsg.org
-Cc: anton@tuxera.com
-Cc: asmadeus@codewreck.org
-Cc: ccross@android.com
-Cc: ceph-devel@vger.kernel.org
-Cc: coda@cs.cmu.edu
-Cc: codalist@coda.cs.cmu.edu
-Cc: darrick.wong@oracle.com
-Cc: dedekind1@gmail.com
-Cc: devel@lists.orangefs.org
-Cc: dsterba@suse.com
-Cc: dushistov@mail.ru
-Cc: dwmw2@infradead.org
-Cc: ericvh@gmail.com
-Cc: gregkh@linuxfoundation.org
-Cc: hch@infradead.org
-Cc: hch@lst.de
-Cc: hirofumi@mail.parknet.co.jp
-Cc: hubcap@omnibond.com
-Cc: idryomov@gmail.com
-Cc: jack@suse.com
-Cc: jaegeuk@kernel.org
-Cc: jaharkes@cs.cmu.edu
-Cc: jfs-discussion@lists.sourceforge.net
-Cc: jlbec@evilplan.org
-Cc: keescook@chromium.org
-Cc: linux-cifs@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net
-Cc: linux-karma-devel@lists.sourceforge.net
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-nfs@vger.kernel.org
-Cc: linux-ntfs-dev@lists.sourceforge.net
-Cc: linux-xfs@vger.kernel.org
-Cc: lucho@ionkov.net
-Cc: luisbg@kernel.org
-Cc: martin@omnibond.com
-Cc: me@bobcopeland.com
-Cc: mikulas@artax.karlin.mff.cuni.cz
-Cc: nico@fluxnic.net
-Cc: phillip@squashfs.org.uk
-Cc: reiserfs-devel@vger.kernel.org
-Cc: richard@nod.at
-Cc: sage@redhat.com
-Cc: salah.triki@gmail.com
-Cc: sfrench@samba.org
-Cc: shaggy@kernel.org
-Cc: tj@kernel.org
-Cc: tony.luck@intel.com
-Cc: trond.myklebust@hammerspace.com
-Cc: tytso@mit.edu
-Cc: v9fs-developer@lists.sourceforge.net
-Cc: yuchao0@huawei.com
-Cc: zyan@redhat.com
