@@ -2,88 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 433C27D123
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 00:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628207D20C
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 01:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728232AbfGaW1m (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 31 Jul 2019 18:27:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33328 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbfGaW1m (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Jul 2019 18:27:42 -0400
-Received: from pd9ef1cb8.dip0.t-ipconnect.de ([217.239.28.184] helo=nanos)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1hsx3t-00009A-6X; Thu, 01 Aug 2019 00:27:09 +0200
-Date:   Thu, 1 Aug 2019 00:27:08 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Jan Kara <jack@suse.cz>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Theodore Tso <tytso@mit.edu>, Julia Cartwright <julia@ni.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [patch 2/4] fs/buffer: Move BH_Uptodate_Lock locking into wrapper
- functions
-In-Reply-To: <20190731144639.GG15806@quack2.suse.cz>
-Message-ID: <alpine.DEB.2.21.1908010022180.1788@nanos.tec.linutronix.de>
-References: <20190730112452.871257694@linutronix.de> <20190730120321.285095769@linutronix.de> <20190731144639.GG15806@quack2.suse.cz>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1730801AbfGaXjF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 31 Jul 2019 19:39:05 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39708 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726231AbfGaXjF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Jul 2019 19:39:05 -0400
+Received: from callcc.thunk.org (96-72-102-169-static.hfc.comcastbusiness.net [96.72.102.169] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6VNchZY000330
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 31 Jul 2019 19:38:44 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 3EE374202F5; Wed, 31 Jul 2019 19:38:43 -0400 (EDT)
+Date:   Wed, 31 Jul 2019 19:38:43 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [PATCH v7 07/16] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+Message-ID: <20190731233843.GA2769@mit.edu>
+References: <20190726224141.14044-1-ebiggers@kernel.org>
+ <20190726224141.14044-8-ebiggers@kernel.org>
+ <20190728192417.GG6088@mit.edu>
+ <20190729195827.GF169027@gmail.com>
+ <20190731183802.GA687@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190731183802.GA687@sol.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 31 Jul 2019, Jan Kara wrote:
-> On Tue 30-07-19 13:24:54, Thomas Gleixner wrote:
-> > Bit spinlocks are problematic if PREEMPT_RT is enabled, because they
-> > disable preemption, which is undesired for latency reasons and breaks when
-> > regular spinlocks are taken within the bit_spinlock locked region because
-> > regular spinlocks are converted to 'sleeping spinlocks' on RT. So RT
-> > replaces the bit spinlocks with regular spinlocks to avoid this problem.
-> > 
-> > To avoid ifdeffery at the source level, wrap all BH_Uptodate_Lock bitlock
-> > operations with inline functions, so the spinlock substitution can be done
-> > at one place.
-> > 
-> > Using regular spinlocks can also be enabled for lock debugging purposes so
-> > the lock operations become visible to lockdep.
-> > 
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: "Theodore Ts'o" <tytso@mit.edu>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> > Cc: linux-fsdevel@vger.kernel.org
+On Wed, Jul 31, 2019 at 11:38:02AM -0700, Eric Biggers wrote:
 > 
-> Looks good to me. You can add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> BTW, it should be possible to get rid of BH_Uptodate_Lock altogether using
-> bio chaining (which was non-existent when this bh code was written) to make
-> sure IO completion function gets called only once all bios used to fill in
-> / write out the page are done. It would be also more efficient. But I guess
-> that's an interesting cleanup project for some other time...
+> This is perhaps different from what users expect from unlink().  It's well known
+> that unlink() just deletes the filename, not the file itself if it's still open
+> or has other links.  And unlink() by itself isn't meant for use cases where the
+> file absolutely must be securely erased.  But FS_IOC_REMOVE_ENCRYPTION_KEY
+> really is meant primarily for that sort of thing.
 
-While 'possible cleanup' is something which triggers a certain nerve, that
-particular project certainly goes beyond my basic understanding of that
-whole fs/block conglomerate. I rather leave that to people who actually
-have a clue. :)
+Seems to me that part of the confusion is FS_IOC_REMOVE_ENCRYPTION_KEY
+does two things.  One is "remove the user's handle on the key".  The
+other is "purge all keys" (which requires root).  So it does two
+different things with one ioctl.
 
-Thanks,
+> To give a concrete example: my patch for the userspace tool
+> https://github.com/google/fscrypt adds a command 'fscrypt lock' which locks an
+> encrypted directory.  If, say, someone runs 'fscrypt unlock' as uid 0 and then
+> 'fscrypt lock' as uid 1000, then FS_IOC_REMOVE_ENCRYPTION_KEY can't actually
+> remove the key.  I need to make the tool show a proper error message in this
+> case.  To do so, it would help to get a unique error code (e.g. EUSERS) from
+> FS_IOC_REMOVE_ENCRYPTION_KEY, rather than get the ambiguous error code ENOKEY
+> and have to call FS_IOC_GET_ENCRYPTION_KEY_STATUS to get the real status.
 
-	tglx
+What about having "fscrypt lock" call FS_IOC_GET_ENCRYPTION_KEY_STATUS
+and print a warning message saying, "we can't lock it because N other
+users who have registered a key".  I'd argue fscrypt should do this
+regardless of whether or not FS_IOC_REMOVE_ENCRYPTION_KEY returns
+EUSERS or not.
 
+> Also, we already have the EBUSY case.  This means that the ioctl removed the
+> master key secret itself; however, some files were still in-use, so the key
+> remains in the "incompletely removed" state.  If we were actually going for
+> unlink() semantics, then for consistency this case really ought to return 0 and
+> unlink the key object, and people who care about in-use files would need to use
+> FS_IOC_GET_ENCRYPTION_KEY_STATUS.  But most people *will* care about this, and
+> may even want to retry the ioctl later, which isn't something youh can do with
+> pure unlink() semantics.
+
+It seems to me that the EBUSY and EUSERS errors should be status bits
+which gets returned to the user in a bitfield --- and if the key has
+been removed, or the user's claim on the key's existence has been
+removed, the ioctl returns success.
+
+That way we don't have to deal with the semantic disconnect where some
+errors don't actually change system state, and other errors that *do*
+change system state (as in, the key gets removed, or the user's claim
+on the key gets removed), but still returns than error.
+
+We could also add a flag which indicates where if there are files that
+are still busy, or there are other users keeping a key in use, the
+ioctl fails hard and returns an error.  At least that way we keep
+consistency where an error means, "nothing has changed".
+
+	    	     	   	  	   - Ted
+
+P.S.  BTW, one of the comments which I didn't make was the
+documentation didn't adequately explain which error codes means,
+"success but with a caveat", and which errors means, "we failed and
+didn't do anything".  But since I was arguing for changing the
+behavior, I decided not to complain about the documentation.
 
