@@ -2,118 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF087D305
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 03:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976927D4E5
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 07:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbfHAB5S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 31 Jul 2019 21:57:18 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34239 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726334AbfHAB5S (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Jul 2019 21:57:18 -0400
-Received: by mail-ot1-f65.google.com with SMTP id n5so72498090otk.1
-        for <linux-ext4@vger.kernel.org>; Wed, 31 Jul 2019 18:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=m/KDAm617lM5vMHWnb0yOVA/uQsQ8BKEofp9Ibmuy+c=;
-        b=Y8pJZD60Zx9glbWxSAu63w226o90IYuRm9tYE2znEwqdkIW3uNCqI1Bl7K9A17ywI5
-         0HMR5qijDNK2Dya47dPxe1bHlafZCpLbiPCCahGrusRWbqa0dgVnPLZoks6hYN9pUx9F
-         taPW7AZ1OqmlnRIasXkfj4dhy0tEITsPGe3d5fQ47mFfqYLGptF9Yy36B6WHXoWg4CSN
-         oxK3nBzGY5eVaKpbWuoLt+ZvEsMpO+tLiwNAhfvhVsfYoilSplXmkvxHJcHhvTygl1mX
-         dw4bbxj5pJYtIc44kSIYo9plqX9FCer3EsMOa76HukneSsiccSA42AFCvND+5yGMGAWP
-         MbJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m/KDAm617lM5vMHWnb0yOVA/uQsQ8BKEofp9Ibmuy+c=;
-        b=T0Uqo3DuJWcCWfL8OFTfVWKOaU6PrUftOhXMQ8HGHDdE54bIL6jmwW3ha97grGJRN2
-         FzTK4feUO+kPTP+aAnn5/lKZbjKQbNR1UDbx1FAn4tBrYMvoZlnv0S2p+nuJu4oqwkrM
-         cE6BZeRY8fgWUN5AWl+twDxMXP1DJQQi32VPBEKU8kDtbkRbdBECIH2l/YdSluheTcZm
-         G4fTQIXFccrQC9Fw8vvQWUCQrP3zp1sx0agpDjEw4iXSKcP2EwLFiJQmV6Om4fWHr96y
-         0zPsX9ort0r79mPfv5pknEzwmYmdwHUUb8oLRvDZGu9cY51/W3mslaOLz14PFan3zO+v
-         cTSg==
-X-Gm-Message-State: APjAAAVd48X3lT+2wfSDV1QCLu0pyouZQg9SAGYSSKVLEtiuszoQ+glR
-        6m2Ogk8e9DCpyjRYwm/yIzmH7K4e
-X-Google-Smtp-Source: APXvYqysgfpXWcQ4FYeg4LSCS7cjS6U+wZlCdw1WFQx39YMJ+ftEpDHOSuH4Riuig9KpwKhUeuLscQ==
-X-Received: by 2002:a05:6830:1249:: with SMTP id s9mr95590850otp.33.1564624636918;
-        Wed, 31 Jul 2019 18:57:16 -0700 (PDT)
-Received: from JosephdeMacBook-Pro.local ([205.204.117.13])
-        by smtp.gmail.com with ESMTPSA id w9sm23378022otk.16.2019.07.31.18.57.15
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 31 Jul 2019 18:57:16 -0700 (PDT)
-Subject: Re: [PATCH] ext4: disable mount with both dioread_nolock and
- nodelalloc
-To:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
-        linux-ext4@vger.kernel.org
-References: <20190731130600.7867-1-xiaoguang.wang@linux.alibaba.com>
-From:   Joseph Qi <jiangqi903@gmail.com>
-Message-ID: <1e05adf4-cb79-c503-4c7d-bf7f7eb2f218@gmail.com>
-Date:   Thu, 1 Aug 2019 09:57:12 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        id S1728171AbfHAFba (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Aug 2019 01:31:30 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39061 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726514AbfHAFba (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Aug 2019 01:31:30 -0400
+Received: from callcc.thunk.org (96-72-102-169-static.hfc.comcastbusiness.net [96.72.102.169] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x715V9Rn013938
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 1 Aug 2019 01:31:10 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id EEE8D4202F5; Thu,  1 Aug 2019 01:31:08 -0400 (EDT)
+Date:   Thu, 1 Aug 2019 01:31:08 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [f2fs-dev] [PATCH v7 07/16] fscrypt: add
+ FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+Message-ID: <20190801053108.GD2769@mit.edu>
+References: <20190726224141.14044-1-ebiggers@kernel.org>
+ <20190726224141.14044-8-ebiggers@kernel.org>
+ <20190728192417.GG6088@mit.edu>
+ <20190729195827.GF169027@gmail.com>
+ <20190731183802.GA687@sol.localdomain>
+ <20190731233843.GA2769@mit.edu>
+ <20190801011140.GB687@sol.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20190731130600.7867-1-xiaoguang.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190801011140.GB687@sol.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Jul 31, 2019 at 06:11:40PM -0700, Eric Biggers wrote:
+> 
+> Well, it's either
+> 
+> 1a. Remove the user's handle.
+> 	OR 
+> 1b. Remove all users' handles.  (FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS)
+> 
+> Then
+> 
+> 2. If no handles remain, try to evict all inodes that use the key.
+> 
+> By "purge all keys" do you mean step (2)?  Note that it doesn't require root by
+> itself; root is only required to remove other users' handles (1b).
 
+No, I was talking about 1b.  I'd argue that 1a and 1b should be
+different ioctl.  1b requires root, and 1a doesn't.
 
-On 19/7/31 21:06, Xiaoguang Wang wrote:
-> Mount with both dioread_nolock and nodelalloc will result in huge
-> performance drop, which indeed is an known issue, so before we fix
-> this issue, currently we disable this behaviour. Below test reproducer
-> can reveal this performance drop.
-> 
->     mount -o remount,dioread_nolock,delalloc /dev/vdb1
->     rm -f testfile
->     start_time=$(date +%s)
->     dd if=/dev/zero of=testfile bs=4096 count=$((1024*256))
->     sync
->     end_time=$(date +%s)
->     echo $((end_time - start_time))
-> 
->     mount -o remount,dioread_nolock,nodelalloc /dev/vdb1
->     rm -f testfile
->     start_time=$(date +%s)
->     dd if=/dev/zero of=testfile bs=4096 count=$((1024*256))
->     sync
->     end_time=$(date +%s)
->     echo $((end_time - start_time))
-> 
-> Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-> ---
->  fs/ext4/super.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 4079605d437a..1a2b2c0cd1b8 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -2098,6 +2098,12 @@ static int parse_options(char *options, struct super_block *sb,
->  		int blocksize =
->  			BLOCK_SIZE << le32_to_cpu(sbi->s_es->s_log_block_size);
->  
-> +		if (!test_opt(sb, DELALLOC)) {
-> +			ext4_msg(sb, KERN_ERR, "can't mount with "
-> +				 "both dioread_nolock and nodelalloc");
-> +			return 0;
-> +		}
-> +
-I suggest move it down to keep blocksize check logic together.
+And 1a should just mean, "I don't need to use the encrypted files any
+more".  In the PAM passphrase case, when you are just logging out, 1a
+is what's needed, and success is just fine.  pam_session won't *care*
+whether or not there are other users keeping the key in use.
 
-Other than that, looks good to me.
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+The problem with "fscrypt lock" is that the non-privileged user sort
+of wants to do REMOVE_FLAG_KEY_FLAG_FOR_ALL_USERS, but they doesn't
+have the privileges to do it, and they are hoping that removing their
+own key removes it the key from the system.  That to me seems to be
+the fundamental disconnect.  The "fscrypt unlock" and "fscrypt lock"
+commands comes from the v1 key management, and requires root.  It's
+the translation to unprivileged mode where "fscrypt lock" seems to
+have problems.
 
->  		if (blocksize < PAGE_SIZE) {
->  			ext4_msg(sb, KERN_ERR, "can't mount with "
->  				 "dioread_nolock if block size != PAGE_SIZE");
+> > What about having "fscrypt lock" call FS_IOC_GET_ENCRYPTION_KEY_STATUS
+> > and print a warning message saying, "we can't lock it because N other
+> > users who have registered a key".  I'd argue fscrypt should do this
+> > regardless of whether or not FS_IOC_REMOVE_ENCRYPTION_KEY returns
+> > EUSERS or not.
 > 
+> Shouldn't "fscrypt lock" still remove the user's handle, as opposed to refuse to
+> do anything, though?  So it would still need to callh
+> FS_IOC_REMOVE_ENCRYPTION_KEY, and could get the status from it rather than also
+> needing to call FS_IOC_GET_ENCRYPTION_KEY_STATUS.
+> 
+> Though, FS_IOC_GET_ENCRYPTION_KEY_STATUS would be needed if we wanted to show
+> the specific count of other users.
+ 
+So my perspective is that the ioctl's should have very clean
+semantics, and errors should be consistent with how the Unix system
+calls and error reporting.
+
+If we need to make "fscrypt lock" and "fscrypt unlock" have semantics
+that are more consistent with previous user interface choices, then
+fscrypt can use FS_IOC_GET_ENCRYPTION_KEY_STATUS to print the warning
+before it calls FS_IOC_REMOVE_ENCRYPTION_KEY --- with "fscrypt purge_keys"
+calling something like FS_IOC_REMOVE_ALL_USER_ENCRYPTION_KEYS.
+
+> > It seems to me that the EBUSY and EUSERS errors should be status bits
+> > which gets returned to the user in a bitfield --- and if the key has
+> > been removed, or the user's claim on the key's existence has been
+> > removed, the ioctl returns success.
+> > 
+> > That way we don't have to deal with the semantic disconnect where some
+> > errors don't actually change system state, and other errors that *do*
+> > change system state (as in, the key gets removed, or the user's claim
+> > on the key gets removed), but still returns than error.
+> > 
+> 
+> Do you mean use a positive return value, or do you mean add an output field to
+> the struct passed to the ioctl?
+
+I meant adding an output field.  I see EBUSY and EUSERS as status bits
+which *some* use cases might find useful.  Other use cases, such as in
+the pam_keys session logout code, we won't care at *all* about those
+status reporting (or error codes).  So if EBUSY and EUSERS are
+returned as errors, then it adds to complexity of those programs
+whichd don't care.  (And even for those that do, it's still a bit more
+complex since they has to distinguish between EBUSY, EUSERS, or other
+errors --- in fact, *all* programs which use
+FS_IOC_REMOVE_ENCRYPTION_KEY will *have* to check for EBUSY and
+ESUSERS whether they care or not.)
+
+> Either way note that it doesn't really need to be a bitfield, since you can't
+> have both statuses at the same time.  I.e. if there are still other users, we
+> couldn't have even gotten to checking for in-use files.
+
+That's actually an implementation detail, though, right?  In theory,
+we could check to see if there are any in-use files, independently of
+whether there are any users or not.
+
+					- Ted
