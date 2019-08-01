@@ -2,97 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A8D7DA55
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 13:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0A27E09D
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 18:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731025AbfHAL31 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 1 Aug 2019 07:29:27 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:45814 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730946AbfHAL31 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 1 Aug 2019 07:29:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ksRJLOMTOIWRq2Nag2thMkKvE3lWaLrnStcxxBgysnw=; b=Wjf8pXawCgcKFVf3bV3iZbnJj
-        rX+WDMifwGDiVc6ecMzHbsMT/+jfAGFFMugdHvw6yBSTK2tn/Q2Syt1Nwxm9oCCVHkDM78I/RIZUk
-        2m7+IzAEQpvn/0rkMsTYP3zgSsxUxl05sRnKRrkqE9q2n46dcLvOao+xLjN4Q3wAYafVTbDxZFd7z
-        UmhJLhJPbpNXPZishSqd2zv3poZ1lQ1U0UsPMZ9mCaz9/iLnd/tJwBaSsLDdYfcOGixo7gWzMT8DD
-        Ff36e4PoTKL35KsJGZCYslDjYcnwWBiXJDap1Co63OVM8uSON30wBYA7ntBMnnquigXHA15H7/BFi
-        cOaFb6Z6w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1ht9GN-0001Zu-6n; Thu, 01 Aug 2019 11:28:51 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9B7432029F4C7; Thu,  1 Aug 2019 13:28:49 +0200 (CEST)
-Date:   Thu, 1 Aug 2019 13:28:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
+        id S1733210AbfHAQzM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 1 Aug 2019 12:55:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34102 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1733208AbfHAQzM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 1 Aug 2019 12:55:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6893DAECA;
+        Thu,  1 Aug 2019 16:55:10 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 6CC5D1E3F4D; Thu,  1 Aug 2019 11:22:23 +0200 (CEST)
+Date:   Thu, 1 Aug 2019 11:22:23 +0200
+From:   Jan Kara <jack@suse.cz>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         Sebastian Siewior <bigeasy@linutronix.de>,
         Anna-Maria Gleixner <anna-maria@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
         Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.com>,
-        Theodore Tso <tytso@mit.edu>, Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Joel Becker <jlbec@evilplan.org>, linux-ext4@vger.kernel.org,
+        linux-ext4@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
         Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [patch V2 6/7] fs/jbd2: Make state lock a spinlock
-Message-ID: <20190801112849.GB31381@hirez.programming.kicks-ass.net>
+        linux-fsdevel@vger.kernel.org, Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Joel Becker <jlbec@evilplan.org>
+Subject: Re: [patch V2 7/7] fs/jbd2: Free journal head outside of locked
+ region
+Message-ID: <20190801092223.GG25064@quack2.suse.cz>
 References: <20190801010126.245731659@linutronix.de>
- <20190801010944.457499601@linutronix.de>
+ <20190801010944.549462805@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190801010944.457499601@linutronix.de>
+In-Reply-To: <20190801010944.549462805@linutronix.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 01, 2019 at 03:01:32AM +0200, Thomas Gleixner wrote:
+On Thu 01-08-19 03:01:33, Thomas Gleixner wrote:
+> On PREEMPT_RT bit-spinlocks have the same semantics as on PREEMPT_RT=n,
+> i.e. they disable preemption. That means functions which are not safe to be
+> called in preempt disabled context on RT trigger a might_sleep() assert.
+> 
+> The journal head bit spinlock is mostly held for short code sequences with
+> trivial RT safe functionality, except for one place:
+> 
+> jbd2_journal_put_journal_head() invokes __journal_remove_journal_head()
+> with the journal head bit spinlock held. __journal_remove_journal_head()
+> invokes kmem_cache_free() which must not be called with preemption disabled
+> on RT.
+> 
+> Jan suggested to rework the removal function so the actual free happens
+> outside the bit-spinlocked region.
+> 
+> Split it into two parts:
+> 
+>   - Do the sanity checks and the buffer head detach under the lock
+> 
+>   - Do the actual free after dropping the lock
+> 
+> There is error case handling in the free part which needs to dereference
+> the b_size field of the now detached buffer head. Due to paranoia (caused
+> by ignorance) the size is retrieved in the detach function and handed into
+> the free function. Might be over-engineered, but better safe than sorry.
+> 
+> This makes the journal head bit-spinlock usage RT compliant and also avoids
+> nested locking which is not covered by lockdep.
+> 
+> Suggested-by: Jan Kara <jack@suse.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: linux-ext4@vger.kernel.org
+> Cc: "Theodore Ts'o" <tytso@mit.edu>
+> Cc: Jan Kara <jack@suse.com>
 
-> @@ -1931,7 +1932,7 @@ static void __jbd2_journal_temp_unlink_b
->  	transaction_t *transaction;
->  	struct buffer_head *bh = jh2bh(jh);
+Looks mostly good. Just a small suggestion for simplification below:
+
+> @@ -2559,11 +2568,14 @@ void jbd2_journal_put_journal_head(struc
+>  	J_ASSERT_JH(jh, jh->b_jcount > 0);
+>  	--jh->b_jcount;
+>  	if (!jh->b_jcount) {
+> -		__journal_remove_journal_head(bh);
+> +		size_t b_size = __journal_remove_journal_head(bh);
+> +
+>  		jbd_unlock_bh_journal_head(bh);
+> +		journal_release_journal_head(jh, b_size);
+>  		__brelse(bh);
+
+The bh is pinned until you call __brelse(bh) above and bh->b_size doesn't
+change during the lifetime of the buffer. So there's no need of
+fetching bh->b_size in __journal_remove_journal_head() and passing it back.
+You can just:
+
+		journal_release_journal_head(jh, bh->b_size);
+
+> -	} else
+> +	} else {
+>  		jbd_unlock_bh_journal_head(bh);
+> +	}
+>  }
 >  
-> -	J_ASSERT_JH(jh, jbd_is_locked_bh_state(bh));
-> +	assert_spin_locked(&jh->state_lock);
->  	transaction = jh->b_transaction;
->  	if (transaction)
->  		assert_spin_locked(&transaction->t_journal->j_list_lock);
 
-> @@ -2415,7 +2416,7 @@ void __jbd2_journal_file_buffer(struct j
->  	int was_dirty = 0;
->  	struct buffer_head *bh = jh2bh(jh);
->  
-> -	J_ASSERT_JH(jh, jbd_is_locked_bh_state(bh));
-> +	assert_spin_locked(&jh->state_lock);
->  	assert_spin_locked(&transaction->t_journal->j_list_lock);
->  
->  	J_ASSERT_JH(jh, jh->b_jlist < BJ_Types);
-
-> @@ -2500,7 +2501,7 @@ void __jbd2_journal_refile_buffer(struct
->  	int was_dirty, jlist;
->  	struct buffer_head *bh = jh2bh(jh);
->  
-> -	J_ASSERT_JH(jh, jbd_is_locked_bh_state(bh));
-> +	assert_spin_locked(&jh->state_lock);
->  	if (jh->b_transaction)
->  		assert_spin_locked(&jh->b_transaction->t_journal->j_list_lock);
->  
-
-Do those want to be:
-
-  lockdep_assert_held(&jh->state_lock);
-
-instead? The difference is of course that lockdep_assert_held() requires
-the current context to hold the lock, where assert_*_locked() merely
-checks _someone_ holds it.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
