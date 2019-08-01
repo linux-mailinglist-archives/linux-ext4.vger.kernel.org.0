@@ -2,159 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9987EE73
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 10:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAB57EF65
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 10:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403874AbfHBIK2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Aug 2019 04:10:28 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3700 "EHLO huawei.com"
+        id S2404274AbfHBIfM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Aug 2019 04:35:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42738 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730124AbfHBIK2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 2 Aug 2019 04:10:28 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id BB2431235F7661B2BA51;
-        Fri,  2 Aug 2019 16:10:21 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.439.0; Fri, 2 Aug 2019
- 16:10:17 +0800
-Subject: Re: [PATCH v7 14/16] f2fs: wire up new fscrypt ioctls
-To:     Eric Biggers <ebiggers@kernel.org>, <linux-fscrypt@vger.kernel.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-mtd@lists.infradead.org>, <linux-api@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>, <keyrings@vger.kernel.org>,
-        Paul Crowley <paulcrowley@google.com>,
-        "Satya Tangirala" <satyat@google.com>
-References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-15-ebiggers@kernel.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <e3cf53a7-faf2-0321-22de-07d2e2783752@huawei.com>
-Date:   Fri, 2 Aug 2019 16:10:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1729739AbfHBIfM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 2 Aug 2019 04:35:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id B5825AD35;
+        Fri,  2 Aug 2019 08:35:10 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id EF9621E3F4D; Thu,  1 Aug 2019 19:57:03 +0200 (CEST)
+Date:   Thu, 1 Aug 2019 19:57:03 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.com>,
+        Theodore Tso <tytso@mit.edu>, Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Joel Becker <jlbec@evilplan.org>, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [patch V2 6/7] fs/jbd2: Make state lock a spinlock
+Message-ID: <20190801175703.GH25064@quack2.suse.cz>
+References: <20190801010126.245731659@linutronix.de>
+ <20190801010944.457499601@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20190726224141.14044-15-ebiggers@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190801010944.457499601@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Eric,
+On Thu 01-08-19 03:01:32, Thomas Gleixner wrote:
+> Bit-spinlocks are problematic on PREEMPT_RT if functions which might sleep
+> on RT, e.g. spin_lock(), alloc/free(), are invoked inside the lock held
+> region because bit spinlocks disable preemption even on RT.
+> 
+> A first attempt was to replace state lock with a spinlock placed in struct
+> buffer_head and make the locking conditional on PREEMPT_RT and
+> DEBUG_BIT_SPINLOCKS.
+> 
+> Jan pointed out that there is a 4 byte hole in struct journal_head where a
+> regular spinlock fits in and he would not object to convert the state lock
+> to a spinlock unconditionally.
+> 
+> Aside of solving the RT problem, this also gains lockdep coverage for the
+> journal head state lock (bit-spinlocks are not covered by lockdep as it's
+> hard to fit a lockdep map into a single bit).
+> 
+> The trivial change would have been to convert the jbd_*lock_bh_state()
+> inlines, but that comes with the downside that these functions take a
+> buffer head pointer which needs to be converted to a journal head pointer
+> which adds another level of indirection.
+> 
+> As almost all functions which use this lock have a journal head pointer
+> readily available, it makes more sense to remove the lock helper inlines
+> and write out spin_*lock() at all call sites.
+> 
+> Fixup all locking comments as well.
+> 
+> Suggested-by: Jan Kara <jack@suse.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: "Theodore Ts'o" <tytso@mit.edu>
+> Cc: Mark Fasheh <mark@fasheh.com>
+> Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Cc: Joel Becker <jlbec@evilplan.org>
+> Cc: Jan Kara <jack@suse.com>
+> Cc: linux-ext4@vger.kernel.org
 
-On 2019/7/27 6:41, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Wire up the new ioctls for adding and removing fscrypt keys to/from the
-> filesystem, and the new ioctl for retrieving v2 encryption policies.
-> 
-> FS_IOC_REMOVE_ENCRYPTION_KEY also required making f2fs_drop_inode() call
-> fscrypt_drop_inode().
-> 
-> For more details see Documentation/filesystems/fscrypt.rst and the
-> fscrypt patches that added the implementation of these ioctls.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Just a heads up that I didn't miss this patch. Just it has some bugs and I
+figured that rather than explaining to you subtleties of jh lifetime it is
+easier to fix up the problems myself since you're probably not keen on
+becoming jbd2 developer ;)... which was more complex than I thought so I'm
+not completely done yet. Hopefuly tomorrow.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-
-BTW, do you think it needs to make xxfs_has_support_encrypt() function be a
-common interface defined in struct fscrypt_operations, as I see all
-fscrypt_ioctl_*() needs to check with it, tho such cleanup is minor...
-
-Thanks,
-
-> ---
->  fs/f2fs/file.c  | 46 ++++++++++++++++++++++++++++++++++++++++++++++
->  fs/f2fs/super.c |  2 ++
->  2 files changed, 48 insertions(+)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index f8d46df8fa9ee..d81dda290b829 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -2184,6 +2184,40 @@ static int f2fs_ioc_get_encryption_pwsalt(struct file *filp, unsigned long arg)
->  	return err;
->  }
->  
-> +static int f2fs_ioc_get_encryption_policy_ex(struct file *filp,
-> +					     unsigned long arg)
-> +{
-> +	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-> +		return -EOPNOTSUPP;
-> +
-> +	return fscrypt_ioctl_get_policy_ex(filp, (void __user *)arg);
-> +}
-> +
-> +static int f2fs_ioc_add_encryption_key(struct file *filp, unsigned long arg)
-> +{
-> +	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-> +		return -EOPNOTSUPP;
-> +
-> +	return fscrypt_ioctl_add_key(filp, (void __user *)arg);
-> +}
-> +
-> +static int f2fs_ioc_remove_encryption_key(struct file *filp, unsigned long arg)
-> +{
-> +	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-> +		return -EOPNOTSUPP;
-> +
-> +	return fscrypt_ioctl_remove_key(filp, (const void __user *)arg);
-> +}
-> +
-> +static int f2fs_ioc_get_encryption_key_status(struct file *filp,
-> +					      unsigned long arg)
-> +{
-> +	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
-> +		return -EOPNOTSUPP;
-> +
-> +	return fscrypt_ioctl_get_key_status(filp, (void __user *)arg);
-> +}
-> +
->  static int f2fs_ioc_gc(struct file *filp, unsigned long arg)
->  {
->  	struct inode *inode = file_inode(filp);
-> @@ -3109,6 +3143,14 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  		return f2fs_ioc_get_encryption_policy(filp, arg);
->  	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
->  		return f2fs_ioc_get_encryption_pwsalt(filp, arg);
-> +	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-> +		return f2fs_ioc_get_encryption_policy_ex(filp, arg);
-> +	case FS_IOC_ADD_ENCRYPTION_KEY:
-> +		return f2fs_ioc_add_encryption_key(filp, arg);
-> +	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-> +		return f2fs_ioc_remove_encryption_key(filp, arg);
-> +	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
-> +		return f2fs_ioc_get_encryption_key_status(filp, arg);
->  	case F2FS_IOC_GARBAGE_COLLECT:
->  		return f2fs_ioc_gc(filp, arg);
->  	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
-> @@ -3236,6 +3278,10 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
->  	case F2FS_IOC_SET_ENCRYPTION_POLICY:
->  	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
->  	case F2FS_IOC_GET_ENCRYPTION_POLICY:
-> +	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
-> +	case FS_IOC_ADD_ENCRYPTION_KEY:
-> +	case FS_IOC_REMOVE_ENCRYPTION_KEY:
-> +	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
->  	case F2FS_IOC_GARBAGE_COLLECT:
->  	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
->  	case F2FS_IOC_WRITE_CHECKPOINT:
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 6de6cda440315..f5fae8d511a20 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -913,6 +913,8 @@ static int f2fs_drop_inode(struct inode *inode)
->  		return 0;
->  	}
->  	ret = generic_drop_inode(inode);
-> +	if (!ret)
-> +		ret = fscrypt_drop_inode(inode);
->  	trace_f2fs_drop_inode(inode, ret);
->  	return ret;
->  }
-> 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
