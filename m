@@ -2,146 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E66147D2B8
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 03:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5670B7D29C
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 03:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729709AbfHABRD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 31 Jul 2019 21:17:03 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33579 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729636AbfHABQ4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Jul 2019 21:16:56 -0400
-Received: from localhost ([127.0.0.1] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtp (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1hszhM-0002IO-FR; Thu, 01 Aug 2019 03:16:04 +0200
-Message-Id: <20190801010944.549462805@linutronix.de>
-User-Agent: quilt/0.65
-Date:   Thu, 01 Aug 2019 03:01:33 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org, "Theodore Tso" <tytso@mit.edu>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Joel Becker <jlbec@evilplan.org>
-Subject: [patch V2 7/7] fs/jbd2: Free journal head outside of locked region
-References: <20190801010126.245731659@linutronix.de>
+        id S1729096AbfHABLn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 31 Jul 2019 21:11:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725942AbfHABLn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 31 Jul 2019 21:11:43 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D166420665;
+        Thu,  1 Aug 2019 01:11:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564621902;
+        bh=H1VGC39qmcqOsG5Rnv48x88mYEzA6Ram+Ziuu/hGRjA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e8Dwci5xbYFe0C6i+Jry/mUax6YutZbfR3b/Gv6NL6rFOTDCCnd/C6LBkT2KI54v8
+         CsswFjk1ORn0BeQh+I/EUKIkcKyQOl9CS/Sr8D605d28SIESBmwR0cw69VcDq8gpU3
+         Qniz1oJ5alZPULLLVyiKg5WFquPGWnvOd3X3n8cE=
+Date:   Wed, 31 Jul 2019 18:11:40 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [f2fs-dev] [PATCH v7 07/16] fscrypt: add
+ FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+Message-ID: <20190801011140.GB687@sol.localdomain>
+Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+References: <20190726224141.14044-1-ebiggers@kernel.org>
+ <20190726224141.14044-8-ebiggers@kernel.org>
+ <20190728192417.GG6088@mit.edu>
+ <20190729195827.GF169027@gmail.com>
+ <20190731183802.GA687@sol.localdomain>
+ <20190731233843.GA2769@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190731233843.GA2769@mit.edu>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On PREEMPT_RT bit-spinlocks have the same semantics as on PREEMPT_RT=n,
-i.e. they disable preemption. That means functions which are not safe to be
-called in preempt disabled context on RT trigger a might_sleep() assert.
+On Wed, Jul 31, 2019 at 07:38:43PM -0400, Theodore Y. Ts'o wrote:
+> On Wed, Jul 31, 2019 at 11:38:02AM -0700, Eric Biggers wrote:
+> > 
+> > This is perhaps different from what users expect from unlink().  It's well known
+> > that unlink() just deletes the filename, not the file itself if it's still open
+> > or has other links.  And unlink() by itself isn't meant for use cases where the
+> > file absolutely must be securely erased.  But FS_IOC_REMOVE_ENCRYPTION_KEY
+> > really is meant primarily for that sort of thing.
+> 
+> Seems to me that part of the confusion is FS_IOC_REMOVE_ENCRYPTION_KEY
+> does two things.  One is "remove the user's handle on the key".  The
+> other is "purge all keys" (which requires root).  So it does two
+> different things with one ioctl.
+> 
 
-The journal head bit spinlock is mostly held for short code sequences with
-trivial RT safe functionality, except for one place:
+Well, it's either
 
-jbd2_journal_put_journal_head() invokes __journal_remove_journal_head()
-with the journal head bit spinlock held. __journal_remove_journal_head()
-invokes kmem_cache_free() which must not be called with preemption disabled
-on RT.
+1a. Remove the user's handle.
+	OR 
+1b. Remove all users' handles.  (FSCRYPT_REMOVE_KEY_FLAG_ALL_USERS)
 
-Jan suggested to rework the removal function so the actual free happens
-outside the bit-spinlocked region.
+Then
 
-Split it into two parts:
+2. If no handles remain, try to evict all inodes that use the key.
 
-  - Do the sanity checks and the buffer head detach under the lock
+By "purge all keys" do you mean step (2)?  Note that it doesn't require root by
+itself; root is only required to remove other users' handles (1b).
 
-  - Do the actual free after dropping the lock
+It could be argued that (2) should be a separate ioctl, so we'd have UNLINK_KEY
+then LOCK_KEY.  But is there a real use case for this split?  I.e. would anyone
+ever want to UNLINK_KEY without also LOCK_KEY?  Is that really something we
+want/need to support?  I'd really like the API to be as straightforward as
+possible for the normal use case of locking a directory, and not require some
+series of multiple ioctl's, which would be more difficult to use correctly.
 
-There is error case handling in the free part which needs to dereference
-the b_size field of the now detached buffer head. Due to paranoia (caused
-by ignorance) the size is retrieved in the detach function and handed into
-the free function. Might be over-engineered, but better safe than sorry.
+> > To give a concrete example: my patch for the userspace tool
+> > https://github.com/google/fscrypt adds a command 'fscrypt lock' which locks an
+> > encrypted directory.  If, say, someone runs 'fscrypt unlock' as uid 0 and then
+> > 'fscrypt lock' as uid 1000, then FS_IOC_REMOVE_ENCRYPTION_KEY can't actually
+> > remove the key.  I need to make the tool show a proper error message in this
+> > case.  To do so, it would help to get a unique error code (e.g. EUSERS) from
+> > FS_IOC_REMOVE_ENCRYPTION_KEY, rather than get the ambiguous error code ENOKEY
+> > and have to call FS_IOC_GET_ENCRYPTION_KEY_STATUS to get the real status.
+> 
+> What about having "fscrypt lock" call FS_IOC_GET_ENCRYPTION_KEY_STATUS
+> and print a warning message saying, "we can't lock it because N other
+> users who have registered a key".  I'd argue fscrypt should do this
+> regardless of whether or not FS_IOC_REMOVE_ENCRYPTION_KEY returns
+> EUSERS or not.
 
-This makes the journal head bit-spinlock usage RT compliant and also avoids
-nested locking which is not covered by lockdep.
+Shouldn't "fscrypt lock" still remove the user's handle, as opposed to refuse to
+do anything, though?  So it would still need to call
+FS_IOC_REMOVE_ENCRYPTION_KEY, and could get the status from it rather than also
+needing to call FS_IOC_GET_ENCRYPTION_KEY_STATUS.
 
-Suggested-by: Jan Kara <jack@suse.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-ext4@vger.kernel.org
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Jan Kara <jack@suse.com>
----
-V2: New patch
----
- fs/jbd2/journal.c |   28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+Though, FS_IOC_GET_ENCRYPTION_KEY_STATUS would be needed if we wanted to show
+the specific count of other users.
 
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -2521,9 +2521,10 @@ struct journal_head *jbd2_journal_grab_j
- 	return jh;
- }
- 
--static void __journal_remove_journal_head(struct buffer_head *bh)
-+static size_t __journal_remove_journal_head(struct buffer_head *bh)
- {
- 	struct journal_head *jh = bh2jh(bh);
-+	size_t b_size = READ_ONCE(bh->b_size);
- 
- 	J_ASSERT_JH(jh, jh->b_jcount >= 0);
- 	J_ASSERT_JH(jh, jh->b_transaction == NULL);
-@@ -2533,17 +2534,25 @@ static void __journal_remove_journal_hea
- 	J_ASSERT_BH(bh, buffer_jbd(bh));
- 	J_ASSERT_BH(bh, jh2bh(jh) == bh);
- 	BUFFER_TRACE(bh, "remove journal_head");
-+
-+	/* Unlink before dropping the lock */
-+	bh->b_private = NULL;
-+	jh->b_bh = NULL;	/* debug, really */
-+	clear_buffer_jbd(bh);
-+
-+	return b_size;
-+}
-+
-+static void journal_release_journal_head(struct journal_head *jh, size_t b_size)
-+{
- 	if (jh->b_frozen_data) {
- 		printk(KERN_WARNING "%s: freeing b_frozen_data\n", __func__);
--		jbd2_free(jh->b_frozen_data, bh->b_size);
-+		jbd2_free(jh->b_frozen_data, b_size);
- 	}
- 	if (jh->b_committed_data) {
- 		printk(KERN_WARNING "%s: freeing b_committed_data\n", __func__);
--		jbd2_free(jh->b_committed_data, bh->b_size);
-+		jbd2_free(jh->b_committed_data, b_size);
- 	}
--	bh->b_private = NULL;
--	jh->b_bh = NULL;	/* debug, really */
--	clear_buffer_jbd(bh);
- 	journal_free_journal_head(jh);
- }
- 
-@@ -2559,11 +2568,14 @@ void jbd2_journal_put_journal_head(struc
- 	J_ASSERT_JH(jh, jh->b_jcount > 0);
- 	--jh->b_jcount;
- 	if (!jh->b_jcount) {
--		__journal_remove_journal_head(bh);
-+		size_t b_size = __journal_remove_journal_head(bh);
-+
- 		jbd_unlock_bh_journal_head(bh);
-+		journal_release_journal_head(jh, b_size);
- 		__brelse(bh);
--	} else
-+	} else {
- 		jbd_unlock_bh_journal_head(bh);
-+	}
- }
- 
- /*
+> 
+> > Also, we already have the EBUSY case.  This means that the ioctl removed the
+> > master key secret itself; however, some files were still in-use, so the key
+> > remains in the "incompletely removed" state.  If we were actually going for
+> > unlink() semantics, then for consistency this case really ought to return 0 and
+> > unlink the key object, and people who care about in-use files would need to use
+> > FS_IOC_GET_ENCRYPTION_KEY_STATUS.  But most people *will* care about this, and
+> > may even want to retry the ioctl later, which isn't something youh can do with
+> > pure unlink() semantics.
+> 
+> It seems to me that the EBUSY and EUSERS errors should be status bits
+> which gets returned to the user in a bitfield --- and if the key has
+> been removed, or the user's claim on the key's existence has been
+> removed, the ioctl returns success.
+> 
+> That way we don't have to deal with the semantic disconnect where some
+> errors don't actually change system state, and other errors that *do*
+> change system state (as in, the key gets removed, or the user's claim
+> on the key gets removed), but still returns than error.
+> 
+> We could also add a flag which indicates where if there are files that
+> are still busy, or there are other users keeping a key in use, the
+> ioctl fails hard and returns an error.  At least that way we keep
+> consistency where an error means, "nothing has changed".
+> 
+> 	    	     	   	  	   - Ted
 
+Do you mean use a positive return value, or do you mean add an output field to
+the struct passed to the ioctl?
 
+The latter might be more error-prone, since it invites bugs where a directory
+silently fails to be locked, because the second field was not checked.
+
+Either way note that it doesn't really need to be a bitfield, since you can't
+have both statuses at the same time.  I.e. if there are still other users, we
+couldn't have even gotten to checking for in-use files.
+
+> 
+> P.S.  BTW, one of the comments which I didn't make was the
+> documentation didn't adequately explain which error codes means,
+> "success but with a caveat", and which errors means, "we failed and
+> didn't do anything".  But since I was arguing for changing the
+> behavior, I decided not to complain about the documentation.
+> 
+
+Yes, in any case the FS_IOC_REMOVE_ENCRYPTION_KEY documentation needs
+improvement.  I have some updates pending for it.
+
+- Eric
