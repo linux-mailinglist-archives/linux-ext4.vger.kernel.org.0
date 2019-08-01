@@ -2,105 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 628207D20C
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 01:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F597D2AC
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2019 03:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730801AbfGaXjF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 31 Jul 2019 19:39:05 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39708 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726231AbfGaXjF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Jul 2019 19:39:05 -0400
-Received: from callcc.thunk.org (96-72-102-169-static.hfc.comcastbusiness.net [96.72.102.169] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x6VNchZY000330
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 31 Jul 2019 19:38:44 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 3EE374202F5; Wed, 31 Jul 2019 19:38:43 -0400 (EDT)
-Date:   Wed, 31 Jul 2019 19:38:43 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v7 07/16] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
-Message-ID: <20190731233843.GA2769@mit.edu>
-References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-8-ebiggers@kernel.org>
- <20190728192417.GG6088@mit.edu>
- <20190729195827.GF169027@gmail.com>
- <20190731183802.GA687@sol.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190731183802.GA687@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729565AbfHABQr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 31 Jul 2019 21:16:47 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33548 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729399AbfHABQj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 31 Jul 2019 21:16:39 -0400
+Received: from localhost ([127.0.0.1] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtp (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1hszhE-0002I1-Vj; Thu, 01 Aug 2019 03:15:57 +0200
+Message-Id: <20190801010126.245731659@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Thu, 01 Aug 2019 03:01:26 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
+        "Theodore Tso" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Joel Becker <jlbec@evilplan.org>
+Subject: [patch V2 0/7] fs: Substitute bit-spinlocks for PREEMPT_RT and
+ debugging
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jul 31, 2019 at 11:38:02AM -0700, Eric Biggers wrote:
-> 
-> This is perhaps different from what users expect from unlink().  It's well known
-> that unlink() just deletes the filename, not the file itself if it's still open
-> or has other links.  And unlink() by itself isn't meant for use cases where the
-> file absolutely must be securely erased.  But FS_IOC_REMOVE_ENCRYPTION_KEY
-> really is meant primarily for that sort of thing.
+Bit spinlocks are problematic if PREEMPT_RT is enabled. They disable
+preemption, which is undesired for latency reasons and breaks when regular
+spinlocks are taken within the bit_spinlock locked region because regular
+spinlocks are converted to 'sleeping spinlocks' on RT.
 
-Seems to me that part of the confusion is FS_IOC_REMOVE_ENCRYPTION_KEY
-does two things.  One is "remove the user's handle on the key".  The
-other is "purge all keys" (which requires root).  So it does two
-different things with one ioctl.
+Bit spinlocks are also not covered by lock debugging, e.g. lockdep. With
+the spinlock substitution in place, they can be exposed via a new config
+switch: CONFIG_DEBUG_BIT_SPINLOCKS.
 
-> To give a concrete example: my patch for the userspace tool
-> https://github.com/google/fscrypt adds a command 'fscrypt lock' which locks an
-> encrypted directory.  If, say, someone runs 'fscrypt unlock' as uid 0 and then
-> 'fscrypt lock' as uid 1000, then FS_IOC_REMOVE_ENCRYPTION_KEY can't actually
-> remove the key.  I need to make the tool show a proper error message in this
-> case.  To do so, it would help to get a unique error code (e.g. EUSERS) from
-> FS_IOC_REMOVE_ENCRYPTION_KEY, rather than get the ambiguous error code ENOKEY
-> and have to call FS_IOC_GET_ENCRYPTION_KEY_STATUS to get the real status.
+This series handles only buffer head and jbd2, but does not touch the
+hlist_bl bit-spinlock usage. See V1 for further details:
 
-What about having "fscrypt lock" call FS_IOC_GET_ENCRYPTION_KEY_STATUS
-and print a warning message saying, "we can't lock it because N other
-users who have registered a key".  I'd argue fscrypt should do this
-regardless of whether or not FS_IOC_REMOVE_ENCRYPTION_KEY returns
-EUSERS or not.
+  https://lkml.kernel.org/r/20190730112452.871257694@linutronix.de
 
-> Also, we already have the EBUSY case.  This means that the ioctl removed the
-> master key secret itself; however, some files were still in-use, so the key
-> remains in the "incompletely removed" state.  If we were actually going for
-> unlink() semantics, then for consistency this case really ought to return 0 and
-> unlink the key object, and people who care about in-use files would need to use
-> FS_IOC_GET_ENCRYPTION_KEY_STATUS.  But most people *will* care about this, and
-> may even want to retry the ioctl later, which isn't something youh can do with
-> pure unlink() semantics.
+Changes vs. V1:
 
-It seems to me that the EBUSY and EUSERS errors should be status bits
-which gets returned to the user in a bitfield --- and if the key has
-been removed, or the user's claim on the key's existence has been
-removed, the ioctl returns success.
+  - Collected reviewed-by tags for the BH_Uptodate part
 
-That way we don't have to deal with the semantic disconnect where some
-errors don't actually change system state, and other errors that *do*
-change system state (as in, the key gets removed, or the user's claim
-on the key gets removed), but still returns than error.
+  - Reworked the JBD2 part according to Jan's review:
 
-We could also add a flag which indicates where if there are files that
-are still busy, or there are other users keeping a key in use, the
-ioctl fails hard and returns an error.  At least that way we keep
-consistency where an error means, "nothing has changed".
+     - Convert state lock to a regular spinlock unconditionally
 
-	    	     	   	  	   - Ted
+     - Refactor jbd2_journal_put_journal_head() to be RT friendly by
+       restricting the bit-spinlock held section to the minimum required
+       operations.
 
-P.S.  BTW, one of the comments which I didn't make was the
-documentation didn't adequately explain which error codes means,
-"success but with a caveat", and which errors means, "we failed and
-didn't do anything".  But since I was arguing for changing the
-behavior, I decided not to complain about the documentation.
+       That part is probably over-engineered, but I'm sure Jan will tell me
+       sooner than later.
+
+Thanks,
+
+        tglx
+
 
