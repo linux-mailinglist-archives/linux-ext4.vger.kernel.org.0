@@ -2,69 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A04E7EE20
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 09:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9987EE73
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 10:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390548AbfHBH4T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Aug 2019 03:56:19 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:58086 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390522AbfHBH4T (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Aug 2019 03:56:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=F/U4RF9BWHk0NEnwlESdSBl0fNvIrEH3x91nEkfBj0s=; b=AroLgI03kPrunxjAUUNLPYV1H3
-        TY2FcCliV84FPetqGsDrGQIB1YHeGEtq136f9fHRgArJ1FZB3u6MuN1yZp9ss2fNLJgleH4V+G6w6
-        h2N3lXQJ5Zjc2kZ7cInHAA4AXzk+GbX4y6qd9hMLl9NVYJ+hJygShEumgsQZ3rQrGiolVnClyvdTe
-        eEsZwhFKQQ1aJgb8rPmz+kKfko+6kIJKf8u47ByPJh9hwk7PkAn72aLooNLKhm6pnJk/16lxyl/xR
-        QEszcatR8lr7FGMsFu32CkCbOEKQ1OuJdTpMXcxM9ibcjNxuHzCy1JlMsZubGrSR8aHsjqENeCTjT
-        UcsThg4w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1htSQ8-0006iu-RB; Fri, 02 Aug 2019 07:56:12 +0000
-Date:   Fri, 2 Aug 2019 00:56:12 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Joel Becker <jlbec@evilplan.org>
-Subject: Re: [patch V2 0/7] fs: Substitute bit-spinlocks for PREEMPT_RT and
- debugging
-Message-ID: <20190802075612.GA20962@infradead.org>
-References: <20190801010126.245731659@linutronix.de>
+        id S2403874AbfHBIK2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Aug 2019 04:10:28 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3700 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730124AbfHBIK2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 2 Aug 2019 04:10:28 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id BB2431235F7661B2BA51;
+        Fri,  2 Aug 2019 16:10:21 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.439.0; Fri, 2 Aug 2019
+ 16:10:17 +0800
+Subject: Re: [PATCH v7 14/16] f2fs: wire up new fscrypt ioctls
+To:     Eric Biggers <ebiggers@kernel.org>, <linux-fscrypt@vger.kernel.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-mtd@lists.infradead.org>, <linux-api@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>, <keyrings@vger.kernel.org>,
+        Paul Crowley <paulcrowley@google.com>,
+        "Satya Tangirala" <satyat@google.com>
+References: <20190726224141.14044-1-ebiggers@kernel.org>
+ <20190726224141.14044-15-ebiggers@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <e3cf53a7-faf2-0321-22de-07d2e2783752@huawei.com>
+Date:   Fri, 2 Aug 2019 16:10:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190801010126.245731659@linutronix.de>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20190726224141.14044-15-ebiggers@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Thomas,
+Hi Eric,
 
-did you look into killing bіt spinlocks as a public API instead?
+On 2019/7/27 6:41, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Wire up the new ioctls for adding and removing fscrypt keys to/from the
+> filesystem, and the new ioctl for retrieving v2 encryption policies.
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY also required making f2fs_drop_inode() call
+> fscrypt_drop_inode().
+> 
+> For more details see Documentation/filesystems/fscrypt.rst and the
+> fscrypt patches that added the implementation of these ioctls.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-The main users seems to be buffer heads, which are so bloated that
-an extra spinlock doesn't really matter anyway.
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-The list_bl and rhashtable uses kinda make sense to be, but they are
-pretty nicely abstracted away anyway.  The remaining users look
-pretty questionable to start with.
+BTW, do you think it needs to make xxfs_has_support_encrypt() function be a
+common interface defined in struct fscrypt_operations, as I see all
+fscrypt_ioctl_*() needs to check with it, tho such cleanup is minor...
+
+Thanks,
+
+> ---
+>  fs/f2fs/file.c  | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/f2fs/super.c |  2 ++
+>  2 files changed, 48 insertions(+)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index f8d46df8fa9ee..d81dda290b829 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -2184,6 +2184,40 @@ static int f2fs_ioc_get_encryption_pwsalt(struct file *filp, unsigned long arg)
+>  	return err;
+>  }
+>  
+> +static int f2fs_ioc_get_encryption_policy_ex(struct file *filp,
+> +					     unsigned long arg)
+> +{
+> +	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
+> +		return -EOPNOTSUPP;
+> +
+> +	return fscrypt_ioctl_get_policy_ex(filp, (void __user *)arg);
+> +}
+> +
+> +static int f2fs_ioc_add_encryption_key(struct file *filp, unsigned long arg)
+> +{
+> +	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
+> +		return -EOPNOTSUPP;
+> +
+> +	return fscrypt_ioctl_add_key(filp, (void __user *)arg);
+> +}
+> +
+> +static int f2fs_ioc_remove_encryption_key(struct file *filp, unsigned long arg)
+> +{
+> +	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
+> +		return -EOPNOTSUPP;
+> +
+> +	return fscrypt_ioctl_remove_key(filp, (const void __user *)arg);
+> +}
+> +
+> +static int f2fs_ioc_get_encryption_key_status(struct file *filp,
+> +					      unsigned long arg)
+> +{
+> +	if (!f2fs_sb_has_encrypt(F2FS_I_SB(file_inode(filp))))
+> +		return -EOPNOTSUPP;
+> +
+> +	return fscrypt_ioctl_get_key_status(filp, (void __user *)arg);
+> +}
+> +
+>  static int f2fs_ioc_gc(struct file *filp, unsigned long arg)
+>  {
+>  	struct inode *inode = file_inode(filp);
+> @@ -3109,6 +3143,14 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  		return f2fs_ioc_get_encryption_policy(filp, arg);
+>  	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
+>  		return f2fs_ioc_get_encryption_pwsalt(filp, arg);
+> +	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
+> +		return f2fs_ioc_get_encryption_policy_ex(filp, arg);
+> +	case FS_IOC_ADD_ENCRYPTION_KEY:
+> +		return f2fs_ioc_add_encryption_key(filp, arg);
+> +	case FS_IOC_REMOVE_ENCRYPTION_KEY:
+> +		return f2fs_ioc_remove_encryption_key(filp, arg);
+> +	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
+> +		return f2fs_ioc_get_encryption_key_status(filp, arg);
+>  	case F2FS_IOC_GARBAGE_COLLECT:
+>  		return f2fs_ioc_gc(filp, arg);
+>  	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
+> @@ -3236,6 +3278,10 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>  	case F2FS_IOC_SET_ENCRYPTION_POLICY:
+>  	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
+>  	case F2FS_IOC_GET_ENCRYPTION_POLICY:
+> +	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
+> +	case FS_IOC_ADD_ENCRYPTION_KEY:
+> +	case FS_IOC_REMOVE_ENCRYPTION_KEY:
+> +	case FS_IOC_GET_ENCRYPTION_KEY_STATUS:
+>  	case F2FS_IOC_GARBAGE_COLLECT:
+>  	case F2FS_IOC_GARBAGE_COLLECT_RANGE:
+>  	case F2FS_IOC_WRITE_CHECKPOINT:
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 6de6cda440315..f5fae8d511a20 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -913,6 +913,8 @@ static int f2fs_drop_inode(struct inode *inode)
+>  		return 0;
+>  	}
+>  	ret = generic_drop_inode(inode);
+> +	if (!ret)
+> +		ret = fscrypt_drop_inode(inode);
+>  	trace_f2fs_drop_inode(inode, ret);
+>  	return ret;
+>  }
+> 
