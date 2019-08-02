@@ -2,72 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C67C0801EF
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 22:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB92A80249
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 23:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437038AbfHBUrE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Aug 2019 16:47:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40442 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbfHBUrD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Aug 2019 16:47:03 -0400
-Received: from pd9ef1cb8.dip0.t-ipconnect.de ([217.239.28.184] helo=nanos)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1hteS2-00018W-As; Fri, 02 Aug 2019 22:46:58 +0200
-Date:   Fri, 2 Aug 2019 22:46:57 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Jan Kara <jack@suse.cz>
-cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Julia Cartwright <julia@ni.com>
-Subject: Re: [PATCH 0/7] jbd2: Bit spinlock conversions
-In-Reply-To: <20190802151356.777-1-jack@suse.cz>
-Message-ID: <alpine.DEB.2.21.1908022245510.4029@nanos.tec.linutronix.de>
-References: <20190802151356.777-1-jack@suse.cz>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S2395066AbfHBVjz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Aug 2019 17:39:55 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39529 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726052AbfHBVjz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Aug 2019 17:39:55 -0400
+Received: from callcc.thunk.org (96-72-84-49-static.hfc.comcastbusiness.net [96.72.84.49] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x72LdipO023483
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 2 Aug 2019 17:39:45 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 33EB64202F5; Fri,  2 Aug 2019 17:39:44 -0400 (EDT)
+Date:   Fri, 2 Aug 2019 17:39:44 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Deepa Dinamani <deepa.kernel@gmail.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 09/20] ext4: Initialize timestamps limits
+Message-ID: <20190802213944.GE4308@mit.edu>
+Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+References: <20190730014924.2193-1-deepa.kernel@gmail.com>
+ <20190730014924.2193-10-deepa.kernel@gmail.com>
+ <20190731152609.GB7077@magnolia>
+ <CABeXuvpiom9eQi0y7PAwAypUP1ezKKRfbh-Yqr8+Sbio=QtUJQ@mail.gmail.com>
+ <20190801224344.GC17372@mit.edu>
+ <CAK8P3a3nqmWBXBiFL1kGmJ7yQ_=5S4Kok0YVB3VMFVBuYjFGOQ@mail.gmail.com>
+ <20190802154341.GB4308@mit.edu>
+ <CAK8P3a1Z+nuvBA92K2ORpdjQ+i7KrjOXCFud7fFg4n73Fqx_8Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1Z+nuvBA92K2ORpdjQ+i7KrjOXCFud7fFg4n73Fqx_8Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Jan,
-
-On Fri, 2 Aug 2019, Jan Kara wrote:
-
-> This series is derived from Thomas' series to get rid of bit spinlocks in
-> buffer head code. These patches convert BH_State bit spinlock to an ordinary
-> spinlock inside struct journal_head and somewhat reduce the critical section
-> under BH_JournalHead bit spinlock so that it is fine for RT. 
-
-Thanks a lot for cleaning this up!
-
-> Motivation from original Thomas' series:
+On Fri, Aug 02, 2019 at 09:00:52PM +0200, Arnd Bergmann wrote:
 > 
-> Bit spinlocks are problematic if PREEMPT_RT is enabled. They disable
-> preemption, which is undesired for latency reasons and breaks when regular
-> spinlocks are taken within the bit_spinlock locked region because regular
-> spinlocks are converted to 'sleeping spinlocks' on RT.
-> 
-> Bit spinlocks are also not covered by lock debugging, e.g. lockdep. With
-> the spinlock substitution in place, they can be exposed via a new config
-> switch: CONFIG_DEBUG_BIT_SPINLOCKS.
-> 
-> WRT patch routing: Since these are non-trivial changes to JBD2 and independent
-> of the rest of the series from Thomas, I think it would be safest to route
-> them through ext4 tree where they get most testing. Thoughts?
+> I must have misunderstood what the field says. I expected that
+> with s_min_extra_isize set beyond the nanosecond fields, there
+> would be a guarantee that all inodes have at least as many
+> extra bytes already allocated. What circumstances would lead to
+> an i_extra_isize smaller than s_min_extra_isize?
 
-Yes, there is no dependency, so feel free to route it through ext4.
+When allocating new inodes, i_extra_isize is set to
+s_want_extra_isize.  When modifying existing inodes, if i_extra_isize
+is less than s_min_extra_isize, then we will attempt to move out
+extended attribute(s) to the external xattr block.  So the
+s_min_extra_isize field is not a guarantee, but rather an aspirationa
+goal.  The idea is that at some point when we want to enable a new
+feature, which needs more extra inode space, we can adjust
+s_min_extra_size and s_want_extra_size, and the file system will
+migrate things to meet these constraints.
 
-Thanks,
+The plan was to teach e2fsck how to fix all of the inodes to meet theh
+s_min_extra_size value, but that never got implemented, and we even
+then, e2fsck would have to deal with the case where tit couldn't move
+the extended attribute(s) in the inode out, because there was no place
+to put them.
 
-	tglx
+In practice, this hasn't been that much of a limitation because we
+haven't been adding that many extra inode fields.  Keep in mind that
+Red Hat for example, has explicitly said they will *never* support
+adding new features to an existing file system.  Their only supported
+method is back up the file system, reformat it with the new file
+system features, and then restore the file system.
+
+Of course, if the backup/restore includes backing up the extended
+attributes, and then restoring them, the xattr restore could fail,
+unless the user also increased the inode size (e.g., from 256 bytes to
+512 bytes).
+
+Getting this right in the general case is *hard*.  Fortunately, the
+corner cases really don't happen that often in practice, at least not
+for pure Linux workloads.  Windows which can have arbitrarily large
+security id's and ACL's might make this harder, of course --- although
+ext4's EA in inode feature would make this better, modulo needing to
+write more complex file system code to handle moving xattrs around.
+
+Since the extended timestamps were one of the first extra inode fields
+to be added, I strongly suggest that we not try to borrow trouble.
+Solving the general case problem is *hard*.
+
+					- Ted
