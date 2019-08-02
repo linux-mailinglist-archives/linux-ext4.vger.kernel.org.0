@@ -2,79 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B36A7EFE3
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 11:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671F57F540
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 12:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732641AbfHBJJB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Aug 2019 05:09:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39083 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727024AbfHBJJB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Aug 2019 05:09:01 -0400
-Received: from [5.158.153.52] (helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1htTXb-0008Bx-4U; Fri, 02 Aug 2019 11:07:59 +0200
-Date:   Fri, 2 Aug 2019 11:07:53 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Christoph Hellwig <hch@infradead.org>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Joel Becker <jlbec@evilplan.org>
-Subject: Re: [patch V2 0/7] fs: Substitute bit-spinlocks for PREEMPT_RT and
- debugging
-In-Reply-To: <20190802075612.GA20962@infradead.org>
-Message-ID: <alpine.DEB.2.21.1908021107090.2285@nanos.tec.linutronix.de>
-References: <20190801010126.245731659@linutronix.de> <20190802075612.GA20962@infradead.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1729574AbfHBKj7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Aug 2019 06:39:59 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39911 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726170AbfHBKj7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Aug 2019 06:39:59 -0400
+Received: by mail-qt1-f195.google.com with SMTP id l9so73300248qtu.6;
+        Fri, 02 Aug 2019 03:39:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=rlJwQwKozaN0IUoAzhdQgNUAloq8MbsoeODQ5XHIhJY=;
+        b=smTgesqlEhm59X+NJGhyYz6n7wKcJv9UxN3KLCmauIYr1XwW+sqMBDZ2bmSMqJjT1F
+         IlyXl/6NV/KePa4flHdcX8Pl+CrZG70wG9TX9biGHtiDjB5Tf1Rxx7hT7X1g6Gqfp2Br
+         PdGYnL7108bhvqBS9Hc4E0Q/TvdETZ2JlSQDtKiS3SPKwt33L8+ZdxAu4yLcew9Xnxfw
+         Fi6cFyaEegGKajE8TOyAdbZGFPy3RMMbfEwTQGmL/+lwQqdgZDoQogsMxcshMG4Ptg1W
+         WnC1zs2DJ73zKG3flHxQFJZ59x4S7jMo2KEgVGSaZgAfoqbEEKfQmDsIXtUcbgFeUFDD
+         R6Qw==
+X-Gm-Message-State: APjAAAWgGek8WZ9jaMdupvLvPOw+COtDHwvKjvR5o56fok8gR3GgUmHf
+        pVo03OQhdmk5fwfcaey5WgivnkBblwcPdUUVD/KLZTC4WdE=
+X-Google-Smtp-Source: APXvYqxjI2APY3XKV/roWB/IOZhK6Qh9LDCyhPcXTsJGr54ySUA2d5+lcfIDZDxkRrdXwBZu1D17z1dmyaU77yOWmQs=
+X-Received: by 2002:ac8:f99:: with SMTP id b25mr86917918qtk.142.1564742398001;
+ Fri, 02 Aug 2019 03:39:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-738874475-1564736879=:2285"
+References: <20190730014924.2193-1-deepa.kernel@gmail.com> <20190730014924.2193-10-deepa.kernel@gmail.com>
+ <20190731152609.GB7077@magnolia> <CABeXuvpiom9eQi0y7PAwAypUP1ezKKRfbh-Yqr8+Sbio=QtUJQ@mail.gmail.com>
+ <20190801224344.GC17372@mit.edu>
+In-Reply-To: <20190801224344.GC17372@mit.edu>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 2 Aug 2019 12:39:41 +0200
+Message-ID: <CAK8P3a3nqmWBXBiFL1kGmJ7yQ_=5S4Kok0YVB3VMFVBuYjFGOQ@mail.gmail.com>
+Subject: Re: [PATCH 09/20] ext4: Initialize timestamps limits
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-738874475-1564736879=:2285
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-
-Christoph,
-
-On Fri, 2 Aug 2019, Christoph Hellwig wrote:
-
-> did you look into killing bіt spinlocks as a public API instead?
-
-Last time I did, there was resistance :)
-
-But I'm happy to try again.
-
-> The main users seems to be buffer heads, which are so bloated that
-> an extra spinlock doesn't really matter anyway.
+On Fri, Aug 2, 2019 at 12:43 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
 >
-> The list_bl and rhashtable uses kinda make sense to be, but they are
-> pretty nicely abstracted away anyway.  The remaining users look
-> pretty questionable to start with.
+> On Thu, Aug 01, 2019 at 12:18:28PM -0700, Deepa Dinamani wrote:
+> > > Say you have a filesystem with s_inode_size > 128 where not all of the
+> > > ondisk inodes have been upgraded to i_extra_isize > 0 and therefore
+> > > don't support nanoseconds or times beyond 2038.  I think this happens on
+> > > ext3 filesystems that reserved extra space for inode attrs that are
+> > > subsequently converted to ext4?
+> >
+> > I'm confused about ext3 being converted to ext4. If the converted
+> > inodes have extra space, then ext4_iget() will start using the extra
+> > space when it modifies the on disk inode, won't it?i
+>
+> It is possible that you can have an ext3 file system with (for
+> example) 256 byte inodes, and all of the extra space was used for
+> extended attributes, then ext4 won't have the extra space available.
+> This is going toh be on an inode-by-inode basis, and if an extended
+> attribute is motdified or deleted, the space would become available,t
+> and then inode would start getting a higher resolution timestamp.
 
-What about the page lock?
+Is it correct to assume that this kind of file would have to be
+created using the ext3.ko file system implementation that was
+removed in linux-4.3, but not using ext2.ko or ext4.ko (which
+would always set the extended timestamps even in "-t ext2" or
+"-t ext3" mode)?
 
-  mm/slub.c:      bit_spin_lock(PG_locked, &page->flags);
+I tried to reproduce this on a modern kernel and with and
+moderately old debugfs (1.42.13) but failed.
 
-Thanks,
+> I really don't think it's worth worrying about that, though.  It's
+> highly unlikely ext3 file systems will be still be in service by the
+> time it's needed in 2038.  And if so, it's highly unlikely they would
+> be converted to ext4.
 
-	tglx
---8323329-738874475-1564736879=:2285--
+As the difference is easily visible even before y2038 by using
+utimensat(old_inode, future_date) on a file, we should at least
+decide what the sanest behavior is that we can easily implement,
+and then document what is expected to happen here.
+
+If we check for s_min_extra_isize instead of s_inode_size
+to determine s_time_gran/s_time_max, we would warn
+at mount time as well as and consistently truncate all
+timestamps to full 32-bit seconds, regardless of whether
+there is actually space or not.
+
+Alternatively, we could warn if s_min_extra_isize is
+too small, but use i_inode_size to determine
+s_time_gran/s_time_max anyway.
+
+From looking at e2fsprogs git history, I see that
+s_min_extra_isize has always been set by mkfs since
+2008, but I'm not sure if there would have been a
+case in which it remains set but the ext3.ko would
+ignore it and use that space anyway.
+
+       Arnd
