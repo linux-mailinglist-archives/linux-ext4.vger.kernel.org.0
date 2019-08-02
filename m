@@ -2,86 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB057FFA7
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 19:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC96680091
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 21:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405327AbfHBRbx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Aug 2019 13:31:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405145AbfHBRbw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 2 Aug 2019 13:31:52 -0400
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31C1B2173E;
-        Fri,  2 Aug 2019 17:31:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564767111;
-        bh=p28pesjeaFELdMWXTRb2eE2TRQRtp76oeifvbyCl/RI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZcqdJ1sHgA4eHoVKYSn8SpVn+pAUEpj9uFNNG8Yop5svyGIeSKgDaCG0hU7/1xGe+
-         YH6wiSFmAifvQSIcT5ECPJSv2MxBpI4U1tOb0SI7k4tFkU4lU056T/wtL7OaDANFff
-         AXFhYpVcepiXq7WKPEIqg6WGV1t6hc/k/rdkPvQU=
-Date:   Fri, 2 Aug 2019 10:31:49 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v7 14/16] f2fs: wire up new fscrypt ioctls
-Message-ID: <20190802173148.GA51937@gmail.com>
-Mail-Followup-To: Chao Yu <yuchao0@huawei.com>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>,
-        Satya Tangirala <satyat@google.com>
-References: <20190726224141.14044-1-ebiggers@kernel.org>
- <20190726224141.14044-15-ebiggers@kernel.org>
- <e3cf53a7-faf2-0321-22de-07d2e2783752@huawei.com>
+        id S2387911AbfHBTBK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Aug 2019 15:01:10 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:45735 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727670AbfHBTBK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Aug 2019 15:01:10 -0400
+Received: by mail-qt1-f195.google.com with SMTP id x22so1590065qtp.12;
+        Fri, 02 Aug 2019 12:01:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=HwHE8/q9xzAY4G3Znjg3gltYqWjAP9OihVXjGw/qZCs=;
+        b=KyzX80aqVpqwmIE4Tlf/5KxAtU0syDphLDcd8EvXc/7QyOko1SfGukW/JAOMXEusRL
+         41485eRBnUXDKigcnkaOIL++Y+vVVEabJjCpTuy/+3AhdabbubQZrv6Ou+oZrTunBP2F
+         bAwadcUXE1a76fwE0MXnl57Dx/9ZMNzY9VNYcv+3Np1iIDSQZcUASaFefCsQ0AdJdN0K
+         PL1JoC48zZyhrdKgbiKAeWjUtnbJ9yc+AS7hrJquhw0hBC0O9wiKQYsBn5vB505jNhP3
+         I23zhg9oHWLPlO3g5kcC3xLkNnCBt+UKWNsLztwuCCoMSk+VG9yLlJ/f9nskDBzr36St
+         JCsA==
+X-Gm-Message-State: APjAAAWphOhrXRA+MRY3oih7y7EYiH+L3kUPEk0z4uKu/sRN/4fei0Rb
+        ZLUfQlNE9+gzqjAMYlbTDvg/x4m6OnD9t5pp2xE=
+X-Google-Smtp-Source: APXvYqxdH3F1KFPszuUkeqoRxQ5r3LJXOoFIyUXh4hFNFtLNtJlWlOJ73mPzmJf5XnVk+WnFpqrI54lRQ7IZEsv9sN0=
+X-Received: by 2002:a0c:ba2c:: with SMTP id w44mr97441239qvf.62.1564772468886;
+ Fri, 02 Aug 2019 12:01:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3cf53a7-faf2-0321-22de-07d2e2783752@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190730014924.2193-1-deepa.kernel@gmail.com> <20190730014924.2193-10-deepa.kernel@gmail.com>
+ <20190731152609.GB7077@magnolia> <CABeXuvpiom9eQi0y7PAwAypUP1ezKKRfbh-Yqr8+Sbio=QtUJQ@mail.gmail.com>
+ <20190801224344.GC17372@mit.edu> <CAK8P3a3nqmWBXBiFL1kGmJ7yQ_=5S4Kok0YVB3VMFVBuYjFGOQ@mail.gmail.com>
+ <20190802154341.GB4308@mit.edu>
+In-Reply-To: <20190802154341.GB4308@mit.edu>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 2 Aug 2019 21:00:52 +0200
+Message-ID: <CAK8P3a1Z+nuvBA92K2ORpdjQ+i7KrjOXCFud7fFg4n73Fqx_8Q@mail.gmail.com>
+Subject: Re: [PATCH 09/20] ext4: Initialize timestamps limits
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>, Arnd Bergmann <arnd@arndb.de>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 02, 2019 at 04:10:15PM +0800, Chao Yu wrote:
-> Hi Eric,
-> 
-> On 2019/7/27 6:41, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Wire up the new ioctls for adding and removing fscrypt keys to/from the
-> > filesystem, and the new ioctl for retrieving v2 encryption policies.
-> > 
-> > FS_IOC_REMOVE_ENCRYPTION_KEY also required making f2fs_drop_inode() call
-> > fscrypt_drop_inode().
-> > 
-> > For more details see Documentation/filesystems/fscrypt.rst and the
-> > fscrypt patches that added the implementation of these ioctls.
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> 
-> Reviewed-by: Chao Yu <yuchao0@huawei.com>
-> 
-> BTW, do you think it needs to make xxfs_has_support_encrypt() function be a
-> common interface defined in struct fscrypt_operations, as I see all
-> fscrypt_ioctl_*() needs to check with it, tho such cleanup is minor...
-> 
+On Fri, Aug 2, 2019 at 5:43 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> On Fri, Aug 02, 2019 at 12:39:41PM +0200, Arnd Bergmann wrote:
+> > Is it correct to assume that this kind of file would have to be
+> > created using the ext3.ko file system implementation that was
+> > removed in linux-4.3, but not usiing ext2.ko or ext4.ko (which
+> > would always set the extended timestamps even in "-t ext2" or
+> > "-t ext3" mode)?
+>
+> Correct.  Some of the enterprise distro's were using ext4 to support
+> "mount -t ext3" even before 4.3.  There's a CONFIG option to enable
+> using ext4 for ext2 or ext3 if they aren't enabled.
+>
+> > If we check for s_min_extra_isize instead of s_inode_size
+> > to determine s_time_gran/s_time_max, we would warn
+> > at mount time as well as and consistently truncate all
+> > timestamps to full 32-bit seconds, regardless of whether
+> > there is actually space or not.
+> >
+> > Alternatively, we could warn if s_min_extra_isize is
+> > too small, but use i_inode_size to determine
+> > s_time_gran/s_time_max anyway.
+>
+> Even with ext4, s_min_extra_isize doesn't guarantee that will be able
+> to expand the inode.  This can fail if (a) we aren't able to expand
+> existing the transaction handle because there isn't enough space in
+> the journal, or (b) there is already an external xattr block which is
+> also full, so there is no space to evacuate an extended attribute out
+> of the inode's extra space.
 
-Maybe.  It would work nicely for ext4 and f2fs, but ubifs does things
-differently since it automatically enables the encryption feature if needed.
-So we'd have to make the callback optional.
+I must have misunderstood what the field says. I expected that
+with s_min_extra_isize set beyond the nanosecond fields, there
+would be a guarantee that all inodes have at least as many
+extra bytes already allocated. What circumstances would lead to
+an i_extra_isize smaller than s_min_extra_isize?
 
-In any case, I think this should be separate from this patchset.
+> We could be more aggressive by trying to expand make room in the inode
+> in ext4_iget (when we're reading in the inode, assuming the file
+> system isn't mounted read/only), instead of in the middle of
+> mark_inode_dirty().  That will eliminate failure mode (a) --- which is
+> statistically rare --- but it won't eliminate failure mode (b).
+>
+> Ultimately, the question is which is worse: having a timestamp be
+> wrong, or randomly dropping an xattr from the inode to make room for
+> the extended timestamp.  We've come down on it being less harmful to
+> have the timestamp be wrong.
+>
+> But again, this is a pretty rare case.  I'm not convinced it's worth
+> stressing about, since it's going to require multiple things to go
+> wrong before a timestamp will be bad.
 
-- Eric
+Agreed, I'm not overly worried about this happening frequently,
+I'd just feel better if we could reliably warn about the few instances
+that might theoretically be affected.
+
+        Arnd
