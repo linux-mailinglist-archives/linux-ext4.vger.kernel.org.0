@@ -2,128 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F467FD2D
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 17:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20327FD8A
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 17:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732226AbfHBPOT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Aug 2019 11:14:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35340 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730768AbfHBPOS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 2 Aug 2019 11:14:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0A07BB128;
-        Fri,  2 Aug 2019 15:14:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E391D1E440E; Fri,  2 Aug 2019 17:14:14 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        id S1733056AbfHBPaZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Aug 2019 11:30:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39873 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732277AbfHBPaZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Aug 2019 11:30:25 -0400
+Received: from [5.158.153.52] (helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1htZV2-0002wy-PP; Fri, 02 Aug 2019 17:29:45 +0200
+Date:   Fri, 2 Aug 2019 17:29:43 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Jan Kara <jack@suse.cz>
+cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
         Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.com>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH 7/7] jbd2: Free journal head outside of locked region
-Date:   Fri,  2 Aug 2019 17:13:56 +0200
-Message-Id: <20190802151356.777-8-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20190802151356.777-1-jack@suse.cz>
-References: <20190802151356.777-1-jack@suse.cz>
+        Theodore Tso <tytso@mit.edu>, Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Joel Becker <jlbec@evilplan.org>, linux-ext4@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [patch V2 6/7] fs/jbd2: Make state lock a spinlock
+In-Reply-To: <20190802133714.GN25064@quack2.suse.cz>
+Message-ID: <alpine.DEB.2.21.1908021729120.3924@nanos.tec.linutronix.de>
+References: <20190801010126.245731659@linutronix.de> <20190801010944.457499601@linutronix.de> <20190801175703.GH25064@quack2.suse.cz> <alpine.DEB.2.21.1908012010020.1789@nanos.tec.linutronix.de> <20190802133714.GN25064@quack2.suse.cz>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Fri, 2 Aug 2019, Jan Kara wrote:
 
-On PREEMPT_RT bit-spinlocks have the same semantics as on PREEMPT_RT=n,
-i.e. they disable preemption. That means functions which are not safe to be
-called in preempt disabled context on RT trigger a might_sleep() assert.
+> On Thu 01-08-19 20:12:11, Thomas Gleixner wrote:
+> > On Thu, 1 Aug 2019, Jan Kara wrote:
+> > > On Thu 01-08-19 03:01:32, Thomas Gleixner wrote:
+> > > > As almost all functions which use this lock have a journal head pointer
+> > > > readily available, it makes more sense to remove the lock helper inlines
+> > > > and write out spin_*lock() at all call sites.
+> > > > 
+> > > 
+> > > Just a heads up that I didn't miss this patch. Just it has some bugs and I
+> > > figured that rather than explaining to you subtleties of jh lifetime it is
+> > > easier to fix up the problems myself since you're probably not keen on
+> > > becoming jbd2 developer ;)... which was more complex than I thought so I'm
+> > > not completely done yet. Hopefuly tomorrow.
+> > 
+> > I'm curious where I was too naive :)
+> 
+> Well, the most obvious where places where the result ended up being like
+> 
+> 	jbd2_journal_put_journal_head(jh);
+> 	spin_unlock(&jh->state_lock);
+> 
+> That's possible use-after-free.
 
-The journal head bit spinlock is mostly held for short code sequences with
-trivial RT safe functionality, except for one place:
+Duh yes.
 
-jbd2_journal_put_journal_head() invokes __journal_remove_journal_head()
-with the journal head bit spinlock held. __journal_remove_journal_head()
-invokes kmem_cache_free() which must not be called with preemption disabled
-on RT.
+> But there were also other more subtle places where
+> jbd2_journal_put_journal_head() was not directly visible as it was hidden
+> inside journal list handling functions such as __jbd2_journal_refile_buffer()
+> or so. And these needed some more work.
+> 
+> Anyway, I'm now done fixing up the patch, doing some xfstests runs to verify
+> things didn't break in any obvious way...
 
-Jan suggested to rework the removal function so the actual free happens
-outside the bit-spinlocked region.
+Very appreciated.
 
-Split it into two parts:
+Thanks,
 
-  - Do the sanity checks and the buffer head detach under the lock
-
-  - Do the actual free after dropping the lock
-
-There is error case handling in the free part which needs to dereference
-the b_size field of the now detached buffer head. Due to paranoia (caused
-by ignorance) the size is retrieved in the detach function and handed into
-the free function. Might be over-engineered, but better safe than sorry.
-
-This makes the journal head bit-spinlock usage RT compliant and also avoids
-nested locking which is not covered by lockdep.
-
-Suggested-by: Jan Kara <jack@suse.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-ext4@vger.kernel.org
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Jan Kara <jack@suse.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/jbd2/journal.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index eee350fef339..c79e6de2fcfc 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -2533,17 +2533,23 @@ static void __journal_remove_journal_head(struct buffer_head *bh)
- 	J_ASSERT_BH(bh, buffer_jbd(bh));
- 	J_ASSERT_BH(bh, jh2bh(jh) == bh);
- 	BUFFER_TRACE(bh, "remove journal_head");
-+
-+	/* Unlink before dropping the lock */
-+	bh->b_private = NULL;
-+	jh->b_bh = NULL;	/* debug, really */
-+	clear_buffer_jbd(bh);
-+}
-+
-+static void journal_release_journal_head(struct journal_head *jh, size_t b_size)
-+{
- 	if (jh->b_frozen_data) {
- 		printk(KERN_WARNING "%s: freeing b_frozen_data\n", __func__);
--		jbd2_free(jh->b_frozen_data, bh->b_size);
-+		jbd2_free(jh->b_frozen_data, b_size);
- 	}
- 	if (jh->b_committed_data) {
- 		printk(KERN_WARNING "%s: freeing b_committed_data\n", __func__);
--		jbd2_free(jh->b_committed_data, bh->b_size);
-+		jbd2_free(jh->b_committed_data, b_size);
- 	}
--	bh->b_private = NULL;
--	jh->b_bh = NULL;	/* debug, really */
--	clear_buffer_jbd(bh);
- 	journal_free_journal_head(jh);
- }
- 
-@@ -2561,9 +2567,11 @@ void jbd2_journal_put_journal_head(struct journal_head *jh)
- 	if (!jh->b_jcount) {
- 		__journal_remove_journal_head(bh);
- 		jbd_unlock_bh_journal_head(bh);
-+		journal_release_journal_head(jh, bh->b_size);
- 		__brelse(bh);
--	} else
-+	} else {
- 		jbd_unlock_bh_journal_head(bh);
-+	}
- }
- 
- /*
--- 
-2.16.4
-
+	tglx
