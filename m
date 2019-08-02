@@ -2,159 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C96037EC9B
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 08:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A04E7EE20
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2019 09:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387620AbfHBG2W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 2 Aug 2019 02:28:22 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:48536 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732494AbfHBG2W (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 2 Aug 2019 02:28:22 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 97EF2BC928EEF673CD80;
-        Fri,  2 Aug 2019 14:28:11 +0800 (CST)
-Received: from [127.0.0.1] (10.177.244.145) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Fri, 2 Aug 2019
- 14:28:08 +0800
-Subject: Re: [PATCH] ext4: fix potential use after free in system zone via
- remount with noblock_validity
-To:     Jan Kara <jack@suse.cz>
-References: <1563970268-33688-1-git-send-email-yi.zhang@huawei.com>
- <20190731140821.GF15806@quack2.suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <54c1c269-c874-1ff8-8ca8-a87e65227957@huawei.com>
-Date:   Fri, 2 Aug 2019 14:28:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S2390548AbfHBH4T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 2 Aug 2019 03:56:19 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:58086 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390522AbfHBH4T (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 2 Aug 2019 03:56:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=F/U4RF9BWHk0NEnwlESdSBl0fNvIrEH3x91nEkfBj0s=; b=AroLgI03kPrunxjAUUNLPYV1H3
+        TY2FcCliV84FPetqGsDrGQIB1YHeGEtq136f9fHRgArJ1FZB3u6MuN1yZp9ss2fNLJgleH4V+G6w6
+        h2N3lXQJ5Zjc2kZ7cInHAA4AXzk+GbX4y6qd9hMLl9NVYJ+hJygShEumgsQZ3rQrGiolVnClyvdTe
+        eEsZwhFKQQ1aJgb8rPmz+kKfko+6kIJKf8u47ByPJh9hwk7PkAn72aLooNLKhm6pnJk/16lxyl/xR
+        QEszcatR8lr7FGMsFu32CkCbOEKQ1OuJdTpMXcxM9ibcjNxuHzCy1JlMsZubGrSR8aHsjqENeCTjT
+        UcsThg4w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1htSQ8-0006iu-RB; Fri, 02 Aug 2019 07:56:12 +0000
+Date:   Fri, 2 Aug 2019 00:56:12 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Joel Becker <jlbec@evilplan.org>
+Subject: Re: [patch V2 0/7] fs: Substitute bit-spinlocks for PREEMPT_RT and
+ debugging
+Message-ID: <20190802075612.GA20962@infradead.org>
+References: <20190801010126.245731659@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20190731140821.GF15806@quack2.suse.cz>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.177.244.145]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190801010126.245731659@linutronix.de>
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for your suggestions, I will look at the RCU method to solve this problem.
+Hi Thomas,
 
-Thanks,
-Yi.
+did you look into killing bіt spinlocks as a public API instead?
 
-On 2019/7/31 22:08, Jan Kara Wrote:
-> On Wed 24-07-19 20:11:08, zhangyi (F) wrote:
->> Remount process will release system zone which was allocated before if
->> "noblock_validity" is specified. If we mount an ext4 file system to two
->> mountpoints whit default mount options, and then remount one of them
->> with "noblock_validity", it may trigger a use after free problem when
->> someone accessing the other one.
->>
->>  # mount /dev/sda foo
->>  # mount /dev/sda bar
->>
->> User access mountpoint "foo"   |   Remount mountpoint "bar"
->>                                |
->> ext4_map_blocks()              |   ext4_remount()
->> check_block_validity()         |   ext4_setup_system_zone()
->> ext4_data_block_valid()        |   ext4_release_system_zone()
->>                                |   free system_blks rb nodes
->> access system_blks rb nodes    |
->> trigger use after free         |
->>
->> This patch lock the system zone when accessing it to prevent it being
->> released when doing a remount with "noblock_validity" mount option.
->>
->> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
->> Cc: stable@vger.kernel.org
-> 
-> Thanks for the patch. It is a good catch. Some small comments below.
-> 
->> diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
->> index 8e83741..d9c4792 100644
->> --- a/fs/ext4/block_validity.c
->> +++ b/fs/ext4/block_validity.c
->> @@ -191,7 +191,7 @@ int ext4_setup_system_zone(struct super_block *sb)
->>  
->>  	if (!test_opt(sb, BLOCK_VALIDITY)) {
->>  		if (sbi->system_blks.rb_node)
->> -			ext4_release_system_zone(sb);
->> +			ext4_release_system_zone_lock(sb);
->>  		return 0;
->>  	}
->>  	if (sbi->system_blks.rb_node)
->> @@ -239,6 +239,14 @@ void ext4_release_system_zone(struct super_block *sb)
->>  	EXT4_SB(sb)->system_blks = RB_ROOT;
->>  }
->>  
->> +/* Called when (re)mounting the filesystem without BLOCK_VALIDITY */
->> +void ext4_release_system_zone_lock(struct super_block *sb)
->> +{
->> +	spin_lock(&EXT4_SB(sb)->system_blks_lock);
->> +	ext4_release_system_zone(sb);
->> +	spin_unlock(&EXT4_SB(sb)->system_blks_lock);
->> +}
-> 
-> Is there any reason why ext4_release_system_zone() should not always take
-> the system_blks_lock lock? I understand it may not be necessary in all the
-> cases but it won't hurt either...
-> 
-> Also ext4_setup_system_zone() should IMO use system_blks_lock to protect
-> modifications of the rbtree. It can get called during remount as well so
-> there can be racing ext4_data_block_valid() reading the rbtree at the same
-> time.
-> 
->> @@ -256,6 +264,13 @@ int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
->>  		sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
->>  		return 0;
->>  	}
->> +
->> +	/*
->> +	 * Lock the system zone to prevent it being released concurrently
->> +	 * when doing a remount with "noblock_validity" mount option.
->> +	 */
->> +	spin_lock(&sbi->system_blks_lock);
->> +	n = sbi->system_blks.rb_node;
->>  	while (n) {
->>  		entry = rb_entry(n, struct ext4_system_zone, node);
->>  		if (start_blk + count - 1 < entry->start_blk)
->> @@ -264,9 +279,11 @@ int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
->>  			n = n->rb_right;
->>  		else {
->>  			sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
->> +			spin_unlock(&sbi->system_blks_lock);
->>  			return 0;
->>  		}
->>  	}
->> +	spin_unlock(&sbi->system_blks_lock);
->>  	return 1;
->>  }
-> 
-> So this will not only serialize ext4_data_block_valid() against remounts
-> but also against each other. So I suspect that a read-heavy workload on
-> fast storage could contend on your new fs-wide spinlock. So I think it
-> would be better to have some other synchronization scheme to avoid the
-> race.
-> 
-> If nothing else, rwlock_t would allow concurrent ext4_data_block_valid()
-> calls. It is still not ideal as the calls would be still bouncing around
-> the cacheline when updating the lock itself but better than nothing.
-> 
-> Ideal (performance-wise) would be to use RCU scheme for this -
-> ext4_data_block_valid() would be RCU protected when reading the RB-tree,
-> teardown of the block validity information would clear
-> sbi->system_blks.rb_node and then defer actual freeing of the tree nodes to
-> RCU callback. Setup would first construct the rbtree and then just set
-> sbi->system_blks.rb_node to the root of the constructed tree.
-> 
-> That being said I'm not *sure* this is going to be a performance issue
-> since ext4_map_blocks() are not that frequent and the lock hold times will
-> be very short (needs testing). So maybe rwlock_t is a reasonable compromise
-> between complexity and performance.
-> 
-> 								Honza
-> 
+The main users seems to be buffer heads, which are so bloated that
+an extra spinlock doesn't really matter anyway.
 
+The list_bl and rhashtable uses kinda make sense to be, but they are
+pretty nicely abstracted away anyway.  The remaining users look
+pretty questionable to start with.
