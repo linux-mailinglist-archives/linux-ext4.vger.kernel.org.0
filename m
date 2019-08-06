@@ -2,64 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D410827AF
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Aug 2019 00:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B926E82B81
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Aug 2019 08:12:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730960AbfHEWoW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 5 Aug 2019 18:44:22 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48735 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729999AbfHEWoW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 5 Aug 2019 18:44:22 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-        (Exim 4.76)
-        (envelope-from <colin.king@canonical.com>)
-        id 1huliG-0002SR-1v; Mon, 05 Aug 2019 22:44:20 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: set error return correctly when ext4_htree_store_dirent fails
-Date:   Mon,  5 Aug 2019 23:44:19 +0100
-Message-Id: <20190805224419.24639-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.20.1
+        id S1731758AbfHFGL1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Aug 2019 02:11:27 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:57880 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731708AbfHFGL1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Aug 2019 02:11:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=aB60sYFkleC6hpDylnEldYGmLHnG+9pRYw06I4nxy6M=; b=ia9qAdq6lNwFYo7OVTZPsfhxv
+        vfOjSEbe9ZkOiaAOKXdKACSVtb7rMX+i3fcKh0974MqVDFqWUVvEtfnry2a+ezfxHcDX+r+jgSl50
+        4z8jVldTjbUVRJWVBZXrw753MjgEsLKG3pAdolC1PYVTAIiRMZaCUjvDi4ZbEkre5vaoTQXo1KETI
+        OlBxF2ExoFKfBRpc+TrCOYdxFhwlgpmKi5cuPacGG26m5p0pT+N+pjxlSVyd3pSxk1WRTuDcWdOw8
+        nXuhTXz7wF2qZXGAy1lH72pgTQdZ+NgIHLkPSCgb3p7NxvwYBxpElWC7GCA+TdWg9Dr2qPPVGqCcv
+        JHcSj4RBQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1husgp-0005nR-Nj; Tue, 06 Aug 2019 06:11:19 +0000
+Date:   Mon, 5 Aug 2019 23:11:19 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Joel Becker <jlbec@evilplan.org>
+Subject: Re: [patch V2 0/7] fs: Substitute bit-spinlocks for PREEMPT_RT and
+ debugging
+Message-ID: <20190806061119.GA17492@infradead.org>
+References: <20190801010126.245731659@linutronix.de>
+ <20190802075612.GA20962@infradead.org>
+ <alpine.DEB.2.21.1908021107090.2285@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.1908021107090.2285@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Aug 02, 2019 at 11:07:53AM +0200, Thomas Gleixner wrote:
+> Last time I did, there was resistance :)
 
-Currently when the call to ext4_htree_store_dirent fails the error return
-variable 'ret' is is not being set to the error code and variable count is
-instead, hence the error code is not being returned.  Fix this by assigning
-ret to the error return code.
+Do you have a pointer?  Note that in the buffer head case maybe
+a hash lock based on the page address is even better, as we only
+ever use the lock in the first buffer head of a page anyway..
 
-Addresses-Coverity: ("Unused value")
-Fixes: 8af0f0822797 ("ext4: fix readdir error in the case of inline_data+dir_index")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- fs/ext4/inline.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> What about the page lock?
+> 
+>   mm/slub.c:      bit_spin_lock(PG_locked, &page->flags);
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 88cdf3c90bd1..2fec62d764fa 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -1416,7 +1416,7 @@ int ext4_inlinedir_to_tree(struct file *dir_file,
- 		err = ext4_htree_store_dirent(dir_file, hinfo->hash,
- 					      hinfo->minor_hash, de, &tmp_str);
- 		if (err) {
--			count = err;
-+			ret = err;
- 			goto out;
- 		}
- 		count++;
--- 
-2.20.1
-
+One caller ouf of a gazillion that spins on the page lock instead of
+sleepign on it like everyone else.  That should not have passed your
+smell test to start with :)
