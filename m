@@ -2,75 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B926E82B81
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Aug 2019 08:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1633083A86
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Aug 2019 22:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731758AbfHFGL1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 6 Aug 2019 02:11:27 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:57880 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731708AbfHFGL1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Aug 2019 02:11:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=aB60sYFkleC6hpDylnEldYGmLHnG+9pRYw06I4nxy6M=; b=ia9qAdq6lNwFYo7OVTZPsfhxv
-        vfOjSEbe9ZkOiaAOKXdKACSVtb7rMX+i3fcKh0974MqVDFqWUVvEtfnry2a+ezfxHcDX+r+jgSl50
-        4z8jVldTjbUVRJWVBZXrw753MjgEsLKG3pAdolC1PYVTAIiRMZaCUjvDi4ZbEkre5vaoTQXo1KETI
-        OlBxF2ExoFKfBRpc+TrCOYdxFhwlgpmKi5cuPacGG26m5p0pT+N+pjxlSVyd3pSxk1WRTuDcWdOw8
-        nXuhTXz7wF2qZXGAy1lH72pgTQdZ+NgIHLkPSCgb3p7NxvwYBxpElWC7GCA+TdWg9Dr2qPPVGqCcv
-        JHcSj4RBQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1husgp-0005nR-Nj; Tue, 06 Aug 2019 06:11:19 +0000
-Date:   Mon, 5 Aug 2019 23:11:19 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Joel Becker <jlbec@evilplan.org>
-Subject: Re: [patch V2 0/7] fs: Substitute bit-spinlocks for PREEMPT_RT and
- debugging
-Message-ID: <20190806061119.GA17492@infradead.org>
-References: <20190801010126.245731659@linutronix.de>
- <20190802075612.GA20962@infradead.org>
- <alpine.DEB.2.21.1908021107090.2285@nanos.tec.linutronix.de>
+        id S1726694AbfHFUnl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 6 Aug 2019 16:43:41 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:42457 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbfHFUnl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 6 Aug 2019 16:43:41 -0400
+Received: by mail-lf1-f68.google.com with SMTP id s19so62292832lfb.9
+        for <linux-ext4@vger.kernel.org>; Tue, 06 Aug 2019 13:43:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VR5feK3MwIDa28M66pr8cZaax0HRBgUIy/YXtAlUVAg=;
+        b=Jcbiz/rlCveea1uGbs0To2AG2Fqr3qcVJByaj30biSJ6IGaZQU269n7UhHiJIq60zt
+         F6m/iDUTKUaAxcfbj3aNcS1UVKWh0iBATpSeFcB2HZZd4zuUH74H+0AsiAw/3vHblfhG
+         rGmoqX4hHVQvNh1Mo2WC3G6d946cIGSfRxOUfOJyomX+NAcaChMCm9wTSq80UpIDDyVy
+         Wsy0W1UJUtub0zWt+iqZy9h9oHmBFsihiepiuxbUw6MWvMUQg0sLWv0bFV1e+nhfBD57
+         VYDaUrEm2FkddHey3B0zSP911OVgsWvOlf8N8vWL7OUIPVuLGhouTH4qcL5ZHCc7EUMj
+         /u6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VR5feK3MwIDa28M66pr8cZaax0HRBgUIy/YXtAlUVAg=;
+        b=iQ5K4jzAPRR6qa67a8gSA+42Ehrl34vvyj72Bs3pVSbjwvPfpBswQ8wRYucQxEGgjS
+         QJtHNQQHAEKL9iSss4FMrLDxWz0qdraJiET37B+PL7vyM8T9lkNcY2o/c81l4HWV762Z
+         Hbqp0DVMiGHK/CxOPqY00lMomdSz8faG+enmAqITxJNepkINFHcY1HpPzcuOKe07CWro
+         /Lb2ZKODuJfmBEHBSzCUiRzerScgmrTxqtrdK7qcFF6jr0d6FWXjUXAK7hZO27d4kWYy
+         LepqtADmk8D5LoNkTlETxfZWCWQi8Gpcg2U/aZtybFCrVaomy4W7wOv56dWu2BYj2nqk
+         YyHA==
+X-Gm-Message-State: APjAAAWiqK5aZhA8FoCekBvaEycjjRdiGZl/DJYNz5j9LnQysleIf6ka
+        KMlU6T3nPsoZotvvTBUoAu7s9fApk9IaWWm46jGzUQ==
+X-Google-Smtp-Source: APXvYqzWZs8IRpgox1WFTKnJpGnBDG26DorCdtZJQD2tgXVD7zBJA6DxGWkpIBTAdKDEhuxqp2JLjofjJIxta57O938=
+X-Received: by 2002:a19:6f4b:: with SMTP id n11mr3649844lfk.163.1565124219457;
+ Tue, 06 Aug 2019 13:43:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.1908021107090.2285@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20190805162521.90882-1-ebiggers@kernel.org> <20190805162521.90882-13-ebiggers@kernel.org>
+In-Reply-To: <20190805162521.90882-13-ebiggers@kernel.org>
+From:   Paul Crowley <paulcrowley@google.com>
+Date:   Tue, 6 Aug 2019 13:43:27 -0700
+Message-ID: <CA+_SqcBkR_8Z9EUTpK-dEW4PN+9P5OgJnqYDHtOhG+P1LjotPA@mail.gmail.com>
+Subject: Re: [PATCH v8 12/20] fscrypt: add an HKDF-SHA512 implementation
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-api@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 02, 2019 at 11:07:53AM +0200, Thomas Gleixner wrote:
-> Last time I did, there was resistance :)
+On Mon, 5 Aug 2019 at 09:28, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Add an implementation of HKDF (RFC 5869) to fscrypt, for the purpose of
+> deriving additional key material from the fscrypt master keys for v2
+> encryption policies.  HKDF is a key derivation function built on top of
+> HMAC.  We choose SHA-512 for the underlying unkeyed hash, and use an
+> "hmac(sha512)" transform allocated from the crypto API.
+>
+> We'll be using this to replace the AES-ECB based KDF currently used to
+> derive the per-file encryption keys.  While the AES-ECB based KDF is
+> believed to meet the original security requirements, it is nonstandard
+> and has problems that don't exist in modern KDFs such as HKDF:
+>
+> 1. It's reversible.  Given a derived key and nonce, an attacker can
+>    easily compute the master key.  This is okay if the master key and
+>    derived keys are equally hard to compromise, but now we'd like to be
+>    more robust against threats such as a derived key being compromised
+>    through a timing attack, or a derived key for an in-use file being
+>    compromised after the master key has already been removed.
+>
+> 2. It doesn't evenly distribute the entropy from the master key; each 16
+>    input bytes only affects the corresponding 16 output bytes.
+>
+> 3. It isn't easily extensible to deriving other values or keys, such as
+>    a public hash for securely identifying the key, or per-mode keys.
+>    Per-mode keys will be immediately useful for Adiantum encryption, for
+>    which fscrypt currently uses the master key directly, introducing
+>    unnecessary usage constraints.  Per-mode keys will also be useful for
+>    hardware inline encryption, which is currently being worked on.
+>
+> HKDF solves all the above problems.
+>
+> Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Do you have a pointer?  Note that in the buffer head case maybe
-a hash lock based on the page address is even better, as we only
-ever use the lock in the first buffer head of a page anyway..
+Looks good, feel free to add:
 
-> What about the page lock?
-> 
->   mm/slub.c:      bit_spin_lock(PG_locked, &page->flags);
-
-One caller ouf of a gazillion that spins on the page lock instead of
-sleepign on it like everyone else.  That should not have passed your
-smell test to start with :)
+Reviewed-by: Paul Crowley <paulcrowley@google.com>
