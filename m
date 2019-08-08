@@ -2,77 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7299C85C25
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Aug 2019 09:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B389A86640
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Aug 2019 17:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731658AbfHHHyd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Aug 2019 03:54:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:52472 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725796AbfHHHyd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Aug 2019 03:54:33 -0400
-Received: from p200300ddd71876597e7a91fffec98e25.dip0.t-ipconnect.de ([2003:dd:d718:7659:7e7a:91ff:fec9:8e25])
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1hvdFR-0002M4-Ph; Thu, 08 Aug 2019 09:54:09 +0200
-Date:   Thu, 8 Aug 2019 09:54:03 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Christoph Hellwig <hch@infradead.org>
-cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Joel Becker <jlbec@evilplan.org>
-Subject: Re: [patch V2 0/7] fs: Substitute bit-spinlocks for PREEMPT_RT and
- debugging
-In-Reply-To: <20190808072807.GA25259@infradead.org>
-Message-ID: <alpine.DEB.2.21.1908080953170.2882@nanos.tec.linutronix.de>
-References: <20190801010126.245731659@linutronix.de> <20190802075612.GA20962@infradead.org> <alpine.DEB.2.21.1908021107090.2285@nanos.tec.linutronix.de> <20190806061119.GA17492@infradead.org> <alpine.DEB.2.21.1908080858460.2882@nanos.tec.linutronix.de>
- <20190808072807.GA25259@infradead.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S2403961AbfHHPut (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Aug 2019 11:50:49 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36971 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728380AbfHHPus (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Aug 2019 11:50:48 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-107.corp.google.com [104.133.0.107] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x78FofOW028778
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 8 Aug 2019 11:50:42 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id DFC084218EF; Thu,  8 Aug 2019 11:50:40 -0400 (EDT)
+Date:   Thu, 8 Aug 2019 11:50:40 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Chandan Rajendra <chandan@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
+        harish@linux.ibm.com, jack@suse.cz
+Subject: Re: [PATCH V2] jbd2: flush_descriptor(): Do not decrease buffer
+ head's ref count
+Message-ID: <20190808155040.GF3340@mit.edu>
+References: <20190805040800.31743-1-chandan@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190805040800.31743-1-chandan@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, 8 Aug 2019, Christoph Hellwig wrote:
-> On Thu, Aug 08, 2019 at 09:02:47AM +0200, Thomas Gleixner wrote:
-> > > >   mm/slub.c:      bit_spin_lock(PG_locked, &page->flags);
-> > > 
-> > > One caller ouf of a gazillion that spins on the page lock instead of
-> > > sleepign on it like everyone else.  That should not have passed your
-> > > smell test to start with :)
-> > 
-> > I surely stared at it, but that cannot sleep. It's in the middle of a
-> > preempt and interrupt disabled region and used on architectures which do
-> > not support CMPXCHG_DOUBLE and ALIGNED_STRUCT_PAGE ...
+On Mon, Aug 05, 2019 at 09:38:00AM +0530, Chandan Rajendra wrote:
+> When executing generic/388 on a ppc64le machine, we notice the following
+> call trace,
 > 
-> I know.  But the problem here is that normally PG_locked is used together 
-> with wait_on_page_bit_*, but this one instances uses the bit spinlock
-> helpers.  This is the equivalent of calling spin_lock on a struct mutex
-> rather than having a mutex_lock_spin helper for this case.
+> VFS: brelse: Trying to free free buffer
+> WARNING: CPU: 0 PID: 6637 at /root/repos/linux/fs/buffer.c:1195 __brelse+0x84/0xc0
+> 
+> Call Trace:
+>  __brelse+0x80/0xc0 (unreliable)
+>  invalidate_bh_lru+0x78/0xc0
+>  on_each_cpu_mask+0xa8/0x130
+>  on_each_cpu_cond_mask+0x130/0x170
+>  invalidate_bh_lrus+0x44/0x60
+>  invalidate_bdev+0x38/0x70
+>  ext4_put_super+0x294/0x560
+>  generic_shutdown_super+0xb0/0x170
+>  kill_block_super+0x38/0xb0
+>  deactivate_locked_super+0xa4/0xf0
+>  cleanup_mnt+0x164/0x1d0
+>  task_work_run+0x110/0x160
+>  do_notify_resume+0x414/0x460
+>  ret_from_except_lite+0x70/0x74
+> 
+> The warning happens because flush_descriptor() drops bh reference it
+> does not own. The bh reference acquired by
+> jbd2_journal_get_descriptor_buffer() is owned by the log_bufs list and
+> gets released when this list is processed. The reference for doing IO is
+> only acquired in write_dirty_buffer() later in flush_descriptor().
+> 
+> Reported-by: Harish Sriram <harish@linux.ibm.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
 
-Yes, I know :(
+Thanks, applied.
 
-> Does SLUB work on -rt at all?
-
-It's the only allocator we support with a few tweaks :)
-
-Thanks,
-
-	tglx
+					- Ted
