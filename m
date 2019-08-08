@@ -2,96 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6D685865
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Aug 2019 05:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD2B85B36
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Aug 2019 09:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389520AbfHHDEC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 7 Aug 2019 23:04:02 -0400
-Received: from mga11.intel.com ([192.55.52.93]:19466 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387536AbfHHDEC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 7 Aug 2019 23:04:02 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Aug 2019 20:04:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,358,1559545200"; 
-   d="scan'208";a="182465060"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 Aug 2019 20:04:00 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1hvYie-0008mq-1Y; Thu, 08 Aug 2019 11:04:00 +0800
-Date:   Thu, 8 Aug 2019 11:03:04 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "zhangyi (F)" <yi.zhang@huawei.com>
-Cc:     kbuild-all@01.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
-        jack@suse.cz, adilger.kernel@dilger.ca, yi.zhang@huawei.com
-Subject: Re: [PATCH v2] ext4: fix potential use after free in system zone via
- remount with noblock_validity
-Message-ID: <201908081107.DkPpgosg%lkp@intel.com>
-References: <1564755566-4378-1-git-send-email-yi.zhang@huawei.com>
+        id S1730903AbfHHHDb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Aug 2019 03:03:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52377 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbfHHHDb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Aug 2019 03:03:31 -0400
+Received: from p200300ddd71876597e7a91fffec98e25.dip0.t-ipconnect.de ([2003:dd:d718:7659:7e7a:91ff:fec9:8e25])
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1hvcRp-0001ck-0m; Thu, 08 Aug 2019 09:02:53 +0200
+Date:   Thu, 8 Aug 2019 09:02:47 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Christoph Hellwig <hch@infradead.org>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Joel Becker <jlbec@evilplan.org>
+Subject: Re: [patch V2 0/7] fs: Substitute bit-spinlocks for PREEMPT_RT and
+ debugging
+In-Reply-To: <20190806061119.GA17492@infradead.org>
+Message-ID: <alpine.DEB.2.21.1908080858460.2882@nanos.tec.linutronix.de>
+References: <20190801010126.245731659@linutronix.de> <20190802075612.GA20962@infradead.org> <alpine.DEB.2.21.1908021107090.2285@nanos.tec.linutronix.de> <20190806061119.GA17492@infradead.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1564755566-4378-1-git-send-email-yi.zhang@huawei.com>
-X-Patchwork-Hint: ignore
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=US-ASCII
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi "zhangyi,
+On Mon, 5 Aug 2019, Christoph Hellwig wrote:
+> On Fri, Aug 02, 2019 at 11:07:53AM +0200, Thomas Gleixner wrote:
+> > Last time I did, there was resistance :)
+> 
+> Do you have a pointer?  Note that in the buffer head case maybe
+> a hash lock based on the page address is even better, as we only
+> ever use the lock in the first buffer head of a page anyway..
 
-Thank you for the patch! Perhaps something to improve:
+I need to search my archives, but I'm on a spotty and slow connection right
+now. Will do so when back home.
+ 
+> > What about the page lock?
+> > 
+> >   mm/slub.c:      bit_spin_lock(PG_locked, &page->flags);
+> 
+> One caller ouf of a gazillion that spins on the page lock instead of
+> sleepign on it like everyone else.  That should not have passed your
+> smell test to start with :)
 
-[auto build test WARNING on linus/master]
-[cannot apply to v5.3-rc3 next-20190807]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+I surely stared at it, but that cannot sleep. It's in the middle of a
+preempt and interrupt disabled region and used on architectures which do
+not support CMPXCHG_DOUBLE and ALIGNED_STRUCT_PAGE ...
 
-url:    https://github.com/0day-ci/linux/commits/zhangyi-F/ext4-fix-potential-use-after-free-in-system-zone-via-remount-with-noblock_validity/20190804-163619
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-rc1-7-g2b96cd8-dirty
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+Thanks,
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
+	tglx
 
 
-sparse warnings: (new ones prefixed by >>)
 
-   include/linux/sched.h:609:43: sparse: sparse: bad integer constant expression
-   include/linux/sched.h:609:73: sparse: sparse: invalid named zero-width bitfield `value'
-   include/linux/sched.h:610:43: sparse: sparse: bad integer constant expression
-   include/linux/sched.h:610:67: sparse: sparse: invalid named zero-width bitfield `bucket_id'
-   include/linux/rbtree.h:84:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   include/linux/rbtree.h:84:9: sparse:    struct rb_node [noderef] <asn:4> *
-   include/linux/rbtree.h:84:9: sparse:    struct rb_node *
->> fs/ext4/block_validity.c:252:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
->> fs/ext4/block_validity.c:252:9: sparse:    struct rb_node [noderef] <asn:4> *
->> fs/ext4/block_validity.c:252:9: sparse:    struct rb_node *
-
-vim +252 fs/ext4/block_validity.c
-
-   246	
-   247	/* Called when the filesystem is unmounted */
-   248	void ext4_release_system_zone(struct super_block *sb)
-   249	{
-   250		struct ext4_system_zone	*entry, *n;
-   251	
- > 252		rcu_assign_pointer(EXT4_SB(sb)->system_blks.rb_node, NULL);
-   253	
-   254		rbtree_postorder_for_each_entry_safe(entry, n,
-   255				&EXT4_SB(sb)->system_blks, node)
-   256			call_rcu(&entry->rcu, destroy_system_zone);
-   257	}
-   258	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
