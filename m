@@ -2,86 +2,150 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E81885AD
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2019 00:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3638C8864C
+	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2019 00:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbfHIWOD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Aug 2019 18:14:03 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:38798 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725985AbfHIWOD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 9 Aug 2019 18:14:03 -0400
-Received: from dread.disaster.area (pa49-181-167-148.pa.nsw.optusnet.com.au [49.181.167.148])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 6AD0036420D;
-        Sat, 10 Aug 2019 08:13:56 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hwD7w-000108-Ua; Sat, 10 Aug 2019 08:12:48 +1000
-Date:   Sat, 10 Aug 2019 08:12:48 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] block: annotate refault stalls from IO submission
-Message-ID: <20190809221248.GK7689@dread.disaster.area>
-References: <20190808190300.GA9067@cmpxchg.org>
+        id S1729596AbfHIW6q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Aug 2019 18:58:46 -0400
+Received: from mga02.intel.com ([134.134.136.20]:7086 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729534AbfHIW6p (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 9 Aug 2019 18:58:45 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:58:45 -0700
+X-IronPort-AV: E=Sophos;i="5.64,367,1559545200"; 
+   d="scan'208";a="183030758"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.157])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:58:44 -0700
+From:   ira.weiny@intel.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: [RFC PATCH v2 03/19] mm/gup: Pass flags down to __gup_device_huge* calls
+Date:   Fri,  9 Aug 2019 15:58:17 -0700
+Message-Id: <20190809225833.6657-4-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190809225833.6657-1-ira.weiny@intel.com>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190808190300.GA9067@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
-        a=gu9DDhuZhshYSb5Zs/lkOA==:117 a=gu9DDhuZhshYSb5Zs/lkOA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=7-415B0cAAAA:8 a=tU5beferOtS2JaHV9NYA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 08, 2019 at 03:03:00PM -0400, Johannes Weiner wrote:
-> psi tracks the time tasks wait for refaulting pages to become
-> uptodate, but it does not track the time spent submitting the IO. The
-> submission part can be significant if backing storage is contended or
-> when cgroup throttling (io.latency) is in effect - a lot of time is
+From: Ira Weiny <ira.weiny@intel.com>
 
-Or the wbt is throttling.
+In order to support checking for a layout lease on a FS DAX inode these
+calls need to know if FOLL_LONGTERM was specified.
 
-> spent in submit_bio(). In that case, we underreport memory pressure.
-> 
-> Annotate submit_bio() to account submission time as memory stall when
-> the bio is reading userspace workingset pages.
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ mm/gup.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-PAtch looks fine to me, but it raises another question w.r.t. IO
-stalls and reclaim pressure feedback to the vm: how do we make use
-of the pressure stall infrastructure to track inode cache pressure
-and stalls?
-
-With the congestion_wait() and wait_iff_congested() being entire
-non-functional for block devices since 5.0, there is no IO load
-based feedback going into memory reclaim from shrinkers that might
-require IO to free objects before they can be reclaimed. This is
-directly analogous to page reclaim writing back dirty pages from
-the LRU, and as I understand it one of things the PSI is supposed
-to be tracking.
-
-Lots of workloads create inode cache pressure and often it can
-dominate the time spent in memory reclaim, so it would seem to me
-that having PSI only track/calculate pressure and stalls from LRU
-pages misses a fair chunk of the memory pressure and reclaim stalls
-that can be occurring.
-
-Any thoughts of how we might be able to integrate more of the system
-caches into the PSI infrastructure, Johannes?
-
-Cheers,
-
-Dave.
+diff --git a/mm/gup.c b/mm/gup.c
+index b6a293bf1267..80423779a50a 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1881,7 +1881,8 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
+ 
+ #if defined(CONFIG_ARCH_HAS_PTE_DEVMAP) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
+ static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+-		unsigned long end, struct page **pages, int *nr)
++		unsigned long end, struct page **pages, int *nr,
++		unsigned int flags)
+ {
+ 	int nr_start = *nr;
+ 	struct dev_pagemap *pgmap = NULL;
+@@ -1907,30 +1908,33 @@ static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+ }
+ 
+ static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+-		unsigned long end, struct page **pages, int *nr)
++		unsigned long end, struct page **pages, int *nr,
++		unsigned int flags)
+ {
+ 	unsigned long fault_pfn;
+ 	int nr_start = *nr;
+ 
+ 	fault_pfn = pmd_pfn(orig) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
+-	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr))
++	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr, flags))
+ 		return 0;
+ 
+ 	if (unlikely(pmd_val(orig) != pmd_val(*pmdp))) {
+ 		undo_dev_pagemap(nr, nr_start, pages);
+ 		return 0;
+ 	}
++
+ 	return 1;
+ }
+ 
+ static int __gup_device_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+-		unsigned long end, struct page **pages, int *nr)
++		unsigned long end, struct page **pages, int *nr,
++		unsigned int flags)
+ {
+ 	unsigned long fault_pfn;
+ 	int nr_start = *nr;
+ 
+ 	fault_pfn = pud_pfn(orig) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
+-	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr))
++	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr, flags))
+ 		return 0;
+ 
+ 	if (unlikely(pud_val(orig) != pud_val(*pudp))) {
+@@ -1941,14 +1945,16 @@ static int __gup_device_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+ }
+ #else
+ static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+-		unsigned long end, struct page **pages, int *nr)
++		unsigned long end, struct page **pages, int *nr,
++		unsigned int flags)
+ {
+ 	BUILD_BUG();
+ 	return 0;
+ }
+ 
+ static int __gup_device_huge_pud(pud_t pud, pud_t *pudp, unsigned long addr,
+-		unsigned long end, struct page **pages, int *nr)
++		unsigned long end, struct page **pages, int *nr,
++		unsigned int flags)
+ {
+ 	BUILD_BUG();
+ 	return 0;
+@@ -2051,7 +2057,8 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+ 	if (pmd_devmap(orig)) {
+ 		if (unlikely(flags & FOLL_LONGTERM))
+ 			return 0;
+-		return __gup_device_huge_pmd(orig, pmdp, addr, end, pages, nr);
++		return __gup_device_huge_pmd(orig, pmdp, addr, end, pages, nr,
++					     flags);
+ 	}
+ 
+ 	refs = 0;
+@@ -2092,7 +2099,8 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+ 	if (pud_devmap(orig)) {
+ 		if (unlikely(flags & FOLL_LONGTERM))
+ 			return 0;
+-		return __gup_device_huge_pud(orig, pudp, addr, end, pages, nr);
++		return __gup_device_huge_pud(orig, pudp, addr, end, pages, nr,
++					     flags);
+ 	}
+ 
+ 	refs = 0;
 -- 
-Dave Chinner
-david@fromorbit.com
+2.20.1
+
