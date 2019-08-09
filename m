@@ -2,115 +2,189 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C996486F5C
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2019 03:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DE487041
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2019 05:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405167AbfHIBb2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Aug 2019 21:31:28 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:57892 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732796AbfHIBb2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Aug 2019 21:31:28 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x791Sw3s013874;
-        Fri, 9 Aug 2019 01:31:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=hPVSpA8g72KdoIKpyeBaTutMNPniNhafljipnDqtxtk=;
- b=SsTSodQl5wnAmJ7e4J63a239yWLmN7bR7+ez3z0tuQogRqiYRercWHCUNkE8X3zLuuv5
- o6KeSMj5sS+Bk4pwQG3nSBQ2JNM3qNox5bds7hSavK1iOqk5dbKcBvEdHsyfHM1rRbRM
- 1fj2Xoi7xVN6fmgSV9BIKtmbvyZG7t3bVFLwLmR43SAWUxDkTa+fyigGkjFDOfzDQ8np
- PQxIOnskqv0m7HbSURWK4xzuqDAL2wOJT7whPd6LuffzFbR4U/9uwcNihHu+U3m41KbS
- t8DGpnM/n0cDeWdgxGwC2XyJAXWwqJc83ziJbpDdZBOgZutL2/iyY9LaN0C/a8hPF282 Hw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=hPVSpA8g72KdoIKpyeBaTutMNPniNhafljipnDqtxtk=;
- b=gVh1xkQiJ3hI0YqMR9gxeaKi6qpbIrTNOca/3MGdUUpXTCuu4IaQNAQQy7QdaVXng0ld
- e4M3Nfj5/GeAy6TySNWp8iDLu1APwLS2uA9IlJlx9Ry9K8jEIjQ/fdM9vzPLy0ppcCAv
- /SJ8U7narMir0hWOtHmXoR7TsIHbrTCeelzFgaSYfZrzrpyru8sYCTZK5QKgfA5aFcfj
- MNlZKXgCyjLR/YOg6NrFowK02Qz1EnFuwYAboZAZiCgU9Mttqb8m4hsE777t/mX6qvnj
- r5fdhj9/2V7Jly4wBAZ/uEV4TIKn6eA2PrJM5pbk7UE1Kxazo55tRaI0o6mLmzy3bQ3w EQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2u8hps4cgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Aug 2019 01:31:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x791SMh3140961;
-        Fri, 9 Aug 2019 01:31:23 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2u8x9f129e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Aug 2019 01:31:23 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x791VL9a001422;
-        Fri, 9 Aug 2019 01:31:22 GMT
-Received: from localhost (/10.145.178.70)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 08 Aug 2019 18:00:59 -0700
-Date:   Thu, 8 Aug 2019 18:00:58 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-ext4@vger.kernel.org,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: mke2fs accepts block size not mentioned in its man page
-Message-ID: <20190809010058.GA7125@magnolia>
-References: <ce9edecb-6f04-77d3-32f1-2b9de6cd3d7e@gmx.com>
+        id S2405079AbfHIDqW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Aug 2019 23:46:22 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:33552 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733140AbfHIDqV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Aug 2019 23:46:21 -0400
+Received: by mail-pf1-f195.google.com with SMTP id g2so45275990pfq.0
+        for <linux-ext4@vger.kernel.org>; Thu, 08 Aug 2019 20:46:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cWw3tq/UuLODm+8cU6ssl8vcc+qasLgnlhst3VdZZO4=;
+        b=pPnQ6Dq6JZuDBeu5eGqyLdkmSboFXNn0z5S+odJhwToa4CFRvUqOYiuy2xLrZUvS3J
+         mbv8Wpk+3NQBNOG5Q4Qo5OPu+l9bwIX/LW9XmAXWViZs+ozgO8Qnd0MCM3a0+wfBlXQj
+         ABjYaAp65MDmEZgiK3kEK8kdWrhMkdU0/R0cS10wF/JvUghFy8WdQULqjiL7lA5K864M
+         CIuZWLvtfDqewYf4qKH0jm5SfH57h8WPFn/nCbmEvZWtsYoiMfNKDnKRYHdq2KMotVZj
+         zhXDrG0gXH7WbEZMZwMlDyX8BS1FTOzO6g4irPZlfsxPnbr6LixNmf7uRMRSVZUw30pe
+         ZnrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cWw3tq/UuLODm+8cU6ssl8vcc+qasLgnlhst3VdZZO4=;
+        b=cRxNppV8smTdgaLXywnJ08KKwemJolYKKpIEEg6dkbCfCMdMpfrmyC/DNO6z3ot68o
+         dg0HYmn51AxusVEM+dvRLX12vMRp7IlExXDe5M2ePAda/sk0Q2mwtVjdJhZ5hGEJ0vRd
+         F6Ev3wkr5yhgUF1N4O/2Kc0hz3f3LjLNhimLXqS/rXmejbrQZY1iqPwkjIv74qtC5SAs
+         1bleTM+7IE2v3rh6hJM6swgVPyfy+noA2If9LYkcTyb8UKVQ/pqkBY4oxkSHvmwWClmX
+         u4oOAIqxEld/5/BUNlB1VGTQNcPjyvUCM1RSofCP9Kv18Z38/pDUTZhVhFi348cgiFtO
+         0alA==
+X-Gm-Message-State: APjAAAWTIr69OKEmRhbwu7z0KQ8JnsJyq84+B7FOhHqkt/0R/fAP2DZq
+        64AudOn5STKqgPTPQqA9lvR2fZa+
+X-Google-Smtp-Source: APXvYqw70byQugvoKqKP7tm49Lwj6bKQlHvW660zM7EnRw1fmQkk7KXE6shqYLn8AfnwzXWcaiYQiQ==
+X-Received: by 2002:a17:90a:9505:: with SMTP id t5mr7255775pjo.96.1565322380145;
+        Thu, 08 Aug 2019 20:46:20 -0700 (PDT)
+Received: from harshads0.svl.corp.google.com ([2620:15c:2cd:202:ec1e:207a:e951:9a5b])
+        by smtp.googlemail.com with ESMTPSA id s5sm80191085pfm.97.2019.08.08.20.46.19
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 08 Aug 2019 20:46:19 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH v2 00/12] ext4: add support fast commit
+Date:   Thu,  8 Aug 2019 20:45:40 -0700
+Message-Id: <20190809034552.148629-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce9edecb-6f04-77d3-32f1-2b9de6cd3d7e@gmx.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9343 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908090014
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9343 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908090014
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jul 05, 2019 at 01:35:02PM +0800, Qu Wenruo wrote:
-> Hi,
-> 
-> Just doing some tests on aarch64 with 64K page size.
-> 
-> Man page of mke2fs only mentions 3 valid block size: 1k, 2k, 4k.
-> But in real world, we can pass 64K as block size for it without any problem:
-> 
->   $mke2fs -F -t ext3 -b 65536 /dev/loop1
->   Warning: blocksize 65536 not usable on most systems.
->   mke2fs 1.45.2 (27-May-2019)
->   /dev/loop1 contains a btrfs file system
->   Discarding device blocks: done
->   Creating filesystem with 81920 64k blocks and 81920 inodes
->   Filesystem UUID: 311bb224-6d2d-44a7-9790-92c4878d6549
->   [...]
-> 
-> It's great to see mke2fs accepts 64K as nodesize, which allows
-> btrfs-convert to work.
-> (If blocksize is default to 4K or doesn't accept 64K page size,
-> btrfs-convert can work but can't be mounted on system with 64K page size)
-> 
-> Shouldn't the man page mention all valid values?
+This patch series adds support for fast commits which is a simplified
+version of the scheme proposed by Park and Shin, in their paper,
+"iJournaling: Fine-Grained Journaling for Improving the Latency of
+Fsync System Call"[1]. The basic idea of fast commits is to make JBD2
+give the client file system an opportunity to perform a faster
+commit. Only if the file system cannot perform such a commit
+operation, then JBD2 should fall back to traditional commits.
 
-You'd think so, but 64k blocks only works on machines with 64k pages,
-so that's why it doesn't mention anything beyond the lowest common
-denominator. :/
+Because JBD2 operates at block granularity, for every file system
+metadata update it commits all the changed blocks to the journal at
+commit time. This is inefficient because updates to some blocks that
+JBD2 commits are derivable from some other blocks. For example, if a
+new extent is added to an inode, then corresponding updates to the
+inode table, the block bitmap, the group descriptor and the superblock
+can be derived based on just the extent information and the
+corresponding inode information. So, if we take this relationship
+between blocks into account and replay the journalled blocks smartly,
+we could increase performance of file system commits significantly.
 
---D
+Fast commits introduced in this patch has two main contributions:
 
-> Thanks,
-> Qu
-> 
+(1) Making JBD2 fast commit aware, so that clients of JBD2 can
+    implement fast commits
 
+(2) Add support in ext4 to use JBD2's new interfaces and implement
+    fast commits
 
+Testing
+-------
+
+e2fsprogs was updated to set fast commit feature flag and to ignore
+fast commit blocks during e2fsck.
+
+https://github.com/harshadjs/e2fsprogs.git
+
+After applying all the patches in this series, following runs of
+xfstests were performed:
+
+- kvm-xfstest.sh -g log -c 4k
+- kvm-xfstests.sh smoke
+
+All the log tests were successful and smoke tests didn't introduce any
+additional failures.
+
+Performance Evaluation
+----------------------
+
+In order to evaluate fast commit performance we used fs_mark
+benchmark. We updated fs_mark benchmark to send fsync() calls after
+every write operation.
+
+https://github.com/harshadjs/fs_mark.git
+
+Following are the results that we got:
+
+Write performance measured in MB/s with 4 parallel threads file sizes
+(X) vs write unit sizes (Y).
+
+Without Fast Commit:
+
+|-----+------+------+------|
+|     |  32k | 128k | 256k |
+|-----+------+------+------|
+| 4k  | 0.27 | 0.25 | 0.24 |
+| 8k  | 0.45 | 0.51 | 0.46 |
+| 32k | 2.15 | 2.23 | 2.28 |
+|-----+------+------+------|
+
+With Fast Commit:
+
+|-----+------+------+------|
+|     |  32k | 128k | 256k |
+|-----+------+------+------|
+| 4k  | 0.74 | 1.42 | 1.94 |
+| 8k  | 1.52 | 1.88 | 2.48 |
+| 32k |  1.8 | 4.29 | 7.38 |
+|-----+------+------+------|
+
+On an average, fast commits increased file system write performance by
+280% on modified fs_mark benchmark.
+
+Harshad Shirwadkar(13):
+ docs: Add fast commit documentation
+ ext4: fast-commit recovery path changes
+ ext4: fast-commit commit path changes
+ ext4: fast-commit commit range tracking
+ ext4: track changed files for fast commit
+ ext4: add fields that are needed to track changed files
+ jbd2: fast-commit recovery path changes
+ jbd2: fast-commit commit path new APIs
+ jbd2: fast-commit commit path changes
+ jbd2: fast commit setup and enable
+ jbd2: add fast commit fields to journal_s structure
+ ext4: add handling for extended mount options
+ ext4: add support fast commit
+
+ Documentation/filesystems/ext4/journal.rst |   78 ++
+ Documentation/filesystems/journalling.rst  |   15
+ fs/ext4/acl.c                              |    1
+ fs/ext4/balloc.c                           |    7
+ fs/ext4/ext4.h                             |   87 +++
+ fs/ext4/ext4_jbd2.c                        |   92 +++
+ fs/ext4/ext4_jbd2.h                        |   29 +
+ fs/ext4/extents.c                          |   44 +
+ fs/ext4/fsync.c                            |    2
+ fs/ext4/ialloc.c                           |    1
+ fs/ext4/inline.c                           |   17
+ fs/ext4/inode.c                            |   62 +-
+ fs/ext4/ioctl.c                            |    3
+ fs/ext4/mballoc.c                          |   83 ++
+ fs/ext4/mballoc.h                          |    2
+ fs/ext4/migrate.c                          |    1
+ fs/ext4/namei.c                            |   14
+ fs/ext4/super.c                            |  538 ++++++++++++++++++-
+ fs/ext4/xattr.c                            |    1
+ fs/jbd2/checkpoint.c                       |    2
+ fs/jbd2/commit.c                           |   85 ++-
+ fs/jbd2/journal.c                          |  230 +++++++-
+ fs/jbd2/recovery.c                         |   70 ++
+ fs/jbd2/transaction.c                      |    6
+ fs/ocfs2/alloc.c                           |    2
+ fs/ocfs2/journal.c                         |    4
+ fs/ocfs2/super.c                           |    2
+ include/linux/jbd2.h                       |  106 +++
+ include/trace/events/ext4.h                |   59 ++
+ include/trace/events/jbd2.h                |    9
+ 30 files changed, 1561 insertions(+), 91 deletions(-)
+-- 
+2.23.0.rc1.153.gdeed80330f-goog
 
