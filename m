@@ -2,23 +2,23 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E536288667
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2019 00:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289BB8867A
+	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2019 00:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730239AbfHIW66 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 9 Aug 2019 18:58:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:62302 "EHLO mga01.intel.com"
+        id S1730800AbfHIW7K (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 9 Aug 2019 18:59:10 -0400
+Received: from mga12.intel.com ([192.55.52.136]:47931 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730149AbfHIW65 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 9 Aug 2019 18:58:57 -0400
+        id S1730724AbfHIW7I (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 9 Aug 2019 18:59:08 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:58:56 -0700
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:59:07 -0700
 X-IronPort-AV: E=Sophos;i="5.64,367,1559545200"; 
-   d="scan'208";a="326762567"
+   d="scan'208";a="374631601"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.157])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:58:56 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Aug 2019 15:59:07 -0700
 From:   ira.weiny@intel.com
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
@@ -32,9 +32,9 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
         linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
         linux-ext4@vger.kernel.org, linux-mm@kvack.org,
         Ira Weiny <ira.weiny@intel.com>
-Subject: [RFC PATCH v2 10/19] mm/gup: Pass a NULL vaddr_pin through GUP fast
-Date:   Fri,  9 Aug 2019 15:58:24 -0700
-Message-Id: <20190809225833.6657-11-ira.weiny@intel.com>
+Subject: [RFC PATCH v2 17/19] RDMA/umem: Convert to vaddr_[pin|unpin]* operations.
+Date:   Fri,  9 Aug 2019 15:58:31 -0700
+Message-Id: <20190809225833.6657-18-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190809225833.6657-1-ira.weiny@intel.com>
 References: <20190809225833.6657-1-ira.weiny@intel.com>
@@ -47,254 +47,179 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-Internally GUP fast needs to know that fast users will not support file
-pins.  Pass NULL for vaddr_pin through the fast call stack so that the
-pin code can return an error if it encounters file backed memory within
-the address range.
+In order to properly track the pinning information we need to keep a
+vaddr_pin object around.  Store that within the umem object directly.
+
+The vaddr_pin object allows the GUP code to associate any files it pins
+with the RDMA file descriptor associated with this GUP.
+
+Furthermore, use the vaddr_pin object to store the owning mm while we
+are at it.
+
+No references need to be taken on the owing file as the lifetime of that
+object is tied to all the umems being destroyed first.
 
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- mm/gup.c | 65 ++++++++++++++++++++++++++++++++++----------------------
- 1 file changed, 40 insertions(+), 25 deletions(-)
+ drivers/infiniband/core/umem.c     | 26 +++++++++++++++++---------
+ drivers/infiniband/core/umem_odp.c | 16 ++++++++--------
+ include/rdma/ib_umem.h             |  2 +-
+ 3 files changed, 26 insertions(+), 18 deletions(-)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 7a449500f0a6..504af3e9a942 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1813,7 +1813,8 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 965cf9dea71a..a9ce3e3816ef 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -54,7 +54,8 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
  
- #ifdef CONFIG_ARCH_HAS_PTE_SPECIAL
- static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
--			 unsigned int flags, struct page **pages, int *nr)
-+			 unsigned int flags, struct page **pages, int *nr,
-+			 struct vaddr_pin *vaddr_pin)
- {
- 	struct dev_pagemap *pgmap = NULL;
- 	int nr_start = *nr, ret = 0;
-@@ -1894,7 +1895,8 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
-  * useful to have gup_huge_pmd even if we can't operate on ptes.
-  */
- static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
--			 unsigned int flags, struct page **pages, int *nr)
-+			 unsigned int flags, struct page **pages, int *nr,
-+			 struct vaddr_pin *vaddr_pin)
- {
- 	return 0;
- }
-@@ -1903,7 +1905,7 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
- #if defined(CONFIG_ARCH_HAS_PTE_DEVMAP) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
- static int __gup_device_huge(unsigned long pfn, unsigned long addr,
- 		unsigned long end, struct page **pages, int *nr,
--		unsigned int flags)
-+		unsigned int flags, struct vaddr_pin *vaddr_pin)
- {
- 	int nr_start = *nr;
- 	struct dev_pagemap *pgmap = NULL;
-@@ -1938,13 +1940,14 @@ static int __gup_device_huge(unsigned long pfn, unsigned long addr,
- 
- static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- 		unsigned long end, struct page **pages, int *nr,
--		unsigned int flags)
-+		unsigned int flags, struct vaddr_pin *vaddr_pin)
- {
- 	unsigned long fault_pfn;
- 	int nr_start = *nr;
- 
- 	fault_pfn = pmd_pfn(orig) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
--	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr, flags))
-+	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr, flags,
-+			       vaddr_pin))
- 		return 0;
- 
- 	if (unlikely(pmd_val(orig) != pmd_val(*pmdp))) {
-@@ -1957,13 +1960,14 @@ static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- 
- static int __gup_device_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
- 		unsigned long end, struct page **pages, int *nr,
--		unsigned int flags)
-+		unsigned int flags, struct vaddr_pin *vaddr_pin)
- {
- 	unsigned long fault_pfn;
- 	int nr_start = *nr;
- 
- 	fault_pfn = pud_pfn(orig) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
--	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr, flags))
-+	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr, flags,
-+			       vaddr_pin))
- 		return 0;
- 
- 	if (unlikely(pud_val(orig) != pud_val(*pudp))) {
-@@ -1975,7 +1979,7 @@ static int __gup_device_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
- #else
- static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- 		unsigned long end, struct page **pages, int *nr,
--		unsigned int flags)
-+		unsigned int flags, struct vaddr_pin *vaddr_pin)
- {
- 	BUILD_BUG();
- 	return 0;
-@@ -1983,7 +1987,7 @@ static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- 
- static int __gup_device_huge_pud(pud_t pud, pud_t *pudp, unsigned long addr,
- 		unsigned long end, struct page **pages, int *nr,
--		unsigned int flags)
-+		unsigned int flags, struct vaddr_pin *vaddr_pin)
- {
- 	BUILD_BUG();
- 	return 0;
-@@ -2075,7 +2079,8 @@ static inline int gup_huge_pd(hugepd_t hugepd, unsigned long addr,
- #endif /* CONFIG_ARCH_HAS_HUGEPD */
- 
- static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
--		unsigned long end, unsigned int flags, struct page **pages, int *nr)
-+		unsigned long end, unsigned int flags, struct page **pages,
-+		int *nr, struct vaddr_pin *vaddr_pin)
- {
- 	struct page *head, *page;
- 	int refs;
-@@ -2087,7 +2092,7 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- 		if (unlikely(flags & FOLL_LONGTERM))
- 			return 0;
- 		return __gup_device_huge_pmd(orig, pmdp, addr, end, pages, nr,
--					     flags);
-+					     flags, vaddr_pin);
+ 	for_each_sg_page(umem->sg_head.sgl, &sg_iter, umem->sg_nents, 0) {
+ 		page = sg_page_iter_page(&sg_iter);
+-		put_user_pages_dirty_lock(&page, 1, umem->writable && dirty);
++		vaddr_unpin_pages_dirty_lock(&page, 1, &umem->vaddr_pin,
++					     umem->writable && dirty);
  	}
  
- 	refs = 0;
-@@ -2117,7 +2122,8 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- }
+ 	sg_free_table(&umem->sg_head);
+@@ -243,8 +244,15 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
+ 	umem->length     = size;
+ 	umem->address    = addr;
+ 	umem->writable   = ib_access_writable(access);
+-	umem->owning_mm = mm = current->mm;
+-	mmgrab(mm);
++	umem->vaddr_pin.mm = mm = current->mm;
++	mmgrab(umem->vaddr_pin.mm);
++
++	/* No need to get a reference to the core file object here.  The key is
++	 * that sys_file reference is held by the ufile.  Any duplication of
++	 * sys_file by the core will keep references active until all those
++	 * contexts are closed out.  No matter which process hold them open.
++	 */
++	umem->vaddr_pin.f_owner = context->ufile->sys_file;
  
- static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
--		unsigned long end, unsigned int flags, struct page **pages, int *nr)
-+		unsigned long end, unsigned int flags, struct page **pages, int *nr,
-+		struct vaddr_pin *vaddr_pin)
+ 	if (access & IB_ACCESS_ON_DEMAND) {
+ 		if (WARN_ON_ONCE(!context->invalidate_range)) {
+@@ -292,11 +300,11 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
+ 
+ 	while (npages) {
+ 		down_read(&mm->mmap_sem);
+-		ret = get_user_pages(cur_base,
++		ret = vaddr_pin_pages(cur_base,
+ 				     min_t(unsigned long, npages,
+ 					   PAGE_SIZE / sizeof (struct page *)),
+-				     gup_flags | FOLL_LONGTERM,
+-				     page_list, NULL);
++				     gup_flags,
++				     page_list, &umem->vaddr_pin);
+ 		if (ret < 0) {
+ 			up_read(&mm->mmap_sem);
+ 			goto umem_release;
+@@ -336,7 +344,7 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
+ 	free_page((unsigned long) page_list);
+ umem_kfree:
+ 	if (ret) {
+-		mmdrop(umem->owning_mm);
++		mmdrop(umem->vaddr_pin.mm);
+ 		kfree(umem);
+ 	}
+ 	return ret ? ERR_PTR(ret) : umem;
+@@ -345,7 +353,7 @@ EXPORT_SYMBOL(ib_umem_get);
+ 
+ static void __ib_umem_release_tail(struct ib_umem *umem)
  {
- 	struct page *head, *page;
- 	int refs;
-@@ -2129,7 +2135,7 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
- 		if (unlikely(flags & FOLL_LONGTERM))
- 			return 0;
- 		return __gup_device_huge_pud(orig, pudp, addr, end, pages, nr,
--					     flags);
-+					     flags, vaddr_pin);
+-	mmdrop(umem->owning_mm);
++	mmdrop(umem->vaddr_pin.mm);
+ 	if (umem->is_odp)
+ 		kfree(to_ib_umem_odp(umem));
+ 	else
+@@ -369,7 +377,7 @@ void ib_umem_release(struct ib_umem *umem)
+ 
+ 	__ib_umem_release(umem->context->device, umem, 1);
+ 
+-	atomic64_sub(ib_umem_num_pages(umem), &umem->owning_mm->pinned_vm);
++	atomic64_sub(ib_umem_num_pages(umem), &umem->vaddr_pin.mm->pinned_vm);
+ 	__ib_umem_release_tail(umem);
+ }
+ EXPORT_SYMBOL(ib_umem_release);
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index 2a75c6f8d827..53085896d718 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -278,11 +278,11 @@ static int get_per_mm(struct ib_umem_odp *umem_odp)
+ 	 */
+ 	mutex_lock(&ctx->per_mm_list_lock);
+ 	list_for_each_entry(per_mm, &ctx->per_mm_list, ucontext_list) {
+-		if (per_mm->mm == umem_odp->umem.owning_mm)
++		if (per_mm->mm == umem_odp->umem.vaddr_pin.mm)
+ 			goto found;
  	}
  
- 	refs = 0;
-@@ -2196,7 +2202,8 @@ static int gup_huge_pgd(pgd_t orig, pgd_t *pgdp, unsigned long addr,
- }
+-	per_mm = alloc_per_mm(ctx, umem_odp->umem.owning_mm);
++	per_mm = alloc_per_mm(ctx, umem_odp->umem.vaddr_pin.mm);
+ 	if (IS_ERR(per_mm)) {
+ 		mutex_unlock(&ctx->per_mm_list_lock);
+ 		return PTR_ERR(per_mm);
+@@ -355,8 +355,8 @@ struct ib_umem_odp *ib_alloc_odp_umem(struct ib_umem_odp *root,
+ 	umem->writable   = root->umem.writable;
+ 	umem->is_odp = 1;
+ 	odp_data->per_mm = per_mm;
+-	umem->owning_mm  = per_mm->mm;
+-	mmgrab(umem->owning_mm);
++	umem->vaddr_pin.mm  = per_mm->mm;
++	mmgrab(umem->vaddr_pin.mm);
  
- static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
--		unsigned int flags, struct page **pages, int *nr)
-+		unsigned int flags, struct page **pages, int *nr,
-+		struct vaddr_pin *vaddr_pin)
+ 	mutex_init(&odp_data->umem_mutex);
+ 	init_completion(&odp_data->notifier_completion);
+@@ -389,7 +389,7 @@ struct ib_umem_odp *ib_alloc_odp_umem(struct ib_umem_odp *root,
+ out_page_list:
+ 	vfree(odp_data->page_list);
+ out_odp_data:
+-	mmdrop(umem->owning_mm);
++	mmdrop(umem->vaddr_pin.mm);
+ 	kfree(odp_data);
+ 	return ERR_PTR(ret);
+ }
+@@ -399,10 +399,10 @@ int ib_umem_odp_get(struct ib_umem_odp *umem_odp, int access)
  {
- 	unsigned long next;
- 	pmd_t *pmdp;
-@@ -2220,7 +2227,7 @@ static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
- 				return 0;
+ 	struct ib_umem *umem = &umem_odp->umem;
+ 	/*
+-	 * NOTE: This must called in a process context where umem->owning_mm
++	 * NOTE: This must called in a process context where umem->vaddr_pin.mm
+ 	 * == current->mm
+ 	 */
+-	struct mm_struct *mm = umem->owning_mm;
++	struct mm_struct *mm = umem->vaddr_pin.mm;
+ 	int ret_val;
  
- 			if (!gup_huge_pmd(pmd, pmdp, addr, next, flags,
--				pages, nr))
-+				pages, nr, vaddr_pin))
- 				return 0;
- 
- 		} else if (unlikely(is_hugepd(__hugepd(pmd_val(pmd))))) {
-@@ -2231,7 +2238,8 @@ static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
- 			if (!gup_huge_pd(__hugepd(pmd_val(pmd)), addr,
- 					 PMD_SHIFT, next, flags, pages, nr))
- 				return 0;
--		} else if (!gup_pte_range(pmd, addr, next, flags, pages, nr))
-+		} else if (!gup_pte_range(pmd, addr, next, flags, pages, nr,
-+					  vaddr_pin))
- 			return 0;
- 	} while (pmdp++, addr = next, addr != end);
- 
-@@ -2239,7 +2247,8 @@ static int gup_pmd_range(pud_t pud, unsigned long addr, unsigned long end,
- }
- 
- static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
--			 unsigned int flags, struct page **pages, int *nr)
-+			 unsigned int flags, struct page **pages, int *nr,
-+			 struct vaddr_pin *vaddr_pin)
+ 	umem_odp->page_shift = PAGE_SHIFT;
+@@ -581,7 +581,7 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
+ 			      unsigned long current_seq)
  {
- 	unsigned long next;
- 	pud_t *pudp;
-@@ -2253,13 +2262,14 @@ static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
- 			return 0;
- 		if (unlikely(pud_huge(pud))) {
- 			if (!gup_huge_pud(pud, pudp, addr, next, flags,
--					  pages, nr))
-+					  pages, nr, vaddr_pin))
- 				return 0;
- 		} else if (unlikely(is_hugepd(__hugepd(pud_val(pud))))) {
- 			if (!gup_huge_pd(__hugepd(pud_val(pud)), addr,
- 					 PUD_SHIFT, next, flags, pages, nr))
- 				return 0;
--		} else if (!gup_pmd_range(pud, addr, next, flags, pages, nr))
-+		} else if (!gup_pmd_range(pud, addr, next, flags, pages, nr,
-+					  vaddr_pin))
- 			return 0;
- 	} while (pudp++, addr = next, addr != end);
+ 	struct task_struct *owning_process  = NULL;
+-	struct mm_struct *owning_mm = umem_odp->umem.owning_mm;
++	struct mm_struct *owning_mm = umem_odp->umem.vaddr_pin.mm;
+ 	struct page       **local_page_list = NULL;
+ 	u64 page_mask, off;
+ 	int j, k, ret = 0, start_idx, npages = 0;
+diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+index 1052d0d62be7..ab677c799e29 100644
+--- a/include/rdma/ib_umem.h
++++ b/include/rdma/ib_umem.h
+@@ -43,7 +43,6 @@ struct ib_umem_odp;
  
-@@ -2267,7 +2277,8 @@ static int gup_pud_range(p4d_t p4d, unsigned long addr, unsigned long end,
- }
+ struct ib_umem {
+ 	struct ib_ucontext     *context;
+-	struct mm_struct       *owning_mm;
+ 	size_t			length;
+ 	unsigned long		address;
+ 	u32 writable : 1;
+@@ -52,6 +51,7 @@ struct ib_umem {
+ 	struct sg_table sg_head;
+ 	int             nmap;
+ 	unsigned int    sg_nents;
++	struct vaddr_pin vaddr_pin;
+ };
  
- static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
--			 unsigned int flags, struct page **pages, int *nr)
-+			 unsigned int flags, struct page **pages, int *nr,
-+			 struct vaddr_pin *vaddr_pin)
- {
- 	unsigned long next;
- 	p4d_t *p4dp;
-@@ -2284,7 +2295,8 @@ static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
- 			if (!gup_huge_pd(__hugepd(p4d_val(p4d)), addr,
- 					 P4D_SHIFT, next, flags, pages, nr))
- 				return 0;
--		} else if (!gup_pud_range(p4d, addr, next, flags, pages, nr))
-+		} else if (!gup_pud_range(p4d, addr, next, flags, pages, nr,
-+					  vaddr_pin))
- 			return 0;
- 	} while (p4dp++, addr = next, addr != end);
- 
-@@ -2292,7 +2304,8 @@ static int gup_p4d_range(pgd_t pgd, unsigned long addr, unsigned long end,
- }
- 
- static void gup_pgd_range(unsigned long addr, unsigned long end,
--		unsigned int flags, struct page **pages, int *nr)
-+		unsigned int flags, struct page **pages, int *nr,
-+		struct vaddr_pin *vaddr_pin)
- {
- 	unsigned long next;
- 	pgd_t *pgdp;
-@@ -2312,7 +2325,8 @@ static void gup_pgd_range(unsigned long addr, unsigned long end,
- 			if (!gup_huge_pd(__hugepd(pgd_val(pgd)), addr,
- 					 PGDIR_SHIFT, next, flags, pages, nr))
- 				return;
--		} else if (!gup_p4d_range(pgd, addr, next, flags, pages, nr))
-+		} else if (!gup_p4d_range(pgd, addr, next, flags, pages, nr,
-+					  vaddr_pin))
- 			return;
- 	} while (pgdp++, addr = next, addr != end);
- }
-@@ -2374,7 +2388,8 @@ int __get_user_pages_fast(unsigned long start, int nr_pages, int write,
- 	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) &&
- 	    gup_fast_permitted(start, end)) {
- 		local_irq_save(flags);
--		gup_pgd_range(start, end, write ? FOLL_WRITE : 0, pages, &nr);
-+		gup_pgd_range(start, end, write ? FOLL_WRITE : 0, pages, &nr,
-+			      NULL);
- 		local_irq_restore(flags);
- 	}
- 
-@@ -2445,7 +2460,7 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
- 	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) &&
- 	    gup_fast_permitted(start, end)) {
- 		local_irq_disable();
--		gup_pgd_range(addr, end, gup_flags, pages, &nr);
-+		gup_pgd_range(addr, end, gup_flags, pages, &nr, NULL);
- 		local_irq_enable();
- 		ret = nr;
- 	}
+ /* Returns the offset of the umem start relative to the first page. */
 -- 
 2.20.1
 
