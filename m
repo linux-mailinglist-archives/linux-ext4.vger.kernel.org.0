@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C128704D
+	by mail.lfdr.de (Postfix) with ESMTP id 2432A8704C
 	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2019 05:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405245AbfHIDqj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 8 Aug 2019 23:46:39 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:36728 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405192AbfHIDqh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Aug 2019 23:46:37 -0400
-Received: by mail-pf1-f194.google.com with SMTP id r7so45277325pfl.3
-        for <linux-ext4@vger.kernel.org>; Thu, 08 Aug 2019 20:46:36 -0700 (PDT)
+        id S2405250AbfHIDqk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 8 Aug 2019 23:46:40 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:42295 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405241AbfHIDqi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 8 Aug 2019 23:46:38 -0400
+Received: by mail-pf1-f196.google.com with SMTP id q10so45258657pff.9
+        for <linux-ext4@vger.kernel.org>; Thu, 08 Aug 2019 20:46:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=70mL84Zj+oqJwB1/rpWefyytz1K+z1achazCJoanKpM=;
-        b=fLnatKr8XK+rZrFSwAKA3CyzSiznLG7DjSSaDr5b3RExAqZ2Xp3lUFu6dZGehbXB3/
-         lgN0BiHWmGN1szcvhGPqqfEqMWUy7nWnx9ArB2OsxPuAT/GqA0FN85CgY3gHaRvlFhzs
-         GR03HXniuPdpEt39EVCA4FgLjKnopvEP8hoLgPNHnr3iube16+UUMDUHs+FyBTVdUcyd
-         sfDqmyL4M4Hl9L36WPVV5PAoNKg+aBH9AZqwnzq/1VqkftWcLQZJO+U2Pb4dlZiYy3b2
-         EPbwbozjbKDQhBQTpzUqUA/tZcXclCB6Gve0p/jaNQoR5HE9Hier1Ignyo4ntLUHAhOt
-         fJJg==
+        bh=dJqXJqAeOKVKiXAlejo9+7GDfeBArCeFG4cEOTw+pTU=;
+        b=OfnPzcWv8+39mwnRXgtCsKtvTZ6avLBKvVXO28HFn4texfTnOD8IvM17wJfbXTlorl
+         8VF0EfJuehNiYCQK3R8cQgeyj9/YhtfI5RLob0HPUKTdWxniDYpgtshCkliwzYXmO70c
+         nmxPolfKFmLTZiFI+lfQuSI2cl8C5syF/1ZG2n/xiSS1ARnHGgEdieumVBFrd5sqgM/J
+         7eLnwrFCQ6nkLLU5s+N1ZEVmltuZ2fxAfhiM0kilwa3HoY2TCCJTaaBXBigDKp4tDwOy
+         zB+B8mgOYwa4QLoA+F/7mtzSDGhaga15OH21AoJNNaM2YPR0IEyqK+N6mvm4pzfZtcYj
+         GIsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=70mL84Zj+oqJwB1/rpWefyytz1K+z1achazCJoanKpM=;
-        b=Mt4eV/o6puZhNDWDffvPcFeO6fq7cs8yOgCysEt+3D2/Ow3LnsljleWtnVHQsflhx/
-         vNg2KmwmyunvA8yrly7OZEvz4I+vwO5QOAkIM9RkMZKGZFcRXKkpjRoU7ZlhL2gWQI3F
-         4yRQRPc9Hm2Z7GR4BIOpekolAhddbVWV2KJjAEwr0OAJu/6RaOn31t8VVO+dhtz3Yo/C
-         pSBdBTIkMdVLp2c4u9YBgzvkRlmhS8QbD1PkLxTfndwvNUjSz13Kw8OPXKs8y3THqogl
-         gpixd8qkDhjMaZ3rpEOdgOwxQDt6JSbeKRdvkHzdUXU19rCBYr8T6PwU7rMsVJN9K81W
-         caLw==
-X-Gm-Message-State: APjAAAUpM/Zc/96xIYUuvD9ED5S96CHsS8fL3u6Y+JC7hUdCPmKTmiFc
-        aswVYyihZgbICbinn+pHwdYIW1ES
-X-Google-Smtp-Source: APXvYqwNccvxQkUwFP7jLsc6K9vUAkw5GNEg480Z3z4ecXMJD1MVsjbyY0P+cBTajCV0Uat/94XidQ==
-X-Received: by 2002:a62:b615:: with SMTP id j21mr18649527pff.190.1565322396018;
+        bh=dJqXJqAeOKVKiXAlejo9+7GDfeBArCeFG4cEOTw+pTU=;
+        b=QvduoshRAZ9zkS5FZc7uZcMKGenZqUp+8bZ7G2E3oSWyKEUV7W5qSEEGkDmRVgdhiG
+         e1LZf13V39uCBu0AL6H8fzEYoryq/Bmaq+za0H3DDNPr32vkKt53bl90+SW7vEx7IbM6
+         lRYYH5DPwpM+KC2MvkgMxlcN136OE8/tdyGd1ufVdEpS4MvyeP8m+oZ+dRWyBxQKeAxp
+         oTcfq+uiday6C2emYiOXbHnBHktO3MEXhKJAYemA6PIk5hkjH2ovSxGhdZ/2LXbHtjKH
+         i6fUwlzeYvpmSKUzgS34/mFycpxw2h5q3f6sNhOSSyERAZZNyDywAb6yWhdwP7ydiBmO
+         RDsA==
+X-Gm-Message-State: APjAAAVj8UtPV2fR7WVed5xbGkv6bl+2aeJ465VVZjocqYWh8QhGUXkL
+        pemedcU/R22PZybrjZzgu23QX0ry
+X-Google-Smtp-Source: APXvYqzutHbG91AccfanqnTTnwpNMJDEGNrhhlOfeS/n1UQzyesI7Ltph5pveu0eb9PosYiof+oL5Q==
+X-Received: by 2002:a63:d301:: with SMTP id b1mr15422849pgg.379.1565322396609;
         Thu, 08 Aug 2019 20:46:36 -0700 (PDT)
 Received: from harshads0.svl.corp.google.com ([2620:15c:2cd:202:ec1e:207a:e951:9a5b])
-        by smtp.googlemail.com with ESMTPSA id s5sm80191085pfm.97.2019.08.08.20.46.35
+        by smtp.googlemail.com with ESMTPSA id s5sm80191085pfm.97.2019.08.08.20.46.36
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 08 Aug 2019 20:46:35 -0700 (PDT)
+        Thu, 08 Aug 2019 20:46:36 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v2 11/12] ext4: fast-commit recovery path changes
-Date:   Thu,  8 Aug 2019 20:45:51 -0700
-Message-Id: <20190809034552.148629-12-harshadshirwadkar@gmail.com>
+Subject: [PATCH v2 12/12] docs: Add fast commit documentation
+Date:   Thu,  8 Aug 2019 20:45:52 -0700
+Message-Id: <20190809034552.148629-13-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.23.0.rc1.153.gdeed80330f-goog
 In-Reply-To: <20190809034552.148629-1-harshadshirwadkar@gmail.com>
 References: <20190809034552.148629-1-harshadshirwadkar@gmail.com>
@@ -60,691 +60,188 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch adds core fast-commit recovery path changes. Each fast
-commit block stores modified extents for a particular file. Replay
-code maps blocks in each such extent to the actual file one-by-one. We
-also update corresponding file system metadata to account for newly
-mapped blocks. In order to achieve all of these,
-ext4_inode_csum_set(), ext4_inode_blocks() which were earlier static
-are now made visible.
+This patch adds necessary documentation to
+Documentation/filesystems/journalling.rst and
+Documentation/filesystems/ext4/journal.rst.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-
 ---
+ Documentation/filesystems/ext4/journal.rst | 96 ++++++++++++++++++++--
+ Documentation/filesystems/journalling.rst  | 15 ++++
+ 2 files changed, 105 insertions(+), 6 deletions(-)
 
-Changelog:
-
-V2:
-1) Fixed warning reported by Kbuild.
-
-2) Implement scan pass.
-    - we look for "last" blocks to maintain atomicity of
-      subtransactions.
-    - Implement CRC checksum verification.
-    - If scan pass detects error, we don't perform replay pass.
-
-3) Calling j_fc_replay_callback for SCAN pass as well. So added
-   passtype and fast commit block offset parameters to
-   j_fc_replay_callback.
-
-Added tracepoint for replay SCAN pass
----
- fs/ext4/balloc.c            |   7 +-
- fs/ext4/ext4.h              |  12 ++
- fs/ext4/extents.c           |  19 +--
- fs/ext4/inode.c             |   8 +-
- fs/ext4/mballoc.c           |  83 +++++++++++++
- fs/ext4/mballoc.h           |   2 +
- fs/ext4/super.c             | 225 ++++++++++++++++++++++++++++++++++++
- fs/jbd2/commit.c            |   6 +-
- fs/jbd2/recovery.c          |  11 +-
- include/linux/jbd2.h        |   5 +-
- include/trace/events/ext4.h |  22 ++++
- include/trace/events/jbd2.h |   9 +-
- 12 files changed, 386 insertions(+), 23 deletions(-)
-
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index 0b202e00d93f..75c3025c7089 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -360,7 +360,12 @@ static int ext4_validate_block_bitmap(struct super_block *sb,
- 				      struct buffer_head *bh)
- {
- 	ext4_fsblk_t	blk;
--	struct ext4_group_info *grp = ext4_get_group_info(sb, block_group);
-+	struct ext4_group_info *grp;
-+
-+	if (EXT4_SB(sb)->fc_replay)
-+		return 0;
-+
-+	grp = ext4_get_group_info(sb, block_group);
+diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
+index ea613ee701f5..d6e4a698e208 100644
+--- a/Documentation/filesystems/ext4/journal.rst
++++ b/Documentation/filesystems/ext4/journal.rst
+@@ -29,10 +29,14 @@ safest. If ``data=writeback``, dirty data blocks are not flushed to the
+ disk before the metadata are written to disk through the journal.
  
- 	if (buffer_verified(bh))
- 		return 0;
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 210bd4c86d4f..ca1fbd77a934 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1378,6 +1378,13 @@ struct ext4_super_block {
- #define ext4_has_strict_mode(sbi) \
- 	(sbi->s_encoding_flags & EXT4_ENC_STRICT_MODE_FL)
+ The journal inode is typically inode 8. The first 68 bytes of the
+-journal inode are replicated in the ext4 superblock. The journal itself
+-is normal (but hidden) file within the filesystem. The file usually
+-consumes an entire block group, though mke2fs tries to put it in the
+-middle of the disk.
++journal inode are replicated in the ext4 superblock. The journal
++itself is normal (but hidden) file within the filesystem. The file
++usually consumes an entire block group, though mke2fs tries to put it
++in the middle of the disk. Last 128 blocks in the journal are reserved
++for fast commits. Fast commits store metadata changes to inodes in an
++incremental fashion. A fast commit is valid only if there is no full
++commit after that particular fast commit. That makes fast commit space
++reusable after every full commit.
  
-+struct ext4_fc_replay_state {
-+	int fc_replay_error;
-+	int fc_replay_expected_off;
-+	int fc_replay_expected_tid;
-+	int fc_replay_current_subtid;
-+};
-+
- /*
-  * fourth extended-fs super-block data in memory
-  */
-@@ -1562,6 +1569,7 @@ struct ext4_sb_info {
- 					 * Are changes after the last commit
- 					 * eligible for fast commit?
- 					 */
-+	struct ext4_fc_replay_state s_fc_replay_state;
- 	spinlock_t s_fc_lock;
- };
+ All fields in jbd2 are written to disk in big-endian order. This is the
+ opposite of ext4.
+@@ -48,16 +52,18 @@ Layout
+ Generally speaking, the journal has this format:
  
-@@ -2588,6 +2596,10 @@ extern int ext4_trim_fs(struct super_block *, struct fstrim_range *);
- extern void ext4_process_freed_data(struct super_block *sb, tid_t commit_tid);
+ .. list-table::
+-   :widths: 16 48 16
++   :widths: 16 48 16 18
+    :header-rows: 1
  
- /* inode.c */
-+void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
-+			 struct ext4_inode_info *ei);
-+blkcnt_t ext4_inode_blocks(struct ext4_inode *raw_inode,
-+			   struct ext4_inode_info *ei);
- int ext4_inode_is_fast_symlink(struct inode *inode);
- struct buffer_head *ext4_getblk(handle_t *, struct inode *, ext4_lblk_t, int);
- struct buffer_head *ext4_bread(handle_t *, struct inode *, ext4_lblk_t, int);
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 66f7f4fb1612..59fe596ce97d 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -2894,7 +2894,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 	int depth = ext_depth(inode);
- 	struct ext4_ext_path *path = NULL;
- 	struct partial_cluster partial;
--	handle_t *handle;
-+	handle_t *handle = NULL;
- 	int i = 0, err = 0;
+    * - Superblock
+      - descriptor\_block (data\_blocks or revocation\_block) [more data or
+        revocations] commmit\_block
+      - [more transactions...]
++     - [Fast commits...]
+    * - 
+      - One transaction
+      -
++     -
  
- 	partial.pclu = 0;
-@@ -2904,9 +2904,11 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 	ext_debug("truncate since %u to %u\n", start, end);
+ Notice that a transaction begins with either a descriptor and some data,
+ or a block revocation list. A finished transaction always ends with a
+@@ -76,7 +82,7 @@ The journal superblock will be in the next full block after the
+ superblock.
  
- 	/* probably first extent we're gonna free will be last in block */
--	handle = ext4_journal_start(inode, EXT4_HT_TRUNCATE, depth + 1);
--	if (IS_ERR(handle))
--		return PTR_ERR(handle);
-+	if (!sbi->fc_replay) {
-+		handle = ext4_journal_start(inode, EXT4_HT_TRUNCATE, depth + 1);
-+		if (IS_ERR(handle))
-+			return PTR_ERR(handle);
-+	}
+ .. list-table::
+-   :widths: 12 12 12 32 12
++   :widths: 12 12 12 32 12 12
+    :header-rows: 1
  
- again:
- 	trace_ext4_ext_remove_space(inode, start, end, depth);
-@@ -2926,7 +2928,8 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 		/* find extent for or closest extent to this block */
- 		path = ext4_find_extent(inode, end, NULL, EXT4_EX_NOCACHE);
- 		if (IS_ERR(path)) {
--			ext4_journal_stop(handle);
-+			if (!sbi->fc_replay)
-+				ext4_journal_stop(handle);
- 			return PTR_ERR(path);
- 		}
- 		depth = ext_depth(inode);
-@@ -3012,7 +3015,8 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 		path = kcalloc(depth + 1, sizeof(struct ext4_ext_path),
- 			       GFP_NOFS);
- 		if (path == NULL) {
--			ext4_journal_stop(handle);
-+			if (!sbi->fc_replay)
-+				ext4_journal_stop(handle);
- 			return -ENOMEM;
- 		}
- 		path[0].p_maxdepth = path[0].p_depth = depth;
-@@ -3142,7 +3146,8 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 	path = NULL;
- 	if (err == -EAGAIN)
- 		goto again;
--	ext4_journal_stop(handle);
-+	if (!sbi->fc_replay)
-+		ext4_journal_stop(handle);
+    * - 1024 bytes of padding
+@@ -85,11 +91,13 @@ superblock.
+      - descriptor\_block (data\_blocks or revocation\_block) [more data or
+        revocations] commmit\_block
+      - [more transactions...]
++     - [Fast commits...]
+    * - 
+      -
+      -
+      - One transaction
+      -
++     -
  
- 	return err;
- }
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index dd5d39a48363..21c9b5197c72 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -103,8 +103,8 @@ static int ext4_inode_csum_verify(struct inode *inode, struct ext4_inode *raw,
- 	return provided == calculated;
- }
+ Block Header
+ ~~~~~~~~~~~~
+@@ -609,3 +617,79 @@ bytes long (but uses a full block):
+      - h\_commit\_nsec
+      - Nanoseconds component of the above timestamp.
  
--static void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
--				struct ext4_inode_info *ei)
-+void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
-+			 struct ext4_inode_info *ei)
- {
- 	__u32 csum;
++Fast Commit Block
++~~~~~~~~~~~~~~~~~
++
++The fast commit block indicates an append to the last commit block
++that was written to the journal. One fast commit block records updates
++to one inode. So, typically you would find as many fast commit blocks
++as the number of inodes that got changed since the last commit. A fast
++commit block is valid only if there is no commit block present with
++transaction ID greater than that of the fast commit block. If such a
++block a present, then there is no need to replay the fast commit
++block.
++
++Multiple fast commit blocks are a part of one sub-transaction. To
++indicate the last block in a fast commit transaction, fc_flags field
++in the last block in every subtransaction is marked with "LAST" (0x1)
++flag. A subtransaction is valid only if all the following conditions
++are met:
++
++1) SUBTID of all blocks is either equal to or greater than SUBTID of
++   the previous fast commit block.
++2) For every sub-transaction, last block is marked with LAST flag.
++3) There are no invalid blocks in between.
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Descriptor
++   * - 0x0
++     - journal\_header\_s
++     - (open coded)
++     - Common block header.
++   * - 0xC
++     - \_\_le32
++     - fc\_magic
++     - Magic value which should be set to 0xE2540090. This identifies
++       that this block is a fast commit block.
++   * - 0x10
++     - \_\_le32
++     - fc\_subtid
++     - Sub-transaction ID for this commit block
++   * - 0x14
++     - \_\_u8
++     - fc\_features
++     - Features used by this fast commit block.
++   * - 0x15
++     - \_\_u8
++     - fc_flags
++     - Flags. (0x1(Last) - Indicates that this is the last block in sub-transaction)
++   * - 0x16
++     - \_\_le16
++     - fc_num_tlvs
++     - Number of TLVs contained in this fast commit block
++   * - 0x18
++     - \_\_le32
++     - \_\_fc\_len
++     - Length of the fast commit block in terms of number of blocks
++   * - 0x2c
++     - \_\_le32
++     - fc\_ino
++     - Inode number of the inode that will be recovered using this fast commit
++   * - 0x30
++     - struct ext4\_inode
++     - inode
++     - On-disk copy of the inode at the commit time
++   * - 0x34
++     - struct ext4\_fc\_tl
++     - Array of struct ext4\_fc\_tl
++     - The actual delta with the last commit. Starting at this offset,
++       there is an array of TLVs that indicates which all extents
++       should be present in the corresponding inode. Currently, the
++       only tag that is supported is EXT4\_FC\_TAG\_EXT. That tag
++       indicates that the corresponding value is an extent.
+diff --git a/Documentation/filesystems/journalling.rst b/Documentation/filesystems/journalling.rst
+index 58ce6b395206..2e0d550b546c 100644
+--- a/Documentation/filesystems/journalling.rst
++++ b/Documentation/filesystems/journalling.rst
+@@ -115,6 +115,21 @@ called after each transaction commit. You can also use
+ ``transaction->t_private_list`` for attaching entries to a transaction
+ that need processing when the transaction commits.
  
-@@ -4801,8 +4801,8 @@ void ext4_set_inode_flags(struct inode *inode)
- 			S_ENCRYPTED|S_CASEFOLD);
- }
- 
--static blkcnt_t ext4_inode_blocks(struct ext4_inode *raw_inode,
--				  struct ext4_inode_info *ei)
-+blkcnt_t ext4_inode_blocks(struct ext4_inode *raw_inode,
-+			   struct ext4_inode_info *ei)
- {
- 	blkcnt_t i_blocks ;
- 	struct inode *inode = &(ei->vfs_inode);
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a3e2767bdf2f..70551fa91237 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2915,6 +2915,89 @@ void ext4_exit_mballoc(void)
- }
- 
- 
-+void ext4_mb_mark_used(struct super_block *sb, ext4_fsblk_t block,
-+		       int len)
-+{
-+	struct buffer_head *bitmap_bh = NULL;
-+	struct ext4_group_desc *gdp;
-+	struct buffer_head *gdp_bh;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	ext4_group_t group;
-+	ext4_fsblk_t cluster;
-+	ext4_grpblk_t blkoff;
-+	int i, clen, err;
-+	int already_allocated_count;
++JBD2 also allows client file systems to implement file system specific
++commits which are called as ``fast commits``. File systems that wish
++to use this feature should first set
++``journal->j_fc_commit_callback``. That function is called before
++performing a commit. File system can call :c:func:`jbd2_map_fc_buf()`
++to get buffers reserved for fast commits. If file system returns 0,
++JBD2 assumes that file system performed a fast commit and it backs off
++from performing a commit. Otherwise, JBD2 falls back to normal full
++commit. After performing either a fast or a full commit, JBD2 calls
++``journal->j_fc_cleanup_cb`` to allow file systems to perform cleanups
++for their internal fast commit related data structures. At the replay
++time, JBD2 passes each and every fast commit block to the file system
++via ``journal->j_fc_replay_cb``. Ext4 effectively uses this fast
++commit mechanism to improve journal commit performance.
 +
-+	cluster = EXT4_B2C(sbi, block);
-+	clen = EXT4_B2C(sbi, len);
-+
-+	ext4_get_group_no_and_offset(sb, block, &group, &blkoff);
-+	bitmap_bh = ext4_read_block_bitmap(sb, group);
-+	if (IS_ERR(bitmap_bh)) {
-+		err = PTR_ERR(bitmap_bh);
-+		bitmap_bh = NULL;
-+		goto out_err;
-+	}
-+
-+	err = -EIO;
-+	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
-+	if (!gdp)
-+		goto out_err;
-+
-+	if (!ext4_data_block_valid(sbi, block, len)) {
-+		ext4_error(sb, "Allocating blks %llu-%llu which overlap mdata",
-+			   cluster, cluster+clen);
-+		/* File system mounted not to panic on error
-+		 * Fix the bitmap and return EFSCORRUPTED
-+		 * We leak some of the blocks here.
-+		 */
-+		ext4_lock_group(sb, group);
-+		ext4_set_bits(bitmap_bh->b_data, blkoff, clen);
-+		ext4_unlock_group(sb, group);
-+		err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
-+		if (!err)
-+			err = -EFSCORRUPTED;
-+		goto out_err;
-+	}
-+
-+	ext4_lock_group(sb, group);
-+	already_allocated_count = 0;
-+	for (i = 0; i < clen; i++)
-+		if (mb_test_bit(blkoff + i, bitmap_bh->b_data))
-+			already_allocated_count++;
-+
-+	ext4_set_bits(bitmap_bh->b_data, blkoff, clen);
-+	if (ext4_has_group_desc_csum(sb) &&
-+	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
-+		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
-+		ext4_free_group_clusters_set(sb, gdp,
-+					     ext4_free_clusters_after_init(sb,
-+						group, gdp));
-+	}
-+	clen = ext4_free_group_clusters(sb, gdp) - clen +
-+	       already_allocated_count;
-+	ext4_free_group_clusters_set(sb, gdp, clen);
-+	ext4_block_bitmap_csum_set(sb, group, gdp, bitmap_bh);
-+	ext4_group_desc_csum_set(sb, group, gdp);
-+
-+	ext4_unlock_group(sb, group);
-+
-+	if (sbi->s_log_groups_per_flex) {
-+		ext4_group_t flex_group = ext4_flex_group(sbi, group);
-+
-+		atomic64_sub(len,
-+			     &sbi->s_flex_groups[flex_group].free_clusters);
-+	}
-+
-+	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
-+	if (err)
-+		goto out_err;
-+	err = ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
-+
-+out_err:
-+	brelse(bitmap_bh);
-+}
-+
- /*
-  * Check quota and mark chosen space (ac->ac_b_ex) non-free in bitmaps
-  * Returns 0 if success or error code
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index 88c98f17e3d9..1881710041b6 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -215,4 +215,6 @@ ext4_mballoc_query_range(
- 	ext4_mballoc_query_range_fn	formatter,
- 	void				*priv);
- 
-+void ext4_mb_mark_used(struct super_block *sb, ext4_fsblk_t block,
-+		       int len);
- #endif
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 1191ebbb55c5..3b535eb624a7 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -408,6 +408,224 @@ static int block_device_ejected(struct super_block *sb)
- 	return bdi->dev == NULL;
- }
- 
-+static void ext4_fc_add_block(struct inode *inode, ext4_lblk_t lblk,
-+			      ext4_fsblk_t pblk, int unwritten)
-+{
-+	struct ext4_extent ex;
-+	struct ext4_ext_path *path = NULL;
-+	struct ext4_map_blocks map;
-+	int ret;
-+
-+	map.m_lblk = lblk;
-+	map.m_len = 0x1;
-+	ret = ext4_map_blocks(NULL, inode, &map, 0);
-+	if (ret > 0) {
-+		if (pblk != map.m_pblk)
-+			jbd_debug(1, "Bad mapping found while replaying fc\n");
-+		return;
-+	}
-+
-+	ex.ee_block = cpu_to_le32(lblk);
-+	ext4_ext_store_pblock(&ex, pblk);
-+	ex.ee_len = cpu_to_le16(0x1);
-+	if (unwritten)
-+		ext4_ext_mark_unwritten(&ex);
-+
-+	path = ext4_find_extent(inode, lblk, NULL, 0);
-+	if (path) {
-+		down_write(&EXT4_I(inode)->i_data_sem);
-+		ret = ext4_ext_insert_extent(NULL, inode, &path, &ex, 0);
-+		ext4_mb_mark_used(inode->i_sb, ext4_ext_pblock(&ex), 0x1);
-+		up_write((&EXT4_I(inode)->i_data_sem));
-+		kfree(path);
-+	}
-+}
-+
-+static int ext4_journal_fc_replay_scan(struct super_block *sb,
-+				       struct buffer_head *bh, int off)
-+{
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	struct ext4_fc_replay_state *state;
-+	struct ext4_fc_commit_hdr *fc_hdr;
-+	struct ext4_fc_tl *tl;
-+	__u32 csum, dummy_csum = 0;
-+	__u8 *start;
-+	tid_t fc_subtid;
-+	int i;
-+
-+	state = &sbi->s_fc_replay_state;
-+	fc_hdr = (struct ext4_fc_commit_hdr *)
-+		  ((__u8 *)bh->b_data + sizeof(journal_header_t));
-+
-+	fc_subtid = le32_to_cpu(fc_hdr->fc_subtid);
-+
-+	if (le32_to_cpu(fc_hdr->fc_magic) != EXT4_FC_MAGIC) {
-+		state->fc_replay_error = -ENOENT;
-+		goto out_err;
-+	}
-+
-+	if (off != state->fc_replay_expected_off) {
-+		state->fc_replay_error = -EFSCORRUPTED;
-+		goto out_err;
-+	}
-+
-+	if (le16_to_cpu(fc_hdr->fc_features)) {
-+		state->fc_replay_error = -EOPNOTSUPP;
-+		goto out_err;
-+	}
-+
-+	/* Check if we already concluded that this fast commit is not useful */
-+	if (state->fc_replay_error && state->fc_replay_error != -EPROTO)
-+		goto out_err;
-+
-+	if (state->fc_replay_expected_off == 0) {
-+		/* This is a first block */
-+		state->fc_replay_current_subtid = fc_subtid;
-+		/*
-+		 * We set replay error by default until we find an end
-+		 * block for a particular subtid
-+		 */
-+		state->fc_replay_error = -EPROTO;
-+	}
-+
-+	if (state->fc_replay_error != 0) {
-+		if (state->fc_replay_current_subtid != fc_subtid) {
-+			state->fc_replay_error = -EFSCORRUPTED;
-+			goto out_err;
-+		}
-+	} else {
-+		/*
-+		 * We encountered _last_ block for previous subtid. So we should
-+		 * only find a bigger subtid here.
-+		 */
-+		if (fc_subtid <= state->fc_replay_current_subtid) {
-+			state->fc_replay_error = -EFSCORRUPTED;
-+			goto out_err;
-+		}
-+		state->fc_replay_current_subtid = fc_subtid;
-+	}
-+
-+	/*
-+	 * We can replay fast commit blocks only if we find a _last_ block for
-+	 * all subtids.
-+	 */
-+	if (ext4_fc_is_last(fc_hdr))
-+		state->fc_replay_error = 0;
-+
-+	csum = ext4_chksum(sbi, 0, fc_hdr,
-+			   offsetof(struct ext4_fc_commit_hdr, fc_csum));
-+	csum = ext4_chksum(sbi, csum, &dummy_csum, sizeof(dummy_csum));
-+
-+	tl = (struct ext4_fc_tl *)(fc_hdr + 1);
-+	start = (__u8 *)tl;
-+	for (i = 0; i < le16_to_cpu(fc_hdr->fc_num_tlvs); i++) {
-+		if (le16_to_cpu(tl->fc_tag) != EXT4_FC_TAG_EXT)
-+			goto out_err;
-+		tl = (struct ext4_fc_tl *)((__u8 *)tl +
-+					   le16_to_cpu(tl->fc_len) +
-+					   sizeof(*tl));
-+	}
-+	csum = ext4_chksum(sbi, csum, start, (__u8 *)tl - start);
-+	if (csum != le32_to_cpu(fc_hdr->fc_csum)) {
-+		state->fc_replay_error = -EFSBADCRC;
-+		goto out_err;
-+	}
-+
-+	state->fc_replay_expected_off++;
-+	return 0;
-+
-+out_err:
-+	trace_ext4_journal_fc_replay_scan(sb, off, state->fc_replay_error);
-+	return state->fc_replay_error;
-+}
-+
-+static int ext4_journal_fc_replay_cb(journal_t *journal, struct buffer_head *bh,
-+				     enum passtype pass, int off)
-+{
-+	struct super_block *sb = journal->j_private;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	struct ext4_fc_commit_hdr *fc_hdr;
-+	struct ext4_fc_tl *tl;
-+	struct ext4_iloc iloc;
-+	struct ext4_extent *ex;
-+	struct inode *inode;
-+	int ret;
-+
-+	if (pass == PASS_SCAN)
-+		return ext4_journal_fc_replay_scan(sb, bh, off);
-+
-+	if (sbi->s_fc_replay_state.fc_replay_error)
-+		return sbi->s_fc_replay_state.fc_replay_error;
-+
-+	sbi->fc_replay = true;
-+	fc_hdr = (struct ext4_fc_commit_hdr *)
-+		  ((__u8 *)bh->b_data + sizeof(journal_header_t));
-+
-+	jbd_debug(3, "%s: Got FC block for inode %d at [%d,%d]", __func__,
-+		  le32_to_cpu(fc_hdr->fc_ino),
-+		  be32_to_cpu(((journal_header_t *)bh->b_data)->h_sequence),
-+		  le32_to_cpu(fc_hdr->fc_subtid));
-+
-+	inode = ext4_iget(sb, le32_to_cpu(fc_hdr->fc_ino), EXT4_IGET_NORMAL);
-+	if (IS_ERR(inode))
-+		return 0;
-+
-+	ret = ext4_get_inode_loc(inode, &iloc);
-+	if (ret)
-+		return ret;
-+
-+	inode_lock(inode);
-+	tl = (struct ext4_fc_tl *)(fc_hdr + 1);
-+	while (le16_to_cpu(tl->fc_tag) == EXT4_FC_TAG_EXT) {
-+		int i;
-+
-+		ex = (struct ext4_extent *)(tl + 1);
-+		tl = (struct ext4_fc_tl *)((__u8 *)tl +
-+					   le16_to_cpu(tl->fc_len) +
-+					   sizeof(*tl));
-+		/*
-+		 * We add block by block because part of extent may already have
-+		 * been added by a previous fast commit replay.
-+		 */
-+		for (i = 0; i < ext4_ext_get_actual_len(ex); i++)
-+			ext4_fc_add_block(inode, le32_to_cpu(ex->ee_block) + i,
-+					  ext4_ext_pblock(ex) + i,
-+					  ext4_ext_is_unwritten(ex));
-+	}
-+
-+	/*
-+	 * Unless inode contains inline data, copy everything except
-+	 * i_blocks. i_blocks would have been set alright by ext4_fc_add_block
-+	 * call above.
-+	 */
-+	if (ext4_has_inline_data(inode)) {
-+		memcpy(ext4_raw_inode(&iloc), &fc_hdr->inode,
-+		       sizeof(struct ext4_inode));
-+	} else {
-+		memcpy(ext4_raw_inode(&iloc), &fc_hdr->inode,
-+		       offsetof(struct ext4_inode, i_block));
-+		memcpy(&ext4_raw_inode(&iloc)->i_generation,
-+		       &fc_hdr->inode.i_generation,
-+		       sizeof(struct ext4_inode) -
-+		       offsetof(struct ext4_inode, i_generation));
-+	}
-+
-+	ext4_reserve_inode_write(NULL, inode, &iloc);
-+	inode_unlock(inode);
-+	sbi->fc_replay = false;
-+
-+	ext4_inode_csum_set(inode, ext4_raw_inode(&iloc), EXT4_I(inode));
-+	ret = ext4_handle_dirty_metadata(NULL, inode, iloc.bh);
-+	iput(inode);
-+	if (!ret)
-+		ret = blkdev_issue_flush(sb->s_bdev, GFP_KERNEL, NULL);
-+
-+	brelse(iloc.bh);
-+
-+	return ret;
-+}
-+
-+
- static void ext4_journal_commit_callback(journal_t *journal, transaction_t *txn)
- {
- 	struct super_block		*sb = journal->j_private;
-@@ -4981,6 +5199,13 @@ static void ext4_init_journal_params(struct super_block *sb, journal_t *journal)
- 		journal->j_fc_commit_callback = ext4_journal_fc_commit_cb;
- 		journal->j_fc_cleanup_callback = ext4_journal_fc_cleanup_cb;
- 	}
-+
-+	/*
-+	 * We set replay callback even if fast commit disabled because we may
-+	 * could still have fast commit blocks that need to be replayed even if
-+	 * fast commit has now been turned off.
-+	 */
-+	journal->j_fc_replay_callback = ext4_journal_fc_replay_cb;
- 	write_lock(&journal->j_state_lock);
- 	if (test_opt(sb, BARRIER))
- 		journal->j_flags |= JBD2_BARRIER;
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index db62a53436e3..1875cdc839fb 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -469,6 +469,10 @@ void jbd2_journal_commit_transaction(journal_t *journal, bool *fc)
- 			if (fc)
- 				*fc = true;
- 			write_unlock(&journal->j_state_lock);
-+			trace_jbd2_run_stats(journal->j_fs_dev->bd_dev,
-+					     journal->j_running_transaction
-+					     ->t_tid,
-+					     &stats.run, true);
- 			goto update_overall_stats;
- 		}
- 		if (journal->j_fc_cleanup_callback)
-@@ -1156,7 +1160,7 @@ void jbd2_journal_commit_transaction(journal_t *journal, bool *fc)
- 	stats.run.rs_handle_count =
- 		atomic_read(&commit_transaction->t_handle_count);
- 	trace_jbd2_run_stats(journal->j_fs_dev->bd_dev,
--			     commit_transaction->t_tid, &stats.run);
-+			     commit_transaction->t_tid, &stats.run, false);
- 	stats.ts_requested = (commit_transaction->t_requested) ? 1 : 0;
- 
- 	commit_transaction->t_state = T_COMMIT_CALLBACK;
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 3a6cd1497504..ba049a31febc 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -35,7 +35,6 @@ struct recovery_info
- 	int		nr_revoke_hits;
- };
- 
--enum passtype {PASS_SCAN, PASS_REVOKE, PASS_REPLAY};
- static int do_one_pass(journal_t *journal,
- 				struct recovery_info *info, enum passtype pass);
- static int scan_revoke_records(journal_t *, struct buffer_head *,
-@@ -444,10 +443,10 @@ static int fc_do_one_pass(journal_t *journal,
- 		}
- 		jbd_debug(3, "Processing fast commit blk with seq %d",
- 			  seq);
--		if (pass == PASS_REPLAY &&
--		    journal->j_fc_replay_callback) {
--			err = journal->j_fc_replay_callback(journal,
--							    bh);
-+		if (journal->j_fc_replay_callback) {
-+			err = journal->j_fc_replay_callback(
-+				journal, bh, pass,
-+				next_fc_block - journal->j_first_fc);
- 			if (err)
- 				break;
- 		}
-@@ -849,7 +848,7 @@ static int do_one_pass(journal_t *journal,
- 		}
- 	}
- 
--	if (jbd2_has_feature_fast_commit(journal) && pass == PASS_REPLAY)
-+	if (jbd2_has_feature_fast_commit(journal) && pass != PASS_REVOKE)
- 		fc_do_one_pass(journal, info, pass);
- 
- 	if (block_error && success == 0)
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 5362777d06f8..000363d994bb 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -759,6 +759,8 @@ jbd2_time_diff(unsigned long start, unsigned long end)
- 
- #define JBD2_NR_BATCH	64
- 
-+enum passtype {PASS_SCAN, PASS_REVOKE, PASS_REPLAY};
-+
- /**
-  * struct journal_s - The journal_s type is the concrete type associated with
-  *     journal_t.
-@@ -1240,7 +1242,8 @@ struct journal_s
- 	 * the journal.
- 	 */
- 	int (*j_fc_replay_callback)(struct journal_s *journal,
--				    struct buffer_head *bh);
-+				    struct buffer_head *bh,
-+				    enum passtype pass, int off);
- 	/**
- 	 * @j_fc_cleanup_callback:
- 	 *
-diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-index 8ef67b61d54a..9aef10c8e16d 100644
---- a/include/trace/events/ext4.h
-+++ b/include/trace/events/ext4.h
-@@ -2703,6 +2703,28 @@ TRACE_EVENT(ext4_error,
- 		  __entry->function, __entry->line)
- );
- 
-+TRACE_EVENT(ext4_journal_fc_replay_scan,
-+	TP_PROTO(struct super_block *sb, int error, int off),
-+
-+	TP_ARGS(sb, error, off),
-+
-+	TP_STRUCT__entry(
-+		__field(dev_t, dev)
-+		__field(int, error)
-+		__field(int, off)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->dev = sb->s_dev;
-+		__entry->error = error;
-+		__entry->off = off;
-+	),
-+
-+	TP_printk("FC scan pass on dev %d,%d: error %d, off %d",
-+		  MAJOR(__entry->dev), MINOR(__entry->dev),
-+		  __entry->error, __entry->off)
-+);
-+
- TRACE_EVENT(ext4_journal_fc_commit_cb_start,
- 	TP_PROTO(struct super_block *sb),
- 
-diff --git a/include/trace/events/jbd2.h b/include/trace/events/jbd2.h
-index 2310b259329f..af78bacdae83 100644
---- a/include/trace/events/jbd2.h
-+++ b/include/trace/events/jbd2.h
-@@ -233,9 +233,9 @@ TRACE_EVENT(jbd2_handle_stats,
- 
- TRACE_EVENT(jbd2_run_stats,
- 	TP_PROTO(dev_t dev, unsigned long tid,
--		 struct transaction_run_stats_s *stats),
-+		 struct transaction_run_stats_s *stats, bool fc),
- 
--	TP_ARGS(dev, tid, stats),
-+	TP_ARGS(dev, tid, stats, fc),
- 
- 	TP_STRUCT__entry(
- 		__field(		dev_t,	dev		)
-@@ -249,6 +249,7 @@ TRACE_EVENT(jbd2_run_stats,
- 		__field(		__u32,	handle_count	)
- 		__field(		__u32,	blocks		)
- 		__field(		__u32,	blocks_logged	)
-+		__field(		 bool,	fc		)
- 	),
- 
- 	TP_fast_assign(
-@@ -263,11 +264,13 @@ TRACE_EVENT(jbd2_run_stats,
- 		__entry->handle_count	= stats->rs_handle_count;
- 		__entry->blocks		= stats->rs_blocks;
- 		__entry->blocks_logged	= stats->rs_blocks_logged;
-+		__entry->fc		= fc;
- 	),
- 
--	TP_printk("dev %d,%d tid %lu wait %u request_delay %u running %u "
-+	TP_printk("%s commit, dev %d,%d tid %lu wait %u request_delay %u running %u "
- 		  "locked %u flushing %u logging %u handle_count %u "
- 		  "blocks %u blocks_logged %u",
-+		  __entry->fc ? "fast" : "full",
- 		  MAJOR(__entry->dev), MINOR(__entry->dev), __entry->tid,
- 		  jiffies_to_msecs(__entry->wait),
- 		  jiffies_to_msecs(__entry->request_delay),
+ JBD2 also provides a way to block all transaction updates via
+ :c:func:`jbd2_journal_lock_updates()` /
+ :c:func:`jbd2_journal_unlock_updates()`. Ext4 uses this when it wants a
 -- 
 2.23.0.rc1.153.gdeed80330f-goog
 
