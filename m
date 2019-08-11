@@ -2,90 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EF08948B
-	for <lists+linux-ext4@lfdr.de>; Sun, 11 Aug 2019 23:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809E9894D4
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 01:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbfHKVij (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 11 Aug 2019 17:38:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbfHKVij (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 11 Aug 2019 17:38:39 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F97D20818;
-        Sun, 11 Aug 2019 21:38:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565559518;
-        bh=Xt0zOe7IEW2PG4s/iWXi34aido9GQCA7atTCsk9jdUY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WPrOx+oTrgHzpMMpiuuFx/k5RJaQzNUFjzCl8z00hmwqWobKn1JgRGaXD8KQgpbc/
-         EMDD25u7SOEqr3af1TiKXcsVvjtGDBduPvIbgTu+5NmvobBPyAmInkhxVTSnRah7AX
-         NieshBvWevxQVSPwyfADO2fvHrLuoaOTtjzSZEM4=
-Date:   Sun, 11 Aug 2019 14:38:36 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 3/3] ext4: add a new ioctl EXT4_IOC_GETSTATE
-Message-ID: <20190811213836.GA17882@sol.localdomain>
-Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-References: <20190809181831.10618-1-tytso@mit.edu>
- <20190809181831.10618-3-tytso@mit.edu>
- <20190809191810.GA100971@gmail.com>
- <20190810001247.GA8368@mit.edu>
+        id S1726541AbfHKXH0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 11 Aug 2019 19:07:26 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:7185 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbfHKXH0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 11 Aug 2019 19:07:26 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d509fb60000>; Sun, 11 Aug 2019 16:07:34 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Sun, 11 Aug 2019 16:07:24 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Sun, 11 Aug 2019 16:07:24 -0700
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 11 Aug
+ 2019 23:07:23 +0000
+Subject: Re: [RFC PATCH v2 15/19] mm/gup: Introduce vaddr_pin_pages()
+To:     <ira.weiny@intel.com>, Andrew Morton <akpm@linux-foundation.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>,
+        <linux-xfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-ext4@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190809225833.6657-16-ira.weiny@intel.com>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <88d82639-c0b2-0b35-1919-999a8438031c@nvidia.com>
+Date:   Sun, 11 Aug 2019 16:07:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190810001247.GA8368@mit.edu>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190809225833.6657-16-ira.weiny@intel.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL104.nvidia.com (172.18.146.11) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1565564854; bh=WyN+cqUy4NONmSoVEoC5zyApgJufQNRRkmxYAmxiNRk=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=GjochqX+orN7s3BQGomPrZQyWc/568hzhVWT8sDxI6ycL8n3NJRfjYVyxlilSkFJV
+         0v1gr7a1sg2wL7PQ7Q0Dcubx1ogIn8Ke72whU/7rqtGuRqPq7C+Ov/M2GpkOhsvG7D
+         prYV07lPVe1n7zXbUFOOqu0O+zmZFD4o9ZwEYryqx80zMRNZ+bq7HCwxmmVbIxjO2a
+         eyfVpsIxVN8KjqFFKHnKr50U23pYiJqe16sEcZFBVMMPBbuIaXUFHzc2oRYO+Hbvbq
+         BtKCArw8N2g27OxonpaIrJUWZPBJhIbV9JVwYzpariVg0rZ5RNb/Q9Z0jeOeGL3ylM
+         qgEDDHrL4QwYQ==
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 09, 2019 at 08:12:47PM -0400, Theodore Y. Ts'o wrote:
-> On Fri, Aug 09, 2019 at 12:18:12PM -0700, Eric Biggers wrote:
-> > On Fri, Aug 09, 2019 at 02:18:31PM -0400, Theodore Ts'o wrote:
-> > > The new ioctl EXT4_IOC_GETSTATE returns some of the dynamic state of
-> > > an ext4 inode for debugging purposes.
-> > > 
-> > > Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> > > ---
-> > >  fs/ext4/ext4.h  | 11 +++++++++++
-> > >  fs/ext4/ioctl.c | 17 +++++++++++++++++
-> > >  2 files changed, 28 insertions(+)
-> > > 
-> > > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > > index f6c305b43ffa..58b7a0905186 100644
-> > > --- a/fs/ext4/ext4.h
-> > > +++ b/fs/ext4/ext4.h
-> > > @@ -651,6 +651,7 @@ enum {
-> > >  #define EXT4_IOC_GET_ENCRYPTION_POLICY	FS_IOC_GET_ENCRYPTION_POLICY
-> > >  /* ioctl codes 19--2F are reserved for fscrypt */
-> > >  #define EXT4_IOC_CLEAR_ES_CACHE		_IO('f', 30)
-> > > +#define EXT4_IOC_GETSTATE		_IOW('f', 30, __u32)
-> > 
-> > 30 == 0x1e overlaps with the range claimed to be reserved for fscrypt.
-> > 
-> > Also, these two new ioctls are both number 30, which means they can't be
-> > controlled separately by SELinux, which only looks at the number.
+On 8/9/19 3:58 PM, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Yeah, that was my screw up.  The range reservation for fscrypt was
-> intended to be in decimal starting with 19 decimal
-> (FSIOC_SET_ENCRYPTION_POLICY), and I believe with the new key
-> management we were up to 26?  So If I reserve up to 39, that should be
-> more than enough, do you agree?
+> The addition of FOLL_LONGTERM has taken on additional meaning for CMA
+> pages.
 > 
-> I'll then make EXT4_IOC_CLEAR_ES_CACHE 40 and EXT4_IOC_GETSTATE 41.
+> In addition subsystems such as RDMA require new information to be passed
+> to the GUP interface to track file owning information.  As such a simple
+> FOLL_LONGTERM flag is no longer sufficient for these users to pin pages.
 > 
-> If we're in agreement, then I'll add an update to
-> Documentation/ioctl/ioctl-number.rst, which is badly out of date with
-> respect to the ioctl's used in ext2 and ext4 (and of course ext3 has
-> since been removed from the kernel tree).
+> Introduce a new GUP like call which takes the newly introduced vaddr_pin
+> information.  Failure to pass the vaddr_pin object back to a vaddr_put*
+> call will result in a failure if pins were created on files during the
+> pin operation.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 > 
 
-Sounds good to me.
+I'm creating a new call site conversion series, to replace the 
+"put_user_pages(): miscellaneous call sites" series. This uses
+vaddr_pin_pages*() where appropriate. So it's based on your series here.
 
-- Eric
+btw, while doing that, I noticed one more typo while re-reading some of the comments. 
+Thought you probably want to collect them all for the next spin. Below...
+
+> ---
+> Changes from list:
+> 	Change to vaddr_put_pages_dirty_lock
+> 	Change to vaddr_unpin_pages_dirty_lock
+> 
+>  include/linux/mm.h |  5 ++++
+>  mm/gup.c           | 59 ++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 64 insertions(+)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 657c947bda49..90c5802866df 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1603,6 +1603,11 @@ int account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc);
+>  int __account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc,
+>  			struct task_struct *task, bool bypass_rlim);
+>  
+> +long vaddr_pin_pages(unsigned long addr, unsigned long nr_pages,
+> +		     unsigned int gup_flags, struct page **pages,
+> +		     struct vaddr_pin *vaddr_pin);
+> +void vaddr_unpin_pages_dirty_lock(struct page **pages, unsigned long nr_pages,
+> +				  struct vaddr_pin *vaddr_pin, bool make_dirty);
+>  bool mapping_inode_has_layout(struct vaddr_pin *vaddr_pin, struct page *page);
+>  
+>  /* Container for pinned pfns / pages */
+> diff --git a/mm/gup.c b/mm/gup.c
+> index eeaa0ddd08a6..6d23f70d7847 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2536,3 +2536,62 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(get_user_pages_fast);
+> +
+> +/**
+> + * vaddr_pin_pages pin pages by virtual address and return the pages to the
+> + * user.
+> + *
+> + * @addr, start address
+> + * @nr_pages, number of pages to pin
+> + * @gup_flags, flags to use for the pin
+> + * @pages, array of pages returned
+> + * @vaddr_pin, initalized meta information this pin is to be associated
+
+Typo:
+                  initialized
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
