@@ -2,172 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DB58A4B2
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 19:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7A98A4D3
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 19:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727196AbfHLReE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Aug 2019 13:34:04 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:58528 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbfHLReE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Aug 2019 13:34:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=S7OxrYIMYsN/W+LCGLpx5eZGJ38yfnWGIGCyNhp6UUs=; b=siMt8ySyjx8VBRwG9UBLi9/9Q
-        eIb2vh9FVKtsyto60QRv/soDWmLheyImHtVNWCTCsOAjn+g3q4wksfWYxRSHEfZ6WIwGnts20pFFb
-        DleAN4say0ePpI4hO/xxlxbtaYjGav12UZcd4E7fnGV4db0tza9Om0sKNjOO1zpvig2fyWvQOT3k+
-        osaWOz1a5c/p946nTJXF1+1Pf1L0pmNuM3Oy/56p6Crxtk4xdzfHsf9Z/5YCRc3NNPsHqinMtHhMd
-        Sr+SV+CLdX3J9s2m4G1hvrr+3RhG32WogKbPYeECTD6lGCgrYTqNU9i/yEkGT8DJgu2WfQrtmEmJ8
-        TjV45CCeA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hxECp-0000x8-Jr; Mon, 12 Aug 2019 17:34:03 +0000
-Date:   Mon, 12 Aug 2019 10:34:03 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        jack@suse.cz, tytso@mit.edu, riteshh@linux.ibm.com
-Subject: Re: [PATCH 4/5] ext4: introduce direct IO write code path using
- iomap infrastructure
-Message-ID: <20190812173403.GD24564@infradead.org>
-References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
- <581c3a2da89991e7ce5862d93dcfb23e1dc8ddc8.1565609891.git.mbobrowski@mbobrowski.org>
+        id S1726797AbfHLRrs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Aug 2019 13:47:48 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:40259 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbfHLRrr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Aug 2019 13:47:47 -0400
+Received: by mail-ot1-f65.google.com with SMTP id c34so22029355otb.7
+        for <linux-ext4@vger.kernel.org>; Mon, 12 Aug 2019 10:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4wawRQCHdcZTmgKJKwizn/urFtMXISL9AbW1MmNDWCU=;
+        b=cIjyFyyr6W37R7+RdqmorpEIyAtM8bygqGrIGJN3aZwWU3aahXDDqCv6RR/kjP3ylv
+         msYPk8eSO4XbSGy/F7nUcO6MdeYSRbppR04ezU+6AqYDxrL2NGyBQmvy/DRcZDSPhKgn
+         xdFAWJJcoj58PurHCdLSjQymeq5aYh2MYXR8GAsPEK9O7e6yItXOtBlnY8GQMvGoDbaU
+         eyHo8zUmI/N6cQf+duAKSfdM4StHPpLP32zHKV8etFxmmYEOPqMNy87vwar47rmct4qZ
+         Hvp1nUzcq41CSuXN86uqHT9Kqwglc5gdfHecSGWYRO00UNkI3V7oZsamUjBTcAKIZ/vc
+         nK5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4wawRQCHdcZTmgKJKwizn/urFtMXISL9AbW1MmNDWCU=;
+        b=aOlg4i3PqIwDyTQr5CCOUVsvJb4ARsxxHhjvmmDaWNsb6x4VLY1/HPyur3/RlR3MLI
+         fHw/KhfE2UoERHtrdCQB46glnmJBityYLLBl1Gio1XSB/tUCnOl5VoLiPzpboyFywIHJ
+         DeK1JN4/9TpzjDoxySqFAbuH8MhtQpbY+pbB6LgZWaLfj6CbYdoOVaAWu3BHlSU6lxPq
+         dkPOO4Znm+LjjBAspozmEAsy4hr34Cn/31vXwzO6N9FawuUnFhJA9WnM6c+czju5JVg0
+         qgrcDTjU6IRClRAtbdlgLA3gX9xyauVu2jYMLzy96JGb6TarY4a4wkry+ls3ZMvToDBw
+         RaTg==
+X-Gm-Message-State: APjAAAV7LL+UcSG85cgVZFfP5qY8Lrv2YF8YrCj6xCcONa2wBVsRGnA/
+        J94FFtckaloGQRp6QIQvyg7mhgt6GYoHuSDdRpc=
+X-Google-Smtp-Source: APXvYqwSpqEINq96z/OzluWUcuOiGEhOm9RQAG7PIVZtBSfxJ6jO+fAZ33I4kfaov+VaDP1z+8nX7zok+280HEL7MX4=
+X-Received: by 2002:a9d:922:: with SMTP id 31mr2599417otp.227.1565631747668;
+ Mon, 12 Aug 2019 10:42:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <581c3a2da89991e7ce5862d93dcfb23e1dc8ddc8.1565609891.git.mbobrowski@mbobrowski.org>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <20190809034552.148629-1-harshadshirwadkar@gmail.com>
+ <20190809034552.148629-6-harshadshirwadkar@gmail.com> <20190812160445.GA28705@mit.edu>
+In-Reply-To: <20190812160445.GA28705@mit.edu>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Mon, 12 Aug 2019 10:41:48 -0700
+Message-ID: <CAD+ocbxwraTHT0wPCZgtjC8mJ7OU6wpkd7PgC7_YW=G9W-arDQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/12] jbd2: fast-commit commit path new APIs
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger@dilger.ca>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> +	if (error) {
-> +		if (offset + size > i_size_read(inode))
-> +			ext4_truncate_failed_write(inode);
-> +
-> +		/*
-> +		 * The inode may have been placed onto the orphan list
-> +		 * as a result of an extension. However, an error may
-> +		 * have been encountered prior to being able to
-> +		 * complete the write operation. Perform any necessary
-> +		 * clean up in this case.
-> +		 */
-> +		if (!list_empty(&EXT4_I(inode)->i_orphan)) {
-> +			handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-> +			if (IS_ERR(handle)) {
-> +				if (inode->i_nlink)
-> +					ext4_orphan_del(NULL, inode);
-> +				return PTR_ERR(handle);
-> +			}
-> +
-> +			if (inode->i_nlink)
-> +				ext4_orphan_del(handle, inode);
-> +			ext4_journal_stop(handle);
-> +		}
-> +		return error;
+Thanks Andreas and Ted for the review.
 
-I'd split this branch into a separate function just to keep the
-end_io handler tidy.
+Yeah, this makes sense.
 
-> +	if (ret == -EIOCBQUEUED && (unaligned_aio || extend))
-> +		inode_dio_wait(inode);
-> +
-> +	if (ret >= 0 && iov_iter_count(from)) {
-> +		overwrite ? inode_unlock_shared(inode) : inode_unlock(inode);
-> +		return ext4_buffered_write_iter(iocb, from);
-> +	}
-> +out:
-> +	overwrite ? inode_unlock_shared(inode) : inode_unlock(inode);
-> +	return ret;
-
-the ? : expression here is weird.
-
-I'd write this as:
-
-	if (overwrite)
-		inode_unlock_shared(inode);
-	else
-		inode_unlock(inode);
-
-	if (ret >= 0 && iov_iter_count(from))
-		return ext4_buffered_write_iter(iocb, from);
-	return ret;
-
-and handle the only place we jump to the current out label manually,
-as that always does an exclusive unlock anyway.
-
-> +		if (IS_DAX(inode)) {
-> +			ret = ext4_map_blocks(handle, inode, &map,
-> +					      EXT4_GET_BLOCKS_CREATE_ZERO);
-> +		} else {
-> +			/*
-> +			 * DAX and direct IO are the only two
-> +			 * operations currently supported with
-> +			 * IOMAP_WRITE.
-> +			 */
-> +			WARN_ON(!(flags & IOMAP_DIRECT));
-> +			if (round_down(offset, i_blocksize(inode)) >=
-> +			    i_size_read(inode)) {
-> +				ret = ext4_map_blocks(handle, inode, &map,
-> +						      EXT4_GET_BLOCKS_CREATE);
-> +			} else if (!ext4_test_inode_flag(inode,
-> +							 EXT4_INODE_EXTENTS)) {
-> +				/*
-> +				 * We cannot fill holes in indirect
-> +				 * tree based inodes as that could
-> +				 * expose stale data in the case of a
-> +				 * crash. Use magic error code to
-> +				 * fallback to buffered IO.
-> +				 */
-> +				ret = ext4_map_blocks(handle, inode, &map, 0);
-> +				if (ret == 0)
-> +					ret = -ENOTBLK;
-> +			} else {
-> +				ret = ext4_map_blocks(handle, inode, &map,
-> +						      EXT4_GET_BLOCKS_IO_CREATE_EXT);
-> +			}
-> +		}
-
-I think this could be simplified down to something like:
-
-		int flags = 0;
-
-		...
-
-		/*
-		 * DAX and direct IO are the only two operations currently
-		 * supported with IOMAP_WRITE.
-		 */
-		WARN_ON(!IS_DAX(inode) && !(flags & IOMAP_DIRECT));
-
-		if (IS_DAX(inode))
-			flags = EXT4_GET_BLOCKS_CREATE_ZERO;
-		else if (round_down(offset, i_blocksize(inode)) >=
-				i_size_read(inode)) {
-			flags = EXT4_GET_BLOCKS_CREATE;
-		else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
-			flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
-
-		/*
-		 * We cannot fill holes in indirect tree based inodes as that
-		 * could expose stale data in the case of a crash.  Use the
-		 * magic error code to fallback to buffered IO.
-		 */
-		if (!flags && !ret)
-			ret = -ENOTBLK;
-
-
-> @@ -3601,6 +3631,8 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
->  			  ssize_t written, unsigned flags, struct iomap *iomap)
->  {
-> +	if (flags & IOMAP_DIRECT && written == 0)
-> +		return -ENOTBLK;
-
-This probably wants a comment, too.  But do we actually ever end up
-here?
+On Mon, Aug 12, 2019 at 9:04 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> On Thu, Aug 08, 2019 at 08:45:45PM -0700, Harshad Shirwadkar wrote:
+> > This patch adds new helper APIs that ext4 needs for fast
+> > commits. These new fast commit APIs are used by subsequent fast commit
+> > patches to implement fast commits. Following new APIs are added:
+> >
+> > /*
+> >  * Returns when either a full commit or a fast commit
+> >  * completes
+> >  */
+> > int jbd2_fc_complete_commit(journal_tc *journal, tid_t tid,
+> >                           tid_t tid, tid_t subtid)
+>
+> I think there is an opportunity to do something more efficient.
+>
+> Right now, the ext4_fsync() calls this function, and the file system
+> can only do a "fast commit" if all of the modifications made to the
+> file system to date are "fast commit eligible".  Otherwise, we have to
+> fall back to a normal, slow commit.
+>
+> We can make this decision on a much more granular level.  Suppose that
+> so far during the life of the current transaction, inodes A, B, and C
+> have been modified.  The modification to inode A is not fast commit
+> eligible (maybe the inode is deleted, or it is involved in a directory
+> rename, etc.).  The modification to inode B is fast commit eligible,
+> but an fsync was not requested for it.  And the modification to inode
+> C *is* fast commit eligble, *and* fsync() has been requested for it.
+>
+> We only need to write the information for inode C to the fast commit
+> area.  The fact that inode A is not fast commit eligible isn't a
+> problem.  It will get committed when the normal transaction closes,
+> perhaps when the 5 second commit transaction timer expires.  And inode
+> B, even though its changes might be fast commit eligible, might
+> require writing a large number of data blocks if it were included in
+> the fast commit.  So excluding inodes A and B from the fast commit,
+> and only writing the logical changes corresponding to the those made
+> to inode C, will allow a fast commit to take place.
+>
+> In order to do that, though, the ext4's fast commit machinery needs to
+> know which inode we actually need to do the fast commit for.  And so
+> for that reason, it's actually probably better not to run the changes
+> through the commit thread.  That makes it harder to plumb the file
+> system specific information through, and it also requires waking up
+> the commit thread and waiting for it to get scheduled.
+I see, so you mean each fsync() call will result in exactly one inode
+to be committed (the inode on which fsync was called), right? I agree
+this doesn't need to go through JBD2 but we need a mechanism to inform
+JBD2 about this fast commit since JBD2 maintains sub-transaction ID.
+JBD2 will in turn need to make sure that a subtid was allocated for
+such a fast commit and it was incremented once the fast commit was
+successful as well.
+>
+> Instead, ext4_fsync() could just call the fast commit machinery, and
+> the only thing we need to expose is a way for the fast commit
+> machinery to attempt to grab a mutex preventing the normal commit
+> thread from starting a normal commit.  If it loses the race, and the
+> normal commit takes place before we manage to do the fast commit; then
+> we don't need to do any thing more.  Otherwise the fast commit
+> machinery can do its thing, writing inode changes to the journal, and
+> once it is done, it can release the mutex and ext4 fsync can return.
+>
+> Does that make sense?
+Thanks for the suggestion, I will implement this in V3.
+>
+>                                         - Ted
