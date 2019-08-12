@@ -2,59 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A28F08A537
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 20:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8E48A54A
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 20:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbfHLSBN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Aug 2019 14:01:13 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49625 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726219AbfHLSBN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Aug 2019 14:01:13 -0400
-Received: from callcc.thunk.org (guestnat-104-133-9-109.corp.google.com [104.133.9.109] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7CI16QP027591
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Aug 2019 14:01:08 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 6C9184218EF; Mon, 12 Aug 2019 14:01:06 -0400 (EDT)
-Date:   Mon, 12 Aug 2019 14:01:06 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v2 05/12] jbd2: fast-commit commit path new APIs
-Message-ID: <20190812180106.GB28705@mit.edu>
-References: <20190809034552.148629-1-harshadshirwadkar@gmail.com>
- <20190809034552.148629-6-harshadshirwadkar@gmail.com>
- <20190812160445.GA28705@mit.edu>
- <CAD+ocbxwraTHT0wPCZgtjC8mJ7OU6wpkd7PgC7_YW=G9W-arDQ@mail.gmail.com>
+        id S1726605AbfHLSF4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Aug 2019 14:05:56 -0400
+Received: from mga01.intel.com ([192.55.52.88]:56621 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbfHLSF4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 12 Aug 2019 14:05:56 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Aug 2019 11:05:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,378,1559545200"; 
+   d="scan'208";a="177558391"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga007.fm.intel.com with ESMTP; 12 Aug 2019 11:05:51 -0700
+Date:   Mon, 12 Aug 2019 11:05:51 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 07/19] fs/xfs: Teach xfs to use new
+ dax_layout_busy_page()
+Message-ID: <20190812180551.GC19746@iweiny-DESK2.sc.intel.com>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190809225833.6657-8-ira.weiny@intel.com>
+ <20190809233037.GB7777@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD+ocbxwraTHT0wPCZgtjC8mJ7OU6wpkd7PgC7_YW=G9W-arDQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190809233037.GB7777@dread.disaster.area>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 10:41:48AM -0700, harshad shirwadkar wrote:
-> I see, so you mean each fsync() call will result in exactly one inode
-> to be committed (the inode on which fsync was called), right? I agree
-> this doesn't need to go through JBD2 but we need a mechanism to inform
-> JBD2 about this fast commit since JBD2 maintains sub-transaction ID.
-> JBD2 will in turn need to make sure that a subtid was allocated for
-> such a fast commit and it was incremented once the fast commit was
-> successful as well.
+On Sat, Aug 10, 2019 at 09:30:37AM +1000, Dave Chinner wrote:
+> On Fri, Aug 09, 2019 at 03:58:21PM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > dax_layout_busy_page() can now operate on a sub-range of the
+> > address_space provided.
+> > 
+> > Have xfs specify the sub range to dax_layout_busy_page()
+> 
+> Hmmm. I've got patches that change all these XFS interfaces to
+> support range locks. I'm not sure the way the ranges are passed here
+> is the best way to do it, and I suspect they aren't correct in some
+> cases, either....
+> 
+> > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > index ff3c1fae5357..f0de5486f6c1 100644
+> > --- a/fs/xfs/xfs_iops.c
+> > +++ b/fs/xfs/xfs_iops.c
+> > @@ -1042,10 +1042,16 @@ xfs_vn_setattr(
+> >  		xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
+> >  		iolock = XFS_IOLOCK_EXCL | XFS_MMAPLOCK_EXCL;
+> >  
+> > -		error = xfs_break_layouts(inode, &iolock, BREAK_UNMAP);
+> > -		if (error) {
+> > -			xfs_iunlock(ip, XFS_MMAPLOCK_EXCL);
+> > -			return error;
+> > +		if (iattr->ia_size < inode->i_size) {
+> > +			loff_t                  off = iattr->ia_size;
+> > +			loff_t                  len = inode->i_size - iattr->ia_size;
+> > +
+> > +			error = xfs_break_layouts(inode, &iolock, off, len,
+> > +						  BREAK_UNMAP);
+> > +			if (error) {
+> > +				xfs_iunlock(ip, XFS_MMAPLOCK_EXCL);
+> > +				return error;
+> > +			}
+> 
+> This isn't right - truncate up still needs to break the layout on
+> the last filesystem block of the file,
 
-Why does JBD2 need to maintain the sub-transaction ID?  We can only
-have a single fast commit happening at a time, and while a fast commit
-is happening we can't allow a full commit from happening (or vice
-versa).  So we need a mutex which enforces this, the transaction id
-can just be a field in the transaction structure.
+I'm not following this?  From a user perspective they can't have done anything
+with the data beyond the EOF.  So isn't it safe to allow EOF to grow without
+changing the layout of that last block?
 
-Cheers,
+> and truncate down needs to
+> extend to "maximum file offset" because we remove all extents beyond
+> EOF on a truncate down.
 
-					- Ted
+Ok, I was trying to allow a user to extend the file without conflicts if they
+were to have a pin on the 'beginning' of the original file.  This sounds like
+you are saying that a layout lease must be dropped to do that?  In some ways I
+think I understand what you are driving at and I think I see how I may have
+been playing "fast and loose" with the strictness of the layout lease.  But
+from a user perspective if there is a part of the file which "does not exist"
+(beyond EOF) does it matter that the layout there may change?
+
+> 
+> i.e. when we use preallocation, the extent map extends beyond EOF,
+> and layout leases need to be able to extend beyond the current EOF
+> to allow the lease owner to do extending writes, extending truncate,
+> preallocation beyond EOF, etc safely without having to get a new
+> lease to cover the new region in the extended file...
+
+I'm not following this.  What determines when preallocation is done?
+
+Forgive my ignorance on file systems but how can we have a layout for every
+file which is "maximum file offset" for every file even if a file is only 1
+page long?
+
+Thanks,
+Ira
+
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
