@@ -2,81 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6169E8A4E0
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 19:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C99838A4FB
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 19:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbfHLRuJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Aug 2019 13:50:09 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46043 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726144AbfHLRuJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Aug 2019 13:50:09 -0400
-Received: from callcc.thunk.org (guestnat-104-133-9-109.corp.google.com [104.133.9.109] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7CHj8dt019363
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Aug 2019 13:45:12 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id CE2394218EF; Mon, 12 Aug 2019 13:45:07 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH] ext4: drop legacy pre-1970 encoding workaround
-Date:   Mon, 12 Aug 2019 13:45:05 -0400
-Message-Id: <20190812174505.8384-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.22.0
+        id S1726674AbfHLR4R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Aug 2019 13:56:17 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:39841 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726632AbfHLR4R (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Aug 2019 13:56:17 -0400
+Received: by mail-qt1-f194.google.com with SMTP id l9so103631494qtu.6
+        for <linux-ext4@vger.kernel.org>; Mon, 12 Aug 2019 10:56:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YeHGfRcz7/xDdQu045YPZqSeRdWuIL5U3pex4BeV6Co=;
+        b=aT1+Cp+KGWQyozFDowVXklkNZVi/kM9KamsNgl23DUo+IJyNPad8EzXuoAG7s3f5bf
+         bOSW7DhNODTjMskeg1DRPDb4g7NB2wX2AWkHQuyR0cct0HrdnZzak9aU8g7CHTL0qHoO
+         IKZcX3vXDSq/u24mEPYpzVVHpbOB2TSRpMchVGlB+vxEwN6TXEtwOQ8uYyw5P8+cz9Hd
+         j1BzALymBU6a7rw2q7wWcxOSnVbjWppZ0IMW4+9rMtyvhB+q0F08Mu3PWUPEGDQxvNfD
+         RqDlAaDfsxyO370w/XugHLZnyfoDs8iN8igYYDuAHaeRZtKy3Zg+yOMKiyalzWN131uL
+         Eqkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YeHGfRcz7/xDdQu045YPZqSeRdWuIL5U3pex4BeV6Co=;
+        b=BnKD7QV3VE5O3kNGCEdC4/wWHiTA8xZUHwySojFmnKXiwmm0u0y7e+E91TTD6qqReR
+         zDFNYJ7CAdQMuiGAot0QQaomfUit7fJSvtBtPSewF+FiYAc6DTvusy53S0BydjxQ3toB
+         rwGhxoEiHTa6cH2/HHb4Yca7Xo+XgjlbBXFW3DCoUfuHTysPU8PRXhY7n9VP31xO4KeK
+         raUPlJNKl+fHWmanc5+kZ/YzwlReC9eoTPc/YbHcI5PtzXMBEyPrmgvCj1/YKlILMGiz
+         3c+yFP0J4ZhrY2yEWLRs6zevbv0x7mv8prfwxJzjlG+xvRKntfP/AHfQTqW8jklaB1Ox
+         pAIA==
+X-Gm-Message-State: APjAAAXKmN/T+YkrMBRLx/F9gppmsf/1kXey9KP7DK4ylMz9u8S8DZmC
+        kERtkVfKcHZJsQZ8mc6LnTNYbw==
+X-Google-Smtp-Source: APXvYqx5MBD9MG64lV9iZUYWN/EeNo5U4lzvE+q4eQc5jVQAxZ4QmzhDKvfOk+m1tNY0/uiYKcLUcw==
+X-Received: by 2002:ac8:43c4:: with SMTP id w4mr15414493qtn.238.1565632576300;
+        Mon, 12 Aug 2019 10:56:16 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
+        by smtp.gmail.com with ESMTPSA id r15sm5883158qtp.94.2019.08.12.10.56.15
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Aug 2019 10:56:15 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1hxEYJ-0004LN-Ev; Mon, 12 Aug 2019 14:56:15 -0300
+Date:   Mon, 12 Aug 2019 14:56:15 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
+ file object
+Message-ID: <20190812175615.GI24457@ziepe.ca>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190809225833.6657-17-ira.weiny@intel.com>
+ <20190812130039.GD24457@ziepe.ca>
+ <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Originally, support for expanded timestamps had a bug in that pre-1970
-times were erroneously encoded as being in the the 24th century.  This
-was fixed in commit a4dad1ae24f8 ("ext4: Fix handling of extended
-tv_sec") which landed in 4.4.  Starting with 4.4, pre-1970 timestamps
-were correctly encoded, but for backwards compatibility those
-incorrectly encoded timestamps were mapped back to the pre-1970 dates.
+On Mon, Aug 12, 2019 at 10:28:27AM -0700, Ira Weiny wrote:
+> On Mon, Aug 12, 2019 at 10:00:40AM -0300, Jason Gunthorpe wrote:
+> > On Fri, Aug 09, 2019 at 03:58:30PM -0700, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > In order for MRs to be tracked against the open verbs context the ufile
+> > > needs to have a pointer to hand to the GUP code.
+> > > 
+> > > No references need to be taken as this should be valid for the lifetime
+> > > of the context.
+> > > 
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > >  drivers/infiniband/core/uverbs.h      | 1 +
+> > >  drivers/infiniband/core/uverbs_main.c | 1 +
+> > >  2 files changed, 2 insertions(+)
+> > > 
+> > > diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+> > > index 1e5aeb39f774..e802ba8c67d6 100644
+> > > +++ b/drivers/infiniband/core/uverbs.h
+> > > @@ -163,6 +163,7 @@ struct ib_uverbs_file {
+> > >  	struct page *disassociate_page;
+> > >  
+> > >  	struct xarray		idr;
+> > > +	struct file             *sys_file; /* backpointer to system file object */
+> > >  };
+> > 
+> > The 'struct file' has a lifetime strictly shorter than the
+> > ib_uverbs_file, which is kref'd on its own lifetime. Having a back
+> > pointer like this is confouding as it will be invalid for some of the
+> > lifetime of the struct.
+> 
+> Ah...  ok.  I really thought it was the other way around.
+> 
+> __fput() should not call ib_uverbs_close() until the last reference on struct
+> file is released...  What holds references to struct ib_uverbs_file past that?
 
-Given that backwards compatibility workaround has been around for 4
-years, and given that running e2fsck from e2fsprogs 1.43.2 and later
-will offer to fix these timestamps (which has been released for 3
-years), it's past time to drop the legacy workaround from the kernel.
+Child fds hold onto the internal ib_uverbs_file until they are closed
 
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/ext4.h | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+> Perhaps I need to add this (untested)?
+> 
+> diff --git a/drivers/infiniband/core/uverbs_main.c
+> b/drivers/infiniband/core/uverbs_main.c
+> index f628f9e4c09f..654e774d9cf2 100644
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -1125,6 +1125,8 @@ static int ib_uverbs_close(struct inode *inode, struct file *filp)
+>         list_del_init(&file->list);
+>         mutex_unlock(&file->device->lists_mutex);
+>  
+> +       file->sys_file = NULL;
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index e2d8ad27f4d1..17cc2dc13174 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -828,21 +828,8 @@ static inline __le32 ext4_encode_extra_time(struct timespec64 *time)
- static inline void ext4_decode_extra_time(struct timespec64 *time,
- 					  __le32 extra)
- {
--	if (unlikely(extra & cpu_to_le32(EXT4_EPOCH_MASK))) {
--
--#if 1
--		/* Handle legacy encoding of pre-1970 dates with epoch
--		 * bits 1,1. (This backwards compatibility may be removed
--		 * at the discretion of the ext4 developers.)
--		 */
--		u64 extra_bits = le32_to_cpu(extra) & EXT4_EPOCH_MASK;
--		if (extra_bits == 3 && ((time->tv_sec) & 0x80000000) != 0)
--			extra_bits = 0;
--		time->tv_sec += extra_bits << 32;
--#else
-+	if (unlikely(extra & cpu_to_le32(EXT4_EPOCH_MASK)))
- 		time->tv_sec += (u64)(le32_to_cpu(extra) & EXT4_EPOCH_MASK) << 32;
--#endif
--	}
- 	time->tv_nsec = (le32_to_cpu(extra) & EXT4_NSEC_MASK) >> EXT4_EPOCH_BITS;
- }
- 
--- 
-2.22.0
+Now this has unlocked updates to that data.. you'd need some lock and
+get not zero pattern
 
+Jason
