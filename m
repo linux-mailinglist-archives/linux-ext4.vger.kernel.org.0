@@ -2,106 +2,170 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F315489F0C
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 15:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BC98A088
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 16:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbfHLNAm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Aug 2019 09:00:42 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46523 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728750AbfHLNAl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Aug 2019 09:00:41 -0400
-Received: by mail-qt1-f194.google.com with SMTP id j15so9046931qtl.13
-        for <linux-ext4@vger.kernel.org>; Mon, 12 Aug 2019 06:00:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=v27wNdJ2y4fYwnlNFEt6zNAiJxMsGAli8ivaPg3wc1M=;
-        b=LV/5e5bv9v8c9I7DK/4tP8vVkAv6ndU5JI38qUo1+2B1jfGlrpI06NbB/wUkGmGyeD
-         KY3vx+BUEfWjNcT2jjwpyELSCXp7i7rhZc2KX9VIhPMNn4kdIu0t67lAdfyU9nekK3/L
-         3MP+wXH4WlzFyTZrxx9Nd58XuCITcoHJXYChWbVPAs14UWUvJfZCxKp6aHXHdcIEep4x
-         r+prD4FcMDTQq1FtSuu4IHqp4tIQ7RstC8NDn1Eia7VGs9b5kzm5e4WhAMu4VOynEmb3
-         TrkDaFXVCw6fu3HohAu2/SmzPW7CoZVyBc26hhltk64h6IL73zahCzWzhawOMhGp4fqS
-         1wtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=v27wNdJ2y4fYwnlNFEt6zNAiJxMsGAli8ivaPg3wc1M=;
-        b=mrF61ijkqduGHTfQwvGCUPwUkGCXPP9I1h5SuhlpZyooBCV/OK3a3w/vkya/wPK2v+
-         KbJxUfMl60QZ9EaRNu+8UhflZJVxcXDCfRTo5BTRNwPte42/Cpm46QbszHLERq7sQt+e
-         JRUzvt/VBVN3E6hYAfReyEINz5pPyOlhWqSBqmPmaBlZublEx/UFJjvCXOpudmMbSkPM
-         E5t/1blXRHVRuYDKo4JgwxT+sJH+41ggrcBSRKDumCyHvJirIFn4C8JfJGayRvUQYhFN
-         NnxT2afii0NOJIUQO+YklE3zD1J8kXN3IJQOoUQCV7JEgkjWNQnaxdp6bP9IH4d3DBb+
-         /+Ew==
-X-Gm-Message-State: APjAAAXYvX2vrPBo8wU7g/dk2rpIggqerS2YhBkACLlZ64+xSy84VKUr
-        dKQH565zZ08WEM661ufAuLWZCQ==
-X-Google-Smtp-Source: APXvYqyQID2HK/cSNFy0j5AldC0D5f58clAE4+2HeEw+kkaB2zL8GXSnMyU9v7OrdqZd4L0OHplsYg==
-X-Received: by 2002:ac8:6c48:: with SMTP id z8mr18986870qtu.58.1565614840799;
-        Mon, 12 Aug 2019 06:00:40 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id m27sm52693265qtu.31.2019.08.12.06.00.40
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 12 Aug 2019 06:00:40 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hx9wG-0007QV-0U; Mon, 12 Aug 2019 10:00:40 -0300
-Date:   Mon, 12 Aug 2019 10:00:40 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     ira.weiny@intel.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
- file object
-Message-ID: <20190812130039.GD24457@ziepe.ca>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-17-ira.weiny@intel.com>
+        id S1726718AbfHLORT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Aug 2019 10:17:19 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33943 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726354AbfHLORS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Aug 2019 10:17:18 -0400
+Received: from callcc.thunk.org (guestnat-104-133-9-109.corp.google.com [104.133.9.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7CEGtiI013115
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Aug 2019 10:16:57 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 7E7C44218EF; Mon, 12 Aug 2019 10:16:55 -0400 (EDT)
+Date:   Mon, 12 Aug 2019 10:16:55 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        Paul Crowley <paulcrowley@google.com>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [PATCH v7 07/16] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+Message-ID: <20190812141655.GA11831@mit.edu>
+References: <20190726224141.14044-1-ebiggers@kernel.org>
+ <20190726224141.14044-8-ebiggers@kernel.org>
+ <20190728192417.GG6088@mit.edu>
+ <20190729195827.GF169027@gmail.com>
+ <20190731183802.GA687@sol.localdomain>
+ <20190731233843.GA2769@mit.edu>
+ <20190801011140.GB687@sol.localdomain>
+ <20190801053108.GD2769@mit.edu>
+ <20190801220432.GC223822@gmail.com>
+ <20190802043827.GA19201@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190809225833.6657-17-ira.weiny@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190802043827.GA19201@sol.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 09, 2019 at 03:58:30PM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On Thu, Aug 01, 2019 at 09:38:27PM -0700, Eric Biggers wrote:
 > 
-> In order for MRs to be tracked against the open verbs context the ufile
-> needs to have a pointer to hand to the GUP code.
-> 
-> No references need to be taken as this should be valid for the lifetime
-> of the context.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->  drivers/infiniband/core/uverbs.h      | 1 +
->  drivers/infiniband/core/uverbs_main.c | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
-> index 1e5aeb39f774..e802ba8c67d6 100644
-> +++ b/drivers/infiniband/core/uverbs.h
-> @@ -163,6 +163,7 @@ struct ib_uverbs_file {
->  	struct page *disassociate_page;
->  
->  	struct xarray		idr;
-> +	struct file             *sys_file; /* backpointer to system file object */
->  };
+> Here's a slightly updated version (I missed removing some stale text):
 
-The 'struct file' has a lifetime strictly shorter than the
-ib_uverbs_file, which is kref'd on its own lifetime. Having a back
-pointer like this is confouding as it will be invalid for some of the
-lifetime of the struct.
+Apologies for the delaying in getting back.  Thanks, this looks great.
 
-Jason
+	      	  	      	      	     - Ted
+
+> 
+> Removing keys
+> -------------
+> 
+> Two ioctls are available for removing a key that was added by
+> `FS_IOC_ADD_ENCRYPTION_KEY`_:
+> 
+> - `FS_IOC_REMOVE_ENCRYPTION_KEY`_
+> - `FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS`_
+> 
+> These two ioctls differ only in cases where v2 policy keys are added
+> or removed by non-root users.
+> 
+> These ioctls don't work on keys that were added via the legacy
+> process-subscribed keyrings mechanism.
+> 
+> Before using these ioctls, read the `Kernel memory compromise`_
+> section for a discussion of the security goals and limitations of
+> these ioctls.
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> The FS_IOC_REMOVE_ENCRYPTION_KEY ioctl removes a claim to a master
+> encryption key from the filesystem, and possibly removes the key
+> itself.  It can be executed on any file or directory on the target
+> filesystem, but using the filesystem's root directory is recommended.
+> It takes in a pointer to a :c:type:`struct fscrypt_remove_key_arg`,
+> defined as follows::
+> 
+>     struct fscrypt_remove_key_arg {
+>             struct fscrypt_key_specifier key_spec;
+>     #define FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY      0x00000001
+>     #define FSCRYPT_KEY_REMOVAL_STATUS_FLAG_OTHER_USERS     0x00000002
+>             __u32 removal_status_flags;     /* output */
+>             __u32 __reserved[5];
+>     };
+> 
+> This structure must be zeroed, then initialized as follows:
+> 
+> - The key to remove is specified by ``key_spec``:
+> 
+>     - To remove a key used by v1 encryption policies, set
+>       ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR and fill
+>       in ``key_spec.u.descriptor``.  To remove this type of key, the
+>       calling process must have the CAP_SYS_ADMIN capability in the
+>       initial user namespace.
+> 
+>     - To remove a key used by v2 encryption policies, set
+>       ``key_spec.type`` to FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER and fill
+>       in ``key_spec.u.identifier``.
+> 
+> For v2 policy keys, this ioctl is usable by non-root users.  However,
+> to make this possible, it actually just removes the current user's
+> claim to the key, undoing a single call to FS_IOC_ADD_ENCRYPTION_KEY.
+> Only after all claims are removed is the key really removed.
+> 
+> For example, if FS_IOC_ADD_ENCRYPTION_KEY was called with uid 1000,
+> then the key will be "claimed" by uid 1000, and
+> FS_IOC_REMOVE_ENCRYPTION_KEY will only succeed as uid 1000.  Or, if
+> both uids 1000 and 2000 added the key, then for each uid
+> FS_IOC_REMOVE_ENCRYPTION_KEY will only remove their own claim.  Only
+> once *both* are removed is the key really removed.  (Think of it like
+> unlinking a file that may have hard links.)
+> 
+> If FS_IOC_REMOVE_ENCRYPTION_KEY really removes the key, it will also
+> try to "lock" all files that had been unlocked with the key.  It won't
+> lock files that are still in-use, so this ioctl is expected to be used
+> in cooperation with userspace ensuring that none of the files are
+> still open.  However, if necessary, the ioctl can be executed again
+> later to retry locking any remaining files.
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY returns 0 if either the key was removed
+> (but may still have files remaining to be locked), the user's claim to
+> the key was removed, or the key was already removed but had files
+> remaining to be the locked so the ioctl retried locking them.  In any
+> of these cases, ``removal_status_flags`` is filled in with the
+> following informational status flags:
+> 
+> - ``FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY``: set if some file(s)
+>   are still in-use.  Not guaranteed to be set in the case where only
+>   the user's claim to the key was removed.
+> - ``FSCRYPT_KEY_REMOVAL_STATUS_FLAG_OTHER_USERS``: set if only the
+>   user's claim to the key was removed, not the key itself
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY can fail with the following errors:
+> 
+> - ``EACCES``: The FSCRYPT_KEY_SPEC_TYPE_DESCRIPTOR key specifier type
+>   was specified, but the caller does not have the CAP_SYS_ADMIN
+>   capability in the initial user namespace
+> - ``EINVAL``: invalid key specifier type, or reserved bits were set
+> - ``ENOKEY``: the key object was not found at all, i.e. it was never
+>   added in the first place or was already fully removed including all
+>   files locked; or, the user does not have a claim to the key.
+> - ``ENOTTY``: this type of filesystem does not implement encryption
+> - ``EOPNOTSUPP``: the kernel was not configured with encryption
+>   support for this filesystem, or the filesystem superblock has not
+>   had encryption enabled on it
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS
+> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS is exactly the same as
+> `FS_IOC_REMOVE_ENCRYPTION_KEY`_, except that for v2 policy keys, the
+> ALL_USERS version of the ioctl will remove all users' claims to the
+> key, not just the current user's.  I.e., the key itself will always be
+> removed, no matter how many users have added it.  This difference is
+> only meaningful if non-root users are adding and removing keys.
+> 
+> Because of this, FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS also requires
+> "root", namely the CAP_SYS_ADMIN capability in the initial user
+> namespace.  Otherwise it will fail with ``EACCES``.
