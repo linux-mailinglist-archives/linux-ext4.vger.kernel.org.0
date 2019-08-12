@@ -2,104 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 414BC8A9A3
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Aug 2019 23:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A9E8AA51
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 00:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727467AbfHLVs4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Aug 2019 17:48:56 -0400
-Received: from mga03.intel.com ([134.134.136.65]:15780 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726530AbfHLVs4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 12 Aug 2019 17:48:56 -0400
-X-Amp-Result: UNSCANNABLE
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Aug 2019 14:48:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,379,1559545200"; 
-   d="scan'208";a="375391550"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Aug 2019 14:48:55 -0700
-Date:   Mon, 12 Aug 2019 14:48:55 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 15/19] mm/gup: Introduce vaddr_pin_pages()
-Message-ID: <20190812214854.GF20634@iweiny-DESK2.sc.intel.com>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-16-ira.weiny@intel.com>
- <20190812122814.GC24457@ziepe.ca>
+        id S1726740AbfHLWUa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 12 Aug 2019 18:20:30 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37518 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726488AbfHLWU3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 12 Aug 2019 18:20:29 -0400
+Received: from callcc.thunk.org (guestnat-104-133-9-109.corp.google.com [104.133.9.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7CMK4AQ010100
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Aug 2019 18:20:06 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id F054A4218EF; Mon, 12 Aug 2019 18:20:03 -0400 (EDT)
+Date:   Mon, 12 Aug 2019 18:20:03 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-api@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH v8 05/20] fscrypt: rename fscrypt_master_key to
+ fscrypt_direct_key
+Message-ID: <20190812222003.GD28705@mit.edu>
+References: <20190805162521.90882-1-ebiggers@kernel.org>
+ <20190805162521.90882-6-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190812122814.GC24457@ziepe.ca>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20190805162521.90882-6-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 09:28:14AM -0300, Jason Gunthorpe wrote:
-> On Fri, Aug 09, 2019 at 03:58:29PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > The addition of FOLL_LONGTERM has taken on additional meaning for CMA
-> > pages.
-> > 
-> > In addition subsystems such as RDMA require new information to be passed
-> > to the GUP interface to track file owning information.  As such a simple
-> > FOLL_LONGTERM flag is no longer sufficient for these users to pin pages.
-> > 
-> > Introduce a new GUP like call which takes the newly introduced vaddr_pin
-> > information.  Failure to pass the vaddr_pin object back to a vaddr_put*
-> > call will result in a failure if pins were created on files during the
-> > pin operation.
+On Mon, Aug 05, 2019 at 09:25:06AM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Is this a 'vaddr' in the traditional sense, ie does it work with
-> something returned by valloc?
-
-...or malloc in user space, yes.  I think the idea is that it is a user virtual
-address.
-
+> In preparation for introducing a filesystem-level keyring which will
+> contain fscrypt master keys, rename the existing 'struct
+> fscrypt_master_key' to 'struct fscrypt_direct_key'.  This is the
+> structure in the existing table of master keys that's maintained to
+> deduplicate the crypto transforms for v1 DIRECT_KEY policies.
 > 
-> Maybe another name would be better?
-
-Maybe, the name I had was way worse...  So I'm not even going to admit to it...
-
-;-)
-
-So I'm open to suggestions.  Jan gave me this one, so I figured it was safer to
-suggest it...
-
-:-D
-
+> I've chosen to keep this table as-is rather than make it automagically
+> add/remove the keys to/from the filesystem-level keyring, since that
+> would add a lot of extra complexity to the filesystem-level keyring.
 > 
-> I also wish GUP like functions took in a 'void __user *' instead of
-> the unsigned long to make this clear :\
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Not a bad idea.  But I only see a couple of call sites who actually use a 'void
-__user *' to pass into GUP...  :-/
+Looks good.  You can add:
 
-For RDMA the address is _never_ a 'void __user *' AFAICS.
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 
-For the new API, it may be tractable to force users to cast to 'void __user *'
-but it is not going to provide any type safety.
-
-But it is easy to change in this series.
-
-What do others think?
-
-Ira
-
-> 
-> Jason
-> 
+						- Ted
