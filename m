@@ -2,207 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA128BB9D
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 16:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0638BFC4
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 19:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729535AbfHMOfy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Aug 2019 10:35:54 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:59450 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729493AbfHMOfx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Aug 2019 10:35:53 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7DEZPNZ074255;
-        Tue, 13 Aug 2019 14:35:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2019-08-05;
- bh=nMBb5D8Ix0hAbWYXXbLi6E1UjhMxHvShcIE7RMXcTQ4=;
- b=MTBd9dTFLiJYAf6qEJbEbV/YGmJA1JqyAqPr+wNUBlFbgnfl1Myyg+gpaHNFBEYSODl8
- kfm3RdJereGaYf0UISDhF416OSTY73cPD4Y8kQH4lcxHug7ljx57hfurP8QGH90K7cDo
- rXRyBdr7gXr/fZZpcqxTtJyATXqXhVH8y2znICARDsTcLXv857zmKVFu9MqZ3xBa6ACB
- d12jS3I+A+ewPLCbuEAk6IxB2LkgK6iZ5sGsWtbyXCfltI2MTEHJ/BYBARHxk4JrU5Nf
- aDyXz4YGpGbWlHUA2fPeO9m3AQ7GF9yJtAju6aJSSjnXstMgXhTH/Zocum57DNleZqlt ow== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2u9nbterw6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Aug 2019 14:35:45 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7DEXCBU117297;
-        Tue, 13 Aug 2019 14:35:44 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2ubwrrbnna-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Aug 2019 14:35:44 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7DEZec5032232;
-        Tue, 13 Aug 2019 14:35:42 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 13 Aug 2019 07:35:40 -0700
-Date:   Tue, 13 Aug 2019 07:35:40 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Cc:     RITESH HARJANI <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, jack@suse.cz, tytso@mit.edu
-Subject: Re: [PATCH 4/5] ext4: introduce direct IO write code path using
- iomap infrastructure
-Message-ID: <20190813143540.GA7126@magnolia>
-References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
- <581c3a2da89991e7ce5862d93dcfb23e1dc8ddc8.1565609891.git.mbobrowski@mbobrowski.org>
- <20190812170430.982E552051@d06av21.portsmouth.uk.ibm.com>
- <20190813125840.GA10187@neo.Home>
+        id S1727679AbfHMRlo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Aug 2019 13:41:44 -0400
+Received: from mga09.intel.com ([134.134.136.24]:57181 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726137AbfHMRln (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 13 Aug 2019 13:41:43 -0400
+X-Amp-Result: UNSCANNABLE
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Aug 2019 10:41:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,382,1559545200"; 
+   d="scan'208";a="376374540"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga006.fm.intel.com with ESMTP; 13 Aug 2019 10:41:42 -0700
+Date:   Tue, 13 Aug 2019 10:41:42 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
+ file object
+Message-ID: <20190813174142.GB11882@iweiny-DESK2.sc.intel.com>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190809225833.6657-17-ira.weiny@intel.com>
+ <20190812130039.GD24457@ziepe.ca>
+ <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
+ <20190812175615.GI24457@ziepe.ca>
+ <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
+ <20190813114842.GB29508@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190813125840.GA10187@neo.Home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9347 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908130155
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9347 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908130155
+In-Reply-To: <20190813114842.GB29508@ziepe.ca>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 10:58:42PM +1000, Matthew Bobrowski wrote:
-> On Mon, Aug 12, 2019 at 10:34:29PM +0530, RITESH HARJANI wrote:
-> > > +	if (offset + count > i_size_read(inode) ||
-> > > +	    offset + count > EXT4_I(inode)->i_disksize) {
-> > > +		ext4_update_i_disksize(inode, inode->i_size);
-> > > +		extend = true;
-> > > +	}
-> > > +
-> > > +	ret = iomap_dio_rw(iocb, from, &ext4_iomap_ops, ext4_dio_write_end_io);
-> > > +
-> > > +	/*
-> > > +	 * Unaligned direct AIO must be the only IO in flight or else
-> > > +	 * any overlapping aligned IO after unaligned IO might result
-> > > +	 * in data corruption.
-> > > +	 */
-> > > +	if (ret == -EIOCBQUEUED && (unaligned_aio || extend))
-> > > +		inode_dio_wait(inode);
+On Tue, Aug 13, 2019 at 08:48:42AM -0300, Jason Gunthorpe wrote:
+> On Mon, Aug 12, 2019 at 02:15:37PM -0700, Ira Weiny wrote:
+> > On Mon, Aug 12, 2019 at 02:56:15PM -0300, Jason Gunthorpe wrote:
+> > > On Mon, Aug 12, 2019 at 10:28:27AM -0700, Ira Weiny wrote:
+> > > > On Mon, Aug 12, 2019 at 10:00:40AM -0300, Jason Gunthorpe wrote:
+> > > > > On Fri, Aug 09, 2019 at 03:58:30PM -0700, ira.weiny@intel.com wrote:
+> > > > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > > > 
+> > > > > > In order for MRs to be tracked against the open verbs context the ufile
+> > > > > > needs to have a pointer to hand to the GUP code.
+> > > > > > 
+> > > > > > No references need to be taken as this should be valid for the lifetime
+> > > > > > of the context.
+> > > > > > 
+> > > > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > > > >  drivers/infiniband/core/uverbs.h      | 1 +
+> > > > > >  drivers/infiniband/core/uverbs_main.c | 1 +
+> > > > > >  2 files changed, 2 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/drivers/infiniband/core/uverbs.h b/drivers/infiniband/core/uverbs.h
+> > > > > > index 1e5aeb39f774..e802ba8c67d6 100644
+> > > > > > +++ b/drivers/infiniband/core/uverbs.h
+> > > > > > @@ -163,6 +163,7 @@ struct ib_uverbs_file {
+> > > > > >  	struct page *disassociate_page;
+> > > > > >  
+> > > > > >  	struct xarray		idr;
+> > > > > > +	struct file             *sys_file; /* backpointer to system file object */
+> > > > > >  };
+> > > > > 
+> > > > > The 'struct file' has a lifetime strictly shorter than the
+> > > > > ib_uverbs_file, which is kref'd on its own lifetime. Having a back
+> > > > > pointer like this is confouding as it will be invalid for some of the
+> > > > > lifetime of the struct.
+> > > > 
+> > > > Ah...  ok.  I really thought it was the other way around.
+> > > > 
+> > > > __fput() should not call ib_uverbs_close() until the last reference on struct
+> > > > file is released...  What holds references to struct ib_uverbs_file past that?
+> > > 
+> > > Child fds hold onto the internal ib_uverbs_file until they are closed
 > > 
-> > Could you please add explain & add a comment about why we wait in AIO DIO
-> > case
-> > when extend is true? As I see without iomap code this case was not present
-> > earlier.
+> > The FDs hold the struct file, don't they?
 > 
-> Because while using the iomap infrastructure for AIO writes, we return to the
-> caller prior to invoking the ->end_io() handler. This callback is responsible
-> for performing the in-core/on-disk inode extension if it is deemed
-> necessary. If we don't wait in the case of an extend, we run the risk of
-> loosing inode size consistencies in addition to things leading to possible
-> data corruption...
+> Only dups, there are other 'child' FDs we can create
 > 
-> > > +
-> > > +	if (ret >= 0 && iov_iter_count(from)) {
-> > > +		overwrite ? inode_unlock_shared(inode) : inode_unlock(inode);
-> > > +		return ext4_buffered_write_iter(iocb, from);
-> > > +	}
-> > should not we copy code from "__generic_file_write_iter" which does below?
+> > > Now this has unlocked updates to that data.. you'd need some lock and
+> > > get not zero pattern
 > > 
-> > 3436                 /*
-> > 3437                  * We need to ensure that the page cache pages are
-> > written to
-> > 3438                  * disk and invalidated to preserve the expected
-> > O_DIRECT
-> > 3439                  * semantics.
-> > 3440                  */
+> > You can't call "get" here because I'm 99% sure we only get here when struct
+> > file has no references left...
 > 
-> Hm, I don't see why this would be required seeing as though the page cache
-> invalidation semantics pre and post write are handled by iomap_dio_rw() and
-> iomap_dio_complete(). But, I could be completely wrong here, so we may need to
-> wait for some others to provide comments on this.
+> Nope, like I said the other FDs hold the uverbs_file independent of
+> the struct file it is related too. 
 
-iomap_dio_rw is supposed to zap the page cache before the write and
-again afterwards (and whine if someone is racing buffered and direct
-writes to the same file location), so ext4 shouldn't need to do that
-itself.
+<sigh>
 
---D
+We don't allow memory registrations to be created with those other FDs...
 
-> > > +			WARN_ON(!(flags & IOMAP_DIRECT));
-> > > +			if (round_down(offset, i_blocksize(inode)) >=
-> > > +			    i_size_read(inode)) {
-> > > +				ret = ext4_map_blocks(handle, inode, &map,
-> > > +						      EXT4_GET_BLOCKS_CREATE);
-> > > +			} else if (!ext4_test_inode_flag(inode,
-> > > +							 EXT4_INODE_EXTENTS)) {
-> > > +				/*
-> > > +				 * We cannot fill holes in indirect
-> > > +				 * tree based inodes as that could
-> > > +				 * expose stale data in the case of a
-> > > +				 * crash. Use magic error code to
-> > > +				 * fallback to buffered IO.
-> > > +				 */
-> > > +				ret = ext4_map_blocks(handle, inode, &map, 0);
-> > > +				if (ret == 0)
-> > > +					ret = -ENOTBLK;
-> > > +			} else {
-> > > +				ret = ext4_map_blocks(handle, inode, &map,
-> > > +						      EXT4_GET_BLOCKS_IO_CREATE_EXT);
-> > > +			}
-> > > +		}
-> > 
-> > Could you please check & confirm on below points -
-> > 1. Do you see a problem @above in case of *overwrite* with extents mapping?
-> > It will fall into EXT4_GET_BLOCKS_IO_CREATE_EXT case.
-> > So are we piggy backing on the fact that ext4_map_blocks first call
-> > ext4_ext_map_blocks
-> > with flags & EXT4_GET_BLOCKS_KEEP_SIZE. And so for overwrite case since it
-> > will return
-> > val > 0 then we will anyway not create any blocks and so we don't need to
-> > check overwrite
-> > case specifically here?
-> > 
-> > 
-> > 2. For cases with flags passed is 0 to ext4_map_blocks (overwrite &
-> > fallocate without extent case),
-> > we need not start the journaling transaction. But in above we are doing
-> > ext4_journal_start/stop unconditionally
-> > & unnecessarily reserving dio_credits blocks.
-> > We need to take care of that right?
+And I was pretty sure uverbs_destroy_ufile_hw() would take care of (or ensure
+that some other thread is) destroying all the MR's we have associated with this
+FD.
+
+I'll have to think on this more since uverbs_destroy_ufile_hw() does not
+block...  Which means there is a window here within the GUP code...  :-/
+
 > 
-> Hm, I think you raise valid points here.
-> 
-> Jan, do you have any comments on the above? I vaguely remember having a
-> discussion around dropping the overwrite checks in ext4_iomap_begin() as we're
-> removing the inode_lock() early on in ext4_dio_write_iter(), so it woudln't be
-> necessary to do so. But, now that Ritesh mentioned it again I'm thinking it
-> may actually be required...
-> 
-> > >   		if (ret < 0) {
-> > >   			ext4_journal_stop(handle);
-> > >   			if (ret == -ENOSPC &&
-> > > @@ -3581,10 +3611,10 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
-> > >   		iomap->type = delalloc ? IOMAP_DELALLOC : IOMAP_HOLE;
-> > >   		iomap->addr = IOMAP_NULL_ADDR;
-> > >   	} else {
-> > > -		if (map.m_flags & EXT4_MAP_MAPPED) {
-> > > -			iomap->type = IOMAP_MAPPED;
-> > > -		} else if (map.m_flags & EXT4_MAP_UNWRITTEN) {
-> > > +		if (map.m_flags & EXT4_MAP_UNWRITTEN) {
-> > >   			iomap->type = IOMAP_UNWRITTEN;
-> > > +		} else if (map.m_flags & EXT4_MAP_MAPPED) {
-> > > +			iomap->type = IOMAP_MAPPED;
-> > Maybe a comment as to explaining why checking UNWRITTEN before is necessary
-> > for others.
-> > So in case of fallocate & DIO write case we may get extent which is both
-> > unwritten & mapped (right?).
-> > so we need to check if we have an unwritten extent first so that it will
-> > need the conversion in ->end_io
-> > callback.
-> 
-> Yes, that is essentially correct.
-> 
-> --M
+> This is why having a back pointer like this is so ugly, it creates a
+> reference counting cycle
+
+Yep...  I worked through this...  and it was giving me fits...
+
+Anyway, the struct file is the only object in the core which was reasonable to
+store this information in since that is what is passed around to other
+processes...
+
+Another idea I explored was to create a callback into the driver from the core
+which put the responsibility of printing the pin information on the driver.
+
+But that started to be (and is likely going to be) a pretty complicated "dance"
+between the core and the drivers so I went this way...
+
+I also thought about holding some other reference on struct file which would
+allow release to be called while keeping struct file around.  But that seemed
+crazy...
+
+Ira
+
