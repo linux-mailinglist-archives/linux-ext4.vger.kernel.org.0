@@ -2,112 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 535258ACC7
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 04:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3964C8B5CF
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 12:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbfHMCko (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 12 Aug 2019 22:40:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4664 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726483AbfHMCko (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 12 Aug 2019 22:40:44 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 5BDD9F756FE5AB8BEAEB;
-        Tue, 13 Aug 2019 10:40:42 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 13 Aug
- 2019 10:40:38 +0800
-Subject: Re: [PATCH 3/6] f2fs: skip truncate when verity in progress in
- ->write_begin()
-To:     <linux-fscrypt@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20190811213557.1970-1-ebiggers@kernel.org>
- <20190811213557.1970-4-ebiggers@kernel.org>
- <e5d57ee4-f022-12ca-7f09-e4b8ef86c6b6@huawei.com>
- <20190812225848.GA175194@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <13be698c-1a3d-9f6a-66d8-b9024b7963f3@huawei.com>
-Date:   Tue, 13 Aug 2019 10:40:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1728023AbfHMKn5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Aug 2019 06:43:57 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:36883 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728004AbfHMKn4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Aug 2019 06:43:56 -0400
+Received: by mail-pg1-f194.google.com with SMTP id d1so18236307pgp.4
+        for <linux-ext4@vger.kernel.org>; Tue, 13 Aug 2019 03:43:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1qklavnkTkWQJy1JopwbXdEDiZx8NzuMuRiS/ag2Wgs=;
+        b=GCczMx5epHAUCi8ppC9r92rGWtBdcIQUaqjdTrk2/fLntT8fEjLlxy9wRHZA3xU+ql
+         3AwKB5s/DdQSlqfXDvR6Yh38AqJi/OgU8DqHW4kkdWsD15nccdwZ+qeW5KUE9UGAiwVX
+         Mfxo/pTPVsm/3eKj4AAe77vE+bWXeyC9VxVlzfLIXOyq5iDU8vG9IKA/60wNlfyd1t3t
+         hDXd1dUbNocIdUK3+W562n07rN3luWkV9n44OQSKbt8DtJPST3sLvsF4Apb4bpkEFb9m
+         myTSHbPHUrjhGOFwV7nH5zd6xIgmGUIz6Qa5DgI41ym2t1h4Yz+NK2QLHQuQ5IAPmamW
+         DCIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1qklavnkTkWQJy1JopwbXdEDiZx8NzuMuRiS/ag2Wgs=;
+        b=BMEJ2WDuEc3UDCHESH0B0FkOk6ce+ekdQGeRjAtzVHKbpwUufKxUwDvZPmubEDQZ1P
+         pXCOGEhsREDXYTiJwuUgYk5ZGrIDdifC1BnleDWIZcWu8vjxDtcLlIBHSRg1oyn7PnM8
+         a9eR2qxiLbV0jxfqhO8V8P6jrfWQbFI0+cz9zjhZV5brUiQEDfWdKHDdX3xqKH4Txm7t
+         J5wk1HJ7LdsFo1O0emUAIj4W0L1IFXJ4IvhGvYCcUoveDH2X+H+f62HG3H4fhdsHV+G6
+         j89ee1lJ60BuUBlkCIoLvS77kOmK7a8arWzZ7Na0/nVMZKxebNtIMGyxZh3YHpKecK3X
+         th0A==
+X-Gm-Message-State: APjAAAUt8gsAPq+Kvxlap+p1g9Lw4fbwXjVclN18lNDUSCdDG9oSHaYm
+        4yGv2IHSXIlUZ8LGAWKsD1Fo
+X-Google-Smtp-Source: APXvYqw+03RFdMM3Vy6a0u+2sgJvuS/z55JRiw2M+5zYi2IK9y+vx1Ks2ApbZH64SHRsFl8zW/eX4w==
+X-Received: by 2002:aa7:96ee:: with SMTP id i14mr19469600pfq.217.1565693035778;
+        Tue, 13 Aug 2019 03:43:55 -0700 (PDT)
+Received: from poseidon.bobrowski.net ([114.78.226.167])
+        by smtp.gmail.com with ESMTPSA id n7sm123051936pff.59.2019.08.13.03.43.52
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 13 Aug 2019 03:43:55 -0700 (PDT)
+Date:   Tue, 13 Aug 2019 20:43:49 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        jack@suse.cz, tytso@mit.edu, riteshh@linux.ibm.com
+Subject: Re: [PATCH 3/5] iomap: modify ->end_io() calling convention
+Message-ID: <20190813104347.GA27628@poseidon.bobrowski.net>
+References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
+ <f4abda9c0c835d9a50b644fdbec8d43269f6b0f7.1565609891.git.mbobrowski@mbobrowski.org>
+ <20190812171832.GA24564@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20190812225848.GA175194@gmail.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190812171832.GA24564@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Eric,
+On Mon, Aug 12, 2019 at 10:18:32AM -0700, Christoph Hellwig wrote:
+> please add linux-xfs to the cc list for the whole series.  Besides
+> touching xfs itself it is also mentioned in MAINTAINERS for the iomap
+> code.
 
-On 2019/8/13 6:58, Eric Biggers wrote:
-> Hi Chao,
+Firstly, thank you for the review, highly appreciated! Secondly, not a
+problem, will do.
+
+> On Mon, Aug 12, 2019 at 10:53:11PM +1000, Matthew Bobrowski wrote:
+> > -	if (size <= 0)
+> > -		return size;
+> > +	if (error || !size)
+> > +		return error ? error : size;
 > 
-> On Mon, Aug 12, 2019 at 08:25:33PM +0800, Chao Yu wrote:
->> Hi Eric,
->>
->> On 2019/8/12 5:35, Eric Biggers wrote:
->>> From: Eric Biggers <ebiggers@google.com>
->>>
->>> When an error (e.g. ENOSPC) occurs during f2fs_write_begin() when called
->>> from f2fs_write_merkle_tree_block(), skip truncating the file.  i_size
->>> is not meaningful in this case, and the truncation is handled by
->>> f2fs_end_enable_verity() instead.
->>>
->>> Fixes: 60d7bf0f790f ("f2fs: add fs-verity support")
->>> Signed-off-by: Eric Biggers <ebiggers@google.com>
->>> ---
->>>  fs/f2fs/data.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>> index 3f525f8a3a5fa..00b03fb87bd9b 100644
->>> --- a/fs/f2fs/data.c
->>> +++ b/fs/f2fs/data.c
->>> @@ -2476,7 +2476,7 @@ static void f2fs_write_failed(struct address_space *mapping, loff_t to)
->>>  	struct inode *inode = mapping->host;
->>>  	loff_t i_size = i_size_read(inode);
->>>  
->>> -	if (to > i_size) {
->>
->> Maybe adding one single line comment to mention that it's redundant/unnecessary
->> truncation here is better, if I didn't misunderstand this.
->>
->> Thanks,
->>
->>> +	if (to > i_size && !f2fs_verity_in_progress(inode)) {
->>>  		down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>>  		down_write(&F2FS_I(inode)->i_mmap_sem);
->>>  
+> This should be:
 > 
-> Do you mean add a comment instead of the !f2fs_verity_in_progress() check, or in
-> addition to it?  ->write_begin(), ->writepages(), and ->write_end() are all
+> 	if (error)
+> 		return error;
+> 	if (!size)
+> 		return 0;
 
-Sorry, I didn't make this very clear, I meant adding the comment in addition on
-above change.
+OK.
 
-> supposed to ignore i_size when verity is in progress, so I don't think this
-> particular part should be different, even if technically it's still correct to
-> truncate twice.  Also, ext4 needs this check in its ->write_begin() for locking
-> reasons; we should keep f2fs similar.
-
-Agreed.
-
+> >  	if (flags & IOMAP_DIO_COW) {
+> > -		error = xfs_reflink_end_cow(ip, offset, size);
+> > -		if (error)
+> > +		ret = xfs_reflink_end_cow(ip, offset, size);
+> > +		if (ret)
 > 
-> How about having both a comment and the check, like:
-> 
->         /* In the fs-verity case, f2fs_end_enable_verity() does the truncate */
->         if (to > i_size && !f2fs_verity_in_progress(inode)) {
+> I think we can just keep reusing error here.
 
-The comment looks good to me. :)
+Ah yes, that will work.
 
-Thanks,
+> > +typedef int (iomap_dio_end_io_t)(struct kiocb *iocb, ssize_t size,
+> > +				 ssize_t error, unsigned int flags);
+> 
+> error should be an int and not a ssize_t.
 
-> 
-> - Eric
-> .
-> 
+Updated.
+
+--M
