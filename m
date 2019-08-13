@@ -2,193 +2,399 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8D38B94B
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 14:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD9D8B94F
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 14:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbfHMM7B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Aug 2019 08:59:01 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:44334 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728342AbfHMM7A (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Aug 2019 08:59:00 -0400
-Received: by mail-pg1-f196.google.com with SMTP id i18so51230542pgl.11
-        for <linux-ext4@vger.kernel.org>; Tue, 13 Aug 2019 05:58:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=BtgHrm08etfJjpF5KZmN8TsxqVOwcQO1JBv4H+Dr5cg=;
-        b=wEmr3cZiUAc2JpvdtUVMLKLT9KycYfEQTCLPN6raNK0E8SO/r2D6MAsFB8sxobyYTB
-         JKHsJgYhlJ71M2Rlf1ky2eEywEQE1JgqOuuGQm+6KVHDcnZn4XWKc8NshLfPWMTv8dHQ
-         9Ac288GNUhb8Cum4V/duyv4hUCR86xG5Uuv8PJaE8K6Wb/IkZ0Bt3TOExh2Da7X8EfGG
-         zAFjRbflE8ZDCijWL3TdCjVc3Beqo0oi7dVa6rxuXlTTtpSNi9W40Hz+3i+6e/yjBJpb
-         moSTb4d4/BQkNFf3UZP7KPmE8TYoL+t/56kin8CzTW45xpfBb3aM4+pUtYz0oq52jHZE
-         zvJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=BtgHrm08etfJjpF5KZmN8TsxqVOwcQO1JBv4H+Dr5cg=;
-        b=kHrIgYmsXkeJF6xQvTuhGDV/Q/g5k62fXkDBYWLDJMJeHD9qDOoPoPDh4RggTLzf3X
-         IFENArbJwaU0ZAi7JvBIJJOLhgsCHqwwg2uH0KEbjfUwT4brFx2efd4NgtkP8uvIUYlR
-         4kr5SIo1tA2udoXP/dwp0v7ml4swcNaHIkutRdpI133pdzSzm3Pb4arfU5j2eCeFVDrf
-         WDOdTvKrRcSlX6/dISosVliqwvN4S5QIPCpMQSW9SMahRgulq+MZ4DVAWSL3c4yvDrj5
-         W3/TW3bZ/xjEMyhNH85hAlw4i9UfpT1dCtKDuPi3PypIJZ9n3Ld70vZ0jZWmYXUIGP4p
-         JQBQ==
-X-Gm-Message-State: APjAAAWZKxKH133W0C7/n1X8Yf6HZd29jvHuIrRQJMVmnR5bv73/9Jvy
-        Ycj1g6hzhd/BtYIeu59+S15T
-X-Google-Smtp-Source: APXvYqy/dcEWOI6c0eEjj5GAJ7wsf/ExpRRYdw8Xmi1ZmvBRpibcJa9dVGYOBop6r31MeVz4JOMGCw==
-X-Received: by 2002:a63:89c7:: with SMTP id v190mr33058801pgd.299.1565701134413;
-        Tue, 13 Aug 2019 05:58:54 -0700 (PDT)
-Received: from neo.Home ([114.78.226.167])
-        by smtp.gmail.com with ESMTPSA id x1sm22171627pfj.182.2019.08.13.05.58.51
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 13 Aug 2019 05:58:53 -0700 (PDT)
-Date:   Tue, 13 Aug 2019 22:58:42 +1000
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     RITESH HARJANI <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        jack@suse.cz, tytso@mit.edu
-Subject: Re: [PATCH 4/5] ext4: introduce direct IO write code path using
- iomap infrastructure
-Message-ID: <20190813125840.GA10187@neo.Home>
-References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
- <581c3a2da89991e7ce5862d93dcfb23e1dc8ddc8.1565609891.git.mbobrowski@mbobrowski.org>
- <20190812170430.982E552051@d06av21.portsmouth.uk.ibm.com>
+        id S1728559AbfHMM7Z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Aug 2019 08:59:25 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:37956 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728289AbfHMM7Z (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 13 Aug 2019 08:59:25 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C6DBEDA50EE0E3A35C50;
+        Tue, 13 Aug 2019 20:59:23 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Tue, 13 Aug 2019
+ 20:59:18 +0800
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <jack@suse.cz>, <adilger.kernel@dilger.ca>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH v3] ext4: fix potential use after free in system zone via remount with noblock_validity
+Date:   Tue, 13 Aug 2019 21:05:47 +0800
+Message-ID: <1565701547-146508-1-git-send-email-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190812170430.982E552051@d06av21.portsmouth.uk.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 10:34:29PM +0530, RITESH HARJANI wrote:
-> > +	if (offset + count > i_size_read(inode) ||
-> > +	    offset + count > EXT4_I(inode)->i_disksize) {
-> > +		ext4_update_i_disksize(inode, inode->i_size);
-> > +		extend = true;
-> > +	}
-> > +
-> > +	ret = iomap_dio_rw(iocb, from, &ext4_iomap_ops, ext4_dio_write_end_io);
-> > +
-> > +	/*
-> > +	 * Unaligned direct AIO must be the only IO in flight or else
-> > +	 * any overlapping aligned IO after unaligned IO might result
-> > +	 * in data corruption.
-> > +	 */
-> > +	if (ret == -EIOCBQUEUED && (unaligned_aio || extend))
-> > +		inode_dio_wait(inode);
-> 
-> Could you please add explain & add a comment about why we wait in AIO DIO
-> case
-> when extend is true? As I see without iomap code this case was not present
-> earlier.
+Remount process will release system zone which was allocated before if
+"noblock_validity" is specified. If we mount an ext4 file system to two
+mountpoints with default mount options, and then remount one of them
+with "noblock_validity", it may trigger a use after free problem when
+someone accessing the other one.
 
-Because while using the iomap infrastructure for AIO writes, we return to the
-caller prior to invoking the ->end_io() handler. This callback is responsible
-for performing the in-core/on-disk inode extension if it is deemed
-necessary. If we don't wait in the case of an extend, we run the risk of
-loosing inode size consistencies in addition to things leading to possible
-data corruption...
+ # mount /dev/sda foo
+ # mount /dev/sda bar
 
-> > +
-> > +	if (ret >= 0 && iov_iter_count(from)) {
-> > +		overwrite ? inode_unlock_shared(inode) : inode_unlock(inode);
-> > +		return ext4_buffered_write_iter(iocb, from);
-> > +	}
-> should not we copy code from "__generic_file_write_iter" which does below?
-> 
-> 3436                 /*
-> 3437                  * We need to ensure that the page cache pages are
-> written to
-> 3438                  * disk and invalidated to preserve the expected
-> O_DIRECT
-> 3439                  * semantics.
-> 3440                  */
+User access mountpoint "foo"   |   Remount mountpoint "bar"
+                               |
+ext4_map_blocks()              |   ext4_remount()
+check_block_validity()         |   ext4_setup_system_zone()
+ext4_data_block_valid()        |   ext4_release_system_zone()
+                               |   free system_blks rb nodes
+access system_blks rb nodes    |
+trigger use after free         |
 
-Hm, I don't see why this would be required seeing as though the page cache
-invalidation semantics pre and post write are handled by iomap_dio_rw() and
-iomap_dio_complete(). But, I could be completely wrong here, so we may need to
-wait for some others to provide comments on this.
+This problem can also be reproduced by one mountpint, At the same time,
+add_system_zone() can get called during remount as well so there can be
+racing ext4_data_block_valid() reading the rbtree at the same time.
 
-> > +			WARN_ON(!(flags & IOMAP_DIRECT));
-> > +			if (round_down(offset, i_blocksize(inode)) >=
-> > +			    i_size_read(inode)) {
-> > +				ret = ext4_map_blocks(handle, inode, &map,
-> > +						      EXT4_GET_BLOCKS_CREATE);
-> > +			} else if (!ext4_test_inode_flag(inode,
-> > +							 EXT4_INODE_EXTENTS)) {
-> > +				/*
-> > +				 * We cannot fill holes in indirect
-> > +				 * tree based inodes as that could
-> > +				 * expose stale data in the case of a
-> > +				 * crash. Use magic error code to
-> > +				 * fallback to buffered IO.
-> > +				 */
-> > +				ret = ext4_map_blocks(handle, inode, &map, 0);
-> > +				if (ret == 0)
-> > +					ret = -ENOTBLK;
-> > +			} else {
-> > +				ret = ext4_map_blocks(handle, inode, &map,
-> > +						      EXT4_GET_BLOCKS_IO_CREATE_EXT);
-> > +			}
-> > +		}
-> 
-> Could you please check & confirm on below points -
-> 1. Do you see a problem @above in case of *overwrite* with extents mapping?
-> It will fall into EXT4_GET_BLOCKS_IO_CREATE_EXT case.
-> So are we piggy backing on the fact that ext4_map_blocks first call
-> ext4_ext_map_blocks
-> with flags & EXT4_GET_BLOCKS_KEEP_SIZE. And so for overwrite case since it
-> will return
-> val > 0 then we will anyway not create any blocks and so we don't need to
-> check overwrite
-> case specifically here?
-> 
-> 
-> 2. For cases with flags passed is 0 to ext4_map_blocks (overwrite &
-> fallocate without extent case),
-> we need not start the journaling transaction. But in above we are doing
-> ext4_journal_start/stop unconditionally
-> & unnecessarily reserving dio_credits blocks.
-> We need to take care of that right?
+This patch add RCU to protect system zone from releasing or building
+when doing a remount which inverse current "noblock_validity" mount
+option. It assign the rbtree after the whole tree was complete and
+do actual freeing after rcu grace period, avoid any intermediate state.
 
-Hm, I think you raise valid points here.
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+---
+Changes since v2:
+ - Remove seqlock, and assign the whole rbtree when finished assembling.
+ - Fix the sparse warning.
 
-Jan, do you have any comments on the above? I vaguely remember having a
-discussion around dropping the overwrite checks in ext4_iomap_begin() as we're
-removing the inode_lock() early on in ext4_dio_write_iter(), so it woudln't be
-necessary to do so. But, now that Ritesh mentioned it again I'm thinking it
-may actually be required...
+ fs/ext4/block_validity.c | 167 +++++++++++++++++++++++++++++++++--------------
+ fs/ext4/ext4.h           |  10 ++-
+ 2 files changed, 126 insertions(+), 51 deletions(-)
 
-> >   		if (ret < 0) {
-> >   			ext4_journal_stop(handle);
-> >   			if (ret == -ENOSPC &&
-> > @@ -3581,10 +3611,10 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
-> >   		iomap->type = delalloc ? IOMAP_DELALLOC : IOMAP_HOLE;
-> >   		iomap->addr = IOMAP_NULL_ADDR;
-> >   	} else {
-> > -		if (map.m_flags & EXT4_MAP_MAPPED) {
-> > -			iomap->type = IOMAP_MAPPED;
-> > -		} else if (map.m_flags & EXT4_MAP_UNWRITTEN) {
-> > +		if (map.m_flags & EXT4_MAP_UNWRITTEN) {
-> >   			iomap->type = IOMAP_UNWRITTEN;
-> > +		} else if (map.m_flags & EXT4_MAP_MAPPED) {
-> > +			iomap->type = IOMAP_MAPPED;
-> Maybe a comment as to explaining why checking UNWRITTEN before is necessary
-> for others.
-> So in case of fallocate & DIO write case we may get extent which is both
-> unwritten & mapped (right?).
-> so we need to check if we have an unwritten extent first so that it will
-> need the conversion in ->end_io
-> callback.
+diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+index 8e83741..249cf46 100644
+--- a/fs/ext4/block_validity.c
++++ b/fs/ext4/block_validity.c
+@@ -38,6 +38,7 @@ int __init ext4_init_system_zone(void)
+ 
+ void ext4_exit_system_zone(void)
+ {
++	rcu_barrier();
+ 	kmem_cache_destroy(ext4_system_zone_cachep);
+ }
+ 
+@@ -49,17 +50,26 @@ static inline int can_merge(struct ext4_system_zone *entry1,
+ 	return 0;
+ }
+ 
++static void release_system_zone(struct ext4_system_blocks *system_blks)
++{
++	struct ext4_system_zone	*entry, *n;
++
++	rbtree_postorder_for_each_entry_safe(entry, n,
++				&system_blks->root, node)
++		kmem_cache_free(ext4_system_zone_cachep, entry);
++}
++
+ /*
+  * Mark a range of blocks as belonging to the "system zone" --- that
+  * is, filesystem metadata blocks which should never be used by
+  * inodes.
+  */
+-static int add_system_zone(struct ext4_sb_info *sbi,
++static int add_system_zone(struct ext4_system_blocks *system_blks,
+ 			   ext4_fsblk_t start_blk,
+ 			   unsigned int count)
+ {
+ 	struct ext4_system_zone *new_entry = NULL, *entry;
+-	struct rb_node **n = &sbi->system_blks.rb_node, *node;
++	struct rb_node **n = &system_blks->root.rb_node, *node;
+ 	struct rb_node *parent = NULL, *new_node = NULL;
+ 
+ 	while (*n) {
+@@ -91,7 +101,7 @@ static int add_system_zone(struct ext4_sb_info *sbi,
+ 		new_node = &new_entry->node;
+ 
+ 		rb_link_node(new_node, parent, n);
+-		rb_insert_color(new_node, &sbi->system_blks);
++		rb_insert_color(new_node, &system_blks->root);
+ 	}
+ 
+ 	/* Can we merge to the left? */
+@@ -101,7 +111,7 @@ static int add_system_zone(struct ext4_sb_info *sbi,
+ 		if (can_merge(entry, new_entry)) {
+ 			new_entry->start_blk = entry->start_blk;
+ 			new_entry->count += entry->count;
+-			rb_erase(node, &sbi->system_blks);
++			rb_erase(node, &system_blks->root);
+ 			kmem_cache_free(ext4_system_zone_cachep, entry);
+ 		}
+ 	}
+@@ -112,7 +122,7 @@ static int add_system_zone(struct ext4_sb_info *sbi,
+ 		entry = rb_entry(node, struct ext4_system_zone, node);
+ 		if (can_merge(new_entry, entry)) {
+ 			new_entry->count += entry->count;
+-			rb_erase(node, &sbi->system_blks);
++			rb_erase(node, &system_blks->root);
+ 			kmem_cache_free(ext4_system_zone_cachep, entry);
+ 		}
+ 	}
+@@ -126,7 +136,7 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
+ 	int first = 1;
+ 
+ 	printk(KERN_INFO "System zones: ");
+-	node = rb_first(&sbi->system_blks);
++	node = rb_first(&sbi->system_blks->root);
+ 	while (node) {
+ 		entry = rb_entry(node, struct ext4_system_zone, node);
+ 		printk(KERN_CONT "%s%llu-%llu", first ? "" : ", ",
+@@ -137,7 +147,42 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
+ 	printk(KERN_CONT "\n");
+ }
+ 
+-static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
++/*
++ * Returns 1 if the passed-in block region (start_blk,
++ * start_blk+count) is valid; 0 if some part of the block region
++ * overlaps with filesystem metadata blocks.
++ */
++static int ext4_data_block_valid_rcu(struct ext4_sb_info *sbi,
++				     struct ext4_system_blocks *system_blks,
++				     ext4_fsblk_t start_blk,
++				     unsigned int count)
++{
++	struct ext4_system_zone *entry;
++	struct rb_node *n = system_blks->root.rb_node;
++
++	if ((start_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
++	    (start_blk + count < start_blk) ||
++	    (start_blk + count > ext4_blocks_count(sbi->s_es))) {
++		sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
++		return 0;
++	}
++	while (n) {
++		entry = rb_entry(n, struct ext4_system_zone, node);
++		if (start_blk + count - 1 < entry->start_blk)
++			n = n->rb_left;
++		else if (start_blk >= (entry->start_blk + entry->count))
++			n = n->rb_right;
++		else {
++			sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
++			return 0;
++		}
++	}
++	return 1;
++}
++
++static int ext4_protect_reserved_inode(struct super_block *sb,
++				       struct ext4_system_blocks *system_blks,
++				       u32 ino)
+ {
+ 	struct inode *inode;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+@@ -163,14 +208,15 @@ static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
+ 		if (n == 0) {
+ 			i++;
+ 		} else {
+-			if (!ext4_data_block_valid(sbi, map.m_pblk, n)) {
++			if (!ext4_data_block_valid_rcu(sbi, system_blks,
++						map.m_pblk, n)) {
+ 				ext4_error(sb, "blocks %llu-%llu from inode %u "
+ 					   "overlap system zone", map.m_pblk,
+ 					   map.m_pblk + map.m_len - 1, ino);
+ 				err = -EFSCORRUPTED;
+ 				break;
+ 			}
+-			err = add_system_zone(sbi, map.m_pblk, n);
++			err = add_system_zone(system_blks, map.m_pblk, n);
+ 			if (err < 0)
+ 				break;
+ 			i += n;
+@@ -180,94 +226,115 @@ static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
+ 	return err;
+ }
+ 
++static void ext4_destroy_system_zone(struct rcu_head *rcu)
++{
++	struct ext4_system_blocks *system_blks;
++
++	system_blks = container_of(rcu, struct ext4_system_blocks, rcu);
++	release_system_zone(system_blks);
++	kfree(system_blks);
++}
++
+ int ext4_setup_system_zone(struct super_block *sb)
+ {
+ 	ext4_group_t ngroups = ext4_get_groups_count(sb);
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	struct ext4_system_blocks *system_blks;
+ 	struct ext4_group_desc *gdp;
+ 	ext4_group_t i;
+ 	int flex_size = ext4_flex_bg_size(sbi);
+ 	int ret;
+ 
+ 	if (!test_opt(sb, BLOCK_VALIDITY)) {
+-		if (sbi->system_blks.rb_node)
++		if (sbi->system_blks)
+ 			ext4_release_system_zone(sb);
+ 		return 0;
+ 	}
+-	if (sbi->system_blks.rb_node)
++	if (sbi->system_blks)
+ 		return 0;
+ 
++	system_blks = kzalloc(sizeof(*system_blks), GFP_KERNEL);
++	if (!system_blks)
++		return -ENOMEM;
++
+ 	for (i=0; i < ngroups; i++) {
+ 		cond_resched();
+ 		if (ext4_bg_has_super(sb, i) &&
+ 		    ((i < 5) || ((i % flex_size) == 0)))
+-			add_system_zone(sbi, ext4_group_first_block_no(sb, i),
++			add_system_zone(system_blks,
++					ext4_group_first_block_no(sb, i),
+ 					ext4_bg_num_gdb(sb, i) + 1);
+ 		gdp = ext4_get_group_desc(sb, i, NULL);
+-		ret = add_system_zone(sbi, ext4_block_bitmap(sb, gdp), 1);
++		ret = add_system_zone(system_blks,
++				ext4_block_bitmap(sb, gdp), 1);
+ 		if (ret)
+-			return ret;
+-		ret = add_system_zone(sbi, ext4_inode_bitmap(sb, gdp), 1);
++			goto err;
++		ret = add_system_zone(system_blks,
++				ext4_inode_bitmap(sb, gdp), 1);
+ 		if (ret)
+-			return ret;
+-		ret = add_system_zone(sbi, ext4_inode_table(sb, gdp),
++			goto err;
++		ret = add_system_zone(system_blks,
++				ext4_inode_table(sb, gdp),
+ 				sbi->s_itb_per_group);
+ 		if (ret)
+-			return ret;
++			goto err;
+ 	}
+ 	if (ext4_has_feature_journal(sb) && sbi->s_es->s_journal_inum) {
+-		ret = ext4_protect_reserved_inode(sb,
++		ret = ext4_protect_reserved_inode(sb, system_blks,
+ 				le32_to_cpu(sbi->s_es->s_journal_inum));
+ 		if (ret)
+-			return ret;
++			goto err;
+ 	}
+ 
++	/*
++	 * System blks rbtree complete, announce it once to prevent racing
++	 * with ext4_data_block_valid() accessing the rbtree at the same
++	 * time.
++	 */
++	rcu_assign_pointer(sbi->system_blks, system_blks);
++
+ 	if (test_opt(sb, DEBUG))
+ 		debug_print_tree(sbi);
+ 	return 0;
++err:
++	release_system_zone(system_blks);
++	kfree(system_blks);
++	return ret;
+ }
+ 
+ /* Called when the filesystem is unmounted */
+ void ext4_release_system_zone(struct super_block *sb)
+ {
+-	struct ext4_system_zone	*entry, *n;
++	struct ext4_system_blocks *system_blks;
+ 
+-	rbtree_postorder_for_each_entry_safe(entry, n,
+-			&EXT4_SB(sb)->system_blks, node)
+-		kmem_cache_free(ext4_system_zone_cachep, entry);
++	system_blks = rcu_dereference(EXT4_SB(sb)->system_blks);
++	rcu_assign_pointer(EXT4_SB(sb)->system_blks, NULL);
+ 
+-	EXT4_SB(sb)->system_blks = RB_ROOT;
++	if (system_blks)
++		call_rcu(&system_blks->rcu, ext4_destroy_system_zone);
+ }
+ 
+-/*
+- * Returns 1 if the passed-in block region (start_blk,
+- * start_blk+count) is valid; 0 if some part of the block region
+- * overlaps with filesystem metadata blocks.
+- */
+ int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
+ 			  unsigned int count)
+ {
+-	struct ext4_system_zone *entry;
+-	struct rb_node *n = sbi->system_blks.rb_node;
++	struct ext4_system_blocks *system_blks;
++	int ret = 1;
+ 
+-	if ((start_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
+-	    (start_blk + count < start_blk) ||
+-	    (start_blk + count > ext4_blocks_count(sbi->s_es))) {
+-		sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
+-		return 0;
+-	}
+-	while (n) {
+-		entry = rb_entry(n, struct ext4_system_zone, node);
+-		if (start_blk + count - 1 < entry->start_blk)
+-			n = n->rb_left;
+-		else if (start_blk >= (entry->start_blk + entry->count))
+-			n = n->rb_right;
+-		else {
+-			sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
+-			return 0;
+-		}
+-	}
+-	return 1;
++	/*
++	 * Lock the system zone to prevent it being released concurrently
++	 * when doing a remount which inverse current "[no]block_validity"
++	 * mount option.
++	 */
++	rcu_read_lock();
++	system_blks = rcu_dereference(sbi->system_blks);
++	if (system_blks == NULL)
++		goto out;
++
++	ret = ext4_data_block_valid_rcu(sbi, system_blks,
++					start_blk, count);
++out:
++	rcu_read_unlock();
++	return ret;
+ }
+ 
+ int ext4_check_blockref(const char *function, unsigned int line,
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index bf660aa..c025efc 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -185,6 +185,14 @@ struct ext4_map_blocks {
+ };
+ 
+ /*
++ * Block validity checking, system zone rbtree.
++ */
++struct ext4_system_blocks {
++	struct rb_root root;
++	struct rcu_head rcu;
++};
++
++/*
+  * Flags for ext4_io_end->flags
+  */
+ #define	EXT4_IO_END_UNWRITTEN	0x0001
+@@ -1421,7 +1429,7 @@ struct ext4_sb_info {
+ 	int s_jquota_fmt;			/* Format of quota to use */
+ #endif
+ 	unsigned int s_want_extra_isize; /* New inodes should reserve # bytes */
+-	struct rb_root system_blks;
++	struct ext4_system_blocks __rcu *system_blks;
+ 
+ #ifdef EXTENTS_STATS
+ 	/* ext4 extents stats */
+-- 
+2.7.4
 
-Yes, that is essentially correct.
-
---M
