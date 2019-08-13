@@ -2,172 +2,193 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF7A8B885
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 14:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8D38B94B
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 14:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbfHMM1d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Aug 2019 08:27:33 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50050 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727969AbfHMM1c (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 13 Aug 2019 08:27:32 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7DCNwNT130486
-        for <linux-ext4@vger.kernel.org>; Tue, 13 Aug 2019 08:27:31 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2ubvr99ep4-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Tue, 13 Aug 2019 08:27:30 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Tue, 13 Aug 2019 13:27:28 +0100
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 13 Aug 2019 13:27:25 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7DCRO2W51445988
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 13 Aug 2019 12:27:24 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9BFC34C046;
-        Tue, 13 Aug 2019 12:27:24 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE6264C040;
-        Tue, 13 Aug 2019 12:27:23 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.124.31.57])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 13 Aug 2019 12:27:23 +0000 (GMT)
-Subject: Re: [PATCH 0/5] ext4: direct IO via iomap infrastructure
-To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
+        id S1728364AbfHMM7B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Aug 2019 08:59:01 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:44334 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728342AbfHMM7A (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 13 Aug 2019 08:59:00 -0400
+Received: by mail-pg1-f196.google.com with SMTP id i18so51230542pgl.11
+        for <linux-ext4@vger.kernel.org>; Tue, 13 Aug 2019 05:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=BtgHrm08etfJjpF5KZmN8TsxqVOwcQO1JBv4H+Dr5cg=;
+        b=wEmr3cZiUAc2JpvdtUVMLKLT9KycYfEQTCLPN6raNK0E8SO/r2D6MAsFB8sxobyYTB
+         JKHsJgYhlJ71M2Rlf1ky2eEywEQE1JgqOuuGQm+6KVHDcnZn4XWKc8NshLfPWMTv8dHQ
+         9Ac288GNUhb8Cum4V/duyv4hUCR86xG5Uuv8PJaE8K6Wb/IkZ0Bt3TOExh2Da7X8EfGG
+         zAFjRbflE8ZDCijWL3TdCjVc3Beqo0oi7dVa6rxuXlTTtpSNi9W40Hz+3i+6e/yjBJpb
+         moSTb4d4/BQkNFf3UZP7KPmE8TYoL+t/56kin8CzTW45xpfBb3aM4+pUtYz0oq52jHZE
+         zvJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=BtgHrm08etfJjpF5KZmN8TsxqVOwcQO1JBv4H+Dr5cg=;
+        b=kHrIgYmsXkeJF6xQvTuhGDV/Q/g5k62fXkDBYWLDJMJeHD9qDOoPoPDh4RggTLzf3X
+         IFENArbJwaU0ZAi7JvBIJJOLhgsCHqwwg2uH0KEbjfUwT4brFx2efd4NgtkP8uvIUYlR
+         4kr5SIo1tA2udoXP/dwp0v7ml4swcNaHIkutRdpI133pdzSzm3Pb4arfU5j2eCeFVDrf
+         WDOdTvKrRcSlX6/dISosVliqwvN4S5QIPCpMQSW9SMahRgulq+MZ4DVAWSL3c4yvDrj5
+         W3/TW3bZ/xjEMyhNH85hAlw4i9UfpT1dCtKDuPi3PypIJZ9n3Ld70vZ0jZWmYXUIGP4p
+         JQBQ==
+X-Gm-Message-State: APjAAAWZKxKH133W0C7/n1X8Yf6HZd29jvHuIrRQJMVmnR5bv73/9Jvy
+        Ycj1g6hzhd/BtYIeu59+S15T
+X-Google-Smtp-Source: APXvYqy/dcEWOI6c0eEjj5GAJ7wsf/ExpRRYdw8Xmi1ZmvBRpibcJa9dVGYOBop6r31MeVz4JOMGCw==
+X-Received: by 2002:a63:89c7:: with SMTP id v190mr33058801pgd.299.1565701134413;
+        Tue, 13 Aug 2019 05:58:54 -0700 (PDT)
+Received: from neo.Home ([114.78.226.167])
+        by smtp.gmail.com with ESMTPSA id x1sm22171627pfj.182.2019.08.13.05.58.51
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 13 Aug 2019 05:58:53 -0700 (PDT)
+Date:   Tue, 13 Aug 2019 22:58:42 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     RITESH HARJANI <riteshh@linux.ibm.com>
 Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         jack@suse.cz, tytso@mit.edu
+Subject: Re: [PATCH 4/5] ext4: introduce direct IO write code path using
+ iomap infrastructure
+Message-ID: <20190813125840.GA10187@neo.Home>
 References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
- <20190812173150.AF04F5204F@d06av21.portsmouth.uk.ibm.com>
- <20190813111004.GA12682@poseidon.bobrowski.net>
-From:   RITESH HARJANI <riteshh@linux.ibm.com>
-Date:   Tue, 13 Aug 2019 17:57:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ <581c3a2da89991e7ce5862d93dcfb23e1dc8ddc8.1565609891.git.mbobrowski@mbobrowski.org>
+ <20190812170430.982E552051@d06av21.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20190813111004.GA12682@poseidon.bobrowski.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-x-cbid: 19081312-0008-0000-0000-000003088469
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19081312-0009-0000-0000-00004A2696E0
-Message-Id: <20190813122723.AE6264C040@d06av22.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-13_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908130132
+In-Reply-To: <20190812170430.982E552051@d06av21.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Mon, Aug 12, 2019 at 10:34:29PM +0530, RITESH HARJANI wrote:
+> > +	if (offset + count > i_size_read(inode) ||
+> > +	    offset + count > EXT4_I(inode)->i_disksize) {
+> > +		ext4_update_i_disksize(inode, inode->i_size);
+> > +		extend = true;
+> > +	}
+> > +
+> > +	ret = iomap_dio_rw(iocb, from, &ext4_iomap_ops, ext4_dio_write_end_io);
+> > +
+> > +	/*
+> > +	 * Unaligned direct AIO must be the only IO in flight or else
+> > +	 * any overlapping aligned IO after unaligned IO might result
+> > +	 * in data corruption.
+> > +	 */
+> > +	if (ret == -EIOCBQUEUED && (unaligned_aio || extend))
+> > +		inode_dio_wait(inode);
+> 
+> Could you please add explain & add a comment about why we wait in AIO DIO
+> case
+> when extend is true? As I see without iomap code this case was not present
+> earlier.
 
-On 8/13/19 4:40 PM, Matthew Bobrowski wrote:
-> On Mon, Aug 12, 2019 at 11:01:50PM +0530, RITESH HARJANI wrote:
->>> This patch series converts the ext4 direct IO code paths to make use of the
->>> iomap infrastructure and removes the old buffer_head direct-io based
->>> implementation. The result is that ext4 is converted to the newer framework
->>> and that it may _possibly_ gain a performance boost for O_SYNC | O_DIRECT IO.
->>>
->>> These changes have been tested using xfstests in both DAX and non-DAX modes
->>> using various configurations i.e. 4k, dioread_nolock, dax.
->> I had some minor review comments posted on Patch-4.
->> But the rest of the patch series looks good to me.
-> Thanks for the review, much appreciated! Also, apologies about any
-> delayed response to your queries, I predominantly do all this work in
-> my personal time.
-Np at all.
+Because while using the iomap infrastructure for AIO writes, we return to the
+caller prior to invoking the ->end_io() handler. This callback is responsible
+for performing the in-core/on-disk inode extension if it is deemed
+necessary. If we don't wait in the case of an extend, we run the risk of
+loosing inode size consistencies in addition to things leading to possible
+data corruption...
 
->
->> I will also do some basic testing of xfstests which I did for my patches and
->> will revert back.
-> Sounds good!
+> > +
+> > +	if (ret >= 0 && iov_iter_count(from)) {
+> > +		overwrite ? inode_unlock_shared(inode) : inode_unlock(inode);
+> > +		return ext4_buffered_write_iter(iocb, from);
+> > +	}
+> should not we copy code from "__generic_file_write_iter" which does below?
+> 
+> 3436                 /*
+> 3437                  * We need to ensure that the page cache pages are
+> written to
+> 3438                  * disk and invalidated to preserve the expected
+> O_DIRECT
+> 3439                  * semantics.
+> 3440                  */
 
-I did not find any failure new failures in xfstests with 4K block size.
-Neither in basic fio DIO/AIO testing. So my basic testing looks good
-(these are mostly the tests which I was using for my debug/dev too)
+Hm, I don't see why this would be required seeing as though the page cache
+invalidation semantics pre and post write are handled by iomap_dio_rw() and
+iomap_dio_complete(). But, I could be completely wrong here, so we may need to
+wait for some others to provide comments on this.
 
+> > +			WARN_ON(!(flags & IOMAP_DIRECT));
+> > +			if (round_down(offset, i_blocksize(inode)) >=
+> > +			    i_size_read(inode)) {
+> > +				ret = ext4_map_blocks(handle, inode, &map,
+> > +						      EXT4_GET_BLOCKS_CREATE);
+> > +			} else if (!ext4_test_inode_flag(inode,
+> > +							 EXT4_INODE_EXTENTS)) {
+> > +				/*
+> > +				 * We cannot fill holes in indirect
+> > +				 * tree based inodes as that could
+> > +				 * expose stale data in the case of a
+> > +				 * crash. Use magic error code to
+> > +				 * fallback to buffered IO.
+> > +				 */
+> > +				ret = ext4_map_blocks(handle, inode, &map, 0);
+> > +				if (ret == 0)
+> > +					ret = -ENOTBLK;
+> > +			} else {
+> > +				ret = ext4_map_blocks(handle, inode, &map,
+> > +						      EXT4_GET_BLOCKS_IO_CREATE_EXT);
+> > +			}
+> > +		}
+> 
+> Could you please check & confirm on below points -
+> 1. Do you see a problem @above in case of *overwrite* with extents mapping?
+> It will fall into EXT4_GET_BLOCKS_IO_CREATE_EXT case.
+> So are we piggy backing on the fact that ext4_map_blocks first call
+> ext4_ext_map_blocks
+> with flags & EXT4_GET_BLOCKS_KEEP_SIZE. And so for overwrite case since it
+> will return
+> val > 0 then we will anyway not create any blocks and so we don't need to
+> check overwrite
+> case specifically here?
+> 
+> 
+> 2. For cases with flags passed is 0 to ext4_map_blocks (overwrite &
+> fallocate without extent case),
+> we need not start the journaling transaction. But in above we are doing
+> ext4_journal_start/stop unconditionally
+> & unnecessarily reserving dio_credits blocks.
+> We need to take care of that right?
 
->
->> One query, could you please help answering below for my understanding :-
->>
->> I was under the assumption that we need to maintain
->> ext4_test_inode_state(inode, EXT4_STATE_DIO_UNWRITTEN) or
->> atomic_read(&EXT4_I(inode)->i_unwritten))
->> in case of non-AIO directIO or AIO directIO case as well (when we may
->> allocate unwritten extents),
->> to protect with some kind of race with other parts of code(maybe
->> truncate/bufferedIO/fallocate not sure?) which may call for
->> ext4_can_extents_be_merged()
->> to check if extents can be merged or not.
->>
->> Is it not the case?
->> Now that directIO code has no way of specifying that this inode has
->> unwritten extent, will it not race with any other path, where this info was
->> necessary (like
->> in above func ext4_can_extents_be_merged())?
-> Ah yes, I was under the same assumption when reviewing the code
-> initially and one of my first solutions was to also use this dynamic
-> 'state' flag in the ->end_io() handler. But, I fell flat on my face as
-> that deemed to be problematic... This is because there can be multiple
-> direct IOs to unwritten extents against the same inode, so you cannot
-> possibly get away with tracking them using this single inode flag. So,
-> hence the reason why we drop using EXT4_STATE_DIO_UNWRITTEN and use
-> IOMAP_DIO_UNWRITTEN instead in the ->end_io() handler, which tracks
-> whether _this_ particular IO has an underlying unwritten extent.
+Hm, I think you raise valid points here.
 
-Thanks for taking time to explain this.
+Jan, do you have any comments on the above? I vaguely remember having a
+discussion around dropping the overwrite checks in ext4_iomap_begin() as we're
+removing the inode_lock() early on in ext4_dio_write_iter(), so it woudln't be
+necessary to do so. But, now that Ritesh mentioned it again I'm thinking it
+may actually be required...
 
-Yes, I do understand that part - i.e. while preparing block mapping in 
-->iomap_begin
-we get to know(from ext4_map_blocks) whether this is an unwritten extent 
-and we add the flag
-IOMAP_DIO_UNWRITTEN to iomap. This is needed so that we can convert 
-unwritten extents in ->end_io
-before we update the inode size and mark the inode dirty - to avoid any 
-race with other AIO DIO or bufferedIO.
+> >   		if (ret < 0) {
+> >   			ext4_journal_stop(handle);
+> >   			if (ret == -ENOSPC &&
+> > @@ -3581,10 +3611,10 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+> >   		iomap->type = delalloc ? IOMAP_DELALLOC : IOMAP_HOLE;
+> >   		iomap->addr = IOMAP_NULL_ADDR;
+> >   	} else {
+> > -		if (map.m_flags & EXT4_MAP_MAPPED) {
+> > -			iomap->type = IOMAP_MAPPED;
+> > -		} else if (map.m_flags & EXT4_MAP_UNWRITTEN) {
+> > +		if (map.m_flags & EXT4_MAP_UNWRITTEN) {
+> >   			iomap->type = IOMAP_UNWRITTEN;
+> > +		} else if (map.m_flags & EXT4_MAP_MAPPED) {
+> > +			iomap->type = IOMAP_MAPPED;
+> Maybe a comment as to explaining why checking UNWRITTEN before is necessary
+> for others.
+> So in case of fallocate & DIO write case we may get extent which is both
+> unwritten & mapped (right?).
+> so we need to check if we have an unwritten extent first so that it will
+> need the conversion in ->end_io
+> callback.
 
-But what I meant was this (I may be wrong here since I haven't really 
-looked into it),
-but for my understanding I would like to discuss this -
+Yes, that is essentially correct.
 
-So earlier with this flag(EXT4_STATE_DIO_UNWRITTEN) we were determining 
-on whether a newextent can be merged with ex1 in function
-ext4_extents_can_be_merged. But now since we have removed that flag we 
-have no way of knowing that whether
-this inode has any unwritten extents or not from any DIO path.
-What I meant is isn't this removal of setting/unsetting of 
-flag(EXT4_STATE_DIO_UNWRITTEN)
-changing the behavior of this func - ext4_extents_can_be_merged?
-
-Also - could you please explain why this check returns 0 in the first 
-place (line 1762 - 1766 below)?
-
-1733 int
-1734 ext4_can_extents_be_merged(struct inode *inode, struct ext4_extent 
-*ex1,
-1735Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  struct ext4_extent *ex2)
-<...>
-
-1762Â Â Â Â Â Â Â Â  if (ext4_ext_is_unwritten(ex1) &&
-1763Â Â Â Â Â Â Â Â Â Â Â Â  (ext4_test_inode_state(inode, EXT4_STATE_DIO_UNWRITTEN) ||
-1764Â Â Â Â Â Â Â Â Â Â Â Â Â  atomic_read(&EXT4_I(inode)->i_unwritten) ||
-1765Â Â Â Â Â Â Â Â Â Â Â Â Â  (ext1_ee_len + ext2_ee_len > EXT_UNWRITTEN_MAX_LEN)))
-1766Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  return 0;
-<...>
-
-Regards
-Ritesh
-
+--M
