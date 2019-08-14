@@ -2,104 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F05418E038
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 23:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F4D8E0D6
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2019 00:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728868AbfHNV5n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Aug 2019 17:57:43 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:57130 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728745AbfHNV5m (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 14 Aug 2019 17:57:42 -0400
-Received: from dread.disaster.area (pa49-195-190-67.pa.nsw.optusnet.com.au [49.195.190.67])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 800D843DB39;
-        Thu, 15 Aug 2019 07:57:37 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hy1Fu-0006Ca-2B; Thu, 15 Aug 2019 07:56:30 +1000
-Date:   Thu, 15 Aug 2019 07:56:30 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 02/19] fs/locks: Add Exclusive flag to user Layout
- lease
-Message-ID: <20190814215630.GQ6129@dread.disaster.area>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-3-ira.weiny@intel.com>
- <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
+        id S1729093AbfHNWfr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Aug 2019 18:35:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727217AbfHNWfq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 14 Aug 2019 18:35:46 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 081B12064A;
+        Wed, 14 Aug 2019 22:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565822145;
+        bh=l8Slk/c9NCmIURt4vJ515GO1o+OGPytEBQ6mmXfsoCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HZrWel2TOGlxa/OLzSgK6FZYkC9k5fmPXmA7SczQPr/nZXF5fhlrN12mEtzuphrKx
+         naClhxqMHYFXy1R/MsRWN561L+U0nJMj+RQmokWi+/oM+CwhuEESn4oiXIYXhBuZnf
+         2ZHVbx8JH1SSewjdXfJj0RGtoca3cSvPVjunHj9Y=
+Date:   Wed, 14 Aug 2019 15:35:43 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-api@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH v8 10/20] fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl
+Message-ID: <20190814223542.GE101319@gmail.com>
+Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-api@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+References: <20190805162521.90882-1-ebiggers@kernel.org>
+ <20190805162521.90882-11-ebiggers@kernel.org>
+ <20190813000644.GH28705@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
+In-Reply-To: <20190813000644.GH28705@mit.edu>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=TR82T6zjGmBjdfWdGgpkDw==:117 a=TR82T6zjGmBjdfWdGgpkDw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=qa3ElbQomqnm_qv8Y-cA:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 10:15:06AM -0400, Jeff Layton wrote:
-> On Fri, 2019-08-09 at 15:58 -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Add an exclusive lease flag which indicates that the layout mechanism
-> > can not be broken.
-> > 
-> > Exclusive layout leases allow the file system to know that pages may be
-> > GUP pined and that attempts to change the layout, ie truncate, should be
-> > failed.
-> > 
-> > A process which attempts to break it's own exclusive lease gets an
-> > EDEADLOCK return to help determine that this is likely a programming bug
-> > vs someone else holding a resource.
-.....
-> > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
-> > index baddd54f3031..88b175ceccbc 100644
-> > --- a/include/uapi/asm-generic/fcntl.h
-> > +++ b/include/uapi/asm-generic/fcntl.h
-> > @@ -176,6 +176,8 @@ struct f_owner_ex {
-> >  
-> >  #define F_LAYOUT	16      /* layout lease to allow longterm pins such as
-> >  				   RDMA */
-> > +#define F_EXCLUSIVE	32      /* layout lease is exclusive */
-> > +				/* FIXME or shoudl this be F_EXLCK??? */
-> >  
-> >  /* operations for bsd flock(), also used by the kernel implementation */
-> >  #define LOCK_SH		1	/* shared lock */
+On Mon, Aug 12, 2019 at 08:06:44PM -0400, Theodore Y. Ts'o wrote:
+> > +		/* Some inodes still reference this key; try to evict them. */
+> > +		if (try_to_lock_encrypted_files(sb, mk) != 0)
+> > +			status_flags |=
+> > +				FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY;
+> > +	}
 > 
-> This interface just seems weird to me. The existing F_*LCK values aren't
-> really set up to be flags, but are enumerated values (even if there are
-> some gaps on some arches). For instance, on parisc and sparc:
+> try_to_lock_encrypted_files() can return other errors besides -EBUSY;
+> in particular sync_filesystem() can return other errors, such as -EIO
+> or -EFSCORUPTED.  In that case, I think we're better off returning the
+> relevant status code back to the user.  We will have already wiped the
+> master key, but this situation will only happen in exceptional
+> conditions (e.g., user has ejected the sdcard, etc.), so it's not
+> worth it to try to undo the master key wipe to try to restore things
+> to the pre-ioctl execution state.
+> 
+> So I think we should capture the return code from
+> try_to_lock_encrypted_files, and if it is EBUSY, we can set FILES_BUSY
+> flag and return success.  Otherwise, we should return the error.
+> 
+> If you agree, please fix that up and then feel free to add:
+> 
+> Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+> 
+> 						- Ted
 
-I don't think we need to worry about this - the F_WRLCK version of
-the layout lease should have these exclusive access semantics (i.e
-other ops fail rather than block waiting for lease recall) and hence
-the API shouldn't need a new flag to specify them.
+Yes, that makes sense.  I've made the following change to this patch:
 
-i.e. the primary difference between F_RDLCK and F_WRLCK layout
-leases is that the F_RDLCK is a shared, co-operative lease model
-where only delays in operations will be seen, while F_WRLCK is a
-"guarantee exclusive access and I don't care what it breaks"
-model... :)
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
+index 9901593051424b..c3423f0edc7014 100644
+--- a/fs/crypto/keyring.c
++++ b/fs/crypto/keyring.c
+@@ -479,6 +479,7 @@ int fscrypt_ioctl_remove_key(struct file *filp, void __user *_uarg)
+ 	struct key *key;
+ 	struct fscrypt_master_key *mk;
+ 	u32 status_flags = 0;
++	int err;
+ 	bool dead;
+ 
+ 	if (copy_from_user(&arg, uarg, sizeof(arg)))
+@@ -514,11 +515,15 @@ int fscrypt_ioctl_remove_key(struct file *filp, void __user *_uarg)
+ 		 * key object is free to be removed from the keyring.
+ 		 */
+ 		key_invalidate(key);
++		err = 0;
+ 	} else {
+ 		/* Some inodes still reference this key; try to evict them. */
+-		if (try_to_lock_encrypted_files(sb, mk) != 0)
++		err = try_to_lock_encrypted_files(sb, mk);
++		if (err == -EBUSY) {
+ 			status_flags |=
+ 				FSCRYPT_KEY_REMOVAL_STATUS_FLAG_FILES_BUSY;
++			err = 0;
++		}
+ 	}
+ 	/*
+ 	 * We return 0 if we successfully did something: wiped the secret, or
+@@ -527,7 +532,9 @@ int fscrypt_ioctl_remove_key(struct file *filp, void __user *_uarg)
+ 	 * including all files locked.
+ 	 */
+ 	key_put(key);
+-	return put_user(status_flags, &uarg->removal_status_flags);
++	if (err == 0)
++		err = put_user(status_flags, &uarg->removal_status_flags);
++	return err;
+ }
+ EXPORT_SYMBOL_GPL(fscrypt_ioctl_remove_key);
+ 
