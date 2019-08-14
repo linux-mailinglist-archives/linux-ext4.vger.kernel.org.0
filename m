@@ -2,130 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9046F8D2F0
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 14:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BE98D30D
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 14:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbfHNMXL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Aug 2019 08:23:11 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:32815 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbfHNMXL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Aug 2019 08:23:11 -0400
-Received: by mail-qt1-f193.google.com with SMTP id v38so17463157qtb.0
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Aug 2019 05:23:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FsrM9iQimb3FYscqsqAsnH27bNwSQwrEhuf8y7pTQg4=;
-        b=MFiCvrWusQBCqyuv0MsnT3yWbG9zhhmIK7HccUs0r5kMXPkuqKNunVQ1h/zORuyu1K
-         dPCooMZtmzJUb73IhrAfW/RZn4uYi3/BcDXSM/JcFnAxpkgDO1ZnxF/dhwE9LrJIMKK2
-         GIj2ajzFnej54EdngHyC+E8SXNY43OW5hl/3FkeZd7g7YORhHWyVwCG9TQ3dfsA80OiH
-         HWrzFKQ3z7OgUVHt5oT61jV6sjY3dSq3dQapXw9as/49/pFairabCCHK8rm27pDfH41T
-         89o7Sbf/Wh6HwQkqcQV3HvbMUxSx6Ms+71YocGCgvEMjq5pAvY9mDNWZDltPkDZJ4FU7
-         pvDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FsrM9iQimb3FYscqsqAsnH27bNwSQwrEhuf8y7pTQg4=;
-        b=C+NUR3n0yDJjCsIgGDztuHH3o2PN9DEoamg7hv6l3b+uzTLHvjkflMqYkSbuCXWA8G
-         N/hLzsrx5pQeTSYRSw50nl4xiJmfd3qLBCd6JkbvcGa+eDmDfiwR3onf98gPfqneDhMm
-         s1WGhUSA1XnIGciT7e0Hw0DBuTr3Fna09CxSPx6OEv64P128XAbo4YgTPPYQd4Hjdqzm
-         YMJyrFikGyZPACHc09ChIlTcEmSxhjMkKFu1Y12CocWAUqZl9hzOTJCV7e6Q4whDqGsA
-         SLwbwPZa0TrGunos4EEZB1Uhy/WysolmKDCVBts8ihdwUImvkK+BvwBd9O7oFpoROrcC
-         vk7w==
-X-Gm-Message-State: APjAAAV0Nj+uppB9dpLrdEofiNupSHz6YMeZfSj9cXwYeDrnbNSAnY6e
-        qV8IXcRrBBZ35XbzjSMkxCoyFg==
-X-Google-Smtp-Source: APXvYqzonRYXwuBtV/92ARGeHeTsDCMwXjWO17US6GUvZqwZjITlYGafac4H3tDArYgjya/pKX0Bmw==
-X-Received: by 2002:a0c:fe6b:: with SMTP id b11mr2192818qvv.64.1565785390263;
-        Wed, 14 Aug 2019 05:23:10 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id e7sm46275956qtp.91.2019.08.14.05.23.09
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 14 Aug 2019 05:23:09 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hxsJ2-00049A-QU; Wed, 14 Aug 2019 09:23:08 -0300
-Date:   Wed, 14 Aug 2019 09:23:08 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
- file object
-Message-ID: <20190814122308.GB13770@ziepe.ca>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-17-ira.weiny@intel.com>
- <20190812130039.GD24457@ziepe.ca>
- <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
- <20190812175615.GI24457@ziepe.ca>
- <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
- <20190813114842.GB29508@ziepe.ca>
- <20190813174142.GB11882@iweiny-DESK2.sc.intel.com>
- <20190813180022.GF29508@ziepe.ca>
- <20190813203858.GA12695@iweiny-DESK2.sc.intel.com>
+        id S1726865AbfHNM2d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Aug 2019 08:28:33 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35994 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726704AbfHNM2c (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 14 Aug 2019 08:28:32 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 94A8B55B3EA1EC18648C;
+        Wed, 14 Aug 2019 20:28:30 +0800 (CST)
+Received: from [127.0.0.1] (10.177.244.145) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.439.0; Wed, 14 Aug 2019
+ 20:28:29 +0800
+Subject: Re: [PATCH v3] ext4: fix potential use after free in system zone via
+ remount with noblock_validity
+To:     Jan Kara <jack@suse.cz>
+References: <1565701547-146508-1-git-send-email-yi.zhang@huawei.com>
+ <20190814111408.GC26273@quack2.suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <6fb8e4b5-e0e6-6dbc-c11b-a3a76754ce72@huawei.com>
+Date:   Wed, 14 Aug 2019 20:28:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190813203858.GA12695@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190814111408.GC26273@quack2.suse.cz>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.177.244.145]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 01:38:59PM -0700, Ira Weiny wrote:
-> On Tue, Aug 13, 2019 at 03:00:22PM -0300, Jason Gunthorpe wrote:
-> > On Tue, Aug 13, 2019 at 10:41:42AM -0700, Ira Weiny wrote:
-> > 
-> > > And I was pretty sure uverbs_destroy_ufile_hw() would take care of (or ensure
-> > > that some other thread is) destroying all the MR's we have associated with this
-> > > FD.
-> > 
-> > fd's can't be revoked, so destroy_ufile_hw() can't touch them. It
-> > deletes any underlying HW resources, but the FD persists.
+On 2019/8/14 19:14, Jan Kara Wrote:
+> On Tue 13-08-19 21:05:47, zhangyi (F) wrote:
+>> Remount process will release system zone which was allocated before if
+>> "noblock_validity" is specified. If we mount an ext4 file system to two
+>> mountpoints with default mount options, and then remount one of them
+>> with "noblock_validity", it may trigger a use after free problem when
+>> someone accessing the other one.
+>>
+>>  # mount /dev/sda foo
+>>  # mount /dev/sda bar
+>>
+>> User access mountpoint "foo"   |   Remount mountpoint "bar"
+>>                                |
+>> ext4_map_blocks()              |   ext4_remount()
+>> check_block_validity()         |   ext4_setup_system_zone()
+>> ext4_data_block_valid()        |   ext4_release_system_zone()
+>>                                |   free system_blks rb nodes
+>> access system_blks rb nodes    |
+>> trigger use after free         |
+>>
+>> This problem can also be reproduced by one mountpint, At the same time,
+>> add_system_zone() can get called during remount as well so there can be
+>> racing ext4_data_block_valid() reading the rbtree at the same time.
+>>
+>> This patch add RCU to protect system zone from releasing or building
+>> when doing a remount which inverse current "noblock_validity" mount
+>> option. It assign the rbtree after the whole tree was complete and
+>> do actual freeing after rcu grace period, avoid any intermediate state.
+>>
+>> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+>> ---
+>> Changes since v2:
+>>  - Remove seqlock, and assign the whole rbtree when finished assembling.
+>>  - Fix the sparse warning.
 > 
-> I misspoke.  I should have said associated with this "context".  And of course
-> uverbs_destroy_ufile_hw() does not touch the FD.  What I mean is that the
-> struct file which had file_pins hanging off of it would be getting its file
-> pins destroyed by uverbs_destroy_ufile_hw().  Therefore we don't need the FD
-> after uverbs_destroy_ufile_hw() is done.
+> Thanks for the patch! It looks great to me. Just one nit below and with
+> that applied feel free to add:
 > 
-> But since it does not block it may be that the struct file is gone before the
-> MR is actually destroyed.  Which means I think the GUP code would blow up in
-> that case...  :-(
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+>>  int ext4_setup_system_zone(struct super_block *sb)
+> ...
+>>  /* Called when the filesystem is unmounted */
+>>  void ext4_release_system_zone(struct super_block *sb)
+> 
+> Can you perhaps add a comment before ext4_setup_system_zone() and
+> ext4_release_system_zone() explaining that these two functions are called
+> under sb->s_umount semaphore protection which also serializes updates of
+> sb->system_blks pointer? Thanks!
+> 
+Thanks for your suggestions. Yes, I will add these two comments.
 
-Oh, yes, that is true, you also can't rely on the struct file living
-longer than the HW objects either, that isn't how the lifetime model
-works.
+BTW, I realize that one thing is not correct in this patch,
+ext4_data_block_valid() should do the below check as before even
+system_blks pointer is NULL.
 
-If GUP consumes the struct file it must allow the struct file to be
-deleted before the GUP pin is released.
+>	if ((start_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
+>	    (start_blk + count < start_blk) ||
+>	    (start_blk + count > ext4_blocks_count(sbi->s_es))) {
+>		sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
+>		return 0;
+>	}
 
-> The drivers could provide some generic object (in RDMA this could be the
-> uverbs_attr_bundle) which represents their "context".
+I will fix this by move "system_blks == NULL" checking into
+ext4_data_block_valid_rcu() in next iteration at the same time.
 
-For RDMA the obvious context is the struct ib_mr *
+Thanks,
+Yi.
 
-> But for the procfs interface, that context then needs to be associated with any
-> file which points to it...  For RDMA, or any other "FD based pin mechanism", it
-> would be up to the driver to "install" a procfs handler into any struct file
-> which _may_ point to this context.  (before _or_ after memory pins).
-
-Is this all just for debugging? Seems like a lot of complication just
-to print a string
-
-Generally, I think you'd be better to associate things with the
-mm_struct not some struct file... The whole design is simpler as GUP
-already has the mm_struct.
-
-Jason
