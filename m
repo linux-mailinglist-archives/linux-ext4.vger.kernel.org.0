@@ -2,90 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 067558D1DE
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 13:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE6B8D203
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 13:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbfHNLOL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Aug 2019 07:14:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35574 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726265AbfHNLOL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 14 Aug 2019 07:14:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F260DACEC;
-        Wed, 14 Aug 2019 11:14:09 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id ED2691E4200; Wed, 14 Aug 2019 13:14:08 +0200 (CEST)
-Date:   Wed, 14 Aug 2019 13:14:08 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "zhangyi (F)" <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
-        adilger.kernel@dilger.ca
-Subject: Re: [PATCH v3] ext4: fix potential use after free in system zone via
- remount with noblock_validity
-Message-ID: <20190814111408.GC26273@quack2.suse.cz>
-References: <1565701547-146508-1-git-send-email-yi.zhang@huawei.com>
+        id S1726522AbfHNLVi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Aug 2019 07:21:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725800AbfHNLVi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 14 Aug 2019 07:21:38 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBA7C2083B;
+        Wed, 14 Aug 2019 11:21:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565781697;
+        bh=lKWyQhJZrTeR2mP8gMp1Sv43C4kaU0ItcD8UjHsGR64=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=GoyIEeuy2aBMsczZxEjc418vIh6+C2Y2j1zEoa7vlM8xwuZ9K4Lx8mUTo+P3ENh3z
+         i4MieExVH35FpkJHKYrGnkalqrRJH19Pu0e79zbx70z//5lRJAjmuuStGEMPll9gj8
+         tcxu2X2I5qV6B/uj35CVsKOn4wUIaS2xvX5qVcac=
+Message-ID: <1ba29bfa22f82e6d880ab31c3835047f3353f05a.camel@kernel.org>
+Subject: Re: [RFC PATCH v2 01/19] fs/locks: Export F_LAYOUT lease to user
+ space
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>, Ira Weiny <ira.weiny@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Date:   Wed, 14 Aug 2019 07:21:34 -0400
+In-Reply-To: <20190814080547.GJ6129@dread.disaster.area>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+         <20190809225833.6657-2-ira.weiny@intel.com>
+         <20190809235231.GC7777@dread.disaster.area>
+         <20190812173626.GB19746@iweiny-DESK2.sc.intel.com>
+         <20190814080547.GJ6129@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1565701547-146508-1-git-send-email-yi.zhang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 13-08-19 21:05:47, zhangyi (F) wrote:
-> Remount process will release system zone which was allocated before if
-> "noblock_validity" is specified. If we mount an ext4 file system to two
-> mountpoints with default mount options, and then remount one of them
-> with "noblock_validity", it may trigger a use after free problem when
-> someone accessing the other one.
-> 
->  # mount /dev/sda foo
->  # mount /dev/sda bar
-> 
-> User access mountpoint "foo"   |   Remount mountpoint "bar"
->                                |
-> ext4_map_blocks()              |   ext4_remount()
-> check_block_validity()         |   ext4_setup_system_zone()
-> ext4_data_block_valid()        |   ext4_release_system_zone()
->                                |   free system_blks rb nodes
-> access system_blks rb nodes    |
-> trigger use after free         |
-> 
-> This problem can also be reproduced by one mountpint, At the same time,
-> add_system_zone() can get called during remount as well so there can be
-> racing ext4_data_block_valid() reading the rbtree at the same time.
-> 
-> This patch add RCU to protect system zone from releasing or building
-> when doing a remount which inverse current "noblock_validity" mount
-> option. It assign the rbtree after the whole tree was complete and
-> do actual freeing after rcu grace period, avoid any intermediate state.
-> 
-> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-> ---
-> Changes since v2:
->  - Remove seqlock, and assign the whole rbtree when finished assembling.
->  - Fix the sparse warning.
+On Wed, 2019-08-14 at 18:05 +1000, Dave Chinner wrote:
+> On Mon, Aug 12, 2019 at 10:36:26AM -0700, Ira Weiny wrote:
+> > On Sat, Aug 10, 2019 at 09:52:31AM +1000, Dave Chinner wrote:
+> > > On Fri, Aug 09, 2019 at 03:58:15PM -0700, ira.weiny@intel.com wrote:
+> > > > +	/*
+> > > > +	 * NOTE on F_LAYOUT lease
+> > > > +	 *
+> > > > +	 * LAYOUT lease types are taken on files which the user knows that
+> > > > +	 * they will be pinning in memory for some indeterminate amount of
+> > > > +	 * time.
+> > > 
+> > > Indeed, layout leases have nothing to do with pinning of memory.
+> > 
+> > Yep, Fair enough.  I'll rework the comment.
+> > 
+> > > That's something an application taht uses layout leases might do,
+> > > but it largely irrelevant to the functionality layout leases
+> > > provide. What needs to be done here is explain what the layout lease
+> > > API actually guarantees w.r.t. the physical file layout, not what
+> > > some application is going to do with a lease. e.g.
+> > > 
+> > > 	The layout lease F_RDLCK guarantees that the holder will be
+> > > 	notified that the physical file layout is about to be
+> > > 	changed, and that it needs to release any resources it has
+> > > 	over the range of this lease, drop the lease and then
+> > > 	request it again to wait for the kernel to finish whatever
+> > > 	it is doing on that range.
+> > > 
+> > > 	The layout lease F_RDLCK also allows the holder to modify
+> > > 	the physical layout of the file. If an operation from the
+> > > 	lease holder occurs that would modify the layout, that lease
+> > > 	holder does not get notification that a change will occur,
+> > > 	but it will block until all other F_RDLCK leases have been
+> > > 	released by their holders before going ahead.
+> > > 
+> > > 	If there is a F_WRLCK lease held on the file, then a F_RDLCK
+> > > 	holder will fail any operation that may modify the physical
+> > > 	layout of the file. F_WRLCK provides exclusive physical
+> > > 	modification access to the holder, guaranteeing nothing else
+> > > 	will change the layout of the file while it holds the lease.
+> > > 
+> > > 	The F_WRLCK holder can change the physical layout of the
+> > > 	file if it so desires, this will block while F_RDLCK holders
+> > > 	are notified and release their leases before the
+> > > 	modification will take place.
+> > > 
+> > > We need to define the semantics we expose to userspace first.....
 
-Thanks for the patch! It looks great to me. Just one nit below and with
-that applied feel free to add:
+Absolutely.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> > 
+> > Agreed.  I believe I have implemented the semantics you describe above.  Do I
+> > have your permission to use your verbiage as part of reworking the comment and
+> > commit message?
+> 
+> Of course. :)
+> 
+> Cheers,
+> 
 
->  int ext4_setup_system_zone(struct super_block *sb)
-...
->  /* Called when the filesystem is unmounted */
->  void ext4_release_system_zone(struct super_block *sb)
+I'll review this in more detail soon, but subsequent postings of the set
+should probably also go to linux-api mailing list. This is a significant
+API change. It might not also hurt to get the glibc folks involved here
+too since you'll probably want to add the constants to the headers there
+as well.
 
-Can you perhaps add a comment before ext4_setup_system_zone() and
-ext4_release_system_zone() explaining that these two functions are called
-under sb->s_umount semaphore protection which also serializes updates of
-sb->system_blks pointer? Thanks!
+Finally, consider going ahead and drafting a patch to the fcntl(2)
+manpage if you think you have the API mostly nailed down. This API is a
+little counterintuitive (i.e. you can change the layout with an F_RDLCK
+lease), so it will need to be very clearly documented. I've also found
+that when creating a new API, documenting it tends to help highlight its
+warts and areas where the behavior is not clearly defined.
 
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jeff Layton <jlayton@kernel.org>
+
