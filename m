@@ -2,163 +2,227 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4488C4FD
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 02:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA0B8C9BA
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 04:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbfHNAOC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 13 Aug 2019 20:14:02 -0400
-Received: from mail.wl.linuxfoundation.org ([198.145.29.98]:39544 "EHLO
-        mail.wl.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726316AbfHNAOC (ORCPT
+        id S1727064AbfHNCwq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 13 Aug 2019 22:52:46 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:56391 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726750AbfHNCwq (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 13 Aug 2019 20:14:02 -0400
-Received: from mail.wl.linuxfoundation.org (localhost [127.0.0.1])
-        by mail.wl.linuxfoundation.org (Postfix) with ESMTP id 0CD072876C
-        for <linux-ext4@vger.kernel.org>; Wed, 14 Aug 2019 00:14:01 +0000 (UTC)
-Received: by mail.wl.linuxfoundation.org (Postfix, from userid 486)
-        id 018F828722; Wed, 14 Aug 2019 00:14:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on
-        pdx-wl-mail.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=2.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS autolearn=unavailable version=3.3.1
-From:   bugzilla-daemon@bugzilla.kernel.org
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 203317] WARNING: CPU: 2 PID: 925 at fs/ext4/inode.c:3897
- ext4_set_page_dirty+0x39/0x50
-Date:   Wed, 14 Aug 2019 00:13:59 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: howaboutsynergy@pm.me
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-203317-13602-ISTW3vyo4Y@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-203317-13602@https.bugzilla.kernel.org/>
-References: <bug-203317-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        Tue, 13 Aug 2019 22:52:46 -0400
+Received: from dread.disaster.area (pa49-181-167-148.pa.nsw.optusnet.com.au [49.181.167.148])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 4FE0C361163;
+        Wed, 14 Aug 2019 12:52:37 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hxjNq-0007K4-DZ; Wed, 14 Aug 2019 12:51:30 +1000
+Date:   Wed, 14 Aug 2019 12:51:30 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] block: annotate refault stalls from IO submission
+Message-ID: <20190814025130.GI7777@dread.disaster.area>
+References: <20190808190300.GA9067@cmpxchg.org>
+ <20190809221248.GK7689@dread.disaster.area>
+ <20190813174625.GA21982@cmpxchg.org>
 MIME-Version: 1.0
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190813174625.GA21982@cmpxchg.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
+        a=gu9DDhuZhshYSb5Zs/lkOA==:117 a=gu9DDhuZhshYSb5Zs/lkOA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=7-415B0cAAAA:8 a=bDTW_sOx19nDKLnYJhUA:9 a=cnofGfEq4Fq2u8Yj:21
+        a=FLub2pyhoGWWgdtb:21 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=203317
+On Tue, Aug 13, 2019 at 01:46:25PM -0400, Johannes Weiner wrote:
+> On Sat, Aug 10, 2019 at 08:12:48AM +1000, Dave Chinner wrote:
+> > On Thu, Aug 08, 2019 at 03:03:00PM -0400, Johannes Weiner wrote:
+> > > psi tracks the time tasks wait for refaulting pages to become
+> > > uptodate, but it does not track the time spent submitting the IO. The
+> > > submission part can be significant if backing storage is contended or
+> > > when cgroup throttling (io.latency) is in effect - a lot of time is
+> > 
+> > Or the wbt is throttling.
+> > 
+> > > spent in submit_bio(). In that case, we underreport memory pressure.
+> > > 
+> > > Annotate submit_bio() to account submission time as memory stall when
+> > > the bio is reading userspace workingset pages.
+> > 
+> > PAtch looks fine to me, but it raises another question w.r.t. IO
+> > stalls and reclaim pressure feedback to the vm: how do we make use
+> > of the pressure stall infrastructure to track inode cache pressure
+> > and stalls?
+> > 
+> > With the congestion_wait() and wait_iff_congested() being entire
+> > non-functional for block devices since 5.0, there is no IO load
+> > based feedback going into memory reclaim from shrinkers that might
+> > require IO to free objects before they can be reclaimed. This is
+> > directly analogous to page reclaim writing back dirty pages from
+> > the LRU, and as I understand it one of things the PSI is supposed
+> > to be tracking.
+> >
+> > Lots of workloads create inode cache pressure and often it can
+> > dominate the time spent in memory reclaim, so it would seem to me
+> > that having PSI only track/calculate pressure and stalls from LRU
+> > pages misses a fair chunk of the memory pressure and reclaim stalls
+> > that can be occurring.
+> 
+> psi already tracks the entire reclaim operation. So if reclaim calls
+> into the shrinker and the shrinker scans inodes, initiates IO, or even
+> waits on IO, that time is accounted for as memory pressure stalling.
 
-howaboutsynergy is abandoned account everywhere (howaboutsynergy@pm.me) changed:
+hmmmm - reclaim _scanning_ is considered a stall event? i.e. even if
+scanning does not block, it's still accounting that _time_ as a
+memory pressure stall?
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |jani.nikula@intel.com
+I'm probably missing it, but I don't see anything in vmpressure()
+that actually accounts for time spent scanning.  AFAICT it accounts
+for LRU objects scanned and reclaimed from memcgs, and then the
+memory freed from the shrinkers is accounted only to the
+sc->target_mem_cgroup once all memcgs have been iterated.
 
---- Comment #4 from howaboutsynergy is abandoned account everywhere (howaboutsynergy@pm.me) ---
-The commit that attempts to fix this(and thus links to this issue) is causing a
-system freeze (where sysctl+s,u,b still works though) when attempting to cause
-a memory pressure via script `memfreeze`(ran as variant 1) which I used in
-order to test
-[le9g.patch](https://www.phoronix.com/forums/forum/phoronix/general-discussion/1118164-yes-linux-does-bad-in-low-ram-memory-pressure-situations-on-the-desktop?p=1119440#post1119440)
-that prevents disk thrashing, but this system freeze happens without that patch
-also.
+So, AFAICT, there's no time aspect to this, and the amount of
+scanning that shrinkers do is not taken into account, so pressure
+can't really be determined properly there. It seems like what the
+shrinkers reclaim will actually give an incorrect interpretation of
+pressure right now...
 
-```
-commit aa56a292ce623734ddd30f52d73f527d1f3529b5
-    drm/i915/userptr: Acquire the page lock around set_page_dirty()
-```
+> If you can think of asynchronous events that are initiated from
+> reclaim but cause indirect stalls in other contexts, contexts which
+> can clearly link the stall back to reclaim activity, we can annotate
+> them using psi_memstall_enter() / psi_memstall_leave().
 
-The freeze seems to be happening right before OOM-killer is about to kill
-something, apparently.
+Well, I was more thinking that issuing/waiting on IOs is a stall
+event, not scanning.
 
-I double checked that v5.3-rc4 with this commit reverted does indeed get rid of
-the system freeze.
+The IO-less inode reclaim stuff for XFS really needs the main
+reclaim loop to back off under heavy IO load, but we cannot put the
+entire metadata writeback path under psi_memstall_enter/leave()
+because:
 
-`memfreeze` script is this:
+	a) it's not linked to any user context - it's a
+	per-superblock kernel thread; and
 
-```
+	b) it's designed to always be stalled on IO when there is
+	metadata writeback pressure. That pressure most often comes from
+	running out of journal space rather than memory pressure, and
+	really there is no way to distinguish between the two from
+	the writeback context.
 
-#!/bin/bash
+Hence I don't think the vmpressure mechanism does what the memory
+reclaim scanning loops really need because they do not feed back a
+clear picture of the load on the IO subsystem load into the reclaim
+loops.....
 
-#run this multiple times consecutively, but not at once.
+> In that vein, what would be great to have is be a distinction between
+> read stalls on dentries/inodes that have never been touched before
+> versus those that have been recently reclaimed - analogous to cold
+> page faults vs refaults.
 
-#this should freeze i87k for about 1-2 seconds(actually 5 seconds - try running
-top of watch -n1 -d cat /proc/meminfo) while running out of memory temporarily
-just before OOM triggers and kills one of the threads:
-#^ old comments
+See my "nonblocking inode reclaim for XFS" series. It adds new
+measures of that the shrinkers feed back to the main reclaim loop.
 
-#Ensure watchers are running:
-ensure_this_runs_already() {
-  local cmdtorun="$*"
-  if ! pgrep --full "^${cmdtorun}$" >/dev/null; then
-    #shellcheck disable=SC2086
-    xfce4-terminal -x $cmdtorun  #XXX: unquoted! else it will fail to launch!
-  fi
-}
-ensure_this_runs_already "watch -n.1 -d cat /proc/meminfo"
-#ensure_this_runs_already watch -n.1 -d cat /proc/meminfo #yes this works too!
-I even tested it.
-ensure_this_runs_already "top -d 0.5"
-ensure_this_runs_already "sudo iotop -d 5 -o -b"
-#exit 1
+One of those measures is the number of objects scanned. Shrinkers
+already report the number of objects they free, but that it tossed
+away and not used by the main reclaim loop.
 
+As for cold faults vs refaults, we could only report that for
+dentries - if the inode is still cached in memory, then the dentry
+hits the inode cache (hot fault), otherwise it's got to fetch the
+inode from disk (cold fault). There is no mechanisms for tracking
+inodes that have been recently reclaimed - the VFS uses a hash for
+tracking cached inodes and so there's nothign you can drop
+exceptional entries into to track reclaim state.
 
-#XXX tested on i87k host
-systemctl --user stop psd #otherwise have to manually rename 2+1 profile dirs
-from *-backup to * after the system crashes(and it does with
-5.3.0-rc4-gd45331b00ddb kernel, not with 5.2.0 (git) though, or 5.2.4 (stable)
-)
-if test "${0##*/}" == "memfreeze2"; then
-  variant=2
-elif test "${0##*/}" == "memfreeze3"; then
-  variant=3
-else
-  variant=1
-fi
-echo "!! Using memfreeze variant '$variant'"
+That said, we /could/ do this with the XFS inode cache. It uses
+radix trees to index the cache, not the VFS level inode hash. Hence
+we could place exceptional entries into the tree on reclaim to do
+working set tracking similar to the way the page cache is used to
+track the working set of pages.
 
-if test "$1" != "keepswap"; then
-  echo "! swapoff first"
-  sudo swapoff -a
-  threads=2
-  timeout=10s
-else
-  threads=6
-  timeout=30s
-fi
-sync #because possibly crash! in fact guaranteed crash in
-5.3.0-rc4-gd45331b00ddb even without any le*.patch-es
+The other thing we could do here is similar to the dentry cache - we
+often have inode metadata buffers in the buffer cache (we have a
+multi-level cache heirarchy that spans most of the metadata in the
+active working set in XFS) and so if we miss the inode cache we
+might hit the inode buffer in the buffer cache (hot fault).  If we
+miss the inode cache and have to do IO to read the inodes, then it's
+a cold fault.
 
-if test "$variant" == "1"; then
-  #this is a remnant from when I've tested this on QubesOS
-  alloc="$(awk '/MemAvailable/{printf "%d\n", $2 + 4000;}' < /proc/meminfo)"
-  echo "Will alloc: $alloc kB for each of the $threads concurrent threads."
-  echo "MemTotal before: $(awk '/MemTotal/{printf "%d kB\n", $2;}' <
-/proc/meminfo)"
-  time stress --vm-bytes "${alloc}k" --vm-keep -m $threads --timeout $timeout
-  echo "exit code: $?"
-  awk '/MemTotal/{printf "MemTotal afterwards: %d kB\n", $2;}' < /proc/meminfo
-elif test "$variant" == "2"; then
-  time stress -m 220 --vm-bytes 10000000000 --timeout 20
-elif test "$variant" == "3"; then
-  #XXX say bye bye to Xorg, courtesy of kernel's OOM-killer FIXME: somehow
-disable oom-killer or what?!
-  time stress -m 3000 --vm-bytes 10M --timeout 50
-else
-  echo "!! memfreeze variant not implemented"
-fi
-```
+That might be misleading, however, because the inode buffers cache
+32 physical inodes and so reading 32 sequential cold inodes would
+give 1 cold fault and 31 hot faults, even though those 31 inodes
+have never been referenced by the workload before and that's not
+ideal.
 
+To complicate matters further, we can thrash the buffer cache,
+resulting in cached inodes that have no backing buffer in memory.
+then we we go to write the inode, we have to read in the inode
+buffer before we can write it. This may have nothing to do with
+working set thrashing, too. e.g. we have an inode that has been
+referenced over and over again by the workload for several hours,
+then a relatime update occurs and the inode is dirtied. when
+writeback occurs, the inode buffer is nowhere to be found because it
+was cycled out of the buffer cache hours ago and hasn't been
+referenced since. hence I think we're probably best to ignore the
+underlying filesystem metadata cache for the purposes of measuring
+and detecting inode cache working set thrashing...
+
+> It would help psi, sure, but more importantly it would help us better
+> balance pressure between filesystem metadata and the data pages. We
+> would be able to tell the difference between a `find /' and actual
+> thrashing, where hot inodes are getting kicked out and reloaded
+> repeatedly - and we could backfeed that pressure to the LRU pages to
+> allow the metadata caches to grow as needed.
+
+Well, hot inodes getting kicked out and immmediate re-used is
+something we largely already handle via caching inode buffers in the
+buffer cache.  So inode cache misses on XFS likely happen a lot more
+than is obvious as we only see inode cache thrashing when we have
+misses the metadata cache, not the inode cache.
+
+> For example, it could make sense to swap out a couple of completely
+> unused anonymous pages if it means we could hold the metadata
+> workingset fully in memory. But right now we cannot do that, because
+> we cannot risk swapping just because somebody runs find /.
+
+I have workloads that run find to produce slab cache memory
+pressure. On 5.2, they cause the system to swap madly because
+there's no file page cache to reclaim and so the only reclaim that
+can be done is inodes/dentries and swapping anonymous pages.
+
+And swap it does - if we don't throttle reclaim sufficiently to
+allow IO to make progress, then direct relcaim ends up in priority
+windup and I see lots of OOM kills on swap-in. I found quite a few
+ways to end up in "reclaim doesn't throttle on IO sufficiently and
+OOM kills" in the last 3-4 weeks...
+
+> I have semi-seriously talked to Josef about this before, but it wasn't
+> quite obvious where we could track non-residency or eviction
+> information for inodes, dentries etc. Maybe you have an idea?
+
+See above - I think only XFS could track working inodes because of
+it's unique caching infrastructure. Dentries largely don't matter,
+because dentry cache misses either hit or miss the inode cache and
+that's the working set that largely matters in terms of detecting
+IO-related thrashing...
+
+Cheers,
+
+Dave.
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+Dave Chinner
+david@fromorbit.com
