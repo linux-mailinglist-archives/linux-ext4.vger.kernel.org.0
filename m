@@ -2,223 +2,237 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA0B8C9BA
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 04:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B868CD94
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 10:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbfHNCwq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Aug 2019 22:52:46 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:56391 "EHLO
+        id S1726947AbfHNIFY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Aug 2019 04:05:24 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:45123 "EHLO
         mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726750AbfHNCwq (ORCPT
+        by vger.kernel.org with ESMTP id S1725265AbfHNIFY (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 13 Aug 2019 22:52:46 -0400
-Received: from dread.disaster.area (pa49-181-167-148.pa.nsw.optusnet.com.au [49.181.167.148])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 4FE0C361163;
-        Wed, 14 Aug 2019 12:52:37 +1000 (AEST)
+        Wed, 14 Aug 2019 04:05:24 -0400
+Received: from dread.disaster.area (pa49-195-190-67.pa.nsw.optusnet.com.au [49.195.190.67])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 2A6E62ADD91;
+        Wed, 14 Aug 2019 18:05:15 +1000 (AEST)
 Received: from dave by dread.disaster.area with local (Exim 4.92)
         (envelope-from <david@fromorbit.com>)
-        id 1hxjNq-0007K4-DZ; Wed, 14 Aug 2019 12:51:30 +1000
-Date:   Wed, 14 Aug 2019 12:51:30 +1000
+        id 1hxoGO-0000sh-7T; Wed, 14 Aug 2019 18:04:08 +1000
+Date:   Wed, 14 Aug 2019 18:04:08 +1000
 From:   Dave Chinner <david@fromorbit.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] block: annotate refault stalls from IO submission
-Message-ID: <20190814025130.GI7777@dread.disaster.area>
-References: <20190808190300.GA9067@cmpxchg.org>
- <20190809221248.GK7689@dread.disaster.area>
- <20190813174625.GA21982@cmpxchg.org>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 07/19] fs/xfs: Teach xfs to use new
+ dax_layout_busy_page()
+Message-ID: <20190814080408.GI6129@dread.disaster.area>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190809225833.6657-8-ira.weiny@intel.com>
+ <20190809233037.GB7777@dread.disaster.area>
+ <20190812180551.GC19746@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190813174625.GA21982@cmpxchg.org>
+In-Reply-To: <20190812180551.GC19746@iweiny-DESK2.sc.intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=gu9DDhuZhshYSb5Zs/lkOA==:117 a=gu9DDhuZhshYSb5Zs/lkOA==:17
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
+        a=TR82T6zjGmBjdfWdGgpkDw==:117 a=TR82T6zjGmBjdfWdGgpkDw==:17
         a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=7-415B0cAAAA:8 a=bDTW_sOx19nDKLnYJhUA:9 a=cnofGfEq4Fq2u8Yj:21
-        a=FLub2pyhoGWWgdtb:21 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=HrHlqKvGs1hBEanXDooA:9
+        a=7KaysmK63p_gRbVv:21 a=sBCleACJziiZA8k5:21 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 01:46:25PM -0400, Johannes Weiner wrote:
-> On Sat, Aug 10, 2019 at 08:12:48AM +1000, Dave Chinner wrote:
-> > On Thu, Aug 08, 2019 at 03:03:00PM -0400, Johannes Weiner wrote:
-> > > psi tracks the time tasks wait for refaulting pages to become
-> > > uptodate, but it does not track the time spent submitting the IO. The
-> > > submission part can be significant if backing storage is contended or
-> > > when cgroup throttling (io.latency) is in effect - a lot of time is
-> > 
-> > Or the wbt is throttling.
-> > 
-> > > spent in submit_bio(). In that case, we underreport memory pressure.
+On Mon, Aug 12, 2019 at 11:05:51AM -0700, Ira Weiny wrote:
+> On Sat, Aug 10, 2019 at 09:30:37AM +1000, Dave Chinner wrote:
+> > On Fri, Aug 09, 2019 at 03:58:21PM -0700, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
 > > > 
-> > > Annotate submit_bio() to account submission time as memory stall when
-> > > the bio is reading userspace workingset pages.
+> > > dax_layout_busy_page() can now operate on a sub-range of the
+> > > address_space provided.
+> > > 
+> > > Have xfs specify the sub range to dax_layout_busy_page()
 > > 
-> > PAtch looks fine to me, but it raises another question w.r.t. IO
-> > stalls and reclaim pressure feedback to the vm: how do we make use
-> > of the pressure stall infrastructure to track inode cache pressure
-> > and stalls?
+> > Hmmm. I've got patches that change all these XFS interfaces to
+> > support range locks. I'm not sure the way the ranges are passed here
+> > is the best way to do it, and I suspect they aren't correct in some
+> > cases, either....
 > > 
-> > With the congestion_wait() and wait_iff_congested() being entire
-> > non-functional for block devices since 5.0, there is no IO load
-> > based feedback going into memory reclaim from shrinkers that might
-> > require IO to free objects before they can be reclaimed. This is
-> > directly analogous to page reclaim writing back dirty pages from
-> > the LRU, and as I understand it one of things the PSI is supposed
-> > to be tracking.
-> >
-> > Lots of workloads create inode cache pressure and often it can
-> > dominate the time spent in memory reclaim, so it would seem to me
-> > that having PSI only track/calculate pressure and stalls from LRU
-> > pages misses a fair chunk of the memory pressure and reclaim stalls
-> > that can be occurring.
+> > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > > index ff3c1fae5357..f0de5486f6c1 100644
+> > > --- a/fs/xfs/xfs_iops.c
+> > > +++ b/fs/xfs/xfs_iops.c
+> > > @@ -1042,10 +1042,16 @@ xfs_vn_setattr(
+> > >  		xfs_ilock(ip, XFS_MMAPLOCK_EXCL);
+> > >  		iolock = XFS_IOLOCK_EXCL | XFS_MMAPLOCK_EXCL;
+> > >  
+> > > -		error = xfs_break_layouts(inode, &iolock, BREAK_UNMAP);
+> > > -		if (error) {
+> > > -			xfs_iunlock(ip, XFS_MMAPLOCK_EXCL);
+> > > -			return error;
+> > > +		if (iattr->ia_size < inode->i_size) {
+> > > +			loff_t                  off = iattr->ia_size;
+> > > +			loff_t                  len = inode->i_size - iattr->ia_size;
+> > > +
+> > > +			error = xfs_break_layouts(inode, &iolock, off, len,
+> > > +						  BREAK_UNMAP);
+> > > +			if (error) {
+> > > +				xfs_iunlock(ip, XFS_MMAPLOCK_EXCL);
+> > > +				return error;
+> > > +			}
+> > 
+> > This isn't right - truncate up still needs to break the layout on
+> > the last filesystem block of the file,
 > 
-> psi already tracks the entire reclaim operation. So if reclaim calls
-> into the shrinker and the shrinker scans inodes, initiates IO, or even
-> waits on IO, that time is accounted for as memory pressure stalling.
+> I'm not following this?  From a user perspective they can't have done anything
+> with the data beyond the EOF.  So isn't it safe to allow EOF to grow without
+> changing the layout of that last block?
 
-hmmmm - reclaim _scanning_ is considered a stall event? i.e. even if
-scanning does not block, it's still accounting that _time_ as a
-memory pressure stall?
 
-I'm probably missing it, but I don't see anything in vmpressure()
-that actually accounts for time spent scanning.  AFAICT it accounts
-for LRU objects scanned and reclaimed from memcgs, and then the
-memory freed from the shrinkers is accounted only to the
-sc->target_mem_cgroup once all memcgs have been iterated.
+You're looking at this from the perspective of what RDMA page
+pinning, not what the guarantees a filesystem has to provide layout
+holders.
 
-So, AFAICT, there's no time aspect to this, and the amount of
-scanning that shrinkers do is not taken into account, so pressure
-can't really be determined properly there. It seems like what the
-shrinkers reclaim will actually give an incorrect interpretation of
-pressure right now...
+For example, truncate up has to zero the portion of the block beyond
+EOF and that requires a data write. What happens if that block is a
+shared extent and hence we have do a copy on write and alter the
+file layout?
 
-> If you can think of asynchronous events that are initiated from
-> reclaim but cause indirect stalls in other contexts, contexts which
-> can clearly link the stall back to reclaim activity, we can annotate
-> them using psi_memstall_enter() / psi_memstall_leave().
+Or perhaps that tail block still has dirty data over it that is
+marked for delayed allocation? Truncate up will have to write that
+data to zero the delayed allocation extent that spans EOF, and hence
+the truncate modifies the layout because it triggers allocation.
 
-Well, I was more thinking that issuing/waiting on IOs is a stall
-event, not scanning.
+i.e. just because an operation does not change user data, it does
+not mean that it will not change the file layout. There is a chance
+that truncate up will modify the layout and so we need to break the
+layout leases that span the range from the old size to the new
+size...
 
-The IO-less inode reclaim stuff for XFS really needs the main
-reclaim loop to back off under heavy IO load, but we cannot put the
-entire metadata writeback path under psi_memstall_enter/leave()
-because:
+> > and truncate down needs to
+> > extend to "maximum file offset" because we remove all extents beyond
+> > EOF on a truncate down.
+> 
+> Ok, I was trying to allow a user to extend the file without conflicts if they
+> were to have a pin on the 'beginning' of the original file.
 
-	a) it's not linked to any user context - it's a
-	per-superblock kernel thread; and
+If we want to allow file extension under a layout lease, the lease
+has to extend beyond EOF, otherwise the new section of the file is
+not covered by a lease. If leases only extend to the existing
+EOF, then once the new data is written and the file is extended,
+then the lease owner needs to take a new lease on the range they
+just wrote. SO the application ends up having to do write - lease
+-write -lease - .... so that it has leases covering the range of the
+file it is extending into.
 
-	b) it's designed to always be stalled on IO when there is
-	metadata writeback pressure. That pressure most often comes from
-	running out of journal space rather than memory pressure, and
-	really there is no way to distinguish between the two from
-	the writeback context.
+Much better it to define a lease that extends to max file offset,
+such that it always covers they range past the existing EOF and
+extending writes will automatically be covered. What this then does
+is to trigger layout break notifications on file size change, either
+by write, truncate, fallocate, without having to actually know or
+track the exactly file size in the lease....
 
-Hence I don't think the vmpressure mechanism does what the memory
-reclaim scanning loops really need because they do not feed back a
-clear picture of the load on the IO subsystem load into the reclaim
-loops.....
+> This sounds like
+> you are saying that a layout lease must be dropped to do that?  In some ways I
+> think I understand what you are driving at and I think I see how I may have
+> been playing "fast and loose" with the strictness of the layout lease.  But
+> from a user perspective if there is a part of the file which "does not exist"
+> (beyond EOF) does it matter that the layout there may change?
 
-> In that vein, what would be great to have is be a distinction between
-> read stalls on dentries/inodes that have never been touched before
-> versus those that have been recently reclaimed - analogous to cold
-> page faults vs refaults.
+Yes, it does, because userspace can directly manipulate the layout
+beyond EOF via fallocate(). e.g. we can preallocation beyond EOF
+without changing the file size, such that when we then do an
+extending write no layout change actually takes place. The only
+thing that happens from a layout point of view is that the file size
+changes.
 
-See my "nonblocking inode reclaim for XFS" series. It adds new
-measures of that the shrinkers feed back to the main reclaim loop.
+This becomes /interesting/ when you start doing things like
 
-One of those measures is the number of objects scanned. Shrinkers
-already report the number of objects they free, but that it tossed
-away and not used by the main reclaim loop.
+	lseek(fd, offset, SEEK_END);
+	write(fd, buf, len);
 
-As for cold faults vs refaults, we could only report that for
-dentries - if the inode is still cached in memory, then the dentry
-hits the inode cache (hot fault), otherwise it's got to fetch the
-inode from disk (cold fault). There is no mechanisms for tracking
-inodes that have been recently reclaimed - the VFS uses a hash for
-tracking cached inodes and so there's nothign you can drop
-exceptional entries into to track reclaim state.
+which will trigger a write way beyond EOF into allocated space.
+That will also trigger block zeroing at the old tail, and there may
+be block zeroing around the write() as well. We've effectively
+change the layout of the file at EOF,  We've effectively change the
+layout of the file at EOF, and potentially beyond EOF.
 
-That said, we /could/ do this with the XFS inode cache. It uses
-radix trees to index the cache, not the VFS level inode hash. Hence
-we could place exceptional entries into the tree on reclaim to do
-working set tracking similar to the way the page cache is used to
-track the working set of pages.
+Indeed, the app might be expecting the preallocation beyond EOF to
+remain, so it might register a layout over that range to be notified
+if the preallocation is removed or the EOF extends beyond it. It
+needs to be notified on truncate down (which removes that
+preallocated range the lease sits over) and EOF is moved beyond it
+(layout range state has changed from inaccessable to valid file
+data)....
 
-The other thing we could do here is similar to the dentry cache - we
-often have inode metadata buffers in the buffer cache (we have a
-multi-level cache heirarchy that spans most of the metadata in the
-active working set in XFS) and so if we miss the inode cache we
-might hit the inode buffer in the buffer cache (hot fault).  If we
-miss the inode cache and have to do IO to read the inodes, then it's
-a cold fault.
 
-That might be misleading, however, because the inode buffers cache
-32 physical inodes and so reading 32 sequential cold inodes would
-give 1 cold fault and 31 hot faults, even though those 31 inodes
-have never been referenced by the workload before and that's not
-ideal.
+> > i.e. when we use preallocation, the extent map extends beyond EOF,
+> > and layout leases need to be able to extend beyond the current EOF
+> > to allow the lease owner to do extending writes, extending truncate,
+> > preallocation beyond EOF, etc safely without having to get a new
+> > lease to cover the new region in the extended file...
+> 
+> I'm not following this.  What determines when preallocation is done?
 
-To complicate matters further, we can thrash the buffer cache,
-resulting in cached inodes that have no backing buffer in memory.
-then we we go to write the inode, we have to read in the inode
-buffer before we can write it. This may have nothing to do with
-working set thrashing, too. e.g. we have an inode that has been
-referenced over and over again by the workload for several hours,
-then a relatime update occurs and the inode is dirtied. when
-writeback occurs, the inode buffer is nowhere to be found because it
-was cycled out of the buffer cache hours ago and hasn't been
-referenced since. hence I think we're probably best to ignore the
-underlying filesystem metadata cache for the purposes of measuring
-and detecting inode cache working set thrashing...
+The application can direct it via fallocate(FALLOC_FL_KEEPSIZE).
+It's typically used for workloads that do appending O_DSYNC or
+direct IO writes to minimise file fragmentation.
 
-> It would help psi, sure, but more importantly it would help us better
-> balance pressure between filesystem metadata and the data pages. We
-> would be able to tell the difference between a `find /' and actual
-> thrashing, where hot inodes are getting kicked out and reloaded
-> repeatedly - and we could backfeed that pressure to the LRU pages to
-> allow the metadata caches to grow as needed.
+The filesystem can ialso choose to do allocation beyond EOFi
+speculatively during writes. XFS does this extensively with delayed
+allocation. And the filesystem can also remove this speculative
+allocation beyond EOF, which it may do if there are no active pages
+dirties on the inode for a period, it is reclaimed, the filesystem
+is running low on space, the user/group is running low on quota
+space, etc.
 
-Well, hot inodes getting kicked out and immmediate re-used is
-something we largely already handle via caching inode buffers in the
-buffer cache.  So inode cache misses on XFS likely happen a lot more
-than is obvious as we only see inode cache thrashing when we have
-misses the metadata cache, not the inode cache.
+Again, just because user data does not change, it does not mean that
+the file layout will not change....
 
-> For example, it could make sense to swap out a couple of completely
-> unused anonymous pages if it means we could hold the metadata
-> workingset fully in memory. But right now we cannot do that, because
-> we cannot risk swapping just because somebody runs find /.
+> Forgive my ignorance on file systems but how can we have a layout for every
+> file which is "maximum file offset" for every file even if a file is only 1
+> page long?
 
-I have workloads that run find to produce slab cache memory
-pressure. On 5.2, they cause the system to swap madly because
-there's no file page cache to reclaim and so the only reclaim that
-can be done is inodes/dentries and swapping anonymous pages.
+The layout lease doesn't care what the file size it. It doesn't even
+know what the file size is. The layout lease covers a range the
+logical file offset with the intend that any change to the file
+layout within that range will result in a notification. The layout
+lease is not bound to the range of valid data in the file at all -
+it doesn't matter if it points beyond EOF - if the file grows to
+the size the it overlaps the layout lease, then that layout lease
+needs to be notified by break_layouts....
 
-And swap it does - if we don't throttle reclaim sufficiently to
-allow IO to make progress, then direct relcaim ends up in priority
-windup and I see lots of OOM kills on swap-in. I found quite a few
-ways to end up in "reclaim doesn't throttle on IO sufficiently and
-OOM kills" in the last 3-4 weeks...
+I've had a stinking headache all day, so I'm struggling to make
+sense right now. The best I can describe is that layout lease ranges
+do not imply or require valid file data to exist within the range
+they are taken over - they just cover a file offset range.
 
-> I have semi-seriously talked to Josef about this before, but it wasn't
-> quite obvious where we could track non-residency or eviction
-> information for inodes, dentries etc. Maybe you have an idea?
+FWIW, the fcntl() locking interface uses a length of 0 to
+indicate "to max file offset" rather than a specific length. e.g.
+SETLK and friends:
 
-See above - I think only XFS could track working inodes because of
-it's unique caching infrastructure. Dentries largely don't matter,
-because dentry cache misses either hit or miss the inode cache and
-that's the working set that largely matters in terms of detecting
-IO-related thrashing...
+	Specifying 0 for l_len has the special meaning: lock all
+	bytes starting at the location specified by l_whence and
+	l_start through to the end of file, no  matter
+	how large the file grows.
+
+That's exactly the semantics I'm talking about here - layout leases
+need to be able to specify an extent anywhere within the valid file
+offset range, and also to specify a nebulous "through to the end of
+the layout range" so taht file growth can be done without needing
+new leases to be taken as the file grows....
 
 Cheers,
 
