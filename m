@@ -2,128 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E64D8C234
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2019 22:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4488C4FD
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 02:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbfHMUjA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 13 Aug 2019 16:39:00 -0400
-Received: from mga11.intel.com ([192.55.52.93]:6361 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725869AbfHMUjA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 13 Aug 2019 16:39:00 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Aug 2019 13:38:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,382,1559545200"; 
-   d="scan'208";a="376423872"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga006.fm.intel.com with ESMTP; 13 Aug 2019 13:38:59 -0700
-Date:   Tue, 13 Aug 2019 13:38:59 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
- file object
-Message-ID: <20190813203858.GA12695@iweiny-DESK2.sc.intel.com>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190809225833.6657-17-ira.weiny@intel.com>
- <20190812130039.GD24457@ziepe.ca>
- <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
- <20190812175615.GI24457@ziepe.ca>
- <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
- <20190813114842.GB29508@ziepe.ca>
- <20190813174142.GB11882@iweiny-DESK2.sc.intel.com>
- <20190813180022.GF29508@ziepe.ca>
+        id S1726512AbfHNAOC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 13 Aug 2019 20:14:02 -0400
+Received: from mail.wl.linuxfoundation.org ([198.145.29.98]:39544 "EHLO
+        mail.wl.linuxfoundation.org" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726316AbfHNAOC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 13 Aug 2019 20:14:02 -0400
+Received: from mail.wl.linuxfoundation.org (localhost [127.0.0.1])
+        by mail.wl.linuxfoundation.org (Postfix) with ESMTP id 0CD072876C
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Aug 2019 00:14:01 +0000 (UTC)
+Received: by mail.wl.linuxfoundation.org (Postfix, from userid 486)
+        id 018F828722; Wed, 14 Aug 2019 00:14:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on
+        pdx-wl-mail.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=2.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS autolearn=unavailable version=3.3.1
+From:   bugzilla-daemon@bugzilla.kernel.org
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 203317] WARNING: CPU: 2 PID: 925 at fs/ext4/inode.c:3897
+ ext4_set_page_dirty+0x39/0x50
+Date:   Wed, 14 Aug 2019 00:13:59 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: howaboutsynergy@pm.me
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-203317-13602-ISTW3vyo4Y@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-203317-13602@https.bugzilla.kernel.org/>
+References: <bug-203317-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190813180022.GF29508@ziepe.ca>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 03:00:22PM -0300, Jason Gunthorpe wrote:
-> On Tue, Aug 13, 2019 at 10:41:42AM -0700, Ira Weiny wrote:
-> 
-> > And I was pretty sure uverbs_destroy_ufile_hw() would take care of (or ensure
-> > that some other thread is) destroying all the MR's we have associated with this
-> > FD.
-> 
-> fd's can't be revoked, so destroy_ufile_hw() can't touch them. It
-> deletes any underlying HW resources, but the FD persists.
+https://bugzilla.kernel.org/show_bug.cgi?id=203317
 
-I misspoke.  I should have said associated with this "context".  And of course
-uverbs_destroy_ufile_hw() does not touch the FD.  What I mean is that the
-struct file which had file_pins hanging off of it would be getting its file
-pins destroyed by uverbs_destroy_ufile_hw().  Therefore we don't need the FD
-after uverbs_destroy_ufile_hw() is done.
+howaboutsynergy is abandoned account everywhere (howaboutsynergy@pm.me) changed:
 
-But since it does not block it may be that the struct file is gone before the
-MR is actually destroyed.  Which means I think the GUP code would blow up in
-that case...  :-(
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |jani.nikula@intel.com
 
-I was thinking it was the other way around.  And in fact most of the time I
-think it is.  But we can't depend on that...
+--- Comment #4 from howaboutsynergy is abandoned account everywhere (howaboutsynergy@pm.me) ---
+The commit that attempts to fix this(and thus links to this issue) is causing a
+system freeze (where sysctl+s,u,b still works though) when attempting to cause
+a memory pressure via script `memfreeze`(ran as variant 1) which I used in
+order to test
+[le9g.patch](https://www.phoronix.com/forums/forum/phoronix/general-discussion/1118164-yes-linux-does-bad-in-low-ram-memory-pressure-situations-on-the-desktop?p=1119440#post1119440)
+that prevents disk thrashing, but this system freeze happens without that patch
+also.
 
->  
-> > > This is why having a back pointer like this is so ugly, it creates a
-> > > reference counting cycle
-> > 
-> > Yep...  I worked through this...  and it was giving me fits...
-> > 
-> > Anyway, the struct file is the only object in the core which was reasonable to
-> > store this information in since that is what is passed around to other
-> > processes...
-> 
-> It could be passed down in the uattr_bundle, once you are in file operations
+```
+commit aa56a292ce623734ddd30f52d73f527d1f3529b5
+    drm/i915/userptr: Acquire the page lock around set_page_dirty()
+```
 
-What is "It"?  The struct file?  Or the file pin information?
+The freeze seems to be happening right before OOM-killer is about to kill
+something, apparently.
 
-> handle the file is guarenteed to exist, and we've now arranged things
+I double checked that v5.3-rc4 with this commit reverted does indeed get rid of
+the system freeze.
 
-I don't understand what you mean by "... once you are in file operations handle... "?
+`memfreeze` script is this:
 
-> so the uattr_bundle flows into the umem, as umems can only be
-> established under a system call.
+```
 
-"uattr_bundle" == uverbs_attr_bundle right?
+#!/bin/bash
 
-The problem is that I don't think the core should be handling
-uverbs_attr_bundles directly.  So, I think you are driving at the same idea I
-had WRT callbacks into the driver.
+#run this multiple times consecutively, but not at once.
 
-The drivers could provide some generic object (in RDMA this could be the
-uverbs_attr_bundle) which represents their "context".
+#this should freeze i87k for about 1-2 seconds(actually 5 seconds - try running
+top of watch -n1 -d cat /proc/meminfo) while running out of memory temporarily
+just before OOM triggers and kills one of the threads:
+#^ old comments
 
-The GUP code calls back into the driver with file pin information as it
-encounters and pins pages.  The driver, RDMA in this case, associates this
-information with the "context".
+#Ensure watchers are running:
+ensure_this_runs_already() {
+  local cmdtorun="$*"
+  if ! pgrep --full "^${cmdtorun}$" >/dev/null; then
+    #shellcheck disable=SC2086
+    xfce4-terminal -x $cmdtorun  #XXX: unquoted! else it will fail to launch!
+  fi
+}
+ensure_this_runs_already "watch -n.1 -d cat /proc/meminfo"
+#ensure_this_runs_already watch -n.1 -d cat /proc/meminfo #yes this works too!
+I even tested it.
+ensure_this_runs_already "top -d 0.5"
+ensure_this_runs_already "sudo iotop -d 5 -o -b"
+#exit 1
 
-But for the procfs interface, that context then needs to be associated with any
-file which points to it...  For RDMA, or any other "FD based pin mechanism", it
-would be up to the driver to "install" a procfs handler into any struct file
-which _may_ point to this context.  (before _or_ after memory pins).
 
-Then the procfs code can walk the FD array and if this handler is installed it
-knows there is file pin information associated with that struct file and it can
-be printed...
+#XXX tested on i87k host
+systemctl --user stop psd #otherwise have to manually rename 2+1 profile dirs
+from *-backup to * after the system crashes(and it does with
+5.3.0-rc4-gd45331b00ddb kernel, not with 5.2.0 (git) though, or 5.2.4 (stable)
+)
+if test "${0##*/}" == "memfreeze2"; then
+  variant=2
+elif test "${0##*/}" == "memfreeze3"; then
+  variant=3
+else
+  variant=1
+fi
+echo "!! Using memfreeze variant '$variant'"
 
-This is not impossible.  But I think is a lot harder for drivers to make
-right...
+if test "$1" != "keepswap"; then
+  echo "! swapoff first"
+  sudo swapoff -a
+  threads=2
+  timeout=10s
+else
+  threads=6
+  timeout=30s
+fi
+sync #because possibly crash! in fact guaranteed crash in
+5.3.0-rc4-gd45331b00ddb even without any le*.patch-es
 
-Ira
+if test "$variant" == "1"; then
+  #this is a remnant from when I've tested this on QubesOS
+  alloc="$(awk '/MemAvailable/{printf "%d\n", $2 + 4000;}' < /proc/meminfo)"
+  echo "Will alloc: $alloc kB for each of the $threads concurrent threads."
+  echo "MemTotal before: $(awk '/MemTotal/{printf "%d kB\n", $2;}' <
+/proc/meminfo)"
+  time stress --vm-bytes "${alloc}k" --vm-keep -m $threads --timeout $timeout
+  echo "exit code: $?"
+  awk '/MemTotal/{printf "MemTotal afterwards: %d kB\n", $2;}' < /proc/meminfo
+elif test "$variant" == "2"; then
+  time stress -m 220 --vm-bytes 10000000000 --timeout 20
+elif test "$variant" == "3"; then
+  #XXX say bye bye to Xorg, courtesy of kernel's OOM-killer FIXME: somehow
+disable oom-killer or what?!
+  time stress -m 3000 --vm-bytes 10M --timeout 50
+else
+  echo "!! memfreeze variant not implemented"
+fi
+```
 
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
