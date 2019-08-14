@@ -2,232 +2,179 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BC28DF31
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 22:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E2D8DF3B
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2019 22:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729802AbfHNUpn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 14 Aug 2019 16:45:43 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:55885 "EHLO
+        id S1729900AbfHNUqJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 14 Aug 2019 16:46:09 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:44517 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725895AbfHNUpn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Aug 2019 16:45:43 -0400
+        with ESMTP id S1729252AbfHNUqE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 14 Aug 2019 16:46:04 -0400
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
  (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MJmbB-1hiokV3nNB-00K75E; Wed, 14 Aug 2019 22:43:31 +0200
+ 1McXwD-1iYj0E0IkX-00d0se; Wed, 14 Aug 2019 22:45:19 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
 To:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, davem@davemloft.net,
-        axboe@kernel.dk, linux-block@vger.kernel.org, minyard@acm.org,
-        gregkh@linuxfoundation.org, linux@roeck-us.net,
-        alexandre.belloni@bootlin.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, dgilbert@interlog.com, jslaby@suse.com,
-        wim@linux-watchdog.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        jaegeuk@kernel.org, rpeterso@redhat.com, agruenba@redhat.com,
-        mikulas@artax.karlin.mff.cuni.cz, konishi.ryusuke@gmail.com,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
-        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
-        linux-hwmon@vger.kernel.org, linux-ppp@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, ecryptfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Tyler Hicks <tyhicks@canonical.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        yangerkun <yangerkun@huawei.com>, Jan Kara <jack@suse.cz>,
+        Wang Shilong <wshilong@ddn.com>,
+        Chandan Rajendra <chandan@linux.vnet.ibm.com>,
+        Eric Biggers <ebiggers@google.com>, ecryptfs@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com
-Subject: [PATCH v5 00/18] compat_ioctl.c removal, part 2/3 
-Date:   Wed, 14 Aug 2019 22:42:27 +0200
-Message-Id: <20190814204259.120942-1-arnd@arndb.de>
+        linux-nilfs@vger.kernel.org, ocfs2-devel@oss.oracle.com
+Subject: [PATCH v5 04/18] fs: compat_ioctl: move FITRIM emulation into file systems
+Date:   Wed, 14 Aug 2019 22:42:31 +0200
+Message-Id: <20190814204259.120942-5-arnd@arndb.de>
 X-Mailer: git-send-email 2.20.0
+In-Reply-To: <20190814204259.120942-1-arnd@arndb.de>
+References: <20190814204259.120942-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:xGnsbJFEb5cp5VgCCKba17rABY8rw5YpFHVSp9sUcOzQSe+UXGP
- EfEYa61AjTCAHzUWX6wv2lDU7UbSUWqI2oz4Izzo8ktMHBlxmH8NVFj4hnZmHzHR9j3PmnD
- FdXT0A0EWAS6WaUuOwbDeG9tdQjqBuRZe/Qa9Z37r+1tBtsxN6SEXAY5fO0COcyHnB4qqcA
- G33rmG1j8a0kHXtMGaC3A==
+X-Provags-ID: V03:K1:z3dV4EMHHVTIqB6irmOt7mALlth6pUBx39cxp1q/MXyyb5my9TD
+ Ei9tu/20oLbXQdeGubAGFUglD7gSy7sRkwU20qqoaC5wM3V/cZvdLqBCQqcct//zQrEBTpY
+ PgotaPI/UqE9QOt6pD+oJC4mYA33c2x1Cmk05o5y4PekAgaxo/Ot1QZSZphz0pO284DyXEV
+ DWM5bnpXU7W9zHwvWm6+g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lZeESLReWcA=:o8v1Y+WXV56E6iMJG8Ogif
- 2FqbIgZz9Cf28eQxkb1FeOSJmjwIDMMG6qZymgcdySt/904oRKzRXaxzdToNS9eKtscmO3Pqe
- /FgBQD2UqihLwK3P/Pddn1urtJAP8i4lHDXy2HhE2jK8dPb6o36J+yFC20qjDEZ2PrwGmI4P+
- eCWYNuv25DY/1Lti33SSmno2KcNiHGryG0RZ4MxsltqQfXdWyvsKej7eST7IWNiMWKhvjyU37
- hE4nHYkj/tcVvmbwEjgJuruEJRODw6lCU7hWqw9twzGmBAmy8QMD8J//vGUTZ4q5+VzF9VhjQ
- bG82fyrhMmJKoue644MCK3h+10nGq6fpc0+zn8mYx07fSdSIGFWt2VJ2pxnSCWgeITy6Ere97
- sRmxqZNBv/e8jpN7Uc0JBjNzz9yYdvbFlJfGeIc2ao4vxcJORGyxhpoqAIRlQzpHC31QgNZum
- edQsMV2appVThHuGv1ov/A9jLW2kPA47ZPWpCcXW+dzl4v7v86+29DJTNjj3mVImCRQNSuJS4
- cAtYqWH6jHUAOn8v98eCWJv3t830ah1HbsJkf7tJ7ckvhUNIWDFHYDwgsfXjt098IoD2AtXor
- PgWxV3iIYDq+x9Wym9Nl2f8rz27kROMPDKgPXeM8TeWHxiZbHQgKAuei5tzhS7HSjk0UKFYhp
- 9Oh+W+y+k0I/NRheX6o+PUjcCpNRjNPLHuD9piLtJmz92aChC6F/e9SyB7FzdHKmmf4IcD77K
- 7HYEjW+U1QhnWXZOIuSxIrYkaKmPv6aeBud5fA==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qJAN7Jtr+50=:Hn6FCDiPj6NPOBPlxdGPcD
+ u/sYhAF03jaoyRBk1JTzPSJhVA6sz1jenvAB2hCYhY8rJaynQ1wNziuco+p8X1rl9Kp67cMlD
+ 1KGuR6lzD1ZizOXIPdQ4gceT+kxjp8IdGN7ZrpkS0gKq9MoqQi3B0PxS5ThXI0Ng2kg6OLgdw
+ j63zI6RZs2sN2dyRoehSpkkplSL3gjKQ0ehTyzU4LRVfqWnqjCX3UVgTgPTMZc8mfZmVMthy8
+ cANIHtG1l+urhmm4NAoZd6sPkIeYchZlep67j9X/ZJ2+NNctF1pMbqGirTbZuMTPDtqAmCGhM
+ OJ3oW67vdkpUTnkySAOptMGqDCEuDkcVM7GWrRCs/sWNmrmxIuoRZh4uN5zlnY+iZh8soANqG
+ U4MZd09RCFAlvrtX/5sWC17n9SnT4LwmejHRG8lW6W/Q4cKOSEdsZSOsu93ymdZinsB5vTfuW
+ E28Jz9wFCu5Lw4QArUqwVjq5OYs0Cwrsx572RE2TgpMNPCg2vyehiqTcJ5RtlVG2yJW8IG5kH
+ +BqVGr47E8eINr6zbAHdgUVVu/MREg9NCspFJfr/kBeroTLhDyhys0jz/ewjHdYOY78CoFamB
+ Er8mGksHdLDynfrxBPfQGKoypEd2p1tUAebqYCMwga+G6h9oScx/lOvsvxPbWr8rBG+/9EJtl
+ gGAZjlTxh6MhDvFAH+dCwH4+fMDRQDlQ8lxqtUxTCBJ4VdpHcV+rzDKHjAz4Vflex8v/o40te
+ v8sereCDav9jt6NTEZnegE8b/RzQevTpcA27uQ==
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This is a follow-up to part 1/3 that I posted after -rc2.
-I hope these are still largely uncontroversial changes, and
-I would like to get them into linux-5.4.
+Remove the special case for FITRIM, and make file systems
+handle that like all other ioctl commands with their own
+handlers.
 
-Part 1 was in
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ fs/compat_ioctl.c  | 2 --
+ fs/ecryptfs/file.c | 1 +
+ fs/ext4/ioctl.c    | 1 +
+ fs/f2fs/file.c     | 1 +
+ fs/hpfs/dir.c      | 1 +
+ fs/hpfs/file.c     | 1 +
+ fs/nilfs2/ioctl.c  | 1 +
+ fs/ocfs2/ioctl.c   | 1 +
+ 8 files changed, 7 insertions(+), 2 deletions(-)
 
-https://lore.kernel.org/lkml/CAPcyv4i_nHzV155RcgnAQ189aq2Lfd2g8pA1D5NbZqo9E_u+Dw@mail.gmail.com/
-
-Part 3 will be one kernel release after part 2 is merged,
-as that still needs a little extra work.
-
-The entire series is available at
-
-git://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git compat_ioctl
-
-      Arnd
-
-Al Viro (2):
-  compat_ioctl: unify copy-in of ppp filters
-  compat_ioctl: move PPPIOCSCOMPRESS to ppp_generic
-
-Arnd Bergmann (16):
-  xfs: compat_ioctl: use compat_ptr()
-  xfs: compat_ioctl: add missing conversions
-  gfs2: add compat_ioctl support
-  fs: compat_ioctl: move FITRIM emulation into file systems
-  watchdog: cpwd: use generic compat_ptr_ioctl
-  compat_ioctl: move WDIOC handling into wdt drivers
-  compat_ioctl: reimplement SG_IO handling
-  af_unix: add compat_ioctl support
-  compat_ioctl: handle SIOCOUTQNSD
-  compat_ioctl: move SIOCOUTQ out of compat_ioctl.c
-  tty: handle compat PPP ioctls
-  compat_ioctl: handle PPPIOCGIDLE for 64-bit time_t
-  compat_ioctl: ppp: move simple commands into ppp_generic.c
-  compat_ioctl: move SG_GET_REQUEST_TABLE handling
-  pktcdvd: add compat_ioctl handler
-  scsi: sd: enable compat ioctls for sed-opal
-
- Documentation/networking/ppp_generic.txt  |   2 +
- arch/powerpc/platforms/52xx/mpc52xx_gpt.c |   1 +
- arch/um/drivers/harddog_kern.c            |   1 +
- block/scsi_ioctl.c                        | 132 ++++++++-
- drivers/block/pktcdvd.c                   |  25 ++
- drivers/char/ipmi/ipmi_watchdog.c         |   1 +
- drivers/hwmon/fschmd.c                    |   1 +
- drivers/net/ppp/ppp_generic.c             | 245 ++++++++++-----
- drivers/rtc/rtc-ds1374.c                  |   1 +
- drivers/scsi/sd.c                         |  14 +-
- drivers/scsi/sg.c                         |  59 +++-
- drivers/tty/tty_io.c                      |   5 +
- drivers/watchdog/acquirewdt.c             |   1 +
- drivers/watchdog/advantechwdt.c           |   1 +
- drivers/watchdog/alim1535_wdt.c           |   1 +
- drivers/watchdog/alim7101_wdt.c           |   1 +
- drivers/watchdog/ar7_wdt.c                |   1 +
- drivers/watchdog/at91rm9200_wdt.c         |   1 +
- drivers/watchdog/ath79_wdt.c              |   1 +
- drivers/watchdog/bcm63xx_wdt.c            |   1 +
- drivers/watchdog/cpu5wdt.c                |   1 +
- drivers/watchdog/cpwd.c                   |  25 +-
- drivers/watchdog/eurotechwdt.c            |   1 +
- drivers/watchdog/f71808e_wdt.c            |   1 +
- drivers/watchdog/gef_wdt.c                |   1 +
- drivers/watchdog/geodewdt.c               |   1 +
- drivers/watchdog/ib700wdt.c               |   1 +
- drivers/watchdog/ibmasr.c                 |   1 +
- drivers/watchdog/indydog.c                |   1 +
- drivers/watchdog/intel_scu_watchdog.c     |   1 +
- drivers/watchdog/iop_wdt.c                |   1 +
- drivers/watchdog/it8712f_wdt.c            |   1 +
- drivers/watchdog/ixp4xx_wdt.c             |   1 +
- drivers/watchdog/ks8695_wdt.c             |   1 +
- drivers/watchdog/m54xx_wdt.c              |   1 +
- drivers/watchdog/machzwd.c                |   1 +
- drivers/watchdog/mixcomwd.c               |   1 +
- drivers/watchdog/mtx-1_wdt.c              |   1 +
- drivers/watchdog/mv64x60_wdt.c            |   1 +
- drivers/watchdog/nuc900_wdt.c             |   1 +
- drivers/watchdog/nv_tco.c                 |   1 +
- drivers/watchdog/pc87413_wdt.c            |   1 +
- drivers/watchdog/pcwd.c                   |   1 +
- drivers/watchdog/pcwd_pci.c               |   1 +
- drivers/watchdog/pcwd_usb.c               |   1 +
- drivers/watchdog/pika_wdt.c               |   1 +
- drivers/watchdog/pnx833x_wdt.c            |   1 +
- drivers/watchdog/rc32434_wdt.c            |   1 +
- drivers/watchdog/rdc321x_wdt.c            |   1 +
- drivers/watchdog/riowd.c                  |   1 +
- drivers/watchdog/sa1100_wdt.c             |   1 +
- drivers/watchdog/sb_wdog.c                |   1 +
- drivers/watchdog/sbc60xxwdt.c             |   1 +
- drivers/watchdog/sbc7240_wdt.c            |   1 +
- drivers/watchdog/sbc_epx_c3.c             |   1 +
- drivers/watchdog/sbc_fitpc2_wdt.c         |   1 +
- drivers/watchdog/sc1200wdt.c              |   1 +
- drivers/watchdog/sc520_wdt.c              |   1 +
- drivers/watchdog/sch311x_wdt.c            |   1 +
- drivers/watchdog/scx200_wdt.c             |   1 +
- drivers/watchdog/smsc37b787_wdt.c         |   1 +
- drivers/watchdog/w83877f_wdt.c            |   1 +
- drivers/watchdog/w83977f_wdt.c            |   1 +
- drivers/watchdog/wafer5823wdt.c           |   1 +
- drivers/watchdog/watchdog_dev.c           |   1 +
- drivers/watchdog/wdrtas.c                 |   1 +
- drivers/watchdog/wdt.c                    |   1 +
- drivers/watchdog/wdt285.c                 |   1 +
- drivers/watchdog/wdt977.c                 |   1 +
- drivers/watchdog/wdt_pci.c                |   1 +
- fs/compat_ioctl.c                         | 346 +---------------------
- fs/ecryptfs/file.c                        |   1 +
- fs/ext4/ioctl.c                           |   1 +
- fs/f2fs/file.c                            |   1 +
- fs/gfs2/file.c                            |  24 ++
- fs/hpfs/dir.c                             |   1 +
- fs/hpfs/file.c                            |   1 +
- fs/nilfs2/ioctl.c                         |   1 +
- fs/ocfs2/ioctl.c                          |   1 +
- fs/xfs/xfs_ioctl32.c                      |  11 +-
- include/linux/blkdev.h                    |   2 +
- include/uapi/linux/ppp-ioctl.h            |   2 +
- include/uapi/linux/ppp_defs.h             |  14 +
- lib/iov_iter.c                            |   1 +
- net/socket.c                              |   3 +
- net/unix/af_unix.c                        |  19 ++
- 86 files changed, 526 insertions(+), 472 deletions(-)
-
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index 1e740f4406d3..b20228c19ccd 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -345,8 +345,6 @@ static int ppp_scompress(struct file *file, unsigned int cmd,
+ static unsigned int ioctl_pointer[] = {
+ /* Little t */
+ COMPATIBLE_IOCTL(TIOCOUTQ)
+-/* 'X' - originally XFS but some now in the VFS */
+-COMPATIBLE_IOCTL(FITRIM)
+ #ifdef CONFIG_BLOCK
+ /* Big S */
+ COMPATIBLE_IOCTL(SCSI_IOCTL_GET_IDLUN)
+diff --git a/fs/ecryptfs/file.c b/fs/ecryptfs/file.c
+index feecb57defa7..5fb45d865ce5 100644
+--- a/fs/ecryptfs/file.c
++++ b/fs/ecryptfs/file.c
+@@ -378,6 +378,7 @@ ecryptfs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		return rc;
+ 
+ 	switch (cmd) {
++	case FITRIM:
+ 	case FS_IOC32_GETFLAGS:
+ 	case FS_IOC32_SETFLAGS:
+ 	case FS_IOC32_GETVERSION:
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 442f7ef873fc..7a6e0f0f69e2 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -1227,6 +1227,7 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	}
+ 	case EXT4_IOC_MOVE_EXT:
+ 	case EXT4_IOC_RESIZE_FS:
++	case FITRIM:
+ 	case EXT4_IOC_PRECACHE_EXTENTS:
+ 	case EXT4_IOC_SET_ENCRYPTION_POLICY:
+ 	case EXT4_IOC_GET_ENCRYPTION_PWSALT:
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 3e58a6f697dd..befd2692160c 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -3216,6 +3216,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case F2FS_IOC_RELEASE_VOLATILE_WRITE:
+ 	case F2FS_IOC_ABORT_VOLATILE_WRITE:
+ 	case F2FS_IOC_SHUTDOWN:
++	case FITRIM:
+ 	case F2FS_IOC_SET_ENCRYPTION_POLICY:
+ 	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
+ 	case F2FS_IOC_GET_ENCRYPTION_POLICY:
+diff --git a/fs/hpfs/dir.c b/fs/hpfs/dir.c
+index d85230c84ef2..f32f15669996 100644
+--- a/fs/hpfs/dir.c
++++ b/fs/hpfs/dir.c
+@@ -325,4 +325,5 @@ const struct file_operations hpfs_dir_ops =
+ 	.release	= hpfs_dir_release,
+ 	.fsync		= hpfs_file_fsync,
+ 	.unlocked_ioctl	= hpfs_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
+ };
+diff --git a/fs/hpfs/file.c b/fs/hpfs/file.c
+index 1ecec124e76f..b36abf9cb345 100644
+--- a/fs/hpfs/file.c
++++ b/fs/hpfs/file.c
+@@ -215,6 +215,7 @@ const struct file_operations hpfs_file_ops =
+ 	.fsync		= hpfs_file_fsync,
+ 	.splice_read	= generic_file_splice_read,
+ 	.unlocked_ioctl	= hpfs_ioctl,
++	.compat_ioctl	= compat_ptr_ioctl,
+ };
+ 
+ const struct inode_operations hpfs_file_iops =
+diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
+index 91b9dac6b2cc..4ba73dbf3e8d 100644
+--- a/fs/nilfs2/ioctl.c
++++ b/fs/nilfs2/ioctl.c
+@@ -1354,6 +1354,7 @@ long nilfs_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 	case NILFS_IOCTL_SYNC:
+ 	case NILFS_IOCTL_RESIZE:
+ 	case NILFS_IOCTL_SET_ALLOC_RANGE:
++	case FITRIM:
+ 		break;
+ 	default:
+ 		return -ENOIOCTLCMD;
+diff --git a/fs/ocfs2/ioctl.c b/fs/ocfs2/ioctl.c
+index d6f7b299eb23..2d517b5ec6ac 100644
+--- a/fs/ocfs2/ioctl.c
++++ b/fs/ocfs2/ioctl.c
+@@ -985,6 +985,7 @@ long ocfs2_compat_ioctl(struct file *file, unsigned cmd, unsigned long arg)
+ 			return -EFAULT;
+ 
+ 		return ocfs2_info_handle(inode, &info, 1);
++	case FITRIM:
+ 	case OCFS2_IOC_MOVE_EXT:
+ 		break;
+ 	default:
 -- 
 2.20.0
 
-Cc: davem@davemloft.net
-Cc: axboe@kernel.dk
-Cc: linux-block@vger.kernel.org
-Cc: minyard@acm.org
-Cc: gregkh@linuxfoundation.org
-Cc: linux@roeck-us.net
-Cc: alexandre.belloni@bootlin.com
-Cc: jejb@linux.ibm.com
-Cc: martin.petersen@oracle.com
-Cc: dgilbert@interlog.com
-Cc: jslaby@suse.com
-Cc: wim@linux-watchdog.org
-Cc: viro@zeniv.linux.org.uk
-Cc: tytso@mit.edu
-Cc: adilger.kernel@dilger.ca
-Cc: jaegeuk@kernel.org
-Cc: rpeterso@redhat.com
-Cc: agruenba@redhat.com
-Cc: mikulas@artax.karlin.mff.cuni.cz
-Cc: konishi.ryusuke@gmail.com
-Cc: jlbec@evilplan.org
-Cc: joseph.qi@linux.alibaba.com
-Cc: darrick.wong@oracle.com
-Cc: linux-xfs@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: openipmi-developer@lists.sourceforge.net
-Cc: linux-hwmon@vger.kernel.org
-Cc: linux-ppp@vger.kernel.org
-Cc: linux-rtc@vger.kernel.org
-Cc: linux-scsi@vger.kernel.org
-Cc: linux-watchdog@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: ecryptfs@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net
-Cc: cluster-devel@redhat.com
-Cc: linux-nilfs@vger.kernel.org
-Cc: ocfs2-devel@oss.oracle.com
