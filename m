@@ -2,290 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 950D68F83E
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2019 03:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7B08F986
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2019 05:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726032AbfHPBAf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Aug 2019 21:00:35 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52838 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbfHPBAf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 15 Aug 2019 21:00:35 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7G0wfRc018197;
-        Fri, 16 Aug 2019 01:00:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=LGdoQSew9bKQooMOqG7q83hx4BsMJD0DTzfUWaN5FTM=;
- b=LmtGW/IlRylCzzPgpR9KqmAaSQk9wVm/Asf89vMkqCJZ5qMFhmPRBbkNsAslsQAei5KZ
- +c0d6bHxglQu3ZCntAxt/FXx3riL3oP2lH7JkMnkf+BNW/3wDn6kStPJsvQPymnqStYo
- cXn+RywC5pEtLi2E4PsMwmCMao9PkNg0dCJOISl3oWJujPAFjK1YCHrZYhf05S1+cLqs
- 12dhSWIALa5p9WPho/ltpUyM1rwBY/rrPmzqS2YgCuS1JdJ7gRncAxO6SZklpIfD/sXw
- pDYhDYjh96VYGSoDkIhKPGF9TDFVssYtuakJO3/+u3JAsWZgxEKeR0xDuXsdEmDxYl/h Dw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2u9pjqwm6h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Aug 2019 01:00:32 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7G0wCd3176344;
-        Fri, 16 Aug 2019 01:00:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2udgqfj9uk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Aug 2019 01:00:31 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7G10U0u028677;
-        Fri, 16 Aug 2019 01:00:30 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 15 Aug 2019 18:00:30 -0700
-Date:   Thu, 15 Aug 2019 18:00:29 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] docs: Add fast commit documentation
-Message-ID: <20190816010029.GA15175@magnolia>
-References: <20190809034552.148629-1-harshadshirwadkar@gmail.com>
- <20190809034552.148629-13-harshadshirwadkar@gmail.com>
+        id S1726541AbfHPDtS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 15 Aug 2019 23:49:18 -0400
+Received: from mail-eopbgr730062.outbound.protection.outlook.com ([40.107.73.62]:47904
+        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726487AbfHPDtR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 15 Aug 2019 23:49:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C2hlrhD5htbUO2hk/T+Es90FVdzjb78KIT976TDwQgnfOWeBLlHaUJrs7bkztwiyqnT0XQWLVcHtM64KD0cUij5VvV4rTePx5Uz/VNSxaOLxQqda2ahUd/eLCEclaYRaWulHtRg7pp7b0AmNFSZIuhqkJTFQVZmGDcCwnIPSasoYctOaIoF2bOkD53oOyEqnPHeI7bA09MejJ8pvk0pmvnxHDNQHQEF/hfJdwNLqklNMo/gE+TZBLqCheBV49v+3yGUUdL6zk4xDWLA63KU85RquiwxjzyuzxoppSCmSkBtllJBbuniqFQyMoB/07K7/GX5jqvCmHeGjUiJThmETyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m3SFQTGznjkWDvcTJ5DZvJdTH0lSVJygiagCWfxQSRs=;
+ b=AMOrDviF/yagu/Bqxb0SK7z0Ir7X7LLYwT+ykCNR5/vJ5aGrhRNoEyK6eNhZjxKcyNceE7m0tRsATsV+reWEEl4ZhossjR+SuMO5Rev4PRW1a0sZlKhItrcUgUzhum22BhXyN7+genTPLyzOH5lvcuBiwGt9tRj0qug+NZkZxwcZIQVys+ed/wei7yLMCJgJp8Hw6q/PL4ZkRmFQvUZpOF0AAUKrvp6WZSy6Z/3uGVfw5M4+U0jonElCvXoooYJkTbeqC0fLrXsgEextVyzDIUOHdxhHeKkky4SvyZwVtV8fzQUa6JfMQh9mTumCNwcPJ9I8C4xa6rphyp+NWADDEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
+ header.d=ddn.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m3SFQTGznjkWDvcTJ5DZvJdTH0lSVJygiagCWfxQSRs=;
+ b=Lba6HY+mCOo0MnrnEBcF9Y5z0hCHEI4sJAujj4qcpLtOxFj4/t3t9XdYOQIRmuDgDuaoz6COjrIjHVX3C1d7HCJhnMPK/KxiB5HksR83odJFhUCHnr5kOobFB090uiEgxcRYDhjckFVtNJBU5O6HRJkjuUMlNFCPBAPi6NCJPis=
+Received: from BL0PR1901MB2004.namprd19.prod.outlook.com (52.132.24.157) by
+ BL0PR1901MB2036.namprd19.prod.outlook.com (52.132.25.23) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2157.21; Fri, 16 Aug 2019 03:49:13 +0000
+Received: from BL0PR1901MB2004.namprd19.prod.outlook.com
+ ([fe80::8106:5cf4:d22e:3737]) by BL0PR1901MB2004.namprd19.prod.outlook.com
+ ([fe80::8106:5cf4:d22e:3737%7]) with mapi id 15.20.2157.022; Fri, 16 Aug 2019
+ 03:49:12 +0000
+From:   Dongyang Li <dongyangli@ddn.com>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+CC:     "adilger@dilger.ca" <adilger@dilger.ca>
+Subject: [PATCH 1/2] libext2fs: optimize ext2fs_convert_subcluster_bitmap()
+Thread-Topic: [PATCH 1/2] libext2fs: optimize
+ ext2fs_convert_subcluster_bitmap()
+Thread-Index: AQHVU+WRSVrR0wfOJEiX477ZjZ6FYw==
+Date:   Fri, 16 Aug 2019 03:49:12 +0000
+Message-ID: <20190816034834.29439-1-dongyangli@ddn.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: SYAPR01CA0031.ausprd01.prod.outlook.com (2603:10c6:1:1::19)
+ To BL0PR1901MB2004.namprd19.prod.outlook.com (2603:10b6:207:38::29)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=dongyangli@ddn.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.22.1
+x-originating-ip: [220.233.193.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e211b553-a843-4bce-244f-08d721fcb396
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BL0PR1901MB2036;
+x-ms-traffictypediagnostic: BL0PR1901MB2036:
+x-microsoft-antispam-prvs: <BL0PR1901MB2036042AF55FAC62A4664AE8CDAF0@BL0PR1901MB2036.namprd19.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-forefront-prvs: 0131D22242
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39850400004)(346002)(376002)(136003)(396003)(366004)(189003)(199004)(2351001)(26005)(6916009)(486006)(186003)(66556008)(7736002)(64756008)(66476007)(52116002)(6506007)(14454004)(2616005)(3846002)(6436002)(66946007)(36756003)(6116002)(66066001)(50226002)(8936002)(86362001)(476003)(102836004)(386003)(66446008)(1076003)(478600001)(2501003)(99286004)(25786009)(53936002)(5640700003)(2906002)(6512007)(305945005)(8676002)(71200400001)(71190400001)(5660300002)(81166006)(6486002)(256004)(316002)(4326008)(81156014);DIR:OUT;SFP:1101;SCL:1;SRVR:BL0PR1901MB2036;H:BL0PR1901MB2004.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: ddn.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: ADAXlZQq4VBzTrVDkaX1KaYwqZfQdXO8A/y/oU0ptkCg4zfUUHj8dxn2h/h8Mp8oS/gRbjwh0YcmKHIvZ8im1Jp74gDXPvNJ4qa5jA0uMI+CBzyz5Jplp1v6TMBb3BuepWFdo0axgUnA+pUg70EV1niJGgGYyp1gBydffyHNST1alo4RE++/AGp5fKm1UY6zBf4rWIPV+6ekmQWqo03GyB5IMTIRu/ABNMNDdk1dXG6G7i2VEBz/3cYL6mi3pNw3egUk6Wvln16FmLmxwa7wvMpk66xepoLVeNmC4L7Si3ptc1UXOwnryH9GNf7AG+bFAlsu47MrIm1pwSZRhb2E9ZGsj/Io5AJ5xitqsxszVeLWXx39c7NAZWqYRdvBR9wFF+ojCfHsh1w2bPUVJi2V3BGxHYCC35UIdWHMRjmL7mA=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190809034552.148629-13-harshadshirwadkar@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908160007
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908160007
+X-OriginatorOrg: ddn.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e211b553-a843-4bce-244f-08d721fcb396
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2019 03:49:12.7679
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KWav5XxtRqrPYhcdjtZGNVu0t1fTqCdP1QYDJzoQNY1AEJXH918Bgb+ezKZZV3zG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR1901MB2036
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 08, 2019 at 08:45:52PM -0700, Harshad Shirwadkar wrote:
-> This patch adds necessary documentation to
-> Documentation/filesystems/journalling.rst and
-> Documentation/filesystems/ext4/journal.rst.
-> 
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> ---
->  Documentation/filesystems/ext4/journal.rst | 96 ++++++++++++++++++++--
->  Documentation/filesystems/journalling.rst  | 15 ++++
->  2 files changed, 105 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
-> index ea613ee701f5..d6e4a698e208 100644
-> --- a/Documentation/filesystems/ext4/journal.rst
-> +++ b/Documentation/filesystems/ext4/journal.rst
-> @@ -29,10 +29,14 @@ safest. If ``data=writeback``, dirty data blocks are not flushed to the
->  disk before the metadata are written to disk through the journal.
->  
->  The journal inode is typically inode 8. The first 68 bytes of the
-> -journal inode are replicated in the ext4 superblock. The journal itself
-> -is normal (but hidden) file within the filesystem. The file usually
-> -consumes an entire block group, though mke2fs tries to put it in the
-> -middle of the disk.
-> +journal inode are replicated in the ext4 superblock. The journal
-> +itself is normal (but hidden) file within the filesystem. The file
-> +usually consumes an entire block group, though mke2fs tries to put it
-> +in the middle of the disk. Last 128 blocks in the journal are reserved
-> +for fast commits. Fast commits store metadata changes to inodes in an
-> +incremental fashion. A fast commit is valid only if there is no full
-> +commit after that particular fast commit. That makes fast commit space
-> +reusable after every full commit.
->  
->  All fields in jbd2 are written to disk in big-endian order. This is the
->  opposite of ext4.
-> @@ -48,16 +52,18 @@ Layout
->  Generally speaking, the journal has this format:
->  
->  .. list-table::
-> -   :widths: 16 48 16
-> +   :widths: 16 48 16 18
->     :header-rows: 1
->  
->     * - Superblock
->       - descriptor\_block (data\_blocks or revocation\_block) [more data or
->         revocations] commmit\_block
->       - [more transactions...]
-> +     - [Fast commits...]
->     * - 
->       - One transaction
->       -
-> +     -
->  
->  Notice that a transaction begins with either a descriptor and some data,
->  or a block revocation list. A finished transaction always ends with a
-> @@ -76,7 +82,7 @@ The journal superblock will be in the next full block after the
->  superblock.
->  
->  .. list-table::
-> -   :widths: 12 12 12 32 12
-> +   :widths: 12 12 12 32 12 12
->     :header-rows: 1
->  
->     * - 1024 bytes of padding
-> @@ -85,11 +91,13 @@ superblock.
->       - descriptor\_block (data\_blocks or revocation\_block) [more data or
->         revocations] commmit\_block
->       - [more transactions...]
-> +     - [Fast commits...]
->     * - 
->       -
->       -
->       - One transaction
->       -
-> +     -
->  
->  Block Header
->  ~~~~~~~~~~~~
-> @@ -609,3 +617,79 @@ bytes long (but uses a full block):
->       - h\_commit\_nsec
->       - Nanoseconds component of the above timestamp.
->  
-> +Fast Commit Block
-> +~~~~~~~~~~~~~~~~~
-> +
-> +The fast commit block indicates an append to the last commit block
-> +that was written to the journal. One fast commit block records updates
-> +to one inode. So, typically you would find as many fast commit blocks
-> +as the number of inodes that got changed since the last commit. A fast
-> +commit block is valid only if there is no commit block present with
-> +transaction ID greater than that of the fast commit block. If such a
-> +block a present, then there is no need to replay the fast commit
-> +block.
-> +
-> +Multiple fast commit blocks are a part of one sub-transaction. To
-> +indicate the last block in a fast commit transaction, fc_flags field
-> +in the last block in every subtransaction is marked with "LAST" (0x1)
-> +flag. A subtransaction is valid only if all the following conditions
-> +are met:
-> +
-> +1) SUBTID of all blocks is either equal to or greater than SUBTID of
-> +   the previous fast commit block.
-> +2) For every sub-transaction, last block is marked with LAST flag.
-> +3) There are no invalid blocks in between.
-> +
-> +.. list-table::
-> +   :widths: 8 8 24 40
-> +   :header-rows: 1
-> +
-> +   * - Offset
-> +     - Type
-> +     - Name
-> +     - Descriptor
-> +   * - 0x0
-> +     - journal\_header\_s
-> +     - (open coded)
-> +     - Common block header.
-> +   * - 0xC
-> +     - \_\_le32
-> +     - fc\_magic
-> +     - Magic value which should be set to 0xE2540090. This identifies
-> +       that this block is a fast commit block.
-> +   * - 0x10
-> +     - \_\_le32
-> +     - fc\_subtid
-> +     - Sub-transaction ID for this commit block
-> +   * - 0x14
-> +     - \_\_u8
-> +     - fc\_features
-> +     - Features used by this fast commit block.
-> +   * - 0x15
-> +     - \_\_u8
-> +     - fc_flags
-> +     - Flags. (0x1(Last) - Indicates that this is the last block in sub-transaction)
-> +   * - 0x16
-> +     - \_\_le16
-> +     - fc_num_tlvs
-> +     - Number of TLVs contained in this fast commit block
-> +   * - 0x18
-> +     - \_\_le32
-> +     - \_\_fc\_len
-> +     - Length of the fast commit block in terms of number of blocks
-> +   * - 0x2c
-> +     - \_\_le32
-> +     - fc\_ino
-> +     - Inode number of the inode that will be recovered using this fast commit
-> +   * - 0x30
-> +     - struct ext4\_inode
-> +     - inode
-> +     - On-disk copy of the inode at the commit time
-> +   * - 0x34
-> +     - struct ext4\_fc\_tl
-> +     - Array of struct ext4\_fc\_tl
-> +     - The actual delta with the last commit. Starting at this offset,
-> +       there is an array of TLVs that indicates which all extents
-> +       should be present in the corresponding inode. Currently, the
-> +       only tag that is supported is EXT4\_FC\_TAG\_EXT. That tag
-> +       indicates that the corresponding value is an extent.
+For a bigalloc filesystem, converting the block bitmap from blocks
+to chunks in ext2fs_convert_subcluster_bitmap() can take a long time
+when the device is huge, because we test the bitmap
+bit-by-bit using ext2fs_test_block_bitmap2().
+Use ext2fs_find_first_set_block_bitmap2() which is more efficient
+for mke2fs when the fs is mostly empty.
 
-This is a good start, but what's the structure of struct ext4_fc_tl ?
-It's written to disk, it should be here too.  Looks like it's mostly
-just an array of ondisk extent structures?
+e2fsck can also benifit from this during pass1 block scanning.
 
-So if I read this right, this first fastcommit tag type seems to be an
-inode core and an array of extents which ... I guess are the extents
-that were allocated and mapped into the file?  So therefore journal
-replay of this metadata update becomes a simple matter of logging the
-new inode core, adding the associated fc extent records to the extent
-map, and marking the corresponding parts of the block bitmap in use?
+Time taken for "mke2fs -O bigalloc,extent -C 131072 -b 4096" on a 1PB
+device:
 
-I'm wondering why these fast commits aren't written inline with the
-regular jbd2 transaction block stream?  i.e.
+without patch:
+real    27m49.457s
+user    21m36.474s
+sys     6m9.514s
 
-[descriptors][blocks][commit][fastcommit][fastcommit][descriptor...]
+with patch:
+real    6m31.908s
+user    0m1.806s
+sys    6m29.697s
 
-That way jbd2 replay just adds a case for a journal block with h_magic
-== JBD2_FC_MAGIC where it checkpoints whatever it had staged at that
-point, throws the fast commit block up to ext4 to do whatever, and then
-continues on replaying regular transactions?  I get this feeling like
-fastcommit is a journal that runs inside of/alongside jbd2 and wonder
-why not just integrate it better with jbd2?
+Signed-off-by: Li Dongyang <dongyangli@ddn.com>
+---
+ lib/ext2fs/gen_bitmap64.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
-> diff --git a/Documentation/filesystems/journalling.rst b/Documentation/filesystems/journalling.rst
-> index 58ce6b395206..2e0d550b546c 100644
-> --- a/Documentation/filesystems/journalling.rst
-> +++ b/Documentation/filesystems/journalling.rst
-> @@ -115,6 +115,21 @@ called after each transaction commit. You can also use
->  ``transaction->t_private_list`` for attaching entries to a transaction
->  that need processing when the transaction commits.
->  
-> +JBD2 also allows client file systems to implement file system specific
-> +commits which are called as ``fast commits``. File systems that wish
-> +to use this feature should first set
-> +``journal->j_fc_commit_callback``. That function is called before
-> +performing a commit. File system can call :c:func:`jbd2_map_fc_buf()`
-> +to get buffers reserved for fast commits. If file system returns 0,
-> +JBD2 assumes that file system performed a fast commit and it backs off
-> +from performing a commit. Otherwise, JBD2 falls back to normal full
+diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
+index 6e4d8b71..97601232 100644
+--- a/lib/ext2fs/gen_bitmap64.c
++++ b/lib/ext2fs/gen_bitmap64.c
+@@ -28,6 +28,7 @@
+ #ifdef HAVE_SYS_TIME_H
+ #include <sys/time.h>
+ #endif
++#include <sys/param.h>
+=20
+ #include "ext2_fs.h"
+ #include "ext2fsP.h"
+@@ -799,8 +800,8 @@ errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsys =
+fs,
+ 	ext2fs_generic_bitmap_64 bmap, cmap;
+ 	ext2fs_block_bitmap	gen_bmap =3D *bitmap, gen_cmap;
+ 	errcode_t		retval;
+-	blk64_t			i, b_end, c_end;
+-	int			n, ratio;
++	blk64_t			i, next, b_end, c_end;
++	int			ratio;
+=20
+ 	bmap =3D (ext2fs_generic_bitmap_64) gen_bmap;
+ 	if (fs->cluster_ratio_bits =3D=3D ext2fs_get_bitmap_granularity(gen_bmap)=
+)
+@@ -817,18 +818,14 @@ errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsy=
+s fs,
+ 	bmap->end =3D bmap->real_end;
+ 	c_end =3D cmap->end;
+ 	cmap->end =3D cmap->real_end;
+-	n =3D 0;
+ 	ratio =3D 1 << fs->cluster_ratio_bits;
+ 	while (i < bmap->real_end) {
+-		if (ext2fs_test_block_bitmap2(gen_bmap, i)) {
+-			ext2fs_mark_block_bitmap2(gen_cmap, i);
+-			i +=3D ratio - n;
+-			n =3D 0;
+-			continue;
+-		}
+-		i++; n++;
+-		if (n >=3D ratio)
+-			n =3D 0;
++		retval =3D ext2fs_find_first_set_block_bitmap2(gen_bmap,
++						i, bmap->real_end, &next);
++		if (retval)
++			break;
++		ext2fs_mark_block_bitmap2(gen_cmap, next);
++		i =3D bmap->start + roundup(next - bmap->start + 1, ratio);
+ 	}
+ 	bmap->end =3D b_end;
+ 	cmap->end =3D c_end;
+--=20
+2.22.1
 
-Huh.  Ok, so the caller I guess grabs fastcommit blocks, writes the
-intent to the fc block, and pushes it to disk, after which we can return
-to userspace.  Some time later jbd2 gets around to committing things so
-it calls back with ->j_fc_commit_callback at which point we say "Oh! I
-already wrote that to disk as a fastcommit, so return 0" and jbd2
-shrugs and moves on to the next transaction?
-
---D
-
-> +commit. After performing either a fast or a full commit, JBD2 calls
-> +``journal->j_fc_cleanup_cb`` to allow file systems to perform cleanups
-> +for their internal fast commit related data structures. At the replay
-> +time, JBD2 passes each and every fast commit block to the file system
-> +via ``journal->j_fc_replay_cb``. Ext4 effectively uses this fast
-> +commit mechanism to improve journal commit performance.
-> +
->  JBD2 also provides a way to block all transaction updates via
->  :c:func:`jbd2_journal_lock_updates()` /
->  :c:func:`jbd2_journal_unlock_updates()`. Ext4 uses this when it wants a
-> -- 
-> 2.23.0.rc1.153.gdeed80330f-goog
-> 
