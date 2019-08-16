@@ -2,306 +2,200 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 192448F987
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2019 05:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE9A8FA8D
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2019 07:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbfHPDtV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 15 Aug 2019 23:49:21 -0400
-Received: from mail-eopbgr730086.outbound.protection.outlook.com ([40.107.73.86]:43683
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726487AbfHPDtV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 15 Aug 2019 23:49:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zj8D5ulswbcrSTlb0eQoYzaFAQz2URPw4z399HnElCycSicrgrV8sELO1O5hHBxj9fKDyOW0erMqEwuDiLbhGPL2kKMlD2aizRjpOpUXJOqx/hW6Al2YEcN10PLBa84Alq98mfXA6g80zHpU9G7e0ri4urlskfrnalkK0AUu0ZjUakqMrN/D6FUO/M44D3zakQW+2eQy5FLQt3cu9wVtyezOXJcznV8rZPhFldZbhQIpMssPRGMiHsVylGGHY+j+qPsPG7LfG2L8Fx+uSynptJi/NWUJtoah7fYaDP3rI+yD8QBsgDbNl6JXFK97ABUPjCkFbUVJbr5F39DA4kwJPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WsW/6qGSstRUqaV2eIwjKMvg9vxIUfTQLsA6yoM77as=;
- b=Ywoarr+6nja6SjFntLaUar79oELRg9AHqNq2SzrFpEYlWgnC2kLX9cQg8mw6SlWzIQbfJImpwcAcVsT9euaXeRjOV828eDIwcMTheizePgsocTLWsHyuSADH6zWEQPQW4fHZ/S2TLKcUpSq7iL5USeF8ng51DgltXj/XoXXMNAhVULuBxtDkcvSLrrWGJj9tvcVXRS/olwz6FdkPNMVqOf9jdArxX3Qnbb8aEsaS9DzxeGiC549v4BB8I/gZFXFu/yCsQqywf7LxEs9Ikg6C89UBKf0yXZmoyvCoENTH5v8Err+JxLQOhwp9b0R13ZfZGrUd4XWjKLHVXEMddVaCOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
- header.d=ddn.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WsW/6qGSstRUqaV2eIwjKMvg9vxIUfTQLsA6yoM77as=;
- b=uKFJLp81+Bu/Hpsf8dcSbaHDAumpqOvMIp2v7Yp1L3ezZuYzmWCj8UGqLCCPywaLtc5Mh24nKASekGNhGmEMuP0tI1Kti+Puiat09/jjs+WmXOS+fzsz6h8icrnK2J8v+LdsvRJAnOWtskUU59CpQxtWhVdOI6qMl13v/vpzZ9w=
-Received: from BL0PR1901MB2004.namprd19.prod.outlook.com (52.132.24.157) by
- BL0PR1901MB2036.namprd19.prod.outlook.com (52.132.25.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2157.21; Fri, 16 Aug 2019 03:49:14 +0000
-Received: from BL0PR1901MB2004.namprd19.prod.outlook.com
- ([fe80::8106:5cf4:d22e:3737]) by BL0PR1901MB2004.namprd19.prod.outlook.com
- ([fe80::8106:5cf4:d22e:3737%7]) with mapi id 15.20.2157.022; Fri, 16 Aug 2019
- 03:49:14 +0000
-From:   Dongyang Li <dongyangli@ddn.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-CC:     "adilger@dilger.ca" <adilger@dilger.ca>
-Subject: [PATCH 2/2] mke2fs: set overhead in super block for bigalloc
-Thread-Topic: [PATCH 2/2] mke2fs: set overhead in super block for bigalloc
-Thread-Index: AQHVU+WSK13T1X7pvEePBTUU+Qum5g==
-Date:   Fri, 16 Aug 2019 03:49:14 +0000
-Message-ID: <20190816034834.29439-2-dongyangli@ddn.com>
-References: <20190816034834.29439-1-dongyangli@ddn.com>
+        id S1726597AbfHPF6E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Aug 2019 01:58:04 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:35267 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbfHPF6E (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Aug 2019 01:58:04 -0400
+Received: by mail-io1-f66.google.com with SMTP id i22so4021947ioh.2
+        for <linux-ext4@vger.kernel.org>; Thu, 15 Aug 2019 22:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=1q4+lec5lE3oPEjUfr+2rU/XH8zkPynfx0NGg+l+r5s=;
+        b=qTtkD8Ms/1nhlGvVlIPJAVzFaFYKP3l98jOVIqs9uD5KglIoQkd1TbwVMgsXSVH6Nu
+         5xaTfEn43PBHyxJH/DOVImUI5+S0JODQ19tgSGdhgRYT5KthO5apvWDS05vIJ0JEK62R
+         A9DhGZsrzEeornxC4/CqLMQPI4/Wbwq7b3NH3jj3OeOYl+1GznmFZ5czRwA135mBsrLr
+         3xUfxF8T6ir/uJHE0C6jmEMv6fhcWQFr0TumftPqfIxYV10T9HlDDXF1qeFuO2+iH9yG
+         XnehxyRLcXk8Lb68Y8xJcJ0wl/txpivZ20siBetwEPvlCof4vUXpDO2swP1kn9aARA/Z
+         LPTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=1q4+lec5lE3oPEjUfr+2rU/XH8zkPynfx0NGg+l+r5s=;
+        b=ej4JOTciljbFWKjJNtv5ZNe0mJMzBz0QtNpUHs65Id0jprN0jOjkDVCf8Ti50i8WpN
+         ad/0nmmO+V918JuMKFH31wJ94EKL9uUDcRdSv10DD07TYGb5vjAlTFnP45aCo+uxnIp9
+         t8mwjy8tZEbFhvCO96Q3jfb+ASna1V691fNZ6b+y26RKbWd+Vka2J73TK/UFGl+HtjAV
+         ABhOgxtmvDHoLlZ93wwJBqa1vMcowtbh4ATqUbr2BoeEehP3cvynmSe78zvCGHrdj4QF
+         7HY4ae1kJXajl1A5Za8cBMuwB1b5E6R0j5A+bVq8L9LspFYvCR95mgXfLqRjkcxB9aPM
+         xljw==
+X-Gm-Message-State: APjAAAXF/67Xp3lPQp+Rwc2P3+H49GWakTRKmdWnyBkWRNBiQ7NhdKTh
+        woT4XDzNFZWcOM3rk9wW+vePtQ==
+X-Google-Smtp-Source: APXvYqxxPT5e4ZPfesIfmaxwr6bDR1FrypkFU6Tq9mNYscLR+GqGZc9ipzaNtukJl0udbvXXFyJ3mg==
+X-Received: by 2002:a6b:ed01:: with SMTP id n1mr6976670iog.255.1565935083384;
+        Thu, 15 Aug 2019 22:58:03 -0700 (PDT)
+Received: from [172.20.10.11] ([24.114.55.80])
+        by smtp.gmail.com with ESMTPSA id m20sm5101060ioh.4.2019.08.15.22.58.01
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Aug 2019 22:58:02 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <16AB3BA6-831E-41E7-B48B-B217FA9CFF3B@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_B93C4445-5282-4A58-86A7-539DD8FF9BAC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 1/2] libext2fs: optimize
+ ext2fs_convert_subcluster_bitmap()
+Date:   Thu, 15 Aug 2019 23:58:05 -0600
 In-Reply-To: <20190816034834.29439-1-dongyangli@ddn.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: SYAPR01CA0031.ausprd01.prod.outlook.com (2603:10c6:1:1::19)
- To BL0PR1901MB2004.namprd19.prod.outlook.com (2603:10b6:207:38::29)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=dongyangli@ddn.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 2.22.1
-x-originating-ip: [220.233.193.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 470b90fb-bab2-4708-c120-08d721fcb4a3
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BL0PR1901MB2036;
-x-ms-traffictypediagnostic: BL0PR1901MB2036:
-x-microsoft-antispam-prvs: <BL0PR1901MB2036761BD4464305CDF13D58CDAF0@BL0PR1901MB2036.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1775;
-x-forefront-prvs: 0131D22242
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39850400004)(346002)(376002)(136003)(396003)(366004)(189003)(199004)(2351001)(26005)(6916009)(486006)(186003)(66556008)(7736002)(64756008)(66476007)(52116002)(6506007)(14454004)(76176011)(2616005)(3846002)(6436002)(66946007)(11346002)(36756003)(6116002)(66066001)(50226002)(8936002)(86362001)(476003)(446003)(102836004)(386003)(66446008)(1076003)(14444005)(478600001)(2501003)(99286004)(25786009)(53936002)(5640700003)(2906002)(6512007)(305945005)(8676002)(71200400001)(71190400001)(5660300002)(81166006)(6486002)(256004)(316002)(4326008)(81156014);DIR:OUT;SFP:1101;SCL:1;SRVR:BL0PR1901MB2036;H:BL0PR1901MB2004.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: ddn.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: LrhQ3hNE+83rFYF4tZqCQ/M3/I2RYVBEAJn7QADnFcDKYKRv3kRm5KIKeYFxyAfNZSYfq6dQLbdBEvLOuvXmsV6WtzWHfOQ0fqaFOh9k+OERiXrUrIXS6fzFmoUi9ZZLwE1hiYXGfG6vdrul6OC5ZCq66Dhg3N4JLhalWYJKSvZhKl9tmTgUxvzbrCd8ow8VRkiT0gsMNBjnYGNLE1QUNqQu+Z/livro3TTYG5dA3OdFscSlXU0gaL8d/5eXOdAyvHxLbrOti4Iu5fstxZR1h7K+OacnK6YqLX3U2UmiB6GCtqmWhKvHNJsCtJc3hHN22E8hRkPwiIVU5mN3ek+SXW1Sjzkwdctt2DFo4tS+CrBmWBBpeT8LHE6q9YWXxwgrukTLxzZotGj3xUWmk1tpWE1XKHrsARkS8G5Mm0Cp1tk=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: ddn.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 470b90fb-bab2-4708-c120-08d721fcb4a3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2019 03:49:14.3709
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n8MD0y9svSjkRLEf5DLjDLwrfahp/UQrrUs+gpzYDcP2/0Zjr9jdiLuA8chAZ968
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR1901MB2036
+Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+To:     Dongyang Li <dongyangli@ddn.com>, Theodore Ts'o <tytso@mit.edu>
+References: <20190816034834.29439-1-dongyangli@ddn.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If overhead is not recorded in the super block, it is caculated
-during mount in kernel, for bigalloc file systems the it takes
-O(groups**2) in time.
-For a 1PB deivce with 32K cluste size it takes ~12 mins to
-mount, with most of the time spent on figuring out overhead.
 
-While we can not improve the overhead algorithm in kernel
-due to the nature of bigalloc, we can work out the overhead
-during mke2fs and set it in the super block, avoiding calculating
-it every time during mounting.
+--Apple-Mail=_B93C4445-5282-4A58-86A7-539DD8FF9BAC
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Overhead is s_first_data_block plus internal journal blocks plus
-the block and inode bitmaps, inode table, super block backups and
-group descriptor blocks for every group. With the patch we calculate
-the overhead when converting the block bitmap to cluster bitmap.
+On Aug 15, 2019, at 9:49 PM, Dongyang Li <dongyangli@ddn.com> wrote:
+>=20
+> For a bigalloc filesystem, converting the block bitmap from blocks
+> to chunks in ext2fs_convert_subcluster_bitmap() can take a long time
+> when the device is huge, because we test the bitmap
+> bit-by-bit using ext2fs_test_block_bitmap2().
 
-When bad blocks are involved, it gets tricky because the blocks
-counted as overhead and the bad blocks can end up in the same
-allocation cluster. In this case we will unmark the bad blocks from
-the block bitmap, covert to cluster bitmap and get the overhead,
-then mark the bad blocks back in the cluster bitmap.
+"bit-by-bit" can fit on the previous line.
 
-Fix a bug in handle_bad_blocks(), don't covert the bad block to
-cluster when marking it as used, the bitmap is still a block bitmap,
-will be coverted to cluster bitmap later.
+> Use ext2fs_find_first_set_block_bitmap2() which is more efficient
+> for mke2fs when the fs is mostly empty.
+>=20
+> e2fsck can also benifit from this during pass1 block scanning.
 
-Note: in kernel the overhead is the s_overhead_clusters field from
-struct ext4_super_block, it's named s_overhead_blocks in e2fsprogs.
+"benefit"
 
-Signed-off-by: Li Dongyang <dongyangli@ddn.com>
----
- lib/ext2fs/ext2fs.h       |  4 +++
- lib/ext2fs/gen_bitmap64.c | 61 ++++++++++++++++++++++++++++++++++-----
- misc/mke2fs.c             | 15 ++++++++--
- 3 files changed, 69 insertions(+), 11 deletions(-)
+>=20
+> Time taken for "mke2fs -O bigalloc,extent -C 131072 -b 4096" on a 1PB
+> device:
+>=20
+> without patch:
+> real    27m49.457s
+> user    21m36.474s
+> sys     6m9.514s
+>=20
+> with patch:
+> real    6m31.908s
+> user    0m1.806s
+> sys    6m29.697s
+>=20
+> Signed-off-by: Li Dongyang <dongyangli@ddn.com>
 
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index 59fd9742..a70924b3 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -1437,6 +1437,10 @@ errcode_t ext2fs_set_generic_bmap_range(ext2fs_gener=
-ic_bitmap bmap,
- 					void *in);
- errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsys fs,
- 					   ext2fs_block_bitmap *bitmap);
-+errcode_t ext2fs_convert_subcluster_bitmap_overhead(ext2_filsys fs,
-+						    ext2fs_block_bitmap *bitmap,
-+						    badblocks_list bb_list,
-+						    unsigned int *count);
-=20
- /* get_num_dirs.c */
- extern errcode_t ext2fs_get_num_dirs(ext2_filsys fs, ext2_ino_t *ret_num_d=
-irs);
-diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
-index 97601232..0f67f9c4 100644
---- a/lib/ext2fs/gen_bitmap64.c
-+++ b/lib/ext2fs/gen_bitmap64.c
-@@ -794,18 +794,46 @@ void ext2fs_warn_bitmap32(ext2fs_generic_bitmap gen_b=
-itmap, const char *func)
- #endif
- }
-=20
--errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsys fs,
--					   ext2fs_block_bitmap *bitmap)
-+errcode_t ext2fs_convert_subcluster_bitmap_overhead(ext2_filsys fs,
-+						    ext2fs_block_bitmap *bitmap,
-+						    badblocks_list bb_list,
-+						    unsigned int *count)
- {
- 	ext2fs_generic_bitmap_64 bmap, cmap;
- 	ext2fs_block_bitmap	gen_bmap =3D *bitmap, gen_cmap;
- 	errcode_t		retval;
--	blk64_t			i, next, b_end, c_end;
-+	blk64_t			blk, next, b_end, c_end;
-+	unsigned int		clusters =3D 0;
-+	blk_t			super_and_bgd, bblk;
-+	badblocks_iterate	bb_iter;
-+	dgrp_t			i;
- 	int			ratio;
-=20
- 	bmap =3D (ext2fs_generic_bitmap_64) gen_bmap;
--	if (fs->cluster_ratio_bits =3D=3D ext2fs_get_bitmap_granularity(gen_bmap)=
-)
-+	if (fs->cluster_ratio_bits =3D=3D
-+				ext2fs_get_bitmap_granularity(gen_bmap)) {
-+		if (count) {
-+			for (i =3D 0; i < fs->group_desc_count; i++) {
-+				ext2fs_super_and_bgd_loc2(fs, i, NULL, NULL,
-+							  NULL,
-+							  &super_and_bgd);
-+				clusters +=3D super_and_bgd +
-+					    fs->inode_blocks_per_group + 2;
-+			}
-+			*count =3D clusters;
-+		}
- 		return 0;	/* Nothing to do */
-+	}
-+
-+	if (bb_list) {
-+		retval =3D ext2fs_badblocks_list_iterate_begin(bb_list,
-+							     &bb_iter);
-+		if (retval)
-+			return retval;
-+		while (ext2fs_badblocks_list_iterate(bb_iter, &bblk))
-+			ext2fs_unmark_block_bitmap2(gen_bmap, bblk);
-+		bb_iter->ptr =3D 0;
-+	}
-=20
- 	retval =3D ext2fs_allocate_block_bitmap(fs, "converted cluster bitmap",
- 					      &gen_cmap);
-@@ -813,27 +841,44 @@ errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsy=
-s fs,
- 		return retval;
-=20
- 	cmap =3D (ext2fs_generic_bitmap_64) gen_cmap;
--	i =3D bmap->start;
-+	blk =3D bmap->start;
- 	b_end =3D bmap->end;
- 	bmap->end =3D bmap->real_end;
- 	c_end =3D cmap->end;
- 	cmap->end =3D cmap->real_end;
- 	ratio =3D 1 << fs->cluster_ratio_bits;
--	while (i < bmap->real_end) {
-+	while (blk < bmap->real_end) {
- 		retval =3D ext2fs_find_first_set_block_bitmap2(gen_bmap,
--						i, bmap->real_end, &next);
-+						blk, bmap->real_end, &next);
- 		if (retval)
- 			break;
- 		ext2fs_mark_block_bitmap2(gen_cmap, next);
--		i =3D bmap->start + roundup(next - bmap->start + 1, ratio);
-+		blk =3D bmap->start + roundup(next - bmap->start + 1, ratio);
-+		clusters++;
- 	}
- 	bmap->end =3D b_end;
- 	cmap->end =3D c_end;
- 	ext2fs_free_block_bitmap(gen_bmap);
-+
-+	if (bb_list) {
-+		while (ext2fs_badblocks_list_iterate(bb_iter, &bblk))
-+			ext2fs_mark_block_bitmap2(gen_cmap, bblk);
-+		ext2fs_badblocks_list_iterate_end(bb_iter);
-+	}
-+
- 	*bitmap =3D (ext2fs_block_bitmap) cmap;
-+	if (count)
-+		*count =3D clusters;
- 	return 0;
- }
-=20
-+errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsys fs,
-+					   ext2fs_block_bitmap *bitmap)
-+{
-+	return ext2fs_convert_subcluster_bitmap_overhead(fs, bitmap,
-+							 NULL, NULL);
-+}
-+
- errcode_t ext2fs_find_first_zero_generic_bmap(ext2fs_generic_bitmap bitmap=
-,
- 					      __u64 start, __u64 end, __u64 *out)
- {
-diff --git a/misc/mke2fs.c b/misc/mke2fs.c
-index d7cf257e..baa87b36 100644
---- a/misc/mke2fs.c
-+++ b/misc/mke2fs.c
-@@ -344,7 +344,7 @@ _("Warning: the backup superblock/group descriptors at =
-block %u contain\n"
- 		exit(1);
- 	}
- 	while (ext2fs_badblocks_list_iterate(bb_iter, &blk))
--		ext2fs_mark_block_bitmap2(fs->block_map, EXT2FS_B2C(fs, blk));
-+		ext2fs_mark_block_bitmap2(fs->block_map, blk);
- 	ext2fs_badblocks_list_iterate_end(bb_iter);
- }
-=20
-@@ -2913,6 +2913,7 @@ int main (int argc, char *argv[])
- 	ext2_filsys	fs;
- 	badblocks_list	bb_list =3D 0;
- 	unsigned int	journal_blocks =3D 0;
-+	unsigned int	overhead;
- 	unsigned int	i, checkinterval;
- 	int		max_mnt_count;
- 	int		val, hash_alg;
-@@ -3213,7 +3214,9 @@ int main (int argc, char *argv[])
- 	if (!quiet)
- 		printf("%s", _("done                            \n"));
-=20
--	retval =3D ext2fs_convert_subcluster_bitmap(fs, &fs->block_map);
-+	retval =3D ext2fs_convert_subcluster_bitmap_overhead(fs, &fs->block_map,
-+							   bb_list,
-+							   &overhead);
- 	if (retval) {
- 		com_err(program_name, retval, "%s",
- 			_("\n\twhile converting subcluster bitmap"));
-@@ -3317,6 +3320,7 @@ int main (int argc, char *argv[])
- 		free(journal_device);
- 	} else if ((journal_size) ||
- 		   ext2fs_has_feature_journal(&fs_param)) {
-+		overhead +=3D EXT2FS_B2C(fs, journal_blocks);
- 		if (super_only) {
- 			printf("%s", _("Skipping journal creation in super-only mode\n"));
- 			fs->super->s_journal_inum =3D EXT2_JOURNAL_INO;
-@@ -3359,8 +3363,13 @@ no_journal:
- 			       fs->super->s_mmp_update_interval);
- 	}
-=20
--	if (ext2fs_has_feature_bigalloc(&fs_param))
-+	overhead +=3D fs->super->s_first_data_block;
-+
-+	if (ext2fs_has_feature_bigalloc(&fs_param)) {
- 		fix_cluster_bg_counts(fs);
-+		if (!super_only)
-+			fs->super->s_overhead_blocks =3D overhead;
-+	}
- 	if (ext2fs_has_feature_quota(&fs_param))
- 		create_quota_inodes(fs);
-=20
---=20
-2.22.1
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
+> ---
+> lib/ext2fs/gen_bitmap64.c | 21 +++++++++------------
+> 1 file changed, 9 insertions(+), 12 deletions(-)
+>=20
+> diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
+> index 6e4d8b71..97601232 100644
+> --- a/lib/ext2fs/gen_bitmap64.c
+> +++ b/lib/ext2fs/gen_bitmap64.c
+> @@ -28,6 +28,7 @@
+> #ifdef HAVE_SYS_TIME_H
+> #include <sys/time.h>
+> #endif
+> +#include <sys/param.h>
+>=20
+> #include "ext2_fs.h"
+> #include "ext2fsP.h"
+> @@ -799,8 +800,8 @@ errcode_t =
+ext2fs_convert_subcluster_bitmap(ext2_filsys fs,
+> 	ext2fs_generic_bitmap_64 bmap, cmap;
+> 	ext2fs_block_bitmap	gen_bmap =3D *bitmap, gen_cmap;
+> 	errcode_t		retval;
+> -	blk64_t			i, b_end, c_end;
+> -	int			n, ratio;
+> +	blk64_t			i, next, b_end, c_end;
+> +	int			ratio;
+>=20
+> 	bmap =3D (ext2fs_generic_bitmap_64) gen_bmap;
+> 	if (fs->cluster_ratio_bits =3D=3D =
+ext2fs_get_bitmap_granularity(gen_bmap))
+> @@ -817,18 +818,14 @@ errcode_t =
+ext2fs_convert_subcluster_bitmap(ext2_filsys fs,
+> 	bmap->end =3D bmap->real_end;
+> 	c_end =3D cmap->end;
+> 	cmap->end =3D cmap->real_end;
+> -	n =3D 0;
+> 	ratio =3D 1 << fs->cluster_ratio_bits;
+> 	while (i < bmap->real_end) {
+> -		if (ext2fs_test_block_bitmap2(gen_bmap, i)) {
+> -			ext2fs_mark_block_bitmap2(gen_cmap, i);
+> -			i +=3D ratio - n;
+> -			n =3D 0;
+> -			continue;
+> -		}
+> -		i++; n++;
+> -		if (n >=3D ratio)
+> -			n =3D 0;
+> +		retval =3D ext2fs_find_first_set_block_bitmap2(gen_bmap,
+> +						i, bmap->real_end, =
+&next);
+> +		if (retval)
+> +			break;
+> +		ext2fs_mark_block_bitmap2(gen_cmap, next);
+> +		i =3D bmap->start + roundup(next - bmap->start + 1, =
+ratio);
+> 	}
+> 	bmap->end =3D b_end;
+> 	cmap->end =3D c_end;
+> --
+> 2.22.1
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_B93C4445-5282-4A58-86A7-539DD8FF9BAC
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl1WRe0ACgkQcqXauRfM
+H+B0lRAAjP4NOXgCT5UgUoX8z6V6WQRIsamh46lMY3uA0YuFX36Um6+jFeQ+agEg
+F4ugw2tnf43IwEGr5HxLwfJ0Vrx6TlkHUQem4HFa7JfXa7UTNeGrdDlLHI6vhNyT
+l5zsW4SQW47Bn3WMNYnBXcNMDP61VZ99QpcRH2aHMBMHcx6M2L9RWV7vRlngyt41
+sjL17pd6JbVMIdhoZrb6jwsXwBzI78bW2gf38oEshb7+seXrtpSf4TyJOGil1kQW
+nEyO0CaQyd7rVrujjpGulhTFi5XQf5SLOKyO6QApldHH8eA/UnLbczz+TcOwp13w
+YcBw2oAXoxM7tDOGQEZ0QyS1p40mQ+bfmXIyeclia2dIJYKS9LVi3t5//2OAxWV9
+4XH28X6ATPreusb28L2ZyYVI3VYfbOTK0RTiuOaYZLC5uaQK1Ngfb+LvRB/VEmLt
+NDSAmElhRCPq+bnJ0TLdYQbufK9i2NHJIQOjYoXmAsM9uw7giUSDmAgSvIZ6Xk1Z
+nnz52Y+VVr2qadmn9HgAZhOcW9D3ONdGJ56ZCdznv1e6/FASAPG7ZTAzVSRwLLLd
+ers2NmRHvQzhVuDeBTI0bZofDhJvzQFEma+B9C1wuLCSQCCWTnh91GGXDSQ/acfJ
+fRd0qM3iZDIGl0IadPit51PBnVuXELwjdoegdqSkQQgNb27PDiw=
+=PR25
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_B93C4445-5282-4A58-86A7-539DD8FF9BAC--
