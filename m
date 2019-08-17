@@ -2,79 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2700690B94
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Aug 2019 01:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFA290C26
+	for <lists+linux-ext4@lfdr.de>; Sat, 17 Aug 2019 04:27:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725945AbfHPX4I (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 16 Aug 2019 19:56:08 -0400
-Received: from mail-ed1-f42.google.com ([209.85.208.42]:40846 "EHLO
-        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbfHPX4I (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 16 Aug 2019 19:56:08 -0400
-Received: by mail-ed1-f42.google.com with SMTP id h8so6498826edv.7
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Aug 2019 16:56:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=3huj0oeyup9M9DIiU9x1xOojU9xk1ZMZIp6mMJ9v6HA=;
-        b=KtOSfd9iaPzsM9DSOvgtP2A/bs3tWeODa4rHs1bTT/YBQFmeAFxLCMMjELQNLTrZiy
-         2H8EBg6Zy2y8YExYoa9OSI6QTSao97r/W9Ov0N0XR7+fxI5UWHm6Zt8rwQy4DjsPo3Pt
-         mvVWI14hMR6KNzsjHO6+8+uSdsp1NGtv58QkpiaE/A2iE1yYNmOAaq0QvGV5fGiw7Nrc
-         JIzRPkiQsr6guWTQnB/Uc2tFzGQyIz5o/yeP4IA4jvDTt1y95TqqHGqSC9K03D1u6bAL
-         kijCafd3GPywaVVy+sqY7eDeFnaSdE3i9x0lHbMnqdNEx7W+UmBUDK/gQyzOZMrRxkhp
-         0qgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=3huj0oeyup9M9DIiU9x1xOojU9xk1ZMZIp6mMJ9v6HA=;
-        b=RsGyNFeE+/JKlJQ+U8cW/TlkQeoIYaIH1vtYKIapIJ6D75hFQs3k7mU9oriFjITgFv
-         tUhX4ahxoitEbENIGNdY9MpOvT4/Kp1/dUagP5L1SgOO+97O4r7LohWMUlRnCykTCjER
-         NXYbGYp6y3fuNNxCMThqKD9h8fs/nNHte4F0igqhXxHcuHzrbqJBe7ivTjEPngNJ6Uf5
-         bidRi/abFa8CM27Y9Nsqq2uQFEfBRXaa2+OybAccgToPQrFkV6tjZB/Ffa4vqMf5qybo
-         YY0VQrCVozoVe33fPjKDcSvF3Sc0dLEpaIS8clmYhzO1UM9Vm8hRHVdz3ftmg+UyST0S
-         bvZg==
-X-Gm-Message-State: APjAAAUip12MFpyGwW2UxThmAPUXw1lfDZpCxku9ar7x+Z6199tUT8nC
-        oigeKACyWrnnvlICTr9FoNVjYVzwTnnnE0+MwmZ0rtIqXf4=
-X-Google-Smtp-Source: APXvYqyluVDkCxY9Ohq5eRKJc6jpvTktAWPJ3zKFbl7XQrxkf6epQnLQMjQh50VdcxwxcYAjRhWP8IjEBM0lHHMaXbU=
-X-Received: by 2002:a50:90a4:: with SMTP id c33mr12829612eda.106.1565999765976;
- Fri, 16 Aug 2019 16:56:05 -0700 (PDT)
+        id S1726141AbfHQC1U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 16 Aug 2019 22:27:20 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:48957 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726032AbfHQC1U (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 16 Aug 2019 22:27:20 -0400
+Received: from dread.disaster.area (pa49-195-190-67.pa.nsw.optusnet.com.au [49.195.190.67])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id D0D423617AF;
+        Sat, 17 Aug 2019 12:27:10 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hyoPr-0000Wh-58; Sat, 17 Aug 2019 12:26:03 +1000
+Date:   Sat, 17 Aug 2019 12:26:03 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190817022603.GW6129@dread.disaster.area>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190814101714.GA26273@quack2.suse.cz>
+ <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
+ <20190815130558.GF14313@quack2.suse.cz>
+ <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-From:   Shehbaz Jaffer <shehbazjaffer007@gmail.com>
-Date:   Fri, 16 Aug 2019 19:55:54 -0400
-Message-ID: <CAPLK-i8xE4n8BJ-Beu0f80PC2W6b-A30nwcz+V_bCb_iAyB++Q@mail.gmail.com>
-Subject: question about jbd2 checksum v2 and v3 flag
-To:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
+        a=TR82T6zjGmBjdfWdGgpkDw==:117 a=TR82T6zjGmBjdfWdGgpkDw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=FmdZ9Uzk2mMA:10
+        a=7-415B0cAAAA:8 a=r7a9GJFEl8VWeONERSwA:9 a=QEXdDO2ut3YA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Fri, Aug 16, 2019 at 12:05:28PM -0700, Ira Weiny wrote:
+> On Thu, Aug 15, 2019 at 03:05:58PM +0200, Jan Kara wrote:
+> > On Wed 14-08-19 11:08:49, Ira Weiny wrote:
+> > > On Wed, Aug 14, 2019 at 12:17:14PM +0200, Jan Kara wrote:
+> 2) Second reason is that I thought I did not have a good way to tell if the
+>    lease was actually in use.  What I mean is that letting the lease go should
+>    be ok IFF we don't have any pins...  I was thinking that without John's code
+>    we don't have a way to know if there are any pins...  But that is wrong...
+>    All we have to do is check
+> 
+> 	!list_empty(file->file_pins)
+> 
+> So now with this detail I think you are right, we should be able to hold the
+> lease through the struct file even if the process no longer has any
+> "references" to it (ie closes and munmaps the file).
 
-I am trying to understand jbd2 checksumming procedure. I reboot ext4
-in the middle of a metadata intensive operation using echo b>
-/proc/sysrq-trigger. I see that the journal gets replayed on next
-mount using prinks in jbd2/recovery.c: do_one_pass() function.
+I really, really dislike the idea of zombie layout leases. It's a
+nasty hack for poor application behaviour. This is a "we allow use
+after layout lease release" API, and I think encoding largely
+untraceable zombie objects into an API is very poor design.
 
-I then corrupt intermediate metadata logged on jbd2 and I still see
-the journal being replayed without multiple error messages which
-should ideally get printed when one of the two following flags -
-JBD2_FEATURE_INCOMPAT_CSUM_V2 or JBD2_FEATURE_INCOMPAT_CSUM_V3 are
-set.
+From the fcntl man page:
 
-I have 2 questions:
+LEASES
+	Leases are associated with an open file description (see
+	open(2)).  This means that duplicate file descriptors
+	(created by, for example, fork(2) or dup(2))  re‐ fer  to
+	the  same  lease,  and this lease may be modified or
+	released using any of these descriptors.  Furthermore, the
+	lease is released by either an explicit F_UNLCK operation on
+	any of these duplicate file descriptors, or when all such
+	file descriptors have been closed.
 
-1. Are the two flags: JBD2_FEATURE_INCOMPAT_CSUM_V2 and
-JBD2_FEATURE_INCOMPAT_CSUM_V3 set by default? If not, how do we set
-them so that the journal will detect and respond to injected
-corruptions?
+Leases are associated with *open* file descriptors, not the
+lifetime of the struct file in the kernel. If the application closes
+the open fds that refer to the lease, then the kernel does not
+guarantee, and the application has no right to expect, that the
+lease remains active in any way once the application closes all
+direct references to the lease.
 
-2. this is very naive question, but what do compat and incompat
-options mean? If flag X in incompat is set, does this mean the feature
-does not exist?
+IOWs, applications using layout leases need to hold the lease fd
+open for as long as the want access to the physical file layout. It
+is a also a requirement of the layout lease that the holder releases
+the resources it holds on the layout before it releases the layout
+lease, exclusive lease or not. Closing the fd indicates they do not
+need access to the file any more, and so the lease should be
+reclaimed at that point.
 
-Thank you,
+I'm of a mind to make the last close() on a file block if there's an
+active layout lease to prevent processes from zombie-ing layout
+leases like this. i.e. you can't close the fd until resources that
+pin the lease have been released.
 
+Cheers,
+
+Dave.
 -- 
-Shehbaz Jaffer
+Dave Chinner
+david@fromorbit.com
