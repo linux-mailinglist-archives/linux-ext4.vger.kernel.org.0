@@ -2,111 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 130019239D
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2019 14:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E17923AE
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2019 14:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727503AbfHSMin (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Aug 2019 08:38:43 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:41215 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727447AbfHSMin (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Aug 2019 08:38:43 -0400
-Received: by mail-qk1-f194.google.com with SMTP id g17so1213708qkk.8
-        for <linux-ext4@vger.kernel.org>; Mon, 19 Aug 2019 05:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kcl2qjS+S92HqUsWy/tjB3qoqqgCsFoa4lNkLGm9eqU=;
-        b=Kw5dYDPC3RCMymknBRy1kIe+iDY+gtMlsFiGqHh0HRHDdkA1mVDMtLhKZZ0CG2KFv3
-         LVYv+T9FGmeylYTDi+kh5M9/Ntuhs1KUREG17679sHQhmPsIVOwRG2eQbHs3GIhuH2De
-         teqAib33hkHc6gnoEGXxQH7ITS22Bxbhltn46+fBqORa9Jb9jv/kTbwn4XmLd12IuyM5
-         /yPvmu7+YELsKojRcfZOMaNBoqJ1qtrNgLmHYKwBdl9/gdtpWh1vLo6xyTHwMVm7oA6I
-         7K86YItRgHihPHUhSIgXXcp4Bm7RF41NJgLrAPGgKKR410ENEsEKjr9s9uuDjUGnheP5
-         bsRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kcl2qjS+S92HqUsWy/tjB3qoqqgCsFoa4lNkLGm9eqU=;
-        b=WLH83WUY7tTj4p1kqpHPth/tjzLhuPrM1h96z1J86TzdLBdzIqtmVrYgVx/PKQftkP
-         ZlM3a/S60/qnlloeBksDJQJVXwLqERx0MXkzcT90ikiVcgd+V/84xXqD1VdTGy7ejDv1
-         9CjRcmwadKjRNnzTKe6dDInGPNX507lkrlRdNv24CsGCGZE+vPPoGgGIhOfUwOAshhw1
-         s27dKiqXigOawAwnvwpulwcj4Grwq0hbStbTl11U94jE51kPzqRZm+McqOh2zUTNoRtE
-         bDmmwIvcVJWHdOBkzEEl0spKyTF8qLicbZkQTcjTQ6kD1YItjSRQE0ASddpESHdxZHZq
-         oXuQ==
-X-Gm-Message-State: APjAAAUyxrC1V6PyBi4wRHTVHCEOpoPWL7kHP1oaUXKXXVlSALsigpLr
-        YEOM20LgPIYKh4oUgYcoNlNfpg==
-X-Google-Smtp-Source: APXvYqzbQNTYwMVTncdSqshKmZtcSi8KUDzyxSrbcJIuOywIrId5vXd75IqedVtc8bcWHqWRX6iGcQ==
-X-Received: by 2002:a37:a14a:: with SMTP id k71mr20104946qke.281.1566218322367;
-        Mon, 19 Aug 2019 05:38:42 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id r15sm6916339qtp.94.2019.08.19.05.38.41
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 19 Aug 2019 05:38:41 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1hzgvp-0001vJ-9J; Mon, 19 Aug 2019 09:38:41 -0300
-Date:   Mon, 19 Aug 2019 09:38:41 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jan Kara <jack@suse.cz>, Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190819123841.GC5058@ziepe.ca>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190814101714.GA26273@quack2.suse.cz>
- <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
- <20190815130558.GF14313@quack2.suse.cz>
- <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
- <20190817022603.GW6129@dread.disaster.area>
- <20190819063412.GA20455@quack2.suse.cz>
- <20190819092409.GM7777@dread.disaster.area>
+        id S1727172AbfHSMmx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Aug 2019 08:42:53 -0400
+Received: from 109-123-65-85.safeukdns.net ([109.123.65.85]:44122 "EHLO
+        ranatechnologies.biz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbfHSMmx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Aug 2019 08:42:53 -0400
+X-Greylist: delayed 6918 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Aug 2019 08:42:52 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=ni-fs.org;
+         s=default; h=Content-Type:MIME-Version:Message-ID:From:Date:Subject:To:
+        Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=WyxmoSa0If10x4YCMjnh6nUvBT6m+hHj1iIfVzXACP8=; b=kpLGkjQIpAs9C7Kpu5YFcPV/Bf
+        FwIIAt91bi8vO1YJAoZ8mUjrdHNheMwEb389aaaqBUuxrSdo05JvwxB/VsJYqLaxWTHzIBdcZKAC9
+        qSQQv3zLy43GJDCS/fMK/xQaOdsHpMk+0G9sAebFtwk4Yo44A6czfxYKOgh0cj87RiQ9j9MUNOnyY
+        9twXCacQQU0EvQyj1PEwUOv51/au4UT2HuKYwfMA94zUE5SAD0v68jchZFoz1XlWmqhv4ermJ+8AB
+        DcpT3VckbY+eMz1pAroO4+1vzcK+EzrpAwhLBys5Yk9EgpFMFSLAtYIJeB9FvCqKbWW7N1WOF4DsS
+        luKFodgQ==;
+Received: from nifsorg by aphrodite.safeukdns.net with local (Exim 4.92)
+        (envelope-from <nifsorg@aphrodite.safeukdns.net>)
+        id 1hzfCG-009njT-E7
+        for linux-ext4@vger.kernel.org; Mon, 19 Aug 2019 11:47:32 +0100
+To:     linux-ext4@vger.kernel.org
+Subject: Invest $ 5000 and get $ 55000 every month
+X-PHP-Script: ni-fs.org/index.php for 87.101.94.203
+X-PHP-Originating-Script: 3240:class-phpmailer.php
+Date:   Mon, 19 Aug 2019 10:47:31 +0000
+From:   Waltersoand <linux-ext4@vger.kernel.org>
+Message-ID: <66570d04ba7ccc0dfaffc4ccea6637ec@ni-fs.org>
+X-Mailer: PHPMailer 5.2.22 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190819092409.GM7777@dread.disaster.area>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - aphrodite.safeukdns.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [3240 32003] / [47 12]
+X-AntiAbuse: Sender Address Domain - aphrodite.safeukdns.net
+X-Get-Message-Sender-Via: aphrodite.safeukdns.net: authenticated_id: nifsorg/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: aphrodite.safeukdns.net: nifsorg
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 07:24:09PM +1000, Dave Chinner wrote:
+Message Body:
+How to invest in bitcoins in 2019 and receive passive income of $ 70,000 per month: https://telegra.ph/Forex--cryptocurrency---9000-per-week-08-19?t=124?cid=vs
 
-> So that leaves just the normal close() syscall exit case, where the
-> application has full control of the order in which resources are
-> released. We've already established that we can block in this
-> context.  Blocking in an interruptible state will allow fatal signal
-> delivery to wake us, and then we fall into the
-> fatal_signal_pending() case if we get a SIGKILL while blocking.
+--
+This e-mail was sent from a contact form on BeTheme (http://themes.muffingroup.com/betheme)
 
-The major problem with RDMA is that it doesn't always wait on close() for the
-MR holding the page pins to be destoyed. This is done to avoid a
-deadlock of the form:
-
-   uverbs_destroy_ufile_hw()
-      mutex_lock()
-       [..]
-        mmput()
-         exit_mmap()
-          remove_vma()
-           fput();
-            file_operations->release()
-             ib_uverbs_close()
-              uverbs_destroy_ufile_hw()
-               mutex_lock()   <-- Deadlock
-
-But, as I said to Ira earlier, I wonder if this is now impossible on
-modern kernels and we can switch to making the whole thing
-synchronous. That would resolve RDMA's main problem with this.
-
-Jason
