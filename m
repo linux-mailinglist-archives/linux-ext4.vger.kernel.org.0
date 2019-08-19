@@ -2,79 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAAF91C3F
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2019 07:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AEA91D30
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2019 08:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725872AbfHSFJa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Aug 2019 01:09:30 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35376 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725536AbfHSFJa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Aug 2019 01:09:30 -0400
-Received: from callcc.thunk.org ([12.235.16.3])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7J59HQU025745
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Aug 2019 01:09:19 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 75A46420843; Mon, 19 Aug 2019 01:09:17 -0400 (EDT)
-Date:   Mon, 19 Aug 2019 01:09:17 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Dongyang Li <dongyangli@ddn.com>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "adilger@dilger.ca" <adilger@dilger.ca>
-Subject: Re: [PATCH 2/2] mke2fs: set overhead in super block for bigalloc
-Message-ID: <20190819050917.GD10349@mit.edu>
-References: <20190816034834.29439-1-dongyangli@ddn.com>
- <20190816034834.29439-2-dongyangli@ddn.com>
+        id S1726661AbfHSGeQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Aug 2019 02:34:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44952 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725768AbfHSGeP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 19 Aug 2019 02:34:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id ED46FAC26;
+        Mon, 19 Aug 2019 06:34:12 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4D0DC1E155E; Mon, 19 Aug 2019 08:34:12 +0200 (CEST)
+Date:   Mon, 19 Aug 2019 08:34:12 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190819063412.GA20455@quack2.suse.cz>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190814101714.GA26273@quack2.suse.cz>
+ <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
+ <20190815130558.GF14313@quack2.suse.cz>
+ <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
+ <20190817022603.GW6129@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190816034834.29439-2-dongyangli@ddn.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190817022603.GW6129@dread.disaster.area>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 16, 2019 at 03:49:14AM +0000, Dongyang Li wrote:
-> Fix a bug in handle_bad_blocks(), don't covert the bad block to
-> cluster when marking it as used, the bitmap is still a block bitmap,
-> will be coverted to cluster bitmap later.
+On Sat 17-08-19 12:26:03, Dave Chinner wrote:
+> On Fri, Aug 16, 2019 at 12:05:28PM -0700, Ira Weiny wrote:
+> > On Thu, Aug 15, 2019 at 03:05:58PM +0200, Jan Kara wrote:
+> > > On Wed 14-08-19 11:08:49, Ira Weiny wrote:
+> > > > On Wed, Aug 14, 2019 at 12:17:14PM +0200, Jan Kara wrote:
+> > 2) Second reason is that I thought I did not have a good way to tell if the
+> >    lease was actually in use.  What I mean is that letting the lease go should
+> >    be ok IFF we don't have any pins...  I was thinking that without John's code
+> >    we don't have a way to know if there are any pins...  But that is wrong...
+> >    All we have to do is check
+> > 
+> > 	!list_empty(file->file_pins)
+> > 
+> > So now with this detail I think you are right, we should be able to hold the
+> > lease through the struct file even if the process no longer has any
+> > "references" to it (ie closes and munmaps the file).
+> 
+> I really, really dislike the idea of zombie layout leases. It's a
+> nasty hack for poor application behaviour. This is a "we allow use
+> after layout lease release" API, and I think encoding largely
+> untraceable zombie objects into an API is very poor design.
+> 
+> From the fcntl man page:
+> 
+> LEASES
+> 	Leases are associated with an open file description (see
+> 	open(2)).  This means that duplicate file descriptors
+> 	(created by, for example, fork(2) or dup(2))  re‐ fer  to
+> 	the  same  lease,  and this lease may be modified or
+> 	released using any of these descriptors.  Furthermore, the
+> 	lease is released by either an explicit F_UNLCK operation on
+> 	any of these duplicate file descriptors, or when all such
+> 	file descriptors have been closed.
+> 
+> Leases are associated with *open* file descriptors, not the
+> lifetime of the struct file in the kernel. If the application closes
+> the open fds that refer to the lease, then the kernel does not
+> guarantee, and the application has no right to expect, that the
+> lease remains active in any way once the application closes all
+> direct references to the lease.
+> 
+> IOWs, applications using layout leases need to hold the lease fd
+> open for as long as the want access to the physical file layout. It
+> is a also a requirement of the layout lease that the holder releases
+> the resources it holds on the layout before it releases the layout
+> lease, exclusive lease or not. Closing the fd indicates they do not
+> need access to the file any more, and so the lease should be
+> reclaimed at that point.
+> 
+> I'm of a mind to make the last close() on a file block if there's an
+> active layout lease to prevent processes from zombie-ing layout
+> leases like this. i.e. you can't close the fd until resources that
+> pin the lease have been released.
 
-Please separate the bug fix into a separate commit.
+Yeah, so this was my initial though as well [1]. But as the discussion in
+that thread revealed, the problem with blocking last close is that kernel
+does not really expect close to block. You could easily deadlock e.g. if
+the process gets SIGKILL, file with lease has fd 10, and the RDMA context
+holding pages pinned has fd 15. Or you could wait for another process to
+release page pins and blocking SIGKILL on that is also bad. So in the end
+the least bad solution we've come up with were these "zombie" leases as you
+call them and tracking them in /proc so that userspace at least has a way
+of seeing them. But if you can come up with a different solution, I'm
+certainly not attached to the current one...
 
-> Note: in kernel the overhead is the s_overhead_clusters field from
-> struct ext4_super_block, it's named s_overhead_blocks in e2fsprogs
+								Honza
 
-Please fix up the field name in e2fsprogs, again in a separate commit.
-
-> +errcode_t ext2fs_convert_subcluster_bitmap_overhead(ext2_filsys fs,
-> +						    ext2fs_block_bitmap *bitmap,
-> +						    badblocks_list bb_list,
-> +						    unsigned int *count);
-
-So I really hate this abstraction which you've proposed.  It's very
-mke2fs specific, and mixing the bb_list abstraction into bitmap is
-just really ugly.
-
-Instead let me suggest the following:
-
-1) Have mke2fs unset the blocks in bb_list from the block bitmap.
-2) Then have mke2fs call ext2fs_convert_subcluster_bitmap()
-3) Create an abstraction which counts the number of clusters in the
-   bitmap, by using find_first_set() and first_first_zero().
-4) Let mke2fs call that function defined in (3) above on the
-   converted cluster bitmap() to get the overhead in clusters
-5) Iterate over the bb_list to set the clusters in the converted
-   cluster-granularity allocation map.
-
-The abstraction in (3) is much less mke2fs specific, and if you make
-the abstraction take a starting and ending block count, there are
-potentially other use cases (for example, counting the number of
-clusters in use in a block group).
-
-Cheers,
-
-					- Ted
+[1] https://lore.kernel.org/lkml/20190606104203.GF7433@quack2.suse.cz
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
