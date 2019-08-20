@@ -2,111 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94891954B6
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 05:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46D0954DB
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 05:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbfHTDA6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Aug 2019 23:00:58 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:56720 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728719AbfHTDA6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 19 Aug 2019 23:00:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0TZy2p6q_1566270039;
-Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TZy2p6q_1566270039)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 20 Aug 2019 11:00:40 +0800
-Subject: Re: [RFC] performance regression with "ext4: Allow parallel DIO
- reads"
-To:     Jan Kara <jack@suse.cz>
-Cc:     Joseph Qi <jiangqi903@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
-        Liu Bo <bo.liu@linux.alibaba.com>
-References: <ab7cf51b-6b52-d151-e22c-6f4400a14589@linux.alibaba.com>
- <29d50d24-f8e7-5ef4-d4d8-3ea6fb1c6ed3@gmail.com>
- <6DADA28C-542F-45F6-ADB0-870A81ABED23@dilger.ca>
- <15112e38-94fe-39d6-a8e2-064ff47187d5@linux.alibaba.com>
- <20190728225122.GG7777@dread.disaster.area>
- <960bb915-20cc-26a0-7abc-bfca01aa39c0@gmail.com>
- <20190815151336.GO14313@quack2.suse.cz>
- <075fd06f-b0b4-4122-81c6-e49200d5bd17@linux.alibaba.com>
- <20190816145719.GA3041@quack2.suse.cz>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <a8ddec64-d87c-ae7a-9b02-2f24da2396e9@linux.alibaba.com>
-Date:   Tue, 20 Aug 2019 11:00:39 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
- Gecko/20100101 Thunderbird/60.8.0
+        id S1729002AbfHTDL2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 19 Aug 2019 23:11:28 -0400
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:12375 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728719AbfHTDL1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 19 Aug 2019 23:11:27 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5d5b64df0000>; Mon, 19 Aug 2019 20:11:27 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 19 Aug 2019 20:11:27 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 19 Aug 2019 20:11:27 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Aug
+ 2019 03:11:26 +0000
+Received: from [10.2.161.11] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 20 Aug
+ 2019 03:11:26 +0000
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+To:     Dave Chinner <david@fromorbit.com>
+CC:     Jan Kara <jack@suse.cz>, Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
+        <linux-xfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-ext4@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190814101714.GA26273@quack2.suse.cz>
+ <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
+ <20190815130558.GF14313@quack2.suse.cz>
+ <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
+ <20190817022603.GW6129@dread.disaster.area>
+ <20190819063412.GA20455@quack2.suse.cz>
+ <20190819092409.GM7777@dread.disaster.area>
+ <ae64491b-85f8-eeca-14e8-2f09caf8abd2@nvidia.com>
+ <20190820012021.GQ7777@dread.disaster.area>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <84318b51-bd07-1d9b-d842-e65cac2ff484@nvidia.com>
+Date:   Mon, 19 Aug 2019 20:09:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190816145719.GA3041@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20190820012021.GQ7777@dread.disaster.area>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1566270687; bh=AKYDp6zi8g/3Ey7Fk8otUT5V262BqzkSQ0q+IcrDmeo=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=CZ4ZI+y0zL6VhLHNeKaQ2BvucdquPt4NgzTapmdwmc3GH3ircx3XCkVaxgGV+d4sV
+         NV4xzAxkdZ0qipuq6cmTMvEo0GkMUZ0LA3h8jLsrhtdUSK7LJYDcORQUkb27HU5iJS
+         D8J/timtnz1ic6DmnMqDlno5UI+SPuaRVL4k6cJ9e1Yy2OisErHDl40bOiFkRHVohj
+         dvzXeKjnkRwCke55psIxtF5KXQ3oFpQTgwnRbtrvqucZqN39Wqb3XG4Rtkggo8WdSf
+         UF27W8iph40Uw6qp5h0XPXa7CrDBm9DA/1RdEpAz6OMTNS7ZEHj/b9rS0k4Y8oW/rq
+         ihGqFKtG8v2lg==
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Jan,
+On 8/19/19 6:20 PM, Dave Chinner wrote:
+> On Mon, Aug 19, 2019 at 05:05:53PM -0700, John Hubbard wrote:
+>> On 8/19/19 2:24 AM, Dave Chinner wrote:
+>>> On Mon, Aug 19, 2019 at 08:34:12AM +0200, Jan Kara wrote:
+>>>> On Sat 17-08-19 12:26:03, Dave Chinner wrote:
+>>>>> On Fri, Aug 16, 2019 at 12:05:28PM -0700, Ira Weiny wrote:
+>>>>>> On Thu, Aug 15, 2019 at 03:05:58PM +0200, Jan Kara wrote:
+>>>>>>> On Wed 14-08-19 11:08:49, Ira Weiny wrote:
+>>>>>>>> On Wed, Aug 14, 2019 at 12:17:14PM +0200, Jan Kara wrote:
+>> ...
+>>
+>> Any thoughts about sockets? I'm looking at net/xdp/xdp_umem.c which pins
+>> memory with FOLL_LONGTERM, and wondering how to make that work here.
+> 
+> I'm not sure how this interacts with file mappings? I mean, this
+> is just pinning anonymous pages for direct data placement into
+> userspace, right?
+> 
+> Are you asking "what if this pinned memory was a file mapping?",
+> or something else?
 
-On 19/8/16 22:57, Jan Kara wrote:
-> On Fri 16-08-19 21:23:24, Joseph Qi wrote:
->> On 19/8/15 23:13, Jan Kara wrote:
->>> On Tue 30-07-19 09:34:39, Joseph Qi wrote:
->>>> On 19/7/29 06:51, Dave Chinner wrote:
->>>>> On Fri, Jul 26, 2019 at 09:12:07AM +0800, Joseph Qi wrote:
->>>>>>
->>>>>>
->>>>>> On 19/7/26 05:20, Andreas Dilger wrote:
->>>>>>>
->>>>>>>> On Jul 23, 2019, at 5:17 AM, Joseph Qi <jiangqi903@gmail.com> wrote:
->>>>>>>>
->>>>>>>> Hi Ted & Jan,
->>>>>>>> Could you please give your valuable comments?
->>>>>>>
->>>>>>> It seems like the original patches should be reverted?  There is no data
->>>>>>
->>>>>> From my test result, yes.
->>>>>> I've also tested libaio with iodepth 16, it behaves the same. Here is the test
->>>>>> data for libaio 4k randrw:
->>>>>>
->>>>>> -------------------------------------------------------------------------------------------
->>>>>> w/ parallel dio reads | READ 78313KB/s, 19578, 1698.70us  | WRITE 78313KB/s, 19578, 4837.60us
->>>>>> -------------------------------------------------------------------------------------------
->>>>>> w/o parallel dio reads| READ 387774KB/s, 96943, 1009.73us | WRITE 387656KB/s，96914, 308.87us
->>>>>> -------------------------------------------------------------------------------------------
->>>>>>
->>>>>> Since this commit went into upstream long time ago，to be precise, Linux
->>>>>> 4.9, I wonder if someone else has also observed this regression, or
->>>>>> anything I missed?
->>>>>
->>>>> I suspect that the second part of this set of mods that Jan had
->>>>> planned to do (on the write side to use shared locking as well)
->>>>> did not happen and so the DIO writes are serialising the workload.
->>>>>
->>>>
->>>> Thanks for the inputs, Dave.
->>>> Hi Jan, Could you please confirm this?
->>>> If so, should we revert this commit at present?
->>>
->>> Sorry for getting to you only now. I was on vacation and then catching up
->>> with various stuff. I suppose you are not using dioread_nolock mount
->>> option, are you? Can you check what are your results with that mount
->>> option?
->>>
->> Yes, I've just used default mount options when testing. And it is indeed
->> that there is performance improvement with dioread_nolock after reverting
->> the 3 related commits.
->> I'll do a supplementary test with parallel dio reads as well as
->> dioread_nolock and send out the test result.
+Yes, mainly that one. Especially since the FOLL_LONGTERM flag is
+already there in xdp_umem_pin_pages(), unconditionally. So the
+simple rules about struct *vaddr_pin usage (set it to NULL if FOLL_LONGTERM is
+not set) are not going to work here.
 
-I've tested parallel dio reads with dioread_nolock, it doesn't have
-significant performance improvement and still poor compared with reverting
-parallel dio reads. IMO, this is because with parallel dio reads, it take
-inode shared lock at the very beginning in ext4_direct_IO_read().
 
-Thanks,
-Joseph
+> 
+>> These are close to files, in how they're handled, but just different
+>> enough that it's not clear to me how to make work with this system.
+> 
+> I'm guessing that if they are pinning a file backed mapping, they
+> are trying to dma direct to the file (zero copy into page cache?)
+> and so they'll need to either play by ODP rules or take layout
+> leases, too....
+> 
+
+OK. I was just wondering if there was some simple way to dig up a
+struct file associated with a socket (I don't think so), but it sounds
+like this is an exercise that's potentially different for each subsystem.
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
