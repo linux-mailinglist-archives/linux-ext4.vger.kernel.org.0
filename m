@@ -2,126 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B018958B3
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 09:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E29B95CDC
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 13:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbfHTHnZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Aug 2019 03:43:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5161 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726049AbfHTHnZ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 20 Aug 2019 03:43:25 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B4DADC8A5D2DB9292ABB;
-        Tue, 20 Aug 2019 15:43:19 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 20 Aug
- 2019 15:43:15 +0800
-Subject: Re: [f2fs-dev] [PATCH V4 5/8] f2fs: Use read_callbacks for decrypting
- file data
-To:     Chandan Rajendra <chandan@linux.ibm.com>, Chao Yu <chao@kernel.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-fscrypt@vger.kernel.org>, <hch@infradead.org>,
-        <tytso@mit.edu>, <ebiggers@kernel.org>, <adilger.kernel@dilger.ca>,
-        <chandanrmail@gmail.com>, <jaegeuk@kernel.org>
-References: <20190816061804.14840-1-chandan@linux.ibm.com>
- <20190816061804.14840-6-chandan@linux.ibm.com>
- <bb3dc624-1249-2418-f9da-93da8c11e7f5@kernel.org>
- <20104514.oSSJcvNEEM@localhost.localdomain>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <c4a16ead-bb85-b7db-948e-5ebe7bc4431d@huawei.com>
-Date:   Tue, 20 Aug 2019 15:43:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1729727AbfHTLFS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Aug 2019 07:05:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729553AbfHTLFS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 20 Aug 2019 07:05:18 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFF55205C9;
+        Tue, 20 Aug 2019 11:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566299116;
+        bh=T0rmHh8w3H3bwdXLru7KFY2A/8hjJcNt2eMc9MdFvoU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=OWYdJNUzSee+UuIh6LQ3YFru0x6seE2TTCifysIDGNOjR8O4ScYkdj2Vrw5S/JeTB
+         qmDzLYeDaoNBfNwX5IDihFikAWZqI1dzLhII85Qm3JJy6zIH2yIFue45EEMtXZPwcN
+         fgzdH+WlULgP+SUhyw7NDBScX/I9XuZMIU+ITkEg=
+Message-ID: <27d1943a0027cb4f658334fad8dc880df133c22d.camel@kernel.org>
+Subject: Re: [PATCH v8 00/20] vfs: Add support for timestamp limits
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Deepa Dinamani <deepa.kernel@gmail.com>, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, y2038@lists.linaro.org,
+        arnd@arndb.de, adilger.kernel@dilger.ca, adrian.hunter@intel.com,
+        aivazian.tigran@gmail.com, al@alarsen.net,
+        anna.schumaker@netapp.com, anton@enomsg.org,
+        asmadeus@codewreck.org, ccross@android.com,
+        ceph-devel@vger.kernel.org, coda@cs.cmu.edu,
+        codalist@coda.cs.cmu.edu, darrick.wong@oracle.com,
+        dedekind1@gmail.com, devel@lists.orangefs.org, dsterba@suse.com,
+        dushistov@mail.ru, dwmw2@infradead.org, ericvh@gmail.com,
+        gregkh@linuxfoundation.org, hch@infradead.org, hch@lst.de,
+        hirofumi@mail.parknet.co.jp, hubcap@omnibond.com,
+        idryomov@gmail.com, jack@suse.com, jaegeuk@kernel.org,
+        jaharkes@cs.cmu.edu, jfs-discussion@lists.sourceforge.net,
+        jlbec@evilplan.org, keescook@chromium.org,
+        linux-cifs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-karma-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-nfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        lucho@ionkov.net, luisbg@kernel.org, martin@omnibond.com,
+        me@bobcopeland.com, mikulas@artax.karlin.mff.cuni.cz,
+        nico@fluxnic.net, phillip@squashfs.org.uk,
+        reiserfs-devel@vger.kernel.org, richard@nod.at, sage@redhat.com,
+        salah.triki@gmail.com, sfrench@samba.org, shaggy@kernel.org,
+        tj@kernel.org, tony.luck@intel.com,
+        trond.myklebust@hammerspace.com, tytso@mit.edu,
+        v9fs-developer@lists.sourceforge.net, yuchao0@huawei.com,
+        zyan@redhat.com
+Date:   Tue, 20 Aug 2019 07:05:10 -0400
+In-Reply-To: <20190818165817.32634-1-deepa.kernel@gmail.com>
+References: <20190818165817.32634-1-deepa.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <20104514.oSSJcvNEEM@localhost.localdomain>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2019/8/19 21:33, Chandan Rajendra wrote:
-> On Sunday, August 18, 2019 7:15:42 PM IST Chao Yu wrote:
->> Hi Chandan,
->>
->> On 2019-8-16 14:18, Chandan Rajendra wrote:
->>> F2FS has a copy of "post read processing" code using which encrypted
->>> file data is decrypted. This commit replaces it to make use of the
->>> generic read_callbacks facility.
->>
->> I remember that previously Jaegeuk had mentioned f2fs will support compression
->> later, and it needs to reuse 'post read processing' fwk.
->>
->> There is very initial version of compression feature in below link:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git/log/?h=compression
->>
->> So my concern is how can we uplift the most common parts of this fwk into vfs,
->> and meanwhile keeping the ability and flexibility when introducing private
->> feature/step in specified filesytem(now f2fs)?
->>
->> According to current f2fs compression's requirement, maybe we can expand to
->>
->> - support callback to let filesystem set the function for the flow in
->> decompression/verity/decryption step.
->> - support to use individual/common workqueue according the parameter.
->>
->> Any thoughts?
->>
+On Sun, 2019-08-18 at 09:57 -0700, Deepa Dinamani wrote:
+> The series is an update and a more complete version of the
+> previously posted series at
+> https://lore.kernel.org/linux-fsdevel/20180122020426.2988-1-deepa.kernel@gmail.com/
 > 
-> Hi,
+> Thanks to Arnd Bergmann for doing a few preliminary reviews.
+> They helped me fix a few issues I had overlooked.
 > 
-> F2FS can be made to use fscrypt's queue for decryption and hence can reuse
-> "read callbacks" code for decrypting data.
+> The limits (sometimes granularity also) for the filesystems updated here are according to the
+> following table:
 > 
-> For decompression, we could have a STEP_MISC where we invoke a FS provided
-> callback function for FS specific post read processing? 
-> 
-> Something like the following can be implemented in read_callbacks(),
-> 	  case STEP_MISC:
-> 		  if (ctx->enabled_steps & (1 << STEP_MISC)) {
-> 			  /*
-> 			    ctx->fs_misc() must process bio in a workqueue
-> 			    and later invoke read_callbacks() with
-> 			    bio->bi_private's value as an argument.
-> 			  */
-> 			  ctx->fs_misc(ctx->bio);
-> 			  return;
-> 		  }
-> 		  ctx->cur_step++;
-> 
-> The fs_misc() callback can be passed in by the filesystem when invoking
-> read_callbacks_setup_bio().
+> File system   Time type                      Start year Expiration year Granularity
+> cramfs        fixed                          0          0
+> romfs         fixed                          0          0
+> pstore        ascii seconds (27 digit ascii) S64_MIN    S64_MAX         1
+> coda          INT64                          S64_MIN    S64_MAX         1
+> omfs          64-bit milliseconds            0          U64_MAX/ 1000   NSEC_PER_MSEC
+> befs          unsigned 48-bit seconds        0          0xffffffffffff  alloc_super
+> bfs           unsigned 32-bit seconds        0          U32_MAX         alloc_super
+> efs           unsigned 32-bit seconds        0          U32_MAX         alloc_super
+> ext2          signed 32-bit seconds          S32_MIN    S32_MAX         alloc_super
+> ext3          signed 32-bit seconds          S32_MIN    S32_MAX         alloc_super
+> ext4 (old)    signed 32-bit seconds          S32_MIN    S32_MAX         alloc_super
+> ext4 (extra)  34-bit seconds, 30-bit ns      S32_MIN    0x37fffffff	1
+> freevxfs      u32 secs/usecs                 0          U32_MAX         alloc_super
+> jffs2         unsigned 32-bit seconds        0          U32_MAX         alloc_super
+> jfs           unsigned 32-bit seconds/ns     0          U32_MAX         1
+> minix         unsigned 32-bit seconds        0          U32_MAX         alloc_super
+> orangefs      u64 seconds                    0          U64_MAX         alloc_super
+> qnx4          unsigned 32-bit seconds        0          U32_MAX         alloc_super
+> qnx6          unsigned 32-bit seconds        0          U32_MAX         alloc_super
+> reiserfs      unsigned 32-bit seconds        0          U32_MAX         alloc_super
+> squashfs      unsigned 32-bit seconds        0          U32_MAX         alloc_super
+> ufs1          signed 32-bit seconds          S32_MIN    S32_MAX         NSEC_PER_SEC
+> ufs2          signed 64-bit seconds/u32 ns   S64_MIN    S64_MAX         1
+> xfs           signed 32-bit seconds/ns       S32_MIN    S32_MAX         1
+> ceph          unsigned 32-bit second/ns      0          U32_MAX         1000
 
-Hi,
+Looks reasonable, overall.
 
-Yes, something like this, can we just use STEP_DECOMPRESS and fs_decompress(),
-not sure, I doubt this interface may has potential user which has compression
-feature.
+Note that the granularity changed recently for cephfs. See commit
+0f7cf80ae96c2a (ceph: initialize superblock s_time_gran to 1).
 
-One more concern is that to avoid more context switch, maybe we can merge all
-background works into one workqueue if there is no conflict when call wants to.
+In any case, you can add my Acked-by
 
-static void bio_post_read_processing(struct bio_post_read_ctx *ctx)
- {
-	switch (++ctx->cur_step) {
-	case STEP_DECRYPT:
-		if (ctx->enabled_steps & (1 << STEP_DECRYPT)) {
-...
-			if (ctx->separated_wq)
-				return;
-		}
-		ctx->cur_step++;
-		/* fall-through */
-	case STEP_DECOMPRESS:
-...
-	default:
-		__read_end_io(ctx->bio);
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-> 
