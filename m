@@ -2,118 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D2C95DED
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 13:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FAF95F72
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 15:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729216AbfHTLzS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Aug 2019 07:55:18 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:37499 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728993AbfHTLzS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Aug 2019 07:55:18 -0400
-Received: by mail-qt1-f195.google.com with SMTP id y26so5630262qto.4
-        for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2019 04:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cjWne9JJX/bamk/BsyOJB8Qocb+2jJnD/6EfxMqzNUc=;
-        b=F8bCgYAmAkUxSVlSTscXxlQRELIsOQnZmrvm1sUjW95CUd0khTshKRxwCuLjyokKev
-         BO8QDllptp/4vv0c5+22/EhhQN7BANX7GXbwhmoL4l4ncCnzuvcFIBhtQofbuqTX6nsg
-         zwql74Buzj9teOKUbKfj5TE3uHNM/5fbApiO0JHQMUUYJ/unQvJimJ2vf/e7eXWfu4Qr
-         e3qKOUbeDxtQCKEEnBFIKa+Y83F0ozkYPvP+sRDb4zW7tz+74GJgY/PNJGOy+FAsmX1f
-         luk7Y3QQ++vwxmyoZVrHTbe9U0I/Qk1BqrxGPfTC0MFEGoh/lly24xPvz/0fT0h+OEJy
-         qwWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cjWne9JJX/bamk/BsyOJB8Qocb+2jJnD/6EfxMqzNUc=;
-        b=aemvS88NgxxOSkRbhqnNE84zdYAKGPFo6df9ZBh/zZx663qmryL377RderODh5NtxL
-         nmd8Qs/xjncPkGXq1SEMxqehfLL0Nj8YLRqD8M59GktkIjb+VrNZ02zZ3+x2AYfz/iTg
-         wlVRyV6iIpymq3hcA+ZbM1NjFUfaro3HhiZ7QC7ZWp6bZu+/2P6y8fhxmos2nhIdbmf9
-         b2uaEAufn5usvbT7iN0iNg3GiyiZ9B9YQHy7vn+mkbnO1M/65aiFlqcn7YEv+Khol8aw
-         VGVXul919eFsoYEIebkeqy14UpPM3zS2t5h2HGjHOsxtms6ii1VOXgK6oor6dUfuSsTW
-         e08A==
-X-Gm-Message-State: APjAAAUXNEDq3xdKWVp511KHoZRc6aByT9jhBwVcBr0HN4Z1d7oQqUCE
-        RDVbK/PsW/IrEpKOsmbn8GLKGA==
-X-Google-Smtp-Source: APXvYqz2loiM8+YcMWhCUXDCstClokgbXoeINv82DptJXTepeIjclfvYpo9S265xpxsrLBOY09rJbg==
-X-Received: by 2002:a0c:d251:: with SMTP id o17mr14202195qvh.109.1566302116866;
-        Tue, 20 Aug 2019 04:55:16 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-55-100.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.55.100])
-        by smtp.gmail.com with ESMTPSA id f23sm8218362qkk.80.2019.08.20.04.55.16
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 20 Aug 2019 04:55:16 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i02jL-0007t8-HZ; Tue, 20 Aug 2019 08:55:15 -0300
-Date:   Tue, 20 Aug 2019 08:55:15 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jan Kara <jack@suse.cz>, Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190820115515.GA29246@ziepe.ca>
-References: <20190809225833.6657-1-ira.weiny@intel.com>
- <20190814101714.GA26273@quack2.suse.cz>
- <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
- <20190815130558.GF14313@quack2.suse.cz>
- <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
- <20190817022603.GW6129@dread.disaster.area>
- <20190819063412.GA20455@quack2.suse.cz>
- <20190819092409.GM7777@dread.disaster.area>
- <20190819123841.GC5058@ziepe.ca>
- <20190820011210.GP7777@dread.disaster.area>
+        id S1728731AbfHTNG7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Aug 2019 09:06:59 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9554 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729351AbfHTNG7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 20 Aug 2019 09:06:59 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7KD60Hm085937
+        for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2019 09:06:57 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ugf4c6xhb-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2019 09:06:57 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Tue, 20 Aug 2019 14:06:54 +0100
+Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 20 Aug 2019 14:06:50 +0100
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7KD6nka26870016
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Aug 2019 13:06:50 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B26DB11C064;
+        Tue, 20 Aug 2019 13:06:49 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5EAA111C05B;
+        Tue, 20 Aug 2019 13:06:48 +0000 (GMT)
+Received: from localhost.in.ibm.com (unknown [9.124.31.57])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Aug 2019 13:06:48 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     adilger.kernel@dilger.ca, jack@suse.cz, tytso@mit.edu,
+        mbobrowski@mbobrowski.org, linux-fsdevel@vger.kernel.org,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [RFC 0/2] ext4: bmap & fiemap conversion to use iomap
+Date:   Tue, 20 Aug 2019 18:36:32 +0530
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190820011210.GP7777@dread.disaster.area>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19082013-0012-0000-0000-00000340B5D6
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19082013-0013-0000-0000-0000217ADA00
+Message-Id: <20190820130634.25954-1-riteshh@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-20_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=642 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908200137
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 11:12:10AM +1000, Dave Chinner wrote:
-> On Mon, Aug 19, 2019 at 09:38:41AM -0300, Jason Gunthorpe wrote:
-> > On Mon, Aug 19, 2019 at 07:24:09PM +1000, Dave Chinner wrote:
-> > 
-> > > So that leaves just the normal close() syscall exit case, where the
-> > > application has full control of the order in which resources are
-> > > released. We've already established that we can block in this
-> > > context.  Blocking in an interruptible state will allow fatal signal
-> > > delivery to wake us, and then we fall into the
-> > > fatal_signal_pending() case if we get a SIGKILL while blocking.
-> > 
-> > The major problem with RDMA is that it doesn't always wait on close() for the
-> > MR holding the page pins to be destoyed. This is done to avoid a
-> > deadlock of the form:
-> > 
-> >    uverbs_destroy_ufile_hw()
-> >       mutex_lock()
-> >        [..]
-> >         mmput()
-> >          exit_mmap()
-> >           remove_vma()
-> >            fput();
-> >             file_operations->release()
-> 
-> I think this is wrong, and I'm pretty sure it's an example of why
-> the final __fput() call is moved out of line.
+Hello,
 
-Yes, I think so too, all I can say is this *used* to happen, as we
-have special code avoiding it, which is the code that is messing up
-Ira's lifetime model.
+These are RFC patches to get community view on converting
+ext4 bmap & fiemap to iomap infrastructure. This reduces the users
+of ext4_get_block API and thus a step towards getting rid of
+buffer_heads from ext4. Also reduces the line of code by making
+use of iomap infrastructure (ex4_iomap_begin) which is already
+used for other operations.
 
-Ira, you could try unraveling the special locking, that solves your
-lifetime issues?
+This gets rid of special implementation of ext4_fill_fiemap_extents
+& ext4_find_delayed_extent and thus only relies upon ext4_map_blocks
+& iomap_fiemap (ext4_iomap_begin) for mapping. It looked more logical
+thing to do, but I appreciate if anyone has any review/feedback
+comments about this part.
 
-Jason
+Didn't get any regression on some basic xfstests in tests/ext4/
+with mkfs option of "-b 4096". Please let me know if I should also test
+any special configurations?
+
+Patches can be cleanly applied over Linux 5.3-rc5.
+
+
+Ritesh Harjani (2):
+  ext4: Move ext4 bmap to use iomap infrastructure.
+  ext4: Move ext4_fiemap to iomap infrastructure
+
+ fs/ext4/extents.c | 294 +++++++---------------------------------------
+ fs/ext4/inline.c  |  41 -------
+ fs/ext4/inode.c   |  17 ++-
+ 3 files changed, 53 insertions(+), 299 deletions(-)
+
+-- 
+2.21.0
+
