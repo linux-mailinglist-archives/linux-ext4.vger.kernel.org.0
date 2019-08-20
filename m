@@ -2,71 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 146A59674A
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 19:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A209679B
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 19:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730466AbfHTRR0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 20 Aug 2019 13:17:26 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:54588 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729852AbfHTRR0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 20 Aug 2019 13:17:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=oHwVFXFTd/4J3FUGeiOCXpDuyqqKxUu9Uqvxt0jCufw=; b=Gml1tOhZGhEvUuyIfqUo3p3+e
-        saftgBze6Guzy9ncyc4b+AB/n7VrfDXKku9z2zRtgEdRVIhRbxeIRxIittvFu8wOk/9TBrQvfi93g
-        nhbfy25U75aW0qZjIMywMpc2dX675S2ScjoLdBF7qkLTi8uOpuhZy+Vk6ryvWOFR/MryUCGhmOPJ5
-        q6/jfAbdrwXlFNEc3TMptLDkMsEMwyDkDOsALHFKkksAfKjVQDqEXwhnw0ts++VLjHXlpEwCtzBR6
-        ry2fUWXdPD4/jOuMPJ4ifPilscj3I+4NIuFK3IF6NCxZ+BJ1UZeTj5VgVpM0oSqXTa9rbS+6V3Dcf
-        Ohr12cOCA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1i07l3-0001ii-DJ; Tue, 20 Aug 2019 17:17:21 +0000
-Date:   Tue, 20 Aug 2019 10:17:21 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Sebastian Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Joel Becker <jlbec@evilplan.org>
-Subject: Re: [PATCH] fs/buffer: Make BH_Uptodate_Lock bit_spin_lock a regular
- spinlock_t
-Message-ID: <20190820171721.GA4949@bombadil.infradead.org>
-References: <20190820170818.oldsdoumzashhcgh@linutronix.de>
+        id S1729933AbfHTRbS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Aug 2019 13:31:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727358AbfHTRbS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 20 Aug 2019 13:31:18 -0400
+Received: from localhost (unknown [104.132.0.81])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA7F9206DF;
+        Tue, 20 Aug 2019 17:31:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566322276;
+        bh=xchQBhCrLDaryEtWVa7H/buI3AaIEZHu2PtVlis3tCo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EALnhDjg14LpO0z6cXs41pGJl7VFZngK162MACYic3kP6I//VLW2CmWhxhuzm0c6H
+         wcvyfirgB/snkOQx4T15wm1bmb9l4uIsgtgzjBZ+9/uEO0LGb8H/igXp4ZS938r7Xf
+         hjpdWBYQLCRV1iQNAm+ZeItii52405uPaddS2Xug=
+Date:   Tue, 20 Aug 2019 10:31:16 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Chandan Rajendra <chandan@linux.ibm.com>, ebiggers@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, chandanrmail@gmail.com,
+        adilger.kernel@dilger.ca, yuchao0@huawei.com, hch@infradead.org
+Subject: Re: [PATCH V4 5/8] f2fs: Use read_callbacks for decrypting file data
+Message-ID: <20190820173116.GA58214@jaegeuk-macbookpro.roam.corp.google.com>
+References: <20190816061804.14840-1-chandan@linux.ibm.com>
+ <20190816061804.14840-6-chandan@linux.ibm.com>
+ <1652707.8YmLLlegLt@localhost.localdomain>
+ <20190820163837.GD10232@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190820170818.oldsdoumzashhcgh@linutronix.de>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <20190820163837.GD10232@mit.edu>
+User-Agent: Mutt/1.8.2 (2017-04-18)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 07:08:18PM +0200, Sebastian Siewior wrote:
-> Bit spinlocks are problematic if PREEMPT_RT is enabled, because they
-> disable preemption, which is undesired for latency reasons and breaks when
-> regular spinlocks are taken within the bit_spinlock locked region because
-> regular spinlocks are converted to 'sleeping spinlocks' on RT. So RT
-> replaces the bit spinlocks with regular spinlocks to avoid this problem.
-> Bit spinlocks are also not covered by lock debugging, e.g. lockdep.
-> 
-> Substitute the BH_Uptodate_Lock bit spinlock with a regular spinlock.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> [bigeasy: remove the wrapper and use always spinlock_t]
+Hi Chandan,
 
-Uhh ... always grow the buffer_head, even for non-PREEMPT_RT?  Why?
+On 08/20, Theodore Y. Ts'o wrote:
+> On Tue, Aug 20, 2019 at 10:35:29AM +0530, Chandan Rajendra wrote:
+> > Looks like F2FS requires a lot more flexiblity than what can be offered by
+> > read callbacks i.e.
+> > 
+> > 1. F2FS wants to make use of its own workqueue for decryption, verity and
+> >    decompression.
+> > 2. F2FS' decompression code is not an FS independent entity like fscrypt and
+> >    fsverity. Hence they would need Filesystem specific callback functions to
+> >    be invoked from "read callbacks". 
+> > 
+> > Hence I would suggest that we should drop F2FS changes made in this
+> > patchset. Please let me know your thoughts on this.
+> 
+> That's probably the best way to go for now.  My one concern is that it
+> means that only ext4 will be using your framework.  I could imagine
+> that some people might argue that should just move the callback scheme
+> into ext4 code as opposed to leaving it in fscrypt --- at least until
+> we can find other file systems where we can show that it will be
+> useful for those other file systems.
 
+I also have to raise a flag on this. Doesn't this patch series try to get rid
+of redundant work? What'd be the rationale, if it only supports ext4?
+
+How about generalizing the framework to support generic_post_read and per-fs
+post_read for fscrypt/fsverity/... selectively?
+
+Thanks,
+
+> 
+> (Perhaps a useful experiment would be to have someone implement patches
+> to support fscrypt and fsverity in ext2 --- the patch might or might
+> not be accepted for upstream inclusion, but it would be useful to
+> demonstrate how easy it is to add fscrypt and fsverity.)
+> 
+> The other thing to consider is that there has been some discussion
+> about adding generalized support for I/O submission to the iomap
+> library.  It might be that if that work is accepted, support for
+> fscrypt and fsverity would be a requirement for ext4 to use that
+> portion of iomap's functionality.  So in that eventuality, it might be
+> that we'll want to move your read callbacks code into iomap, or we'll
+> need to rework the read callbacks code so it can work with iomap.
+> 
+> But this is all work for the future.  I'm a firm believe that the
+> perfect should not be the enemy of the good, and that none of this
+> should be a fundamental obstacle in having your code upstream.
+> 
+> Cheers,
+> 
+> 					- Ted
+> 
