@@ -2,121 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE81955AC
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 05:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDD595660
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2019 07:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729060AbfHTDhX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 19 Aug 2019 23:37:23 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:35236 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728647AbfHTDhW (ORCPT
+        id S1728957AbfHTFEA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 20 Aug 2019 01:04:00 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14128 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727006AbfHTFEA (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 19 Aug 2019 23:37:22 -0400
-Received: from dread.disaster.area (pa49-195-190-67.pa.nsw.optusnet.com.au [49.195.190.67])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 79FD543C142;
-        Tue, 20 Aug 2019 13:37:15 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hzuwK-0002SY-6I; Tue, 20 Aug 2019 13:36:08 +1000
-Date:   Tue, 20 Aug 2019 13:36:08 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Jan Kara <jack@suse.cz>, Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
-        linux-xfs@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190820033608.GB1119@dread.disaster.area>
-References: <20190814101714.GA26273@quack2.suse.cz>
- <20190814180848.GB31490@iweiny-DESK2.sc.intel.com>
- <20190815130558.GF14313@quack2.suse.cz>
- <20190816190528.GB371@iweiny-DESK2.sc.intel.com>
- <20190817022603.GW6129@dread.disaster.area>
- <20190819063412.GA20455@quack2.suse.cz>
- <20190819092409.GM7777@dread.disaster.area>
- <ae64491b-85f8-eeca-14e8-2f09caf8abd2@nvidia.com>
- <20190820012021.GQ7777@dread.disaster.area>
- <84318b51-bd07-1d9b-d842-e65cac2ff484@nvidia.com>
+        Tue, 20 Aug 2019 01:04:00 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7K52KhS087566
+        for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2019 01:03:59 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2ug8gb3m96-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2019 01:03:58 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <chandan@linux.ibm.com>;
+        Tue, 20 Aug 2019 06:03:56 +0100
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 20 Aug 2019 06:03:51 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7K53U6o39322076
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 20 Aug 2019 05:03:30 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE4E4A4040;
+        Tue, 20 Aug 2019 05:03:50 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6610FA4055;
+        Tue, 20 Aug 2019 05:03:48 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.62.92])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 20 Aug 2019 05:03:48 +0000 (GMT)
+From:   Chandan Rajendra <chandan@linux.ibm.com>
+To:     tytso@mit.edu, ebiggers@kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, chandanrmail@gmail.com,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, yuchao0@huawei.com,
+        hch@infradead.org
+Subject: Re: [PATCH V4 5/8] f2fs: Use read_callbacks for decrypting file data
+Date:   Tue, 20 Aug 2019 10:35:29 +0530
+Organization: IBM
+In-Reply-To: <20190816061804.14840-6-chandan@linux.ibm.com>
+References: <20190816061804.14840-1-chandan@linux.ibm.com> <20190816061804.14840-6-chandan@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84318b51-bd07-1d9b-d842-e65cac2ff484@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
-        a=TR82T6zjGmBjdfWdGgpkDw==:117 a=TR82T6zjGmBjdfWdGgpkDw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=7-415B0cAAAA:8 a=PhlOC_QpxKtFCDIvIqEA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-TM-AS-GCONF: 00
+x-cbid: 19082005-0012-0000-0000-000003409143
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19082005-0013-0000-0000-0000217AB39E
+Message-Id: <1652707.8YmLLlegLt@localhost.localdomain>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-20_01:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=1 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=927 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908200052
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 08:09:33PM -0700, John Hubbard wrote:
-> On 8/19/19 6:20 PM, Dave Chinner wrote:
-> > On Mon, Aug 19, 2019 at 05:05:53PM -0700, John Hubbard wrote:
-> > > On 8/19/19 2:24 AM, Dave Chinner wrote:
-> > > > On Mon, Aug 19, 2019 at 08:34:12AM +0200, Jan Kara wrote:
-> > > > > On Sat 17-08-19 12:26:03, Dave Chinner wrote:
-> > > > > > On Fri, Aug 16, 2019 at 12:05:28PM -0700, Ira Weiny wrote:
-> > > > > > > On Thu, Aug 15, 2019 at 03:05:58PM +0200, Jan Kara wrote:
-> > > > > > > > On Wed 14-08-19 11:08:49, Ira Weiny wrote:
-> > > > > > > > > On Wed, Aug 14, 2019 at 12:17:14PM +0200, Jan Kara wrote:
-> > > ...
-> > > 
-> > > Any thoughts about sockets? I'm looking at net/xdp/xdp_umem.c which pins
-> > > memory with FOLL_LONGTERM, and wondering how to make that work here.
-> > 
-> > I'm not sure how this interacts with file mappings? I mean, this
-> > is just pinning anonymous pages for direct data placement into
-> > userspace, right?
-> > 
-> > Are you asking "what if this pinned memory was a file mapping?",
-> > or something else?
+On Friday, August 16, 2019 11:48 AM Chandan Rajendra wrote:
+> F2FS has a copy of "post read processing" code using which encrypted
+> file data is decrypted. This commit replaces it to make use of the
+> generic read_callbacks facility.
 > 
-> Yes, mainly that one. Especially since the FOLL_LONGTERM flag is
-> already there in xdp_umem_pin_pages(), unconditionally. So the
-> simple rules about struct *vaddr_pin usage (set it to NULL if FOLL_LONGTERM is
-> not set) are not going to work here.
-> 
-> 
-> > 
-> > > These are close to files, in how they're handled, but just different
-> > > enough that it's not clear to me how to make work with this system.
-> > 
-> > I'm guessing that if they are pinning a file backed mapping, they
-> > are trying to dma direct to the file (zero copy into page cache?)
-> > and so they'll need to either play by ODP rules or take layout
-> > leases, too....
-> > 
-> 
-> OK. I was just wondering if there was some simple way to dig up a
-> struct file associated with a socket (I don't think so), but it sounds
-> like this is an exercise that's potentially different for each subsystem.
+> Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
 
-AFAIA, there is no struct file here - the memory that has been pinned
-is just something mapped into the application's address space.
+Hi Eric and Ted,
 
-It seems to me that the socket here is equivalent of the RDMA handle
-that that owns the hardware that pins the pages. Again, that RDMA
-handle is not aware of waht the mapping represents, hence need to
-hold a layout lease if it's a file mapping.
+Looks like F2FS requires a lot more flexiblity than what can be offered by
+read callbacks i.e.
 
-SO from the filesystem persepctive, there's no difference between
-XDP or RDMA - if it's a FSDAX mapping then it is DMAing directly
-into the filesystem's backing store and that will require use of
-layout leases to perform safely.
+1. F2FS wants to make use of its own workqueue for decryption, verity and
+   decompression.
+2. F2FS' decompression code is not an FS independent entity like fscrypt and
+   fsverity. Hence they would need Filesystem specific callback functions to
+   be invoked from "read callbacks". 
 
-Cheers,
+Hence I would suggest that we should drop F2FS changes made in this
+patchset. Please let me know your thoughts on this.
 
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+chandan
+
+
+
