@@ -2,29 +2,28 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4992D97E62
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2019 17:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBF097E6E
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2019 17:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbfHUPRP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 21 Aug 2019 11:17:15 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:49158 "EHLO mx1.redhat.com"
+        id S1727887AbfHUPTO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 21 Aug 2019 11:19:14 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:53448 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726371AbfHUPRP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 21 Aug 2019 11:17:15 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        id S1727683AbfHUPTO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 21 Aug 2019 11:19:14 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 876333001A9A
-        for <linux-ext4@vger.kernel.org>; Wed, 21 Aug 2019 15:17:14 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 12B2B3083362
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Aug 2019 15:19:14 +0000 (UTC)
 Received: from [IPv6:::1] (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BF1E76D0BD;
-        Wed, 21 Aug 2019 15:17:10 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C0690381A7;
+        Wed, 21 Aug 2019 15:19:13 +0000 (UTC)
 Reply-To: sandeen@redhat.com
-Subject: Re: [PATCH 2/2] tune2fs: Warn if page size != blocksize when enabling
- encrypt
+Subject: Re: [PATCH 1/2] mke2fs: Warn if page size != blocksize when ecnrypt
+ is enabled
 To:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org
 References: <20190821131813.9456-1-lczerner@redhat.com>
- <20190821131813.9456-2-lczerner@redhat.com>
 From:   Eric Sandeen <esandeen@redhat.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=esandeen@redhat.com; prefer-encrypt=mutual; keydata=
@@ -69,111 +68,68 @@ Autocrypt: addr=esandeen@redhat.com; prefer-encrypt=mutual; keydata=
  Pk6ah10C4+R1Jc7dyUsKksMfvvhRX1hTIXhth85H16706bneTayZBhlZ/hK18uqTX+s0onG/
  m1F3vYvdlE4p2ts1mmixMF7KajN9/E5RQtiSArvKTbfsB6Two4MthIuLuf+M0mI4gPl9SPlf
  fWCYVPhaU9o83y1KFbD/+lh1pjP7bEu/YudBvz7F2Myjh4/9GUAijrCTNeDTDAgvIJDjXuLX pA==
-Message-ID: <c790aa59-7686-09e2-1066-92bec97704cd@redhat.com>
-Date:   Wed, 21 Aug 2019 10:17:09 -0500
+Message-ID: <30492603-86b4-8ea4-4573-6c2c4db12237@redhat.com>
+Date:   Wed, 21 Aug 2019 10:19:12 -0500
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
  Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190821131813.9456-2-lczerner@redhat.com>
+In-Reply-To: <20190821131813.9456-1-lczerner@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Wed, 21 Aug 2019 15:17:14 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.44]); Wed, 21 Aug 2019 15:19:14 +0000 (UTC)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
 On 8/21/19 8:18 AM, Lukas Czerner wrote:
 > With encrypt feature enabled the file system block size must match
-> system page size. Currently tune2fs will not complain at all when we try
-> to enable encrypt on a file system that does not satisfy this
-> requirement for the system. Add a warning for this case.
+> system page size. Currently mke2fs will not complain at all when we try
+> to create a file system that does not satisfy this requirement for the
+> system. Add a warning for this case.
 > 
 > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+
+This matches the warnings we give for block size > system page size, for example,
+so this makes sense to me.
+
+Reviewed-by: Eric Sandeen <sandeen@redhat.com>
+
 > ---
->  misc/tune2fs.c | 38 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
+>  misc/mke2fs.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 > 
-> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> index 7d2d38d7..26b1b1d0 100644
-> --- a/misc/tune2fs.c
-> +++ b/misc/tune2fs.c
-> @@ -130,6 +130,8 @@ void do_findfs(int argc, char **argv);
->  int journal_enable_debug = -1;
->  #endif
+> diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+> index d7cf257e..aa9590d8 100644
+> --- a/misc/mke2fs.c
+> +++ b/misc/mke2fs.c
+> @@ -2468,6 +2468,26 @@ profile_error:
+>  		      exit (1);
+>  	}
 >  
-> +static int sys_page_size = 4096;
-> +
->  static void usage(void)
->  {
->  	fprintf(stderr,
-> @@ -1407,6 +1409,29 @@ mmp_error:
->  			      stderr);
->  			return 1;
->  		}
-> +
-> +		/*
-> +		 * When encrypt feature is enabled, the file system blocksize
-> +		 * needs to match system page size otherwise the file system
-> +		 * won't mount.
-> +		 */
-> +		if (fs->blocksize != sys_page_size) {
-> +			if (!f_flag) {
-> +				com_err(program_name, 0,
-> +					_("Block size (%dB) does not match "
-> +					  "system page size (%dB). File "
-> +					  "system won't be usable on this "
-> +					  "system"),
-
-I wonder if this message should explicitly mention the encryption option, right
-now it doesn't give a lot of context as to why this is being printed.
-
-Perhaps "Encryption feature requested, but block size (%dB) does not match ...?"
-
--Eric
-
-> +					fs->blocksize, sys_page_size);
-> +				proceed_question(-1);
-> +			}
-> +			fprintf(stderr,_("Warning: Encrypt feature enabled, "
-> +					 "but block size (%dB) does not match "
-> +					 "system page size (%dB), forced to "
-> +					 "cointinue\n"),
-> +				fs->blocksize, sys_page_size);
+> +	/*
+> +	 * Encrypt feature requires blocksize to be the same as page size,
+> +	 * otherwise file system won't mount
+> +	 */
+> +	if (ext2fs_has_feature_encrypt(&fs_param) &&
+> +	   (blocksize != sys_page_size)) {
+> +		if (!force) {
+> +			com_err(program_name, 0,
+> +				_("Encrypt feature is enabled, but block size "
+> +				  "(%dB) does not match system page size "
+> +				  "(%dB)"),
+> +				blocksize, sys_page_size);
+> +			proceed_question(proceed_delay);
 > +		}
+> +		fprintf(stderr,_("Warning: Encrypt feature enabled, but block "
+> +				 "size (%dB) does not match system page size "
+> +				 "(%dB), forced to continue\n"),
+> +			blocksize, sys_page_size);
+> +	}
 > +
->  		fs->super->s_encrypt_algos[0] =
->  			EXT4_ENCRYPTION_MODE_AES_256_XTS;
->  		fs->super->s_encrypt_algos[1] =
-> @@ -2844,6 +2869,7 @@ int main(int argc, char **argv)
->  int tune2fs_main(int argc, char **argv)
->  #endif  /* BUILD_AS_LIB */
->  {
-> +	long sysval;
->  	errcode_t retval;
->  	ext2_filsys fs;
->  	struct ext2_super_block *sb;
-> @@ -2879,6 +2905,18 @@ int tune2fs_main(int argc, char **argv)
->  #endif
->  		io_ptr = unix_io_manager;
->  
-> +	/* Determine the system page size if possible */
-> +#ifdef HAVE_SYSCONF
-> +#if (!defined(_SC_PAGESIZE) && defined(_SC_PAGE_SIZE))
-> +#define _SC_PAGESIZE _SC_PAGE_SIZE
-> +#endif
-> +#ifdef _SC_PAGESIZE
-> +	sysval = sysconf(_SC_PAGESIZE);
-> +	if (sysval > 0)
-> +		sys_page_size = sysval;
-> +#endif /* _SC_PAGESIZE */
-> +#endif /* HAVE_SYSCONF */
-> +
->  retry_open:
->  	if ((open_flag & EXT2_FLAG_RW) == 0 || f_flag)
->  		open_flag |= EXT2_FLAG_SKIP_MMP;
+>  	/* Don't allow user to set both metadata_csum and uninit_bg bits. */
+>  	if (ext2fs_has_feature_metadata_csum(&fs_param) &&
+>  	    ext2fs_has_feature_gdt_csum(&fs_param))
 > 
