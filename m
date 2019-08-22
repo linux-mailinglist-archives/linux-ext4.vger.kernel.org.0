@@ -2,91 +2,200 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C3799388
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2019 14:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1FF99602
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2019 16:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731760AbfHVMaN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Aug 2019 08:30:13 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:38309 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732446AbfHVMaL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Aug 2019 08:30:11 -0400
-Received: by mail-lf1-f67.google.com with SMTP id h28so4399600lfj.5
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Aug 2019 05:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
-        b=qdsf9ywOac8zY5MUNYHyLmgYuaLEam3BAv+2GvrFskmj3ct8zemKNUowr1wIxEiP1M
-         lRPp3sn48RvDBAbNg2d67Jd4wJEBqI0o8nsmJEETirP1d1yMA/tgYMvnDcm7RJAVlBij
-         H+NZg1+WZOy+HUc+u1at+99zf1CHmmmJX8AW9+YePuC2w0GF+BtrxLekvJsl5VkhTTXT
-         mKs5g8mOFQFa8leShp0vgwCesAdOh7yzZNBB9FQdEAiuwWJWAN3c+6SXwQ+FsCkMZ1by
-         YsRkjOk/c4p/7ULzNlfyEncajpaOniYhuxpV3losFfdL2Uflk3chvmC6JTkb1OQ1rZfN
-         0X0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
-        b=mm2RDUIDItLdncFJ8G/m88nV0J7Sfi1Allt/HBmSKGpFvfKM8p5iLK4KyGULsM3FVX
-         FNGLxWYj+Slx600lyCUShXIS4MOYJfTkN4UL7FK2SIg+yN3Bp7A0dujzClHyDXtdw70y
-         Ghlo2/Je6L+txBrppjtNZnfCmIxCiNUni6TDEdbO86CqV2CBoeObYDSlREVjKFbPxDv8
-         UUl1D6Hhtmi2EPiNq7VESNXKUpZFDEPUNIdb0iHyx6e4QsAUMvNb7tFA5roSNPFkjll7
-         Kutp+grLKyznfN8YP+EMmjS5k2IjIRvaq+h7LRX5SJeN7KlzWP7Lv2FHHGAdi9VIXWh2
-         pH8w==
-X-Gm-Message-State: APjAAAUF2W2uSqSfW1YtkuorAS1NH9Mj3Pb+BDRhu1XRlOtFKAMnq+qT
-        Z+dUOa3zMaF6PpWFPe2f/zbfLaRtvDQruwOkTpg=
-X-Google-Smtp-Source: APXvYqzkz4kIg1ocssl6sKZ5ftGmnbPjIaQ9YF1WIwZSNRn0V0Y9OD1nUZw+XNW+ei4U76lXEt8Xdra2dmuzo8BqHv4=
-X-Received: by 2002:ac2:592f:: with SMTP id v15mr4155679lfi.57.1566477009142;
- Thu, 22 Aug 2019 05:30:09 -0700 (PDT)
+        id S2387427AbfHVOLg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Aug 2019 10:11:36 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62110 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725941AbfHVOLf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 22 Aug 2019 10:11:35 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7MDofhS073567
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Aug 2019 10:11:34 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2uhuf4baka-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Thu, 22 Aug 2019 10:11:34 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Thu, 22 Aug 2019 15:11:32 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 22 Aug 2019 15:11:28 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7MEBRDf27852850
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Aug 2019 14:11:27 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A941CA405E;
+        Thu, 22 Aug 2019 14:11:27 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 70A94A407B;
+        Thu, 22 Aug 2019 14:11:26 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.124.31.57])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 22 Aug 2019 14:11:26 +0000 (GMT)
+Subject: Re: [PATCH 0/5] ext4: direct IO via iomap infrastructure
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>, tytso@mit.edu,
+        jack@suse.cz, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, aneesh.kumar@linux.ibm.com
+References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
+ <20190812173150.AF04F5204F@d06av21.portsmouth.uk.ibm.com>
+ <20190813111004.GA12682@poseidon.bobrowski.net>
+ <20190813122723.AE6264C040@d06av22.portsmouth.uk.ibm.com>
+ <20190821131405.GC24417@poseidon.bobrowski.net>
+ <20190822120015.GA3330@poseidon.bobrowski.net>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Thu, 22 Aug 2019 19:41:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Received: by 2002:a19:dc4f:0:0:0:0:0 with HTTP; Thu, 22 Aug 2019 05:30:08
- -0700 (PDT)
-Reply-To: eku.lawfirm@gmail.com
-From:   "Law firm(Eku and Associates)" <elenabaltach66@gmail.com>
-Date:   Thu, 22 Aug 2019 12:30:08 +0000
-Message-ID: <CAOGpsp5-jtxg0EF9UNKiS2JiLByUAiDoKpw7HM0DuZo7wP=xMw@mail.gmail.com>
-Subject: MY $25,000,000.00 INVESTMENT PROPOSAL WITH YOU AND IN YOUR COUNTRY.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20190822120015.GA3330@poseidon.bobrowski.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19082214-4275-0000-0000-0000035BEC71
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19082214-4276-0000-0000-0000386E12DF
+Message-Id: <20190822141126.70A94A407B@d06av23.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-22_09:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908220146
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---=20
-Dear,
-With due respect this is not spam or Scam mail, because I have
-contacted you before and there was no response from you,I apologise if
-the contents of this mail are contrary to your moral ethics, which I
-feel may be of great disturbance to your person, but please treat this
-with absolute confidentiality, believing that this email reaches you
-in good faith. My contacting you is not a mistake or a coincidence
-because God can use any person known or unknown to accomplish great
-things.
-I am a lawyer and I have an investment business proposal to offer you.
-It is not official but should be considered as legal and confidential
-business. I have a customer's deposit of $US25 million dollars ready
-to be moved for investment if you can partner with us. We are ready to
-offer you 10% of this total amount as your compensation for supporting
-the transaction to completion. If you are interested to help me please
-reply me with your full details as stated below:
-(1) Your full names:
-(2) Your address:
-(3) Your occupation:
-(4) Your mobile telephone number:
-(5) Your nationality:
-(6) Your present location:
-(7) Your age:
-So that I will provide you more details on what to do and what is
-required for successful completion.
-Note: DO NOT REPLY ME IF YOU ARE NOT INTERESTED AND WITHOUT THE ABOVE
-MENTIONED DETAILS
 
-Sinc=C3=A8rement v=C3=B4tre,
-Avocat Etienne Eku Esq.(Lawfirm)
-Procureur principal. De Cabinet d=E2=80=99avocats de l=E2=80=99Afrique de l=
-=E2=80=99ouest.
-Skype:westafricalawfirm
+
+On 8/22/19 5:30 PM, Matthew Bobrowski wrote:
+> On Wed, Aug 21, 2019 at 11:14:07PM +1000, Matthew Bobrowski wrote:
+>> On Tue, Aug 13, 2019 at 05:57:22PM +0530, RITESH HARJANI wrote:
+>>> But what I meant was this (I may be wrong here since I haven't
+>>> really looked into it), but for my understanding I would like to
+>>> discuss this -
+>>>
+>>> So earlier with this flag(EXT4_STATE_DIO_UNWRITTEN) we were determining on
+>>> whether a newextent can be merged with ex1 in function
+>>> ext4_extents_can_be_merged. But now since we have removed that flag we have
+>>> no way of knowing that whether this inode has any unwritten extents or not
+>>> from any DIO path.
+>>>
+>>> What I meant is isn't this removal of setting/unsetting of
+>>> flag(EXT4_STATE_DIO_UNWRITTEN) changing the behavior of this func -
+>>> ext4_extents_can_be_merged?
+>>
+>> OK, I'm stuck and looking for either clarity, revalidation of my
+>> thought process, or any input on how to solve this problem for that
+>> matter.
+>>
+>> In the current ext4 direct IO implementation, the dynamic state flag
+>> EXT4_STATE_DIO_UNWRITTEN is set/unset for synchronous direct IO
+>> writes. On the other hand, the flag EXT4_IO_END_UNWRITTEN is set/unset
+>> for ext4_io_end->flag, and the value of i_unwritten is
+>> incremented/decremented for asynchronous direct IO writes. All
+>> mechanisms by which are used to track and determine whether the inode,
+>> or an IO in flight against a particular inode have any pending
+>> unwritten extents that need to be converted after the IO has
+>> completed. In addition to this, we have ext4_can_extents_be_merged()
+>> performing explicit checks against both EXT4_STATE_DIO_UNWRITTEN and
+>> i_unwritten and using them to determine whether it can or cannot merge
+>> a requested extent into an existing extent.
+>>
+>> This is all fine for the current direct IO implementation. However,
+>> while switching the direct IO code paths over to make use of the iomap
+>> infrastructure, I believe that we can no longer simply track whether
+>> an inode has unwritten extents needing to be converted by simply
+>> setting and checking the EXT4_STATE_DIO_UNWRITTEN flag on the
+>> inode. The reason being is that there can be multiple direct IO
+>> operations to unwritten extents running against the inode and we don't
+>> particularly distinguish synchronous from asynchronous writes within
+>> ext4_iomap_begin() as there's really no need. So, the only way to
+>> accurately determine whether extent conversion is deemed necessary for
+>> an IO operation whether it'd be synchronous or asynchronous is by
+>> checking the IOMAP_DIO_UNWRITTEN flag within the ->end_io()
+>> callback. I'm certain that this portion of the logic is correct, but
+>> we're still left with some issues when it comes to the checks that I
+>> previously mentioned in ext4_can_extents_be_merged(), which is the
+>> part I need some input on.
+>>
+>> I was doing some thinking and I don't believe that making use of the
+>> EXT4_STATE_DIO_UNWRITTEN flag is the solution at all here. This is not
+>> only for reasons that I've briefly mentioned above, but also because
+>> of the fact that it'll probably lead to a lot of inaccurate judgements
+>> while taking particular code paths and some really ugly code that
+>> creeps close to the definition of insanity. Rather, what if we solve
+>> this problem by continuing to just use i_unwritten to keep track of
+>> all the direct IOs to unwritten against running against an inode?
+>> Within ext4_iomap_begin() post successful creation of unwritten
+>> extents we'd call atomic_inc(&EXT4_I(inode)->i_unwritten) and
+>> subsequently within the ->end_io() callback whether we take the
+>> success or error path we'd call
+>> atomic_dec(&EXT4_I(inode)->i_unwritten) accordingly? This way we can
+>> still rely on this value to be used in the check within
+>> ext4_can_extents_be_merged(). Open for alternate suggestions if anyone
+>> has any...
+> 
+> Actually, no...
+> 
+> I've done some more thinking and what I suggested above around the use
+> of i_unwritten will also not work properly. Using iomap
+> infrastructure, there is the possibility of calling into the
+> ->iomap_begin() more than once for a single direct IO operation. This
+> means that by the time we even get to decrementing i_unwritten in the
+> ->end_io() callback after converting the unwritten extents we're
+> already running the possibility of i_unwritten becoming unbalanced
+> really quickly and staying that way. This also means that the
+> statement checking i_unwritten in ext4_can_extents_be_merged() will be
+> affected and potentially result in it being evaluated incorrectly. I
+> was thinking that we could just decrement i_unwritten in
+> ->iomap_end(), but that seems to me like it would be racy and also
+> lead to incorrect results. At this point I'm out of ideas on how to
+> solve this, so any other ideas would be appreciated!
+
+I will let others also comment, if someone has any other better approach.
+
+1. One approach is to add the infrastructure in iomap with 
+iomap_dio->private which is filesystem specific pointer. This can be
+updated by filesystem in ->iomap_begin call into iomap->private.
+And in case of iomap_dio_rw, this iomap->private will be copied to 
+iomap_dio->private if not already set.
+
+But I think this will eventually become hacky in the sense when you will 
+have to determine on whether the dio->private is already set or not when 
+iomap_apply will be called second time. It will become a problem with 
+AIO DIO in ext4 since we use i_unwritten which tells us whether there is 
+any unwritten extent but it does not tell whether this unwritten extent 
+is due to a DIRECT AIO DIO in progress or a buffered one.
+
+So we can ignore this approach - unless you or someone else have some 
+good design ideas to build on top of above.
+
+
+2. Second approach which I was thinking is to track only those extents 
+which are marked unwritten and are under IO. This can be done in 
+ext4_map_blocks. This way we will not have to track a particular inode 
+has any unwritten extents or not, but it will be extent based.
+Something similar was also done a while ago. Do you think this approach 
+will work in our case?
+
+So with this extents will be scanned in extent status tree to see if any 
+among those are under IO and are unwritten in func 
+ext4_can_extents_be_merged.
+
+https://patchwork.ozlabs.org/patch/1013837/
+
+
+-Ritesh
+
