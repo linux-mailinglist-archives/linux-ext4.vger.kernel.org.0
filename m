@@ -2,83 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B6398B79
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2019 08:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AADD398B87
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2019 08:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbfHVGht (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Aug 2019 02:37:49 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:42939 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728480AbfHVGhs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Aug 2019 02:37:48 -0400
-Received: by mail-pf1-f195.google.com with SMTP id i30so3228033pfk.9;
-        Wed, 21 Aug 2019 23:37:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=w8zkc+hg1ldncUHCMP36879SboQhR2ebSLSzLuQQalg=;
-        b=fCC4CME5OP8iD39VnZbgUC6+VHsDq/3kYX0AXl4Bkr3z3iQjaP6d2QtT8PvD9DnBo6
-         NTd5BCa2WnLtj8mpV8bDRqk240AciNphFci4PqN3rVhTitFXnihroP6imgzFS2aTP7ko
-         yaf/pObXlr6PVL8dBDOd5niq7UkBSouOueTGdFjPtjvymGx7f7rwm6QY+He7EqchcFy5
-         hSn6aaQSRBZj5VFbUz5ntCTJsEg9YdclO2VqJC9U0rH94uyHHiGCBGVSlswIj7nCANMi
-         l+JlkKL/o6D2hwV2lWhCV+wPs3s9IcBxikbwE11J5QZ/XkefeqYnWHt3fUzTxLL71xqU
-         8pMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=w8zkc+hg1ldncUHCMP36879SboQhR2ebSLSzLuQQalg=;
-        b=rfTS0hxL2s1uqARIpyZHqXfUy/RdWL48JYra9VKOxIupCQdWJV7X9/71pdeKgxM7jO
-         uwP1OeN3gCtbHa3UgxFMcbqmsWIC0CUZk1etu+bXGSRQiFPxYnFp9fDCK9zQA9iVgFkX
-         pnOXrHMxuS5ct7Rj4/oxjU1KxBQME2tG0/XLGrbAq6Epo1KoGw94dRvH/eCQROYdGnvO
-         fmSqTz+PkXAokZP8olxqMmkHh2qZVAcaLsYItYGbVpIcb4/YPbDgk+GtXwsqE0p7bEie
-         Mh9FBo27W62vP6qKCzsKwD6QSqZxFlnS7d1Bw9H0cPs/8s4xjZUVkDw+WJCpmaxKgz9p
-         F6Sw==
-X-Gm-Message-State: APjAAAXuAPvLNFLXh1ifQzKtuwF5g52v1IBkC/+1Xdy90lPe5LlNhg/B
-        vXCrUBFU5lrN1ZXg1r259pQ=
-X-Google-Smtp-Source: APXvYqwzTV/pvz4d7K8iOa4nlf+wlHkCX08B7MwQa1Rq8ffg7AjQtBVTPvDv4NMuVOOoiTWxNp6kmg==
-X-Received: by 2002:a63:c246:: with SMTP id l6mr32706655pgg.210.1566455868053;
-        Wed, 21 Aug 2019 23:37:48 -0700 (PDT)
-Received: from LGEARND20B15 ([27.122.242.75])
-        by smtp.gmail.com with ESMTPSA id e2sm26565941pff.49.2019.08.21.23.37.46
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Aug 2019 23:37:47 -0700 (PDT)
-Date:   Thu, 22 Aug 2019 15:37:43 +0900
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        austindh.kim@gmail.com
-Subject: [PATCH] ext4: remove unreachable statement inside
- __es_insert_extent()
-Message-ID: <20190822063743.GA36528@LGEARND20B15>
+        id S1731653AbfHVGp1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Aug 2019 02:45:27 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:60338 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730856AbfHVGp1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 22 Aug 2019 02:45:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04391;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Ta74xR2_1566456323;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Ta74xR2_1566456323)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 22 Aug 2019 14:45:23 +0800
+Subject: Re: [RFC] performance regression with "ext4: Allow parallel DIO
+ reads"
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, Joseph Qi <jiangqi903@gmail.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
+        Liu Bo <bo.liu@linux.alibaba.com>
+References: <6DADA28C-542F-45F6-ADB0-870A81ABED23@dilger.ca>
+ <15112e38-94fe-39d6-a8e2-064ff47187d5@linux.alibaba.com>
+ <20190728225122.GG7777@dread.disaster.area>
+ <960bb915-20cc-26a0-7abc-bfca01aa39c0@gmail.com>
+ <20190815151336.GO14313@quack2.suse.cz>
+ <075fd06f-b0b4-4122-81c6-e49200d5bd17@linux.alibaba.com>
+ <20190816145719.GA3041@quack2.suse.cz>
+ <a8ddec64-d87c-ae7a-9b02-2f24da2396e9@linux.alibaba.com>
+ <20190820160805.GB10232@mit.edu>
+ <f89131c9-6f84-ac3c-b53c-d3d55887ea89@linux.alibaba.com>
+ <20190821033443.GI10232@mit.edu>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <4e3606cf-34ae-6989-404a-de67324a4919@linux.alibaba.com>
+Date:   Thu, 22 Aug 2019 14:45:23 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20190821033443.GI10232@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-__es_insert_extent() never returns -EINVAL after BUG is executed.
-So remove unreachable code.
----
- fs/ext4/extents_status.c | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-index a959adc..7f97360 100644
---- a/fs/ext4/extents_status.c
-+++ b/fs/ext4/extents_status.c
-@@ -781,7 +781,6 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes)
- 			p = &(*p)->rb_right;
- 		} else {
- 			BUG();
--			return -EINVAL;
- 		}
- 	}
- 
--- 
-2.6.2
 
+On 19/8/21 11:34, Theodore Y. Ts'o wrote:
+> On Wed, Aug 21, 2019 at 09:04:57AM +0800, Joseph Qi wrote:
+>> On 19/8/21 00:08, Theodore Y. Ts'o wrote:
+>>> On Tue, Aug 20, 2019 at 11:00:39AM +0800, Joseph Qi wrote:
+>>>>
+>>>> I've tested parallel dio reads with dioread_nolock, it doesn't have
+>>>> significant performance improvement and still poor compared with reverting
+>>>> parallel dio reads. IMO, this is because with parallel dio reads, it take
+>>>> inode shared lock at the very beginning in ext4_direct_IO_read().
+>>>
+>>> Why is that a problem?  It's a shared lock, so parallel threads should
+>>> be able to issue reads without getting serialized?
+>>>
+>> The above just tells the result that even mounting with dioread_nolock,
+>> parallel dio reads still has poor performance than before (w/o parallel
+>> dio reads).
+> 
+> Right, but you were asserting that performance hit was *because* of
+> the shared lock.  I'm asking what leading you to have that opinion.
+> The fact that parallel dioread reads doesn't necessarily say that it
+> was because of that particular shared lock.  It could be due to any
+> number of other things.  Have you looked at /proc/lock_stat (enabeld
+> via CONFIG_LOCK_STAT) to see where the locking bottlenecks might be?
+> 
+I've enabled CONFIG_LOCK_STAT and CONFIG_DEBUG_RWSEMS, but doesn't see
+any statistics for i_rwsem. Am I missing something?
+
+Thanks,
+Joseph
