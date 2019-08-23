@@ -2,131 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E33579A597
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Aug 2019 04:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0FB9A5CD
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Aug 2019 04:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391150AbfHWCf3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 22 Aug 2019 22:35:29 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:46628 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390934AbfHWCf2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 22 Aug 2019 22:35:28 -0400
-Received: by mail-io1-f65.google.com with SMTP id x4so16504564iog.13
-        for <linux-ext4@vger.kernel.org>; Thu, 22 Aug 2019 19:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2Ob+A4xxX2bRSxLGz92/UzTEvC1yWM8JcjhiXKDPfB8=;
-        b=flcLM5FZxA1UdTl+5MfostzBYwQfyv1yb87DaSzrnDrUwd/ZNj4K4T/rHszC/sFQMH
-         ADUFV/N/N6vulg+PsFB9LiJOba7WYzMsXqe7TkwmxiwQw++HUI5Q9lwxgsadqj5kp36o
-         7ir9Ftxz3Frpzbh7dbD9IWl/fAPy+uyEwFD9Qu0xwImVT/66UuNo3m+3vDu9rqcZdHGP
-         dJuOAFAhp3e0iD0AWnqz3VAQtqcjnUDCLFkZZiPVDrJq83kU9d3bg+KlteAnZK+XFKE6
-         M2BK3WAwQy2tydaBr0xJ2dcLV8QJVxM3CxkgnlBsNXoibdFYaWIIutqUzeXdd2gExoTy
-         FEcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2Ob+A4xxX2bRSxLGz92/UzTEvC1yWM8JcjhiXKDPfB8=;
-        b=NMJNCU7gEUsD0tHBQdfsXWkASSqUggxSJO3wYbgVPz/1JZjJFz114JgodydP6ewYWL
-         LnuPsR5ekc0Fme4Qkpd4aHzX8o484BBEvroKav1B8anuQ3b1HFRRi8D71H3xBHjljhBt
-         P1ozzRs5iaXf2fu377i6wG+QJD6v9c+Wyd79CqPb63eQgsq9grYmTTR7Y+0SgFv5xZoX
-         gbS62hox6+SmkNWUbDWbldY0xul2ZwlEumfvPg+QRjXH/S0eXH7YcLPm56T/hBZDQQJf
-         FxZ1Rm1sTP3pV/qRRuKc4IxiqxRB+fxFttyJJZF0ehqKyIUxh25E7jaNUjp68m10s5na
-         gGsw==
-X-Gm-Message-State: APjAAAX5u64gzAqDnlVFGuDbhuSHEc9kAcQAnqLK6hEC/Xw8kf0Cr7sS
-        yrVCwVPPOWFtlQbOB0Qh20JPtb4B0H0GQLId6vXODQ==
-X-Google-Smtp-Source: APXvYqxk0KBtXTDXCH7sq1BDWGn2tzcj3BOrK9VJXXJYjin28Niwi8IhH6bIWJT+jY7Hn20R6XsnRrLk/vFE/AUzyqo=
-X-Received: by 2002:a6b:c581:: with SMTP id v123mr3719443iof.158.1566527727590;
- Thu, 22 Aug 2019 19:35:27 -0700 (PDT)
+        id S2403840AbfHWCuL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 22 Aug 2019 22:50:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5203 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726283AbfHWCuL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 22 Aug 2019 22:50:11 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 46EEB239800F4B6F10CA;
+        Fri, 23 Aug 2019 10:50:00 +0800 (CST)
+Received: from localhost.localdomain (10.67.212.132) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.439.0; Fri, 23 Aug 2019 10:49:51 +0800
+From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
+To:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Yang Guo <guoyang2@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
+        "Andreas Dilger" <adilger.kernel@dilger.ca>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+Subject: [PATCH] ext4: change the type of ext4 cache stats to percpu_counter to improve performance
+Date:   Fri, 23 Aug 2019 10:47:34 +0800
+Message-ID: <1566528454-13725-1-git-send-email-zhangshaokun@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <CGME20190821064226epcas2p2835b8a9084988b79107e54abfc5e7dab@epcas2p2.samsung.com>
- <004101d557eb$98b00060$ca100120$@samsung.com> <6ea5e5db-4dd4-719f-3b3e-b89099636ea6@kernel.dk>
-In-Reply-To: <6ea5e5db-4dd4-719f-3b3e-b89099636ea6@kernel.dk>
-From:   Satya Tangirala <satyat@google.com>
-Date:   Thu, 22 Aug 2019 19:35:16 -0700
-Message-ID: <CAA+FYZc6G0xk7Dhx0b9xNRoK+b+DpfuS+OK4wn4bpKpFPiiGUQ@mail.gmail.com>
-Subject: Re: [PATCH 5/9] block: support diskcipher
-To:     Jens Axboe <axboe@kernel.dk>, boojin.kim@samsung.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>, dm-devel@redhat.com,
-        Mike Snitzer <snitzer@redhat.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.212.132]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 5:10 AM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 8/21/19 12:42 AM, boojin.kim wrote:
-> > This patch supports crypto information to be maintained via BIO
-> > and passed to the storage driver.
-> >
-> > To do this, 'bi_aux_private', 'REQ_CYPTE' and 'bi_dun' are added
-> > to the block layer.
-> >
-> > 'bi_aux_private' is added for loading additional private information into
-> > BIO.
-> > 'REQ_CRYPT' is added to distinguish that bi_aux_private is being used
-> > for diskcipher.
-> > F2FS among encryption users uses DUN(device unit number) as
-> > the IV(initial vector) for cryptographic operations.
-> > DUN is stored in 'bi_dun' of bi_iter as a specific value for each BIO.
-> >
-> > Before attempting to merge the two BIOs, the operation is also added to
-> > verify that the crypto information contained in two BIOs is consistent.
->
-> This isn't going to happen. With this, and the inline encryption
-> proposed by Google, we'll bloat the bio even more. At least the Google
-> approach didn't include bio iter changes as well.
->
-> Please work it out between yourselves so we can have a single, clean
-> abstraction that works for both.
->
-> --
-> Jens Axboe
->
+From: Yang Guo <guoyang2@huawei.com>
 
-Hi Boojin,
+@es_stats_cache_hits and @es_stats_cache_misses are accessed frequently in
+ext4_es_lookup_extent function, it would influence the ext4 read/write
+performance in NUMA system.
+Let's optimize it using percpu_counter, it is profitable for the
+performance.
 
-We're very keen to make sure that our approach to inline encryption can
-work with diverse hardware, including Samsung's FMP hardware; if you
-can see any issues with using our approach with your hardware please
-let us know.
+The test command is as below:
+fio -name=randwrite -numjobs=8 -filename=/mnt/test1 -rw=randwrite
+-ioengine=libaio -direct=1 -iodepth=64 -sync=0 -norandommap -group_reporting
+-runtime=120 -time_based -bs=4k -size=5G
 
-We understand that a possible concern for getting FMP working with our
-patch series for Inline Encryption Support at
+And the result is better 10% than the initial implement:
+without the patch，IOPS=197k, BW=770MiB/s (808MB/s)(90.3GiB/120002msec)
+with the patch,  IOPS=218k, BW=852MiB/s (894MB/s)(99.9GiB/120002msec)
 
-https://lore.kernel.org/linux-block/20190821075714.65140-1-satyat@google.com/
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Signed-off-by: Yang Guo <guoyang2@huawei.com>
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+---
+ fs/ext4/extents_status.c | 20 +++++++++++++-------
+ fs/ext4/extents_status.h |  4 ++--
+ 2 files changed, 15 insertions(+), 9 deletions(-)
 
-is that unlike some inline encryption hardware (and also unlike the JEDEC
-UFS v2.1 spec), FMP doesn't have the concept of a limited number of
-keyslots - to address that difference we have a "passthrough keyslot
-manager", which we put up on top of our patch series for inline encryption
-support at
+diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+index 7521de2dcf3a..7699e80ae236 100644
+--- a/fs/ext4/extents_status.c
++++ b/fs/ext4/extents_status.c
+@@ -947,9 +947,9 @@ int ext4_es_lookup_extent(struct inode *inode, ext4_lblk_t lblk,
+ 		es->es_pblk = es1->es_pblk;
+ 		if (!ext4_es_is_referenced(es1))
+ 			ext4_es_set_referenced(es1);
+-		stats->es_stats_cache_hits++;
++		percpu_counter_inc(&stats->es_stats_cache_hits);
+ 	} else {
+-		stats->es_stats_cache_misses++;
++		percpu_counter_inc(&stats->es_stats_cache_misses);
+ 	}
+ 
+ 	read_unlock(&EXT4_I(inode)->i_es_lock);
+@@ -1235,9 +1235,9 @@ int ext4_seq_es_shrinker_info_show(struct seq_file *seq, void *v)
+ 	seq_printf(seq, "stats:\n  %lld objects\n  %lld reclaimable objects\n",
+ 		   percpu_counter_sum_positive(&es_stats->es_stats_all_cnt),
+ 		   percpu_counter_sum_positive(&es_stats->es_stats_shk_cnt));
+-	seq_printf(seq, "  %lu/%lu cache hits/misses\n",
+-		   es_stats->es_stats_cache_hits,
+-		   es_stats->es_stats_cache_misses);
++	seq_printf(seq, "  %llu/%llu cache hits/misses\n",
++		   percpu_counter_sum_positive(&es_stats->es_stats_cache_hits),
++		   percpu_counter_sum_positive(&es_stats->es_stats_cache_misses));
+ 	if (inode_cnt)
+ 		seq_printf(seq, "  %d inodes on list\n", inode_cnt);
+ 
+@@ -1264,8 +1264,14 @@ int ext4_es_register_shrinker(struct ext4_sb_info *sbi)
+ 	sbi->s_es_nr_inode = 0;
+ 	spin_lock_init(&sbi->s_es_lock);
+ 	sbi->s_es_stats.es_stats_shrunk = 0;
+-	sbi->s_es_stats.es_stats_cache_hits = 0;
+-	sbi->s_es_stats.es_stats_cache_misses = 0;
++	err = percpu_counter_init(&sbi->s_es_stats.es_stats_cache_hits, 0,
++				  GFP_KERNEL);
++	if (err)
++		return err;
++	err = percpu_counter_init(&sbi->s_es_stats.es_stats_cache_misses, 0,
++				  GFP_KERNEL);
++	if (err)
++		return err;
+ 	sbi->s_es_stats.es_stats_scan_time = 0;
+ 	sbi->s_es_stats.es_stats_max_scan_time = 0;
+ 	err = percpu_counter_init(&sbi->s_es_stats.es_stats_all_cnt, 0, GFP_KERNEL);
+diff --git a/fs/ext4/extents_status.h b/fs/ext4/extents_status.h
+index 131a8b7df265..e722dd9bd06e 100644
+--- a/fs/ext4/extents_status.h
++++ b/fs/ext4/extents_status.h
+@@ -70,8 +70,8 @@ struct ext4_es_tree {
+ 
+ struct ext4_es_stats {
+ 	unsigned long es_stats_shrunk;
+-	unsigned long es_stats_cache_hits;
+-	unsigned long es_stats_cache_misses;
++	struct percpu_counter es_stats_cache_hits;
++	struct percpu_counter es_stats_cache_misses;
+ 	u64 es_stats_scan_time;
+ 	u64 es_stats_max_scan_time;
+ 	struct percpu_counter es_stats_all_cnt;
+-- 
+2.7.4
 
-https://android-review.googlesource.com/c/kernel/common/+/980137/2
-
-Setting up a passthrough keyslot manager in the request queue of a
-device allows the device to receive a bio's encryption context as-is with
-the bio, which is what FMP would prefer. Are there any issues with
-using the passthrough keyslot manager for FMP?
-
-Thanks!
-Satya
