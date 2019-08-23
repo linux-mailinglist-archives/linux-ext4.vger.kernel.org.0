@@ -2,154 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2099D9A879
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Aug 2019 09:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EA29A933
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Aug 2019 09:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387453AbfHWHS6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Aug 2019 03:18:58 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:63867 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731986AbfHWHS4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Aug 2019 03:18:56 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20190823071852epoutp03bf7d7f5a45434cfd2d65b387011d82da~9fCJGUY-p1749517495epoutp03k
-        for <linux-ext4@vger.kernel.org>; Fri, 23 Aug 2019 07:18:52 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20190823071852epoutp03bf7d7f5a45434cfd2d65b387011d82da~9fCJGUY-p1749517495epoutp03k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1566544732;
-        bh=+fYE/jWK1CRZuDZ2tVBT+Ef/F2Gp0hZ+OjNZD7CcuN0=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=JPCoQLPyMnwUsXcRJAb87lIbwjVAz8UJnhO9geXbleKdINR95oS+Pk7MPNyeSIKlr
-         Ie5LM4HsFuPx33ZSSTfcMnvc55/lFYB3Po/KTATm56/rPppRH16qhqPtM2q1rTtoUK
-         Y+RZMMMZQWD9EG8hvLGNnIEbSL4l0oI/7oyWJQfs=
-Received: from epsnrtp5.localdomain (unknown [182.195.42.166]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20190823071851epcas2p2a4a203c12c80c1285afac51eb7c84d8f~9fCIdn5SC1459514595epcas2p2h;
-        Fri, 23 Aug 2019 07:18:51 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.182]) by
-        epsnrtp5.localdomain (Postfix) with ESMTP id 46FCS92KMhzMqYkd; Fri, 23 Aug
-        2019 07:18:49 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        47.3F.04112.9539F5D5; Fri, 23 Aug 2019 16:18:49 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20190823071848epcas2p3fe4d229d22b14162c354f88a29f366c2~9fCGBJdVk1882918829epcas2p3k;
-        Fri, 23 Aug 2019 07:18:48 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20190823071848epsmtrp10b85cadf4258caf7cfd003e7d6717ccd~9fCF-zuWg1973319733epsmtrp1u;
-        Fri, 23 Aug 2019 07:18:48 +0000 (GMT)
-X-AuditID: b6c32a48-f37ff70000001010-57-5d5f935942ee
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        77.E5.03706.8539F5D5; Fri, 23 Aug 2019 16:18:48 +0900 (KST)
-Received: from KORDO035251 (unknown [12.36.165.204]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20190823071848epsmtip1133664f58af60792a11a792437cc8f99~9fCFn2bUi1770217702epsmtip1x;
-        Fri, 23 Aug 2019 07:18:48 +0000 (GMT)
-From:   "boojin.kim" <boojin.kim@samsung.com>
-To:     "'Herbert Xu'" <herbert@gondor.apana.org.au>
-Cc:     "'Herbert Xu'" <herbert@gondor.apana.org.au>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        "'Eric Biggers'" <ebiggers@kernel.org>,
-        "'Theodore Y. Ts'o'" <tytso@mit.edu>,
-        "'Chao Yu'" <chao@kernel.org>,
-        "'Jaegeuk Kim'" <jaegeuk@kernel.org>,
-        "'Andreas Dilger'" <adilger.kernel@dilger.ca>,
-        "'Theodore Ts'o'" <tytso@mit.edu>, <dm-devel@redhat.com>,
-        "'Mike Snitzer'" <snitzer@redhat.com>,
-        "'Alasdair Kergon'" <agk@redhat.com>,
-        "'Jens Axboe'" <axboe@kernel.dk>,
-        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
-        "'Kukjin Kim'" <kgene@kernel.org>,
-        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
-        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-fscrypt@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 6/9] dm crypt: support diskcipher
-Date:   Fri, 23 Aug 2019 16:18:47 +0900
-Message-ID: <002b01d55983$01b40320$051c0960$@samsung.com>
+        id S2391463AbfHWH5K (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Aug 2019 03:57:10 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:36539 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391272AbfHWH5K (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 23 Aug 2019 03:57:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04391;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0TaC9Q2t_1566547022;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TaC9Q2t_1566547022)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 23 Aug 2019 15:57:03 +0800
+Subject: Re: [RFC] performance regression with "ext4: Allow parallel DIO
+ reads"
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Joseph Qi <jiangqi903@gmail.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
+        Liu Bo <bo.liu@linux.alibaba.com>
+References: <6DADA28C-542F-45F6-ADB0-870A81ABED23@dilger.ca>
+ <15112e38-94fe-39d6-a8e2-064ff47187d5@linux.alibaba.com>
+ <20190728225122.GG7777@dread.disaster.area>
+ <960bb915-20cc-26a0-7abc-bfca01aa39c0@gmail.com>
+ <20190815151336.GO14313@quack2.suse.cz>
+ <075fd06f-b0b4-4122-81c6-e49200d5bd17@linux.alibaba.com>
+ <20190816145719.GA3041@quack2.suse.cz>
+ <a8ddec64-d87c-ae7a-9b02-2f24da2396e9@linux.alibaba.com>
+ <20190820160805.GB10232@mit.edu>
+ <f89131c9-6f84-ac3c-b53c-d3d55887ea89@linux.alibaba.com>
+ <20190822054001.GT7777@dread.disaster.area>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <f0eb766f-3c04-2a53-1669-4088e09d8f73@linux.alibaba.com>
+Date:   Fri, 23 Aug 2019 15:57:02 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 14.0
-Thread-Index: AdVZgoTeM6vEQWOMSaO8aX0QkbtHrA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf0xTVxjN7Xt9r6JdrqVudw3bujc0EQO2ne0uC2xmY/jMTMSZuOjGujf6
-        Uoj9lb6WqdmEbFAB2dAYEQoSf8XNbgQtiMS1hCCs4kSyEYwarVskqwIriIABRdbycOO/853v
-        nPt9J1+ujFAcoVWyApuLd9o4C0MlkK2XVhtStx8y5mrC1XI8OVFG4qYrvxL4pztVFP7tcK8E
-        1/eVkDgYrZPixsBTAu8fSsKDTV4C35jxSHHVvWEC9/WdpbH/3nUpDt5ag++GpyW4tuE2hf84
-        sQEPNUyROBDsIXH/xXoKd81VAVzT1y7BnnOTAJdWTtM41Pjx+pfZljM3JWxJ85dsa8dKtr/X
-        zfp95RR7+3qAYptPFbG/HHskYb+52k2wo+0DFPt9iw+wj/yv5izbYcnI5zkT71Tztjy7qcBm
-        zmQ+3Gp836g3aLSp2nT8FqO2cVY+k8nalJOaXWCJZWfUhZzFHaNyOEFg1r6T4bS7Xbw63y64
-        MhneYbI4tFpHmsBZBbfNnJZnt76t1Wh0+pjyc0v+yPkfpY4QvevOz2GiGBynKsASGYLrUPnI
-        abICJMgUsA2gga4wIRbjAEWiE7RYTAE0fqD2P0v0/jAdxwoYBOjxRLYoegDQ04fnpfEGBdeg
-        5pAPxLESatAF/xMQFxHwGY0GxzvJeCMR6lG4a3/sVZmMhCtRw6QxTsthOmo82kOJeDnqqR2c
-        lxPwNXThn3pCXEKN2nqHQdyqhGnIU+IUJUpUV+5ZkEzT6Er/chFnobpvRyUiTkRDoRZaxCr0
-        oMqzgIvQwOmT84ERrATo6szzxpvI+/e++VkEXI2aLq6NQwTfQF23FjZ7AZVdmqVFWo7KPArR
-        mIyOjvdLRFqFxir3ijSLhh6XggPgde+iiN5FEb2Lsnj/H3sMkD7wIu8QrGZe0DnWLb60H8x/
-        ihS2DXRc29QJoAwwy+SXKz7LVUi5QmG3tRMgGcEo5YUHY5TcxO3ewzvtRqfbwgudQB87wEFC
-        tSLPHvtiNpdRq9cZDJp0PdYbdJh5Se5fevNTBTRzLn4nzzt453OfRLZEVQzWp3SsqI8EehAc
-        G/xA+D0yV5R8ZiL4SQgmrNr6Q7mueOmN4u+UjRHSvfH+u9fYVaaxqZzWuj0j1dtqyo7MKLt3
-        Hv6o4VDyX1knc7/elr1xy+xkS0Yi0335meYLvW/vn9GkVONcYPNs5Kz2q+pXkvZ17zrVXjlq
-        vlvzXulszY7pJ5HoQ4YU8jltCuEUuH8B2IqajSoEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBIsWRmVeSWpSXmKPExsWy7bCSnG7E5PhYg87bihZfv3SwWKw/dYzZ
-        YvXdfjaL01PPMlnMOd/CYrH33WxWi7V7/jBbdL+SsXiyfhazxY1fbawW/Y9fM1ucP7+B3WLT
-        42usFntvaVvcv/eTyWLmvDtsFpcWuVu8mveNxWLP3pMsFpd3zWGzOPK/n9Fixvl9TBZtG78y
-        WrT2/GS3OL423EHSY8vKm0weLZvLPbYdUPW4fLbUY9OqTjaPO9f2sHlsXlLvsXvBZyaPpjNH
-        mT3e77vK5tG3ZRWjx+dNcgE8UVw2Kak5mWWpRfp2CVwZb7auYC04zl5xd8095gbGhWxdjJwc
-        EgImEu9evGYHsYUEdjNK9B0xgYhLSWxt38MMYQtL3G85wtrFyAVU85xR4syCxWANbALaEpuP
-        r2IEsUUEDCS2b/oNZjMLTOOQ2PVBHMQWFjCVuHekG2gZBweLgKrEvK/xIGFeAUuJtXNPskHY
-        ghInZz5hASlhFtCTaNsINUVeYvvbOVAnKEjsOPuaEaREBKSkpQiiRERidmcb8wRGwVlIBs1C
-        GDQLyaBZSDoWMLKsYpRMLSjOTc8tNiwwzEst1ytOzC0uzUvXS87P3cQIjn8tzR2Ml5fEH2IU
-        4GBU4uEt6IiLFWJNLCuuzD3EKMHBrCTCWzYRKMSbklhZlVqUH19UmpNafIhRmoNFSZz3ad6x
-        SCGB9MSS1OzU1ILUIpgsEwenVAPj/OSa9W1d/dfS9K63n54b1X3C+cSWAqnD/vI1HyIsY87q
-        y9e/2CLn6c+WUXD5Ym3vnseaC/u2PP5mt3a5zZYUj0uvzY7c3Zv15QDjJeHpgkwt3gwHH/eF
-        CF+KdStfHfH8kRKHhM5DuXgjtzMbfnMVufJKnMreU1zOr6S3rV5ln++hk4tZLD4qsRRnJBpq
-        MRcVJwIAsdKINPsCAAA=
-X-CMS-MailID: 20190823071848epcas2p3fe4d229d22b14162c354f88a29f366c2
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20190823071848epcas2p3fe4d229d22b14162c354f88a29f366c2
-References: <CGME20190823071848epcas2p3fe4d229d22b14162c354f88a29f366c2@epcas2p3.samsung.com>
+In-Reply-To: <20190822054001.GT7777@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 01:28:37PM +0900, Herbert Xu wrote:
->
-> No.  If you're after total offload then the crypto API is not for
-> you.  What we can support is the offloading of encryption/decryption
-> over many sectors.
->
-> Cheers,
+Hi Dave,
 
-FMP doesn't use encrypt/decrypt of crypto API because it doesn't
-expose cipher-text to DRAM.
-But, Crypto API has many useful features such as cipher management,
-cipher allocation with cipher name, key management and test manager.
-All these features are useful for FMP.
-FMP has been cerified with FIPS as below by using test vectors and
-test manager of Crypto API.
-https://csrc.nist.gov/projects/cryptographic-module-validation-program/Certi
-ficate/3255
-https://csrc.nist.gov/CSRC/media/projects/cryptographic-module-validation-pr
-ogram/documents/security-policies/140sp3255.pdf
+On 19/8/22 13:40, Dave Chinner wrote:
+> On Wed, Aug 21, 2019 at 09:04:57AM +0800, Joseph Qi wrote:
+>> Hi Ted，
+>>
+>> On 19/8/21 00:08, Theodore Y. Ts'o wrote:
+>>> On Tue, Aug 20, 2019 at 11:00:39AM +0800, Joseph Qi wrote:
+>>>>
+>>>> I've tested parallel dio reads with dioread_nolock, it doesn't have
+>>>> significant performance improvement and still poor compared with reverting
+>>>> parallel dio reads. IMO, this is because with parallel dio reads, it take
+>>>> inode shared lock at the very beginning in ext4_direct_IO_read().
+>>>
+>>> Why is that a problem?  It's a shared lock, so parallel threads should
+>>> be able to issue reads without getting serialized?
+>>>
+>> The above just tells the result that even mounting with dioread_nolock,
+>> parallel dio reads still has poor performance than before (w/o parallel
+>> dio reads).
+>>
+>>> Are you using sufficiently fast storage devices that you're worried
+>>> about cache line bouncing of the shared lock?  Or do you have some
+>>> other concern, such as some other thread taking an exclusive lock?
+>>>
+>> The test case is random read/write described in my first mail. And
+> 
+> Regardless of dioread_nolock, ext4_direct_IO_read() is taking
+> inode_lock_shared() across the direct IO call.  And writes in ext4
+> _always_ take the inode_lock() in ext4_file_write_iter(), even
+> though it gets dropped quite early when overwrite && dioread_nolock
+> is set.  But just taking the lock exclusively in write fro a short
+> while is enough to kill all shared locking concurrency...
+> 
+>> from my preliminary investigation, shared lock consumes more in such
+>> scenario.
+> 
+> If the write lock is also shared, then there should not be a
+> scalability issue. The shared dio locking is only half-done in ext4,
+> so perhaps comparing your workload against XFS would be an
+> informative exercise... 
 
-Can't I use crypto APIs to take advantage of this?
-I want to find a good way that FMP can use crypto API.
+I've done the same test workload on xfs, it behaves the same as ext4
+after reverting parallel dio reads and mounting with dioread_lock.
+Here is the test result:
+psync, randrw, direct=1, numofjobs=8
 
-Thanks
-Boojin Kim.
+4k:
+-----------------------------------------
+ext4 | READ 123450KB/s | WRITE 123368KB/s
+-----------------------------------------
+xfs  | READ 123848KB/s | WRITE 123761KB/s
+-----------------------------------------
 
+16k:
+-----------------------------------------
+ext4 | READ 222477KB/s | WRITE 222322KB/s
+-----------------------------------------
+xfs  | READ 223261KB/s | WRITE 223106KB/s
+-----------------------------------------
+
+64k:
+-----------------------------------------
+ext4 | READ 427406KB/s | WRITE 426197KB/s
+-----------------------------------------
+xfs  | READ 403697KB/s | WRITE 402555KB/s
+-----------------------------------------
+
+512k:
+-----------------------------------------
+ext4 | READ 618752KB/s | WRITE 619054KB/s
+-----------------------------------------
+xfs  | READ 614954KB/s | WRITE 615254KB/s
+-----------------------------------------
+
+1M:
+-----------------------------------------
+ext4 | READ 615011KB/s | WRITE 612255KB/s
+-----------------------------------------
+xfs  | READ 624087KB/s | WRITE 621290KB/s
+-----------------------------------------
