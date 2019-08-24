@@ -2,53 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A543E9BF8D
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2019 21:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C289C06E
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2019 23:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727960AbfHXTA3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 24 Aug 2019 15:00:29 -0400
-Received: from smtp2.osep.mendoza.gov.ar ([200.16.135.145]:52888 "HELO
-        smtp2.osep.mendoza.gov.ar" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1727912AbfHXTA3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 24 Aug 2019 15:00:29 -0400
-X-Greylist: delayed 9981 seconds by postgrey-1.27 at vger.kernel.org; Sat, 24 Aug 2019 15:00:28 EDT
-Received: (qmail 402 invoked from network); 24 Aug 2019 14:14:38 -0000
-Received: from unknown (HELO zimbra.servers.dg.intranet) (10.10.195.224)
-  by smtp2.osep.mendoza.gov.ar with SMTP; 24 Aug 2019 14:14:38 -0000
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra.servers.dg.intranet (Postfix) with ESMTP id DB8B3CF7CC66;
-        Sat, 24 Aug 2019 11:14:37 -0300 (ART)
-Received: from zimbra.servers.dg.intranet ([127.0.0.1])
-        by localhost (zimbra.servers.dg.intranet [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id RViPrJdL95bg; Sat, 24 Aug 2019 11:14:37 -0300 (ART)
-Received: from localhost (localhost [127.0.0.1])
-        by zimbra.servers.dg.intranet (Postfix) with ESMTP id 877BBCF7CC58;
-        Sat, 24 Aug 2019 11:14:37 -0300 (ART)
-X-Virus-Scanned: amavisd-new at osep.mendoza.gov.ar
-Received: from zimbra.servers.dg.intranet ([127.0.0.1])
-        by localhost (zimbra.servers.dg.intranet [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9n2-6F1Dy9XD; Sat, 24 Aug 2019 11:14:37 -0300 (ART)
-Received: from zimbra.servers.dg.intranet (zimbra.servers.dg.intranet [10.10.195.224])
-        by zimbra.servers.dg.intranet (Postfix) with ESMTP id BAAEBCF7CC40;
-        Sat, 24 Aug 2019 11:14:36 -0300 (ART)
-Date:   Sat, 24 Aug 2019 11:14:36 -0300 (ART)
-From:   "Herr.Robert Jackson" <liliana.marinero@osep.mendoza.gov.ar>
-Reply-To: SKY GROUP FINANCIAL <skygroupfinancial0@gmail.com>
-Message-ID: <1268244548.24999093.1566656076742.JavaMail.zimbra@osep.mendoza.gov.ar>
-Subject: 
+        id S1727879AbfHXVYz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 24 Aug 2019 17:24:55 -0400
+Received: from ms.lwn.net ([45.79.88.28]:50340 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727690AbfHXVYy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 24 Aug 2019 17:24:54 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 1BB5B300;
+        Sat, 24 Aug 2019 21:24:54 +0000 (UTC)
+Date:   Sat, 24 Aug 2019 15:24:53 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Ayush Ranjan <ayushr2@illinois.edu>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] Ext4 documentation fixes.
+Message-ID: <20190824152453.03737143@lwn.net>
+In-Reply-To: <DEDD6BA5-6E18-4ED6-9EF6-E11EDA593700@dilger.ca>
+References: <CA+UE=SPyMXZUhHFm0KgvihPdaE=yH5ra6n1C4XhKgM6aGheo=A@mail.gmail.com>
+        <DEDD6BA5-6E18-4ED6-9EF6-E11EDA593700@dilger.ca>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [172.16.3.2]
-X-Mailer: Zimbra 8.6.0_GA_1153 (zclient/8.6.0_GA_1153)
-Thread-Topic: 
-Thread-Index: 9gdTMQJ8JBu8cvpzdFVmtKjzn0qahQ==
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, 15 Aug 2019 09:16:23 -0700
+Andreas Dilger <adilger@dilger.ca> wrote:
 
+> On Aug 15, 2019, at 09:11, Ayush Ranjan <ayushr2@illinois.edu> wrote:
+> > 
+> > This commit aims to fix the following issues in ext4 documentation:
+> > - Flexible block group docs said that the aim was to group block
+> >   metadata together instead of block group metadata.
+> > - The documentation consistly uses "location" instead of "block number".
+> >   It is easy to confuse location to be an absolute offset on disk. Added
+> >   a line to clarify all location values are in terms of block numbers.
+> > - Dirent2 docs said that the rec_len field is shortened instead of the
+> >   name_len field.
+> > - Typo in bg_checksum description.
+> > - Inode size is 160 bytes now, and hence i_extra_isize is now 32.
+> > - Cluster size formula was incorrect, it did not include the +10 to
+> >   s_log_cluster_size value.
+> > - Typo: there were two s_wtime_hi in the superblock struct.
+> > - Superblock struct was outdated, added the new fields which were part
+> >   of s_reserved earlier.
+> > - Multiple mount protection seems to be implemented in fs/ext4/mmp.c.
+> > 
+> > Signed-off-by: Ayush Ranjan <ayushr2@illinois.edu>  
+> 
+> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-Wir sind zuverlässige, vertrauenswürdige Kreditgeber, leihen wir Unternehmen und Einzelpersonen zu einem niedrigen Zinssatz von 2%, Sind Sie auf der Suche nach einem Geschäftskredit, Privatkredite, Schuldenkonsolidierung, unbesicherte Kredite, Risikokapital, wenn ja Kontaktieren Sie uns jetzt für weitere Einzelheiten.
+I've applied this to the docs tree.
+
+However, Ayush: the patch was rather badly corrupted by your mail client.
+I managed to fix it up, but please in the future verify that you can email
+a patch to yourself and apply it before submitting it.  There may be some
+useful hints in Documentation/process/email-clients.rst .
+
+Thanks,
+
+jon
