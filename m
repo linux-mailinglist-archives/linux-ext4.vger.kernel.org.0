@@ -2,127 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AE89B96A
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2019 02:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFC19B973
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2019 02:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbfHXAMk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Aug 2019 20:12:40 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:45548 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726283AbfHXAMk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 23 Aug 2019 20:12:40 -0400
-Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id EF9B9361F93;
-        Sat, 24 Aug 2019 10:12:31 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1i1JeO-0007di-F2; Sat, 24 Aug 2019 10:11:24 +1000
-Date:   Sat, 24 Aug 2019 10:11:24 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190824001124.GI1119@dread.disaster.area>
-References: <20190819123841.GC5058@ziepe.ca>
- <20190820011210.GP7777@dread.disaster.area>
- <20190820115515.GA29246@ziepe.ca>
- <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
- <20190821181343.GH8653@ziepe.ca>
- <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
- <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
- <20190823032345.GG1119@dread.disaster.area>
- <20190823120428.GA12968@ziepe.ca>
+        id S1725857AbfHXARe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Aug 2019 20:17:34 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52326 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725807AbfHXARe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Aug 2019 20:17:34 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7O0HSAv017564
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Aug 2019 20:17:29 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9B7B042049E; Fri, 23 Aug 2019 20:17:28 -0400 (EDT)
+Date:   Fri, 23 Aug 2019 20:17:28 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Whitney <enwlinux@gmail.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: rework reserved cluster accounting when
+ invalidating pages
+Message-ID: <20190824001728.GA19348@mit.edu>
+References: <20190817193103.28912-1-enwlinux@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190823120428.GA12968@ziepe.ca>
+In-Reply-To: <20190817193103.28912-1-enwlinux@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=7-415B0cAAAA:8 a=G1NtteZr6bW4K8DtrmYA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
-> On Fri, Aug 23, 2019 at 01:23:45PM +1000, Dave Chinner wrote:
+On Sat, Aug 17, 2019 at 03:31:03PM -0400, Eric Whitney wrote:
+> The goal of this patch is to remove two references to the buffer delay
+> bit in ext4_da_page_release_reservation() as part of a larger effort
+> to remove all such references from ext4.  These two references are
+> principally used to reduce the reserved block/cluster count when pages
+> are invalidated as a result of truncating, punching holes, or
+> collapsing a block range in a file.  The entire function is removed
+> and replaced with code in ext4_es_remove_extent() that reduces the
+> reserved count as a side effect of removing a block range from delayed
+> and not unwritten extents in the extent status tree as is done when
+> truncating, punching holes, or collapsing ranges.
 > 
-> > > But the fact that RDMA, and potentially others, can "pass the
-> > > pins" to other processes is something I spent a lot of time trying to work out.
-> > 
-> > There's nothing in file layout lease architecture that says you
-> > can't "pass the pins" to another process.  All the file layout lease
-> > requirements say is that if you are going to pass a resource for
-> > which the layout lease guarantees access for to another process,
-> > then the destination process already have a valid, active layout
-> > lease that covers the range of the pins being passed to it via the
-> > RDMA handle.
+> The code is written to minimize the number of searches descending from
+> rb tree roots for scalability.
 > 
-> How would the kernel detect and enforce this? There are many ways to
-> pass a FD.
+> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
 
-AFAIC, that's not really a kernel problem. It's more of an
-application design constraint than anything else. i.e. if the app
-passes the IB context to another process without a lease, then the
-original process is still responsible for recalling the lease and
-has to tell that other process to release the IB handle and it's
-resources.
+Thanks, applied.
 
-> IMHO it is wrong to try and create a model where the file lease exists
-> independently from the kernel object relying on it. In other words the
-> IB MR object itself should hold a reference to the lease it relies
-> upon to function properly.
-
-That still doesn't work. Leases are not individually trackable or
-reference counted objects objects - they are attached to a struct
-file bUt, in reality, they are far more restricted than a struct
-file.
-
-That is, a lease specifically tracks the pid and the _open fd_ it
-was obtained for, so it is essentially owned by a specific process
-context. Hence a lease is not able to be passed to a separate
-process context and have it still work correctly for lease break
-notifications.  i.e. the layout break signal gets delivered to
-original process that created the struct file, if it still exists
-and has the original fd still open. It does not get sent to the
-process that currently holds a reference to the IB context.
-
-So while a struct file passed to another process might still have
-an active lease, and you can change the owner of the struct file
-via fcntl(F_SETOWN), you can't associate the existing lease with a
-the new fd in the new process and so layout break signals can't be
-directed at the lease fd....
-
-This really means that a lease can only be owned by a single process
-context - it can't be shared across multiple processes (so I was
-wrong about dup/pass as being a possible way of passing them)
-because there's only one process that can "own" a struct file, and
-that where signals are sent when the lease needs to be broken.
-
-So, fundamentally, if you want to pass a resource that pins a file
-layout between processes, both processes need to hold a layout lease
-on that file range. And that means exclusive leases and passing
-layouts between processes are fundamentally incompatible because you
-can't hold two exclusive leases on the same file range....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+					- Ted
