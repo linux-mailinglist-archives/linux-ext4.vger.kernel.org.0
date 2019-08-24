@@ -2,77 +2,205 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B82BB9BAEC
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2019 04:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B0C9BB57
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2019 05:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbfHXCjA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 23 Aug 2019 22:39:00 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45969 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725782AbfHXCjA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Aug 2019 22:39:00 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7O2cuv3014982
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Aug 2019 22:38:57 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 7984342049E; Fri, 23 Aug 2019 22:38:56 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, stable@vger.kernel.org
-Subject: [PATCH] ext4: fix punch hole for inline_data file systems
-Date:   Fri, 23 Aug 2019 22:38:51 -0400
-Message-Id: <20190824023851.30991-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.23.0
+        id S1726500AbfHXDSp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 23 Aug 2019 23:18:45 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45695 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726385AbfHXDSp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 23 Aug 2019 23:18:45 -0400
+Received: by mail-pg1-f196.google.com with SMTP id o13so6845810pgp.12
+        for <linux-ext4@vger.kernel.org>; Fri, 23 Aug 2019 20:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XDGdcSXIqyLF2qZ43wb756VbO6pNmebjNMnWc+tm5r4=;
+        b=vVkcS0BH1V3C7/yaOR0KizQZ/EGsGfBWmtOyOkj5sVrYjRJfkvjsaNZT240Pq7uTvl
+         LTWIq57t2cfCpi/xbmO7BvVlBJn93Y/u4o842j3+0pYPYXsBoTRq134I8cdJ+cc8puqV
+         b0LGAYW6aIYp3w0Nh5bdGHqxQu8ZJNFRowvmGorsZ9cgDYsXeIxtiMk5zLHbnRTZpZTl
+         gXUL+8BxPNtoZqvhimksXZUaGXSpfkPMLOiRw0B2CnfX2CP8ycJV4shtnR/+xqTXgtdt
+         h27KfT+YraZz+g+TbnRJtdJxQYFS9xsphKM6E15brPmLCpMQdCM8YunfEA04aj46i0ye
+         Sh7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XDGdcSXIqyLF2qZ43wb756VbO6pNmebjNMnWc+tm5r4=;
+        b=eQta7E3fcl45m87me2sDhel2fbjozvtmxzqzG2shBfy+BvM9AJkt9nKDxmcf9vSVv2
+         jFOaGT5SdNiLw2daNTXSl+MfEZo81sPWt5mxMWb3Yuk0M6Nnbg0ZGAF4TK4O1jIiXEiz
+         pEcKnB2WqVpH71Dff5LkQIIsferfQKXFmXXkSBLC0aTnrEP8dEWbF4cbSFnLZsHqbu5N
+         t4Ypki1Rfe6JOIwr1N6arqBll+NI7J1hMrj6UTyJNj87+l+dBwBFLm7lSQwqyF8aHlis
+         TkuJiZCGfpSPSetoKSG88mPgbNhuCClA8MvvDNqLS78vWd87XKoHtT7Lo3zOcloMHHXZ
+         o/1w==
+X-Gm-Message-State: APjAAAUVquCRH1Km4X/TtNkeXLStjGy2eZqy8rl9gsB/uZb+SVrJC9vo
+        rNr2OXetokfXh0bZP4J1kgHG
+X-Google-Smtp-Source: APXvYqwhKmqG0S7uZCKEa+SXvnIdTU5R2pSMzZyYYcUHuahJVlklR9GLTUg5uhWq/Fs0FkS1KV4D+w==
+X-Received: by 2002:a17:90a:d146:: with SMTP id t6mr8549240pjw.76.1566616719260;
+        Fri, 23 Aug 2019 20:18:39 -0700 (PDT)
+Received: from poseidon.bobrowski.net ([114.78.226.167])
+        by smtp.gmail.com with ESMTPSA id f63sm4695894pfa.144.2019.08.23.20.18.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Aug 2019 20:18:38 -0700 (PDT)
+Date:   Sat, 24 Aug 2019 13:18:31 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, aneesh.kumar@linux.ibm.com,
+        darrick.wong@oracle.com
+Subject: Re: [PATCH 0/5] ext4: direct IO via iomap infrastructure
+Message-ID: <20190824031830.GB2174@poseidon.bobrowski.net>
+References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
+ <20190812173150.AF04F5204F@d06av21.portsmouth.uk.ibm.com>
+ <20190813111004.GA12682@poseidon.bobrowski.net>
+ <20190813122723.AE6264C040@d06av22.portsmouth.uk.ibm.com>
+ <20190821131405.GC24417@poseidon.bobrowski.net>
+ <20190822120015.GA3330@poseidon.bobrowski.net>
+ <20190822141126.70A94A407B@d06av23.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190822141126.70A94A407B@d06av23.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If a program attempts to punch a hole on an inline data file, we need
-to convert it to a normal file first.
+On Thu, Aug 22, 2019 at 07:41:25PM +0530, Ritesh Harjani wrote:
+> 
+> 
+> On 8/22/19 5:30 PM, Matthew Bobrowski wrote:
+> > On Wed, Aug 21, 2019 at 11:14:07PM +1000, Matthew Bobrowski wrote:
+> > > On Tue, Aug 13, 2019 at 05:57:22PM +0530, RITESH HARJANI wrote:
+> > > > But what I meant was this (I may be wrong here since I haven't
+> > > > really looked into it), but for my understanding I would like to
+> > > > discuss this -
+> > > > 
+> > > > So earlier with this flag(EXT4_STATE_DIO_UNWRITTEN) we were determining on
+> > > > whether a newextent can be merged with ex1 in function
+> > > > ext4_extents_can_be_merged. But now since we have removed that flag we have
+> > > > no way of knowing that whether this inode has any unwritten extents or not
+> > > > from any DIO path.
+> > > > 
+> > > > What I meant is isn't this removal of setting/unsetting of
+> > > > flag(EXT4_STATE_DIO_UNWRITTEN) changing the behavior of this func -
+> > > > ext4_extents_can_be_merged?
+> > > 
+> > > OK, I'm stuck and looking for either clarity, revalidation of my
+> > > thought process, or any input on how to solve this problem for that
+> > > matter.
+> > > 
+> > > In the current ext4 direct IO implementation, the dynamic state flag
+> > > EXT4_STATE_DIO_UNWRITTEN is set/unset for synchronous direct IO
+> > > writes. On the other hand, the flag EXT4_IO_END_UNWRITTEN is set/unset
+> > > for ext4_io_end->flag, and the value of i_unwritten is
+> > > incremented/decremented for asynchronous direct IO writes. All
+> > > mechanisms by which are used to track and determine whether the inode,
+> > > or an IO in flight against a particular inode have any pending
+> > > unwritten extents that need to be converted after the IO has
+> > > completed. In addition to this, we have ext4_can_extents_be_merged()
+> > > performing explicit checks against both EXT4_STATE_DIO_UNWRITTEN and
+> > > i_unwritten and using them to determine whether it can or cannot merge
+> > > a requested extent into an existing extent.
+> > > 
+> > > This is all fine for the current direct IO implementation. However,
+> > > while switching the direct IO code paths over to make use of the iomap
+> > > infrastructure, I believe that we can no longer simply track whether
+> > > an inode has unwritten extents needing to be converted by simply
+> > > setting and checking the EXT4_STATE_DIO_UNWRITTEN flag on the
+> > > inode. The reason being is that there can be multiple direct IO
+> > > operations to unwritten extents running against the inode and we don't
+> > > particularly distinguish synchronous from asynchronous writes within
+> > > ext4_iomap_begin() as there's really no need. So, the only way to
+> > > accurately determine whether extent conversion is deemed necessary for
+> > > an IO operation whether it'd be synchronous or asynchronous is by
+> > > checking the IOMAP_DIO_UNWRITTEN flag within the ->end_io()
+> > > callback. I'm certain that this portion of the logic is correct, but
+> > > we're still left with some issues when it comes to the checks that I
+> > > previously mentioned in ext4_can_extents_be_merged(), which is the
+> > > part I need some input on.
+> > > 
+> > > I was doing some thinking and I don't believe that making use of the
+> > > EXT4_STATE_DIO_UNWRITTEN flag is the solution at all here. This is not
+> > > only for reasons that I've briefly mentioned above, but also because
+> > > of the fact that it'll probably lead to a lot of inaccurate judgements
+> > > while taking particular code paths and some really ugly code that
+> > > creeps close to the definition of insanity. Rather, what if we solve
+> > > this problem by continuing to just use i_unwritten to keep track of
+> > > all the direct IOs to unwritten against running against an inode?
+> > > Within ext4_iomap_begin() post successful creation of unwritten
+> > > extents we'd call atomic_inc(&EXT4_I(inode)->i_unwritten) and
+> > > subsequently within the ->end_io() callback whether we take the
+> > > success or error path we'd call
+> > > atomic_dec(&EXT4_I(inode)->i_unwritten) accordingly? This way we can
+> > > still rely on this value to be used in the check within
+> > > ext4_can_extents_be_merged(). Open for alternate suggestions if anyone
+> > > has any...
+> > 
+> > Actually, no...
+> > 
+> > I've done some more thinking and what I suggested above around the use
+> > of i_unwritten will also not work properly. Using iomap
+> > infrastructure, there is the possibility of calling into the
+> > ->iomap_begin() more than once for a single direct IO operation. This
+> > means that by the time we even get to decrementing i_unwritten in the
+> > ->end_io() callback after converting the unwritten extents we're
+> > already running the possibility of i_unwritten becoming unbalanced
+> > really quickly and staying that way. This also means that the
+> > statement checking i_unwritten in ext4_can_extents_be_merged() will be
+> > affected and potentially result in it being evaluated incorrectly. I
+> > was thinking that we could just decrement i_unwritten in
+> > ->iomap_end(), but that seems to me like it would be racy and also
+> > lead to incorrect results. At this point I'm out of ideas on how to
+> > solve this, so any other ideas would be appreciated!
+> 
+> I will let others also comment, if someone has any other better approach.
+> 
+> 1. One approach is to add the infrastructure in iomap with
+> iomap_dio->private which is filesystem specific pointer. This can be
+> updated by filesystem in ->iomap_begin call into iomap->private.
+> And in case of iomap_dio_rw, this iomap->private will be copied to
+> iomap_dio->private if not already set.
+> 
+> But I think this will eventually become hacky in the sense when you will
+> have to determine on whether the dio->private is already set or not when
+> iomap_apply will be called second time. It will become a problem with AIO
+> DIO in ext4 since we use i_unwritten which tells us whether there is any
+> unwritten extent but it does not tell whether this unwritten extent is due
+> to a DIRECT AIO DIO in progress or a buffered one.
+> 
+> So we can ignore this approach - unless you or someone else have some good
+> design ideas to build on top of above.
 
-This was detected using ext4/032 using the adv configuration.  Simple
-reproducer:
+I'm not sure whether _this_ is the solution or not, so let's maybe
+wait for others to comment. One thing that I and probably the iomap
+maintainers would like to avoid is adding any special case code to
+iomap infrastructure, if possible. I mean, from what you suggest it
+seems to be rather generic and not overly intrusive, although I know
+for a fact that iomap infrastructure exists because stuff like
+buffer_heads and the old direct IO code ended up accommodating so many
+different edge cases making it almost unmodifiable and unmaintainable.
 
-mke2fs -Fq -t ext4 -O inline_data /dev/vdc
-mount /vdc
-echo "" > /vdc/testfile
-xfs_io -c 'truncate 33554432' /vdc/testfile
-xfs_io -c 'fpunch 0 1048576' /vdc/testfile
-umount /vdc
-e2fsck -fy /dev/vdc
+> 2. Second approach which I was thinking is to track only those extents which
+> are marked unwritten and are under IO. This can be done in ext4_map_blocks.
+> This way we will not have to track a particular inode has any unwritten
+> extents or not, but it will be extent based.
+> Something similar was also done a while ago. Do you think this approach will
+> work in our case?
+> 
+> So with this extents will be scanned in extent status tree to see if any
+> among those are under IO and are unwritten in func
+> ext4_can_extents_be_merged.
+> 
+> https://patchwork.ozlabs.org/patch/1013837/
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/inode.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Maybe this would be a better approach and I think that it'd
+work. Based upon what I read within in that thread there weren't
+really any objections to the idea, although I can't see that it made
+it upstream, so I may be missing something?
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 2b1c58da8d1e..e567f0229d4e 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4236,6 +4236,15 @@ int ext4_punch_hole(struct inode *inode, loff_t offset, loff_t length)
- 
- 	trace_ext4_punch_hole(inode, offset, length, 0);
- 
-+	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-+	if (ext4_has_inline_data(inode)) {
-+		down_write(&EXT4_I(inode)->i_mmap_sem);
-+		ret = ext4_convert_inline_data(inode);
-+		up_write(&EXT4_I(inode)->i_mmap_sem);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/*
- 	 * Write out all dirty pages to avoid race conditions
- 	 * Then release them.
--- 
-2.23.0
-
+--M
