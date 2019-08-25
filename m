@@ -2,74 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 052679C169
-	for <lists+linux-ext4@lfdr.de>; Sun, 25 Aug 2019 05:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698819C16E
+	for <lists+linux-ext4@lfdr.de>; Sun, 25 Aug 2019 05:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728214AbfHYDZn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 24 Aug 2019 23:25:43 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38571 "EHLO
+        id S1728270AbfHYDkT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 24 Aug 2019 23:40:19 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42626 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727708AbfHYDZm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 24 Aug 2019 23:25:42 -0400
+        with ESMTP id S1728246AbfHYDkT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 24 Aug 2019 23:40:19 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7P3POUv029060
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7P3e1Ie031810
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 24 Aug 2019 23:25:25 -0400
+        Sat, 24 Aug 2019 23:40:02 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 7F19A42049E; Sat, 24 Aug 2019 23:25:24 -0400 (EDT)
-Date:   Sat, 24 Aug 2019 23:25:24 -0400
+        id 13FD842049E; Sat, 24 Aug 2019 23:40:01 -0400 (EDT)
+Date:   Sat, 24 Aug 2019 23:40:00 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Guo <guoyang2@huawei.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: [PATCH] ext4: change the type of ext4 cache stats to
- percpu_counter to improve performance
-Message-ID: <20190825032524.GD5163@mit.edu>
-Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Guo <guoyang2@huawei.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-References: <1566528454-13725-1-git-send-email-zhangshaokun@hisilicon.com>
+To:     "zhangyi (F)" <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, adilger.kernel@dilger.ca
+Subject: Re: [PATCH v5] ext4: fix potential use after free in system zone via
+ remount with noblock_validity
+Message-ID: <20190825034000.GE5163@mit.edu>
+References: <1565869639-105420-1-git-send-email-yi.zhang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1566528454-13725-1-git-send-email-zhangshaokun@hisilicon.com>
+In-Reply-To: <1565869639-105420-1-git-send-email-yi.zhang@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 10:47:34AM +0800, Shaokun Zhang wrote:
-> From: Yang Guo <guoyang2@huawei.com>
+On Thu, Aug 15, 2019 at 07:47:19PM +0800, zhangyi (F) wrote:
+> Remount process will release system zone which was allocated before if
+> "noblock_validity" is specified. If we mount an ext4 file system to two
+> mountpoints with default mount options, and then remount one of them
+> with "noblock_validity", it may trigger a use after free problem when
+> someone accessing the other one.
 > 
-> @es_stats_cache_hits and @es_stats_cache_misses are accessed frequently in
-> ext4_es_lookup_extent function, it would influence the ext4 read/write
-> performance in NUMA system.
-> Let's optimize it using percpu_counter, it is profitable for the
-> performance.
+>  # mount /dev/sda foo
+>  # mount /dev/sda bar
 > 
-> The test command is as below:
-> fio -name=randwrite -numjobs=8 -filename=/mnt/test1 -rw=randwrite
-> -ioengine=libaio -direct=1 -iodepth=64 -sync=0 -norandommap -group_reporting
-> -runtime=120 -time_based -bs=4k -size=5G
+> User access mountpoint "foo"   |   Remount mountpoint "bar"
+>                                |
+> ext4_map_blocks()              |   ext4_remount()
+> check_block_validity()         |   ext4_setup_system_zone()
+> ext4_data_block_valid()        |   ext4_release_system_zone()
+>                                |   free system_blks rb nodes
+> access system_blks rb nodes    |
+> trigger use after free         |
 > 
-> And the result is better 10% than the initial implement:
-> without the patch，IOPS=197k, BW=770MiB/s (808MB/s)(90.3GiB/120002msec)
-> with the patch,  IOPS=218k, BW=852MiB/s (894MB/s)(99.9GiB/120002msec)
+> This problem can also be reproduced by one mountpint, At the same time,
+> add_system_zone() can get called during remount as well so there can be
+> racing ext4_data_block_valid() reading the rbtree at the same time.
 > 
-> Cc: "Theodore Ts'o" <tytso@mit.edu>
-> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-> Signed-off-by: Yang Guo <guoyang2@huawei.com>
-> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+> This patch add RCU to protect system zone from releasing or building
+> when doing a remount which inverse current "noblock_validity" mount
+> option. It assign the rbtree after the whole tree was complete and
+> do actual freeing after rcu grace period, avoid any intermediate state.
+> 
+> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Applied with some adjustments so it would apply.  I also changed the patch summary to:
+Applied, thanks!
 
-    ext4: use percpu_counters for extent_status cache hits/misses
+I changed the patch summary to:
 
-    	      		      	  		- Ted
+    ext4: fix potential use after free after remounting with noblock_validity
+
+I also added:
+
+    Reported-by: syzbot+1e470567330b7ad711d5@syzkaller.appspotmail.com
+
+since this had been noted by Syzkaller:
+
+   https://syzkaller.appspot.com/bug?extid=1e470567330b7ad711d5
+
+Cheers,
+
+					- Ted
