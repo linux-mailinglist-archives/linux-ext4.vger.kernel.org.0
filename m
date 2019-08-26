@@ -2,212 +2,226 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4CD9C896
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 07:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CE49C8D9
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 07:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbfHZFHu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Aug 2019 01:07:50 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:45873 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbfHZFHu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Aug 2019 01:07:50 -0400
-Received: by mail-pl1-f196.google.com with SMTP id y8so9406735plr.12
-        for <linux-ext4@vger.kernel.org>; Sun, 25 Aug 2019 22:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=Xmihh81w3U6cpqDunTSNiKgrFgCkfaddfnQQPuPGejA=;
-        b=So4vBQD0JAeoZlB4H9X2AOzjC0xv6BV2XoiFf8YEI/uqdaZJJtyi6A0hFyHWpBvfJb
-         uZz0zUprYwxvGgSJuA5te3gRowIbI5dIYjhdBgInSkLrU4gbhwpeev1KWwHfJ0AjyFHU
-         oKIL2ZUpzF3M43hq0fmNkyUy9LxqG1mdzFqwl3LUa7kJg929KJPkF8rpdehjsoiN4la6
-         8+9R4jSbmrL6krsu4EFOob3/4bIsm2+Ay4JrvNaY+8yy5b0eQFBJ4dVUHpx/SZopwBYO
-         SBxp22PboTuJxmi8pZmgNJRsTmMNuIYz1+L3Uf8RTXn501cMxgZ8/wo2CdXgmf+wKfR6
-         y4xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=Xmihh81w3U6cpqDunTSNiKgrFgCkfaddfnQQPuPGejA=;
-        b=MSxDqZr4yZtxk02i5L+kH0H+66klROWa4kLC4yJevF/7KGyyFO7NN+Mt9N5hKeozm0
-         +PjZwDfilavoEBA2wBo8iDfzC9580K9fcDorEsugjbr2mwQRFnv3yBzrZNBd1Vw2hTAo
-         wSjgxSnaHGs20HCW2WzMlF8EDa+zvzKq6xwZnrmpTm5uWKtdOuJrZ3OD6Pib3JlBXRoF
-         cgggcHFyzG7K05+bmOrxfY7S/vkpd2h7aWGNwpBp/QwJbTpTwkb6XittuTfROWFu3gN4
-         51pyqvq+aeavH3w7iiOjugEndQPp07GRdWPDHsq2mPqBxWRmR/K2iIo32XwFru2R0SOg
-         cvNg==
-X-Gm-Message-State: APjAAAXObgj3ZBgAAedYJa2/VWu0M4wkMKaOscy36+b7CpfD9xUc08SG
-        Lb2k7YSi2vunubonlI1k1AVnAA==
-X-Google-Smtp-Source: APXvYqxmzVoebW/P178FKOomDFgkVVbD0MV/U44t0ix5irTWfBcOLIs6FlJs+8pMZcbVhmSDWHTBMw==
-X-Received: by 2002:a17:902:f096:: with SMTP id go22mr17561895plb.58.1566796069246;
-        Sun, 25 Aug 2019 22:07:49 -0700 (PDT)
-Received: from cabot.adilger.ext (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id s13sm5042568pfm.12.2019.08.25.22.07.48
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Aug 2019 22:07:48 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <7303B125-6C0E-41C2-A71E-4AF8C9776468@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_0C4A5CBD-E6D7-4AD4-A1DF-E72829DB7298";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: attempt to shrink directory on dentry removal
-Date:   Sun, 25 Aug 2019 23:07:46 -0600
-In-Reply-To: <20190821182740.97127-1-harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-References: <20190821182740.97127-1-harshadshirwadkar@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        id S1729314AbfHZF4S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Aug 2019 01:56:18 -0400
+Received: from mail-eopbgr750075.outbound.protection.outlook.com ([40.107.75.75]:49989
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727797AbfHZF4S (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 26 Aug 2019 01:56:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HsSlwuv5afJdrkX0YbvY2yHkhQma3jqFcfFC/wtbDNPWlmnfCCruj213q3VhPjye0h2w3cHYVdmAxL0f3zTtLmbN2/faCdN2OjRV9mchNMF7Tda3KHUp1xZbRCIx6pj78xHpoepjaT+Wnp6awaoJYpiZ3ck2QGxuwSX/gzkCU1nPyio6m9FReM/UTSfHJBIVeZhlAjAUmPBrNWnCZd0lZ3rfiVBaNWvSC0PoGew7ZyWuGCAsO64RqHrs/FTPdxQo7DCFJWVIg0R/Myo6s48LtqVqGW/59AxTzqBbXZAlPPnIIlB2ptwcX+47HvFmMn+lnxj5jHukFCxjEwMr2I0sng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fZ1oMMcw8mO9vV8w5hRRgzbaIrTnBzSQaCI0iNc3s4E=;
+ b=loXGuUXUPg1XtXRnVADn5UNyoIEJWWySTTjvuwbpFqzfykWVSUrKLS36pQ00xTqEuD0rwo6zO5YsgCvpVwiUeRSUBSUbobaZ+NROFWtuaahK5VV1MGbwfGERDXd64L8mv2s+CtSIsg213BUSGNCGQcvMzCScnLqhUOBbDX3BdV/EtpUPocZGVBJSgDhRMMLjDuVr1oK55XE16aDDO6nzo5iwHZlXBnRJikW90OSgBTbUCjRukxeA3Nm2QEsSswvIDOuFJFcMQh4R1nh3X39q84vfgKmmpZqrKI9pZCxtZbTVmKKByUNjA9iTIJkG4CRLAodIB+a15ZKHs9DJwmKGpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
+ header.d=ddn.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fZ1oMMcw8mO9vV8w5hRRgzbaIrTnBzSQaCI0iNc3s4E=;
+ b=aMPdFhIKk1BH33lJrm/V+n+Nql74vHstfEyZN19SBJJDB+osb2twTKtDSc0GzhV08uh6Yws6CfKE9Orwimlzrkt1dLgHn/DxPGuc9jcjJ6e9EfJR4+kY0+2NZQIalFOWiJWqcijI8i2fS+xVg9XD942AGKc0qJ3QTVC2VwVFh3o=
+Received: from BL0PR1901MB2004.namprd19.prod.outlook.com (52.132.24.157) by
+ BL0PR1901MB1985.namprd19.prod.outlook.com (52.132.22.31) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2178.16; Mon, 26 Aug 2019 05:53:34 +0000
+Received: from BL0PR1901MB2004.namprd19.prod.outlook.com
+ ([fe80::8106:5cf4:d22e:3737]) by BL0PR1901MB2004.namprd19.prod.outlook.com
+ ([fe80::8106:5cf4:d22e:3737%7]) with mapi id 15.20.2199.021; Mon, 26 Aug 2019
+ 05:53:34 +0000
+From:   Dongyang Li <dongyangli@ddn.com>
+To:     "adilger@dilger.ca" <adilger@dilger.ca>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] mke2fs: set overhead in super block for bigalloc
+Thread-Topic: [PATCH v2 4/4] mke2fs: set overhead in super block for bigalloc
+Thread-Index: AQHVWMNZPnxfhKjn7UWVswnRm8HqlKcMy2UAgAAoQwA=
+Date:   Mon, 26 Aug 2019 05:53:33 +0000
+Message-ID: <82090b26ca1b80e757048e0043d4489e5b3e6508.camel@ddn.com>
+References: <20190822082617.19180-1-dongyangli@ddn.com>
+         <20190822082617.19180-4-dongyangli@ddn.com>
+         <F25195AC-DF10-47E0-9445-074D47DACDB4@dilger.ca>
+In-Reply-To: <F25195AC-DF10-47E0-9445-074D47DACDB4@dilger.ca>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=dongyangli@ddn.com; 
+x-originating-ip: [220.233.193.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ad5c6e8f-8cde-40e9-508b-08d729e9bb30
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BL0PR1901MB1985;
+x-ms-traffictypediagnostic: BL0PR1901MB1985:
+x-microsoft-antispam-prvs: <BL0PR1901MB1985E5622E0D06F5070FFCC6CDA10@BL0PR1901MB1985.namprd19.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-forefront-prvs: 01415BB535
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39840400004)(376002)(366004)(136003)(396003)(346002)(199004)(189003)(86362001)(7736002)(14454004)(478600001)(118296001)(53936002)(66476007)(316002)(99286004)(66556008)(64756008)(66446008)(305945005)(66946007)(2351001)(76176011)(91956017)(5660300002)(76116006)(8936002)(11346002)(446003)(186003)(229853002)(2616005)(476003)(71200400001)(71190400001)(25786009)(486006)(53546011)(6506007)(26005)(14444005)(256004)(102836004)(6246003)(36756003)(4326008)(3846002)(6116002)(2501003)(81156014)(8676002)(1730700003)(81166006)(6916009)(6512007)(2906002)(6486002)(5640700003)(66066001)(6436002);DIR:OUT;SFP:1101;SCL:1;SRVR:BL0PR1901MB1985;H:BL0PR1901MB2004.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: ddn.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: VAqn3EfJrLg9Ot3hF+40CgdxDOj5FP+Z/fERF1dcb+6864tSPNHEAvh3/07c1GMiM+XT0fgaeJYNt+d4zFtTtop6qrXfmtkCM2DdO6CBCcmLRw+jvfT/ei6FFb0n+KBNaDBZ1YxjQCJQ7xraPGxGFKyLPu5JTmN20B2rFWh0R3YqeZ9X6wleHS3DKkEl551+Dc+iyVvMqnGII4/yR85hwqR6HjLwCy7Ua8+Urqhuy4/SWi981zOQ9iQqin9Y1oYCabzzamb4Im2az184aVVdIfJRtZDxxD2HG0o/upvM0MTnadZIGGYDXMXYwqmxy8n+KDW22nL9WZePqp7jFFTEuGoZKKKGu6OzFOR9ljN7hp8EZq6Jdj8xJpABiHF1J2Mt1zB7NkHiyCTT0banEzHsLHVYe+R9r73xIzLzFuwR8Mk=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D13C59A2439EF4478806183ED9C7BF8E@namprd19.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: ddn.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad5c6e8f-8cde-40e9-508b-08d729e9bb30
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2019 05:53:33.6951
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: njtqCL0P2pG1asHNeREi1UaEVnWc49fph4zf1pb7YGld46CV3FjgIWSFq9TwHQp+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR1901MB1985
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
---Apple-Mail=_0C4A5CBD-E6D7-4AD4-A1DF-E72829DB7298
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-On Aug 21, 2019, at 12:27 PM, Harshad Shirwadkar =
-<harshadshirwadkar@gmail.com> wrote:
->=20
-> On every dentry deletion, this patch traverses directory inode in
-> reverse direction and frees up empty dirent blocks until it finds a
-> non-empty dirent block. We leverage the fact that we never clear
-> dentry name when we delete dentrys by merging them with the previous
-> one. So, even though the dirent block has only fake dentry which spans
-> across the entire block, we can use the name in this dead entry to
-> perform dx lookup and find intermediate dx node blocks as well as
-> offset inside these blocks.
-
-
-One high-level limitation with this implementation is that it is =
-unlikely
-to remove any directory blocks until the directory is almost entirely
-empty since "rm -r" will return entries in hash order, which does not
-match the order that the leaf blocks are allocated in the file.  Even
-worse, if files in the directory are not deleted in hash order, no leaf
-block will be completely empty until about 99% of the files have been
-deleted - assume 24-byte filenames in 4096-byte blocks means up to 128
-entries per block, typically 3/4 full, or 1/96 entries will be left in
-each block before it becomes empty.
-
-One option that was discussed in the past is to use the high 4 bits
-of dx_entry->block (i.e. the opposite of dx_get_block()) to store the
-"fullness" of each block (in 1/16th of a block, or 256-byte increments
-for 4096-byte blocks) and try to merge entries into an adjacent block
-if it becomes mostly empty (e.g. if the current block plus the neighbour
-are below 50% full).  That allows removing blocks much earlier as the
-directory shrinks, rather than waiting until each block is completely
-empty.  A fullness of "0" would mean "unset", since we don't set it
-yet, and once this feature is available there would never be a block
-that is entirely empty.
-
-> As of now, we only support non-indexed directories and indexed
-> directories with no intermediate dx nodes. This technique can also be
-> used to remove intermediate dx nodes. But it needs a little more
-> interesting logic to make that happen since we don't store directory
-> entry name in intermediate nodes.
->=20
-> Ran kvm-xfstests smoke test-suite and verified that there are no
-> failures. Also, verified that when all the files are deleted in a
-> directory, directory shrinks to either 4k for non-indexed directories
-> or 8k for indexed directories with 1 level.
->=20
-> This patch is an improvement over previous patch that I sent out
-> earlier this month. So, if this patch looks alright, then we can drop
-> the other shrinking patch.
->=20
-
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
->=20
-> ---
-> This patch supersedes the other directory shrinking patch sent in Aug
-> 2019 ("ext4: shrink directory when last block is empty").
->=20
-> fs/ext4/namei.c | 176 ++++++++++++++++++++++++++++++++++++++++++++++++
-> 1 file changed, 176 insertions(+)
->=20
->=20
->=20
-> +static inline bool is_empty_dirent_block(struct inode *dir,
-> +					 struct buffer_head *bh)
-> +{
-> +	struct ext4_dir_entry_2 *de =3D (struct ext4_dir_entry_2 =
-*)bh->b_data;
-> +	int	csum_size =3D 0;
-> +
-> +	if (ext4_has_metadata_csum(dir->i_sb))
-> +		csum_size =3D sizeof(struct ext4_dir_entry_tail);
-> +
-> +	return ext4_rec_len_from_disk(de->rec_len, =
-dir->i_sb->s_blocksize) =3D=3D
-> +			dir->i_sb->s_blocksize - csum_size && de->inode =
-=3D=3D 0;
-> +}
-
-This may not always detect empty directory blocks properly, because
-ext4_generic_delete_entry() will only merge deleted entries with the
-previous entry.  It at least appears possible that if entries are not
-deleted in the proper order (e.g. in reverse of the order they are
-listed in the directory) there may be multiple empty entries in a block,
-and the above check will fail.
-
-Instead, this checks should walk all entries in a block and return false
-if any one of them has a non-zero de->inode.  In the common case there
-may be only a single entry, or the first entry will be used, so it
-should be fairly quick to decide that the block cannot be removed.
-
-Another option is to change ext4_generic_delete_entry() to also try
-to merge with the immediately following entry to ensure that an empty
-block always has rec_len of the full blocksize.  However, I think this
-is probably not a worthwhile effort since it would be better to support
-removing blocks that are partly empty rather than entirely empty.
-
-> @@ -2510,6 +2684,8 @@ static int ext4_delete_entry(handle_t *handle,
-> 	if (unlikely(err))
-> 		goto out;
->=20
-> +	ext4_try_dir_shrink(handle, dir);
-> +
-> 	return 0;
-
-I think it would be inefficient to try shrinking the directory after
-_every_ directory entry is removed.  Instead, there should be some
-way to determine here if ext4_generic_delete_entry() removed the last
-entry from the directory block, and only shrink in that case.
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_0C4A5CBD-E6D7-4AD4-A1DF-E72829DB7298
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl1jaSIACgkQcqXauRfM
-H+CADBAApQ0nfqCcRzZ8Aaf7XQJkO6erU/GZmdGCUdXByVyMuwYsUstGEXhM0vRT
-72iHl6lqg8HlJ9lZq+DchhRps6K3pES5H4pmYazwWogYmI/F1aGntizqMwPBvMhl
-ZyLFlfyTzc9GWQxvARe625DX7XPDaiCT7Ul5L5lXMJyMdn4AXhJw2wSEAg8eqW8q
-CIolld1Ifk0ACE2irFGXhaH2YRzC0gTdt8lbHUXCc6J7ZWOmjIYz9oXN0fHHeMvl
-dAcnBouTsEVUyUMDkhKrw889hMm1xL1GEsweOLbRCdFZExGnXJOoQ93heoRTl+Q+
-aoV87odYqxhb6JJic4P0uzGr/Y4vC1Buz7IbKVO1qd+7HvLK5MHEsJzOgQPp9exN
-H7VZ4uNtb8JFfiwGGMRFDOvajv2BRwGHlGLaN3BBXLIUIQpDlgmzJjkDBSdaUSmW
-xeXJtVGpCmZG7FCUw1v1B8anhXujXnInhsuixI6XIdgcxgc09YveLVPXVm8TANTi
-6psQ32Ams7ztzamTwwvIyAgkaPVuS3iqJWVHH0gIm8jdgVXOkwZhZ9P+4FLBg4bs
-0fNnRCteE0ryCCtVlbIef2kE+xIGEjgQSaB/Qo4KR7n6NNk57CDz4OoDTX8vVA6q
-YfBkLCqPwQoxjDrLm1MP5oB+724e8gWPOzWVOxGi6sqnPs/irBY=
-=AMXd
------END PGP SIGNATURE-----
-
---Apple-Mail=_0C4A5CBD-E6D7-4AD4-A1DF-E72829DB7298--
+T24gU3VuLCAyMDE5LTA4LTI1IGF0IDIxOjI5IC0wNjAwLCBBbmRyZWFzIERpbGdlciB3cm90ZToN
+Cj4gT24gQXVnIDIyLCAyMDE5LCBhdCAyOjI2IEFNLCBEb25neWFuZyBMaSA8ZG9uZ3lhbmdsaUBk
+ZG4uY29tPiB3cm90ZToNCj4gPiBJZiBvdmVyaGVhZCBpcyBub3QgcmVjb3JkZWQgaW4gdGhlIHN1
+cGVyIGJsb2NrLCBpdCBpcyBjYWN1bGF0ZWQNCj4gPiBkdXJpbmcgbW91bnQgaW4ga2VybmVsLCBm
+b3IgYmlnYWxsb2MgZmlsZSBzeXN0ZW1zIHRoZSBpdCB0YWtlcw0KPiA+IE8oZ3JvdXBzKioyKSBp
+biB0aW1lLg0KPiA+IEZvciBhIDFQQiBkZWl2Y2Ugd2l0aCAzMksgY2x1c3RlIHNpemUgaXQgdGFr
+ZXMgfjEyIG1pbnMgdG8NCj4gPiBtb3VudCwgd2l0aCBtb3N0IG9mIHRoZSB0aW1lIHNwZW50IG9u
+IGZpZ3VyaW5nIG91dCBvdmVyaGVhZC4NCj4gPiANCj4gPiBXaGlsZSB3ZSBjYW4gbm90IGltcHJv
+dmUgdGhlIG92ZXJoZWFkIGFsZ29yaXRobSBpbiBrZXJuZWwNCj4gPiBkdWUgdG8gdGhlIG5hdHVy
+ZSBvZiBiaWdhbGxvYywgd2UgY2FuIHdvcmsgb3V0IHRoZSBvdmVyaGVhZA0KPiA+IGR1cmluZyBt
+a2UyZnMgYW5kIHNldCBpdCBpbiB0aGUgc3VwZXIgYmxvY2ssIGF2b2lkaW5nIGNhbGN1bGF0aW5n
+DQo+ID4gaXQgZXZlcnkgdGltZSB3aGVuIGl0IG1vdW50cy4NCj4gDQo+IEl0IHdvdWxkIGFsc28g
+YmUgZ29vZCB0byBnZXQgYW4gZXh0NCBwYXRjaCB0byBzYXZlIHRoZSBjYWxjdWxhdGVkDQo+IG92
+ZXJoZWFkIHRvIHNfb3ZlcmhlYWRfY2x1c3RlcnMgaWYgdGhlIGtlcm5lbCBmaW5kcyBpdCB1bnNl
+dD8NCj4gVGhhdCBpc24ndCBhbnkgbGVzcyBhY2N1cmF0ZSB0aGFuIHJlY29tcHV0aW5nIGl0IGVh
+Y2ggdGltZSwgYW5kDQo+IGF2b2lkcyBleHRyYSBvdmVyaGVhZCBvbiBlYWNoIG1vdW50IGZvciBm
+aWxlc3lzdGVtcyB0aGF0IGRpZCBub3QNCj4gZ2V0IGl0IHNldCBhdCBta2UyZnMgdGltZS4NClNv
+dW5kcyBnb29kLCB3ZSBhbHNvIG5lZWQgdG8gdXBkYXRlIHRoZSBvdmVyaGVhZCB3aGVuIHJlc2l6
+ZSBoYXBwZW5zLg0KPiANCj4gPiBPdmVyaGVhZCBpcyBzX2ZpcnN0X2RhdGFfYmxvY2sgcGx1cyBp
+bnRlcm5hbCBqb3VybmFsIGJsb2NrcyBwbHVzDQo+ID4gdGhlIGJsb2NrIGFuZCBpbm9kZSBiaXRt
+YXBzLCBpbm9kZSB0YWJsZSwgc3VwZXIgYmxvY2sgYmFja3VwcyBhbmQNCj4gPiBncm91cCBkZXNj
+cmlwdG9yIGJsb2NrcyBmb3IgZXZlcnkgZ3JvdXAuIFRoaXMgcGF0Y2ggaW50cm9kdWNlcw0KPiA+
+IGV4dDJmc19jb3VudF91c2VkX2NsdXN0ZXJzKCksIHdoaWNoIGNhbGN1bGF0ZXMgdGhlIGNsdXN0
+ZXJzIHVzZWQNCj4gPiBpbiB0aGUgYmxvY2sgYml0bWFwIGZvciB0aGUgZ2l2ZW4gcmFuZ2UuDQo+
+ID4gDQo+ID4gV2hlbiBiYWQgYmxvY2tzIGFyZSBpbnZvbHZlZCwgaXQgZ2V0cyB0cmlja3kgYmVj
+YXVzZSB0aGUgYmxvY2tzDQo+ID4gY291bnRlZCBhcyBvdmVyaGVhZCBhbmQgdGhlIGJhZCBibG9j
+a3MgY2FuIGVuZCB1cCBpbiB0aGUgc2FtZQ0KPiA+IGFsbG9jYXRpb24gY2x1c3Rlci4NCj4gDQo+
+IE9uIHRoZSBvdGhlciBoYW5kLCB3b3VsZCBpdCBiZSB3cm9uZyBpZiB0aGUgYmFkIGJsb2NrcyBh
+cmUgc3RvcmVkDQo+IGluICJzX292ZXJoZWFkX2NsdXN0ZXJzIj8NCklNSE8gdGhlIGJhZCBibG9j
+a3MgYXJlIGNvbnNpZGVyZWQgYXMgdXNlZCBibG9ja3MsIG92ZXJoZWFkIGlzIHRoZQ0KZmlsZXN5
+c3RlbSBzdHJ1Y3R1cmVzLCBzbyB0aGV5IGFyZSBkaWZmZXJlbnQuDQpTb21lb25lIHBsZWFzZSBj
+b3JyZWN0IG1lIGlmIEknbSB3cm9uZywgY29uc2lkZXJpbmcgYmFkIGJsb2NrcyBhcw0Kb3Zlcmhl
+YWQgd2lsbCBtYWtlIHRoaXMgaGVhcHMgZWFzaWVyLg0KPiANCj4gPiBJbiB0aGlzIGNhc2Ugd2Ug
+d2lsbCB1bm1hcmsgdGhlIGJhZCBibG9ja3MgZnJvbQ0KPiA+IHRoZSBibG9jayBiaXRtYXAsIGNv
+dmVydCB0byBjbHVzdGVyIGJpdG1hcCBhbmQgZ2V0IHRoZSBvdmVyaGVhZCwNCj4gDQo+ICh0eXBv
+KSAiY29udmVydCINCj4gDQo+ID4gdGhlbiBtYXJrIHRoZSBiYWQgYmxvY2tzIGJhY2sgaW4gdGhl
+IGNsdXN0ZXIgYml0bWFwLg0KPiANCj4gSW4gdGhpcyBjYXNlLCBzaG91bGQgdGhlIGJhZCBibG9j
+ayBudW1iZXJzIGJlIGNvbnZlcnRlZCB0bw0KPiBjbHVzdGVycyBkdXJpbmcgdGhlIHNlY29uZCBp
+dGVyYXRpb24/DQpleHQyZnNfbWFya19nZW5lcmljX2JtYXAoKSB3aWxsIGRvIHRoYXQgZm9yIHVz
+Lg0KPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBMaSBEb25neWFuZyA8ZG9uZ3lhbmdsaUBkZG4uY29t
+Pg0KPiA+IC0tLQ0KPiA+IGxpYi9leHQyZnMvZXh0MmZzLmggICAgICAgfCAgMiArKw0KPiA+IGxp
+Yi9leHQyZnMvZ2VuX2JpdG1hcDY0LmMgfCAzNSArKysrKysrKysrKysrKysrKysrKysrKysrKysN
+Cj4gPiBtaXNjL21rZTJmcy5jICAgICAgICAgICAgIHwgNTANCj4gPiArKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKy0NCj4gPiAzIGZpbGVzIGNoYW5nZWQsIDg2IGluc2VydGlv
+bnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvbGliL2V4dDJmcy9l
+eHQyZnMuaCBiL2xpYi9leHQyZnMvZXh0MmZzLmgNCj4gPiBpbmRleCA1OWZkOTc0Mi4uYThkZGI5
+ZTQgMTAwNjQ0DQo+ID4gLS0tIGEvbGliL2V4dDJmcy9leHQyZnMuaA0KPiA+ICsrKyBiL2xpYi9l
+eHQyZnMvZXh0MmZzLmgNCj4gPiBAQCAtMTQzNyw2ICsxNDM3LDggQEAgZXJyY29kZV90DQo+ID4g
+ZXh0MmZzX3NldF9nZW5lcmljX2JtYXBfcmFuZ2UoZXh0MmZzX2dlbmVyaWNfYml0bWFwIGJtYXAs
+DQo+ID4gCQkJCQl2b2lkICppbik7DQo+ID4gZXJyY29kZV90IGV4dDJmc19jb252ZXJ0X3N1YmNs
+dXN0ZXJfYml0bWFwKGV4dDJfZmlsc3lzIGZzLA0KPiA+IAkJCQkJICAgZXh0MmZzX2Jsb2NrX2Jp
+dG1hcA0KPiA+ICpiaXRtYXApOw0KPiA+ICtlcnJjb2RlX3QgZXh0MmZzX2NvdW50X3VzZWRfY2x1
+c3RlcnMoZXh0Ml9maWxzeXMgZnMsIGJsazY0X3QNCj4gPiBzdGFydCwNCj4gPiArCQkJCSAgICAg
+YmxrNjRfdCBlbmQsIGJsazY0X3QgKm91dCk7DQo+ID4gDQo+ID4gLyogZ2V0X251bV9kaXJzLmMg
+Ki8NCj4gPiBleHRlcm4gZXJyY29kZV90IGV4dDJmc19nZXRfbnVtX2RpcnMoZXh0Ml9maWxzeXMg
+ZnMsIGV4dDJfaW5vX3QNCj4gPiAqcmV0X251bV9kaXJzKTsNCj4gPiBkaWZmIC0tZ2l0IGEvbGli
+L2V4dDJmcy9nZW5fYml0bWFwNjQuYyBiL2xpYi9leHQyZnMvZ2VuX2JpdG1hcDY0LmMNCj4gPiBp
+bmRleCBmMWRkMTg5MS4uYjIzNzA2NjcgMTAwNjQ0DQo+ID4gLS0tIGEvbGliL2V4dDJmcy9nZW5f
+Yml0bWFwNjQuYw0KPiA+ICsrKyBiL2xpYi9leHQyZnMvZ2VuX2JpdG1hcDY0LmMNCj4gPiBAQCAt
+OTQwLDMgKzk0MCwzOCBAQCBlcnJjb2RlX3QNCj4gPiBleHQyZnNfZmluZF9maXJzdF9zZXRfZ2Vu
+ZXJpY19ibWFwKGV4dDJmc19nZW5lcmljX2JpdG1hcCBiaXRtYXAsDQo+ID4gDQo+ID4gCXJldHVy
+biBFTk9FTlQ7DQo+ID4gfQ0KPiA+ICsNCj4gPiArZXJyY29kZV90IGV4dDJmc19jb3VudF91c2Vk
+X2NsdXN0ZXJzKGV4dDJfZmlsc3lzIGZzLCBibGs2NF90DQo+ID4gc3RhcnQsDQo+ID4gKwkJCQkg
+ICAgIGJsazY0X3QgZW5kLCBibGs2NF90ICpvdXQpDQo+ID4gK3sNCj4gPiArCWJsazY0X3QJCW5l
+eHQ7DQo+ID4gKwlibGs2NF90CQl0b3Rfc2V0ID0gMDsNCj4gPiArCWVycmNvZGVfdAlyZXR2YWw7
+DQo+ID4gKw0KPiA+ICsJd2hpbGUgKHN0YXJ0IDwgZW5kKSB7DQo+ID4gKwkJcmV0dmFsID0gZXh0
+MmZzX2ZpbmRfZmlyc3Rfc2V0X2Jsb2NrX2JpdG1hcDIoZnMtDQo+ID4gPmJsb2NrX21hcCwNCj4g
+PiArCQkJCQkJCXN0YXJ0LCBlbmQsDQo+ID4gJm5leHQpOw0KPiA+ICsJCWlmIChyZXR2YWwpIHsN
+Cj4gPiArCQkJaWYgKHJldHZhbCA9PSBFTk9FTlQpDQo+ID4gKwkJCQlyZXR2YWwgPSAwOw0KPiA+
+ICsJCQlicmVhazsNCj4gPiArCQl9DQo+ID4gKwkJc3RhcnQgPSBuZXh0Ow0KPiA+ICsNCj4gPiAr
+CQlyZXR2YWwgPSBleHQyZnNfZmluZF9maXJzdF96ZXJvX2Jsb2NrX2JpdG1hcDIoZnMtDQo+ID4g
+PmJsb2NrX21hcCwNCj4gPiArCQkJCQkJCXN0YXJ0LCBlbmQsDQo+ID4gJm5leHQpOw0KPiA+ICsJ
+CWlmIChyZXR2YWwgPT0gMCkgew0KPiA+ICsJCQl0b3Rfc2V0ICs9IG5leHQgLSBzdGFydDsNCj4g
+PiArCQkJc3RhcnQgID0gbmV4dCArIDE7DQo+ID4gKwkJfSBlbHNlIGlmIChyZXR2YWwgPT0gRU5P
+RU5UKSB7DQo+ID4gKwkJCXJldHZhbCA9IDA7DQo+ID4gKwkJCXRvdF9zZXQgKz0gZW5kIC0gc3Rh
+cnQgKyAxOw0KPiA+ICsJCQlicmVhazsNCj4gPiArCQl9IGVsc2UNCj4gPiArCQkJYnJlYWs7DQo+
+ID4gKwl9DQo+ID4gKw0KPiA+ICsJaWYgKCFyZXR2YWwpDQo+ID4gKwkJKm91dCA9IEVYVDJGU19O
+VU1fQjJDKGZzLCB0b3Rfc2V0KTsNCj4gPiArCXJldHVybiByZXR2YWw7DQo+ID4gK30NCj4gPiBk
+aWZmIC0tZ2l0IGEvbWlzYy9ta2UyZnMuYyBiL21pc2MvbWtlMmZzLmMNCj4gPiBpbmRleCAzMGUz
+NTNkMy4uMTkyOGM5YmYgMTAwNjQ0DQo+ID4gLS0tIGEvbWlzYy9ta2UyZnMuYw0KPiA+ICsrKyBi
+L21pc2MvbWtlMmZzLmMNCj4gPiBAQCAtMjkxMiw2ICsyOTEyLDggQEAgaW50IG1haW4gKGludCBh
+cmdjLCBjaGFyICphcmd2W10pDQo+ID4gCWVycmNvZGVfdAlyZXR2YWwgPSAwOw0KPiA+IAlleHQy
+X2ZpbHN5cwlmczsNCj4gPiAJYmFkYmxvY2tzX2xpc3QJYmJfbGlzdCA9IDA7DQo+ID4gKwliYWRi
+bG9ja3NfaXRlcmF0ZQliYl9pdGVyOw0KPiA+ICsJYmxrX3QJCWJsazsNCj4gPiAJdW5zaWduZWQg
+aW50CWpvdXJuYWxfYmxvY2tzID0gMDsNCj4gPiAJdW5zaWduZWQgaW50CWksIGNoZWNraW50ZXJ2
+YWw7DQo+ID4gCWludAkJbWF4X21udF9jb3VudDsNCj4gPiBAQCAtMjkyMiw2ICsyOTI0LDcgQEAg
+aW50IG1haW4gKGludCBhcmdjLCBjaGFyICphcmd2W10pDQo+ID4gCWNoYXIJCW9wdF9zdHJpbmdb
+NDBdOw0KPiA+IAljaGFyCQkqaGFzaF9hbGdfc3RyOw0KPiA+IAlpbnQJCWl0YWJsZV96ZXJvZWQg
+PSAwOw0KPiA+ICsJYmxrNjRfdAkJb3ZlcmhlYWQ7DQo+ID4gDQo+ID4gI2lmZGVmIEVOQUJMRV9O
+TFMNCj4gPiAJc2V0bG9jYWxlKExDX01FU1NBR0VTLCAiIik7DQo+ID4gQEAgLTMyMTMsNiArMzIx
+NiwyMyBAQCBpbnQgbWFpbiAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkNCj4gPiAJaWYgKCFxdWll
+dCkNCj4gPiAJCXByaW50ZigiJXMiLCBfKCJkb25lICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IFxuIikpOw0KPiA+IA0KPiA+ICsJLyoNCj4gPiArCSAqIFVubWFyayBiYWQgYmxvY2tzIHRvIGNh
+bGN1bGF0ZSBvdmVyaGVhZCwgYmVjYXVzZSBtZXRhZGF0YQ0KPiA+ICsgCSAqIGJsb2NrcyBhbmQg
+YmFkIGJsb2NrcyBjYW4gbGFuZCBvbiB0aGUgc2FtZSBhbGxvY2F0aW9uDQo+ID4gY2x1c3Rlci4N
+Cj4gPiArIAkgKi8NCj4gPiArCWlmIChiYl9saXN0KSB7DQo+ID4gKwkJcmV0dmFsID0gZXh0MmZz
+X2JhZGJsb2Nrc19saXN0X2l0ZXJhdGVfYmVnaW4oYmJfbGlzdCwNCj4gPiArCQkJCQkJCSAgICAg
+JmJiX2l0ZXIpOw0KPiA+ICsJCWlmIChyZXR2YWwpIHsNCj4gPiArCQkJY29tX2VycigiZXh0MmZz
+X2JhZGJsb2Nrc19saXN0X2l0ZXJhdGVfYmVnaW4iLA0KPiA+IHJldHZhbCwNCj4gPiArCQkJCSIl
+cyIsIF8oIndoaWxlIHVubWFya2luZyBiYWQgYmxvY2tzIikpOw0KPiA+ICsJCQlleGl0KDEpOw0K
+PiA+ICsJCX0NCj4gPiArCQl3aGlsZSAoZXh0MmZzX2JhZGJsb2Nrc19saXN0X2l0ZXJhdGUoYmJf
+aXRlciwgJmJsaykpDQo+ID4gKwkJCWV4dDJmc191bm1hcmtfYmxvY2tfYml0bWFwMihmcy0+Ymxv
+Y2tfbWFwLA0KPiA+IGJsayk7DQo+ID4gKwkJZXh0MmZzX2JhZGJsb2Nrc19saXN0X2l0ZXJhdGVf
+ZW5kKGJiX2l0ZXIpOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiAJcmV0dmFsID0gZXh0MmZzX2NvbnZl
+cnRfc3ViY2x1c3Rlcl9iaXRtYXAoZnMsICZmcy0+YmxvY2tfbWFwKTsNCj4gPiAJaWYgKHJldHZh
+bCkgew0KPiA+IAkJY29tX2Vycihwcm9ncmFtX25hbWUsIHJldHZhbCwgIiVzIiwNCj4gPiBAQCAt
+MzIyMCw2ICszMjQwLDI4IEBAIGludCBtYWluIChpbnQgYXJnYywgY2hhciAqYXJndltdKQ0KPiA+
+IAkJZXhpdCgxKTsNCj4gPiAJfQ0KPiA+IA0KPiA+ICsJcmV0dmFsID0gZXh0MmZzX2NvdW50X3Vz
+ZWRfY2x1c3RlcnMoZnMsIGZzLT5zdXBlci0NCj4gPiA+c19maXJzdF9kYXRhX2Jsb2NrLA0KPiA+
+ICsJCQkJCWV4dDJmc19ibG9ja3NfY291bnQoZnMtPnN1cGVyKQ0KPiA+IC0gMSwNCj4gPiArCQkJ
+CQkmb3ZlcmhlYWQpOw0KPiA+ICsJaWYgKHJldHZhbCkgew0KPiA+ICsJCWNvbV9lcnIocHJvZ3Jh
+bV9uYW1lLCByZXR2YWwsICIlcyIsDQo+ID4gKwkJCV8oIndoaWxlIGNhbGN1bGF0aW5nIG92ZXJo
+ZWFkIikpOw0KPiA+ICsJCWV4aXQoMSk7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJaWYgKGJiX2xp
+c3QpIHsNCj4gPiArCQlyZXR2YWwgPSBleHQyZnNfYmFkYmxvY2tzX2xpc3RfaXRlcmF0ZV9iZWdp
+bihiYl9saXN0LA0KPiA+ICsJCQkJCQkJICAgICAmYmJfaXRlcik7DQo+ID4gKwkJaWYgKHJldHZh
+bCkgew0KPiA+ICsJCQljb21fZXJyKCJleHQyZnNfYmFkYmxvY2tzX2xpc3RfaXRlcmF0ZV9iZWdp
+biIsDQo+ID4gcmV0dmFsLA0KPiA+ICsJCQkJIiVzIiwgXygid2hpbGUgbWFya2luZyBiYWQgYmxv
+Y2tzIGFzDQo+ID4gdXNlZCIpKTsNCj4gPiArCQkJZXhpdCgxKTsNCj4gPiArCQl9DQo+ID4gKwkJ
+d2hpbGUgKGV4dDJmc19iYWRibG9ja3NfbGlzdF9pdGVyYXRlKGJiX2l0ZXIsICZibGspKQ0KPiA+
+ICsJCQlleHQyZnNfbWFya19ibG9ja19iaXRtYXAyKGZzLT5ibG9ja19tYXAsIGJsayk7DQo+ID4g
+KwkJZXh0MmZzX2JhZGJsb2Nrc19saXN0X2l0ZXJhdGVfZW5kKGJiX2l0ZXIpOw0KPiA+ICsJfQ0K
+PiA+ICsNCj4gPiAJaWYgKHN1cGVyX29ubHkpIHsNCj4gPiAJCWNoZWNrX3BsYXVzaWJpbGl0eShk
+ZXZpY2VfbmFtZSwgQ0hFQ0tfRlNfRVhJU1QsIE5VTEwpOw0KPiA+IAkJcHJpbnRmKF8oIiVzIG1h
+eSBiZSBmdXJ0aGVyIGNvcnJ1cHRlZCBieSBzdXBlcmJsb2NrDQo+ID4gcmV3cml0ZVxuIiksDQo+
+ID4gQEAgLTMzMTcsNiArMzM1OSw3IEBAIGludCBtYWluIChpbnQgYXJnYywgY2hhciAqYXJndltd
+KQ0KPiA+IAkJZnJlZShqb3VybmFsX2RldmljZSk7DQo+ID4gCX0gZWxzZSBpZiAoKGpvdXJuYWxf
+c2l6ZSkgfHwNCj4gPiAJCSAgIGV4dDJmc19oYXNfZmVhdHVyZV9qb3VybmFsKCZmc19wYXJhbSkp
+IHsNCj4gPiArCQlvdmVyaGVhZCArPSBFWFQyRlNfTlVNX0IyQyhmcywgam91cm5hbF9ibG9ja3Mp
+Ow0KPiA+IAkJaWYgKHN1cGVyX29ubHkpIHsNCj4gPiAJCQlwcmludGYoIiVzIiwgXygiU2tpcHBp
+bmcgam91cm5hbCBjcmVhdGlvbiBpbg0KPiA+IHN1cGVyLW9ubHkgbW9kZVxuIikpOw0KPiA+IAkJ
+CWZzLT5zdXBlci0+c19qb3VybmFsX2ludW0gPSBFWFQyX0pPVVJOQUxfSU5POw0KPiA+IEBAIC0z
+MzU5LDggKzM0MDIsMTMgQEAgbm9fam91cm5hbDoNCj4gPiAJCQkgICAgICAgZnMtPnN1cGVyLT5z
+X21tcF91cGRhdGVfaW50ZXJ2YWwpOw0KPiA+IAl9DQo+ID4gDQo+ID4gLQlpZiAoZXh0MmZzX2hh
+c19mZWF0dXJlX2JpZ2FsbG9jKCZmc19wYXJhbSkpDQo+ID4gKwlvdmVyaGVhZCArPSBmcy0+c3Vw
+ZXItPnNfZmlyc3RfZGF0YV9ibG9jazsNCj4gPiArDQo+ID4gKwlpZiAoZXh0MmZzX2hhc19mZWF0
+dXJlX2JpZ2FsbG9jKCZmc19wYXJhbSkpIHsNCj4gPiArCQlpZiAoIXN1cGVyX29ubHkpDQo+ID4g
+KwkJCWZzLT5zdXBlci0+c19vdmVyaGVhZF9jbHVzdGVycyA9IG92ZXJoZWFkOw0KPiA+IAkJZml4
+X2NsdXN0ZXJfYmdfY291bnRzKGZzKTsNCj4gPiArCX0NCj4gDQo+IFNob3VsZCB3ZSBjb25zaWRl
+ciB0byBhbHdheXMgc3RvcmUgdGhlIG92ZXJoZWFkIHZhbHVlIGludG8gdGhlDQo+IHN1cGVyYmxv
+Y2ssDQo+IHJlZ2FyZGxlc3Mgb2Ygd2hldGhlciBiaWdhbGxvYyBpcyBlbmFibGVkIG9yIG5vdD8N
+Cj4gDQo+IENoZWVycywgQW5kcmVhcw0KPiANCj4gDQo+IA0KPiANCj4gDQo=
