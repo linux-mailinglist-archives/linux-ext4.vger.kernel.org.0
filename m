@@ -2,174 +2,191 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D4D9C8D0
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 07:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B429CB51
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 10:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729216AbfHZFzV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Aug 2019 01:55:21 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:36676 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725806AbfHZFzV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 26 Aug 2019 01:55:21 -0400
-Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 1199A43F692;
-        Mon, 26 Aug 2019 15:55:12 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1i27yA-0002Rg-EJ; Mon, 26 Aug 2019 15:55:10 +1000
-Date:   Mon, 26 Aug 2019 15:55:10 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190826055510.GL1119@dread.disaster.area>
-References: <20190820115515.GA29246@ziepe.ca>
- <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
- <20190821181343.GH8653@ziepe.ca>
- <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
- <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
- <20190823032345.GG1119@dread.disaster.area>
- <20190823120428.GA12968@ziepe.ca>
- <20190824001124.GI1119@dread.disaster.area>
- <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
+        id S1730400AbfHZINI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Aug 2019 04:13:08 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5212 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729535AbfHZINI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 26 Aug 2019 04:13:08 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 60D501EF688B42FADD9F;
+        Mon, 26 Aug 2019 16:13:02 +0800 (CST)
+Received: from [127.0.0.1] (10.74.221.148) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.439.0; Mon, 26 Aug 2019
+ 16:12:51 +0800
+Subject: Re: [PATCH] ext4: change the type of ext4 cache stats to
+ percpu_counter to improve performance
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Yang Guo <guoyang2@huawei.com>,
+        "Andreas Dilger" <adilger.kernel@dilger.ca>
+References: <1566528454-13725-1-git-send-email-zhangshaokun@hisilicon.com>
+ <20190825032524.GD5163@mit.edu> <20190825172803.GA9505@sol.localdomain>
+From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
+Message-ID: <98d6d036-e4cd-9dc1-9238-aa170b89eeec@hisilicon.com>
+Date:   Mon, 26 Aug 2019 16:12:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
-        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=7-415B0cAAAA:8 a=l-5HZ6ThFU8XlB48y_YA:9 a=qRlaua0cGjGJrKa9:21
-        a=OEwtXWmnxFRK9C0v:21 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20190825172803.GA9505@sol.localdomain>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.74.221.148]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 10:08:36PM -0700, Ira Weiny wrote:
-> On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
-> > On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
-> > > On Fri, Aug 23, 2019 at 01:23:45PM +1000, Dave Chinner wrote:
-> > > 
-> > > > > But the fact that RDMA, and potentially others, can "pass the
-> > > > > pins" to other processes is something I spent a lot of time trying to work out.
-> > > > 
-> > > > There's nothing in file layout lease architecture that says you
-> > > > can't "pass the pins" to another process.  All the file layout lease
-> > > > requirements say is that if you are going to pass a resource for
-> > > > which the layout lease guarantees access for to another process,
-> > > > then the destination process already have a valid, active layout
-> > > > lease that covers the range of the pins being passed to it via the
-> > > > RDMA handle.
-> > > 
-> > > How would the kernel detect and enforce this? There are many ways to
-> > > pass a FD.
-> > 
-> > AFAIC, that's not really a kernel problem. It's more of an
-> > application design constraint than anything else. i.e. if the app
-> > passes the IB context to another process without a lease, then the
-> > original process is still responsible for recalling the lease and
-> > has to tell that other process to release the IB handle and it's
-> > resources.
-> > 
-> > > IMHO it is wrong to try and create a model where the file lease exists
-> > > independently from the kernel object relying on it. In other words the
-> > > IB MR object itself should hold a reference to the lease it relies
-> > > upon to function properly.
-> > 
-> > That still doesn't work. Leases are not individually trackable or
-> > reference counted objects objects - they are attached to a struct
-> > file bUt, in reality, they are far more restricted than a struct
-> > file.
-> > 
-> > That is, a lease specifically tracks the pid and the _open fd_ it
-> > was obtained for, so it is essentially owned by a specific process
-> > context.  Hence a lease is not able to be passed to a separate
-> > process context and have it still work correctly for lease break
-> > notifications.  i.e. the layout break signal gets delivered to
-> > original process that created the struct file, if it still exists
-> > and has the original fd still open. It does not get sent to the
-> > process that currently holds a reference to the IB context.
-> >
+Hi Eric,
+
+On 2019/8/26 1:28, Eric Biggers wrote:
+> On Sat, Aug 24, 2019 at 11:25:24PM -0400, Theodore Y. Ts'o wrote:
+>> On Fri, Aug 23, 2019 at 10:47:34AM +0800, Shaokun Zhang wrote:
+>>> From: Yang Guo <guoyang2@huawei.com>
+>>>
+>>> @es_stats_cache_hits and @es_stats_cache_misses are accessed frequently in
+>>> ext4_es_lookup_extent function, it would influence the ext4 read/write
+>>> performance in NUMA system.
+>>> Let's optimize it using percpu_counter, it is profitable for the
+>>> performance.
+>>>
+>>> The test command is as below:
+>>> fio -name=randwrite -numjobs=8 -filename=/mnt/test1 -rw=randwrite
+>>> -ioengine=libaio -direct=1 -iodepth=64 -sync=0 -norandommap -group_reporting
+>>> -runtime=120 -time_based -bs=4k -size=5G
+>>>
+>>> And the result is better 10% than the initial implement:
+>>> without the patch，IOPS=197k, BW=770MiB/s (808MB/s)(90.3GiB/120002msec)
+>>> with the patch,  IOPS=218k, BW=852MiB/s (894MB/s)(99.9GiB/120002msec)
+>>>
+>>> Cc: "Theodore Ts'o" <tytso@mit.edu>
+>>> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+>>> Signed-off-by: Yang Guo <guoyang2@huawei.com>
+>>> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+>>
+>> Applied with some adjustments so it would apply.  I also changed the patch summary to:
+>>
+>>     ext4: use percpu_counters for extent_status cache hits/misses
+>>
+>>     	      		      	  		- Ted
 > 
-> The fcntl man page says:
+> This patch is causing the following.  Probably because there's no calls to
+> percpu_counter_destroy() for the new counters?
 > 
-> "Leases are associated with an open file description (see open(2)).  This means
-> that duplicate file descriptors (created by, for example, fork(2) or dup(2))
-> refer to the same lease, and this lease may be modified or released using any
-> of these descriptors.  Furthermore,  the lease is released by either an
-> explicit F_UNLCK operation on any of these duplicate file descriptors, or when
-> all such file descriptors have been closed."
 
-Right, the lease is attached to the struct file, so it follows
-where-ever the struct file goes. That doesn't mean it's actually
-useful when the struct file is duplicated and/or passed to another
-process. :/
+Apologies, We missed it and let's fix it soon.
 
-AFAICT, the problem is that when we take another reference to the
-struct file, or when the struct file is passed to a different
-process, nothing updates the lease or lease state attached to that
-struct file.
+Thanks,
+Shaokun
 
-> From this I took it that the child process FD would have the lease as well
-> _and_ could release it.  I _assumed_ that applied to SCM_RIGHTS but it does not
-> seem to work the same way as dup() so I'm not so sure.
+> ==================================================================
+> BUG: KASAN: use-after-free in __list_del_entry_valid+0x168/0x180 lib/list_debug.c:51
+> Read of size 8 at addr ffff888063168fa8 by task umount/611
+> 
+> CPU: 1 PID: 611 Comm: umount Not tainted 5.3.0-rc4-00015-gcc08b68e62ec #6
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-20181126_142135-anatol 04/01/2014
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x86/0xca lib/dump_stack.c:113
+>  print_address_description+0x6e/0x2e7 mm/kasan/report.c:351
+>  __kasan_report.cold+0x1b/0x35 mm/kasan/report.c:482
+>  kasan_report+0x12/0x17 mm/kasan/common.c:612
+>  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
+>  __list_del_entry_valid+0x168/0x180 lib/list_debug.c:51
+>  __list_del_entry include/linux/list.h:131 [inline]
+>  list_del include/linux/list.h:139 [inline]
+>  percpu_counter_destroy+0x5d/0x230 lib/percpu_counter.c:157
+>  ext4_put_super+0x319/0xbb0 fs/ext4/super.c:1010
+>  generic_shutdown_super+0x128/0x320 fs/super.c:458
+>  kill_block_super+0x97/0xe0 fs/super.c:1310
+>  deactivate_locked_super+0x7b/0xd0 fs/super.c:331
+>  deactivate_super+0x138/0x150 fs/super.c:362
+>  cleanup_mnt+0x298/0x3f0 fs/namespace.c:1102
+>  __cleanup_mnt+0xd/0x10 fs/namespace.c:1109
+>  task_work_run+0x103/0x180 kernel/task_work.c:113
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_usermode_loop+0x10b/0x130 arch/x86/entry/common.c:163
+>  prepare_exit_to_usermode arch/x86/entry/common.c:194 [inline]
+>  syscall_return_slowpath arch/x86/entry/common.c:274 [inline]
+>  do_syscall_64+0x343/0x450 arch/x86/entry/common.c:299
+>  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> RIP: 0033:0x7f7caed23d77
+> Code: 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 8
+> RSP: 002b:00007ffe960e7c98 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+> RAX: 0000000000000000 RBX: 0000560c039e1060 RCX: 00007f7caed23d77
+> RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000560c039e3c90
+> RBP: 0000560c039e3c90 R08: 0000560c039e2ec0 R09: 0000000000000014
+> R10: 00000000000006b4 R11: 0000000000000246 R12: 00007f7caf225e64
+> R13: 0000000000000000 R14: 0000560c039e1240 R15: 00007ffe960e7f20
+> 
+> Allocated by task 596:
+>  save_stack mm/kasan/common.c:69 [inline]
+>  set_track mm/kasan/common.c:77 [inline]
+>  __kasan_kmalloc.part.0+0x41/0xb0 mm/kasan/common.c:487
+>  __kasan_kmalloc.constprop.0+0xba/0xc0 mm/kasan/common.c:468
+>  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:501
+>  kmem_cache_alloc_trace+0x11e/0x2e0 mm/slab.c:3550
+>  kmalloc include/linux/slab.h:552 [inline]
+>  kzalloc include/linux/slab.h:748 [inline]
+>  ext4_fill_super+0x111/0x80a0 fs/ext4/super.c:3610
+>  mount_bdev+0x286/0x350 fs/super.c:1283
+>  ext4_mount+0x10/0x20 fs/ext4/super.c:6007
+>  legacy_get_tree+0x101/0x1f0 fs/fs_context.c:661
+>  vfs_get_tree+0x86/0x2e0 fs/super.c:1413
+>  do_new_mount fs/namespace.c:2791 [inline]
+>  do_mount+0x1093/0x1b30 fs/namespace.c:3111
+>  ksys_mount+0x7d/0xd0 fs/namespace.c:3320
+>  __do_sys_mount fs/namespace.c:3334 [inline]
+>  __se_sys_mount fs/namespace.c:3331 [inline]
+>  __x64_sys_mount+0xb9/0x150 fs/namespace.c:3331
+>  do_syscall_64+0x8f/0x450 arch/x86/entry/common.c:296
+>  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+> Freed by task 600:
+>  save_stack mm/kasan/common.c:69 [inline]
+>  set_track mm/kasan/common.c:77 [inline]
+>  __kasan_slab_free+0x127/0x1f0 mm/kasan/common.c:449
+>  kasan_slab_free+0xe/0x10 mm/kasan/common.c:457
+>  __cache_free mm/slab.c:3425 [inline]
+>  kfree+0xc1/0x1e0 mm/slab.c:3756
+>  ext4_put_super+0x78c/0xbb0 fs/ext4/super.c:1061
+>  generic_shutdown_super+0x128/0x320 fs/super.c:458
+>  kill_block_super+0x97/0xe0 fs/super.c:1310
+>  deactivate_locked_super+0x7b/0xd0 fs/super.c:331
+>  deactivate_super+0x138/0x150 fs/super.c:362
+>  cleanup_mnt+0x298/0x3f0 fs/namespace.c:1102
+>  __cleanup_mnt+0xd/0x10 fs/namespace.c:1109
+>  task_work_run+0x103/0x180 kernel/task_work.c:113
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_usermode_loop+0x10b/0x130 arch/x86/entry/common.c:163
+>  prepare_exit_to_usermode arch/x86/entry/common.c:194 [inline]
+>  syscall_return_slowpath arch/x86/entry/common.c:274 [inline]
+>  do_syscall_64+0x343/0x450 arch/x86/entry/common.c:299
+>  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+> The buggy address belongs to the object at ffff888063168980
+>  which belongs to the cache kmalloc-4k of size 4096
+> The buggy address is located 1576 bytes inside of
+>  4096-byte region [ffff888063168980, ffff888063169980)
+> The buggy address belongs to the page:
+> page:ffffea00015acec0 refcount:1 mapcount:0 mapping:ffff88806d000900 index:0x0 compound_mapcount: 0
+> flags: 0x100000000010200(slab|head)
+> raw: 0100000000010200 ffffea00015b9f08 ffffea0001749e58 ffff88806d000900
+> raw: 0000000000000000 ffff888063168980 0000000100000001
+> page dumped because: kasan: bad access detected
+> 
+> Memory state around the buggy address:
+>  ffff888063168e80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff888063168f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>> ffff888063168f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                                   ^
+>  ffff888063169000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff888063169080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ==================================================================
+> 
+> .
+> 
 
-Sure, that part works because the struct file is passed. It doesn't
-end up with the same fd number in the other process, though.
-
-The issue is that layout leases need to notify userspace when they
-are broken by the kernel, so a lease stores the owner pid/tid in the
-file->f_owner field via __f_setown(). It also keeps a struct fasync
-attached to the file_lock that records the fd that the lease was
-created on.  When a signal needs to be sent to userspace for that
-lease, we call kill_fasync() and that walks the list of fasync
-structures on the lease and calls:
-
-	send_sigio(fown, fa->fa_fd, band);
-
-And it does for every fasync struct attached to a lease. Yes, a
-lease can track multiple fds, but it can only track them in a single
-process context. The moment the struct file is shared with another
-process, the lease is no longer capable of sending notifications to
-all the lease holders.
-
-Yes, you can change the owning process via F_SETOWNER, but that's
-still only a single process context, and you can't change the fd in
-the fasync list. You can add new fd to an existing lease by calling
-F_SETLEASE on the new fd, but you still only have a single process
-owner context for signal delivery.
-
-As such, leases that require callbacks to userspace are currently
-only valid within the process context the lease was taken in.
-Indeed, even closing the fd the lease was taken on without
-F_UNLCKing it first doesn't mean the lease has been torn down if
-there is some other reference to the struct file. That means the
-original lease owner will still get SIGIO delivered to that fd on a
-lease break regardless of whether it is open or not. ANd if we
-implement "layout lease not released within SIGIO response timeout"
-then that process will get killed, despite the fact it may not even
-have a reference to that file anymore.
-
-So, AFAICT, leases that require userspace callbacks only work within
-their original process context while they original fd is still open.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
