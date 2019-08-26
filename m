@@ -2,323 +2,262 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 747239C7ED
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 05:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCEE9C80E
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 05:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729432AbfHZD33 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 25 Aug 2019 23:29:29 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:37419 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729419AbfHZD33 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 25 Aug 2019 23:29:29 -0400
-Received: by mail-pg1-f193.google.com with SMTP id d1so9685476pgp.4
-        for <linux-ext4@vger.kernel.org>; Sun, 25 Aug 2019 20:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=BOF9u2J03SL6BTYTHr4uUIF4JBfbhHoCASdGl2lTo5E=;
-        b=sP1CiWd6ywtMxSDI7dEhvCv+p6YtbMPFEJq2TdQbhVGH3eX9jPFaX4jXE6lbRxC87D
-         q6fLZAyBm/sGQhcPg8gT4Bl3VL0HcrvmErQ/SL2SFYt+8iDDMfcrd1VmzVsXzGJWQfRP
-         RmgoCCmvW0XmqG5MdK6yh7njxV7eg97QPZUxiuf3bViCeBvfwoYOemVcPwrNMycH5OPY
-         8Fs7Jg+DG5FLyjqQDhpFxS4PKtcZowVrZMQEh8BbhjVignAkMxV/ExfjJlyn2xVUN9iZ
-         G+mprAtRdn9qYWazzBG99mtJDPPHrIMaaJilkiBwo9fvKL6IRafRxZiH1i56FcNuOZI6
-         Qvng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=BOF9u2J03SL6BTYTHr4uUIF4JBfbhHoCASdGl2lTo5E=;
-        b=qFqz2F56s2WAdKusbiCxRYyqsD3QPOp5gKnAhhvp5cFzmPsElJ1meSDaVHo5Yiw4v1
-         h1Lpnv3+V94oMMj2CO6b0CtGGdGlvGumPA9eRxdSLUzF23nAsPPYLNAYxFcN20EcN/h5
-         17vV5Qf7g4+Yq9ho1XC2JdDCqN3YBlmOjvpeAHjmLn2RFOBCoWyQgK9iZjR4iX5b2f9s
-         xvwq9YpKziYRug8A06N/5Rf2RtEVA3uTW/ETqUck5ayTIz4Ot9Ql/pMQ8MnyO0ZS5Q3G
-         or8VRMynfeNIQkb56cSWyVLTiqHrRZxW2Wm0mvruhWwSTaCMB4j12y3wnP/XylhARzj+
-         NA8w==
-X-Gm-Message-State: APjAAAUGQE4HO/ENtAKMagrV7UBtR//vxZkLBR5eIYYZ1CJrPbWAbFhe
-        gta4hh7UcbLbfaZ+5wjogB7hNawEz0YVXQ==
-X-Google-Smtp-Source: APXvYqyzqUvYfddblc7pxxnbQXXJxQXSjFrQujiheopV6WjYiha4+Tz57ZXd+tsxpuWATeQ7h3ZH1g==
-X-Received: by 2002:a17:90a:db0d:: with SMTP id g13mr17881266pjv.51.1566790168615;
-        Sun, 25 Aug 2019 20:29:28 -0700 (PDT)
-Received: from cabot.adilger.ext (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id l31sm9432745pgm.63.2019.08.25.20.29.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Aug 2019 20:29:27 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <F25195AC-DF10-47E0-9445-074D47DACDB4@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_2DCB50EC-2581-4621-A641-FC5DC62414BA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2 4/4] mke2fs: set overhead in super block for bigalloc
-Date:   Sun, 25 Aug 2019 21:29:26 -0600
-In-Reply-To: <20190822082617.19180-4-dongyangli@ddn.com>
-Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-To:     Dongyang Li <dongyangli@ddn.com>
-References: <20190822082617.19180-1-dongyangli@ddn.com>
- <20190822082617.19180-4-dongyangli@ddn.com>
-X-Mailer: Apple Mail (2.3273)
+        id S1729342AbfHZDzS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 25 Aug 2019 23:55:18 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51334 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727287AbfHZDzS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 25 Aug 2019 23:55:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0TaQIzL6_1566791708;
+Received: from localhost(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TaQIzL6_1566791708)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 26 Aug 2019 11:55:16 +0800
+From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Subject: [RFC] jbd2: reclaim journal space asynchronously when free space is low
+Date:   Mon, 26 Aug 2019 11:54:59 +0800
+Message-Id: <20190826035459.4121-1-xiaoguang.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+In current jbd2's implemention, jbd2 won't reclaim journal space unless
+free journal space is lower than specified threshold, see logic in
+add_transaction_credits():
+        write_lock(&journal->j_state_lock);
+        if (jbd2_log_space_left(journal) < jbd2_space_needed(journal))
+            __jbd2_log_wait_for_space(journal);
+        write_unlock(&journal->j_state_lock);
+Indeed with this logic, we can also have many transactions queued to be
+checkpointd, which means these transactions still occupy jbd2 space.
 
---Apple-Mail=_2DCB50EC-2581-4621-A641-FC5DC62414BA
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Recently I have seen some disadvantages caused by this logic:
+Some of our applications will get stuck in below stack periodically:
+        __jbd2_log_wait_for_space+0xd5/0x200 [jbd2]
+        start_this_handle+0x31b/0x8f0 [jbd2]
+        jbd2__journal_start+0xcd/0x1f0 [jbd2]
+        __ext4_journal_start_sb+0x69/0xe0 [ext4]
+        ext4_dirty_inode+0x32/0x70 [ext4]
+        __mark_inode_dirty+0x15f/0x3a0
+        generic_update_time+0x87/0xe0
+        file_update_time+0xbd/0x120
+        __generic_file_aio_write+0x198/0x3e0
+        generic_file_aio_write+0x5d/0xc0
+        ext4_file_write+0xb5/0x460 [ext4]
+        do_sync_write+0x8d/0xd0
+        vfs_write+0xbd/0x1e0
+        SyS_write+0x7f/0xe0
+Meanwhile I found io usage in these applications' machines are relatively
+low, journal space is somewhat like a global lock, in high concurrency case,
+if many tasks contend for journal credits, they will easily hit above stack
+and be stuck in waitting for free journal space, so I wonder whether we can
+reclaim journal space asynchronously when free space is lower than a specified
+threshold, to avoid that all applications are stalled at the same time.
 
-On Aug 22, 2019, at 2:26 AM, Dongyang Li <dongyangli@ddn.com> wrote:
->=20
-> If overhead is not recorded in the super block, it is caculated
-> during mount in kernel, for bigalloc file systems the it takes
-> O(groups**2) in time.
-> For a 1PB deivce with 32K cluste size it takes ~12 mins to
-> mount, with most of the time spent on figuring out overhead.
->=20
-> While we can not improve the overhead algorithm in kernel
-> due to the nature of bigalloc, we can work out the overhead
-> during mke2fs and set it in the super block, avoiding calculating
-> it every time when it mounts.
+I think this will be more useful in high speed store, journal space will be
+reclaimed in background quickly, and applications will less likely to be
+stucked by above issue. To improve this case, we use workqueue to queue a
+work in background to reclaim journal space.
 
-It would also be good to get an ext4 patch to save the calculated
-overhead to s_overhead_clusters if the kernel finds it unset?
-That isn't any less accurate than recomputing it each time, and
-avoids extra overhead on each mount for filesystems that did not
-get it set at mke2fs time.
+I also construct a test case to verify improvement, test case will create
+1000000 directories, use 1, 2, 4, 8 and 16 tasks per test round. For example,
+in 8 tasks case, create 8 processes and every process creates 125000 directories,
+16 tasks case, every process creates 62500 directories. Every test case run
+5 iterations.
 
-> Overhead is s_first_data_block plus internal journal blocks plus
-> the block and inode bitmaps, inode table, super block backups and
-> group descriptor blocks for every group. This patch introduces
-> ext2fs_count_used_clusters(), which calculates the clusters used
-> in the block bitmap for the given range.
->=20
-> When bad blocks are involved, it gets tricky because the blocks
-> counted as overhead and the bad blocks can end up in the same
-> allocation cluster.
+Tested in my vm(16cores, 8G memory), count the run time per test round.
+Without this patch,
+16 tasks:  35s 34s 33s 34s 34s total: 170s, avg: 34s
+8  tasks:  33s 35s 34s 35s 35s total: 172s, avg: 34.4s
+4  tasks:  36s 38s 39s 39s 41s total: 193s, avg: 38.6s
+2  tasks:  53s 54s 52s 55s 54s total: 268s, avg: 53.6s
+1  tasks:  65s 65s 65s 65s 64s total: 324s, avg: 64.8s
 
-On the other hand, would it be wrong if the bad blocks are stored
-in "s_overhead_clusters"?
+With this patch:
+16 tasks:  29s 32s 32s 31s 33s total: 157s, avg: 31.4s
+8  tasks:  30s 31s 30s 31s 30s total: 152s, avg: 30.4s
+4  tasks:  33s 34s 32s 33s 37s total: 169s, avg: 33.8s
+2  tasks:  47s 48s 46s 49s 48s total: 238s, avg: 47.6s
+1  tasks:  56s 55s 56s 54s 55s total: 276s, avg: 55.2s
 
-> In this case we will unmark the bad blocks from
-> the block bitmap, covert to cluster bitmap and get the overhead,
+From above test, we can have 10% improvements.
 
-(typo) "convert"
+Run same test in physical machine with nvme store, get such test results:
+without patch(count the total time spending to create 5000000 sub-directories):
+64 tasks  32 tasks 16 tasks  8 tasks  4 tasks  2 tasks  1 tasks
+     66s       64s      67s      71s      81s     108s     133s
+with patch:
+64 tasks  32 tasks 16 tasks  8 tasks  4 tasks  2 tasks  1 tasks
+    66s        64s      69s      72s      80s     103s     112s
 
-> then mark the bad blocks back in the cluster bitmap.
+Seems that improvements are only somewhat significant in low concurrency
+case, I guess it's because that the checkpoint work in nvme is quick.
+In high concurrency case, the overhead caused by waitting for log space
+may not a big bottleneck, I'll look into this issue more.
 
-In this case, should the bad block numbers be converted to
-clusters during the second iteration?
+Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+---
+ fs/jbd2/checkpoint.c  |  4 ++--
+ fs/jbd2/journal.c     | 26 ++++++++++++++++++++++++++
+ fs/jbd2/transaction.c | 12 +++++++++++-
+ include/linux/jbd2.h  | 23 ++++++++++++++++++++++-
+ 4 files changed, 61 insertions(+), 4 deletions(-)
 
-> Signed-off-by: Li Dongyang <dongyangli@ddn.com>
-> ---
-> lib/ext2fs/ext2fs.h       |  2 ++
-> lib/ext2fs/gen_bitmap64.c | 35 +++++++++++++++++++++++++++
-> misc/mke2fs.c             | 50 ++++++++++++++++++++++++++++++++++++++-
-> 3 files changed, 86 insertions(+), 1 deletion(-)
->=20
-> diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-> index 59fd9742..a8ddb9e4 100644
-> --- a/lib/ext2fs/ext2fs.h
-> +++ b/lib/ext2fs/ext2fs.h
-> @@ -1437,6 +1437,8 @@ errcode_t =
-ext2fs_set_generic_bmap_range(ext2fs_generic_bitmap bmap,
-> 					void *in);
-> errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsys fs,
-> 					   ext2fs_block_bitmap *bitmap);
-> +errcode_t ext2fs_count_used_clusters(ext2_filsys fs, blk64_t start,
-> +				     blk64_t end, blk64_t *out);
->=20
-> /* get_num_dirs.c */
-> extern errcode_t ext2fs_get_num_dirs(ext2_filsys fs, ext2_ino_t =
-*ret_num_dirs);
-> diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
-> index f1dd1891..b2370667 100644
-> --- a/lib/ext2fs/gen_bitmap64.c
-> +++ b/lib/ext2fs/gen_bitmap64.c
-> @@ -940,3 +940,38 @@ errcode_t =
-ext2fs_find_first_set_generic_bmap(ext2fs_generic_bitmap bitmap,
->=20
-> 	return ENOENT;
-> }
-> +
-> +errcode_t ext2fs_count_used_clusters(ext2_filsys fs, blk64_t start,
-> +				     blk64_t end, blk64_t *out)
-> +{
-> +	blk64_t		next;
-> +	blk64_t		tot_set =3D 0;
-> +	errcode_t	retval;
-> +
-> +	while (start < end) {
-> +		retval =3D =
-ext2fs_find_first_set_block_bitmap2(fs->block_map,
-> +							start, end, =
-&next);
-> +		if (retval) {
-> +			if (retval =3D=3D ENOENT)
-> +				retval =3D 0;
-> +			break;
-> +		}
-> +		start =3D next;
-> +
-> +		retval =3D =
-ext2fs_find_first_zero_block_bitmap2(fs->block_map,
-> +							start, end, =
-&next);
-> +		if (retval =3D=3D 0) {
-> +			tot_set +=3D next - start;
-> +			start  =3D next + 1;
-> +		} else if (retval =3D=3D ENOENT) {
-> +			retval =3D 0;
-> +			tot_set +=3D end - start + 1;
-> +			break;
-> +		} else
-> +			break;
-> +	}
-> +
-> +	if (!retval)
-> +		*out =3D EXT2FS_NUM_B2C(fs, tot_set);
-> +	return retval;
-> +}
-> diff --git a/misc/mke2fs.c b/misc/mke2fs.c
-> index 30e353d3..1928c9bf 100644
-> --- a/misc/mke2fs.c
-> +++ b/misc/mke2fs.c
-> @@ -2912,6 +2912,8 @@ int main (int argc, char *argv[])
-> 	errcode_t	retval =3D 0;
-> 	ext2_filsys	fs;
-> 	badblocks_list	bb_list =3D 0;
-> +	badblocks_iterate	bb_iter;
-> +	blk_t		blk;
-> 	unsigned int	journal_blocks =3D 0;
-> 	unsigned int	i, checkinterval;
-> 	int		max_mnt_count;
-> @@ -2922,6 +2924,7 @@ int main (int argc, char *argv[])
-> 	char		opt_string[40];
-> 	char		*hash_alg_str;
-> 	int		itable_zeroed =3D 0;
-> +	blk64_t		overhead;
->=20
-> #ifdef ENABLE_NLS
-> 	setlocale(LC_MESSAGES, "");
-> @@ -3213,6 +3216,23 @@ int main (int argc, char *argv[])
-> 	if (!quiet)
-> 		printf("%s", _("done                            \n"));
->=20
-> +	/*
-> +	 * Unmark bad blocks to calculate overhead, because metadata
-> + 	 * blocks and bad blocks can land on the same allocation =
-cluster.
-> + 	 */
-> +	if (bb_list) {
-> +		retval =3D ext2fs_badblocks_list_iterate_begin(bb_list,
-> +							     &bb_iter);
-> +		if (retval) {
-> +			com_err("ext2fs_badblocks_list_iterate_begin", =
-retval,
-> +				"%s", _("while unmarking bad blocks"));
-> +			exit(1);
-> +		}
-> +		while (ext2fs_badblocks_list_iterate(bb_iter, &blk))
-> +			ext2fs_unmark_block_bitmap2(fs->block_map, blk);
-> +		ext2fs_badblocks_list_iterate_end(bb_iter);
-> +	}
-> +
-> 	retval =3D ext2fs_convert_subcluster_bitmap(fs, &fs->block_map);
-> 	if (retval) {
-> 		com_err(program_name, retval, "%s",
-> @@ -3220,6 +3240,28 @@ int main (int argc, char *argv[])
-> 		exit(1);
-> 	}
->=20
-> +	retval =3D ext2fs_count_used_clusters(fs, =
-fs->super->s_first_data_block,
-> +					ext2fs_blocks_count(fs->super) - =
-1,
-> +					&overhead);
-> +	if (retval) {
-> +		com_err(program_name, retval, "%s",
-> +			_("while calculating overhead"));
-> +		exit(1);
-> +	}
-> +
-> +	if (bb_list) {
-> +		retval =3D ext2fs_badblocks_list_iterate_begin(bb_list,
-> +							     &bb_iter);
-> +		if (retval) {
-> +			com_err("ext2fs_badblocks_list_iterate_begin", =
-retval,
-> +				"%s", _("while marking bad blocks as =
-used"));
-> +			exit(1);
-> +		}
-> +		while (ext2fs_badblocks_list_iterate(bb_iter, &blk))
-> +			ext2fs_mark_block_bitmap2(fs->block_map, blk);
-> +		ext2fs_badblocks_list_iterate_end(bb_iter);
-> +	}
-> +
-> 	if (super_only) {
-> 		check_plausibility(device_name, CHECK_FS_EXIST, NULL);
-> 		printf(_("%s may be further corrupted by superblock =
-rewrite\n"),
-> @@ -3317,6 +3359,7 @@ int main (int argc, char *argv[])
-> 		free(journal_device);
-> 	} else if ((journal_size) ||
-> 		   ext2fs_has_feature_journal(&fs_param)) {
-> +		overhead +=3D EXT2FS_NUM_B2C(fs, journal_blocks);
-> 		if (super_only) {
-> 			printf("%s", _("Skipping journal creation in =
-super-only mode\n"));
-> 			fs->super->s_journal_inum =3D EXT2_JOURNAL_INO;
-> @@ -3359,8 +3402,13 @@ no_journal:
-> 			       fs->super->s_mmp_update_interval);
-> 	}
->=20
-> -	if (ext2fs_has_feature_bigalloc(&fs_param))
-> +	overhead +=3D fs->super->s_first_data_block;
-> +
-> +	if (ext2fs_has_feature_bigalloc(&fs_param)) {
-> +		if (!super_only)
-> +			fs->super->s_overhead_clusters =3D overhead;
-> 		fix_cluster_bg_counts(fs);
-> +	}
+diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+index a1909066bde6..da0920cbc1d3 100644
+--- a/fs/jbd2/checkpoint.c
++++ b/fs/jbd2/checkpoint.c
+@@ -105,12 +105,12 @@ static int __try_to_free_cp_buf(struct journal_head *jh)
+  * Called under j-state_lock *only*.  It will be unlocked if we have to wait
+  * for a checkpoint to free up some space in the log.
+  */
+-void __jbd2_log_wait_for_space(journal_t *journal)
++void __jbd2_log_wait_for_space(journal_t *journal, int scale)
+ {
+ 	int nblocks, space_left;
+ 	/* assert_spin_locked(&journal->j_state_lock); */
+ 
+-	nblocks = jbd2_space_needed(journal);
++	nblocks = jbd2_space_needed(journal) * scale;
+ 	while (jbd2_log_space_left(journal) < nblocks) {
+ 		write_unlock(&journal->j_state_lock);
+ 		mutex_lock_io(&journal->j_checkpoint_mutex);
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 953990eb70a9..871c3d251fdb 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1100,6 +1100,21 @@ static void jbd2_stats_proc_exit(journal_t *journal)
+ 	remove_proc_entry(journal->j_devname, proc_jbd2_stats);
+ }
+ 
++/*
++ * Start to reclaim journal space asynchronously.
++ */
++void jbd2_reclaim_log_space_async(struct work_struct *work)
++{
++	journal_t *journal = container_of(work, journal_t, j_reclaim_work);
++
++	write_lock(&journal->j_state_lock);
++	/* See comments in add_transaction_credits() */
++	if (jbd2_log_space_left(journal) < jbd2_space_needed(journal) * 2)
++		__jbd2_log_wait_for_space(journal, 2);
++	journal->j_async_reclaim_run = 0;
++	write_unlock(&journal->j_state_lock);
++}
++
+ /*
+  * Management for journal control blocks: functions to create and
+  * destroy journal_t structures, and to initialise and read existing
+@@ -1142,6 +1157,15 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	/* The journal is marked for error until we succeed with recovery! */
+ 	journal->j_flags = JBD2_ABORT;
+ 
++	journal->j_reclaim_wq = alloc_workqueue("jbd2-reclaim-wq",
++					WQ_MEM_RECLAIM | WQ_UNBOUND, 1);
++	if (!journal->j_reclaim_wq) {
++		pr_err("%s: failed to create workqueue\n", __func__);
++		goto err_cleanup;
++	}
++	INIT_WORK(&journal->j_reclaim_work, jbd2_reclaim_log_space_async);
++	journal->j_async_reclaim_run = 0;
++
+ 	/* Set up a default-sized revoke table for the new mount. */
+ 	err = jbd2_journal_init_revoke(journal, JOURNAL_REVOKE_DEFAULT_HASH);
+ 	if (err)
+@@ -1718,6 +1742,7 @@ int jbd2_journal_destroy(journal_t *journal)
+ 	if (journal->j_running_transaction)
+ 		jbd2_journal_commit_transaction(journal);
+ 
++	flush_workqueue(journal->j_reclaim_wq);
+ 	/* Force any old transactions to disk */
+ 
+ 	/* Totally anal locking here... */
+@@ -1768,6 +1793,7 @@ int jbd2_journal_destroy(journal_t *journal)
+ 		jbd2_journal_destroy_revoke(journal);
+ 	if (journal->j_chksum_driver)
+ 		crypto_free_shash(journal->j_chksum_driver);
++	destroy_workqueue(journal->j_reclaim_wq);
+ 	kfree(journal->j_wbuf);
+ 	kfree(journal);
+ 
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index 990e7b5062e7..27f9d47c620e 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -247,6 +247,16 @@ static int add_transaction_credits(journal_t *journal, int blocks,
+ 		return 1;
+ 	}
+ 
++	/*
++	 * If free journal space is lower than (jbd2_space_needed(journal) * 2),
++	 * let's reclaim some journal space early and do it asynchronously.
++	 */
++	if (journal->j_async_reclaim_run == 0 &&
++	    jbd2_log_space_left(journal) < (jbd2_space_needed(journal) * 2)) {
++		journal->j_async_reclaim_run = 1;
++		queue_work(journal->j_reclaim_wq, &journal->j_reclaim_work);
++	}
++
+ 	/*
+ 	 * The commit code assumes that it can get enough log space
+ 	 * without forcing a checkpoint.  This is *critical* for
+@@ -264,7 +274,7 @@ static int add_transaction_credits(journal_t *journal, int blocks,
+ 		jbd2_might_wait_for_commit(journal);
+ 		write_lock(&journal->j_state_lock);
+ 		if (jbd2_log_space_left(journal) < jbd2_space_needed(journal))
+-			__jbd2_log_wait_for_space(journal);
++			__jbd2_log_wait_for_space(journal, 1);
+ 		write_unlock(&journal->j_state_lock);
+ 		return 1;
+ 	}
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index df03825ad1a1..acc93597271b 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1152,6 +1152,27 @@ struct journal_s
+ 	 */
+ 	__u32 j_csum_seed;
+ 
++	/**
++	 * @j_async_reclaim_run:
++	 *
++	 * Is there a work running asynchronously to reclaim journal space.
++	 */
++	int j_async_reclaim_run;
++
++	/**
++	 * @j_reclaim_work:
++	 *
++	 * Work_struct to reclaim journal space.
++	 */
++	struct work_struct j_reclaim_work;
++
++	/**
++	 * @j_reclaim_wq:
++	 *
++	 * Workqueue for reclaim journal space asynchronously.
++	 */
++	struct workqueue_struct *j_reclaim_wq;
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	/**
+ 	 * @j_trans_commit_map:
+@@ -1498,7 +1519,7 @@ int jbd2_complete_transaction(journal_t *journal, tid_t tid);
+ int jbd2_log_do_checkpoint(journal_t *journal);
+ int jbd2_trans_will_send_data_barrier(journal_t *journal, tid_t tid);
+ 
+-void __jbd2_log_wait_for_space(journal_t *journal);
++void __jbd2_log_wait_for_space(journal_t *journal, int scale);
+ extern void __jbd2_journal_drop_transaction(journal_t *, transaction_t *);
+ extern int jbd2_cleanup_journal_tail(journal_t *);
+ 
+-- 
+2.17.2
 
-Should we consider to always store the overhead value into the =
-superblock,
-regardless of whether bigalloc is enabled or not?
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_2DCB50EC-2581-4621-A641-FC5DC62414BA
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl1jUhYACgkQcqXauRfM
-H+D1IQ//ZA1mou9T2ZWYFQ1nxG1Af3/Rq7FRDsrOF9CSafxZKQOShQ6vBM+aUZDA
-HFuJQea6XkZra+hPJLBY2BL7yLAcmnLzD+HwuWz9szXvyMTTwGkFNBp25zT7Um2D
-3K9eyw3EUSUwORYWZOHHZ0KRlnvfzU1vhwwy0weuryOIRl3J9ZgbQwHmRlJOl5sC
-LYA3mWz3V95tcZq9cYVEt1oj5N8HscnZVgZpMsZXxsg1vX40CA36yXgF01VmFEUQ
-zypthCUg87qvgyuSuh8/+eXpTYaViQphS0o6TIDCEitPbnnYX6lx4+ct2J4J9Bxl
-IagM8IRuaZutRLX+h399PayBkZm7YNAkdNhk20cYL5iyNQ6m/icGd7+14oszblPG
-8cBsssqABKOEll+hiosrkC5Whks35lNviA+5+byf4V5i9Evr4TW/beYZLRLhsTp9
-k2QWGThczT1MZIW346vXrDDvbP9CXsL6LsZm5JzhD+8YBkhwTtSnGT/aNvN+dd3d
-llwgiI6Ol8bXMdkf6hs4lhII8Xr94oMKNEr6lsW8g6fojI00pwMPs/Xr1otDKxeD
-IZMXtKeeuH9IDvPGcCH2trBsM3t7jAlNAy4NCCBhAlNAbNdnwysmsMp4vfD3SghY
-UlJiV2v53cq2fkjpggxtKzOsKlriUPMezltNJ6R719QSXp1CUqo=
-=O0jz
------END PGP SIGNATURE-----
-
---Apple-Mail=_2DCB50EC-2581-4621-A641-FC5DC62414BA--
