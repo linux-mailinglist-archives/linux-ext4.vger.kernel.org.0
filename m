@@ -2,95 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A55D39D2C8
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 17:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49399D388
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 17:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730785AbfHZPaP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Aug 2019 11:30:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48712 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728965AbfHZPaP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 26 Aug 2019 11:30:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 98C0DB035;
-        Mon, 26 Aug 2019 15:30:14 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 321841E3DA1; Mon, 26 Aug 2019 17:30:14 +0200 (CEST)
-Date:   Mon, 26 Aug 2019 17:30:14 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "zhangyi (F)" <yi.zhang@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
-        adilger.kernel@dilger.ca
-Subject: Re: [PATCH] ext4: fix integer overflow when calculating commit
- interval
-Message-ID: <20190826153014.GI10614@quack2.suse.cz>
-References: <20190826143547.95169-1-yi.zhang@huawei.com>
+        id S1732117AbfHZP5y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Aug 2019 11:57:54 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47819 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727864AbfHZP5y (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Aug 2019 11:57:54 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7QFvSxI008412
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Aug 2019 11:57:29 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 22FD042049E; Mon, 26 Aug 2019 11:57:28 -0400 (EDT)
+Date:   Mon, 26 Aug 2019 11:57:28 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Guo <guoyang2@huawei.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Subject: Re: [PATCH] ext4: change the type of ext4 cache stats to
+ percpu_counter to improve performance
+Message-ID: <20190826155728.GE4918@mit.edu>
+Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Guo <guoyang2@huawei.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+References: <1566528454-13725-1-git-send-email-zhangshaokun@hisilicon.com>
+ <20190825032524.GD5163@mit.edu>
+ <20190825172803.GA9505@sol.localdomain>
+ <20190826004744.GA27472@mit.edu>
+ <f0495aa7-8f21-e938-9617-07ac8741acb7@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190826143547.95169-1-yi.zhang@huawei.com>
+In-Reply-To: <f0495aa7-8f21-e938-9617-07ac8741acb7@hisilicon.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 26-08-19 22:35:47, zhangyi (F) wrote:
-> If user specify a large enough value of "commit=" option, it may trigger
-> signed integer overflow which may lead to sbi->s_commit_interval becomes
-> a large or small value, zero in particular.
+On Mon, Aug 26, 2019 at 04:24:20PM +0800, Shaokun Zhang wrote:
+> > The other problem with this patch is that it initializes
+> > es_stats_cache_hits and es_stats_cache_miesses too late.  They will
+> > get used when the journal inode is loaded.  This is mostly harmless,
 > 
-> UBSAN: Undefined behaviour in ../fs/ext4/super.c:1592:31
-> signed integer overflow:
-> 536870912 * 1000 cannot be represented in type 'int'
-> [...]
-> Call trace:
-> [...]
-> [<ffffff9008a2d120>] ubsan_epilogue+0x34/0x9c lib/ubsan.c:166
-> [<ffffff9008a2d8b8>] handle_overflow+0x228/0x280 lib/ubsan.c:197
-> [<ffffff9008a2d95c>] __ubsan_handle_mul_overflow+0x4c/0x68 lib/ubsan.c:218
-> [<ffffff90086d070c>] handle_mount_opt fs/ext4/super.c:1592 [inline]
-> [<ffffff90086d070c>] parse_options+0x1724/0x1a40 fs/ext4/super.c:1773
-> [<ffffff90086d51c4>] ext4_remount+0x2ec/0x14a0 fs/ext4/super.c:4834
-> [...]
-> 
-> Although it is not a big deal, still silence the UBSAN by limit the
-> input value.
-> 
-> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+> I have checked it again, @es_stats_cache_hits and @es_stats_cache_miesses
+> have been initialized before the journal inode is loaded, Maybe I miss
+> something else?
 
-Looks good to me. You can add:
+No, sorry, that was my mistake.  I misread things when I was looking
+over your patch last night.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Please resubmit your patch once you've fixed things up and tested it.
 
-								Honza
+I would recommend that you at least try running your patch using the
+kvm-xfstests's smoke test[1] before submitting them.  It will save you
+and me time.
 
-> ---
->  fs/ext4/super.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 4079605d437a..7310facffa9d 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1874,6 +1874,13 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
->  	} else if (token == Opt_commit) {
->  		if (arg == 0)
->  			arg = JBD2_DEFAULT_MAX_COMMIT_AGE;
-> +		else if (arg > INT_MAX / HZ) {
-> +			ext4_msg(sb, KERN_ERR,
-> +				 "Invalid commit interval %d, "
-> +				 "must be smaller than %d",
-> +				 arg, INT_MAX / HZ);
-> +			return -1;
-> +		}
->  		sbi->s_commit_interval = HZ * arg;
->  	} else if (token == Opt_debug_want_extra_isize) {
->  		sbi->s_want_extra_isize = arg;
-> -- 
-> 2.23.0.rc2.8.gff66981
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+[1] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+
+Thanks,
+
+					- Ted
+					
