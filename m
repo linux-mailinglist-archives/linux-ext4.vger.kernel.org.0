@@ -2,60 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F159C781
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 05:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3396E9C78B
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 05:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729380AbfHZDFm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 25 Aug 2019 23:05:42 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:42367 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729179AbfHZDFm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 25 Aug 2019 23:05:42 -0400
-Received: by mail-pf1-f194.google.com with SMTP id i30so10785890pfk.9
-        for <linux-ext4@vger.kernel.org>; Sun, 25 Aug 2019 20:05:42 -0700 (PDT)
+        id S1729425AbfHZDNV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 25 Aug 2019 23:13:21 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:34262 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726215AbfHZDNV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 25 Aug 2019 23:13:21 -0400
+Received: by mail-pg1-f194.google.com with SMTP id n9so9674687pgc.1
+        for <linux-ext4@vger.kernel.org>; Sun, 25 Aug 2019 20:13:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=2n8AFGb1haPv4O5LvrHC2E9r72jJ24DzV0ZxWr0N0U4=;
-        b=hfnl4AM0Ia9/R09meSEARjLcj1PwH3bBLmLkPfBPqITNN2EZQIaFMVy+ArarSIl+AZ
-         i9qyDivlWJNPCRHxdPnHTsMvpQpL0ld4Bqi9mbm+1/5wrvJOT74+anbA9PTrWJsyrmBc
-         qtoik0reiljuyZv8qViTU+BP44QbyVFSErsKEphnHrDrAWraLgOD61ErUruBX9hPK8B1
-         XgdtNqhql+hGU8MBSk3JzSm5d0BdZ9yvvZWIMxM6WqSpS982tPF5eZqJkRX602GU2djm
-         COVczBTEk+z9Hdr5Lgg44OPN/X7AAvyAlOQv3EhvZd0MSRc8KMWPpDilmeSiCBa8LaVe
-         eXBQ==
+        bh=cb+jAyVVPkTS5Gxu9PRQLkHFuj06hZ8Nn6b14q3qHuk=;
+        b=YaT0h5/ejMzQ2L9WqFm6IJHoUr+8ssaj/upw0JkW1lVxfmuWME06ekSYlKLayQXve6
+         uZMnM+H5gL60Xg2kzWTQcIFdYa0MEaQNfUx8cUrTW79Jiq+dCGz9C5snrnwsT+1iGg9o
+         HSTPdcSaRkuqrAU8hJRORC9JXBoklaez60ffSfnYs6WYHA6ihFoSBlDgrvVyUwL8zbtp
+         N/J+IInMyK4WFutdMHHAd8wcKdkO6kE3i9gZz97vMn6PzQs/SWH3lgNB2xs/6+wEr3nT
+         K9ARDby0oAzrCSKoMG5/EYeMsCZy32UOSfWxG/46eDdadeEbA2i6V5YQ5ccUCXgE5MIa
+         N7qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=2n8AFGb1haPv4O5LvrHC2E9r72jJ24DzV0ZxWr0N0U4=;
-        b=A4LntNTW2ye/RWfHS/fvmV4zyFcoQb1AKIZCua/SO1wStxg34Z2mDu6qFuNLj2VkJt
-         7HFRlNxLemqlNP0ilp3AB48JzEPveXQBoaHtanxql+XsSFf0zmve/iV3rjjvfg5YbfQi
-         bvaHvElcppwer4EAWyLa3sPLOjXTlLlCV/karIQQ2xDAtfQJJ4AgejtfZkxnMMCeV0JB
-         qCIQyraQoTUp3kprCppz8EC0FVaYAUwh5SpmpIbRBnUlmUjjR0LIZQpr0KJcDRqHHSz+
-         KVgDwOkC5STbTmm8tlRBvDA8MkKROO92JTBZD8Ui0pqDIOvv06+Dfk80Z1qdKya5+rQr
-         7t3g==
-X-Gm-Message-State: APjAAAWZZpxSnxwN/FKbrpUZ8EhbcFJ/E98Ga+ehHaXAjX1cP3UDqHiU
-        lGvlvw/hzncwmBmAN7hMe4H60y9o4F6t4w==
-X-Google-Smtp-Source: APXvYqx11XZSNKCAGApcwH4yvyro9Pq8Vet9EiCAY7++Ma48DVZdZc0bnanGO5WpKMO71jyR9uMV5w==
-X-Received: by 2002:aa7:8c03:: with SMTP id c3mr17577111pfd.139.1566788741628;
-        Sun, 25 Aug 2019 20:05:41 -0700 (PDT)
+        bh=cb+jAyVVPkTS5Gxu9PRQLkHFuj06hZ8Nn6b14q3qHuk=;
+        b=fsvuk1GtCYHH4HYzPBhdeVM5LVEbXuHfP5lZDGOs924mF4UudZtKNMOO1BLFfWd4Sw
+         VXb7HmEusknGFTfh8mqgcZQt1cTVcHPPUFi5dj4PluV9FI/MC/RxeO1+9fmtvQkfLF3+
+         YeJsHRbPs0b8EncQ6tvMQr+XU/0c+rorvRkt+hQQcfodLgPA57KJbO6wFzXQdpySfwtX
+         wWIyitJH89T0qXgyAAWQZf+gebKw8AQf/+PtR85jGj9BpEUTVzAq9ul7ujIPIFAxdPzG
+         +ZBoLKzrtwGNP7SE73OV6D5lT9X12MecanQOAriS2YU0wETXAMLCnEWemKw93q+YEzYI
+         ko/A==
+X-Gm-Message-State: APjAAAXUbClWcugkcqJb4HvTJsEkQ9J4OMhfogAGnBiikv1Rl+Apt99l
+        jS8CstXbBlKbQ5NbDX6Ix7XLtYzBus7YdQ==
+X-Google-Smtp-Source: APXvYqyo9CyesNZki2GV8vHjDc5RJ6+VCfnWWsvbxfEZByUo142ddbB8evlWn60yvtYIApDa+SYmYQ==
+X-Received: by 2002:a17:90a:8a11:: with SMTP id w17mr17205686pjn.139.1566789200285;
+        Sun, 25 Aug 2019 20:13:20 -0700 (PDT)
 Received: from cabot.adilger.ext (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id d129sm9409948pfc.168.2019.08.25.20.05.40
+        by smtp.gmail.com with ESMTPSA id g36sm10123553pgb.78.2019.08.25.20.13.19
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Aug 2019 20:05:40 -0700 (PDT)
+        Sun, 25 Aug 2019 20:13:19 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <FF31C738-6B87-434B-9736-76286ED0F8E3@dilger.ca>
+Message-Id: <E1EABF29-7F54-41AD-A8BA-A11538B682DD@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_2D7617C9-7671-4181-8623-2CDE31F792D1";
+ boundary="Apple-Mail=_B2C45E8A-19C6-4F14-BF16-BE7DD61A6A76";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: question about jbd2 checksum v2 and v3 flag
-Date:   Sun, 25 Aug 2019 21:05:36 -0600
-In-Reply-To: <CAPLK-i8xE4n8BJ-Beu0f80PC2W6b-A30nwcz+V_bCb_iAyB++Q@mail.gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-To:     Shehbaz Jaffer <shehbazjaffer007@gmail.com>
-References: <CAPLK-i8xE4n8BJ-Beu0f80PC2W6b-A30nwcz+V_bCb_iAyB++Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] ext2fs: rename "s_overhead_blocks" to
+ "s_overhead_clusters"
+Date:   Sun, 25 Aug 2019 21:13:17 -0600
+In-Reply-To: <20190822082617.19180-3-dongyangli@ddn.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     Dongyang Li <dongyangli@ddn.com>
+References: <20190822082617.19180-1-dongyangli@ddn.com>
+ <20190822082617.19180-3-dongyangli@ddn.com>
 X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -63,44 +65,130 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_2D7617C9-7671-4181-8623-2CDE31F792D1
+--Apple-Mail=_B2C45E8A-19C6-4F14-BF16-BE7DD61A6A76
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Aug 16, 2019, at 5:55 PM, Shehbaz Jaffer <shehbazjaffer007@gmail.com> =
-wrote:
+On Aug 22, 2019, at 2:26 AM, Dongyang Li <dongyangli@ddn.com> wrote:
 >=20
-> Hello,
+> Rename s_overhead_blocks field from struct ext2_super_block to
+> make it consistent with the kernel counterpart.
 >=20
-> I am trying to understand jbd2 checksumming procedure. I reboot ext4
-> in the middle of a metadata intensive operation using echo b>
-> /proc/sysrq-trigger. I see that the journal gets replayed on next
-> mount using prinks in jbd2/recovery.c: do_one_pass() function.
->=20
-> I then corrupt intermediate metadata logged on jbd2 and I still see
-> the journal being replayed without multiple error messages which
-> should ideally get printed when one of the two following flags -
-> JBD2_FEATURE_INCOMPAT_CSUM_V2 or JBD2_FEATURE_INCOMPAT_CSUM_V3 are
-> set.
->=20
-> I have 2 questions:
->=20
-> 1. Are the two flags: JBD2_FEATURE_INCOMPAT_CSUM_V2 and
-> JBD2_FEATURE_INCOMPAT_CSUM_V3 set by default? If not, how do we set
-> them so that the journal will detect and respond to injected
-> corruptions?
+> Signed-off-by: Li Dongyang <dongyangli@ddn.com>
 
-See set_journal_csum_feature_set() for details on how these flags are =
-set.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-> 2. this is very naive question, but what do compat and incompat
-> options mean? If flag X in incompat is set, does this mean the feature
-> does not exist?
+with one minor comment/question below...
 
-See description of the compat/incompat/ro_compat fields at:
+> ---
+> debugfs/set_fields.c        | 2 +-
+> lib/e2p/ls.c                | 6 +++---
+> lib/ext2fs/ext2_fs.h        | 2 +-
+> lib/ext2fs/swapfs.c         | 2 +-
+> lib/ext2fs/tst_super_size.c | 2 +-
+> 5 files changed, 7 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/debugfs/set_fields.c b/debugfs/set_fields.c
+> index 5142554d..f497bd92 100644
+> --- a/debugfs/set_fields.c
+> +++ b/debugfs/set_fields.c
+> @@ -160,7 +160,7 @@ static struct field_set_info super_fields[] =3D {
+> 	{ "usr_quota_inum", &set_sb.s_usr_quota_inum, NULL, 4, =
+parse_uint },
+> 	{ "grp_quota_inum", &set_sb.s_grp_quota_inum, NULL, 4, =
+parse_uint },
+> 	{ "prj_quota_inum", &set_sb.s_prj_quota_inum, NULL, 4, =
+parse_uint },
+> -	{ "overhead_blocks", &set_sb.s_overhead_blocks, NULL, 4, =
+parse_uint },
+> +	{ "overhead_clusters", &set_sb.s_overhead_clusters, NULL, 4, =
+parse_uint },
 
-https://ext4.wiki.kernel.org/index.php/Ext4_Disk_Layout#The_Super_Block
+Should we consider to keep the "overhead_blocks" name for compatibility? =
+ It
+should be listed second, after "overhead_clusters", maybe with a =
+comment.
+
+> 	{ "backup_bgs", &set_sb.s_backup_bgs[0], NULL, 4, parse_uint,
+> 	  FLAG_ARRAY, 2 },
+> 	{ "checksum", &set_sb.s_checksum, NULL, 4, parse_uint },
+> diff --git a/lib/e2p/ls.c b/lib/e2p/ls.c
+> index 5a446178..5ca750f6 100644
+> --- a/lib/e2p/ls.c
+> +++ b/lib/e2p/ls.c
+> @@ -272,9 +272,9 @@ void list_super2(struct ext2_super_block * sb, =
+FILE *f)
+> 	fprintf(f, "Inode count:              %u\n", =
+sb->s_inodes_count);
+> 	fprintf(f, "Block count:              %llu\n", =
+e2p_blocks_count(sb));
+> 	fprintf(f, "Reserved block count:     %llu\n", =
+e2p_r_blocks_count(sb));
+> -	if (sb->s_overhead_blocks)
+> -		fprintf(f, "Overhead blocks:          %u\n",
+> -			sb->s_overhead_blocks);
+> +	if (sb->s_overhead_clusters)
+> +		fprintf(f, "Overhead clusters:          %u\n",
+> +			sb->s_overhead_clusters);
+> 	fprintf(f, "Free blocks:              %llu\n", =
+e2p_free_blocks_count(sb));
+> 	fprintf(f, "Free inodes:              %u\n", =
+sb->s_free_inodes_count);
+> 	fprintf(f, "First block:              %u\n", =
+sb->s_first_data_block);
+> diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
+> index cbb44bdb..5737dc61 100644
+> --- a/lib/ext2fs/ext2_fs.h
+> +++ b/lib/ext2fs/ext2_fs.h
+> @@ -742,7 +742,7 @@ struct ext2_super_block {
+> /*200*/	__u8	s_mount_opts[64];
+> /*240*/	__u32	s_usr_quota_inum;	/* inode number of user =
+quota file */
+> 	__u32	s_grp_quota_inum;	/* inode number of group quota =
+file */
+> -	__u32	s_overhead_blocks;	/* overhead blocks/clusters in =
+fs */
+> +	__u32	s_overhead_clusters;	/* overhead blocks/clusters in =
+fs */
+> /*24c*/	__u32	s_backup_bgs[2];	/* If sparse_super2 =
+enabled */
+> /*254*/	__u8	s_encrypt_algos[4];	/* Encryption algorithms =
+in use  */
+> /*258*/	__u8	s_encrypt_pw_salt[16];	/* Salt used for =
+string2key algorithm */
+> diff --git a/lib/ext2fs/swapfs.c b/lib/ext2fs/swapfs.c
+> index a1560045..63b24330 100644
+> --- a/lib/ext2fs/swapfs.c
+> +++ b/lib/ext2fs/swapfs.c
+> @@ -121,7 +121,7 @@ void ext2fs_swap_super(struct ext2_super_block * =
+sb)
+> 	/* sb->s_mount_opts is __u8 and does not need swabbing */
+> 	sb->s_usr_quota_inum =3D ext2fs_swab32(sb->s_usr_quota_inum);
+> 	sb->s_grp_quota_inum =3D ext2fs_swab32(sb->s_grp_quota_inum);
+> -	sb->s_overhead_blocks =3D ext2fs_swab32(sb->s_overhead_blocks);
+> +	sb->s_overhead_clusters =3D =
+ext2fs_swab32(sb->s_overhead_clusters);
+> 	sb->s_backup_bgs[0] =3D ext2fs_swab32(sb->s_backup_bgs[0]);
+> 	sb->s_backup_bgs[1] =3D ext2fs_swab32(sb->s_backup_bgs[1]);
+> 	/* sb->s_encrypt_algos is __u8 and does not need swabbing */
+> diff --git a/lib/ext2fs/tst_super_size.c b/lib/ext2fs/tst_super_size.c
+> index a932685d..ab38dd59 100644
+> --- a/lib/ext2fs/tst_super_size.c
+> +++ b/lib/ext2fs/tst_super_size.c
+> @@ -135,7 +135,7 @@ int main(int argc, char **argv)
+> 	check_field(s_mount_opts, 64);
+> 	check_field(s_usr_quota_inum, 4);
+> 	check_field(s_grp_quota_inum, 4);
+> -	check_field(s_overhead_blocks, 4);
+> +	check_field(s_overhead_clusters, 4);
+> 	check_field(s_backup_bgs, 8);
+> 	check_field(s_encrypt_algos, 4);
+> 	check_field(s_encrypt_pw_salt, 16);
+> --
+> 2.22.1
+>=20
+
 
 Cheers, Andreas
 
@@ -109,7 +197,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_2D7617C9-7671-4181-8623-2CDE31F792D1
+--Apple-Mail=_B2C45E8A-19C6-4F14-BF16-BE7DD61A6A76
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -120,19 +208,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl1jTIAACgkQcqXauRfM
-H+CSuw/+L6P9LCAX8Ops0SwB3z0BRzmJ1AQAOjexJ0sAbu86uFz8rdSGhrWo32H+
-J/sPn75DNkXeZemwIm5luN3Mz17SpVCTzSzicGqmc8c+ULOWAM4fUEmGSPxWNFXC
-oaUfUHzD1HesI1XsU0kHbFeyJj+dLquKv6JM+V9fx/nPDfiNK2vtqnazqIovV05I
-2ylNwn2aYbHoUNszjCHwe15MIjE2iWF1VNFeQ+lKLgBhY76iKA/nVIStx54I8R5B
-xzpFIrXed+OQRMRYF05n4oQu7WI5tFOCD2v/x1iGmwKJ4q7KnN/RkA/C9VqGyU3d
-NC6ucr77wzu13EDOviwdku5KSYIu1ezf3WuO9/3puyt8BTeveKVnFeCkr1MYOTW2
-IRYE/yIEm0qPIqRlRoLZXq+sGRlv5GpajhkHtG/GxmlZOqPhP8p08bqll3pFi9xW
-gzNPgKHlWHnTjzVNqq9ElkxBTU8bW8RGypDmF0h+9nBsBH9nG2g76RT766d+2VQU
-NGIANP6e6D1y2F1XjscKP+lPhkYLv9vF47fewkwrufIz0p6C6zQpnb1OVzfJgcSp
-/EycehQyzXluN6P29oqKsHppMCHhYgp/z+ds4DOx/tQ2Pqf5692N3vG54tNKeZYK
-YczribrV7cqtthHiZWyq3mJ3VxT72Pf5S1h97BZVdxsQryzTS0k=
-=wr7g
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl1jTk0ACgkQcqXauRfM
+H+AkVw/8CPs5DUOf+EFBr3jcNfBLfI1/qeJRFc5ToQC0ayvDNOowAx5aVzCWpAui
+x6nevdG7nSWm77eDHYSXJs2QBcLiFbKHx549j9Ue9L9oG4M1ZrcF1qGg5h6f8NM2
+CF1UG6tDn0Ixb2ZYA8niY8MGou8a3N6x9zaGwyRMlBAnjTSp/9qsGZWWhhyhYqJU
+8ufORcR13CKX1uNa/ztx6K5goBFfOhA9OKcwel5hyNC3K2tOHn+F7d9pVGk2ps3k
+xBpvd9g1wUHeaI5/pQv14YGDkPYOHBGRYaZzZ/PWhEC7fjU1NQhjsxvxH+X3qhhZ
+h5KskFYl+BptojEdrkFLcQBeVlKTr4YBLMb8bYomdcjzfTn4OPUHUZPsLLhnuerm
+K52FgGEOwb5jXMMZTn+yQOfqoQBXpox3oL3JYpJYJz7eOS81xXP7jyKCcuJEowmr
+R2BXHHppdfT/k0qum+Zo5KUSqycuIsWr/+q34KMXfk0jAYMtUzVcD7UIb2VvDudB
+HaMbqBfnYQaFDUvEV4mJmE8KJ+rTVjceD0I1qTCoDyPyLs4JEjOPDlhU6hR6OyC3
+TBBFYcwvFQI5UWCf4nTCksneyqCCCbfSJGND3PJYKWjTmKmXSwMVfLLs2V5Bra7F
+Fom8EIrmnESgWAPyiZdFcKwVI7lZ6gYm3c4TfPulzilui9oYsn4=
+=JECV
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_2D7617C9-7671-4181-8623-2CDE31F792D1--
+--Apple-Mail=_B2C45E8A-19C6-4F14-BF16-BE7DD61A6A76--
