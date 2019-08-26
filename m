@@ -2,80 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D34C9CB7A
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 10:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334C59CB92
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 10:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729585AbfHZIYd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Aug 2019 04:24:33 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5213 "EHLO huawei.com"
+        id S1729678AbfHZIbq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Aug 2019 04:31:46 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58852 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727798AbfHZIYc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 26 Aug 2019 04:24:32 -0400
+        id S1726747AbfHZIbq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 26 Aug 2019 04:31:46 -0400
 Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id AD1C04BAE3479113E447;
-        Mon, 26 Aug 2019 16:24:28 +0800 (CST)
-Received: from [127.0.0.1] (10.74.221.148) by DGGEMS409-HUB.china.huawei.com
+        by Forcepoint Email with ESMTP id D0093D5AD12F44246E56;
+        Mon, 26 Aug 2019 16:31:44 +0800 (CST)
+Received: from [127.0.0.1] (10.177.244.145) by DGGEMS409-HUB.china.huawei.com
  (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Mon, 26 Aug 2019
- 16:24:20 +0800
-Subject: Re: [PATCH] ext4: change the type of ext4 cache stats to
- percpu_counter to improve performance
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Yang Guo <guoyang2@huawei.com>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>
-References: <1566528454-13725-1-git-send-email-zhangshaokun@hisilicon.com>
- <20190825032524.GD5163@mit.edu> <20190825172803.GA9505@sol.localdomain>
- <20190826004744.GA27472@mit.edu>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <f0495aa7-8f21-e938-9617-07ac8741acb7@hisilicon.com>
-Date:   Mon, 26 Aug 2019 16:24:20 +0800
+ 16:31:42 +0800
+Subject: Re: [PATCH v5] ext4: fix potential use after free in system zone via
+ remount with noblock_validity
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+References: <1565869639-105420-1-git-send-email-yi.zhang@huawei.com>
+ <20190825034000.GE5163@mit.edu> <20190826025612.GB4918@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, <jack@suse.cz>,
+        <adilger.kernel@dilger.ca>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <33767946-1e6f-5165-94b3-46e2da15172f@huawei.com>
+Date:   Mon, 26 Aug 2019 16:31:41 +0800
 User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.1.1
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <20190826004744.GA27472@mit.edu>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.221.148]
+In-Reply-To: <20190826025612.GB4918@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.177.244.145]
 X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ted,
-
-On 2019/8/26 8:47, Theodore Y. Ts'o wrote:
-> On Sun, Aug 25, 2019 at 10:28:03AM -0700, Eric Biggers wrote:
->> This patch is causing the following.  Probably because there's no calls to
->> percpu_counter_destroy() for the new counters?
+On 2019/8/26 10:56, Theodore Y. Ts'o Wrote:
+> I added a missing rcu_read_lock() to prevent a suspicious RCU
+> warning when CONFIG_PROVE_RCU is enabled:
 > 
-> Yeah, I noticed this from my test runs last night as well.  It looks
-> like original patch was never tested with CONFIG_HOTPLUG_CPU.
+> diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+> index 003dc1dc2da3..f7bc914a74df 100644
+> --- a/fs/ext4/block_validity.c
+> +++ b/fs/ext4/block_validity.c
+> @@ -330,11 +330,13 @@ void ext4_release_system_zone(struct super_block *sb)
+>  {
+>  	struct ext4_system_blocks *system_blks;
+>  
+> +	rcu_read_lock();
+>  	system_blks = rcu_dereference(EXT4_SB(sb)->system_blks);
+>  	rcu_assign_pointer(EXT4_SB(sb)->system_blks, NULL);
+>  
+>  	if (system_blks)
+>  		call_rcu(&system_blks->rcu, ext4_destroy_system_zone);
+> +	rcu_read_unlock();
+>  }
+>  
+>  int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
 > 
 
-Sorry that We may miss it completely, we shall double check it and
-make the proper patch carefully.
-
-> The other problem with this patch is that it initializes
-> es_stats_cache_hits and es_stats_cache_miesses too late.  They will
-> get used when the journal inode is loaded.  This is mostly harmless,
-
-I have checked it again, @es_stats_cache_hits and @es_stats_cache_miesses
-have been initialized before the journal inode is loaded, Maybe I miss
-something else?
-
-egrep "ext4_es_register_shrinker|ext4_load_journal" fs/ext4/super.c
-4260:   if (ext4_es_register_shrinker(sbi))
-4302:           err = ext4_load_journal(sb, es, journal_devnum);
+Hi Ted，
+Sorry about missing this warning, I think switch to use:
+  system_blks = rcu_dereference_raw(EXT4_SB(sb)->system_blks);
+or
+  system_blks = rcu_dereference_protected(EXT4_SB(sb)->system_blks, true);
+is enough to fix this waring, am I missing something?
 
 Thanks,
-Shaokun
-
-> but it's also wrong.
-> 
-> I've dropped this patch from the ext4 git tree.
-> 
->      	     	  	     	      - Ted
-> 
-> .
-> 
+Yi.
 
