@@ -2,145 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF9F9CBCA
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 10:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC499CD71
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 12:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730423AbfHZIkB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Aug 2019 04:40:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49144 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729523AbfHZIkB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 26 Aug 2019 04:40:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 42279B011;
-        Mon, 26 Aug 2019 08:39:59 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C5ECB1E3FE3; Mon, 26 Aug 2019 10:39:58 +0200 (CEST)
-Date:   Mon, 26 Aug 2019 10:39:58 +0200
-From:   Jan Kara <jack@suse.cz>
+        id S1730919AbfHZKlM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Aug 2019 06:41:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730640AbfHZKlM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 26 Aug 2019 06:41:12 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E32920828;
+        Mon, 26 Aug 2019 10:41:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566816070;
+        bh=8ziD+meEXqXL5pLNd7FdOcpozYaNgK5kwHaeo4uhx28=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=It43Y4jhI4WRMT7EOX/lr7UQrAHGcp7abrKi/dW/O0Kd9egEDPpQrb9qKy1oWb9pe
+         lnOftVy2OCBwYNxuaPQUMNRvYTlPGOmE5p+KJsXKHIySHdTnGKve5YDOmGidGBo/29
+         cnTh0m+X3A/MuYbOjoz90Mp0uG6r73lbyIxhL/QI=
+Message-ID: <e6f4f619967f4551adb5003d0364770fde2b8110.camel@kernel.org>
+Subject: Re: [RFC PATCH v2 02/19] fs/locks: Add Exclusive flag to user
+ Layout lease
+From:   Jeff Layton <jlayton@kernel.org>
 To:     Dave Chinner <david@fromorbit.com>
-Cc:     Joseph Qi <joseph.qi@linux.alibaba.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Joseph Qi <jiangqi903@gmail.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
-        Liu Bo <bo.liu@linux.alibaba.com>
-Subject: Re: [RFC] performance regression with "ext4: Allow parallel DIO
- reads"
-Message-ID: <20190826083958.GA10614@quack2.suse.cz>
-References: <075fd06f-b0b4-4122-81c6-e49200d5bd17@linux.alibaba.com>
- <20190816145719.GA3041@quack2.suse.cz>
- <a8ddec64-d87c-ae7a-9b02-2f24da2396e9@linux.alibaba.com>
- <20190820160805.GB10232@mit.edu>
- <f89131c9-6f84-ac3c-b53c-d3d55887ea89@linux.alibaba.com>
- <20190822054001.GT7777@dread.disaster.area>
- <f0eb766f-3c04-2a53-1669-4088e09d8f73@linux.alibaba.com>
- <20190823101623.GV7777@dread.disaster.area>
- <707b1a60-00f0-847e-02f9-e63d20eab47e@linux.alibaba.com>
- <20190824021840.GW7777@dread.disaster.area>
+Cc:     ira.weiny@intel.com, Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Date:   Mon, 26 Aug 2019 06:41:07 -0400
+In-Reply-To: <20190814215630.GQ6129@dread.disaster.area>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+         <20190809225833.6657-3-ira.weiny@intel.com>
+         <fde2959db776616008fc5d31df700f5d7d899433.camel@kernel.org>
+         <20190814215630.GQ6129@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190824021840.GW7777@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat 24-08-19 12:18:40, Dave Chinner wrote:
-> On Fri, Aug 23, 2019 at 09:08:53PM +0800, Joseph Qi wrote:
-> > 
-> > 
-> > On 19/8/23 18:16, Dave Chinner wrote:
-> > > On Fri, Aug 23, 2019 at 03:57:02PM +0800, Joseph Qi wrote:
-> > >> Hi Dave,
-> > >>
-> > >> On 19/8/22 13:40, Dave Chinner wrote:
-> > >>> On Wed, Aug 21, 2019 at 09:04:57AM +0800, Joseph Qi wrote:
-> > >>>> Hi Ted，
-> > >>>>
-> > >>>> On 19/8/21 00:08, Theodore Y. Ts'o wrote:
-> > >>>>> On Tue, Aug 20, 2019 at 11:00:39AM +0800, Joseph Qi wrote:
-> > >>>>>>
-> > >>>>>> I've tested parallel dio reads with dioread_nolock, it
-> > >>>>>> doesn't have significant performance improvement and still
-> > >>>>>> poor compared with reverting parallel dio reads. IMO, this
-> > >>>>>> is because with parallel dio reads, it take inode shared
-> > >>>>>> lock at the very beginning in ext4_direct_IO_read().
-> > >>>>>
-> > >>>>> Why is that a problem?  It's a shared lock, so parallel
-> > >>>>> threads should be able to issue reads without getting
-> > >>>>> serialized?
-> > >>>>>
-> > >>>> The above just tells the result that even mounting with
-> > >>>> dioread_nolock, parallel dio reads still has poor performance
-> > >>>> than before (w/o parallel dio reads).
-> > >>>>
-> > >>>>> Are you using sufficiently fast storage devices that you're
-> > >>>>> worried about cache line bouncing of the shared lock?  Or do
-> > >>>>> you have some other concern, such as some other thread
-> > >>>>> taking an exclusive lock?
-> > >>>>>
-> > >>>> The test case is random read/write described in my first
-> > >>>> mail. And
-> > >>>
-> > >>> Regardless of dioread_nolock, ext4_direct_IO_read() is taking
-> > >>> inode_lock_shared() across the direct IO call.  And writes in
-> > >>> ext4 _always_ take the inode_lock() in ext4_file_write_iter(),
-> > >>> even though it gets dropped quite early when overwrite &&
-> > >>> dioread_nolock is set.  But just taking the lock exclusively
-> > >>> in write fro a short while is enough to kill all shared
-> > >>> locking concurrency...
-> > >>>
-> > >>>> from my preliminary investigation, shared lock consumes more
-> > >>>> in such scenario.
-> > >>>
-> > >>> If the write lock is also shared, then there should not be a
-> > >>> scalability issue. The shared dio locking is only half-done in
-> > >>> ext4, so perhaps comparing your workload against XFS would be
-> > >>> an informative exercise... 
-> > >>
-> > >> I've done the same test workload on xfs, it behaves the same as
-> > >> ext4 after reverting parallel dio reads and mounting with
-> > >> dioread_lock.
+On Thu, 2019-08-15 at 07:56 +1000, Dave Chinner wrote:
+> On Wed, Aug 14, 2019 at 10:15:06AM -0400, Jeff Layton wrote:
+> > On Fri, 2019-08-09 at 15:58 -0700, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
 > > > 
-> > > Ok, so the problem is not shared locking scalability ('cause
-> > > that's what XFS does and it scaled fine), the problem is almost
-> > > certainly that ext4 is using exclusive locking during
-> > > writes...
+> > > Add an exclusive lease flag which indicates that the layout mechanism
+> > > can not be broken.
 > > > 
+> > > Exclusive layout leases allow the file system to know that pages may be
+> > > GUP pined and that attempts to change the layout, ie truncate, should be
+> > > failed.
+> > > 
+> > > A process which attempts to break it's own exclusive lease gets an
+> > > EDEADLOCK return to help determine that this is likely a programming bug
+> > > vs someone else holding a resource.
+> .....
+> > > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generic/fcntl.h
+> > > index baddd54f3031..88b175ceccbc 100644
+> > > --- a/include/uapi/asm-generic/fcntl.h
+> > > +++ b/include/uapi/asm-generic/fcntl.h
+> > > @@ -176,6 +176,8 @@ struct f_owner_ex {
+> > >  
+> > >  #define F_LAYOUT	16      /* layout lease to allow longterm pins such as
+> > >  				   RDMA */
+> > > +#define F_EXCLUSIVE	32      /* layout lease is exclusive */
+> > > +				/* FIXME or shoudl this be F_EXLCK??? */
+> > >  
+> > >  /* operations for bsd flock(), also used by the kernel implementation */
+> > >  #define LOCK_SH		1	/* shared lock */
 > > 
-> > Agree. Maybe I've misled you in my previous mails.I meant shared
-> > lock makes worse in case of mixed random read/write, since we
-> > would always take inode lock during write.  And it also conflicts
-> > with dioread_nolock. It won't take any inode lock before with
-> > dioread_nolock during read, but now it always takes a shared
-> > lock.
+> > This interface just seems weird to me. The existing F_*LCK values aren't
+> > really set up to be flags, but are enumerated values (even if there are
+> > some gaps on some arches). For instance, on parisc and sparc:
 > 
-> No, you didn't mislead me. IIUC, the shared locking was added to the
-> direct IO read path so that it can't run concurrently with
-> operations like hole punch that free the blocks the dio read might
-> currently be operating on (use after free).
+> I don't think we need to worry about this - the F_WRLCK version of
+> the layout lease should have these exclusive access semantics (i.e
+> other ops fail rather than block waiting for lease recall) and hence
+> the API shouldn't need a new flag to specify them.
 > 
-> i.e. the shared locking fixes an actual bug, but the performance
-> regression is a result of only partially converting the direct IO
-> path to use shared locking. Only half the job was done from a
-> performance perspective. Seems to me that the two options here to
-> fix the performance regression are to either finish the shared
-> locking conversion, or remove the shared locking on read and re-open
-> a potential data exposure issue...
+> i.e. the primary difference between F_RDLCK and F_WRLCK layout
+> leases is that the F_RDLCK is a shared, co-operative lease model
+> where only delays in operations will be seen, while F_WRLCK is a
+> "guarantee exclusive access and I don't care what it breaks"
+> model... :)
+> 
 
-We actually had a separate locking mechanism in ext4 code to avoid stale
-data exposure during hole punch when unlocked DIO reads were running. But
-it was kind of ugly and making things complex. I agree we need to move ext4
-DIO path conversion further to avoid taking exclusive lock when we won't
-actually need it.
+Not exactly...
 
-								Honza
+F_WRLCK and F_RDLCK leases can both be broken, and will eventually time
+out if there is conflicting access. The F_EXCLUSIVE flag on the other
+hand is there to prevent any sort of lease break from 
+
+I'm guessing what Ira really wants with the F_EXCLUSIVE flag is
+something akin to what happens when we set fl_break_time to 0 in the
+nfsd code. nfsd never wants the locks code to time out a lease of any
+sort, since it handles that timeout itself.
+
+If you're going to add this functionality, it'd be good to also convert
+knfsd to use it as well, so we don't end up with multiple ways to deal
+with that situation.
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jeff Layton <jlayton@kernel.org>
+
