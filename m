@@ -2,226 +2,174 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CE49C8D9
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 07:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D4D9C8D0
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 07:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729314AbfHZF4S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Aug 2019 01:56:18 -0400
-Received: from mail-eopbgr750075.outbound.protection.outlook.com ([40.107.75.75]:49989
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727797AbfHZF4S (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 26 Aug 2019 01:56:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HsSlwuv5afJdrkX0YbvY2yHkhQma3jqFcfFC/wtbDNPWlmnfCCruj213q3VhPjye0h2w3cHYVdmAxL0f3zTtLmbN2/faCdN2OjRV9mchNMF7Tda3KHUp1xZbRCIx6pj78xHpoepjaT+Wnp6awaoJYpiZ3ck2QGxuwSX/gzkCU1nPyio6m9FReM/UTSfHJBIVeZhlAjAUmPBrNWnCZd0lZ3rfiVBaNWvSC0PoGew7ZyWuGCAsO64RqHrs/FTPdxQo7DCFJWVIg0R/Myo6s48LtqVqGW/59AxTzqBbXZAlPPnIIlB2ptwcX+47HvFmMn+lnxj5jHukFCxjEwMr2I0sng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fZ1oMMcw8mO9vV8w5hRRgzbaIrTnBzSQaCI0iNc3s4E=;
- b=loXGuUXUPg1XtXRnVADn5UNyoIEJWWySTTjvuwbpFqzfykWVSUrKLS36pQ00xTqEuD0rwo6zO5YsgCvpVwiUeRSUBSUbobaZ+NROFWtuaahK5VV1MGbwfGERDXd64L8mv2s+CtSIsg213BUSGNCGQcvMzCScnLqhUOBbDX3BdV/EtpUPocZGVBJSgDhRMMLjDuVr1oK55XE16aDDO6nzo5iwHZlXBnRJikW90OSgBTbUCjRukxeA3Nm2QEsSswvIDOuFJFcMQh4R1nh3X39q84vfgKmmpZqrKI9pZCxtZbTVmKKByUNjA9iTIJkG4CRLAodIB+a15ZKHs9DJwmKGpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
- header.d=ddn.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fZ1oMMcw8mO9vV8w5hRRgzbaIrTnBzSQaCI0iNc3s4E=;
- b=aMPdFhIKk1BH33lJrm/V+n+Nql74vHstfEyZN19SBJJDB+osb2twTKtDSc0GzhV08uh6Yws6CfKE9Orwimlzrkt1dLgHn/DxPGuc9jcjJ6e9EfJR4+kY0+2NZQIalFOWiJWqcijI8i2fS+xVg9XD942AGKc0qJ3QTVC2VwVFh3o=
-Received: from BL0PR1901MB2004.namprd19.prod.outlook.com (52.132.24.157) by
- BL0PR1901MB1985.namprd19.prod.outlook.com (52.132.22.31) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2178.16; Mon, 26 Aug 2019 05:53:34 +0000
-Received: from BL0PR1901MB2004.namprd19.prod.outlook.com
- ([fe80::8106:5cf4:d22e:3737]) by BL0PR1901MB2004.namprd19.prod.outlook.com
- ([fe80::8106:5cf4:d22e:3737%7]) with mapi id 15.20.2199.021; Mon, 26 Aug 2019
- 05:53:34 +0000
-From:   Dongyang Li <dongyangli@ddn.com>
-To:     "adilger@dilger.ca" <adilger@dilger.ca>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] mke2fs: set overhead in super block for bigalloc
-Thread-Topic: [PATCH v2 4/4] mke2fs: set overhead in super block for bigalloc
-Thread-Index: AQHVWMNZPnxfhKjn7UWVswnRm8HqlKcMy2UAgAAoQwA=
-Date:   Mon, 26 Aug 2019 05:53:33 +0000
-Message-ID: <82090b26ca1b80e757048e0043d4489e5b3e6508.camel@ddn.com>
-References: <20190822082617.19180-1-dongyangli@ddn.com>
-         <20190822082617.19180-4-dongyangli@ddn.com>
-         <F25195AC-DF10-47E0-9445-074D47DACDB4@dilger.ca>
-In-Reply-To: <F25195AC-DF10-47E0-9445-074D47DACDB4@dilger.ca>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=dongyangli@ddn.com; 
-x-originating-ip: [220.233.193.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ad5c6e8f-8cde-40e9-508b-08d729e9bb30
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BL0PR1901MB1985;
-x-ms-traffictypediagnostic: BL0PR1901MB1985:
-x-microsoft-antispam-prvs: <BL0PR1901MB1985E5622E0D06F5070FFCC6CDA10@BL0PR1901MB1985.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2733;
-x-forefront-prvs: 01415BB535
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39840400004)(376002)(366004)(136003)(396003)(346002)(199004)(189003)(86362001)(7736002)(14454004)(478600001)(118296001)(53936002)(66476007)(316002)(99286004)(66556008)(64756008)(66446008)(305945005)(66946007)(2351001)(76176011)(91956017)(5660300002)(76116006)(8936002)(11346002)(446003)(186003)(229853002)(2616005)(476003)(71200400001)(71190400001)(25786009)(486006)(53546011)(6506007)(26005)(14444005)(256004)(102836004)(6246003)(36756003)(4326008)(3846002)(6116002)(2501003)(81156014)(8676002)(1730700003)(81166006)(6916009)(6512007)(2906002)(6486002)(5640700003)(66066001)(6436002);DIR:OUT;SFP:1101;SCL:1;SRVR:BL0PR1901MB1985;H:BL0PR1901MB2004.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: ddn.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: VAqn3EfJrLg9Ot3hF+40CgdxDOj5FP+Z/fERF1dcb+6864tSPNHEAvh3/07c1GMiM+XT0fgaeJYNt+d4zFtTtop6qrXfmtkCM2DdO6CBCcmLRw+jvfT/ei6FFb0n+KBNaDBZ1YxjQCJQ7xraPGxGFKyLPu5JTmN20B2rFWh0R3YqeZ9X6wleHS3DKkEl551+Dc+iyVvMqnGII4/yR85hwqR6HjLwCy7Ua8+Urqhuy4/SWi981zOQ9iQqin9Y1oYCabzzamb4Im2az184aVVdIfJRtZDxxD2HG0o/upvM0MTnadZIGGYDXMXYwqmxy8n+KDW22nL9WZePqp7jFFTEuGoZKKKGu6OzFOR9ljN7hp8EZq6Jdj8xJpABiHF1J2Mt1zB7NkHiyCTT0banEzHsLHVYe+R9r73xIzLzFuwR8Mk=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D13C59A2439EF4478806183ED9C7BF8E@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729216AbfHZFzV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Aug 2019 01:55:21 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:36676 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725806AbfHZFzV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 26 Aug 2019 01:55:21 -0400
+Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 1199A43F692;
+        Mon, 26 Aug 2019 15:55:12 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1i27yA-0002Rg-EJ; Mon, 26 Aug 2019 15:55:10 +1000
+Date:   Mon, 26 Aug 2019 15:55:10 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190826055510.GL1119@dread.disaster.area>
+References: <20190820115515.GA29246@ziepe.ca>
+ <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
+ <20190821181343.GH8653@ziepe.ca>
+ <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
+ <20190821194810.GI8653@ziepe.ca>
+ <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
+ <20190823032345.GG1119@dread.disaster.area>
+ <20190823120428.GA12968@ziepe.ca>
+ <20190824001124.GI1119@dread.disaster.area>
+ <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: ddn.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad5c6e8f-8cde-40e9-508b-08d729e9bb30
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2019 05:53:33.6951
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: njtqCL0P2pG1asHNeREi1UaEVnWc49fph4zf1pb7YGld46CV3FjgIWSFq9TwHQp+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR1901MB1985
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
+        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=7-415B0cAAAA:8 a=l-5HZ6ThFU8XlB48y_YA:9 a=qRlaua0cGjGJrKa9:21
+        a=OEwtXWmnxFRK9C0v:21 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-T24gU3VuLCAyMDE5LTA4LTI1IGF0IDIxOjI5IC0wNjAwLCBBbmRyZWFzIERpbGdlciB3cm90ZToN
-Cj4gT24gQXVnIDIyLCAyMDE5LCBhdCAyOjI2IEFNLCBEb25neWFuZyBMaSA8ZG9uZ3lhbmdsaUBk
-ZG4uY29tPiB3cm90ZToNCj4gPiBJZiBvdmVyaGVhZCBpcyBub3QgcmVjb3JkZWQgaW4gdGhlIHN1
-cGVyIGJsb2NrLCBpdCBpcyBjYWN1bGF0ZWQNCj4gPiBkdXJpbmcgbW91bnQgaW4ga2VybmVsLCBm
-b3IgYmlnYWxsb2MgZmlsZSBzeXN0ZW1zIHRoZSBpdCB0YWtlcw0KPiA+IE8oZ3JvdXBzKioyKSBp
-biB0aW1lLg0KPiA+IEZvciBhIDFQQiBkZWl2Y2Ugd2l0aCAzMksgY2x1c3RlIHNpemUgaXQgdGFr
-ZXMgfjEyIG1pbnMgdG8NCj4gPiBtb3VudCwgd2l0aCBtb3N0IG9mIHRoZSB0aW1lIHNwZW50IG9u
-IGZpZ3VyaW5nIG91dCBvdmVyaGVhZC4NCj4gPiANCj4gPiBXaGlsZSB3ZSBjYW4gbm90IGltcHJv
-dmUgdGhlIG92ZXJoZWFkIGFsZ29yaXRobSBpbiBrZXJuZWwNCj4gPiBkdWUgdG8gdGhlIG5hdHVy
-ZSBvZiBiaWdhbGxvYywgd2UgY2FuIHdvcmsgb3V0IHRoZSBvdmVyaGVhZA0KPiA+IGR1cmluZyBt
-a2UyZnMgYW5kIHNldCBpdCBpbiB0aGUgc3VwZXIgYmxvY2ssIGF2b2lkaW5nIGNhbGN1bGF0aW5n
-DQo+ID4gaXQgZXZlcnkgdGltZSB3aGVuIGl0IG1vdW50cy4NCj4gDQo+IEl0IHdvdWxkIGFsc28g
-YmUgZ29vZCB0byBnZXQgYW4gZXh0NCBwYXRjaCB0byBzYXZlIHRoZSBjYWxjdWxhdGVkDQo+IG92
-ZXJoZWFkIHRvIHNfb3ZlcmhlYWRfY2x1c3RlcnMgaWYgdGhlIGtlcm5lbCBmaW5kcyBpdCB1bnNl
-dD8NCj4gVGhhdCBpc24ndCBhbnkgbGVzcyBhY2N1cmF0ZSB0aGFuIHJlY29tcHV0aW5nIGl0IGVh
-Y2ggdGltZSwgYW5kDQo+IGF2b2lkcyBleHRyYSBvdmVyaGVhZCBvbiBlYWNoIG1vdW50IGZvciBm
-aWxlc3lzdGVtcyB0aGF0IGRpZCBub3QNCj4gZ2V0IGl0IHNldCBhdCBta2UyZnMgdGltZS4NClNv
-dW5kcyBnb29kLCB3ZSBhbHNvIG5lZWQgdG8gdXBkYXRlIHRoZSBvdmVyaGVhZCB3aGVuIHJlc2l6
-ZSBoYXBwZW5zLg0KPiANCj4gPiBPdmVyaGVhZCBpcyBzX2ZpcnN0X2RhdGFfYmxvY2sgcGx1cyBp
-bnRlcm5hbCBqb3VybmFsIGJsb2NrcyBwbHVzDQo+ID4gdGhlIGJsb2NrIGFuZCBpbm9kZSBiaXRt
-YXBzLCBpbm9kZSB0YWJsZSwgc3VwZXIgYmxvY2sgYmFja3VwcyBhbmQNCj4gPiBncm91cCBkZXNj
-cmlwdG9yIGJsb2NrcyBmb3IgZXZlcnkgZ3JvdXAuIFRoaXMgcGF0Y2ggaW50cm9kdWNlcw0KPiA+
-IGV4dDJmc19jb3VudF91c2VkX2NsdXN0ZXJzKCksIHdoaWNoIGNhbGN1bGF0ZXMgdGhlIGNsdXN0
-ZXJzIHVzZWQNCj4gPiBpbiB0aGUgYmxvY2sgYml0bWFwIGZvciB0aGUgZ2l2ZW4gcmFuZ2UuDQo+
-ID4gDQo+ID4gV2hlbiBiYWQgYmxvY2tzIGFyZSBpbnZvbHZlZCwgaXQgZ2V0cyB0cmlja3kgYmVj
-YXVzZSB0aGUgYmxvY2tzDQo+ID4gY291bnRlZCBhcyBvdmVyaGVhZCBhbmQgdGhlIGJhZCBibG9j
-a3MgY2FuIGVuZCB1cCBpbiB0aGUgc2FtZQ0KPiA+IGFsbG9jYXRpb24gY2x1c3Rlci4NCj4gDQo+
-IE9uIHRoZSBvdGhlciBoYW5kLCB3b3VsZCBpdCBiZSB3cm9uZyBpZiB0aGUgYmFkIGJsb2NrcyBh
-cmUgc3RvcmVkDQo+IGluICJzX292ZXJoZWFkX2NsdXN0ZXJzIj8NCklNSE8gdGhlIGJhZCBibG9j
-a3MgYXJlIGNvbnNpZGVyZWQgYXMgdXNlZCBibG9ja3MsIG92ZXJoZWFkIGlzIHRoZQ0KZmlsZXN5
-c3RlbSBzdHJ1Y3R1cmVzLCBzbyB0aGV5IGFyZSBkaWZmZXJlbnQuDQpTb21lb25lIHBsZWFzZSBj
-b3JyZWN0IG1lIGlmIEknbSB3cm9uZywgY29uc2lkZXJpbmcgYmFkIGJsb2NrcyBhcw0Kb3Zlcmhl
-YWQgd2lsbCBtYWtlIHRoaXMgaGVhcHMgZWFzaWVyLg0KPiANCj4gPiBJbiB0aGlzIGNhc2Ugd2Ug
-d2lsbCB1bm1hcmsgdGhlIGJhZCBibG9ja3MgZnJvbQ0KPiA+IHRoZSBibG9jayBiaXRtYXAsIGNv
-dmVydCB0byBjbHVzdGVyIGJpdG1hcCBhbmQgZ2V0IHRoZSBvdmVyaGVhZCwNCj4gDQo+ICh0eXBv
-KSAiY29udmVydCINCj4gDQo+ID4gdGhlbiBtYXJrIHRoZSBiYWQgYmxvY2tzIGJhY2sgaW4gdGhl
-IGNsdXN0ZXIgYml0bWFwLg0KPiANCj4gSW4gdGhpcyBjYXNlLCBzaG91bGQgdGhlIGJhZCBibG9j
-ayBudW1iZXJzIGJlIGNvbnZlcnRlZCB0bw0KPiBjbHVzdGVycyBkdXJpbmcgdGhlIHNlY29uZCBp
-dGVyYXRpb24/DQpleHQyZnNfbWFya19nZW5lcmljX2JtYXAoKSB3aWxsIGRvIHRoYXQgZm9yIHVz
-Lg0KPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBMaSBEb25neWFuZyA8ZG9uZ3lhbmdsaUBkZG4uY29t
-Pg0KPiA+IC0tLQ0KPiA+IGxpYi9leHQyZnMvZXh0MmZzLmggICAgICAgfCAgMiArKw0KPiA+IGxp
-Yi9leHQyZnMvZ2VuX2JpdG1hcDY0LmMgfCAzNSArKysrKysrKysrKysrKysrKysrKysrKysrKysN
-Cj4gPiBtaXNjL21rZTJmcy5jICAgICAgICAgICAgIHwgNTANCj4gPiArKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKy0NCj4gPiAzIGZpbGVzIGNoYW5nZWQsIDg2IGluc2VydGlv
-bnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvbGliL2V4dDJmcy9l
-eHQyZnMuaCBiL2xpYi9leHQyZnMvZXh0MmZzLmgNCj4gPiBpbmRleCA1OWZkOTc0Mi4uYThkZGI5
-ZTQgMTAwNjQ0DQo+ID4gLS0tIGEvbGliL2V4dDJmcy9leHQyZnMuaA0KPiA+ICsrKyBiL2xpYi9l
-eHQyZnMvZXh0MmZzLmgNCj4gPiBAQCAtMTQzNyw2ICsxNDM3LDggQEAgZXJyY29kZV90DQo+ID4g
-ZXh0MmZzX3NldF9nZW5lcmljX2JtYXBfcmFuZ2UoZXh0MmZzX2dlbmVyaWNfYml0bWFwIGJtYXAs
-DQo+ID4gCQkJCQl2b2lkICppbik7DQo+ID4gZXJyY29kZV90IGV4dDJmc19jb252ZXJ0X3N1YmNs
-dXN0ZXJfYml0bWFwKGV4dDJfZmlsc3lzIGZzLA0KPiA+IAkJCQkJICAgZXh0MmZzX2Jsb2NrX2Jp
-dG1hcA0KPiA+ICpiaXRtYXApOw0KPiA+ICtlcnJjb2RlX3QgZXh0MmZzX2NvdW50X3VzZWRfY2x1
-c3RlcnMoZXh0Ml9maWxzeXMgZnMsIGJsazY0X3QNCj4gPiBzdGFydCwNCj4gPiArCQkJCSAgICAg
-YmxrNjRfdCBlbmQsIGJsazY0X3QgKm91dCk7DQo+ID4gDQo+ID4gLyogZ2V0X251bV9kaXJzLmMg
-Ki8NCj4gPiBleHRlcm4gZXJyY29kZV90IGV4dDJmc19nZXRfbnVtX2RpcnMoZXh0Ml9maWxzeXMg
-ZnMsIGV4dDJfaW5vX3QNCj4gPiAqcmV0X251bV9kaXJzKTsNCj4gPiBkaWZmIC0tZ2l0IGEvbGli
-L2V4dDJmcy9nZW5fYml0bWFwNjQuYyBiL2xpYi9leHQyZnMvZ2VuX2JpdG1hcDY0LmMNCj4gPiBp
-bmRleCBmMWRkMTg5MS4uYjIzNzA2NjcgMTAwNjQ0DQo+ID4gLS0tIGEvbGliL2V4dDJmcy9nZW5f
-Yml0bWFwNjQuYw0KPiA+ICsrKyBiL2xpYi9leHQyZnMvZ2VuX2JpdG1hcDY0LmMNCj4gPiBAQCAt
-OTQwLDMgKzk0MCwzOCBAQCBlcnJjb2RlX3QNCj4gPiBleHQyZnNfZmluZF9maXJzdF9zZXRfZ2Vu
-ZXJpY19ibWFwKGV4dDJmc19nZW5lcmljX2JpdG1hcCBiaXRtYXAsDQo+ID4gDQo+ID4gCXJldHVy
-biBFTk9FTlQ7DQo+ID4gfQ0KPiA+ICsNCj4gPiArZXJyY29kZV90IGV4dDJmc19jb3VudF91c2Vk
-X2NsdXN0ZXJzKGV4dDJfZmlsc3lzIGZzLCBibGs2NF90DQo+ID4gc3RhcnQsDQo+ID4gKwkJCQkg
-ICAgIGJsazY0X3QgZW5kLCBibGs2NF90ICpvdXQpDQo+ID4gK3sNCj4gPiArCWJsazY0X3QJCW5l
-eHQ7DQo+ID4gKwlibGs2NF90CQl0b3Rfc2V0ID0gMDsNCj4gPiArCWVycmNvZGVfdAlyZXR2YWw7
-DQo+ID4gKw0KPiA+ICsJd2hpbGUgKHN0YXJ0IDwgZW5kKSB7DQo+ID4gKwkJcmV0dmFsID0gZXh0
-MmZzX2ZpbmRfZmlyc3Rfc2V0X2Jsb2NrX2JpdG1hcDIoZnMtDQo+ID4gPmJsb2NrX21hcCwNCj4g
-PiArCQkJCQkJCXN0YXJ0LCBlbmQsDQo+ID4gJm5leHQpOw0KPiA+ICsJCWlmIChyZXR2YWwpIHsN
-Cj4gPiArCQkJaWYgKHJldHZhbCA9PSBFTk9FTlQpDQo+ID4gKwkJCQlyZXR2YWwgPSAwOw0KPiA+
-ICsJCQlicmVhazsNCj4gPiArCQl9DQo+ID4gKwkJc3RhcnQgPSBuZXh0Ow0KPiA+ICsNCj4gPiAr
-CQlyZXR2YWwgPSBleHQyZnNfZmluZF9maXJzdF96ZXJvX2Jsb2NrX2JpdG1hcDIoZnMtDQo+ID4g
-PmJsb2NrX21hcCwNCj4gPiArCQkJCQkJCXN0YXJ0LCBlbmQsDQo+ID4gJm5leHQpOw0KPiA+ICsJ
-CWlmIChyZXR2YWwgPT0gMCkgew0KPiA+ICsJCQl0b3Rfc2V0ICs9IG5leHQgLSBzdGFydDsNCj4g
-PiArCQkJc3RhcnQgID0gbmV4dCArIDE7DQo+ID4gKwkJfSBlbHNlIGlmIChyZXR2YWwgPT0gRU5P
-RU5UKSB7DQo+ID4gKwkJCXJldHZhbCA9IDA7DQo+ID4gKwkJCXRvdF9zZXQgKz0gZW5kIC0gc3Rh
-cnQgKyAxOw0KPiA+ICsJCQlicmVhazsNCj4gPiArCQl9IGVsc2UNCj4gPiArCQkJYnJlYWs7DQo+
-ID4gKwl9DQo+ID4gKw0KPiA+ICsJaWYgKCFyZXR2YWwpDQo+ID4gKwkJKm91dCA9IEVYVDJGU19O
-VU1fQjJDKGZzLCB0b3Rfc2V0KTsNCj4gPiArCXJldHVybiByZXR2YWw7DQo+ID4gK30NCj4gPiBk
-aWZmIC0tZ2l0IGEvbWlzYy9ta2UyZnMuYyBiL21pc2MvbWtlMmZzLmMNCj4gPiBpbmRleCAzMGUz
-NTNkMy4uMTkyOGM5YmYgMTAwNjQ0DQo+ID4gLS0tIGEvbWlzYy9ta2UyZnMuYw0KPiA+ICsrKyBi
-L21pc2MvbWtlMmZzLmMNCj4gPiBAQCAtMjkxMiw2ICsyOTEyLDggQEAgaW50IG1haW4gKGludCBh
-cmdjLCBjaGFyICphcmd2W10pDQo+ID4gCWVycmNvZGVfdAlyZXR2YWwgPSAwOw0KPiA+IAlleHQy
-X2ZpbHN5cwlmczsNCj4gPiAJYmFkYmxvY2tzX2xpc3QJYmJfbGlzdCA9IDA7DQo+ID4gKwliYWRi
-bG9ja3NfaXRlcmF0ZQliYl9pdGVyOw0KPiA+ICsJYmxrX3QJCWJsazsNCj4gPiAJdW5zaWduZWQg
-aW50CWpvdXJuYWxfYmxvY2tzID0gMDsNCj4gPiAJdW5zaWduZWQgaW50CWksIGNoZWNraW50ZXJ2
-YWw7DQo+ID4gCWludAkJbWF4X21udF9jb3VudDsNCj4gPiBAQCAtMjkyMiw2ICsyOTI0LDcgQEAg
-aW50IG1haW4gKGludCBhcmdjLCBjaGFyICphcmd2W10pDQo+ID4gCWNoYXIJCW9wdF9zdHJpbmdb
-NDBdOw0KPiA+IAljaGFyCQkqaGFzaF9hbGdfc3RyOw0KPiA+IAlpbnQJCWl0YWJsZV96ZXJvZWQg
-PSAwOw0KPiA+ICsJYmxrNjRfdAkJb3ZlcmhlYWQ7DQo+ID4gDQo+ID4gI2lmZGVmIEVOQUJMRV9O
-TFMNCj4gPiAJc2V0bG9jYWxlKExDX01FU1NBR0VTLCAiIik7DQo+ID4gQEAgLTMyMTMsNiArMzIx
-NiwyMyBAQCBpbnQgbWFpbiAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkNCj4gPiAJaWYgKCFxdWll
-dCkNCj4gPiAJCXByaW50ZigiJXMiLCBfKCJkb25lICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IFxuIikpOw0KPiA+IA0KPiA+ICsJLyoNCj4gPiArCSAqIFVubWFyayBiYWQgYmxvY2tzIHRvIGNh
-bGN1bGF0ZSBvdmVyaGVhZCwgYmVjYXVzZSBtZXRhZGF0YQ0KPiA+ICsgCSAqIGJsb2NrcyBhbmQg
-YmFkIGJsb2NrcyBjYW4gbGFuZCBvbiB0aGUgc2FtZSBhbGxvY2F0aW9uDQo+ID4gY2x1c3Rlci4N
-Cj4gPiArIAkgKi8NCj4gPiArCWlmIChiYl9saXN0KSB7DQo+ID4gKwkJcmV0dmFsID0gZXh0MmZz
-X2JhZGJsb2Nrc19saXN0X2l0ZXJhdGVfYmVnaW4oYmJfbGlzdCwNCj4gPiArCQkJCQkJCSAgICAg
-JmJiX2l0ZXIpOw0KPiA+ICsJCWlmIChyZXR2YWwpIHsNCj4gPiArCQkJY29tX2VycigiZXh0MmZz
-X2JhZGJsb2Nrc19saXN0X2l0ZXJhdGVfYmVnaW4iLA0KPiA+IHJldHZhbCwNCj4gPiArCQkJCSIl
-cyIsIF8oIndoaWxlIHVubWFya2luZyBiYWQgYmxvY2tzIikpOw0KPiA+ICsJCQlleGl0KDEpOw0K
-PiA+ICsJCX0NCj4gPiArCQl3aGlsZSAoZXh0MmZzX2JhZGJsb2Nrc19saXN0X2l0ZXJhdGUoYmJf
-aXRlciwgJmJsaykpDQo+ID4gKwkJCWV4dDJmc191bm1hcmtfYmxvY2tfYml0bWFwMihmcy0+Ymxv
-Y2tfbWFwLA0KPiA+IGJsayk7DQo+ID4gKwkJZXh0MmZzX2JhZGJsb2Nrc19saXN0X2l0ZXJhdGVf
-ZW5kKGJiX2l0ZXIpOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiAJcmV0dmFsID0gZXh0MmZzX2NvbnZl
-cnRfc3ViY2x1c3Rlcl9iaXRtYXAoZnMsICZmcy0+YmxvY2tfbWFwKTsNCj4gPiAJaWYgKHJldHZh
-bCkgew0KPiA+IAkJY29tX2Vycihwcm9ncmFtX25hbWUsIHJldHZhbCwgIiVzIiwNCj4gPiBAQCAt
-MzIyMCw2ICszMjQwLDI4IEBAIGludCBtYWluIChpbnQgYXJnYywgY2hhciAqYXJndltdKQ0KPiA+
-IAkJZXhpdCgxKTsNCj4gPiAJfQ0KPiA+IA0KPiA+ICsJcmV0dmFsID0gZXh0MmZzX2NvdW50X3Vz
-ZWRfY2x1c3RlcnMoZnMsIGZzLT5zdXBlci0NCj4gPiA+c19maXJzdF9kYXRhX2Jsb2NrLA0KPiA+
-ICsJCQkJCWV4dDJmc19ibG9ja3NfY291bnQoZnMtPnN1cGVyKQ0KPiA+IC0gMSwNCj4gPiArCQkJ
-CQkmb3ZlcmhlYWQpOw0KPiA+ICsJaWYgKHJldHZhbCkgew0KPiA+ICsJCWNvbV9lcnIocHJvZ3Jh
-bV9uYW1lLCByZXR2YWwsICIlcyIsDQo+ID4gKwkJCV8oIndoaWxlIGNhbGN1bGF0aW5nIG92ZXJo
-ZWFkIikpOw0KPiA+ICsJCWV4aXQoMSk7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJaWYgKGJiX2xp
-c3QpIHsNCj4gPiArCQlyZXR2YWwgPSBleHQyZnNfYmFkYmxvY2tzX2xpc3RfaXRlcmF0ZV9iZWdp
-bihiYl9saXN0LA0KPiA+ICsJCQkJCQkJICAgICAmYmJfaXRlcik7DQo+ID4gKwkJaWYgKHJldHZh
-bCkgew0KPiA+ICsJCQljb21fZXJyKCJleHQyZnNfYmFkYmxvY2tzX2xpc3RfaXRlcmF0ZV9iZWdp
-biIsDQo+ID4gcmV0dmFsLA0KPiA+ICsJCQkJIiVzIiwgXygid2hpbGUgbWFya2luZyBiYWQgYmxv
-Y2tzIGFzDQo+ID4gdXNlZCIpKTsNCj4gPiArCQkJZXhpdCgxKTsNCj4gPiArCQl9DQo+ID4gKwkJ
-d2hpbGUgKGV4dDJmc19iYWRibG9ja3NfbGlzdF9pdGVyYXRlKGJiX2l0ZXIsICZibGspKQ0KPiA+
-ICsJCQlleHQyZnNfbWFya19ibG9ja19iaXRtYXAyKGZzLT5ibG9ja19tYXAsIGJsayk7DQo+ID4g
-KwkJZXh0MmZzX2JhZGJsb2Nrc19saXN0X2l0ZXJhdGVfZW5kKGJiX2l0ZXIpOw0KPiA+ICsJfQ0K
-PiA+ICsNCj4gPiAJaWYgKHN1cGVyX29ubHkpIHsNCj4gPiAJCWNoZWNrX3BsYXVzaWJpbGl0eShk
-ZXZpY2VfbmFtZSwgQ0hFQ0tfRlNfRVhJU1QsIE5VTEwpOw0KPiA+IAkJcHJpbnRmKF8oIiVzIG1h
-eSBiZSBmdXJ0aGVyIGNvcnJ1cHRlZCBieSBzdXBlcmJsb2NrDQo+ID4gcmV3cml0ZVxuIiksDQo+
-ID4gQEAgLTMzMTcsNiArMzM1OSw3IEBAIGludCBtYWluIChpbnQgYXJnYywgY2hhciAqYXJndltd
-KQ0KPiA+IAkJZnJlZShqb3VybmFsX2RldmljZSk7DQo+ID4gCX0gZWxzZSBpZiAoKGpvdXJuYWxf
-c2l6ZSkgfHwNCj4gPiAJCSAgIGV4dDJmc19oYXNfZmVhdHVyZV9qb3VybmFsKCZmc19wYXJhbSkp
-IHsNCj4gPiArCQlvdmVyaGVhZCArPSBFWFQyRlNfTlVNX0IyQyhmcywgam91cm5hbF9ibG9ja3Mp
-Ow0KPiA+IAkJaWYgKHN1cGVyX29ubHkpIHsNCj4gPiAJCQlwcmludGYoIiVzIiwgXygiU2tpcHBp
-bmcgam91cm5hbCBjcmVhdGlvbiBpbg0KPiA+IHN1cGVyLW9ubHkgbW9kZVxuIikpOw0KPiA+IAkJ
-CWZzLT5zdXBlci0+c19qb3VybmFsX2ludW0gPSBFWFQyX0pPVVJOQUxfSU5POw0KPiA+IEBAIC0z
-MzU5LDggKzM0MDIsMTMgQEAgbm9fam91cm5hbDoNCj4gPiAJCQkgICAgICAgZnMtPnN1cGVyLT5z
-X21tcF91cGRhdGVfaW50ZXJ2YWwpOw0KPiA+IAl9DQo+ID4gDQo+ID4gLQlpZiAoZXh0MmZzX2hh
-c19mZWF0dXJlX2JpZ2FsbG9jKCZmc19wYXJhbSkpDQo+ID4gKwlvdmVyaGVhZCArPSBmcy0+c3Vw
-ZXItPnNfZmlyc3RfZGF0YV9ibG9jazsNCj4gPiArDQo+ID4gKwlpZiAoZXh0MmZzX2hhc19mZWF0
-dXJlX2JpZ2FsbG9jKCZmc19wYXJhbSkpIHsNCj4gPiArCQlpZiAoIXN1cGVyX29ubHkpDQo+ID4g
-KwkJCWZzLT5zdXBlci0+c19vdmVyaGVhZF9jbHVzdGVycyA9IG92ZXJoZWFkOw0KPiA+IAkJZml4
-X2NsdXN0ZXJfYmdfY291bnRzKGZzKTsNCj4gPiArCX0NCj4gDQo+IFNob3VsZCB3ZSBjb25zaWRl
-ciB0byBhbHdheXMgc3RvcmUgdGhlIG92ZXJoZWFkIHZhbHVlIGludG8gdGhlDQo+IHN1cGVyYmxv
-Y2ssDQo+IHJlZ2FyZGxlc3Mgb2Ygd2hldGhlciBiaWdhbGxvYyBpcyBlbmFibGVkIG9yIG5vdD8N
-Cj4gDQo+IENoZWVycywgQW5kcmVhcw0KPiANCj4gDQo+IA0KPiANCj4gDQo=
+On Fri, Aug 23, 2019 at 10:08:36PM -0700, Ira Weiny wrote:
+> On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
+> > On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
+> > > On Fri, Aug 23, 2019 at 01:23:45PM +1000, Dave Chinner wrote:
+> > > 
+> > > > > But the fact that RDMA, and potentially others, can "pass the
+> > > > > pins" to other processes is something I spent a lot of time trying to work out.
+> > > > 
+> > > > There's nothing in file layout lease architecture that says you
+> > > > can't "pass the pins" to another process.  All the file layout lease
+> > > > requirements say is that if you are going to pass a resource for
+> > > > which the layout lease guarantees access for to another process,
+> > > > then the destination process already have a valid, active layout
+> > > > lease that covers the range of the pins being passed to it via the
+> > > > RDMA handle.
+> > > 
+> > > How would the kernel detect and enforce this? There are many ways to
+> > > pass a FD.
+> > 
+> > AFAIC, that's not really a kernel problem. It's more of an
+> > application design constraint than anything else. i.e. if the app
+> > passes the IB context to another process without a lease, then the
+> > original process is still responsible for recalling the lease and
+> > has to tell that other process to release the IB handle and it's
+> > resources.
+> > 
+> > > IMHO it is wrong to try and create a model where the file lease exists
+> > > independently from the kernel object relying on it. In other words the
+> > > IB MR object itself should hold a reference to the lease it relies
+> > > upon to function properly.
+> > 
+> > That still doesn't work. Leases are not individually trackable or
+> > reference counted objects objects - they are attached to a struct
+> > file bUt, in reality, they are far more restricted than a struct
+> > file.
+> > 
+> > That is, a lease specifically tracks the pid and the _open fd_ it
+> > was obtained for, so it is essentially owned by a specific process
+> > context.  Hence a lease is not able to be passed to a separate
+> > process context and have it still work correctly for lease break
+> > notifications.  i.e. the layout break signal gets delivered to
+> > original process that created the struct file, if it still exists
+> > and has the original fd still open. It does not get sent to the
+> > process that currently holds a reference to the IB context.
+> >
+> 
+> The fcntl man page says:
+> 
+> "Leases are associated with an open file description (see open(2)).  This means
+> that duplicate file descriptors (created by, for example, fork(2) or dup(2))
+> refer to the same lease, and this lease may be modified or released using any
+> of these descriptors.  Furthermore,  the lease is released by either an
+> explicit F_UNLCK operation on any of these duplicate file descriptors, or when
+> all such file descriptors have been closed."
+
+Right, the lease is attached to the struct file, so it follows
+where-ever the struct file goes. That doesn't mean it's actually
+useful when the struct file is duplicated and/or passed to another
+process. :/
+
+AFAICT, the problem is that when we take another reference to the
+struct file, or when the struct file is passed to a different
+process, nothing updates the lease or lease state attached to that
+struct file.
+
+> From this I took it that the child process FD would have the lease as well
+> _and_ could release it.  I _assumed_ that applied to SCM_RIGHTS but it does not
+> seem to work the same way as dup() so I'm not so sure.
+
+Sure, that part works because the struct file is passed. It doesn't
+end up with the same fd number in the other process, though.
+
+The issue is that layout leases need to notify userspace when they
+are broken by the kernel, so a lease stores the owner pid/tid in the
+file->f_owner field via __f_setown(). It also keeps a struct fasync
+attached to the file_lock that records the fd that the lease was
+created on.  When a signal needs to be sent to userspace for that
+lease, we call kill_fasync() and that walks the list of fasync
+structures on the lease and calls:
+
+	send_sigio(fown, fa->fa_fd, band);
+
+And it does for every fasync struct attached to a lease. Yes, a
+lease can track multiple fds, but it can only track them in a single
+process context. The moment the struct file is shared with another
+process, the lease is no longer capable of sending notifications to
+all the lease holders.
+
+Yes, you can change the owning process via F_SETOWNER, but that's
+still only a single process context, and you can't change the fd in
+the fasync list. You can add new fd to an existing lease by calling
+F_SETLEASE on the new fd, but you still only have a single process
+owner context for signal delivery.
+
+As such, leases that require callbacks to userspace are currently
+only valid within the process context the lease was taken in.
+Indeed, even closing the fd the lease was taken on without
+F_UNLCKing it first doesn't mean the lease has been torn down if
+there is some other reference to the struct file. That means the
+original lease owner will still get SIGIO delivered to that fd on a
+lease break regardless of whether it is open or not. ANd if we
+implement "layout lease not released within SIGIO response timeout"
+then that process will get killed, despite the fact it may not even
+have a reference to that file anymore.
+
+So, AFAICT, leases that require userspace callbacks only work within
+their original process context while they original fd is still open.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
