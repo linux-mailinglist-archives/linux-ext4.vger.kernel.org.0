@@ -2,65 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC359DBAC
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 04:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DF19DC32
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 05:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbfH0Cix (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Aug 2019 22:38:53 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58009 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727887AbfH0Cix (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Aug 2019 22:38:53 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7R2cmxC013004
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Aug 2019 22:38:49 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id A86FA42049E; Mon, 26 Aug 2019 22:38:48 -0400 (EDT)
-Date:   Mon, 26 Aug 2019 22:38:48 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] ext4: attempt to shrink directory on dentry removal
-Message-ID: <20190827023848.GH28066@mit.edu>
-References: <20190821182740.97127-1-harshadshirwadkar@gmail.com>
- <7303B125-6C0E-41C2-A71E-4AF8C9776468@dilger.ca>
- <CAD+ocbzT=A4LW7CYBC_mxh2cf3ZxUhvffhtpO0LnfkXAJDy0Kw@mail.gmail.com>
+        id S1729132AbfH0D6u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Aug 2019 23:58:50 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21052 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729116AbfH0D6t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 26 Aug 2019 23:58:49 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7R3v0RF011514
+        for <linux-ext4@vger.kernel.org>; Mon, 26 Aug 2019 23:58:48 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2umu302wme-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Mon, 26 Aug 2019 23:58:48 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Tue, 27 Aug 2019 04:58:45 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 27 Aug 2019 04:58:42 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7R3wfYE29294656
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Aug 2019 03:58:41 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 721F042041;
+        Tue, 27 Aug 2019 03:58:41 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63EB842042;
+        Tue, 27 Aug 2019 03:58:40 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.124.31.57])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Aug 2019 03:58:40 +0000 (GMT)
+Subject: Re: [RFC 0/2] ext4: bmap & fiemap conversion to use iomap
+To:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        tytso@mit.edu
+Cc:     mbobrowski@mbobrowski.org, linux-fsdevel@vger.kernel.org
+References: <20190820130634.25954-1-riteshh@linux.ibm.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Tue, 27 Aug 2019 09:28:39 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD+ocbzT=A4LW7CYBC_mxh2cf3ZxUhvffhtpO0LnfkXAJDy0Kw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190820130634.25954-1-riteshh@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19082703-0020-0000-0000-0000036454BA
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19082703-0021-0000-0000-000021B99F38
+Message-Id: <20190827035840.63EB842042@d06av24.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-26_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1908270043
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Aug 26, 2019 at 02:46:01PM -0700, harshad shirwadkar wrote:
-> By this method we end up reading up to 2 extra blocks (one previous
-> and one next) that are not going to be merged. That's the trade-off we
-> have to make in order to avoid any changes to on-disk structure (If we
-> modify the on-disk structure and store the fullness in the dx block,
-> we would read only the blocks that need to be merged).
+Hello Ted/Jan/Andreas,
 
-We can also adjust the merging strategy depending on whether the
-previous and/or next blocks are in memory.  If they are in memory,
-that we might try merging if the block is < 50% full.  If they are not
-in memory, it might not be worth doing the read until the block is
-empty, or maybe, say, 10% full.
+Any review comments on this please?
 
-> Since merging approach also requires a way to free up directory
-> blocks, I think we could first get a patch in that can free up
-> directory blocks by swapping with the last block. Once we have that
-> then we could implement merging.
 
-I agree; I'd wait to implementing merging until we get directory block
-removal working.  Simply trying to shrink the directory when a leaf
-block which is *not* the last block in an indexed directory is going
-to be substantially better compared to waiting until the last block in
-the directory is empty.
+One more thing which I wanted to discuss about this patch set is 
+testcase generic/473 ("Hole + Data" case).
+With iomap we only report extent information upto what user requested
+which I think is different than previous implementation.
 
-						- Ted
+I see that with iomap, generic/473 test case("hole + data" case) shows 
+as failed, although it reported the data extents only upto what user 
+requested. Also as per Documentation/filesystems/fiemap.txt, both
+outputs are proper.
+
+
+i.e. for below case (generic/473)
+  63 echo "Hole + Data"
+  64 $XFS_IO_PROG -c "fiemap -v 0 65k" $file | _filter_fiemap
+
+<output for both ext4(with this patchset) & XFS is this>
+
+generic/473 3s ... - output mismatch (see 
+/home/qemu/work/xfstests-dev/results//xfs_filesystem/generic/473.out.bad)
+     --- tests/generic/473.out   2019-07-05 10:49:42.130902595 +0530
+     +++ 
+/home/qemu/work/xfstests-dev/results//xfs_filesystem/generic/473.out.bad 
+        2019-08-27 09:26:20.823980693 +0530
+     @@ -6,7 +6,7 @@
+      1: [256..287]: hole
+      Hole + Data
+      0: [0..127]: hole
+     -1: [128..255]: data
+     +1: [128..135]: data
+      Hole + Data + Hole
+      0: [0..127]: hole
+     ...
+
+
+-ritesh
+
+On 8/20/19 6:36 PM, Ritesh Harjani wrote:
+> Hello,
+> 
+> These are RFC patches to get community view on converting
+> ext4 bmap & fiemap to iomap infrastructure. This reduces the users
+> of ext4_get_block API and thus a step towards getting rid of
+> buffer_heads from ext4. Also reduces the line of code by making
+> use of iomap infrastructure (ex4_iomap_begin) which is already
+> used for other operations.
+> 
+> This gets rid of special implementation of ext4_fill_fiemap_extents
+> & ext4_find_delayed_extent and thus only relies upon ext4_map_blocks
+> & iomap_fiemap (ext4_iomap_begin) for mapping. It looked more logical
+> thing to do, but I appreciate if anyone has any review/feedback
+> comments about this part.
+> 
+> Didn't get any regression on some basic xfstests in tests/ext4/
+> with mkfs option of "-b 4096". Please let me know if I should also test
+> any special configurations?
+> 
+> Patches can be cleanly applied over Linux 5.3-rc5.
+> 
+> 
+> Ritesh Harjani (2):
+>    ext4: Move ext4 bmap to use iomap infrastructure.
+>    ext4: Move ext4_fiemap to iomap infrastructure
+> 
+>   fs/ext4/extents.c | 294 +++++++---------------------------------------
+>   fs/ext4/inline.c  |  41 -------
+>   fs/ext4/inode.c   |  17 ++-
+>   3 files changed, 53 insertions(+), 299 deletions(-)
+> 
+
