@@ -2,91 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0E29E32C
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 10:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA19C9E3DA
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 11:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbfH0Iwj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Aug 2019 04:52:39 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:45388 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbfH0Iwi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Aug 2019 04:52:38 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7R8mnou135868;
-        Tue, 27 Aug 2019 08:52:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
- bh=bSF9FeAxhVkI0MFxm9TIMwM291/MWgLqiQOkLqwX08Q=;
- b=SSk9TDHSCp1vks7AFi3QbmwLTPNS0c5g7ELEd9Xo2jIdO7Jy6j7EtL9OLC4kq6M5I1bf
- 3YDc9CrFi9Wi1pSJ1bq23p6yoEKimlUaTEgK8j0dyrKdhLGS7uGNP1c3qkV3h+wh8vq3
- qpn23OS3w/bOJrq2N1S7l8+OUCSMxbam9YuNUiDxT6ER1aOR1NMrfJhOmNpTbuD9KG6E
- 4BZURKtOR5kEOLgiDSFdA7tsqctFXZxHmRZXdlLN0ejSml52g5jTXZAoJdRdP0U5wwEE
- K3Z8zijiFH9EH444Iqqr0rHLNcBr97Qr3ckb+PKihvmh7vrIEKLS6i51mZb23TaWgGuY yQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2umyvt0vcw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Aug 2019 08:52:34 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7R8gTDn144206;
-        Tue, 27 Aug 2019 08:47:33 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 2umj281576-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Aug 2019 08:47:33 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7R8lWhs032722;
-        Tue, 27 Aug 2019 08:47:32 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 27 Aug 2019 01:47:32 -0700
-Date:   Tue, 27 Aug 2019 11:47:25 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>, Eric Whitney <enwlinux@gmail.com>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] ext4: tidy up white space in count_rsvd()
-Message-ID: <20190827084725.GA22301@mwanda>
+        id S1729388AbfH0JUu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Aug 2019 05:20:50 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5221 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725912AbfH0JUt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 27 Aug 2019 05:20:49 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B349910FF19798F531BF;
+        Tue, 27 Aug 2019 17:20:46 +0800 (CST)
+Received: from [127.0.0.1] (10.177.244.145) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Tue, 27 Aug 2019
+ 17:20:41 +0800
+Subject: Re: [PATCH v5] ext4: fix potential use after free in system zone via
+ remount with noblock_validity
+To:     Jan Kara <jack@suse.cz>
+References: <1565869639-105420-1-git-send-email-yi.zhang@huawei.com>
+ <20190825034000.GE5163@mit.edu> <20190826025612.GB4918@mit.edu>
+ <33767946-1e6f-5165-94b3-46e2da15172f@huawei.com>
+ <20190826150350.GH10614@quack2.suse.cz>
+CC:     "Theodore Y. Ts'o" <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
+        <adilger.kernel@dilger.ca>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <6874efe7-17e9-6651-0b38-22b8b8946599@huawei.com>
+Date:   Tue, 27 Aug 2019 17:20:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9361 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908270098
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9361 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908270099
+In-Reply-To: <20190826150350.GH10614@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.177.244.145]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This line was indented one tab too far.
+On 2019/8/26 23:03, Jan Kara Wrote:
+> On Mon 26-08-19 16:31:41, zhangyi (F) wrote:
+>> On 2019/8/26 10:56, Theodore Y. Ts'o Wrote:
+>>> I added a missing rcu_read_lock() to prevent a suspicious RCU
+>>> warning when CONFIG_PROVE_RCU is enabled:
+>>>
+>>> diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+>>> index 003dc1dc2da3..f7bc914a74df 100644
+>>> --- a/fs/ext4/block_validity.c
+>>> +++ b/fs/ext4/block_validity.c
+>>> @@ -330,11 +330,13 @@ void ext4_release_system_zone(struct super_block *sb)
+>>>  {
+>>>  	struct ext4_system_blocks *system_blks;
+>>>  
+>>> +	rcu_read_lock();
+>>>  	system_blks = rcu_dereference(EXT4_SB(sb)->system_blks);
+>>>  	rcu_assign_pointer(EXT4_SB(sb)->system_blks, NULL);
+>>>  
+>>>  	if (system_blks)
+>>>  		call_rcu(&system_blks->rcu, ext4_destroy_system_zone);
+>>> +	rcu_read_unlock();
+>>>  }
+>>>  
+>>>  int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
+>>>
+>>
+>> Hi Ted，
+>> Sorry about missing this warning, I think switch to use:
+>>   system_blks = rcu_dereference_raw(EXT4_SB(sb)->system_blks);
+>> or
+>>   system_blks = rcu_dereference_protected(EXT4_SB(sb)->system_blks, true);
+>> is enough to fix this waring, am I missing something?
+> 
+> Proper fix for this is actually using:
+> 
+>  system_blks = rcu_dereference_protected(EXT4_SB(sb)->system_blks,
+> 					 lockdep_is_held(&sb->s_umount));
+> 
+Totally agree, will resend the patch.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- fs/ext4/extents_status.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-index dc28a9642452..f17e3f521a17 100644
---- a/fs/ext4/extents_status.c
-+++ b/fs/ext4/extents_status.c
-@@ -1089,7 +1089,7 @@ static void count_rsvd(struct inode *inode, ext4_lblk_t lblk, long len,
- 	 */
- 	if ((i + sbi->s_cluster_ratio - 1) <= end) {
- 		nclu = (end - i + 1) >> sbi->s_cluster_bits;
--			rc->ndelonly += nclu;
-+		rc->ndelonly += nclu;
- 		i += nclu << sbi->s_cluster_bits;
- 	}
- 
--- 
-2.20.1
+Thanks,
+Yi.
 
