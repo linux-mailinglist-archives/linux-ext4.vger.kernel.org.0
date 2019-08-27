@@ -2,83 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F46E9DD46
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 07:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE68C9DD69
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 08:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729249AbfH0Fq5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Aug 2019 01:46:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:38476 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729137AbfH0Fq5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 27 Aug 2019 01:46:57 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 9AE8DE6BE64AB22EFF1E;
-        Tue, 27 Aug 2019 13:46:54 +0800 (CST)
-Received: from [127.0.0.1] (10.74.221.148) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.439.0; Tue, 27 Aug 2019
- 13:46:48 +0800
-Subject: Re: [PATCH] ext4: change the type of ext4 cache stats to
- percpu_counter to improve performance
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Yang Guo <guoyang2@huawei.com>,
-        "Andreas Dilger" <adilger.kernel@dilger.ca>
-References: <1566528454-13725-1-git-send-email-zhangshaokun@hisilicon.com>
- <20190825032524.GD5163@mit.edu> <20190825172803.GA9505@sol.localdomain>
- <20190826004744.GA27472@mit.edu>
- <f0495aa7-8f21-e938-9617-07ac8741acb7@hisilicon.com>
- <20190826155728.GE4918@mit.edu>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <31888086-9ad8-6442-cbf6-c777cbc4947c@hisilicon.com>
-Date:   Tue, 27 Aug 2019 13:46:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.1.1
+        id S1726071AbfH0GG6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Aug 2019 02:06:58 -0400
+Received: from mail.aixigo.de ([5.145.142.10]:40206 "EHLO mail.aixigo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725874AbfH0GG6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 27 Aug 2019 02:06:58 -0400
+X-Greylist: delayed 402 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Aug 2019 02:06:57 EDT
+Received: from srvvm01.ac.aixigo.de (mail.ac.aixigo.de [172.19.96.11])
+        by gate5a.ac.aixigo.de (OpenSMTPD) with ESMTPS id c965f4ed (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO)
+        for <linux-ext4@vger.kernel.org>;
+        Tue, 27 Aug 2019 08:00:15 +0200 (CEST)
+Received: from dpcl082.ac.aixigo.de (dpcl082.ac.aixigo.de [172.19.97.128])
+        by srvvm01.ac.aixigo.de (8.15.2/8.15.2/Debian-8) with ESMTP id x7R60EJk3921397;
+        Tue, 27 Aug 2019 08:00:15 +0200
+To:     linux-ext4@vger.kernel.org
+From:   Harald Dunkel <harald.dunkel@aixigo.com>
+Subject: fsck on ext4: "WARN Wrong bounce buffer write length: 1024 != 0"
+Message-ID: <22367f07-3448-f771-0363-b5c6f500b77d@aixigo.com>
+Date:   Tue, 27 Aug 2019 08:00:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190826155728.GE4918@mit.edu>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.221.148]
-X-CFilter-Loop: Reflected
+X-Virus-Scanned: clamav-milter 0.101.1 at srvvm01.ac.aixigo.de
+X-Virus-Status: Clean
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Theodore,
+FYI: "fsck -y" on an external USB drive (USB-C, ext4) gave
+me a ton of messages
 
-On 2019/8/26 23:57, Theodore Y. Ts'o wrote:
-> On Mon, Aug 26, 2019 at 04:24:20PM +0800, Shaokun Zhang wrote:
->>> The other problem with this patch is that it initializes
->>> es_stats_cache_hits and es_stats_cache_miesses too late.  They will
->>> get used when the journal inode is loaded.  This is mostly harmless,
->>
->> I have checked it again, @es_stats_cache_hits and @es_stats_cache_miesses
->> have been initialized before the journal inode is loaded, Maybe I miss
->> something else?
-> 
-> No, sorry, that was my mistake.  I misread things when I was looking
-> over your patch last night.
-> 
-> Please resubmit your patch once you've fixed things up and tested it.
-> 
+:
+[  191.261939] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
+[  191.263743] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
+[  191.263788] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
+[  191.263840] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
+[  191.266857] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
+:
 
-Sure, will do it soon.
+Related to 597c56e372dab2c7f79b8d700aad3a5deebf9d1b, AFAICT.
 
-> I would recommend that you at least try running your patch using the
-> kvm-xfstests's smoke test[1] before submitting them.  It will save you
-> and me time.
-> 
+Kernel is 4.19.67-1 (Debian proposed-updates).
 
-Ok, thanks your guidance.
 
-Shaokun,
-
-> [1] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
-> 
-> Thanks,
-> 
-> 					- Ted
-> 					
-> 
-> .
-> 
-
+Regards
+Harri
