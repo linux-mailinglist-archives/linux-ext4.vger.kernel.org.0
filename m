@@ -2,119 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2239E4EA
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 11:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D539E70D
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 13:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729617AbfH0Jwb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Aug 2019 05:52:31 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:44281 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729584AbfH0Jwb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Aug 2019 05:52:31 -0400
-Received: by mail-pf1-f195.google.com with SMTP id c81so13767813pfc.11
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Aug 2019 02:52:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Y+Hx7d/m4wprfVAziyvHQsP5nHRV1o00I9AIkIwGmBI=;
-        b=oR8FYwqyxnUNtWn9qDiZuFshumZRSt9tmRikWYbDag77666pzk94O4GjoYqiO7vc9C
-         mEwlKH5xjHhyNheZbKl8W7DlS/COtYiMYs8IIWube+emNCjTPBPB6oh450j8E91Ahqci
-         mcH9qTDlYoohq/RkYrEkvTs60+1mAp4AxiwrUeusvQP8rbXapNP4T6RB1xoyxoX2REhW
-         RlVmzf8Vi9ZJsumrU621TBW9SBVRz/NyzO/HsBsD6JrF747VcucSlSPxezLZQQVHnv6l
-         pscJjdMPYuUEz57xSOH1BLzHxry6PCdYjmYq5wEWlO0x6r8SyGcqLY2w3a9rPg/VKwck
-         9JAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Y+Hx7d/m4wprfVAziyvHQsP5nHRV1o00I9AIkIwGmBI=;
-        b=Y815HNfk4DBxl5u222BVvABPBzr/XLbgy+zDrnF52Ov9yr6Bbfj1iaDg9BuNhGOcA1
-         ZY9hyc7SpQhWEYOr2c28Z9NruA0RW36ycFMOWJbpdiltQf7BvWYf58ya5erY8rrQYcQy
-         CPRQpUpjiD/Y9H7WBHhMgMgTS6ZMhelOWKKZeUicrrgRLdS+TpzZZGzDPM8aSwLhsoZO
-         fm9+Vn4KYd+lYCyHLMHtBX9Scjf4HgvaGf6pbudntayfTETfpNd1esqgN3Hhtz6x8/ZV
-         YLl9KdBBj5Ot7Q1A/461Dwb7iYb8WvjM7Qv5vpP3uXdkind38fs/uDa19j7CQsmAlhoB
-         wK0A==
-X-Gm-Message-State: APjAAAVJsZUzJnWL7Bj5K9n4/eUeO7mF+uURAZEcQ0cS1blxOmhJvVdJ
-        BdWbTK7pcziTOafiJVMJtrm3
-X-Google-Smtp-Source: APXvYqzscS+XMU6obO2Ex2JLNcSixvi3mTvrraxDm0d8nX0LBExX6zTY1+QlXK5Bs9Yk3wGsl/CORw==
-X-Received: by 2002:a17:90a:33ed:: with SMTP id n100mr24625174pjb.19.1566899550316;
-        Tue, 27 Aug 2019 02:52:30 -0700 (PDT)
-Received: from poseidon.bobrowski.net ([114.78.226.167])
-        by smtp.gmail.com with ESMTPSA id z63sm14239181pfb.163.2019.08.27.02.52.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2019 02:52:29 -0700 (PDT)
-Date:   Tue, 27 Aug 2019 19:52:23 +1000
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>, tytso@mit.edu,
-        jack@suse.cz, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, aneesh.kumar@linux.ibm.com
-Subject: Re: [PATCH 0/5] ext4: direct IO via iomap infrastructure
-Message-ID: <20190827095221.GA1568@poseidon.bobrowski.net>
-References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
- <20190812173150.AF04F5204F@d06av21.portsmouth.uk.ibm.com>
- <20190813111004.GA12682@poseidon.bobrowski.net>
- <20190813122723.AE6264C040@d06av22.portsmouth.uk.ibm.com>
- <20190821131405.GC24417@poseidon.bobrowski.net>
- <20190822120015.GA3330@poseidon.bobrowski.net>
- <20190822141126.70A94A407B@d06av23.portsmouth.uk.ibm.com>
- <20190824031830.GB2174@poseidon.bobrowski.net>
- <20190824035554.GA1037502@magnolia>
- <20190824230427.GA32012@infradead.org>
+        id S1726537AbfH0LvZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Aug 2019 07:51:25 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:55970 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726071AbfH0LvZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 27 Aug 2019 07:51:25 -0400
+Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id F351A43E197;
+        Tue, 27 Aug 2019 21:51:20 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1i2a0M-0005M0-Qf; Tue, 27 Aug 2019 21:51:18 +1000
+Date:   Tue, 27 Aug 2019 21:51:18 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>,
+        Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/3] Revert parallel dio reads
+Message-ID: <20190827115118.GY7777@dread.disaster.area>
+References: <1566871552-60946-1-git-send-email-joseph.qi@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190824230427.GA32012@infradead.org>
+In-Reply-To: <1566871552-60946-1-git-send-email-joseph.qi@linux.alibaba.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
+        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=VwQbUJbxAAAA:8 a=rNOIIekrAAAA:8 a=7-415B0cAAAA:8 a=i-Dg2M7HJCqoGRThW54A:9
+        a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22 a=HyV29BWo3XPGBPza7_5j:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Aug 24, 2019 at 04:04:27PM -0700, Christoph Hellwig wrote:
-> On Fri, Aug 23, 2019 at 08:55:54PM -0700, Darrick J. Wong wrote:
-> > I'm probably misunderstanding the ext4 extent cache horribly, but I keep
-> > wondering why any of this is necessary -- why can't ext4 track the
-> > unwritten status in the extent records directly?  And why is there all
-> > this strange "can merge" logic?  If you need to convert blocks X to Y
-> > to written state because a write to those blocks completed, isn't that
-> > just manipulation of a bunch of incore records?  And can't you just seek
-> > back and forth in the extent cache to look for adjacent records to merge
-> > with? <confuseD>
+On Tue, Aug 27, 2019 at 10:05:49AM +0800, Joseph Qi wrote:
+> This patch set is trying to revert parallel dio reads feature at present
+> since it causes significant performance regression in mixed random
+> read/write scenario.
 > 
-> Same here.  I'm not an ext4 expert, but here is what we do in XFS, which
-> hopefully works in some form for ext4 a well:
+> Joseph Qi (3):
+>   Revert "ext4: remove EXT4_STATE_DIOREAD_LOCK flag"
+>   Revert "ext4: fix off-by-one error when writing back pages before dio
+>     read"
+>   Revert "ext4: Allow parallel DIO reads"
 > 
->  - when starting a direct I/O we allocate any needed blocks and do so
->    as unwritten extent.  The extent tree code will merge them in
->    whatever way that seems suitable
->  - if the IOMAP_DIO_UNWRITTEN is set on the iomap at ->end_io time we
->    call a function that walks the whole range covered by the ioend,
->    and convert any unwritten extent to a normal written extent.  Any
->    splitting and merging will be done as needed by the low-level
->    extent tree code
->  - this also means we don't need the xfs_ioen structure (which ext4)
->    copied from for direct I/O at all (we used to have it initially,
->    though including the time when ext4 copied this code).
->  - we don't need the equivalent to the ext4_unwritten_wait call in
->    ext4_file_write_iter because we serialize any non-aligned I/O
->    instead of trying to optimize for weird corner cases
+>  fs/ext4/ext4.h        | 17 +++++++++++++++++
+>  fs/ext4/extents.c     | 19 ++++++++++++++-----
+>  fs/ext4/inode.c       | 47 +++++++++++++++++++++++++++++++----------------
+>  fs/ext4/ioctl.c       |  4 ++++
+>  fs/ext4/move_extent.c |  4 ++++
+>  fs/ext4/super.c       | 12 +++++++-----
+>  6 files changed, 77 insertions(+), 26 deletions(-)
 
-Yeah, so what you've detailed above is essentially the approach I've
-taken in my patch series...
+Before doing this, you might want to have a chat and co-ordinate
+with the folks that are currently trying to port the ext4 direct IO
+code to use the iomap infrastructure:
 
-What is not clear to me at this point though is whether it is still
-necessary to explicitly track unwritten extents via in-core inode
-attributes i.e. ->i_unwritten and ->i_state_flags under the new direct
-IO code path implementation, which makes use of the iomap
-infrastructure. Or, whether we can get away with simply not using
-these in-core inode attributes and rely just on checks against the
-extent record directly, as breifly mentioned by Darrick. I would think
-that this type of check would be enough, however the checks around
-whether the inode is currently undergoing direct IO were implemented
-at some point, so there must be a reason for having them
-(a9b8241594add)?
+https://lore.kernel.org/linux-ext4/20190827095221.GA1568@poseidon.bobrowski.net/T/#t
 
---M
+That is going to need the shared locking on read and will work just
+fine with shared locking on write, too (it's the code that XFS uses
+for direct IO). So it might be best here if you work towards shared
+locking on the write side rather than just revert the shared locking
+on the read side....
+
+Cheers,
+
+Dave,
+-- 
+Dave Chinner
+david@fromorbit.com
