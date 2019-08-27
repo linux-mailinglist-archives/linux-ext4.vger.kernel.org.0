@@ -2,192 +2,163 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5861A9D8A5
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2019 23:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922E79DAE0
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 03:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbfHZVqO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 26 Aug 2019 17:46:14 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:40115 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbfHZVqN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 26 Aug 2019 17:46:13 -0400
-Received: by mail-oi1-f194.google.com with SMTP id h21so13337388oie.7
-        for <linux-ext4@vger.kernel.org>; Mon, 26 Aug 2019 14:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hDLxh/wDAnGYgyHQGf1g1WN+KKS1KKuJZAHSWkLXjI4=;
-        b=GmYAT3SmGj+RBUcl3L5LUbKUnU/FHOuzvvyRlEOe6I2Ok4m9o71drjyzugItr1am1v
-         zIoJOMI9VjsSoGu6b2sntkO4uJsTTJBU1j4dKKI/vz/5+frzAgtIdvICBPZGTDPukFL6
-         ixDIzBACP3oZdUdLfxkHfixw+RMVBjN2qYqvaJ55uqD6hBRp6IEwyKqjo7vHnf4Vqnwl
-         eRGkpOpoMWnq07kv16F2qoaaTXUHkYoB1ISSeJNu9is2gi7wAVr8An9lgmpRFPhFNIhx
-         C5JK+JXQpy1zSXXXqKjUH0DooLByARrpnFx/Neib66nXPbxf/5+MgouztRR20PVeApfg
-         uj9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hDLxh/wDAnGYgyHQGf1g1WN+KKS1KKuJZAHSWkLXjI4=;
-        b=tRUy+0L7f8v11jgF3inzy1G+4EQxjc+x+03XIQbFMpwEZnOKQaccEVE2U/HaIr7LV4
-         jBlDqEUh//88HU1a+f4K50vG1gLhAj5bae/uGrvIpn+vMgGuXzSUtUaj6Z0b2UlaeLx4
-         KA906WMGMHOgHNCeaPRYpUFpsnBn4wOvOH7/fK8vdAFL4vVNGKqm5IlLJPvH6WfbHRw+
-         Ujd4NF972yeUqm7YsMgZ7q4j9iNkGtkpXzDKjLGTOfFnVnjlhblQY3C4T25WnIOiPCao
-         CY+c+w36dr4w+1VMNuPzazd2D14Qda1AlWgshx27BsBUO9OY2Q9TQsRycN59B5kTfgR7
-         QEYQ==
-X-Gm-Message-State: APjAAAW109p9uhtn+t5gjeZsrqy//DS8xbTf/Z8MtqRcdh6t6UZhSurx
-        pVT3/ujvAHsHj22ReJBaKOGvkjIf/UDr9yrmbl0=
-X-Google-Smtp-Source: APXvYqzV9act9A5OHcjwNpdLOzvElfK9sdAISVJ5r5FacR7lfM02pCrUhkxBnCv0yo76kb/SkfxOnwKR/L6iDK1Aj9A=
-X-Received: by 2002:a05:6808:92:: with SMTP id s18mr9525107oic.141.1566855972413;
- Mon, 26 Aug 2019 14:46:12 -0700 (PDT)
+        id S1728124AbfH0BAZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 26 Aug 2019 21:00:25 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:55969 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728036AbfH0BAZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 26 Aug 2019 21:00:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07417;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0TaZ2tmY_1566867620;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TaZ2tmY_1566867620)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 27 Aug 2019 09:00:21 +0800
+Subject: Re: [RFC] performance regression with "ext4: Allow parallel DIO
+ reads"
+To:     Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Joseph Qi <jiangqi903@gmail.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
+        Liu Bo <bo.liu@linux.alibaba.com>
+References: <075fd06f-b0b4-4122-81c6-e49200d5bd17@linux.alibaba.com>
+ <20190816145719.GA3041@quack2.suse.cz>
+ <a8ddec64-d87c-ae7a-9b02-2f24da2396e9@linux.alibaba.com>
+ <20190820160805.GB10232@mit.edu>
+ <f89131c9-6f84-ac3c-b53c-d3d55887ea89@linux.alibaba.com>
+ <20190822054001.GT7777@dread.disaster.area>
+ <f0eb766f-3c04-2a53-1669-4088e09d8f73@linux.alibaba.com>
+ <20190823101623.GV7777@dread.disaster.area>
+ <707b1a60-00f0-847e-02f9-e63d20eab47e@linux.alibaba.com>
+ <20190824021840.GW7777@dread.disaster.area>
+ <20190826083958.GA10614@quack2.suse.cz>
+ <94515D9C-045C-46EA-9F3C-E13CB2DAA1F9@dilger.ca>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <a5c6b0cc-60d1-eac2-65a5-b40998c28de9@linux.alibaba.com>
+Date:   Tue, 27 Aug 2019 09:00:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20190821182740.97127-1-harshadshirwadkar@gmail.com> <7303B125-6C0E-41C2-A71E-4AF8C9776468@dilger.ca>
-In-Reply-To: <7303B125-6C0E-41C2-A71E-4AF8C9776468@dilger.ca>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Mon, 26 Aug 2019 14:46:01 -0700
-Message-ID: <CAD+ocbzT=A4LW7CYBC_mxh2cf3ZxUhvffhtpO0LnfkXAJDy0Kw@mail.gmail.com>
-Subject: Re: [PATCH] ext4: attempt to shrink directory on dentry removal
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <94515D9C-045C-46EA-9F3C-E13CB2DAA1F9@dilger.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I see, this is an interesting approach. I think we can do this without
-modifying on-disk format and by bearing the cost of 2 extra reads per
-merge. Whenever dentry deletion results in a dirent block that is
-_sufficiently_ empty, we can look at its parent dx block and and find
-its neighbors that can be merged. We can be aggressive and do this for
-every dentry deletion or we could do this whenever the current dirent
-block is half empty or something.
 
-By this method we end up reading up to 2 extra blocks (one previous
-and one next) that are not going to be merged. That's the trade-off we
-have to make in order to avoid any changes to on-disk structure (If we
-modify the on-disk structure and store the fullness in the dx block,
-we would read only the blocks that need to be merged).
 
-The same logic can also be applied to intermediate dx nodes as well.
-After every merge operation, we'll have a set of blocks that need to
-be freed. Once we know what blocks we can free, we can use Ted's idea
-of swapping them with the last block, one by one.
+On 19/8/27 03:10, Andreas Dilger wrote:
+> On Aug 26, 2019, at 2:39 AM, Jan Kara <jack@suse.cz> wrote:
+>>
+>> On Sat 24-08-19 12:18:40, Dave Chinner wrote:
+>>> On Fri, Aug 23, 2019 at 09:08:53PM +0800, Joseph Qi wrote:
+>>>>
+>>>>
+>>>> On 19/8/23 18:16, Dave Chinner wrote:
+>>>>> On Fri, Aug 23, 2019 at 03:57:02PM +0800, Joseph Qi wrote:
+>>>>>> Hi Dave,
+>>>>>>
+>>>>>> On 19/8/22 13:40, Dave Chinner wrote:
+>>>>>>> On Wed, Aug 21, 2019 at 09:04:57AM +0800, Joseph Qi wrote:
+>>>>>>>> Hi Ted，
+>>>>>>>>
+>>>>>>>> On 19/8/21 00:08, Theodore Y. Ts'o wrote:
+>>>>>>>>> On Tue, Aug 20, 2019 at 11:00:39AM +0800, Joseph Qi wrote:
+>>>>>>>>>>
+>>>>>>>>>> I've tested parallel dio reads with dioread_nolock, it
+>>>>>>>>>> doesn't have significant performance improvement and still
+>>>>>>>>>> poor compared with reverting parallel dio reads. IMO, this
+>>>>>>>>>> is because with parallel dio reads, it take inode shared
+>>>>>>>>>> lock at the very beginning in ext4_direct_IO_read().
+>>>>>>>>>
+>>>>>>>>> Why is that a problem?  It's a shared lock, so parallel
+>>>>>>>>> threads should be able to issue reads without getting
+>>>>>>>>> serialized?
+>>>>>>>>>
+>>>>>>>> The above just tells the result that even mounting with
+>>>>>>>> dioread_nolock, parallel dio reads still has poor performance
+>>>>>>>> than before (w/o parallel dio reads).
+>>>>>>>>
+>>>>>>>>> Are you using sufficiently fast storage devices that you're
+>>>>>>>>> worried about cache line bouncing of the shared lock?  Or do
+>>>>>>>>> you have some other concern, such as some other thread
+>>>>>>>>> taking an exclusive lock?
+>>>>>>>>>
+>>>>>>>> The test case is random read/write described in my first
+>>>>>>>> mail. And
+>>>>>>>
+>>>>>>> Regardless of dioread_nolock, ext4_direct_IO_read() is taking
+>>>>>>> inode_lock_shared() across the direct IO call.  And writes in
+>>>>>>> ext4 _always_ take the inode_lock() in ext4_file_write_iter(),
+>>>>>>> even though it gets dropped quite early when overwrite &&
+>>>>>>> dioread_nolock is set.  But just taking the lock exclusively
+>>>>>>> in write fro a short while is enough to kill all shared
+>>>>>>> locking concurrency...
+>>>>>>>
+>>>>>>>> from my preliminary investigation, shared lock consumes more
+>>>>>>>> in such scenario.
+>>>>>>>
+>>>>>>> If the write lock is also shared, then there should not be a
+>>>>>>> scalability issue. The shared dio locking is only half-done in
+>>>>>>> ext4, so perhaps comparing your workload against XFS would be
+>>>>>>> an informative exercise...
+>>>>>>
+>>>>>> I've done the same test workload on xfs, it behaves the same as
+>>>>>> ext4 after reverting parallel dio reads and mounting with
+>>>>>> dioread_lock.
+>>>>>
+>>>>> Ok, so the problem is not shared locking scalability ('cause
+>>>>> that's what XFS does and it scaled fine), the problem is almost
+>>>>> certainly that ext4 is using exclusive locking during
+>>>>> writes...
+>>>>>
+>>>>
+>>>> Agree. Maybe I've misled you in my previous mails.I meant shared
+>>>> lock makes worse in case of mixed random read/write, since we
+>>>> would always take inode lock during write.  And it also conflicts
+>>>> with dioread_nolock. It won't take any inode lock before with
+>>>> dioread_nolock during read, but now it always takes a shared
+>>>> lock.
+>>>
+>>> No, you didn't mislead me. IIUC, the shared locking was added to the
+>>> direct IO read path so that it can't run concurrently with
+>>> operations like hole punch that free the blocks the dio read might
+>>> currently be operating on (use after free).
+>>>
+>>> i.e. the shared locking fixes an actual bug, but the performance
+>>> regression is a result of only partially converting the direct IO
+>>> path to use shared locking. Only half the job was done from a
+>>> performance perspective. Seems to me that the two options here to
+>>> fix the performance regression are to either finish the shared
+>>> locking conversion, or remove the shared locking on read and re-open
+>>> a potential data exposure issue...
+>>
+>> We actually had a separate locking mechanism in ext4 code to avoid stale
+>> data exposure during hole punch when unlocked DIO reads were running. But
+>> it was kind of ugly and making things complex. I agree we need to move ext4
+>> DIO path conversion further to avoid taking exclusive lock when we won't
+>> actually need it.
+> 
+> It seems to me that the right solution for the short term is to revert
+> the patch in question, since that appears to be incomplete, and reverting
+> it will restore the performance.  I haven't seen any comments posted with
+> a counter-example that the original patch actually improved performance,
+> or that reverting it will cause some other performance regression.
+> 
+> We can then leave implementing a more complete solution to a later kernel.
+> 
+Thanks for the discussion.
+So if no one else objects reverting parallel dio reads at present, I'll
+send out the revert patches.
 
-Since merging approach also requires a way to free up directory
-blocks, I think we could first get a patch in that can free up
-directory blocks by swapping with the last block. Once we have that
-then we could implement merging.
+Thanks,
+Joseph
 
-On Sun, Aug 25, 2019 at 10:07 PM Andreas Dilger <adilger@dilger.ca> wrote:
->
-> On Aug 21, 2019, at 12:27 PM, Harshad Shirwadkar <harshadshirwadkar@gmail.com> wrote:
-> >
-> > On every dentry deletion, this patch traverses directory inode in
-> > reverse direction and frees up empty dirent blocks until it finds a
-> > non-empty dirent block. We leverage the fact that we never clear
-> > dentry name when we delete dentrys by merging them with the previous
-> > one. So, even though the dirent block has only fake dentry which spans
-> > across the entire block, we can use the name in this dead entry to
-> > perform dx lookup and find intermediate dx node blocks as well as
-> > offset inside these blocks.
->
->
-> One high-level limitation with this implementation is that it is unlikely
-> to remove any directory blocks until the directory is almost entirely
-> empty since "rm -r" will return entries in hash order, which does not
-> match the order that the leaf blocks are allocated in the file.  Even
-> worse, if files in the directory are not deleted in hash order, no leaf
-> block will be completely empty until about 99% of the files have been
-> deleted - assume 24-byte filenames in 4096-byte blocks means up to 128
-> entries per block, typically 3/4 full, or 1/96 entries will be left in
-> each block before it becomes empty.
->
-> One option that was discussed in the past is to use the high 4 bits
-> of dx_entry->block (i.e. the opposite of dx_get_block()) to store the
-> "fullness" of each block (in 1/16th of a block, or 256-byte increments
-> for 4096-byte blocks) and try to merge entries into an adjacent block
-> if it becomes mostly empty (e.g. if the current block plus the neighbour
-> are below 50% full).  That allows removing blocks much earlier as the
-> directory shrinks, rather than waiting until each block is completely
-> empty.  A fullness of "0" would mean "unset", since we don't set it
-> yet, and once this feature is available there would never be a block
-> that is entirely empty.
->
-> > As of now, we only support non-indexed directories and indexed
-> > directories with no intermediate dx nodes. This technique can also be
-> > used to remove intermediate dx nodes. But it needs a little more
-> > interesting logic to make that happen since we don't store directory
-> > entry name in intermediate nodes.
-> >
-> > Ran kvm-xfstests smoke test-suite and verified that there are no
-> > failures. Also, verified that when all the files are deleted in a
-> > directory, directory shrinks to either 4k for non-indexed directories
-> > or 8k for indexed directories with 1 level.
-> >
-> > This patch is an improvement over previous patch that I sent out
-> > earlier this month. So, if this patch looks alright, then we can drop
-> > the other shrinking patch.
-> >
->
-> > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> >
-> > ---
-> > This patch supersedes the other directory shrinking patch sent in Aug
-> > 2019 ("ext4: shrink directory when last block is empty").
-> >
-> > fs/ext4/namei.c | 176 ++++++++++++++++++++++++++++++++++++++++++++++++
-> > 1 file changed, 176 insertions(+)
-> >
-> >
-> >
-> > +static inline bool is_empty_dirent_block(struct inode *dir,
-> > +                                      struct buffer_head *bh)
-> > +{
-> > +     struct ext4_dir_entry_2 *de = (struct ext4_dir_entry_2 *)bh->b_data;
-> > +     int     csum_size = 0;
-> > +
-> > +     if (ext4_has_metadata_csum(dir->i_sb))
-> > +             csum_size = sizeof(struct ext4_dir_entry_tail);
-> > +
-> > +     return ext4_rec_len_from_disk(de->rec_len, dir->i_sb->s_blocksize) ==
-> > +                     dir->i_sb->s_blocksize - csum_size && de->inode == 0;
-> > +}
->
-> This may not always detect empty directory blocks properly, because
-> ext4_generic_delete_entry() will only merge deleted entries with the
-> previous entry.  It at least appears possible that if entries are not
-> deleted in the proper order (e.g. in reverse of the order they are
-> listed in the directory) there may be multiple empty entries in a block,
-> and the above check will fail.
->
-> Instead, this checks should walk all entries in a block and return false
-> if any one of them has a non-zero de->inode.  In the common case there
-> may be only a single entry, or the first entry will be used, so it
-> should be fairly quick to decide that the block cannot be removed.
->
-> Another option is to change ext4_generic_delete_entry() to also try
-> to merge with the immediately following entry to ensure that an empty
-> block always has rec_len of the full blocksize.  However, I think this
-> is probably not a worthwhile effort since it would be better to support
-> removing blocks that are partly empty rather than entirely empty.
->
-> > @@ -2510,6 +2684,8 @@ static int ext4_delete_entry(handle_t *handle,
-> >       if (unlikely(err))
-> >               goto out;
-> >
-> > +     ext4_try_dir_shrink(handle, dir);
-> > +
-> >       return 0;
->
-> I think it would be inefficient to try shrinking the directory after
-> _every_ directory entry is removed.  Instead, there should be some
-> way to determine here if ext4_generic_delete_entry() removed the last
-> entry from the directory block, and only shrink in that case.
->
-> Cheers, Andreas
->
->
->
->
->
+
