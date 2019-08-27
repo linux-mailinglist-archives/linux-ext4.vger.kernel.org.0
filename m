@@ -2,62 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3549F047
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 18:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334D79F076
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 18:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727401AbfH0Qft (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Aug 2019 12:35:49 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50988 "EHLO
+        id S1728584AbfH0QlL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Aug 2019 12:41:11 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52634 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726678AbfH0Qft (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Aug 2019 12:35:49 -0400
+        with ESMTP id S1727401AbfH0QlL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Aug 2019 12:41:11 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7RGZBvV019304
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7RGeCWG021084
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Aug 2019 12:35:12 -0400
+        Tue, 27 Aug 2019 12:40:13 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 41CEA42049E; Tue, 27 Aug 2019 12:35:11 -0400 (EDT)
-Date:   Tue, 27 Aug 2019 12:35:11 -0400
+        id 70A4F42049E; Tue, 27 Aug 2019 12:40:12 -0400 (EDT)
+Date:   Tue, 27 Aug 2019 12:40:12 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Harald Dunkel <harald.dunkel@aixigo.com>
-Cc:     mathias.nyman@intel.com, linux-usb@vger.kernel.org
-Subject: Re: fsck on ext4: "WARN Wrong bounce buffer write length: 1024 != 0"
-Message-ID: <20190827163511.GM28066@mit.edu>
-References: <22367f07-3448-f771-0363-b5c6f500b77d@aixigo.com>
+To:     "boojin.kim" <boojin.kim@samsung.com>
+Cc:     "'Satya Tangirala'" <satyat@google.com>,
+        "'Herbert Xu'" <herbert@gondor.apana.org.au>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Eric Biggers'" <ebiggers@kernel.org>,
+        "'Chao Yu'" <chao@kernel.org>,
+        "'Jaegeuk Kim'" <jaegeuk@kernel.org>,
+        "'Andreas Dilger'" <adilger.kernel@dilger.ca>, dm-devel@redhat.com,
+        "'Mike Snitzer'" <snitzer@redhat.com>,
+        "'Alasdair Kergon'" <agk@redhat.com>,
+        "'Jens Axboe'" <axboe@kernel.dk>,
+        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        "'Kukjin Kim'" <kgene@kernel.org>,
+        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
+        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/9] block: support diskcipher
+Message-ID: <20190827164012.GN28066@mit.edu>
+Mail-Followup-To: "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "boojin.kim" <boojin.kim@samsung.com>,
+        'Satya Tangirala' <satyat@google.com>,
+        'Herbert Xu' <herbert@gondor.apana.org.au>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        'Eric Biggers' <ebiggers@kernel.org>, 'Chao Yu' <chao@kernel.org>,
+        'Jaegeuk Kim' <jaegeuk@kernel.org>,
+        'Andreas Dilger' <adilger.kernel@dilger.ca>, dm-devel@redhat.com,
+        'Mike Snitzer' <snitzer@redhat.com>,
+        'Alasdair Kergon' <agk@redhat.com>, 'Jens Axboe' <axboe@kernel.dk>,
+        'Krzysztof Kozlowski' <krzk@kernel.org>,
+        'Kukjin Kim' <kgene@kernel.org>,
+        'Jaehoon Chung' <jh80.chung@samsung.com>,
+        'Ulf Hansson' <ulf.hansson@linaro.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org, linux-fsdevel@vger.kernel.org
+References: <CGME20190827083334epcas2p115d479190b9a72c886f66569add78203@epcas2p1.samsung.com>
+ <03b201d55cb2$1d4d31b0$57e79510$@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <22367f07-3448-f771-0363-b5c6f500b77d@aixigo.com>
+In-Reply-To: <03b201d55cb2$1d4d31b0$57e79510$@samsung.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 27, 2019 at 08:00:14AM +0200, Harald Dunkel wrote:
-> FYI: "fsck -y" on an external USB drive (USB-C, ext4) gave
-> me a ton of messages
+On Tue, Aug 27, 2019 at 05:33:33PM +0900, boojin.kim wrote:
 > 
-> :
-> [  191.261939] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
-> [  191.263743] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
-> [  191.263788] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
-> [  191.263840] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
-> [  191.266857] xhci_hcd 0000:05:00.0: WARN Wrong bounce buffer write length: 1024 != 0
-> :
-> 
-> Related to 597c56e372dab2c7f79b8d700aad3a5deebf9d1b, AFAICT.
-> 
-> Kernel is 4.19.67-1 (Debian proposed-updates).
+> Dear Satya.
+> Keyslot manager is a good solution for ICE. And probably no issue for FMP.
+> But, I think it's complicated for FMP because FMP doesn't need
+> any keyslot control.
 
-+mathias.nyman@intel.com, linux-usb@vger.kernel.org
-linux-ext4 to BCC
+Hi Boojin,
 
-That's a USB XHCI issue, not an ext4 issue.  I'm handing this to the
-XHCI maintainer and the Linux USB mailing list.
+I think the important thing to realize here is that there are a large
+number of hardware devices for which the keyslot manager *is* needed.
+And from the upstream kernel's perspective, supporting two different
+schemes for supporting the inline encryption feature is more
+complexity than just supporting one which is general enough to support
+a wider variety of hardware devices.
 
-Cheers,
+If you want somethig which is only good for the hardware platform you
+are charged to support, that's fine if it's only going to be in a
+Samsung-specific kernel.  But if your goal is to get something that
+works upstream, especially if it requires changes in core layers of
+the kernel, it's important that it's general enough to support most,
+if not all, if the hardware devices in the industry.
 
-						- Ted
+Regards,
+
+					- Ted
