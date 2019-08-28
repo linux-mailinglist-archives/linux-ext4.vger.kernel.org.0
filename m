@@ -2,227 +2,261 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6FFA0AF5
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2019 21:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE2CA0B58
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2019 22:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbfH1T7R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Aug 2019 15:59:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44898 "EHLO mx1.suse.de"
+        id S1726794AbfH1U0X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Aug 2019 16:26:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49840 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726315AbfH1T7R (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 28 Aug 2019 15:59:17 -0400
+        id S1726763AbfH1U0X (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 28 Aug 2019 16:26:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1CEDDAD45;
-        Wed, 28 Aug 2019 19:59:15 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id E4A58B67E;
+        Wed, 28 Aug 2019 20:26:19 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5EDD91E4362; Wed, 28 Aug 2019 21:59:14 +0200 (CEST)
-Date:   Wed, 28 Aug 2019 21:59:14 +0200
+        id 86EE31E4362; Wed, 28 Aug 2019 22:26:19 +0200 (CEST)
+Date:   Wed, 28 Aug 2019 22:26:19 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
 Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         jack@suse.cz, tytso@mit.edu, riteshh@linux.ibm.com
-Subject: Re: [PATCH 2/5] ext4: move inode extension/truncate code out from
- ext4_iomap_end()
-Message-ID: <20190828195914.GF22343@quack2.suse.cz>
+Subject: Re: [PATCH 4/5] ext4: introduce direct IO write code path using
+ iomap infrastructure
+Message-ID: <20190828202619.GG22343@quack2.suse.cz>
 References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
- <774754e9b2afc541df619921f7743d98c5c6a358.1565609891.git.mbobrowski@mbobrowski.org>
+ <581c3a2da89991e7ce5862d93dcfb23e1dc8ddc8.1565609891.git.mbobrowski@mbobrowski.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <774754e9b2afc541df619921f7743d98c5c6a358.1565609891.git.mbobrowski@mbobrowski.org>
+In-Reply-To: <581c3a2da89991e7ce5862d93dcfb23e1dc8ddc8.1565609891.git.mbobrowski@mbobrowski.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 12-08-19 22:52:53, Matthew Bobrowski wrote:
-> In preparation for implementing the direct IO write code path modifications
-> that make us of iomap infrastructure we need to move out the inode
-> extension/truncate code from ext4_iomap_end() callback. For direct IO, if the
-> current code remained it would behave incorrectly. If we update the inode size
-> prior to converting unwritten extents we run the risk of allowing a racing
-> direct IO read operation to find unwritten extents before they are converted.
+On Mon 12-08-19 22:53:26, Matthew Bobrowski wrote:
+> This patch introduces a new direct IO write code path implementation
+> that makes use of the iomap infrastructure.
 > 
-> The inode extension/truncate has been moved out into a new function
-> ext4_handle_inode_extension(). This will be used by both direct IO and DAX
-> code paths if the write results with the inode being extended.
+> All direct IO write operations are now passed from the ->write_iter() callback
+> to the new function ext4_dio_write_iter(). This function is responsible for
+> calling into iomap infrastructure via iomap_dio_rw(). Snippets of the direct
+> IO code from within ext4_file_write_iter(), such as checking whether the IO
+> request is unaligned asynchronous IO, or whether it will ber overwriting
+> allocated and initialized blocks has been moved out and into
+> ext4_dio_write_iter().
+> 
+> The block mapping flags that are passed to ext4_map_blocks() from within
+> ext4_dio_get_block() and friends have effectively been taken out and
+> introduced within the ext4_iomap_begin(). If ext4_map_blocks() happens to have
+> instantiated blocks beyond the i_size, then we attempt to place the inode onto
+> the orphan list. Despite being able to perform i_size extension checking
+> earlier on in the direct IO code path, it makes most sense to perform this bit
+> post successful block allocation.
+> 
+> The ->end_io() callback ext4_dio_write_end_io() is responsible for removing
+> the inode from the orphan list and determining if we should truncate a failed
+> write in the case of an error. We also convert a range of unwritten extents to
+> written if IOMAP_DIO_UNWRITTEN is set and perform the necessary
+> i_size/i_disksize extension if the iocb->ki_pos + dio->size > i_size_read(inode).
+> 
+> In the instance of a short write, we fallback to buffered IO and complete
+> whatever is left the 'iter'. Any blocks that may have been allocated in
+> preparation for direct IO will be reused by buffered IO, so there's no issue
+> with leaving allocated blocks beyond EOF.
 > 
 > Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
 > ---
->  fs/ext4/file.c  | 60 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
->  fs/ext4/inode.c | 48 +--------------------------------------------
->  2 files changed, 60 insertions(+), 48 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 360eff7b6aa2..7470800c63b7 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -33,6 +33,7 @@
->  #include "ext4_jbd2.h"
->  #include "xattr.h"
->  #include "acl.h"
-> +#include "truncate.h"
->  
->  static bool ext4_dio_checks(struct inode *inode)
->  {
-> @@ -234,12 +235,62 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
+>  fs/ext4/file.c  | 227 ++++++++++++++++++++++++++++++++++++++++----------------
+>  fs/ext4/inode.c |  42 +++++++++--
+>  2 files changed, 199 insertions(+), 70 deletions(-)
+
+Overall this is very nice. Some smaller comments below.
+
+> @@ -235,6 +244,34 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
 >  	return iov_iter_count(from);
 >  }
 >  
-> +static int ext4_handle_inode_extension(struct inode *inode, loff_t size,
-> +				       size_t count)
+> +static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
+> +					struct iov_iter *from)
 > +{
+> +	ssize_t ret;
+> +	struct inode *inode = file_inode(iocb->ki_filp);
+> +
+> +	if (!inode_trylock(inode)) {
+> +		if (iocb->ki_flags & IOCB_NOWAIT)
+> +			return -EOPNOTSUPP;
+> +		inode_lock(inode);
+> +	}
+
+Currently there's no support for IOCB_NOWAIT for buffered IO so you can
+replace this with "inode_lock(inode)".
+
+> @@ -284,6 +321,128 @@ static int ext4_handle_inode_extension(struct inode *inode, loff_t size,
+>  	return ret;
+>  }
+>  
+
+I'd mention here that for cases where inode size is extended,
+ext4_dio_write_iter() waits for DIO to complete and thus we are protected
+by inode_lock in that case.
+
+> +static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
+> +				 ssize_t error, unsigned int flags)
+> +{
+> +	int ret = 0;
 > +	handle_t *handle;
-> +	bool truncate = false;
-> +	ext4_lblk_t written_blk, end_blk;
-> +	int ret = 0, blkbits = inode->i_blkbits;
+> +	loff_t offset = iocb->ki_pos;
+> +	struct inode *inode = file_inode(iocb->ki_filp);
 > +
-> +	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-> +	if (IS_ERR(handle)) {
-> +		ret = PTR_ERR(handle);
-> +		goto orphan_del;
-> +	}
+> +	if (error) {
+> +		if (offset + size > i_size_read(inode))
+> +			ext4_truncate_failed_write(inode);
 > +
-> +	if (ext4_update_inode_size(inode, size))
-> +		ext4_mark_inode_dirty(handle, inode);
-> +
-> +	/*
-> +	 * We may need truncate allocated but not written blocks
-> +	 * beyond EOF.
-> +	 */
-> +	written_blk = ALIGN(size, 1 << blkbits);
-> +	end_blk = ALIGN(size + count, 1 << blkbits);
-
-So this seems to imply that 'size' is really offset where IO started but
-ext4_update_inode_size(inode, size) above suggests 'size' is really where
-IO has ended and that's indeed what you pass into
-ext4_handle_inode_extension(). So I'd just make the calling convention for
-ext4_handle_inode_extension() less confusing and pass 'offset' and 'len'
-and fixup the math inside the function...
-
-Otherwise the patch looks OK to me.
-
-								Honza
-
-
-> +	if (written_blk < end_blk && ext4_can_truncate(inode))
-> +		truncate = true;
-> +
-> +	/*
-> +	 * Remove the inode from the orphan list if it has been
-> +	 * extended and everything went OK.
-> +	 */
-> +	if (!truncate && inode->i_nlink)
-> +		ext4_orphan_del(handle, inode);
-> +	ext4_journal_stop(handle);
-> +
-> +	if (truncate) {
-> +		ext4_truncate_failed_write(inode);
-> +orphan_del:
 > +		/*
-> +		 * If the truncate operation failed early the inode
-> +		 * may still be on the orphan list. In that case, we
-> +		 * need try remove the inode from the linked list in
-> +		 * memory.
+> +		 * The inode may have been placed onto the orphan list
+> +		 * as a result of an extension. However, an error may
+> +		 * have been encountered prior to being able to
+> +		 * complete the write operation. Perform any necessary
+> +		 * clean up in this case.
 > +		 */
-> +		if (inode->i_nlink)
-> +			ext4_orphan_del(NULL, inode);
+> +		if (!list_empty(&EXT4_I(inode)->i_orphan)) {
+> +			handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+> +			if (IS_ERR(handle)) {
+> +				if (inode->i_nlink)
+> +					ext4_orphan_del(NULL, inode);
+> +				return PTR_ERR(handle);
+> +			}
+> +
+> +			if (inode->i_nlink)
+> +				ext4_orphan_del(handle, inode);
+> +			ext4_journal_stop(handle);
+> +		}
+> +		return error;
 > +	}
+> +
+> +	if (flags & IOMAP_DIO_UNWRITTEN) {
+> +		ret = ext4_convert_unwritten_extents(NULL, inode, offset, size);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (offset + size > i_size_read(inode)) {
+> +		ret = ext4_handle_inode_extension(inode, offset + size, 0);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+> +{
+> +	ssize_t ret;
+> +	loff_t offset = iocb->ki_pos;
+> +	size_t count = iov_iter_count(from);
+> +	struct inode *inode = file_inode(iocb->ki_filp);
+> +	bool extend = false, overwrite = false, unaligned_aio = false;
+> +
+> +	if (!inode_trylock(inode)) {
+> +		if (iocb->ki_flags & IOCB_NOWAIT)
+> +			return -EAGAIN;
+> +		inode_lock(inode);
+> +	}
+> +
+> +	if (!ext4_dio_checks(inode)) {
+> +		inode_unlock(inode);
+> +		/*
+> +		 * Fallback to buffered IO if the operation on the
+> +		 * inode is not supported by direct IO.
+> +		 */
+> +		return ext4_buffered_write_iter(iocb, from);
+> +	}
+> +
+> +	ret = ext4_write_checks(iocb, from);
+> +	if (ret <= 0)
+> +		goto out;
+> +
+> +	/*
+> +	 * Unaligned direct AIO must be serialized among each other as
+> +	 * the zeroing of partial blocks of two competing unaligned
+> +	 * AIOs can result in data corruption.
+> +	 */
+> +	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS) &&
+> +	    !is_sync_kiocb(iocb) && ext4_unaligned_aio(inode, from, offset)) {
+> +		unaligned_aio = true;
+> +		inode_dio_wait(inode);
+> +	}
+> +
+> +	/*
+> +	 * Determine whether the IO operation will overwrite allocated
+> +	 * and initialized blocks. If so, check to see whether it is
+> +	 * possible to take the dioread_nolock path.
+> +	 */
+> +	if (!unaligned_aio && ext4_overwrite_io(inode, offset, count) &&
+> +	    ext4_should_dioread_nolock(inode)) {
+> +		overwrite = true;
+> +		downgrade_write(&inode->i_rwsem);
+> +	}
+> +
+> +	if (offset + count > i_size_read(inode) ||
+> +	    offset + count > EXT4_I(inode)->i_disksize) {
+> +		ext4_update_i_disksize(inode, inode->i_size);
+> +		extend = true;
+> +	}
+> +
+> +	ret = iomap_dio_rw(iocb, from, &ext4_iomap_ops, ext4_dio_write_end_io);
+> +
+> +	/*
+> +	 * Unaligned direct AIO must be the only IO in flight or else
+> +	 * any overlapping aligned IO after unaligned IO might result
+> +	 * in data corruption.
+> +	 */
+
+Here I'd expand the comment to explain that we wait in case inode is
+extended so that inode extension in ext4_dio_write_end_io() is properly
+covered by inode_lock.
+
+> +	if (ret == -EIOCBQUEUED && (unaligned_aio || extend))
+> +		inode_dio_wait(inode);
+> +
+> +	if (ret >= 0 && iov_iter_count(from)) {
+> +		overwrite ? inode_unlock_shared(inode) : inode_unlock(inode);
+> +		return ext4_buffered_write_iter(iocb, from);
+> +	}
+> +out:
+> +	overwrite ? inode_unlock_shared(inode) : inode_unlock(inode);
 > +	return ret;
 > +}
 > +
 >  #ifdef CONFIG_FS_DAX
 >  static ssize_t
 >  ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  {
-> -	struct inode *inode = file_inode(iocb->ki_filp);
-> +	int err;
->  	ssize_t ret;
-> +	struct inode *inode = file_inode(iocb->ki_filp);
->  
->  	if (!inode_trylock(inode)) {
->  		if (iocb->ki_flags & IOCB_NOWAIT)
-> @@ -257,6 +308,13 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  		goto out;
->  
->  	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
-> +
-> +	if (ret > 0 && iocb->ki_pos > i_size_read(inode)) {
-> +		err = ext4_handle_inode_extension(inode, iocb->ki_pos,
-> +						  iov_iter_count(from));
-> +		if (err)
-> +			ret = err;
-> +	}
->  out:
->  	inode_unlock(inode);
->  	if (ret > 0)
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 420fe3deed39..761ce6286b05 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3601,53 +3601,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->  static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
->  			  ssize_t written, unsigned flags, struct iomap *iomap)
->  {
-> -	int ret = 0;
-> -	handle_t *handle;
-> -	int blkbits = inode->i_blkbits;
-> -	bool truncate = false;
-> -
-> -	if (!(flags & IOMAP_WRITE) || (flags & IOMAP_FAULT))
-> -		return 0;
-> -
-> -	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-> -	if (IS_ERR(handle)) {
-> -		ret = PTR_ERR(handle);
-> -		goto orphan_del;
-> -	}
-> -	if (ext4_update_inode_size(inode, offset + written))
-> -		ext4_mark_inode_dirty(handle, inode);
-> -	/*
-> -	 * We may need to truncate allocated but not written blocks beyond EOF.
-> -	 */
-> -	if (iomap->offset + iomap->length > 
-> -	    ALIGN(inode->i_size, 1 << blkbits)) {
-> -		ext4_lblk_t written_blk, end_blk;
-> -
-> -		written_blk = (offset + written) >> blkbits;
-> -		end_blk = (offset + length) >> blkbits;
-> -		if (written_blk < end_blk && ext4_can_truncate(inode))
-> -			truncate = true;
-> -	}
-> -	/*
-> -	 * Remove inode from orphan list if we were extending a inode and
-> -	 * everything went fine.
-> -	 */
-> -	if (!truncate && inode->i_nlink &&
-> -	    !list_empty(&EXT4_I(inode)->i_orphan))
-> -		ext4_orphan_del(handle, inode);
-> -	ext4_journal_stop(handle);
-> -	if (truncate) {
-> -		ext4_truncate_failed_write(inode);
-> -orphan_del:
-> -		/*
-> -		 * If truncate failed early the inode might still be on the
-> -		 * orphan list; we need to make sure the inode is removed from
-> -		 * the orphan list in that case.
-> -		 */
-> -		if (inode->i_nlink)
-> -			ext4_orphan_del(NULL, inode);
-> -	}
-> -	return ret;
-> +	return 0;
->  }
->  
->  const struct iomap_ops ext4_iomap_ops = {
-> -- 
-> 2.16.4
-> 
-> 
-> -- 
-> Matthew Bobrowski
+
+...
+
+> @@ -3581,10 +3611,10 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>  		iomap->type = delalloc ? IOMAP_DELALLOC : IOMAP_HOLE;
+>  		iomap->addr = IOMAP_NULL_ADDR;
+>  	} else {
+> -		if (map.m_flags & EXT4_MAP_MAPPED) {
+> -			iomap->type = IOMAP_MAPPED;
+> -		} else if (map.m_flags & EXT4_MAP_UNWRITTEN) {
+> +		if (map.m_flags & EXT4_MAP_UNWRITTEN) {
+>  			iomap->type = IOMAP_UNWRITTEN;
+> +		} else if (map.m_flags & EXT4_MAP_MAPPED) {
+> +			iomap->type = IOMAP_MAPPED;
+>  		} else {
+>  			WARN_ON_ONCE(1);
+>  			return -EIO;
+
+Possibly this hunk should go into a separate patch (since this is not
+directly related with iomap conversion) with a changelog / comment
+explaining why we need to check EXT4_MAP_UNWRITTEN first.
+
+								Honza
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
