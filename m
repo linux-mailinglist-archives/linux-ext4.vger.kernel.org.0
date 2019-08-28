@@ -2,89 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64ABCA04F3
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2019 16:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715FCA05ED
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2019 17:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbfH1O1w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Aug 2019 10:27:52 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48329 "EHLO
+        id S1726560AbfH1PPf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Aug 2019 11:15:35 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60799 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726415AbfH1O1w (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Aug 2019 10:27:52 -0400
+        with ESMTP id S1726315AbfH1PPf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Aug 2019 11:15:35 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7SERT6U008937
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x7SFF1IX007431
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 28 Aug 2019 10:27:30 -0400
+        Wed, 28 Aug 2019 11:15:01 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 4AA8F42049E; Wed, 28 Aug 2019 10:27:29 -0400 (EDT)
-Date:   Wed, 28 Aug 2019 10:27:29 -0400
+        id 9C53342049E; Wed, 28 Aug 2019 11:15:00 -0400 (EDT)
+Date:   Wed, 28 Aug 2019 11:15:00 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, aneesh.kumar@linux.ibm.com
-Subject: Re: [PATCH 0/5] ext4: direct IO via iomap infrastructure
-Message-ID: <20190828142729.GB24857@mit.edu>
-References: <20190813111004.GA12682@poseidon.bobrowski.net>
- <20190813122723.AE6264C040@d06av22.portsmouth.uk.ibm.com>
- <20190821131405.GC24417@poseidon.bobrowski.net>
- <20190822120015.GA3330@poseidon.bobrowski.net>
- <20190822141126.70A94A407B@d06av23.portsmouth.uk.ibm.com>
- <20190824031830.GB2174@poseidon.bobrowski.net>
- <20190824035554.GA1037502@magnolia>
- <20190824230427.GA32012@infradead.org>
- <20190827095221.GA1568@poseidon.bobrowski.net>
- <20190828120509.GC22165@poseidon.bobrowski.net>
+To:     "zhangyi (F)" <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, adilger.kernel@dilger.ca
+Subject: Re: [PATCH v2] ext4: fix potential use after free after remounting
+ with noblock_validity
+Message-ID: <20190828151500.GF24857@mit.edu>
+References: <20190827120839.90454-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190828120509.GC22165@poseidon.bobrowski.net>
+In-Reply-To: <20190827120839.90454-1-yi.zhang@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 10:05:11PM +1000, Matthew Bobrowski wrote:
-> > What is not clear to me at this point though is whether it is still
-> > necessary to explicitly track unwritten extents via in-core inode
-> > attributes i.e. ->i_unwritten and ->i_state_flags under the new direct
-> > IO code path implementation, which makes use of the iomap
-> > infrastructure. Or, whether we can get away with simply not using
-> > these in-core inode attributes and rely just on checks against the
-> > extent record directly, as breifly mentioned by Darrick. I would think
-> > that this type of check would be enough, however the checks around
-> > whether the inode is currently undergoing direct IO were implemented
-> > at some point, so there must be a reason for having them
-> > (a9b8241594add)?
+On Tue, Aug 27, 2019 at 08:08:39PM +0800, zhangyi (F) wrote:
+> Remount process will release system zone which was allocated before if
+> "noblock_validity" is specified. If we mount an ext4 file system to two
+> mountpoints with default mount options, and then remount one of them
+> with "noblock_validity", it may trigger a use after free problem when
+> someone accessing the other one.
+> 
+>  # mount /dev/sda foo
+>  # mount /dev/sda bar
+> 
+> User access mountpoint "foo"   |   Remount mountpoint "bar"
+>                                |
+> ext4_map_blocks()              |   ext4_remount()
+> check_block_validity()         |   ext4_setup_system_zone()
+> ext4_data_block_valid()        |   ext4_release_system_zone()
+>                                |   free system_blks rb nodes
+> access system_blks rb nodes    |
+> trigger use after free         |
+> 
+> This problem can also be reproduced by one mountpint, At the same time,
+> add_system_zone() can get called during remount as well so there can be
+> racing ext4_data_block_valid() reading the rbtree at the same time.
+> 
+> This patch add RCU to protect system zone from releasing or building
+> when doing a remount which inverse current "noblock_validity" mount
+> option. It assign the rbtree after the whole tree was complete and
+> do actual freeing after rcu grace period, avoid any intermediate state.
+> 
+> Reported-by: syzbot+1e470567330b7ad711d5@syzkaller.appspotmail.com
+> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-The original reason why we created the DIO_STATE_UNWRITTEN flag was a
-fast path, where the common case is writing blocks to an existing
-location in a file where the blocks are already allocated, and marked
-as written.  So consulting the on-disk extent tree to determine
-whether unwritten extents need to be converted and/or split is
-certainly doable.  However, it's expensive for the common case.  So
-having a hint whether we need to schedule a workqueue to possibly
-convert an unwritten region is helpful.  If we can just free the bio
-and exit the I/O completion handler without having to take shared
-locks to examine the on-disk extent tree, so much the better.
+Applied, thanks!
 
-> Maybe it's a silly question, although I'm wanting to clarify my
-> understanding around why it is that when we either try prepend or
-> append to an existing extent, we don't permit merging of extents if
-
-If I recall correctly, the reason for this check was mainly the
-concern that we would end up merging an extent that we would then have
-to split later on (when the direct I/O completed).
-
-To be honest, i'm not 100% sure what would happen if we removed that
-restriction; it might be that things would work just fine (just slower
-in some workloads), or whether there is some hidden dependency that
-would explode.  I suspect we'd have to try the experiment to be sure.
-
-      		  	       	    - Ted
-				    
+						- Ted
