@@ -2,94 +2,164 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB989F492
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2019 22:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566F29F83E
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2019 04:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbfH0Uys (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 27 Aug 2019 16:54:48 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:35985 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726675AbfH0Uys (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Aug 2019 16:54:48 -0400
-Received: by mail-qt1-f196.google.com with SMTP id z4so496871qtc.3;
-        Tue, 27 Aug 2019 13:54:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KWbFURB61/lWAVFSnEsUC28SV9DvkqEr5tllt6yvTiY=;
-        b=OZ6xFV/SEt92Ly6JN/1OKdHAGx7HvxRDHWW+T5X83Kxk6NiMQ4SWxgdae0ZPhc8zgi
-         4pCJO5rrmixT5YUdplTZifYcQgohc2JijaA3xkN01ZJYbg6GZqFWtLbbWNT7FN3xJXSK
-         V22MtiA0yg4epbWt6GQIWRxPl+zeYxmO6Wf6ODZf9rMomZAxY24aO1Zd16jYU5AUZrJp
-         A8Y7SYYX5W01uN4DeLiWnAVnkNxpx6y37O2iVxkrZyKLPJ9Nuh7iGaFIyGgG7eLYnAMf
-         EQa0MRj19D1PPtTkWLiG4fgcx+y5Swm4MdVTyW2gRVgBNeEj13/5Mq8UWQUrVJI1tl9X
-         uBCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KWbFURB61/lWAVFSnEsUC28SV9DvkqEr5tllt6yvTiY=;
-        b=QxxzQVWfsmvF0Tf5TkDbEoTm2FfqkJYSSLt4B1eIw7GYzVfbIwJ8H624bKXxX4R8AD
-         ET2h+B30+W7q9okEjyCHnkpKvupP2ODQ3bFmgQpF8WOwlkcWs7rO+/xJBEwh88t4yQRd
-         Y8xPtUxUSwY9GJTTe26QtBn8pGdy18vDiDuemv6TK69tFeiXKfl30+En3rk3TEyUkNmk
-         nG0RxxRKwtja3MSFkpm50uN/yD6xThckbL+W9UQHVA8RZdzfdNbkiI7DjJfEfeFeRo9q
-         PT4ZSkqzxDHAWJAT7XyF8qVjFjdWSqsTmmk/WmpETKKVXhZs9Lh7OLqZHdD847+M9RhY
-         aVzA==
-X-Gm-Message-State: APjAAAU0biaJCHkjCsfarg/Fmzcg/UyMxeO83gOq4wdUoY7JS0uH1ZJJ
-        Bi1EGOw/TRfbTaI8VmgGWno=
-X-Google-Smtp-Source: APXvYqzysEHZCwbe6uzTwLs8CI6Fhv6YgJbv6827n6K7nE9WtDfokwg3gau0xYJ+chkpDyXbvVNOPw==
-X-Received: by 2002:ac8:6146:: with SMTP id d6mr937546qtm.36.1566939287696;
-        Tue, 27 Aug 2019 13:54:47 -0700 (PDT)
-Received: from rocky (63-235-172-154.dia.static.qwest.net. [63.235.172.154])
-        by smtp.gmail.com with ESMTPSA id i8sm278952qkm.46.2019.08.27.13.54.47
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 27 Aug 2019 13:54:47 -0700 (PDT)
-From:   Eric Whitney <enwlinux@gmail.com>
-X-Google-Original-From: Eric Whitney <enw.linux@gmail.com>
-Date:   Tue, 27 Aug 2019 16:54:45 -0400
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Eric Whitney <enwlinux@gmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ext4: tidy up white space in count_rsvd()
-Message-ID: <20190827205445.3gtjyktwitgnbzx4@rocky>
-References: <20190827084725.GA22301@mwanda>
+        id S1726504AbfH1CVB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 27 Aug 2019 22:21:01 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:44741 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbfH1CVA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 27 Aug 2019 22:21:00 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20190828022057epoutp01410f18621e032030d23a607f6ec877c4~_9MdUze0A2998229982epoutp01v
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Aug 2019 02:20:57 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20190828022057epoutp01410f18621e032030d23a607f6ec877c4~_9MdUze0A2998229982epoutp01v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1566958857;
+        bh=2Id8G/Xn6V06sAdZYXMptUi6MUxaX2z3h414AQSi5/I=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=k98yVcHoY5eRWy55whZ8rcavcrMGw1LpHMDptIqy9vdMw+WVazwzt15mo01XkRRd9
+         7l4/CVj1LA+KD2X9zJQ7pDyqu9or8QDc9Y8Ar0ut0xku1LRrop+z5Ki0aMLe43HoyD
+         3N5pbfTIZQ6BYehWU3Hx+E4IXA0zFrHfzsrXO79E=
+Received: from epsnrtp5.localdomain (unknown [182.195.42.166]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20190828022056epcas2p488315cc4e34969caaecc606d9bbd2c6e~_9Mc2Raic1168911689epcas2p4l;
+        Wed, 28 Aug 2019 02:20:56 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.181]) by
+        epsnrtp5.localdomain (Postfix) with ESMTP id 46J8c74t4rzMqYkf; Wed, 28 Aug
+        2019 02:20:55 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        36.C7.04156.705E56D5; Wed, 28 Aug 2019 11:20:55 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20190828022055epcas2p25525077d0a5a3fa5a2027bac06a10bc1~_9MbUtf8v2048620486epcas2p2Q;
+        Wed, 28 Aug 2019 02:20:55 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20190828022055epsmtrp247236feb1b81a6eaa608658d164e62a4~_9MbTgesT1110211102epsmtrp2U;
+        Wed, 28 Aug 2019 02:20:55 +0000 (GMT)
+X-AuditID: b6c32a45-ddfff7000000103c-c4-5d65e5073e36
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F0.33.03706.605E56D5; Wed, 28 Aug 2019 11:20:55 +0900 (KST)
+Received: from KORDO035251 (unknown [12.36.165.204]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20190828022054epsmtip1cb959d74740696d9b606a29b76e0110e~_9MbAmhuG2545625456epsmtip1A;
+        Wed, 28 Aug 2019 02:20:54 +0000 (GMT)
+From:   "boojin.kim" <boojin.kim@samsung.com>
+To:     "'Theodore Y. Ts'o'" <tytso@mit.edu>
+Cc:     "'Herbert Xu'" <herbert@gondor.apana.org.au>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Eric Biggers'" <ebiggers@kernel.org>,
+        "'Theodore Y. Ts'o'" <tytso@mit.edu>,
+        "'Chao Yu'" <chao@kernel.org>,
+        "'Jaegeuk Kim'" <jaegeuk@kernel.org>,
+        "'Andreas Dilger'" <adilger.kernel@dilger.ca>,
+        "'Theodore Ts'o'" <tytso@mit.edu>, <dm-devel@redhat.com>,
+        "'Mike Snitzer'" <snitzer@redhat.com>,
+        "'Alasdair Kergon'" <agk@redhat.com>,
+        "'Jens Axboe'" <axboe@kernel.dk>,
+        "'Krzysztof Kozlowski'" <krzk@kernel.org>,
+        "'Kukjin Kim'" <kgene@kernel.org>,
+        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
+        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fscrypt@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 5/9] block: support diskcipher
+Date:   Wed, 28 Aug 2019 11:20:53 +0900
+Message-ID: <009301d55d47$38606400$a9212c00$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190827084725.GA22301@mwanda>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AdVdRkQ7u+BKrKHPSQuBNN28o4N3VA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf0wbZRjOd3e9OybFs6vus6LrThYdE9arFj50qNG5XbL9gb+iMc56KZcW
+        7a/0WjbUbATXUhiRQXRuhbG5GeNgla3UjQzKXGGSOqBOZGEEt8QxDKBsApuBiNr2WOS/53m+
+        5/ne9/3efDSu+pzS0CV2t+iyC1aWXEGc7l6Xn0PdELfrWnqy0O05P4Faf/geRy2/1JLo4mf9
+        GGqM7yFQZLpBgYKdf+No72QmGmsN4Gh4wadAtdencBSPn6RQ6PplBYqMrEfXrs5j6GDTKIl+
+        OroFTTbdIVBnJEagwbONJOr5txagA/EuDPlO3QbIWzNPod7gG88/yIePX8H4PW07+NPfreUH
+        +z18qLmK5Ecvd5J825e7+Y4jsxhf0XcB5292DZH8J+FmwM+GHilKf8u60SIKxaJLK9pNjuIS
+        u7mQ3fqq8UWjIU/H5XAFKJ/V2gWbWMhu2laUs7nEmpid1ZYKVk9CKhIkid3w7EaXw+MWtRaH
+        5C5kRWex1clxzlxJsEkeuznX5LA9zel0ekPC+a7VUn/1EOWsTN/Zd7hWUQ4uplUDmobMUzBY
+        KVaDFbSKaQfw5/EmhUxmALw5vI+UyZ0E8VaAuwlveIusRwD8bfhPXCYTAJ7/ay4RT6NJZj1s
+        620GSaxmHodDi/Opa3HmHwqOzUSJ5MFKRg+91XuxJCaYtXCi6hKWrKBkCuCl/auTspK5D8YO
+        jqXsOLManvmjEU9iyGhhe/9UqiE1kwuPjr8iW9SwocqX6gcyixQcb/ATsn8T/NgbWcquhJO9
+        YUrGGjg7HSFlvBsOfXWMksM1APYt+JZMT8LAeGWqGM6sg61nN8gP8SjsGVlqLQP6uxcpWVZC
+        v08lB7PgoZlBTJY18FbNLlnmYThcD/aBNYFlMwaWzRhYNkzg/7JHANEMHhCdks0sSnont3zT
+        IZD6FNkvtYMDA9uigKEBm6703ytuVymEUqnMFgWQxlm18teshKQsFso+EF0Oo8tjFaUoMCQ2
+        UIdr7jc5El/M7jZyBn1enq7AgAx5esSuUrbdc+VtFWMW3OL7ougUXXdzGJ2mKQdm9e/PFMRj
+        773zBV9v6lKSE4+Fdg3MVVyYek5SKp6IvRms40syMn5sObHq/EM7TOdOZkd21tVrz2WWWSYa
+        Tk1jU4dBJy2xr58IfXvmNZtpf0UpZ87vuHGreyBmffiFeJeR+Kaj91prJhoJlleXfXpsob0n
+        mv91KTg++mHN1o/EzJdZQrIIXDbukoT/AJPWV5kqBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGIsWRmVeSWpSXmKPExsWy7bCSnC7709RYg94Ki69fOlgs1p86xmyx
+        +m4/m8XpqWeZLOacb2Gx2PtuNqvF2j1/mC26X8lYPFk/i9nixq82Vov+x6+ZLc6f38Busenx
+        NVaLvbe0Le7f+8lkMXPeHTaLS4vcLV7N+8ZisWfvSRaLy7vmsFkc+d/PaDHj/D4mi7aNXxkt
+        Wnt+slscXxvuIOmxZeVNJo+WzeUe2w6oelw+W+qxaVUnm8eda3vYPDYvqffYveAzk0fTmaPM
+        Hu/3XWXz6NuyitHj8ya5AJ4oLpuU1JzMstQifbsEroxJ9+ayF7TzVJyZ38/awHias4uRg0NC
+        wESidYt7FyMXh5DAbkaJkzPfsHYxcgLFpSS2tu9hhrCFJe63HAGLCwk8Z5T43FQAYrMJaEts
+        Pr6KEcQWEdCQuPr3J1gNs8A0DoldH8RBbGEBI4nWrm4mEJtFQFXiZedFJpC9vAKWEhenyYOE
+        eQUEgdY+YQEJMwvoSbRtZISYIi+x/e0cqAsUJHacfc0IUiICVLLoWRBEiYjE7M425gmMgrOQ
+        DJqFMGgWkkGzkHQsYGRZxSiZWlCcm55bbFhgmJdarlecmFtcmpeul5yfu4kRHPtamjsYLy+J
+        P8QowMGoxMPbwZ8aK8SaWFZcmXuIUYKDWUmE95EKUIg3JbGyKrUoP76oNCe1+BCjNAeLkjjv
+        07xjkUIC6YklqdmpqQWpRTBZJg5OqQbGCe6KPu0piqufKnP1tu34wfCOpXqGoZpO67oI2VcH
+        eqz4CosPzjLUeH51hWb/iW3c2p8WGrj7dMxw+SJmk/ti5rSjDMePZCbVPPVd3qPhWBbPHjtv
+        ZbFB6qVNv9OePpv046uo851LB0VeyiS+PenWVX+k+d80Jp7Pto/8NjFKWcr4L715Z/M0JZbi
+        jERDLeai4kQAn059LPkCAAA=
+X-CMS-MailID: 20190828022055epcas2p25525077d0a5a3fa5a2027bac06a10bc1
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20190828022055epcas2p25525077d0a5a3fa5a2027bac06a10bc1
+References: <CGME20190828022055epcas2p25525077d0a5a3fa5a2027bac06a10bc1@epcas2p2.samsung.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-* Dan Carpenter <dan.carpenter@oracle.com>:
-> This line was indented one tab too far.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Tue, Aug 27, 2019 at 05:33:33PM +0900, boojin.kim wrote:
+>
+> Hi Boojin,
+>
+> I think the important thing to realize here is that there are a large
+> number of hardware devices for which the keyslot manager *is* needed.
+> And from the upstream kernel's perspective, supporting two different
+> schemes for supporting the inline encryption feature is more
+> complexity than just supporting one which is general enough to support
+> a wider variety of hardware devices.
+>
+> If you want somethig which is only good for the hardware platform you
+> are charged to support, that's fine if it's only going to be in a
+> Samsung-specific kernel.  But if your goal is to get something that
+> works upstream, especially if it requires changes in core layers of
+> the kernel, it's important that it's general enough to support most,
+> if not all, if the hardware devices in the industry.
+>
+> Regards,
 
-Good catch, thanks.  You can add:
+I understood your reply.
+But, Please consider the diskcipher isn't just for FMP. 
+The UFS in Samsung SoC also has UFS ICE. This UFS ICE can be registered 
+as an algorithm of diskcipher like FMP.
 
-Reviewed-by: Eric Whitney <enwlinux@gmail.com>
+Following is my opinion to introduce diskcipher.
+I think the common feature of ICE like FMP and UFS ICE, 
+is 'exposing cipher text to storage".
+And, Crypto test is also important for ICE.  Diskcipher supports
+the common feature of ICE. 
+I think specific functions for each ICE such as the key control of UFS ICE
+and the writing crypto table of FMP can be processed at algorithm level.
 
-> ---
->  fs/ext4/extents_status.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-> index dc28a9642452..f17e3f521a17 100644
-> --- a/fs/ext4/extents_status.c
-> +++ b/fs/ext4/extents_status.c
-> @@ -1089,7 +1089,7 @@ static void count_rsvd(struct inode *inode, ext4_lblk_t lblk, long len,
->  	 */
->  	if ((i + sbi->s_cluster_ratio - 1) <= end) {
->  		nclu = (end - i + 1) >> sbi->s_cluster_bits;
-> -			rc->ndelonly += nclu;
-> +		rc->ndelonly += nclu;
->  		i += nclu << sbi->s_cluster_bits;
->  	}
->  
-> -- 
-> 2.20.1
-> 
+Thanks for your reply.
+Boojin Kim.
+
