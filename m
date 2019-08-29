@@ -2,117 +2,188 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC3EA0D9A
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 00:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5589EA0F57
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 04:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbfH1WcY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Aug 2019 18:32:24 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:54966 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726658AbfH1WcY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 28 Aug 2019 18:32:24 -0400
-Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 98ED4361338;
-        Thu, 29 Aug 2019 08:32:20 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1i36UE-00057N-WE; Thu, 29 Aug 2019 08:32:19 +1000
-Date:   Thu, 29 Aug 2019 08:32:18 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Matthew Bobrowski <mbobrowski@mbobrowski.org>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, riteshh@linux.ibm.com
-Subject: Re: [PATCH 4/5] ext4: introduce direct IO write code path using
- iomap infrastructure
-Message-ID: <20190828223218.GZ7777@dread.disaster.area>
-References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
- <581c3a2da89991e7ce5862d93dcfb23e1dc8ddc8.1565609891.git.mbobrowski@mbobrowski.org>
- <20190828202619.GG22343@quack2.suse.cz>
+        id S1726839AbfH2CCd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 28 Aug 2019 22:02:33 -0400
+Received: from mga03.intel.com ([134.134.136.65]:63034 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726279AbfH2CCd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 28 Aug 2019 22:02:33 -0400
+X-Amp-Result: UNSCANNABLE
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 28 Aug 2019 19:02:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,442,1559545200"; 
+   d="scan'208";a="175115578"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga008.jf.intel.com with ESMTP; 28 Aug 2019 19:02:31 -0700
+Date:   Wed, 28 Aug 2019 19:02:31 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Michal Hocko <mhocko@suse.com>, linux-xfs@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
+Message-ID: <20190829020230.GA18249@iweiny-DESK2.sc.intel.com>
+References: <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
+ <20190821181343.GH8653@ziepe.ca>
+ <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
+ <20190821194810.GI8653@ziepe.ca>
+ <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
+ <20190823032345.GG1119@dread.disaster.area>
+ <20190823120428.GA12968@ziepe.ca>
+ <20190824001124.GI1119@dread.disaster.area>
+ <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
+ <20190826055510.GL1119@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190828202619.GG22343@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
-        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=4ERQYXhnAAAA:8 a=7-415B0cAAAA:8 a=YRs46oH6ve-dZsFn3eoA:9
-        a=CjuIK1q_8ugA:10 a=HrUHXJcpxbsINVJ6ux1W:22 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20190826055510.GL1119@dread.disaster.area>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 10:26:19PM +0200, Jan Kara wrote:
-> On Mon 12-08-19 22:53:26, Matthew Bobrowski wrote:
-> > This patch introduces a new direct IO write code path implementation
-> > that makes use of the iomap infrastructure.
-> > 
-> > All direct IO write operations are now passed from the ->write_iter() callback
-> > to the new function ext4_dio_write_iter(). This function is responsible for
-> > calling into iomap infrastructure via iomap_dio_rw(). Snippets of the direct
-> > IO code from within ext4_file_write_iter(), such as checking whether the IO
-> > request is unaligned asynchronous IO, or whether it will ber overwriting
-> > allocated and initialized blocks has been moved out and into
-> > ext4_dio_write_iter().
-> > 
-> > The block mapping flags that are passed to ext4_map_blocks() from within
-> > ext4_dio_get_block() and friends have effectively been taken out and
-> > introduced within the ext4_iomap_begin(). If ext4_map_blocks() happens to have
-> > instantiated blocks beyond the i_size, then we attempt to place the inode onto
-> > the orphan list. Despite being able to perform i_size extension checking
-> > earlier on in the direct IO code path, it makes most sense to perform this bit
-> > post successful block allocation.
-> > 
-> > The ->end_io() callback ext4_dio_write_end_io() is responsible for removing
-> > the inode from the orphan list and determining if we should truncate a failed
-> > write in the case of an error. We also convert a range of unwritten extents to
-> > written if IOMAP_DIO_UNWRITTEN is set and perform the necessary
-> > i_size/i_disksize extension if the iocb->ki_pos + dio->size > i_size_read(inode).
-> > 
-> > In the instance of a short write, we fallback to buffered IO and complete
-> > whatever is left the 'iter'. Any blocks that may have been allocated in
-> > preparation for direct IO will be reused by buffered IO, so there's no issue
-> > with leaving allocated blocks beyond EOF.
-> > 
-> > Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-> > ---
-> >  fs/ext4/file.c  | 227 ++++++++++++++++++++++++++++++++++++++++----------------
-> >  fs/ext4/inode.c |  42 +++++++++--
-> >  2 files changed, 199 insertions(+), 70 deletions(-)
-> 
-> Overall this is very nice. Some smaller comments below.
-> 
-> > @@ -235,6 +244,34 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
-> >  	return iov_iter_count(from);
-> >  }
-> >  
-> > +static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
-> > +					struct iov_iter *from)
-> > +{
-> > +	ssize_t ret;
-> > +	struct inode *inode = file_inode(iocb->ki_filp);
-> > +
-> > +	if (!inode_trylock(inode)) {
-> > +		if (iocb->ki_flags & IOCB_NOWAIT)
-> > +			return -EOPNOTSUPP;
-> > +		inode_lock(inode);
-> > +	}
-> 
-> Currently there's no support for IOCB_NOWAIT for buffered IO so you can
-> replace this with "inode_lock(inode)".
+On Mon, Aug 26, 2019 at 03:55:10PM +1000, Dave Chinner wrote:
+> On Fri, Aug 23, 2019 at 10:08:36PM -0700, Ira Weiny wrote:
+> > On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
+> > > On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
+> > >
+> > > > IMHO it is wrong to try and create a model where the file lease exists
+> > > > independently from the kernel object relying on it. In other words the
+> > > > IB MR object itself should hold a reference to the lease it relies
+> > > > upon to function properly.
+> > > 
+> > > That still doesn't work. Leases are not individually trackable or
+> > > reference counted objects objects - they are attached to a struct
+> > > file bUt, in reality, they are far more restricted than a struct
+> > > file.
+> > > 
+> > > That is, a lease specifically tracks the pid and the _open fd_ it
+> > > was obtained for, so it is essentially owned by a specific process
+> > > context.  Hence a lease is not able to be passed to a separate
+> > > process context and have it still work correctly for lease break
+> > > notifications.  i.e. the layout break signal gets delivered to
+> > > original process that created the struct file, if it still exists
+> > > and has the original fd still open. It does not get sent to the
+> > > process that currently holds a reference to the IB context.
 
-IOCB_NOWAIT is supported for buffered reads. It is not supported on
-buffered writes (as yet), so this should return EOPNOTSUPP if
-IOCB_NOWAIT is set, regardless of whether the lock can be grabbed or
-not.
+But this is an exclusive layout lease which does not send a signal.  There is
+no way to break it.
 
-Cheers,
+> > >
+> > 
+> > The fcntl man page says:
+> > 
+> > "Leases are associated with an open file description (see open(2)).  This means
+> > that duplicate file descriptors (created by, for example, fork(2) or dup(2))
+> > refer to the same lease, and this lease may be modified or released using any
+> > of these descriptors.  Furthermore,  the lease is released by either an
+> > explicit F_UNLCK operation on any of these duplicate file descriptors, or when
+> > all such file descriptors have been closed."
+> 
+> Right, the lease is attached to the struct file, so it follows
+> where-ever the struct file goes. That doesn't mean it's actually
+> useful when the struct file is duplicated and/or passed to another
+> process. :/
+> 
+> AFAICT, the problem is that when we take another reference to the
+> struct file, or when the struct file is passed to a different
+> process, nothing updates the lease or lease state attached to that
+> struct file.
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Ok, I probably should have made this more clear in the cover letter but _only_
+the process which took the lease can actually pin memory.
+
+That pinned memory _can_ be passed to another process but those sub-process' can
+_not_ use the original lease to pin _more_ of the file.  They would need to
+take their own lease to do that.
+
+Sorry for not being clear on that.
+
+> 
+> > From this I took it that the child process FD would have the lease as well
+> > _and_ could release it.  I _assumed_ that applied to SCM_RIGHTS but it does not
+> > seem to work the same way as dup() so I'm not so sure.
+> 
+> Sure, that part works because the struct file is passed. It doesn't
+> end up with the same fd number in the other process, though.
+> 
+> The issue is that layout leases need to notify userspace when they
+> are broken by the kernel, so a lease stores the owner pid/tid in the
+> file->f_owner field via __f_setown(). It also keeps a struct fasync
+> attached to the file_lock that records the fd that the lease was
+> created on.  When a signal needs to be sent to userspace for that
+> lease, we call kill_fasync() and that walks the list of fasync
+> structures on the lease and calls:
+> 
+> 	send_sigio(fown, fa->fa_fd, band);
+> 
+> And it does for every fasync struct attached to a lease. Yes, a
+> lease can track multiple fds, but it can only track them in a single
+> process context. The moment the struct file is shared with another
+> process, the lease is no longer capable of sending notifications to
+> all the lease holders.
+> 
+> Yes, you can change the owning process via F_SETOWNER, but that's
+> still only a single process context, and you can't change the fd in
+> the fasync list. You can add new fd to an existing lease by calling
+> F_SETLEASE on the new fd, but you still only have a single process
+> owner context for signal delivery.
+> 
+> As such, leases that require callbacks to userspace are currently
+> only valid within the process context the lease was taken in.
+
+But for long term pins we are not requiring callbacks.
+
+> Indeed, even closing the fd the lease was taken on without
+> F_UNLCKing it first doesn't mean the lease has been torn down if
+> there is some other reference to the struct file. That means the
+> original lease owner will still get SIGIO delivered to that fd on a
+> lease break regardless of whether it is open or not. ANd if we
+> implement "layout lease not released within SIGIO response timeout"
+> then that process will get killed, despite the fact it may not even
+> have a reference to that file anymore.
+
+I'm not seeing that as a problem.  This is all a result of the application
+failing to do the right thing.  The code here is simply keeping the kernel
+consistent and safe so that an admin or the user themselves can unwind the
+badness without damage to the file system.
+
+> 
+> So, AFAICT, leases that require userspace callbacks only work within
+> their original process context while they original fd is still open.
+
+But they _work_ IFF the application actually expects to do something with the
+SIGIO.  The application could just as well chose to ignore the SIGIO without
+closing the FD which would do the same thing.
+
+If the application expected to do something with the SIGIO but closed the FD
+then it's really just the applications fault.
+
+So after thinking on this for a day I don't think we have a serious issue.
+
+Even the "zombie" lease is just an application error and it is already possible
+to get something like this.  If the application passes the FD to another
+process and closes their FD then SIGIO's don't get delivered but there is a
+lease hanging off the struct file until it is destroyed.  No harm, no foul.
+
+In the case of close it is _not_ true that users don't have a way to release
+the lease.  It is just that they can't call F_UNLCK to do so.  Once they have
+"zombie'ed" the lease (again an application error) the only recourse is to
+unpin the file through the subsystem which pinned the page.  Probably through
+killing the process.
+
+Ira
+
