@@ -2,80 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D57A178B
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 12:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C98A1845
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 13:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbfH2K67 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Aug 2019 06:58:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49720 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726379AbfH2K67 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 29 Aug 2019 06:58:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9EF81AF43;
-        Thu, 29 Aug 2019 10:58:58 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1D26B1E3BE6; Thu, 29 Aug 2019 12:58:58 +0200 (CEST)
-Date:   Thu, 29 Aug 2019 12:58:58 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/3] Revert parallel dio reads
-Message-ID: <20190829105858.GA22939@quack2.suse.cz>
-References: <1566871552-60946-1-git-send-email-joseph.qi@linux.alibaba.com>
- <20190827115118.GY7777@dread.disaster.area>
+        id S1727040AbfH2LU6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Aug 2019 07:20:58 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36788 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726232AbfH2LU6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Aug 2019 07:20:58 -0400
+Received: by mail-pg1-f195.google.com with SMTP id l21so1437079pgm.3
+        for <linux-ext4@vger.kernel.org>; Thu, 29 Aug 2019 04:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MO1at3htvy+QBiGMsZ4p3IurvkhEqFEhhsP44+X95CE=;
+        b=rJojcqdn4jRu5pAqPMUfE93udKprNxEHdg/UMkhlc2PipSnotKuR429QUIPq+cn3cV
+         CfBv9d7MeYJZxSeJ/ux5WjlYNSyTOUeK+exsWcN01/HwgXkPwiMKlVspY1lFg1T0LZUo
+         KY/UTYXyWNOa+PtCaX69THNbsOp9QaZGboYOwoGc2f6Jsj1i1IocSoFpr+AI2KsKKkMp
+         j/FxR6PwtOMR63Oio7sZn5jYz00HzE6dji8DCgzzToWMOE4e7meFLJMtVnkx3H+oLqrv
+         V+YUt1P/rZoIGoCkdyGOrmzSF0yxYNkFfR9i1I1yNvVLmtZobazbEI+cR8xCTHG/xGY5
+         J0rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MO1at3htvy+QBiGMsZ4p3IurvkhEqFEhhsP44+X95CE=;
+        b=bELi19futdSt9vyKMl69RxIe117KFZgDhFyoGWgrRJ+eR3nM9P8Mn9JE/vyJpQL5wW
+         orPkMVd/3akP/OJXutdeKeWFMN8ODis5c4UkLaMbropy9sIElOijOGr+WNwAN5QY/8bh
+         JCKHkzvJMhxMyu1cgu/Eh7JLzHYsv0HiuckyNkI2KSb7kglAB04TjhQEztC44kTDuA5h
+         ZhBhf9G/IAAc/9am/bu2uYDtHJrCaLrCUq2G1NaFR1hzW/VkYaXACI7kbhoPG0LMXNue
+         /P97og6iDlqoHxLwVqCbZm5Bf9GgSMFr199J24vtSrEpXaAfLNo17gYmrS0OV56QSQvZ
+         afFA==
+X-Gm-Message-State: APjAAAWwyx+XRvmIoKGTA+CqZtLr5Si1pGQ51jBWiYB0DHeJKkJ12baD
+        urtz9S/sFSTPCKwKv+UOUFGhQmSv1epho24=
+X-Google-Smtp-Source: APXvYqyPZX1a8Wl3Hv5h/GqI8hkbGT710z+NBi9F2BVP28ztiJx4E/HcSUO+OhBDFk/z0X/imxPwdA==
+X-Received: by 2002:a17:90a:1a8d:: with SMTP id p13mr9579500pjp.15.1567077657344;
+        Thu, 29 Aug 2019 04:20:57 -0700 (PDT)
+Received: from poseidon.bobrowski.net ([114.78.226.167])
+        by smtp.gmail.com with ESMTPSA id f26sm3055950pfq.38.2019.08.29.04.20.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Aug 2019 04:20:56 -0700 (PDT)
+Date:   Thu, 29 Aug 2019 21:20:50 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, aneesh.kumar@linux.ibm.com
+Subject: Re: [PATCH 0/5] ext4: direct IO via iomap infrastructure
+Message-ID: <20190829112048.GA2486@poseidon.bobrowski.net>
+References: <20190822120015.GA3330@poseidon.bobrowski.net>
+ <20190822141126.70A94A407B@d06av23.portsmouth.uk.ibm.com>
+ <20190824031830.GB2174@poseidon.bobrowski.net>
+ <20190824035554.GA1037502@magnolia>
+ <20190824230427.GA32012@infradead.org>
+ <20190827095221.GA1568@poseidon.bobrowski.net>
+ <20190828120509.GC22165@poseidon.bobrowski.net>
+ <20190828142729.GB24857@mit.edu>
+ <20190828180215.GE22343@quack2.suse.cz>
+ <20190829063608.GA17426@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190827115118.GY7777@dread.disaster.area>
+In-Reply-To: <20190829063608.GA17426@infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 27-08-19 21:51:18, Dave Chinner wrote:
-> On Tue, Aug 27, 2019 at 10:05:49AM +0800, Joseph Qi wrote:
-> > This patch set is trying to revert parallel dio reads feature at present
-> > since it causes significant performance regression in mixed random
-> > read/write scenario.
-> > 
-> > Joseph Qi (3):
-> >   Revert "ext4: remove EXT4_STATE_DIOREAD_LOCK flag"
-> >   Revert "ext4: fix off-by-one error when writing back pages before dio
-> >     read"
-> >   Revert "ext4: Allow parallel DIO reads"
-> > 
-> >  fs/ext4/ext4.h        | 17 +++++++++++++++++
-> >  fs/ext4/extents.c     | 19 ++++++++++++++-----
-> >  fs/ext4/inode.c       | 47 +++++++++++++++++++++++++++++++----------------
-> >  fs/ext4/ioctl.c       |  4 ++++
-> >  fs/ext4/move_extent.c |  4 ++++
-> >  fs/ext4/super.c       | 12 +++++++-----
-> >  6 files changed, 77 insertions(+), 26 deletions(-)
-> 
-> Before doing this, you might want to have a chat and co-ordinate
-> with the folks that are currently trying to port the ext4 direct IO
-> code to use the iomap infrastructure:
-> 
-> https://lore.kernel.org/linux-ext4/20190827095221.GA1568@poseidon.bobrowski.net/T/#t
-> 
-> That is going to need the shared locking on read and will work just
-> fine with shared locking on write, too (it's the code that XFS uses
-> for direct IO). So it might be best here if you work towards shared
-> locking on the write side rather than just revert the shared locking
-> on the read side....
+Awesome, and thank you *all* for your very valueable input.
 
-Yeah, after converting ext4 DIO path to iomap infrastructure, using shared
-inode lock for all aligned non-extending DIO writes will be easy so I'd
-prefer if we didn't have to redo the iomap conversion patches due to these
-reverts.
+On Wed, Aug 28, 2019 at 11:36:08PM -0700, Christoph Hellwig wrote:
+> On Wed, Aug 28, 2019 at 08:02:15PM +0200, Jan Kara wrote:
+> > > The original reason why we created the DIO_STATE_UNWRITTEN flag was a
+> > > fast path, where the common case is writing blocks to an existing
+> > > location in a file where the blocks are already allocated, and marked
+> > > as written.  So consulting the on-disk extent tree to determine
+> > > whether unwritten extents need to be converted and/or split is
+> > > certainly doable.  However, it's expensive for the common case.  So
+> > > having a hint whether we need to schedule a workqueue to possibly
+> > > convert an unwritten region is helpful.  If we can just free the bio
+> > > and exit the I/O completion handler without having to take shared
+> > > locks to examine the on-disk extent tree, so much the better.
+> > 
+> > Yes, but for determining whether extent conversion on IO completion is
+> > needed we now use IOMAP_DIO_UNWRITTEN flag iomap infrastructure provides to
+> > us. So we don't have to track this internally in ext4 anymore.
+> 
+> Exactly.  As mentioned before the ioend to track unwritten thing was
+> in XFS by the time ext4 copied the ioend approach. but we actually got
+> rid of that long before the iomap conversion.  Maybe to make everything
+> easier to understand and bisect you might want to get rid of the ioend
+> for direct I/O in ext4 as a prep path as well.
+> 
+> The relevant commit is: 273dda76f757 ("xfs: don't use ioends for direct
+> write completions")
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Uh ha! So, we conclude that there's no need to muck around with hairy
+ioend's, or the need to denote whether there's unwritten extents held
+against the inode using tricky state flag for that matter.
+
+> > > To be honest, i'm not 100% sure what would happen if we removed that
+> > > restriction; it might be that things would work just fine (just slower
+> > > in some workloads), or whether there is some hidden dependency that
+> > > would explode.  I suspect we'd have to try the experiment to be sure.
+> > 
+> > As far as I remember the concern was that extent split may need block
+> > allocation and we may not have enough free blocks to do it. These days we
+> > have some blocks reserved in the filesystem to accomodate unexpected extent
+> > splits so this shouldn't happen anymore so the only real concern is the
+> > wasted performance due to unnecessary extent merge & split. Kind of a
+> > stress test for this would be to fire of lots of sequential AIO DIO
+> > requests against a hole in a file.
+> 
+> Well, you can always add a don't merge flag to the actual allocation.
+> You might still get a merge for pathological case (fallocate adjacent
+> to a dio write just submitted), but if the merging is such a performance
+> over head here is easy ways to avoid it for the common case.
+
+After I've posted through the next version of this patch series, I
+will attempt to perform some stress testing to see what the
+performance hit could potentially be.
