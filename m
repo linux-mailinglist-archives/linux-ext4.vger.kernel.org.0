@@ -2,124 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB7EA2090
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 18:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4625A2679
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 20:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbfH2QQb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Aug 2019 12:16:31 -0400
-Received: from mga05.intel.com ([192.55.52.43]:19642 "EHLO mga05.intel.com"
+        id S1728158AbfH2SwR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Aug 2019 14:52:17 -0400
+Received: from mga17.intel.com ([192.55.52.151]:43358 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727066AbfH2QQb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 29 Aug 2019 12:16:31 -0400
+        id S1727798AbfH2SwR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 29 Aug 2019 14:52:17 -0400
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Aug 2019 09:16:29 -0700
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Aug 2019 11:52:15 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.64,444,1559545200"; 
-   d="scan'208";a="183523268"
+   d="scan'208";a="180965850"
 Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga003.jf.intel.com with ESMTP; 29 Aug 2019 09:16:28 -0700
-Date:   Thu, 29 Aug 2019 09:16:28 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 29 Aug 2019 11:52:15 -0700
+Date:   Thu, 29 Aug 2019 11:52:15 -0700
 From:   Ira Weiny <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Dave Chinner <david@fromorbit.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
-        linux-xfs@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-ext4@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-Message-ID: <20190829161627.GB18249@iweiny-DESK2.sc.intel.com>
-References: <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
- <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
- <20190823032345.GG1119@dread.disaster.area>
- <20190823120428.GA12968@ziepe.ca>
- <20190824001124.GI1119@dread.disaster.area>
- <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
- <20190826055510.GL1119@dread.disaster.area>
- <20190829020230.GA18249@iweiny-DESK2.sc.intel.com>
- <3e5c5053-a74a-509c-660c-a6075ed87f11@nvidia.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
+        linux-nvdimm@lists.01.org, linux-rdma@vger.kernel.org,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        linux-xfs@vger.kernel.org, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-fsdevel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v2 06/19] fs/ext4: Teach dax_layout_busy_page() to
+ operate on a sub-range
+Message-ID: <20190829185215.GC18249@iweiny-DESK2.sc.intel.com>
+References: <20190809225833.6657-1-ira.weiny@intel.com>
+ <20190809225833.6657-7-ira.weiny@intel.com>
+ <20190823151826.GB11009@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3e5c5053-a74a-509c-660c-a6075ed87f11@nvidia.com>
+In-Reply-To: <20190823151826.GB11009@redhat.com>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 08:27:23PM -0700, John Hubbard wrote:
-> On 8/28/19 7:02 PM, Ira Weiny wrote:
-> > On Mon, Aug 26, 2019 at 03:55:10PM +1000, Dave Chinner wrote:
-> > > On Fri, Aug 23, 2019 at 10:08:36PM -0700, Ira Weiny wrote:
-> > > > On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
-> > > > > On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
-> ...
-> > > 
-> > > Sure, that part works because the struct file is passed. It doesn't
-> > > end up with the same fd number in the other process, though.
-> > > 
-> > > The issue is that layout leases need to notify userspace when they
-> > > are broken by the kernel, so a lease stores the owner pid/tid in the
-> > > file->f_owner field via __f_setown(). It also keeps a struct fasync
-> > > attached to the file_lock that records the fd that the lease was
-> > > created on.  When a signal needs to be sent to userspace for that
-> > > lease, we call kill_fasync() and that walks the list of fasync
-> > > structures on the lease and calls:
-> > > 
-> > > 	send_sigio(fown, fa->fa_fd, band);
-> > > 
-> > > And it does for every fasync struct attached to a lease. Yes, a
-> > > lease can track multiple fds, but it can only track them in a single
-> > > process context. The moment the struct file is shared with another
-> > > process, the lease is no longer capable of sending notifications to
-> > > all the lease holders.
-> > > 
-> > > Yes, you can change the owning process via F_SETOWNER, but that's
-> > > still only a single process context, and you can't change the fd in
-> > > the fasync list. You can add new fd to an existing lease by calling
-> > > F_SETLEASE on the new fd, but you still only have a single process
-> > > owner context for signal delivery.
-> > > 
-> > > As such, leases that require callbacks to userspace are currently
-> > > only valid within the process context the lease was taken in.
+On Fri, Aug 23, 2019 at 11:18:26AM -0400, Vivek Goyal wrote:
+> On Fri, Aug 09, 2019 at 03:58:20PM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
 > > 
-> > But for long term pins we are not requiring callbacks.
+> > Callers of dax_layout_busy_page() are only rarely operating on the
+> > entire file of concern.
 > > 
+> > Teach dax_layout_busy_page() to operate on a sub-range of the
+> > address_space provided.  Specifying 0 - ULONG_MAX however, will continue
+> > to operate on the "entire file" and XFS is split out to a separate patch
+> > by this method.
+> > 
+> > This could potentially speed up dax_layout_busy_page() as well.
 > 
-> Hi Ira,
+> I need this functionality as well for virtio_fs and posted a patch for
+> this.
 > 
-> If "require callbacks to userspace" means sending SIGIO, then actually
-> FOLL_LONGTERM *does* require those callbacks. Because we've been, so
-> far, equating FOLL_LONGTERM with the vaddr_pin struct and with a lease.
+> https://lkml.org/lkml/2019/8/21/825
 > 
-> What am I missing here?
+> Given this is an optimization which existing users can benefit from already,
+> this patch could probably be pushed upstream independently.
 
-We agreed back in June that the layout lease would have 2 "levels".  The
-"normal" layout lease would cause SIGIO and could be broken and another
-"exclusive" level which could _not_ be broken.
+I'm ok with that.
 
-Because we _can't_ _trust_ user space to react to the SIGIO properly the
-"exclusive" lease is required to take the longterm pins.  Also this is the
-lease which causes the truncate to fail (return ETXTBSY) because the kernel
-can't break the lease.
+However, this patch does not apply cleanly to head as I had some other
+additions to dax.h.
 
-The vaddr_pin struct in the current RFC is there for a couple of reasons.
+> 
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > ---
+> > Changes from RFC v1
+> > 	Fix 0-day build errors
+> > 
+> >  fs/dax.c            | 15 +++++++++++----
+> >  fs/ext4/ext4.h      |  2 +-
+> >  fs/ext4/extents.c   |  6 +++---
+> >  fs/ext4/inode.c     | 19 ++++++++++++-------
+> >  fs/xfs/xfs_file.c   |  3 ++-
+> >  include/linux/dax.h |  6 ++++--
+> >  6 files changed, 33 insertions(+), 18 deletions(-)
+> > 
+> > diff --git a/fs/dax.c b/fs/dax.c
+> > index a14ec32255d8..3ad19c384454 100644
+> > --- a/fs/dax.c
+> > +++ b/fs/dax.c
+> > @@ -573,8 +573,11 @@ bool dax_mapping_is_dax(struct address_space *mapping)
+> >  EXPORT_SYMBOL_GPL(dax_mapping_is_dax);
+> >  
+> >  /**
+> > - * dax_layout_busy_page - find first pinned page in @mapping
+> > + * dax_layout_busy_page - find first pinned page in @mapping within
+> > + *                        the range @off - @off + @len
+> >   * @mapping: address space to scan for a page with ref count > 1
+> > + * @off: offset to start at
+> > + * @len: length to scan through
+> >   *
+> >   * DAX requires ZONE_DEVICE mapped pages. These pages are never
+> >   * 'onlined' to the page allocator so they are considered idle when
+> > @@ -587,9 +590,13 @@ EXPORT_SYMBOL_GPL(dax_mapping_is_dax);
+> >   * to be able to run unmap_mapping_range() and subsequently not race
+> >   * mapping_mapped() becoming true.
+> >   */
+> > -struct page *dax_layout_busy_page(struct address_space *mapping)
+> > +struct page *dax_layout_busy_page(struct address_space *mapping,
+> > +				  loff_t off, loff_t len)
+> >  {
+> > -	XA_STATE(xas, &mapping->i_pages, 0);
+> > +	unsigned long start_idx = off >> PAGE_SHIFT;
+> > +	unsigned long end_idx = (len == ULONG_MAX) ? ULONG_MAX
+> > +				: start_idx + (len >> PAGE_SHIFT);
+> > +	XA_STATE(xas, &mapping->i_pages, start_idx);
+> >  	void *entry;
+> >  	unsigned int scanned = 0;
+> >  	struct page *page = NULL;
+> > @@ -612,7 +619,7 @@ struct page *dax_layout_busy_page(struct address_space *mapping)
+> >  	unmap_mapping_range(mapping, 0, 0, 1);
+> 
+> Should we unmap only those pages which fall in the range specified by caller.
+> Unmapping whole file seems to be less efficient.
 
-1) To ensure that we have a way to correlate the long term pin user with the
-   file if the data file FD's are closed.  (ie the application has zombie'd the
-   lease).
+Seems reasonable to me.  I was focused on getting pages which were busy not
+necessarily on what got unmapped.  So I did not consider this.  Thanks for the
+suggestion.
 
-2) And more importantly as a token the vaddr_pin*() callers use to be able to
-   properly ref count the file itself while in use.
+However, I don't understand the math you do for length?  Is this comment/code
+correct?
+
++  /* length is being calculated from lstart and not start.
++   * This is due to behavior of unmap_mapping_range(). If
++   * start is say 4094 and end is on 4093 then want to
++   * unamp two pages, idx 0 and 1. But unmap_mapping_range()
++   * will unmap only page at idx 0. If we calculate len
++   * from the rounded down start, this problem should not
++   * happen.
++   */
++  len = end - lstart + 1;
+
+
+How can end (4093) be < start (4094)?  Is that valid?  And why would a start of
+4094 unmap idx 0?
 
 Ira
 
