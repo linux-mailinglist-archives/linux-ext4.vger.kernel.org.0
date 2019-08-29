@@ -2,124 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9B2A0FF3
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 05:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AE7A11D5
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 08:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbfH2D3Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 28 Aug 2019 23:29:24 -0400
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:13912 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbfH2D3Y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 28 Aug 2019 23:29:24 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5d6746950001>; Wed, 28 Aug 2019 20:29:25 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 28 Aug 2019 20:29:23 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 28 Aug 2019 20:29:23 -0700
-Received: from [10.2.174.243] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 29 Aug
- 2019 03:29:22 +0000
-Subject: Re: [RFC PATCH v2 00/19] RDMA/FS DAX truncate proposal V1,000,002 ;-)
-To:     Ira Weiny <ira.weiny@intel.com>, Dave Chinner <david@fromorbit.com>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>, Michal Hocko <mhocko@suse.com>,
-        <linux-xfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-ext4@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20190821180200.GA5965@iweiny-DESK2.sc.intel.com>
- <20190821181343.GH8653@ziepe.ca>
- <20190821185703.GB5965@iweiny-DESK2.sc.intel.com>
- <20190821194810.GI8653@ziepe.ca>
- <20190821204421.GE5965@iweiny-DESK2.sc.intel.com>
- <20190823032345.GG1119@dread.disaster.area> <20190823120428.GA12968@ziepe.ca>
- <20190824001124.GI1119@dread.disaster.area>
- <20190824050836.GC1092@iweiny-DESK2.sc.intel.com>
- <20190826055510.GL1119@dread.disaster.area>
- <20190829020230.GA18249@iweiny-DESK2.sc.intel.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <3e5c5053-a74a-509c-660c-a6075ed87f11@nvidia.com>
-Date:   Wed, 28 Aug 2019 20:27:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726063AbfH2GgP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Aug 2019 02:36:15 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:40996 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbfH2GgP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Aug 2019 02:36:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=6ZKZa5hSMyLHv6xLpJiz9k1EsszZdKKsEOVr1o0T8zI=; b=HVK2/OylhsOIfK+T9ZRGZr5so
+        d9KUjw/GBIRsWH9jViIx8pu/Fk5ovr6r7y3flYq308m3C/sgfBsvMYYjM/qXXyQYppZoMfJoEWBD5
+        rjD0/tFY1VEzf3ofwUh3twPbXnDaGIeMA6rsAuoPMeDvSBBfvwFmEV9DmfEHtaDp3hS610Y36uWc8
+        +i/j50c6Z7TAKHGT9UGkbBDb1g7kqibNzlMJGuHkFbRjf6BT1NmwvFsLt94SmZVJilkLfrIfSRy3y
+        Gu1IpLEmr+I2LVCXJC3xB91zQ/8xLNDsB2DzMvaqzm2rkjwi4nVIrRrHu6COPqlWn5UuPI24M5RxK
+        cOPcdJ0JQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1i3E2S-0007LA-Jx; Thu, 29 Aug 2019 06:36:08 +0000
+Date:   Wed, 28 Aug 2019 23:36:08 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Matthew Bobrowski <mbobrowski@mbobrowski.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, aneesh.kumar@linux.ibm.com
+Subject: Re: [PATCH 0/5] ext4: direct IO via iomap infrastructure
+Message-ID: <20190829063608.GA17426@infradead.org>
+References: <20190821131405.GC24417@poseidon.bobrowski.net>
+ <20190822120015.GA3330@poseidon.bobrowski.net>
+ <20190822141126.70A94A407B@d06av23.portsmouth.uk.ibm.com>
+ <20190824031830.GB2174@poseidon.bobrowski.net>
+ <20190824035554.GA1037502@magnolia>
+ <20190824230427.GA32012@infradead.org>
+ <20190827095221.GA1568@poseidon.bobrowski.net>
+ <20190828120509.GC22165@poseidon.bobrowski.net>
+ <20190828142729.GB24857@mit.edu>
+ <20190828180215.GE22343@quack2.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20190829020230.GA18249@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1567049365; bh=U2zxSkDmfFQFUW8ITCuFuqzogPoHzY3eUcatrjlA5a8=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=br5k4UQ1c3ttyAEINc727xSgtnH39dAWjWSCaXGTLwro1CU1YneuoppDXhLMmA4uD
-         aDQ3MTA6HOZLsrWjeRsmclmc+9VuPFDc3mjUYq5LVFTaiCoeFJ5fy4G3b324J/gsUa
-         1/2Te/7AfanbM290SQcF7x/TWeee+3u45vwvCyED11F/dogTN4V6SByz3yIloOJ3jT
-         cLvs8UFo3vWu0RzGtWuxTuxbTth7a/DwXWriVQxLCn7BVTFeq34iQK1UkdryZj/+oB
-         pVGut1zha9UABjnIclmX/RBYsT1gxtKg14OYbEVTjMUr+uzTVtNuUOwSxrEb1ZPXtX
-         CMDU/9O7s997Q==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190828180215.GE22343@quack2.suse.cz>
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 8/28/19 7:02 PM, Ira Weiny wrote:
-> On Mon, Aug 26, 2019 at 03:55:10PM +1000, Dave Chinner wrote:
->> On Fri, Aug 23, 2019 at 10:08:36PM -0700, Ira Weiny wrote:
->>> On Sat, Aug 24, 2019 at 10:11:24AM +1000, Dave Chinner wrote:
->>>> On Fri, Aug 23, 2019 at 09:04:29AM -0300, Jason Gunthorpe wrote:
-...
->>
->> Sure, that part works because the struct file is passed. It doesn't
->> end up with the same fd number in the other process, though.
->>
->> The issue is that layout leases need to notify userspace when they
->> are broken by the kernel, so a lease stores the owner pid/tid in the
->> file->f_owner field via __f_setown(). It also keeps a struct fasync
->> attached to the file_lock that records the fd that the lease was
->> created on.  When a signal needs to be sent to userspace for that
->> lease, we call kill_fasync() and that walks the list of fasync
->> structures on the lease and calls:
->>
->> 	send_sigio(fown, fa->fa_fd, band);
->>
->> And it does for every fasync struct attached to a lease. Yes, a
->> lease can track multiple fds, but it can only track them in a single
->> process context. The moment the struct file is shared with another
->> process, the lease is no longer capable of sending notifications to
->> all the lease holders.
->>
->> Yes, you can change the owning process via F_SETOWNER, but that's
->> still only a single process context, and you can't change the fd in
->> the fasync list. You can add new fd to an existing lease by calling
->> F_SETLEASE on the new fd, but you still only have a single process
->> owner context for signal delivery.
->>
->> As such, leases that require callbacks to userspace are currently
->> only valid within the process context the lease was taken in.
+On Wed, Aug 28, 2019 at 08:02:15PM +0200, Jan Kara wrote:
+> > The original reason why we created the DIO_STATE_UNWRITTEN flag was a
+> > fast path, where the common case is writing blocks to an existing
+> > location in a file where the blocks are already allocated, and marked
+> > as written.  So consulting the on-disk extent tree to determine
+> > whether unwritten extents need to be converted and/or split is
+> > certainly doable.  However, it's expensive for the common case.  So
+> > having a hint whether we need to schedule a workqueue to possibly
+> > convert an unwritten region is helpful.  If we can just free the bio
+> > and exit the I/O completion handler without having to take shared
+> > locks to examine the on-disk extent tree, so much the better.
 > 
-> But for long term pins we are not requiring callbacks.
+> Yes, but for determining whether extent conversion on IO completion is
+> needed we now use IOMAP_DIO_UNWRITTEN flag iomap infrastructure provides to
+> us. So we don't have to track this internally in ext4 anymore.
+
+Exactly.  As mentioned before the ioend to track unwritten thing was
+in XFS by the time ext4 copied the ioend approach. but we actually got
+rid of that long before the iomap conversion.  Maybe to make everything
+easier to understand and bisect you might want to get rid of the ioend
+for direct I/O in ext4 as a prep path as well.
+
+The relevant commit is: 273dda76f757 ("xfs: don't use ioends for direct
+write completions")
+
+> > To be honest, i'm not 100% sure what would happen if we removed that
+> > restriction; it might be that things would work just fine (just slower
+> > in some workloads), or whether there is some hidden dependency that
+> > would explode.  I suspect we'd have to try the experiment to be sure.
 > 
+> As far as I remember the concern was that extent split may need block
+> allocation and we may not have enough free blocks to do it. These days we
+> have some blocks reserved in the filesystem to accomodate unexpected extent
+> splits so this shouldn't happen anymore so the only real concern is the
+> wasted performance due to unnecessary extent merge & split. Kind of a
+> stress test for this would be to fire of lots of sequential AIO DIO
+> requests against a hole in a file.
 
-Hi Ira,
-
-If "require callbacks to userspace" means sending SIGIO, then actually
-FOLL_LONGTERM *does* require those callbacks. Because we've been, so
-far, equating FOLL_LONGTERM with the vaddr_pin struct and with a lease.
-
-What am I missing here?
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+Well, you can always add a don't merge flag to the actual allocation.
+You might still get a merge for pathological case (fallocate adjacent
+to a dio write just submitted), but if the merging is such a performance
+over head here is easy ways to avoid it for the common case.
