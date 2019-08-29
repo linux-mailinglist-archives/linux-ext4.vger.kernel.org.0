@@ -2,101 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AE7A11D5
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 08:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED344A1336
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2019 10:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbfH2GgP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 29 Aug 2019 02:36:15 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:40996 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbfH2GgP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 29 Aug 2019 02:36:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=6ZKZa5hSMyLHv6xLpJiz9k1EsszZdKKsEOVr1o0T8zI=; b=HVK2/OylhsOIfK+T9ZRGZr5so
-        d9KUjw/GBIRsWH9jViIx8pu/Fk5ovr6r7y3flYq308m3C/sgfBsvMYYjM/qXXyQYppZoMfJoEWBD5
-        rjD0/tFY1VEzf3ofwUh3twPbXnDaGIeMA6rsAuoPMeDvSBBfvwFmEV9DmfEHtaDp3hS610Y36uWc8
-        +i/j50c6Z7TAKHGT9UGkbBDb1g7kqibNzlMJGuHkFbRjf6BT1NmwvFsLt94SmZVJilkLfrIfSRy3y
-        Gu1IpLEmr+I2LVCXJC3xB91zQ/8xLNDsB2DzMvaqzm2rkjwi4nVIrRrHu6COPqlWn5UuPI24M5RxK
-        cOPcdJ0JQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1i3E2S-0007LA-Jx; Thu, 29 Aug 2019 06:36:08 +0000
-Date:   Wed, 28 Aug 2019 23:36:08 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        id S1726384AbfH2IDL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 29 Aug 2019 04:03:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52818 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725807AbfH2IDL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 29 Aug 2019 04:03:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 4BED4AC8E;
+        Thu, 29 Aug 2019 08:03:09 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id B65901E4362; Thu, 29 Aug 2019 10:03:08 +0200 (CEST)
+Date:   Thu, 29 Aug 2019 10:03:08 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Jan Kara <jack@suse.cz>,
         Matthew Bobrowski <mbobrowski@mbobrowski.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, aneesh.kumar@linux.ibm.com
-Subject: Re: [PATCH 0/5] ext4: direct IO via iomap infrastructure
-Message-ID: <20190829063608.GA17426@infradead.org>
-References: <20190821131405.GC24417@poseidon.bobrowski.net>
- <20190822120015.GA3330@poseidon.bobrowski.net>
- <20190822141126.70A94A407B@d06av23.portsmouth.uk.ibm.com>
- <20190824031830.GB2174@poseidon.bobrowski.net>
- <20190824035554.GA1037502@magnolia>
- <20190824230427.GA32012@infradead.org>
- <20190827095221.GA1568@poseidon.bobrowski.net>
- <20190828120509.GC22165@poseidon.bobrowski.net>
- <20190828142729.GB24857@mit.edu>
- <20190828180215.GE22343@quack2.suse.cz>
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, riteshh@linux.ibm.com
+Subject: Re: [PATCH 4/5] ext4: introduce direct IO write code path using
+ iomap infrastructure
+Message-ID: <20190829080308.GA19156@quack2.suse.cz>
+References: <cover.1565609891.git.mbobrowski@mbobrowski.org>
+ <581c3a2da89991e7ce5862d93dcfb23e1dc8ddc8.1565609891.git.mbobrowski@mbobrowski.org>
+ <20190828202619.GG22343@quack2.suse.cz>
+ <20190828223218.GZ7777@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190828180215.GE22343@quack2.suse.cz>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20190828223218.GZ7777@dread.disaster.area>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 08:02:15PM +0200, Jan Kara wrote:
-> > The original reason why we created the DIO_STATE_UNWRITTEN flag was a
-> > fast path, where the common case is writing blocks to an existing
-> > location in a file where the blocks are already allocated, and marked
-> > as written.  So consulting the on-disk extent tree to determine
-> > whether unwritten extents need to be converted and/or split is
-> > certainly doable.  However, it's expensive for the common case.  So
-> > having a hint whether we need to schedule a workqueue to possibly
-> > convert an unwritten region is helpful.  If we can just free the bio
-> > and exit the I/O completion handler without having to take shared
-> > locks to examine the on-disk extent tree, so much the better.
+On Thu 29-08-19 08:32:18, Dave Chinner wrote:
+> On Wed, Aug 28, 2019 at 10:26:19PM +0200, Jan Kara wrote:
+> > On Mon 12-08-19 22:53:26, Matthew Bobrowski wrote:
+> > > This patch introduces a new direct IO write code path implementation
+> > > that makes use of the iomap infrastructure.
+> > > 
+> > > All direct IO write operations are now passed from the ->write_iter() callback
+> > > to the new function ext4_dio_write_iter(). This function is responsible for
+> > > calling into iomap infrastructure via iomap_dio_rw(). Snippets of the direct
+> > > IO code from within ext4_file_write_iter(), such as checking whether the IO
+> > > request is unaligned asynchronous IO, or whether it will ber overwriting
+> > > allocated and initialized blocks has been moved out and into
+> > > ext4_dio_write_iter().
+> > > 
+> > > The block mapping flags that are passed to ext4_map_blocks() from within
+> > > ext4_dio_get_block() and friends have effectively been taken out and
+> > > introduced within the ext4_iomap_begin(). If ext4_map_blocks() happens to have
+> > > instantiated blocks beyond the i_size, then we attempt to place the inode onto
+> > > the orphan list. Despite being able to perform i_size extension checking
+> > > earlier on in the direct IO code path, it makes most sense to perform this bit
+> > > post successful block allocation.
+> > > 
+> > > The ->end_io() callback ext4_dio_write_end_io() is responsible for removing
+> > > the inode from the orphan list and determining if we should truncate a failed
+> > > write in the case of an error. We also convert a range of unwritten extents to
+> > > written if IOMAP_DIO_UNWRITTEN is set and perform the necessary
+> > > i_size/i_disksize extension if the iocb->ki_pos + dio->size > i_size_read(inode).
+> > > 
+> > > In the instance of a short write, we fallback to buffered IO and complete
+> > > whatever is left the 'iter'. Any blocks that may have been allocated in
+> > > preparation for direct IO will be reused by buffered IO, so there's no issue
+> > > with leaving allocated blocks beyond EOF.
+> > > 
+> > > Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> > > ---
+> > >  fs/ext4/file.c  | 227 ++++++++++++++++++++++++++++++++++++++++----------------
+> > >  fs/ext4/inode.c |  42 +++++++++--
+> > >  2 files changed, 199 insertions(+), 70 deletions(-)
+> > 
+> > Overall this is very nice. Some smaller comments below.
+> > 
+> > > @@ -235,6 +244,34 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
+> > >  	return iov_iter_count(from);
+> > >  }
+> > >  
+> > > +static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
+> > > +					struct iov_iter *from)
+> > > +{
+> > > +	ssize_t ret;
+> > > +	struct inode *inode = file_inode(iocb->ki_filp);
+> > > +
+> > > +	if (!inode_trylock(inode)) {
+> > > +		if (iocb->ki_flags & IOCB_NOWAIT)
+> > > +			return -EOPNOTSUPP;
+> > > +		inode_lock(inode);
+> > > +	}
+> > 
+> > Currently there's no support for IOCB_NOWAIT for buffered IO so you can
+> > replace this with "inode_lock(inode)".
 > 
-> Yes, but for determining whether extent conversion on IO completion is
-> needed we now use IOMAP_DIO_UNWRITTEN flag iomap infrastructure provides to
-> us. So we don't have to track this internally in ext4 anymore.
+> IOCB_NOWAIT is supported for buffered reads. It is not supported on
+> buffered writes (as yet), so this should return EOPNOTSUPP if
+> IOCB_NOWAIT is set, regardless of whether the lock can be grabbed or
+> not.
 
-Exactly.  As mentioned before the ioend to track unwritten thing was
-in XFS by the time ext4 copied the ioend approach. but we actually got
-rid of that long before the iomap conversion.  Maybe to make everything
-easier to understand and bisect you might want to get rid of the ioend
-for direct I/O in ext4 as a prep path as well.
+Yeah, right. Thanks for correcting me.
 
-The relevant commit is: 273dda76f757 ("xfs: don't use ioends for direct
-write completions")
-
-> > To be honest, i'm not 100% sure what would happen if we removed that
-> > restriction; it might be that things would work just fine (just slower
-> > in some workloads), or whether there is some hidden dependency that
-> > would explode.  I suspect we'd have to try the experiment to be sure.
-> 
-> As far as I remember the concern was that extent split may need block
-> allocation and we may not have enough free blocks to do it. These days we
-> have some blocks reserved in the filesystem to accomodate unexpected extent
-> splits so this shouldn't happen anymore so the only real concern is the
-> wasted performance due to unnecessary extent merge & split. Kind of a
-> stress test for this would be to fire of lots of sequential AIO DIO
-> requests against a hole in a file.
-
-Well, you can always add a don't merge flag to the actual allocation.
-You might still get a merge for pathological case (fallocate adjacent
-to a dio write just submitted), but if the merging is such a performance
-over head here is easy ways to avoid it for the common case.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
