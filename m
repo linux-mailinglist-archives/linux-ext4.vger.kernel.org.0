@@ -2,91 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44217A4145
-	for <lists+linux-ext4@lfdr.de>; Sat, 31 Aug 2019 02:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF3AA4411
+	for <lists+linux-ext4@lfdr.de>; Sat, 31 Aug 2019 12:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbfHaART (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 30 Aug 2019 20:17:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728267AbfHaART (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 30 Aug 2019 20:17:19 -0400
-Received: from zzz.localdomain (h184-61-154-48.mdsnwi.dsl.dynamic.tds.net [184.61.154.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B0E12342E;
-        Sat, 31 Aug 2019 00:17:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567210638;
-        bh=BaRI7IwsAkJrLTQzGT8uAutIa3SlxHbAfQrue2wwro0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2achGriRDM+zaayC37azxpTkHKrWmEdjmSaNVmFDlDq7wQKT+xVdwPl4KrTs/L4ba
-         /ICmb5Z0huUZs/5KbSAj8IMkWwUqbir0y16NFvRKF/De776e/oRdn2bvwK/Zri52Ep
-         UZZXeL8XWwkfR+aLempswLrD1Rq5OUu02/m9rbjA=
-Date:   Fri, 30 Aug 2019 19:17:15 -0500
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     syzbot <syzbot+5bda120b4032f831c57f@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Subject: Re: WARNING: suspicious RCU usage in ext4_release_system_zone
-Message-ID: <20190831001715.GC22191@zzz.localdomain>
-Mail-Followup-To: syzbot <syzbot+5bda120b4032f831c57f@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-References: <000000000000457d1405915a9f19@google.com>
+        id S1728144AbfHaKcc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 31 Aug 2019 06:32:32 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:40354 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727404AbfHaKcb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 31 Aug 2019 06:32:31 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id E7011FF38C00B8F8B49E;
+        Sat, 31 Aug 2019 18:32:29 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.439.0; Sat, 31 Aug
+ 2019 18:32:29 +0800
+Subject: Re: [PATCH] ext4 crypto: fix to check feature status before get
+ policy
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <ebiggers@kernel.org>
+CC:     Chao Yu <chao@kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>
+References: <20190804095643.7393-1-chao@kernel.org>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <f5186fae-ac58-a5f5-f9dc-b749ade7285d@huawei.com>
+Date:   Sat, 31 Aug 2019 18:32:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000457d1405915a9f19@google.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190804095643.7393-1-chao@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Aug 30, 2019 at 12:28:08PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    ed858b88 Add linux-next specific files for 20190826
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=121b506c600000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ee8373cd9733e305
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5bda120b4032f831c57f
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> 
-> Unfortunately, I don't have any reproducer for this crash yet.
-> 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+5bda120b4032f831c57f@syzkaller.appspotmail.com
-> 
-> =============================
-> WARNING: suspicious RCU usage
-> 5.3.0-rc6-next-20190826 #73 Not tainted
-> -----------------------------
-> fs/ext4/block_validity.c:333 suspicious rcu_dereference_check() usage!
-> 
+Hi,
 
-#syz invalid
+Is this change not necessary? A month has passed...
 
-There was already a fix applied between ed858b88 and latest linux-next:
+Thanks,
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index 003dc1dc2da3..f7bc914a74df 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -330,11 +330,13 @@ void ext4_release_system_zone(struct super_block *sb)
- {
- 	struct ext4_system_blocks *system_blks;
- 
-+	rcu_read_lock();
- 	system_blks = rcu_dereference(EXT4_SB(sb)->system_blks);
- 	rcu_assign_pointer(EXT4_SB(sb)->system_blks, NULL);
- 
- 	if (system_blks)
- 		call_rcu(&system_blks->rcu, ext4_destroy_system_zone);
-+	rcu_read_unlock();
- }
+On 2019/8/4 17:56, Chao Yu wrote:
+> From: Chao Yu <yuchao0@huawei.com>
+> 
+> When getting fscrypto policy via EXT4_IOC_GET_ENCRYPTION_POLICY, if
+> encryption feature is off, it's better to return EOPNOTSUPP instead
+> of ENODATA, so let's add ext4_has_feature_encrypt() to do the check
+> for that.
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>  fs/ext4/ioctl.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+> index 442f7ef873fc..bf87835c1237 100644
+> --- a/fs/ext4/ioctl.c
+> +++ b/fs/ext4/ioctl.c
+> @@ -1112,9 +1112,11 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  		return -EOPNOTSUPP;
+>  #endif
+>  	}
+> -	case EXT4_IOC_GET_ENCRYPTION_POLICY:
+> +	case EXT4_IOC_GET_ENCRYPTION_POLICY: {
+> +		if (!ext4_has_feature_encrypt(sb))
+> +			return -EOPNOTSUPP;
+>  		return fscrypt_ioctl_get_policy(filp, (void __user *)arg);
+> -
+> +	}
+>  	case EXT4_IOC_FSGETXATTR:
+>  	{
+>  		struct fsxattr fa;
+> 
