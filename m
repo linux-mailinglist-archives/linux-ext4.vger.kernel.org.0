@@ -2,78 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC064A6F58
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2019 18:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DC2A7016
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2019 18:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731317AbfICQcZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Sep 2019 12:32:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731431AbfICQcR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 3 Sep 2019 12:32:17 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C964215EA;
-        Tue,  3 Sep 2019 16:32:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567528336;
-        bh=4UCNBBxw3LhMunVdWAChjEp/I1fLorG7hxA5sRYINWg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AvX/AsKiN5L3MmSggGQmEx+Ngq7mvRY3gs7uvjeaGXZW96tnA/OeVJJ4QvI/HBaQ8
-         knkWtxmkavC/C3oIqiNmmbqooMdZB7ivpfcqtelgxNrtsRa7AKGuuH5cBG/2RqgKDW
-         3hzYsZSrHka23wr7nuecu7S79KhtXggdO8VguI68=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 166/167] ext4: unsigned int compared against zero
-Date:   Tue,  3 Sep 2019 12:25:18 -0400
-Message-Id: <20190903162519.7136-166-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190903162519.7136-1-sashal@kernel.org>
-References: <20190903162519.7136-1-sashal@kernel.org>
+        id S1731083AbfICQhE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Sep 2019 12:37:04 -0400
+Received: from mail-io1-f41.google.com ([209.85.166.41]:47033 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730832AbfICQhA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Sep 2019 12:37:00 -0400
+Received: by mail-io1-f41.google.com with SMTP id x4so37262345iog.13;
+        Tue, 03 Sep 2019 09:37:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=86NmJMb/PMXwG/w20757BijiqFPtv6jsMz3d0NJXQY0=;
+        b=a996jW3QaxWUE7wDbAblf3oagbPf4XFwKXdaxLmQMvelz5tqGRy6Wn9tgzMdI5OgSF
+         9lWVwAzlgZZxhk1USQe8VlIWHF54xkZXguBnLeiLk+5JwhzSL3NYguTo9jaMQweTQlx7
+         6jgZyFxLMkTyES8GWkRxdBCCjOp6buAvBePOeDhADN8AER3uc2ARVLeGXW9ctcklk0tT
+         8MPmXndEB3ajmSnJmZ/l3v8hHo/NnJmpL5VZwhnamE6PuyI2d33ciw+Nmoy1Vuc3SK4T
+         k5lZTPNU5dJMH5POmYJtJMVDuMjR3lsMfDsGB+2hdLsGk3afAUVC/xhrTvt0JHaaeoge
+         lYeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=86NmJMb/PMXwG/w20757BijiqFPtv6jsMz3d0NJXQY0=;
+        b=hWaxqD8ADpYmP5JPsvgXsUFgUI9G70D1Ll2UQp1xRoxErbC19oai75CfiIyQY0WmyN
+         P+OtlcSVJHYCGD/y88COlHhyF960AdRZOoyg2VbRV8kzjqfIemrCJTi0AkCMxAJgXJkx
+         dfIapDr+0Zd490bK8qUwPzWqivnbpTSqWFhwV/NZt9wzqpaKKKFcXO8LWG8dJREKdb8Z
+         FJ88GVRJAomRH/S9mOIdvawAHokpChpzYpLn8YKrQE0EYqGPQahFZEuND3puG0wCDYMx
+         SvoImtZCwMnwJdReB/EqHINiFhBbwd8XZMYC7/VB7Es53yNzfirr2aoenFzUZWtrUKbf
+         n/Ng==
+X-Gm-Message-State: APjAAAXvCTKrdAWytUAubMSkuhiCPCzWDXQEDRfDRUDB+6DInoctqGCN
+        eFSBX46FQIMitne2VOcn07kZnQqEc482l42/PqY=
+X-Google-Smtp-Source: APXvYqxw4eC5fbEEGGIKB6d8XCBCVkWxCov0hCXx3VO6dvzkd/8wVoYdi3MD6BsiuI5pf228iDaCqPDsf1BkJ2DJHjg=
+X-Received: by 2002:a02:23cc:: with SMTP id u195mr38523370jau.136.1567528619842;
+ Tue, 03 Sep 2019 09:36:59 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <1567523922.5576.57.camel@lca.pw> <CABeXuvoPdAbDr-ELxNqUPg5n84fubZJZKiryERrXdHeuLhBQjQ@mail.gmail.com>
+In-Reply-To: <CABeXuvoPdAbDr-ELxNqUPg5n84fubZJZKiryERrXdHeuLhBQjQ@mail.gmail.com>
+From:   Deepa Dinamani <deepa.kernel@gmail.com>
+Date:   Tue, 3 Sep 2019 09:36:47 -0700
+Message-ID: <CABeXuvq7n+ZW7-HOiur+cyQXBjYKKWw1nRgFTJXTBZ9JNusPeg@mail.gmail.com>
+Subject: Re: "beyond 2038" warnings from loopback mount is noisy
+To:     Qian Cai <cai@lca.pw>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+We might also want to consider updating the file system the LTP is
+being run on here.
 
-[ Upstream commit fbbbbd2f28aec991f3fbc248df211550fbdfd58c ]
-
-There are two cases where u32 variables n and err are being checked
-for less than zero error values, the checks is always false because
-the variables are not signed. Fix this by making the variables ints.
-
-Addresses-Coverity: ("Unsigned compared against 0")
-Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using block_validity")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/block_validity.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index cd7129b622f85..e8e27cdc2f677 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -142,7 +142,8 @@ static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
- 	struct inode *inode;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_map_blocks map;
--	u32 i = 0, err = 0, num, n;
-+	u32 i = 0, num;
-+	int err = 0, n;
- 
- 	if ((ino < EXT4_ROOT_INO) ||
- 	    (ino > le32_to_cpu(sbi->s_es->s_inodes_count)))
--- 
-2.20.1
-
+-Deepa
