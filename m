@@ -2,34 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE52A6EB1
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2019 18:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90753A6F53
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2019 18:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731048AbfICQ2J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Sep 2019 12:28:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49830 "EHLO mail.kernel.org"
+        id S1731412AbfICQcP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Sep 2019 12:32:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731039AbfICQ2I (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 3 Sep 2019 12:28:08 -0400
+        id S1730214AbfICQcP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 3 Sep 2019 12:32:15 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65102238C6;
-        Tue,  3 Sep 2019 16:28:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BADE6238C7;
+        Tue,  3 Sep 2019 16:32:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567528087;
-        bh=NdnzEdhOKQCo6wnC0RJ0qayx+6RC9/BYkZg6aPhDzms=;
+        s=default; t=1567528334;
+        bh=yruG6zYRqI5FfoP6ioRKtGvCg1Enlfzh6rJyvHXfJSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YYJVsOhaAInm3M2gyQjcCU3kqvGssGRlsRucm11JMrNXa7p4WD5tzqucAJx41gvLL
-         j9xXZ8DBWIE6zp8R84EehQ+YsCHOHVzIEUZ6mLEONhwa2hj7qUsTN7cs/Blg+qARL5
-         Yd5pXojzxJM2g3w0osWo2lyq6flGjjTfMk24FJ4I=
+        b=WVTi4ZV/E9IaigAGJOtcWfATBHZ3GB19otH+z+A9B1fgyKUYjAvxbisOoyaE6E+f7
+         I4zisdWzHUrq3tBI/sWm1MMCkE0dXt+qtWVeEzv0fTAs/TLUrWEyQSG7FzOUw5bATT
+         jPakjaABNZpX245JXAHcM/1DU8tBO9Eef4N7wBbc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>, stable@kernel.org,
+Cc:     Theodore Ts'o <tytso@mit.edu>, Dan Rue <dan.rue@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
         Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 097/167] ext4: protect journal inode's blocks using block_validity
-Date:   Tue,  3 Sep 2019 12:24:09 -0400
-Message-Id: <20190903162519.7136-97-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 164/167] ext4: don't perform block validity checks on the journal inode
+Date:   Tue,  3 Sep 2019 12:25:16 -0400
+Message-Id: <20190903162519.7136-164-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190903162519.7136-1-sashal@kernel.org>
 References: <20190903162519.7136-1-sashal@kernel.org>
@@ -44,103 +45,55 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Theodore Ts'o <tytso@mit.edu>
 
-[ Upstream commit 345c0dbf3a30872d9b204db96b5857cd00808cae ]
+[ Upstream commit 0a944e8a6c66ca04c7afbaa17e22bf208a8b37f0 ]
 
-Add the blocks which belong to the journal inode to block_validity's
-system zone so attempts to deallocate or overwrite the journal due a
-corrupted file system where the journal blocks are also claimed by
-another inode.
+Since the journal inode is already checked when we added it to the
+block validity's system zone, if we check it again, we'll just trigger
+a failure.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202879
+This was causing failures like this:
+
+[   53.897001] EXT4-fs error (device sda): ext4_find_extent:909: inode
+#8: comm jbd2/sda-8: pblk 121667583 bad header/extent: invalid extent entries - magic f30a, entries 8, max 340(340), depth 0(0)
+[   53.931430] jbd2_journal_bmap: journal block not found at offset 49 on sda-8
+[   53.938480] Aborting journal on device sda-8.
+
+... but only if the system was under enough memory pressure that
+logical->physical mapping for the journal inode gets pushed out of the
+extent cache.  (This is why it wasn't noticed earlier.)
+
+Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using block_validity")
+Reported-by: Dan Rue <dan.rue@linaro.org>
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/block_validity.c | 48 ++++++++++++++++++++++++++++++++++++++++
- fs/ext4/inode.c          |  4 ++++
- 2 files changed, 52 insertions(+)
+ fs/ext4/extents.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index 913061c0de1b3..9409b1e11a22e 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -137,6 +137,48 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
- 	printk(KERN_CONT "\n");
- }
- 
-+static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
-+{
-+	struct inode *inode;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	struct ext4_map_blocks map;
-+	u32 i = 0, err = 0, num, n;
-+
-+	if ((ino < EXT4_ROOT_INO) ||
-+	    (ino > le32_to_cpu(sbi->s_es->s_inodes_count)))
-+		return -EINVAL;
-+	inode = ext4_iget(sb, ino, EXT4_IGET_SPECIAL);
-+	if (IS_ERR(inode))
-+		return PTR_ERR(inode);
-+	num = (inode->i_size + sb->s_blocksize - 1) >> sb->s_blocksize_bits;
-+	while (i < num) {
-+		map.m_lblk = i;
-+		map.m_len = num - i;
-+		n = ext4_map_blocks(NULL, inode, &map, 0);
-+		if (n < 0) {
-+			err = n;
-+			break;
-+		}
-+		if (n == 0) {
-+			i++;
-+		} else {
-+			if (!ext4_data_block_valid(sbi, map.m_pblk, n)) {
-+				ext4_error(sb, "blocks %llu-%llu from inode %u "
-+					   "overlap system zone", map.m_pblk,
-+					   map.m_pblk + map.m_len - 1, ino);
-+				err = -EFSCORRUPTED;
-+				break;
-+			}
-+			err = add_system_zone(sbi, map.m_pblk, n);
-+			if (err < 0)
-+				break;
-+			i += n;
-+		}
-+	}
-+	iput(inode);
-+	return err;
-+}
-+
- int ext4_setup_system_zone(struct super_block *sb)
- {
- 	ext4_group_t ngroups = ext4_get_groups_count(sb);
-@@ -171,6 +213,12 @@ int ext4_setup_system_zone(struct super_block *sb)
- 		if (ret)
- 			return ret;
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 45aea792d22a0..00bf0b67aae87 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -518,10 +518,14 @@ __read_extent_tree_block(const char *function, unsigned int line,
  	}
-+	if (ext4_has_feature_journal(sb) && sbi->s_es->s_journal_inum) {
-+		ret = ext4_protect_reserved_inode(sb,
-+				le32_to_cpu(sbi->s_es->s_journal_inum));
-+		if (ret)
-+			return ret;
+ 	if (buffer_verified(bh) && !(flags & EXT4_EX_FORCE_CACHE))
+ 		return bh;
+-	err = __ext4_ext_check(function, line, inode,
+-			       ext_block_hdr(bh), depth, pblk);
+-	if (err)
+-		goto errout;
++	if (!ext4_has_feature_journal(inode->i_sb) ||
++	    (inode->i_ino !=
++	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum))) {
++		err = __ext4_ext_check(function, line, inode,
++				       ext_block_hdr(bh), depth, pblk);
++		if (err)
++			goto errout;
 +	}
- 
- 	if (test_opt(sb, DEBUG))
- 		debug_print_tree(sbi);
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index e65559bf77281..cff6277f7a9ff 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -399,6 +399,10 @@ static int __check_block_validity(struct inode *inode, const char *func,
- 				unsigned int line,
- 				struct ext4_map_blocks *map)
- {
-+	if (ext4_has_feature_journal(inode->i_sb) &&
-+	    (inode->i_ino ==
-+	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum)))
-+		return 0;
- 	if (!ext4_data_block_valid(EXT4_SB(inode->i_sb), map->m_pblk,
- 				   map->m_len)) {
- 		ext4_error_inode(inode, func, line, map->m_pblk,
+ 	set_buffer_verified(bh);
+ 	/*
+ 	 * If this is a leaf block, cache all of its entries
 -- 
 2.20.1
 
