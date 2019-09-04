@@ -2,109 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 260AAA8919
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2019 21:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E03A8926
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2019 21:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731199AbfIDO7D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Sep 2019 10:59:03 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57670 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729944AbfIDO7C (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Sep 2019 10:59:02 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69])
-        by youngberry.canonical.com with esmtps (TLS1.0:RSA_AES_128_CBC_SHA1:16)
-        (Exim 4.76)
-        (envelope-from <dann.frazier@canonical.com>)
-        id 1i5WkO-00068I-Ku
-        for linux-ext4@vger.kernel.org; Wed, 04 Sep 2019 14:59:00 +0000
-Received: by mail-io1-f69.google.com with SMTP id f24so19086671ion.4
-        for <linux-ext4@vger.kernel.org>; Wed, 04 Sep 2019 07:59:00 -0700 (PDT)
+        id S1731161AbfIDPDS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Sep 2019 11:03:18 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:39881 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729957AbfIDPDS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Sep 2019 11:03:18 -0400
+Received: by mail-pg1-f195.google.com with SMTP id u17so11394900pgi.6;
+        Wed, 04 Sep 2019 08:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=7uLKsFf8UaYi9otI506qs+jXJd1+G87udMLmTQyNAO8=;
+        b=hINAEv2btDn7HKYL6dPnq8PM7dvrHAdbK/Jqkovu4vQCEm2kaNaO568Tb0m/Z4BxhU
+         G1e/IeSg4qsECAaZ5/iVfI7bJk/AvjEQaWcYz8ZbWvui+IPvznBZu/kW6vlRjSLqijSU
+         YDXJYIFjF0oL1B3K1xBz7SuUSVCczPyStX05019DdhfC+NUvJN5wez/G7aBtQ7MXg1eM
+         r5HaCD6z5YjEzI4A96m2fycpBzgy6B8o6Jlk7DWWKqSUOf5k0oFGeCk6j9LhnkJGSw/S
+         vBFDXMvIW1yNJyOql4Zq1XYUsKdUHsY3OkTprgcB2qBP1JFNnAYm4rsgJezfW0gyvWbr
+         T5LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3sDrFAvQf0w1nVql3tAUzXcXvI1jIJ7MZ8Vpfy03Qgs=;
-        b=GeLb2Eu3KaMthyz2yfqLwbCAiXewxiyJTGS0Sd6JzeeRdcATyrQRk9oFy/JB4xWpw4
-         MTDYCo5Zf1l9N1GlLgVwu1845dna+A4iqxoPGu5kcLiw8b58e8RerWWbEr1PwB01WV72
-         ZhzGXc0OXe9dYvYTNU2i6Wvh9DvJd/8vULfJgn6MqPpqf5mIHpro7rb1qli0pBUqwHXE
-         n0K2lZyq/bCKo8tweh8nqi1V69S7F3RDzAiB6LMm5aAmfzBKRxjaWobam60yoT9fH3mH
-         RQpOxchqkwTby6JBCatDGfKDcJqt4IVIfQzIvOrSaRjKUJlyipAG+9YLimy7+f2gIqKh
-         R7rg==
-X-Gm-Message-State: APjAAAXEW8zMOeeVw72IjpeT899eC5hN3stHGjoGelDGVlxMkuqDIhLN
-        SJkqiWfzuhpvuuZk6uVfBRULpJOv5PmFl/8hx1HArqZyvzI2XwIU80NnuGrn0Ja4JSdZ9BKD03D
-        HTAU30exal8eCQOv7tbkAiXJ+4jUZ1JyYRgbOY5Q=
-X-Received: by 2002:a6b:b487:: with SMTP id d129mr3485088iof.223.1567609139450;
-        Wed, 04 Sep 2019 07:58:59 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqzP3foLbiKbo8yJmAClO7gBY2psxgTBFEGQLaS8Cfp9Qafz8DkETtTVf2DWyPgRiXksDWLEfg==
-X-Received: by 2002:a6b:b487:: with SMTP id d129mr3485061iof.223.1567609139118;
-        Wed, 04 Sep 2019 07:58:59 -0700 (PDT)
-Received: from xps13.canonical.com (c-71-56-235-36.hsd1.co.comcast.net. [71.56.235.36])
-        by smtp.gmail.com with ESMTPSA id q8sm17355307ion.82.2019.09.04.07.58.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=7uLKsFf8UaYi9otI506qs+jXJd1+G87udMLmTQyNAO8=;
+        b=t8GDa30I3ds6wo992Fp0tDI9j1+PZRAuq8E7XTK9NokkBGenv5J/RKk6KN6HYg6gNK
+         V+m8jOspCn0Poel3LL0IXIKpYnHpSrid5SQdC7I6r9NeXeMCBc6ZzkMa5IawxQg2drAC
+         MhKY4oDkxiZlzztTXwhNNZydbiedEGaMh80gZKPeCRseiHc7Hc2Au0oezqSnRU3GF9IX
+         rOIcp/8F0OvOJ/VU5ndYhoPLmwwxwQJjGY916+/R6q2MKz1EiVTOCBGf/KmV1aSOCzHI
+         RB9DaJpQNknvw6DZ4KhXLX+vLLLoUuJh6rgXMJJKtki9KMShStpZ4JvaQBAGB+0ppJAQ
+         qgPg==
+X-Gm-Message-State: APjAAAVXmi49JhEa/k1C+yjwqggsKdncEqrta01bq8wfN0Pl6FfvnD1s
+        5/vw91FpMGWJzFKi/0bkT5E=
+X-Google-Smtp-Source: APXvYqw+K+rOd4gyctDvzKJSvTHtwjiu6imCFvIG97cnEI/NeSrECWN+iVxL79CR2Npz0aRr3Da0EA==
+X-Received: by 2002:a63:eb56:: with SMTP id b22mr36102490pgk.355.1567609397741;
+        Wed, 04 Sep 2019 08:03:17 -0700 (PDT)
+Received: from deepa-ubuntu.lan (c-98-234-52-230.hsd1.ca.comcast.net. [98.234.52.230])
+        by smtp.gmail.com with ESMTPSA id g2sm26349972pfm.32.2019.09.04.08.03.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Sep 2019 07:58:58 -0700 (PDT)
-Date:   Wed, 4 Sep 2019 08:58:57 -0600
-From:   dann frazier <dann.frazier@canonical.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Andreas Dilger <adilger@dilger.ca>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.com>,
-        Colin King <colin.king@canonical.com>,
-        Ryan Harper <ryan.harper@canonical.com>
-Subject: Re: ext4 fsck vs. kernel recovery policy
-Message-ID: <20190904145857.GA8297@xps13.dannf>
-References: <CALdTtnuRqgZ=By1JQ0yJJYczUPxxYCWPkAey4BjBkmj77q7aaA@mail.gmail.com>
- <5FEB4E1B-B21B-418D-801D-81FF7C6C069F@dilger.ca>
- <20190829225348.GA13045@xps13.dannf>
- <20190830012236.GC10779@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190830012236.GC10779@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Wed, 04 Sep 2019 08:03:16 -0700 (PDT)
+From:   Deepa Dinamani <deepa.kernel@gmail.com>
+To:     arnd@arndb.de, linux-kernel@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, cai@lca.pw,
+        deepa.kernel@gmail.com, jlayton@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk
+Subject: [PATCH] ext4: Reduce ext4 timestamp warnings
+Date:   Wed,  4 Sep 2019 08:02:51 -0700
+Message-Id: <20190904150251.27004-1-deepa.kernel@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <31a671ea-a00b-37da-5f30-558c3ab6d690@thelounge.net>
+References: <31a671ea-a00b-37da-5f30-558c3ab6d690@thelounge.net>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Aug 29, 2019 at 09:22:36PM -0400, Theodore Y. Ts'o wrote:
-> (Changing the cc from linux-fsdevel to linux-ext4.)
-> 
-> On Thu, Aug 29, 2019 at 04:53:48PM -0600, dann frazier wrote:
-> > JBD2: Invalid checksum recovering data block 517634 in log
-> > 
-> > So is it correct to say that the checksum errors were identifying
-> > filesystem correctness issues, and therefore e2fsck was needed to
-> > correct them?
-> 
-> That's correct.  More precisely, checksum errors for journal blocks
-> are presumed to mean that file system might be corrupt, so a full
-> e2fsck check was needed to make sure the file system was consistent.
-> 
-> > You're probably right - this issue is very easy to reproduce w/
-> > data=journal,journal_checksum. I was never able to reproduce it
-> > otherwise.
-> 
-> I've looked at the data block numbers that you've reported, and they
-> come from a journald file.  The problem is with data=journal +
-> journal_checksum + mmap.  Unfortunately, we don't handle that
-> combination correctly at the moment.
-> 
-> The fix is going to have to involve fixing __ext4_journalled_writepage()
-> to call set_page_writeback() before it unlocks the page, adding a list of
-> pages under data=journalled writeback which is attached to the
-> transaction handle, have the jbd2 commit hook call end_page_writeback()
-> on all of these pages, and then in the places where ext4 calls
-> wait_for_stable_page() or grab_cache_page_write_begin(),
-> we need to add:
-> 
-> 	if (ext4_should_journal_data(inode))
-> 		wait_on_page_writeback(page);
-> 
-> It's all relatively straightforward except for the part where we have to
-> attach a list of pages to the currently running transaction.  That
-> will require adding  some plumbing into the jbd2 layer.
-> 
-> Dann, any interest in trying to code this fix?
+When ext4 file systems were created intentionally with 128 byte inodes,
+the rate-limited warning of eventual possible timestamp overflow are
+still emitted rather frequently.  Remove the warning for now.
 
-Thanks Ted. I've the interest, I'll see if I can find the time :)
+Discussion for whether any warning is needed,
+and where it should be emitted, can be found at
+https://lore.kernel.org/lkml/1567523922.5576.57.camel@lca.pw/.
+I can post a separate follow-up patch after the conclusion.
 
-  -dann
+Reported-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Deepa Dinamani <deepa.kernel@gmail.com>
+---
+ fs/ext4/ext4.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 9e3ae3be3de9..24b14bd3feab 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -833,10 +833,8 @@ do {										\
+ 		(raw_inode)->xtime ## _extra =					\
+ 				ext4_encode_extra_time(&(inode)->xtime);	\
+ 		}								\
+-	else	{\
++	else	\
+ 		(raw_inode)->xtime = cpu_to_le32(clamp_t(int32_t, (inode)->xtime.tv_sec, S32_MIN, S32_MAX));	\
+-		ext4_warning_inode(inode, "inode does not support timestamps beyond 2038"); \
+-	} \
+ } while (0)
+ 
+ #define EXT4_EINODE_SET_XTIME(xtime, einode, raw_inode)			       \
+-- 
+2.17.1
+
