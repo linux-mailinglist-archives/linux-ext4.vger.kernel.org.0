@@ -2,94 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD126A8407
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2019 15:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02439A8410
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2019 15:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729923AbfIDM6o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Sep 2019 08:58:44 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36366 "EHLO
+        id S1729881AbfIDNCP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Sep 2019 09:02:15 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37403 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727900AbfIDM6o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Sep 2019 08:58:44 -0400
+        with ESMTP id S1727929AbfIDNCP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Sep 2019 09:02:15 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-96.corp.google.com [104.133.0.96] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x84CwYVZ022125
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x84D29pR023350
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 4 Sep 2019 08:58:35 -0400
+        Wed, 4 Sep 2019 09:02:11 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id C62D042049E; Wed,  4 Sep 2019 08:58:34 -0400 (EDT)
-Date:   Wed, 4 Sep 2019 08:58:34 -0400
+        id 2D04142049E; Wed,  4 Sep 2019 09:02:09 -0400 (EDT)
+Date:   Wed, 4 Sep 2019 09:02:09 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Deepa Dinamani <deepa.kernel@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Qian Cai <cai@lca.pw>,
-        Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: "beyond 2038" warnings from loopback mount is noisy
-Message-ID: <20190904125834.GA3044@mit.edu>
-References: <1567523922.5576.57.camel@lca.pw>
- <CABeXuvoPdAbDr-ELxNqUPg5n84fubZJZKiryERrXdHeuLhBQjQ@mail.gmail.com>
- <20190903211747.GD2899@mit.edu>
- <CABeXuvoYh0mhg049+pXbMqh-eM=rw+Ui1=rDree4Yb=7H7mQRg@mail.gmail.com>
- <CAK8P3a0AcPzuGeNFMW=ymO0wH_cmgnynLGYXGjqyrQb65o6aOw@mail.gmail.com>
- <CABeXuvq0_YsyuFY509XmwFsX6tX5EVHmWGuzHnSyOEX=9X6TFg@mail.gmail.com>
+To:     zhao.hang1@zte.com.cn
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xue.zhihong@zte.com.cn,
+        wang.yi59@zte.com.cn, jiang.xuexin@zte.com.cn
+Subject: Re: [PATCH] fs:ext4:remove unused including <linux/version.h>
+Message-ID: <20190904130209.GB3044@mit.edu>
+References: <201909041536282215333@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABeXuvq0_YsyuFY509XmwFsX6tX5EVHmWGuzHnSyOEX=9X6TFg@mail.gmail.com>
+In-Reply-To: <201909041536282215333@zte.com.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 03, 2019 at 09:50:09PM -0700, Deepa Dinamani wrote:
-> If we don't care to warn about the timestamps that are clamped in
-> memory, maybe we could just warn when they are being written out.
-> Would something like this be more acceptable? I would also remove the
-> warning in ext4.h. I think we don't have to check if the inode is 128
-> bytes here (Please correct me if I am wrong). If this looks ok, I can
-> post this.
+On Wed, Sep 04, 2019 at 03:36:28PM +0800, zhao.hang1@zte.com.cn wrote:
+> fix compiler error in ext4.hfs/ext4/ext4.h:30:27: fatal error: linux/version.h: No such file or directorySigned-off-by: Zhao Hang <zhao.hang1@zte.com.cn> --- fs/ext4/ext4.h | 1 - 1 file changed, 1 deletion(-)diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.hindex 1cb6785..9baa4cf 100644--- a/fs/ext4/ext4.h+++ b/fs/ext4/ext4.h@@ -27,7 +27,6 @@ #include <linux/seqlock.h>  #include <linux/mutex.h>  #include <linux/timer.h> -#include <linux/version.h>  #include <linux/wait.h>  #include <linux/sched/signal.h>  #include <linux/blockgroup_lock.h> --  2.15.2
 
-That's better, but it's going to be misleading in many cases.  The
-inode's extra size field is 16 or larger, there will be enough space
-for the timestamps, so talking about "timestamps on this inode beyond
-2038" when ext4 is unable to expand it from say, 24 to 32, won't be
-true.  Certain certain features won't be available, yes --- such as
-project-id-based quotas, since there won't be room to store the
-project ID.  However, it's not going to impact the ability to store
-timestamps beyond 2038.  The i_extra_isize field is not just about
-timestamps!
+First of all, this patch is completely white space namaged.
 
-Again, the likelihood that there will be file systems that have this
-problem in 2038 is... extremely low in my judgement.  Storage media
-just doesn't last that long; and distributions such as Red Hat and
-SuSE very strongly encourage people to reformat file systems and do
-*not* support upgrades from ext3 to ext4 by using tune2fs.  If you do
-this, their help desk will laugh at you and refuse to help you.
+Secondly, this is a problem in how you are building your kernel (or
+ext4 as a module, if you are trying to build ext4 as some kind of out
+of tree module or some such).  When you do a kernel build, the file
+include/linux/version.h is automatically generated.  It will look
+something like this.
 
-Companies like Google will do this kind of upgrades[1], sure.  But
-that's because backing up and reformatting vast numbers of file
-systems are not practical at scale.  (And even Google doesn't maintain
-the file system image when the servers are old enough to be TCO
-negative and it's time to replace them.)
+% cat /build/ext4-64/usr/include/linux/version.h
+#define LINUX_VERSION_CODE 327936
+#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
 
-In contrast, most companies / users don't do this sort of thing at
-all.  It's not an issue for Cell Phones, for example, or most consumer
-devices, which are lucky if the last more than 3 years before they get
-desupported and stop getting security updates, and then the lithium
-ion batttery dies and the device end up in a landfill.  Those that
-might live 20 years (although good luck with that for something like,
-say, a smart thermostat) aren't going to have a console and no one
-will be paying attention to the kernel messages anyway.  So is it
-really worth it?  For whom are these messages meant?
-
-[1] https://www.youtube.com/watch?v=Wp5Ehw7ByuU
-
-Cheers,
-
-					- Ted
+			      	       	     - Ted
