@@ -2,110 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E322FA88C2
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2019 21:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260AAA8919
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2019 21:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730405AbfIDOZc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Sep 2019 10:25:32 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:34190 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729809AbfIDOZc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Sep 2019 10:25:32 -0400
-Received: by mail-io1-f67.google.com with SMTP id s21so44654350ioa.1;
-        Wed, 04 Sep 2019 07:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=J14Deb8/u/x8SPSlK7MOeAWJqG+LQLoxFq5bvKEaz7c=;
-        b=iz5ubyrro5kU3CaILVKZ8g/Z46nRZl2E5EyMh/ddWuMOVV58AfTdZwE1lRlA+/2gC6
-         rrkQv7Bp6R8klnOdkZovLFlAMseafse6HjXYkwlivbDXKrdmit02Xak1fqWHxonDgVV6
-         /THpyJ3YfT/ZPmf9TwGbUj9Eofn+9rujJFBRsMPhzq3z2WxmMmeYhvn/qFEMkL9hX6PM
-         alZD7vxlRLJJ214HETUdqMiNsuZef2T6xZqoD1niihB8KCuW/RE9kZJaw5pTU06Z4Fti
-         x+5IUyhPNbOkcSzgA9xXTC6aAbu+aIpcrugIKDZjoO8KL0P98vOCMjXx4rCJXes0SPCZ
-         AweQ==
+        id S1731199AbfIDO7D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Sep 2019 10:59:03 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57670 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729944AbfIDO7C (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Sep 2019 10:59:02 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69])
+        by youngberry.canonical.com with esmtps (TLS1.0:RSA_AES_128_CBC_SHA1:16)
+        (Exim 4.76)
+        (envelope-from <dann.frazier@canonical.com>)
+        id 1i5WkO-00068I-Ku
+        for linux-ext4@vger.kernel.org; Wed, 04 Sep 2019 14:59:00 +0000
+Received: by mail-io1-f69.google.com with SMTP id f24so19086671ion.4
+        for <linux-ext4@vger.kernel.org>; Wed, 04 Sep 2019 07:59:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=J14Deb8/u/x8SPSlK7MOeAWJqG+LQLoxFq5bvKEaz7c=;
-        b=kPaXiqTwfNtaB3lF0XPQW2rDdFSjGyMy6n03RnTEpJg39F9AnBfGTNt96ZSspWiEvn
-         NLkIotSqaRY4h5M6PsuiCSU450kzbTJfrWhlLsuqicIAc0NFRy0EhjoGnxzMeiN8eNf1
-         zED88leKCoTQDde0Imzy8xcOpqZX9xpMaSelfPbrATnX1VAP/T/AwjZmBmhHMVJg/HYx
-         FwNj7HQYX6FoZxUWFC8yWkXC7Zg1OYlJ9f+llQUTu1glBiMKdVl7dMdgcLMx7byep3fC
-         At8nlWE2cnZ5RpMMXT2Y7RDKDc6n4TJDPi3EVFct3hE9DDAK1BRUUsthV4VqQ0CC/eYp
-         3Eng==
-X-Gm-Message-State: APjAAAVny7GYfe0SBVUOf7saYsc8x/Cq1HwIa7SnRGkp+cbUzc0HQ80L
-        S23FZdrxpcT7wMIMr4Xy4jO5E8Qj1N31PUeLlu8mkd87
-X-Google-Smtp-Source: APXvYqzeRG/uyzgFU9gsbGJOxvokb0v5sAg3EY0xn/Cbi7tu5fxDRkc9byd7neezSHJcWUe85BzUNRQz0zOhbAy7Xpo=
-X-Received: by 2002:a6b:148b:: with SMTP id 133mr5849872iou.81.1567607130936;
- Wed, 04 Sep 2019 07:25:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <1567523922.5576.57.camel@lca.pw> <CABeXuvoPdAbDr-ELxNqUPg5n84fubZJZKiryERrXdHeuLhBQjQ@mail.gmail.com>
- <20190903211747.GD2899@mit.edu> <CABeXuvoYh0mhg049+pXbMqh-eM=rw+Ui1=rDree4Yb=7H7mQRg@mail.gmail.com>
- <CAK8P3a0AcPzuGeNFMW=ymO0wH_cmgnynLGYXGjqyrQb65o6aOw@mail.gmail.com>
- <CABeXuvq0_YsyuFY509XmwFsX6tX5EVHmWGuzHnSyOEX=9X6TFg@mail.gmail.com> <20190904125834.GA3044@mit.edu>
-In-Reply-To: <20190904125834.GA3044@mit.edu>
-From:   Deepa Dinamani <deepa.kernel@gmail.com>
-Date:   Wed, 4 Sep 2019 07:25:19 -0700
-Message-ID: <CABeXuvoKE4VrnAcHff+veyds+JbqzrUtYxBJ4tUv3eaUsec0bw@mail.gmail.com>
-Subject: Re: "beyond 2038" warnings from loopback mount is noisy
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3sDrFAvQf0w1nVql3tAUzXcXvI1jIJ7MZ8Vpfy03Qgs=;
+        b=GeLb2Eu3KaMthyz2yfqLwbCAiXewxiyJTGS0Sd6JzeeRdcATyrQRk9oFy/JB4xWpw4
+         MTDYCo5Zf1l9N1GlLgVwu1845dna+A4iqxoPGu5kcLiw8b58e8RerWWbEr1PwB01WV72
+         ZhzGXc0OXe9dYvYTNU2i6Wvh9DvJd/8vULfJgn6MqPpqf5mIHpro7rb1qli0pBUqwHXE
+         n0K2lZyq/bCKo8tweh8nqi1V69S7F3RDzAiB6LMm5aAmfzBKRxjaWobam60yoT9fH3mH
+         RQpOxchqkwTby6JBCatDGfKDcJqt4IVIfQzIvOrSaRjKUJlyipAG+9YLimy7+f2gIqKh
+         R7rg==
+X-Gm-Message-State: APjAAAXEW8zMOeeVw72IjpeT899eC5hN3stHGjoGelDGVlxMkuqDIhLN
+        SJkqiWfzuhpvuuZk6uVfBRULpJOv5PmFl/8hx1HArqZyvzI2XwIU80NnuGrn0Ja4JSdZ9BKD03D
+        HTAU30exal8eCQOv7tbkAiXJ+4jUZ1JyYRgbOY5Q=
+X-Received: by 2002:a6b:b487:: with SMTP id d129mr3485088iof.223.1567609139450;
+        Wed, 04 Sep 2019 07:58:59 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzP3foLbiKbo8yJmAClO7gBY2psxgTBFEGQLaS8Cfp9Qafz8DkETtTVf2DWyPgRiXksDWLEfg==
+X-Received: by 2002:a6b:b487:: with SMTP id d129mr3485061iof.223.1567609139118;
+        Wed, 04 Sep 2019 07:58:59 -0700 (PDT)
+Received: from xps13.canonical.com (c-71-56-235-36.hsd1.co.comcast.net. [71.56.235.36])
+        by smtp.gmail.com with ESMTPSA id q8sm17355307ion.82.2019.09.04.07.58.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Sep 2019 07:58:58 -0700 (PDT)
+Date:   Wed, 4 Sep 2019 08:58:57 -0600
+From:   dann frazier <dann.frazier@canonical.com>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Qian Cai <cai@lca.pw>,
-        Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc:     Andreas Dilger <adilger@dilger.ca>, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.com>,
+        Colin King <colin.king@canonical.com>,
+        Ryan Harper <ryan.harper@canonical.com>
+Subject: Re: ext4 fsck vs. kernel recovery policy
+Message-ID: <20190904145857.GA8297@xps13.dannf>
+References: <CALdTtnuRqgZ=By1JQ0yJJYczUPxxYCWPkAey4BjBkmj77q7aaA@mail.gmail.com>
+ <5FEB4E1B-B21B-418D-801D-81FF7C6C069F@dilger.ca>
+ <20190829225348.GA13045@xps13.dannf>
+ <20190830012236.GC10779@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190830012236.GC10779@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> On Sep 4, 2019, at 5:58 AM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
->> On Tue, Sep 03, 2019 at 09:50:09PM -0700, Deepa Dinamani wrote:
->> If we don't care to warn about the timestamps that are clamped in
->> memory, maybe we could just warn when they are being written out.
->> Would something like this be more acceptable? I would also remove the
->> warning in ext4.h. I think we don't have to check if the inode is 128
->> bytes here (Please correct me if I am wrong). If this looks ok, I can
->> post this.
->
-> That's better, but it's going to be misleading in many cases.  The
-> inode's extra size field is 16 or larger, there will be enough space
-> for the timestamps, so talking about "timestamps on this inode beyond
-> 2038" when ext4 is unable to expand it from say, 24 to 32, won't be
-> true.  Certain certain features won't be available, yes --- such as
-> project-id-based quotas, since there won't be room to store the
-> project ID.  However, it's not going to impact the ability to store
-> timestamps beyond 2038.  The i_extra_isize field is not just about
-> timestamps!
+On Thu, Aug 29, 2019 at 09:22:36PM -0400, Theodore Y. Ts'o wrote:
+> (Changing the cc from linux-fsdevel to linux-ext4.)
+> 
+> On Thu, Aug 29, 2019 at 04:53:48PM -0600, dann frazier wrote:
+> > JBD2: Invalid checksum recovering data block 517634 in log
+> > 
+> > So is it correct to say that the checksum errors were identifying
+> > filesystem correctness issues, and therefore e2fsck was needed to
+> > correct them?
+> 
+> That's correct.  More precisely, checksum errors for journal blocks
+> are presumed to mean that file system might be corrupt, so a full
+> e2fsck check was needed to make sure the file system was consistent.
+> 
+> > You're probably right - this issue is very easy to reproduce w/
+> > data=journal,journal_checksum. I was never able to reproduce it
+> > otherwise.
+> 
+> I've looked at the data block numbers that you've reported, and they
+> come from a journald file.  The problem is with data=journal +
+> journal_checksum + mmap.  Unfortunately, we don't handle that
+> combination correctly at the moment.
+> 
+> The fix is going to have to involve fixing __ext4_journalled_writepage()
+> to call set_page_writeback() before it unlocks the page, adding a list of
+> pages under data=journalled writeback which is attached to the
+> transaction handle, have the jbd2 commit hook call end_page_writeback()
+> on all of these pages, and then in the places where ext4 calls
+> wait_for_stable_page() or grab_cache_page_write_begin(),
+> we need to add:
+> 
+> 	if (ext4_should_journal_data(inode))
+> 		wait_on_page_writeback(page);
+> 
+> It's all relatively straightforward except for the part where we have to
+> attach a list of pages to the currently running transaction.  That
+> will require adding  some plumbing into the jbd2 layer.
+> 
+> Dann, any interest in trying to code this fix?
 
-I understand that i_extra_isize is not just about timestamps. It=E2=80=99s
-evident from EXT4_FITS_IN_INODE(). I think we can check for
-EXT4_FITS_IN_INODE() here if that will consistently eliminates false
-positives.
+Thanks Ted. I've the interest, I'll see if I can find the time :)
 
-But, I hear you. You think this warning is unnecessary. I think there
-are many file systems and I don=E2=80=99t think anybody would knows in=E2=
-=80=99s and
-outs of each one. I think if I=E2=80=99m mounting an ext4 fs and it has mix=
-ed
-sizes of inodes, I think I would at least expect a dmesg(with a hint
-on how to fix it) considering that this filesystem is restricted in
-more ways than just time. Is this the purpose of the warning you
-already have?:
-
-        if (error && (mnt_count !=3D le16_to_cpu(sbi->s_es->s_mnt_count))) =
-{
-               ext4_warning(inode->i_sb, "Unable to expand inode %lu.
-Delete some EAs or run e2fsck.",
-
-Maybe there should be a warning, but it has nothing to do with just
-time. Do we already have this?
-
--Deepa
+  -dann
