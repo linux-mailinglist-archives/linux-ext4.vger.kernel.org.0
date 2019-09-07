@@ -2,105 +2,173 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1429AC3F1
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Sep 2019 03:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDE7AC46B
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Sep 2019 06:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406418AbfIGBfx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Sep 2019 21:35:53 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:41861 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406424AbfIGBfx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Sep 2019 21:35:53 -0400
-Received: by mail-vs1-f67.google.com with SMTP id g11so4918004vsr.8
-        for <linux-ext4@vger.kernel.org>; Fri, 06 Sep 2019 18:35:52 -0700 (PDT)
+        id S2387398AbfIGEXI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Sep 2019 00:23:08 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:38059 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726940AbfIGEXH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Sep 2019 00:23:07 -0400
+Received: by mail-pg1-f196.google.com with SMTP id d10so4642187pgo.5
+        for <linux-ext4@vger.kernel.org>; Fri, 06 Sep 2019 21:23:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=C+0rVi6PzTMFYTcbcIBgVtgcdKuod3fbgGTlJ3s1Cbc=;
-        b=aAqX8GF3NxJfYWTz+7NIDPLIjo0XP9/JZPono8ypSM0neNSMZHUmzdkq2Se7OJFOh9
-         PoY/oOktOwroaWpUhvkh/0lVCpOy0KJOLjA7Oi/nzaXZuFlZGZbL/4747zKBrwwhtzas
-         gG/MLSk0D7meYg6rv72yzT1Ye0iKhsbuA3x7qNKl17C/ShWvLceuPesYJRB24JI3yF/d
-         RlQ1pN3llWGMGktA9M5mcCV2mXYnONq4mktjFBILLKDKqhDlfm3tts6F97UbE+dOxwKG
-         stLn6T4VogMt45OE5RvOA2uSkgh1bK36Tx1Z5lO8sum/OTUS4kxFqGu49PNKiFyRTNrp
-         8fGg==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=2+MCJav8+2k1to15gJpg1P78MAUieaWqcpgypcYGuP4=;
+        b=V6KVatMtr5U0CCMhWL4d6h7Qt/z6EUx70v/vwbtSD6Ml7DuqWcXfxp6aV4mlQNlefj
+         GL5YmrwUbJZQWGvsTZ0vRd1Zh18NOvs9QQ5qMFDTS3akxqoeR/Zf7Db8kyqYRQVPBbPz
+         5wz1XIq82Pd3uvNt23zhpSvyrnUBe21DuLVnFFh9SRZOnKrRnOqWFd0jFxQWZCNyPN5t
+         WQKPaEmVI90MTKRMHfkJJfM9IsmNZlqJrzmRw62FEftXuMeNXygcPislOJtZRy0HtR5s
+         pztttQeSRKlHWjS9X9oOdlMBIdwq5m4yW2un37ngjFVD2ZB5EIIUqd0jWYkEaxo1pVQh
+         PHRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=C+0rVi6PzTMFYTcbcIBgVtgcdKuod3fbgGTlJ3s1Cbc=;
-        b=ZMTmEivgTH5tbC6ChJoWd5Wu4G3fkqSrg+M1DYg43G4CSPTY2Fb0FKqZW1JWox9EVt
-         lLZcTptIis6JW8G4i4d/CHlOaAqZka9KPUDpgrY173gfdZJLgZJyH/FOR/arBRZWTdlZ
-         DY7i2xiXynZ4H9tQOOOv/lDEmvqJu+AiGshVSr2NIDJqjqIuCRe1feJyfh+YfMc6KtKK
-         xZroLQMr1GI7xJ0HtG6SdZUR7t0H5cicThNfI3cG+cmzCnB+dhsDLHFyN0sY6YC5Ujau
-         DlKDeP7C06c1MvDaqNc0hNEirWPq82VVuSa0qXIrTCAqtTqv1/4cfh9UsgtwbN60rsDc
-         przw==
-X-Gm-Message-State: APjAAAX314nkLXqNxoO43aI1tp5BngPCbTaAiydNo4GFrW6zuNxqnDCm
-        cdX0jVWAmW3sbItIPh9ToF7NDCQSNp4xashCimY=
-X-Google-Smtp-Source: APXvYqyTtP/aHSfYAfmSrs7MWIe/GTCmIy0j5/fOPaIGMbEKnvKQPW7B/2OIkBGdOM/ShGwFA2jh7u3jozMFI6xv0E8=
-X-Received: by 2002:a05:6102:15a:: with SMTP id a26mr6991278vsr.143.1567820152517;
- Fri, 06 Sep 2019 18:35:52 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a1f:c545:0:0:0:0:0 with HTTP; Fri, 6 Sep 2019 18:35:52 -0700 (PDT)
-Reply-To: waltonalice41@gmail.com
-From:   Alice Walton <saraharmony501@gmail.com>
-Date:   Sat, 7 Sep 2019 02:35:52 +0100
-Message-ID: <CAHoQAbVi2eUJHHAx8-i6uv=tXXkdZbDQj+bGXrd4foXr+8goAQ@mail.gmail.com>
-Subject: Please forgive me
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=2+MCJav8+2k1to15gJpg1P78MAUieaWqcpgypcYGuP4=;
+        b=h9o8Azmdec2pzK5okus1gbZZXDWwrdPo76lnjUoT5xfa6NTU6KL//N6aY+PsdAitHO
+         /n2iZLUHvieU4Qmizgsk5iTr/5ErdGxT2rxJR6tWxLdzL3FgFiELHaJImvoFKisiX6CG
+         RJZ8xubpq/HC257nhJwt5+MoATJTeWMV8goJc8tWfedxAmTzcpA7q/86yHxJ4pw/6Dqn
+         4/ZcLBqMBBDEn/jQ5ZSxEDNjLVrlDTbKia/XBuSku0bpd3uIJvUYdeGmUUtYpIGLPptM
+         JCsWN0ef/M3Lkp/zDHbprXW7iTtJsRNb9SMUE1zgQA1Rij7fBXLZ7ovg4kP3fRejsV1o
+         88SQ==
+X-Gm-Message-State: APjAAAUwtGmru2ZceIhZn3dIKLCnt1P4r8QKwBLgwYEEkg6dMKfTdNFk
+        /3tWFEUL1zDyfyxEm5GLIEcfXg==
+X-Google-Smtp-Source: APXvYqyD39lVMVJVz5yw56szyL87yEiJ8xuJfbf5mQuG+mHXzTMBOCdzSTGysXY5evH60qgQsnEzpA==
+X-Received: by 2002:a63:5648:: with SMTP id g8mr10676026pgm.81.1567830186540;
+        Fri, 06 Sep 2019 21:23:06 -0700 (PDT)
+Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id l6sm14544870pje.28.2019.09.06.21.23.05
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 06 Sep 2019 21:23:05 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <28D1848F-B84A-4D2A-880E-F0C8E8FD36C7@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_669BFA70-DBB2-44E5-8B6B-34CCC80FEE88";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v3] e2fsck: check for consistent encryption policies
+Date:   Fri, 6 Sep 2019 22:23:03 -0600
+In-Reply-To: <20190904155524.GA41757@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20190823162339.186643-1-ebiggers@kernel.org>
+ <20190904155524.GA41757@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-My Dearest,
 
-Please forgive me for stressing you with my predicaments as I know
-that this letter may come to you as a big surprise.
+--Apple-Mail=_669BFA70-DBB2-44E5-8B6B-34CCC80FEE88
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-Actually, I came across your E-mail from my personal search afterward
-I decided to email you directly believing that you will be honest to
-fulfil my final wish before anything happens to me. Meanwhile, I am
-Madam Alice Walton, 71 years old childless widow from France but i
-reside and doing Gold mining business in Africa before i fall sick.
 
-I am suffering from Adenocarcinoma Cancer of the lungs for the past 8
-years and from all indication my condition is really deteriorating as
-my doctors have confirmed and courageously advised me that I may not
-live beyond 3 weeks from now for the reason that my tumor has reached
-a critical stage which has defiled all forms of medical treatment.
+On Sep 4, 2019, at 9:55 AM, Eric Biggers <ebiggers@kernel.org> wrote:
+> On Fri, Aug 23, 2019 at 09:23:39AM -0700, Eric Biggers wrote:
+>> From: Eric Biggers <ebiggers@google.com>
+>> 
+>> By design, the kernel enforces that all files in an encrypted directory
+>> use the same encryption policy as the directory.  It's not possible to
+>> violate this constraint using syscalls.  Lookups of files that violate
+>> this constraint also fail, in case the disk was manipulated.
+>> 
+>> But this constraint can also be violated by accidental filesystem
+>> corruption.  E.g., a power cut when using ext4 without a journal might
+>> leave new files without the encryption bit and/or xattr.  Thus, it's
+>> important that e2fsck correct this condition.
+>> 
+>> Therefore, this patch makes the following changes to e2fsck:
+>> 
+>> - During pass 1 (inode table scan), create a map from inode number to
+>>  encryption policy for all encrypted inodes.  But it's optimized so
+>>  that the full xattrs aren't saved but rather only 32-bit "policy IDs",
+>>  since usually many inodes share the same encryption policy.  Also, if
+>>  an encryption xattr is missing, offer to clear the encrypt flag.  If
+>>  an encryption xattr is clearly corrupt, offer to clear the inode.
+>> 
+>> - During pass 2 (directory structure check), use the map to verify that
+>>  all regular files, directories, and symlinks in encrypted directories
+>>  use the directory's encryption policy.  Offer to clear any directory
+>>  entries for which this isn't the case.
+>> 
+>> Add a new test "f_bad_encryption" to test the new behavior.
+>> 
+>> Due to the new checks, it was also necessary to update the existing test
+>> "f_short_encrypted_dirent" to add an encryption xattr to the test file,
+>> since it was missing one before, which is now considered invalid.
+>> 
+> 
+> Any comments on this patch?
 
-Since my days are numbered, I=E2=80=99ve decided willingly to fulfil my
-long-time vow to donate to the less privileges the sum of($18.5
-million dollars) I deposited in my offshore account over 7 years now
-because I have tried to handle this project by myself but I have seen
-that my health could not allow me to do so anymore.
+I didn't see the original email for this patch, but I found it on patchworks.
 
-My promise to God includes building of well-equipped charity
-foundation/hospital and a technical school for the orphans and less
-privileges.
+One change is needed if the filesystem is very large and has a lot of
+encrypted files.  While your typical use case is going to be Android
+handsets, on the flip side I'm often dealing with filesystems with a
+few billion files in them, and there are definitely users that want
+to use the on-disk encryption.
 
-Since i am not capable to handle this again myself due to my critical
-health condition,please i need your consent to help me receive my
-money from the bank and use it to do this divine works of God in your
-country in my name so that my soul can be at rest if anything happens
-to me.
+>> +	/* Append the (ino, policy_id) pair to the list. */
+>> +	if (info->files_count == info->files_capacity) {
+>> +		size_t new_capacity = info->files_capacity * 2;
+>> +
+>> +		if (new_capacity < 128)
+>> +			new_capacity = 128;
+>> +
+>> +		if (ext2fs_resize_mem(info->files_capacity * sizeof(*file),
+>> +				      new_capacity * sizeof(*file),
+>> +				      &info->files) != 0)
 
-If you will be honest, kind and willing to assist me handle this
-charity project as I=E2=80=99ve mentioned here, I will like you to provide =
-me
-your personal data like,
+If the number of files in the array get very large, then doubling the
+array size at the end may consume a *lot* of memory.  It would be
+somewhat better to cap new_capacity by the number of inodes in the
+filesystem, and better yet scale the array size by a fraction of the
+total number of inodes that have already been processed, but this array
+might still be several GB of RAM.
 
-(1) Your full name:
-(2) country:
-(3) Occupation:
-(4) phone number:
-(5) Age:
+What about using run-length encoding for this?  It is unlikely that many
+different encryption policies are in a filesystem, and inodes tend to be
+allocated in groups by users, so it is likely that you will get large runs
+of inodes with the same policy_id, and this could save considerable space.
 
-Let me have this data so that i can link you up with my bank as my
-representative and receiver of the funds now that i am still alive.
+Cheers, Andreas
 
-Warmest Regards!
-Mrs. Alice Walton
+
+
+
+
+
+--Apple-Mail=_669BFA70-DBB2-44E5-8B6B-34CCC80FEE88
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl1zMKcACgkQcqXauRfM
+H+AvgRAAvW6yJVYdn1B6VDSTQMrY+hj04aHnvhr8jYT+Vwzix2msFLQodxEA9dXX
+XsfLeUi23LCmCrZMaxLl3lZDGsstTVAm3ECeZk1E833YaR3Gxy8JVuXQ/Pr4aDwj
+pbCwh8D3Un5mZnrq9tg2B7LIIsMnjC6+SfAQHfaAPT+FysSbGZYFgnGSVm0A5e9A
+1iUfCVs5lu3Meme+R3urwQyzpuhNnPTQ4QC9haIEp9UQzHsZw4Te4aExtFgPQ6db
+24wFquL5bdxUW/QV9/BaNo4aZPxZhyuhXjO72uFqQ2R0Uqh/8sSOkpnH5FXAcMdd
++5W7w8JZNqHOmHkRekqqn/TUpOsC+7rtjzp3jPPEveaCbq5ohI3DGfV//hSEztYZ
+/wAttTHxfl6IyTltpdJdzuAzfRjP8Mv3itR1/dAYvVqwtwv3CppBHtucb2x1+Z59
+fJZt9FpdJaYWYIU3e4QigUYv747mFomTkO2GUq/KT3zHQpfCqxbhwDRYrWUQ2DdU
+aLkuizZXEnlUUE53+HqoZfplL7Xw0e0EulflOEJna3HN/9F26zl6IIGtT123r7nM
+KnLg85A6NMUXQLQLVv7/lj7ydcvwMzgKCBGRtBIux9nkrSVzOT0SaMLZpLi0JFhc
+7xOvLJ4/guk7z+7cs8rJYFDOmxwkepfA5kmCSairJCbb0KbkHOA=
+=+I+v
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_669BFA70-DBB2-44E5-8B6B-34CCC80FEE88--
