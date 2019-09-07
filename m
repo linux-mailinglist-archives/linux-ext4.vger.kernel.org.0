@@ -2,141 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF04AC2E5
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Sep 2019 01:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1429AC3F1
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Sep 2019 03:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392786AbfIFXPb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Sep 2019 19:15:31 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:54774 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732440AbfIFXPb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Sep 2019 19:15:31 -0400
-Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 9307A36115B;
-        Sat,  7 Sep 2019 09:15:27 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1i6NRu-0004fL-K6; Sat, 07 Sep 2019 09:15:26 +1000
-Date:   Sat, 7 Sep 2019 09:15:26 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs@vger.kernel.org,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Lukas Czerner <lczerner@redhat.com>
-Subject: Re: [Q] gfs2: mmap write vs. punch_hole consistency
-Message-ID: <20190906231526.GA16973@dread.disaster.area>
-References: <20190906205241.2292-1-agruenba@redhat.com>
- <20190906212758.GO1119@dread.disaster.area>
- <CAHc6FU5BxOHkgHKKWTL7jFq0oL4TbAPpe49QDB6X35ndjYTWKQ@mail.gmail.com>
+        id S2406418AbfIGBfx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Sep 2019 21:35:53 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:41861 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406424AbfIGBfx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Sep 2019 21:35:53 -0400
+Received: by mail-vs1-f67.google.com with SMTP id g11so4918004vsr.8
+        for <linux-ext4@vger.kernel.org>; Fri, 06 Sep 2019 18:35:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=C+0rVi6PzTMFYTcbcIBgVtgcdKuod3fbgGTlJ3s1Cbc=;
+        b=aAqX8GF3NxJfYWTz+7NIDPLIjo0XP9/JZPono8ypSM0neNSMZHUmzdkq2Se7OJFOh9
+         PoY/oOktOwroaWpUhvkh/0lVCpOy0KJOLjA7Oi/nzaXZuFlZGZbL/4747zKBrwwhtzas
+         gG/MLSk0D7meYg6rv72yzT1Ye0iKhsbuA3x7qNKl17C/ShWvLceuPesYJRB24JI3yF/d
+         RlQ1pN3llWGMGktA9M5mcCV2mXYnONq4mktjFBILLKDKqhDlfm3tts6F97UbE+dOxwKG
+         stLn6T4VogMt45OE5RvOA2uSkgh1bK36Tx1Z5lO8sum/OTUS4kxFqGu49PNKiFyRTNrp
+         8fGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=C+0rVi6PzTMFYTcbcIBgVtgcdKuod3fbgGTlJ3s1Cbc=;
+        b=ZMTmEivgTH5tbC6ChJoWd5Wu4G3fkqSrg+M1DYg43G4CSPTY2Fb0FKqZW1JWox9EVt
+         lLZcTptIis6JW8G4i4d/CHlOaAqZka9KPUDpgrY173gfdZJLgZJyH/FOR/arBRZWTdlZ
+         DY7i2xiXynZ4H9tQOOOv/lDEmvqJu+AiGshVSr2NIDJqjqIuCRe1feJyfh+YfMc6KtKK
+         xZroLQMr1GI7xJ0HtG6SdZUR7t0H5cicThNfI3cG+cmzCnB+dhsDLHFyN0sY6YC5Ujau
+         DlKDeP7C06c1MvDaqNc0hNEirWPq82VVuSa0qXIrTCAqtTqv1/4cfh9UsgtwbN60rsDc
+         przw==
+X-Gm-Message-State: APjAAAX314nkLXqNxoO43aI1tp5BngPCbTaAiydNo4GFrW6zuNxqnDCm
+        cdX0jVWAmW3sbItIPh9ToF7NDCQSNp4xashCimY=
+X-Google-Smtp-Source: APXvYqyTtP/aHSfYAfmSrs7MWIe/GTCmIy0j5/fOPaIGMbEKnvKQPW7B/2OIkBGdOM/ShGwFA2jh7u3jozMFI6xv0E8=
+X-Received: by 2002:a05:6102:15a:: with SMTP id a26mr6991278vsr.143.1567820152517;
+ Fri, 06 Sep 2019 18:35:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHc6FU5BxOHkgHKKWTL7jFq0oL4TbAPpe49QDB6X35ndjYTWKQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
-        a=7-415B0cAAAA:8 a=8fbbZ4Ib-xQoSIbtoJoA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Received: by 2002:a1f:c545:0:0:0:0:0 with HTTP; Fri, 6 Sep 2019 18:35:52 -0700 (PDT)
+Reply-To: waltonalice41@gmail.com
+From:   Alice Walton <saraharmony501@gmail.com>
+Date:   Sat, 7 Sep 2019 02:35:52 +0100
+Message-ID: <CAHoQAbVi2eUJHHAx8-i6uv=tXXkdZbDQj+bGXrd4foXr+8goAQ@mail.gmail.com>
+Subject: Please forgive me
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 06, 2019 at 11:48:31PM +0200, Andreas Gruenbacher wrote:
-> On Fri, Sep 6, 2019 at 11:28 PM Dave Chinner <david@fromorbit.com> wrote:
-> > On Fri, Sep 06, 2019 at 10:52:41PM +0200, Andreas Gruenbacher wrote:
-> > > Hi,
-> > >
-> > > I've just fixed a mmap write vs. truncate consistency issue on gfs on
-> > > filesystems with a block size smaller that the page size [1].
-> > >
-> > > It turns out that the same problem exists between mmap write and hole
-> > > punching, and since xfstests doesn't seem to cover that,
-> >
-> > AFAIA, fsx exercises it pretty often. Certainly it's found problems
-> > with XFS in the past w.r.t. these operations.
-> >
-> > > I've written a
-> > > new test [2].
-> >
-> > I suspect that what we really want is a test that runs
-> > _test_generic_punch using mmap rather than pwrite...
-> >
-> > > Ext4 and xfs both pass that test; they both apparently
-> > > mark the pages that have a hole punched in them as read-only so that
-> > > page_mkwrite is called before those pages can be written to again.
-> >
-> > XFS invalidates the range being hole punched (see
-> > xfs_flush_unmap_range() under XFS_MMAPLOCK_EXCL, which means any
-> > attempt to fault that page back in will block on the MMAPLOCK until
-> > the hole punch finishes.
-> 
-> This isn't about writes during the hole punching, this is about writes
-> once the hole is punched.
+My Dearest,
 
-How do you prevent this:
+Please forgive me for stressing you with my predicaments as I know
+that this letter may come to you as a big surprise.
 
-hole punch process:		other process
-  clean page
-  invalidate page
-				write page fault
-				instantiate new page
-				page_mkwrite
-				page dirty
-  do hole punch
-  overwrite hole
+Actually, I came across your E-mail from my personal search afterward
+I decided to email you directly believing that you will be honest to
+fulfil my final wish before anything happens to me. Meanwhile, I am
+Madam Alice Walton, 71 years old childless widow from France but i
+reside and doing Gold mining business in Africa before i fall sick.
 
-Firstly, you end up with a dirty page over a hole with no backing
-store, and second, you get no page fault on overwrite because the
-pages are already dirty.
+I am suffering from Adenocarcinoma Cancer of the lungs for the past 8
+years and from all indication my condition is really deteriorating as
+my doctors have confirmed and courageously advised me that I may not
+live beyond 3 weeks from now for the reason that my tumor has reached
+a critical stage which has defiled all forms of medical treatment.
 
-That's the problem the MMAPLOCK in XFS solves - it's integral to
-ensuring the page faults on mmap write are correctly serialised with
-both the page cache invalidation and the underlying extent
-manipulation that the hole punch operation then does.
+Since my days are numbered, I=E2=80=99ve decided willingly to fulfil my
+long-time vow to donate to the less privileges the sum of($18.5
+million dollars) I deposited in my offshore account over 7 years now
+because I have tried to handle this project by myself but I have seen
+that my health could not allow me to do so anymore.
 
-i.e. if you want a page fault /after/ a hole punch, you have to
-prevent it occurring during the hole punch after the page has
-already been marked clean and/or invalidated.
+My promise to God includes building of well-equipped charity
+foundation/hospital and a technical school for the orphans and less
+privileges.
 
-> For example, the test case I've posted
-> creates the following file layout with 1k blocksize:
-> 
->   DDDD DDDD DDDD
-> 
-> Then it punches a hole like this:
-> 
->   DDHH HHHH HHDD
-> 
-> Then it fills the hole again with mwrite:
-> 
->   DDDD DDDD DDDD
-> 
-> As far as I can tell, that needs to trigger page faults on all three
-> pages.
+Since i am not capable to handle this again myself due to my critical
+health condition,please i need your consent to help me receive my
+money from the bank and use it to do this divine works of God in your
+country in my name so that my soul can be at rest if anything happens
+to me.
 
-Yes, but only /after/ the hole has been punched.
+If you will be honest, kind and willing to assist me handle this
+charity project as I=E2=80=99ve mentioned here, I will like you to provide =
+me
+your personal data like,
 
-> I did get these on ext4; judging from the fact that xfs works,
-> the also seem to occur there; but on gfs2, page_mkwrite isn't called
-> for the two partially mapped pages, only for the page in the middle
-> that's entirely within the hole. And I don't see where those pages are
-> marked read-only; it appears like pagecache_isize_extended isn't
-> called on ext4 or xfs. So how does this work there?
+(1) Your full name:
+(2) country:
+(3) Occupation:
+(4) phone number:
+(5) Age:
 
-As I said in my last response, the answer is in
-xfs_flush_unmap_range(). That uses truncate_pagecache_range() to do
-the necessary page cache manipulation.
+Let me have this data so that i can link you up with my bank as my
+representative and receiver of the funds now that i am still alive.
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Warmest Regards!
+Mrs. Alice Walton
