@@ -2,278 +2,181 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FA4AD2FE
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Sep 2019 08:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52AB1AD420
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Sep 2019 09:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbfIIGK0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Sep 2019 02:10:26 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:38492 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726875AbfIIGK0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Sep 2019 02:10:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07417;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=1;SR=0;TI=SMTPD_---0TbpoNSr_1568009402;
-Received: from 30.5.113.70(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TbpoNSr_1568009402)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 09 Sep 2019 14:10:03 +0800
-Subject: Re: [RFC] jbd2: reclaim journal space asynchronously when free space
- is low
-To:     linux-ext4@vger.kernel.org
-References: <20190826035459.4121-1-xiaoguang.wang@linux.alibaba.com>
-From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Message-ID: <8edec7d4-2b6e-cce3-1011-5189aca3e462@linux.alibaba.com>
-Date:   Mon, 9 Sep 2019 14:10:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2388386AbfIIHsu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Sep 2019 03:48:50 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57270 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388374AbfIIHst (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Sep 2019 03:48:49 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x897ldY2080465
+        for <linux-ext4@vger.kernel.org>; Mon, 9 Sep 2019 03:48:48 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2uwgrv4xwx-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Mon, 09 Sep 2019 03:48:47 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Mon, 9 Sep 2019 08:48:45 +0100
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 9 Sep 2019 08:48:42 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x897mglB24444938
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 9 Sep 2019 07:48:42 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 051A242045;
+        Mon,  9 Sep 2019 07:48:42 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 04FE642042;
+        Mon,  9 Sep 2019 07:48:40 +0000 (GMT)
+Received: from [9.199.158.183] (unknown [9.199.158.183])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  9 Sep 2019 07:48:39 +0000 (GMT)
+Subject: Re: [PATCH v2 1/6] ext4: introduce direct IO read path using iomap
+ infrastructure
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>, tytso@mit.edu,
+        jack@suse.cz, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        david@fromorbit.com, hch@infradead.org, darrick.wong@oracle.com
+References: <cover.1567978633.git.mbobrowski@mbobrowski.org>
+ <75a6ead09a10e362526a849af482510a0090f82a.1567978633.git.mbobrowski@mbobrowski.org>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Mon, 9 Sep 2019 13:18:39 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190826035459.4121-1-xiaoguang.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <75a6ead09a10e362526a849af482510a0090f82a.1567978633.git.mbobrowski@mbobrowski.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19090907-0012-0000-0000-00000348A7F0
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19090907-0013-0000-0000-0000218306FF
+Message-Id: <20190909074840.04FE642042@d06av24.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-09_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1909090086
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-hi,
 
-Any suggestions to this patch? Though I also think this patch needs some
-more improvements and more performance tests :)
-Currently I have two other thoughts:
-1, add codes to count the number of transactions to be checkpointted, with
-this information, we can make some better decisions, for example, when it's
-appropriate to reclaim journal space asynchronously.
-2, add a new mount option to control whether enable or disable this feature.
 
-Regards,
-Xiaoguang Wang
+On 9/9/19 4:48 AM, Matthew Bobrowski wrote:
+> This patch introduces a new direct IO read path that makes use of the
+> iomap infrastructure.
+> 
+> The new function ext4_dio_read_iter() is responsible for calling into
+> the iomap infrastructure via iomap_dio_rw(). If the inode in question
+> does not pass preliminary checks in ext4_dio_checks(), then we simply
+> fallback to buffered IO and take that path to fulfil the request. It's
+> imperative that we drop the IOCB_DIRECT flag from iocb->ki_flags in
+> order to prevent generic_file_read_iter() from trying to take the
+> direct IO code path again.
+> 
+> Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
 
-> In current jbd2's implemention, jbd2 won't reclaim journal space unless
-> free journal space is lower than specified threshold, see logic in
-> add_transaction_credits():
->          write_lock(&journal->j_state_lock);
->          if (jbd2_log_space_left(journal) < jbd2_space_needed(journal))
->              __jbd2_log_wait_for_space(journal);
->          write_unlock(&journal->j_state_lock);
-> Indeed with this logic, we can also have many transactions queued to be
-> checkpointd, which means these transactions still occupy jbd2 space.
-> 
-> Recently I have seen some disadvantages caused by this logic:
-> Some of our applications will get stuck in below stack periodically:
->          __jbd2_log_wait_for_space+0xd5/0x200 [jbd2]
->          start_this_handle+0x31b/0x8f0 [jbd2]
->          jbd2__journal_start+0xcd/0x1f0 [jbd2]
->          __ext4_journal_start_sb+0x69/0xe0 [ext4]
->          ext4_dirty_inode+0x32/0x70 [ext4]
->          __mark_inode_dirty+0x15f/0x3a0
->          generic_update_time+0x87/0xe0
->          file_update_time+0xbd/0x120
->          __generic_file_aio_write+0x198/0x3e0
->          generic_file_aio_write+0x5d/0xc0
->          ext4_file_write+0xb5/0x460 [ext4]
->          do_sync_write+0x8d/0xd0
->          vfs_write+0xbd/0x1e0
->          SyS_write+0x7f/0xe0
-> Meanwhile I found io usage in these applications' machines are relatively
-> low, journal space is somewhat like a global lock, in high concurrency case,
-> if many tasks contend for journal credits, they will easily hit above stack
-> and be stuck in waitting for free journal space, so I wonder whether we can
-> reclaim journal space asynchronously when free space is lower than a specified
-> threshold, to avoid that all applications are stalled at the same time.
-> 
-> I think this will be more useful in high speed store, journal space will be
-> reclaimed in background quickly, and applications will less likely to be
-> stucked by above issue. To improve this case, we use workqueue to queue a
-> work in background to reclaim journal space.
-> 
-> I also construct a test case to verify improvement, test case will create
-> 1000000 directories, use 1, 2, 4, 8 and 16 tasks per test round. For example,
-> in 8 tasks case, create 8 processes and every process creates 125000 directories,
-> 16 tasks case, every process creates 62500 directories. Every test case run
-> 5 iterations.
-> 
-> Tested in my vm(16cores, 8G memory), count the run time per test round.
-> Without this patch,
-> 16 tasks:  35s 34s 33s 34s 34s total: 170s, avg: 34s
-> 8  tasks:  33s 35s 34s 35s 35s total: 172s, avg: 34.4s
-> 4  tasks:  36s 38s 39s 39s 41s total: 193s, avg: 38.6s
-> 2  tasks:  53s 54s 52s 55s 54s total: 268s, avg: 53.6s
-> 1  tasks:  65s 65s 65s 65s 64s total: 324s, avg: 64.8s
-> 
-> With this patch:
-> 16 tasks:  29s 32s 32s 31s 33s total: 157s, avg: 31.4s
-> 8  tasks:  30s 31s 30s 31s 30s total: 152s, avg: 30.4s
-> 4  tasks:  33s 34s 32s 33s 37s total: 169s, avg: 33.8s
-> 2  tasks:  47s 48s 46s 49s 48s total: 238s, avg: 47.6s
-> 1  tasks:  56s 55s 56s 54s 55s total: 276s, avg: 55.2s
-> 
->  From above test, we can have 10% improvements.
-> 
-> Run same test in physical machine with nvme store, get such test results:
-> without patch(count the total time spending to create 5000000 sub-directories):
-> 64 tasks  32 tasks 16 tasks  8 tasks  4 tasks  2 tasks  1 tasks
->       66s       64s      67s      71s      81s     108s     133s
-> with patch:
-> 64 tasks  32 tasks 16 tasks  8 tasks  4 tasks  2 tasks  1 tasks
->      66s        64s      69s      72s      80s     103s     112s
-> 
-> Seems that improvements are only somewhat significant in low concurrency
-> case, I guess it's because that the checkpoint work in nvme is quick.
-> In high concurrency case, the overhead caused by waitting for log space
-> may not a big bottleneck, I'll look into this issue more.
-> 
-> Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Looks good to me.
+
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
 > ---
->   fs/jbd2/checkpoint.c  |  4 ++--
->   fs/jbd2/journal.c     | 26 ++++++++++++++++++++++++++
->   fs/jbd2/transaction.c | 12 +++++++++++-
->   include/linux/jbd2.h  | 23 ++++++++++++++++++++++-
->   4 files changed, 61 insertions(+), 4 deletions(-)
+>   fs/ext4/file.c | 58 ++++++++++++++++++++++++++++++++++++++++++++++----
+>   1 file changed, 54 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-> index a1909066bde6..da0920cbc1d3 100644
-> --- a/fs/jbd2/checkpoint.c
-> +++ b/fs/jbd2/checkpoint.c
-> @@ -105,12 +105,12 @@ static int __try_to_free_cp_buf(struct journal_head *jh)
->    * Called under j-state_lock *only*.  It will be unlocked if we have to wait
->    * for a checkpoint to free up some space in the log.
->    */
-> -void __jbd2_log_wait_for_space(journal_t *journal)
-> +void __jbd2_log_wait_for_space(journal_t *journal, int scale)
->   {
->   	int nblocks, space_left;
->   	/* assert_spin_locked(&journal->j_state_lock); */
->   
-> -	nblocks = jbd2_space_needed(journal);
-> +	nblocks = jbd2_space_needed(journal) * scale;
->   	while (jbd2_log_space_left(journal) < nblocks) {
->   		write_unlock(&journal->j_state_lock);
->   		mutex_lock_io(&journal->j_checkpoint_mutex);
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 953990eb70a9..871c3d251fdb 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -1100,6 +1100,21 @@ static void jbd2_stats_proc_exit(journal_t *journal)
->   	remove_proc_entry(journal->j_devname, proc_jbd2_stats);
->   }
->   
-> +/*
-> + * Start to reclaim journal space asynchronously.
-> + */
-> +void jbd2_reclaim_log_space_async(struct work_struct *work)
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 70b0438dbc94..e52e3928dc25 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -34,6 +34,53 @@
+>   #include "xattr.h"
+>   #include "acl.h"
+> 
+> +static bool ext4_dio_checks(struct inode *inode)
 > +{
-> +	journal_t *journal = container_of(work, journal_t, j_reclaim_work);
-> +
-> +	write_lock(&journal->j_state_lock);
-> +	/* See comments in add_transaction_credits() */
-> +	if (jbd2_log_space_left(journal) < jbd2_space_needed(journal) * 2)
-> +		__jbd2_log_wait_for_space(journal, 2);
-> +	journal->j_async_reclaim_run = 0;
-> +	write_unlock(&journal->j_state_lock);
+> +#if IS_ENABLED(CONFIG_FS_ENCRYPTION)
+> +	if (IS_ENCRYPTED(inode))
+> +		return false;
+> +#endif
+> +	if (ext4_should_journal_data(inode))
+> +		return false;
+> +	if (ext4_has_inline_data(inode))
+> +		return false;
+> +	return true;
 > +}
 > +
->   /*
->    * Management for journal control blocks: functions to create and
->    * destroy journal_t structures, and to initialise and read existing
-> @@ -1142,6 +1157,15 @@ static journal_t *journal_init_common(struct block_device *bdev,
->   	/* The journal is marked for error until we succeed with recovery! */
->   	journal->j_flags = JBD2_ABORT;
->   
-> +	journal->j_reclaim_wq = alloc_workqueue("jbd2-reclaim-wq",
-> +					WQ_MEM_RECLAIM | WQ_UNBOUND, 1);
-> +	if (!journal->j_reclaim_wq) {
-> +		pr_err("%s: failed to create workqueue\n", __func__);
-> +		goto err_cleanup;
-> +	}
-> +	INIT_WORK(&journal->j_reclaim_work, jbd2_reclaim_log_space_async);
-> +	journal->j_async_reclaim_run = 0;
+> +static ssize_t ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
+> +{
+> +	ssize_t ret;
+> +	struct inode *inode = file_inode(iocb->ki_filp);
 > +
->   	/* Set up a default-sized revoke table for the new mount. */
->   	err = jbd2_journal_init_revoke(journal, JOURNAL_REVOKE_DEFAULT_HASH);
->   	if (err)
-> @@ -1718,6 +1742,7 @@ int jbd2_journal_destroy(journal_t *journal)
->   	if (journal->j_running_transaction)
->   		jbd2_journal_commit_transaction(journal);
->   
-> +	flush_workqueue(journal->j_reclaim_wq);
->   	/* Force any old transactions to disk */
->   
->   	/* Totally anal locking here... */
-> @@ -1768,6 +1793,7 @@ int jbd2_journal_destroy(journal_t *journal)
->   		jbd2_journal_destroy_revoke(journal);
->   	if (journal->j_chksum_driver)
->   		crypto_free_shash(journal->j_chksum_driver);
-> +	destroy_workqueue(journal->j_reclaim_wq);
->   	kfree(journal->j_wbuf);
->   	kfree(journal);
->   
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index 990e7b5062e7..27f9d47c620e 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -247,6 +247,16 @@ static int add_transaction_credits(journal_t *journal, int blocks,
->   		return 1;
->   	}
->   
 > +	/*
-> +	 * If free journal space is lower than (jbd2_space_needed(journal) * 2),
-> +	 * let's reclaim some journal space early and do it asynchronously.
+> +	 * Get exclusion from truncate and other inode operations.
 > +	 */
-> +	if (journal->j_async_reclaim_run == 0 &&
-> +	    jbd2_log_space_left(journal) < (jbd2_space_needed(journal) * 2)) {
-> +		journal->j_async_reclaim_run = 1;
-> +		queue_work(journal->j_reclaim_wq, &journal->j_reclaim_work);
+> +	if (!inode_trylock_shared(inode)) {
+> +		if (iocb->ki_flags & IOCB_NOWAIT)
+> +			return -EAGAIN;
+> +		inode_lock_shared(inode);
 > +	}
 > +
->   	/*
->   	 * The commit code assumes that it can get enough log space
->   	 * without forcing a checkpoint.  This is *critical* for
-> @@ -264,7 +274,7 @@ static int add_transaction_credits(journal_t *journal, int blocks,
->   		jbd2_might_wait_for_commit(journal);
->   		write_lock(&journal->j_state_lock);
->   		if (jbd2_log_space_left(journal) < jbd2_space_needed(journal))
-> -			__jbd2_log_wait_for_space(journal);
-> +			__jbd2_log_wait_for_space(journal, 1);
->   		write_unlock(&journal->j_state_lock);
->   		return 1;
->   	}
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index df03825ad1a1..acc93597271b 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -1152,6 +1152,27 @@ struct journal_s
->   	 */
->   	__u32 j_csum_seed;
->   
-> +	/**
-> +	 * @j_async_reclaim_run:
-> +	 *
-> +	 * Is there a work running asynchronously to reclaim journal space.
-> +	 */
-> +	int j_async_reclaim_run;
+> +	if (!ext4_dio_checks(inode)) {
+> +		inode_unlock_shared(inode);
+> +		/*
+> +		 * Fallback to buffered IO if the operation being
+> +		 * performed on the inode is not supported by direct
+> +		 * IO. The IOCB_DIRECT flag flags needs to be cleared
+> +		 * here to ensure that the direct IO code path within
+> +		 * generic_file_read_iter() is not taken again.
+> +		 */
+> +		iocb->ki_flags &= ~IOCB_DIRECT;
+> +		return generic_file_read_iter(iocb, to);
+> +	}
 > +
-> +	/**
-> +	 * @j_reclaim_work:
-> +	 *
-> +	 * Work_struct to reclaim journal space.
-> +	 */
-> +	struct work_struct j_reclaim_work;
+> +	ret = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL);
+> +	inode_unlock_shared(inode);
 > +
-> +	/**
-> +	 * @j_reclaim_wq:
-> +	 *
-> +	 * Workqueue for reclaim journal space asynchronously.
-> +	 */
-> +	struct workqueue_struct *j_reclaim_wq;
+> +	file_accessed(iocb->ki_filp);
+> +	return ret;
+> +}
 > +
->   #ifdef CONFIG_DEBUG_LOCK_ALLOC
->   	/**
->   	 * @j_trans_commit_map:
-> @@ -1498,7 +1519,7 @@ int jbd2_complete_transaction(journal_t *journal, tid_t tid);
->   int jbd2_log_do_checkpoint(journal_t *journal);
->   int jbd2_trans_will_send_data_barrier(journal_t *journal, tid_t tid);
->   
-> -void __jbd2_log_wait_for_space(journal_t *journal);
-> +void __jbd2_log_wait_for_space(journal_t *journal, int scale);
->   extern void __jbd2_journal_drop_transaction(journal_t *, transaction_t *);
->   extern int jbd2_cleanup_journal_tail(journal_t *);
->   
+>   #ifdef CONFIG_FS_DAX
+>   static ssize_t ext4_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>   {
+> @@ -64,16 +111,19 @@ static ssize_t ext4_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
 > 
+>   static ssize_t ext4_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>   {
+> -	if (unlikely(ext4_forced_shutdown(EXT4_SB(file_inode(iocb->ki_filp)->i_sb))))
+> +	struct inode *inode = file_inode(iocb->ki_filp);
+> +
+> +	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
+>   		return -EIO;
+> 
+>   	if (!iov_iter_count(to))
+>   		return 0; /* skip atime */
+> 
+> -#ifdef CONFIG_FS_DAX
+> -	if (IS_DAX(file_inode(iocb->ki_filp)))
+> +	if (IS_DAX(inode))
+>   		return ext4_dax_read_iter(iocb, to);
+> -#endif
+> +
+> +	if (iocb->ki_flags & IOCB_DIRECT)
+> +		return ext4_dio_read_iter(iocb, to);
+>   	return generic_file_read_iter(iocb, to);
+>   }
+> 
+
