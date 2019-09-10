@@ -2,137 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8E3AE902
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2019 13:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DA8AE934
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2019 13:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729635AbfIJLVK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Sep 2019 07:21:10 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:39627 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731081AbfIJLUV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Sep 2019 07:20:21 -0400
-Received: by mail-pf1-f195.google.com with SMTP id i1so2503321pfa.6
-        for <linux-ext4@vger.kernel.org>; Tue, 10 Sep 2019 04:20:21 -0700 (PDT)
+        id S1729170AbfIJLdc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Sep 2019 07:33:32 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:43294 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728537AbfIJLdc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Sep 2019 07:33:32 -0400
+Received: by mail-lj1-f193.google.com with SMTP id d5so16047386lja.10
+        for <linux-ext4@vger.kernel.org>; Tue, 10 Sep 2019 04:33:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=N3/5vLMmzRhTd1W36lW3qUn81GaFZZqufFsh/hbWviw=;
-        b=c4IjVDMLL4thjceUBw/l9sDVEDn+wiXyGZuGRRFtm2PXWYziXwSBLD7w39Y5AGMNIl
-         j+BsPnZY0mkflOk4BD+6MTYZO0vSneLehaGysvVBXgsEe8CrhNfKUpOuuqknn1DRKpyn
-         brEalmlrhBrOd/RniDXpZ42TRe7afJk59A6KgFrLXSA1MRHIH3AW5WVl/0AIKZalPbL/
-         f3FUKa7Y0Tbd67KkyYohj2Fw8WzCKFfPSH1sR0apJAQxy2EVi3XApX1kCBI4bnRZHOjk
-         9csrb8x8ISfVRvAIUNusKvvPX9WDWdavNtPUq1n7EERFj2ZUQYQSvOzjykKkGkeKgCnl
-         qpYg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/87kLUWhA8VGKwQ9ReDVfft5SDHkATRiA6uskomi3Do=;
+        b=VPec9JRv8Tfx9xEc4r84woloylMuGNHPDiClO6km+SMR4SlGOn2EWxH8paATQU4SYk
+         EdX0wUykyyflt8+WFj/VGKXZi/CVm+7AEyvwhPWJkWLBihBks9G66wETZBSNT1pzq08G
+         a35JZGXi1OKWxuE5XkZCOuOYghEjdjQryubYo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=N3/5vLMmzRhTd1W36lW3qUn81GaFZZqufFsh/hbWviw=;
-        b=LthFuV38lN2yAiO+YSUz12TO/aoj1X4UqwGw7FkKUoA6Utx6jnHb+irKc0QzBPNflL
-         Wlp29AppGAbGL+i5tWexT5+tE1iXX7A/hW0ZTj28uSaMXh06FDQsX8D+LVIQAvEUkmBn
-         J281rd6+cblyNIfZOjDpZfQWLHRbS8KCYeBvFYhjpXVcHWRd94WlojhMHhML+nUECRoE
-         KOJfc4nEZSpk5eVZnci/UkkJ9sj7n0r4w9bjfC/Xln3+c7oj6jQBokZQshxpls1wFnLU
-         apo+/miPhErjukcbGmjqbJQA2+kIrMptxU9Wx59Nk6rUYig6KxC5oygaQJq9fKr7Jo4x
-         Achg==
-X-Gm-Message-State: APjAAAWXQ1SOXO50vPbSioEzLVjZion2hqbjsub+MNBbsE8CDf8W6koh
-        J40s713sEWD5tlMtyIjDDRd0
-X-Google-Smtp-Source: APXvYqz+2UiK906iZ7AxWC3xdRNinP0SM90NeHnmz41pRV9/XrsirsNMM4cXIG0/trsOo3aq31VGxg==
-X-Received: by 2002:a65:6093:: with SMTP id t19mr27228026pgu.79.1568114420750;
-        Tue, 10 Sep 2019 04:20:20 -0700 (PDT)
-Received: from bobrowski ([110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id f27sm14950640pgm.60.2019.09.10.04.20.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Sep 2019 04:20:20 -0700 (PDT)
-Date:   Tue, 10 Sep 2019 21:20:14 +1000
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
-        hch@infradead.org, darrick.wong@oracle.com,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        david@fromorbit.com
-Subject: Re: [PATCH v2 5/6] ext4: introduce direct IO write path using iomap
- infrastructure
-Message-ID: <20190910112014.GB10579@bobrowski>
-References: <cover.1567978633.git.mbobrowski@mbobrowski.org>
- <7c2f0ee02b2659d5a45f3e30dbee66b443b5ea0a.1567978633.git.mbobrowski@mbobrowski.org>
- <20190909092617.07ECB42041@d06av24.portsmouth.uk.ibm.com>
- <20190909143219.B549042049@d06av24.portsmouth.uk.ibm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/87kLUWhA8VGKwQ9ReDVfft5SDHkATRiA6uskomi3Do=;
+        b=bzJguR5+2mWZ7tg7Of5Q4qhIjiqIk0xqmfbpSTCsju2p4EqeP8cYQ0qGZuajsQL1Gr
+         TF9DVJQTW3ZEyRJhfccQmY5juJgBfN/ZlD43y8I2ZLUI+CdVDOEBHtha3dxPE1/HupJ9
+         wrAJhgf9lrtnlr50qolU/yFGJ1nE5MWNV+/fXAjEyVmmuz4eZp693+HgjhcTDf4HVKo9
+         XXsC8MS7HhYmS4GF75A2Fb6lQyfKV7JiBpbKPdmGBY6VgnkYTFYxw3ZW2Mwg7pbi9k0k
+         BAPf0JoJ+KU31AIGAo4fTMrFpSuTpEOd0sl+eCYQ91aZgoW55u59zo6kctnTF/ZrbK9G
+         lpfw==
+X-Gm-Message-State: APjAAAWLG7C79FeqazrBiE8NkCunU4uejtaEX+UQZ4cgej8BpF7Ozqx4
+        Nj3NiRXO1/9mzjkTkwgdIYC4DLECv3ZtXg==
+X-Google-Smtp-Source: APXvYqxszH7hz0Hr38fm/MEjo+S1ejDXzqg5Z23iFovu5SPMdpFE/Yvbf0zMeUOBBdp/xxcL0l/FSA==
+X-Received: by 2002:a2e:8611:: with SMTP id a17mr15767865lji.130.1568115209723;
+        Tue, 10 Sep 2019 04:33:29 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id d8sm3775371ljj.59.2019.09.10.04.33.28
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Sep 2019 04:33:28 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id a22so16090537ljd.0
+        for <linux-ext4@vger.kernel.org>; Tue, 10 Sep 2019 04:33:28 -0700 (PDT)
+X-Received: by 2002:a2e:3c14:: with SMTP id j20mr18756186lja.84.1568115208066;
+ Tue, 10 Sep 2019 04:33:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190909143219.B549042049@d06av24.portsmouth.uk.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAHk-=whBQ+6c-h+htiv6pp8ndtv97+45AH9WvdZougDRM6M4VQ@mail.gmail.com>
+ <20190910042107.GA1517@darwi-home-pc>
+In-Reply-To: <20190910042107.GA1517@darwi-home-pc>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 10 Sep 2019 12:33:12 +0100
+X-Gmail-Original-Message-ID: <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
+Message-ID: <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
+Subject: Re: Linux 5.3-rc8
+To:     "Ahmed S. Darwish" <darwish.07@gmail.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, zhangjs <zachary@baishancloud.com>,
+        linux-ext4@vger.kernel.org,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 09, 2019 at 08:02:13PM +0530, Ritesh Harjani wrote:
-> On 9/9/19 2:56 PM, Ritesh Harjani wrote:
-> > > +    ret = iomap_dio_rw(iocb, from, &ext4_iomap_ops,
-> > > ext4_dio_write_end_io);
-> > > +
-> > > +    /*
-> > > +     * Unaligned direct AIO must be the only IO in flight or else
-> > > +     * any overlapping aligned IO after unaligned IO might result
-> > > +     * in data corruption. We also need to wait here in the case
-> > > +     * where the inode is being extended so that inode extension
-> > > +     * routines in ext4_dio_write_end_io() are covered by the
-> > > +     * inode_lock().
-> > > +     */
-> > > +    if (ret == -EIOCBQUEUED && (unaligned_aio || extend))
-> > > +        inode_dio_wait(inode);
-> 
-> So, I looked this more closely into the AIO DIO write extend case
-> of yours here. AFAICT, this looks good in the sense that it follows
-> the behavior what we used to have before from __blockdev_direct_IO.
-> In that it used to wait for AIO DIO writes beyond EOF, but the iomap
-> framework does not have that. So waiting in case of writes beyond EOF
-> should be the right thing to do here for ext4 (following the legacy code).
-> 
-> But I would like to confirm the exact race this extend case
-> is protecting here.
-> Since writes beyond EOF will require update of inode i_size
-> (ext4_update_inode_size()) which require us to hold the inode_lock
-> in exclusive mode, so we must need to wait in extend case here,
-> even for AIO DIO writes.
-> 
-> Q1. Is above understanding completely correct?
+On Tue, Sep 10, 2019 at 5:21 AM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
+>
+> The commit b03755ad6f33 (ext4: make __ext4_get_inode_loc plug), [1]
+> which was merged in v5.3-rc1, *always* leads to a blocked boot on my
+> system due to low entropy.
 
-Yes, that's essentially correct.
+Exactly what is it that blocks on entropy? Nobody should do that
+during boot, because on some systems entropy is really really low
+(think flash memory with polling IO etc).
 
-> Q2. Or is there anything else also which it is also protecting which I am
-> missing?
+That said, I would have expected that any PC gets plenty of entropy.
+Are you sure it's entropy that is blocking, and not perhaps some odd
+"forgot to unplug" situation?
 
-No, I think that's it...
+> Can this even be considered a user-space breakage? I'm honestly not
+> sure. On my modern RDRAND-capable x86, just running rng-tools rngd(8)
+> early-on fixes the problem. I'm not sure about the status of older
+> CPUs though.
 
-> Do we need to hold inode exclusive lock for ext4_orphan_del() as well?
+It's definitely breakage, although rather odd. I would have expected
+us to have other sources of entropy than just the disk. Did we stop
+doing low bits of TSC from timer interrupts etc?
 
-Yes, I believe so.
+Ted, either way - ext4 IO patterns or random number entropy - this is
+your code. Comments?
 
-> Q3. How about XFS then?
-> (I do see some tricks done with IOLOCK handling in case of ki__pos > i_size
-> & to zero out the buffer space between old i_size & ki_pos).
-> 
-> But if we talk only about the above case of extending AIO DIO writes beyond
-> EOF, XFS only takes a shared lock. why?
-> 
-> Looking into XFS code, I see that they have IOLOCK & ILOCK.
-> So I guess for protecting inode->i_size update they use ILOCK (in
-> xfs_dio_write_end_io() -> xfs_iomap_write_unwritten()
-> or ip->i_flags_lock lock in NON-UNWRITTEN case). And for IO part the IOLOCK
-> is used and hence IOLOCK can be used in shared mode. Is this correct
-> understanding for XFS?
-
-* David/Christoph/Darrick
-
-I haven't looked at the intricate XFS locking semantics, so I can't really
-comment until I've looked at the code to be perfectly honest. Perhaps asking
-one of the XFS maintainers could get you the answer you're looking for on
-this.
-
---<M>--
+                 Linus
