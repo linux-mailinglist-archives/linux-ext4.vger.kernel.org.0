@@ -2,115 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DB9AE2D8
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2019 06:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45445AE80C
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2019 12:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732418AbfIJEVU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Sep 2019 00:21:20 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:40800 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729390AbfIJEVU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Sep 2019 00:21:20 -0400
-Received: by mail-wr1-f66.google.com with SMTP id w13so17148527wru.7;
-        Mon, 09 Sep 2019 21:21:18 -0700 (PDT)
+        id S1730888AbfIJK04 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Sep 2019 06:26:56 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:33587 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727351AbfIJK04 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Sep 2019 06:26:56 -0400
+Received: by mail-pf1-f195.google.com with SMTP id q10so11286455pfl.0
+        for <linux-ext4@vger.kernel.org>; Tue, 10 Sep 2019 03:26:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=2DrkhGPdPNpHkFc5j7Jf+UBRr/PJrOsC0aoouCBeVg8=;
-        b=iKwXphZFnd4EJ10aRhCsjbebrYziVjmDnBhFhxggI2H7MYiveCNHM0OzBNuR8z28cH
-         rytuKJ+sQje6UxpLjumiEVlOl1fSg3d7xVtZ4Uutgrwt/LjrC4P2hZX2GzLcWgHV/law
-         SlK/MjDV/ilT4sw90PUy2RrtIHGc4UPnGHAkjKkFCFR5PLKSPVypr3IKxICgbDCu6L6S
-         GwPI6GRLWnm7CTnAd4Bhp3UxoQfU8uAtmpj+WtUBY4q9XheD1IQ0n1msxe4G50dguDgt
-         ilRWQ7GCU+ACpuFExNgPGteJuWJImDEyn/Omg3/ym1vLjr7i9ZhmeR3eMnIXOAqgQGBH
-         qvZQ==
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xpMwYrMj0JCUefC3R/F8uLVaeqHT3pdUsMCxxoo34M0=;
+        b=Q6a3ZtUHh+oF3nS4bd+r59coZ8xc8KJc3o6GYoeEFOVXK9asgswP5jGwNxVDw5f2rF
+         pnu2F5Q7VURa+qhPdvX5rF6AZ6SG/X4H8CDtifIA5BSU81Fk7dRaAEBJP+d2qWHlF89d
+         oTCbH+IrQUYJlBBsgi2qErquc1IxgzZt8cN+ty/OJ9KXPANmauYg7QLzRoadX0FkXF1z
+         God2D0UKfz5khWVgPh3x0mUwkWgVXKu/Son1ML2GcY2BAX8POr9+Qyl3FUQS2TRvhG3M
+         S/ufvzusja7sYgp3mCA1k3cArBrgIl5BVjlYpkz/7yHln29dcYZzqNRg5NJ8Yg6EFR6/
+         QvHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2DrkhGPdPNpHkFc5j7Jf+UBRr/PJrOsC0aoouCBeVg8=;
-        b=AA9VWvufReMOZJw/inNkEjnP/yjLhSaOnHKszET0aNpA4llr8aY9MuH9PHSwU4MlJ7
-         AxZXli211zMF/JfjbPaKENtrwJ4kd3FRe5NLybo539OLWtTvEEbRmXP6al/8uY6LeHEd
-         hABwfPrIthDUhKI2tT/IevadQmdlW7gSESW0Gpjj6rXPQhdMIU8c6cGWe9MgW98/duaJ
-         7p5I96LQowxoRhKPqeG/YQnzbLlzU5rDQlrBMaWxH1N5oWl604ho7fu8eyzy5tOeX53a
-         5JKzTVW0vIKs21NF6lopXNiO1tkk+TgAu9WycFFg1Z8iiY+UjgMN4ep1RQZ7EpsXTTMx
-         VMPg==
-X-Gm-Message-State: APjAAAUHJr1KFvRnQ6Ojgk3VSieQLqxRlRMQQaLfCfVo1ltTC7ZsxFg7
-        4wmg+oodVSXRJrm5SsLEsWJ/ikCI
-X-Google-Smtp-Source: APXvYqxJIc7uwWOmEG3nKFmsUhigEYGQLBX5eTHq0QbT1GRyaQPib9ERqFSJiaTPJnqpzYoZfM8ZMQ==
-X-Received: by 2002:adf:ef05:: with SMTP id e5mr22668169wro.127.1568089278090;
-        Mon, 09 Sep 2019 21:21:18 -0700 (PDT)
-Received: from darwi-home-pc (ip-109-42-2-46.web.vodafone.de. [109.42.2.46])
-        by smtp.gmail.com with ESMTPSA id x5sm23142789wrg.69.2019.09.09.21.21.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xpMwYrMj0JCUefC3R/F8uLVaeqHT3pdUsMCxxoo34M0=;
+        b=NYwuYTueVyEwMAmQsTrLT5AzMUyDvAvVIV4B8Rr5AwthIIKkVE+BEmi9UzElRs9Ol1
+         Krh+7aX7RXy7mK6gbmms0n0PcPaaVzIb4E9jGKJmUKQ1HCP4FNxHxI4CPK9zmKEJQ3CZ
+         cm7YFOCvR0lemJQloezRSoCj21+5Ka8fVHoma5rTJ+9948Aw3v0oXUjLeNCBo6V4T2rk
+         90v+9mNDoTEpgzoO29hfXAqkoh7nx+sCEAUoXv5mCV6u2iip8bawjHH59gcRPxvYAvpG
+         XaUND+g1IgKBLgLKPA30rB5rUVkWPlyj4TG0TrJCFBrHEz/hJiF7YQL/zczQ+RjMyLGO
+         XR3w==
+X-Gm-Message-State: APjAAAWBJIhjI3r43WU1t2PZKw5w4cG9kkW3oiVlRvksdMyi+TNORA27
+        +Dx8DQ3W/rEH3jIpVb0905VF
+X-Google-Smtp-Source: APXvYqxBGnxXjhhRtHEQc6fpQY8tTZLmVogYJm/5G0YtnAFKhKelTUIRAZb4kUkJiYJaCstXsuVrVA==
+X-Received: by 2002:a65:56c1:: with SMTP id w1mr26518414pgs.395.1568111209986;
+        Tue, 10 Sep 2019 03:26:49 -0700 (PDT)
+Received: from bobrowski ([110.232.114.101])
+        by smtp.gmail.com with ESMTPSA id h1sm22770149pfk.124.2019.09.10.03.26.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Sep 2019 21:21:17 -0700 (PDT)
-Date:   Tue, 10 Sep 2019 06:21:07 +0200
-From:   "Ahmed S. Darwish" <darwish.07@gmail.com>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jan Kara <jack@suse.cz>, zhangjs <zachary@baishancloud.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190910042107.GA1517@darwi-home-pc>
+        Tue, 10 Sep 2019 03:26:49 -0700 (PDT)
+Date:   Tue, 10 Sep 2019 20:26:43 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        david@fromorbit.com, hch@infradead.org, darrick.wong@oracle.com
+Subject: Re: [PATCH v2 2/6] ext4: move inode extension/truncate code out from
+ ext4_iomap_end()
+Message-ID: <20190910102643.GA9013@bobrowski>
+References: <cover.1567978633.git.mbobrowski@mbobrowski.org>
+ <c1e9b23ced988587dfec399021a5b62983745842.1567978633.git.mbobrowski@mbobrowski.org>
+ <20190909081729.3555C42041@d06av24.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whBQ+6c-h+htiv6pp8ndtv97+45AH9WvdZougDRM6M4VQ@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190909081729.3555C42041@d06av24.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+On Mon, Sep 09, 2019 at 01:47:28PM +0530, Ritesh Harjani wrote:
+> On 9/9/19 4:49 AM, Matthew Bobrowski wrote:
+> > +static int ext4_handle_inode_extension(struct inode *inode, loff_t offset,
+> > +				       ssize_t len, size_t count)
+> > +{
+> > +	handle_t *handle;
+> > +	bool truncate = false;
+> > +	ext4_lblk_t written_blk, end_blk;
+> > +	int ret = 0, blkbits = inode->i_blkbits;
+> > +
+> > +	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+> > +	if (IS_ERR(handle)) {
+> > +		ret = PTR_ERR(handle);
+> > +		goto orphan_del;
+> > +	}
+> > +
+> > +	if (ext4_update_inode_size(inode, offset + len))
+> > +		ext4_mark_inode_dirty(handle, inode);
+> > +
+> > +	/*
+> > +	 * We may need truncate allocated but not written blocks
+> > +	 * beyond EOF.
+> > +	 */
+> > +	written_blk = ALIGN(offset + len, 1 << blkbits);
+> > +	end_blk = ALIGN(offset + len + count, 1 << blkbits);
+> 
+> why add len in end_blk calculation?
+> shouldn't this be like below?
+> 	end_blk = ALIGN(offset + count, 1 << blkbits);
 
-On Sun, Sep 08, 2019 at 01:59:27PM -0700, Linus Torvalds wrote:
-> So we probably didn't strictly need an rc8 this release, but with LPC
-> and the KS conference travel this upcoming week it just makes
-> everything easier.
->
+I don't believe that would be entirely correct. The reason being is that the
+'end_blk' is meant to represent the last logical block which we should expect
+to have used for the write operation. So, we have the 'offset' which
+represents starting point, 'len' which is the amount of data that has been
+written, and 'count' which is the amount of data that we still have left over
+in the 'iter', if any.
 
-The commit b03755ad6f33 (ext4: make __ext4_get_inode_loc plug), [1]
-which was merged in v5.3-rc1, *always* leads to a blocked boot on my
-system due to low entropy.
+The count in the 'iter' is decremented as that data is copied from it. So if
+we did use 'offset' + 'count', in the instance of a short write, we
+potentially wouldn't truncate any of the allocated but not written blocks. I
+guess this would hold true for the DAX code path at this point, seeing as
+though for the DIO case we pass in '0'.
 
-The hardware is not a VM: it's a Thinkpad E480 (i5-8250U CPU), with
-a standard Arch user-space.
+> > +/*
+> > + * The inode may have been placed onto the orphan list or has had
+> > + * blocks allocated beyond EOF as a result of an extension. We need to
+> > + * ensure that any necessary cleanup routines are performed if the
+> > + * error path has been taken for a write.
+> > + */
+> > +static int ext4_handle_failed_inode_extension(struct inode *inode, loff_t size)
+> > +{
+> > +	int ret = 0;
+> 
+> No need of ret anyways.
+> 
+> 
+> > +	handle_t *handle;
+> > +
+> > +	if (size > i_size_read(inode))
+> > +		ext4_truncate_failed_write(inode);
+> > +
+> > +	if (!list_empty(&EXT4_I(inode)->i_orphan)) {
+> > +		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+> > +		if (IS_ERR(handle)) {
+> > +			if (inode->i_nlink)
+> > +				ext4_orphan_del(NULL, inode);
+> > +			return PTR_ERR(handle);
+> > +		}
+> > +		if (inode->i_nlink)
+> > +			ext4_orphan_del(handle, inode);
+> > +		ext4_journal_stop(handle);
+> > +	}
+> > +	return ret;
+> 
+> can directly call for `return 0;`
 
-It was discovered through bisecting the problem v5.2 => v5.3-rc1,
-since v5.2 never had any similar issues. The issue still persists in
-v5.3-rc8: reverting that commit always fixes the problem.
+True.
 
-It seems that batching the directory lookup I/O requests (which are
-possibly a lot during boot) is minimizing sources of disk-activity-
-induced entropy? [2] [3]
-
-Can this even be considered a user-space breakage? I'm honestly not
-sure. On my modern RDRAND-capable x86, just running rng-tools rngd(8)
-early-on fixes the problem. I'm not sure about the status of older
-CPUs though.
-
-Thanks,
-
-[1]
-  commit b03755ad6f33b7b8cd7312a3596a2dbf496de6e7
-  Author: zhangjs <zachary@baishancloud.com>
-  Date:   Wed Jun 19 23:41:29 2019 -0400
-
-      ext4: make __ext4_get_inode_loc plug
-
-      Add a blk_plug to prevent the inode table readahead from being
-      submitted as small I/O requests.
-
-      Signed-off-by: zhangjs <zachary@baishancloud.com>
-      Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-      Reviewed-by: Jan Kara <jack@suse.cz>
-
-[2] https://lkml.kernel.org/r/20190619122457.GF27954@quack2.suse.cz
-
-[3] block/blk-core.c :: blk_start_plug()
-
---
-darwi
-http://darwish.chasingpointers.com
+--<M>--
