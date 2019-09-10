@@ -2,188 +2,298 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E14AF2BB
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2019 23:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86D5AF36D
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Sep 2019 01:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbfIJV5X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Sep 2019 17:57:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51480 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725263AbfIJV5X (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 10 Sep 2019 17:57:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 82253ABB2;
-        Tue, 10 Sep 2019 21:57:20 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DA5781E43AC; Tue, 10 Sep 2019 23:57:20 +0200 (CEST)
-Date:   Tue, 10 Sep 2019 23:57:20 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
-        Theodore Ts'o <tytso@mit.edu>, hch@infradead.org,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Andreas Dilger <adilger@dilger.ca>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/3] Revert parallel dio reads
-Message-ID: <20190910215720.GA7561@quack2.suse.cz>
-References: <1566871552-60946-1-git-send-email-joseph.qi@linux.alibaba.com>
- <20190827115118.GY7777@dread.disaster.area>
- <20190829105858.GA22939@quack2.suse.cz>
- <20190910141041.134674C072@d06av22.portsmouth.uk.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190910141041.134674C072@d06av22.portsmouth.uk.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1725965AbfIJXk6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Sep 2019 19:40:58 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:40133 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725942AbfIJXk5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Sep 2019 19:40:57 -0400
+Received: by mail-pl1-f195.google.com with SMTP id y10so9295483pll.7
+        for <linux-ext4@vger.kernel.org>; Tue, 10 Sep 2019 16:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=ffmjQlXS4yVy/vVVGz5kvYYh6Pjm4uvvcWpv2HOWjbY=;
+        b=FU257zApd8KJO9oXKlxY+AVMU9jTscaSYcJLwwD6JRh7wY+4H2zbQAv08xt9TjExAu
+         ML07G3mJFUt9yZzlJt0bzIxH7G2rOQOAVpQstwWv74VSI7ashZYLK15/OJahETqOHm6n
+         wmNCEIxTUlve0xQu7LhVd1gHsYsxpczwX6MU+DWZbsJHMayuIXh2euIVrGEEtkG3+niJ
+         Vr+Q7nlGFxekg2Bqw8kX3qF+7td3KC4RTiBKNHVSSGpI9ASml7WhYyfF5S2g/PRl0880
+         uTXNiVIAqq6MIuBgxBJwQBY97wFq9WFK6q6KXFMgT0V9QU9uQjGQ6Ngyh3DYlrDDElOd
+         aWkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=ffmjQlXS4yVy/vVVGz5kvYYh6Pjm4uvvcWpv2HOWjbY=;
+        b=koXzl2X/9EWT4YQzm45ideQrvV9nPRx+mC/GK1sjgCLzbaAPxyzS34EpR/IPuxi9ar
+         H1Z26jv5+aqOntJ6WushuU9djmpRTgfw13+6+ZA/lGgZtv1aAKJnb1pgu+LN3pkcJDiY
+         +SoUl9jacVCTyfCqUYPHdxL+JQqQPhLDXI6Or9IpftzgPQo7h9dlWdkJcpua2u0Z7DN+
+         XffqMNB35Dvk+E0I+0w0GrZYD02kcARZlHGKgAEKqM/Tag2HssCI7XKYJluhpGlF3Eum
+         funQ8amadgcb26VVOtDf4fBQMUVNoS7RL9sIa0y1XihszKPIWOKD84oC30UsV6eYS20G
+         lspg==
+X-Gm-Message-State: APjAAAVgXORxvqMb/FLkw1FuOXEieGGKr+UsRk7g37SIoz0sWSI5n/AE
+        z72dvr+3fjMfCWH1AvIf8EPokA==
+X-Google-Smtp-Source: APXvYqymbIzBZLAk+98sEy7gd2SGa/llxmqDxirL0hGs2XRRKV1mJMwmTtK7J52LHgX5gFm+RP5YwQ==
+X-Received: by 2002:a17:902:96a:: with SMTP id 97mr33861619plm.264.1568158856699;
+        Tue, 10 Sep 2019 16:40:56 -0700 (PDT)
+Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id x22sm21507889pfi.139.2019.09.10.16.40.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Sep 2019 16:40:55 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <2757ADAC-336F-4EC8-8DBF-2B9C61C196C4@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_114FD3C9-E1AA-4A7A-B7A7-5FFDEC1AA31A";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v4] e2fsck: check for consistent encryption policies
+Date:   Tue, 10 Sep 2019 17:40:51 -0600
+In-Reply-To: <20190909174310.182019-1-ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20190909174310.182019-1-ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
 
-On Tue 10-09-19 19:40:40, Ritesh Harjani wrote:
-> > > Before doing this, you might want to have a chat and co-ordinate
-> > > with the folks that are currently trying to port the ext4 direct IO
-> > > code to use the iomap infrastructure:
-> > > 
-> > > https://lore.kernel.org/linux-ext4/20190827095221.GA1568@poseidon.bobrowski.net/T/#t
-> > > 
-> > > That is going to need the shared locking on read and will work just
-> > > fine with shared locking on write, too (it's the code that XFS uses
-> > > for direct IO). So it might be best here if you work towards shared
-> > > locking on the write side rather than just revert the shared locking
-> > > on the read side....
-> > 
-> > Yeah, after converting ext4 DIO path to iomap infrastructure, using shared
-> > inode lock for all aligned non-extending DIO writes will be easy so I'd
-> > prefer if we didn't have to redo the iomap conversion patches due to these
-> > reverts.
-> 
-> I was looking into this to see what is required to convert this into
-> shared locking for DIO write side.
-> Why do you say shared inode lock only for *aligned non-extending DIO
-> writes*?
-> non-extending means overwrite case only, which still in today's code is
-> not under any exclusive inode_lock (except the orphan handling and truncate
-> handling in case of error after IO is completed). But even with
-> current code the perf problem is reported right?
+--Apple-Mail=_114FD3C9-E1AA-4A7A-B7A7-5FFDEC1AA31A
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Yes, the problem is even with current code. It is that we first acquire
-inode_rwsem in exclusive mode in ext4_file_write_iter() and only later
-relax that to no lock later. And this is what is causing low performance
-for mixed read-write workload because the exclusive lock has to wait for
-all shared holders and vice versa...
+On Sep 9, 2019, at 11:43 AM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> From: Eric Biggers <ebiggers@google.com>
+>=20
+> By design, the kernel enforces that all files in an encrypted =
+directory
+> use the same encryption policy as the directory.  It's not possible to
+> violate this constraint using syscalls.  Lookups of files that violate
+> this constraint also fail, in case the disk was manipulated.
+>=20
+> But this constraint can also be violated by accidental filesystem
+> corruption.  E.g., a power cut when using ext4 without a journal might
+> leave new files without the encryption bit and/or xattr.  Thus, it's
+> important that e2fsck correct this condition.
+>=20
+> Therefore, this patch makes the following changes to e2fsck:
+>=20
+> - During pass 1 (inode table scan), create a map from inode number to
+>  encryption policy for all encrypted inodes.  But it's optimized so
+>  that the full xattrs aren't saved but rather only 32-bit "policy =
+IDs",
+>  since usually many inodes share the same encryption policy.  Also, if
+>  an encryption xattr is missing, offer to clear the encrypt flag.  If
+>  an encryption xattr is clearly corrupt, offer to clear the inode.
+>=20
+> - During pass 2 (directory structure check), use the map to verify =
+that
+>  all regular files, directories, and symlinks in encrypted directories
+>  use the directory's encryption policy.  Offer to clear any directory
+>  entries for which this isn't the case.
+>=20
+> Add a new test "f_bad_encryption" to test the new behavior.
+>=20
+> Due to the new checks, it was also necessary to update the existing =
+test
+> "f_short_encrypted_dirent" to add an encryption xattr to the test =
+file,
+> since it was missing one before, which is now considered invalid.
+>=20
+> Google-Bug-Id: 135138675
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-> If we see in today's code (including in iomap new code for overwrite case
-> where we downgrade the lock).
-> We call for inode_unlock in case of overwrite and then do the IO, since we
-> don't have to allocate any blocks in this case.
-> 
-> 
-> 	/*
-> 	 * Make all waiters for direct IO properly wait also for extent
-> 	 * conversion. This also disallows race between truncate() and
-> 	 * overwrite DIO as i_dio_count needs to be incremented under
->  	 * i_mutex.
-> 	 */
-> 	inode_dio_begin(inode);
-> 	/* If we do a overwrite dio, i_mutex locking can be released */
-> 	overwrite = *((int *)iocb->private);
-> 	if (overwrite)
-> 		inode_unlock(inode);
-> 	
-> 	write data (via __blockdev_direct_IO)
-> 
-> 	inode_dio_end(inode);
-> 	/* take i_mutex locking again if we do a ovewrite dio */
-> 	if (overwrite)
-> 		inode_lock(inode);
-> 
-> 
-> 
-> What can we do next:-
-> 
-> Earlier the DIO reads was not having any inode_locking.
-> IIUC, the inode_lock_shared() in the DIO reads case was added to
-> protect the race against reading back uninitialized/stale data for e.g.
-> in case of truncate or writeback etc.
+Looks much better.  One minor nit below, but at this point you could =
+add:
 
-Not quite. Places that are prone to exposing stale block content (such as
-truncate) wait for running DIO (inode_dio_wait()). Just with unlocked read
-DIO we had to have special wait mechanisms to disable unlocked DIO for a
-while so that we can actually safely drain all running DIOs without new
-ones being submitted and then perform e.g. truncate. So it was more a
-complexity of the locking mechanism.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-> So as Dave suggested, shouldn't we add the complete shared locking in DIO
-> writes cases as well (except for unaligned writes, since it may required
-> zeroing of partial blocks).
-> 
-> 
-> Could you please help me understand how we can go about it?
-> I was thinking if we can create uninitialized blocks beyond EOF, so that
-> any parallel read should only read 0 from that area and we may not require
-> exclusive inode_lock. The block creation is anyway protected
-> with i_data_sem in ext4_map_blocks.
+> ---
+>=20
+> Changes v3 =3D> v4:
+>=20
+> - Save memory in common cases by storing ranges of inodes that share =
+the
+>  same encryption policy.
+>=20
+> - Rebased onto latest master branch.
+>=20
+>=20
+> diff --git a/e2fsck/encrypted_files.c b/e2fsck/encrypted_files.c
+> new file mode 100644
+> index 00000000..3dc706a7
+> --- /dev/null
+> +++ b/e2fsck/encrypted_files.c
+> @@ -0,0 +1,368 @@
+>=20
+> +/* A range of inodes which share the same encryption policy */
+> +struct encrypted_file_range {
+> +	ext2_ino_t		first_ino;
+> +	ext2_ino_t		last_ino;
+> +	__u32			policy_id;
+> +};
 
-So doing file size changes (i.e., file expansion) without exclusive
-inode_lock would be tricky. I wouldn't really like to go there at least
-initially. My plan would be to do it similarly to XFS like:
+This seems like a clear win...  As long as we have at least two inodes
+in a row with the same policy ID it will take less space than the =
+previous
+version of the patch.
 
-Do a quick check whether IO is going to grow inode size or is unaligned. If
-yes, mode = exclusive, else mode = shared. Then lock inode rwsem is
-appropriate mode, do ext4_write_checks() (which may find out exclusive lock
-is actually needed so in that case mode = exclusive and restart). Then call
-iomap code to do direct IO.
+> +static int handle_nomem(e2fsck_t ctx, struct problem_context *pctx)
+> +{
+> +	fix_problem(ctx, PR_1_ALLOCATE_ENCRYPTED_DIRLIST, pctx);
+> +	/* Should never get here */
+> +	ctx->flags |=3D E2F_FLAG_ABORT;
+> +	return 0;
+> +}
 
-> I do see that in case of bufferedIO writes, we use ext4_get_block_unwritten
-> for dioread_nolock case. Which should
-> be true for even writes extending beyond EOF. This will
-> create uninitialized and mapped blocks only (even beyond EOF).
-> But all of this happen under exclusive inode_lock() in ext4_file_write_iter.
+It would be useful if the error message for =
+PR_1_ALLOCATE_ENCRYPTED_DIRLIST
+printed the actual allocation size that failed, so that the user has =
+some
+idea of how much memory would be needed.  The underlying =
+ext2fs_resize_mem()
+code doesn't print anything, just returns EXT2_ET_NO_MEMORY.
 
-I guess this is mostly because we don't bother to check in
-ext4_write_begin() whether we are extending the file or not and filling
-holes needs unwritten extents. Also before DIO reads got changed to be
-under shared inode rwsem, the following was possible:
+> +static int append_ino_and_policy_id(e2fsck_t ctx, struct =
+problem_context *pctx,
+> +				    ext2_ino_t ino, __u32 policy_id)
+> +{
+> +	struct encrypted_file_info *info =3D ctx->encrypted_files;
+> +	struct encrypted_file_range *range;
+> +
+> +	/* See if we can just extend the last range. */
+> +	if (info->file_ranges_count > 0) {
+> +		range =3D &info->file_ranges[info->file_ranges_count - =
+1];
+> +
+> +		if (ino <=3D range->last_ino) {
+> +			/* Should never get here */
+> +			fatal_error(ctx,
+> +				    "Encrypted inodes processed out of =
+order");
+> +		}
+> +
+> +		if (ino =3D=3D range->last_ino + 1 &&
+> +		    policy_id =3D=3D range->policy_id) {
+> +			range->last_ino++;
+> +			return 0;
+> +		}
+> +	}
+> +	/* Nope, a new range is needed. */
+> +
+> +	if (info->file_ranges_count =3D=3D info->file_ranges_capacity) {
+> +		/* Double the capacity by default. */
+> +		size_t new_capacity =3D info->file_ranges_capacity * 2;
+> +
+> +		/* ... but go from 0 to 128 right away. */
+> +		if (new_capacity < 128)
+> +			new_capacity =3D 128;
+> +
+> +		/* We won't need more than the filesystem's inode count. =
+*/
+> +		if (new_capacity > ctx->fs->super->s_inodes_count)
+> +			new_capacity =3D ctx->fs->super->s_inodes_count;
+> +
+> +		/* To be safe, ensure the capacity really increases. */
+> +		if (new_capacity < info->file_ranges_capacity + 1)
+> +			new_capacity =3D info->file_ranges_capacity + 1;
 
-CPU1					CPU2
-DIO read from file f offset 4096
-  flush cache
-					grow 'f' from 4096 to 8192 by write
-					  blocks get allocated, page cache
-					  dirtied
-  map blocks, submit IO
-    - reads stale contents
+Not sure how this could happen (more inodes than s_inodes_count?), but
+better safe than sorry I guess?
 
-> Whereas in case of DIO writes extending beyond EOF, we pass
-> EXT4_GET_BLOCKS_CREATE in ext4_map_blocks which may allocate
-> initialized & mapped blocks.
-> Do you know why so?
+> +		if (ext2fs_resize_mem(info->file_ranges_capacity *
+> +					sizeof(*range),
+> +				      new_capacity * sizeof(*range),
+> +				      &info->file_ranges) !=3D 0)
+> +			return handle_nomem(ctx, pctx);
 
-Not using unwritten extents is faster if that is safe. So that's why DIO
-code uses them if possible.
+This is the only thing that gives me pause, potentially having a huge
+allocation, but I think the RLE encoding of entries and the fact we
+have overwhelmingly 64-bit CPUs means we could still run with swap
+(on an internal NVMe M.2 device) if really needed.  A problem to fix
+if it ever actually rears its head, so long as there is a decent error
+message printed.
 
-> Do you think we can create uninit. blocks in dioread_nolock AIO/non-AIO DIO
-> writes cases as well with only shared inode lock mode?
-> Do you see any problems with this?
-> Or do you have any other suggestion?
+> +/*
+> + * Find the ID of an inode's encryption policy, using the information =
+saved
+> + * earlier.
+> + *
+> + * If the inode is encrypted, returns the policy ID or
+> + * UNRECOGNIZED_ENCRYPTION_POLICY.  Else, returns =
+NO_ENCRYPTION_POLICY.
+> + */
+> +__u32 find_encryption_policy(e2fsck_t ctx, ext2_ino_t ino)
+> +{
+> +	const struct encrypted_file_info *info =3D ctx->encrypted_files;
+> +	size_t l, r;
+> +
+> +	if (info =3D=3D NULL)
+> +		return NO_ENCRYPTION_POLICY;
+> +	l =3D 0;
+> +	r =3D info->file_ranges_count;
+> +	while (l < r) {
+> +		size_t m =3D l + (r - l) / 2;
 
-Not uninit but unwritten. Yes, we can do that. After all e.g. page writeback
-creates extents like this without any inode rwsem protection.
+Using the RLE encoding for the entries should also speed up searching
+here considerably.  In theory, for a single-user Android filesystem
+there might only be one or two entries here.  It would be interesting
+to run this on some of your filesystems to see what the average count
+of inodes per entry is.
 
-> In case of XFS -
-> I do see it promotes the demotes the shared lock (IOLOCK_XXX) in
-> xfs_file_aio_write_checks. But I don't know if after that, whether
-> it only holds the shared lock while doing the DIO IO?
-> And how does it protects against the parallel DIO reads which can
-> potentially expose any stale data?
+> +		const struct encrypted_file_range *range =3D
+> +			&info->file_ranges[m];
+> +
+> +		if (ino < range->first_ino)
+> +			r =3D m;
+> +		else if (ino > range->last_ino)
+> +			l =3D m + 1;
+> +		else
+> +			return range->policy_id;
+> +	}
+> +	return NO_ENCRYPTION_POLICY;
+> +}
 
-XFS protects DIO submission with shared IOLOCK. Stale data exposure is
-solved by using unwritten extents similarly to what ext4 does.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_114FD3C9-E1AA-4A7A-B7A7-5FFDEC1AA31A
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl14NIQACgkQcqXauRfM
+H+CD1Q/+JXAI3V33yt2K5CDDJgcKT6hDDNazWlEeLRtJ7JDRx9tBMnvOFoVvSarX
+uqk4/orBdxxSz+OJkcAnDzo6cmPBDnW70MVjOT6JA6CCdC97dH4GcBHJpVOR8v2E
+etEM+g8+kJD7h8WU7veNjn4koyE4nlLgK8uRSUrRFEVzJth34+0S2UZ7G7wzpi5i
+m00pNjyk9NT2oGzzxEH4BUbd/UALnkQ7SjybQbkS0J2vKtAqDPiyUWib2CvjVdL8
+vCMyxUEfh4tj+6nBXlZiMUPq6taHAUdPHlV5Y7S4+Uraozrg8w24izlqMErSml/N
+Bp027ROH4DsabGFsIOGguq1BUAAASFe+BXjGrSnWDdEg05gm8fbQZVkFszkROd91
+cK9aXVS2d/7s1qRL0ro8UzNVYabDDW9umqKiA0yDH6+ZS1fEVVdnTxXj1urFH8AH
+2EPwHYlAHCFv/SOHZKg2AK9ZmGQWttYTiOfGWA/te9zmWEtpFF5O/1FzLIvlMMZw
+z4W/+c+BOplGoCzaPnTOBNcm0Iq2m5HzdKxTdujCDxYbrDA2tCG5GuJH/RXOdwhG
+AcRnVZJtVCJaoXTjajQ/rWTCazqGaT8MD77W2tOtO4uxoi/2SfqdQ/BPsSggPXV3
+DC02NJoCIKtwZRikeNF2ng3XegGaVnK4UAABX5X7jd/azFG7ETk=
+=WrIv
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_114FD3C9-E1AA-4A7A-B7A7-5FFDEC1AA31A--
