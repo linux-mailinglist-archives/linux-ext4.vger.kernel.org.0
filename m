@@ -2,95 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DA8AE934
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2019 13:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECD7AE9C0
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2019 13:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729170AbfIJLdc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Sep 2019 07:33:32 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:43294 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728537AbfIJLdc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Sep 2019 07:33:32 -0400
-Received: by mail-lj1-f193.google.com with SMTP id d5so16047386lja.10
-        for <linux-ext4@vger.kernel.org>; Tue, 10 Sep 2019 04:33:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/87kLUWhA8VGKwQ9ReDVfft5SDHkATRiA6uskomi3Do=;
-        b=VPec9JRv8Tfx9xEc4r84woloylMuGNHPDiClO6km+SMR4SlGOn2EWxH8paATQU4SYk
-         EdX0wUykyyflt8+WFj/VGKXZi/CVm+7AEyvwhPWJkWLBihBks9G66wETZBSNT1pzq08G
-         a35JZGXi1OKWxuE5XkZCOuOYghEjdjQryubYo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/87kLUWhA8VGKwQ9ReDVfft5SDHkATRiA6uskomi3Do=;
-        b=bzJguR5+2mWZ7tg7Of5Q4qhIjiqIk0xqmfbpSTCsju2p4EqeP8cYQ0qGZuajsQL1Gr
-         TF9DVJQTW3ZEyRJhfccQmY5juJgBfN/ZlD43y8I2ZLUI+CdVDOEBHtha3dxPE1/HupJ9
-         wrAJhgf9lrtnlr50qolU/yFGJ1nE5MWNV+/fXAjEyVmmuz4eZp693+HgjhcTDf4HVKo9
-         XXsC8MS7HhYmS4GF75A2Fb6lQyfKV7JiBpbKPdmGBY6VgnkYTFYxw3ZW2Mwg7pbi9k0k
-         BAPf0JoJ+KU31AIGAo4fTMrFpSuTpEOd0sl+eCYQ91aZgoW55u59zo6kctnTF/ZrbK9G
-         lpfw==
-X-Gm-Message-State: APjAAAWLG7C79FeqazrBiE8NkCunU4uejtaEX+UQZ4cgej8BpF7Ozqx4
-        Nj3NiRXO1/9mzjkTkwgdIYC4DLECv3ZtXg==
-X-Google-Smtp-Source: APXvYqxszH7hz0Hr38fm/MEjo+S1ejDXzqg5Z23iFovu5SPMdpFE/Yvbf0zMeUOBBdp/xxcL0l/FSA==
-X-Received: by 2002:a2e:8611:: with SMTP id a17mr15767865lji.130.1568115209723;
-        Tue, 10 Sep 2019 04:33:29 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id d8sm3775371ljj.59.2019.09.10.04.33.28
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Sep 2019 04:33:28 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id a22so16090537ljd.0
-        for <linux-ext4@vger.kernel.org>; Tue, 10 Sep 2019 04:33:28 -0700 (PDT)
-X-Received: by 2002:a2e:3c14:: with SMTP id j20mr18756186lja.84.1568115208066;
- Tue, 10 Sep 2019 04:33:28 -0700 (PDT)
-MIME-Version: 1.0
+        id S2393046AbfIJL4x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Sep 2019 07:56:53 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37767 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2393023AbfIJL4w (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Sep 2019 07:56:52 -0400
+Received: from callcc.thunk.org (38.85.69.148.rev.vodafone.pt [148.69.85.38] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8ABua45016670
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Sep 2019 07:56:39 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 97FF742049E; Tue, 10 Sep 2019 07:56:35 -0400 (EDT)
+Date:   Tue, 10 Sep 2019 07:56:35 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     "Ahmed S. Darwish" <darwish.07@gmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, zhangjs <zachary@baishancloud.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Linux 5.3-rc8
+Message-ID: <20190910115635.GB2740@mit.edu>
 References: <CAHk-=whBQ+6c-h+htiv6pp8ndtv97+45AH9WvdZougDRM6M4VQ@mail.gmail.com>
  <20190910042107.GA1517@darwi-home-pc>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20190910042107.GA1517@darwi-home-pc>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 10 Sep 2019 12:33:12 +0100
-X-Gmail-Original-Message-ID: <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
-Message-ID: <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
-Subject: Re: Linux 5.3-rc8
-To:     "Ahmed S. Darwish" <darwish.07@gmail.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, zhangjs <zachary@baishancloud.com>,
-        linux-ext4@vger.kernel.org,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 10, 2019 at 5:21 AM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
->
+On Tue, Sep 10, 2019 at 06:21:07AM +0200, Ahmed S. Darwish wrote:
+> 
 > The commit b03755ad6f33 (ext4: make __ext4_get_inode_loc plug), [1]
 > which was merged in v5.3-rc1, *always* leads to a blocked boot on my
 > system due to low entropy.
+> 
+> The hardware is not a VM: it's a Thinkpad E480 (i5-8250U CPU), with
+> a standard Arch user-space.
 
-Exactly what is it that blocks on entropy? Nobody should do that
-during boot, because on some systems entropy is really really low
-(think flash memory with polling IO etc).
+Hmm, I'm not seeing this on a Dell XPS 13 (model 9380) using a Debian
+Bullseye (Testing) running a rc4+ kernel.
 
-That said, I would have expected that any PC gets plenty of entropy.
-Are you sure it's entropy that is blocking, and not perhaps some odd
-"forgot to unplug" situation?
+This could be because Debian is simply doing more I/O; or it could be
+because I don't have some package installed which is trying to reading
+from /dev/random or calling getrandom(2).  Previously, Fedora ran into
+blocking issues because of some FIPS compliance patches to some
+userspace daemons.  So it's going to be very user space dependent and
+package dependent.
 
+> It seems that batching the directory lookup I/O requests (which are
+> possibly a lot during boot) is minimizing sources of disk-activity-
+> induced entropy? [2] [3]
+> 
 > Can this even be considered a user-space breakage? I'm honestly not
 > sure. On my modern RDRAND-capable x86, just running rng-tools rngd(8)
 > early-on fixes the problem. I'm not sure about the status of older
 > CPUs though.
 
-It's definitely breakage, although rather odd. I would have expected
-us to have other sources of entropy than just the disk. Did we stop
-doing low bits of TSC from timer interrupts etc?
+You can probably also fix this problem by adding random.trust_cpu=true
+to the boot command line, or by enabling CONFIG_RANDOM_TRUST_CPU.
+This obviously assumes that you trust Intel's implementation of
+RDRAND, but that's true regardless of whether of whether you use rngd
+or the kernel config option.
 
-Ted, either way - ext4 IO patterns or random number entropy - this is
-your code. Comments?
+As far as whether it's considered user-space breakage; that's though.
+File system performance improvements can cause a reduced amount of
+I/O, and that can cause less entropy to be collected, and depending on
+a complex combination of kernel config options, distribution-specific
+patches, and what packages are loaded, that could potentially cause
+boot hangs waiting for entropy.  Does that we we're can't make any
+file system performace improvements?  Surely that doesn't seem like
+the right answer.
 
-                 Linus
+It would be useful to figure out what process is blocking waiting on
+entropy, since in general, trying to rely on cryptographic entropy in
+early boot, especially if it is to generate cryptographic keys, is
+going to be more dangerous compared to a "just in time" approach to
+generating crypto keys.  So this could also be considered a userspace
+bug, depending on your point of view...
+
+					- Ted
