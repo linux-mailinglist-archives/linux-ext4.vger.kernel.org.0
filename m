@@ -2,156 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 547EAAFCE8
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Sep 2019 14:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12854AFE37
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Sep 2019 16:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727576AbfIKMjO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Sep 2019 08:39:14 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:32880 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726954AbfIKMjN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Sep 2019 08:39:13 -0400
-Received: by mail-pg1-f196.google.com with SMTP id n190so11482834pgn.0
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Sep 2019 05:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=4lHFBU6SXujhDxpzZ6crK+hUiX4HRVXLWKbkqR+joTI=;
-        b=kVN8OiBAsSmlrWar2he0qz0DqTHGBP7me9DfkTJqqXsWQYfVMzkJB8z//7GYjH36VX
-         ytymYi4yAqZbXKAnBN9qzdMvdOei1yEz46mxPmcd0cPFUYK/PLAyj7lVLjWjO3m7wV2a
-         Jo5T59JQCTDHCooQGlHisbUKVFottsuJnc289BoFfUS1bKe3N1n97Gs2Qb7byum9UCJr
-         fhAuqWHigxgo4BZrhxKo7OfoAL6PenIGjFdvHbPmMxEG/2kuaqkXw1YpWLwAVqvJsHX6
-         huM4xuQj24YsIR/4G0MCmUSphCoofCx98RrRiFJ4sB/zCDEQOTxHpOmQ6tdwWpmMhCho
-         qBaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=4lHFBU6SXujhDxpzZ6crK+hUiX4HRVXLWKbkqR+joTI=;
-        b=OOFi6E/6DLRBt/Xne5QP2gIzKRD9E9tVksIftPucfk6eZUkR1JWaOOCOVSJNnIwWJL
-         VToNcVz5UEMvCbW5BoXGVqLZ9eIaJrtgbyawj8ZXJnQOHBW4UckXM6faPj5Rf8igGbLY
-         6Oj0BfmNV4slHv6zKtNG88Env5GiqsLO43Q3in+AVU/F5PwPBVntyApZPF+bR7w1TAwo
-         DPuf8Sz3HbYEbozqZbzI+Y3UDNSmO7uODRX+Mj0TeR+E/52OztxTbDzKlARcaCVftuit
-         mSlW1/QCZhM7nJP0bkPnuV+AI+Mm+ZvV9kfj4uxzS39/8buvkx+lS9gLDoXXmcLY4QhZ
-         ub8Q==
-X-Gm-Message-State: APjAAAVaK9XUXjLDbIS0cwdgSallFAXuf0aqx1GBRD0EvDqmlE5e9DKi
-        GbWCS+9uDGnJ1JLjYtFqGMoR
-X-Google-Smtp-Source: APXvYqw/FDFJ2NyPG5lJ2GxCXJJTDu7p8HKQSNqflvKQfD5rw2hETsgwAaDhCRw08KBVqp9yFoy+3g==
-X-Received: by 2002:aa7:9735:: with SMTP id k21mr43135380pfg.174.1568205552566;
-        Wed, 11 Sep 2019 05:39:12 -0700 (PDT)
-Received: from bobrowski ([110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id w6sm50123564pfw.84.2019.09.11.05.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Sep 2019 05:39:11 -0700 (PDT)
-Date:   Wed, 11 Sep 2019 22:39:05 +1000
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        david@fromorbit.com, hch@infradead.org, darrick.wong@oracle.com
-Subject: Re: [PATCH v2 5/6] ext4: introduce direct IO write path using iomap
- infrastructure
-Message-ID: <20190911123905.GA26735@bobrowski>
-References: <cover.1567978633.git.mbobrowski@mbobrowski.org>
- <7c2f0ee02b2659d5a45f3e30dbee66b443b5ea0a.1567978633.git.mbobrowski@mbobrowski.org>
- <20190909092617.07ECB42041@d06av24.portsmouth.uk.ibm.com>
- <20190911080853.43B954C04E@d06av22.portsmouth.uk.ibm.com>
+        id S1726762AbfIKOAF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Sep 2019 10:00:05 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36095 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726058AbfIKOAF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Sep 2019 10:00:05 -0400
+Received: from callcc.thunk.org (38.85.69.148.rev.vodafone.pt [148.69.85.38] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8BDvsps004681
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Sep 2019 09:57:58 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id C6DC242049E; Wed, 11 Sep 2019 09:57:07 -0400 (EDT)
+Date:   Wed, 11 Sep 2019 09:57:07 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/2] jbd2: add new tracepoint jbd2_sleep_on_shadow
+Message-ID: <20190911135707.GC2740@mit.edu>
+References: <20190902145442.1921-1-xiaoguang.wang@linux.alibaba.com>
+ <20190907162145.GC23683@mit.edu>
+ <5d96e18f-9610-208f-6db3-6a7b6a112400@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190911080853.43B954C04E@d06av22.portsmouth.uk.ibm.com>
+In-Reply-To: <5d96e18f-9610-208f-6db3-6a7b6a112400@linux.alibaba.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 11, 2019 at 01:38:52PM +0530, Ritesh Harjani wrote:
-> On 9/9/19 2:56 PM, Ritesh Harjani wrote:
-> > On 9/9/19 4:49 AM, Matthew Bobrowski wrote:
-> > > @@ -217,6 +218,14 @@ static ssize_t ext4_write_checks(struct kiocb
-> > > *iocb, struct iov_iter *from)
-> > >       if (ret <= 0)
-> > >           return ret;
-> > > 
-> > > +    ret = file_remove_privs(iocb->ki_filp);
-> > > +    if (ret)
-> > > +        return 0;
-> > > +
-> > > +    ret = file_update_time(iocb->ki_filp);
-> > > +    if (ret)
-> > > +        return 0;
-> > > +
-> > >       if (unlikely(IS_IMMUTABLE(inode)))
-> > >           return -EPERM;
-> 
-> Maybe we can move this up. If file is IMMUTABLE no point in
-> calling for above actions (file_remove_privs/file_updatetime).
+On Wed, Sep 11, 2019 at 02:52:51PM +0800, Xiaoguang Wang wrote:
+> > I think maybe it might be better to use units of microseconds and then
+> > change sleep to usleep so the units are clear?  This is a spinlock, so
+> > it should be quick.
+>
+> Sorry, I may not quite understand you, do you mean that milliseconds is not precise, so
+> should use microseconds? For these two patches, they do not use usleep or msleep to do
+> real sleep work, they just record the duration which process takes to wait bh_shadow flag
+> to be cleared or transaction to be unlocked.
 
-Yep, sure could do this. In fact, I think we could put this above
-generic_write_checks().
+Apologies, I should have been clear enough.  Yes, my concern that
+milliseconds might not be fine-grained enough.  The sample results
+which you showed had values of 2ms, 1ms, and 0ms.  And the single 0ms
+result in particular raised the concern that we should use a
+microseconds instead of milliseconds.
 
-> Also why not use file_modified() API which does the same.
+In fact, instead of "sleep", maybe "latency(us)" or "latency(ms)"
+would be a better label?
 
-Ah, nice. Indeed we can, thanks for simplifying it.
+Regards,
 
-> > > @@ -234,6 +243,34 @@ static ssize_t ext4_write_checks(struct kiocb
-> > > *iocb, struct iov_iter *from)
-> > >       return iov_iter_count(from);
-> > >   }
-> > > 
-> > > +static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
-> > > +                    struct iov_iter *from)
-> > > +{
-> > > +    ssize_t ret;
-> > > +    struct inode *inode = file_inode(iocb->ki_filp);
-> > > +
-> > > +    if (iocb->ki_flags & IOCB_NOWAIT)
-> > > +        return -EOPNOTSUPP;
-> > > +
-> > > +    if (!inode_trylock(inode))
-> > > +        inode_lock(inode);
-> 
-> Is it really needed to check for trylock first?
-> we can directly call for inode_lock() here.
-
-You're right, no need to do this dance. We can call inode_lock() directly.
-
-> > > +
-> > > +    ret = ext4_write_checks(iocb, from);
-> > > +    if (ret <= 0)
-> > > +        goto out;
-> > > +
-> > > +    current->backing_dev_info = inode_to_bdi(inode);
-> > > +    ret = generic_perform_write(iocb->ki_filp, from, iocb->ki_pos);
-> > > +    current->backing_dev_info = NULL;
-> > > +out:
-> > > +    inode_unlock(inode);
-> > > +    if (likely(ret > 0)) {
-> > > +        iocb->ki_pos += ret;
-> > > +        ret = generic_write_sync(iocb, ret);
-> > > +    }
-> > > +    return ret;
-> > > +}
-> > > +
-> > > +    if (!ext4_dio_checks(inode)) {
-> > > +        inode_unlock(inode);
-> > > +        /*
-> > > +         * Fallback to buffered IO if the operation on the
-> > > +         * inode is not supported by direct IO.
-> > > +         */
-> > > +        return ext4_buffered_write_iter(iocb, from);
-> > > +    }
-> > > +
-> > > +    ret = ext4_write_checks(iocb, from);
-> This can modify the count in iov_iter *from.
-
-Good point. We'll recalculate the iter 'count' again.
-
-Thank you for the review/suggestions, highly appreciated.
-
---<M>--
+						- Ted
