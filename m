@@ -2,33 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D84CAAF62A
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Sep 2019 08:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650F0AF715
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Sep 2019 09:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbfIKGxB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Sep 2019 02:53:01 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:59326 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726390AbfIKGxB (ORCPT
+        id S1726702AbfIKHmn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Sep 2019 03:42:43 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:54695 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726561AbfIKHmn (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 11 Sep 2019 02:53:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04391;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0Tc2lZS6_1568184771;
-Received: from 30.5.113.40(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0Tc2lZS6_1568184771)
+        Wed, 11 Sep 2019 03:42:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0Tc34Rwq_1568187743;
+Received: from 30.5.113.40(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0Tc34Rwq_1568187743)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 11 Sep 2019 14:52:51 +0800
-Subject: Re: [PATCH 1/2] jbd2: add new tracepoint jbd2_sleep_on_shadow
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+          Wed, 11 Sep 2019 15:42:24 +0800
+Subject: Re: [RFC] jbd2: reclaim journal space asynchronously when free space
+ is low
+To:     Andreas Dilger <adilger@dilger.ca>
 Cc:     linux-ext4@vger.kernel.org
-References: <20190902145442.1921-1-xiaoguang.wang@linux.alibaba.com>
- <20190907162145.GC23683@mit.edu>
+References: <20190826035459.4121-1-xiaoguang.wang@linux.alibaba.com>
+ <8edec7d4-2b6e-cce3-1011-5189aca3e462@linux.alibaba.com>
+ <13257F13-1017-489E-A822-69EC510C9EEC@dilger.ca>
 From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Message-ID: <5d96e18f-9610-208f-6db3-6a7b6a112400@linux.alibaba.com>
-Date:   Wed, 11 Sep 2019 14:52:51 +0800
+Message-ID: <4d1c3200-31bd-7834-f29b-97ee35facedc@linux.alibaba.com>
+Date:   Wed, 11 Sep 2019 15:42:23 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20190907162145.GC23683@mit.edu>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <13257F13-1017-489E-A822-69EC510C9EEC@dilger.ca>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -37,43 +39,295 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 hi,
 
-Thanks for reviewing.
-> On Mon, Sep 02, 2019 at 10:54:41PM +0800, Xiaoguang Wang wrote:
->> Sometimes process will be stalled in "wait_on_bit_io(&bh->b_state,
->> BH_Shadow, TASK_UNINTERRUPTIBLE)" for a while, and in order to analyse
->> app's latency thoroughly, add a new tracepoint to track this delay.
+> On Sep 9, 2019, at 12:10 AM, Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com> wrote:
 >>
->> Trace info likes below:
->> fsstress-5068  [008] .... 11007.757543: jbd2_sleep_on_shadow: dev 254,17 sleep 1
->> fsstress-5070  [007] .... 11007.757544: jbd2_sleep_on_shadow: dev 254,17 sleep 2
->> fsstress-5069  [009] .... 11007.757548: jbd2_sleep_on_shadow: dev 254,17 sleep 2
->> fsstress-5067  [011] .... 11007.757569: jbd2_sleep_on_shadow: dev 254,17 sleep 1
->> fsstress-5063  [007] .... 11007.757651: jbd2_sleep_on_shadow: dev 254,17 sleep 2
->> fsstress-5070  [007] .... 11007.757792: jbd2_sleep_on_shadow: dev 254,17 sleep 0
->> fsstress-5071  [011] .... 11007.763493: jbd2_sleep_on_shadow: dev 254,17 sleep 1
->>
->> Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+>> Any suggestions to this patch? Though I also think this patch needs some
+>> more improvements and more performance tests :)
 > 
-> I think maybe it might be better to use units of microseconds and then
-> change sleep to usleep so the units are clear?  This is a spinlock, so
-> it should be quick.
-Sorry, I may not quite understand you, do you mean that milliseconds is not precise, so
-should use microseconds? For these two patches, they do not use usleep or msleep to do
-real sleep work, they just record the duration which process takes to wait bh_shadow flag
-to be cleared or transaction to be unlocked.
+> What we've done in the past is to increase the journal size until this is
+> no longer a problem.  For metadata-intensive filesystems we use a journal
+> size of up to 4GB, and default to 1GB for data servers.  One benefit of
+Yes, big journal size can ease this problem. But look at the codes, it seems that
+there still are two problems:
+1) say a transation's journaled buffers all have been written to disk(not jbd2 sapce)
+by mm subsystem, but the space occupied by this transaction won't be freed automatically.
+Later if process starts one jbd2 handle, it still will be stalled for a while to wait
+jbd2 relcalim this transaction's space, though for this transaction, it does not need
+to write buffers any more.
+2) big journal size maybe not appropriate for small fs.
+
+> this over forcing checkpoints is that it allows IO aggregation from the
+> dirty buffers before they are forced to disk, which reduces impact on the
+> foreground workload.  However, it does use a lot of RAM.
+> 
+>> Currently I have two other thoughts:
+>> 1, add codes to count the number of transactions to be checkpointted, with
+>> this information, we can make some better decisions, for example, when it's
+>> appropriate to reclaim journal space asynchronously.
+> 
+> You can check some stats about transactions and checkpointing like:
+> 
+> $ cat /proc/fs/jbd2/dm-12-8/info
+> 6490 transaction, each up to 8192 blocks
+> average:
+>    0ms waiting for transaction
+>    5227ms running transaction
+>    0ms transaction was being locked
+>    0ms flushing data (in ordered mode)
+>    196ms logging transaction
+>    134327us average transaction commit time
+>    320 handles per transaction
+>    18 blocks per transaction
+>    19 logged blocks per transaction
+> 
+> In the situation you describe, where the journal is full, there should be
+> a non-zero "waiting for transaction".
+Yes, but it depends on CONFIG_JBD2_DEBUG is enabled, if you don't have this
+config enabled, we will always get a zero wait time.
+
+> 
+> If you are adding more stats (e.g. decaying average number of transactions
+> to be checkpointed), this is where it should go.
+Ok.
+
+> 
+> 
+>> 2, add a new mount option to control whether enable or disable this feature.
+> 
+> I think this is critical for any feature.  It is useful both for testing
+> (e.g. does it improve/hurt performance), but also in case there are bugs
+> seen in the field then the feature can be turned off without having to
+> patch, build, and install a new kernel.
+Ok.
+
+> 
+> Rather than just enable/disable the feature, the tunable should be the
+> number of pending transactions before checkpoint is started, or number
+> of free journal blocks (percentage if < 100?) at which to start checkpoint.
+Nice advice, thanks.
+Really thanks for your reviewing, I'll update a v2 and make more performance tests.
 
 Regards,
-Xiaougang Wang
+Xiaoguang Wang
+
 
 > 
-> For the other patch in this series, milliseconds seems fine, but if we
-> change the trace info to use "msleep" instead that would be clearer
-> --- or you could change it to use microseconds as well just for
-> consistency; I think either would be fine.
+>>> In current jbd2's implemention, jbd2 won't reclaim journal space unless
+>>> free journal space is lower than specified threshold, see logic in
+>>> add_transaction_credits():
+>>>          write_lock(&journal->j_state_lock);
+>>>          if (jbd2_log_space_left(journal) < jbd2_space_needed(journal))
+>>>              __jbd2_log_wait_for_space(journal);
+>>>          write_unlock(&journal->j_state_lock);
+>>> Indeed with this logic, we can also have many transactions queued to be
+>>> checkpointd, which means these transactions still occupy jbd2 space.
+>>> Recently I have seen some disadvantages caused by this logic:
+>>> Some of our applications will get stuck in below stack periodically:
+>>>          __jbd2_log_wait_for_space+0xd5/0x200 [jbd2]
+>>>          start_this_handle+0x31b/0x8f0 [jbd2]
+>>>          jbd2__journal_start+0xcd/0x1f0 [jbd2]
+>>>          __ext4_journal_start_sb+0x69/0xe0 [ext4]
+>>>          ext4_dirty_inode+0x32/0x70 [ext4]
+>>>          __mark_inode_dirty+0x15f/0x3a0
+>>>          generic_update_time+0x87/0xe0
+>>>          file_update_time+0xbd/0x120
+>>>          __generic_file_aio_write+0x198/0x3e0
+>>>          generic_file_aio_write+0x5d/0xc0
+>>>          ext4_file_write+0xb5/0x460 [ext4]
+>>>          do_sync_write+0x8d/0xd0
+>>>          vfs_write+0xbd/0x1e0
+>>>          SyS_write+0x7f/0xe0
+>>> Meanwhile I found io usage in these applications' machines are relatively
+>>> low, journal space is somewhat like a global lock, in high concurrency case,
+>>> if many tasks contend for journal credits, they will easily hit above stack
+>>> and be stuck in waitting for free journal space, so I wonder whether we can
+>>> reclaim journal space asynchronously when free space is lower than a specified
+>>> threshold, to avoid that all applications are stalled at the same time.
+>>> I think this will be more useful in high speed store, journal space will be
+>>> reclaimed in background quickly, and applications will less likely to be
+>>> stucked by above issue. To improve this case, we use workqueue to queue a
+>>> work in background to reclaim journal space.
+>>> I also construct a test case to verify improvement, test case will create
+>>> 1000000 directories, use 1, 2, 4, 8 and 16 tasks per test round. For example,
+>>> in 8 tasks case, create 8 processes and every process creates 125000 directories,
+>>> 16 tasks case, every process creates 62500 directories. Every test case run
+>>> 5 iterations.
+>>> Tested in my vm(16cores, 8G memory), count the run time per test round.
+>>> Without this patch,
+>>> 16 tasks:  35s 34s 33s 34s 34s total: 170s, avg: 34s
+>>> 8  tasks:  33s 35s 34s 35s 35s total: 172s, avg: 34.4s
+>>> 4  tasks:  36s 38s 39s 39s 41s total: 193s, avg: 38.6s
+>>> 2  tasks:  53s 54s 52s 55s 54s total: 268s, avg: 53.6s
+>>> 1  tasks:  65s 65s 65s 65s 64s total: 324s, avg: 64.8s
+>>> With this patch:
+>>> 16 tasks:  29s 32s 32s 31s 33s total: 157s, avg: 31.4s
+>>> 8  tasks:  30s 31s 30s 31s 30s total: 152s, avg: 30.4s
+>>> 4  tasks:  33s 34s 32s 33s 37s total: 169s, avg: 33.8s
+>>> 2  tasks:  47s 48s 46s 49s 48s total: 238s, avg: 47.6s
+>>> 1  tasks:  56s 55s 56s 54s 55s total: 276s, avg: 55.2s
+>>>  From above test, we can have 10% improvements.
+>>> Run same test in physical machine with nvme store, get such test results:
+>>> without patch(count the total time spending to create 5000000 sub-directories):
+>>> 64 tasks  32 tasks 16 tasks  8 tasks  4 tasks  2 tasks  1 tasks
+>>>       66s       64s      67s      71s      81s     108s     133s
+>>> with patch:
+>>> 64 tasks  32 tasks 16 tasks  8 tasks  4 tasks  2 tasks  1 tasks
+>>>      66s        64s      69s      72s      80s     103s     112s
+>>> Seems that improvements are only somewhat significant in low concurrency
+>>> case, I guess it's because that the checkpoint work in nvme is quick.
+>>> In high concurrency case, the overhead caused by waitting for log space
+>>> may not a big bottleneck, I'll look into this issue more.
+>>> Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+>>> ---
+>>>   fs/jbd2/checkpoint.c  |  4 ++--
+>>>   fs/jbd2/journal.c     | 26 ++++++++++++++++++++++++++
+>>>   fs/jbd2/transaction.c | 12 +++++++++++-
+>>>   include/linux/jbd2.h  | 23 ++++++++++++++++++++++-
+>>>   4 files changed, 61 insertions(+), 4 deletions(-)
+>>> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+>>> index a1909066bde6..da0920cbc1d3 100644
+>>> --- a/fs/jbd2/checkpoint.c
+>>> +++ b/fs/jbd2/checkpoint.c
+>>> @@ -105,12 +105,12 @@ static int __try_to_free_cp_buf(struct journal_head *jh)
+>>>    * Called under j-state_lock *only*.  It will be unlocked if we have to wait
+>>>    * for a checkpoint to free up some space in the log.
+>>>    */
+>>> -void __jbd2_log_wait_for_space(journal_t *journal)
+>>> +void __jbd2_log_wait_for_space(journal_t *journal, int scale)
+>>>   {
+>>>   	int nblocks, space_left;
+>>>   	/* assert_spin_locked(&journal->j_state_lock); */
+>>>   -	nblocks = jbd2_space_needed(journal);
+>>> +	nblocks = jbd2_space_needed(journal) * scale;
+>>>   	while (jbd2_log_space_left(journal) < nblocks) {
+>>>   		write_unlock(&journal->j_state_lock);
+>>>   		mutex_lock_io(&journal->j_checkpoint_mutex);
+>>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>>> index 953990eb70a9..871c3d251fdb 100644
+>>> --- a/fs/jbd2/journal.c
+>>> +++ b/fs/jbd2/journal.c
+>>> @@ -1100,6 +1100,21 @@ static void jbd2_stats_proc_exit(journal_t *journal)
+>>>   	remove_proc_entry(journal->j_devname, proc_jbd2_stats);
+>>>   }
+>>>   +/*
+>>> + * Start to reclaim journal space asynchronously.
+>>> + */
+>>> +void jbd2_reclaim_log_space_async(struct work_struct *work)
+>>> +{
+>>> +	journal_t *journal = container_of(work, journal_t, j_reclaim_work);
+>>> +
+>>> +	write_lock(&journal->j_state_lock);
+>>> +	/* See comments in add_transaction_credits() */
+>>> +	if (jbd2_log_space_left(journal) < jbd2_space_needed(journal) * 2)
+>>> +		__jbd2_log_wait_for_space(journal, 2);
+>>> +	journal->j_async_reclaim_run = 0;
+>>> +	write_unlock(&journal->j_state_lock);
+>>> +}
+>>> +
+>>>   /*
+>>>    * Management for journal control blocks: functions to create and
+>>>    * destroy journal_t structures, and to initialise and read existing
+>>> @@ -1142,6 +1157,15 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>>>   	/* The journal is marked for error until we succeed with recovery! */
+>>>   	journal->j_flags = JBD2_ABORT;
+>>>   +	journal->j_reclaim_wq = alloc_workqueue("jbd2-reclaim-wq",
+>>> +					WQ_MEM_RECLAIM | WQ_UNBOUND, 1);
+>>> +	if (!journal->j_reclaim_wq) {
+>>> +		pr_err("%s: failed to create workqueue\n", __func__);
+>>> +		goto err_cleanup;
+>>> +	}
+>>> +	INIT_WORK(&journal->j_reclaim_work, jbd2_reclaim_log_space_async);
+>>> +	journal->j_async_reclaim_run = 0;
+>>> +
+>>>   	/* Set up a default-sized revoke table for the new mount. */
+>>>   	err = jbd2_journal_init_revoke(journal, JOURNAL_REVOKE_DEFAULT_HASH);
+>>>   	if (err)
+>>> @@ -1718,6 +1742,7 @@ int jbd2_journal_destroy(journal_t *journal)
+>>>   	if (journal->j_running_transaction)
+>>>   		jbd2_journal_commit_transaction(journal);
+>>>   +	flush_workqueue(journal->j_reclaim_wq);
+>>>   	/* Force any old transactions to disk */
+>>>     	/* Totally anal locking here... */
+>>> @@ -1768,6 +1793,7 @@ int jbd2_journal_destroy(journal_t *journal)
+>>>   		jbd2_journal_destroy_revoke(journal);
+>>>   	if (journal->j_chksum_driver)
+>>>   		crypto_free_shash(journal->j_chksum_driver);
+>>> +	destroy_workqueue(journal->j_reclaim_wq);
+>>>   	kfree(journal->j_wbuf);
+>>>   	kfree(journal);
+>>>   diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+>>> index 990e7b5062e7..27f9d47c620e 100644
+>>> --- a/fs/jbd2/transaction.c
+>>> +++ b/fs/jbd2/transaction.c
+>>> @@ -247,6 +247,16 @@ static int add_transaction_credits(journal_t *journal, int blocks,
+>>>   		return 1;
+>>>   	}
+>>>   +	/*
+>>> +	 * If free journal space is lower than (jbd2_space_needed(journal) * 2),
+>>> +	 * let's reclaim some journal space early and do it asynchronously.
+>>> +	 */
+>>> +	if (journal->j_async_reclaim_run == 0 &&
+>>> +	    jbd2_log_space_left(journal) < (jbd2_space_needed(journal) * 2)) {
+>>> +		journal->j_async_reclaim_run = 1;
+>>> +		queue_work(journal->j_reclaim_wq, &journal->j_reclaim_work);
+>>> +	}
+>>> +
+>>>   	/*
+>>>   	 * The commit code assumes that it can get enough log space
+>>>   	 * without forcing a checkpoint.  This is *critical* for
+>>> @@ -264,7 +274,7 @@ static int add_transaction_credits(journal_t *journal, int blocks,
+>>>   		jbd2_might_wait_for_commit(journal);
+>>>   		write_lock(&journal->j_state_lock);
+>>>   		if (jbd2_log_space_left(journal) < jbd2_space_needed(journal))
+>>> -			__jbd2_log_wait_for_space(journal);
+>>> +			__jbd2_log_wait_for_space(journal, 1);
+>>>   		write_unlock(&journal->j_state_lock);
+>>>   		return 1;
+>>>   	}
+>>> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+>>> index df03825ad1a1..acc93597271b 100644
+>>> --- a/include/linux/jbd2.h
+>>> +++ b/include/linux/jbd2.h
+>>> @@ -1152,6 +1152,27 @@ struct journal_s
+>>>   	 */
+>>>   	__u32 j_csum_seed;
+>>>   +	/**
+>>> +	 * @j_async_reclaim_run:
+>>> +	 *
+>>> +	 * Is there a work running asynchronously to reclaim journal space.
+>>> +	 */
+>>> +	int j_async_reclaim_run;
+>>> +
+>>> +	/**
+>>> +	 * @j_reclaim_work:
+>>> +	 *
+>>> +	 * Work_struct to reclaim journal space.
+>>> +	 */
+>>> +	struct work_struct j_reclaim_work;
+>>> +
+>>> +	/**
+>>> +	 * @j_reclaim_wq:
+>>> +	 *
+>>> +	 * Workqueue for reclaim journal space asynchronously.
+>>> +	 */
+>>> +	struct workqueue_struct *j_reclaim_wq;
+>>> +
+>>>   #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>>>   	/**
+>>>   	 * @j_trans_commit_map:
+>>> @@ -1498,7 +1519,7 @@ int jbd2_complete_transaction(journal_t *journal, tid_t tid);
+>>>   int jbd2_log_do_checkpoint(journal_t *journal);
+>>>   int jbd2_trans_will_send_data_barrier(journal_t *journal, tid_t tid);
+>>>   -void __jbd2_log_wait_for_space(journal_t *journal);
+>>> +void __jbd2_log_wait_for_space(journal_t *journal, int scale);
+>>>   extern void __jbd2_journal_drop_transaction(journal_t *, transaction_t *);
+>>>   extern int jbd2_cleanup_journal_tail(journal_t *);
+>>>
 > 
-> What do you think?
 > 
-> Cheers,
+> Cheers, Andreas
 > 
-> 						- Ted
+> 
+> 
+> 
 > 
