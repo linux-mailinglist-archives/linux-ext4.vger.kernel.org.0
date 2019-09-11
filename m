@@ -2,120 +2,183 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E8AAF79E
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Sep 2019 10:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41E6AF91F
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Sep 2019 11:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbfIKIUE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Sep 2019 04:20:04 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:53042 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726579AbfIKIUD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Sep 2019 04:20:03 -0400
-Received: by mail-wm1-f68.google.com with SMTP id t17so2309613wmi.2
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Sep 2019 01:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=73Mk7Z9yNYBR9L0eb9oAsrN33Ivf779654SN9226Yx0=;
-        b=lzzM8L2DKputz7E8BnA9+EcELiqTMUGOY69T7jjCa9uf+uWvwuzpYYhL8Nv5LJzUtX
-         pslPCUzteUedVsAO7Uh+akynz719MT5rU3CXAGnZCX0ho9qVu76a27TAVjsgM+zyeS0A
-         ksacMXfdU7LVCHgRBpm9gajfZbu7oGrLchB/8Y3McmIxN2Ul3PI2FPJ6afqOio//N9LI
-         ta5N/T+t0ETYEJ3C2risxGC6eu0pHf9Q4eQXPLAVzrsLwff2DyzqLQjOsshK+m9pnUg8
-         AU6Bi9iICYiPINavXSkRjPjWy0lqtq5O3QvUmqqLA1ovJHhVXc3YwX7OtEYjLY+gIZdo
-         OoQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=73Mk7Z9yNYBR9L0eb9oAsrN33Ivf779654SN9226Yx0=;
-        b=pX0GlewiGTv9EarHGHS092f9GQi7wLHMYqcdHKt0JYNfvJSwOvTaZEzv0ng00NsUZG
-         Iao1tQL/sFnhy6IatpbqlsnCVKj5/U7RVQw07Ezh+mVuHrUKr8xiCYKg2iLbcRLVy+QP
-         ClLfLc43DJnUyABliZm3hasOxJSUNgDYjuS6NCSZ9EQpTJZiSB385o7JKi3plpWaQP3e
-         WLpwncc9XDtxkFmbCp9wX21OZ3Ux+DnizPOR4wrArBXi3hjuqJmaw3Yam8kCPBHUoFLK
-         FXI9vlxnQD9+Oy5CnBLxp5ASYfpTDQ8rBTh2uiDqh0v1YU/h2Gf/EiM+K+b/hYAuG2sC
-         NywA==
-X-Gm-Message-State: APjAAAVrVBFDMDer5IjerDfxcVNXBLRUssVzIxDxJIG8pWDT7AO41Fr/
-        jOyh1grnEbpyc8+bia41BGw/gw==
-X-Google-Smtp-Source: APXvYqwuImgeWs/pa+4thE+4R4gw3Ydri3nAjPDaSD8LYzbWB31nR0x1yXh0fLg4sEsBe7+K+ixaIg==
-X-Received: by 2002:a7b:c752:: with SMTP id w18mr2765612wmk.63.1568189997578;
-        Wed, 11 Sep 2019 01:19:57 -0700 (PDT)
-Received: from ziepe.ca ([148.69.85.38])
-        by smtp.gmail.com with ESMTPSA id a13sm36163114wrf.73.2019.09.11.01.19.56
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 11 Sep 2019 01:19:56 -0700 (PDT)
-Received: from jgg by jggl.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1i7xr1-0002Mq-Vn; Wed, 11 Sep 2019 05:19:55 -0300
-Date:   Wed, 11 Sep 2019 05:19:55 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v2 16/19] RDMA/uverbs: Add back pointer to system
- file object
-Message-ID: <20190911081955.GA9070@ziepe.ca>
-References: <20190812130039.GD24457@ziepe.ca>
- <20190812172826.GA19746@iweiny-DESK2.sc.intel.com>
- <20190812175615.GI24457@ziepe.ca>
- <20190812211537.GE20634@iweiny-DESK2.sc.intel.com>
- <20190813114842.GB29508@ziepe.ca>
- <20190813174142.GB11882@iweiny-DESK2.sc.intel.com>
- <20190813180022.GF29508@ziepe.ca>
- <20190813203858.GA12695@iweiny-DESK2.sc.intel.com>
- <20190814122308.GB13770@ziepe.ca>
- <20190904222549.GC31319@iweiny-DESK2.sc.intel.com>
+        id S1727479AbfIKJjc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Sep 2019 05:39:32 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:43853 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726657AbfIKJjb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 11 Sep 2019 05:39:31 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 80E0B614;
+        Wed, 11 Sep 2019 05:39:29 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 11 Sep 2019 05:39:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=mvzKeifSnTSILTn0qraq+rN4Cry
+        GTOsIEYJQEQ6OnYg=; b=mtiyobYXM4j9EFSIKWpelWpgZOm+amyEdDeS0EUXrQI
+        Dr0Gjx7szmVtnduulUVe3O6G9B/UhKhaeTGAU24JR8WcsrwcdUfodTMHaj+pj++b
+        JxqwoCNsMr4xy3pxI6ewV6CcL2UbOFSEBRgxQv90tZqs6Bqln4/D7Zl8jXpyjki3
+        iZIaoGsBbkcWJbdo/wlOnO+k2OrkprPrRM6TZqlqvKNeUrC0X4GIV7fwr0LYlkrB
+        eybjaBdLKN4LXUJQY6nhVPvF0cP0VOACC1LgVeII6B0YqSvVFgwsfqvh0Vy1/Hr+
+        qiTFfwY4QjLy3hkLKplwva/42/wK9CCTaZ2r/cLROTA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=mvzKei
+        fSnTSILTn0qraq+rN4CryGTOsIEYJQEQ6OnYg=; b=k5SckXFxB6PoUTEitBhdke
+        SomEjIEWYKhC9eJGnnHcLsihzDA6TTEPgFNZxqdrbW0LQ7g5IJVRoLT0nHfSMunH
+        YHB0yZzjViLeZXMx7HVyNyK3QD0LvjInmNX0KJ0Y1MjRL5HBkNu0sd28Kwq3aJC6
+        ReUfbuvPshNdoCpzAeh7zV/O61lWLHUtx1Jw+7NKlda7PE/brwHXFG4jUooiHJAm
+        wGaBut55D2tCZ/ky0okQNzJZXVSDO/ENtn4Edn+rrxQLp8miV4T8a0xqvLOtsuc3
+        0Q9IRtnvSHs106V5mK+ujB3P2U0jwcs4EiKqX/T8Bv1yC3VpqLr0f4AEHLqoDj4g
+        ==
+X-ME-Sender: <xms:0MB4XcggKqjOEYVJZd9qevP_wUbxPncN_tBAWi6-Fg0PqZClExk1ww>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrtddvgddujecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughrvghs
+    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecukfhppeduge
+    ekrdeiledrkeehrdefkeenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvghssegr
+    nhgrrhgriigvlhdruggvnecuvehluhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:0MB4XRpJpoY7c-KRT-ghH_eG4kEn_6fgDEkd0OK8br23501TAjiBSw>
+    <xmx:0MB4XVGmwottXAZ-O2b07rrASsS8h2xpuOWgU6TE044_p6rIXVcopA>
+    <xmx:0MB4XZPdbMNAKKH1rn1JYLUGjXKSbhslMId2-QvU1f7ug0CD0uthzQ>
+    <xmx:0cB4XfDWFcyGBy2d-xOSQdZbxxMjaKqwUXHgqpQHGNcAAkWhylQ-MA>
+Received: from intern.anarazel.de (unknown [148.69.85.38])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2563CD60062;
+        Wed, 11 Sep 2019 05:39:28 -0400 (EDT)
+Date:   Wed, 11 Sep 2019 02:39:26 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Dave Chinner <david@fromorbit.com>, David Sterba <dsterba@suse.com>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, jack@suse.com, hch@infradead.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: Odd locking pattern introduced as part of "nowait aio support"
+Message-ID: <20190911093926.pfkkx25mffzeuo32@alap3.anarazel.de>
+References: <20190910223327.mnegfoggopwqqy33@alap3.anarazel.de>
+ <20190911040420.GB27547@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190904222549.GC31319@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20190911040420.GB27547@dread.disaster.area>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 04, 2019 at 03:25:50PM -0700, Ira Weiny wrote:
-> On Wed, Aug 14, 2019 at 09:23:08AM -0300, Jason Gunthorpe wrote:
-> > On Tue, Aug 13, 2019 at 01:38:59PM -0700, Ira Weiny wrote:
-> > > On Tue, Aug 13, 2019 at 03:00:22PM -0300, Jason Gunthorpe wrote:
-> > > > On Tue, Aug 13, 2019 at 10:41:42AM -0700, Ira Weiny wrote:
-> > > > 
-> > > > > And I was pretty sure uverbs_destroy_ufile_hw() would take care of (or ensure
-> > > > > that some other thread is) destroying all the MR's we have associated with this
-> > > > > FD.
-> > > > 
-> > > > fd's can't be revoked, so destroy_ufile_hw() can't touch them. It
-> > > > deletes any underlying HW resources, but the FD persists.
-> > > 
-> > > I misspoke.  I should have said associated with this "context".  And of course
-> > > uverbs_destroy_ufile_hw() does not touch the FD.  What I mean is that the
-> > > struct file which had file_pins hanging off of it would be getting its file
-> > > pins destroyed by uverbs_destroy_ufile_hw().  Therefore we don't need the FD
-> > > after uverbs_destroy_ufile_hw() is done.
-> > > 
-> > > But since it does not block it may be that the struct file is gone before the
-> > > MR is actually destroyed.  Which means I think the GUP code would blow up in
-> > > that case...  :-(
+Hi,
+
+On 2019-09-11 14:04:20 +1000, Dave Chinner wrote:
+> On Tue, Sep 10, 2019 at 03:33:27PM -0700, Andres Freund wrote:
+> > Hi,
 > > 
-> > Oh, yes, that is true, you also can't rely on the struct file living
-> > longer than the HW objects either, that isn't how the lifetime model
-> > works.
+> > Especially with buffered io it's fairly easy to hit contention on the
+> > inode lock, during writes. With something like io_uring, it's even
+> > easier, because it currently (but see [1]) farms out buffered writes to
+> > workers, which then can easily contend on the inode lock, even if only
+> > one process submits writes.  But I've seen it in plenty other cases too.
+> > 
+> > Looking at the code I noticed that several parts of the "nowait aio
+> > support" (cf 728fbc0e10b7f3) series introduced code like:
+> > 
+> > static ssize_t
+> > ext4_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+> > {
+> > ...
+> > 	if (!inode_trylock(inode)) {
+> > 		if (iocb->ki_flags & IOCB_NOWAIT)
+> > 			return -EAGAIN;
+> > 		inode_lock(inode);
+> > 	}
 > 
-> Reviewing all these old threads...  And this made me think.  While the HW
-> objects may out live the struct file.
+> The ext4 code is just buggy here - we don't support RWF_NOWAIT on
+> buffered writes.
+
+But both buffered and non-buffered writes go through
+ext4_file_write_iter(). And there's a preceding check, at least these
+days, preventing IOCB_NOWAIT to apply to buffered writes:
+
+	if (!o_direct && (iocb->ki_flags & IOCB_NOWAIT))
+		return -EOPNOTSUPP;
+
+
+I do really wish buffered NOWAIT was supported... The overhead of having
+to do async buffered writes through the workqueue in io_uring, even if
+an already existing page is targeted, is quite noticable. Even if it
+failed with EAGAIN as soon as the buffered write's target isn't in the
+page cache, it'd be worthwhile.
+
+
+> > isn't trylocking and then locking in a blocking fashion an inefficient
+> > pattern? I.e. I think this should be
+> > 
+> > 	if (iocb->ki_flags & IOCB_NOWAIT) {
+> > 		if (!inode_trylock(inode))
+> > 			return -EAGAIN;
+> > 	}
+> >         else
+> >         	inode_lock(inode);
 > 
-> They _are_ going away in a finite amount of time right?  It is not like they
-> could be held forever right?
+> Yes, you are right.
+> 
+> History: commit 91f9943e1c7b ("fs: support RWF_NOWAIT
+> for buffered reads") which introduced the first locking pattern
+> you describe in XFS.
 
-Yes, at least until they become shared between FDs
+Seems, as part of the nowait work, the pattern was introduced in ext4,
+xfs and btrfs. And fixed in xfs.
 
-Jason
+
+> That was followed soon after by:
+> 
+> commit 942491c9e6d631c012f3c4ea8e7777b0b02edeab
+> Author: Christoph Hellwig <hch@lst.de>
+> Date:   Mon Oct 23 18:31:50 2017 -0700
+> 
+>     xfs: fix AIM7 regression
+>     
+>     Apparently our current rwsem code doesn't like doing the trylock, then
+>     lock for real scheme.  So change our read/write methods to just do the
+>     trylock for the RWF_NOWAIT case.  This fixes a ~25% regression in
+>     AIM7.
+>     
+>     Fixes: 91f9943e ("fs: support RWF_NOWAIT for buffered reads")
+>     Reported-by: kernel test robot <xiaolong.ye@intel.com>
+>     Signed-off-by: Christoph Hellwig <hch@lst.de>
+>     Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+>     Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> 
+> Which changed all the trylock/eagain/lock patterns to the second
+> form you quote. None of the other filesystems had AIM7 regressions
+> reported against them, so nobody changed them....
+
+:(
+
+
+> > Obviously this isn't going to improve scalability to a very significant
+> > degree. But not unnecessarily doing two atomic ops on a contended lock
+> > can't hurt scalability either. Also, the current code just seems
+> > confusing.
+> > 
+> > Am I missing something?
+> 
+> Just that the sort of performance regression testing that uncovers
+> this sort of thing isn't widely done, and most filesystems are
+> concurrency limited in some way before they hit inode lock
+> scalability issues. Hence filesystem concurrency foccussed
+> benchmarks that could uncover it (like aim7) won't because the inode
+> locks don't end up stressed enough to make a difference to
+> benchmark performance.
+
+Ok.  Goldwyn, do you want to write a patch, or do you want me to write
+one up?
+
+
+Greetings,
+
+Andres Freund
