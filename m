@@ -2,102 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F11C8B0DF1
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Sep 2019 13:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CFAB0EA8
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Sep 2019 14:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731370AbfILLfG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Sep 2019 07:35:06 -0400
-Received: from mail-lj1-f172.google.com ([209.85.208.172]:35150 "EHLO
-        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730982AbfILLfG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Sep 2019 07:35:06 -0400
-Received: by mail-lj1-f172.google.com with SMTP id q22so18667994ljj.2
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Sep 2019 04:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EJEjXo6Uv0jyp2+Brgg1JL8WxFYC+E50/NKS1o8RgP4=;
-        b=SoqpQsGN0urBE3TZhDDbfGxMqQFL1cSw3SqSCRD7jsTJhbHzZSr7ZZSQZhcXfxdkDc
-         rNbyzfu3s7rI7jD4hkuWmJhs7sZYsjUnj7IUIPx0yWxF6qwKRfkFXQOSdwttIBTxaccA
-         Gqqy35oMPqJwLuP5+0ltXVj/AffUCCXYemJFA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EJEjXo6Uv0jyp2+Brgg1JL8WxFYC+E50/NKS1o8RgP4=;
-        b=b54qBpyfsv/jKAPy+h1iTQJEkxFzjkU06UsaJNnYyo9tBO12+OiNuXy+Kf7rf9gAw1
-         55tu0U+1yWoRt9C55qmEg+7ZcuIVTopceKvvWT3mq+H+yEADFcl/UOsFR8kx3JSeQLC7
-         VhUcYamH93lJsj9xg9lf5bNS5oYOPyHzhTn2CIPs/P7ZxJDP3hoQjlc5JhEMA11srNjP
-         1wRKb6v6njyxGSDYMXPdw77cIJWnAPMSTLp291DCMz3C/YqGjmLy4R6pkCmCVorDTNbH
-         5hAgXs6gY+2iSCA92Wxr4XO7uS50BLfheWejMxeoSdio0qlvHrGEEY/vp1xhB0f2hCBF
-         sI9A==
-X-Gm-Message-State: APjAAAWLafqmSwDHXq0OiGjNNg/adD/0NR1KqYRHI6rbyrrTPiIVB6dr
-        ShzHtyNUkno5e3hRWKLFhTcAb+mKsIKIUg==
-X-Google-Smtp-Source: APXvYqzQmD7B29KPodHQGPUQGnKwRgNDHg13eDWpjLHj1UWg+4KPN8sf80sMpYJofJBJqS+xeZggPQ==
-X-Received: by 2002:a2e:9d0d:: with SMTP id t13mr4999972lji.169.1568288103832;
-        Thu, 12 Sep 2019 04:35:03 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id d12sm6175262lfn.93.2019.09.12.04.35.01
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Sep 2019 04:35:01 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id y5so12435391lji.4
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Sep 2019 04:35:01 -0700 (PDT)
-X-Received: by 2002:a2e:814d:: with SMTP id t13mr26938394ljg.72.1568288101290;
- Thu, 12 Sep 2019 04:35:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=whBQ+6c-h+htiv6pp8ndtv97+45AH9WvdZougDRM6M4VQ@mail.gmail.com>
- <20190910042107.GA1517@darwi-home-pc> <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
- <20190910173243.GA3992@darwi-home-pc> <CAHk-=wjo6qDvh_fUnd2HdDb63YbWN09kE0FJPgCW+nBaWMCNAQ@mail.gmail.com>
- <20190911160729.GF2740@mit.edu> <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
- <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
- <20190911173624.GI2740@mit.edu> <20190912034421.GA2085@darwi-home-pc> <20190912082530.GA27365@mit.edu>
-In-Reply-To: <20190912082530.GA27365@mit.edu>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 12 Sep 2019 12:34:45 +0100
-X-Gmail-Original-Message-ID: <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
-Message-ID: <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
-Subject: Re: Linux 5.3-rc8
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        id S1731486AbfILMMX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Sep 2019 08:12:23 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:43294 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730454AbfILMMW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 12 Sep 2019 08:12:22 -0400
+X-Greylist: delayed 813 seconds by postgrey-1.27 at vger.kernel.org; Thu, 12 Sep 2019 08:12:22 EDT
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id x8CBwOk1011171;
+        Thu, 12 Sep 2019 13:58:24 +0200
+Date:   Thu, 12 Sep 2019 13:58:24 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
         William Jon McCann <mccann@jhu.edu>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: Linux 5.3-rc8
+Message-ID: <20190912115824.GB11016@1wt.eu>
+References: <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
+ <20190910173243.GA3992@darwi-home-pc>
+ <CAHk-=wjo6qDvh_fUnd2HdDb63YbWN09kE0FJPgCW+nBaWMCNAQ@mail.gmail.com>
+ <20190911160729.GF2740@mit.edu>
+ <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
+ <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
+ <20190911173624.GI2740@mit.edu>
+ <20190912034421.GA2085@darwi-home-pc>
+ <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 9:25 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> Hmm, one thought might be GRND_FAILSAFE, which will wait up to two
-> minutes before returning "best efforts" randomness and issuing a huge
-> massive warning if it is triggered?
+On Thu, Sep 12, 2019 at 12:34:45PM +0100, Linus Torvalds wrote:
+> An alternative might be to make getrandom() just return an error
+> instead of waiting. Sure, fill the buffer with "as random as we can"
+> stuff, but then return -EINVAL because you called us too early.
 
-Yeah, based on (by now) _years_ of experience with people mis-using
-"get me random numbers", I think the sense of a new flag needs to be
-"yeah, I'm willing to wait for it".
+That's probably one of the most sensible approaches. I must say I feel
+quite annoyed by what randomness has become due to the misuse of poor
+random sources by security components suddenly forcing all these sources
+to become strong and having to become unavailable for everything which
+doesn't need strong random. And most of the time the stuff which doesn't
+need a strong random happens during early boot. It can range from issuing
+a MAC address before setting a link up (when you have no chance to get
+entropy) to providing a UUID for a file system, or use of ephemeral
+randoms for session keys for the first access to a device for its
+configuration. A number of these often end up with a system not
+booting, unable to self-configure itself, or not being available when
+expected.
 
-Because most people just don't want to wait for it, and most people
-don't think about it, and we need to make the default be for that
-"don't think about it" crowd, with the people who ask for randomness
-sources for a secure key having to very clearly and very explicitly
-say "Yes, I understand that this can take minutes and can only be done
-long after boot".
+It's too late now to change existing applications, but probably that
+doing something like above would at least allow applications to
+implement a fall back with the choice of "hey Mr user, there's not
+enough entropy yet to propose you a secure password, so please type
+20 random chars on the keyboard so that I can complete it", or
+conversely "the syscall failed but I know I can still use the
+buffer's contents for a MAC address".
 
-Even then people will screw that up because they copy code, or some
-less than gifted rodent writes a library and decides "my library is so
-important that I need that waiting sooper-sekrit-secure random
-number", and then people use that broken library by mistake without
-realizing that it's not going to be reliable at boot time.
+But having to make the syscall to wait longer is never going to serve
+anyone. Two minutes is an eternity for certain devices, and some from
+the security world will consider that the syscall waited long enough
+to produce a good security so it's OK to use it as a reliable source.
+Failing immediately with whatever could be obtained is by far the
+best solution in my opinion as the application has to take the
+responsibility for using that buffer's contents.
 
-An alternative might be to make getrandom() just return an error
-instead of waiting. Sure, fill the buffer with "as random as we can"
-stuff, but then return -EINVAL because you called us too early.
-
-                  Linus
+Willy
+-- still dreaming about the day boot loaders will collect entropy from
+the DDR training phase and pass it to the kernel.
