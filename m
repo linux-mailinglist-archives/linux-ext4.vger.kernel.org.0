@@ -2,88 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F78B0B51
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Sep 2019 11:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 572B2B0D7C
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Sep 2019 13:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730767AbfILJ0W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Sep 2019 05:26:22 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:35961 "EHLO
+        id S1731343AbfILLDj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Sep 2019 07:03:39 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:36456 "EHLO
         mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730759AbfILJ0W (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Sep 2019 05:26:22 -0400
-Received: by mail-pg1-f194.google.com with SMTP id j191so2620840pgd.3
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Sep 2019 02:26:21 -0700 (PDT)
+        with ESMTP id S1731146AbfILLDi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Sep 2019 07:03:38 -0400
+Received: by mail-pg1-f194.google.com with SMTP id j191so2761091pgd.3
+        for <linux-ext4@vger.kernel.org>; Thu, 12 Sep 2019 04:03:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dt0j6/Dbs+dwW1SIPthaW+qziOAlFsuqXt20b4c12nE=;
-        b=12hCQat9jUcgSa47++/HQI/Kl7LxMpOdcs5vqzMW95pKZMUHEhyw9ZMTKknS+6Z2Rx
-         K9qJNKmsGVjwgxprs5gDVl8K+aUT2VnsLU60nF0AzZqv5zXtsCwN++iPfEVHgWC+J7j+
-         dzo27W3kuN+k10OHxZQp4JFaIL0RYtJn0rAoEKVV3Tjp/yso+xeP3PIyvRGhxb2KSfST
-         ffoFGuMIjtreThdQ+W41KGD+0jkLetWQM+B1FTVLAr6v++nXXRuC0Pw6a6KKqO9IL1Es
-         KlgfJcVrWGFzhtJHgrA+FEtA/80mCRFIS7z+ma8tpq3q4vca8MZ/qHfHgMp7DzPy84Ad
-         FAkg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=6TdpHGRMo/9QGFFi43irhTk/FFMkZ5MctGN+Nor7bUo=;
+        b=e1ZsZIQKwY04TZyCyLF3+eKdqL7zUB44U/DjsjtqLdpGeQZpMXkNYhq4tEu53pbWja
+         kcnWDtijf9xsDUsHu2fEyJUp4RtOPkJKcsIBZm+3F+drHu2zZdAYO4AGPgq+5LxcT6/Z
+         Humd2JXqYUlmyA8DTIX9vQLaQR0ZuxIxsDsglIrAO4M/GvgrVlJM+BI3+njZKeOul5ey
+         ZqRMAIvN3JlL4XIYDwYxNdkpR2AiIs5mgbx8EE55odTiXuaUUZT9iUpPdpGuOswppxkM
+         QIgO57DSW59CR4jTS1hYBQzGSKj6VT8tNSk1cgI+NGLIi7+2uLFXLODIwuvGxYGjTAkq
+         VRRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dt0j6/Dbs+dwW1SIPthaW+qziOAlFsuqXt20b4c12nE=;
-        b=Yj9PlCpRfXGHejzzpmO3EIhUV6q0GwrwU99VJs6EKcA2zHJg73Zr4J75yvtq3LIahq
-         L7eMxqty00fgObjRLNZj0aE1NZhfiHH1z+1oeSh0inGmrSsHa9+TqTkw23GgXPa36MMo
-         llGyNS7P3p02lCyFLL327/llcjiSnrTEJ+TdtW9Evx4HGZVZHqNp/tGz3i2v4wUYGEto
-         64+tM55OxC2zcKl54DeQNzisaoVGgbcrm7qSEUc1ZONLhkT61OhMwoZQ646r+Kg35p4+
-         SEZBZks7s7P+7ZtrwxcdactbciR17RgmUlvM9/gvQlk107c7/nxkn4Hsd3uzomKWyZBe
-         BgCw==
-X-Gm-Message-State: APjAAAVR77KRwVkGT2XV+3caLgoea7g6XmTHDj95QsuOXPrvA7VRtXvB
-        m67Sd1eXYXz6AsWlGdKiNmLD
-X-Google-Smtp-Source: APXvYqwyIDlF1caDTpNVqUKoLG7l8JslVWsCl4azAP5rgYV6Wp1tuclPnO2lsBQan2QfColr2D8A2g==
-X-Received: by 2002:a63:211c:: with SMTP id h28mr36886434pgh.438.1568280381146;
-        Thu, 12 Sep 2019 02:26:21 -0700 (PDT)
-Received: from bobrowski ([110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id c62sm29491396pfa.92.2019.09.12.02.26.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=6TdpHGRMo/9QGFFi43irhTk/FFMkZ5MctGN+Nor7bUo=;
+        b=pyHwJlSbWoFHSQ024/y+N8hbLftng3qzMcYI3WyUa/MV0VtqPO27I19pAiKXEE/NHV
+         ehlda394cMrLGS+WG+KkluTCeoJZ6hJ6nmib4ZGPzQhPMESgmyZWsIdYo2ffnMVfYjHN
+         Ztyeg4N6viv27TynZMenH7c72+Pat6Sy5//HBg9Hy5eha4jjES4vsPI0GEPum57zAwqV
+         v4ysNqRZYPVG0ofXYDTbaMnCn6nT4+MCiEJkOYQTCE8ExndrAtH0EXtHzv+nGQLll3bw
+         eJRQ1RFlYoYc/+vvHDju8HVHfxyWL067hF6u3k7FAn51VB4oGgZdrr0hDYhIq32ImwQ2
+         KGWQ==
+X-Gm-Message-State: APjAAAVOBqQKI8OpS3kGTJtNQA12J5hjJElTdlE7WaKIfAHNXieJ1CV8
+        6GM7ca8pQiGMRt5bLdAW2laM
+X-Google-Smtp-Source: APXvYqxMi/6AwAWIBbV3Fk+7VAehvArZGxks4tfVfWiG90d8S7WeSaYnEa0sztMwIwxAYvqzUV7e+A==
+X-Received: by 2002:a63:c246:: with SMTP id l6mr37856485pgg.210.1568286215350;
+        Thu, 12 Sep 2019 04:03:35 -0700 (PDT)
+Received: from poseidon.bobrowski.net ([114.78.226.167])
+        by smtp.gmail.com with ESMTPSA id u65sm27618703pfu.104.2019.09.12.04.03.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Sep 2019 02:26:20 -0700 (PDT)
-Date:   Thu, 12 Sep 2019 19:26:14 +1000
+        Thu, 12 Sep 2019 04:03:34 -0700 (PDT)
+Date:   Thu, 12 Sep 2019 21:03:28 +1000
 From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, hch@infradead.org, andres@anarazel.de,
-        david@fromorbit.com, linux-f2fs-devel@lists.sourceforge.net,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        aneesh.kumar@linux.ibm.com
-Subject: Re: [PATCH 2/3] ext4: fix inode rwsem regression
-Message-ID: <20190912092614.GB9747@bobrowski>
-References: <20190911093926.pfkkx25mffzeuo32@alap3.anarazel.de>
- <20190911164517.16130-1-rgoldwyn@suse.de>
- <20190911164517.16130-3-rgoldwyn@suse.de>
- <20190912085236.7C51642042@d06av24.portsmouth.uk.ibm.com>
+To:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        david@fromorbit.com, hch@infradead.org, darrick.wong@oracle.com
+Subject: [PATCH v3 0/6] ext4: port direct IO to iomap infrastructure
+Message-ID: <cover.1568282664.git.mbobrowski@mbobrowski.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190912085236.7C51642042@d06av24.portsmouth.uk.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 02:22:35PM +0530, Ritesh Harjani wrote:
-> cc'd Matthew as well.
-> 
-> > This is similar to 942491c9e6d6 ("xfs: fix AIM7 regression")
-> > Apparently our current rwsem code doesn't like doing the trylock, then
-> > lock for real scheme.  So change our read/write methods to just do the
-> > trylock for the RWF_NOWAIT case.
-> > 
-> > Fixes: 728fbc0e10b7 ("ext4: nowait aio support")
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> This patch will conflict with recent iomap patch series.
-> So if this is getting queued up before, so iomap patch series will
-> need to rebase and factor these changes in the new APIs.
+This patch series ports the ext4 direct IO paths to make use of the
+iomap infrastructure. The legacy buffer_head based direct IO paths
+have subsequently been removed as they're now no longer in use. The
+result of this change is that the direct IO implementation is much   
+cleaner and keeps the code isolated from the buffer_head internals. In
+addition to this, a slight performance boost could be expected while 
+using O_SYNC | O_DIRECT IO.
 
-Noted. I've been keeping my eye on this thread, so I'm aware of this.
+The changes have been tested using xfstests in both DAX and non-DAX
+modes using various filesystem configurations i.e. 4k, dioread_nolock.
 
---<M>--
+Changes since v2:
+
+  - Simplified ext4_write_checks() by using file_modified() as oppose
+    to calling file_remove_privs() and file_update_time() explicitly.
+
+  - Other minor cleanups that have been suggested by Ritesh Harjani in
+    the previous round of feedback.
+
+In the original patch series, there was a relatively lengthy
+discussion around the merging of unwritten extents. The buffer_head
+direct IO implementation made use of inode and end_io flags to track
+whether an unwritten extent is eligible to be merged, or not. We don't
+make use of these flags in the new direct IO iomap implementation,
+effectively making the extent merging checks that make use these flags
+redundant. However, it appears that even if additional merges and
+splits are performed, it isn't deemed problematic as such and that's
+due to the way that the filesystem now accommdates for unexpected
+extent splits. The only real concern is the potential wasted
+performance due to the unnecessary merge and split performed under
+specific workloads. The full discussion that goes through these
+details starts from here:
+https://www.spinics.net/lists/linux-ext4/msg67173.html.
+
+Thank you to all that took the time to review and provide constructive
+feedback for previous patch series, highly appreciated.
+
+Matthew Bobrowski (6):
+  ext4: introduce direct IO read path using iomap infrastructure
+  ext4: move inode extension/truncate code out from ext4_iomap_end()
+  iomap: split size and error for iomap_dio_rw ->end_io
+  ext4: reorder map.m_flags checks in ext4_iomap_begin()
+  ext4: introduce direct IO write path using iomap infrastructure
+  ext4: cleanup legacy buffer_head direct IO code
+
+ fs/ext4/ext4.h        |   3 -
+ fs/ext4/extents.c     |  11 +-
+ fs/ext4/file.c        | 364 +++++++++++++++++++++++------
+ fs/ext4/inode.c       | 516 +++++-------------------------------------
+ fs/iomap/direct-io.c  |   9 +-
+ fs/xfs/xfs_file.c     |   8 +-
+ include/linux/iomap.h |   4 +-
+ 7 files changed, 363 insertions(+), 552 deletions(-)
+
+-- 
+2.20.1
+
