@@ -2,127 +2,204 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3BDB2CA6
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Sep 2019 21:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B8BB2D1D
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Sep 2019 23:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728618AbfINTTo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 14 Sep 2019 15:19:44 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:38567 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727975AbfINTTo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Sep 2019 15:19:44 -0400
-Received: by mail-lj1-f193.google.com with SMTP id y23so29776449ljn.5
-        for <linux-ext4@vger.kernel.org>; Sat, 14 Sep 2019 12:19:43 -0700 (PDT)
+        id S1726582AbfINVLi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 14 Sep 2019 17:11:38 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43514 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726295AbfINVLh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Sep 2019 17:11:37 -0400
+Received: by mail-wr1-f65.google.com with SMTP id q17so30512217wrx.10;
+        Sat, 14 Sep 2019 14:11:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iPQUiN+MJCiURQJKXosBWd3fof3PGiz/eGjFjKhHooQ=;
-        b=WnL0j3pyjxPnM4hyGPIMKPvliWuoPrHkG3hgdyb3sUJcufozYIh7VZ+bBUf44lWAB4
-         pcl0tDtzPQqDxymM/g3YLvtkLjejtwFbg4lioNHR9dtkICNJTYZ6/F3XTY/AgKJG9z1d
-         EuP51x7okTZmjwEK/BHlvdQaggkLC8U+lNfw8=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LlOdOy3KWJQjxCTVMfOJ3x8EX8EsEr3SCTQpuq4qJzg=;
+        b=TNcBXYAiK8SQp8X281WxYJXrhrd835Ub5tRKqX8LO4STVnw2hSExbTgcyyPNsbubCx
+         7MK8a4qIA5cTLZ45VcJH53zqbQMtUeMLfBP9I/o2PWed5KUhStlAz9a1aBcYpU2mxPyp
+         cMFCTuWj8rbWZ9KW9mihXdiHgMrusSZKETjBnAbr9t6p9BVcK+kaMgaW/u/BrGcMwTF0
+         WLA6gRhOuutTNC/ui9RYjT69n56k3jcXVvRXLvFd/g9nBFWB34XUxMdV2DizGVJQt+he
+         taXWPSjMKxGEJ8WcBhujmkYK3XJ9GOWcCYXSXDRsxWXadqesyojeplctg2G9rxD+WJdp
+         cRkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iPQUiN+MJCiURQJKXosBWd3fof3PGiz/eGjFjKhHooQ=;
-        b=B1+Q8+LJls6O/ToR2PIxqGt2pnm5CX7PwmQYBiK74CiE3+0wHvLaOWG27I+h9ixjPP
-         1I+9+rg5aoBgIthxc9qpnasqDhe0+HOd20TiiH98xSCCzCbnMxwAeik3ZipvtLpx/TJY
-         m1sul4QyRRktPy196xXxkGhIx63j1aSz96EpjwbC1jExGUh1gO4v27kbQhsYXU6rS8J0
-         wxrz5hcirVWlbVkmmzUQWnuffx3URwYdpWpaA4WL6UKzbb7THLw6itD7ztXk/JkY2N+A
-         huBKDZmPC6Pss39c7QrQCudRwjp76W2vuntBpkhRBSZ7mIihgsokwmulWLq1bgscds3i
-         poYQ==
-X-Gm-Message-State: APjAAAWNOy4sofaRF9lWzbSV86QhnAS5uR6Z/96629Wzj+vyuLkCRzvV
-        8AVdX2yIIxUg4cg3hbYhaP+MHh+RsEU=
-X-Google-Smtp-Source: APXvYqy4aWKzQA5Khrf1hJEKUwzJo87JqEerBhm7RzoIK39YfCvpXN7YxRtuUVA0HfAVBq8JNoXnOw==
-X-Received: by 2002:a05:651c:292:: with SMTP id b18mr34299459ljo.131.1568488781574;
-        Sat, 14 Sep 2019 12:19:41 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id n9sm4956312ljh.53.2019.09.14.12.19.39
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Sep 2019 12:19:40 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id q64so19597069ljb.12
-        for <linux-ext4@vger.kernel.org>; Sat, 14 Sep 2019 12:19:39 -0700 (PDT)
-X-Received: by 2002:a2e:814d:: with SMTP id t13mr34140740ljg.72.1568488779341;
- Sat, 14 Sep 2019 12:19:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
- <20190910173243.GA3992@darwi-home-pc> <CAHk-=wjo6qDvh_fUnd2HdDb63YbWN09kE0FJPgCW+nBaWMCNAQ@mail.gmail.com>
- <20190911160729.GF2740@mit.edu> <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
- <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
- <20190911173624.GI2740@mit.edu> <20190912034421.GA2085@darwi-home-pc>
- <20190912082530.GA27365@mit.edu> <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
- <20190914150206.GA2270@darwi-home-pc> <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
- <214fed0e-6659-def9-b5f8-a9d7a8cb72af@gmail.com> <CAHk-=wiB0e_uGpidYHf+dV4eeT+XmG-+rQBx=JJ110R48QFFWw@mail.gmail.com>
- <8c2a47cc-a519-ad94-5d9a-18bb03ba2fd7@gmail.com>
-In-Reply-To: <8c2a47cc-a519-ad94-5d9a-18bb03ba2fd7@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 14 Sep 2019 12:19:23 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whSbo=dBiqozLoa6TFmMgbeB8d9krXXvXBKtpRWkG0rMQ@mail.gmail.com>
-Message-ID: <CAHk-=whSbo=dBiqozLoa6TFmMgbeB8d9krXXvXBKtpRWkG0rMQ@mail.gmail.com>
-Subject: Re: Linux 5.3-rc8
-To:     "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LlOdOy3KWJQjxCTVMfOJ3x8EX8EsEr3SCTQpuq4qJzg=;
+        b=ozPk+jv5OPefz8SEfe6l9iRiVBfXphBrO6i0Pkvs43X+FBTm+kQRlOTmsldg12KfAG
+         rgJE0wFlJ0XcHss/6oieRPrM79wKKxoU1FmhPd+rJeoTzu7R1JbZ6kZrxHicierzgufX
+         GfY7f0Pl9JK1eh8/VCN+ckK/3MnoyKmxHyS8LqKN8mLaRI5xioRMJQz4cm039dFC1yqf
+         +rT+j+CrtjK83X5OBOKhczTfQmwuSJezLBhGM05l7Kd4VtgPKoq5MQx/C+21HBwcSIfb
+         ZKSLoH+P0Awk1huWJtGlDKNQyIJ1Dl5yvaOjEa0fiAXpuG2vHafjWNtPLj+w1PbQkCr5
+         RgJQ==
+X-Gm-Message-State: APjAAAUu3I9r5a6tCmdUvcximMoisGmBIk/NZqi6ZgQAqt8DfzVa+15c
+        PpDdZ7r1NxfXMSVhQTRXDDI=
+X-Google-Smtp-Source: APXvYqxtXKumRSjSnxsEyDa+c9BMeql5KCk0JiFcU5AJ9nRfQCXT3ns3uaM2BJouTcP0bkHsuF6lAA==
+X-Received: by 2002:a05:6000:10f:: with SMTP id o15mr6046218wrx.92.1568495493586;
+        Sat, 14 Sep 2019 14:11:33 -0700 (PDT)
+Received: from darwi-home-pc (p200300D06F2D1401AF0812D8DEE03BEC.dip0.t-ipconnect.de. [2003:d0:6f2d:1401:af08:12d8:dee0:3bec])
+        by smtp.gmail.com with ESMTPSA id b144sm7007661wmb.3.2019.09.14.14.11.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Sep 2019 14:11:32 -0700 (PDT)
+Date:   Sat, 14 Sep 2019 23:11:26 +0200
+From:   "Ahmed S. Darwish" <darwish.07@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
         William Jon McCann <mccann@jhu.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         Lennart Poettering <lennart@poettering.net>,
         lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: Linux 5.3-rc8
+Message-ID: <20190914211126.GA4355@darwi-home-pc>
+References: <CAHk-=wjo6qDvh_fUnd2HdDb63YbWN09kE0FJPgCW+nBaWMCNAQ@mail.gmail.com>
+ <20190911160729.GF2740@mit.edu>
+ <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
+ <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
+ <20190911173624.GI2740@mit.edu>
+ <20190912034421.GA2085@darwi-home-pc>
+ <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914150206.GA2270@darwi-home-pc>
+ <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Sep 14, 2019 at 10:09 AM Alexander E. Patrakov
-<patrakov@gmail.com> wrote:
+Hi,
+
+On Sat, Sep 14, 2019 at 09:30:19AM -0700, Linus Torvalds wrote:
+> On Sat, Sep 14, 2019 at 8:02 AM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
+> >
+> > On Thu, Sep 12, 2019 at 12:34:45PM +0100, Linus Torvalds wrote:
+> > >
+> > > An alternative might be to make getrandom() just return an error
+> > > instead of waiting. Sure, fill the buffer with "as random as we can"
+> > > stuff, but then return -EINVAL because you called us too early.
+> >
+> > ACK, that's probably _the_ most sensible approach. Only caveat is
+> > the slight change in user-space API semantics though...
+> >
+> > For example, this breaks the just released systemd-random-seed(8)
+> > as it _explicitly_ requests blocking behvior from getrandom() here:
+> >
+> 
+> Actually, I would argue that the "don't ever block, instead fill
+> buffer and return error instead" fixes this broken case.
+> 
+> >     => src/random-seed/random-seed.c:
+> >     /*
+> >      * Let's make this whole job asynchronous, i.e. let's make
+> >      * ourselves a barrier for proper initialization of the
+> >      * random pool.
+> >      */
+> >      k = getrandom(buf, buf_size, GRND_NONBLOCK);
+> >      if (k < 0 && errno == EAGAIN && synchronous) {
+> >          log_notice("Kernel entropy pool is not initialized yet, "
+> >                     "waiting until it is.");
+> >
+> >          k = getrandom(buf, buf_size, 0); /* retry synchronously */
+> >      }
+> 
+> Yeah, the above is yet another example of completely broken garbage.
+> 
+> You can't just wait and block at boot. That is simply 100%
+> unacceptable, and always has been, exactly because that may
+> potentially mean waiting forever since you didn't do anything that
+> actually is likely to add any entropy.
 >
-> > Which means that we're all kinds of screwed. The whole "we guarantee
-> > entropy" model is broken.
+
+ACK, the systemd commit which introduced that code also does:
+
+   => 26ded5570994 (random-seed: rework systemd-random-seed.service..)
+    [...]
+    --- a/units/systemd-random-seed.service.in
+    +++ b/units/systemd-random-seed.service.in
+    @@ -22,4 +22,9 @@ Type=oneshot
+    RemainAfterExit=yes
+    ExecStart=@rootlibexecdir@/systemd-random-seed load
+    ExecStop=@rootlibexecdir@/systemd-random-seed save
+   -TimeoutSec=30s
+   +
+   +# This service waits until the kernel's entropy pool is
+   +# initialized, and may be used as ordering barrier for service
+   +# that require an initialized entropy pool. Since initialization
+   +# can take a while on entropy-starved systems, let's increase the
+   +# time-out substantially here.
+   +TimeoutSec=10min
+
+This 10min wait thing is really broken... it's basically "forever".
+
+> >      if (k < 0) {
+> >          log_debug_errno(errno, "Failed to read random data with "
+> >                          "getrandom(), falling back to "
+> >                          "/dev/urandom: %m");
+> 
+> At least it gets a log message.
+> 
+> So I think the right thing to do is to just make getrandom() return
+> -EINVAL, and refuse to block.
+> 
+> As mentioned, this has already historically been a huge issue on
+> embedded devices, and with disks turnign not just to NVMe but to
+> actual polling nvdimm/xpoint/flash, the amount of true "entropy"
+> randomness we can give at boot is very questionable.
 >
-> I agree here. Given that you suggested "to just fill the buffer and
-> return 0" in the previous mail (well, I think you really meant "return
-> buflen", otherwise ENOENTROPY == 0 and your previous objection applies),
 
-Right.
+ACK.
 
-The question remains when we should WARN_ON(), though.
+Moreover, and as a result of all that, distributions are now officially
+*duct-taping* the problem:
 
-For example, if somebody did save entropy between boots, we probably
-should accept that - at least in the sense of not warning when they
-then ask for randomness data back.
+    https://www.debian.org/releases/buster/amd64/release-notes/ch-information.en.html#entropy-starvation
 
-And if the hardware does have a functioning rdrand, we probably should
-accept that too - simply because not accepting it and warning sounds a
-bit too annoying.
+    5.1.4. Daemons fail to start or system appears to hang during boot
+  
+    Due to systemd needing entropy during boot and the kernel treating
+    such calls as blocking when available entropy is low, the system
+    may hang for minutes to hours until the randomness subsystem is
+    sufficiently initialized (random: crng init done).
 
-But we definitely *should* have a warning for people who build
-embedded devices that we can't see any reasonable amount of possible
-entropy. Those have definitely happened, and it's a serious and real
-security issue.
+"the system may hang for minuts to hours"...
 
-> let's do just that. As a bonus, it saves applications from the complex
-> dance with retrying via /dev/urandom and finally brings a reliable API
-> (modulo old and broken kernels) to get random numbers (well, as random
-> as possible right now) without needing a file descriptor.
+> We can (and will) continue to do a best-effort thing (including very
+> much using rdread and friends), but the whole "wait for entropy"
+> simply *must* stop.
+> 
+> > I've sent an RFC patch at [1].
+> >
+> > [1] https://lkml.kernel.org/r/20190914122500.GA1425@darwi-home-pc
+> 
+> Looks reasonable to me. Except I'd just make it simpler and make it a
+> big WARN_ON_ONCE(), which is a lot harder to miss than pr_notice().
+> Make it clear that it is a *bug* if user space thinks it should wait
+> at boot time.
+> 
+> Also, we might even want to just fill the buffer and return 0 at that
+> point, to make sure that even more broken user space doesn't then try
+> to sleep manually and turn it into a "I'll wait myself" loop.
+>
 
-Yeah, well, the question in the end always is "what is reliable".
+ACK, I'll send an RFC v2, returning buflen, and so on..
 
-Waiting has definitely not been reliable, and has only ever caused problems.
+/me will enjoy the popcorn from all the to-be-reported WARN_ON()s
+on distribution mailing lists ;-)
 
-Returning an error (or some status while still doing a best effort)
-would be reasonable, but I really do think that people will mis-use
-that. We just have too much of a history of people having the mindset
-that they can just fall back to something better - like waiting - and
-they are always wrong.
+>                  Linus
 
-Just returning random data is the right thing, but we do need to make
-sure that system developers see a warning if they do something
-obviously wrong (so that the embedded people without even a real-time
-clock to initialize any bits of entropy AT ALL won't think that they
-can generate a system key on their router).
+thanks,
 
-               Linus
+-- 
+darwi
+http://darwish.chasingpointers.com
