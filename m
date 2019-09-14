@@ -2,144 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DC1B2C3A
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Sep 2019 18:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A59AB2C3C
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Sep 2019 18:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727503AbfINQ1v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 14 Sep 2019 12:27:51 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58952 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727143AbfINQ1v (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Sep 2019 12:27:51 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8EGRJv0011964
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 14 Sep 2019 12:27:20 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 65FD842049E; Sat, 14 Sep 2019 12:27:19 -0400 (EDT)
-Date:   Sat, 14 Sep 2019 12:27:19 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+        id S1727595AbfINQam (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 14 Sep 2019 12:30:42 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:39668 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727584AbfINQam (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Sep 2019 12:30:42 -0400
+Received: by mail-lj1-f196.google.com with SMTP id j16so29932541ljg.6
+        for <linux-ext4@vger.kernel.org>; Sat, 14 Sep 2019 09:30:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7QtC/f2hJx2ppzGwikyhiUUGfw6v6V8CYE/OQaTbY7U=;
+        b=XOEL1ROFEhWIlOr/kpF+Xmv1cOHfZvVJqWci/babAShogjn0G0G2KAwGvxWlSSiYT1
+         EcyJi67/ISiMlt/SeSt8nJbkhD6pVZnMSqd65N/zAAXMs0EW9BPxJrCJ3gx/zz55metR
+         hCSidt7nSarlIY/sOgjiRVEIldlOlPQvKoVrE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7QtC/f2hJx2ppzGwikyhiUUGfw6v6V8CYE/OQaTbY7U=;
+        b=h8SnHWzz3KzdCdHZWmEhovcF4hdrpVBwbbkXS2rdeswaNu/E+3f2cjgaCxPCKq0sEv
+         fqi1iuYh9G4Tz9iE/gtVaEPhqsBstqOS9GjWuBijdEzy//5sEz+akOQajrIFKsYP4NG3
+         JplaD9cNW0XBnwA5vGU6MqeinfOlHv9mAe7pmEFeqCVXzWW00H/7fZuYygwy9khfoskW
+         XH6+y+5LFnYh6QbV/uZeZOtVG1pwXmd+Yv1CCSbHQHXZfj0Xivm+R8fHS/7z7T49Nof9
+         KiOsmnJOdZ5QlSm1BnhFPFMAD9/wNur+jXVkaADWUz+LwG2IXYTZLZvwsC9PKyb2JEKw
+         LZGQ==
+X-Gm-Message-State: APjAAAWziDrXmem5RKx9zhmXx/CXmdWTxMToWhyDKt24ZRxSRGU72cPk
+        3uVHQVAs9XIgUNHYDrYvUtoiZw25OWQ=
+X-Google-Smtp-Source: APXvYqx9i5aTWA7qTVwUnUVPaYdEoLp+nCdLcD8Nc2yYDuhmP8WBvQmcxIpmprceXUAkZPy+zK3usA==
+X-Received: by 2002:a2e:934f:: with SMTP id m15mr7531974ljh.101.1568478639450;
+        Sat, 14 Sep 2019 09:30:39 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id h25sm9195563lfj.81.2019.09.14.09.30.37
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Sep 2019 09:30:39 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id h2so23396718ljk.1
+        for <linux-ext4@vger.kernel.org>; Sat, 14 Sep 2019 09:30:37 -0700 (PDT)
+X-Received: by 2002:a2e:8789:: with SMTP id n9mr363387lji.52.1568478635956;
+ Sat, 14 Sep 2019 09:30:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
+ <20190910173243.GA3992@darwi-home-pc> <CAHk-=wjo6qDvh_fUnd2HdDb63YbWN09kE0FJPgCW+nBaWMCNAQ@mail.gmail.com>
+ <20190911160729.GF2740@mit.edu> <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
+ <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
+ <20190911173624.GI2740@mit.edu> <20190912034421.GA2085@darwi-home-pc>
+ <20190912082530.GA27365@mit.edu> <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914150206.GA2270@darwi-home-pc>
+In-Reply-To: <20190914150206.GA2270@darwi-home-pc>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 14 Sep 2019 09:30:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
+Message-ID: <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
+Subject: Re: Linux 5.3-rc8
 To:     "Ahmed S. Darwish" <darwish.07@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
         William Jon McCann <mccann@jhu.edu>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
         lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190914162719.GA19710@mit.edu>
-References: <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
- <20190910173243.GA3992@darwi-home-pc>
- <CAHk-=wjo6qDvh_fUnd2HdDb63YbWN09kE0FJPgCW+nBaWMCNAQ@mail.gmail.com>
- <20190911160729.GF2740@mit.edu>
- <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
- <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
- <20190911173624.GI2740@mit.edu>
- <20190912034421.GA2085@darwi-home-pc>
- <20190912082530.GA27365@mit.edu>
- <20190914092509.GA1138@darwi-home-pc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190914092509.GA1138@darwi-home-pc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Sep 14, 2019 at 11:25:09AM +0200, Ahmed S. Darwish wrote:
-> Unfortunately, it only made the early fast init faster, but didn't fix
-> the normal crng init blockage :-(
+On Sat, Sep 14, 2019 at 8:02 AM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
+>
+> On Thu, Sep 12, 2019 at 12:34:45PM +0100, Linus Torvalds wrote:
+> >
+> > An alternative might be to make getrandom() just return an error
+> > instead of waiting. Sure, fill the buffer with "as random as we can"
+> > stuff, but then return -EINVAL because you called us too early.
+>
+> ACK, that's probably _the_ most sensible approach. Only caveat is
+> the slight change in user-space API semantics though...
+>
+> For example, this breaks the just released systemd-random-seed(8)
+> as it _explicitly_ requests blocking behvior from getrandom() here:
+>
 
-Yeah, I see why; the original goal was to do the fast init so that
-using /dev/urandom, even before we were fully initialized, wouldn't be
-deadly.  But then we still wanted 128 bits of estimated entropy the
-old fashioned way before we declare the CRNG initialized.
+Actually, I would argue that the "don't ever block, instead fill
+buffer and return error instead" fixes this broken case.
 
-There are a bunch of things that I think I want to do long-term, such
-as make CONFIG_RANDOM_TRUST_CPU the default, trying to get random
-entropy from the bootloader, etc.  But none of this is something we
-should do in a hurry, especially this close before 5.4 drops.  So I
-think I want to fix things this way, which is a bit a of a hack, but I
-think it's better than simply reverting commit b03755ad6f33.
+>     => src/random-seed/random-seed.c:
+>     /*
+>      * Let's make this whole job asynchronous, i.e. let's make
+>      * ourselves a barrier for proper initialization of the
+>      * random pool.
+>      */
+>      k = getrandom(buf, buf_size, GRND_NONBLOCK);
+>      if (k < 0 && errno == EAGAIN && synchronous) {
+>          log_notice("Kernel entropy pool is not initialized yet, "
+>                     "waiting until it is.");
+>
+>          k = getrandom(buf, buf_size, 0); /* retry synchronously */
+>      }
 
-Ahmed, Linus, what do you think?
+Yeah, the above is yet another example of completely broken garbage.
 
-				- Ted
+You can't just wait and block at boot. That is simply 100%
+unacceptable, and always has been, exactly because that may
+potentially mean waiting forever since you didn't do anything that
+actually is likely to add any entropy.
 
-From f1a111bff3b996258410e51a3760fc39bbd7058f Mon Sep 17 00:00:00 2001
-From: Theodore Ts'o <tytso@mit.edu>
-Date: Sat, 14 Sep 2019 12:21:39 -0400
-Subject: [PATCH] ext4: don't plug in __ext4_get_inode_loc if the CRNG is not
- initialized
+>      if (k < 0) {
+>          log_debug_errno(errno, "Failed to read random data with "
+>                          "getrandom(), falling back to "
+>                          "/dev/urandom: %m");
 
-Unfortuantely commit b03755ad6f33 ("ext4: make __ext4_get_inode_loc
-plug") is so effective that on some systems, where RDRAND is not
-trusted, and the GNOME display manager is using getrandom(2) to get
-randomness for MIT Magic Cookie (which isn't really secure so using
-getrandom(2) is a bit of waste) in early boot on an Arch system is
-causing the boot to hang.
+At least it gets a log message.
 
-Since this is causing problems, although arguably this is userspace's
-fault, let's not do it if the CRNG is not yet initialized.  This is
-better than trying to tweak the random number generator right before
-5.4 is released (I'm afraid we'll accidentally make it _too_ weak),
-and it's also better than simply completely reverting b03755ad6f33.
+So I think the right thing to do is to just make getrandom() return
+-EINVAL, and refuse to block.
 
-We're effectively reverting it while the RNG is not yet initialized,
-to slow down the boot and make it less efficient, just to work around
-broken init setups.
+As mentioned, this has already historically been a huge issue on
+embedded devices, and with disks turnign not just to NVMe but to
+actual polling nvdimm/xpoint/flash, the amount of true "entropy"
+randomness we can give at boot is very questionable.
 
-Fixes: b03755ad6f33 ("ext4: make __ext4_get_inode_loc plug")
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/inode.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+We can (and will) continue to do a best-effort thing (including very
+much using rdread and friends), but the whole "wait for entropy"
+simply *must* stop.
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 4e271b509af1..41ad93f11b6d 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4534,6 +4534,7 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 	struct buffer_head	*bh;
- 	struct super_block	*sb = inode->i_sb;
- 	ext4_fsblk_t		block;
-+	int			be_inefficient = !rng_is_initialized();
- 	struct blk_plug		plug;
- 	int			inodes_per_block, inode_offset;
- 
-@@ -4541,7 +4542,6 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 	if (inode->i_ino < EXT4_ROOT_INO ||
- 	    inode->i_ino > le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count))
- 		return -EFSCORRUPTED;
--
- 	iloc->block_group = (inode->i_ino - 1) / EXT4_INODES_PER_GROUP(sb);
- 	gdp = ext4_get_group_desc(sb, iloc->block_group, NULL);
- 	if (!gdp)
-@@ -4623,7 +4623,8 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 		 * If we need to do any I/O, try to pre-readahead extra
- 		 * blocks from the inode table.
- 		 */
--		blk_start_plug(&plug);
-+		if (likely(!be_inefficient))
-+			blk_start_plug(&plug);
- 		if (EXT4_SB(sb)->s_inode_readahead_blks) {
- 			ext4_fsblk_t b, end, table;
- 			unsigned num;
-@@ -4654,7 +4655,8 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 		get_bh(bh);
- 		bh->b_end_io = end_buffer_read_sync;
- 		submit_bh(REQ_OP_READ, REQ_META | REQ_PRIO, bh);
--		blk_finish_plug(&plug);
-+		if (likely(!be_inefficient))
-+			blk_finish_plug(&plug);
- 		wait_on_buffer(bh);
- 		if (!buffer_uptodate(bh)) {
- 			EXT4_ERROR_INODE_BLOCK(inode, block,
--- 
-2.23.0
+> I've sent an RFC patch at [1].
+>
+> [1] https://lkml.kernel.org/r/20190914122500.GA1425@darwi-home-pc
 
+Looks reasonable to me. Except I'd just make it simpler and make it a
+big WARN_ON_ONCE(), which is a lot harder to miss than pr_notice().
+Make it clear that it is a *bug* if user space thinks it should wait
+at boot time.
+
+Also, we might even want to just fill the buffer and return 0 at that
+point, to make sure that even more broken user space doesn't then try
+to sleep manually and turn it into a "I'll wait myself" loop.
+
+                 Linus
