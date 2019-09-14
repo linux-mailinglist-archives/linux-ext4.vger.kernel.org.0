@@ -2,62 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2C4B2AD3
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Sep 2019 11:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7F7B2B29
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Sep 2019 14:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbfINJZU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 14 Sep 2019 05:25:20 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:36940 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727666AbfINJZU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Sep 2019 05:25:20 -0400
-Received: by mail-wr1-f68.google.com with SMTP id i1so33662955wro.4;
-        Sat, 14 Sep 2019 02:25:17 -0700 (PDT)
+        id S1730442AbfINMZM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 14 Sep 2019 08:25:12 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:33800 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730438AbfINMZM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Sep 2019 08:25:12 -0400
+Received: by mail-wm1-f68.google.com with SMTP id y135so3731674wmc.1;
+        Sat, 14 Sep 2019 05:25:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=0ZUbt5qfZhTTFzUgC4IFjqmJyGeXLH3Sp7wB7Ay8158=;
-        b=hREe1AemGeI02DKnbQKhfaYRJ3V+qo6uki4vsXF5L/9kEtNxmuXops+bw+97zgd6vN
-         xKzGi+LZB5wOsGYwp8Y8MD0zS7klSoatAZcd0YhFv7pg1C61PiHy7HPZWwbrlbk8rVfk
-         6ZJW2++O0VDjIJD26DkzDDauLIomdp+GxEpzswU9ahpIiQVgX0Y+VGZkG1uQ17F1+jpO
-         Dr0QS6rl150Km4PJ1Cbr5V9rT+sgJWjbdceRHCr5bpMt+osjFJtpL7G3O8/dwmUFYdta
-         qsmFuW1Ya+pME91gKOmnI3OHX7gJh4shInqXjSqkWzQCxH/wX/fejlAunk/LUaVm94gz
-         Es8g==
+        bh=fmVqgGwWD104zixL+b9UTNpYfn08VL/GzWBh1q3vkxU=;
+        b=njD6j8MRfJCvOD8IaYmxhuhYhto9Z+pjBKA7d8UWEvA06OU8fyOqParzbf1upS6spw
+         7CybUU6ytIeUPQEr0ybHLEuBrcskXJPgSJftTb0BYHVfFbzQtspoDp4H5/dFY4aLRT5g
+         OYCBfnHFKsLIePeNLuFJ4k9LWFzwpNA8gYDiJAqBB2bVgWT70kOKXfVVya1pQ6sbt4pk
+         UNCKj9ZSee0YPYdOptCPZ/vd4/liJ+numH6pYd47sZCby7/6FPz6JEC1ffuN4ZuS47+m
+         NnDLiy9Cfd3y8fT2UayhVA/+aFtw225YSEyvyWemWHNjicMiqdm687JgYXbvobPI9qWo
+         fJsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0ZUbt5qfZhTTFzUgC4IFjqmJyGeXLH3Sp7wB7Ay8158=;
-        b=ADKOftYJoqwBj3QxcWbWGvy1JbtgjI1L+IDFA/l7imLfz4OIpIAX/17BSQkkw5pFgL
-         Kp2RzTe4KJi2yuHPBWgpxajTxQHovLp9jALC2PzQgTcktKhGuoCd2X2fmYLSgh9IRS7Q
-         12Jq6cS9j3Bf/n1/6E4amTUDSS6/BumMIXmwbPQUbzc1s/koohqLHTLhSLEr7JdmtzYq
-         buwmuMeSPnS5pFXQ2Wzauek9JzyFUe2jp80Fib2cEROWlkLhrOLz9ITcDcf/LT2Gkb+Z
-         +i4Thp1TUSL0Ib5kuFjp1mrErH+Rlbt6AfDLIQScVRPzLkCBbocqbEk/6a0q0H32OXX1
-         3mmw==
-X-Gm-Message-State: APjAAAWDvZYOQYSIUn/Tm0eA9cJb8id7Q8PBEIBK7A7aOH8+4tJPg315
-        JM5H8gOedzGi5W39FiKdadg=
-X-Google-Smtp-Source: APXvYqwO23/ek3Tphg7mLbnmMjnn8s6DSBISi6Cn99px5e9IfL1YTLUy/D8zFWZOWJxW1MF7ahduuw==
-X-Received: by 2002:adf:dd4d:: with SMTP id u13mr10780769wrm.112.1568453116848;
-        Sat, 14 Sep 2019 02:25:16 -0700 (PDT)
-Received: from darwi-home-pc (p200300D06F2D142FF79C0802487FC445.dip0.t-ipconnect.de. [2003:d0:6f2d:142f:f79c:802:487f:c445])
-        by smtp.gmail.com with ESMTPSA id z1sm55299338wre.40.2019.09.14.02.25.15
+        bh=fmVqgGwWD104zixL+b9UTNpYfn08VL/GzWBh1q3vkxU=;
+        b=phxpvS9JxkjfShOaqJiS1e1f23Dw96pK/P/oBhVqUmultfb+5oNKdd4fWmTyVWEO+k
+         vQFFlsj+IeQRyozBAK9OSVgEpdxgy+fFqTT2hUjY8ISsgTipfk0M2DAeojP8mnd7EEZ/
+         2n1sLnt4KVq9g2QwP7833aKxAQDHsU/8bdPTLnkgNHYYrIQFZ9vLlGgFTNyxfpVBVHB/
+         7eZyqfYRtH30vwe6QRDOw8cvvRs0kli/sKsHRDgTVqzQ2S7VD4c9AJ8v9PFZbDGO9jV5
+         VEyPa/ZUPRyViyILzIngw9aaV4fGGZd0hTP1MuI9DEJwV69f96HDlkyTpGA+u9hAZUb7
+         8Syw==
+X-Gm-Message-State: APjAAAXPLFiJ0z/WRDHU4lurT34/EbmVhI5xRXz4hzxjoJ7SbfqVD34c
+        1IlaOJggYqNKdTUZE+hmTpE=
+X-Google-Smtp-Source: APXvYqyaua4dfsp8t2MuvGLJ5trj0tBgTGML6kk+L1HU+962XTdkyK/kCB25ncqNPN3wn4MyVisGPg==
+X-Received: by 2002:a1c:cbcc:: with SMTP id b195mr7686638wmg.80.1568463909367;
+        Sat, 14 Sep 2019 05:25:09 -0700 (PDT)
+Received: from darwi-home-pc (p200300D06F2D1401AF0812D8DEE03BEC.dip0.t-ipconnect.de. [2003:d0:6f2d:1401:af08:12d8:dee0:3bec])
+        by smtp.gmail.com with ESMTPSA id a205sm11775370wmd.44.2019.09.14.05.25.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Sep 2019 02:25:15 -0700 (PDT)
-Date:   Sat, 14 Sep 2019 11:25:09 +0200
+        Sat, 14 Sep 2019 05:25:08 -0700 (PDT)
+Date:   Sat, 14 Sep 2019 14:25:00 +0200
 From:   "Ahmed S. Darwish" <darwish.07@gmail.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
         William Jon McCann <mccann@jhu.edu>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190914092509.GA1138@darwi-home-pc>
-References: <20190910042107.GA1517@darwi-home-pc>
- <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
+Subject: [PATCH RFC] random: getrandom(2): don't block on non-initialized
+ entropy pool
+Message-ID: <20190914122500.GA1425@darwi-home-pc>
+References: <CAHk-=wimE=Rw4s8MHKpsgc-ZsdoTp-_CAs7fkm9scn87ZbkMFg@mail.gmail.com>
  <20190910173243.GA3992@darwi-home-pc>
  <CAHk-=wjo6qDvh_fUnd2HdDb63YbWN09kE0FJPgCW+nBaWMCNAQ@mail.gmail.com>
  <20190911160729.GF2740@mit.edu>
@@ -66,159 +67,134 @@ References: <20190910042107.GA1517@darwi-home-pc>
  <20190911173624.GI2740@mit.edu>
  <20190912034421.GA2085@darwi-home-pc>
  <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190912082530.GA27365@mit.edu>
+In-Reply-To: <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 04:25:30AM -0400, Theodore Y. Ts'o wrote:
-> On Thu, Sep 12, 2019 at 05:44:21AM +0200, Ahmed S. Darwish wrote:
-[...]
-> 
-> >     1. Cutting down the number of bits needed to initialize the CRNG
-> >        to 256 bits (CHACHA20 cipher)
-> 
-> Does the attach patch (see below) help?
->
-[...]
-> 
-> diff --git a/drivers/char/random.c b/drivers/char/random.c
-> index 5d5ea4ce1442..b9b3a5a82abf 100644
-> --- a/drivers/char/random.c
-> +++ b/drivers/char/random.c
-> @@ -500,7 +500,7 @@ static int crng_init = 0;
->  #define crng_ready() (likely(crng_init > 1))
->  static int crng_init_cnt = 0;
->  static unsigned long crng_global_init_time = 0;
-> -#define CRNG_INIT_CNT_THRESH (2*CHACHA_KEY_SIZE)
-> +#define CRNG_INIT_CNT_THRESH	CHACHA_KEY_SIZE
->  static void _extract_crng(struct crng_state *crng, __u8 out[CHACHA_BLOCK_SIZE]);
->  static void _crng_backtrack_protect(struct crng_state *crng,
->  				    __u8 tmp[CHACHA_BLOCK_SIZE], int used);
+getrandom() has been created as a new and more secure interface for
+pseudorandom data requests.  Unlike /dev/urandom, it unconditionally
+blocks until the entropy pool has been properly initialized.
 
-Unfortunately, it only made the early fast init faster, but didn't fix
-the normal crng init blockage :-(
+While getrandom() has no guaranteed upper bound for its waiting time,
+user-space has been abusing it by issuing the syscall, from shared
+libraries no less, during the main system boot sequence.
 
-Here's a trace log, got by applying the patch at [1]. The boot was
-continued only after typing some random keys after ~30s:
+Thus, on certain setups where there is no hwrng (embedded), or the
+hwrng is not trusted by some users (intel RDRAND), or sometimes it's
+just broken (amd RDRAND), the system boot can be *reliably* blocked.
 
-#
-# entries-in-buffer/entries-written: 22/22   #P:8
-#
-#                              _-----=> irqs-off
-#                             / _----=> need-resched
-#                            | / _---=> hardirq/softirq
-#                            || / _--=> preempt-depth
-#                            ||| /     delay
-#           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-#              | |       |   ||||       |         |
-          <idle>-0     [001] dNh.     0.687088: crng_fast_load: crng threshold = 32
-          <idle>-0     [001] dNh.     0.687089: crng_fast_load: crng_init_cnt = 0
-          <idle>-0     [001] dNh.     0.687090: crng_fast_load: crng_init_cnt, now set to 16
-          <idle>-0     [001] dNh.     0.705208: crng_fast_load: crng threshold = 32
-          <idle>-0     [001] dNh.     0.705209: crng_fast_load: crng_init_cnt = 16
-          <idle>-0     [001] dNh.     0.705209: crng_fast_load: crng_init_cnt, now set to 32
-          <idle>-0     [001] dNh.     0.708048: crng_fast_load: random: fast init done
-             lvm-165   [001] d...     2.417971: urandom_read: random: crng_init_cnt, now set to 0
- systemd-random--179   [003] ....     2.495669: wait_for_random_bytes.part.0: wait for randomness
-     dbus-daemon-274   [006] dN..     3.294331: urandom_read: random: crng_init_cnt, now set to 0
-     dbus-daemon-274   [006] dN..     3.316618: urandom_read: random: crng_init_cnt, now set to 0
-         polkitd-286   [007] dN..     3.873918: urandom_read: random: crng_init_cnt, now set to 0
-         polkitd-286   [007] dN..     3.874303: urandom_read: random: crng_init_cnt, now set to 0
-         polkitd-286   [007] dN..     3.874375: urandom_read: random: crng_init_cnt, now set to 0
-         polkitd-286   [007] d...     3.886204: urandom_read: random: crng_init_cnt, now set to 0
-         polkitd-286   [007] d...     3.886217: urandom_read: random: crng_init_cnt, now set to 0
-         polkitd-286   [007] d...     3.888519: urandom_read: random: crng_init_cnt, now set to 0
-         polkitd-286   [007] d...     3.888529: urandom_read: random: crng_init_cnt, now set to 0
- gnome-session-b-321   [006] ....     4.292034: wait_for_random_bytes.part.0: wait for randomness
-          <idle>-0     [002] dNh.    36.784001: crng_reseed: random: crng init done
- gnome-session-b-321   [006] ....    36.784019: wait_for_random_bytes.part.0: wait done
- systemd-random--179   [003] ....    36.784051: wait_for_random_bytes.part.0: wait done
+The issue is further exaggerated by recent file-system optimizations,
+e.g. b03755ad6f33 (ext4: make __ext4_get_inode_loc plug), which
+merges directory lookup code inode table IO, and thus minimizes the
+number of disk interrupts and entropy during boot. After that commit,
+a blocked boot can be reliably reproduced on a Thinkpad E480 laptop
+with standard ArchLinux user-space.
 
-[1] patch:
+Thus, don't trust user-space on calling getrandom() from the right
+context. Just never block, and return -EINVAL if entropy is not yet
+available.
+
+Link: https://lkml.kernel.org/r/CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com
+Link: https://lkml.kernel.org/r/20190912034421.GA2085@darwi-home-pc
+Link: https://lkml.kernel.org/r/20190911173624.GI2740@mit.edu
+Link: https://lkml.kernel.org/r/20180514003034.GI14763@thunk.org
+
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Ahmed S. Darwish <darwish.07@gmail.com>
+---
+
+Notes:
+    This feels very risky at the very end of -rc8, so only sending
+    this as an RFC. The system of course reliably boots with this,
+    and the log, as expected, powerfully warns all callers:
+
+    $ dmesg | grep random
+    [0.236472] random: get_random_bytes called from start_kernel+0x30f/0x4d7 with crng_init=0
+    [0.680263] random: fast init done
+    [2.500346] random: lvm: uninitialized urandom read (4 bytes read)
+    [2.595125] random: systemd-random-: invalid getrandom request (512 bytes): crng not ready
+    [2.595126] random: systemd-random-: uninitialized urandom read (512 bytes read)
+    [3.427699] random: dbus-daemon: uninitialized urandom read (12 bytes read)
+    [3.979425] urandom_read: 1 callbacks suppressed
+    [3.979426] random: polkitd: uninitialized urandom read (8 bytes read)
+    [3.979726] random: polkitd: uninitialized urandom read (8 bytes read)
+    [3.979752] random: polkitd: uninitialized urandom read (8 bytes read)
+    [4.473398] random: gnome-session-b: invalid getrandom request (16 bytes): crng not ready
+    [4.473404] random: gnome-session-b: invalid getrandom request (16 bytes): crng not ready
+    [4.473409] random: gnome-session-b: invalid getrandom request (16 bytes): crng not ready
+    [5.265636] random: crng init done
+    [5.265649] random: 3 urandom warning(s) missed due to ratelimiting
+    [5.265652] random: 1 getrandom warning(s) missed due to ratelimiting
+
+ drivers/char/random.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 5d5ea4ce1442..4a50ee2c230d 100644
+index 4a50ee2c230d..309dc5ddf370 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -500,7 +500,7 @@ static int crng_init = 0;
- #define crng_ready() (likely(crng_init > 1))
- static int crng_init_cnt = 0;
- static unsigned long crng_global_init_time = 0;
--#define CRNG_INIT_CNT_THRESH (2*CHACHA_KEY_SIZE)
-+#define CRNG_INIT_CNT_THRESH (CHACHA_KEY_SIZE)
- static void _extract_crng(struct crng_state *crng, __u8 out[CHACHA_BLOCK_SIZE]);
- static void _crng_backtrack_protect(struct crng_state *crng,
- 				    __u8 tmp[CHACHA_BLOCK_SIZE], int used);
-@@ -931,6 +931,9 @@ static int crng_fast_load(const char *cp, size_t len)
- 	unsigned long flags;
- 	char *p;
- 
-+	trace_printk("crng threshold = %d\n", CRNG_INIT_CNT_THRESH);
-+	trace_printk("crng_init_cnt = %d\n", crng_init_cnt);
-+
- 	if (!spin_trylock_irqsave(&primary_crng.lock, flags))
- 		return 0;
- 	if (crng_init != 0) {
-@@ -943,11 +946,15 @@ static int crng_fast_load(const char *cp, size_t len)
- 		cp++; crng_init_cnt++; len--;
+@@ -511,6 +511,8 @@ static struct ratelimit_state unseeded_warning =
+ 	RATELIMIT_STATE_INIT("warn_unseeded_randomness", HZ, 3);
+ static struct ratelimit_state urandom_warning =
+ 	RATELIMIT_STATE_INIT("warn_urandom_randomness", HZ, 3);
++static struct ratelimit_state getrandom_warning =
++	RATELIMIT_STATE_INIT("warn_getrandom_notavail", HZ, 3);
+
+ static int ratelimit_disable __read_mostly;
+
+@@ -1053,6 +1055,12 @@ static void crng_reseed(struct crng_state *crng, struct entropy_store *r)
+ 				  urandom_warning.missed);
+ 			urandom_warning.missed = 0;
+ 		}
++		if (getrandom_warning.missed) {
++			pr_notice("random: %d getrandom warning(s) missed "
++				  "due to ratelimiting\n",
++				  getrandom_warning.missed);
++			getrandom_warning.missed = 0;
++		}
  	}
- 	spin_unlock_irqrestore(&primary_crng.lock, flags);
-+
-+	trace_printk("crng_init_cnt, now set to %d\n", crng_init_cnt);
-+
- 	if (crng_init_cnt >= CRNG_INIT_CNT_THRESH) {
- 		invalidate_batched_entropy();
- 		crng_init = 1;
- 		wake_up_interruptible(&crng_init_wait);
- 		pr_notice("random: fast init done\n");
-+		trace_printk("random: fast init done\n");
- 	}
- 	return 1;
  }
-@@ -1033,6 +1040,7 @@ static void crng_reseed(struct crng_state *crng, struct entropy_store *r)
- 		process_random_ready_list();
- 		wake_up_interruptible(&crng_init_wait);
- 		pr_notice("random: crng init done\n");
-+		trace_printk("random: crng init done\n");
- 		if (unseeded_warning.missed) {
- 			pr_notice("random: %d get_random_xx warning(s) missed "
- 				  "due to ratelimiting\n",
-@@ -1743,9 +1751,16 @@ EXPORT_SYMBOL(get_random_bytes);
-  */
- int wait_for_random_bytes(void)
+
+@@ -1915,6 +1923,7 @@ int __init rand_initialize(void)
+ 	crng_global_init_time = jiffies;
+ 	if (ratelimit_disable) {
+ 		urandom_warning.interval = 0;
++		getrandom_warning.interval = 0;
+ 		unseeded_warning.interval = 0;
+ 	}
+ 	return 0;
+@@ -2138,8 +2147,6 @@ const struct file_operations urandom_fops = {
+ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
+ 		unsigned int, flags)
  {
-+	int ret;
+-	int ret;
+-
+ 	if (flags & ~(GRND_NONBLOCK|GRND_RANDOM))
+ 		return -EINVAL;
+
+@@ -2152,9 +2159,13 @@ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
+ 	if (!crng_ready()) {
+ 		if (flags & GRND_NONBLOCK)
+ 			return -EAGAIN;
+-		ret = wait_for_random_bytes();
+-		if (unlikely(ret))
+-			return ret;
 +
- 	if (likely(crng_ready()))
- 		return 0;
--	return wait_event_interruptible(crng_init_wait, crng_ready());
++		if (__ratelimit(&getrandom_warning))
++			pr_notice("random: %s: invalid getrandom request "
++				  "(%zd bytes): crng not ready",
++				  current->comm, count);
 +
-+	trace_printk("wait for randomness\n");
-+	ret = wait_event_interruptible(crng_init_wait, crng_ready());
-+	trace_printk("wait done\n");
-+
-+	return ret;
- }
- EXPORT_SYMBOL(wait_for_random_bytes);
- 
-@@ -1974,6 +1989,8 @@ urandom_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
- 			       current->comm, nbytes);
- 		spin_lock_irqsave(&primary_crng.lock, flags);
- 		crng_init_cnt = 0;
-+		trace_printk("random: crng_init_cnt, now set to %d\n",
-+			     crng_init_cnt);
- 		spin_unlock_irqrestore(&primary_crng.lock, flags);
++		return -EINVAL;
  	}
- 	nbytes = min_t(size_t, nbytes, INT_MAX >> (ENTROPY_SHIFT + 3));
-
-thanks,
-
--- 
-darwi
-http://darwish.chasingpointers.com
+ 	return urandom_read(NULL, buf, count, NULL);
+ }
+--
+2.23.0
