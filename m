@@ -2,25 +2,23 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BD8B2EDE
-	for <lists+linux-ext4@lfdr.de>; Sun, 15 Sep 2019 08:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89EEB2EE5
+	for <lists+linux-ext4@lfdr.de>; Sun, 15 Sep 2019 09:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbfIOG46 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 Sep 2019 02:56:58 -0400
-Received: from gardel.0pointer.net ([85.214.157.71]:38262 "EHLO
-        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725991AbfIOG45 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Sep 2019 02:56:57 -0400
-X-Greylist: delayed 313 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Sep 2019 02:56:57 EDT
-Received: from gardel-login.0pointer.net (gardel.0pointer.net [85.214.157.71])
-        by gardel.0pointer.net (Postfix) with ESMTP id 51E95E811E1;
-        Sun, 15 Sep 2019 08:56:56 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-        id F3F4B160ADC; Sun, 15 Sep 2019 08:56:55 +0200 (CEST)
-Date:   Sun, 15 Sep 2019 08:56:55 +0200
-From:   Lennart Poettering <mzxreary@0pointer.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Alexander E. Patrakov" <patrakov@gmail.com>,
+        id S1726492AbfIOHBW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 15 Sep 2019 03:01:22 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:45081 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725773AbfIOHBV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 15 Sep 2019 03:01:21 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id x8F713NQ021628;
+        Sun, 15 Sep 2019 09:01:03 +0200
+Date:   Sun, 15 Sep 2019 09:01:03 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Lennart Poettering <mzxreary@0pointer.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
         "Ahmed S. Darwish" <darwish.07@gmail.com>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
@@ -29,9 +27,8 @@ Cc:     "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
 Subject: Re: Linux 5.3-rc8
-Message-ID: <20190915065655.GB29681@gardel-login>
-References: <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
- <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
+Message-ID: <20190915070103.GC20811@1wt.eu>
+References: <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
  <20190911173624.GI2740@mit.edu>
  <20190912034421.GA2085@darwi-home-pc>
  <20190912082530.GA27365@mit.edu>
@@ -40,55 +37,24 @@ References: <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
  <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
  <214fed0e-6659-def9-b5f8-a9d7a8cb72af@gmail.com>
  <CAHk-=wiB0e_uGpidYHf+dV4eeT+XmG-+rQBx=JJ110R48QFFWw@mail.gmail.com>
+ <20190915065655.GB29681@gardel-login>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiB0e_uGpidYHf+dV4eeT+XmG-+rQBx=JJ110R48QFFWw@mail.gmail.com>
+In-Reply-To: <20190915065655.GB29681@gardel-login>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sa, 14.09.19 09:52, Linus Torvalds (torvalds@linux-foundation.org) wrote:
+On Sun, Sep 15, 2019 at 08:56:55AM +0200, Lennart Poettering wrote:
+> There's benefit in being able to wait until the pool is initialized
+> before we update the random seed stored on disk with a new one,
 
-> On Sat, Sep 14, 2019 at 9:35 AM Alexander E. Patrakov
-> <patrakov@gmail.com> wrote:
-> >
-> > Let me repeat: not -EINVAL, please. Please find some other error code,
-> > so that the application could sensibly distinguish between this case
-> > (low quality entropy is in the buffer) and the "kernel is too dumb" case
-> > (and no entropy is in the buffer).
->
-> I'm not convinced we want applications to see that difference.
->
-> The fact is, every time an application thinks it cares, it has caused
-> problems. I can just see systemd saying "ok, the kernel didn't block,
-> so I'll just do
->
->    while (getrandom(x) == -ENOENTROPY)
->        sleep(1);
->
-> instead. Which is still completely buggy garbage.
->
-> The fact is, we can't guarantee entropy in general. It's probably
-> there is practice, particularly with user space saving randomness from
-> last boot etc, but that kind of data may be real entropy, but the
-> kernel cannot *guarantee* that it is.
+And what exactly makes you think that waiting with arms crossed not
+doing anything else has any chance to make the situation change if
+you already had no such entropy available when reaching that first
+call, especially during early boot ?
 
-I am not expecting the kernel to guarantee entropy. I just expecting
-the kernel to not give me garbage knowingly. It's OK if it gives me
-garbage unknowingly, but I have a problem if it gives me trash all the
-time.
-
-There's benefit in being able to wait until the pool is initialized
-before we update the random seed stored on disk with a new one, and
-there's benefit in being able to wait until the pool is initialized
-before we let cryptsetup read a fresh, one-time key for dm-crypt from
-/dev/urandom. I fully understand that any such reporting for
-initialization is "best-effort", i.e. to the point where we don't know
-anything to the contrary, but at least give userspace that.
-
-Lennart
-
---
-Lennart Poettering, Berlin
+Willy
