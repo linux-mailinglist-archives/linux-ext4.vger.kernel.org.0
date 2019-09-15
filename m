@@ -2,92 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AE3B2EDB
-	for <lists+linux-ext4@lfdr.de>; Sun, 15 Sep 2019 08:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06BD8B2EDE
+	for <lists+linux-ext4@lfdr.de>; Sun, 15 Sep 2019 08:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbfIOGx7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 Sep 2019 02:53:59 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:45069 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbfIOGx7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 15 Sep 2019 02:53:59 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id x8F6rdfG021602;
-        Sun, 15 Sep 2019 08:53:39 +0200
-Date:   Sun, 15 Sep 2019 08:53:39 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        id S1726399AbfIOG46 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 15 Sep 2019 02:56:58 -0400
+Received: from gardel.0pointer.net ([85.214.157.71]:38262 "EHLO
+        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725991AbfIOG45 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Sep 2019 02:56:57 -0400
+X-Greylist: delayed 313 seconds by postgrey-1.27 at vger.kernel.org; Sun, 15 Sep 2019 02:56:57 EDT
+Received: from gardel-login.0pointer.net (gardel.0pointer.net [85.214.157.71])
+        by gardel.0pointer.net (Postfix) with ESMTP id 51E95E811E1;
+        Sun, 15 Sep 2019 08:56:56 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id F3F4B160ADC; Sun, 15 Sep 2019 08:56:55 +0200 (CEST)
+Date:   Sun, 15 Sep 2019 08:56:55 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Alexander E. Patrakov" <patrakov@gmail.com>,
         "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
         William Jon McCann <mccann@jhu.edu>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
         lkml <linux-kernel@vger.kernel.org>
 Subject: Re: Linux 5.3-rc8
-Message-ID: <20190915065338.GB20811@1wt.eu>
-References: <20190912082530.GA27365@mit.edu>
+Message-ID: <20190915065655.GB29681@gardel-login>
+References: <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
+ <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
+ <20190911173624.GI2740@mit.edu>
+ <20190912034421.GA2085@darwi-home-pc>
+ <20190912082530.GA27365@mit.edu>
  <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
  <20190914150206.GA2270@darwi-home-pc>
  <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
- <20190914211126.GA4355@darwi-home-pc>
- <20190914222432.GC19710@mit.edu>
- <CAHk-=wi-y26j4yX5JtwqwXc7zKX1K8FLQGVcx49aSYuW8JwM+w@mail.gmail.com>
- <20190915010037.GE19710@mit.edu>
- <CAHk-=wjGTV0e_P73V0B3cPVrfeoSZcV6CjQMgj-+yL-s38DKaw@mail.gmail.com>
- <20190915020521.GF19710@mit.edu>
+ <214fed0e-6659-def9-b5f8-a9d7a8cb72af@gmail.com>
+ <CAHk-=wiB0e_uGpidYHf+dV4eeT+XmG-+rQBx=JJ110R48QFFWw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190915020521.GF19710@mit.edu>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+In-Reply-To: <CAHk-=wiB0e_uGpidYHf+dV4eeT+XmG-+rQBx=JJ110R48QFFWw@mail.gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Sep 14, 2019 at 10:05:21PM -0400, Theodore Y. Ts'o wrote:
-> You basically want to turn getrandom into /dev/urandom.  And that's
-> how we got into the mess where 10% of the publically accessible ssh
-> keys could be guessed.
+On Sa, 14.09.19 09:52, Linus Torvalds (torvalds@linux-foundation.org) wrote:
 
-Not exactly. This was an *API* issue that created this situation. The
-fact that you had a single random() call in the libc, either mapped
-to /dev/urandom or to /dev/random. By then many of us were used to rely
-on one or the other and finding systems where /dev/random was a symlink
-to /dev/urandom to avoid blocking was extremely common. In fact it was
-caused by the exact same situation: we try to enforce good random for
-everyone, it cannot work all the time and breaks programs which do not
-need such randoms, so the user breaks the trust on randomness by
-configuring the system so that randoms work all the time for the most
-common programs. And that's how you end up with SSH trusting a broken
-random generator without knowing it was misconfigured.
+> On Sat, Sep 14, 2019 at 9:35 AM Alexander E. Patrakov
+> <patrakov@gmail.com> wrote:
+> >
+> > Let me repeat: not -EINVAL, please. Please find some other error code,
+> > so that the application could sensibly distinguish between this case
+> > (low quality entropy is in the buffer) and the "kernel is too dumb" case
+> > (and no entropy is in the buffer).
+>
+> I'm not convinced we want applications to see that difference.
+>
+> The fact is, every time an application thinks it cares, it has caused
+> problems. I can just see systemd saying "ok, the kernel didn't block,
+> so I'll just do
+>
+>    while (getrandom(x) == -ENOENTROPY)
+>        sleep(1);
+>
+> instead. Which is still completely buggy garbage.
+>
+> The fact is, we can't guarantee entropy in general. It's probably
+> there is practice, particularly with user space saving randomness from
+> last boot etc, but that kind of data may be real entropy, but the
+> kernel cannot *guarantee* that it is.
 
-Your getrandom() API does have the ability to fix this. In my opinion
-the best way to proceed is to consider that all those who don't care
-about randomness quality never block and that those who care can be
-sure they will either get good randoms or will know about it. Ideally
-calling getrandom() without any flag should be equivalent to what you
-have with /dev/urandom and be good enough to put a UUID on a file
-system. And calling it with "SECURE" or something like this will be
-the indication that it will not betray you and will only return good
-randoms (which is what GRND_RANDOM does in my opinion).
+I am not expecting the kernel to guarantee entropy. I just expecting
+the kernel to not give me garbage knowingly. It's OK if it gives me
+garbage unknowingly, but I have a problem if it gives me trash all the
+time.
 
-The huge difference between getrandom() and /dev/*random here is that
-each application can decide what type of random to use without relying
-on what system-wide breakage was applied just for the sake of fixing
-another simple application. This could even help OpenSSL use two different
-calls for RAND_bytes() and RAND_pseudo_bytes(), instead of using the
-same call and blocking.
+There's benefit in being able to wait until the pool is initialized
+before we update the random seed stored on disk with a new one, and
+there's benefit in being able to wait until the pool is initialized
+before we let cryptsetup read a fresh, one-time key for dm-crypt from
+/dev/urandom. I fully understand that any such reporting for
+initialization is "best-effort", i.e. to the point where we don't know
+anything to the contrary, but at least give userspace that.
 
-Last but not least, I think we need to educate developers regarding
-random number consumption, asking "if you could produce only 16 bytes
-of random in your whole system's lifetime, where would you use them?".
-Entropy is extremely precious and yet the most poorly used resource. I
-almost wouldn't mind seeing GRND_RANDOM requiring a special capability
-since it does have a system-wide impact!
+Lennart
 
-Regards,
-Willy
+--
+Lennart Poettering, Berlin
