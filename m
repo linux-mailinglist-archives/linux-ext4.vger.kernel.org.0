@@ -2,26 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02560B2DBF
-	for <lists+linux-ext4@lfdr.de>; Sun, 15 Sep 2019 04:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1ABB2DC5
+	for <lists+linux-ext4@lfdr.de>; Sun, 15 Sep 2019 04:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbfIOCFz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 14 Sep 2019 22:05:55 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57778 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727262AbfIOCFz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Sep 2019 22:05:55 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8F25Mrh018387
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 14 Sep 2019 22:05:26 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id DADD4420811; Sat, 14 Sep 2019 22:05:21 -0400 (EDT)
-Date:   Sat, 14 Sep 2019 22:05:21 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        id S1727516AbfIOCMD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 14 Sep 2019 22:12:03 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:36603 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727262AbfIOCMD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 14 Sep 2019 22:12:03 -0400
+Received: by mail-lf1-f65.google.com with SMTP id x80so24821647lff.3
+        for <linux-ext4@vger.kernel.org>; Sat, 14 Sep 2019 19:12:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4rYFEB2K43HNknGCuNtqwY11d7jNo13i6prZjBn/RDM=;
+        b=IFLavFfBEECvUaRBp/EiSvd06bt8SLP7qdIU8LhowKpuB244awAuNyT4xXKNmN8XsF
+         qKdO4HiiFlSNQQjo59uVaTwlCPHmxYMbqFjOi4brsClvtwRtIGCqxPsJvahupKarYSzE
+         nprKJDuzUk/SMYuio6GVb4ZLDckKb7XB7gnLc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4rYFEB2K43HNknGCuNtqwY11d7jNo13i6prZjBn/RDM=;
+        b=A/vVagqhqB53H3hJDsfys8M4dZCbvfdzn4mklsQw1dEPMsSRzXUE3U6RH/6QAw/CwN
+         BD4S/Z/Ht7A6igTlWvItZJGx15Ir/Ca4mi4HR1M9OSa0ZKk61EhiQjCLy7qhMlbauZwK
+         grzdxhyDf7eQpk2BkbFPAD0npJhQF6XLfmy2VoyBzFmcsRgeRs7P1P8gdZtGlVptmvgV
+         ajeYHbbeZ31JDscDE+5jzsajjXLYqV7WTlKaTnXxQNY4zN9gqYQUN++27BhfS1YZYLfk
+         CL1KVEh911S1KLyUzuadNWxFKgal7gXnpKaDrlNCvD8ejEYD/r16C9aGV+8JnQWfO+tV
+         rNUQ==
+X-Gm-Message-State: APjAAAVydL/N+ta3kX4s0QIrx5HZI/rGOBRqrfqn/a3zgU7qvI3y3daW
+        HBV7dH6Ve6CGduafwLaeav/esLWGmxI=
+X-Google-Smtp-Source: APXvYqwwL79oN6msGMPtilJTcv1yifqz/hqIozn0vVAZlx73dhllFutYPV5sB6Sw4bukpnfXgDcZTw==
+X-Received: by 2002:a19:7413:: with SMTP id v19mr34542367lfe.176.1568513520415;
+        Sat, 14 Sep 2019 19:12:00 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id z7sm2591635ljc.9.2019.09.14.19.11.58
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 14 Sep 2019 19:11:59 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id a22so30529565ljd.0
+        for <linux-ext4@vger.kernel.org>; Sat, 14 Sep 2019 19:11:58 -0700 (PDT)
+X-Received: by 2002:a2e:814d:: with SMTP id t13mr34727113ljg.72.1568513518572;
+ Sat, 14 Sep 2019 19:11:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190912034421.GA2085@darwi-home-pc> <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914150206.GA2270@darwi-home-pc> <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
+ <20190914211126.GA4355@darwi-home-pc> <20190914222432.GC19710@mit.edu>
+ <CAHk-=wi-y26j4yX5JtwqwXc7zKX1K8FLQGVcx49aSYuW8JwM+w@mail.gmail.com>
+ <20190915010037.GE19710@mit.edu> <CAHk-=wjGTV0e_P73V0B3cPVrfeoSZcV6CjQMgj-+yL-s38DKaw@mail.gmail.com>
+ <20190915020521.GF19710@mit.edu>
+In-Reply-To: <20190915020521.GF19710@mit.edu>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 14 Sep 2019 19:11:42 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg5BPZeH+wBdgWbDNYuHwiPN+GR-VBhUMjRsYuqEit6Ag@mail.gmail.com>
+Message-ID: <CAHk-=wg5BPZeH+wBdgWbDNYuHwiPN+GR-VBhUMjRsYuqEit6Ag@mail.gmail.com>
+Subject: Re: Linux 5.3-rc8
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
@@ -30,83 +69,23 @@ Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         Lennart Poettering <lennart@poettering.net>,
         lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190915020521.GF19710@mit.edu>
-References: <20190912034421.GA2085@darwi-home-pc>
- <20190912082530.GA27365@mit.edu>
- <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
- <20190914150206.GA2270@darwi-home-pc>
- <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
- <20190914211126.GA4355@darwi-home-pc>
- <20190914222432.GC19710@mit.edu>
- <CAHk-=wi-y26j4yX5JtwqwXc7zKX1K8FLQGVcx49aSYuW8JwM+w@mail.gmail.com>
- <20190915010037.GE19710@mit.edu>
- <CAHk-=wjGTV0e_P73V0B3cPVrfeoSZcV6CjQMgj-+yL-s38DKaw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjGTV0e_P73V0B3cPVrfeoSZcV6CjQMgj-+yL-s38DKaw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Sep 14, 2019 at 06:10:47PM -0700, Linus Torvalds wrote:
-> > We could return 0 for success, and yet "the best we
-> > can do" could be really terrible.
-> 
-> Yes. Which is why we should warn.
+On Sat, Sep 14, 2019 at 7:05 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> I'd be willing to let it take at least 2 minutes, since that's slow
+> enough to be annoying.
 
-I'm all in favor of warning.  But people might just ignore the
-warning.  We warn today about systemd trying to read from /dev/urandom
-too early, and that just gets ignored.
+Have you ever met a real human being?
 
-> But we can't *block*. Because that just breaks people. Like shown in
-> this whole discussion.
+A boot that blocks will result in people pressing the big red button
+in less than 30 seconds, unless it talks very much about _why_ it
+blocks and gives an estimate of how long.
 
-I'd be willing to let it take at least 2 minutes, since that's slow
-enough to be annoying.  I'd be willing to to kill the process which
-tried to call getrandom too early.  But I believe blocking is better
-than returning something potentially not random at all.  I think
-failing "safe" is extremely important.  And returning something not
-random which then gets used for a long-term private key is a disaster.
+Please go out and actually interact with real people some day.
 
-You basically want to turn getrandom into /dev/urandom.  And that's
-how we got into the mess where 10% of the publically accessible ssh
-keys could be guessed.  I've tried that already, and we saw how that
-ended.
-
-> Why is warning different? Because hopefully it tells the only person
-> who can *do* something about it - the original maintainer or developer
-> of the user space tools - that they are doing something wrong and need
-> to fix their broken model.
-
-Except the developer could (and *has) just ignored the warning, which
-is what happened with /dev/urandom when it was accessed too early.
-Even when I drew some developers attention to the warning, at least
-one just said, "meh", and blew me off.  Would a making it be noiser
-(e.g., a WARN_ON) make enough of a difference?  I guess I'm just not
-convinced.
-
-> Blocking doesn't do that. Blocking only makes the system unusable. And
-> yes, some security people think "unusable == secure", but honestly,
-> those security people shouldn't do system design. They are the worst
-> kind of "technically correct" incompetent.
-
-Which is worse really depends on your point of view, and what the
-system might be controlling.  If access to the system could cause a
-malicious attacker to trigger a nuclear bomb, failing safe is always
-going to be better.  In other cases, maybe failing open is certainly
-more convenient.  It certainly leaves the system more "usable".  But
-how do we trade off "usable" with "insecure"?  There are times when
-"unusable" is WAY better than "could risk life or human safety".
-
-Would you be willing to settle for a CONFIG option or a boot-command
-line option which controls whether we fail "safe" or fail "open" if
-someone calls getrandom(2) and there isn't enough entropy?  Then each
-distribution and/or system integrator can decide whether "proper
-systems design" considers "usability" versus "must not fail
-insecurely" to be more important.   
-
-	       	      	   	       	    - Ted
+            Linus
