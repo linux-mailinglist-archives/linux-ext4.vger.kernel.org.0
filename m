@@ -2,132 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AD3B34A0
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 08:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EF5B3700
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 11:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728558AbfIPGN3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Sep 2019 02:13:29 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:45723 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725798AbfIPGN3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 16 Sep 2019 02:13:29 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id x8G6Cqap024026;
-        Mon, 16 Sep 2019 08:12:52 +0200
-Date:   Mon, 16 Sep 2019 08:12:52 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190916061252.GA24002@1wt.eu>
-References: <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
- <20190914150206.GA2270@darwi-home-pc>
- <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
- <20190915065142.GA29681@gardel-login>
- <CAHk-=wiDNRPzuNE-eXs7QOpgPVLXsZOXEMQE9RmAWABiiZrSAQ@mail.gmail.com>
- <20190916014050.GA7002@darwi-home-pc>
- <20190916014833.cbetw4sqm3lq4x6m@shells.gnugeneration.com>
- <20190916024904.GA22035@mit.edu>
- <20190916042952.GB23719@1wt.eu>
- <CAHk-=wg4cONuiN32Tne28Cg2kEx6gsJCoOVroqgPFT7_Kg18Hg@mail.gmail.com>
+        id S1727050AbfIPJUe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Sep 2019 05:20:34 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:34908 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725270AbfIPJUe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 05:20:34 -0400
+Received: by mail-ed1-f66.google.com with SMTP id v8so1061859eds.2
+        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2019 02:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=zomg-hu.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TGaRemEmFeSSlnNdj7nX2rcO4xNpEWP90cFSs0qWvPI=;
+        b=Xk08xXi8ootHZXDv6Tb6QFAxZt2l2MDryctGAoTV3k68DT63La3oUBU+BKPjG2d91D
+         PQyfq1RKqt8R4paAifgqODfNOJs4d6P69O+o+rnC8bdngstnQpJ3eOjG0qfEnUFQiWwI
+         K3XoIyl6WtOziPcewSc6ilHhLs2brzMG/b/LXiwV3wCD7N5mRlelZyv9WxrI+OaOZLLD
+         D7kzDlFYfsOVIw6q+zP5CXUMc5+AdoEG+GVU9ISwRwzSTSTGDtt+Y7aMeWpcXlyDjy1H
+         CImQIqziJDV03gg6d0Wa8aQ/lwpTjPl2A3LU3ktXeCVxANOZzgRn/rUQRZdASnEn48Bc
+         LftQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TGaRemEmFeSSlnNdj7nX2rcO4xNpEWP90cFSs0qWvPI=;
+        b=eOB44Iw+6QZ4q2Ts4uU1vCNDfn6aSBGHZdkjsFynGwJ518goQ4Y4HecmGiY1SPpOnw
+         3Ln9lgA7A222TTlswqADEA0RrEMsS80qvHsLrB9g+SPgXJUAsyuKOostf90wdV/jy/96
+         39aaUjGm5lyuanfiZqWU7pAKWOFEyCdRcFwY6I7jLUsev6XB7cy0wMXPZE442E8vbzOf
+         F77nf2Hj6GXZiDY8lu7l2rme6c0XCwbn7MWQP6uNVdzDbzvzQXUikX13+QE0nNCvvNmu
+         91YvMZgZ5UwEl7RNZvJ25vzjq31gCVkpPuNAHROkI00P+AQStFy/7lEOB52A4eBKXhA2
+         N1Kg==
+X-Gm-Message-State: APjAAAUPX2Re9+IuLThidrgqMKWeT7SOKwWokUoc8xfWenP9Vhr3CIsq
+        MicbRz8DIJTrUJKhoRA2UV8lpc0iHYA8L+K9jJWFZCpF8BA=
+X-Google-Smtp-Source: APXvYqzVNB/dzYe8aKTndeMZTkiuc8xVdTY90rFwfegQPdO20b8BH4IDGyv66P64YF8qETFV2i8iUYD4vEktC+JIyDY=
+X-Received: by 2002:a50:f00c:: with SMTP id r12mr61078890edl.274.1568625632239;
+ Mon, 16 Sep 2019 02:20:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg4cONuiN32Tne28Cg2kEx6gsJCoOVroqgPFT7_Kg18Hg@mail.gmail.com>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+References: <CAF1H-TADHtpDtdL++Vk1FLAL7jJbOOifnN+7taDXpVkjYrbsgA@mail.gmail.com>
+ <20190914232801.GD19710@mit.edu>
+In-Reply-To: <20190914232801.GD19710@mit.edu>
+From:   Pas <pas@zomg.hu>
+Date:   Mon, 16 Sep 2019 11:20:20 +0200
+Message-ID: <CAF1H-TAUkTqX+nWjpp0bxLrmOShr4eSTDPL=yqrnoLaph950tg@mail.gmail.com>
+Subject: Re: inline_data status (e2fsprogs)
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Sep 15, 2019 at 10:02:02PM -0700, Linus Torvalds wrote:
-> On Sun, Sep 15, 2019 at 9:30 PM Willy Tarreau <w@1wt.eu> wrote:
-> >
-> > I'd be in favor of adding in the man page something like "this
-> > random source is only suitable for applications which will not be
-> > harmed by getting a predictable value on output, and as such it is
-> > not suitable for generation of system keys or passwords, please
-> > use GRND_RANDOM for this".
-> 
-> The problem with GRND_RANDOM is that it also ends up extracting
-> entropy, and has absolutely horrendous performance behavior. It's why
-> hardly anybody uses /dev/random.
+Thanks for the blazing fast and detailed reply!
+
+Am I correct assuming that the jbd2 problem is only (mostly?) relevant
+in case of data=journal mode?
+
+> It also generally doesn't buy you much for most file system
+workloads, so it hasn't been high on my priority list to fix.
+
+Completely understandable. I wasn't really hunting for those juice
+performance bits, however it seemed like a nice optimization that's in
+the kernel for quite long, plus enabling it is just a bit flip, then
+why not? But then I haven't found anything conclusive on it.
+
+Thanks again for clearing things up!
+
+Pas
+
+On Sun, 15 Sep 2019 at 01:28, Theodore Y. Ts'o <tytso@mit.edu> wrote:
 >
-> Which nobody should really ever do. I don't understand why people want
-> that thing, considering that the second law of thermodynamics really
-> pretty much applies. If you can crack the cryptographic hashes well
-> enough to break them despite reseeding etc, people will have much more
-> serious issues than the entropy accounting.
-
-That's exactly what I was thinking about a few minutes ago and which
-drove me back to mutt :-)
-
-> So the problem with getrandom() is that it only offered two flags, and
-> to make things worse they were the wrong ones.
-(...)
->  - GRND_RANDOM | GRND_NONBLOCK - don't use
-> 
->    This won't block, but it will decrease the blocking pool entropy.
-> 
->    It might be an acceptable "get me a truly secure ring with reliable
-> performance", but when it fails, you're going to be unhappy, and there
-> is no obvious fallback.
-> 
-> So three out of four flag combinations end up being mostly "don't
-> use", and the fourth one isn't what you'd normally want (which is just
-> plain /dev/urandom semantics).
-
-I'm seeing it from a different angle. I now understand better why
-getrandom() absolutely wants to have an initialized pool, it's to
-encourage private key producers to use a secure, infinite source of
-randomness. Something that neither /dev/random nor /dev/urandom
-reliably provide. Unfortunately it does it by changing how urandom
-works while it ought to have done it as the replacement of /dev/random.
-
-The 3 random generation behaviors we currently support are :
-
-  - /dev/random: only returns safe random (blocks), AND depletes entropy.
-    getrandom(GRND_RANDOM) does the same.
-  - /dev/urandom: returns whatever (never blocks), inexhaustible
-  - getrandom(0): returns safe random (blocks), inexhaustible
-
-Historically we used to want to rely on /dev/random for SSH keys and
-certificates. It's arguable that with the massive increase of crypto
-usage, what used to be done only once in a system's life happens a
-bit more often and using /dev/random here can sometimes become a
-problem because it harms the whole system (thus why I said I think that
-we could almost require CAP_something to access it). Applications
-falling back to /dev/urandom obviously resulted in the massive mess
-we've seen years ago, even if it apparently solved the problem for
-their users. Thus getrandom(0) does make sense, but not as an
-alternative to urandom but to random, since it returns randoms safe
-for use for long lived keys.
-
-Couldn't we simply change the way things work ? Make GRND_RANDOM *not*
-deplate entropy, and document it as the only safe source, and make the
-default call return the same as /dev/urandom ? We can then use your
-timeout mechanism for the first one (which is not supposed to be called
-often and would be more accepted with a moderately long delay).
-
-Applications need to evolve as well. It's fine to use libraries to do
-whatever you need for you but ultimately the lib exports a function for
-a generic use case and doesn't know how to best adapt to the use case.
-Typically I would expect an SSH/HTTP daemon running in a recovery
-initramfs to produce unsafe randoms so that I can connect there without
-having to dance around it. However the self-signed cert produced there
-must not be saved, just like the SSH host key. But this means that the
-application (here the ssh-keygen or openssl) also need to be taught to
-purposely produce insecure keys when explicitly instructed to do so.
-Otherwise we know what will happen in the long term, since history
-repeats itself as long as the conditions are not changed :-/
-
-Willy
+> On Sat, Sep 14, 2019 at 08:06:04PM +0200, Pas wrote:
+> >
+> > I hope this is the correct forum to ask these questions. (If not, then
+> > sorry for the noise! Though then could you recommend where to ask
+> > them?)
+>
+> There are some known issues with with the inline_data feature; in
+> particular, it violates some of the jbd2 rules about how to jorunal
+> data blocks.  As such, bad things(tm) can happen on crash recovery.
+> For the most part it works OK for the original intended use case, was
+> for bigalloc file systems where there was a desire to handle small
+> directories more efficiently, which was how the developer who created
+> the feature used said feature.  I didn't realize this particular
+> rather serious bug until after the feature went into the kernel, and
+> it's been on my todo list to fix; I just haven't had the time.
+>
+> It doesn't happen all that often; you need to start files that are
+> small enough such that they can fit in an inline_data file, and then
+> grow them via an appending write so that they need to be shifted to an
+> block allocated file, and then force an unclean shutdown at an
+> inopportune time.
+>
+> But yeah, there is a good reason why it's not a default-enabled
+> feature.  It also generally doesn't buy you much for most file system
+> workloads, so it hasn't been high on my priority list to fix.
+>
+> Regards,
+>
+>                                         - Ted
