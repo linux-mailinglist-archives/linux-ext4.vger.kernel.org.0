@@ -2,181 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1E5B3456
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 07:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AD3B34A0
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 08:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728754AbfIPFU4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Sep 2019 01:20:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49864 "EHLO mail.kernel.org"
+        id S1728558AbfIPGN3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Sep 2019 02:13:29 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:45723 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbfIPFU4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 16 Sep 2019 01:20:56 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7A222067B;
-        Mon, 16 Sep 2019 05:20:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568611255;
-        bh=0Zp0/Naz0WUbXJutjSKemevgHRocsO7EMFcWzb2dl1Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=awni9dksgHmJx9gTvqey0ukMhUw0fPydoBJv1SubKwoyxuqe/OomgiDpv4zwSvTWq
-         6IrShbxft+Mr7JZGQUrgh1plwzdI2vlB6mlsPM2p3hP/7vnJMyzgYN+WqvIrmSoljM
-         YtEjpk63iNa20lYgzpkEpwq/Bpbx8ft2uu4xPGEg=
-Date:   Sun, 15 Sep 2019 22:20:53 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
+        id S1725798AbfIPGN3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 16 Sep 2019 02:13:29 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id x8G6Cqap024026;
+        Mon, 16 Sep 2019 08:12:52 +0200
+Date:   Mon, 16 Sep 2019 08:12:52 +0200
+From:   Willy Tarreau <w@1wt.eu>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [GIT PULL] fs-verity for 5.4
-Message-ID: <20190916052053.GB8269@sol.localdomain>
-Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.3-rc8
+Message-ID: <20190916061252.GA24002@1wt.eu>
+References: <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914150206.GA2270@darwi-home-pc>
+ <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
+ <20190915065142.GA29681@gardel-login>
+ <CAHk-=wiDNRPzuNE-eXs7QOpgPVLXsZOXEMQE9RmAWABiiZrSAQ@mail.gmail.com>
+ <20190916014050.GA7002@darwi-home-pc>
+ <20190916014833.cbetw4sqm3lq4x6m@shells.gnugeneration.com>
+ <20190916024904.GA22035@mit.edu>
+ <20190916042952.GB23719@1wt.eu>
+ <CAHk-=wg4cONuiN32Tne28Cg2kEx6gsJCoOVroqgPFT7_Kg18Hg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CAHk-=wg4cONuiN32Tne28Cg2kEx6gsJCoOVroqgPFT7_Kg18Hg@mail.gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit 609488bc979f99f805f34e9a32c1e3b71179d10b:
+On Sun, Sep 15, 2019 at 10:02:02PM -0700, Linus Torvalds wrote:
+> On Sun, Sep 15, 2019 at 9:30 PM Willy Tarreau <w@1wt.eu> wrote:
+> >
+> > I'd be in favor of adding in the man page something like "this
+> > random source is only suitable for applications which will not be
+> > harmed by getting a predictable value on output, and as such it is
+> > not suitable for generation of system keys or passwords, please
+> > use GRND_RANDOM for this".
+> 
+> The problem with GRND_RANDOM is that it also ends up extracting
+> entropy, and has absolutely horrendous performance behavior. It's why
+> hardly anybody uses /dev/random.
+>
+> Which nobody should really ever do. I don't understand why people want
+> that thing, considering that the second law of thermodynamics really
+> pretty much applies. If you can crack the cryptographic hashes well
+> enough to break them despite reseeding etc, people will have much more
+> serious issues than the entropy accounting.
 
-  Linux 5.3-rc2 (2019-07-28 12:47:02 -0700)
+That's exactly what I was thinking about a few minutes ago and which
+drove me back to mutt :-)
 
-are available in the Git repository at:
+> So the problem with getrandom() is that it only offered two flags, and
+> to make things worse they were the wrong ones.
+(...)
+>  - GRND_RANDOM | GRND_NONBLOCK - don't use
+> 
+>    This won't block, but it will decrease the blocking pool entropy.
+> 
+>    It might be an acceptable "get me a truly secure ring with reliable
+> performance", but when it fails, you're going to be unhappy, and there
+> is no obvious fallback.
+> 
+> So three out of four flag combinations end up being mostly "don't
+> use", and the fourth one isn't what you'd normally want (which is just
+> plain /dev/urandom semantics).
 
-  git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
+I'm seeing it from a different angle. I now understand better why
+getrandom() absolutely wants to have an initialized pool, it's to
+encourage private key producers to use a secure, infinite source of
+randomness. Something that neither /dev/random nor /dev/urandom
+reliably provide. Unfortunately it does it by changing how urandom
+works while it ought to have done it as the replacement of /dev/random.
 
-for you to fetch changes up to 95ae251fe82838b85c6d37e5a1775006e2a42ae0:
+The 3 random generation behaviors we currently support are :
 
-  f2fs: add fs-verity support (2019-08-12 19:33:51 -0700)
+  - /dev/random: only returns safe random (blocks), AND depletes entropy.
+    getrandom(GRND_RANDOM) does the same.
+  - /dev/urandom: returns whatever (never blocks), inexhaustible
+  - getrandom(0): returns safe random (blocks), inexhaustible
 
-----------------------------------------------------------------
-Hi Linus,
+Historically we used to want to rely on /dev/random for SSH keys and
+certificates. It's arguable that with the massive increase of crypto
+usage, what used to be done only once in a system's life happens a
+bit more often and using /dev/random here can sometimes become a
+problem because it harms the whole system (thus why I said I think that
+we could almost require CAP_something to access it). Applications
+falling back to /dev/urandom obviously resulted in the massive mess
+we've seen years ago, even if it apparently solved the problem for
+their users. Thus getrandom(0) does make sense, but not as an
+alternative to urandom but to random, since it returns randoms safe
+for use for long lived keys.
 
-Please consider pulling fs-verity for 5.4.
+Couldn't we simply change the way things work ? Make GRND_RANDOM *not*
+deplate entropy, and document it as the only safe source, and make the
+default call return the same as /dev/urandom ? We can then use your
+timeout mechanism for the first one (which is not supposed to be called
+often and would be more accepted with a moderately long delay).
 
-fs-verity is a filesystem feature that provides Merkle tree based
-hashing (similar to dm-verity) for individual readonly files, mainly for
-the purpose of efficient authenticity verification.
+Applications need to evolve as well. It's fine to use libraries to do
+whatever you need for you but ultimately the lib exports a function for
+a generic use case and doesn't know how to best adapt to the use case.
+Typically I would expect an SSH/HTTP daemon running in a recovery
+initramfs to produce unsafe randoms so that I can connect there without
+having to dance around it. However the self-signed cert produced there
+must not be saved, just like the SSH host key. But this means that the
+application (here the ssh-keygen or openssl) also need to be taught to
+purposely produce insecure keys when explicitly instructed to do so.
+Otherwise we know what will happen in the long term, since history
+repeats itself as long as the conditions are not changed :-/
 
-This pull request includes:
-
-(a) The fs/verity/ support layer and documentation.
-
-(b) fs-verity support for ext4 and f2fs.
-
-Compared to the original fs-verity patchset from last year, the UAPI to
-enable fs-verity on a file has been greatly simplified.  Lots of other
-things were cleaned up too.
-
-fs-verity is planned to be used by two different projects on Android;
-most of the userspace code is in place already.  Another userspace tool
-("fsverity-utils"), and xfstests, are also available.  e2fsprogs and
-f2fs-tools already have fs-verity support.  Other people have shown
-interest in using fs-verity too.
-
-I've tested this on ext4 and f2fs with xfstests, both the existing tests
-and the new fs-verity tests.  This has also been in linux-next since
-July 30 with no reported issues except a couple minor ones I found
-myself and folded in fixes for.
-
-Ted and I will be co-maintaining fs-verity.
-
-
-There will be some fairly straightforward merge conflicts with the ext4
-and f2fs trees.  I've tested the resolution of these in linux-next.
-
-This will also "silently" conflict (compiler warning only) with the key
-ACLs patchset, if you merge it again this cycle.  The resolution is to
-translate the key permissions to an ACL in fs/verity/signature.c.  I
-suggest using the resolution in linux-next, which I've tested.  This
-resolution avoids making any behavior changes; note that some of the old
-permissions map to multiple new permissions.
-
-----------------------------------------------------------------
-Eric Biggers (17):
-      fs-verity: add a documentation file
-      fs-verity: add MAINTAINERS file entry
-      fs-verity: add UAPI header
-      fs: uapi: define verity bit for FS_IOC_GETFLAGS
-      fs-verity: add Kconfig and the helper functions for hashing
-      fs-verity: add inode and superblock fields
-      fs-verity: add the hook for file ->open()
-      fs-verity: add the hook for file ->setattr()
-      fs-verity: add data verification hooks for ->readpages()
-      fs-verity: implement FS_IOC_ENABLE_VERITY ioctl
-      fs-verity: implement FS_IOC_MEASURE_VERITY ioctl
-      fs-verity: add SHA-512 support
-      fs-verity: support builtin file signatures
-      ext4: add basic fs-verity support
-      ext4: add fs-verity read support
-      ext4: update on-disk format documentation for fs-verity
-      f2fs: add fs-verity support
-
- Documentation/filesystems/ext4/inodes.rst   |   6 +-
- Documentation/filesystems/ext4/overview.rst |   1 +
- Documentation/filesystems/ext4/super.rst    |   2 +
- Documentation/filesystems/ext4/verity.rst   |  41 ++
- Documentation/filesystems/fsverity.rst      | 726 ++++++++++++++++++++++++++++
- Documentation/filesystems/index.rst         |   1 +
- Documentation/ioctl/ioctl-number.rst        |   1 +
- MAINTAINERS                                 |  12 +
- fs/Kconfig                                  |   2 +
- fs/Makefile                                 |   1 +
- fs/ext4/Makefile                            |   1 +
- fs/ext4/ext4.h                              |  23 +-
- fs/ext4/file.c                              |   4 +
- fs/ext4/inode.c                             |  55 ++-
- fs/ext4/ioctl.c                             |  13 +
- fs/ext4/readpage.c                          | 211 ++++++--
- fs/ext4/super.c                             |  18 +-
- fs/ext4/sysfs.c                             |   6 +
- fs/ext4/verity.c                            | 367 ++++++++++++++
- fs/f2fs/Makefile                            |   1 +
- fs/f2fs/data.c                              |  75 ++-
- fs/f2fs/f2fs.h                              |  20 +-
- fs/f2fs/file.c                              |  43 +-
- fs/f2fs/inode.c                             |   5 +-
- fs/f2fs/super.c                             |   3 +
- fs/f2fs/sysfs.c                             |  11 +
- fs/f2fs/verity.c                            | 247 ++++++++++
- fs/f2fs/xattr.h                             |   2 +
- fs/verity/Kconfig                           |  55 +++
- fs/verity/Makefile                          |  10 +
- fs/verity/enable.c                          | 377 +++++++++++++++
- fs/verity/fsverity_private.h                | 185 +++++++
- fs/verity/hash_algs.c                       | 280 +++++++++++
- fs/verity/init.c                            |  61 +++
- fs/verity/measure.c                         |  57 +++
- fs/verity/open.c                            | 356 ++++++++++++++
- fs/verity/signature.c                       | 157 ++++++
- fs/verity/verify.c                          | 281 +++++++++++
- include/linux/fs.h                          |  11 +
- include/linux/fsverity.h                    | 211 ++++++++
- include/uapi/linux/fs.h                     |   1 +
- include/uapi/linux/fsverity.h               |  40 ++
- 42 files changed, 3910 insertions(+), 70 deletions(-)
- create mode 100644 Documentation/filesystems/ext4/verity.rst
- create mode 100644 Documentation/filesystems/fsverity.rst
- create mode 100644 fs/ext4/verity.c
- create mode 100644 fs/f2fs/verity.c
- create mode 100644 fs/verity/Kconfig
- create mode 100644 fs/verity/Makefile
- create mode 100644 fs/verity/enable.c
- create mode 100644 fs/verity/fsverity_private.h
- create mode 100644 fs/verity/hash_algs.c
- create mode 100644 fs/verity/init.c
- create mode 100644 fs/verity/measure.c
- create mode 100644 fs/verity/open.c
- create mode 100644 fs/verity/signature.c
- create mode 100644 fs/verity/verify.c
- create mode 100644 include/linux/fsverity.h
- create mode 100644 include/uapi/linux/fsverity.h
+Willy
