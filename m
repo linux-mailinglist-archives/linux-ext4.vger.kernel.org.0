@@ -2,54 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 792B5B33CF
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 05:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9929DB33D0
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 05:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728999AbfIPDwy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 Sep 2019 23:52:54 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:33832 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727387AbfIPDwy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 15 Sep 2019 23:52:54 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
-        id 1i9i41-0000sf-QO; Mon, 16 Sep 2019 13:52:34 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 16 Sep 2019 13:52:28 +1000
-Date:   Mon, 16 Sep 2019 13:52:28 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     torvalds@linux-foundation.org, darwish.07@gmail.com,
-        adilger.kernel@dilger.ca, jack@suse.cz, rstrode@redhat.com,
-        mccann@jhu.edu, zachary@baishancloud.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190916035228.GA1767@gondor.apana.org.au>
+        id S1729114AbfIPD47 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 15 Sep 2019 23:56:59 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:38729 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729065AbfIPD47 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Sep 2019 23:56:59 -0400
+Received: by mail-lf1-f68.google.com with SMTP id u28so5486083lfc.5
+        for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2019 20:56:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/WJOiZU+ONLAF5VZ8QdOdt/8naAIMcee9SR9+Sx4feo=;
+        b=CtTVmBweTrysJ5DoBdCUD/t7zNLy0x4eKmXubkXkdKS8+ArCc5ANYpzn9sH94OOKbs
+         Jk5h0KuyermsSKSl+qKF7ca6CUOT9A6LKnCKJZbR4H18skYWhZHhR7XelAKdszwFd9Z2
+         hKybKfniHYIfTwncY2S8j6sL+gJCjCg2rE644=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/WJOiZU+ONLAF5VZ8QdOdt/8naAIMcee9SR9+Sx4feo=;
+        b=jRi/kRihck9kNPuClzXi8X3Tq6M3jYNP+1GQxk/gaCPBF/SA5HwMzmpuud/Xyqv5Z8
+         tno4B08nu7Mk7rImkB9H58nlx/wNVIg2N2lgsdyXyLRpgHuHeZ4UUmoPUBSwK6fYREiT
+         2n9/kb6DYT3o4WRz9XsnJWoxKhNZ7lhqWfD0Ah1HnWtEnM035zIoH/l6LZ3mW1G8JUxi
+         mUu2Xkke62O1UQYQlJJTmJ5yj0zTMXmx2Rzz6z88Sd8J0cF/0tLuU1ykLdBcxCpU2mC8
+         aMnBvra4tiTZjQk8gcZ9/dUwWLtARL3fdMZZXLRvNWG2Q+ebnFTLo2qSc3wIkvtE0Ogr
+         Xlhg==
+X-Gm-Message-State: APjAAAXbx9KgfiT3fd1zhkAeA/t6K2fvsp8CYTk3KFGmund2p2jta6N1
+        uEBomMPI2pjDyme9A9V2PVia5LIR9/0=
+X-Google-Smtp-Source: APXvYqw3moiWf2PLLXNHsH2EByg7wZs7UQKWsmyZV5+oKoJFEbkCzQjTtL18ih8rMEaZhVFs0o0BIA==
+X-Received: by 2002:ac2:51ce:: with SMTP id u14mr34448951lfm.72.1568606216975;
+        Sun, 15 Sep 2019 20:56:56 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id e21sm8680440lfj.10.2019.09.15.20.56.55
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 15 Sep 2019 20:56:56 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id 7so32280898ljw.7
+        for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2019 20:56:55 -0700 (PDT)
+X-Received: by 2002:a2e:2c02:: with SMTP id s2mr5154441ljs.156.1568606215653;
+ Sun, 15 Sep 2019 20:56:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190911160729.GF2740@mit.edu>
-X-Newsgroups: apana.lists.os.linux.kernel
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190911173624.GI2740@mit.edu> <20190912034421.GA2085@darwi-home-pc>
+ <20190912082530.GA27365@mit.edu> <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914150206.GA2270@darwi-home-pc> <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
+ <214fed0e-6659-def9-b5f8-a9d7a8cb72af@gmail.com> <CAHk-=wiB0e_uGpidYHf+dV4eeT+XmG-+rQBx=JJ110R48QFFWw@mail.gmail.com>
+ <20190915065655.GB29681@gardel-login> <CAHk-=wi8wAP4P33KO6hU3D386Oupr=ZL4Or6Gw+1zDFjvz+MKA@mail.gmail.com>
+ <20190916032327.GB22035@mit.edu> <CAHk-=wjM3aEiX-s3e8PnUjkiTzkF712vOfeJPoFDCVTJ+Pp+XA@mail.gmail.com>
+In-Reply-To: <CAHk-=wjM3aEiX-s3e8PnUjkiTzkF712vOfeJPoFDCVTJ+Pp+XA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 15 Sep 2019 20:56:39 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjPDR6_crhmvaoXDo8q6Joz5rD02bZpd2x9rr-LazPxRA@mail.gmail.com>
+Message-ID: <CAHk-=wjPDR6_crhmvaoXDo8q6Joz5rD02bZpd2x9rr-LazPxRA@mail.gmail.com>
+Subject: Re: Linux 5.3-rc8
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Lennart Poettering <mzxreary@0pointer.de>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Theodore Y. Ts'o <tytso@mit.edu> wrote:
+On Sun, Sep 15, 2019 at 8:40 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Ultimately, though, we need to find *some* way to fix userspace's
-> assumptions that they can always get high quality entropy in early
-> boot, or we need to get over people's distrust of Intel and RDRAND.
-> Otherwise, future performance improvements in any part of the system
-> which reduces the number of interrupts is always going to potentially
-> result in somebody's misconfigured system or badly written
-> applications to fail to boot.  :-(
+> If you want secure keys, you can't rely on a blocking model, because
+> it ends up not working. Blocking leads to problems.
 
-Can we perhaps artifically increase the interrupt rate while the
-CRNG is not initialised?
+Side note: I'd argue that (despite my earlier mis-understanding) the
+only really valid use of "block until there is entropy" is the
+systemd-random-seed model that blocks not because it wants a secure
+key, but blocks because it wants to save the (now properly) random
+seed for later.
 
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+So apologies to Lennart - he was very much right, and I mis-understood
+Ahmed's bug report. Systemd was blameless, and blocked correctly.
+
+While blocking for actual random keys was the usual bug, just for that
+silly and pointless MIT cookie that doesn't even need the secure
+randomness.
+
+But because the getrandom() interface was mis-designed (and only
+_looks_ like a more convenient interface for /dev/urandom, without
+being one), the MIT cookie code got the blocking whether it wanted to
+or not.
+
+Just say no to blocking for key data.
+
+            Linus
