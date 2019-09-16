@@ -2,167 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BDBB4412
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 00:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C34B446F
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 01:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387555AbfIPWhu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Sep 2019 18:37:50 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:33880 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728123AbfIPWhu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 18:37:50 -0400
-Received: by mail-pf1-f196.google.com with SMTP id b128so819983pfa.1
-        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2019 15:37:49 -0700 (PDT)
+        id S2390472AbfIPXGI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Sep 2019 19:06:08 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:39981 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390458AbfIPXGH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 19:06:07 -0400
+Received: by mail-lf1-f68.google.com with SMTP id d17so1274703lfa.7
+        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2019 16:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=59X5RvHm807OLFbm3taZna4w+6L5coMBB4Ni//2NeKI=;
-        b=C80DicDCYT7rIcDYOHOGrrJk3NvfyZfExEswz6GbI2lAEjINTbwPDtebRCvZFSnMW9
-         9w8vIF/xVyR16X1mX7uz9+pP+nI4VHxGrgxY8M0dUcCO9yp3Tnkg9Gb2sx8r6Z3Z1KVh
-         gKQTpNpmFERkJwtqz7IHImJWQVEtvVdagn6Mf3XYzhWWE4k67g8p49N8/CvI6oAuSfM4
-         oUHTY/I5JWpm0HJTmnOui5/ef/qLmKYL8MWVF62Gbbs0yiyy8tasexPK0JI/Un8KvJj8
-         FelXqV94iaGUw/sZHScuzvDcv4qWPGJkvVmW3PJYVxChiskv+pzi9i5kWlKIyFK7cjwE
-         U/Fg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vGY772lMZRO+RxPe3yiKJ2HFEo5jrkt8czVBRCefa98=;
+        b=Q7JCqBOjFHRpAm3IIWECi7V0+z1iWHaDOFZaCm6UHZvTzYhkaHhwj14043bgrTO5+M
+         irDuUsnCTLlLSkR5eaTGatxvVbFnXqaZCYAJkoMxi8+1pB0mDlKmdUInEOq+UcizHb9i
+         e+qtbtq9xxZIz3FByFamlLpdLYhAncsgzI69k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=59X5RvHm807OLFbm3taZna4w+6L5coMBB4Ni//2NeKI=;
-        b=jZ1+ePqrMnbtFdcC7imrWP26leXpN69ymUoMFuc85ejWopSkUyviNZXyy4bwZkpBkv
-         xDsNisfsrmldldluH8FZJHdjo2gsarkO/JHzYG8u4AAUrK3yDeaoW+7Q776WoT/B6n8Q
-         ng+4etczpXw83jc8/AQAxf3LGcI6w2SETJ6kWn/kZOc3/UdNOOqsLd7aWppo5aDDxyNb
-         NepU2gpCocIbrHzPP4s+Cid5A1bmtBu2qzhn4lRbuPrD7q0rUZFt7aDWRBaY2yZ2uoBA
-         MtJetXwm7ThU0qYhGACa1RR+uK+O3/xb3xMCODzV2zq5xVA78sJeqln31Phy5fHfur+r
-         DhXw==
-X-Gm-Message-State: APjAAAW2iWlElThjRTNBYHwSWdXfyuSWLgSMcRMik32ye8QgAB/G5QBq
-        K0BMvL4QkUPVl5HCFtHtUP1N
-X-Google-Smtp-Source: APXvYqw201emQOCzAUYbBBuxD2MbgCxcjbSVpKAy7S6p1X+7ll9pov8i2Lw4qCsPmWAubk01ux60tw==
-X-Received: by 2002:a63:1c09:: with SMTP id c9mr25644pgc.347.1568673469085;
-        Mon, 16 Sep 2019 15:37:49 -0700 (PDT)
-Received: from bobrowski ([110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id b10sm125472pfo.123.2019.09.16.15.37.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2019 15:37:48 -0700 (PDT)
-Date:   Tue, 17 Sep 2019 08:37:41 +1000
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        david@fromorbit.com, darrick.wong@oracle.com
-Subject: Re: [PATCH v3 5/6] ext4: introduce direct IO write path using iomap
- infrastructure
-Message-ID: <20190916223741.GA5936@bobrowski>
-References: <cover.1568282664.git.mbobrowski@mbobrowski.org>
- <db33705f9ba35ccbe20fc19b8ecbbf2078beff08.1568282664.git.mbobrowski@mbobrowski.org>
- <20190916121248.GD4005@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vGY772lMZRO+RxPe3yiKJ2HFEo5jrkt8czVBRCefa98=;
+        b=P7a8Tu40BWHC3CCXLy0u/s9y9il+YXA8CtOcjah3rePNAaGMozXHOVR/0narWTkQ89
+         K8C0P30W4ukZWjShDXeL5tmVIfMuqJ5x2clgTZvFY9jIqxZ/VRfE5DTTyMC9QMJHNJxT
+         wv8G2ZQ96dB1U9SQjxX/sZeewXGgy9/SeMu5nX9XKpsccDv13vpX+RA3qeBPeDgTqV6P
+         ukGir8q3JODIB47CqFrD4kgjfYwQ0LPuVJ6S+igBrlFpg9i93pieGyljg9r4zcNqG2jh
+         wJ+NcX9YVlozykpBzyBeEjKylwpL0/VMVLTpVNED1OObhqFhp2nIwqQjT0cYaTsgr7lJ
+         3F/g==
+X-Gm-Message-State: APjAAAX8TMELU4brCgL6695A3OYWO5mf7L0+swqpWPEcsqGH91ecKsn5
+        hX6kUb8szg34R50rPot1uie+dzZvEKo=
+X-Google-Smtp-Source: APXvYqz/0ePnC7FWdnzeosX7zyK/SvuVgpftT6xSiYZLoivK00P033QGhkxS6y5UCaT1vN4xOJIp9w==
+X-Received: by 2002:a19:f111:: with SMTP id p17mr308489lfh.187.1568675164974;
+        Mon, 16 Sep 2019 16:06:04 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id n12sm38369lfh.86.2019.09.16.16.06.04
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Sep 2019 16:06:04 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id q11so1249244lfc.11
+        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2019 16:06:04 -0700 (PDT)
+X-Received: by 2002:ac2:5c11:: with SMTP id r17mr319536lfp.61.1568675164042;
+ Mon, 16 Sep 2019 16:06:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190916121248.GD4005@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CAHk-=wiDNRPzuNE-eXs7QOpgPVLXsZOXEMQE9RmAWABiiZrSAQ@mail.gmail.com>
+ <20190916014050.GA7002@darwi-home-pc> <20190916014833.cbetw4sqm3lq4x6m@shells.gnugeneration.com>
+ <20190916024904.GA22035@mit.edu> <20190916042952.GB23719@1wt.eu>
+ <CAHk-=wg4cONuiN32Tne28Cg2kEx6gsJCoOVroqgPFT7_Kg18Hg@mail.gmail.com>
+ <20190916061252.GA24002@1wt.eu> <CAHk-=wjWSRzTjwN9F5gQcxtPkAgaRHJOOOTUjVakqP-Nzg9BXA@mail.gmail.com>
+ <20190916172117.GB15263@mit.edu> <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
+ <20190916230217.vmgvsm6o2o4uq5j7@srcf.ucam.org>
+In-Reply-To: <20190916230217.vmgvsm6o2o4uq5j7@srcf.ucam.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 16 Sep 2019 16:05:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whwSt4RqzqM7cA5SAhj+wkORfr1bG=+yydTJPtayQ0JwQ@mail.gmail.com>
+Message-ID: <CAHk-=whwSt4RqzqM7cA5SAhj+wkORfr1bG=+yydTJPtayQ0JwQ@mail.gmail.com>
+Subject: Re: Linux 5.3-rc8
+To:     Matthew Garrett <mjg59@srcf.ucam.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 05:12:48AM -0700, Christoph Hellwig wrote:
-> On Thu, Sep 12, 2019 at 09:04:46PM +1000, Matthew Bobrowski wrote:
-> > @@ -213,12 +214,16 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
-> >  	struct inode *inode = file_inode(iocb->ki_filp);
-> >  	ssize_t ret;
-> >  
-> > +	if (unlikely(IS_IMMUTABLE(inode)))
-> > +		return -EPERM;
-> > +
-> >  	ret = generic_write_checks(iocb, from);
-> >  	if (ret <= 0)
-> >  		return ret;
-> >  
-> > -	if (unlikely(IS_IMMUTABLE(inode)))
-> > -		return -EPERM;
-> > +	ret = file_modified(iocb->ki_filp);
-> > +	if (ret)
-> > +		return 0;
-> >  
-> >  	/*
-> >  	 * If we have encountered a bitmap-format file, the size limit
-> 
-> Independent of the error return issue you probably want to split
-> modifying ext4_write_checks into a separate preparation patch.
+On Mon, Sep 16, 2019 at 4:02 PM Matthew Garrett <mjg59@srcf.ucam.org> wrote:
+>
+> The semantics many people want for secure key generation is urandom, but
+> with a guarantee that it's seeded.
 
-Providing that there's no objections to introducing a possible performance
-change with this separate preparation patch (overhead of calling
-file_remove_privs/file_update_time twice), then I have no issues in doing so.
+And that is exactly what I'd suggest GRND_SECURE should do.
 
-> > +/*
-> > + * For a write that extends the inode size, ext4_dio_write_iter() will
-> > + * wait for the write to complete. Consequently, operations performed
-> > + * within this function are still covered by the inode_lock(). On
-> > + * success, this function returns 0.
-> > + */
-> > +static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size, int error,
-> > +				 unsigned int flags)
-> > +{
-> > +	int ret;
-> > +	loff_t offset = iocb->ki_pos;
-> > +	struct inode *inode = file_inode(iocb->ki_filp);
-> > +
-> > +	if (error) {
-> > +		ret = ext4_handle_failed_inode_extension(inode, offset + size);
-> > +		return ret ? ret : error;
-> > +	}
-> 
-> Just a personal opinion, but I find the use of the ternary operator
-> here a little weird.
-> 
-> A plain old:
-> 
-> 	ret = ext4_handle_failed_inode_extension(inode, offset + size);
-> 	if (ret)
-> 		return ret;
-> 	return error;
-> 
-> flow much easier.
+The problem with:
 
-Agree, much cleaner.
- 
-> > +	if (!inode_trylock(inode)) {
-> > +		if (iocb->ki_flags & IOCB_NOWAIT)
-> > +			return -EAGAIN;
-> > +		inode_lock(inode);
-> > +	}
-> > +
-> > +	if (!ext4_dio_checks(inode)) {
-> > +		inode_unlock(inode);
-> > +		/*
-> > +		 * Fallback to buffered IO if the operation on the
-> > +		 * inode is not supported by direct IO.
-> > +		 */
-> > +		return ext4_buffered_write_iter(iocb, from);
-> 
-> I think you want to lift the locking into the caller of this function
-> so that you don't have to unlock and relock for the buffered write
-> fallback.
+> getrandom()'s default behaviour at present provides that
 
-I don't exactly know what you really mean by "lift the locking into the caller
-of this function". I'm interpreting that as moving the inode_unlock()
-operation into ext4_buffered_write_iter(), but I can't see how that would be
-any different from doing it directly here? Wouldn't this also run the risk of
-the locks becoming unbalanced as we'd need to add checks around whether the
-resource is being contended? Maybe I'm misunderstanding something here...
+is that exactly because it's the "default" (ie when you don't pass any
+flags at all), that behavior is what all the random people get who do
+*not* really intentionally want it, they just don't think about it.
 
-> > +	if (offset + count > i_size_read(inode) ||
-> > +	    offset + count > EXT4_I(inode)->i_disksize) {
-> > +		ext4_update_i_disksize(inode, inode->i_size);
-> > +		extend = true;
-> 
-> Doesn't the ext4_update_i_disksize need to be under an open journal
-> handle?
+> Changing the default (even with kernel warnings) seems like
+> it risks people generating keys from an unseeded prng, and that seems
+> like a bad thing?
 
-After all, it is a metadata update, which should go through an open journal
-handle.
+I agree that it's a horrible thing, but the fact that the default 0
+behavior had that "wait for entropy" is what now causes boot problems
+for people.
 
-Thank you for the review Christoph!
-
---<M>--
+             Linus
