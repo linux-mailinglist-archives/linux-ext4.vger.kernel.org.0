@@ -2,105 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EF5B3700
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 11:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB13B37D9
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 12:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbfIPJUe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Sep 2019 05:20:34 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:34908 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725270AbfIPJUe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 05:20:34 -0400
-Received: by mail-ed1-f66.google.com with SMTP id v8so1061859eds.2
-        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2019 02:20:32 -0700 (PDT)
+        id S1728426AbfIPKOa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Sep 2019 06:14:30 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43573 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726173AbfIPKOa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 06:14:30 -0400
+Received: by mail-pg1-f193.google.com with SMTP id u72so19544504pgb.10
+        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2019 03:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=zomg-hu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TGaRemEmFeSSlnNdj7nX2rcO4xNpEWP90cFSs0qWvPI=;
-        b=Xk08xXi8ootHZXDv6Tb6QFAxZt2l2MDryctGAoTV3k68DT63La3oUBU+BKPjG2d91D
-         PQyfq1RKqt8R4paAifgqODfNOJs4d6P69O+o+rnC8bdngstnQpJ3eOjG0qfEnUFQiWwI
-         K3XoIyl6WtOziPcewSc6ilHhLs2brzMG/b/LXiwV3wCD7N5mRlelZyv9WxrI+OaOZLLD
-         D7kzDlFYfsOVIw6q+zP5CXUMc5+AdoEG+GVU9ISwRwzSTSTGDtt+Y7aMeWpcXlyDjy1H
-         CImQIqziJDV03gg6d0Wa8aQ/lwpTjPl2A3LU3ktXeCVxANOZzgRn/rUQRZdASnEn48Bc
-         LftQ==
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YwusKXBUgyUMXSs68FocspxMjGXcgKSvza9r85FVtq4=;
+        b=v6z5y0McOHGn6caqnH2fZHUUguAgMIWn1G5wkZy2mpOO5Vr6+zYEtdp5B1DnXNZlI9
+         EZWCcKune2GEpOoZmPN3Fd/xBqTPw3GeDjDHCrTbDGxRkcxQVRvZgaae45tiNWz4egdv
+         7aWNYbhwB4cnAhNaDOf89BHHxLVO1IBC/+9uxgIdOe8EFp4mc3LIMT2XcvnaYeRKqQqm
+         Yiwb3IyFtUpA4Ev1VKh3dS8+BcwUFt3NgeiHb4dTUF5GGF13r6EgZNvrXUUnviBbd+Wk
+         SJ2CKtC8oD+7uODionnjzRsjJjaPai1sErp6OMT7XZ+QlqSV+h0QR24i2CVmFXGruzsq
+         R9Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TGaRemEmFeSSlnNdj7nX2rcO4xNpEWP90cFSs0qWvPI=;
-        b=eOB44Iw+6QZ4q2Ts4uU1vCNDfn6aSBGHZdkjsFynGwJ518goQ4Y4HecmGiY1SPpOnw
-         3Ln9lgA7A222TTlswqADEA0RrEMsS80qvHsLrB9g+SPgXJUAsyuKOostf90wdV/jy/96
-         39aaUjGm5lyuanfiZqWU7pAKWOFEyCdRcFwY6I7jLUsev6XB7cy0wMXPZE442E8vbzOf
-         F77nf2Hj6GXZiDY8lu7l2rme6c0XCwbn7MWQP6uNVdzDbzvzQXUikX13+QE0nNCvvNmu
-         91YvMZgZ5UwEl7RNZvJ25vzjq31gCVkpPuNAHROkI00P+AQStFy/7lEOB52A4eBKXhA2
-         N1Kg==
-X-Gm-Message-State: APjAAAUPX2Re9+IuLThidrgqMKWeT7SOKwWokUoc8xfWenP9Vhr3CIsq
-        MicbRz8DIJTrUJKhoRA2UV8lpc0iHYA8L+K9jJWFZCpF8BA=
-X-Google-Smtp-Source: APXvYqzVNB/dzYe8aKTndeMZTkiuc8xVdTY90rFwfegQPdO20b8BH4IDGyv66P64YF8qETFV2i8iUYD4vEktC+JIyDY=
-X-Received: by 2002:a50:f00c:: with SMTP id r12mr61078890edl.274.1568625632239;
- Mon, 16 Sep 2019 02:20:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YwusKXBUgyUMXSs68FocspxMjGXcgKSvza9r85FVtq4=;
+        b=YBxyoRQL6CDlYAiC8bEMJC+HfBs86YbAzbm7Z+AmtOYCupSjjpewK2cRNZutzfvXEm
+         WEW4QF2yP26Wlwf2o+LxTKSL96PiUIha9Ai3hheMXkybV1X7u0oBtbBK+FG7ioomDybJ
+         wRnUO5qL8BrpeCfxDU/QoJESsmfc1B4FKbRPac/Exj+gxorOcPnNTvTZahiIrtHQeGKj
+         tbVZvHuTo1DQO60TpFXzAZCYRjMLKDmRohW4Efi1q3dhpHtCcmX4hUu9FzYiSPJH6FIS
+         ZgtBsKifxnLihM/dFlfEI30IJeyIwsR9INU7LU+hw7Q9k17IVLHd4HAhsp450GkTg4Xg
+         84iw==
+X-Gm-Message-State: APjAAAXr4DGDqK/cjYIZ5ybcPUZixDluyDwArtxgxTdGM8rtrOTQfjJO
+        JaCsOAhC3DcFpdu/jiPWmpn6
+X-Google-Smtp-Source: APXvYqyL1KqvzAf2ZZKqgFwNVe0gZbGBEQJFslScWmzayJcvvmZjesltSh/2GJG9gQtx2930L95cZw==
+X-Received: by 2002:a63:5941:: with SMTP id j1mr55238748pgm.319.1568628864456;
+        Mon, 16 Sep 2019 03:14:24 -0700 (PDT)
+Received: from bobrowski ([110.232.114.101])
+        by smtp.gmail.com with ESMTPSA id j4sm4197326pfn.29.2019.09.16.03.14.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Sep 2019 03:14:23 -0700 (PDT)
+Date:   Mon, 16 Sep 2019 20:14:17 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        david@fromorbit.com, hch@infradead.org, darrick.wong@oracle.com
+Subject: Re: [PATCH v3 5/6] ext4: introduce direct IO write path using iomap
+ infrastructure
+Message-ID: <20190916101417.GA4024@bobrowski>
+References: <cover.1568282664.git.mbobrowski@mbobrowski.org>
+ <db33705f9ba35ccbe20fc19b8ecbbf2078beff08.1568282664.git.mbobrowski@mbobrowski.org>
+ <20190916043741.BCBDEA4054@b06wcsmtp001.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
-References: <CAF1H-TADHtpDtdL++Vk1FLAL7jJbOOifnN+7taDXpVkjYrbsgA@mail.gmail.com>
- <20190914232801.GD19710@mit.edu>
-In-Reply-To: <20190914232801.GD19710@mit.edu>
-From:   Pas <pas@zomg.hu>
-Date:   Mon, 16 Sep 2019 11:20:20 +0200
-Message-ID: <CAF1H-TAUkTqX+nWjpp0bxLrmOShr4eSTDPL=yqrnoLaph950tg@mail.gmail.com>
-Subject: Re: inline_data status (e2fsprogs)
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190916043741.BCBDEA4054@b06wcsmtp001.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for the blazing fast and detailed reply!
+On Mon, Sep 16, 2019 at 10:07:41AM +0530, Ritesh Harjani wrote:
+> > @@ -213,12 +214,16 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
+> >   	struct inode *inode = file_inode(iocb->ki_filp);
+> >   	ssize_t ret;
+> > 
+> > +	if (unlikely(IS_IMMUTABLE(inode)))
+> > +		return -EPERM;
+> > +
+> >   	ret = generic_write_checks(iocb, from);
+> >   	if (ret <= 0)
+> >   		return ret;
+> > 
+> > -	if (unlikely(IS_IMMUTABLE(inode)))
+> > -		return -EPERM;
+> > +	ret = file_modified(iocb->ki_filp);
+> > +	if (ret)
+> > +		return 0;
+> 
+> Why not return ret directly, otherwise we will be returning the wrong
+> error code to user space. Thoughts?
 
-Am I correct assuming that the jbd2 problem is only (mostly?) relevant
-in case of data=journal mode?
+You're right. I can't remember exactly why I decided to return '0', however
+looking at the code once again I don't see a reason why we don't just return
+'ret', as any value other than '0' represents a failure in this case
+anyway. Thanks for picking that up.
+ 
+> Do you think simplification/restructuring of this API
+> "ext4_write_checks" can be a separate patch, so that this patch
+> only focuses on conversion of DIO write path to iomap?
 
-> It also generally doesn't buy you much for most file system
-workloads, so it hasn't been high on my priority list to fix.
+Hm, if we split it up so that it comes before this patch then it becomes hairy
+in the sense that a whole bunch of other changes would also need to come with
+what looks to be such a miniscule modification
+i.e. ext4_buffered_write_iter(), ext4_file_write_iter(), etc. Splitting it to
+come after just doesn't make any sense. To be honest, I don't really have any
+strong opinions around why we shouldn't split it up, nor do I have a strong
+opinion around why we should, so I think we should just leave it for now.
 
-Completely understandable. I wasn't really hunting for those juice
-performance bits, however it seemed like a nice optimization that's in
-the kernel for quite long, plus enabling it is just a bit flip, then
-why not? But then I haven't found anything conclusive on it.
+> Also, I think we can make the function (ext4_write_checks())
+> like below. This way we call for file_modified() only after we
+> have checked for write limits, at one place.
 
-Thanks again for clearing things up!
+No objections and I think it's a good idea.
 
-Pas
+>   static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter
+> *from)
+>   {
+>           struct inode *inode = file_inode(iocb->ki_filp);
+>           ssize_t ret;
+> 
+>           if (unlikely(IS_IMMUTABLE(inode)))
+>                   return -EPERM;
+> 
+>           ret = generic_write_checks(iocb, from);
+>           if (ret <= 0)
+> _                 return ret;
+>           /*
+>            * If we have encountered a bitmap-format file, the size limit
+>            * is smaller than s_maxbytes, which is for extent-mapped files.
+>            */
+>           if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
+>                   struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+> 
+>                   if (iocb->ki_pos >= sbi->s_bitmap_maxbytes)
+>                           return -EFBIG;
+>                   iov_iter_truncate(from, sbi->s_bitmap_maxbytes -
+> iocb->ki_pos);
+>           }
+> +
+> +         ret = file_modified(iocb->ki_filp);
+> +         if (ret)
+> +                 return ret;
+> +
+>           return iov_iter_count(from);
+>   }
 
-On Sun, 15 Sep 2019 at 01:28, Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Sat, Sep 14, 2019 at 08:06:04PM +0200, Pas wrote:
-> >
-> > I hope this is the correct forum to ask these questions. (If not, then
-> > sorry for the noise! Though then could you recommend where to ask
-> > them?)
->
-> There are some known issues with with the inline_data feature; in
-> particular, it violates some of the jbd2 rules about how to jorunal
-> data blocks.  As such, bad things(tm) can happen on crash recovery.
-> For the most part it works OK for the original intended use case, was
-> for bigalloc file systems where there was a desire to handle small
-> directories more efficiently, which was how the developer who created
-> the feature used said feature.  I didn't realize this particular
-> rather serious bug until after the feature went into the kernel, and
-> it's been on my todo list to fix; I just haven't had the time.
->
-> It doesn't happen all that often; you need to start files that are
-> small enough such that they can fit in an inline_data file, and then
-> grow them via an appending write so that they need to be shifted to an
-> block allocated file, and then force an unclean shutdown at an
-> inopportune time.
->
-> But yeah, there is a good reason why it's not a default-enabled
-> feature.  It also generally doesn't buy you much for most file system
-> workloads, so it hasn't been high on my priority list to fix.
->
-> Regards,
->
->                                         - Ted
+--<M>--
