@@ -2,144 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB13B37D9
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 12:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F33B381B
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 12:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728426AbfIPKOa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Sep 2019 06:14:30 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:43573 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726173AbfIPKOa (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 06:14:30 -0400
-Received: by mail-pg1-f193.google.com with SMTP id u72so19544504pgb.10
-        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2019 03:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YwusKXBUgyUMXSs68FocspxMjGXcgKSvza9r85FVtq4=;
-        b=v6z5y0McOHGn6caqnH2fZHUUguAgMIWn1G5wkZy2mpOO5Vr6+zYEtdp5B1DnXNZlI9
-         EZWCcKune2GEpOoZmPN3Fd/xBqTPw3GeDjDHCrTbDGxRkcxQVRvZgaae45tiNWz4egdv
-         7aWNYbhwB4cnAhNaDOf89BHHxLVO1IBC/+9uxgIdOe8EFp4mc3LIMT2XcvnaYeRKqQqm
-         Yiwb3IyFtUpA4Ev1VKh3dS8+BcwUFt3NgeiHb4dTUF5GGF13r6EgZNvrXUUnviBbd+Wk
-         SJ2CKtC8oD+7uODionnjzRsjJjaPai1sErp6OMT7XZ+QlqSV+h0QR24i2CVmFXGruzsq
-         R9Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YwusKXBUgyUMXSs68FocspxMjGXcgKSvza9r85FVtq4=;
-        b=YBxyoRQL6CDlYAiC8bEMJC+HfBs86YbAzbm7Z+AmtOYCupSjjpewK2cRNZutzfvXEm
-         WEW4QF2yP26Wlwf2o+LxTKSL96PiUIha9Ai3hheMXkybV1X7u0oBtbBK+FG7ioomDybJ
-         wRnUO5qL8BrpeCfxDU/QoJESsmfc1B4FKbRPac/Exj+gxorOcPnNTvTZahiIrtHQeGKj
-         tbVZvHuTo1DQO60TpFXzAZCYRjMLKDmRohW4Efi1q3dhpHtCcmX4hUu9FzYiSPJH6FIS
-         ZgtBsKifxnLihM/dFlfEI30IJeyIwsR9INU7LU+hw7Q9k17IVLHd4HAhsp450GkTg4Xg
-         84iw==
-X-Gm-Message-State: APjAAAXr4DGDqK/cjYIZ5ybcPUZixDluyDwArtxgxTdGM8rtrOTQfjJO
-        JaCsOAhC3DcFpdu/jiPWmpn6
-X-Google-Smtp-Source: APXvYqyL1KqvzAf2ZZKqgFwNVe0gZbGBEQJFslScWmzayJcvvmZjesltSh/2GJG9gQtx2930L95cZw==
-X-Received: by 2002:a63:5941:: with SMTP id j1mr55238748pgm.319.1568628864456;
-        Mon, 16 Sep 2019 03:14:24 -0700 (PDT)
-Received: from bobrowski ([110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id j4sm4197326pfn.29.2019.09.16.03.14.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2019 03:14:23 -0700 (PDT)
-Date:   Mon, 16 Sep 2019 20:14:17 +1000
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        david@fromorbit.com, hch@infradead.org, darrick.wong@oracle.com
-Subject: Re: [PATCH v3 5/6] ext4: introduce direct IO write path using iomap
- infrastructure
-Message-ID: <20190916101417.GA4024@bobrowski>
-References: <cover.1568282664.git.mbobrowski@mbobrowski.org>
- <db33705f9ba35ccbe20fc19b8ecbbf2078beff08.1568282664.git.mbobrowski@mbobrowski.org>
- <20190916043741.BCBDEA4054@b06wcsmtp001.portsmouth.uk.ibm.com>
+        id S1729704AbfIPKeC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Sep 2019 06:34:02 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:33034 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728736AbfIPKeB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 06:34:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=0zriILmKCDGiikF7Oyn0qe09shDqYGPmrGUDW/y4opg=; b=S5RsoMbgYcp2ozJ24vD9vcYvg
+        3+waoNpeH7BdOwTZ9mQDwhqeRrL+u1yfQqcrYQX0AiE/o7ExBE5G6AUCLHNxsORb67Es/nqekoO5T
+        PpgBZ6Iq5p9gt5Jp/HreSVJHu6sHhJGjJldEJ4Kh2MiaYVaURe7jJM943cQKct3wRsipICdc8yLA9
+        0rZwUOVWuW/v96V9i0xfVeh6v61bBpYZl/XfXpxB/8vYe9bESSI4J+n5lWxXTS+V7kUepU22DrON/
+        +LcV+XAIUbB6y9UM12b26731Dae8/BvvXcQ9iSEo9zYvR3QPLxJLfR5IyWM2ZurzeZnSO4UxqfFn/
+        wFhlZ7E4A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.2 #3 (Red Hat Linux))
+        id 1i9oKN-00040J-Nw; Mon, 16 Sep 2019 10:33:51 +0000
+Date:   Mon, 16 Sep 2019 03:33:51 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, zhangjs <zachary@baishancloud.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Linux 5.3-rc8
+Message-ID: <20190916103351.GA14308@infradead.org>
+References: <CAHk-=whBQ+6c-h+htiv6pp8ndtv97+45AH9WvdZougDRM6M4VQ@mail.gmail.com>
+ <20190910042107.GA1517@darwi-home-pc>
+ <20190910115635.GB2740@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190916043741.BCBDEA4054@b06wcsmtp001.portsmouth.uk.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190910115635.GB2740@mit.edu>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 10:07:41AM +0530, Ritesh Harjani wrote:
-> > @@ -213,12 +214,16 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
-> >   	struct inode *inode = file_inode(iocb->ki_filp);
-> >   	ssize_t ret;
-> > 
-> > +	if (unlikely(IS_IMMUTABLE(inode)))
-> > +		return -EPERM;
-> > +
-> >   	ret = generic_write_checks(iocb, from);
-> >   	if (ret <= 0)
-> >   		return ret;
-> > 
-> > -	if (unlikely(IS_IMMUTABLE(inode)))
-> > -		return -EPERM;
-> > +	ret = file_modified(iocb->ki_filp);
-> > +	if (ret)
-> > +		return 0;
+On Tue, Sep 10, 2019 at 07:56:35AM -0400, Theodore Y. Ts'o wrote:
+> Hmm, I'm not seeing this on a Dell XPS 13 (model 9380) using a Debian
+> Bullseye (Testing) running a rc4+ kernel.
 > 
-> Why not return ret directly, otherwise we will be returning the wrong
-> error code to user space. Thoughts?
+> This could be because Debian is simply doing more I/O; or it could be
+> because I don't have some package installed which is trying to reading
+> from /dev/random or calling getrandom(2).  Previously, Fedora ran into
+> blocking issues because of some FIPS compliance patches to some
+> userspace daemons.  So it's going to be very user space dependent and
+> package dependent.
 
-You're right. I can't remember exactly why I decided to return '0', however
-looking at the code once again I don't see a reason why we don't just return
-'ret', as any value other than '0' represents a failure in this case
-anyway. Thanks for picking that up.
- 
-> Do you think simplification/restructuring of this API
-> "ext4_write_checks" can be a separate patch, so that this patch
-> only focuses on conversion of DIO write path to iomap?
-
-Hm, if we split it up so that it comes before this patch then it becomes hairy
-in the sense that a whole bunch of other changes would also need to come with
-what looks to be such a miniscule modification
-i.e. ext4_buffered_write_iter(), ext4_file_write_iter(), etc. Splitting it to
-come after just doesn't make any sense. To be honest, I don't really have any
-strong opinions around why we shouldn't split it up, nor do I have a strong
-opinion around why we should, so I think we should just leave it for now.
-
-> Also, I think we can make the function (ext4_write_checks())
-> like below. This way we call for file_modified() only after we
-> have checked for write limits, at one place.
-
-No objections and I think it's a good idea.
-
->   static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter
-> *from)
->   {
->           struct inode *inode = file_inode(iocb->ki_filp);
->           ssize_t ret;
-> 
->           if (unlikely(IS_IMMUTABLE(inode)))
->                   return -EPERM;
-> 
->           ret = generic_write_checks(iocb, from);
->           if (ret <= 0)
-> _                 return ret;
->           /*
->            * If we have encountered a bitmap-format file, the size limit
->            * is smaller than s_maxbytes, which is for extent-mapped files.
->            */
->           if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
->                   struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-> 
->                   if (iocb->ki_pos >= sbi->s_bitmap_maxbytes)
->                           return -EFBIG;
->                   iov_iter_truncate(from, sbi->s_bitmap_maxbytes -
-> iocb->ki_pos);
->           }
-> +
-> +         ret = file_modified(iocb->ki_filp);
-> +         if (ret)
-> +                 return ret;
-> +
->           return iov_iter_count(from);
->   }
-
---<M>--
+Btw, I've been seeing this issue on debian testing with an XFS root
+file system ever since the blocking random changes went in.  There
+are a few reports (not from me) in the BTS since.  I ended up just
+giving up on gdm and using lightdm instead as it was clearly related
+to that.
