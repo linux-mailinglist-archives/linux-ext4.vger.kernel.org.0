@@ -2,54 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F11B6B4495
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 01:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F967B449C
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 01:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726818AbfIPX3d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Sep 2019 19:29:33 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:38415 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbfIPX3c (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 19:29:32 -0400
-Received: by mail-wr1-f65.google.com with SMTP id l11so1139159wrx.5;
-        Mon, 16 Sep 2019 16:29:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iSJV746RJhhQqjkMYfS7cXLz5TDKUWbV61EOzvKoZE8=;
-        b=sOnrCysgB8VpJ/0LmxZjUQaJw6293vaRqOVGY7iS9Cv094eZlzG1ZltkyhgHGXFpdr
-         5gjvtVHKucXlUlGU6uJOAN0f9W/ohCedq6jOQ1cPuXzdjtnXrGq34cgOOzp//emRFqvL
-         eR4ssAYDx0jRGQZBphzPZcodGYS9OJnLMDO/d3HFYzhjQsb19BDY5Ndq1gGoDXDrjjRg
-         47qMYNwRzx3X7vssqRebmiWmUHYaxdx8QB2h/kspujtbXAe/5VdyZ6Ce23tLymJqPo5w
-         HNdS5TpT42UOPIN7sIn31dGr2tWYF4Noa8UwBpmQAx4EcThMrhI6JiyxyOMzGheQKC51
-         +cdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iSJV746RJhhQqjkMYfS7cXLz5TDKUWbV61EOzvKoZE8=;
-        b=i8IV61L3VD4UMOGLIa2nhAcq2/0bXNr2NS2GjxzUot7GK0V9mlwo1G4pDhGfgwjCee
-         3N32RFc5/jbnYQO6VxvlZMdCiUrwaTRGEbJvmo7erBuNrzaIP92agdZgNIsz6sfUPkPC
-         /1bPpvTb5ZnVzQCQlIcPYiqJwX51cRnmg5jsG/Mnb/x8jqhMwmqxr+aHasTcbqD6GN+Y
-         1I26RGIKOvhkzzINv4jOJo5o5ZKP2hGyWWmyNx0h7TsPznwb5+HUwYFnmw4qTKwVa3Uu
-         aSYZKbsCaC3FTk671gQAS0wRvvenLaYu1CKpa52C6QjDqHE9tHqKUzMFSeLdstxT0DJP
-         DgMw==
-X-Gm-Message-State: APjAAAXb7LmE2I8zNaLEwOuVlYuu8js+BZ+1nU8eF8et7f18KDXC3tfB
-        dbsezrPyad17TMJcAdnG5yE=
-X-Google-Smtp-Source: APXvYqyxDwVFzcE3x/4xdXPW2m8KVSDpMzJvReZW6zi2IZkcFBIXoMH+4N1RbVOHMezJ68DhsuBA6Q==
-X-Received: by 2002:adf:f112:: with SMTP id r18mr632122wro.88.1568676571199;
-        Mon, 16 Sep 2019 16:29:31 -0700 (PDT)
-Received: from darwi-home-pc (ip-109-42-3-39.web.vodafone.de. [109.42.3.39])
-        by smtp.gmail.com with ESMTPSA id f3sm317963wrq.53.2019.09.16.16.29.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2019 16:29:30 -0700 (PDT)
-Date:   Tue, 17 Sep 2019 01:29:22 +0200
-From:   "Ahmed S. Darwish" <darwish.07@gmail.com>
+        id S1728147AbfIPXey (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Sep 2019 19:34:54 -0400
+Received: from cavan.codon.org.uk ([93.93.128.6]:47379 "EHLO
+        cavan.codon.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbfIPXey (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 19:34:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codon.org.uk; s=63138784; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=X2q8aSnUy4dy03z0yGFvq5cDtugo9Mv7XGnsBb9G3Bk=; b=iAa4MiEKt/pSuLtIM34u8C1sW
+        HHlf+AHi/l5j+B4Z4Z0k+p3U6eMDp91kvCPlrGAlvN7/2pFnerYmrpTlrds1l4uKuu4UD2RIXJv9u
+        YW2hP7Ilkey8R69WYU4zMpfFKhHUbErDI/SRqn/q7IpqEli9w4dM4vCXhqDIFc0jB4wfQ=;
+Received: from mjg59 by cavan.codon.org.uk with local (Exim 4.89)
+        (envelope-from <mjg59@cavan.codon.org.uk>)
+        id 1iA00g-0001fo-3D; Tue, 17 Sep 2019 00:02:18 +0100
+Date:   Tue, 17 Sep 2019 00:02:18 +0100
+From:   Matthew Garrett <mjg59@srcf.ucam.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Matthew Garrett <mjg59@srcf.ucam.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
         Vito Caputo <vcaputo@pengaru.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
         Lennart Poettering <mzxreary@0pointer.de>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
@@ -58,66 +37,56 @@ Cc:     Matthew Garrett <mjg59@srcf.ucam.org>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
 Subject: Re: Linux 5.3-rc8
-Message-ID: <20190916232922.GA7880@darwi-home-pc>
-References: <20190916042952.GB23719@1wt.eu>
+Message-ID: <20190916230217.vmgvsm6o2o4uq5j7@srcf.ucam.org>
+References: <CAHk-=wiDNRPzuNE-eXs7QOpgPVLXsZOXEMQE9RmAWABiiZrSAQ@mail.gmail.com>
+ <20190916014050.GA7002@darwi-home-pc>
+ <20190916014833.cbetw4sqm3lq4x6m@shells.gnugeneration.com>
+ <20190916024904.GA22035@mit.edu>
+ <20190916042952.GB23719@1wt.eu>
  <CAHk-=wg4cONuiN32Tne28Cg2kEx6gsJCoOVroqgPFT7_Kg18Hg@mail.gmail.com>
  <20190916061252.GA24002@1wt.eu>
  <CAHk-=wjWSRzTjwN9F5gQcxtPkAgaRHJOOOTUjVakqP-Nzg9BXA@mail.gmail.com>
  <20190916172117.GB15263@mit.edu>
  <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
- <20190916230217.vmgvsm6o2o4uq5j7@srcf.ucam.org>
- <CAHk-=whwSt4RqzqM7cA5SAhj+wkORfr1bG=+yydTJPtayQ0JwQ@mail.gmail.com>
- <20190916231103.bic65ab4ifv7vhio@srcf.ucam.org>
- <CAHk-=wjwJDznDUsiaXH=UCxFRQxNEpj2tTCa0GvZm2WB4+hJ4A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjwJDznDUsiaXH=UCxFRQxNEpj2tTCa0GvZm2WB4+hJ4A@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: <locally generated>
+X-SA-Exim-Mail-From: mjg59@cavan.codon.org.uk
+X-SA-Exim-Scanned: No (on cavan.codon.org.uk); SAEximRunCond expanded to false
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 04:18:00PM -0700, Linus Torvalds wrote:
-> On Mon, Sep 16, 2019 at 4:11 PM Matthew Garrett <mjg59@srcf.ucam.org> wrote:
-> >
-> > In one case we have "Systems don't boot, but you can downgrade your
-> > kernel" and in the other case we have "Your cryptographic keys are weak
-> > and you have no way of knowing unless you read dmesg", and I think
-> > causing boot problems is the better outcome here.
+On Mon, Sep 16, 2019 at 10:44:31AM -0700, Linus Torvalds wrote:
+>  - admit that the current situation actually causes problems, and has
+> _existing_ bugs.
 > 
-> Or: In one case you have a real and present problem. In the other
-> case, people are talking hypotheticals.
->
+>  - throw it out the window, with the timeout and big BIG warning when
+> the problem cases trigger
 
-Linus, in all honesty, the other case is _not_ a hypothetical . For
-example, here is a fresh comment on LWN from gnupg developers:
+The semantics many people want for secure key generation is urandom, but 
+with a guarantee that it's seeded. getrandom()'s default behaviour at 
+present provides that, and as a result it's used for a bunch of key 
+generation. Changing the default (even with kernel warnings) seems like 
+it risks people generating keys from an unseeded prng, and that seems 
+like a bad thing?
 
-    https://lwn.net/Articles/799352
-
-It's about this libgnupg code:
-
-    => https://dev.gnupg.org/source/libgcrypt.git
-
-    => random/rdlinux.c:
-    
-    /* If we have a modern operating system, we first try to use the new
-     * getentropy function.  That call guarantees that the kernel's
-     * RNG has been properly seeded before returning any data.  This
-     * is different from /dev/urandom which may, due to its
-     * non-blocking semantics, return data even if the kernel has
-     * not been properly seeded.  And it differs from /dev/random by never
-     * blocking once the kernel is seeded.  */
-    #if defined(HAVE_GETENTROPY) || defined(__NR_getrandom)
-    do {
-        ...
-        ret = getentropy (buffer, nbytes);
-        ...
-    } while (ret == -1 && errno == EINTR);
-
-thanks,
-
+It's definitely unfortunate that getrandom() doesn't have a GRND_URANDOM 
+flag that would make it useful for the "I want some vaguely random 
+numbers but I don't care that much and I don't necessarily have access 
+to /dev/urandom" case, but at the moment we have no way of 
+distinguishing between applications that are making this call because 
+they want the semantics of urandom but need it to be seeded (which is 
+one of the usecases getrandom() was introduced for in the first place) 
+and applications that are making this call because it was convenient and 
+the kernel usually ended up generating enough entropy in the first 
+place. Given the ambiguity, I don't see an easy way to solve for the 
+latter without breaking the former - and that could have some *very* bad 
+outcomes.
+ 
 -- 
-Ahmed Darwish
-http://darwish.chasingpointers.com
+Matthew Garrett | mjg59@srcf.ucam.org
