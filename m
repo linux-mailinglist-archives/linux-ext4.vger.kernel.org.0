@@ -2,71 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8C4B33BC
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 05:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC8FB33C4
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 05:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbfIPDbt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 Sep 2019 23:31:49 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:33045 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbfIPDbt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Sep 2019 23:31:49 -0400
-Received: by mail-lj1-f196.google.com with SMTP id a22so32297064ljd.0
-        for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2019 20:31:48 -0700 (PDT)
+        id S1728935AbfIPDkw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 15 Sep 2019 23:40:52 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]:33622 "EHLO
+        mail-lf1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728295AbfIPDkw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Sep 2019 23:40:52 -0400
+Received: by mail-lf1-f43.google.com with SMTP id y127so3021809lfc.0
+        for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2019 20:40:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fabntbPdTHBLY+J8GfOMAsjCxQ98iy3fvtylDOTNtXY=;
-        b=Rb7ndPRvbfKdFFSW7cp++vq1VHLPlokFSVp6Zh7QLtyhVbwCBEx8Psy7stGdetXSto
-         hxKA0uoLhVq+46CqKsFhgvJDUuHcQrcmaa8RyM4+9k0D1SHM3VJxKW8jGMfrDA0XIVTc
-         6v1yUfy1cZjQdxtKTGusEupfiPawMV3IOSOvE=
+        bh=ZLXQAqPqQDmWrNXiK3wVfq5Z50mijKvlxznDrVOzmgs=;
+        b=Z+nV7Ke5BSXKKmQ+Ts4YTT7qlC7TbyV/jm6NLKBU6z03rU7NvAQNji5GioZWgK17s7
+         62yKx2FMR6rJFiizi4ZjNRv5njnEY7NFsF2OjfCFTgE2HwxHxhM9PY/0+JsGYd4dJ2fD
+         dgKtQX7Ouj0JYOEnIgLAxi0CnKF/POvAmDnps=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fabntbPdTHBLY+J8GfOMAsjCxQ98iy3fvtylDOTNtXY=;
-        b=nXJZYGh4Itw/i0D8EIiu1aXAHMTXDv1XNOAME5EOwNeL8F7fLAL7gk6tokU/rBvz5T
-         Z51qlAbb9yXWa/q0TGqPzpyWwObpm+bLSgiHPiHXBAMKbKD+if6in5BQ2zomYTBpaX6Q
-         l7ixn6DFV9HXeDX9wwf3l18bOH46ExE9entbh0j/wAFwmuNykx74+kCCSMDDCrJ78LCk
-         bu361XulsPD9qPBVX51qqgy9XQdE9hf14h/3zUwwYM2rJJENGKc5OJHq8DOKiCXOEHno
-         PMwPj+N77cZ9xmlAdKfbiueNWLF9OV+SEKYk/pfJ1I0ukoXtfx4Y63kguRCMqW6Q55eh
-         QQVA==
-X-Gm-Message-State: APjAAAXFF3ZXstYu6KjvXt2DeT+aAYDNdPlF/VY4Z7ni54vR488h8/XC
-        YJ4OTKIKk9/QyWQ6XagYxf1xjBmb2WQ=
-X-Google-Smtp-Source: APXvYqwrKyTpzH6kJnBSrrnyia1NBloR+LjXkYOwRP5erw3Cv+7ascu49z12PvacdDEv+nC1zP77kw==
-X-Received: by 2002:a2e:9881:: with SMTP id b1mr18418691ljj.134.1568604706408;
-        Sun, 15 Sep 2019 20:31:46 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id c69sm8343923ljf.32.2019.09.15.20.31.45
+        bh=ZLXQAqPqQDmWrNXiK3wVfq5Z50mijKvlxznDrVOzmgs=;
+        b=juNzqY8dFXFICN4TkitGuT0rM5v13CfAv1fH+CixpxbpCfEdaHumdR0FkQ/3G2r4Dr
+         wlc4OjOvlFFohwCxcgXJgtzzg7V64A5NpRK/QPBpAgJLTVYSC3kdQMe2Nr485PZdamtr
+         YTk9QtAIfMPS2Kdkpui7aWAGEwaNM4cnYdZbjmoPhyJNx5ZihuxlcuVCqLmv8LEPt9ui
+         TN3Oc+ygXgOdiTn6dppNYuxEuGh7Qxig8GXl4tbyS5IaMmlnnm4BQH536lLJPn4GjrYk
+         gSrlQQkFz+Kp9AkAlaKwfHphq0jvMztuSfshwBM0WrYd3z/TI7uZNHqXzfA7ddFdjvk6
+         Pg3w==
+X-Gm-Message-State: APjAAAUPz0cSXRl//yEwj+eHqBbVnlQJpTX9q0ofbVIdSon/+/jpuEfV
+        sKYphC0TyzgXnZzKyXkto9z1VOgfYvg=
+X-Google-Smtp-Source: APXvYqwoFzhlJGFjNHeqb0KxCRKI7EnEfWPKxCjt1fbOkfEfxrm3ObJhKOkpEyTVWrhJi2+2XhKsFA==
+X-Received: by 2002:ac2:4196:: with SMTP id z22mr18252550lfh.54.1568605248820;
+        Sun, 15 Sep 2019 20:40:48 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id 3sm8077343ljs.20.2019.09.15.20.40.46
         for <linux-ext4@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 15 Sep 2019 20:31:45 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id d17so8374853lfa.7
-        for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2019 20:31:45 -0700 (PDT)
-X-Received: by 2002:ac2:5a4c:: with SMTP id r12mr11957567lfn.52.1568604704963;
- Sun, 15 Sep 2019 20:31:44 -0700 (PDT)
+        Sun, 15 Sep 2019 20:40:47 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id f5so300184ljg.8
+        for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2019 20:40:46 -0700 (PDT)
+X-Received: by 2002:a2e:2c02:: with SMTP id s2mr5130786ljs.156.1568605246706;
+ Sun, 15 Sep 2019 20:40:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
- <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
- <20190911173624.GI2740@mit.edu> <20190912034421.GA2085@darwi-home-pc>
+References: <20190911173624.GI2740@mit.edu> <20190912034421.GA2085@darwi-home-pc>
  <20190912082530.GA27365@mit.edu> <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
  <20190914150206.GA2270@darwi-home-pc> <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
- <20190915065142.GA29681@gardel-login> <CAHk-=wiDNRPzuNE-eXs7QOpgPVLXsZOXEMQE9RmAWABiiZrSAQ@mail.gmail.com>
- <20190916014050.GA7002@darwi-home-pc>
-In-Reply-To: <20190916014050.GA7002@darwi-home-pc>
+ <214fed0e-6659-def9-b5f8-a9d7a8cb72af@gmail.com> <CAHk-=wiB0e_uGpidYHf+dV4eeT+XmG-+rQBx=JJ110R48QFFWw@mail.gmail.com>
+ <20190915065655.GB29681@gardel-login> <CAHk-=wi8wAP4P33KO6hU3D386Oupr=ZL4Or6Gw+1zDFjvz+MKA@mail.gmail.com>
+ <20190916032327.GB22035@mit.edu>
+In-Reply-To: <20190916032327.GB22035@mit.edu>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 15 Sep 2019 20:31:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whzFdN3hg0H56qYQfXVbV2pXo=uAVXoFF+KOsQguqgfMg@mail.gmail.com>
-Message-ID: <CAHk-=whzFdN3hg0H56qYQfXVbV2pXo=uAVXoFF+KOsQguqgfMg@mail.gmail.com>
+Date:   Sun, 15 Sep 2019 20:40:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjM3aEiX-s3e8PnUjkiTzkF712vOfeJPoFDCVTJ+Pp+XA@mail.gmail.com>
+Message-ID: <CAHk-=wjM3aEiX-s3e8PnUjkiTzkF712vOfeJPoFDCVTJ+Pp+XA@mail.gmail.com>
 Subject: Re: Linux 5.3-rc8
-To:     "Ahmed S. Darwish" <darwish.07@gmail.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     Lennart Poettering <mzxreary@0pointer.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
         William Jon McCann <mccann@jhu.edu>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -75,19 +74,58 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Sep 15, 2019 at 6:41 PM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
+On Sun, Sep 15, 2019 at 8:23 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
 >
-> Yes, the systemd-random-seed(8) process blocks, but this is an
-> isolated process, and it's only there as a synchronization point and
-> to load/restore random seeds from disk across reboots.
->
-> What blocked the system boot was GDM/gnome-session implicitly calling
-> getrandom() for the Xorg MIT cookie.
+> But not blocking is *precisely* what lead us to weak keys in network
+> devices that were sold by the millions to users in their printers,
+> wifi routers, etc.
 
-Aahh. I saw that email, but then in the discussion the systemd case
-always ended up coming up first, and I never made the connection.
+Ted, just admit that you are wrong on this, instead of writing the
+above kind of bad fantasy.
 
-What a complete crock that silly MIT random cookie is, and what a sad
-sad reason for blocking.
+We have *always* supported blocking. It's called "/dev/random". And
+guess what? Not blocking wasn't what lead to weak keys like you try to
+imply.
 
-              Linus
+What led to weak keys is that /dev/random is useless and nobody sane
+uses it, exactly because it always blocks.
+
+So you claim that it is lack of blocking that is the problem, but
+you're ignoring reality. You are ignoring the very real fact that
+blocking is what led to people not using the blocking interface in the
+first place, because IT IS THE WRONG MODEL.
+
+It really is fundamentally wrong. Blocking by definition will never
+work, because it doesn't add any entropy. So people then don't use the
+blocking interface, because it doesn't _work_.
+
+End result: they then use another interface that does work, but isn't secure.
+
+I have told you that in this thread, and HISTORY should have told you
+that. You're not listening.
+
+If you want secure keys, you can't rely on a blocking model, because
+it ends up not working. Blocking leads to problems.
+
+If you want secure keys, you should do the exact opposite of blocking:
+you should encourage people to explicitly use a non-blocking "I want
+secure random numbers", and then if that fails, they should do things
+that cause entropy.
+
+So getrandom() just repeated a known broken model. And you're
+parroting that same old known broken stuff. It didn't work with
+/dev/random, why do you think it magically works with getrandom()?
+
+Stop fighting reality.
+
+The fact is, either you have sufficient entropy or you don't.
+
+ - if you have sufficient entropy, blocking is stupid and pointless
+
+ - if you don't have sufficient entropy, blocking is exactly the wrong
+thing to do.
+
+Seriously. Don't make excuses for bad interfaces. We should have
+learnt this long ago.
+
+             Linus
