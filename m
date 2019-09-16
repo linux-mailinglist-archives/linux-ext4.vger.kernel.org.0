@@ -2,125 +2,167 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A66B4165
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2019 21:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BDBB4412
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 00:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732696AbfIPTyH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Sep 2019 15:54:07 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:36523 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727884AbfIPTyH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 15:54:07 -0400
-Received: by mail-wm1-f68.google.com with SMTP id t3so593216wmj.1;
-        Mon, 16 Sep 2019 12:54:05 -0700 (PDT)
+        id S2387555AbfIPWhu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Sep 2019 18:37:50 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:33880 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728123AbfIPWhu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Sep 2019 18:37:50 -0400
+Received: by mail-pf1-f196.google.com with SMTP id b128so819983pfa.1
+        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2019 15:37:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=4PX9Kbdf/A/a4MaGAnVuIX5oyNGr0+JJhJb/XQGXlPk=;
-        b=Pq/G5sgDBwqO7N/NZoHq6vAnLQdnmqWF3ActxfgcfBHmPcaay1k310KGeT+4zLnbtf
-         e2VkRluXw2y5zJidKXyUAWYAncmIU6FJ4VI/aWaAxnyCkhGqW1Ka7fuUAVg0mCYfFtzx
-         FeS9X3Iwq8Ap4EBLpRwCMPVzTLhnB9ZeflCrvj+cOzaMAMzsvvDDOcucbLp0sjc86aYT
-         ZzUwBs+lqr2lf1VZSN+5yWugK6aXHW8mOoCnSFRXTzFfzkXDZdUKvTUju9KwPQhSR3lN
-         iSXmY+qh8DxbLz1tDu1OmneYH5Uj1tpttrQmJQwxAFtx/HS7/9wLkRiEhurlvj/Zik7B
-         7uyA==
+        bh=59X5RvHm807OLFbm3taZna4w+6L5coMBB4Ni//2NeKI=;
+        b=C80DicDCYT7rIcDYOHOGrrJk3NvfyZfExEswz6GbI2lAEjINTbwPDtebRCvZFSnMW9
+         9w8vIF/xVyR16X1mX7uz9+pP+nI4VHxGrgxY8M0dUcCO9yp3Tnkg9Gb2sx8r6Z3Z1KVh
+         gKQTpNpmFERkJwtqz7IHImJWQVEtvVdagn6Mf3XYzhWWE4k67g8p49N8/CvI6oAuSfM4
+         oUHTY/I5JWpm0HJTmnOui5/ef/qLmKYL8MWVF62Gbbs0yiyy8tasexPK0JI/Un8KvJj8
+         FelXqV94iaGUw/sZHScuzvDcv4qWPGJkvVmW3PJYVxChiskv+pzi9i5kWlKIyFK7cjwE
+         U/Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4PX9Kbdf/A/a4MaGAnVuIX5oyNGr0+JJhJb/XQGXlPk=;
-        b=E2/kGpa2REY6GI+62fRTmCCT/pWToguA8UrM7vIqxqIiEdPRboVKREdzCIQP1GjsIF
-         JZsGyBYc6zvTUdpJiwYkYQnfvlrw362G4el2zsi5Zs7hZTVCNDbMc71ytNqoaHtHTXnr
-         RfHkIdpRx4z7K658uMIG2cd3UqRTdflMMxAjH8K6a4JmGr/VCD24maEuM9gbi27+vE2r
-         An1bldAGT5x7EmMjdsPVbI8tpDga7Y/9DpqyTK8bMzDvBS9b54hdzpFqCb4tEQT3oI7l
-         QM88xb6YLCOGUxCNfy31/UMDyEj+a3obEgg6dg6kgNyNmgJBs3iaozQkQL2lGkEUvAZ9
-         U/Sg==
-X-Gm-Message-State: APjAAAXNW1V0RqHe+hQeZbNokJZDvC8kyiaIHAulaMILeXE+1LAOnj/P
-        S8XTV8IRSUKKLP1C56GbLD0=
-X-Google-Smtp-Source: APXvYqwBdY4uOu0ZFcdaEBrivR93S7OYkwCljwilX1W+IUtywSMOglf7NIj5IKWKDBba0+vqOt4kXQ==
-X-Received: by 2002:a1c:4946:: with SMTP id w67mr537801wma.131.1568663644846;
-        Mon, 16 Sep 2019 12:54:04 -0700 (PDT)
-Received: from darwi-home-pc (p200300D06F2D148E24CC892DA859AC81.dip0.t-ipconnect.de. [2003:d0:6f2d:148e:24cc:892d:a859:ac81])
-        by smtp.gmail.com with ESMTPSA id m18sm53826700wrg.97.2019.09.16.12.54.02
+        bh=59X5RvHm807OLFbm3taZna4w+6L5coMBB4Ni//2NeKI=;
+        b=jZ1+ePqrMnbtFdcC7imrWP26leXpN69ymUoMFuc85ejWopSkUyviNZXyy4bwZkpBkv
+         xDsNisfsrmldldluH8FZJHdjo2gsarkO/JHzYG8u4AAUrK3yDeaoW+7Q776WoT/B6n8Q
+         ng+4etczpXw83jc8/AQAxf3LGcI6w2SETJ6kWn/kZOc3/UdNOOqsLd7aWppo5aDDxyNb
+         NepU2gpCocIbrHzPP4s+Cid5A1bmtBu2qzhn4lRbuPrD7q0rUZFt7aDWRBaY2yZ2uoBA
+         MtJetXwm7ThU0qYhGACa1RR+uK+O3/xb3xMCODzV2zq5xVA78sJeqln31Phy5fHfur+r
+         DhXw==
+X-Gm-Message-State: APjAAAW2iWlElThjRTNBYHwSWdXfyuSWLgSMcRMik32ye8QgAB/G5QBq
+        K0BMvL4QkUPVl5HCFtHtUP1N
+X-Google-Smtp-Source: APXvYqw201emQOCzAUYbBBuxD2MbgCxcjbSVpKAy7S6p1X+7ll9pov8i2Lw4qCsPmWAubk01ux60tw==
+X-Received: by 2002:a63:1c09:: with SMTP id c9mr25644pgc.347.1568673469085;
+        Mon, 16 Sep 2019 15:37:49 -0700 (PDT)
+Received: from bobrowski ([110.232.114.101])
+        by smtp.gmail.com with ESMTPSA id b10sm125472pfo.123.2019.09.16.15.37.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2019 12:54:04 -0700 (PDT)
-Date:   Mon, 16 Sep 2019 21:53:57 +0200
-From:   "Ahmed S. Darwish" <darwish.07@gmail.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Willy Tarreau <w@1wt.eu>, Vito Caputo <vcaputo@pengaru.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190916195357.GA3312@darwi-home-pc>
-References: <20190915065142.GA29681@gardel-login>
- <CAHk-=wiDNRPzuNE-eXs7QOpgPVLXsZOXEMQE9RmAWABiiZrSAQ@mail.gmail.com>
- <20190916014050.GA7002@darwi-home-pc>
- <20190916014833.cbetw4sqm3lq4x6m@shells.gnugeneration.com>
- <20190916024904.GA22035@mit.edu>
- <20190916042952.GB23719@1wt.eu>
- <CAHk-=wg4cONuiN32Tne28Cg2kEx6gsJCoOVroqgPFT7_Kg18Hg@mail.gmail.com>
- <20190916061252.GA24002@1wt.eu>
- <CAHk-=wjWSRzTjwN9F5gQcxtPkAgaRHJOOOTUjVakqP-Nzg9BXA@mail.gmail.com>
- <20190916172117.GB15263@mit.edu>
+        Mon, 16 Sep 2019 15:37:48 -0700 (PDT)
+Date:   Tue, 17 Sep 2019 08:37:41 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        david@fromorbit.com, darrick.wong@oracle.com
+Subject: Re: [PATCH v3 5/6] ext4: introduce direct IO write path using iomap
+ infrastructure
+Message-ID: <20190916223741.GA5936@bobrowski>
+References: <cover.1568282664.git.mbobrowski@mbobrowski.org>
+ <db33705f9ba35ccbe20fc19b8ecbbf2078beff08.1568282664.git.mbobrowski@mbobrowski.org>
+ <20190916121248.GD4005@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190916172117.GB15263@mit.edu>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190916121248.GD4005@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 01:21:17PM -0400, Theodore Y. Ts'o wrote:
-> On Mon, Sep 16, 2019 at 09:17:10AM -0700, Linus Torvalds wrote:
-> > So the semantics that getrandom() should have had are:
-> > 
-> >  getrandom(0) - just give me reasonable random numbers for any of a
-> > million non-strict-long-term-security use (ie the old urandom)
-> > 
-> >     - the nonblocking flag makes no sense here and would be a no-op
+On Mon, Sep 16, 2019 at 05:12:48AM -0700, Christoph Hellwig wrote:
+> On Thu, Sep 12, 2019 at 09:04:46PM +1000, Matthew Bobrowski wrote:
+> > @@ -213,12 +214,16 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
+> >  	struct inode *inode = file_inode(iocb->ki_filp);
+> >  	ssize_t ret;
+> >  
+> > +	if (unlikely(IS_IMMUTABLE(inode)))
+> > +		return -EPERM;
+> > +
+> >  	ret = generic_write_checks(iocb, from);
+> >  	if (ret <= 0)
+> >  		return ret;
+> >  
+> > -	if (unlikely(IS_IMMUTABLE(inode)))
+> > -		return -EPERM;
+> > +	ret = file_modified(iocb->ki_filp);
+> > +	if (ret)
+> > +		return 0;
+> >  
+> >  	/*
+> >  	 * If we have encountered a bitmap-format file, the size limit
 > 
-> That change is what I consider highly problematic.  There are a *huge*
-> number of applications which use cryptography which assumes that
-> getrandom(0) means, "I'm guaranteed to get something safe
-> cryptographic use".  Changing his now would expose a very large number
-> of applications to be insecure.  Part of the problem here is that
-> there are many different actors.  There is the application or
-> cryptographic library developer, who may want to be sure they have
-> cryptographically secure random numbers.  They are the ones who will
-> select getrandom(0).
+> Independent of the error return issue you probably want to split
+> modifying ext4_write_checks into a separate preparation patch.
+
+Providing that there's no objections to introducing a possible performance
+change with this separate preparation patch (overhead of calling
+file_remove_privs/file_update_time twice), then I have no issues in doing so.
+
+> > +/*
+> > + * For a write that extends the inode size, ext4_dio_write_iter() will
+> > + * wait for the write to complete. Consequently, operations performed
+> > + * within this function are still covered by the inode_lock(). On
+> > + * success, this function returns 0.
+> > + */
+> > +static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size, int error,
+> > +				 unsigned int flags)
+> > +{
+> > +	int ret;
+> > +	loff_t offset = iocb->ki_pos;
+> > +	struct inode *inode = file_inode(iocb->ki_filp);
+> > +
+> > +	if (error) {
+> > +		ret = ext4_handle_failed_inode_extension(inode, offset + size);
+> > +		return ret ? ret : error;
+> > +	}
 > 
-> Then you have the distribution or consumer-grade electronics
-> developers who may choose to run them too early in some init script or
-> systemd unit files.  And some of these people may do something stupid,
-> like run things too early, or omit the a hardware random number
-> generator in their design, even though it's for a security critical
-> purpose (say, a digital wallet for bitcoin).
+> Just a personal opinion, but I find the use of the ternary operator
+> here a little weird.
+> 
+> A plain old:
+> 
+> 	ret = ext4_handle_failed_inode_extension(inode, offset + size);
+> 	if (ret)
+> 		return ret;
+> 	return error;
+> 
+> flow much easier.
 
-Ted, you're really the expert here. My apologies though, every time I
-see the words "too early" I get a cramp... Please check my earlier
-reply:
+Agree, much cleaner.
+ 
+> > +	if (!inode_trylock(inode)) {
+> > +		if (iocb->ki_flags & IOCB_NOWAIT)
+> > +			return -EAGAIN;
+> > +		inode_lock(inode);
+> > +	}
+> > +
+> > +	if (!ext4_dio_checks(inode)) {
+> > +		inode_unlock(inode);
+> > +		/*
+> > +		 * Fallback to buffered IO if the operation on the
+> > +		 * inode is not supported by direct IO.
+> > +		 */
+> > +		return ext4_buffered_write_iter(iocb, from);
+> 
+> I think you want to lift the locking into the caller of this function
+> so that you don't have to unlock and relock for the buffered write
+> fallback.
 
-    https://lkml.kernel.org/r/20190912034421.GA2085@darwi-home-pc
+I don't exactly know what you really mean by "lift the locking into the caller
+of this function". I'm interpreting that as moving the inode_unlock()
+operation into ext4_buffered_write_iter(), but I can't see how that would be
+any different from doing it directly here? Wouldn't this also run the risk of
+the locks becoming unbalanced as we'd need to add checks around whether the
+resource is being contended? Maybe I'm misunderstanding something here...
 
-Specifically the trace_printk log of all the getrandom(2) calls
-during an standard Archlinux boot...
+> > +	if (offset + count > i_size_read(inode) ||
+> > +	    offset + count > EXT4_I(inode)->i_disksize) {
+> > +		ext4_update_i_disksize(inode, inode->i_size);
+> > +		extend = true;
+> 
+> Doesn't the ext4_update_i_disksize need to be under an open journal
+> handle?
 
-where is the "too early" boundary there? It's undefinable.
+After all, it is a metadata update, which should go through an open journal
+handle.
 
-You either have entropy, or you don't. And if you don't, it will stay
-like this forever, because if you had, you wouldn't have blocked in
-the first place...
+Thank you for the review Christoph!
 
-Thanks,
-
---
-Ahmed Darwish
-http://darwish.chasingpointers.com
+--<M>--
