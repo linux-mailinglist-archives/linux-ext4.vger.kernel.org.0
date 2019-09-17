@@ -2,143 +2,211 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13068B52DF
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 18:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA68CB52EC
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 18:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727171AbfIQQYE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 12:24:04 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39496 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726875AbfIQQYE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 12:24:04 -0400
-Received: by mail-lj1-f193.google.com with SMTP id s19so4171763lji.6
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 09:24:02 -0700 (PDT)
+        id S1727987AbfIQQ2I (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 12:28:08 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:42110 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727568AbfIQQ2I (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 12:28:08 -0400
+Received: by mail-lf1-f68.google.com with SMTP id c195so3385562lfg.9
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 09:28:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GxsyW6nLofhV8viqZYmUtikq7MzcUQ0DLONnisNNMgg=;
-        b=TqK580QEDxVQPMUfHjJ7kx8CJ6swQ66oeXEZhXBI33FU+q9pAhpktcTOSJh9FjQuYB
-         g/amoJaPGMr0tVs+0KonicAn6CEpIb0jSqvDt3HwUdn6xXa6sACcDsgEA68nfpRcpykU
-         M3sf6qYdD8L0B4HAx6NYPW9aAgS0IclpQKu/s=
+        bh=MbppCquzDPmdlrJOa+FeToM7VEugTw0SaSjlI4jjkR4=;
+        b=iEabaA2QOPqJxq22zFag3TdicdXUTUWaxkXLmUo0VtEw24iQnuc7Ry8i7Eg6tej/5z
+         UcAZMcBSCEslugNriE8LWVBH6yrElzqDGjNljDpxXA5LGb2H/1EVo9tm6bmKrkvU7IF+
+         HplgpzdDDnqi6gOiqlM5hkQqJxVc5u+GXsj4A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GxsyW6nLofhV8viqZYmUtikq7MzcUQ0DLONnisNNMgg=;
-        b=L6ixAKplIlMLGuQqZ/Td1oFk+qnOCKEl+bcXoBNfyYJ49bco/5KBPCMh+/4UBMXhJv
-         ZchfTDZ7q6Mk2VIeNNrnZpDBgS6rvz3w1hpM9BxOaOWX7hsrHp9O5IZfuiJQR2BtOFrc
-         1zo+OWY7HQ9TUnwZ/5pdwG39YtbT+U0BCgIUZGoy15NzA946gs5BX1Wts/vG8SH2MHFe
-         5O50Nf6oD3xD/QMLH72HTXRbUFntsdI/rggwaaecdHSi4M09ZjE9KCOY+x3rhw2Bu0pS
-         nF6GIAti+sLTeRPpruliiicU90FdG7/Sv/wh0y/4jR6HojImX8S12U1YAky7CcEImPVT
-         Gd8g==
-X-Gm-Message-State: APjAAAXO84Ii0kI47MM3TdasPFVYLW7oP/rEJw+MHYC49FkRHAA1eCE1
-        TPBmlIWbvFaLoerUdrOasa6JpOIq9d0=
-X-Google-Smtp-Source: APXvYqzbYCz1FQvGPuI4S3ZmYQ8+raVxV+NygeZJYkaCN/UaabHbKjAHGNFpwkt2Mf3wo8+ychFeQg==
-X-Received: by 2002:a2e:5b9a:: with SMTP id m26mr2356038lje.90.1568737441082;
-        Tue, 17 Sep 2019 09:24:01 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id w30sm507556lfn.82.2019.09.17.09.23.59
+        bh=MbppCquzDPmdlrJOa+FeToM7VEugTw0SaSjlI4jjkR4=;
+        b=hUJT1id4b8MYKeXRVkp8cNpPsrsjieJtSGQ1JHMRSHeEmZp4MRR43YeOQmPnZuLGrx
+         RHkS4RoMdrRPphmwxQFenC1XH4wYZq2yxDWXLZ4UDk3gbs/Sa3dbLqfAElgYuGGdZwb4
+         gnr4g7Tb2bBeVXUySVC+tQOwOCyIRJI54Fwq+Dy2h5OCJMZ+b3KOPEZG9ZKU6OdNizcq
+         IMRPRDsvUd/H6IGlhDpAraoHKikrrEiEpmyIUkGVyZA3QAA8nAsAItXwJJR6k3w0lD1L
+         sG2+xchr0/RDqJhGystQtuXsJHWedIW1B84uZs8NpvHbPRE5Y+HzeXX7Gl1Ic6cMgEWP
+         bmlw==
+X-Gm-Message-State: APjAAAWPyFOoEetx5kWoad9N3zkWrqbSoVgRS+pHZjpoBZW8pc9dpcxP
+        e6KU3hLdYOWVNLHpCr9Pi2X9b9Q1VYo=
+X-Google-Smtp-Source: APXvYqyVhwWpafZ0xGnz9DElxNjdsE0Xuemc5yB/M1AClYlo8xPQoLNM54vMMAg8A8PoeilNEVjdTQ==
+X-Received: by 2002:ac2:5181:: with SMTP id u1mr2754704lfi.114.1568737683149;
+        Tue, 17 Sep 2019 09:28:03 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id c69sm525735ljf.32.2019.09.17.09.28.01
         for <linux-ext4@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Sep 2019 09:24:00 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id a22so4223241ljd.0
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 09:23:59 -0700 (PDT)
-X-Received: by 2002:a2e:2c02:: with SMTP id s2mr2491562ljs.156.1568737439299;
- Tue, 17 Sep 2019 09:23:59 -0700 (PDT)
+        Tue, 17 Sep 2019 09:28:01 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id m7so3522402lji.2
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 09:28:01 -0700 (PDT)
+X-Received: by 2002:a2e:9854:: with SMTP id e20mr2473591ljj.72.1568737681125;
+ Tue, 17 Sep 2019 09:28:01 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
  <C4F7DC65-50B9-4D70-8E9B-0A6FF5C1070A@srcf.ucam.org> <20190917052438.GA26923@1wt.eu>
- <2508489.jOnZlRuxVn@merkaba> <20190917121156.GC6762@mit.edu>
- <20190917123015.sirlkvy335crozmj@debian-stretch-darwi.lab.linutronix.de> <20190917160844.GC31567@gardel-login>
-In-Reply-To: <20190917160844.GC31567@gardel-login>
+ <2508489.jOnZlRuxVn@merkaba>
+In-Reply-To: <2508489.jOnZlRuxVn@merkaba>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 17 Sep 2019 09:23:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgsWTCZ=LPHi7BXzFCoWbyp3Ey-zZbaKzWixO91Ryr9=A@mail.gmail.com>
-Message-ID: <CAHk-=wgsWTCZ=LPHi7BXzFCoWbyp3Ey-zZbaKzWixO91Ryr9=A@mail.gmail.com>
+Date:   Tue, 17 Sep 2019 09:27:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiGg-G8JFJ=R7qf0B+UtqA_Weouk6v+McmfsLJLRq6AKA@mail.gmail.com>
+Message-ID: <CAHk-=wiGg-G8JFJ=R7qf0B+UtqA_Weouk6v+McmfsLJLRq6AKA@mail.gmail.com>
 Subject: Re: Linux 5.3-rc8
-To:     Lennart Poettering <mzxreary@0pointer.de>
-Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
+To:     Martin Steigerwald <martin@lichtvoll.de>
+Cc:     Willy Tarreau <w@1wt.eu>, Matthew Garrett <mjg59@srcf.ucam.org>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
         Vito Caputo <vcaputo@pengaru.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
         William Jon McCann <mccann@jhu.edu>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="0000000000003b46310592c23438"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 9:08 AM Lennart Poettering <mzxreary@0pointer.de> wrote:
+--0000000000003b46310592c23438
+Content-Type: text/plain; charset="UTF-8"
+
+On Tue, Sep 17, 2019 at 12:33 AM Martin Steigerwald <martin@lichtvoll.de> wrote:
 >
-> Here's what I'd propose:
+> So yes, that would it make it harder to abuse the API, but not
+> impossible. Which may still be good, I don't know.
 
-So I think this is ok, but I have another proposal. Before I post that
-one, though, I just wanted to point out:
+So the real problem is not people abusing the ABI per se. Yes, I was a
+bit worried about that too, but it's not the cause of the immediate
+issue.
 
-> 1) Add GRND_INSECURE to get those users of getrandom() who do not need
->    high quality entropy off its use (systemd has uses for this, for
->    seeding hash tables for example), thus reducing the places where
->    things might block.
+The real problem is that "getrandom(0)" is really _convenient_ for
+people who just want random numbers - and not at all the "secure"
+kind.
 
-I really think that trhe logic should be the other way around.
+And it's convenient, and during development and testing, it always
+"just works", because it doesn't ever block in any normal situation.
 
-The getrandom() users that don't need high quality entropy are the
-ones that don't really think about this, and so _they_ shouldn't be
-the ones that have to explicitly state anything. To those users,
-"random is random". By definition they don't much care, and quite
-possibly they don't even know what "entropy" really means in that
-context.
+And then you deploy it, and on some poor users machine it *does*
+block, because the program now encounters the "oops, no entropy"
+situation that it never ever encountered on the development machine,
+because the testing there was mainly done not during booting, but the
+developer also probably had a much more modern machine that had
+rdrand, and that quite possibly also had more services enabled at
+bootup etc so even without rdrand it got tons of entropy.
 
-The ones that *do* want high security randomness should be the ones
-that know that "random" means different things to different people,
-and that randomness is hard.
+That's why
 
-So the onus should be on them to say that "yes, I'm one of those
-people willing to wait".
+ (a) killing the process is _completely_ silly.  It misses the whole
+point of the problem in the first place and only makes things much
+worse.
 
-That's why I'd like to see GRND_SECURE instead. That's kind of what
-GRND_RANDOM is right now, but it went overboard and it's not useful
-even to the people who do want secure random numners.
+ (b) we should just change getrandom() and add that GRND_SECURE flag
+instead. Because the current API is fundamentally confusing. If you
+want secure random numbers, you should really deeply _know_ about it,
+and think about it, rather than have it be the "oh, don't even bother
+passing any flags, it's secure by default".
 
-Besides, the GRND_RANDOM naming doesn't really help the people who
-don't know anyway, so it's just bad in so many ways. We should
-probably just get rid of that flag entirely and make it imply
-GRND_SECURE without the overdone entropy accounting, but that's a
-separate issue.
+ (c) the timeout approach isn't wonderful, but it at least helps with
+the "this was never tested under those circumstances" kind of problem.
 
-When we do add GRND_SECURE, we should also add the GRND_INSECURE just
-to allow people to mark their use, and to avoid the whole existing
-confusion about "0".
+Note that the people who actually *thought* about getrandom() and use
+it correctly should already handle error returns (even for the
+blocking version), because getrandom() can already return EINTR. So
+the argument that we should cater primarily to the secure key people
+is not all that strong. We should be able to return EINTR, and the
+people who *thought* about blocking and about entropy should be fine.
 
-> 2) Add a kernel log message if a getrandom(0) client hung for 15s or
->    more, explaining the situation briefly, but not otherwise changing
->    behaviour.
+And gdm and other silly random users that never wanted entropy in the
+first place, just "random" random numbers, wouldn't be in the
+situation they are now.
 
-The problem is that when you have some graphical boot, you'll not even
-see the kernel messages ;(
+That said - looking at some of the problematic traces that Ahmed
+posted for his bootup problem, I actually think we can use *another*
+heuristic to solve the problem. Namely just looking at how much
+randomness the caller wants.
 
-I do agree that a message is a good idea regardless, but I don't think
-it necessarily solves the problems except for developers.
+The processes that ask for randomness for an actual secure key have a
+very fundamental constraint: they need enough randomness for the key
+to be secure in the first place.
 
-> 3) Change systemd-random-seed.service to log to console in the same
->    case, blocking boot cleanly and discoverably.
+But look at what gnome-shell and gnome-session-b does:
 
-So I think systemd-random-seed might as well just use a new
-GRND_SECURE, and then not even have to worry about it.
+    https://lore.kernel.org/linux-ext4/20190912034421.GA2085@darwi-home-pc/
 
-That said, I think I have a suggestion that everybody can live with -
-even if they might not be _happy_ about it. See next email.
+and most of them already set GRND_NONBLOCK, but look at the
+problematic one that actually causes the boot problem:
 
-> I am not a fan of randomly killing userspace processes that just
-> happened to be the unlucky ones, to call this first... I see no
-> benefit in killing stuff over letting boot hang in a discoverable way.
+    gnome-session-b-327   4.400620: getrandom(16 bytes, flags = 0)
 
-Absolutely agreed. The point was to not break things.
+and here the big clue is: "Hey, it only asks for 128 bits of randomness".
 
-              Linus
+Does anybody believe that 128 bits of randomness is a good basis for a
+long-term secure key? Even if the key itself contains than that, if
+you are generating a long-term secure key in this day and age, you had
+better be asking for more than 128 bits of actual unpredictable base
+data. So just based on the size of the request we can determine that
+this is not hugely important.
+
+Compare that to the case later on for something that seems to ask for
+actual interesting randomness. and - just judging by the name -
+probably even has a reason for it:
+
+      gsd-smartcard-388   51.433924: getrandom(110 bytes, flags = 0)
+      gsd-smartcard-388   51.433936: getrandom(256 bytes, flags = 0)
+
+big difference.
+
+End result: I would propose the attached patch.
+
+Ahmed, can you just verify that it works for you (obviously with the
+ext4 plugging reinstated)? It looks like it should "obviously" fix
+things, but still...
+
+                    Linus
+
+--0000000000003b46310592c23438
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k0o1w7n40>
+X-Attachment-Id: f_k0o1w7n40
+
+IGRyaXZlcnMvY2hhci9yYW5kb20uYyB8IDMzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrLQogMSBmaWxlIGNoYW5nZWQsIDMyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRp
+ZmYgLS1naXQgYS9kcml2ZXJzL2NoYXIvcmFuZG9tLmMgYi9kcml2ZXJzL2NoYXIvcmFuZG9tLmMK
+aW5kZXggNTY2OTIyZGY0YjdiLi43YmU3NzFlYWM5NjkgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvY2hh
+ci9yYW5kb20uYworKysgYi9kcml2ZXJzL2NoYXIvcmFuZG9tLmMKQEAgLTIxMTgsNiArMjExOCwz
+NyBAQCBjb25zdCBzdHJ1Y3QgZmlsZV9vcGVyYXRpb25zIHVyYW5kb21fZm9wcyA9IHsKIAkubGxz
+ZWVrID0gbm9vcF9sbHNlZWssCiB9OwogCisvKgorICogSGFja3kgd29ya2Fyb3VuZCBmb3IgdGhl
+IGZhY3QgdGhhdCBzb21lIHByb2Nlc3NlcworICogYXNrIGZvciB0cnVseSBzZWN1cmUgcmFuZG9t
+IG51bWJlcnMgYW5kIGFic29sdXRlbHkgd2FudAorICogdG8gd2FpdCBmb3IgdGhlIGVudHJvcHkg
+cG9vbCB0byBmaWxsLCBhbmQgb3RoZXJzIGp1c3QKKyAqIGRvICJnZXRyYW5kb20oMCkiIHRvIGdl
+dCBzb21lIGFkLWhvYyByYW5kb20gbnVtYmVycy4KKyAqCisgKiBJZiB5b3UncmUgZ2VuZXJhdGlu
+ZyBhIHNlY3VyZSBrZXksIHlvdSdkIGJldHRlciBhc2sgZm9yCisgKiBtb3JlIHRoYW4gMTI4IGJp
+dHMgb2YgcmFuZG9tbmVzcy4gT3RoZXJ3aXNlIGl0J3Mgbm90CisgKiByZWFsbHkgYWxsIHRoYXQg
+c2VjdXJlIGJ5IGRlZmluaXRpb24uCisgKgorICogV2Ugc2hvdWxkIGFkZCBhIEdSTkRfU0VDVVJF
+IGZsYWcgc28gdGhhdCBwZW9wbGUgY2FuIHN0YXRlCisgKiB0aGlzICJJIHdhbnQgc2VjdXJlIHJh
+bmRvbSBudW1iZXJzIiBleHBsaWNpdGx5LgorICovCitzdGF0aWMgaW50IHdhaXRfZm9yX2dldHJh
+bmRvbShzaXplX3QgY291bnQpCit7CisJdW5zaWduZWQgbG9uZyB0aW1lb3V0ID0gTUFYX1NDSEVE
+VUxFX1RJTUVPVVQ7CisJaW50IHJldDsKKworCS8qIFdlJ2xsIGdpdmUgZXZlbiBzbWFsbCByZXF1
+ZXN0cyBfc29tZV8gdGltZSB0byBnZXQgbW9yZSBlbnRyb3B5ICovCisJaWYgKGNvdW50IDw9IDE2
+KQorCQl0aW1lb3V0ID0gNSpIWjsKKworCXJldCA9IHdhaXRfZXZlbnRfaW50ZXJydXB0aWJsZV90
+aW1lb3V0KGNybmdfaW5pdF93YWl0LCBjcm5nX3JlYWR5KCksIHRpbWVvdXQpOworCWlmIChsaWtl
+bHkocmV0KSkKKwkJcmV0dXJuIHJldCA+IDAgPyAwIDogcmV0OworCisJLyogVGltZWQgb3V0IC0g
+d2UnbGwgcmV0dXJuIHVyYW5kb20gKi8KKwlwcl9ub3RpY2UoInJhbmRvbTogZmFsbGluZyBiYWNr
+IHRvIHVyYW5kb20gZm9yIHNtYWxsIHJlcXVlc3Qgb2YgJXp1IGJ5dGVzIiwgY291bnQpOworCXJl
+dHVybiAwOworfQorCiBTWVNDQUxMX0RFRklORTMoZ2V0cmFuZG9tLCBjaGFyIF9fdXNlciAqLCBi
+dWYsIHNpemVfdCwgY291bnQsCiAJCXVuc2lnbmVkIGludCwgZmxhZ3MpCiB7CkBAIC0yMTM1LDcg
+KzIxNjYsNyBAQCBTWVNDQUxMX0RFRklORTMoZ2V0cmFuZG9tLCBjaGFyIF9fdXNlciAqLCBidWYs
+IHNpemVfdCwgY291bnQsCiAJaWYgKCFjcm5nX3JlYWR5KCkpIHsKIAkJaWYgKGZsYWdzICYgR1JO
+RF9OT05CTE9DSykKIAkJCXJldHVybiAtRUFHQUlOOwotCQlyZXQgPSB3YWl0X2Zvcl9yYW5kb21f
+Ynl0ZXMoKTsKKwkJcmV0ID0gd2FpdF9mb3JfZ2V0cmFuZG9tKGNvdW50KTsKIAkJaWYgKHVubGlr
+ZWx5KHJldCkpCiAJCQlyZXR1cm4gcmV0OwogCX0K
+--0000000000003b46310592c23438--
