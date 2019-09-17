@@ -2,233 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFEA4B56CC
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 22:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471A0B56F8
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 22:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbfIQUUY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 16:20:24 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:41286 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbfIQUUX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 16:20:23 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q7so2795926pfh.8
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 13:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=pecCGf/qoSGFtBFHmFbOGcChFgi9MoSCGhsOpPQfOL8=;
-        b=HIkaixV5m6rjyyjMraL5GtBynSKr+FhMaSXl5pOU89KhIPNGvz2V9s3JA80lcNgbGq
-         KMOCoxDlT0/3pNEbMIBmg4UbmZ2FnzO/SK1MtbLpOi321E4eUdryhaSdo3v5lk5CBCS8
-         pG1wHJhCOaeaDNz+z2H/Hxe4kiRdDPSnOqPRv3UIIhpXSFbTDHVZcbSsVpZ/Hi7D8boK
-         bk6Bdl1vU6unImX003bXh1jsrNqPQ5EBg4jEX5aWhwU431g29GdkisHZeMm5P5XZlJUH
-         tdqdV9Fq6v99iWR/FVguRlvyfFXwWEfrFHpm54WQAKMkVSeAh66hy+jAKPZ+9CHKrbFm
-         oqyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=pecCGf/qoSGFtBFHmFbOGcChFgi9MoSCGhsOpPQfOL8=;
-        b=aMB32C1HTkfj+Yz66lw7zI3+2cQX7Hz8KAWYwJFdC0XSh4f+Z6fRqho3mNc3Ci4AHI
-         7z5jQ0qfX2ZTiCH2lPUnOO4hJg+RAy/fX0Zu3V3aCsbCZTxyWoRE0xwf7PT3Oa5hDdoB
-         FMsBevz4B6bHUjug48v8oAc6DA76h/EGaoss00YdcqFKCmsXKwnS3oMH17GNnDiCo81E
-         j+Q8i24/9sjbz6LyfZx93frmF4ratgyL21rML59Ss0L1hWbRzSxjV9dkSDWWFPfTcKKm
-         shqoQj3+QO93eVG2toqvQgZkO0m6oURsRXgOXDpiWdDys8BOrydlz27QMTSavUnlbIq4
-         2U1w==
-X-Gm-Message-State: APjAAAWhQ0fitBVtObKuBr1Azir+oWCcuMqaiX4HKYY+8p0HzsExdWuy
-        QnIrYrpocXWZBnozNZftiR7Ryw==
-X-Google-Smtp-Source: APXvYqwP0ZIVSFsNshIt4C84+OoW0aRAWh5iedbVVaX8pWhiU4ZY7Xr6cudkNhJCqRX9p98nfZh+Zw==
-X-Received: by 2002:a63:f304:: with SMTP id l4mr666564pgh.66.1568751621229;
-        Tue, 17 Sep 2019 13:20:21 -0700 (PDT)
-Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id c8sm2935744pgw.37.2019.09.17.13.20.19
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 17 Sep 2019 13:20:20 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <C87FF70E-A410-4C92-B012-E5F1F7DC3A0F@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_11E832A0-FE2A-4D65-BA1E-3F355BC104C6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext2fs: add ext2fs_read_sb that returns superblock
-Date:   Tue, 17 Sep 2019 14:20:16 -0600
-In-Reply-To: <490AFB3A-CA8B-41BE-96BF-94EBA93FF5B3@gmail.com>
-Cc:     linux-ext4 <linux-ext4@vger.kernel.org>
-To:     =?utf-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
-        <artem.blagodarenko@gmail.com>
-References: <20190905110110.32627-1-c17828@cray.com>
- <490AFB3A-CA8B-41BE-96BF-94EBA93FF5B3@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        id S1728512AbfIQU2u convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 17 Sep 2019 16:28:50 -0400
+Received: from luna.lichtvoll.de ([194.150.191.11]:45411 "EHLO
+        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726285AbfIQU2u (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 16:28:50 -0400
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 7A6C8776D7;
+        Tue, 17 Sep 2019 22:28:47 +0200 (CEST)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Lennart Poettering <mzxreary@0pointer.de>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.3-rc8
+Date:   Tue, 17 Sep 2019 22:28:47 +0200
+Message-ID: <2658007.Cequ2ms4lF@merkaba>
+In-Reply-To: <CAHk-=wjABG3+daJFr4w3a+OWuraVcZpi=SMUg=pnZ+7+O0E2FA@mail.gmail.com>
+References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com> <20190917174219.GD31798@gardel-login> <CAHk-=wjABG3+daJFr4w3a+OWuraVcZpi=SMUg=pnZ+7+O0E2FA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Linus Torvalds - 17.09.19, 20:01:23 CEST:
+> > We can make boot hang in "sane", discoverable way.
+> 
+> That is certainly a huge advantage, yes. Right now I suspect that what
+> has happened is that this has probably been going on as some
+> low-level background noise for a while, and people either figured it
+> out and switched away from gdm (example: Christoph), or more likely
+> some unexplained boot problems that people just didn't chase down. So
+> it took basically a random happenstance to make this a kernel issue.
+> 
+> But "easily discoverable" would be good.
 
---Apple-Mail=_11E832A0-FE2A-4D65-BA1E-3F355BC104C6
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=utf-8
+Well I meanwhile remembered how it was with sddm:
 
+Without CPU assistance (RDRAND) or haveged or any other source of
+entropy, sddm would simply not appear and I'd see the tty1 login. Then
+I start to type something and after a while sddm popped up. If I would
+not type anything it took easily at least have a minute till it appeared.
 
-> On Sep 17, 2019, at 12:22 PM, =D0=91=D0=BB=D0=B0=D0=B3=D0=BE=D0=B4=D0=B0=
-=D1=80=D0=B5=D0=BD=D0=BA=D0=BE =D0=90=D1=80=D1=82=D1=91=D0=BC =
-<artem.blagodarenko@gmail.com> wrote:
->=20
-> Hello,
->=20
-> Should I change anything it this patch?
+Actually I used my system like this quite a while, cause I did not feel
+comfortable with haveged and RDRAND.
 
-Looks OK to me:
+AFAIR this was as this Debian still ran with Systemd. What Debian
+maintainer for sddm did was this:
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+sddm (0.18.0-1) unstable; urgency=medium
+[…]
+  [ Maximiliano Curia ]
+  * Workaround entropy starvation by recommending haveged
+  * Release to unstable
 
->=20
-> Thanks,
-> Artem Blagodarenko.
->=20
->> On 5 Sep 2019, at 14:01, Artem Blagodarenko =
-<artem.blagodarenko@gmail.com> wrote:
->>=20
->> tune2fs is used to make e2label duties.  ext2fs_open2() reads group
->> descriptors which are not used during disk label obtaining, but takes
->> a lot of time on large partitions.
->>=20
->> This patch adds ext2fs_read_sb(), there only initialized superblock
->> is returned This saves time dramatically.
->>=20
->> Signed-off-by: Artem Blagodarenko <c17828@cray.com>
->> Cray-bug-id: LUS-5777
->> ---
->> lib/ext2fs/ext2fs.h |  2 ++
->> lib/ext2fs/openfs.c | 16 ++++++++++++++++
->> misc/tune2fs.c      | 23 +++++++++++++++--------
->> 3 files changed, 33 insertions(+), 8 deletions(-)
->>=20
->> diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
->> index 59fd9742..3a63b74d 100644
->> --- a/lib/ext2fs/ext2fs.h
->> +++ b/lib/ext2fs/ext2fs.h
->> @@ -1630,6 +1630,8 @@ extern int ext2fs_journal_sb_start(int =
-blocksize);
->> extern errcode_t ext2fs_open(const char *name, int flags, int =
-superblock,
->> 			     unsigned int block_size, io_manager =
-manager,
->> 			     ext2_filsys *ret_fs);
->> +extern errcode_t ext2fs_read_sb(const char *name, io_manager =
-manager,
->> +				struct ext2_super_block * super);
->> extern errcode_t ext2fs_open2(const char *name, const char =
-*io_options,
->> 			      int flags, int superblock,
->> 			      unsigned int block_size, io_manager =
-manager,
->> diff --git a/lib/ext2fs/openfs.c b/lib/ext2fs/openfs.c
->> index 51b54a44..95f45d84 100644
->> --- a/lib/ext2fs/openfs.c
->> +++ b/lib/ext2fs/openfs.c
->> @@ -99,6 +99,22 @@ static void block_sha_map_free_entry(void *data)
->> 	return;
->> }
->>=20
->> +errcode_t ext2fs_read_sb(const char *name, io_manager manager,
->> +			 struct ext2_super_block * super)
->> +{
->> +	io_channel	io;
->> +	errcode_t	retval =3D 0;
->> +
->> +	retval =3D manager->open(name, 0, &io);
->> +	if (!retval) {
->> +		retval =3D io_channel_read_blk(io, 1, -SUPERBLOCK_SIZE,
->> +				     super);
->> +		io_channel_close(io);
->> +	}
->> +
->> +	return retval;
->> +}
->> +
->> /*
->> *  Note: if superblock is non-zero, block-size must also be non-zero.
->> * 	Superblock and block_size can be zero to use the default size.
->> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
->> index 7d2d38d7..fea607e1 100644
->> --- a/misc/tune2fs.c
->> +++ b/misc/tune2fs.c
->> @@ -2879,6 +2879,21 @@ int tune2fs_main(int argc, char **argv)
->> #endif
->> 		io_ptr =3D unix_io_manager;
->>=20
->> +	if (print_label) {
->> +		/* For e2label emulation */
->> +		struct ext2_super_block sb;
->> +
->> +		/* Read only superblock. Nothing else metters.*/
->> +		retval =3D ext2fs_read_sb(device_name, io_ptr, &sb);
->> +		if (!retval) {
->> +			printf("%.*s\n", (int) sizeof(sb.s_volume_name),
->> +			       sb.s_volume_name);
->> +		}
->> +
->> +		remove_error_table(&et_ext2_error_table);
->> +		return retval;
->> +	}
->> +
->> retry_open:
->> 	if ((open_flag & EXT2_FLAG_RW) =3D=3D 0 || f_flag)
->> 		open_flag |=3D EXT2_FLAG_SKIP_MMP;
->> @@ -2972,14 +2987,6 @@ retry_open:
->> 	sb =3D fs->super;
->> 	fs->flags &=3D ~EXT2_FLAG_MASTER_SB_ONLY;
->>=20
->> -	if (print_label) {
->> -		/* For e2label emulation */
->> -		printf("%.*s\n", (int) sizeof(sb->s_volume_name),
->> -		       sb->s_volume_name);
->> -		remove_error_table(&et_ext2_error_table);
->> -		goto closefs;
->> -	}
->> -
->> 	retval =3D ext2fs_check_if_mounted(device_name, &mount_flags);
->> 	if (retval) {
->> 		com_err("ext2fs_check_if_mount", retval,
->> --
->> 2.14.3
->>=20
->=20
+ -- Maximiliano Curia […]  Sun, 22 Jul 2018 13:26:44 +0200
+
+With Sysvinit I still have neither haveged nor RDRAND enabled, but
+behavior changed a bit. crng init still takes a while
+
+% zgrep -h "crng init" /var/log/kern.log*
+Sep 16 09:06:23 merkaba kernel: [   16.910096][    C3] random: crng init done
+Sep  8 14:08:39 merkaba kernel: [   16.682014][    C2] random: crng init done
+Sep  9 09:16:43 merkaba kernel: [   46.084188][    C2] random: crng init done
+Sep 11 10:52:37 merkaba kernel: [   47.209825][    C3] random: crng init done
+Sep 12 08:32:08 merkaba kernel: [   76.624375][    C3] random: crng init done
+Sep 12 20:07:29 merkaba kernel: [   10.726349][    C2] random: crng init done
+Sep  8 10:02:42 merkaba kernel: [   37.391577][    C2] random: crng init done
+Aug 26 09:23:51 merkaba kernel: [   40.555337][    C3] random: crng init done
+Aug 28 09:45:28 merkaba kernel: [   39.446847][    C1] random: crng init done
+Aug 20 10:14:59 merkaba kernel: [   12.242467][    C1] random: crng init done
+
+and there might be a slight delay before sddm appears, before tty has been
+initialized. I am not completely sure whether it is related to sddm or
+something else. But AFAIR delays have been in the range of a maximum of
+5-10 seconds, so I did not bother to check more closely.
+
+Note this is on a ThinkPad T520 which is a PC. And if I read above kernel log
+excerpts right, it can still take up to 76 second for crng to be initialized with
+entropy. Would be interesting to see other people's numbers there.
+
+There might be a different ordering with Sysvinit and it may still be sddm.
+But I never have seen a delay of 76 seconds AFAIR… so something else
+might be different or I just did not notice the delay. Sometimes I switch
+on the laptop and do something else to come back in a minute or so.
+
+I don't have any kernel logs old enough to see whether whether crng init
+times have been different with Systemd due to asking for randomness for
+UUID/hashmaps.
+
+Thanks,
+-- 
+Martin
 
 
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_11E832A0-FE2A-4D65-BA1E-3F355BC104C6
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl2BQAAACgkQcqXauRfM
-H+C7IA/+KVposImK9g0Bli/PNwE/JvM4/zjMvior5h0lvC9yV6BH11MbVeehxhA+
-ZkWf9wyAUfogS6JhbcvL2Qv7fxzfP7OnaeqEJy3w3UTtpUnIRmwTkBexnpgCiWoj
-UDr2lA4Bt+oTGOwsjOSKn9KuW+1peLD0NacFeUXvIEhcWoL89xrSb7ppel6SyC5t
-m8RQXxXCY1U4B5AdOkQj95LuO6R80f6KmOeFyd2jKiWlHBri+dcu96VSykhio6Qr
-5cPl/S6KOK83n+mvqT8G3+59c1r10l0xRqumJQB6owc3UFl/rhk0aHDzW7NV8zQw
-SeNj3hKsthTbWk28NcLAiqs1wdqmUbO4u0DyNfFBvF/7DoEyG9MQTbxM8hx5cMLk
-D/EJbmlSORSx4DIYqwrsEZrfB2cNyp8YsnZlr6lIVp58A7BgmupVjycEPB7zIDqv
-/Go0DEwxr695Ldlm7+u/2yg7rCYJMteGOKrudXWL0oaLvP7/R0O0Sa389ZctkTKG
-B8SzkLMfVuNDoKry937SIc+OkO7l3zBNL5Ic1aUSbwF3EKMZbkGAAzLwhbAiZy+N
-gpaB+E9Lg8n1DQwxUocRZWyKUdZpuOrRmowMgWHi/iirMTsRjzKsNHcdsytrkGUT
-ueODjf/AvNUTVrQK96e6a/RqXbg0wCj+p0gF+soFBUnm0GXurgA=
-=o4AD
------END PGP SIGNATURE-----
-
---Apple-Mail=_11E832A0-FE2A-4D65-BA1E-3F355BC104C6--
