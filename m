@@ -2,403 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5AAB4C05
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 12:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBFBB4CEB
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 13:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726213AbfIQKdG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 06:33:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20358 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726185AbfIQKdG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 17 Sep 2019 06:33:06 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x8HAWOoP120186
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 06:33:04 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2v2vd5c6ng-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 06:33:04 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Tue, 17 Sep 2019 11:33:02 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 17 Sep 2019 11:32:58 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x8HAWWlK27590976
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 17 Sep 2019 10:32:32 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CD8AC42041;
-        Tue, 17 Sep 2019 10:32:57 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2A7254203F;
-        Tue, 17 Sep 2019 10:32:56 +0000 (GMT)
-Received: from localhost.in.ibm.com (unknown [9.124.31.57])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 17 Sep 2019 10:32:55 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     jack@suse.cz, tytso@mit.edu, linux-ext4@vger.kernel.org,
-        joseph.qi@linux.alibaba.com
-Cc:     david@fromorbit.com, hch@infradead.org, adilger@dilger.ca,
-        riteshh@linux.ibm.com, mbobrowski@mbobrowski.org, rgoldwyn@suse.de
-Subject: [RFC 2/2] ext4: Improve DIO writes locking sequence
-Date:   Tue, 17 Sep 2019 16:02:49 +0530
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190917103249.20335-1-riteshh@linux.ibm.com>
-References: <20190917103249.20335-1-riteshh@linux.ibm.com>
+        id S1726342AbfIQLbP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 07:31:15 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:39965 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726553AbfIQLbO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 07:31:14 -0400
+Received: by mail-pg1-f194.google.com with SMTP id w10so1865797pgj.7
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 04:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=haHTGffRW5vANHA+WJrpU6ZKkWIFsJTyKM4HQ48Fqjw=;
+        b=PDWr0cB7F7xLSAU12jIL5a86NRbxRJxAmhopvAfaaybXfe7oaJkct5DXzdg1AiQpOI
+         fHfpc6PK5Fw2/YAndeXRsbP5t66Ip2pWV6tnCcI0amJRBKmLdTYqOUyLYw0mcFV2A883
+         zIqpOFWf9yek6jEOCb0EU/B2oVLLnFVUV60OjAie7OFYqKz2PZHS/oXXYAxSxSKpReCI
+         5dnC8h/cu9wLrTJaSapbYy5KwCsHZBJuiliu8yTkjZCnW7ipuiTEQXJM7wzKpspYXEc6
+         IrsTuhg1nB0zwQ1Px1p+RCsK9RWPv181MvYf/c1BNUyVAEN5cplWQdOF2IDRmZMgHL1u
+         Cwaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=haHTGffRW5vANHA+WJrpU6ZKkWIFsJTyKM4HQ48Fqjw=;
+        b=SZKQ9h0tyjD0PkpjkI7Ryl43AhsecULngur7n5Z6fNRQqrmeeLLI6eNDVTDuQuNfU3
+         TalPzQMOZfvpAjTzTvA++JyqzxDD7GpWKstvvgnRpsLqHbD8iRH16o0nWJ+zTzuNBaOb
+         zR39tOBAFjeog37/JeXXfipVaARvPh2CM8PkGGWLg5hGtyQ2uV+cNGslOokLJRTIqYWH
+         9/X7fDwOYjzJbrwsbQ2E8A5xCZ/A3sUgyNlSuouZARu2gIJCBjCsbm/wUInJU2VdjReY
+         VmsDaVA5069XkFPsxfnFS+udQ5VXsjSFkDwEKE6m3qdc6cb5bkSkYNCP2K2OzVj8H2LF
+         vDwA==
+X-Gm-Message-State: APjAAAWh/7hpiaFC4bKEqmKeVuS6h00PthftgN8nQfWtSer5W95Ss+qU
+        5EteYidJbMrrUnte2XpWectY
+X-Google-Smtp-Source: APXvYqzOsnXyMzVzJPL/ZiEDQGH3p2QIv1+lzH89Vs5iszm0w2T1uEdH1we+JzsYoSrLGpLjy5rLEA==
+X-Received: by 2002:a17:90a:37d1:: with SMTP id v75mr4472866pjb.33.1568719868394;
+        Tue, 17 Sep 2019 04:31:08 -0700 (PDT)
+Received: from bobrowski ([110.232.114.101])
+        by smtp.gmail.com with ESMTPSA id d20sm4411809pfq.88.2019.09.17.04.31.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Sep 2019 04:31:07 -0700 (PDT)
+Date:   Tue, 17 Sep 2019 21:31:01 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        david@fromorbit.com, darrick.wong@oracle.com
+Subject: Re: [PATCH v3 5/6] ext4: introduce direct IO write path using iomap
+ infrastructure
+Message-ID: <20190917113101.GA17286@bobrowski>
+References: <cover.1568282664.git.mbobrowski@mbobrowski.org>
+ <db33705f9ba35ccbe20fc19b8ecbbf2078beff08.1568282664.git.mbobrowski@mbobrowski.org>
+ <20190916121248.GD4005@infradead.org>
+ <20190916223741.GA5936@bobrowski>
+ <20190917090613.GC29487@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19091710-0020-0000-0000-0000036E1382
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19091710-0021-0000-0000-000021C3B739
-Message-Id: <20190917103249.20335-3-riteshh@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-17_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1909170107
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190917090613.GC29487@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Earlier there was no shared lock in DIO read path.
-But this patch (16c54688592ce: ext4: Allow parallel DIO reads)
-simplified some of the locking mechanism while still allowing
-for parallel DIO reads by adding shared lock in inode DIO
-read path.
+On Tue, Sep 17, 2019 at 02:06:13AM -0700, Christoph Hellwig wrote:
+> On Tue, Sep 17, 2019 at 08:37:41AM +1000, Matthew Bobrowski wrote:
+> > > Independent of the error return issue you probably want to split
+> > > modifying ext4_write_checks into a separate preparation patch.
+> > 
+> > Providing that there's no objections to introducing a possible performance
+> > change with this separate preparation patch (overhead of calling
+> > file_remove_privs/file_update_time twice), then I have no issues in doing so.
+> 
+> Well, we should avoid calling it twice.  But what caught my eye is that
+> the buffered I/O path also called this function, so we are changing it as
+> well here.  If that actually is safe (I didn't review these bits carefully
+> and don't know ext4 that well) the overall refactoring of the write
+> flow might belong into a separate prep patch (that is not relying
+> on ->direct_IO, the checks changes, etc).
 
-But this created problem with mixed read/write workload.
-It is due to the fact that in DIO path, we first start with
-exclusive lock and only when we determine that it is a ovewrite
-IO, we downgrade the lock. This causes the problem, since
-with above patch we have shared locking in DIO reads.
+Yeah, I see what you're saying. From memory, in order to get this right, there
+was a whole bunch of additional changes that needed to be done that would
+effectively be removed in a subsequent patch. But, let me revisit this again
+and see what I can do.
 
-So, this patch tries to fix this issue by starting with
-shared lock and then switching to exclusive lock only
-when required based on ext4_dio_write_checks().
+> > > > +	if (!inode_trylock(inode)) {
+> > > > +		if (iocb->ki_flags & IOCB_NOWAIT)
+> > > > +			return -EAGAIN;
+> > > > +		inode_lock(inode);
+> > > > +	}
+> > > > +
+> > > > +	if (!ext4_dio_checks(inode)) {
+> > > > +		inode_unlock(inode);
+> > > > +		/*
+> > > > +		 * Fallback to buffered IO if the operation on the
+> > > > +		 * inode is not supported by direct IO.
+> > > > +		 */
+> > > > +		return ext4_buffered_write_iter(iocb, from);
+> > > 
+> > > I think you want to lift the locking into the caller of this function
+> > > so that you don't have to unlock and relock for the buffered write
+> > > fallback.
+> > 
+> > I don't exactly know what you really mean by "lift the locking into the caller
+> > of this function". I'm interpreting that as moving the inode_unlock()
+> > operation into ext4_buffered_write_iter(), but I can't see how that would be
+> > any different from doing it directly here? Wouldn't this also run the risk of
+> > the locks becoming unbalanced as we'd need to add checks around whether the
+> > resource is being contended? Maybe I'm misunderstanding something here...
+> 
+> With that I mean to acquire the inode lock in ext4_file_write_iter
+> instead of the low-level buffered I/O or direct I/O routines.
 
-Other than that, it also simplifies below cases:-
+Oh, I didn't think of that! But yes, that would in fact be nice and I cannot
+see why we shouldn't be doing that at this point. It also helps with reducing
+all the code duplication going on in the low-level buffered, direct, dax I/O
+routines.
 
-1. Simplified ext4_unaligned_aio API to
-ext4_unaligned_io.
-Previous API was abused in the sense that it was
-not really checking for AIO anywhere also it used to
-check for extending writes.
-So this API was renamed and simplified to ext4_unaligned_io()
-which actully only checks if the IO is really unaligned.
-
-This is because in all other cases inode_dio_wait()
-will anyway become a no-op. So no need to over complicate
-by checking for every condition here.
-
-2. Added ext4_extending_io API. This checks if the IO
-is extending the file.
-
-Now we only check for
-unaligned_io, extend, dioread_nolock & overwrite.
-
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- fs/ext4/file.c | 206 ++++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 154 insertions(+), 52 deletions(-)
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index ce1cecbae932..45af2b7679ad 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -166,14 +166,11 @@ static int ext4_release_file(struct inode *inode, struct file *filp)
-  * threads are at work on the same unwritten block, they must be synchronized
-  * or one thread will zero the other's data, causing corruption.
-  */
--static int
--ext4_unaligned_aio(struct inode *inode, struct iov_iter *from, loff_t pos)
-+static bool
-+ext4_unaligned_io(struct inode *inode, struct iov_iter *from, loff_t pos)
- {
- 	struct super_block *sb = inode->i_sb;
--	int blockmask = sb->s_blocksize - 1;
--
--	if (pos >= ALIGN(i_size_read(inode), sb->s_blocksize))
--		return 0;
-+	unsigned long blockmask = sb->s_blocksize - 1;
- 
- 	if ((pos | iov_iter_alignment(from)) & blockmask)
- 		return 1;
-@@ -181,6 +178,15 @@ ext4_unaligned_aio(struct inode *inode, struct iov_iter *from, loff_t pos)
- 	return 0;
- }
- 
-+static bool
-+ext4_extending_io(struct inode *inode, loff_t offset, size_t len)
-+{
-+	if (offset + len > i_size_read(inode) ||
-+	    offset + len > EXT4_I(inode)->i_disksize)
-+		return 1;
-+	return 0;
-+}
-+
- /* Is IO overwriting allocated and initialized blocks? */
- static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
- {
-@@ -204,7 +210,9 @@ static bool ext4_overwrite_io(struct inode *inode, loff_t pos, loff_t len)
- 	return err == blklen && (map.m_flags & EXT4_MAP_MAPPED);
- }
- 
--static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
-+
-+static ssize_t ext4_generic_write_checks(struct kiocb *iocb,
-+					 struct iov_iter *from)
- {
- 	struct inode *inode = file_inode(iocb->ki_filp);
- 	ssize_t ret;
-@@ -216,10 +224,6 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
- 	if (ret <= 0)
- 		return ret;
- 
--	ret = file_modified(iocb->ki_filp);
--	if (ret)
--		return 0;
--
- 	/*
- 	 * If we have encountered a bitmap-format file, the size limit
- 	 * is smaller than s_maxbytes, which is for extent-mapped files.
-@@ -231,9 +235,26 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
- 			return -EFBIG;
- 		iov_iter_truncate(from, sbi->s_bitmap_maxbytes - iocb->ki_pos);
- 	}
-+
- 	return iov_iter_count(from);
- }
- 
-+static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
-+{
-+	ssize_t ret;
-+	ssize_t count;
-+
-+	count = ext4_generic_write_checks(iocb, from);
-+	if (count <= 0)
-+		return count;
-+
-+	ret = file_modified(iocb->ki_filp);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
- static ssize_t ext4_buffered_write_iter(struct kiocb *iocb,
- 					struct iov_iter *from)
- {
-@@ -336,6 +357,83 @@ static int ext4_handle_failed_inode_extension(struct inode *inode, loff_t size)
- 	return 0;
- }
- 
-+/*
-+ * The intention here is to start with shared lock acquired
-+ * (except in unaligned IO & extending writes case),
-+ * then see if any condition requires an exclusive inode
-+ * lock. If yes, then we restart the whole operation by
-+ * releasing the shared lock and acquiring exclusive lock.
-+ *
-+ * - For unaligned_io we never take exclusive lock as it
-+ *   may cause data corruption when two unaligned IO tries
-+ *   to modify the same block.
-+ *
-+ * - For extending wirtes case we don't take
-+ *   the exclusive lock, since it requires updating
-+ *   inode i_disksize with exclusive lock.
-+ *
-+ * - shared locking will only be true mostly in case of
-+ *   overwrites with dioread_nolock mode.
-+ *   Otherwise we will switch to exclusive locking mode.
-+ */
-+static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
-+				 unsigned int *iolock, bool *unaligned_io,
-+				 bool *extend)
-+{
-+	struct file *file = iocb->ki_filp;
-+	struct inode *inode = file_inode(file);
-+	loff_t offset = iocb->ki_pos;
-+	loff_t final_size;
-+	size_t count;
-+	ssize_t ret;
-+
-+restart:
-+	if (!ext4_dio_checks(inode)) {
-+		ext4_iunlock(inode, *iolock);
-+		return ext4_buffered_write_iter(iocb, from);
-+	}
-+
-+	ret = ext4_generic_write_checks(iocb, from);
-+	if (ret <= 0) {
-+		ext4_iunlock(inode, *iolock);
-+		return ret;
-+	}
-+
-+	/* Recalculate since offset & count may change above. */
-+	offset = iocb->ki_pos;
-+	count = iov_iter_count(from);
-+	final_size = offset + count;
-+
-+	if (ext4_unaligned_io(inode, from, offset))
-+		*unaligned_io = true;
-+
-+	if (ext4_extending_io(inode, offset, count))
-+		*extend = true;
-+	/*
-+	 * Determine whether the IO operation will overwrite allocated
-+	 * and initialized blocks. If so, check to see whether it is
-+	 * possible to take the dioread_nolock path.
-+	 *
-+	 * We need exclusive i_rwsem for changing security info
-+	 * in file_modified().
-+	 */
-+	if (*iolock == EXT4_IOLOCK_SHARED &&
-+	    (!IS_NOSEC(inode) || *unaligned_io || *extend ||
-+	     !ext4_should_dioread_nolock(inode) ||
-+	     !ext4_overwrite_io(inode, offset, count))) {
-+		ext4_iunlock(inode, *iolock);
-+		*iolock = EXT4_IOLOCK_EXCL;
-+		ext4_ilock(inode, *iolock);
-+		goto restart;
-+	}
-+
-+	ret = file_modified(file);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
- /*
-  * For a write that extends the inode size, ext4_dio_write_iter() will
-  * wait for the write to complete. Consequently, operations performed
-@@ -371,64 +469,68 @@ static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size, int error,
- 
- static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
-+
- 	ssize_t ret;
--	size_t count;
- 	loff_t offset = iocb->ki_pos;
-+	size_t count = iov_iter_count(from);
- 	struct inode *inode = file_inode(iocb->ki_filp);
--	bool extend = false, overwrite = false, unaligned_aio = false;
--	unsigned int iolock = EXT4_IOLOCK_EXCL;
-+	bool extend = false, unaligned_io = false;
-+	unsigned int iolock = EXT4_IOLOCK_SHARED;
-+
-+	/*
-+	 * We initially start with shared inode lock
-+	 * unless it is unaligned IO which needs
-+	 * exclusive lock anyways.
-+	 */
-+	if (ext4_unaligned_io(inode, from, offset)) {
-+		unaligned_io = true;
-+		iolock = EXT4_IOLOCK_EXCL;
-+	}
-+	/*
-+	 * Extending writes need exclusive lock
-+	 * to update
-+	 */
-+	if (ext4_extending_io(inode, offset, count)) {
-+		extend = true;
-+		iolock = EXT4_IOLOCK_EXCL;
-+	}
- 
- 	if (iocb->ki_flags & IOCB_NOWAIT) {
-+		/*
-+		 * unaligned IO may anyway require wait
-+		 * at other places, so bail out.
-+		 */
-+		if (unaligned_io)
-+			return -EAGAIN;
- 		if (!ext4_ilock_nowait(inode, iolock))
- 			return -EAGAIN;
- 	} else {
- 		ext4_ilock(inode, iolock);
- 	}
- 
--	if (!ext4_dio_checks(inode)) {
--		ext4_iunlock(inode, iolock);
--		/*
--		 * Fallback to buffered IO if the operation on the
--		 * inode is not supported by direct IO.
--		 */
--		return ext4_buffered_write_iter(iocb, from);
--	}
--
--	ret = ext4_write_checks(iocb, from);
--	if (ret <= 0) {
--		ext4_iunlock(inode, iolock);
-+	ret = ext4_dio_write_checks(iocb, from, &iolock, &unaligned_io,
-+				    &extend);
-+	if (ret <= 0)
- 		return ret;
--	}
--
- 	/*
--	 * Unaligned direct AIO must be serialized among each other as
-+	 * Unaligned direct IO must be serialized among each other as
- 	 * the zeroing of partial blocks of two competing unaligned
--	 * AIOs can result in data corruption.
-+	 * IOs can result in data corruption. This can mainly
-+	 * happen since we may start with shared locking and for
-+	 * dioread_nolock and overwrite case we may continue to be
-+	 * in shared locking mode. In that case two parallel unaligned
-+	 * IO may cause data corruption.
-+	 *
-+	 * So we make sure we don't allow any unaligned IO in flight.
-+	 * For IOs where we need not wait (like unaligned non-AIO DIO),
-+	 * below dio_wait may anyway become a no-op,
-+	 * since we start take exclusive locks.
- 	 */
--	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS) &&
--	    !is_sync_kiocb(iocb) && ext4_unaligned_aio(inode, from, offset)) {
--		unaligned_aio = true;
-+	if (unaligned_io)
- 		inode_dio_wait(inode);
--	}
--
--	/*
--	 * Determine whether the IO operation will overwrite allocated
--	 * and initialized blocks. If so, check to see whether it is
--	 * possible to take the dioread_nolock path.
--	 */
--	count = iov_iter_count(from);
--	if (!unaligned_aio && ext4_overwrite_io(inode, offset, count) &&
--	    ext4_should_dioread_nolock(inode)) {
--		overwrite = true;
--		ext4_ilock_demote(inode, iolock);
--		iolock = EXT4_IOLOCK_SHARED;
--	}
- 
--	if (offset + count > i_size_read(inode) ||
--	    offset + count > EXT4_I(inode)->i_disksize) {
-+	if (extend)
- 		ext4_update_i_disksize(inode, inode->i_size);
--		extend = true;
--	}
- 
- 	ret = iomap_dio_rw(iocb, from, &ext4_iomap_ops, ext4_dio_write_end_io);
- 
-@@ -440,7 +542,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	 * routines in ext4_dio_write_end_io() are covered by the
- 	 * inode_lock().
- 	 */
--	if (ret == -EIOCBQUEUED && (unaligned_aio || extend))
-+	if (ret == -EIOCBQUEUED && (unaligned_io || extend))
- 		inode_dio_wait(inode);
- 
- 	ext4_iunlock(inode, iolock);
--- 
-2.21.0
-
+--<M>--
