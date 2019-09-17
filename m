@@ -2,116 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7F7B546E
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 19:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2302B5470
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 19:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726916AbfIQRlk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 13:41:40 -0400
-Received: from mail-lf1-f53.google.com ([209.85.167.53]:35370 "EHLO
-        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbfIQRlk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 13:41:40 -0400
-Received: by mail-lf1-f53.google.com with SMTP id w6so3591457lfl.2;
-        Tue, 17 Sep 2019 10:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Fx+sdLrbbMO3EWgs8sTQWDVcw7BxviYLKx2x+SxaOiQ=;
-        b=UE7uJ0z3dchGQ5s2pw5h8c5mOBn3HzdG/7+5VHOfgUWXBZKF8c/3EMk5ve0IR5foXS
-         LtYt39+luyTdw1z+xN8Ew/oqH9NS1n8JzUByPe9t4CPPfLC93kHIIilrKh0ZDcNTIOjH
-         PzcGZ9ZXHoIGTdxZPvr8Xqe7zIjQ99pfDXfAZvUBoGfAkC7nXha2hvZ0M3E2OUU3+hQi
-         QMuEWWuhhP/5qYkE3iZfGX0zYPV3td6Pv45OMVhKC6USE7FfEftA+TRntaJVYXM7DsR1
-         TIfJb1pUMuAzayWJUfHZXGxS3FpbGZArIM13W0WpG82HulfZBCMC9jiINBD69WrKHdq6
-         tfkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Fx+sdLrbbMO3EWgs8sTQWDVcw7BxviYLKx2x+SxaOiQ=;
-        b=oYdZ78YVZkd2n3va//+magcfeN684aT6z9eZgkH/WIuGbxEaOH2HGn4NZBFCHTpKwo
-         +i5dpbRYr/JEQIrtIEyXMrf/yuhpYZzkbp81L1bQ9JAnXaXlKEnZqq/BMq20ct43NgLV
-         281UGKDvrNwKSEcZmfmqIfK7pDupzIeKPoIIk878pCA1ARNE85fbKfDEeWJTaumWfXFA
-         evYtV4sIm6HRCPWeFqCB5GzhAcGg9rCJvRkP+hwoECY4rr6+3MmlpdV7PSFx0NOdTjcv
-         /CFP3P0H61PPTS8HHUbyVxlDIxQ1fJPrWlSov8SMjCTvcxluMMHCqX+A0ymnDq3ss8GS
-         bung==
-X-Gm-Message-State: APjAAAUT6dJttGOh2XEMKlHtTuU5GisUYsKpHV2kx6DHr+2o/dqyE6mo
-        +uzQMNWJuoKzKJXVjJ0fqzkR/NmRfUSZTQ==
-X-Google-Smtp-Source: APXvYqySL4ftj8UHOFNjKvTL8adHecoW4HTmjHrzY0Ar4gDc87QZ8jiSrMjmOh4inm0eUBrMMvx4JA==
-X-Received: by 2002:a19:f11c:: with SMTP id p28mr2714006lfh.44.1568742096338;
-        Tue, 17 Sep 2019 10:41:36 -0700 (PDT)
-Received: from ?IPv6:2a02:17d0:4a6:5700::72c? ([2a02:17d0:4a6:5700::72c])
-        by smtp.googlemail.com with ESMTPSA id w13sm549636lfk.47.2019.09.17.10.41.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Sep 2019 10:41:35 -0700 (PDT)
-Subject: Re: Linux 5.3-rc8
-To:     Willy Tarreau <w@1wt.eu>, Lennart Poettering <mzxreary@0pointer.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        id S1726883AbfIQRmW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 13:42:22 -0400
+Received: from gardel.0pointer.net ([85.214.157.71]:40808 "EHLO
+        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbfIQRmV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 13:42:21 -0400
+Received: from gardel-login.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by gardel.0pointer.net (Postfix) with ESMTP id 53EA6E80FFC;
+        Tue, 17 Sep 2019 19:42:20 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id 06FB9160ADC; Tue, 17 Sep 2019 19:42:19 +0200 (CEST)
+Date:   Tue, 17 Sep 2019 19:42:19 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
         Matthew Garrett <mjg59@srcf.ucam.org>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
         Vito Caputo <vcaputo@pengaru.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
         William Jon McCann <mccann@jhu.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.3-rc8
+Message-ID: <20190917174219.GD31798@gardel-login>
 References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
  <C4F7DC65-50B9-4D70-8E9B-0A6FF5C1070A@srcf.ucam.org>
- <20190917052438.GA26923@1wt.eu> <2508489.jOnZlRuxVn@merkaba>
- <CAHk-=wiGg-G8JFJ=R7qf0B+UtqA_Weouk6v+McmfsLJLRq6AKA@mail.gmail.com>
- <6ae36cda-5045-6873-9727-1d36bf45b84e@gmail.com>
- <20190917173036.GC31798@gardel-login> <20190917173225.GE27999@1wt.eu>
-From:   "Alexander E. Patrakov" <patrakov@gmail.com>
-Message-ID: <69d8cabe-9285-a01e-ae78-57838e886c9a@gmail.com>
-Date:   Tue, 17 Sep 2019 22:41:33 +0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+ <20190917052438.GA26923@1wt.eu>
+ <2508489.jOnZlRuxVn@merkaba>
+ <20190917121156.GC6762@mit.edu>
+ <20190917123015.sirlkvy335crozmj@debian-stretch-darwi.lab.linutronix.de>
+ <20190917160844.GC31567@gardel-login>
+ <CAHk-=wgsWTCZ=LPHi7BXzFCoWbyp3Ey-zZbaKzWixO91Ryr9=A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20190917173225.GE27999@1wt.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-PH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wgsWTCZ=LPHi7BXzFCoWbyp3Ey-zZbaKzWixO91Ryr9=A@mail.gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-17.09.2019 22:32, Willy Tarreau пишет:
-> On Tue, Sep 17, 2019 at 07:30:36PM +0200, Lennart Poettering wrote:
->> On Di, 17.09.19 21:58, Alexander E. Patrakov (patrakov@gmail.com) wrote:
->>
->>> I am worried that the getrandom delays will be serialized, because processes
->>> sometimes run one after another. If there are enough chained/dependent
->>> processes that ask for randomness before it is ready, the end result is
->>> still a too-big delay, essentially a failed boot.
->>>
->>> In other words: your approach of adding delays only makes sense for heavily
->>> parallelized boot, which may not be the case, especially for embedded
->>> systems that don't like systemd.
->>
->> As mentioned elsewhere: once the pool is initialized it's
->> initialized. This means any pending getrandom() on the whole system
->> will unblock at the same time, and from the on all getrandom()s will
->> be non-blocking.
-> 
-> He means that all process will experience this delay until there's enough
-> entropy.
-> 
-> Willy
+On Di, 17.09.19 09:23, Linus Torvalds (torvalds@linux-foundation.org) wrote:
 
-Indeed, my wording was not clear enough. Linus' patch has a 5-second 
-timeout for small entropy requests, after which they get converted to 
-the equivalent of urandom. However, in the following shell script:
+> On Tue, Sep 17, 2019 at 9:08 AM Lennart Poettering <mzxreary@0pointer.de> wrote:
+> >
+> > Here's what I'd propose:
+>
+> So I think this is ok, but I have another proposal. Before I post that
+> one, though, I just wanted to point out:
+>
+> > 1) Add GRND_INSECURE to get those users of getrandom() who do not need
+> >    high quality entropy off its use (systemd has uses for this, for
+> >    seeding hash tables for example), thus reducing the places where
+> >    things might block.
+>
+> I really think that trhe logic should be the other way around.
+>
+> The getrandom() users that don't need high quality entropy are the
+> ones that don't really think about this, and so _they_ shouldn't be
+> the ones that have to explicitly state anything. To those users,
+> "random is random". By definition they don't much care, and quite
+> possibly they don't even know what "entropy" really means in that
+> context.
 
-#!/bin/sh
-p1
-p2
+So I think people nowadays prefer getrandom() over /dev/urandom
+primarily because of the noisy logging the kernel does when you use
+the latter on a non-initialized pool. If that'd be dropped then I am
+pretty sure that the porting from /dev/urandom to getrandom() you see
+in various projects (such as gdm/x11) would probably not take place.
 
-if both p1 and p2 ask for a small amount of entropy before crng is fully 
-initialized, and do nothing that produces more entropy, the total delay 
-will be 10 seconds.
+In fact, speaking for systemd: the noisy logging in the kernel is the
+primary (actually: only) reason that we prefer using RDRAND (if
+available) over /dev/urandom if we need "medium quality" random
+numbers, for example to seed hash tables and such. If the log message
+wasn't there we wouldn't be tempted to bother with RDRAND and would
+just use /dev/urandom like we used to for that.
 
--- 
-Alexander E. Patrakov
+> > 2) Add a kernel log message if a getrandom(0) client hung for 15s or
+> >    more, explaining the situation briefly, but not otherwise changing
+> >    behaviour.
+>
+> The problem is that when you have some graphical boot, you'll not even
+> see the kernel messages ;(
+
+Well, but as mentioned, there's infrastructure for this, that's why I
+suggested changing systemd-random-seed.service.
+
+We can make boot hang in "sane", discoverable way.
+
+The reason why I think this should also be logged by the kernel since
+people use netconsole and pstore and whatnot and they should see this
+there. If systemd with its infrastructure brings this to screen via
+plymouth then this wouldn't help people who debug much more low-level.
+
+(I mean, there have been requests to add a logic to systemd that
+refuses booting — or delays it — if the system has a battery and it is
+nearly empty. I am pretty sure adding a cleanm discoverable concept of
+"uh, i can't boot for a good reason which is this" wouldn't be the
+worst of ideas)
+
+Lennart
+
+--
+Lennart Poettering, Berlin
