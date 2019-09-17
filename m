@@ -2,53 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E34EB572C
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 22:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18C6B575A
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 23:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729792AbfIQUwo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 16:52:44 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:40829 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbfIQUwn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 16:52:43 -0400
-Received: by mail-wm1-f67.google.com with SMTP id b24so22071wmj.5;
-        Tue, 17 Sep 2019 13:52:42 -0700 (PDT)
+        id S1726703AbfIQVHE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 17:07:04 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:42368 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbfIQVHE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 17:07:04 -0400
+Received: by mail-lj1-f195.google.com with SMTP id y23so4993751lje.9
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 14:07:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ApT0kSwd0qDPrpu8YD2GohWeJamU26dBJ+jJSNS2N/w=;
-        b=Cw4D9QTM40QeSn5ag5Fy7naFWlT8CuE4Jc/VpV9ujyw+3wxs7IFqglZv4uqz6yJqKm
-         6ivRok4vGvWJWcKJpZM1ivrr33Pec+rCj0so6jzFdaVyD4Cax89Iv+Xt/91shEaJ1em5
-         jcCKhzicru/qAfkEN4GSeVGEO4hmgot0g2dt4xdTQwpZxfFEUgmGFh1BfkBG9Sc1Mk+0
-         GMLBMW2RmDs1S+Hr6z5v49Jy49YlrzqanorxZFwdsrAqSFvGGm7Xcn1kVozVWRDO1/zd
-         wVeKfHfGDLfKDQShYHG5XVVivYtqBa/C6af5JDz8B5zh9vGE+Ju7pQsLL3rwFQZblCsB
-         ylAw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OHrObK8b+yTwXUpTknBWom0+qFXiK3R3tZjZ4MRZwFw=;
+        b=ZGDVy1dUaQtKpgdgdOVfn2ocAdPPX/vdWupn5Tq0b6mOU1+upk6uZJtQVBC20v7jGw
+         CbIdJYnxxcQqMf9qM5m5SL0B1Rfxv9frW2ay/IyXYPuQIqy8qt8R3bYEpGAA/jNcpOUh
+         Rvj5TZaXMBPqI1vJva1Ju07IwTuegIJmAAbNs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ApT0kSwd0qDPrpu8YD2GohWeJamU26dBJ+jJSNS2N/w=;
-        b=EqzqVRfPlSisxo1tc7arKeagaX5gxCW9HBr9m8IrrH1Kx9R7oNYP6RXsU3YrRkhSRQ
-         Gr5MxrxNzA79Ioqq1Nfs+YtaGHOFIuCPgKrHaXOmJiYLCHRjJhjyne0uuD0jVWpYib40
-         q6iCw3TTBodn1IDDET34qetKI+4K1qNhZIqP4AKI8NMCuzYE7w5OgVdcuDliJy2BnjVs
-         04fBMnWrPVZo6VaOJUVc7sR7CM+lPJv+xeA/9y8iuW06XPdvQSMWTassfjRnUYMbP797
-         IGr+uaXTDJ8/ZL3+tN5sdi+wZXD9tAZe/cZjUYU11Jl6/AjZffJ31G401LmCZ5dRLvPX
-         7rZw==
-X-Gm-Message-State: APjAAAVMoya+/PD3H3AKoNPftdoXGaYYYX7DwXrv6fRo/5TBjcaMauVe
-        O8M7Ub9ZYKg2pVaAYIdIcEc=
-X-Google-Smtp-Source: APXvYqyFO//Zh6kStyRWZE1zRsXqFhQBmSoIvCWsjebAToll90pLtRXxEqs6I7c7Z0FUscm7OwWz1g==
-X-Received: by 2002:a1c:1d8d:: with SMTP id d135mr18289wmd.7.1568753561336;
-        Tue, 17 Sep 2019 13:52:41 -0700 (PDT)
-Received: from darwi-home-pc (p200300D06F2D143EC08AA0470B895785.dip0.t-ipconnect.de. [2003:d0:6f2d:143e:c08a:a047:b89:5785])
-        by smtp.gmail.com with ESMTPSA id j1sm5256090wrg.24.2019.09.17.13.52.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Sep 2019 13:52:40 -0700 (PDT)
-Date:   Tue, 17 Sep 2019 22:52:34 +0200
-From:   "Ahmed S. Darwish" <darwish.07@gmail.com>
-To:     Martin Steigerwald <martin@lichtvoll.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Lennart Poettering <mzxreary@0pointer.de>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OHrObK8b+yTwXUpTknBWom0+qFXiK3R3tZjZ4MRZwFw=;
+        b=L/tSEib+JkdMBSrpI1RCGqK4xczM/rQjT3dP8vb8Zoi/MiGyplMQsF96urmE317XZd
+         CIpWxH/cRurSSamuLwuJoAPv6sLJeMI+Gs57ZDGulXkWHim5Akx5wh6ZFpyW3/KezUKX
+         5D6aXO9UrD0s6iiOk82HoELlo2ZwOKH/foiShTjLrx++iV1+pz3JXWnA0pnXuuK46R9V
+         5xx8nmsbfzNNYcOjeZWIds6A6ctWYUyH8zJ66IsGRuDrAlj9VvAnXEuett7yl6ufZiVR
+         unjofBaqaGGRQ7FnbCmcCo4m07llfFuvpSC98YEgz8WYPfEA7JDRky3U7xcNy+oNcP0Z
+         g+rA==
+X-Gm-Message-State: APjAAAWQGuMfW7I/zw6oYQ4i9L7OY4R8uSBKELM20a/hjPdqiiDCCK+d
+        1KAUPPfnQJgdnGXNfoaACxKOT6RfdDM=
+X-Google-Smtp-Source: APXvYqxXAZ5bjBF4X+4D7UE4HPPM/Xs7qks7H+N0OltURzbRjb/gBu6WWohQs6fF+41BDZAkAUNisA==
+X-Received: by 2002:a2e:3004:: with SMTP id w4mr202664ljw.21.1568754422659;
+        Tue, 17 Sep 2019 14:07:02 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id c10sm631590lfp.65.2019.09.17.14.07.02
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 Sep 2019 14:07:02 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id h2so5058208ljk.1
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 14:07:02 -0700 (PDT)
+X-Received: by 2002:a2e:9854:: with SMTP id e20mr203592ljj.72.1568753941203;
+ Tue, 17 Sep 2019 13:59:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
+ <C4F7DC65-50B9-4D70-8E9B-0A6FF5C1070A@srcf.ucam.org> <20190917052438.GA26923@1wt.eu>
+ <2508489.jOnZlRuxVn@merkaba> <20190917121156.GC6762@mit.edu>
+ <20190917123015.sirlkvy335crozmj@debian-stretch-darwi.lab.linutronix.de>
+ <20190917160844.GC31567@gardel-login> <CAHk-=wgsWTCZ=LPHi7BXzFCoWbyp3Ey-zZbaKzWixO91Ryr9=A@mail.gmail.com>
+ <20190917174219.GD31798@gardel-login> <CAHk-=wjABG3+daJFr4w3a+OWuraVcZpi=SMUg=pnZ+7+O0E2FA@mail.gmail.com>
+In-Reply-To: <CAHk-=wjABG3+daJFr4w3a+OWuraVcZpi=SMUg=pnZ+7+O0E2FA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 17 Sep 2019 13:58:45 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgOCv2eOT2M8Vw9GD_yOpsTwF364-hkeADyEu9erHgMGw@mail.gmail.com>
+Message-ID: <CAHk-=wgOCv2eOT2M8Vw9GD_yOpsTwF364-hkeADyEu9erHgMGw@mail.gmail.com>
+Subject: Re: Linux 5.3-rc8
+To:     Lennart Poettering <mzxreary@0pointer.de>
+Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
         Matthew Garrett <mjg59@srcf.ucam.org>,
         Vito Caputo <vcaputo@pengaru.com>,
@@ -58,46 +70,41 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190917205234.GA1765@darwi-home-pc>
-References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
- <20190917174219.GD31798@gardel-login>
- <CAHk-=wjABG3+daJFr4w3a+OWuraVcZpi=SMUg=pnZ+7+O0E2FA@mail.gmail.com>
- <2658007.Cequ2ms4lF@merkaba>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2658007.Cequ2ms4lF@merkaba>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 10:28:47PM +0200, Martin Steigerwald wrote:
-[...]
-> 
-> I don't have any kernel logs old enough to see whether whether crng init
-> times have been different with Systemd due to asking for randomness for
-> UUID/hashmaps.
->
+Side note, and entirely unrelated to this particular problem, but
+_because_ I was looking at the entropy init and sources of randomness
+we have, I notice that we still don't use the ToD clock as a source.
 
-Please stop claiming this. It has been pointed out to you, __multiple
-times__, that this makes no difference. For example:
+There's not a whole lot of bits there, but at least one of the attacks
+against entirely missing boot-time randomness was to look at the
+output of get_random_bytes(), and just compare it across machines. We
+sanitize things by going through a cryptographic hash function, but
+that helps hide the internal entropy buffers from direct viewing, but
+it still leaves the "are those internal entropy buffers the _same_
+across machines" for the nasty embedded hardware case with identical
+hardware.
 
-    https://lkml.kernel.org/r/20190916024904.GA22035@mit.edu
-    
-    No. getrandom(2) uses the new CRNG, which is either initialized,
-    or it's not ... So to the extent that systemd has made systems
-    boot faster, you could call that systemd's "fault".
+Of course, some of those machines didn't even have a a time-of-day
+clock either. But the fact that some didn't doesn't mean we shouldn't
+take it into account.
 
-You've claimed this like 3 times before in this thread already, and
-multiple people replied with the same response. If you don't get the
-paragraph above, then please don't continue replying further on this
-thread.
+So adding a "add_device_randomness()" to do_settimeofday64() (which
+catches them all) wouldn't be a bad idea. Not perhaps "entropy", but
+helping against detecting the case of basically very limited entropy
+at all at early boot.
 
-thanks,
+I'm pretty sure we discussed that case when we did those things
+originally, but I don't actually see us doing it anywhere right now.
 
--- 
-Ahmed Darwish
-http://darwish.chasingpointers.com
+So we definitely have some sources of differences for different
+systems that we could/should use, even if we might not be able to
+really account them as "entropy". The whole "people generated a number
+of the same keys" is just horrendously bad, even if they were to use
+/dev/urandom that doesn't have any strict entropy guarantees.
+
+               Linus
