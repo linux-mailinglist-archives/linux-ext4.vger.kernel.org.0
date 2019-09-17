@@ -2,124 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBFBB4CEB
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 13:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85790B4D93
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 14:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbfIQLbP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 07:31:15 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:39965 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726553AbfIQLbO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 07:31:14 -0400
-Received: by mail-pg1-f194.google.com with SMTP id w10so1865797pgj.7
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 04:31:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=haHTGffRW5vANHA+WJrpU6ZKkWIFsJTyKM4HQ48Fqjw=;
-        b=PDWr0cB7F7xLSAU12jIL5a86NRbxRJxAmhopvAfaaybXfe7oaJkct5DXzdg1AiQpOI
-         fHfpc6PK5Fw2/YAndeXRsbP5t66Ip2pWV6tnCcI0amJRBKmLdTYqOUyLYw0mcFV2A883
-         zIqpOFWf9yek6jEOCb0EU/B2oVLLnFVUV60OjAie7OFYqKz2PZHS/oXXYAxSxSKpReCI
-         5dnC8h/cu9wLrTJaSapbYy5KwCsHZBJuiliu8yTkjZCnW7ipuiTEQXJM7wzKpspYXEc6
-         IrsTuhg1nB0zwQ1Px1p+RCsK9RWPv181MvYf/c1BNUyVAEN5cplWQdOF2IDRmZMgHL1u
-         Cwaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=haHTGffRW5vANHA+WJrpU6ZKkWIFsJTyKM4HQ48Fqjw=;
-        b=SZKQ9h0tyjD0PkpjkI7Ryl43AhsecULngur7n5Z6fNRQqrmeeLLI6eNDVTDuQuNfU3
-         TalPzQMOZfvpAjTzTvA++JyqzxDD7GpWKstvvgnRpsLqHbD8iRH16o0nWJ+zTzuNBaOb
-         zR39tOBAFjeog37/JeXXfipVaARvPh2CM8PkGGWLg5hGtyQ2uV+cNGslOokLJRTIqYWH
-         9/X7fDwOYjzJbrwsbQ2E8A5xCZ/A3sUgyNlSuouZARu2gIJCBjCsbm/wUInJU2VdjReY
-         VmsDaVA5069XkFPsxfnFS+udQ5VXsjSFkDwEKE6m3qdc6cb5bkSkYNCP2K2OzVj8H2LF
-         vDwA==
-X-Gm-Message-State: APjAAAWh/7hpiaFC4bKEqmKeVuS6h00PthftgN8nQfWtSer5W95Ss+qU
-        5EteYidJbMrrUnte2XpWectY
-X-Google-Smtp-Source: APXvYqzOsnXyMzVzJPL/ZiEDQGH3p2QIv1+lzH89Vs5iszm0w2T1uEdH1we+JzsYoSrLGpLjy5rLEA==
-X-Received: by 2002:a17:90a:37d1:: with SMTP id v75mr4472866pjb.33.1568719868394;
-        Tue, 17 Sep 2019 04:31:08 -0700 (PDT)
-Received: from bobrowski ([110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id d20sm4411809pfq.88.2019.09.17.04.31.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Sep 2019 04:31:07 -0700 (PDT)
-Date:   Tue, 17 Sep 2019 21:31:01 +1000
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        david@fromorbit.com, darrick.wong@oracle.com
-Subject: Re: [PATCH v3 5/6] ext4: introduce direct IO write path using iomap
- infrastructure
-Message-ID: <20190917113101.GA17286@bobrowski>
-References: <cover.1568282664.git.mbobrowski@mbobrowski.org>
- <db33705f9ba35ccbe20fc19b8ecbbf2078beff08.1568282664.git.mbobrowski@mbobrowski.org>
- <20190916121248.GD4005@infradead.org>
- <20190916223741.GA5936@bobrowski>
- <20190917090613.GC29487@infradead.org>
+        id S1727281AbfIQMNg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 08:13:36 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45621 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725270AbfIQMNg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 08:13:36 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8HCBvaY011073
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 17 Sep 2019 08:11:58 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id DC55C420811; Tue, 17 Sep 2019 08:11:56 -0400 (EDT)
+Date:   Tue, 17 Sep 2019 08:11:56 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Martin Steigerwald <martin@lichtvoll.de>
+Cc:     Willy Tarreau <w@1wt.eu>, Matthew Garrett <mjg59@srcf.ucam.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.3-rc8
+Message-ID: <20190917121156.GC6762@mit.edu>
+References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
+ <C4F7DC65-50B9-4D70-8E9B-0A6FF5C1070A@srcf.ucam.org>
+ <20190917052438.GA26923@1wt.eu>
+ <2508489.jOnZlRuxVn@merkaba>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190917090613.GC29487@infradead.org>
+In-Reply-To: <2508489.jOnZlRuxVn@merkaba>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 02:06:13AM -0700, Christoph Hellwig wrote:
-> On Tue, Sep 17, 2019 at 08:37:41AM +1000, Matthew Bobrowski wrote:
-> > > Independent of the error return issue you probably want to split
-> > > modifying ext4_write_checks into a separate preparation patch.
+On Tue, Sep 17, 2019 at 09:33:40AM +0200, Martin Steigerwald wrote:
+> Willy Tarreau - 17.09.19, 07:24:38 CEST:
+> > On Mon, Sep 16, 2019 at 06:46:07PM -0700, Matthew Garrett wrote:
+> > > >Well, the patch actually made getrandom() return en error too, but
+> > > >you seem more interested in the hypotheticals than in arguing
+> > > >actualities.> 
+> > > If you want to be safe, terminate the process.
 > > 
-> > Providing that there's no objections to introducing a possible performance
-> > change with this separate preparation patch (overhead of calling
-> > file_remove_privs/file_update_time twice), then I have no issues in doing so.
+> > This is an interesting approach. At least it will cause bug reports in
+> > application using getrandom() in an unreliable way and they will
+> > check for other options. Because one of the issues with systems that
+> > do not finish to boot is that usually the user doesn't know what
+> > process is hanging.
 > 
-> Well, we should avoid calling it twice.  But what caught my eye is that
-> the buffered I/O path also called this function, so we are changing it as
-> well here.  If that actually is safe (I didn't review these bits carefully
-> and don't know ext4 that well) the overall refactoring of the write
-> flow might belong into a separate prep patch (that is not relying
-> on ->direct_IO, the checks changes, etc).
 
-Yeah, I see what you're saying. From memory, in order to get this right, there
-was a whole bunch of additional changes that needed to be done that would
-effectively be removed in a subsequent patch. But, let me revisit this again
-and see what I can do.
+I would be happy with a change which changes getrandom(0) to send a
+kill -9 to the process if it is called too early, with a new flag,
+getrandom(GRND_BLOCK) which blocks until entropy is available.  That
+leaves it up to the application developer to decide what behavior they
+want.
 
-> > > > +	if (!inode_trylock(inode)) {
-> > > > +		if (iocb->ki_flags & IOCB_NOWAIT)
-> > > > +			return -EAGAIN;
-> > > > +		inode_lock(inode);
-> > > > +	}
-> > > > +
-> > > > +	if (!ext4_dio_checks(inode)) {
-> > > > +		inode_unlock(inode);
-> > > > +		/*
-> > > > +		 * Fallback to buffered IO if the operation on the
-> > > > +		 * inode is not supported by direct IO.
-> > > > +		 */
-> > > > +		return ext4_buffered_write_iter(iocb, from);
-> > > 
-> > > I think you want to lift the locking into the caller of this function
-> > > so that you don't have to unlock and relock for the buffered write
-> > > fallback.
-> > 
-> > I don't exactly know what you really mean by "lift the locking into the caller
-> > of this function". I'm interpreting that as moving the inode_unlock()
-> > operation into ext4_buffered_write_iter(), but I can't see how that would be
-> > any different from doing it directly here? Wouldn't this also run the risk of
-> > the locks becoming unbalanced as we'd need to add checks around whether the
-> > resource is being contended? Maybe I'm misunderstanding something here...
-> 
-> With that I mean to acquire the inode lock in ext4_file_write_iter
-> instead of the low-level buffered I/O or direct I/O routines.
+Userspace applications which want to do something more sophisticated
+could set a timer which will cause getrandom(GRND_BLOCK) to return
+with EINTR (or the signal handler could use longjmp; whatever) to
+abort and do something else, like calling random_r if it's for some
+pathetic use of random numbers like MIT-MAGIC-COOKIE.
 
-Oh, I didn't think of that! But yes, that would in fact be nice and I cannot
-see why we shouldn't be doing that at this point. It also helps with reducing
-all the code duplication going on in the low-level buffered, direct, dax I/O
-routines.
+> A userspace process could just poll on the kernel by forking a process 
+> to use getrandom() and waiting until it does not get terminated anymore. 
+> And then it would still hang.
 
---<M>--
+So.... I'm not too worried about that, because if a process is
+determined to do something stupid, they can always do something
+stupid.
+
+This could potentially be a problem, as would GRND_BLOCK, in that if
+an application author decides to use to do something to wait for real
+randomness, because in the good judgement of the application author,
+it d*mned needs real security because otherwise an attacker could,
+say, force a launch of nuclear weapons and cause world war III, and
+then some small 3rd-tier distro decides to repurpose that application
+for some other use, and puts it in early boot, it's possible that a
+user will report it as a "regression", and we'll be back to the
+question of whether we revert a performance optimization patch.
+
+There are only two ways out of this mess.  The first option is we take
+functionality away from a userspace author who Really Wants A Secure
+Random Number Generator.  And there are an awful lot of programs who
+really want secure crypto, becuase this is not a hypothetical.  The
+result in "Mining your P's and Q's" did happen before.  If we forget
+the history, we are doomed to repeat it.
+
+The only other way is that we need to try to get the CRNG initialized
+securely in early boot, before we let userspace start.  If we do it
+early enough, we can also make the kernel facilities like KASLR and
+Stack Canaries more secure.  And this is *doable*, at least for most
+common platforms.  We can leverage UEFI; we cn try to use the TPM's
+random number generator, etc.  It won't help so much for certain
+brain-dead architectures, like MIPS and ARM, but if they are used for
+embedded use cases, it will be caught before the product is released
+for consumer use.  And this is where blocking is *way* better than a
+big fat warning, or sleeping for 15 seconds, both of which can easily
+get missed in the embedded case.  If we can fix this for traditional
+servers/desktops/laptops, then users won't be complaining to Linus,
+and I think we can all be happy.
+
+Regards,
+
+					- Ted
