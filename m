@@ -2,51 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 509F9B5193
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 17:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0C9B5197
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 17:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729580AbfIQPb7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 11:31:59 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60656 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726882AbfIQPb7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 11:31:59 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8HFVeKC021438
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 17 Sep 2019 11:31:41 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 20F03420811; Tue, 17 Sep 2019 11:31:40 -0400 (EDT)
-Date:   Tue, 17 Sep 2019 11:31:40 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     yangerkun <yangerkun@huawei.com>
-Cc:     jack@suse.cz, linux-ext4@vger.kernel.org, yi.zhang@huawei.com,
-        houtao1@huawei.com
-Subject: Re: [PATCH] ext4: fix a bug in ext4_wait_for_tail_page_commit
-Message-ID: <20190917153140.GF6762@mit.edu>
-References: <20190917084814.40370-1-yangerkun@huawei.com>
+        id S1729504AbfIQPc4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 11:32:56 -0400
+Received: from gardel.0pointer.net ([85.214.157.71]:40460 "EHLO
+        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726724AbfIQPcz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 11:32:55 -0400
+Received: from gardel-login.0pointer.net (gardel.0pointer.net [85.214.157.71])
+        by gardel.0pointer.net (Postfix) with ESMTP id 4E947E80FFC;
+        Tue, 17 Sep 2019 17:32:53 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id C7EDE160ADC; Tue, 17 Sep 2019 17:32:52 +0200 (CEST)
+Date:   Tue, 17 Sep 2019 17:32:52 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Willy Tarreau <w@1wt.eu>, Vito Caputo <vcaputo@pengaru.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.3-rc8
+Message-ID: <20190917153252.GA31567@gardel-login>
+References: <20190915065142.GA29681@gardel-login>
+ <CAHk-=wiDNRPzuNE-eXs7QOpgPVLXsZOXEMQE9RmAWABiiZrSAQ@mail.gmail.com>
+ <20190916014050.GA7002@darwi-home-pc>
+ <20190916014833.cbetw4sqm3lq4x6m@shells.gnugeneration.com>
+ <20190916024904.GA22035@mit.edu>
+ <20190916042952.GB23719@1wt.eu>
+ <CAHk-=wg4cONuiN32Tne28Cg2kEx6gsJCoOVroqgPFT7_Kg18Hg@mail.gmail.com>
+ <20190916061252.GA24002@1wt.eu>
+ <CAHk-=wjWSRzTjwN9F5gQcxtPkAgaRHJOOOTUjVakqP-Nzg9BXA@mail.gmail.com>
+ <20190916172117.GB15263@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190917084814.40370-1-yangerkun@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190916172117.GB15263@mit.edu>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 04:48:14PM +0800, yangerkun wrote:
-> No need to wait when offset equals to 0. And it will trigger a bug since
-> the latter __ext4_journalled_invalidatepage can free the buffers but leave
-> page still dirty.
+On Mo, 16.09.19 13:21, Theodore Y. Ts'o (tytso@mit.edu) wrote:
 
-That's only true if the block size == the page size, no?  If the
-offset is zero and the block size is 1k, we still need to wait.
-Shouldn't the better fix be:
+> We could create a new flag, GRND_INSECURE, which never blocks.  And
+> that that allows us to solve the problem for silly applications that
+> are using getrandom(2) for non-cryptographic use cases.  Use cases
+> might include Python dictionary seeds, gdm for MIT Magic Cookie, UUID
+> generation where best efforts probably is good enough, etc.  The
+> answer today is they should just use /dev/urandom, since that exists
+> today, and we have to support it for backwards compatibility anyway.
+> It sounds like gdm recently switched to getrandom(2), and I suspect
+> that it's going to get caught on some hardware configs anyway, even
+> without the ext4 optimization patch.  So I suspect gdm will switch
+> back to /dev/urandom, and this particular pain point will probably go
+> away.
 
-> -	if (offset > PAGE_SIZE - i_blocksize(inode))
-> +	if (offset >= PAGE_SIZE - i_blocksize(inode))
+The problem is that reading from /dev/urandom at a point where it's
+not initialized yet results in noisy kernel logging on current
+kernels. If you want people to use /dev/urandom then the logging needs
+to go away, because it scares people, makes them file bug reports and
+so on, even though there isn't actually any problem for these specific
+purposes.
 
-  	   	      		- Ted
+For that reason I'd prefer GRND_INSECURE I must say, because it
+indicates people grokked "I know I might get questionnable entropy".
+
+Lennart
