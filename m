@@ -2,170 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B53C2B4DCF
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 14:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006FCB4DEC
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 14:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbfIQMa0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 08:30:26 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:40357 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725270AbfIQMa0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 08:30:26 -0400
-Received: by mail-wm1-f68.google.com with SMTP id b24so2942658wmj.5;
-        Tue, 17 Sep 2019 05:30:24 -0700 (PDT)
+        id S1727814AbfIQMjJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 08:39:09 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:35688 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727112AbfIQMjJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 08:39:09 -0400
+Received: by mail-pf1-f195.google.com with SMTP id 205so2113103pfw.2
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 05:39:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=YBp2v8vFDNAxFhqQgdr+u9iIeUOhuwZckRnxJj0Jxrs=;
-        b=E25WSBhPPxHHjzHODS1R3+6Ld++kisQJorRGGHXnMT9BXrzL3H+rV3QSGF8eH79WBk
-         nWS3FlJdQoElriRYPYYSi5aWgF/HkTrB7v6/j/YPmt1CpyIDkJi9HRBlYga+LbDq1Q4i
-         TsPRxAwdZg7Z6qiNohxiEkWvE6HPgbn+FYMEVVb2UWtCjBTDF+Ka/++DIaBRAY+oqS6E
-         CTCmpVLFcDSCqgq7saquKkyzNN9BxipHvKzIC/nXF6GNsbcqHkGK+Z2E+yTrHGl3s3IN
-         ftaNjO9xGypzoLxTJznF7K1l55m19XXTz8N7MzV1lm5t04GerAJ4cTghglLxG6jE6WsT
-         1piQ==
+        bh=OTvLvWZQKYamARFFGSiOc5HaM2nlxTYOTsAuTJxrrZs=;
+        b=ciD6VU9yB23JT/INsw0iZBKrcCvl4Dhneq7SKh0gol9MakWQxeEtxuLaARa/b/TRvZ
+         W85vqr3GqAujOQ9vB9o2sxjiyEfp1l3GZ3a+7MIlEGRzaRRXK0w1ZGEQLc2iQ/rMGcrl
+         i/AeSvz4KkpdR3CyEN/fVlZ4I4h/kRJrlVzdilVlupwyA1BSVzqDav4VIa+i6GnevFUX
+         kkMw44kDLSsGB79HdHYR7mH8enAE3X7GUC8g/JA+bP+1D0C+x5UqRL8ufkTtrLMcY0dG
+         RAFK27B/7zODPALJLjGWPi3Qw5kKJGs6x6Q8JGEXG4weltt/7kG/Q4kfwNYh1qRkrzdx
+         Z5nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YBp2v8vFDNAxFhqQgdr+u9iIeUOhuwZckRnxJj0Jxrs=;
-        b=C0m/u0HKcBDW0nxfJ5LXct5JGDF9g2xPvvznIRHaOH40D/OTdayUfCJSdNadYId0Vi
-         swaOyeIbxuyHdkdsBdz0H8U6SI+SNe+cr5Yt4ixEqH8JbpGzwD2yHhLDJtZ6YmvIHuAt
-         AkzhuiIGVLhmWyuXMp9Dga9L418KBHATJU12ISopE+JoU8l7giUntzMJAePeNsUiQNV2
-         rkGNW4STPFggWQlRqRGJfrhFXwIVEwM7OUye9KlCU2vFC9jFZvgnuZ5KudPCsPXJ2O1b
-         Bch7db/06eCFLwATLM2ZppJltOmMS1oK4pLrzd/UoqttxvoNkOLFnmINPvXulxE9G3rP
-         wW7g==
-X-Gm-Message-State: APjAAAWxzKogTai9eH/Bl0kmBGY4xeaIv/7fiVMP5CiroHxNZa0Kj/cn
-        pP5EpiikabkT9E9MllnHUpdqzPnLP/k=
-X-Google-Smtp-Source: APXvYqzQ3PVSAhsuMvzKRoZPeZQdZ/5cLfN+W6bP1BTcEBhiwq5pK91AO7KyXf4CO+VydsZPPZI9jg==
-X-Received: by 2002:a1c:1f47:: with SMTP id f68mr3646457wmf.78.1568723423295;
-        Tue, 17 Sep 2019 05:30:23 -0700 (PDT)
-Received: from debian-stretch-darwi.lab.linutronix.de ([5.158.153.53])
-        by smtp.gmail.com with ESMTPSA id a10sm3160082wrv.64.2019.09.17.05.30.21
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 17 Sep 2019 05:30:22 -0700 (PDT)
-Date:   Tue, 17 Sep 2019 12:30:15 +0000
-From:   "Ahmed S. Darwish" <darwish.07@gmail.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Martin Steigerwald <martin@lichtvoll.de>, Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190917123015.sirlkvy335crozmj@debian-stretch-darwi.lab.linutronix.de>
-References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
- <C4F7DC65-50B9-4D70-8E9B-0A6FF5C1070A@srcf.ucam.org>
- <20190917052438.GA26923@1wt.eu>
- <2508489.jOnZlRuxVn@merkaba>
- <20190917121156.GC6762@mit.edu>
+        bh=OTvLvWZQKYamARFFGSiOc5HaM2nlxTYOTsAuTJxrrZs=;
+        b=jyjQP2q9uEu3i0zPOTlN9DpZGnLyu8zKMxkH5wv/0DgtgO32PunCdMFuQ4ZhCFMBUT
+         ew2CovurHLB11CUvOSpDN1uPUi1sg86R/0jugTaekCM5Ojpyc0QNGGA8/jCA9QSID5RX
+         6b4mV2csNqfTgg3T3aRbHXuAxgx2EG8PJUadRzQYXi0Hkm8wzd5KQqk3rIRH/HNxADZe
+         O+o5GGzD7X9PacU/lhyr8zAoCf8q8ZIfoLwFXkE9wDQVQYlkqulfVJ3Un1fep/aYMsPU
+         kjMM/e4tmMLOpUfwL6C9WlO9iN6i+gJhxXZ43XxVWtb924iaJ3cTibE4gdt+Bt0rtJcW
+         6VJQ==
+X-Gm-Message-State: APjAAAUJ4Uur9Rf4Qj8M9zxGmjRDx225ZP7bFYiuSMdXLaD9CkI3a9E4
+        zSCcXM/R+NV4FdmK5u+Wd3au
+X-Google-Smtp-Source: APXvYqxHGql6gtXiSLgnubOsn1tuxwk2FA+6A4sN+VnBtelTx82oAS/kvGo08+sSLohyfTC2EAHG7g==
+X-Received: by 2002:a62:7a12:: with SMTP id v18mr4037934pfc.205.1568723948525;
+        Tue, 17 Sep 2019 05:39:08 -0700 (PDT)
+Received: from bobrowski ([110.232.114.101])
+        by smtp.gmail.com with ESMTPSA id 2sm2758518pfa.43.2019.09.17.05.39.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Sep 2019 05:39:07 -0700 (PDT)
+Date:   Tue, 17 Sep 2019 22:39:01 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, tytso@mit.edu,
+        jack@suse.cz, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, david@fromorbit.com,
+        darrick.wong@oracle.com
+Subject: Re: [PATCH v3 5/6] ext4: introduce direct IO write path using iomap
+ infrastructure
+Message-ID: <20190917123901.GB17286@bobrowski>
+References: <cover.1568282664.git.mbobrowski@mbobrowski.org>
+ <db33705f9ba35ccbe20fc19b8ecbbf2078beff08.1568282664.git.mbobrowski@mbobrowski.org>
+ <20190916121248.GD4005@infradead.org>
+ <20190916223741.GA5936@bobrowski>
+ <20190917090016.266CB520A1@d06av21.portsmouth.uk.ibm.com>
+ <20190917090233.GB29487@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190917121156.GC6762@mit.edu>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20190917090233.GB29487@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 08:11:56AM -0400, Theodore Y. Ts'o wrote:
-> On Tue, Sep 17, 2019 at 09:33:40AM +0200, Martin Steigerwald wrote:
-> > Willy Tarreau - 17.09.19, 07:24:38 CEST:
-> > > On Mon, Sep 16, 2019 at 06:46:07PM -0700, Matthew Garrett wrote:
-> > > > >Well, the patch actually made getrandom() return en error too, but
-> > > > >you seem more interested in the hypotheticals than in arguing
-> > > > >actualities.>
-> > > > If you want to be safe, terminate the process.
-> > >
-> > > This is an interesting approach. At least it will cause bug reports in
-> > > application using getrandom() in an unreliable way and they will
-> > > check for other options. Because one of the issues with systems that
-> > > do not finish to boot is that usually the user doesn't know what
-> > > process is hanging.
-> >
->
-> I would be happy with a change which changes getrandom(0) to send a
-> kill -9 to the process if it is called too early, with a new flag,
-> getrandom(GRND_BLOCK) which blocks until entropy is available.  That
-> leaves it up to the application developer to decide what behavior they
-> want.
->
+On Tue, Sep 17, 2019 at 02:02:33AM -0700, Christoph Hellwig wrote:
+> On Tue, Sep 17, 2019 at 02:30:15PM +0530, Ritesh Harjani wrote:
+> > So if we have a delayed buffered write to a file,
+> > in that case we first only update inode->i_size and update
+> > i_disksize at writeback time
+> > (i.e. during block allocation).
+> > In that case when we call for ext4_dio_write_iter
+> > since offset + len > i_disksize, we call for ext4_update_i_disksize().
+> > 
+> > Now if writeback for some reason failed. And the system crashes, during the
+> > DIO writes, after the blocks are allocated. Then during reboot we may have
+> > an inconsistent inode, since we did not add the inode into the
+> > orphan list before we updated the inode->i_disksize. And journal replay
+> > may not succeed.
+> > 
+> > 1. Can above actually happen? I am still not able to figure out the
+> >    race/inconsistency completely.
+> > 2. Can you please help explain under what other cases
+> >    it was necessary to call ext4_update_i_disksize() in DIO write paths?
+> > 3. When will i_disksize be out-of-sync with i_size during DIO writes?
+> 
+> None of the above seems new in this patchset, does it?
 
-Yup, I'm convinced that's the sanest option too. I'll send a final RFC
-patch tonight implementing the following:
+That's correct.
 
-config GETRANDOM_CRNG_ENTROPY_MAX_WAIT_MS
-	int
-	default 3000
-	help
-	  Default max wait in milliseconds, for the getrandom(2) system
-	  call when asking for entropy from the urandom source, until
-	  the Cryptographic Random Number Generator (CRNG) gets
-	  initialized.  Any process exceeding this duration for entropy
-	  wait will get killed by kernel. The maximum wait can be
-	  overriden through the "random.getrandom_max_wait_ms" kernel
-	  boot parameter. Rationale follows.
+*Ritesh - FWIW, I think you'll find the answers to your questions above by
+ referring to the following commits:
 
-	  When the getrandom(2) system call was created, it came with
-	  the clear warning: "Any userspace program which uses this new
-	  functionality must take care to assure that if it is used
-	  during the boot process, that it will not cause the init
-	  scripts or other portions of the system startup to hang
-	  indefinitely.
+ 1) 73fdad00b208b
+ 2) 45d8ec4d9fd54
 
-	  Unfortunately, due to multiple factors, including not having
-	  this warning written in a scary enough language in the
-	  manpages, and due to glibc since v2.25 implementing a BSD-like
-	  getentropy(3) in terms of getrandom(2), modern user-space is
-	  calling getrandom(2) in the boot path everywhere.
+If you drop the check (offset + count > EXT4_I(inode)->i_disksize) and the
+call to ext4_update_i_disksize(), under some workloads i.e. "generic/475"
+you'll generally end up with metadata corruption.
 
-	  Embedded Linux systems were first hit by this, and reports of
-	  embedded system "getting stuck at boot" began to be
-	  common. Over time, the issue began to even creep into consumer
-	  level x86 laptops: mainstream distributions, like Debian
-	  Buster, began to recommend installing haveged as a workaround,
-	  just to let the system boot.
+> That being said I found the early size update odd. XFS updates the on-disk
+> size only at I/O completion time to deal with various races including the
+> potential exposure of stale data.
 
-	  Filesystem optimizations in EXT4 and XFS exagerated the
-	  problem, due to aggressive batching of IO requests, and thus
-	  minimizing sources of entropy at boot. This led to large
-	  delays until the kernel's Cryptographic Random Number
-	  Generator (CRNG) got initialized, and thus having reports of
-	  getrandom(2) inidifinitely stuck at boot.
+Indeed a little odd. But, I think delalloc/writeback implementation is
+possibly to blame here (based on what's detailed in 45d8ec4d9fd54)? Ideally, I
+had the same approach as XFS in mind, but I couldn't do it.
 
-	  Solve this problem by setting a conservative upper bound for
-	  getrandom(2) wait. Kill the process, instead of returning an
-	  error code, because otherwise crypto-sensitive applications
-	  may revert to less secure mechanisms (e.g. /dev/urandom). We
-	  __deeply encourage__ system integrators and distribution
-	  builders not to considerably increase this value: during
-	  system boot, you either have entropy, or you don't. And if you
-	  didn't have entropy, it will stay like this forever, because
-	  if you had, you wouldn't have blocked in the first place. It's
-	  an atomic "either/or" situation, with no middle ground. Please
-	  think twice.
-
-	  Ideally, systems would be configured with hardware random
-	  number generators, and/or configured to trust the CPU-provided
-	  RNG's (CONFIG_RANDOM_TRUST_CPU) or boot-loader provided ones
-	  (CONFIG_RANDOM_TRUST_BOOTLOADER).  In addition, userspace
-	  should generate cryptographic keys only as late as possible,
-	  when they are needed, instead of during early boot.  (For
-	  non-cryptographic use cases, such as dictionary seeds or MIT
-	  Magic Cookies, other mechanisms such as /dev/urandom or
-	  random(3) may be more appropropriate.)
-
-Sounds good?
-
-thanks,
-
---
-Ahmed Darwish
-http://darwish.chasingpointers.com
+--<M>--
