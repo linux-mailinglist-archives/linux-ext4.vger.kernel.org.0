@@ -2,28 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B491B571D
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 22:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E34EB572C
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 22:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729796AbfIQUo3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 17 Sep 2019 16:44:29 -0400
-Received: from luna.lichtvoll.de ([194.150.191.11]:37695 "EHLO
-        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726668AbfIQUo3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 16:44:29 -0400
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id AAB4C776E2;
-        Tue, 17 Sep 2019 22:44:25 +0200 (CEST)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Lennart Poettering <mzxreary@0pointer.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        id S1729792AbfIQUwo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 16:52:44 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:40829 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbfIQUwn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 16:52:43 -0400
+Received: by mail-wm1-f67.google.com with SMTP id b24so22071wmj.5;
+        Tue, 17 Sep 2019 13:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ApT0kSwd0qDPrpu8YD2GohWeJamU26dBJ+jJSNS2N/w=;
+        b=Cw4D9QTM40QeSn5ag5Fy7naFWlT8CuE4Jc/VpV9ujyw+3wxs7IFqglZv4uqz6yJqKm
+         6ivRok4vGvWJWcKJpZM1ivrr33Pec+rCj0so6jzFdaVyD4Cax89Iv+Xt/91shEaJ1em5
+         jcCKhzicru/qAfkEN4GSeVGEO4hmgot0g2dt4xdTQwpZxfFEUgmGFh1BfkBG9Sc1Mk+0
+         GMLBMW2RmDs1S+Hr6z5v49Jy49YlrzqanorxZFwdsrAqSFvGGm7Xcn1kVozVWRDO1/zd
+         wVeKfHfGDLfKDQShYHG5XVVivYtqBa/C6af5JDz8B5zh9vGE+Ju7pQsLL3rwFQZblCsB
+         ylAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ApT0kSwd0qDPrpu8YD2GohWeJamU26dBJ+jJSNS2N/w=;
+        b=EqzqVRfPlSisxo1tc7arKeagaX5gxCW9HBr9m8IrrH1Kx9R7oNYP6RXsU3YrRkhSRQ
+         Gr5MxrxNzA79Ioqq1Nfs+YtaGHOFIuCPgKrHaXOmJiYLCHRjJhjyne0uuD0jVWpYib40
+         q6iCw3TTBodn1IDDET34qetKI+4K1qNhZIqP4AKI8NMCuzYE7w5OgVdcuDliJy2BnjVs
+         04fBMnWrPVZo6VaOJUVc7sR7CM+lPJv+xeA/9y8iuW06XPdvQSMWTassfjRnUYMbP797
+         IGr+uaXTDJ8/ZL3+tN5sdi+wZXD9tAZe/cZjUYU11Jl6/AjZffJ31G401LmCZ5dRLvPX
+         7rZw==
+X-Gm-Message-State: APjAAAVMoya+/PD3H3AKoNPftdoXGaYYYX7DwXrv6fRo/5TBjcaMauVe
+        O8M7Ub9ZYKg2pVaAYIdIcEc=
+X-Google-Smtp-Source: APXvYqyFO//Zh6kStyRWZE1zRsXqFhQBmSoIvCWsjebAToll90pLtRXxEqs6I7c7Z0FUscm7OwWz1g==
+X-Received: by 2002:a1c:1d8d:: with SMTP id d135mr18289wmd.7.1568753561336;
+        Tue, 17 Sep 2019 13:52:41 -0700 (PDT)
+Received: from darwi-home-pc (p200300D06F2D143EC08AA0470B895785.dip0.t-ipconnect.de. [2003:d0:6f2d:143e:c08a:a047:b89:5785])
+        by smtp.gmail.com with ESMTPSA id j1sm5256090wrg.24.2019.09.17.13.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Sep 2019 13:52:40 -0700 (PDT)
+Date:   Tue, 17 Sep 2019 22:52:34 +0200
+From:   "Ahmed S. Darwish" <darwish.07@gmail.com>
+To:     Martin Steigerwald <martin@lichtvoll.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
         Matthew Garrett <mjg59@srcf.ucam.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
         Vito Caputo <vcaputo@pengaru.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
@@ -32,85 +59,45 @@ Cc:     Lennart Poettering <mzxreary@0pointer.de>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
 Subject: Re: Linux 5.3-rc8
-Date:   Tue, 17 Sep 2019 22:42:57 +0200
-Message-ID: <2119167.1ishuQyBJ6@merkaba>
-In-Reply-To: <20190917172929.GD27999@1wt.eu>
-References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com> <20190917171328.GA31798@gardel-login> <20190917172929.GD27999@1wt.eu>
+Message-ID: <20190917205234.GA1765@darwi-home-pc>
+References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
+ <20190917174219.GD31798@gardel-login>
+ <CAHk-=wjABG3+daJFr4w3a+OWuraVcZpi=SMUg=pnZ+7+O0E2FA@mail.gmail.com>
+ <2658007.Cequ2ms4lF@merkaba>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2658007.Cequ2ms4lF@merkaba>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Willy Tarreau - 17.09.19, 19:29:29 CEST:
-> On Tue, Sep 17, 2019 at 07:13:28PM +0200, Lennart Poettering wrote:
-> > On Di, 17.09.19 18:21, Willy Tarreau (w@1wt.eu) wrote:
-> > > On Tue, Sep 17, 2019 at 05:57:43PM +0200, Lennart Poettering 
-> > > wrote:
-> > > > Note that calling getrandom(0) "too early" is not something
-> > > > people do
-> > > > on purpose. It happens by accident, i.e. because we live in a
-> > > > world
-> > > > where SSH or HTTPS or so is run in the initrd already, and in a
-> > > > world
-> > > > where booting sometimes can be very very fast.
-> > > 
-> > > It's not an accident, it's a lack of understanding of the impacts
-> > > from the people who package the systems. Generating an SSH key
-> > > from
-> > > an initramfs without thinking where the randomness used for this
-> > > could come from is not accidental, it's a lack of experience that
-> > > will be fixed once they start to collect such reports. And those
-> > > who absolutely need their SSH daemon or HTTPS server for a
-> > > recovery image in initramfs can very well feed fake entropy by
-> > > dumping whatever they want into /dev/random to make it possible
-> > > to build temporary keys for use within this single session. At
-> > > least all supposedly incorrect use will be made *on purpose* and
-> > > will still be possible to match what users need.> 
-> > What do you expect these systems to do though?
-> > 
-> > I mean, think about general purpose distros: they put together live
-> > images that are supposed to work on a myriad of similar (as in: same
-> > arch) but otherwise very different systems (i.e. VMs that might lack
-> > any form of RNG source the same as beefy servers with muliple
-> > sources
-> > the same as older netbooks with few and crappy sources, ...). They
-> > can't know what the specific hw will provide or won't. It's not
-> > their incompetence that they build the image like that. It's a
-> > common, very common usecase to install a system via SSH, and it's
-> > also very common to have very generic images for a large number
-> > varied systems to run on.
+On Tue, Sep 17, 2019 at 10:28:47PM +0200, Martin Steigerwald wrote:
+[...]
 > 
-> I'm totally file with installing the system via SSH, using a temporary
-> SSH key. I do make a strong distinction between the installation
-> phase and the final deployment. The SSH key used *for installation*
-> doesn't need to the be same as the final one. And very often at the
-> end of the installation we'll have produced enough entropy to produce
-> a correct key.
+> I don't have any kernel logs old enough to see whether whether crng init
+> times have been different with Systemd due to asking for randomness for
+> UUID/hashmaps.
+>
 
-Well… systems cloud-init adapts may come from the same template. Cloud 
-Init thus replaces the key that has been there before on their first 
-boot. There is no "installation".
+Please stop claiming this. It has been pointed out to you, __multiple
+times__, that this makes no difference. For example:
 
-Cloud Init could replace the key in the background… and restart SSH 
-then… but that will give those big fat man in the middle warnings and 
-all systems would use the same SSH host key initially. I just don't see 
-a good way at the moment how to handle this. Introducing an SSH mode for 
-this is still a temporary not so random key with proper warnings might 
-be challenging to get right from both a security and usability point of 
-view. And it would add complexity.
+    https://lkml.kernel.org/r/20190916024904.GA22035@mit.edu
+    
+    No. getrandom(2) uses the new CRNG, which is either initialized,
+    or it's not ... So to the extent that systemd has made systems
+    boot faster, you could call that systemd's "fault".
 
-That said with Proxmox VE on Fujitsu S8 or Intel NUCs I have never seen 
-this issue even when starting 50 VMs in a row, however, with large cloud 
-providers starting 50 VMs in a row does not sound like all that much. 
-And I bet with Proxmox VE virtio rng is easily available cause it uses 
-KVM.
+You've claimed this like 3 times before in this thread already, and
+multiple people replied with the same response. If you don't get the
+paragraph above, then please don't continue replying further on this
+thread.
+
+thanks,
 
 -- 
-Martin
-
-
+Ahmed Darwish
+http://darwish.chasingpointers.com
