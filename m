@@ -2,65 +2,25 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B18C6B575A
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 23:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92517B57B2
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 23:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbfIQVHE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 17:07:04 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:42368 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbfIQVHE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 17:07:04 -0400
-Received: by mail-lj1-f195.google.com with SMTP id y23so4993751lje.9
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 14:07:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OHrObK8b+yTwXUpTknBWom0+qFXiK3R3tZjZ4MRZwFw=;
-        b=ZGDVy1dUaQtKpgdgdOVfn2ocAdPPX/vdWupn5Tq0b6mOU1+upk6uZJtQVBC20v7jGw
-         CbIdJYnxxcQqMf9qM5m5SL0B1Rfxv9frW2ay/IyXYPuQIqy8qt8R3bYEpGAA/jNcpOUh
-         Rvj5TZaXMBPqI1vJva1Ju07IwTuegIJmAAbNs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OHrObK8b+yTwXUpTknBWom0+qFXiK3R3tZjZ4MRZwFw=;
-        b=L/tSEib+JkdMBSrpI1RCGqK4xczM/rQjT3dP8vb8Zoi/MiGyplMQsF96urmE317XZd
-         CIpWxH/cRurSSamuLwuJoAPv6sLJeMI+Gs57ZDGulXkWHim5Akx5wh6ZFpyW3/KezUKX
-         5D6aXO9UrD0s6iiOk82HoELlo2ZwOKH/foiShTjLrx++iV1+pz3JXWnA0pnXuuK46R9V
-         5xx8nmsbfzNNYcOjeZWIds6A6ctWYUyH8zJ66IsGRuDrAlj9VvAnXEuett7yl6ufZiVR
-         unjofBaqaGGRQ7FnbCmcCo4m07llfFuvpSC98YEgz8WYPfEA7JDRky3U7xcNy+oNcP0Z
-         g+rA==
-X-Gm-Message-State: APjAAAWQGuMfW7I/zw6oYQ4i9L7OY4R8uSBKELM20a/hjPdqiiDCCK+d
-        1KAUPPfnQJgdnGXNfoaACxKOT6RfdDM=
-X-Google-Smtp-Source: APXvYqxXAZ5bjBF4X+4D7UE4HPPM/Xs7qks7H+N0OltURzbRjb/gBu6WWohQs6fF+41BDZAkAUNisA==
-X-Received: by 2002:a2e:3004:: with SMTP id w4mr202664ljw.21.1568754422659;
-        Tue, 17 Sep 2019 14:07:02 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id c10sm631590lfp.65.2019.09.17.14.07.02
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Sep 2019 14:07:02 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id h2so5058208ljk.1
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 14:07:02 -0700 (PDT)
-X-Received: by 2002:a2e:9854:: with SMTP id e20mr203592ljj.72.1568753941203;
- Tue, 17 Sep 2019 13:59:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
- <C4F7DC65-50B9-4D70-8E9B-0A6FF5C1070A@srcf.ucam.org> <20190917052438.GA26923@1wt.eu>
- <2508489.jOnZlRuxVn@merkaba> <20190917121156.GC6762@mit.edu>
- <20190917123015.sirlkvy335crozmj@debian-stretch-darwi.lab.linutronix.de>
- <20190917160844.GC31567@gardel-login> <CAHk-=wgsWTCZ=LPHi7BXzFCoWbyp3Ey-zZbaKzWixO91Ryr9=A@mail.gmail.com>
- <20190917174219.GD31798@gardel-login> <CAHk-=wjABG3+daJFr4w3a+OWuraVcZpi=SMUg=pnZ+7+O0E2FA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjABG3+daJFr4w3a+OWuraVcZpi=SMUg=pnZ+7+O0E2FA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 17 Sep 2019 13:58:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgOCv2eOT2M8Vw9GD_yOpsTwF364-hkeADyEu9erHgMGw@mail.gmail.com>
-Message-ID: <CAHk-=wgOCv2eOT2M8Vw9GD_yOpsTwF364-hkeADyEu9erHgMGw@mail.gmail.com>
-Subject: Re: Linux 5.3-rc8
-To:     Lennart Poettering <mzxreary@0pointer.de>
-Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        id S1728636AbfIQVih convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 17 Sep 2019 17:38:37 -0400
+Received: from luna.lichtvoll.de ([194.150.191.11]:48061 "EHLO
+        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726999AbfIQVig (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 17:38:36 -0400
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.lichtvoll.de (Postfix) with ESMTPSA id 4277D77722;
+        Tue, 17 Sep 2019 23:38:33 +0200 (CEST)
+From:   Martin Steigerwald <martin@lichtvoll.de>
+To:     "Ahmed S. Darwish" <darwish.07@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Lennart Poettering <mzxreary@0pointer.de>,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
         Matthew Garrett <mjg59@srcf.ucam.org>,
         Vito Caputo <vcaputo@pengaru.com>,
@@ -70,41 +30,90 @@ Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
         zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
         lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.3-rc8
+Date:   Tue, 17 Sep 2019 23:38:33 +0200
+Message-ID: <1722575.Y5XjozQscI@merkaba>
+In-Reply-To: <20190917205234.GA1765@darwi-home-pc>
+References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com> <2658007.Cequ2ms4lF@merkaba> <20190917205234.GA1765@darwi-home-pc>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: mail.lichtvoll.de;
+        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Side note, and entirely unrelated to this particular problem, but
-_because_ I was looking at the entropy init and sources of randomness
-we have, I notice that we still don't use the ToD clock as a source.
+Ahmed S. Darwish - 17.09.19, 22:52:34 CEST:
+> On Tue, Sep 17, 2019 at 10:28:47PM +0200, Martin Steigerwald wrote:
+> [...]
+> 
+> > I don't have any kernel logs old enough to see whether whether crng
+> > init times have been different with Systemd due to asking for
+> > randomness for UUID/hashmaps.
+> 
+> Please stop claiming this. It has been pointed out to you, __multiple
+> times__, that this makes no difference. For example:
+> 
+>     https://lkml.kernel.org/r/20190916024904.GA22035@mit.edu
+> 
+>     No. getrandom(2) uses the new CRNG, which is either initialized,
+>     or it's not ... So to the extent that systemd has made systems
+>     boot faster, you could call that systemd's "fault".
+> 
+> You've claimed this like 3 times before in this thread already, and
+> multiple people replied with the same response. If you don't get the
+> paragraph above, then please don't continue replying further on this
+> thread.
 
-There's not a whole lot of bits there, but at least one of the attacks
-against entirely missing boot-time randomness was to look at the
-output of get_random_bytes(), and just compare it across machines. We
-sanitize things by going through a cryptographic hash function, but
-that helps hide the internal entropy buffers from direct viewing, but
-it still leaves the "are those internal entropy buffers the _same_
-across machines" for the nasty embedded hardware case with identical
-hardware.
+First off, this mail you referenced has not been an answer to a mail of 
+mine. It does not have my mail address in Cc. So no, it has not been 
+pointed out directly to me in that mail.
 
-Of course, some of those machines didn't even have a a time-of-day
-clock either. But the fact that some didn't doesn't mean we shouldn't
-take it into account.
+Secondly: Pardon me, but I do not see how asking for entropy early at 
+boot times or not doing so has *no effect* on the available entropy¹. And 
+I do not see the above mail actually saying this. To my knowledge 
+Sysvinit does not need entropy for itself². The above mail merely talks 
+about the blocking on boot. And whether systemd-random-seed would drain 
+entropy, not whether hashmaps/UUID do. And also not the effect that 
+asking for entropy early has on the available entropy and on the 
+*initial* initialization time of the new CRNG. However I did not claim 
+that Systemd would block booting. *Not at all*.
 
-So adding a "add_device_randomness()" to do_settimeofday64() (which
-catches them all) wouldn't be a bad idea. Not perhaps "entropy", but
-helping against detecting the case of basically very limited entropy
-at all at early boot.
+Thirdly: I disagree with the tone you use in your mail. And for that 
+alone I feel it may be better for me to let go of this discussion.
 
-I'm pretty sure we discussed that case when we did those things
-originally, but I don't actually see us doing it anywhere right now.
+My understanding of entropy always has been that only a certain amount 
+of it can be produced in a certain amount of time. If that is wrong… 
+please by all means, please teach me, how it would be.
 
-So we definitely have some sources of differences for different
-systems that we could/should use, even if we might not be able to
-really account them as "entropy". The whole "people generated a number
-of the same keys" is just horrendously bad, even if they were to use
-/dev/urandom that doesn't have any strict entropy guarantees.
+However I am not even claiming anything. All I wrote above is that I do 
+not have any measurements. But I'd expect that the more entropy is asked 
+for early during boot, the longer the initial initialization of the new 
+CRNG will take. And if someone else relies on this initialization, that 
+something else would block for a longer time.
 
-               Linus
+I got that it the new crng won't block after that anymore.
+
+[1] https://github.com/systemd/systemd/issues/4167
+
+(I know that it still with /dev/urandom, so if it is using RDRAND now, 
+this may indeed be different, but would it then deplete entropy the CPU 
+has available and that by default is fed into the Linux crng as well 
+(even without trusting it completely)?)
+
+[2] According to
+
+https://daniel-lange.com/archives/152-Openssh-taking-minutes-to-become-available,-booting-takes-half-an-hour-...-because-your-server-waits-for-a-few-bytes-of-randomness.html
+
+sysvinit does not contain a single line of code about entropy or random 
+numbers.
+
+Daniel even updated his blog post with a hint to this discussion.
+
+Thanks,
+-- 
+Martin
+
+
