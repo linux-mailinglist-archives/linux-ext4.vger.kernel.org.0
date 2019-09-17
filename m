@@ -2,49 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C705BB4ED4
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 15:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04C6B4F6E
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2019 15:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727465AbfIQNLM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 09:11:12 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:44165 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726649AbfIQNLM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 09:11:12 -0400
-Received: by mail-lf1-f65.google.com with SMTP id q11so2804606lfc.11;
-        Tue, 17 Sep 2019 06:11:09 -0700 (PDT)
+        id S1728481AbfIQNhf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 09:37:35 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40185 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbfIQNhe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 09:37:34 -0400
+Received: by mail-lj1-f193.google.com with SMTP id 7so3548571ljw.7;
+        Tue, 17 Sep 2019 06:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to;
-        bh=EZCXqAj8JTWrMTmIU44H25hWpxUIVaHu44MXcSwaNwk=;
-        b=dfKl9B5nKL/rUbUpShub6ZPyLymeg5fooGANUJrpFVw7EHBYA7xEnYB50zerC78afv
-         TrCqwNnJtxU+LyyAYxrMXhbJodXx4H34wYubjGgJ24O1PrdLHHv9A7WXqrutATtImwGG
-         TxUhs8HQynSAOEIpM+b0kx0DQHM85T4hX9+vAeuI5GAB2ViK/FQUFl6e78AxiJ4a+1be
-         QIsqmkoFYOTosFkmDcozrSeYd+U24RnD8MVHZdWrGnbsOgenyZZIAhKx25We21ha7oIJ
-         EfJENn1pSZnOaf0zQ0nDPcCcpVX4aRtRNR1rg3boguYPbzspkKIS2TbL1E9TMYE/eA9L
-         a7tg==
+        bh=FbvSBTZNtszguQDI9rTH0oC8VcHjwmxUhGV6gMIwuLA=;
+        b=nPRGxln+JvzxKYmEeV4c3p24xQeiy+moRIh61GhA6v5V+J6Nlo58x4n7WHtt/9rrpk
+         JuAqf2FH76iOTkUrQVofNhTFmagMDkr4iCVLvLYPPROyxuw7PnB2CF1saX7x7PzzE2Og
+         g2DAxTL1L/6n6z1daEJqYAe+64R88QtHxWbK04wxOV643lwRppDqR6vC2xsrVEdC9nbT
+         N1CR5FQGDgQF3+n68makPvUX+HnZTmAL7xTFIwhmzBvsbRovdsrG5bLnuaPcZg/V/cvs
+         bo6t8mSO56wk3nLV45m35p7KiwmCSuhCPWYVxPgzhOzHAL54PH+FPU6kV9GTGknDXghV
+         rRgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to;
-        bh=EZCXqAj8JTWrMTmIU44H25hWpxUIVaHu44MXcSwaNwk=;
-        b=Ire0bbwsj7xlMG+d2BiwfNgqYEZvmchr1CXcOVjpdthpYTttx9pJDdf4ZGK8rfPt/9
-         8ZkGbz+anODw27k6JL4cLUrhW443NeQY8lJYKf7mgU/L3Eco96nzn4Kd8wYYXSEj/SsQ
-         Zlv8o76a5a5Gd8xAwVIwv7RsnKj2d2BCRQC7F6TIJRIdKTepWEsz9krq2zFChxNPOWzP
-         X5cVLdCkOqh6P4p0nmis3K9yxbCoT+52EvwdGHS3K9oM/ck1D3u1zVH23YxQxp3lmqfj
-         ZlEDnlPr+fs5u9KPV18nlPGm3JlitbQN3ey7Dhvw/G+KYRQJvudBW/7QISQ1wB7c0RRe
-         KU3w==
-X-Gm-Message-State: APjAAAUvcO2qsvUjnkmyIZIxCMXoFvP0rgdzjmFiasfIzuB67gRTCC5z
-        NYivo5CC+g0uX7X+IwrGTixwXN56k8YclQ==
-X-Google-Smtp-Source: APXvYqyT+DbwMGCvi5jjW9688ETYL/dZO1nMXYPzDuh1iAxYeAoVA9N86kfQ5zrRkdQNj6LOz7kQaw==
-X-Received: by 2002:a19:6a09:: with SMTP id u9mr2022744lfu.91.1568725868337;
-        Tue, 17 Sep 2019 06:11:08 -0700 (PDT)
+        bh=FbvSBTZNtszguQDI9rTH0oC8VcHjwmxUhGV6gMIwuLA=;
+        b=p66z09wujZcaiY3UqdmLPCmHD4cRyOeD0CBlH1iKneS+MUBcWkFjTan3oT09CwxXkI
+         Dq7OZ1AZksqGeiDLOEG/hMFMG8rCqLnT0EuBrNFHzUKIhRLd6CihDrKyD17ycdGcGfKW
+         8c6IcV1RGvmksfqJeXwixvOqimte60b3eeA+W0aWlighigVmy+vtUwm6X97WCzGfKFI0
+         gleHi3YBC+4/jHgr2DpXhSfAm1Leo4lG2pFE6RqJLM1NuRaa9sE9JKv3V7mfc7VjbAJm
+         NjjlnFQiSiNRHmiHU55QAsKKrdHDEwbaHsbpSuIFQUfDqZoyRBBe6ewdTYJJ2oq/rQDa
+         RODg==
+X-Gm-Message-State: APjAAAWYlt5RvDGGAToKbJ7a6um7rERnFFnnsTMXMht8K4VrIk0uJwzh
+        7n0V8aNm12tgWNaXE0r5THSIUP6cd49hmw==
+X-Google-Smtp-Source: APXvYqw+665/b6v76srsM0m1rcRW4588C0l7r+wPguXZs3T/ntaTYX9mdvoJjIz9vbw3JrzPp/Jj8A==
+X-Received: by 2002:a05:651c:111c:: with SMTP id d28mr2041032ljo.138.1568727452085;
+        Tue, 17 Sep 2019 06:37:32 -0700 (PDT)
 Received: from ?IPv6:2a02:17d0:4a6:5700::72c? ([2a02:17d0:4a6:5700::72c])
-        by smtp.googlemail.com with ESMTPSA id o18sm429465lfb.25.2019.09.17.06.11.05
+        by smtp.googlemail.com with ESMTPSA id p27sm445367lfo.95.2019.09.17.06.37.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Sep 2019 06:11:06 -0700 (PDT)
+        Tue, 17 Sep 2019 06:37:31 -0700 (PDT)
 Subject: Re: Linux 5.3-rc8
+From:   "Alexander E. Patrakov" <patrakov@gmail.com>
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Martin Steigerwald <martin@lichtvoll.de>
 Cc:     Willy Tarreau <w@1wt.eu>, Matthew Garrett <mjg59@srcf.ucam.org>,
@@ -61,14 +62,14 @@ References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
  <C4F7DC65-50B9-4D70-8E9B-0A6FF5C1070A@srcf.ucam.org>
  <20190917052438.GA26923@1wt.eu> <2508489.jOnZlRuxVn@merkaba>
  <20190917121156.GC6762@mit.edu>
-From:   "Alexander E. Patrakov" <patrakov@gmail.com>
-Message-ID: <6601569a-f339-bc2c-0459-5548a21d0595@gmail.com>
-Date:   Tue, 17 Sep 2019 18:11:04 +0500
+ <6601569a-f339-bc2c-0459-5548a21d0595@gmail.com>
+Message-ID: <fb0dbfd6-d183-01cd-cdaf-f45eaf826c52@gmail.com>
+Date:   Tue, 17 Sep 2019 18:37:29 +0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <20190917121156.GC6762@mit.edu>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms040309000700070503000406"
+In-Reply-To: <6601569a-f339-bc2c-0459-5548a21d0595@gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms090507060509090405070701"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -76,54 +77,66 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 This is a cryptographically signed message in MIME format.
 
---------------ms040309000700070503000406
+--------------ms090507060509090405070701
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-PH
 Content-Transfer-Encoding: quoted-printable
 
-17.09.2019 17:11, Theodore Y. Ts'o =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> There are only two ways out of this mess.  The first option is we take
-> functionality away from a userspace author who Really Wants A Secure
-> Random Number Generator.  And there are an awful lot of programs who
-> really want secure crypto, becuase this is not a hypothetical.  The
-> result in "Mining your P's and Q's" did happen before.  If we forget
-> the history, we are doomed to repeat it.
+17.09.2019 18:11, Alexander E. Patrakov =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> 17.09.2019 17:11, Theodore Y. Ts'o =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> There are only two ways out of this mess.=C2=A0 The first option is we=
+ take
+>> functionality away from a userspace author who Really Wants A Secure
+>> Random Number Generator.=C2=A0 And there are an awful lot of programs =
+who
+>> really want secure crypto, becuase this is not a hypothetical.=C2=A0 T=
+he
+>> result in "Mining your P's and Q's" did happen before.=C2=A0 If we for=
+get
+>> the history, we are doomed to repeat it.
+>=20
+> You cannot take away functionality that does not really exist. Every=20
+> time somebody tries to use it, there is a huge news, "the boot process =
 
-You cannot take away functionality that does not really exist. Every=20
-time somebody tries to use it, there is a huge news, "the boot process=20
-is blocked on application FOO", followed by an insecure fallback to=20
-/dev/urandom in the said application or library.
+> is blocked on application FOO", followed by an insecure fallback to=20
+> /dev/urandom in the said application or library.
+>=20
+> Regarding the "Mining your P's and Q's" paper: I would say it is a=20
+> combination of TWO faults, only one of which (poor, or, as explained=20
+> below, "marginally poor" entropy) is discussed and the other one (not=20
+> really sound crypto when deriving the RSA key from the=20
+> presumedly-available entropy) is ignored.
+>=20
+> The authors of the paper factored the weak keys by applying the=20
+> generalized GCD algorithm, thus looking for common factors in the RSA=20
+> public keys. For two RSA public keys to be detected as faulty, they mus=
+t=20
+> share exactly one of their prime factors. In other words: repeated keys=
+=20
+> were specifically excluded from the study by the paper authors.
+>=20
+> Sharing only one of the two primes means that that the systems in=20
+> question behaved identically when they generated the first prime, but=20
+> diverged (possibly due to the extra entropy becoming available) when=20
+> they generated the second one. And asking the randomness for p and for =
+q=20
+> separately is what I would call the application bug here that nobody=20
+> wants to talk about: both p and q should have been derived from a CSPRN=
+G=20
+> seeded by a single read from a random source. If that practice were=20
+> followed, then it would either result in a duplicate key (which is not =
 
-Regarding the "Mining your P's and Q's" paper: I would say it is a=20
-combination of TWO faults, only one of which (poor, or, as explained=20
-below, "marginally poor" entropy) is discussed and the other one (not=20
-really sound crypto when deriving the RSA key from the=20
-presumedly-available entropy) is ignored.
+> as bad as a factorable one), or in completely unrelated keys.
 
-The authors of the paper factored the weak keys by applying the=20
-generalized GCD algorithm, thus looking for common factors in the RSA=20
-public keys. For two RSA public keys to be detected as faulty, they must =
-
-share exactly one of their prime factors. In other words: repeated keys=20
-were specifically excluded from the study by the paper authors.
-
-Sharing only one of the two primes means that that the systems in=20
-question behaved identically when they generated the first prime, but=20
-diverged (possibly due to the extra entropy becoming available) when=20
-they generated the second one. And asking the randomness for p and for q =
-
-separately is what I would call the application bug here that nobody=20
-wants to talk about: both p and q should have been derived from a CSPRNG =
-
-seeded by a single read from a random source. If that practice were=20
-followed, then it would either result in a duplicate key (which is not=20
-as bad as a factorable one), or in completely unrelated keys.
+I take this back. Of course, completely duplicate keys are weak keys,=20
+and they are even more dangerous because they are not distinguishable=20
+from intentionally copied good keys by the method in the paper.
 
 --=20
 Alexander E. Patrakov
 
 
---------------ms040309000700070503000406
+--------------ms090507060509090405070701
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -189,8 +202,8 @@ GP3yVDGCA/YwggPyAgEBMIGXMIGCMQswCQYDVQQGEwJJVDEPMA0GA1UECAwGTWlsYW5vMQ8w
 DQYDVQQHDAZNaWxhbm8xIzAhBgNVBAoMGkFjdGFsaXMgUy5wLkEuLzAzMzU4NTIwOTY3MSww
 KgYDVQQDDCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBHMQIQK0NjfYTmoz4r
 qg9tGyNesDANBglghkgBZQMEAgEFAKCCAi8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-BgkqhkiG9w0BCQUxDxcNMTkwOTE3MTMxMTA0WjAvBgkqhkiG9w0BCQQxIgQg4JRbrFVB+gIE
-EcHSQUEdQYosqK9xifU/OqplPCdqYSowbAYJKoZIhvcNAQkPMV8wXTALBglghkgBZQMEASow
+BgkqhkiG9w0BCQUxDxcNMTkwOTE3MTMzNzI5WjAvBgkqhkiG9w0BCQQxIgQg/3vsbifzUodB
+OjB+YydwqFbrlZ2gCVITdFz8FQ7/8X8wbAYJKoZIhvcNAQkPMV8wXTALBglghkgBZQMEASow
 CwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIB
 QDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBqAYJKwYBBAGCNxAEMYGaMIGXMIGCMQswCQYD
 VQQGEwJJVDEPMA0GA1UECAwGTWlsYW5vMQ8wDQYDVQQHDAZNaWxhbm8xIzAhBgNVBAoMGkFj
@@ -199,10 +212,10 @@ ZW50aWNhdGlvbiBDQSBHMQIQK0NjfYTmoz4rqg9tGyNesDCBqgYLKoZIhvcNAQkQAgsxgZqg
 gZcwgYIxCzAJBgNVBAYTAklUMQ8wDQYDVQQIDAZNaWxhbm8xDzANBgNVBAcMBk1pbGFubzEj
 MCEGA1UECgwaQWN0YWxpcyBTLnAuQS4vMDMzNTg1MjA5NjcxLDAqBgNVBAMMI0FjdGFsaXMg
 Q2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEcxAhArQ2N9hOajPiuqD20bI16wMA0GCSqGSIb3
-DQEBAQUABIIBAJsPmmyFOn4zkMda/oKRAOqUxnYd8g7YzQCqmdWoM0Cb7iwZ5FuwxUJI+6nw
-4mxzYiO3C2lWTS6dv+t5WmS++l52RXgGuMO9eODpnLXYlErTHZs/7Dea66qGE0Hey8YqsTo1
-ENIlTa44e2A+awVOoVArCEUGkZVggaEGkXIISWjgYtQfKh+vujWjcptL1AqRLck5Bn+G5igp
-dsdr31DlXS25hzy3iYmEHRELFZGy5YlEum4Y+XnnLkb0P0PPitrWBhsjhytelR+fbCwXjI49
-cNvj7t/X4br3fAC+HtS7h7hLxrpFtlPlFfsGcaCXRjpKvybyR0Uo2S5Kn2JKbSsx9pQAAAAA
+DQEBAQUABIIBAJugPVLnlYgkgXViGZhYGsp4UsLhQrYpssT7e4ylbDo/swie/1d/a7tOtblU
+4pnI7q2TySi9G4Bowm6//2t5OghjDe5//OnmrhwAdfwYk0rJ1w5K/ULosCNCxnwMQYGT8SvE
+07xIk7goJMeTdFyhwMDwCfDqKkxEyN5bmoW+mDi9EZ26N3Bx0+NpJNkwSBElomb7bKM1QOPq
+8rLehLThDWmGrhH/xV6+2NQ06tCXKfzxbR/Krf9gnrOFT7kzTbYRuJ4smoff6NuMQOhUhivr
+WMw4DY8uisOn4i1T3gU3vdlylOOIDE5X2/9GztUVP02GMALliHVe90RrauZFhdx8tEMAAAAA
 AAA=
---------------ms040309000700070503000406--
+--------------ms090507060509090405070701--
