@@ -2,66 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BA8B6F44
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 00:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283BEB6F89
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 01:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388388AbfIRWNW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Sep 2019 18:13:22 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:48083 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731105AbfIRWNW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Sep 2019 18:13:22 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id x8IMCsSF030560;
-        Thu, 19 Sep 2019 00:12:54 +0200
-Date:   Thu, 19 Sep 2019 00:12:54 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190918221254.GA30471@1wt.eu>
-References: <20190917052438.GA26923@1wt.eu>
- <2508489.jOnZlRuxVn@merkaba>
- <20190917121156.GC6762@mit.edu>
- <20190917123015.sirlkvy335crozmj@debian-stretch-darwi.lab.linutronix.de>
- <20190917160844.GC31567@gardel-login>
- <CAHk-=wgsWTCZ=LPHi7BXzFCoWbyp3Ey-zZbaKzWixO91Ryr9=A@mail.gmail.com>
- <20190917174219.GD31798@gardel-login>
- <87zhj15qgf.fsf@x220.int.ebiederm.org>
- <84824f79-2d12-0fd5-5b32-b0360eb075ac@gmail.com>
- <CAHk-=whYhC-qXHdEypy6iC7SzPA+KvWphLXSGF+mvGCGHGjNZw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whYhC-qXHdEypy6iC7SzPA+KvWphLXSGF+mvGCGHGjNZw@mail.gmail.com>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+        id S1730832AbfIRXGs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Sep 2019 19:06:48 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:35887 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728729AbfIRXGr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Sep 2019 19:06:47 -0400
+Received: by mail-pl1-f194.google.com with SMTP id f19so672363plr.3
+        for <linux-ext4@vger.kernel.org>; Wed, 18 Sep 2019 16:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=2rcIoa3Qi8nbxa267M7FWbNBFFjAv0U3Z4xH/gFLz98=;
+        b=Xj/puUE3F1IHN+drNjUWeCrOoFk3AFRKf6d4eKczp7IfkX+37hvV6bByeJDql6ctpC
+         2ZNTzgY+5Ci9T0mra1Eh0sKlUEQyvKS4eBE2a3+RkaqOpPY1gnN7fARQB60vZg5ILbWB
+         9/zYTo26u03BkDmzVkrNDhy4llx2JraPCA/rpRaQTxwpnHARfmj0YOg/jLZVL03d4oo9
+         jddd9yv8BfS8fbjQlPnZH04d1gPMeOCp+lJ5c1pZ/fmm96YnYotEQTxHR+XmDhGhroP6
+         xbKpKPucZE5M6P4Yl/8lUOETKEXTVmU29FlLEYdGDo4EXpexQKbLfqMHCo2k0GN0mOxk
+         0+Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=2rcIoa3Qi8nbxa267M7FWbNBFFjAv0U3Z4xH/gFLz98=;
+        b=WFrAgFUro0ee4Aole8GY16i2Rndx5p80u2vzE2QZwVUU2wnZGGljhftFwKZaLfHMRY
+         Db+H9U4WAfj+3XU2+TsC8YqvYCCbGQwhNFsZuNunm/vJARuidn1zVgeUGbMohAMaENDV
+         SSuozoQnhxG0zjaWhFzoP30hEvVw4s7Af7ZeG/UrKt1Yi8+8FG6ovYncbweHAQqJo8rP
+         HHampFtIvldcRXHA65j+9vaRcmu9MxooAvIc4sDJtT6nQ7qk5geGVEXFmYvfmORNEJzx
+         u3uwmsR8aajERt0CDUdPUTgdCPTtHEE6j3kxAz0GVMvR1TQZ+Y9rq9MGI9DtygGJ7eAL
+         7GiA==
+X-Gm-Message-State: APjAAAWPzZQSU1bM//JBd9QK2vJ4mNL6j4i8oaZaUUES1lnYOLwEIHsb
+        6n2veyNB4d6yozBZFSM2xQchCA==
+X-Google-Smtp-Source: APXvYqzg/otb2YmNvik+ooosCgw+xHvxztbgO6uYlMEIkWAq9za3eUQ6hGdO6pAtnhNCj/CL994W2w==
+X-Received: by 2002:a17:902:8d98:: with SMTP id v24mr4643637plo.265.1568848005750;
+        Wed, 18 Sep 2019 16:06:45 -0700 (PDT)
+Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id e6sm12844666pfl.146.2019.09.18.16.06.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Sep 2019 16:06:44 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <0EE70FDE-E6F8-4B5C-87CA-5ADC445B6848@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_F8CF1AF7-DBCB-44DD-BDB2-343F86BCEA54";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v5] e2fsck: check for consistent encryption policies
+Date:   Wed, 18 Sep 2019 17:06:43 -0600
+In-Reply-To: <20190918010734.253049-1-ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20190918010734.253049-1-ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 18, 2019 at 01:26:39PM -0700, Linus Torvalds wrote:
-> Of course, even then people will say "I don't trust the platform". But
-> at some point you just say "you have trust issues" and move on.
 
-It's where our extreme configurability can hurt. Sometimes we'd rather
-avoid providing some of these "I don't trust this or that" options and
-impose some choices to users: "you need entropy to boot, stop being
-childish and collect the small entropy where it is, period". I'm not
-certain the other operating systems not experiencing entropy issues
-leave as many choices as we do. I can understand how some choices may
-be problematic in virtual environments but there are so many other
-attack vectors there that randomness is probably a detail.
+--Apple-Mail=_F8CF1AF7-DBCB-44DD-BDB2-343F86BCEA54
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-Willy
+On Sep 17, 2019, at 7:07 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+> 
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> By design, the kernel enforces that all files in an encrypted directory
+> use the same encryption policy as the directory.  It's not possible to
+> violate this constraint using syscalls.  Lookups of files that violate
+> this constraint also fail, in case the disk was manipulated.
+> 
+> But this constraint can also be violated by accidental filesystem
+> corruption.  E.g., a power cut when using ext4 without a journal might
+> leave new files without the encryption bit and/or xattr.  Thus, it's
+> important that e2fsck correct this condition.
+> 
+> Therefore, this patch makes the following changes to e2fsck:
+> 
+> - During pass 1 (inode table scan), create a map from inode number to
+>  encryption policy for all encrypted inodes.  But it's optimized so
+>  that the full xattrs aren't saved but rather only 32-bit "policy IDs",
+>  since usually many inodes share the same encryption policy.  Also, if
+>  an encryption xattr is missing, offer to clear the encrypt flag.  If
+>  an encryption xattr is clearly corrupt, offer to clear the inode.
+> 
+> - During pass 2 (directory structure check), use the map to verify that
+>  all regular files, directories, and symlinks in encrypted directories
+>  use the directory's encryption policy.  Offer to clear any directory
+>  entries for which this isn't the case.
+> 
+> Add a new test "f_bad_encryption" to test the new behavior.
+> 
+> Due to the new checks, it was also necessary to update the existing test
+> "f_short_encrypted_dirent" to add an encryption xattr to the test file,
+> since it was missing one before, which is now considered invalid.
+> 
+> Google-Bug-Id: 135138675
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_F8CF1AF7-DBCB-44DD-BDB2-343F86BCEA54
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl2CuIMACgkQcqXauRfM
+H+ArzhAAgvcV7rVD1sDS91a03F9/kjhtbG5hEHON8S296qTI7r1J4inIyUyG5ieC
+nE4ws/rILNb4U/KiyWGC7kMngQ2/QF288BwKs+feJK5qTGolPyhIcf1kd4VgjM8b
+6fnxgOfmj5+rhwE4s4VBsGQjB+N5AZfPTh2UubpZ61Auj8litpRxajc3Ml4DapPf
+khsm99Dm6VxFJsWXW5IRTBOoPPPa6nR9kaTTvmWET34Pdf9znI52pA0oh0oBsTBx
+0igOnjMNHQYWTJSXHDEuaTD6lIQzryiWhl0HNUDgd90YHlIV5Fh50l4L5sZEJZnV
+PBPvgOqEvwcdL+9j61LOCn3rFB9Qy3uF4MYprle8V+q2dzKrOuYsFlCfNF3dmumZ
+bVzG10MxM6BjlS4RL28LNrQX3+qSAVXssFXKYALovIQiBAH39oBTkBR1AbTzuJI4
+f+5PkWYbp/LAnY5r1yJ4iGnTI0o60QJb76v6zWWGQNA//pi9Mw4iO7ZzzGpJkqgU
+sY2RrRToAmFyCB7D0PBijgbSX8ACgYKHCRsGPhZUX27ur9PKbuOdI01LOQBDWCr4
+nmSLTQthqR8N8Q1PC0p3vQYmt1pAppENY+VGc5OofHH63nnmYwU4PLHFOGnoDK3J
+44xamn9rjyOwSFl5III2InXcqqFONl9BXS1XnRXF8hiQPpii3Sg=
+=zUIG
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_F8CF1AF7-DBCB-44DD-BDB2-343F86BCEA54--
