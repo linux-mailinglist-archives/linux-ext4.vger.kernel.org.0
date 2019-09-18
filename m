@@ -2,89 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA5DB5863
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 01:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0ABB5921
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 02:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728148AbfIQXI1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 19:08:27 -0400
-Received: from mail-lj1-f178.google.com ([209.85.208.178]:40565 "EHLO
-        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728144AbfIQXI1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Sep 2019 19:08:27 -0400
-Received: by mail-lj1-f178.google.com with SMTP id 7so5233229ljw.7
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 16:08:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g82v5y3G7TVA0v7mCcq1n+V2khyOarEDdhGna/0Sk4U=;
-        b=L8a2jFr0MK1lqzSmP1nmNC7UtLKaANtJmwm0MjDWS+KVH79086JwtyDZuUGM4T781m
-         HoilUbcI4/1ZiN5cXpxjaOrqMFRdDS8Noew9fdkB+wySfbVXegDF6l39qyRDe+3dK4J6
-         jyq4YIHfLp9NTKMvV2dsp9msHtHGUv7HkFwqI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g82v5y3G7TVA0v7mCcq1n+V2khyOarEDdhGna/0Sk4U=;
-        b=epuVpO3Cr1FDRxoDiN5R2PBxA8Jh6LtwXFXIFMdsJsvNfttMWR6/DEP0suG4v97uoD
-         IGaJ4Do2kKRdW4SK5gmbjq424tYF3ba6MUDqOnmqzgDUUrXPGuQpFxxF6rNIo8PbFEe7
-         ZfXLnQxXAtPI0VEU2dp25XNahkv1Ukbu6fC3b6JtBUDUu6qZX6mP+Wbw75iVIHZHP6Hz
-         i1j/hZPvvfMR0yYK0BCXU8GQK9KiZNxA0kn5F+9E9iBlMD5zBE1lKq9gWkJyFlAA6KGu
-         Rp/CKYg7vFf25hr6NtnTXA9OKRd0cKAQ68LMmjTvt0EpBJdn9pDhm1XYG8c3BaXp01qu
-         aerw==
-X-Gm-Message-State: APjAAAVaiXtdf5bSAIA+Ff1kPgT+KwRQlSER/y706P3ftrpC9FdRomRg
-        sCe9SHYMQt/Ttiddo/H9nzvXkdewKkc=
-X-Google-Smtp-Source: APXvYqxZlq3HAphdwx8++muNH++lpq/N9YbLOBmusP55qCJOSQ41GIqZqaKotEwO4jCbT8Y1YMZy7w==
-X-Received: by 2002:a2e:9bcc:: with SMTP id w12mr383545ljj.181.1568761705117;
-        Tue, 17 Sep 2019 16:08:25 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id m8sm675871lfa.67.2019.09.17.16.08.24
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Sep 2019 16:08:24 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id q11so4146739lfc.11
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2019 16:08:24 -0700 (PDT)
-X-Received: by 2002:a19:f204:: with SMTP id q4mr366572lfh.29.1568761704101;
- Tue, 17 Sep 2019 16:08:24 -0700 (PDT)
+        id S1727229AbfIRA6X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 20:58:23 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:60844 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725868AbfIRA6X (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 17 Sep 2019 20:58:23 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TceEJSu_1568768297;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TceEJSu_1568768297)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 18 Sep 2019 08:58:18 +0800
+Subject: Re: [RFC 0/2] ext4: Improve locking sequence in DIO write path
+To:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
+        tytso@mit.edu, linux-ext4@vger.kernel.org
+Cc:     david@fromorbit.com, hch@infradead.org, adilger@dilger.ca,
+        mbobrowski@mbobrowski.org, rgoldwyn@suse.de
+References: <20190917103249.20335-1-riteshh@linux.ibm.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <40e8fc50-db5b-83e3-8a06-620253b6c10b@linux.alibaba.com>
+Date:   Wed, 18 Sep 2019 08:58:17 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
- <2658007.Cequ2ms4lF@merkaba> <20190917205234.GA1765@darwi-home-pc>
- <1722575.Y5XjozQscI@merkaba> <20190917215200.wtjim3t6zgt7gdmw@srcf.ucam.org>
-In-Reply-To: <20190917215200.wtjim3t6zgt7gdmw@srcf.ucam.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 17 Sep 2019 16:08:08 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgO81JZJSvmyeUwW7YOk=14YyOnu0TFDygo=jy3D_r6UQ@mail.gmail.com>
-Message-ID: <CAHk-=wgO81JZJSvmyeUwW7YOk=14YyOnu0TFDygo=jy3D_r6UQ@mail.gmail.com>
-Subject: Re: Linux 5.3-rc8
-To:     Matthew Garrett <mjg59@srcf.ucam.org>
-Cc:     Martin Steigerwald <martin@lichtvoll.de>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190917103249.20335-1-riteshh@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Sep 17, 2019 at 2:52 PM Matthew Garrett <mjg59@srcf.ucam.org> wrote:
->
-> getrandom() will never "consume entropy" in a way that will block any
-> users of getrandom().
 
-Yes, this is true for any common and sane use.
 
-And by that I just mean that we do have GRND_RANDOM, which currently
-does exactly that entropy consumption.
+On 19/9/17 18:32, Ritesh Harjani wrote:
+> Hello,
+> 
+> This patch series is based on the upstream discussion with Jan
+> & Joseph @ [1].
+> It is based on top of Matthew's v3 ext4 iomap patch series [2]
+> 
+> Patch-1: Adds the ext4_ilock/unlock APIs and also replaces all
+> inode_lock/unlock instances from fs/ext4/*
+> 
+> For now I already accounted for trylock/lock issue symantics
+> (which was discussed here [3]) in the same patch,
+> since the this whole patch was around inode_lock/unlock API,
+> so I thought it will be best to address that issue in the same patch. 
+> However, kindly let me know if otherwise.
+> 
+> Patch-2: Commit msg of this patch describes in detail about
+> what it is doing.
+> In brief - we try to first take the shared lock (instead of exclusive
+> lock), unless it is a unaligned_io or extend_io. Then in
+> ext4_dio_write_checks(), if we start with shared lock, we see
+> if we can really continue with shared lock or not. If not, then
+> we release the shared lock then acquire exclusive lock
+> and restart ext4_dio_write_checks().
+> 
+> 
+> Tested against few xfstests (with dioread_nolock mount option),
+> those ran fine (ext4 & generic).
+> 
+> I tried testing performance numbers on my VM (since I could not get
+> hold of any real h/w based test device). I could test the fact
+> that earlier we were trying to do downgrade_write() lock, but with
+> this patch, that path is now avoided for fio test case
+> (as reported by Joseph in [4]).
+> But for the actual results, I am not sure if VM machine testing could
+> really give the reliable perf numbers which we want to take a look at.
+> Though I do observe some form of perf improvements, but I could not
+> get any reliable numbers (not even with the same list of with/without
+> patches with which Joseph posted his numbers [1]).
+> 
+> 
+> @Joseph,
+> Would it be possible for you to give your test case a run with this
+> patches? That will be really helpful.
+> 
 
-But it only consumes it for other GRND_RANDOM users - of which there
-are approximately zero, because nobody wants that rats nest.
+Sure, will post the result ASAP.
 
-                Linus
+Thanks,
+Joseph
+
+> Branch for this is hosted at below tree.
+> 
+> https://github.com/riteshharjani/linux/tree/ext4-ilock-RFC
+> 
+> [1]: https://lore.kernel.org/linux-ext4/20190910215720.GA7561@quack2.suse.cz/
+> [2]: https://lwn.net/Articles/799184/
+> [3]: https://lore.kernel.org/linux-fsdevel/20190911103117.E32C34C044@d06av22.portsmouth.uk.ibm.com/
+> [4]: https://lore.kernel.org/linux-ext4/1566871552-60946-4-git-send-email-joseph.qi@linux.alibaba.com/
+> 
+> 
+> Ritesh Harjani (2):
+>   ext4: Add ext4_ilock & ext4_iunlock API
+>   ext4: Improve DIO writes locking sequence
+> 
+>  fs/ext4/ext4.h    |  33 ++++++
+>  fs/ext4/extents.c |  16 +--
+>  fs/ext4/file.c    | 253 ++++++++++++++++++++++++++++++++--------------
+>  fs/ext4/inode.c   |   4 +-
+>  fs/ext4/ioctl.c   |  16 +--
+>  fs/ext4/super.c   |  12 +--
+>  fs/ext4/xattr.c   |  16 +--
+>  7 files changed, 244 insertions(+), 106 deletions(-)
+> 
