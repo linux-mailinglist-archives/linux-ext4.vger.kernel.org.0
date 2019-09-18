@@ -2,71 +2,246 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56060B6197
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 12:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FEDB61EC
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 12:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729310AbfIRKml (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Sep 2019 06:42:41 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:47725 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727485AbfIRKmk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Sep 2019 06:42:40 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id x8IAg55l029595;
-        Wed, 18 Sep 2019 12:42:05 +0200
-Date:   Wed, 18 Sep 2019 12:42:05 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     "Alexander E. Patrakov" <patrakov@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Message-ID: <20190918104205.GA29590@1wt.eu>
-References: <20190917121156.GC6762@mit.edu>
- <20190917123015.sirlkvy335crozmj@debian-stretch-darwi.lab.linutronix.de>
- <20190917160844.GC31567@gardel-login>
- <CAHk-=wgsWTCZ=LPHi7BXzFCoWbyp3Ey-zZbaKzWixO91Ryr9=A@mail.gmail.com>
- <20190917174219.GD31798@gardel-login>
- <CAHk-=wjABG3+daJFr4w3a+OWuraVcZpi=SMUg=pnZ+7+O0E2FA@mail.gmail.com>
- <CAHk-=wgOCv2eOT2M8Vw9GD_yOpsTwF364-hkeADyEu9erHgMGw@mail.gmail.com>
- <89aeae9d-0bca-2a59-5ce2-1e18f6479936@rasmusvillemoes.dk>
- <20190918101616.GA29565@1wt.eu>
- <2c5a27b5-66cb-269a-547d-5584d51337bb@gmail.com>
+        id S1726916AbfIRK6K (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Sep 2019 06:58:10 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:61214 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726310AbfIRK6K (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Sep 2019 06:58:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Tch9fM3_1568804276;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Tch9fM3_1568804276)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 18 Sep 2019 18:57:56 +0800
+Subject: Re: [RFC 0/2] ext4: Improve locking sequence in DIO write path
+To:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
+        tytso@mit.edu, linux-ext4@vger.kernel.org
+Cc:     david@fromorbit.com, hch@infradead.org, adilger@dilger.ca,
+        mbobrowski@mbobrowski.org, rgoldwyn@suse.de
+References: <20190917103249.20335-1-riteshh@linux.ibm.com>
+ <d1f3b048-d21c-67f1-09a3-dd2abf7c156d@linux.alibaba.com>
+ <20190918100336.3A4DA11C050@d06av25.portsmouth.uk.ibm.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <17568e68-d144-b9aa-2d8f-a4e866dd08be@linux.alibaba.com>
+Date:   Wed, 18 Sep 2019 18:57:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c5a27b5-66cb-269a-547d-5584d51337bb@gmail.com>
-User-Agent: Mutt/1.6.1 (2016-04-27)
+In-Reply-To: <20190918100336.3A4DA11C050@d06av25.portsmouth.uk.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Sep 18, 2019 at 03:25:51PM +0500, Alexander E. Patrakov wrote:
-> The results so far are:
-> 
-> 1. Desktop with MSI Z87I board: works.
-> 2. Lenovo Yoga 2 Pro laptop: works.
-> 3. Server based on the Intel Corporation S1200SPL board (available from OVH
-> as EG-32): does not work, memory is cleared.
-> 4. Cheap server based on Gooxi G1SCN-B board (the cheapes thing with IPMI
-> available on bacloud.com): works.
-> 
-> So that's 75% of success stories (found at least one page that is preserved
-> after the "reboot" command) based on my samples.
 
-That's pretty good! I didn't have this luck each time I tried this in
-the past :-/ I remember noticing that video RAM from graphics card was
-often usable however, which I figured I could use after seeing a ghost
-image from a previous boot when switching to graphics mode.
 
-Willy
+On 19/9/18 18:03, Ritesh Harjani wrote:
+> Hello Joseph,
+> 
+> First of all thanks a lot for collecting a thorough
+> performance numbers.
+> 
+> On 9/18/19 12:05 PM, Joseph Qi wrote:
+>> Hi Ritesh,
+>>
+>> On 19/9/17 18:32, Ritesh Harjani wrote:
+>>> Hello,
+>>>
+>>> This patch series is based on the upstream discussion with Jan
+>>> & Joseph @ [1].
+>>> It is based on top of Matthew's v3 ext4 iomap patch series [2]
+>>>
+>>> Patch-1: Adds the ext4_ilock/unlock APIs and also replaces all
+>>> inode_lock/unlock instances from fs/ext4/*
+>>>
+>>> For now I already accounted for trylock/lock issue symantics
+>>> (which was discussed here [3]) in the same patch,
+>>> since the this whole patch was around inode_lock/unlock API,
+>>> so I thought it will be best to address that issue in the same patch.
+>>> However, kindly let me know if otherwise.
+>>>
+>>> Patch-2: Commit msg of this patch describes in detail about
+>>> what it is doing.
+>>> In brief - we try to first take the shared lock (instead of exclusive
+>>> lock), unless it is a unaligned_io or extend_io. Then in
+>>> ext4_dio_write_checks(), if we start with shared lock, we see
+>>> if we can really continue with shared lock or not. If not, then
+>>> we release the shared lock then acquire exclusive lock
+>>> and restart ext4_dio_write_checks().
+>>>
+>>>
+>>> Tested against few xfstests (with dioread_nolock mount option),
+>>> those ran fine (ext4 & generic).
+>>>
+>>> I tried testing performance numbers on my VM (since I could not get
+>>> hold of any real h/w based test device). I could test the fact
+>>> that earlier we were trying to do downgrade_write() lock, but with
+>>> this patch, that path is now avoided for fio test case
+>>> (as reported by Joseph in [4]).
+>>> But for the actual results, I am not sure if VM machine testing could
+>>> really give the reliable perf numbers which we want to take a look at.
+>>> Though I do observe some form of perf improvements, but I could not
+>>> get any reliable numbers (not even with the same list of with/without
+>>> patches with which Joseph posted his numbers [1]).
+>>>
+>>>
+>>> @Joseph,
+>>> Would it be possible for you to give your test case a run with this
+>>> patches? That will be really helpful.
+>>>
+>>> Branch for this is hosted at below tree.
+>>>
+>>> https://github.com/riteshharjani/linux/tree/ext4-ilock-RFC
+>>>
+>> I've tested your branch, the result is:
+>> mounting with dioread_nolock, it behaves the same like reverting
+>> parallel dio reads + dioread_nolock;
+> 
+> Good sign, means that patch is doing what it is supposed to do.
+> 
+> 
+>> while mounting without dioread_nolock, no improvement, or even worse.
+>> Please refer the test data below.
+> Actually without dioread_nolock, we take the restart path.
+> i.e. initially we start with SHARED_LOCK, but if dioread_nolock
+> is not enabled (or check some other conditions like overwrite),
+> we release the shared lock and re-acquire the EXCL lock.
+> 
+> 
+> But as an optimization, I added the below diff just now
+> to directly first check for ext4_should_dioread_nolock too
+> before taking the shared lock.
+> 
+> I think with this we should not see any performance regression
+> (even without dioread_nolock mount option).
+> Since it will directly start with exclusive lock
+> if dioread_nolock mount option is not enabled.
+> 
+> I have updated the tree with this diff in same branch.
+> 
+> 
+> ext4_dio_file_write_iter ()
+> <...>
+> 
+> 498         if (iolock == EXT4_IOLOCK_SHARED && !ext4_should_dioread_nolock(inode))
+> 499                 iolock = EXT4_IOLOCK_EXCL;
+> 500
+> <...>
+> 
+> 
+>>
+>> fio -name=parallel_dio_reads_test -filename=/mnt/nvme0n1/testfile
+>> -direct=1 -iodepth=1 -thread -rw=randrw -ioengine=psync -bs=$bs
+>> -size=20G -numjobs=8 -runtime=600 -group_reporting
+>>
+>> w/     = with parallel dio reads
+>> w/o    = reverting parallel dio reads
+>> w/o+   = reverting parallel dio reads + dioread_nolock
+>> ilock  = ext4-ilock-RFC
+>> ilock+ = ext4-ilock-RFC + dioread_nolock
+> 
+> I will request to kindly also add "w/ + dioread_nolock" in your list.
+> 
+I've done this test before, it still behaves poor.
+You can refer the previous RFC thread:
+https://www.spinics.net/lists/linux-ext4/msg67066.html
+
+Thanks,
+Joseph
+
+> 
+> "w/ + dioread_nolock"  v/s  "ilock+" - should show some improvements.
+> "w/ "  v/s  "ilock" - should not show any regression.
+> 
+> But thanks for the exhaustive performance numbers you collected.
+> 
+> 
+> -ritesh
+> 
+> 
+>>
+>> bs=4k:
+>> --------------------------------------------------------------
+>>        |            READ           |           WRITE          |
+>> --------------------------------------------------------------
+>> w/    | 30898KB/s,7724,555.00us   | 30875KB/s,7718,479.70us  |
+>> --------------------------------------------------------------
+>> w/o   | 117915KB/s,29478,248.18us | 117854KB/s,29463,21.91us |
+>> --------------------------------------------------------------
+>> w/o+  | 123450KB/s,30862,245.77us | 123368KB/s,30841,12.14us |
+>> --------------------------------------------------------------
+>> ilock | 29964KB/s,7491,326.70us      | 29940KB/s,7485,740.62us  |
+>> --------------------------------------------------------------
+>> ilock+| 123685KB/s,30921,245.52us | 123601KB/s,30900,12.11us |
+>> --------------------------------------------------------------
+>>
+>>
+>> bs=16k:
+>> --------------------------------------------------------------
+>>        |            READ           |           WRITE          |
+>> --------------------------------------------------------------
+>> w/    | 58961KB/s,3685,835.28us   | 58877KB/s,3679,1335.98us |
+>> --------------------------------------------------------------
+>> w/o   | 218409KB/s,13650,554.46us | 218257KB/s,13641,29.22us |
+>> --------------------------------------------------------------
+>> w/o+  | 222477KB/s,13904,552.94us | 222322KB/s,13895,20.28us |
+>> --------------------------------------------------------------
+>> ilock | 56039KB/s,3502,632.96us      | 55943KB/s,3496,1652.72us |
+>> --------------------------------------------------------------
+>> ilock+| 222747KB/s,13921,552.57us | 222592KB/s,13912,20.31us |
+>> --------------------------------------------------------------
+>>
+>> bs=64k
+>> ----------------------------------------------------------------
+>>        |            READ            |           WRITE           |
+>> ----------------------------------------------------------------
+>> w/    | 119396KB/s,1865,1759.38us  | 119159KB/s,1861,2532.26us |
+>> ----------------------------------------------------------------
+>> w/o   | 422815KB/s,6606,1146.05us  | 421619KB/s,6587,60.72us   |
+>> --------------------------------------------,-------------------
+>> w/o+  | 427406KB/s,6678,1141.52us  | 426197KB/s,6659,52.79us   |
+>> ----------------------------------------------------------------
+>> ilock | 105800KB/s,1653,1451.68us  | 105721KB/s,1651,3388.64us |
+>> ----------------------------------------------------------------
+>> ilock+| 427678KB/s,6682,1142.13us  | 426468KB/s,6663,52.31us   |
+>> ----------------------------------------------------------------
+>>
+>> bs=512k
+>> ----------------------------------------------------------------
+>>        |            READ            |           WRITE           |
+>> ----------------------------------------------------------------
+>> w/    | 392973KB/s,767,5046.35us   | 393165KB/s,767,5359.86us  |
+>> ----------------------------------------------------------------
+>> w/o   | 590266KB/s,1152,4312.01us  | 590554KB/s,1153,2606.82us |
+>> ----------------------------------------------------------------
+>> w/o+  | 618752KB/s,1208,4125.82us  | 619054KB/s,1209,2487.90us |
+>> ----------------------------------------------------------------
+>> ilock | 296239KB/s,578,4703.10us   | 296384KB/s,578,9049.32us  |
+>> ----------------------------------------------------------------
+>> ilock+| 616636KB/s,1204,4143.38us  | 616937KB/s,1204,2490.08us |
+>> ----------------------------------------------------------------
+>>
+>> bs=1M
+>> ----------------------------------------------------------------
+>>        |            READ            |           WRITE           |
+>> ----------------------------------------------------------------
+>> w/    | 487779KB/s,476,8058.55us   | 485592KB/s,474,8630.51us  |
+>> ----------------------------------------------------------------
+>> w/o   | 593927KB/s,580,7623.63us   | 591265KB/s,577,6163.42us  |
+>> ----------------------------------------------------------------
+>> w/o+  | 615011KB/s,600,7399.93us   | 612255KB/s,597,5936.61us  |
+>> ----------------------------------------------------------------
+>> ilock | 394762KB/s,385,7097.55us   | 392993KB/s,383,13626.98us |
+>> ----------------------------------------------------------------
+>> ilock+| 626183KB/s,611,7319.16us   | 623377KB/s,608,5773.24us  |
+>> ----------------------------------------------------------------
+>>
+>> Thanks,
+>> Joseph
+>>
