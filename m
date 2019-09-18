@@ -2,49 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D93B6549
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 16:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED29B6667
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 16:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730798AbfIROAI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Sep 2019 10:00:08 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:38069 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730928AbfIROAI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Sep 2019 10:00:08 -0400
-Received: by mail-lf1-f66.google.com with SMTP id u28so5780358lfc.5;
-        Wed, 18 Sep 2019 07:00:05 -0700 (PDT)
+        id S1730712AbfIROub (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Sep 2019 10:50:31 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:34555 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbfIROub (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Sep 2019 10:50:31 -0400
+Received: by mail-lj1-f195.google.com with SMTP id h2so249612ljk.1;
+        Wed, 18 Sep 2019 07:50:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to;
-        bh=Gjuy2BobqTtYzcRJC3yYgBOZPPiT0+Q2NlOyo4yVn/g=;
-        b=ERA9bZLBrzVs82xSZNivXvDKvb3FTqbg8kJE+kceqpXcvg/brCo9l0dCNKW9cT2w+9
-         hwSw/inM1QPgrbcNjENefgmVnQQ1IFnh8Pa+0x0iy57TQjmoeRA54g95HDHWoDCo9PMe
-         K0MLhf70r2xOd3UMXz2L6dmAHVV1UjpDB1Nw+pSQWt0VKVr28R+FsXNOfSqfO0y9ho6S
-         phiTm9p57QhUCv53sFjx8wljoCdSN3lAqaQ+d/Do7W2JTGYxqa8HMWZvKE4OLTGj/5HL
-         UJeLgEUKouCY/qHwfKOktZ0Lhqi3uLPZKie2Z2JFMsuo+rIIutwk8IRo/5Q9k9sdAy1w
-         wazQ==
+        bh=shRcCqdrW2AA6jwy3OcrdqKfsL4WIJsDKGjUpc0AYZw=;
+        b=nkw5Ks0CtGS+LjOOxHN0PgSWk2Hwmmhr/3pdJ1CPEV07i+jlbspJDw68suIRxsAv7R
+         uBQYGtwtz5w1+hL+9kWVmop9ivZurDP2LYIVvJ4arLG2bxF7lAimOcTzb/f2viq3lRKe
+         XYFfolsMZRCoUmh8ApsT9mOxDEUY2Joc0SK9sb/Vmw6kr/51GfPyLv+rfbsKqMnNc5p6
+         N5da3msp1r88wh1+jeE1D/LLDYZPANyE6n8nA27I4ukWqnfEyeXRdkX4xWtRAd0O8K/M
+         mvBbaCET7VNmYg214sJbvE+65HvhoW4eG+agGXs5v78Y1CiF+JFYTqRiGJVotcjXPS7M
+         OwjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to;
-        bh=Gjuy2BobqTtYzcRJC3yYgBOZPPiT0+Q2NlOyo4yVn/g=;
-        b=EbTM6nMtGcSYbYC8x8qanw4enhuulkoJGbG9R+mBE3zR/qhb+hjav5FHEaqAprCNiB
-         mLKE/V8po54ggK9JgTf5vO7OETnn8dmHwF/AjaS0K3Nm3QH59UAP+840nNsY+5m45j9+
-         a8q5Ioy8EeBYSsHXh97j6K2gscVlTV0pnOzRfcVUFAT3cap6SzRm7lMK0m/dxrwCRlKP
-         uSK+iQJfazLvqxkas50goPQEizFJaqiXDWIE61KRkcqmHqVotrP2zHrGBfrrDnJ8Cvo5
-         qdgDFqUwnD2ZYL+f+fyvBlvhBfite1MbXVfvUVFiPsDQ0kZ3rKnXNB0kgozcidDs3R1R
-         NCzA==
-X-Gm-Message-State: APjAAAXVTW8/0UeEYU0GllSBx4WTtCPM2K3rGmaFZEadZ8aErg7PUbA1
-        cOZ7qAjAwGnI7j7ljC+fEv5812oqdFqeGPq4
-X-Google-Smtp-Source: APXvYqxHD9zCTNeJeKVgV36B4dJ+3O3sYwtWvVOPBUZCQCnPclJi8xUh18uHb3BhB5WYll4vKnri8w==
-X-Received: by 2002:a19:c14a:: with SMTP id r71mr2198196lff.55.1568815204787;
-        Wed, 18 Sep 2019 07:00:04 -0700 (PDT)
+        bh=shRcCqdrW2AA6jwy3OcrdqKfsL4WIJsDKGjUpc0AYZw=;
+        b=JkxcNSf3zvjSr+ylSfdT0IcJspU1UsQmTCswMjXltCNUrdhuNE4EBUU5bbtCmDtdBU
+         cDVHdJZlYWCHecQe+zOfPMmkOj5JplA67S1NKJtSs0YqsFqxjg2rkqW03MswW9FqGP+z
+         HC47WNNirwgXRWggpMzT4paXlb+YUuGWhlwRdQMEkOVaZUUyCodOwvnEGweYkekMIDBi
+         GtG9DI99JuvlqiQv2vb5zckLnYe0lM9x84mrou9e0O9KjDe7nARnn3S8GAdEGky3dyN1
+         iuh2Rlk28etk+OavpYMvXw3DNMF6Ha5elo6lkfdJVMNxr2V+pu7bquEDkqu170NjAQ7a
+         k6JA==
+X-Gm-Message-State: APjAAAUb/69CC6DUgh4AotDHB53HOp4CZdqLlDkPp8i8TyR/omLieJcB
+        n8sK8FiKl4rGcK0ICtYMWkqy9FbvT9Nv5LFz
+X-Google-Smtp-Source: APXvYqzVpfZ3g/DNv3R/y869cy71jjtjXgi5KEI7EV+27077xxDXDpdSn5ugeJ6m0sCi3JvAfHG/Gg==
+X-Received: by 2002:a2e:94cd:: with SMTP id r13mr2483813ljh.24.1568818226929;
+        Wed, 18 Sep 2019 07:50:26 -0700 (PDT)
 Received: from ?IPv6:2a02:17d0:4a6:5700::47f? ([2a02:17d0:4a6:5700::47f])
-        by smtp.googlemail.com with ESMTPSA id f21sm1207295lfm.90.2019.09.18.07.00.02
+        by smtp.googlemail.com with ESMTPSA id x15sm1205138lff.54.2019.09.18.07.50.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 18 Sep 2019 07:00:03 -0700 (PDT)
+        Wed, 18 Sep 2019 07:50:25 -0700 (PDT)
 Subject: Re: Linux 5.3-rc8
+From:   "Alexander E. Patrakov" <patrakov@gmail.com>
 To:     Lennart Poettering <mzxreary@0pointer.de>, Willy Tarreau <w@1wt.eu>
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Matthew Garrett <mjg59@srcf.ucam.org>,
@@ -62,14 +63,14 @@ References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
  <20190917121156.GC6762@mit.edu> <20190917155743.GB31567@gardel-login>
  <20190917162137.GA27921@1wt.eu> <20190917171328.GA31798@gardel-login>
  <20190917172929.GD27999@1wt.eu> <20190918133806.GA32346@gardel-login>
-From:   "Alexander E. Patrakov" <patrakov@gmail.com>
-Message-ID: <dde9545e-66a7-f9cc-7b03-63517c4f8655@gmail.com>
-Date:   Wed, 18 Sep 2019 18:59:31 +0500
+ <dde9545e-66a7-f9cc-7b03-63517c4f8655@gmail.com>
+Message-ID: <97a49761-701c-c5d9-0a35-65c01368017e@gmail.com>
+Date:   Wed, 18 Sep 2019 19:50:23 +0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <20190918133806.GA32346@gardel-login>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms000105010902080405070607"
+In-Reply-To: <dde9545e-66a7-f9cc-7b03-63517c4f8655@gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms090904010206040709020606"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -77,76 +78,97 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 This is a cryptographically signed message in MIME format.
 
---------------ms000105010902080405070607
+--------------ms090904010206040709020606
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-PH
 Content-Transfer-Encoding: quoted-printable
 
-18.09.2019 18:38, Lennart Poettering =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> On Di, 17.09.19 19:29, Willy Tarreau (w@1wt.eu) wrote:
->=20
->>> What do you expect these systems to do though?
->>>
->>> I mean, think about general purpose distros: they put together live
->>> images that are supposed to work on a myriad of similar (as in: same
->>> arch) but otherwise very different systems (i.e. VMs that might lack
->>> any form of RNG source the same as beefy servers with muliple sources=
-
->>> the same as older netbooks with few and crappy sources, ...). They ca=
-n't
->>> know what the specific hw will provide or won't. It's not their
->>> incompetence that they build the image like that. It's a common, very=
-
->>> common usecase to install a system via SSH, and it's also very common=
-
->>> to have very generic images for a large number varied systems to run
->>> on.
+18.09.2019 18:59, Alexander E. Patrakov =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> 18.09.2019 18:38, Lennart Poettering =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> On Di, 17.09.19 19:29, Willy Tarreau (w@1wt.eu) wrote:
 >>
->> I'm totally file with installing the system via SSH, using a temporary=
+>>>> What do you expect these systems to do though?
+>>>>
+>>>> I mean, think about general purpose distros: they put together live
+>>>> images that are supposed to work on a myriad of similar (as in: same=
 
->> SSH key. I do make a strong distinction between the installation phase=
+>>>> arch) but otherwise very different systems (i.e. VMs that might lack=
 
->> and the final deployment. The SSH key used *for installation* doesn't
->> need to the be same as the final one. And very often at the end of the=
+>>>> any form of RNG source the same as beefy servers with muliple source=
+s
+>>>> the same as older netbooks with few and crappy sources, ...). They=20
+>>>> can't
+>>>> know what the specific hw will provide or won't. It's not their
+>>>> incompetence that they build the image like that. It's a common, ver=
+y
+>>>> common usecase to install a system via SSH, and it's also very commo=
+n
+>>>> to have very generic images for a large number varied systems to run=
 
->> installation we'll have produced enough entropy to produce a correct
->> key.
+>>>> on.
+>>>
+>>> I'm totally file with installing the system via SSH, using a temporar=
+y
+>>> SSH key. I do make a strong distinction between the installation phas=
+e
+>>> and the final deployment. The SSH key used *for installation* doesn't=
+
+>>> need to the be same as the final one. And very often at the end of th=
+e
+>>> installation we'll have produced enough entropy to produce a correct
+>>> key.
+>>
+>> That's not how systems are built today though. And I am not sure they
+>> should be. I mean, the majority of systems at this point probably have=
+
+>> some form of hardware (or virtualized) RNG available (even raspi has
+>> one these days!), so generating these keys once at boot is totally
+>> OK. Probably a number of others need just a few seconds to get the
+>> entropy needed, where things are totally OK too. The only problem is
+>> systems that lack any reasonable source of entropy and where
+>> initialization of the pool will take overly long.
+>>
+>> I figure we can reduce the number of systems where entropy is scarce
+>> quite a bit if we'd start crediting entropy by default from various hw=
+
+>> rngs we currently don't credit entropy for. For example, the TPM and
+>> older intel/amd chipsets. You currently have to specify
+>> rng_core.default_quality=3D1000 on the kernel cmdline to make them
+>> credit entropy. I am pretty sure this should be the default now, in a
+>> world where CONFIG_RANDOM_TRUST_CPU=3Dy is set anyway. i.e. why say
+>> RDRAND is fine but those chipsets are not? That makes no sense to me.
+>>
+>> I am very sure that crediting entropy to chipset hwrngs is a much
+>> better way to solve the issue on those systems than to just hand out
+>> rubbish randomness.
 >=20
-> That's not how systems are built today though. And I am not sure they
-> should be. I mean, the majority of systems at this point probably have
-> some form of hardware (or virtualized) RNG available (even raspi has
-> one these days!), so generating these keys once at boot is totally
-> OK. Probably a number of others need just a few seconds to get the
-> entropy needed, where things are totally OK too. The only problem is
-> systems that lack any reasonable source of entropy and where
-> initialization of the pool will take overly long.
+> Very well said. However, 1000 is more than the hard-coded quality of=20
+> some existing rngs, and so would send a misleading message that they ar=
+e=20
+> somehow worse. I would suggest case-by-case reevaluation of all existin=
+g=20
+> hwrng drivers by their maintainers, and then setting the default to=20
+> something like 899, so that evaluated drivers have priority.
 >=20
-> I figure we can reduce the number of systems where entropy is scarce
-> quite a bit if we'd start crediting entropy by default from various hw
-> rngs we currently don't credit entropy for. For example, the TPM and
-> older intel/amd chipsets. You currently have to specify
-> rng_core.default_quality=3D1000 on the kernel cmdline to make them
-> credit entropy. I am pretty sure this should be the default now, in a
-> world where CONFIG_RANDOM_TRUST_CPU=3Dy is set anyway. i.e. why say
-> RDRAND is fine but those chipsets are not? That makes no sense to me.
->=20
-> I am very sure that crediting entropy to chipset hwrngs is a much
-> better way to solve the issue on those systems than to just hand out
-> rubbish randomness.
 
-Very well said. However, 1000 is more than the hard-coded quality of=20
-some existing rngs, and so would send a misleading message that they are =
+Well, I have to provide another data point. On Arch Linux and MSI Z87I=20
+desktop board:
 
-somehow worse. I would suggest case-by-case reevaluation of all existing =
+$ lsmod | grep rng
+<nothing>
+$ modinfo rng_core
+<yes, the module does exist>
 
-hwrng drivers by their maintainers, and then setting the default to=20
-something like 899, so that evaluated drivers have priority.
+So this particular board has no sources of randomness except interrupts=20
+(which are scarce), RDRAND (which is not trusted in Arch Linux by=20
+default) and jitter entropy (which is not collected by the kernel and=20
+needs haveged or equivalent).
 
 --=20
 Alexander E. Patrakov
 
 
---------------ms000105010902080405070607
+--------------ms090904010206040709020606
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -212,8 +234,8 @@ GP3yVDGCA/YwggPyAgEBMIGXMIGCMQswCQYDVQQGEwJJVDEPMA0GA1UECAwGTWlsYW5vMQ8w
 DQYDVQQHDAZNaWxhbm8xIzAhBgNVBAoMGkFjdGFsaXMgUy5wLkEuLzAzMzU4NTIwOTY3MSww
 KgYDVQQDDCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBHMQIQK0NjfYTmoz4r
 qg9tGyNesDANBglghkgBZQMEAgEFAKCCAi8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-BgkqhkiG9w0BCQUxDxcNMTkwOTE4MTM1OTMxWjAvBgkqhkiG9w0BCQQxIgQg0ABwLtZqlrbB
-DF4K0AGIgXqPH3rTfJYzFePusBIiOpIwbAYJKoZIhvcNAQkPMV8wXTALBglghkgBZQMEASow
+BgkqhkiG9w0BCQUxDxcNMTkwOTE4MTQ1MDIzWjAvBgkqhkiG9w0BCQQxIgQgiX/F7NbbowKH
+lAWbZTtS02XnWnSOdiy4jUyPKMY1N4MwbAYJKoZIhvcNAQkPMV8wXTALBglghkgBZQMEASow
 CwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIB
 QDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBqAYJKwYBBAGCNxAEMYGaMIGXMIGCMQswCQYD
 VQQGEwJJVDEPMA0GA1UECAwGTWlsYW5vMQ8wDQYDVQQHDAZNaWxhbm8xIzAhBgNVBAoMGkFj
@@ -222,10 +244,10 @@ ZW50aWNhdGlvbiBDQSBHMQIQK0NjfYTmoz4rqg9tGyNesDCBqgYLKoZIhvcNAQkQAgsxgZqg
 gZcwgYIxCzAJBgNVBAYTAklUMQ8wDQYDVQQIDAZNaWxhbm8xDzANBgNVBAcMBk1pbGFubzEj
 MCEGA1UECgwaQWN0YWxpcyBTLnAuQS4vMDMzNTg1MjA5NjcxLDAqBgNVBAMMI0FjdGFsaXMg
 Q2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEcxAhArQ2N9hOajPiuqD20bI16wMA0GCSqGSIb3
-DQEBAQUABIIBAHc9Ivarn8a1Ygy+MGRnrnowoT2FMXnjwVjtFw8S4xyhDj8MoQLZOVSAikX/
-Sk/rz4eJfxuSF/plpLF1zVF7zj0QU0ccyVqwnUvPL5Ie7RRln0H0JkVTG5VXM7NWkcWg7cje
-eHogVIM8kGJ58lxGEZwVWvPFNC0U2k0rIvtGbSaReL/V473FG2k2wbu9cKxG+fWvC8ognaXp
-hIyIGoD9+Wqe1TZECNipK9HyJ7IRBkWU4zOjdwN/UW5wD+V+0+kXiZVFUPrfZMwT67mbTOFA
-pwxTs9QwrCr7jv2zajvS/qbS4BDKfdlrKai6cdSjiG3NmIijDuBwercsEYAbvVPQp/AAAAAA
+DQEBAQUABIIBAGoHs8qn60/eg+p+srTCkGRxWg2VuuEWk2K6iVv0oon7CMNLPmmbS6GmHKCZ
+5v1t2uKkWbXWYeeEuAsJFgb2KmOuRCC39X7VPSS+CevzN23qs/Czf0q0RrXPvXm71bGbsIUh
+VvJdaK9ZtPttYR9qr0zzCa5PTF2OnR7r0Teg00eEvP2psLzo4SWma2Txs8VR59J0CNqAFD4s
+SLL8OScewBHIWiJJzUHd3Ik7tl2Im8eKIiuibBhnTElymAKWN/wGPWBAuXYtpV+zDnzlW0Ok
+NBki46PcSQbDnHrgBXOIJG3rm04qg81XotLGy6NtPbZYNXhcETyNA0LPeMSVApVy8xAAAAAA
 AAA=
---------------ms000105010902080405070607--
+--------------ms090904010206040709020606--
