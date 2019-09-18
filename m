@@ -2,114 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0ABB5921
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 02:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210EEB5926
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 03:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727229AbfIRA6X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Sep 2019 20:58:23 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:60844 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725868AbfIRA6X (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 17 Sep 2019 20:58:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TceEJSu_1568768297;
-Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TceEJSu_1568768297)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 18 Sep 2019 08:58:18 +0800
-Subject: Re: [RFC 0/2] ext4: Improve locking sequence in DIO write path
-To:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
-        tytso@mit.edu, linux-ext4@vger.kernel.org
-Cc:     david@fromorbit.com, hch@infradead.org, adilger@dilger.ca,
-        mbobrowski@mbobrowski.org, rgoldwyn@suse.de
-References: <20190917103249.20335-1-riteshh@linux.ibm.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <40e8fc50-db5b-83e3-8a06-620253b6c10b@linux.alibaba.com>
-Date:   Wed, 18 Sep 2019 08:58:17 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
- Gecko/20100101 Thunderbird/60.9.0
+        id S1726100AbfIRBBE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Sep 2019 21:01:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725834AbfIRBBE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 17 Sep 2019 21:01:04 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C83120640;
+        Wed, 18 Sep 2019 01:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1568768463;
+        bh=9fuLOK0CqBsG9RDwdyXhx3bH7OmlmAi5CxgMMLeTIJ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OTSe8L31zjXFxnU6WUZ32x93j7cJmJVw2LZNw8rBjAfYtQ9fJs3bP+zU4kQotqvoq
+         EqaxjSIrA3o+DXrmW7W1uxAAGvBxq3u7E4Isxxx1bB4Dm2Rk1kfeSXoJg7Oa1HbhJa
+         qTTSU5r7VihGnL+vYJrnK7gTn1Kvr3SrJAVpGJCI=
+Date:   Tue, 17 Sep 2019 18:01:01 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v4] e2fsck: check for consistent encryption policies
+Message-ID: <20190918010100.GA45382@gmail.com>
+Mail-Followup-To: Andreas Dilger <adilger@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+References: <20190909174310.182019-1-ebiggers@kernel.org>
+ <2757ADAC-336F-4EC8-8DBF-2B9C61C196C4@dilger.ca>
 MIME-Version: 1.0
-In-Reply-To: <20190917103249.20335-1-riteshh@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2757ADAC-336F-4EC8-8DBF-2B9C61C196C4@dilger.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-On 19/9/17 18:32, Ritesh Harjani wrote:
-> Hello,
+On Tue, Sep 10, 2019 at 05:40:51PM -0600, Andreas Dilger wrote:
+> > diff --git a/e2fsck/encrypted_files.c b/e2fsck/encrypted_files.c
+> > new file mode 100644
+> > index 00000000..3dc706a7
+> > --- /dev/null
+> > +++ b/e2fsck/encrypted_files.c
+> > @@ -0,0 +1,368 @@
+> > 
+> > +/* A range of inodes which share the same encryption policy */
+> > +struct encrypted_file_range {
+> > +	ext2_ino_t		first_ino;
+> > +	ext2_ino_t		last_ino;
+> > +	__u32			policy_id;
+> > +};
 > 
-> This patch series is based on the upstream discussion with Jan
-> & Joseph @ [1].
-> It is based on top of Matthew's v3 ext4 iomap patch series [2]
+> This seems like a clear win...  As long as we have at least two inodes
+> in a row with the same policy ID it will take less space than the previous
+> version of the patch.
 > 
-> Patch-1: Adds the ext4_ilock/unlock APIs and also replaces all
-> inode_lock/unlock instances from fs/ext4/*
+> > +static int handle_nomem(e2fsck_t ctx, struct problem_context *pctx)
+> > +{
+> > +	fix_problem(ctx, PR_1_ALLOCATE_ENCRYPTED_DIRLIST, pctx);
+> > +	/* Should never get here */
+> > +	ctx->flags |= E2F_FLAG_ABORT;
+> > +	return 0;
+> > +}
 > 
-> For now I already accounted for trylock/lock issue symantics
-> (which was discussed here [3]) in the same patch,
-> since the this whole patch was around inode_lock/unlock API,
-> so I thought it will be best to address that issue in the same patch. 
-> However, kindly let me know if otherwise.
-> 
-> Patch-2: Commit msg of this patch describes in detail about
-> what it is doing.
-> In brief - we try to first take the shared lock (instead of exclusive
-> lock), unless it is a unaligned_io or extend_io. Then in
-> ext4_dio_write_checks(), if we start with shared lock, we see
-> if we can really continue with shared lock or not. If not, then
-> we release the shared lock then acquire exclusive lock
-> and restart ext4_dio_write_checks().
-> 
-> 
-> Tested against few xfstests (with dioread_nolock mount option),
-> those ran fine (ext4 & generic).
-> 
-> I tried testing performance numbers on my VM (since I could not get
-> hold of any real h/w based test device). I could test the fact
-> that earlier we were trying to do downgrade_write() lock, but with
-> this patch, that path is now avoided for fio test case
-> (as reported by Joseph in [4]).
-> But for the actual results, I am not sure if VM machine testing could
-> really give the reliable perf numbers which we want to take a look at.
-> Though I do observe some form of perf improvements, but I could not
-> get any reliable numbers (not even with the same list of with/without
-> patches with which Joseph posted his numbers [1]).
-> 
-> 
-> @Joseph,
-> Would it be possible for you to give your test case a run with this
-> patches? That will be really helpful.
+> It would be useful if the error message for PR_1_ALLOCATE_ENCRYPTED_DIRLIST
+> printed the actual allocation size that failed, so that the user has some
+> idea of how much memory would be needed.  The underlying ext2fs_resize_mem()
+> code doesn't print anything, just returns EXT2_ET_NO_MEMORY.
 > 
 
-Sure, will post the result ASAP.
+Yes, I can make it print the number of bytes using %N.
 
-Thanks,
-Joseph
+> > +	if (info->file_ranges_count == info->file_ranges_capacity) {
+> > +		/* Double the capacity by default. */
+> > +		size_t new_capacity = info->file_ranges_capacity * 2;
+> > +
+> > +		/* ... but go from 0 to 128 right away. */
+> > +		if (new_capacity < 128)
+> > +			new_capacity = 128;
+> > +
+> > +		/* We won't need more than the filesystem's inode count. */
+> > +		if (new_capacity > ctx->fs->super->s_inodes_count)
+> > +			new_capacity = ctx->fs->super->s_inodes_count;
+> > +
+> > +		/* To be safe, ensure the capacity really increases. */
+> > +		if (new_capacity < info->file_ranges_capacity + 1)
+> > +			new_capacity = info->file_ranges_capacity + 1;
+> 
+> Not sure how this could happen (more inodes than s_inodes_count?), but
+> better safe than sorry I guess?
+> 
 
-> Branch for this is hosted at below tree.
+Either that, or an integer overflow.  It shouldn't really happen, but I think we
+should have this check to be safe.
+
+> > +		if (ext2fs_resize_mem(info->file_ranges_capacity *
+> > +					sizeof(*range),
+> > +				      new_capacity * sizeof(*range),
+> > +				      &info->file_ranges) != 0)
+> > +			return handle_nomem(ctx, pctx);
 > 
-> https://github.com/riteshharjani/linux/tree/ext4-ilock-RFC
+> This is the only thing that gives me pause, potentially having a huge
+> allocation, but I think the RLE encoding of entries and the fact we
+> have overwhelmingly 64-bit CPUs means we could still run with swap
+> (on an internal NVMe M.2 device) if really needed.  A problem to fix
+> if it ever actually rears its head, so long as there is a decent error
+> message printed.
 > 
-> [1]: https://lore.kernel.org/linux-ext4/20190910215720.GA7561@quack2.suse.cz/
-> [2]: https://lwn.net/Articles/799184/
-> [3]: https://lore.kernel.org/linux-fsdevel/20190911103117.E32C34C044@d06av22.portsmouth.uk.ibm.com/
-> [4]: https://lore.kernel.org/linux-ext4/1566871552-60946-4-git-send-email-joseph.qi@linux.alibaba.com/
+> > +/*
+> > + * Find the ID of an inode's encryption policy, using the information saved
+> > + * earlier.
+> > + *
+> > + * If the inode is encrypted, returns the policy ID or
+> > + * UNRECOGNIZED_ENCRYPTION_POLICY.  Else, returns NO_ENCRYPTION_POLICY.
+> > + */
+> > +__u32 find_encryption_policy(e2fsck_t ctx, ext2_ino_t ino)
+> > +{
+> > +	const struct encrypted_file_info *info = ctx->encrypted_files;
+> > +	size_t l, r;
+> > +
+> > +	if (info == NULL)
+> > +		return NO_ENCRYPTION_POLICY;
+> > +	l = 0;
+> > +	r = info->file_ranges_count;
+> > +	while (l < r) {
+> > +		size_t m = l + (r - l) / 2;
 > 
+> Using the RLE encoding for the entries should also speed up searching
+> here considerably.  In theory, for a single-user Android filesystem
+> there might only be one or two entries here.  It would be interesting
+> to run this on some of your filesystems to see what the average count
+> of inodes per entry is.
 > 
-> Ritesh Harjani (2):
->   ext4: Add ext4_ilock & ext4_iunlock API
->   ext4: Improve DIO writes locking sequence
-> 
->  fs/ext4/ext4.h    |  33 ++++++
->  fs/ext4/extents.c |  16 +--
->  fs/ext4/file.c    | 253 ++++++++++++++++++++++++++++++++--------------
->  fs/ext4/inode.c   |   4 +-
->  fs/ext4/ioctl.c   |  16 +--
->  fs/ext4/super.c   |  12 +--
->  fs/ext4/xattr.c   |  16 +--
->  7 files changed, 244 insertions(+), 106 deletions(-)
-> 
+
+On a freshly reset Android device I'm seeing 58 ranges for 4705 encrypted
+inodes, so it's not quite *that* good, but it still helps a lot.
+
+Note that there are actually 4 encryption policies on a single-user Android
+device: system device-encrypted, user device-encrypted, user
+credential-encrypted, and (recently added) per-boot encrypted.
+
+- Eric
