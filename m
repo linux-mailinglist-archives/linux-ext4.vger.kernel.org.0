@@ -2,155 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EADDB6456
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 15:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225BBB64BD
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 15:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbfIRN1L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Sep 2019 09:27:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44006 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726038AbfIRN1L (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Sep 2019 09:27:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8567EB633;
-        Wed, 18 Sep 2019 13:27:09 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C907A1E4201; Wed, 18 Sep 2019 15:27:19 +0200 (CEST)
-Date:   Wed, 18 Sep 2019 15:27:19 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     yangerkun <yangerkun@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, linux-ext4@vger.kernel.org,
-        yi.zhang@huawei.com, houtao1@huawei.com
-Subject: Re: [PATCH] ext4: fix a bug in ext4_wait_for_tail_page_commit
-Message-ID: <20190918132719.GE31891@quack2.suse.cz>
-References: <20190917084814.40370-1-yangerkun@huawei.com>
- <20190918104535.GC25056@quack2.suse.cz>
- <71e28624-214c-f676-b215-19f78266de84@huawei.com>
+        id S1727106AbfIRNiJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Sep 2019 09:38:09 -0400
+Received: from gardel.0pointer.net ([85.214.157.71]:41602 "EHLO
+        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726618AbfIRNiJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Sep 2019 09:38:09 -0400
+Received: from gardel-login.0pointer.net (gardel.0pointer.net [85.214.157.71])
+        by gardel.0pointer.net (Postfix) with ESMTP id 81113E80FFC;
+        Wed, 18 Sep 2019 15:38:07 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id 0B989160ADC; Wed, 18 Sep 2019 15:38:06 +0200 (CEST)
+Date:   Wed, 18 Sep 2019 15:38:06 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.3-rc8
+Message-ID: <20190918133806.GA32346@gardel-login>
+References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com>
+ <C4F7DC65-50B9-4D70-8E9B-0A6FF5C1070A@srcf.ucam.org>
+ <20190917052438.GA26923@1wt.eu>
+ <2508489.jOnZlRuxVn@merkaba>
+ <20190917121156.GC6762@mit.edu>
+ <20190917155743.GB31567@gardel-login>
+ <20190917162137.GA27921@1wt.eu>
+ <20190917171328.GA31798@gardel-login>
+ <20190917172929.GD27999@1wt.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <71e28624-214c-f676-b215-19f78266de84@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190917172929.GD27999@1wt.eu>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 18-09-19 21:09:00, yangerkun wrote:
-> On 2019/9/18 18:45, Jan Kara wrote:
-> > On Tue 17-09-19 16:48:14, yangerkun wrote:
-> > > No need to wait when offset equals to 0. And it will trigger a bug since
-> > > the latter __ext4_journalled_invalidatepage can free the buffers but leave
-> > > page still dirty.
-> > > 
-> > > [   26.057508] ------------[ cut here ]------------
-> > > [   26.058531] kernel BUG at fs/ext4/inode.c:2134!
-> > > ...
-> > > [   26.088130] Call trace:
-> > > [   26.088695]  ext4_writepage+0x914/0xb28
-> > > [   26.089541]  writeout.isra.4+0x1b4/0x2b8
-> > > [   26.090409]  move_to_new_page+0x3b0/0x568
-> > > [   26.091338]  __unmap_and_move+0x648/0x988
-> > > [   26.092241]  unmap_and_move+0x48c/0xbb8
-> > > [   26.093096]  migrate_pages+0x220/0xb28
-> > > [   26.093945]  kernel_mbind+0x828/0xa18
-> > > [   26.094791]  __arm64_sys_mbind+0xc8/0x138
-> > > [   26.095716]  el0_svc_common+0x190/0x490
-> > > [   26.096571]  el0_svc_handler+0x60/0xd0
-> > > [   26.097423]  el0_svc+0x8/0xc
-> > > 
-> > > Run below parallel can reproduce it easily(ext3):
-> > > void main()
-> > > {
-> > >          int fd, fd1, fd2, fd3, ret;
-> > >          void *addr;
-> > >          size_t length = 4096;
-> > >          int flags;
-> > >          off_t offset = 0;
-> > >          char *str = "12345";
-> > > 
-> > >          fd = open("a", O_RDWR | O_CREAT);
-> > >          assert(fd >= 0);
-> > > 
-> > >          ret = ftruncate(fd, length);
-> > >          assert(ret == 0);
-> > > 
-> > >          fd1 = open("a", O_RDWR | O_CREAT, -1);
-> > >          assert(fd1 >= 0);
-> > > 
-> > >          flags = 0xc00f;/*Journal data mode*/
-> > >          ret = ioctl(fd1, _IOW('f', 2, long), &flags);
-> > >          assert(ret == 0);
-> > > 
-> > >          fd2 = open("a", O_RDWR | O_CREAT);
-> > >          assert(fd2 >= 0);
-> > > 
-> > >          fd3 = open("a", O_TRUNC | O_NOATIME);
-> > >          assert(fd3 >= 0);
-> > > 
-> > >          addr = mmap(NULL, length, 0xe, 0x28013, fd2, offset);
-> > 
-> > Ugh, these mmap flags look pretty bogus. Were they generated by some
-> > fuzzer?
-> Yeah, generated by syzkaller.
-> > 
-> > >          assert(addr != (void *)-1);
-> > >          memcpy(addr, str, 5);
-> > 
-> > Also the O_TRUNC open above will truncate "a" to 0 so the mapping is
-> > actually beyond i_size and this memcpy should fail with SIGBUS. So I'm
-> > surprised your test program gets up to mbind()...
-> 
-> We run the program parallel, sometimes will run as below:
-> 
-> reproduce1                         reproduce2
-> 
-> ...                            |   ...
-> truncate to 4k                 |
-> change to journal data mode    |
->                                |   memcpy(set page dirty)
-> truncate to 0:                 |
-> ext4_setattr:                  |
-> ...                            |
-> ext4_wait_for_tail_page_commit |
->                                |   mbind(trigger bug)
-> truncate_pagecache(clean dirty)|   ...
-> ...                            |
-> Reproduce2 will mark page as dirty by memcpy, then mbind run between
-> ext4_wait_for_tail_page_commit and truncate_pagecache in ext4_setattr can
-> trigger the bug with page still be dirty but buffer head has been free.
+On Di, 17.09.19 19:29, Willy Tarreau (w@1wt.eu) wrote:
 
-Aha! Thanks for explanation. Makes sense. So I agree with your patch but we
-also need to update the comment before the condition in
-ext4_wait_for_tail_page_commit(). Something like:
+> > What do you expect these systems to do though?
+> >
+> > I mean, think about general purpose distros: they put together live
+> > images that are supposed to work on a myriad of similar (as in: same
+> > arch) but otherwise very different systems (i.e. VMs that might lack
+> > any form of RNG source the same as beefy servers with muliple sources
+> > the same as older netbooks with few and crappy sources, ...). They can't
+> > know what the specific hw will provide or won't. It's not their
+> > incompetence that they build the image like that. It's a common, very
+> > common usecase to install a system via SSH, and it's also very common
+> > to have very generic images for a large number varied systems to run
+> > on.
+>
+> I'm totally file with installing the system via SSH, using a temporary
+> SSH key. I do make a strong distinction between the installation phase
+> and the final deployment. The SSH key used *for installation* doesn't
+> need to the be same as the final one. And very often at the end of the
+> installation we'll have produced enough entropy to produce a correct
+> key.
 
-If the page is fully truncated, we don't need to wait for any commit (and
-we even should not as __ext4_journalled_invalidatepage() may strip all
-buffers from the page but keep the page dirty which can then confuse e.g.
-concurrent ext4_writepage() seeing dirty page without buffers). Also we
-don't need to wait for any commit if all buffers in the page remain valid.
-This is most beneficial for the common case of blocksize == PAGE_SIZE.
+That's not how systems are built today though. And I am not sure they
+should be. I mean, the majority of systems at this point probably have
+some form of hardware (or virtualized) RNG available (even raspi has
+one these days!), so generating these keys once at boot is totally
+OK. Probably a number of others need just a few seconds to get the
+entropy needed, where things are totally OK too. The only problem is
+systems that lack any reasonable source of entropy and where
+initialization of the pool will take overly long.
 
-								Honza
+I figure we can reduce the number of systems where entropy is scarce
+quite a bit if we'd start crediting entropy by default from various hw
+rngs we currently don't credit entropy for. For example, the TPM and
+older intel/amd chipsets. You currently have to specify
+rng_core.default_quality=1000 on the kernel cmdline to make them
+credit entropy. I am pretty sure this should be the default now, in a
+world where CONFIG_RANDOM_TRUST_CPU=y is set anyway. i.e. why say
+RDRAND is fine but those chipsets are not? That makes no sense to me.
 
-> > > ---
-> > >   fs/ext4/inode.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > > index 006b7a2070bf..a9943ae4f74d 100644
-> > > --- a/fs/ext4/inode.c
-> > > +++ b/fs/ext4/inode.c
-> > > @@ -5479,7 +5479,7 @@ static void ext4_wait_for_tail_page_commit(struct inode *inode)
-> > >   	 * do. We do the check mainly to optimize the common PAGE_SIZE ==
-> > >   	 * blocksize case
-> > >   	 */
-> > > -	if (offset > PAGE_SIZE - i_blocksize(inode))
-> > > +	if (!offset || offset > PAGE_SIZE - i_blocksize(inode))
-> > >   		return;
-> > >   	while (1) {
-> > >   		page = find_lock_page(inode->i_mapping,
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I am very sure that crediting entropy to chipset hwrngs is a much
+better way to solve the issue on those systems than to just hand out
+rubbish randomness.
+
+Lennart
+
+--
+Lennart Poettering, Berlin
