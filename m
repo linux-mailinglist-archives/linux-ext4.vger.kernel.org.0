@@ -2,61 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0A5B62EB
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 14:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA7BB62EC
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2019 14:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730880AbfIRMPF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Sep 2019 08:15:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52190 "EHLO mx1.suse.de"
+        id S1730881AbfIRMPG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Sep 2019 08:15:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52192 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730608AbfIRMPE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Sep 2019 08:15:04 -0400
+        id S1730634AbfIRMPF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Sep 2019 08:15:05 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5EAF0AD45;
+        by mx1.suse.de (Postfix) with ESMTP id 5EC9CAD4E;
         Wed, 18 Sep 2019 12:15:03 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7810E1E4215; Wed, 18 Sep 2019 12:06:27 +0200 (CEST)
-Date:   Wed, 18 Sep 2019 12:06:27 +0200
+        id 2E6D01E47E2; Wed, 18 Sep 2019 12:45:35 +0200 (CEST)
+Date:   Wed, 18 Sep 2019 12:45:35 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     yangerkun <yangerkun@huawei.com>, jack@suse.cz,
-        linux-ext4@vger.kernel.org, yi.zhang@huawei.com, houtao1@huawei.com
+To:     yangerkun <yangerkun@huawei.com>
+Cc:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org,
+        yi.zhang@huawei.com, houtao1@huawei.com
 Subject: Re: [PATCH] ext4: fix a bug in ext4_wait_for_tail_page_commit
-Message-ID: <20190918100627.GB25056@quack2.suse.cz>
+Message-ID: <20190918104535.GC25056@quack2.suse.cz>
 References: <20190917084814.40370-1-yangerkun@huawei.com>
- <20190917153140.GF6762@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190917153140.GF6762@mit.edu>
+In-Reply-To: <20190917084814.40370-1-yangerkun@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 17-09-19 11:31:40, Theodore Y. Ts'o wrote:
-> On Tue, Sep 17, 2019 at 04:48:14PM +0800, yangerkun wrote:
-> > No need to wait when offset equals to 0. And it will trigger a bug since
-> > the latter __ext4_journalled_invalidatepage can free the buffers but leave
-> > page still dirty.
+On Tue 17-09-19 16:48:14, yangerkun wrote:
+> No need to wait when offset equals to 0. And it will trigger a bug since
+> the latter __ext4_journalled_invalidatepage can free the buffers but leave
+> page still dirty.
 > 
-> That's only true if the block size == the page size, no?  If the
-> offset is zero and the block size is 1k, we still need to wait.
-> Shouldn't the better fix be:
+> [   26.057508] ------------[ cut here ]------------
+> [   26.058531] kernel BUG at fs/ext4/inode.c:2134!
+> ...
+> [   26.088130] Call trace:
+> [   26.088695]  ext4_writepage+0x914/0xb28
+> [   26.089541]  writeout.isra.4+0x1b4/0x2b8
+> [   26.090409]  move_to_new_page+0x3b0/0x568
+> [   26.091338]  __unmap_and_move+0x648/0x988
+> [   26.092241]  unmap_and_move+0x48c/0xbb8
+> [   26.093096]  migrate_pages+0x220/0xb28
+> [   26.093945]  kernel_mbind+0x828/0xa18
+> [   26.094791]  __arm64_sys_mbind+0xc8/0x138
+> [   26.095716]  el0_svc_common+0x190/0x490
+> [   26.096571]  el0_svc_handler+0x60/0xd0
+> [   26.097423]  el0_svc+0x8/0xc
 > 
-> > -	if (offset > PAGE_SIZE - i_blocksize(inode))
-> > +	if (offset >= PAGE_SIZE - i_blocksize(inode))
+> Run below parallel can reproduce it easily(ext3):
+> void main()
+> {
+>         int fd, fd1, fd2, fd3, ret;
+>         void *addr;
+>         size_t length = 4096;
+>         int flags;
+>         off_t offset = 0;
+>         char *str = "12345";
+> 
+>         fd = open("a", O_RDWR | O_CREAT);
+>         assert(fd >= 0);
+> 
+>         ret = ftruncate(fd, length);
+>         assert(ret == 0);
+> 
+>         fd1 = open("a", O_RDWR | O_CREAT, -1);
+>         assert(fd1 >= 0);
+> 
+>         flags = 0xc00f;/*Journal data mode*/
+>         ret = ioctl(fd1, _IOW('f', 2, long), &flags);
+>         assert(ret == 0);
+> 
+>         fd2 = open("a", O_RDWR | O_CREAT);
+>         assert(fd2 >= 0);
+> 
+>         fd3 = open("a", O_TRUNC | O_NOATIME);
+>         assert(fd3 >= 0);
+> 
+>         addr = mmap(NULL, length, 0xe, 0x28013, fd2, offset);
 
-No, what yangerkun wrote is correct. We don't have to wait for commit when
-offset == 0 - truncate_inode_pages() should just happily process such page.
-Also '>' in the above condition is correct. offset == PAGE_SIZE -
-i_blocksize(inode) means one full block is getting truncated from the page
-and we need to wait in that case to avoid jbd2_journal_invalidatepage()
-failing with EBUSY when called from truncate_inode_pages().
+Ugh, these mmap flags look pretty bogus. Were they generated by some
+fuzzer?
+
+>         assert(addr != (void *)-1);
+>         memcpy(addr, str, 5);
+
+Also the O_TRUNC open above will truncate "a" to 0 so the mapping is
+actually beyond i_size and this memcpy should fail with SIGBUS. So I'm
+surprised your test program gets up to mbind()...
+
+>         mbind(addr, length, 0, 0, 0, 2);
+> 
+>         close(fd);
+>         munmap(addr, length);
+> }
+> 
+> Signed-off-by: yangerkun <yangerkun@huawei.com>
+
+I agree that there's no need to wait for transaction commit when offset ==
+0. So your patch is correct in that regard. What still escapes me is why
+this is necessary. I have a feeling that it just papers over the real
+problem.  You mention crash in ext4_writepage() because page is dirty but
+has no buffers - but how come the page is dirty? If offset == 0 for a page,
+truncate_inode_pages() should have cleaned PageDirty flag so the page
+should never get to ext4_writepage() in the first place. Together with my
+comments about the test case this is still a bit mystery to me... I guess
+I'll try to reproduce this to understand this better.
 
 								Honza
+
+> ---
+>  fs/ext4/inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 006b7a2070bf..a9943ae4f74d 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5479,7 +5479,7 @@ static void ext4_wait_for_tail_page_commit(struct inode *inode)
+>  	 * do. We do the check mainly to optimize the common PAGE_SIZE ==
+>  	 * blocksize case
+>  	 */
+> -	if (offset > PAGE_SIZE - i_blocksize(inode))
+> +	if (!offset || offset > PAGE_SIZE - i_blocksize(inode))
+>  		return;
+>  	while (1) {
+>  		page = find_lock_page(inode->i_mapping,
+> -- 
+> 2.17.2
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
