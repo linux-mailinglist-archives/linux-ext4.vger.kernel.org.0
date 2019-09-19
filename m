@@ -2,121 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C4BB7407
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 09:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE98B7CEE
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 16:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388493AbfISH2I convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 19 Sep 2019 03:28:08 -0400
-Received: from luna.lichtvoll.de ([194.150.191.11]:34167 "EHLO
-        mail.lichtvoll.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732034AbfISH2H (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Sep 2019 03:28:07 -0400
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.lichtvoll.de (Postfix) with ESMTPSA id 2A05677F1C;
-        Thu, 19 Sep 2019 09:28:04 +0200 (CEST)
-From:   Martin Steigerwald <martin@lichtvoll.de>
-To:     Lennart Poettering <mzxreary@0pointer.de>
-Cc:     Matthew Garrett <mjg59@srcf.ucam.org>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
+        id S1732411AbfISOek (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Sep 2019 10:34:40 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46914 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732082AbfISOej (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Sep 2019 10:34:39 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8JEYRHU016692
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Sep 2019 10:34:29 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 6085D420811; Thu, 19 Sep 2019 10:34:27 -0400 (EDT)
+Date:   Thu, 19 Sep 2019 10:34:27 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
-        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.3-rc8
-Date:   Thu, 19 Sep 2019 09:28:03 +0200
-Message-ID: <4837188.Q7355LDvlW@merkaba>
-In-Reply-To: <20190918135325.GC32346@gardel-login>
-References: <CAHk-=wgs65hez6ctK7J2k46BdQzvKU5avExPOTTJsZu6iqA-ow@mail.gmail.com> <3783292.MWR84v24fu@merkaba> <20190918135325.GC32346@gardel-login>
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        linux-man@vger.kernel.org
+Subject: Re: [PATCH RFC v4 1/1] random: WARN on large getrandom() waits and
+ introduce getrandom2()
+Message-ID: <20190919143427.GQ6762@mit.edu>
+References: <20190912034421.GA2085@darwi-home-pc>
+ <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914122500.GA1425@darwi-home-pc>
+ <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
+ <20190915052242.GG19710@mit.edu>
+ <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
+ <20190918211503.GA1808@darwi-home-pc>
+ <20190918211713.GA2225@darwi-home-pc>
+ <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-Authentication-Results: mail.lichtvoll.de;
-        auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dear Lennart.
+(Adding linux-api since this patch proposes an API change; both by
+changing the existing behavior, and adding new flags and possibly a
+new system call.)
 
-Lennart Poettering - 18.09.19, 15:53:25 CEST:
-> On Mi, 18.09.19 00:10, Martin Steigerwald (martin@lichtvoll.de) wrote:
-> > > getrandom() will never "consume entropy" in a way that will block
-> > > any
-> > > users of getrandom(). If you don't have enough collected entropy
-> > > to
-> > > seed the rng, getrandom() will block. If you do, getrandom() will
-> > > generate as many numbers as you ask it to, even if no more entropy
-> > > is
-> > > ever collected by the system. So it doesn't matter how many
-> > > clients
-> > > you have calling getrandom() in the boot process - either there'll
-> > > be
-> > > enough entropy available to satisfy all of them, or there'll be
-> > > too
-> > > little to satisfy any of them.
-> > 
-> > Right, but then Systemd would not use getrandom() for initial
-> > hashmap/ UUID stuff since it
+On Wed, Sep 18, 2019 at 04:57:58PM -0700, Linus Torvalds wrote:
+> On Wed, Sep 18, 2019 at 2:17 PM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
+> >
+> > Since Linux v3.17, getrandom(2) has been created as a new and more
+> > secure interface for pseudorandom data requests.  It attempted to
+> > solve three problems, as compared to /dev/urandom:
 > 
-> Actually things are more complex. In systemd there are four classes of
-> random values we need:
+> I don't think your patch is really _wrong_, but I think it's silly to
+> introduce a new system call, when we have 30 bits left in the flags of
+> the old one, and the old system call checked them.
+
+The only reason to introduce a new system call is if we were going to
+keep the existing behavior of getrandom.  Given that the patch changes
+what getrandom(0), I agree there's no point to adding a new system
+call.
+
+> There is *one* other small semantic change: The old code did
+> urandom_read() which added warnings, but each warning also _reset_ the
+> crng_init_cnt. Until it decided not to warn any more, at which point
+> it also stops that resetting of crng_init_cnt.
 > 
-> 1. High "cryptographic" quality. There are very few needs for this in
-[…]
-> 2. High "non-cryptographic" quality. This is used for example for
-[…]
-> 3. Medium quality. This is used for seeding hash tables. These may be
-[…]
-> 4. Crap quality. There are only a few uses of this, where rand_r() is
->    is OK.
+> And that reset of crng_init_cnt, btw, is some cray cray.
 > 
-> Of these four case, the first two might block boot. Because the first
-> case is not common you won't see blocking that often though for
-> them. The second case is very common, but since we use RDRAND you
-> won't see it on any recent Intel machines.
+> It's basically a "we used up entropy" thing, which is very
+> questionable to begin with as the whole discussion has shown, but
+> since it stops doing it after 10 cases, it's not even good security
+> assuming the "use up entropy" case makes sense in the first place.
+
+It was a bug that it stopped doing it after 10 tries, and there's a
+really good reason for it.  Yes, the "using up entropy" thing doesn't
+make much sense in the general case.  But we still need some threshold
+for deciding whether or not it's been sufficiently initialized such
+that we consider the CRNG initialized.
+
+The reason for zeroing it after we expose state is because otherwise
+if the pool starts in a known state (the attacker knows the starting
+configuration, knows the DMI table that we're mixing into the pool
+since that's a constant, etc.), then after we've injected a small
+amount of uncertainty in the pool --- say, we started with a single
+known state of the pool, and after injecting some randomness, there
+are 64 possible states of the pool.  If the attacker can read from
+/dev/urandom, the attacker can know which of the 64 possible states of
+the pool it's in.  Now suppose we inject more uncertainty, so that
+there's another 64 unknown states, and the attacker is able to
+constantly read from /dev/urandom in a tight loop; it'll be able to
+keep up with the injection of entropy insertion, and so even though
+we've injected 256 "bits" of uncertainty, the attacker will still know
+the state of the pool.  That's why when we read from the pool, we need
+to clear the entropy bits.
+
+This is sometimes called a "state extension attack", and there have
+been attacks that have been carried out against RNG's that's don't
+protect against it.  What happened is when I added the rate-limiting
+to the uninitialized /dev/urandom warning, I accidentally wiped out
+the protection.  But it was there for a reason.
+
+> And the new cases are defined to *not* warn. In particular,
+> GRND_INSECURE very much does *not* warn about early urandom access
+> when crng isn't ready. Because the whole point of that new mode is
+> that the user knows it isn't secure.
 > 
-> Or to say this all differently: the hash table seeding and the uuid
-> case are two distinct cases in systemd, and I am sure they should be.
+> So that should make getrandom(GRND_INSECURE) palatable to the systemd
+> kind of use that wanted to avoid the pointless kernel warning.
 
-Thank you very much for your summary of uses of random numbers in 
-Systemd and also for your other mail that "neither RDRAND nor /dev/
-urandom know a concept of of "depleting entropy"". I thought they would 
-deplete entropy needed to the initial seeding of crng.
+Yes, that's clearly the right thing to do.  I do think we need to
+restore the state extension attack protections, though.
 
-Thank you also for taking part in this discussion, even if someone put 
-your mail address on carbon copy without asking with.
+> +	/*
+> +	 * People are really confused about whether
+> +	 * this is secure or insecure. Traditional
+> +	 * behavior is secure, but there are users
+> +	 * who clearly didn't want that, and just
+> +	 * never thought about it.
+> +	 */
+> +	case 0:
+>  		ret = wait_for_random_bytes();
+> -		if (unlikely(ret))
+> +		if (ret)
+>  			return ret;
+> +		break;
 
-I do not claim I understand enough of this random number stuff. But I 
-feel its important that kernel and userspace developers actually talk 
-with each other about a sane approach for it. And I believe that the 
-complexity involved is part of the issue. I feel an API for attaining 
-random number with different quality levels needs to be much, much, much 
-more simple to use *properly*.
+I'm happy this proposed is not changing the behavior of getrandom(0).
+Why not just remap 0 to GRND_EXPLICIT | GRND_WAIT_ENTROPY, though?  It
+will have the same effect, and it's make it clear what we're doing.
 
-I felt a bit overwhelmed by the discussion (and by what else is 
-happening in my life, just having come back from holding a Linux 
-performance workshop in front of about two dozen people), so I intend to 
-step back from it. 
+Later on, when we rip out /dev/random pool code (and make reading from
+/dev/random the equivalent of getrandom(GRND_SECURE)), we'll need to
+similarly map the legacy combination of flags for GRND_RANDOM and
+GRND_RANDOM | GRND_NONBLOCK.
 
-If one of my mails actually helped to encourage or facilitate kernel 
-space and user space developers talking with each other about a sane 
-approach to random numbers, then I may have used my soft skills in a way 
-that brings some benefit. For the technical aspects certainly people are 
-taking part in this discussion who are much much deeper into the 
-intricacies of entropy in Linux and computers in general, so I just hope 
-for a good outcome.
-
-Best,
--- 
-Martin
-
-
+						- Ted
