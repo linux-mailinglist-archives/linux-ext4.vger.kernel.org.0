@@ -2,26 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE98B7CEE
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 16:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A4CB7E05
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 17:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732411AbfISOek (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Sep 2019 10:34:40 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46914 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732082AbfISOej (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Sep 2019 10:34:39 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8JEYRHU016692
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Sep 2019 10:34:29 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 6085D420811; Thu, 19 Sep 2019 10:34:27 -0400 (EDT)
-Date:   Thu, 19 Sep 2019 10:34:27 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
+        id S2391208AbfISPVV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Sep 2019 11:21:21 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:43661 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389433AbfISPVU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Sep 2019 11:21:20 -0400
+Received: by mail-lj1-f196.google.com with SMTP id d5so3968623lja.10
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2019 08:21:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zfEuPJ641YJQeJkTLfoZf15jmx/xg/Ot7RIxF8XZrnA=;
+        b=IeBlACCv1tdF6ZOzyEP8OJsAwJslYvvpUJkXNzHb4jX+yNNAS3BZmLItZivVoYM1Rs
+         VowQP+P9MXEx89V5iLrrCYHL5VwW6G8+q7N0l1WKXVBSnpkmBwKuOyhhfpFxBZfThAv0
+         0JhTD0cT+wVcdXd64K9wjv9SZYXH5dnmZ6l+I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zfEuPJ641YJQeJkTLfoZf15jmx/xg/Ot7RIxF8XZrnA=;
+        b=NziWgV/hkCz1P9kxAZiQve9E/EQJ6LrYpGjVwWX6A5Ow3bUcti6Vzs0dC7ewyfobAj
+         Ps2APlq8ii7e86+KTnCr9jR6nKI+7HMmQzZ4K815PqNO9gZa8c9s922ucjuupHMcZNPw
+         nv/GEdPi86rKCJ2DEPpbdwTuwWWSl0nQFyQBxq3ha0g0poJ0q2QdEe7YHqSh8LAAQrZO
+         XLFuzCPg6hWDZpRx10YRcHzFJ9uhabRuLsyW/2jJ38UxsdSb+Q7NTZxf15JjTUM/FFTu
+         Ql0k4MkEEv2K0F/cxT6CtXD4SQKpvImCr5K8+XDuPO6/1xcSk6XP/37rrseoTOc+BwHR
+         cIcw==
+X-Gm-Message-State: APjAAAXmDOTiU1bMjeiIMxJLUCt6NEK27l+bau+MoF6CO/SO48YvPoTV
+        +MbXVGcN7bYzYXfKwXvcGj+HULKKvdI=
+X-Google-Smtp-Source: APXvYqz/JZ9elMYEdeyjvbIow/GPdeLjNbVkXCVTCi+Is+xmYA3GVc3Stb6PgnaWMn6Krqo4m1McYg==
+X-Received: by 2002:a2e:9799:: with SMTP id y25mr5860223lji.38.1568906475891;
+        Thu, 19 Sep 2019 08:21:15 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id k15sm1729825ljg.65.2019.09.19.08.21.14
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Sep 2019 08:21:14 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id c195so2653082lfg.9
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2019 08:21:14 -0700 (PDT)
+X-Received: by 2002:ac2:47f8:: with SMTP id b24mr5372959lfp.134.1568906473541;
+ Thu, 19 Sep 2019 08:21:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190912034421.GA2085@darwi-home-pc> <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914122500.GA1425@darwi-home-pc> <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
+ <20190915052242.GG19710@mit.edu> <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
+ <20190918211503.GA1808@darwi-home-pc> <20190918211713.GA2225@darwi-home-pc>
+ <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com> <20190919143427.GQ6762@mit.edu>
+In-Reply-To: <20190919143427.GQ6762@mit.edu>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Sep 2019 08:20:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgqbBy84ovtr8wPFqRo6U8jvp59rvQ8a6TvXuoyb-4L-Q@mail.gmail.com>
+Message-ID: <CAHk-=wgqbBy84ovtr8wPFqRo6U8jvp59rvQ8a6TvXuoyb-4L-Q@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 1/1] random: WARN on large getrandom() waits and
+ introduce getrandom2()
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
         Lennart Poettering <mzxreary@0pointer.de>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
@@ -29,121 +68,138 @@ Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
         Michael Kerrisk <mtk.manpages@gmail.com>,
         lkml <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org,
         linux-man@vger.kernel.org
-Subject: Re: [PATCH RFC v4 1/1] random: WARN on large getrandom() waits and
- introduce getrandom2()
-Message-ID: <20190919143427.GQ6762@mit.edu>
-References: <20190912034421.GA2085@darwi-home-pc>
- <20190912082530.GA27365@mit.edu>
- <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
- <20190914122500.GA1425@darwi-home-pc>
- <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
- <20190915052242.GG19710@mit.edu>
- <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
- <20190918211503.GA1808@darwi-home-pc>
- <20190918211713.GA2225@darwi-home-pc>
- <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-(Adding linux-api since this patch proposes an API change; both by
-changing the existing behavior, and adding new flags and possibly a
-new system call.)
+On Thu, Sep 19, 2019 at 7:34 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> > It's basically a "we used up entropy" thing, which is very
+> > questionable to begin with as the whole discussion has shown, but
+> > since it stops doing it after 10 cases, it's not even good security
+> > assuming the "use up entropy" case makes sense in the first place.
+>
+> It was a bug that it stopped doing it after 10 tries, and there's a
+> really good reason for it.
 
-On Wed, Sep 18, 2019 at 04:57:58PM -0700, Linus Torvalds wrote:
-> On Wed, Sep 18, 2019 at 2:17 PM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
-> >
-> > Since Linux v3.17, getrandom(2) has been created as a new and more
-> > secure interface for pseudorandom data requests.  It attempted to
-> > solve three problems, as compared to /dev/urandom:
-> 
-> I don't think your patch is really _wrong_, but I think it's silly to
-> introduce a new system call, when we have 30 bits left in the flags of
-> the old one, and the old system call checked them.
+I really doubt that.
 
-The only reason to introduce a new system call is if we were going to
-keep the existing behavior of getrandom.  Given that the patch changes
-what getrandom(0), I agree there's no point to adding a new system
-call.
+> The reason for zeroing it after we expose state is because otherwise
+> if the pool starts in a known state (the attacker knows the starting
+> configuration, knows the DMI table that we're mixing into the pool
+> since that's a constant, etc.),
 
-> There is *one* other small semantic change: The old code did
-> urandom_read() which added warnings, but each warning also _reset_ the
-> crng_init_cnt. Until it decided not to warn any more, at which point
-> it also stops that resetting of crng_init_cnt.
-> 
-> And that reset of crng_init_cnt, btw, is some cray cray.
-> 
-> It's basically a "we used up entropy" thing, which is very
-> questionable to begin with as the whole discussion has shown, but
-> since it stops doing it after 10 cases, it's not even good security
-> assuming the "use up entropy" case makes sense in the first place.
+That's at least partly because our pool hashing has what looks a
+fairly sad property.
 
-It was a bug that it stopped doing it after 10 tries, and there's a
-really good reason for it.  Yes, the "using up entropy" thing doesn't
-make much sense in the general case.  But we still need some threshold
-for deciding whether or not it's been sufficiently initialized such
-that we consider the CRNG initialized.
+Yes, it hashes it using a good hash, but it does so in a way that
+makes it largely possible to follow the hashing and repeat it and
+analyze it.
 
-The reason for zeroing it after we expose state is because otherwise
-if the pool starts in a known state (the attacker knows the starting
-configuration, knows the DMI table that we're mixing into the pool
-since that's a constant, etc.), then after we've injected a small
-amount of uncertainty in the pool --- say, we started with a single
-known state of the pool, and after injecting some randomness, there
-are 64 possible states of the pool.  If the attacker can read from
-/dev/urandom, the attacker can know which of the 64 possible states of
-the pool it's in.  Now suppose we inject more uncertainty, so that
-there's another 64 unknown states, and the attacker is able to
-constantly read from /dev/urandom in a tight loop; it'll be able to
-keep up with the injection of entropy insertion, and so even though
-we've injected 256 "bits" of uncertainty, the attacker will still know
-the state of the pool.  That's why when we read from the pool, we need
-to clear the entropy bits.
+That breaks if we have hw randomness, because it does the
 
-This is sometimes called a "state extension attack", and there have
-been attacks that have been carried out against RNG's that's don't
-protect against it.  What happened is when I added the rate-limiting
-to the uninitialized /dev/urandom warning, I accidentally wiped out
-the protection.  But it was there for a reason.
+        if (arch_get_random_long(&v))
+                crng->state[14] ^= v;
 
-> And the new cases are defined to *not* warn. In particular,
-> GRND_INSECURE very much does *not* warn about early urandom access
-> when crng isn't ready. Because the whole point of that new mode is
-> that the user knows it isn't secure.
-> 
-> So that should make getrandom(GRND_INSECURE) palatable to the systemd
-> kind of use that wanted to avoid the pointless kernel warning.
+so it always mixes in hardware randomness as part of the extraction,
+but we don't mix anything else unpredictable - or even
+process-specific - state in. So without hw randomness, you can try to
+get a lot of data over a lot of boots - and for long times during
+boots - and maybe find the pattern.
 
-Yes, that's clearly the right thing to do.  I do think we need to
-restore the state extension attack protections, though.
+But honestly, this isn't realistic. I can point to emails where *you*
+are  arguing against other hashing algorithms because the whole state
+extension attack simply isn't realistic.
 
-> +	/*
-> +	 * People are really confused about whether
-> +	 * this is secure or insecure. Traditional
-> +	 * behavior is secure, but there are users
-> +	 * who clearly didn't want that, and just
-> +	 * never thought about it.
-> +	 */
-> +	case 0:
->  		ret = wait_for_random_bytes();
-> -		if (unlikely(ret))
-> +		if (ret)
->  			return ret;
-> +		break;
+And I think it's also pretty questionable how we don't try to mix in
+anything timing/process-specific when extracting, which is what makes
+that "do lots of boots" possible.
 
-I'm happy this proposed is not changing the behavior of getrandom(0).
-Why not just remap 0 to GRND_EXPLICIT | GRND_WAIT_ENTROPY, though?  It
-will have the same effect, and it's make it clear what we're doing.
+The silly "reset crng_init_cnt" does absolutely nothing to help that,
+but in fact what it does is to basically give the attacker a way to
+get an infinite stream of data without any reseeding (because that
+only happens after crng_read()), and able to extend that "block at
+boot" time indefinitely while doing so.
 
-Later on, when we rip out /dev/random pool code (and make reading from
-/dev/random the equivalent of getrandom(GRND_SECURE)), we'll need to
-similarly map the legacy combination of flags for GRND_RANDOM and
-GRND_RANDOM | GRND_NONBLOCK.
+Also honestly, if the attacker already has access to the system at
+boot, you have some fairly big problems to begin with.
 
-						- Ted
+So a much bigger issue than the state extension attack (pretty much
+purely theoretical, given any entropy at all, which we _will_ have
+even without the crng_init_cnt clearing) is the fact that right now we
+really are predictable if there are no hardware interrupts, and people
+have used /dev/urandom because other sources weren't useful.
+
+And the fact is, we *know* people use /dev/urandom exactly because
+other sources haven't been useful.
+
+And unlike your theoretical state extension attack, I can point you to
+black hat presentations that literally talk about using the fact that
+we delay m,ixing in the input pull hash to know what's going on:
+
+  https://www.blackhat.com/docs/eu-14/materials/eu-14-Kedmi-Attacking-The-Linux-PRNG-On-Android-Weaknesses-In-Seeding-Of-Entropic-Pools-And-Low-Boot-Time-Entropy.pdf
+
+That's a real attack. Based on the REAL fact that we currently have to
+use the urandom logic because the entropy-waiting one is useless, and
+in fact depends on the re-seeding happening too late.
+
+Yes, yes, our urandom has changed since that attack, and we use chacha
+instead of sha1 these days. We have other changes too. But I don't see
+anything fundamentally different.
+
+And all your arguments seem to make that _real_ security issue just
+worse, exactly because we also avoid reseeding while crng_init is
+zero.
+
+> I'm happy this proposed is not changing the behavior of getrandom(0).
+> Why not just remap 0 to GRND_EXPLICIT | GRND_WAIT_ENTROPY, though?  It
+> will have the same effect, and it's make it clear what we're doing.
+
+Have you you not followed the whole discussion? Didn't you read the comment?
+
+People use "getrandom(0)" not because they want secure randomness, but
+because that's the default.
+
+And we *will* do something about it. This patch didn't, because I want
+to be able to backport it to stable, so that everybody is happier with
+saying "ok, I'll use the new getrandom(GRND_INSECURE)".
+
+Because getrandom(0) will NOT be the the same as GRND_EXPLICIT |
+GRND_WAIT_ENTROPY.
+
+getrandom(0) is the "I don't know what I am doing" thing. It could be
+somebody that wants real secure random numbers. Or it could *not* be
+one of those, and need the timeout.
+
+> Later on, when we rip out /dev/random pool code (and make reading from
+> /dev/random the equivalent of getrandom(GRND_SECURE)), we'll need to
+> similarly map the legacy combination of flags for GRND_RANDOM and
+> GRND_RANDOM | GRND_NONBLOCK.
+
+And that is completely immaterial, because the "I'm confused" case
+isn't about GRND_RANDOM. Nobody uses that anyway, and more importantly
+it's not the case that has caused bugs. That one blocks even during
+normal execution, so that one - despite being completely useless -
+actually has the one good thing going for it that it's testable.
+People will see the "oh, that took a long time" during testing. And
+then they'll stop using it.
+
+Ted - you really don't seem to be making any distinction between
+"these are real problems that should be fixed" vs "this is theory that
+isn't relevant".
+
+The "getrandom(0)" is a real problem that needs to be fixed.
+
+The warnings from /dev/urandom are real problems that people
+apparently have worked around by (incorrectly) using getrandom(0).
+
+The "hashing the random pool still leaves identities in place" is a
+real problem that had a real attack.
+
+The state extension attack? Complete theory (again, I can point to you
+saying the same thing in other threads), and the "fix" of resetting
+the counter and not reseeding seems to be anything but.
+
+            Linus
