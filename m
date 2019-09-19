@@ -2,135 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA65B8303
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 22:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B749B83A9
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 23:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732847AbfISU4r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Sep 2019 16:56:47 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44114 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732841AbfISU4r (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Sep 2019 16:56:47 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8JKuf3T028218
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Sep 2019 16:56:42 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 65BE8420811; Thu, 19 Sep 2019 16:56:41 -0400 (EDT)
-Date:   Thu, 19 Sep 2019 16:56:41 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 updates for 5.4
-Message-ID: <20190919205641.GA23449@mit.edu>
+        id S1733033AbfISVsS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Sep 2019 17:48:18 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:46726 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732082AbfISVsR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Sep 2019 17:48:17 -0400
+Received: by mail-lj1-f194.google.com with SMTP id e17so5044901ljf.13
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2019 14:48:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=edBNiUCAkfvN/3XpQNySJ3URni0Ib/sxF2qoxmEcdPs=;
+        b=aVaV1zCjOFb/oCr3LlveP0iW40Bbf85kACXi2TPOzhPig+J6nPBdquOOmmczmq3Pvz
+         eAU+3Jy03OQ31MfO232+fud/OluIqVj1sjHgRJxGMQN/Cu5OAgjExkpNb+RVnX54oHiP
+         ko0EAsEVkDpJzJdh060J1gEBSzBA17aW3PG2Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=edBNiUCAkfvN/3XpQNySJ3URni0Ib/sxF2qoxmEcdPs=;
+        b=Xd84LXDEA6lDex7i/06qm3tQftB+J+X9RSa5UET323R4ZEkV3SSxyUAVzXzTMlC/IM
+         Fri1nPWeC/crBbi6yblCfuB77iB3idkr5zBXQ0c3E7ZYWd5JJ5QNpO1z2QY2jnxcGVRG
+         GKuFDHKWsXYcVLIJeaGUvDIdyvB5+JxnRbZ7cA3nyM2doPyEHwDrY1BXfijlVrfUzA00
+         /Iw31o2uTDv4XL4J04APU1zVxBbwwlFvOyjmbPS3cPbV7yrBsUhkMqsjgcCEnVCjxEE2
+         skS5DODQ7eev7/7FmzrYtzwN0VCkaSZiOr7OZK0CrHM2LbKCgEuhIY9MDTRMJVhQBeU/
+         pZqg==
+X-Gm-Message-State: APjAAAUlRO2NuboYjSGf9+YPTqYhLlvDlL3BzduATSu9+84vD6NYtA91
+        t4I8PBM6wLZX0hRrxwisRpPvZavOwKA=
+X-Google-Smtp-Source: APXvYqxWVwvB3Ta/V1Z7H0DZsiAaIkqgyPBL27R7QSMJP0i7X6x3qVXMI86S2FmrmxGpljn3EQIM7w==
+X-Received: by 2002:a2e:9890:: with SMTP id b16mr6523172ljj.189.1568929695061;
+        Thu, 19 Sep 2019 14:48:15 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id q88sm1948751lje.57.2019.09.19.14.48.14
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Sep 2019 14:48:14 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id q11so3453517lfc.11
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2019 14:48:14 -0700 (PDT)
+X-Received: by 2002:ac2:47f8:: with SMTP id b24mr6182150lfp.134.1568929693778;
+ Thu, 19 Sep 2019 14:48:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190912034421.GA2085@darwi-home-pc> <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914122500.GA1425@darwi-home-pc> <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
+ <20190915052242.GG19710@mit.edu> <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
+ <20190918211503.GA1808@darwi-home-pc> <20190918211713.GA2225@darwi-home-pc>
+ <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
+ <20190919143427.GQ6762@mit.edu> <CAHk-=wgqbBy84ovtr8wPFqRo6U8jvp59rvQ8a6TvXuoyb-4L-Q@mail.gmail.com>
+ <CAHk-=wjTbpcyVevsy3g-syB5v9gk_rR-yRFrUAvTL8NFuGfCrw@mail.gmail.com> <6adb02d4-c486-a945-7f51-d007d6de45b2@gmail.com>
+In-Reply-To: <6adb02d4-c486-a945-7f51-d007d6de45b2@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Sep 2019 14:47:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjGAaPAGnfok6fuZK1PYMkZ9bNOGkWXLYtS7+6bAWnAGQ@mail.gmail.com>
+Message-ID: <CAHk-=wjGAaPAGnfok6fuZK1PYMkZ9bNOGkWXLYtS7+6bAWnAGQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 1/1] random: WARN on large getrandom() waits and
+ introduce getrandom2()
+To:     "Alexander E. Patrakov" <patrakov@gmail.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        linux-man@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit d45331b00ddb179e291766617259261c112db872:
+On Thu, Sep 19, 2019 at 1:45 PM Alexander E. Patrakov
+<patrakov@gmail.com> wrote:
+>
+> This already resembles in-kernel haveged (except that it doesn't credit
+> entropy), and Willy Tarreau said "collect the small entropy where it is,
+> period" today. So, too many people touched upon the topic in one day,
+> and therefore I'll bite.
 
-  Linux 5.3-rc4 (2019-08-11 13:26:41 -0700)
+I'm one of the people who aren't entirely convinced by the jitter
+entropy - I definitely believe it exists, I just am not necessarily
+convinced about the actual entropy calculations.
 
-are available in the Git repository at:
+So while I do think we should take things like the cycle counter into
+account just because I think it's a a useful way to force some noise,
+I am *not* a huge fan of the jitter entropy driver either, because of
+the whole "I'm not convinced about the amount of entropy".
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+The whole "third order time difference" thing would make sense if the
+time difference was some kind of smooth function - which it is at a
+macro level.
 
-for you to fetch changes up to 040823b5372b445d1d9483811e85a24d71314d33:
+But at a micro level, I could easily see the time difference having
+some very simple pattern - say that your cycle counter isn't really
+cycle-granular, and the load takes 5.33 "cycles" and you see a time
+difference pattern of (5, 5, 6, 5, 5, 6, ...). No real entropy at all
+there, it is 100% reliable.
 
-  Merge tag 'unicode-next-v5.4' of https://git.kernel.org/pub/scm/linux/kernel/git/krisman/unicode into dev (2019-09-18 10:36:24 -0400)
+At a macro level, that's a very smooth curve, and you'd say "ok, time
+difference is 5.3333 (repeating)". But that's not what the jitter
+entropy code does. It just does differences of differences.
 
-----------------------------------------------------------------
-Added new ext4 debugging ioctls to allow userspace to get information
-about the state of the extent status cache.
+And that completely non-random pattern has a first-order difference of
+0, 1, 1, 0, 1, 1.. and a second order of 1, 0, 1, 1, 0,  and so on
+forever. So the "jitter entropy" logic will assign that completely
+repeatable thing entropy, because the delta difference doesn't ever go
+away.
 
-Dropped workaround for pre-1970 dates which were encoded incorrectly
-in pre-4.4 kernels.  Since both the kernel correctly generates, and
-e2fsck detects and fixes this issue for the past four years, it'e time
-to drop the workaround.  (Also, it's not like files with dates in the
-distant past were all that common in the first place.)
+Maybe I misread it.
 
-A lot of miscellaneous bug fixes and cleanups, including some ext4
-Documentation fixes.  Also included are two minor bug fixes in
-fs/unicode.
+We used to (we still do, but we used to too) do that same third-order
+delta difference ourselves for the interrupt timing entropy estimation
+in add_timer_randomness(). But I think it's more valid with something
+that likely has more noise (interrupt timing really _should_ be
+noisy). It's not clear that the jitterentropy load really has all that
+much noise.
 
-----------------------------------------------------------------
-Ayush Ranjan (2):
-      ext4: documentation fixes
-      ext4: add missing bigalloc documentation.
+That said, I'm _also_ not a fan of the user mode models - they happen
+too late anyway for some users, and as you say, it leaves us open to
+random (heh) user mode distribution choices that may be more or less
+broken.
 
-Chandan Rajendra (1):
-      jbd2: flush_descriptor(): Do not decrease buffer head's ref count
+I would perhaps be willing to just put my foot down, and say "ok,
+we'll solve the 'getrandom(0)' issue by just saying that if that
+blocks too  much, we'll do the jitter entropy thing".
 
-Colin Ian King (2):
-      ext4: set error return correctly when ext4_htree_store_dirent fails
-      unicode: make array 'token' static const, makes object smaller
+Making absolutely nobody happy, but working in practice. And maybe
+encouraging the people who don't like jitter entropy to use
+GRND_SECURE instead.
 
-Eric Whitney (1):
-      ext4: rework reserved cluster accounting when invalidating pages
-
-Krzysztof Wilczynski (1):
-      unicode: Move static keyword to the front of declarations
-
-Rakesh Pandit (1):
-      ext4: fix warning inside ext4_convert_unwritten_extents_endio
-
-Shi Siyuan (1):
-      ext4: remove unnecessary error check
-
-Theodore Ts'o (7):
-      ext4: add a new ioctl EXT4_IOC_CLEAR_ES_CACHE
-      ext4: add a new ioctl EXT4_IOC_GETSTATE
-      ext4: add new ioctl EXT4_IOC_GET_ES_CACHE
-      ext4: drop legacy pre-1970 encoding workaround
-      ext4: fix punch hole for inline_data file systems
-      ext4: fix kernel oops caused by spurious casefold flag
-      Merge tag 'unicode-next-v5.4' of https://git.kernel.org/.../krisman/unicode into dev
-
-Xiaoguang Wang (1):
-      jbd2: add missing tracepoint for reserved handle
-
-Yang Guo (1):
-      ext4: use percpu_counters for extent_status cache hits/misses
-
-ZhangXiaoxu (1):
-      ext4: treat buffers with write errors as containing valid data
-
-yangerkun (1):
-      ext4: fix warning when turn on dioread_nolock and inline_data
-
-zhangyi (F) (2):
-      ext4: fix potential use after free after remounting with noblock_validity
-      ext4: fix integer overflow when calculating commit interval
-
- Documentation/filesystems/ext4/bigalloc.rst    |  32 ++-
- Documentation/filesystems/ext4/blockgroup.rst  |  10 +-
- Documentation/filesystems/ext4/blocks.rst      |   4 +-
- Documentation/filesystems/ext4/directory.rst   |   2 +-
- Documentation/filesystems/ext4/group_descr.rst |   9 +-
- Documentation/filesystems/ext4/inodes.rst      |   4 +-
- Documentation/filesystems/ext4/super.rst       |  20 +-
- fs/ext4/block_validity.c                       | 189 +++++++++++++-----
- fs/ext4/dir.c                                  |   7 +-
- fs/ext4/ext4.h                                 |  64 ++++--
- fs/ext4/extents.c                              |  98 +++++++++-
- fs/ext4/extents_status.c                       | 521 ++++++++++++++++++++++++++++++++++++++-----------
- fs/ext4/extents_status.h                       |   8 +-
- fs/ext4/file.c                                 |   2 -
- fs/ext4/hash.c                                 |   2 +-
- fs/ext4/inline.c                               |   2 +-
- fs/ext4/inode.c                                | 103 +++-------
- fs/ext4/ioctl.c                                |  98 ++++++++++
- fs/ext4/namei.c                                |   4 +-
- fs/ext4/super.c                                |   7 +
- fs/jbd2/revoke.c                               |   4 +-
- fs/jbd2/transaction.c                          |   3 +
- fs/unicode/utf8-core.c                         |   2 +-
- fs/unicode/utf8-selftest.c                     |   4 +-
- 24 files changed, 890 insertions(+), 309 deletions(-)
+              Linus
