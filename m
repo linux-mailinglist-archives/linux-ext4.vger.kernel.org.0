@@ -2,294 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12611B8107
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 20:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EB8B8223
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 22:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404330AbfISSsw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Sep 2019 14:48:52 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45660 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404283AbfISSsw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 19 Sep 2019 14:48:52 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x8JIlSmO179755
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2019 14:48:50 -0400
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2v4ch3xgr8-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2019 14:48:49 -0400
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Thu, 19 Sep 2019 19:48:47 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 19 Sep 2019 19:48:43 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x8JImgQa27459590
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Sep 2019 18:48:42 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B0A34C044;
-        Thu, 19 Sep 2019 18:48:42 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 88D2F4C050;
-        Thu, 19 Sep 2019 18:48:40 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.124.31.57])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Sep 2019 18:48:40 +0000 (GMT)
-Subject: Re: [RFC 0/2] ext4: Improve locking sequence in DIO write path
-To:     Joseph Qi <joseph.qi@linux.alibaba.com>, jack@suse.cz,
-        tytso@mit.edu, linux-ext4@vger.kernel.org
-Cc:     david@fromorbit.com, hch@infradead.org, adilger@dilger.ca,
-        mbobrowski@mbobrowski.org, rgoldwyn@suse.de
-References: <20190917103249.20335-1-riteshh@linux.ibm.com>
- <d1f3b048-d21c-67f1-09a3-dd2abf7c156d@linux.alibaba.com>
- <20190918100336.3A4DA11C050@d06av25.portsmouth.uk.ibm.com>
- <d264b7b0-334a-eb36-4fdb-5af5526ea4aa@linux.alibaba.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Fri, 20 Sep 2019 00:18:39 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S2392427AbfISUEY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Sep 2019 16:04:24 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:43046 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390510AbfISUEX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Sep 2019 16:04:23 -0400
+Received: by mail-lj1-f193.google.com with SMTP id k21so536971ljh.10
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2019 13:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4m5fsmM1D52MDhgJ8zhgndmWP49nchai632Fc7rhfU8=;
+        b=PHHUgZsUDck1+0WgtGWev2ZlhzqlhCDdiuEQXHeHNB3isAv9qmIWo1voeYWP4xuA/T
+         +xfLIMLS+z/qhyz5qZFANtXTjNrrdAV2+486tGTU1scf77F8RtXrqE4Kwsnq/Q6BF9nP
+         mNagbYeNqWlvqvey2a6BlVYqNvoZoDpKMSclI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4m5fsmM1D52MDhgJ8zhgndmWP49nchai632Fc7rhfU8=;
+        b=Euf0kAB1LuszGeNh/eEd2y27EiLCdG4Qp73n07YzcoLrLqV3IKAAQpDdqdhcFaNFQ2
+         +sTmpgmh6RKlWznaspK6povqczSQdEGx4UYb4UOsAzCcHce7fDbi/JOXAzn8c+l0qjFG
+         ygJLDPZyJsm9xQSB4zOYjYUN3rKbzcmBfj3NzvVruUaS/jMI6FsuXrFvgUybdRiPERMI
+         dCbh82U9lCfucAMi5QbK9w+/0AXWf0bnhMCoayxnxC0DESqj8LdQB9ca8VbAN6fwSly1
+         g+rKjkBT4yOXBmVZm/YKGAPnIzmx7c35/eOKu5izeWvXM+SVi2lgJIkc5FcduBNR0kTE
+         TYcg==
+X-Gm-Message-State: APjAAAVnDs2qVje+ZRNQhEfpkqajz+nEYH9co3HQrwr2n0scVu7eesgc
+        /YT7LfQ50myqb3rtF+X0OSKcfB/0Rzw=
+X-Google-Smtp-Source: APXvYqy9P8W65I6/4Xw70efP1ZXt1S3dDPtecaGaBtgghc7LeXIb0SSfhn+PhYfDGUXe6Gw8c0vD0g==
+X-Received: by 2002:a2e:96d5:: with SMTP id d21mr5805638ljj.187.1568923460432;
+        Thu, 19 Sep 2019 13:04:20 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id x76sm2165020ljb.81.2019.09.19.13.04.17
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 Sep 2019 13:04:17 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id u28so3293509lfc.5
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2019 13:04:17 -0700 (PDT)
+X-Received: by 2002:ac2:5c11:: with SMTP id r17mr6044271lfp.61.1568923456905;
+ Thu, 19 Sep 2019 13:04:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d264b7b0-334a-eb36-4fdb-5af5526ea4aa@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19091918-0012-0000-0000-0000034E379D
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19091918-0013-0000-0000-00002188BACE
-Message-Id: <20190919184840.88D2F4C050@d06av22.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-19_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1909190156
+References: <20190912034421.GA2085@darwi-home-pc> <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914122500.GA1425@darwi-home-pc> <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
+ <20190915052242.GG19710@mit.edu> <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
+ <20190918211503.GA1808@darwi-home-pc> <20190918211713.GA2225@darwi-home-pc>
+ <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
+ <20190919143427.GQ6762@mit.edu> <CAHk-=wgqbBy84ovtr8wPFqRo6U8jvp59rvQ8a6TvXuoyb-4L-Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wgqbBy84ovtr8wPFqRo6U8jvp59rvQ8a6TvXuoyb-4L-Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 19 Sep 2019 13:04:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjTbpcyVevsy3g-syB5v9gk_rR-yRFrUAvTL8NFuGfCrw@mail.gmail.com>
+Message-ID: <CAHk-=wjTbpcyVevsy3g-syB5v9gk_rR-yRFrUAvTL8NFuGfCrw@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 1/1] random: WARN on large getrandom() waits and
+ introduce getrandom2()
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        linux-man@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000545cbf0592ed7546"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+--000000000000545cbf0592ed7546
+Content-Type: text/plain; charset="UTF-8"
 
-On 9/19/19 7:38 AM, Joseph Qi wrote:
-> 
-> 
-> On 19/9/18 18:03, Ritesh Harjani wrote:
->> Hello Joseph,
->>
->> First of all thanks a lot for collecting a thorough
->> performance numbers.
->>
->> On 9/18/19 12:05 PM, Joseph Qi wrote:
->>> Hi Ritesh,
->>>
->>> On 19/9/17 18:32, Ritesh Harjani wrote:
->>>> Hello,
->>>>
->>>> This patch series is based on the upstream discussion with Jan
->>>> & Joseph @ [1].
->>>> It is based on top of Matthew's v3 ext4 iomap patch series [2]
->>>>
->>>> Patch-1: Adds the ext4_ilock/unlock APIs and also replaces all
->>>> inode_lock/unlock instances from fs/ext4/*
->>>>
->>>> For now I already accounted for trylock/lock issue symantics
->>>> (which was discussed here [3]) in the same patch,
->>>> since the this whole patch was around inode_lock/unlock API,
->>>> so I thought it will be best to address that issue in the same patch.
->>>> However, kindly let me know if otherwise.
->>>>
->>>> Patch-2: Commit msg of this patch describes in detail about
->>>> what it is doing.
->>>> In brief - we try to first take the shared lock (instead of exclusive
->>>> lock), unless it is a unaligned_io or extend_io. Then in
->>>> ext4_dio_write_checks(), if we start with shared lock, we see
->>>> if we can really continue with shared lock or not. If not, then
->>>> we release the shared lock then acquire exclusive lock
->>>> and restart ext4_dio_write_checks().
->>>>
->>>>
->>>> Tested against few xfstests (with dioread_nolock mount option),
->>>> those ran fine (ext4 & generic).
->>>>
->>>> I tried testing performance numbers on my VM (since I could not get
->>>> hold of any real h/w based test device). I could test the fact
->>>> that earlier we were trying to do downgrade_write() lock, but with
->>>> this patch, that path is now avoided for fio test case
->>>> (as reported by Joseph in [4]).
->>>> But for the actual results, I am not sure if VM machine testing could
->>>> really give the reliable perf numbers which we want to take a look at.
->>>> Though I do observe some form of perf improvements, but I could not
->>>> get any reliable numbers (not even with the same list of with/without
->>>> patches with which Joseph posted his numbers [1]).
->>>>
->>>>
->>>> @Joseph,
->>>> Would it be possible for you to give your test case a run with this
->>>> patches? That will be really helpful.
->>>>
->>>> Branch for this is hosted at below tree.
->>>>
->>>> https://github.com/riteshharjani/linux/tree/ext4-ilock-RFC
->>>>
->>> I've tested your branch, the result is:
->>> mounting with dioread_nolock, it behaves the same like reverting
->>> parallel dio reads + dioread_nolock;
->>
->> Good sign, means that patch is doing what it is supposed to do.
->>
->>
->>> while mounting without dioread_nolock, no improvement, or even worse.
->>> Please refer the test data below.
->> Actually without dioread_nolock, we take the restart path.
->> i.e. initially we start with SHARED_LOCK, but if dioread_nolock
->> is not enabled (or check some other conditions like overwrite),
->> we release the shared lock and re-acquire the EXCL lock.
->>
->>
->> But as an optimization, I added the below diff just now
->> to directly first check for ext4_should_dioread_nolock too
->> before taking the shared lock.
->>
->> I think with this we should not see any performance regression
->> (even without dioread_nolock mount option).
->> Since it will directly start with exclusive lock
->> if dioread_nolock mount option is not enabled.
->>
->> I have updated the tree with this diff in same branch.
->>
->>
->> ext4_dio_file_write_iter ()
->> <...>
->>
->> 498         if (iolock == EXT4_IOLOCK_SHARED && !ext4_should_dioread_nolock(inode))
->> 499                 iolock = EXT4_IOLOCK_EXCL;
->> 500
->> <...>
->>
-> With this optimization, when mounting without dioread_nolock, it has
-> a little improvement compared to the last ilock version, but still
-> poor than original, especially for big block size.
+On Thu, Sep 19, 2019 at 8:20 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Yes, it hashes it using a good hash, but it does so in a way that
+> makes it largely possible to follow the hashing and repeat it and
+> analyze it.
+>
+> That breaks if we have hw randomness, because it does the
+>
+>         if (arch_get_random_long(&v))
+>                 crng->state[14] ^= v;
+>
+> so it always mixes in hardware randomness as part of the extraction,
+> but we don't mix anything else unpredictable - or even
+> process-specific - state in.
 
-Finally, I got hold of some HW. I am collecting the numbers as we speak.
-Will post those tomorrow.
+So this is the other actual _serious_ patch I'd suggest: replace the
 
-Thanks for your help!!
+          if (arch_get_random_long(&v))
+                  crng->state[14] ^= v;
 
--ritesh
+with
 
+          if (!arch_get_random_long(&v))
+                  v = random_get_entropy();
+          crng->state[14] += v;
 
+instead. Yeah, it still doesn't help on machines that don't even have
+a cycle counter, but it at least means that you don't have to have a
+CPU rdrand (or equivalent) but you do have a cycle counter, now the
+extraction of randomness from the pool doesn't just do the
+(predictable) mutation for the backtracking, but actually means that
+you have some very hard to predict timing effects.
 
-> 
-> w/        = with parallel dio reads (original)
-> w/o       = reverting parallel dio reads
-> w/o+      = reverting parallel dio reads + dioread_nolock
-> ilock     = ext4-ilock-RFC
-> ilock+    = ext4-ilock-RFC + dioread_nolock
-> ilocknew  = ext4-ilock-RFC latest
-> ilocknew+ = ext4-ilock-RFC latest + dioread_nolock
-> 
-> 
-> bs=4k:
-> ------------------------------------------------------------------
->            |            READ           |           WRITE          |
-> ------------------------------------------------------------------
-> w/        | 30898KB/s,7724,555.00us   | 30875KB/s,7718,479.70us  |
-> ------------------------------------------------------------------
-> w/o       | 117915KB/s,29478,248.18us | 117854KB/s,29463,21.91us |
-> ------------------------------------------------------------------
-> w/o+      | 123450KB/s,30862,245.77us | 123368KB/s,30841,12.14us |
-> ------------------------------------------------------------------
-> ilock     | 29964KB/s,7491,326.70us   | 29940KB/s,7485,740.62us  |
-> ------------------------------------------------------------------
-> ilocknew  | 30190KB/s,7547,497.47us   | 30159KB/s,7539,561.85us  |
-> ------------------------------------------------------------------
-> ilock+    | 123685KB/s,30921,245.52us | 123601KB/s,30900,12.11us |
-> ------------------------------------------------------------------
-> ilocknew+ | 123169KB/s,30792,245.81us | 123087KB/s,30771,12.85us |
-> ------------------------------------------------------------------
-> 
-> 
-> bs=16k:
-> ------------------------------------------------------------------
->            |            READ           |           WRITE          |
-> ------------------------------------------------------------------
-> w/        | 58961KB/s,3685,835.28us   | 58877KB/s,3679,1335.98us |
-> ------------------------------------------------------------------
-> w/o       | 218409KB/s,13650,554.46us | 218257KB/s,13641,29.22us |
-> ------------------------------------------------------------------
-> w/o+      | 222477KB/s,13904,552.94us | 222322KB/s,13895,20.28us |
-> ------------------------------------------------------------------
-> ilock     | 56039KB/s,3502,632.96us   | 55943KB/s,3496,1652.72us |
-> ------------------------------------------------------------------
-> ilocknew  | 57317KB/s,3582,1023.88us  | 57230KB/s,3576,1209.91us |
-> ------------------------------------------------------------------
-> ilock+    | 222747KB/s,13921,552.57us | 222592KB/s,13912,20.31us |
-> ------------------------------------------------------------------
-> ilocknew+ | 221945KB/s,13871,552.61us | 221791KB/s,13861,21.29us |
-> ------------------------------------------------------------------
-> 
-> bs=64k
-> -------------------------------------------------------------------
->            |            READ           |           WRITE           |
-> -------------------------------------------------------------------
-> w/        | 119396KB/s,1865,1759.38us | 119159KB/s,1861,2532.26us |
-> -------------------------------------------------------------------
-> w/o       | 422815KB/s,6606,1146.05us | 421619KB/s,6587,60.72us   |
-> --------------------------------------------,----------------------
-> w/o+      | 427406KB/s,6678,1141.52us | 426197KB/s,6659,52.79us   |
-> -------------------------------------------------------------------
-> ilock     | 105800KB/s,1653,1451.68us | 105721KB/s,1651,3388.64us |
-> -------------------------------------------------------------------
-> ilocknew  | 107447KB/s,1678,1654.33us | 107322KB/s,1676,3112.96us |
-> -------------------------------------------------------------------
-> ilock+    | 427678KB/s,6682,1142.13us | 426468KB/s,6663,52.31us   |
-> -------------------------------------------------------------------
-> ilocknew+ | 427054KB/s,6672,1143.43us | 425846KB/s,6653,52.87us   |
-> -------------------------------------------------------------------
-> 
-> bs=512k
-> -------------------------------------------------------------------
->            |            READ           |           WRITE           |
-> -------------------------------------------------------------------
-> w/        | 392973KB/s,767,5046.35us  | 393165KB/s,767,5359.86us  |
-> -------------------------------------------------------------------
-> w/o       | 590266KB/s,1152,4312.01us | 590554KB/s,1153,2606.82us |
-> -------------------------------------------------------------------
-> w/o+      | 618752KB/s,1208,4125.82us | 619054KB/s,1209,2487.90us |
-> -------------------------------------------------------------------
-> ilock     | 296239KB/s,578,4703.10us  | 296384KB/s,578,9049.32us  |
-> -------------------------------------------------------------------
-> ilocknew  | 309740KB/s,604,5485.93us  | 309892KB/s,605,7666.79us  |
-> -------------------------------------------------------------------
-> ilock+    | 616636KB/s,1204,4143.38us | 616937KB/s,1204,2490.08us |
-> -------------------------------------------------------------------
-> ilocknew+ | 618159KB/s,1207,4129.76us | 618461KB/s,1207,2486.90us |
-> -------------------------------------------------------------------
-> 
-> bs=1M
-> -------------------------------------------------------------------
->            |            READ           |           WRITE           |
-> -------------------------------------------------------------------
-> w/        | 487779KB/s,476,8058.55us  | 485592KB/s,474,8630.51us  |
-> -------------------------------------------------------------------
-> w/o       | 593927KB/s,580,7623.63us  | 591265KB/s,577,6163.42us  |
-> -------------------------------------------------------------------
-> w/o+      | 615011KB/s,600,7399.93us  | 612255KB/s,597,5936.61us  |
-> -------------------------------------------------------------------
-> ilock     | 394762KB/s,385,7097.55us  | 392993KB/s,383,13626.98us |
-> -------------------------------------------------------------------
-> ilocknew  | 422052KB/s,412,8338.16us  | 420161KB/s,410,11008.95us |
-> -------------------------------------------------------------------
-> ilock+    | 626183KB/s,611,7319.16us  | 623377KB/s,608,5773.24us  |
-> -------------------------------------------------------------------
-> ilocknew+ | 626006KB/s,611,7281.09us  | 623200KB/s,608,5817.84us  |
-> -------------------------------------------------------------------
-> 
+Again, in this case a cycle counter really does add a small amount of
+entropy (everybody agrees that modern CPU's are simply too complex to
+be predictable at a cycle level), but that's not really the point. The
+point is that now doing the extraction really fundamentally changes
+the state in unpredictable ways, so that you don't have that "if I
+recognize a value, I know what the next value will be" kind of attack.
 
+Which, as mentioned, is actually not a purely theoretical concern.
+
+Note small detail above: I changed the ^= to a +=. Addition tends to
+be better (due to carry between bits) when there might be bit
+commonalities.  Particularly with something like a cycle count where
+two xors can mostly cancel out previous bits rather than move bits
+around in the word.
+
+With an actual random input from rdrand, the xor-vs-add is immaterial
+and doesn't matter, of course, so the old code made sense in that
+context.
+
+In the attached patch I also moved the arch_get_random_long() and
+random_get_entropy() to outside the crng spinlock. We're not talking
+blocking operations, but it can easily be hundreds of cycles with
+rdrand retries, or the random_get_entropy() reading an external clock
+on some architectures.
+
+                 Linus
+
+--000000000000545cbf0592ed7546
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k0r4ezrw0>
+X-Attachment-Id: f_k0r4ezrw0
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2hhci9yYW5kb20uYyBiL2RyaXZlcnMvY2hhci9yYW5kb20u
+YwotLS0gYS9kcml2ZXJzL2NoYXIvcmFuZG9tLmMKKysrIGIvZHJpdmVycy9jaGFyL3JhbmRvbS5j
+CkBAIC0xMDU3LDkgKzEwNTcsMTAgQEAgc3RhdGljIHZvaWQgX2V4dHJhY3RfY3JuZyhzdHJ1Y3Qg
+Y3JuZ19zdGF0ZSAqY3JuZywKIAkgICAgKHRpbWVfYWZ0ZXIoY3JuZ19nbG9iYWxfaW5pdF90aW1l
+LCBjcm5nLT5pbml0X3RpbWUpIHx8CiAJICAgICB0aW1lX2FmdGVyKGppZmZpZXMsIGNybmctPmlu
+aXRfdGltZSArIENSTkdfUkVTRUVEX0lOVEVSVkFMKSkpCiAJCWNybmdfcmVzZWVkKGNybmcsIGNy
+bmcgPT0gJnByaW1hcnlfY3JuZyA/ICZpbnB1dF9wb29sIDogTlVMTCk7CisJaWYgKCFhcmNoX2dl
+dF9yYW5kb21fbG9uZygmdikpCisJCXYgPSByYW5kb21fZ2V0X2VudHJvcHkoKTsKIAlzcGluX2xv
+Y2tfaXJxc2F2ZSgmY3JuZy0+bG9jaywgZmxhZ3MpOwotCWlmIChhcmNoX2dldF9yYW5kb21fbG9u
+ZygmdikpCi0JCWNybmctPnN0YXRlWzE0XSBePSB2OworCWNybmctPnN0YXRlWzE0XSArPSB2Owog
+CWNoYWNoYTIwX2Jsb2NrKCZjcm5nLT5zdGF0ZVswXSwgb3V0KTsKIAlpZiAoY3JuZy0+c3RhdGVb
+MTJdID09IDApCiAJCWNybmctPnN0YXRlWzEzXSsrOwo=
+--000000000000545cbf0592ed7546--
