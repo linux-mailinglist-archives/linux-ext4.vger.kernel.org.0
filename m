@@ -2,50 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06508B85DD
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 00:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861B5B8832
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 01:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404931AbfISWZQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Sep 2019 18:25:16 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:45442 "EHLO
+        id S2394147AbfISXoi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Sep 2019 19:44:38 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:34450 "EHLO
         mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407077AbfISWYF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Sep 2019 18:24:05 -0400
-Received: by mail-lj1-f194.google.com with SMTP id q64so5116528ljb.12;
-        Thu, 19 Sep 2019 15:24:03 -0700 (PDT)
+        with ESMTP id S1732769AbfISXoh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Sep 2019 19:44:37 -0400
+Received: by mail-lj1-f194.google.com with SMTP id j19so3805095lja.1;
+        Thu, 19 Sep 2019 16:44:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        h=subject:from:to:cc:references:message-id:date:user-agent
          :mime-version:in-reply-to;
-        bh=Qdei0vz5Ent769bcm6WZCPTkwK74qx0JUnG76SvybaA=;
-        b=HpJWb57Yk/o9pjWic2+J+IM5nh3jPTtKcMBmrbTfJwbRHSZYeoigSsNKmO/UYHAhA3
-         FCVPjpsQyxqFhZqs5BIfbVX02+mVF+1UMSQkubn/gsA0C31D8bKjIwupJt67nPXRm+5H
-         /0YBsxi643IxTBEl6Yumf9VLnG/nA7UtgyocDfy/JuQBp2NhWxlDdzSOvQrXQlaEfsBa
-         heaJP4XB5sf1fQp3u8eIk1HHx+vzlcijwGKFA/r+/SBCuT157lHMsJ6MEaG6E95mEBg1
-         YLD1VOSZ2dNN0PWzorGCKOVUyaQJFXDVDq9MH3uMR/HkKxpoSrMMuDNyeVp6GmQJ0Vv3
-         Kd3A==
+        bh=i7RuiP19W1VhsgitsYVAzaqHOT4gNVIayT1+H/ObASg=;
+        b=ZVV3OwmA72jygcagD5B0KAqIyLiyPww51wDkDJaO8LIneKYfe2QZ3m5QXOkL+pC2AO
+         8Kdeop+eawtm0bdXcr53uhjpLYINXNqJPYgGDZ7ERf4hDrlejE4S7Xg/kJtYbJR4V0wx
+         R/XdCVdRNweuqTfnt47FH+mDQzpOGJaLLmDa8FKZmPXmfk0snZ3ljSmiO3D+ZVpHg01X
+         2+sgudXxJO9LHy5fIPBTBvO7ZrvEV367GleQIzkVSYRlLsw45R/PxC/k76iqczHjD1G8
+         I0Ep2ck83c6yUV7kl1jAEaEyxRAnbldF7pVVHJinVkxnDrPVU9693VwwVuD7mxJeyK/K
+         3+EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
          :user-agent:mime-version:in-reply-to;
-        bh=Qdei0vz5Ent769bcm6WZCPTkwK74qx0JUnG76SvybaA=;
-        b=kkxAGwLmMmZpSC+/gxY/3rJM/jyjH0pFOg25VPhMgVjKs3HLj5wpNTf0Cv6zqEEtSf
-         rKMUDqMoTSpRr94yjc4gNf1et7OCkKNbkZ7lfZJ002114aCRzf2eYLE2Q35pMAwqtAfm
-         NMTMtT/Z+r9pxE2eK2mTJsvZwX/IyPflWLc7hQddVoyOJ+vrna04D2mLbViUJdDT+yB/
-         QID9PMGNTDNZ+p+KP0au5cBgsxce3WgofcZIRSMiQvceH1lVy7s3XCNNLx7GxQJXlHyH
-         uBEpMi5kbi9hhaLZUQLaPEaK9qWhK1yc/JJMLOGk2oyA9FDNfiaqDLC2WHp0xvFXy1/V
-         3mJA==
-X-Gm-Message-State: APjAAAWYPs5F8W9NXKp9h7PHwEhKOJQcZBORtQOtE4fUx/nDsysQ08V+
-        52qab28/CiJ8tV58Z+mlRkgoCvyoEFYslQ==
-X-Google-Smtp-Source: APXvYqzfuxut82MF+uuUbn5TFcujd/qjECTp7BYapsavuqhaYdQNis/JWRbBWEfBIrA7w2+xE+TEPg==
-X-Received: by 2002:a2e:2bdb:: with SMTP id r88mr6653831ljr.82.1568931842008;
-        Thu, 19 Sep 2019 15:24:02 -0700 (PDT)
+        bh=i7RuiP19W1VhsgitsYVAzaqHOT4gNVIayT1+H/ObASg=;
+        b=RKgwmpuepyTaX41R7jn/IpzAADFUO1k6gD8Xi8sxtR/GajeRyVaEVCIna6XoZMdr+x
+         TKtbH7PrXhp+13c7PfDEvqkPtq4UXBWp2Ll1h5rZrlgP5VQ3+vMQVYCRK7lVV2LZhUp1
+         /2PCs+cObYo/L5bKDjo7mm1EoUulZTWDDm2GmYWbgET0bm7MJjLJ8WuxfOtlm53+tmKP
+         NkT6eui6DM0rhaMkEBgzva69wIS4t3TRtqQ6Hg1GvXyw8JEuEwUV5VE1JMgv7fxHiayH
+         7ax28PVkx4w8uSU2/R/vtUohdS/teJWXFit3erIvAsE0Kk9Qxh2AygZeQa8HobRv4jaX
+         n2Ow==
+X-Gm-Message-State: APjAAAV4dk9Zsgd8kDSJYmc/tLPyP79SP9NaKo6TTJy75SKb5xMqiTGc
+        Y4M1TNmXAZX03t8NwjFXTVuK8eJ123N/TA==
+X-Google-Smtp-Source: APXvYqxlnApVYXOOaxD88i0/CP5hDCXTm3cions2ZzKPjkoK6Fq96tp3e36TU5hXdS1YiPqNy30Eug==
+X-Received: by 2002:a2e:1b56:: with SMTP id b83mr6816283ljb.107.1568936673639;
+        Thu, 19 Sep 2019 16:44:33 -0700 (PDT)
 Received: from ?IPv6:2a02:17d0:4a6:5700::ae2? ([2a02:17d0:4a6:5700::ae2])
-        by smtp.googlemail.com with ESMTPSA id f22sm40291lfa.41.2019.09.19.15.24.00
+        by smtp.googlemail.com with ESMTPSA id q21sm85117lfc.2.2019.09.19.16.44.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 19 Sep 2019 15:24:01 -0700 (PDT)
+        Thu, 19 Sep 2019 16:44:32 -0700 (PDT)
 Subject: Re: [PATCH RFC v4 1/1] random: WARN on large getrandom() waits and
  introduce getrandom2()
+From:   "Alexander E. Patrakov" <patrakov@gmail.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         "Ahmed S. Darwish" <darwish.07@gmail.com>,
@@ -68,14 +69,14 @@ References: <20190912034421.GA2085@darwi-home-pc>
  <CAHk-=wjTbpcyVevsy3g-syB5v9gk_rR-yRFrUAvTL8NFuGfCrw@mail.gmail.com>
  <6adb02d4-c486-a945-7f51-d007d6de45b2@gmail.com>
  <CAHk-=wjGAaPAGnfok6fuZK1PYMkZ9bNOGkWXLYtS7+6bAWnAGQ@mail.gmail.com>
-From:   "Alexander E. Patrakov" <patrakov@gmail.com>
-Message-ID: <bd24cba4-b9c8-2ed8-6434-ee5932c24fb9@gmail.com>
-Date:   Fri, 20 Sep 2019 03:23:58 +0500
+ <bd24cba4-b9c8-2ed8-6434-ee5932c24fb9@gmail.com>
+Message-ID: <9f359f02-0b43-888c-2c05-8e6661bfa38f@gmail.com>
+Date:   Fri, 20 Sep 2019 04:44:30 +0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjGAaPAGnfok6fuZK1PYMkZ9bNOGkWXLYtS7+6bAWnAGQ@mail.gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms010904010601080104050401"
+In-Reply-To: <bd24cba4-b9c8-2ed8-6434-ee5932c24fb9@gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms010005020607080905000605"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -83,107 +84,80 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 This is a cryptographically signed message in MIME format.
 
---------------ms010904010601080104050401
+--------------ms010005020607080905000605
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-PH
 Content-Transfer-Encoding: quoted-printable
 
-20.09.2019 02:47, Linus Torvalds =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> On Thu, Sep 19, 2019 at 1:45 PM Alexander E. Patrakov
-> <patrakov@gmail.com> wrote:
+20.09.2019 03:23, Alexander E. Patrakov =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> 20.09.2019 02:47, Linus Torvalds =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> On Thu, Sep 19, 2019 at 1:45 PM Alexander E. Patrakov
+>> <patrakov@gmail.com> wrote:
+>>>
+>>> This already resembles in-kernel haveged (except that it doesn't cred=
+it
+>>> entropy), and Willy Tarreau said "collect the small entropy where it =
+is,
+>>> period" today. So, too many people touched upon the topic in one day,=
+
+>>> and therefore I'll bite.
 >>
->> This already resembles in-kernel haveged (except that it doesn't credi=
-t
->> entropy), and Willy Tarreau said "collect the small entropy where it i=
-s,
->> period" today. So, too many people touched upon the topic in one day,
->> and therefore I'll bite.
->=20
-> I'm one of the people who aren't entirely convinced by the jitter
-> entropy - I definitely believe it exists, I just am not necessarily
-> convinced about the actual entropy calculations.
->=20
-> So while I do think we should take things like the cycle counter into
-> account just because I think it's a a useful way to force some noise,
-> I am *not* a huge fan of the jitter entropy driver either, because of
-> the whole "I'm not convinced about the amount of entropy".
->=20
-> The whole "third order time difference" thing would make sense if the
-> time difference was some kind of smooth function - which it is at a
-> macro level.
->=20
-> But at a micro level, I could easily see the time difference having
-> some very simple pattern - say that your cycle counter isn't really
-> cycle-granular, and the load takes 5.33 "cycles" and you see a time
-> difference pattern of (5, 5, 6, 5, 5, 6, ...). No real entropy at all
-> there, it is 100% reliable.
->=20
-> At a macro level, that's a very smooth curve, and you'd say "ok, time
-> difference is 5.3333 (repeating)". But that's not what the jitter
-> entropy code does. It just does differences of differences.
->=20
-> And that completely non-random pattern has a first-order difference of
-> 0, 1, 1, 0, 1, 1.. and a second order of 1, 0, 1, 1, 0,  and so on
-> forever. So the "jitter entropy" logic will assign that completely
-> repeatable thing entropy, because the delta difference doesn't ever go
-> away.
->=20
-> Maybe I misread it.
+>> I'm one of the people who aren't entirely convinced by the jitter
+>> entropy - I definitely believe it exists, I just am not necessarily
+>> convinced about the actual entropy calculations.
+>>
+>> So while I do think we should take things like the cycle counter into
+>> account just because I think it's a a useful way to force some noise,
+>> I am *not* a huge fan of the jitter entropy driver either, because of
+>> the whole "I'm not convinced about the amount of entropy".
+>>
+>> The whole "third order time difference" thing would make sense if the
+>> time difference was some kind of smooth function - which it is at a
+>> macro level.
+>>
+>> But at a micro level, I could easily see the time difference having
+>> some very simple pattern - say that your cycle counter isn't really
+>> cycle-granular, and the load takes 5.33 "cycles" and you see a time
+>> difference pattern of (5, 5, 6, 5, 5, 6, ...). No real entropy at all
+>> there, it is 100% reliable.
+>>
+>> At a macro level, that's a very smooth curve, and you'd say "ok, time
+>> difference is 5.3333 (repeating)". But that's not what the jitter
+>> entropy code does. It just does differences of differences.
+>>
+>> And that completely non-random pattern has a first-order difference of=
 
-You didn't. Let me generalize and rephrase the part of the concern that=20
-I agree with, in my own words:
+>> 0, 1, 1, 0, 1, 1.. and a second order of 1, 0, 1, 1, 0,=C2=A0 and so o=
+n
+>> forever. So the "jitter entropy" logic will assign that completely
+>> repeatable thing entropy, because the delta difference doesn't ever go=
 
-The same code is used in cryptoapi rng, and also a userspace version=20
-exists. These two have been tested by the author via the "dieharder"=20
-tool (see the message for commit d9d67c87), so we know that on his=20
-machine it actually produces good-quality random bits. However, the=20
-in-kernel self-test is much, much weaker, and would not catch the=20
-situation when someone's machine is deterministic in a way that you=20
-describe, or something similar.
-
-OTOH, I thought that at least part of the real entropy, if it exists,=20
-comes from the interference of the CPU's memory accesses with the=20
-refresh cycles that are clocked from an independent oscillator. That's=20
-why (in order to catch more of them before declaring the crng=20
-initialized) I have set the quality to the minimum possible that is=20
-guaranteed to be distinct from zero according to the fixed-point math in =
-
-hwrng_fillfn() in drivers/char/hw_random/core.c.
-
+>> away.
+>>
+>> Maybe I misread it.
 >=20
-> We used to (we still do, but we used to too) do that same third-order
-> delta difference ourselves for the interrupt timing entropy estimation
-> in add_timer_randomness(). But I think it's more valid with something
-> that likely has more noise (interrupt timing really _should_ be
-> noisy). It's not clear that the jitterentropy load really has all that
-> much noise.
+> You didn't. Let me generalize and rephrase the part of the concern that=
+=20
+> I agree with, in my own words:
 >=20
-> That said, I'm _also_ not a fan of the user mode models - they happen
-> too late anyway for some users, and as you say, it leaves us open to
-> random (heh) user mode distribution choices that may be more or less
-> broken.
->=20
-> I would perhaps be willing to just put my foot down, and say "ok,
-> we'll solve the 'getrandom(0)' issue by just saying that if that
-> blocks too  much, we'll do the jitter entropy thing".
->=20
-> Making absolutely nobody happy, but working in practice. And maybe
-> encouraging the people who don't like jitter entropy to use
-> GRND_SECURE instead.
+> The same code is used in cryptoapi rng, and also a userspace version=20
+> exists. These two have been tested by the author via the "dieharder"=20
+> tool (see the message for commit d9d67c87), so we know that on his=20
+> machine it actually produces good-quality random bits. However, the=20
+> in-kernel self-test is much, much weaker, and would not catch the=20
+> situation when someone's machine is deterministic in a way that you=20
+> describe, or something similar.
 
-I think this approach makes sense. For those who don't believe in jitter =
-
-entropy, it changes really nothing (except a one-time delay) to Ahmed's=20
-first patch that makes getrandom(0) equivalent to /dev/urandom, and=20
-nobody so far proposed anything better that doesn't break existing=20
-systems. And for those who do believe in jitter entropy, this makes the=20
-situation as good as in OpenBSD.
+A constructive suggestion here would be to put the first few thousands=20
+(ok, a completely made up number) raw timing intervals through a "gzip=20
+compression test" in addition to the third derivative test, just based=20
+on what we already have in the kernel.
 
 --=20
 Alexander E. Patrakov
 
 
---------------ms010904010601080104050401
+--------------ms010005020607080905000605
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -249,8 +223,8 @@ GP3yVDGCA/YwggPyAgEBMIGXMIGCMQswCQYDVQQGEwJJVDEPMA0GA1UECAwGTWlsYW5vMQ8w
 DQYDVQQHDAZNaWxhbm8xIzAhBgNVBAoMGkFjdGFsaXMgUy5wLkEuLzAzMzU4NTIwOTY3MSww
 KgYDVQQDDCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBHMQIQK0NjfYTmoz4r
 qg9tGyNesDANBglghkgBZQMEAgEFAKCCAi8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-BgkqhkiG9w0BCQUxDxcNMTkwOTE5MjIyMzU5WjAvBgkqhkiG9w0BCQQxIgQggAg29WUjGdIh
-K/FjsyJ+2OoV4RNKQNGV1l5/DOK0xpYwbAYJKoZIhvcNAQkPMV8wXTALBglghkgBZQMEASow
+BgkqhkiG9w0BCQUxDxcNMTkwOTE5MjM0NDMwWjAvBgkqhkiG9w0BCQQxIgQgK58SpgVGaQoV
+xcP19nLEx4xA7QmyVd88OE/p90T5jDcwbAYJKoZIhvcNAQkPMV8wXTALBglghkgBZQMEASow
 CwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIB
 QDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBqAYJKwYBBAGCNxAEMYGaMIGXMIGCMQswCQYD
 VQQGEwJJVDEPMA0GA1UECAwGTWlsYW5vMQ8wDQYDVQQHDAZNaWxhbm8xIzAhBgNVBAoMGkFj
@@ -259,10 +233,10 @@ ZW50aWNhdGlvbiBDQSBHMQIQK0NjfYTmoz4rqg9tGyNesDCBqgYLKoZIhvcNAQkQAgsxgZqg
 gZcwgYIxCzAJBgNVBAYTAklUMQ8wDQYDVQQIDAZNaWxhbm8xDzANBgNVBAcMBk1pbGFubzEj
 MCEGA1UECgwaQWN0YWxpcyBTLnAuQS4vMDMzNTg1MjA5NjcxLDAqBgNVBAMMI0FjdGFsaXMg
 Q2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEcxAhArQ2N9hOajPiuqD20bI16wMA0GCSqGSIb3
-DQEBAQUABIIBAFJurVoyf10e2ZWXSR/hYqUFs+7l+0wwexKKP7TOBJH7lnndNtNDDT3kaAss
-0lgX75qet4PesZ906wLa+9+INkbEvdHoMwZpIe+P9PLQmY/v6iw1UtCPR67MpCXLbHMz88wv
-FVwUxPGDl8vYQCLzqsD8Sx7gcAJyjeK4q78k86J3UZU0u0sxcYe4XOaqbtiKL7nma6awVBYI
-Dz4rtL6rBtXC1Y1L6ycHoOHVYS3aIn+1i+sM/B5cRn3aYR80pb0NFv0HBsSgZCbXGb4T8Pqk
-T+G7CFNsIcqYP1MqBU1SiXVqdMxO/wpWqpTewubgxm2MoeUPGkwcwg2Uwasw4CiN87YAAAAA
+DQEBAQUABIIBAIcUJdnriZ4quPoWUWaiu3YJCrjY2O7MXIzcv5YE6BamPiLVtAbNvv1/+mi+
+MzSZrxlJM9Pv71qLJcyRgXKO1UXJg0OGyqaPnz1rXz1BKF5UAT44O9zEw1ELV5biqs70OcGh
+dKVBmos1CdMvHnLR0WB3z5DgUFHGuUjTH2RApvv29be0NYqoG3gqu7OVDKlu8Dh83lIFPusw
+DANMUXQ9+1M6oREFYrpVTZilsN/PtFZnDO7BRuWa7nY6YSEeeMddvNWX3yVhpIr4aOBvGMp3
+N6Iksr7QscLmGuz+zZEUKGp5zB85rRF2gwJq+5MTYCrfiBdgrYhna4En8Z6s+3OdWfEAAAAA
 AAA=
---------------ms010904010601080104050401--
+--------------ms010005020607080905000605--
