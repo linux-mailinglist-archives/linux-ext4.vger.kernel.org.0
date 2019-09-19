@@ -2,41 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC940B7116
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 03:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8D7B7168
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 04:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388277AbfISB3g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Sep 2019 21:29:36 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2730 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387395AbfISB3f (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Sep 2019 21:29:35 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E4FEFF1993D3E79DF086;
-        Thu, 19 Sep 2019 09:29:33 +0800 (CST)
-Received: from [127.0.0.1] (10.133.210.141) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.439.0; Thu, 19 Sep 2019
- 09:29:27 +0800
-Subject: Re: [PATCH] ext4: fix a bug in ext4_wait_for_tail_page_commit
-To:     Jan Kara <jack@suse.cz>
-CC:     <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <houtao1@huawei.com>
-References: <20190917084814.40370-1-yangerkun@huawei.com>
- <20190918104535.GC25056@quack2.suse.cz>
- <71e28624-214c-f676-b215-19f78266de84@huawei.com>
- <20190918132719.GE31891@quack2.suse.cz>
-From:   yangerkun <yangerkun@huawei.com>
-Message-ID: <d6eef0f1-bb89-ba55-53d4-e72d45d75cd3@huawei.com>
-Date:   Thu, 19 Sep 2019 09:29:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S2387930AbfISCIT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Sep 2019 22:08:19 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:14635 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387712AbfISCIT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Sep 2019 22:08:19 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TckWgn0_1568858895;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TckWgn0_1568858895)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 19 Sep 2019 10:08:16 +0800
+Subject: Re: [RFC 0/2] ext4: Improve locking sequence in DIO write path
+To:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
+        tytso@mit.edu, linux-ext4@vger.kernel.org
+Cc:     david@fromorbit.com, hch@infradead.org, adilger@dilger.ca,
+        mbobrowski@mbobrowski.org, rgoldwyn@suse.de
+References: <20190917103249.20335-1-riteshh@linux.ibm.com>
+ <d1f3b048-d21c-67f1-09a3-dd2abf7c156d@linux.alibaba.com>
+ <20190918100336.3A4DA11C050@d06av25.portsmouth.uk.ibm.com>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <d264b7b0-334a-eb36-4fdb-5af5526ea4aa@linux.alibaba.com>
+Date:   Thu, 19 Sep 2019 10:08:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20190918132719.GE31891@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20190918100336.3A4DA11C050@d06av25.portsmouth.uk.ibm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.133.210.141]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -44,122 +41,204 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 
 
-On 2019/9/18 21:27, Jan Kara wrote:
-> On Wed 18-09-19 21:09:00, yangerkun wrote:
->> On 2019/9/18 18:45, Jan Kara wrote:
->>> On Tue 17-09-19 16:48:14, yangerkun wrote:
->>>> No need to wait when offset equals to 0. And it will trigger a bug since
->>>> the latter __ext4_journalled_invalidatepage can free the buffers but leave
->>>> page still dirty.
->>>>
->>>> [   26.057508] ------------[ cut here ]------------
->>>> [   26.058531] kernel BUG at fs/ext4/inode.c:2134!
->>>> ...
->>>> [   26.088130] Call trace:
->>>> [   26.088695]  ext4_writepage+0x914/0xb28
->>>> [   26.089541]  writeout.isra.4+0x1b4/0x2b8
->>>> [   26.090409]  move_to_new_page+0x3b0/0x568
->>>> [   26.091338]  __unmap_and_move+0x648/0x988
->>>> [   26.092241]  unmap_and_move+0x48c/0xbb8
->>>> [   26.093096]  migrate_pages+0x220/0xb28
->>>> [   26.093945]  kernel_mbind+0x828/0xa18
->>>> [   26.094791]  __arm64_sys_mbind+0xc8/0x138
->>>> [   26.095716]  el0_svc_common+0x190/0x490
->>>> [   26.096571]  el0_svc_handler+0x60/0xd0
->>>> [   26.097423]  el0_svc+0x8/0xc
->>>>
->>>> Run below parallel can reproduce it easily(ext3):
->>>> void main()
->>>> {
->>>>           int fd, fd1, fd2, fd3, ret;
->>>>           void *addr;
->>>>           size_t length = 4096;
->>>>           int flags;
->>>>           off_t offset = 0;
->>>>           char *str = "12345";
->>>>
->>>>           fd = open("a", O_RDWR | O_CREAT);
->>>>           assert(fd >= 0);
->>>>
->>>>           ret = ftruncate(fd, length);
->>>>           assert(ret == 0);
->>>>
->>>>           fd1 = open("a", O_RDWR | O_CREAT, -1);
->>>>           assert(fd1 >= 0);
->>>>
->>>>           flags = 0xc00f;/*Journal data mode*/
->>>>           ret = ioctl(fd1, _IOW('f', 2, long), &flags);
->>>>           assert(ret == 0);
->>>>
->>>>           fd2 = open("a", O_RDWR | O_CREAT);
->>>>           assert(fd2 >= 0);
->>>>
->>>>           fd3 = open("a", O_TRUNC | O_NOATIME);
->>>>           assert(fd3 >= 0);
->>>>
->>>>           addr = mmap(NULL, length, 0xe, 0x28013, fd2, offset);
->>>
->>> Ugh, these mmap flags look pretty bogus. Were they generated by some
->>> fuzzer?
->> Yeah, generated by syzkaller.
->>>
->>>>           assert(addr != (void *)-1);
->>>>           memcpy(addr, str, 5);
->>>
->>> Also the O_TRUNC open above will truncate "a" to 0 so the mapping is
->>> actually beyond i_size and this memcpy should fail with SIGBUS. So I'm
->>> surprised your test program gets up to mbind()...
+On 19/9/18 18:03, Ritesh Harjani wrote:
+> Hello Joseph,
+> 
+> First of all thanks a lot for collecting a thorough
+> performance numbers.
+> 
+> On 9/18/19 12:05 PM, Joseph Qi wrote:
+>> Hi Ritesh,
 >>
->> We run the program parallel, sometimes will run as below:
->>
->> reproduce1                         reproduce2
->>
->> ...                            |   ...
->> truncate to 4k                 |
->> change to journal data mode    |
->>                                 |   memcpy(set page dirty)
->> truncate to 0:                 |
->> ext4_setattr:                  |
->> ...                            |
->> ext4_wait_for_tail_page_commit |
->>                                 |   mbind(trigger bug)
->> truncate_pagecache(clean dirty)|   ...
->> ...                            |
->> Reproduce2 will mark page as dirty by memcpy, then mbind run between
->> ext4_wait_for_tail_page_commit and truncate_pagecache in ext4_setattr can
->> trigger the bug with page still be dirty but buffer head has been free.
+>> On 19/9/17 18:32, Ritesh Harjani wrote:
+>>> Hello,
+>>>
+>>> This patch series is based on the upstream discussion with Jan
+>>> & Joseph @ [1].
+>>> It is based on top of Matthew's v3 ext4 iomap patch series [2]
+>>>
+>>> Patch-1: Adds the ext4_ilock/unlock APIs and also replaces all
+>>> inode_lock/unlock instances from fs/ext4/*
+>>>
+>>> For now I already accounted for trylock/lock issue symantics
+>>> (which was discussed here [3]) in the same patch,
+>>> since the this whole patch was around inode_lock/unlock API,
+>>> so I thought it will be best to address that issue in the same patch.
+>>> However, kindly let me know if otherwise.
+>>>
+>>> Patch-2: Commit msg of this patch describes in detail about
+>>> what it is doing.
+>>> In brief - we try to first take the shared lock (instead of exclusive
+>>> lock), unless it is a unaligned_io or extend_io. Then in
+>>> ext4_dio_write_checks(), if we start with shared lock, we see
+>>> if we can really continue with shared lock or not. If not, then
+>>> we release the shared lock then acquire exclusive lock
+>>> and restart ext4_dio_write_checks().
+>>>
+>>>
+>>> Tested against few xfstests (with dioread_nolock mount option),
+>>> those ran fine (ext4 & generic).
+>>>
+>>> I tried testing performance numbers on my VM (since I could not get
+>>> hold of any real h/w based test device). I could test the fact
+>>> that earlier we were trying to do downgrade_write() lock, but with
+>>> this patch, that path is now avoided for fio test case
+>>> (as reported by Joseph in [4]).
+>>> But for the actual results, I am not sure if VM machine testing could
+>>> really give the reliable perf numbers which we want to take a look at.
+>>> Though I do observe some form of perf improvements, but I could not
+>>> get any reliable numbers (not even with the same list of with/without
+>>> patches with which Joseph posted his numbers [1]).
+>>>
+>>>
+>>> @Joseph,
+>>> Would it be possible for you to give your test case a run with this
+>>> patches? That will be really helpful.
+>>>
+>>> Branch for this is hosted at below tree.
+>>>
+>>> https://github.com/riteshharjani/linux/tree/ext4-ilock-RFC
+>>>
+>> I've tested your branch, the result is:
+>> mounting with dioread_nolock, it behaves the same like reverting
+>> parallel dio reads + dioread_nolock;
 > 
-> Aha! Thanks for explanation. Makes sense. So I agree with your patch but we
-> also need to update the comment before the condition in
-> ext4_wait_for_tail_page_commit(). Something like:
+> Good sign, means that patch is doing what it is supposed to do.
 > 
-> If the page is fully truncated, we don't need to wait for any commit (and
-> we even should not as __ext4_journalled_invalidatepage() may strip all
-> buffers from the page but keep the page dirty which can then confuse e.g.
-> concurrent ext4_writepage() seeing dirty page without buffers). Also we
-> don't need to wait for any commit if all buffers in the page remain valid.
-> This is most beneficial for the common case of blocksize == PAGE_SIZE.
+> 
+>> while mounting without dioread_nolock, no improvement, or even worse.
+>> Please refer the test data below.
+> Actually without dioread_nolock, we take the restart path.
+> i.e. initially we start with SHARED_LOCK, but if dioread_nolock
+> is not enabled (or check some other conditions like overwrite),
+> we release the shared lock and re-acquire the EXCL lock.
+> 
+> 
+> But as an optimization, I added the below diff just now
+> to directly first check for ext4_should_dioread_nolock too
+> before taking the shared lock.
+> 
+> I think with this we should not see any performance regression
+> (even without dioread_nolock mount option).
+> Since it will directly start with exclusive lock
+> if dioread_nolock mount option is not enabled.
+> 
+> I have updated the tree with this diff in same branch.
+> 
+> 
+> ext4_dio_file_write_iter ()
+> <...>
+> 
+> 498         if (iolock == EXT4_IOLOCK_SHARED && !ext4_should_dioread_nolock(inode))
+> 499                 iolock = EXT4_IOLOCK_EXCL;
+> 500
+> <...>
+> 
+With this optimization, when mounting without dioread_nolock, it has
+a little improvement compared to the last ilock version, but still
+poor than original, especially for big block size.
 
-I will add this comment and reorganize the patch. Thanks a lot!
+w/        = with parallel dio reads (original)
+w/o       = reverting parallel dio reads
+w/o+      = reverting parallel dio reads + dioread_nolock
+ilock     = ext4-ilock-RFC
+ilock+    = ext4-ilock-RFC + dioread_nolock
+ilocknew  = ext4-ilock-RFC latest
+ilocknew+ = ext4-ilock-RFC latest + dioread_nolock
 
-> 
-> 								Honza
-> 
->>>> ---
->>>>    fs/ext4/inode.c | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->>>> index 006b7a2070bf..a9943ae4f74d 100644
->>>> --- a/fs/ext4/inode.c
->>>> +++ b/fs/ext4/inode.c
->>>> @@ -5479,7 +5479,7 @@ static void ext4_wait_for_tail_page_commit(struct inode *inode)
->>>>    	 * do. We do the check mainly to optimize the common PAGE_SIZE ==
->>>>    	 * blocksize case
->>>>    	 */
->>>> -	if (offset > PAGE_SIZE - i_blocksize(inode))
->>>> +	if (!offset || offset > PAGE_SIZE - i_blocksize(inode))
->>>>    		return;
->>>>    	while (1) {
->>>>    		page = find_lock_page(inode->i_mapping,
 
+bs=4k:
+------------------------------------------------------------------
+          |            READ           |           WRITE          |
+------------------------------------------------------------------
+w/        | 30898KB/s,7724,555.00us   | 30875KB/s,7718,479.70us  |
+------------------------------------------------------------------
+w/o       | 117915KB/s,29478,248.18us | 117854KB/s,29463,21.91us |
+------------------------------------------------------------------
+w/o+      | 123450KB/s,30862,245.77us | 123368KB/s,30841,12.14us |
+------------------------------------------------------------------
+ilock     | 29964KB/s,7491,326.70us   | 29940KB/s,7485,740.62us  |
+------------------------------------------------------------------
+ilocknew  | 30190KB/s,7547,497.47us   | 30159KB/s,7539,561.85us  |
+------------------------------------------------------------------
+ilock+    | 123685KB/s,30921,245.52us | 123601KB/s,30900,12.11us |
+------------------------------------------------------------------
+ilocknew+ | 123169KB/s,30792,245.81us | 123087KB/s,30771,12.85us |
+------------------------------------------------------------------
+
+
+bs=16k:
+------------------------------------------------------------------
+          |            READ           |           WRITE          |
+------------------------------------------------------------------
+w/        | 58961KB/s,3685,835.28us   | 58877KB/s,3679,1335.98us |
+------------------------------------------------------------------
+w/o       | 218409KB/s,13650,554.46us | 218257KB/s,13641,29.22us |
+------------------------------------------------------------------
+w/o+      | 222477KB/s,13904,552.94us | 222322KB/s,13895,20.28us |
+------------------------------------------------------------------
+ilock     | 56039KB/s,3502,632.96us   | 55943KB/s,3496,1652.72us |
+------------------------------------------------------------------
+ilocknew  | 57317KB/s,3582,1023.88us  | 57230KB/s,3576,1209.91us |
+------------------------------------------------------------------
+ilock+    | 222747KB/s,13921,552.57us | 222592KB/s,13912,20.31us |
+------------------------------------------------------------------
+ilocknew+ | 221945KB/s,13871,552.61us | 221791KB/s,13861,21.29us |
+------------------------------------------------------------------
+
+bs=64k
+-------------------------------------------------------------------
+          |            READ           |           WRITE           |
+-------------------------------------------------------------------
+w/        | 119396KB/s,1865,1759.38us | 119159KB/s,1861,2532.26us |
+-------------------------------------------------------------------
+w/o       | 422815KB/s,6606,1146.05us | 421619KB/s,6587,60.72us   |
+--------------------------------------------,----------------------
+w/o+      | 427406KB/s,6678,1141.52us | 426197KB/s,6659,52.79us   |
+-------------------------------------------------------------------
+ilock     | 105800KB/s,1653,1451.68us | 105721KB/s,1651,3388.64us |
+-------------------------------------------------------------------
+ilocknew  | 107447KB/s,1678,1654.33us | 107322KB/s,1676,3112.96us |
+-------------------------------------------------------------------
+ilock+    | 427678KB/s,6682,1142.13us | 426468KB/s,6663,52.31us   |
+-------------------------------------------------------------------
+ilocknew+ | 427054KB/s,6672,1143.43us | 425846KB/s,6653,52.87us   |
+-------------------------------------------------------------------
+
+bs=512k
+-------------------------------------------------------------------
+          |            READ           |           WRITE           |
+-------------------------------------------------------------------
+w/        | 392973KB/s,767,5046.35us  | 393165KB/s,767,5359.86us  |
+-------------------------------------------------------------------
+w/o       | 590266KB/s,1152,4312.01us | 590554KB/s,1153,2606.82us |
+-------------------------------------------------------------------
+w/o+      | 618752KB/s,1208,4125.82us | 619054KB/s,1209,2487.90us |
+-------------------------------------------------------------------
+ilock     | 296239KB/s,578,4703.10us  | 296384KB/s,578,9049.32us  |
+-------------------------------------------------------------------
+ilocknew  | 309740KB/s,604,5485.93us  | 309892KB/s,605,7666.79us  |
+-------------------------------------------------------------------
+ilock+    | 616636KB/s,1204,4143.38us | 616937KB/s,1204,2490.08us |
+-------------------------------------------------------------------
+ilocknew+ | 618159KB/s,1207,4129.76us | 618461KB/s,1207,2486.90us |
+-------------------------------------------------------------------
+
+bs=1M
+-------------------------------------------------------------------
+          |            READ           |           WRITE           |
+-------------------------------------------------------------------
+w/        | 487779KB/s,476,8058.55us  | 485592KB/s,474,8630.51us  |
+-------------------------------------------------------------------
+w/o       | 593927KB/s,580,7623.63us  | 591265KB/s,577,6163.42us  |
+-------------------------------------------------------------------
+w/o+      | 615011KB/s,600,7399.93us  | 612255KB/s,597,5936.61us  |
+-------------------------------------------------------------------
+ilock     | 394762KB/s,385,7097.55us  | 392993KB/s,383,13626.98us |
+-------------------------------------------------------------------
+ilocknew  | 422052KB/s,412,8338.16us  | 420161KB/s,410,11008.95us |
+-------------------------------------------------------------------
+ilock+    | 626183KB/s,611,7319.16us  | 623377KB/s,608,5773.24us  |
+-------------------------------------------------------------------
+ilocknew+ | 626006KB/s,611,7281.09us  | 623200KB/s,608,5817.84us  |
+-------------------------------------------------------------------
