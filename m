@@ -2,56 +2,164 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9507DB6FFD
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 02:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC940B7116
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2019 03:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387509AbfISAUP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Sep 2019 20:20:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387406AbfISAUP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Sep 2019 20:20:15 -0400
-Subject: Re: [GIT PULL] fs-verity for 5.4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568852415;
-        bh=Kgnmdq9f4tydvkTaAzsFlsaT7RZYMwPGjy6eZyrv2lg=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=d4TYbWotbCsYwIReC6TqfGLqYzZ83KC56t979ih9FDQTPr7IfbE0f5p7dLiPIIOqg
-         NCKzukI+2Hka2uUCA4sOvoKLK31ijYnyt5jdN+CsHO4N1CyMWrm8exGDvlc/q6deD6
-         cUVAtOMjNAHxacwwUFywbfjnrJ7WSFDHxHPCpjVA=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20190916052053.GB8269@sol.localdomain>
-References: <20190916052053.GB8269@sol.localdomain>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20190916052053.GB8269@sol.localdomain>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
- tags/fsverity-for-linus
-X-PR-Tracked-Commit-Id: 95ae251fe82838b85c6d37e5a1775006e2a42ae0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f60c55a94e1d127186566f06294f2dadd966e9b4
-Message-Id: <156885241510.15091.4135567870760674350.pr-tracker-bot@kernel.org>
-Date:   Thu, 19 Sep 2019 00:20:15 +0000
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
+        id S2388277AbfISB3g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Sep 2019 21:29:36 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2730 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387395AbfISB3f (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Sep 2019 21:29:35 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E4FEFF1993D3E79DF086;
+        Thu, 19 Sep 2019 09:29:33 +0800 (CST)
+Received: from [127.0.0.1] (10.133.210.141) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.439.0; Thu, 19 Sep 2019
+ 09:29:27 +0800
+Subject: Re: [PATCH] ext4: fix a bug in ext4_wait_for_tail_page_commit
+To:     Jan Kara <jack@suse.cz>
+CC:     <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <houtao1@huawei.com>
+References: <20190917084814.40370-1-yangerkun@huawei.com>
+ <20190918104535.GC25056@quack2.suse.cz>
+ <71e28624-214c-f676-b215-19f78266de84@huawei.com>
+ <20190918132719.GE31891@quack2.suse.cz>
+From:   yangerkun <yangerkun@huawei.com>
+Message-ID: <d6eef0f1-bb89-ba55-53d4-e72d45d75cd3@huawei.com>
+Date:   Thu, 19 Sep 2019 09:29:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20190918132719.GE31891@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.133.210.141]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Sun, 15 Sep 2019 22:20:53 -0700:
 
-> git://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fsverity-for-linus
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f60c55a94e1d127186566f06294f2dadd966e9b4
+On 2019/9/18 21:27, Jan Kara wrote:
+> On Wed 18-09-19 21:09:00, yangerkun wrote:
+>> On 2019/9/18 18:45, Jan Kara wrote:
+>>> On Tue 17-09-19 16:48:14, yangerkun wrote:
+>>>> No need to wait when offset equals to 0. And it will trigger a bug since
+>>>> the latter __ext4_journalled_invalidatepage can free the buffers but leave
+>>>> page still dirty.
+>>>>
+>>>> [   26.057508] ------------[ cut here ]------------
+>>>> [   26.058531] kernel BUG at fs/ext4/inode.c:2134!
+>>>> ...
+>>>> [   26.088130] Call trace:
+>>>> [   26.088695]  ext4_writepage+0x914/0xb28
+>>>> [   26.089541]  writeout.isra.4+0x1b4/0x2b8
+>>>> [   26.090409]  move_to_new_page+0x3b0/0x568
+>>>> [   26.091338]  __unmap_and_move+0x648/0x988
+>>>> [   26.092241]  unmap_and_move+0x48c/0xbb8
+>>>> [   26.093096]  migrate_pages+0x220/0xb28
+>>>> [   26.093945]  kernel_mbind+0x828/0xa18
+>>>> [   26.094791]  __arm64_sys_mbind+0xc8/0x138
+>>>> [   26.095716]  el0_svc_common+0x190/0x490
+>>>> [   26.096571]  el0_svc_handler+0x60/0xd0
+>>>> [   26.097423]  el0_svc+0x8/0xc
+>>>>
+>>>> Run below parallel can reproduce it easily(ext3):
+>>>> void main()
+>>>> {
+>>>>           int fd, fd1, fd2, fd3, ret;
+>>>>           void *addr;
+>>>>           size_t length = 4096;
+>>>>           int flags;
+>>>>           off_t offset = 0;
+>>>>           char *str = "12345";
+>>>>
+>>>>           fd = open("a", O_RDWR | O_CREAT);
+>>>>           assert(fd >= 0);
+>>>>
+>>>>           ret = ftruncate(fd, length);
+>>>>           assert(ret == 0);
+>>>>
+>>>>           fd1 = open("a", O_RDWR | O_CREAT, -1);
+>>>>           assert(fd1 >= 0);
+>>>>
+>>>>           flags = 0xc00f;/*Journal data mode*/
+>>>>           ret = ioctl(fd1, _IOW('f', 2, long), &flags);
+>>>>           assert(ret == 0);
+>>>>
+>>>>           fd2 = open("a", O_RDWR | O_CREAT);
+>>>>           assert(fd2 >= 0);
+>>>>
+>>>>           fd3 = open("a", O_TRUNC | O_NOATIME);
+>>>>           assert(fd3 >= 0);
+>>>>
+>>>>           addr = mmap(NULL, length, 0xe, 0x28013, fd2, offset);
+>>>
+>>> Ugh, these mmap flags look pretty bogus. Were they generated by some
+>>> fuzzer?
+>> Yeah, generated by syzkaller.
+>>>
+>>>>           assert(addr != (void *)-1);
+>>>>           memcpy(addr, str, 5);
+>>>
+>>> Also the O_TRUNC open above will truncate "a" to 0 so the mapping is
+>>> actually beyond i_size and this memcpy should fail with SIGBUS. So I'm
+>>> surprised your test program gets up to mbind()...
+>>
+>> We run the program parallel, sometimes will run as below:
+>>
+>> reproduce1                         reproduce2
+>>
+>> ...                            |   ...
+>> truncate to 4k                 |
+>> change to journal data mode    |
+>>                                 |   memcpy(set page dirty)
+>> truncate to 0:                 |
+>> ext4_setattr:                  |
+>> ...                            |
+>> ext4_wait_for_tail_page_commit |
+>>                                 |   mbind(trigger bug)
+>> truncate_pagecache(clean dirty)|   ...
+>> ...                            |
+>> Reproduce2 will mark page as dirty by memcpy, then mbind run between
+>> ext4_wait_for_tail_page_commit and truncate_pagecache in ext4_setattr can
+>> trigger the bug with page still be dirty but buffer head has been free.
+> 
+> Aha! Thanks for explanation. Makes sense. So I agree with your patch but we
+> also need to update the comment before the condition in
+> ext4_wait_for_tail_page_commit(). Something like:
+> 
+> If the page is fully truncated, we don't need to wait for any commit (and
+> we even should not as __ext4_journalled_invalidatepage() may strip all
+> buffers from the page but keep the page dirty which can then confuse e.g.
+> concurrent ext4_writepage() seeing dirty page without buffers). Also we
+> don't need to wait for any commit if all buffers in the page remain valid.
+> This is most beneficial for the common case of blocksize == PAGE_SIZE.
 
-Thank you!
+I will add this comment and reorganize the patch. Thanks a lot!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+> 
+> 								Honza
+> 
+>>>> ---
+>>>>    fs/ext4/inode.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>>>> index 006b7a2070bf..a9943ae4f74d 100644
+>>>> --- a/fs/ext4/inode.c
+>>>> +++ b/fs/ext4/inode.c
+>>>> @@ -5479,7 +5479,7 @@ static void ext4_wait_for_tail_page_commit(struct inode *inode)
+>>>>    	 * do. We do the check mainly to optimize the common PAGE_SIZE ==
+>>>>    	 * blocksize case
+>>>>    	 */
+>>>> -	if (offset > PAGE_SIZE - i_blocksize(inode))
+>>>> +	if (!offset || offset > PAGE_SIZE - i_blocksize(inode))
+>>>>    		return;
+>>>>    	while (1) {
+>>>>    		page = find_lock_page(inode->i_mapping,
+
