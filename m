@@ -2,84 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3264B9107
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 15:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E98B9298
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 16:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387441AbfITNty (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Sep 2019 09:49:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46466 "EHLO mail.kernel.org"
+        id S2391641AbfITOeE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Sep 2019 10:34:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387424AbfITNty (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 20 Sep 2019 09:49:54 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2391630AbfITOeB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 20 Sep 2019 10:34:01 -0400
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DE062054F;
-        Fri, 20 Sep 2019 13:49:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81D1F21882
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Sep 2019 14:34:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568987393;
-        bh=JziL+5K0N67ZfzV4tlVfkTPVyCElvzMYgV7JKwZMvak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I3aTruf+IgU+nu2WE9zoVKEsbQiuW1la0SrCePBCYi/j7Jep2PZJEI/aEbQCK2dlD
-         FJkBTGSE1Dae8vjnWNYZOGUZtAOcdhrBtwvOMy1GDMt96r5u1dd2sz5lfXy4XASxJo
-         Khgn1c3fwX9e7+fy0lwK0UCkXIO/oAu8Q/KnWcIA=
-Date:   Fri, 20 Sep 2019 14:49:43 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     torvalds@linux-foundation.org, ast@kernel.org,
-        akpm@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
-        jslaby@suse.com, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org,
-        tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
-        tj@kernel.org, mark@fasheh.com, jlbec@evilplan.org,
-        joseph.qi@linux.alibaba.com, ocfs2-devel@oss.oracle.com,
-        davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, duyuyang@gmail.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, alexander.levin@microsoft.com
-Subject: Re: [PATCH -next] treewide: remove unused argument in lock_release()
-Message-ID: <20190920134942.iiygzg6s7dcay56l@willie-the-truck>
-References: <1568909380-32199-1-git-send-email-cai@lca.pw>
- <20190920093700.7nfaghxdrmubp2do@willie-the-truck>
- <1568983836.5576.194.camel@lca.pw>
+        s=default; t=1568990040;
+        bh=5T/4VfiO/HqhsBQATWPC19/qw+SPrKZRtyV53KT0GwQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ERG/TepvuolOT6Mw8ez/j7trPLA7A2UHhgppUbM1UKt5I3anQ/LyiAyc1Gzj2TlKM
+         sADxzjaDUCB5buPl3eS2UovJkkkCM5lajx430tmkdOhaMKDDGW+G/nttRZzcXhrsdr
+         zAieZhwuQe6tN6TAp81EjJVKtEqxNKxDSB5o4mHU=
+Received: by mail-wr1-f46.google.com with SMTP id v8so7033462wrt.2
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Sep 2019 07:34:00 -0700 (PDT)
+X-Gm-Message-State: APjAAAVI1HdsDoQ1oMJ9Mc8szRBxdAjvKsrzYiyuBoXzwRNozlhWcf+Y
+        QGBnP2Z8fK213RnagA5fhVD8zJVYTjfGk6wYBX4CDw==
+X-Google-Smtp-Source: APXvYqw97uK1m0GzlqxXwrKua5Pdc2B9TF8UZRisIXGn8aSTnAlq1AfsIBHJ3uk1lXhVKnKKQuKNgHptfa8+mPFi7KY=
+X-Received: by 2002:adf:fe0f:: with SMTP id n15mr12713274wrr.343.1568990038968;
+ Fri, 20 Sep 2019 07:33:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1568983836.5576.194.camel@lca.pw>
-User-Agent: NeoMutt/20170113 (1.7.2)
+References: <20190912034421.GA2085@darwi-home-pc> <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914122500.GA1425@darwi-home-pc> <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
+ <20190915052242.GG19710@mit.edu> <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
+ <20190918211503.GA1808@darwi-home-pc> <20190918211713.GA2225@darwi-home-pc>
+ <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com> <20190920134609.GA2113@pc>
+In-Reply-To: <20190920134609.GA2113@pc>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 20 Sep 2019 07:33:47 -0700
+X-Gmail-Original-Message-ID: <CALCETrWvE5es3i+to33y6jw=Yf0Tw6ZfV-6QWjZT5v0fo76tWw@mail.gmail.com>
+Message-ID: <CALCETrWvE5es3i+to33y6jw=Yf0Tw6ZfV-6QWjZT5v0fo76tWw@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 1/1] random: WARN on large getrandom() waits and
+ introduce getrandom2()
+To:     "Ahmed S. Darwish" <darwish.07@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 20, 2019 at 08:50:36AM -0400, Qian Cai wrote:
-> On Fri, 2019-09-20 at 10:38 +0100, Will Deacon wrote:
-> > On Thu, Sep 19, 2019 at 12:09:40PM -0400, Qian Cai wrote:
-> > > Since the commit b4adfe8e05f1 ("locking/lockdep: Remove unused argument
-> > > in __lock_release"), @nested is no longer used in lock_release(), so
-> > > remove it from all lock_release() calls and friends.
-> > > 
-> > > Signed-off-by: Qian Cai <cai@lca.pw>
-> > > ---
-> > 
-> > Although this looks fine to me at a first glance, it might be slightly
-> > easier to manage if you hit {spin,rwlock,seqcount,mutex,rwsem}_release()
-> > first with coccinelle scripts, and then hack lock_release() as a final
-> > patch. That way it's easy to regenerate things if needed.
-> 
-> I am not sure if it worth the extra efforts where I have to retest it on all
-> architectures, and the patch is really simple, but I can certainly do that if
-> you insist.
+On Fri, Sep 20, 2019 at 6:46 AM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
+>
+> Hi,
+>
+> On Wed, Sep 18, 2019 at 04:57:58PM -0700, Linus Torvalds wrote:
+> > On Wed, Sep 18, 2019 at 2:17 PM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
+> > >
+> > > Since Linux v3.17, getrandom(2) has been created as a new and more
+> > > secure interface for pseudorandom data requests.  It attempted to
+> > > solve three problems, as compared to /dev/urandom:
+>   >
+> > I don't think your patch is really _wrong_, but I think it's silly to
+> > introduce a new system call, when we have 30 bits left in the flags of
+> > the old one, and the old system call checked them.
+> >
+> > So it's much simpler and more straightforward to  just introduce a
+> > single new bit #2 that says "I actually know what I'm doing, and I'm
+> > explicitly asking for secure/insecure random data".
+> >
+> > And then say that the existing bit #1 just means "I want to wait for entropy".
+> >
+> > So then you end up with this:
+> >
+> >     /*
+> >      * Flags for getrandom(2)
+> >      *
+> >      * GRND_NONBLOCK    Don't block and return EAGAIN instead
+> >      * GRND_WAIT_ENTROPY        Explicitly wait for entropy
+> >      * GRND_EXPLICIT    Make it clear you know what you are doing
+> >      */
+> >     #define GRND_NONBLOCK               0x0001
+> >     #define GRND_WAIT_ENTROPY   0x0002
+> >     #define GRND_EXPLICIT               0x0004
 
-I'm not insisting, just thought it might be easier to get it merged that
-way. If you prefer to go with the big diff,
+What is this GRND_EXPLICIT thing?
 
-Acked-by: Will Deacon <will@kernel.org>
+A few weeks ago, I sent a whole series to address this, and I
+obviously didn't cc enough people.  I'll resend a rebased version
+today.  Meanwhile, some comments on this whole mess:
 
-Will
+As I think everyone mostly agrees in this whole thread, getrandom()
+can't just magically start returning non-random results.  That would
+be a big problem.
+
+Linus, I disagree that blocking while waiting for randomness is an
+error.  Sometimes you want to generate a key, you want to finish as
+quickly as possible, and you don't want to be in the business of
+fiddling with the setup of the kernel RNG.  I would argue that *most*
+crypto applications are in this category.  I think that the kernel
+should, instead, handle this mess itself.  As a first pass, it could
+be as simple as noticing that someone is blocking on randomness and
+kicking off a thread that does some randomish reads to the rootfs.
+This would roughly simulate the old behavior in which an ext4 rootfs
+did more IO than necessary.  A fancier version would, as discussed in
+this thread, do more clever things.
+
+(As an aside, I am not a fan of xoring or adding stuff to the CRNG
+state.  We should just use an actual crypto primitive for this.
+Accumulate the state in a buffer and SHA-512 it.  Or use something
+like the Keccak duplex sponge.  But this is a discussion for another
+day.)
+
+So I'm going to resend my series.  You can all fight over whether the
+patch that actually goes in should be based on my series or based on
+this patch.
+
+--Andy
