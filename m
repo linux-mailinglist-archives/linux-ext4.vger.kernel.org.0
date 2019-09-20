@@ -2,27 +2,27 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8A4B92F2
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 16:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5241B92F6
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 16:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392042AbfITOgh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Sep 2019 10:36:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48998 "EHLO mail.kernel.org"
+        id S2392515AbfITOgi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Sep 2019 10:36:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392458AbfITOgg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 20 Sep 2019 10:36:36 -0400
+        id S2392470AbfITOgh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 20 Sep 2019 10:36:37 -0400
 Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E418218AE;
-        Fri, 20 Sep 2019 14:36:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FAFD21928;
+        Fri, 20 Sep 2019 14:36:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568990195;
-        bh=Xa5lUKuEKR/Mj/s8RMBKL11PjH1zbgHgXvtpnqsOn+I=;
+        s=default; t=1568990196;
+        bh=Nm5ZEPhJ5iW6wy1xtViittGqLfT6Ya6S88l/UkOXLuI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=auASqbp4NCulMrJTRWJf4LXFic5L3p2Gu4oJq2LL2f3fV73TmO42qvMn2dWsLhK9F
-         MjiEpJRwZt6kibtZIcQ4MDifqQP0W8evATN3Gv3RtlyE1yqvijE+wVc6bAkmYkbejj
-         Gkn0WW+2L5mgdqW2IWy87j1sHFInWcULd3gzy8AQ=
+        b=dXna2tpHNuI5NPsWMl5YPngT7mYeEygUp1y16zF8xmgHBnbuUu2BxOmaJpldPnJ+9
+         nTZCllUhIsvNp48AAyeoNehVpRvwoOackZUZMpy+aQTxFTq+CraHgMY1wf6VfYmPjl
+         c3XijBZzLsvl/pb3dDhn2T0IYPPz/EwJ2BSOkDFA=
 From:   Andy Lutomirski <luto@kernel.org>
 To:     Theodore Tso <tytso@google.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -39,9 +39,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         linux-man <linux-man@vger.kernel.org>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2 4/7] random: Make /dev/random be almost like /dev/urandom
-Date:   Fri, 20 Sep 2019 07:36:26 -0700
-Message-Id: <b3108e0defc82daee3f14a0c794464b6e74c5e71.1568990048.git.luto@kernel.org>
+Subject: [PATCH v2 5/7] random: Remove the blocking pool
+Date:   Fri, 20 Sep 2019 07:36:27 -0700
+Message-Id: <3ce6a6d7532d90300b45ec7d6b966ef9c052897d.1568990048.git.luto@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <cover.1568990048.git.luto@kernel.org>
 References: <cover.1568990048.git.luto@kernel.org>
@@ -52,119 +52,210 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch changes the read semantics of /dev/random to be the same
-as /dev/urandom except that reads will block until the CRNG is
-ready.
+There is no longer any interface to read data from the blocking
+pool, so remove it.
 
-None of the cleanups that this enables have been done yet.  As a
-result, this gives a warning about an unused function.
+This enables quite a bit of code deletion, much of which will be
+done in subsequent patches.
 
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- drivers/char/random.c | 55 +++++++++++--------------------------------
- 1 file changed, 14 insertions(+), 41 deletions(-)
+ drivers/char/random.c | 106 ------------------------------------------
+ 1 file changed, 106 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 1ad2c7eaf675..29a158d9353c 100644
+index 29a158d9353c..4521138231ed 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -354,7 +354,6 @@
- #define INPUT_POOL_WORDS	(1 << (INPUT_POOL_SHIFT-5))
- #define OUTPUT_POOL_SHIFT	10
- #define OUTPUT_POOL_WORDS	(1 << (OUTPUT_POOL_SHIFT-5))
--#define SEC_XFER_SIZE		512
- #define EXTRACT_SIZE		10
+@@ -470,7 +470,6 @@ static const struct poolinfo {
+ /*
+  * Static global variables
+  */
+-static DECLARE_WAIT_QUEUE_HEAD(random_read_wait);
+ static DECLARE_WAIT_QUEUE_HEAD(random_write_wait);
+ static struct fasync_struct *fasync;
  
+@@ -530,7 +529,6 @@ struct entropy_store {
+ 	__u32 *pool;
+ 	const char *name;
+ 	struct entropy_store *pull;
+-	struct work_struct push_work;
  
-@@ -803,7 +802,6 @@ static void credit_entropy_bits(struct entropy_store *r, int nbits)
- 		if (entropy_bits >= random_read_wakeup_bits &&
- 		    wq_has_sleeper(&random_read_wait)) {
- 			wake_up_interruptible(&random_read_wait);
--			kill_fasync(&fasync, SIGIO, POLL_IN);
+ 	/* read-write data: */
+ 	unsigned long last_pulled;
+@@ -549,9 +547,7 @@ static ssize_t _extract_entropy(struct entropy_store *r, void *buf,
+ 				size_t nbytes, int fips);
+ 
+ static void crng_reseed(struct crng_state *crng, struct entropy_store *r);
+-static void push_to_pool(struct work_struct *work);
+ static __u32 input_pool_data[INPUT_POOL_WORDS] __latent_entropy;
+-static __u32 blocking_pool_data[OUTPUT_POOL_WORDS] __latent_entropy;
+ 
+ static struct entropy_store input_pool = {
+ 	.poolinfo = &poolinfo_table[0],
+@@ -560,16 +556,6 @@ static struct entropy_store input_pool = {
+ 	.pool = input_pool_data
+ };
+ 
+-static struct entropy_store blocking_pool = {
+-	.poolinfo = &poolinfo_table[1],
+-	.name = "blocking",
+-	.pull = &input_pool,
+-	.lock = __SPIN_LOCK_UNLOCKED(blocking_pool.lock),
+-	.pool = blocking_pool_data,
+-	.push_work = __WORK_INITIALIZER(blocking_pool.push_work,
+-					push_to_pool),
+-};
+-
+ static __u32 const twist_table[8] = {
+ 	0x00000000, 0x3b6e20c8, 0x76dc4190, 0x4db26158,
+ 	0xedb88320, 0xd6d6a3e8, 0x9b64c2b0, 0xa00ae278 };
+@@ -765,15 +751,11 @@ static void credit_entropy_bits(struct entropy_store *r, int nbits)
+ 		entropy_count = 0;
+ 	} else if (entropy_count > pool_size)
+ 		entropy_count = pool_size;
+-	if ((r == &blocking_pool) && !r->initialized &&
+-	    (entropy_count >> ENTROPY_SHIFT) > 128)
+-		has_initialized = 1;
+ 	if (cmpxchg(&r->entropy_count, orig, entropy_count) != orig)
+ 		goto retry;
+ 
+ 	if (has_initialized) {
+ 		r->initialized = 1;
+-		wake_up_interruptible(&random_read_wait);
+ 		kill_fasync(&fasync, SIGIO, POLL_IN);
+ 	}
+ 
+@@ -782,7 +764,6 @@ static void credit_entropy_bits(struct entropy_store *r, int nbits)
+ 
+ 	if (r == &input_pool) {
+ 		int entropy_bits = entropy_count >> ENTROPY_SHIFT;
+-		struct entropy_store *other = &blocking_pool;
+ 
+ 		if (crng_init < 2) {
+ 			if (entropy_bits < 128)
+@@ -790,27 +771,6 @@ static void credit_entropy_bits(struct entropy_store *r, int nbits)
+ 			crng_reseed(&primary_crng, r);
+ 			entropy_bits = r->entropy_count >> ENTROPY_SHIFT;
  		}
- 		/* If the input pool is getting full, and the blocking
- 		 * pool has room, send some entropy to the blocking
-@@ -1031,6 +1029,7 @@ static void crng_reseed(struct crng_state *crng, struct entropy_store *r)
- 		crng_init = 2;
- 		process_random_ready_list();
- 		wake_up_interruptible(&crng_init_wait);
-+		kill_fasync(&fasync, SIGIO, POLL_IN);
- 		pr_notice("random: crng init done\n");
- 		if (unseeded_warning.missed) {
- 			pr_notice("random: %d get_random_xx warning(s) missed "
-@@ -1921,43 +1920,6 @@ void rand_initialize_disk(struct gendisk *disk)
+-
+-		/* initialize the blocking pool if necessary */
+-		if (entropy_bits >= random_read_wakeup_bits &&
+-		    !other->initialized) {
+-			schedule_work(&other->push_work);
+-			return;
+-		}
+-
+-		/* should we wake readers? */
+-		if (entropy_bits >= random_read_wakeup_bits &&
+-		    wq_has_sleeper(&random_read_wait)) {
+-			wake_up_interruptible(&random_read_wait);
+-		}
+-		/* If the input pool is getting full, and the blocking
+-		 * pool has room, send some entropy to the blocking
+-		 * pool.
+-		 */
+-		if (!work_pending(&other->push_work) &&
+-		    (ENTROPY_BITS(r) > 6 * r->poolinfo->poolbytes) &&
+-		    (ENTROPY_BITS(other) <= 6 * other->poolinfo->poolbytes))
+-			schedule_work(&other->push_work);
+ 	}
  }
- #endif
  
--static ssize_t
--_random_read(int nonblock, char __user *buf, size_t nbytes)
+@@ -1422,22 +1382,6 @@ static void _xfer_secondary_pool(struct entropy_store *r, size_t nbytes)
+ 	credit_entropy_bits(r, bytes*8);
+ }
+ 
+-/*
+- * Used as a workqueue function so that when the input pool is getting
+- * full, we can "spill over" some entropy to the output pools.  That
+- * way the output pools can store some of the excess entropy instead
+- * of letting it go to waste.
+- */
+-static void push_to_pool(struct work_struct *work)
 -{
--	ssize_t n;
+-	struct entropy_store *r = container_of(work, struct entropy_store,
+-					      push_work);
+-	BUG_ON(!r);
+-	_xfer_secondary_pool(r, random_read_wakeup_bits/8);
+-	trace_push_to_pool(r->name, r->entropy_count >> ENTROPY_SHIFT,
+-			   r->pull->entropy_count >> ENTROPY_SHIFT);
+-}
 -
--	if (nbytes == 0)
--		return 0;
+ /*
+  * This function decides how many bytes to actually take from the
+  * given pool, and also debits the entropy count accordingly.
+@@ -1616,54 +1560,6 @@ static ssize_t extract_entropy(struct entropy_store *r, void *buf,
+ 	return _extract_entropy(r, buf, nbytes, fips_enabled);
+ }
+ 
+-/*
+- * This function extracts randomness from the "entropy pool", and
+- * returns it in a userspace buffer.
+- */
+-static ssize_t extract_entropy_user(struct entropy_store *r, void __user *buf,
+-				    size_t nbytes)
+-{
+-	ssize_t ret = 0, i;
+-	__u8 tmp[EXTRACT_SIZE];
+-	int large_request = (nbytes > 256);
 -
--	nbytes = min_t(size_t, nbytes, SEC_XFER_SIZE);
--	while (1) {
--		n = extract_entropy_user(&blocking_pool, buf, nbytes);
--		if (n < 0)
--			return n;
--		trace_random_read(n*8, (nbytes-n)*8,
--				  ENTROPY_BITS(&blocking_pool),
--				  ENTROPY_BITS(&input_pool));
--		if (n > 0)
--			return n;
--
--		/* Pool is (near) empty.  Maybe wait and retry. */
--		if (nonblock)
--			return -EAGAIN;
--
--		wait_event_interruptible(random_read_wait,
--		    blocking_pool.initialized &&
--		    (ENTROPY_BITS(&input_pool) >= random_read_wakeup_bits));
--		if (signal_pending(current))
--			return -ERESTARTSYS;
+-	trace_extract_entropy_user(r->name, nbytes, ENTROPY_BITS(r), _RET_IP_);
+-	if (!r->initialized && r->pull) {
+-		xfer_secondary_pool(r, ENTROPY_BITS(r->pull)/8);
+-		if (!r->initialized)
+-			return 0;
 -	}
+-	xfer_secondary_pool(r, nbytes);
+-	nbytes = account(r, nbytes, 0, 0);
+-
+-	while (nbytes) {
+-		if (large_request && need_resched()) {
+-			if (signal_pending(current)) {
+-				if (ret == 0)
+-					ret = -ERESTARTSYS;
+-				break;
+-			}
+-			schedule();
+-		}
+-
+-		extract_buf(r, tmp);
+-		i = min_t(int, nbytes, EXTRACT_SIZE);
+-		if (copy_to_user(buf, tmp, i)) {
+-			ret = -EFAULT;
+-			break;
+-		}
+-
+-		nbytes -= i;
+-		buf += i;
+-		ret += i;
+-	}
+-
+-	/* Wipe data just returned from memory */
+-	memzero_explicit(tmp, sizeof(tmp));
+-
+-	return ret;
 -}
 -
--static ssize_t
--random_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
--{
--	return _random_read(file->f_flags & O_NONBLOCK, buf, nbytes);
--}
--
- static ssize_t
- urandom_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
- {
-@@ -1981,15 +1943,26 @@ urandom_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
- 	return ret;
- }
+ #define warn_unseeded_randomness(previous) \
+ 	_warn_unseeded_randomness(__func__, (void *) _RET_IP_, (previous))
  
-+static ssize_t
-+random_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
-+{
-+	int ret;
-+
-+	ret = wait_for_random_bytes();
-+	if (ret != 0)
-+		return ret;
-+	return urandom_read(file, buf, nbytes, ppos);
-+}
-+
- static __poll_t
- random_poll(struct file *file, poll_table * wait)
+@@ -1893,7 +1789,6 @@ static void __init init_std_data(struct entropy_store *r)
+ int __init rand_initialize(void)
  {
- 	__poll_t mask;
- 
--	poll_wait(file, &random_read_wait, wait);
-+	poll_wait(file, &crng_init_wait, wait);
- 	poll_wait(file, &random_write_wait, wait);
- 	mask = 0;
--	if (ENTROPY_BITS(&input_pool) >= random_read_wakeup_bits)
-+	if (crng_ready())
- 		mask |= EPOLLIN | EPOLLRDNORM;
- 	if (ENTROPY_BITS(&input_pool) < random_write_wakeup_bits)
- 		mask |= EPOLLOUT | EPOLLWRNORM;
+ 	init_std_data(&input_pool);
+-	init_std_data(&blocking_pool);
+ 	crng_initialize(&primary_crng);
+ 	crng_global_init_time = jiffies;
+ 	if (ratelimit_disable) {
+@@ -2053,7 +1948,6 @@ static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 		if (!capable(CAP_SYS_ADMIN))
+ 			return -EPERM;
+ 		input_pool.entropy_count = 0;
+-		blocking_pool.entropy_count = 0;
+ 		return 0;
+ 	case RNDRESEEDCRNG:
+ 		if (!capable(CAP_SYS_ADMIN))
 -- 
 2.21.0
 
