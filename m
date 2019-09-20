@@ -2,27 +2,27 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4A0B92EC
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 16:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD17B92FD
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 16:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392538AbfITOgi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Sep 2019 10:36:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49058 "EHLO mail.kernel.org"
+        id S2392242AbfITOg6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Sep 2019 10:36:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392475AbfITOgh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 20 Sep 2019 10:36:37 -0400
+        id S2392496AbfITOgi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 20 Sep 2019 10:36:38 -0400
 Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C76E92190F;
-        Fri, 20 Sep 2019 14:36:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 739D22196E;
+        Fri, 20 Sep 2019 14:36:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568990196;
-        bh=X4irArokqxNk8ds89THjZ+EOtSp5mEI9ypOKtb4645w=;
+        s=default; t=1568990197;
+        bh=48YHBcgZFu1F8D2WFbpxkLRezHZiaeSa/tHcV9zv9WI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w/himErLA2djSrkVZuIRWCSYP46YJO2FotcSuYSnWM0qBfJcKrF3eA6lZYsRCc87Y
-         yWyN+wCxGxQizegWWXjUgCLZP60zTOU9fYOjvPVohxLQAlVfzKjbgqLZULH7ZsxLYr
-         JWEB99pST3yZWavwK9bBbioPeZezo9VWyoy2QWSA=
+        b=YbsVw4SDrXKVLW2Ro5x3VmOWumryYqEkpKnfpuvWi8L9E0zkTp9UaYB6MlnmwWN/k
+         apCt+7Mxms39DF7fLnYteSStWhKluhjNyjnSXQKcBv9Qc56sTqe6nIqqRM9m/BrfUf
+         VoGe5XyS9dTNhxoIAchcfvTruCdz8IOnRdOQLwX8=
 From:   Andy Lutomirski <luto@kernel.org>
 To:     Theodore Tso <tytso@google.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -39,9 +39,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         linux-man <linux-man@vger.kernel.org>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2 6/7] random: Delete code to pull data into pools
-Date:   Fri, 20 Sep 2019 07:36:28 -0700
-Message-Id: <67ba15c4b1737623f3b9d968a252094051781835.1568990048.git.luto@kernel.org>
+Subject: [PATCH v2 7/7] random: Remove kernel.random.read_wakeup_threshold
+Date:   Fri, 20 Sep 2019 07:36:29 -0700
+Message-Id: <66b16acf2953fc033abc9641b9cf43d23e75a8e9.1568990048.git.luto@kernel.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <cover.1568990048.git.luto@kernel.org>
 References: <cover.1568990048.git.luto@kernel.org>
@@ -52,94 +52,57 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-There is no pool that pulls, so it was just dead code.
+It has no effect any more, so remove it.  We can revert this if
+there is some user code that expects to be able to set this sysctl.
 
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- drivers/char/random.c | 40 ----------------------------------------
- 1 file changed, 40 deletions(-)
+ drivers/char/random.c | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 4521138231ed..99fea5cc29a8 100644
+index 99fea5cc29a8..2a284f30cac4 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -528,10 +528,8 @@ struct entropy_store {
- 	const struct poolinfo *poolinfo;
- 	__u32 *pool;
- 	const char *name;
--	struct entropy_store *pull;
- 
- 	/* read-write data: */
--	unsigned long last_pulled;
- 	spinlock_t lock;
- 	unsigned short add_ptr;
- 	unsigned short input_rotate;
-@@ -1347,41 +1345,6 @@ EXPORT_SYMBOL_GPL(add_disk_randomness);
-  *
-  *********************************************************************/
+@@ -369,12 +369,6 @@
+ #define ENTROPY_SHIFT 3
+ #define ENTROPY_BITS(r) ((r)->entropy_count >> ENTROPY_SHIFT)
  
 -/*
-- * This utility inline function is responsible for transferring entropy
-- * from the primary pool to the secondary extraction pool. We make
-- * sure we pull enough for a 'catastrophic reseed'.
+- * The minimum number of bits of entropy before we wake up a read on
+- * /dev/random.  Should be enough to do a significant reseed.
 - */
--static void _xfer_secondary_pool(struct entropy_store *r, size_t nbytes);
--static void xfer_secondary_pool(struct entropy_store *r, size_t nbytes)
--{
--	if (!r->pull ||
--	    r->entropy_count >= (nbytes << (ENTROPY_SHIFT + 3)) ||
--	    r->entropy_count > r->poolinfo->poolfracbits)
--		return;
--
--	_xfer_secondary_pool(r, nbytes);
--}
--
--static void _xfer_secondary_pool(struct entropy_store *r, size_t nbytes)
--{
--	__u32	tmp[OUTPUT_POOL_WORDS];
--
--	int bytes = nbytes;
--
--	/* pull at least as much as a wakeup */
--	bytes = max_t(int, bytes, random_read_wakeup_bits / 8);
--	/* but never more than the buffer size */
--	bytes = min_t(int, bytes, sizeof(tmp));
--
--	trace_xfer_secondary_pool(r->name, bytes * 8, nbytes * 8,
--				  ENTROPY_BITS(r), ENTROPY_BITS(r->pull));
--	bytes = extract_entropy(r->pull, tmp, bytes,
--				random_read_wakeup_bits / 8, 0);
--	mix_pool_bytes(r, tmp, bytes);
--	credit_entropy_bits(r, bytes*8);
--}
+-static int random_read_wakeup_bits = 64;
 -
  /*
-  * This function decides how many bytes to actually take from the
-  * given pool, and also debits the entropy count accordingly.
-@@ -1545,7 +1508,6 @@ static ssize_t extract_entropy(struct entropy_store *r, void *buf,
- 			spin_unlock_irqrestore(&r->lock, flags);
- 			trace_extract_entropy(r->name, EXTRACT_SIZE,
- 					      ENTROPY_BITS(r), _RET_IP_);
--			xfer_secondary_pool(r, EXTRACT_SIZE);
- 			extract_buf(r, tmp);
- 			spin_lock_irqsave(&r->lock, flags);
- 			memcpy(r->last_data, tmp, EXTRACT_SIZE);
-@@ -1554,7 +1516,6 @@ static ssize_t extract_entropy(struct entropy_store *r, void *buf,
- 	}
+  * If the entropy count falls under this number of bits, then we
+  * should wake up processes which are selecting or polling on write
+@@ -1982,8 +1976,7 @@ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
  
- 	trace_extract_entropy(r->name, nbytes, ENTROPY_BITS(r), _RET_IP_);
--	xfer_secondary_pool(r, nbytes);
- 	nbytes = account(r, nbytes, min, reserved);
+ #include <linux/sysctl.h>
  
- 	return _extract_entropy(r, buf, nbytes, fips_enabled);
-@@ -1765,7 +1726,6 @@ static void __init init_std_data(struct entropy_store *r)
- 	ktime_t now = ktime_get_real();
- 	unsigned long rv;
- 
--	r->last_pulled = jiffies;
- 	mix_pool_bytes(r, &now, sizeof(now));
- 	for (i = r->poolinfo->poolbytes; i > 0; i -= sizeof(rv)) {
- 		if (!arch_get_random_seed_long(&rv) &&
+-static int min_read_thresh = 8, min_write_thresh;
+-static int max_read_thresh = OUTPUT_POOL_WORDS * 32;
++static int min_write_thresh;
+ static int max_write_thresh = INPUT_POOL_WORDS * 32;
+ static int random_min_urandom_seed = 60;
+ static char sysctl_bootid[16];
+@@ -2058,15 +2051,6 @@ struct ctl_table random_table[] = {
+ 		.proc_handler	= proc_do_entropy,
+ 		.data		= &input_pool.entropy_count,
+ 	},
+-	{
+-		.procname	= "read_wakeup_threshold",
+-		.data		= &random_read_wakeup_bits,
+-		.maxlen		= sizeof(int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= &min_read_thresh,
+-		.extra2		= &max_read_thresh,
+-	},
+ 	{
+ 		.procname	= "write_wakeup_threshold",
+ 		.data		= &random_write_wakeup_bits,
 -- 
 2.21.0
 
