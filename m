@@ -2,58 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68192B9673
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 19:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12183B967A
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 19:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388712AbfITRUi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 20 Sep 2019 13:20:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43980 "EHLO mail.kernel.org"
+        id S1729494AbfITR0V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Sep 2019 13:26:21 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49204 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729428AbfITRUh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 20 Sep 2019 13:20:37 -0400
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 204779] Xubuntu 18.04 Sometimes freezes when turned off on the
- logo
-Date:   Fri, 20 Sep 2019 17:20:37 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: Process Management
-X-Bugzilla-Component: Other
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: 0963499018m@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: component product
-Message-ID: <bug-204779-13602-iGz04VoFqd@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-204779-13602@https.bugzilla.kernel.org/>
-References: <bug-204779-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1729485AbfITR0V (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 20 Sep 2019 13:26:21 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id x8KHQ9oc001842;
+        Fri, 20 Sep 2019 19:26:09 +0200
+Date:   Fri, 20 Sep 2019 19:26:09 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     "Ahmed S. Darwish" <darwish.07@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        lkml <linux-kernel@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org
+Subject: Re: [PATCH RFC v4 1/1] random: WARN on large getrandom() waits and
+ introduce getrandom2()
+Message-ID: <20190920172609.GA1832@1wt.eu>
+References: <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914122500.GA1425@darwi-home-pc>
+ <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
+ <20190915052242.GG19710@mit.edu>
+ <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
+ <20190918211503.GA1808@darwi-home-pc>
+ <20190918211713.GA2225@darwi-home-pc>
+ <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
+ <20190920134609.GA2113@pc>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190920134609.GA2113@pc>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=204779
+Hi Ahmed,
 
-Maxim (0963499018m@gmail.com) changed:
+On Fri, Sep 20, 2019 at 03:46:09PM +0200, Ahmed S. Darwish wrote:
+> Problem is, glibc is still *really* slow in adopting linux syscall
+> wrappers, so I'm not optimistic about that...
+>
+> I still see the new system call as the sanest path, even provided
+> the cost of a new syscall number..
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-          Component|Bug Tracker                 |Other
-            Product|Other                       |Process Management
+New syscalls are always a pain to deal with in userland, because when
+they are introduced, everyone wants them long before they're available
+in glibc. So userland has to define NR_xxx for each supported arch and
+to perform the call itself.
 
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+With flags adoption is instantaneous. Just #ifndef/#define, check if
+the flag is supported and that's done. The only valid reason for a new
+syscall is when the API changes (e.g. one extra arg, a la accept4()),
+which doesn't seem to be the case here. Otherwise please by all means
+avoid this in general.
+
+Thanks,
+Willy
