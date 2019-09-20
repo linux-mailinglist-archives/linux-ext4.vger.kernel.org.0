@@ -2,131 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E98B9298
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 16:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62107B92F0
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2019 16:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391641AbfITOeE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 20 Sep 2019 10:34:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46818 "EHLO mail.kernel.org"
+        id S2392430AbfITOgf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Sep 2019 10:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391630AbfITOeB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 20 Sep 2019 10:34:01 -0400
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2388039AbfITOgd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 20 Sep 2019 10:36:33 -0400
+Received: from localhost (c-67-180-165-146.hsd1.ca.comcast.net [67.180.165.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81D1F21882
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Sep 2019 14:34:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C0F4206C2;
+        Fri, 20 Sep 2019 14:36:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568990040;
-        bh=5T/4VfiO/HqhsBQATWPC19/qw+SPrKZRtyV53KT0GwQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ERG/TepvuolOT6Mw8ez/j7trPLA7A2UHhgppUbM1UKt5I3anQ/LyiAyc1Gzj2TlKM
-         sADxzjaDUCB5buPl3eS2UovJkkkCM5lajx430tmkdOhaMKDDGW+G/nttRZzcXhrsdr
-         zAieZhwuQe6tN6TAp81EjJVKtEqxNKxDSB5o4mHU=
-Received: by mail-wr1-f46.google.com with SMTP id v8so7033462wrt.2
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Sep 2019 07:34:00 -0700 (PDT)
-X-Gm-Message-State: APjAAAVI1HdsDoQ1oMJ9Mc8szRBxdAjvKsrzYiyuBoXzwRNozlhWcf+Y
-        QGBnP2Z8fK213RnagA5fhVD8zJVYTjfGk6wYBX4CDw==
-X-Google-Smtp-Source: APXvYqw97uK1m0GzlqxXwrKua5Pdc2B9TF8UZRisIXGn8aSTnAlq1AfsIBHJ3uk1lXhVKnKKQuKNgHptfa8+mPFi7KY=
-X-Received: by 2002:adf:fe0f:: with SMTP id n15mr12713274wrr.343.1568990038968;
- Fri, 20 Sep 2019 07:33:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190912034421.GA2085@darwi-home-pc> <20190912082530.GA27365@mit.edu>
- <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
- <20190914122500.GA1425@darwi-home-pc> <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
- <20190915052242.GG19710@mit.edu> <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
- <20190918211503.GA1808@darwi-home-pc> <20190918211713.GA2225@darwi-home-pc>
- <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com> <20190920134609.GA2113@pc>
-In-Reply-To: <20190920134609.GA2113@pc>
+        s=default; t=1568990192;
+        bh=UdNzovcKyZpZxczO/+ZLqGn4wfUX7R9VU6/eNsOHJVI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PsuELdiTwZ0uKFAseBBIl+FQ0jl+wrcFUUF7O+agBb8n4p/1RXoRd+Gj+s1nnTKVP
+         /vAFAl6VvdLTOmFytk5ShVdgJ7wNzqTFir9jPam6YTzprE+wYYjQyw5JX4H4JXB/gh
+         BabaDD/Dla7e99lS72oDsItadPSr4V3dJPpGIErY=
 From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 20 Sep 2019 07:33:47 -0700
-X-Gmail-Original-Message-ID: <CALCETrWvE5es3i+to33y6jw=Yf0Tw6ZfV-6QWjZT5v0fo76tWw@mail.gmail.com>
-Message-ID: <CALCETrWvE5es3i+to33y6jw=Yf0Tw6ZfV-6QWjZT5v0fo76tWw@mail.gmail.com>
-Subject: Re: [PATCH RFC v4 1/1] random: WARN on large getrandom() waits and
- introduce getrandom2()
-To:     "Ahmed S. Darwish" <darwish.07@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+To:     Theodore Tso <tytso@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
         Lennart Poettering <mzxreary@0pointer.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
         "Alexander E. Patrakov" <patrakov@gmail.com>,
         Michael Kerrisk <mtk.manpages@gmail.com>,
         Willy Tarreau <w@1wt.eu>,
         Matthew Garrett <mjg59@srcf.ucam.org>,
-        lkml <linux-kernel@vger.kernel.org>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-man <linux-man@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v2 0/7] Rework random blocking
+Date:   Fri, 20 Sep 2019 07:36:22 -0700
+Message-Id: <cover.1568990048.git.luto@kernel.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Sep 20, 2019 at 6:46 AM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
->
-> Hi,
->
-> On Wed, Sep 18, 2019 at 04:57:58PM -0700, Linus Torvalds wrote:
-> > On Wed, Sep 18, 2019 at 2:17 PM Ahmed S. Darwish <darwish.07@gmail.com> wrote:
-> > >
-> > > Since Linux v3.17, getrandom(2) has been created as a new and more
-> > > secure interface for pseudorandom data requests.  It attempted to
-> > > solve three problems, as compared to /dev/urandom:
->   >
-> > I don't think your patch is really _wrong_, but I think it's silly to
-> > introduce a new system call, when we have 30 bits left in the flags of
-> > the old one, and the old system call checked them.
-> >
-> > So it's much simpler and more straightforward to  just introduce a
-> > single new bit #2 that says "I actually know what I'm doing, and I'm
-> > explicitly asking for secure/insecure random data".
-> >
-> > And then say that the existing bit #1 just means "I want to wait for entropy".
-> >
-> > So then you end up with this:
-> >
-> >     /*
-> >      * Flags for getrandom(2)
-> >      *
-> >      * GRND_NONBLOCK    Don't block and return EAGAIN instead
-> >      * GRND_WAIT_ENTROPY        Explicitly wait for entropy
-> >      * GRND_EXPLICIT    Make it clear you know what you are doing
-> >      */
-> >     #define GRND_NONBLOCK               0x0001
-> >     #define GRND_WAIT_ENTROPY   0x0002
-> >     #define GRND_EXPLICIT               0x0004
+This makes two major semantic changes to Linux's random APIs:
 
-What is this GRND_EXPLICIT thing?
+It adds getentropy(..., GRND_INSECURE).  This causes getentropy to
+always return *something*.  There is no guarantee whatsoever that
+the result will be cryptographically random or even unique, but the
+kernel will give the best quality random output it can.  The name is
+a big hint: the resulting output is INSECURE.
 
-A few weeks ago, I sent a whole series to address this, and I
-obviously didn't cc enough people.  I'll resend a rebased version
-today.  Meanwhile, some comments on this whole mess:
+The purpose of this is to allow programs that genuinely want
+best-effort entropy to get it without resorting to /dev/urandom.
+Plenty of programs do this because they need to do *something*
+during boot and they can't afford to wait.  Calling it "INSECURE" is
+probably the best we can do to discourage using this API for things
+that need security.
 
-As I think everyone mostly agrees in this whole thread, getrandom()
-can't just magically start returning non-random results.  That would
-be a big problem.
+This series also removes the blocking pool and makes /dev/random
+work just like getentropy(..., 0) and makes GRND_RANDOM a no-op.  I
+believe that Linux's blocking pool has outlived its usefulness.
+Linux's CRNG generates output that is good enough to use even for
+key generation.  The blocking pool is not stronger in any material
+way, and keeping it around requires a lot of infrastructure of
+dubious value.
 
-Linus, I disagree that blocking while waiting for randomness is an
-error.  Sometimes you want to generate a key, you want to finish as
-quickly as possible, and you don't want to be in the business of
-fiddling with the setup of the kernel RNG.  I would argue that *most*
-crypto applications are in this category.  I think that the kernel
-should, instead, handle this mess itself.  As a first pass, it could
-be as simple as noticing that someone is blocking on randomness and
-kicking off a thread that does some randomish reads to the rootfs.
-This would roughly simulate the old behavior in which an ext4 rootfs
-did more IO than necessary.  A fancier version would, as discussed in
-this thread, do more clever things.
+This series should not break any existing programs.  /dev/urandom is
+unchanged.  /dev/random will still block just after booting, but it
+will block less than it used to.  getentropy() with existing flags
+will return output that is, for practical purposes, just as strong
+as before.
 
-(As an aside, I am not a fan of xoring or adding stuff to the CRNG
-state.  We should just use an actual crypto primitive for this.
-Accumulate the state in a buffer and SHA-512 it.  Or use something
-like the Keccak duplex sponge.  But this is a discussion for another
-day.)
+Changes from v1:
+ - Rebased to v5.3.  No other changes.
 
-So I'm going to resend my series.  You can all fight over whether the
-patch that actually goes in should be based on my series or based on
-this patch.
+Andy Lutomirski (7):
+  random: Don't wake crng_init_wait when crng_init == 1
+  random: Add GRND_INSECURE to return best-effort non-cryptographic
+    bytes
+  random: Ignore GRND_RANDOM in getentropy(2)
+  random: Make /dev/random be almost like /dev/urandom
+  random: Remove the blocking pool
+  random: Delete code to pull data into pools
+  random: Remove kernel.random.read_wakeup_threshold
 
---Andy
+ drivers/char/random.c       | 234 ++++--------------------------------
+ include/uapi/linux/random.h |   4 +-
+ 2 files changed, 27 insertions(+), 211 deletions(-)
+
+-- 
+2.21.0
+
