@@ -2,178 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A62C9BBCAC
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2019 22:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0783BBD4E
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2019 22:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbfIWUSD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Sep 2019 16:18:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728647AbfIWUSC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 23 Sep 2019 16:18:02 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C996205F4;
-        Mon, 23 Sep 2019 20:18:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569269881;
-        bh=1cS+V/2T6hNQDP2dZSXrP1Xl7F2JPVXoQBrGnhIIPto=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=uCQg0YOuP/QFqnR+R+RbQxNx8ri4unVWRFrjFAw3XVDUoGJOVcYLXFDm98fFifPCF
-         xhFWllvd7JOhbF6YB82C7hWZ46zQEZp5t2CYtIJhjbBN8gDSWVAEEIPvT/Lf/NO7RV
-         NfF133HbqciMhpf6r0BUlHGlbDyOHVIgaZ1FmiJA=
-Message-ID: <5d5a93637934867e1b3352763da8e3d9f9e6d683.camel@kernel.org>
-Subject: Re: Lease semantic proposal
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Ira Weiny <ira.weiny@intel.com>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org
-Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Date:   Mon, 23 Sep 2019 16:17:59 -0400
-In-Reply-To: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
-References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S2502528AbfIWUtu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Sep 2019 16:49:50 -0400
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193]:38778 "EHLO
+        atrey.karlin.mff.cuni.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389848AbfIWUtu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Sep 2019 16:49:50 -0400
+Received: by atrey.karlin.mff.cuni.cz (Postfix, from userid 512)
+        id C47F88062D; Mon, 23 Sep 2019 22:49:31 +0200 (CEST)
+Date:   Mon, 23 Sep 2019 22:49:45 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        zhangjs <zachary@baishancloud.com>, linux-ext4@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: chaos generating driver was Re: Linux 5.3-rc8
+Message-ID: <20190923204944.GA1107@bug>
+References: <CAHk-=wjo6qDvh_fUnd2HdDb63YbWN09kE0FJPgCW+nBaWMCNAQ@mail.gmail.com>
+ <20190911160729.GF2740@mit.edu>
+ <CAHk-=whW_AB0pZ0u6P9uVSWpqeb5t2NCX_sMpZNGy8shPDyDNg@mail.gmail.com>
+ <CAHk-=wi_yXK5KSmRhgNRSmJSD55x+2-pRdZZPOT8Fm1B8w6jUw@mail.gmail.com>
+ <20190911173624.GI2740@mit.edu>
+ <20190912034421.GA2085@darwi-home-pc>
+ <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914150206.GA2270@darwi-home-pc>
+ <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjuVT+2oj_U2V94MBVaJdWsbo1RWzy0qXQSMAUnSaQzxw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 2019-09-23 at 12:08 -0700, Ira Weiny wrote:
-> Since the last RFC patch set[1] much of the discussion of supporting RDMA with
-> FS DAX has been around the semantics of the lease mechanism.[2]  Within that
-> thread it was suggested I try and write some documentation and/or tests for the
-> new mechanism being proposed.  I have created a foundation to test lease
-> functionality within xfstests.[3] This should be close to being accepted.
-> Before writing additional lease tests, or changing lots of kernel code, this
-> email presents documentation for the new proposed "layout lease" semantic.
-> 
-> At Linux Plumbers[4] just over a week ago, I presented the current state of the
-> patch set and the outstanding issues.  Based on the discussion there, well as
-> follow up emails, I propose the following addition to the fcntl() man page.
-> 
-> Thank you,
-> Ira
-> 
-> [1] https://lkml.org/lkml/2019/8/9/1043
-> [2] https://lkml.org/lkml/2019/8/9/1062
-> [3] https://www.spinics.net/lists/fstests/msg12620.html
-> [4] https://linuxplumbersconf.org/event/4/contributions/368/
-> 
-> 
+Hi!
 
-Thank you so much for doing this, Ira. This allows us to debate the
-user-visible behavior semantics without getting bogged down in the
-implementation details. More comments below:
+> >     => src/random-seed/random-seed.c:
+> >     /*
+> >      * Let's make this whole job asynchronous, i.e. let's make
+> >      * ourselves a barrier for proper initialization of the
+> >      * random pool.
+> >      */
+...
+> >      k = getrandom(buf, buf_size, GRND_NONBLOCK);
+> >      if (k < 0 && errno == EAGAIN && synchronous) {
+> >          log_notice("Kernel entropy pool is not initialized yet, "
+> >                     "waiting until it is.");
+> >
+> >          k = getrandom(buf, buf_size, 0); /* retry synchronously */
+> >      }
+> 
+> Yeah, the above is yet another example of completely broken garbage.
+> 
+> You can't just wait and block at boot. That is simply 100%
+> unacceptable, and always has been, exactly because that may
+> potentially mean waiting forever since you didn't do anything that
+> actually is likely to add any entropy.
 
-> <fcntl man page addition>
-> Layout Leases
-> -------------
-> 
-> Layout (F_LAYOUT) leases are special leases which can be used to control and/or
-> be informed about the manipulation of the underlying layout of a file.
-> 
-> A layout is defined as the logical file block -> physical file block mapping
-> including the file size and sharing of physical blocks among files.  Note that
-> the unwritten state of a block is not considered part of file layout.
-> 
-> **Read layout lease F_RDLCK | F_LAYOUT**
-> 
-> Read layout leases can be used to be informed of layout changes by the
-> system or other users.  This lease is similar to the standard read (F_RDLCK)
-> lease in that any attempt to change the _layout_ of the file will be reported to
-> the process through the lease break process.  But this lease is different
-> because the file can be opened for write and data can be read and/or written to
-> the file as long as the underlying layout of the file does not change.
-> Therefore, the lease is not broken if the file is simply open for write, but
-> _may_ be broken if an operation such as, truncate(), fallocate() or write()
-> results in changing the underlying layout.
-> 
-> **Write layout lease (F_WRLCK | F_LAYOUT)**
-> 
-> Write Layout leases can be used to break read layout leases to indicate that
-> the process intends to change the underlying layout lease of the file.
-> 
-> A process which has taken a write layout lease has exclusive ownership of the
-> file layout and can modify that layout as long as the lease is held.
-> Operations which change the layout are allowed by that process.  But operations
-> from other file descriptors which attempt to change the layout will break the
-> lease through the standard lease break process.  The F_LAYOUT flag is used to
-> indicate a difference between a regular F_WRLCK and F_WRLCK with F_LAYOUT.  In
-> the F_LAYOUT case opens for write do not break the lease.  But some operations,
-> if they change the underlying layout, may.
-> 
-> The distinction between read layout leases and write layout leases is that
-> write layout leases can change the layout without breaking the lease within the
-> owning process.  This is useful to guarantee a layout prior to specifying the
-> unbreakable flag described below.
-> 
-> 
+Hmm. This actually points to a solution, and I believe solution is in the
+kernel. Userspace is not the best place to decide what is the best way to
+generate entropy.
 
-The above sounds totally reasonable. You're essentially exposing the
-behavior of nfsd's layout leases to userland. To be clear, will F_LAYOUT
-leases work the same way as "normal" leases, wrt signals and timeouts?
-
-I do wonder if we're better off not trying to "or" in flags for this,
-and instead have a separate set of commands (maybe F_RDLAYOUT,
-F_WRLAYOUT, F_UNLAYOUT). Maybe I'm just bikeshedding though -- I don't
-feel terribly strongly about it.
-
-Also, at least in NFSv4, layouts are handed out for a particular byte
-range in a file. Should we consider doing this with an API that allows
-for that in the future? Is this something that would be desirable for
-your RDMA+DAX use-cases?
-
-We could add a new F_SETLEASE variant that takes a struct with a byte
-range (something like struct flock).
-
-> **Unbreakable Layout Leases (F_UNBREAK)**
+> As mentioned, this has already historically been a huge issue on
+> embedded devices, and with disks turnign not just to NVMe but to
+> actual polling nvdimm/xpoint/flash, the amount of true "entropy"
+> randomness we can give at boot is very questionable.
 > 
-> In order to support pinning of file pages by direct user space users an
-> unbreakable flag (F_UNBREAK) can be used to modify the read and write layout
-> lease.  When specified, F_UNBREAK indicates that any user attempting to break
-> the lease will fail with ETXTBUSY rather than follow the normal breaking
-> procedure.
-> 
-> Both read and write layout leases can have the unbreakable flag (F_UNBREAK)
-> specified.  The difference between an unbreakable read layout lease and an
-> unbreakable write layout lease are that an unbreakable read layout lease is
-> _not_ exclusive.  This means that once a layout is established on a file,
-> multiple unbreakable read layout leases can be taken by multiple processes and
-> used to pin the underlying pages of that file.
-> 
-> Care must therefore be taken to ensure that the layout of the file is as the
-> user wants prior to using the unbreakable read layout lease.  A safe mechanism
-> to do this would be to take a write layout lease and use fallocate() to set the
-> layout of the file.  The layout lease can then be "downgraded" to unbreakable
-> read layout as long as no other user broke the write layout lease.
-> 
+> We can (and will) continue to do a best-effort thing (including very
+> much using rdread and friends), but the whole "wait for entropy"
+> simply *must* stop.
 
-Will userland require any special privileges in order to set an
-F_UNBREAK lease? This seems like something that could be used for DoS. I
-assume that these will never time out.
+And we can stop it... from kernel, and without hacks. Simply by generating some
+entropy. We do not need to sit quietly while userspace waits for entropy to appear.
 
-How will we deal with the case where something is is squatting on an
-F_UNBREAK lease and isn't letting it go?
+We can for example do some reads from the disk. (find / should be good for generating
+entropy on many systems). For systems with rtc but not timestamp counter, we can
+actually just increase register, then read it from interrupt...
+...to get precise timings. We know system is blocked waiting for entropy, we can
+do expensive things we would not "normally" do.
 
-Leases are technically "owned" by the file description -- we can't
-necessarily trace it back to a single task in a threaded program. The
-kernel task that set the lease may have exited by the time we go
-looking.
+Yes, it would probably mean new kind of "driver" whose purpose is to generate some
+kind of activity so that interrupts happen and entropy is generated... But that is
+still better solution than fixing all of the userspace.
 
-Will we be content trying to determine this using /proc/locks+lsof, etc,
-or will we need something better?
+(With some proposals here, userspace _could_ do 
 
-> </fcntl man page addition>
+while (getrandom() == -EINVAL) {
+    system("find / &");
+    sleep(1);
+}
 
+...but I believe we really want to do it once, in kernel, and less hacky than this)
+
+Best regards,
+									Pavel
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
