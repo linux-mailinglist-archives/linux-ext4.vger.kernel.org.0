@@ -2,246 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A76BBE71
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 00:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CF0BBEFA
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 01:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503279AbfIWW0a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Sep 2019 18:26:30 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:39888 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2503270AbfIWW0a (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 23 Sep 2019 18:26:30 -0400
-Received: from dread.disaster.area (pa49-181-226-196.pa.nsw.optusnet.com.au [49.181.226.196])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 5E45736296B;
-        Tue, 24 Sep 2019 08:26:21 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.2)
-        (envelope-from <david@fromorbit.com>)
-        id 1iCWmi-0005IP-CL; Tue, 24 Sep 2019 08:26:20 +1000
-Date:   Tue, 24 Sep 2019 08:26:20 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-mm@kvack.org, Jeff Layton <jlayton@kernel.org>,
-        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: Lease semantic proposal
-Message-ID: <20190923222620.GC16973@dread.disaster.area>
-References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
+        id S2408203AbfIWXbh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Sep 2019 19:31:37 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59467 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729152AbfIWXbh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Sep 2019 19:31:37 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8NNVWdj011827
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Sep 2019 19:31:33 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 821104200BF; Mon, 23 Sep 2019 19:31:32 -0400 (EDT)
+Date:   Mon, 23 Sep 2019 19:31:32 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     linux-ext4@vger.kernel.org
+Subject: [ANNOUNCE] e2fsprogs v1.45.4
+Message-ID: <20190923233132.GB3136@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=dRuLqZ1tmBNts2YiI0zFQg==:117 a=dRuLqZ1tmBNts2YiI0zFQg==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
-        a=D19gQVrFAAAA:8 a=OLL_FvSJAAAA:8 a=gQGbs8_HAAAA:8 a=7-415B0cAAAA:8
-        a=cV8XMCNRulwGmHMGVcAA:9 a=CjuIK1q_8ugA:10 a=Z1lksQSvXmgA:10
-        a=oDE_HKQWQKsA:10 a=W4TVW4IDbPiebHqcZpNg:22 a=oIrB72frpwYPwTMnlWqB:22
-        a=1pMqk7AwgTXjlBDkgM7h:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 23, 2019 at 12:08:53PM -0700, Ira Weiny wrote:
-> 
-> Since the last RFC patch set[1] much of the discussion of supporting RDMA with
-> FS DAX has been around the semantics of the lease mechanism.[2]  Within that
-> thread it was suggested I try and write some documentation and/or tests for the
-> new mechanism being proposed.  I have created a foundation to test lease
-> functionality within xfstests.[3] This should be close to being accepted.
-> Before writing additional lease tests, or changing lots of kernel code, this
-> email presents documentation for the new proposed "layout lease" semantic.
-> 
-> At Linux Plumbers[4] just over a week ago, I presented the current state of the
-> patch set and the outstanding issues.  Based on the discussion there, well as
-> follow up emails, I propose the following addition to the fcntl() man page.
-> 
-> Thank you,
-> Ira
-> 
-> [1] https://lkml.org/lkml/2019/8/9/1043
-> [2] https://lkml.org/lkml/2019/8/9/1062
-> [3] https://www.spinics.net/lists/fstests/msg12620.html
-> [4] https://linuxplumbersconf.org/event/4/contributions/368/
-> 
-> 
-> <fcntl man page addition>
-> Layout Leases
-> -------------
-> 
-> Layout (F_LAYOUT) leases are special leases which can be used to control and/or
-> be informed about the manipulation of the underlying layout of a file.
-> 
-> A layout is defined as the logical file block -> physical file block mapping
-> including the file size and sharing of physical blocks among files.  Note that
-> the unwritten state of a block is not considered part of file layout.
+I've released e2fsprogs 1.45.4 in all of the usual places; it's tagged
+in the git trees on git.kernel.org, github, and sourceforge, and
+available for download at:
+ 
+http://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.45.4
+ 
+and
+ 
+http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.45.4.tar.gz
 
-Why even mention "unwritten" state if it's not considered something
-that the layout lease treats differently?
-
-i.e. Unwritten extents are a filesystem implementation detail that
-is not exposed to userspace by anything other than FIEMAP. If they
-have no impact on layout lease behaviour, then why raise it as
-something the user needs to know about?
-
-> **Read layout lease F_RDLCK | F_LAYOUT**
-> 
-> Read layout leases can be used to be informed of layout changes by the
-> system or other users.  This lease is similar to the standard read (F_RDLCK)
-> lease in that any attempt to change the _layout_ of the file will be reported to
-> the process through the lease break process. 
-
-Similar in what way? The standard F_RDLCK lease triggers on open or
-truncate - a layout lease does nothing of the sort.
-
-> But this lease is different
-> because the file can be opened for write and data can be read and/or written to
-> the file as long as the underlying layout of the file does not change.
-
-So a F_RDLCK|F_LAYOUT can be taken on a O_WRONLY fd, unlike a
-F_RDLCK which can only be taken on O_RDONLY fd.
-
-I think these semantics are sufficiently different to F_RDLCK they
-need to be explicitly documented, because I see problems here.
-
-> Therefore, the lease is not broken if the file is simply open for write, but
-> _may_ be broken if an operation such as, truncate(), fallocate() or write()
-> results in changing the underlying layout.
-
-As will mmap(), any number of XFS and ext4 ioctls, etc. 
-
-So this really needs to say "_will_ be broken if *any* modification to
-the file _might_ need to change the underlying physical layout".
-
-Now, the big question: what happens to a process with a
-F_RDLCK|F_LAYOUT lease held does a write that triggers a layout
-change? What happens then?
-
-Also, have you noticed that XFS will unconditionally break layouts on
-write() because it /might/ need to change the layout? i.e. the
-BREAK_WRITE case in xfs_file_aio_write_checks()? This is needed for
-correctly supporting pNFS layout coherency against local IO. i.e.
-local write() breaks layouts held by NFS server to get the
-delegation recalled.
-
-So by the above definition of F_RDLCK|F_LAYOUT behaviour, a holder
-of such a lease doing a write() to that file would trigger a lease
-break of their own lease as the filesystem has notified the lease
-layer that there is a layout change about to happen. What's expected
-to happen here?
-
-Hence, AFIACT, the above definition of a F_RDLCK|F_LAYOUT lease
-doesn't appear to be compatible with the semantics required by
-existing users of layout leases.
-
-> **Write layout lease (F_WRLCK | F_LAYOUT)**
-> 
-> Write Layout leases can be used to break read layout leases to indicate that
-> the process intends to change the underlying layout lease of the file.
-
-Any write() can change the layout of the file, and userspace cannot
-tell in advance whether that will occur (neither can the
-filesystem), so it seems to me that any application that needs to
-write data is going to have to use F_WRLCK|F_LAYOUT.
-
-> A process which has taken a write layout lease has exclusive ownership of the
-> file layout and can modify that layout as long as the lease is held.
-
-Which further implies single writer semantics and leases are
-associated with a single open fd. Single writers are something we
-are always trying to avoid in XFS.
-
-> Operations which change the layout are allowed by that process.  But operations
-> from other file descriptors which attempt to change the layout will break the
-> lease through the standard lease break process.
-
-If the F_WRLCK|F_LAYOUT lease is exclusive, who is actually able to
-modify the layout?  Are you talking about processes that don't
-actually hold leases modifying the layout? i.e. what are the
-constraints on "exclusive access" here - is F_WRLCK|F_LAYOUT is
-only exclusive when every modification is co-operating and taking
-the appropriate layout lease for every access to the file that is
-made?
-
-If that's the case, what happens when someone fails to get a read
-lock and decides "I can break write locks just by using ftruncate()
-to the same size without a layout lease". Or fallocate() to
-preallocate space that is already allocated. Or many other things I
-can think of.
-
-IOWs, this seems to me like a very fragile sort of construct that is
-open to abuse and that will lead to everyone using F_UNBREAK, which
-is highly unfriendly to everyone else...
-
-> The F_LAYOUT flag is used to
-> indicate a difference between a regular F_WRLCK and F_WRLCK with F_LAYOUT.  In
-> the F_LAYOUT case opens for write do not break the lease.  But some operations,
-> if they change the underlying layout, may.
-> 
-> The distinction between read layout leases and write layout leases is that
-> write layout leases can change the layout without breaking the lease within the
-> owning process.  This is useful to guarantee a layout prior to specifying the
-> unbreakable flag described below.
-
-Ok, so now you really are saying that F_RDLCK leases can only be
-used on O_RDONLY file descriptors because any modification under a
-F_RDLCK|LAYOUT will trigger a layout break.
-
-> **Unbreakable Layout Leases (F_UNBREAK)**
-> 
-> In order to support pinning of file pages by direct user space users an
-> unbreakable flag (F_UNBREAK) can be used to modify the read and write layout
-> lease.  When specified, F_UNBREAK indicates that any user attempting to break
-> the lease will fail with ETXTBUSY rather than follow the normal breaking
-> procedure.
-> 
-> Both read and write layout leases can have the unbreakable flag (F_UNBREAK)
-> specified.  The difference between an unbreakable read layout lease and an
-> unbreakable write layout lease are that an unbreakable read layout lease is
-> _not_ exclusive. 
-
-Oh, this doesn't work at all. Now we get write()s to F_RDLCK leases
-that can't break the leases and so all writes, even to processes
-that own RDLCK|UNBREAK, will fail with ETXTBSY.
-
-> This means that once a layout is established on a file,
-> multiple unbreakable read layout leases can be taken by multiple processes and
-> used to pin the underlying pages of that file.
-
-Ok, so what happens when someone now takes a
-F_WRLOCK|F_LAYOUT|F_UNBREAK? Is that supposed to break
-F_RDLCK|F_LAYOUT|F_UNBREAK, as the wording about F_WRLCK behaviour
-implies it should?
-
-> Care must therefore be taken to ensure that the layout of the file is as the
-> user wants prior to using the unbreakable read layout lease.  A safe mechanism
-> to do this would be to take a write layout lease and use fallocate() to set the
-> layout of the file.  The layout lease can then be "downgraded" to unbreakable
-> read layout as long as no other user broke the write layout lease.
-
-What are the semantics of this "downgrade" behaviour you speak of? :)
-
-My thoughts are:
-	- RDLCK can only be used for O_RDONLY because write()
-	  requires breaking of leases
-	- WRLCK is open to abuse simply by not using a layout lease
-	  to do a "no change" layout modification
-	- RDLCK|F_UNBREAK is entirely unusable
-	- WRLCK|F_UNBREAK will be what every application uses
-	  because everything else either doesn't work or is too easy
-	  to abuse.
+The release notes for 1.45.4 can be found below.  Note that if your
+system/distribution allows malicious users to trick the system into
+running e2fsck on an untrustworthy source as root, you are strongly
+recommended to take this release, or cherry pick 8dbe7b475ec5:
+"libsupport: add checks to prevent buffer overrun bugs in quota code".
 
 Cheers,
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+                                        - Ted
+
+
+E2fsprogs 1.45.4 (September 23, 2019)
+=====================================
+
+Updates/Fixes since v1.45.3:
+
+Fixes
+-----
+
+A maliciously corrupted file systems can trigger buffer overruns in the
+quota code used by e2fsck.  (Addresses CVE-2019-5094)
+
+E2fsck now checks to make sure the casefold flag is only set on
+directories, and only when the casefold feature is enabled.
+
+E2fsck will not disable the low dtime checks when using a backup
+superblock where the last mount time is zero.  This fixes a failure in
+xfstests ext4/007.
+
+Fix e2fsck so that when it needs to recreate the root directory, the
+quota counts are correctly updated.
+
+Fix e2scrub_all cron script so it checks to make sure e2scrub_all
+exists, since the crontab and cron script might stick around after the
+e2fsprogs package is removed.  (Addresses Debian Bug: #932622)
+
+Fix e2scrub_all so that it works when the free space is exactly the
+snapshot size.  (Addresses Debian Bug: #935009)
+
+Avoid spurious lvm warnings when e2scrub_all is run out of cron on
+non-systemd systems (Addresses Debian Bug: #940240)
+
+Update the man pages to document the new fsverity feature, and improve
+the documentation for the casefold and encrypt features.
+
+
+Performance, Internal Implementation, Development Support etc.
+--------------------------------------------------------------
+
+Fixed various debian packaging issues.  (Addresses Debian Bug: #933247,
+#932874, #932876, #932855, #932859, #932861, #932881, #932888)
+
+Fix false positive test failure in f_pre_1970_date_encoding on 32-bit
+systems with a 64-bit time_t.  (Addresses Debian Bug: #932906)
+
+Fixed various compiler warnings.  (Addresses Google Bug #118836063)
+
+Update the Czech, Dutch, French, German, Malay, Polish, Portuguese,
+Spanish, Swedish, Ukrainian, and Vietnamese translations from the
+Translation Project.
+
