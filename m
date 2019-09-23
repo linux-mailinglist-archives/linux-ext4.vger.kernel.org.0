@@ -2,69 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 045AABB51B
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2019 15:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BADBB78A
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2019 17:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439650AbfIWNTF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Sep 2019 09:19:05 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51834 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2439591AbfIWNTF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Sep 2019 09:19:05 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8NDIEHw002725
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Sep 2019 09:18:15 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 7F45B420811; Mon, 23 Sep 2019 09:18:14 -0400 (EDT)
-Date:   Mon, 23 Sep 2019 09:18:14 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, hch@infradead.org, andres@anarazel.de,
-        david@fromorbit.com, riteshh@linux.ibm.com,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 2/3] ext4: fix inode rwsem regression
-Message-ID: <20190923131814.GB6005@mit.edu>
-References: <20190911093926.pfkkx25mffzeuo32@alap3.anarazel.de>
- <20190911164517.16130-1-rgoldwyn@suse.de>
- <20190911164517.16130-3-rgoldwyn@suse.de>
- <20190923101042.GA25332@quack2.suse.cz>
+        id S1726552AbfIWPIo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Sep 2019 11:08:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42800 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726054AbfIWPIn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 23 Sep 2019 11:08:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id D7C50AB9B;
+        Mon, 23 Sep 2019 15:08:41 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 865BE1E4669; Mon, 23 Sep 2019 17:08:56 +0200 (CEST)
+Date:   Mon, 23 Sep 2019 17:08:56 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        david@fromorbit.com, hch@infradead.org, darrick.wong@oracle.com
+Subject: Re: [PATCH v3 4/6] ext4: reorder map.m_flags checks in
+ ext4_iomap_begin()
+Message-ID: <20190923150856.GE20367@quack2.suse.cz>
+References: <cover.1568282664.git.mbobrowski@mbobrowski.org>
+ <8aa099e66ece73578f32cbbc411b6f3e52d53e52.1568282664.git.mbobrowski@mbobrowski.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190923101042.GA25332@quack2.suse.cz>
+In-Reply-To: <8aa099e66ece73578f32cbbc411b6f3e52d53e52.1568282664.git.mbobrowski@mbobrowski.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 23, 2019 at 12:10:42PM +0200, Jan Kara wrote:
-> On Wed 11-09-19 11:45:16, Goldwyn Rodrigues wrote:
-> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > 
-> > This is similar to 942491c9e6d6 ("xfs: fix AIM7 regression")
-> > Apparently our current rwsem code doesn't like doing the trylock, then
-> > lock for real scheme.  So change our read/write methods to just do the
-> > trylock for the RWF_NOWAIT case.
-> > 
-> > Fixes: 728fbc0e10b7 ("ext4: nowait aio support")
-> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+On Thu 12-09-19 21:04:30, Matthew Bobrowski wrote:
+> For iomap direct IO write code path changes, we need to accommodate
+> for the case where the block mapping flags passed to ext4_map_blocks()
+> will result in m_flags having both EXT4_MAP_MAPPED and
+> EXT4_MAP_UNWRITTEN bits set. In order for the allocated unwritten
+> extents to be converted properly in the end_io handler, iomap->type
+> must be set to IOMAP_UNWRITTEN, so we need to reshuffle the
+> conditional statement in order to achieve this.
 > 
-> Thanks for fixing this! The patch looks good to me. You can add:
+> This change is a no-op for DAX code path as the block mapping flag
+> passed to ext4_map_blocks() when IS_DAX(inode) never results in
+> EXT4_MAP_MAPPED and EXT4_MAP_UNWRITTEN being set at once.
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+The patch looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/inode.c | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
 > 
-> BTW, I've also added Ted as ext4 maintainer to CC.
-
-Thanks, I've been following along, and once the merge window is over
-I'll start going through the patch backlog.
-
-Cheers,
-
-						- Ted
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 761ce6286b05..efb184928e51 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3581,10 +3581,21 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>  		iomap->type = delalloc ? IOMAP_DELALLOC : IOMAP_HOLE;
+>  		iomap->addr = IOMAP_NULL_ADDR;
+>  	} else {
+> -		if (map.m_flags & EXT4_MAP_MAPPED) {
+> -			iomap->type = IOMAP_MAPPED;
+> -		} else if (map.m_flags & EXT4_MAP_UNWRITTEN) {
+> +		/*
+> +		 * Flags passed to ext4_map_blocks() for direct IO
+> +		 * writes can result in m_flags having both
+> +		 * EXT4_MAP_MAPPED and EXT4_MAP_UNWRITTEN bits set. In
+> +		 * order for allocated unwritten extents to be
+> +		 * converted to written extents in the end_io handler
+> +		 * correctly, we need to ensure that the iomap->type
+> +		 * is also set appropriately in that case. Thus, we
+> +		 * need to check whether EXT4_MAP_UNWRITTEN is set
+> +		 * first.
+> +		 */
+> +		if (map.m_flags & EXT4_MAP_UNWRITTEN) {
+>  			iomap->type = IOMAP_UNWRITTEN;
+> +		} else if (map.m_flags & EXT4_MAP_MAPPED) {
+> +			iomap->type = IOMAP_MAPPED;
+>  		} else {
+>  			WARN_ON_ONCE(1);
+>  			return -EIO;
+> -- 
+> 2.20.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
