@@ -2,434 +2,248 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B06BCF7C
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 19:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C042DBD300
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 21:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732077AbfIXQ5W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Sep 2019 12:57:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410132AbfIXQsq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 24 Sep 2019 12:48:46 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4966E21D7B;
-        Tue, 24 Sep 2019 16:48:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569343725;
-        bh=1e/bd42Kt+/IBhPNaZvPHL/uh41AfV+WOZQC0Q6o0IE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lcGQDt+VxzKN+KS3pVJy/1by4QKBlSStnCN/BwZAd/m8D62p4Au2d5kutahfsU9Mv
-         sFHxgwPxeOrrQoEmCV96KmCkrcz5Cj5bmHdd0ob54Dz2brEtIvFs1bYX1zmyuaFMpo
-         7JFBAxJREGuWUv0VHlSSQUHYg8JCy8ZxQSLI8crA=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "zhangyi (F)" <yi.zhang@huawei.com>,
-        syzbot+1e470567330b7ad711d5@syzkaller.appspotmail.com,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 70/70] ext4: fix potential use after free after remounting with noblock_validity
-Date:   Tue, 24 Sep 2019 12:45:49 -0400
-Message-Id: <20190924164549.27058-70-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190924164549.27058-1-sashal@kernel.org>
-References: <20190924164549.27058-1-sashal@kernel.org>
+        id S1731100AbfIXTsQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Sep 2019 15:48:16 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17120 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726251AbfIXTsP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 24 Sep 2019 15:48:15 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x8OJbpIG090798
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Sep 2019 15:48:14 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2v7qgfmreq-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Sep 2019 15:48:13 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Tue, 24 Sep 2019 20:48:12 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 24 Sep 2019 20:48:08 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x8OJm7V540173734
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Sep 2019 19:48:07 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 27CC4A4053;
+        Tue, 24 Sep 2019 19:48:07 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ED164A4040;
+        Tue, 24 Sep 2019 19:48:04 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.46.35])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 24 Sep 2019 19:48:04 +0000 (GMT)
+Subject: Re: [RFC 0/2] ext4: Improve locking sequence in DIO write path
+To:     Jan Kara <jack@suse.cz>, Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org, david@fromorbit.com,
+        hch@infradead.org, adilger@dilger.ca, mbobrowski@mbobrowski.org,
+        rgoldwyn@suse.de
+References: <20190917103249.20335-1-riteshh@linux.ibm.com>
+ <d1f3b048-d21c-67f1-09a3-dd2abf7c156d@linux.alibaba.com>
+ <20190924151025.GD11819@quack2.suse.cz>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Wed, 25 Sep 2019 01:18:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190924151025.GD11819@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19092419-0020-0000-0000-000003711FA7
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19092419-0021-0000-0000-000021C6E252
+Message-Id: <20190924194804.ED164A4040@d06av23.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-24_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1909240163
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: "zhangyi (F)" <yi.zhang@huawei.com>
 
-[ Upstream commit 7727ae52975d4f4ef7ff69ed8e6e25f6a4168158 ]
 
-Remount process will release system zone which was allocated before if
-"noblock_validity" is specified. If we mount an ext4 file system to two
-mountpoints with default mount options, and then remount one of them
-with "noblock_validity", it may trigger a use after free problem when
-someone accessing the other one.
+On 9/24/19 8:40 PM, Jan Kara wrote:
+> Hi Joseph!
+> 
+> On Wed 18-09-19 14:35:15, Joseph Qi wrote:
+>> On 19/9/17 18:32, Ritesh Harjani wrote:
+>>> Hello,
+>>>
+>>> This patch series is based on the upstream discussion with Jan
+>>> & Joseph @ [1].
+>>> It is based on top of Matthew's v3 ext4 iomap patch series [2]
+>>>
+>>> Patch-1: Adds the ext4_ilock/unlock APIs and also replaces all
+>>> inode_lock/unlock instances from fs/ext4/*
+>>>
+>>> For now I already accounted for trylock/lock issue symantics
+>>> (which was discussed here [3]) in the same patch,
+>>> since the this whole patch was around inode_lock/unlock API,
+>>> so I thought it will be best to address that issue in the same patch.
+>>> However, kindly let me know if otherwise.
+>>>
+>>> Patch-2: Commit msg of this patch describes in detail about
+>>> what it is doing.
+>>> In brief - we try to first take the shared lock (instead of exclusive
+>>> lock), unless it is a unaligned_io or extend_io. Then in
+>>> ext4_dio_write_checks(), if we start with shared lock, we see
+>>> if we can really continue with shared lock or not. If not, then
+>>> we release the shared lock then acquire exclusive lock
+>>> and restart ext4_dio_write_checks().
+>>>
+>>>
+>>> Tested against few xfstests (with dioread_nolock mount option),
+>>> those ran fine (ext4 & generic).
+>>>
+>>> I tried testing performance numbers on my VM (since I could not get
+>>> hold of any real h/w based test device). I could test the fact
+>>> that earlier we were trying to do downgrade_write() lock, but with
+>>> this patch, that path is now avoided for fio test case
+>>> (as reported by Joseph in [4]).
+>>> But for the actual results, I am not sure if VM machine testing could
+>>> really give the reliable perf numbers which we want to take a look at.
+>>> Though I do observe some form of perf improvements, but I could not
+>>> get any reliable numbers (not even with the same list of with/without
+>>> patches with which Joseph posted his numbers [1]).
+>>>
+>>>
+>>> @Joseph,
+>>> Would it be possible for you to give your test case a run with this
+>>> patches? That will be really helpful.
+>>>
+>>> Branch for this is hosted at below tree.
+>>>
+>>> https://github.com/riteshharjani/linux/tree/ext4-ilock-RFC
+>>>
+>> I've tested your branch, the result is:
+>> mounting with dioread_nolock, it behaves the same like reverting
+>> parallel dio reads + dioread_nolock;
+>> while mounting without dioread_nolock, no improvement, or even worse.
+>> Please refer the test data below.
+>>
+>> fio -name=parallel_dio_reads_test -filename=/mnt/nvme0n1/testfile
+>> -direct=1 -iodepth=1 -thread -rw=randrw -ioengine=psync -bs=$bs
+>> -size=20G -numjobs=8 -runtime=600 -group_reporting
+>>
+>> w/     = with parallel dio reads
+>> w/o    = reverting parallel dio reads
+> 
+> This is with 16c54688592ce8 "ext4: Allow parallel DIO reads" reverted,
+> right?
 
- # mount /dev/sda foo
- # mount /dev/sda bar
+He posted the same numbers where he posted previous reverts too,
+which I thought we already noticed [1].
+ From [2] below, I assumed we knew this.
 
-User access mountpoint "foo"   |   Remount mountpoint "bar"
-                               |
-ext4_map_blocks()              |   ext4_remount()
-check_block_validity()         |   ext4_setup_system_zone()
-ext4_data_block_valid()        |   ext4_release_system_zone()
-                               |   free system_blks rb nodes
-access system_blks rb nodes    |
-trigger use after free         |
+[2] - """
+(note
+that the patches actually improve performance of read-only DIO workload
+when not using dioread_nolock as for that case, exclusive lock is 
+replaced with a shared one)
+"""
 
-This problem can also be reproduced by one mountpint, At the same time,
-add_system_zone() can get called during remount as well so there can be
-racing ext4_data_block_valid() reading the rbtree at the same time.
 
-This patch add RCU to protect system zone from releasing or building
-when doing a remount which inverse current "noblock_validity" mount
-option. It assign the rbtree after the whole tree was complete and
-do actual freeing after rcu grace period, avoid any intermediate state.
+[1]  https://patchwork.ozlabs.org/patch/1153546/
+[2] 
+https://lore.kernel.org/linux-ext4/20190830153520.GB25069@quack2.suse.cz/
 
-Reported-by: syzbot+1e470567330b7ad711d5@syzkaller.appspotmail.com
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/block_validity.c | 189 ++++++++++++++++++++++++++++-----------
- fs/ext4/ext4.h           |  10 ++-
- 2 files changed, 147 insertions(+), 52 deletions(-)
+> 
+>> w/o+   = reverting parallel dio reads + dioread_nolock
+>> ilock  = ext4-ilock-RFC
+>> ilock+ = ext4-ilock-RFC + dioread_nolock
+>>
+>> bs=4k:
+>> --------------------------------------------------------------
+>>        |            READ           |           WRITE          |
+>> --------------------------------------------------------------
+>> w/    | 30898KB/s,7724,555.00us   | 30875KB/s,7718,479.70us  |
+>> --------------------------------------------------------------
+>> w/o   | 117915KB/s,29478,248.18us | 117854KB/s,29463,21.91us |
+>> --------------------------------------------------------------
+> 
+> I'm really surprised by the numbers here. They would mean that when DIO
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index 8e83741b02e03..d4d4fdfac1a65 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -38,6 +38,7 @@ int __init ext4_init_system_zone(void)
- 
- void ext4_exit_system_zone(void)
- {
-+	rcu_barrier();
- 	kmem_cache_destroy(ext4_system_zone_cachep);
- }
- 
-@@ -49,17 +50,26 @@ static inline int can_merge(struct ext4_system_zone *entry1,
- 	return 0;
- }
- 
-+static void release_system_zone(struct ext4_system_blocks *system_blks)
-+{
-+	struct ext4_system_zone	*entry, *n;
-+
-+	rbtree_postorder_for_each_entry_safe(entry, n,
-+				&system_blks->root, node)
-+		kmem_cache_free(ext4_system_zone_cachep, entry);
-+}
-+
- /*
-  * Mark a range of blocks as belonging to the "system zone" --- that
-  * is, filesystem metadata blocks which should never be used by
-  * inodes.
-  */
--static int add_system_zone(struct ext4_sb_info *sbi,
-+static int add_system_zone(struct ext4_system_blocks *system_blks,
- 			   ext4_fsblk_t start_blk,
- 			   unsigned int count)
- {
- 	struct ext4_system_zone *new_entry = NULL, *entry;
--	struct rb_node **n = &sbi->system_blks.rb_node, *node;
-+	struct rb_node **n = &system_blks->root.rb_node, *node;
- 	struct rb_node *parent = NULL, *new_node = NULL;
- 
- 	while (*n) {
-@@ -91,7 +101,7 @@ static int add_system_zone(struct ext4_sb_info *sbi,
- 		new_node = &new_entry->node;
- 
- 		rb_link_node(new_node, parent, n);
--		rb_insert_color(new_node, &sbi->system_blks);
-+		rb_insert_color(new_node, &system_blks->root);
- 	}
- 
- 	/* Can we merge to the left? */
-@@ -101,7 +111,7 @@ static int add_system_zone(struct ext4_sb_info *sbi,
- 		if (can_merge(entry, new_entry)) {
- 			new_entry->start_blk = entry->start_blk;
- 			new_entry->count += entry->count;
--			rb_erase(node, &sbi->system_blks);
-+			rb_erase(node, &system_blks->root);
- 			kmem_cache_free(ext4_system_zone_cachep, entry);
- 		}
- 	}
-@@ -112,7 +122,7 @@ static int add_system_zone(struct ext4_sb_info *sbi,
- 		entry = rb_entry(node, struct ext4_system_zone, node);
- 		if (can_merge(new_entry, entry)) {
- 			new_entry->count += entry->count;
--			rb_erase(node, &sbi->system_blks);
-+			rb_erase(node, &system_blks->root);
- 			kmem_cache_free(ext4_system_zone_cachep, entry);
- 		}
- 	}
-@@ -126,7 +136,7 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
- 	int first = 1;
- 
- 	printk(KERN_INFO "System zones: ");
--	node = rb_first(&sbi->system_blks);
-+	node = rb_first(&sbi->system_blks->root);
- 	while (node) {
- 		entry = rb_entry(node, struct ext4_system_zone, node);
- 		printk(KERN_CONT "%s%llu-%llu", first ? "" : ", ",
-@@ -137,7 +147,47 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
- 	printk(KERN_CONT "\n");
- }
- 
--static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
-+/*
-+ * Returns 1 if the passed-in block region (start_blk,
-+ * start_blk+count) is valid; 0 if some part of the block region
-+ * overlaps with filesystem metadata blocks.
-+ */
-+static int ext4_data_block_valid_rcu(struct ext4_sb_info *sbi,
-+				     struct ext4_system_blocks *system_blks,
-+				     ext4_fsblk_t start_blk,
-+				     unsigned int count)
-+{
-+	struct ext4_system_zone *entry;
-+	struct rb_node *n;
-+
-+	if ((start_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
-+	    (start_blk + count < start_blk) ||
-+	    (start_blk + count > ext4_blocks_count(sbi->s_es))) {
-+		sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
-+		return 0;
-+	}
-+
-+	if (system_blks == NULL)
-+		return 1;
-+
-+	n = system_blks->root.rb_node;
-+	while (n) {
-+		entry = rb_entry(n, struct ext4_system_zone, node);
-+		if (start_blk + count - 1 < entry->start_blk)
-+			n = n->rb_left;
-+		else if (start_blk >= (entry->start_blk + entry->count))
-+			n = n->rb_right;
-+		else {
-+			sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
-+			return 0;
-+		}
-+	}
-+	return 1;
-+}
-+
-+static int ext4_protect_reserved_inode(struct super_block *sb,
-+				       struct ext4_system_blocks *system_blks,
-+				       u32 ino)
- {
- 	struct inode *inode;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
-@@ -163,14 +213,15 @@ static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
- 		if (n == 0) {
- 			i++;
- 		} else {
--			if (!ext4_data_block_valid(sbi, map.m_pblk, n)) {
-+			if (!ext4_data_block_valid_rcu(sbi, system_blks,
-+						map.m_pblk, n)) {
- 				ext4_error(sb, "blocks %llu-%llu from inode %u "
- 					   "overlap system zone", map.m_pblk,
- 					   map.m_pblk + map.m_len - 1, ino);
- 				err = -EFSCORRUPTED;
- 				break;
- 			}
--			err = add_system_zone(sbi, map.m_pblk, n);
-+			err = add_system_zone(system_blks, map.m_pblk, n);
- 			if (err < 0)
- 				break;
- 			i += n;
-@@ -180,94 +231,130 @@ static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
- 	return err;
- }
- 
-+static void ext4_destroy_system_zone(struct rcu_head *rcu)
-+{
-+	struct ext4_system_blocks *system_blks;
-+
-+	system_blks = container_of(rcu, struct ext4_system_blocks, rcu);
-+	release_system_zone(system_blks);
-+	kfree(system_blks);
-+}
-+
-+/*
-+ * Build system zone rbtree which is used for block validity checking.
-+ *
-+ * The update of system_blks pointer in this function is protected by
-+ * sb->s_umount semaphore. However we have to be careful as we can be
-+ * racing with ext4_data_block_valid() calls reading system_blks rbtree
-+ * protected only by RCU. That's why we first build the rbtree and then
-+ * swap it in place.
-+ */
- int ext4_setup_system_zone(struct super_block *sb)
- {
- 	ext4_group_t ngroups = ext4_get_groups_count(sb);
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	struct ext4_system_blocks *system_blks;
- 	struct ext4_group_desc *gdp;
- 	ext4_group_t i;
- 	int flex_size = ext4_flex_bg_size(sbi);
- 	int ret;
- 
- 	if (!test_opt(sb, BLOCK_VALIDITY)) {
--		if (sbi->system_blks.rb_node)
-+		if (sbi->system_blks)
- 			ext4_release_system_zone(sb);
- 		return 0;
- 	}
--	if (sbi->system_blks.rb_node)
-+	if (sbi->system_blks)
- 		return 0;
- 
-+	system_blks = kzalloc(sizeof(*system_blks), GFP_KERNEL);
-+	if (!system_blks)
-+		return -ENOMEM;
-+
- 	for (i=0; i < ngroups; i++) {
- 		cond_resched();
- 		if (ext4_bg_has_super(sb, i) &&
- 		    ((i < 5) || ((i % flex_size) == 0)))
--			add_system_zone(sbi, ext4_group_first_block_no(sb, i),
-+			add_system_zone(system_blks,
-+					ext4_group_first_block_no(sb, i),
- 					ext4_bg_num_gdb(sb, i) + 1);
- 		gdp = ext4_get_group_desc(sb, i, NULL);
--		ret = add_system_zone(sbi, ext4_block_bitmap(sb, gdp), 1);
-+		ret = add_system_zone(system_blks,
-+				ext4_block_bitmap(sb, gdp), 1);
- 		if (ret)
--			return ret;
--		ret = add_system_zone(sbi, ext4_inode_bitmap(sb, gdp), 1);
-+			goto err;
-+		ret = add_system_zone(system_blks,
-+				ext4_inode_bitmap(sb, gdp), 1);
- 		if (ret)
--			return ret;
--		ret = add_system_zone(sbi, ext4_inode_table(sb, gdp),
-+			goto err;
-+		ret = add_system_zone(system_blks,
-+				ext4_inode_table(sb, gdp),
- 				sbi->s_itb_per_group);
- 		if (ret)
--			return ret;
-+			goto err;
- 	}
- 	if (ext4_has_feature_journal(sb) && sbi->s_es->s_journal_inum) {
--		ret = ext4_protect_reserved_inode(sb,
-+		ret = ext4_protect_reserved_inode(sb, system_blks,
- 				le32_to_cpu(sbi->s_es->s_journal_inum));
- 		if (ret)
--			return ret;
-+			goto err;
- 	}
- 
-+	/*
-+	 * System blks rbtree complete, announce it once to prevent racing
-+	 * with ext4_data_block_valid() accessing the rbtree at the same
-+	 * time.
-+	 */
-+	rcu_assign_pointer(sbi->system_blks, system_blks);
-+
- 	if (test_opt(sb, DEBUG))
- 		debug_print_tree(sbi);
- 	return 0;
-+err:
-+	release_system_zone(system_blks);
-+	kfree(system_blks);
-+	return ret;
- }
- 
--/* Called when the filesystem is unmounted */
-+/*
-+ * Called when the filesystem is unmounted or when remounting it with
-+ * noblock_validity specified.
-+ *
-+ * The update of system_blks pointer in this function is protected by
-+ * sb->s_umount semaphore. However we have to be careful as we can be
-+ * racing with ext4_data_block_valid() calls reading system_blks rbtree
-+ * protected only by RCU. So we first clear the system_blks pointer and
-+ * then free the rbtree only after RCU grace period expires.
-+ */
- void ext4_release_system_zone(struct super_block *sb)
- {
--	struct ext4_system_zone	*entry, *n;
-+	struct ext4_system_blocks *system_blks;
- 
--	rbtree_postorder_for_each_entry_safe(entry, n,
--			&EXT4_SB(sb)->system_blks, node)
--		kmem_cache_free(ext4_system_zone_cachep, entry);
-+	system_blks = rcu_dereference_protected(EXT4_SB(sb)->system_blks,
-+					lockdep_is_held(&sb->s_umount));
-+	rcu_assign_pointer(EXT4_SB(sb)->system_blks, NULL);
- 
--	EXT4_SB(sb)->system_blks = RB_ROOT;
-+	if (system_blks)
-+		call_rcu(&system_blks->rcu, ext4_destroy_system_zone);
- }
- 
--/*
-- * Returns 1 if the passed-in block region (start_blk,
-- * start_blk+count) is valid; 0 if some part of the block region
-- * overlaps with filesystem metadata blocks.
-- */
- int ext4_data_block_valid(struct ext4_sb_info *sbi, ext4_fsblk_t start_blk,
- 			  unsigned int count)
- {
--	struct ext4_system_zone *entry;
--	struct rb_node *n = sbi->system_blks.rb_node;
-+	struct ext4_system_blocks *system_blks;
-+	int ret;
- 
--	if ((start_blk <= le32_to_cpu(sbi->s_es->s_first_data_block)) ||
--	    (start_blk + count < start_blk) ||
--	    (start_blk + count > ext4_blocks_count(sbi->s_es))) {
--		sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
--		return 0;
--	}
--	while (n) {
--		entry = rb_entry(n, struct ext4_system_zone, node);
--		if (start_blk + count - 1 < entry->start_blk)
--			n = n->rb_left;
--		else if (start_blk >= (entry->start_blk + entry->count))
--			n = n->rb_right;
--		else {
--			sbi->s_es->s_last_error_block = cpu_to_le64(start_blk);
--			return 0;
--		}
--	}
--	return 1;
-+	/*
-+	 * Lock the system zone to prevent it being released concurrently
-+	 * when doing a remount which inverse current "[no]block_validity"
-+	 * mount option.
-+	 */
-+	rcu_read_lock();
-+	system_blks = rcu_dereference(sbi->system_blks);
-+	ret = ext4_data_block_valid_rcu(sbi, system_blks, start_blk,
-+					count);
-+	rcu_read_unlock();
-+	return ret;
- }
- 
- int ext4_check_blockref(const char *function, unsigned int line,
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 1cb67859e0518..0014b1c5e6be1 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -184,6 +184,14 @@ struct ext4_map_blocks {
- 	unsigned int m_flags;
- };
- 
-+/*
-+ * Block validity checking, system zone rbtree.
-+ */
-+struct ext4_system_blocks {
-+	struct rb_root root;
-+	struct rcu_head rcu;
-+};
-+
- /*
-  * Flags for ext4_io_end->flags
-  */
-@@ -1420,7 +1428,7 @@ struct ext4_sb_info {
- 	int s_jquota_fmt;			/* Format of quota to use */
- #endif
- 	unsigned int s_want_extra_isize; /* New inodes should reserve # bytes */
--	struct rb_root system_blks;
-+	struct ext4_system_blocks __rcu *system_blks;
- 
- #ifdef EXTENTS_STATS
- 	/* ext4 extents stats */
--- 
-2.20.1
+While testing my patches I noticed this again, but then when I saw [2]
+above, I thought we were aware of this.
+My bad, I should have brought this point up maybe once before going
+ahead with implementing our discussed solution.
+
+
+> read takes i_rwsem exclusive lock instead of shared, it is a win for your
+> workload... Argh, now checking code in fs/direct-io.c I think I can see the
+> difference. The trick in do_blockdev_direct_IO() is:
+> 
+>          if (iov_iter_rw(iter) == READ && (dio->flags & DIO_LOCKING))
+>                  inode_unlock(dio->inode);
+>          if (dio->is_async && retval == 0 && dio->result &&
+>              (iov_iter_rw(iter) == READ || dio->result == count))
+>                  retval = -EIOCBQUEUED;
+>          else
+>                  dio_await_completion(dio);
+> 
+> So actually only direct IO read submission is protected by i_rwsem with
+> DIO_LOCKING. Actual waiting for sync DIO read happens with i_rwsem dropped.
+> 
+> After some thought I think the best solution for this is to just finally
+> finish the conversion of ext4 so that dioread_nolock is the only DIO path.
+
+Sorry, I still didn't get this completely. Could you please explain a 
+bit more?
+
+
+> With i_rwsem held in shared mode even for "unlocked" DIO, it should be
+> actually relatively simple and most of the dances with unwritten extents
+> shouldn't be needed anymore.
+
+Again, maybe it's related to above comment. Could you please give some
+insights?
+
+
+Or do you mean that we should do it like this-
+So as of now in dioread_nolock, we allocate blocks, mark the entry into
+extents as unwritten, then do the data IO, and then finally do the
+conversion of unwritten to written extents.
+
+So instead of that we first only reserve the disk blocks, (without
+making any on-disk changes in extent tree), do the data IO and then
+finally make an entry into extent tree on disk. And going
+forward only keep this as the default path.
+
+The above is something I have been looking into for enabling
+dioread_nolock for powerpc platforms where blocksize < page_size.
+This is based upon an upstream discussion between Ted and you :)
+
+
+But even with above, in case of extending writes, we still
+will have to zero out those extending blocks no? Which
+will require an exclusive inode lock anyways for zeroing.
+(same which has been done in XFS too).
+
+So going with current discussed solution of mounting with
+dioread_nolock to provide performance scalability in mixed read/write 
+workload should be also the right approach, no?
+Also looking at the numbers here [3] & [4], this patch also seems
+to improve the performance with dioread_nolock mount option.
+Please help me understand your thoughts on this.
+
+[3] - https://marc.info/?l=linux-ext4&m=156921748126221&w=2
+[4] - 
+https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/ext4/fio-output/vanilla-vs-ilocknew-randrw-dioread-nolock-4K.png
+
+
+-ritesh
 
