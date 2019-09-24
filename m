@@ -2,201 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B689BBC9ED
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 16:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD5BBCAE0
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 17:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441263AbfIXONJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Sep 2019 10:13:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59920 "EHLO mx1.suse.de"
+        id S1731050AbfIXPKN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Sep 2019 11:10:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43968 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2441260AbfIXONJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 24 Sep 2019 10:13:09 -0400
+        id S1727279AbfIXPKN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 24 Sep 2019 11:10:13 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 73ADBACD9;
-        Tue, 24 Sep 2019 14:13:06 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id E08CFAC93;
+        Tue, 24 Sep 2019 15:10:10 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6EA5D1E4427; Tue, 24 Sep 2019 16:13:21 +0200 (CEST)
-Date:   Tue, 24 Sep 2019 16:13:21 +0200
+        id 950881E4427; Tue, 24 Sep 2019 17:10:25 +0200 (CEST)
+Date:   Tue, 24 Sep 2019 17:10:25 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        david@fromorbit.com, hch@infradead.org, darrick.wong@oracle.com
-Subject: Re: [PATCH v3 5/6] ext4: introduce direct IO write path using iomap
- infrastructure
-Message-ID: <20190924141321.GC11819@quack2.suse.cz>
-References: <cover.1568282664.git.mbobrowski@mbobrowski.org>
- <db33705f9ba35ccbe20fc19b8ecbbf2078beff08.1568282664.git.mbobrowski@mbobrowski.org>
- <20190923211011.GH20367@quack2.suse.cz>
- <20190924102926.GC17526@bobrowski>
+To:     Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
+        tytso@mit.edu, linux-ext4@vger.kernel.org, david@fromorbit.com,
+        hch@infradead.org, adilger@dilger.ca, mbobrowski@mbobrowski.org,
+        rgoldwyn@suse.de
+Subject: Re: [RFC 0/2] ext4: Improve locking sequence in DIO write path
+Message-ID: <20190924151025.GD11819@quack2.suse.cz>
+References: <20190917103249.20335-1-riteshh@linux.ibm.com>
+ <d1f3b048-d21c-67f1-09a3-dd2abf7c156d@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190924102926.GC17526@bobrowski>
+In-Reply-To: <d1f3b048-d21c-67f1-09a3-dd2abf7c156d@linux.alibaba.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 24-09-19 20:29:26, Matthew Bobrowski wrote:
-> On Mon, Sep 23, 2019 at 11:10:11PM +0200, Jan Kara wrote:
-> > On Thu 12-09-19 21:04:46, Matthew Bobrowski wrote:
-> > > +static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> > > +{
-> > > +	ssize_t ret;
-> > > +	size_t count;
-> > > +	loff_t offset = iocb->ki_pos;
-> > > +	struct inode *inode = file_inode(iocb->ki_filp);
-> > > +	bool extend = false, overwrite = false, unaligned_aio = false;
-> > > +
-> > > +	if (!inode_trylock(inode)) {
-> > > +		if (iocb->ki_flags & IOCB_NOWAIT)
-> > > +			return -EAGAIN;
-> > > +		inode_lock(inode);
-> > > +	}
-> > > +
-> > > +	if (!ext4_dio_checks(inode)) {
-> > > +		inode_unlock(inode);
-> > > +		/*
-> > > +		 * Fallback to buffered IO if the operation on the
-> > > +		 * inode is not supported by direct IO.
-> > > +		 */
-> > > +		return ext4_buffered_write_iter(iocb, from);
-> > > +	}
-> > > +
-> > > +	ret = ext4_write_checks(iocb, from);
-> > > +	if (ret <= 0) {
-> > > +		inode_unlock(inode);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	/*
-> > > +	 * Unaligned direct AIO must be serialized among each other as
-> > > +	 * the zeroing of partial blocks of two competing unaligned
-> > > +	 * AIOs can result in data corruption.
-> > > +	 */
-> > > +	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS) &&
-> > > +	    !is_sync_kiocb(iocb) && ext4_unaligned_aio(inode, from, offset)) {
-> > > +		unaligned_aio = true;
-> > > +		inode_dio_wait(inode);
-> > > +	}
-> > > +
-> > > +	/*
-> > > +	 * Determine whether the IO operation will overwrite allocated
-> > > +	 * and initialized blocks. If so, check to see whether it is
-> > > +	 * possible to take the dioread_nolock path.
-> > > +	 */
-> > > +	count = iov_iter_count(from);
-> > > +	if (!unaligned_aio && ext4_overwrite_io(inode, offset, count) &&
-> > > +	    ext4_should_dioread_nolock(inode)) {
-> > > +		overwrite = true;
-> > > +		downgrade_write(&inode->i_rwsem);
-> > > +	}
-> > > +
-> > > +	if (offset + count > i_size_read(inode) ||
-> > > +	    offset + count > EXT4_I(inode)->i_disksize) {
-> > > +		ext4_update_i_disksize(inode, inode->i_size);
-> > > +		extend = true;
-> > > +	}
+Hi Joseph!
+
+On Wed 18-09-19 14:35:15, Joseph Qi wrote:
+> On 19/9/17 18:32, Ritesh Harjani wrote:
+> > Hello,
 > > 
-> > This call to ext4_update_i_disksize() is definitely wrong. If nothing else,
-> > you need to also have transaction started and call ext4_mark_inode_dirty()
-> > to actually journal the change of i_disksize (ext4_update_i_disksize()
-> > updates only the in-memory copy of the entry). Also the direct IO code
-> > needs to add the inode to the orphan list so that in case of crash, blocks
-> > allocated beyond EOF get truncated on next mount. That is the whole point
-> > of this excercise with i_disksize after all.
+> > This patch series is based on the upstream discussion with Jan
+> > & Joseph @ [1].
+> > It is based on top of Matthew's v3 ext4 iomap patch series [2]
 > > 
-> > But I'm wondering if i_disksize update is needed. Truncate cannot be in
-> > progress (we hold i_rwsem) and dirty pages will be flushed by
-> > iomap_dio_rw() before we start to allocate any blocks. So it should be
-> > enough to have here:
-> 
-> Well, I initially thought the same, however doing some research shows that we
-> have the following edge case:
->      - 45d8ec4d9fd54
->      and
->      - 73fdad00b208b
-> 
-> In fact you can reproduce the exact same i_size corruption issue by running
-> the generic/475 xfstests mutitple times, as articulated within
-> 45d8ec4d9fd54. So with that, I'm kind of confused and thinking that there may
-> be a problem that resides elsewhere that may need addressing?
-
-Right, I forgot about the special case explained in 45d8ec4d9fd54 where
-there's unwritted delalloc write beyond range where DIO write happens.
-
-> > 	if (offset + count > i_size_read(inode)) {
-> > 		/*
-> > 		 * Add inode to orphan list so that blocks allocated beyond
-> > 		 * EOF get properly truncated in case of crash.
-> > 		 */
-> > 		start transaction handle
-> > 		add inode to orphan list
-> > 		stop transaction handle
-> > 	}
+> > Patch-1: Adds the ext4_ilock/unlock APIs and also replaces all
+> > inode_lock/unlock instances from fs/ext4/*
 > > 
-> > And just leave i_disksize at whatever it currently is.
+> > For now I already accounted for trylock/lock issue symantics
+> > (which was discussed here [3]) in the same patch,
+> > since the this whole patch was around inode_lock/unlock API,
+> > so I thought it will be best to address that issue in the same patch. 
+> > However, kindly let me know if otherwise.
+> > 
+> > Patch-2: Commit msg of this patch describes in detail about
+> > what it is doing.
+> > In brief - we try to first take the shared lock (instead of exclusive
+> > lock), unless it is a unaligned_io or extend_io. Then in
+> > ext4_dio_write_checks(), if we start with shared lock, we see
+> > if we can really continue with shared lock or not. If not, then
+> > we release the shared lock then acquire exclusive lock
+> > and restart ext4_dio_write_checks().
+> > 
+> > 
+> > Tested against few xfstests (with dioread_nolock mount option),
+> > those ran fine (ext4 & generic).
+> > 
+> > I tried testing performance numbers on my VM (since I could not get
+> > hold of any real h/w based test device). I could test the fact
+> > that earlier we were trying to do downgrade_write() lock, but with
+> > this patch, that path is now avoided for fio test case
+> > (as reported by Joseph in [4]).
+> > But for the actual results, I am not sure if VM machine testing could
+> > really give the reliable perf numbers which we want to take a look at.
+> > Though I do observe some form of perf improvements, but I could not
+> > get any reliable numbers (not even with the same list of with/without
+> > patches with which Joseph posted his numbers [1]).
+> > 
+> > 
+> > @Joseph,
+> > Would it be possible for you to give your test case a run with this
+> > patches? That will be really helpful.
+> > 
+> > Branch for this is hosted at below tree.
+> > 
+> > https://github.com/riteshharjani/linux/tree/ext4-ilock-RFC
+> > 
+> I've tested your branch, the result is:
+> mounting with dioread_nolock, it behaves the same like reverting
+> parallel dio reads + dioread_nolock;
+> while mounting without dioread_nolock, no improvement, or even worse.
+> Please refer the test data below. 
 > 
-> I originally had the code which added the inode to the orphan list here, but
-> then I thought to myself that it'd make more sense to actually do this step
-> closer to the point where we've managed to successfully allocate the required
-> blocks for the write. This prevents the need to spray orphan list clean up
-> code all over the place just to cover the case that a write which had intended
-> to extend the inode beyond i_size had failed prematurely (i.e. before block
-> allocation). So, hence the reason why I thought having it in
-> ext4_iomap_begin() would make more sense, because at that point in the write
-> path, there is enough/or more assurance to make the call around whether we
-> will in fact be able to perform the write which will be extending beyond
-> i_size, or not and consequently whether the inode should be placed onto the
-> orphan list?
+> fio -name=parallel_dio_reads_test -filename=/mnt/nvme0n1/testfile
+> -direct=1 -iodepth=1 -thread -rw=randrw -ioengine=psync -bs=$bs
+> -size=20G -numjobs=8 -runtime=600 -group_reporting
 > 
-> Ideally I'd like to turn this statement into:
+> w/     = with parallel dio reads
+> w/o    = reverting parallel dio reads
+
+This is with 16c54688592ce8 "ext4: Allow parallel DIO reads" reverted,
+right?
+
+> w/o+   = reverting parallel dio reads + dioread_nolock
+> ilock  = ext4-ilock-RFC
+> ilock+ = ext4-ilock-RFC + dioread_nolock
 > 
-> 	if (offset + count > i_size_read(inode))
-> 	        extend = true;
-> 
-> Maybe I'm missing something here and there's actually a really good reason for
-> doing this nice and early? What are your thoughts about what I've mentioned
-> above?
+> bs=4k:
+> --------------------------------------------------------------
+>       |            READ           |           WRITE          |
+> --------------------------------------------------------------
+> w/    | 30898KB/s,7724,555.00us   | 30875KB/s,7718,479.70us  |
+> --------------------------------------------------------------
+> w/o   | 117915KB/s,29478,248.18us | 117854KB/s,29463,21.91us |
+> --------------------------------------------------------------
 
-Well, the slight trouble with adding inode to orphan list in
-ext4_iomap_begin() is that then it is somewhat difficult to tell whether
-you need to remove it when IO is done because there's no way how to
-propagate that information from ext4_iomap_begin() and checking against
-i_disksize is unreliable because it can change (due to writeback of
-delalloc pages) while direct IO is running. But I think we can overcome
-that by splitting our end_io functions to two - ext4_dio_write_end_io() and
-ext4_dio_extend_write_end_io(). So:
+I'm really surprised by the numbers here. They would mean that when DIO
+read takes i_rwsem exclusive lock instead of shared, it is a win for your
+workload... Argh, now checking code in fs/direct-io.c I think I can see the
+difference. The trick in do_blockdev_direct_IO() is:
 
-	WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
-	/*
-	 * Need to check against i_disksize as there may be dellalloc writes
-	 * pending.
-	 */
- 	if (offset + count > EXT4_I(inode)->i_disksize)
-		extend = true;
+        if (iov_iter_rw(iter) == READ && (dio->flags & DIO_LOCKING))
+                inode_unlock(dio->inode);
+        if (dio->is_async && retval == 0 && dio->result &&
+            (iov_iter_rw(iter) == READ || dio->result == count))
+                retval = -EIOCBQUEUED;
+        else
+                dio_await_completion(dio);
 
-	...
-	iomap_dio_rw(...,
-		extend ? ext4_dio_extend_write_end_io : ext4_dio_write_end_io);
+So actually only direct IO read submission is protected by i_rwsem with
+DIO_LOCKING. Actual waiting for sync DIO read happens with i_rwsem dropped.
 
-and ext4_dio_write_end_io() will just take care of conversion of unwritten
-extents on successful IO completion, while ext4_dio_extend_write_end_io()
-will take care of all the complex stuff with orphan handling, extension
-of inode size, and truncation of blocks beyond EOF - and it can do that
-because it is guaranteed to run under the protection of i_rwsem held in
-ext4_dio_write_iter().
-
-Alternatively, we could also just pass NULL instead of
-ext4_dio_extend_write_end_io() and just do all the work explicitely in
-ext4_dio_write_iter() in the 'extend' case. That might be actually the most
-transparent option...
-
-But at this point there are so many suggestions in flight that I need to
-see current state of the code again to be able to tell anything useful :).
+After some thought I think the best solution for this is to just finally
+finish the conversion of ext4 so that dioread_nolock is the only DIO path.
+With i_rwsem held in shared mode even for "unlocked" DIO, it should be
+actually relatively simple and most of the dances with unwritten extents
+shouldn't be needed anymore.
 
 								Honza
 -- 
