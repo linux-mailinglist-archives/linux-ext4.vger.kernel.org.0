@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3814CBCEA0
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 19:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B06BCF7C
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 19:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410005AbfIXQpq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Sep 2019 12:45:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35802 "EHLO mail.kernel.org"
+        id S1732077AbfIXQ5W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Sep 2019 12:57:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410021AbfIXQpp (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 24 Sep 2019 12:45:45 -0400
+        id S2410132AbfIXQsq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 24 Sep 2019 12:48:46 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A677621D7B;
-        Tue, 24 Sep 2019 16:45:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4966E21D7B;
+        Tue, 24 Sep 2019 16:48:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569343544;
-        bh=zLCAEo97goiHu6MVJZAlQJZVwD4ZpfNgGIsrNb/zL0Q=;
+        s=default; t=1569343725;
+        bh=1e/bd42Kt+/IBhPNaZvPHL/uh41AfV+WOZQC0Q6o0IE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hpB6BTVt0mJyTaWZBG5hNECfX02R5vqOSx5fFU75rtRwYWrarPU7Yofs4i5qS1CPV
-         YrDDVcxEPomaX+hIkOXLqXbzfKNpN3B2o8AH+LCt2U22Eded0zT809yAC0bXsl0nn7
-         Kf8qaDuA0ZGf0KBp9zpsQpchIHXv8kSx/ELK8+20=
+        b=lcGQDt+VxzKN+KS3pVJy/1by4QKBlSStnCN/BwZAd/m8D62p4Au2d5kutahfsU9Mv
+         sFHxgwPxeOrrQoEmCV96KmCkrcz5Cj5bmHdd0ob54Dz2brEtIvFs1bYX1zmyuaFMpo
+         7JFBAxJREGuWUv0VHlSSQUHYg8JCy8ZxQSLI8crA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "zhangyi (F)" <yi.zhang@huawei.com>,
         syzbot+1e470567330b7ad711d5@syzkaller.appspotmail.com,
         Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.3 87/87] ext4: fix potential use after free after remounting with noblock_validity
-Date:   Tue, 24 Sep 2019 12:41:43 -0400
-Message-Id: <20190924164144.25591-87-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 70/70] ext4: fix potential use after free after remounting with noblock_validity
+Date:   Tue, 24 Sep 2019 12:45:49 -0400
+Message-Id: <20190924164549.27058-70-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190924164144.25591-1-sashal@kernel.org>
-References: <20190924164144.25591-1-sashal@kernel.org>
+In-Reply-To: <20190924164549.27058-1-sashal@kernel.org>
+References: <20190924164549.27058-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -403,7 +403,7 @@ index 8e83741b02e03..d4d4fdfac1a65 100644
  
  int ext4_check_blockref(const char *function, unsigned int line,
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index bf660aa7a9e08..c025efcbcf27c 100644
+index 1cb67859e0518..0014b1c5e6be1 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
 @@ -184,6 +184,14 @@ struct ext4_map_blocks {
@@ -421,7 +421,7 @@ index bf660aa7a9e08..c025efcbcf27c 100644
  /*
   * Flags for ext4_io_end->flags
   */
-@@ -1421,7 +1429,7 @@ struct ext4_sb_info {
+@@ -1420,7 +1428,7 @@ struct ext4_sb_info {
  	int s_jquota_fmt;			/* Format of quota to use */
  #endif
  	unsigned int s_want_extra_isize; /* New inodes should reserve # bytes */
