@@ -2,26 +2,26 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB7BBC141
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 07:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAF4BC142
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 07:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409021AbfIXFOG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Sep 2019 01:14:06 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:45853 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404357AbfIXFOF (ORCPT
+        id S2409024AbfIXFOL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Sep 2019 01:14:11 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:49765 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404357AbfIXFOK (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 24 Sep 2019 01:14:05 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01451;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0TdH-Pbr_1569302039;
-Received: from localhost(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TdH-Pbr_1569302039)
+        Tue, 24 Sep 2019 01:14:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0TdH8ZPI_1569302045;
+Received: from localhost(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TdH8ZPI_1569302045)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 24 Sep 2019 13:14:04 +0800
+          Tue, 24 Sep 2019 13:14:06 +0800
 From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Subject: [PATCH 2/3] jbd2: add new tracepoint jbd2_wait_on_transaction_locked
-Date:   Tue, 24 Sep 2019 13:13:49 +0800
-Message-Id: <20190924051350.1740-2-xiaoguang.wang@linux.alibaba.com>
+Subject: [PATCH 3/3] jbd2: add new tracepoint jbd2_wait_on_credits
+Date:   Tue, 24 Sep 2019 13:13:50 +0800
+Message-Id: <20190924051350.1740-3-xiaoguang.wang@linux.alibaba.com>
 X-Mailer: git-send-email 2.17.2
 In-Reply-To: <20190924051350.1740-1-xiaoguang.wang@linux.alibaba.com>
 References: <20190924051350.1740-1-xiaoguang.wang@linux.alibaba.com>
@@ -30,57 +30,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Sometimes process will be stalled in wait_transaction_locked() for a while,
-also add a new tracepoint to track this delay.
+In current jbd2's implemention, jbd2 won't reclaim journal space unless
+free journal space is lower than specified threshold, sometimes there'll
+be many processes blocked on waiting for free journal space, so here
+also add a tracepoint to trace this delay:
 
 Trace info likes below:
-fsstress-1793  [009] ....   519.967867: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 73442
-fsstress-1788  [002] ....   519.967877: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 75189
-fsstress-1792  [012] ....   519.967882: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 148260
-fsstress-1786  [011] ....   519.967885: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 143292
-fsstress-1796  [004] ....   519.967889: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 147945
-fsstress-1791  [015] ....   519.967892: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 148126
-fsstress-1794  [009] ....   519.967938: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 148347
-fsstress-1787  [003] ....   519.967990: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 148152
-fsstress-1795  [004] ....   519.967999: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 141676
-fsstress-1800  [000] ....   519.968001: jbd2_wait_on_transaction_locked: dev 254,17 latency(us) 148141
+rm-1609  [012] ....   232.134012: jbd2_wait_on_credits: dev 254,17 latency(us) 30249
+rm-1609  [012] ....   232.540123: jbd2_wait_on_credits: dev 254,17 latency(us) 45491
+rm-1609  [012] ....   233.074011: jbd2_wait_on_credits: dev 254,17 latency(us) 111308
+rm-1609  [012] ....   233.798669: jbd2_wait_on_credits: dev 254,17 latency(us) 54398
+rm-1609  [011] ....   234.311211: jbd2_wait_on_credits: dev 254,17 latency(us) 48049
+rm-1609  [011] ....   234.917501: jbd2_wait_on_credits: dev 254,17 latency(us) 51491
+rm-1609  [011] ....   235.776268: jbd2_wait_on_credits: dev 254,17 latency(us) 51248
 
 Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
 ---
- fs/jbd2/transaction.c       |  3 +++
- include/trace/events/jbd2.h | 21 +++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+ fs/jbd2/transaction.c       |  6 +++++-
+ include/trace/events/jbd2.h | 20 ++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
 diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 5d7a96e10133..6757911a4a17 100644
+index 6757911a4a17..15f613ae32de 100644
 --- a/fs/jbd2/transaction.c
 +++ b/fs/jbd2/transaction.c
-@@ -148,6 +148,7 @@ static void wait_transaction_locked(journal_t *journal)
- 	DEFINE_WAIT(wait);
- 	int need_to_start;
- 	tid_t tid = journal->j_running_transaction->t_tid;
-+	s64 start_us = ktime_to_us(ktime_get());
- 
- 	prepare_to_wait(&journal->j_wait_transaction_locked, &wait,
- 			TASK_UNINTERRUPTIBLE);
-@@ -158,6 +159,8 @@ static void wait_transaction_locked(journal_t *journal)
- 	jbd2_might_wait_for_commit(journal);
- 	schedule();
- 	finish_wait(&journal->j_wait_transaction_locked, &wait);
-+	trace_jbd2_wait_on_transaction_locked(journal->j_fs_dev->bd_dev,
-+		ktime_to_us(ktime_get()) - start_us);
- }
- 
- /*
+@@ -266,8 +266,12 @@ static int add_transaction_credits(journal_t *journal, int blocks,
+ 		read_unlock(&journal->j_state_lock);
+ 		jbd2_might_wait_for_commit(journal);
+ 		write_lock(&journal->j_state_lock);
+-		if (jbd2_log_space_left(journal) < jbd2_space_needed(journal))
++		if (jbd2_log_space_left(journal) < jbd2_space_needed(journal)) {
++			s64 start_us = ktime_to_us(ktime_get());
+ 			__jbd2_log_wait_for_space(journal);
++			trace_jbd2_wait_on_credits(journal->j_fs_dev->bd_dev,
++				ktime_to_us(ktime_get()) - start_us);
++		}
+ 		write_unlock(&journal->j_state_lock);
+ 		return 1;
+ 	}
 diff --git a/include/trace/events/jbd2.h b/include/trace/events/jbd2.h
-index e42072c74ce9..f2eebd839bf2 100644
+index f2eebd839bf2..108f320ef362 100644
 --- a/include/trace/events/jbd2.h
 +++ b/include/trace/events/jbd2.h
-@@ -401,6 +401,27 @@ TRACE_EVENT(jbd2_wait_on_shadow,
+@@ -422,6 +422,26 @@ TRACE_EVENT(jbd2_wait_on_transaction_locked,
  		__entry->wait_us)
  );
  
-+TRACE_EVENT(jbd2_wait_on_transaction_locked,
++TRACE_EVENT(jbd2_wait_on_credits,
 +
 +	TP_PROTO(dev_t dev, unsigned long wait_us),
 +
@@ -100,7 +96,6 @@ index e42072c74ce9..f2eebd839bf2 100644
 +		MAJOR(__entry->dev), MINOR(__entry->dev),
 +		__entry->wait_us)
 +);
-+
  #endif /* _TRACE_JBD2_H */
  
  /* This part must be outside protection */
