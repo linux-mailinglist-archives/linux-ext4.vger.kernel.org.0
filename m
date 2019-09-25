@@ -2,181 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DD3BD3E9
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2019 22:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6BABD608
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2019 03:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633461AbfIXU5a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Sep 2019 16:57:30 -0400
-Received: from h-163-233.A498.priv.bahnhof.se ([155.4.163.233]:48224 "EHLO
-        mail.kenjo.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727890AbfIXU53 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 24 Sep 2019 16:57:29 -0400
-X-Greylist: delayed 1185 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Sep 2019 16:57:28 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kenjo.org;
-         s=mail; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=19E64vm8RRgmAsEKmLZbmxug/FG1/uAhHiL+c4K0QG0=; b=hgDQcYqY1gbjeSJVqSfpn021vU
-        Jw+v5TJMgwAdlUMBKl3X4A0tDl8+jpERZZMs83PRgd+Xc4yVMz5jkU0EapEM3ivxrPZ+9zb9VMZfx
-        t4vmpMXJczv+prqFwpuAz6BTEqinANHxaVG0b5B7qAIZ1KrJVwqyCfh5MRL8G9FaL5Tw=;
-Received: from brix.kenjo.org ([172.16.2.16])
-        by mail.kenjo.org with esmtp (Exim 4.89)
-        (envelope-from <ken@kenjo.org>)
-        id 1iCrZ6-0004bn-A5
-        for linux-ext4@vger.kernel.org; Tue, 24 Sep 2019 22:37:40 +0200
-To:     linux-ext4@vger.kernel.org
-From:   Kenneth Johansson <ken@kenjo.org>
-Subject: e2fsck ends up taking taking way to much time
-Message-ID: <9065f0c0-42f8-5fb1-b66f-db536a573c05@kenjo.org>
-Date:   Tue, 24 Sep 2019 22:37:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2390813AbfIYBR0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Sep 2019 21:17:26 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:50661 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389624AbfIYBR0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 24 Sep 2019 21:17:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07487;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0TdLt5SR_1569374242;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TdLt5SR_1569374242)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 25 Sep 2019 09:17:23 +0800
+Subject: Re: [RFC 0/2] ext4: Improve locking sequence in DIO write path
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, tytso@mit.edu,
+        linux-ext4@vger.kernel.org, david@fromorbit.com, hch@infradead.org,
+        adilger@dilger.ca, mbobrowski@mbobrowski.org, rgoldwyn@suse.de
+References: <20190917103249.20335-1-riteshh@linux.ibm.com>
+ <d1f3b048-d21c-67f1-09a3-dd2abf7c156d@linux.alibaba.com>
+ <20190924151025.GD11819@quack2.suse.cz>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <dc63d1cc-b6ae-7a6d-d932-9f36e0ca29bd@linux.alibaba.com>
+Date:   Wed, 25 Sep 2019 09:17:22 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
+In-Reply-To: <20190924151025.GD11819@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-So I was going to resize the fileystem something I done several times 
-but this time something went wrong. I hit the 16GB limit and had to use 
-the -b flag to resize. This is the commands I used
-
------
-
-# e2fsck -C 0 -f /dev/mapper/bfd_uc
-e2fsck 1.45.2 (27-May-2019)
-Pass 1: Checking inodes, blocks, and sizes
-Pass 2: Checking directory structure
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Pass 5: Checking group summary information
-/dev/mapper/bfd_uc: 78660/1021870080 files (16.1% non-contiguous), 
-3928630907/4087464448 blocks
-
------
-
-so long everything worked.
-
------
-
-# resize2fs  /dev/mapper/bfd_uc
-resize2fs 1.45.2 (27-May-2019)
-resize2fs: New size too large to be expressed in 32 bits
-
------
-
-ok letsa try that.
-
----------------
-
-# resize2fs  -b -p /dev/mapper/bfd_uc
-resize2fs 1.45.2 (27-May-2019)
-Converting the filesystem to 64-bit.
-Begin pass 2 (max = 22287)
-Relocating blocks XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-Begin pass 3 (max = 124740)
-Scanning inode table XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-Begin pass 5 (max = 2)
-Moving inode table XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-The filesystem on /dev/mapper/bfd_uc is now 4087464448 (4k) blocks long.
-
-  resize2fs  /dev/mapper/bfd_uc
-resize2fs 1.45.2 (27-May-2019)
-Resizing the filesystem on /dev/mapper/bfd_uc to 4355899904 (4k) blocks.
-The filesystem on /dev/mapper/bfd_uc is now 4355899904 (4k) blocks long.
-
------
-
-Still no problems but when I tried to mount it the kernel refused. so I 
-run fsck again and now there is a lot of issues.
-
------
-
-  e2fsck -C 0 -f /dev/mapper/bfd_uc
-e2fsck 1.45.2 (27-May-2019)
-Pass 1: Checking inodes, blocks, and sizes
-Inode 29360452 extent tree (at level 1) could be narrower. Optimize<y>? yes
-Inode 29360454 extent tree (at level 1) could be narrower. Optimize<y>? yes
-Inode 29360456 extent tree (at level 1) could be narrower. Optimize<y>? yes
-Inode 29360457 extent tree (at level 1) could be narrower. Optimize<y>? yes
-Inode 29360458 extent tree (at level 1) could be narrower. Optimize<y>? yes
-Inode 29360459 extent tree (at level 1) could be narrower. Optimize<y>? yes
-yInode 29361103 extent tree (at level 1) could be narrower. Optimize<y>? yes
-Inode 313786521 extent tree (at level 1) could be narrower. Optimize<y>? 
-yes
-Inode 313786522 extent tree (at level 1) could be narrower. Optimize<y>? yes
-Inode 400425891 extent tree (at level 1) could be narrower. Optimize 
-('a' enables 'yes' to all) <y>? yes to all
-Inode 400427369 extent tree (at level 2) could be narrower. Optimize? yes
-
-Inode 401735804 extent tree (at level 1) could be narrower. Optimize? yes
-
-and so on. not sure where they came from but the real issue is that I 
-cant get e2fsck to complete. I eventually get lots and lots of things 
-like this
-
-Inode 1021871069 block 336 conflicts with critical metadata, skipping 
-block checks.
-
-the same inode is used on hundreds of lines. looks like the inode is 
-random data more or less. I used debugfs and clri to delete it but I 
-just end up in the same error on another inode and I cant solve it this 
-way as it is manual work.
 
 
-here is parts of "debugfs stat" on another of this inodes. debugfs 
-enters the same loop as fsck I think as it hangs here.
+On 19/9/24 23:10, Jan Kara wrote:
+> Hi Joseph!
+> 
+> On Wed 18-09-19 14:35:15, Joseph Qi wrote:
+>> On 19/9/17 18:32, Ritesh Harjani wrote:
+>>> Hello,
+>>>
+>>> This patch series is based on the upstream discussion with Jan
+>>> & Joseph @ [1].
+>>> It is based on top of Matthew's v3 ext4 iomap patch series [2]
+>>>
+>>> Patch-1: Adds the ext4_ilock/unlock APIs and also replaces all
+>>> inode_lock/unlock instances from fs/ext4/*
+>>>
+>>> For now I already accounted for trylock/lock issue symantics
+>>> (which was discussed here [3]) in the same patch,
+>>> since the this whole patch was around inode_lock/unlock API,
+>>> so I thought it will be best to address that issue in the same patch. 
+>>> However, kindly let me know if otherwise.
+>>>
+>>> Patch-2: Commit msg of this patch describes in detail about
+>>> what it is doing.
+>>> In brief - we try to first take the shared lock (instead of exclusive
+>>> lock), unless it is a unaligned_io or extend_io. Then in
+>>> ext4_dio_write_checks(), if we start with shared lock, we see
+>>> if we can really continue with shared lock or not. If not, then
+>>> we release the shared lock then acquire exclusive lock
+>>> and restart ext4_dio_write_checks().
+>>>
+>>>
+>>> Tested against few xfstests (with dioread_nolock mount option),
+>>> those ran fine (ext4 & generic).
+>>>
+>>> I tried testing performance numbers on my VM (since I could not get
+>>> hold of any real h/w based test device). I could test the fact
+>>> that earlier we were trying to do downgrade_write() lock, but with
+>>> this patch, that path is now avoided for fio test case
+>>> (as reported by Joseph in [4]).
+>>> But for the actual results, I am not sure if VM machine testing could
+>>> really give the reliable perf numbers which we want to take a look at.
+>>> Though I do observe some form of perf improvements, but I could not
+>>> get any reliable numbers (not even with the same list of with/without
+>>> patches with which Joseph posted his numbers [1]).
+>>>
+>>>
+>>> @Joseph,
+>>> Would it be possible for you to give your test case a run with this
+>>> patches? That will be really helpful.
+>>>
+>>> Branch for this is hosted at below tree.
+>>>
+>>> https://github.com/riteshharjani/linux/tree/ext4-ilock-RFC
+>>>
+>> I've tested your branch, the result is:
+>> mounting with dioread_nolock, it behaves the same like reverting
+>> parallel dio reads + dioread_nolock;
+>> while mounting without dioread_nolock, no improvement, or even worse.
+>> Please refer the test data below. 
+>>
+>> fio -name=parallel_dio_reads_test -filename=/mnt/nvme0n1/testfile
+>> -direct=1 -iodepth=1 -thread -rw=randrw -ioengine=psync -bs=$bs
+>> -size=20G -numjobs=8 -runtime=600 -group_reporting
+>>
+>> w/     = with parallel dio reads
+>> w/o    = reverting parallel dio reads
+> 
+> This is with 16c54688592ce8 "ext4: Allow parallel DIO reads" reverted,
+> right?
 
------------
+Yes, actually, it also reverts the related patches:
 
-Inode: 1021870344   Type: regular    Mode:  04565   Flags: 0x9f6845b
-Generation: 3754451681    Version: 0x0cec5d88:0cee9f57
-User: 1240871040   Group: -228176346   Size: 7783179247692111229
-File ACL: 87875029679583
-Links: 57617   Blockcount: 203042659658940
-Fragment:  Address: -1951344957    Number: 0    Size: 0
-  ctime: 0x162ec9d3:d145c3fc -- Sat Oct 17 12:11:15 1981
-  atime: 0x4471cfa3:1a4a9fbf -- Thu Sep 11 12:14:59 2414
-  mtime: 0x2997b943:178e01cf -- Fri Jun  2 09:18:27 2400
-crtime: 0x42faeff4:02752ab4 -- Thu Aug 11 08:28:04 2005
-Size of extra inode fields: 28
-BLOCKS:
-(0):3868683678, (1):2003982397, (2):620007688, (3):4267941890, 
-(4):3725597703, (5):3651320496, (6):738218534, (7):2119776579, 
-(8):160072405, (9):4132595055, (10):1419200473, (11):772345008, 
-(IND):137269137, (12):4163901537, (13):344587808, (14):1106180479, 
-(15):3742206454, (16):1735251710, (17):709071450, (18):1481240729,79_
----------
+Revert "ext4: remove EXT4_STATE_DIOREAD_LOCK flag"
+Revert "ext4: fix off-by-one error when writing back pages before dio read"
+Revert "ext4: Allow parallel DIO reads"
 
-
-so I need to tell fsck to just ignore any inode that has like a filesize 
-larger than say 50G or some reasonable value so it does not scan the 
-whole blody disk or whatever its doing. right now It will never finish 
-this disk once it hit this type of inode data and I have no idea how 
-much of this exists. could be alot as I added 1T to the partition and 
-its from lvm so it could be any data that is now added to the 
-partition/disk
-
-so far I have had problems on this inode numbers
-
-1021871069
-1021871209
-1021870852
-1021870344
-
-so it looks like there could be a lot of them.
-
-
-
-
-
-
-
-
-
-
+> 
+>> w/o+   = reverting parallel dio reads + dioread_nolock
+>> ilock  = ext4-ilock-RFC
+>> ilock+ = ext4-ilock-RFC + dioread_nolock
+>>
+>> bs=4k:
+>> --------------------------------------------------------------
+>>       |            READ           |           WRITE          |
+>> --------------------------------------------------------------
+>> w/    | 30898KB/s,7724,555.00us   | 30875KB/s,7718,479.70us  |
+>> --------------------------------------------------------------
+>> w/o   | 117915KB/s,29478,248.18us | 117854KB/s,29463,21.91us |
+>> --------------------------------------------------------------
+> 
+> I'm really surprised by the numbers here. They would mean that when DIO
+> read takes i_rwsem exclusive lock instead of shared, it is a win for your
+> workload... Argh, now checking code in fs/direct-io.c I think I can see the
+> difference. The trick in do_blockdev_direct_IO() is:
+> 
+>         if (iov_iter_rw(iter) == READ && (dio->flags & DIO_LOCKING))
+>                 inode_unlock(dio->inode);
+>         if (dio->is_async && retval == 0 && dio->result &&
+>             (iov_iter_rw(iter) == READ || dio->result == count))
+>                 retval = -EIOCBQUEUED;
+>         else
+>                 dio_await_completion(dio);
+> 
+> So actually only direct IO read submission is protected by i_rwsem with
+> DIO_LOCKING. Actual waiting for sync DIO read happens with i_rwsem dropped.
+> 
+> After some thought I think the best solution for this is to just finally
+> finish the conversion of ext4 so that dioread_nolock is the only DIO path.
+> With i_rwsem held in shared mode even for "unlocked" DIO, it should be
+> actually relatively simple and most of the dances with unwritten extents
+> shouldn't be needed anymore.
+> 
+> 								Honza
+> 
