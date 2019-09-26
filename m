@@ -2,96 +2,144 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E27BF67F
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2019 18:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7C0BFAAD
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2019 22:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727238AbfIZQOo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Sep 2019 12:14:44 -0400
-Received: from mail-eopbgr730087.outbound.protection.outlook.com ([40.107.73.87]:7218
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726105AbfIZQOn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 26 Sep 2019 12:14:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=by1WYTvxS59ueEBaztMandpivrZGElkoNhDS8p8s7XCGGbZKIiFTYo/JdR926BYdswSBvEa8IucB9j6BR4VcuicmGMszH3Gy/3lyH8htaimpoSesfSwCXIkec7+wyluue56iXR45Nd/mlpGlSDWBu6MG6Ur7zDhWX8HdoCPMEKmIideFwfdknr1B1H/rQ+DfBbdGCt1l8z/3qoy7H8sZ2tfhqgwa4dWdFTlInDcO5k9rXfpqgRAzDKF79tVZZmliodxsNqOoWMKeUUpygPEKp7UtrkgazvUP7D4uIy/VYJVik1flqm0jo0Po/oLKdkFqoQwxJH48P/4dTBfkKpnxnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BjUyZbEjHBV25Sw3JI4Qa+wbYhiWfOjTSfdJDsGP9Eo=;
- b=Pp3oABXtvQJ3TF8f8Dsx3zLA1TbZ32en8m47UbE8xpQabC4nr8x2eKF5zC/WMXIR5V5kP9/ycIM4cvKDa0WJo3F5TjZUfI8/LpTvbtZDigrzZEFshRuvMs2pYA8bA0yiat898Yi9DS+n3kp1Dlgm+jCYbOK36egwftH3zvrIJ6UXQ02zUjk3WGDaVwn+z6XnlSQfbjYrIOYrNf8waQiWjmsrcxfbTV7jm0KHRKH9h9yE3LcHRyhI7XISlCU3YNboYAOZooXyYJDeW+l8RWx9gwKGlwjWfT7oCOg92AqxUdJPr0IOepl5eizDg30HQ0Vcf6gjQCmFI/9B0KUOtU0xmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
- header.d=ddn.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BjUyZbEjHBV25Sw3JI4Qa+wbYhiWfOjTSfdJDsGP9Eo=;
- b=tFdL1HuWPmDdulKP/YShtscSCdnRIgSvRdnvL+xnAUcN9iZLRvvNbNbcQhGWywnpdfEit/oS7BBxjirnIHl8/s8M7zUCMqmb+TsHmqW5nnbQQTh+9CIvCSTgrMr3e2BmSbS3bmm8X6MU55FOyVZgVuTLW9SgJz49U9jLntPtxsg=
-Received: from MN2PR19MB2638.namprd19.prod.outlook.com (20.179.84.18) by
- MN2PR19MB2733.namprd19.prod.outlook.com (20.178.250.92) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2284.20; Thu, 26 Sep 2019 16:14:40 +0000
-Received: from MN2PR19MB2638.namprd19.prod.outlook.com
- ([fe80::6da8:5431:51bb:cf68]) by MN2PR19MB2638.namprd19.prod.outlook.com
- ([fe80::6da8:5431:51bb:cf68%6]) with mapi id 15.20.2284.028; Thu, 26 Sep 2019
- 16:14:40 +0000
-From:   Sebastien Buisson <sbuisson@ddn.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Backup with encrypted content
-Thread-Topic: Backup with encrypted content
-Thread-Index: AQHVdIWAJ6ykQjjRP0eJq4GPQXYujQ==
-Date:   Thu, 26 Sep 2019 16:14:40 +0000
-Message-ID: <7B215AA4-7356-450D-AF24-A228BC6EC623@ddn.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=sbuisson@ddn.com; 
-x-originating-ip: [77.147.201.40]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b2b82a2b-6d7f-4ef7-c807-08d7429ca2a0
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MN2PR19MB2733;
-x-ms-traffictypediagnostic: MN2PR19MB2733:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <MN2PR19MB273359307EA85DCD5CC92225D7860@MN2PR19MB2733.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0172F0EF77
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(396003)(376002)(346002)(136003)(39850400004)(189003)(199004)(6306002)(316002)(6512007)(4744005)(6486002)(5640700003)(14454004)(3480700005)(71200400001)(71190400001)(305945005)(2351001)(7736002)(5660300002)(966005)(6436002)(66066001)(86362001)(99286004)(102836004)(2616005)(476003)(8936002)(6506007)(3846002)(26005)(478600001)(256004)(2906002)(6916009)(36756003)(25786009)(186003)(2501003)(8676002)(66446008)(76116006)(91956017)(6116002)(66556008)(64756008)(66476007)(66946007)(486006)(33656002)(81156014)(81166006)(6606295002);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR19MB2733;H:MN2PR19MB2638.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: ddn.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: vtaWWPNhB9GHy3cErzgz9O/6Vlq/jFaiy16KTd7SP3ySGyoTfbB5OdWE26eQnuaayNpugPzuKe8hqcYALeF2UWR76tcR+jqm2to8aU3W2/HNeAh4fjfL9GRuRhq0LxNQYGhPMaeFQqz/byPp5B7xT2T+1AmUAd898L+8cIIHC782eiROE9oVEyFLWrbptTYTWSbZalAE2/Zg6hE09uwekj8rGJ9zMSvvmT2kX7EOvl9KKu/8EBUHOufVXDSxnjikuyu2tEdjwRLy46w5fiwdMJkN3pUGQOkH+0enIVhwppuj/VDhYyG5+AGB/xnefkhFMX5wA3Jz60JEq5Z1Tp7+BQ1jhYWtHkEVmQwrL+ZePU3qBZlme4SaHP5owIgOeGacJrlBfv/zzmR+LEZzpvQhhQ8Hk0Z5v2btAuo0MZ6EqG1BkfagtRGWqq8cnsQS8mZQNZlCsa0wRvt06yQkCkQP1w==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <9DB67F5A4A21E34DAA4C58FB0D3E6289@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1728838AbfIZUm3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Sep 2019 16:42:29 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:42283 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727948AbfIZUm3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Sep 2019 16:42:29 -0400
+Received: by mail-wr1-f68.google.com with SMTP id n14so262150wrw.9;
+        Thu, 26 Sep 2019 13:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=v7VtkEEG2LAz9vVB8MM5QKckRl92FYJ98jBUqUE9BwA=;
+        b=u5spxzCLQa36RysMhpR/QTwiffH9apHOymwGEfBlshrnSYnVSdLYQTuKSRlBahGMTW
+         kljWooiuX6R0VxnZ0cUGreGtbkLL9qX/hR9bgMaaO6BjvUQ2aXWDK1tGQ9rfNxbwiSSq
+         fFKbhVrD0RlruSVqYVz4o7GMqXxhsRmZSh5NM7ExWQGIb1vFcF9k/a6uJppHVwmJvoAI
+         DxBgnAhlPvJgoCw4QX6sBYfSFqmbXaqFKW0euCCzG5haAewy1g588lLp/JBDHpxMifyq
+         hpWz6Qe4YXpxYViS+EpdOMW0DgRg2lSQ2sQAGcNWsWwEIQD/GGh4NnFfY4+bvjmZdkId
+         VAPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=v7VtkEEG2LAz9vVB8MM5QKckRl92FYJ98jBUqUE9BwA=;
+        b=ub8Q4e+gZZdS9Nb6S/YJKur5BZAIO11nucv7TYsw/TAi8u7Tis42rYwKFKqMXrz92a
+         rT3O5eybi4b0wacHVAc+ZE+rBPOMXXM/kMTNn46qY7XlAjzYwNQdoha+/IhyKgaWS5id
+         2y/edRJd2qZFjmfkjoIDJJCSXuD0W+XFn4600+F3Jw4pAwsZq9ScMq/CjrBK2xRyEfjB
+         ZoYtnchxbnmwdP8TnnVSAqZoBs1FXLOP/qrAaNBbYr1tdOqTF8jK08RLvWopXR7tCMOK
+         347i6wZePfwJM4gYAEsnnun7TD+fv9p2zn24eKCtq0tE060JmnxvG3CZp1HRICpj4Xby
+         jYzg==
+X-Gm-Message-State: APjAAAUuljqjaiGOTiPGguWGVUrisM0Ymuf4TvtPjpVTlLIsg+55EgXj
+        ROHA1APvgZpDQMIam0f3Vmk=
+X-Google-Smtp-Source: APXvYqx3sIDOdlofsaPVb8yY8fHJlIBsTAzoi31CxPZQoIgTKNLCuIpHCtrMLYLGQD0LcwEvLq25Nw==
+X-Received: by 2002:a5d:6306:: with SMTP id i6mr243312wru.323.1569530546588;
+        Thu, 26 Sep 2019 13:42:26 -0700 (PDT)
+Received: from pc ([5.158.153.52])
+        by smtp.gmail.com with ESMTPSA id r2sm5722658wma.1.2019.09.26.13.42.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2019 13:42:25 -0700 (PDT)
+Date:   Thu, 26 Sep 2019 22:42:17 +0200
+From:   "Ahmed S. Darwish" <darwish.07@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Florian Weimer <fweimer@redhat.com>, Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>
+Subject: [PATCH v5 0/1] random: getrandom(2): warn on large CRNG waits,
+ introduce new flags
+Message-ID: <20190926204217.GA1366@pc>
+References: <20190912034421.GA2085@darwi-home-pc>
+ <20190912082530.GA27365@mit.edu>
+ <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
+ <20190914122500.GA1425@darwi-home-pc>
+ <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
+ <20190915052242.GG19710@mit.edu>
+ <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
+ <20190918211503.GA1808@darwi-home-pc>
+ <20190918211713.GA2225@darwi-home-pc>
+ <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: ddn.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2b82a2b-6d7f-4ef7-c807-08d7429ca2a0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Sep 2019 16:14:40.5782
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4+35XDJPpOv7KbVTVJq1/ViPKsiVAp344jrncfI+S8Os6ROWRKwGY3SrfLNJUHPisvj/6NCQEUr3Z1HdKjW/xA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR19MB2733
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Summary / Changelog-v5:
 
-I am currently investigating the possibility to implement encryption for th=
-e Lustre file system, thanks to the same fscrypt API that ext4 leverages.
-During my investigations the question of backup was raised. So I looked int=
-o this aspect for ext4 when encryption is activated for certain directories=
-, and the only mention I found dates back from December, 2015.
-https://marc.info/?l=3Dlinux-ext4&m=3D145030599010416&w=3D2
-And it seems that these patches were never merged.
+  - Add the new flags GRND_INSECURE and GRND_SECURE_UNBOUNDED_INITIAL_WAIT
+    to getrandom(2), instead of introducing a new getrandom2(2) system
+    call, which nobody liked.
 
-As of today, what are the recommended ways to properly backup an ext4 file =
-system that contains encrypted directories?
+  - Fix a bug discovered through testing where "int ret =
+    wait_event_interruptible_timeout(waitq, true, MAX_SCHEDULE_TIMEOUT)"
+    returns failure (-1) due to implicit LONG_MAX => int truncation
 
-Thanks,
-Sebastien.=
+  - WARN if a process is stuck on getrandom(,,flags=0) for more than 30
+    seconds ... defconfig and bootparam configurable
+
+  - Add documentation for "random.getrandom_wait_threshold" kernel param
+
+  - Extra comments @ include/uapi/linux/random.h and random.c::getrandom.
+    Explicit recommendations to *exclusively* use the new flags.
+
+  - GRND_INSECURE never issue any warning, even if CRNG is not inited.
+    Similarly for GRND_SECURE_UNBOUNDED_INITIAL_WAIT, no matter how
+    big the unbounded wait is.
+
+In a reply to the V4 patch, Linus posted a related patch [*] with the
+following additions:
+
+  - Drop the original random.c behavior of having each /dev/urandom
+    "CRNG not inited" warning also _reset_ the crng_init_cnt entropy.
+
+    This is not included in this patch, as IMHO this can be done as a
+    separate patch on top.
+
+ - Limit GRND_RANDOM max count/buflen to 32MB instead of 2GB.  This
+   is very sane obviously, and can be done in a separate patch on
+   top.
+
+   This V5 patch just tries to be as conservative as possible.
+
+ - GRND_WAIT_ENTROPY and GRND_EXCPLICIT: AFAIK these were primarily
+   added so that getrandom(,,flags=0) can be changed to return
+   weaker non-blocking crypto from non-inited CRG in a possible
+   future.
+
+   I hope we don't have to resort to that extreme measure.. Hopefully
+   the WARN() on this patch will be enough in nudging distributions to
+   enable more hwrng sources (RDRAND, etc.) .. and also for the
+   user-space developres badly pointed at (hi GDM and Qt) to fix their
+   code.
+
+[*] https://lkml.kernel.org/r/CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com
+
+Ahmed S. Darwish (1):
+  random: getrandom(2): warn on large CRNG waits, introduce new flags
+
+ .../admin-guide/kernel-parameters.txt         |   7 ++
+ drivers/char/Kconfig                          |  60 ++++++++++-
+ drivers/char/random.c                         | 102 +++++++++++++++---
+ include/uapi/linux/random.h                   |  27 ++++-
+ 4 files changed, 177 insertions(+), 19 deletions(-)
+
+--
+2.23.0
