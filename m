@@ -2,388 +2,311 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 859D5BF14D
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2019 13:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D54BF31B
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2019 14:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725920AbfIZL3V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Sep 2019 07:29:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725784AbfIZL3V (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 26 Sep 2019 07:29:21 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FB2A222BE;
-        Thu, 26 Sep 2019 11:29:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569497359;
-        bh=9/Rqb68Hd5zokVs62d+8Q8CmAfS8pQMwz3knVtN56fo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=omM//YC5oUdyi9kAcm0qaiytjebiyZl37YKEzcR4YPYTBuy82kW1IkvB94GjDmPSY
-         V96+Zq2YtdLUWwO0+d8kob5UDH+RWLk1PlcKJ9TfMGaZDvCFeBeYTYp4Qv43tVYA7K
-         t4URTuhp06aJYd4fmgoeCitJCLjMB/VuLmUtP3z8=
-Message-ID: <aaee1675b737469187d14286d604b7990f2d5cbc.camel@kernel.org>
-Subject: Re: Lease semantic proposal
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Ira Weiny <ira.weiny@intel.com>, Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-mm@kvack.org, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Date:   Thu, 26 Sep 2019 07:29:16 -0400
-In-Reply-To: <20190925234602.GB12748@iweiny-DESK2.sc.intel.com>
-References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
-         <20190923222620.GC16973@dread.disaster.area>
-         <20190925234602.GB12748@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1726100AbfIZMhB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Sep 2019 08:37:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:17604 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726049AbfIZMhA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 26 Sep 2019 08:37:00 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x8QCZwrL181680
+        for <linux-ext4@vger.kernel.org>; Thu, 26 Sep 2019 08:36:59 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2v7mfs3w0r-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Thu, 26 Sep 2019 08:36:55 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Thu, 26 Sep 2019 13:35:02 +0100
+Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 26 Sep 2019 13:35:00 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x8QCYxwD46530846
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Sep 2019 12:34:59 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 130364C040;
+        Thu, 26 Sep 2019 12:34:59 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9B2984C044;
+        Thu, 26 Sep 2019 12:34:56 +0000 (GMT)
+Received: from [9.199.159.6] (unknown [9.199.159.6])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 26 Sep 2019 12:34:56 +0000 (GMT)
+Subject: Re: [RFC 0/2] ext4: Improve locking sequence in DIO write path
+To:     Jan Kara <jack@suse.cz>
+Cc:     Joseph Qi <joseph.qi@linux.alibaba.com>, tytso@mit.edu,
+        linux-ext4@vger.kernel.org, david@fromorbit.com, hch@infradead.org,
+        adilger@dilger.ca, mbobrowski@mbobrowski.org, rgoldwyn@suse.de
+References: <20190917103249.20335-1-riteshh@linux.ibm.com>
+ <d1f3b048-d21c-67f1-09a3-dd2abf7c156d@linux.alibaba.com>
+ <20190924151025.GD11819@quack2.suse.cz>
+ <20190924194804.ED164A4040@d06av23.portsmouth.uk.ibm.com>
+ <20190925092339.GB23277@quack2.suse.cz>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Thu, 26 Sep 2019 18:04:55 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <20190925092339.GB23277@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19092612-0012-0000-0000-00000350F80C
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19092612-0013-0000-0000-0000218B8F8F
+Message-Id: <20190926123456.9B2984C044@d06av22.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-26_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1909260119
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2019-09-25 at 16:46 -0700, Ira Weiny wrote:
-> On Tue, Sep 24, 2019 at 08:26:20AM +1000, Dave Chinner wrote:
-> > On Mon, Sep 23, 2019 at 12:08:53PM -0700, Ira Weiny wrote:
-> > > Since the last RFC patch set[1] much of the discussion of supporting RDMA with
-> > > FS DAX has been around the semantics of the lease mechanism.[2]  Within that
-> > > thread it was suggested I try and write some documentation and/or tests for the
-> > > new mechanism being proposed.  I have created a foundation to test lease
-> > > functionality within xfstests.[3] This should be close to being accepted.
-> > > Before writing additional lease tests, or changing lots of kernel code, this
-> > > email presents documentation for the new proposed "layout lease" semantic.
-> > > 
-> > > At Linux Plumbers[4] just over a week ago, I presented the current state of the
-> > > patch set and the outstanding issues.  Based on the discussion there, well as
-> > > follow up emails, I propose the following addition to the fcntl() man page.
-> > > 
-> > > Thank you,
-> > > Ira
-> > > 
-> > > [1] https://lkml.org/lkml/2019/8/9/1043
-> > > [2] https://lkml.org/lkml/2019/8/9/1062
-> > > [3] https://www.spinics.net/lists/fstests/msg12620.html
-> > > [4] https://linuxplumbersconf.org/event/4/contributions/368/
-> > > 
-> > > 
-> > > <fcntl man page addition>
-> > > Layout Leases
-> > > -------------
-> > > 
-> > > Layout (F_LAYOUT) leases are special leases which can be used to control and/or
-> > > be informed about the manipulation of the underlying layout of a file.
-> > > 
-> > > A layout is defined as the logical file block -> physical file block mapping
-> > > including the file size and sharing of physical blocks among files.  Note that
-> > > the unwritten state of a block is not considered part of file layout.
-> > 
-> > Why even mention "unwritten" state if it's not considered something
-> > that the layout lease treats differently?
-> > 
-> > i.e. Unwritten extents are a filesystem implementation detail that
-> > is not exposed to userspace by anything other than FIEMAP. If they
-> > have no impact on layout lease behaviour, then why raise it as
-> > something the user needs to know about?
-> 
-> This paragraph was intended to define a layout.  So I guess one could say our
-> internal discussion on what defines a "layout" has leaked into the external
-> documentation.  Do you think we should just remove the second sentence or the
-> whole paragraph?
-> 
-> > > **Read layout lease F_RDLCK | F_LAYOUT**
-> > > 
-> > > Read layout leases can be used to be informed of layout changes by the
-> > > system or other users.  This lease is similar to the standard read (F_RDLCK)
-> > > lease in that any attempt to change the _layout_ of the file will be reported to
-> > > the process through the lease break process. 
-> > 
-> > Similar in what way? The standard F_RDLCK lease triggers on open or
-> > truncate - a layout lease does nothing of the sort.
-> 
-> Similar in that attempts to "write" the layout will result in breaking the
-> lease just like attempts to write the file would break the standard F_RDLCK
-> lease.  I'm not stuck on the verbiage though; similar may be the wrong word.
-> 
-> > > But this lease is different
-> > > because the file can be opened for write and data can be read and/or written to
-> > > the file as long as the underlying layout of the file does not change.
-> > 
-> > So a F_RDLCK|F_LAYOUT can be taken on a O_WRONLY fd, unlike a
-> > F_RDLCK which can only be taken on O_RDONLY fd.
-> 
-> That was the idea, yes.
-> 
-> > I think these semantics are sufficiently different to F_RDLCK they
-> > need to be explicitly documented, because I see problems here.
-> 
-> I agree, and I intended this document to indicate how they are different.
-> 
-> Anther option may be to define F_RDLAYOUT and not have F_LAYOUT such that it is
-> clear that this lease is not associated with F_RDLCK at all.  It is different.
-> 
-> > > Therefore, the lease is not broken if the file is simply open for write, but
-> > > _may_ be broken if an operation such as, truncate(), fallocate() or write()
-> > > results in changing the underlying layout.
-> > 
-> > As will mmap(), any number of XFS and ext4 ioctls, etc. 
-> > 
-> > So this really needs to say "_will_ be broken if *any* modification to
-> > the file _might_ need to change the underlying physical layout".
-> 
-> Agreed.  I used the word "may" because a simple write() does not necessarily
-> change the layout of the file.  But I like your verbiage better.  I did wonder
-> if listing operations was a bad idea.  So I'm ok simply leaving that detail
-> out.
-> 
-> > Now, the big question: what happens to a process with a
-> > F_RDLCK|F_LAYOUT lease held does a write that triggers a layout
-> > change? What happens then?
-> 
-> Because F_UNBREAK is not specified, the write() operation is held for lease
-> break time and then the lease is broken if not voluntarily released.  This
-> would be the same pattern as a process holding a F_RDLCK and opening the file
-> O_RDWR.
-> 
-> > Also, have you noticed that XFS will unconditionally break layouts on
-> > write() because it /might/ need to change the layout? i.e. the
-> > BREAK_WRITE case in xfs_file_aio_write_checks()? This is needed for
-> > correctly supporting pNFS layout coherency against local IO. i.e.
-> > local write() breaks layouts held by NFS server to get the
-> > delegation recalled.
-> > 
-> > So by the above definition of F_RDLCK|F_LAYOUT behaviour, a holder
-> > of such a lease doing a write() to that file would trigger a lease
-> > break of their own lease as the filesystem has notified the lease
-> > layer that there is a layout change about to happen. What's expected
-> > to happen here?
-> 
-> That is not ideal but the proposed semantics say a write() may fail in this
-> situation.  So depending on the implementation requirements of the underlying
-> FS the semantics still hold for our current use case.  It would be nice to be
-> able to enhance the implementation in the future such that a write() could work
-> but maybe they can't.  For RDMA the application is probably going to have the
-> region mmap'ed anyway and will not need, nor in fact want to use a write()
-> call.
-> 
-> Also, I think I missed a need to specify that a F_RDLCK|F_LAYOUT needs to have
-> write permission on (or be the owner of) the file for the user to be able to
-> specify F_UNBREAK on it.
-> 
-> > Hence, AFIACT, the above definition of a F_RDLCK|F_LAYOUT lease
-> > doesn't appear to be compatible with the semantics required by
-> > existing users of layout leases.
-> 
-> I disagree.  Other than the addition of F_UNBREAK, I think this is consistent
-> with what is currently implemented.  Also, by exporting all this to user space
-> we can now write tests for it independent of the RDMA pinning.
-> 
-> > > **Write layout lease (F_WRLCK | F_LAYOUT)**
-> > > 
-> > > Write Layout leases can be used to break read layout leases to indicate that
-> > > the process intends to change the underlying layout lease of the file.
-> > 
-> > Any write() can change the layout of the file, and userspace cannot
-> > tell in advance whether that will occur (neither can the
-> > filesystem), so it seems to me that any application that needs to
-> > write data is going to have to use F_WRLCK|F_LAYOUT.
-> 
-> Sure, but the use case of F_WRLCK|F_LAYOUT is that the user is creating the
-> layout.  So using write() to create the file would be ok.
-> 
-> On the surface it seems like using a standard F_WRLCK lease could be used
-> instead of F_WRLCK|F_LAYOUT.  But it actually can't because that does not
-> protect against the internals of the file system changing the lease.  This is
-> where the semantics are exactly exported to user space.
-> 
-> > > A process which has taken a write layout lease has exclusive ownership of the
-> > > file layout and can modify that layout as long as the lease is held.
-> > 
-> > Which further implies single writer semantics and leases are
-> > associated with a single open fd. Single writers are something we
-> > are always trying to avoid in XFS.
-> 
-> The discussion at LPC revealed that we need a way for the user to ensure the
-> file layout is realized prior to any unbreakable lease being taken.  So yes, for
-> some period we will need a single writer.
-> 
-> > > Operations which change the layout are allowed by that process.  But operations
-> > > from other file descriptors which attempt to change the layout will break the
-> > > lease through the standard lease break process.
-> > 
-> > If the F_WRLCK|F_LAYOUT lease is exclusive, who is actually able to
-> > modify the layout?  Are you talking about processes that don't
-> > actually hold leases modifying the layout?
-> 
-> That was the idea, yes.
-> 
-> > i.e. what are the
-> > constraints on "exclusive access" here - is F_WRLCK|F_LAYOUT is
-> > only exclusive when every modification is co-operating and taking
-> > the appropriate layout lease for every access to the file that is
-> > made?
-> 
-> I'm not following but IIUC...  no...  The idea is that if you hold the
-> F_WRLCK|F_LAYOUT lease then any attempt by _other_ processes to change the
-> layout (intentional or otherwise) would result in you getting a SIGIO signal
-> which indicates someone _else_ changed the file.
-> 
-> Then you can atomically downgrade the lock to F_RDLCK|F_LAYOUT|F_UNBREAK or
-> atomically upgrade to F_WRLCK|F_LAYOUT|F_UNBREAK.  Either way you know you have
-> the layout you want and can rely on the pin working.
-> 
-> > If that's the case, what happens when someone fails to get a read
-> > lock and decides "I can break write locks just by using ftruncate()
-> > to the same size without a layout lease". Or fallocate() to
-> > preallocate space that is already allocated. Or many other things I
-> > can think of.
-> 
-> The intended use case for F_WRLCK|F_LAYOUT is that a single process is
-> attempting to set the layout prior to setting F_UNBREAK.  While
-> F_WRLCK|F_LAYOUT can be broken, breaking the lease will not happen without that
-> process knowing about it.
-> 
-> I don't see this being different from the current lease semantics which
-> requires some external coordination amongst process/file users to resolve any
-> races or coordination.
-> 
-> > IOWs, this seems to me like a very fragile sort of construct that is
-> > open to abuse and that will lead to everyone using F_UNBREAK, which
-> > is highly unfriendly to everyone else...
-> 
-> FWIW, my use case does require F_UNBREAK.  All of the semantics presented have
-> a real use case except for F_RDLCK|F_LAYOUT.  However, I think F_RDLCK|F_LAYOUT
-> does have a use case in testing.
-> 
-> Also, I do think that we need to have some check on file ownership for
-> F_UNBREAK.  That needs to be added.
-> 
-> > > The F_LAYOUT flag is used to
-> > > indicate a difference between a regular F_WRLCK and F_WRLCK with F_LAYOUT.  In
-> > > the F_LAYOUT case opens for write do not break the lease.  But some operations,
-> > > if they change the underlying layout, may.
-> > > 
-> > > The distinction between read layout leases and write layout leases is that
-> > > write layout leases can change the layout without breaking the lease within the
-> > > owning process.  This is useful to guarantee a layout prior to specifying the
-> > > unbreakable flag described below.
-> > 
-> > Ok, so now you really are saying that F_RDLCK leases can only be
-> > used on O_RDONLY file descriptors because any modification under a
-> > F_RDLCK|LAYOUT will trigger a layout break.
-> 
-> I don't necessarily agree.  We also have the mmap() case.  What I was really
-> trying to do is define a relaxed lease semantic which allows some shared
-> reading/writing of the file as long as the underlying layout does not change.
-> I am _not_ a file system expert but it seems like that should be possible.
-> 
-> Perhaps we need something more fine grained between BREAK_UNMAP and
-> BREAK_WRITE?
-> 
-> > > **Unbreakable Layout Leases (F_UNBREAK)**
-> > > 
-> > > In order to support pinning of file pages by direct user space users an
-> > > unbreakable flag (F_UNBREAK) can be used to modify the read and write layout
-> > > lease.  When specified, F_UNBREAK indicates that any user attempting to break
-> > > the lease will fail with ETXTBUSY rather than follow the normal breaking
-> > > procedure.
-> > > 
-> > > Both read and write layout leases can have the unbreakable flag (F_UNBREAK)
-> > > specified.  The difference between an unbreakable read layout lease and an
-> > > unbreakable write layout lease are that an unbreakable read layout lease is
-> > > _not_ exclusive. 
-> > 
-> > Oh, this doesn't work at all. Now we get write()s to F_RDLCK leases
-> > that can't break the leases and so all writes, even to processes
-> > that own RDLCK|UNBREAK, will fail with ETXTBSY.
-> 
-> Yes I agree writes()'s to F_RDLCK|F_LAYOUT|F_UNBREAK _may_ fail.  I don't see
-> how this is broken if the file owner is opting into it.  RDMA's can still occur
-> to that file.  mmap'ed areas of the file can still be used (especially in the
-> no-page cache case of FS DAX).
-> 
-> > > This means that once a layout is established on a file,
-> > > multiple unbreakable read layout leases can be taken by multiple processes and
-> > > used to pin the underlying pages of that file.
-> > 
-> > Ok, so what happens when someone now takes a
-> > F_WRLOCK|F_LAYOUT|F_UNBREAK? Is that supposed to break
-> > F_RDLCK|F_LAYOUT|F_UNBREAK, as the wording about F_WRLCK behaviour
-> > implies it should?
-> 
-> Ah no.  F_RDLCK|F_LAYOUT|F_UNBREAK could not be broken.  I'll have to update
-> the text for this.  The idea here is that no one can be changing the layout but
-> multiple readers could be using that layout.  So I'll update the text that a
-> F_WRLCK|F_LAYOUT|F_UNBREAK would fail in this case.
-> 
-> > > Care must therefore be taken to ensure that the layout of the file is as the
-> > > user wants prior to using the unbreakable read layout lease.  A safe mechanism
-> > > to do this would be to take a write layout lease and use fallocate() to set the
-> > > layout of the file.  The layout lease can then be "downgraded" to unbreakable
-> > > read layout as long as no other user broke the write layout lease.
-> > 
-> > What are the semantics of this "downgrade" behaviour you speak of? :)
-> 
-> As I said above it may be a downgrade or an upgrade but the idea is to
-> atomically convert the lease to F_UNBREAK.
-> 
-> > My thoughts are:
-> > 	- RDLCK can only be used for O_RDONLY because write()
-> > 	  requires breaking of leases
-> 
-> Does the file system require write() break the layout lease?  Or is that just
-> the way the file system is currently implemented?  What about mmap()?  I need
-> to have the file open WR to mmap() the file for RDMA.
-> 
-> To be clear I'm intending F_RDLCK|F_LAYOUT to be something new.  As I said
-> above we could use something like F_RDLAYOUT instead?
-> 
-> > 	- WRLCK is open to abuse simply by not using a layout lease
-> > 	  to do a "no change" layout modification
-> 
-> I'm sorry, I don't understand this comment.
-> 
-> > 	- RDLCK|F_UNBREAK is entirely unusable
-> 
-> Well even if write() fails with ETXTBSY this should give us the ability to do
-> RDMA and XDP to these areas from multiple processes.  Furthermore, for FS DAX
-> which bypasses the page cache mmap'ed areas can be written without write() with
-> CPU stores.  Which is how many RDMA applications are likely to write this data.
-> 
-> > 	- WRLCK|F_UNBREAK will be what every application uses
-> > 	  because everything else either doesn't work or is too easy
-> > 	  to abuse.
-> 
-> Maybe.  IMO that is still a step in the right direction as at least 1 process
-> can use this now.  And these semantics allow for a shared unbreakable lease
-> (F_RDLCK|F_LAYOUT|F_UNBREAK) which can be used with some configurations (FS DAX
-> in particular).
-> 
-> Also, I do think we will need something to ensure file ownership for F_UNBREAK.
-> 
-> It sounds like the difficulty here is in potential implementation of allowing
-> write() to not break layouts.  And dealing with writes to mmap'ed page cache
-> pages.  The file system is free to do better later.
-> 
+Hello Jan,
 
-Whatever the semantics, from an API standpoint, I think we should not
-try to multiplex layout behavior on top of F_SETLEASE. Layouts should
-get new fcntl cmd values (maybe F_SETLAYOUT/F_GETLAYOUT) and then you
-wouldn't need to expose the F_LAYOUT flag to userland.
+Thanks for answering it all and giving all the info.
 
-The behavior of layouts is different enough from "traditional" leases
-that trying to mash them together like this is only going to cause
-confusion.
+On 9/25/19 2:53 PM, Jan Kara wrote:
+> On Wed 25-09-19 01:18:04, Ritesh Harjani wrote:
+>>> read takes i_rwsem exclusive lock instead of shared, it is a win for your
+>>> workload... Argh, now checking code in fs/direct-io.c I think I can see the
+>>> difference. The trick in do_blockdev_direct_IO() is:
+>>>
+>>>           if (iov_iter_rw(iter) == READ && (dio->flags & DIO_LOCKING))
+>>>                   inode_unlock(dio->inode);
+>>>           if (dio->is_async && retval == 0 && dio->result &&
+>>>               (iov_iter_rw(iter) == READ || dio->result == count))
+>>>                   retval = -EIOCBQUEUED;
+>>>           else
+>>>                   dio_await_completion(dio);
+>>>
+>>> So actually only direct IO read submission is protected by i_rwsem with
+>>> DIO_LOCKING. Actual waiting for sync DIO read happens with i_rwsem dropped.
+>>>
+>>> After some thought I think the best solution for this is to just finally
+>>> finish the conversion of ext4 so that dioread_nolock is the only DIO path.
+>>
+>> Sorry, I still didn't get this completely. Could you please explain a bit
+>> more?
+> 
+> Well, currently we have two different locking schemes for DIO - the
+> "normal" case and the "dioread_nolock" case. And the "normal" case really
+> only exists because buffered writeback needed to be more careful (so that
+> nolock DIO cannot expose stale data) and nobody did the effort to make that
+> work when blocksize < pagesize. But having two different locking schemes
+> for DIO is really confusing to users and a maintenance burden so we want to
+> get rid of the old scheme once the "dioread_nolock" scheme works for all
+> the configurations.
 
-Note that I'm mainly concerned with the user-facing API with this. The
-kernel internals can still use F_LAYOUT flag, and you can do the
-F_SETLAYOUT -> F_LAYOUT translation at a high level.
--- 
-Jeff Layton <jlayton@kernel.org>
+Agreed.
+
+>   
+>>> With i_rwsem held in shared mode even for "unlocked" DIO, it should be
+>>> actually relatively simple and most of the dances with unwritten extents
+>>> shouldn't be needed anymore.
+>>
+>> Again, maybe it's related to above comment. Could you please give some
+>> insights?
+> 
+> Now that we hold i_rwsem in shared mode for all of DIO, it isn't really
+> "unlocked" anymore. Which actually very much limits the races with buffered
+> writes and thus page writeback (because we flush page cache before doing
+> DIO).
+
+So looking at the code again based on your inputs from above, we should
+be able to remove this condition <snip below> in ext4_dio_write_checks.
+
+What I meant is, in DIO writes path we can start with shared lock
+(which the current patch is doing), and only check for below conditions
+<snip below> for it to continue using shared lock.
+(i.e. we need not check for ext4_should_dioread_nolock(inode) anymore).
+
+That means there should not be any race for non-extent based mode
+too right?
+
+
+Because for overwrites in DIO (for both extents & non-extents)-
+(just reiterating)
+
+1. Race against bufferedIO writes and DIO overwrites will be protected
+via SHARED inode lock in DIO overwrites & EXCL lock in bufferedIO
+writes. Plus we flush page cache before doing DIO.
+
+2. Race against bufferedIO reads & DIO overwrites will be anyway 
+protected since we don't do any block allocations during DIO overwrite.
+
+3. Again race against DIO reads & DIO overwrites is not be a problem,
+since no block allocation is done anyway. So no stale data will be
+exposed.
+
+
+<snip of change we should do in ext4_dio_write_checks>
+
+         if (*iolock == EXT4_IOLOCK_SHARED &&
+             (!IS_NOSEC(inode) || *unaligned_io || *extend ||
+-            !ext4_should_dioread_nolock(inode) ||
+              !ext4_overwrite_io(inode, offset, count))) {
+                 ext4_iunlock(inode, *iolock);
+                 *iolock = EXT4_IOLOCK_EXCL;
+                 ext4_ilock(inode, *iolock);
+                 goto restart;
+         }
+
+> 
+>> Or do you mean that we should do it like this-
+>> So as of now in dioread_nolock, we allocate blocks, mark the entry into
+>> extents as unwritten, then do the data IO, and then finally do the
+>> conversion of unwritten to written extents.
+> 
+> So this allocation of extents as unwritten in dioread_nolock mode is now
+> mostly unnecessary. We hold i_rwsem for reading (or even for writing) while
+> submitting any DIO. Because we flush page cache before starting DIO and new
+> pages cannot be dirtied by buffered writes (i_rwsem), DIO cannot be racing
+> with page writeback and thus cannot expose stale block contents. There is
+> one exception though - which is why I wrote "mostly" above - pages can
+> still be dirtied through memory mappings (there's no i_rwsem protection for
+> mmap writes) and thus races with page writeback exposing stale data are still
+> theoretically possible. In fact the "normal" DIO mode has this kind of race
+> all the time ext4 exists.
+
+Yes, now that you said I could see this below race even with current
+code. Any other race too?
+
+i.e.
+ext4_dio_read			ext4_page_mkwrite()
+
+     filemap_write_and_wait_range()
+				     ext4_get_blocks()
+
+     submit_bio
+     // this could expose the stale data.
+		
+				     mark_buffer_dirty()
+
+
+Ok. I guess we cannot use any exclusive inode lock in ext4_page_mkwrite,
+because then we loose the parallelism that it offers right now.
+Wonder how other FS protect this race (like XFS?)
+
+
+> I guess we could fix this by falling back to page writeback using unwritten
+> extents when we have dirty pages locked for writeback and see there's any
+> DIO in flight for the inode. Sadly that means we we cannot get rid of
+> writeback code using unwritten extents but at least it won't be hurting
+> performance in the common case.
+
+
+1. So why to check for dirty pages locked for writeback (in
+ext4_page_mkwrite)? we anyway lock the page which we modify or
+allocate block for. So race against bufferedRead should not happen.
+
+2. And even if we check for inode_dio_wait(), we still can't gurantee
+that the next DIO may not snoopin while we are in ext4_page_mkwrite?
+
+I am definitely missing something here.
+
+
+> 
+>> So instead of that we first only reserve the disk blocks, (without
+>> making any on-disk changes in extent tree), do the data IO and then
+>> finally make an entry into extent tree on disk. And going
+>> forward only keep this as the default path.
+>>
+>> The above is something I have been looking into for enabling
+>> dioread_nolock for powerpc platforms where blocksize < page_size.
+>> This is based upon an upstream discussion between Ted and you :)
+> 
+> Yes, this is even better solution to dioread_nolock "problem" but it is
+> also more work 
+
+Yes, I agree that we should do this incrementally.
+
+
+> then just dropping the old DIO locking mode and
+> fix writeback using unwritten extents for blocksize < pagesize.
+
+
+So, I was looking into this (to support dioread_nolock for
+blocksize < pagesize) but I could not find any history in git,
+nor any thread which explains the problem.
+
+I got below understanding while going over code -
+
+1. This problem may be somehow related to bufferheads in the
+extent conversion from unwritten to written in writeback path.
+But I couldn't see what exactly is the issue there?
+
+I see that the completion path happens via
+ext4_end_io
+    |- ext4_convert_unwritten_extents() // offset & size is properly 
+taken care.
+    |- ext4_release_io_end() (which is same in both DIO & writeback).
+
+
+2. One thing which I noticed is the FIXME in
+mpage_map_and_submit_buffers(). Where we
+io->io_end->size we add the whole PAGE_SIZE.
+I guess we should update the size here carefully
+based on buffer_heads.
+
+
+Could you please give some pointers as to what
+is the limitation. Or some hint which I can go
+and check by myself.
+
+
+
+>> But even with above, in case of extending writes, we still
+>> will have to zero out those extending blocks no? Which
+>> will require an exclusive inode lock anyways for zeroing.
+>> (same which has been done in XFS too).
+> 
+> Yes, extending writes are a different matter.
+> 
+>> So going with current discussed solution of mounting with
+>> dioread_nolock to provide performance scalability in mixed read/write
+>> workload should be also the right approach, no?
+>> Also looking at the numbers here [3] & [4], this patch also seems
+>> to improve the performance with dioread_nolock mount option.
+>> Please help me understand your thoughts on this.
+> 
+> Yes, your patches are definitely going in the right direction. What I'm
+> discussing is mostly how to make ext4 perform well for mixed read/write
+> workload by default without user having to use magic mount option.
+
+Really thanks for your support here.
+
+So can we get these patches upstream incrementally?
+i.e.
+1. As a first step, we can remove this condition
+ext4_should_dioread_nolock from the current patchset
+(as mentioned above too) &  get this patch rebased
+on top of iomap pathset. We should be good to merge
+this patchset then, right? Since this should be able
+to improve the performance even without dioread_nolock
+mount option.
+
+
+2. Meanwhile I will continue to check for blocksize < pagesize
+requirement for dioread_nolock. We can follow the plan
+as you mentioned above then.
+
+Your thoughts?
+
+
+-ritesh
 
