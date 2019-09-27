@@ -2,139 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7E4BFAFF
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2019 23:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36928BFEF8
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2019 08:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725882AbfIZVjs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Sep 2019 17:39:48 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:44365 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbfIZVjs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Sep 2019 17:39:48 -0400
-Received: by mail-pl1-f194.google.com with SMTP id q15so171923pll.11
-        for <linux-ext4@vger.kernel.org>; Thu, 26 Sep 2019 14:39:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pV3FpOkzQQShFchCizZU5uBqu5oBWsYmqNuxn4zVKE0=;
-        b=jnhaxzY0nbeEfwC0YxWNeRsOp4zuQvYFIAMbEG9AfmqyweYDxWl6q9OUYLiv0X9Ast
-         RYYcMlrDcrZe7lEWnkCrXIYogRFQZTtGSNzBhC82OYBMcMwMoG2Zmm/WK/Qo6xfEWxdu
-         L3x7eB2Ce0grk3AIFqnc55/ymysWQRa+0ivsOj4qhhpfUW4IEx/4QXJOfvujZaoJzXPq
-         Rt44yB1jOWf3RMWAW5Hs4wKCyFMEz5Ck0UGOMXFGocH/hsfSnZ7lYvlR0oqPYd3RodO/
-         370pEnAp9ACCLkwT+zJwfdT1Os36rwM3VJj3jZMWKGWRm/rPpV3bmybmy7Icaf+iD5b/
-         GQdg==
-X-Gm-Message-State: APjAAAXTqRcNgShkgJYbDMXOwHI4XJKsvx1k/DcVOHIg6uQsWERqHPj0
-        g5j6FPN2jF2k4LQ8LPiIG+RnPA==
-X-Google-Smtp-Source: APXvYqy7KKyqlGOIFQNurRPuS4kxCwCBpKPXcUca5a9bY2uqtM2zEYAnQC8MtusRwyL7ipme3Xtx0w==
-X-Received: by 2002:a17:902:82cb:: with SMTP id u11mr729185plz.313.1569533987366;
-        Thu, 26 Sep 2019 14:39:47 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:3602:86ff:fef6:e86b? ([2601:646:c200:1ef2:3602:86ff:fef6:e86b])
-        by smtp.googlemail.com with ESMTPSA id v8sm9595132pje.6.2019.09.26.14.39.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Sep 2019 14:39:46 -0700 (PDT)
-Subject: Re: [PATCH v5 1/1] random: getrandom(2): warn on large CRNG waits,
- introduce new flags
-To:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Florian Weimer <fweimer@redhat.com>, Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-References: <20190912082530.GA27365@mit.edu>
- <CAHk-=wjyH910+JRBdZf_Y9G54c1M=LBF8NKXB6vJcm9XjLnRfg@mail.gmail.com>
- <20190914122500.GA1425@darwi-home-pc>
- <008f17bc-102b-e762-a17c-e2766d48f515@gmail.com>
- <20190915052242.GG19710@mit.edu>
- <CAHk-=wgg2T=3KxrO-BY3nHJgMEyApjnO3cwbQb_0vxsn9qKN8Q@mail.gmail.com>
- <20190918211503.GA1808@darwi-home-pc> <20190918211713.GA2225@darwi-home-pc>
- <CAHk-=wiCqDiU7SE3FLn2W26MS_voUAuqj5XFa1V_tiGTrrW-zQ@mail.gmail.com>
- <20190926204217.GA1366@pc> <20190926204425.GA2198@pc>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <9a9715dc-e30b-24fb-a754-464449cafb2f@kernel.org>
-Date:   Thu, 26 Sep 2019 14:39:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S1725820AbfI0GQw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 27 Sep 2019 02:16:52 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:40758 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725804AbfI0GQw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 27 Sep 2019 02:16:52 -0400
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 45D4CE15EA39F4430FDB;
+        Fri, 27 Sep 2019 14:16:49 +0800 (CST)
+Received: from DGGEMM422-HUB.china.huawei.com (10.1.198.39) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Fri, 27 Sep 2019 14:16:47 +0800
+Received: from DGGEMM532-MBX.china.huawei.com ([169.254.7.3]) by
+ dggemm422-hub.china.huawei.com ([10.1.198.39]) with mapi id 14.03.0439.000;
+ Fri, 27 Sep 2019 14:16:37 +0800
+From:   Guiyao <guiyao@huawei.com>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+CC:     "tytso@mit.edu" <tytso@mit.edu>,
+        Mingfangsen <mingfangsen@huawei.com>
+Subject: [PATCH]e2fsprogs: Check device id in advance to skip fake device
+ name
+Thread-Topic: [PATCH]e2fsprogs: Check device id in advance to skip fake
+ device name
+Thread-Index: AdV02MES0JCmsThxSjmE5ZL4UzwrvgAIfIqQ
+Date:   Fri, 27 Sep 2019 06:16:37 +0000
+Message-ID: <005F77DB9A260B4E91664DDF22573C66E9CF24E9@DGGEMM532-MBX.china.huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.173.220.158]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20190926204425.GA2198@pc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 9/26/19 1:44 PM, Ahmed S. Darwish wrote:
-> Since Linux v3.17, getrandom(2) has been created as a new and more
-> secure interface for pseudorandom data requests.  It attempted to
-> solve three problems, as compared to /dev/urandom:
-> 
->    1. the need to access filesystem paths, which can fail, e.g. under a
->       chroot
-> 
->    2. the need to open a file descriptor, which can fail under file
->       descriptor exhaustion attacks
-> 
->    3. the possibility of getting not-so-random data from /dev/urandom,
->       due to an incompletely initialized kernel entropy pool
-> 
-> To solve the third point, getrandom(2) was made to block until a
-> proper amount of entropy has been accumulated to initialize the CRNG
-> ChaCha20 cipher.  This made the system call have no guaranteed
-> upper-bound for its initial waiting time.
-> 
-> Thus when it was introduced at c6e9d6f38894 ("random: introduce
-> getrandom(2) system call"), it came with a clear warning: "Any
-> userspace program which uses this new functionality must take care to
-> assure that if it is used during the boot process, that it will not
-> cause the init scripts or other portions of the system startup to hang
-> indefinitely."
-> 
-> Unfortunately, due to multiple factors, including not having this
-> warning written in a scary-enough language in the manpages, and due to
-> glibc since v2.25 implementing a BSD-like getentropy(3) in terms of
-> getrandom(2), modern user-space is calling getrandom(2) in the boot
-> path everywhere (e.g. Qt, GDM, etc.)
-> 
-> Embedded Linux systems were first hit by this, and reports of embedded
-> systems "getting stuck at boot" began to be common.  Over time, the
-> issue began to even creep into consumer-level x86 laptops: mainstream
-> distributions, like Debian Buster, began to recommend installing
-> haveged as a duct-tape workaround... just to let the system boot.
-> 
-> Moreover, filesystem optimizations in EXT4 and XFS, e.g. b03755ad6f33
-> ("ext4: make __ext4_get_inode_loc plug"), which merged directory
-> lookup code inode table IO, and very fast systemd boots, further
-> exaggerated the problem by limiting interrupt-based entropy sources.
-> This led to large delays until the kernel's cryptographic random
-> number generator (CRNG) got initialized.
-> 
-> On a Thinkpad E480 x86 laptop and an ArchLinux user-space, the ext4
-> commit earlier mentioned reliably blocked the system on GDM boot.
-> Mitigate the problem, as a first step, in two ways:
-> 
->    1. Issue a big WARN_ON when any process gets stuck on getrandom(2)
->       for more than CONFIG_GETRANDOM_WAIT_THRESHOLD_SEC seconds.
-> 
->    2. Introduce new getrandom(2) flags, with clear semantics that can
->       hopefully guide user-space in doing the right thing.
-> 
-> Set CONFIG_GETRANDOM_WAIT_THRESHOLD_SEC to a heuristic 30-second
-> default value. System integrators and distribution builders are deeply
-> encouraged not to increase it much: during system boot, you either
-> have entropy, or you don't. And if you didn't have entropy, it will
-> stay like this forever, because if you had, you wouldn't have blocked
-> in the first place. It's an atomic "either/or" situation, with no
-> middle ground. Please think twice.
+Hi,
 
-So what do we expect glibc's getentropy() to do?  If it just adds the 
-new flag to shut up the warning, we haven't really accomplished much.
+In some cases, using resize2fs to resize one fs will return "fail".
+Reproduce steps are as follows,
+1. create 2 folders, for example "mnt" and "tmp"
+2. mount /dev/sdb onto tmp as tmpfs
+3. mount /dev/sdb onto mnt as ext4 or other normal file system
+4. try to resize /dev/sdb, it FAILED! -> "Couldn't find valid filesystem superblock."
+5. if mount mnt firstly, resize2fs command will succeed.
+
+In check_mntent_file func, firstly try to find out the input device name in mtab_file line by line,
+and it will leave from loop once one item matched.
+Then, check the mount point's st_dev of matched item,
+if it is not same with the input device's st_dev, it will return fail.
+In this case, the first matched item in mtab_file is "tmp" mount point,
+it is only named as "/dev/sdb", which actually is not sdb's real mount point.
+Finally, the name is matched, but st_dev is not matched, and then resize command fails.
+
+Here, we check the st_dev immediately once the name is matched.
+If st_dev not same, continue to next loop.
+
+
+Signed-off-by: GuiYao <guiyao@huawei.com>
+---
+ lib/ext2fs/ismounted.c | 49 +++++++++++++++++-------------------------
+ 1 file changed, 20 insertions(+), 29 deletions(-)
+
+diff --git a/lib/ext2fs/ismounted.c b/lib/ext2fs/ismounted.c index 6cd497dc..265d27f7 100644
+--- a/lib/ext2fs/ismounted.c
++++ b/lib/ext2fs/ismounted.c
+@@ -98,6 +98,9 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,  {
+ 	struct mntent 	*mnt;
+ 	struct stat	st_buf;
++#ifndef __GNU__
++	struct stat	dir_st_buf;
++#endif  /* __GNU__ */
+ 	errcode_t	retval = 0;
+ 	dev_t		file_dev=0, file_rdev=0;
+ 	ino_t		file_ino=0;
+@@ -128,13 +131,26 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,
+ 	while ((mnt = getmntent (f)) != NULL) {
+ 		if (mnt->mnt_fsname[0] != '/')
+ 			continue;
+-		if (strcmp(file, mnt->mnt_fsname) == 0)
++#ifndef __GNU__
++		if (stat(mnt->mnt_dir, &dir_st_buf) != 0)
++			continue;
++#endif  /* __GNU__ */
++		if (strcmp(file, mnt->mnt_fsname) == 0) { #ifndef __GNU__
++			if (file_rdev && (file_rdev == dir_st_buf.st_dev))
++				break;
++			continue;
++#else
+ 			break;
++#endif  /* __GNU__ */
++		}
+ 		if (stat(mnt->mnt_fsname, &st_buf) == 0) {
+ 			if (ext2fsP_is_disk_device(st_buf.st_mode)) {  #ifndef __GNU__
+-				if (file_rdev && (file_rdev == st_buf.st_rdev))
+-					break;
++				if (file_rdev && (file_rdev == st_buf.st_rdev)) {
++					if (file_rdev == dir_st_buf.st_dev)
++						break;
++				}
+ 				if (check_loop_mounted(mnt->mnt_fsname,
+ 						st_buf.st_rdev, file_dev,
+ 						file_ino) == 1)
+@@ -168,32 +184,7 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,
+ #endif	/* __GNU__ */
+ 		goto errout;
+ 	}
+-#ifndef __GNU__ /* The GNU hurd is deficient; what else is new? */
+-	/* Validate the entry in case /etc/mtab is out of date */
+-	/*
+-	 * We need to be paranoid, because some broken distributions
+-	 * (read: Slackware) don't initialize /etc/mtab before checking
+-	 * all of the non-root filesystems on the disk.
+-	 */
+-	if (stat(mnt->mnt_dir, &st_buf) < 0) {
+-		retval = errno;
+-		if (retval == ENOENT) {
+-#ifdef DEBUG
+-			printf("Bogus entry in %s!  (%s does not exist)\n",
+-			       mtab_file, mnt->mnt_dir);
+-#endif /* DEBUG */
+-			retval = 0;
+-		}
+-		goto errout;
+-	}
+-	if (file_rdev && (st_buf.st_dev != file_rdev)) {
+-#ifdef DEBUG
+-		printf("Bogus entry in %s!  (%s not mounted on %s)\n",
+-		       mtab_file, file, mnt->mnt_dir);
+-#endif /* DEBUG */
+-		goto errout;
+-	}
+-#endif /* __GNU__ */
++
+ 	*mount_flags = EXT2_MF_MOUNTED;
+ 
+ #ifdef MNTOPT_RO
+--
+1.8.3.1
