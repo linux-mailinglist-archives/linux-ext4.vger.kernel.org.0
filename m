@@ -2,27 +2,27 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9769DC03F2
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2019 13:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127E9C03F3
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2019 13:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbfI0LQJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 Sep 2019 07:16:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52462 "EHLO mx1.suse.de"
+        id S1727265AbfI0LQK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 27 Sep 2019 07:16:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52468 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727321AbfI0LQI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 27 Sep 2019 07:16:08 -0400
+        id S1727333AbfI0LQH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 27 Sep 2019 07:16:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DC479B139;
-        Fri, 27 Sep 2019 11:16:03 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 02EEEB14A;
+        Fri, 27 Sep 2019 11:16:04 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 52A151E4826; Fri, 27 Sep 2019 13:16:20 +0200 (CEST)
+        id 55B761E4827; Fri, 27 Sep 2019 13:16:20 +0200 (CEST)
 From:   Jan Kara <jack@suse.cz>
 To:     <linux-ext4@vger.kernel.org>
 Cc:     Ted Tso <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 08/15] jbd2: Factor out common parts of stopping and restarting a handle
-Date:   Fri, 27 Sep 2019 13:15:29 +0200
-Message-Id: <20190927111536.16455-9-jack@suse.cz>
+Subject: [PATCH 09/15] jbd2: Account descriptor blocks into t_outstanding_credits
+Date:   Fri, 27 Sep 2019 13:15:30 +0200
+Message-Id: <20190927111536.16455-10-jack@suse.cz>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20190927111536.16455-1-jack@suse.cz>
 References: <20190927111536.16455-1-jack@suse.cz>
@@ -31,190 +31,133 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-jbd2__journal_restart() has quite some code that is common with
-jbd2_journal_stop(). Factor this functionality into stop_this_handle()
-helper and use it from both functions. Note that this also drops
-t_handle_lock protection from jbd2__journal_restart() as
-jbd2_journal_stop() does the same thing without it.
+Currently, journal descriptor blocks were not accounted in
+transaction->t_outstanding_credits and we were just leaving some slack
+space in the journal for them (in jbd2_log_space_left() and
+jbd2_space_needed()). This is making proper accounting (and reservation
+we want to add) of descriptor blocks difficult so switch to accounting
+descriptor blocks in transaction->t_outstanding_credits and just reserve
+the same amount of credits in t_outstanding credits for journal
+descriptor blocks when creating transaction.
 
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/jbd2/transaction.c | 94 +++++++++++++++++++++++----------------------------
- 1 file changed, 42 insertions(+), 52 deletions(-)
+ fs/jbd2/commit.c      |  3 +++
+ fs/jbd2/journal.c     |  1 +
+ fs/jbd2/transaction.c | 20 ++++++++++++--------
+ include/linux/jbd2.h  | 16 +++-------------
+ 4 files changed, 19 insertions(+), 21 deletions(-)
 
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index c6d39f2ad828..2736c00cf70e 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -887,6 +887,9 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+ 	if (err)
+ 		jbd2_journal_abort(journal, err);
+ 
++	WARN_ON_ONCE(
++		atomic_read(&commit_transaction->t_outstanding_credits) < 0);
++
+ 	/*
+ 	 * Now disk caches for filesystem device are flushed so we are safe to
+ 	 * erase checkpointed transactions from the log by updating journal
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 953990eb70a9..810363443df4 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -842,6 +842,7 @@ jbd2_journal_get_descriptor_buffer(transaction_t *transaction, int type)
+ 	bh = __getblk(journal->j_dev, blocknr, journal->j_blocksize);
+ 	if (!bh)
+ 		return NULL;
++	atomic_dec(&transaction->t_outstanding_credits);
+ 	lock_buffer(bh);
+ 	memset(bh->b_data, 0, journal->j_blocksize);
+ 	header = (journal_header_t *)bh->b_data;
 diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index ece3e97279c2..8a42c717e260 100644
+index 8a42c717e260..a4913831d7cc 100644
 --- a/fs/jbd2/transaction.c
 +++ b/fs/jbd2/transaction.c
-@@ -512,12 +512,17 @@ handle_t *jbd2_journal_start(journal_t *journal, int nblocks)
+@@ -62,6 +62,17 @@ void jbd2_journal_free_transaction(transaction_t *transaction)
+ 	kmem_cache_free(transaction_cache, transaction);
  }
- EXPORT_SYMBOL(jbd2_journal_start);
  
--void jbd2_journal_free_reserved(handle_t *handle)
-+static void __jbd2_journal_unreserve_handle(handle_t *handle)
- {
- 	journal_t *journal = handle->h_journal;
- 
- 	WARN_ON(!handle->h_reserved);
- 	sub_reserved_credits(journal, handle->h_buffer_credits);
++/*
++ * We reserve t_outstanding_credits >> JBD2_CONTROL_BLOCKS_SHIFT for
++ * transaction descriptor blocks.
++ */
++#define JBD2_CONTROL_BLOCKS_SHIFT 5
++
++static int jbd2_descriptor_blocks_per_trans(journal_t *journal)
++{
++	return journal->j_max_transaction_buffers >> JBD2_CONTROL_BLOCKS_SHIFT;
 +}
 +
-+void jbd2_journal_free_reserved(handle_t *handle)
-+{
-+	__jbd2_journal_unreserve_handle(handle);
- 	jbd2_free_handle(handle);
- }
- EXPORT_SYMBOL(jbd2_journal_free_reserved);
-@@ -652,6 +657,28 @@ int jbd2_journal_extend(handle_t *handle, int nblocks)
- 	return result;
- }
+ /*
+  * jbd2_get_transaction: obtain a new transaction_t object.
+  *
+@@ -88,6 +99,7 @@ static void jbd2_get_transaction(journal_t *journal,
+ 	spin_lock_init(&transaction->t_handle_lock);
+ 	atomic_set(&transaction->t_updates, 0);
+ 	atomic_set(&transaction->t_outstanding_credits,
++		   jbd2_decriptor_blocks_per_trans(journal) +
+ 		   atomic_read(&journal->j_reserved_credits));
+ 	atomic_set(&transaction->t_handle_count, 0);
+ 	INIT_LIST_HEAD(&transaction->t_inode_list);
+@@ -631,14 +643,6 @@ int jbd2_journal_extend(handle_t *handle, int nblocks)
+ 		goto unlock;
+ 	}
  
-+static void stop_this_handle(handle_t *handle)
-+{
-+	transaction_t *transaction = handle->h_transaction;
-+	journal_t *journal = transaction->t_journal;
-+
-+	J_ASSERT(journal_current_handle() == handle);
-+	J_ASSERT(atomic_read(&transaction->t_updates) > 0);
-+	current->journal_info = NULL;
-+	atomic_sub(handle->h_buffer_credits,
-+		   &transaction->t_outstanding_credits);
-+	if (handle->h_rsv_handle)
-+		__jbd2_journal_unreserve_handle(handle->h_rsv_handle);
-+	if (atomic_dec_and_test(&transaction->t_updates))
-+		wake_up(&journal->j_wait_updates);
-+
-+	rwsem_release(&journal->j_trans_commit_map, 1, _THIS_IP_);
-+	/*
-+	 * Scope of the GFP_NOFS context is over here and so we can restore the
-+	 * original alloc context.
-+	 */
-+	memalloc_nofs_restore(handle->saved_alloc_context);
-+}
- 
- /**
-  * int jbd2_journal_restart() - restart a handle .
-@@ -674,52 +701,30 @@ int jbd2__journal_restart(handle_t *handle, int nblocks, gfp_t gfp_mask)
- 	transaction_t *transaction = handle->h_transaction;
- 	journal_t *journal;
- 	tid_t		tid;
--	int		need_to_start, ret;
-+	int		need_to_start;
- 
- 	/* If we've had an abort of any type, don't even think about
- 	 * actually doing the restart! */
- 	if (is_handle_aborted(handle))
- 		return 0;
- 	journal = transaction->t_journal;
-+	tid = transaction->t_tid;
- 
- 	/*
- 	 * First unlink the handle from its current transaction, and start the
- 	 * commit on that.
- 	 */
--	J_ASSERT(atomic_read(&transaction->t_updates) > 0);
--	J_ASSERT(journal_current_handle() == handle);
--
--	read_lock(&journal->j_state_lock);
--	spin_lock(&transaction->t_handle_lock);
--	atomic_sub(handle->h_buffer_credits,
--		   &transaction->t_outstanding_credits);
--	if (handle->h_rsv_handle) {
--		sub_reserved_credits(journal,
--				     handle->h_rsv_handle->h_buffer_credits);
+-	if (wanted + (wanted >> JBD2_CONTROL_BLOCKS_SHIFT) >
+-	    jbd2_log_space_left(journal)) {
+-		jbd_debug(3, "denied handle %p %d blocks: "
+-			  "insufficient log space\n", handle, nblocks);
+-		atomic_sub(nblocks, &transaction->t_outstanding_credits);
+-		goto unlock;
 -	}
--	if (atomic_dec_and_test(&transaction->t_updates))
--		wake_up(&journal->j_wait_updates);
--	tid = transaction->t_tid;
--	spin_unlock(&transaction->t_handle_lock);
-+	jbd_debug(2, "restarting handle %p\n", handle);
-+	stop_this_handle(handle);
- 	handle->h_transaction = NULL;
--	current->journal_info = NULL;
- 
--	jbd_debug(2, "restarting handle %p\n", handle);
-+	read_lock(&journal->j_state_lock);
- 	need_to_start = !tid_geq(journal->j_commit_request, tid);
- 	read_unlock(&journal->j_state_lock);
- 	if (need_to_start)
- 		jbd2_log_start_commit(journal, tid);
 -
--	rwsem_release(&journal->j_trans_commit_map, 1, _THIS_IP_);
- 	handle->h_buffer_credits = nblocks;
--	/*
--	 * Restore the original nofs context because the journal restart
--	 * is basically the same thing as journal stop and start.
--	 * start_this_handle will start a new nofs context.
--	 */
--	memalloc_nofs_restore(handle->saved_alloc_context);
--	ret = start_this_handle(journal, handle, gfp_mask);
--	return ret;
-+	return start_this_handle(journal, handle, gfp_mask);
+ 	trace_jbd2_handle_extend(journal->j_fs_dev->bd_dev,
+ 				 transaction->t_tid,
+ 				 handle->h_type, handle->h_line_no,
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index b20ef2c0812d..5ffa7aac067e 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1562,20 +1562,13 @@ static inline int jbd2_journal_has_csum_v2or3(journal_t *journal)
+ 	return journal->j_chksum_driver != NULL;
  }
- EXPORT_SYMBOL(jbd2__journal_restart);
  
-@@ -1715,16 +1720,12 @@ int jbd2_journal_stop(handle_t *handle)
- 		 * Handle is already detached from the transaction so there is
- 		 * nothing to do other than free the handle.
- 		 */
--		if (handle->h_rsv_handle)
--			jbd2_free_handle(handle->h_rsv_handle);
-+		memalloc_nofs_restore(handle->saved_alloc_context);
- 		goto free_and_exit;
- 	}
- 	journal = transaction->t_journal;
- 	tid = transaction->t_tid;
- 
--	J_ASSERT(journal_current_handle() == handle);
--	J_ASSERT(atomic_read(&transaction->t_updates) > 0);
+-/*
+- * We reserve t_outstanding_credits >> JBD2_CONTROL_BLOCKS_SHIFT for
+- * transaction control blocks.
+- */
+-#define JBD2_CONTROL_BLOCKS_SHIFT 5
 -
- 	if (is_handle_aborted(handle))
- 		err = -EIO;
+ /*
+  * Return the minimum number of blocks which must be free in the journal
+  * before a new transaction may be started.  Must be called under j_state_lock.
+  */
+ static inline int jbd2_space_needed(journal_t *journal)
+ {
+-	int nblocks = journal->j_max_transaction_buffers;
+-	return nblocks + (nblocks >> JBD2_CONTROL_BLOCKS_SHIFT);
++	return journal->j_max_transaction_buffers;
+ }
  
-@@ -1794,9 +1795,6 @@ int jbd2_journal_stop(handle_t *handle)
+ /*
+@@ -1587,11 +1580,8 @@ static inline unsigned long jbd2_log_space_left(journal_t *journal)
+ 	long free = journal->j_free - 32;
  
- 	if (handle->h_sync)
- 		transaction->t_synchronous_commit = 1;
--	current->journal_info = NULL;
--	atomic_sub(handle->h_buffer_credits,
--		   &transaction->t_outstanding_credits);
- 
- 	/*
- 	 * If the handle is marked SYNC, we need to set another commit
-@@ -1823,27 +1821,19 @@ int jbd2_journal_stop(handle_t *handle)
- 	}
- 
- 	/*
--	 * Once we drop t_updates, if it goes to zero the transaction
--	 * could start committing on us and eventually disappear.  So
--	 * once we do this, we must not dereference transaction
--	 * pointer again.
-+	 * Once stop_this_handle() drops t_updates, the transaction could start
-+	 * committing on us and eventually disappear.  So we must not
-+	 * dereference transaction pointer again after calling
-+	 * stop_this_handle().
- 	 */
--	if (atomic_dec_and_test(&transaction->t_updates))
--		wake_up(&journal->j_wait_updates);
+ 	if (journal->j_committing_transaction) {
+-		unsigned long committing = atomic_read(&journal->
+-			j_committing_transaction->t_outstanding_credits);
 -
--	rwsem_release(&journal->j_trans_commit_map, 1, _THIS_IP_);
-+	stop_this_handle(handle);
- 
- 	if (wait_for_commit)
- 		err = jbd2_log_wait_commit(journal, tid);
- 
--	if (handle->h_rsv_handle)
--		jbd2_journal_free_reserved(handle->h_rsv_handle);
- free_and_exit:
--	/*
--	 * Scope of the GFP_NOFS context is over here and so we can restore the
--	 * original alloc context.
--	 */
--	memalloc_nofs_restore(handle->saved_alloc_context);
-+	if (handle->h_rsv_handle)
-+		jbd2_free_handle(handle->h_rsv_handle);
- 	jbd2_free_handle(handle);
- 	return err;
+-		/* Transaction + control blocks */
+-		free -= committing + (committing >> JBD2_CONTROL_BLOCKS_SHIFT);
++		free -= atomic_read(&journal->
++                        j_committing_transaction->t_outstanding_credits);
+ 	}
+ 	return max_t(long, free, 0);
  }
 -- 
 2.16.4
