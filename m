@@ -2,323 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 084EEC28A2
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2019 23:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D49C28B6
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2019 23:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732436AbfI3VT3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 30 Sep 2019 17:19:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732362AbfI3VT3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 30 Sep 2019 17:19:29 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0775821A4C;
-        Mon, 30 Sep 2019 21:19:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569878368;
-        bh=9UhgddTaavLuhdplB1poq3TFBlFYIObQrc+iqLwnCDk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OEUf6GR7sHRbWgy7UrYMF81xx6PGyl3AADS8DiDNKM7SCJzB3mrliZ7I8E8LzwkYX
-         fVGWbRMqQO6PjCK+J/myYivWJlxC0KqCYEHGICCmA7eWeZhaHpl3Mqy4FAg/jXOQgc
-         LdRCF/rSi9wKNczospIq7W0ROJibS15KC8/WSkT8=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     fstests@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>
-Subject: [PATCH v4 8/8] generic: test the fs-verity built-in signature verification support
-Date:   Mon, 30 Sep 2019 14:15:53 -0700
-Message-Id: <20190930211553.64208-9-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.23.0.444.g18eeb5a265-goog
-In-Reply-To: <20190930211553.64208-1-ebiggers@kernel.org>
-References: <20190930211553.64208-1-ebiggers@kernel.org>
+        id S1731678AbfI3VVy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 30 Sep 2019 17:21:54 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54332 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727884AbfI3VVx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 30 Sep 2019 17:21:53 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8ULLjDG008724
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 30 Sep 2019 17:21:46 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 4295F42014C; Mon, 30 Sep 2019 17:21:45 -0400 (EDT)
+Date:   Mon, 30 Sep 2019 17:21:45 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 17/19] jbd2: Rename h_buffer_credits to h_total_credits
+Message-ID: <20190930212145.GC4001@mit.edu>
+References: <20190930104339.24919-17-jack@suse.cz>
+ <201909302058.uxNSY0q3%lkp@intel.com>
+ <20190930150553.GB4001@mit.edu>
+ <20190930162536.GB13973@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190930162536.GB13973@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Mon, Sep 30, 2019 at 06:25:36PM +0200, Jan Kara wrote:
+> The problem was that my patches were based on a kernel that didn't have
+> this code yet. I've rebased now on current Linus' tree and fixed this up in
+> my local tree (along with couple documentation warnings). But I don't think
+> it's worth resending just for this.
 
-Add a basic test for the fs-verity built-in signature verification
-support, which is an optional feature where the kernel can be configured
-to enforce that all verity files are accompanied with a valid signature
-by a key that has been loaded into the fs-verity keyring.
+Oh, agreed, it's not worth resending for this; it was a quick fixup.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- common/config         |   1 +
- common/verity         |  16 +++++
- tests/generic/905     | 150 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/905.out |  42 ++++++++++++
- tests/generic/group   |   1 +
- 5 files changed, 210 insertions(+)
- create mode 100755 tests/generic/905
- create mode 100644 tests/generic/905.out
+How much testing have you given this patch series?  I did a quick
+xfstests run, and I found the following new failures when this was
+applied on top of the dev branch on ext4.git (e.g., what got sent to
+Linus as a pull request).
 
-diff --git a/common/config b/common/config
-index fb4097b8..c7a1c61c 100644
---- a/common/config
-+++ b/common/config
-@@ -214,6 +214,7 @@ export XFS_INFO_PROG="$(type -P xfs_info)"
- export DUPEREMOVE_PROG="$(type -P duperemove)"
- export CC_PROG="$(type -P cc)"
- export FSVERITY_PROG="$(type -P fsverity)"
-+export OPENSSL_PROG="$(type -P openssl)"
- 
- # use 'udevadm settle' or 'udevsettle' to wait for lv to be settled.
- # newer systems have udevadm command but older systems like RHEL5 don't.
-diff --git a/common/verity b/common/verity
-index a8aae51e..bcb5670d 100644
---- a/common/verity
-+++ b/common/verity
-@@ -45,6 +45,17 @@ _require_scratch_verity()
- 	FSV_BLOCK_SIZE=$(get_page_size)
- }
- 
-+# Check for CONFIG_FS_VERITY_BUILTIN_SIGNATURES=y.
-+_require_fsverity_builtin_signatures()
-+{
-+	if [ ! -e /proc/keys ]; then
-+		_notrun "kernel doesn't support keyrings"
-+	fi
-+	if ! awk '{print $9}' /proc/keys | grep -q '^\.fs-verity:$'; then
-+		_notrun "kernel doesn't support fs-verity builtin signatures"
-+	fi
-+}
-+
- _scratch_mkfs_verity()
- {
- 	case $FSTYP in
-@@ -92,6 +103,11 @@ _fsv_measure()
-         $FSVERITY_PROG measure "$@" | awk '{print $1}'
- }
- 
-+_fsv_sign()
-+{
-+	$FSVERITY_PROG sign "$@"
-+}
-+
- # Generate a file, then enable verity on it.
- _fsv_create_enable_file()
- {
-diff --git a/tests/generic/905 b/tests/generic/905
-new file mode 100755
-index 00000000..e42b012d
---- /dev/null
-+++ b/tests/generic/905
-@@ -0,0 +1,150 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright 2019 Google LLC
-+#
-+# FS QA Test generic/905
-+#
-+# Test the fs-verity built-in signature verification support.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	sysctl -w fs.verity.require_signatures=0 &>/dev/null
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/verity
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+_require_scratch_verity
-+_require_fsverity_builtin_signatures
-+_require_command "$OPENSSL_PROG" openssl
-+_require_command "$KEYCTL_PROG" keyctl
-+
-+_scratch_mkfs_verity &>> $seqres.full
-+_scratch_mount
-+
-+fsv_file=$SCRATCH_MNT/file.fsv
-+fsv_orig_file=$SCRATCH_MNT/file
-+keyfile=$tmp.key.pem
-+certfile=$tmp.cert.pem
-+certfileder=$tmp.cert.der
-+sigfile=$tmp.sig
-+otherfile=$SCRATCH_MNT/otherfile
-+othersigfile=$tmp.othersig
-+
-+# Setup
-+
-+echo -e "\n# Generating certificates and private keys"
-+for suffix in '' '.2'; do
-+	if ! $OPENSSL_PROG req -newkey rsa:4096 -nodes -batch -x509 \
-+			-keyout $keyfile$suffix -out $certfile$suffix \
-+			&>> $seqres.full; then
-+		_fail "Failed to generate certificate and private key (see $seqres.full)"
-+	fi
-+	$OPENSSL_PROG x509 -in $certfile$suffix -out $certfileder$suffix \
-+		-outform der
-+done
-+
-+echo -e "\n# Clearing fs-verity keyring"
-+$KEYCTL_PROG clear %keyring:.fs-verity
-+
-+echo -e "\n# Loading first certificate into fs-verity keyring"
-+$KEYCTL_PROG padd asymmetric '' %keyring:.fs-verity \
-+	< $certfileder >> $seqres.full
-+
-+echo -e "\n# Enabling fs.verity.require_signatures"
-+sysctl -w fs.verity.require_signatures=1
-+
-+echo -e "\n# Generating file and signing it for fs-verity"
-+head -c 100000 /dev/zero > $fsv_orig_file
-+for suffix in '' '.2'; do
-+	_fsv_sign $fsv_orig_file $sigfile$suffix --key=$keyfile$suffix \
-+		--cert=$certfile$suffix | _filter_scratch
-+done
-+
-+echo -e "\n# Signing a different file for fs-verity"
-+head -c 100000 /dev/zero | tr '\0' 'X' > $otherfile
-+_fsv_sign $otherfile $othersigfile --key=$keyfile --cert=$certfile \
-+	| _filter_scratch
-+
-+# Actual tests
-+
-+reset_fsv_file()
-+{
-+	rm -f $fsv_file
-+	cp $fsv_orig_file $fsv_file
-+}
-+
-+echo -e "\n# Enabling verity with valid signature (should succeed)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$sigfile
-+cmp $fsv_file $fsv_orig_file
-+
-+echo -e "\n# Enabling verity without signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file |& _filter_scratch
-+
-+echo -e "\n# Opening verity file without signature (should fail)"
-+reset_fsv_file
-+sysctl -w fs.verity.require_signatures=0 &>> $seqres.full
-+_fsv_enable $fsv_file
-+sysctl -w fs.verity.require_signatures=1 &>> $seqres.full
-+_scratch_cycle_mount
-+md5sum $fsv_file |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with untrusted signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$sigfile.2 |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with wrong file's signature (should fail)"
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$othersigfile |& _filter_scratch
-+
-+echo -e "\n# Enabling verity with malformed signature (should fail)"
-+echo foobarbaz > $tmp.malformed_sig
-+reset_fsv_file
-+_fsv_enable $fsv_file --signature=$tmp.malformed_sig |& _filter_scratch
-+
-+echo -e "\n# Testing salt"
-+reset_fsv_file
-+_fsv_sign $fsv_orig_file $sigfile.salted --key=$keyfile --cert=$certfile \
-+	--salt=abcd | _filter_scratch
-+_fsv_enable $fsv_file --signature=$sigfile.salted --salt=abcd
-+cmp $fsv_file $fsv_orig_file
-+
-+echo -e "\n# Testing non-default hash algorithm"
-+if _fsv_have_hash_algorithm sha512 $fsv_file; then
-+	reset_fsv_file
-+	_fsv_sign $fsv_orig_file $sigfile.sha512 --key=$keyfile \
-+		--cert=$certfile --hash-alg=sha512 > /dev/null
-+	_fsv_enable $fsv_file --signature=$sigfile.sha512 --hash-alg=sha512
-+	cmp $fsv_file $fsv_orig_file
-+fi
-+
-+echo -e "\n# Testing empty file"
-+echo -n > $fsv_file
-+_fsv_sign $fsv_file $sigfile.emptyfile --key=$keyfile --cert=$certfile | \
-+		_filter_scratch
-+_fsv_enable $fsv_file --signature=$sigfile.emptyfile
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/905.out b/tests/generic/905.out
-new file mode 100644
-index 00000000..4b28757a
---- /dev/null
-+++ b/tests/generic/905.out
-@@ -0,0 +1,42 @@
-+QA output created by 905
-+
-+# Generating certificates and private keys
-+
-+# Clearing fs-verity keyring
-+
-+# Loading first certificate into fs-verity keyring
-+
-+# Enabling fs.verity.require_signatures
-+fs.verity.require_signatures = 1
-+
-+# Generating file and signing it for fs-verity
-+Signed file 'SCRATCH_MNT/file' (sha256:ecabbfca4efd69a721be824965da10d27900b109549f96687b35a4d91d810dac)
-+Signed file 'SCRATCH_MNT/file' (sha256:ecabbfca4efd69a721be824965da10d27900b109549f96687b35a4d91d810dac)
-+
-+# Signing a different file for fs-verity
-+Signed file 'SCRATCH_MNT/otherfile' (sha256:b2a419c5a8c767a78c6275d6729794bf51e52ddf8713e31d12a93d61d961f49f)
-+
-+# Enabling verity with valid signature (should succeed)
-+
-+# Enabling verity without signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Operation not permitted
-+
-+# Opening verity file without signature (should fail)
-+md5sum: SCRATCH_MNT/file.fsv: Operation not permitted
-+
-+# Enabling verity with untrusted signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Required key not available
-+
-+# Enabling verity with wrong file's signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Key was rejected by service
-+
-+# Enabling verity with malformed signature (should fail)
-+ERROR: FS_IOC_ENABLE_VERITY failed on 'SCRATCH_MNT/file.fsv': Bad message
-+
-+# Testing salt
-+Signed file 'SCRATCH_MNT/file' (sha256:1cb173bcd199133eb80e9ea4f0f741001b9e73227aa8812685156f2bc8ff45f5)
-+
-+# Testing non-default hash algorithm
-+
-+# Testing empty file
-+Signed file 'SCRATCH_MNT/file.fsv' (sha256:3d248ca542a24fc62d1c43b916eae5016878e2533c88238480b26128a1f1af95)
-diff --git a/tests/generic/group b/tests/generic/group
-index c996542a..78aba1e7 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -575,3 +575,4 @@
- 902 auto quick verity
- 903 auto quick verity
- 904 auto quick verity encrypt
-+905 auto quick verity
--- 
-2.23.0.444.g18eeb5a265-goog
+ext4/4k: 
+  Failures: ext4/026 generic/233
+ext4/1k: 
+  Failures: ext4/026
+ext4/ext3: 
+  Failures: ext4/026 generic/233
+ext4/encrypt: 
+  Failures: generic/083
+ext4/nojournal:
+  Failures: ext4/301
+ext4/adv: 
+  Failures: ext4/026 generic/233 generic/269 generic/270 generic/476
+ext4/dioread_nolock: 
+  Failures: ext4/026 generic/233
+ext4/data_journal: 
+  Failures: generic/233
+ext4/bigalloc: 
+  Failures: generic/013 generic/014 generic/051 generic/083
+    generic/232 generic/233 generic/269 generic/270 generic/299
+    generic/429 generic/475 generic/476
+ext4/bigalloc_1k: 
+  Failures: ext4/026 generic/013 generic/014 generic/032 generic/051
+    generic/068 generic/083 generic/232 generic/233 generic/269
+    generic/270 generic/320 generic/475 generic/476
 
+I haven't trianged them all yet, but here are the details for the two
+biggies: ext4/026 and generic/233.
+
+					- Ted
+
+ext4/026		[14:11:43][   14.287850] run fstests ext4/026 at 2019-09-30 14:11:43
+[   14.821933] WARNING: CPU: 0 PID: 1542 at fs/jbd2/revoke.c:394 jbd2_journal_revoke+0x14b/0x160
+[   14.824000] CPU: 0 PID: 1542 Comm: rm Not tainted 5.3.0-rc4-xfstests-00019-ga8d18e88fd60-dirty #1201
+[   14.826111] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+[   14.828039] RIP: 0010:jbd2_journal_revoke+0x14b/0x160
+[   14.829217] Code: 4c 89 f7 e8 77 8c ef ff eb a6 e8 d0 8d ef ff 48 85 c0 49 89 c6 74 99 48 8b 00 a9 00 00 10 00 0f 84 5b ff ff ff e9 71 06 00 00 <0f> 0b eb 89 0f 0b 0f 0b 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f
+[   14.833505] RSP: 0018:ffffae0ec2683ad8 EFLAGS: 00010246
+[   14.834721] RAX: 0000000000000000 RBX: ffff951876a9f410 RCX: 1111111111111120
+[   14.836287] RDX: 0000000000000004 RSI: 0000000000000006 RDI: ffff951876a9f410
+[   14.837853] RBP: ffff951874f1f6c8 R08: 0000000373745034 R09: 0000000000000000
+[   14.839244] R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000840d
+[   14.840799] R13: ffff951876695000 R14: ffff951876a9f410 R15: 0000000000000001
+[   14.842349] FS:  00007f39e17b5540(0000) GS:ffff95187d800000(0000) knlGS:0000000000000000
+[   14.844125] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   14.845403] CR2: 00007f39e16ba4a0 CR3: 0000000075b9e006 CR4: 0000000000360ef0
+[   14.847055] Call Trace:
+[   14.847628]  __ext4_forget+0xf2/0x280
+[   14.848470]  ext4_free_blocks+0x9c8/0xc00
+[   14.849270]  ? __lock_acquire+0x447/0x7c0
+[   14.850174]  ? kvm_sched_clock_read+0x14/0x30
+[   14.851182]  ext4_remove_blocks+0x33c/0x630
+[   14.852190]  ext4_ext_rm_leaf+0x1fb/0x7a0
+[   14.853493]  ext4_ext_remove_space+0x556/0xa80
+[   14.855020]  ? ext4_es_remove_extent+0x9d/0x180
+[   14.856325]  ext4_truncate+0x413/0x520
+[   14.857374]  ext4_evict_inode+0x29c/0x670
+[   14.858329]  evict+0xd0/0x1a0
+[   14.859157]  ext4_xattr_inode_array_free+0x27/0x40
+[   14.860341]  ext4_evict_inode+0x31c/0x670
+[   14.861344]  evict+0xd0/0x1a0
+[   14.862107]  do_unlinkat+0x1cd/0x2e0
+[   14.862769]  do_syscall_64+0x50/0x1b0
+[   14.863387]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[   14.864219] RIP: 0033:0x7f39e16deff7
+[   14.864813] Code: 73 01 c3 48 8b 0d 99 ee 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 69 ee 0c 00 f7 d8 64 89 01 48
+[   14.867949] RSP: 002b:00007fff3ed46068 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
+[   14.869197] RAX: ffffffffffffffda RBX: 0000561d094937b0 RCX: 00007f39e16deff7
+[   14.870371] RDX: 0000000000000000 RSI: 0000561d09492340 RDI: 00000000ffffff9c
+[   14.871544] RBP: 0000561d094922b0 R08: 0000000000000003 R09: 0000000000000000
+[   14.872766] R10: 0000000000000100 R11: 0000000000000246 R12: 00007fff3ed46250
+[   14.873950] R13: 0000000000000000 R14: 0000561d094937b0 R15: 0000000000000000
+[   14.875156] irq event stamp: 2176
+[   14.875720] hardirqs last  enabled at (2175): [<ffffffffb16663e1>] kmem_cache_free+0x51/0x220
+[   14.877150] hardirqs last disabled at (2176): [<ffffffffb14016aa>] trace_hardirqs_off_thunk+0x1a/0x20
+[   14.878702] softirqs last  enabled at (814): [<ffffffffb14297f3>] fpu__clear+0xb3/0x1b0
+[   14.880055] softirqs last disabled at (812): [<ffffffffb14297b5>] fpu__clear+0x75/0x1b0
+[   14.881926] ---[ end trace 4d44757f1901181f ]---
+_check_dmesg: something found in dmesg (see /results/ext4/results-4k/ext4/026.dmesg)
+ [14:11:44]
+
+
+generic/233 		[14:18:34][   19.736637] run fstests generic/233 at 2019-09-30 14:18:34
+[   21.400934] EXT4-fs (vdc): Delayed block allocation failed for inode 131809 at logical offset 209 with max blocks 9 with error 122
+[   21.404197] EXT4-fs (vdc): This should not happen!! Data will be lost
+[   21.404197]
+ [14:18:36] 2s
