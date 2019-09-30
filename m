@@ -2,113 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95266C1C16
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2019 09:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD77C1D4A
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2019 10:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729515AbfI3HaN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 30 Sep 2019 03:30:13 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:35606 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbfI3HaN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 30 Sep 2019 03:30:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=+RxVhfg/XqKkmLaVbtiYHGOh1FSjmgcY7SoSeeOxLws=; b=RIUESRFxLtDN6yOAeQnqRT2Tl
-        imOaYQBEHlXioRQUhAXw+pEyGz4F5u2Xd9pigFxiSivWCGTMUCoGIYzxyVeMIWpaOQZVML65ZJb6C
-        ZwefEhmPzjdTla9bwPzNMaDGwktKVErqLCxH1FeWc7vaqZ8Lq2LUsEl4RexprH62pddRzCo6Uv4Hu
-        jelEw3faOMfP7i+paWjjWyDnS4IZbf9PHyDhKlqDWzt4zbyzUVAplr6d5tcGTWahipCOzg7QcxRBe
-        c984nCz/UvNNxmzCNIkhw3HPOV+VVaGduUTWtfqTOkd+Lu2L75NBXHYFvOO4lOAfqyP5IGXyJuJdW
-        jDMQWAJTg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iEq7r-00013E-Gb; Mon, 30 Sep 2019 07:29:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E24CE301B59;
-        Mon, 30 Sep 2019 09:28:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A0F3F2651BB8E; Mon, 30 Sep 2019 09:29:38 +0200 (CEST)
-Date:   Mon, 30 Sep 2019 09:29:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     akpm@linux-foundation.org, mingo@redhat.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
-        jslaby@suse.com, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org,
-        tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
-        tj@kernel.org, mark@fasheh.com, jlbec@evilplan.or,
-        joseph.qi@linux.alibaba.com, ocfs2-devel@oss.oracle.com,
-        davem@davemloft.net, st@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, duyuyang@gmail.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        alexander.levin@microsoft.com
-Subject: Re: [PATCH -next] treewide: remove unused argument in lock_release()
-Message-ID: <20190930072938.GK4553@hirez.programming.kicks-ass.net>
-References: <1568909380-32199-1-git-send-email-cai@lca.pw>
+        id S1730139AbfI3Imm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 30 Sep 2019 04:42:42 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:35671 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726121AbfI3Iml (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 30 Sep 2019 04:42:41 -0400
+Received: from dread.disaster.area (pa49-181-226-196.pa.nsw.optusnet.com.au [49.181.226.196])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 1ED87362787;
+        Mon, 30 Sep 2019 18:42:34 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.2)
+        (envelope-from <david@fromorbit.com>)
+        id 1iErGL-0007Hh-Iu; Mon, 30 Sep 2019 18:42:33 +1000
+Date:   Mon, 30 Sep 2019 18:42:33 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, Jeff Layton <jlayton@kernel.org>,
+        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: Lease semantic proposal
+Message-ID: <20190930084233.GO16973@dread.disaster.area>
+References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
+ <20190923222620.GC16973@dread.disaster.area>
+ <20190925234602.GB12748@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1568909380-32199-1-git-send-email-cai@lca.pw>
+In-Reply-To: <20190925234602.GB12748@iweiny-DESK2.sc.intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
+        a=dRuLqZ1tmBNts2YiI0zFQg==:117 a=dRuLqZ1tmBNts2YiI0zFQg==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
+        a=7-415B0cAAAA:8 a=UEOKGneJplBUkCUAY6MA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Sep 19, 2019 at 12:09:40PM -0400, Qian Cai wrote:
-> Since the commit b4adfe8e05f1 ("locking/lockdep: Remove unused argument
-> in __lock_release"), @nested is no longer used in lock_release(), so
-> remove it from all lock_release() calls and friends.
+On Wed, Sep 25, 2019 at 04:46:03PM -0700, Ira Weiny wrote:
+> On Tue, Sep 24, 2019 at 08:26:20AM +1000, Dave Chinner wrote:
+> > Hence, AFIACT, the above definition of a F_RDLCK|F_LAYOUT lease
+> > doesn't appear to be compatible with the semantics required by
+> > existing users of layout leases.
+> 
+> I disagree.  Other than the addition of F_UNBREAK, I think this is consistent
+> with what is currently implemented.  Also, by exporting all this to user space
+> we can now write tests for it independent of the RDMA pinning.
 
-Right; I never did this cleanup for not wanting the churn, but as long
-as it applies I'll take it.
+The current usage of F_RDLCK | F_LAYOUT by the pNFS code allows
+layout changes to occur to the file while the layout lease is held.
+IOWs, your definition of F_RDLCK | F_LAYOUT not being allowed
+to change the is in direct contradition to existing users.
 
-> Signed-off-by: Qian Cai <cai@lca.pw>
-> ---
->  drivers/gpu/drm/drm_connector.c               |  2 +-
->  drivers/gpu/drm/i915/gem/i915_gem_shrinker.c  |  6 +++---
->  drivers/gpu/drm/i915/gt/intel_engine_pm.c     |  2 +-
->  drivers/gpu/drm/i915/i915_request.c           |  2 +-
->  drivers/tty/tty_ldsem.c                       |  8 ++++----
->  fs/dcache.c                                   |  2 +-
->  fs/jbd2/transaction.c                         |  4 ++--
->  fs/kernfs/dir.c                               |  4 ++--
->  fs/ocfs2/dlmglue.c                            |  2 +-
->  include/linux/jbd2.h                          |  2 +-
->  include/linux/lockdep.h                       | 21 ++++++++++-----------
->  include/linux/percpu-rwsem.h                  |  4 ++--
->  include/linux/rcupdate.h                      |  2 +-
->  include/linux/rwlock_api_smp.h                | 16 ++++++++--------
->  include/linux/seqlock.h                       |  4 ++--
->  include/linux/spinlock_api_smp.h              |  8 ++++----
->  include/linux/ww_mutex.h                      |  2 +-
->  include/net/sock.h                            |  2 +-
->  kernel/bpf/stackmap.c                         |  2 +-
->  kernel/cpu.c                                  |  2 +-
->  kernel/locking/lockdep.c                      |  3 +--
->  kernel/locking/mutex.c                        |  4 ++--
->  kernel/locking/rtmutex.c                      |  6 +++---
->  kernel/locking/rwsem.c                        | 10 +++++-----
->  kernel/printk/printk.c                        | 10 +++++-----
->  kernel/sched/core.c                           |  2 +-
->  lib/locking-selftest.c                        | 24 ++++++++++++------------
->  mm/memcontrol.c                               |  2 +-
->  net/core/sock.c                               |  2 +-
->  tools/lib/lockdep/include/liblockdep/common.h |  3 +--
->  tools/lib/lockdep/include/liblockdep/mutex.h  |  2 +-
->  tools/lib/lockdep/include/liblockdep/rwlock.h |  2 +-
->  tools/lib/lockdep/preload.c                   | 16 ++++++++--------
->  33 files changed, 90 insertions(+), 93 deletions(-)
+I've said this several times over the past few months now: shared
+layout leases must allow layout modifications to be made. Only
+allowing an exclusive layout lease to modify the layout rules out
+many potential use cases for direct data placement and p2p DMA
+applications, not to mention conflicts with the existing pNFS usage.
+Layout leases need to support more than just RDMA, and tailoring the
+API to exactly the immediate needs of RDMA is just going to make it
+useless for anything else.
 
-Thanks!
+I'm getting frustrated now because we still seem to be going around
+in circles and getting nowhere.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
