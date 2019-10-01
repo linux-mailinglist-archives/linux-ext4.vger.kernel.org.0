@@ -2,56 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E78DC2E52
+	by mail.lfdr.de (Postfix) with ESMTP id A7EFBC2E53
 	for <lists+linux-ext4@lfdr.de>; Tue,  1 Oct 2019 09:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728926AbfJAHmD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Oct 2019 03:42:03 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:44478 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728249AbfJAHmD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Oct 2019 03:42:03 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q21so7287321pfn.11
+        id S1730124AbfJAHmE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Oct 2019 03:42:04 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:46144 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729189AbfJAHmE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Oct 2019 03:42:04 -0400
+Received: by mail-pg1-f193.google.com with SMTP id a3so8972566pgm.13
         for <linux-ext4@vger.kernel.org>; Tue, 01 Oct 2019 00:42:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OURPjTRTXuglZULKxoZ5ncYc60pHs4vLUxcp1tLNHN0=;
-        b=gV14bNcsprFFBpLd/QTHUYWCcZsRupt2vO3cwEORjMQGdPSyWyEJE4mHPZK1JJ5QQ6
-         V0CYxZjp0yGrd35EFL9o1cKHcvl1qkkII/L08h2YkF2fmpSiGRTEtdf3YXrSnohqsPJ6
-         +nVmnrkWv8hsB/dHIMpYuR3ydRWPtEDQribRB1CZdKISCXCk/Oz0HtyykwosBjRMHgYW
-         XJvoku+P8lZEo/CBu2ydAfvsXVTjEVKXSy/SVEh0utDrRX8JlByZ68/Hs1jgI6+3rTd8
-         TUTMtfTBdZefMsAMiF+gQ4Yx1y2dMI6LPHASXkVvWRGD4WftnfaNpr9U7KA8R5WOS5Ph
-         Fk6Q==
+        bh=EGqBedYLzZgUreszGDKD1/yH1H0MhImKzKjZTUiPsyc=;
+        b=Z/CP4mk3S1ZRZup5pJYGSEmJ35y9fopeQEMYsEaFKg503JhkjzNsHkoYRT7D+w/pLq
+         r8xi3fAPR0G7IYX0qo/vxVxjRgVvBHCRPS7YUX34mXlTbWBIIy5QEUuSe17+1xdj8YoH
+         IUhsxZP+t3N3Ue1C7xK6yn+8xw4IpAxaPWYqBEd3CddJzj6QOTdYqkUROMCCwZL9NtRK
+         V4FX5URSqYFYZcEu8DVTScJpZrJikEmRj6fo5G3eECNkiD+d07KOISVv5BWcPZmDRnl0
+         S0wRby3Om5zEe0yc83tJxj0jC39ynORXhQHtBVLbzHjApjor+YeE4z1bc1n8/FS4vv//
+         wZkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OURPjTRTXuglZULKxoZ5ncYc60pHs4vLUxcp1tLNHN0=;
-        b=V9sKgiNdlIb9rco4wOnmEFmmBfCCUr7pV3KP5tLtqn70gYKp58HVeqW87NGniGkJKj
-         AlH50foHD+wHXRKUtUjMRNqdZ+KTQooNdtZBojcpcozDshZQO2BuJ7P5ee4TuvVcEIFa
-         3xb+LBlZTv2rf1AdrLkX/lRRbKsubihVTi4hhnS77K1kZH9xf1LCm4VNpTRM7S4knrDm
-         xfV7LwdrSJadQRr4c8/93tyBytn5S1OHlV8ydJZ4RIoOA9b4myNAJswSTlHqGYGYluG3
-         eJB1TiYsMXMcdULyx3HFGw63iE6RUhSpniND2dMfy6V8B3AxqVPZSnjEQ4RAMGG93M8B
-         tfOg==
-X-Gm-Message-State: APjAAAVwwWn3dPwjg6ZH3ZiAUV8COJlBBxeh6UQXp1VJnM64jxL2QiBc
-        cZ6fW83WBAlM1iIJlo1ZKebBuRhJYrk=
-X-Google-Smtp-Source: APXvYqySgwa9yveskwbdNaN1pdtM+37UA/mkuM4tNXGuKzQilOyQQmjISnZAVKT5IPAx67GLaZPfQw==
-X-Received: by 2002:a62:19c7:: with SMTP id 190mr26555009pfz.105.1569915722234;
+        bh=EGqBedYLzZgUreszGDKD1/yH1H0MhImKzKjZTUiPsyc=;
+        b=cJsNcZYg8Km/aHtqGkvPcY/D7ptF6gAaXC6j4gOxeRcNr98RVpsm3SoVydMDgBN9pK
+         ovtAZU5TRIVJMa5r49aIdAkmGMt6zspOBuyg0aXkxPE9eY29c0iDut3+jqautyvlgWlt
+         I5/vTO0q7/jCXWSDtnsffehxCqoSchg6L6XnzQcZylxhJaCX+cTyE6MBf6nPxw3jaIcG
+         CYBNu4K+EsHP47SfRd5YoELkA8RAJzx6q8akQjcEzq4fMIMY27FGI5BSJOqde135gUI7
+         I0eYUGR7mGrH69H8rwdqUn4kHswmzWkSuYt9NfO2xPx+KvxuWowfPbumth/ODi9RM8gU
+         Xp1Q==
+X-Gm-Message-State: APjAAAXAEuzAzTz3jxCjhbZ1yc9PQwbnEEphKlDxKZ+G0sJmOY7TdKHo
+        AkkuzjFfqCP3k1OxPAmaBfXvlIF64zg=
+X-Google-Smtp-Source: APXvYqwVBVXCjahgXEAWnWCG9lt9GPt0iHB/KEDhZHxOI9F+qJHoTzUwM9KPxWjXqRFKpV8xkp6i2Q==
+X-Received: by 2002:aa7:96b8:: with SMTP id g24mr7778057pfk.163.1569915722862;
         Tue, 01 Oct 2019 00:42:02 -0700 (PDT)
 Received: from harshads0.svl.corp.google.com ([2620:15c:2cd:202:ec1e:207a:e951:9a5b])
-        by smtp.googlemail.com with ESMTPSA id q13sm2287668pjq.0.2019.10.01.00.42.01
+        by smtp.googlemail.com with ESMTPSA id q13sm2287668pjq.0.2019.10.01.00.42.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Oct 2019 00:42:01 -0700 (PDT)
+        Tue, 01 Oct 2019 00:42:02 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
-Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: [PATCH v3 01/13] ext4: add handling for extended mount options
-Date:   Tue,  1 Oct 2019 00:40:50 -0700
-Message-Id: <20191001074101.256523-2-harshadshirwadkar@gmail.com>
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH v3 02/13] jbd2: fast commit setup and enable
+Date:   Tue,  1 Oct 2019 00:40:51 -0700
+Message-Id: <20191001074101.256523-3-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.23.0.444.g18eeb5a265-goog
 In-Reply-To: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
 References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
@@ -62,170 +60,230 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We are running out of mount option bits. This patch adds handling for
-using s_mount_opt2 and also adds ability to turn on / off the fast
-commit feature. In order to use fast commits, new version e2fsprogs
-needs to set the fast feature commit flag. This also makes sure that
-we have fast commit compatible e2fsprogs before starting to use the
-feature. Mount flag "no_fastcommit", introuced in this patch, can be
-passed to disable the feature at mount time.
+This patch allows file systems to turn fast commits on and thereby
+restrict the normal journalling space to total journal blocks minus
+JBD2_FAST_COMMIT_BLOCKS. Fast commits are not actually performed, just
+the interface to turn fast commits on is opened.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 ---
- fs/ext4/ext4.h       |  4 ++++
- fs/ext4/super.c      | 27 ++++++++++++++++++++++-----
- include/linux/jbd2.h |  5 ++++-
- 3 files changed, 30 insertions(+), 6 deletions(-)
+ fs/ext4/super.c      |  5 +++-
+ fs/jbd2/journal.c    | 68 +++++++++++++++++++++++++++++++++-----------
+ include/linux/jbd2.h | 39 +++++++++++++++++++++++++
+ 3 files changed, 95 insertions(+), 17 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index bf660aa7a9e0..becbda38b7db 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1146,6 +1146,8 @@ struct ext4_inode_info {
- #define EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM	0x00000008 /* User explicitly
- 						specified journal checksum */
- 
-+#define EXT4_MOUNT2_JOURNAL_FAST_COMMIT	0x00000010 /* Journal fast commit */
-+
- #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
- 						~EXT4_MOUNT_##opt
- #define set_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt |= \
-@@ -1643,6 +1645,7 @@ static inline void ext4_clear_state_flags(struct ext4_inode_info *ei)
- #define EXT4_FEATURE_COMPAT_RESIZE_INODE	0x0010
- #define EXT4_FEATURE_COMPAT_DIR_INDEX		0x0020
- #define EXT4_FEATURE_COMPAT_SPARSE_SUPER2	0x0200
-+#define EXT4_FEATURE_COMPAT_FAST_COMMIT		0x0400
- 
- #define EXT4_FEATURE_RO_COMPAT_SPARSE_SUPER	0x0001
- #define EXT4_FEATURE_RO_COMPAT_LARGE_FILE	0x0002
-@@ -1743,6 +1746,7 @@ EXT4_FEATURE_COMPAT_FUNCS(xattr,		EXT_ATTR)
- EXT4_FEATURE_COMPAT_FUNCS(resize_inode,		RESIZE_INODE)
- EXT4_FEATURE_COMPAT_FUNCS(dir_index,		DIR_INDEX)
- EXT4_FEATURE_COMPAT_FUNCS(sparse_super2,	SPARSE_SUPER2)
-+EXT4_FEATURE_COMPAT_FUNCS(fast_commit,		FAST_COMMIT)
- 
- EXT4_FEATURE_RO_COMPAT_FUNCS(sparse_super,	SPARSE_SUPER)
- EXT4_FEATURE_RO_COMPAT_FUNCS(large_file,	LARGE_FILE)
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 4079605d437a..e376ac040cce 100644
+index e376ac040cce..7725eb2105f4 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -1455,6 +1455,7 @@ enum {
- 	Opt_dioread_nolock, Opt_dioread_lock,
- 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
- 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
-+	Opt_no_fastcommit
- };
+@@ -4933,7 +4933,10 @@ static int ext4_load_journal(struct super_block *sb,
+ 		if (save)
+ 			memcpy(save, ((char *) es) +
+ 			       EXT4_S_ERR_START, EXT4_S_ERR_LEN);
+-		err = jbd2_journal_load(journal);
++		if (test_opt2(sb, JOURNAL_FAST_COMMIT))
++			err = jbd2_journal_load_with_fc(journal);
++		else
++			err = jbd2_journal_load(journal);
+ 		if (save)
+ 			memcpy(((char *) es) + EXT4_S_ERR_START,
+ 			       save, EXT4_S_ERR_LEN);
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 953990eb70a9..7c13834873ad 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1159,12 +1159,15 @@ static journal_t *journal_init_common(struct block_device *bdev,
+ 	journal->j_blk_offset = start;
+ 	journal->j_maxlen = len;
+ 	n = journal->j_blocksize / sizeof(journal_block_tag_t);
+-	journal->j_wbufsize = n;
++	journal->j_wbufsize = n - JBD2_FAST_COMMIT_BLOCKS;
+ 	journal->j_wbuf = kmalloc_array(n, sizeof(struct buffer_head *),
+ 					GFP_KERNEL);
+ 	if (!journal->j_wbuf)
+ 		goto err_cleanup;
  
- static const match_table_t tokens = {
-@@ -1537,6 +1538,7 @@ static const match_table_t tokens = {
- 	{Opt_init_itable, "init_itable=%u"},
- 	{Opt_init_itable, "init_itable"},
- 	{Opt_noinit_itable, "noinit_itable"},
-+	{Opt_no_fastcommit, "no_fastcommit"},
- 	{Opt_max_dir_size_kb, "max_dir_size_kb=%u"},
- 	{Opt_test_dummy_encryption, "test_dummy_encryption"},
- 	{Opt_nombcache, "nombcache"},
-@@ -1659,6 +1661,7 @@ static int clear_qf_name(struct super_block *sb, int qtype)
- #define MOPT_NO_EXT3	0x0200
- #define MOPT_EXT4_ONLY	(MOPT_NO_EXT2 | MOPT_NO_EXT3)
- #define MOPT_STRING	0x0400
-+#define MOPT_2		0x0800
- 
- static const struct mount_opts {
- 	int	token;
-@@ -1751,6 +1754,8 @@ static const struct mount_opts {
- 	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
- 	{Opt_test_dummy_encryption, 0, MOPT_GTE0},
- 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
-+	{Opt_no_fastcommit, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
-+	 MOPT_CLEAR | MOPT_2 | MOPT_EXT4_ONLY},
- 	{Opt_err, 0, 0}
- };
- 
-@@ -1858,8 +1863,9 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 			set_opt2(sb, EXPLICIT_DELALLOC);
- 		} else if (m->mount_opt & EXT4_MOUNT_JOURNAL_CHECKSUM) {
- 			set_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM);
--		} else
-+		} else if (m->mount_opt) {
- 			return -1;
-+		}
- 	}
- 	if (m->flags & MOPT_CLEAR_ERR)
- 		clear_opt(sb, ERRORS_MASK);
-@@ -2027,10 +2033,17 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 			WARN_ON(1);
- 			return -1;
- 		}
--		if (arg != 0)
--			sbi->s_mount_opt |= m->mount_opt;
--		else
--			sbi->s_mount_opt &= ~m->mount_opt;
-+		if (m->flags & MOPT_2) {
-+			if (arg != 0)
-+				sbi->s_mount_opt2 |= m->mount_opt;
-+			else
-+				sbi->s_mount_opt2 &= ~m->mount_opt;
-+		} else {
-+			if (arg != 0)
-+				sbi->s_mount_opt |= m->mount_opt;
-+			else
-+				sbi->s_mount_opt &= ~m->mount_opt;
-+		}
- 	}
- 	return 1;
- }
-@@ -3733,6 +3746,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- #ifdef CONFIG_EXT4_FS_POSIX_ACL
- 	set_opt(sb, POSIX_ACL);
- #endif
-+	if (ext4_has_feature_fast_commit(sb))
-+		set_opt2(sb, JOURNAL_FAST_COMMIT);
++	journal->j_fc_wbuf = &journal->j_wbuf[journal->j_wbufsize];
++	journal->j_fc_wbufsize = JBD2_FAST_COMMIT_BLOCKS;
 +
- 	/* don't forget to enable journal_csum when metadata_csum is enabled. */
- 	if (ext4_has_metadata_csum(sb))
- 		set_opt(sb, JOURNAL_CHECKSUM);
-@@ -4334,6 +4350,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 		sbi->s_def_mount_opt &= ~EXT4_MOUNT_JOURNAL_CHECKSUM;
- 		clear_opt(sb, JOURNAL_CHECKSUM);
- 		clear_opt(sb, DATA_FLAGS);
-+		clear_opt2(sb, JOURNAL_FAST_COMMIT);
- 		sbi->s_journal = NULL;
- 		needs_recovery = 0;
- 		goto no_journal;
+ 	bh = getblk_unmovable(journal->j_dev, start, journal->j_blocksize);
+ 	if (!bh) {
+ 		pr_err("%s: Cannot get buffer for journal superblock\n",
+@@ -1297,11 +1300,19 @@ static int journal_reset(journal_t *journal)
+ 	}
+ 
+ 	journal->j_first = first;
+-	journal->j_last = last;
+ 
+-	journal->j_head = first;
+-	journal->j_tail = first;
+-	journal->j_free = last - first;
++	if (jbd2_has_feature_fast_commit(journal)) {
++		journal->j_last_fc = last;
++		journal->j_last = last - JBD2_FAST_COMMIT_BLOCKS;
++		journal->j_first_fc = journal->j_last + 1;
++		journal->j_fc_off = 0;
++	} else {
++		journal->j_last = last;
++	}
++
++	journal->j_head = journal->j_first;
++	journal->j_tail = journal->j_first;
++	journal->j_free = journal->j_last - journal->j_first;
+ 
+ 	journal->j_tail_sequence = journal->j_transaction_sequence;
+ 	journal->j_commit_sequence = journal->j_transaction_sequence - 1;
+@@ -1626,22 +1637,21 @@ static int load_superblock(journal_t *journal)
+ 	journal->j_tail_sequence = be32_to_cpu(sb->s_sequence);
+ 	journal->j_tail = be32_to_cpu(sb->s_start);
+ 	journal->j_first = be32_to_cpu(sb->s_first);
+-	journal->j_last = be32_to_cpu(sb->s_maxlen);
+ 	journal->j_errno = be32_to_cpu(sb->s_errno);
+ 
++	if (jbd2_has_feature_fast_commit(journal)) {
++		journal->j_last_fc = be32_to_cpu(sb->s_maxlen);
++		journal->j_last = journal->j_last_fc - JBD2_FAST_COMMIT_BLOCKS;
++		journal->j_first_fc = journal->j_last + 1;
++		journal->j_fc_off = 0;
++	} else {
++		journal->j_last = be32_to_cpu(sb->s_maxlen);
++	}
++
+ 	return 0;
+ }
+ 
+-
+-/**
+- * int jbd2_journal_load() - Read journal from disk.
+- * @journal: Journal to act on.
+- *
+- * Given a journal_t structure which tells us which disk blocks contain
+- * a journal, read the journal from disk to initialise the in-memory
+- * structures.
+- */
+-int jbd2_journal_load(journal_t *journal)
++static int __jbd2_journal_load(journal_t *journal, bool enable_fc)
+ {
+ 	int err;
+ 	journal_superblock_t *sb;
+@@ -1684,6 +1694,12 @@ int jbd2_journal_load(journal_t *journal)
+ 		return -EFSCORRUPTED;
+ 	}
+ 
++	if (enable_fc)
++		jbd2_journal_set_features(journal, 0, 0,
++					  JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
++	else
++		jbd2_journal_clear_features(journal, 0, 0,
++					    JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
+ 	/* OK, we've finished with the dynamic journal bits:
+ 	 * reinitialise the dynamic contents of the superblock in memory
+ 	 * and reset them on disk. */
+@@ -1699,6 +1715,26 @@ int jbd2_journal_load(journal_t *journal)
+ 	return -EIO;
+ }
+ 
++/**
++ * int jbd2_journal_load() - Read journal from disk.
++ * @journal: Journal to act on.
++ *
++ * Given a journal_t structure which tells us which disk blocks contain
++ * a journal, read the journal from disk to initialise the in-memory
++ * structures.
++ */
++int jbd2_journal_load(journal_t *journal)
++{
++	return __jbd2_journal_load(journal, false);
++}
++
++/* Same as above but also enables fast commits. */
++int jbd2_journal_load_with_fc(journal_t *journal)
++{
++	return __jbd2_journal_load(journal, true);
++}
++
++
+ /**
+  * void jbd2_journal_destroy() - Release a journal_t structure.
+  * @journal: Journal to act on.
 diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index df03825ad1a1..b7eed49b8ecd 100644
+index b7eed49b8ecd..84d04e1f3d92 100644
 --- a/include/linux/jbd2.h
 +++ b/include/linux/jbd2.h
-@@ -288,6 +288,7 @@ typedef struct journal_superblock_s
- #define JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT	0x00000004
- #define JBD2_FEATURE_INCOMPAT_CSUM_V2		0x00000008
- #define JBD2_FEATURE_INCOMPAT_CSUM_V3		0x00000010
-+#define JBD2_FEATURE_INCOMPAT_FAST_COMMIT	0x00000020
+@@ -67,6 +67,7 @@ extern void *jbd2_alloc(size_t size, gfp_t flags);
+ extern void jbd2_free(void *ptr, size_t size);
  
- /* See "journal feature predicate functions" below */
- 
-@@ -298,7 +299,8 @@ typedef struct journal_superblock_s
- 					JBD2_FEATURE_INCOMPAT_64BIT | \
- 					JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT | \
- 					JBD2_FEATURE_INCOMPAT_CSUM_V2 | \
--					JBD2_FEATURE_INCOMPAT_CSUM_V3)
-+					JBD2_FEATURE_INCOMPAT_CSUM_V3 | \
-+					JBD2_FEATURE_INCOMPAT_FAST_COMMIT)
+ #define JBD2_MIN_JOURNAL_BLOCKS 1024
++#define JBD2_FAST_COMMIT_BLOCKS 128
  
  #ifdef __KERNEL__
  
-@@ -1235,6 +1237,7 @@ JBD2_FEATURE_INCOMPAT_FUNCS(64bit,		64BIT)
- JBD2_FEATURE_INCOMPAT_FUNCS(async_commit,	ASYNC_COMMIT)
- JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
- JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
-+JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
+@@ -918,6 +919,30 @@ struct journal_s
+ 	 */
+ 	unsigned long		j_last;
  
- /*
-  * Journal flag definitions
++	/**
++	 * @j_first_fc:
++	 *
++	 * The block number of the first fast commit block in the journal
++	 * [j_state_lock].
++	 */
++	unsigned long		j_first_fc;
++
++	/**
++	 * @j_fc_off:
++	 *
++	 * Number of fast commit blocks currently allocated.
++	 * [j_state_lock].
++	 */
++	unsigned long		j_fc_off;
++
++	/**
++	 * @j_last_fc:
++	 *
++	 * The block number one beyond the last fast commit block in the journal
++	 * [j_state_lock].
++	 */
++	unsigned long		j_last_fc;
++
+ 	/**
+ 	 * @j_dev: Device where we store the journal.
+ 	 */
+@@ -1061,6 +1086,12 @@ struct journal_s
+ 	 */
+ 	struct buffer_head	**j_wbuf;
+ 
++	/**
++	 * @j_fc_wbuf: Array of fast commit bhs for
++	 * jbd2_journal_commit_transaction.
++	 */
++	struct buffer_head	**j_fc_wbuf;
++
+ 	/**
+ 	 * @j_wbufsize:
+ 	 *
+@@ -1068,6 +1099,13 @@ struct journal_s
+ 	 */
+ 	int			j_wbufsize;
+ 
++	/**
++	 * @j_fc_wbufsize:
++	 *
++	 * Size of @j_fc_wbuf array.
++	 */
++	int			j_fc_wbufsize;
++
+ 	/**
+ 	 * @j_last_sync_writer:
+ 	 *
+@@ -1398,6 +1436,7 @@ extern int	   jbd2_journal_set_features
+ extern void	   jbd2_journal_clear_features
+ 		   (journal_t *, unsigned long, unsigned long, unsigned long);
+ extern int	   jbd2_journal_load       (journal_t *journal);
++extern int	   jbd2_journal_load_with_fc(journal_t *journal);
+ extern int	   jbd2_journal_destroy    (journal_t *);
+ extern int	   jbd2_journal_recover    (journal_t *journal);
+ extern int	   jbd2_journal_wipe       (journal_t *, int);
 -- 
 2.23.0.444.g18eeb5a265-goog
 
