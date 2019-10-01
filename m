@@ -2,235 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB94C2E6E
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Oct 2019 09:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A506C2E81
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Oct 2019 10:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbfJAHxJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Oct 2019 03:53:09 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:40681 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbfJAHxJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Oct 2019 03:53:09 -0400
-Received: by mail-ot1-f68.google.com with SMTP id y39so10727909ota.7
-        for <linux-ext4@vger.kernel.org>; Tue, 01 Oct 2019 00:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FGaS4O4dBHJPQPxOu/dbQCVxys+QtMc0K6LLhNgt5gI=;
-        b=QYaanONGCiiXqjKqi+bWQqgGy832pprNQGqoeq3+ezQqNQaon9b5mBUMPQJ7jHNXlx
-         LURAu8qOxxhhcX5USilTHiLz7x4cZr614hEaIxGqORyDN+qoUedlZ0ufHw5J08C++eGQ
-         RezWee6NUCc6jRzg7SMJHOm6HfzJX6+EW78OTcnj0GlfNyIGu4rmRRo3c914ekNYfP24
-         oXwFz30/m0Q3ySMAErqUI+tcloGTj9YXHEGa164Z/CanWKqfF8vikNlouOdDpj5dbUIL
-         kKYlNxm91/SKa9VsXVOPTTTrgnWqYb21XriBDvsHiGj/ZRAtPFE6fnCysEFwbVmm/sLI
-         P6Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FGaS4O4dBHJPQPxOu/dbQCVxys+QtMc0K6LLhNgt5gI=;
-        b=f8WNAwFdbJEpc/IQdi6Z0A6wga8nIxFZFecntnilX60tbDzK9PvmvkXFspLXvT/yHp
-         +zmmvH8MFNYcTu/je0wLaie/i8oA5pFD1QFbtzwIqASgJ855zZXVhNlKyXuFpu2H44St
-         bp+bqg8C5asyK0a1Bb04XNGGwrLQgbhLw/URU8Yb80J/yNkJvrf9u1qg5n9fdkq4FPtO
-         mfYTGHmN7Grt5TnqbPxQDsnQs9z19C6I5LVq55WIsIbtklTblQLD3jk2Gp3HbiSVyYIx
-         9u+USze1AhGl1AF8n2+NK8TXePsxKiOhkQhIrGXfrSCvqWM2DPPpKyf8XAlywD0RwIl8
-         3gMw==
-X-Gm-Message-State: APjAAAVztc+W9Wdr6swcgvtv9HJGp5gxJaOHNqjD1l1PHYJ46a8ZQ2Mx
-        UPKB2H6Mg+C3Kk5tz6Y7U+zG1fPiMg1PV4SGfAY=
-X-Google-Smtp-Source: APXvYqwPicZYih/N41HDg7tQLv6HXsch+oViZB/Y1pjEZdC+7qRJQU+7M2xI84+yj19gwP8y9v9BdsE/S7tGR+CAd64=
-X-Received: by 2002:a9d:6b98:: with SMTP id b24mr2447724otq.227.1569916387866;
- Tue, 01 Oct 2019 00:53:07 -0700 (PDT)
+        id S1728373AbfJAH6v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Oct 2019 03:58:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44640 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726672AbfJAH6v (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 1 Oct 2019 03:58:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id C9C95AF8D;
+        Tue,  1 Oct 2019 07:58:48 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DCE731E37A2; Tue,  1 Oct 2019 09:59:08 +0200 (CEST)
+Date:   Tue, 1 Oct 2019 09:59:08 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 17/19] jbd2: Rename h_buffer_credits to h_total_credits
+Message-ID: <20191001075908.GB25062@quack2.suse.cz>
+References: <20190930104339.24919-17-jack@suse.cz>
+ <201909302058.uxNSY0q3%lkp@intel.com>
+ <20190930150553.GB4001@mit.edu>
+ <20190930162536.GB13973@quack2.suse.cz>
+ <20190930212145.GC4001@mit.edu>
 MIME-Version: 1.0
-References: <20190809034552.148629-1-harshadshirwadkar@gmail.com>
- <20190809034552.148629-4-harshadshirwadkar@gmail.com> <D1E772AE-A30B-434B-916E-E3B5FADE6517@dilger.ca>
-In-Reply-To: <D1E772AE-A30B-434B-916E-E3B5FADE6517@dilger.ca>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Tue, 1 Oct 2019 00:52:57 -0700
-Message-ID: <CAD+ocbybr=5L+jYRz9=NXWAU-DfPJjzy4oyi+z9Ezb-CndCgbg@mail.gmail.com>
-Subject: Re: [PATCH v2 03/12] jbd2: fast commit setup and enable
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190930212145.GC4001@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Oops, I missed this, I'll handle this in V4. Thanks!
+On Mon 30-09-19 17:21:45, Theodore Y. Ts'o wrote:
+> On Mon, Sep 30, 2019 at 06:25:36PM +0200, Jan Kara wrote:
+> > The problem was that my patches were based on a kernel that didn't have
+> > this code yet. I've rebased now on current Linus' tree and fixed this up in
+> > my local tree (along with couple documentation warnings). But I don't think
+> > it's worth resending just for this.
+> 
+> Oh, agreed, it's not worth resending for this; it was a quick fixup.
+> 
+> How much testing have you given this patch series?  I did a quick
+> xfstests run, and I found the following new failures when this was
+> applied on top of the dev branch on ext4.git (e.g., what got sent to
+> Linus as a pull request). 
 
-On Fri, Aug 9, 2019 at 1:02 PM Andreas Dilger <adilger@dilger.ca> wrote:
->
-> On Aug 8, 2019, at 9:45 PM, Harshad Shirwadkar <harshadshirwadkar@gmail.com> wrote:
-> >
-> > This patch allows file systems to turn fast commits on and thereby
-> > restrict the normal journalling space to total journal blocks minus
-> > JBD2_FAST_COMMIT_BLOCKS. Fast commits are not actually performed, just
-> > the interface to turn fast commits on is opened.
-> >
-> > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> >
-> > ---
-> >
-> > Changelog:
-> >
-> > V2: No changes since V1
-> > ---
-> > fs/ext4/super.c      |  3 ++-
-> > fs/jbd2/journal.c    | 39 ++++++++++++++++++++++++++++++++-------
-> > fs/ocfs2/journal.c   |  4 ++--
-> > include/linux/jbd2.h |  2 +-
-> > 4 files changed, 37 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index e376ac040cce..81c3ec165822 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -4933,7 +4933,8 @@ static int ext4_load_journal(struct super_block *sb,
-> >               if (save)
-> >                       memcpy(save, ((char *) es) +
-> >                              EXT4_S_ERR_START, EXT4_S_ERR_LEN);
-> > -             err = jbd2_journal_load(journal);
-> > +             err = jbd2_journal_load(journal,
-> > +                                     test_opt2(sb, JOURNAL_FAST_COMMIT));
-> >               if (save)
-> >                       memcpy(((char *) es) + EXT4_S_ERR_START,
-> >                              save, EXT4_S_ERR_LEN);
-> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> > index 953990eb70a9..59ad709154a3 100644
-> > --- a/fs/jbd2/journal.c
-> > +++ b/fs/jbd2/journal.c
-> > @@ -1159,12 +1159,15 @@ static journal_t *journal_init_common(struct block_device *bdev,
-> >       journal->j_blk_offset = start;
-> >       journal->j_maxlen = len;
-> >       n = journal->j_blocksize / sizeof(journal_block_tag_t);
-> > -     journal->j_wbufsize = n;
-> > +     journal->j_wbufsize = n - JBD2_FAST_COMMIT_BLOCKS;
->
-> The reservation of the JBD2_FAST_COMMIT_BLOCKS should only be done in
-> the case of the FAST_COMMIT feature being enabled.  Otherwise it can
-> hurt performance for filesystems where this feature is not enabled.
->
-> Cheers, Andreas
->
-> >       journal->j_wbuf = kmalloc_array(n, sizeof(struct buffer_head *),
-> >                                       GFP_KERNEL);
-> >       if (!journal->j_wbuf)
-> >               goto err_cleanup;
-> >
-> > +     journal->j_fc_wbuf = &journal->j_wbuf[journal->j_wbufsize];
-> > +     journal->j_fc_wbufsize = JBD2_FAST_COMMIT_BLOCKS;
-> > +
-> >       bh = getblk_unmovable(journal->j_dev, start, journal->j_blocksize);
-> >       if (!bh) {
-> >               pr_err("%s: Cannot get buffer for journal superblock\n",
-> > @@ -1297,11 +1300,19 @@ static int journal_reset(journal_t *journal)
-> >       }
-> >
-> >       journal->j_first = first;
-> > -     journal->j_last = last;
-> >
-> > -     journal->j_head = first;
-> > -     journal->j_tail = first;
-> > -     journal->j_free = last - first;
-> > +     if (jbd2_has_feature_fast_commit(journal)) {
-> > +             journal->j_last_fc = last;
-> > +             journal->j_last = last - JBD2_FAST_COMMIT_BLOCKS;
-> > +             journal->j_first_fc = journal->j_last + 1;
-> > +             journal->j_fc_off = 0;
-> > +     } else {
-> > +             journal->j_last = last;
-> > +     }
-> > +
-> > +     journal->j_head = journal->j_first;
-> > +     journal->j_tail = journal->j_first;
-> > +     journal->j_free = journal->j_last - journal->j_first;
-> >
-> >       journal->j_tail_sequence = journal->j_transaction_sequence;
-> >       journal->j_commit_sequence = journal->j_transaction_sequence - 1;
-> > @@ -1626,9 +1637,17 @@ static int load_superblock(journal_t *journal)
-> >       journal->j_tail_sequence = be32_to_cpu(sb->s_sequence);
-> >       journal->j_tail = be32_to_cpu(sb->s_start);
-> >       journal->j_first = be32_to_cpu(sb->s_first);
-> > -     journal->j_last = be32_to_cpu(sb->s_maxlen);
-> >       journal->j_errno = be32_to_cpu(sb->s_errno);
-> >
-> > +     if (jbd2_has_feature_fast_commit(journal)) {
-> > +             journal->j_last_fc = be32_to_cpu(sb->s_maxlen);
-> > +             journal->j_last = journal->j_last_fc - JBD2_FAST_COMMIT_BLOCKS;
-> > +             journal->j_first_fc = journal->j_last + 1;
-> > +             journal->j_fc_off = 0;
-> > +     } else {
-> > +             journal->j_last = be32_to_cpu(sb->s_maxlen);
-> > +     }
-> > +
-> >       return 0;
-> > }
-> >
-> > @@ -1641,7 +1660,7 @@ static int load_superblock(journal_t *journal)
-> >  * a journal, read the journal from disk to initialise the in-memory
-> >  * structures.
-> >  */
-> > -int jbd2_journal_load(journal_t *journal)
-> > +int jbd2_journal_load(journal_t *journal, bool enable_fc)
-> > {
-> >       int err;
-> >       journal_superblock_t *sb;
-> > @@ -1684,6 +1703,12 @@ int jbd2_journal_load(journal_t *journal)
-> >               return -EFSCORRUPTED;
-> >       }
-> >
-> > +     if (enable_fc)
-> > +             jbd2_journal_set_features(journal, 0, 0,
-> > +                                       JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
-> > +     else
-> > +             jbd2_journal_clear_features(journal, 0, 0,
-> > +                                         JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
-> >       /* OK, we've finished with the dynamic journal bits:
-> >        * reinitialise the dynamic contents of the superblock in memory
-> >        * and reset them on disk. */
-> > diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-> > index 930e3d388579..3b4d91b16e8e 100644
-> > --- a/fs/ocfs2/journal.c
-> > +++ b/fs/ocfs2/journal.c
-> > @@ -1057,7 +1057,7 @@ int ocfs2_journal_load(struct ocfs2_journal *journal, int local, int replayed)
-> >
-> >       osb = journal->j_osb;
-> >
-> > -     status = jbd2_journal_load(journal->j_journal);
-> > +     status = jbd2_journal_load(journal->j_journal, false);
-> >       if (status < 0) {
-> >               mlog(ML_ERROR, "Failed to load journal!\n");
-> >               goto done;
-> > @@ -1642,7 +1642,7 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
-> >               goto done;
-> >       }
-> >
-> > -     status = jbd2_journal_load(journal);
-> > +     status = jbd2_journal_load(journal, false);
-> >       if (status < 0) {
-> >               mlog_errno(status);
-> >               if (!igrab(inode))
-> > diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> > index 9a750b732241..153840b422cc 100644
-> > --- a/include/linux/jbd2.h
-> > +++ b/include/linux/jbd2.h
-> > @@ -1476,7 +1476,7 @@ extern int         jbd2_journal_set_features
-> >                  (journal_t *, unsigned long, unsigned long, unsigned long);
-> > extern void      jbd2_journal_clear_features
-> >                  (journal_t *, unsigned long, unsigned long, unsigned long);
-> > -extern int      jbd2_journal_load       (journal_t *journal);
-> > +extern int      jbd2_journal_load(journal_t *journal, bool enable_fc);
-> > extern int       jbd2_journal_destroy    (journal_t *);
-> > extern int       jbd2_journal_recover    (journal_t *journal);
-> > extern int       jbd2_journal_wipe       (journal_t *, int);
-> > --
-> > 2.23.0.rc1.153.gdeed80330f-goog
-> >
->
->
-> Cheers, Andreas
->
->
->
->
->
+I did run e.g. ext4/4k, ext4/1k, ext4/nojournal, ext4/datajournal. But
+my setup does not run ext4/026 (too old e2fsprogs it seems - I need to
+update those). I have cathegorized generic/233 as preexisting failure but I
+might be wrong and it definitely failed differently for me. Anyway, thanks
+for running these tests, I'll check more what's going on.
+
+								Honza
+> ext4/4k: 
+>   Failures: ext4/026 generic/233
+> ext4/1k: 
+>   Failures: ext4/026
+> ext4/ext3: 
+>   Failures: ext4/026 generic/233
+> ext4/encrypt: 
+>   Failures: generic/083
+> ext4/nojournal:
+>   Failures: ext4/301
+> ext4/adv: 
+>   Failures: ext4/026 generic/233 generic/269 generic/270 generic/476
+> ext4/dioread_nolock: 
+>   Failures: ext4/026 generic/233
+> ext4/data_journal: 
+>   Failures: generic/233
+> ext4/bigalloc: 
+>   Failures: generic/013 generic/014 generic/051 generic/083
+>     generic/232 generic/233 generic/269 generic/270 generic/299
+>     generic/429 generic/475 generic/476
+> ext4/bigalloc_1k: 
+>   Failures: ext4/026 generic/013 generic/014 generic/032 generic/051
+>     generic/068 generic/083 generic/232 generic/233 generic/269
+>     generic/270 generic/320 generic/475 generic/476
+> 
+> I haven't trianged them all yet, but here are the details for the two
+> biggies: ext4/026 and generic/233.
+> 
+> 					- Ted
+> 
+> ext4/026		[14:11:43][   14.287850] run fstests ext4/026 at 2019-09-30 14:11:43
+> [   14.821933] WARNING: CPU: 0 PID: 1542 at fs/jbd2/revoke.c:394 jbd2_journal_revoke+0x14b/0x160
+> [   14.824000] CPU: 0 PID: 1542 Comm: rm Not tainted 5.3.0-rc4-xfstests-00019-ga8d18e88fd60-dirty #1201
+> [   14.826111] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> [   14.828039] RIP: 0010:jbd2_journal_revoke+0x14b/0x160
+> [   14.829217] Code: 4c 89 f7 e8 77 8c ef ff eb a6 e8 d0 8d ef ff 48 85 c0 49 89 c6 74 99 48 8b 00 a9 00 00 10 00 0f 84 5b ff ff ff e9 71 06 00 00 <0f> 0b eb 89 0f 0b 0f 0b 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f
+> [   14.833505] RSP: 0018:ffffae0ec2683ad8 EFLAGS: 00010246
+> [   14.834721] RAX: 0000000000000000 RBX: ffff951876a9f410 RCX: 1111111111111120
+> [   14.836287] RDX: 0000000000000004 RSI: 0000000000000006 RDI: ffff951876a9f410
+> [   14.837853] RBP: ffff951874f1f6c8 R08: 0000000373745034 R09: 0000000000000000
+> [   14.839244] R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000840d
+> [   14.840799] R13: ffff951876695000 R14: ffff951876a9f410 R15: 0000000000000001
+> [   14.842349] FS:  00007f39e17b5540(0000) GS:ffff95187d800000(0000) knlGS:0000000000000000
+> [   14.844125] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   14.845403] CR2: 00007f39e16ba4a0 CR3: 0000000075b9e006 CR4: 0000000000360ef0
+> [   14.847055] Call Trace:
+> [   14.847628]  __ext4_forget+0xf2/0x280
+> [   14.848470]  ext4_free_blocks+0x9c8/0xc00
+> [   14.849270]  ? __lock_acquire+0x447/0x7c0
+> [   14.850174]  ? kvm_sched_clock_read+0x14/0x30
+> [   14.851182]  ext4_remove_blocks+0x33c/0x630
+> [   14.852190]  ext4_ext_rm_leaf+0x1fb/0x7a0
+> [   14.853493]  ext4_ext_remove_space+0x556/0xa80
+> [   14.855020]  ? ext4_es_remove_extent+0x9d/0x180
+> [   14.856325]  ext4_truncate+0x413/0x520
+> [   14.857374]  ext4_evict_inode+0x29c/0x670
+> [   14.858329]  evict+0xd0/0x1a0
+> [   14.859157]  ext4_xattr_inode_array_free+0x27/0x40
+> [   14.860341]  ext4_evict_inode+0x31c/0x670
+> [   14.861344]  evict+0xd0/0x1a0
+> [   14.862107]  do_unlinkat+0x1cd/0x2e0
+> [   14.862769]  do_syscall_64+0x50/0x1b0
+> [   14.863387]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> [   14.864219] RIP: 0033:0x7f39e16deff7
+> [   14.864813] Code: 73 01 c3 48 8b 0d 99 ee 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 69 ee 0c 00 f7 d8 64 89 01 48
+> [   14.867949] RSP: 002b:00007fff3ed46068 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
+> [   14.869197] RAX: ffffffffffffffda RBX: 0000561d094937b0 RCX: 00007f39e16deff7
+> [   14.870371] RDX: 0000000000000000 RSI: 0000561d09492340 RDI: 00000000ffffff9c
+> [   14.871544] RBP: 0000561d094922b0 R08: 0000000000000003 R09: 0000000000000000
+> [   14.872766] R10: 0000000000000100 R11: 0000000000000246 R12: 00007fff3ed46250
+> [   14.873950] R13: 0000000000000000 R14: 0000561d094937b0 R15: 0000000000000000
+> [   14.875156] irq event stamp: 2176
+> [   14.875720] hardirqs last  enabled at (2175): [<ffffffffb16663e1>] kmem_cache_free+0x51/0x220
+> [   14.877150] hardirqs last disabled at (2176): [<ffffffffb14016aa>] trace_hardirqs_off_thunk+0x1a/0x20
+> [   14.878702] softirqs last  enabled at (814): [<ffffffffb14297f3>] fpu__clear+0xb3/0x1b0
+> [   14.880055] softirqs last disabled at (812): [<ffffffffb14297b5>] fpu__clear+0x75/0x1b0
+> [   14.881926] ---[ end trace 4d44757f1901181f ]---
+> _check_dmesg: something found in dmesg (see /results/ext4/results-4k/ext4/026.dmesg)
+>  [14:11:44]
+> 
+> 
+> generic/233 		[14:18:34][   19.736637] run fstests generic/233 at 2019-09-30 14:18:34
+> [   21.400934] EXT4-fs (vdc): Delayed block allocation failed for inode 131809 at logical offset 209 with max blocks 9 with error 122
+> [   21.404197] EXT4-fs (vdc): This should not happen!! Data will be lost
+> [   21.404197]
+>  [14:18:36] 2s
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
