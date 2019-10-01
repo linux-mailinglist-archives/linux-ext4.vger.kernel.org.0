@@ -2,52 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0C5C2E5F
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Oct 2019 09:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3D2C2E67
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Oct 2019 09:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733056AbfJAHnY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Oct 2019 03:43:24 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:36064 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbfJAHnX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Oct 2019 03:43:23 -0400
-Received: by mail-oi1-f196.google.com with SMTP id k20so13572282oih.3
-        for <linux-ext4@vger.kernel.org>; Tue, 01 Oct 2019 00:43:22 -0700 (PDT)
+        id S1729228AbfJAHue (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Oct 2019 03:50:34 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:36589 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727728AbfJAHud (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Oct 2019 03:50:33 -0400
+Received: by mail-oi1-f195.google.com with SMTP id k20so13587737oih.3
+        for <linux-ext4@vger.kernel.org>; Tue, 01 Oct 2019 00:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cy1+gqIWPVd6qeNHo+RpVb4nVyRnzF2BJZORp3IJwQ0=;
-        b=bZ92PcDNq10AUcfmCsGDGs1+nPpceNd958yl1DTxSGZ1uMPb/KBKyFmvnEVsmEguae
-         z70vD6tHaOOqVl6i3jT8qqE6gOXn9C7jqswyQIFLP3WM5NDGdUCh3bopMlzGae/HzEvw
-         frxuRzajHX2K6g+8Cu0YgkLCO1PMixKiuT65bcHG2zzmLWqilMTtzHeXPorMVlK59Fna
-         RmFGTOFozGPd2hhoLvVagiuCm7z9EQGactYLh9WdeLMR97x3De+A12kdxiNEx1uWShIg
-         kz7xy3J8FHfxn0RkI67WvMQ+aVdHwrdXgqnVKR+6dMQUXNWpdlWLSlKpKoUPYmi+aO8S
-         9dFA==
+        bh=a6OucmKR5TvSwQKe6SzD5iJe5lWs8Hy7Vd4C7UvIC8Q=;
+        b=teK38wCMTEe2DhUOsE8EjhzmEVUYU3mPbnQj4Zi1U8gBM5/uHrT372HyyGKwSMyv+P
+         BI0XSNRsYU1/1jZ7qFIE3adgRnDQhy/vpmMqtMAn+OJozfUojtfIxDPql6LL89+DqQmv
+         iGNXRldPUE9y3z2mwKCmgwr9kKeOXHXG+FnrTf8Lp9w32dY+RrQ0V4MK0iz9ab862r0J
+         faWEhKIGyjy8X51Iu8xWdBS2bupWk8O/SWELw5Dg7VSlUYwxt2ShJDO4FJ8CdDdZQH2S
+         EhuWcRg+552Qyd2PjIiJ92hfdACjvInf+qjuZlzSXNYClNDjPaH5kXnv3Coe7/w3aHSx
+         eQtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cy1+gqIWPVd6qeNHo+RpVb4nVyRnzF2BJZORp3IJwQ0=;
-        b=n3O6eEFJd2zvrAbRewHFcgMkux0HA5z4zIRv0LI5XuAKQ6XKh18zQhmXcLU9z6zRHm
-         Oip114JnAquNW7kj4IQCj9z3tk6372VtFQsN5Ljgy54C3HgAX+tejL6OLs6z2E7CJqo2
-         29KKRNm/ITXi7O2YpJV6q3P5YZAFVn/3AZD6MwwUuAyhq2Uuq28Wpd/VBZNQoAL8/fFP
-         DFuEIkwiGpMnN0VY7Jkp6xIsyvH30JOMF96vSish5wOy3OPkgVob10D1j8bAvERiq/jl
-         ODDhQz4XwMpcNsUCn7Hi1waW5/WrprvNLMl1kWirVtf5z22cW3BaPLnyt2Re6SM7SBeA
-         vMhw==
-X-Gm-Message-State: APjAAAVQom9AbOxk+WodeFfsrIP6Rlps/4ny/VPsk+m4qPz8AYqyIZS5
-        5651BfgKyTI05BOZl8X/aR/VADlDw7o0SxV6Y9UGO3de
-X-Google-Smtp-Source: APXvYqxD9hrdFhhk8WZVbJvfh9zbnMB+rkdl8Xc0j+46qJUSYgmSmP9YcBDCX1m9Ellvt7vmGTyGJapImtjLoquoV+U=
-X-Received: by 2002:aca:170c:: with SMTP id j12mr2489263oii.141.1569915801485;
- Tue, 01 Oct 2019 00:43:21 -0700 (PDT)
+        bh=a6OucmKR5TvSwQKe6SzD5iJe5lWs8Hy7Vd4C7UvIC8Q=;
+        b=W+/gVgaCoFTJsLVOTMzVohSpFfGsYrkfsFSgqWn0TMD/QQDKtVyaucfZmcRtAv6uyF
+         /h0ym/phxSD01cKlEBPorvX5EV8EyT+SY+Xj2uipn1oJa0PG8UbFB17zaEIXAB/1zmAO
+         fYwuC9DDkIU8Gc0vIStGViVYNafD1g5n5ZJVMQMtgZYTDP+d9ZUTAmrugCOAH6q++m7l
+         0zWbg3YjFOM6hZpU1L203tUvo/tIEi2H+DywpYGJFyVvSh56qPGEjB9sprM60fIHcpKM
+         Q13JcSreeEqDZB0XPjTpPIVkNSrKELk7Rny3DS8jaR7rLhfvfMfA5lUZyUSrrEWz+dsk
+         gktQ==
+X-Gm-Message-State: APjAAAU9KP+T44zPr/b9ki6xqD2cswsYW4QfwePJ0+BnR0LPh2UpRzKC
+        A+Uv/1p8wA3dMq5BypJ8R8tO2wRzXagp/wulWUAwR3ji
+X-Google-Smtp-Source: APXvYqwxHmyQAuYWdmX7FdATCbOqHw4MkcbT4B/eeCqDBJtO21y9EYX0DNrdXlS9WoOoxBcFc6ve4IIeU+PACA1QB/c=
+X-Received: by 2002:aca:31c7:: with SMTP id x190mr2735414oix.17.1569916231906;
+ Tue, 01 Oct 2019 00:50:31 -0700 (PDT)
 MIME-Version: 1.0
 References: <20190809034552.148629-1-harshadshirwadkar@gmail.com>
- <20190809034552.148629-5-harshadshirwadkar@gmail.com> <88620994-CC37-450F-9698-AF7EF8A388FC@dilger.ca>
-In-Reply-To: <88620994-CC37-450F-9698-AF7EF8A388FC@dilger.ca>
+ <20190809034552.148629-8-harshadshirwadkar@gmail.com> <10EB162C-FDCF-476B-9AC0-923C2230DEA7@dilger.ca>
+In-Reply-To: <10EB162C-FDCF-476B-9AC0-923C2230DEA7@dilger.ca>
 From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Tue, 1 Oct 2019 00:43:10 -0700
-Message-ID: <CAD+ocbyd5jckZCVomVOiqSh6R50Ys5yj=kLj2LFx=B2VbQ9V3g@mail.gmail.com>
-Subject: Re: [PATCH v2 04/12] jbd2: fast-commit commit path changes
+Date:   Tue, 1 Oct 2019 00:50:21 -0700
+Message-ID: <CAD+ocbxML=Zj4SxgFONAFtx9apNkEzfhiTs7p6Qf+-x6kUxf4w@mail.gmail.com>
+Subject: Re: [PATCH v2 07/12] ext4: add fields that are needed to track
+ changed files
 To:     Andreas Dilger <adilger@dilger.ca>
 Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -56,475 +57,188 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks, done in V3.
+Thanks, handled in V3.
 
-
-On Fri, Aug 9, 2019 at 1:22 PM Andreas Dilger <adilger@dilger.ca> wrote:
+On Fri, Aug 9, 2019 at 2:23 PM Andreas Dilger <adilger@dilger.ca> wrote:
 >
 > On Aug 8, 2019, at 9:45 PM, Harshad Shirwadkar <harshadshirwadkar@gmail.com> wrote:
 > >
-> > This patch adds core fast-commit commit path changes. This patch also
-> > modifies existing JBD2 APIs to allow usage of fast commits. If fast
-> > commits are enabled and journal->j_do_full_commit is not set, the
-> > commit routine tries the file system specific fast commmit first. Only
-> > if it fails, it falls back to the full commit. Commit start and wait
-> > APIs now take an additional argument which indicates if fast commits
-> > are allowed or not.
-> >
-> > In this patch we also add a new entry to journal->stats which counts
-> > the number of fast commits performed.
+> > Ext4's fast commit feature tracks changed files and maintains them in
+> > a queue. We also remember for each file the logical block range that
+> > needs to be committed. This patch adds these fields to ext4_inode_info
+> > and ext4_sb_info and also adds initialization calls.
 > >
 > > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
->
-> It would be better to rename the existing function something like
-> jbd2_log_start_commit_full() and add wrappers jbd2_log_start_commit()
-> and jbd2_log_start_commit_fast() to avoid to change all of the
-> callsites to add the same parameter:
->
-> int jbd2_log_start_commit_fast(journal_t *journal, tid_t tid)
-> {
->         return jbd2_log_start_commit_full(journal, tid, false);
-> }
-> EXPORT_SYMBOL(jbd2_log_start_commit_fast);
->
-> int jbd2_log_start_commit(journal_t *journal, tid_t tid)
-> {
->         return jbd2_log_start_commit_full(journal, tid, true);
-> }
-> EXPORT_SYMBOL(jbd2_log_start_commit);
->
-> That makes it much more clear for the few callsites that need the
-> "fast" variant what is being done, unlike a "true" or "false"
-> argument to a function that isn't very clear what meaning it has.
->
-> Cheers, Andreas
->
+> >
 > > ---
 > >
 > > Changelog:
 > >
-> > V2: JBD2 commit routine passes stats to the fast commit callbac. Also,
-> >    added a new entry to journal->stats and its tracking.
+> > V2: Converted s_fc_lock from mutex to spinlock to improve parallelism
+> >    performance.
 > > ---
-> > fs/ext4/super.c       |  2 +-
-> > fs/jbd2/checkpoint.c  |  2 +-
-> > fs/jbd2/commit.c      | 47 +++++++++++++++++++++++--
-> > fs/jbd2/journal.c     | 81 +++++++++++++++++++++++++++++++++++--------
-> > fs/jbd2/transaction.c |  6 ++--
-> > fs/ocfs2/alloc.c      |  2 +-
-> > fs/ocfs2/super.c      |  2 +-
-> > include/linux/jbd2.h  |  9 +++--
-> > 8 files changed, 124 insertions(+), 27 deletions(-)
+> > fs/ext4/ext4.h      | 34 ++++++++++++++++++++++++++++++++++
+> > fs/ext4/ext4_jbd2.c | 13 +++++++++++++
+> > fs/ext4/ext4_jbd2.h |  2 ++
+> > fs/ext4/inode.c     |  1 +
+> > fs/ext4/super.c     |  7 +++++++
+> > 5 files changed, 57 insertions(+)
 > >
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 81c3ec165822..6bab59ae81f7 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -5148,7 +5148,7 @@ static int ext4_sync_fs(struct super_block *sb, int wait)
-> >                   !jbd2_trans_will_send_data_barrier(sbi->s_journal, target))
-> >                       needs_barrier = true;
+> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> > index becbda38b7db..0d15d4539dda 100644
+> > --- a/fs/ext4/ext4.h
+> > +++ b/fs/ext4/ext4.h
+> > @@ -921,6 +921,27 @@ enum {
+> >       I_DATA_SEM_QUOTA,
+> > };
 > >
-> > -             if (jbd2_journal_start_commit(sbi->s_journal, &target)) {
-> > +             if (jbd2_journal_start_commit(sbi->s_journal, &target, true)) {
-> >                       if (wait)
-> >                               ret = jbd2_log_wait_commit(sbi->s_journal,
-> >                                                          target);
-> > diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-> > index a1909066bde6..6297978ae3bc 100644
-> > --- a/fs/jbd2/checkpoint.c
-> > +++ b/fs/jbd2/checkpoint.c
-> > @@ -277,7 +277,7 @@ int jbd2_log_do_checkpoint(journal_t *journal)
-> >
-> >                       if (batch_count)
-> >                               __flush_batch(journal, &batch_count);
-> > -                     jbd2_log_start_commit(journal, tid);
-> > +                     jbd2_log_start_commit(journal, tid, true);
-> >                       /*
-> >                        * jbd2_journal_commit_transaction() may want
-> >                        * to take the checkpoint_mutex if JBD2_FLUSHED
-> > diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-> > index 132fb92098c7..9281814606e7 100644
-> > --- a/fs/jbd2/commit.c
-> > +++ b/fs/jbd2/commit.c
-> > @@ -351,8 +351,12 @@ static void jbd2_block_tag_csum_set(journal_t *j, journal_block_tag_t *tag,
-> >  *
-> >  * The primary function for committing a transaction to the log.  This
-> >  * function is called by the journal thread to begin a complete commit.
-> > + *
-> > + * fc is input / output parameter. If fc is non-null and is set to true, this
-> > + * function tries to perform fast commit. If the fast commit is successfully
-> > + * performed, *fc is set to true.
-> >  */
-> > -void jbd2_journal_commit_transaction(journal_t *journal)
-> > +void jbd2_journal_commit_transaction(journal_t *journal, bool *fc)
-> > {
-> >       struct transaction_stats_s stats;
-> >       transaction_t *commit_transaction;
-> > @@ -380,6 +384,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
-> >       tid_t first_tid;
-> >       int update_tail;
-> >       int csum_size = 0;
-> > +     bool full_commit;
-> >       LIST_HEAD(io_bufs);
-> >       LIST_HEAD(log_bufs);
-> >
-> > @@ -413,6 +418,40 @@ void jbd2_journal_commit_transaction(journal_t *journal)
-> >       J_ASSERT(journal->j_running_transaction != NULL);
-> >       J_ASSERT(journal->j_committing_transaction == NULL);
-> >
-> > +     read_lock(&journal->j_state_lock);
-> > +     full_commit = journal->j_do_full_commit;
-> > +     read_unlock(&journal->j_state_lock);
+> > +/*
+> > + * Ext4 fast commit inode specific information
+> > + */
+> > +struct ext4_fast_commit_inode_info {
+> > +     /* TID / SUB-TID when old_i_size and i_size were recorded */
+> > +     tid_t fc_tid;
+> > +     tid_t fc_subtid;
 > > +
-> > +     /* Let file-system try its own fast commit */
-> > +     if (jbd2_has_feature_fast_commit(journal)) {
-> > +             if (!full_commit && fc && *fc == true &&
-> > +                 journal->j_fc_commit_callback &&
-> > +                 !journal->j_fc_commit_callback(
-> > +                     journal, journal->j_running_transaction->t_tid,
-> > +                     journal->j_subtid, &stats.run)) {
-> > +                     jbd_debug(3, "fast commit success.\n");
-> > +                     if (journal->j_fc_cleanup_callback)
-> > +                             journal->j_fc_cleanup_callback(journal);
-> > +                     write_lock(&journal->j_state_lock);
-> > +                     journal->j_subtid++;
-> > +                     if (fc)
-> > +                             *fc = true;
-> > +                     write_unlock(&journal->j_state_lock);
-> > +                     goto update_overall_stats;
-> > +             }
-> > +             if (journal->j_fc_cleanup_callback)
-> > +                     journal->j_fc_cleanup_callback(journal);
-> > +             write_lock(&journal->j_state_lock);
-> > +             journal->j_fc_off = 0;
-> > +             journal->j_subtid = 0;
-> > +             journal->j_do_full_commit = false;
-> > +             write_unlock(&journal->j_state_lock);
-> > +     }
-> > +
-> > +     jbd_debug(3, "fast commit not performed, trying full.\n");
-> > +     if (fc)
-> > +             *fc = false;
-> > +
-> >       commit_transaction = journal->j_running_transaction;
-> >
-> >       trace_jbd2_start_commit(journal, commit_transaction);
-> > @@ -1129,8 +1168,12 @@ void jbd2_journal_commit_transaction(journal_t *journal)
-> >       /*
-> >        * Calculate overall stats
-> >        */
-> > +update_overall_stats:
-> >       spin_lock(&journal->j_history_lock);
-> > -     journal->j_stats.ts_tid++;
-> > +     if (fc && *fc == true)
-> > +             journal->j_stats.ts_num_fast_commits++;
-> > +     else
-> > +             journal->j_stats.ts_tid++;
-> >       journal->j_stats.ts_requested += stats.ts_requested;
-> >       journal->j_stats.run.rs_wait += stats.run.rs_wait;
-> >       journal->j_stats.run.rs_request_delay += stats.run.rs_request_delay;
-> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> > index 59ad709154a3..ab05e47ed2d4 100644
-> > --- a/fs/jbd2/journal.c
-> > +++ b/fs/jbd2/journal.c
-> > @@ -160,7 +160,13 @@ static void commit_timeout(struct timer_list *t)
-> >  *
-> >  * 1) COMMIT:  Every so often we need to commit the current state of the
-> >  *    filesystem to disk.  The journal thread is responsible for writing
-> > - *    all of the metadata buffers to disk.
-> > + *    all of the metadata buffers to disk. If fast commits are allowed,
-> > + *    journal thread passes the control to the file system and file system
-> > + *    is then responsible for writing metadata buffers to disk (in whichever
-> > + *    format it wants). If fast commit succeds, journal thread won't perform
-> > + *    a normal commit. In case the fast commit fails, journal thread performs
-> > + *    full commit as normal.
-> > + *
-> >  *
-> >  * 2) CHECKPOINT: We cannot reuse a used section of the log file until all
-> >  *    of the data in that part of the log has been rewritten elsewhere on
-> > @@ -172,6 +178,7 @@ static int kjournald2(void *arg)
-> > {
-> >       journal_t *journal = arg;
-> >       transaction_t *transaction;
-> > +     bool fc_flag = true, fc_flag_save;
-> >
-> >       /*
-> >        * Set up an interval timer which can be used to trigger a commit wakeup
-> > @@ -209,9 +216,14 @@ static int kjournald2(void *arg)
-> >               jbd_debug(1, "OK, requests differ\n");
-> >               write_unlock(&journal->j_state_lock);
-> >               del_timer_sync(&journal->j_commit_timer);
-> > -             jbd2_journal_commit_transaction(journal);
-> > +             fc_flag_save = fc_flag;
-> > +             jbd2_journal_commit_transaction(journal, &fc_flag);
-> >               write_lock(&journal->j_state_lock);
-> > -             goto loop;
-> > +             if (!fc_flag) {
-> > +                     /* fast commit not performed */
-> > +                     fc_flag = fc_flag_save;
-> > +                     goto loop;
-> > +             }
-> >       }
-> >
-> >       wake_up(&journal->j_wait_done_commit);
-> > @@ -235,16 +247,18 @@ static int kjournald2(void *arg)
-> >
-> >               prepare_to_wait(&journal->j_wait_commit, &wait,
-> >                               TASK_INTERRUPTIBLE);
-> > -             if (journal->j_commit_sequence != journal->j_commit_request)
-> > +             if (!fc_flag &&
-> > +                 journal->j_commit_sequence != journal->j_commit_request)
-> >                       should_sleep = 0;
-> >               transaction = journal->j_running_transaction;
-> >               if (transaction && time_after_eq(jiffies,
-> > -                                             transaction->t_expires))
-> > +                                              transaction->t_expires))
-> >                       should_sleep = 0;
-> >               if (journal->j_flags & JBD2_UNMOUNT)
-> >                       should_sleep = 0;
-> >               if (should_sleep) {
-> >                       write_unlock(&journal->j_state_lock);
-> > +                     jbd_debug(1, "%s sleeps\n", __func__);
-> >                       schedule();
-> >                       write_lock(&journal->j_state_lock);
-> >               }
-> > @@ -259,7 +273,10 @@ static int kjournald2(void *arg)
-> >       transaction = journal->j_running_transaction;
-> >       if (transaction && time_after_eq(jiffies, transaction->t_expires)) {
-> >               journal->j_commit_request = transaction->t_tid;
-> > +             fc_flag = false;
-> >               jbd_debug(1, "woke because of timeout\n");
-> > +     } else {
-> > +             fc_flag = true;
-> >       }
-> >       goto loop;
-> >
-> > @@ -517,11 +534,17 @@ int __jbd2_log_start_commit(journal_t *journal, tid_t target)
-> >       return 0;
-> > }
-> >
-> > -int jbd2_log_start_commit(journal_t *journal, tid_t tid)
-> > +int jbd2_log_start_commit(journal_t *journal, tid_t tid, bool full_commit)
-> > {
-> >       int ret;
-> >
-> >       write_lock(&journal->j_state_lock);
 > > +     /*
-> > +      * If someone has already requested a full commit,
-> > +      * we have to honor it.
+> > +      * Start of logical block range that needs to be committed in this fast
+> > +      * commit
 > > +      */
-> > +     if (!journal->j_do_full_commit)
-> > +             journal->j_do_full_commit = full_commit;
-> >       ret = __jbd2_log_start_commit(journal, tid);
-> >       write_unlock(&journal->j_state_lock);
-> >       return ret;
-> > @@ -556,7 +579,7 @@ static int __jbd2_journal_force_commit(journal_t *journal)
-> >       tid = transaction->t_tid;
-> >       read_unlock(&journal->j_state_lock);
-> >       if (need_to_start)
-> > -             jbd2_log_start_commit(journal, tid);
-> > +             jbd2_log_start_commit(journal, tid, true);
-> >       ret = jbd2_log_wait_commit(journal, tid);
-> >       if (!ret)
-> >               ret = 1;
-> > @@ -603,11 +626,14 @@ int jbd2_journal_force_commit(journal_t *journal)
-> >  * if a transaction is going to be committed (or is currently already
-> >  * committing), and fills its tid in at *ptid
-> >  */
-> > -int jbd2_journal_start_commit(journal_t *journal, tid_t *ptid)
-> > +int jbd2_journal_start_commit(journal_t *journal, tid_t *ptid, bool full_commit)
-> > {
-> >       int ret = 0;
-> >
-> >       write_lock(&journal->j_state_lock);
-> > +     if (!journal->j_do_full_commit)
-> > +             journal->j_do_full_commit = full_commit;
+> > +     loff_t fc_lblk_start;
 > > +
-> >       if (journal->j_running_transaction) {
-> >               tid_t tid = journal->j_running_transaction->t_tid;
+> > +     /*
+> > +      * End of logical block range that needs to be committed in this fast
+> > +      * commit
+> > +      */
+> > +     loff_t fc_lblk_end;
+>
+> Since these are logical block numbers within the journal, they certainly
+> don't need to be 64-bit values.  loff_t is for byte offsets, this should
+> use ext4_lblk_t, which will also reduce the size of the struct by 8 bytes.
+>
+> > +};
+> > +
 > >
-> > @@ -675,7 +701,7 @@ EXPORT_SYMBOL(jbd2_trans_will_send_data_barrier);
-> >  * Wait for a specified commit to complete.
-> >  * The caller may not hold the journal lock.
-> >  */
-> > -int jbd2_log_wait_commit(journal_t *journal, tid_t tid)
-> > +int __jbd2_log_wait_commit(journal_t *journal, tid_t tid, tid_t subtid)
-> > {
-> >       int err = 0;
+> > /*
+> >  * fourth extended file system inode data in memory
+> > @@ -955,6 +976,9 @@ struct ext4_inode_info {
 > >
-> > @@ -702,12 +728,25 @@ int jbd2_log_wait_commit(journal_t *journal, tid_t tid)
-> >       }
-> > #endif
-> >       while (tid_gt(tid, journal->j_commit_sequence)) {
-> > -             jbd_debug(1, "JBD2: want %u, j_commit_sequence=%u\n",
-> > -                               tid, journal->j_commit_sequence);
-> > +             if ((!journal->j_do_full_commit) &&
-> > +                 !tid_geq(subtid, journal->j_subtid))
-> > +                     break;
-> > +             jbd_debug(1, "JBD2: want full commit %u %s %u, ",
-> > +                       tid, journal->j_do_full_commit ?
-> > +                       "and ignoring fast commit request for " :
-> > +                       "or want fast commit",
-> > +                       journal->j_subtid);
-> > +             jbd_debug(1, "j_commit_sequence=%u, j_subtid=%u\n",
-> > +                       journal->j_commit_sequence, journal->j_subtid);
-> >               read_unlock(&journal->j_state_lock);
-> >               wake_up(&journal->j_wait_commit);
-> > -             wait_event(journal->j_wait_done_commit,
-> > -                             !tid_gt(tid, journal->j_commit_sequence));
-> > +             if (journal->j_do_full_commit)
-> > +                     wait_event(journal->j_wait_done_commit,
-> > +                                !tid_gt(tid, journal->j_commit_sequence));
-> > +             else
-> > +                     wait_event(journal->j_wait_done_commit,
-> > +                                !tid_gt(tid, journal->j_commit_sequence) ||
-> > +                                !tid_geq(subtid, journal->j_subtid));
-> >               read_lock(&journal->j_state_lock);
-> >       }
-> >       read_unlock(&journal->j_state_lock);
-> > @@ -717,6 +756,13 @@ int jbd2_log_wait_commit(journal_t *journal, tid_t tid)
+> >       struct list_head i_orphan;      /* unlinked but open inodes */
+> >
+> > +     struct list_head i_fc_list;     /* inodes that need fast commit */
+>
+> This comment should document what lock is protecting this list, along
+> with the other fields.
+>
+> > +     struct ext4_fast_commit_inode_info i_fc;
+>
+> Since this increases the size of the inode, does it affect the number of
+> inodes that can fit into one page of ext4_inode_cachep?
+>
+> >       /*
+> >        * i_disksize keeps track of what the inode size is ON DISK, not
+> >        * in memory.  During truncate, i_size is set to the new size by
+> > @@ -1529,6 +1553,16 @@ struct ext4_sb_info {
+> >       /* Barrier between changing inodes' journal flags and writepages ops. */
+> >       struct percpu_rw_semaphore s_journal_flag_rwsem;
+> >       struct dax_device *s_daxdev;
+> > +
+> > +     /* Ext4 fast commit stuff */
+> > +     bool fc_replay;                 /* Fast commit replay in progress */
+> > +     struct list_head s_fc_q;        /* Inodes that need fast commit. */
+>
+> This comment should document what lock is protecting this list, along
+> with the other fields.
+>
+> > +     __u32 s_fc_q_cnt;               /* Number of inodes in the fc queue */
+> > +     bool s_fc_eligible;             /*
+> > +                                      * Are changes after the last commit
+> > +                                      * eligible for fast commit?
+> > +                                      */
+>
+> It is slightly more space efficient to put the bool values together
+> rather than interleaving them between 64-bit values.
+>
+> > +     spinlock_t s_fc_lock;
+> > };
+> >
+> > static inline struct ext4_sb_info *EXT4_SB(struct super_block *sb)
+> > diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+> > index 7c70b08d104c..75b6db808837 100644
+> > --- a/fs/ext4/ext4_jbd2.c
+> > +++ b/fs/ext4/ext4_jbd2.c
+> > @@ -330,3 +330,16 @@ int __ext4_handle_dirty_super(const char *where, unsigned int line,
+> >               mark_buffer_dirty(bh);
 > >       return err;
 > > }
-> >
-> > +int jbd2_log_wait_commit(journal_t *journal, tid_t tid)
+> > +
+> > +void ext4_init_inode_fc_info(struct inode *inode)
 > > +{
-> > +     journal->j_do_full_commit = true;
-> > +     return __jbd2_log_wait_commit(journal, tid, 0);
+> > +     handle_t *handle = ext4_journal_current_handle();
+> > +     struct ext4_inode_info *ei = EXT4_I(inode);
+> > +
+> > +     memset(&ei->i_fc, 0, sizeof(ei->i_fc));
+> > +     if (ext4_handle_valid(handle)) {
+> > +             ei->i_fc.fc_tid = handle->h_transaction->t_tid;
+> > +             ei->i_fc.fc_subtid = handle->h_transaction->t_journal->j_subtid;
+> > +     }
+> > +     INIT_LIST_HEAD(&ei->i_fc_list);
 > > +}
-> > +
-> > +
-> > /* Return 1 when transaction with given tid has already committed. */
-> > int jbd2_transaction_committed(journal_t *journal, tid_t tid)
-> > {
-> > @@ -751,7 +797,7 @@ int jbd2_complete_transaction(journal_t *journal, tid_t tid)
-> >               if (journal->j_commit_request != tid) {
-> >                       /* transaction not yet started, so request it */
-> >                       read_unlock(&journal->j_state_lock);
-> > -                     jbd2_log_start_commit(journal, tid);
-> > +                     jbd2_log_start_commit(journal, tid, true);
-> >                       goto wait_commit;
-> >               }
-> >       } else if (!(journal->j_committing_transaction &&
-> > @@ -996,6 +1042,8 @@ static int jbd2_seq_info_show(struct seq_file *seq, void *v)
-> >                  "each up to %u blocks\n",
-> >                  s->stats->ts_tid, s->stats->ts_requested,
-> >                  s->journal->j_max_transaction_buffers);
-> > +     seq_printf(seq, "%lu fast commits performed\n",
-> > +                s->stats->ts_num_fast_commits);
-> >       if (s->stats->ts_tid == 0)
-> >               return 0;
-> >       seq_printf(seq, "average: \n  %ums waiting for transaction\n",
-> > @@ -1020,6 +1068,9 @@ static int jbd2_seq_info_show(struct seq_file *seq, void *v)
-> >           s->stats->run.rs_blocks / s->stats->ts_tid);
-> >       seq_printf(seq, "  %lu logged blocks per transaction\n",
-> >           s->stats->run.rs_blocks_logged / s->stats->ts_tid);
-> > +     seq_printf(seq, "  %lu logged blocks per commit\n",
-> > +         s->stats->run.rs_blocks_logged /
-> > +         (s->stats->ts_tid + s->stats->ts_num_fast_commits));
-> >       return 0;
+> > diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+> > index ef8fcf7d0d3b..2305c1acd415 100644
+> > --- a/fs/ext4/ext4_jbd2.h
+> > +++ b/fs/ext4/ext4_jbd2.h
+> > @@ -459,4 +459,6 @@ static inline int ext4_should_dioread_nolock(struct inode *inode)
+> >       return 1;
 > > }
 > >
-> > @@ -1741,7 +1792,7 @@ int jbd2_journal_destroy(journal_t *journal)
+> > +void ext4_init_inode_fc_info(struct inode *inode);
+> > +
+> > #endif        /* _EXT4_JBD2_H */
+> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > index 420fe3deed39..f230a888eddd 100644
+> > --- a/fs/ext4/inode.c
+> > +++ b/fs/ext4/inode.c
+> > @@ -4996,6 +4996,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+> >       for (block = 0; block < EXT4_N_BLOCKS; block++)
+> >               ei->i_data[block] = raw_inode->i_block[block];
+> >       INIT_LIST_HEAD(&ei->i_orphan);
+> > +     ext4_init_inode_fc_info(&ei->vfs_inode);
 > >
-> >       /* Force a final log commit */
-> >       if (journal->j_running_transaction)
-> > -             jbd2_journal_commit_transaction(journal);
-> > +             jbd2_journal_commit_transaction(journal, NULL);
+> >       /*
+> >        * Set transaction id's of transactions that have to be committed
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 6bab59ae81f7..0b833e9b61c1 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -1100,6 +1100,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
+> >       ei->i_datasync_tid = 0;
+> >       atomic_set(&ei->i_unwritten, 0);
+> >       INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
+> > +     ext4_init_inode_fc_info(&ei->vfs_inode);
+> >       return &ei->vfs_inode;
+> > }
 > >
-> >       /* Force any old transactions to disk */
+> > @@ -1139,6 +1140,7 @@ static void init_once(void *foo)
+> >       init_rwsem(&ei->i_data_sem);
+> >       init_rwsem(&ei->i_mmap_sem);
+> >       inode_init_once(&ei->vfs_inode);
+> > +     ext4_init_inode_fc_info(&ei->vfs_inode);
+> > }
 > >
-> > diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> > index 990e7b5062e7..87f6627d78aa 100644
-> > --- a/fs/jbd2/transaction.c
-> > +++ b/fs/jbd2/transaction.c
-> > @@ -154,7 +154,7 @@ static void wait_transaction_locked(journal_t *journal)
-> >       need_to_start = !tid_geq(journal->j_commit_request, tid);
-> >       read_unlock(&journal->j_state_lock);
-> >       if (need_to_start)
-> > -             jbd2_log_start_commit(journal, tid);
-> > +             jbd2_log_start_commit(journal, tid, true);
-> >       jbd2_might_wait_for_commit(journal);
-> >       schedule();
-> >       finish_wait(&journal->j_wait_transaction_locked, &wait);
-> > @@ -708,7 +708,7 @@ int jbd2__journal_restart(handle_t *handle, int nblocks, gfp_t gfp_mask)
-> >       need_to_start = !tid_geq(journal->j_commit_request, tid);
-> >       read_unlock(&journal->j_state_lock);
-> >       if (need_to_start)
-> > -             jbd2_log_start_commit(journal, tid);
-> > +             jbd2_log_start_commit(journal, tid, true);
+> > static int __init init_inodecache(void)
+> > @@ -4301,6 +4303,11 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+> >       INIT_LIST_HEAD(&sbi->s_orphan); /* unlinked but open files */
+> >       mutex_init(&sbi->s_orphan_lock);
 > >
-> >       rwsem_release(&journal->j_trans_commit_map, 1, _THIS_IP_);
-> >       handle->h_buffer_credits = nblocks;
-> > @@ -1822,7 +1822,7 @@ int jbd2_journal_stop(handle_t *handle)
-> >               jbd_debug(2, "transaction too old, requesting commit for "
-> >                                       "handle %p\n", handle);
-> >               /* This is non-blocking */
-> > -             jbd2_log_start_commit(journal, transaction->t_tid);
-> > +             jbd2_log_start_commit(journal, transaction->t_tid, true);
+> > +     INIT_LIST_HEAD(&sbi->s_fc_q);
+> > +     sbi->s_fc_q_cnt = 0;
+> > +     sbi->s_fc_eligible = true;
+> > +     spin_lock_init(&sbi->s_fc_lock);
+> > +
+> >       sb->s_root = NULL;
 > >
-> >               /*
-> >                * Special case: JBD2_SYNC synchronous updates require us
-> > diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
-> > index 0c335b51043d..df41c43573b7 100644
-> > --- a/fs/ocfs2/alloc.c
-> > +++ b/fs/ocfs2/alloc.c
-> > @@ -6117,7 +6117,7 @@ int ocfs2_try_to_free_truncate_log(struct ocfs2_super *osb,
-> >               goto out;
-> >       }
-> >
-> > -     if (jbd2_journal_start_commit(osb->journal->j_journal, &target)) {
-> > +     if (jbd2_journal_start_commit(osb->journal->j_journal, &target, true)) {
-> >               jbd2_log_wait_commit(osb->journal->j_journal, target);
-> >               ret = 1;
-> >       }
-> > diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-> > index 8b2f39506648..60ecc51759ae 100644
-> > --- a/fs/ocfs2/super.c
-> > +++ b/fs/ocfs2/super.c
-> > @@ -410,7 +410,7 @@ static int ocfs2_sync_fs(struct super_block *sb, int wait)
-> >       }
-> >
-> >       if (jbd2_journal_start_commit(osb->journal->j_journal,
-> > -                                   &target)) {
-> > +                                   &target, true)) {
-> >               if (wait)
-> >                       jbd2_log_wait_commit(osb->journal->j_journal,
-> >                                            target);
-> > diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> > index 153840b422cc..535f88dff653 100644
-> > --- a/include/linux/jbd2.h
-> > +++ b/include/linux/jbd2.h
-> > @@ -742,6 +742,7 @@ struct transaction_run_stats_s {
-> >
-> > struct transaction_stats_s {
-> >       unsigned long           ts_tid;
-> > +     unsigned long           ts_num_fast_commits;
-> >       unsigned long           ts_requested;
-> >       struct transaction_run_stats_s run;
-> > };
-> > @@ -1364,7 +1365,8 @@ int __jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block);
-> > void jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block);
-> >
-> > /* Commit management */
-> > -extern void jbd2_journal_commit_transaction(journal_t *);
-> > +extern void jbd2_journal_commit_transaction(journal_t *journal,
-> > +                                         bool *full_commit);
-> >
-> > /* Checkpoint list management */
-> > void __jbd2_journal_clean_checkpoint_list(journal_t *journal, bool destroy);
-> > @@ -1571,9 +1573,10 @@ extern void    jbd2_clear_buffer_revoked_flags(journal_t *journal);
-> >  * transitions on demand.
-> >  */
-> >
-> > -int jbd2_log_start_commit(journal_t *journal, tid_t tid);
-> > +int jbd2_log_start_commit(journal_t *journal, tid_t tid, bool full_commit);
-> > int __jbd2_log_start_commit(journal_t *journal, tid_t tid);
-> > -int jbd2_journal_start_commit(journal_t *journal, tid_t *tid);
-> > +int jbd2_journal_start_commit(journal_t *journal, tid_t *tid,
-> > +                           bool full_commit);
-> > int jbd2_log_wait_commit(journal_t *journal, tid_t tid);
-> > int jbd2_transaction_committed(journal_t *journal, tid_t tid);
-> > int jbd2_complete_transaction(journal_t *journal, tid_t tid);
+> >       needs_recovery = (es->s_last_orphan != 0 ||
 > > --
 > > 2.23.0.rc1.153.gdeed80330f-goog
 > >
