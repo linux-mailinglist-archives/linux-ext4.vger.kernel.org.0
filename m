@@ -2,139 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D49C28B6
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2019 23:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D442C2E54
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Oct 2019 09:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731678AbfI3VVy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 30 Sep 2019 17:21:54 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54332 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727884AbfI3VVx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 30 Sep 2019 17:21:53 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x8ULLjDG008724
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 30 Sep 2019 17:21:46 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 4295F42014C; Mon, 30 Sep 2019 17:21:45 -0400 (EDT)
-Date:   Mon, 30 Sep 2019 17:21:45 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 17/19] jbd2: Rename h_buffer_credits to h_total_credits
-Message-ID: <20190930212145.GC4001@mit.edu>
-References: <20190930104339.24919-17-jack@suse.cz>
- <201909302058.uxNSY0q3%lkp@intel.com>
- <20190930150553.GB4001@mit.edu>
- <20190930162536.GB13973@quack2.suse.cz>
+        id S1732953AbfJAHmE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Oct 2019 03:42:04 -0400
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:39415 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728249AbfJAHmE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Oct 2019 03:42:04 -0400
+Received: by mail-pf1-f177.google.com with SMTP id v4so7301058pff.6
+        for <linux-ext4@vger.kernel.org>; Tue, 01 Oct 2019 00:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pXj9qX4zwEp9vOKqWNSfk580fjJgOhzVTrplm2CaoDM=;
+        b=tdifwMp+iV9Jy06tN4UGZZqXl045/gLOY8yy9kRBJkhhzzrNUXdPX9IDl0AtLmc7g/
+         HGjn0+wK/2gNVfA4cpnC6V/TlaiG2nGKn/WwogXiE1n6TILibmYwJMxSqE4UU7SLUW1E
+         /wVZUifXvAEuyhgFl1acxjYWQ8oBHFJ6oZPz4ECKwL+8UvnJj1fIsByfgi4Am8RG3yDJ
+         L3BBcR/7yQW7qgIB0hvzSFM43xL5F4biivMzYtcr7PpKkooXxhSPwSLPKJhX6usv/Zhb
+         qrnlIaqOY2MiVrFdvp9/CS5hujyoI7iSX2U6JPDWYpN/7TfIuaiMbouGzyJmlzDo9d6t
+         /h7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pXj9qX4zwEp9vOKqWNSfk580fjJgOhzVTrplm2CaoDM=;
+        b=pPrZK+Ub4NwCfk8YdgayF3yuc4hGJLPUXB0kWjRcw0EKw/6Oi9uo9N4HEA7dfP0OyL
+         9QfzVffnal4VQWLIDDoALWUgOd5VcO1rNrokxf6IKrsvmonbAPGIciGPiu0Rv8mnLC9T
+         I1pp/wK6t8pitf7oh+Xs3jBgPYRaa10s4g1ss0WeARx4Xe5jR0ihi7ecfWQtClsbjjIR
+         kPm6ljt1f9POQWIKPecsmCI7RvQrLUTiEgEKM1RosnfbeFh0gz3zDC4pNPbQOxeTeWvS
+         BvXCjpfwMj/7GYvfCZsQxcQc4y1fDuSGmRIF66qqOIZu6kdxPQef+dra1RBsQpBIaGVN
+         7rew==
+X-Gm-Message-State: APjAAAV4UJEWMXgqEZWVOc60oVOZP/5aj7pXqYxF9w4b8WgnioW6NxCi
+        7pM0cSAMpC6cgZX2VC1SpRX5MPA98qI=
+X-Google-Smtp-Source: APXvYqyOgvt+KnkiwlLmPmD9XheEhKNHXtsG6SXHV4Qs096CQwrGpLz37Y4+G+LT0dwguV4ak60/Rw==
+X-Received: by 2002:a63:e658:: with SMTP id p24mr29844335pgj.61.1569915721511;
+        Tue, 01 Oct 2019 00:42:01 -0700 (PDT)
+Received: from harshads0.svl.corp.google.com ([2620:15c:2cd:202:ec1e:207a:e951:9a5b])
+        by smtp.googlemail.com with ESMTPSA id q13sm2287668pjq.0.2019.10.01.00.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Oct 2019 00:42:00 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH v3 00/13] ext4: add fast commit support
+Date:   Tue,  1 Oct 2019 00:40:49 -0700
+Message-Id: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.23.0.444.g18eeb5a265-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190930162536.GB13973@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Sep 30, 2019 at 06:25:36PM +0200, Jan Kara wrote:
-> The problem was that my patches were based on a kernel that didn't have
-> this code yet. I've rebased now on current Linus' tree and fixed this up in
-> my local tree (along with couple documentation warnings). But I don't think
-> it's worth resending just for this.
+This patch series adds support for fast commits which is a simplified
+version of the scheme proposed by Park and Shin, in their paper,
+"iJournaling: Fine-Grained Journaling for Improving the Latency of
+Fsync System Call"[1]. The basic idea of fast commits is to make JBD2
+give the client file system an opportunity to perform a faster
+commit. Only if the file system cannot perform such a commit
+operation, then JBD2 should fall back to traditional commits.
 
-Oh, agreed, it's not worth resending for this; it was a quick fixup.
+Because JBD2 operates at block granularity, for every file system
+metadata update it commits all the changed blocks are written to the
+journal at commit time. This is inefficient because updates to some
+blocks that JBD2 commits are derivable from some other blocks. For
+example, if a new extent is added to an inode, then corresponding
+updates to the inode table, the block bitmap, the group descriptor and
+the superblock can be derived based on just the extent information and
+the corresponding inode information. So, if we take this relationship
+between blocks into account and replay the journalled blocks smartly,
+we could increase performance of file system commits significantly.
 
-How much testing have you given this patch series?  I did a quick
-xfstests run, and I found the following new failures when this was
-applied on top of the dev branch on ext4.git (e.g., what got sent to
-Linus as a pull request).
+Fast commits introduced in this patch have two main contributions:
 
-ext4/4k: 
-  Failures: ext4/026 generic/233
-ext4/1k: 
-  Failures: ext4/026
-ext4/ext3: 
-  Failures: ext4/026 generic/233
-ext4/encrypt: 
-  Failures: generic/083
-ext4/nojournal:
-  Failures: ext4/301
-ext4/adv: 
-  Failures: ext4/026 generic/233 generic/269 generic/270 generic/476
-ext4/dioread_nolock: 
-  Failures: ext4/026 generic/233
-ext4/data_journal: 
-  Failures: generic/233
-ext4/bigalloc: 
-  Failures: generic/013 generic/014 generic/051 generic/083
-    generic/232 generic/233 generic/269 generic/270 generic/299
-    generic/429 generic/475 generic/476
-ext4/bigalloc_1k: 
-  Failures: ext4/026 generic/013 generic/014 generic/032 generic/051
-    generic/068 generic/083 generic/232 generic/233 generic/269
-    generic/270 generic/320 generic/475 generic/476
+(1) Making JBD2 fast commit aware, so that clients of JBD2 can
+    implement fast commits
 
-I haven't trianged them all yet, but here are the details for the two
-biggies: ext4/026 and generic/233.
+(2) Add support in ext4 to use JBD2's new interfaces and implement
+    fast commits
 
-					- Ted
+Testing
+-------
 
-ext4/026		[14:11:43][   14.287850] run fstests ext4/026 at 2019-09-30 14:11:43
-[   14.821933] WARNING: CPU: 0 PID: 1542 at fs/jbd2/revoke.c:394 jbd2_journal_revoke+0x14b/0x160
-[   14.824000] CPU: 0 PID: 1542 Comm: rm Not tainted 5.3.0-rc4-xfstests-00019-ga8d18e88fd60-dirty #1201
-[   14.826111] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-[   14.828039] RIP: 0010:jbd2_journal_revoke+0x14b/0x160
-[   14.829217] Code: 4c 89 f7 e8 77 8c ef ff eb a6 e8 d0 8d ef ff 48 85 c0 49 89 c6 74 99 48 8b 00 a9 00 00 10 00 0f 84 5b ff ff ff e9 71 06 00 00 <0f> 0b eb 89 0f 0b 0f 0b 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f
-[   14.833505] RSP: 0018:ffffae0ec2683ad8 EFLAGS: 00010246
-[   14.834721] RAX: 0000000000000000 RBX: ffff951876a9f410 RCX: 1111111111111120
-[   14.836287] RDX: 0000000000000004 RSI: 0000000000000006 RDI: ffff951876a9f410
-[   14.837853] RBP: ffff951874f1f6c8 R08: 0000000373745034 R09: 0000000000000000
-[   14.839244] R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000840d
-[   14.840799] R13: ffff951876695000 R14: ffff951876a9f410 R15: 0000000000000001
-[   14.842349] FS:  00007f39e17b5540(0000) GS:ffff95187d800000(0000) knlGS:0000000000000000
-[   14.844125] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   14.845403] CR2: 00007f39e16ba4a0 CR3: 0000000075b9e006 CR4: 0000000000360ef0
-[   14.847055] Call Trace:
-[   14.847628]  __ext4_forget+0xf2/0x280
-[   14.848470]  ext4_free_blocks+0x9c8/0xc00
-[   14.849270]  ? __lock_acquire+0x447/0x7c0
-[   14.850174]  ? kvm_sched_clock_read+0x14/0x30
-[   14.851182]  ext4_remove_blocks+0x33c/0x630
-[   14.852190]  ext4_ext_rm_leaf+0x1fb/0x7a0
-[   14.853493]  ext4_ext_remove_space+0x556/0xa80
-[   14.855020]  ? ext4_es_remove_extent+0x9d/0x180
-[   14.856325]  ext4_truncate+0x413/0x520
-[   14.857374]  ext4_evict_inode+0x29c/0x670
-[   14.858329]  evict+0xd0/0x1a0
-[   14.859157]  ext4_xattr_inode_array_free+0x27/0x40
-[   14.860341]  ext4_evict_inode+0x31c/0x670
-[   14.861344]  evict+0xd0/0x1a0
-[   14.862107]  do_unlinkat+0x1cd/0x2e0
-[   14.862769]  do_syscall_64+0x50/0x1b0
-[   14.863387]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[   14.864219] RIP: 0033:0x7f39e16deff7
-[   14.864813] Code: 73 01 c3 48 8b 0d 99 ee 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 69 ee 0c 00 f7 d8 64 89 01 48
-[   14.867949] RSP: 002b:00007fff3ed46068 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-[   14.869197] RAX: ffffffffffffffda RBX: 0000561d094937b0 RCX: 00007f39e16deff7
-[   14.870371] RDX: 0000000000000000 RSI: 0000561d09492340 RDI: 00000000ffffff9c
-[   14.871544] RBP: 0000561d094922b0 R08: 0000000000000003 R09: 0000000000000000
-[   14.872766] R10: 0000000000000100 R11: 0000000000000246 R12: 00007fff3ed46250
-[   14.873950] R13: 0000000000000000 R14: 0000561d094937b0 R15: 0000000000000000
-[   14.875156] irq event stamp: 2176
-[   14.875720] hardirqs last  enabled at (2175): [<ffffffffb16663e1>] kmem_cache_free+0x51/0x220
-[   14.877150] hardirqs last disabled at (2176): [<ffffffffb14016aa>] trace_hardirqs_off_thunk+0x1a/0x20
-[   14.878702] softirqs last  enabled at (814): [<ffffffffb14297f3>] fpu__clear+0xb3/0x1b0
-[   14.880055] softirqs last disabled at (812): [<ffffffffb14297b5>] fpu__clear+0x75/0x1b0
-[   14.881926] ---[ end trace 4d44757f1901181f ]---
-_check_dmesg: something found in dmesg (see /results/ext4/results-4k/ext4/026.dmesg)
- [14:11:44]
+e2fsprogs was updated to set fast commit feature flag and to ignore
+fast commit blocks during e2fsck.
 
+https://github.com/harshadjs/e2fsprogs.git
 
-generic/233 		[14:18:34][   19.736637] run fstests generic/233 at 2019-09-30 14:18:34
-[   21.400934] EXT4-fs (vdc): Delayed block allocation failed for inode 131809 at logical offset 209 with max blocks 9 with error 122
-[   21.404197] EXT4-fs (vdc): This should not happen!! Data will be lost
-[   21.404197]
- [14:18:36] 2s
+After applying all the patches in this series, following runs of
+xfstests were performed:
+
+- kvm-xfstest.sh -g log -c 4k
+- kvm-xfstests.sh smoke
+
+All the log tests were successful and smoke tests didn't introduce any
+additional failures.
+
+Performance Evaluation
+----------------------
+
+Ext4 file system performance was tested with and without fast commit
+using fs_mark benchmark. Following was the command used:
+
+Command: ./fs_mark -t 8 -n 1024 -s 65536 -w 4096 -d /mnt
+
+Results:
+Without Fast Commit: 1501.2 files/sec
+With Fast commits: 3055 files/sec
+~103% write performance improvement
+
+Changes since V2:
+
+- Added ability to support new file creation in fast commits. This
+  allows us to use fs_mark benchmark for performance testing
+
+- Added support for asynchronous fast commits
+
+- Many cleanups and bug fixes
+
+- Re-organized the patch set, moved most of the new code to
+  ext4_jbd2.c instead of super.c
+
+- Handling of review comments on previous patchset
+
+Harshad Shirwadkar(13):
+ docs: Add fast commit documentation
+ ext4: add support for asynchronous fast commits
+ ext4: fast-commit recovery path changes
+ ext4: fast-commit commit path changes
+ ext4: fast-commit commit range tracking
+ ext4: track changed files for fast commit
+ ext4: add fields that are needed to track changed files
+ jbd2: fast-commit recovery path changes
+ jbd2: fast-commit commit path new APIs
+ jbd2: fast-commit commit path changes
+ jbd2: fast commit setup and enable
+ ext4: add handling for extended mount options
+ ext4: add fast commit support
+
+ Documentation/filesystems/ext4/journal.rst |   98 +-
+ Documentation/filesystems/journalling.rst  |   22
+ fs/ext4/acl.c                              |    1
+ fs/ext4/balloc.c                           |    7
+ fs/ext4/ext4.h                             |   86 +
+ fs/ext4/ext4_jbd2.c                        |  902 +++++++++++++++++++
+ fs/ext4/ext4_jbd2.h                        |   98 ++
+ fs/ext4/extents.c                          |   43
+ fs/ext4/fsync.c                            |    7
+ fs/ext4/ialloc.c                           |   60 -
+ fs/ext4/inline.c                           |   14
+ fs/ext4/inode.c                            |   77 +
+ fs/ext4/ioctl.c                            |    9
+ fs/ext4/mballoc.c                          |   83 +
+ fs/ext4/mballoc.h                          |    2
+ fs/ext4/migrate.c                          |    1
+ fs/ext4/namei.c                            |   16
+ fs/ext4/super.c                            |   55 +
+ fs/ext4/xattr.c                            |    1
+ fs/jbd2/commit.c                           |   98 ++
+ fs/jbd2/journal.c                          |  343 ++++++-
+ fs/jbd2/recovery.c                         |   63 +
+ fs/jbd2/transaction.c                      |    3
+ include/linux/jbd2.h                       |  117 ++
+ include/trace/events/ext4.h                |   61 +
+ include/trace/events/jbd2.h                |    9
+ 26 files changed, 2170 insertions(+), 106 deletions(-)
+-- 
+2.23.0.444.g18eeb5a265-goog
+
