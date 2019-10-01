@@ -2,149 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A506C2E81
-	for <lists+linux-ext4@lfdr.de>; Tue,  1 Oct 2019 10:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F3EC34AB
+	for <lists+linux-ext4@lfdr.de>; Tue,  1 Oct 2019 14:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728373AbfJAH6v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 1 Oct 2019 03:58:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44640 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726672AbfJAH6v (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 1 Oct 2019 03:58:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C9C95AF8D;
-        Tue,  1 Oct 2019 07:58:48 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DCE731E37A2; Tue,  1 Oct 2019 09:59:08 +0200 (CEST)
-Date:   Tue, 1 Oct 2019 09:59:08 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 17/19] jbd2: Rename h_buffer_credits to h_total_credits
-Message-ID: <20191001075908.GB25062@quack2.suse.cz>
-References: <20190930104339.24919-17-jack@suse.cz>
- <201909302058.uxNSY0q3%lkp@intel.com>
- <20190930150553.GB4001@mit.edu>
- <20190930162536.GB13973@quack2.suse.cz>
- <20190930212145.GC4001@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190930212145.GC4001@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2388036AbfJAMqv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 1 Oct 2019 08:46:51 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38939 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388006AbfJAMqu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 1 Oct 2019 08:46:50 -0400
+Received: by mail-qk1-f193.google.com with SMTP id 4so11021471qki.6
+        for <linux-ext4@vger.kernel.org>; Tue, 01 Oct 2019 05:46:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yhYK707SJYezdTmtlm0H5DzhvYDEY+AheUSfJipRwQA=;
+        b=Ip07l89zJ0jmeRNnjuMLfwUjUW/Co9PU7e0m/xjX5PRGmc7z0AHojhkZabJt8X2Bgg
+         g+nON2pSO1jYd3vrOuUPki6rr1yQEu8hEHqD2uxKaL1mXqoQO+mmyIxyk/MqTG+kwh7j
+         k8s6vQHeaqcK2Ex9HxDcxmXOxrevnS6yuu8GEXyqlYjEZ0NonLeaC1CRZJXuD0MLzbKz
+         KMfG1EI87v8Lxz8Ezrm+M3DQJYYjEG8yK9ND3K1qjmeVssoYCQLFRhdCLXQgMe4P5XGr
+         47iPcjETHnPBpfL8Sd3yLzPtHoVT0IEvJrxtCfa4Pu82gMneNTnjOQOCUx8TaPMdQriE
+         9BWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yhYK707SJYezdTmtlm0H5DzhvYDEY+AheUSfJipRwQA=;
+        b=XsQD6KdgeL7em3XcJmFX61c2/+J1fNaG7pN1Hn5DEWcdR+LGaHGL4JktH/HlZfZKhl
+         txqJwCbH2SZrWWsxznT5Eg7PIUIOJ59u4P1a4Gv5h5R/LTXdIygUSEBP2CX7hlvynads
+         tR/178H+s+SGnGKlW7z8t2LqI8FX6qgDvG0+m8x9DppilnaqSlOFVkmrvDgsh0ywov3K
+         LyzmjoqlDI1o2mXRpUteenlm5MCetVnqPVM3GEAD6vupX6QabYeAq3MOsPF5C7rrmv1E
+         000QLCbfQDtbFdi4gljBqSt5Y8yWbUnSKmuJ4RtPZS0ZeF4o+JznV7JCECdBo2EDBb0C
+         DOYQ==
+X-Gm-Message-State: APjAAAWvlGPeXrqpPKnqBe8mEleGZvGKqw/ef+IBn3z7NFxPvVveeeWO
+        ujfaEbIKepkOSPjuuCOHyLWW0Q==
+X-Google-Smtp-Source: APXvYqxfvaAa5fGyRQyIYajobY2F3QEa4iZspmX+Xrdwm3QyJhHVVt0YDLkyzlFTQn8rAQfDdMC0qg==
+X-Received: by 2002:a37:a9d1:: with SMTP id s200mr5660408qke.251.1569934008434;
+        Tue, 01 Oct 2019 05:46:48 -0700 (PDT)
+Received: from dhcp-41-57.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id n65sm7669877qkb.19.2019.10.01.05.46.45
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Oct 2019 05:46:47 -0700 (PDT)
+Message-ID: <1569934004.5576.249.camel@lca.pw>
+Subject: Re: [PATCH -next] treewide: remove unused argument in lock_release()
+From:   Qian Cai <cai@lca.pw>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     akpm@linux-foundation.org, mingo@redhat.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
+        jslaby@suse.com, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org,
+        tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
+        tj@kernel.org, mark@fasheh.com, jlbec@evilplan.org,
+        joseph.qi@linux.alibaba.com, ocfs2-devel@oss.oracle.com,
+        davem@davemloft.net, st@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, duyuyang@gmail.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        alexander.levin@microsoft.com
+Date:   Tue, 01 Oct 2019 08:46:44 -0400
+In-Reply-To: <20190930072938.GK4553@hirez.programming.kicks-ass.net>
+References: <1568909380-32199-1-git-send-email-cai@lca.pw>
+         <20190930072938.GK4553@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.22.6 (3.22.6-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 30-09-19 17:21:45, Theodore Y. Ts'o wrote:
-> On Mon, Sep 30, 2019 at 06:25:36PM +0200, Jan Kara wrote:
-> > The problem was that my patches were based on a kernel that didn't have
-> > this code yet. I've rebased now on current Linus' tree and fixed this up in
-> > my local tree (along with couple documentation warnings). But I don't think
-> > it's worth resending just for this.
+On Mon, 2019-09-30 at 09:29 +0200, Peter Zijlstra wrote:
+> On Thu, Sep 19, 2019 at 12:09:40PM -0400, Qian Cai wrote:
+> > Since the commit b4adfe8e05f1 ("locking/lockdep: Remove unused argument
+> > in __lock_release"), @nested is no longer used in lock_release(), so
+> > remove it from all lock_release() calls and friends.
 > 
-> Oh, agreed, it's not worth resending for this; it was a quick fixup.
-> 
-> How much testing have you given this patch series?  I did a quick
-> xfstests run, and I found the following new failures when this was
-> applied on top of the dev branch on ext4.git (e.g., what got sent to
-> Linus as a pull request). 
+> Right; I never did this cleanup for not wanting the churn, but as long
+> as it applies I'll take it.
 
-I did run e.g. ext4/4k, ext4/1k, ext4/nojournal, ext4/datajournal. But
-my setup does not run ext4/026 (too old e2fsprogs it seems - I need to
-update those). I have cathegorized generic/233 as preexisting failure but I
-might be wrong and it definitely failed differently for me. Anyway, thanks
-for running these tests, I'll check more what's going on.
-
-								Honza
-> ext4/4k: 
->   Failures: ext4/026 generic/233
-> ext4/1k: 
->   Failures: ext4/026
-> ext4/ext3: 
->   Failures: ext4/026 generic/233
-> ext4/encrypt: 
->   Failures: generic/083
-> ext4/nojournal:
->   Failures: ext4/301
-> ext4/adv: 
->   Failures: ext4/026 generic/233 generic/269 generic/270 generic/476
-> ext4/dioread_nolock: 
->   Failures: ext4/026 generic/233
-> ext4/data_journal: 
->   Failures: generic/233
-> ext4/bigalloc: 
->   Failures: generic/013 generic/014 generic/051 generic/083
->     generic/232 generic/233 generic/269 generic/270 generic/299
->     generic/429 generic/475 generic/476
-> ext4/bigalloc_1k: 
->   Failures: ext4/026 generic/013 generic/014 generic/032 generic/051
->     generic/068 generic/083 generic/232 generic/233 generic/269
->     generic/270 generic/320 generic/475 generic/476
-> 
-> I haven't trianged them all yet, but here are the details for the two
-> biggies: ext4/026 and generic/233.
-> 
-> 					- Ted
-> 
-> ext4/026		[14:11:43][   14.287850] run fstests ext4/026 at 2019-09-30 14:11:43
-> [   14.821933] WARNING: CPU: 0 PID: 1542 at fs/jbd2/revoke.c:394 jbd2_journal_revoke+0x14b/0x160
-> [   14.824000] CPU: 0 PID: 1542 Comm: rm Not tainted 5.3.0-rc4-xfstests-00019-ga8d18e88fd60-dirty #1201
-> [   14.826111] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [   14.828039] RIP: 0010:jbd2_journal_revoke+0x14b/0x160
-> [   14.829217] Code: 4c 89 f7 e8 77 8c ef ff eb a6 e8 d0 8d ef ff 48 85 c0 49 89 c6 74 99 48 8b 00 a9 00 00 10 00 0f 84 5b ff ff ff e9 71 06 00 00 <0f> 0b eb 89 0f 0b 0f 0b 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 0f
-> [   14.833505] RSP: 0018:ffffae0ec2683ad8 EFLAGS: 00010246
-> [   14.834721] RAX: 0000000000000000 RBX: ffff951876a9f410 RCX: 1111111111111120
-> [   14.836287] RDX: 0000000000000004 RSI: 0000000000000006 RDI: ffff951876a9f410
-> [   14.837853] RBP: ffff951874f1f6c8 R08: 0000000373745034 R09: 0000000000000000
-> [   14.839244] R10: 0000000000000000 R11: 0000000000000000 R12: 000000000000840d
-> [   14.840799] R13: ffff951876695000 R14: ffff951876a9f410 R15: 0000000000000001
-> [   14.842349] FS:  00007f39e17b5540(0000) GS:ffff95187d800000(0000) knlGS:0000000000000000
-> [   14.844125] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   14.845403] CR2: 00007f39e16ba4a0 CR3: 0000000075b9e006 CR4: 0000000000360ef0
-> [   14.847055] Call Trace:
-> [   14.847628]  __ext4_forget+0xf2/0x280
-> [   14.848470]  ext4_free_blocks+0x9c8/0xc00
-> [   14.849270]  ? __lock_acquire+0x447/0x7c0
-> [   14.850174]  ? kvm_sched_clock_read+0x14/0x30
-> [   14.851182]  ext4_remove_blocks+0x33c/0x630
-> [   14.852190]  ext4_ext_rm_leaf+0x1fb/0x7a0
-> [   14.853493]  ext4_ext_remove_space+0x556/0xa80
-> [   14.855020]  ? ext4_es_remove_extent+0x9d/0x180
-> [   14.856325]  ext4_truncate+0x413/0x520
-> [   14.857374]  ext4_evict_inode+0x29c/0x670
-> [   14.858329]  evict+0xd0/0x1a0
-> [   14.859157]  ext4_xattr_inode_array_free+0x27/0x40
-> [   14.860341]  ext4_evict_inode+0x31c/0x670
-> [   14.861344]  evict+0xd0/0x1a0
-> [   14.862107]  do_unlinkat+0x1cd/0x2e0
-> [   14.862769]  do_syscall_64+0x50/0x1b0
-> [   14.863387]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> [   14.864219] RIP: 0033:0x7f39e16deff7
-> [   14.864813] Code: 73 01 c3 48 8b 0d 99 ee 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 07 01 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 69 ee 0c 00 f7 d8 64 89 01 48
-> [   14.867949] RSP: 002b:00007fff3ed46068 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-> [   14.869197] RAX: ffffffffffffffda RBX: 0000561d094937b0 RCX: 00007f39e16deff7
-> [   14.870371] RDX: 0000000000000000 RSI: 0000561d09492340 RDI: 00000000ffffff9c
-> [   14.871544] RBP: 0000561d094922b0 R08: 0000000000000003 R09: 0000000000000000
-> [   14.872766] R10: 0000000000000100 R11: 0000000000000246 R12: 00007fff3ed46250
-> [   14.873950] R13: 0000000000000000 R14: 0000561d094937b0 R15: 0000000000000000
-> [   14.875156] irq event stamp: 2176
-> [   14.875720] hardirqs last  enabled at (2175): [<ffffffffb16663e1>] kmem_cache_free+0x51/0x220
-> [   14.877150] hardirqs last disabled at (2176): [<ffffffffb14016aa>] trace_hardirqs_off_thunk+0x1a/0x20
-> [   14.878702] softirqs last  enabled at (814): [<ffffffffb14297f3>] fpu__clear+0xb3/0x1b0
-> [   14.880055] softirqs last disabled at (812): [<ffffffffb14297b5>] fpu__clear+0x75/0x1b0
-> [   14.881926] ---[ end trace 4d44757f1901181f ]---
-> _check_dmesg: something found in dmesg (see /results/ext4/results-4k/ext4/026.dmesg)
->  [14:11:44]
-> 
-> 
-> generic/233 		[14:18:34][   19.736637] run fstests generic/233 at 2019-09-30 14:18:34
-> [   21.400934] EXT4-fs (vdc): Delayed block allocation failed for inode 131809 at logical offset 209 with max blocks 9 with error 122
-> [   21.404197] EXT4-fs (vdc): This should not happen!! Data will be lost
-> [   21.404197]
->  [14:18:36] 2s
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Not sure when you would like to merge this. As you know, the longer it is
+pending, the more churn it could have. If you could give me rough timeline
+(i.e., aim for v5.4-rc2 or v5.5), I'll double-check for breakage and rebase it
+if necessary.
