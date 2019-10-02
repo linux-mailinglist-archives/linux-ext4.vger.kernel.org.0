@@ -2,98 +2,214 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24554C92B8
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2019 22:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6046DC92EF
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2019 22:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbfJBUAD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 2 Oct 2019 16:00:03 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55112 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726069AbfJBUAD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 2 Oct 2019 16:00:03 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x92JxtwW029285
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Oct 2019 15:59:57 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 68A4C42088C; Wed,  2 Oct 2019 15:59:55 -0400 (EDT)
-Date:   Wed, 2 Oct 2019 15:59:55 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     "A. Wilcox" <awilfox@adelielinux.org>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: t_ext_jnl_rm test takes 96 seconds to finish
-Message-ID: <20191002195955.GC777@mit.edu>
-References: <6f6b5895-12f3-bc3d-f50c-1de0886f41c3@adelielinux.org>
+        id S1728260AbfJBUgA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 2 Oct 2019 16:36:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726302AbfJBUgA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 2 Oct 2019 16:36:00 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 680BA21783;
+        Wed,  2 Oct 2019 20:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570048558;
+        bh=0B5UAKaVr2PEXiovBRwTBFLAKLLaWrdReoAFlNZRmqU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=eNVHxVwnLxNx2pl325Hkvbe+FmHZSPE+6zPbsbWy70tnpIV9Olf+rcC20YYo6btFr
+         hADFUNxkVLXW8lv1e3NtoH+hz6Bt+nFy99LCK9QyIav1rtyXg3tytFeYLtPbYNtuzC
+         4nobSrgKHTULcnRgNjWxQHS1ANbcb0+xTNwfh/4w=
+Message-ID: <df9022f0f5d18d71f37ed494a05eaa4509cf0a68.camel@kernel.org>
+Subject: Re: Lease semantic proposal
+From:   Jeff Layton <jlayton@kernel.org>
+To:     "J. Bruce Fields" <bfields@fieldses.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Date:   Wed, 02 Oct 2019 16:35:55 -0400
+In-Reply-To: <20191002192711.GA21386@fieldses.org>
+References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
+         <5d5a93637934867e1b3352763da8e3d9f9e6d683.camel@kernel.org>
+         <20191001181659.GA5500@iweiny-DESK2.sc.intel.com>
+         <2b42cf4ae669cedd061c937103674babad758712.camel@kernel.org>
+         <20191002192711.GA21386@fieldses.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f6b5895-12f3-bc3d-f50c-1de0886f41c3@adelielinux.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 02, 2019 at 01:16:51PM -0500, A. Wilcox wrote:
-> Hello there,
+On Wed, 2019-10-02 at 15:27 -0400, J. Bruce Fields wrote:
+> On Wed, Oct 02, 2019 at 08:28:40AM -0400, Jeff Layton wrote:
+> > On Tue, 2019-10-01 at 11:17 -0700, Ira Weiny wrote:
+> > > On Mon, Sep 23, 2019 at 04:17:59PM -0400, Jeff Layton wrote:
+> > > > On Mon, 2019-09-23 at 12:08 -0700, Ira Weiny wrote:
+> > > > > Since the last RFC patch set[1] much of the discussion of supporting RDMA with
+> > > > > FS DAX has been around the semantics of the lease mechanism.[2]  Within that
+> > > > > thread it was suggested I try and write some documentation and/or tests for the
+> > > > > new mechanism being proposed.  I have created a foundation to test lease
+> > > > > functionality within xfstests.[3] This should be close to being accepted.
+> > > > > Before writing additional lease tests, or changing lots of kernel code, this
+> > > > > email presents documentation for the new proposed "layout lease" semantic.
+> > > > > 
+> > > > > At Linux Plumbers[4] just over a week ago, I presented the current state of the
+> > > > > patch set and the outstanding issues.  Based on the discussion there, well as
+> > > > > follow up emails, I propose the following addition to the fcntl() man page.
+> > > > > 
+> > > > > Thank you,
+> > > > > Ira
+> > > > > 
+> > > > > [1] https://lkml.org/lkml/2019/8/9/1043
+> > > > > [2] https://lkml.org/lkml/2019/8/9/1062
+> > > > > [3] https://www.spinics.net/lists/fstests/msg12620.html
+> > > > > [4] https://linuxplumbersconf.org/event/4/contributions/368/
+> > > > > 
+> > > > > 
+> > > > 
+> > > > Thank you so much for doing this, Ira. This allows us to debate the
+> > > > user-visible behavior semantics without getting bogged down in the
+> > > > implementation details. More comments below:
+> > > 
+> > > Thanks.  Sorry for the delay in response.  Turns out this email was in my
+> > > spam...  :-/  I'll need to work out why.
+> > > 
+> > > > > <fcntl man page addition>
+> > > > > Layout Leases
+> > > > > -------------
+> > > > > 
+> > > > > Layout (F_LAYOUT) leases are special leases which can be used to control and/or
+> > > > > be informed about the manipulation of the underlying layout of a file.
+> > > > > 
+> > > > > A layout is defined as the logical file block -> physical file block mapping
+> > > > > including the file size and sharing of physical blocks among files.  Note that
+> > > > > the unwritten state of a block is not considered part of file layout.
+> > > > > 
+> > > > > **Read layout lease F_RDLCK | F_LAYOUT**
+> > > > > 
+> > > > > Read layout leases can be used to be informed of layout changes by the
+> > > > > system or other users.  This lease is similar to the standard read (F_RDLCK)
+> > > > > lease in that any attempt to change the _layout_ of the file will be reported to
+> > > > > the process through the lease break process.  But this lease is different
+> > > > > because the file can be opened for write and data can be read and/or written to
+> > > > > the file as long as the underlying layout of the file does not change.
+> > > > > Therefore, the lease is not broken if the file is simply open for write, but
+> > > > > _may_ be broken if an operation such as, truncate(), fallocate() or write()
+> > > > > results in changing the underlying layout.
+> > > > > 
+> > > > > **Write layout lease (F_WRLCK | F_LAYOUT)**
+> > > > > 
+> > > > > Write Layout leases can be used to break read layout leases to indicate that
+> > > > > the process intends to change the underlying layout lease of the file.
+> > > > > 
+> > > > > A process which has taken a write layout lease has exclusive ownership of the
+> > > > > file layout and can modify that layout as long as the lease is held.
+> > > > > Operations which change the layout are allowed by that process.  But operations
+> > > > > from other file descriptors which attempt to change the layout will break the
+> > > > > lease through the standard lease break process.  The F_LAYOUT flag is used to
+> > > > > indicate a difference between a regular F_WRLCK and F_WRLCK with F_LAYOUT.  In
+> > > > > the F_LAYOUT case opens for write do not break the lease.  But some operations,
+> > > > > if they change the underlying layout, may.
+> > > > > 
+> > > > > The distinction between read layout leases and write layout leases is that
+> > > > > write layout leases can change the layout without breaking the lease within the
+> > > > > owning process.  This is useful to guarantee a layout prior to specifying the
+> > > > > unbreakable flag described below.
+> > > > > 
+> > > > > 
+> > > > 
+> > > > The above sounds totally reasonable. You're essentially exposing the
+> > > > behavior of nfsd's layout leases to userland. To be clear, will F_LAYOUT
+> > > > leases work the same way as "normal" leases, wrt signals and timeouts?
+> > > 
+> > > That was my intention, yes.
+> > > 
+> > > > I do wonder if we're better off not trying to "or" in flags for this,
+> > > > and instead have a separate set of commands (maybe F_RDLAYOUT,
+> > > > F_WRLAYOUT, F_UNLAYOUT). Maybe I'm just bikeshedding though -- I don't
+> > > > feel terribly strongly about it.
+> > > 
+> > > I'm leaning that was as well.  To make these even more distinct from
+> > > F_SETLEASE.
+> > > 
+> > > > Also, at least in NFSv4, layouts are handed out for a particular byte
+> > > > range in a file. Should we consider doing this with an API that allows
+> > > > for that in the future? Is this something that would be desirable for
+> > > > your RDMA+DAX use-cases?
+> > > 
+> > > I don't see this.  I've thought it would be a nice thing to have but I don't
+> > > know of any hard use case.  But first I'd like to understand how this works for
+> > > NFS.
+> > > 
+> > 
+> > The NFSv4.1 spec allows the client to request the layouts for a
+> > particular range in the file:
+> > 
+> > https://tools.ietf.org/html/rfc5661#page-538
+> > 
+> > The knfsd only hands out whole-file layouts at present. Eventually we
+> > may want to make better use of segmented layouts, at which point we'd
+> > need something like a byte-range lease.
+> > 
+> > > > We could add a new F_SETLEASE variant that takes a struct with a byte
+> > > > range (something like struct flock).
+> > > 
+> > > I think this would be another reason to introduce F_[RD|WR|UN]LAYOUT as a
+> > > command.  Perhaps supporting smaller byte ranges could be added later?
+> > > 
+> > 
+> > I'd definitely not multiplex this over F_SETLEASE. An F_SETLAYOUT cmd
+> > would probably be sufficient, and maybe just reuse
+> > F_RDLCK/F_WRLCK/F_UNLCK for the iomode?
+> > 
+> > For the byte ranges, the catch there is that extending the userland
+> > interface for that later will be difficult.
 > 
-> While building e2fsprogs 1.45.4, I noticed the following output during
-> testing:
+> Why would it be difficult?
 > 
-> t_ext_jnl_rm: remove missing external journal device: ok
-> t_ext_jnl_rm:  *** took 96 seconds to finish ***
-> t_ext_jnl_rm:  consider adding t_ext_jnl_rm/is_slow_test
+
+Legacy userland code that wanted to use byte range enabled layouts would
+have to be rebuilt to take advantage of them. If we require a range from
+the get-go, then they will get the benefit of them once they're
+available.
+ 
+> > What I'd probably suggest
+> > (and what would jive with the way pNFS works) would be to go ahead and
+> > add an offset and length to the arguments and result (maybe also
+> > whence?).
 > 
-> I didn't see any mention of this in the list archives, and I'm not
-> entirely sure if it should really be marked as a slow test.
-> 
-> System is a 64-thread POWER9 @ 3.8 GHz with DDR4-2400 RAM, so it isn't
-> exactly a "low end" machine.
+> Why not add new commands with range arguments later if it turns out to
+> be necessary?
 
-The first time I ran this test, it took 20 seconds.  (And that was
-only because I had a WDC external SSD attached to my laptop and it
-took time to spin it up; more on that below.)  The next time, it was
-nearly instaneous:
+We could do that. It'd be a little ugly, IMO, simply because then we'd
+end up with two interfaces that do almost the exact same thing.
 
-% time ./test_script t_ext_jnl_rm
-t_ext_jnl_rm: remove missing external journal device: ok
-356 tests succeeded  0 tests failed
+Should byte-range layouts at that point conflict with non-byte range
+layouts, or should they be in different "spaces" (a'la POSIX and flock
+locks)? When it's all one interface, those sorts of questions sort of
+answer themselves. When they aren't we'll have to document them clearly
+and I think the result will be more confusing for userland programmers.
 
-real	  0m0.242s
-user	  0m0.053s
-sys	  0m0.114s
+If you felt strongly about leaving those out for now, you could just do
+something similar to what Aleksa is planning for openat2 -- have a
+struct pointer and length as arguments for this cmd, and only have a
+single iomode member in there for now.
 
-If you look at the test script, you'll see that we are creating a file
-system, setting up an external journal which doesn't exist:
+The kernel would have to know how to deal with "legacy" and byte-range-
+enabled variants if we ever extend it, but that's not too hard to
+handle.
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-    dd if=/dev/zero of=$TMPFILE bs=1k count=512 > /dev/null 2>&1
-
-    echo mke2fs -q -F -o Linux -b 1024 $TMPFILE >> $OUT
-    $MKE2FS -q -F -o Linux -I 128 -b 1024 $TMPFILE >> $OUT 2>&1
-
-    echo "debugfs add journal device/UUID" >> $OUT
-    $DEBUGFS -w -f - $TMPFILE <<- EOF >> $OUT 2>&1
-    	feature has_journal
-    	ssv journal_dev 0x9999
-    	ssv journal_uuid 1db3f677-6832-4adb-bafc-8e4059c30a33
-    EOF
-
-... and then we ask tune2fs to remove the journal:
-
-    echo "tune2fs -f -O ^has_journal $TMPFILE" >> $OUT
-    $TUNE2FS -f -O ^has_journal $TMPFILE >> $OUT 2>&1
-
-So the time that it takes is based on how long it takes to search all
-of the disks attached to the system looking for an external journal
-with the uuid 1db3f677-6832-4adb-bafc-8e4059c30a33.
-
-On most systems, this is fast.  If you happen to have a slow device
-attached to your system, then this can take a while --- but there's
-really not much we can do about this.  I suppose we could try to add a
-test mock which disables the external journal search, if there isn't
-any way you can speed things up on your end now that you know what's
-causing the delay?
-
-						- Ted
