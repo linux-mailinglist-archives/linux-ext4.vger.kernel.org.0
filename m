@@ -2,21 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D02CB132
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Oct 2019 23:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFF1CB129
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Oct 2019 23:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733197AbfJCVeD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Oct 2019 17:34:03 -0400
-Received: from edison.jonmasters.org ([173.255.233.168]:45010 "EHLO
-        edison.jonmasters.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731694AbfJCVeD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Oct 2019 17:34:03 -0400
-X-Greylist: delayed 1394 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Oct 2019 17:34:03 EDT
-Received: from boston.jonmasters.org ([50.195.43.97] helo=tonnant.bos.jonmasters.org)
-        by edison.jonmasters.org with esmtpsa (TLS1.0:RSA_AES_128_CBC_SHA1:16)
-        (Exim 4.71)
-        (envelope-from <jcm@jonmasters.org>)
-        id 1iG8N4-0002a7-GX; Thu, 03 Oct 2019 21:10:46 +0000
+        id S1731945AbfJCVbr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Oct 2019 17:31:47 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]:41737 "EHLO
+        mail-qt1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728763AbfJCVbr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Oct 2019 17:31:47 -0400
+Received: by mail-qt1-f176.google.com with SMTP id d16so5722474qtq.8
+        for <linux-ext4@vger.kernel.org>; Thu, 03 Oct 2019 14:31:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jonmasters-org.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9VbPegMBaauhbhqrGeSKBEluFIPdq7CVXWZA4Bamei8=;
+        b=BJHxrU1nSyyy8QF2YqhUZ6bw3iyG47Xae1aeOT1UUoyKSErx+TwdcWv7QJp3ii6FUC
+         GrjZy9eSgAQQGYaRMZIPwTn5cnnCQZ0/M0OP9SOTuR7wGkcNI5MnFo6SbIPzPqFBM+t1
+         lht3nPaJTvInTyk/eyJtUVjt5laQLj3IrPzy+Wn8omLAEUzIzjctOIXl1C4uD+1PWhJS
+         CUe5uYo+RDEvTQirTAL6mEV7MtPuMLpziS85bx2PyX+09SgwivFMzbKT/wCFocIoDA8v
+         sV6aUGef1efw+0+SPYN7HsHKFTHwjWxeUpls4Rd2dgFQvhv0/k0+An4AE3up6lsiDm3A
+         DGhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9VbPegMBaauhbhqrGeSKBEluFIPdq7CVXWZA4Bamei8=;
+        b=X3niNL/R+NqMqXQ/SoisDThGOp0quS6F/ZmfrLIj0KK0ztOY38uGgtyIUB/j+kp5E+
+         YGEA17r9LFx+RNcKXpH0++9Es2f4HCx+Me8FQEw6cbsZ3PGclwS9NDSwr0JqVgAW9Yod
+         C//6DKR+IuFYXNKPuN+3hav8hZNjP3vU4dIIggPlbolMhKwiFL3Oqx7Lrv9yYT6GEyVo
+         ymfPE2HvioTRrP5R5kbZDWn20psoKG4uGPgnLL1f8cEFxyMxCISOZcdFGUiQgXZfiXI7
+         PNjFOVu17ybIZUhFAZFWRldHX1SAcdSdICp50lFv6dIuV7uv1Pj0EIN7uLInbFwxeFt3
+         yB9Q==
+X-Gm-Message-State: APjAAAVPCsxUgVsW8Lm7o89vOWrOIA4xNYtsczW0+slKo97GRUUY/l1u
+        ou/qviDdQP4DVpVqiTMOCJqGYA==
+X-Google-Smtp-Source: APXvYqwgx7GCDCzm1ugkjBJk7NQzk6WWoKpRMlg4DROZvf+75wqqSA3Qq5BDTpkQ3s3fOr1cp8IFDg==
+X-Received: by 2002:ad4:4772:: with SMTP id d18mr10824473qvx.100.1570138304941;
+        Thu, 03 Oct 2019 14:31:44 -0700 (PDT)
+Received: from tonnant.bos.jonmasters.org (Boston.jonmasters.org. [50.195.43.97])
+        by smtp.gmail.com with ESMTPSA id q5sm2820352qte.38.2019.10.03.14.31.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Oct 2019 14:31:44 -0700 (PDT)
+From:   Jon Masters <jcm@jonmasters.org>
+Subject: Re: Linux 5.3-rc8
 To:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
         Theodore Ts'o <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
@@ -24,9 +54,8 @@ To:     "Ahmed S. Darwish" <darwish.07@gmail.com>,
 Cc:     Jan Kara <jack@suse.cz>, zhangjs <zachary@baishancloud.com>,
         linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20190910042107.GA1517@darwi-home-pc>
-From:   Jon Masters <jcm@jonmasters.org>
-Message-ID: <60fc1d03-314a-6b0a-2c8f-100394b05969@jonmasters.org>
-Date:   Thu, 3 Oct 2019 17:10:45 -0400
+Message-ID: <cbcfca99-5c84-bab5-3b50-448e048bd2e9@jonmasters.org>
+Date:   Thu, 3 Oct 2019 17:31:43 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.4.0
 MIME-Version: 1.0
@@ -34,16 +63,6 @@ In-Reply-To: <20190910042107.GA1517@darwi-home-pc>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 50.195.43.97
-X-SA-Exim-Mail-From: jcm@jonmasters.org
-X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on
-        edison.jonmasters.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham version=3.3.1
-Subject: Re: Linux 5.3-rc8
-X-SA-Exim-Version: 4.2.1 (built Sun, 08 Nov 2009 07:31:22 +0000)
-X-SA-Exim-Scanned: Yes (on edison.jonmasters.org)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
