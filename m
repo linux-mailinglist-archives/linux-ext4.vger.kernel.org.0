@@ -2,86 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D57A1C9ED9
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Oct 2019 14:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8794AC9F68
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Oct 2019 15:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730091AbfJCMvW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Oct 2019 08:51:22 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:44184 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbfJCMvV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 3 Oct 2019 08:51:21 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id B36B84FCC9
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Oct 2019 12:51:21 +0000 (UTC)
-Received: from work (unknown [10.40.205.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2F89F608A5
-        for <linux-ext4@vger.kernel.org>; Thu,  3 Oct 2019 12:51:21 +0000 (UTC)
-Date:   Thu, 3 Oct 2019 14:51:17 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/2] mke2fs: Warn if page size != blocksize when ecnrypt
- is enabled
-Message-ID: <20191003125117.75gmubgqgcp3xo3k@work>
-References: <20190821131813.9456-1-lczerner@redhat.com>
+        id S1730378AbfJCN3Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Oct 2019 09:29:16 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47635 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730370AbfJCN3Q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Oct 2019 09:29:16 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x93DT9uA022479
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 3 Oct 2019 09:29:10 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id AF10742088C; Thu,  3 Oct 2019 09:29:09 -0400 (EDT)
+Date:   Thu, 3 Oct 2019 09:29:09 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 17/19] jbd2: Rename h_buffer_credits to h_total_credits
+Message-ID: <20191003132909.GC3226@mit.edu>
+References: <20190930104339.24919-17-jack@suse.cz>
+ <201909302058.uxNSY0q3%lkp@intel.com>
+ <20190930150553.GB4001@mit.edu>
+ <20190930162536.GB13973@quack2.suse.cz>
+ <20190930212145.GC4001@mit.edu>
+ <20191001075908.GB25062@quack2.suse.cz>
+ <20191003083316.GA17911@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190821131813.9456-1-lczerner@redhat.com>
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.30]); Thu, 03 Oct 2019 12:51:21 +0000 (UTC)
+In-Reply-To: <20191003083316.GA17911@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-ping
+On Thu, Oct 03, 2019 at 10:33:16AM +0200, Jan Kara wrote:
+> 
+> I'm not yet sure about some failures in ext4/adv and ext4/bigalloc configs.
+> Where can I find what mkfs & mount options do you use for these? I've
+> looked at xfstests-bld but I didn't find the configs there... Thanks!
 
-On Wed, Aug 21, 2019 at 03:18:12PM +0200, Lukas Czerner wrote:
-> With encrypt feature enabled the file system block size must match
-> system page size. Currently mke2fs will not complain at all when we try
-> to create a file system that does not satisfy this requirement for the
-> system. Add a warning for this case.
-> 
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> ---
->  misc/mke2fs.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/misc/mke2fs.c b/misc/mke2fs.c
-> index d7cf257e..aa9590d8 100644
-> --- a/misc/mke2fs.c
-> +++ b/misc/mke2fs.c
-> @@ -2468,6 +2468,26 @@ profile_error:
->  		      exit (1);
->  	}
->  
-> +	/*
-> +	 * Encrypt feature requires blocksize to be the same as page size,
-> +	 * otherwise file system won't mount
-> +	 */
-> +	if (ext2fs_has_feature_encrypt(&fs_param) &&
-> +	   (blocksize != sys_page_size)) {
-> +		if (!force) {
-> +			com_err(program_name, 0,
-> +				_("Encrypt feature is enabled, but block size "
-> +				  "(%dB) does not match system page size "
-> +				  "(%dB)"),
-> +				blocksize, sys_page_size);
-> +			proceed_question(proceed_delay);
-> +		}
-> +		fprintf(stderr,_("Warning: Encrypt feature enabled, but block "
-> +				 "size (%dB) does not match system page size "
-> +				 "(%dB), forced to continue\n"),
-> +			blocksize, sys_page_size);
-> +	}
-> +
->  	/* Don't allow user to set both metadata_csum and uninit_bg bits. */
->  	if (ext2fs_has_feature_metadata_csum(&fs_param) &&
->  	    ext2fs_has_feature_gdt_csum(&fs_param))
-> -- 
-> 2.21.0
-> 
+The configs are in [1] the mount options for adv and bigalloc are in
+[2] and [3], respectively.
+
+[1] https://github.com/tytso/xfstests-bld/blob/master/kvm-xfstests/test-appliance/files/root/fs
+[2] https://github.com/tytso/xfstests-bld/blob/master/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/adv
+[3] https://github.com/tytso/xfstests-bld/blob/master/kvm-xfstests/test-appliance/files/root/fs/ext4/cfg/bigalloc
+
+It shouldn't be terribly difficult for you to use kvm-xfstests on
+SuSE, if you just want to try using the test appliance directly.  I'm
+happy to update the documentation to include the necessary SuSE
+packages needed to run kvm-xfstests; it shouldn't be that hard to
+translate them from the Debian prerequisites to SuSE package names.
+See [4] for details.
+
+[4] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
+
+Note: if you want to run tests manually (which can be handy if you
+want to try tweaking the tests, just do this:
+
+% kvm-xfstests shell
+...
+root@kvm-xfstests:~# FSTESTSET=ext4/301
+root@kvm-xfstests:~# FSTESTCFG=adv
+root@kvm-xfstests:~# ./runtests.sh
+
+The xfstests installation is in /root/xfstests.  Other valid settings
+for FSTESTCFG include: ext4/adv, ext4/all, btrfs/default, btrfs, xfs,
+nfs, nfs/loopback_v3, and so on.  See [1] for other fs configs that
+you can use for testing.
+
+Cheers,
+
+							- Ted
