@@ -2,56 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E37BC9D6C
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Oct 2019 13:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59952C9D6D
+	for <lists+linux-ext4@lfdr.de>; Thu,  3 Oct 2019 13:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730207AbfJCLe1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 3 Oct 2019 07:34:27 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:47059 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730018AbfJCLe1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Oct 2019 07:34:27 -0400
-Received: by mail-pg1-f195.google.com with SMTP id a3so1566981pgm.13
-        for <linux-ext4@vger.kernel.org>; Thu, 03 Oct 2019 04:34:25 -0700 (PDT)
+        id S1730215AbfJCLeo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 3 Oct 2019 07:34:44 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:33515 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730085AbfJCLen (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 3 Oct 2019 07:34:43 -0400
+Received: by mail-pg1-f196.google.com with SMTP id q1so1629690pgb.0
+        for <linux-ext4@vger.kernel.org>; Thu, 03 Oct 2019 04:34:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=FMTKEFXhOlLeJnylK8hi8xn6It6tAu38pI2D5z++hlU=;
-        b=WyLMPmme7XOtAGG1ICIPMp1uvwtWjHaB+sbrXi5CllLngXcQgYURyT/5hW1QHtqyS+
-         UKfEH2v0SUngv7yD3GPzUMOjfvWQVq11H+EFrlwyEsF5h7m32hLiaELSX8RK1anP54Xz
-         W6WTBhLOUZh7XFvRlH6EKPy8KixcvMYKDw6iY1W365r+Qh5hQ2xKbEOF9z9G1jXdqvcF
-         cgcMqYeJCt32/678KsRslWjzWriUGVIbXpPGNXDIlZMw5KK8+hyC5oR27GLnFuIvkulK
-         Xe4HFjQ5LSbow+AartyEj3/Ko3i17gMNOVUy+D2rD8mrWRzmMeVLqD6fFD/uQxq9kZ32
-         KqnQ==
+        bh=UQEtX9xV6QoOzwhI4K3Zgq+aHHgBiMKDDNW6NF4ZZlk=;
+        b=2LZ/1FWaO6D10wZiz7AhibWPbArsNFJpckQ4crRa3K8GtxkC6HX9CjMqS9JyEaevi3
+         F5HUKnxZXdoH64ed9aerLacCs5A66EqTe7n1HOicmg57rrRhWRxkBK6W2t5xOJMxgl49
+         Jg7aJUzVjY22AvD1n+/AsO/dDpBClGO6MAnuyI118JFEDlV94W4UQ1yZqJ8GpXBWqrYa
+         qqszhi7qW1SMXj5XNxpbZDyUOcr3FEp7oIW90c0Waz/HOSo3IBsL4dDwbc1zXUU1amme
+         UY3o0hPvqTy8sYyur1avU7opnN/u5CAEGJIeZVsZIKNaiQL2H4tOObIvcwxcaf+YmSiJ
+         USAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FMTKEFXhOlLeJnylK8hi8xn6It6tAu38pI2D5z++hlU=;
-        b=FEayNK/s8JGYEn+6k936N8Jx5ThIY3sZxX92KEBwTBWwF0SL/By2NJEgZLElKncyuQ
-         tmzRo4oC6IESSSNuL5h00jtgeSYkggCz6g63i7ZgmABApH9Qqf2IMqk3k/8YAvEu0NxO
-         DDP/aqAY/oaS+M7PW+mFc7a3cEmL+Lanv3YYurdSKKtl1apFaf4e0BTOC3Rod3H/0gGA
-         Re5ZgZqi9DLga9ZBdYMaSlKjXHzoBfUFC2+ak7gHYmewrwek35TQdZCE2aZIzUyT0bjx
-         ffc0n9ByN4s8yhRiscyskRDsYohsbTw0Dmv3usaLyJetRsIx9kXuufZJnakf9Fww6Iag
-         wpZw==
-X-Gm-Message-State: APjAAAXerDgdgopEc4qk/hUql5kA07beL1EB1X4a/pjQp9/UdzI7CTY0
-        A8UUqWy1Tlorff7N01vIAWcTjhi0Pv2P
-X-Google-Smtp-Source: APXvYqyZMUogI5sremMVmQGnPKwbBbGoWQLTx4PeVKb528PU2cU639o7yvUhVkl4+nYxCZ/+d0+KVg==
-X-Received: by 2002:a63:3709:: with SMTP id e9mr9045248pga.53.1570102464964;
-        Thu, 03 Oct 2019 04:34:24 -0700 (PDT)
+        bh=UQEtX9xV6QoOzwhI4K3Zgq+aHHgBiMKDDNW6NF4ZZlk=;
+        b=HNUds6d/EcqubLceDuAu8l5RPggDNMwuq2nkmrl81Hc/EkTt6nh3y0abbdJ/H3Ad3q
+         57B75ApHCN602nFCMxZu/n+ht5atl2eZlp2yPM2+kVIkAv7KxfY8KZOtTwS8FO4IkDEV
+         xK2tdffspBXK3fonbLf9yv9prdw99NcoOSHAHb6Y4pDfjMJNqyEVmeaOw0NQUV2UuFdG
+         XKTKUWVsVL8PUKEoiwVo4AUZnjvjcTLz6i7PV9o508hz19hO4rhF5Ydi/v7WH2u7VDwW
+         5DzC8+/26m2bcMYMAIW3qV37MJn3CxQobrIZXAQASPxwSUtSghw99RApy+sRSlzEBgDJ
+         96uw==
+X-Gm-Message-State: APjAAAWXjyD6RGEovJKl7ddruAJW1EYgo6dmuVeYIBpH3A4q/b3QzVSh
+        1gVsG8FJmdwxcL+Hk/jaEXPs
+X-Google-Smtp-Source: APXvYqz/1fcWZvv4TSLLTLnXTVXqIBvxzhIGqqPB45sdpVged+0rtncMRkZ5AleKzndce8KcbFzbYg==
+X-Received: by 2002:a63:154d:: with SMTP id 13mr9244083pgv.163.1570102483111;
+        Thu, 03 Oct 2019 04:34:43 -0700 (PDT)
 Received: from poseidon.bobrowski.net ([114.78.226.167])
-        by smtp.gmail.com with ESMTPSA id g12sm3026061pfb.97.2019.10.03.04.34.21
+        by smtp.gmail.com with ESMTPSA id d20sm4781328pfq.88.2019.10.03.04.34.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Oct 2019 04:34:24 -0700 (PDT)
-Date:   Thu, 3 Oct 2019 21:34:18 +1000
+        Thu, 03 Oct 2019 04:34:42 -0700 (PDT)
+Date:   Thu, 3 Oct 2019 21:34:36 +1000
 From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
 To:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
-Subject: [PATCH v4 5/8] ext4: move inode extension/truncate code out from
- ->iomap_end() callback
-Message-ID: <da556191f9dba2b477cce57665ded57bfd396463.1570100361.git.mbobrowski@mbobrowski.org>
+Subject: [PATCH v4 6/8] ext4: move inode extension checks out from
+ ext4_iomap_alloc()
+Message-ID: <d1ca9cc472175760ef629fb66a88f0c9b0625052.1570100361.git.mbobrowski@mbobrowski.org>
 References: <cover.1570100361.git.mbobrowski@mbobrowski.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -63,193 +63,92 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In preparation for implementing the iomap direct I/O write path
-modifications, the inode extension/truncate code needs to be moved out
-from ext4_iomap_end(). For direct I/O, if the current code remained
-within ext4_iomap_end() it would behave incorrectly. Updating the
-inode size prior to converting unwritten extents to written extents
-will potentially allow a racing direct I/O read operation to find
-unwritten extents before they've been correctly converted.
-
-The inode extension/truncate code has been moved out into a new helper
-ext4_handle_inode_extension(). This function has been designed so that
-it can be used by both DAX and direct I/O paths.
+We lift the inode extension/orphan list handling logic out from
+ext4_iomap_alloc() and place it within the caller
+ext4_dax_write_iter().
 
 Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
 ---
- fs/ext4/file.c  | 79 ++++++++++++++++++++++++++++++++++++++++++++++++-
- fs/ext4/inode.c | 48 +-----------------------------
- 2 files changed, 79 insertions(+), 48 deletions(-)
+ fs/ext4/file.c  | 17 +++++++++++++++++
+ fs/ext4/inode.c | 22 ----------------------
+ 2 files changed, 17 insertions(+), 22 deletions(-)
 
 diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 69ac042fb74b..2883711e8a33 100644
+index 2883711e8a33..f64da0c590b2 100644
 --- a/fs/ext4/file.c
 +++ b/fs/ext4/file.c
-@@ -33,6 +33,7 @@
- #include "ext4_jbd2.h"
- #include "xattr.h"
- #include "acl.h"
-+#include "truncate.h"
- 
- static bool ext4_dio_supported(struct inode *inode)
- {
-@@ -233,12 +234,82 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
- 	return iov_iter_count(from);
- }
- 
-+static int ext4_handle_inode_extension(struct inode *inode, loff_t offset,
-+				       ssize_t written, size_t count)
-+{
-+	int ret = 0;
-+	handle_t *handle;
-+	bool truncate = false;
-+	u8 blkbits = inode->i_blkbits;
-+	ext4_lblk_t written_blk, end_blk;
-+
-+	/*
-+         * Note that EXT4_I(inode)->i_disksize can get extended up to
-+         * inode->i_size while the IO was running due to writeback of
-+         * delalloc blocks. But the code in ext4_iomap_alloc() is careful
-+         * to use zeroed / unwritten extents if this is possible and thus
-+         * we won't leave uninitialized blocks in a file even if we didn't
-+         * succeed in writing as much as we planned.
-+         */
-+	WARN_ON_ONCE(i_size_read(inode) < EXT4_I(inode)->i_disksize);
-+	if (offset + count <= EXT4_I(inode)->i_disksize)
-+		return written < 0 ? written : 0;
-+
-+	if (written < 0) {
-+		ret = written;
-+		goto truncate;
-+	}
-+
-+	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-+	if (IS_ERR(handle)) {
-+		ret = PTR_ERR(handle);
-+		goto truncate;
-+	}
-+
-+	if (ext4_update_inode_size(inode, offset + written))
-+		ext4_mark_inode_dirty(handle, inode);
-+
-+	/*
-+	 * We may need to truncate allocated but not written blocks
-+	 * beyond EOF.
-+	 */
-+	written_blk = ALIGN(offset + written, 1 << blkbits);
-+	end_blk = ALIGN(offset + count, 1 << blkbits);
-+	if (written_blk < end_blk && ext4_can_truncate(inode))
-+		truncate = true;
-+
-+	/*
-+	 * Remove the inode from the orphan list if it has been
-+	 * extended and everything went OK.
-+	 */
-+	if (!truncate && inode->i_nlink)
-+		ext4_orphan_del(handle, inode);
-+	ext4_journal_stop(handle);
-+
-+	if (truncate) {
-+truncate:
-+		ext4_truncate_failed_write(inode);
-+		/*
-+		 * If the truncate operation failed early, then the
-+		 * inode may still be on the orphan list. In that
-+		 * case, we need to try remove the inode from the
-+		 * in-memory linked list.
-+		 */
-+		if (inode->i_nlink)
-+			ext4_orphan_del(NULL, inode);
-+	}
-+	return ret;
-+}
-+
- #ifdef CONFIG_FS_DAX
- static ssize_t
- ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct inode *inode = file_inode(iocb->ki_filp);
-+	int error;
+@@ -309,6 +309,7 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
  	ssize_t ret;
-+	size_t count;
-+	loff_t offset;
-+	struct inode *inode = file_inode(iocb->ki_filp);
+ 	size_t count;
+ 	loff_t offset;
++	handle_t *handle;
+ 	struct inode *inode = file_inode(iocb->ki_filp);
  
  	if (!inode_trylock(inode)) {
- 		if (iocb->ki_flags & IOCB_NOWAIT)
-@@ -255,7 +326,13 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (ret)
- 		goto out;
+@@ -328,6 +329,22 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
  
-+	offset = iocb->ki_pos;
-+	count = iov_iter_count(from);
- 	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
+ 	offset = iocb->ki_pos;
+ 	count = iov_iter_count(from);
 +
-+	error = ext4_handle_inode_extension(inode, offset, ret, count);
-+	if (error)
-+		ret = error;
- out:
- 	inode_unlock(inode);
- 	if (ret > 0)
++	if (offset + count > EXT4_I(inode)->i_disksize) {
++		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
++		if (IS_ERR(handle)) {
++			ret = PTR_ERR(handle);
++			goto out;
++		}
++
++		ret = ext4_orphan_add(handle, inode);
++		if (ret) {
++			ext4_journal_stop(handle);
++			goto out;
++		}
++		ext4_journal_stop(handle);
++	}
++
+ 	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
+ 
+ 	error = ext4_handle_inode_extension(inode, offset, ret, count);
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 159ffb92f82d..d616062b603e 100644
+index d616062b603e..e133dda55063 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -3592,53 +3592,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
- 			  ssize_t written, unsigned flags, struct iomap *iomap)
+@@ -3508,7 +3508,6 @@ static int ext4_iomap_alloc(struct inode *inode,
+ 			    struct ext4_map_blocks *map)
  {
--	int ret = 0;
--	handle_t *handle;
--	int blkbits = inode->i_blkbits;
--	bool truncate = false;
--
--	if (!(flags & IOMAP_WRITE) || (flags & IOMAP_FAULT))
--		return 0;
--
--	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
--	if (IS_ERR(handle)) {
--		ret = PTR_ERR(handle);
--		goto orphan_del;
--	}
--	if (ext4_update_inode_size(inode, offset + written))
--		ext4_mark_inode_dirty(handle, inode);
--	/*
--	 * We may need to truncate allocated but not written blocks beyond EOF.
--	 */
--	if (iomap->offset + iomap->length > 
--	    ALIGN(inode->i_size, 1 << blkbits)) {
--		ext4_lblk_t written_blk, end_blk;
--
--		written_blk = (offset + written) >> blkbits;
--		end_blk = (offset + length) >> blkbits;
--		if (written_blk < end_blk && ext4_can_truncate(inode))
--			truncate = true;
--	}
--	/*
--	 * Remove inode from orphan list if we were extending a inode and
--	 * everything went fine.
--	 */
--	if (!truncate && inode->i_nlink &&
--	    !list_empty(&EXT4_I(inode)->i_orphan))
--		ext4_orphan_del(handle, inode);
--	ext4_journal_stop(handle);
--	if (truncate) {
--		ext4_truncate_failed_write(inode);
--orphan_del:
--		/*
--		 * If truncate failed early the inode might still be on the
--		 * orphan list; we need to make sure the inode is removed from
--		 * the orphan list in that case.
--		 */
--		if (inode->i_nlink)
--			ext4_orphan_del(NULL, inode);
--	}
--	return ret;
-+	return 0;
- }
+ 	handle_t *handle;
+-	u8 blkbits = inode->i_blkbits;
+ 	int ret, dio_credits, retries = 0;
  
- const struct iomap_ops ext4_iomap_ops = {
+ 	/*
+@@ -3530,28 +3529,7 @@ static int ext4_iomap_alloc(struct inode *inode,
+ 		return PTR_ERR(handle);
+ 
+ 	ret = ext4_map_blocks(handle, inode, map, EXT4_GET_BLOCKS_CREATE_ZERO);
+-	if (ret < 0)
+-		goto journal_stop;
+ 
+-	/*
+-	 * If we have allocated blocks beyond the EOF, we need to make
+-	 * sure that they get truncate if we crash before updating the
+-	 * inode size metadata in ext4_iomap_end(). For faults, we
+-	 * don't need to do that (and cannot due to the orphan list
+-	 * operations needing an inode_lock()). If we happen to
+-	 * instantiate blocks beyond EOF, it is because we race with a
+-	 * truncate operation, which already has added the inode onto
+-	 * the orphan list.
+-	 */
+-	if (!(flags & IOMAP_FAULT) && first_block + map->m_len >
+-	    (i_size_read(inode) + (1 << blkbits) - 1) >> blkbits) {
+-		int err;
+-
+-		err = ext4_orphan_add(handle, inode);
+-		if (err < 0)
+-			ret = err;
+-	}
+-journal_stop:
+ 	ext4_journal_stop(handle);
+ 	if (ret == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
+ 		goto retry;
 -- 
 2.20.1
 
