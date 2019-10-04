@@ -2,108 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52474CD15D
-	for <lists+linux-ext4@lfdr.de>; Sun,  6 Oct 2019 12:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15671CDF03
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Oct 2019 12:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbfJFKq3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 6 Oct 2019 06:46:29 -0400
-Received: from sender2-of-o52.zoho.com.cn ([163.53.93.247]:21653 "EHLO
-        sender2-of-o52.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726248AbfJFKq3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 6 Oct 2019 06:46:29 -0400
-X-Greylist: delayed 916 seconds by postgrey-1.27 at vger.kernel.org; Sun, 06 Oct 2019 06:46:26 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1570357843; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=P+7aT3TSZBXnxh6f7SyVjkTiCD92rbvuWgxsIytoWXuCZO2iqeQPMR/LEWr/o+qzh40pnpY8mFMkdwmrKlgDG4RM5+Uccjzcwvnz0eIFWJfdMQFkuQa4nrIOZhtjBZGPsLsoDwnLk2wbS0aG46lYgGGi/nnTj45c67V8nBuvqac=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1570357843; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
-        bh=NoGSNU0s/AdxfmdrNPrBvuGX45XVZ4o5yKoJDmyajws=; 
-        b=XArQAFzkPz/ecYBJKTONPrv68JOJkqlx6woavMver+c65Y5K8EufRsMfBocPPToOeIyVG4+4y2rLJxCCsl1MegW0E6e9FwGpKsxNWx9DyO3eWTdrgMZibXptoYYUyhBd0iUSSDS2+OnWdVkxn+nl7Bo1imVAqbbhPMMWVfLkOoM=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1570357843;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=1808; bh=NoGSNU0s/AdxfmdrNPrBvuGX45XVZ4o5yKoJDmyajws=;
-        b=Ebc+3pfQROKvQErkhIJW+6luOUdIzkCNx+bBRtGW3aHxlnSTrvAEyRiZy02sEKzK
-        NdM31B5C8sw9cvvbIesT9TR8WAmqEsQukdtp9Rhwqpq/jcx1/QwNTHyBXv2KHSuUD/W
-        pgGkrBmuVDr92qWGUZZaGRD7yIQ3n6H+KIvmFjrY=
-Received: from localhost.localdomain (116.30.195.234 [116.30.195.234]) by mx.zoho.com.cn
-        with SMTPS id 1570357841513677.3525053323079; Sun, 6 Oct 2019 18:30:41 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191006103028.31299-1-cgxu519@mykernel.net>
-Subject: [PATCH] ext4: code cleanup for get_next_id
-Date:   Sun,  6 Oct 2019 18:30:28 +0800
-X-Mailer: git-send-email 2.21.0
+        id S1727793AbfJGKQV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 7 Oct 2019 06:16:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58894 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727755AbfJGKQV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 7 Oct 2019 06:16:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 688B2B206;
+        Mon,  7 Oct 2019 10:16:18 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E6A461E4813; Fri,  4 Oct 2019 09:51:00 +0200 (CEST)
+Date:   Fri, 4 Oct 2019 09:51:00 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: Lease semantic proposal
+Message-ID: <20191004075100.GA12412@quack2.suse.cz>
+References: <20190923190853.GA3781@iweiny-DESK2.sc.intel.com>
+ <20190923222620.GC16973@dread.disaster.area>
+ <20190925234602.GB12748@iweiny-DESK2.sc.intel.com>
+ <20190930084233.GO16973@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190930084233.GO16973@dread.disaster.area>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now the checks in ext4_get_next_id() and dquot_get_next_id()
-are almost the same, so just call dquot_get_next_id() instead
-of ext4_get_next_id().
+On Mon 30-09-19 18:42:33, Dave Chinner wrote:
+> On Wed, Sep 25, 2019 at 04:46:03PM -0700, Ira Weiny wrote:
+> > On Tue, Sep 24, 2019 at 08:26:20AM +1000, Dave Chinner wrote:
+> > > Hence, AFIACT, the above definition of a F_RDLCK|F_LAYOUT lease
+> > > doesn't appear to be compatible with the semantics required by
+> > > existing users of layout leases.
+> > 
+> > I disagree.  Other than the addition of F_UNBREAK, I think this is consistent
+> > with what is currently implemented.  Also, by exporting all this to user space
+> > we can now write tests for it independent of the RDMA pinning.
+> 
+> The current usage of F_RDLCK | F_LAYOUT by the pNFS code allows
+> layout changes to occur to the file while the layout lease is held.
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- fs/ext4/super.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+I remember you saying that in the past conversations. But I agree with Ira
+that I don't see where in the code this would be implemented. AFAICS
+break_layout() called from xfs_break_leased_layouts() simply breaks all the
+leases with F_LAYOUT set attached to the inode... Now I'm not any expert on
+file leases but what am I missing?
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dd654e53ba3d..d1bdffcbfcee 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1374,7 +1374,6 @@ static ssize_t ext4_quota_write(struct super_block *s=
-b, int type,
- static int ext4_quota_enable(struct super_block *sb, int type, int format_=
-id,
- =09=09=09     unsigned int flags);
- static int ext4_enable_quotas(struct super_block *sb);
--static int ext4_get_next_id(struct super_block *sb, struct kqid *qid);
-=20
- static struct dquot **ext4_get_dquots(struct inode *inode)
- {
-@@ -1392,7 +1391,7 @@ static const struct dquot_operations ext4_quota_opera=
-tions =3D {
- =09.destroy_dquot=09=09=3D dquot_destroy,
- =09.get_projid=09=09=3D ext4_get_projid,
- =09.get_inode_usage=09=3D ext4_get_inode_usage,
--=09.get_next_id=09=09=3D ext4_get_next_id,
-+=09.get_next_id=09=09=3D dquot_get_next_id,
- };
-=20
- static const struct quotactl_ops ext4_qctl_operations =3D {
-@@ -6019,18 +6018,6 @@ static ssize_t ext4_quota_write(struct super_block *=
-sb, int type,
- =09}
- =09return len;
- }
--
--static int ext4_get_next_id(struct super_block *sb, struct kqid *qid)
--{
--=09const struct quota_format_ops=09*ops;
--
--=09if (!sb_has_quota_loaded(sb, qid->type))
--=09=09return -ESRCH;
--=09ops =3D sb_dqopt(sb)->ops[qid->type];
--=09if (!ops || !ops->get_next_id)
--=09=09return -ENOSYS;
--=09return dquot_get_next_id(sb, qid);
--}
- #endif
-=20
- static struct dentry *ext4_mount(struct file_system_type *fs_type, int fla=
-gs,
---=20
-2.21.0
+> IOWs, your definition of F_RDLCK | F_LAYOUT not being allowed
+> to change the is in direct contradition to existing users.
+> 
+> I've said this several times over the past few months now: shared
+> layout leases must allow layout modifications to be made. Only
+> allowing an exclusive layout lease to modify the layout rules out
+> many potential use cases for direct data placement and p2p DMA
+> applications, not to mention conflicts with the existing pNFS usage.
+> Layout leases need to support more than just RDMA, and tailoring the
+> API to exactly the immediate needs of RDMA is just going to make it
+> useless for anything else.
 
+I agree we should not tailor the layout lease definition to just RDMA
+usecase. But let's talk about the semantics once our confusion about how
+pNFS currently uses layout leases is clear out.
 
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
