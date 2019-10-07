@@ -2,142 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2685C23BFA1
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Aug 2020 21:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169F123C25F
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Aug 2020 01:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgHDTSw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Aug 2020 15:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
+        id S1727838AbgHDXw3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Aug 2020 19:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgHDTSv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Aug 2020 15:18:51 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A21C061756
-        for <linux-ext4@vger.kernel.org>; Tue,  4 Aug 2020 12:18:51 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id bo3so21065932ejb.11
-        for <linux-ext4@vger.kernel.org>; Tue, 04 Aug 2020 12:18:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iECZKbCttisI32R5vOBuQe0LHnglBF7s4axnvjSdNlk=;
-        b=nQ4grv0/FGhjcX/X9Q+kj/w809eT436vH2U+X4EgTlnaRGNA7g8vikX3m+zfSmYRaT
-         i6cmBUlwtVL6LQdpbpBz3ozbnlKtLwkowabhGu0920duv5F6NKDItb0IoNMhvkRdBd2i
-         gIIVodOYdnVzl0Ma8TCtUfhW97EQEZHXDBBfE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iECZKbCttisI32R5vOBuQe0LHnglBF7s4axnvjSdNlk=;
-        b=nKLJjAyFSjR21VDF1jC+10/2dY1bcW8rVeirXP8I8vfv6KUuTcS8efAuCNtinAIpiY
-         rHDy6GHgYcJvd1VNK/LSiDtS/Epmss9Mc0dJltOffmanS4MfTiVlkuWOKB1hO5qL8Qz1
-         DKxd4Q79CIGRXuaq/N+frN3WHNPUs4WYYvoUMWvYPV36xdqiaGTJBzlkg+IWPq2w5mty
-         nceDjNyHShb1R8RKUNpaAcdaouRtAzNINt4I96xd5aCoP8TgMHJimJVdbkyTkd10yOEF
-         NKHJFjboq15+y1KF4+uooZLay6Amc6htppwaFflg2Gz1yOk1R+8PgHpZEtf0pPuxMyWn
-         zE5Q==
-X-Gm-Message-State: AOAM533tqoqWm0beKhgn9cbn2xZUGKYj1SVj4fG9bJnN4t7LlKZQM++0
-        /MVF4Kakb5DPz3k1RvVCEFLBRjTWILGnPg6XS4wXfw==
-X-Google-Smtp-Source: ABdhPJxzCVu2FMIuLxYbxYX+UMEg7zT277U5zuZN2lWf6qdwT1ZHQkTlmDhsVnKdcF178T6jfpPcrpCd3ySV7qJkuu8=
-X-Received: by 2002:a17:906:4aca:: with SMTP id u10mr20883333ejt.320.1596568729975;
- Tue, 04 Aug 2020 12:18:49 -0700 (PDT)
+        with ESMTP id S1726011AbgHDXw2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Aug 2020 19:52:28 -0400
+X-Greylist: delayed 86248 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 04 Aug 2020 16:52:27 PDT
+Received: from dockerbox (unknown [IPv6:2001:4800:7817:101:be76:4eff:fe04:a215])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC72FC061756;
+        Tue,  4 Aug 2020 16:52:27 -0700 (PDT)
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        by dockerbox (Postfix) with SMTP id 6F4DA5EC5A;
+        Mon,  7 Oct 2019 19:30:12 -0500 (CDT)
+Received: from [32.188.209.113] by 127.0.0.1 with SMTP; Mon, 07 Oct 2019 18:22:17 -0600
+Message-ID: <80v-q$4-o4pqyq0@6eeih174.p55>
+From:   "Mr Barrister Hans Erich" <dave@dbsoundfactory.com>
+Reply-To: "Mr Barrister Hans Erich" <dave@dbsoundfactory.com>
+To:     linkos@binet.lv
+Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA
+Date:   Mon, 07 Oct 19 18:22:17 GMT
+X-Mailer: Microsoft Outlook Express 5.00.2615.200
 MIME-Version: 1.0
-References: <159646178122.1784947.11705396571718464082.stgit@warthog.procyon.org.uk>
- <1596555579.10158.23.camel@HansenPartnership.com>
-In-Reply-To: <1596555579.10158.23.camel@HansenPartnership.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 4 Aug 2020 21:18:38 +0200
-Message-ID: <CAJfpegtbX4DZcEuyF1oBatP__jRc_=HFmcJE8XUHjy1rwtqdOg@mail.gmail.com>
-Subject: Re: [PATCH 00/18] VFS: Filesystem information [ver #21]
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jeff Layton <jlayton@kernel.org>, linux-ext4@vger.kernel.org,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Ian Kent <raven@themaw.net>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>, Karel Zak <kzak@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/alternative;
+        boundary="_.A4476ECDD73A3"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Aug 4, 2020 at 5:40 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> On Mon, 2020-08-03 at 14:36 +0100, David Howells wrote:
-> > Here's a set of patches that adds a system call, fsinfo(), that
-> > allows information about the VFS, mount topology, superblock and
-> > files to be retrieved.
-> >
-> > The patchset is based on top of the notifications patchset and allows
-> > event counters implemented in the latter to be retrieved to allow
-> > overruns to be efficiently managed.
->
-> Could I repeat the question I asked about six months back that never
-> got answered:
->
-> https://lore.kernel.org/linux-api/1582316494.3376.45.camel@HansenPartnership.com/
->
-> It sort of petered out into a long winding thread about why not use
-> sysfs instead, which really doesn't look like a good idea to me.
->
-> I'll repeat the information for those who want to quote it easily on
-> reply without having to use a web interface:
->
-> ---
-> Could I make a suggestion about how this should be done in a way that
-> doesn't actually require the fsinfo syscall at all: it could just be
-> done with fsconfig.  The idea is based on something I've wanted to do
-> for configfd but couldn't because otherwise it wouldn't substitute for
-> fsconfig, but Christian made me think it was actually essential to the
-> ability of the seccomp and other verifier tools in the critique of
-> configfd and I belive the same critique applies here.
->
-> Instead of making fsconfig functionally configure ... as in you pass
-> the attribute name, type and parameters down into the fs specific
-> handler and the handler does a string match and then verifies the
-> parameters and then acts on them, make it table configured, so what
-> each fstype does is register a table of attributes which can be got and
-> optionally set (with each attribute having a get and optional set
-> function).  We'd have multiple tables per fstype, so the generic VFS
-> can register a table of attributes it understands for every fstype
-> (things like name, uuid and the like) and then each fs type would
-> register a table of fs specific attributes following the same pattern.
-> The system would examine the fs specific table before the generic one,
-> allowing overrides.  fsconfig would have the ability to both get and
-> set attributes, permitting retrieval as well as setting (which is how I
-> get rid of the fsinfo syscall), we'd have a global parameter, which
-> would retrieve the entire table by name and type so the whole thing is
-> introspectable because the upper layer knows a-priori all the
-> attributes which can be set for a given fs type and what type they are
-> (so we can make more of the parsing generic).  Any attribute which
-> doesn't have a set routine would be read only and all attributes would
-> have to have a get routine meaning everything is queryable.
 
-fsconfig(2) takes an fd referring to an fs_context, that in turn
-refers to a super_block.
+--_.A4476ECDD73A3
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-So using fsconfig() for retrieving super_block attributes would be
-fine (modulo value being const, and lack of buffer size).
+Greetings
 
-But what about mount attributes?
+My name is Barrister Hans Erich.
 
-I don't buy the argument that an API needs to be designed around the
-requirements of seccomp and the like.  It should be the other way
-round.  In that, I think your configfd idea was fine, and would answer
-the above question.
+I have a client who is interested to invest in your country, she is a well=
+ known politician in her country and deserve a lucrative investment partne=
+rship with you outside her country without any delay   Please can you mana=
+ge such investment please Kindly reply for further details.
 
-Thanks,
-Miklos
+Your full names --------
+
+
+Your urgent response will be appreciated
+
+Thank you and God bless you.
+
+Barrister Hans Erich
+
+Yours sincerely,
+Barrister Hans Erich
+CONTACT: hanserich9helmut@gmail.com
+
+--_.A4476ECDD73A3--
+
