@@ -2,145 +2,166 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF982CF163
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2019 05:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDFACF700
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2019 12:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729879AbfJHDnC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 7 Oct 2019 23:43:02 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:36428 "EHLO huawei.com"
+        id S1730256AbfJHK1M (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 8 Oct 2019 06:27:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36718 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729772AbfJHDnC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 7 Oct 2019 23:43:02 -0400
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id A91DC9CD7BE5900EBA13;
-        Tue,  8 Oct 2019 11:42:59 +0800 (CST)
-Received: from DGGEMM532-MBX.china.huawei.com ([169.254.7.168]) by
- DGGEMM406-HUB.china.huawei.com ([10.3.20.214]) with mapi id 14.03.0439.000;
- Tue, 8 Oct 2019 11:42:53 +0800
-From:   Guiyao <guiyao@huawei.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-CC:     "tytso@mit.edu" <tytso@mit.edu>,
-        Mingfangsen <mingfangsen@huawei.com>,
-        "ebiggers@google.com" <ebiggers@google.com>,
-        "aceballos@gmail.com" <aceballos@gmail.com>,
-        "vertaling@coevern.nl" <vertaling@coevern.nl>
-Subject: [PATCH] e2fsprogs: Check device id in advance to skip fake device
- name
-Thread-Topic: [PATCH] e2fsprogs: Check device id in advance to skip fake
- device name
-Thread-Index: AdV9ilnP4am9Fx3mSHqwErCX4XHRfQ==
-Date:   Tue, 8 Oct 2019 03:42:52 +0000
-Message-ID: <005F77DB9A260B4E91664DDF22573C66E9CFF3AA@DGGEMM532-MBX.china.huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.173.220.158]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1729958AbfJHK1M (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 8 Oct 2019 06:27:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 8F8A8ADFE;
+        Tue,  8 Oct 2019 10:27:10 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id B8ABD1E4827; Tue,  8 Oct 2019 12:27:09 +0200 (CEST)
+Date:   Tue, 8 Oct 2019 12:27:09 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
+Subject: Re: [PATCH v4 1/8] ext4: move out iomap field population into
+ separate helper
+Message-ID: <20191008102709.GD5078@quack2.suse.cz>
+References: <cover.1570100361.git.mbobrowski@mbobrowski.org>
+ <8b4499e47bea3841194850e1b3eeb924d87e69a5.1570100361.git.mbobrowski@mbobrowski.org>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8b4499e47bea3841194850e1b3eeb924d87e69a5.1570100361.git.mbobrowski@mbobrowski.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+On Thu 03-10-19 21:33:09, Matthew Bobrowski wrote:
+> Separate the iomap field population chunk into a separate simple
+> helper routine. This helps reducing the overall clutter within the
+> ext4_iomap_begin() callback, especially as we move across more code to
+> make use of iomap infrastructure.
+> 
+> Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> ---
+>  fs/ext4/inode.c | 65 ++++++++++++++++++++++++++++---------------------
+>  1 file changed, 37 insertions(+), 28 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 516faa280ced..1ccdc14c4d69 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3406,10 +3406,43 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
+>  	return inode->i_state & I_DIRTY_DATASYNC;
+>  }
+>  
+> +static int ext4_set_iomap(struct inode *inode, struct iomap *iomap, u16 type,
+> +			  unsigned long first_block, struct ext4_map_blocks *map)
+> +{
+> +	u8 blkbits = inode->i_blkbits;
+> +
+> +	iomap->flags = 0;
+> +	if (ext4_inode_datasync_dirty(inode))
+> +		iomap->flags |= IOMAP_F_DIRTY;
+> +	iomap->bdev = inode->i_sb->s_bdev;
+> +	iomap->dax_dev = EXT4_SB(inode->i_sb)->s_daxdev;
+> +	iomap->offset = (u64) first_block << blkbits;
+> +	iomap->length = (u64) map->m_len << blkbits;
+> +
+> +	if (type) {
+> +		iomap->type = type;
+> +		iomap->addr = IOMAP_NULL_ADDR;
+> +	} else {
+> +		if (map->m_flags & EXT4_MAP_MAPPED) {
+> +			iomap->type = IOMAP_MAPPED;
+> +		} else if (map->m_flags & EXT4_MAP_UNWRITTEN) {
+> +			iomap->type = IOMAP_UNWRITTEN;
+> +		} else {
+> +			WARN_ON_ONCE(1);
+> +			return -EIO;
+> +		}
+> +		iomap->addr = (u64) map->m_pblk << blkbits;
+> +	}
 
-In some cases, using resize2fs to resize one fs will return "fail".
-Reproduce steps are as follows,
-1. create 2 folders, for example "mnt" and "tmp"
-2. mount /dev/sdb onto tmp as tmpfs
-3. mount /dev/sdb onto mnt as ext4 or other normal file system 4. try to resize /dev/sdb, it FAILED! -> "Couldn't find valid filesystem superblock."
-5. if mount mnt firstly, resize2fs command will succeed.
+Looking at this function now, the 'type' argument looks a bit weird. Can we
+perhaps just remove the 'type' argument and change the above to:
 
-In check_mntent_file func, firstly try to find out the input device name in mtab_file line by line, and it will leave from loop once one item matched.
-Then, check the mount point's st_dev of matched item, if it is not same with the input device's st_dev, it will return fail.
-In this case, the first matched item in mtab_file is "tmp" mount point, it is only named as "/dev/sdb", which actually is not sdb's real mount point.
-Finally, the name is matched, but st_dev is not matched, and then resize command fails.
+	if (map->m_flags & (EXT4_MAP_MAPPED | EXT4_MAP_UNWRITTEN)) {
+		if (map->m_flags & EXT4_MAP_MAPPED)
+			iomap->type = IOMAP_MAPPED;
+		else if (map->m_flags & EXT4_MAP_UNWRITTEN)
+			iomap->type = IOMAP_UNWRITTEN;
+		iomap->addr = (u64) map->m_pblk << blkbits;
+	} else {
+		iomap->type = IOMAP_HOLE;
+		iomap->addr = IOMAP_NULL_ADDR;
+	}
 
-Here, we check the st_dev immediately once the name is matched.
-If st_dev not same, continue to next loop.
+And then in ext4_iomap_begin() we overwrite the type to:
 
+	if (delalloc && iomap->type == IOMAP_HOLE)
+		iomap->type = IOMAP_DELALLOC;
 
-Signed-off-by: GuiYao <guiyao@huawei.com>
----
- lib/ext2fs/ismounted.c | 49 +++++++++++++++++-------------------------
- 1 file changed, 20 insertions(+), 29 deletions(-)
+That would IMO make ext4_set_iomap() arguments harder to get wrong.
 
-diff --git a/lib/ext2fs/ismounted.c b/lib/ext2fs/ismounted.c index 6cd497dc..265d27f7 100644
---- a/lib/ext2fs/ismounted.c
-+++ b/lib/ext2fs/ismounted.c
-@@ -98,6 +98,9 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,  {
- 	struct mntent 	*mnt;
- 	struct stat	st_buf;
-+#ifndef __GNU__
-+	struct stat	dir_st_buf;
-+#endif  /* __GNU__ */
- 	errcode_t	retval = 0;
- 	dev_t		file_dev=0, file_rdev=0;
- 	ino_t		file_ino=0;
-@@ -128,13 +131,26 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,
- 	while ((mnt = getmntent (f)) != NULL) {
- 		if (mnt->mnt_fsname[0] != '/')
- 			continue;
--		if (strcmp(file, mnt->mnt_fsname) == 0)
-+#ifndef __GNU__
-+		if (stat(mnt->mnt_dir, &dir_st_buf) != 0)
-+			continue;
-+#endif  /* __GNU__ */
-+		if (strcmp(file, mnt->mnt_fsname) == 0) { #ifndef __GNU__
-+			if (file_rdev && (file_rdev == dir_st_buf.st_dev))
-+				break;
-+			continue;
-+#else
- 			break;
-+#endif  /* __GNU__ */
-+		}
- 		if (stat(mnt->mnt_fsname, &st_buf) == 0) {
- 			if (ext2fsP_is_disk_device(st_buf.st_mode)) {  #ifndef __GNU__
--				if (file_rdev && (file_rdev == st_buf.st_rdev))
--					break;
-+				if (file_rdev && (file_rdev == st_buf.st_rdev)) {
-+					if (file_rdev == dir_st_buf.st_dev)
-+						break;
-+				}
- 				if (check_loop_mounted(mnt->mnt_fsname,
- 						st_buf.st_rdev, file_dev,
- 						file_ino) == 1)
-@@ -168,32 +184,7 @@ static errcode_t check_mntent_file(const char *mtab_file, const char *file,
- #endif	/* __GNU__ */
- 		goto errout;
- 	}
--#ifndef __GNU__ /* The GNU hurd is deficient; what else is new? */
--	/* Validate the entry in case /etc/mtab is out of date */
--	/*
--	 * We need to be paranoid, because some broken distributions
--	 * (read: Slackware) don't initialize /etc/mtab before checking
--	 * all of the non-root filesystems on the disk.
--	 */
--	if (stat(mnt->mnt_dir, &st_buf) < 0) {
--		retval = errno;
--		if (retval == ENOENT) {
--#ifdef DEBUG
--			printf("Bogus entry in %s!  (%s does not exist)\n",
--			       mtab_file, mnt->mnt_dir);
--#endif /* DEBUG */
--			retval = 0;
--		}
--		goto errout;
--	}
--	if (file_rdev && (st_buf.st_dev != file_rdev)) {
--#ifdef DEBUG
--		printf("Bogus entry in %s!  (%s not mounted on %s)\n",
--		       mtab_file, file, mnt->mnt_dir);
--#endif /* DEBUG */
--		goto errout;
--	}
--#endif /* __GNU__ */
-+
- 	*mount_flags = EXT2_MF_MOUNTED;
- 
- #ifdef MNTOPT_RO
---
-1.8.3.1
+								Honza
+
+> +
+> +	if (map->m_flags & EXT4_MAP_NEW)
+> +		iomap->flags |= IOMAP_F_NEW;
+> +	return 0;
+> +}
+> +
+>  static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>  			    unsigned flags, struct iomap *iomap)
+>  {
+> -	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+> +	u16 type = 0;
+>  	unsigned int blkbits = inode->i_blkbits;
+>  	unsigned long first_block, last_block;
+>  	struct ext4_map_blocks map;
+> @@ -3523,33 +3556,9 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>  			return ret;
+>  	}
+>  
+> -	iomap->flags = 0;
+> -	if (ext4_inode_datasync_dirty(inode))
+> -		iomap->flags |= IOMAP_F_DIRTY;
+> -	iomap->bdev = inode->i_sb->s_bdev;
+> -	iomap->dax_dev = sbi->s_daxdev;
+> -	iomap->offset = (u64)first_block << blkbits;
+> -	iomap->length = (u64)map.m_len << blkbits;
+> -
+> -	if (ret == 0) {
+> -		iomap->type = delalloc ? IOMAP_DELALLOC : IOMAP_HOLE;
+> -		iomap->addr = IOMAP_NULL_ADDR;
+> -	} else {
+> -		if (map.m_flags & EXT4_MAP_MAPPED) {
+> -			iomap->type = IOMAP_MAPPED;
+> -		} else if (map.m_flags & EXT4_MAP_UNWRITTEN) {
+> -			iomap->type = IOMAP_UNWRITTEN;
+> -		} else {
+> -			WARN_ON_ONCE(1);
+> -			return -EIO;
+> -		}
+> -		iomap->addr = (u64)map.m_pblk << blkbits;
+> -	}
+> -
+> -	if (map.m_flags & EXT4_MAP_NEW)
+> -		iomap->flags |= IOMAP_F_NEW;
+> -
+> -	return 0;
+> +	if (!ret)
+> +		type = delalloc ? IOMAP_DELALLOC : IOMAP_HOLE;
+> +	return ext4_set_iomap(inode, iomap, type, first_block, &map);
+>  }
+>  
+>  static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
+> -- 
+> 2.20.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
