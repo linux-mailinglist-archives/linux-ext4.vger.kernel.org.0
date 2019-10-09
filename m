@@ -2,85 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE11D0AD5
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 11:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC6DD0B3C
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 11:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730347AbfJIJSj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Oct 2019 05:18:39 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:40495 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbfJIJSj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Oct 2019 05:18:39 -0400
-Received: by mail-pf1-f194.google.com with SMTP id x127so1222732pfb.7
-        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2019 02:18:38 -0700 (PDT)
+        id S1730217AbfJIJby (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Oct 2019 05:31:54 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:40932 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726734AbfJIJbx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Oct 2019 05:31:53 -0400
+Received: by mail-pg1-f195.google.com with SMTP id d26so1034966pgl.7
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2019 02:31:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=dIMjgz2wkdOJUmFipmSdwtOA8NXSDN4ksobQ1Cu2hUA=;
-        b=QH1PLZwggPZx3KtHORU9BFAiQwvFEibddbWy92hdfzkazAoK0ZRupqHaNi8+5J36OJ
-         zP6038H7xR7gzG+jDff1hyaTp1CfcrtC+tsqwU7G0ifDfhuxrQguMX5vTqFwStKCeBiq
-         NEyXvdnNeCOHyirKwJW1TZmZtt/wOeTngrkeCjHi5/xtBgwFjj6pwGptTzNKpd0/CLOt
-         EmRbcL+dBJzZDfWeH8ki/Tw+8z6UN1/mJIAvc4YHJERfcLGIJwbzALFAZe3VH+S3Zq4X
-         ENC1o4zhJM2+RRQqWQwm7eyb/0ZRCeUnusjirW/3aMTvwiFwuP6zXbnRlIFaGzN1/nae
-         b8dA==
+        bh=kRwGuJ3Z1w4orY8QbOKxpUxozCDZla3/A5WPD537bEo=;
+        b=O1ezDfSH84PuIoqX/PAnA8VZ2qWhvdldsQ1OgtFWqCDjde4BiS2PHLkT9IRrkvDE8N
+         RDzIfE5o9qj2czst4sStXqKL5f499Z85e7ZDJOQN3Awp0nMrOUdaTuKQv6TRg9+SBC56
+         B6gFljPw42NnjfS37m83Go+yK4RC+MlIWsSE3H/96hUy3qNpaOwBvojlKnGdL5eCkPyP
+         exDBUtoWtNXpUjh8hrEx59kpghBMaUZrFV5wM1yVls1A4e4xOnMDf0+UVcE5MQey89b2
+         C4c3c/SZmKbuv1YP3+Vnc4JbQm7QEBgGg+40a6LiweMVOvvWTPLTyMbIkP3nkZZy2sm9
+         2+dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dIMjgz2wkdOJUmFipmSdwtOA8NXSDN4ksobQ1Cu2hUA=;
-        b=N8Um4L7ycoZ6lkr6C/C9ex6/SzuG+xc3luZPcX8qOGabt+QJZc/T6b2zti6YHoikLp
-         DP9HFyoLhqoPlVNO+KJgSo5GHk+FmEN4MpDScR/NiJQACY4DJ3zpdQo7keMB0tXhHhBj
-         4JBG7dwkqUxfLZoHiDcTlsLRqcHSkNjkIdWJar2w5rS/hNcGLsfoUVT2IbemgBV1nMAB
-         QsR6G0+nRBRLc3FRebAeqNh6aahuWZjEQVkRSon0dbSPwH+97je9y8Mu+TlL9q5Pui+g
-         83CfR9HSv5HV52UhJLvFs3FwjQUJdqusl1t2qC4I7km5npSTLfVt1NwTMFhYqWzKqGGg
-         izWw==
-X-Gm-Message-State: APjAAAUoc5x2uaj008FRSt1QcEvGsUMSLSfs52clZLWwMtoZysCvc7hn
-        xyrVXegQrn3XSNxV2QO/0fAv0ZUKa2JD
-X-Google-Smtp-Source: APXvYqwmoyEVscGNMXHMxoyorGGNSGPQexKQNKFX+pBChZ4yWHcpoI8Ert7PG67/T1PhyKZrreUROw==
-X-Received: by 2002:a62:283:: with SMTP id 125mr2684628pfc.137.1570612718047;
-        Wed, 09 Oct 2019 02:18:38 -0700 (PDT)
+        bh=kRwGuJ3Z1w4orY8QbOKxpUxozCDZla3/A5WPD537bEo=;
+        b=VjcnnmZSQim7y9C86ZGLXOqEAwpSZF9yHU4efgbFpcrPm7A/AQO7CQ5TbB+YST94tK
+         C5WuAUZRRslDVPcmBCMylf6IrN6tkk1DTHuOdyr1soOr6oAkHqR5soZO11ShNjOPxMuA
+         K2SGG6Yj0Bfz1emFM7YlGfNzzb9L+jlhiChgtCLpTaN/WZ9GMO5XKxRgsbz8BsK4XWv3
+         dcb0hgcXjqNIWquLeVX9cgdxeYvO1lmZa/O7hUbd4tQ7oDVL2wxzxdey+81j/uF8qKmU
+         uHII6odCa5rCxikZDj+C2/ppSZ1nXBoeZKPMiK1NfG30XoZ28WVT7cV8sMMcxWQeuVgm
+         XT4g==
+X-Gm-Message-State: APjAAAXpwDDYDmTe3GH3fBIWMyWW4/dYcxvv6S0a6Gswm+mR6R3BwPBO
+        BcLDUdbs6vle8HPBKUXFuLIeN4F9Znpy
+X-Google-Smtp-Source: APXvYqxxU1TsVsd/WhnZ8S4/DbhtJuP9H5Zl17BMmDhrD1TFjUz562odaZUlcJ2flcD1Tu4UZ8w5/Q==
+X-Received: by 2002:a62:283:: with SMTP id 125mr2735157pfc.137.1570613512888;
+        Wed, 09 Oct 2019 02:31:52 -0700 (PDT)
 Received: from poseidon.bobrowski.net ([114.78.226.167])
-        by smtp.gmail.com with ESMTPSA id h8sm2027979pfo.64.2019.10.09.02.18.34
+        by smtp.gmail.com with ESMTPSA id g6sm1926197pgk.64.2019.10.09.02.31.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 02:18:37 -0700 (PDT)
-Date:   Wed, 9 Oct 2019 20:18:31 +1100
+        Wed, 09 Oct 2019 02:31:52 -0700 (PDT)
+Date:   Wed, 9 Oct 2019 20:31:46 +1100
 From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
 Subject: Re: [PATCH v4 2/8] ext4: move out IOMAP_WRITE path into separate
  helper
-Message-ID: <20191009091830.GC2125@poseidon.bobrowski.net>
+Message-ID: <20191009093144.GD2125@poseidon.bobrowski.net>
 References: <cover.1570100361.git.mbobrowski@mbobrowski.org>
  <99b317af0f20a170fba2e70695d7cca1597fb19a.1570100361.git.mbobrowski@mbobrowski.org>
- <20191008103137.GE5078@quack2.suse.cz>
+ <20191009062242.87D244204B@d06av24.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191008103137.GE5078@quack2.suse.cz>
+In-Reply-To: <20191009062242.87D244204B@d06av24.portsmouth.uk.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 08, 2019 at 12:31:37PM +0200, Jan Kara wrote:
-> On Thu 03-10-19 21:33:29, Matthew Bobrowski wrote:
-> > In preparation for porting across the direct I/O path to iomap, split
-> > out the IOMAP_WRITE logic into a separate helper. This way, we don't
-> > need to clutter the ext4_iomap_begin() callback.
-> > 
-> > Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+On Wed, Oct 09, 2019 at 11:52:41AM +0530, Ritesh Harjani wrote:
+> On 10/3/19 5:03 PM, Matthew Bobrowski wrote:
+> Minor comment, but otherwise.
+> Patch looks good to me. You may add:
 > 
-> The patch looks good to me. You can add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> Just please reformat the comments to use full 80 column lines. Your Emacs
-> still doesn't seem to get it :)
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-*nod* :)
+*nod* - Thank you!
+
+> >   static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+> >   			    unsigned flags, struct iomap *iomap)
+> >   {
+> > @@ -3500,62 +3556,16 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+> >   			}
+> >   		}
+> >   	} else if (flags & IOMAP_WRITE) {
+> > -		int dio_credits;
+> > -		handle_t *handle;
+> > -		int retries = 0;
+> > -
+> > -		/* Trim mapping request to maximum we can map at once for DIO */
+> > -		if (map.m_len > DIO_MAX_BLOCKS)
+> > -			map.m_len = DIO_MAX_BLOCKS;
+> > -		dio_credits = ext4_chunk_trans_blocks(inode, map.m_len);
+> > -retry:
+> > -		/*
+> > -		 * Either we allocate blocks and then we don't get unwritten
+> > -		 * extent so we have reserved enough credits, or the blocks
+> > -		 * are already allocated and unwritten and in that case
+> > -		 * extent conversion fits in the credits as well.
+> > -		 */
+> > -		handle = ext4_journal_start(inode, EXT4_HT_MAP_BLOCKS,
+> > -					    dio_credits);
+> > -		if (IS_ERR(handle))
+> > -			return PTR_ERR(handle);
+> > -
+> > -		ret = ext4_map_blocks(handle, inode, &map,
+> > -				      EXT4_GET_BLOCKS_CREATE_ZERO);
+> > -		if (ret < 0) {
+> > -			ext4_journal_stop(handle);
+> > -			if (ret == -ENOSPC &&
+> > -			    ext4_should_retry_alloc(inode->i_sb, &retries))
+> > -				goto retry;
+> > -			return ret;
+> > -		}
+> > -
+> > -		/*
+> > -		 * If we added blocks beyond i_size, we need to make sure they
+> > -		 * will get truncated if we crash before updating i_size in
+> > -		 * ext4_iomap_end(). For faults we don't need to do that (and
+> > -		 * even cannot because for orphan list operations inode_lock is
+> > -		 * required) - if we happen to instantiate block beyond i_size,
+> > -		 * it is because we race with truncate which has already added
+> > -		 * the inode to the orphan list.
+> > -		 */
+> > -		if (!(flags & IOMAP_FAULT) && first_block + map.m_len >
+> > -		    (i_size_read(inode) + (1 << blkbits) - 1) >> blkbits) {
+> > -			int err;
+> > -
+> > -			err = ext4_orphan_add(handle, inode);
+> > -			if (err < 0) {
+> > -				ext4_journal_stop(handle);
+> > -				return err;
+> > -			}
+> > -		}
+> > -		ext4_journal_stop(handle);
+> > +		ret = ext4_iomap_alloc(inode, flags, first_block, &map);
+> 
+> We don't need "first_block" argument here. Since
+> map->m_lblk saves first_block directly above in the same function.
+
+You're right. I will change that.
+
+> No strong objection against ext4_iomap_alloc, but
+> maybe ext4_iomap_map_write sounds better?
+> Either way is fine though.
+
+I like 'ext4_iomap_alloc', because it's performing allocation in
+preparation for a write being performed on behalf of iomap. :)
 
 --<M>--
+
