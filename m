@@ -2,169 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F038FD0FBC
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 15:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C1AD1063
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 15:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731144AbfJINOy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Oct 2019 09:14:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17698 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730765AbfJINOy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Oct 2019 09:14:54 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x99DE1VE068952
-        for <linux-ext4@vger.kernel.org>; Wed, 9 Oct 2019 09:14:51 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2vhda0ed7c-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2019 09:14:51 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Wed, 9 Oct 2019 14:14:49 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 9 Oct 2019 14:14:45 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x99DEii253018862
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Oct 2019 13:14:44 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2BB9211C05E;
-        Wed,  9 Oct 2019 13:14:44 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BDE6311C054;
-        Wed,  9 Oct 2019 13:14:41 +0000 (GMT)
-Received: from [9.199.159.72] (unknown [9.199.159.72])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Oct 2019 13:14:41 +0000 (GMT)
-Subject: Re: [PATCH v4 3/8] ext4: introduce new callback for IOMAP_REPORT
- operations
-To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
+        id S1731403AbfJINl0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Oct 2019 09:41:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58886 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731243AbfJINl0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 9 Oct 2019 09:41:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 15A07B186;
+        Wed,  9 Oct 2019 13:41:24 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 727191E4851; Wed,  9 Oct 2019 15:41:23 +0200 (CEST)
+Date:   Wed, 9 Oct 2019 15:41:23 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>,
+        Matthew Bobrowski <mbobrowski@mbobrowski.org>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, david@fromorbit.com,
+        darrick.wong@oracle.com
+Subject: Re: [PATCH v4 8/8] ext4: introduce direct I/O write path using iomap
+ infrastructure
+Message-ID: <20191009134123.GE5050@quack2.suse.cz>
 References: <cover.1570100361.git.mbobrowski@mbobrowski.org>
- <cb2dcb6970da1b53bdf85583f13ba2aaf1684e96.1570100361.git.mbobrowski@mbobrowski.org>
- <20191009060022.4878542049@d06av24.portsmouth.uk.ibm.com>
- <20191009120816.GH14749@poseidon.bobrowski.net>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Wed, 9 Oct 2019 18:44:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ <9ef408b4079d438c0e6071b862c56fc8b65c3451.1570100361.git.mbobrowski@mbobrowski.org>
+ <20191008151238.GK5078@quack2.suse.cz>
+ <20191009071145.GB32281@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20191009120816.GH14749@poseidon.bobrowski.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 19100913-0008-0000-0000-000003207B6B
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19100913-0009-0000-0000-00004A3F804F
-Message-Id: <20191009131441.BDE6311C054@d06av25.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-09_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1910090126
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191009071145.GB32281@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-On 10/9/19 5:38 PM, Matthew Bobrowski wrote:
-> On Wed, Oct 09, 2019 at 11:30:21AM +0530, Ritesh Harjani wrote:
->>> +static u16 ext4_iomap_check_delalloc(struct inode *inode,
->>> +				     struct ext4_map_blocks *map)
->>> +{
->>> +	struct extent_status es;
->>> +	ext4_lblk_t end = map->m_lblk + map->m_len - 1;
->>> +
->>> +	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, map->m_lblk,
->>> +				  end, &es);
->>> +
->>> +	/* Entire range is a hole */
->>> +	if (!es.es_len || es.es_lblk > end)
->>> +		return IOMAP_HOLE;
->>> +	if (es.es_lblk <= map->m_lblk) {
->>> +		ext4_lblk_t offset = 0;
->>> +
->>> +		if (es.es_lblk < map->m_lblk)
->>> +			offset = map->m_lblk - es.es_lblk;
->>> +		map->m_lblk = es.es_lblk + offset;
->> This looks redundant no? map->m_lblk never changes actually.
->> So this is not needed here.
+On Wed 09-10-19 00:11:45, Christoph Hellwig wrote:
+> On Tue, Oct 08, 2019 at 05:12:38PM +0200, Jan Kara wrote:
+> > Seeing how difficult it is when a filesystem wants to complete the iocb
+> > synchronously (regardless whether it is async or sync) and have all the
+> > information in one place for further processing, I think it would be the
+> > easiest to provide iomap_dio_rw_wait() that forces waiting for the iocb to
+> > complete *and* returns the appropriate return value instead of pretty
+> > useless EIOCBQUEUED. It is actually pretty trivial (patch attached). With
+> > this we can then just call iomap_dio_rw_sync() for the inode extension case
+> > with ->end_io doing just the unwritten extent processing and then call
+> > ext4_handle_inode_extension() from ext4_direct_write_iter() where we would
+> > have all the information we need.
+> > 
+> > Christoph, Darrick, what do you think about extending iomap like in the
+> > attached patch (plus sample use in XFS)?
 > 
-> Well, it depends if map->m_lblk == es.es_lblk + offset prior to the
-> assignment? If that's always true, then sure, it'd be redundant. But
-> honestly, I don't know what the downstream effect would be if this was
-> removed. I'd have to look at the code, perform some tests, and figure
-> it out.
+> I vaguely remember suggesting something like this but Brian or Dave
+> convinced me it wasn't a good idea.  This will require a trip to the
+> xfs or fsdevel archives from when the inode_dio_wait was added in XFS.
 
-<snip>
-3334         if (es.es_lblk <= map->m_lblk) {
-3335                 ext4_lblk_t offset = 0;
-3336
-3337                 if (es.es_lblk < map->m_lblk)
-3338                         offset = map->m_lblk - es.es_lblk;
-3339                 map->m_lblk = es.es_lblk + offset;
-3340                 map->m_len = es.es_len - offset;
-3341                 return IOMAP_DELALLOC;
-3342         }
+I think you refer to this [1] message from Brian:
 
-I saw it this way-
+It's not quite that simple..
 
-In condition "if (es.es_lblk <= map->m_lblk)" there are 2 cases.
+FWIW, the discussion (between Dave and I) for how best to solve this
+started offline prior to sending the patch and pretty much started with
+the idea of changing the async I/O to sync as you suggest here. I backed
+off from that because it's too subtle given the semantics between the
+higher level aio code and lower level dio code for async I/O. By that I
+mean either can be responsible for calling the ->ki_complete() callback
+in the iocb on I/O completion.
 
-Case 1: es.es_lblk is equal to map->m_lblk (equality)
-    For this case, "offset" will remain 0.
-    So map->lblk = es.es_lblk + 0 (but since es.es_lblk is same as
-map->m_lblk in equality case, so it is redundant).
+IOW, if we receive an async direct I/O, clear ->ki_complete() as you
+describe above and submit it, the dio code will wait on I/O and return
+the size of the I/O on successful completion. It will not have called
+->ki_complete(), however. Rather, the >0 return value indicates that
+aio_rw_done() must call ->ki_complete() after xfs_file_write_iter()
+returns, but we would have already cleared the function pointer.
 
+I think it is technically possible to use this technique by clearing and
+restoring ->ki_complete(), but in general we've visited this "change the
+I/O type" approach twice now and we've (collectively) got it wrong both
+times (the first error in thinking was that XFS would need to call
+->ki_complete()). IMO, this demonstrates that it's not worth the
+complexity to insert ourselves into this dependency chain when we can
+accomplish the same thing with a simple dio wait call.
 
-Case 2: es.es_lblk < map->m_lblk (less than)
-In this case "offset = map->m_lblk - es.es_lblk"
-Now replacing this val of offset in "map->m_lblk = es.es_lblk + offset"
-map->m_lblk = es.es_lblk + map->m_lblk - es.es_lblk
-which again is map->m_lblk = map->m_lblk - again redundant.
+---
 
+Which is fair enough. I've been looking at the same and arrived at similar
+conclusion ;) (BTW, funnily enough ocfs2 seems to do this dance with
+clearing and restoring ki_complete). But what I propose is something
+different - just wait for IO in iomap_dio_rw() which avoids the need to
+clear & restore ->ki_complete() while at the same time while providing
+fully-sync IO experience to the caller. So Brians objection doesn't apply
+here.
 
-What did I miss?
-But sure feel free to test as per your convenience.
+> But if we decide it actully works this time around please don't add the
+> __ variant but just add the parameter to iomap_dio_rw directly.
 
+Yeah, I was undecided on this one as well. Will change this and post the
+patches to fsdevel & xfs lists.
 
-> 
->>> +	map.m_lblk = first_block;
->>> +	map.m_len = last_block = first_block + 1;
->>> +	ret = ext4_map_blocks(NULL, inode, &map, 0);
->>> +	if (ret < 0)
->>> +		return ret;
->>> +	if (ret == 0)
->>> +		type = ext4_iomap_check_delalloc(inode, &map);
->>> +	return ext4_set_iomap(inode, iomap, type, first_block, &map);
->> We don't need to send first_block here. Since map->m_lblk
->> is same as first_block.
->> Also with Jan comment, we don't even need 'type' parameter.
->> Then we should be able to rename the function
->> ext4_set_iomap ==> ext4_map_to_iomap. This better reflects what it is
->> doing. Thoughts?
-> 
-> Depends on what we conclude in 1/8. :)
-> 
-> I'm for removing 'first_block', but still not convinced removing
-> 'type' is heading down the right track if I were to forward think a
-> little.
+								Honza
 
-Only once you are convinced that map->m_lblk will not change even in
-function ext4_iomap_check_delalloc(), then only you should
-drop "first_block" argument from ext4_set_iomap.
-
-Please check above comments once.
-
--ritesh
-
+[1] https://lore.kernel.org/linux-xfs/20190325135124.GD52167@bfoster/
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
