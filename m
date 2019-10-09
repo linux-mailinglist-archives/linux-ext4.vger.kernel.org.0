@@ -2,79 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE370D0CF6
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 12:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02B6D0D00
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 12:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729942AbfJIKmb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Oct 2019 06:42:31 -0400
-Received: from mail-pl1-f181.google.com ([209.85.214.181]:41904 "EHLO
-        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729566AbfJIKmb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Oct 2019 06:42:31 -0400
-Received: by mail-pl1-f181.google.com with SMTP id t10so859046plr.8
-        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2019 03:42:29 -0700 (PDT)
+        id S1730606AbfJIKno (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Oct 2019 06:43:44 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:44801 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729686AbfJIKno (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Oct 2019 06:43:44 -0400
+Received: by mail-pf1-f193.google.com with SMTP id q21so1351410pfn.11
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2019 03:43:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Bm58YBswdlISkDr/Ri9rK9T+YxLaZyKmJp4DGvcJTBg=;
-        b=I8aIhyJ8I7eXY+MUGOunHtMn6yXr1flIzb64UdLjR6f4S4S4HW8P+ydbg8Mb5x771M
-         gfFVAxGILf6ALC5vbppKVpqPeMUBIYR/HzP4TRvu7eU2b/3QdGcpB3Zxdg5pmyUHSS40
-         pG1/gNBxuLT7YP6uFqNm6lJ6oSB2mO/t8svE5FpbAxxxYqkFXSb6GVI96UPQ0B2cKLZX
-         wjiGJ5q4MCR5Ad6C14cQA1Bn9quHwGmphku24TcrlJLffYjbrwqhk5R0Jj5SAqQnXh7C
-         gOA/Yu39oCaUbjKNNjevJxzyhs21oJ8a28wh98pu49VvKNANvtGMG4aEv1+52Lvywoqd
-         Janw==
+        bh=buLwW9Upwu/0aO+lI2LypZ3xpXUVlEG3VMhVw7VQ4tA=;
+        b=dX7XsLKdVagUMLtcBrpcMoJKqB1Yw5QVHwcVawHbdbXDMHsuuKMAxwM6Lp8nUmWbMw
+         Hh8nMmETmlvvxS49stA2BItM0nGPcjph1SmvmSJeI5JObNPuIXsvgQvA3b2hNIFkTwMy
+         AKnVU0Saig9XXlcLr70wB6FYSB3gMNxobuzpZIZ3AnG1MPKmXUKCiMoGnmgUKTOy52/X
+         QRRKjtwSqf4cg2Fd6d+JP3sk4lawuAzSfuHBZiUbZOrVgo3EKbFa6MmvVJ0s90ghNCxv
+         IPRXtLsMvkh6VVqxtP52foHD3cP25VPyZG6BveL1aJGcAFqWc/Fpx63nLyslH5yT4q0+
+         87BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Bm58YBswdlISkDr/Ri9rK9T+YxLaZyKmJp4DGvcJTBg=;
-        b=OaQGE8jldMomNwCtLaC1bchScMufyJMeAbwmXXgLcOPFhY+E5dyHHVs5JfYMin+0Uc
-         pIv4KSwyC5iIdEcKeAu5RoyXo+edBMvmpU6a4bygBNerAiRh8gHzmQHWppuoL/1wTQgd
-         IArdMqBKuRYXpvPdX+EqNKGBdsS3ylNJKXDQ+4YQYaW/YEAz65ZkA4BwytOa6BboBvuf
-         8d+Lxf5eOFnrbyhMoGja6HZJtUJS1+s7LX4eWtzi/5dSO5eRRHtTORGuW68HSYEjF/NN
-         fbEjDgjv67TL9PENUivBQ+Q9f23dMlTU0RZhQlMAdbB8VqjYM0lvNSnKVbNXug06GZio
-         F3BA==
-X-Gm-Message-State: APjAAAUmGXLfFu1crub7zrV5WDOdPzVF1+Tdxe/QgQZocujHWEhIIG6m
-        gGBcxN1PIUvzqBsUpUR8PQ0U
-X-Google-Smtp-Source: APXvYqxN69Tjyhd5JrhDTftfgmmWiJND0nFIpMG9lopTpbZTDjnDe4p+ppTyjeoIFhyMtSomAzn2fQ==
-X-Received: by 2002:a17:902:930b:: with SMTP id bc11mr2488108plb.284.1570617748885;
-        Wed, 09 Oct 2019 03:42:28 -0700 (PDT)
+        bh=buLwW9Upwu/0aO+lI2LypZ3xpXUVlEG3VMhVw7VQ4tA=;
+        b=jDHaMDctxt6im3WSQux5Yh+DAx/0DwMp5UiDe6P8M0mlFT/3e/nsuw6AiArG68Z+Pc
+         ZX6F4KUM2PtBZbyJmtED5/Tp7PSElQtfG/+7HX8Mpphy5cKRuLMLjguBvoWdiweQnng5
+         uCCo/JB1ycpMWE3xKR80s2mbCe6HPBJHdRGS3pO6J506/VhqV0fl4Ae0jVqresl6HbHb
+         9ed0DxyROy2swDwbPruOOH24G9GgC7Us8JfEdj4BYCMr9JpDcaMbnSZFTcWepjNzsGwU
+         M3a664yNjvqg5z2gG/FZR/TGITlXWrn8owCzM96cGuTqHFFrrMLmLDvvnMus2xozsKQ+
+         WQqA==
+X-Gm-Message-State: APjAAAXd96rzkrtO0IXPuFQGfDQbdb8rrBw/g1fZsQr6D7KwkbCEwGP4
+        Q5FHiq/dXSeuMEQ3yKSE9oWQ
+X-Google-Smtp-Source: APXvYqyZMaSmPfryuxffFu9XVIDaj3367+BDwEu69W+82YdMuLOhWY63sSdE+IJew0VhRgP7AvRyOg==
+X-Received: by 2002:a17:90a:5d0f:: with SMTP id s15mr3238284pji.126.1570617823216;
+        Wed, 09 Oct 2019 03:43:43 -0700 (PDT)
 Received: from poseidon.bobrowski.net ([114.78.226.167])
-        by smtp.gmail.com with ESMTPSA id f128sm1955760pfg.143.2019.10.09.03.42.25
+        by smtp.gmail.com with ESMTPSA id b73sm2213665pga.36.2019.10.09.03.43.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 03:42:28 -0700 (PDT)
-Date:   Wed, 9 Oct 2019 21:42:22 +1100
+        Wed, 09 Oct 2019 03:43:42 -0700 (PDT)
+Date:   Wed, 9 Oct 2019 21:43:36 +1100
 From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
 Subject: Re: [PATCH v4 7/8] ext4: reorder map.m_flags checks in
  ext4_set_iomap()
-Message-ID: <20191009104220.GD14749@poseidon.bobrowski.net>
+Message-ID: <20191009104334.GE14749@poseidon.bobrowski.net>
 References: <cover.1570100361.git.mbobrowski@mbobrowski.org>
  <3551610e53aa1984210a4de04ad6e1a89f5bf0a3.1570100361.git.mbobrowski@mbobrowski.org>
- <20191008113012.GJ5078@quack2.suse.cz>
+ <20191009063548.90C434203F@d06av24.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191008113012.GJ5078@quack2.suse.cz>
+In-Reply-To: <20191009063548.90C434203F@d06av24.portsmouth.uk.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 08, 2019 at 01:30:12PM +0200, Jan Kara wrote:
-> The patch looks good to me. You can add:
+On Wed, Oct 09, 2019 at 12:05:47PM +0530, Ritesh Harjani wrote:
+> You may be changing the function parameters & name here,
+> (in ext4_set_iomap)
+
+Hm, maybe. :P It all depends on the outcome of what we discuss in 1/8.
+
+> But functionality wise the patch looks good to me.
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> You may add:
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-Thanks Jan!
-
-> Just those 72 columns limited comment lines... ;)
-
-*nod* - will be fixed!
+Great, thanks Ritesh!
 
 --<M>--
