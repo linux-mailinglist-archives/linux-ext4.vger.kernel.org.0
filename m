@@ -2,112 +2,373 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C1AD1063
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 15:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DDED1083
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 15:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731403AbfJINl0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Oct 2019 09:41:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58886 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731243AbfJINl0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 9 Oct 2019 09:41:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 15A07B186;
-        Wed,  9 Oct 2019 13:41:24 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 727191E4851; Wed,  9 Oct 2019 15:41:23 +0200 (CEST)
-Date:   Wed, 9 Oct 2019 15:41:23 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>,
-        Matthew Bobrowski <mbobrowski@mbobrowski.org>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, david@fromorbit.com,
-        darrick.wong@oracle.com
-Subject: Re: [PATCH v4 8/8] ext4: introduce direct I/O write path using iomap
- infrastructure
-Message-ID: <20191009134123.GE5050@quack2.suse.cz>
-References: <cover.1570100361.git.mbobrowski@mbobrowski.org>
- <9ef408b4079d438c0e6071b862c56fc8b65c3451.1570100361.git.mbobrowski@mbobrowski.org>
- <20191008151238.GK5078@quack2.suse.cz>
- <20191009071145.GB32281@infradead.org>
+        id S1731381AbfJINsE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Oct 2019 09:48:04 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40722 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731260AbfJINsD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Oct 2019 09:48:03 -0400
+Received: by mail-io1-f65.google.com with SMTP id h144so5075231iof.7
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2019 06:48:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mSn2+23DA3dvXibL8cPD2hacODId04tGVSl14+36G0M=;
+        b=f4t2WfBwSf0jLgHGNe7U1kPAffY7ZsGh6FcYh9bkmepgDSasA6orIgr3iNx3Vvxen0
+         lVwcEfeOdtQMBR3ANQe1udoxHnlRkNwgYvtaHlAx3/Fbnw3SG99zRiRtDM19KYkPPmHa
+         Os+V32rqsuiw8Ll8tllM9Vw7EHLMTaKp7E/Mw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mSn2+23DA3dvXibL8cPD2hacODId04tGVSl14+36G0M=;
+        b=jbThgNpRM5J6OIj9zalbX7EK3ktMbS+5SHWXGYTWjicQny/iyPHRMQCU+l9dRlBhJH
+         /32iv11PtkNHLOeJMeaX59FAjV8F7BN3zFzaJlqTkR9aYww7A5S5KMYi7FXGTPT1wO/Q
+         8c0lnh0PHxlF2usQlP7eHv74rzeBd5W/ObyE3NcE5iuPeGlA8CXKgcg94AHjBZI+DNCP
+         Uh5gl7ZC4a9eHsm89nJFd/fAE2iL30TmtXcnMBJCnstsZZV6XYNsk5nCg9JCrmHADX4m
+         ZcgCqKMPXOtqGzXt/tXoNcY+DrRu5agjl2Ly2SLQYvArucS4N/wpvkeWfX13mdFdFJiN
+         0ZsA==
+X-Gm-Message-State: APjAAAXUCYlkZMUVe/tK3jMJOmQBfHr8r7jOm6gd84BWAekoG/ZvMLLr
+        V5eMWCdM5yoAou7z4tGhllUMJQ==
+X-Google-Smtp-Source: APXvYqwJpI9LiJgzwPQq+Q9lfmxOWVS6eOIfFeQvJQZXWTQgAmcdA043NEA+HNTVg2O2QdXXobHxYA==
+X-Received: by 2002:a02:8188:: with SMTP id n8mr3032515jag.71.1570628882235;
+        Wed, 09 Oct 2019 06:48:02 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id f8sm881926ioo.27.2019.10.09.06.48.01
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Oct 2019 06:48:01 -0700 (PDT)
+Subject: Re: [PATCH v1] fs/ext4/inode-test: KUnit test for ext4 inode.
+To:     Iurii Zaikin <yzaikin@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca
+Cc:     kunit-dev@googlegroups.com,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <CAAXuY3rcz78vxvXbvg+wjFBFonmOx9dfweo3od6U6TaT8JVHsQ@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <a21cb4ad-bbb8-7763-e73b-829c3d575673@linuxfoundation.org>
+Date:   Wed, 9 Oct 2019 07:48:00 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191009071145.GB32281@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAAXuY3rcz78vxvXbvg+wjFBFonmOx9dfweo3od6U6TaT8JVHsQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 09-10-19 00:11:45, Christoph Hellwig wrote:
-> On Tue, Oct 08, 2019 at 05:12:38PM +0200, Jan Kara wrote:
-> > Seeing how difficult it is when a filesystem wants to complete the iocb
-> > synchronously (regardless whether it is async or sync) and have all the
-> > information in one place for further processing, I think it would be the
-> > easiest to provide iomap_dio_rw_wait() that forces waiting for the iocb to
-> > complete *and* returns the appropriate return value instead of pretty
-> > useless EIOCBQUEUED. It is actually pretty trivial (patch attached). With
-> > this we can then just call iomap_dio_rw_sync() for the inode extension case
-> > with ->end_io doing just the unwritten extent processing and then call
-> > ext4_handle_inode_extension() from ext4_direct_write_iter() where we would
-> > have all the information we need.
-> > 
-> > Christoph, Darrick, what do you think about extending iomap like in the
-> > attached patch (plus sample use in XFS)?
+Hi Iurii,
+
+Thanks for the patch.
+
+On 10/8/19 8:42 PM, Iurii Zaikin wrote:
+> Note: this patch is intended to be applied against kselftest/test branch:
+> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=test
 > 
-> I vaguely remember suggesting something like this but Brian or Dave
-> convinced me it wasn't a good idea.  This will require a trip to the
-> xfs or fsdevel archives from when the inode_dio_wait was added in XFS.
 
-I think you refer to this [1] message from Brian:
 
-It's not quite that simple..
+This doesn't belong here. You can add it to commit header
 
-FWIW, the discussion (between Dave and I) for how best to solve this
-started offline prior to sending the patch and pretty much started with
-the idea of changing the async I/O to sync as you suggest here. I backed
-off from that because it's too subtle given the semantics between the
-higher level aio code and lower level dio code for async I/O. By that I
-mean either can be responsible for calling the ->ki_complete() callback
-in the iocb on I/O completion.
+[PATCH linux-kselftest/test] also you don't need v1 in there.
 
-IOW, if we receive an async direct I/O, clear ->ki_complete() as you
-describe above and submit it, the dio code will wait on I/O and return
-the size of the I/O on successful completion. It will not have called
-->ki_complete(), however. Rather, the >0 return value indicates that
-aio_rw_done() must call ->ki_complete() after xfs_file_write_iter()
-returns, but we would have already cleared the function pointer.
+> KUnit tests for decoding extended 64 bit timestamps.
 
-I think it is technically possible to use this technique by clearing and
-restoring ->ki_complete(), but in general we've visited this "change the
-I/O type" approach twice now and we've (collectively) got it wrong both
-times (the first error in thinking was that XFS would need to call
-->ki_complete()). IMO, this demonstrates that it's not worth the
-complexity to insert ourselves into this dependency chain when we can
-accomplish the same thing with a simple dio wait call.
+Please give more details on what these tests do. More information
+on range of timestamps would be helpful. I see you have 2038 test
+and it would be great to call out the ranges and conditions it is
+resting.
 
----
+> 
+> Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+> ---
+>   fs/ext4/Kconfig      |  12 +++
+>   fs/ext4/Makefile     |   1 +
+>   fs/ext4/inode-test.c | 217 +++++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 230 insertions(+)
+>   create mode 100644 fs/ext4/inode-test.c
+> 
+> diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+> index cbb5ca830e57..72c26abbce4c 100644
+> --- a/fs/ext4/Kconfig
+> +++ b/fs/ext4/Kconfig
+> @@ -106,3 +106,15 @@ config EXT4_DEBUG
+>     If you select Y here, then you will be able to turn on debugging
+>     with a command such as:
+>    echo 1 > /sys/module/ext4/parameters/mballoc_debug
+> +
+> +config EXT4_INODE_KUNIT_TEST
+> + bool "KUnit test for ext4 inode"
+> + depends on EXT4_FS
+> + depends on KUNIT
+> + help
+> +  This builds the ext4 inode sysctl unit test, which runs on boot.
+> +  Tests the encoding correctness of ext4 inode.
+> +  For more information on KUnit and unit tests in general please refer
+> +  to the KUnit documentation in Documentation/dev-tools/kunit/.
+> +
+> +  If unsure, say N.
+> diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
+> index b17ddc229ac5..1eeb8b449255 100644
+> --- a/fs/ext4/Makefile
+> +++ b/fs/ext4/Makefile
+> @@ -13,4 +13,5 @@ ext4-y := balloc.o bitmap.o block_validity.o dir.o
+> ext4_jbd2.o extents.o \
+> 
+>   ext4-$(CONFIG_EXT4_FS_POSIX_ACL) += acl.o
+>   ext4-$(CONFIG_EXT4_FS_SECURITY) += xattr_security.o
+> +ext4-$(CONFIG_EXT4_INODE_KUNIT_TEST) += inode-test.o
+>   ext4-$(CONFIG_FS_VERITY) += verity.o
+> diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+> new file mode 100644
+> index 000000000000..0ecb8dd5e0c5
+> --- /dev/null
+> +++ b/fs/ext4/inode-test.c
+> @@ -0,0 +1,217 @@
+> +// SPDX-License-Identifier: GPL-2.0
 
-Which is fair enough. I've been looking at the same and arrived at similar
-conclusion ;) (BTW, funnily enough ocfs2 seems to do this dance with
-clearing and restoring ki_complete). But what I propose is something
-different - just wait for IO in iomap_dio_rw() which avoids the need to
-clear & restore ->ki_complete() while at the same time while providing
-fully-sync IO experience to the caller. So Brians objection doesn't apply
-here.
+Follow the commenting style recommended in the coding-style doc.
+/* ---- */
 
-> But if we decide it actully works this time around please don't add the
-> __ variant but just add the parameter to iomap_dio_rw directly.
+> +/*
+> + * KUnit test of ext4 inode.
+> + */
+> +
+> +#include <kunit/test.h>
+> +#include <linux/kernel.h>
+> +#include <linux/time64.h>
+> +
+> +#include "ext4.h"
+> +
+> +// binary: 00000000 00000000 00000000 00000000
+> +#define LOWER_MSB_0 0L
+> +// binary: 01111111 11111111 11111111 11111111
+> +#define UPPER_MSB_0 0x7fffffffL
+> +// binary: 10000000 00000000 00000000 00000000
+> +#define LOWER_MSB_1 (-0x80000000L)
+> +// binary: 11111111 11111111 11111111 11111111
+> +#define UPPER_MSB_1 (-1L)
+> +
+> +#define CASE_NAME_FORMAT "%s: msb:%x lower_bound:%x extra_bits: %x"
+> +
+> +struct timestamp_expectation {
+> + const char *test_case_name;
+> + struct timespec64 expected;
+> + u32 extra_bits;
+> + bool msb_set;
+> + bool lower_bound;
+> +};
+> +
+> +static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+> +{
+> + if (test->msb_set) {
+> + if (test->lower_bound)
+> + return LOWER_MSB_1;
+> +
+> + return UPPER_MSB_1;
+> + }
 
-Yeah, I was undecided on this one as well. Will change this and post the
-patches to fsdevel & xfs lists.
+Can you add information on what you are trying to test.
+Please do the same for all tests.
 
-								Honza
+> +
+> + if (test->lower_bound)
+> + return LOWER_MSB_0;
+> + return UPPER_MSB_0;
+> +}
+> +
+> +
+> +static void inode_test_xtimestamp_decoding(struct kunit *test)
+> +{
+> + const struct timestamp_expectation test_data[] = {
+> + {
+> + .test_case_name = "1901-12-13",
+> + .msb_set = true,
+> + .lower_bound = true,
+> + .extra_bits = 0,
+> + .expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+> + },
+> +
 
-[1] https://lore.kernel.org/linux-xfs/20190325135124.GD52167@bfoster/
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I see that you use the same tv_nsec for all tests. Is there
+a reason for that? Would it be helpful to vary it?
+
+> + {
+> + .test_case_name = "1969-12-31",
+> + .msb_set = true,
+> + .lower_bound = false,
+> + .extra_bits = 0,
+> + .expected = {.tv_sec = -1LL, .tv_nsec = 0L},
+> + },
+> +
+> + {
+> + .test_case_name = "1970-01-01",
+> + .msb_set = false,
+> + .lower_bound = true,
+> + .extra_bits = 0,
+> + .expected = {0LL, 0L},
+> + },
+> +
+> + {
+> + .test_case_name = "2038-01-19",
+> + .msb_set = false,
+> + .lower_bound = false,
+> + .extra_bits = 0,
+> + .expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
+> + },
+> +
+> + {
+> + .test_case_name = "2038-01-19",
+> + .msb_set = true,
+> + .lower_bound = true,
+> + .extra_bits = 1,
+> + .expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
+> + },
+> +
+> + {
+> + .test_case_name = "2106-02-07",
+> + .msb_set = true,
+> + .lower_bound = false,
+> + .extra_bits = 1,
+> + .expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
+> + },
+> +
+> + {
+> + .test_case_name = "2106-02-07",
+> + .msb_set = false,
+> + .lower_bound = true,
+> + .extra_bits = 1,
+> + .expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0LL},
+> + },
+> +
+> + {
+> + .test_case_name = "2174-02-25",
+> + .msb_set = false,
+> + .lower_bound = false,
+> + .extra_bits = 1,
+> + .expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
+> + },
+> +
+> + {
+> + .test_case_name = "2174-02-25",
+> + .msb_set = true,
+> + .lower_bound = true,
+> + .extra_bits =  2,
+> + .expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
+> + },
+> +
+> + {
+> + .test_case_name = "2242-03-16",
+> + .msb_set = true,
+> + .lower_bound = false,
+> + .extra_bits = 2,
+> + .expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
+> + },
+> +
+> + {
+> + .test_case_name = "2242-03-16",
+> + .msb_set = false,
+> + .lower_bound = true,
+> + .extra_bits = 2,
+> + .expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
+> + },
+> +
+> + {
+> + .test_case_name = " 2310-04-04",
+> + .msb_set = false,
+> + .lower_bound = false,
+> + .extra_bits = 2,
+> + .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
+> + },
+> +
+
+Get rid of this. Add it when you can add it later. I don't
+like to see these TODOs with blocks of code commented out.
+
+> + /* TODO: enable when legacy encoding in ext4.h is disabled.
+> + *{
+> + * .test_case_name = "2310-04-04",
+> + * .msb_set = true,
+> + * .lower_bound = true,
+> + * .extra_bits = 3,
+> + * .expected = {.tv_sec = 0x280000000LL, .tv_nsec = 0L},
+> + *},
+> + *
+> + *{
+> + * .test_case_name = "2378-04-22",
+> + * .msb_set = true,
+> + * .lower_bound = false,
+> + * .extra_bits = 3,
+> + * .expected = {.tv_sec = 0x2ffffffffLL, .tv_nsec = 0L},
+> + * },
+> + */
+> +
+> + {
+> + .test_case_name = "2378-04-22",
+> + .msb_set = false,
+> + .lower_bound = true,
+> + .extra_bits = 3,
+> + .expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
+> + },
+> +
+> + {
+> + .test_case_name = "2446-05-10",
+> + .msb_set = false,
+> + .lower_bound = false,
+> + .extra_bits = 3,
+> + .expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
+> + }
+> + };
+> +
+> + struct timespec64 timestamp;
+> + int i;
+> +
+> + for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
+> + timestamp.tv_sec = get_32bit_time(&test_data[i]);
+> + ext4_decode_extra_time(&timestamp,
+> +       cpu_to_le32(test_data[i].extra_bits));
+> +
+> + KUNIT_EXPECT_EQ_MSG(test,
+> +    test_data[i].expected.tv_sec,
+> +    timestamp.tv_sec,
+> +    CASE_NAME_FORMAT,
+> +    test_data[i].test_case_name,
+> +    test_data[i].msb_set,
+> +    test_data[i].lower_bound,
+> +    test_data[i].extra_bits);
+> + KUNIT_EXPECT_EQ_MSG(test,
+> +    test_data[i].expected.tv_nsec,
+> +    timestamp.tv_nsec,
+> +    CASE_NAME_FORMAT,
+> +    test_data[i].test_case_name,
+> +    test_data[i].msb_set,
+> +    test_data[i].lower_bound,
+> +    test_data[i].extra_bits);
+> + }
+> +}
+> +
+> +static struct kunit_case ext4_inode_test_cases[] = {
+> + KUNIT_CASE(inode_test_xtimestamp_decoding),
+> + {}
+> +};
+> +
+> +static struct kunit_suite ext4_inode_test_suite = {
+> + .name = "ext4_inode_test",
+> + .test_cases = ext4_inode_test_cases,
+> +};
+> +
+> +kunit_test_suite(ext4_inode_test_suite);
+> --
+> 2.23.0.700.g56cf767bdb-goog
+> 
+
+thanks,
+-- Shuah
