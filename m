@@ -2,325 +2,300 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A92DD058F
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 04:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85EDD06FB
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 08:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbfJICmo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 8 Oct 2019 22:42:44 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:42796 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbfJICmo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 8 Oct 2019 22:42:44 -0400
-Received: by mail-qk1-f196.google.com with SMTP id f16so835007qkl.9
-        for <linux-ext4@vger.kernel.org>; Tue, 08 Oct 2019 19:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=o11X3jQOdAg7GU0NKo+NL/9277taGfyioI1ZvF1fdf8=;
-        b=jUsRgzdlQTXaOALVWTVkL0xRNJaAFWMBj/X2Fni5Oe5hkDxLeSEVZG1Sl7NCjImaGC
-         rb/EwiDg4+JkFashyoKZLbphWaIlQyrsw8UUAyp8/lKfnxB7nx82AzPvsk1YVY/5vyl2
-         kms830gGyYbVv3znChAWuFRADOmwxJ4F9XVe0yxs6sarYIarZyblUS9Gh1Z0Fgdsq3zC
-         ERU+R/SDwnzflnToG8kxDYM/q8BRTOL9j4n1NH47vI3OIj3A6N7w6/iu/hhR8BojF4pe
-         1vB2FporCviknLgitQFSq7/CEDFXnsBD17LGPdqQ4pOxkmdVAHcBAGs0G6Azwow4MUHU
-         RLPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=o11X3jQOdAg7GU0NKo+NL/9277taGfyioI1ZvF1fdf8=;
-        b=LGpWzG27V5WLBgB+RE4YFAwXU+XRynkPaO7Mltpg6mCbqMiU2OutXG1V4agaMaEgyv
-         MJ+q36m8UXIShyzRY8topJpubLKyUOGvuLopJ/lfaGlm3n/TJ1tef0I5WvhPVimWyW1g
-         xQ9YHDI6QwWa7iEqdkjAV6XvnRJnK//81rPAPs1b8mEdro9Crwz1WO3SbswbWXKhxtd0
-         HRw5lOMO3EvAaLdBsUbpXqfDGOWB75N1tCv7cNNAc8Xmb80xmgfQCAx7ScCCrqOCs4n0
-         Z0w+I6LdW+NWfOkzGtQP388yCz9iLtNsO++iEkvzCpzvXO7sjPc4+6UpLp0Q/yYGwp8T
-         gjDA==
-X-Gm-Message-State: APjAAAXPFAR68HBbDTun31A9YzGYJw4jd9XxEwnugj+k0o0xTIYDl9xy
-        lgy5OtHX5TjSQ7NCB2raeXGZ5S8JCJy5U2ot2dBo
-X-Google-Smtp-Source: APXvYqxeXb8QNtuVzu/XmEO1Q5zkgvIfrZ7QWvobPXDkVR0RfTFaLJnYCxKEPExM8U0b4HLDbdFeAl3u3LeILJqRt2A=
-X-Received: by 2002:a37:a1c7:: with SMTP id k190mr1433960qke.289.1570588962459;
- Tue, 08 Oct 2019 19:42:42 -0700 (PDT)
+        id S1727649AbfJIGAd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Oct 2019 02:00:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:25772 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726698AbfJIGAd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Oct 2019 02:00:33 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x995vVMZ122511
+        for <linux-ext4@vger.kernel.org>; Wed, 9 Oct 2019 02:00:32 -0400
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2vh96ss6vb-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2019 02:00:31 -0400
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Wed, 9 Oct 2019 07:00:29 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 9 Oct 2019 07:00:26 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9960P1B54919206
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 9 Oct 2019 06:00:25 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7662A42054;
+        Wed,  9 Oct 2019 06:00:25 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4878542049;
+        Wed,  9 Oct 2019 06:00:22 +0000 (GMT)
+Received: from [9.199.159.72] (unknown [9.199.159.72])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  9 Oct 2019 06:00:22 +0000 (GMT)
+Subject: Re: [PATCH v4 3/8] ext4: introduce new callback for IOMAP_REPORT
+ operations
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>, tytso@mit.edu,
+        jack@suse.cz, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com,
+        riteshh@linux.ibm.com
+References: <cover.1570100361.git.mbobrowski@mbobrowski.org>
+ <cb2dcb6970da1b53bdf85583f13ba2aaf1684e96.1570100361.git.mbobrowski@mbobrowski.org>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Wed, 9 Oct 2019 11:30:21 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-From:   Iurii Zaikin <yzaikin@google.com>
-Date:   Tue, 8 Oct 2019 19:42:05 -0700
-Message-ID: <CAAXuY3rcz78vxvXbvg+wjFBFonmOx9dfweo3od6U6TaT8JVHsQ@mail.gmail.com>
-Subject: [PATCH v1] fs/ext4/inode-test: KUnit test for ext4 inode.
-To:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-ext4@vger.kernel.org,
-        skhan@linuxfoundation.org, "Theodore Ts'o" <tytso@mit.edu>,
-        adilger.kernel@dilger.ca
-Cc:     kunit-dev@googlegroups.com,
-        Brendan Higgins <brendanhiggins@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cb2dcb6970da1b53bdf85583f13ba2aaf1684e96.1570100361.git.mbobrowski@mbobrowski.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19100906-0028-0000-0000-000003A8555B
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19100906-0029-0000-0000-0000246A585A
+Message-Id: <20191009060022.4878542049@d06av24.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-09_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1910090055
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Note: this patch is intended to be applied against kselftest/test branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=test
 
-KUnit tests for decoding extended 64 bit timestamps.
 
-Signed-off-by: Iurii Zaikin <yzaikin@google.com>
----
- fs/ext4/Kconfig      |  12 +++
- fs/ext4/Makefile     |   1 +
- fs/ext4/inode-test.c | 217 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 230 insertions(+)
- create mode 100644 fs/ext4/inode-test.c
+On 10/3/19 5:03 PM, Matthew Bobrowski wrote:
+> As part of ext4_iomap_begin() cleanups and port across direct I/O path
+> to make use of iomap infrastructure, we split IOMAP_REPORT operations
+> into a separate ->iomap_begin() handler.
+> 
+> Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> ---
+>   fs/ext4/ext4.h  |   1 +
+>   fs/ext4/file.c  |   6 ++-
+>   fs/ext4/inode.c | 129 ++++++++++++++++++++++++++++--------------------
+>   3 files changed, 80 insertions(+), 56 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 03db3e71676c..d0d88f411a44 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -3379,6 +3379,7 @@ static inline void ext4_clear_io_unwritten_flag(ext4_io_end_t *io_end)
+>   }
+> 
+>   extern const struct iomap_ops ext4_iomap_ops;
+> +extern const struct iomap_ops ext4_iomap_report_ops;
+> 
+>   static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+>   {
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 8d2bbcc2d813..ab75aee3e687 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -494,12 +494,14 @@ loff_t ext4_llseek(struct file *file, loff_t offset, int whence)
+>   						maxbytes, i_size_read(inode));
+>   	case SEEK_HOLE:
+>   		inode_lock_shared(inode);
+> -		offset = iomap_seek_hole(inode, offset, &ext4_iomap_ops);
+> +		offset = iomap_seek_hole(inode, offset,
+> +					 &ext4_iomap_report_ops);
+>   		inode_unlock_shared(inode);
+>   		break;
+>   	case SEEK_DATA:
+>   		inode_lock_shared(inode);
+> -		offset = iomap_seek_data(inode, offset, &ext4_iomap_ops);
+> +		offset = iomap_seek_data(inode, offset,
+> +					 &ext4_iomap_report_ops);
+>   		inode_unlock_shared(inode);
+>   		break;
+>   	}
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index caeb3dec0dec..1dace576b8bd 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3439,6 +3439,72 @@ static int ext4_set_iomap(struct inode *inode, struct iomap *iomap, u16 type,
+>   	return 0;
+>   }
+> 
+> +static u16 ext4_iomap_check_delalloc(struct inode *inode,
+> +				     struct ext4_map_blocks *map)
+> +{
+> +	struct extent_status es;
+> +	ext4_lblk_t end = map->m_lblk + map->m_len - 1;
+> +
+> +	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, map->m_lblk,
+> +				  end, &es);
+> +
+> +	/* Entire range is a hole */
+> +	if (!es.es_len || es.es_lblk > end)
+> +		return IOMAP_HOLE;
+> +	if (es.es_lblk <= map->m_lblk) {
+> +		ext4_lblk_t offset = 0;
+> +
+> +		if (es.es_lblk < map->m_lblk)
+> +			offset = map->m_lblk - es.es_lblk;
+> +		map->m_lblk = es.es_lblk + offset;
+This looks redundant no? map->m_lblk never changes actually.
+So this is not needed here.
 
-diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-index cbb5ca830e57..72c26abbce4c 100644
---- a/fs/ext4/Kconfig
-+++ b/fs/ext4/Kconfig
-@@ -106,3 +106,15 @@ config EXT4_DEBUG
-   If you select Y here, then you will be able to turn on debugging
-   with a command such as:
-  echo 1 > /sys/module/ext4/parameters/mballoc_debug
-+
-+config EXT4_INODE_KUNIT_TEST
-+ bool "KUnit test for ext4 inode"
-+ depends on EXT4_FS
-+ depends on KUNIT
-+ help
-+  This builds the ext4 inode sysctl unit test, which runs on boot.
-+  Tests the encoding correctness of ext4 inode.
-+  For more information on KUnit and unit tests in general please refer
-+  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+  If unsure, say N.
-diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
-index b17ddc229ac5..1eeb8b449255 100644
---- a/fs/ext4/Makefile
-+++ b/fs/ext4/Makefile
-@@ -13,4 +13,5 @@ ext4-y := balloc.o bitmap.o block_validity.o dir.o
-ext4_jbd2.o extents.o \
 
- ext4-$(CONFIG_EXT4_FS_POSIX_ACL) += acl.o
- ext4-$(CONFIG_EXT4_FS_SECURITY) += xattr_security.o
-+ext4-$(CONFIG_EXT4_INODE_KUNIT_TEST) += inode-test.o
- ext4-$(CONFIG_FS_VERITY) += verity.o
-diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
-new file mode 100644
-index 000000000000..0ecb8dd5e0c5
---- /dev/null
-+++ b/fs/ext4/inode-test.c
-@@ -0,0 +1,217 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit test of ext4 inode.
-+ */
-+
-+#include <kunit/test.h>
-+#include <linux/kernel.h>
-+#include <linux/time64.h>
-+
-+#include "ext4.h"
-+
-+// binary: 00000000 00000000 00000000 00000000
-+#define LOWER_MSB_0 0L
-+// binary: 01111111 11111111 11111111 11111111
-+#define UPPER_MSB_0 0x7fffffffL
-+// binary: 10000000 00000000 00000000 00000000
-+#define LOWER_MSB_1 (-0x80000000L)
-+// binary: 11111111 11111111 11111111 11111111
-+#define UPPER_MSB_1 (-1L)
-+
-+#define CASE_NAME_FORMAT "%s: msb:%x lower_bound:%x extra_bits: %x"
-+
-+struct timestamp_expectation {
-+ const char *test_case_name;
-+ struct timespec64 expected;
-+ u32 extra_bits;
-+ bool msb_set;
-+ bool lower_bound;
-+};
-+
-+static time64_t get_32bit_time(const struct timestamp_expectation * const test)
-+{
-+ if (test->msb_set) {
-+ if (test->lower_bound)
-+ return LOWER_MSB_1;
-+
-+ return UPPER_MSB_1;
-+ }
-+
-+ if (test->lower_bound)
-+ return LOWER_MSB_0;
-+ return UPPER_MSB_0;
-+}
-+
-+
-+static void inode_test_xtimestamp_decoding(struct kunit *test)
-+{
-+ const struct timestamp_expectation test_data[] = {
-+ {
-+ .test_case_name = "1901-12-13",
-+ .msb_set = true,
-+ .lower_bound = true,
-+ .extra_bits = 0,
-+ .expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = "1969-12-31",
-+ .msb_set = true,
-+ .lower_bound = false,
-+ .extra_bits = 0,
-+ .expected = {.tv_sec = -1LL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = "1970-01-01",
-+ .msb_set = false,
-+ .lower_bound = true,
-+ .extra_bits = 0,
-+ .expected = {0LL, 0L},
-+ },
-+
-+ {
-+ .test_case_name = "2038-01-19",
-+ .msb_set = false,
-+ .lower_bound = false,
-+ .extra_bits = 0,
-+ .expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = "2038-01-19",
-+ .msb_set = true,
-+ .lower_bound = true,
-+ .extra_bits = 1,
-+ .expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = "2106-02-07",
-+ .msb_set = true,
-+ .lower_bound = false,
-+ .extra_bits = 1,
-+ .expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = "2106-02-07",
-+ .msb_set = false,
-+ .lower_bound = true,
-+ .extra_bits = 1,
-+ .expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0LL},
-+ },
-+
-+ {
-+ .test_case_name = "2174-02-25",
-+ .msb_set = false,
-+ .lower_bound = false,
-+ .extra_bits = 1,
-+ .expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = "2174-02-25",
-+ .msb_set = true,
-+ .lower_bound = true,
-+ .extra_bits =  2,
-+ .expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = "2242-03-16",
-+ .msb_set = true,
-+ .lower_bound = false,
-+ .extra_bits = 2,
-+ .expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = "2242-03-16",
-+ .msb_set = false,
-+ .lower_bound = true,
-+ .extra_bits = 2,
-+ .expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = " 2310-04-04",
-+ .msb_set = false,
-+ .lower_bound = false,
-+ .extra_bits = 2,
-+ .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
-+ },
-+
-+ /* TODO: enable when legacy encoding in ext4.h is disabled.
-+ *{
-+ * .test_case_name = "2310-04-04",
-+ * .msb_set = true,
-+ * .lower_bound = true,
-+ * .extra_bits = 3,
-+ * .expected = {.tv_sec = 0x280000000LL, .tv_nsec = 0L},
-+ *},
-+ *
-+ *{
-+ * .test_case_name = "2378-04-22",
-+ * .msb_set = true,
-+ * .lower_bound = false,
-+ * .extra_bits = 3,
-+ * .expected = {.tv_sec = 0x2ffffffffLL, .tv_nsec = 0L},
-+ * },
-+ */
-+
-+ {
-+ .test_case_name = "2378-04-22",
-+ .msb_set = false,
-+ .lower_bound = true,
-+ .extra_bits = 3,
-+ .expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
-+ },
-+
-+ {
-+ .test_case_name = "2446-05-10",
-+ .msb_set = false,
-+ .lower_bound = false,
-+ .extra_bits = 3,
-+ .expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
-+ }
-+ };
-+
-+ struct timespec64 timestamp;
-+ int i;
-+
-+ for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
-+ timestamp.tv_sec = get_32bit_time(&test_data[i]);
-+ ext4_decode_extra_time(&timestamp,
-+       cpu_to_le32(test_data[i].extra_bits));
-+
-+ KUNIT_EXPECT_EQ_MSG(test,
-+    test_data[i].expected.tv_sec,
-+    timestamp.tv_sec,
-+    CASE_NAME_FORMAT,
-+    test_data[i].test_case_name,
-+    test_data[i].msb_set,
-+    test_data[i].lower_bound,
-+    test_data[i].extra_bits);
-+ KUNIT_EXPECT_EQ_MSG(test,
-+    test_data[i].expected.tv_nsec,
-+    timestamp.tv_nsec,
-+    CASE_NAME_FORMAT,
-+    test_data[i].test_case_name,
-+    test_data[i].msb_set,
-+    test_data[i].lower_bound,
-+    test_data[i].extra_bits);
-+ }
-+}
-+
-+static struct kunit_case ext4_inode_test_cases[] = {
-+ KUNIT_CASE(inode_test_xtimestamp_decoding),
-+ {}
-+};
-+
-+static struct kunit_suite ext4_inode_test_suite = {
-+ .name = "ext4_inode_test",
-+ .test_cases = ext4_inode_test_cases,
-+};
-+
-+kunit_test_suite(ext4_inode_test_suite);
---
-2.23.0.700.g56cf767bdb-goog
+> +		map->m_len = es.es_len - offset;
+> +		return IOMAP_DELALLOC;
+> +	}
+> +
+> +	/* Range starts with a hole */
+> +	map->m_len = es.es_lblk - map->m_lblk;
+> +	return IOMAP_HOLE;
+> +}
+> +
+> +static int ext4_iomap_begin_report(struct inode *inode, loff_t offset,
+> +				   loff_t length, unsigned flags,
+> +				   struct iomap *iomap)
+> +{
+> +	int ret;
+> +	u16 type = 0;
+> +	struct ext4_map_blocks map;
+> +	u8 blkbits = inode->i_blkbits;
+> +	unsigned long first_block, last_block;
+> +
+> +	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
+> +		return -EINVAL;
+> +	first_block = offset >> blkbits;
+> +	last_block = min_t(loff_t, (offset + length - 1) >> blkbits,
+> +			   EXT4_MAX_LOGICAL_BLOCK);
+> +
+> +	if (ext4_has_inline_data(inode)) {
+> +		ret = ext4_inline_data_iomap(inode, iomap);
+> +		if (ret != -EAGAIN) {
+> +			if (ret == 0 && offset >= iomap->length)
+> +				ret = -ENOENT;
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	map.m_lblk = first_block;
+> +	map.m_len = last_block = first_block + 1;
+> +	ret = ext4_map_blocks(NULL, inode, &map, 0);
+> +	if (ret < 0)
+> +		return ret;
+> +	if (ret == 0)
+> +		type = ext4_iomap_check_delalloc(inode, &map);
+> +	return ext4_set_iomap(inode, iomap, type, first_block, &map);
+We don't need to send first_block here. Since map->m_lblk
+is same as first_block.
+Also with Jan comment, we don't even need 'type' parameter.
+Then we should be able to rename the function
+ext4_set_iomap ==> ext4_map_to_iomap. This better reflects what it is
+doing. Thoughts?
+
+
+> +}
+> +
+> +const struct iomap_ops ext4_iomap_report_ops = {
+> +	.iomap_begin = ext4_iomap_begin_report,
+> +};
+> +
+>   static int ext4_iomap_alloc(struct inode *inode,
+>   			    unsigned flags,
+>   			    unsigned long first_block,
+> @@ -3498,12 +3564,10 @@ static int ext4_iomap_alloc(struct inode *inode,
+>   static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>   			    unsigned flags, struct iomap *iomap)
+>   {
+> -	u16 type = 0;
+> -	unsigned int blkbits = inode->i_blkbits;
+> -	unsigned long first_block, last_block;
+> -	struct ext4_map_blocks map;
+> -	bool delalloc = false;
+>   	int ret;
+> +	struct ext4_map_blocks map;
+> +	u8 blkbits = inode->i_blkbits;
+> +	unsigned long first_block, last_block;
+> 
+>   	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
+>   		return -EINVAL;
+> @@ -3511,64 +3575,21 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>   	last_block = min_t(loff_t, (offset + length - 1) >> blkbits,
+>   			   EXT4_MAX_LOGICAL_BLOCK);
+> 
+> -	if (flags & IOMAP_REPORT) {
+> -		if (ext4_has_inline_data(inode)) {
+> -			ret = ext4_inline_data_iomap(inode, iomap);
+> -			if (ret != -EAGAIN) {
+> -				if (ret == 0 && offset >= iomap->length)
+> -					ret = -ENOENT;
+> -				return ret;
+> -			}
+> -		}
+> -	} else {
+> -		if (WARN_ON_ONCE(ext4_has_inline_data(inode)))
+> -			return -ERANGE;
+> -	}
+> +	if (WARN_ON_ONCE(ext4_has_inline_data(inode)))
+> +		return -ERANGE;
+> 
+>   	map.m_lblk = first_block;
+>   	map.m_len = last_block - first_block + 1;
+> 
+> -	if (flags & IOMAP_REPORT) {
+> -		ret = ext4_map_blocks(NULL, inode, &map, 0);
+> -		if (ret < 0)
+> -			return ret;
+> -
+> -		if (ret == 0) {
+> -			ext4_lblk_t end = map.m_lblk + map.m_len - 1;
+> -			struct extent_status es;
+> -
+> -			ext4_es_find_extent_range(inode, &ext4_es_is_delayed,
+> -						  map.m_lblk, end, &es);
+> -
+> -			if (!es.es_len || es.es_lblk > end) {
+> -				/* entire range is a hole */
+> -			} else if (es.es_lblk > map.m_lblk) {
+> -				/* range starts with a hole */
+> -				map.m_len = es.es_lblk - map.m_lblk;
+> -			} else {
+> -				ext4_lblk_t offs = 0;
+> -
+> -				if (es.es_lblk < map.m_lblk)
+> -					offs = map.m_lblk - es.es_lblk;
+> -				map.m_lblk = es.es_lblk + offs;
+> -				map.m_len = es.es_len - offs;
+> -				delalloc = true;
+> -			}
+> -		}
+> -	} else if (flags & IOMAP_WRITE) {
+> +	if (flags & IOMAP_WRITE)
+>   		ret = ext4_iomap_alloc(inode, flags, first_block, &map);
+> -	} else {
+> +	else
+>   		ret = ext4_map_blocks(NULL, inode, &map, 0);
+> -		if (ret < 0)
+> -			return ret;
+> -	}
+> 
+>   	if (ret < 0)
+>   		return ret;
+> -
+> -	if (!ret)
+> -		type = delalloc ? IOMAP_DELALLOC : IOMAP_HOLE;
+> -	return ext4_set_iomap(inode, iomap, type, first_block, &map);
+> +	return ext4_set_iomap(inode, iomap, ret ? 0 : IOMAP_HOLE, first_block,
+> +			      &map);
+>   }
+> 
+>   static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
+> 
+
