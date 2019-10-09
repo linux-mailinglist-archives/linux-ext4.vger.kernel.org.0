@@ -2,173 +2,390 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D830D1840
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2019 21:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B39DD1CED
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2019 01:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732302AbfJITMg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Oct 2019 15:12:36 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:55809 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732056AbfJITLb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Oct 2019 15:11:31 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1Mbzdn-1hfexe4BV1-00dXse; Wed, 09 Oct 2019 21:11:18 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, y2038@lists.linaro.org,
-        linux-fsdevel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        linux-nilfs@vger.kernel.org, ocfs2-devel@oss.oracle.com
-Subject: [PATCH v6 30/43] fs: compat_ioctl: move FITRIM emulation into file systems
-Date:   Wed,  9 Oct 2019 21:10:31 +0200
-Message-Id: <20191009191044.308087-31-arnd@arndb.de>
-X-Mailer: git-send-email 2.20.0
-In-Reply-To: <20191009190853.245077-1-arnd@arndb.de>
-References: <20191009190853.245077-1-arnd@arndb.de>
+        id S1731834AbfJIXmU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Oct 2019 19:42:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730955AbfJIXmU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 9 Oct 2019 19:42:20 -0400
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB71420659;
+        Wed,  9 Oct 2019 23:42:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570664538;
+        bh=flJUjeWsBitYEJJv/geZb6UQNxzbDxZ6BcCxvKBO15M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TYJsb0NiidEvrAgMLvnesz/lyUWJZ9+LFGeHu3uSDEawPCWHL2ybwf1QR5P/CAviS
+         J8mk/Jhz5/1Um6POHJQha57USijRrKmz/MKaYgvEEpiwoBeJa8jXioxyKMjXL3/O7u
+         Thw3TtVD1sQgwT8nKKgUTFLBFMpEytiA8FOICJIY=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Chandan Rajendra <chandan@linux.ibm.com>
+Subject: [PATCH] fscrypt: remove struct fscrypt_ctx
+Date:   Wed,  9 Oct 2019 16:40:38 -0700
+Message-Id: <20191009234038.224587-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Yt5Qym2EiThPkdPiZuVWsOArs8kXwnMpYv8e8jcFHq6aBlEUl35
- 2IN5+k0io/Ejnt6hQYqU5PeavuhijMbDbcKRb1ZxQ/6UItKgQqaET9+WeQFtRybNXL/7Evn
- QrMfvNL1I0AWYpCpt9cUDrfru1T2gMRukpp+x7ARQhmEKsY4PWg2oSrpD+oymHu2Kj+/KUc
- T+MrdQgXOJZMCEpqnSOug==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7szO+vH6EQs=:V71EFPjAZtDgdRdkiMO12Q
- GDLOgoe6xabrsRpK8dss/1FbSbd0/LRu8BSTX7ftPlUZ+ZrQO/H/faHx7JJk8RieIGlFgEcTT
- EXof9rfzqoBpUY3NJs2WvGoyHioXGOJcv1Ti4timVZ1CMpKrwZubVAerQ6bQxbTMwoXlwZhPJ
- WJWhKviJJ+5ZHWTRMNkj74RwxD4yVonQ4W5VjBHlK1Oo0eblhb0poFzhDCODP46ISMsi/9YD2
- Z4V+18ywpVntd+bOeYwYzv7eX5gkuhOSj+XrBOKfyrRP+pT8nx6Ukjzvd9oHcdrcJFvC8AcvM
- TvBxzq9XsZnQzQ+IfDnHkROqfzx2gcSDKD0pN7QcP8+NDDTTDn+mTZ1jyWFe8szzoDIEf/in/
- Z5HsDqhyHAMOZrRu2p2/5NLbSZdH+gtKjTP7Bm+rsQUQtZoA5sZqPZA5Ke8MPiljJxYAjb3V+
- 8tAWysmnPhzKCTGzz55hWPESGavXF+hXB1U4zToeD0cfYLJFxIXVuC8mA75CIHsiUhPaOlrM+
- S3nXh/SqKBSkahI3UkokDIAHWkeuXN0A9Ra894zoJWdvH9wNUbJsLtVGIM/fifxQThNlWYT5T
- 6R1gelJX7GGYk1z8i6JQP1goaezQjXRvWLMhZVXgf04QdLYqzPCZ0deY+X6VpUqvBULcsaxWj
- j4pGbhm+vSq8rHNdmFVEWNgmvZX9otZDdg2NWWjUTy9l7RSbYel3vhdr4QBBswTCE/pvQbuiK
- haSKR+87qyJ1+499CCnOZ8trUag2y5Kb3V9ee/cpkoDhqP0imin4VTobW5LCiZIFp3Y/AbzmZ
- FtTTQ0cj7UlAaaqwms/+RToktTC6bvO2m2r1rUqodivpkKTexLJqOe/arDm2yym9T4zGxA0VQ
- +W/7eVUm3osaGfa39ACA==
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Remove the special case for FITRIM, and make file systems
-handle that like all other ioctl commands with their own
-handlers.
+From: Eric Biggers <ebiggers@google.com>
 
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net
-Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-Cc: linux-nilfs@vger.kernel.org
-Cc: ocfs2-devel@oss.oracle.com
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Now that ext4 and f2fs implement their own post-read workflow that
+supports both fscrypt and fsverity, the fscrypt-only workflow based
+around struct fscrypt_ctx is no longer used.  So remove the unused code.
+
+This is based on a patch from Chandan Rajendra's "Consolidate FS read
+I/O callbacks code" patchset, but rebased onto the latest kernel, folded
+__fscrypt_decrypt_bio() into fscrypt_decrypt_bio(), cleaned up
+fscrypt_initialize(), and updated the commit message.
+
+Originally-from: Chandan Rajendra <chandan@linux.ibm.com>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/compat_ioctl.c  | 2 --
- fs/ecryptfs/file.c | 1 +
- fs/ext4/ioctl.c    | 1 +
- fs/f2fs/file.c     | 1 +
- fs/hpfs/dir.c      | 1 +
- fs/hpfs/file.c     | 1 +
- fs/nilfs2/ioctl.c  | 1 +
- fs/ocfs2/ioctl.c   | 1 +
- 8 files changed, 7 insertions(+), 2 deletions(-)
+ fs/crypto/bio.c             |  29 +---------
+ fs/crypto/crypto.c          | 110 +++---------------------------------
+ fs/crypto/fscrypt_private.h |   2 -
+ include/linux/fscrypt.h     |  32 -----------
+ 4 files changed, 10 insertions(+), 163 deletions(-)
 
-diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
-index 1e740f4406d3..b20228c19ccd 100644
---- a/fs/compat_ioctl.c
-+++ b/fs/compat_ioctl.c
-@@ -345,8 +345,6 @@ static int ppp_scompress(struct file *file, unsigned int cmd,
- static unsigned int ioctl_pointer[] = {
- /* Little t */
- COMPATIBLE_IOCTL(TIOCOUTQ)
--/* 'X' - originally XFS but some now in the VFS */
--COMPATIBLE_IOCTL(FITRIM)
- #ifdef CONFIG_BLOCK
- /* Big S */
- COMPATIBLE_IOCTL(SCSI_IOCTL_GET_IDLUN)
-diff --git a/fs/ecryptfs/file.c b/fs/ecryptfs/file.c
-index feecb57defa7..5fb45d865ce5 100644
---- a/fs/ecryptfs/file.c
-+++ b/fs/ecryptfs/file.c
-@@ -378,6 +378,7 @@ ecryptfs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 		return rc;
+diff --git a/fs/crypto/bio.c b/fs/crypto/bio.c
+index 82da2510721f6..1f4b8a2770606 100644
+--- a/fs/crypto/bio.c
++++ b/fs/crypto/bio.c
+@@ -26,7 +26,7 @@
+ #include <linux/namei.h>
+ #include "fscrypt_private.h"
  
- 	switch (cmd) {
-+	case FITRIM:
- 	case FS_IOC32_GETFLAGS:
- 	case FS_IOC32_SETFLAGS:
- 	case FS_IOC32_GETVERSION:
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 0b7f316fd30f..e8870fff8224 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1360,6 +1360,7 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+-static void __fscrypt_decrypt_bio(struct bio *bio, bool done)
++void fscrypt_decrypt_bio(struct bio *bio)
+ {
+ 	struct bio_vec *bv;
+ 	struct bvec_iter_all iter_all;
+@@ -37,37 +37,10 @@ static void __fscrypt_decrypt_bio(struct bio *bio, bool done)
+ 							   bv->bv_offset);
+ 		if (ret)
+ 			SetPageError(page);
+-		else if (done)
+-			SetPageUptodate(page);
+-		if (done)
+-			unlock_page(page);
  	}
- 	case EXT4_IOC_MOVE_EXT:
- 	case EXT4_IOC_RESIZE_FS:
-+	case FITRIM:
- 	case EXT4_IOC_PRECACHE_EXTENTS:
- 	case EXT4_IOC_SET_ENCRYPTION_POLICY:
- 	case EXT4_IOC_GET_ENCRYPTION_PWSALT:
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 29bc0a542759..57d82f2d2ebd 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -3403,6 +3403,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case F2FS_IOC_RELEASE_VOLATILE_WRITE:
- 	case F2FS_IOC_ABORT_VOLATILE_WRITE:
- 	case F2FS_IOC_SHUTDOWN:
-+	case FITRIM:
- 	case F2FS_IOC_SET_ENCRYPTION_POLICY:
- 	case F2FS_IOC_GET_ENCRYPTION_PWSALT:
- 	case F2FS_IOC_GET_ENCRYPTION_POLICY:
-diff --git a/fs/hpfs/dir.c b/fs/hpfs/dir.c
-index d85230c84ef2..f32f15669996 100644
---- a/fs/hpfs/dir.c
-+++ b/fs/hpfs/dir.c
-@@ -325,4 +325,5 @@ const struct file_operations hpfs_dir_ops =
- 	.release	= hpfs_dir_release,
- 	.fsync		= hpfs_file_fsync,
- 	.unlocked_ioctl	= hpfs_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
- };
-diff --git a/fs/hpfs/file.c b/fs/hpfs/file.c
-index 1ecec124e76f..b36abf9cb345 100644
---- a/fs/hpfs/file.c
-+++ b/fs/hpfs/file.c
-@@ -215,6 +215,7 @@ const struct file_operations hpfs_file_ops =
- 	.fsync		= hpfs_file_fsync,
- 	.splice_read	= generic_file_splice_read,
- 	.unlocked_ioctl	= hpfs_ioctl,
-+	.compat_ioctl	= compat_ptr_ioctl,
+ }
+-
+-void fscrypt_decrypt_bio(struct bio *bio)
+-{
+-	__fscrypt_decrypt_bio(bio, false);
+-}
+ EXPORT_SYMBOL(fscrypt_decrypt_bio);
+ 
+-static void completion_pages(struct work_struct *work)
+-{
+-	struct fscrypt_ctx *ctx = container_of(work, struct fscrypt_ctx, work);
+-	struct bio *bio = ctx->bio;
+-
+-	__fscrypt_decrypt_bio(bio, true);
+-	fscrypt_release_ctx(ctx);
+-	bio_put(bio);
+-}
+-
+-void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx, struct bio *bio)
+-{
+-	INIT_WORK(&ctx->work, completion_pages);
+-	ctx->bio = bio;
+-	fscrypt_enqueue_decrypt_work(&ctx->work);
+-}
+-EXPORT_SYMBOL(fscrypt_enqueue_decrypt_bio);
+-
+ int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+ 				sector_t pblk, unsigned int len)
+ {
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index 6bc3e4f1e657e..ced8ad9f2d019 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -31,24 +31,16 @@
+ #include "fscrypt_private.h"
+ 
+ static unsigned int num_prealloc_crypto_pages = 32;
+-static unsigned int num_prealloc_crypto_ctxs = 128;
+ 
+ module_param(num_prealloc_crypto_pages, uint, 0444);
+ MODULE_PARM_DESC(num_prealloc_crypto_pages,
+ 		"Number of crypto pages to preallocate");
+-module_param(num_prealloc_crypto_ctxs, uint, 0444);
+-MODULE_PARM_DESC(num_prealloc_crypto_ctxs,
+-		"Number of crypto contexts to preallocate");
+ 
+ static mempool_t *fscrypt_bounce_page_pool = NULL;
+ 
+-static LIST_HEAD(fscrypt_free_ctxs);
+-static DEFINE_SPINLOCK(fscrypt_ctx_lock);
+-
+ static struct workqueue_struct *fscrypt_read_workqueue;
+ static DEFINE_MUTEX(fscrypt_init_mutex);
+ 
+-static struct kmem_cache *fscrypt_ctx_cachep;
+ struct kmem_cache *fscrypt_info_cachep;
+ 
+ void fscrypt_enqueue_decrypt_work(struct work_struct *work)
+@@ -57,62 +49,6 @@ void fscrypt_enqueue_decrypt_work(struct work_struct *work)
+ }
+ EXPORT_SYMBOL(fscrypt_enqueue_decrypt_work);
+ 
+-/**
+- * fscrypt_release_ctx() - Release a decryption context
+- * @ctx: The decryption context to release.
+- *
+- * If the decryption context was allocated from the pre-allocated pool, return
+- * it to that pool.  Else, free it.
+- */
+-void fscrypt_release_ctx(struct fscrypt_ctx *ctx)
+-{
+-	unsigned long flags;
+-
+-	if (ctx->flags & FS_CTX_REQUIRES_FREE_ENCRYPT_FL) {
+-		kmem_cache_free(fscrypt_ctx_cachep, ctx);
+-	} else {
+-		spin_lock_irqsave(&fscrypt_ctx_lock, flags);
+-		list_add(&ctx->free_list, &fscrypt_free_ctxs);
+-		spin_unlock_irqrestore(&fscrypt_ctx_lock, flags);
+-	}
+-}
+-EXPORT_SYMBOL(fscrypt_release_ctx);
+-
+-/**
+- * fscrypt_get_ctx() - Get a decryption context
+- * @gfp_flags:   The gfp flag for memory allocation
+- *
+- * Allocate and initialize a decryption context.
+- *
+- * Return: A new decryption context on success; an ERR_PTR() otherwise.
+- */
+-struct fscrypt_ctx *fscrypt_get_ctx(gfp_t gfp_flags)
+-{
+-	struct fscrypt_ctx *ctx;
+-	unsigned long flags;
+-
+-	/*
+-	 * First try getting a ctx from the free list so that we don't have to
+-	 * call into the slab allocator.
+-	 */
+-	spin_lock_irqsave(&fscrypt_ctx_lock, flags);
+-	ctx = list_first_entry_or_null(&fscrypt_free_ctxs,
+-					struct fscrypt_ctx, free_list);
+-	if (ctx)
+-		list_del(&ctx->free_list);
+-	spin_unlock_irqrestore(&fscrypt_ctx_lock, flags);
+-	if (!ctx) {
+-		ctx = kmem_cache_zalloc(fscrypt_ctx_cachep, gfp_flags);
+-		if (!ctx)
+-			return ERR_PTR(-ENOMEM);
+-		ctx->flags |= FS_CTX_REQUIRES_FREE_ENCRYPT_FL;
+-	} else {
+-		ctx->flags &= ~FS_CTX_REQUIRES_FREE_ENCRYPT_FL;
+-	}
+-	return ctx;
+-}
+-EXPORT_SYMBOL(fscrypt_get_ctx);
+-
+ struct page *fscrypt_alloc_bounce_page(gfp_t gfp_flags)
+ {
+ 	return mempool_alloc(fscrypt_bounce_page_pool, gfp_flags);
+@@ -392,17 +328,6 @@ const struct dentry_operations fscrypt_d_ops = {
+ 	.d_revalidate = fscrypt_d_revalidate,
  };
  
- const struct inode_operations hpfs_file_iops =
-diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
-index 91b9dac6b2cc..4ba73dbf3e8d 100644
---- a/fs/nilfs2/ioctl.c
-+++ b/fs/nilfs2/ioctl.c
-@@ -1354,6 +1354,7 @@ long nilfs_compat_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 	case NILFS_IOCTL_SYNC:
- 	case NILFS_IOCTL_RESIZE:
- 	case NILFS_IOCTL_SET_ALLOC_RANGE:
-+	case FITRIM:
- 		break;
- 	default:
- 		return -ENOIOCTLCMD;
-diff --git a/fs/ocfs2/ioctl.c b/fs/ocfs2/ioctl.c
-index d6f7b299eb23..2d517b5ec6ac 100644
---- a/fs/ocfs2/ioctl.c
-+++ b/fs/ocfs2/ioctl.c
-@@ -985,6 +985,7 @@ long ocfs2_compat_ioctl(struct file *file, unsigned cmd, unsigned long arg)
- 			return -EFAULT;
+-static void fscrypt_destroy(void)
+-{
+-	struct fscrypt_ctx *pos, *n;
+-
+-	list_for_each_entry_safe(pos, n, &fscrypt_free_ctxs, free_list)
+-		kmem_cache_free(fscrypt_ctx_cachep, pos);
+-	INIT_LIST_HEAD(&fscrypt_free_ctxs);
+-	mempool_destroy(fscrypt_bounce_page_pool);
+-	fscrypt_bounce_page_pool = NULL;
+-}
+-
+ /**
+  * fscrypt_initialize() - allocate major buffers for fs encryption.
+  * @cop_flags:  fscrypt operations flags
+@@ -410,11 +335,11 @@ static void fscrypt_destroy(void)
+  * We only call this when we start accessing encrypted files, since it
+  * results in memory getting allocated that wouldn't otherwise be used.
+  *
+- * Return: Zero on success, non-zero otherwise.
++ * Return: 0 on success; -errno on failure
+  */
+ int fscrypt_initialize(unsigned int cop_flags)
+ {
+-	int i, res = -ENOMEM;
++	int err = 0;
  
- 		return ocfs2_info_handle(inode, &info, 1);
-+	case FITRIM:
- 	case OCFS2_IOC_MOVE_EXT:
- 		break;
- 	default:
+ 	/* No need to allocate a bounce page pool if this FS won't use it. */
+ 	if (cop_flags & FS_CFLG_OWN_PAGES)
+@@ -422,29 +347,18 @@ int fscrypt_initialize(unsigned int cop_flags)
+ 
+ 	mutex_lock(&fscrypt_init_mutex);
+ 	if (fscrypt_bounce_page_pool)
+-		goto already_initialized;
+-
+-	for (i = 0; i < num_prealloc_crypto_ctxs; i++) {
+-		struct fscrypt_ctx *ctx;
+-
+-		ctx = kmem_cache_zalloc(fscrypt_ctx_cachep, GFP_NOFS);
+-		if (!ctx)
+-			goto fail;
+-		list_add(&ctx->free_list, &fscrypt_free_ctxs);
+-	}
++		goto out_unlock;
+ 
++	err = -ENOMEM;
+ 	fscrypt_bounce_page_pool =
+ 		mempool_create_page_pool(num_prealloc_crypto_pages, 0);
+ 	if (!fscrypt_bounce_page_pool)
+-		goto fail;
++		goto out_unlock;
+ 
+-already_initialized:
+-	mutex_unlock(&fscrypt_init_mutex);
+-	return 0;
+-fail:
+-	fscrypt_destroy();
++	err = 0;
++out_unlock:
+ 	mutex_unlock(&fscrypt_init_mutex);
+-	return res;
++	return err;
+ }
+ 
+ void fscrypt_msg(const struct inode *inode, const char *level,
+@@ -490,13 +404,9 @@ static int __init fscrypt_init(void)
+ 	if (!fscrypt_read_workqueue)
+ 		goto fail;
+ 
+-	fscrypt_ctx_cachep = KMEM_CACHE(fscrypt_ctx, SLAB_RECLAIM_ACCOUNT);
+-	if (!fscrypt_ctx_cachep)
+-		goto fail_free_queue;
+-
+ 	fscrypt_info_cachep = KMEM_CACHE(fscrypt_info, SLAB_RECLAIM_ACCOUNT);
+ 	if (!fscrypt_info_cachep)
+-		goto fail_free_ctx;
++		goto fail_free_queue;
+ 
+ 	err = fscrypt_init_keyring();
+ 	if (err)
+@@ -506,8 +416,6 @@ static int __init fscrypt_init(void)
+ 
+ fail_free_info:
+ 	kmem_cache_destroy(fscrypt_info_cachep);
+-fail_free_ctx:
+-	kmem_cache_destroy(fscrypt_ctx_cachep);
+ fail_free_queue:
+ 	destroy_workqueue(fscrypt_read_workqueue);
+ fail:
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 76c64297ce187..dacf8fcbac3be 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -203,8 +203,6 @@ typedef enum {
+ 	FS_ENCRYPT,
+ } fscrypt_direction_t;
+ 
+-#define FS_CTX_REQUIRES_FREE_ENCRYPT_FL		0x00000001
+-
+ static inline bool fscrypt_valid_enc_modes(u32 contents_mode,
+ 					   u32 filenames_mode)
+ {
+diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+index f622f7460ed8c..04f5ed6284454 100644
+--- a/include/linux/fscrypt.h
++++ b/include/linux/fscrypt.h
+@@ -20,7 +20,6 @@
+ 
+ #define FS_CRYPTO_BLOCK_SIZE		16
+ 
+-struct fscrypt_ctx;
+ struct fscrypt_info;
+ 
+ struct fscrypt_str {
+@@ -64,18 +63,6 @@ struct fscrypt_operations {
+ 	unsigned int max_namelen;
+ };
+ 
+-/* Decryption work */
+-struct fscrypt_ctx {
+-	union {
+-		struct {
+-			struct bio *bio;
+-			struct work_struct work;
+-		};
+-		struct list_head free_list;	/* Free list */
+-	};
+-	u8 flags;				/* Flags */
+-};
+-
+ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+ {
+ 	/* pairs with cmpxchg_release() in fscrypt_get_encryption_info() */
+@@ -102,8 +89,6 @@ static inline void fscrypt_handle_d_move(struct dentry *dentry)
+ 
+ /* crypto.c */
+ extern void fscrypt_enqueue_decrypt_work(struct work_struct *);
+-extern struct fscrypt_ctx *fscrypt_get_ctx(gfp_t);
+-extern void fscrypt_release_ctx(struct fscrypt_ctx *);
+ 
+ extern struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
+ 						     unsigned int len,
+@@ -244,8 +229,6 @@ static inline bool fscrypt_match_name(const struct fscrypt_name *fname,
+ 
+ /* bio.c */
+ extern void fscrypt_decrypt_bio(struct bio *);
+-extern void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx,
+-					struct bio *bio);
+ extern int fscrypt_zeroout_range(const struct inode *, pgoff_t, sector_t,
+ 				 unsigned int);
+ 
+@@ -295,16 +278,6 @@ static inline void fscrypt_enqueue_decrypt_work(struct work_struct *work)
+ {
+ }
+ 
+-static inline struct fscrypt_ctx *fscrypt_get_ctx(gfp_t gfp_flags)
+-{
+-	return ERR_PTR(-EOPNOTSUPP);
+-}
+-
+-static inline void fscrypt_release_ctx(struct fscrypt_ctx *ctx)
+-{
+-	return;
+-}
+-
+ static inline struct page *fscrypt_encrypt_pagecache_blocks(struct page *page,
+ 							    unsigned int len,
+ 							    unsigned int offs,
+@@ -484,11 +457,6 @@ static inline void fscrypt_decrypt_bio(struct bio *bio)
+ {
+ }
+ 
+-static inline void fscrypt_enqueue_decrypt_bio(struct fscrypt_ctx *ctx,
+-					       struct bio *bio)
+-{
+-}
+-
+ static inline int fscrypt_zeroout_range(const struct inode *inode, pgoff_t lblk,
+ 					sector_t pblk, unsigned int len)
+ {
 -- 
-2.20.0
+2.23.0.581.g78d2f28ef7-goog
 
