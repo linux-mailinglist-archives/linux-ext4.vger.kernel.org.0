@@ -2,70 +2,325 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E923D1D08
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2019 01:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F02D1E8F
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2019 04:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732340AbfJIXrZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 9 Oct 2019 19:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42694 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731103AbfJIXrZ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 9 Oct 2019 19:47:25 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEF4E206BB;
-        Wed,  9 Oct 2019 23:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570664845;
-        bh=wV/V6DhT0TzJjctQ/covpkwmj5QjFM961Z0/BTrFR5E=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WhSjfjHstDaamJAnmujsDC4/nz0uLTeh8/TLveamefQGBgi/lSL8EuYxN/EIzVVr9
-         tsZ8/Z3e6oCl6a3TRyLojo9Y0MDsX806iF2xqa92qd2JGISQny2e10513j4+2Yf5vx
-         +VWo/A62AuNyuQnTzVxy5zEwYqggPzuCnZJ6HmXo=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH] docs: ioctl-number: document fscrypt ioctl numbers
-Date:   Wed,  9 Oct 2019 16:45:55 -0700
-Message-Id: <20191009234555.226282-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1732680AbfJJCkC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 9 Oct 2019 22:40:02 -0400
+Received: from mail-pl1-f201.google.com ([209.85.214.201]:55708 "EHLO
+        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732667AbfJJCkC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 9 Oct 2019 22:40:02 -0400
+Received: by mail-pl1-f201.google.com with SMTP id g11so2888639plm.22
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2019 19:40:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=py6joaoRGINk47RJOvP95LhbkynbRIrHn1eoyMwowAo=;
+        b=Bmfz7nZoAzXPk2y/yoSWllQk34nq7Z05rmA8maRVTOy9SDgsTAQ/5+gv33zrfB41hZ
+         gryscbmNcNwXG9hq943YnlVWC2QD1BLG1C0FxJRGNddtqlhfLVzM9kj1SPA9oWYFCKJP
+         +xiPZq0itBXwtEH/7dZ2yRx/A8Wz2NgdVbD0TOAUVMgSpfNHrlxAYW+7Mp+j4wUX0TgA
+         duZdVSbqUqUm3L9f+3eT1Ov4O9JPIU4nWfrDzmg8Boa4SWJLcMe33zUNsV/XyVg90uwF
+         TSwL0a6faivMIUAP/s/6JpwKFgD0QGHfxLTwRnAGPzn0KubDIsgQNGIK2WLHDtAViODf
+         FcjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=py6joaoRGINk47RJOvP95LhbkynbRIrHn1eoyMwowAo=;
+        b=GuS1M5u8qwqXIvU8P4G3LmJd1tScOHcfFJB5I0iNsVWxsI91GwgUCmA3e29i658aRq
+         BTcyex4lzbqcb9qesIsi/2vTwgVdTN/ctuuqRDxtNVfU+iO9MKnDuc6W4EEGCXemMz+4
+         q2P3A9W5WOuka0+g4Gd980JoFJ5EP0TFSz75ZsfxkiRem7r6Rw3+TIYOVzD6KiB/RpPX
+         A79Ggkyvd+o1sf+YVr85er4wIOLeAsNwXmfA7+sCLpQCNun0Z0hnJKeY9QpzuAh7koRy
+         PwQ7Of12fevsJ7ava4mT39Y+RHt4rePYsQQrKSXjZd6LLQ85oPKQk+KyTNTQrhsRVyPx
+         SE2A==
+X-Gm-Message-State: APjAAAUznesaOIAAD8PEFZWiT7pOp6Tn+Nm9MDYHbYOYcVbEyvQYz2zz
+        8BI2dEoEBmAMh77pbHmLu9W+4L5Bmzo=
+X-Google-Smtp-Source: APXvYqwvfqx3k7r9gfAaXfLt61IBhcJfrkXQ/Ctq8kNtezNzaDB6AE3MKjF+q5hDk0WsW5TXKmA7I+2Bp1f4
+X-Received: by 2002:a65:5345:: with SMTP id w5mr8142012pgr.213.1570675199960;
+ Wed, 09 Oct 2019 19:39:59 -0700 (PDT)
+Date:   Wed,  9 Oct 2019 19:39:31 -0700
+Message-Id: <20191010023931.230475-1-yzaikin@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.700.g56cf767bdb-goog
+Subject: [PATCH linux-kselftest/test v2] ext4: add kunit test for decoding
+ extended timestamps
+From:   Iurii Zaikin <yzaikin@google.com>
+To:     linux-kselftest@vger.kernel.org, linux-ext4@vger.kernel.org,
+        skhan@linuxfoundation.org, tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     kunit-dev@googlegroups.com, brendanhiggins@google.com,
+        Iurii Zaikin <yzaikin@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+KUnit tests for decoding extended 64 bit timestamps.
 
-The 'f' ioctls with numbers 19-26 decimal are currently used for fscrypt
-(a.k.a. ext4/f2fs/ubifs encryption), and up to 39 decimal is reserved
-for future fscrypt use, as per the comment in fs/ext4/ext4.h.  So the
-reserved range is 13-27 hex.
-
-Document this in ioctl-number.rst.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Iurii Zaikin <yzaikin@google.com>
 ---
- Documentation/ioctl/ioctl-number.rst | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/Kconfig      |  12 +++
+ fs/ext4/Makefile     |   1 +
+ fs/ext4/inode-test.c | 221 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 234 insertions(+)
+ create mode 100644 fs/ext4/inode-test.c
 
-diff --git a/Documentation/ioctl/ioctl-number.rst b/Documentation/ioctl/ioctl-number.rst
-index bef79cd4c6b4d..4ef86433bd677 100644
---- a/Documentation/ioctl/ioctl-number.rst
-+++ b/Documentation/ioctl/ioctl-number.rst
-@@ -233,6 +233,7 @@ Code  Seq#    Include File                                           Comments
- 'f'   00-0F  fs/ext4/ext4.h                                          conflict!
- 'f'   00-0F  linux/fs.h                                              conflict!
- 'f'   00-0F  fs/ocfs2/ocfs2_fs.h                                     conflict!
-+'f'   13-27  linux/fscrypt.h
- 'f'   81-8F  linux/fsverity.h
- 'g'   00-0F  linux/usb/gadgetfs.h
- 'g'   20-2F  linux/usb/g_printer.h
--- 
-2.23.0.581.g78d2f28ef7-goog
+diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+index cbb5ca830e57..cb0b52753674 100644
+--- a/fs/ext4/Kconfig
++++ b/fs/ext4/Kconfig
+@@ -106,3 +106,15 @@ config EXT4_DEBUG
+ 	  If you select Y here, then you will be able to turn on debugging
+ 	  with a command such as:
+ 		echo 1 > /sys/module/ext4/parameters/mballoc_debug
++
++config EXT4_KUNIT_TESTS
++	bool "KUnit test for ext4 inode"
++	depends on EXT4_FS
++	depends on KUNIT
++	help
++	  This builds the ext4 inode sysctl unit test, which runs on boot.
++	  Tests the encoding correctness of ext4 inode.
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
+diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
+index b17ddc229ac5..a0588fd2eea6 100644
+--- a/fs/ext4/Makefile
++++ b/fs/ext4/Makefile
+@@ -13,4 +13,5 @@ ext4-y	:= balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
 
+ ext4-$(CONFIG_EXT4_FS_POSIX_ACL)	+= acl.o
+ ext4-$(CONFIG_EXT4_FS_SECURITY)		+= xattr_security.o
++ext4-$(CONFIG_EXT4_KUNIT_TESTS)	+= inode-test.o
+ ext4-$(CONFIG_FS_VERITY)		+= verity.o
+diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+new file mode 100644
+index 000000000000..43bc6cb547cd
+--- /dev/null
++++ b/fs/ext4/inode-test.c
+@@ -0,0 +1,221 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test of ext4 inode that verify the seconds part of [a/c/m]
++ * timestamps in ext4 inode structs are decoded correctly.
++ * These tests are derived from the table under
++ * Documentation/filesystems/ext4/inodes.rst Inode Timestamps
++ */
++
++#include <kunit/test.h>
++#include <linux/kernel.h>
++#include <linux/time64.h>
++
++#include "ext4.h"
++
++/* binary: 00000000 00000000 00000000 00000000 */
++#define LOWER_MSB_0 0L
++/* binary: 01111111 11111111 11111111 11111111 */
++#define UPPER_MSB_0 0x7fffffffL
++/* binary: 10000000 00000000 00000000 00000000 */
++#define LOWER_MSB_1 (-0x80000000L)
++/* binary: 11111111 11111111 11111111 11111111 */
++#define UPPER_MSB_1 (-1L)
++/* binary: 00111111   11111111 11111111 11111111 */
++#define MAX_NANOSECONDS ((1L << 30) - 1)
++
++#define CASE_NAME_FORMAT "%s: msb:%x lower_bound:%x extra_bits: %x"
++
++struct timestamp_expectation {
++	const char *test_case_name;
++	struct timespec64 expected;
++	u32 extra_bits;
++	bool msb_set;
++	bool lower_bound;
++};
++
++static time64_t get_32bit_time(const struct timestamp_expectation * const test)
++{
++	if (test->msb_set) {
++		if (test->lower_bound)
++			return LOWER_MSB_1;
++
++		return UPPER_MSB_1;
++	}
++
++	if (test->lower_bound)
++		return LOWER_MSB_0;
++	return UPPER_MSB_0;
++}
++
++
++static void inode_test_xtimestamp_decoding(struct kunit *test)
++{
++	const struct timestamp_expectation test_data[] = {
++		{
++			.test_case_name = "1901-12-13",
++			.msb_set = true,
++			.lower_bound = true,
++			.extra_bits = 0,
++			.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "1969-12-31",
++			.msb_set = true,
++			.lower_bound = false,
++			.extra_bits = 0,
++			.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "1970-01-01",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 0,
++			.expected = {0LL, 0L},
++		},
++
++		{
++			.test_case_name = "2038-01-19",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 0,
++			.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "2038-01-19",
++			.msb_set = true,
++			.lower_bound = true,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "2106-02-07",
++			.msb_set = true,
++			.lower_bound = false,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "2106-02-07",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "2174-02-25",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "2174-02-25",
++			.msb_set = true,
++			.lower_bound = true,
++			.extra_bits =  2,
++			.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "2242-03-16",
++			.msb_set = true,
++			.lower_bound = false,
++			.extra_bits = 2,
++			.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "2242-03-16",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 2,
++			.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = " 2310-04-04",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 2,
++			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = " 2310-04-04 00:00:00.1",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 6,
++			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
++		},
++
++		{
++			.test_case_name = "2378-04-22 00:00:00.MAX_NSEC",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 0xFFFFFFFF,
++			.expected = {.tv_sec = 0x300000000LL,
++				     .tv_nsec = MAX_NANOSECONDS},
++		},
++
++		{
++			.test_case_name = "2378-04-22",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 3,
++			.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = "2446-05-10",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 3,
++			.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
++		}
++	};
++
++	struct timespec64 timestamp;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
++		timestamp.tv_sec = get_32bit_time(&test_data[i]);
++		ext4_decode_extra_time(&timestamp,
++				       cpu_to_le32(test_data[i].extra_bits));
++
++		KUNIT_EXPECT_EQ_MSG(test,
++				    test_data[i].expected.tv_sec,
++				    timestamp.tv_sec,
++				    CASE_NAME_FORMAT,
++				    test_data[i].test_case_name,
++				    test_data[i].msb_set,
++				    test_data[i].lower_bound,
++				    test_data[i].extra_bits);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    test_data[i].expected.tv_nsec,
++				    timestamp.tv_nsec,
++				    CASE_NAME_FORMAT,
++				    test_data[i].test_case_name,
++				    test_data[i].msb_set,
++				    test_data[i].lower_bound,
++				    test_data[i].extra_bits);
++	}
++}
++
++static struct kunit_case ext4_inode_test_cases[] = {
++	KUNIT_CASE(inode_test_xtimestamp_decoding),
++	{}
++};
++
++static struct kunit_suite ext4_inode_test_suite = {
++	.name = "ext4_inode_test",
++	.test_cases = ext4_inode_test_cases,
++};
++
++kunit_test_suite(ext4_inode_test_suite);
+--
+2.23.0.700.g56cf767bdb-goog
