@@ -2,128 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E12C4D1FEE
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2019 07:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA73D2017
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2019 07:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbfJJFPH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Oct 2019 01:15:07 -0400
-Received: from sender2-of-o52.zoho.com.cn ([163.53.93.247]:21338 "EHLO
-        sender2-of-o52.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726065AbfJJFPG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 10 Oct 2019 01:15:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1570684489; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=I+0u4qaXnsIOBwPodn0HCCNGHmbC4h3J9j/iLw4q0FlL/xg+VStMSOSO4FA/KbW/3EiLUc5xVUyXRKU3NDhM2q5dNOYYLv9f+re+LBlwYb9o42V6XJrZDzr/e03+aTEnZ0hG/biAE76tKmT9ML7iyfAcAbz1fxBhtjX2MxNlGoY=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1570684489; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
-        bh=57k/DfEojH8J7KZq4dnoQZxo7kGlpuPxep7Jg8y5XQM=; 
-        b=XKxtZ2JqV7d8rtegeqBRWc7l8ReyLDQShLawbMyqPXy4qfBTmJ8foyhbqkDOI/i5/M5XQ/uxvtpn+zZpBFTjVI32QFr66n6xrbnWj0/CXTxXCkAJTnCu73osmj4vEaslyPRJr7yBwTBtfLpYMvQ/oEVcPhVB7qgoNjeFkPC+HeM=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1570684489;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=2799; bh=57k/DfEojH8J7KZq4dnoQZxo7kGlpuPxep7Jg8y5XQM=;
-        b=ThSxGUtino07ywuAgQw2jr4+mYQYkTwzaQEvHDtFqPrHcRWuCQolg2knl+2NAIHL
-        tFDs2FuOriRiw8Y4sI4fxLJd7fChzqyrF1CRYzCOSm57XPhQ6dKIPW+FpGmxXosoZZx
-        nydB2uJmjmph6idjirUZDWwIzYXtGDd2IQUmdQ5s=
-Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1570684486856354.78702537373726; Thu, 10 Oct 2019 13:14:46 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191010051426.1087-1-cgxu519@mykernel.net>
-Subject: [PATCH] ext4: choose hardlimit when softlimit is larger than hardlimit in ext4_statfs_project()
-Date:   Thu, 10 Oct 2019 13:14:26 +0800
-X-Mailer: git-send-email 2.20.1
+        id S1728912AbfJJFjd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Oct 2019 01:39:33 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:46921 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728649AbfJJFjc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Oct 2019 01:39:32 -0400
+Received: by mail-pf1-f195.google.com with SMTP id q5so3123038pfg.13
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2019 22:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CQ8qLkYxE3s0aj/7O2LxSmHAT6SGLjMyMlog3ylNc2I=;
+        b=nf3VoIshCTmDpZ0oex/t5ARoB3VgkbQuNWiDByqqqC//+0GDmW/7qKTuiv9Py8F8oO
+         6+pdWDVOp1zrT9x99x1szhVN2H3SbfQMqRYIQBtK1XzYSy+z/znzKPP7edXgzcDSRNSO
+         AO8CchB7kaot693N5W81/j3mqPT/bR4eqCV1McMLmWdvNsF4tkZ41xmMcWF5xiZkT7Y1
+         KtTodBivEBrK2f7pehC8jAWkd/+jFVI9H7VF3YbLhrIsLj9pjUXNaWDNMfmgObVJ5W9D
+         BA8yLQUR0AaflJVIpjTHybWJ4XC6bZX6lfVzcsvm+Y4z23r74p5/LzCsnAimeNKhXMAq
+         ruUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CQ8qLkYxE3s0aj/7O2LxSmHAT6SGLjMyMlog3ylNc2I=;
+        b=sif7Htppf6usxZho3eZm3u7rM3gwN8n9zM4EpXL50vtZ9i0cOoMh3oJeMmbCdsRqdX
+         jvoBEAUnLbwzTWt+x5717j7QCgga7wWj18xHJmD7p9btX9G7BA/TDGF6WkPTIjJLJKOk
+         F3ud4BeZZeXO1m9QPUVZ8gDQE+xrKwPxmBbtSGz52jqSd2pYzZ5bWpQ6qdxNXqSR1Zzp
+         6t01QraY+DLdNE02aHNAh3FvPHBam97b46su4XRxQasemOKHIjeffh5I3p0bNIfShKTD
+         euqqIFCAV6qcinxOIl6SkgE52S02oY7b/ZGpVlSb5vqKke1Z3TamdHbEk1tep0oxcThg
+         SbpQ==
+X-Gm-Message-State: APjAAAUX/SNPbCOBhDO+RU5FIb29Pmb1n8sw5zlVwwXfLV+ZrkBVSrpl
+        bCbaew2vKNKQnkSEce8X/vTn
+X-Google-Smtp-Source: APXvYqzhWcEu9gXKSMHhfEBtAqyrEPhfXh8alzTCj23YWGqJxc1mi6M24/+aV0jumaZ3ueAU5FGzDA==
+X-Received: by 2002:a65:67c8:: with SMTP id b8mr8956182pgs.121.1570685971380;
+        Wed, 09 Oct 2019 22:39:31 -0700 (PDT)
+Received: from bobrowski ([110.232.114.101])
+        by smtp.gmail.com with ESMTPSA id u65sm5030390pfu.104.2019.10.09.22.39.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Oct 2019 22:39:30 -0700 (PDT)
+Date:   Thu, 10 Oct 2019 16:39:24 +1100
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
+Subject: Re: [PATCH v4 1/8] ext4: move out iomap field population into
+ separate helper
+Message-ID: <20191010053924.GC19064@bobrowski>
+References: <cover.1570100361.git.mbobrowski@mbobrowski.org>
+ <8b4499e47bea3841194850e1b3eeb924d87e69a5.1570100361.git.mbobrowski@mbobrowski.org>
+ <20191008102709.GD5078@quack2.suse.cz>
+ <20191009085721.GA1534@poseidon.bobrowski.net>
+ <20191009130609.GD5050@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191009130609.GD5050@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Setting softlimit larger than hardlimit seems meaningless
-for disk quota but currently it is allowed. In this case,
-there may be a bit of comfusion for users when they run
-df comamnd to directory which has project quota.
+On Wed, Oct 09, 2019 at 03:06:09PM +0200, Jan Kara wrote:
+> On Wed 09-10-19 19:57:23, Matthew Bobrowski wrote:
+> > On Tue, Oct 08, 2019 at 12:27:09PM +0200, Jan Kara wrote:
+> > > On Thu 03-10-19 21:33:09, Matthew Bobrowski wrote:
+> > > > +static int ext4_set_iomap(struct inode *inode, struct iomap *iomap, u16 type,
+> > > > +			  unsigned long first_block, struct ext4_map_blocks *map)
+> > > > +{
+> > > > +	u8 blkbits = inode->i_blkbits;
+> > > > +
+> > > > +	iomap->flags = 0;
+> > > > +	if (ext4_inode_datasync_dirty(inode))
+> > > > +		iomap->flags |= IOMAP_F_DIRTY;
+> > > > +	iomap->bdev = inode->i_sb->s_bdev;
+> > > > +	iomap->dax_dev = EXT4_SB(inode->i_sb)->s_daxdev;
+> > > > +	iomap->offset = (u64) first_block << blkbits;
+> > > > +	iomap->length = (u64) map->m_len << blkbits;
+> > > > +
+> > > > +	if (type) {
+> > > > +		iomap->type = type;
+> > > > +		iomap->addr = IOMAP_NULL_ADDR;
+> > > > +	} else {
+> > > > +		if (map->m_flags & EXT4_MAP_MAPPED) {
+> > > > +			iomap->type = IOMAP_MAPPED;
+> > > > +		} else if (map->m_flags & EXT4_MAP_UNWRITTEN) {
+> > > > +			iomap->type = IOMAP_UNWRITTEN;
+> > > > +		} else {
+> > > > +			WARN_ON_ONCE(1);
+> > > > +			return -EIO;
+> > > > +		}
+> > > > +		iomap->addr = (u64) map->m_pblk << blkbits;
+> > > > +	}
+> > > 
+> > > Looking at this function now, the 'type' argument looks a bit weird. Can we
+> > > perhaps just remove the 'type' argument and change the above to:
+> > 
+> > We can, but refer to the point below.
+> >  
+> > > 	if (map->m_flags & (EXT4_MAP_MAPPED | EXT4_MAP_UNWRITTEN)) {
+> > > 		if (map->m_flags & EXT4_MAP_MAPPED)
+> > > 			iomap->type = IOMAP_MAPPED;
+> > > 		else if (map->m_flags & EXT4_MAP_UNWRITTEN)
+> > > 			iomap->type = IOMAP_UNWRITTEN;
+> > > 		iomap->addr = (u64) map->m_pblk << blkbits;
+> > > 	} else {
+> > > 		iomap->type = IOMAP_HOLE;
+> > > 		iomap->addr = IOMAP_NULL_ADDR;
+> > > 	}
+> > > 
+> > > And then in ext4_iomap_begin() we overwrite the type to:
+> > > 
+> > > 	if (delalloc && iomap->type == IOMAP_HOLE)
+> > > 		iomap->type = IOMAP_DELALLOC;
+> > > 
+> > > That would IMO make ext4_set_iomap() arguments harder to get wrong.
+> > 
+> > I was thinking about this while doing a bunch of other things at work
+> > today. I'm kind of aligned with what Christoph mentioned around
+> > possibly duplicating some of the post 'iomap->type' setting from both
+> > current and any future ext4_set_iomap() callers. In addition to this,
+> > my thought was that if we're populating the iomap structure with
+> > values respectively, then it would make most sense to encapsulate
+> > those routines, if possible, within the ext4_set_iomap() as that's the
+> > sole purpose of the function.
+> 
+> Well, what I dislike about 'type' argument is the inconsistency in it's
+> handling. It is useful only for HOLE/DELALLOC, anything else will just give
+> you invalid iomap and you have to be careful to pass 0 in that case.
+> 
+> I understand the concern about possible duplication but since only
+> IOMAP_REPORT cares about IOMAP_DELALLOC, I'm not much concerned about it.
+> But another sensible API would be to optionally pass 'struct extent_status
+> *es' argument to ext4_set_iomap() and if this argument is non-NULL,
+> ext4_set_iomap() will handle the intersection of ext4_map_blocks and
+> extent_status and deduce appropriate resulting type from that.
 
-For example, we set 20M softlimit and 10M hardlimit of
-block usage limit for project quota of test_dir(project id 123).
+I see and thank you for sharing your view point. Let's go with what you
+originally proposed, which is dropping the 'type' argument and then handling
+IOMAP_DELALLOC within ext4_set_iomap(). No real hard objections. :)
 
-[root@hades mnt_ext4]# repquota -P -a
-*** Report for project quotas on device /dev/loop0
-Block grace time: 7days; Inode grace time: 7days
-                        Block limits                File limits
-Project         used    soft    hard  grace    used  soft  hard  grace
-----------------------------------------------------------------------
- 0        --      13       0       0              2     0     0
- 123      --   10237   20480   10240              5   200   100
-
-The result of df command as below:
-
-[root@hades mnt_ext4]# df -h test_dir
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/loop0       20M   10M   10M  50% /home/cgxu/test/mnt_ext4
-
-Even though it looks like there is another 10M free space to use,
-if we write new data to diretory test_dir(inherit project id),
-the write will fail with errno(-EDQUOT).
-
-After this patch, the df result looks like below.
-
-[root@hades mnt_ext4]# df -h test_dir
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/loop0       10M   10M  3.0K 100% /home/cgxu/test/mnt_ext4
-
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- fs/ext4/super.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dd654e53ba3d..08d4f993b365 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5546,9 +5546,11 @@ static int ext4_statfs_project(struct super_block *s=
-b,
- =09=09return PTR_ERR(dquot);
- =09spin_lock(&dquot->dq_dqb_lock);
-=20
--=09limit =3D (dquot->dq_dqb.dqb_bsoftlimit ?
--=09=09 dquot->dq_dqb.dqb_bsoftlimit :
--=09=09 dquot->dq_dqb.dqb_bhardlimit) >> sb->s_blocksize_bits;
-+=09limit =3D ((dquot->dq_dqb.dqb_bhardlimit &&
-+=09=09(dquot->dq_dqb.dqb_bhardlimit < dquot->dq_dqb.dqb_bsoftlimit)) ?
-+=09=09dquot->dq_dqb.dqb_bhardlimit :
-+=09=09dquot->dq_dqb.dqb_bsoftlimit) >> sb->s_blocksize_bits;
-+
- =09if (limit && buf->f_blocks > limit) {
- =09=09curblock =3D (dquot->dq_dqb.dqb_curspace +
- =09=09=09    dquot->dq_dqb.dqb_rsvspace) >> sb->s_blocksize_bits;
-@@ -5558,9 +5560,11 @@ static int ext4_statfs_project(struct super_block *s=
-b,
- =09=09=09 (buf->f_blocks - curblock) : 0;
- =09}
-=20
--=09limit =3D dquot->dq_dqb.dqb_isoftlimit ?
--=09=09dquot->dq_dqb.dqb_isoftlimit :
--=09=09dquot->dq_dqb.dqb_ihardlimit;
-+=09limit =3D (dquot->dq_dqb.dqb_ihardlimit &&
-+=09=09(dquot->dq_dqb.dqb_ihardlimit < dquot->dq_dqb.dqb_isoftlimit)) ?
-+=09=09dquot->dq_dqb.dqb_ihardlimit :
-+=09=09dquot->dq_dqb.dqb_isoftlimit;
-+
- =09if (limit && buf->f_files > limit) {
- =09=09buf->f_files =3D limit;
- =09=09buf->f_ffree =3D
---=20
-2.20.1
-
-
-
+--<M>--
