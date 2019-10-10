@@ -2,349 +2,392 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 772ECD3243
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2019 22:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B14D33CE
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2019 00:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbfJJUaK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 10 Oct 2019 16:30:10 -0400
-Received: from mail-eopbgr710110.outbound.protection.outlook.com ([40.107.71.110]:50558
-        "EHLO NAM05-BY2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726802AbfJJUaA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 10 Oct 2019 16:30:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RMttLiTTMFeosXTNF8qgS45m8Yq3T1P7+xmQU/Nb/QnkB2EMLvjjTOKagva88KQfRx/kVEPQK0wENhP34KaPY7U+l8eGyFsSyAkkaWydfjvum9qJj8tdiORLQtPvRSd214fJksBp8OIBxzOmAvDhhqeu8mqa1Ekls8zsRUfPE/y/CDi68uBH39JDbzhUWT4L+ZpTq1F9uH79AXzp90iJSYCFy7QJ2phn15MSzrW8O4E6xt+t/XMf53yEzhqDf2rASBVzvnEzsKTPvgldI9IGH6HE+ZpmUgZwVlZc8MfO0h3lSgqyeicfoHtLeBU+zCK54jVH4YH9TXsSgh46lcmQCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9l5Ptx20tAczvIj9q13hiQWkpODFRPzPlNKuLl823PA=;
- b=B317xyk+eQHdtDaCLKWRbRWfOy5T0LHoSEDK5aUMQ152wF5MAfhAFGtLujqicX5XGnJnmFf1be6u6uuzvaG+vyqSZy/jgn86wfU2wMAc9Gdjxz5plebfpUjq62mQ4zdhA3tw6Si4fSKp7CaWOlSjIMsNBkjVJoaPjfe/KayIH4A8OGePZNbev3HFQ4OSoc7wC+uxiI9aGrGUPUumxqZGVcVF2B5mcxLMfCHoLJX+xfenr4B92qYRT8ZDTQkAbrT4OEmr9RdAK7wUfGruTggTVRF6l5to70rz8bJfykLmxZDSZLZlbvZHnZxku85MI5K+Editf6f3tE/ftSMYEpE2aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 160.33.194.228) smtp.rcpttodomain=google.com smtp.mailfrom=sony.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=sony.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Sony.onmicrosoft.com;
- s=selector2-Sony-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9l5Ptx20tAczvIj9q13hiQWkpODFRPzPlNKuLl823PA=;
- b=It5fpXtkmQnNk4UScmTfO97p2kIzVH0IBGMDyJWYX5vVFbb2dj6orPSWnR3rkhigD1WijokmLfBfZe5l9GQO7X3Zr1rScYRCyUoiym4Go9oe2nTV7634sr3W/CIwNPOvPCy2mHBkw7IsTtKAyTAd9wyNtIqV7eo9I5O8AcYd1W8=
-Received: from BN6PR13CA0060.namprd13.prod.outlook.com (2603:10b6:404:11::22)
- by MWHPR13MB1215.namprd13.prod.outlook.com (2603:10b6:300:14::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2347.16; Thu, 10 Oct
- 2019 20:29:52 +0000
-Received: from SN1NAM02FT059.eop-nam02.prod.protection.outlook.com
- (2a01:111:f400:7e44::208) by BN6PR13CA0060.outlook.office365.com
- (2603:10b6:404:11::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.2367.6 via Frontend
- Transport; Thu, 10 Oct 2019 20:29:52 +0000
-Authentication-Results: spf=pass (sender IP is 160.33.194.228)
- smtp.mailfrom=sony.com; google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=pass action=none header.from=sony.com;
-Received-SPF: Pass (protection.outlook.com: domain of sony.com designates
- 160.33.194.228 as permitted sender) receiver=protection.outlook.com;
- client-ip=160.33.194.228; helo=usculsndmail01v.am.sony.com;
-Received: from usculsndmail01v.am.sony.com (160.33.194.228) by
- SN1NAM02FT059.mail.protection.outlook.com (10.152.72.177) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.2327.21 via Frontend Transport; Thu, 10 Oct 2019 20:29:52 +0000
-Received: from usculsndmail11v.am.sony.com (usculsndmail11v.am.sony.com [146.215.230.102])
-        by usculsndmail01v.am.sony.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with ESMTP id x9AKTpW1026850;
-        Thu, 10 Oct 2019 20:29:51 GMT
-Received: from USCULXHUB05V.am.sony.com (hub.bc.in.sel.sony.com [146.215.231.43])
-        by usculsndmail11v.am.sony.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with ESMTP id x9AKToDL027463;
-        Thu, 10 Oct 2019 20:29:50 GMT
-Received: from USCULXMSG01.am.sony.com ([fe80::b09d:6cb6:665e:d1b5]) by
- USCULXHUB05V.am.sony.com ([146.215.231.43]) with mapi id 14.03.0439.000; Thu,
- 10 Oct 2019 16:29:50 -0400
-From:   <Tim.Bird@sony.com>
-To:     <yzaikin@google.com>
-CC:     <linux-kselftest@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <skhan@linuxfoundation.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <kunit-dev@googlegroups.com>,
-        <brendanhiggins@google.com>
-Subject: RE: [PATCH linux-kselftest/test v2] ext4: add kunit test for
- decoding extended timestamps
-Thread-Topic: [PATCH linux-kselftest/test v2] ext4: add kunit test for
- decoding extended timestamps
-Thread-Index: AQHVfxQJt5KYyUfdIUCqjuPcGwlYBqdTO9/QgAEdLoD///HtAA==
-Date:   Thu, 10 Oct 2019 20:29:32 +0000
-Message-ID: <ECADFF3FD767C149AD96A924E7EA6EAF977C172D@USCULXMSG01.am.sony.com>
-References: <20191010023931.230475-1-yzaikin@google.com>
- <ECADFF3FD767C149AD96A924E7EA6EAF977C135F@USCULXMSG01.am.sony.com>
- <CAAXuY3rk8_Eu_09jGbE66irtnjFzz4=6RxmZ6eMpBLdqpo5xfw@mail.gmail.com>
-In-Reply-To: <CAAXuY3rk8_Eu_09jGbE66irtnjFzz4=6RxmZ6eMpBLdqpo5xfw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [146.215.231.6]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726332AbfJJWOT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 10 Oct 2019 18:14:19 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:41704 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbfJJWOT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 10 Oct 2019 18:14:19 -0400
+Received: by mail-qk1-f196.google.com with SMTP id p10so7097587qkg.8
+        for <linux-ext4@vger.kernel.org>; Thu, 10 Oct 2019 15:14:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=axqXitUpZQzPW9NNcvtsJ/Fag1zSuFDupbs5adqeHAY=;
+        b=mvGXyxsF2hMezJhsi7moeSj8D+ZPCuql58FjUcK0kqkhSwILlRoIZv+ZsxEXJrYDtT
+         jst4zvTFG01K7vEkAS1KgQR8i4+NLzxkvwEapssrORSwxM2THM5JPz2/+kQRBkoKt12w
+         97nq43kXSV9ArWnFbLANlz2zSWfeI+F6o0r3RjfB5zK52wiFRYq5v8Pq0GxOlWCI/Ab5
+         6dPnSTfZ22VmDmjizA356TU41fPFxFmnGBjA0tk6RtU/MbQDiV2EhPV3NTa/KCFMdnYI
+         hXxgdG7ws8shrdB8098QL8w1KoS7MDNiXG0CUOpNQUzS4Fr6rRaEzveqhpTJNn48wzog
+         5BHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=axqXitUpZQzPW9NNcvtsJ/Fag1zSuFDupbs5adqeHAY=;
+        b=JXZABGmoXDYINhZhujClZCHS7Tzh0ry+dN7CwqWLioz8NjloY/JmLyRjfd40CnB+PH
+         duitGhZeOXnlsbVYVGJKCp98934olQ07UJgQhwa4cwGsBuP+whFoWidU7tvTFBBEfFfZ
+         Xbvm1rm1JlRelnUdUdSqi496l9r096yCnGSnlZqsW7QUqzW4ZWUQLv3qxwuMdNKJL5M4
+         xJHDCL0icBwDRZ1RxL5xSKIsH/FsLQTmRr+WJTDCsBp2z1EeumAZlYIiePiI99emMZoH
+         Trco6yMHn8n2ekaQO1j7pHT/HyEbtvZtBUq41dQXl5h5bO9jsXieHZ8UGDjhMlyW65sY
+         Pkxw==
+X-Gm-Message-State: APjAAAXFOTpEB82FFUfGdJJZpz621/oMsmBlBNy7PeA3AQq9CRado/dl
+        C1oyGJtZFexc6UhmphIL1tN9zyAdkcGg+URFQH2a
+X-Google-Smtp-Source: APXvYqzeStFXF/rIjaxV9IGoXG9xmVSRwwbd8DHMoeoL3vhcAF7r8sqhrF+9rglt4no30sm21jILw9Ulj8m7XzrI0YE=
+X-Received: by 2002:a05:620a:2193:: with SMTP id g19mr12739515qka.184.1570745657502;
+ Thu, 10 Oct 2019 15:14:17 -0700 (PDT)
 MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:160.33.194.228;IPV:NLI;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10019020)(376002)(39860400002)(136003)(346002)(396003)(13464003)(189003)(199004)(37786003)(33656002)(5660300002)(8936002)(246002)(26005)(6916009)(6666004)(356004)(478600001)(8676002)(54906003)(2876002)(186003)(7696005)(23676004)(2486003)(76176011)(102836004)(14444005)(50466002)(53546011)(3846002)(6116002)(86362001)(11346002)(7736002)(336012)(426003)(436003)(2906002)(106002)(476003)(30864003)(486006)(126002)(4326008)(446003)(305945005)(6246003)(316002)(55846006)(229853002)(55016002)(66066001)(70206006)(47776003)(70586007)(2351001)(5001870100001);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR13MB1215;H:usculsndmail01v.am.sony.com;FPR:;SPF:Pass;LANG:en;PTR:mail.sonyusa.com,mail01.sonyusa.com;MX:1;A:1;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4cf3c3bb-c5b9-48ad-f95e-08d74dc09ad5
-X-MS-TrafficTypeDiagnostic: MWHPR13MB1215:
-X-Microsoft-Antispam-PRVS: <MWHPR13MB12157C12F48BF0582798DFFBFD940@MWHPR13MB1215.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 018632C080
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZvkZiO05JRsAFzHfYrOZt2Q2+LNdAuIF9VoLkpNNf/EUOLkZBRpzE6R3lLTrQjKhd5GPbYqp2btM15ZhRQTBme0dMXXgYf4IcQ+lMc4Fgebe00EUY45ixNHez/JaBkQvHWqzIMOZn8w2Iw0gAF+KGiJddkWwF+MMhzyGV2IhwIZOQvkS9cVblT/1xuuHIXsXhLgXq3Mq8IntTKC1kuFDj2gfaB+wVMn1OZlSpw8StJnx9Mdi1B34Uz6AGZdrZj1bzEqPXwj/cziz2Nu4pq7tBwup4t/54529mRJe7VzpJqwsNyQZOj/v5t3rvr/vhftUXObskYLduyqgrLFVEOkz1/TsR2RQaeLqr4+07KwPefHikUebi9C+E4kqaTNr1K2b2DqRnAjhgmCgMRya2YdA0dnB1mHbL73h4RSS81ILDjE=
-X-OriginatorOrg: sony.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Oct 2019 20:29:52.0846
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4cf3c3bb-c5b9-48ad-f95e-08d74dc09ad5
-X-MS-Exchange-CrossTenant-Id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=66c65d8a-9158-4521-a2d8-664963db48e4;Ip=[160.33.194.228];Helo=[usculsndmail01v.am.sony.com]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR13MB1215
+References: <20191010023931.230475-1-yzaikin@google.com> <2f2ea7b0-f683-1cdd-f3f2-ecdf44cb4a97@linuxfoundation.org>
+In-Reply-To: <2f2ea7b0-f683-1cdd-f3f2-ecdf44cb4a97@linuxfoundation.org>
+From:   Iurii Zaikin <yzaikin@google.com>
+Date:   Thu, 10 Oct 2019 15:13:41 -0700
+Message-ID: <CAAXuY3qtSHENgy3S168_03ju_JwAucOAt5WEJGQ+pi5PfurP6g@mail.gmail.com>
+Subject: Re: [PATCH linux-kselftest/test v2] ext4: add kunit test for decoding
+ extended timestamps
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        kunit-dev@googlegroups.com,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSXVyaWkgWmFpa2luIG9u
-IFRodXJzZGF5LCBPY3RvYmVyIDEwLCAyMDE5IDY6NDUgQU0NCj4gDQo+IE9uIFdlZCwgT2N0IDks
-IDIwMTkgYXQgODo0NyBQTSA8VGltLkJpcmRAc29ueS5jb20+IHdyb3RlOg0KPiA+DQo+ID4NCj4g
-PiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBGcm9tIEl1cmlpIFphaWtpbiBv
-biBXZWRuZXNkYXksIE9jdG9iZXIgMDksIDIwMTkgNDo0MCBQTQ0KPiA+ID4NCj4gPiA+IEtVbml0
-IHRlc3RzIGZvciBkZWNvZGluZyBleHRlbmRlZCA2NCBiaXQgdGltZXN0YW1wcy4NCj4gPiA+DQo+
-ID4gPiBTaWduZWQtb2ZmLWJ5OiBJdXJpaSBaYWlraW4gPHl6YWlraW5AZ29vZ2xlLmNvbT4NCj4g
-PiA+IC0tLQ0KPiA+ID4gIGZzL2V4dDQvS2NvbmZpZyAgICAgIHwgIDEyICsrKw0KPiA+ID4gIGZz
-L2V4dDQvTWFrZWZpbGUgICAgIHwgICAxICsNCj4gPiA+ICBmcy9leHQ0L2lub2RlLXRlc3QuYyB8
-IDIyMQ0KPiA+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0K
-PiA+ID4gIDMgZmlsZXMgY2hhbmdlZCwgMjM0IGluc2VydGlvbnMoKykNCj4gPiA+ICBjcmVhdGUg
-bW9kZSAxMDA2NDQgZnMvZXh0NC9pbm9kZS10ZXN0LmMNCj4gPiA+DQo+ID4gPiBkaWZmIC0tZ2l0
-IGEvZnMvZXh0NC9LY29uZmlnIGIvZnMvZXh0NC9LY29uZmlnDQo+ID4gPiBpbmRleCBjYmI1Y2E4
-MzBlNTcuLmNiMGI1Mjc1MzY3NCAxMDA2NDQNCj4gPiA+IC0tLSBhL2ZzL2V4dDQvS2NvbmZpZw0K
-PiA+ID4gKysrIGIvZnMvZXh0NC9LY29uZmlnDQo+ID4gPiBAQCAtMTA2LDMgKzEwNiwxNSBAQCBj
-b25maWcgRVhUNF9ERUJVRw0KPiA+ID4gICAgICAgICBJZiB5b3Ugc2VsZWN0IFkgaGVyZSwgdGhl
-biB5b3Ugd2lsbCBiZSBhYmxlIHRvIHR1cm4gb24gZGVidWdnaW5nDQo+ID4gPiAgICAgICAgIHdp
-dGggYSBjb21tYW5kIHN1Y2ggYXM6DQo+ID4gPiAgICAgICAgICAgICAgIGVjaG8gMSA+IC9zeXMv
-bW9kdWxlL2V4dDQvcGFyYW1ldGVycy9tYmFsbG9jX2RlYnVnDQo+ID4gPiArDQo+ID4gPiArY29u
-ZmlnIEVYVDRfS1VOSVRfVEVTVFMNCj4gPiA+ICsgICAgIGJvb2wgIktVbml0IHRlc3QgZm9yIGV4
-dDQgaW5vZGUiDQo+ID4gPiArICAgICBkZXBlbmRzIG9uIEVYVDRfRlMNCj4gPiA+ICsgICAgIGRl
-cGVuZHMgb24gS1VOSVQNCj4gPiA+ICsgICAgIGhlbHANCj4gPiA+ICsgICAgICAgVGhpcyBidWls
-ZHMgdGhlIGV4dDQgaW5vZGUgc3lzY3RsIHVuaXQgdGVzdCwgd2hpY2ggcnVucyBvbiBib290Lg0K
-PiA+ID4gKyAgICAgICBUZXN0cyB0aGUgZW5jb2RpbmcgY29ycmVjdG5lc3Mgb2YgZXh0NCBpbm9k
-ZS4NCj4gPiA+ICsgICAgICAgRm9yIG1vcmUgaW5mb3JtYXRpb24gb24gS1VuaXQgYW5kIHVuaXQg
-dGVzdHMgaW4gZ2VuZXJhbCBwbGVhc2UgcmVmZXINCj4gPiA+ICsgICAgICAgdG8gdGhlIEtVbml0
-IGRvY3VtZW50YXRpb24gaW4gRG9jdW1lbnRhdGlvbi9kZXYtdG9vbHMva3VuaXQvLg0KPiA+ID4g
-Kw0KPiA+ID4gKyAgICAgICBJZiB1bnN1cmUsIHNheSBOLg0KPiA+ID4gZGlmZiAtLWdpdCBhL2Zz
-L2V4dDQvTWFrZWZpbGUgYi9mcy9leHQ0L01ha2VmaWxlDQo+ID4gPiBpbmRleCBiMTdkZGMyMjlh
-YzUuLmEwNTg4ZmQyZWVhNiAxMDA2NDQNCj4gPiA+IC0tLSBhL2ZzL2V4dDQvTWFrZWZpbGUNCj4g
-PiA+ICsrKyBiL2ZzL2V4dDQvTWFrZWZpbGUNCj4gPiA+IEBAIC0xMyw0ICsxMyw1IEBAIGV4dDQt
-eSAgICAgIDo9IGJhbGxvYy5vIGJpdG1hcC5vIGJsb2NrX3ZhbGlkaXR5Lm8gZGlyLm8NCj4gPiA+
-IGV4dDRfamJkMi5vIGV4dGVudHMubyBcDQo+ID4gPg0KPiA+ID4gIGV4dDQtJChDT05GSUdfRVhU
-NF9GU19QT1NJWF9BQ0wpICAgICArPSBhY2wubw0KPiA+ID4gIGV4dDQtJChDT05GSUdfRVhUNF9G
-U19TRUNVUklUWSkgICAgICAgICAgICAgICs9IHhhdHRyX3NlY3VyaXR5Lm8NCj4gPiA+ICtleHQ0
-LSQoQ09ORklHX0VYVDRfS1VOSVRfVEVTVFMpICAgICAgKz0gaW5vZGUtdGVzdC5vDQo+ID4gPiAg
-ZXh0NC0kKENPTkZJR19GU19WRVJJVFkpICAgICAgICAgICAgICs9IHZlcml0eS5vDQo+ID4gPiBk
-aWZmIC0tZ2l0IGEvZnMvZXh0NC9pbm9kZS10ZXN0LmMgYi9mcy9leHQ0L2lub2RlLXRlc3QuYw0K
-PiA+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uNDNi
-YzZjYjU0N2NkDQo+ID4gPiAtLS0gL2Rldi9udWxsDQo+ID4gPiArKysgYi9mcy9leHQ0L2lub2Rl
-LXRlc3QuYw0KPiA+ID4gQEAgLTAsMCArMSwyMjEgQEANCj4gPiA+ICsvLyBTUERYLUxpY2Vuc2Ut
-SWRlbnRpZmllcjogR1BMLTIuMA0KPiA+ID4gKy8qDQo+ID4gPiArICogS1VuaXQgdGVzdCBvZiBl
-eHQ0IGlub2RlIHRoYXQgdmVyaWZ5IHRoZSBzZWNvbmRzIHBhcnQgb2YgW2EvYy9tXQ0KPiA+ID4g
-KyAqIHRpbWVzdGFtcHMgaW4gZXh0NCBpbm9kZSBzdHJ1Y3RzIGFyZSBkZWNvZGVkIGNvcnJlY3Rs
-eS4NCj4gPiA+ICsgKiBUaGVzZSB0ZXN0cyBhcmUgZGVyaXZlZCBmcm9tIHRoZSB0YWJsZSB1bmRl
-cg0KPiA+ID4gKyAqIERvY3VtZW50YXRpb24vZmlsZXN5c3RlbXMvZXh0NC9pbm9kZXMucnN0IElu
-b2RlIFRpbWVzdGFtcHMNCj4gPiA+ICsgKi8NCj4gPiA+ICsNCj4gPiA+ICsjaW5jbHVkZSA8a3Vu
-aXQvdGVzdC5oPg0KPiA+ID4gKyNpbmNsdWRlIDxsaW51eC9rZXJuZWwuaD4NCj4gPiA+ICsjaW5j
-bHVkZSA8bGludXgvdGltZTY0Lmg+DQo+ID4gPiArDQo+ID4gPiArI2luY2x1ZGUgImV4dDQuaCIN
-Cj4gPiA+ICsNCj4gPiA+ICsvKiBiaW5hcnk6IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAw
-MDAwMDAwICovDQo+ID4gPiArI2RlZmluZSBMT1dFUl9NU0JfMCAwTA0KPiA+ID4gKy8qIGJpbmFy
-eTogMDExMTExMTEgMTExMTExMTEgMTExMTExMTEgMTExMTExMTEgKi8NCj4gPiA+ICsjZGVmaW5l
-IFVQUEVSX01TQl8wIDB4N2ZmZmZmZmZMDQo+ID4gPiArLyogYmluYXJ5OiAxMDAwMDAwMCAwMDAw
-MDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAqLw0KPiA+ID4gKyNkZWZpbmUgTE9XRVJfTVNCXzEgKC0w
-eDgwMDAwMDAwTCkNCj4gPiA+ICsvKiBiaW5hcnk6IDExMTExMTExIDExMTExMTExIDExMTExMTEx
-IDExMTExMTExICovDQo+ID4gPiArI2RlZmluZSBVUFBFUl9NU0JfMSAoLTFMKQ0KPiA+ID4gKy8q
-IGJpbmFyeTogMDAxMTExMTEgICAxMTExMTExMSAxMTExMTExMSAxMTExMTExMSAqLw0KPiA+ID4g
-KyNkZWZpbmUgTUFYX05BTk9TRUNPTkRTICgoMUwgPDwgMzApIC0gMSkNCj4gPiA+ICsNCj4gPiA+
-ICsjZGVmaW5lIENBU0VfTkFNRV9GT1JNQVQgIiVzOiBtc2I6JXggbG93ZXJfYm91bmQ6JXgNCj4g
-ZXh0cmFfYml0czoNCj4gPiA+ICV4Ig0KPiA+ID4gKw0KPiA+ID4gK3N0cnVjdCB0aW1lc3RhbXBf
-ZXhwZWN0YXRpb24gew0KPiA+ID4gKyAgICAgY29uc3QgY2hhciAqdGVzdF9jYXNlX25hbWU7DQo+
-ID4gPiArICAgICBzdHJ1Y3QgdGltZXNwZWM2NCBleHBlY3RlZDsNCj4gPiA+ICsgICAgIHUzMiBl
-eHRyYV9iaXRzOw0KPiA+ID4gKyAgICAgYm9vbCBtc2Jfc2V0Ow0KPiA+ID4gKyAgICAgYm9vbCBs
-b3dlcl9ib3VuZDsNCj4gPiA+ICt9Ow0KPiA+ID4gKw0KPiA+ID4gK3N0YXRpYyB0aW1lNjRfdCBn
-ZXRfMzJiaXRfdGltZShjb25zdCBzdHJ1Y3QgdGltZXN0YW1wX2V4cGVjdGF0aW9uICoNCj4gY29u
-c3QNCj4gPiA+IHRlc3QpDQo+ID4gPiArew0KPiA+ID4gKyAgICAgaWYgKHRlc3QtPm1zYl9zZXQp
-IHsNCj4gPiA+ICsgICAgICAgICAgICAgaWYgKHRlc3QtPmxvd2VyX2JvdW5kKQ0KPiA+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgIHJldHVybiBMT1dFUl9NU0JfMTsNCj4gPiA+ICsNCj4gPiA+ICsg
-ICAgICAgICAgICAgcmV0dXJuIFVQUEVSX01TQl8xOw0KPiA+ID4gKyAgICAgfQ0KPiA+ID4gKw0K
-PiA+ID4gKyAgICAgaWYgKHRlc3QtPmxvd2VyX2JvdW5kKQ0KPiA+ID4gKyAgICAgICAgICAgICBy
-ZXR1cm4gTE9XRVJfTVNCXzA7DQo+ID4gPiArICAgICByZXR1cm4gVVBQRVJfTVNCXzA7DQo+ID4g
-PiArfQ0KPiA+ID4gKw0KPiA+ID4gKw0KPiA+ID4gK3N0YXRpYyB2b2lkIGlub2RlX3Rlc3RfeHRp
-bWVzdGFtcF9kZWNvZGluZyhzdHJ1Y3Qga3VuaXQgKnRlc3QpDQo+ID4gPiArew0KPiA+ID4gKyAg
-ICAgY29uc3Qgc3RydWN0IHRpbWVzdGFtcF9leHBlY3RhdGlvbiB0ZXN0X2RhdGFbXSA9IHsNCj4g
-PiA+ICsgICAgICAgICAgICAgew0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC50ZXN0X2Nh
-c2VfbmFtZSA9ICIxOTAxLTEyLTEzIiwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAubXNi
-X3NldCA9IHRydWUsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLmxvd2VyX2JvdW5kID0g
-dHJ1ZSwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAuZXh0cmFfYml0cyA9IDAsDQo+ID4g
-PiArICAgICAgICAgICAgICAgICAgICAgLmV4cGVjdGVkID0gey50dl9zZWMgPSAtMHg4MDAwMDAw
-MExMLCAudHZfbnNlYyA9IDBMfSwNCj4gPiA+ICsgICAgICAgICAgICAgfSwNCj4gPiA+ICsNCj4g
-PiA+ICsgICAgICAgICAgICAgew0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC50ZXN0X2Nh
-c2VfbmFtZSA9ICIxOTY5LTEyLTMxIiwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAubXNi
-X3NldCA9IHRydWUsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLmxvd2VyX2JvdW5kID0g
-ZmFsc2UsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLmV4dHJhX2JpdHMgPSAwLA0KPiA+
-ID4gKyAgICAgICAgICAgICAgICAgICAgIC5leHBlY3RlZCA9IHsudHZfc2VjID0gLTFMTCwgLnR2
-X25zZWMgPSAwTH0sDQo+ID4gPiArICAgICAgICAgICAgIH0sDQo+ID4gPiArDQo+ID4gPiArICAg
-ICAgICAgICAgIHsNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAudGVzdF9jYXNlX25hbWUg
-PSAiMTk3MC0wMS0wMSIsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLm1zYl9zZXQgPSBm
-YWxzZSwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAubG93ZXJfYm91bmQgPSB0cnVlLA0K
-PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC5leHRyYV9iaXRzID0gMCwNCj4gPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICAuZXhwZWN0ZWQgPSB7MExMLCAwTH0sDQo+ID4gPiArICAgICAgICAg
-ICAgIH0sDQo+ID4gPiArDQo+ID4gPiArICAgICAgICAgICAgIHsNCj4gPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICAudGVzdF9jYXNlX25hbWUgPSAiMjAzOC0wMS0xOSIsDQo+ID4gPiArICAgICAg
-ICAgICAgICAgICAgICAgLm1zYl9zZXQgPSBmYWxzZSwNCj4gPiA+ICsgICAgICAgICAgICAgICAg
-ICAgICAubG93ZXJfYm91bmQgPSBmYWxzZSwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAu
-ZXh0cmFfYml0cyA9IDAsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLmV4cGVjdGVkID0g
-ey50dl9zZWMgPSAweDdmZmZmZmZmTEwsIC50dl9uc2VjID0gMEx9LA0KPiA+ID4gKyAgICAgICAg
-ICAgICB9LA0KPiA+ID4gKw0KPiA+ID4gKyAgICAgICAgICAgICB7DQo+ID4gPiArICAgICAgICAg
-ICAgICAgICAgICAgLnRlc3RfY2FzZV9uYW1lID0gIjIwMzgtMDEtMTkiLA0KPiA+IEl0J3MgcXVp
-dGUgaGFuZHkgaWYgdGVzdGNhc2UgbmFtZXMgY2FuIGJlIHVuaXF1ZSwgYW5kIGRlc2NyaWJlIHdo
-YXQgaXQgaXMNCj4gdGhleSBhcmUgdGVzdGluZy4NCj4gPg0KPiA+IElmIHNvbWVvbmUgdW5mYW1p
-bGlhciB3aXRoIHRoaXMgdGVzdCBsb29rcyBhdCB0aGUgcmVzdWx0cywgaXQncyBuaWNlIGlmIHRo
-ZXkgY2FuDQo+ID4gaW50dWl0IHdoYXQgaXQgd2FzIHRoYXQgd2VudCB3cm9uZywgYmFzZWQgb24g
-dGhlIHRlc3QgY2FzZSBuYW1lLg0KPiA+DQo+ID4gSU1ITyB0aGVzZSBuYW1lcyBhcmUgdG9vIHNo
-b3J0IGFuZCBub3QgZGVzY3JpcHRpdmUgZW5vdWdoLg0KPg0KPiBUaGUgdGVzdCBjYXNlcyBhcmUg
-cHJldHR5IG11Y2ggMToxIHRvIHRoZSBleGFtcGxlcyB0YWJsZSByZWZlcmVuY2VkIGF0DQo+IHRo
-ZSB0b3AgY29tbWVudCBvZiB0aGUgZmlsZS4gV291bGQgaXQgaGVscCBpZiBJIG1vdmUgdGhlIHJl
-ZmVyZW5jZQ0KPiBjb21tZW50IGNsb3NlciB0byB0aGUgdGVzdCBjYXNlIGRlZmluaXRpb24gb3Ig
-d291bGQgeW91IGxpa2UgdGhlIHRlc3QNCj4gbmFtZSB0byBoYXZlIGEgcmVmZXJlbmNlIHRvIGEg
-dGFibGUgZW50cnkgZW5jb2RlZCBpbnRvIGl0Pw0KDQpJIHRoaW5rIG1vdmluZyB0aGUgY29tbWVu
-dCB0byByaWdodCBhYm92ZSB0aGUgdGVzdGNhc2UgZGVmaW5pdGlvbnMNCndvdWxkIGJlIGdvb2Qu
-ICBTb21laG93IEkgbWlzc2VkIHRoYXQuDQoNCk9LIC0gSSBhbHNvIG1pc3NlZCB0aGUgdXNhZ2Ug
-b2YgdGhlIFRFU1RDQVNFX05BTUVfRk9STUFUIHN0cmluZy4gIFRoaXMgb2J2aW91c2x5DQpoYW5k
-bGVzIHRoZSBpc3N1ZSBvZiB0aGUgdGVzdGNhc2UgbmFtZXMgYmVpbmcgdW5pcXVlLCBidXQgZG9l
-c24ndCBoZWxwIHRob3NlIG5vdA0KZmFtaWxpYXIgd2l0aCB0aGUgdGVzdC4NCg0KV2hhdCBJJ20g
-c3VnZ2VzdGluZyBpcyBqdXN0IGEgbGl0dGxlIGJpdCBvZiBleHRyYSB3b3JkaW5nLCBkZXNjcmli
-aW5nIGluIEVuZ2xpc2gNCndoYXQgdGhlIHRlc3QgaXMgY2hlY2tpbmcgZm9yLiAgVGhpcyBpcyBm
-b3IgcGVvcGxlIGxvb2tpbmcNCmF0IHRlc3QgcmVzdWx0cyB3aG8gZG9uJ3Qga25vdyB0aGUgaW50
-ZXJuYWxzIG9mIHRoZSB0ZXN0Lg0KDQpJJ20gcHJldHR5IHN1cmUgdGhlc2UgYXJlIHRoZSB3cm9u
-ZyBkZXNjcmlwdGlvbnMsIGJ1dCBzb21ldGhpbmcgbGlrZSB0aGlzOg0KICAgICAgICAgICAgIHsN
-CiAgICAgICAgICAgICAgICAgICAgIC50ZXN0X2Nhc2VfbmFtZSA9ICIyMDM4LTAxLTE5IGNoZWNr
-IHVwcGVyIGVkZ2Ugb2YgMzEtYml0IGJvdW5kYXJ5IiwNCiAgICAgICAgICAgICAgICAgICAgIC5t
-c2Jfc2V0ID0gZmFsc2UsDQogICAgICAgICAgICAgICAgICAgICAubG93ZXJfYm91bmQgPSBmYWxz
-ZSwNCiAgICAgICAgICAgICAgICAgICAgIC5leHRyYV9iaXRzID0gMCwNCiAgICAgICAgICAgICAg
-ICAgICAgIC5leHBlY3RlZCA9IHsudHZfc2VjID0gMHg3ZmZmZmZmZkxMLCAudHZfbnNlYyA9IDBM
-fSwNCiAgICAgICAgICAgICB9LA0KICAgICAgICAgICAgIHsNCiAgICAgICAgICAgICAgICAgICAg
-IC50ZXN0X2Nhc2VfbmFtZSA9ICIyMDM4LTAxLTE5IGNoZWNrIGZpcnN0IHVzZSBvZiBleHRyYSBl
-cG9jaCBiaXQiLA0KICAgICAgICAgICAgICAgICAgICAgLm1zYl9zZXQgPSB0cnVlLA0KICAgICAg
-ICAgICAgICAgICAgICAgLmxvd2VyX2JvdW5kID0gdHJ1ZSwNCiAgICAgICAgICAgICAgICAgICAg
-IC5leHRyYV9iaXRzID0gMSwNCiAgICAgICAgICAgICAgICAgICAgIC5leHBlY3RlZCA9IHsudHZf
-c2VjID0gMHg4MDAwMDAwMExMLCAudHZfbnNlYyA9IDBMfSwNCiAgICAgICAgICAgICB9LA0KDQpJ
-J20gbm90IHBlZGFudGljIGFib3V0IGl0Lg0KIC0tIFRpbQ0KDQo+ID4gPiArICAgICAgICAgICAg
-ICAgICAgICAgLm1zYl9zZXQgPSB0cnVlLA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC5s
-b3dlcl9ib3VuZCA9IHRydWUsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLmV4dHJhX2Jp
-dHMgPSAxLA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC5leHBlY3RlZCA9IHsudHZfc2Vj
-ID0gMHg4MDAwMDAwMExMLCAudHZfbnNlYyA9IDBMfSwNCj4gPiA+ICsgICAgICAgICAgICAgfSwN
-Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAubXNiX3NldCA9IHRydWUsDQo+ID4gPiArICAg
-ICAgICAgICAgICAgICAgICAgLmxvd2VyX2JvdW5kID0gdHJ1ZSwNCj4gPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICAuZXh0cmFfYml0cyA9IDEsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAg
-LmV4cGVjdGVkID0gey50dl9zZWMgPSAweDgwMDAwMDAwTEwsIC50dl9uc2VjID0gMEx9LA0KPiA+
-ID4gKyAgICAgICAgICAgICB9LA0KPiA+ID4gKw0KPiA+ID4gKyAgICAgICAgICAgICB7DQo+ID4g
-PiArICAgICAgICAgICAgICAgICAgICAgLnRlc3RfY2FzZV9uYW1lID0gIjIxMDYtMDItMDciLA0K
-PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC5tc2Jfc2V0ID0gdHJ1ZSwNCj4gPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICAubG93ZXJfYm91bmQgPSBmYWxzZSwNCj4gPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICAuZXh0cmFfYml0cyA9IDEsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAg
-LmV4cGVjdGVkID0gey50dl9zZWMgPSAweGZmZmZmZmZmTEwsIC50dl9uc2VjID0gMEx9LA0KPiA+
-ID4gKyAgICAgICAgICAgICB9LA0KPiA+ID4gKw0KPiA+ID4gKyAgICAgICAgICAgICB7DQo+ID4g
-PiArICAgICAgICAgICAgICAgICAgICAgLnRlc3RfY2FzZV9uYW1lID0gIjIxMDYtMDItMDciLA0K
-PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC5tc2Jfc2V0ID0gZmFsc2UsDQo+ID4gPiArICAg
-ICAgICAgICAgICAgICAgICAgLmxvd2VyX2JvdW5kID0gdHJ1ZSwNCj4gPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICAuZXh0cmFfYml0cyA9IDEsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAg
-LmV4cGVjdGVkID0gey50dl9zZWMgPSAweDEwMDAwMDAwMExMLCAudHZfbnNlYyA9IDBMfSwNCj4g
-PiA+ICsgICAgICAgICAgICAgfSwNCj4gPiA+ICsNCj4gPiA+ICsgICAgICAgICAgICAgew0KPiA+
-ID4gKyAgICAgICAgICAgICAgICAgICAgIC50ZXN0X2Nhc2VfbmFtZSA9ICIyMTc0LTAyLTI1IiwN
-Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAubXNiX3NldCA9IGZhbHNlLA0KPiA+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgIC5sb3dlcl9ib3VuZCA9IGZhbHNlLA0KPiA+ID4gKyAgICAgICAg
-ICAgICAgICAgICAgIC5leHRyYV9iaXRzID0gMSwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAg
-ICAuZXhwZWN0ZWQgPSB7LnR2X3NlYyA9IDB4MTdmZmZmZmZmTEwsIC50dl9uc2VjID0gMEx9LA0K
-PiA+ID4gKyAgICAgICAgICAgICB9LA0KPiA+ID4gKw0KPiA+ID4gKyAgICAgICAgICAgICB7DQo+
-ID4gPiArICAgICAgICAgICAgICAgICAgICAgLnRlc3RfY2FzZV9uYW1lID0gIjIxNzQtMDItMjUi
-LA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC5tc2Jfc2V0ID0gdHJ1ZSwNCj4gPiA+ICsg
-ICAgICAgICAgICAgICAgICAgICAubG93ZXJfYm91bmQgPSB0cnVlLA0KPiA+ID4gKyAgICAgICAg
-ICAgICAgICAgICAgIC5leHRyYV9iaXRzID0gIDIsDQo+ID4gPiArICAgICAgICAgICAgICAgICAg
-ICAgLmV4cGVjdGVkID0gey50dl9zZWMgPSAweDE4MDAwMDAwMExMLCAudHZfbnNlYyA9IDBMfSwN
-Cj4gPiA+ICsgICAgICAgICAgICAgfSwNCj4gPiA+ICsNCj4gPiA+ICsgICAgICAgICAgICAgew0K
-PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC50ZXN0X2Nhc2VfbmFtZSA9ICIyMjQyLTAzLTE2
-IiwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAubXNiX3NldCA9IHRydWUsDQo+ID4gPiAr
-ICAgICAgICAgICAgICAgICAgICAgLmxvd2VyX2JvdW5kID0gZmFsc2UsDQo+ID4gPiArICAgICAg
-ICAgICAgICAgICAgICAgLmV4dHJhX2JpdHMgPSAyLA0KPiA+ID4gKyAgICAgICAgICAgICAgICAg
-ICAgIC5leHBlY3RlZCA9IHsudHZfc2VjID0gMHgxZmZmZmZmZmZMTCwgLnR2X25zZWMgPSAwTH0s
-DQo+ID4gPiArICAgICAgICAgICAgIH0sDQo+ID4gPiArDQo+ID4gPiArICAgICAgICAgICAgIHsN
-Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAudGVzdF9jYXNlX25hbWUgPSAiMjI0Mi0wMy0x
-NiIsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLm1zYl9zZXQgPSBmYWxzZSwNCj4gPiA+
-ICsgICAgICAgICAgICAgICAgICAgICAubG93ZXJfYm91bmQgPSB0cnVlLA0KPiA+ID4gKyAgICAg
-ICAgICAgICAgICAgICAgIC5leHRyYV9iaXRzID0gMiwNCj4gPiA+ICsgICAgICAgICAgICAgICAg
-ICAgICAuZXhwZWN0ZWQgPSB7LnR2X3NlYyA9IDB4MjAwMDAwMDAwTEwsIC50dl9uc2VjID0gMEx9
-LA0KPiA+ID4gKyAgICAgICAgICAgICB9LA0KPiA+ID4gKw0KPiA+ID4gKyAgICAgICAgICAgICB7
-DQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLnRlc3RfY2FzZV9uYW1lID0gIiAyMzEwLTA0
-LTA0IiwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAubXNiX3NldCA9IGZhbHNlLA0KPiA+
-ID4gKyAgICAgICAgICAgICAgICAgICAgIC5sb3dlcl9ib3VuZCA9IGZhbHNlLA0KPiA+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgIC5leHRyYV9iaXRzID0gMiwNCj4gPiA+ICsgICAgICAgICAgICAg
-ICAgICAgICAuZXhwZWN0ZWQgPSB7LnR2X3NlYyA9IDB4MjdmZmZmZmZmTEwsIC50dl9uc2VjID0g
-MEx9LA0KPiA+ID4gKyAgICAgICAgICAgICB9LA0KPiA+ID4gKw0KPiA+ID4gKyAgICAgICAgICAg
-ICB7DQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLnRlc3RfY2FzZV9uYW1lID0gIiAyMzEw
-LTA0LTA0IDAwOjAwOjAwLjEiLA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC5tc2Jfc2V0
-ID0gZmFsc2UsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLmxvd2VyX2JvdW5kID0gZmFs
-c2UsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgLmV4dHJhX2JpdHMgPSA2LA0KPiA+ID4g
-KyAgICAgICAgICAgICAgICAgICAgIC5leHBlY3RlZCA9IHsudHZfc2VjID0gMHgyN2ZmZmZmZmZM
-TCwgLnR2X25zZWMgPSAxTH0sDQo+ID4gPiArICAgICAgICAgICAgIH0sDQo+ID4gPiArDQo+ID4g
-PiArICAgICAgICAgICAgIHsNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAudGVzdF9jYXNl
-X25hbWUgPSAiMjM3OC0wNC0yMg0KPiA+ID4gMDA6MDA6MDAuTUFYX05TRUMiLA0KPiA+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgIC5tc2Jfc2V0ID0gZmFsc2UsDQo+ID4gPiArICAgICAgICAgICAg
-ICAgICAgICAgLmxvd2VyX2JvdW5kID0gdHJ1ZSwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAg
-ICAuZXh0cmFfYml0cyA9IDB4RkZGRkZGRkYsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAg
-LmV4cGVjdGVkID0gey50dl9zZWMgPSAweDMwMDAwMDAwMExMLA0KPiA+ID4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAudHZfbnNlYyA9IE1BWF9OQU5PU0VDT05EU30sDQo+ID4g
-PiArICAgICAgICAgICAgIH0sDQo+ID4gPiArDQo+ID4gPiArICAgICAgICAgICAgIHsNCj4gPiA+
-ICsgICAgICAgICAgICAgICAgICAgICAudGVzdF9jYXNlX25hbWUgPSAiMjM3OC0wNC0yMiIsDQo+
-ID4gPiArICAgICAgICAgICAgICAgICAgICAgLm1zYl9zZXQgPSBmYWxzZSwNCj4gPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICAubG93ZXJfYm91bmQgPSB0cnVlLA0KPiA+ID4gKyAgICAgICAgICAg
-ICAgICAgICAgIC5leHRyYV9iaXRzID0gMywNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAu
-ZXhwZWN0ZWQgPSB7LnR2X3NlYyA9IDB4MzAwMDAwMDAwTEwsIC50dl9uc2VjID0gMEx9LA0KPiA+
-ID4gKyAgICAgICAgICAgICB9LA0KPiA+ID4gKw0KPiA+ID4gKyAgICAgICAgICAgICB7DQo+ID4g
-PiArICAgICAgICAgICAgICAgICAgICAgLnRlc3RfY2FzZV9uYW1lID0gIjI0NDYtMDUtMTAiLA0K
-PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIC5tc2Jfc2V0ID0gZmFsc2UsDQo+ID4gPiArICAg
-ICAgICAgICAgICAgICAgICAgLmxvd2VyX2JvdW5kID0gZmFsc2UsDQo+ID4gPiArICAgICAgICAg
-ICAgICAgICAgICAgLmV4dHJhX2JpdHMgPSAzLA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAg
-IC5leHBlY3RlZCA9IHsudHZfc2VjID0gMHgzN2ZmZmZmZmZMTCwgLnR2X25zZWMgPSAwTH0sDQo+
-ID4gPiArICAgICAgICAgICAgIH0NCj4gPiA+ICsgICAgIH07DQo+ID4gPiArDQo+ID4gPiArICAg
-ICBzdHJ1Y3QgdGltZXNwZWM2NCB0aW1lc3RhbXA7DQo+ID4gPiArICAgICBpbnQgaTsNCj4gPiA+
-ICsNCj4gPiA+ICsgICAgIGZvciAoaSA9IDA7IGkgPCBBUlJBWV9TSVpFKHRlc3RfZGF0YSk7ICsr
-aSkgew0KPiA+ID4gKyAgICAgICAgICAgICB0aW1lc3RhbXAudHZfc2VjID0gZ2V0XzMyYml0X3Rp
-bWUoJnRlc3RfZGF0YVtpXSk7DQo+ID4gPiArICAgICAgICAgICAgIGV4dDRfZGVjb2RlX2V4dHJh
-X3RpbWUoJnRpbWVzdGFtcCwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBjcHVfdG9fbGUzMih0ZXN0X2RhdGFbaV0uZXh0cmFfYml0cykpOw0KPiA+ID4gKw0KPiA+
-ID4gKyAgICAgICAgICAgICBLVU5JVF9FWFBFQ1RfRVFfTVNHKHRlc3QsDQo+ID4gPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgdGVzdF9kYXRhW2ldLmV4cGVjdGVkLnR2X3NlYywN
-Cj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0aW1lc3RhbXAudHZfc2Vj
-LA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIENBU0VfTkFNRV9GT1JN
-QVQsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGVzdF9kYXRhW2ld
-LnRlc3RfY2FzZV9uYW1lLA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHRlc3RfZGF0YVtpXS5tc2Jfc2V0LA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHRlc3RfZGF0YVtpXS5sb3dlcl9ib3VuZCwNCj4gPiA+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB0ZXN0X2RhdGFbaV0uZXh0cmFfYml0cyk7DQo+ID4gPiArICAgICAg
-ICAgICAgIEtVTklUX0VYUEVDVF9FUV9NU0codGVzdCwNCj4gPiA+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB0ZXN0X2RhdGFbaV0uZXhwZWN0ZWQudHZfbnNlYywNCj4gPiA+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0aW1lc3RhbXAudHZfbnNlYywNCj4gPiA+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBDQVNFX05BTUVfRk9STUFULA0KPiA+
-ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRlc3RfZGF0YVtpXS50ZXN0X2Nh
-c2VfbmFtZSwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZXN0X2Rh
-dGFbaV0ubXNiX3NldCwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0
-ZXN0X2RhdGFbaV0ubG93ZXJfYm91bmQsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgdGVzdF9kYXRhW2ldLmV4dHJhX2JpdHMpOw0KPiA+ID4gKyAgICAgfQ0KPiA+ID4g
-K30NCj4gPiA+ICsNCj4gPiA+ICtzdGF0aWMgc3RydWN0IGt1bml0X2Nhc2UgZXh0NF9pbm9kZV90
-ZXN0X2Nhc2VzW10gPSB7DQo+ID4gPiArICAgICBLVU5JVF9DQVNFKGlub2RlX3Rlc3RfeHRpbWVz
-dGFtcF9kZWNvZGluZyksDQo+ID4gPiArICAgICB7fQ0KPiA+ID4gK307DQo+ID4gPiArDQo+ID4g
-PiArc3RhdGljIHN0cnVjdCBrdW5pdF9zdWl0ZSBleHQ0X2lub2RlX3Rlc3Rfc3VpdGUgPSB7DQo+
-ID4gPiArICAgICAubmFtZSA9ICJleHQ0X2lub2RlX3Rlc3QiLA0KPiA+ID4gKyAgICAgLnRlc3Rf
-Y2FzZXMgPSBleHQ0X2lub2RlX3Rlc3RfY2FzZXMsDQo+ID4gPiArfTsNCj4gPiA+ICsNCj4gPiA+
-ICtrdW5pdF90ZXN0X3N1aXRlKGV4dDRfaW5vZGVfdGVzdF9zdWl0ZSk7DQo+ID4gPiAtLQ0KPiA+
-ID4gMi4yMy4wLjcwMC5nNTZjZjc2N2JkYi1nb29nDQo=
+On Thu, Oct 10, 2019 at 10:11 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 10/9/19 8:39 PM, Iurii Zaikin wrote:
+> > KUnit tests for decoding extended 64 bit timestamps.
+> >
+> "Added the link to the ext4 docs from which the tests were derived."
+>
+> Document reference is great. I would still like to see summary
+> in the commit log.
+>
+> As you said below:
+>
+> "This builds the ext4 inode sysctl unit test, which runs on boot."
+>
+> Also include what should user expect to see when one of these fails.
+Will do.
+>
+> > Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+> > ---
+> >   fs/ext4/Kconfig      |  12 +++
+> >   fs/ext4/Makefile     |   1 +
+> >   fs/ext4/inode-test.c | 221 +++++++++++++++++++++++++++++++++++++++++++
+> >   3 files changed, 234 insertions(+)
+> >   create mode 100644 fs/ext4/inode-test.c
+> >
+> > diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+> > index cbb5ca830e57..cb0b52753674 100644
+> > --- a/fs/ext4/Kconfig
+> > +++ b/fs/ext4/Kconfig
+> > @@ -106,3 +106,15 @@ config EXT4_DEBUG
+> >         If you select Y here, then you will be able to turn on debugging
+> >         with a command such as:
+> >               echo 1 > /sys/module/ext4/parameters/mballoc_debug
+> > +
+> > +config EXT4_KUNIT_TESTS
+> > +     bool "KUnit test for ext4 inode"
+> > +     depends on EXT4_FS
+> > +     depends on KUNIT
+> > +     help
+> > +       This builds the ext4 inode sysctl unit test, which runs on boot.
+> > +       Tests the encoding correctness of ext4 inode.
+> > +       For more information on KUnit and unit tests in general please refer
+> > +       to the KUnit documentation in Documentation/dev-tools/kunit/.
+>
+> Please add Documentation/filesystems/ext4/inodes.rst Inode Timestamps
+> here as well.
+> Yeah. Especially after looking at the document, summary of what these
+> test(s) is definitely helpful. You can't expect users to read the
+> document before enabling it. Please write a summary of tests and what
+> they do and add it here and then in the commit log. Also include what
+> user should expect when they pass and when one of them fails.
+>
+I'm not sure this is compatible with Theodore's preference for having a single
+config option for all ext4 tests. If anything, I should be removing
+all inode-specific
+stuff from the description.
+I think it makes sense to add wording that this option is only useful
+for devs running
+a kernel test harness and should not be enabled in production.
+> > +
+> > +       If unsure, say N.
+> > diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
+> > index b17ddc229ac5..a0588fd2eea6 100644
+> > --- a/fs/ext4/Makefile
+> > +++ b/fs/ext4/Makefile
+> > @@ -13,4 +13,5 @@ ext4-y      := balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
+> >
+> >   ext4-$(CONFIG_EXT4_FS_POSIX_ACL)    += acl.o
+> >   ext4-$(CONFIG_EXT4_FS_SECURITY)             += xattr_security.o
+> > +ext4-$(CONFIG_EXT4_KUNIT_TESTS)      += inode-test.o
+> >   ext4-$(CONFIG_FS_VERITY)            += verity.o
+> > diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+> > new file mode 100644
+> > index 000000000000..43bc6cb547cd
+> > --- /dev/null
+> > +++ b/fs/ext4/inode-test.c
+> > @@ -0,0 +1,221 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * KUnit test of ext4 inode that verify the seconds part of [a/c/m]
+> > + * timestamps in ext4 inode structs are decoded correctly.
+> > + * These tests are derived from the table under
+> > + * Documentation/filesystems/ext4/inodes.rst Inode Timestamps
+>
+> Yeah. Especially after looking at the document, summary of what these
+> test(s) is definitely helpful. You can't expect users to read the
+> document before enabling the tests.
+>
+> > + */
+> > +
+> > +#include <kunit/test.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/time64.h>
+> > +
+> > +#include "ext4.h"
+> > +
+> > +/* binary: 00000000 00000000 00000000 00000000 */
+> > +#define LOWER_MSB_0 0L
+> > +/* binary: 01111111 11111111 11111111 11111111 */
+> > +#define UPPER_MSB_0 0x7fffffffL
+> > +/* binary: 10000000 00000000 00000000 00000000 */
+> > +#define LOWER_MSB_1 (-0x80000000L)
+> > +/* binary: 11111111 11111111 11111111 11111111 */
+> > +#define UPPER_MSB_1 (-1L)
+> > +/* binary: 00111111   11111111 11111111 11111111 */
+> > +#define MAX_NANOSECONDS ((1L << 30) - 1)
+> > +
+> > +#define CASE_NAME_FORMAT "%s: msb:%x lower_bound:%x extra_bits: %x"
+> > +
+> > +struct timestamp_expectation {
+> > +     const char *test_case_name;
+> > +     struct timespec64 expected;
+> > +     u32 extra_bits;
+> > +     bool msb_set;
+> > +     bool lower_bound;
+> > +};
+> > +
+> > +static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+> > +{
+> > +     if (test->msb_set) {
+> > +             if (test->lower_bound)
+> > +                     return LOWER_MSB_1;
+> > +
+> > +             return UPPER_MSB_1;
+> > +     }
+> > +
+> > +     if (test->lower_bound)
+> > +             return LOWER_MSB_0;
+> > +     return UPPER_MSB_0;
+> > +}
+> > +
+> > +
+> > +static void inode_test_xtimestamp_decoding(struct kunit *test)
+> > +{
+> > +     const struct timestamp_expectation test_data[] = {
+> > +             {
+> > +                     .test_case_name = "1901-12-13",
+> > +                     .msb_set = true,
+> > +                     .lower_bound = true,
+> > +                     .extra_bits = 0,
+> > +                     .expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "1969-12-31",
+> > +                     .msb_set = true,
+> > +                     .lower_bound = false,
+> > +                     .extra_bits = 0,
+> > +                     .expected = {.tv_sec = -1LL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "1970-01-01",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = true,
+> > +                     .extra_bits = 0,
+> > +                     .expected = {0LL, 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2038-01-19",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = false,
+> > +                     .extra_bits = 0,
+> > +                     .expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2038-01-19",
+> > +                     .msb_set = true,
+> > +                     .lower_bound = true,
+> > +                     .extra_bits = 1,
+> > +                     .expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2106-02-07",
+> > +                     .msb_set = true,
+> > +                     .lower_bound = false,
+> > +                     .extra_bits = 1,
+> > +                     .expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2106-02-07",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = true,
+> > +                     .extra_bits = 1,
+> > +                     .expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2174-02-25",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = false,
+> > +                     .extra_bits = 1,
+> > +                     .expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2174-02-25",
+> > +                     .msb_set = true,
+> > +                     .lower_bound = true,
+> > +                     .extra_bits =  2,
+> > +                     .expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2242-03-16",
+> > +                     .msb_set = true,
+> > +                     .lower_bound = false,
+> > +                     .extra_bits = 2,
+> > +                     .expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2242-03-16",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = true,
+> > +                     .extra_bits = 2,
+> > +                     .expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = " 2310-04-04",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = false,
+> > +                     .extra_bits = 2,
+> > +                     .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = " 2310-04-04 00:00:00.1",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = false,
+> > +                     .extra_bits = 6,
+> > +                     .expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2378-04-22 00:00:00.MAX_NSEC",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = true,
+> > +                     .extra_bits = 0xFFFFFFFF,
+> > +                     .expected = {.tv_sec = 0x300000000LL,
+> > +                                  .tv_nsec = MAX_NANOSECONDS},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2378-04-22",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = true,
+> > +                     .extra_bits = 3,
+> > +                     .expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
+> > +             },
+> > +
+> > +             {
+> > +                     .test_case_name = "2446-05-10",
+> > +                     .msb_set = false,
+> > +                     .lower_bound = false,
+> > +                     .extra_bits = 3,
+> > +                     .expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
+> > +             }
+> > +     };
+> > +
+>
+> Is there a way to make the test data dynamic. Can you read from a data
+> file? It will be easier to if the data
+>
+> Maybe this is question to Brendan?
+>
+From the general unit test philosophy, unit tests must be 100% deterministic,
+repeatable and simple enough to be correct by visual inspection, dynamically
+generated test data runs contrary to these goals IMHO.
+As for reading from a data file, not sure what exactly you mean here:
+ - Having a running kernel read a file in the filesystem, especially as early in
+the initialization process as KUnit currently runs is something I'm not sure
+how to implement reliably. Also, doing I/O in the tests will make them slower
+and require more setup from test running environment.
+- Having reading a file in the build stage and linking it as a data
+blob into the
+kernel image. This approach looks better to me since it avoids the I/O and has
+no noticeable speed penalty or test harness requirements. It would be up to
+Brendan whether he wants such capability in KUnit and based on the user-space
+test code I've seen so far, the number of test data points in this
+test doesn't warrant
+reading from files even in userspace which has far fewer constraints.
+> > +     struct timespec64 timestamp;
+> > +     int i;
+> > +
+> > +     for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
+> > +             timestamp.tv_sec = get_32bit_time(&test_data[i]);
+> > +             ext4_decode_extra_time(&timestamp,
+> > +                                    cpu_to_le32(test_data[i].extra_bits));
+> > +
+> > +             KUNIT_EXPECT_EQ_MSG(test,
+> > +                                 test_data[i].expected.tv_sec,
+> > +                                 timestamp.tv_sec,
+> > +                                 CASE_NAME_FORMAT,
+> > +                                 test_data[i].test_case_name,
+> > +                                 test_data[i].msb_set,
+> > +                                 test_data[i].lower_bound,
+> > +                                 test_data[i].extra_bits);
+> > +             KUNIT_EXPECT_EQ_MSG(test,
+> > +                                 test_data[i].expected.tv_nsec,
+> > +                                 timestamp.tv_nsec,
+> > +                                 CASE_NAME_FORMAT,
+> > +                                 test_data[i].test_case_name,
+> > +                                 test_data[i].msb_set,
+> > +                                 test_data[i].lower_bound,
+> > +                                 test_data[i].extra_bits);
+> > +     }
+> > +}
+> > +
+> > +static struct kunit_case ext4_inode_test_cases[] = {
+> > +     KUNIT_CASE(inode_test_xtimestamp_decoding),
+> > +     {}
+> > +};
+> > +
+> > +static struct kunit_suite ext4_inode_test_suite = {
+> > +     .name = "ext4_inode_test",
+> > +     .test_cases = ext4_inode_test_cases,
+> > +};
+> > +
+> > +kunit_test_suite(ext4_inode_test_suite);
+> > --
+> > 2.23.0.700.g56cf767bdb-goog
+> >
+>
+> thanks,
+> -- Shuah
