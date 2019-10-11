@@ -2,76 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39570D3E68
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2019 13:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3861DD3F89
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2019 14:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbfJKLZd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Oct 2019 07:25:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60390 "EHLO
+        id S1727953AbfJKMbN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Oct 2019 08:31:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60622 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727541AbfJKLZd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Oct 2019 07:25:33 -0400
+        with ESMTP id S1727672AbfJKMbN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Oct 2019 08:31:13 -0400
 Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
         (envelope-from <bigeasy@linutronix.de>)
-        id 1iIt2z-0007LM-9u; Fri, 11 Oct 2019 13:25:25 +0200
-Date:   Fri, 11 Oct 2019 13:25:25 +0200
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        id 1iIu4Z-00008T-5V; Fri, 11 Oct 2019 14:31:07 +0200
+Date:   Fri, 11 Oct 2019 14:31:07 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Julia Cartwright <julia@ni.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Joel Becker <jlbec@evilplan.org>
-Subject: Re: [PATCH] fs/buffer: Make BH_Uptodate_Lock bit_spin_lock a regular
- spinlock_t
-Message-ID: <20191011112525.7dksg6ixb5c3hxn5@linutronix.de>
-References: <20190820170818.oldsdoumzashhcgh@linutronix.de>
- <20190820171721.GA4949@bombadil.infradead.org>
- <alpine.DEB.2.21.1908201959240.2223@nanos.tec.linutronix.de>
+        Anna-Maria Gleixner <anna-maria@linutronix.de>,
+        Julia Cartwright <julia@ni.com>
+Subject: Re: [PATCH 0/7 v2] jbd2: Bit spinlock conversions
+Message-ID: <20191011123105.s6qjwrlgugszk73j@linutronix.de>
+References: <20190809124233.13277-1-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.1908201959240.2223@nanos.tec.linutronix.de>
+In-Reply-To: <20190809124233.13277-1-jack@suse.cz>
 User-Agent: NeoMutt/20180716
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2019-08-20 20:01:14 [+0200], Thomas Gleixner wrote:
-> On Tue, 20 Aug 2019, Matthew Wilcox wrote:
-> > On Tue, Aug 20, 2019 at 07:08:18PM +0200, Sebastian Siewior wrote:
-> > > Bit spinlocks are problematic if PREEMPT_RT is enabled, because they
-> > > disable preemption, which is undesired for latency reasons and breaks when
-> > > regular spinlocks are taken within the bit_spinlock locked region because
-> > > regular spinlocks are converted to 'sleeping spinlocks' on RT. So RT
-> > > replaces the bit spinlocks with regular spinlocks to avoid this problem.
-> > > Bit spinlocks are also not covered by lock debugging, e.g. lockdep.
-> > > 
-> > > Substitute the BH_Uptodate_Lock bit spinlock with a regular spinlock.
-> > > 
-> > > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > > [bigeasy: remove the wrapper and use always spinlock_t]
-> > 
-> > Uhh ... always grow the buffer_head, even for non-PREEMPT_RT?  Why?
-> 
-> Christoph requested that:
-> 
->   https://lkml.kernel.org/r/20190802075612.GA20962@infradead.org
+On 2019-08-09 14:42:26 [+0200], Jan Kara wrote:
+> Hello,
+Hi,
 
-What do we do about this one?
-
-> Thanks,
+> This series is derived from Thomas' series to get rid of bit spinlocks in
+> buffer head code. These patches convert BH_State bit spinlock to an ordinary
+> spinlock inside struct journal_head and somewhat reduce the critical section
+> under BH_JournalHead bit spinlock so that it is fine for RT. 
 > 
-> 	tglx
+> Motivation from original Thomas' series:
+> 
+> Bit spinlocks are problematic if PREEMPT_RT is enabled. They disable
+> preemption, which is undesired for latency reasons and breaks when regular
+> spinlocks are taken within the bit_spinlock locked region because regular
+> spinlocks are converted to 'sleeping spinlocks' on RT.
+> 
+> Bit spinlocks are also not covered by lock debugging, e.g. lockdep. With
+> the spinlock substitution in place, they can be exposed via a new config
+> switch: CONFIG_DEBUG_BIT_SPINLOCKS.
+> 
+> Ted, can you pick up these patches? Thanks!
+
+Has this series been postponed?
+
+> Changes since v1:
+> * Fixed up compilation breakage on UP due to missing linux/spinlock.h include
+> 
+> 								Honza
 
 Sebastian
