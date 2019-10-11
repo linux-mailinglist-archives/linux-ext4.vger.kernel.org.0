@@ -2,68 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3861DD3F89
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2019 14:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6EDD40E9
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2019 15:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbfJKMbN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 11 Oct 2019 08:31:13 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60622 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727672AbfJKMbN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Oct 2019 08:31:13 -0400
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1iIu4Z-00008T-5V; Fri, 11 Oct 2019 14:31:07 +0200
-Date:   Fri, 11 Oct 2019 14:31:07 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Julia Cartwright <julia@ni.com>
-Subject: Re: [PATCH 0/7 v2] jbd2: Bit spinlock conversions
-Message-ID: <20191011123105.s6qjwrlgugszk73j@linutronix.de>
-References: <20190809124233.13277-1-jack@suse.cz>
+        id S1728423AbfJKNTN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 11 Oct 2019 09:19:13 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43381 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728344AbfJKNTN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 11 Oct 2019 09:19:13 -0400
+Received: from callcc.thunk.org (guestnat-104-132-34-105.corp.google.com [104.132.34.105] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9BDJ2BT010295
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Oct 2019 09:19:03 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 63F8F42045A; Fri, 11 Oct 2019 09:19:02 -0400 (EDT)
+Date:   Fri, 11 Oct 2019 09:19:02 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Iurii Zaikin <yzaikin@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        adilger.kernel@dilger.ca, kunit-dev@googlegroups.com
+Subject: Re: [PATCH linux-kselftest/test v2] ext4: add kunit test for
+ decoding extended timestamps
+Message-ID: <20191011131902.GC16225@mit.edu>
+References: <20191010023931.230475-1-yzaikin@google.com>
+ <2f2ea7b0-f683-1cdd-f3f2-ecdf44cb4a97@linuxfoundation.org>
+ <CAAXuY3qtSHENgy3S168_03ju_JwAucOAt5WEJGQ+pi5PfurP6g@mail.gmail.com>
+ <CAFd5g46RcFV0FACuoF=jCSLzf7UFmEYn4gddaijUZ+zR_CFZBQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190809124233.13277-1-jack@suse.cz>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <CAFd5g46RcFV0FACuoF=jCSLzf7UFmEYn4gddaijUZ+zR_CFZBQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2019-08-09 14:42:26 [+0200], Jan Kara wrote:
-> Hello,
-Hi,
+On Fri, Oct 11, 2019 at 03:05:43AM -0700, Brendan Higgins wrote:
+> That's an interesting point. Should we try to establish a pattern for
+> how tests should be configured? My *very long term* goal is to
+> eventually have tests able to be built and run without any kind of
+> kernel of any kind, but I don't think that having a single config for
+> all tests in a subsystem gets in the way of that, so I don't think I
+> have a strong preference in terms of what I want to do.
+> 
+> Nevertheless, I think establishing patterns is good. Do we want to try
+> to follow Ted's preference as a general rule from now on?
 
-> This series is derived from Thomas' series to get rid of bit spinlocks in
-> buffer head code. These patches convert BH_State bit spinlock to an ordinary
-> spinlock inside struct journal_head and somewhat reduce the critical section
-> under BH_JournalHead bit spinlock so that it is fine for RT. 
-> 
-> Motivation from original Thomas' series:
-> 
-> Bit spinlocks are problematic if PREEMPT_RT is enabled. They disable
-> preemption, which is undesired for latency reasons and breaks when regular
-> spinlocks are taken within the bit_spinlock locked region because regular
-> spinlocks are converted to 'sleeping spinlocks' on RT.
-> 
-> Bit spinlocks are also not covered by lock debugging, e.g. lockdep. With
-> the spinlock substitution in place, they can be exposed via a new config
-> switch: CONFIG_DEBUG_BIT_SPINLOCKS.
-> 
-> Ted, can you pick up these patches? Thanks!
+As I suggested on another thread (started on kunit-dev, but Brendan
+has cc'ed in linux-kselftest), I think it might really work well if
+"make kunit" runs all of the kunit tests automatically.  As we add
+more kunit tests, finding all of the CONFIG options so they can be
+added to the kunitconfig file is going to be hard, so kunit.py really
+needs an --allconfig which does this automatically.
 
-Has this series been postponed?
+Along these lines, perhaps we should state that as a general rule the
+CONFIG option for Kunit tests should only depend on KUINIT, and use
+select to enable other dependencies.  i.e., for the ext4 kunit tests,
+it should look like this:
 
-> Changes since v1:
-> * Fixed up compilation breakage on UP due to missing linux/spinlock.h include
-> 
-> 								Honza
+config EXT4_KUNIT_TESTS
+	bool "KUnit test for ext4 inode"
+	select EXT4_FS
+	depends on KUNIT
+...
 
-Sebastian
+In the current patch, we use "depends on EXT4_FS", which meant that
+when I first added "CONFIG_EXT4_KUNIT_TESTS=y" to the kunitconfig
+file, I got the following confusing error message:
+
+% ./tools/testing/kunit/kunit.py  run
+Regenerating .config ...
+ERROR:root:Provided Kconfig is not contained in validated .config!
+
+Using "select EXT4_FS" makes it much easier to enable the ext4 kunit
+tests in kunitconfig.  At the moment requiring that we two lines to
+kunitconfig to enable ext4 isn't _that_ bad:
+
+CONFIG_EXT4_FS=y
+CONFIG_EXT4_KUNIT_TESTS=y
+
+but over time, if many subsystems start adding unit tests, the
+overhead of managing the kunitconfig file is going to get unwieldy.
+Hence my suggestion that we just make all Kunit CONFIG options depend
+only on CONFIG_KUNIT.
+
+> I agree with Iurii. I don't think that this example alone warrants
+> adding support for being able to read test data in from a separate
+> file (I would also like some clarification here on what is meant by
+> reading in from a separate file). I can imagine some scenarios where
+> that might make sense, but I think it would be better to get more
+> examples before trying to support that use case.
+
+So what I was thinking might happen is that for some of the largest
+unit tests before I would transition to deciding that xfstests was the
+better way to go, I *might* have a small, 100k ext4 file system which
+would checked into the kernel sources as fs/ext4/kunit_test.img, and
+there would be a makefile rule that would turn that into
+fs/ext4/kunit_test_img.c file that might look something like:
+
+const ext4_kunit_test_img[] = {
+      0xde, ...
+
+But I'm not sure I actually want to go down that path.  It would
+certainly better from a test design perspective to create test mocks
+at a higher layer, such as ext4_iget() and ext4_read_block_bitmap().
+
+The problem is that quite a bit of code in ext4 would have to be
+*extensively* refactored in order to allow for easy test mocking,
+since we have calls to sb_bread, ext4_bread(), submit_bh(), etc.,
+sprinkled alongside the code logic that we would want to test.
+
+So using a small test image and making the cut line be at the buffer
+cache layer is going to be much, *much* simpler at least in the short
+term.  So the big question is how much of an investment (or technical
+debt paydown) do I want to do right away, versus taking a shortcut to
+get better unit test coverage more quickly, and then do further tech
+debt reduction later?
+
+   	       	     	    	       - Ted
