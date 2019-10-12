@@ -2,133 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F4FD4D92
-	for <lists+linux-ext4@lfdr.de>; Sat, 12 Oct 2019 08:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7607D50CC
+	for <lists+linux-ext4@lfdr.de>; Sat, 12 Oct 2019 18:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728732AbfJLGeG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 12 Oct 2019 02:34:06 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:35380 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726728AbfJLGeG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 12 Oct 2019 02:34:06 -0400
-Received: by mail-wr1-f52.google.com with SMTP id v8so14069188wrt.2;
-        Fri, 11 Oct 2019 23:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=yX5F7UQ9XF6+RagIHPxa9+er8AVmn045CyrMl3Uj8II=;
-        b=vZ8xgYMuZtf2K6miCpSfiKIWBcIiN4f7xMdAW1E/JFPPSxKimGzy/nt9SZ4EclWSCr
-         SiN7qQp2vPL+aLEYATYMY0pdwhIFnMLdxAzKrJAh9V/Xyx6aoo0B9WtfdS8vOJIZWK2z
-         e8UnoGVRDABmn4L6EWMrzibBdrpT81TWNJNWCx1s0pIwLSQHfpBQA5WZRzYtfduvVJlz
-         guQU4qV7oBxclyYwDyMh/4yO/EXH45+18IHMAOS021i57nr14Um7CUXucOmjIvxPGT5R
-         G1Qkvss+BjCKBorwBFcTIinWuFamTzdlFmBuy6PPAc6Q+qWiBcafrMdFifi6wo6yriU9
-         0ssg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=yX5F7UQ9XF6+RagIHPxa9+er8AVmn045CyrMl3Uj8II=;
-        b=BeIVaaggx2YCZUHmWlBHTeRbke2hph4aLy92qk3NNYO+09ITp8HGdD+s/ULzXLglch
-         ugQJnPRGLYCt2iPhzgOGn9lTCQ9xM4xKtUoww6HM6EYReoWq5yytVxW6yNKIej42uXkE
-         N16GRzbJFpaff9A8vLIUdQApREngG4wdcDqvJguwAgUvIKG3dRNFrSqQunhvwL4h2sj1
-         uYp5IClHLD8e2ZjeHrrc2h8dgzQtduna63LQeZ5QLUomqCOxNoZwesKH8N810r7KtNQZ
-         R0EjEqeCTLJoJSZVROs2GC8S+C13Dva94Q1qRPm6dgYqaLJgukGfXQRnZ6VMzqIKrEAA
-         lYgg==
-X-Gm-Message-State: APjAAAXHsgNrMcWYsL5hLHIwMu5a22We5MGg7iwy8eurvGFlaOWd/YSY
-        85slG7bQI0WTVEUmg1dveDgcxwqFg8Wrzkcl87bKL6Pkid0=
-X-Google-Smtp-Source: APXvYqw/sLpBqdBHOPU9qSM2L8NublyOyWrSLwEFjTf+YsKt7TtPut7dovRhNhmqzW2j39UQAjzxVd9jsFKttBMVXNg=
-X-Received: by 2002:a5d:638b:: with SMTP id p11mr10510005wru.372.1570862043467;
- Fri, 11 Oct 2019 23:34:03 -0700 (PDT)
+        id S1728902AbfJLQBa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 12 Oct 2019 12:01:30 -0400
+Received: from nms02.ip-net.mgrs.ru ([178.237.242.9]:45450 "EHLO
+        nms02.ip-net.mgrs.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727115AbfJLP7a (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 12 Oct 2019 11:59:30 -0400
+Received: from User (localhost.localdomain [127.0.0.1])
+        by nms02.ip-net.mgrs.ru (Postfix) with SMTP id 562F84E11B6;
+        Sat, 12 Oct 2019 08:16:18 +0300 (MSK)
+Reply-To: <kepe19655@aol.com>
+From:   "Mr. Henk Boelens" <info@wholeearth.com>
+To:     henkboelens2016@contractor.net
+Subject: GOOD DAY?
+Date:   Fri, 11 Oct 2019 22:17:04 -0700
 MIME-Version: 1.0
-From:   Wang Shilong <wangshilong1991@gmail.com>
-Date:   Sat, 12 Oct 2019 14:33:36 +0800
-Message-ID: <CAP9B-QmQ-mbWgJwEWrVOMabsgnPwyJsxSQbMkWuFk81-M4dRPQ@mail.gmail.com>
-Subject: [Project Quota]file owner could change its project ID?
-To:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Andreas Dilger <adilger@dilger.ca>, Li Xi <lixi@ddn.com>,
-        Wang Shilong <wshilong@ddn.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20191012051619.562F84E11B6@nms02.ip-net.mgrs.ru>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Steps to reproduce:
-[wangsl@localhost tmp]$ mkdir project
-[wangsl@localhost tmp]$ lsattr -p project -d
-    0 ------------------ project
-[wangsl@localhost tmp]$ chattr -p 1 project
-[wangsl@localhost tmp]$ lsattr -p -d project
-    1 ------------------ project
-[wangsl@localhost tmp]$ chattr -p 2 project
-[wangsl@localhost tmp]$ lsattr -p -d project
-    2 ------------------ project
-[wangsl@localhost tmp]$ df -Th .
-Filesystem     Type  Size  Used Avail Use% Mounted on
-/dev/sda3      xfs    36G  4.1G   32G  12% /
-[wangsl@localhost tmp]$ uname -r
-5.4.0-rc2+
+Western Associate Bank
+Bank Address:Tower Building 83 Hull Road
+Oxwich Brussels Belgium
 
-As above you could see file owner could change project ID of file its self.
-As my understanding, we could set project ID and inherit attribute to account
-Directory usage, and implement a similar 'Directory Quota' based on this.
+Dear Friend
 
-But Directories could easily break this limit by change its file to
-other project ID.
+Please accept my apologies if this request does not meet your personal ethics as it is not intended to cause you any embarrassment in what ever form. I got your
+contact email address from the internet directory and decided to contact you for this transaction that is based on trust and your outstanding. I have an interesting business proposal for you that will be of immense benefit to both of us. Although this may be hard for you to believe because i know that there is absolutely going to be a great doubt and distrust in your heart in respect of this email as this might sound strange to you and coupled with the fact that, so many individuals have taken possession of the Internet to facilitate their nefarious deeds, thereby making it extremely difficult for genuine and legitimate persons to get attention and recognition. Please grant me the benefit of doubt and hear me out.
 
-And we used vfs_ioc_fssetxattr_check() to only allow init userspace to
-change project quota:
+My name is Henk Boelens . I work with Western Associate Bank here in Belgium as a branch bank manager. I discovered an abandoned sum of GBP 19,850,000.00 (Nineteen Million Eight Hundred And Fifty Thousand British Pounds) in an account that belongs to one of our foreign customers Late Dr. Erin Jacobson, an American citizen who unfortunately lost his life and his entire family in Montana plane crash on March 23, 2009, on their way to a group ski vacation. The choice of contacting you is aroused from the geographical nature of where you live, particularly due to the sensitivity of this transaction and the confidentiality herein. Now our bank has been waiting for any of the relatives to come up for the claim but nobody has done that. I personally tried to locate any member of his family but have been unsuccessful in locating the relatives for 7 years now, i have also checked the deposit documents and discovered that he did not declare any next of kin on the deposit.
 
-        /*
+Now the Management of our bank as instructed me to look for the next of kin or they will convert the funds into the Government Treasury Account as unclaimed funds and the funds will be wasted. Therefore, I cannot claim these funds without presenting a foreigner to stand as next of kin. This is reason why I contacted you to seek your consent to present you as an next of kin so that the funds will be release to you, then we share it 55% for me and 45% for you because am not a
+greedy person and is deal between me and you.
 
-         * Project Quota ID state is only allowed to change from within the init
+I have employed the service of an Attorney who will secure all necessary legal documents that could be used to back up this claim. All the attorney need to do is to fill in your names to the documents and legalize it in the Court here to prove you as the legitimate next of kin to the late depositor Dr. Erin Jacobson then the bank will release the funds to you as the rightful beneficiary.
 
-         * namespace. Enforce that restriction only if we are trying to change
+This is a fair deal without any risk attached either on your part or on my part as long as we comply with the laws governing the claiming of funds in our establishment. All I require is your honest co-operation to enable us see this deal through, and with my position in the bank as a bank manager, I will do every thing possible to protect your interest and to make sure everything workout successfully.
 
-         * the quota ID state. Everything else is allowed in user namespaces.
+If you are interested in this deal, kindly send me your complete information, your full names and address, Your Private telephone and Fax numbers, and Cell phone so that the attorney will start processing the necessary paperwork that would facilitate the release of the funds to you.
 
-         */
-
-        if (current_user_ns() != &init_user_ns) {
-
-                if (old_fa->fsx_projid != fa->fsx_projid)
-
-                        return -EINVAL;
-
-                if ((old_fa->fsx_xflags ^ fa->fsx_xflags) &
-
-                                FS_XFLAG_PROJINHERIT)
-
-                        return -EINVAL;
-
-        }
-
-Shall we have something like following to limit admin change for
-Project state too?
-
-diff --git a/fs/inode.c b/fs/inode.c
-
-index fef457a42882..3e324931ee84 100644
-
---- a/fs/inode.c
-
-+++ b/fs/inode.c
-
-@@ -2273,7 +2273,7 @@ int vfs_ioc_fssetxattr_check(struct inode
-*inode, const struct fsxattr *old_fa,
-
-         * namespace. Enforce that restriction only if we are trying to change
-
-         * the quota ID state. Everything else is allowed in user namespaces.
-
-         */
-
--       if (current_user_ns() != &init_user_ns) {
-
-+       if (current_user_ns() != &init_user_ns || !capable(CAP_SYS_ADMIN)){
-
-                if (old_fa->fsx_projid != fa->fsx_projid)
-
-                        return -EINVAL;
-
-                if ((old_fa->fsx_xflags ^ fa->fsx_xflags) &
+Mr. Henk Boelens
