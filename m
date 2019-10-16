@@ -2,142 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 628E0D85E3
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 04:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47A6D87C7
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 07:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729574AbfJPC0Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 15 Oct 2019 22:26:16 -0400
-Received: from sender2-of-o52.zoho.com.cn ([163.53.93.247]:21595 "EHLO
-        sender2-of-o52.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726534AbfJPC0Q (ORCPT
+        id S1732708AbfJPFLI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Oct 2019 01:11:08 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:55830 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730411AbfJPFLI (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 15 Oct 2019 22:26:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1571192753; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=XlGHH60U4LfVaAfzuhBuHSv1fM50isbht2qJRgjxo7XHU1WrELQyLOAnHVIl8yEgBkFx/PIRR68jtZ4R/k2r0mTMkZKvpUhsxgkWbNh5qOKlkSR3f4DuWMXjLTnO46It48cnv8y9oSgQK3QTNgpJRTU8jwHH9boLX+0PqfnTExY=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1571192753; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
-        bh=Nk0C0V4E9Y4XENGJUxL3tSBz2Pbvt50Yg2mLQYB1Eog=; 
-        b=EyVcHX0C+0BbxOc1QkfaajxrzWnuH1CeV1wDiQmpSjoM5kZBmW9hCwZCdUpXXQCHqibJiH6yz4lk8BB59nUCjh9Fo6awdQcs2Jfw2Ma7tC0X7qWx2zQf687DktxEBuW86+enJ6zqcJx/lKr4qCioA2PKGdOcM5U1l1XXyL3YOi8=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1571192753;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=3162; bh=Nk0C0V4E9Y4XENGJUxL3tSBz2Pbvt50Yg2mLQYB1Eog=;
-        b=MZURaCIKFOJ5+RzvaznPOdLkgV/x0Thei2c8RqN1zWrGMgoIv/NCuktoegpdZaZo
-        eYr1X+si9fiXnLw0RVx6EDpJtPXpO/u/FKStdPJAovGVlaCYwhHFfvM2xAf92KAFJxH
-        31zQJa8/PK/H5Zd9FUeamEnoAgpBcM4gba9c+AHU=
-Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1571192750752780.5297570380358; Wed, 16 Oct 2019 10:25:50 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>,
-        Jan Kara <jack@suse.cz>
-Message-ID: <20191016022501.760-1-cgxu519@mykernel.net>
-Subject: [PATCH v3] ext4: choose hardlimit when softlimit is larger than  hardlimit in ext4_statfs_project()
-Date:   Wed, 16 Oct 2019 10:25:01 +0800
-X-Mailer: git-send-email 2.20.1
+        Wed, 16 Oct 2019 01:11:08 -0400
+Received: from dread.disaster.area (pa49-181-198-88.pa.nsw.optusnet.com.au [49.181.198.88])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 28579362207;
+        Wed, 16 Oct 2019 16:11:02 +1100 (AEDT)
+Received: from discord.disaster.area ([192.168.253.110])
+        by dread.disaster.area with esmtp (Exim 4.92.2)
+        (envelope-from <david@fromorbit.com>)
+        id 1iKbaP-0003aq-Gc; Wed, 16 Oct 2019 16:11:01 +1100
+Received: from dave by discord.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1iKbaP-0003IH-Cq; Wed, 16 Oct 2019 16:11:01 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     linux-xfs@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH] iomap: iomap that extends beyond EOF should be marked dirty
+Date:   Wed, 16 Oct 2019 16:11:01 +1100
+Message-Id: <20191016051101.12620-1-david@fromorbit.com>
+X-Mailer: git-send-email 2.23.0.rc1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Transfer-Encoding: 8bit
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
+        a=ocld+OpnWJCUTqzFQA3oTA==:117 a=ocld+OpnWJCUTqzFQA3oTA==:17
+        a=XobE76Q3jBoA:10 a=20KFwNOVAAAA:8 a=S-1eUNTvgfi6r5ippUoA:9
+        a=-LxSyIH3IyFY79c0:21 a=rj11tZLffgg5wOKJ:21
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Setting softlimit larger than hardlimit seems meaningless
-for disk quota but currently it is allowed. In this case,
-there may be a bit of comfusion for users when they run
-df comamnd to directory which has project quota.
+From: Dave Chinner <dchinner@redhat.com>
 
-For example, we set 20M softlimit and 10M hardlimit of
-block usage limit for project quota of test_dir(project id 123).
+When doing a direct IO that spans the current EOF, and there are
+written blocks beyond EOF that extend beyond the current write, the
+only metadata update that needs to be done is a file size extension.
 
-[root@hades mnt_ext4]# repquota -P -a
-*** Report for project quotas on device /dev/loop0
-Block grace time: 7days; Inode grace time: 7days
-                        Block limits                File limits
-Project         used    soft    hard  grace    used  soft  hard  grace
-----------------------------------------------------------------------
- 0        --      13       0       0              2     0     0
- 123      --   10237   20480   10240              5   200   100
+However, we don't mark such iomaps as IOMAP_F_DIRTY to indicate that
+there is IO completion metadata updates required, and hence we may
+fail to correctly sync file size extensions made in IO completion
+when O_DSYNC writes are beingt used and the hardware supports FUA.
 
-The result of df command as below:
+Hence when setting IOMAP_F_DIRTY, we need to also take into account
+whether the iomap spans the current EOF. If it does, then we need to
+mark it dirty so that IO completion will call generic_write_sync()
+to flush the inode size update to stable storage correctly.
 
-[root@hades mnt_ext4]# df -h test_dir
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/loop0       20M   10M   10M  50% /home/cgxu/test/mnt_ext4
-
-Even though it looks like there is another 10M free space to use,
-if we write new data to diretory test_dir(inherit project id),
-the write will fail with errno(-EDQUOT).
-
-After this patch, the df result looks like below.
-
-[root@hades mnt_ext4]# df -h test_dir
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/loop0       10M   10M  3.0K 100% /home/cgxu/test/mnt_ext4
-
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
-Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Dave Chinner <dchinner@redhat.com>
 ---
-v1->v2:
-- Fix a bug in the limit setting logic.
-v2->v3:
-- Modify coding style.
+ fs/ext4/inode.c       | 9 ++++++++-
+ fs/xfs/xfs_iomap.c    | 8 ++++++++
+ include/linux/iomap.h | 2 ++
+ 3 files changed, 18 insertions(+), 1 deletion(-)
 
- fs/ext4/super.c | 23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dd654e53ba3d..0f9a219c0ab4 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5546,9 +5546,15 @@ static int ext4_statfs_project(struct super_block *s=
-b,
- =09=09return PTR_ERR(dquot);
- =09spin_lock(&dquot->dq_dqb_lock);
-=20
--=09limit =3D (dquot->dq_dqb.dqb_bsoftlimit ?
--=09=09 dquot->dq_dqb.dqb_bsoftlimit :
--=09=09 dquot->dq_dqb.dqb_bhardlimit) >> sb->s_blocksize_bits;
-+=09limit =3D 0;
-+=09if (dquot->dq_dqb.dqb_bsoftlimit &&
-+=09    (!limit || dquot->dq_dqb.dqb_bsoftlimit < limit))
-+=09=09limit =3D dquot->dq_dqb.dqb_bsoftlimit;
-+=09if (dquot->dq_dqb.dqb_bhardlimit &&
-+=09    (!limit || dquot->dq_dqb.dqb_bhardlimit < limit))
-+=09=09limit =3D dquot->dq_dqb.dqb_bhardlimit;
-+=09limit >>=3D sb->s_blocksize_bits;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 516faa280ced..e9dc52537e5b 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3523,9 +3523,16 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 			return ret;
+ 	}
+ 
++	/*
++	 * Writes that span EOF might trigger an IO size update on completion,
++	 * so consider them to be dirty for the purposes of O_DSYNC even if
++	 * there is no other metadata changes being made or are pending here.
++	 */
+ 	iomap->flags = 0;
+-	if (ext4_inode_datasync_dirty(inode))
++	if (ext4_inode_datasync_dirty(inode) ||
++	    offset + length > i_size_read(inode))
+ 		iomap->flags |= IOMAP_F_DIRTY;
 +
- =09if (limit && buf->f_blocks > limit) {
- =09=09curblock =3D (dquot->dq_dqb.dqb_curspace +
- =09=09=09    dquot->dq_dqb.dqb_rsvspace) >> sb->s_blocksize_bits;
-@@ -5558,9 +5564,14 @@ static int ext4_statfs_project(struct super_block *s=
-b,
- =09=09=09 (buf->f_blocks - curblock) : 0;
- =09}
-=20
--=09limit =3D dquot->dq_dqb.dqb_isoftlimit ?
--=09=09dquot->dq_dqb.dqb_isoftlimit :
--=09=09dquot->dq_dqb.dqb_ihardlimit;
-+=09limit =3D 0;
-+=09if (dquot->dq_dqb.dqb_isoftlimit &&
-+=09    (!limit || dquot->dq_dqb.dqb_isoftlimit < limit))
-+=09=09limit =3D dquot->dq_dqb.dqb_isoftlimit;
-+=09if (dquot->dq_dqb.dqb_ihardlimit &&
-+=09    (!limit || dquot->dq_dqb.dqb_ihardlimit < limit))
-+=09=09limit =3D dquot->dq_dqb.dqb_ihardlimit;
+ 	iomap->bdev = inode->i_sb->s_bdev;
+ 	iomap->dax_dev = sbi->s_daxdev;
+ 	iomap->offset = (u64)first_block << blkbits;
+diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+index f780e223b118..38be06f19ea2 100644
+--- a/fs/xfs/xfs_iomap.c
++++ b/fs/xfs/xfs_iomap.c
+@@ -722,6 +722,14 @@ xfs_file_iomap_begin_delay(
+ 		xfs_trim_extent(&imap, cmap.br_startoff, cmap.br_blockcount);
+ 		shared = true;
+ 	}
 +
- =09if (limit && buf->f_files > limit) {
- =09=09buf->f_files =3D limit;
- =09=09buf->f_ffree =3D
---=20
-2.20.1
-
-
++	/*
++	 * Writes that span EOF might trigger an IO size update on completion,
++	 * so consider them to be dirty for the purposes of O_DSYNC even if
++	 * there is no other metadata changes being made or are pending here.
++	 */
++	if (offset + count > i_size_read(inode))
++		iomap->flags |= IOMAP_F_DIRTY;
+ 	error = xfs_bmbt_to_iomap(ip, iomap, &imap, shared);
+ out_unlock:
+ 	xfs_iunlock(ip, XFS_ILOCK_EXCL);
+diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+index 7aa5d6117936..24bd227d59f9 100644
+--- a/include/linux/iomap.h
++++ b/include/linux/iomap.h
+@@ -32,6 +32,8 @@ struct vm_fault;
+  *
+  * IOMAP_F_DIRTY indicates the inode has uncommitted metadata needed to access
+  * written data and requires fdatasync to commit them to persistent storage.
++ * This needs to take into account metadata changes that *may* be made at IO
++ * completion, such as file size updates from direct IO.
+  */
+ #define IOMAP_F_NEW		0x01	/* blocks have been newly allocated */
+ #define IOMAP_F_DIRTY		0x02	/* uncommitted metadata */
+-- 
+2.23.0.rc1
 
