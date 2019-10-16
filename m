@@ -2,194 +2,168 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC837DA1B1
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2019 00:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF07ADA223
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2019 01:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393306AbfJPWpS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Oct 2019 18:45:18 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52205 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726417AbfJPWpS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Oct 2019 18:45:18 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9GMjC6I026587
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Oct 2019 18:45:12 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id AE6F2420458; Wed, 16 Oct 2019 18:45:11 -0400 (EDT)
-Date:   Wed, 16 Oct 2019 18:45:11 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 09/13] ext4: fast-commit commit path changes
-Message-ID: <20191016224511.GI11103@mit.edu>
-References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
- <20191001074101.256523-10-harshadshirwadkar@gmail.com>
+        id S2437689AbfJPX0e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Oct 2019 19:26:34 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:43719 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390440AbfJPX0d (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Oct 2019 19:26:33 -0400
+Received: by mail-io1-f68.google.com with SMTP id v2so626755iob.10
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Oct 2019 16:26:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ALqoFhbrnK92+EsGdW3MzBdtB/MfZ4NI71UqQ56Wjro=;
+        b=QvcAupNYUIeNyIZotmMk1JsF16omX7CtqAazx8G7WPLjCL8VxpyM3wM98mQ065R90J
+         2x+RzpwBohCAE8N16Di7Tj0yA7S/NKBb864ssgBU2Mvk0B9W4cy9BlcVPP39y03EvCWi
+         cBhb45MYsF/9UVGqODW1FjAz5kgzCYW36Bgzw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ALqoFhbrnK92+EsGdW3MzBdtB/MfZ4NI71UqQ56Wjro=;
+        b=MkxEn29Ae+VrIkUHzN3pTag227DGkEw4qUM/8Tv9H9UxMihhmu2nyqFjRP1SbaS1gV
+         UCe9CFNvKg2GfcVMUWQGhRf7L6YzncuLE20s6oqRVuGIHo/LbNUNCRieEenyfzpkeKbu
+         Ts7g03EkG+bt74tWUT9dgG63U+q/USjKvcvvIX94vGUr/ePTIm+Zp6FeQVa8ytEMfhHB
+         HNmNTPKjB0dsMYYtpLKZ1IKVPp0gJvuPdefDQ2bX9Ys8snGi7F+6Mpvlc8jKlRpjR06D
+         56SB0AsrVh7H7vAhqS99SFYi6iVdvCk+srPBzztrYO4QeoiWO2y2HIOuws9w2APHD82F
+         IZnQ==
+X-Gm-Message-State: APjAAAVyLFFQE44ZW6yLGV/fd3ZxuPLYX2RLztrx+GPDxXAi0k4B+9xP
+        QlhqucvvEddgEoAO963E1Hh02A==
+X-Google-Smtp-Source: APXvYqzoR8qettcJiq77CKQss21JvYq+xCoAaPUBywv0gL5OaGCdzz6oWHFSnuihBBPtDUGn/r3dMg==
+X-Received: by 2002:a5e:8f04:: with SMTP id c4mr237800iok.57.1571268391243;
+        Wed, 16 Oct 2019 16:26:31 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t8sm135004ild.7.2019.10.16.16.26.29
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Oct 2019 16:26:30 -0700 (PDT)
+Subject: Re: [PATCH linux-kselftest/test v2] ext4: add kunit test for decoding
+ extended timestamps
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Iurii Zaikin <yzaikin@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-ext4@vger.kernel.org,
+        adilger.kernel@dilger.ca,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20191010023931.230475-1-yzaikin@google.com>
+ <2f2ea7b0-f683-1cdd-f3f2-ecdf44cb4a97@linuxfoundation.org>
+ <CAAXuY3qtSHENgy3S168_03ju_JwAucOAt5WEJGQ+pi5PfurP6g@mail.gmail.com>
+ <CAFd5g46RcFV0FACuoF=jCSLzf7UFmEYn4gddaijUZ+zR_CFZBQ@mail.gmail.com>
+ <20191011131902.GC16225@mit.edu>
+ <CAFd5g45s1-=Z4JwJn4A1VDGu4oEGBisQ_0RFp4otUU3rKf1XpQ@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <1e6611e6-2fa6-6f7d-bc7f-0bc2243d9342@linuxfoundation.org>
+Date:   Wed, 16 Oct 2019 17:26:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191001074101.256523-10-harshadshirwadkar@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAFd5g45s1-=Z4JwJn4A1VDGu4oEGBisQ_0RFp4otUU3rKf1XpQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 01, 2019 at 12:40:58AM -0700, Harshad Shirwadkar wrote:
-> This patch implements the actual commit path for fast commit. Based on
-> inodes tracked and their respective changes remembered, this
-> patch adds code to create a fast commit block that stores extents
-> added as well as dentrys created for the inode. We use new JBD2
-> interfaces added in previous patches in this series. The fast commit
-> blocks that are created have extents that _should_ be present in the
-> file. It doesn't yet support removing of extents, making operations
-> such as truncate, delete fast commit incompatible.
+On 10/16/19 4:18 PM, Brendan Higgins wrote:
+> On Fri, Oct 11, 2019 at 6:19 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>>
+>> On Fri, Oct 11, 2019 at 03:05:43AM -0700, Brendan Higgins wrote:
+>>> That's an interesting point. Should we try to establish a pattern for
+>>> how tests should be configured? My *very long term* goal is to
+>>> eventually have tests able to be built and run without any kind of
+>>> kernel of any kind, but I don't think that having a single config for
+>>> all tests in a subsystem gets in the way of that, so I don't think I
+>>> have a strong preference in terms of what I want to do.
+>>>
+>>> Nevertheless, I think establishing patterns is good. Do we want to try
+>>> to follow Ted's preference as a general rule from now on?
+>>
+>> As I suggested on another thread (started on kunit-dev, but Brendan
+>> has cc'ed in linux-kselftest), I think it might really work well if
+> 
+> For reference, that thread can be found here:
+> https://lore.kernel.org/linux-kselftest/CAFd5g46+OMmP8mYsH8vcpMpdOeYryp=1Lsab4Hy6pAhWjX5-4Q@mail.gmail.com/
+> 
+>> "make kunit" runs all of the kunit tests automatically.  As we add
+>> more kunit tests, finding all of the CONFIG options so they can be
+>> added to the kunitconfig file is going to be hard, so kunit.py really
+>> needs an --allconfig which does this automatically.
+>>
+>> Along these lines, perhaps we should state that as a general rule the
+>> CONFIG option for Kunit tests should only depend on KUINIT, and use
+>> select to enable other dependencies.  i.e., for the ext4 kunit tests,
+> 
+> I support this. Although I think that we will eventually find
+> ourselves in a position where it is not possible to satisfy all
+> dependencies for all KUnit tests, this may get us far enough along
+> that the problem may be easier, or may work well enough for a long
+> time. It's hard to say. In anycase, I think it makes sense for a unit
+> test config to select its dependencies. I also think it makes sense to
+> make each subsystem have a master config for all KUnit tests.
+> 
+>> it should look like this:
+>>
+>> config EXT4_KUNIT_TESTS
+>>          bool "KUnit test for ext4 inode"
+>>          select EXT4_FS
+>>          depends on KUNIT
+>> ...
+>>
+>> In the current patch, we use "depends on EXT4_FS", which meant that
+>> when I first added "CONFIG_EXT4_KUNIT_TESTS=y" to the kunitconfig
+>> file, I got the following confusing error message:
+>>
+>> % ./tools/testing/kunit/kunit.py  run
+>> Regenerating .config ...
+>> ERROR:root:Provided Kconfig is not contained in validated .config!
+>>
+>> Using "select EXT4_FS" makes it much easier to enable the ext4 kunit
+>> tests in kunitconfig.  At the moment requiring that we two lines to
+>> kunitconfig to enable ext4 isn't _that_ bad:
+>>
+>> CONFIG_EXT4_FS=y
+>> CONFIG_EXT4_KUNIT_TESTS=y
+>>
+>> but over time, if many subsystems start adding unit tests, the
+>> overhead of managing the kunitconfig file is going to get unwieldy.
+> 
+> Agreed.
+> 
+>> Hence my suggestion that we just make all Kunit CONFIG options depend
+>> only on CONFIG_KUNIT.
+> 
 
-This affects some of the earlier patches, but I didn't realize this
-until now.  Right now, what we're doing is when initiate an fast
-commit, we are writing out all fast-commit eligible inodes (and
-flushing out any associated data blocks needed to maintain
-data=ordered guarantees).
+Sounds good to me. I am a bit behind in reviews. I will review v5.
 
-We don't actually have to do this.  Strictly speaking, we only have to
-write out the specific inode being fsync'ed, or the specific inode for
-which ext4_nfs_commit_metdata() has been called.  For an fsync()
-workload, especially one where for example, we might have hundreds of
-modified inodes, all of which are fc-eligible --- for example, because
-a kernel build is happening in the background, and a single file which
-is being fsync'ed --- for example because the programmer has just
-saved a source file in emacs ---- we only need to include that single
-inode in the fast commit.  Including *all* of the inodes in the
-i_fc_list in the fast commit, is wasted effort, especially since the
-inodes in question will be committed within the next 5 seconds.
+> That makes sense for now. I think we will eventually reach a point
+> where that may not be enough or that we may have KUnit configs which
+> are mutually exclusive; nevertheless, I imagine that this may be a
+> good short term solution for a decent amount of time.
+> 
+> Shuah suggested an alternative in the form of config fragments. I
+> think Ted's solution is going to be easier to maintain in the short
+> term. Any other thoughts?
+> 
 
-Now, in the case of ext4_nfs_commit_metadata(), we know that NFS is
-*very* aggressive at calling commit_metadata, and so writing out all
-of the FC-eligible commit is probably a good thing to do.  So we might
-want to do different things depending on whether the FC is being
-initiated via fsync() or fdatasync() versus commit_metadata().
+I don't recall commenting on config fragments per say. I think I was
+asking if we can make the test data dynamic as opposed to static.
 
-The other reason why it's better to only do this for
-ext4_nfs_commit_metadata() is because if we only write out the inode
-which is being fsync'ed, we don't have worry about fairness concerned,
-since the I/O will be charged to the process/cgroup who requested the
-fsync.  If we write out *all* the fc-eligible inodes in the FC commit,
-then they will get charged to the process doing the fsync(2).  Whereas
-for an NFS server, we don't care about cgroups, since they can all be
-charged to the NFS server.
+Lurii said it might be difficult to do it that way since we are doing
+this at boot time + we are testing extfs. If not for this test, for
+others, it would good to explore option to make test data dynamic,
+so it would be easier to use custom test data.
 
+I don't really buy the argument that unit tests should be deterministic
+Possibly, but I would opt for having the ability to feed test data.
 
-> diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-> index 0bb8de2139a5..fd7740372438 100644
-> --- a/fs/ext4/ext4_jbd2.c
-> +++ b/fs/ext4/ext4_jbd2.c
-> @@ -4,6 +4,7 @@
-> +static void ext4_end_buffer_io_sync(struct buffer_head *bh, int uptodate)
-> +{
-> +	struct buffer_head *orig_bh = bh->b_private;
-> +
-> +	BUFFER_TRACE(bh, "");
-> +	if (uptodate) {
-> +		ext4_debug("%s: Block %lld up-to-date",
-> +			   __func__, bh->b_blocknr);
-> +		set_buffer_uptodate(bh);
-> +	} else {
-> +		ext4_debug("%s: Block %lld not up-to-date",
-> +			   __func__, bh->b_blocknr);
-> +		clear_buffer_uptodate(bh);
-> +	}
-> +	if (orig_bh) {
-> +		clear_bit_unlock(BH_Shadow, &orig_bh->b_state);
-> +		/* Protect BH_Shadow bit in b_state */
-> +		smp_mb__after_atomic();
-> +		wake_up_bit(&orig_bh->b_state, BH_Shadow);
-> +	}
-
-We don't need to deal with BH_Shadow handling here.  This is needed
-when we are writing out buffer heads correspond to ext4 metadata
-(e.g., an inode table block, a block group descriptor block).  We're
-only writing out bh's corresponding to the journal, so the BH_Shadow
-bit should never be set on such bh's.
-
-> +static inline u8 *fc_add_tag(u8 *dst, u16 tag, u16 len, u8 *val)
-
-Can you add some documentation for this function?  In particular, what
-does it return?  I also tend to prefer to pass in the pointer to the
-buffer (val) first, followed then by the length (len), but that's more
-of a personal preference.
-
-> +int ext4_fc_write_inode(journal_t *journal, struct buffer_head *bh,
-> +			struct inode *inode, tid_t tid, tid_t subtid,
-> +			int is_last, struct dentry *dentry)
-> +{
-
-  ...
-> +
-> +	memcpy(&fc_hdr->inode, ext4_raw_inode(&iloc), EXT4_INODE_SIZE(sb));
-
-So this is a bit problematic.  In the structure definition,
-fc_hdr->inode is not at the end of the structure
-
-struct ext4_fc_commit_hdr {
-	/* Fast commit magic, should be EXT4_FC_MAGIC */
-	__le32 fc_magic;
-	...	
-	/* ext4 inode on disk copy */
-	struct ext4_inode inode;
-	/* Csum(hdr+contents) */
-	__le32 fc_csum;
-};
-
-... and the size of struct ext4_inode is just the fixed portion of the
-inode, and is almost always smaller than EXT4_INODE_SIZE(sb) ---
-except in the case of 128 byte inodes, in which case the fields
-i_extra_isize and beyond going to be beyond the 128 byte limit.
-
-So this isn't going to work.  I'm guessing you didn't test with
-extended attributes, because the checksum would have overwritten the
-beginning of the in-inode xattrs?
-
-Also, note that EXT4_INODE_SIZE(sb) can be set to the block size.
-It's super-rare, but that is legal.  Which means we need to test for
-that case somewhere, and either (a) disable fast commits when the
-inode size == blocksize, or (b) support a fast commit log which is
-larger than a single block.  (This is doable, since there is a
-checksum field to protect against partial writes.)
-
-> +struct ext4_fc_commit_hdr {
-> +	/* Fast commit magic, should be EXT4_FC_MAGIC */
-> +	__le32 fc_magic;
-> +	/* Sub transaction ID */
-> +	__le32 fc_subtid;
-> +	/* Features used by this fast commit block */
-> +	__u8 fc_features;
-> +	/* Flags for this block. */
-> +	__u8 fc_flags;
-
-What fs_features and fc_flags are you thinking we would need?  I can't
-think of a good reasons to have per-fc block features.  But I can
-think of reasons why we might want to support a small number of blocks
-in an fc entry.  So maybe repurpose fc_features with some limit, such
-as say, 4 blocks, and on the replay side we can just kmalloc 4 *
-blocksize worth of space to read in that number of blocks if
-necessary?
-
-> +	/* Number of TLVs in this fast commmit block */
-> +	__le16 fc_num_tlvs;
-> +	/* Inode number */
-> +	__le32 fc_ino;
-> +	/* ext4 inode on disk copy */
-> +	struct ext4_inode inode;
-> +	/* Csum(hdr+contents) */
-> +	__le32 fc_csum;
-
-I'd suggest putting the checksum at the very end of the fc entry.
-e.g., at offset 4092 if there is only a single block in the fc commit
-entry.  Also, I'd make sure that we explicitly zero all of the bytes
-at the end of the TLV section and the checksum, and specify that the
-checksum is calculated including the must-be-zero padding, just to
-keep things simple.
-
-						- Ted
+thanks,
+-- Shuah
