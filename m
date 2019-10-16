@@ -2,133 +2,171 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E06D991F
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 20:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B834D9ABB
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 22:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390931AbfJPS0Z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Oct 2019 14:26:25 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54323 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727374AbfJPS0Z (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Oct 2019 14:26:25 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9GIQILo029702
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Oct 2019 14:26:19 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id AA04C420458; Wed, 16 Oct 2019 14:26:18 -0400 (EDT)
-Date:   Wed, 16 Oct 2019 14:26:18 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 06/13] ext4: add fields that are needed to track
- changed files
-Message-ID: <20191016182618.GF11103@mit.edu>
-References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
- <20191001074101.256523-7-harshadshirwadkar@gmail.com>
+        id S1727534AbfJPUDM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Oct 2019 16:03:12 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:42136 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725797AbfJPUDL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Oct 2019 16:03:11 -0400
+Received: by mail-pl1-f193.google.com with SMTP id e5so11759229pls.9
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Oct 2019 13:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=JX36bcoVDvGPpKT56L/IQCmfHofuMF7ewkrGUc48K60=;
+        b=S3OzJHvQ/jbpxi+w4ta2h9fuet9pvzKeCJL/BynoxfdCTszapvphYqKUAxEJt4Cd5P
+         77hBJAdR88NJF9AO6qHNN6jh7/++8jN4UsdbfxPRjTWpyMZi5iyAS7rWev1SQw2d7yYI
+         kuG3OrjiHzpESxZQ/iPDl081NMpXfB3a6wsSaNu5kzRRJMJe75IdPD4S1MqQFxRHmNvo
+         BWoNTGhf2QuZcTi1dIT6tYHVaJJYgmVU1v2rz8bHTY8KNM8+S/Tws2j4g11lCIqy53Ks
+         G5aLCHdQCvYR6Ty6V9+QIsfWa6h/vdf7QPEkXLR/8KncVAvV/62MTbqVzeiJTbLWCjYQ
+         3hqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=JX36bcoVDvGPpKT56L/IQCmfHofuMF7ewkrGUc48K60=;
+        b=PiYDI4brJFNjoSRi4d6Od7Hhst/kIFzdptq0pOKL0VTDcUqQY7rkNwVHo7BMsifNVT
+         NVy3rTSb1WR3vYGcYHnjCsabUmbEZc1mcQ2cuN/aZ+PYBI36YcMRr8CMjFHm9J0FT8c/
+         9wW14A0RdyFVqHX5pgXfbyw9cbKxvRB9j4fbbSkS2IqNKf5KqwuoPVK7BF10xLBmIHbL
+         aR4dZXsjBFmZdGdZilu8bdft3MMskT6XXiOFwPH3oW9t2OkNoXIatGEcdKwWMtJrdjEk
+         pLVLBlqWz9L506lKbsPf/+0JVKjgKQm5ivESsTOS0n4hfu0eBrZkCrWZqph89jY3NYts
+         LVUA==
+X-Gm-Message-State: APjAAAWzAFvH/u635Nyxh4UEJFFHKL+XgSurOPFMvUBejEEv3bi5LgiN
+        n3TE5qqpeniI1/h5BUVO3wawFw==
+X-Google-Smtp-Source: APXvYqwzim77PSt3IxfBaBfc7aTaUod4a/+aKNQfcA6ooJ2eV6CEcz5FOdV2/3P065W6TYl7blQqDA==
+X-Received: by 2002:a17:902:a581:: with SMTP id az1mr42046269plb.311.1571256190227;
+        Wed, 16 Oct 2019 13:03:10 -0700 (PDT)
+Received: from google.com ([2620:15c:2cb:1:e90c:8e54:c2b4:29e7])
+        by smtp.gmail.com with ESMTPSA id y144sm29943397pfb.188.2019.10.16.13.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Oct 2019 13:03:08 -0700 (PDT)
+Date:   Wed, 16 Oct 2019 13:03:04 -0700
+From:   Brendan Higgins <brendanhiggins@google.com>
+To:     Iurii Zaikin <yzaikin@google.com>
+Cc:     linux-kselftest@vger.kernel.org, linux-ext4@vger.kernel.org,
+        skhan@linuxfoundation.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        Tim.Bird@sony.com, kunit-dev@googlegroups.com
+Subject: Re: [PATCH linux-kselftest/test v4] ext4: add kunit test for
+ decoding extended timestamps
+Message-ID: <20191016200304.GA49718@google.com>
+References: <20191012023757.172770-1-yzaikin@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191001074101.256523-7-harshadshirwadkar@gmail.com>
+In-Reply-To: <20191012023757.172770-1-yzaikin@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 01, 2019 at 12:40:55AM -0700, Harshad Shirwadkar wrote:
+On Fri, Oct 11, 2019 at 07:37:57PM -0700, Iurii Zaikin wrote:
+> KUnit tests for decoding extended 64 bit timestamps
+> that verify the seconds part of [a/c/m]
+> timestamps in ext4 inode structs are decoded correctly.
+> KUnit tests, which run on boot and output
+> the results to the debug log in TAP format (http://testanything.org/).
+> are only useful for kernel devs running KUnit test harness. Not for
+> inclusion into a production build.
+> Test data is derive from the table under
+nit:                ^
+Should be:     derived from ...
+
+> Documentation/filesystems/ext4/inodes.rst Inode Timestamps.
+> 
+> Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
+
+> ---
+>  fs/ext4/Kconfig      |  14 +++
+>  fs/ext4/Makefile     |   1 +
+>  fs/ext4/inode-test.c | 239 +++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 254 insertions(+)
+>  create mode 100644 fs/ext4/inode-test.c
+>
+[...]
+> diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+> new file mode 100644
+> index 000000000000..3b3a453ff382
+> --- /dev/null
+> +++ b/fs/ext4/inode-test.c
+> @@ -0,0 +1,239 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +/*
-> + * Ext4 fast commit inode specific information
+> + * KUnit test of ext4 inode that verify the seconds part of [a/c/m]
+> + * timestamps in ext4 inode structs are decoded correctly.
 > + */
-> +struct ext4_fast_commit_inode_info {
-
-I think it would be better to move the contents of this structure
-directly into ext4_inode_info, instead of adding this structure to
-ext4_inode_info; the structure is never used in a free-standing
-context.
-
-> +	/*
-> +	 * Flag indicating whether this inode is eligible for fast commits or
-> +	 * not.
-> +	 */
-> +	bool fc_eligible;
 > +
-> +	/*
-> +	 * Flag indicating whether this inode is newly created during this
-> +	 * tid:subtid.
-> +	 */
-> +	bool fc_new;
+> +#include <kunit/test.h>
+> +#include <linux/kernel.h>
+> +#include <linux/time64.h>
+> +
+> +#include "ext4.h"
+> +
+> +/* binary: 00000000 00000000 00000000 00000000 */
+> +#define LOWER_MSB_0 0L
+> +/* binary: 01111111 11111111 11111111 11111111 */
+> +#define UPPER_MSB_0 0x7fffffffL
+> +/* binary: 10000000 00000000 00000000 00000000 */
+> +#define LOWER_MSB_1 (-0x80000000L)
+> +/* binary: 11111111 11111111 11111111 11111111 */
+> +#define UPPER_MSB_1 (-1L)
+> +/* binary: 00111111 11111111 11111111 11111111 */
+> +#define MAX_NANOSECONDS ((1L << 30) - 1)
+> +
+> +#define CASE_NAME_FORMAT "%s: msb:%x lower_bound:%x extra_bits: %x"
+> +
+> +struct timestamp_expectation {
+> +	const char *test_case_name;
+> +	struct timespec64 expected;
+> +	u32 extra_bits;
+> +	bool msb_set;
+> +	bool lower_bound;
+> +};
+> +
+> +static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+> +{
+> +	if (test->msb_set) {
+> +		if (test->lower_bound)
+> +			return LOWER_MSB_1;
+> +
+> +		return UPPER_MSB_1;
+> +	}
+> +
+> +	if (test->lower_bound)
+> +		return LOWER_MSB_0;
+> +	return UPPER_MSB_0;
+> +}
+> +
+> +
+> +/*
+> + * These tests are derived from the table under
+> + * Documentation/filesystems/ext4/inodes.rst Inode Timestamps
+> + */
+> +static void inode_test_xtimestamp_decoding(struct kunit *test)
+> +{
+> +	const struct timestamp_expectation test_data[] = {
+> +		{
+> +			.test_case_name =
+> +		"1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits.",
 
-These two bools could be replaced using EXT4_STATE_* flags.  Grep for
-EXT4_STATE_NEWENTRY to see an example of how an EXT4_STATE_ flag is
-defined and used.
+nit: Maybe drop the period at the end (here and elsewhere)? Otherwise if
+the test fails you have a period right next to a colon and it looks a
+bit off.
 
+> +			.msb_set = true,
+> +			.lower_bound = true,
+> +			.extra_bits = 0,
+> +			.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+> +		},
 
-> +	rwlock_t fc_lock;
+Feel free to ignore my nits if you don't need to send another version.
+Also note that Ted has given a Reviewed-by on an earlier revision.
 
-What is this used for?  If it's only just to protect the i_fc_list
-list_head, maybe name it i_fc_list_lock?
-
-> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-> index 764ff4c56233..ff30f3015551 100644
-> --- a/fs/ext4/ialloc.c
-> +++ b/fs/ext4/ialloc.c
-> @@ -1131,6 +1131,7 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
->  
->  	ext4_clear_state_flags(ei); /* Only relevant on 32-bit archs */
->  	ext4_set_inode_state(inode, EXT4_STATE_NEW);
-> +	ext4_init_inode_fc_info(inode);
->  
->  	ei->i_extra_isize = sbi->s_want_extra_isize;
->  	ei->i_inline_off = 0;
-
-I don't think this is necessary; the inode was returned by ext4_iget,
-so the ext4_alloc_inode() will have already called that function.
-
-
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 420fe3deed39..f230a888eddd 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -4996,6 +4996,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
->  	for (block = 0; block < EXT4_N_BLOCKS; block++)
->  		ei->i_data[block] = raw_inode->i_block[block];
->  	INIT_LIST_HEAD(&ei->i_orphan);
-> +	ext4_init_inode_fc_info(&ei->vfs_inode);
->  
-
-The inode here was returned by iget_locked(), which means
-ext4_alloc_inode() will have been called.
-
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 7725eb2105f4..c90337fc98c1 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1139,6 +1140,7 @@ static void init_once(void *foo)
->  	init_rwsem(&ei->i_data_sem);
->  	init_rwsem(&ei->i_mmap_sem);
->  	inode_init_once(&ei->vfs_inode);
-> +	ext4_init_inode_fc_info(&ei->vfs_inode);
->  }
-
-Maybe pull the rwlock_init() out of ext4_init_inode_fc_info() and
-stuff it here?
-
-Basically, it looks like certain fields are getting redundantly
-initalized a lot.  The init_once function will initialize those fields
-that will be reset when the structure is released.  If we are sure
-that it will be reset (e.g., the spinlock will be reset), then we can
-initialize it once in init_once() and then not re-initializing in
-other places, such as ext4_alloc_inode().
-
-There are some people who think it's not worth it to avoid using
-init_once, since this can cause bugs if it turns out it wasn't
-properly reset at the time when the object is released.  So the other
-approach is to drop the ext4_init_inode_fc_info() and then just
-reinitialize the spinlock every time.  (OTOH, if someone else is still
-holding on the spinlock when you release it, then reinitialize the
-spinlock can *also* lead to a very hard-to-debug crash.)
-
-	     	    	      	   		 - Ted
+Thanks!
