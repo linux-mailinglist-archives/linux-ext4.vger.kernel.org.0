@@ -2,52 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D9CD88BD
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 08:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D6AD89DD
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 09:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388363AbfJPGny (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Oct 2019 02:43:54 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:46538 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726372AbfJPGny (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Oct 2019 02:43:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=RlX7GJA1mPLD3DZ4u1ksZQlVybr4nI9WtXqdX6/HNAI=; b=E21R+IZHsbiYeZprJLL7Bwber
-        u5gP7U/A1/qmRpkMDA2njgnRtbisZyBRQiDIrdtJ0XpblzccJMYtOysbM3DXrCr8hxfvPnce13Uzf
-        xeSb+g7zPxAT+yEcESNTcNhZmgr+rGuos8M0NIMyrVnd47t4QqDIstN8suzvKre4wHIkP6bm+LnZU
-        P9hJfWij6CzsJn1F0AO2OxU3VhH+imaEwItRYRm/bSb3GKPON2nuscyo9+Wd8S3y0CtdZDKibXwJ1
-        x/8kSFgOlOH710WQmIfNy6cnYkReK2rGp3aQNjbWr9eUD3xpmtY4qcqLnQWXJ5Iy5kVJ71wQEiiuZ
-        P9KgrDLxw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iKd2H-0007Ek-Sw; Wed, 16 Oct 2019 06:43:53 +0000
-Date:   Tue, 15 Oct 2019 23:43:53 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] iomap: iomap that extends beyond EOF should be marked
- dirty
-Message-ID: <20191016064353.GA25846@infradead.org>
-References: <20191016051101.12620-1-david@fromorbit.com>
- <20191016060604.GH16973@dread.disaster.area>
+        id S1732521AbfJPHh0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Oct 2019 03:37:26 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2578 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730523AbfJPHhZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 16 Oct 2019 03:37:25 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9G7b0ei013800
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Oct 2019 03:37:24 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2vng3u1a8j-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Oct 2019 03:37:23 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Wed, 16 Oct 2019 08:37:20 +0100
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 16 Oct 2019 08:37:17 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9G7bGjx42926300
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Oct 2019 07:37:16 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 12729AE04D;
+        Wed, 16 Oct 2019 07:37:16 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 80811AE05D;
+        Wed, 16 Oct 2019 07:37:14 +0000 (GMT)
+Received: from dhcp-9-199-158-105.in.ibm.com (unknown [9.199.158.105])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Oct 2019 07:37:14 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org,
+        riteshh@linux.ibm.com
+Subject: [RFC 0/5] Ext4: Add support for blocksize < pagesize for dioread_nolock
+Date:   Wed, 16 Oct 2019 13:07:06 +0530
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191016060604.GH16973@dread.disaster.area>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19101607-0012-0000-0000-000003587C9A
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19101607-0013-0000-0000-0000219394D2
+Message-Id: <20191016073711.4141-1-riteshh@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-16_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=549 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1910160071
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I wonder if the i_size check should be done in core, similar to the
-iomap_block_needs_zeroing helper.  But independent of what is nicer
-this version does look correct to me:
+This patch series adds the support for blocksize < pagesize for
+dioread_nolock feature.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Since in case of blocksize < pagesize, we can have multiple
+small buffers of page as unwritten extents, we need to
+maintain a vector of these unwritten extents which needs
+the conversion after the IO is complete. Thus, we maintain
+a list of tuple <offset, size> pair (io_end_vec) for this &
+traverse this list to do the unwritten to written conversion.
+
+Appreciate any reviews/comments on this patches.
+
+Tests completed
+===============
+
+All (which also passes in default config) "quick" group xfstests
+are passing. Tested xfstests with below configurations.
+	dioread_nolock with blocksize < pagesize
+	dioread_nolock with blocksize == pagesize
+	without dioread_nolock with blocksize < pagesize
+	without dioread_nolock with blocksize == pagesize
+ltp/fsx test with multiple iterations of 1 million ops
+did not show any error.
+
+
+About patches
+=============
+
+Patch 1 - 3: These are some cleanup and refactoring patches.
+Patch 4: This patch adds the required support.
+Patch 5: This patch removes the checks which was not allowing to mount
+with dioread_nolock when blocksize != pagesize was true.
+
+_Patches can be cleanly applied on today's linus tree master branch_
+
+Ritesh Harjani (5):
+  ext4: keep uniform naming convention for io & io_end variables
+  ext4: Add API to bring in support for unwritten io_end_vec conversion
+  ext4: Refactor mpage_map_and_submit_buffers function
+  ext4: Add support for blocksize < pagesize in dioread_nolock
+  ext4: Enable blocksize < pagesize for dioread_nolock
+
+ fs/ext4/ext4.h    |  13 ++++-
+ fs/ext4/extents.c |  49 ++++++++++++-----
+ fs/ext4/inode.c   | 136 ++++++++++++++++++++++++++++++----------------
+ fs/ext4/page-io.c | 110 ++++++++++++++++++++++++-------------
+ fs/ext4/super.c   |  10 ----
+ 5 files changed, 208 insertions(+), 110 deletions(-)
+
+-- 
+2.21.0
+
