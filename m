@@ -2,193 +2,354 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4097D9BC6
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 22:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917E2D9C1D
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 22:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437153AbfJPU0y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Oct 2019 16:26:54 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53895 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2437132AbfJPU0y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Oct 2019 16:26:54 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9GKQmOQ014347
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Oct 2019 16:26:49 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id B003B420458; Wed, 16 Oct 2019 16:26:48 -0400 (EDT)
-Date:   Wed, 16 Oct 2019 16:26:48 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 07/13] ext4: track changed files for fast commit
-Message-ID: <20191016202648.GG11103@mit.edu>
-References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
- <20191001074101.256523-8-harshadshirwadkar@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191001074101.256523-8-harshadshirwadkar@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2403762AbfJPU62 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Oct 2019 16:58:28 -0400
+Received: from mail-pg1-f201.google.com ([209.85.215.201]:34860 "EHLO
+        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726565AbfJPU62 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Oct 2019 16:58:28 -0400
+Received: by mail-pg1-f201.google.com with SMTP id s1so117496pgm.2
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Oct 2019 13:58:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=/EAnK9mVP5VpM5sGIwj5LYu1ZBRvQtiCnXhFbzBw3r4=;
+        b=q1h7wztqPVFQlE/b5zALy/t/ZvOUBRjhRD3hrQIpz5dF+WAGbjoGCN37p6Y9eAlt8/
+         TM6Gz36mlQolwokARs4gogzsAA6bGXQosPpjeymA2HrpkXvqY/LqmQ9oqwCU9rbbUqiK
+         lYBDxRufOi7ZzJRR30VJznFMJHmrLSX6q2Sk2VKrpt8idaarvxJYj2+FdbzZh5NI61tD
+         mFAy1BcyXf1L74ZHmCEa3WhH065ud6SqaTf5P7oSqP8ZbSuW7m6mNhmGVJLzwSWFlovJ
+         7dCX6YJ5kQjLTBZMz+k3z8Lwk3r8WySydKqSvl2RnRDURszjRe0hqtS4aD3Ovv0UJfsa
+         9BSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=/EAnK9mVP5VpM5sGIwj5LYu1ZBRvQtiCnXhFbzBw3r4=;
+        b=pqeWJxTOW7IHAjQQvNKjy7SpatKOF8Ri0SYz5ipNGc1ISfQLpGPV+BBgjTvfTg0n2b
+         AmY6dAb6uFYDYpeF1+iPOMogt7PJYr7McR4BwNh1xC1Cioyah0vIdToqziRnE2fkij2R
+         Y2sSMz/qqqyDwQbx+g4x5yAb5C6b0EnHCLiZPGM9bxjnhaV3qqzQrMikot7vz9rUg/qL
+         1r6ympYMu51yeyjbQRMB9OAXeoPISmEu0BgfJ6SvEcleWpdJE1AknWn3dQ4Iu4kblCCo
+         rXcUGv4l8glCXRbe/KvtubHnRz+FLFbLMk+ilwzCKxvnlU+B5jU9t1Mc8zGTofZT/x8u
+         0nNA==
+X-Gm-Message-State: APjAAAXbqFBy6z9IEPOpkmWffHvYSvTWOz2b4I/rjzVzMUrf4j3q1jRf
+        T1CFru/OCIf4dI1ZlvwS5evNC30yfVg=
+X-Google-Smtp-Source: APXvYqzIrNWJivMfq8gKmkBfx1cQNb5gj8aYmEoGbEgFsa0hU1gHJK/UwOqwu+w9OchkXOnViBnX4UMoMOUi
+X-Received: by 2002:a63:f5a:: with SMTP id 26mr122217pgp.63.1571259504907;
+ Wed, 16 Oct 2019 13:58:24 -0700 (PDT)
+Date:   Wed, 16 Oct 2019 13:58:20 -0700
+Message-Id: <20191016205820.164985-1-yzaikin@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.866.gb869b98d4c-goog
+Subject: [PATCH linux-kselftest/test v5] ext4: add kunit test for decoding
+ extended timestamps
+From:   Iurii Zaikin <yzaikin@google.com>
+To:     linux-kselftest@vger.kernel.org, linux-ext4@vger.kernel.org,
+        skhan@linuxfoundation.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        Tim.Bird@sony.com
+Cc:     kunit-dev@googlegroups.com, brendanhiggins@google.com,
+        Iurii Zaikin <yzaikin@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 01, 2019 at 12:40:56AM -0700, Harshad Shirwadkar wrote:
-> +void ext4_fc_enqueue_inode(handle_t *handle, struct inode *inode)
-> +{
-> +	struct ext4_inode_info *ei = EXT4_I(inode);
-> +	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-> +	tid_t running_txn_tid = get_running_txn_tid(inode->i_sb);
+KUnit tests for decoding extended 64 bit timestamps
+that verify the seconds part of [a/c/m]
+timestamps in ext4 inode structs are decoded correctly.
+KUnit tests, which run on boot and output
+the results to the debug log in TAP format (http://testanything.org/).
+are only useful for kernel devs running KUnit test harness. Not for
+inclusion into a production build.
+Test data is derived from the table under
+Documentation/filesystems/ext4/inodes.rst Inode Timestamps.
 
-BTW, we don't actually have to call get_running_txn_tid() here.  We
-have a handle, which means we know there is a running transaction, so
-we can also just do:
+Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+---
+ fs/ext4/Kconfig      |  14 +++
+ fs/ext4/Makefile     |   1 +
+ fs/ext4/inode-test.c | 239 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 254 insertions(+)
+ create mode 100644 fs/ext4/inode-test.c
 
-	tid_t running_txn_tid = handle->h_transaction->t_id;
+diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+index cbb5ca830e57..f13dde8ed92b 100644
+--- a/fs/ext4/Kconfig
++++ b/fs/ext4/Kconfig
+@@ -106,3 +106,17 @@ config EXT4_DEBUG
+ 	  If you select Y here, then you will be able to turn on debugging
+ 	  with a command such as:
+ 		echo 1 > /sys/module/ext4/parameters/mballoc_debug
++
++config EXT4_KUNIT_TESTS
++	bool "KUnit tests for ext4"
++	select EXT4_FS
++	depends on KUNIT
++	help
++	  This builds the ext4 KUnit tests, which run on boot and output
++	  the results to the debug log in TAP format (http://testanything.org/).
++	  Only useful for kernel devs running KUnit test harness. Not for
++	  inclusion into a production build.
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
+diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
+index b17ddc229ac5..840b91d040f1 100644
+--- a/fs/ext4/Makefile
++++ b/fs/ext4/Makefile
+@@ -13,4 +13,5 @@ ext4-y	:= balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
 
-> +
-> +	if (!ext4_should_fast_commit(inode->i_sb))
-> +		return;
-> +
-> +	spin_lock(&sbi->s_fc_lock);
-
-This is going to be a major lock contention bottleneck.  So we should
-move the the write_lock of &ei->i_fc.fc_lock and comparison of
-ei->i_fc.fc_tid against running_txn_tid before we try to take the file
-system-level s_fc_lock.
-
-> +	if (!sbi->s_fc_eligible) {
-> +		spin_unlock(&sbi->s_fc_lock);
-> +		return;
-> +	}
-
-I'm really not fond the file system level s_fc_eligible; again, I
-really think we should have a transaction-level "this transaction is
-not eligible for fast commit" flag.  We don't have to be super careful
-about locking for this flag anyway, since it only transitions from set
-to unset, and here in ext4_fc_enqueue_inode(), it's only an
-optimization to avoid doing extra unnecessary work.
-
-> +static inline void
-> +ext4_fc_mark_ineligible(struct inode *inode)
-> +{
-> +	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
-> +	struct ext4_inode_info *ei = EXT4_I(inode);
-> +
-> +	write_lock(&ei->i_fc.fc_lock);
-> +	if (sbi->s_journal)
-> +		ei->i_fc.fc_tid = sbi->s_journal->j_commit_sequence + 1;
-
-Use get_running_txn_tid() instead?
-
-> +	ei->i_fc.fc_eligible = false;
-> +	write_unlock(&ei->i_fc.fc_lock);
-> +	spin_lock(&sbi->s_fc_lock);
-> +	sbi->s_fc_eligible = false;
-> +	spin_unlock(&sbi->s_fc_lock);
-> +}
-> +
-
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index f230a888eddd..6d2efbd9aba9 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -279,6 +280,8 @@ void ext4_evict_inode(struct inode *inode)
->  	if (ext4_inode_is_fast_symlink(inode))
->  		memset(EXT4_I(inode)->i_data, 0, sizeof(EXT4_I(inode)->i_data));
->  	inode->i_size = 0;
-> +	ext4_fc_del(inode);
-> +	ext4_fc_mark_ineligible(inode);
-
-Why is ext4_fc_mark_ineligible() needed here?
-
-> @@ -326,6 +330,8 @@ void ext4_evict_inode(struct inode *inode)
->  	 * having errors), but we can't free the inode if the mark_dirty
->  	 * fails.
->  	 */
-> +	ext4_fc_del(inode);
-> +	ext4_fc_mark_ineligible(inode);
-
-Same question here....
-
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 442f7ef873fc..a8e23acb5c03 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -987,6 +987,7 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  		err = mnt_want_write_file(filp);
->  		if (err)
->  			return err;
-> +		ext4_fc_mark_sb_ineligible(sb);
->  		err = swap_inode_boot_loader(sb, inode);
->  		mnt_drop_write_file(filp);
->  		return err;
-
-I don't think we need to mark the whole file system (transaction) as
-ineligible.  We just have to mark the two inodes being marked as
-ineligible, no?
-
-> @@ -997,6 +998,8 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->  		int err = 0, err2 = 0;
->  		ext4_group_t o_group = EXT4_SB(sb)->s_groups_count;
->  
-> +		ext4_fc_mark_sb_ineligible(sb);
-> +
->  		if (copy_from_user(&n_blocks_count, (__u64 __user *)arg,
->  				   sizeof(__u64))) {
->  			return -EFAULT;
-
-This is the resize ioctl, and this is the one place where we need to
-mark the whole transaction as fc ineligible, since some other
-subsequent handle might try to allocate blocks or inodes that were
-created as the result of EXT4_IOC_RESIZE_FS.
-
-But we shouldn't actually do it here; we should do it whenever we
-start a handle that tries to resize the file system, since it is
-*that* transaction that we need to make sure is made ineligible.
-Otherwise there can be races where we set the flag in sbi, but before
-we have a chance to start the handle which does (part of) the resize
-operation, it gets cleared because another transaction committed
-first.
-
-We similarly need to mark the transaction is ineligible for any
-handles created as the result of EXT4_IOC_GROUP_ADD and
-EXT4_IOC_GROUP_EXTEND.  (Which are the old/legacy resize ioctl.)
-
-> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-> index b1e4d359f73b..b995690d73ce 100644
-> --- a/fs/ext4/migrate.c
-> +++ b/fs/ext4/migrate.c
-> @@ -513,6 +513,7 @@ int ext4_ext_migrate(struct inode *inode)
->  		 * work to orphan_list_cleanup()
->  		 */
->  		ext4_orphan_del(NULL, tmp_inode);
-> +		ext4_fc_del(inode);
-
-This should be tmp_inode, not inode; and I don't think it's needed,
-since the tmp inode will never have been fast commit enqueued.
-
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 491f9ee4040e..19bc4046658c 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -1406,6 +1406,7 @@ static int ext4_xattr_inode_write(handle_t *handle, struct inode *ea_inode,
->  	inode_unlock(ea_inode);
->  
->  	ext4_mark_inode_dirty(handle, ea_inode);
-> +	ext4_fc_enqueue_inode(handle, ea_inode);
-
-If we modify an external xattr block, or if we need to create (or
-modify the ref count) on an EA inode, we need to disable fast commit
-on the inode whose xattrs we are manipulating.  Could you add that
-logic, please?
-
-We could add support for writing out the external xattr block to the
-fast commit log if it has been modified, but that's a fast commit
-change in its journal format.
-
-					- Ted
+ ext4-$(CONFIG_EXT4_FS_POSIX_ACL)	+= acl.o
+ ext4-$(CONFIG_EXT4_FS_SECURITY)		+= xattr_security.o
++ext4-$(CONFIG_EXT4_KUNIT_TESTS)		+= inode-test.o
+ ext4-$(CONFIG_FS_VERITY)		+= verity.o
+diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+new file mode 100644
+index 000000000000..1f2c486bc1c2
+--- /dev/null
++++ b/fs/ext4/inode-test.c
+@@ -0,0 +1,239 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test of ext4 inode that verify the seconds part of [a/c/m]
++ * timestamps in ext4 inode structs are decoded correctly.
++ */
++
++#include <kunit/test.h>
++#include <linux/kernel.h>
++#include <linux/time64.h>
++
++#include "ext4.h"
++
++/* binary: 00000000 00000000 00000000 00000000 */
++#define LOWER_MSB_0 0L
++/* binary: 01111111 11111111 11111111 11111111 */
++#define UPPER_MSB_0 0x7fffffffL
++/* binary: 10000000 00000000 00000000 00000000 */
++#define LOWER_MSB_1 (-0x80000000L)
++/* binary: 11111111 11111111 11111111 11111111 */
++#define UPPER_MSB_1 (-1L)
++/* binary: 00111111 11111111 11111111 11111111 */
++#define MAX_NANOSECONDS ((1L << 30) - 1)
++
++#define CASE_NAME_FORMAT "%s: msb:%x lower_bound:%x extra_bits: %x"
++
++struct timestamp_expectation {
++	const char *test_case_name;
++	struct timespec64 expected;
++	u32 extra_bits;
++	bool msb_set;
++	bool lower_bound;
++};
++
++static time64_t get_32bit_time(const struct timestamp_expectation * const test)
++{
++	if (test->msb_set) {
++		if (test->lower_bound)
++			return LOWER_MSB_1;
++
++		return UPPER_MSB_1;
++	}
++
++	if (test->lower_bound)
++		return LOWER_MSB_0;
++	return UPPER_MSB_0;
++}
++
++
++/*
++ * These tests are derived from the table under
++ * Documentation/filesystems/ext4/inodes.rst Inode Timestamps
++ */
++static void inode_test_xtimestamp_decoding(struct kunit *test)
++{
++	const struct timestamp_expectation test_data[] = {
++		{
++			.test_case_name =
++		"1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits",
++			.msb_set = true,
++			.lower_bound = true,
++			.extra_bits = 0,
++			.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++		"1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits",
++			.msb_set = true,
++			.lower_bound = false,
++			.extra_bits = 0,
++			.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++		"1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 0,
++			.expected = {0LL, 0L},
++		},
++
++		{
++			.test_case_name =
++		"2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 0,
++			.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++	"2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on",
++			.msb_set = true,
++			.lower_bound = true,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++	"2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on",
++			.msb_set = true,
++			.lower_bound = false,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++	  "2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++	  "2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++	  "2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on",
++			.msb_set = true,
++			.lower_bound = true,
++			.extra_bits =  2,
++			.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++	  "2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on",
++			.msb_set = true,
++			.lower_bound = false,
++			.extra_bits = 2,
++			.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++	"2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 2,
++			.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++	  "2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 2,
++			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++"2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns bit 1",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 6,
++			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
++		},
++
++		{
++			.test_case_name =
++"2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. ns bits 1",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 0xFFFFFFFF,
++			.expected = {.tv_sec = 0x300000000LL,
++				     .tv_nsec = MAX_NANOSECONDS},
++		},
++
++		{
++			.test_case_name =
++	 "2378-04-22 Lower bound of 32bit >= timestamp. All extra sec bits on",
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 3,
++			.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name =
++	"2446-05-10 Upper bound of 32bit >= timestamp. All extra sec bits on",
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 3,
++			.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
++		}
++	};
++
++	struct timespec64 timestamp;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
++		timestamp.tv_sec = get_32bit_time(&test_data[i]);
++		ext4_decode_extra_time(&timestamp,
++				       cpu_to_le32(test_data[i].extra_bits));
++
++		KUNIT_EXPECT_EQ_MSG(test,
++				    test_data[i].expected.tv_sec,
++				    timestamp.tv_sec,
++				    CASE_NAME_FORMAT,
++				    test_data[i].test_case_name,
++				    test_data[i].msb_set,
++				    test_data[i].lower_bound,
++				    test_data[i].extra_bits);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    test_data[i].expected.tv_nsec,
++				    timestamp.tv_nsec,
++				    CASE_NAME_FORMAT,
++				    test_data[i].test_case_name,
++				    test_data[i].msb_set,
++				    test_data[i].lower_bound,
++				    test_data[i].extra_bits);
++	}
++}
++
++static struct kunit_case ext4_inode_test_cases[] = {
++	KUNIT_CASE(inode_test_xtimestamp_decoding),
++	{}
++};
++
++static struct kunit_suite ext4_inode_test_suite = {
++	.name = "ext4_inode_test",
++	.test_cases = ext4_inode_test_cases,
++};
++
++kunit_test_suite(ext4_inode_test_suite);
+--
+2.23.0.866.gb869b98d4c-goog
