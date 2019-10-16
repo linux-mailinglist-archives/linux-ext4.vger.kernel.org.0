@@ -2,102 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC98D89E6
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 09:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4D7D8AFC
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2019 10:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387717AbfJPHhg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Oct 2019 03:37:36 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53414 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387517AbfJPHhg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 16 Oct 2019 03:37:36 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9G7b2tn005462
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Oct 2019 03:37:35 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2vnx2tt1w3-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Oct 2019 03:37:35 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Wed, 16 Oct 2019 08:37:33 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 16 Oct 2019 08:37:30 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9G7bTdw11403350
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Oct 2019 07:37:29 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 180B0AE058;
-        Wed, 16 Oct 2019 07:37:29 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 664DAAE045;
-        Wed, 16 Oct 2019 07:37:26 +0000 (GMT)
-Received: from dhcp-9-199-158-105.in.ibm.com (unknown [9.199.158.105])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Oct 2019 07:37:25 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org,
-        riteshh@linux.ibm.com
-Subject: [RFC 5/5] ext4: Enable blocksize < pagesize for dioread_nolock
-Date:   Wed, 16 Oct 2019 13:07:11 +0530
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191016073711.4141-1-riteshh@linux.ibm.com>
-References: <20191016073711.4141-1-riteshh@linux.ibm.com>
+        id S1730963AbfJPIbK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Oct 2019 04:31:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39882 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726092AbfJPIbK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 16 Oct 2019 04:31:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 99E11B600;
+        Wed, 16 Oct 2019 08:31:08 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4ED151E3BDE; Wed, 16 Oct 2019 10:31:08 +0200 (CEST)
+Date:   Wed, 16 Oct 2019 10:31:08 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        tytso@mit.edu, mbobrowski@mbobrowski.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC 1/2] ext4: Move ext4 bmap to use iomap infrastructure.
+Message-ID: <20191016083108.GA30337@quack2.suse.cz>
+References: <20190820130634.25954-1-riteshh@linux.ibm.com>
+ <20190820130634.25954-2-riteshh@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19101607-0020-0000-0000-000003797C3F
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19101607-0021-0000-0000-000021CF9E44
-Message-Id: <20191016073711.4141-6-riteshh@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-16_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=550 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1910160071
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190820130634.25954-2-riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-All support is now added for blocksize < pagesize for dioread_nolock.
-This patch removes those checks which disables dioread_nolock
-feature for blocksize != pagesize.
+On Tue 20-08-19 18:36:33, Ritesh Harjani wrote:
+> ext4_iomap_begin is already implemented which provides
+> ext4_map_blocks, so just move the API from
+> generic_block_bmap to iomap_bmap for iomap conversion.
+> 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- fs/ext4/super.c | 10 ----------
- 1 file changed, 10 deletions(-)
+This seems to have fallen through the cracks. The patch looks OK, feel free
+to add:
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dd654e53ba3d..7796e2ffc294 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2105,16 +2105,6 @@ static int parse_options(char *options, struct super_block *sb,
- 		}
- 	}
- #endif
--	if (test_opt(sb, DIOREAD_NOLOCK)) {
--		int blocksize =
--			BLOCK_SIZE << le32_to_cpu(sbi->s_es->s_log_block_size);
--
--		if (blocksize < PAGE_SIZE) {
--			ext4_msg(sb, KERN_ERR, "can't mount with "
--				 "dioread_nolock if block size != PAGE_SIZE");
--			return 0;
--		}
--	}
- 	return 1;
- }
- 
+Reviewed-by: Jan Kara <jack@suse.cz>
+	
+								Honza
+
+> ---
+>  fs/ext4/inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 420fe3deed39..d6a34214e9df 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3355,7 +3355,7 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
+>  			return 0;
+>  	}
+>  
+> -	return generic_block_bmap(mapping, block, ext4_get_block);
+> +	return iomap_bmap(mapping, block, &ext4_iomap_ops);
+>  }
+>  
+>  static int ext4_readpage(struct file *file, struct page *page)
+> -- 
+> 2.21.0
+> 
 -- 
-2.21.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
