@@ -2,418 +2,222 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28371DA297
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2019 02:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB56DA2B0
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2019 02:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387395AbfJQAKb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 16 Oct 2019 20:10:31 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:45697 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729213AbfJQAKb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Oct 2019 20:10:31 -0400
-Received: by mail-il1-f196.google.com with SMTP id u1so243251ilq.12
-        for <linux-ext4@vger.kernel.org>; Wed, 16 Oct 2019 17:10:30 -0700 (PDT)
+        id S2391572AbfJQA1x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 16 Oct 2019 20:27:53 -0400
+Received: from mail-pl1-f169.google.com ([209.85.214.169]:43697 "EHLO
+        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391330AbfJQA1x (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 16 Oct 2019 20:27:53 -0400
+Received: by mail-pl1-f169.google.com with SMTP id f21so218407plj.10
+        for <linux-ext4@vger.kernel.org>; Wed, 16 Oct 2019 17:27:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=if3Znejo9rQAoId7/S4UP3LDpeW2iiN7Zw1qG6w8YHk=;
-        b=HyMxLXJTfRAgva8+etBTxYoULQ2WCOP1LQzHcCV6OvngSuCEw4961lAl3dJXiBxWzK
-         43RPXUFsTZU24ZOJM+QpPqlOlvrfbxMx1AeMHbauVpz22K78ztsCAVLV+C8Gk8IK/K2p
-         ahMYN0dFckK7xfv2mptket+BBZqvMFkgeu3l4=
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=BqoeGV2D1N7EryAXqg8r4RvbJr4RaowdrbuQXkBcA0c=;
+        b=M6NjSc0VpcusbErvX94N5vFyHJIe9z955Et8/7WwUJ96pQXgrxNSG5xLGCYcUgg0Xx
+         jCk3TsE6cnwALZbb/Mz+TUB5ip8STKhWFVei+6dLhNOQYCg5RQ/t3IFLqmUn+REOVc2t
+         nQClbNSwryIW518xgt/H7RdlkIU11gnFxElxVingbEk8SmsxL9r1lr70XwlQ/S06gNFa
+         tcWMWIZHBGeZmefP6gcoBmIG1v9zyY6VTFRy09EZRw7ZG2nW5wYjR/mleg0CHQK8/nfZ
+         8UvTdv2SpqPrIN96SvcFDHowmiZ0c65vuloW06zg0x9711/sqy+i1VOZHMEjQjLB+MWM
+         Ezag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=if3Znejo9rQAoId7/S4UP3LDpeW2iiN7Zw1qG6w8YHk=;
-        b=KUqzsfnszStEs/l8BBMwGFct5Eaf39iEkhrGPC7w7GEzqDZYncLOWjGjtkChNKVg9i
-         ow0MwqWMYh9vYlof6MrEXWHoN9m2nmrlLcRB9gpAAnHyvREyLf5Kwvbo1Va0tCVE903N
-         lGRXS/mKyVeKx2Aoi8ZS1kVPw8pXT2lJoIiU3WcWtqeMxxVD/J3wvXf3TlFij4O7k3TJ
-         eeGpa0FQR0s8423EfEuzgiIqQj0VHHvTXgALMTn4GWK0n/+dthJG8/nU3zw4sYMeUmeR
-         rLAY0Vp4Q2Nk5rSWjgmDGyRIM9n0V+PRg2WL3dJnlArcibmKQhkOvk2LQBt3yyQN/zEH
-         v+tA==
-X-Gm-Message-State: APjAAAVEaoF3sxZkRxZKY12436+xAe4/BPCWbRc0LzV0kJLtC+gljFT4
-        bIVnn+UNuSLLT1+nplFfXhUFXw==
-X-Google-Smtp-Source: APXvYqx3Rfp+R+zFX0ooH9wisWr/r1bLRayTfXwjfYMoUAxeI6liwppV18C3nDquZGzPwJguuics3Q==
-X-Received: by 2002:a92:a308:: with SMTP id a8mr630494ili.65.1571271029789;
-        Wed, 16 Oct 2019 17:10:29 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id t16sm138715iol.12.2019.10.16.17.10.28
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=BqoeGV2D1N7EryAXqg8r4RvbJr4RaowdrbuQXkBcA0c=;
+        b=ipMDz07DH5opFBDYSbOR3jCF2RS+fNg3djVugh4BQI0ivG3GL8tSzb8Wkkcq9VBNys
+         dCixYmmsQRr4yEFYTUBHYL7TeAywC5odavx/XzMdJM4tZoSIM6foqMSO/ZL9gkEZXlq3
+         N+N96t2lW39ry8Ok75hD+R6u1bpsbZxM6A/PeDU/ElPkNM/0V7sM6cxT9/m9OkFqoex7
+         w/4WWoPjS2ASqsOCrfmGIRihykGqgQ6iBHukf5OZgmSVQxWvHO3SchrEyeThATKQ2df7
+         egCHcOviNeiPSHx+HEx5OCceKxQZeTf1uf0bNRHxMKNxqgsdaqoHny0KLHBKTfTQofXk
+         Pcag==
+X-Gm-Message-State: APjAAAXNSyVmkzarHMJeVeJlk+Ryep2ExDxq6WOH64NejcpKljVgr03I
+        fXWGrWYJun3IvpRgPHJWrrv49Q==
+X-Google-Smtp-Source: APXvYqyVnqS8R6kiBVd1UhikRP3tFAnUu4QxHZ3R3dlXfqcDb3texdH1vZ4yq+LewHWu51lMsjddyg==
+X-Received: by 2002:a17:902:700b:: with SMTP id y11mr1067105plk.29.1571272071882;
+        Wed, 16 Oct 2019 17:27:51 -0700 (PDT)
+Received: from [172.16.182.166] (pb6abe849.tokyff01.ap.so-net.ne.jp. [182.171.232.73])
+        by smtp.gmail.com with ESMTPSA id s5sm285321pjn.24.2019.10.16.17.27.49
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 16 Oct 2019 17:10:29 -0700 (PDT)
-Subject: Re: [PATCH linux-kselftest/test v5] ext4: add kunit test for decoding
- extended timestamps
-To:     Iurii Zaikin <yzaikin@google.com>, linux-kselftest@vger.kernel.org,
-        linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, Tim.Bird@sony.com
-Cc:     kunit-dev@googlegroups.com, brendanhiggins@google.com,
-        "skh >> Shuah Khan" <skhan@linuxfoundation.org>
-References: <20191016212935.215310-1-yzaikin@google.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f87c91bd-5ebb-d259-ff80-385e2db342b1@linuxfoundation.org>
-Date:   Wed, 16 Oct 2019 18:10:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20191016212935.215310-1-yzaikin@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 16 Oct 2019 17:27:50 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <648712FB-0ECE-41F4-B6B8-98BD3168B2A4@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_13619D83-4B15-42F9-B9D2-2D87D8B7FD21";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [Project Quota]file owner could change its project ID?
+Date:   Wed, 16 Oct 2019 18:28:08 -0600
+In-Reply-To: <20191016213700.GH13108@magnolia>
+Cc:     Wang Shilong <wangshilong1991@gmail.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Li Xi <lixi@ddn.com>, Wang Shilong <wshilong@ddn.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+References: <CAP9B-QmQ-mbWgJwEWrVOMabsgnPwyJsxSQbMkWuFk81-M4dRPQ@mail.gmail.com>
+ <20191013164124.GR13108@magnolia>
+ <CAP9B-Q=SfhnA6iO7h1TWAoSOfZ+BvT7d8=OE4176FZ3GXiU-xw@mail.gmail.com>
+ <20191016213700.GH13108@magnolia>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Lurii,
 
-On 10/16/19 3:29 PM, Iurii Zaikin wrote:
-> KUnit tests for decoding extended 64 bit timestamps
-> that verify the seconds part of [a/c/m]
-> timestamps in ext4 inode structs are decoded correctly.
+--Apple-Mail=_13619D83-4B15-42F9-B9D2-2D87D8B7FD21
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Add a blank line here. Also can you make these close 75 char long.
-It will be easier to read the commit log.
+On Oct 16, 2019, at 3:37 PM, Darrick J. Wong <darrick.wong@oracle.com> =
+wrote:
+>=20
+> On Wed, Oct 16, 2019 at 07:51:15PM +0800, Wang Shilong wrote:
+>> On Mon, Oct 14, 2019 at 12:41 AM Darrick J. Wong
+>> <darrick.wong@oracle.com> wrote:
+>>>=20
+>>> On Sat, Oct 12, 2019 at 02:33:36PM +0800, Wang Shilong wrote:
+>>>> Steps to reproduce:
+>>>> [wangsl@localhost tmp]$ mkdir project
+>>>> [wangsl@localhost tmp]$ lsattr -p project -d
+>>>>    0 ------------------ project
+>>>> [wangsl@localhost tmp]$ chattr -p 1 project
+>>>> [wangsl@localhost tmp]$ lsattr -p -d project
+>>>>    1 ------------------ project
+>>>> [wangsl@localhost tmp]$ chattr -p 2 project
+>>>> [wangsl@localhost tmp]$ lsattr -p -d project
+>>>>    2 ------------------ project
+>>>> [wangsl@localhost tmp]$ df -Th .
+>>>> Filesystem     Type  Size  Used Avail Use% Mounted on
+>>>> /dev/sda3      xfs    36G  4.1G   32G  12% /
+>>>> [wangsl@localhost tmp]$ uname -r
+>>>> 5.4.0-rc2+
+>>>>=20
+>>>> As above you could see file owner could change project ID of file =
+its self.
+>>>> As my understanding, we could set project ID and inherit attribute =
+to account
+>>>> Directory usage, and implement a similar 'Directory Quota' based on =
+this.
+>>>=20
+>>> So the problem here is that the admin sets up a project quota on a
+>>> directory, then non-container users change the project id and =
+thereby
+>>> break quota enforcement?  Dave didn't sound at all enthusiastic, but =
+I'm
+>>> still wondering what exactly you're trying to prevent.
+>>=20
+>> Yup, we are trying to prevent no-root users to change their project =
+ID.
+>> As we want to implement 'Directory Quota':
+>>=20
+>> If non-root users could change their project ID, they could always =
+try
+>> to change its project ID to steal space when EDQUOT returns.
+>>=20
+>> Yup, if mount option could be introduced to make this case work,
+>> that will be nice.
+>=20
+> Well then we had better discuss and write down the exact behaviors of
+> this new directory quota feature and how it differs from ye olde =
+project
+> quota.  Here's the existing definition of project quotas in the
+> xfs_quota manpage:
+>=20
+>       10.    XFS  supports  the notion of project quota, which can be
+>              used to implement a form of directory tree  quota  (i.e.
+>              to  restrict  a directory tree to only being able to use
+>              up a component of the filesystems  available  space;  or
+>              simply  to  keep  track  of the amount of space used, or
+>              number of inodes, within the tree).
+>=20
+> First, we probably ought to add the following to that definition to
+> reflect a few pieces of current reality:
+>=20
+> "Processes running inside runtime environments using mapped user or
+> group ids, such as container runtimes, are not allowed to change the
+> project id and project id inheritance flag of inodes."
+>=20
+> What do you all think of this starting definition for directory =
+quotas:
+>=20
+>       11.    XFS supports the similar notion of directory quota.  The
+> 	      key difference between project and directory quotas is the
+> 	      additional restriction that only a system administrator
+> 	      running outside of a mapped user or group id runtime
+> 	      environment (such as a container runtime) can change the
+> 	      project id and project id inheritenace flag.  This means
+> 	      that unprivileged users are never allowed to manage their
+>              own directory quotas.
+>=20
+> We'd probably enable this with a new 'dirquota' mount option that is
+> mutually exclusive with the old 'prjquota' option.
 
+I don't think that this is really "directory quotas" in the end, since =
+it
+isn't changing the semantics that the same projid could exist in =
+multiple
+directory trees.  The real difference is the ability to enforce existing
+project quota limits for regular users outside of a container.  =
+Basically,
+it is the same as regular users not being able to change the UID of =
+their
+files to dump quota to some other user.
 
-> KUnit tests, which run on boot and output
+So rather than rename this "dirquota", it would be better to have a
+an option like "projid_enforce" or "projid_restrict", or maybe some
+more flexibility to allow only users in specific groups to change the
+projid like "projid_admin=3D<gid>" so that e.g. "staff" or "admin" =
+groups
+can still change it (in addition to root) but not regular users.  To
+restrict it to root only, leave "projid_admin=3D0" and the default (to
+keep the same "everyone can change projid" behavior) would be -1?
 
-  run during boot?
+Cheers, Andreas
 
-> the results to the debug log in TAP format (http://testanything.org/).
-
-Break this sentence here.
-
-> are only useful for kernel devs running KUnit test harness. Not for
-> inclusion into a production build.
-
-I like the way you state clearly that these aren't for production
-build. Thanks for this detail.
-
-> Test data is derived from the table under
-> Documentation/filesystems/ext4/inodes.rst Inode Timestamps.
-
-Reads a bit funny. Please rephrase.
-
-
-Test data is derived from the Inode Timestamps table under
-Documentation/filesystems/ext4/inodes.rst
-
-> 
-> Signed-off-by: Iurii Zaikin <yzaikin@google.com>
-> Reviewed-by: Theodore Ts'o <tytso@mit.edu>
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> Tested-by: Brendan Higgins <brendanhiggins@google.com>
-> ---
->   fs/ext4/Kconfig      |  14 +++
->   fs/ext4/Makefile     |   1 +
->   fs/ext4/inode-test.c | 239 +++++++++++++++++++++++++++++++++++++++++++
->   3 files changed, 254 insertions(+)
->   create mode 100644 fs/ext4/inode-test.c
-> 
-> diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-> index cbb5ca830e57..f13dde8ed92b 100644
-> --- a/fs/ext4/Kconfig
-> +++ b/fs/ext4/Kconfig
-> @@ -106,3 +106,17 @@ config EXT4_DEBUG
->   	  If you select Y here, then you will be able to turn on debugging
->   	  with a command such as:
->   		echo 1 > /sys/module/ext4/parameters/mballoc_debug
-> +
-> +config EXT4_KUNIT_TESTS
-> +	bool "KUnit tests for ext4"
-> +	select EXT4_FS
-> +	depends on KUNIT
-> +	help
-> +	  This builds the ext4 KUnit tests, which run on boot and output
-> +	  the results to the debug log in TAP format (http://testanything.org/).
-> +	  Only useful for kernel devs running KUnit test harness. Not for
-> +	  inclusion into a production build.
-
-Please apply the same changes you made to commit log here.
-
-> +	  For more information on KUnit and unit tests in general please refer
-> +	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-> +
-> +	  If unsure, say N.
-> diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
-> index b17ddc229ac5..840b91d040f1 100644
-> --- a/fs/ext4/Makefile
-> +++ b/fs/ext4/Makefile
-> @@ -13,4 +13,5 @@ ext4-y	:= balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
-> 
->   ext4-$(CONFIG_EXT4_FS_POSIX_ACL)	+= acl.o
->   ext4-$(CONFIG_EXT4_FS_SECURITY)		+= xattr_security.o
-> +ext4-$(CONFIG_EXT4_KUNIT_TESTS)		+= inode-test.o
->   ext4-$(CONFIG_FS_VERITY)		+= verity.o
-> diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
-> new file mode 100644
-> index 000000000000..1f2c486bc1c2
-> --- /dev/null
-> +++ b/fs/ext4/inode-test.c
-> @@ -0,0 +1,239 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KUnit test of ext4 inode that verify the seconds part of [a/c/m]
-> + * timestamps in ext4 inode structs are decoded correctly.
-> + */
-> +
-> +#include <kunit/test.h>
-> +#include <linux/kernel.h>
-> +#include <linux/time64.h>
-> +
-> +#include "ext4.h"
-> +
-
-Please add a comment to say what these defines are for.
-
-> +/* binary: 00000000 00000000 00000000 00000000 */
-> +#define LOWER_MSB_0 0L
-> +/* binary: 01111111 11111111 11111111 11111111 */
-> +#define UPPER_MSB_0 0x7fffffffL
-> +/* binary: 10000000 00000000 00000000 00000000 */
-> +#define LOWER_MSB_1 (-0x80000000L)
-> +/* binary: 11111111 11111111 11111111 11111111 */
-> +#define UPPER_MSB_1 (-1L)
-> +/* binary: 00111111 11111111 11111111 11111111 */
-> +#define MAX_NANOSECONDS ((1L << 30) - 1)
-> +
-> +#define CASE_NAME_FORMAT "%s: msb:%x lower_bound:%x extra_bits: %x"
-> +
-> +struct timestamp_expectation {
-> +	const char *test_case_name;
-> +	struct timespec64 expected;
-> +	u32 extra_bits;
-> +	bool msb_set;
-> +	bool lower_bound;
-> +};
-> +
-> +static time64_t get_32bit_time(const struct timestamp_expectation * const test)
-> +{
-> +	if (test->msb_set) {
-> +		if (test->lower_bound)
-> +			return LOWER_MSB_1;
-> +
-> +		return UPPER_MSB_1;
-> +	}
-> +
-> +	if (test->lower_bound)
-> +		return LOWER_MSB_0;
-> +	return UPPER_MSB_0;
-> +}
-> +
-> +
-> +/*
-> + * These tests are derived from the table under
-> + * Documentation/filesystems/ext4/inodes.rst Inode Timestamps
-
-Rephrase this please. Reads a bit funny.
-
-> + */
-> +static void inode_test_xtimestamp_decoding(struct kunit *test)
-> +{
-> +	const struct timestamp_expectation test_data[] = {
-> +		{
-> +			.test_case_name =
-> +		"1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits",
-
-Please make these defines and use name here. Makes it easier to read
-and you can also avoid this weird lining up with {
+>>> (Which is to say, maybe we introduce a mount option to prevent =
+changing
+>>> projid if project quota *enforcement* is enabled?)
+>>>=20
+>>> --D
 
 
-> +			.msb_set = true,
-> +			.lower_bound = true,
-> +			.extra_bits = 0,
-> +			.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +		"1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits",
+Cheers, Andreas
 
-Same here.
 
-> +			.msb_set = true,
-> +			.lower_bound = false,
-> +			.extra_bits = 0,
-> +			.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +		"1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits",
 
-Same here.
 
-> +			.msb_set = false,
-> +			.lower_bound = true,
-> +			.extra_bits = 0,
-> +			.expected = {0LL, 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +		"2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits",
 
-Same here and all the strings below.
 
-> +			.msb_set = false,
-> +			.lower_bound = false,
-> +			.extra_bits = 0,
-> +			.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	"2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on",
-> +			.msb_set = true,
-> +			.lower_bound = true,
-> +			.extra_bits = 1,
-> +			.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	"2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on",
-> +			.msb_set = true,
-> +			.lower_bound = false,
-> +			.extra_bits = 1,
-> +			.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	  "2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on",
-> +			.msb_set = false,
-> +			.lower_bound = true,
-> +			.extra_bits = 1,
-> +			.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	  "2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on",
-> +			.msb_set = false,
-> +			.lower_bound = false,
-> +			.extra_bits = 1,
-> +			.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	  "2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on",
-> +			.msb_set = true,
-> +			.lower_bound = true,
-> +			.extra_bits =  2,
-> +			.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	  "2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on",
-> +			.msb_set = true,
-> +			.lower_bound = false,
-> +			.extra_bits = 2,
-> +			.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	"2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on",
-> +			.msb_set = false,
-> +			.lower_bound = true,
-> +			.extra_bits = 2,
-> +			.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	  "2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on",
-> +			.msb_set = false,
-> +			.lower_bound = false,
-> +			.extra_bits = 2,
-> +			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +"2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns bit 1",
-> +			.msb_set = false,
-> +			.lower_bound = false,
-> +			.extra_bits = 6,
-> +			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +"2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. ns bits 1",
-> +			.msb_set = false,
-> +			.lower_bound = true,
-> +			.extra_bits = 0xFFFFFFFF,
-> +			.expected = {.tv_sec = 0x300000000LL,
-> +				     .tv_nsec = MAX_NANOSECONDS},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	 "2378-04-22 Lower bound of 32bit >= timestamp. All extra sec bits on",
-> +			.msb_set = false,
-> +			.lower_bound = true,
-> +			.extra_bits = 3,
-> +			.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
-> +		},
-> +
-> +		{
-> +			.test_case_name =
-> +	"2446-05-10 Upper bound of 32bit >= timestamp. All extra sec bits on",
-> +			.msb_set = false,
-> +			.lower_bound = false,
-> +			.extra_bits = 3,
-> +			.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
-> +		}
-> +	};
-> +
-> +	struct timespec64 timestamp;
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
-> +		timestamp.tv_sec = get_32bit_time(&test_data[i]);
-> +		ext4_decode_extra_time(&timestamp,
-> +				       cpu_to_le32(test_data[i].extra_bits));
-> +
-> +		KUNIT_EXPECT_EQ_MSG(test,
-> +				    test_data[i].expected.tv_sec,
-> +				    timestamp.tv_sec,
-> +				    CASE_NAME_FORMAT,
-> +				    test_data[i].test_case_name,
-> +				    test_data[i].msb_set,
-> +				    test_data[i].lower_bound,
-> +				    test_data[i].extra_bits);
-> +		KUNIT_EXPECT_EQ_MSG(test,
-> +				    test_data[i].expected.tv_nsec,
-> +				    timestamp.tv_nsec,
-> +				    CASE_NAME_FORMAT,
-> +				    test_data[i].test_case_name,
-> +				    test_data[i].msb_set,
-> +				    test_data[i].lower_bound,
-> +				    test_data[i].extra_bits);
-> +	}
-> +}
-> +
-> +static struct kunit_case ext4_inode_test_cases[] = {
-> +	KUNIT_CASE(inode_test_xtimestamp_decoding),
-> +	{}
-> +};
-> +
-> +static struct kunit_suite ext4_inode_test_suite = {
-> +	.name = "ext4_inode_test",
-> +	.test_cases = ext4_inode_test_cases,
-> +};
-> +
-> +kunit_test_suite(ext4_inode_test_suite);
-> --
-> 2.23.0.866.gb869b98d4c-goog
-> 
+--Apple-Mail=_13619D83-4B15-42F9-B9D2-2D87D8B7FD21
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
-thanks,
--- Shuah
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl2ntZgACgkQcqXauRfM
+H+D+3g/9Hibb7xuUxOK+zGcIr8/YlprNOfZRj23nSnWyOGXKxLTSiyNIIaEFSVbP
+xSVQyb79LcKJ8MxkAcLgo9eVY8zCXpOcZE+MxTsrcYO1WA5H0u7H+9cmXbip7gkq
++Ldkt/iz3/9CWljcljjgxL2OyMnarPnvky0VfjGWQ320t45Na4Z2LLqneebUPJEW
+Vw46ndio/CxbdAVizU78TexD63hAIruWbQ210ZUxeFD2fGW2Ksv1KYu10AIQjtmQ
+OvpIbovuBSaO9xQnNpx8BmodrOC4ubk68b4dcntBp9ZgM8h0Xjh/uPmCXo6HkJg1
+y1XYiOOdBefHxQmpbGb/YnLmMw65xKYAnpz4sr14bGnWDDJy88hzNkn7OhaH7ij3
+qbQN17APTY10loDkdJ4XTthpaKqgK0NfjBuwnm5FYrmHMGoT/DpJU8Sxwt3Lxcgi
+kcRKshgs9SgW8gVjv9IVFqhN/08ZpA9/3uRXMZqwpE7Bq5CaymNgJ4MrDOrCyrMz
+PmYeQwFWECzFN87hFNrzBTzEi/tilsHmG1D763a+RZVU7cyI8J0JcsHPl50pSp9F
+2oRASO/yGinj8sjSqykV686ZQjif4UqmzWVqsbYDost1KvJdEzGKaja/rClotVzO
+BIO61AFChHHD2AZcX9ul8I8PmSJd9cPMOPZ8aZDfiCcqbwhSuyI=
+=lB9i
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_13619D83-4B15-42F9-B9D2-2D87D8B7FD21--
