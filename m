@@ -2,69 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 039E5DABB9
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2019 14:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F2FDABC7
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2019 14:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392282AbfJQMIm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Oct 2019 08:08:42 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54683 "EHLO
+        id S2393290AbfJQMNC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Oct 2019 08:13:02 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55323 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731634AbfJQMIm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Oct 2019 08:08:42 -0400
+        with ESMTP id S1731634AbfJQMNC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Oct 2019 08:13:02 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9HC8Yro023150
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9HCCqag024199
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Oct 2019 08:08:34 -0400
+        Thu, 17 Oct 2019 08:12:53 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id B7A5E420458; Thu, 17 Oct 2019 08:08:33 -0400 (EDT)
-Date:   Thu, 17 Oct 2019 08:08:33 -0400
+        id 13A9E420458; Thu, 17 Oct 2019 08:12:52 -0400 (EDT)
+Date:   Thu, 17 Oct 2019 08:12:52 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-ext4@vger.kernel.org,
-        adilger.kernel@dilger.ca,
-        KUnit Development <kunit-dev@googlegroups.com>
-Subject: Re: [PATCH linux-kselftest/test v2] ext4: add kunit test for
- decoding extended timestamps
-Message-ID: <20191017120833.GA25548@mit.edu>
-References: <20191010023931.230475-1-yzaikin@google.com>
- <2f2ea7b0-f683-1cdd-f3f2-ecdf44cb4a97@linuxfoundation.org>
- <CAAXuY3qtSHENgy3S168_03ju_JwAucOAt5WEJGQ+pi5PfurP6g@mail.gmail.com>
- <CAFd5g46RcFV0FACuoF=jCSLzf7UFmEYn4gddaijUZ+zR_CFZBQ@mail.gmail.com>
- <20191011131902.GC16225@mit.edu>
- <CAFd5g45s1-=Z4JwJn4A1VDGu4oEGBisQ_0RFp4otUU3rKf1XpQ@mail.gmail.com>
- <1e6611e6-2fa6-6f7d-bc7f-0bc2243d9342@linuxfoundation.org>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Wang Shilong <wangshilong1991@gmail.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Li Xi <lixi@ddn.com>, Wang Shilong <wshilong@ddn.com>
+Subject: Re: [Project Quota]file owner could change its project ID?
+Message-ID: <20191017121251.GB25548@mit.edu>
+References: <CAP9B-QmQ-mbWgJwEWrVOMabsgnPwyJsxSQbMkWuFk81-M4dRPQ@mail.gmail.com>
+ <20191013164124.GR13108@magnolia>
+ <CAP9B-Q=SfhnA6iO7h1TWAoSOfZ+BvT7d8=OE4176FZ3GXiU-xw@mail.gmail.com>
+ <20191016213700.GH13108@magnolia>
+ <648712FB-0ECE-41F4-B6B8-98BD3168B2A4@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1e6611e6-2fa6-6f7d-bc7f-0bc2243d9342@linuxfoundation.org>
+In-Reply-To: <648712FB-0ECE-41F4-B6B8-98BD3168B2A4@dilger.ca>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 05:26:29PM -0600, Shuah Khan wrote:
+On Wed, Oct 16, 2019 at 06:28:08PM -0600, Andreas Dilger wrote:
+> I don't think that this is really "directory quotas" in the end, since it
+> isn't changing the semantics that the same projid could exist in multiple
+> directory trees.  The real difference is the ability to enforce existing
+> project quota limits for regular users outside of a container.  Basically,
+> it is the same as regular users not being able to change the UID of their
+> files to dump quota to some other user.
 > 
-> I don't really buy the argument that unit tests should be deterministic
-> Possibly, but I would opt for having the ability to feed test data.
+> So rather than rename this "dirquota", it would be better to have a
+> an option like "projid_enforce" or "projid_restrict", or maybe some
+> more flexibility to allow only users in specific groups to change the
+> projid like "projid_admin=<gid>" so that e.g. "staff" or "admin" groups
+> can still change it (in addition to root) but not regular users.  To
+> restrict it to root only, leave "projid_admin=0" and the default (to
+> keep the same "everyone can change projid" behavior) would be -1?
 
-I strongly believe that unit tests should be deterministic.
-Non-deterministic tests are essentially fuzz tests.  And fuzz tests
-should be different from unit tests.
+I'm not sure how common the need for restsrictive quota enforcement is
+really going to be.  Can someone convince me this is actually going to
+be a common use case?
 
-We want unit tests to run quickly.  Fuzz tests need to be run for a
-large number of passes (perhaps hours) in order to be sure that we've
-hit any possible bad cases.  We want to be able to easily bisect fuzz
-tests --- preferably, automatically.  And any kind of flakey test is
-hell to bisect.
+We could also solve the problem by adding an LSM hook called when
+there is an attempt to set the project ID, and for people who really
+want this, they can create a stackable LSM which enforces whatever
+behavior they want.
 
-It's bad enough when a test is flakey because of the underlying code.
-But when a test is flakey because the test inputs are
-non-deterministic, it's even worse.
+If we think this going to be an speciality request, this might be the
+better way to go.
 
 						- Ted
