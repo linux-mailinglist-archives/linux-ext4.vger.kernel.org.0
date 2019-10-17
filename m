@@ -2,70 +2,395 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EFCDB127
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2019 17:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771B1DB98C
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2019 00:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390908AbfJQPcV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 17 Oct 2019 11:32:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50032 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388925AbfJQPcV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 17 Oct 2019 11:32:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BF847B56C;
-        Thu, 17 Oct 2019 15:32:17 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 34CEE1E485F; Thu, 17 Oct 2019 17:32:17 +0200 (CEST)
-Date:   Thu, 17 Oct 2019 17:32:17 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Daegyu Han <hdg9400@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: Why doesn't disk io occur to read file system metadata despite
- clearing dentry and inode with drop_cache command?
-Message-ID: <20191017153217.GB27576@quack2.suse.cz>
-References: <CAARcW+qa7aRbh+BeFWTndGLC8owsy9VPUqcJ-BYN-Yw3jQM-_w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAARcW+qa7aRbh+BeFWTndGLC8owsy9VPUqcJ-BYN-Yw3jQM-_w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2441596AbfJQWMj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 17 Oct 2019 18:12:39 -0400
+Received: from mail-qt1-f201.google.com ([209.85.160.201]:42091 "EHLO
+        mail-qt1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbfJQWMj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 17 Oct 2019 18:12:39 -0400
+Received: by mail-qt1-f201.google.com with SMTP id t25so3808055qtq.9
+        for <linux-ext4@vger.kernel.org>; Thu, 17 Oct 2019 15:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=L+dU0G5f51fk+R1KokO5//3nTTbHElWO3XDD84WR/JE=;
+        b=slLu6cXPRC3Cd/4ApuNlizqgLvqpM45Hvx/mD38QHphN06LrSitJ6GoHcjIna8f5vH
+         Ml18viYLkDWfWGTIBSo4YIvRT6VDIrMLU/bMAWfx3ZPxTXIA8cTxwSPREMEgdwD90AD1
+         XjvfgClhrjGFoAGjFkbNhVPCZ/Ju9QRYYzWLDMf5Jwy2I1ETI4Q4ynMSBby8HZUCM2QQ
+         mfOGZukci4aG+Zvbh+m1nurk30q/Zf4k7XZgEjQsiwC2e95QmnKzl+eN3Q4jUfjvMNb6
+         XGqUOPKSz3x75IT2aEZcl1vr+9jUjU/I0aYCnP5RObvwO8PWn/suZlYRQobkPA1bqTTd
+         nOkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=L+dU0G5f51fk+R1KokO5//3nTTbHElWO3XDD84WR/JE=;
+        b=jf0v120t24iYJCdpEijC3qCbi2JEYhhVJRw0lZ4MpVsu3cvuPa7Adld7uOwxA/41H4
+         hoYZPGwOYsYedguO3Ef+IJ3SDYPbrlK6Xh65ANTDM6ks2VlQT/si30CuNk6xITe2bRal
+         /jVtVZOaq/5U+TSOp+1dP2IW0E7NinVX/MOkprAcnGY+S3EZF+GJxvQxkhD8y5TeUIlP
+         BEgIfJCW2jtjpidoZBi3j+Ds4+6OVMZhDztCJ49UkM1ToAaZ0g+W1I1J/l3U7tKv4Cl7
+         EZI4tyAsSgt4hI/BbQIrgH1FPEvibiNm6ag8FkOKuV7868Rar4X+GqVimFWS7G1VawmF
+         XmPA==
+X-Gm-Message-State: APjAAAXPLlHxsHZh3UezLoK79uHW8gQmP6gMMbXZdo22//XBYB/ng/UX
+        3IwoXeXFHk4gav/CBIARU0SM5yLElvI=
+X-Google-Smtp-Source: APXvYqx+9QJ/v4ggwrVbLqHjPPMo7/crlVEISoXODtdqSRG9lrIE0sGJECzTXU3n3U5uaxs782cr9TQuZd1a
+X-Received: by 2002:a0c:e84f:: with SMTP id l15mr4709263qvo.200.1571350357854;
+ Thu, 17 Oct 2019 15:12:37 -0700 (PDT)
+Date:   Thu, 17 Oct 2019 15:12:33 -0700
+Message-Id: <20191017221233.154848-1-yzaikin@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.866.gb869b98d4c-goog
+Subject: [PATCH linux-kselftest/test v6] ext4: add kunit test for decoding
+ extended timestamps
+From:   Iurii Zaikin <yzaikin@google.com>
+To:     linux-kselftest@vger.kernel.org, linux-ext4@vger.kernel.org,
+        skhan@linuxfoundation.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        Tim.Bird@sony.com
+Cc:     kunit-dev@googlegroups.com, brendanhiggins@google.com,
+        Iurii Zaikin <yzaikin@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+KUnit tests for decoding extended 64 bit timestamps that verify the
+seconds part of [a/c/m] timestamps in ext4 inode structs are decoded
+correctly.
 
-On Wed 11-09-19 15:27:07, Daegyu Han wrote:
-> I am confused about "echo # >/proc/sys/vm/drop_caches" and blockdev
-> --flushbufs.  According to OSStep book written by Remzi,If the target
-> inodes are not cached in memory, disk IO should be occur to readthe
-> inode, which will make a dentry data structure on memory.  To my
-> knowledge, echo 3 >/proc/sys/vm/drop_caches is to drop(clear) page
-> cahche, inodes and dentry. I have experimented with blktrace to figure
-> out whether disk io is really occurring to read the inode.
-> 
-> 1. echo 3 > /proc/sys/vm/drop_caches
-> However, there is no disk io to read inode. I can only see the disk io
-> to read 16KB data block.
-> 2. echo 3 > /proc/sys/vm/drop_caches` and `blockdev --flushbufs
-> /dev/nvme0n1I found block access (+8(512*8=4KB)) to read inode.
-> 
-> A quick look at how blockdev --flushbufs works in the kernel code shows
-> that it clears the superblock.  Why doesn't disk io occur to read inodes
-> with drop_cache alone?  The kernel book called ULK says that inodes and
-> superblocks are cached in buffer-cache.Is this the reason for this?  I
-> infer as follows:Is the buffer_head data structure not flushed to disk by
-> drop_cache alone because the storage device is still mapped in memory?
+Test data is derived from the table in the Inode Timestamps section of
+Documentation/filesystems/ext4/inodes.rst.
 
-Yes, I guess that's what happened. Note that drop_caches drop only clean
-and unreferenced inodes, dentries & page cache. So if the inode is dirty
-(e.g. due to atime update pending), drop caches won't free it. Another
-effect may be that something (e.g. the jbd2 journal) holds onto the buffer
-caching the inode table block with the inode.
+KUnit tests run during boot and output the results to the debug log
+in TAP format (http://testanything.org/). Only useful for kernel devs
+running KUnit test harness and are not for inclusion into a production
+build.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Signed-off-by: Iurii Zaikin <yzaikin@google.com>
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ fs/ext4/Kconfig      |  17 +++
+ fs/ext4/Makefile     |   1 +
+ fs/ext4/inode-test.c | 272 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 290 insertions(+)
+ create mode 100644 fs/ext4/inode-test.c
+
+diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+index cbb5ca830e57..ef42ab040905 100644
+--- a/fs/ext4/Kconfig
++++ b/fs/ext4/Kconfig
+@@ -106,3 +106,20 @@ config EXT4_DEBUG
+ 	  If you select Y here, then you will be able to turn on debugging
+ 	  with a command such as:
+ 		echo 1 > /sys/module/ext4/parameters/mballoc_debug
++
++config EXT4_KUNIT_TESTS
++	bool "KUnit tests for ext4"
++	select EXT4_FS
++	depends on KUNIT
++	help
++	  This builds the ext4 KUnit tests.
++
++	  KUnit tests run during boot and output the results to the debug log
++	  in TAP format (http://testanything.org/). Only useful for kernel devs
++	  running KUnit test harness and are not for inclusion into a production
++	  build.
++
++	  For more information on KUnit and unit tests in general please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit/.
++
++	  If unsure, say N.
+diff --git a/fs/ext4/Makefile b/fs/ext4/Makefile
+index b17ddc229ac5..840b91d040f1 100644
+--- a/fs/ext4/Makefile
++++ b/fs/ext4/Makefile
+@@ -13,4 +13,5 @@ ext4-y	:= balloc.o bitmap.o block_validity.o dir.o ext4_jbd2.o extents.o \
+
+ ext4-$(CONFIG_EXT4_FS_POSIX_ACL)	+= acl.o
+ ext4-$(CONFIG_EXT4_FS_SECURITY)		+= xattr_security.o
++ext4-$(CONFIG_EXT4_KUNIT_TESTS)		+= inode-test.o
+ ext4-$(CONFIG_FS_VERITY)		+= verity.o
+diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+new file mode 100644
+index 000000000000..92a9da1774aa
+--- /dev/null
++++ b/fs/ext4/inode-test.c
+@@ -0,0 +1,272 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit test of ext4 inode that verify the seconds part of [a/c/m]
++ * timestamps in ext4 inode structs are decoded correctly.
++ */
++
++#include <kunit/test.h>
++#include <linux/kernel.h>
++#include <linux/time64.h>
++
++#include "ext4.h"
++
++/*
++ * For constructing the nonnegative timestamp lower bound value.
++ * binary: 00000000 00000000 00000000 00000000
++ */
++#define LOWER_MSB_0 0L
++/*
++ * For constructing the nonnegative timestamp upper bound value.
++ * binary: 01111111 11111111 11111111 11111111
++ *
++ */
++#define UPPER_MSB_0 0x7fffffffL
++/*
++ * For constructing the negative timestamp lower bound value.
++ * binary: 10000000 00000000 00000000 00000000
++ */
++#define LOWER_MSB_1 (-0x80000000L)
++/*
++ * For constructing the negative timestamp upper bound value.
++ * binary: 11111111 11111111 11111111 11111111
++ */
++#define UPPER_MSB_1 (-1L)
++/*
++ * Upper bound for nanoseconds value supported by the encoding.
++ * binary: 00111111 11111111 11111111 11111111
++ */
++#define MAX_NANOSECONDS ((1L << 30) - 1)
++
++#define CASE_NAME_FORMAT "%s: msb:%x lower_bound:%x extra_bits: %x"
++
++#define LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE\
++	"1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits"
++#define UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE\
++	"1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits"
++#define LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE\
++	"1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits"
++#define UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE\
++	"2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits"
++#define LOWER_BOUND_NEG_LO_1_CASE\
++	"2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on"
++#define UPPER_BOUND_NEG_LO_1_CASE\
++	"2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on"
++#define LOWER_BOUND_NONNEG_LO_1_CASE\
++	"2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on"
++#define UPPER_BOUND_NONNEG_LO_1_CASE\
++	"2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on"
++#define LOWER_BOUND_NEG_HI_1_CASE\
++	"2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on"
++#define UPPER_BOUND_NEG_HI_1_CASE\
++	"2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on"
++#define LOWER_BOUND_NONNEG_HI_1_CASE\
++	"2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on"
++#define UPPER_BOUND_NONNEG_HI_1_CASE\
++	"2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on"
++#define UPPER_BOUND_NONNEG_HI_1_NS_1_CASE\
++	"2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns"
++#define LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE\
++	"2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. Max ns"
++#define LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE\
++	"2378-04-22 Lower bound of 32bit >=0 timestamp. All extra sec bits on"
++#define UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE\
++	"2446-05-10 Upper bound of 32bit >=0 timestamp. All extra sec bits on"
++
++struct timestamp_expectation {
++	const char *test_case_name;
++	struct timespec64 expected;
++	u32 extra_bits;
++	bool msb_set;
++	bool lower_bound;
++};
++
++static time64_t get_32bit_time(const struct timestamp_expectation * const test)
++{
++	if (test->msb_set) {
++		if (test->lower_bound)
++			return LOWER_MSB_1;
++
++		return UPPER_MSB_1;
++	}
++
++	if (test->lower_bound)
++		return LOWER_MSB_0;
++	return UPPER_MSB_0;
++}
++
++
++/*
++ *  Test data is derived from the table in the Inode Timestamps section of
++ *  Documentation/filesystems/ext4/inodes.rst.
++ */
++static void inode_test_xtimestamp_decoding(struct kunit *test)
++{
++	const struct timestamp_expectation test_data[] = {
++		{
++			.test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
++			.msb_set = true,
++			.lower_bound = true,
++			.extra_bits = 0,
++			.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
++			.msb_set = true,
++			.lower_bound = false,
++			.extra_bits = 0,
++			.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 0,
++			.expected = {0LL, 0L},
++		},
++
++		{
++			.test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 0,
++			.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
++			.msb_set = true,
++			.lower_bound = true,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
++			.msb_set = true,
++			.lower_bound = false,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 1,
++			.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
++			.msb_set = true,
++			.lower_bound = true,
++			.extra_bits =  2,
++			.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
++			.msb_set = true,
++			.lower_bound = false,
++			.extra_bits = 2,
++			.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 2,
++			.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 2,
++			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 6,
++			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
++		},
++
++		{
++			.test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 0xFFFFFFFF,
++			.expected = {.tv_sec = 0x300000000LL,
++				     .tv_nsec = MAX_NANOSECONDS},
++		},
++
++		{
++			.test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
++			.msb_set = false,
++			.lower_bound = true,
++			.extra_bits = 3,
++			.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
++		},
++
++		{
++			.test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
++			.msb_set = false,
++			.lower_bound = false,
++			.extra_bits = 3,
++			.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
++		}
++	};
++
++	struct timespec64 timestamp;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
++		timestamp.tv_sec = get_32bit_time(&test_data[i]);
++		ext4_decode_extra_time(&timestamp,
++				       cpu_to_le32(test_data[i].extra_bits));
++
++		KUNIT_EXPECT_EQ_MSG(test,
++				    test_data[i].expected.tv_sec,
++				    timestamp.tv_sec,
++				    CASE_NAME_FORMAT,
++				    test_data[i].test_case_name,
++				    test_data[i].msb_set,
++				    test_data[i].lower_bound,
++				    test_data[i].extra_bits);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    test_data[i].expected.tv_nsec,
++				    timestamp.tv_nsec,
++				    CASE_NAME_FORMAT,
++				    test_data[i].test_case_name,
++				    test_data[i].msb_set,
++				    test_data[i].lower_bound,
++				    test_data[i].extra_bits);
++	}
++}
++
++static struct kunit_case ext4_inode_test_cases[] = {
++	KUNIT_CASE(inode_test_xtimestamp_decoding),
++	{}
++};
++
++static struct kunit_suite ext4_inode_test_suite = {
++	.name = "ext4_inode_test",
++	.test_cases = ext4_inode_test_cases,
++};
++
++kunit_test_suite(ext4_inode_test_suite);
+--
+2.23.0.866.gb869b98d4c-goog
