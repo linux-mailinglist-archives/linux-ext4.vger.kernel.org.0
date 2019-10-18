@@ -2,72 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6242BDD1E0
-	for <lists+linux-ext4@lfdr.de>; Sat, 19 Oct 2019 00:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB357DD5CC
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Oct 2019 02:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731689AbfJRWGe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Oct 2019 18:06:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731660AbfJRWGd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 18 Oct 2019 18:06:33 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13A43222D1;
-        Fri, 18 Oct 2019 22:06:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1571436392;
-        bh=uub7qoWJO07kCGY9mnSTpLi4SKi0+yvY+LER2AED5r4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fDru+jKmDHlhxvHqibX3EYEpp/csaQO3PhjuBD0TqZuTGSAImXFM5QjX4HaOsAqtz
-         h9GgFSFTR3G+2+wMiWrNLLiohdMLYEUbSQbNnUnPk+aJUV0iR0i+/52564Wj7iQdaX
-         Jxi5PMt6XpVeQdtxkOCc4OzSoKF5V0s5EukfgSi0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 044/100] ext4: disallow files with EXT4_JOURNAL_DATA_FL from EXT4_IOC_SWAP_BOOT
-Date:   Fri, 18 Oct 2019 18:04:29 -0400
-Message-Id: <20191018220525.9042-44-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191018220525.9042-1-sashal@kernel.org>
-References: <20191018220525.9042-1-sashal@kernel.org>
+        id S1726708AbfJSAoA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Oct 2019 20:44:00 -0400
+Received: from mail.keramplus.com ([212.3.124.226]:20614 "EHLO
+        trixbox1.localdomain" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726718AbfJSAn7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Oct 2019 20:43:59 -0400
+Received: from 127.0.0.1 (trixbox1.localdomain [127.0.0.1])
+        by trixbox1.localdomain (Postfix) with SMTP id 1A756ADBBF8;
+        Fri, 18 Oct 2019 04:08:13 +0300 (EEST)
+Received: from [96.33.17.216] by 127.0.0.1 id <2767436-78664>; Fri, 18 Oct 2019 08:02:32 +0600
+Message-ID: <k1bvh4lf9n0kp-w7jxz$p1-1i9$4-hu@pt9dituo>
+From:   "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
+Reply-To: "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
+To:     lost_turtle@hotmail.com
+Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA
+Date:   Fri, 18 Oct 19 08:02:32 GMT
+X-Mailer: MIME-tools 5.503 (Entity 5.501)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+        boundary="FE67B06D.C"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
 
-[ Upstream commit 6e589291f4b1b700ca12baec5930592a0d51e63c ]
+--FE67B06D.C
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-A malicious/clueless root user can use EXT4_IOC_SWAP_BOOT to force a
-corner casew which can lead to the file system getting corrupted.
-There's no usefulness to allowing this, so just prohibit this case.
+Greetings
 
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/ioctl.c | 1 +
- 1 file changed, 1 insertion(+)
+My name is Barrister Hans Erich.
 
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index abb6fcff0a1d3..783c54bb2ce75 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -132,6 +132,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
- 
- 	if (inode->i_nlink != 1 || !S_ISREG(inode->i_mode) ||
- 	    IS_SWAPFILE(inode) || IS_ENCRYPTED(inode) ||
-+	    (EXT4_I(inode)->i_flags & EXT4_JOURNAL_DATA_FL) ||
- 	    ext4_has_inline_data(inode)) {
- 		err = -EINVAL;
- 		goto journal_err_out;
--- 
-2.20.1
+I have a client who is interested to invest in your country, she is a well=
+ known politician in her country and deserve a lucrative investment partne=
+rship with you outside her country without any delay   Please can you mana=
+ge such investment please Kindly reply for further details.
+
+Your full names ---------
+
+
+Your urgent response will be appreciated
+
+Thank you and God bless you.
+
+Barrister Hans Erich
+
+Yours sincerely,
+Barrister Hans Erich
+
+--FE67B06D.C--
 
