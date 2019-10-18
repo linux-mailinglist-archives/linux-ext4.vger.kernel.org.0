@@ -2,74 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7647DBED9
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2019 09:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3B4DC569
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2019 14:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504856AbfJRHwV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Oct 2019 03:52:21 -0400
-Received: from zaovasilisa.ru ([88.200.194.99]:46823 "EHLO usrv.lan"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2504820AbfJRHwP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 18 Oct 2019 03:52:15 -0400
-X-Greylist: delayed 39671 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Oct 2019 03:51:51 EDT
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        by usrv.lan (Postfix) with SMTP id CC3F818647F;
-        Thu, 17 Oct 2019 17:04:03 +0400 (MSD)
-Received: from [72.215.151.127] by 127.0.0.1 with ESMTP id 72A686FDC7F; Thu, 17 Oct 2019 18:59:02 +0600
-Message-ID: <735ui-$$-55e3--c$i$-l0-18w85$-6@8d6h1006syk>
-From:   "Mr Ekrem Bayraktar" <dave@dbsoundfactory.com>
-Reply-To: "Mr Ekrem Bayraktar" <dave@dbsoundfactory.com>
-To:     links@q.vu
-Subject: MOTHERLESS CHILDREN IN YOUR CITY !!
-Date:   Thu, 17 Oct 19 18:59:02 GMT
-X-Mailer: AOL 7.0 for Windows US sub 118
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="EFA7_FB09FAD2"
-X-Priority: 3
-X-MSMail-Priority: Normal
+        id S1727993AbfJRMvF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Oct 2019 08:51:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40366 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726875AbfJRMvE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 18 Oct 2019 08:51:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5AE07B3B6;
+        Fri, 18 Oct 2019 12:51:03 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id ED5CA1E4851; Fri, 18 Oct 2019 14:51:02 +0200 (CEST)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Subject: [PATCH] resize2fs: Make minimum size estimates more reliable for mounted fs
+Date:   Fri, 18 Oct 2019 14:50:59 +0200
+Message-Id: <20191018125059.2446-1-jack@suse.cz>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Currently, the estimate of minimum filesystem size is using free blocks
+counter in the superblock. The counter generally doesn't get updated
+while the filesystem is mounted and thus the estimate is very unreliable
+for a mounted filesystem. For some usecases such as automated
+partitioning proposal to the user it is desirable that the estimate of
+minimum filesystem size is reasonably accurate even for a mounted
+filesystem. So use group descriptor counters of free blocks for the
+estimate of minimum filesystem size. These get updated together with
+block being allocated and so the resulting estimate is more accurate.
 
---EFA7_FB09FAD2
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ resize/resize2fs.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Dear Sir / Madam
-
-
-
-Since ever we left your country back to Canada , we have gotten Government=
- approval and we have been busying planning for the less privilege Childre=
-n projects.
-
-We are planning to release first batch of the funds $2,990,000.00 within 1=
-4 days for building an estate for motherless children in your city.
-
-I want you to use my mother;s company name to register this charity projec=
-t in your country after receiving the project funds.
-
-It must be registered as { Bayraktar Group Homeless Children Ltd }.
-
-
-Can you handle and supervise this big project ?
-Can you manager all the workers as a senior supervisor ?
-We want to be sure you can handle it before we proceed with this project.
-
-
-Please call me if you want to hear from us + 1-917 580 4919.
-Please can you manage such project please Kindly reply for further details=
-.
-
-Your full names-----------
-
-
-
-Ekrem Bayraktar.
-Bayraktar Shipping Group
-
---EFA7_FB09FAD2--
+diff --git a/resize/resize2fs.c b/resize/resize2fs.c
+index c2e10471bfd1..8a3d08db19f3 100644
+--- a/resize/resize2fs.c
++++ b/resize/resize2fs.c
+@@ -2926,11 +2926,11 @@ blk64_t calculate_minimum_resize_size(ext2_filsys fs, int flags)
+ 			fs->super->s_reserved_gdt_blocks;
+ 
+ 	/* calculate how many blocks are needed for data */
+-	data_needed = ext2fs_blocks_count(fs->super) -
+-		ext2fs_free_blocks_count(fs->super);
+-
+-	for (grp = 0; grp < fs->group_desc_count; grp++)
++	data_needed = ext2fs_blocks_count(fs->super);
++	for (grp = 0; grp < fs->group_desc_count; grp++) {
+ 		data_needed -= calc_group_overhead(fs, grp, old_desc_blocks);
++		data_needed -= ext2fs_bg_free_blocks_count(fs, grp);
++	}
+ #ifdef RESIZE2FS_DEBUG
+ 	if (flags & RESIZE_DEBUG_MIN_CALC)
+ 		printf("fs requires %llu data blocks.\n", data_needed);
+-- 
+2.16.4
 
