@@ -2,68 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3B4DC569
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2019 14:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F12DC60F
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2019 15:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727993AbfJRMvF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Oct 2019 08:51:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40366 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726875AbfJRMvE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 18 Oct 2019 08:51:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5AE07B3B6;
-        Fri, 18 Oct 2019 12:51:03 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id ED5CA1E4851; Fri, 18 Oct 2019 14:51:02 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH] resize2fs: Make minimum size estimates more reliable for mounted fs
-Date:   Fri, 18 Oct 2019 14:50:59 +0200
-Message-Id: <20191018125059.2446-1-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
+        id S2393118AbfJRN2I (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Oct 2019 09:28:08 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53053 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1733113AbfJRN2I (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Oct 2019 09:28:08 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9IDS2va032678
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Oct 2019 09:28:04 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id C50DB420458; Fri, 18 Oct 2019 09:28:02 -0400 (EDT)
+Date:   Fri, 18 Oct 2019 09:28:02 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v3 12/13] docs: Add fast commit documentation
+Message-ID: <20191018132802.GE21137@mit.edu>
+References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
+ <20191001074101.256523-13-harshadshirwadkar@gmail.com>
+ <20191018015655.GB21137@mit.edu>
+ <C41A9852-DFA0-4F1A-A984-29A71D23CEFB@dilger.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C41A9852-DFA0-4F1A-A984-29A71D23CEFB@dilger.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently, the estimate of minimum filesystem size is using free blocks
-counter in the superblock. The counter generally doesn't get updated
-while the filesystem is mounted and thus the estimate is very unreliable
-for a mounted filesystem. For some usecases such as automated
-partitioning proposal to the user it is desirable that the estimate of
-minimum filesystem size is reasonably accurate even for a mounted
-filesystem. So use group descriptor counters of free blocks for the
-estimate of minimum filesystem size. These get updated together with
-block being allocated and so the resulting estimate is more accurate.
+On Fri, Oct 18, 2019 at 01:51:56PM +0900, Andreas Dilger wrote:
+> What about rename or hard link?
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- resize/resize2fs.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Neither is currently handled by the fast commit patches, but each
+operation can fit inside a single block, so it could be handled as a
+update to a single inode.  In the case of rename, we will need to add
+some tags to indicate the desintation directory and directory enrty
+name, and whether or not there is a destination inode which needs to
+have its refcount dropped and possibly deleted.
 
-diff --git a/resize/resize2fs.c b/resize/resize2fs.c
-index c2e10471bfd1..8a3d08db19f3 100644
---- a/resize/resize2fs.c
-+++ b/resize/resize2fs.c
-@@ -2926,11 +2926,11 @@ blk64_t calculate_minimum_resize_size(ext2_filsys fs, int flags)
- 			fs->super->s_reserved_gdt_blocks;
- 
- 	/* calculate how many blocks are needed for data */
--	data_needed = ext2fs_blocks_count(fs->super) -
--		ext2fs_free_blocks_count(fs->super);
--
--	for (grp = 0; grp < fs->group_desc_count; grp++)
-+	data_needed = ext2fs_blocks_count(fs->super);
-+	for (grp = 0; grp < fs->group_desc_count; grp++) {
- 		data_needed -= calc_group_overhead(fs, grp, old_desc_blocks);
-+		data_needed -= ext2fs_bg_free_blocks_count(fs, grp);
-+	}
- #ifdef RESIZE2FS_DEBUG
- 	if (flags & RESIZE_DEBUG_MIN_CALC)
- 		printf("fs requires %llu data blocks.\n", data_needed);
--- 
-2.16.4
+Harshad, we probably should handle them, since in order to support
+NFS, the nfs server will send the rename or hard link request,
+followed by a commit metadata request, and that commit metadata
+request needs to persist the rename or link.  So for the purposes of
+accelerating NFS, we should handle these commands.
 
+If we don't handle these commands, we will need to declare the inode
+as fast commit ineligible, so that we force a full journal commit when
+the commit metadata request is received.
+
+						- Ted
