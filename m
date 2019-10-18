@@ -2,152 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBA1DD001
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2019 22:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6242BDD1E0
+	for <lists+linux-ext4@lfdr.de>; Sat, 19 Oct 2019 00:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443429AbfJRUY6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 18 Oct 2019 16:24:58 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:43765 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443423AbfJRUYq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 18 Oct 2019 16:24:46 -0400
-Received: by mail-io1-f67.google.com with SMTP id v2so8916029iob.10
-        for <linux-ext4@vger.kernel.org>; Fri, 18 Oct 2019 13:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NuSCTuHLyeIME2hbrerbprSKbzeZs/hKIavOLJRoGRQ=;
-        b=HtCk0A8CHBSeN/vkbSv/7Y2ykRo+7yexMnvlVxS0NDBJHW3+GiIXbExrf6RB731B6o
-         a4ARGEbe+sW4LYEuHqWT5/bhoeDx+edmwvMwzONWe+5H5uxyGZOUEsi34JWviWu56Fe6
-         /JclB31wrotM6MfNpR/Wqa8lSJOJV7CUEFiJw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NuSCTuHLyeIME2hbrerbprSKbzeZs/hKIavOLJRoGRQ=;
-        b=YcTJR08VjdF70CHJEuTu/KW6f5VIW5Cgnl0/NAfVxtwusP6KR4YfS0AOjgM/aHGUAZ
-         rzVPImpWkXP2sYowLbN80npN0LJ1BMk6JFyK0ozd3+ymcTi1lHsVWfg1H8ugwd+fvAx/
-         yfhAm8qn9MTvTWOARutUoWsrlunC8E/E5JTQcaQuVByGf4GfXp3TRPbFEa3tPAx2iAFg
-         dJaOZV0wXvKOmrvjX16Mg4e91GksdkVK1YiS1G+yvudtU000CtQjnFbufhVX2NNSctiU
-         G59Ors0M6e4RCKlTb2bM/SQZqn2fF6nqYQNxPQvxhQsz4P9eczglfYnV9DggpU00cKPb
-         075A==
-X-Gm-Message-State: APjAAAUXvOPM73ttBpeSbDZcz43D4dlnQMonnAjXV02gJLf/toZO6m/u
-        AQTCK+Ct/MxBnKPImgGEpc/PSQ==
-X-Google-Smtp-Source: APXvYqw0zqeIpXublcbBrspxIImYvwsqyX3848ANoqBLSESQe4clT0dZGWwSknNUeo8XUDx1yoEmMg==
-X-Received: by 2002:a5d:8185:: with SMTP id u5mr4375511ion.147.1571430285037;
-        Fri, 18 Oct 2019 13:24:45 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id s24sm2019056iog.26.2019.10.18.13.24.43
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 18 Oct 2019 13:24:44 -0700 (PDT)
-Subject: Re: [PATCH linux-kselftest/test v2] ext4: add kunit test for decoding
- extended timestamps
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>, Tim.Bird@sony.com
-Cc:     brendanhiggins@google.com, yzaikin@google.com,
-        linux-kselftest@vger.kernel.org, linux-ext4@vger.kernel.org,
-        adilger.kernel@dilger.ca, kunit-dev@googlegroups.com,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <CAFd5g46RcFV0FACuoF=jCSLzf7UFmEYn4gddaijUZ+zR_CFZBQ@mail.gmail.com>
- <20191011131902.GC16225@mit.edu>
- <CAFd5g45s1-=Z4JwJn4A1VDGu4oEGBisQ_0RFp4otUU3rKf1XpQ@mail.gmail.com>
- <1e6611e6-2fa6-6f7d-bc7f-0bc2243d9342@linuxfoundation.org>
- <20191017120833.GA25548@mit.edu>
- <ECADFF3FD767C149AD96A924E7EA6EAF977D0023@USCULXMSG01.am.sony.com>
- <20191017225637.GB6371@mit.edu>
- <ECADFF3FD767C149AD96A924E7EA6EAF977D00A4@USCULXMSG01.am.sony.com>
- <20191018014027.GA21137@mit.edu>
- <ECADFF3FD767C149AD96A924E7EA6EAF977D01DC@USCULXMSG01.am.sony.com>
- <20191018152746.GF21137@mit.edu>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <b433854d-3140-95cd-6847-003dcf3851bc@linuxfoundation.org>
-Date:   Fri, 18 Oct 2019 14:24:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1731689AbfJRWGe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 18 Oct 2019 18:06:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731660AbfJRWGd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 18 Oct 2019 18:06:33 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13A43222D1;
+        Fri, 18 Oct 2019 22:06:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1571436392;
+        bh=uub7qoWJO07kCGY9mnSTpLi4SKi0+yvY+LER2AED5r4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fDru+jKmDHlhxvHqibX3EYEpp/csaQO3PhjuBD0TqZuTGSAImXFM5QjX4HaOsAqtz
+         h9GgFSFTR3G+2+wMiWrNLLiohdMLYEUbSQbNnUnPk+aJUV0iR0i+/52564Wj7iQdaX
+         Jxi5PMt6XpVeQdtxkOCc4OzSoKF5V0s5EukfgSi0=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 044/100] ext4: disallow files with EXT4_JOURNAL_DATA_FL from EXT4_IOC_SWAP_BOOT
+Date:   Fri, 18 Oct 2019 18:04:29 -0400
+Message-Id: <20191018220525.9042-44-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191018220525.9042-1-sashal@kernel.org>
+References: <20191018220525.9042-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20191018152746.GF21137@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 10/18/19 9:27 AM, Theodore Y. Ts'o wrote:
-> On Fri, Oct 18, 2019 at 02:40:50AM +0000, Tim.Bird@sony.com wrote:
->> We're just talking past each other.  My original e-mail was a rebuttal
->> to your assertion that any test that was data-driven or non-deterministic
->> was a fuzzer.  I still believe that's just not the case.  This is independent
->> of the mechanics or speed of how the data is input.
-> 
-> Apologies, I was still focused on the original context of this thread,
-> which was about suggested improvements to Iurii's ext4 kunit test, or
-> perhaps adding new features to Kunit.
-> 
->> I also conceded (multiple times) that externally data-driven
->> techniques are probably more aptly applied to non-unit tests. I've
->> heard your pitch about speed, and I'm sympathetic.  My point is that
->> I believe there is a place for data-driven tests.
-> 
+From: Theodore Ts'o <tytso@mit.edu>
 
-As such what this current test does is data driven right. What we are
-discussing is how the data is supplied? In this case it is embedded.
+[ Upstream commit 6e589291f4b1b700ca12baec5930592a0d51e63c ]
 
-> I guess I would put it differently.  The key goal is it should be
-> really easy for developers to run, create, and extend tests.
-> Data-driven tests is certainly one technique to make it easier to
-> extend tests, and indeed fs/ext4/inode-test.c is data-driven with the
-> goal to make it easier to add additional tests.
-> 
+A malicious/clueless root user can use EXT4_IOC_SWAP_BOOT to force a
+corner casew which can lead to the file system getting corrupted.
+There's no usefulness to allowing this, so just prohibit this case.
 
-Again I would make the distinction that "how the data supplied".
-Embedded in the test vs. having the flexibility to accept external
-test data. From what I can tell,  I didn't see anybody say that the
-embedded data is it and nothing more needed.
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/ioctl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Instead of adding the ability to read, the suggestion is for modifying
-the data. This gets real tedious and don't think anybody will take the
-time to do it. On the other hand, is there a few test data files to run
-with, it makes it easier to exercise different cases.
-
-> Having the data for the test be external is certainly one option, and
-> there will be cases where it will make sense.  However, the overhead
-> in creating the parser for the data, and additional complexity
-> required to get the test data to be fed to the test program means that
-> that benefits need to be pretty large in order to balance the
-> additional costs of having an external data file, especially for
-> Kunit.
-> 
-
-Let's explore it further before deciding whether is useful or not.
-
-> In terms of the abstract question, is there a place for data-driven
-> tests, I'm in complete agreement with you.  I've used this many times
-> personally, especially when writing tests which are implemented in
-> terms of shell scripts.  Examples of this include e2fsprogs's
-> regression test suite and xfstests.  I don't consider that a terribly
-> interesting question though; I view that as on the same order as "is
-> the sky blue?" or "are apple pies yummy?"
-> 
-> The more interesting, and more concrete question is whether there is a
-> place for external data-driven tests in Kunit, and there I am *much*
-> more skeptical. 
-
-This is what I am interested in exploring. I do think it will add value.
-I can see some use-cases that could benefit from this.
-
-I am not suggesting that this should happen soon. This is something that
-can be looked into for the future. I have a few use-cases in mind that
-could benefit.
-
-btw. I am by no means suggesting to that this test going in is dependent
-on the external data. I already sent my Reviewed-by for the v6 and
-planning to pull it into linux-kselftest test for 5.5-rc1.
-
-thanks,
--- Shuah
-
-
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index abb6fcff0a1d3..783c54bb2ce75 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -132,6 +132,7 @@ static long swap_inode_boot_loader(struct super_block *sb,
+ 
+ 	if (inode->i_nlink != 1 || !S_ISREG(inode->i_mode) ||
+ 	    IS_SWAPFILE(inode) || IS_ENCRYPTED(inode) ||
++	    (EXT4_I(inode)->i_flags & EXT4_JOURNAL_DATA_FL) ||
+ 	    ext4_has_inline_data(inode)) {
+ 		err = -EINVAL;
+ 		goto journal_err_out;
+-- 
+2.20.1
 
