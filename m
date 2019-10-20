@@ -2,23 +2,23 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB81CDDF4D
-	for <lists+linux-ext4@lfdr.de>; Sun, 20 Oct 2019 18:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE0CDDF5E
+	for <lists+linux-ext4@lfdr.de>; Sun, 20 Oct 2019 18:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbfJTQAC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 20 Oct 2019 12:00:02 -0400
-Received: from mga04.intel.com ([192.55.52.120]:32418 "EHLO mga04.intel.com"
+        id S1726525AbfJTP7y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 20 Oct 2019 11:59:54 -0400
+Received: from mga02.intel.com ([134.134.136.20]:54570 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726691AbfJTQAB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 20 Oct 2019 12:00:01 -0400
+        id S1726383AbfJTP7y (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 20 Oct 2019 11:59:54 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Oct 2019 09:00:00 -0700
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Oct 2019 08:59:53 -0700
 X-IronPort-AV: E=Sophos;i="5.67,320,1566889200"; 
-   d="scan'208";a="209275529"
+   d="scan'208";a="398438094"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.157])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Oct 2019 09:00:00 -0700
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Oct 2019 08:59:53 -0700
 From:   ira.weiny@intel.com
 To:     linux-kernel@vger.kernel.org
 Cc:     Ira Weiny <ira.weiny@intel.com>,
@@ -30,12 +30,10 @@ Cc:     Ira Weiny <ira.weiny@intel.com>,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
-Subject: [PATCH 5/5] fs/xfs: Allow toggle of physical DAX flag
-Date:   Sun, 20 Oct 2019 08:59:35 -0700
-Message-Id: <20191020155935.12297-6-ira.weiny@intel.com>
+Subject: [PATCH 0/5] Enable per-file/directory DAX operations
+Date:   Sun, 20 Oct 2019 08:59:30 -0700
+Message-Id: <20191020155935.12297-1-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191020155935.12297-1-ira.weiny@intel.com>
-References: <20191020155935.12297-1-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
@@ -45,56 +43,56 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-Switching between DAX and non-DAX on a file is racy with respect to data
-operations.  However, if no data is involved the flag is safe to switch.
+At LSF/MM'19 [1] [2] we discussed applications that overestimate memory
+consumption due to their inability to detect whether the kernel will
+instantiate page cache for a file, and cases where a global dax enable via a
+mount option is too coarse.
 
-Allow toggling the physical flag if a file is empty.  The file length
-check is not racy with respect to other operations as it is performed
-under XFS_MMAPLOCK_EXCL and XFS_IOLOCK_EXCL locks.
+The following patch series enables selecting the use of DAX on individual files
+and/or directories on xfs, and lays some groundwork to do so in ext4.  In this
+scheme the dax mount option can be omitted to allow the per-file property to
+take effect.
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- fs/xfs/xfs_ioctl.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+The insight at LSF/MM was to separate the per-mount or per-file "physical"
+capability switch from an "effective" attribute for the file.
 
-diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-index d3a7340d3209..3839684c249b 100644
---- a/fs/xfs/xfs_ioctl.c
-+++ b/fs/xfs/xfs_ioctl.c
-@@ -33,6 +33,7 @@
- #include "xfs_sb.h"
- #include "xfs_ag.h"
- #include "xfs_health.h"
-+#include "libxfs/xfs_dir2.h"
- 
- #include <linux/mount.h>
- #include <linux/namei.h>
-@@ -1232,12 +1233,10 @@ xfs_diflags_to_linux(
- 		inode->i_flags |= S_NOATIME;
- 	else
- 		inode->i_flags &= ~S_NOATIME;
--#if 0	/* disabled until the flag switching races are sorted out */
- 	if (xflags & FS_XFLAG_DAX)
- 		inode->i_flags |= S_DAX;
- 	else
- 		inode->i_flags &= ~S_DAX;
--#endif
- }
- 
- static int
-@@ -1320,6 +1319,12 @@ xfs_ioctl_setattr_dax_invalidate(
- 
- 	/* lock, flush and invalidate mapping in preparation for flag change */
- 	xfs_ilock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
-+
-+	if (i_size_read(inode) != 0) {
-+		error = -EOPNOTSUPP;
-+		goto out_unlock;
-+	}
-+
- 	error = filemap_write_and_wait(inode->i_mapping);
- 	if (error)
- 		goto out_unlock;
+At LSF/MM we discussed the difficulties of switching the mode of a file with
+active mappings / page cache. Rather than solve those races the decision was to
+just limit mode flips to 0-length files.
+
+Finally, the physical DAX flag inheritance is maintained from previous work on 
+XFS but should be added for other file systems for consistence.
+
+
+[1] https://lwn.net/Articles/787973/
+[2] https://lwn.net/Articles/787233/
+
+To: linux-kernel@vger.kernel.org
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+
+Ira Weiny (5):
+  fs/stat: Define DAX statx attribute
+  fs/xfs: Isolate the physical DAX flag from effective
+  fs/xfs: Separate functionality of xfs_inode_supports_dax()
+  fs/xfs: Clean up DAX support check
+  fs/xfs: Allow toggle of physical DAX flag
+
+ fs/stat.c                 |  3 +++
+ fs/xfs/xfs_ioctl.c        | 32 ++++++++++++++------------------
+ fs/xfs/xfs_iops.c         | 36 ++++++++++++++++++++++++++++++------
+ fs/xfs/xfs_iops.h         |  2 ++
+ include/uapi/linux/stat.h |  1 +
+ 5 files changed, 50 insertions(+), 24 deletions(-)
+
 -- 
 2.20.1
 
