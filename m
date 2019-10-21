@@ -2,56 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C659DF457
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 19:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E17DF471
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 19:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbfJUReK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 13:34:10 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57459 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726672AbfJUReJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 13:34:09 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9LHY4pu006615
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Oct 2019 13:34:04 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id C88B6420458; Mon, 21 Oct 2019 13:34:03 -0400 (EDT)
-Date:   Mon, 21 Oct 2019 13:34:03 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 14/22] jbd2: Drop pointless wakeup from
- jbd2_journal_stop()
-Message-ID: <20191021173403.GG27850@mit.edu>
-References: <20191003215523.7313-1-jack@suse.cz>
- <20191003220613.10791-14-jack@suse.cz>
+        id S1729238AbfJURk2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 13:40:28 -0400
+Received: from mga04.intel.com ([192.55.52.120]:38681 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726289AbfJURk2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 21 Oct 2019 13:40:28 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2019 10:40:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,324,1566889200"; 
+   d="scan'208";a="200508215"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga003.jf.intel.com with ESMTP; 21 Oct 2019 10:40:26 -0700
+Date:   Mon, 21 Oct 2019 10:40:26 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/5] fs/xfs: Isolate the physical DAX flag from effective
+Message-ID: <20191021174025.GA23024@iweiny-DESK2.sc.intel.com>
+References: <20191020155935.12297-1-ira.weiny@intel.com>
+ <20191020155935.12297-3-ira.weiny@intel.com>
+ <20191021002621.GC8015@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191003220613.10791-14-jack@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191021002621.GC8015@dread.disaster.area>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 04, 2019 at 12:06:00AM +0200, Jan Kara wrote:
-> When we drop last handle from a transaction and journal->j_barrier_count
-> > 0, jbd2_journal_stop() wakes up journal->j_wait_transaction_locked
-> wait queue. This looks pointless - wait for outstanding handles always
-> happens on journal->j_wait_updates waitqueue.
-> journal->j_wait_transaction_locked is used to wait for transaction state
-> changes and by start_this_handle() for waiting until
-> journal->j_barrier_count drops to 0. The first case is clearly
-> irrelevant here since only jbd2 thread changes transaction state. The
-> second case looks related but jbd2_journal_unlock_updates() is
-> responsible for the wakeup in this case. So just drop the wakeup.
+On Mon, Oct 21, 2019 at 11:26:21AM +1100, Dave Chinner wrote:
+> On Sun, Oct 20, 2019 at 08:59:32AM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > xfs_ioctl_setattr_dax_invalidate() currently checks if the DAX flag is
+> > changing as a quick check.
+> > 
+> > But the implementation mixes the physical (XFS_DIFLAG2_DAX) and
+> > effective (S_DAX) DAX flags.
 > 
-> Signed-off-by: Jan Kara <jack@suse.cz>
+> More nuanced than that.
+> 
+> The idea was that if the mount option was set, clearing the
+> per-inode flag would override the mount option. i.e. the mount
+> option sets the S_DAX flag at inode instantiation, so using
+> FSSETXATTR to ensure the FS_XFLAG_DAX is not set would override the
+> mount option setting, giving applications a way of guranteeing they
+> aren't using DAX to access the data.
 
-Looks good; feel free to add:
+At LSF/MM we discussed keeping the mount option as a global "chicken bit" as
+described by Matt Wilcox[1].  This preserves the existing behavior of turning
+it on no matter what but offers an alternative with the per-file flag.
 
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+To do what you describe above, it was suggested, by Ted I believe, that an
+admin can set DAX on the root directory which will enable DAX by default
+through inheritance but allow users to turn it off if they desire.
+
+I'm concerned that all users who currently use '-o dax' will expect their
+current file systems to be using DAX when those mounts occur.  Their physical
+inode flag is going to be 0 which, if we implement the 'turn off DAX' as you
+describe will mean they will not get the behavior they expect when booting on a
+new kernel.
+
+> 
+> So if the mount option is going to live on, I suspect that we want
+> to keep this code as it stands.
+
+I don't think we can get rid of it soon but I would be in favor of working
+toward deprecating it.  Regardless I think this keeps the semantics simple WRT
+the interaction of the mount and per-file flags.
+
+Ira
+
+[1] https://lwn.net/Articles/787973/
+
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
