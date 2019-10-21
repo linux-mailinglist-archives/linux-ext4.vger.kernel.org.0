@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 447B2DE3B2
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 07:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBBEDE3B3
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 07:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbfJUFXL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 01:23:11 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:46382 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbfJUFXL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 01:23:11 -0400
-Received: by mail-io1-f69.google.com with SMTP id t15so12496593ios.13
-        for <linux-ext4@vger.kernel.org>; Sun, 20 Oct 2019 22:23:09 -0700 (PDT)
+        id S1725926AbfJUFYK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 01:24:10 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:46615 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbfJUFYK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 01:24:10 -0400
+Received: by mail-io1-f70.google.com with SMTP id t15so12498087ios.13
+        for <linux-ext4@vger.kernel.org>; Sun, 20 Oct 2019 22:24:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ZdKnZjst7DyyK+x6sCAL8/L6eZyuHz1MCtPw3YcdJ2s=;
-        b=gecuNdCrpnseFg5js3PU9+J6Vq/kVEqgc1hWyZKY/3HPcDIUr6YRsPX/8FSbvZDVYM
-         yifvC2bUTHQgq+MMOCsZNNPfgnbyQh65fGmJxEq5xVmWGQ8818dv/0yOAhBiTgIb2Eh8
-         W+Tmy+TYwQuYhmZQJ+xNZtcf8D9X1GIVqCb1l/BcOvV5zLhJaov6uynrV3F+LsC5i2jT
-         WMhmXF24rCSdU2++Z5NOm6E7PLvySeI/zhRQFt1hBmgJ4JyM6hQ65eC8oZXp5/xkUGJc
-         TrKwwEzXo/rW3WHIDRr1hqPSJd0VrahbrQ58nmgCFKGNegHbtyWlnYPP+1GCOErXBiv2
-         smUw==
-X-Gm-Message-State: APjAAAVTQ5tmLgL/cR5j3lWcd4/wM22h5Mo0vPQBNn1XaVR55Kzl6VaC
-        +7KTDZSw9VxTLgJ8GYt3qcH1kSsaFlIVeS0xgyBbr/V/Ywxq
-X-Google-Smtp-Source: APXvYqzoxb7HOvJ+gHaP6gB1G2giklxm7tLizdjMyDWOASKppseVav8DVlJJN+ErF+ASQ0rhCtHXngteyKRreuM1MCqb9ZxGIzbj
+        bh=ibEOpCoeiPYGLofBO4gILotcPFeGeTi4EnMlW4wbLyg=;
+        b=WPG0CNvYKWWwOS1uHGrP8NUeU/OHDhM034DSRQSgoz24kVwekaRS1onmdnSNI8OGUr
+         j4owqxoCTtp/jsja27k8PdFHWiE9sK9hU19a2F6sPiETuAYqhNft1ZxfKx2eacMiIlX9
+         3VFKEQQax2e76BhZ5TSpKKr4/vWi15ysyjapyZHzLuMKB5c75SWgqpmB2esXPwr1d6ow
+         5EIAp3e7jNrLD20Z9jf5Lu7SoKdwr4H9zmMtqwVsRhJeKoWK0lNR4ooPJR/Et2McDKuC
+         uwVzKazo+XkmeIyyuhvYb7TdLL810rRsZQ7DxDeouJ+rTpCiNW8iNy3LsyHQHklx2Hsn
+         Dd4Q==
+X-Gm-Message-State: APjAAAVKjIt7nS7fjQ1TRsSmIier3WwXvio5SXZGan88FZCvsG+YL1ib
+        TzANAQjD3ULAZuDYLun23udhAKrxMw6fSl4D84jcIGXDygzx
+X-Google-Smtp-Source: APXvYqyToV0HA6Xpp8sNTdjKNR8Rm0cybuN9cxK5b3p7FgMSp/8ymdO5V7IogUMWiqb0fVTnEdJK87QC7SuYdRsIh075fQ0OMu9v
 MIME-Version: 1.0
-X-Received: by 2002:a92:9edd:: with SMTP id s90mr5566194ilk.244.1571635388574;
- Sun, 20 Oct 2019 22:23:08 -0700 (PDT)
-Date:   Sun, 20 Oct 2019 22:23:08 -0700
+X-Received: by 2002:a92:8404:: with SMTP id l4mr4531041ild.15.1571635447792;
+ Sun, 20 Oct 2019 22:24:07 -0700 (PDT)
+Date:   Sun, 20 Oct 2019 22:24:07 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000d74c7059564e17f@google.com>
-Subject: KASAN: use-after-free Write in __ext4_expand_extra_isize (2)
-From:   syzbot <syzbot+44b6763edfc17144296f@syzkaller.appspotmail.com>
+Message-ID: <000000000000950f21059564e4c7@google.com>
+Subject: BUG: unable to handle kernel paging request in __ext4_expand_extra_isize
+From:   syzbot <syzbot+33d7ea72e47de3bdf4e1@syzkaller.appspotmail.com>
 To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
         tytso@mit.edu
@@ -48,92 +48,152 @@ Hello,
 
 syzbot found the following crash on:
 
-HEAD commit:    b145b0eb Merge tag 'for-linus' of git://git.kernel.org/pub..
+HEAD commit:    64c5e530 Merge tag 'arc-4.19-rc8' of git://git.kernel.org/..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13887f1f600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1ec3be9936e004f6
-dashboard link: https://syzkaller.appspot.com/bug?extid=44b6763edfc17144296f
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+console output: https://syzkaller.appspot.com/x/log.txt?x=17add285400000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=88e9a8a39dc0be2d
+dashboard link: https://syzkaller.appspot.com/bug?extid=33d7ea72e47de3bdf4e1
+compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
 
 Unfortunately, I don't have any reproducer for this crash yet.
 
 IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+44b6763edfc17144296f@syzkaller.appspotmail.com
+Reported-by: syzbot+33d7ea72e47de3bdf4e1@syzkaller.appspotmail.com
 
-==================================================================
-BUG: KASAN: use-after-free in memset include/linux/string.h:344 [inline]
-BUG: KASAN: use-after-free in __ext4_expand_extra_isize+0x1ab/0x290  
-fs/ext4/inode.c:5924
-Write of size 736 at addr ffff88803763aea0 by task syz-executor.5/28447
+EXT4-fs (sda1): Mount option "noacl" will be removed by 3.5
+Contact linux-ext4@vger.kernel.org if you think we should keep it.
 
-CPU: 1 PID: 28447 Comm: syz-executor.5 Not tainted 5.4.0-rc1+ #0
+EXT4-fs error (device sda1): ext4_expand_extra_isize_ea:2727: inode #16554:  
+comm syz-executor0: corrupted in-inode xattr
+EXT4-fs (sda1): re-mounted. Opts:  
+debug_want_extra_isize=0x0000000074000000,noacl,
+BUG: unable to handle kernel paging request at ffffed0044000000
+EXT4-fs error (device sda1): ext4_expand_extra_isize_ea:2727: inode #16558:  
+comm syz-executor2: corrupted in-inode xattr
+PGD 21ffef067 P4D 21ffef067 PUD 21ffed067 PMD 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5720 Comm: rs:main Q:Reg Not tainted 4.19.0-rc7+ #52
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
 Google 01/01/2011
+RIP: 0010:memory_is_nonzero mm/kasan/kasan.c:195 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/kasan.c:210 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/kasan.c:241 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/kasan.c:257 [inline]
+RIP: 0010:check_memory_region+0x9e/0x1b0 mm/kasan/kasan.c:267
+Code: c8 49 c1 f9 03 45 85 c9 0f 84 23 01 00 00 48 83 38 00 75 1c 45 8d 41  
+ff 4a 8d 5c c0 08 48 83 c0 08 48 39 c3 0f 84 a8 00 00 00 <48> 83 38 00 74  
+ed 4c 8d 40 08 eb 09 48 83 c0 01 49 39 c0 74 0a 80
+RSP: 0018:ffff8801d8bb6f98 EFLAGS: 00010206
+RAX: ffffed0044000000 RBX: ffffed00518c2bf0 RCX: ffffffff82171b58
+RDX: 0000000000000001 RSI: 0000000073ffffe0 RDI: ffff880218615fa0
+RBP: ffff8801d8bb6fb0 R08: 0000000001cffffe R09: 0000000001cfffff
+R10: ffffed00518c2bef R11: ffff88028c615f7f R12: ffffed00518c2bf0
+R13: 0000000000000004 R14: ffff880218615fa0 R15: 0000000074000000
+FS:  00007fef5d695700(0000) GS:ffff8801daf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffed0044000000 CR3: 00000001c3a63000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  memset+0x23/0x40 mm/kasan/kasan.c:285
+  memset include/linux/string.h:330 [inline]
+  __ext4_expand_extra_isize+0x178/0x240 fs/ext4/inode.c:5865
+EXT4-fs error (device sda1): ext4_expand_extra_isize_ea:2727: inode #16548:  
+comm syz-executor3: corrupted in-inode xattr
+  ext4_try_to_expand_extra_isize fs/ext4/inode.c:5917 [inline]
+  ext4_mark_inode_dirty+0x902/0xb30 fs/ext4/inode.c:5993
+overlayfs: failed to resolve './file1': -2
+EXT4-fs warning (device sda1): ext4_expand_extra_isize_ea:2789: Unable to  
+expand inode 16558. Delete some EAs or run e2fsck.
+  ext4_dirty_inode+0x97/0xc0 fs/ext4/inode.c:6027
+  __mark_inode_dirty+0x7c3/0x1510 fs/fs-writeback.c:2129
+==================================================================
+BUG: KASAN: use-after-free in memset include/linux/string.h:330 [inline]
+BUG: KASAN: use-after-free in __ext4_expand_extra_isize+0x178/0x240  
+fs/ext4/inode.c:5865
+Write of size 1946157024 at addr ffff8801b65c65a0 by task  
+syz-executor1/21720
+
+CPU: 0 PID: 21720 Comm: syz-executor1 Not tainted 4.19.0-rc7+ #52
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+  mark_inode_dirty include/linux/fs.h:2070 [inline]
+  __generic_write_end+0x320/0x400 fs/buffer.c:2117
 Call Trace:
   __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
-  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
-  kasan_report+0x12/0x20 mm/kasan/common.c:634
-  check_memory_region_inline mm/kasan/generic.c:185 [inline]
-  check_memory_region+0x134/0x1a0 mm/kasan/generic.c:192
-  memset+0x24/0x40 mm/kasan/common.c:105
-  memset include/linux/string.h:344 [inline]
-  __ext4_expand_extra_isize+0x1ab/0x290 fs/ext4/inode.c:5924
-  ext4_try_to_expand_extra_isize fs/ext4/inode.c:5976 [inline]
-  ext4_mark_inode_dirty+0x74e/0x9b0 fs/ext4/inode.c:6052
-  ext4_ext_truncate+0x92/0x200 fs/ext4/extents.c:4583
-  ext4_truncate+0xc6e/0x13c0 fs/ext4/inode.c:4511
-  ext4_evict_inode+0x9d4/0x14e0 fs/ext4/inode.c:289
-  evict+0x306/0x680 fs/inode.c:574
-  iput_final fs/inode.c:1563 [inline]
-  iput+0x55d/0x900 fs/inode.c:1589
-  dentry_unlink_inode+0x2d9/0x400 fs/dcache.c:374
-  __dentry_kill+0x38b/0x600 fs/dcache.c:579
-  dentry_kill fs/dcache.c:698 [inline]
-  dput+0x639/0xe10 fs/dcache.c:859
-  __fput+0x424/0x890 fs/file_table.c:293
-  ____fput+0x16/0x20 fs/file_table.c:313
-  task_work_run+0x145/0x1c0 kernel/task_work.c:113
-  exit_task_work include/linux/task_work.h:22 [inline]
-  do_exit+0x904/0x2e60 kernel/exit.c:817
-  do_group_exit+0x135/0x360 kernel/exit.c:921
-  get_signal+0x47c/0x2500 kernel/signal.c:2734
-  do_signal+0x87/0x1700 arch/x86/kernel/signal.c:815
-  exit_to_usermode_loop+0x286/0x380 arch/x86/entry/common.c:159
-  prepare_exit_to_usermode arch/x86/entry/common.c:194 [inline]
-  syscall_return_slowpath arch/x86/entry/common.c:274 [inline]
-  do_syscall_64+0x65f/0x760 arch/x86/entry/common.c:300
+  dump_stack+0x1c4/0x2b4 lib/dump_stack.c:113
+  print_address_description.cold.8+0x9/0x1ff mm/kasan/report.c:256
+  kasan_report_error mm/kasan/report.c:354 [inline]
+  kasan_report.cold.9+0x242/0x309 mm/kasan/report.c:412
+  generic_write_end+0x6c/0x90 fs/buffer.c:2162
+  ext4_da_write_end+0x2e0/0xcd0 fs/ext4/inode.c:3173
+  check_memory_region_inline mm/kasan/kasan.c:260 [inline]
+  check_memory_region+0x13e/0x1b0 mm/kasan/kasan.c:267
+  memset+0x23/0x40 mm/kasan/kasan.c:285
+  memset include/linux/string.h:330 [inline]
+  __ext4_expand_extra_isize+0x178/0x240 fs/ext4/inode.c:5865
+  ext4_try_to_expand_extra_isize fs/ext4/inode.c:5917 [inline]
+  ext4_mark_inode_dirty+0x902/0xb30 fs/ext4/inode.c:5993
+  generic_perform_write+0x4ca/0x6a0 mm/filemap.c:3150
+  ext4_dirty_inode+0x97/0xc0 fs/ext4/inode.c:6027
+  __mark_inode_dirty+0x7c3/0x1510 fs/fs-writeback.c:2129
+  __generic_file_write_iter+0x26e/0x630 mm/filemap.c:3264
+  ext4_file_write_iter+0x390/0x1420 fs/ext4/file.c:266
+  call_write_iter include/linux/fs.h:1808 [inline]
+  new_sync_write fs/read_write.c:474 [inline]
+  __vfs_write+0x6b8/0x9f0 fs/read_write.c:487
+  generic_update_time+0x26a/0x450 fs/inode.c:1651
+  update_time fs/inode.c:1667 [inline]
+  file_update_time+0x390/0x640 fs/inode.c:1877
+  vfs_write+0x1fc/0x560 fs/read_write.c:549
+  ksys_write+0x101/0x260 fs/read_write.c:598
+  ext4_page_mkwrite+0x1fe/0x14a0 fs/ext4/inode.c:6171
+  __do_sys_write fs/read_write.c:610 [inline]
+  __se_sys_write fs/read_write.c:607 [inline]
+  __x64_sys_write+0x73/0xb0 fs/read_write.c:607
+  do_syscall_64+0x1b9/0x820 arch/x86/entry/common.c:290
+  do_page_mkwrite+0x14e/0x660 mm/memory.c:2388
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x459a59
-Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f163d095cf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000075c120 RCX: 0000000000459a59
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000075c120
-RBP: 000000000075c118 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000075c124
-R13: 00007ffee9e6c79f R14: 00007f163d0969c0 R15: 000000000075c124
-
-The buggy address belongs to the page:
-page:ffffea0000dd8e80 refcount:2 mapcount:0 mapping:ffff8880a2d8e520  
-index:0x487
-def_blk_aops
-flags: 0x1fffc000000203a(referenced|dirty|lru|active|private)
-raw: 01fffc000000203a ffffea0000e4cc08 ffffea0000b54b88 ffff8880a2d8e520
-raw: 0000000000000487 ffff88808f15d150 00000002ffffffff ffff8880a17cec40
-page dumped because: kasan: bad access detected
-page->mem_cgroup:ffff8880a17cec40
-
-Memory state around the buggy address:
-  ffff88803763af00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  ffff88803763af80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ffff88803763b000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                    ^
-  ffff88803763b080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-  ffff88803763b100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
+RIP: 0033:0x7fef5f0f319d
+Code: d1 20 00 00 75 10 b8 01 00 00 00 0f 05 48 3d 01 f0 ff ff 73 31 c3 48  
+83 ec 08 e8 be fa ff ff 48 89 04 24 b8 01 00 00 00 0f 05 <48> 8b 3c 24 48  
+89 c2 e8 07 fb ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007fef5d694000 EFLAGS: 00000293
+  do_shared_fault mm/memory.c:3717 [inline]
+  do_fault mm/memory.c:3756 [inline]
+  handle_pte_fault mm/memory.c:3983 [inline]
+  __handle_mm_fault+0x35ca/0x53e0 mm/memory.c:4107
+  ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000388 RCX: 00007fef5f0f319d
+RDX: 0000000000000388 RSI: 000000000236aa90 RDI: 0000000000000005
+RBP: 000000000236aa90 R08: 656c6c616b7a7973 R09: 6c656e72656b2072
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 00007fef5d694480 R14: 0000000000000008 R15: 000000000236a890
+Modules linked in:
+CR2: ffffed0044000000
+---[ end trace 9a8a1d955d622e7a ]---
+RIP: 0010:memory_is_nonzero mm/kasan/kasan.c:195 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/kasan.c:210 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/kasan.c:241 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/kasan.c:257 [inline]
+RIP: 0010:check_memory_region+0x9e/0x1b0 mm/kasan/kasan.c:267
+Code: c8 49 c1 f9 03 45 85 c9 0f 84 23 01 00 00 48 83 38 00 75 1c 45 8d 41  
+ff 4a 8d 5c c0 08 48 83 c0 08 48 39 c3 0f 84 a8 00 00 00 <48> 83 38 00 74  
+ed 4c 8d 40 08 eb 09 48 83 c0 01 49 39 c0 74 0a 80
+RSP: 0018:ffff8801d8bb6f98 EFLAGS: 00010206
+  handle_mm_fault+0x54f/0xc70 mm/memory.c:4144
+RAX: ffffed0044000000 RBX: ffffed00518c2bf0 RCX: ffffffff82171b58
+RDX: 0000000000000001 RSI: 0000000073ffffe0 RDI: ffff880218615fa0
+  __do_page_fault+0x67d/0xed0 arch/x86/mm/fault.c:1395
+RBP: ffff8801d8bb6fb0 R08: 0000000001cffffe R09: 0000000001cfffff
+R10: ffffed00518c2bef R11: ffff88028c615f7f R12: ffffed00518c2bf0
+R13: 0000000000000004 R14: ffff880218615fa0 R15: 0000000074000000
+FS:  00007fef5d695700(0000) GS:ffff8801daf00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  do_page_fault+0xf2/0x7e0 arch/x86/mm/fault.c:1470
+CR2: ffffed0044000000 CR3: 00000001c3a63000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
