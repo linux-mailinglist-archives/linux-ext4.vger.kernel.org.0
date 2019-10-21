@@ -2,100 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E17DF471
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 19:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9D6DF491
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 19:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbfJURk2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 13:40:28 -0400
-Received: from mga04.intel.com ([192.55.52.120]:38681 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbfJURk2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 21 Oct 2019 13:40:28 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2019 10:40:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,324,1566889200"; 
-   d="scan'208";a="200508215"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga003.jf.intel.com with ESMTP; 21 Oct 2019 10:40:26 -0700
-Date:   Mon, 21 Oct 2019 10:40:26 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/5] fs/xfs: Isolate the physical DAX flag from effective
-Message-ID: <20191021174025.GA23024@iweiny-DESK2.sc.intel.com>
-References: <20191020155935.12297-1-ira.weiny@intel.com>
- <20191020155935.12297-3-ira.weiny@intel.com>
- <20191021002621.GC8015@dread.disaster.area>
+        id S1728162AbfJURtk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 13:49:40 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33397 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727171AbfJURtj (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 13:49:39 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9LHnX2K012041
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Oct 2019 13:49:34 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 31358420458; Mon, 21 Oct 2019 13:49:33 -0400 (EDT)
+Date:   Mon, 21 Oct 2019 13:49:33 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 15/22] jbd2: Factor out common parts of stopping and
+ restarting a handle
+Message-ID: <20191021174933.GH27850@mit.edu>
+References: <20191003215523.7313-1-jack@suse.cz>
+ <20191003220613.10791-15-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191021002621.GC8015@dread.disaster.area>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20191003220613.10791-15-jack@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 11:26:21AM +1100, Dave Chinner wrote:
-> On Sun, Oct 20, 2019 at 08:59:32AM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > xfs_ioctl_setattr_dax_invalidate() currently checks if the DAX flag is
-> > changing as a quick check.
-> > 
-> > But the implementation mixes the physical (XFS_DIFLAG2_DAX) and
-> > effective (S_DAX) DAX flags.
+On Fri, Oct 04, 2019 at 12:06:01AM +0200, Jan Kara wrote:
+> jbd2__journal_restart() has quite some code that is common with
+> jbd2_journal_stop(). Factor this functionality into stop_this_handle()
+> helper and use it from both functions. Note that this also drops
+> t_handle_lock protection from jbd2__journal_restart() as
+> jbd2_journal_stop() does the same thing without it.
 > 
-> More nuanced than that.
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>  fs/jbd2/transaction.c | 94 +++++++++++++++++++++++----------------------------
+>  1 file changed, 42 insertions(+), 52 deletions(-)
 > 
-> The idea was that if the mount option was set, clearing the
-> per-inode flag would override the mount option. i.e. the mount
-> option sets the S_DAX flag at inode instantiation, so using
-> FSSETXATTR to ensure the FS_XFLAG_DAX is not set would override the
-> mount option setting, giving applications a way of guranteeing they
-> aren't using DAX to access the data.
+> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+> index d648cec3f90f..d4ee02e5161b 100644
+> --- a/fs/jbd2/transaction.c
+> +++ b/fs/jbd2/transaction.c
+> @@ -677,52 +704,30 @@ int jbd2__journal_restart(handle_t *handle, int nblocks, gfp_t gfp_mask)
 
-At LSF/MM we discussed keeping the mount option as a global "chicken bit" as
-described by Matt Wilcox[1].  This preserves the existing behavior of turning
-it on no matter what but offers an alternative with the per-file flag.
+> -	read_lock(&journal->j_state_lock);
+> -	spin_lock(&transaction->t_handle_lock);
+> -	atomic_sub(handle->h_buffer_credits,
+> -		   &transaction->t_outstanding_credits);
+> -	if (handle->h_rsv_handle) {
+> -		sub_reserved_credits(journal,
+> -				     handle->h_rsv_handle->h_buffer_credits);
+> -	}
+> -	if (atomic_dec_and_test(&transaction->t_updates))
+> -		wake_up(&journal->j_wait_updates);
+> -	tid = transaction->t_tid;
+> -	spin_unlock(&transaction->t_handle_lock);
+> +	jbd_debug(2, "restarting handle %p\n", handle);
+> +	stop_this_handle(handle);
+>  	handle->h_transaction = NULL;
+> -	current->journal_info = NULL;
+>  
+> -	jbd_debug(2, "restarting handle %p\n", handle);
+> +	read_lock(&journal->j_state_lock);
+>  	need_to_start = !tid_geq(journal->j_commit_request, tid);
+>  	read_unlock(&journal->j_state_lock);
 
-To do what you describe above, it was suggested, by Ted I believe, that an
-admin can set DAX on the root directory which will enable DAX by default
-through inheritance but allow users to turn it off if they desire.
+What is j_state_lock protecting at this point?  There's only a 32-bit
+read of j_commit_request at this point.
 
-I'm concerned that all users who currently use '-o dax' will expect their
-current file systems to be using DAX when those mounts occur.  Their physical
-inode flag is going to be 0 which, if we implement the 'turn off DAX' as you
-describe will mean they will not get the behavior they expect when booting on a
-new kernel.
-
-> 
-> So if the mount option is going to live on, I suspect that we want
-> to keep this code as it stands.
-
-I don't think we can get rid of it soon but I would be in favor of working
-toward deprecating it.  Regardless I think this keeps the semantics simple WRT
-the interaction of the mount and per-file flags.
-
-Ira
-
-[1] https://lwn.net/Articles/787973/
-
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+						- Ted
