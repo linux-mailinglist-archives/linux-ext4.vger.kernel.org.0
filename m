@@ -2,124 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77696DF834
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 00:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA9DDF85C
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 01:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730453AbfJUWtd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 18:49:33 -0400
-Received: from mga07.intel.com ([134.134.136.100]:59581 "EHLO mga07.intel.com"
+        id S1730444AbfJUXHX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 19:07:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730276AbfJUWtd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 21 Oct 2019 18:49:33 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2019 15:49:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,325,1566889200"; 
-   d="scan'208";a="209483476"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga002.jf.intel.com with ESMTP; 21 Oct 2019 15:49:31 -0700
-Date:   Mon, 21 Oct 2019 15:49:31 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/5] fs/xfs: Allow toggle of physical DAX flag
-Message-ID: <20191021224931.GA25526@iweiny-DESK2.sc.intel.com>
-References: <20191020155935.12297-1-ira.weiny@intel.com>
- <20191020155935.12297-6-ira.weiny@intel.com>
- <20191021004536.GD8015@dread.disaster.area>
+        id S1730069AbfJUXHX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 21 Oct 2019 19:07:23 -0400
+Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C812F2086D;
+        Mon, 21 Oct 2019 23:07:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1571699242;
+        bh=Pe7Lis/ulx8/IwkmeLuv53LKYhthEU3xhU7qcvrWXZ8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KFqCookuLvhUWmmwBtVb2etKPO0Oto0GcX9cwodQRQNs2/xlaPbje2qinGny1YdhG
+         34Z6+AuL/AuHZ/lDvAKibQh0ft7asFQOQiIoMfRwwMVndg90X1oJg9z7TTsgGx/cQ9
+         3FPe8cmn2ZRnZyEzQrXJ9OGqx45lrhuB5zRNyYLI=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 0/3] fscrypt: support for inline-encryption-optimized policies
+Date:   Mon, 21 Oct 2019 16:03:52 -0700
+Message-Id: <20191021230355.23136-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.23.0.866.gb869b98d4c-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191021004536.GD8015@dread.disaster.area>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 11:45:36AM +1100, Dave Chinner wrote:
-> On Sun, Oct 20, 2019 at 08:59:35AM -0700, ira.weiny@intel.com wrote:
-> > @@ -1232,12 +1233,10 @@ xfs_diflags_to_linux(
-> >  		inode->i_flags |= S_NOATIME;
-> >  	else
-> >  		inode->i_flags &= ~S_NOATIME;
-> > -#if 0	/* disabled until the flag switching races are sorted out */
-> >  	if (xflags & FS_XFLAG_DAX)
-> >  		inode->i_flags |= S_DAX;
-> >  	else
-> >  		inode->i_flags &= ~S_DAX;
-> > -#endif
-> 
-> This code has bit-rotted. See xfs_setup_iops(), where we now have a
-> different inode->i_mapping->a_ops for DAX inodes.
+Hello,
 
-:-(
+In preparation for adding inline encryption support to fscrypt, this
+patchset adds a new fscrypt policy flag which modifies the encryption to
+be optimized for inline encryption hardware compliant with the UFS
+standard --- specifically, to use a smaller number of keys while still
+using at most 64 IV bits.  This required adding the inode number to the
+IVs.  For ext4, this precludes filesystem shrinking, so I've also added
+a compat feature which will prevent the filesystem from being shrunk.
 
-> 
-> That, fundamentally, is the issue here - it's not setting/clearing
-> the DAX flag that is the issue, it's doing a swap of the
-> mapping->a_ops while there may be other code using that ops
-> structure.
-> 
-> IOWs, if there is any code anywhere in the kernel that
-> calls an address space op without holding one of the three locks we
-> hold here (i_rwsem, MMAPLOCK, ILOCK) then it can race with the swap
-> of the address space operations.
-> 
-> By limiting the address space swap to file sizes of zero, we rule
-> out the page fault path (mmap of a zero length file segv's with an
-> access beyond EOF on the first read/write page fault, right?).
+I've separated this from the full "Inline Encryption Support" patchset
+(https://lkml.kernel.org/linux-fsdevel/20190821075714.65140-1-satyat@google.com/)
+to avoid conflating an implementation (inline encryption) with a new
+on-disk format (INLINE_CRYPT_OPTIMIZED).  This patchset purely adds
+support for INLINE_CRYPT_OPTIMIZED policies to fscrypt, but implements
+them using the existing filesystem layer crypto.
 
-Yes I checked that and thought we were safe here...
+We're planning to make the *implementation* (filesystem layer or inline
+crypto) be controlled by a mount option '-o inlinecrypt'.
 
-> However, other aops callers that might run unlocked and do the wrong
-> thing if the aops pointer is swapped between check of the aop method
-> existing and actually calling it even if the file size is zero?
-> 
-> A quick look shows that FIBMAP (ioctl_fibmap())) looks susceptible
-> to such a race condition with the current definitions of the XFS DAX
-> aops. I'm guessing there will be others, but I haven't looked
-> further than this...
+This patchset applies to fscrypt.git#master and can also be retrieved from
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-crypt-optimized-v1
 
-I'll check for others and think on what to do about this.  ext4 will have the
-same problem I think.  :-(
+A ciphertext verification test for INLINE_CRYPT_OPTIMIZED policies can
+be found at
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git/log/?h=inline-encryption
 
-I don't suppose using a single a_ops for both DAX and non-DAX is palatable?
+Work-in-progress patches for the inline encryption implementation of
+both INLINE_CRYPT_OPTIMIZED and regular policies can be found at
+https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-encryption-wip
 
-> 
-> >  	/* lock, flush and invalidate mapping in preparation for flag change */
-> >  	xfs_ilock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
-> > +
-> > +	if (i_size_read(inode) != 0) {
-> > +		error = -EOPNOTSUPP;
-> > +		goto out_unlock;
-> > +	}
-> 
-> Wrong error. Should be the same as whatever is returned when we try
-> to change the extent size hint and can't because the file is
-> non-zero in length (-EINVAL, I think). Also needs a comment
-> explainging why this check exists, and probably better written as
-> i_size_read() > 0 ....
+Eric Biggers (3):
+  fscrypt: add support for inline-encryption-optimized policies
+  ext4: add support for INLINE_CRYPT_OPTIMIZED encryption policies
+  f2fs: add support for INLINE_CRYPT_OPTIMIZED encryption policies
 
-Done, done, and done.
+ Documentation/filesystems/fscrypt.rst | 53 +++++++++++++++++++--------
+ fs/crypto/crypto.c                    | 11 +++++-
+ fs/crypto/fscrypt_private.h           | 20 +++++++---
+ fs/crypto/keyring.c                   |  6 ++-
+ fs/crypto/keysetup.c                  | 47 +++++++++++++++++++-----
+ fs/crypto/policy.c                    | 42 ++++++++++++++++++++-
+ fs/ext4/ext4.h                        |  2 +
+ fs/ext4/super.c                       | 14 +++++++
+ fs/f2fs/super.c                       | 26 ++++++++++---
+ include/linux/fscrypt.h               |  3 ++
+ include/uapi/linux/fscrypt.h          | 15 ++++----
+ 11 files changed, 191 insertions(+), 48 deletions(-)
 
-Thank you,
-Ira
+-- 
+2.23.0.866.gb869b98d4c-goog
 
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
