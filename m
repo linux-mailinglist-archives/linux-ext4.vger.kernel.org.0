@@ -2,89 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC2FDEDD1
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 15:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F45DEDF1
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 15:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbfJUNiW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 09:38:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54636 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729021AbfJUNiV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 21 Oct 2019 09:38:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 39153AE2D;
-        Mon, 21 Oct 2019 13:38:20 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EC4F51E4AA0; Mon, 21 Oct 2019 15:38:19 +0200 (CEST)
-Date:   Mon, 21 Oct 2019 15:38:19 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     mbobrowski@mbobrowski.org
-Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
-Subject: Re: [PATCH v5 06/12] xfs: Use iomap_dio_rw_wait()
-Message-ID: <20191021133819.GE25184@quack2.suse.cz>
-References: <cover.1571647178.git.mbobrowski@mbobrowski.org>
- <78aac4cedf43825b3535a0d35dbba179ecbdffeb.1571647179.git.mbobrowski@mbobrowski.org>
+        id S1728927AbfJUNkC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 09:40:02 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45609 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728995AbfJUNkB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 09:40:01 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9LDduu3004709
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Oct 2019 09:39:57 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 2CC60420458; Mon, 21 Oct 2019 09:39:56 -0400 (EDT)
+Date:   Mon, 21 Oct 2019 09:39:56 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 07/22] ext4: Avoid unnecessary revokes in
+ ext4_alloc_branch()
+Message-ID: <20191021133956.GB4675@mit.edu>
+References: <20191003215523.7313-1-jack@suse.cz>
+ <20191003220613.10791-7-jack@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <78aac4cedf43825b3535a0d35dbba179ecbdffeb.1571647179.git.mbobrowski@mbobrowski.org>
+In-Reply-To: <20191003220613.10791-7-jack@suse.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 21-10-19 20:18:27, mbobrowski@mbobrowski.org wrote:
-> Use iomap_dio_rw() to wait for unaligned direct IO instead of opencoding
-> the wait.
+On Fri, Oct 04, 2019 at 12:05:53AM +0200, Jan Kara wrote:
+> Error cleanup path in ext4_alloc_branch() calls ext4_forget() on freshly
+> allocated indirect blocks with 'metadata' set to 1. This results in
+> generating revoke records for these blocks. However this is unnecessary
+> as the freed blocks are only allocated in the current transaction and
+> thus they will never be journalled. Make this cleanup path similar to
+> e.g. cleanup in ext4_splice_branch() and use ext4_free_blocks() to
+> handle block forgetting by passing EXT4_FREE_BLOCKS_FORGET and not
+> EXT4_FREE_BLOCKS_METADATA to ext4_free_blocks(). This also allows
+> allocating transaction not to reserve any credits for revoke records.
 > 
 > Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
-> 
-> This patch has already been posted through by Jan, but I've just
-> included it within this patch series to mark that it's a clear
-> dependency.
 
-This patch actually is not a dependency. But that doesn't really matter...
+Looks good, you can add:
 
-								Honza
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 
-> 
->  fs/xfs/xfs_file.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 0739ba72a82e..c0620135a279 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -547,16 +547,12 @@ xfs_file_dio_aio_write(
->  	}
->  
->  	trace_xfs_file_direct_write(ip, count, iocb->ki_pos);
-> -	ret = iomap_dio_rw(iocb, from, &xfs_iomap_ops, &xfs_dio_write_ops,
-> -			   is_sync_kiocb(iocb));
-> -
->  	/*
-> -	 * If unaligned, this is the only IO in-flight. If it has not yet
-> -	 * completed, wait on it before we release the iolock to prevent
-> -	 * subsequent overlapping IO.
-> +	 * If unaligned, this is the only IO in-flight. Wait on it before we
-> +	 * release the iolock to prevent subsequent overlapping IO.
->  	 */
-> -	if (ret == -EIOCBQUEUED && unaligned_io)
-> -		inode_dio_wait(inode);
-> +	ret = iomap_dio_rw(iocb, from, &xfs_iomap_ops, &xfs_dio_write_ops,
-> +			   is_sync_kiocb(iocb) || unaligned_io);
->  out:
->  	xfs_iunlock(ip, iolock);
->  
-> -- 
-> 2.20.1
-> 
-> --<M>--
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
