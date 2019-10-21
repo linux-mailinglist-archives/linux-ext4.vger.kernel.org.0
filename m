@@ -2,79 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A334DF6E2
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 22:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3ECADF73F
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 23:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730121AbfJUUl1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 16:41:27 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:39918 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbfJUUl1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 16:41:27 -0400
-Received: by mail-ot1-f67.google.com with SMTP id s22so12221546otr.6
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Oct 2019 13:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K2A3f3eR0usajIWv7ygDfgHp0FE7soF64v7si14VMt8=;
-        b=jCnq3ew4BHM7CigcT9fR4xtMwX4ujwBTp4aW5d6dYlIQrUWu0NFc8U+JLH9MxRcNiD
-         /SatjX3cjA9E7/FWipkIopT1UKofPnvFt7Oe0flTtNZq8YduWw9OAB6NJaXbSQZSLY0e
-         PpehSCBvSTevTNOVzGzk4MU9npHj+LgNejp5z+eHbI9ifvHBg/T410/059Mnxaj34nAd
-         jCpgdrCjo1hHXbYthCOd8zQuUmew1u/QRlq84Zut9nZ9LMdLrBRu6PbmSjI+PVFi9dxi
-         B/pJLVlAbd51zhACPN+urWpRWgI8YdhhS2LDmeJJYa8++46T4UojsIRfmiVwnG3Sob51
-         37gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K2A3f3eR0usajIWv7ygDfgHp0FE7soF64v7si14VMt8=;
-        b=b5HFsZaU5ZfhhQQVfhjuT24NtcxbKErpdzNJz3T+Vh++voY5KLJl4xUvezwwh6c6vS
-         lhfvlr2iBh3oeW4Hw61R72UP77SO0dnjI+tkfeZ5WsHOrXncXHsb9CjQJLJSphc8w0OZ
-         0lNTJfFM4IX9AY+HmL/k6Qx3SltJbdotJk0uGrGEQ6O5/NOYZ1TCwLi9wF8PLLTNGWwp
-         xPMBSUt3X9y+L4QtiSL7D5YAJzWES4VbkuflEdCeg1fzDIFMa3L5OSotKOHVM8saSxQI
-         olDcyYWptWxta4Be4tbR/wXnCnQ20lb3e8wfz5fJAOZ1nltr3MY7HmfUIf9M1sh3Nvby
-         AKLQ==
-X-Gm-Message-State: APjAAAUsXGkBB8dr45EU2SgMMU/w2DffQ15lJdlxGxcr24+caLdzX7b1
-        H55a7rUQKy7VSjcWCRFKIPwp22poViq+Dl+a0hunc5wy
-X-Google-Smtp-Source: APXvYqy01nqHHj4/bS55F0Ma1ybXoMwD2ci6BZx4qaBI7Q3QPiMVjJxHWXSwE4tHlrNbGKPx/kcDyzXekBZZc5e54bg=
-X-Received: by 2002:a9d:6a0c:: with SMTP id g12mr19089932otn.141.1571690486165;
- Mon, 21 Oct 2019 13:41:26 -0700 (PDT)
+        id S2387412AbfJUVE0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 17:04:26 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57189 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387407AbfJUVE0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 17:04:26 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9LL4KZL018418
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Oct 2019 17:04:21 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 8DF28420456; Mon, 21 Oct 2019 17:04:20 -0400 (EDT)
+Date:   Mon, 21 Oct 2019 17:04:20 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 16/22] jbd2: Account descriptor blocks into
+ t_outstanding_credits
+Message-ID: <20191021210420.GA24015@mit.edu>
+References: <20191003215523.7313-1-jack@suse.cz>
+ <20191003220613.10791-16-jack@suse.cz>
 MIME-Version: 1.0
-References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
- <20191001074101.256523-2-harshadshirwadkar@gmail.com> <20191016021427.GA31394@mit.edu>
-In-Reply-To: <20191016021427.GA31394@mit.edu>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Mon, 21 Oct 2019 13:41:14 -0700
-Message-ID: <CAD+ocbyMyfp8gF7Q2=c7_w-=p5BPdsPmCFaCS_4iKb=8r=Rrxg@mail.gmail.com>
-Subject: Re: [PATCH v3 01/13] ext4: add handling for extended mount options
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Andreas Dilger <adilger@dilger.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191003220613.10791-16-jack@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Oct 15, 2019 at 7:14 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Tue, Oct 01, 2019 at 12:40:50AM -0700, Harshad Shirwadkar wrote:
-> > @@ -1858,8 +1863,9 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
-> >                       set_opt2(sb, EXPLICIT_DELALLOC);
-> >               } else if (m->mount_opt & EXT4_MOUNT_JOURNAL_CHECKSUM) {
-> >                       set_opt2(sb, EXPLICIT_JOURNAL_CHECKSUM);
-> > -             } else
-> > +             } else if (m->mount_opt) {
-> >                       return -1;
-> > +             }
-> >       }
-> >       if (m->flags & MOPT_CLEAR_ERR)
-> >               clear_opt(sb, ERRORS_MASK);
->
-> Why is this change needed?  This is in the handling of options that
-> have MOPT_EXPLICIT, and it doesn't seem relevant to this commit?
-You are right, this change is an irrelevant change. I'll remove it in
-next version. Thanks!
->
->                                                  - Ted
+On Fri, Oct 04, 2019 at 12:06:02AM +0200, Jan Kara wrote:
+> Currently, journal descriptor blocks were not accounted in
+> transaction->t_outstanding_credits and we were just leaving some slack
+> space in the journal for them (in jbd2_log_space_left() and
+> jbd2_space_needed()). This is making proper accounting (and reservation
+> we want to add) of descriptor blocks difficult so switch to accounting
+> descriptor blocks in transaction->t_outstanding_credits and just reserve
+> the same amount of credits in t_outstanding credits for journal
+> descriptor blocks when creating transaction.
+
+This changes the meaning of t_oustanding credits; in particular the
+documentation of t_outstanding_credits in include/linux/jbd2.h is no
+longer correct, as it currently defines it has containing:
+
+     Number of buffers reserved for use by all handles in this transaction
+     handle but not yet modified. [none]
+
+Previously, t_outstanding_credits would go to zero once all of the
+handles attached to the transaction were closed.  Now, it is
+initialized to j_max_transaction_buffers >> 32, and once all of the
+handles are closed t_outstanding_credits will go back to that value.
+It then gets decremented as we write each jbd descriptor block
+(whether it is for a revoke block or a data block) during the commit
+and we throw a warning if we ever write more than j_max_transaction_buffers >> 32
+descriptor blocks.
+
+Is that a fair summary of what happens after this commit?
+
+The thing is, I don't see how this helps the rest of the patch series;
+we account for space needed for the revoke blocks in later patches,
+but I don't see that adjusting t_outstanding credits.  We reserve
+extra space for the revoke blocks, and we then account for that space,
+but the fact that we have accounted for all of the extra descriptor
+blocks in t_outstanding_credits doesn't seem to be changed.  As a
+result, we appear to be double-counting the space needed for the
+revoke descriptor blocks.  Which is fine; I don't mind the accounting
+being a bit more conservative, but I find myself being a bit puzzled
+about why this change is necessary or adds value.
+
+What am I missing?
+
+						- Ted
