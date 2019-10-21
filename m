@@ -2,204 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82928DEE15
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 15:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9648EDEE46
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 15:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729727AbfJUNle (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 09:41:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56812 "EHLO mx1.suse.de"
+        id S1728994AbfJUNsT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 09:48:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60466 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729714AbfJUNle (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 21 Oct 2019 09:41:34 -0400
+        id S1728083AbfJUNsT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 21 Oct 2019 09:48:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EFE89B15A;
-        Mon, 21 Oct 2019 13:41:31 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id D7FDDB469;
+        Mon, 21 Oct 2019 13:48:17 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A1D551E4AA0; Mon, 21 Oct 2019 15:41:31 +0200 (CEST)
-Date:   Mon, 21 Oct 2019 15:41:31 +0200
+        id 6CC681E4AA2; Mon, 21 Oct 2019 15:48:17 +0200 (CEST)
+Date:   Mon, 21 Oct 2019 15:48:17 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
 Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
-Subject: Re: [PATCH v5 07/12] ext4: introduce direct I/O read using iomap
- infrastructure
-Message-ID: <20191021134131.GF25184@quack2.suse.cz>
+Subject: Re: [PATCH v5 08/12] ext4: update direct I/O read to do trylock in
+ IOCB_NOWAIT cases
+Message-ID: <20191021134817.GG25184@quack2.suse.cz>
 References: <cover.1571647178.git.mbobrowski@mbobrowski.org>
- <280de880787dc7c064c309efb685f95d4ff732a9.1571647179.git.mbobrowski@mbobrowski.org>
+ <5ee370a435eb08fb14579c7c197b16e9fa0886f0.1571647179.git.mbobrowski@mbobrowski.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <280de880787dc7c064c309efb685f95d4ff732a9.1571647179.git.mbobrowski@mbobrowski.org>
+In-Reply-To: <5ee370a435eb08fb14579c7c197b16e9fa0886f0.1571647179.git.mbobrowski@mbobrowski.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 21-10-19 20:18:37, Matthew Bobrowski wrote:
-> This patch introduces a new direct I/O read path which makes use of
-> the iomap infrastructure.
-> 
-> The new function ext4_do_read_iter() is responsible for calling into
-> the iomap infrastructure via iomap_dio_rw(). If the read operation
-> performed on the inode is not supported, which is checked via
-> ext4_dio_supported(), then we simply fallback and complete the I/O
-> using buffered I/O.
-> 
-> Existing direct I/O read code path has been removed, as it is no
-> longer required.
-> 
-> Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+On Mon 21-10-19 20:18:46, Matthew Bobrowski wrote:
+> This patch updates the lock pattern in ext4_dio_read_iter() to only
+> perform the trylock in IOCB_NOWAIT cases.
 
-Looks good to me. You can add:
+The changelog is actually misleading. It should say something like "This
+patch updates the lock pattern in ext4_dio_read_iter() to not block on
+inode lock in case of IOCB_NOWAIT direct IO reads."
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Also to ease backporting of easy fixes, we try to put patches like this
+early in the series (fixing code in ext4_direct_IO_read(), and then the
+fixed code would just carry over to ext4_dio_read_iter()).
 
-BTW, I think I gave you my Reviewed-by tag for this patch also last time
-and this patch didn't change since then. You can just include the tag in
-your posting in that case.
+The change itself looks good to me.
 
 								Honza
 
+> 
+> Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
 > ---
->  fs/ext4/file.c  | 46 +++++++++++++++++++++++++++++++++++++++++++++-
->  fs/ext4/inode.c | 32 +-------------------------------
->  2 files changed, 46 insertions(+), 32 deletions(-)
+>  fs/ext4/file.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 > 
 > diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index ab75aee3e687..6ea7e00e0204 100644
+> index 6ea7e00e0204..8420686b90f5 100644
 > --- a/fs/ext4/file.c
 > +++ b/fs/ext4/file.c
-> @@ -34,6 +34,46 @@
->  #include "xattr.h"
->  #include "acl.h"
+> @@ -52,7 +52,13 @@ static int ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>  	ssize_t ret;
+>  	struct inode *inode = file_inode(iocb->ki_filp);
 >  
-> +static bool ext4_dio_supported(struct inode *inode)
-> +{
-> +	if (IS_ENABLED(CONFIG_FS_ENCRYPTION) && IS_ENCRYPTED(inode))
-> +		return false;
-> +	if (fsverity_active(inode))
-> +		return false;
-> +	if (ext4_should_journal_data(inode))
-> +		return false;
-> +	if (ext4_has_inline_data(inode))
-> +		return false;
-> +	return true;
-> +}
-> +
-> +static int ext4_dio_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> +{
-> +	ssize_t ret;
-> +	struct inode *inode = file_inode(iocb->ki_filp);
-> +
-> +	inode_lock_shared(inode);
-> +	if (!ext4_dio_supported(inode)) {
-> +		inode_unlock_shared(inode);
-> +		/*
-> +		 * Fallback to buffered I/O if the operation being performed on
-> +		 * the inode is not supported by direct I/O. The IOCB_DIRECT
-> +		 * flag needs to be cleared here in order to ensure that the
-> +		 * direct I/O path within generic_file_read_iter() is not
-> +		 * taken.
-> +		 */
-> +		iocb->ki_flags &= ~IOCB_DIRECT;
-> +		return generic_file_read_iter(iocb, to);
+> -	inode_lock_shared(inode);
+> +	if (iocb->ki_flags & IOCB_NOWAIT) {
+> +		if (!inode_trylock_shared(inode))
+> +			return -EAGAIN;
+> +	} else {
+> +		inode_lock_shared(inode);
 > +	}
 > +
-> +	ret = iomap_dio_rw(iocb, to, &ext4_iomap_ops, NULL,
-> +			   is_sync_kiocb(iocb));
-> +	inode_unlock_shared(inode);
-> +
-> +	file_accessed(iocb->ki_filp);
-> +	return ret;
-> +}
-> +
->  #ifdef CONFIG_FS_DAX
->  static ssize_t ext4_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  {
-> @@ -64,7 +104,9 @@ static ssize_t ext4_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  
->  static ssize_t ext4_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  {
-> -	if (unlikely(ext4_forced_shutdown(EXT4_SB(file_inode(iocb->ki_filp)->i_sb))))
-> +	struct inode *inode = file_inode(iocb->ki_filp);
-> +
-> +	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
->  		return -EIO;
->  
->  	if (!iov_iter_count(to))
-> @@ -74,6 +116,8 @@ static ssize_t ext4_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  	if (IS_DAX(file_inode(iocb->ki_filp)))
->  		return ext4_dax_read_iter(iocb, to);
->  #endif
-> +	if (iocb->ki_flags & IOCB_DIRECT)
-> +		return ext4_dio_read_iter(iocb, to);
->  	return generic_file_read_iter(iocb, to);
->  }
->  
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index ebeedbf3900f..03a9e2b85e46 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -863,9 +863,6 @@ int ext4_dio_get_block(struct inode *inode, sector_t iblock,
->  {
->  	/* We don't expect handle for direct IO */
->  	WARN_ON_ONCE(ext4_journal_current_handle());
-> -
-> -	if (!create)
-> -		return _ext4_get_block(inode, iblock, bh, 0);
->  	return ext4_get_block_trans(inode, iblock, bh, EXT4_GET_BLOCKS_CREATE);
->  }
->  
-> @@ -3865,30 +3862,6 @@ static ssize_t ext4_direct_IO_write(struct kiocb *iocb, struct iov_iter *iter)
->  	return ret;
->  }
->  
-> -static ssize_t ext4_direct_IO_read(struct kiocb *iocb, struct iov_iter *iter)
-> -{
-> -	struct address_space *mapping = iocb->ki_filp->f_mapping;
-> -	struct inode *inode = mapping->host;
-> -	size_t count = iov_iter_count(iter);
-> -	ssize_t ret;
-> -
-> -	/*
-> -	 * Shared inode_lock is enough for us - it protects against concurrent
-> -	 * writes & truncates and since we take care of writing back page cache,
-> -	 * we are protected against page writeback as well.
-> -	 */
-> -	inode_lock_shared(inode);
-> -	ret = filemap_write_and_wait_range(mapping, iocb->ki_pos,
-> -					   iocb->ki_pos + count - 1);
-> -	if (ret)
-> -		goto out_unlock;
-> -	ret = __blockdev_direct_IO(iocb, inode, inode->i_sb->s_bdev,
-> -				   iter, ext4_dio_get_block, NULL, NULL, 0);
-> -out_unlock:
-> -	inode_unlock_shared(inode);
-> -	return ret;
-> -}
-> -
->  static ssize_t ext4_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
->  {
->  	struct file *file = iocb->ki_filp;
-> @@ -3915,10 +3888,7 @@ static ssize_t ext4_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
->  		return 0;
->  
->  	trace_ext4_direct_IO_enter(inode, offset, count, iov_iter_rw(iter));
-> -	if (iov_iter_rw(iter) == READ)
-> -		ret = ext4_direct_IO_read(iocb, iter);
-> -	else
-> -		ret = ext4_direct_IO_write(iocb, iter);
-> +	ret = ext4_direct_IO_write(iocb, iter);
->  	trace_ext4_direct_IO_exit(inode, offset, count, iov_iter_rw(iter), ret);
->  	return ret;
->  }
-> -- 
-> 2.20.1
-> 
-> --<M>--
+>  	if (!ext4_dio_supported(inode)) {
+>  		inode_unlock_shared(inode);
+>  		/*
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
