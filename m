@@ -2,62 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44428DF610
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 21:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4F7DF60B
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2019 21:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbfJUTcA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 15:32:00 -0400
-Received: from 61-222-241-106.HINET-IP.hinet.net ([61.222.241.106]:53444 "EHLO
-        ai-valuation.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728056AbfJUTcA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 15:32:00 -0400
-X-Greylist: delayed 13751 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Oct 2019 15:31:59 EDT
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        by ai-valuation.com.tw (Postfix) with SMTP id C8FF33FD7FD;
-        Mon, 21 Oct 2019 16:55:47 +0800 (CST)
-Received: from [123.132.6.247] by 127.0.0.1; Mon, 21 Oct 2019 06:55:17 -0200
-Message-ID: <a19$l05$aqe3a32a-6-7@lnvasxsd0w>
-From:   "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
-Reply-To: "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
-To:     vincent.lee@dxytech.com
-Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA
-Date:   Mon, 21 Oct 19 06:55:17 GMT
-X-Mailer: MIME-tools 5.503 (Entity 5.501)
+        id S1730146AbfJUTa2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 15:30:28 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32815 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726672AbfJUTa1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 15:30:27 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9LJUKLB017773
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Oct 2019 15:30:21 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D6972420458; Mon, 21 Oct 2019 15:30:19 -0400 (EDT)
+Date:   Mon, 21 Oct 2019 15:30:19 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        Chandan Rajendra <chandan@linux.ibm.com>
+Subject: Re: [xfstests-bld PATCH] test-appliance: add ext4/encrypt_1k test
+ config
+Message-ID: <20191021193019.GI27850@mit.edu>
+References: <20191016221552.299566-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="F5F7_2._.B_EF__.DC48B"
-X-Priority: 3
-X-MSMail-Priority: Normal
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191016221552.299566-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Oct 16, 2019 at 03:15:52PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Add a test configuration to allow testing ext4 encryption with 1k
+> blocks, which kernel patches have been proposed to support.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
---F5F7_2._.B_EF__.DC48B
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+Thanks, applied.
 
-Greetings
-
-My name is Barrister Hans Erich.
-
-I have a client who is interested to invest in your country, she is a well=
- known politician in her country and deserve a lucrative investment partne=
-rship with you outside her country without any delay   Please can you mana=
-ge such investment please Kindly reply for further details.
-
-Your full names ---------
-
-
-Your urgent response will be appreciated
-
-Thank you and God bless you.
-
-Barrister Hans Erich
-
-Yours sincerely,
-Barrister Hans Erich
-
---F5F7_2._.B_EF__.DC48B--
-
+					- Ted
