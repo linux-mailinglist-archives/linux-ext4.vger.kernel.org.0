@@ -2,90 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 497ACDFD1A
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 07:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F4EDFD26
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 07:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731167AbfJVF1T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Oct 2019 01:27:19 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:39196 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727978AbfJVF1S (ORCPT
+        id S1731001AbfJVFgf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Oct 2019 01:36:35 -0400
+Received: from sender3-pp-o92.zoho.com.cn ([124.251.121.251]:25770 "EHLO
+        sender3-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725788AbfJVFgf (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 22 Oct 2019 01:27:18 -0400
-Received: from dread.disaster.area (pa49-180-40-48.pa.nsw.optusnet.com.au [49.180.40.48])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 95C8A43ED8B;
-        Tue, 22 Oct 2019 16:27:14 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1iMmhM-0000ft-TN; Tue, 22 Oct 2019 16:27:12 +1100
-Date:   Tue, 22 Oct 2019 16:27:12 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        Paul Crowley <paulcrowley@google.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH 1/3] fscrypt: add support for inline-encryption-optimized
- policies
-Message-ID: <20191022052712.GA2083@dread.disaster.area>
-References: <20191021230355.23136-1-ebiggers@kernel.org>
- <20191021230355.23136-2-ebiggers@kernel.org>
+        Tue, 22 Oct 2019 01:36:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1571722579; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=elWVXuZ5DIIuwhkBidniQ4q30rjoikxwsU2TViQ4n3ncGBDbethRAFDJzV/iJKXLdgXjr7Z51iy8WoEYJdzRbwDgEWbgXgJsOnYdGcXJu4lLMyP2yJpPSWMGWGPdDFgnG95n8OAmSYjBVW7QE+PuFGGkR9hYcBIlLL9f1TXXaG8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1571722579; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To:ARC-Authentication-Results; 
+        bh=UMCtnXKp+wwDbWddncCsDub/KDwoKgBRjvwsYUv2piM=; 
+        b=oBTLOWwvVtYpKOS2NlOP1MXwr449zzQtqNuzNjQQQk6OskvrX8V9GuXnNhjZI4/g8wqwCsKVaPWJTAQK1KGlAp6bmLUaeR5dO4RGdOpYE/GkJTBQPLx1x2fjhWKZqUsnUI4jYmRBf3fbxDeZ0FqMHuJWs7sciVHBsxsAeRV3To8=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1571722579;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        l=1114; bh=UMCtnXKp+wwDbWddncCsDub/KDwoKgBRjvwsYUv2piM=;
+        b=TsmsDYX8ogzOAg/tSwYikX3wuXvGWaJ6sc/PDHFTomxVNfJbZf+y+wbJdrFgBlyJ
+        9F4qVc+UGSdmJxo4fiDt3a67JybpmeJvd4+qo+qXljZ/wAHVoftJoBD7Oztk5XZJALW
+        /jInXO7O4OL6WJfiFZMIpPYnKDBObE7wXCAz1Yh0=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 1571722578697508.42916244145624; Tue, 22 Oct 2019 13:36:18 +0800 (CST)
+Date:   Tue, 22 Oct 2019 13:36:18 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Jan Kara" <jack@suse.cz>
+Cc:     "jack" <jack@suse.com>, "linux-ext4" <linux-ext4@vger.kernel.org>
+Message-ID: <16df1f74b07.d3ade7d625647.885482535351431524@mykernel.net>
+In-Reply-To: <20191021091800.GC17810@quack2.suse.cz>
+References: <20191020232326.84881-1-cgxu519@mykernel.net> <20191021091800.GC17810@quack2.suse.cz>
+Subject: Re: [PATCH] ext2: adjust block num when retry allocation
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191021230355.23136-2-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
-        a=y881pOMu+B+mZdf5UrsJdA==:117 a=y881pOMu+B+mZdf5UrsJdA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=XobE76Q3jBoA:10
-        a=1XWaLZrsAAAA:8 a=7-415B0cAAAA:8 a=u2WIiwEpneD56I5pijMA:9
-        a=5WK52ldy0EvilltI:21 a=YrdWnVge8_36jD4u:21 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Priority: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 04:03:53PM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Some inline encryption hardware has only a small number of keyslots,
-> which would make it inefficient to use the traditional fscrypt per-file
-> keys.  The existing DIRECT_KEY encryption policy flag doesn't solve this
-> because it assumes that file contents and names are encrypted by the
-> same algorithm and that IVs are at least 24 bytes.
-> 
-> Therefore, add a new encryption policy flag INLINE_CRYPT_OPTIMIZED which
-> causes the encryption to modified as follows:
-> 
-> - The key for file contents encryption is derived from the values
->   (master_key, mode_num, filesystem_uuid).  The per-file nonce is not
->   included, so many files may share the same contents encryption key.
-> 
-> - The IV for encrypting each block of file contents is built as
->   (inode_number << 32) | file_logical_block_num.
-> 
-> Including the inode number in the IVs ensures that data in different
-> files is encrypted differently, despite per-file keys not being used.
-> Limiting the inode and block numbers to 32 bits and putting the block
-> number in the low bits is needed to be compatible with inline encryption
-> hardware which only supports specifying a 64-bit data unit number which
-> is auto-incremented; this is what the UFS and EMMC standards support.
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2019-10-21 17:18:00 Jan Kara <=
+jack@suse.cz> =E6=92=B0=E5=86=99 ----
+ > On Mon 21-10-19 07:23:26, Chengguang Xu wrote:
+ > > Set block num to original *count in a case
+ > > of retrying allocation in case num < *count
+ > >=20
+ > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+ > > ---
+ > > Hi Jan,
+ > >=20
+ > > This patch is only compile-tested, I'm not sure if this
+ > > kind of unexpected condition which causes reallocation
+ > > will actually happen but baesd on the code the fix seems
+ > > correct and better.
+ >=20
+ > Yeah, you are right that we should reset 'num' back to *count. Although =
+the
+ > practial effect of this is minimal - we take this code path only when th=
+e
+ > filesystem is corrupted. But still... Patch applied. Thanks!
+=20
+Thanks for your review. I found another relevant bug in ext2_try_to_allocat=
+e()
+today, I'll fix it up and  also plan to do some code cleanups for the alloc=
+ation logic.
+Do you prefer two separate patches for bugfix and cleanup or just put all i=
+n a patch series?
 
-These 32 bit size limits seem arbitrary and rules out implementing
-this on larger filesystems. Why not just hash the 64 bit inode, file
-offset and block numbers into a single 64 bit value? It is still
-unique enough for the stated use (i.e. unique IV for each file
-block) but it doesn't limit what filesystem configurations can
-actually make use of this functionality....
+Thanks,
+Chengguang
 
-Cheers,
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+
+
+
+
