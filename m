@@ -2,70 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CFADFF68
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 10:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B631BDFFE4
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 10:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388423AbfJVI2F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Oct 2019 04:28:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39320 "EHLO mx1.suse.de"
+        id S2388644AbfJVIp0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Oct 2019 04:45:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54614 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388061AbfJVI2F (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 22 Oct 2019 04:28:05 -0400
+        id S2388490AbfJVIp0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 22 Oct 2019 04:45:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 43AECB3BD;
-        Tue, 22 Oct 2019 08:28:04 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 62417B170;
+        Tue, 22 Oct 2019 08:45:24 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A0B361E4812; Tue, 22 Oct 2019 10:28:03 +0200 (CEST)
-Date:   Tue, 22 Oct 2019 10:28:03 +0200
+        id 411851E4862; Tue, 22 Oct 2019 09:50:35 +0200 (CEST)
+Date:   Tue, 22 Oct 2019 09:50:35 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext2: add missing brelse in ext2_new_blocks()
-Message-ID: <20191022082803.GE2436@quack2.suse.cz>
-References: <20191022071045.7311-1-cgxu519@mykernel.net>
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
+Subject: Re: [PATCH v5 08/12] ext4: update direct I/O read to do trylock in
+ IOCB_NOWAIT cases
+Message-ID: <20191022075035.GA2436@quack2.suse.cz>
+References: <cover.1571647178.git.mbobrowski@mbobrowski.org>
+ <5ee370a435eb08fb14579c7c197b16e9fa0886f0.1571647179.git.mbobrowski@mbobrowski.org>
+ <20191021134817.GG25184@quack2.suse.cz>
+ <20191022020421.GE5092@athena.bobrowski.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191022071045.7311-1-cgxu519@mykernel.net>
+In-Reply-To: <20191022020421.GE5092@athena.bobrowski.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 22-10-19 15:10:45, Chengguang Xu wrote:
-> There is a missing brelse of bitmap_bh in the
-> case of retry.
+On Tue 22-10-19 13:04:21, Matthew Bobrowski wrote:
+> On Mon, Oct 21, 2019 at 03:48:17PM +0200, Jan Kara wrote:
+> > On Mon 21-10-19 20:18:46, Matthew Bobrowski wrote:
+> > > This patch updates the lock pattern in ext4_dio_read_iter() to only
+> > > perform the trylock in IOCB_NOWAIT cases.
+> > 
+> > The changelog is actually misleading. It should say something like "This
+> > patch updates the lock pattern in ext4_dio_read_iter() to not block on
+> > inode lock in case of IOCB_NOWAIT direct IO reads."
+> > 
+> > Also to ease backporting of easy fixes, we try to put patches like this
+> > early in the series (fixing code in ext4_direct_IO_read(), and then the
+> > fixed code would just carry over to ext4_dio_read_iter()).
 > 
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+> OK, understood. Now I know this for next time. :)
+> 
+> Providing that I have this patch precede the ext4_dio_read_iter()
+> patch and implement this lock pattern in ext4_direct_IO_read(), am I
+> OK to add the 'Reviewed-by' tag?
 
-Good catch but please add a comment explaining that 'bitmap_bh' may be
-non-null because of retry. Thanks!
+Yes.
 
 								Honza
-
-> ---
->  fs/ext2/balloc.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-> index 924c1c765306..e8eedad479a7 100644
-> --- a/fs/ext2/balloc.c
-> +++ b/fs/ext2/balloc.c
-> @@ -1313,6 +1313,7 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
->  	if (free_blocks > 0) {
->  		grp_target_blk = ((goal - le32_to_cpu(es->s_first_data_block)) %
->  				EXT2_BLOCKS_PER_GROUP(sb));
-> +		brelse(bitmap_bh);
->  		bitmap_bh = read_block_bitmap(sb, group_no);
->  		if (!bitmap_bh)
->  			goto io_error;
-> -- 
-> 2.20.1
-> 
-> 
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
