@@ -2,133 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF3BDF8BE
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 01:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350FBDF9F0
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 02:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730156AbfJUXqP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 19:46:15 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:45110 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727264AbfJUXqP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 21 Oct 2019 19:46:15 -0400
-Received: from dread.disaster.area (pa49-180-40-48.pa.nsw.optusnet.com.au [49.180.40.48])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id E32A73629FF;
-        Tue, 22 Oct 2019 10:46:04 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1iMhNE-0007QX-Aa; Tue, 22 Oct 2019 10:46:04 +1100
-Date:   Tue, 22 Oct 2019 10:46:04 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/5] fs/xfs: Allow toggle of physical DAX flag
-Message-ID: <20191021234604.GB2681@dread.disaster.area>
-References: <20191020155935.12297-1-ira.weiny@intel.com>
- <20191020155935.12297-6-ira.weiny@intel.com>
- <20191021004536.GD8015@dread.disaster.area>
- <20191021224931.GA25526@iweiny-DESK2.sc.intel.com>
+        id S1730616AbfJVAvc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 20:51:32 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:44835 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728741AbfJVAvb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 20:51:31 -0400
+Received: by mail-oi1-f193.google.com with SMTP id w6so12700455oie.11
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Oct 2019 17:51:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wKeXQ6WSWVCuZeO3MaMM0GeqhfTH6DUUj/94XvXxApg=;
+        b=snFZE5ED1snZX9RerA7ijkHwzVNharm7oaKz8HB1Cxcn4xWlGP2Wp94qR6yue+XmhZ
+         hGk8Amuxt5GVw/oDuY0xxaKyOLqYWn4VTOZLe/qN8uj87JEkwS5Lr9ieA+bFbuw7Qia0
+         8FHndO7dGXeNqi6KkHN4q9f5Kb4+f3Stv7WNsKk3ERMW9C594ytApehZXS+k6gN82izA
+         DCoDj6P8FZU4siT2XXK69FeWazAXdomTdVQm94lyCBn+sMKteltSL35t9YDa3+MMRD6c
+         IiCfCP0t8857csEfqHv3J3IUT7Wa6BhIK4WdR3RX2Jd7u23iGzkgDu8jmbKwb290AbN0
+         k1zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wKeXQ6WSWVCuZeO3MaMM0GeqhfTH6DUUj/94XvXxApg=;
+        b=uTOqezGmHGmnIe6dURhf609n0qU5VXImWW21BgC9R2QNw5ODzYutN/6CbUEFAqZUrV
+         bV2KjDzIMtuGdP1oahHDookj6LPnMKVpqO73CrEuLglvqHo37r//jNhvd7n8DaJY17bD
+         tVsATSfWW4Cuvklr2uccO2fbQ6VybjG+xjMlbbHEuVQBoe3NaMbwcFYa92dzp8etTncE
+         Ah56KKSL+PUCFUNK8vLIyWnnwdu6z9wwmdNWHrIICzjl4dOObuHTbyconz9M3iZoVJDU
+         ZYYzGcqxji6hxdMMwHN6KOyKIVmajwD2KDYuR0+/66m4JZ2dxrLGhj/RwAoizMvMYJre
+         jEiA==
+X-Gm-Message-State: APjAAAVH6HXSmgOQkig0HUzHNLydANtm32Lxf/6WvlY0sMcM+2zzysOJ
+        lhct9yTCaF2jtzDe9JhYuif3i5ygOmqgOdo4XFw=
+X-Google-Smtp-Source: APXvYqyTEy5qukk4jSXEpUcdZw3dMufp4MMbc1yfWY7M/sKl2bHUEflQ9PvmFAVmHYCWrT1vziX+w+LRIDj6NY9QXCI=
+X-Received: by 2002:a05:6808:10:: with SMTP id u16mr749374oic.16.1571705490575;
+ Mon, 21 Oct 2019 17:51:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191021224931.GA25526@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
-        a=y881pOMu+B+mZdf5UrsJdA==:117 a=y881pOMu+B+mZdf5UrsJdA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=XobE76Q3jBoA:10
-        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=YPogiMHmU-6fRLEyw_MA:9
-        a=z-c3JQe-jSBONlfH:21 a=Z1gFN9eyTm15yBDe:21 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
+ <20191001074101.256523-6-harshadshirwadkar@gmail.com> <20191016173039.GE11103@mit.edu>
+In-Reply-To: <20191016173039.GE11103@mit.edu>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Mon, 21 Oct 2019 17:51:19 -0700
+Message-ID: <CAD+ocbywMJg3UG523sSLpoNmni7e8Gv1dDYGtF=2zsXDNoMUtQ@mail.gmail.com>
+Subject: Re: [PATCH v3 05/13] jbd2: fast-commit recovery path changes
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 03:49:31PM -0700, Ira Weiny wrote:
-> On Mon, Oct 21, 2019 at 11:45:36AM +1100, Dave Chinner wrote:
-> > On Sun, Oct 20, 2019 at 08:59:35AM -0700, ira.weiny@intel.com wrote:
-> > > @@ -1232,12 +1233,10 @@ xfs_diflags_to_linux(
-> > >  		inode->i_flags |= S_NOATIME;
-> > >  	else
-> > >  		inode->i_flags &= ~S_NOATIME;
-> > > -#if 0	/* disabled until the flag switching races are sorted out */
-> > >  	if (xflags & FS_XFLAG_DAX)
-> > >  		inode->i_flags |= S_DAX;
-> > >  	else
-> > >  		inode->i_flags &= ~S_DAX;
-> > > -#endif
-> > 
-> > This code has bit-rotted. See xfs_setup_iops(), where we now have a
-> > different inode->i_mapping->a_ops for DAX inodes.
-> 
-> :-(
-> 
-> > 
-> > That, fundamentally, is the issue here - it's not setting/clearing
-> > the DAX flag that is the issue, it's doing a swap of the
-> > mapping->a_ops while there may be other code using that ops
-> > structure.
-> > 
-> > IOWs, if there is any code anywhere in the kernel that
-> > calls an address space op without holding one of the three locks we
-> > hold here (i_rwsem, MMAPLOCK, ILOCK) then it can race with the swap
-> > of the address space operations.
-> > 
-> > By limiting the address space swap to file sizes of zero, we rule
-> > out the page fault path (mmap of a zero length file segv's with an
-> > access beyond EOF on the first read/write page fault, right?).
-> 
-> Yes I checked that and thought we were safe here...
-> 
-> > However, other aops callers that might run unlocked and do the wrong
-> > thing if the aops pointer is swapped between check of the aop method
-> > existing and actually calling it even if the file size is zero?
-> > 
-> > A quick look shows that FIBMAP (ioctl_fibmap())) looks susceptible
-> > to such a race condition with the current definitions of the XFS DAX
-> > aops. I'm guessing there will be others, but I haven't looked
-> > further than this...
-> 
-> I'll check for others and think on what to do about this.  ext4 will have the
-> same problem I think.  :-(
-> 
-> I don't suppose using a single a_ops for both DAX and non-DAX is palatable?
+On Wed, Oct 16, 2019 at 10:30 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> On Tue, Oct 01, 2019 at 12:40:54AM -0700, Harshad Shirwadkar wrote:
+> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> > index 14d549445418..e0684212384d 100644
+> > --- a/fs/jbd2/journal.c
+> > +++ b/fs/jbd2/journal.c
+> >
+> >       jbd2_write_superblock(journal, write_op);
+> >
+> > +     if (had_fast_commit)
+> > +             jbd2_set_feature_fast_commit(journal);
+> > +
+>
+> Why the logic with had_fast_commit and (re-)setting the fast commit
+> feature flag?
+>
+> This ties back to how we handle the logic around setting the fast
+> commit flag if requested by the file system....
 
-IMO, no. It means we have to check IS_DAX() in every aops,
-and replicate a bunch of callouts to generic code. i.e this sort of
-thing:
+Fast commit feature flag serves 2 purposes: 1) If the flag is turned
+on in on-disk superblock, it means that the superblock contains fast
+commit blocks that should be replayed. 2) If the flag is turned on in
+the in-memory representation of the superblock, it serves as an
+indicator for the rest of the JBD2 code that fast commit feature is
+enabled. Based on that flag, for example, the journal thread decides
+to try fast commits. In this particular case, since the journal is
+empty we don't want to commit fast commit feature flag on-disk but we
+want to retain that flag in in-memory structure.
 
-	if (aops->method)
-		return aops->method(...)
-
-	/* do something else */
-
-results in us having to replicate that logic as something like:
-
-	if (!IS_DAX)
-		return filesystem_aops_method()
-
-	/* do something else */
-
-Indeed, the calling code may well do the wrong thing if we have
-methods defined just to add IS_DAX() checks to avoid using that
-functionality because the caller now thinks that functionality is
-supported when in fact it isn't.
-
-So it seems to me like an even bigger can of worms to try to use a
-single aops structure for vastly different functionality....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>
+> > @@ -768,6 +816,8 @@ static int do_one_pass(journal_t *journal,
+> >                       if (err)
+> >                               goto failed;
+> >                       continue;
+> > +             case JBD2_FC_BLOCK:
+> > +                     continue;
+>
+> Why should a Fast Commit block ever show up in the primary part of the
+> journal?   It should never happen, right?
+That's right, I'll fix this in next version.
+>
+> In which case, we should probably at least issue a warning, and not
+> just skip the block.
+>
+>                                         - Ted
