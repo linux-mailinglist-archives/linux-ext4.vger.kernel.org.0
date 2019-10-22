@@ -2,75 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ACE4E00BD
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 11:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05F6E02BF
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 13:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731513AbfJVJ1q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Oct 2019 05:27:46 -0400
-Received: from sender2-of-o52.zoho.com.cn ([163.53.93.247]:21129 "EHLO
-        sender2-of-o52.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731397AbfJVJ1q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 22 Oct 2019 05:27:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1571736460; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=AwO29ivo4Fow7ulkLO/sTV1SPQf/ID0zdw1eOEzxuQFGVsdKxMUMDfOgkGk7Z9Cx8hcicDwFFVo0yoN9n8hetG7izjtWOY52pKi1I+19Sh0U5g8nQCLAY8hmggD1Rzx+mc0UjcG+wIahdg6pMXZfJ0te2p/wFWT3NaNX1MjkMio=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1571736460; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
-        bh=Z3nUGkAA3XNVPbgALGAPttn65zEYTMxdYqcinEjIfGQ=; 
-        b=IZVzO9QNj+BprBx0Iw2MYQsvcJUumv5wDGKTK9/U9/mnmPPxpOu1N6c8ktMlRi8u9kgIkpe73xNG9Ds7DT4NrrmZy4ubLJFgocVLEpyWMrnt+XZnnTGMp8wZJOQBTv896NhrqxFs09p7vRfWDOnlJiUvh8JRifk6pa/HjjOaM18=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1571736460;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=618; bh=Z3nUGkAA3XNVPbgALGAPttn65zEYTMxdYqcinEjIfGQ=;
-        b=XZWXQKjE7gO/dxcx+4m6ge0/E9arFpMIMdeILYQ8UXd8DWT4Py5NQfkHDvpa4YoX
-        ROJ4wrFqbWQvRIzDHsccixibBrqX8TptXg92AbpDEg/2wcF0cVZezXCDfnvrcdERTix
-        q6t2JM6R9lrrVYcMV/k+y+Sed9oqXjmlLLqxPnL8=
-Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 157173645815319.38959495323263; Tue, 22 Oct 2019 17:27:38 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191022092720.24416-1-cgxu519@mykernel.net>
-Subject: [PATCH] ext2: don't set count in the case of failure
-Date:   Tue, 22 Oct 2019 17:27:20 +0800
-X-Mailer: git-send-email 2.20.1
+        id S2388015AbfJVLVW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Oct 2019 07:21:22 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:40899 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387776AbfJVLVW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 22 Oct 2019 07:21:22 -0400
+Received: by mail-ed1-f67.google.com with SMTP id p59so4160484edp.7
+        for <linux-ext4@vger.kernel.org>; Tue, 22 Oct 2019 04:21:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=plexistor-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hkPjYtxu0G68TNOL7v3J1p13GtJ9bbjz9PgUJHvGUO4=;
+        b=NY/Vg+KYkfRz80jxUYpA7t8Pxm2pGBYJ+h3r9wYIIS9WTnYFDXAjUzhM7N78ek5F9C
+         r+L+12vJiHo+PxQ82cmaBgOJ/yw90xHGpO3E/d1R8cdSmLS6Yahs+PXzpAuGzRBVsxK0
+         vVyBefcjZfG2X6pLWNK7Nwn0zpyX2pIy/kqKQ30ad7Q13i7lmWZysLFyuUJr8CYGtBZZ
+         pD6hzp4Zj64Usi8SQFo0A0wCk2GQMYBUBurH4YTO2khbUC78TgpcrMLnyeIturUEx/bF
+         pMEbQwbm9AJOtx6+JoIjFQCQYvqOi5Xft8n5yxfj7F7VjRbYykLjhXNarDhLy1Zj//i/
+         MQzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hkPjYtxu0G68TNOL7v3J1p13GtJ9bbjz9PgUJHvGUO4=;
+        b=tak1TrJST9dAnMCE0/HHFtfrC8M4Fq1/G1SmNFJ7UVlLOsKMvWmRanE5eEJJcIXkwH
+         XWnlp8YhwEUgG+WKZGc5WEUquKsjKJy9s+gDOI53w7N+Q+LzhKna569fjtLP4AHBLEAF
+         uztC0wDQYyjLLdLVVXWFY8xHJV5u4AzmMHNLhiaKcGTB3AsmojXRb5U8g9APFV3W2h9B
+         vP/wzQqqwaxGZfKCIDyDuVNCa61cPjlluRg8hLZomkipjYxoROseN9PniKtD8pF+m62e
+         Icl1O42T2q5rbiLLvynKt1bObPUH2lg7Qv+ByGnRbV+C+4uUlr6WfIkxugaquOcjemNa
+         WlEw==
+X-Gm-Message-State: APjAAAWFba+ClNJImQffuKqjngVrOidwCYOA9VmP4tYmvdm1gMYjLOVq
+        JoYfMxhsJTrURX44UzLjRNxqVw==
+X-Google-Smtp-Source: APXvYqySKn4thuU3f7K7aDJqekurENi/VR+yBa2dMuzwxWcadqexy5iRGP32nwx1Eh17ArpcLJiB9w==
+X-Received: by 2002:a17:906:bfcb:: with SMTP id us11mr26657460ejb.299.1571743279644;
+        Tue, 22 Oct 2019 04:21:19 -0700 (PDT)
+Received: from [10.68.217.182] ([217.70.210.43])
+        by smtp.googlemail.com with ESMTPSA id gl4sm114537ejb.6.2019.10.22.04.21.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Oct 2019 04:21:18 -0700 (PDT)
+Subject: Re: [PATCH 0/5] Enable per-file/directory DAX operations
+To:     ira.weiny@intel.com, linux-kernel@vger.kernel.org
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20191020155935.12297-1-ira.weiny@intel.com>
+From:   Boaz Harrosh <boaz@plexistor.com>
+Message-ID: <b7849297-e4a4-aaec-9a64-2b481663588b@plexistor.com>
+Date:   Tue, 22 Oct 2019 14:21:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+In-Reply-To: <20191020155935.12297-1-ira.weiny@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In the case of failure, the num is still initialized value 0
-so we should not set it to *count because it will bring
-unexpected side effect to the caller.
+On 20/10/2019 18:59, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> At LSF/MM'19 [1] [2] we discussed applications that overestimate memory
+> consumption due to their inability to detect whether the kernel will
+> instantiate page cache for a file, and cases where a global dax enable via a
+> mount option is too coarse.
+> 
+> The following patch series enables selecting the use of DAX on individual files
+> and/or directories on xfs, and lays some groundwork to do so in ext4.  In this
+> scheme the dax mount option can be omitted to allow the per-file property to
+> take effect.
+> 
+> The insight at LSF/MM was to separate the per-mount or per-file "physical"
+> capability switch from an "effective" attribute for the file.
+> 
+> At LSF/MM we discussed the difficulties of switching the mode of a file with
+> active mappings / page cache. Rather than solve those races the decision was to
+> just limit mode flips to 0-length files.
+> 
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- fs/ext2/balloc.c | 1 -
- 1 file changed, 1 deletion(-)
+What I understand above is that only "writers" before writing any bytes may
+turn the flag on, which then persists. But as a very long time user of DAX, usually
+it is the writers that are least interesting. With lots of DAX technologies and
+emulations the write is slower and needs slow "flushing".
 
-diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index 18e75adcd2f6..cc516c7b7974 100644
---- a/fs/ext2/balloc.c
-+++ b/fs/ext2/balloc.c
-@@ -736,7 +736,6 @@ ext2_try_to_allocate(struct super_block *sb, int group,
- =09*count =3D num;
- =09return grp_goal - num;
- fail_access:
--=09*count =3D num;
- =09return -1;
- }
-=20
---=20
-2.20.1
+The more interesting and performance gains comes from DAX READs actually.
+specially cross the VM guest. (IE. All VMs share host memory or pmem)
 
+This fixture as I understand it, that I need to know before I write if I will
+want DAX or not and then the write is DAX as well as reads after that, looks
+not very interesting for me as a user.
 
+Just my $0.17
+Boaz
+
+> Finally, the physical DAX flag inheritance is maintained from previous work on 
+> XFS but should be added for other file systems for consistence.
+> 
+> 
+> [1] https://lwn.net/Articles/787973/
+> [2] https://lwn.net/Articles/787233/
+> 
+> To: linux-kernel@vger.kernel.org
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Chinner <david@fromorbit.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: "Theodore Y. Ts'o" <tytso@mit.edu>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: linux-ext4@vger.kernel.org
+> Cc: linux-xfs@vger.kernel.org
+> Cc: linux-fsdevel@vger.kernel.org
+> 
+> Ira Weiny (5):
+>   fs/stat: Define DAX statx attribute
+>   fs/xfs: Isolate the physical DAX flag from effective
+>   fs/xfs: Separate functionality of xfs_inode_supports_dax()
+>   fs/xfs: Clean up DAX support check
+>   fs/xfs: Allow toggle of physical DAX flag
+> 
+>  fs/stat.c                 |  3 +++
+>  fs/xfs/xfs_ioctl.c        | 32 ++++++++++++++------------------
+>  fs/xfs/xfs_iops.c         | 36 ++++++++++++++++++++++++++++++------
+>  fs/xfs/xfs_iops.h         |  2 ++
+>  include/uapi/linux/stat.h |  1 +
+>  5 files changed, 50 insertions(+), 24 deletions(-)
+> 
 
