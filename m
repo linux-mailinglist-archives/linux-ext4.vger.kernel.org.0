@@ -2,103 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 350FBDF9F0
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 02:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7FF1DFA41
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 03:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730616AbfJVAvc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 21 Oct 2019 20:51:32 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:44835 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728741AbfJVAvb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 20:51:31 -0400
-Received: by mail-oi1-f193.google.com with SMTP id w6so12700455oie.11
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Oct 2019 17:51:31 -0700 (PDT)
+        id S1729270AbfJVBt0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 21 Oct 2019 21:49:26 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:45625 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728375AbfJVBtZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 21 Oct 2019 21:49:25 -0400
+Received: by mail-pf1-f196.google.com with SMTP id b4so670891pfr.12
+        for <linux-ext4@vger.kernel.org>; Mon, 21 Oct 2019 18:49:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wKeXQ6WSWVCuZeO3MaMM0GeqhfTH6DUUj/94XvXxApg=;
-        b=snFZE5ED1snZX9RerA7ijkHwzVNharm7oaKz8HB1Cxcn4xWlGP2Wp94qR6yue+XmhZ
-         hGk8Amuxt5GVw/oDuY0xxaKyOLqYWn4VTOZLe/qN8uj87JEkwS5Lr9ieA+bFbuw7Qia0
-         8FHndO7dGXeNqi6KkHN4q9f5Kb4+f3Stv7WNsKk3ERMW9C594ytApehZXS+k6gN82izA
-         DCoDj6P8FZU4siT2XXK69FeWazAXdomTdVQm94lyCBn+sMKteltSL35t9YDa3+MMRD6c
-         IiCfCP0t8857csEfqHv3J3IUT7Wa6BhIK4WdR3RX2Jd7u23iGzkgDu8jmbKwb290AbN0
-         k1zg==
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cYd8ROhMNq1Yx+vOsBONaKOy7KeVJVgFB+LYLRUxDgE=;
+        b=TFBptRq3ve/tPAMq3b0V8kT4Xd0iReoVP7HNznmMumSnWXMSWwlza3Uc6AyyQVElIx
+         hKLIAKeVXZ7CYXilmRzi+njAv2oVri01gkVEniuAoyefK2hxnP2PDVLv3DCBqjSF8499
+         U5AYYP7gRGFwu1rfFp4TcLNu6tSIcf99XvGLBg81/W8vU8XVWTGi+7L9Bz4EVPws2jPk
+         mT7fzvaj5ZrX70loZoXKYAbH2sMI3xAM100X52Xm7Knfdy3gBImXszpF+VQi6tSqWzGx
+         5ju+WnTH5bhnY2KHyAuyIi5wu8tCq0tzqjb1zcUpoBgMKMGVVAlcfYBfEXnVfUc+9pwE
+         9cGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wKeXQ6WSWVCuZeO3MaMM0GeqhfTH6DUUj/94XvXxApg=;
-        b=uTOqezGmHGmnIe6dURhf609n0qU5VXImWW21BgC9R2QNw5ODzYutN/6CbUEFAqZUrV
-         bV2KjDzIMtuGdP1oahHDookj6LPnMKVpqO73CrEuLglvqHo37r//jNhvd7n8DaJY17bD
-         tVsATSfWW4Cuvklr2uccO2fbQ6VybjG+xjMlbbHEuVQBoe3NaMbwcFYa92dzp8etTncE
-         Ah56KKSL+PUCFUNK8vLIyWnnwdu6z9wwmdNWHrIICzjl4dOObuHTbyconz9M3iZoVJDU
-         ZYYzGcqxji6hxdMMwHN6KOyKIVmajwD2KDYuR0+/66m4JZ2dxrLGhj/RwAoizMvMYJre
-         jEiA==
-X-Gm-Message-State: APjAAAVH6HXSmgOQkig0HUzHNLydANtm32Lxf/6WvlY0sMcM+2zzysOJ
-        lhct9yTCaF2jtzDe9JhYuif3i5ygOmqgOdo4XFw=
-X-Google-Smtp-Source: APXvYqyTEy5qukk4jSXEpUcdZw3dMufp4MMbc1yfWY7M/sKl2bHUEflQ9PvmFAVmHYCWrT1vziX+w+LRIDj6NY9QXCI=
-X-Received: by 2002:a05:6808:10:: with SMTP id u16mr749374oic.16.1571705490575;
- Mon, 21 Oct 2019 17:51:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cYd8ROhMNq1Yx+vOsBONaKOy7KeVJVgFB+LYLRUxDgE=;
+        b=aEXyyL7KPYvSP13UF0Jia76yILei5nh3K18uWkLoVixN14XPw8+67E71bcqpmzX8sE
+         zD3ldzdo/6FcPzfUxVyBFUeHN2lAykFSbO0M8flZQFxNJqdb9Kl+DUfUZJGCeiYc2juf
+         K6SnBzVmjexAUzvO8hR+h7e58GhHWbJtmgBGg4LiLy897VAKmMUBw/wHWdoLpoEDGTM3
+         CBa4FxIZqW7d5QHP2tKJl12aG+7OwhqfaSliIo6zpWu6gdUszkVkKIAUIrjluTh4TaXO
+         Z7T1Huz7JaEEjQACBR6iNH5kc71bfZsKSdiKDSx3fJFdFu+KVQMniQjyU0kv/7A2WRg/
+         7lLg==
+X-Gm-Message-State: APjAAAXwyhodoZoa/kBim7ZlWHGGJqPSC8ARu7rvpyN8YhAlkwJ+WlQN
+        kseNoOiZxt8+06qbAuXDoTpV
+X-Google-Smtp-Source: APXvYqwoqsLbPzmAZETxvHQWf9PUCzQB2+x1jzr+FtzeR4gk+LtQk8N9Y3WH/CXf4ZS7F1MR0XnHRQ==
+X-Received: by 2002:a63:c446:: with SMTP id m6mr976716pgg.136.1571708964617;
+        Mon, 21 Oct 2019 18:49:24 -0700 (PDT)
+Received: from athena.bobrowski.net (n1-41-199-60.bla2.nsw.optusnet.com.au. [1.41.199.60])
+        by smtp.gmail.com with ESMTPSA id y144sm17865523pfb.188.2019.10.21.18.49.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Oct 2019 18:49:23 -0700 (PDT)
+Date:   Tue, 22 Oct 2019 12:49:17 +1100
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
+Subject: Re: [PATCH v5 02/12] ext4: iomap that extends beyond EOF should be
+ marked dirty
+Message-ID: <20191022014917.GB5092@athena.bobrowski.net>
+References: <cover.1571647178.git.mbobrowski@mbobrowski.org>
+ <995387be9841bde2151c85880555c18bec68a641.1571647179.git.mbobrowski@mbobrowski.org>
+ <20191021132818.GB25184@quack2.suse.cz>
 MIME-Version: 1.0
-References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
- <20191001074101.256523-6-harshadshirwadkar@gmail.com> <20191016173039.GE11103@mit.edu>
-In-Reply-To: <20191016173039.GE11103@mit.edu>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Mon, 21 Oct 2019 17:51:19 -0700
-Message-ID: <CAD+ocbywMJg3UG523sSLpoNmni7e8Gv1dDYGtF=2zsXDNoMUtQ@mail.gmail.com>
-Subject: Re: [PATCH v3 05/13] jbd2: fast-commit recovery path changes
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191021132818.GB25184@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 10:30 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Tue, Oct 01, 2019 at 12:40:54AM -0700, Harshad Shirwadkar wrote:
-> > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> > index 14d549445418..e0684212384d 100644
-> > --- a/fs/jbd2/journal.c
-> > +++ b/fs/jbd2/journal.c
-> >
-> >       jbd2_write_superblock(journal, write_op);
-> >
-> > +     if (had_fast_commit)
-> > +             jbd2_set_feature_fast_commit(journal);
-> > +
->
-> Why the logic with had_fast_commit and (re-)setting the fast commit
-> feature flag?
->
-> This ties back to how we handle the logic around setting the fast
-> commit flag if requested by the file system....
+On Mon, Oct 21, 2019 at 03:28:18PM +0200, Jan Kara wrote:
+> On Mon 21-10-19 20:17:46, Matthew Bobrowski wrote:
+> > This patch is effectively addressed what Dave Chinner had found and
+> > fixed within this commit: 8a23414ee345. Justification for needing this
+> > modification has been provided below:
+> > 
+> > When doing a direct IO that spans the current EOF, and there are
+> > written blocks beyond EOF that extend beyond the current write, the
+> > only metadata update that needs to be done is a file size extension.
+> > 
+> > However, we don't mark such iomaps as IOMAP_F_DIRTY to indicate that
+> > there is IO completion metadata updates required, and hence we may
+> > fail to correctly sync file size extensions made in IO completion when
+> > O_DSYNC writes are being used and the hardware supports FUA.
+> > 
+> > Hence when setting IOMAP_F_DIRTY, we need to also take into account
+> > whether the iomap spans the current EOF. If it does, then we need to
+> > mark it dirty so that IO completion will call generic_write_sync() to
+> > flush the inode size update to stable storage correctly.
+> > 
+> > Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+> 
+> Looks good to me. You could possibly also comment in the changelog that
+> currently, this change doesn't have user visible impact for ext4 as none of
+> current users of ext4_iomap_begin() that extend files depend of
+> IOMAP_F_DIRTY.
 
-Fast commit feature flag serves 2 purposes: 1) If the flag is turned
-on in on-disk superblock, it means that the superblock contains fast
-commit blocks that should be replayed. 2) If the flag is turned on in
-the in-memory representation of the superblock, it serves as an
-indicator for the rest of the JBD2 code that fast commit feature is
-enabled. Based on that flag, for example, the journal thread decides
-to try fast commits. In this particular case, since the journal is
-empty we don't want to commit fast commit feature flag on-disk but we
-want to retain that flag in in-memory structure.
+Sure, I will add this.
 
->
-> > @@ -768,6 +816,8 @@ static int do_one_pass(journal_t *journal,
-> >                       if (err)
-> >                               goto failed;
-> >                       continue;
-> > +             case JBD2_FC_BLOCK:
-> > +                     continue;
->
-> Why should a Fast Commit block ever show up in the primary part of the
-> journal?   It should never happen, right?
-That's right, I'll fix this in next version.
->
-> In which case, we should probably at least issue a warning, and not
-> just skip the block.
->
->                                         - Ted
+> Also this patch would make slightly more sense to be before 1/12 so that
+> you don't have there those two strange unused arguments. But these are just
+> small nits.
+
+You're right. I will rearrange it in v6 so that this patch comes
+first.
+
+> Feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+
+Thanks Jan!
+
+--<M>--
