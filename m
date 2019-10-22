@@ -2,79 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56915E00AA
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 11:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACE4E00BD
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2019 11:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731422AbfJVJ0A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 22 Oct 2019 05:26:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50542 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728182AbfJVJ0A (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 22 Oct 2019 05:26:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C0C21B78C;
-        Tue, 22 Oct 2019 09:25:58 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 0E2EB1E4812; Tue, 22 Oct 2019 11:25:55 +0200 (CEST)
-Date:   Tue, 22 Oct 2019 11:25:55 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] ext2: add missing brelse in ext2_new_blocks()
-Message-ID: <20191022092555.GH2436@quack2.suse.cz>
-References: <20191022091738.9160-1-cgxu519@mykernel.net>
+        id S1731513AbfJVJ1q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 22 Oct 2019 05:27:46 -0400
+Received: from sender2-of-o52.zoho.com.cn ([163.53.93.247]:21129 "EHLO
+        sender2-of-o52.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731397AbfJVJ1q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 22 Oct 2019 05:27:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1571736460; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=AwO29ivo4Fow7ulkLO/sTV1SPQf/ID0zdw1eOEzxuQFGVsdKxMUMDfOgkGk7Z9Cx8hcicDwFFVo0yoN9n8hetG7izjtWOY52pKi1I+19Sh0U5g8nQCLAY8hmggD1Rzx+mc0UjcG+wIahdg6pMXZfJ0te2p/wFWT3NaNX1MjkMio=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1571736460; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
+        bh=Z3nUGkAA3XNVPbgALGAPttn65zEYTMxdYqcinEjIfGQ=; 
+        b=IZVzO9QNj+BprBx0Iw2MYQsvcJUumv5wDGKTK9/U9/mnmPPxpOu1N6c8ktMlRi8u9kgIkpe73xNG9Ds7DT4NrrmZy4ubLJFgocVLEpyWMrnt+XZnnTGMp8wZJOQBTv896NhrqxFs09p7vRfWDOnlJiUvh8JRifk6pa/HjjOaM18=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1571736460;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        l=618; bh=Z3nUGkAA3XNVPbgALGAPttn65zEYTMxdYqcinEjIfGQ=;
+        b=XZWXQKjE7gO/dxcx+4m6ge0/E9arFpMIMdeILYQ8UXd8DWT4Py5NQfkHDvpa4YoX
+        ROJ4wrFqbWQvRIzDHsccixibBrqX8TptXg92AbpDEg/2wcF0cVZezXCDfnvrcdERTix
+        q6t2JM6R9lrrVYcMV/k+y+Sed9oqXjmlLLqxPnL8=
+Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
+        with SMTPS id 157173645815319.38959495323263; Tue, 22 Oct 2019 17:27:38 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
+Message-ID: <20191022092720.24416-1-cgxu519@mykernel.net>
+Subject: [PATCH] ext2: don't set count in the case of failure
+Date:   Tue, 22 Oct 2019 17:27:20 +0800
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191022091738.9160-1-cgxu519@mykernel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 22-10-19 17:17:38, Chengguang Xu wrote:
-> There is a missing brelse of bitmap_bh in the
-> case of retry.
-> 
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+In the case of failure, the num is still initialized value 0
+so we should not set it to *count because it will bring
+unexpected side effect to the caller.
 
-Thanks. Patch applied with small update to the comment - this can also hit
-in case our reservation window was alredy full.
+Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+---
+ fs/ext2/balloc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-								Honza
+diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
+index 18e75adcd2f6..cc516c7b7974 100644
+--- a/fs/ext2/balloc.c
++++ b/fs/ext2/balloc.c
+@@ -736,7 +736,6 @@ ext2_try_to_allocate(struct super_block *sb, int group,
+ =09*count =3D num;
+ =09return grp_goal - num;
+ fail_access:
+-=09*count =3D num;
+ =09return -1;
+ }
+=20
+--=20
+2.20.1
 
-> ---
-> v1->v2:
-> - Add comment to explain why the fix is needed.
-> 
->  fs/ext2/balloc.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-> index 924c1c765306..18e75adcd2f6 100644
-> --- a/fs/ext2/balloc.c
-> +++ b/fs/ext2/balloc.c
-> @@ -1313,6 +1313,13 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
->  	if (free_blocks > 0) {
->  		grp_target_blk = ((goal - le32_to_cpu(es->s_first_data_block)) %
->  				EXT2_BLOCKS_PER_GROUP(sb));
-> +		/*
-> +		 * In a special case that allocated blocks are in system zone,
-> +		 * we will retry block allocation due to failing to pass sanity
-> +		 * check. In this case, the bitmap_bh is non-null pointer and we
-> +		 * have to release it before calling read_block_bitmap().
-> +		 */
-> +		brelse(bitmap_bh);
->  		bitmap_bh = read_block_bitmap(sb, group_no);
->  		if (!bitmap_bh)
->  			goto io_error;
-> -- 
-> 2.20.1
-> 
-> 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+
