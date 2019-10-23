@@ -2,60 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BCCE2367
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 21:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F443E263D
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 00:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389299AbfJWTqL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Oct 2019 15:46:11 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36281 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728697AbfJWTqL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 15:46:11 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9NJk5na030394
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Oct 2019 15:46:06 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 3F07F420456; Wed, 23 Oct 2019 15:46:05 -0400 (EDT)
-Date:   Wed, 23 Oct 2019 15:46:05 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] ext4: fix signed vs unsigned comparison in
- ext4_valid_extent()
-Message-ID: <20191023194605.GA7630@mit.edu>
-References: <20191023013112.18809-1-tytso@mit.edu>
- <20191023054447.GE361298@sol.localdomain>
- <20191023131546.GB2460@mit.edu>
- <20191023184332.GC7689@iweiny-DESK2.sc.intel.com>
+        id S2436706AbfJWWNo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Oct 2019 18:13:44 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:39940 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2436687AbfJWWNo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 23 Oct 2019 18:13:44 -0400
+Received: from dread.disaster.area (pa49-180-40-48.pa.nsw.optusnet.com.au [49.180.40.48])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 00C6E43EE24;
+        Thu, 24 Oct 2019 09:13:34 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1iNOsm-0006fc-Rc; Thu, 24 Oct 2019 09:13:32 +1100
+Date:   Thu, 24 Oct 2019 09:13:32 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Boaz Harrosh <boaz@plexistor.com>
+Cc:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Enable per-file/directory DAX operations
+Message-ID: <20191023221332.GE2044@dread.disaster.area>
+References: <20191020155935.12297-1-ira.weiny@intel.com>
+ <b7849297-e4a4-aaec-9a64-2b481663588b@plexistor.com>
+ <b883142c-ecfe-3c5b-bcd9-ebe4ff28d852@plexistor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191023184332.GC7689@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <b883142c-ecfe-3c5b-bcd9-ebe4ff28d852@plexistor.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
+        a=y881pOMu+B+mZdf5UrsJdA==:117 a=y881pOMu+B+mZdf5UrsJdA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=XobE76Q3jBoA:10
+        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=iEe7G1TxEPlCt2B0xWcA:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 11:43:33AM -0700, Ira Weiny wrote:
-> On Wed, Oct 23, 2019 at 09:15:46AM -0400, Theodore Y. Ts'o wrote:
-> > On Tue, Oct 22, 2019 at 10:44:47PM -0700, Eric Biggers wrote:
-> > > 
-> > > This patch can't be fixing anything because the comparison is unsigned both
-> > > before and after this patch.
-> > 
-> > Thanks, you're right; I had forgotten C's signed/unsigned rules for
-> > addition.  The funny thing is the original reporter of BZ #205197
-> > reported that the problem went away he tried a similar patch.
-> 
-> Not trying to stick my nose in too much here but:
-> 
-> What does it mean if ext4_ext_get_actual_len() to return < 0?
+On Wed, Oct 23, 2019 at 04:09:50PM +0300, Boaz Harrosh wrote:
+> On 22/10/2019 14:21, Boaz Harrosh wrote:
+> > On 20/10/2019 18:59, ira.weiny@intel.com wrote:
+> Please explain the use case behind your model?
 
-It's not possible for it to return < 0.  We probably should clean it
-up to make it return an unsigned int, but that's a longer-term clean-up.
+No application changes needed to control whether they use DAX or
+not. It allows the admin to control the application behaviour
+completely, so they can turn off DAX if necessary. Applications are
+unaware of constraints that may prevent DAX from being used, and so
+admins need a mechanism to prevent DAX aware application from
+actually using DAX if the capability is present.
 
-      	      	     		 - Ted
+e.g. given how slow some PMEM devices are when it comes to writing
+data, especially under extremely high concurrency, DAX is not
+necessarily a performance win for every application. Admins need a
+guaranteed method of turning off DAX in these situations - apps may
+not provide such a knob, or even be aware of a thing called DAX...
+
+e.g. the data set being accessed by the application is mapped and
+modified by RDMA applications, so those files must not be accessed
+using DAX by any application because DAX+RDMA are currently
+incompatible. Hence you can have RDMA on pmem devices co-exist
+within the same filesystem as other applications using DAX to access
+the pmem...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
