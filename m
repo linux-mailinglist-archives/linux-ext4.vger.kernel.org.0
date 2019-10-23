@@ -2,81 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B9AE17B3
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 12:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387B4E1814
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 12:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390986AbfJWKUW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Oct 2019 06:20:22 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:38677 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390361AbfJWKUW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 06:20:22 -0400
-Received: by mail-pl1-f196.google.com with SMTP id w8so9866250plq.5
-        for <linux-ext4@vger.kernel.org>; Wed, 23 Oct 2019 03:20:21 -0700 (PDT)
+        id S2391068AbfJWKf4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Oct 2019 06:35:56 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:42210 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390935AbfJWKf4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 06:35:56 -0400
+Received: by mail-pf1-f194.google.com with SMTP id 21so1409738pfj.9
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Oct 2019 03:35:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=famTCWyPOGlr1iiTRrbj7To+YO5ZL7PQ7fuU9NIRIM8=;
-        b=JON2hb8FD7wKKKxya3rkN1coe2W2La6b76N2w7fZYQuMexSyKUaAgkW4Y3KrdrmU+b
-         uyC7JgtXzwGZzYqla2Z48CaVnxDTKZn9juyVEPKg2yJnmbz7df8WrnL66WfZE6qSYPAX
-         LhHXe1DcWo8YeWiE62X5KTyEBoCPW4UwwdqiatwvKKntKxjCRKcyBLF9zg05NltG6YYU
-         APFD+N0vyOClP5deqSULDlcl2Voqw4pstFpbIujruRlfNuXCA6N3EZdRyt86yULLZD7C
-         PECJaj+S67lZmRj6AemJBqeM2n/wR+C2ce0YqFCLOP7OTnn0mDj3eovs0tuTrGX+oD7t
-         f3DA==
+        bh=IGCTYUdGZ/kAtactsj73D19FolPD9OqOn6a2pp38DL4=;
+        b=ed00/wQ5b0JNduMCcXPzDHZ6hgztDx/0N7hnFnNKMPysVwKyUzx9tm5lQYb8wrp4vB
+         t7zMj9n9I1QahJCKxDyggMRDo506VxsMpIJKPoPN2ao0zpjBm/D0QRt3Oa2V7GC1nlkS
+         +2S/ut2fgYX/wpIXau+KOomw5Qu5ovPS3yF0L+BoaxPGqTOmSwvgMdl7L0B86ziHbIcc
+         vDLIOc1oS/D9d538AXuX2qMkumVCaCzk2jhZUcpbwR3suwZGSK96V43yYVqvjYtr1Y0Y
+         kxsG/Q6wrPkZWZNvpdsapThAcJ+72DrUn+YZaNttozeJVAbRuil97E1VCjv3Iyox20sN
+         YDVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=famTCWyPOGlr1iiTRrbj7To+YO5ZL7PQ7fuU9NIRIM8=;
-        b=Fm384MKg2vGJB9SfYna0JEt68G7tU+82NgTCj23r3SiSY+XpoTOjS0COUQAsByEfmW
-         F/1tY6D0cvcHJaha3qE7Nl9Bp5FxWk25BM7+k9Fn0c3FzsZlKQHB93u6Kwofq8i6oLQy
-         6t42m1Je36PVn4FA8A8eH3VPJzS9EuUPf0zQSgFU3+9u5eYIg4RyWkbOfG52WHAQAZLF
-         iEsXDU4HsD6IIFduAuc2Yh90mLUDOhkUAWLv47q2TXtPlJyVXUCMXci5X/AC4plWY5CI
-         34dHzbFRgpy0x5hdiMPd7eW5DOxDWc2Vl/BMfEukWvHXB+iXDLJqcF02upoz8MCQ0hRk
-         VrVg==
-X-Gm-Message-State: APjAAAV69/0r410auktBqBcwWQ7U8TgpdBrmUMDuesPhfRiVCpYcjm3S
-        lQPtPefj2QP99pbOB7JvALImDKJQ5Jlm
-X-Google-Smtp-Source: APXvYqx/Gh/865ymI26LBSmTesvR7Y1bh+ywON7c0JxKZnQK2Be6SXoP+jYM1TCdeWFIWd4Wpb2yfw==
-X-Received: by 2002:a17:902:8343:: with SMTP id z3mr8789394pln.70.1571826021159;
-        Wed, 23 Oct 2019 03:20:21 -0700 (PDT)
+        bh=IGCTYUdGZ/kAtactsj73D19FolPD9OqOn6a2pp38DL4=;
+        b=eQEGSJ1YTovC4EfzE7mdkHfWyxWMjTkEhiPKt00lUUt/iKFuDrZ3/Zx7QILsTNZL+j
+         cLbE7U0ntFqliCvs0guIYNGsFhlrtX6eB9KSVC46UaaYQ3p2Rof278VvyoxFhsNesFtq
+         NHHw47Yji231m6u3PoInXnNb/KuzhZRB3N0x+EOnAQnsd6oFIfC0+U9bPdiIKvhwR/Rv
+         DmFbuM6lxUdu1x4QFOTuYkNvmRyw0zZzA2HoFlhRHN8IvQ6iFjZdnMucbxanxEbpqOs8
+         NxW0BAqSZhkdWz+WuZzwBk7hBWg1K4ntL6pTDXYrr1Qs0jm+oFa1j3d22yefRa3wbnK9
+         mn9w==
+X-Gm-Message-State: APjAAAWBIsGu33DnRNI3Ypwby8aRh2iG3bVEde18x3jyg/zGpwjdsWQB
+        pbNLL05BVgOsNXyvRrnJ2NmTb4sB0Lpt
+X-Google-Smtp-Source: APXvYqxDN4nFg1E1mrSmBOqnqzfKhJ041UGZcDGwc6vrrRZBUb5u5S3KRYaqQyFtOHKfYdyLyYI2GA==
+X-Received: by 2002:a17:90a:8505:: with SMTP id l5mr10774993pjn.41.1571826954909;
+        Wed, 23 Oct 2019 03:35:54 -0700 (PDT)
 Received: from bobrowski ([110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id w2sm16327287pgm.18.2019.10.23.03.20.17
+        by smtp.gmail.com with ESMTPSA id c66sm3570020pfb.25.2019.10.23.03.35.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2019 03:20:20 -0700 (PDT)
-Date:   Wed, 23 Oct 2019 21:20:14 +1100
+        Wed, 23 Oct 2019 03:35:54 -0700 (PDT)
+Date:   Wed, 23 Oct 2019 21:35:48 +1100
 From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
 To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
-Subject: Re: [PATCH v5 02/12] ext4: iomap that extends beyond EOF should be
- marked dirty
-Message-ID: <20191023102014.GC6725@bobrowski>
+Subject: Re: [PATCH v5 04/12] ext4: introduce new callback for IOMAP_REPORT
+Message-ID: <20191023103548.GD6725@bobrowski>
 References: <cover.1571647178.git.mbobrowski@mbobrowski.org>
- <995387be9841bde2151c85880555c18bec68a641.1571647179.git.mbobrowski@mbobrowski.org>
- <20191023063557.21C964C050@d06av22.portsmouth.uk.ibm.com>
+ <f82e93ccc50014bf6c47318fd089a035d8032b28.1571647179.git.mbobrowski@mbobrowski.org>
+ <20191021133715.GD25184@quack2.suse.cz>
+ <20191022015535.GC5092@athena.bobrowski.net>
+ <20191023063925.84F6C4C044@d06av22.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191023063557.21C964C050@d06av22.portsmouth.uk.ibm.com>
+In-Reply-To: <20191023063925.84F6C4C044@d06av22.portsmouth.uk.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 12:05:55PM +0530, Ritesh Harjani wrote:
-> On 10/21/19 2:47 PM, Matthew Bobrowski wrote:
-> > This patch is effectively addressed what Dave Chinner had found and
-> > fixed within this commit: 8a23414ee345. Justification for needing this
-> > modification has been provided below:
-> Not sure if this is a valid commit id. I couldn't find it.
+On Wed, Oct 23, 2019 at 12:09:24PM +0530, Ritesh Harjani wrote:
+> On 10/22/19 7:25 AM, Matthew Bobrowski wrote:
+> > On Mon, Oct 21, 2019 at 03:37:15PM +0200, Jan Kara wrote:
+> > > On Mon 21-10-19 20:18:09, Matthew Bobrowski wrote:
+> > > One nit below.
+> > > > +	ext4_es_find_extent_range(inode, &ext4_es_is_delayed,
+> > > > +				  map->m_lblk, end, &es);
+> > > > +
+> > > > +	if (!es.es_len || es.es_lblk > end)
+> > > > +		return false;
+> > > > +
+> > > > +	if (es.es_lblk > map->m_lblk) {
+> > > > +		map->m_len = es.es_lblk - map->m_lblk;
+> > > > +		return false;
+> > > > +	}
+> > > > +
+> > > > +	if (es.es_lblk <= map->m_lblk)
+> > > > +		offset = map->m_lblk - es.es_lblk;
+> > > > +	map->m_lblk = es.es_lblk + offset;
+> 
+> And so, this above line will also be redundant.
 
-Ah, oops! I plucked that from somewhere, but where (some thread)? Hm, anyway,
-this is what I was referring to:
-https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git/commit/?h=xfs-5.5-merge&id=7684e2c4384d5d1f884b01ab8bff2369e4db0bff
+And, you're absolutely right. Nice catch. Who knew basic math could go such a
+long way? :P
 
-This is queued for 5.5, so I will add this commit hash to my changelog in v6.
- 
+Thanks Ritesh!
+
 --<M>--
