@@ -2,84 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71382E1B07
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 14:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25831E1B7B
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 14:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391664AbfJWMoI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Oct 2019 08:44:08 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51424 "EHLO
+        id S2390284AbfJWM5d (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Oct 2019 08:57:33 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54963 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2391648AbfJWMoI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 08:44:08 -0400
+        with ESMTP id S2390108AbfJWM5d (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 08:57:33 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9NCi2PB012503
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9NCv1VA016128
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Oct 2019 08:44:03 -0400
+        Wed, 23 Oct 2019 08:57:02 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 90FE2420456; Wed, 23 Oct 2019 08:44:02 -0400 (EDT)
-Date:   Wed, 23 Oct 2019 08:44:02 -0400
+        id 3FF4B420456; Wed, 23 Oct 2019 08:57:01 -0400 (EDT)
+Date:   Wed, 23 Oct 2019 08:57:01 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     xiaohui li <lixiaohui1@xiaomi.corp-partner.google.com>
-Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v3 09/13] ext4: fast-commit commit path changes
-Message-ID: <20191023124402.GA31059@mit.edu>
-References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
- <20191001074101.256523-10-harshadshirwadkar@gmail.com>
- <20191016224511.GI11103@mit.edu>
- <CAAJeciXQiE022GqcsTr35jSqjA6eH+zBS2KNvDPj5PovButdYA@mail.gmail.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>, linux-fscrypt@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Crowley <paulcrowley@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH 1/3] fscrypt: add support for inline-encryption-optimized
+ policies
+Message-ID: <20191023125701.GA2460@mit.edu>
+References: <20191021230355.23136-1-ebiggers@kernel.org>
+ <20191021230355.23136-2-ebiggers@kernel.org>
+ <20191022052712.GA2083@dread.disaster.area>
+ <20191022060004.GA333751@sol.localdomain>
+ <20191022133001.GA23268@mit.edu>
+ <20191023092718.GA23274@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAJeciXQiE022GqcsTr35jSqjA6eH+zBS2KNvDPj5PovButdYA@mail.gmail.com>
+In-Reply-To: <20191023092718.GA23274@infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 04:58:47PM +0800, xiaohui li wrote:
-> why not let fsync handle enjoy one transaction exclusively ?
-> that is to say, in this transaction, there is only one handle which is
-> generated in one file's fsync path .
+On Wed, Oct 23, 2019 at 02:27:18AM -0700, Christoph Hellwig wrote:
+> On Tue, Oct 22, 2019 at 09:30:01AM -0400, Theodore Y. Ts'o wrote:
+> > If and when we actually get inline crypto support for server-class
+> > systems, hopefully they will support 128-bit DUN's, and/or they will
+> > have sufficiently fast key load times such that we can use per-file
+> > keying.
+> 
+> NVMe is working on a key per I/O feature.  So at very least the naming
+> of this option should be "crappy_underwhelming_embedded_inline_crypto"
 
-There is only one handle which is generated in one file's fsync path.
-That isn't the problem.  (If it were that simple, we would have done
-it a long time ago.)
+If and when the vaporware shows up in real hardware, and assuming that
+fscrypt is useful for this hardware, we can name it
+"super_duper_fancy_inline_crypto".  :-)
 
-The problem is that there may have been other handles that have been
-started before the fsync transaction, and these handles will have
-already made changes to the file system.  Worse, some of those handles
-may have made changes in the same metadata blocks which the fsync
-operation needs to modify.
+Remember that fscrypt only encrypts the data and the file name.  It
+doesn't encrypt the metadata.  It has very specific use cases for
+Android and ChromeOS where you have multiple users that need to use
+different keys, and in the case of ChromeOS, we want to be able to
+efficiently use the space so that while user A is logged in, we can
+delete files in user B's cache directory without user B's keys being
+present.  (This is why we can't use fixed per-user partitions with
+dm-crypt; that solution was considered and rejected before we started
+work on fscrypt.)
 
-For example, suppose we are three seconds into the current
-transaction, with potentially hundreds of handles that have already
-been started and finished --- but not yet committed, because the
-current transaction hasn't closed.  All of those handles have already
-been attached to the current transaction, and they can't be ignored.
-
-The fast commit patch set deals with this by using part of the journal
-for a "fast commit journal" where we essentially are doing a very
-simplified logical journal.  It doesn't handle all cases, and there
-will be situations where we will need to fall back to the physical
-journalling techniques used in ext4 today.  For example, if the file
-has been truncated, and then a single 4k block is written, and then
-the file gets fsync'ed, we won't be able to use the fast commit
-logical journal.  Fortunately, the common case which compromises well
-over 99% of most workloads are much simpler to handle, and these can
-be handled via the fast commit patch.
-
-The fast commit approach is a simplified version of the idea proposed
-by Daejun Park and Dungkun Shih from the Sungkyunkwan University in
-Korea, and which were presented in the paper "iJournaling:
-Fine-Grained Journaling for Improving the Latency of Fsync System
-Call[1]", presented at the Usenix Annual Technical Conference in 2017.
-
-[1] https://www.usenix.org/conference/atc17/technical-sessions/presentation/park
+If you aren't working under tight space and cost constraints, it's
+actually better to encrypt the whole partition, so that all of the
+metadata can be protected.  fscrypt is deployed in millions and
+millions of devices, and is solving real world problems.  However, it
+never claimed to be the only way to address encryption in the storage
+stack --- and it's not at all clear fscrypt is the way that makes the
+most amount of sense for NVMe devices.  So let's cross that bridge
+when we get to it.
 
 Cheers,
 
-						- Ted
+	       	   	      	       	      - Ted
