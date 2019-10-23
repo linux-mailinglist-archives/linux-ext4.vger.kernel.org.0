@@ -2,82 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F443E263D
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 00:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034DCE26C4
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 00:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436706AbfJWWNo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Oct 2019 18:13:44 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:39940 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2436687AbfJWWNo (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 23 Oct 2019 18:13:44 -0400
-Received: from dread.disaster.area (pa49-180-40-48.pa.nsw.optusnet.com.au [49.180.40.48])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 00C6E43EE24;
-        Thu, 24 Oct 2019 09:13:34 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1iNOsm-0006fc-Rc; Thu, 24 Oct 2019 09:13:32 +1100
-Date:   Thu, 24 Oct 2019 09:13:32 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Boaz Harrosh <boaz@plexistor.com>
-Cc:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Enable per-file/directory DAX operations
-Message-ID: <20191023221332.GE2044@dread.disaster.area>
-References: <20191020155935.12297-1-ira.weiny@intel.com>
- <b7849297-e4a4-aaec-9a64-2b481663588b@plexistor.com>
- <b883142c-ecfe-3c5b-bcd9-ebe4ff28d852@plexistor.com>
+        id S2406203AbfJWW6g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Oct 2019 18:58:36 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34567 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2392721AbfJWW6g (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 18:58:36 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9NMwPcW028147
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Oct 2019 18:58:26 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id CB9B4420456; Wed, 23 Oct 2019 18:58:24 -0400 (EDT)
+Date:   Wed, 23 Oct 2019 18:58:24 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Petr Vorel <pvorel@suse.cz>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Cyril Hrubis <chrubis@suse.cz>, Yong Sun <yosun@suse.com>
+Subject: Re: "New" ext4 features tests in LTP
+Message-ID: <20191023225824.GB7630@mit.edu>
+References: <20191023155846.GA28604@dell5510>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b883142c-ecfe-3c5b-bcd9-ebe4ff28d852@plexistor.com>
+In-Reply-To: <20191023155846.GA28604@dell5510>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
-        a=y881pOMu+B+mZdf5UrsJdA==:117 a=y881pOMu+B+mZdf5UrsJdA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=XobE76Q3jBoA:10
-        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=iEe7G1TxEPlCt2B0xWcA:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 04:09:50PM +0300, Boaz Harrosh wrote:
-> On 22/10/2019 14:21, Boaz Harrosh wrote:
-> > On 20/10/2019 18:59, ira.weiny@intel.com wrote:
-> Please explain the use case behind your model?
+On Wed, Oct 23, 2019 at 05:58:46PM +0200, Petr Vorel wrote:
+> ext4-inode-version [4]
+> ------------------
+> Directory containing the shell script which is used to test inode version field
+> on disk of ext4.
 
-No application changes needed to control whether they use DAX or
-not. It allows the admin to control the application behaviour
-completely, so they can turn off DAX if necessary. Applications are
-unaware of constraints that may prevent DAX from being used, and so
-admins need a mechanism to prevent DAX aware application from
-actually using DAX if the capability is present.
+This is basically testing whether or not i_version gets incremented
+after various file system operations.  There's some checks about
+whether i_version is 32 bit or 64 bit based on the inode size, which
+seems a bit pointless, and also checking whether the file system can
+be mounted as ext3, which is even more pointless.
 
-e.g. given how slow some PMEM devices are when it comes to writing
-data, especially under extremely high concurrency, DAX is not
-necessarily a performance win for every application. Admins need a
-guaranteed method of turning off DAX in these situations - apps may
-not provide such a knob, or even be aware of a thing called DAX...
+The i_version increment check can be done in a much more general (file
+systme independant) way by using the FS_IOC_GETVERSION ioctl (there is
+also an FS_IOC_SETVERSION).  
 
-e.g. the data set being accessed by the application is mapped and
-modified by RDMA applications, so those files must not be accessed
-using DAX by any application because DAX+RDMA are currently
-incompatible. Hence you can have RDMA on pmem devices co-exist
-within the same filesystem as other applications using DAX to access
-the pmem...
+> ext4-journal-checksum [5]
+> ---------------------
+> Directory containing the shell script which is used to test journal checksumming
+> of ext4.
+
+This is basically checking whether you can mount an ext4 file system
+with the journal checksum options.  Seems kinda pointless to me.  I'm
+guessing that perhaps the test authors were trying to hit some
+artificial code coverage metric, perhaps?
+
+> ext4-nsec-timestamps [6]
+> --------------------
+> Directory containing the shell script which is used to test nanosec timestamps
+> of ext4.
+
+This basically tests that the file system supports nanosecond
+timestamps, with a 0.3% false positive failure rate.   Again, why?
+
+> ext4-online-defrag [7]
+> ------------------
+> Directory containing the shell script which is used to test online defrag
+> feature of ext4.
+
+We already have tests of online defrag in xfstests: ext4/301,
+ext4/302, ext4/303, and ext4/304.  And they do a much better job of
+stress testing the defrag code than the very simple "let's tickle the
+code paths to hit the code coverage metric" style of testing in this
+script.
+
+> ext4-persist-prealloc [8]
+> ---------------------
+> Directory containing the shell script which is used to test persist prealloc
+> feature of ext4.
+
+We have lots and lots of fallocate tests in xfstests.  what is in ltp
+is just "let's run fallocate in the happy path, without any stress
+tests" style test.  There's a reason why a lot of people really like
+to hate on pointed-haired managers who push for code coverage
+metrics....
+
+> ext4-subdir-limit [9]
+> -----------------
+> Directory containing the shell script which is used to test subdirectory limit
+> of ext4. According to the kernel documentation, we create more than 32000
+> subdirectorys on the ext4 filesystem.
+
+This is a valid test, although it's not what I would call a "high
+value" test.  (As in, it's testing maybe a total of four simple lines
+of code that are highly unlikely to fail.)
+
+> ext4-uninit-groups [10]
+> ------------------
+> Directory containing the shell script which is used to test uninitialized groups
+> feature of ext4.
+
+The uninitialized block group feature is enabled by default for ext4
+these days, and we do extensive testing with it enabled.  I also test
+in ext3 compatibility mode, which tests the "not unitialized groups
+case".  The oldalloc mount option is a no-op these days, so the fact
+that the ltp test tries to test orlov versus oldalloc is pointless.
 
 Cheers,
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+							- Ted
