@@ -2,96 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 387B4E1814
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 12:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71382E1B07
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 14:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391068AbfJWKf4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Oct 2019 06:35:56 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:42210 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390935AbfJWKf4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 06:35:56 -0400
-Received: by mail-pf1-f194.google.com with SMTP id 21so1409738pfj.9
-        for <linux-ext4@vger.kernel.org>; Wed, 23 Oct 2019 03:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IGCTYUdGZ/kAtactsj73D19FolPD9OqOn6a2pp38DL4=;
-        b=ed00/wQ5b0JNduMCcXPzDHZ6hgztDx/0N7hnFnNKMPysVwKyUzx9tm5lQYb8wrp4vB
-         t7zMj9n9I1QahJCKxDyggMRDo506VxsMpIJKPoPN2ao0zpjBm/D0QRt3Oa2V7GC1nlkS
-         +2S/ut2fgYX/wpIXau+KOomw5Qu5ovPS3yF0L+BoaxPGqTOmSwvgMdl7L0B86ziHbIcc
-         vDLIOc1oS/D9d538AXuX2qMkumVCaCzk2jhZUcpbwR3suwZGSK96V43yYVqvjYtr1Y0Y
-         kxsG/Q6wrPkZWZNvpdsapThAcJ+72DrUn+YZaNttozeJVAbRuil97E1VCjv3Iyox20sN
-         YDVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IGCTYUdGZ/kAtactsj73D19FolPD9OqOn6a2pp38DL4=;
-        b=eQEGSJ1YTovC4EfzE7mdkHfWyxWMjTkEhiPKt00lUUt/iKFuDrZ3/Zx7QILsTNZL+j
-         cLbE7U0ntFqliCvs0guIYNGsFhlrtX6eB9KSVC46UaaYQ3p2Rof278VvyoxFhsNesFtq
-         NHHw47Yji231m6u3PoInXnNb/KuzhZRB3N0x+EOnAQnsd6oFIfC0+U9bPdiIKvhwR/Rv
-         DmFbuM6lxUdu1x4QFOTuYkNvmRyw0zZzA2HoFlhRHN8IvQ6iFjZdnMucbxanxEbpqOs8
-         NxW0BAqSZhkdWz+WuZzwBk7hBWg1K4ntL6pTDXYrr1Qs0jm+oFa1j3d22yefRa3wbnK9
-         mn9w==
-X-Gm-Message-State: APjAAAWBIsGu33DnRNI3Ypwby8aRh2iG3bVEde18x3jyg/zGpwjdsWQB
-        pbNLL05BVgOsNXyvRrnJ2NmTb4sB0Lpt
-X-Google-Smtp-Source: APXvYqxDN4nFg1E1mrSmBOqnqzfKhJ041UGZcDGwc6vrrRZBUb5u5S3KRYaqQyFtOHKfYdyLyYI2GA==
-X-Received: by 2002:a17:90a:8505:: with SMTP id l5mr10774993pjn.41.1571826954909;
-        Wed, 23 Oct 2019 03:35:54 -0700 (PDT)
-Received: from bobrowski ([110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id c66sm3570020pfb.25.2019.10.23.03.35.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2019 03:35:54 -0700 (PDT)
-Date:   Wed, 23 Oct 2019 21:35:48 +1100
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        hch@infradead.org, david@fromorbit.com, darrick.wong@oracle.com
-Subject: Re: [PATCH v5 04/12] ext4: introduce new callback for IOMAP_REPORT
-Message-ID: <20191023103548.GD6725@bobrowski>
-References: <cover.1571647178.git.mbobrowski@mbobrowski.org>
- <f82e93ccc50014bf6c47318fd089a035d8032b28.1571647179.git.mbobrowski@mbobrowski.org>
- <20191021133715.GD25184@quack2.suse.cz>
- <20191022015535.GC5092@athena.bobrowski.net>
- <20191023063925.84F6C4C044@d06av22.portsmouth.uk.ibm.com>
+        id S2391664AbfJWMoI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Oct 2019 08:44:08 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51424 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2391648AbfJWMoI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 08:44:08 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9NCi2PB012503
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Oct 2019 08:44:03 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 90FE2420456; Wed, 23 Oct 2019 08:44:02 -0400 (EDT)
+Date:   Wed, 23 Oct 2019 08:44:02 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     xiaohui li <lixiaohui1@xiaomi.corp-partner.google.com>
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v3 09/13] ext4: fast-commit commit path changes
+Message-ID: <20191023124402.GA31059@mit.edu>
+References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
+ <20191001074101.256523-10-harshadshirwadkar@gmail.com>
+ <20191016224511.GI11103@mit.edu>
+ <CAAJeciXQiE022GqcsTr35jSqjA6eH+zBS2KNvDPj5PovButdYA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191023063925.84F6C4C044@d06av22.portsmouth.uk.ibm.com>
+In-Reply-To: <CAAJeciXQiE022GqcsTr35jSqjA6eH+zBS2KNvDPj5PovButdYA@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 12:09:24PM +0530, Ritesh Harjani wrote:
-> On 10/22/19 7:25 AM, Matthew Bobrowski wrote:
-> > On Mon, Oct 21, 2019 at 03:37:15PM +0200, Jan Kara wrote:
-> > > On Mon 21-10-19 20:18:09, Matthew Bobrowski wrote:
-> > > One nit below.
-> > > > +	ext4_es_find_extent_range(inode, &ext4_es_is_delayed,
-> > > > +				  map->m_lblk, end, &es);
-> > > > +
-> > > > +	if (!es.es_len || es.es_lblk > end)
-> > > > +		return false;
-> > > > +
-> > > > +	if (es.es_lblk > map->m_lblk) {
-> > > > +		map->m_len = es.es_lblk - map->m_lblk;
-> > > > +		return false;
-> > > > +	}
-> > > > +
-> > > > +	if (es.es_lblk <= map->m_lblk)
-> > > > +		offset = map->m_lblk - es.es_lblk;
-> > > > +	map->m_lblk = es.es_lblk + offset;
-> 
-> And so, this above line will also be redundant.
+On Wed, Oct 23, 2019 at 04:58:47PM +0800, xiaohui li wrote:
+> why not let fsync handle enjoy one transaction exclusively ?
+> that is to say, in this transaction, there is only one handle which is
+> generated in one file's fsync path .
 
-And, you're absolutely right. Nice catch. Who knew basic math could go such a
-long way? :P
+There is only one handle which is generated in one file's fsync path.
+That isn't the problem.  (If it were that simple, we would have done
+it a long time ago.)
 
-Thanks Ritesh!
+The problem is that there may have been other handles that have been
+started before the fsync transaction, and these handles will have
+already made changes to the file system.  Worse, some of those handles
+may have made changes in the same metadata blocks which the fsync
+operation needs to modify.
 
---<M>--
+For example, suppose we are three seconds into the current
+transaction, with potentially hundreds of handles that have already
+been started and finished --- but not yet committed, because the
+current transaction hasn't closed.  All of those handles have already
+been attached to the current transaction, and they can't be ignored.
+
+The fast commit patch set deals with this by using part of the journal
+for a "fast commit journal" where we essentially are doing a very
+simplified logical journal.  It doesn't handle all cases, and there
+will be situations where we will need to fall back to the physical
+journalling techniques used in ext4 today.  For example, if the file
+has been truncated, and then a single 4k block is written, and then
+the file gets fsync'ed, we won't be able to use the fast commit
+logical journal.  Fortunately, the common case which compromises well
+over 99% of most workloads are much simpler to handle, and these can
+be handled via the fast commit patch.
+
+The fast commit approach is a simplified version of the idea proposed
+by Daejun Park and Dungkun Shih from the Sungkyunkwan University in
+Korea, and which were presented in the paper "iJournaling:
+Fine-Grained Journaling for Improving the Latency of Fsync System
+Call[1]", presented at the Usenix Annual Technical Conference in 2017.
+
+[1] https://www.usenix.org/conference/atc17/technical-sessions/presentation/park
+
+Cheers,
+
+						- Ted
