@@ -2,85 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCF8E1D75
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 15:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FA9E2006
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 17:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406263AbfJWN5W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Oct 2019 09:57:22 -0400
-Received: from sender2-of-o52.zoho.com.cn ([163.53.93.247]:21057 "EHLO
-        sender2-of-o52.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405260AbfJWN5W (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 23 Oct 2019 09:57:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1571839028; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=dOD7L7fshLb4ZxoBS0HWdPcMBSwMQXx2vRxF8Mjd5kE1GjGB5wyHIK85dSa02hHV+VPuIGXD/cLREGuesHhEThPNgYk8bkAbbhUiNJfAAdsYR/qq4v8ROeFPyfnRkdg9B5y/NCSKBzt1BcCv0zXtJq5f/ahp/OrpcVl1qh/nVak=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1571839028; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
-        bh=r/VPlG00fukPgk0RE7nUzAUnYuC2Vx0+b2N/mY3fB6g=; 
-        b=Z+kY+iz/L+JVh0u4ZkfzFCDjxbpQxG75K0VdDwxF/Isvhd+lYgDk2L249K8buOuh4es/9het8Nc5pezB5krr7XgczJ8yLxD+3HELtwqGP5Ag1Di2S+B661rtBcAniqpyKDafs1tcTiwgKCN19bDReBNhFnTFkfu1z8vnn1AueeY=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1571839028;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=940; bh=r/VPlG00fukPgk0RE7nUzAUnYuC2Vx0+b2N/mY3fB6g=;
-        b=UQJ/TXuckIMyhU0AV+KBbZbdA7dO28nTifmCGLVhItC20SqHADdCEZxaJjxf9KbC
-        U8U+8HwjchEmG8/uXRynQRWZesgn1ZOQGILeBL/LjK+IU83DM/f/ANe+Zpag5CpKHoN
-        F8a1nsHWYyHqhqeSIS1nnXbSUIKRCpAwhFdpgIFU=
-Received: from localhost.localdomain (113.116.156.62 [113.116.156.62]) by mx.zoho.com.cn
-        with SMTPS id 1571839025106266.214635017231; Wed, 23 Oct 2019 21:57:05 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191023135643.28837-1-cgxu519@mykernel.net>
-Subject: [PATCH] ext2: return error when fail to allocating memory in ioctl
-Date:   Wed, 23 Oct 2019 21:56:43 +0800
-X-Mailer: git-send-email 2.21.0
+        id S2391035AbfJWP6u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Oct 2019 11:58:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59190 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390259AbfJWP6u (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 23 Oct 2019 11:58:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 7363DB4D8;
+        Wed, 23 Oct 2019 15:58:48 +0000 (UTC)
+Date:   Wed, 23 Oct 2019 17:58:46 +0200
+From:   Petr Vorel <pvorel@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Cyril Hrubis <chrubis@suse.cz>, Yong Sun <yosun@suse.com>
+Subject: "New" ext4 features tests in LTP
+Message-ID: <20191023155846.GA28604@dell5510>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently, we do not check memory allocation
-result for ei->i_block_alloc_info in ioctl,
-this patch checks it and returns error in
-failure case.
+Hi,
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- fs/ext2/ioctl.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+we have in LTP some ext4 fs tests [1], which aimed to test at the time new ext4
+features [2]. All of them are using The Flexible Filesystem Benchmark (ffsb)
+- a filesystem performance measurement too [3]. Tests were contributed in 2009
+and needs at least some cleanup.
 
-diff --git a/fs/ext2/ioctl.c b/fs/ext2/ioctl.c
-index 1b853fb0b163..32a8d10b579d 100644
---- a/fs/ext2/ioctl.c
-+++ b/fs/ext2/ioctl.c
-@@ -145,10 +145,13 @@ long ext2_ioctl(struct file *filp, unsigned int cmd, =
-unsigned long arg)
- =09=09if (ei->i_block_alloc_info){
- =09=09=09struct ext2_reserve_window_node *rsv =3D &ei->i_block_alloc_info-=
->rsv_window_node;
- =09=09=09rsv->rsv_goal_size =3D rsv_window_size;
-+=09=09} else {
-+=09=09=09ret =3D -ENOMEM;
- =09=09}
-+
- =09=09mutex_unlock(&ei->truncate_mutex);
- =09=09mnt_drop_write_file(filp);
--=09=09return 0;
-+=09=09return ret;
- =09}
- =09default:
- =09=09return -ENOTTY;
---=20
-2.21.0
+I wonder whether testing these features is still relevant. And if yes, whether
+they're covered in xfstests? After brief search in xfstests ext4 tests it
+doesn't look like, at least not directly. Does it make sense to you to keep them?
+(either to cleanup and keep them in LTP or rewrite and contribute to xfstests)
 
+List of these tests [3]:
+ext4-inode-version [4]
+------------------
+Directory containing the shell script which is used to test inode version field
+on disk of ext4.
 
+ext4-journal-checksum [5]
+---------------------
+Directory containing the shell script which is used to test journal checksumming
+of ext4.
 
+ext4-nsec-timestamps [6]
+--------------------
+Directory containing the shell script which is used to test nanosec timestamps
+of ext4.
+
+ext4-online-defrag [7]
+------------------
+Directory containing the shell script which is used to test online defrag
+feature of ext4.
+
+ext4-persist-prealloc [8]
+---------------------
+Directory containing the shell script which is used to test persist prealloc
+feature of ext4.
+
+ext4-subdir-limit [9]
+-----------------
+Directory containing the shell script which is used to test subdirectory limit
+of ext4. According to the kernel documentation, we create more than 32000
+subdirectorys on the ext4 filesystem.
+
+ext4-uninit-groups [10]
+------------------
+Directory containing the shell script which is used to test uninitialized groups
+feature of ext4.
+
+Thanks for info.
+
+Kind regards,
+Petr
+
+[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/ext4-new-features/README
+[2] http://ext4.wiki.kernel.org/index.php/New_ext4_features
+[3] https://github.com/linux-test-project/ltp/blob/master/utils/ffsb-6.0-rc2/README
+[4] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+[5] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+[6] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
+[7] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/ext4-new-features/ext4-online-defrag/ext4_online_defrag_test.sh
+[8] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
+[9] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
+[10] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
