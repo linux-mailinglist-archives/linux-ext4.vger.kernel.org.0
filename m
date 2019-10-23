@@ -2,60 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7FAE15BC
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 11:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9BAE173D
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2019 12:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390870AbfJWJ2Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Oct 2019 05:28:16 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:43164 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390165AbfJWJ2Q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 05:28:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=uGan0qkqY3Baf+Gu4EO36oLW37gG3cinwDiYCMyfjkw=; b=IPtlkSVbKd9G6jeWwzkZUcoqb
-        4NVDb3fhL/u7bjVcexVJA80NrHgxO0mhThUzgtgQ543HR7W6XGJZ4U6xWi7m8tXDkiye2nX4Iy7tq
-        Zo8VGdc+FuZ3+dVi4dGltCQJIux+pcP5Mo/CMVpWbGcV5khHPpEs5vjDiDjrMP+ulqaZ3VcJZF97N
-        dAZzJ09V2tAZ/iMf+YsGSFaAE9+Tl7a945g6zchy+gJ2bgjSs4tcNAP2LdWu4lCPXVuvnaOXCGl4Y
-        Ye4lqxGDjhYoyNu2MP1lc/2/gtxhSm01HlvGYUrbZ6jO0kCf8idq7xB+sAkRHsdaddi1xkOVxJY81
-        gpahDH58A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iNCwC-0007Zj-C9; Wed, 23 Oct 2019 09:28:16 +0000
-Date:   Wed, 23 Oct 2019 02:28:16 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        Paul Crowley <paulcrowley@google.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: Re: [PATCH 1/3] fscrypt: add support for inline-encryption-optimized
- policies
-Message-ID: <20191023092816.GB23274@infradead.org>
-References: <20191021230355.23136-1-ebiggers@kernel.org>
- <20191021230355.23136-2-ebiggers@kernel.org>
- <20191022052712.GA2083@dread.disaster.area>
- <20191022060004.GA333751@sol.localdomain>
+        id S2404222AbfJWKB4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Oct 2019 06:01:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48046 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390361AbfJWKB4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 23 Oct 2019 06:01:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id F32D2AF19;
+        Wed, 23 Oct 2019 10:01:53 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 705B41E4A89; Wed, 23 Oct 2019 12:01:53 +0200 (CEST)
+Date:   Wed, 23 Oct 2019 12:01:53 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Cc:     Jan Kara <jack@suse.cz>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, hch@infradead.org,
+        david@fromorbit.com, darrick.wong@oracle.com
+Subject: Re: [PATCH v5 00/12] ext4: port direct I/O to iomap infrastructure
+Message-ID: <20191023100153.GB22307@quack2.suse.cz>
+References: <cover.1571647178.git.mbobrowski@mbobrowski.org>
+ <20191021133111.GA4675@mit.edu>
+ <20191021194330.GJ25184@quack2.suse.cz>
+ <20191023023519.GA16505@bobrowski>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191022060004.GA333751@sol.localdomain>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20191023023519.GA16505@bobrowski>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 11:00:04PM -0700, Eric Biggers wrote:
-> An alternative which would work nicely on ext4 and xfs (if xfs supported
-> fscrypt) would be to pass the physical block number as the DUN.  However, that
-> wouldn't work at all on f2fs because f2fs moves data blocks around.
+On Wed 23-10-19 13:35:19, Matthew Bobrowski wrote:
+> On Mon, Oct 21, 2019 at 09:43:30PM +0200, Jan Kara wrote:
+> > On Mon 21-10-19 09:31:12, Theodore Y. Ts'o wrote:
+> > > Hi Matthew, thanks for your work on this patch series!
+> > > 
+> > > I applied it against 4c3, and ran a quick test run on it, and found
+> > > the following locking problem.  To reproduce:
+> > > 
+> > > kvm-xfstests -c nojournal generic/113
+> > > 
+> > > generic/113		[09:27:19][    5.841937] run fstests generic/113 at 2019-10-21 09:27:19
+> > > [    7.959477] 
+> > > [    7.959798] ============================================
+> > > [    7.960518] WARNING: possible recursive locking detected
+> > > [    7.961225] 5.4.0-rc3-xfstests-00012-g7fe6ea084e48 #1238 Not tainted
+> > > [    7.961991] --------------------------------------------
+> > > [    7.962569] aio-stress/1516 is trying to acquire lock:
+> > > [    7.963129] ffff9fd4791148c8 (&sb->s_type->i_mutex_key#12){++++}, at: __generic_file_fsync+0x3e/0xb0
+> > > [    7.964109] 
+> > > [    7.964109] but task is already holding lock:
+> > > [    7.964740] ffff9fd4791148c8 (&sb->s_type->i_mutex_key#12){++++}, at: ext4_dio_write_iter+0x15b/0x430
+> > 
+> > This is going to be a tricky one. With iomap, the inode locking is handled
+> > by the filesystem while calling generic_write_sync() is done by
+> > iomap_dio_rw(). I would really prefer to avoid tweaking iomap_dio_rw() not
+> > to call generic_write_sync(). So we need to remove inode_lock from
+> > __generic_file_fsync() (used from ext4_sync_file()). This locking is mostly
+> > for legacy purposes and we don't need this in ext4 AFAICT - but removing
+> > the lock from __generic_file_fsync() would mean auditing all legacy
+> > filesystems that use this to make sure flushing inode & its metadata buffer
+> > list while it is possibly changing cannot result in something unexpected. I
+> > don't want to clutter this series with it so we are left with
+> > reimplementing __generic_file_fsync() inside ext4 without inode_lock. Not
+> > too bad but not great either. Thoughts?
+> 
+> So, I just looked at this on my lunch break and I think the simplest
+> approach would be to just transfer the necessary chunks of code from
+> within __generic_file_fsync() into ext4_sync_file() for !journal cases,
+> minus the inode lock, and minus calling into __generic_file_fsync(). I
+> don't forsee this causing any issues, but feel free to correct me if I'm
+> wrong.
 
-XFS can also move data blocks around.  Even ext4 can do that for limited
-cases (defrag).
+Yes, that's what I'd suggest as well. In fact when doing that you can share
+file_write_and_wait_range() call with the one already in ext4_sync_file()
+use for other cases. Similarly with file_check_and_advance_wb_err(). So the
+copied bit will be really only:
+
+        ret = sync_mapping_buffers(inode->i_mapping);
+        if (!(inode->i_state & I_DIRTY_ALL))
+                goto out;
+        if (datasync && !(inode->i_state & I_DIRTY_DATASYNC))
+                goto out;
+
+        err = sync_inode_metadata(inode, 1);
+        if (ret == 0)
+                ret = err;
+
+> If this is deemed to be OK, then I will go ahead and include this as a
+> separate patch in my series.
+
+Yes, please.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
