@@ -2,116 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1978E3D10
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 22:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A64E3E48
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 23:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbfJXUSF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Oct 2019 16:18:05 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57130 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725958AbfJXUSE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Oct 2019 16:18:04 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9OKI0Gc002459
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Oct 2019 16:18:01 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 46513420456; Thu, 24 Oct 2019 16:18:00 -0400 (EDT)
-Date:   Thu, 24 Oct 2019 16:18:00 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Xiaohui1 Li =?utf-8?B?5p2O5pmT6L6J?= <lixiaohui1@xiaomi.com>
-Cc:     "lixiaohui1@xiaomi.corp-partner.google.com" 
-        <lixiaohui1@xiaomi.corp-partner.google.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v3 09/13] ext4: fast-commit commit path changes
-Message-ID: <20191024201800.GE1124@mit.edu>
-References: <1571900042725.99617@xiaomi.com>
+        id S1729508AbfJXVfQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Oct 2019 17:35:16 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45749 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726386AbfJXVfQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 24 Oct 2019 17:35:16 -0400
+Received: from dread.disaster.area (pa49-181-161-154.pa.nsw.optusnet.com.au [49.181.161.154])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 7386F43F07B;
+        Fri, 25 Oct 2019 08:35:09 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1iNklA-0006Nu-K4; Fri, 25 Oct 2019 08:35:08 +1100
+Date:   Fri, 25 Oct 2019 08:35:08 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Boaz Harrosh <boaz@plexistor.com>
+Cc:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Enable per-file/directory DAX operations
+Message-ID: <20191024213508.GB4614@dread.disaster.area>
+References: <20191020155935.12297-1-ira.weiny@intel.com>
+ <b7849297-e4a4-aaec-9a64-2b481663588b@plexistor.com>
+ <b883142c-ecfe-3c5b-bcd9-ebe4ff28d852@plexistor.com>
+ <20191023221332.GE2044@dread.disaster.area>
+ <efffc9e7-8948-a117-dc7f-e394e50606ab@plexistor.com>
+ <20191024073446.GA4614@dread.disaster.area>
+ <fb4f8be7-bca6-733a-7f16-ced6557f7108@plexistor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1571900042725.99617@xiaomi.com>
+In-Reply-To: <fb4f8be7-bca6-733a-7f16-ced6557f7108@plexistor.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=G6BsK5s5 c=1 sm=1 tr=0
+        a=l3vQdJ1SkhDHY1nke8Lmag==:117 a=l3vQdJ1SkhDHY1nke8Lmag==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=XobE76Q3jBoA:10
+        a=7-415B0cAAAA:8 a=Qt9MKOuts2txuSNu_AQA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 06:54:44AM +0000, Xiaohui1 Li 李晓辉 wrote:
+On Thu, Oct 24, 2019 at 05:05:45PM +0300, Boaz Harrosh wrote:
+> On 24/10/2019 10:34, Dave Chinner wrote:
+> > On Thu, Oct 24, 2019 at 05:31:13AM +0300, Boaz Harrosh wrote:
+> <>
+> > 
+> > The on disk DAX flag is inherited from the parent directory at
+> > create time. Hence an admin only need to set it on the data
+> > directory of the application when first configuring it, and
+> > everything the app creates will be configured for DAX access
+> > automatically.
+> > 
 > 
-> But i also have an idea which can simplify the fast commit patch.
-> because we want to fix fsync cost too much time problems on our
-> mobile phone without format the whole ext4 partition , and i found
-> current fast commit patch can't do this job as it need to
-> readjustment the layout of journal area and will destroy phone
-> user's data from my opinion .
+> Yes I said that as well.
 
-That's not correct.  The fast commit feature can be added to an
-existing ext4 file system.  That's because when the ext4 file system
-is mounted (or when e2fsck is run) the contents of the file system
-journal (if any) are replayed and then discard.  On a clean shutdown,
-the journal is empty to begin with.
+You said "it must be set between creation and first write",
+stating the requirement for an on-disk flag to work. I'm
+decribing how that requirement is actually implemented. i.e. what
+you are stating is something we actually implemented years ago...
 
-Hence, restructuring the journal so that a portion of the space can be
-used for fast commits can be done without modifying or otherwise
-destroying the data on the pre-existing file system.
+> > I also seem
+> > to recall that there was a need to take some vm level lock to really
+> > prevent page fault races, and that we can't safely take that in a
+> > safe combination with all the filesystem locks we need.
+> > 
+> 
+> We do not really care with page fault races in the Kernel as long
 
-> so my simplify idea is that:
-> when jbd2 thread begin to commit the current transaction , why not
-> divide the commiting work into two sub work ? firstly flush metadata
-> generated by fsynced handles to disk, and then append a commit end
-> block. and then tell the fsync threads that no need to wait, as
-> their metadata has already been flush to disk journal area, the
-> fsync work is finished.  and then the second sub work is to
-> committing metadata and data generated by left handles in current
-> transaction.
+Oh yes we do. A write fault is a 2-part operation - a read fault to
+populate the pte and mapping, then a write fault (->page_mkwrite) to 
+do all the filesystem work needed to dirty the page and pte.
 
-The problem, as I stated in my earlier message, is that the handles
-that were not involved in the fsync in many cases will have been
-started and completed before the changes reflected by the handles
-involving the inode to be fsync'ed.  We can't just "separate out the
-handles" and commit the ones that are necessary, and then do the rest
-in a separate transaction.  The problem is entagled dependencies.  For
-example, one of the handles not involved with the fsync may have
-modified the inode table or the allocation bitmap that is involved
-with the update to the inode to be fsync'ed.  We can't just flush the
-metadata blocks involved with the "fsync handles", since they will
-include the modifications made by other file systems via "the rest of
-the handles."
+The read fault sets up the state for the write fault, and if we
+change the aops between these two operations, then the
+->page_mkwrite implementation goes kaboom.
 
-So no, we can't do what you are suggesting.  If it were that easy, we
-would have done it a long time ago.
+This isn't a theoretical problem - this is exactly the race
+condition that lead us to disabling the flag in the first place.
+There is no serialisation between the read and write parts of the
+page fault iand the filesystem changing the DAX flag and ops vector,
+and so fixing this problem requires hold yet more locks in the
+filesystem path to completely lock out page fault processing on the
+inode's mapping.
 
-The reason why you can't separate out some of the handles from others
-is referenced in the LWN article, "Soft Updates, Hard Problems"[1].
-What you are suggesting is not exactly soft updates, but it suffers
-from the same problem, namely that of entangled updates, where the
-same block is modified by multiple handles.  If you track all of the
-logical dependencies, you could potentially "roll back" in memory
-those changes which are not yet committed, and then after commit of
-the "fsync hanldes", roll them forward again.  But this is hopelessly
-complicated to get right.
+> as I protect the xarray access and these are protected well if we
+> take truncate locking. But we have a bigger problem that you pointed
+> out with the change of the operations vector pointer.
+> 
+> I was thinking about this last night. One way to do this is with
+> file-exclusive-lock. Correct me if I'm wrong:
+> file-exclusive-readwrite-lock means any other openers will fail and
+> if there are openers already the lock will fail. Which is what we want
+> no?
 
-[1] https://lwn.net/Articles/339337/
+The filesystem ioctls and page faults have no visibility of file
+locks.  They don't know and can't find out in a sane manner that an
+inode has a single -user- reference.
 
-So if you implemented your suggestion, and the system were to crash
-between the first and second commit, the file system would be
-corrupted, and in the worst case, e2fsck might not be able to recover
-the file system, and all of the user's data would be lost.  Of course,
-if you are sure that your system will never crash, because the kernel
-is bug-free(tm), then you could skip using the journalling altogher.....
+And it introduces a new problem for any application using the
+fssetxattr() ioctl - accidentally not setting the S_DAX flag to be
+unmodified will now fail, and that means such a change breaks
+existing applications. Sure, you can say they are "buggy
+applications", but the fact is this user API change breaks them.
 
-						- Ted
+Hence I don't think we can change the user API for setting/clearing
+this flag like this.
 
-P.S.  It's actually a little bit more complicated than that; you also
-need to worry about power drops, so the battery needs to be embedded,
-so there is no chance the battery will come flying out when the phone
-is dropped.  The EC also has to be able to give a low-pattery warning
-so that the system can be shut down cleanly before the battery power
-goes to zero, and you can't allow the emergency poweroff where the
-user pushes and holds the power buton for eight seconds.  The last,
-after all, won't be needed because we are making the hopelessly
-unrealistic assumption that the kernel is completely, 100%,
-bug-free(tm).   :-)
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
