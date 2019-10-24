@@ -2,84 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ACED5E363A
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 17:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1978E3D10
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 22:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409620AbfJXPMT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Oct 2019 11:12:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50154 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2409599AbfJXPMT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 24 Oct 2019 11:12:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 95A72C213;
-        Thu, 24 Oct 2019 15:12:17 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EA9011E155F; Thu, 24 Oct 2019 17:12:16 +0200 (CEST)
-Date:   Thu, 24 Oct 2019 17:12:16 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/19 v3] ext4: Fix transaction overflow due to revoke
- descriptors
-Message-ID: <20191024151216.GQ31271@quack2.suse.cz>
-References: <20191003215523.7313-1-jack@suse.cz>
- <20191019191933.GA25841@mit.edu>
- <20191024130908.GO31271@quack2.suse.cz>
+        id S1726908AbfJXUSF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Oct 2019 16:18:05 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57130 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725958AbfJXUSE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Oct 2019 16:18:04 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9OKI0Gc002459
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Oct 2019 16:18:01 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 46513420456; Thu, 24 Oct 2019 16:18:00 -0400 (EDT)
+Date:   Thu, 24 Oct 2019 16:18:00 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Xiaohui1 Li =?utf-8?B?5p2O5pmT6L6J?= <lixiaohui1@xiaomi.com>
+Cc:     "lixiaohui1@xiaomi.corp-partner.google.com" 
+        <lixiaohui1@xiaomi.corp-partner.google.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH v3 09/13] ext4: fast-commit commit path changes
+Message-ID: <20191024201800.GE1124@mit.edu>
+References: <1571900042725.99617@xiaomi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20191024130908.GO31271@quack2.suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1571900042725.99617@xiaomi.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 24-10-19 15:09:08, Jan Kara wrote:
-> On Sat 19-10-19 15:19:33, Theodore Y. Ts'o wrote:
-> > Hi Jan,
-> > 
-> > I've tried applying this patch set against 5.4-rc3, and I'm finding a
-> > easily reproducible failure using:
-> > 
-> > 	kvm-xfstests -c ext3conv ext4/039
-> > 
-> > It is the BUG_ON in fs/jbd2/commit.c, around line 570:
-> > 
-> > 	J_ASSERT(commit_transaction->t_nr_buffers <=
-> > 		 atomic_read(&commit_transaction->t_outstanding_credits));
-> > 
-> > The failure (with the obvious debugging printk added) is:
-> > 
-> > ext4/039		[15:13:16][    6.747101] run fstests ext4/039 at 2019-10
-> > -19 15:13:16
-> > [    7.018766] Mounted ext4 file system at /vdc supports timestamps until 2038 (
-> > 0x7fffffff)
-> > [    8.227631] JBD2: t_nr_buffers 226, t_outstanding_credits=223
-> > [    8.229215] ------------[ cut here ]------------
-> > [    8.230249] kernel BUG at fs/jbd2/commit.c:573!
-> >      	       ...
-> > 
-> > The full log is attached (although the stack trace isn't terribly
-> > interesting, since this is being run out of kjournald2).
+On Thu, Oct 24, 2019 at 06:54:44AM +0000, Xiaohui1 Li 李晓辉 wrote:
 > 
-> Thanks! Somehow this escaped my testing although I thought I have run ext3
-> configuration... Anyway we are reserving too few space in this case - with
-> some debugging added:
-> 
-> [   80.296029] t_buffers: 222, t_outstanding_credits: 219,
-> t_revoke_written: 23, t_revoke_reserved: 12, t_revoke_records_written
-> 11432, t_revoke_records_reserved 11432, revokes_per_block: 1020
-> 
-> Which is really puzzling because it would suggest that revokes_per_block is
-> actually wrong. Digging more into this.
+> But i also have an idea which can simplify the fast commit patch.
+> because we want to fix fsync cost too much time problems on our
+> mobile phone without format the whole ext4 partition , and i found
+> current fast commit patch can't do this job as it need to
+> readjustment the layout of journal area and will destroy phone
+> user's data from my opinion .
 
-Yeah, ext4 was updating journal features in this case but
-j_revoke_records_per_block didn't get properly updated. Fixed now.
+That's not correct.  The fast commit feature can be added to an
+existing ext4 file system.  That's because when the ext4 file system
+is mounted (or when e2fsck is run) the contents of the file system
+journal (if any) are replayed and then discard.  On a clean shutdown,
+the journal is empty to begin with.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Hence, restructuring the journal so that a portion of the space can be
+used for fast commits can be done without modifying or otherwise
+destroying the data on the pre-existing file system.
+
+> so my simplify idea is that:
+> when jbd2 thread begin to commit the current transaction , why not
+> divide the commiting work into two sub work ? firstly flush metadata
+> generated by fsynced handles to disk, and then append a commit end
+> block. and then tell the fsync threads that no need to wait, as
+> their metadata has already been flush to disk journal area, the
+> fsync work is finished.  and then the second sub work is to
+> committing metadata and data generated by left handles in current
+> transaction.
+
+The problem, as I stated in my earlier message, is that the handles
+that were not involved in the fsync in many cases will have been
+started and completed before the changes reflected by the handles
+involving the inode to be fsync'ed.  We can't just "separate out the
+handles" and commit the ones that are necessary, and then do the rest
+in a separate transaction.  The problem is entagled dependencies.  For
+example, one of the handles not involved with the fsync may have
+modified the inode table or the allocation bitmap that is involved
+with the update to the inode to be fsync'ed.  We can't just flush the
+metadata blocks involved with the "fsync handles", since they will
+include the modifications made by other file systems via "the rest of
+the handles."
+
+So no, we can't do what you are suggesting.  If it were that easy, we
+would have done it a long time ago.
+
+The reason why you can't separate out some of the handles from others
+is referenced in the LWN article, "Soft Updates, Hard Problems"[1].
+What you are suggesting is not exactly soft updates, but it suffers
+from the same problem, namely that of entangled updates, where the
+same block is modified by multiple handles.  If you track all of the
+logical dependencies, you could potentially "roll back" in memory
+those changes which are not yet committed, and then after commit of
+the "fsync hanldes", roll them forward again.  But this is hopelessly
+complicated to get right.
+
+[1] https://lwn.net/Articles/339337/
+
+So if you implemented your suggestion, and the system were to crash
+between the first and second commit, the file system would be
+corrupted, and in the worst case, e2fsck might not be able to recover
+the file system, and all of the user's data would be lost.  Of course,
+if you are sure that your system will never crash, because the kernel
+is bug-free(tm), then you could skip using the journalling altogher.....
+
+						- Ted
+
+P.S.  It's actually a little bit more complicated than that; you also
+need to worry about power drops, so the battery needs to be embedded,
+so there is no chance the battery will come flying out when the phone
+is dropped.  The EC also has to be able to give a low-pattery warning
+so that the system can be shut down cleanly before the battery power
+goes to zero, and you can't allow the emergency poweroff where the
+user pushes and holds the power buton for eight seconds.  The last,
+after all, won't be needed because we are making the hopelessly
+unrealistic assumption that the kernel is completely, 100%,
+bug-free(tm).   :-)
