@@ -2,160 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 131FEE27E6
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 03:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66180E282E
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 04:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408140AbfJXB7B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 23 Oct 2019 21:59:01 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:34896 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408092AbfJXB7B (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 21:59:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=0h70dGDOK05vm1Ih0GsIq9J9o32Y+rfowYypTFnY+YU=; b=FvYNi1N0v7S11gHtJLTUG37e4
-        yq5DERi0tBZLKVtRByJPqmVo/GZGYlTUUUleW/NdAr2klQWnv0JfjEqCUPBvpzsrBwZ8upYS/BVVj
-        lM88rVphVa6O2CsuBgt+wx9jEx3vCuX2jbw6ColppZ7yR6givPG5yy04srq1eC8+l7EUppsRv7A8Z
-        Rqs/TPdi6Gg8m8rG6A2heMt5Rs39hKoX8qouHLCJf7JaynJbH3mq9gJqH7R+jzdpheUIuSRUjc/89
-        zdsR4Wf3sQUOJ1lDXXQGC9pskj1ZZd0MB4iAyygJixRdUEM1f1T6bODno7+41YaPcUb4Yi5Dgxkpo
-        mIuggkxvg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iNSOv-0003Ka-HU; Thu, 24 Oct 2019 01:58:57 +0000
-Date:   Wed, 23 Oct 2019 18:58:57 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Cc:     Jan Kara <jack@suse.cz>, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, hch@infradead.org,
-        david@fromorbit.com, darrick.wong@oracle.com
-Subject: Re: [PATCH v5 00/12] ext4: port direct I/O to iomap infrastructure
-Message-ID: <20191024015857.GB14940@infradead.org>
-References: <cover.1571647178.git.mbobrowski@mbobrowski.org>
- <20191021133111.GA4675@mit.edu>
- <20191021194330.GJ25184@quack2.suse.cz>
- <20191023023519.GA16505@bobrowski>
- <20191023100153.GB22307@quack2.suse.cz>
- <20191023101138.GA6725@bobrowski>
+        id S2437080AbfJXCbT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 23 Oct 2019 22:31:19 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:39965 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437067AbfJXCbT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 23 Oct 2019 22:31:19 -0400
+Received: by mail-ed1-f66.google.com with SMTP id p59so8943119edp.7
+        for <linux-ext4@vger.kernel.org>; Wed, 23 Oct 2019 19:31:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=plexistor-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gnpimtDmP0lqthi2a9dQUIzsbuDYbXbk8lwy1rA6ZU4=;
+        b=rWfKpJmH4ifuIAc04embim+n/JBDGLFT0Hj+ihXkCmiMhnOlUJ7dovXsW/rUmYCG6F
+         NxvohT6iNXBI6t174vtu7YcDkT26RFlgZNkwGZix5mNkPhEVfaQJud2KWOstCgH42cLL
+         C6TMjBSQEmYIn9WfT37PSeJ/iFVaR6bQjE0zyQcvJKF2mvrqFmnCmfG0685/oCLWd2D/
+         kj3C67iakdIgJwUCaU7RXbrXgjL50UBwhAsUqAr4lASSx5NA4IH+9zeFS8WnF3708s4S
+         VD43nmX5iXHmxRFB4FSaXMMTYJZZ+KuoOiJB3j+OaIRifCMquB5u1LE663zK8s24CJAE
+         4+WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gnpimtDmP0lqthi2a9dQUIzsbuDYbXbk8lwy1rA6ZU4=;
+        b=UssgtJcWzs6NBuKEq/Sh7LAmJVj1pGDCbTh/whrM+JsnEmXKeUJAsMrt1TRw2nSo7O
+         Ug+P3f0j8n9IunbLZqpb2JtJdoiYuy35coS2CVBsqH6wYFlHOlIdCApXYXvlkh1Ok+9Q
+         T2KuvAAisgMTIhncfm8i1fb86iZAUeEjwJmzA7IM7bghtafZR3/MwJ/0trbM1WF/KWCK
+         CkgRvzC6RC/fRM5f47U5SaGs8sQ8/Dv2o+rxpdDQzpQzw+/+8jIHkpXVfM29Yf2c7mea
+         0KPb/U8jn88BlNAoQ83X6gDyOBb/8hKPOGvespXBsD35eTqdISJVhSv5qiElbyF6xwyx
+         1c4g==
+X-Gm-Message-State: APjAAAUTLYbZAW6lkN/vg3HnKdSLBMG5RW5c/mY3CJ9brMx/PGUZaEOG
+        FF7KMkyyYbtXxlyxzf2UULPGaw==
+X-Google-Smtp-Source: APXvYqy84bemiVw55n7fco+FbX1+KuwznFlI0XsqhDfwNJccDH40WXATcHh+QUP1GE+pY3XO2S2c9A==
+X-Received: by 2002:a17:906:780e:: with SMTP id u14mr26591750ejm.97.1571884275784;
+        Wed, 23 Oct 2019 19:31:15 -0700 (PDT)
+Received: from [10.68.217.182] ([217.70.210.43])
+        by smtp.googlemail.com with ESMTPSA id x23sm430555eda.83.2019.10.23.19.31.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Oct 2019 19:31:15 -0700 (PDT)
+Subject: Re: [PATCH 0/5] Enable per-file/directory DAX operations
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20191020155935.12297-1-ira.weiny@intel.com>
+ <b7849297-e4a4-aaec-9a64-2b481663588b@plexistor.com>
+ <b883142c-ecfe-3c5b-bcd9-ebe4ff28d852@plexistor.com>
+ <20191023221332.GE2044@dread.disaster.area>
+From:   Boaz Harrosh <boaz@plexistor.com>
+Message-ID: <efffc9e7-8948-a117-dc7f-e394e50606ab@plexistor.com>
+Date:   Thu, 24 Oct 2019 05:31:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191023101138.GA6725@bobrowski>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20191023221332.GE2044@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Maybe something like the version below which declutter the thing a bit?
+On 24/10/2019 01:13, Dave Chinner wrote:
+> On Wed, Oct 23, 2019 at 04:09:50PM +0300, Boaz Harrosh wrote:
+>> On 22/10/2019 14:21, Boaz Harrosh wrote:
+>>> On 20/10/2019 18:59, ira.weiny@intel.com wrote:
+>> Please explain the use case behind your model?
+> 
+> No application changes needed to control whether they use DAX or
+> not. It allows the admin to control the application behaviour
+> completely, so they can turn off DAX if necessary. Applications are
+> unaware of constraints that may prevent DAX from being used, and so
+> admins need a mechanism to prevent DAX aware application from
+> actually using DAX if the capability is present.
+> 
+> e.g. given how slow some PMEM devices are when it comes to writing
+> data, especially under extremely high concurrency, DAX is not
+> necessarily a performance win for every application. Admins need a
+> guaranteed method of turning off DAX in these situations - apps may
+> not provide such a knob, or even be aware of a thing called DAX...
+> 
 
-diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
-index 5508baa11bb6..ab601c6779d2 100644
---- a/fs/ext4/fsync.c
-+++ b/fs/ext4/fsync.c
-@@ -80,6 +80,41 @@ static int ext4_sync_parent(struct inode *inode)
- 	return ret;
- }
- 
-+static int ext4_fsync_nojournal(struct inode *inode, bool datasync,
-+		bool *needs_barrier)
-+{
-+	int ret, err;
-+
-+	ret = sync_mapping_buffers(inode->i_mapping);
-+	if (!(inode->i_state & I_DIRTY_ALL))
-+		return ret;
-+	if (datasync && !(inode->i_state & I_DIRTY_DATASYNC))
-+		return ret;
-+
-+	err = sync_inode_metadata(inode, 1);
-+	if (!ret)
-+		ret = err;
-+
-+	if (!ret)
-+		ret = ext4_sync_parent(inode);
-+	if (test_opt(inode->i_sb, BARRIER))
-+		*needs_barrier = true;
-+	return ret;
-+}
-+
-+static int ext4_fsync_journal(struct inode *inode, bool datasync,
-+		bool *needs_barrier)
-+{
-+	struct ext4_inode_info *ei = EXT4_I(inode);
-+	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
-+	tid_t commit_tid = datasync ? ei->i_datasync_tid : ei->i_sync_tid;
-+
-+	if (journal->j_flags & JBD2_BARRIER &&
-+	    !jbd2_trans_will_send_data_barrier(journal, commit_tid))
-+		*needs_barrier = true;
-+	return jbd2_complete_transaction(journal, commit_tid);
-+}
-+
- /*
-  * akpm: A new design for ext4_sync_file().
-  *
-@@ -95,13 +130,11 @@ static int ext4_sync_parent(struct inode *inode)
- int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- {
- 	struct inode *inode = file->f_mapping->host;
--	struct ext4_inode_info *ei = EXT4_I(inode);
--	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
-+	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	int ret = 0, err;
--	tid_t commit_tid;
- 	bool needs_barrier = false;
- 
--	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
-+	if (unlikely(ext4_forced_shutdown(sbi)))
- 		return -EIO;
- 
- 	J_ASSERT(ext4_journal_current_handle() == NULL);
-@@ -116,18 +149,10 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 		goto out;
- 	}
- 
--	if (!journal) {
--		ret = __generic_file_fsync(file, start, end, datasync);
--		if (!ret)
--			ret = ext4_sync_parent(inode);
--		if (test_opt(inode->i_sb, BARRIER))
--			goto issue_flush;
--		goto out;
--	}
--
- 	ret = file_write_and_wait_range(file, start, end);
- 	if (ret)
- 		return ret;
-+
- 	/*
- 	 * data=writeback,ordered:
- 	 *  The caller's filemap_fdatawrite()/wait will sync the data.
-@@ -142,18 +167,14 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
- 	 *  (they were dirtied by commit).  But that's OK - the blocks are
- 	 *  safe in-journal, which is all fsync() needs to ensure.
- 	 */
--	if (ext4_should_journal_data(inode)) {
-+	if (!sbi->s_journal) 
-+		ret = ext4_fsync_nojournal(inode, datasync, &needs_barrier);
-+	else if (ext4_should_journal_data(inode))
- 		ret = ext4_force_commit(inode->i_sb);
--		goto out;
--	}
-+	else
-+		ret = ext4_fsync_journal(inode, datasync, &needs_barrier);
- 
--	commit_tid = datasync ? ei->i_datasync_tid : ei->i_sync_tid;
--	if (journal->j_flags & JBD2_BARRIER &&
--	    !jbd2_trans_will_send_data_barrier(journal, commit_tid))
--		needs_barrier = true;
--	ret = jbd2_complete_transaction(journal, commit_tid);
- 	if (needs_barrier) {
--	issue_flush:
- 		err = blkdev_issue_flush(inode->i_sb->s_bdev, GFP_KERNEL, NULL);
- 		if (!ret)
- 			ret = err;
+Thank you Dave for explaining. Forgive my slowness. I now understand
+your intention.
+
+But if so please address my first concern. That in the submitted implementation
+you must set the flag-bit after the create of the file but before the write.
+So exactly the above slow writes must always be DAX if I ever want the file
+to be DAX accessed in the future.
+
+In fact I do not see how you do this without changing the application because
+most applications create thier own files, so you do not have a chance to set
+the DAX-flag before the write happens. So the only effective fixture is the
+inheritance from the parent directory.
+But then again how do you separate from the slow writes that we would like
+none-DAX to the DAX reads that are fast and save so much resources and latency.
+
+What if, say in XFS when setting the DAX-bit we take all the three write-locks
+same as a truncate. Then we check that there are no active page-cache mappings
+ie. a single opener. Then allow to set the bit. Else return EBUISY. (file is in use)
+
+> e.g. the data set being accessed by the application is mapped and
+> modified by RDMA applications, so those files must not be accessed
+> using DAX by any application because DAX+RDMA are currently
+> incompatible. Hence you can have RDMA on pmem devices co-exist
+> within the same filesystem as other applications using DAX to access
+> the pmem...
+> 
+
+I actually like the lastest patchset that takes a lease on the file.
+But yes an outside admin tool to set different needs.
+
+> Cheers,
+> Dave.
+> 
+
+Yes, thanks
+Boaz
