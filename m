@@ -2,82 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2820E2AB8
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 09:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68A9E2B08
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2019 09:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437869AbfJXHEh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Oct 2019 03:04:37 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:60208 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727635AbfJXHEh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Oct 2019 03:04:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=UuKLDbpQvbMotGXcc+uLQ0Vocvzd2LHIJ9vtxHOU5vU=; b=i6E3AhTxU7PiiGoZzHX1bpT6K
-        7IRuf91wXcARc4dhTksYxqxPdfUSlbB4q7yGugACfQTvkbN8suN7Yd9H8ZiWfzixEAaJEUoGg497V
-        8lWSw8TWXat6lhpSQCxuXB0JIQp15oSX7lw7dgZ6tsSiYPOWh+odehSxcdiZJEy7yrEN1UoQISKC+
-        KihqDHF2wWd5cKKq/bFaRJ4aOtR9PXq7IR4CzsUOxkrN9XW5Z5UkWpZkzqAoSh6m6C8RzC/j/5MRy
-        CLVwiG+QvZ8C4mNC7/+ocWKE0wCHvQZXxoKj2reDkv5OQNW6+OzL+JyxSmVy2pIlCdVqbRt89NrZ1
-        P+5IiNmTw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iNXAf-0004zo-44; Thu, 24 Oct 2019 07:04:33 +0000
-Date:   Thu, 24 Oct 2019 00:04:33 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Satya Tangirala <satyat@google.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
-        Paul Crowley <paulcrowley@google.com>
-Subject: Re: [PATCH 1/3] fscrypt: add support for inline-encryption-optimized
- policies
-Message-ID: <20191024070433.GB16652@infradead.org>
-References: <20191021230355.23136-1-ebiggers@kernel.org>
- <20191021230355.23136-2-ebiggers@kernel.org>
- <20191022052712.GA2083@dread.disaster.area>
- <20191022060004.GA333751@sol.localdomain>
- <20191022133001.GA23268@mit.edu>
- <20191023092718.GA23274@infradead.org>
- <20191023125701.GA2460@mit.edu>
- <20191024012759.GA32358@infradead.org>
- <20191024024459.GA743@sol.localdomain>
+        id S2407153AbfJXHY6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 24 Oct 2019 03:24:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52772 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390783AbfJXHY6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 24 Oct 2019 03:24:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id EF08BAEB8;
+        Thu, 24 Oct 2019 07:24:56 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8506E1E4A99; Thu, 24 Oct 2019 09:24:56 +0200 (CEST)
+Date:   Thu, 24 Oct 2019 09:24:56 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext2: return error when fail to allocating memory in
+ ioctl
+Message-ID: <20191024072456.GH31271@quack2.suse.cz>
+References: <20191023135643.28837-1-cgxu519@mykernel.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191024024459.GA743@sol.localdomain>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20191023135643.28837-1-cgxu519@mykernel.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 07:44:59PM -0700, Eric Biggers wrote:
-> Would you be happy with something that more directly describes the change the
-> flag makes
-
-Yes.
-
-> , like FSCRYPT_POLICY_FLAG_CONTENTS_IV_INO_LBLK_64?  I.e., the IVs for
-> contents encryption are 64-bit and contain the inode and logical block numbers.
+On Wed 23-10-19 21:56:43, Chengguang Xu wrote:
+> Currently, we do not check memory allocation
+> result for ei->i_block_alloc_info in ioctl,
+> this patch checks it and returns error in
+> failure case.
 > 
-> Actually, we could use the same key derivation and IV generation for directories
-> and symlinks too, which would result in just FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64.
-> (lblk is 0 when encrypting a filename.)
+> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
 
-I think not making it crazy verbose is a helpful, but at the same time
-it should be somewhat descriptive.
+Makes sense. Applied. Thanks!
 
-> Although, in general it would be nice to name the settings in ways that are
-> easier for people not intimately familiar with the crypto to understand...
+							Honza
 
-For the andoid case the actual users won't ever really see it, and if
-you set up the thing yourself it probably helps a lot to try to
-understand what your are doing.
+> ---
+>  fs/ext2/ioctl.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext2/ioctl.c b/fs/ext2/ioctl.c
+> index 1b853fb0b163..32a8d10b579d 100644
+> --- a/fs/ext2/ioctl.c
+> +++ b/fs/ext2/ioctl.c
+> @@ -145,10 +145,13 @@ long ext2_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  		if (ei->i_block_alloc_info){
+>  			struct ext2_reserve_window_node *rsv = &ei->i_block_alloc_info->rsv_window_node;
+>  			rsv->rsv_goal_size = rsv_window_size;
+> +		} else {
+> +			ret = -ENOMEM;
+>  		}
+> +
+>  		mutex_unlock(&ei->truncate_mutex);
+>  		mnt_drop_write_file(filp);
+> -		return 0;
+> +		return ret;
+>  	}
+>  	default:
+>  		return -ENOTTY;
+> -- 
+> 2.21.0
+> 
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
