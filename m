@@ -2,137 +2,338 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F4CE40E4
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2019 03:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370F4E438D
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2019 08:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388566AbfJYBPu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 24 Oct 2019 21:15:50 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:41383 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388565AbfJYBPu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 24 Oct 2019 21:15:50 -0400
-Received: by mail-ed1-f68.google.com with SMTP id a21so497141edj.8
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Oct 2019 18:15:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=plexistor-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=H1GaUvponGzx8dfabBhKW2OqVVQdC3N0IbNOHN+GfyA=;
-        b=F7CvUN1nPbeQ3ofUpTfw3ik8aSK5aNiLPnsPsnj56b2FzDgopyq8dS+4OdywSY3cRK
-         Eb7pBK79RZCAqa7dMaDNiALdZ1Q3F4Qp1fNImEMnjWIyz47c4BHaKK+WCMwcPVNBfHiN
-         xknjfj8h/cTsqLjN1CpurQu9NYku85BMGiwf+6d9S5cE50PlssibV/Qo7E4k6g+D1o7G
-         BXtMdHwxSZDmgNJWJzqGOPCg0ZODwFjbIvuczE7ACnosAFZZhRB0n7cefeG6+aipnjAf
-         ijbC86raCT7G6EcIKb+iSX/posRmH1Oq7/anIPBl3mwLVo+v+cMt72aXJqlVakb/ePHY
-         pyYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=H1GaUvponGzx8dfabBhKW2OqVVQdC3N0IbNOHN+GfyA=;
-        b=kR4kFuEMXssL37v3LIpmXeVw1HMvQECfbhU/JJvMMyBJbwqhrcwnnEH07CBLobm5kN
-         f3UlKk+5b7PzakwDEN1jSXk8C80PO6wTo/9bhs5ZUonjIrNBEtet/6Tz7EmX1tAxZjFn
-         wFEEETk3TcIfrM5L+VGvhWQ75uBfEEhisJ9evFA05D3JnuMMRLvwIJtG7j7fT3VWQNOz
-         vefA41y+q7albxhzPAiho/TopG1LdNVy0RW0qgaj1XS/SFxLd09MV3LcyAClDlMoWy1+
-         4mIO70IlVzWuvuEt/B60B0LZN1x60EINid7S1ksYtGED0YqCdcsmbaXA1P9Y1xOKYAzN
-         6c4g==
-X-Gm-Message-State: APjAAAURLkqNQwjHk55xSpYlJHVICIQY9dIYYGOsE5XgEpbMNCpt0fcZ
-        cZcjeNVwaUuM3VK6wwD/+s7I1w==
-X-Google-Smtp-Source: APXvYqz6czjRAMv/BeSl0ugHesI8gzA5oRUMvzQQRtKwlS9OjlmuA9FEFIHOOZH28oxILnBJQbs9HQ==
-X-Received: by 2002:a50:cbc2:: with SMTP id l2mr1201839edi.304.1571966147286;
-        Thu, 24 Oct 2019 18:15:47 -0700 (PDT)
-Received: from [10.68.217.182] ([217.70.210.43])
-        by smtp.googlemail.com with ESMTPSA id gj14sm1695ejb.62.2019.10.24.18.15.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Oct 2019 18:15:46 -0700 (PDT)
-Subject: Re: [PATCH 0/5] Enable per-file/directory DAX operations
-To:     Dave Chinner <david@fromorbit.com>,
-        Boaz Harrosh <boaz@plexistor.com>
-Cc:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20191020155935.12297-1-ira.weiny@intel.com>
- <b7849297-e4a4-aaec-9a64-2b481663588b@plexistor.com>
- <b883142c-ecfe-3c5b-bcd9-ebe4ff28d852@plexistor.com>
- <20191023221332.GE2044@dread.disaster.area>
- <efffc9e7-8948-a117-dc7f-e394e50606ab@plexistor.com>
- <20191024073446.GA4614@dread.disaster.area>
- <fb4f8be7-bca6-733a-7f16-ced6557f7108@plexistor.com>
- <20191024213508.GB4614@dread.disaster.area>
- <ab101f90-6ec1-7527-1859-5f6309640cfa@plexistor.com>
- <20191025003603.GE4614@dread.disaster.area>
-From:   Boaz Harrosh <boaz@plexistor.com>
-Message-ID: <9ffbc2a5-c85b-3633-1ad5-a9a3fe33cd2e@plexistor.com>
-Date:   Fri, 25 Oct 2019 04:15:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S2391788AbfJYG2a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Oct 2019 02:28:30 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51999 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389669AbfJYG2a (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 25 Oct 2019 02:28:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=2;SR=0;TI=SMTPD_---0Tg86W42_1571984887;
+Received: from 30.5.113.164(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0Tg86W42_1571984887)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 25 Oct 2019 14:28:23 +0800
+Subject: Re: [PATCH v3 11/13] ext4: add support for asynchronous fast commits
+To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        linux-ext4@vger.kernel.org
+References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
+ <20191001074101.256523-12-harshadshirwadkar@gmail.com>
+From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Message-ID: <d5d6f55e-6637-6d10-5228-0a7e6d885b9e@linux.alibaba.com>
+Date:   Fri, 25 Oct 2019 14:28:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191025003603.GE4614@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20191001074101.256523-12-harshadshirwadkar@gmail.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 25/10/2019 03:36, Dave Chinner wrote:
-> On Fri, Oct 25, 2019 at 02:29:04AM +0300, Boaz Harrosh wrote:
-<>
+hi,
 
->> Perhaps we always go by the directory. And then do an mv dir_DAX/foo dir_NODAX/foo
+> Until this patch, fast commits could only be invoked by jbd2 thread.
+> This patch allows file system to perform fast commit in an async manner
+> without involving jbd2 thread. This makes fast commits even faster as
+> it gets rid of the time spent in context switching to jbd2 thread. In
+> order to avoid race between jbd2 thread and async fast commits, we add
+> new jbd2 APIs that allow file systems to indicate their intent of
+> performing an async fast commit.
 > 
-> The inode is instatiated before the rename is run, so it's set up
-> with it's old dir config, not the new one. So this ends up with the
-> same problem of haivng to change the S_DAX flag and aops vector
-> dynamically on rename. Same problem, not a solution.
+> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> ---
+>   fs/ext4/ext4.h        |  3 ++
+>   fs/ext4/ext4_jbd2.c   | 74 +++++++++++++++++++++++++++++++++++++++++++
+>   fs/ext4/fsync.c       |  7 ++--
+>   fs/jbd2/commit.c      | 11 +++++++
+>   fs/jbd2/journal.c     | 59 ++++++++++++++++++++++++++++++++++
+>   fs/jbd2/transaction.c |  2 ++
+>   include/linux/jbd2.h  | 10 ++++++
+>   7 files changed, 164 insertions(+), 2 deletions(-)
 > 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index cd5b567d8ca8..a8a481c5ffa4 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -2716,6 +2716,9 @@ extern int ext4_group_extend(struct super_block *sb,
+>   extern int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count);
+>   
+>   /* super.c */
+> +int ext4_fc_async_commit(journal_t *journal, tid_t commit_tid,
+> +			 tid_t commit_subtid, struct inode *inode,
+> +			 struct dentry *dentry);
+>   extern struct buffer_head *ext4_sb_bread(struct super_block *sb,
+>   					 sector_t block, int op_flags);
+>   extern int ext4_seq_options_show(struct seq_file *seq, void *offset);
+> diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+> index 12d6e70bf676..cf796268322b 100644
+> --- a/fs/ext4/ext4_jbd2.c
+> +++ b/fs/ext4/ext4_jbd2.c
+> @@ -1144,6 +1144,80 @@ static int ext4_journal_fc_replay_cb(journal_t *journal, struct buffer_head *bh,
+>   	return ret;
+>   }
+>   
+> +int ext4_fc_async_commit(journal_t *journal, tid_t commit_tid,
+> +			 tid_t commit_subtid, struct inode *inode,
+> +			 struct dentry *dentry)
+> +{
+> +	struct ext4_inode_info *ei = EXT4_I(inode);
+> +	struct super_block *sb = inode->i_sb;
+> +	struct buffer_head *bh;
+> +	int ret;
+> +
+> +	if (!ext4_should_fast_commit(sb))
+> +		return jbd2_complete_transaction(journal, commit_tid);
+> +
+> +	read_lock(&ei->i_fc.fc_lock);
+> +	if (ei->i_fc.fc_tid != commit_tid) {
+> +		read_unlock(&ei->i_fc.fc_lock);
+> +		return 0;
+> +	}
+> +	read_unlock(&ei->i_fc.fc_lock);
+> +
+> +	if (ext4_is_inode_fc_ineligible(inode))
+> +		return jbd2_complete_transaction(journal, commit_tid);
+> +
+> +	if (jbd2_commit_check(journal, commit_tid, commit_subtid))
+> +		return 0;
+> +
+> +	ret = jbd2_start_async_fc(journal, commit_tid);
+> +	if (ret)
+> +		return jbd2_fc_complete_commit(journal, commit_tid,
+> +					       commit_subtid);
+> +
+> +	trace_ext4_journal_fc_commit_cb_start(sb);
+> +
+> +	ret = jbd2_submit_inode_data(journal, ei->jinode);
+> +	if (ret)
+> +		goto out;
+> +
+> +	ret = jbd2_map_fc_buf(journal, &bh);
+> +	if (ret) {
+> +		jbd2_stop_async_fc(journal, commit_tid);
+> +		trace_ext4_journal_fc_commit_cb_stop(sb, 0, "map_fc_buf");
+> +		return jbd2_complete_transaction(journal, commit_tid);
+> +
+> +	}
+> +
+> +	ret = ext4_fc_write_inode(journal, bh, inode, commit_tid,
+> +				  commit_subtid, 1, dentry);
+> +
+> +	if (ret < 0) {
+> +		brelse(bh);
+> +		jbd2_stop_async_fc(journal, commit_tid);
+> +		trace_ext4_journal_fc_commit_cb_stop(sb, 0, "fc_write_inode");
+> +		return jbd2_complete_transaction(journal, commit_tid);
+> +	}
+> +	lock_buffer(bh);
+> +	clear_buffer_dirty(bh);
+> +	set_buffer_uptodate(bh);
+> +	bh->b_end_io = ext4_end_buffer_io_sync;
+> +	submit_bh(REQ_OP_WRITE, REQ_SYNC, bh);
+> +
+> +	jbd2_stop_async_fc(journal, commit_tid);
+> +	wait_on_buffer(bh);
+> +	if (unlikely(!buffer_uptodate(bh))) {
+> +		trace_ext4_journal_fc_commit_cb_stop(sb, 0, "IO");
+> +		return -EIO;
+> +	}
+> +
+> +out:
+> +	trace_ext4_journal_fc_commit_cb_stop(sb,
+> +					     ret < 0 ? 0 : ret,
+> +					     ret >= 0 ? "success" : "fail");
+> +	wake_up(&journal->j_wait_async_fc);
+> +	return ret;
+> +}
+> +
+>   void ext4_init_fast_commit(struct super_block *sb, journal_t *journal)
+>   {
+>   	if (ext4_should_fast_commit(sb)) {
+> diff --git a/fs/ext4/fsync.c b/fs/ext4/fsync.c
+> index 5508baa11bb6..5bbfc55e1756 100644
+> --- a/fs/ext4/fsync.c
+> +++ b/fs/ext4/fsync.c
+> @@ -98,7 +98,7 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+>   	struct ext4_inode_info *ei = EXT4_I(inode);
+>   	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+>   	int ret = 0, err;
+> -	tid_t commit_tid;
+> +	tid_t commit_tid, commit_subtid;
+>   	bool needs_barrier = false;
+>   
+>   	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
+> @@ -148,10 +148,13 @@ int ext4_sync_file(struct file *file, loff_t start, loff_t end, int datasync)
+>   	}
+>   
+>   	commit_tid = datasync ? ei->i_datasync_tid : ei->i_sync_tid;
+> +	commit_subtid = datasync ? ei->i_datasync_subtid : ei->i_sync_subtid;
+> +
+>   	if (journal->j_flags & JBD2_BARRIER &&
+>   	    !jbd2_trans_will_send_data_barrier(journal, commit_tid))
+>   		needs_barrier = true;
+> -	ret = jbd2_complete_transaction(journal, commit_tid);
+> +	ret = ext4_fc_async_commit(journal, commit_tid, commit_subtid,
+> +				   inode, file->f_path.dentry);
+>   	if (needs_barrier) {
+>   	issue_flush:
+>   		err = blkdev_issue_flush(inode->i_sb->s_bdev, GFP_KERNEL, NULL);
+> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+> index e85f51e1cc70..18cb70fa2421 100644
+> --- a/fs/jbd2/commit.c
+> +++ b/fs/jbd2/commit.c
+> @@ -452,6 +452,17 @@ void jbd2_journal_commit_transaction(journal_t *journal, bool *fc)
+>   
+>   	write_lock(&journal->j_state_lock);
+>   	full_commit = journal->j_do_full_commit;
+> +	journal->j_running_transaction->t_async_fc_allowed = false;
+> +	while (journal->j_running_transaction->t_async_fc_ongoing) {
+> +		DEFINE_WAIT(wait);
+> +
+> +		prepare_to_wait(&journal->j_wait_async_fc, &wait,
+> +				TASK_UNINTERRUPTIBLE);
+> +		write_unlock(&journal->j_state_lock);
+> +		schedule();
+> +		write_lock(&journal->j_state_lock);
+> +		finish_wait(&journal->j_wait_async_fc, &wait);
+> +	}
+>   	write_unlock(&journal->j_state_lock);
+>   
+>   	/* Let file-system try its own fast commit */
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index e0684212384d..81daa2cff67f 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -794,6 +794,64 @@ int jbd2_commit_check(journal_t *journal, tid_t tid, tid_t subtid)
+>   	return 0;
+>   }
+>   
+> +int jbd2_start_async_fc(journal_t *journal, tid_t tid)
+> +{
+> +	transaction_t *txn;
+> +	int ret = -EINVAL;
+> +
+> +	if (!journal->j_running_transaction)
+> +		return ret;
+> +
+> +	if (journal->j_running_transaction->t_tid != tid)
+> +		return ret;
+> +
+> +	txn = journal->j_running_transaction;
+> +	write_lock(&journal->j_state_lock);
+> +	while (txn->t_state == T_RUNNING) {
+> +		DEFINE_WAIT(wait);
+> +
+> +		if (txn->t_async_fc_allowed) {
+> +			if (!txn->t_async_fc_ongoing) {
+> +				txn->t_async_fc_ongoing = true;
+> +				ret = 0;
+> +				break;
+> +			}
+> +			prepare_to_wait(&journal->j_wait_async_fc,
+> +					&wait, TASK_UNINTERRUPTIBLE);
+> +			write_unlock(&journal->j_state_lock);
+> +			schedule();
+> +			write_lock(&journal->j_state_lock);
+> +			finish_wait(&journal->j_wait_async_fc, &wait);
+It seems that above code logic will prevent concurrent fsync operations using fast
+commit feature?
 
-Yes Admin needs a inode-drop_caches after the mv if she/he wants an effective
-change.
+Regards,
+Xiaoguang Wang
 
->> to have an effective change. In hard links the first one at iget time before populating
->> the inode cache takes affect.
+> +		} else {
+> +			ret = -ECANCELED;
+> +			break;
+> +		}
+> +	}
+> +	write_unlock(&journal->j_state_lock);
+> +
+> +	return ret;
+> +}
+> +
+> +int jbd2_stop_async_fc(journal_t *journal, tid_t tid)
+> +{
+> +	transaction_t *txn;
+> +
+> +	if (!journal->j_running_transaction)
+> +		return -EINVAL;
+> +
+> +	if (journal->j_running_transaction->t_tid != tid)
+> +		return -EINVAL;
+> +
+> +	txn = journal->j_running_transaction;
+> +	write_lock(&journal->j_state_lock);
+> +	J_ASSERT(txn->t_state == T_RUNNING);
+> +	txn->t_async_fc_ongoing = false;
+> +	txn->t_subtid++;
+> +	write_unlock(&journal->j_state_lock);
+> +	return 0;
+> +
+> +}
+> +
+>   /* Return 1 when transaction with given tid has already committed. */
+>   int jbd2_transaction_committed(journal_t *journal, tid_t tid)
+>   {
+> @@ -1308,6 +1366,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>   	init_waitqueue_head(&journal->j_wait_commit);
+>   	init_waitqueue_head(&journal->j_wait_updates);
+>   	init_waitqueue_head(&journal->j_wait_reserved);
+> +	init_waitqueue_head(&journal->j_wait_async_fc);
+>   	mutex_init(&journal->j_barrier);
+>   	mutex_init(&journal->j_checkpoint_mutex);
+>   	spin_lock_init(&journal->j_revoke_lock);
+> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+> index ce7f03cfd90b..f17f813b5610 100644
+> --- a/fs/jbd2/transaction.c
+> +++ b/fs/jbd2/transaction.c
+> @@ -103,6 +103,8 @@ static void jbd2_get_transaction(journal_t *journal,
+>   	transaction->t_max_wait = 0;
+>   	transaction->t_start = jiffies;
+>   	transaction->t_requested = 0;
+> +	transaction->t_async_fc_allowed = true;
+> +	transaction->t_async_fc_ongoing = false;
+>   }
+>   
+>   /*
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 312103fc9581..5610f16de919 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -604,6 +604,7 @@ struct transaction_s
+>   		T_FINISHED
+>   	}			t_state;
+>   
+> +	bool t_async_fc_allowed, t_async_fc_ongoing;
+>   	/*
+>   	 * Where in the log does this transaction's commit start? [no locking]
+>   	 */
+> @@ -869,6 +870,13 @@ struct journal_s
+>   	 */
+>   	wait_queue_head_t	j_wait_reserved;
+>   
+> +	/**
+> +	 * @j_wait_async_fc:
+> +	 *
+> +	 * Wait queue to wait for completion of async fast commits.
+> +	 */
+> +	wait_queue_head_t	j_wait_async_fc;
+> +
+>   	/**
+>   	 * @j_checkpoint_mutex:
+>   	 *
+> @@ -1594,6 +1602,8 @@ int jbd2_complete_transaction(journal_t *journal, tid_t tid);
+>   int jbd2_log_do_checkpoint(journal_t *journal);
+>   int jbd2_trans_will_send_data_barrier(journal_t *journal, tid_t tid);
+>   int jbd2_fc_complete_commit(journal_t *journal, tid_t tid, tid_t subtid);
+> +int jbd2_start_async_fc(journal_t *journal, tid_t tid);
+> +int jbd2_stop_async_fc(journal_t *journal, tid_t tid);
+>   
+>   void __jbd2_log_wait_for_space(journal_t *journal);
+>   extern void __jbd2_journal_drop_transaction(journal_t *, transaction_t *);
 > 
-> If something like a find or backup program brings the inode into
-> cache, the app may not even get the behaviour it wants, and it can't
-> change it until the inode is evicted from cache, which may be never.
-
-inode-drop-caches. (echo 2 > /proc/sys/vm/drop_caches)
-
-> Nobody wants implicit/random/uncontrollable/unchangeable behaviour
-> like this.
-> 
-
-You mean in the case of hard links between different mode directories?
-I agree it is not so good. I do not like it too.
-
-<>
-> We went over all this ground when we disabled the flag in the first
-> place. We disabled the flag because we couldn't come up with a sane
-> way to flip the ops vector short of tracking the number of aops
-> calls in progress at any given time. i.e. reference counting the
-> aops structure, but that's hard to do with a const ops structure,
-> and so it got disabled rather than allowing users to crash
-> kernels....
-> 
-
-Do you mean dropping this patchset all together? I missed that.
-
-Current patchset with the i_size == 0 thing is really bad I think.
-Its the same has dropping the direct change all together and only
-supporting inheritance from parent.
-[Which again for me is really not interesting]
-
-> Cheers,
-> -Dave.
-
-Lets sleep on it. Please remind me if xfs supports clone + DAX
-
-Thanks Dave
-Boaz
