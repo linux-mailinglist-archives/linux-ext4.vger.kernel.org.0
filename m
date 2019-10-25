@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85545E4D93
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2019 16:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDDEE4D8C
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2019 16:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505405AbfJYN5z (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Oct 2019 09:57:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52838 "EHLO mail.kernel.org"
+        id S2394915AbfJYOBC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Oct 2019 10:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505381AbfJYN5u (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:57:50 -0400
+        id S2505586AbfJYN6a (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 25 Oct 2019 09:58:30 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC8B821E6F;
-        Fri, 25 Oct 2019 13:57:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D88121E6F;
+        Fri, 25 Oct 2019 13:58:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572011869;
-        bh=VxAENRe8KXE3KAQSm0XpFg7pqpD9WQdNEuOUOrj6zvg=;
+        s=default; t=1572011910;
+        bh=+F0pkVj7I5n+RegaCo0C9K6X3YZYlP9VUdh+KIbm/AQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WSg8ZIpkQUKp2HfodOtYBEC6rZyLMQ8jYc4wCixiicVkoOQRMBR4bv2HWsZybj8Pp
-         ppIThQ3I0bkwWMqWmHlZX6LiElJUsd0vsryXKH4GP2qHv8Wt1r9Keae2PKQKIXd9gj
-         RSfgaLWvzKHdgGNvuV3JZKRauXUcBmuscsL/HCsU=
+        b=lmyIfyo9Kwo6QCcMXgvxYwfvwpR2D+eZYzt5NT6/gIZzGiBPlOdPZjHcRtmtJCxc5
+         X3I50nFe3qmkW3e7XSJGyCSYh9C1POftIG3YJc6jznM+UlJ0UMCevLImp96SedytmI
+         CqY9nHZBJ43EAFnhjNOWYBnpCGUBLL9RtSVe+/Zc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Chandan Rajendra <chandan@linux.ibm.com>,
         Harish Sriram <harish@linux.ibm.com>, Jan Kara <jack@suse.cz>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 19/25] jbd2: flush_descriptor(): Do not decrease buffer head's ref count
-Date:   Fri, 25 Oct 2019 09:57:07 -0400
-Message-Id: <20191025135715.25468-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 14/20] jbd2: flush_descriptor(): Do not decrease buffer head's ref count
+Date:   Fri, 25 Oct 2019 09:57:54 -0400
+Message-Id: <20191025135801.25739-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135715.25468-1-sashal@kernel.org>
-References: <20191025135715.25468-1-sashal@kernel.org>
+In-Reply-To: <20191025135801.25739-1-sashal@kernel.org>
+References: <20191025135801.25739-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -86,7 +86,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
-index f9aefcda58541..cc7d1f094393a 100644
+index 3cd73059da9a4..bf2e164d341aa 100644
 --- a/fs/jbd2/revoke.c
 +++ b/fs/jbd2/revoke.c
 @@ -637,10 +637,8 @@ static void flush_descriptor(journal_t *journal,
