@@ -2,105 +2,191 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDDEE4D8C
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2019 16:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236B4E556B
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2019 22:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394915AbfJYOBC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 25 Oct 2019 10:01:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53892 "EHLO mail.kernel.org"
+        id S1726115AbfJYUt1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 25 Oct 2019 16:49:27 -0400
+Received: from mga11.intel.com ([192.55.52.93]:23023 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505586AbfJYN6a (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:58:30 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D88121E6F;
-        Fri, 25 Oct 2019 13:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572011910;
-        bh=+F0pkVj7I5n+RegaCo0C9K6X3YZYlP9VUdh+KIbm/AQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lmyIfyo9Kwo6QCcMXgvxYwfvwpR2D+eZYzt5NT6/gIZzGiBPlOdPZjHcRtmtJCxc5
-         X3I50nFe3qmkW3e7XSJGyCSYh9C1POftIG3YJc6jznM+UlJ0UMCevLImp96SedytmI
-         CqY9nHZBJ43EAFnhjNOWYBnpCGUBLL9RtSVe+/Zc=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chandan Rajendra <chandan@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 14/20] jbd2: flush_descriptor(): Do not decrease buffer head's ref count
-Date:   Fri, 25 Oct 2019 09:57:54 -0400
-Message-Id: <20191025135801.25739-14-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135801.25739-1-sashal@kernel.org>
-References: <20191025135801.25739-1-sashal@kernel.org>
+        id S1725874AbfJYUt1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 25 Oct 2019 16:49:27 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Oct 2019 13:49:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,229,1569308400"; 
+   d="scan'208";a="210441346"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Oct 2019 13:49:26 -0700
+Date:   Fri, 25 Oct 2019 13:49:26 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Boaz Harrosh <boaz@plexistor.com>, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Enable per-file/directory DAX operations
+Message-ID: <20191025204926.GA26184@iweiny-DESK2.sc.intel.com>
+References: <20191020155935.12297-1-ira.weiny@intel.com>
+ <b7849297-e4a4-aaec-9a64-2b481663588b@plexistor.com>
+ <b883142c-ecfe-3c5b-bcd9-ebe4ff28d852@plexistor.com>
+ <20191023221332.GE2044@dread.disaster.area>
+ <efffc9e7-8948-a117-dc7f-e394e50606ab@plexistor.com>
+ <20191024073446.GA4614@dread.disaster.area>
+ <fb4f8be7-bca6-733a-7f16-ced6557f7108@plexistor.com>
+ <20191024213508.GB4614@dread.disaster.area>
+ <ab101f90-6ec1-7527-1859-5f6309640cfa@plexistor.com>
+ <20191025003603.GE4614@dread.disaster.area>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191025003603.GE4614@dread.disaster.area>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Chandan Rajendra <chandan@linux.ibm.com>
+On Fri, Oct 25, 2019 at 11:36:03AM +1100, Dave Chinner wrote:
+> On Fri, Oct 25, 2019 at 02:29:04AM +0300, Boaz Harrosh wrote:
+> > On 25/10/2019 00:35, Dave Chinner wrote:
+> 
+> If something like a find or backup program brings the inode into
+> cache, the app may not even get the behaviour it wants, and it can't
+> change it until the inode is evicted from cache, which may be never.
 
-[ Upstream commit 547b9ad698b434eadca46319cb47e5875b55ef03 ]
+Why would this be never?
 
-When executing generic/388 on a ppc64le machine, we notice the following
-call trace,
+> Nobody wants implicit/random/uncontrollable/unchangeable behaviour
+> like this.
 
-VFS: brelse: Trying to free free buffer
-WARNING: CPU: 0 PID: 6637 at /root/repos/linux/fs/buffer.c:1195 __brelse+0x84/0xc0
+I'm thinking this could work with a bit of effort on the users part.  While the
+behavior does have a bit of uncertainty, I feel like there has to be a way to
+get the inode to drop from the cache when a final iput() happens on the inode.
 
-Call Trace:
- __brelse+0x80/0xc0 (unreliable)
- invalidate_bh_lru+0x78/0xc0
- on_each_cpu_mask+0xa8/0x130
- on_each_cpu_cond_mask+0x130/0x170
- invalidate_bh_lrus+0x44/0x60
- invalidate_bdev+0x38/0x70
- ext4_put_super+0x294/0x560
- generic_shutdown_super+0xb0/0x170
- kill_block_super+0x38/0xb0
- deactivate_locked_super+0xa4/0xf0
- cleanup_mnt+0x164/0x1d0
- task_work_run+0x110/0x160
- do_notify_resume+0x414/0x460
- ret_from_except_lite+0x70/0x74
+Admin programs should not leave files open forever, without the users knowing
+about it.  So I don't understand why the inode could not be evicted from the
+cache if the FS knew that this change had been made and the inode needs to be
+"re-loaded".  See below...
 
-The warning happens because flush_descriptor() drops bh reference it
-does not own. The bh reference acquired by
-jbd2_journal_get_descriptor_buffer() is owned by the log_bufs list and
-gets released when this list is processed. The reference for doing IO is
-only acquired in write_dirty_buffer() later in flush_descriptor().
+> 
+> > (And never change the flag on the fly)
+> > (Just brain storming here)
+> 
+> We went over all this ground when we disabled the flag in the first
+> place. We disabled the flag because we couldn't come up with a sane
+> way to flip the ops vector short of tracking the number of aops
+> calls in progress at any given time. i.e. reference counting the
+> aops structure, but that's hard to do with a const ops structure,
+> and so it got disabled rather than allowing users to crash
+> kernels....
 
-Reported-by: Harish Sriram <harish@linux.ibm.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Chandan Rajendra <chandan@linux.ibm.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Agreed.  We can't change the a_ops without some guarantee that no one is using
+the file.  Which means we need all fds to close and a final iput().  I thought
+that would mean an eviction of the inode and a subsequent reload.
+
+Yesterday I coded up the following (applies on top of this series) but I can't
+seem to get it to work because I believe xfs is keeping a reference on the
+inode.  What am I missing?  I think if I could get xfs to recognize that the
+inode needs to be cleared from it's cache this would work, with some caveats.
+
+Currently this works if I remount the fs or if I use <procfs>/drop_caches like
+Boaz mentioned.
+
+Isn't there a way to get xfs to do that on it's own?
+
+Ira
+
+
+From 7762afd95a3e21a782dffd2fd8e13ae4a23b5e4a Mon Sep 17 00:00:00 2001
+From: Ira Weiny <ira.weiny@intel.com>
+Date: Fri, 25 Oct 2019 13:32:07 -0700
+Subject: [PATCH] squash: Allow phys change on any length file
+
+delay the changing of the effective bit to when the inode is re-read
+into the cache.
+
+Currently a work in Progress because xfs seems to cache the inodes as
+well and I'm not sure how to get xfs to release it's reference.
 ---
- fs/jbd2/revoke.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/xfs/xfs_ioctl.c | 18 +++++++-----------
+ include/linux/fs.h |  5 ++++-
+ 2 files changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
-index 3cd73059da9a4..bf2e164d341aa 100644
---- a/fs/jbd2/revoke.c
-+++ b/fs/jbd2/revoke.c
-@@ -637,10 +637,8 @@ static void flush_descriptor(journal_t *journal,
- {
- 	jbd2_journal_revoke_header_t *header;
+diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+index 89cf47ef273e..4d730d5781d9 100644
+--- a/fs/xfs/xfs_ioctl.c
++++ b/fs/xfs/xfs_ioctl.c
+@@ -1233,10 +1233,13 @@ xfs_diflags_to_linux(
+ 		inode->i_flags |= S_NOATIME;
+ 	else
+ 		inode->i_flags &= ~S_NOATIME;
+-	if (xflags & FS_XFLAG_DAX)
+-		inode->i_flags |= S_DAX;
+-	else
+-		inode->i_flags &= ~S_DAX;
++	/* NOTE: we do not allow the physical DAX flag to immediately change
++	 * the effective IS_DAX() flag tell the VFS layer to remove the inode
++	 * from the cache on the final iput() to force recreation on the next
++	 * 'fresh' open */
++	if (((xflags & FS_XFLAG_DAX) && !IS_DAX(inode)) ||
++	    (!(xflags & FS_XFLAG_DAX) && IS_DAX(inode)))
++		inode->i_flags |= S_REVALIDATE;
+ }
  
--	if (is_journal_aborted(journal)) {
--		put_bh(descriptor);
-+	if (is_journal_aborted(journal))
- 		return;
+ static int
+@@ -1320,13 +1323,6 @@ xfs_ioctl_setattr_dax_invalidate(
+ 	/* lock, flush and invalidate mapping in preparation for flag change */
+ 	xfs_ilock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
+ 
+-	/* File size must be zero to avoid races with asynchronous page
+-	 * faults */
+-	if (i_size_read(inode) > 0) {
+-		error = -EINVAL;
+-		goto out_unlock;
 -	}
+-
+ 	error = filemap_write_and_wait(inode->i_mapping);
+ 	if (error)
+ 		goto out_unlock;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 0b4d8fc79e0f..4e9b7bf53c86 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1998,6 +1998,7 @@ struct super_operations {
+ #define S_ENCRYPTED	16384	/* Encrypted file (using fs/crypto/) */
+ #define S_CASEFOLD	32768	/* Casefolded file */
+ #define S_VERITY	65536	/* Verity file (using fs/verity/) */
++#define S_REVALIDATE	131072	/* Drop inode from cache on final put */
  
- 	header = (jbd2_journal_revoke_header_t *)descriptor->b_data;
- 	header->r_count = cpu_to_be32(offset);
+ /*
+  * Note that nosuid etc flags are inode-specific: setting some file-system
+@@ -2040,6 +2041,7 @@ static inline bool sb_rdonly(const struct super_block *sb) { return sb->s_flags
+ #define IS_ENCRYPTED(inode)	((inode)->i_flags & S_ENCRYPTED)
+ #define IS_CASEFOLDED(inode)	((inode)->i_flags & S_CASEFOLD)
+ #define IS_VERITY(inode)	((inode)->i_flags & S_VERITY)
++#define IS_REVALIDATE(inode)	((inode)->i_flags & S_REVALIDATE)
+ 
+ #define IS_WHITEOUT(inode)	(S_ISCHR(inode->i_mode) && \
+ 				 (inode)->i_rdev == WHITEOUT_DEV)
+@@ -3027,7 +3029,8 @@ extern int inode_needs_sync(struct inode *inode);
+ extern int generic_delete_inode(struct inode *inode);
+ static inline int generic_drop_inode(struct inode *inode)
+ {
+-	return !inode->i_nlink || inode_unhashed(inode);
++	return !inode->i_nlink || inode_unhashed(inode) ||
++		IS_REVALIDATE(inode);
+ }
+ 
+ extern struct inode *ilookup5_nowait(struct super_block *sb,
 -- 
 2.20.1
+
 
