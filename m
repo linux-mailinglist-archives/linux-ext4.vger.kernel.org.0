@@ -2,82 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C238E595F
-	for <lists+linux-ext4@lfdr.de>; Sat, 26 Oct 2019 11:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6784E6033
+	for <lists+linux-ext4@lfdr.de>; Sun, 27 Oct 2019 03:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbfJZJHn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 26 Oct 2019 05:07:43 -0400
-Received: from sender2-of-o52.zoho.com.cn ([163.53.93.247]:21210 "EHLO
-        sender2-of-o52.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726057AbfJZJHn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 26 Oct 2019 05:07:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1572080851; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=Sv+TW6OhviS9mjSCPq4jD9QTzqpnWDGQkp8snS/yX+ywsOZwRRdB8XFgVoY1CQJvf5KMT29J/97qcTMlmImZ6PTym0EF+rFKLlM97d526PtvsWSoTZkaGp0pak2aFeLbpToEjW/aGzqeSRmeJWbZ2l3kMHSmDrYZcvfb7zLqVPw=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1572080851; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To:ARC-Authentication-Results; 
-        bh=LU6DDOmihitYkTVww+mLh369eU8sibrZGSH3hAdM0Nc=; 
-        b=WhzFYII9sVbNjzwhYub9a6rZKuSgCdd4uLpKqlQQ9OI/jrSFeIflYX13HUL+oplIh9k5EksTC716ZzWJSJENB/MSCMgkPMM850SxSC6JKQS9veoF+RBSGPJvGBezZySwrSL+vS33GWhNlWmmEjUeTTpuSrBI18PAXyPRKUxVdtY=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1572080851;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=878; bh=LU6DDOmihitYkTVww+mLh369eU8sibrZGSH3hAdM0Nc=;
-        b=TRbyq1LYahhFUL0nwuGVUQ7/sZtVczsPTcF9KixR4jM7T66OggYxmmnUL0jyT0JD
-        w6qFr0WJudd6+mcr7bE0tVECLhnjPEg0BF1znMZ0KYUr86fxXIt6BF5Qrt0YORAFLED
-        wr7YzTTlGRNKi8NiZKddRvtTCN6nmyxptPzMFwCc=
-Received: from localhost.localdomain (116.30.192.119 [116.30.192.119]) by mx.zoho.com.cn
-        with SMTPS id 1572080848029478.60393130348143; Sat, 26 Oct 2019 17:07:28 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191026090721.23794-1-cgxu519@mykernel.net>
-Subject: [PATCH v2] ext2: don't set *count in the case of failure in ext2_try_to_allocate()
-Date:   Sat, 26 Oct 2019 17:07:21 +0800
-X-Mailer: git-send-email 2.21.0
+        id S1726632AbfJ0CEw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 26 Oct 2019 22:04:52 -0400
+Received: from smg.telkomsa.net ([105.187.200.242]:44758 "EHLO
+        smg.telkomsa.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726525AbfJ0CEw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 26 Oct 2019 22:04:52 -0400
+X-Greylist: delayed 328 seconds by postgrey-1.27 at vger.kernel.org; Sat, 26 Oct 2019 22:04:49 EDT
+X-AuditID: 69bbcaf5-201ff70000000a9e-d4-5db4f9ec670e
+Received: from sargas.telkomsa.net (sargas.telkomsa.net [196.25.211.69])
+        by smg.telkomsa.net (Telkom Internet Messaging Gateway) with SMTP id 58.D8.02718.CE9F4BD5; Sun, 27 Oct 2019 03:59:18 +0200 (CAT)
+Received: from mail8.telkomsa.net (unknown [192.168.16.221])
+        by sargas.telkomsa.net (Postfix) with ESMTP id 3E9B22A0CE7;
+        Sun, 27 Oct 2019 01:33:49 +0200 (SAST)
+Date:   Sun, 27 Oct 2019 01:33:49 +0200 (SAST)
+From:   "Mrs. Ja-ANN (UNIDPF SECRETARIAT) " <online553303@telkomsa.net>
+Reply-To: Office_IDPFDC11118Secretariat@usa.com
+To:     idpfoffice@mail2usa.com
+Message-ID: <465003346.47112718.1572132829121.JavaMail.root@telkomsa.net>
+In-Reply-To: <143999948.46849349.1572099017705.JavaMail.root@telkomsa.net>
+Subject: Re: YOUR PROJECT SUBSIDY NOTICE REF-:|
+ WBDS/UNIDPF/709/SGT43658/2019
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.146.44.54]
+X-Mailer: Zimbra 7.2.4_GA_2903 (ZimbraWebClient - FF3.0 (Win)/7.2.4_GA_2900)
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SWUwTURT1dYYyNIwOA8KlEpcxEaOCgBprYtQfFNCIaFwj6igjbSwFO3Wp
+        H0oUMPDhUjEIChLBrS6F0giJ4lKISl2BJi4oi4iIuACVQt1wpg3Kz8l575x773vnPQKjbVI5
+        odLoOK2GVTNSGV4b3Bgd5nRZEiM6n9GKxrKnUkV+0Rup4lZ1Ha64Xxy4CI9xmMfH9JpiV0g2
+        yOYncWrVbk47c8EWmbL6eR+W9kK295KlxjsdDRE5yIcAajZkXWjBcpCMoKlHCOzOdNyzKEHQ
+        ln1ZKrpwagZUvM30ErmUiobW5nL3Pk3NhEMV2RKRB1Dj4OTRG24PScVCSe0bJHIfKg76j/30
+        Frk/FQ+Gx2bc4/GDuvz3bo5RofCrqAHz8AlQ+eUM5jndRHCV9CIPXwaZr1vQMTSmYER5wYjy
+        ghHlxQgzIobXp3A8zyazOm4Pqw+LmBO+TaML13HqHakpPBuu4XRmJISqumnrr0IduUorogjE
+        +JL6Lksi7cXuFuqtKJiQMGPJwQxha/TW1CS9kuWVm7W71BxvRUBgTAA5/aE5kSaTWP0+Tps6
+        LI0jcCaIzPoiSJR4gB0cl8Zph9UQgmCAVAoPSftpuWRu73aVWvdflhA+YnNfoflU0UPyaWwK
+        r0r26Da0luiqLTqHEX1ubDeWCuj4KOJvNz7oFvFgj4gvvlWfx2hck6rh5EFk/6DQjhLbKXdp
+        /k0c/lqf0G0kJOBP5ok2X+Hn/RsaVSoo1BMpZF/dD9YLGV5gvtzgA632OzKwvjtBgr2jkIbP
+        Tb9pcLXcCASDyREE1qr7IfDnlCsEzv44PAUuDbQLUD4wBRqaqsLgz/ecKHDU1C+Eb+lfF4G9
+        vTkaTPmuaPiZa18MrYbcGDCdvRkDpx/ZYyHj4pU4GOxzxkGjcWgZlA7Y4sHxZGgllBo7VkHb
+        lWtr4POP12s+CbFJhNjG4BVibDr2/w3k6Qg/4698e9q0MV4SHDn2SP71pITJTS2jarzL2253
+        lXQXLtTJN8krs+Zd7ZPXzbrzcvFW5+TVBuYeZ18S+PVAU3PCh57wk/HSeYb641OPzrp30Xzw
+        cParjABVwE7GUjnJNtFvXURmnqVzadnyGXse9xR15ilCe88XmrpHHakPXV/2vmDuXQbnlWzk
+        NEzLs38BziKVQN0DAAA=
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently we set *count to num(value 0) in the failure
-of block allocation in ext2_try_to_allocate(). Without
-reservation, we reuse *count(value 0) to retry block
-allocation and wrong *count will cause only allocating
-maximum 1 block even though having sufficent free blocks
-in that block group. Finally, it probably cause significant
-fragmentation.
+ 
+Sir/Madam,
+Attn:| The Manager / Director, CEO
+Your Subsidy Ref:| WBDS/UNIDPF/709/SGT43658/2019
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
-v1->v2:
-- Add detail explanation of effect to changelog.
+REF STATUS:| HEREWITH, THROUGH YOUR NAMES AND/OR UNDER YOUR COMPANY'S DATA-PROFILE IN YOUR COUNTRY;
+OUR DEPARTMENT HAS REGISTERED YOUR COMPANY'S DETAILS FOR YOU TO RECEIVE THE AMOUNT OF US$2,750,000.00 MILLION
+FROM THE (UNIDPF) INDUSTRIAL DEVELOPMENT PROJECT SUBSIDY. THIS IS A SPONSORED PROGRAM FROM THE WORLD BANK IN
+YOUR COUNTRY AND AROUND TO WORLD, FOR SMALL BUSINESSES AND INFRASTRUCTURES DEVELOPMENT PROJECT FINANCE 
+IN YOUR COUNTRY AS APPROVED, BETWEEN 2015 - 2030. ENCLOSED IS YOUR (((US$2,750,000.00 MILLION COMPANY'S 
+SUBSIDY ALLOCATION VOUCHER))) FROM OUR DEPARTMENT HERE IN NEW YORK, U.S.A.
+Kindly Re-confirm Your Detail Particulars As Follows:-
+* YOUR NAMES IN FULL:-
+* HOME TEL & MOBILE PHONE:-
+* FULL RESIDENTIAL ADDRESS:- (WITH SUBURB, CITY or STATE AND COUNTRY)
 
- fs/ext2/balloc.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index e0cc55164505..29fc3a5054f8 100644
---- a/fs/ext2/balloc.c
-+++ b/fs/ext2/balloc.c
-@@ -736,7 +736,6 @@ ext2_try_to_allocate(struct super_block *sb, int group,
- =09*count =3D num;
- =09return grp_goal - num;
- fail_access:
--=09*count =3D num;
- =09return -1;
- }
-=20
---=20
-2.21.0
-
-
-
+THANKS IN ANTICIPATION OF YOUR MOST CORDIALLY REPLY
+THROUGH OUR BELOW OFFICE EMAIL.
+/
+--------------------------------------------------
+MRS. JAYNE-ANN HALTIWANGER | {CFO} CHIEF FINANCIAL OFFICE
+ROOM DC1-1118 | EMAIL: Office_UNIDPFSecretariat@mail2Usa.com
+ Tell 001(0212)963 7904 | EMAIL: Jayne-ann.idpfDC1-1118Secretariat@usa.com
+UNIDPF NEW YORK OFFICE l NO. 1 UNITED NATIONAL PLAZA, NY 10017, U.S.A
+*** This PDF File Attachment Is Free From Virus & Not Harmful ***
