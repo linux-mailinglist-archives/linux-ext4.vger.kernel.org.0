@@ -2,165 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF53E69E1
-	for <lists+linux-ext4@lfdr.de>; Sun, 27 Oct 2019 23:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1653EE6FBA
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Oct 2019 11:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbfJ0WKr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 27 Oct 2019 18:10:47 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:57349 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726931AbfJ0WKr (ORCPT
+        id S2388265AbfJ1Kis (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 28 Oct 2019 06:38:48 -0400
+Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:56058 "EHLO
+        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388234AbfJ1Kis (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 27 Oct 2019 18:10:47 -0400
-Received: from dread.disaster.area (pa49-181-161-154.pa.nsw.optusnet.com.au [49.181.161.154])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 0A0EF3A0432;
-        Mon, 28 Oct 2019 09:10:40 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1iOqkB-0006QW-Bo; Mon, 28 Oct 2019 09:10:39 +1100
-Date:   Mon, 28 Oct 2019 09:10:39 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Boaz Harrosh <boaz@plexistor.com>, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Enable per-file/directory DAX operations
-Message-ID: <20191027221039.GL4614@dread.disaster.area>
-References: <b7849297-e4a4-aaec-9a64-2b481663588b@plexistor.com>
- <b883142c-ecfe-3c5b-bcd9-ebe4ff28d852@plexistor.com>
- <20191023221332.GE2044@dread.disaster.area>
- <efffc9e7-8948-a117-dc7f-e394e50606ab@plexistor.com>
- <20191024073446.GA4614@dread.disaster.area>
- <fb4f8be7-bca6-733a-7f16-ced6557f7108@plexistor.com>
- <20191024213508.GB4614@dread.disaster.area>
- <ab101f90-6ec1-7527-1859-5f6309640cfa@plexistor.com>
- <20191025003603.GE4614@dread.disaster.area>
- <20191025204926.GA26184@iweiny-DESK2.sc.intel.com>
+        Mon, 28 Oct 2019 06:38:48 -0400
+Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 63A172E146B;
+        Mon, 28 Oct 2019 13:38:44 +0300 (MSK)
+Received: from iva8-b53eb3f76dc7.qloud-c.yandex.net (iva8-b53eb3f76dc7.qloud-c.yandex.net [2a02:6b8:c0c:2ca1:0:640:b53e:b3f7])
+        by mxbackcorp1j.mail.yandex.net (nwsmtp/Yandex) with ESMTP id BUnN8RUcgy-ch9WZfD9;
+        Mon, 28 Oct 2019 13:38:44 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1572259124; bh=BUd74mhZhB63Gk6S1rzlQQdwN5kUFsdKTQsJCf4kM78=;
+        h=Message-ID:Date:To:From:Subject:Cc;
+        b=ZuHBSifukQ1eCeHwe634/PMRXHkwuSqZdtr+YKRUCcjvaYRdOEzOIZu+qP6o4ws/a
+         nEn4BVc315P13VWZUqVeQfXgElqXXxCCsw8lcDlTTEqZ8JiSUcae3YDtnbthAFIfoW
+         EGB5eZISd+9TO3GOv+73O0nYbYRAIah4v87sCh4w=
+Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:148a:8f3:5b61:9f4])
+        by iva8-b53eb3f76dc7.qloud-c.yandex.net (nwsmtp/Yandex) with ESMTPSA id k7moP2jRqY-chWOJ7us;
+        Mon, 28 Oct 2019 13:38:43 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+Subject: [PATCH] fs/ext4: get project quota from inode for mangling statfs
+ results
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+To:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.com>
+Cc:     Li Xi <lixi@ddn.com>, Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Date:   Mon, 28 Oct 2019 13:38:43 +0300
+Message-ID: <157225912326.3929.8539227851002947260.stgit@buzz>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191025204926.GA26184@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=G6BsK5s5 c=1 sm=1 tr=0
-        a=l3vQdJ1SkhDHY1nke8Lmag==:117 a=l3vQdJ1SkhDHY1nke8Lmag==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=XobE76Q3jBoA:10
-        a=7-415B0cAAAA:8 a=7H7ooxU6e5Yfb1tYggsA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Oct 25, 2019 at 01:49:26PM -0700, Ira Weiny wrote:
-> On Fri, Oct 25, 2019 at 11:36:03AM +1100, Dave Chinner wrote:
-> > On Fri, Oct 25, 2019 at 02:29:04AM +0300, Boaz Harrosh wrote:
-> > > On 25/10/2019 00:35, Dave Chinner wrote:
-> > 
-> > If something like a find or backup program brings the inode into
-> > cache, the app may not even get the behaviour it wants, and it can't
-> > change it until the inode is evicted from cache, which may be never.
-> 
-> Why would this be never?
+Right now ext4_statfs_project() does quota lookup by id every time.
+This is costly operation, especially if there is no inode who hold
+reference to this quota and dqget() reads it from disk each time.
 
-Because only unreferenced inodes can be removed from cache. As long
-as something holds a reference or repeatedly accesses the inode such
-that reclaim always skips it because it is referenced, it will never
-get evicted from the cache.
+Function ext4_statfs_project() could be moved into generic quota code,
+it is required for every filesystem which uses generic project quota.
 
-IOWs, "never" in the practical sense, not "never" in the theoretical
-sense.
+Reported-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+---
+ fs/ext4/super.c |   25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-> > Nobody wants implicit/random/uncontrollable/unchangeable behaviour
-> > like this.
-> 
-> I'm thinking this could work with a bit of effort on the users part.  While the
-> behavior does have a bit of uncertainty, I feel like there has to be a way to
-> get the inode to drop from the cache when a final iput() happens on the inode.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index dd654e53ba3d..f841c66aa499 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5532,18 +5532,23 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ }
+ 
+ #ifdef CONFIG_QUOTA
+-static int ext4_statfs_project(struct super_block *sb,
+-			       kprojid_t projid, struct kstatfs *buf)
++static int ext4_statfs_project(struct inode *inode, struct kstatfs *buf)
+ {
+-	struct kqid qid;
++	struct super_block *sb = inode->i_sb;
+ 	struct dquot *dquot;
+ 	u64 limit;
+ 	u64 curblock;
++	int err;
++
++	err = dquot_initialize(inode);
++	if (err)
++		return err;
++
++	spin_lock(&inode->i_lock);
++	dquot = ext4_get_dquots(inode)[PRJQUOTA];
++	if (!dquot)
++		goto out_unlock;
+ 
+-	qid = make_kqid_projid(projid);
+-	dquot = dqget(sb, qid);
+-	if (IS_ERR(dquot))
+-		return PTR_ERR(dquot);
+ 	spin_lock(&dquot->dq_dqb_lock);
+ 
+ 	limit = (dquot->dq_dqb.dqb_bsoftlimit ?
+@@ -5569,7 +5574,9 @@ static int ext4_statfs_project(struct super_block *sb,
+ 	}
+ 
+ 	spin_unlock(&dquot->dq_dqb_lock);
+-	dqput(dquot);
++out_unlock:
++	spin_unlock(&inode->i_lock);
++
+ 	return 0;
+ }
+ #endif
+@@ -5609,7 +5616,7 @@ static int ext4_statfs(struct dentry *dentry, struct kstatfs *buf)
+ #ifdef CONFIG_QUOTA
+ 	if (ext4_test_inode_flag(dentry->d_inode, EXT4_INODE_PROJINHERIT) &&
+ 	    sb_has_quota_limits_enabled(sb, PRJQUOTA))
+-		ext4_statfs_project(sb, EXT4_I(dentry->d_inode)->i_projid, buf);
++		ext4_statfs_project(dentry->d_inode, buf);
+ #endif
+ 	return 0;
+ }
 
-Keep in mind that the final iput()->evict() process doesn't mean the
-inode is going to get removed from all filesystem inode caches, just
-the VFS level cache. The filesystem can still have internal
-references to the inode, and still be doing work on the inode that
-the VFS knows nothing about. XFS definitely fits into this category.
-
-XFS will, however, re-initialise the inode aops structure if the VFS
-then does another lookup on the inode while it is in this
-"reclaimed" state, so from the VFS perspective it looks like a
-newly instantiated inodes on the next lookup. We don't actually need
-to do this for large parts of the inode as it is already still in
-the valid state from the evict() call. It's an implementation
-simplification that means we always re-init the ops vectors attached
-to the inode rather than just the fields that need to be
-re-initialised.
-
-IOWs, evict/reinit changing the aops vector because the on disk dax
-flag changed on XFS works by luck right now, not intent....
-
-> Admin programs should not leave files open forever, without the users knowing
-> about it.  So I don't understand why the inode could not be evicted from the
-> cache if the FS knew that this change had been made and the inode needs to be
-> "re-loaded".  See below...
-
-Doesn't need to be an open file - inodes are pinned in memory by the
-reference the dentry holds on it. Hence as long as there are
-actively referenced dentries that point at the inode, the inode
-cannot be reclaimed. Hard links mean multiple dentries could pin the
-inode, too.
-
-> > > (And never change the flag on the fly)
-> > > (Just brain storming here)
-> > 
-> > We went over all this ground when we disabled the flag in the first
-> > place. We disabled the flag because we couldn't come up with a sane
-> > way to flip the ops vector short of tracking the number of aops
-> > calls in progress at any given time. i.e. reference counting the
-> > aops structure, but that's hard to do with a const ops structure,
-> > and so it got disabled rather than allowing users to crash
-> > kernels....
-> 
-> Agreed.  We can't change the a_ops without some guarantee that no one is using
-> the file.  Which means we need all fds to close and a final iput().  I thought
-> that would mean an eviction of the inode and a subsequent reload.
-> 
-> Yesterday I coded up the following (applies on top of this series) but I can't
-> seem to get it to work because I believe xfs is keeping a reference on the
-> inode.  What am I missing?  I think if I could get xfs to recognize that the
-> inode needs to be cleared from it's cache this would work, with some caveats.
-
-You are missing the fact that dentries hold an active reference to
-inodes. So a path lookup (access(), stat(), etc) will pin the inode
-just as effectively as holding an open file because they instantiate
-a dentry that holds a reference to the inode....
-
-> Currently this works if I remount the fs or if I use <procfs>/drop_caches like
-> Boaz mentioned.
-
-drop_caches frees all the dentries that don't have an active
-references before it iterates over inodes, thereby dropping the
-cached reference(s) to the inode that pins it in memory before it
-iterates the inode LRU.
-
-> Isn't there a way to get xfs to do that on it's own?
-
-Not reliably. Killing all the dentries doesn't guarantee the inode
-will be reclaimed immediately. The ioctl() itself requires an open
-file reference to the inode, and there's no telling how many other
-references there are to the inode that the filesystem a) can't find,
-and b) even if it can find them, it is illegal to release them.
-
-IOWs, if you are relying on being able to force eviction of inode
-from the cache for correct operation of a user controlled flag, then
-it's just not going to work.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
