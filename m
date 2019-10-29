@@ -2,66 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D7AE8218
-	for <lists+linux-ext4@lfdr.de>; Tue, 29 Oct 2019 08:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8225DE8E89
+	for <lists+linux-ext4@lfdr.de>; Tue, 29 Oct 2019 18:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730049AbfJ2HVA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 29 Oct 2019 03:21:00 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:39672 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728547AbfJ2HUi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 29 Oct 2019 03:20:38 -0400
-Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 558EF2E1492;
-        Tue, 29 Oct 2019 10:20:35 +0300 (MSK)
-Received: from iva8-b53eb3f76dc7.qloud-c.yandex.net (iva8-b53eb3f76dc7.qloud-c.yandex.net [2a02:6b8:c0c:2ca1:0:640:b53e:b3f7])
-        by mxbackcorp1o.mail.yandex.net (nwsmtp/Yandex) with ESMTP id z9I2k0eD4G-KYl0QrA6;
-        Tue, 29 Oct 2019 10:20:35 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1572333635; bh=ybO1Y2oq7Ib/EvpNL4QHXvV2p9s8Wjfoqf8YgObcVK8=;
-        h=In-Reply-To:Message-ID:Date:References:To:From:Subject:Cc;
-        b=1gVT2E7Kb5Wqsk8xqwFHfzj7ey/Sl4tf7LsGReR8lVZTJGvNiRGkSpFZ1P5QfOlfu
-         RvJTvz7WRKdqCJVKcQwyLkrIDZPWJSPaOtDl0Ot7x+vSMd4u+m8FLisUobJl6N8inN
-         gCis+y8CafSp6pnnkNV/iTjpVANuGMIcwXZx4REs=
-Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:148a:8f3:5b61:9f4])
-        by iva8-b53eb3f76dc7.qloud-c.yandex.net (nwsmtp/Yandex) with ESMTPSA id NZ48FxkpSN-KYWaqv0C;
-        Tue, 29 Oct 2019 10:20:34 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH] ext4: deaccount delayed allocations at freeing inode in
- ext4_evict_inode()
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-To:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        linux-kernel@vger.kernel.org
-Cc:     Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
-        Eric Whitney <enwlinux@gmail.com>
-References: <157233344808.4027.17162642259754563372.stgit@buzz>
-Message-ID: <427b6718-0893-0f0f-f5db-5ad45b949a09@yandex-team.ru>
-Date:   Tue, 29 Oct 2019 10:20:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726804AbfJ2RsE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 29 Oct 2019 13:48:04 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:40293 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbfJ2RsE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 29 Oct 2019 13:48:04 -0400
+Received: by mail-lj1-f195.google.com with SMTP id u22so16256223lji.7
+        for <linux-ext4@vger.kernel.org>; Tue, 29 Oct 2019 10:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R35NzCe37FoRr+JmWaRxXNrs+ANr5l1yDPp+eQUm8vU=;
+        b=cIKrfG2BcBsU9hYXIpQdSwopgElTE4RautsHm9ZOuGHXTi69dKNkh17wSQH/L4zosA
+         DI1JpADSu0a3R25/VXr5Iz0OjSuf3z6tAsWgiVO+H5ZF/9VP2xOxAKxjdhdoLpjleNL1
+         GGQBMKSg8yP8LIjunquGxXVF8tAxYNJNCdEfsXnbnr55B8bLQDyruSeqzDYclYPGSbAm
+         HJjhrG4J94CdXOlytO9LgDMPwdYA+nprQ2rf2m4rCZfPfrNaJYmSZ90g3N59yzI3oBGl
+         vPR4bxKynazkligieSoyOTOws2e6shukr1fmmOZGMEygc+XcvpYmK61rppkwFwgRbTjB
+         zPIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R35NzCe37FoRr+JmWaRxXNrs+ANr5l1yDPp+eQUm8vU=;
+        b=PLlB3F3dTQlqF+FXbohsWLAPYnGXivEXt+vfInsxO49tE99PKIDCfZ6mAHtGEJVqeR
+         sBIw1yQHylirwyuLLlYL0GdeJrd/aWtVMl5CBZPTHW/8ea3AgkyN5a68yOAoqNQDVzSI
+         5B5Tt5xycXsLkQFTtgjHefrhZcQqd1hqENvSubzGfNEH5DUX3yNpAbrbXZKyrI/4UeR+
+         q6u0wndPElLMzxgVkXXJtonu0iQi81ee6NqfDwhzdeBtc9Ng5Dof2nzXK7mcxjuO7PFb
+         fozyjrYFRXEpzrZzyeFq5I+9dmvofEBel+EwpzCFuFOwvEeqW94hQLZgLZwUz72jVfnY
+         YRdg==
+X-Gm-Message-State: APjAAAXbHOqxcUTmPH+bW96dno0cyCA3qzbFhjgFy7/RCccvdaMJCsix
+        54FoLDJqpi65lhf084VK4mu2yCx7ioHAMx8NluykPA==
+X-Google-Smtp-Source: APXvYqwNTLBO6ek7haLq57qS7qFh4V78zjcOU4/j+rzIkHP000hEzkPtfT9hnV441B6ZiktsLU57y15HuzMTPyrd4yw=
+X-Received: by 2002:a2e:96c9:: with SMTP id d9mr3387439ljj.247.1572371282017;
+ Tue, 29 Oct 2019 10:48:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <157233344808.4027.17162642259754563372.stgit@buzz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+References: <20191024215438.138489-1-ebiggers@kernel.org> <20191024215438.138489-2-ebiggers@kernel.org>
+In-Reply-To: <20191024215438.138489-2-ebiggers@kernel.org>
+From:   Paul Crowley <paulcrowley@google.com>
+Date:   Tue, 29 Oct 2019 10:47:50 -0700
+Message-ID: <CA+_SqcCefZRWL2xHRwFABupXyBdq9=jgBK_9gy-_4o-yFXG+Tg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] fscrypt: add support for IV_INO_LBLK_64 policies
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 29/10/2019 10.17, Konstantin Khlebnikov wrote:
-> If inode->i_blocks is zero then ext4_evict_inode() skips ext4_truncate().
-> Delayed allocation extents are freed later in ext4_clear_inode() but this
-> happens when quota reference is already dropped. This leads to leak of
-> reserved space in quota block, which disappears after umount-mount.
-> 
-> This seems broken for a long time but worked somehow until recent changes
-> in delayed allocation.
+On Thu, 24 Oct 2019 at 14:57, Eric Biggers <ebiggers@kernel.org> wrote:
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Co-developed-by: Satya Tangirala <satyat@google.com>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  Documentation/filesystems/fscrypt.rst | 63 +++++++++++++++++----------
+>  fs/crypto/crypto.c                    | 10 ++++-
+>  fs/crypto/fscrypt_private.h           | 16 +++++--
+>  fs/crypto/keyring.c                   |  6 ++-
+>  fs/crypto/keysetup.c                  | 45 ++++++++++++++-----
+>  fs/crypto/policy.c                    | 41 ++++++++++++++++-
+>  include/linux/fscrypt.h               |  3 ++
+>  include/uapi/linux/fscrypt.h          |  3 +-
+>  8 files changed, 146 insertions(+), 41 deletions(-)
 
-FYI, perf cannot correctly parse related perf events without this:
+I don't understand all of this, but the crypto-relevant part looks good to me.
 
-https://lore.kernel.org/lkml/157228145325.7530.4974461761228678289.stgit@buzz/
+Reviewed-By: Paul Crowley <paulcrowley@google.com>
