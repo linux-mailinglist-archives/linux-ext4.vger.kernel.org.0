@@ -2,101 +2,210 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B3FE95DE
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Oct 2019 06:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF3DE99C1
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Oct 2019 11:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbfJ3FNM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Oct 2019 01:13:12 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:36905 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725855AbfJ3FNM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Oct 2019 01:13:12 -0400
-Received: by mail-oi1-f196.google.com with SMTP id y194so921422oie.4
-        for <linux-ext4@vger.kernel.org>; Tue, 29 Oct 2019 22:13:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JB3vUDBDhDVaso771SA9fR4wLZSqaQMyCnURuqv8m5E=;
-        b=uK3aDSr6DKxTohPVzMikIVCGtoOSroDkTuDTTUghrdJPlWPcEfJ8mHMy3yGdlBaNTj
-         FQf8dV94ECcXpjZVukIi9XGmud1hh24VSLU3ZrOq9siz7F1IAfgS5izncf+bRrO1jXhv
-         AXwpNh1irO+jURr273P/7sSsWkP8euq6yP+Kp3l8P4zIVOpwKlmva+w5SJqqnIGdSv9F
-         8dJpBUIT1TWuI7+pIWb7c0tSZnrsReB5uQyCPhBCSqnD/ZaQ22kOk535edaAqp5rNaJx
-         vUFTWkhkQa+ADaI96P+Yz7D40TgM2Bfj4CUpDA2H/aDeWj/dwSEKMyzTzzlS8XuOjF9A
-         bexA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JB3vUDBDhDVaso771SA9fR4wLZSqaQMyCnURuqv8m5E=;
-        b=hnOJVqEdq4bl4aSyTs43rHnRlZfmqmO5/4N0EsDiRdJR8E+BFFnmah4/Uq5deDGawK
-         pReR1hhJjquOPhKgFSrRWL1KWlytrMgSBpoci6JsseNfN2qm6Sczokh2Qi8JBXqNejmK
-         l0TDZr0iliJevvaIz6ykQOE7zQeCDjX14B2Re9nLO26eTftBsQ0hXOukJ6j0yhCz2Xk4
-         At9jdwtdrVAwjNT+8vIDQ/UfcLq2mtCCHgFUomdMsnS6DY4PgrR0jwL1IKBXu5jMULSW
-         CNHRh2O/zpszVi2a/mUFRoyINs5GLQpihpt4pwep8/3TUPxw1IVhRZI/UVVLt8ySQp/t
-         brvA==
-X-Gm-Message-State: APjAAAUQB2Bkpc5Tajl4C4dEKlAnlQUm0YIpozaaG8OGf3pH2/qP27Zd
-        xvHU95RAcaLaL35RPuVq8VVFl/3aq5cBPSF9UGPrcKml
-X-Google-Smtp-Source: APXvYqxUhj0Dp/R+WOHgRhdOXMF0TO2VwAMZBbkswAyC7aeMIdWSMbIFkZ5nLTYYSaGnbodunxFf0ndqQ+GYTcmQ0pI=
-X-Received: by 2002:a05:6808:317:: with SMTP id i23mr7208000oie.17.1572412390678;
- Tue, 29 Oct 2019 22:13:10 -0700 (PDT)
+        id S1726411AbfJ3KNV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Oct 2019 06:13:21 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19638 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726032AbfJ3KNV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 30 Oct 2019 06:13:21 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9UA9UwM075967
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Oct 2019 06:13:19 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2vy672msq2-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Oct 2019 06:13:19 -0400
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Wed, 30 Oct 2019 10:13:17 -0000
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 30 Oct 2019 10:13:15 -0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9UADEog53411954
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Oct 2019 10:13:14 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 032ECA404D;
+        Wed, 30 Oct 2019 10:13:14 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2175EA4055;
+        Wed, 30 Oct 2019 10:13:11 +0000 (GMT)
+Received: from [9.199.158.87] (unknown [9.199.158.87])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 30 Oct 2019 10:13:10 +0000 (GMT)
+Subject: Re: [PATCH] ext4: bio_alloc never fails
+To:     Gao Xiang <gaoxiang25@huawei.com>, "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20191030042618.124220-1-gaoxiang25@huawei.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Wed, 30 Oct 2019 15:43:10 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20191001074101.256523-1-harshadshirwadkar@gmail.com>
- <20191001074101.256523-9-harshadshirwadkar@gmail.com> <20191016213655.GH11103@mit.edu>
-In-Reply-To: <20191016213655.GH11103@mit.edu>
-From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date:   Tue, 29 Oct 2019 22:12:59 -0700
-Message-ID: <CAD+ocbyyGoJM8tvaXKaSJTNzXHUs=YpXGNLuk1ZhPt+PpSk=Zw@mail.gmail.com>
-Subject: Re: [PATCH v3 08/13] ext4: fast-commit commit range tracking
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191030042618.124220-1-gaoxiang25@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19103010-0016-0000-0000-000002BF14B1
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19103010-0017-0000-0000-000033207124
+Message-Id: <20191030101311.2175EA4055@d06av23.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-30_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1910300100
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for this, I'll remove these calls and add calls in ext4_map_blocks.
 
-On Wed, Oct 16, 2019 at 2:36 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Tue, Oct 01, 2019 at 12:40:57AM -0700, Harshad Shirwadkar wrote:
-> > With this patch, we track logical range of file offsets that need to
-> > be committed using fast commit. This allows us to find file extents
-> > that need to be committed during the commit time.
->
-> We don't actually need to track when data is modified in the page
-> cache, which is what this commit is actually doing.  We only need to
-> track newly allocated blocks, at granularity of the logical block
-> number.
->
-> That's because we only need to force out newly allocated blocks to
-> make sure we don't reveal stale data when we are in data=ordered mode.
-> And it also follows that we don't need to track logical block ranges
-> and submit inode data in data=writeback or data=journalled mode.
->
-> In the case where the user has actually called fsync() on the the
-> inode, we do a data integrity writeback in ext4_sync_file, and that's
-> independent on the fast commit code.
->
-> But if the file is being modified using buffered writes, or if an
-> already allocated block is changed, and the file has *not* been
-> changed, we don't need to write out those blocks on a fast commit.
-> For example, in the case where we are the fast commit is being
-> initiated via ext4_nfs_commit_metadata() -> ext4_write_inode(), we
-> only care about submitting data for the newly allocated blocks.  And
-> that's what we want to track here.
->
-> Hence, all of the callers of ext4_fc_update_commit_range() here are in
-> the wrong place.  (Also, they are calling ext4_fc_update_commit_range
-> with byte offsets, when the function is expecting logical block
-Thanks for pointing that out. My code as of now works with logical
-file offsets instead of logical block offsets. So I should have used
-file offset type instead of logical block type for arguments of
-ext4_fc_update_commit_range. But it makes sense to just use logical
-block offsets everywhere. I'll fix this in next version.
 
-> numbers, but that really matter, since the existing call sites need to
-> be all removed and replaced with new ones in ext4_map_blocks().
->
->                                      - Ted
+On 10/30/19 9:56 AM, Gao Xiang wrote:
+> Similar to [1] [2], it seems a trivial cleanup since
+> bio_alloc can handle memory allocation as mentioned in
+> fs/direct-io.c (also see fs/block_dev.c, fs/buffer.c, ..)
+> 
+
+AFAIU, the reason is that, bio_alloc with __GFP_DIRECT_RECLAIM
+flags guarantees bio allocation under some given restrictions,
+as stated in fs/direct-io.c
+So here it is ok to not check for NULL value from bio_alloc.
+
+I think we can update above info too in your commit msg.
+
+> [1] https://lore.kernel.org/r/20191030035518.65477-1-gaoxiang25@huawei.com
+> [2] https://lore.kernel.org/r/20190830162812.GA10694@infradead.org
+> Signed-off-by: Gao Xiang <gaoxiang25@huawei.com>
+> ---
+>   fs/ext4/page-io.c  | 11 +++--------
+>   fs/ext4/readpage.c |  2 --
+>   2 files changed, 3 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+> index 12ceadef32c5..f1f7b6601780 100644
+> --- a/fs/ext4/page-io.c
+> +++ b/fs/ext4/page-io.c
+> @@ -358,14 +358,12 @@ void ext4_io_submit_init(struct ext4_io_submit *io,
+>   	io->io_end = NULL;
+>   }
+> 
+> -static int io_submit_init_bio(struct ext4_io_submit *io,
+> -			      struct buffer_head *bh)
+> +static void io_submit_init_bio(struct ext4_io_submit *io,
+> +			       struct buffer_head *bh)
+>   {
+>   	struct bio *bio;
+> 
+>   	bio = bio_alloc(GFP_NOIO, BIO_MAX_PAGES);
+> -	if (!bio)
+> -		return -ENOMEM;
+>   	bio->bi_iter.bi_sector = bh->b_blocknr * (bh->b_size >> 9);
+>   	bio_set_dev(bio, bh->b_bdev);
+>   	bio->bi_end_io = ext4_end_bio;
+> @@ -373,7 +371,6 @@ static int io_submit_init_bio(struct ext4_io_submit *io,
+>   	io->io_bio = bio;
+>   	io->io_next_block = bh->b_blocknr;
+>   	wbc_init_bio(io->io_wbc, bio);
+> -	return 0;
+>   }
+> 
+>   static int io_submit_add_bh(struct ext4_io_submit *io,
+> @@ -388,9 +385,7 @@ static int io_submit_add_bh(struct ext4_io_submit *io,
+>   		ext4_io_submit(io);
+>   	}
+>   	if (io->io_bio == NULL) {
+> -		ret = io_submit_init_bio(io, bh);
+> -		if (ret)
+> -			return ret;
+> +		io_submit_init_bio(io, bh);
+>   		io->io_bio->bi_write_hint = inode->i_write_hint;
+>   	}
+>   	ret = bio_add_page(io->io_bio, page, bh->b_size, bh_offset(bh));
+
+
+Also we can further simplify it like below. Please check.
+
+diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+index f1f7b6601780..a3a2edeb3bbf 100644
+--- a/fs/ext4/page-io.c
++++ b/fs/ext4/page-io.c
+@@ -373,7 +373,7 @@ static void io_submit_init_bio(struct ext4_io_submit 
+*io,
+  	wbc_init_bio(io->io_wbc, bio);
+  }
+
+-static int io_submit_add_bh(struct ext4_io_submit *io,
++static void io_submit_add_bh(struct ext4_io_submit *io,
+  			    struct inode *inode,
+  			    struct page *page,
+  			    struct buffer_head *bh)
+@@ -393,7 +393,6 @@ static int io_submit_add_bh(struct ext4_io_submit *io,
+  		goto submit_and_retry;
+  	wbc_account_cgroup_owner(io->io_wbc, page, bh->b_size);
+  	io->io_next_block++;
+-	return 0;
+  }
+
+  int ext4_bio_write_page(struct ext4_io_submit *io,
+@@ -495,30 +494,23 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
+  	do {
+  		if (!buffer_async_write(bh))
+  			continue;
+-		ret = io_submit_add_bh(io, inode, bounce_page ?: page, bh);
+-		if (ret) {
+-			/*
+-			 * We only get here on ENOMEM.  Not much else
+-			 * we can do but mark the page as dirty, and
+-			 * better luck next time.
+-			 */
+-			break;
+-		}
++		io_submit_add_bh(io, inode, bounce_page ?: page, bh);
+  		nr_submitted++;
+  		clear_buffer_dirty(bh);
+  	} while ((bh = bh->b_this_page) != head);
+
+-	/* Error stopped previous loop? Clean up buffers... */
+-	if (ret) {
+-	out:
+-		fscrypt_free_bounce_page(bounce_page);
+-		printk_ratelimited(KERN_ERR "%s: ret = %d\n", __func__, ret);
+-		redirty_page_for_writepage(wbc, page);
+-		do {
+-			clear_buffer_async_write(bh);
+-			bh = bh->b_this_page;
+-		} while (bh != head);
+-	}
++	goto unlock;
++
++out:
++	fscrypt_free_bounce_page(bounce_page);
++	printk_ratelimited(KERN_ERR "%s: ret = %d\n", __func__, ret);
++	redirty_page_for_writepage(wbc, page);
++	do {
++		clear_buffer_async_write(bh);
++		bh = bh->b_this_page;
++	} while (bh != head);
++
++unlock:
+  	unlock_page(page);
+  	/* Nothing submitted - we have to end page writeback */
+  	if (!nr_submitted)
+
+
+-ritesh
+
