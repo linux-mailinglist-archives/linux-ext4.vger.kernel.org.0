@@ -2,121 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D71EA183
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Oct 2019 17:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C4FEA248
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Oct 2019 18:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbfJ3QND (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Oct 2019 12:13:03 -0400
-Received: from sonic313-19.consmr.mail.gq1.yahoo.com ([98.137.65.82]:37839
-        "EHLO sonic313-19.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726423AbfJ3QNC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 30 Oct 2019 12:13:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1572451981; bh=S/ZDvmEPfSmBt4lxF3DnDhcZlHbW70loQ/lD49ODK0I=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Subject; b=QMBsrUOAQVdL2w29pwAQaHcD6kp2e/RxIp85wI+KnwsKuWxiqcJd8pATRVM9juGX5aZ/M7BuyUfS5wt7Y0p7vu709QHNPrLp1Z4E9h7z68tMh618U7f6ta2GmPLy7yQCZRox404VNutWwYT8qNk/aAZEK3WRXE0N4mH403ldgsBC/Tx9M9nzP1ZDHq8F/LlUB9fkdt258m47X/57Ox1024R3FIkEwNiQAL0XywHbe9psFuOezVpV3A2f7pZyQb3XI/aSvm+06Oh24z+xWW8r97t43nzeGYvIXZJ9ZW1Rge1RRzUwoHSyq7JHN5f5juBRxYTrFXNP84iAVH7ZY7+o3Q==
-X-YMail-OSG: VUDslHoVM1nmGfsRLE0u6zk7Oh8KL_GwpUfSYXRJd11NEDgJqdxoDyFqJsBHhwD
- J5Di1M9rrfPbZjoCYs9uFuiAHMizladxdFQNJmkGHayhDOIZsSFgNjLOmkN7zj_78F4XnsXXKNoH
- aUtTv9GZR9.VRdzMCwVd81Pts54VKsRZ.JD20NZe2pzYH6D7cZFxA3dN.jIIVb7C8JD6j3G5pfOA
- 7Wue0S3h8TiGNDOonY_o7fnuA7ga79sdfZBHRlvZKhgCJYlI_WUrZ76lG.8PHeUThs14_K0Mg9fK
- ia5Ow1aNkdZC3urIl0TUBB1e6oWR3s_cY_P9t6aXScNzQyyCMTIrU.qrp2tN68btDzsHIX8C19Sp
- PVZjDBlwW1cN6wgT5VhVXjoslEjOoBjVQGTkpsgtic5BWw2CwYb_paKFYyMh..sN4kfVoGcU5NCX
- Qc5n4ZRt02IsYfuF9uEEV7_Ztjx5Iy_he2eohLQL4FRd0mRBCXMTeBAgOe6iz0AOgVVKkaQwl8Vj
- oN96L9ZBf93ukvBDAcruF9nm.kL2Yfhaz8PpuaqOkfigoMuNNcQ1It94nLXHK8lHSJyJlK0uD675
- AjPw_Vud6NlafOCsZJY4N8iizqSpuE5QXkL8xbGOH.0B0iofYy0yezUFrY0kPdvhHwLMzfkgOsfL
- N0Tou4sPDQ4dSjwBbGbRhsfQpdGx3VcqEG0oWAY3ifxhnG9WVRbb_b_4p0qo1G2zeXPQ5jfxfbZs
- 6lVHyj.PZdOxnpLrLMJsyc_FdXTpkBxPadHWs11RBUNpiMuhAXEHFwyQQNxEq9sC0JyIZqejGhOv
- mi8r2eK3P8dEhDy5eX4EeWXinlzC1RG.KX4oqqBt1U85ALfe877Kq1qzxyzOFE9Atv22PxWqNbKM
- iLkBUqEizY8iFKZ8vZaBmdClhopDxeCmZrdSimesgEWCQjTKvrRhuSu0aLGjx42_jXxUTcOEbauc
- 6LZblcrM_54LoUOnQE8gCBcALNL2j5VUklssHHu8tbSNAmY2_LbkMQxB4ni2rbCd2z89la..ojMB
- JQCUkH3Dyfudae9CqZNIGztmvD4fwf.wn4p_krKtkiFusiiskMiaLsXNvXujMv6yXR5bk1SR4B6a
- zJfQ4V60duEOpO0XFgCd5Bzq0doRP6R6zJVzpSJZH4BDNb_qq4KqOKPtJvTyQLer9b7YIcYdLtBi
- Nt4Z2xs.KOYNhiQxc0Vrpjo0aWUwDzmjReN0SkgkmOt3FhPovo0oA3KcgN_cRDyV4CjGSvoKTqUA
- JhAVJ_wtD0hLl6umTyuUGUUJHnRkx9a1PK2v_LtCx8uvFRRMmBHs2F__keJdEBI0gc.6dzatprPn
- NYs.w_VYphckCWYGa1zNGZ_d1E2n3DqcQfYweifeee2FaOf8Z2j_nlc3sZihMdvquuwbJCzslQON
- RPKNRTQ--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.gq1.yahoo.com with HTTP; Wed, 30 Oct 2019 16:13:01 +0000
-Received: by smtp431.mail.ir2.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID 5bc5368066fdcbc1af6a611a83615b01;
-          Wed, 30 Oct 2019 16:12:59 +0000 (UTC)
-Date:   Thu, 31 Oct 2019 00:12:52 +0800
-From:   Gao Xiang <hsiangkao@aol.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        Gao Xiang <gaoxiang25@huawei.com>,
+        id S1727227AbfJ3RHI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Oct 2019 13:07:08 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:39762 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727128AbfJ3RHH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Oct 2019 13:07:07 -0400
+Received: by mail-pf1-f196.google.com with SMTP id v4so2012705pff.6
+        for <linux-ext4@vger.kernel.org>; Wed, 30 Oct 2019 10:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vMuH4Tmqws5nmsyjv5QNUlDTiwl+gmCyW0G4vi9p60Y=;
+        b=i+zTzHBWB2Ma47wxrrvHx4AP/6Xg47x5ZXOXbKie74NAhyf8CRNB696Ix9Tau1Tjmv
+         8p73T41VcrHgHFWlUv1PDQTBhNFH2PmpjXoKe5UUDastxvpiW+k+fULlPodzTrxQYk79
+         JPSNix7l7u2Yxag9tlyq8GNoGKVLVgzUIazbA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vMuH4Tmqws5nmsyjv5QNUlDTiwl+gmCyW0G4vi9p60Y=;
+        b=YiCqbvXsz8L3s8eGYIG63Na4H2upz9Zh/p0Ly7TmWqURM7E73PbaoHDSGOnIE6Jfe8
+         dKusEC65ppv9IJ0Dt2rE+bvDN9f+3l0UOSCs0nM0HjD381WdFweeAdnQmvr+nIB6cC/k
+         PqtKI0S3QKJBKmINuuf/QAh1gq/vpMaUuaQFHxkbnQjyD13PrrGQx0JKPDCUfvsJTNcY
+         jWHW4hziInZOvsK3FolXg/V7L9HFK+GlWBI9YXoZZ7Dyay3JkyJvNAdP9Dn+e3Zl/vgz
+         uaVcdXNCdP0S7y4xxmATSYZjq8tJNPIXvDmgqRbn/4fNbxjyzN/u2GMT95EqBQg6y7IM
+         tkKg==
+X-Gm-Message-State: APjAAAX0XcDoBwQLB3rhlQ5T7Rrc7x928aLcrRCvmYgkSJikLaeY3Sz2
+        MhJQCsrhUHJ37r1v9rXtESsqCA==
+X-Google-Smtp-Source: APXvYqxKO214ezv7g2i9PQtIFuSBB+X2aTkrxmXXCsp3Bq6tMZJ5EPHImzS/jVHHuqsi9bOw5W/gIg==
+X-Received: by 2002:a17:90a:cb02:: with SMTP id z2mr345481pjt.86.1572455225570;
+        Wed, 30 Oct 2019 10:07:05 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id y1sm485065pfl.48.2019.10.30.10.07.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Oct 2019 10:07:04 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Eric Biggers <ebiggers@google.com>
+Cc:     Gwendal Grignou <gwendal@chromium.org>, Chao Yu <chao@kernel.org>,
+        Ryo Hashimoto <hashimoto@chromium.org>, sukhomlinov@google.com,
+        groeck@chromium.org, apronin@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-doc@vger.kernel.org,
         Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] ext4: bio_alloc never fails
-Message-ID: <20191030161244.GB3953@hsiangkao-HP-ZHAN-66-Pro-G1>
-References: <20191030042618.124220-1-gaoxiang25@huawei.com>
- <20191030101311.2175EA4055@d06av23.portsmouth.uk.ibm.com>
- <20191030150437.GB16197@mit.edu>
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH] Revert "ext4 crypto: fix to check feature status before get policy"
+Date:   Wed, 30 Oct 2019 10:06:25 -0700
+Message-Id: <20191030100618.1.Ibf7a996e4a58e84f11eec910938cfc3f9159c5de@changeid>
+X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191030150437.GB16197@mit.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Mailer: WebService/1.1.14593 hermes Apache-HttpAsyncClient/4.1.4 (Java/1.8.0_181)
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ted,
+This reverts commit 0642ea2409f3 ("ext4 crypto: fix to check feature
+status before get policy").
 
-On Wed, Oct 30, 2019 at 11:04:37AM -0400, Theodore Y. Ts'o wrote:
-> On Wed, Oct 30, 2019 at 03:43:10PM +0530, Ritesh Harjani wrote:
-> > 
-> > 
-> > On 10/30/19 9:56 AM, Gao Xiang wrote:
-> > > Similar to [1] [2], it seems a trivial cleanup since
-> > > bio_alloc can handle memory allocation as mentioned in
-> > > fs/direct-io.c (also see fs/block_dev.c, fs/buffer.c, ..)
-> > > 
-> > 
-> > AFAIU, the reason is that, bio_alloc with __GFP_DIRECT_RECLAIM
-> > flags guarantees bio allocation under some given restrictions,
-> > as stated in fs/direct-io.c
-> > So here it is ok to not check for NULL value from bio_alloc.
-> > 
-> > I think we can update above info too in your commit msg.
-> 
-> Please also add a short comment in the code itself, so it's clear why
-> it's OK to skip the error check, and reference the comments for
-> bio_alloc_bioset().  This is the fairly subtle bit which makes this
-> change not obvious:
+The commit made a clear and documented ABI change that is not backward
+compatible.  There exists userspace code [1] that relied on the old
+behavior and is now broken.
 
-OK, I will add short comments in code then, and tidy up later since
-it's not urgent (but I'm surprised that so many in-kernel code handles
-that, those also makes me misleaded before, but I think mempool back
-maybe better since the total efficient path is shorter compared with
-error handling path)... and I'd like to know the f2fs side as well :-)
+While we could entertain the idea of updating the userspace code to
+handle the ABI change, it's my understanding that in general ABI
+changes that break userspace are frowned upon (to put it nicely).
 
-> 
->  *   When @bs is not NULL, if %__GFP_DIRECT_RECLAIM is set then bio_alloc will
->  *   always be able to allocate a bio. This is due to the mempool guarantees.
->  *   To make this work, callers must never allocate more than 1 bio at a time
->  *   from this pool. Callers that need to allocate more than 1 bio must always
->  *   submit the previously allocated bio for IO before attempting to allocate
->  *   a new one. Failure to do so can cause deadlocks under memory pressure.
->  *
->  *   Note that when running under generic_make_request() (i.e. any block
->  *   driver), bios are not submitted until after you return - see the code in
->  *   generic_make_request() that converts recursion into iteration, to prevent
->  *   stack overflows.
->  *
->  *   This would normally mean allocating multiple bios under
->  *   generic_make_request() would be susceptible to deadlocks, but we have
->  *   deadlock avoidance code that resubmits any blocked bios from a rescuer
->  *   thread.
-> 
-> Otherwise, someone else may not understand why it's safe to not check
-> the error return then submit cleanup patch to add the error checking
-> back.  :-)
+NOTE: if we for some reason do decide to entertain the idea of
+allowing the ABI change and updating userspace, I'd appreciate any
+help on how we should make the change.  Specifically the old code
+relied on the different return values to differentiate between
+"KeyState::NO_KEY" and "KeyState::NOT_SUPPORTED".  I'm no expert on
+the ext4 encryption APIs (I just ended up here tracking down the
+regression [2]) so I'd need a bit of handholding from someone.
 
-Got it.
+[1] https://chromium.googlesource.com/chromiumos/platform2/+/refs/heads/master/cryptohome/dircrypto_util.cc#73
+[2] https://crbug.com/1018265
 
-Thanks,
-Gao Xiang
+Fixes: 0642ea2409f3 ("ext4 crypto: fix to check feature status before get policy")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-> 
-> 					- Ted
-> 					
+ Documentation/filesystems/fscrypt.rst | 3 +--
+ fs/ext4/ioctl.c                       | 2 --
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+index 8a0700af9596..4289c29d7c5a 100644
+--- a/Documentation/filesystems/fscrypt.rst
++++ b/Documentation/filesystems/fscrypt.rst
+@@ -562,8 +562,7 @@ FS_IOC_GET_ENCRYPTION_POLICY_EX can fail with the following errors:
+   or this kernel is too old to support FS_IOC_GET_ENCRYPTION_POLICY_EX
+   (try FS_IOC_GET_ENCRYPTION_POLICY instead)
+ - ``EOPNOTSUPP``: the kernel was not configured with encryption
+-  support for this filesystem, or the filesystem superblock has not
+-  had encryption enabled on it
++  support for this filesystem
+ - ``EOVERFLOW``: the file is encrypted and uses a recognized
+   encryption policy version, but the policy struct does not fit into
+   the provided buffer
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 0b7f316fd30f..13d97fb797b4 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -1181,8 +1181,6 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ #endif
+ 	}
+ 	case EXT4_IOC_GET_ENCRYPTION_POLICY:
+-		if (!ext4_has_feature_encrypt(sb))
+-			return -EOPNOTSUPP;
+ 		return fscrypt_ioctl_get_policy(filp, (void __user *)arg);
+ 
+ 	case FS_IOC_GET_ENCRYPTION_POLICY_EX:
+-- 
+2.24.0.rc1.363.gb1bccd3e3d-goog
+
