@@ -2,293 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB84E9BE6
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Oct 2019 13:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A3BE9D6F
+	for <lists+linux-ext4@lfdr.de>; Wed, 30 Oct 2019 15:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbfJ3M5H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 30 Oct 2019 08:57:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55568 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726097AbfJ3M5H (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 30 Oct 2019 08:57:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9A676B49A;
-        Wed, 30 Oct 2019 12:57:03 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 265741E485C; Wed, 30 Oct 2019 13:57:03 +0100 (CET)
-Date:   Wed, 30 Oct 2019 13:57:03 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     =?utf-8?B?0JTQvNC40YLRgNC40Lkg0JzQvtC90LDRhdC+0LI=?= 
-        <dmtrmonakhov@yandex-team.ru>
-Cc:     Jan Kara <jack@suse.cz>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.com>, Li Xi <lixi@ddn.com>
-Subject: Re: [PATCH] fs/ext4: get project quota from inode for mangling
- statfs results
-Message-ID: <20191030125703.GM28525@quack2.suse.cz>
-References: <157225912326.3929.8539227851002947260.stgit@buzz>
- <20191030105953.GC28525@quack2.suse.cz>
- <2625831572437163@vla1-6bb9290e4d68.qloud-c.yandex.net>
+        id S1726646AbfJ3O0e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 30 Oct 2019 10:26:34 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44393 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726137AbfJ3O0e (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 30 Oct 2019 10:26:34 -0400
+Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x9UEQTCs024646
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Oct 2019 10:26:30 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id F0B02420456; Wed, 30 Oct 2019 10:26:28 -0400 (EDT)
+Date:   Wed, 30 Oct 2019 10:26:28 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Xiaohui1 Li =?utf-8?B?5p2O5pmT6L6J?= <lixiaohui1@xiaomi.com>
+Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "harshadshirwadkar@gmail.com" <harshadshirwadkar@gmail.com>
+Subject: Re: =?utf-8?B?562U5aSNOiBbRXh0ZXJuYWwgTWFp?= =?utf-8?B?bF1SZTo=?=
+ [PATCH v3 09/13] ext4: fast-commit commit path changes
+Message-ID: <20191030142628.GA16197@mit.edu>
+References: <1571900042725.99617@xiaomi.com>
+ <20191024201800.GE1124@mit.edu>
+ <1572349386604.43878@xiaomi.com>
+ <20191029213553.GD4404@mit.edu>
+ <1572409673853.43507@xiaomi.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2625831572437163@vla1-6bb9290e4d68.qloud-c.yandex.net>
+In-Reply-To: <1572409673853.43507@xiaomi.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 30-10-19 15:06:13, Дмитрий Монахов wrote:
->  
->  
-> 30.10.2019, 13:59, "Jan Kara" <jack@suse.cz>:
-> 
-> 
->     On Mon 28-10-19 13:38:43, Konstantin Khlebnikov wrote:
-> 
->          Right now ext4_statfs_project() does quota lookup by id every time.
->          This is costly operation, especially if there is no inode who hold
->          reference to this quota and dqget() reads it from disk each time.
-> 
->          Function ext4_statfs_project() could be moved into generic quota code,
->          it is required for every filesystem which uses generic project quota.
-> 
->          Reported-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
->          Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
->          ---
->           fs/ext4/super.c | 25 ++++++++++++++++---------
->           1 file changed, 16 insertions(+), 9 deletions(-)
-> 
->          diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->          index dd654e53ba3d..f841c66aa499 100644
->          --- a/fs/ext4/super.c
->          +++ b/fs/ext4/super.c
->          @@ -5532,18 +5532,23 @@ static int ext4_remount(struct super_block
->         *sb, int *flags, char *data)
->           }
-> 
->           #ifdef CONFIG_QUOTA
->          -static int ext4_statfs_project(struct super_block *sb,
->          - kprojid_t projid, struct kstatfs *buf)
->          +static int ext4_statfs_project(struct inode *inode, struct kstatfs
->         *buf)
->           {
->          - struct kqid qid;
->          + struct super_block *sb = inode->i_sb;
->                   struct dquot *dquot;
->                   u64 limit;
->                   u64 curblock;
->          + int err;
->          +
->          + err = dquot_initialize(inode);
-> 
-> 
->     Hum, I'm kind of puzzled here: Your patch seems to be concerned with
->     performance but how is this any faster than what we do now?
->     dquot_initialize() will look up three dquots instead of one in the current
->     code? Oh, I guess you are concerned about *repeated* calls to statfs() and
->     thus repeated lookups of dquot structure? And this patch effectively caches
->     looked up dquots in the inode?
-> 
->     That starts to make some sense but still, even if dquot isn't cached in any
->     inode, we still hold on to it (it's in the free_list) until shrinker evicts
->     it. So lookup of such dquot should be just a hash table lookup which should
->     be very fast. Then there's the cost of dquot_acquire() / dquot_release()
->     that get always called on first / last get of a dquot. So are you concerned
->     about that cost? Or do you really see IO happening to fetch quota structure
->     on each statfs call again and again?
-> 
-> Hi,
-> No IO, only useless synchronization on journal
-> Repeaded statfs result in dquot_acquire()/ dquot_release() which result in two
-> ext4_journal_starts
-> perf record -e 'ext4:*' -e 'jbd2:*'  stat -f  volume
-> perf script
->            stat 520596 [002] 589927.123955:                      
-> ext4:ext4_journal_start: dev 252,2 blocks, 73 rsv_blocks, 0 caller
-> ext4_acquire_dquot
->             stat 520596 [002] 589927.123958:                      
->  jbd2:jbd2_handle_start: dev 252,2 tid 187859 type 6 line_no 5550
-> requested_blocks 73
->             stat 520596 [002] 589927.123959:                      
->  jbd2:jbd2_handle_stats: dev 252,2 tid 187859 type 6 line_no 5550 interval 0
-> sync 0 requested_blocks 73 dirtied_blocks 0
->             stat 520596 [002] 589927.123960:                      
-> ext4:ext4_journal_start: dev 252,2 blocks, 9 rsv_blocks, 0 caller
-> ext4_release_dquot
->             stat 520596 [002] 589927.123961:                      
->  jbd2:jbd2_handle_start: dev 252,2 tid 187859 type 6 line_no 5566
-> requested_blocks 9
->             stat 520596 [002] 589927.123962:                      
->  jbd2:jbd2_handle_stats: dev 252,2 tid 187859 type 6 line_no 5566 interval 0
-> sync 0 requested_blocks 9 dirtied_blocks 0
-> On host under io load this will be blocked on __jbd2_log_wait_for_space() which
-> is no what people expects from statfs()
+On Wed, Oct 30, 2019 at 04:28:42AM +0000, Xiaohui1 Li 李晓辉 wrote:
+> the problem of file' data wating in jbd2 order mode is also a
+> serious problem which case a long-latency fsync call.
 
-OK, makes sense.
+Yes, this is a separate problem, although note that if the file with a
+large amount of data is the file which is being fsync'ed, you have to
+write it out at fsync time no matter what.
 
->     The only situation where I could seethat happening is when the quota
->     structure would be actually completely
->     empty (i.e., not originally present in the quota file). But then this
->     cannot be a case when there's actually an inode belonging to this
->     project...
-> 
->     So I'm really curious about the details of what you are seeing as the
->     changelog / patch doesn't quite make sense to me yet.
-> 
->  
-> This indeed happens if project quota goes out of sync, which is quite simple
-> for non journaled  quota case.
-> And this provoke huge IO penalty on each statfs
+You could try to write out dirty data earlier (e.g., by decreasing the
+30 second writeback window), but there are tradeoffs.  For one thing,
+if the file ends up being deleted anyway, it's better not to write out
+the data at all.  For another, if we know how big the file is at the
+time when we do the writeout, we can do a better job allocating space
+for the file, and it improves the file layout by making it more likely
+it will be contiguous, or at least mostly contiguous.
 
-Yes, but then I wonder how it can happen that project quota is out of sync
-because ext4 does not support non-journalled project quotas (project quotas
-must be stored in hidden system inodes). So it is a fs bug if project quota
-goes out of sync.
+Also, files that tend to be fsync'ed a lot tend to be database files
+(e.g., SQLite files), and they tend to write small amounts of data and
+then fsync them.  So the problem described below happens when there
+are unrelated files that happen to be downloaded in parallel.  An
+example of this in the Android case mgiht be when the user is
+downloading a large video file, such as a movie, to be watched offline
+later (such as when they are on a plane).
 
-Anyway, case 1 you mentioned above still makes sense so please just update
-the changelog explaining more details about the problem and why your
-patch helps that. Thanks!
+> as pointed out in this iJournaling paper, when three conditions turn up at the same time,
+> 1: order mode must be applied, not the writeback mode.
+> 2: The delayed block allocation technique of ext4 must be  applied.
+> 3: backgroud buffer writes are too many.
 
-								Honza
+(1) and (2) are the default.  (3) may or may not be a frequent
+occurrence, depending on the workload.  In practice though, users
+aren't downloading large files all *that* often.
 
->  
-> $perf record -e 'ext4:*' -e 'jbd2:*'  stat -f  volume-with-staled-quota
-> $perf script
->             stat 528212 [002] 591269.007915:                      
-> ext4:ext4_journal_start: dev 252,2 blocks, 73 rsv_blocks, 0 caller
-> ext4_acquire_dquot
->             stat 528212 [002] 591269.007919:                      
->  jbd2:jbd2_handle_start: dev 252,2 tid 188107 type 6 line_no 5550
-> requested_blocks 73
->             stat 528212 [002] 591269.007922:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 0
->             stat 528212 [002] 591269.007923:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [0/1) 190361090 W
->             stat 528212 [002] 591269.007926:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 3
->             stat 528212 [002] 591269.007926:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [3/1) 188785674 W
->             stat 528212 [002] 591269.007928:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 3
->             stat 528212 [002] 591269.007928:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [3/1) 188785674 W
->             stat 528212 [002] 591269.007929:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 3
->             stat 528212 [002] 591269.007930:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [3/1) 188785674 W
->             stat 528212 [002] 591269.007931:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 1
->             stat 528212 [002] 591269.007931:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [1/1) 138484739 W
->             stat 528212 [002] 591269.007933:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 1
->             stat 528212 [002] 591269.007933:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [1/1) 138484739 W
->             stat 528212 [002] 591269.007936:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 3
->             stat 528212 [002] 591269.007936:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [3/1) 188785674 W
->             stat 528212 [002] 591269.007938:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 1
->             stat 528212 [002] 591269.007938:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [1/1) 138484739 W
->             stat 528212 [002] 591269.007940:                      
->  jbd2:jbd2_handle_stats: dev 252,2 tid 188107 type 6 line_no 5550 interval 0
-> sync 0 requested_blocks 73 dirtied_blocks 2
->             stat 528212 [002] 591269.007941:                      
-> ext4:ext4_journal_start: dev 252,2 blocks, 9 rsv_blocks, 0 caller
-> ext4_release_dquot
->             stat 528212 [002] 591269.007941:                      
->  jbd2:jbd2_handle_start: dev 252,2 tid 188107 type 6 line_no 5566
-> requested_blocks 9
->             stat 528212 [002] 591269.007942:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 0
->             stat 528212 [002] 591269.007943:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [0/1) 190361090 W
->             stat 528212 [002] 591269.007944:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 3
->             stat 528212 [002] 591269.007944:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [3/1) 188785674 W
->             stat 528212 [002] 591269.007945:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 3
->             stat 528212 [002] 591269.007954:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [3/1) 188785674 W
->             stat 528212 [002] 591269.007954:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 3
->             stat 528212 [002] 591269.007955:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [3/1) 188785674 W
->             stat 528212 [002] 591269.007956:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 1
->             stat 528212 [002] 591269.007956:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [1/1) 138484739 W
->             stat 528212 [002] 591269.007957:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 1
->             stat 528212 [002] 591269.007957:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [1/1) 138484739 W
->             stat 528212 [002] 591269.007958:            
->  ext4:ext4_es_lookup_extent_enter: dev 252,2 ino 13 lblk 3
->             stat 528212 [002] 591269.007958:              
-> ext4:ext4_es_lookup_extent_exit: dev 252,2 ino 13 found 1 [3/1) 188785674 W
->             stat 528212 [002] 591269.007959:                      
->  jbd2:jbd2_handle_stats: dev 252,2 tid 188107 type 6 line_no 5566 interval 0
-> sync 0 requested_blocks 9 dirtied_blocks 0
+> we have no choice as the order mode need to do this work, so the
+> waiting inode-data-flushed-disk time is too long in some extreme
+> conditions.  so it cause the appearance of long-latency fsync call.
 > 
-> 
-> 
->      
-> 
->          + if (err)
->          + return err;
->          +
->          + spin_lock(&inode->i_lock);
->          + dquot = ext4_get_dquots(inode)[PRJQUOTA];
->          + if (!dquot)
->          + goto out_unlock;
-> 
->          - qid = make_kqid_projid(projid);
->          - dquot = dqget(sb, qid);
->          - if (IS_ERR(dquot))
->          - return PTR_ERR(dquot);
->                   spin_lock(&dquot->dq_dqb_lock);
-> 
->                   limit = (dquot->dq_dqb.dqb_bsoftlimit ?
->          @@ -5569,7 +5574,9 @@ static int ext4_statfs_project(struct
->         super_block *sb,
->                   }
-> 
->                   spin_unlock(&dquot->dq_dqb_lock);
->          - dqput(dquot);
->          +out_unlock:
->          + spin_unlock(&inode->i_lock);
->          +
->                   return 0;
->           }
->           #endif
->          @@ -5609,7 +5616,7 @@ static int ext4_statfs(struct dentry *dentry,
->         struct kstatfs *buf)
->           #ifdef CONFIG_QUOTA
->                   if (ext4_test_inode_flag(dentry->d_inode,
->         EXT4_INODE_PROJINHERIT) &&
->                       sb_has_quota_limits_enabled(sb, PRJQUOTA))
->          - ext4_statfs_project(sb, EXT4_I(dentry->d_inode)->i_projid, buf);
->          + ext4_statfs_project(dentry->d_inode, buf);
->           #endif
->                   return 0;
->           }
->          
-> 
->     --
->     Jan Kara <jack@suse.com>
->     SUSE Labs, CR
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> thank you for your reply, i will try to fix this problem in my free time.
+
+So there is a solution; it's just a bit tricky to do, and it's not
+been a huge enough deal that anyone has allocated time to fix it.
+
+The idea is to allocate space, but not actually update the metadata
+blocks at the time when the data blocks are allocated.  Instead, we
+reserve them so they won't get allocated for use by another file, and
+we note where they are in the extent status cache.  We then issue the
+writes of the data block, and only after they are complete, only
+*then* do we update the metadata blocks (which then gets updated via
+the journal, using either a commit or a fast commit).
+
+This is similar to the dioread_nolock case, where we update the
+metadata blocks first, but mark them as unwritten, then we let the
+data blocks get written, and only finally do we update the metadata
+blocks so they are marked as written (e.g., initialized).  This avoids
+the stale data problem as well, but we end up modifying the metadata
+blocks twice, and it has resulted other performance problems since in
+increases overhead on the i_data_sem lock.  See for example some of
+the posts by Liu Bo from Alibaba last year:
+
+If we can allocate space, write the data blocks, and only *then*
+update the extent tree metadata blocks, it solves a lot of problems.
+We can get rid of the dioread_nolock option; we can get rid of the
+data=ordered vs data=writeback distinction; and we can avoid the need
+to force data blocks to be written out at commit time.  So it improves
+performance, and it will reduce code complexity, making it a win-win
+approach.
+
+The problem is that this means significantly changing how we do block
+allocation and block reservation, so it's a fairly large and invasive
+set of changes.  But it's the right long-term direction, and we'll get
+there eventually.
+
+Cheers,
+
+						- Ted
