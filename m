@@ -2,161 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D98EB492
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2019 17:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BF8EB4E6
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2019 17:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbfJaQWM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 31 Oct 2019 12:22:12 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:32778 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbfJaQWM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 31 Oct 2019 12:22:12 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9VG8gcn077408;
-        Thu, 31 Oct 2019 16:21:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
- bh=jKnmogrjBI421cgKzUpswjdcCEV/ia2xm5HwuLv6enY=;
- b=TUBvFhuRX+zkHNuvieKI704i0GjUMruro171WzUcoW+nEJw/5h4DFLpY4wfrTHFlJDZ5
- PF/mtt0ePYY9w5D5biPKw5d9y3yJ9SGKSV9Z12xHOEuLt4u/wmu3M7QVIEUpvb0MBJ52
- cRArqv2+zXodb9bLlwDpdpn83OKeISvNTRP47cmoln2BmQAQHN0Un1/+EZK/opJ2IaPG
- BVQZX+BVjU3VDVSXsi9J6XbrkhTxtNOBvWMpGWxu5BDNJcjQYgkyh4yf1gZ4tExgH/Rl
- 0S6QZX8zDWRtx4bzU95UW66/aH1EO9H/dkOMlrD+/VsUPrSMHYF7Gvnp6516Ax5qdNSu 5Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2vxwhfmhbr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 31 Oct 2019 16:21:46 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9VG9i1K140201;
-        Thu, 31 Oct 2019 16:21:45 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2vykw1mev6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 31 Oct 2019 16:21:45 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9VGLbOd016467;
-        Thu, 31 Oct 2019 16:21:37 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 31 Oct 2019 09:21:37 -0700
-Date:   Thu, 31 Oct 2019 09:21:35 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Jan Kara <jack@suse.cz>, mbobrowski@mbobrowski.org,
-        riteshh@linux.ibm.com, linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: [ANNOUNCE] xfs-linux: iomap-for-next updated to a90100421499
-Message-ID: <20191031162135.GB15212@magnolia>
+        id S1728656AbfJaQn0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 31 Oct 2019 12:43:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59658 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728521AbfJaQn0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 31 Oct 2019 12:43:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 71E17B243;
+        Thu, 31 Oct 2019 16:43:23 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 5597C1E482D; Thu, 31 Oct 2019 17:43:22 +0100 (CET)
+Date:   Thu, 31 Oct 2019 17:43:22 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Valdis Kletnieks <valdis.kletnieks@vt.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, Jan Kara <jack@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-fsdevel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-arch@vger.kernel.org
+Subject: Re: [RFC] errno.h: Provide EFSCORRUPTED for everybody
+Message-ID: <20191031164322.GC13321@quack2.suse.cz>
+References: <20191031010736.113783-1-Valdis.Kletnieks@vt.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9427 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910310163
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9427 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910310163
+In-Reply-To: <20191031010736.113783-1-Valdis.Kletnieks@vt.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi folks,
+On Wed 30-10-19 21:07:33, Valdis Kletnieks wrote:
+> Three questions: (a) ACK/NAK on this patch, (b) should it be all in one
+> patch, or one to add to errno.h and 6 patches for 6 filesystems?), and
+> (c) if one patch, who gets to shepherd it through?
+> 
+> 
+> There's currently 6 filesystems that have the same #define. Move it
+> into errno.h so it's defined in just one place.
+> 
+> Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
 
-The iomap-for-next branch of the xfs-linux repository at:
+Looks good to me. You can add:
 
-	git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-has just been updated.
+								Honza
 
-Patches often get missed, so please check if your outstanding patches
-were in this update. If they have not been in this update, please
-resubmit them to linux-xfs@vger.kernel.org so they can be picked up in
-the next update.  This is a minor cleanup of a duplicated check, so
-there's no need to rebase your development trees.
-
-The new head of the iomap-for-next branch is commit:
-
-a90100421499 fs/iomap: remove redundant check in iomap_dio_rw()
-
-New Commits:
-
-Christoph Hellwig (20):
-      [2492a606b3d2] xfs: initialize iomap->flags in xfs_bmbt_to_iomap
-      [05b30949f1aa] xfs: set IOMAP_F_NEW more carefully
-      [4e087a3b313c] xfs: use a struct iomap in xfs_writepage_ctx
-      [433dad94ec5d] xfs: refactor the ioend merging code
-      [5653017bc44e] xfs: turn io_append_trans into an io_private void pointer
-      [760fea8bfb7f] xfs: remove the fork fields in the writepage_ctx and ioend
-      [009d8d849d3f] iomap: zero newly allocated mapped blocks
-      [9e91c5728cab] iomap: lift common tracing code from xfs to iomap
-      [598ecfbaa742] iomap: lift the xfs writeback code to iomap
-      [3e19e6f3eeea] iomap: warn on inline maps in iomap_writepage_map
-      [ab08b01ec0a2] iomap: move struct iomap_page out of iomap.h
-      [b3d423ec898a] iomap: cleanup iomap_ioend_compare
-      [48d64cd18b33] iomap: pass a struct page to iomap_finish_page_writeback
-      [65a60e8687c1] iomap: better document the IOMAP_F_* flags
-      [c12d6fa88d09] iomap: remove the unused iomap argument to __iomap_write_end
-      [dcd6158d15c7] iomap: always use AOP_FLAG_NOFS in iomap_write_begin
-      [3590c4d8979b] iomap: ignore non-shared or non-data blocks in xfs_file_dirty
-      [d3b404396977] iomap: move the zeroing case out of iomap_read_page_sync
-      [32a38a499104] iomap: use write_begin to read pages to unshare
-      [eb81cf9d0e18] iomap: renumber IOMAP_HOLE to 0
-
-Darrick J. Wong (1):
-      [9cd0ed63ca51] iomap: enhance writeback error message
-
-Dave Chinner (1):
-      [7684e2c4384d] iomap: iomap that extends beyond EOF should be marked dirty
-
-Goldwyn Rodrigues (1):
-      [c039b9979272] iomap: use a srcmap for a read-modify-write I/O
-
-Jan Kara (2):
-      [13ef954445df] iomap: Allow forcing of waiting for running DIO in iomap_dio_rw()
-      [906753befc4d] xfs: Use iomap_dio_rw to wait for unaligned direct IO
-
-Joseph Qi (1):
-      [a90100421499] fs/iomap: remove redundant check in iomap_dio_rw()
-
-
-Code Diffstat:
-
- fs/dax.c                 |  13 +-
- fs/ext2/inode.c          |   2 +-
- fs/ext4/inode.c          |   2 +-
- fs/gfs2/bmap.c           |   3 +-
- fs/gfs2/file.c           |   6 +-
- fs/iomap/Makefile        |  16 +-
- fs/iomap/apply.c         |  25 +-
- fs/iomap/buffered-io.c   | 749 ++++++++++++++++++++++++++++++++++++++++------
- fs/iomap/direct-io.c     |  11 +-
- fs/iomap/fiemap.c        |   4 +-
- fs/iomap/seek.c          |   4 +-
- fs/iomap/swapfile.c      |   3 +-
- fs/iomap/trace.c         |  12 +
- fs/iomap/trace.h         |  88 ++++++
- fs/xfs/libxfs/xfs_bmap.c |  14 +-
- fs/xfs/libxfs/xfs_bmap.h |   3 +-
- fs/xfs/xfs_aops.c        | 754 ++++++++---------------------------------------
- fs/xfs/xfs_aops.h        |  17 --
- fs/xfs/xfs_file.c        |  13 +-
- fs/xfs/xfs_iomap.c       |  51 +++-
- fs/xfs/xfs_iomap.h       |   2 +-
- fs/xfs/xfs_pnfs.c        |   2 +-
- fs/xfs/xfs_reflink.c     |   2 +-
- fs/xfs/xfs_super.c       |  11 +-
- fs/xfs/xfs_trace.h       |  65 ----
- include/linux/iomap.h    | 129 +++++---
- 26 files changed, 1086 insertions(+), 915 deletions(-)
- create mode 100644 fs/iomap/trace.c
- create mode 100644 fs/iomap/trace.h
+> ---
+>  drivers/staging/exfat/exfat.h    | 2 --
+>  fs/erofs/internal.h              | 2 --
+>  fs/ext4/ext4.h                   | 1 -
+>  fs/f2fs/f2fs.h                   | 1 -
+>  fs/xfs/xfs_linux.h               | 1 -
+>  include/linux/jbd2.h             | 1 -
+>  include/uapi/asm-generic/errno.h | 1 +
+>  7 files changed, 1 insertion(+), 8 deletions(-)
+> 
+> diff --git a/drivers/staging/exfat/exfat.h b/drivers/staging/exfat/exfat.h
+> index 84de1123e178..3cf7e54af0b7 100644
+> --- a/drivers/staging/exfat/exfat.h
+> +++ b/drivers/staging/exfat/exfat.h
+> @@ -30,8 +30,6 @@
+>  #undef DEBUG
+>  #endif
+>  
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+> -
+>  #define DENTRY_SIZE		32	/* dir entry size */
+>  #define DENTRY_SIZE_BITS	5
+>  
+> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> index 544a453f3076..3980026a8882 100644
+> --- a/fs/erofs/internal.h
+> +++ b/fs/erofs/internal.h
+> @@ -425,7 +425,5 @@ static inline int z_erofs_init_zip_subsystem(void) { return 0; }
+>  static inline void z_erofs_exit_zip_subsystem(void) {}
+>  #endif	/* !CONFIG_EROFS_FS_ZIP */
+>  
+> -#define EFSCORRUPTED    EUCLEAN         /* Filesystem is corrupted */
+> -
+>  #endif	/* __EROFS_INTERNAL_H */
+>  
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 03db3e71676c..a86c2585457d 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -3396,6 +3396,5 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+>  #endif	/* __KERNEL__ */
+>  
+>  #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+>  
+>  #endif	/* _EXT4_H */
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 4024790028aa..04ebe77569a3 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -3752,6 +3752,5 @@ static inline bool is_journalled_quota(struct f2fs_sb_info *sbi)
+>  }
+>  
+>  #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+>  
+>  #endif /* _LINUX_F2FS_H */
+> diff --git a/fs/xfs/xfs_linux.h b/fs/xfs/xfs_linux.h
+> index ca15105681ca..3409d02a7d21 100644
+> --- a/fs/xfs/xfs_linux.h
+> +++ b/fs/xfs/xfs_linux.h
+> @@ -123,7 +123,6 @@ typedef __u32			xfs_nlink_t;
+>  
+>  #define ENOATTR		ENODATA		/* Attribute not found */
+>  #define EWRONGFS	EINVAL		/* Mount with wrong filesystem type */
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+>  #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+>  
+>  #define SYNCHRONIZE()	barrier()
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 564793c24d12..1ecd3859d040 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -1657,6 +1657,5 @@ static inline tid_t  jbd2_get_latest_transaction(journal_t *journal)
+>  #endif	/* __KERNEL__ */
+>  
+>  #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+> -#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+>  
+>  #endif	/* _LINUX_JBD2_H */
+> diff --git a/include/uapi/asm-generic/errno.h b/include/uapi/asm-generic/errno.h
+> index cf9c51ac49f9..1d5ffdf54cb0 100644
+> --- a/include/uapi/asm-generic/errno.h
+> +++ b/include/uapi/asm-generic/errno.h
+> @@ -98,6 +98,7 @@
+>  #define	EINPROGRESS	115	/* Operation now in progress */
+>  #define	ESTALE		116	/* Stale file handle */
+>  #define	EUCLEAN		117	/* Structure needs cleaning */
+> +#define	EFSCORRUPTED	EUCLEAN
+>  #define	ENOTNAM		118	/* Not a XENIX named type file */
+>  #define	ENAVAIL		119	/* No XENIX semaphores available */
+>  #define	EISNAM		120	/* Is a named type file */
+> -- 
+> 2.24.0.rc1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
