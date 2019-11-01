@@ -2,241 +2,150 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B22BEC1A8
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2019 12:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A993DEC3AE
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2019 14:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbfKALXm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 Nov 2019 07:23:42 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:55970 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726229AbfKALXl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Nov 2019 07:23:41 -0400
-Received: by mail-wm1-f67.google.com with SMTP id g24so8999811wmh.5
-        for <linux-ext4@vger.kernel.org>; Fri, 01 Nov 2019 04:23:39 -0700 (PDT)
+        id S1727201AbfKANcS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Nov 2019 09:32:18 -0400
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:45367 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726927AbfKANcS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Nov 2019 09:32:18 -0400
+Received: by mail-yw1-f68.google.com with SMTP id x65so3457405ywf.12
+        for <linux-ext4@vger.kernel.org>; Fri, 01 Nov 2019 06:32:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7Qozr4RraxVw3AIoqkq5NOqyj+4JsfE1BKmXlzQuthM=;
-        b=pBw3YArVQtzOCQVraUck7DoJgF6t3tP7Em+WuMRz3DEmVOG2lrLtTX38kRJYbFVdzE
-         ugSCtpb7fVP7fYCWRR8dK/XqdeagKiJmQrOpJEFTpw8aF371JXlFV2WSqfSbodwteguU
-         D/jFffnbovCSlxupueCW8yWtgLzrfVyw+9OxJEzr0dlLdTRzFPp+FfkbjkImHODWQDxq
-         /VxElS8fXcJTDm/yUN6jEvNIJxTkoN71kS5HfX8x+QL8TlM8b9gHZxbnWK/kXySnpd7A
-         5G19BdYlcFDWVbUVAL+swF9w4zl2AAit8NW67M+ZkcSrYCt+9u/1/+28s3DnO2vhpYPi
-         1knA==
+        bh=sIZwoSrU60azkju4XlI+xHq6n0ne1xWv7n1NGMPGr4Q=;
+        b=NM8Ga8Hqnp8YUqkz1Huiro6k8teFHd041XtBeYc+Ya1GKfoTW8wtTa5320HyfTx7rs
+         ev7ncEyqpJyIouMHVJA0ek6rI/99vnGXVojZD3zJgPS+/RINUhJa8x/Wjse7coSJGDFL
+         Kd+MzCVqIarPT98omr9ob+2N52k+0IPD89iU1D4D3xcizwoU2TzITjgNAiaPY9bx2qhk
+         1ytTybKexviQ3hI4p0Fp0dPqiL2jyyBG2+nxm+kXaZbqg5dfI/4MvoXZ6/hS8M9HQ5Vk
+         EQcDv8rHP1RuZDL+kPZa18q6AYTCP4MiZCU6A1fBNdzAVaNwUVRsnDgBih47qRT2G45u
+         m0qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7Qozr4RraxVw3AIoqkq5NOqyj+4JsfE1BKmXlzQuthM=;
-        b=PczJ8bsr2BDI1ovdEXQKnWEkOwx3VgbiyK/KxqZvxSC5Qd6t0bncRtD/iIe2/uHxp6
-         ih2v5ZADWiMfTx8CsY7ih7SwPDapyP1+Lor/t6+ytspIsm+4N16jm8sIWRWAF1vgY5WI
-         +4+eRE7h2mTVeUExPdDumzhAp5DhcwJRMyNIeQWQmSdl13qCqhvYyc9TIyQuZMTeFJ9m
-         Ug8Rzb0/2rUeIrcMhEd0H1y8O8l42X9HkAPwKi9CE2FC2A4KfDzpviTJ7SxQI0MRR2oj
-         u50wipf5Hm96IP8XbwLxNlc8QwIrbRUr8UlOozJ5W2N0q4V/VGbbkHMByF7+lFn+9fIQ
-         m6Ew==
-X-Gm-Message-State: APjAAAVf5ZchzxFd/ArXEBdKijaV7f7S3XGSlWTl+oQBYD5KeeL5scwu
-        00hVJR9eJBmj5ahG9lIXP13DRWfavd8wI6vHf729gljF
-X-Google-Smtp-Source: APXvYqx2RoEcRZI8RHafIROgsMfz9hkvCLE43LbKGHMWw0bgQAmcc7ZgyRtOouL7k9SAPUZ5LoYhbZUKnUdQ11R3Evg=
-X-Received: by 2002:a05:600c:2295:: with SMTP id 21mr9201805wmf.85.1572607418592;
- Fri, 01 Nov 2019 04:23:38 -0700 (PDT)
+        bh=sIZwoSrU60azkju4XlI+xHq6n0ne1xWv7n1NGMPGr4Q=;
+        b=d/95UKVMPrvM5AzKcnVdDOjfY+pMhBCd9Vc45Tmh51ue/jr8+8vfGC8cRYXtkvJ6jf
+         UcryxHUHaVjbGYYGx0dFm9kYyYSDoc/PxQiRE2hBgoWtRrt4vLGJcXZSQRaFBsif9MV3
+         k/u+S5mOjj0uI4EIiFW7fkgeTSFuBSAQ+njtSde2Q9f6l6A2RIbXfgKifo35SJUUoY5a
+         AwxEdc85F7efVtpeIRiARIhhaODUy8xADOr++iZR2R/QHTej3cOKgsclpn5EfpWr/Mck
+         A7nfvMHty722yUk5SuiM8dJyqMV0cIrW5pbSLUoA+PsfsoY8KkIjNTm4WMPfQVxZklFj
+         KGYw==
+X-Gm-Message-State: APjAAAX8N1r007G2DSUQrgUnldVjDN6Aj6YYXFfUqBW1GucTSllVM6bb
+        QAjYUcBbtL3p8U1N2xtKfVysNW/jzeT2Wb0/BR93Aw==
+X-Google-Smtp-Source: APXvYqzyWIQ58WDy4QVlh+4flLK1JIVIkiZK2lzx8SHEsEX/KtyBRcjNp3P7bwbxQfGmLusYD0py4wwrMtjR50NGH9k=
+X-Received: by 2002:a81:8486:: with SMTP id u128mr8278300ywf.337.1572615136623;
+ Fri, 01 Nov 2019 06:32:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190809034552.148629-1-harshadshirwadkar@gmail.com>
- <20190809034552.148629-4-harshadshirwadkar@gmail.com> <D1E772AE-A30B-434B-916E-E3B5FADE6517@dilger.ca>
- <CAD+ocbybr=5L+jYRz9=NXWAU-DfPJjzy4oyi+z9Ezb-CndCgbg@mail.gmail.com>
-In-Reply-To: <CAD+ocbybr=5L+jYRz9=NXWAU-DfPJjzy4oyi+z9Ezb-CndCgbg@mail.gmail.com>
-From:   xiaohui li <lixiaohui1@xiaomi.corp-partner.google.com>
-Date:   Fri, 1 Nov 2019 19:22:35 +0800
-Message-ID: <CAAJeciVpv-Ctvx31yPGLMS1DKiLOX7AWDZ1V_=xqLpKXMn8cng@mail.gmail.com>
-Subject: Re: [PATCH v2 03/12] jbd2: fast commit setup and enable
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+References: <20191030100618.1.Ibf7a996e4a58e84f11eec910938cfc3f9159c5de@changeid>
+ <20191030173758.GC693@sol.localdomain> <CAD=FV=Uzma+eSGG1S1Aq6s3QdMNh4J-c=g-5uhB=0XBtkAawcA@mail.gmail.com>
+ <20191030190226.GD693@sol.localdomain> <20191030205745.GA216218@sol.localdomain>
+ <CAD=FV=X6Q3QZaND-tfYr9mf-KYMeKFmJDca3ee-i9roWj+GHsQ@mail.gmail.com>
+ <CAD=FV=URZX4t-TB2Ne8y5ZfeBGoyhsPZhcncQ0yPe3cRXi=1gw@mail.gmail.com> <20191101043620.GA703@sol.localdomain>
+In-Reply-To: <20191101043620.GA703@sol.localdomain>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Fri, 1 Nov 2019 06:32:05 -0700
+Message-ID: <CABXOdTf=x_LGExsBUnqEvT4t=OAp3e3YjpEDCGdeQnKR=5=D5A@mail.gmail.com>
+Subject: Re: [PATCH] Revert "ext4 crypto: fix to check feature status before
+ get policy"
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Chao Yu <chao@kernel.org>,
+        Ryo Hashimoto <hashimoto@chromium.org>,
+        Vadim Sukhomlinov <sukhomlinov@google.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Andrey Pronin <apronin@chromium.org>,
+        linux-doc@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-greate.
+On Thu, Oct 31, 2019 at 9:36 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Thu, Oct 31, 2019 at 10:52:19AM -0700, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Wed, Oct 30, 2019 at 2:59 PM Doug Anderson <dianders@chromium.org> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Wed, Oct 30, 2019 at 1:57 PM Eric Biggers <ebiggers@kernel.org> wrote:
+> > > >
+> > > > FWIW, from reading the Chrome OS code, I think the code you linked to isn't
+> > > > where the breakage actually is.  I think it's actually at
+> > > > https://chromium.googlesource.com/chromiumos/platform2/+/refs/heads/master/chromeos-common-script/share/chromeos-common.sh#375
+> > > > ... where an init script is using the error message printed by 'e4crypt
+> > > > get_policy' to decide whether to add -O encrypt to the filesystem or not.
+> > > >
+> > > > It really should check instead:
+> > > >
+> > > >         [ -e /sys/fs/ext4/features/encryption ]
+> > >
+> > > OK, I filed <https://crbug.com/1019939> and CCed all the people listed
+> > > in the cryptohome "OWNERS" file.  Hopefully one of them can pick this
+> > > up as a general cleanup.  Thanks!
+> >
+> > Just to follow-up: I did a quick test here to see if I could fix
+> > "chromeos-common.sh" as you suggested.  Then I got rid of the Revert
+> > and tried to login.  No joy.
+> >
+> > Digging a little deeper, the ext4_dir_encryption_supported() function
+> > is called in two places:
+> > * chromeos-install
+> > * chromeos_startup
+> >
+> > In my test case I had a machine that I'd already logged into (on a
+> > previous kernel version) and I was trying to log into it a second
+> > time.  Thus there's no way that chromeos-install could be involved.
+> > Looking at chromeos_startup:
+> >
+> > https://chromium.googlesource.com/chromiumos/platform2/+/refs/heads/master/init/chromeos_startup
+> >
+> > ...the function is only used for setting up the "encrypted stateful"
+> > partition.  That wasn't where my failure was.  My failure was with
+> > logging in AKA with cryptohome.  Thus I think it's plausible that my
+> > original commit message pointing at cryptohome may have been correct.
+> > It's possible that there were _also_ problems with encrypted stateful
+> > that I wasn't noticing, but if so they were not the only problems.
+> >
+> > It still may be wise to make Chrome OS use different tests, but it
+> > might not be quite as simple as hoped...
+> >
+>
+> Ah, I think I found it:
+>
+> https://chromium.googlesource.com/chromiumos/overlays/chromiumos-overlay/+/2cbdedd5eca0a57d9596671a99da5fab8e60722b/sys-apps/upstart/files/upstart-1.2-dircrypto.patch
+>
+> The init process does EXT4_IOC_GET_ENCRYPTION_POLICY on /, and if the error is
+> EOPNOTSUPP, it skips creating the "dircrypto" keyring.  So then cryptohome can't
+> add keys later.  (Note the error message you got, "Error adding dircrypto key".)
+>
 
-On Tue, Oct 1, 2019 at 3:53 PM harshad shirwadkar
-<harshadshirwadkar@gmail.com> wrote:
+Good catch. I'll try replacing that with a check for the sysfs flag
+and see if that does the trick.
+
+Guenter
+
+> So it looks like the kernel patch broke both that and
+> ext4_dir_encryption_supported().
 >
-> Oops, I missed this, I'll handle this in V4. Thanks!
+> I don't see how it could have broken cryptohome by itself, since AFAICS
+> cryptohome only uses EXT4_IOC_GET_ENCRYPTION_POLICY on the partition which is
+> supposed to have the 'encrypt' feature set.
 >
-> On Fri, Aug 9, 2019 at 1:02 PM Andreas Dilger <adilger@dilger.ca> wrote:
-> >
-> > On Aug 8, 2019, at 9:45 PM, Harshad Shirwadkar <harshadshirwadkar@gmail.com> wrote:
-> > >
-> > > This patch allows file systems to turn fast commits on and thereby
-> > > restrict the normal journalling space to total journal blocks minus
-> > > JBD2_FAST_COMMIT_BLOCKS. Fast commits are not actually performed, just
-> > > the interface to turn fast commits on is opened.
-> > >
-> > > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> > >
-> > > ---
-> > >
-> > > Changelog:
-> > >
-> > > V2: No changes since V1
-> > > ---
-> > > fs/ext4/super.c      |  3 ++-
-> > > fs/jbd2/journal.c    | 39 ++++++++++++++++++++++++++++++++-------
-> > > fs/ocfs2/journal.c   |  4 ++--
-> > > include/linux/jbd2.h |  2 +-
-> > > 4 files changed, 37 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > > index e376ac040cce..81c3ec165822 100644
-> > > --- a/fs/ext4/super.c
-> > > +++ b/fs/ext4/super.c
-> > > @@ -4933,7 +4933,8 @@ static int ext4_load_journal(struct super_block *sb,
-> > >               if (save)
-> > >                       memcpy(save, ((char *) es) +
-> > >                              EXT4_S_ERR_START, EXT4_S_ERR_LEN);
-> > > -             err = jbd2_journal_load(journal);
-> > > +             err = jbd2_journal_load(journal,
-> > > +                                     test_opt2(sb, JOURNAL_FAST_COMMIT));
-> > >               if (save)
-> > >                       memcpy(((char *) es) + EXT4_S_ERR_START,
-> > >                              save, EXT4_S_ERR_LEN);
-> > > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> > > index 953990eb70a9..59ad709154a3 100644
-> > > --- a/fs/jbd2/journal.c
-> > > +++ b/fs/jbd2/journal.c
-> > > @@ -1159,12 +1159,15 @@ static journal_t *journal_init_common(struct block_device *bdev,
-> > >       journal->j_blk_offset = start;
-> > >       journal->j_maxlen = len;
-> > >       n = journal->j_blocksize / sizeof(journal_block_tag_t);
-> > > -     journal->j_wbufsize = n;
-> > > +     journal->j_wbufsize = n - JBD2_FAST_COMMIT_BLOCKS;
-> >
-> > The reservation of the JBD2_FAST_COMMIT_BLOCKS should only be done in
-> > the case of the FAST_COMMIT feature being enabled.  Otherwise it can
-> > hurt performance for filesystems where this feature is not enabled.
-> >
-> > Cheers, Andreas
-> >
-> > >       journal->j_wbuf = kmalloc_array(n, sizeof(struct buffer_head *),
-> > >                                       GFP_KERNEL);
-> > >       if (!journal->j_wbuf)
-> > >               goto err_cleanup;
-> > >
-> > > +     journal->j_fc_wbuf = &journal->j_wbuf[journal->j_wbufsize];
-> > > +     journal->j_fc_wbufsize = JBD2_FAST_COMMIT_BLOCKS;
-> > > +
-> > >       bh = getblk_unmovable(journal->j_dev, start, journal->j_blocksize);
-> > >       if (!bh) {
-> > >               pr_err("%s: Cannot get buffer for journal superblock\n",
-> > > @@ -1297,11 +1300,19 @@ static int journal_reset(journal_t *journal)
-> > >       }
-> > >
-> > >       journal->j_first = first;
-> > > -     journal->j_last = last;
-> > >
-> > > -     journal->j_head = first;
-> > > -     journal->j_tail = first;
-> > > -     journal->j_free = last - first;
-> > > +     if (jbd2_has_feature_fast_commit(journal)) {
-> > > +             journal->j_last_fc = last;
-> > > +             journal->j_last = last - JBD2_FAST_COMMIT_BLOCKS;
-> > > +             journal->j_first_fc = journal->j_last + 1;
-> > > +             journal->j_fc_off = 0;
-> > > +     } else {
-> > > +             journal->j_last = last;
-> > > +     }
-> > > +
-> > > +     journal->j_head = journal->j_first;
-> > > +     journal->j_tail = journal->j_first;
-> > > +     journal->j_free = journal->j_last - journal->j_first;
-> > >
-> > >       journal->j_tail_sequence = journal->j_transaction_sequence;
-> > >       journal->j_commit_sequence = journal->j_transaction_sequence - 1;
-> > > @@ -1626,9 +1637,17 @@ static int load_superblock(journal_t *journal)
-> > >       journal->j_tail_sequence = be32_to_cpu(sb->s_sequence);
-> > >       journal->j_tail = be32_to_cpu(sb->s_start);
-> > >       journal->j_first = be32_to_cpu(sb->s_first);
-> > > -     journal->j_last = be32_to_cpu(sb->s_maxlen);
-> > >       journal->j_errno = be32_to_cpu(sb->s_errno);
-> > >
-> > > +     if (jbd2_has_feature_fast_commit(journal)) {
-> > > +             journal->j_last_fc = be32_to_cpu(sb->s_maxlen);
-> > > +             journal->j_last = journal->j_last_fc - JBD2_FAST_COMMIT_BLOCKS;
-> > > +             journal->j_first_fc = journal->j_last + 1;
-> > > +             journal->j_fc_off = 0;
-> > > +     } else {
-> > > +             journal->j_last = be32_to_cpu(sb->s_maxlen);
-> > > +     }
-> > > +
-> > >       return 0;
-> > > }
-> > >
-> > > @@ -1641,7 +1660,7 @@ static int load_superblock(journal_t *journal)
-> > >  * a journal, read the journal from disk to initialise the in-memory
-> > >  * structures.
-> > >  */
-> > > -int jbd2_journal_load(journal_t *journal)
-> > > +int jbd2_journal_load(journal_t *journal, bool enable_fc)
-> > > {
-> > >       int err;
-> > >       journal_superblock_t *sb;
-> > > @@ -1684,6 +1703,12 @@ int jbd2_journal_load(journal_t *journal)
-> > >               return -EFSCORRUPTED;
-> > >       }
-> > >
-> > > +     if (enable_fc)
-> > > +             jbd2_journal_set_features(journal, 0, 0,
-> > > +                                       JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
-> > > +     else
-> > > +             jbd2_journal_clear_features(journal, 0, 0,
-> > > +                                         JBD2_FEATURE_INCOMPAT_FAST_COMMIT);
-> > >       /* OK, we've finished with the dynamic journal bits:
-> > >        * reinitialise the dynamic contents of the superblock in memory
-> > >        * and reset them on disk. */
-> > > diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-> > > index 930e3d388579..3b4d91b16e8e 100644
-> > > --- a/fs/ocfs2/journal.c
-> > > +++ b/fs/ocfs2/journal.c
-> > > @@ -1057,7 +1057,7 @@ int ocfs2_journal_load(struct ocfs2_journal *journal, int local, int replayed)
-> > >
-> > >       osb = journal->j_osb;
-> > >
-> > > -     status = jbd2_journal_load(journal->j_journal);
-> > > +     status = jbd2_journal_load(journal->j_journal, false);
-> > >       if (status < 0) {
-> > >               mlog(ML_ERROR, "Failed to load journal!\n");
-> > >               goto done;
-> > > @@ -1642,7 +1642,7 @@ static int ocfs2_replay_journal(struct ocfs2_super *osb,
-> > >               goto done;
-> > >       }
-> > >
-> > > -     status = jbd2_journal_load(journal);
-> > > +     status = jbd2_journal_load(journal, false);
-> > >       if (status < 0) {
-> > >               mlog_errno(status);
-> > >               if (!igrab(inode))
-> > > diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> > > index 9a750b732241..153840b422cc 100644
-> > > --- a/include/linux/jbd2.h
-> > > +++ b/include/linux/jbd2.h
-> > > @@ -1476,7 +1476,7 @@ extern int         jbd2_journal_set_features
-> > >                  (journal_t *, unsigned long, unsigned long, unsigned long);
-> > > extern void      jbd2_journal_clear_features
-> > >                  (journal_t *, unsigned long, unsigned long, unsigned long);
-> > > -extern int      jbd2_journal_load       (journal_t *journal);
-> > > +extern int      jbd2_journal_load(journal_t *journal, bool enable_fc);
-> > > extern int       jbd2_journal_destroy    (journal_t *);
-> > > extern int       jbd2_journal_recover    (journal_t *journal);
-> > > extern int       jbd2_journal_wipe       (journal_t *, int);
-> > > --
-> > > 2.23.0.rc1.153.gdeed80330f-goog
-> > >
-> >
-> >
-> > Cheers, Andreas
-> >
-> >
-> >
-> >
-> >
+> - Eric
