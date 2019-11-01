@@ -2,104 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1382EC88C
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2019 19:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E66ECA07
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2019 21:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbfKASd0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 Nov 2019 14:33:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726671AbfKASd0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 1 Nov 2019 14:33:26 -0400
-Received: from localhost (unknown [104.132.0.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 520EB21734;
-        Fri,  1 Nov 2019 18:33:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572633205;
-        bh=O2xOXMU8ZuGa8qvDhmT8yNNHuqfhzhj+CDrM/y+R8mw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hzidrk+UjF6KOAXbE6VsYklvSG6v4p6oZqYY3BHWUMifu38B/OUELpDbD+afGyp6+
-         9vqZyc1hVRscVcUMFAu1Hp1/YTh9T8Bcp4XzfLAVsAi5f3V/3eF/EJzoXBfImYp//E
-         c8EBJE/0RMsGQPUUvMoTpfJRFaLjO5W/YJe+ukw4=
-Date:   Fri, 1 Nov 2019 11:33:24 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Satya Tangirala <satyat@google.com>,
-        Paul Crowley <paulcrowley@google.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH v2 3/3] f2fs: add support for IV_INO_LBLK_64 encryption
- policies
-Message-ID: <20191101183324.GA14664@jaegeuk-macbookpro.roam.corp.google.com>
-References: <20191024215438.138489-1-ebiggers@kernel.org>
- <20191024215438.138489-4-ebiggers@kernel.org>
+        id S1727864AbfKAU5o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Nov 2019 16:57:44 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:35160 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726396AbfKAU5n (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Nov 2019 16:57:43 -0400
+Received: by mail-oi1-f195.google.com with SMTP id n16so9325776oig.2;
+        Fri, 01 Nov 2019 13:57:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B2Wo++qvCAWopO2MVN1SxMuOaw9O5ooxGYbXrtTGoLc=;
+        b=JnPKRmD8EH+YTuMKNidCmXHCX/xkxCn1I5n0S0B4DX7PNVRwaflaqlbaRoR3ijfKYy
+         buUgt6M5ddeaC6dTS2u+uBTqyp2BQ8o5sw56Zgrp8LRUgCmlgengvLZ7aHNN2BPgC3xf
+         n2hnXEcOkD7OoG1RxTgiLd/OsAO6tFtLyHFOuv+QbfPI61W37ATcc2PLDUe0tEYWs4l9
+         ZB8fmWRLSS3ZeAAjaLikBXOIATdnibwsKMtaMc9npj1IEkPya28MPDALPjcIXKvIevIP
+         8zF/pTKFCAxK+G5JpswJvCoWHo8KVccNusSQfrGFp9kW1Rua+Vs4iZObJq74YUKQBXEE
+         TdQg==
+X-Gm-Message-State: APjAAAXitYPQXSYdzk7bUFE86PsG8V12cHlWtzVZg6VmLLBFZNNt2UYl
+        g9sr2isaukLaVAAL6k2OpNDXGWMPmjI5F4gjpko=
+X-Google-Smtp-Source: APXvYqyMPGVgSghm8B6Z8BliWMbf63SJMtQqkLmxrpCWnOLjhSTH18y22Nnv6Mk4zTGM1EgQgPb5eF27WcBVRETo4XE=
+X-Received: by 2002:a05:6808:60a:: with SMTP id y10mr3730740oih.102.1572641862721;
+ Fri, 01 Nov 2019 13:57:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191024215438.138489-4-ebiggers@kernel.org>
-User-Agent: Mutt/1.8.2 (2017-04-18)
+References: <20191031010736.113783-1-Valdis.Kletnieks@vt.edu>
+In-Reply-To: <20191031010736.113783-1-Valdis.Kletnieks@vt.edu>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 1 Nov 2019 21:57:31 +0100
+Message-ID: <CAMuHMdXzyVBa4TZEc5eRaBzu50thgJ2TrHJLZqwhbQ=JASgWOA@mail.gmail.com>
+Subject: Re: [RFC] errno.h: Provide EFSCORRUPTED for everybody
+To:     Valdis Kletnieks <valdis.kletnieks@vt.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, Jan Kara <jack@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-erofs@lists.ozlabs.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Linux-Arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 10/24, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> f2fs inode numbers are stable across filesystem resizing, and f2fs inode
-> and file logical block numbers are always 32-bit.  So f2fs can always
-> support IV_INO_LBLK_64 encryption policies.  Wire up the needed
-> fscrypt_operations to declare support.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+Hi Valdis,
 
-Acked-by: Jaegeuk Kim <jaegeuk@kernel.org>
+On Thu, Oct 31, 2019 at 2:11 AM Valdis Kletnieks
+<valdis.kletnieks@vt.edu> wrote:
+> Three questions: (a) ACK/NAK on this patch, (b) should it be all in one
+> patch, or one to add to errno.h and 6 patches for 6 filesystems?), and
+> (c) if one patch, who gets to shepherd it through?
+>
+> There's currently 6 filesystems that have the same #define. Move it
+> into errno.h so it's defined in just one place.
+>
+> Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
 
-> ---
->  fs/f2fs/super.c | 26 ++++++++++++++++++++------
->  1 file changed, 20 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 1443cee158633..851ac95229263 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -2308,13 +2308,27 @@ static bool f2fs_dummy_context(struct inode *inode)
->  	return DUMMY_ENCRYPTION_ENABLED(F2FS_I_SB(inode));
->  }
->  
-> +static bool f2fs_has_stable_inodes(struct super_block *sb)
-> +{
-> +	return true;
-> +}
-> +
-> +static void f2fs_get_ino_and_lblk_bits(struct super_block *sb,
-> +				       int *ino_bits_ret, int *lblk_bits_ret)
-> +{
-> +	*ino_bits_ret = 8 * sizeof(nid_t);
-> +	*lblk_bits_ret = 8 * sizeof(block_t);
-> +}
-> +
->  static const struct fscrypt_operations f2fs_cryptops = {
-> -	.key_prefix	= "f2fs:",
-> -	.get_context	= f2fs_get_context,
-> -	.set_context	= f2fs_set_context,
-> -	.dummy_context	= f2fs_dummy_context,
-> -	.empty_dir	= f2fs_empty_dir,
-> -	.max_namelen	= F2FS_NAME_LEN,
-> +	.key_prefix		= "f2fs:",
-> +	.get_context		= f2fs_get_context,
-> +	.set_context		= f2fs_set_context,
-> +	.dummy_context		= f2fs_dummy_context,
-> +	.empty_dir		= f2fs_empty_dir,
-> +	.max_namelen		= F2FS_NAME_LEN,
-> +	.has_stable_inodes	= f2fs_has_stable_inodes,
-> +	.get_ino_and_lblk_bits	= f2fs_get_ino_and_lblk_bits,
->  };
->  #endif
->  
-> -- 
-> 2.24.0.rc0.303.g954a862665-goog
+Thanks for your patch!
+
+> --- a/include/uapi/asm-generic/errno.h
+> +++ b/include/uapi/asm-generic/errno.h
+> @@ -98,6 +98,7 @@
+>  #define        EINPROGRESS     115     /* Operation now in progress */
+>  #define        ESTALE          116     /* Stale file handle */
+>  #define        EUCLEAN         117     /* Structure needs cleaning */
+> +#define        EFSCORRUPTED    EUCLEAN
+
+I have two questions:
+a) Why not use EUCLEAN everywhere instead?
+    Having two different names for the same errno complicates grepping.
+b) Perhaps both errors should use different values? Do they have the
+   same semantics? I'm not a fs developer, so this is a bit fuzzy to me.
+   According to Documentation/, one seems to originate in mtd, the
+   other in xfs.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
