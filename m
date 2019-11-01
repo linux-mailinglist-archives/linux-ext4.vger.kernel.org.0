@@ -2,74 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D15EC615
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2019 16:56:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDF6EC833
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2019 19:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729142AbfKAP4E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 Nov 2019 11:56:04 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:39040 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729162AbfKAPzt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 Nov 2019 11:55:49 -0400
-Received: by mail-il1-f194.google.com with SMTP id f201so3413190ilh.6
-        for <linux-ext4@vger.kernel.org>; Fri, 01 Nov 2019 08:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=KqYLJklOErTzrVm5Bzbb6HQh9gI4PrbbORQE30GcC5Y=;
-        b=pUJIzGj/MPv1EKc2k3aNehKVojTiwbi36zg1sckIL11PdqXfau1yGsXj1t9CSJeyKL
-         3i/jp/TX/JDBG+iju9GRvxcye9SA9yiSTdccj7/EyUgYmTSSLRFNkcsvQASN37kQDgQc
-         jnResb6aJSg07Bq5suGRVdOqTkrlyY1YMgTmHgQc7tz+apzSU8zlfJ8cqPEt/z1Bd3OE
-         3WNB6qm/Pkg8xI5aHgZ1XzvGw6eZK1PwDo4winMpdBi8I/fqM1G/oYqHCv2wNxwHhj5m
-         N0Nph5NSOfE5c8csPVkAAUkUAiHHdFA9X2wHOboX58ouCDBOqdL9C38hXp5o3eU3+tNB
-         N8dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=KqYLJklOErTzrVm5Bzbb6HQh9gI4PrbbORQE30GcC5Y=;
-        b=eJ/zeJBS3jXu0mPy9fv4sjmXJ5ZGTJqPyl7lpRuOYTaFVY7S3otJTtFO1FQmcX4Wcr
-         MLXW2Zhu9yvPTRzVUzYbMoWLxFsukiEmom2BYj+qcc5JUfx6Htm4Oyo2ZWAk5sQICsl/
-         mXuhF2wUrmdqDUBKwIy2CzY8Xt16L9Ml0gvAhll18QvE0T6n3k15WWHbPnxajzkUnv8W
-         UhypCZH1ETxf+Fx6rXq1O5l3NizdmSXSNQa+GMJOwtgVlOQVoB3tEgEFTpoeO4+BVpJp
-         kYAQgui8qBVR8myX3qzZ0iG/2NPcQxyYkeNBQYYuUTBH8wAzX0JUe0ZUbBFz+GsspAYf
-         Pg2w==
-X-Gm-Message-State: APjAAAWnC7N1rAyUVGDz4KQfcRHH6TBMubDZA9AOAwRv7HHdHbwlzP3m
-        zYL324L3TeYbK51G1xg1+kFnT6ig2Zs+v8YO3w==
-X-Google-Smtp-Source: APXvYqwNtyKjT0pXbrd92BXP7Yur4/d12tLIQphfDkWOJF9bZR6SLYcfNyjCPNgVxkpA0mTQo/BiL8Zaftdd9XRgWqY=
-X-Received: by 2002:a92:1d8d:: with SMTP id g13mr8826976ile.35.1572623748630;
- Fri, 01 Nov 2019 08:55:48 -0700 (PDT)
+        id S1726985AbfKASCZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 Nov 2019 14:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726229AbfKASCZ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 1 Nov 2019 14:02:25 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8948B2085B;
+        Fri,  1 Nov 2019 18:02:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572631343;
+        bh=+EVYdRQnzMSni7rbkWUkr/VyBRQqZzi7HYgJl2PSv7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H/js7aTdFNTtnWaMZwMd7OYbWGfMscIslU2oJfmvt7TBifOeGwuqtE2QElTyxYpr7
+         R4OLm2XIf0CaESSYuC8mO//4FbtGDyJ6M7c6oYdStKnDVn1r5SNLMT4lKj41qv8ydw
+         TWE5Xs721QeeFRJ6TErBluIl9FU8Ta+x9ZhSmrbk=
+Date:   Fri, 1 Nov 2019 11:02:21 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Satya Tangirala <satyat@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
+Subject: Re: [PATCH v2 0/3] fscrypt: support for IV_INO_LBLK_64 policies
+Message-ID: <20191101180220.GA86412@gmail.com>
+Mail-Followup-To: linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Satya Tangirala <satyat@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
+References: <20191024215438.138489-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a02:7749:0:0:0:0:0 with HTTP; Fri, 1 Nov 2019 08:55:48 -0700 (PDT)
-Reply-To: moneygram.1820@outlook.fr
-From:   "Mary Coster, I.M.F director-Benin" 
-        <info.zennitbankplcnigerian@gmail.com>
-Date:   Fri, 1 Nov 2019 16:55:48 +0100
-Message-ID: <CABHzvrmPdjgy_vBxQMfJ2YwGwj1RyCvQt1Oy5GJczarHTQb=pg@mail.gmail.com>
-Subject: Contact Money Gram international service-Benin to receive your
- payment funds US$2.500,000 Million
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191024215438.138489-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Attn Dear,Funds Beneficiary.
-Contact Money Gram international service-Benin to receive your payment
-funds US$2.500,000 Million approved this morning through the UN
-payment settlement organization.
-Contact Person, Mr. John Dave.
-Official Director.Money Gram-Benin
-Email: moneygram.1820@outlook.fr
-Telephone +229 62619517
-Once you get intouch with Mr. John Dave, Money Gram Director, send to
-him your address including your phone numbers. He will be sending the
-transfer to you  $5000.00 USD daily until you received your complete
-payment $2.5m from the office.
-Note,I have paid the whole service fees for you but only small money
-you been required to send to this office is $23.00 only via Money Gram
-transfer.
-God bless
-Mary Coster, I.M.F director-Benin
-m.coster@aol.com
+On Thu, Oct 24, 2019 at 02:54:35PM -0700, Eric Biggers wrote:
+> Hello,
+> 
+> In preparation for adding inline encryption support to fscrypt, this
+> patchset adds a new fscrypt policy flag which modifies the encryption to
+> be optimized for inline encryption hardware compliant with the UFS v2.1
+> standard or the upcoming version of the eMMC standard.
+> 
+> This means using per-mode keys instead of per-file keys, and in
+> compensation including the inode number in the IVs.  For ext4, this
+> precludes filesystem shrinking, so I've also added a compat feature
+> which will prevent the filesystem from being shrunk.
+> 
+> I've separated this from the full "Inline Encryption Support" patchset
+> (https://lkml.kernel.org/linux-fsdevel/20190821075714.65140-1-satyat@google.com/)
+> to avoid conflating an implementation (inline encryption) with a new
+> on-disk format (IV_INO_LBLK_64).  This patchset purely adds support for
+> IV_INO_LBLK_64 policies to fscrypt, but implements them using the
+> existing filesystem layer crypto.
+> 
+> We're planning to make the *implementation* (filesystem layer or inline
+> crypto) be controlled by a mount option '-o inlinecrypt'.
+> 
+> This patchset applies to fscrypt.git#master and can also be retrieved from
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-crypt-optimized-v2
+> 
+> I've written a ciphertext verification test for this new type of policy:
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git/log/?h=inline-encryption
+> 
+> Work-in-progress patches for the inline encryption implementation of
+> both IV_INO_LBLK_64 and regular policies can be found at
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-encryption-wip
+> 
+> Changes v1 => v2:
+> 
+> - Rename the flag from INLINE_CRYPT_OPTIMIZED to IV_INO_LBLK_64.
+> 
+> - Use the same key derivation and IV generation scheme for filenames
+>   encryption too.
+> 
+> - Improve the documentation and commit messages.
+> 
+> Eric Biggers (3):
+>   fscrypt: add support for IV_INO_LBLK_64 policies
+>   ext4: add support for IV_INO_LBLK_64 encryption policies
+>   f2fs: add support for IV_INO_LBLK_64 encryption policies
+> 
+
+Does anyone have any more comments on these patches?
+
+- Eric
