@@ -2,65 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BC5EE468
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 17:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF316EE470
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 17:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728351AbfKDQKA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Nov 2019 11:10:00 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54168 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728012AbfKDQKA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 11:10:00 -0500
-Received: from callcc.thunk.org (ip-12-2-52-196.nyc.us.northamericancoax.com [196.52.2.12])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xA4G8QEQ010632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Nov 2019 11:08:27 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 05B81420311; Mon,  4 Nov 2019 11:08:23 -0500 (EST)
-Date:   Mon, 4 Nov 2019 11:08:23 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC 0/5] Ext4: Add support for blocksize < pagesize for
- dioread_nolock
-Message-ID: <20191104160823.GI28764@mit.edu>
-References: <20191016073711.4141-1-riteshh@linux.ibm.com>
- <20191023232614.GB1124@mit.edu>
- <20191029071925.60AABA405B@b06wcsmtp001.portsmouth.uk.ibm.com>
- <20191103191606.GB8037@mit.edu>
- <20191104101623.GB27115@bobrowski>
- <20191104103759.4085C4C046@d06av22.portsmouth.uk.ibm.com>
- <20191104104913.GC27115@bobrowski>
+        id S1728321AbfKDQLw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 4 Nov 2019 11:11:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52924 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727838AbfKDQLv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 4 Nov 2019 11:11:51 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 205417] Files corruption ( fs/ext4/inode.c:3941
+ ext4_set_page_dirty+0x3e/0x50 [ext4] )
+Date:   Mon, 04 Nov 2019 16:11:51 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: the.dmol@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-205417-13602-TOsKyWzmri@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-205417-13602@https.bugzilla.kernel.org/>
+References: <bug-205417-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191104104913.GC27115@bobrowski>
-User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 09:49:14PM +1100, Matthew Bobrowski wrote:
-> > It sure may be giving a merge conflict (due to io_end structure).
-> > But this dioread_nolock series was not dependent over iomap series.
-> 
-> Uh ha. Well, there's been a chunk of code injected into
-> ext4_end_io_dio() here and by me removing it, I'm not entirely sure
-> what the downstream effects will be for this specific change...
+https://bugzilla.kernel.org/show_bug.cgi?id=205417
 
-Yeah, that was probably my failure to do the merge correctly; I'm
-hoping that Ritesh will be able to fix that up.  If not we can throw
-an "experimental" config to enable dioread_nolock on subpage
-blocksizes, just to warn people that under some extreme workloads,
-they might end up corrupting their allocation bitmap, which then might
-lead to data loss.  I suspect it would actually work fine for most
-users; but out of paranoia, if we can't figure out the generic/270
-failure before the merge window, we can just make dioread_nolock_1k
-experimental for now.
+--- Comment #5 from Ivan Baidakou (the.dmol@gmail.com) ---
+Yes, the original message is reproduced every time I boot with 5.3.8
+approximately after a few mins boot. I just launch my DE(awesome), Firefox,
+Telegram, Claws-mail, and terminal. Actually visually no buggy behavior can be
+observed, except the message in /var/log/messages.
 
-  	      	     	       		- Ted
-							      
+The buggy behavior was in Saturnday, when 
+1. I launched a WarThunder game, which does heavy I/O (I assume it calculates 
+checksums of files, and if they mismatch, then download new asseets) - it just
+hanged.
+
+2. Then I was sure that it is a bug in game, and removed it. A bit later I just
+spawned "make -j9" several times simultaneously for the same project (debug,
+release, and sanitizer-build) - and when it hanged, I finally payed attention
+to the original kernel message.
+
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
