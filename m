@@ -2,75 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7022CEDF56
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 12:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA521EDF73
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 12:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbfKDL4X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Nov 2019 06:56:23 -0500
-Received: from sender3-of-o52.zoho.com.cn ([124.251.121.247]:21932 "EHLO
-        sender2.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728871AbfKDL4X (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 06:56:23 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1572867664; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=F7putwOGu/cvO5j65ILWAUK1N7Ka672NOZ3+qRvuOKcwzz/EDdI2BfYBH0h6n0cm17ijCTVK1gOLL+3NidMvM1O2sn1jchTolrwQPoZnqQwCJ5XuCbFChxz9mRTqZAS+sB6f8M6eHxGqQzWEwBb4wGeIklAljBtZdXzdjsOnYo8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1572867664; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=MScuvJamY4B9PODRGlsGY+0SFH7BZjXZFmDqK8i2d/8=; 
-        b=f1PMr3m1bzReeK54z84ca3mzvQkLrv0oMuE+pOLUHq3d2V32Cl5eVJ94ey4VyDrIRrTCXkBh91mMvkRBwNoxyvNTT6xVyeC3FRuAYVRBeb/79VfQTzTg28AJ+eIOH+I12pkeBbJsN/0FWgvrl9Zsklm8t/oIrWk2fG5Esz94/kE=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1572867664;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=725; bh=MScuvJamY4B9PODRGlsGY+0SFH7BZjXZFmDqK8i2d/8=;
-        b=TfTM1pRLbSwJ/p8s/3HiTo/5uZPweTrZwVALkf60QrGeGIgCW0JK/6RIt/4Gt8V9
-        HK2GstLcHmHEfYghZxhon2H5sMHaipdpAbnWrhba/TqftMeReo5ZpsXMs+WIOxJ+MSb
-        7z+0SljjdcAJbu/dESDmmFGv+HdKSk7oywA0Y1Vc=
-Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1572867663706905.0393051105115; Mon, 4 Nov 2019 19:41:03 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191104114036.9893-5-cgxu519@mykernel.net>
-Subject: [PATCH 5/5] ext2: fix improper function comment
-Date:   Mon,  4 Nov 2019 19:40:36 +0800
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191104114036.9893-1-cgxu519@mykernel.net>
-References: <20191104114036.9893-1-cgxu519@mykernel.net>
+        id S1728646AbfKDL7p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Nov 2019 06:59:45 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61760 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727838AbfKDL7p (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 06:59:45 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xA4Bx8Xh047388
+        for <linux-ext4@vger.kernel.org>; Mon, 4 Nov 2019 06:59:44 -0500
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2w2k500u5k-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Mon, 04 Nov 2019 06:59:43 -0500
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Mon, 4 Nov 2019 11:59:42 -0000
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 4 Nov 2019 11:59:39 -0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xA4BxcEN47120510
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Nov 2019 11:59:38 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A3C504C050;
+        Mon,  4 Nov 2019 11:59:38 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C8F694C04A;
+        Mon,  4 Nov 2019 11:59:36 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.82.150])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Nov 2019 11:59:36 +0000 (GMT)
+Subject: Re: [RFC 0/5] Ext4: Add support for blocksize < pagesize for
+ dioread_nolock
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org
+References: <20191016073711.4141-1-riteshh@linux.ibm.com>
+ <20191023232614.GB1124@mit.edu>
+ <20191029071925.60AABA405B@b06wcsmtp001.portsmouth.uk.ibm.com>
+ <20191103191606.GB8037@mit.edu>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Mon, 4 Nov 2019 17:29:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+In-Reply-To: <20191103191606.GB8037@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19110411-0008-0000-0000-0000032A81F2
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19110411-0009-0000-0000-00004A49D734
+Message-Id: <20191104115936.C8F694C04A@d06av22.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-04_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1911040120
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Just fix a improper function comment.
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- fs/ext2/balloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 11/4/19 4:13 PM, Ritesh Harjani wrote:
+> 
+> 
+> On 11/4/19 12:46 AM, Theodore Y. Ts'o wrote:
+>> On Tue, Oct 29, 2019 at 12:49:24PM +0530, Ritesh Harjani wrote:
+>>>
+>>> So it looks like these failed tests does not seem to be because of this
+>>> patch series. But these are broken in general for at least 1K blocksize.
+>>
+>> Agreed, I failed to add them to the exclude list for diread_nolock_1k.
+>> Thanks for pointing that out!
+>>
+>> After looking through these patches, it looks good.  So, I've landed
+>> this series on the ext4 git tree.
+>>
+>> There are some potential conflicts with Matthew's DIO using imap patch
+>> set.  I tried resolving them in the obvious way (see the tt/mb-dio
+>> branch[1] on ext4.git), and unfortunately, there is a flaky test
+>> failure with generic/270 --- 2 times out 30 runs of generic/270, the
+>> file system is left inconsistent, with problems found in the block
+>> allocation bitmap.
+>>
+>> [1] 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/log/?h=tt/mb-dio 
+>>
+>>
+>> I've verified that generic/270 isn't a problem on -rc3, and it's not a
+>> problem with just your patch series.  So, it's almost certain it's
+>> because I screwed up the merge.  I applied each of Matthew's patch one
+>> at a time, and conflict was in changes in ext4_end_io_dio, which is
+>> dropped in Matthew's patch.  It wasn't obvious though where the
+>> dioread-nolock-1k change should be applied in Matthew's patch series.
+>> Could you take a look?  Thanks!!
 
-diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index 9a9bd566243d..4180467122d0 100644
---- a/fs/ext2/balloc.c
-+++ b/fs/ext2/balloc.c
-@@ -749,7 +749,7 @@ ext2_try_to_allocate(struct super_block *sb, int group,
-  *=09=09but we will shift to the place where start_block is,
-  *=09=09then start from there, when looking for a reservable space.
-  *
-- * =09@size: the target new reservation window size
-+ *=09@sb: the super block.
-  *
-  * =09@group_first_block: the first block we consider to start
-  *=09=09=09the real search from
---=20
-2.20.1
+Looked into the above mentioned branch.
+I see the patches of iomap patch series were properly
+applied. It is ok to completely remove function "ext4_end_io_dio" and
+directly call for "ext4_convert_unwritten_extents" from 
+"ext4_dio_write_end_io" (which is also done by default).
 
+Actually io_end_vec in dioread_nolock series was used for AIO
+DIO, since AIO+DIO was already using io_end structure and all
+io_end usage was moved to use io_end_vec.
+But since in iomap, we don't use io_end structure so it is ok
+to directly call for ext4_convert_unwritten_extents with offset &
+size argument.
 
+hmm, I will try and run this generic/270 at my end to see what is going
+wrong with this. It would be good if you could share the xfstest config
+under which this is failing & if possible the failed logs/report.
+
+Meanwhile, I will test generic/270 on your given branch with
+dioread_nolock & 1K bs configuration.
+
+-ritesh
 
