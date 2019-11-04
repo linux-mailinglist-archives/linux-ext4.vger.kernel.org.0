@@ -2,91 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A19CAEE09F
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 14:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F08AEEE0AE
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 14:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728595AbfKDNIc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Nov 2019 08:08:32 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37383 "EHLO
+        id S1729011AbfKDNJx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Nov 2019 08:09:53 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37604 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727454AbfKDNIc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 08:08:32 -0500
+        with ESMTP id S1729136AbfKDNJg (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 08:09:36 -0500
 Received: from callcc.thunk.org (ip-12-2-52-196.nyc.us.northamericancoax.com [196.52.2.12])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xA4D8QxB004393
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xA4D9Ul7004768
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Nov 2019 08:08:27 -0500
+        Mon, 4 Nov 2019 08:09:31 -0500
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id F4160420311; Mon,  4 Nov 2019 08:08:23 -0500 (EST)
-Date:   Mon, 4 Nov 2019 08:08:23 -0500
+        id 47C66420311; Mon,  4 Nov 2019 08:09:28 -0500 (EST)
+Date:   Mon, 4 Nov 2019 08:09:28 -0500
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
 To:     Jan Kara <jack@suse.cz>
 Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 21/22] ext4: Reserve revoke credits for freed blocks
-Message-ID: <20191104130823.GC28764@mit.edu>
+Subject: Re: [PATCH 0/19 v3] ext4: Fix transaction overflow due to revoke
+ descriptors
+Message-ID: <20191104130928.GD28764@mit.edu>
 References: <20191003215523.7313-1-jack@suse.cz>
- <20191003220613.10791-21-jack@suse.cz>
- <20191021231818.GF24015@mit.edu>
- <20191023161314.GD31271@quack2.suse.cz>
+ <20191104033252.GC12046@mit.edu>
+ <20191104112232.GD22379@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191023161314.GD31271@quack2.suse.cz>
+In-Reply-To: <20191104112232.GD22379@quack2.suse.cz>
 User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 06:13:14PM +0200, Jan Kara wrote:
-> > It would probably be better to push this up to the callers, since we
-> > can get the exact number by calculating
-> > 
-> > 	(EXT4_B2C(sbi, last) - EXT4_B2C(sbi, first) + 1) * sbi->s_cluster_ratio
-> > 
-> > This is a bit more complicated in fs/ext4/indirect.c, where we
-> > probably will need to do a min of the these two formulas.
+On Mon, Nov 04, 2019 at 12:22:32PM +0100, Jan Kara wrote:
+> Hi Ted!
 > 
-> Is it worth the complexity at the callers? If we don't use some reserved
-> revoke credits, we'll just return them back. And the truncate code
-> generally works one extent at a time so in the end we may have just asked
-> for 1 more descriptor block than strictly necessary while the handle is
-> running...
+> On Sun 03-11-19 22:32:52, Theodore Y. Ts'o wrote:
+> > I believe that I'm waiting for the v4 version of this series with some
+> > pending fixes that you are planning on making.  Is that correct?
+> 
+> Ah, good that you pinged me because I have the series ready but I was
+> waiting for your answers to some explanations... In particular discussion
+> around patch 3 (move iput() outside of transaction), patch 15 (dropping of
+> j_state_lock around t_tid load), patch 18 (possible large overreservation
+> of descriptor blocks due to rounding), and 21 (change of on-disk format for
+> revoke descriptors).
 
-Sure, this is a change we can make later if we think it's necessary.
-Bigalloc file systems aren't that common, and when they are used, most
-of the time people aren't creating large numbers of small files and/or
-directories.
+Sorry, I didn't comment because I accepted your arguments; but I guess
+I should have said so explicitly.  I just replied to those threads.
 
-> Yes, I was thinking about the same. Extent format of revoke blocks would
-> certainly reduce the number of revoke descriptor blocks in the average
-> case. On the other hand I think that especially large directories can be
-> pretty fragmented so it isn't clear how big the average win would be. And
-> as you say the worst case estimate would not really change substantially
-> with the different format so to make the filesystem resistent to malicious
-> attacker we need some form of reservation of revoke descriptor blocks
-> anyway. So in the end I've decided to go without on-disk format change for
-> now.
+> Out of these I probably find the overreservation due to rounding the most
+> serious and easy enough to handle so I'll fix that and then resend the
+> series unless you raise your objection also in some other case.
 
-Adding a new on-disk journal format is easier than making other ext4
-format changes, since the journal is transient, and the case where the
-user is simultaneously (a) rolling back to an older kernel which might
-not support the new journal feature, and (b) crashes so that journal
-replay is necessary, and (c) it's the root file system, so e2fsck
-can't take care of the journal replay is a pretty rare / edge case.
+Great!
 
-That being said, we can set that aside as a possible later
-enhancement.  I suspect the main place we would have the large
-contiguous range fo blocks to be revoked is the data=journal case, and
-one of the things I keep wondering about how much is it worth it to
-keep that code.  So long as it's not posing a code maintenance burden,
-I don't mind that much; but I also wonder how many people are actually
-using it in practice.
-
-Out of curiosity, how easily were you able to trigger the revoke
-overflow situation using normal directories?  I would have expected it
-would have been fairly difficult to do, except for large file
-deletions with data=journal?
-
-						- Ted
+					- Ted
