@@ -2,59 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A50EEDDA6
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 12:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FEEEDF52
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 12:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbfKDLWe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Nov 2019 06:22:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56716 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726364AbfKDLWe (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 4 Nov 2019 06:22:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D572BB301;
-        Mon,  4 Nov 2019 11:22:32 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5E9451E43DA; Mon,  4 Nov 2019 12:22:32 +0100 (CET)
-Date:   Mon, 4 Nov 2019 12:22:32 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/19 v3] ext4: Fix transaction overflow due to revoke
- descriptors
-Message-ID: <20191104112232.GD22379@quack2.suse.cz>
-References: <20191003215523.7313-1-jack@suse.cz>
- <20191104033252.GC12046@mit.edu>
+        id S1728848AbfKDL4N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Nov 2019 06:56:13 -0500
+Received: from sender3-of-o52.zoho.com.cn ([124.251.121.247]:21922 "EHLO
+        sender2.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727663AbfKDL4N (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 06:56:13 -0500
+X-Greylist: delayed 906 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Nov 2019 06:56:09 EST
+ARC-Seal: i=1; a=rsa-sha256; t=1572867659; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=rY0x6zTB1/c6EuqPvJdRCRxK2Zmh5ahjD6H0UhscfMqrQgG/JnFwr/GD1YbAEUEYWSTYscE/j4tV/afSiL3HGYLWZVU4EtP9oPH4FfoWge1R2VCn/+hxyAhVUVCOTVgp/07DZP8VYCNdcfTwYIC45tcfApYyfN+ExR38mnvPzG8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1572867659; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=m6R7At4+C/REK1yLQtQ2YRUko1s/FbpG1OERsvSbHl0=; 
+        b=JszRGn+O6CaXfIjFC1tCBx04qZqb7g1MSdQVik8EunfaP5Uti7c9V2jNAasnbsxxUjecoGNe+yg9cltkb8ckhCWpxMLrM1TypURh5ZUZVydQxGM7hwSzSqVKzyvq4Z9wBqKMZ9vYsAEbdBrtvRQKN5/BZ2fpi+ctcbJpuTB431s=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1572867659;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        l=1133; bh=m6R7At4+C/REK1yLQtQ2YRUko1s/FbpG1OERsvSbHl0=;
+        b=gxwq13VVxOr6+wye9SLbLj4GowWQl4UTkyAF74g2WI6Fqr53C0ZWAnl/G4Fpkxbz
+        seGIOXtzs5516O3kbs9YGYU5EaFazN6p37JToyk+7I+vKNyj6pntrWFuhQ/3rvy6BOH
+        r9scbX+HDuw/FxaWNJctJL+L0E3Dz7ekv/Y5ljUA=
+Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
+        with SMTPS id 15728676574231004.4041585412566; Mon, 4 Nov 2019 19:40:57 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
+Message-ID: <20191104114036.9893-1-cgxu519@mykernel.net>
+Subject: [PATCH 1/5] ext2: introduce new helper ext2_group_last_block_no()
+Date:   Mon,  4 Nov 2019 19:40:32 +0800
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191104033252.GC12046@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ted!
+Introduce new helper ext2_group_last_block_no() to calculate
+last block num for specific block group, we can replace open
+coded logic by calling this common helper.
 
-On Sun 03-11-19 22:32:52, Theodore Y. Ts'o wrote:
-> I believe that I'm waiting for the v4 version of this series with some
-> pending fixes that you are planning on making.  Is that correct?
+Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+---
+ fs/ext2/ext2.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Ah, good that you pinged me because I have the series ready but I was
-waiting for your answers to some explanations... In particular discussion
-around patch 3 (move iput() outside of transaction), patch 15 (dropping of
-j_state_lock around t_tid load), patch 18 (possible large overreservation
-of descriptor blocks due to rounding), and 21 (change of on-disk format for
-revoke descriptors).
+diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
+index 10ab238de9a6..8178bd38a9d6 100644
+--- a/fs/ext2/ext2.h
++++ b/fs/ext2/ext2.h
+@@ -813,6 +813,18 @@ ext2_group_first_block_no(struct super_block *sb, unsi=
+gned long group_no)
+ =09=09le32_to_cpu(EXT2_SB(sb)->s_es->s_first_data_block);
+ }
+=20
++static inline ext2_fsblk_t
++ext2_group_last_block_no(struct super_block *sb, unsigned long group_no)
++{
++=09struct ext2_sb_info *sbi =3D EXT2_SB(sb);
++
++=09if (group_no =3D=3D sbi->s_groups_count - 1)
++=09=09return le32_to_cpu(sbi->s_es->s_blocks_count) - 1;
++=09else
++=09=09return ext2_group_first_block_no(sb, group_no) +
++=09=09=09EXT2_BLOCKS_PER_GROUP(sb) - 1;
++}
++
+ #define ext2_set_bit=09__test_and_set_bit_le
+ #define ext2_clear_bit=09__test_and_clear_bit_le
+ #define ext2_test_bit=09test_bit_le
+--=20
+2.20.1
 
-Out of these I probably find the overreservation due to rounding the most
-serious and easy enough to handle so I'll fix that and then resend the
-series unless you raise your objection also in some other case.
 
-								Honza
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
