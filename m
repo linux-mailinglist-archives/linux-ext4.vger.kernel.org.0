@@ -2,41 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D556EDF53
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 12:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7022CEDF56
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 12:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbfKDL4O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Nov 2019 06:56:14 -0500
-Received: from sender3-of-o52.zoho.com.cn ([124.251.121.247]:21985 "EHLO
+        id S1728619AbfKDL4X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Nov 2019 06:56:23 -0500
+Received: from sender3-of-o52.zoho.com.cn ([124.251.121.247]:21932 "EHLO
         sender2.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728346AbfKDL4M (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 06:56:12 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1572867663; cv=none; 
+        with ESMTP id S1728871AbfKDL4X (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 06:56:23 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1572867664; cv=none; 
         d=zoho.com.cn; s=zohoarc; 
-        b=UsW76rhlBPLUFUKJLgq27iaTcR8khwjKSdGZUsPCyQQe3U8S2AJ8IlzqJiDqa+9emM3PncxECuuxYr3baW8ZdzjypHf9sFu0OKJ3ZxJvRQJlx7geq1rBZbpNEphubQKGLPfsg+rK5Pucxx0MDOANulARkWRuGQ3UpbpsoZBDZAk=
+        b=F7putwOGu/cvO5j65ILWAUK1N7Ka672NOZ3+qRvuOKcwzz/EDdI2BfYBH0h6n0cm17ijCTVK1gOLL+3NidMvM1O2sn1jchTolrwQPoZnqQwCJ5XuCbFChxz9mRTqZAS+sB6f8M6eHxGqQzWEwBb4wGeIklAljBtZdXzdjsOnYo8=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1572867663; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=vD2mCFzn5UUpY9L7B2S+YTK+IZxao6tB3UjpLRoC+0I=; 
-        b=lLEwjYctF60oFRWW/plD9XiTGvd1XOxHoouf9HDPFAvh92cTnFfhFhhQqJat8CvyQfsGVpz96JkbssQQBGb7EpeJ9uSSaDsbH8ikv8Uv+eUPXH+alPrDbaW3VaVVyChGhm+8DkxRC8vIDYaNl8GRHGh/noybLApPuSfCRzfAgfY=
+        t=1572867664; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=MScuvJamY4B9PODRGlsGY+0SFH7BZjXZFmDqK8i2d/8=; 
+        b=f1PMr3m1bzReeK54z84ca3mzvQkLrv0oMuE+pOLUHq3d2V32Cl5eVJ94ey4VyDrIRrTCXkBh91mMvkRBwNoxyvNTT6xVyeC3FRuAYVRBeb/79VfQTzTg28AJ+eIOH+I12pkeBbJsN/0FWgvrl9Zsklm8t/oIrWk2fG5Esz94/kE=
 ARC-Authentication-Results: i=1; mx.zoho.com.cn;
         dkim=pass  header.i=mykernel.net;
         spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
         dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1572867663;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1572867664;
         s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
         h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=1502; bh=vD2mCFzn5UUpY9L7B2S+YTK+IZxao6tB3UjpLRoC+0I=;
-        b=E3kFSWINHB2yCIbB3PtpKtnO4i3satdUvGSJD1IapUOAbG9Be9adgX84v4iehbPW
-        lSZmhrvFMeLK5bDe5QEpuhbeW9t49+XsGyi7USJ982aZ1na/qY5UyqUSY6RgLDuZAvV
-        EP9BRRXv+6uO0Ioqx+1CKk+OHpNUER2jvgNp3t98=
+        l=725; bh=MScuvJamY4B9PODRGlsGY+0SFH7BZjXZFmDqK8i2d/8=;
+        b=TfTM1pRLbSwJ/p8s/3HiTo/5uZPweTrZwVALkf60QrGeGIgCW0JK/6RIt/4Gt8V9
+        HK2GstLcHmHEfYghZxhon2H5sMHaipdpAbnWrhba/TqftMeReo5ZpsXMs+WIOxJ+MSb
+        7z+0SljjdcAJbu/dESDmmFGv+HdKSk7oywA0Y1Vc=
 Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1572867662321557.7088117113368; Mon, 4 Nov 2019 19:41:02 +0800 (CST)
+        with SMTPS id 1572867663706905.0393051105115; Mon, 4 Nov 2019 19:41:03 +0800 (CST)
 From:   Chengguang Xu <cgxu519@mykernel.net>
 To:     jack@suse.com
 Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191104114036.9893-4-cgxu519@mykernel.net>
-Subject: [PATCH 4/5] ext2: code cleanup for ext2_try_to_allocate()
-Date:   Mon,  4 Nov 2019 19:40:35 +0800
+Message-ID: <20191104114036.9893-5-cgxu519@mykernel.net>
+Subject: [PATCH 5/5] ext2: fix improper function comment
+Date:   Mon,  4 Nov 2019 19:40:36 +0800
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191104114036.9893-1-cgxu519@mykernel.net>
 References: <20191104114036.9893-1-cgxu519@mykernel.net>
@@ -49,62 +49,26 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Code cleanup by removing duplicated code.
+Just fix a improper function comment.
 
 Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
 ---
- fs/ext2/balloc.c | 32 ++++++++++++++------------------
- 1 file changed, 14 insertions(+), 18 deletions(-)
+ fs/ext2/balloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index a0c22e166682..9a9bd566243d 100644
+index 9a9bd566243d..4180467122d0 100644
 --- a/fs/ext2/balloc.c
 +++ b/fs/ext2/balloc.c
-@@ -710,29 +710,25 @@ ext2_try_to_allocate(struct super_block *sb, int grou=
-p,
- =09=09=09=09;
- =09=09}
- =09}
--=09start =3D grp_goal;
-=20
--repeat:
--=09if (ext2_set_bit_atomic(sb_bgl_lock(EXT2_SB(sb), group), grp_goal,
--=09=09=09       =09=09=09=09bitmap_bh->b_data)) {
--=09=09/*
--=09=09 * The block was allocated by another thread, or it was
--=09=09 * allocated and then freed by another thread
--=09=09 */
--=09=09start++;
--=09=09grp_goal++;
--=09=09if (start >=3D end)
--=09=09=09goto fail_access;
--=09=09goto repeat;
--=09}
--=09num++;
--=09grp_goal++;
--=09while (num < *count && grp_goal < end
--=09=09&& !ext2_set_bit_atomic(sb_bgl_lock(EXT2_SB(sb), group),
-+=09while (num < *count && grp_goal < end) {
-+=09=09if (ext2_set_bit_atomic(sb_bgl_lock(EXT2_SB(sb), group),
- =09=09=09=09=09grp_goal, bitmap_bh->b_data)) {
-+=09=09=09if (num =3D=3D 0) {
-+=09=09=09=09grp_goal++;
-+=09=09=09=09continue;
-+=09=09=09} else {
-+=09=09=09=09break;
-+=09=09=09}
-+=09=09}
-+
- =09=09num++;
- =09=09grp_goal++;
- =09}
-+
-+=09if (!num)
-+=09=09goto fail_access;
-+
- =09*count =3D num;
- =09return grp_goal - num;
- fail_access:
+@@ -749,7 +749,7 @@ ext2_try_to_allocate(struct super_block *sb, int group,
+  *=09=09but we will shift to the place where start_block is,
+  *=09=09then start from there, when looking for a reservable space.
+  *
+- * =09@size: the target new reservation window size
++ *=09@sb: the super block.
+  *
+  * =09@group_first_block: the first block we consider to start
+  *=09=09=09the real search from
 --=20
 2.20.1
 
