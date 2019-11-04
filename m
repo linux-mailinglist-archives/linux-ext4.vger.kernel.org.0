@@ -2,104 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8854BEDC4B
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 11:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC10CEDCB1
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 11:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbfKDKQd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Nov 2019 05:16:33 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:47015 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727419AbfKDKQc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 05:16:32 -0500
-Received: by mail-pf1-f196.google.com with SMTP id 193so10560040pfc.13
-        for <linux-ext4@vger.kernel.org>; Mon, 04 Nov 2019 02:16:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TJQGiAgKCYWh8wNF9k7wkhKxBP/cvA1DOhIr1NkfKYk=;
-        b=bnFQ/lnRqK7i8gWmTJsldq0Hr6vmT9CXNi5Q6o1STOtybU9UETnS0w/5Pn/7CfSUqH
-         LCgveX3/8TAKefnhtcB2/6NRv4v9dv0VRWSoDXvPDmYaU1wEkhFk7xfwhSnSDA7Y74Fp
-         NT1C7VEQg1XW1g9ygiAW2XrE5JFXgRxvjztdvvz9WGXn69j5gTf5vfJufhqhpKLbJjin
-         xo17wfNWU16mp/qR68iNQ5ULGcuxIynjnLOKiABXvGCObKkKYQAS1gM8SiojLXL2PjGy
-         DU/RjM6Xs8I4jexzoy3CiHminxwDjJykiYYOH/Ll0DRiOk7r7Xkds8weXF1Pu/bnrMwk
-         TPVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TJQGiAgKCYWh8wNF9k7wkhKxBP/cvA1DOhIr1NkfKYk=;
-        b=R1iMllryZtigSkbQfTr6/ulFlM3AXpJKPH3TFImLS/u6Z0I0If54oERT4zrlW+QpdE
-         0PpVcyOeO4yGZp15n5rCKzqyorFYMM5GlqPoQn25dDeWjR+5KAP23+zeWzLNfAEQ+28M
-         waw6nGZAssAT/JEfsdJCUgbsOGQagvd4BTEoPuHKerdm5hlFi3p6R94A8yhMAi7lMLnt
-         sBVUmZddQUdfZkaVTp+04Tg+U+GMclHAthKf6N/4q1TmbRmjvrWIWOLwdj5sCJ0wv0q7
-         XQTqsSLj6WbslRugWCsTt6H/Q5k/ZIRnIQHit8joEc9jgykLVsRc88hiN+sj/LD0GBZe
-         KdLg==
-X-Gm-Message-State: APjAAAU7oN1RLCGMqo+qzS38kBxOBTOyAFPzAFTVcuNBBBmAyXfgf97L
-        IU2t7rMQXV2kti//POjnVebDzIl/cA==
-X-Google-Smtp-Source: APXvYqwAcq82ncb22/mkCdVpY5vng7hH4oNlmpx0znO99V1yS8O9yUtNgWanilHNxX3wDyRaeJyJyQ==
-X-Received: by 2002:a17:90a:eb18:: with SMTP id j24mr22020776pjz.85.1572862591457;
-        Mon, 04 Nov 2019 02:16:31 -0800 (PST)
-Received: from bobrowski ([110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id y2sm16122582pfe.126.2019.11.04.02.16.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Nov 2019 02:16:30 -0800 (PST)
-Date:   Mon, 4 Nov 2019 21:16:25 +1100
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+        id S1727985AbfKDKiJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Nov 2019 05:38:09 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63532 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727320AbfKDKiI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 05:38:08 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xA4AU6fF053416
+        for <linux-ext4@vger.kernel.org>; Mon, 4 Nov 2019 05:38:07 -0500
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2w2j0w909w-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Mon, 04 Nov 2019 05:38:07 -0500
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Mon, 4 Nov 2019 10:38:05 -0000
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 4 Nov 2019 10:38:02 -0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xA4Ac1uh48824450
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Nov 2019 10:38:01 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C45D74C052;
+        Mon,  4 Nov 2019 10:38:01 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4085C4C046;
+        Mon,  4 Nov 2019 10:37:59 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.82.150])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Nov 2019 10:37:58 +0000 (GMT)
 Subject: Re: [RFC 0/5] Ext4: Add support for blocksize < pagesize for
  dioread_nolock
-Message-ID: <20191104101623.GB27115@bobrowski>
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, jack@suse.cz
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
 References: <20191016073711.4141-1-riteshh@linux.ibm.com>
  <20191023232614.GB1124@mit.edu>
  <20191029071925.60AABA405B@b06wcsmtp001.portsmouth.uk.ibm.com>
- <20191103191606.GB8037@mit.edu>
+ <20191103191606.GB8037@mit.edu> <20191104101623.GB27115@bobrowski>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Mon, 4 Nov 2019 16:07:56 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191103191606.GB8037@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191104101623.GB27115@bobrowski>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19110410-0012-0000-0000-000003607AF0
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19110410-0013-0000-0000-0000219BCEF3
+Message-Id: <20191104103759.4085C4C046@d06av22.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-04_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1911040102
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Nov 03, 2019 at 02:16:06PM -0500, Theodore Y. Ts'o wrote:
-> On Tue, Oct 29, 2019 at 12:49:24PM +0530, Ritesh Harjani wrote:
-> > 
-> > So it looks like these failed tests does not seem to be because of this
-> > patch series. But these are broken in general for at least 1K blocksize.
-> 
-> Agreed, I failed to add them to the exclude list for diread_nolock_1k.  
-> Thanks for pointing that out!   
-> 
-> After looking through these patches, it looks good.  So, I've landed
-> this series on the ext4 git tree.
-> 
-> There are some potential conflicts with Matthew's DIO using imap patch
-> set.  I tried resolving them in the obvious way (see the tt/mb-dio
-> branch[1] on ext4.git), and unfortunately, there is a flaky test
-> failure with generic/270 --- 2 times out 30 runs of generic/270, the
-> file system is left inconsistent, with problems found in the block
-> allocation bitmap.
-> 
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/log/?h=tt/mb-dio
-> 
-> I've verified that generic/270 isn't a problem on -rc3, and it's not a
-> problem with just your patch series.  So, it's almost certain it's
-> because I screwed up the merge.  I applied each of Matthew's patch one
-> at a time, and conflict was in changes in ext4_end_io_dio, which is
-> dropped in Matthew's patch.  It wasn't obvious though where the
-> dioread-nolock-1k change should be applied in Matthew's patch series.
-> Could you take a look?  Thanks!!
 
-Hang on a second.
 
-Are we not prematurely merging this series in with master? I thought
-that this is something that should've come after the iomap direct I/O
-port, no? The use of io_end's within the new direct I/O implementation
-are effectively redundant...
+On 11/4/19 3:46 PM, Matthew Bobrowski wrote:
+> On Sun, Nov 03, 2019 at 02:16:06PM -0500, Theodore Y. Ts'o wrote:
+>> On Tue, Oct 29, 2019 at 12:49:24PM +0530, Ritesh Harjani wrote:
+>>>
+>>> So it looks like these failed tests does not seem to be because of this
+>>> patch series. But these are broken in general for at least 1K blocksize.
+>>
+>> Agreed, I failed to add them to the exclude list for diread_nolock_1k.
+>> Thanks for pointing that out!
+>>
+>> After looking through these patches, it looks good.  So, I've landed
+>> this series on the ext4 git tree.
+>>
+>> There are some potential conflicts with Matthew's DIO using imap patch
+>> set.  I tried resolving them in the obvious way (see the tt/mb-dio
+>> branch[1] on ext4.git), and unfortunately, there is a flaky test
+>> failure with generic/270 --- 2 times out 30 runs of generic/270, the
+>> file system is left inconsistent, with problems found in the block
+>> allocation bitmap.
+>>
+>> [1] https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/log/?h=tt/mb-dio
+>>
+>> I've verified that generic/270 isn't a problem on -rc3, and it's not a
+>> problem with just your patch series.  So, it's almost certain it's
+>> because I screwed up the merge.  I applied each of Matthew's patch one
+>> at a time, and conflict was in changes in ext4_end_io_dio, which is
+>> dropped in Matthew's patch.  It wasn't obvious though where the
+>> dioread-nolock-1k change should be applied in Matthew's patch series.
+>> Could you take a look?  Thanks!!
+> 
+> Hang on a second.
+> 
+> Are we not prematurely merging this series in with master? I thought
+> that this is something that should've come after the iomap direct I/O
+> port, no? The use of io_end's within the new direct I/O implementation
+> are effectively redundant...
 
-/M
+It sure may be giving a merge conflict (due to io_end structure).
+But this dioread_nolock series was not dependent over iomap series.
+
+-ritesh
+
