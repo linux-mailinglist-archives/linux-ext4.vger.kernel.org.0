@@ -2,177 +2,173 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D31ED6C2
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 02:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B25ED743
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2019 02:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbfKDBCh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 3 Nov 2019 20:02:37 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:33164 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbfKDBCh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 3 Nov 2019 20:02:37 -0500
-Received: by mail-wm1-f68.google.com with SMTP id 6so12903076wmf.0
-        for <linux-ext4@vger.kernel.org>; Sun, 03 Nov 2019 17:02:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AWyR+bGTGMFD8+HQUddI08vKKSkkr0/MKUO4tpvfVAc=;
-        b=maSU1c1Nfqp+mxagU+8zJu/nL3aQft8VFDawau8r18GnnN5ulj7Ge6kDMFkVANtHaY
-         vGOVUxutk/Selbn1FCyCCbYLuD10+Qj5cGI+zJMcbFYwjyIakMeDAY3PQtMEmB997Cnc
-         zveWeRHJUqP8TPeLTTtbwxck2tbuqPpKH+qRJDnupDZCwnxaf9lHxkAiZvakxg+QAWc/
-         I0vAQQ3Vaa0vW4A+rxb8v3dX0cQl0cZWiyk3s99QowCZhqrFqup4t9tRDiJTrqsRJk7h
-         K9wFR+7CShxORAtte/YIZcbqUCDHztZgUhvnfJHQi/CnuUlToxMqsUgNr4EIQ5CCqSbi
-         5Vyw==
+        id S1729088AbfKDBq7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 3 Nov 2019 20:46:59 -0500
+Received: from outbound.smtp.vt.edu ([198.82.183.121]:39852 "EHLO
+        omr1.cc.vt.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729087AbfKDBq6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 3 Nov 2019 20:46:58 -0500
+Received: from mr6.cc.vt.edu (mr6.cc.vt.edu [IPv6:2607:b400:92:8500:0:af:2d00:4488])
+        by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id xA41kvjM025967
+        for <linux-ext4@vger.kernel.org>; Sun, 3 Nov 2019 20:46:57 -0500
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+        by mr6.cc.vt.edu (8.14.7/8.14.7) with ESMTP id xA41kpWr018175
+        for <linux-ext4@vger.kernel.org>; Sun, 3 Nov 2019 20:46:57 -0500
+Received: by mail-qt1-f200.google.com with SMTP id h15so6721926qtn.6
+        for <linux-ext4@vger.kernel.org>; Sun, 03 Nov 2019 17:46:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AWyR+bGTGMFD8+HQUddI08vKKSkkr0/MKUO4tpvfVAc=;
-        b=hibxrimzntTjIkXbEJHy2Qn/FFW1kJTiv2rw1XXpmOBWyj9iP8jo70wYMLYniXmFgo
-         HOHeUsr5GL3iv/VNpEWsKYhZXX7//d8mFBdOJY/UYMY90Y8LaBeTHSoi6ZnOYUCQU+6u
-         JayKste2OSPjCvTgBeIs4OppKuU6anjrB1c6T532SnSTM72OMrFst/tep+ZTBHAy+kSd
-         859vihh05m8arpd+fHbcgxrGQTWVliuMJsDcc7iF2oQYY54IyIx/tflnovyOcMhz1v68
-         XCz8O1IHaq586/vjNxmCR5zfJUlVO5NiNGzImSgaasTF9uDv/C/xuW85Ahxy3KOiRJDo
-         2BWw==
-X-Gm-Message-State: APjAAAVtaVw5Vc7dkRB+ZfNozGlXOuG2r13OuYRJy3+R3SyzsyaAxN3K
-        dYCv+vJ12Sf1+7LAfKfONiUx0Lvg331Zom+nYdZTTw==
-X-Google-Smtp-Source: APXvYqwZXStdNTmX78tlTg6EfvfrB9rtzfnauybC+1E/kFaLejF9Ll3aOQc0YZvrhSevh64Uf4rap4YGCt5z7Q6lDL4=
-X-Received: by 2002:a1c:b1c3:: with SMTP id a186mr20993335wmf.10.1572829352893;
- Sun, 03 Nov 2019 17:02:32 -0800 (PST)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=r7c0I8SvMYKpHRjqYv9HI6yFzb55f/VPo02TJ216c5Q=;
+        b=YEqSSPprmi+54tcoD5uYxk5VBGlHjNrV6JNFqdMXsj7BweK4Wj1gGLLW5zymbL43Ai
+         XP7wx9rEOMmb1z165twsB9W/qfJpIiMr3lDcrLmfostbttas2pSCcTcDnTnfFbrAQ5/s
+         cTh/SsLcBrRz9FPP+bExj5HQKBu1dvHelaOhfSDd2ZO6kQYJUkXAqclNt/F0H//lJB0l
+         KrRp1Np0pRcTCjiy89yDLCcjT/53YnqKtguifIfIfR5lMSXzUkoLldCvLuI4jgmGprCW
+         RI0ubcL5xCeOty6/zYOKa8U0Fm6C6gv36z1gmpydF/ytZLqf+cw32e50jC5KLZYcbVRV
+         0MfQ==
+X-Gm-Message-State: APjAAAXowdqnlU3cngEMsfVb9d9vO6YOt0K6FarM9I4FsWnGtN/PG0hl
+        yhlbOaREMcvrghGhFjtXa1iVKcGdnS5Nh9rE71BtCXImzj1LXYk6tX3fIOJwg7Gwcxi0IY19zE7
+        TlSslDXy2bTjvb2a+bqkoFtoTIfHZlZp6
+X-Received: by 2002:a05:6214:70f:: with SMTP id b15mr19848522qvz.97.1572832010208;
+        Sun, 03 Nov 2019 17:46:50 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyZ6TMTqkBpyXQGPAZMIMj5EH3dwBQ8r4Ftf0xofxFI/BWghZasoJHnZlzuhtG3wrll2Arcjw==
+X-Received: by 2002:a05:6214:70f:: with SMTP id b15mr19848512qvz.97.1572832009874;
+        Sun, 03 Nov 2019 17:46:49 -0800 (PST)
+Received: from turing-police.lan ([2601:5c0:c001:c9e1::359])
+        by smtp.gmail.com with ESMTPSA id d2sm8195354qkg.77.2019.11.03.17.46.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Nov 2019 17:46:49 -0800 (PST)
+From:   Valdis Kletnieks <valdis.kletnieks@vt.edu>
+X-Google-Original-From: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+To:     Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+Cc:     "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Jan Kara <jack@suse.cz>, "Theodore Ts'o" <tytso@mit.edu>,
+        Valdis Kletnieks <valdis.kletnieks@vt.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, linux-xfs@vger.kernel.org,
+        Jan Kara <jack@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-fsdevel@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-arch@vger.kernel.org
+Subject: [PATCH 10/10] errno.h: Provide EFSCORRUPTED for everybody
+Date:   Sun,  3 Nov 2019 20:45:06 -0500
+Message-Id: <20191104014510.102356-11-Valdis.Kletnieks@vt.edu>
+X-Mailer: git-send-email 2.24.0.rc1
+In-Reply-To: <20191104014510.102356-1-Valdis.Kletnieks@vt.edu>
+References: <20191104014510.102356-1-Valdis.Kletnieks@vt.edu>
 MIME-Version: 1.0
-References: <1571900042725.99617@xiaomi.com> <20191024201800.GE1124@mit.edu>
- <1572349386604.43878@xiaomi.com> <20191029213553.GD4404@mit.edu>
- <1572409673853.43507@xiaomi.com> <20191030142628.GA16197@mit.edu>
-In-Reply-To: <20191030142628.GA16197@mit.edu>
-From:   xiaohui li <lixiaohui1@xiaomi.corp-partner.google.com>
-Date:   Mon, 4 Nov 2019 09:01:28 +0800
-Message-ID: <CAAJeciVYOAWzsjAtL7SNmpFQH60z0MB53OPE3hZ==_oBB0N3dQ@mail.gmail.com>
-Subject: =?UTF-8?B?UmU6IOetlOWkjTogW0V4dGVybmFsIE1haWxdUmU6IFtQQVRDSCB2MyAwOS8xM10gZXh0NA==?=
-        =?UTF-8?B?OiBmYXN0LWNvbW1pdCBjb21taXQgcGF0aCBjaGFuZ2Vz?=
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     =?UTF-8?B?WGlhb2h1aTEgTGkg5p2O5pmT6L6J?= <lixiaohui1@xiaomi.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "harshadshirwadkar@gmail.com" <harshadshirwadkar@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-another way which i think can fix this fsync time cost problem may be
-that changing ext4 data mode from order to writeback.
+There's currently 6 filesystems that have the same #define. Move it
+into errno.h so it's defined in just one place.
 
-when in writeback mode, inode' data has not to be waited in jbd2
-thread, so the fsync time cost is also reduced.
-meawhile, writeback mode also can guarantee filesystem consistency in
-os crash-reboot conditions,
-with only one drawback is that it will cause security problems such as
-stale data will be seen.
+Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Acked-by: Theodore Ts'o <tytso@mit.edu>
+---
+ drivers/staging/exfat/exfat.h    | 2 --
+ fs/erofs/internal.h              | 2 --
+ fs/ext4/ext4.h                   | 1 -
+ fs/f2fs/f2fs.h                   | 1 -
+ fs/xfs/xfs_linux.h               | 1 -
+ include/linux/jbd2.h             | 1 -
+ include/uapi/asm-generic/errno.h | 1 +
+ 7 files changed, 1 insertion(+), 8 deletions(-)
 
-but in android system with file encryption enabled, there is no
-security problem as files are all encryped.
-but user will see wrong file data in system crash-reboot conditions
-with writeback mode enabled.
+diff --git a/drivers/staging/exfat/exfat.h b/drivers/staging/exfat/exfat.h
+index 72cf40e123de..58b091a077e8 100644
+--- a/drivers/staging/exfat/exfat.h
++++ b/drivers/staging/exfat/exfat.h
+@@ -30,8 +30,6 @@
+ #undef DEBUG
+ #endif
+ 
+-#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+-
+ #define DENTRY_SIZE		32	/* dir entry size */
+ #define DENTRY_SIZE_BITS	5
+ 
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index 544a453f3076..3980026a8882 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -425,7 +425,5 @@ static inline int z_erofs_init_zip_subsystem(void) { return 0; }
+ static inline void z_erofs_exit_zip_subsystem(void) {}
+ #endif	/* !CONFIG_EROFS_FS_ZIP */
+ 
+-#define EFSCORRUPTED    EUCLEAN         /* Filesystem is corrupted */
+-
+ #endif	/* __EROFS_INTERNAL_H */
+ 
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 03db3e71676c..a86c2585457d 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3396,6 +3396,5 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+ #endif	/* __KERNEL__ */
+ 
+ #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+-#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+ 
+ #endif	/* _EXT4_H */
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 4024790028aa..04ebe77569a3 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3752,6 +3752,5 @@ static inline bool is_journalled_quota(struct f2fs_sb_info *sbi)
+ }
+ 
+ #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+-#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+ 
+ #endif /* _LINUX_F2FS_H */
+diff --git a/fs/xfs/xfs_linux.h b/fs/xfs/xfs_linux.h
+index ca15105681ca..3409d02a7d21 100644
+--- a/fs/xfs/xfs_linux.h
++++ b/fs/xfs/xfs_linux.h
+@@ -123,7 +123,6 @@ typedef __u32			xfs_nlink_t;
+ 
+ #define ENOATTR		ENODATA		/* Attribute not found */
+ #define EWRONGFS	EINVAL		/* Mount with wrong filesystem type */
+-#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+ #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+ 
+ #define SYNCHRONIZE()	barrier()
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 603fbc4e2f70..69411d7e0431 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1657,6 +1657,5 @@ static inline tid_t  jbd2_get_latest_transaction(journal_t *journal)
+ #endif	/* __KERNEL__ */
+ 
+ #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+-#define EFSCORRUPTED	EUCLEAN		/* Filesystem is corrupted */
+ 
+ #endif	/* _LINUX_JBD2_H */
+diff --git a/include/uapi/asm-generic/errno.h b/include/uapi/asm-generic/errno.h
+index cf9c51ac49f9..1d5ffdf54cb0 100644
+--- a/include/uapi/asm-generic/errno.h
++++ b/include/uapi/asm-generic/errno.h
+@@ -98,6 +98,7 @@
+ #define	EINPROGRESS	115	/* Operation now in progress */
+ #define	ESTALE		116	/* Stale file handle */
+ #define	EUCLEAN		117	/* Structure needs cleaning */
++#define	EFSCORRUPTED	EUCLEAN
+ #define	ENOTNAM		118	/* Not a XENIX named type file */
+ #define	ENAVAIL		119	/* No XENIX semaphores available */
+ #define	EISNAM		120	/* Is a named type file */
+-- 
+2.24.0.rc1
 
-for example:
--------------
-file A has allocate 50 new blocks, and already dirtys page cache
-corresponding to these 50 blocks,
-and after the medata represent new 50 blocks of this file have been
-flushed to journal area, the system crash.
-file A's data according to above 50 new blocks has not been to flushed to d=
-isk.
-after system reboot and finish file system recovery work, file A's
-size has bee enlarged with new 50 blocks added.
-but data in this file's new 50 blocks is not correct. so it will cheat
-user if it is difficult to see this data-not-correct problem.
--------------
-
-and this problem can't fixed by e2fsck full check ,it is not belong to
-file system consistency,
-so we will insist on using order mode ,not writeback mode.
-
-i will also share my view about that ijournal paper in my next time.
-
-On Wed, Oct 30, 2019 at 10:26 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Wed, Oct 30, 2019 at 04:28:42AM +0000, Xiaohui1 Li =E6=9D=8E=E6=99=93=
-=E8=BE=89 wrote:
-> > the problem of file' data wating in jbd2 order mode is also a
-> > serious problem which case a long-latency fsync call.
->
-> Yes, this is a separate problem, although note that if the file with a
-> large amount of data is the file which is being fsync'ed, you have to
-> write it out at fsync time no matter what.
->
-> You could try to write out dirty data earlier (e.g., by decreasing the
-> 30 second writeback window), but there are tradeoffs.  For one thing,
-> if the file ends up being deleted anyway, it's better not to write out
-> the data at all.  For another, if we know how big the file is at the
-> time when we do the writeout, we can do a better job allocating space
-> for the file, and it improves the file layout by making it more likely
-> it will be contiguous, or at least mostly contiguous.
->
-> Also, files that tend to be fsync'ed a lot tend to be database files
-> (e.g., SQLite files), and they tend to write small amounts of data and
-> then fsync them.  So the problem described below happens when there
-> are unrelated files that happen to be downloaded in parallel.  An
-> example of this in the Android case mgiht be when the user is
-> downloading a large video file, such as a movie, to be watched offline
-> later (such as when they are on a plane).
->
-> > as pointed out in this iJournaling paper, when three conditions turn up=
- at the same time,
-> > 1: order mode must be applied, not the writeback mode.
-> > 2: The delayed block allocation technique of ext4 must be  applied.
-> > 3: backgroud buffer writes are too many.
->
-> (1) and (2) are the default.  (3) may or may not be a frequent
-> occurrence, depending on the workload.  In practice though, users
-> aren't downloading large files all *that* often.
->
-> > we have no choice as the order mode need to do this work, so the
-> > waiting inode-data-flushed-disk time is too long in some extreme
-> > conditions.  so it cause the appearance of long-latency fsync call.
-> >
-> > thank you for your reply, i will try to fix this problem in my free tim=
-e.
->
-> So there is a solution; it's just a bit tricky to do, and it's not
-> been a huge enough deal that anyone has allocated time to fix it.
->
-> The idea is to allocate space, but not actually update the metadata
-> blocks at the time when the data blocks are allocated.  Instead, we
-> reserve them so they won't get allocated for use by another file, and
-> we note where they are in the extent status cache.  We then issue the
-> writes of the data block, and only after they are complete, only
-> *then* do we update the metadata blocks (which then gets updated via
-> the journal, using either a commit or a fast commit).
->
-> This is similar to the dioread_nolock case, where we update the
-> metadata blocks first, but mark them as unwritten, then we let the
-> data blocks get written, and only finally do we update the metadata
-> blocks so they are marked as written (e.g., initialized).  This avoids
-> the stale data problem as well, but we end up modifying the metadata
-> blocks twice, and it has resulted other performance problems since in
-> increases overhead on the i_data_sem lock.  See for example some of
-> the posts by Liu Bo from Alibaba last year:
->
-> If we can allocate space, write the data blocks, and only *then*
-> update the extent tree metadata blocks, it solves a lot of problems.
-> We can get rid of the dioread_nolock option; we can get rid of the
-> data=3Dordered vs data=3Dwriteback distinction; and we can avoid the need
-> to force data blocks to be written out at commit time.  So it improves
-> performance, and it will reduce code complexity, making it a win-win
-> approach.
->
-> The problem is that this means significantly changing how we do block
-> allocation and block reservation, so it's a fairly large and invasive
-> set of changes.  But it's the right long-term direction, and we'll get
-> there eventually.
->
-> Cheers,
->
->                                                 - Ted
