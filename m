@@ -2,52 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B55EFEC4
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 14:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43A9EFF1E
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 14:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389166AbfKENiR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Nov 2019 08:38:17 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46074 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387880AbfKENiQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 08:38:16 -0500
-Received: from callcc.thunk.org (ip-12-2-52-196.nyc.us.northamericancoax.com [196.52.2.12])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xA5DbnOx019876
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 5 Nov 2019 08:37:50 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id EF97E420311; Tue,  5 Nov 2019 08:37:46 -0500 (EST)
-Date:   Tue, 5 Nov 2019 08:37:46 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Valdis Kletnieks <valdis.kletnieks@vt.edu>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, Jan Kara <jack@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 1/1] errno.h: Provide EFSBADCRC for everybody
-Message-ID: <20191105133746.GJ28764@mit.edu>
-References: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
+        id S2389294AbfKEN7e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Nov 2019 08:59:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41568 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388209AbfKEN7e (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 5 Nov 2019 08:59:34 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E376FAC44;
+        Tue,  5 Nov 2019 13:59:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3C9EC1E47E5; Tue,  5 Nov 2019 14:59:32 +0100 (CET)
+Date:   Tue, 5 Nov 2019 14:59:32 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        riteshh@linux.ibm.com
+Subject: Re: [PATCH v7 11/11] ext4: introduce direct I/O write using iomap
+ infrastructure
+Message-ID: <20191105135932.GN22379@quack2.suse.cz>
+References: <cover.1572949325.git.mbobrowski@mbobrowski.org>
+ <e55db6f12ae6ff017f36774135e79f3e7b0333da.1572949325.git.mbobrowski@mbobrowski.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <e55db6f12ae6ff017f36774135e79f3e7b0333da.1572949325.git.mbobrowski@mbobrowski.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 09:46:14PM -0500, Valdis Kletnieks wrote:
-> Four filesystems have their own defines for this. Move it
-> into errno.h so it's defined in just one place.
-> 
-> Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+On Tue 05-11-19 23:02:39, Matthew Bobrowski wrote:
+> +	if (ret >= 0 && iov_iter_count(from)) {
+> +		ssize_t err;
+> +		loff_t endbyte;
+> +
+> +		offset = iocb->ki_pos;
+> +		err = ext4_buffered_write_iter(iocb, from);
+> +		if (err < 0)
+> +			return err;
+> +
+> +		/*
+> +		 * We need to ensure that the pages within the page cache for
+> +		 * the range covered by this I/O are written to disk and
+> +		 * invalidated. This is in attempt to preserve the expected
+> +		 * direct I/O semantics in the case we fallback to buffered I/O
+> +		 * to complete off the I/O request.
+> +		 */
+> +		ret += err;
+> +		endbyte = offset + ret - 1;
+				   ^^ err here?
 
-Acked-by: Theodore Ts'o <tytso@mit.edu>
+Otherwise you would write out and invalidate too much AFAICT - the 'offset'
+is position just before we fall back to buffered IO. Otherwise this hunk
+looks good to me.
 
-					- Ted
+> +		err = filemap_write_and_wait_range(iocb->ki_filp->f_mapping,
+> +						   offset, endbyte);
+> +		if (!err)
+> +			invalidate_mapping_pages(iocb->ki_filp->f_mapping,
+> +						 offset >> PAGE_SHIFT,
+> +						 endbyte >> PAGE_SHIFT);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
