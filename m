@@ -2,78 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7DCEF9C1
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 10:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 028BDEFCC6
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 12:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730804AbfKEJl4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Nov 2019 04:41:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44780 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730666AbfKEJl4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 5 Nov 2019 04:41:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 3B615B33E;
-        Tue,  5 Nov 2019 09:41:54 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 300981E4407; Tue,  5 Nov 2019 10:41:54 +0100 (CET)
-Date:   Tue, 5 Nov 2019 10:41:54 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext2: check err when partial != NULL
-Message-ID: <20191105094154.GK22379@quack2.suse.cz>
-References: <20191105045100.7104-1-cgxu519@mykernel.net>
+        id S1730894AbfKEL6l (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Nov 2019 06:58:41 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:34775 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730852AbfKEL6l (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 06:58:41 -0500
+Received: by mail-pf1-f196.google.com with SMTP id n13so3436026pff.1
+        for <linux-ext4@vger.kernel.org>; Tue, 05 Nov 2019 03:58:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=h9VpA2g34Bu2I5d0STf5cy+RDlAZuPn+9VMhiuJJ58A=;
+        b=sd3856InG/QyYul3VqhlArnsF0x4iZ/HQeEp+06OsidvKULY528KU0cR56wIdGhOXP
+         nyehJRfCF4biYQ71fq6+lCd/JJOZKZY4EBWcthnaXzHimJoZGMR7K1Q2wE5sK8//7Aax
+         L0ju/OrbBNRg4OTXt65AzHW8/NWRDvZAXZrg0aLMkWJJiiLy8l5yQ3MpX/itIkC4LpJK
+         C+2dureap91CyCr76meAYTav4jfd2YrR801MdogeZFyzWs6vRXM2/yrC3Fz8YdWluHQ7
+         JU4HWIOybDwca5FFmnTTpvpY2SK54YJmBRe16zlE7xckDKwnkPleeFsYRbrPMn0Xh2KE
+         hwQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=h9VpA2g34Bu2I5d0STf5cy+RDlAZuPn+9VMhiuJJ58A=;
+        b=qK8/15+uUOeim9n7PAVU3AlYUKTahkaPTQ7HJHCwO8UCR55RiiPLV/swNeGo2iaIeL
+         sb7lyt/BMPEvNBrrSfqNxUlXkxrbJVYXVhqllrLmoSmKAM+CLznHQjYk0/Q+h3633MhT
+         SNKXBPXcG37axVLFswFxa+4qkVInnzeinSBoga91lOJfMoTlEe66aWGSMvnBQh/k+crV
+         KIf+xBdzYx4v92HPWEcH4iKy+ftYm8puo5v/G9+/HJk6UT10tCghNAMk8Wu1rbSyHuyq
+         EQ2Cl4dyxP1m/259Ma5lwjpbTWFoRAVghqQBCk4CYHyLe3G8E77ZQHoIDPh3AjN9pyKJ
+         CEoA==
+X-Gm-Message-State: APjAAAXr3ReEuIL4kYMJI0pyYsqoabue0b3ovucFocT+foTIAbyKZL/j
+        wPsPyWM+aZD+HZNsu8P45sXq
+X-Google-Smtp-Source: APXvYqxJOgJ9erhU70ajuchnWDu639AJUNZmISD9Zn8d8WjfPdfLOUHwQdcwtgH5ctZan0kUobswwA==
+X-Received: by 2002:a62:7a8a:: with SMTP id v132mr37566824pfc.228.1572955118184;
+        Tue, 05 Nov 2019 03:58:38 -0800 (PST)
+Received: from poseidon.bobrowski.net ([114.78.226.167])
+        by smtp.gmail.com with ESMTPSA id 70sm20386845pfw.160.2019.11.05.03.58.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Nov 2019 03:58:37 -0800 (PST)
+Date:   Tue, 5 Nov 2019 22:58:31 +1100
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        riteshh@linux.ibm.com
+Subject: [PATCH v7 00/11] ext4: port direct I/O to iomap infrastructure
+Message-ID: <cover.1572949325.git.mbobrowski@mbobrowski.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191105045100.7104-1-cgxu519@mykernel.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 05-11-19 12:51:00, Chengguang Xu wrote:
-> Check err when partial == NULL is meaningless because
-> partial == NULL means getting branch successfully without
-> error.
-> 
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+Hi all,
 
-Good catch! Added to my tree. Thanks!
+This is an updated patch series of the ext4 direct I/O port to iomap
+infrastructure. This updated series includes some minor updates and
+fixes that were identified within the preceding patch
+series. Changlog since v6 has been summarised below:
 
-							Honza
+Changes since v6:
 
-> ---
->  fs/ext2/inode.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-> index 7004ce581a32..a16c53655e77 100644
-> --- a/fs/ext2/inode.c
-> +++ b/fs/ext2/inode.c
-> @@ -701,10 +701,13 @@ static int ext2_get_blocks(struct inode *inode,
->  		if (!partial) {
->  			count++;
->  			mutex_unlock(&ei->truncate_mutex);
-> -			if (err)
-> -				goto cleanup;
->  			goto got_it;
->  		}
-> +
-> +		if (err) {
-> +			mutex_unlock(&ei->truncate_mutex);
-> +			goto cleanup;
-> +		}
->  	}
->  
->  	/*
-> -- 
-> 2.20.1
-> 
-> 
-> 
+ - Removed duplicate map->m_flags check in ext4_set_iomap(), which
+   cleaned up some of unnecessary levels of identation.
+
+ - Fixed an issue with the buffered I/O fallback path within
+   ext4_dio_write_iter(). Previously, we only returned the value that
+   ext4_buffered_write_iter() would return without taking into account
+   anything that possibly written for the direct I/O. This meant that
+   we'd return incorrect values back to userspace. 
+
+ - Added missing fsync + page cache invalidation for written I/O range
+   post buffered I/O fallback. This was missing from my original patch
+   series, but this is actually needed in order to preserve direct I/O
+   semantics.
+
+The original cover letter for this series has been provided below for
+reference.
+
+---
+
+This patch series ports the ext4 direct IO paths to make use of the
+iomap infrastructure. The legacy buffer_head based direct IO paths
+have subsequently been removed as they're now no longer in use. The
+result of this change is that the direct IO implementation is much   
+cleaner and keeps the code isolated from the buffer_head internals. In
+addition to this, a slight performance boost could be expected while 
+using O_SYNC | O_DIRECT IO.
+
+The changes have been tested using xfstests in both DAX and non-DAX
+modes using various filesystem configurations i.e. 4k, dioread_nolock,
+nojournal, ext3.
+
+Matthew Bobrowski (11):
+  ext4: reorder map.m_flags checks within ext4_iomap_begin()
+  ext4: update direct I/O read lock pattern for IOCB_NOWAIT
+  ext4: iomap that extends beyond EOF should be marked dirty
+  ext4: move set iomap routines into a separate helper ext4_set_iomap()
+  ext4: split IOMAP_WRITE branch in ext4_iomap_begin() into helper
+  ext4: introduce new callback for IOMAP_REPORT
+  ext4: introduce direct I/O read using iomap infrastructure
+  ext4: move inode extension/truncate code out from ->iomap_end()
+    callback
+  ext4: move inode extension check out from ext4_iomap_alloc()
+  ext4: update ext4_sync_file() to not use __generic_file_fsync()
+  ext4: introduce direct I/O write using iomap infrastructure
+
+ fs/ext4/ext4.h    |   4 +-
+ fs/ext4/extents.c |  11 +-
+ fs/ext4/file.c    | 412 +++++++++++++++++++++-----
+ fs/ext4/fsync.c   |  72 +++--
+ fs/ext4/inode.c   | 720 +++++++++++-----------------------------------
+ 5 files changed, 563 insertions(+), 656 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.20.1
+
