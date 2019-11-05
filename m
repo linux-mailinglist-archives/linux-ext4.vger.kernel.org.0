@@ -2,56 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0148DEFCCF
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 12:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14296EFCD2
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 13:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730943AbfKEL7o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Nov 2019 06:59:44 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:40332 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbfKEL7o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 06:59:44 -0500
-Received: by mail-pf1-f196.google.com with SMTP id r4so15138774pfl.7
-        for <linux-ext4@vger.kernel.org>; Tue, 05 Nov 2019 03:59:44 -0800 (PST)
+        id S1730852AbfKEMAD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Nov 2019 07:00:03 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:41210 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726751AbfKEMAD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 07:00:03 -0500
+Received: by mail-pg1-f193.google.com with SMTP id l3so13976448pgr.8
+        for <linux-ext4@vger.kernel.org>; Tue, 05 Nov 2019 04:00:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=IalHleKHLFMzSLg0SYJL+fw2PdceORLMv9WENP/4q30=;
-        b=vE2uEZ+MnatULuVJetsFF5gEPeIzWNhZ95NapXKd4imaR/SqowpoGqqjFw/tVbdzG+
-         CI9snjgoCBDH8YMPrANIklT8ADrrEDUFXSrgLVl7M6uqnYJ+SeRINsjiuMH/3MzZjCRC
-         x7uAmLnMEuClE+Mrfc8NKFi41jLNmE9Xy9bFj/+QshX8tGHRTNr6Z7FGBGPEAEIXws4E
-         GP31NNnaNH0ktW/lhL1GcZhQzUoURdnz5KyqharDQ7f30iaEiHD+Nps2dz+FrrSgCIL6
-         tP9Meg4BlA0z0xswlmititxW6GAK5DkszjR9AKm43+GAfOyovCMgq1ySEK+5f/D4iKkG
-         NVSQ==
+        bh=9DvOG+Bzv+9J/Y7WvEj6a/mdMF4pBTR9bq5BO8IzC1o=;
+        b=IySyQPBdtAQQIY0PRyNHAxgm2468OhiEY0eml6eaF/5afuGwHCwY63QklmMHmzDrVn
+         0b69uPXsT2MreXOnf6JKXXxTXnvKZ/eHUPLBSffZ1NgLL1tsCeEDMin7T0JRamYTp8Gl
+         mKe/gQHgPCywWAoWrVqWiM/fnY7TbCGfbU794PH/6IN5T7OA+S0xs/iHRpGw4gMOnEQK
+         kBsniYMYpS8GF2a/SVHrlAz0f7F5CXDQ9oKvp6DTlLBnqPeFrZqOdXU4iSPenKvnhcYq
+         fEbVJS9qN2yqD9l27dPRD4CHeTDpGBb3qPx1fVGdV1TWfbVkW+4uS9kD4eDq0HjDJB/Q
+         jb+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IalHleKHLFMzSLg0SYJL+fw2PdceORLMv9WENP/4q30=;
-        b=kjCvWtYY1xdv2vxR+q9Gx9icPJp5PeHt8J6t5FELuyesqPQ7QY1Qn/Slk7geFn2JJP
-         aRgVl2rSyP8n/o8ky4eFZKbLXJ78dQclaxho6Gip38wuGwu9zGahdwBNY8LvoDfII5i7
-         p+d3G2g59BNN37E41LzpjYMayT+VONFSv8NEPK/9PAnnBcqN6fCvxjLSnNNf0U4w0Vm+
-         rlxA8qVJHupxspAVOQ13kYlEA0jYioaFz4KJvZ/g+0nFbV88vNn6qbGM5lv+vTKh0orX
-         Py5pNVestgjLtztO4pSkwjU10ZvuQP73qzwdHkPxAqrw5PedT/qkrmZ6ZxcSCfM6/hUZ
-         jdQg==
-X-Gm-Message-State: APjAAAVHN7cILgukhuTHFmRVVosuiuxEx9VfsMM+K9G8F0lPU6f8swVJ
-        8OTz9/hC9lWrOg8rV3hlOGtB
-X-Google-Smtp-Source: APXvYqx42HPFhiqLRP7eQKgRiEHCLM07ajKcCvwhrVhnYOxkKyej9oG0EDT/Nx1XkNh3zvuThXkgwA==
-X-Received: by 2002:a65:4183:: with SMTP id a3mr36366936pgq.440.1572955183724;
-        Tue, 05 Nov 2019 03:59:43 -0800 (PST)
+        bh=9DvOG+Bzv+9J/Y7WvEj6a/mdMF4pBTR9bq5BO8IzC1o=;
+        b=SjXadcozLVKyG+5j2iS4bI4/wTC6rNO0noPv3v5xwmmFk9fRFK1TauMfAHn6+WlRZD
+         27iFFlhe7YS4XzzA9z6m+/0tme4Ypq9+ADhIApcgllei4nQKDHVIO/My8Z2dSFbAWvTD
+         XzKNH8P9ITxIuQjiCN00yOm5HmsebSzjPlO2QausE9PBKKjAGnPj712pseQ+16c8iVvG
+         B/iFaQNWhqwswRxsHJ7jeXIHn83jSaSfMUMvLCNbun2Q+zzj+8JTfACaR3KEifASiJDv
+         lQ4h46F0A/yz6NblFZgzWY7UI0KW1llsOysonOoEOrhTLzmNTNyickiLKfgNIxAr0m/5
+         +y8Q==
+X-Gm-Message-State: APjAAAWSyS2nvg9HkMvWtyeI/0Y6CrUE1aIRZLzNstFh5juU4A4M+oEs
+        4dryeAp69Pkxp+SAWMWtMR3O
+X-Google-Smtp-Source: APXvYqx7GKubfC6doj+f7ebYapYbfwM+Ry9OnpW/snQnOT6awK9qf7gNmUrlqaH9hSBdoAbNO4EsLQ==
+X-Received: by 2002:a63:1703:: with SMTP id x3mr36987546pgl.263.1572955202310;
+        Tue, 05 Nov 2019 04:00:02 -0800 (PST)
 Received: from poseidon.bobrowski.net ([114.78.226.167])
-        by smtp.gmail.com with ESMTPSA id 31sm18822992pgy.63.2019.11.05.03.59.40
+        by smtp.gmail.com with ESMTPSA id e8sm22115227pga.17.2019.11.05.03.59.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Nov 2019 03:59:43 -0800 (PST)
-Date:   Tue, 5 Nov 2019 22:59:37 +1100
+        Tue, 05 Nov 2019 04:00:01 -0800 (PST)
+Date:   Tue, 5 Nov 2019 22:59:56 +1100
 From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
 To:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca
 Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         riteshh@linux.ibm.com
-Subject: [PATCH v7 03/11] ext4: iomap that extends beyond EOF should be
- marked dirty
-Message-ID: <8b43ee9ee94bee5328da56ba0909b7d2229ef150.1572949325.git.mbobrowski@mbobrowski.org>
+Subject: [PATCH v7 04/11] ext4: move set iomap routines into a separate
+ helper ext4_set_iomap()
+Message-ID: <1ea34da65eecffcddffb2386668ae06134e8deaf.1572949325.git.mbobrowski@mbobrowski.org>
 References: <cover.1572949325.git.mbobrowski@mbobrowski.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -63,52 +63,130 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch addresses what Dave Chinner had discovered and fixed within
-commit: 7684e2c4384d. This changes does not have any user visible
-impact for ext4 as none of the current users of ext4_iomap_begin()
-that extend files depend on IOMAP_F_DIRTY.
-
-When doing a direct IO that spans the current EOF, and there are
-written blocks beyond EOF that extend beyond the current write, the
-only metadata update that needs to be done is a file size extension.
-
-However, we don't mark such iomaps as IOMAP_F_DIRTY to indicate that
-there is IO completion metadata updates required, and hence we may
-fail to correctly sync file size extensions made in IO completion when
-O_DSYNC writes are being used and the hardware supports FUA.
-
-Hence when setting IOMAP_F_DIRTY, we need to also take into account
-whether the iomap spans the current EOF. If it does, then we need to
-mark it dirty so that IO completion will call generic_write_sync() to
-flush the inode size update to stable storage correctly.
+Separate the iomap field population code that is currently within
+ext4_iomap_begin() into a separate helper ext4_set_iomap(). The intent
+of this function is self explanatory, however the rationale behind
+taking this step is to reeduce the overall clutter that we currently
+have within the ext4_iomap_begin() callback.
 
 Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
 ---
- fs/ext4/inode.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/ext4/inode.c | 90 ++++++++++++++++++++++++++-----------------------
+ 1 file changed, 48 insertions(+), 42 deletions(-)
 
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index f33fa86fff67..b422d9b8c0bd 100644
+index b422d9b8c0bd..9e1ac9fe816b 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -3565,8 +3565,14 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+@@ -3448,10 +3448,54 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
+ 	return inode->i_state & I_DIRTY_DATASYNC;
+ }
+ 
++static void ext4_set_iomap(struct inode *inode, struct iomap *iomap,
++			   struct ext4_map_blocks *map, loff_t offset,
++			   loff_t length)
++{
++	u8 blkbits = inode->i_blkbits;
++
++	/*
++	 * Writes that span EOF might trigger an I/O size update on completion,
++	 * so consider them to be dirty for the purpose of O_DSYNC, even if
++	 * there is no other metadata changes being made or are pending.
++	 */
++	iomap->flags = 0;
++	if (ext4_inode_datasync_dirty(inode) ||
++	    offset + length > i_size_read(inode))
++		iomap->flags |= IOMAP_F_DIRTY;
++
++	if (map->m_flags & EXT4_MAP_NEW)
++		iomap->flags |= IOMAP_F_NEW;
++
++	iomap->bdev = inode->i_sb->s_bdev;
++	iomap->dax_dev = EXT4_SB(inode->i_sb)->s_daxdev;
++	iomap->offset = (u64) map->m_lblk << blkbits;
++	iomap->length = (u64) map->m_len << blkbits;
++
++	/*
++	 * Flags passed to ext4_map_blocks() for direct I/O writes can result
++	 * in m_flags having both EXT4_MAP_MAPPED and EXT4_MAP_UNWRITTEN bits
++	 * set. In order for any allocated unwritten extents to be converted
++	 * into written extents correctly within the ->end_io() handler, we
++	 * need to ensure that the iomap->type is set appropriately. Hence, the
++	 * reason why we need to check whether the EXT4_MAP_UNWRITTEN bit has
++	 * been set first.
++	 */
++	if (map->m_flags & EXT4_MAP_UNWRITTEN) {
++		iomap->type = IOMAP_UNWRITTEN;
++		iomap->addr = (u64) map->m_pblk << blkbits;
++	} else if (map->m_flags & EXT4_MAP_MAPPED) {
++		iomap->type = IOMAP_MAPPED;
++		iomap->addr = (u64) map->m_pblk << blkbits;
++	} else {
++		iomap->type = IOMAP_HOLE;
++		iomap->addr = IOMAP_NULL_ADDR;
++	}
++}
++
+ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 		unsigned flags, struct iomap *iomap, struct iomap *srcmap)
+ {
+-	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+ 	unsigned int blkbits = inode->i_blkbits;
+ 	unsigned long first_block, last_block;
+ 	struct ext4_map_blocks map;
+@@ -3565,47 +3609,9 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
  			return ret;
  	}
  
-+	/*
-+	 * Writes that span EOF might trigger an I/O size update on completion,
-+	 * so consider them to be dirty for the purposes of O_DSYNC, even if
-+	 * there is no other metadata changes being made or are pending here.
-+	 */
- 	iomap->flags = 0;
--	if (ext4_inode_datasync_dirty(inode))
-+	if (ext4_inode_datasync_dirty(inode) ||
-+	    offset + length > i_size_read(inode))
- 		iomap->flags |= IOMAP_F_DIRTY;
- 	iomap->bdev = inode->i_sb->s_bdev;
- 	iomap->dax_dev = sbi->s_daxdev;
+-	/*
+-	 * Writes that span EOF might trigger an I/O size update on completion,
+-	 * so consider them to be dirty for the purposes of O_DSYNC, even if
+-	 * there is no other metadata changes being made or are pending here.
+-	 */
+-	iomap->flags = 0;
+-	if (ext4_inode_datasync_dirty(inode) ||
+-	    offset + length > i_size_read(inode))
+-		iomap->flags |= IOMAP_F_DIRTY;
+-	iomap->bdev = inode->i_sb->s_bdev;
+-	iomap->dax_dev = sbi->s_daxdev;
+-	iomap->offset = (u64)first_block << blkbits;
+-	iomap->length = (u64)map.m_len << blkbits;
+-
+-	if (ret == 0) {
+-		iomap->type = delalloc ? IOMAP_DELALLOC : IOMAP_HOLE;
+-		iomap->addr = IOMAP_NULL_ADDR;
+-	} else {
+-		/*
+-		 * Flags passed into ext4_map_blocks() for direct I/O writes
+-		 * can result in m_flags having both EXT4_MAP_MAPPED and
+-		 * EXT4_MAP_UNWRITTEN bits set. In order for any allocated
+-		 * unwritten extents to be converted into written extents
+-		 * correctly within the ->end_io() handler, we need to ensure
+-		 * that the iomap->type is set appropriately. Hence the reason
+-		 * why we need to check whether EXT4_MAP_UNWRITTEN is set
+-		 * first.
+-		 */
+-		if (map.m_flags & EXT4_MAP_UNWRITTEN) {
+-			iomap->type = IOMAP_UNWRITTEN;
+-		} else if (map.m_flags & EXT4_MAP_MAPPED) {
+-			iomap->type = IOMAP_MAPPED;
+-		} else {
+-			WARN_ON_ONCE(1);
+-			return -EIO;
+-		}
+-		iomap->addr = (u64)map.m_pblk << blkbits;
+-	}
+-
+-	if (map.m_flags & EXT4_MAP_NEW)
+-		iomap->flags |= IOMAP_F_NEW;
++	ext4_set_iomap(inode, iomap, &map, offset, length);
++	if (delalloc && iomap->type == IOMAP_HOLE)
++		iomap->type = IOMAP_DELALLOC;
+ 
+ 	return 0;
+ }
 -- 
 2.20.1
 
