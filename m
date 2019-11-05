@@ -2,280 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C94B2EFCE4
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 13:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B55EFEC4
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 14:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730896AbfKEMDi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Nov 2019 07:03:38 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:42026 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730872AbfKEMDi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 07:03:38 -0500
-Received: by mail-pl1-f193.google.com with SMTP id j12so7344468plt.9
-        for <linux-ext4@vger.kernel.org>; Tue, 05 Nov 2019 04:03:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=cFgPyT+ODS1OrE0hwd9zKr2rgvqb/PsZ4tSjiSvlbbI=;
-        b=tM4Lzb8r0Y3azoMYlfMr2tjxpkD/t7EJ1W+mHQD92JAZkhZunDsIbNAgsVmy4HAx2A
-         6XKVJ9zMtcDBeHKOrEFwttX7/gYRBPxxLztFmcYKxf+awDYrMblE8mC5ag+3B20Hxk8B
-         ci4OKEqZLcDocpfv++pNjbpTt06caKr8nEOZyIisK9ccoyDIeRgJJn6WZQQBM9khjFuK
-         7Ta/owPGktqqQnwatf170XRX5YtaAzsgbyEUZeqsSbfc9F7qFUHTjHfww5Q4peJ9ndq+
-         +aHm+wsTZAIOezIPc4XV7P4zEXsuP/MuC3UcoVRfwejs74M4sZ8ieJuR9yBRNu4ypS3Y
-         X2Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cFgPyT+ODS1OrE0hwd9zKr2rgvqb/PsZ4tSjiSvlbbI=;
-        b=MXWxn5uEA6wvJeqC+4ZGi26YUE6b1704AqUOLQVtsPmvWOwb9UgNGSRYQP+r1JIIJy
-         o2cRpL1f0CD2MJWXcM6oT9xdxVDe266a8Iju4GmKrEzNFDHiXZAhY6M5zOcmQ+RotALQ
-         egekTfzCAO4Fejfyjd6bxsTeLlTmbN8OP0sdn3TOYsRrNKXZdOvZEuTpg8OeHbaWd4w6
-         V6qvDnh5mQN87P3u+V3owCMLZ/xxts3qDUrw1KywkRgYMiPxYx3ve2e/8AvsLcpPKycK
-         iyRye4yJdJ25NhzpT0rovYG12EzrAIgJoZ86V2LaXstp//uC1wSvWNwiRPbsOWMW7Wm8
-         /tfw==
-X-Gm-Message-State: APjAAAWiaia53d4zPW4X2MRagEmX/SRZd5TYGSFSLMCfT1knVQbZso3O
-        NCVhkIX3AUcYwjdURISWFROU
-X-Google-Smtp-Source: APXvYqy//gLInV/z0P1L70ZmRo5JX29PhNoALIeBgwlxEJoIk1PjOVNaCNOIr+X57s2rUsVBZUhuTw==
-X-Received: by 2002:a17:902:7c8f:: with SMTP id y15mr5008661pll.341.1572955417149;
-        Tue, 05 Nov 2019 04:03:37 -0800 (PST)
-Received: from poseidon.bobrowski.net ([114.78.226.167])
-        by smtp.gmail.com with ESMTPSA id n3sm21268023pff.102.2019.11.05.04.03.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Nov 2019 04:03:36 -0800 (PST)
-Date:   Tue, 5 Nov 2019 23:03:31 +1100
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        riteshh@linux.ibm.com
-Subject: [PATCH v7 06/11] ext4: introduce new callback for IOMAP_REPORT
-Message-ID: <5c97a569e26ddb6696e3d3ac9fbde41317e029a0.1572949325.git.mbobrowski@mbobrowski.org>
-References: <cover.1572949325.git.mbobrowski@mbobrowski.org>
+        id S2389166AbfKENiR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Nov 2019 08:38:17 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46074 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387880AbfKENiQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 08:38:16 -0500
+Received: from callcc.thunk.org (ip-12-2-52-196.nyc.us.northamericancoax.com [196.52.2.12])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xA5DbnOx019876
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Nov 2019 08:37:50 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id EF97E420311; Tue,  5 Nov 2019 08:37:46 -0500 (EST)
+Date:   Tue, 5 Nov 2019 08:37:46 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Valdis Kletnieks <valdis.kletnieks@vt.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, Jan Kara <jack@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 1/1] errno.h: Provide EFSBADCRC for everybody
+Message-ID: <20191105133746.GJ28764@mit.edu>
+References: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1572949325.git.mbobrowski@mbobrowski.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As part of the ext4_iomap_begin() cleanups that precede this patch, we
-also split up the IOMAP_REPORT branch into a completely separate
-->iomap_begin() callback named ext4_iomap_begin_report(). Again, the
-raionale for this change is to reduce the overall clutter within
-ext4_iomap_begin().
+On Mon, Nov 04, 2019 at 09:46:14PM -0500, Valdis Kletnieks wrote:
+> Four filesystems have their own defines for this. Move it
+> into errno.h so it's defined in just one place.
+> 
+> Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
 
-Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- fs/ext4/ext4.h  |   1 +
- fs/ext4/file.c  |   6 ++-
- fs/ext4/inode.c | 134 +++++++++++++++++++++++++++++-------------------
- 3 files changed, 85 insertions(+), 56 deletions(-)
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 3616f1b0c987..5c6c4acea8b1 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3388,6 +3388,7 @@ static inline void ext4_clear_io_unwritten_flag(ext4_io_end_t *io_end)
- }
- 
- extern const struct iomap_ops ext4_iomap_ops;
-+extern const struct iomap_ops ext4_iomap_report_ops;
- 
- static inline int ext4_buffer_uptodate(struct buffer_head *bh)
- {
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 8d2bbcc2d813..ab75aee3e687 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -494,12 +494,14 @@ loff_t ext4_llseek(struct file *file, loff_t offset, int whence)
- 						maxbytes, i_size_read(inode));
- 	case SEEK_HOLE:
- 		inode_lock_shared(inode);
--		offset = iomap_seek_hole(inode, offset, &ext4_iomap_ops);
-+		offset = iomap_seek_hole(inode, offset,
-+					 &ext4_iomap_report_ops);
- 		inode_unlock_shared(inode);
- 		break;
- 	case SEEK_DATA:
- 		inode_lock_shared(inode);
--		offset = iomap_seek_data(inode, offset, &ext4_iomap_ops);
-+		offset = iomap_seek_data(inode, offset,
-+					 &ext4_iomap_report_ops);
- 		inode_unlock_shared(inode);
- 		break;
- 	}
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index b540f2903faa..b5ba6767b276 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3553,74 +3553,32 @@ static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
- static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 		unsigned flags, struct iomap *iomap, struct iomap *srcmap)
- {
--	unsigned int blkbits = inode->i_blkbits;
--	unsigned long first_block, last_block;
--	struct ext4_map_blocks map;
--	bool delalloc = false;
- 	int ret;
-+	struct ext4_map_blocks map;
-+	u8 blkbits = inode->i_blkbits;
- 
- 	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
- 		return -EINVAL;
--	first_block = offset >> blkbits;
--	last_block = min_t(loff_t, (offset + length - 1) >> blkbits,
--			   EXT4_MAX_LOGICAL_BLOCK);
--
--	if (flags & IOMAP_REPORT) {
--		if (ext4_has_inline_data(inode)) {
--			ret = ext4_inline_data_iomap(inode, iomap);
--			if (ret != -EAGAIN) {
--				if (ret == 0 && offset >= iomap->length)
--					ret = -ENOENT;
--				return ret;
--			}
--		}
--	} else {
--		if (WARN_ON_ONCE(ext4_has_inline_data(inode)))
--			return -ERANGE;
--	}
- 
--	map.m_lblk = first_block;
--	map.m_len = last_block - first_block + 1;
--
--	if (flags & IOMAP_REPORT) {
--		ret = ext4_map_blocks(NULL, inode, &map, 0);
--		if (ret < 0)
--			return ret;
--
--		if (ret == 0) {
--			ext4_lblk_t end = map.m_lblk + map.m_len - 1;
--			struct extent_status es;
--
--			ext4_es_find_extent_range(inode, &ext4_es_is_delayed,
--						  map.m_lblk, end, &es);
-+	if (WARN_ON_ONCE(ext4_has_inline_data(inode)))
-+		return -ERANGE;
- 
--			if (!es.es_len || es.es_lblk > end) {
--				/* entire range is a hole */
--			} else if (es.es_lblk > map.m_lblk) {
--				/* range starts with a hole */
--				map.m_len = es.es_lblk - map.m_lblk;
--			} else {
--				ext4_lblk_t offs = 0;
-+	/*
-+	 * Calculate the first and last logical blocks respectively.
-+	 */
-+	map.m_lblk = offset >> blkbits;
-+	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
-+			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
- 
--				if (es.es_lblk < map.m_lblk)
--					offs = map.m_lblk - es.es_lblk;
--				map.m_lblk = es.es_lblk + offs;
--				map.m_len = es.es_len - offs;
--				delalloc = true;
--			}
--		}
--	} else if (flags & IOMAP_WRITE) {
-+	if (flags & IOMAP_WRITE)
- 		ret = ext4_iomap_alloc(inode, &map, flags);
--	} else {
-+	else
- 		ret = ext4_map_blocks(NULL, inode, &map, 0);
--	}
- 
- 	if (ret < 0)
- 		return ret;
- 
- 	ext4_set_iomap(inode, iomap, &map, offset, length);
--	if (delalloc && iomap->type == IOMAP_HOLE)
--		iomap->type = IOMAP_DELALLOC;
- 
- 	return 0;
- }
-@@ -3682,6 +3640,74 @@ const struct iomap_ops ext4_iomap_ops = {
- 	.iomap_end		= ext4_iomap_end,
- };
- 
-+static bool ext4_iomap_is_delalloc(struct inode *inode,
-+				   struct ext4_map_blocks *map)
-+{
-+	struct extent_status es;
-+	ext4_lblk_t offset = 0, end = map->m_lblk + map->m_len - 1;
-+
-+	ext4_es_find_extent_range(inode, &ext4_es_is_delayed,
-+				  map->m_lblk, end, &es);
-+
-+	if (!es.es_len || es.es_lblk > end)
-+		return false;
-+
-+	if (es.es_lblk > map->m_lblk) {
-+		map->m_len = es.es_lblk - map->m_lblk;
-+		return false;
-+	}
-+
-+	offset = map->m_lblk - es.es_lblk;
-+	map->m_len = es.es_len - offset;
-+
-+	return true;
-+}
-+
-+static int ext4_iomap_begin_report(struct inode *inode, loff_t offset,
-+				   loff_t length, unsigned int flags,
-+				   struct iomap *iomap, struct iomap *srcmap)
-+{
-+	int ret;
-+	bool delalloc = false;
-+	struct ext4_map_blocks map;
-+	u8 blkbits = inode->i_blkbits;
-+
-+	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
-+		return -EINVAL;
-+
-+	if (ext4_has_inline_data(inode)) {
-+		ret = ext4_inline_data_iomap(inode, iomap);
-+		if (ret != -EAGAIN) {
-+			if (ret == 0 && offset >= iomap->length)
-+				ret = -ENOENT;
-+			return ret;
-+		}
-+	}
-+
-+	/*
-+	 * Calculate the first and last logical block respectively.
-+	 */
-+	map.m_lblk = offset >> blkbits;
-+	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
-+			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
-+
-+	ret = ext4_map_blocks(NULL, inode, &map, 0);
-+	if (ret < 0)
-+		return ret;
-+	if (ret == 0)
-+		delalloc = ext4_iomap_is_delalloc(inode, &map);
-+
-+	ext4_set_iomap(inode, iomap, &map, offset, length);
-+	if (delalloc && iomap->type == IOMAP_HOLE)
-+		iomap->type = IOMAP_DELALLOC;
-+
-+	return 0;
-+}
-+
-+const struct iomap_ops ext4_iomap_report_ops = {
-+	.iomap_begin = ext4_iomap_begin_report,
-+};
-+
- static int ext4_end_io_dio(struct kiocb *iocb, loff_t offset,
- 			    ssize_t size, void *private)
- {
--- 
-2.20.1
-
+					- Ted
