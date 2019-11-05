@@ -2,114 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 883D1F0768
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 21:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57F4F0779
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 21:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729915AbfKEU5Y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Nov 2019 15:57:24 -0500
-Received: from outbound.smtp.vt.edu ([198.82.183.121]:51710 "EHLO
-        omr2.cc.vt.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729911AbfKEU5Y (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 15:57:24 -0500
-Received: from mr3.cc.vt.edu (mr3.cc.ipv6.vt.edu [IPv6:2607:b400:92:8500:0:7f:b804:6b0a])
-        by omr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id xA5KvMKK027727
-        for <linux-ext4@vger.kernel.org>; Tue, 5 Nov 2019 15:57:22 -0500
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
-        by mr3.cc.vt.edu (8.14.7/8.14.7) with ESMTP id xA5KvHlg018076
-        for <linux-ext4@vger.kernel.org>; Tue, 5 Nov 2019 15:57:22 -0500
-Received: by mail-qt1-f199.google.com with SMTP id v23so23758223qth.20
-        for <linux-ext4@vger.kernel.org>; Tue, 05 Nov 2019 12:57:22 -0800 (PST)
+        id S2387416AbfKEU6t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Nov 2019 15:58:49 -0500
+Received: from outbound.smtp.vt.edu ([198.82.183.121]:52224 "EHLO
+        omr1.cc.vt.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729770AbfKEU6s (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 15:58:48 -0500
+Received: from mr4.cc.vt.edu (mail.ipv6.vt.edu [IPv6:2607:b400:92:9:0:9d:8fcb:4116])
+        by omr1.cc.vt.edu (8.14.4/8.14.4) with ESMTP id xA5KwlYg011556
+        for <linux-ext4@vger.kernel.org>; Tue, 5 Nov 2019 15:58:47 -0500
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com [209.85.222.200])
+        by mr4.cc.vt.edu (8.14.7/8.14.7) with ESMTP id xA5Kwgr2020377
+        for <linux-ext4@vger.kernel.org>; Tue, 5 Nov 2019 15:58:47 -0500
+Received: by mail-qk1-f200.google.com with SMTP id r2so22610534qkb.2
+        for <linux-ext4@vger.kernel.org>; Tue, 05 Nov 2019 12:58:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:subject:in-reply-to:references
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
          :mime-version:content-transfer-encoding:date:message-id;
-        bh=MBXhOxNin9mvpJEf+EL+olFVquhzYl5dF3xWGaJhuMU=;
-        b=PliWUUaaN2vKHJxz1T0f973bSltgcx2G83leIKBJdV2Nh9yIsR02MXlW6+g7IDSvgh
-         VC9uYQV3FV33Y7JxG30JbWEFJysJcyoHdV9USalQ8McK1nT7ZzVv+2vUbGZ7Q+Mrap+R
-         3HtoBgq6EgzAu66m2E3kiShpWyvYF5cWBX04jEaj4Z8jGPqHYytgkFHsyTQEhMlmZ26p
-         caeWQIDTuXqmrurEAkbSCVDOVEtde3GwIXahQFCK49IZuKueJpKNE1PdlTa3CXyycac7
-         8P2W5z42e78vonRFtPI+qQryjKPL5t1plhnwn13MI7qZ6ZoopndF5xCa+bHDOBYaJRC7
-         0Qsw==
-X-Gm-Message-State: APjAAAWpN5xpvY0uPygx+YvPr/yy9u0eIp6d+mLu+FmT0GX16VYT7bUe
-        2zfdwhhTB68TzO8qm5xhCHU8v5kJn8G49YFNf8kmoBQRjIFuqYOFHCEfxpyYRiGTYtrZ4deLhd9
-        O+gkddgtLDgnSI72w2cu1+p6uRxUrpp4z
-X-Received: by 2002:a37:b403:: with SMTP id d3mr22864309qkf.415.1572987436644;
-        Tue, 05 Nov 2019 12:57:16 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxDNTKWJZSa0xMopygThw6VT3DdT7WC8At6HBen1ZT58IvMEY+XYz6wkkA8lFAhsp9RuyzHJw==
-X-Received: by 2002:a37:b403:: with SMTP id d3mr22864288qkf.415.1572987436234;
-        Tue, 05 Nov 2019 12:57:16 -0800 (PST)
+        bh=S50K21onMwLaHq3dPT4Qwhc6hjGO5VfOOOJ5JGwTxQE=;
+        b=WiV6OJaqevMhwA2yrxQ5wmRDCihg+M5zgLikGCS5XucjvbuNssU7zpCHtAl7rZ91bZ
+         M5Vfm8vJwl6Zn1hohIBdfPQDGaHFZQFZxCAAnQpKE2rc3nLilydU8aBC8N4ddfxxoPlJ
+         u5f/1c9Gqg7TvD9/HpolQHl7S4skywc1VRE/Gua2iL1W1sl8W27rbBbzLgs7pKIQ6TVP
+         Tkp0kP6YTIyvHYLLArENWlRkCaqrK4x7TQYQn3MeRnxdFrqA1abd9pmyEpsHRA6Tz2BO
+         olpLc7yTNC3Z/2JX7ZKcrHIXewxv46B2SNjHZylQBOMdsVwDTaGS0aBlErpPliXiqNkp
+         +FkQ==
+X-Gm-Message-State: APjAAAU876lIidSrFU08AKNJjflGK9EO1OZTU03FQ6cUC0F04ncjvYQE
+        hxQiHKZGZtbIDu1toCcjbg5vOhUIOusb1b5SsjSPvtYzNdRxEFhBXJCo/Zndm7ExMuXpQZhYG4u
+        9bHcmvD38bGLFLZfggHKvDMw+uVMxsozs
+X-Received: by 2002:ac8:524a:: with SMTP id y10mr18951022qtn.325.1572987522131;
+        Tue, 05 Nov 2019 12:58:42 -0800 (PST)
+X-Google-Smtp-Source: APXvYqx24doZC2vszjGyzN8ksjbbXYHRswolJBukeRP8MxDNjSGnmrve+cRRNS5kWu9wK6cSyWOUJw==
+X-Received: by 2002:ac8:524a:: with SMTP id y10mr18950991qtn.325.1572987521831;
+        Tue, 05 Nov 2019 12:58:41 -0800 (PST)
 Received: from turing-police ([2601:5c0:c001:c9e1::359])
-        by smtp.gmail.com with ESMTPSA id m5sm8676126qtp.97.2019.11.05.12.57.14
+        by smtp.gmail.com with ESMTPSA id k17sm9903799qkg.63.2019.11.05.12.58.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Nov 2019 12:57:14 -0800 (PST)
+        Tue, 05 Nov 2019 12:58:40 -0800 (PST)
 From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
 X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
 X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     "Theodore Ts'o" <tytso@mit.edu>,
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
         linux-xfs@vger.kernel.org, Jan Kara <jack@suse.com>,
         Arnd Bergmann <arnd@arndb.de>, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, linux-arch@vger.kernel.org
 Subject: Re: [PATCH 1/1] errno.h: Provide EFSBADCRC for everybody
-In-Reply-To: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
+In-Reply-To: <20191105151736.GB4153244@magnolia>
 References: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
+ <20191105151736.GB4153244@magnolia>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1572987433_14215P";
+Content-Type: multipart/signed; boundary="==_Exmh_1572987519_14215P";
          micalg=pgp-sha1; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 05 Nov 2019 15:57:13 -0500
-Message-ID: <249994.1572987433@turing-police>
+Date:   Tue, 05 Nov 2019 15:58:39 -0500
+Message-ID: <250143.1572987519@turing-police>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---==_Exmh_1572987433_14215P
+--==_Exmh_1572987519_14215P
 Content-Type: text/plain; charset=us-ascii
 
-On Mon, 04 Nov 2019 21:46:14 -0500, Valdis Kletnieks said:
-> Four filesystems have their own defines for this. Move it
-> into errno.h so it's defined in just one place.
+On Tue, 05 Nov 2019 07:17:36 -0800, "Darrick J. Wong" said:
+> On Mon, Nov 04, 2019 at 09:46:14PM -0500, Valdis Kletnieks wrote:
+> > Four filesystems have their own defines for this. Move it
+> > into errno.h so it's defined in just one place.
+> >
+> > Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
 >
-> Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+> Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
+>
+> You can build all six filesystems with both this and the EFSCORRUPTED
+> patch applied, correct?
 
-Going to have to retract this. and the other patch for EFSCORRUPTED.
+I can.  But it was pointed out to me that it blows up on some architectures..
 
-On Tue, 05 Nov 2019 10:17:52 +0000, Rasmus Villemoes <rasmus.villemoes@prevas.dk> said:
 
-> Does that work? Six architectures (alpha ia64 mips parisc powerpc sparc)
-> have their own asm/errno.h. ia64 and powerpc include asm-generic/errno.h
-> from their asm/errno.h, but the remaining four will no longer have a
-> definition of EFSBADCRC.
 
-I knew some architectures had their own syscall values.  I admit it comes as
-a surprise to me (and probably a number of others) that errno.h is that way too....
-
-Thanks for spotting this, Rasmus...
-
---==_Exmh_1572987433_14215P
+--==_Exmh_1572987519_14215P
 Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Comment: Exmh version 2.9.0 11/07/2018
 
-iQIVAwUBXcHiKQdmEQWDXROgAQILDg/+IpFcal1QlvbuIHm2Skf6HofxtKqb0d6M
-tK77zP5Q+nv9p4o41Nh3lYk5p3an6xlcd3157L9fmOjQFy8dZJbY8i07oVCO/gtS
-oV8xesp6X7uYEgSARDK6lO/1/9bAuCt4ghd5lKcsyBKDv1MQ80x3+mWx++oV1SG4
-EYqkIglqmnZ2ZrielunCbKqSqs0tUY50ayaogkISJzMDliTsYfTMpWF+MkrYiuEU
-kSQ8ifkclZ6rRQgeQzYRe/7Q4x02sudSWPkWHCOw5Gtg4vd0H7O4OhCadSt44uHv
-Za+sDJ3TZ5bUlROV5SKj3Jfrp2EuuW3jbFHEVEvjrP5rZbOC6sPKy4N81oDCYQ5X
-SbNfryx8h3CwOtGM6hgtLj1U3BFNESqkc6TnAarC8015rEbOoZn9vivgrtZ1xB6n
-K9XXs1guqWZ2xBPdFbOTmv6T3Heg8Y4c/GhV/PcRTV+XZzUs77SmAKtaH9qH9bkf
-efM4xNwEyBJsFn3ycYeP1lAjxlhJPsyEQVKfGNcyzGq4jP4EHNpWclncbZ9Wf/mw
-QzHYeoP5jtmf2Mppe6/nTGm5Mdra1IptAZKdBRehe4XJc78exI3mfAi/2LoqHuzy
-6EiVhn2WrtzPJ+s4SzNud9tOQz5tRhvh2wjiY0pDWYXMX8xg2DvdWpj03bM5ojHA
-ePHUo1dE0Xs=
-=2I65
+iQIVAwUBXcHifwdmEQWDXROgAQLj5RAApcBiDjlLyeNreRjX2DmNwO+Ua9G5e5Sp
+eXKK/n2L2aQzyRQz7vGUMquNdBYorbtXuzT13bysejTkkkISSGz9lABhFZibT3n5
+EUxZmFM8LKoRYx+sAkw3sHfwj4pmLhuz3O5GXA3IkEn57++QiOoi+QR01H7B6KIU
+2W2NoauIR6t5hiO83EIpioJq07WOm1QP46diNozGGCskSwgEeJVXnWMNoIS23Xc7
+OK1FlYHnJ0wxDtnuzCEb9rOoi7u1Fr3FXTwpLo5V2krxLdW+jYhIRSoK+UPM0yky
+HIKCcTErRDckrbcT4+T6uszVrt+tXLdZE/mWgHLqbWnfB3g3Hh4C1ccX7TWqAG5S
+63ok39pe6rDa5sTRwHhEhIfBKOWXhGA1XNay3cWCgBroEwPpz0Zhy8xBP397bwZA
+7RubcSMY6Ct4tTUsS/8Ocmo/U0Kuo6k3El246di3UILbLQ1hvUXBeHtBbNKD0u4u
+nHhCqndqK0JAluIzlkpqVkcFXSWBlzlxfpNNNpgrr3aIGkwFWjJnsgkhB9T0cT4L
+8gK8W3Ly4V8A+oYoI4MgZ1LJ+jN/y7aDpDMHL3mjBECucfSmvaZLbRTOiAN7OHdz
+J7lkyAPaFi9NCVNYzS4tKLPOQcgJIA+GMCfSGmEAWiW07o2qb62I1kJz2vSkiTQC
+j0Tlv0TH9BI=
+=1Y8S
 -----END PGP SIGNATURE-----
 
---==_Exmh_1572987433_14215P--
+--==_Exmh_1572987519_14215P--
