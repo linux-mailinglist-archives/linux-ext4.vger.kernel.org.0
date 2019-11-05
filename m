@@ -2,75 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E26ECF06A3
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 21:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD28F06F3
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 21:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbfKEUHp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Nov 2019 15:07:45 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45534 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726141AbfKEUHp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 15:07:45 -0500
-Received: from dread.disaster.area (pa49-180-67-183.pa.nsw.optusnet.com.au [49.180.67.183])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 340A77E7AB3;
-        Wed,  6 Nov 2019 07:07:40 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1iS574-0006S9-TG; Wed, 06 Nov 2019 07:07:38 +1100
-Date:   Wed, 6 Nov 2019 07:07:38 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Valdis Kletnieks <valdis.kletnieks@vt.edu>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, Jan Kara <jack@suse.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 1/1] errno.h: Provide EFSBADCRC for everybody
-Message-ID: <20191105200045.GD4614@dread.disaster.area>
-References: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
+        id S1727821AbfKEUcJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Nov 2019 15:32:09 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:37900 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbfKEUcI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 15:32:08 -0500
+Received: by mail-pf1-f194.google.com with SMTP id c13so16687006pfp.5
+        for <linux-ext4@vger.kernel.org>; Tue, 05 Nov 2019 12:32:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CXqKLplEg6QFJZFTjZZERaYQH2HOfWcmYOoVbXgDrYo=;
+        b=ZZ4KzDbSDUnfjdiSr4ueKak6InnyZZT0EjdcNFWCU9zuCk+mxbpPoWVQvwIndVnoXv
+         +rzNJYjXmR9sjSKIbOQyA58Q7cJq1Gu/2TDoL0HhMwN5T8ZFIP1IA2azWIQxYsLTUVi6
+         0Bq5dewkmpugtQP9/pfDq5ZYCHv0zXEYipxhj2D2PLsO+uBNU58W2ZW+QRf26icZwvdA
+         mpi2VwyguV420FGRuekjjaErHt/sudVEJuUq9WWdK5guNc8gW6Hlo0mO/+qxT5G8dpJK
+         HwCfuV2m42nL05+A28xjeYQG67z3Djsx1rsbXRaLE/JlFgsoaK/4D0Y+88etk1JIBdRJ
+         mNlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CXqKLplEg6QFJZFTjZZERaYQH2HOfWcmYOoVbXgDrYo=;
+        b=Kzff3dFloqv3bayiO4xJttH8Ro15C8afbsdEBunq6suPsu81jFVlsDPIAlNALRfmwg
+         1OPIZsvdt1c/R78LSabaQgTCf2QrLJZb4l0G/KG1avXAMj7dl0OtHFfnPzkx2URqZfzO
+         sVnMld0h8S+8UgBHVWk5nCvdCp1i1V6CbbGaGx4QVfdZU1ZbvfXCVua0VQkU09iDI5oZ
+         zdKm2jRuhj0p71DPAhDF46xR5DXAhn/5eKlK/k6XfiPi9lneZbIVvtti/ho1X6Tzx5c1
+         7fKMP/LuZPiDiKagLrksmQ1iziaj5SeiWA3MTvlSHZlzHEPauhCn9tRPP+/b3irLt5zH
+         TktQ==
+X-Gm-Message-State: APjAAAUTUKvVLfdQ2Q3i6Ie9ruPTTXt8oqGYLJZQhlc+8wZqp5M6C66J
+        VB40e0VwHfQGnWtOCVWyxaTG
+X-Google-Smtp-Source: APXvYqw/3eTcON5SJct+d5URgN+1AmMbZq3xLvPKPdKhEyP2EtoJi2NAzTEYm/hasUXn4J+aH7/uXQ==
+X-Received: by 2002:a17:90a:35d0:: with SMTP id r74mr1186988pjb.47.1572985927720;
+        Tue, 05 Nov 2019 12:32:07 -0800 (PST)
+Received: from bobrowski ([110.232.114.101])
+        by smtp.gmail.com with ESMTPSA id h9sm294751pjh.8.2019.11.05.12.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Nov 2019 12:32:07 -0800 (PST)
+Date:   Wed, 6 Nov 2019 07:32:00 +1100
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        riteshh@linux.ibm.com
+Subject: Re: [PATCH v7 11/11] ext4: introduce direct I/O write using iomap
+ infrastructure
+Message-ID: <20191105203158.GA1739@bobrowski>
+References: <cover.1572949325.git.mbobrowski@mbobrowski.org>
+ <e55db6f12ae6ff017f36774135e79f3e7b0333da.1572949325.git.mbobrowski@mbobrowski.org>
+ <20191105135932.GN22379@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
+In-Reply-To: <20191105135932.GN22379@quack2.suse.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=G6BsK5s5 c=1 sm=1 tr=0
-        a=3wLbm4YUAFX2xaPZIabsgw==:117 a=3wLbm4YUAFX2xaPZIabsgw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=MeAgGD-zjQ4A:10
-        a=7-415B0cAAAA:8 a=rJHQ1rk6g6_wif3L1mMA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 09:46:14PM -0500, Valdis Kletnieks wrote:
-> Four filesystems have their own defines for this. Move it
-> into errno.h so it's defined in just one place.
+On Tue, Nov 05, 2019 at 02:59:32PM +0100, Jan Kara wrote:
+> On Tue 05-11-19 23:02:39, Matthew Bobrowski wrote:
+> > +	if (ret >= 0 && iov_iter_count(from)) {
+> > +		ssize_t err;
+> > +		loff_t endbyte;
+> > +
+> > +		offset = iocb->ki_pos;
+> > +		err = ext4_buffered_write_iter(iocb, from);
+> > +		if (err < 0)
+> > +			return err;
+> > +
+> > +		/*
+> > +		 * We need to ensure that the pages within the page cache for
+> > +		 * the range covered by this I/O are written to disk and
+> > +		 * invalidated. This is in attempt to preserve the expected
+> > +		 * direct I/O semantics in the case we fallback to buffered I/O
+> > +		 * to complete off the I/O request.
+> > +		 */
+> > +		ret += err;
+> > +		endbyte = offset + ret - 1;
+> 				   ^^ err here?
 > 
-> Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+> Otherwise you would write out and invalidate too much AFAICT - the 'offset'
+> is position just before we fall back to buffered IO. Otherwise this hunk
+> looks good to me.
 
-Looks good, minor nit below:
+Er, yes. That's right, it should rather be 'err' instead or else we
+would write/invalidate too much. I actually had this originally, but I
+must've muddled it up while rewriting this patch on my other computer.
 
-> diff --git a/include/uapi/asm-generic/errno.h b/include/uapi/asm-generic/errno.h
-> index 1d5ffdf54cb0..e4cae9a9ae79 100644
-> --- a/include/uapi/asm-generic/errno.h
-> +++ b/include/uapi/asm-generic/errno.h
-> @@ -55,6 +55,7 @@
->  #define	EMULTIHOP	72	/* Multihop attempted */
->  #define	EDOTDOT		73	/* RFS specific error */
->  #define	EBADMSG		74	/* Not a data message */
-> +#define EFSBADCRC	EBADMSG	/* Bad CRC detected */
+Thanks for picking that up!
 
-Inconsistent whitespace here. When you get tab vs space after
-#define wrong it only shows up in patches. :/
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+/M
