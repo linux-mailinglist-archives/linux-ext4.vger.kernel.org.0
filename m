@@ -2,27 +2,27 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6342F0352
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 17:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 211F1F034A
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 17:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390413AbfKEQoo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Nov 2019 11:44:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41614 "EHLO mx1.suse.de"
+        id S2390437AbfKEQor (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Nov 2019 11:44:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41616 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390347AbfKEQol (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 5 Nov 2019 11:44:41 -0500
+        id S2390378AbfKEQoo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 5 Nov 2019 11:44:44 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F2858B391;
-        Tue,  5 Nov 2019 16:44:37 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 23754B456;
+        Tue,  5 Nov 2019 16:44:38 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4D6411E4ABA; Tue,  5 Nov 2019 17:44:37 +0100 (CET)
+        id 504D71E4ABB; Tue,  5 Nov 2019 17:44:37 +0100 (CET)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 11/25] ext4, jbd2: Provide accessor function for handle credits
-Date:   Tue,  5 Nov 2019 17:44:17 +0100
-Message-Id: <20191105164437.32602-11-jack@suse.cz>
+Subject: [PATCH 12/25] ocfs2: Use accessor function for h_buffer_credits
+Date:   Tue,  5 Nov 2019 17:44:18 +0100
+Message-Id: <20191105164437.32602-12-jack@suse.cz>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20191003215523.7313-1-jack@suse.cz>
 References: <20191003215523.7313-1-jack@suse.cz>
@@ -31,114 +31,158 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Provide accessor function to get number of credits available in a handle
-and use it from ext4. Later, computation of available credits won't be
-so straightforward.
+Use the jbd2 accessor function for h_buffer_credits.
 
 Reviewed-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/ext4_jbd2.c  | 13 +++++++------
- fs/ext4/ext4_jbd2.h  |  7 -------
- fs/ext4/xattr.c      |  2 +-
- include/linux/jbd2.h |  6 ++++++
- 4 files changed, 14 insertions(+), 14 deletions(-)
+ fs/ocfs2/alloc.c   | 32 ++++++++++++++++----------------
+ fs/ocfs2/journal.c |  4 ++--
+ 2 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index 2b98d893cda9..731bbfdbce5b 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -119,8 +119,8 @@ handle_t *__ext4_journal_start_reserved(handle_t *handle, unsigned int line,
- 		return ext4_get_nojournal();
+diff --git a/fs/ocfs2/alloc.c b/fs/ocfs2/alloc.c
+index f9baefc76cf9..88534eb0e7c2 100644
+--- a/fs/ocfs2/alloc.c
++++ b/fs/ocfs2/alloc.c
+@@ -2288,9 +2288,9 @@ static int ocfs2_extend_rotate_transaction(handle_t *handle, int subtree_depth,
+ 	int ret = 0;
+ 	int credits = (path->p_tree_depth - subtree_depth) * 2 + 1 + op_credits;
  
- 	sb = handle->h_journal->j_private;
--	trace_ext4_journal_start_reserved(sb, handle->h_buffer_credits,
--					  _RET_IP_);
-+	trace_ext4_journal_start_reserved(sb,
-+				jbd2_handle_buffer_credits(handle), _RET_IP_);
- 	err = ext4_journal_check_start(sb);
- 	if (err < 0) {
- 		jbd2_journal_free_reserved(handle);
-@@ -138,10 +138,10 @@ int __ext4_journal_ensure_credits(handle_t *handle, int check_cred,
+-	if (handle->h_buffer_credits < credits)
++	if (jbd2_handle_buffer_credits(handle) < credits)
+ 		ret = ocfs2_extend_trans(handle,
+-					 credits - handle->h_buffer_credits);
++				credits - jbd2_handle_buffer_credits(handle));
+ 
+ 	return ret;
+ }
+@@ -2367,7 +2367,7 @@ static int ocfs2_rotate_tree_right(handle_t *handle,
+ 				   struct ocfs2_path *right_path,
+ 				   struct ocfs2_path **ret_left_path)
  {
- 	if (!ext4_handle_valid(handle))
+-	int ret, start, orig_credits = handle->h_buffer_credits;
++	int ret, start, orig_credits = jbd2_handle_buffer_credits(handle);
+ 	u32 cpos;
+ 	struct ocfs2_path *left_path = NULL;
+ 	struct super_block *sb = ocfs2_metadata_cache_get_super(et->et_ci);
+@@ -3148,7 +3148,7 @@ static int ocfs2_rotate_tree_left(handle_t *handle,
+ 				  struct ocfs2_path *path,
+ 				  struct ocfs2_cached_dealloc_ctxt *dealloc)
+ {
+-	int ret, orig_credits = handle->h_buffer_credits;
++	int ret, orig_credits = jbd2_handle_buffer_credits(handle);
+ 	struct ocfs2_path *tmp_path = NULL, *restart_path = NULL;
+ 	struct ocfs2_extent_block *eb;
+ 	struct ocfs2_extent_list *el;
+@@ -3386,8 +3386,8 @@ static int ocfs2_merge_rec_right(struct ocfs2_path *left_path,
+ 							right_path);
+ 
+ 		ret = ocfs2_extend_rotate_transaction(handle, subtree_index,
+-						      handle->h_buffer_credits,
+-						      right_path);
++					jbd2_handle_buffer_credits(handle),
++					right_path);
+ 		if (ret) {
+ 			mlog_errno(ret);
+ 			goto out;
+@@ -3548,8 +3548,8 @@ static int ocfs2_merge_rec_left(struct ocfs2_path *right_path,
+ 							right_path);
+ 
+ 		ret = ocfs2_extend_rotate_transaction(handle, subtree_index,
+-						      handle->h_buffer_credits,
+-						      left_path);
++					jbd2_handle_buffer_credits(handle),
++					left_path);
+ 		if (ret) {
+ 			mlog_errno(ret);
+ 			goto out;
+@@ -3623,7 +3623,7 @@ static int ocfs2_merge_rec_left(struct ocfs2_path *right_path,
+ 		    le16_to_cpu(el->l_next_free_rec) == 1) {
+ 			/* extend credit for ocfs2_remove_rightmost_path */
+ 			ret = ocfs2_extend_rotate_transaction(handle, 0,
+-					handle->h_buffer_credits,
++					jbd2_handle_buffer_credits(handle),
+ 					right_path);
+ 			if (ret) {
+ 				mlog_errno(ret);
+@@ -3669,7 +3669,7 @@ static int ocfs2_try_to_merge_extent(handle_t *handle,
+ 	if (ctxt->c_split_covers_rec && ctxt->c_has_empty_extent) {
+ 		/* extend credit for ocfs2_remove_rightmost_path */
+ 		ret = ocfs2_extend_rotate_transaction(handle, 0,
+-				handle->h_buffer_credits,
++				jbd2_handle_buffer_credits(handle),
+ 				path);
+ 		if (ret) {
+ 			mlog_errno(ret);
+@@ -3725,7 +3725,7 @@ static int ocfs2_try_to_merge_extent(handle_t *handle,
+ 
+ 		/* extend credit for ocfs2_remove_rightmost_path */
+ 		ret = ocfs2_extend_rotate_transaction(handle, 0,
+-					handle->h_buffer_credits,
++					jbd2_handle_buffer_credits(handle),
+ 					path);
+ 		if (ret) {
+ 			mlog_errno(ret);
+@@ -3755,7 +3755,7 @@ static int ocfs2_try_to_merge_extent(handle_t *handle,
+ 
+ 		/* extend credit for ocfs2_remove_rightmost_path */
+ 		ret = ocfs2_extend_rotate_transaction(handle, 0,
+-				handle->h_buffer_credits,
++				jbd2_handle_buffer_credits(handle),
+ 				path);
+ 		if (ret) {
+ 			mlog_errno(ret);
+@@ -3799,7 +3799,7 @@ static int ocfs2_try_to_merge_extent(handle_t *handle,
+ 		if (ctxt->c_split_covers_rec) {
+ 			/* extend credit for ocfs2_remove_rightmost_path */
+ 			ret = ocfs2_extend_rotate_transaction(handle, 0,
+-					handle->h_buffer_credits,
++					jbd2_handle_buffer_credits(handle),
+ 					path);
+ 			if (ret) {
+ 				mlog_errno(ret);
+@@ -5358,7 +5358,7 @@ static int ocfs2_truncate_rec(handle_t *handle,
+ 	if (ocfs2_is_empty_extent(&el->l_recs[0]) && index > 0) {
+ 		/* extend credit for ocfs2_remove_rightmost_path */
+ 		ret = ocfs2_extend_rotate_transaction(handle, 0,
+-				handle->h_buffer_credits,
++				jbd2_handle_buffer_credits(handle),
+ 				path);
+ 		if (ret) {
+ 			mlog_errno(ret);
+@@ -5427,8 +5427,8 @@ static int ocfs2_truncate_rec(handle_t *handle,
+ 	}
+ 
+ 	ret = ocfs2_extend_rotate_transaction(handle, 0,
+-					      handle->h_buffer_credits,
+-					      path);
++					jbd2_handle_buffer_credits(handle),
++					path);
+ 	if (ret) {
+ 		mlog_errno(ret);
+ 		goto out;
+diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
+index 930e3d388579..019aaf2a3f8a 100644
+--- a/fs/ocfs2/journal.c
++++ b/fs/ocfs2/journal.c
+@@ -419,7 +419,7 @@ int ocfs2_extend_trans(handle_t *handle, int nblocks)
+ 	if (!nblocks)
  		return 0;
--	if (handle->h_buffer_credits >= check_cred)
-+	if (jbd2_handle_buffer_credits(handle) >= check_cred)
- 		return 0;
- 	return ext4_journal_extend(handle,
--				   extend_cred - handle->h_buffer_credits);
-+			   extend_cred - jbd2_handle_buffer_credits(handle));
- }
  
- static void ext4_journal_abort_handle(const char *caller, unsigned int line,
-@@ -289,7 +289,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
- 				       handle->h_type,
- 				       handle->h_line_no,
- 				       handle->h_requested_credits,
--				       handle->h_buffer_credits, err);
-+				       jbd2_handle_buffer_credits(handle), err);
- 				return err;
- 			}
- 			ext4_error_inode(inode, where, line,
-@@ -300,7 +300,8 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
- 					 handle->h_type,
- 					 handle->h_line_no,
- 					 handle->h_requested_credits,
--					 handle->h_buffer_credits, err);
-+					 jbd2_handle_buffer_credits(handle),
-+					 err);
- 		}
- 	} else {
- 		if (inode)
-diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-index 1920b976eef1..36aa72599646 100644
---- a/fs/ext4/ext4_jbd2.h
-+++ b/fs/ext4/ext4_jbd2.h
-@@ -288,13 +288,6 @@ static inline int ext4_handle_is_aborted(handle_t *handle)
- 	return 0;
- }
+-	old_nblocks = handle->h_buffer_credits;
++	old_nblocks = jbd2_handle_buffer_credits(handle);
  
--static inline int ext4_handle_has_enough_credits(handle_t *handle, int needed)
--{
--	if (ext4_handle_valid(handle) && handle->h_buffer_credits < needed)
--		return 0;
--	return 1;
--}
--
- #define ext4_journal_start_sb(sb, type, nblocks)			\
- 	__ext4_journal_start_sb((sb), __LINE__, (type), (nblocks), 0)
+ 	trace_ocfs2_extend_trans(old_nblocks, nblocks);
  
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index b79d8ffd3e9b..48a9dbd27f43 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2314,7 +2314,7 @@ ext4_xattr_set_handle(handle_t *handle, struct inode *inode, int name_index,
- 						   flags & XATTR_CREATE);
- 		brelse(bh);
+@@ -460,7 +460,7 @@ int ocfs2_allocate_extend_trans(handle_t *handle, int thresh)
  
--		if (!ext4_handle_has_enough_credits(handle, credits)) {
-+		if (jbd2_handle_buffer_credits(handle) < credits) {
- 			error = -ENOSPC;
- 			goto cleanup;
- 		}
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 10e6049c0ba9..727ff91d7f3e 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1645,6 +1645,12 @@ static inline tid_t  jbd2_get_latest_transaction(journal_t *journal)
- 	return tid;
- }
+ 	BUG_ON(!handle);
  
-+
-+static inline int jbd2_handle_buffer_credits(handle_t *handle)
-+{
-+	return handle->h_buffer_credits;
-+}
-+
- #ifdef __KERNEL__
+-	old_nblks = handle->h_buffer_credits;
++	old_nblks = jbd2_handle_buffer_credits(handle);
+ 	trace_ocfs2_allocate_extend_trans(old_nblks, thresh);
  
- #define buffer_trace_init(bh)	do {} while (0)
+ 	if (old_nblks < thresh)
 -- 
 2.16.4
 
