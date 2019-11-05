@@ -2,67 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40619EF42A
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 04:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00490EF494
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 05:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730266AbfKEDna (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Nov 2019 22:43:30 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6150 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729711AbfKEDn3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 4 Nov 2019 22:43:29 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 800408998B034BFB165D;
-        Tue,  5 Nov 2019 11:43:25 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 5 Nov 2019
- 11:43:20 +0800
-Subject: Re: [PATCH 10/10] errno.h: Provide EFSCORRUPTED for everybody
-To:     Valdis Kletnieks <valdis.kletnieks@vt.edu>
-CC:     "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, <linux-xfs@vger.kernel.org>,
-        Jan Kara <jack@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        <linux-fsdevel@vger.kernel.org>, <devel@driverdev.osuosl.org>,
-        <linux-kernel@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
-        <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-arch@vger.kernel.org>
-References: <20191104014510.102356-1-Valdis.Kletnieks@vt.edu>
- <20191104014510.102356-11-Valdis.Kletnieks@vt.edu>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <5c441427-7e65-fcae-3518-eb37cea5f875@huawei.com>
-Date:   Tue, 5 Nov 2019 11:43:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S2387408AbfKEEv2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Nov 2019 23:51:28 -0500
+Received: from sender3-of-o52.zoho.com.cn ([124.251.121.247]:21971 "EHLO
+        sender2.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730176AbfKEEv2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 23:51:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1572929466; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=DomkhDhM1XEEd/23OBghWc0u5sSw8AhGw6paheV8CXyfRVt+PtJW7smnffptR3OXKZjKGlTta1AusCFUu7B8kkOZSnXmKbl9dVsaDW5Siu21EiHmDwS413vv7EN6kvwCQ2l8Sa+dX/Bl0xxbiNrck5kXScO4m1j8LLS8DWtntBM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1572929466; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=brSRdP5KFqpuH2p9tNPrplZ6xACWkA+oRDVfhtlVNZY=; 
+        b=DzvJOETp/hRwhcF9K4RFv+1s87+xHCGlaCsoHzuLcuJOZoVIgakC7JjbAzx0ogyoD9A4LdY0XlNRYXJF5ZCizfiQAscmATAG29rjXJCfTszGcQ+/Ogb7KfNAlnkP8vufQcYnNP52ZHHuDPH8z2McjKvdQ3OFF1NiAg1Erus+uBk=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1572929466;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        l=788; bh=brSRdP5KFqpuH2p9tNPrplZ6xACWkA+oRDVfhtlVNZY=;
+        b=Y7B/FOMPO4INjTM96XZGaYcWKBzXzsfuu2XsauUqlPoWwt5fdoDlpODkO5FocbkC
+        +I7Q7DrtPL6iuMHbdCkJh6KgSukiuyvKeGtwk8JudTlbcsSPcoMZwZufmjkCsh/vxPJ
+        TOxWogqnOcIOPOAWR0ULKIB6D6XPCYnnrb37NrV0=
+Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
+        with SMTPS id 1572929464784774.4755415872704; Tue, 5 Nov 2019 12:51:04 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
+Message-ID: <20191105045100.7104-1-cgxu519@mykernel.net>
+Subject: [PATCH] ext2: check err when partial != NULL
+Date:   Tue,  5 Nov 2019 12:51:00 +0800
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20191104014510.102356-11-Valdis.Kletnieks@vt.edu>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2019/11/4 9:45, Valdis Kletnieks wrote:
-> There's currently 6 filesystems that have the same #define. Move it
-> into errno.h so it's defined in just one place.
-> 
-> Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
-> Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Acked-by: Theodore Ts'o <tytso@mit.edu>
+Check err when partial =3D=3D NULL is meaningless because
+partial =3D=3D NULL means getting branch successfully without
+error.
 
->  fs/erofs/internal.h              | 2 --
+Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+---
+ fs/ext2/inode.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
->  fs/f2fs/f2fs.h                   | 1 -
+diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+index 7004ce581a32..a16c53655e77 100644
+--- a/fs/ext2/inode.c
++++ b/fs/ext2/inode.c
+@@ -701,10 +701,13 @@ static int ext2_get_blocks(struct inode *inode,
+ =09=09if (!partial) {
+ =09=09=09count++;
+ =09=09=09mutex_unlock(&ei->truncate_mutex);
+-=09=09=09if (err)
+-=09=09=09=09goto cleanup;
+ =09=09=09goto got_it;
+ =09=09}
++
++=09=09if (err) {
++=09=09=09mutex_unlock(&ei->truncate_mutex);
++=09=09=09goto cleanup;
++=09=09}
+ =09}
+=20
+ =09/*
+--=20
+2.20.1
 
-Acked-by: Chao Yu <yuchao0@huawei.com>
 
-Thanks,
+
