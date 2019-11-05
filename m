@@ -2,134 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E826FEF30F
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 02:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 791F0EF3A4
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 03:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730048AbfKEByc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 Nov 2019 20:54:32 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:49568 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729597AbfKEByc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 20:54:32 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA51rrRn148644;
-        Tue, 5 Nov 2019 01:54:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=210MQdTH4TsqiQ1Hr/tuh07kenc/TNbMdCsGnM5I5+0=;
- b=lDFG4LFX9XcRwDD3a5ixqumjXkYTxOy56PhH4AkVTT1VpeXNAJUcOxY4edA0iW2k82Xt
- i/hjVJpFQhiPpetcdemKyDJzqn7wYmOBhkAv5jnRqe+B616yby77j13jXRb1wYFDzt3J
- Hkoqh8jdcGRgBt4vR9gAnJ3U3k9J7Fj6iMUNlyhfyWaS6CMrLSo0jHTjfjpBcMW293ym
- v8qLWs3TWr1ArAqpXc8vVvSqzZomk0d2/UaoAtbg9MrOpfATaCVTLoAaEaGAlFrTvQyL
- PkBAN5irUFhxWS16SlS3+g797sQlzrf+IOiqZRenpUhhX4P7ZX4srBAcIaPsT6y0zqro DQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2w12er2w4j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Nov 2019 01:54:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA51s94d028973;
-        Tue, 5 Nov 2019 01:54:23 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2w2wcgf871-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Nov 2019 01:54:23 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xA51sMjd009059;
-        Tue, 5 Nov 2019 01:54:22 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 04 Nov 2019 17:54:21 -0800
-Subject: [PATCH 2/2] e2scrub_all: fix broken stdin redirection
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     tytso@mit.edu, darrick.wong@oracle.com
-Cc:     linux-ext4@vger.kernel.org, gregor herrmann <gregoa@debian.org>
-Date:   Mon, 04 Nov 2019 17:54:20 -0800
-Message-ID: <157291886085.328601.12219484583340581878.stgit@magnolia>
-In-Reply-To: <157291884852.328601.5452592601628272222.stgit@magnolia>
-References: <157291884852.328601.5452592601628272222.stgit@magnolia>
-User-Agent: StGit/0.17.1-dirty
+        id S1729822AbfKECql (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 Nov 2019 21:46:41 -0500
+Received: from outbound.smtp.vt.edu ([198.82.183.121]:38192 "EHLO
+        omr2.cc.vt.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729596AbfKECqk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 Nov 2019 21:46:40 -0500
+Received: from mr6.cc.vt.edu (mr6.cc.ipv6.vt.edu [IPv6:2607:b400:92:8500:0:af:2d00:4488])
+        by omr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id xA52kbGA027471
+        for <linux-ext4@vger.kernel.org>; Mon, 4 Nov 2019 21:46:37 -0500
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com [209.85.222.199])
+        by mr6.cc.vt.edu (8.14.7/8.14.7) with ESMTP id xA52kWav027480
+        for <linux-ext4@vger.kernel.org>; Mon, 4 Nov 2019 21:46:37 -0500
+Received: by mail-qk1-f199.google.com with SMTP id x186so19888177qke.13
+        for <linux-ext4@vger.kernel.org>; Mon, 04 Nov 2019 18:46:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=RZNcm7tJHE7PJ/B2fVNd5i/u7+ifnx25OIt2h3zpLOo=;
+        b=gZmH2jkm8i8CNWqf5NxvG3ROo0AqdRro7VnyedtjtqGbteOGWL2zPt30A0qWttXq+c
+         v3UoCrmiYbKfvzR4akdLvIr2qBUEotSVU+rXPz2OGqdq7ac9ONC6bSfEYih6jGfv0nkd
+         83qFzYUVQirmR8X2qRosm4+o2JQH/h6JIwtjmBqpcJ/plJNacVJN7QY59aKP1Qvju6/Z
+         7vjhHGvH7iwv7w6JRQCHxpUllu4S50rECQJoXxpjTl69YerrQanDIVvcYibwX7GUeHZh
+         1kIwD+q2cihBNwTUbqEKNT9+2c9FoSPLHLNqENkPkVOqxmt48M/+PpKEdVL7MjxTdy1j
+         F67g==
+X-Gm-Message-State: APjAAAUl0sk6YzkOTGqs0Oe2cm4y+BBZLmg/l+XSAsvr1Xs376v8Gm8t
+        WMyWdNBohnDmbyiefFwX9G1kQLEowZiB0K1l0XHZc48A5Hx0TvbQ9z1figlocMx28/CNG6rFcq4
+        QLyXQ/1cq9fyq/er6/DKoeH/4ZY3nUf/i
+X-Received: by 2002:ad4:5349:: with SMTP id v9mr23621306qvs.55.1572921992488;
+        Mon, 04 Nov 2019 18:46:32 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyXzA6HviTv6QlEgIOFkTmQMi16KNYqK2sd8+KO7QEzhWvkSciXAH9zdUWTp/6s496+Fl8aKA==
+X-Received: by 2002:ad4:5349:: with SMTP id v9mr23621285qvs.55.1572921992189;
+        Mon, 04 Nov 2019 18:46:32 -0800 (PST)
+Received: from turing-police.lan ([2601:5c0:c001:c9e1::359])
+        by smtp.gmail.com with ESMTPSA id s21sm12156815qtc.12.2019.11.04.18.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Nov 2019 18:46:30 -0800 (PST)
+From:   Valdis Kletnieks <valdis.kletnieks@vt.edu>
+X-Google-Original-From: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
+Cc:     Valdis Kletnieks <Valdis.Kletnieks@vt.edu>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, Jan Kara <jack@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-arch@vger.kernel.org
+Subject: [PATCH 1/1] errno.h: Provide EFSBADCRC for everybody
+Date:   Mon,  4 Nov 2019 21:46:14 -0500
+Message-Id: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
+X-Mailer: git-send-email 2.24.0.rc1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9431 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=9 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1911050013
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9431 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=9 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1911050013
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+Four filesystems have their own defines for this. Move it
+into errno.h so it's defined in just one place.
 
-gregor herrmann reports that the weekly e2scrub cronjob emits these
-errors:
-
-/sbin/e2scrub_all: line 173: /proc/8234/fd/pipe:[90083173]: No such file or directory
-
-The root cause of this is that the ls_targets stdout is piped to stdin
-to the entire ls_targets loop body to prevent the loop body from reading
-the loop iteration items.  Remove all the broken hackery by reading the
-target list into a bash array and iterating the bash array.
-
-Addresses-Debian-Bug: #944033
-
-Reported-by: gregor herrmann <gregoa@debian.org>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
 ---
- scrub/e2scrub_all.in |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ fs/ext4/ext4.h                   | 2 --
+ fs/f2fs/f2fs.h                   | 2 --
+ fs/xfs/xfs_linux.h               | 1 -
+ include/linux/jbd2.h             | 2 --
+ include/uapi/asm-generic/errno.h | 1 +
+ 5 files changed, 1 insertion(+), 7 deletions(-)
 
-
-diff --git a/scrub/e2scrub_all.in b/scrub/e2scrub_all.in
-index 72e66ff6..f0336711 100644
---- a/scrub/e2scrub_all.in
-+++ b/scrub/e2scrub_all.in
-@@ -101,6 +101,12 @@ exec 3<&-
- # indicating success to avoid spamming the sysadmin with fail messages
- # when e2scrub_all is run out of cron or a systemd timer.
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index a86c2585457d..79b3fd8291ab 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3395,6 +3395,4 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
  
-+if ! type mapfile >& /dev/null ; then
-+    test -n "${SERVICE_MODE}" && exitcode 0
-+    echo "e2scrub_all: can't find mapfile --- is bash 4.xx installed?"
-+    exitcode 1
-+fi
-+
- if ! type lsblk >& /dev/null ; then
-     test -n "${SERVICE_MODE}" && exitcode 0
-     echo "e2scrub_all: can't find lsblk --- is util-linux installed?"
-@@ -165,13 +171,13 @@ escape_path_for_systemd() {
+ #endif	/* __KERNEL__ */
+ 
+-#define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+-
+ #endif	/* _EXT4_H */
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 04ebe77569a3..ba23fd18d44a 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3751,6 +3751,4 @@ static inline bool is_journalled_quota(struct f2fs_sb_info *sbi)
+ 	return false;
  }
  
- # Scrub any mounted fs on lvm by creating a snapshot and fscking that.
--stdin="$(realpath /dev/stdin)"
--ls_targets | while read tgt; do
-+mapfile -t targets < <(ls_targets)
-+for tgt in "${targets[@]}"; do
- 	# If we're not reaping and systemd is present, try invoking the
- 	# systemd service.
- 	if [ "${reap}" -ne 1 ] && type systemctl > /dev/null 2>&1; then
- 		tgt_esc="$(escape_path_for_systemd "${tgt}")"
--		${DBG} systemctl start "e2scrub@${tgt_esc}" 2> /dev/null < "${stdin}"
-+		${DBG} systemctl start "e2scrub@${tgt_esc}" 2> /dev/null
- 		res=$?
- 		if [ "${res}" -eq 0 ] || [ "${res}" -eq 1 ]; then
- 			continue;
-@@ -179,7 +185,7 @@ ls_targets | while read tgt; do
- 	fi
+-#define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+-
+ #endif /* _LINUX_F2FS_H */
+diff --git a/fs/xfs/xfs_linux.h b/fs/xfs/xfs_linux.h
+index 3409d02a7d21..abdfc506618d 100644
+--- a/fs/xfs/xfs_linux.h
++++ b/fs/xfs/xfs_linux.h
+@@ -123,7 +123,6 @@ typedef __u32			xfs_nlink_t;
  
- 	# Otherwise use direct invocation
--	${DBG} "@root_sbindir@/e2scrub" ${scrub_args} "${tgt}" < "${stdin}"
-+	${DBG} "@root_sbindir@/e2scrub" ${scrub_args} "${tgt}"
- done
+ #define ENOATTR		ENODATA		/* Attribute not found */
+ #define EWRONGFS	EINVAL		/* Mount with wrong filesystem type */
+-#define EFSBADCRC	EBADMSG		/* Bad CRC detected */
  
- exitcode 0
+ #define SYNCHRONIZE()	barrier()
+ #define __return_address __builtin_return_address(0)
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 69411d7e0431..e07692fe6f20 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1656,6 +1656,4 @@ static inline tid_t  jbd2_get_latest_transaction(journal_t *journal)
+ 
+ #endif	/* __KERNEL__ */
+ 
+-#define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+-
+ #endif	/* _LINUX_JBD2_H */
+diff --git a/include/uapi/asm-generic/errno.h b/include/uapi/asm-generic/errno.h
+index 1d5ffdf54cb0..e4cae9a9ae79 100644
+--- a/include/uapi/asm-generic/errno.h
++++ b/include/uapi/asm-generic/errno.h
+@@ -55,6 +55,7 @@
+ #define	EMULTIHOP	72	/* Multihop attempted */
+ #define	EDOTDOT		73	/* RFS specific error */
+ #define	EBADMSG		74	/* Not a data message */
++#define EFSBADCRC	EBADMSG	/* Bad CRC detected */
+ #define	EOVERFLOW	75	/* Value too large for defined data type */
+ #define	ENOTUNIQ	76	/* Name not unique on network */
+ #define	EBADFD		77	/* File descriptor in bad state */
+-- 
+2.24.0.rc1
 
