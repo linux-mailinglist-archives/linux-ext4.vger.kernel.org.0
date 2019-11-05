@@ -2,83 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E37F0356
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 17:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26ECF06A3
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2019 21:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390456AbfKEQow (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 Nov 2019 11:44:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41610 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390388AbfKEQoo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 5 Nov 2019 11:44:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 118A4B43A;
-        Tue,  5 Nov 2019 16:44:38 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7F8B91E4AC8; Tue,  5 Nov 2019 17:44:37 +0100 (CET)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 25/25] jbd2: Fine tune estimate of necessary descriptor blocks
-Date:   Tue,  5 Nov 2019 17:44:31 +0100
-Message-Id: <20191105164437.32602-25-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20191003215523.7313-1-jack@suse.cz>
-References: <20191003215523.7313-1-jack@suse.cz>
+        id S1727132AbfKEUHp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 Nov 2019 15:07:45 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45534 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726141AbfKEUHp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 Nov 2019 15:07:45 -0500
+Received: from dread.disaster.area (pa49-180-67-183.pa.nsw.optusnet.com.au [49.180.67.183])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 340A77E7AB3;
+        Wed,  6 Nov 2019 07:07:40 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1iS574-0006S9-TG; Wed, 06 Nov 2019 07:07:38 +1100
+Date:   Wed, 6 Nov 2019 07:07:38 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Valdis Kletnieks <valdis.kletnieks@vt.edu>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, Jan Kara <jack@suse.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 1/1] errno.h: Provide EFSBADCRC for everybody
+Message-ID: <20191105200045.GD4614@dread.disaster.area>
+References: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191105024618.194134-1-Valdis.Kletnieks@vt.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=G6BsK5s5 c=1 sm=1 tr=0
+        a=3wLbm4YUAFX2xaPZIabsgw==:117 a=3wLbm4YUAFX2xaPZIabsgw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=MeAgGD-zjQ4A:10
+        a=7-415B0cAAAA:8 a=rJHQ1rk6g6_wif3L1mMA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently we reserve j_max_transaction_buffers / 32 for transaction
-descriptor blocks. Now that revoke descriptors are accounted for
-separately this estimate is unnecessarily high and we can actually
-compute much tighter estimate. In the common case of 32k journal blocks
-and 4k blocksize this actually reduces the amount of reserved descriptor
-blocks from 256 to ~25 which allows us to fit more real data into a
-transaction.
+On Mon, Nov 04, 2019 at 09:46:14PM -0500, Valdis Kletnieks wrote:
+> Four filesystems have their own defines for this. Move it
+> into errno.h so it's defined in just one place.
+> 
+> Signed-off-by: Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/jbd2/transaction.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+Looks good, minor nit below:
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index a3374c1a3d41..a9d3a2208506 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -63,14 +63,25 @@ void jbd2_journal_free_transaction(transaction_t *transaction)
- }
- 
- /*
-- * We reserve t_outstanding_credits >> JBD2_CONTROL_BLOCKS_SHIFT for
-- * transaction descriptor blocks.
-+ * Base amount of descriptor blocks we reserve for each transaction.
-  */
--#define JBD2_CONTROL_BLOCKS_SHIFT 5
--
- static int jbd2_descriptor_blocks_per_trans(journal_t *journal)
- {
--	return journal->j_max_transaction_buffers >> JBD2_CONTROL_BLOCKS_SHIFT;
-+	int tag_space = journal->j_blocksize - sizeof(journal_header_t);
-+	int tags_per_block;
-+
-+	/* Subtract UUID */
-+	tag_space -= 16;
-+	if (jbd2_journal_has_csum_v2or3(journal))
-+		tag_space -= sizeof(struct jbd2_journal_block_tail);
-+	/* Commit code leaves a slack space of 16 bytes at the end of block */
-+	tags_per_block = (tag_space - 16) / journal_tag_bytes(journal);
-+	/*
-+	 * Revoke descriptors are accounted separately so we need to reserve
-+	 * space for commit block and normal transaction descriptor blocks.
-+	 */
-+	return 1 + DIV_ROUND_UP(journal->j_max_transaction_buffers,
-+				tags_per_block);
- }
- 
- /*
+> diff --git a/include/uapi/asm-generic/errno.h b/include/uapi/asm-generic/errno.h
+> index 1d5ffdf54cb0..e4cae9a9ae79 100644
+> --- a/include/uapi/asm-generic/errno.h
+> +++ b/include/uapi/asm-generic/errno.h
+> @@ -55,6 +55,7 @@
+>  #define	EMULTIHOP	72	/* Multihop attempted */
+>  #define	EDOTDOT		73	/* RFS specific error */
+>  #define	EBADMSG		74	/* Not a data message */
+> +#define EFSBADCRC	EBADMSG	/* Bad CRC detected */
+
+Inconsistent whitespace here. When you get tab vs space after
+#define wrong it only shows up in patches. :/
+
+Cheers,
+
+Dave.
 -- 
-2.16.4
-
+Dave Chinner
+david@fromorbit.com
