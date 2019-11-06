@@ -2,103 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 531AFF12B9
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 10:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3A2F137E
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 11:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731663AbfKFJt1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 6 Nov 2019 04:49:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47664 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731379AbfKFJt0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 6 Nov 2019 04:49:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 14C48B46C;
-        Wed,  6 Nov 2019 09:49:25 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8165C1E47E5; Wed,  6 Nov 2019 10:49:24 +0100 (CET)
-Date:   Wed, 6 Nov 2019 10:49:24 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     Jan Kara <jack@suse.cz>,
-        "adilger.kernel" <adilger.kernel@dilger.ca>, tytso <tytso@mit.edu>,
-        Jan Kara <jack@suse.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v2] ext4: choose hardlimit when softlimit is larger than
- hardlimit in ext4_statfs_project()
-Message-ID: <20191106094924.GA16085@quack2.suse.cz>
-References: <20191015102327.5333-1-cgxu519@mykernel.net>
- <20191015112523.GB29554@quack2.suse.cz>
- <16e3f00ed3d.da5d5acd1285.2289879597060795256@mykernel.net>
+        id S1727628AbfKFKMM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 6 Nov 2019 05:12:12 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26722 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726891AbfKFKMM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 Nov 2019 05:12:12 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xA6A63ht051306
+        for <linux-ext4@vger.kernel.org>; Wed, 6 Nov 2019 05:12:11 -0500
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2w3v4d85qe-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Wed, 06 Nov 2019 05:12:11 -0500
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Wed, 6 Nov 2019 10:12:09 -0000
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 6 Nov 2019 10:12:06 -0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xA6AC45R42205354
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Nov 2019 10:12:05 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4510A405B;
+        Wed,  6 Nov 2019 10:12:04 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 73814A4059;
+        Wed,  6 Nov 2019 10:12:03 +0000 (GMT)
+Received: from [9.199.158.77] (unknown [9.199.158.77])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  6 Nov 2019 10:12:03 +0000 (GMT)
+Subject: Re: [bug report] ext4: Add support for blocksize < pagesize in
+ dioread_nolock
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Jan Kara <jack@suse.cz>,
+        Matthew Bobrowski <mbobrowski@mbobrowski.org>
+References: <20191106082505.GA31923@mwanda>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Wed, 6 Nov 2019 15:42:02 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <16e3f00ed3d.da5d5acd1285.2289879597060795256@mykernel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191106082505.GA31923@mwanda>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19110610-4275-0000-0000-0000037B41BE
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19110610-4276-0000-0000-0000388E8EFD
+Message-Id: <20191106101203.73814A4059@d06av23.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-06_02:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=840 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1911060102
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 06-11-19 12:37:35, Chengguang Xu wrote:
->  ---- 在 星期二, 2019-10-15 19:25:23 Jan Kara <jack@suse.cz> 撰写 ----
->  > On Tue 15-10-19 18:23:27, Chengguang Xu wrote:
->  > > Setting softlimit larger than hardlimit seems meaningless
->  > > for disk quota but currently it is allowed. In this case,
->  > > there may be a bit of comfusion for users when they run
->  > > df comamnd to directory which has project quota.
->  > > 
->  > > For example, we set 20M softlimit and 10M hardlimit of
->  > > block usage limit for project quota of test_dir(project id 123).
->  > > 
->  > > [root@hades mnt_ext4]# repquota -P -a
->  > > *** Report for project quotas on device /dev/loop0
->  > > Block grace time: 7days; Inode grace time: 7days
->  > >                         Block limits                File limits
->  > > Project         used    soft    hard  grace    used  soft  hard  grace
->  > > ----------------------------------------------------------------------
->  > >  0        --      13       0       0              2     0     0
->  > >  123      --   10237   20480   10240              5   200   100
->  > > 
->  > > The result of df command as below:
->  > > 
->  > > [root@hades mnt_ext4]# df -h test_dir
->  > > Filesystem      Size  Used Avail Use% Mounted on
->  > > /dev/loop0       20M   10M   10M  50% /home/cgxu/test/mnt_ext4
->  > > 
->  > > Even though it looks like there is another 10M free space to use,
->  > > if we write new data to diretory test_dir(inherit project id),
->  > > the write will fail with errno(-EDQUOT).
->  > > 
->  > > After this patch, the df result looks like below.
->  > > 
->  > > [root@hades mnt_ext4]# df -h test_dir
->  > > Filesystem      Size  Used Avail Use% Mounted on
->  > > /dev/loop0       10M   10M  3.0K 100% /home/cgxu/test/mnt_ext4
->  > > 
->  > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
->  > > ---
->  > > - Fix a bug in the limit setting logic.
->  > 
->  > Thanks for the patch! It looks good to me. You can add:
->  > 
->  > Reviewed-by: Jan Kara <jack@suse.cz>
->  > 
+Thanks Dan for reporting this.
+
+On 11/6/19 1:55 PM, Dan Carpenter wrote:
+> Hello Ritesh Harjani,
 > 
-> Hi Jan,
+> The patch c8cc88163f40: "ext4: Add support for blocksize < pagesize
+> in dioread_nolock" from Oct 16, 2019, leads to the following static
+> checker warning:
 > 
-> I have a proposal for another direction.
-> Could we add a check for soft limit  in quota layer when setting the value?
-> So that we could not bother with  specific file systems on statfs(). 
+> fs/ext4/inode.c:2390 mpage_process_page() error: 'io_end_vec' dereferencing possible ERR_PTR()
+> fs/ext4/inode.c:2557 mpage_map_and_submit_extent() error: 'io_end_vec' dereferencing possible ERR_PTR()
+> fs/ext4/inode.c:3677 ext4_end_io_dio() error: 'io_end_vec' dereferencing possible ERR_PTR()
 
-What do you mean exactly? To not allow softlimit to be larger than
-hardlimit? That would make some sense but I don't think the risk of
-breaking some user that accidentally depends on current behavior is worth
-the few checks we can save...
+ext4_end_io_dio func is removed on recent ext4 master branch.
+It got removed in ext4 iomap DIO patches. So my patch
+(which is based on today's ext4 master branch) does not covers
+for ext4_end_io_dio().
 
-								Honza
+-ritesh
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
