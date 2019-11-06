@@ -2,93 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3A2F137E
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 11:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A453F139A
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 11:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727628AbfKFKMM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 6 Nov 2019 05:12:12 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26722 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726891AbfKFKMM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 Nov 2019 05:12:12 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xA6A63ht051306
-        for <linux-ext4@vger.kernel.org>; Wed, 6 Nov 2019 05:12:11 -0500
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2w3v4d85qe-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Wed, 06 Nov 2019 05:12:11 -0500
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Wed, 6 Nov 2019 10:12:09 -0000
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 6 Nov 2019 10:12:06 -0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xA6AC45R42205354
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Nov 2019 10:12:05 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D4510A405B;
-        Wed,  6 Nov 2019 10:12:04 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73814A4059;
-        Wed,  6 Nov 2019 10:12:03 +0000 (GMT)
-Received: from [9.199.158.77] (unknown [9.199.158.77])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  6 Nov 2019 10:12:03 +0000 (GMT)
-Subject: Re: [bug report] ext4: Add support for blocksize < pagesize in
- dioread_nolock
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Jan Kara <jack@suse.cz>,
-        Matthew Bobrowski <mbobrowski@mbobrowski.org>
-References: <20191106082505.GA31923@mwanda>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Wed, 6 Nov 2019 15:42:02 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727961AbfKFKPR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 6 Nov 2019 05:15:17 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:59259 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725856AbfKFKPR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 Nov 2019 05:15:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573035316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YP9EVR09MZiKrv4YS5q3sHAfg7F5RhYfSOQz4XcaRn8=;
+        b=Xsz4LBaL4imyvCg4/bpiZjkng1bbSPNUyGiFe8hZRRANMr7qSO5l8Pe92wLwvR3V9bICX8
+        yFqsqrtxYUhru6DbTiP7C+Rm/XG1me5rPEEMam0QystX2DMV7KO6AQfW0UJ+RxFKcH80S2
+        0XKNEYRjMcQeV/Yi1fokrBxgzwzCrsA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-1B2Z87_4PECyQ1xq5oCFmg-1; Wed, 06 Nov 2019 05:15:14 -0500
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C828C1005500;
+        Wed,  6 Nov 2019 10:15:13 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.40.205.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 665EC26DC5;
+        Wed,  6 Nov 2019 10:15:10 +0000 (UTC)
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Theodore Ts'o <tytso@mit.edu>, David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: ext4: new mount API conversion
+Date:   Wed,  6 Nov 2019 11:14:40 +0100
+Message-Id: <20191106101457.11237-1-lczerner@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20191106082505.GA31923@mwanda>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 19110610-4275-0000-0000-0000037B41BE
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19110610-4276-0000-0000-0000388E8EFD
-Message-Id: <20191106101203.73814A4059@d06av23.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-06_02:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=840 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1911060102
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MC-Unique: 1B2Z87_4PECyQ1xq5oCFmg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks Dan for reporting this.
+The following patch converts the ext4 to use the new mount API
+(Documentation/filesystems/mount_api.txt).
 
-On 11/6/19 1:55 PM, Dan Carpenter wrote:
-> Hello Ritesh Harjani,
-> 
-> The patch c8cc88163f40: "ext4: Add support for blocksize < pagesize
-> in dioread_nolock" from Oct 16, 2019, leads to the following static
-> checker warning:
-> 
-> fs/ext4/inode.c:2390 mpage_process_page() error: 'io_end_vec' dereferencing possible ERR_PTR()
-> fs/ext4/inode.c:2557 mpage_map_and_submit_extent() error: 'io_end_vec' dereferencing possible ERR_PTR()
-> fs/ext4/inode.c:3677 ext4_end_io_dio() error: 'io_end_vec' dereferencing possible ERR_PTR()
+The series can be applied on top of the current mainline tree and the work
+is based on the patches from David Howells (thank you David). It was built
+and tested with xfstests and custom script to check all ext4 mount options
+and some valid/invalid combinations.
 
-ext4_end_io_dio func is removed on recent ext4 master branch.
-It got removed in ext4 iomap DIO patches. So my patch
-(which is based on today's ext4 master branch) does not covers
-for ext4_end_io_dio().
+This series also requires a small fix to the parsing infrastructure from
+David Howells which has not been adopted yet - "vfs: Handle
+fs_param_neg_with_empty"
 
--ritesh
+I've tried to avoid big unrelated changes to the original ext4_fill_super()
+and ext4_remount, though it could definitelly use some cleanup. This can
+be done after the conversion with a separate patch set.
+
+-Lukas
+
+---
+
+David Howells (1):
+=09[PATCH 01/17] vfs: Handle fs_param_neg_with_empty
+
+Lukas Czerner (16):
+=09[PATCH 02/17] ext4: Add fs parameter description
+=09[PATCH 03/17] ext4: Refactor parse_options
+=09[PATCH 04/17] ext4: handle_mount_opt use fs_parameter
+=09[PATCH 05/17] ext4: Allow sb to be NULL in ext4_msg()
+=09[PATCH 06/17] ext4: move quota configuration out of
+=09[PATCH 07/17] ext4: check ext2/3 compatibility outside
+=09[PATCH 08/17] ext4: get rid of super block and sbi from
+=09[PATCH 09/17] ext4: parse Opt_sb in handle_mount_opt()
+=09[PATCH 10/17] ext4: clean up return values in handle_mount_opt()
+=09[PATCH 11/17] ext4: mount api: add ext4_get_tree
+=09[PATCH 12/17] ext4: refactor ext4_remount()
+=09[PATCH 13/17] ext4: mount api: add ext4_reconfigure
+=09[PATCH 14/17] ext4: mount api: add ext4_fc_free
+=09[PATCH 15/17] ext4: mount api: switch to the new mount api
+=09[PATCH 16/17] ext4: change token2str() to use ext4_param_specs
+=09[PATCH 17/17] ext4: Remove unused code from old mount api
+
+
+fs/ext4/super.c           | 1858 ++++++++++++++++++++++--------------
+fs/fs_parser.c            |    5
+include/linux/fs_parser.h |    6
+3 files changed, 1147 insertions(+), 722 deletions(-)
 
