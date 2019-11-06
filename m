@@ -2,67 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C66D3F1C5F
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 18:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6961F204C
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 22:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732246AbfKFRXE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 6 Nov 2019 12:23:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48946 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729259AbfKFRXE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 6 Nov 2019 12:23:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B5790B498;
-        Wed,  6 Nov 2019 17:23:02 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 546B61E4353; Wed,  6 Nov 2019 18:23:02 +0100 (CET)
-Date:   Wed, 6 Nov 2019 18:23:02 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org
-Subject: Re: [RFC 0/5] Ext4: Add support for blocksize < pagesize for
- dioread_nolock
-Message-ID: <20191106172302.GE12685@quack2.suse.cz>
-References: <20191016073711.4141-1-riteshh@linux.ibm.com>
+        id S1727949AbfKFVEg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 6 Nov 2019 16:04:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727351AbfKFVEg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 6 Nov 2019 16:04:36 -0500
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D4E020663;
+        Wed,  6 Nov 2019 21:04:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573074274;
+        bh=gjl0DiLR6wZlVim/nV2ye21G7PfWS65h/U6LfKQDhOI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ar8VeiM8q2OQT8IoJYh3V+TV427A/Ul9oo2Nc+bBlNFftOaldwb8dJEju6gXLLTK/
+         c5jxp1YbNtAI2dpDUDyh2rsJ6O/CA8ifSHEB7Cem82mpMWsqXgP77/aM3UnnzJ9dOF
+         8vWJsJMWS7Rj2CGh8Qbh4EcGZaPviVhm4mbJmIo0=
+Date:   Wed, 6 Nov 2019 13:04:33 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Satya Tangirala <satyat@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
+Subject: Re: [PATCH v2 0/3] fscrypt: support for IV_INO_LBLK_64 policies
+Message-ID: <20191106210432.GB139580@gmail.com>
+Mail-Followup-To: linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Satya Tangirala <satyat@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        linux-fsdevel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-ext4@vger.kernel.org, Paul Crowley <paulcrowley@google.com>
+References: <20191024215438.138489-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191016073711.4141-1-riteshh@linux.ibm.com>
+In-Reply-To: <20191024215438.138489-1-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 16-10-19 13:07:06, Ritesh Harjani wrote:
-> This patch series adds the support for blocksize < pagesize for
-> dioread_nolock feature.
+On Thu, Oct 24, 2019 at 02:54:35PM -0700, Eric Biggers wrote:
+> Hello,
 > 
-> Since in case of blocksize < pagesize, we can have multiple
-> small buffers of page as unwritten extents, we need to
-> maintain a vector of these unwritten extents which needs
-> the conversion after the IO is complete. Thus, we maintain
-> a list of tuple <offset, size> pair (io_end_vec) for this &
-> traverse this list to do the unwritten to written conversion.
+> In preparation for adding inline encryption support to fscrypt, this
+> patchset adds a new fscrypt policy flag which modifies the encryption to
+> be optimized for inline encryption hardware compliant with the UFS v2.1
+> standard or the upcoming version of the eMMC standard.
 > 
-> Appreciate any reviews/comments on this patches.
+> This means using per-mode keys instead of per-file keys, and in
+> compensation including the inode number in the IVs.  For ext4, this
+> precludes filesystem shrinking, so I've also added a compat feature
+> which will prevent the filesystem from being shrunk.
+> 
+> I've separated this from the full "Inline Encryption Support" patchset
+> (https://lkml.kernel.org/linux-fsdevel/20190821075714.65140-1-satyat@google.com/)
+> to avoid conflating an implementation (inline encryption) with a new
+> on-disk format (IV_INO_LBLK_64).  This patchset purely adds support for
+> IV_INO_LBLK_64 policies to fscrypt, but implements them using the
+> existing filesystem layer crypto.
+> 
+> We're planning to make the *implementation* (filesystem layer or inline
+> crypto) be controlled by a mount option '-o inlinecrypt'.
+> 
+> This patchset applies to fscrypt.git#master and can also be retrieved from
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-crypt-optimized-v2
+> 
+> I've written a ciphertext verification test for this new type of policy:
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git/log/?h=inline-encryption
+> 
+> Work-in-progress patches for the inline encryption implementation of
+> both IV_INO_LBLK_64 and regular policies can be found at
+> https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=inline-encryption-wip
+> 
+> Changes v1 => v2:
+> 
+> - Rename the flag from INLINE_CRYPT_OPTIMIZED to IV_INO_LBLK_64.
+> 
+> - Use the same key derivation and IV generation scheme for filenames
+>   encryption too.
+> 
+> - Improve the documentation and commit messages.
+> 
+> Eric Biggers (3):
+>   fscrypt: add support for IV_INO_LBLK_64 policies
+>   ext4: add support for IV_INO_LBLK_64 encryption policies
+>   f2fs: add support for IV_INO_LBLK_64 encryption policies
+> 
+>  Documentation/filesystems/fscrypt.rst | 63 +++++++++++++++++----------
+>  fs/crypto/crypto.c                    | 10 ++++-
+>  fs/crypto/fscrypt_private.h           | 16 +++++--
+>  fs/crypto/keyring.c                   |  6 ++-
+>  fs/crypto/keysetup.c                  | 45 ++++++++++++++-----
+>  fs/crypto/policy.c                    | 41 ++++++++++++++++-
+>  fs/ext4/ext4.h                        |  2 +
+>  fs/ext4/super.c                       | 14 ++++++
+>  fs/f2fs/super.c                       | 26 ++++++++---
+>  include/linux/fscrypt.h               |  3 ++
+>  include/uapi/linux/fscrypt.h          |  3 +-
+>  11 files changed, 182 insertions(+), 47 deletions(-)
+> 
+> -- 
 
-I know Ted has merged the patches already so this is just informational but
-I've read the patches and they look fine to me. Thanks for the work! I was
-just thinking that we could actually make the vector tracking more
-efficient because the io_end always looks like:
+Applied to fscrypt.git#master for 5.5.
 
-one-big-extent-to-fully-write + whatever it takes to fully write out the
-last page
-
-So your vectors could be also expressed as "extent to write" + bitmap of
-blocks written in the last page. And 64-bits are enough for the bitmap for
-anything ext4 supports so we could easily save allocation of ioend_vec etc.
-Just a suggestion.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+- Eric
