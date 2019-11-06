@@ -2,118 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20259F10FD
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 09:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A206AF1123
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 09:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730246AbfKFIZQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 6 Nov 2019 03:25:16 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:34486 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729951AbfKFIZQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 Nov 2019 03:25:16 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA68OAYh068300;
-        Wed, 6 Nov 2019 08:25:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
- bh=YbvCGM50D19noC6b26GDzY6B6H0xo3nblZ6QUqNP7N4=;
- b=MBL9/Ijml7igTtHsqHCiFpKF8dT4Im3cYfxFDRyW0Kdc3dF1jsbgqZ1CiB4KozzW9GUk
- QlL/xnfaiAEkNoGk9Upd84KJ4p7ZlHRxiy0KaU4lmnksgeVZVvxVPeIlXYMzqmRctKd2
- 4hk62JapkuSUWvnrU8t1hW+qHXH7oGQS2jMFfjGigAC7BI52XAGXVg9d/UJ38YrKn+ep
- 23QzSE+uKZ9J/wl/QwzXE0uvxi7BF+CCmQiy7mp4qYq2CaGmhYvRyucn+VjX+XuEPlTB
- skuCrG3HpF3xaiUzvEdmo3OLqWUSJa7cPK0zlmwfBjZQJnlxfJgPcfsok1t7Ik1Q3MtH wg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2w11rq47cp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Nov 2019 08:25:13 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA68OAti121246;
-        Wed, 6 Nov 2019 08:25:12 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2w2wcpd426-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Nov 2019 08:25:12 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xA68PBtn011835;
-        Wed, 6 Nov 2019 08:25:11 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 Nov 2019 00:25:10 -0800
-Date:   Wed, 6 Nov 2019 11:25:05 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     riteshh@linux.ibm.com
-Cc:     linux-ext4@vger.kernel.org
-Subject: [bug report] ext4: Add support for blocksize < pagesize in
- dioread_nolock
-Message-ID: <20191106082505.GA31923@mwanda>
+        id S1730088AbfKFIfC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 6 Nov 2019 03:35:02 -0500
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25345 "EHLO
+        sender3-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727159AbfKFIfC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 Nov 2019 03:35:02 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1573029266; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=Mddu0dGuv6sdZHdyUaxH1UCAmQrxozWCuJdhGPrU9JC33+ETYjQfTQE/dw1pD8qeZ5HQNgEpAjvORYw8xyY6Pa1kcQJpFOX+cDf5a1sj/70nwSiliKuycy9WpFh4MjWbCz88/u+yNJm6kGWMOBg+sVUiz8LiQmSGeglKHcN+zdI=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1573029266; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=88jTmaQ8V5u+M2/dGu6C624eDKCud4CbWGywqy7p/jg=; 
+        b=nOaY4WN2nLYbsQH9JSrY4d8CiiTtPkSGQjHq18UMXpz+WsPm32Fnxv3ST6FQbzeEGS3cvmP2M9olUddXDLmASDgoGG/n8grXASun7ujwRSGzOjXWNlHjo8Pf6b7dOrq15N7GfjS1UdHONU/p2laJOr435j1pP8oquQGT6tRSU2Y=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1573029266;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        l=2731; bh=88jTmaQ8V5u+M2/dGu6C624eDKCud4CbWGywqy7p/jg=;
+        b=Mcmjh8GCmxHR2eQR0ZStqzR74fLCKNC79lobtZidd67wc6WliQY0IVUc+VNFT9j8
+        +MYag7misEVfgjQNjPYPJs+JcfLvYIIL904HBdXW43p0qM11vrztIt77ZAr8UyKqVMI
+        KMLQvZDOzkSKVgp0infjtW0BXdC9yFe2LaD/bjf8=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 15730292643411008.9555114747113; Wed, 6 Nov 2019 16:34:24 +0800 (CST)
+Date:   Wed, 06 Nov 2019 16:34:24 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     "Jan Kara" <jack@suse.cz>,
+        "adilger.kernel" <adilger.kernel@dilger.ca>,
+        "tytso" <tytso@mit.edu>, "Jan Kara" <jack@suse.com>,
+        "linux-ext4" <linux-ext4@vger.kernel.org>
+Message-ID: <16e3fd9bbd0.13ef078cc303.945603942066109125@mykernel.net>
+In-Reply-To: <20191106050336.GD15203@magnolia>
+References: <20191015102327.5333-1-cgxu519@mykernel.net>
+ <20191015112523.GB29554@quack2.suse.cz>
+ <16e3f00ed3d.da5d5acd1285.2289879597060795256@mykernel.net> <20191106050336.GD15203@magnolia>
+Subject: Re: [PATCH v2] ext4: choose hardlimit when softlimit is larger than
+ hardlimit in ext4_statfs_project()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9432 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=686
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1911060088
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9432 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=764 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1911060088
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Priority: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Ritesh Harjani,
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=89, 2019-11-06 13:03:36 Darrick J.=
+ Wong <darrick.wong@oracle.com> =E6=92=B0=E5=86=99 ----
+ > On Wed, Nov 06, 2019 at 12:37:35PM +0800, Chengguang Xu wrote:
+ > >  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=BA=8C, 2019-10-15 19:25:23 Jan K=
+ara <jack@suse.cz> =E6=92=B0=E5=86=99 ----
+ > >  > On Tue 15-10-19 18:23:27, Chengguang Xu wrote:
+ > >  > > Setting softlimit larger than hardlimit seems meaningless
+ > >  > > for disk quota but currently it is allowed. In this case,
+ > >  > > there may be a bit of comfusion for users when they run
+ > >  > > df comamnd to directory which has project quota.
+ > >  > >=20
+ > >  > > For example, we set 20M softlimit and 10M hardlimit of
+ > >  > > block usage limit for project quota of test_dir(project id 123).
+ > >  > >=20
+ > >  > > [root@hades mnt_ext4]# repquota -P -a
+ > >  > > *** Report for project quotas on device /dev/loop0
+ > >  > > Block grace time: 7days; Inode grace time: 7days
+ > >  > >                         Block limits                File limits
+ > >  > > Project         used    soft    hard  grace    used  soft  hard  =
+grace
+ > >  > > -----------------------------------------------------------------=
+-----
+ > >  > >  0        --      13       0       0              2     0     0
+ > >  > >  123      --   10237   20480   10240              5   200   100
+ > >  > >=20
+ > >  > > The result of df command as below:
+ > >  > >=20
+ > >  > > [root@hades mnt_ext4]# df -h test_dir
+ > >  > > Filesystem      Size  Used Avail Use% Mounted on
+ > >  > > /dev/loop0       20M   10M   10M  50% /home/cgxu/test/mnt_ext4
+ > >  > >=20
+ > >  > > Even though it looks like there is another 10M free space to use,
+ > >  > > if we write new data to diretory test_dir(inherit project id),
+ > >  > > the write will fail with errno(-EDQUOT).
+ > >  > >=20
+ > >  > > After this patch, the df result looks like below.
+ > >  > >=20
+ > >  > > [root@hades mnt_ext4]# df -h test_dir
+ > >  > > Filesystem      Size  Used Avail Use% Mounted on
+ > >  > > /dev/loop0       10M   10M  3.0K 100% /home/cgxu/test/mnt_ext4
+ > >  > >=20
+ > >  > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+ > >  > > ---
+ > >  > > - Fix a bug in the limit setting logic.
+ > >  >=20
+ > >  > Thanks for the patch! It looks good to me. You can add:
+ > >  >=20
+ > >  > Reviewed-by: Jan Kara <jack@suse.cz>
+ > >  >=20
+ > >=20
+ > > Hi Jan,
+ > >=20
+ > > I have a proposal for another direction.
+ > > Could we add a check for soft limit  in quota layer when setting the v=
+alue?
+ > > So that we could not bother with  specific file systems on statfs().=
+=20
+ >=20
+ > How do the other filesystems (e.g. xfs) behave if someone tries to set a
+ > soft limit higher than the hard limit?
+ >=20
 
-The patch c8cc88163f40: "ext4: Add support for blocksize < pagesize
-in dioread_nolock" from Oct 16, 2019, leads to the following static
-checker warning:
+In xfs if (hard && hard < soft), the limit will not be set(or changed) but =
+command xfs_quota does not return error.
 
-fs/ext4/inode.c:2390 mpage_process_page() error: 'io_end_vec' dereferencing possible ERR_PTR()
-fs/ext4/inode.c:2557 mpage_map_and_submit_extent() error: 'io_end_vec' dereferencing possible ERR_PTR()
-fs/ext4/inode.c:3677 ext4_end_io_dio() error: 'io_end_vec' dereferencing possible ERR_PTR()
 
-fs/ext4/inode.c
-  2371          bh = head = page_buffers(page);
-  2372          do {
-  2373                  if (lblk < mpd->map.m_lblk)
-  2374                          continue;
-  2375                  if (lblk >= mpd->map.m_lblk + mpd->map.m_len) {
-  2376                          /*
-  2377                           * Buffer after end of mapped extent.
-  2378                           * Find next buffer in the page to map.
-  2379                           */
-  2380                          mpd->map.m_len = 0;
-  2381                          mpd->map.m_flags = 0;
-  2382                          io_end_vec->size += io_end_size;
-  2383                          io_end_size = 0;
-  2384  
-  2385                          err = mpage_process_page_bufs(mpd, head, bh, lblk);
-  2386                          if (err > 0)
-  2387                                  err = 0;
-  2388                          if (!err && mpd->map.m_len && mpd->map.m_lblk > lblk) {
-  2389                                  io_end_vec = ext4_alloc_io_end_vec(io_end);
-                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This allocation can fail.
+Thanks,
+Chengguang
 
-  2390                                  io_end_vec->offset = mpd->map.m_lblk << blkbits;
-                                        ^^^^^^^^^^^^^^^^^^
-Oops
 
-  2391                          }
-  2392                          *map_bh = true;
-  2393                          goto out;
-  2394                  }
-  2395                  if (buffer_delay(bh)) {
-  2396                          clear_buffer_delay(bh);
-  2397                          bh->b_blocknr = pblock++;
-  2398                  }
-  2399                  clear_buffer_unwritten(bh);
-  2400                  io_end_size += (1 << blkbits);
-  2401          } while (lblk++, (bh = bh->b_this_page) != head);
-
-regards,
-dan carpenter
