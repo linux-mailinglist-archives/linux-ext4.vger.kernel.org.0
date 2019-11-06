@@ -2,71 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DE0F1AAE
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 17:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C66D3F1C5F
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 18:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbfKFQBY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 6 Nov 2019 11:01:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42060 "EHLO mx1.suse.de"
+        id S1732246AbfKFRXE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 6 Nov 2019 12:23:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48946 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727074AbfKFQBY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 6 Nov 2019 11:01:24 -0500
+        id S1729259AbfKFRXE (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 6 Nov 2019 12:23:04 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DAD8EB195;
-        Wed,  6 Nov 2019 16:01:22 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B5790B498;
+        Wed,  6 Nov 2019 17:23:02 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B641C1E4353; Wed,  6 Nov 2019 17:01:22 +0100 (CET)
-Date:   Wed, 6 Nov 2019 17:01:22 +0100
+        id 546B61E4353; Wed,  6 Nov 2019 18:23:02 +0100 (CET)
+Date:   Wed, 6 Nov 2019 18:23:02 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 5/5] ext2: fix improper function comment
-Message-ID: <20191106160122.GD12685@quack2.suse.cz>
-References: <20191104114036.9893-1-cgxu519@mykernel.net>
- <20191104114036.9893-5-cgxu519@mykernel.net>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org
+Subject: Re: [RFC 0/5] Ext4: Add support for blocksize < pagesize for
+ dioread_nolock
+Message-ID: <20191106172302.GE12685@quack2.suse.cz>
+References: <20191016073711.4141-1-riteshh@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191104114036.9893-5-cgxu519@mykernel.net>
+In-Reply-To: <20191016073711.4141-1-riteshh@linux.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 04-11-19 19:40:36, Chengguang Xu wrote:
-> Just fix a improper function comment.
+On Wed 16-10-19 13:07:06, Ritesh Harjani wrote:
+> This patch series adds the support for blocksize < pagesize for
+> dioread_nolock feature.
 > 
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+> Since in case of blocksize < pagesize, we can have multiple
+> small buffers of page as unwritten extents, we need to
+> maintain a vector of these unwritten extents which needs
+> the conversion after the IO is complete. Thus, we maintain
+> a list of tuple <offset, size> pair (io_end_vec) for this &
+> traverse this list to do the unwritten to written conversion.
+> 
+> Appreciate any reviews/comments on this patches.
 
-Thanks, applied! I've also fixed @group_first_block as that should be
-@start_block.
+I know Ted has merged the patches already so this is just informational but
+I've read the patches and they look fine to me. Thanks for the work! I was
+just thinking that we could actually make the vector tracking more
+efficient because the io_end always looks like:
+
+one-big-extent-to-fully-write + whatever it takes to fully write out the
+last page
+
+So your vectors could be also expressed as "extent to write" + bitmap of
+blocks written in the last page. And 64-bits are enough for the bitmap for
+anything ext4 supports so we could easily save allocation of ioend_vec etc.
+Just a suggestion.
 
 								Honza
-
-> ---
->  fs/ext2/balloc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-> index 9a9bd566243d..4180467122d0 100644
-> --- a/fs/ext2/balloc.c
-> +++ b/fs/ext2/balloc.c
-> @@ -749,7 +749,7 @@ ext2_try_to_allocate(struct super_block *sb, int group,
->   *		but we will shift to the place where start_block is,
->   *		then start from there, when looking for a reservable space.
->   *
-> - * 	@size: the target new reservation window size
-> + *	@sb: the super block.
->   *
->   * 	@group_first_block: the first block we consider to start
->   *			the real search from
-> -- 
-> 2.20.1
-> 
-> 
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
