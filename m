@@ -2,117 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C465F15CC
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 13:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 635E4F1602
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2019 13:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731608AbfKFMGt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 6 Nov 2019 07:06:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42784 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729164AbfKFMGs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 6 Nov 2019 07:06:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5D96DB20E;
-        Wed,  6 Nov 2019 12:06:46 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 433A01E4862; Wed,  6 Nov 2019 13:06:45 +0100 (CET)
-Date:   Wed, 6 Nov 2019 13:06:45 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     Jan Kara <jack@suse.cz>,
-        "adilger.kernel" <adilger.kernel@dilger.ca>, tytso <tytso@mit.edu>,
-        Jan Kara <jack@suse.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v2] ext4: choose hardlimit when softlimit is larger than
- hardlimit in ext4_statfs_project()
-Message-ID: <20191106120645.GH16085@quack2.suse.cz>
-References: <20191015102327.5333-1-cgxu519@mykernel.net>
- <20191015112523.GB29554@quack2.suse.cz>
- <16e3f00ed3d.da5d5acd1285.2289879597060795256@mykernel.net>
- <20191106094924.GA16085@quack2.suse.cz>
- <16e404d465e.ddfd6f53546.5756417115406096069@mykernel.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <16e404d465e.ddfd6f53546.5756417115406096069@mykernel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728140AbfKFMZN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 6 Nov 2019 07:25:13 -0500
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:56330 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727391AbfKFMZN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 Nov 2019 07:25:13 -0500
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 155792E1536;
+        Wed,  6 Nov 2019 15:25:10 +0300 (MSK)
+Received: from vla5-2bf13a090f43.qloud-c.yandex.net (vla5-2bf13a090f43.qloud-c.yandex.net [2a02:6b8:c18:3411:0:640:2bf1:3a09])
+        by mxbackcorp1o.mail.yandex.net (nwsmtp/Yandex) with ESMTP id B7r0ZSOaEi-P9jqPFrZ;
+        Wed, 06 Nov 2019 15:25:10 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1573043110; bh=VNHTVJgiBUzRXMvTsn/63vksAZQWaIt9D9leamx225k=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=a/qh8MSzvdoEc4YjBPAezu1hAKoFKFK93V3G1EVLp+mXgsAknaQR1048WyF6uXw8B
+         7lGUqot/1NIcGJard1vVrq/k03BwfeAKKeXswhpcRXXBWQqtBfqj0Ec+iF/tuVzL9I
+         uWg7biEO6R7DMh2bhKEoTqAoACOd8YNj7XaqL+9s=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from 95.108.174.193-red.dhcp.yndx.net (95.108.174.193-red.dhcp.yndx.net [95.108.174.193])
+        by vla5-2bf13a090f43.qloud-c.yandex.net (nwsmtp/Yandex) with ESMTPSA id cXS3Q0ownK-P9XWnhYl;
+        Wed, 06 Nov 2019 15:25:09 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Dmitry Monakhov <dmonakhov@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Dmitry Monakhov <dmonakhov@gmail.com>
+Subject: [PATCH] ext4: fix extent_status fragmentation for plain files
+Date:   Wed,  6 Nov 2019 12:25:02 +0000
+Message-Id: <20191106122502.19986-1-dmonakhov@gmail.com>
+X-Mailer: git-send-email 2.18.0
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 06-11-19 18:40:36, Chengguang Xu wrote:
->  ---- 在 星期三, 2019-11-06 17:49:24 Jan Kara <jack@suse.cz> 撰写 ----
->  > On Wed 06-11-19 12:37:35, Chengguang Xu wrote:
->  > >  ---- 在 星期二, 2019-10-15 19:25:23 Jan Kara <jack@suse.cz> 撰写 ----
->  > >  > On Tue 15-10-19 18:23:27, Chengguang Xu wrote:
->  > >  > > Setting softlimit larger than hardlimit seems meaningless
->  > >  > > for disk quota but currently it is allowed. In this case,
->  > >  > > there may be a bit of comfusion for users when they run
->  > >  > > df comamnd to directory which has project quota.
->  > >  > > 
->  > >  > > For example, we set 20M softlimit and 10M hardlimit of
->  > >  > > block usage limit for project quota of test_dir(project id 123).
->  > >  > > 
->  > >  > > [root@hades mnt_ext4]# repquota -P -a
->  > >  > > *** Report for project quotas on device /dev/loop0
->  > >  > > Block grace time: 7days; Inode grace time: 7days
->  > >  > >                         Block limits                File limits
->  > >  > > Project         used    soft    hard  grace    used  soft  hard  grace
->  > >  > > ----------------------------------------------------------------------
->  > >  > >  0        --      13       0       0              2     0     0
->  > >  > >  123      --   10237   20480   10240              5   200   100
->  > >  > > 
->  > >  > > The result of df command as below:
->  > >  > > 
->  > >  > > [root@hades mnt_ext4]# df -h test_dir
->  > >  > > Filesystem      Size  Used Avail Use% Mounted on
->  > >  > > /dev/loop0       20M   10M   10M  50% /home/cgxu/test/mnt_ext4
->  > >  > > 
->  > >  > > Even though it looks like there is another 10M free space to use,
->  > >  > > if we write new data to diretory test_dir(inherit project id),
->  > >  > > the write will fail with errno(-EDQUOT).
->  > >  > > 
->  > >  > > After this patch, the df result looks like below.
->  > >  > > 
->  > >  > > [root@hades mnt_ext4]# df -h test_dir
->  > >  > > Filesystem      Size  Used Avail Use% Mounted on
->  > >  > > /dev/loop0       10M   10M  3.0K 100% /home/cgxu/test/mnt_ext4
->  > >  > > 
->  > >  > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
->  > >  > > ---
->  > >  > > - Fix a bug in the limit setting logic.
->  > >  > 
->  > >  > Thanks for the patch! It looks good to me. You can add:
->  > >  > 
->  > >  > Reviewed-by: Jan Kara <jack@suse.cz>
->  > >  > 
->  > > 
->  > > Hi Jan,
->  > > 
->  > > I have a proposal for another direction.
->  > > Could we add a check for soft limit  in quota layer when setting the value?
->  > > So that we could not bother with  specific file systems on statfs(). 
->  > 
->  > What do you mean exactly? To not allow softlimit to be larger than
->  > hardlimit? That would make some sense but I don't think the risk of
->  > breaking some user that accidentally depends on current behavior is worth
->  > the few checks we can save...
->  > 
->  
-> Actually, I thought exactly same as you when I wrote my patch for
-> statfs() of ext4.  However, even though softlimit > hardlimit, we cannot
-> allow user to use blocks or inode more than hardlimit. IOW, the limit is
-> always there and  fixed in this situation.  So  how about set softlimit
-> to hardlimit when softlimit > hardlimit and return with success?
+It is appeared that extent are not cached for inodes with depth == 0
+which result in suboptimal extent status populating inside ext4_map_blocks()
+by map's result where size requested is usually smaller than extent size so
+cache becomes fragmented
 
-Well, the softlimit > hardlimit won't have any effect but if the hardlimit
-is then raised (e.g. with a tool like edquota(8)), it may suddently start
-having effect. That's why I'm reluctant to just ignore or trim too large
-softlimit.
-								Honza
+# Example: I have plain file:
+File size of /mnt/test is 33554432 (8192 blocks of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..    8191:      40960..     49151:   8192:             last,eof
+
+$ perf record -e 'ext4:ext4_es_*' /root/bin/fio --name=t --direct=0 --rw=randread --bs=4k --filesize=32M --size=32M --filename=/mnt/test
+$ perf script | grep ext4_es_insert_extent | head -n 10
+             fio   131 [000]    13.975421:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [494/1) mapped 41454 status W
+             fio   131 [000]    13.975939:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [6064/1) mapped 47024 status W
+             fio   131 [000]    13.976467:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [6907/1) mapped 47867 status W
+             fio   131 [000]    13.976937:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [3850/1) mapped 44810 status W
+             fio   131 [000]    13.977440:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [3292/1) mapped 44252 status W
+             fio   131 [000]    13.977931:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [6882/1) mapped 47842 status W
+             fio   131 [000]    13.978376:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [3117/1) mapped 44077 status W
+             fio   131 [000]    13.978957:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [2896/1) mapped 43856 status W
+             fio   131 [000]    13.979474:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [7479/1) mapped 48439 status W
+
+This is wrong, we should cache extents inside ext4_find_extent() as we already do for inodes with depth > 0
+
+Signed-off-by: Dmitry Monakhov <dmonakhov@gmail.com>
+---
+ fs/ext4/extents.c | 47 +++++++++++++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index fb0f99d..24d6bfd 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -498,6 +498,30 @@ int ext4_ext_check_inode(struct inode *inode)
+ 	return ext4_ext_check(inode, ext_inode_hdr(inode), ext_depth(inode), 0);
+ }
+ 
++static void  ext4_es_cache_extents(struct inode *inode,
++				   struct ext4_extent_header *eh)
++{
++	struct ext4_extent *ex = EXT_FIRST_EXTENT(eh);
++	ext4_lblk_t prev = 0;
++	int i;
++
++	for (i = le16_to_cpu(eh->eh_entries); i > 0; i--, ex++) {
++		unsigned int status = EXTENT_STATUS_WRITTEN;
++		ext4_lblk_t lblk = le32_to_cpu(ex->ee_block);
++		int len = ext4_ext_get_actual_len(ex);
++
++		if (prev && (prev != lblk))
++			ext4_es_cache_extent(inode, prev, lblk - prev, ~0,
++					     EXTENT_STATUS_HOLE);
++
++		if (ext4_ext_is_unwritten(ex))
++			status = EXTENT_STATUS_UNWRITTEN;
++		ext4_es_cache_extent(inode, lblk, len,
++				     ext4_ext_pblock(ex), status);
++		prev = lblk + len;
++	}
++}
++
+ static struct buffer_head *
+ __read_extent_tree_block(const char *function, unsigned int line,
+ 			 struct inode *inode, ext4_fsblk_t pblk, int depth,
+@@ -532,26 +556,7 @@ __read_extent_tree_block(const char *function, unsigned int line,
+ 	 */
+ 	if (!(flags & EXT4_EX_NOCACHE) && depth == 0) {
+ 		struct ext4_extent_header *eh = ext_block_hdr(bh);
+-		struct ext4_extent *ex = EXT_FIRST_EXTENT(eh);
+-		ext4_lblk_t prev = 0;
+-		int i;
+-
+-		for (i = le16_to_cpu(eh->eh_entries); i > 0; i--, ex++) {
+-			unsigned int status = EXTENT_STATUS_WRITTEN;
+-			ext4_lblk_t lblk = le32_to_cpu(ex->ee_block);
+-			int len = ext4_ext_get_actual_len(ex);
+-
+-			if (prev && (prev != lblk))
+-				ext4_es_cache_extent(inode, prev,
+-						     lblk - prev, ~0,
+-						     EXTENT_STATUS_HOLE);
+-
+-			if (ext4_ext_is_unwritten(ex))
+-				status = EXTENT_STATUS_UNWRITTEN;
+-			ext4_es_cache_extent(inode, lblk, len,
+-					     ext4_ext_pblock(ex), status);
+-			prev = lblk + len;
+-		}
++		ext4_es_cache_extents(inode, eh);
+ 	}
+ 	return bh;
+ errout:
+@@ -899,6 +904,8 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
+ 	path[0].p_bh = NULL;
+ 
+ 	i = depth;
++	if (!(flags & EXT4_EX_NOCACHE) && depth == 0)
++		ext4_es_cache_extents(inode, eh);
+ 	/* walk through the tree */
+ 	while (i) {
+ 		ext_debug("depth %d: num %d, max %d\n",
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.7.4
+
