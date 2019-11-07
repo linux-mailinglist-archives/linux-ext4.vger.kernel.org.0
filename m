@@ -2,101 +2,117 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C50EF2B0C
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Nov 2019 10:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C994F2D3A
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Nov 2019 12:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727434AbfKGJoy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Nov 2019 04:44:54 -0500
-Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25339 "EHLO
-        sender3-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726866AbfKGJoy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Nov 2019 04:44:54 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1573119865; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=SU3RDOaUnLCn1QGmgxhYMtOZHui9oOTqEGZFwcWr6lEwHhNArWGDfzimwthxZJnHEUADwLJONor8kC76CRAmtsj0laxIJtremQPniog+B4NtFEtccLF0X6mWLSl3OV6ortq25wXx3fdORq0t2LsHkVjzWj9uTdM3nt2wxo2MnUA=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1573119865; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=pqYHCzjtbdk0Vsetr9tkPwToVHLSqWDh9kTs/tHPJR8=; 
-        b=dwK5dQV8ZN1jh0dpPFUfuR0qegGRMo+8cUyq61Jzt5/9QGDJHwnBsxxnIpqr7PYSMpVToq/F1SGf54VQWO7MnRj+LuTuQi47qyV/oCvey3FAnJw0GEp2xQ+oCcNeqjz/dKPkHgMNBRx8p7KqXE9vXrDWnuzpXvZOwObwbIwisQM=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1573119865;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        l=1609; bh=pqYHCzjtbdk0Vsetr9tkPwToVHLSqWDh9kTs/tHPJR8=;
-        b=Q0euPC4jEtWv/UBjsEG7GStGlvYZP8+CkUdSDCGd5dqwZYkALpeRVB/hJ0x25DlZ
-        a4sfCcDdZWRKeer4iREAGZ8eZOQA2TeDCgflkH654V2Ak79xxCcm7V7gbOR0Z7o+t7z
-        u4k+RJH4Ze6QvgQi6ll2EtO9dtqcA0IJslFQlPKs=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1573119863323397.8144115962217; Thu, 7 Nov 2019 17:44:23 +0800 (CST)
-Date:   Thu, 07 Nov 2019 17:44:23 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Jan Kara" <jack@suse.cz>
-Cc:     "jack" <jack@suse.com>, "linux-ext4" <linux-ext4@vger.kernel.org>
-Message-ID: <16e45402a18.c7fb3dc01505.2507377017571315195@mykernel.net>
-In-Reply-To: <20191107092117.GA11400@quack2.suse.cz>
-References: <20191104114036.9893-1-cgxu519@mykernel.net>
- <20191104114036.9893-2-cgxu519@mykernel.net>
- <20191106154236.GB12685@quack2.suse.cz>
- <16e43c91b4e.12c0f5d17918.413402503051848643@mykernel.net> <20191107092117.GA11400@quack2.suse.cz>
-Subject: Re: [PATCH 2/5] ext2: code cleanup by calling
- ext2_group_last_block_no()
+        id S2387962AbfKGLRC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Nov 2019 06:17:02 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7692 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727732AbfKGLRC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Nov 2019 06:17:02 -0500
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xA7BAQc2117537
+        for <linux-ext4@vger.kernel.org>; Thu, 7 Nov 2019 06:17:00 -0500
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2w4f6ayrhg-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Thu, 07 Nov 2019 06:16:37 -0500
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Thu, 7 Nov 2019 11:16:04 -0000
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 7 Nov 2019 11:16:01 -0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xA7BG0dv64356470
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Nov 2019 11:16:00 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 04EA6A4053;
+        Thu,  7 Nov 2019 11:16:00 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DEC5FA4059;
+        Thu,  7 Nov 2019 11:15:58 +0000 (GMT)
+Received: from [9.199.158.214] (unknown [9.199.158.214])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  7 Nov 2019 11:15:58 +0000 (GMT)
+Subject: Re: [RFC 0/5] Ext4: Add support for blocksize < pagesize for
+ dioread_nolock
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org
+References: <20191016073711.4141-1-riteshh@linux.ibm.com>
+ <20191106172302.GE12685@quack2.suse.cz>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Thu, 7 Nov 2019 16:45:58 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Priority: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+In-Reply-To: <20191106172302.GE12685@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19110711-0028-0000-0000-000003B383DA
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19110711-0029-0000-0000-00002475E350
+Message-Id: <20191107111558.DEC5FA4059@d06av23.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-07_03:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1910280000 definitions=main-1911070114
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2019-11-07 17:21:17 Jan Kara <=
-jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > On Thu 07-11-19 10:54:43, Chengguang Xu wrote:
- > >  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=89, 2019-11-06 23:42:36 Jan K=
-ara <jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > >  > On Mon 04-11-19 19:40:33, Chengguang Xu wrote:
- > >  > > Call common helper ext2_group_last_block_no() to
- > >  > > calculate group last block number.
- > >  > >=20
- > >  > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
- > >  >=20
- > >  > Thanks for the patch! I've applied it (as well as 1/5) and added at=
-tached
- > >  > simplification on top.
- > >  >=20
- > >=20
- > > In ext2_try_to_allocate()
- > >=20
- > > +        if (my_rsv->_rsv_end < group_last_block)
- > > +            end =3D my_rsv->_rsv_end - group_first_block + 1;
- > > +        if (grp_goal < start || grp_goal > end)
- > >=20
- > > Based on original code, shouldn't it be  if (grp_goal < start || grp_g=
-oal
- > > >=3Dend) ?
- >=20
- > Hum, that's a good point. The original code actually had an off-by-one b=
-ug
- > because 'end' is really the last block that can be used so grp_goal =3D=
-=3D end
- > still makes sense. And my cleanup fixed it. Now looking at the code in
- > ext2_try_to_allocate() we also have a similar bug in the loop allocating
- > blocks. There we can also go upto 'end' inclusive. Added a patch to fix
- > that. Thanks for pointing me to this!
- >=20
-
-Doesn't it depend on what starting number for grp_block inside block group?
-if it starts from 0, is the end number block still available for allocation=
-?
-
-Thanks,
-Chengguang
 
 
+On 11/6/19 10:53 PM, Jan Kara wrote:
+> On Wed 16-10-19 13:07:06, Ritesh Harjani wrote:
+>> This patch series adds the support for blocksize < pagesize for
+>> dioread_nolock feature.
+>>
+>> Since in case of blocksize < pagesize, we can have multiple
+>> small buffers of page as unwritten extents, we need to
+>> maintain a vector of these unwritten extents which needs
+>> the conversion after the IO is complete. Thus, we maintain
+>> a list of tuple <offset, size> pair (io_end_vec) for this &
+>> traverse this list to do the unwritten to written conversion.
+>>
+>> Appreciate any reviews/comments on this patches.
+> 
+> I know Ted has merged the patches already so this is just informational but
+> I've read the patches and they look fine to me. Thanks for the work! I was
+
+Appreciate your help too for valuable feedback & pointers at various places.
+
+
+> just thinking that we could actually make the vector tracking more
+> efficient because the io_end always looks like:
+> 
+> one-big-extent-to-fully-write + whatever it takes to fully write out the
+> last page
+> 
+> So your vectors could be also expressed as "extent to write" + bitmap of
+> blocks written in the last page. And 64-bits are enough for the bitmap for
+> anything ext4 supports so we could easily save allocation of ioend_vec etc.
+> Just a suggestion.
+
+Yes, sounds good to me. Although slab allocations are also fast.
+However I agree this should be more efficient and will also avoid the
+list management and or list pointer traversal.
+
+Sure, will work over this optimization once I get some closure on some
+ongoing open items.
+
+
+Thanks & appreciate your feedback.
+ritesh
 
