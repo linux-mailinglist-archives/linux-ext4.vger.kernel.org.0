@@ -2,77 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B06F3385
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Nov 2019 16:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B78CCF366A
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Nov 2019 18:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388065AbfKGPiZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 Nov 2019 10:38:25 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52145 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726231AbfKGPiZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Nov 2019 10:38:25 -0500
-Received: from callcc.thunk.org (ip-12-2-52-196.nyc.us.northamericancoax.com [196.52.2.12])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xA7FcLB9003883
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 7 Nov 2019 10:38:22 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 3C15F420311; Thu,  7 Nov 2019 10:38:19 -0500 (EST)
-Date:   Thu, 7 Nov 2019 10:38:19 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Dmitry Monakhov <dmonakhov@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix extent_status fragmentation for plain files
-Message-ID: <20191107153819.GI26959@mit.edu>
-References: <20191106122502.19986-1-dmonakhov@gmail.com>
+        id S1730716AbfKGR6j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 Nov 2019 12:58:39 -0500
+Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:38238 "EHLO
+        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730616AbfKGR6j (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 Nov 2019 12:58:39 -0500
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 55CC52E1552;
+        Thu,  7 Nov 2019 20:58:36 +0300 (MSK)
+Received: from iva8-b53eb3f76dc7.qloud-c.yandex.net (iva8-b53eb3f76dc7.qloud-c.yandex.net [2a02:6b8:c0c:2ca1:0:640:b53e:b3f7])
+        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id LeW1YeuNw9-wZAq1p8Q;
+        Thu, 07 Nov 2019 20:58:36 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1573149516; bh=ZKdu7DjjRRV4ojXOZkKZpV6414Sz8SohQFYN9jwXu5M=;
+        h=In-Reply-To:Message-ID:Date:References:To:From:Subject:Cc;
+        b=fSiWiSwmZIWSDf1pPkRCMufYGjtpdUYoIkhXriAlVklPLO91jvQmjFKlkJ1HXG0gZ
+         zb4QTwTE+3I9avjaWF3Ig2isFVpfgsPx7BNulA9xzvM049hlJkSi9xp1pI+oTXBDMO
+         t8QPSVnvIQ5z+SdhTZUNfYwI5vEu+NBYXQQKiUu8=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:8554:53c0:3d75:2e8a])
+        by iva8-b53eb3f76dc7.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id dPaRliDqHU-wZWqNkRQ;
+        Thu, 07 Nov 2019 20:58:35 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH] ext4: deaccount delayed allocations at freeing inode in
+ ext4_evict_inode()
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+To:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        linux-kernel@vger.kernel.org
+Cc:     Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
+        Eric Whitney <enwlinux@gmail.com>, Jan Kara <jack@suse.cz>
+References: <157233344808.4027.17162642259754563372.stgit@buzz>
+Message-ID: <c7cb2ea9-2cb8-0af1-3f6d-e5c42d4a016d@yandex-team.ru>
+Date:   Thu, 7 Nov 2019 20:58:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191106122502.19986-1-dmonakhov@gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <157233344808.4027.17162642259754563372.stgit@buzz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 06, 2019 at 12:25:02PM +0000, Dmitry Monakhov wrote:
-> It is appeared that extent are not cached for inodes with depth == 0
-> which result in suboptimal extent status populating inside ext4_map_blocks()
-> by map's result where size requested is usually smaller than extent size so
-> cache becomes fragmented
++jack@suse.cz into Cc.
+
+On 29/10/2019 10.17, Konstantin Khlebnikov wrote:
+> If inode->i_blocks is zero then ext4_evict_inode() skips ext4_truncate().
+> Delayed allocation extents are freed later in ext4_clear_inode() but this
+> happens when quota reference is already dropped. This leads to leak of
+> reserved space in quota block, which disappears after umount-mount.
 > 
-> # Example: I have plain file:
-> File size of /mnt/test is 33554432 (8192 blocks of 4096 bytes)
->  ext:     logical_offset:        physical_offset: length:   expected: flags:
->    0:        0..    8191:      40960..     49151:   8192:             last,eof
+> This seems broken for a long time but worked somehow until recent changes
+> in delayed allocation.
 > 
-> $ perf record -e 'ext4:ext4_es_*' /root/bin/fio --name=t --direct=0 --rw=randread --bs=4k --filesize=32M --size=32M --filename=/mnt/test
-> $ perf script | grep ext4_es_insert_extent | head -n 10
->              fio   131 [000]    13.975421:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [494/1) mapped 41454 status W
->              fio   131 [000]    13.976467:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [6907/1) mapped 47867 status W
-
-So this is certainly bad behavior, but the original intent was to not
-cached extents that were in the inode's i_blocks[] array because the
-information was already in the inode cache, and so we could save
-memory but just pulling the information out of the i_blocks away and
-there was no need to cache the extent in the es cache.
-
-There are cases where we do need to track the extent in the es cache
---- for example, if we are writing the file and we need to track its
-delayed allocation status.
-
-So I wonder if we might be better off defining a new flag
-EXT4_MAP_INROOT, which gets set by ext4_ext_map_blocks() and
-ext4_ind_map_blocks() if the mapping is exclusively found in the
-i_blocks array, and if EXT4_MAP_INROOT is set, and we don't need to
-set EXTENT_STATUS_DELAYED, we skip the call to
-ext4_es_insert_extent().
-
-What do you think?  This should significantly reduce the memory
-utilization of the es_cache, which would be good for low-memory
-workloads, and those where there are a large number of inodes that fit
-in the es_cache, which is probably true for most desktops, especially
-those belonging kernel developers.  :-)
-
-						- Ted
+> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> ---
+>   fs/ext4/inode.c |    9 +++++++++
+>   1 file changed, 9 insertions(+)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 516faa280ced..580898145e8f 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -293,6 +293,15 @@ void ext4_evict_inode(struct inode *inode)
+>   				   inode->i_ino, err);
+>   			goto stop_handle;
+>   		}
+> +	} else if (EXT4_I(inode)->i_reserved_data_blocks) {
+> +		/* Deaccount reserve if inode has only delayed allocations. */
+> +		err = ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
+> +		if (err) {
+> +			ext4_warning(inode->i_sb,
+> +				     "couldn't remove extents %lu (err %d)",
+> +				     inode->i_ino, err);
+> +			goto stop_handle;
+> +		}
+>   	}
+>   
+>   	/* Remove xattr references. */
+> 
