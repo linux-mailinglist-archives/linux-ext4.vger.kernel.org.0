@@ -2,157 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78233F4811
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Nov 2019 12:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31194F4CD6
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Nov 2019 14:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390237AbfKHLyZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Nov 2019 06:54:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47290 "EHLO mx1.suse.de"
+        id S1727422AbfKHNMl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Nov 2019 08:12:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46874 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387515AbfKHLyY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 8 Nov 2019 06:54:24 -0500
+        id S1726445AbfKHNMl (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 8 Nov 2019 08:12:41 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 27467ABE9;
-        Fri,  8 Nov 2019 11:54:22 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 15F75AE2A;
+        Fri,  8 Nov 2019 13:12:39 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E52B31E155F; Fri,  8 Nov 2019 12:54:20 +0100 (CET)
-Date:   Fri, 8 Nov 2019 12:54:20 +0100
+        id 8C0061E3BE4; Fri,  8 Nov 2019 14:12:38 +0100 (CET)
+Date:   Fri, 8 Nov 2019 14:12:38 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
-        Eric Whitney <enwlinux@gmail.com>
-Subject: Re: [PATCH] ext4: deaccount delayed allocations at freeing inode in
- ext4_evict_inode()
-Message-ID: <20191108115420.GI20863@quack2.suse.cz>
-References: <157233344808.4027.17162642259754563372.stgit@buzz>
- <20191108020827.15D1EAE056@d06av26.portsmouth.uk.ibm.com>
- <d00c572b-66ae-42dc-746a-e2c365c9895a@yandex-team.ru>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/5] fs/xfs: Allow toggle of physical DAX flag
+Message-ID: <20191108131238.GK20863@quack2.suse.cz>
+References: <20191020155935.12297-1-ira.weiny@intel.com>
+ <20191020155935.12297-6-ira.weiny@intel.com>
+ <20191021004536.GD8015@dread.disaster.area>
+ <20191021224931.GA25526@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="u3/rZRmxL6MmkK24"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d00c572b-66ae-42dc-746a-e2c365c9895a@yandex-team.ru>
+In-Reply-To: <20191021224931.GA25526@iweiny-DESK2.sc.intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
---u3/rZRmxL6MmkK24
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri 08-11-19 11:30:56, Konstantin Khlebnikov wrote:
-> On 08/11/2019 05.08, Ritesh Harjani wrote:
+On Mon 21-10-19 15:49:31, Ira Weiny wrote:
+> On Mon, Oct 21, 2019 at 11:45:36AM +1100, Dave Chinner wrote:
+> > On Sun, Oct 20, 2019 at 08:59:35AM -0700, ira.weiny@intel.com wrote:
+> > That, fundamentally, is the issue here - it's not setting/clearing
+> > the DAX flag that is the issue, it's doing a swap of the
+> > mapping->a_ops while there may be other code using that ops
+> > structure.
 > > 
+> > IOWs, if there is any code anywhere in the kernel that
+> > calls an address space op without holding one of the three locks we
+> > hold here (i_rwsem, MMAPLOCK, ILOCK) then it can race with the swap
+> > of the address space operations.
 > > 
-> > On 10/29/19 12:47 PM, Konstantin Khlebnikov wrote:
-> > > If inode->i_blocks is zero then ext4_evict_inode() skips ext4_truncate().
-> > > Delayed allocation extents are freed later in ext4_clear_inode() but this
-> > > happens when quota reference is already dropped. This leads to leak of
-> > > reserved space in quota block, which disappears after umount-mount.
-> > > 
-> > > This seems broken for a long time but worked somehow until recent changes
-> > > in delayed allocation.
+> > By limiting the address space swap to file sizes of zero, we rule
+> > out the page fault path (mmap of a zero length file segv's with an
+> > access beyond EOF on the first read/write page fault, right?).
+> 
+> Yes I checked that and thought we were safe here...
+> 
+> > However, other aops callers that might run unlocked and do the wrong
+> > thing if the aops pointer is swapped between check of the aop method
+> > existing and actually calling it even if the file size is zero?
 > > 
-> > Sorry, I may have missed it, but could you please help understand
-> > what recent changes in delayed allocation make this break or worse?
+> > A quick look shows that FIBMAP (ioctl_fibmap())) looks susceptible
+> > to such a race condition with the current definitions of the XFS DAX
+> > aops. I'm guessing there will be others, but I haven't looked
+> > further than this...
 > 
-> I don't see problem for 4.19. Haven't bisected yet.
-> Most likely this is around 'reserved cluster accounting'.
-> 
-> I suspect before these changes something always triggered da before
-> unlink and space usage committed and then truncated at eviction.
+> I'll check for others and think on what to do about this.  ext4 will have the
+> same problem I think.  :-(
 
-Yes, I think it's commit 8fcc3a580651 "ext4: rework reserved cluster
-accounting when invalidating pages". Because that commit moved releasing of
-reserved space from page invalidation time to extent status tree eviction
-time. Does attached patch fix the problem for you?
-
-> > A silly query, since I couldn't figure it out. Maybe the code has been
-> > there ever since like this:-
-> 
-> > So why can't we just move drop_dquot later after the ext4_es_remove_extent() (in function ext4_clear_inode)? Any known
-> > problems around that?
-> 
-> Clear_inode is called also when inode evicts from cache while it has nlinks
-> and stays at disk. I'm not sure how this must interact with reserves.
-
-In that case all data should be written out for such inode and thus there
-should be no reserves...
+Just as a datapoint, ext4 is bold and sets inode->i_mapping->a_ops on
+existing inodes when switching journal data flag and so far it has not
+blown up. What we did to deal with issues Dave describes is that we
+introduced percpu rw-semaphore guarding switching of aops and then inside
+problematic functions redirect callbacks in the right direction under this
+semaphore. Somewhat ugly but it seems to work.
 
 								Honza
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
-
---u3/rZRmxL6MmkK24
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-ext4-Fix-leak-of-quota-reservations.patch"
-
-From ee27836b579d3bf750d45cd7081d3433ea6fedd5 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Fri, 8 Nov 2019 12:45:11 +0100
-Subject: [PATCH] ext4: Fix leak of quota reservations
-
-Commit 8fcc3a580651 ("ext4: rework reserved cluster accounting when
-invalidating pages") moved freeing of delayed allocation reservations
-from dirty page invalidation time to time when we evict corresponding
-status extent from extent status tree. For inodes which don't have any
-blocks allocated this may actually happen only in ext4_clear_blocks()
-which is after we've dropped references to quota structures from the
-inode. Thus reservation of quota leaked. Fix the problem by clearing
-quota information from the inode only after evicting extent status tree
-in ext4_clear_inode().
-
-Reported-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Fixes: 8fcc3a580651 ("ext4: rework reserved cluster accounting when invalidating pages")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/ialloc.c | 5 -----
- fs/ext4/super.c  | 2 +-
- 2 files changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 764ff4c56233..564e2ceb8417 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -265,13 +265,8 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
- 	ext4_debug("freeing inode %lu\n", ino);
- 	trace_ext4_free_inode(inode);
- 
--	/*
--	 * Note: we must free any quota before locking the superblock,
--	 * as writing the quota to disk may need the lock as well.
--	 */
- 	dquot_initialize(inode);
- 	dquot_free_inode(inode);
--	dquot_drop(inode);
- 
- 	is_directory = S_ISDIR(inode->i_mode);
- 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dd654e53ba3d..9589f09a40f6 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1172,9 +1172,9 @@ void ext4_clear_inode(struct inode *inode)
- {
- 	invalidate_inode_buffers(inode);
- 	clear_inode(inode);
--	dquot_drop(inode);
- 	ext4_discard_preallocations(inode);
- 	ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
-+	dquot_drop(inode);
- 	if (EXT4_I(inode)->jinode) {
- 		jbd2_journal_release_jbd_inode(EXT4_JOURNAL(inode),
- 					       EXT4_I(inode)->jinode);
--- 
-2.16.4
-
-
---u3/rZRmxL6MmkK24--
