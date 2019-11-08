@@ -2,110 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7410EF4207
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Nov 2019 09:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A051DF421A
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Nov 2019 09:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727649AbfKHIXN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Nov 2019 03:23:13 -0500
-Received: from mx01-fr.bfs.de ([193.174.231.67]:34635 "EHLO mx01-fr.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbfKHIXM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 8 Nov 2019 03:23:12 -0500
-Received: from mail-fr.bfs.de (mail-fr.bfs.de [10.177.18.200])
-        by mx01-fr.bfs.de (Postfix) with ESMTPS id EEE4C2034D;
-        Fri,  8 Nov 2019 09:23:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1573201385; h=from:from:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ovMpTZlO+mqX1NztFF4Z8RNfQdHNbliQo84EBCeKmM=;
-        b=knPojPheDaPBcYO0QNEKA99SLOrrQ33XMHG3MG3K0LZOwxHE4616BDh2Y7CMpi5TGf/aKT
-        ZZK+HPeJZmjLdyhNaKHlvbUovd4cCrlP6h/VsOx+sp5mVwxPBDYQ5lUiLKN4B95XMlPyZZ
-        FFXGmOmmP2VITXOXVD/TSHndOHwV9lKrvg1X/X0mkRjOYKCpum4vFlr7QueAnpx47CWRGU
-        tfsUWVeTSm3JyzAfXwj+0WXx+HX03nuSeY9XbjykjbSRtDigR/BV7TaDdOuT2HzQQ3J05U
-        RF6vzt535kfv/BlYy/tMieg+LO3CQrgMNgiSq6jOyBR+bM1QpviXF8g6XMguzg==
-Received: from [134.92.181.33] (unknown [134.92.181.33])
-        by mail-fr.bfs.de (Postfix) with ESMTPS id 8E220BEEBD;
-        Fri,  8 Nov 2019 09:23:05 +0100 (CET)
-Message-ID: <5DC525E8.4060705@bfs.de>
-Date:   Fri, 08 Nov 2019 09:23:04 +0100
-From:   walter harms <wharms@bfs.de>
-Reply-To: wharms@bfs.de
-User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; de; rv:1.9.1.16) Gecko/20101125 SUSE/3.0.11 Thunderbird/3.0.11
+        id S1727016AbfKHIbC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Nov 2019 03:31:02 -0500
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:44260 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726072AbfKHIbC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Nov 2019 03:31:02 -0500
+Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 53DBF2E14A2;
+        Fri,  8 Nov 2019 11:30:58 +0300 (MSK)
+Received: from vla5-2bf13a090f43.qloud-c.yandex.net (vla5-2bf13a090f43.qloud-c.yandex.net [2a02:6b8:c18:3411:0:640:2bf1:3a09])
+        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id rxIew9xOSF-UvMSX8ne;
+        Fri, 08 Nov 2019 11:30:58 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1573201858; bh=Hp4ev14l2Lhx6iEHLcG1z7KhXz+b83W67JPYeP/4FDw=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=sG5lBWVzvm6JiVDH6m8flzUp/gHVxPkazSVwFHZfeNhrICYDxZ6aQr+o4vh+At1ek
+         0RoB71VfYbbtZSlNX2nygKdkdyIGJ9uJY5xiJZKOKSzbs7Kx4V4vMGvgL0EntDfRZ4
+         J9oqWO96TQLG5yf6UI0ENF0vepeGhHzglZ4EJEPg=
+Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:8554:53c0:3d75:2e8a])
+        by vla5-2bf13a090f43.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id Nq2nXa0706-UvVa8ZLj;
+        Fri, 08 Nov 2019 11:30:57 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH] ext4: deaccount delayed allocations at freeing inode in
+ ext4_evict_inode()
+To:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        linux-kernel@vger.kernel.org
+Cc:     Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
+        Eric Whitney <enwlinux@gmail.com>
+References: <157233344808.4027.17162642259754563372.stgit@buzz>
+ <20191108020827.15D1EAE056@d06av26.portsmouth.uk.ibm.com>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <d00c572b-66ae-42dc-746a-e2c365c9895a@yandex-team.ru>
+Date:   Fri, 8 Nov 2019 11:30:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     linux-man@vger.kernel.org, darrick.wong@oracle.com,
-        dhowells@redhat.com, jaegeuk@kernel.org, linux-api@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, victorhsieh@google.com
-Subject: Re: [man-pages RFC PATCH] statx.2: document STATX_ATTR_VERITY
-References: <20191107014420.GD15212@magnolia> <20191107220248.32025-1-ebiggers@kernel.org>
-In-Reply-To: <20191107220248.32025-1-ebiggers@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.60
-Authentication-Results: mx01-fr.bfs.de
-X-Spamd-Result: default: False [-1.60 / 7.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.00)[wharms@bfs.de];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         NEURAL_HAM(-0.00)[-0.998,0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
+In-Reply-To: <20191108020827.15D1EAE056@d06av26.portsmouth.uk.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-Am 07.11.2019 23:02, schrieb Eric Biggers:
-> From: Eric Biggers <ebiggers@google.com>
+On 08/11/2019 05.08, Ritesh Harjani wrote:
 > 
-> Document the verity attribute for statx().
 > 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
->  man2/statx.2 | 4 ++++
->  1 file changed, 4 insertions(+)
+> On 10/29/19 12:47 PM, Konstantin Khlebnikov wrote:
+>> If inode->i_blocks is zero then ext4_evict_inode() skips ext4_truncate().
+>> Delayed allocation extents are freed later in ext4_clear_inode() but this
+>> happens when quota reference is already dropped. This leads to leak of
+>> reserved space in quota block, which disappears after umount-mount.
+>>
+>> This seems broken for a long time but worked somehow until recent changes
+>> in delayed allocation.
 > 
-> RFC since the kernel patches are currently under review.
-> The kernel patches can be found here:
-> https://lkml.kernel.org/linux-fscrypt/20191029204141.145309-1-ebiggers@kernel.org/T/#u
+> Sorry, I may have missed it, but could you please help understand
+> what recent changes in delayed allocation make this break or worse?
+
+I don't see problem for 4.19. Haven't bisected yet.
+Most likely this is around 'reserved cluster accounting'.
+
+I suspect before these changes something always triggered da before unlink and
+space usage committed and then truncated at eviction.
+
 > 
-> diff --git a/man2/statx.2 b/man2/statx.2
-> index d2f1b07b8..713bd1260 100644
-> --- a/man2/statx.2
-> +++ b/man2/statx.2
-> @@ -461,6 +461,10 @@ See
->  .TP
->  .B STATX_ATTR_ENCRYPTED
->  A key is required for the file to be encrypted by the filesystem.
-> +.TP
-> +.B STATX_ATTR_VERITY
-> +The file has fs-verity enabled.  It cannot be written to, and all reads from it
-> +will be verified against a Merkle tree.
+> 
+> A silly query, since I couldn't figure it out. Maybe the code has been
+> there ever since like this:-
 
-Using "Merkle tree" opens a can of worm and what will happen when the methode will change ?
-Does it matter at all ? i would suggest "filesystem" here.
+> So why can't we just move drop_dquot later after the ext4_es_remove_extent() (in function ext4_clear_inode)? Any known
+> problems around that?
 
-re,
- wh
+Clear_inode is called also when inode evicts from cache while it has nlinks
+and stays at disk. I'm not sure how this must interact with reserves.
 
->  .SH RETURN VALUE
->  On success, zero is returned.
->  On error, \-1 is returned, and
+> 
+> -ritesh
+> 
+> 
+>>
+>> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+>> ---
+>>   fs/ext4/inode.c |    9 +++++++++
+>>   1 file changed, 9 insertions(+)
+>>
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 516faa280ced..580898145e8f 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -293,6 +293,15 @@ void ext4_evict_inode(struct inode *inode)
+>>                      inode->i_ino, err);
+>>               goto stop_handle;
+>>           }
+>> +    } else if (EXT4_I(inode)->i_reserved_data_blocks) {
+>> +        /* Deaccount reserve if inode has only delayed allocations. */
+>> +        err = ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
+>> +        if (err) {
+>> +            ext4_warning(inode->i_sb,
+>> +                     "couldn't remove extents %lu (err %d)",
+>> +                     inode->i_ino, err);
+>> +            goto stop_handle;
+>> +        }
+>>       }
+>>
+>>       /* Remove xattr references. */
+>>
+> 
