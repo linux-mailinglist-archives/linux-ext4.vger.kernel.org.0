@@ -2,100 +2,176 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6117F4D7E
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Nov 2019 14:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 894AFF4F61
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Nov 2019 16:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728702AbfKHNqK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Nov 2019 08:46:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39232 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726845AbfKHNqJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 8 Nov 2019 08:46:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9750DACEF;
-        Fri,  8 Nov 2019 13:46:07 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id CD4111E3BE4; Fri,  8 Nov 2019 14:46:06 +0100 (CET)
-Date:   Fri, 8 Nov 2019 14:46:06 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/5] fs/xfs: Allow toggle of physical DAX flag
-Message-ID: <20191108134606.GL20863@quack2.suse.cz>
-References: <20191020155935.12297-1-ira.weiny@intel.com>
- <20191020155935.12297-6-ira.weiny@intel.com>
- <20191021004536.GD8015@dread.disaster.area>
- <20191021224931.GA25526@iweiny-DESK2.sc.intel.com>
- <20191108131238.GK20863@quack2.suse.cz>
+        id S1726200AbfKHPWC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Nov 2019 10:22:02 -0500
+Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:56234 "EHLO
+        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726101AbfKHPWC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Nov 2019 10:22:02 -0500
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 6AB452E14DB;
+        Fri,  8 Nov 2019 18:21:58 +0300 (MSK)
+Received: from vla1-5826f599457c.qloud-c.yandex.net (vla1-5826f599457c.qloud-c.yandex.net [2a02:6b8:c0d:35a1:0:640:5826:f599])
+        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id Bl9ncq3Znd-LuA8X05E;
+        Fri, 08 Nov 2019 18:21:58 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1573226518; bh=adnC/iTxUcrhGYGRJutoOIWeXUNVcuANsBlpJP0jmzM=;
+        h=Message-ID:Subject:Date:References:To:From:In-Reply-To:Cc;
+        b=cJJINX1VarLT0RZcxQNSQojC4uzvQvfMKWzYV4qAhD6ffS3HmRnxdZtnz4aupS/ze
+         OpUjyhVk6MuN8+4btQQljUcaRnRbm7Mmyiabxmnxlg1/oZUCZYbclxDEw9zztK22mS
+         pr6Iy/gElh6cu1vVxnwnIyQv7sLpfGkmyIg+RRbo=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from 95.108.174.193-red.dhcp.yndx.net (95.108.174.193-red.dhcp.yndx.net [95.108.174.193])
+        by vla1-5826f599457c.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id n8aAsXwaGV-LuWC47Ma;
+        Fri, 08 Nov 2019 18:21:56 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Dmitry Monakhov <dmonakhov@gmail.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix extent_status fragmentation for plain files
+In-Reply-To: <20191107153819.GI26959@mit.edu>
+References: <20191106122502.19986-1-dmonakhov@gmail.com> <20191107153819.GI26959@mit.edu>
+Date:   Fri, 08 Nov 2019 18:21:56 +0300
+Message-ID: <874kze4cmj.fsf@dmws.yandex.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191108131238.GK20863@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/mixed; boundary="=-=-="
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 08-11-19 14:12:38, Jan Kara wrote:
-> On Mon 21-10-19 15:49:31, Ira Weiny wrote:
-> > On Mon, Oct 21, 2019 at 11:45:36AM +1100, Dave Chinner wrote:
-> > > On Sun, Oct 20, 2019 at 08:59:35AM -0700, ira.weiny@intel.com wrote:
-> > > That, fundamentally, is the issue here - it's not setting/clearing
-> > > the DAX flag that is the issue, it's doing a swap of the
-> > > mapping->a_ops while there may be other code using that ops
-> > > structure.
-> > > 
-> > > IOWs, if there is any code anywhere in the kernel that
-> > > calls an address space op without holding one of the three locks we
-> > > hold here (i_rwsem, MMAPLOCK, ILOCK) then it can race with the swap
-> > > of the address space operations.
-> > > 
-> > > By limiting the address space swap to file sizes of zero, we rule
-> > > out the page fault path (mmap of a zero length file segv's with an
-> > > access beyond EOF on the first read/write page fault, right?).
-> > 
-> > Yes I checked that and thought we were safe here...
-> > 
-> > > However, other aops callers that might run unlocked and do the wrong
-> > > thing if the aops pointer is swapped between check of the aop method
-> > > existing and actually calling it even if the file size is zero?
-> > > 
-> > > A quick look shows that FIBMAP (ioctl_fibmap())) looks susceptible
-> > > to such a race condition with the current definitions of the XFS DAX
-> > > aops. I'm guessing there will be others, but I haven't looked
-> > > further than this...
-> > 
-> > I'll check for others and think on what to do about this.  ext4 will have the
-> > same problem I think.  :-(
-> 
-> Just as a datapoint, ext4 is bold and sets inode->i_mapping->a_ops on
-> existing inodes when switching journal data flag and so far it has not
-> blown up. What we did to deal with issues Dave describes is that we
-> introduced percpu rw-semaphore guarding switching of aops and then inside
-> problematic functions redirect callbacks in the right direction under this
-> semaphore. Somewhat ugly but it seems to work.
+--=-=-=
+Content-Type: text/plain
 
-Thinking about this some more, perhaps this scheme could be actually
-transformed in something workable. We could have a global (or maybe per-sb
-but I'm not sure it's worth it) percpu rwsem and we could transform aops
-calls into:
 
-percpu_down_read(aops_rwsem);
-do_call();
-percpu_up_read(aops_rwsem);
+"Theodore Y. Ts'o" <tytso@mit.edu> writes:
 
-With some macro magic it needn't be even that ugly.
+> On Wed, Nov 06, 2019 at 12:25:02PM +0000, Dmitry Monakhov wrote:
+>> It is appeared that extent are not cached for inodes with depth == 0
+>> which result in suboptimal extent status populating inside ext4_map_blocks()
+>> by map's result where size requested is usually smaller than extent size so
+>> cache becomes fragmented
+>> 
+>> # Example: I have plain file:
+>> File size of /mnt/test is 33554432 (8192 blocks of 4096 bytes)
+>>  ext:     logical_offset:        physical_offset: length:   expected: flags:
+>>    0:        0..    8191:      40960..     49151:   8192:             last,eof
+>> 
+>> $ perf record -e 'ext4:ext4_es_*' /root/bin/fio --name=t --direct=0 --rw=randread --bs=4k --filesize=32M --size=32M --filename=/mnt/test
+>> $ perf script | grep ext4_es_insert_extent | head -n 10
+>>              fio   131 [000]    13.975421:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [494/1) mapped 41454 status W
+>>              fio   131 [000]    13.976467:           ext4:ext4_es_insert_extent: dev 253,0 ino 12 es [6907/1) mapped 47867 status W
+>
+> So this is certainly bad behavior, but the original intent was to not
+> cached extents that were in the inode's i_blocks[] array because the
+> information was already in the inode cache, and so we could save
+> memory but just pulling the information out of the i_blocks away and
+> there was no need to cache the extent in the es cache.
+>
+> There are cases where we do need to track the extent in the es cache
+> --- for example, if we are writing the file and we need to track its
+> delayed allocation status.
+>
+> So I wonder if we might be better off defining a new flag
+> EXT4_MAP_INROOT, which gets set by ext4_ext_map_blocks() and
+> ext4_ind_map_blocks() if the mapping is exclusively found in the
+> i_blocks array, and if EXT4_MAP_INROOT is set, and we don't need to
+> set EXTENT_STATUS_DELAYED, we skip the call to
+> ext4_es_insert_extent().
+>
+> What do you think?  This should significantly reduce the memory
+> utilization of the es_cache, which would be good for low-memory
+> workloads, and those where there are a large number of inodes that fit
+> in the es_cache, which is probably true for most desktops, especially
+> those belonging kernel developers.  :-)
 
-								Honza
+Sound reasonable, same happens in ext4_ext_precache()
+See my patch below.
+
+But this also means that on each ext4_map_blocks()
+will fallback to regular block lookup:
+
+down_read(&EXT4_I(inode)->i_data_sem)
+ext4_ext_map_blocks (
+ ->ext4_find_extent
+   path = kcalloc(depth + 2, sizeof(struct ext4_ext_path), GFP_NOFS)
+   kfree(path)
+up_read(&EXT4_I(inode)->i_data_sem)
+I thought that we can neglect this, but curiosity is a good thing
+That it why I've tested nocache(see patch below) vs cache(first path)  approach
+
+## Production server ##
+# CPU: Intel-Gold-6230
+# DEV: /dev/ram0 
+# TEST: fio --direct=1 --rw=randread --bs=1k --filesize=64M
+IOPS(nocache/cache): 729k vs 764k  => +5%
+# DEV: /dev/nvme0n1 (Samsung DC grade)
+# TEST: fio --direct=1 --rw=randread --bs=4k --filesize=64M --ioengine=libaio --iodepth=128
+IOPS(nocache/cache): 366k vs 378k => +3%
+
+## My notebook Carbon/X1 ##
+# CPU: i7-7600U
+# DEV: /dev/nvme0n1 (Samsung MZVLB512HAJQ-000L7)
+# TEST: fio --direct=1 --rw=randread --bs=4k --filesize=64M --ioengine=libaio --iodepth=128
+IOPS(nocache/cache): 270k vs 270k => No difference
+
+Difference is invisiable for my laptop, but visiable on fast NVME dev.
+From other point of view unconditional caching result in memory
+overhead  sizeof(struct extent_status)/sizeof(ext4_inode_info) => 3.5% for everybody.
+>
+> 						- Ted
+
+--=-=-=
+Content-Type: text/x-diff
+Content-Disposition: inline;
+ filename=0001-ext4-Don-t-cache-clean-inline-extents.patch
+
+From 779e1322d47a5f28364343446853f24ac145e9ff Mon Sep 17 00:00:00 2001
+From: Dmitry Monakhov <dmonakhov@gmail.com>
+Date: Fri, 8 Nov 2019 18:08:49 +0300
+Subject: [PATCH] ext4:  Don't cache clean inline extents
+
+Signed-off-by: Dmitry Monakhov <dmonakhov@gmail.com>
+---
+ fs/ext4/inode.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index abaaf7d..6839ac4 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -45,6 +45,7 @@
+ #include "xattr.h"
+ #include "acl.h"
+ #include "truncate.h"
++#include "ext4_extents.h"
+ 
+ #include <trace/events/ext4.h>
+ 
+@@ -584,11 +585,13 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 		    ext4_es_scan_range(inode, &ext4_es_is_delayed, map->m_lblk,
+ 				       map->m_lblk + map->m_len - 1))
+ 			status |= EXTENT_STATUS_DELAYED;
+-		ret = ext4_es_insert_extent(inode, map->m_lblk,
+-					    map->m_len, map->m_pblk, status);
+-		if (ret < 0)
+-			retval = ret;
++		/* Don't cache if there are no external extent blocks */
++		if ((status & EXTENT_STATUS_DELAYED) || ext_depth(inode)) {
++			ret = ext4_es_insert_extent(inode, map->m_lblk,
++						    map->m_len, map->m_pblk, status);
++			if (ret < 0)
++				retval = ret;
++		}
+ 	}
+ 	up_read((&EXT4_I(inode)->i_data_sem));
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.7.4
+
+
+--=-=-=--
