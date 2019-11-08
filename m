@@ -2,119 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A051DF421A
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Nov 2019 09:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78233F4811
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Nov 2019 12:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbfKHIbC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Nov 2019 03:31:02 -0500
-Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:44260 "EHLO
-        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726072AbfKHIbC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 8 Nov 2019 03:31:02 -0500
-Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 53DBF2E14A2;
-        Fri,  8 Nov 2019 11:30:58 +0300 (MSK)
-Received: from vla5-2bf13a090f43.qloud-c.yandex.net (vla5-2bf13a090f43.qloud-c.yandex.net [2a02:6b8:c18:3411:0:640:2bf1:3a09])
-        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id rxIew9xOSF-UvMSX8ne;
-        Fri, 08 Nov 2019 11:30:58 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1573201858; bh=Hp4ev14l2Lhx6iEHLcG1z7KhXz+b83W67JPYeP/4FDw=;
-        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
-        b=sG5lBWVzvm6JiVDH6m8flzUp/gHVxPkazSVwFHZfeNhrICYDxZ6aQr+o4vh+At1ek
-         0RoB71VfYbbtZSlNX2nygKdkdyIGJ9uJY5xiJZKOKSzbs7Kx4V4vMGvgL0EntDfRZ4
-         J9oqWO96TQLG5yf6UI0ENF0vepeGhHzglZ4EJEPg=
-Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:8554:53c0:3d75:2e8a])
-        by vla5-2bf13a090f43.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id Nq2nXa0706-UvVa8ZLj;
-        Fri, 08 Nov 2019 11:30:57 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH] ext4: deaccount delayed allocations at freeing inode in
- ext4_evict_inode()
-To:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        id S2390237AbfKHLyZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 8 Nov 2019 06:54:25 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47290 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387515AbfKHLyY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 8 Nov 2019 06:54:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 27467ABE9;
+        Fri,  8 Nov 2019 11:54:22 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id E52B31E155F; Fri,  8 Nov 2019 12:54:20 +0100 (CET)
+Date:   Fri, 8 Nov 2019 12:54:20 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        linux-kernel@vger.kernel.org
-Cc:     Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
         Eric Whitney <enwlinux@gmail.com>
+Subject: Re: [PATCH] ext4: deaccount delayed allocations at freeing inode in
+ ext4_evict_inode()
+Message-ID: <20191108115420.GI20863@quack2.suse.cz>
 References: <157233344808.4027.17162642259754563372.stgit@buzz>
  <20191108020827.15D1EAE056@d06av26.portsmouth.uk.ibm.com>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <d00c572b-66ae-42dc-746a-e2c365c9895a@yandex-team.ru>
-Date:   Fri, 8 Nov 2019 11:30:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ <d00c572b-66ae-42dc-746a-e2c365c9895a@yandex-team.ru>
 MIME-Version: 1.0
-In-Reply-To: <20191108020827.15D1EAE056@d06av26.portsmouth.uk.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="u3/rZRmxL6MmkK24"
+Content-Disposition: inline
+In-Reply-To: <d00c572b-66ae-42dc-746a-e2c365c9895a@yandex-team.ru>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 08/11/2019 05.08, Ritesh Harjani wrote:
-> 
-> 
-> On 10/29/19 12:47 PM, Konstantin Khlebnikov wrote:
->> If inode->i_blocks is zero then ext4_evict_inode() skips ext4_truncate().
->> Delayed allocation extents are freed later in ext4_clear_inode() but this
->> happens when quota reference is already dropped. This leads to leak of
->> reserved space in quota block, which disappears after umount-mount.
->>
->> This seems broken for a long time but worked somehow until recent changes
->> in delayed allocation.
-> 
-> Sorry, I may have missed it, but could you please help understand
-> what recent changes in delayed allocation make this break or worse?
 
-I don't see problem for 4.19. Haven't bisected yet.
-Most likely this is around 'reserved cluster accounting'.
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I suspect before these changes something always triggered da before unlink and
-space usage committed and then truncated at eviction.
+On Fri 08-11-19 11:30:56, Konstantin Khlebnikov wrote:
+> On 08/11/2019 05.08, Ritesh Harjani wrote:
+> > 
+> > 
+> > On 10/29/19 12:47 PM, Konstantin Khlebnikov wrote:
+> > > If inode->i_blocks is zero then ext4_evict_inode() skips ext4_truncate().
+> > > Delayed allocation extents are freed later in ext4_clear_inode() but this
+> > > happens when quota reference is already dropped. This leads to leak of
+> > > reserved space in quota block, which disappears after umount-mount.
+> > > 
+> > > This seems broken for a long time but worked somehow until recent changes
+> > > in delayed allocation.
+> > 
+> > Sorry, I may have missed it, but could you please help understand
+> > what recent changes in delayed allocation make this break or worse?
+> 
+> I don't see problem for 4.19. Haven't bisected yet.
+> Most likely this is around 'reserved cluster accounting'.
+> 
+> I suspect before these changes something always triggered da before
+> unlink and space usage committed and then truncated at eviction.
 
-> 
-> 
-> A silly query, since I couldn't figure it out. Maybe the code has been
-> there ever since like this:-
+Yes, I think it's commit 8fcc3a580651 "ext4: rework reserved cluster
+accounting when invalidating pages". Because that commit moved releasing of
+reserved space from page invalidation time to extent status tree eviction
+time. Does attached patch fix the problem for you?
 
-> So why can't we just move drop_dquot later after the ext4_es_remove_extent() (in function ext4_clear_inode)? Any known
-> problems around that?
+> > A silly query, since I couldn't figure it out. Maybe the code has been
+> > there ever since like this:-
+> 
+> > So why can't we just move drop_dquot later after the ext4_es_remove_extent() (in function ext4_clear_inode)? Any known
+> > problems around that?
+> 
+> Clear_inode is called also when inode evicts from cache while it has nlinks
+> and stays at disk. I'm not sure how this must interact with reserves.
 
-Clear_inode is called also when inode evicts from cache while it has nlinks
-and stays at disk. I'm not sure how this must interact with reserves.
+In that case all data should be written out for such inode and thus there
+should be no reserves...
 
-> 
-> -ritesh
-> 
-> 
->>
->> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
->> ---
->>   fs/ext4/inode.c |    9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 516faa280ced..580898145e8f 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -293,6 +293,15 @@ void ext4_evict_inode(struct inode *inode)
->>                      inode->i_ino, err);
->>               goto stop_handle;
->>           }
->> +    } else if (EXT4_I(inode)->i_reserved_data_blocks) {
->> +        /* Deaccount reserve if inode has only delayed allocations. */
->> +        err = ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
->> +        if (err) {
->> +            ext4_warning(inode->i_sb,
->> +                     "couldn't remove extents %lu (err %d)",
->> +                     inode->i_ino, err);
->> +            goto stop_handle;
->> +        }
->>       }
->>
->>       /* Remove xattr references. */
->>
-> 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+--u3/rZRmxL6MmkK24
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-ext4-Fix-leak-of-quota-reservations.patch"
+
+From ee27836b579d3bf750d45cd7081d3433ea6fedd5 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Fri, 8 Nov 2019 12:45:11 +0100
+Subject: [PATCH] ext4: Fix leak of quota reservations
+
+Commit 8fcc3a580651 ("ext4: rework reserved cluster accounting when
+invalidating pages") moved freeing of delayed allocation reservations
+from dirty page invalidation time to time when we evict corresponding
+status extent from extent status tree. For inodes which don't have any
+blocks allocated this may actually happen only in ext4_clear_blocks()
+which is after we've dropped references to quota structures from the
+inode. Thus reservation of quota leaked. Fix the problem by clearing
+quota information from the inode only after evicting extent status tree
+in ext4_clear_inode().
+
+Reported-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Fixes: 8fcc3a580651 ("ext4: rework reserved cluster accounting when invalidating pages")
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/ialloc.c | 5 -----
+ fs/ext4/super.c  | 2 +-
+ 2 files changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+index 764ff4c56233..564e2ceb8417 100644
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -265,13 +265,8 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
+ 	ext4_debug("freeing inode %lu\n", ino);
+ 	trace_ext4_free_inode(inode);
+ 
+-	/*
+-	 * Note: we must free any quota before locking the superblock,
+-	 * as writing the quota to disk may need the lock as well.
+-	 */
+ 	dquot_initialize(inode);
+ 	dquot_free_inode(inode);
+-	dquot_drop(inode);
+ 
+ 	is_directory = S_ISDIR(inode->i_mode);
+ 
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index dd654e53ba3d..9589f09a40f6 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1172,9 +1172,9 @@ void ext4_clear_inode(struct inode *inode)
+ {
+ 	invalidate_inode_buffers(inode);
+ 	clear_inode(inode);
+-	dquot_drop(inode);
+ 	ext4_discard_preallocations(inode);
+ 	ext4_es_remove_extent(inode, 0, EXT_MAX_BLOCKS);
++	dquot_drop(inode);
+ 	if (EXT4_I(inode)->jinode) {
+ 		jbd2_journal_release_jbd_inode(EXT4_JOURNAL(inode),
+ 					       EXT4_I(inode)->jinode);
+-- 
+2.16.4
+
+
+--u3/rZRmxL6MmkK24--
