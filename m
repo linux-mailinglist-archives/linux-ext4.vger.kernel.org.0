@@ -2,233 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC75F57B9
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Nov 2019 21:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC968F6131
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Nov 2019 20:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388388AbfKHTgP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 8 Nov 2019 14:36:15 -0500
-Received: from mga09.intel.com ([134.134.136.24]:54222 "EHLO mga09.intel.com"
+        id S1726424AbfKITe7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 9 Nov 2019 14:34:59 -0500
+Received: from mx01-fr.bfs.de ([193.174.231.67]:53442 "EHLO mx01-fr.bfs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727233AbfKHTgP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 8 Nov 2019 14:36:15 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Nov 2019 11:36:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,283,1569308400"; 
-   d="scan'208";a="196999801"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga008.jf.intel.com with ESMTP; 08 Nov 2019 11:36:13 -0800
-Date:   Fri, 8 Nov 2019 11:36:13 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/5] fs/xfs: Allow toggle of physical DAX flag
-Message-ID: <20191108193612.GA4800@iweiny-DESK2.sc.intel.com>
-References: <20191020155935.12297-1-ira.weiny@intel.com>
- <20191020155935.12297-6-ira.weiny@intel.com>
- <20191021004536.GD8015@dread.disaster.area>
- <20191021224931.GA25526@iweiny-DESK2.sc.intel.com>
- <20191108131238.GK20863@quack2.suse.cz>
- <20191108134606.GL20863@quack2.suse.cz>
+        id S1726240AbfKITe7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 9 Nov 2019 14:34:59 -0500
+Received: from mail-fr.bfs.de (mail-fr.bfs.de [10.177.18.200])
+        by mx01-fr.bfs.de (Postfix) with ESMTPS id 10EE720341;
+        Sat,  9 Nov 2019 20:34:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
+        t=1573328092; h=from:from:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6SudR88lkF+lKSGJMK8+RxHhCApBdq5YQs6jZRSc0iw=;
+        b=SdkRUkSagrNMTjlf2lNoy4psNiZfyF+MeMTvYgob7vd96q5DqUIobqQL3gg778mGMVTAPH
+        TPFmDTheiHgZR/32jrEoziySqCn/Rb+9LAnZa6keObsD8+CW6n99rUa50DqQc9bRkvzbg8
+        +NX+vskYA3yVHhOW0hqigSOa1ET542P2mzIaGoJXLA1veXfCZitg7+SKhbI5qVBjd3QpoM
+        O3nwxgPeY5iLM9sygre3yzrqnGKKqP6U16pJ9FTPyoWfmBZMjG++mdOwBsUPtpZf32XBZ+
+        SMgc/HUYegliti2K4iu4P2KrUftQ1Fn5twmczL4y4kVWRs/netouVn4GcTOegQ==
+Received: from [134.92.181.33] (unknown [134.92.181.33])
+        by mail-fr.bfs.de (Postfix) with ESMTPS id 963F8BEEBD;
+        Sat,  9 Nov 2019 20:34:51 +0100 (CET)
+Message-ID: <5DC714DB.9060007@bfs.de>
+Date:   Sat, 09 Nov 2019 20:34:51 +0100
+From:   walter harms <wharms@bfs.de>
+Reply-To: wharms@bfs.de
+User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; de; rv:1.9.1.16) Gecko/20101125 SUSE/3.0.11 Thunderbird/3.0.11
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191108134606.GL20863@quack2.suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+To:     linux-man@vger.kernel.org, darrick.wong@oracle.com,
+        dhowells@redhat.com, jaegeuk@kernel.org, linux-api@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, victorhsieh@google.com
+Subject: Re: [man-pages RFC PATCH] statx.2: document STATX_ATTR_VERITY
+References: <20191107014420.GD15212@magnolia> <20191107220248.32025-1-ebiggers@kernel.org> <5DC525E8.4060705@bfs.de> <20191108193557.GA12997@gmail.com>
+In-Reply-To: <20191108193557.GA12997@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.60
+Authentication-Results: mx01-fr.bfs.de
+X-Spamd-Result: default: False [-1.60 / 7.00];
+         HAS_REPLYTO(0.00)[wharms@bfs.de];
+         TO_DN_NONE(0.00)[];
+         REPLYTO_ADDR_EQ_FROM(0.00)[];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[];
+         NEURAL_HAM(-0.00)[-0.998,0];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 08, 2019 at 02:46:06PM +0100, Jan Kara wrote:
-> On Fri 08-11-19 14:12:38, Jan Kara wrote:
-> > On Mon 21-10-19 15:49:31, Ira Weiny wrote:
-> > > On Mon, Oct 21, 2019 at 11:45:36AM +1100, Dave Chinner wrote:
-> > > > On Sun, Oct 20, 2019 at 08:59:35AM -0700, ira.weiny@intel.com wrote:
-> > > > That, fundamentally, is the issue here - it's not setting/clearing
-> > > > the DAX flag that is the issue, it's doing a swap of the
-> > > > mapping->a_ops while there may be other code using that ops
-> > > > structure.
-> > > > 
-> > > > IOWs, if there is any code anywhere in the kernel that
-> > > > calls an address space op without holding one of the three locks we
-> > > > hold here (i_rwsem, MMAPLOCK, ILOCK) then it can race with the swap
-> > > > of the address space operations.
-> > > > 
-> > > > By limiting the address space swap to file sizes of zero, we rule
-> > > > out the page fault path (mmap of a zero length file segv's with an
-> > > > access beyond EOF on the first read/write page fault, right?).
-> > > 
-> > > Yes I checked that and thought we were safe here...
-> > > 
-> > > > However, other aops callers that might run unlocked and do the wrong
-> > > > thing if the aops pointer is swapped between check of the aop method
-> > > > existing and actually calling it even if the file size is zero?
-> > > > 
-> > > > A quick look shows that FIBMAP (ioctl_fibmap())) looks susceptible
-> > > > to such a race condition with the current definitions of the XFS DAX
-> > > > aops. I'm guessing there will be others, but I haven't looked
-> > > > further than this...
-> > > 
-> > > I'll check for others and think on what to do about this.  ext4 will have the
-> > > same problem I think.  :-(
-> > 
-> > Just as a datapoint, ext4 is bold and sets inode->i_mapping->a_ops on
-> > existing inodes when switching journal data flag and so far it has not
-> > blown up. What we did to deal with issues Dave describes is that we
-> > introduced percpu rw-semaphore guarding switching of aops and then inside
-> > problematic functions redirect callbacks in the right direction under this
-> > semaphore. Somewhat ugly but it seems to work.
 
-Ah I am glad you brought this up.  I had not seen this before.
 
-Is that s_journal_flag_rwsem?
-
-In the general case I don't think that correctly protects against:
-
-	if (a_ops->call)
-		a_ops->call();
-
-Because not all operations are defined in both ext4_aops and
-ext4_journalled_aops.  Specifically migratepage.
-
-move_to_new_page() specifically follows the pattern above with migratepage.  So
-is there a bug here?
-
+Am 08.11.2019 20:35, schrieb Eric Biggers:
+> On Fri, Nov 08, 2019 at 09:23:04AM +0100, walter harms wrote:
+>>
+>>
+>> Am 07.11.2019 23:02, schrieb Eric Biggers:
+>>> From: Eric Biggers <ebiggers@google.com>
+>>>
+>>> Document the verity attribute for statx().
+>>>
+>>> Signed-off-by: Eric Biggers <ebiggers@google.com>
+>>> ---
+>>>  man2/statx.2 | 4 ++++
+>>>  1 file changed, 4 insertions(+)
+>>>
+>>> RFC since the kernel patches are currently under review.
+>>> The kernel patches can be found here:
+>>> https://lkml.kernel.org/linux-fscrypt/20191029204141.145309-1-ebiggers@kernel.org/T/#u
+>>>
+>>> diff --git a/man2/statx.2 b/man2/statx.2
+>>> index d2f1b07b8..713bd1260 100644
+>>> --- a/man2/statx.2
+>>> +++ b/man2/statx.2
+>>> @@ -461,6 +461,10 @@ See
+>>>  .TP
+>>>  .B STATX_ATTR_ENCRYPTED
+>>>  A key is required for the file to be encrypted by the filesystem.
+>>> +.TP
+>>> +.B STATX_ATTR_VERITY
+>>> +The file has fs-verity enabled.  It cannot be written to, and all reads from it
+>>> +will be verified against a Merkle tree.
+>>
+>> Using "Merkle tree" opens a can of worm and what will happen when the methode will change ?
+>> Does it matter at all ? i would suggest "filesystem" here.
+>>
 > 
-> Thinking about this some more, perhaps this scheme could be actually
-> transformed in something workable. We could have a global (or maybe per-sb
-> but I'm not sure it's worth it) percpu rwsem and we could transform aops
-> calls into:
+> Fundamentally, fs-verity guarantees that all data read is verified against a
+> cryptographic hash that covers the entire file.  I think it will be helpful to
+> convey that here, e.g. to avoid confusion with non-cryptographic, individual
+> block checksums supported by filesystems like btrfs and zfs.
 > 
-> percpu_down_read(aops_rwsem);
-> do_call();
-> percpu_up_read(aops_rwsem);
+> Now, the only sane way to implement this model is with a Merkle tree, and this
+> is part of the fs-verity UAPI (via the file hash), so that's where I'm coming
+> from here.  Perhaps the phrase "Merkle tree" could be interpreted too strictly,
+> though, so it would be better to emphasize the more abstract model.  How about
+> the following?:
 > 
-> With some macro magic it needn't be even that ugly.
-
-I think this is safer.  And what I have been investigating/coding up.  Because
-that also would protect against the above with:
-
-percpu_down_read(aops_rwsem);
-	if (a_ops->call)
-		a_ops->call();
-percpu_up_read(aops_rwsem);
-
-However I have been looking at SRCU because we also have patterns like:
-
-
-	generic_file_buffered_read
-		if (a_ops->is_partially_uptodate)
-			a_ops->is_partially_uptodate()
-		page_cache_sync_readahead
-			force_page_cache_readahead
-				if (!a_ops->readpage && !a_ops->readpages)
-					return;
-				__do_page_cache_readahead
-					read_pages
-						if (a_ops->readpages)
-							a_ops->readpages()
-						a_ops->readpage
-
-
-So we would have to pass the a_ops through to use a rwsem.  Where SRCU I think
-would be fine to just take the SRCU read lock multiple times.  Am I wrong?
-
-
-We also have a 3rd (2nd?) issue.  There are callers who check for the presence
-of an operation to be used later.  For example do_dentry_open():
-
-do_dentry_open()
-{
-...
-	if (<flags> & O_DIRECT)
-		if (!<a_ops> || !<a_ops>->direct_IO)
-			return -EINVAL;
-...
-}
-
-After this open direct_IO better be there AFAICT so changing the a_ops later
-would not be good.  For ext4 direct_IO is defined for all the a_ops...  so I
-guess that is not a big deal.  However, is the user really getting the behavior
-they expect in this case?
-
-I'm afraid of requiring FSs to have to follow rules in defining their a_ops.
-Because I'm afraid maintaining those rules would be hard and would eventually
-lead to crashes when someone did it wrong.
-
-:-/
-
-So for this 3rd (2nd) case I think we should simply take a reference to the
-a_ops and fail changing the mode.  For the DAX case that means the user is best
-served by taking a write lease on the file to ensure there are no other opens
-which could cause issues.
-
-Would that work for changing the journaling mode?
-
-And I _think_ this is the only issue we have with this right now. But if other
-callers of a_ops needed the pattern of using the a_ops at a time across context
-changes they would need to ensure this reference was taken.
-
-What I have come up with thus far is an interface like:
-
-/*
- * as_get_a_ops() -- safely get the a_ops from the address_space specified
- *
- * @as: address space to get a_ops from
- * @ref: used to indicate if a reference is required on this a_ops
- * @tok: srcu token to be returned in as_put_a_ops()
- *
- * The a_ops returned is protected from changing until as_put_a_ops().
- *
- * If ref is specified then ref must also be specified in as_put_a_ops() to
- * release this reference.  In this case a reference is taken on the a_ops
- * which will prevent it from changing until the reference is released.
- *
- * References should _ONLY_ be taken when the a_ops needs to be constant
- * across a user context switch because doing so will block changing the a_ops
- * until that reference is released.
- *
- * Examples of using a reference are checks for specific a_ops pointers which
- * are expected to support functionality at a later date (example direct_IO)
- */
-static inline const struct address_space_operations *
-as_get_a_ops(struct address_space *as, bool ref, int *tok)
-{
-	...
-}
-
-static inline void
-as_assign_a_ops(struct address_space *as,
-                const struct address_space_operations *a_ops)
-{
-	...
-}
-
-static inline void as_put_a_ops(struct address_space *as, int tok, bool ref)
-{
-	...
-}
-
-
-I'm still working out the details of using SRCU and a ref count.  I have made
-at least 1 complete pass of all the a_ops users and I think this would cover
-them all.
-
-Thoughts?
-Ira
-
+> 	The file has fs-verity enabled.  It cannot be written to, and all reads
+> 	from it will be verified against a cryptographic hash that covers the
+> 	entire file, e.g. via a Merkle tree.
 > 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+
+"feels" better,. but from a programmers perspective it is important at what level
+this is actually done. To see my point look at the line before.
+"encrypted by the filesystem" mean i have to read the documentation of the fs first
+so if encryption is supported at all. Or do i think to complicated ?
+
+jm2c,
+re
+ wh
+
