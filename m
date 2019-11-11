@@ -2,85 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCBBF7259
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2019 11:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1964F76C6
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2019 15:44:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbfKKKjC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Nov 2019 05:39:02 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29200 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726819AbfKKKjB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Nov 2019 05:39:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1573468740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DtJ5pv77U2r0G6ksqsSYckeZ6pvSP6wLt/Y5uCN51BI=;
-        b=gX6VKX1YGSQBI/P7OkvrH8I9iedPzu5Owoj68/TimgZxIogBVL9lB2mlcILm37mLI6OhY+
-        KBmGypspQcRqNqkEA1sxK+Ou2e7bfAKgBjIY/vq6QCMsHGvS57gKZYwMrT/rDLOp6gb99k
-        Xc5zsiEjM+MsvqWYLt86/mwuxguMlvA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-268-S1iNAS8jNHuFSYbreh69fQ-1; Mon, 11 Nov 2019 05:38:56 -0500
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D4F5107ACC4;
-        Mon, 11 Nov 2019 10:38:55 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E5C755D6A3;
-        Mon, 11 Nov 2019 10:38:54 +0000 (UTC)
-Received: from zmail17.collab.prod.int.phx2.redhat.com (zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id C14C94BB5C;
-        Mon, 11 Nov 2019 10:38:54 +0000 (UTC)
-Date:   Mon, 11 Nov 2019 05:38:54 -0500 (EST)
-From:   Jan Stancek <jstancek@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        LTP List <ltp@lists.linux.it>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, chrubis <chrubis@suse.cz>,
-        open list <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        lkft-triage@lists.linaro.org,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Message-ID: <1757087132.11450258.1573468734360.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20191111083815.GA29540@infradead.org>
-References: <CA+G9fYtmA5F174nTAtyshr03wkSqMS7+7NTDuJMd_DhJF6a4pw@mail.gmail.com> <852514139.11036267.1573172443439.JavaMail.zimbra@redhat.com> <20191111012614.GC6235@magnolia> <1751469294.11431533.1573460380206.JavaMail.zimbra@redhat.com> <20191111083815.GA29540@infradead.org>
-Subject: Re: LTP: diotest4.c:476: read to read-only space. returns 0:
- Success
+        id S1727015AbfKKOoB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 Nov 2019 09:44:01 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:36924 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726832AbfKKOoB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 11 Nov 2019 09:44:01 -0500
+Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id ACF0049714017543CCD7;
+        Mon, 11 Nov 2019 22:43:54 +0800 (CST)
+Received: from DGGEMM512-MBS.china.huawei.com ([169.254.4.39]) by
+ DGGEMM406-HUB.china.huawei.com ([10.3.20.214]) with mapi id 14.03.0439.000;
+ Mon, 11 Nov 2019 22:43:47 +0800
+From:   Guiyao <guiyao@huawei.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Mingfangsen <mingfangsen@huawei.com>,
+        "ebiggers@google.com" <ebiggers@google.com>,
+        "aceballos@gmail.com" <aceballos@gmail.com>,
+        "vertaling@coevern.nl" <vertaling@coevern.nl>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIHYyXSBlMmZzcHJvZ3M6IENoZWNrIGRldmljZSBpZCBp?=
+ =?gb2312?Q?n_advance_to_skip_fake_device_name?=
+Thread-Topic: [PATCH v2] e2fsprogs: Check device id in advance to skip fake
+ device name
+Thread-Index: AdWYmobA6kLp3Wt1RVKDbvNk/crgBQ==
+Date:   Mon, 11 Nov 2019 14:43:46 +0000
+Message-ID: <005F77DB9A260B4E91664DDF22573C66E9D380C7@dggemm512-mbs.china.huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.173.220.158]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Originating-IP: [10.43.17.163, 10.4.195.18]
-Thread-Topic: diotest4.c:476: read to read-only space. returns 0: Success
-Thread-Index: 910IB+66jrM2sMmDpKAiK7gJA7sQsg==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-MC-Unique: S1iNAS8jNHuFSYbreh69fQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
------ Original Message -----
-> Is this a new test?
-
-No, it's not new.
-
-> If not why was this never reported?  Sounds like
-> we should add this test case to xfstests.
-
-I'm guessing not that many users still run 32bit kernels.
-Naresh' setup is using ext4, so I assume he noticed only
-after recent changes in linux-next wrt. directio and ext4.
-
-Regards,
-Jan
-
+SGkgVGhlb2RvcmUsDQoNClRoYW5rcyBmb3IgeW91ciByZXNwb25zZSBhbmQgeW91ciByZXdyaXRp
+bmcuDQoNCkFjdHVhbGx5LCB3ZSBmb3VuZCBzb21lIGluc2FuZSBzeXN0ZW0gYWRtaW5pc3RyYXRv
+cnMsIHRoZXkgbm90IG9ubHkgZG8gc29tZXRoaW5nIGxpa2UgIm1vdW50IC10IHRtcGZzIC9kZXYv
+c2RiIC90bXAgIiwgYnV0IGFsc28gdGhleSBkbyAiIGxuIC1zIC9kZXYvc2RiIGFiYyAiLCB0aGVu
+ICJyZXNpemUyZnMgYWJjIHh4eCIuIDooDQoNClNvIHdlIGhhdmUgdG8gYWRkIHRoZSBmaXhpbmcg
+Y29kZSBpbiBib3RoIHNpZGVzIG9mICJuYW1lIG1hdGNoZWQiIGFuZCAibmFtZSBub3QgbWF0Y2hl
+ZCIuDQoNCkZvciB0aGUgY29tcGlsaW5nIGlzc3VlLCBpdCdzIG15IGZhdWx0IGluIHByZXZpb3Vz
+IHBhdGNoLCBhbmQgYWRkZWQgdGhlIG1hY3JvIGluIGEgd3JvbmcgbGluZS4NCg0KU28sIEkgcmV3
+cm90ZSBpdCBhZ2FpbiwgYW5kIHBsZWFzZSBnaXZlIG1vcmUgYWR2aXNlLiBUaGFuayB5b3UgaW4g
+YWR2YW5jZS4NCg0KDQpkaWZmIC0tZ2l0IGEvbGliL2V4dDJmcy9pc21vdW50ZWQuYyBiL2xpYi9l
+eHQyZnMvaXNtb3VudGVkLmMNCmluZGV4IDZjZDQ5N2QuLjcyOTc2OWUgMTAwNjQ0DQotLS0gYS9s
+aWIvZXh0MmZzL2lzbW91bnRlZC5jDQorKysgYi9saWIvZXh0MmZzL2lzbW91bnRlZC5jDQpAQCAt
+OTcsNiArOTcsOSBAQCBzdGF0aWMgZXJyY29kZV90IGNoZWNrX21udGVudF9maWxlKGNvbnN0IGNo
+YXIgKm10YWJfZmlsZSwgY29uc3QgY2hhciAqZmlsZSwNCiAgICAgICAgICAgICAgICAgICBpbnQg
+Km1vdW50X2ZsYWdzLCBjaGFyICptdHB0LCBpbnQgbXRsZW4pDQogew0KICAgIHN0cnVjdCBtbnRl
+bnQgICAqbW50Ow0KKyNpZm5kZWYgX19HTlVfXw0KKyAgIHN0cnVjdCBzdGF0IGRpcl9zdF9idWY7
+DQorI2VuZGlmICAvKiBfX0dOVV9fICovDQogICAgc3RydWN0IHN0YXQgc3RfYnVmOw0KICAgIGVy
+cmNvZGVfdCAgIHJldHZhbCA9IDA7DQogICAgZGV2X3QgICAgICAgZmlsZV9kZXY9MCwgZmlsZV9y
+ZGV2PTA7DQpAQCAtMTI4LDEzICsxMzEsMzIgQEAgc3RhdGljIGVycmNvZGVfdCBjaGVja19tbnRl
+bnRfZmlsZShjb25zdCBjaGFyICptdGFiX2ZpbGUsIGNvbnN0IGNoYXIgKmZpbGUsDQogICAgd2hp
+bGUgKChtbnQgPSBnZXRtbnRlbnQgKGYpKSAhPSBOVUxMKSB7DQogICAgICAgIGlmIChtbnQtPm1u
+dF9mc25hbWVbMF0gIT0gJy8nKQ0KICAgICAgICAgICAgY29udGludWU7DQotICAgICAgIGlmIChz
+dHJjbXAoZmlsZSwgbW50LT5tbnRfZnNuYW1lKSA9PSAwKQ0KKyNpZm5kZWYgX19HTlVfXw0KKyAg
+ICAgICBpZiAoc3RhdChtbnQtPm1udF9kaXIsICZkaXJfc3RfYnVmKSAhPSAwKQ0KKyAgICAgICAg
+ICAgY29udGludWU7DQorI2VuZGlmDQorICAgICAgIGlmIChzdHJjbXAoZmlsZSwgbW50LT5tbnRf
+ZnNuYW1lKSA9PSAwKSB7DQorI2lmbmRlZiBfX0dOVV9fDQorICAgICAgICAgICBpZiAoZmlsZV9y
+ZGV2ICYmIChmaWxlX3JkZXYgIT0gZGlyX3N0X2J1Zi5zdF9kZXYpKSB7DQorI2lmZGVmIERFQlVH
+DQorICAgICAgICAgICAgICAgcHJpbnRmKCJCb2d1cyBlbnRyeSBpbiAlcyEgICINCisgICAgICAg
+ICAgICAgICAgICAgICAgIiglcyBkb2VzIG5vdCBleGlzdClcbiIsDQorICAgICAgICAgICAgICAg
+ICAgICAgIG10YWJfZmlsZSwgbW50LT5tbnRfZGlyKTsNCisjZW5kaWYgLyogREVCVUcgKi8NCisg
+ICAgICAgICAgICAgICBjb250aW51ZTsNCisgICAgICAgICAgIH0NCisjZW5kaWYgLyogX19HTlVf
+XyAqLw0KICAgICAgICAgICAgYnJlYWs7DQorICAgICAgIH0NCisNCiAgICAgICAgaWYgKHN0YXQo
+bW50LT5tbnRfZnNuYW1lLCAmc3RfYnVmKSA9PSAwKSB7DQogICAgICAgICAgICBpZiAoZXh0MmZz
+UF9pc19kaXNrX2RldmljZShzdF9idWYuc3RfbW9kZSkpIHsNCiAjaWZuZGVmIF9fR05VX18NCi0g
+ICAgICAgICAgICAgICBpZiAoZmlsZV9yZGV2ICYmIChmaWxlX3JkZXYgPT0gc3RfYnVmLnN0X3Jk
+ZXYpKQ0KLSAgICAgICAgICAgICAgICAgICBicmVhazsNCisgICAgICAgICAgICAgICBpZiAoZmls
+ZV9yZGV2ICYmIChmaWxlX3JkZXYgPT0gc3RfYnVmLnN0X3JkZXYpKSB7DQorICAgICAgICAgICAg
+ICAgICAgIGlmIChmaWxlX3JkZXYgPT0gZGlyX3N0X2J1Zi5zdF9kZXYpDQorICAgICAgICAgICAg
+ICAgICAgICAgICBicmVhazsNCisgICAgICAgICAgICAgICB9DQorDQogICAgICAgICAgICAgICAg
+aWYgKGNoZWNrX2xvb3BfbW91bnRlZChtbnQtPm1udF9mc25hbWUsDQogICAgICAgICAgICAgICAg
+ICAgICAgICBzdF9idWYuc3RfcmRldiwgZmlsZV9kZXYsDQogICAgICAgICAgICAgICAgICAgICAg
+ICBmaWxlX2lubykgPT0gMSkNCkBAIC0xNjgsMzIgKzE5MCw2IEBAIHN0YXRpYyBlcnJjb2RlX3Qg
+Y2hlY2tfbW50ZW50X2ZpbGUoY29uc3QgY2hhciAqbXRhYl9maWxlLCBjb25zdCBjaGFyICpmaWxl
+LA0KICNlbmRpZiAvKiBfX0dOVV9fICovDQogICAgICAgIGdvdG8gZXJyb3V0Ow0KICAgIH0NCi0j
+aWZuZGVmIF9fR05VX18gLyogVGhlIEdOVSBodXJkIGlzIGRlZmljaWVudDsgd2hhdCBlbHNlIGlz
+IG5ldz8gKi8NCi0gICAvKiBWYWxpZGF0ZSB0aGUgZW50cnkgaW4gY2FzZSAvZXRjL210YWIgaXMg
+b3V0IG9mIGRhdGUgKi8NCi0gICAvKg0KLSAgICAqIFdlIG5lZWQgdG8gYmUgcGFyYW5vaWQsIGJl
+Y2F1c2Ugc29tZSBicm9rZW4gZGlzdHJpYnV0aW9ucw0KLSAgICAqIChyZWFkOiBTbGFja3dhcmUp
+IGRvbid0IGluaXRpYWxpemUgL2V0Yy9tdGFiIGJlZm9yZSBjaGVja2luZw0KLSAgICAqIGFsbCBv
+ZiB0aGUgbm9uLXJvb3QgZmlsZXN5c3RlbXMgb24gdGhlIGRpc2suDQotICAgICovDQotICAgaWYg
+KHN0YXQobW50LT5tbnRfZGlyLCAmc3RfYnVmKSA8IDApIHsNCi0gICAgICAgcmV0dmFsID0gZXJy
+bm87DQotICAgICAgIGlmIChyZXR2YWwgPT0gRU5PRU5UKSB7DQotI2lmZGVmIERFQlVHDQotICAg
+ICAgICAgICBwcmludGYoIkJvZ3VzIGVudHJ5IGluICVzISAgKCVzIGRvZXMgbm90IGV4aXN0KVxu
+IiwNCi0gICAgICAgICAgICAgICAgICBtdGFiX2ZpbGUsIG1udC0+bW50X2Rpcik7DQotI2VuZGlm
+IC8qIERFQlVHICovDQotICAgICAgICAgICByZXR2YWwgPSAwOw0KLSAgICAgICB9DQotICAgICAg
+IGdvdG8gZXJyb3V0Ow0KLSAgIH0NCi0gICBpZiAoZmlsZV9yZGV2ICYmIChzdF9idWYuc3RfZGV2
+ICE9IGZpbGVfcmRldikpIHsNCi0jaWZkZWYgREVCVUcNCi0gICAgICAgcHJpbnRmKCJCb2d1cyBl
+bnRyeSBpbiAlcyEgICglcyBub3QgbW91bnRlZCBvbiAlcylcbiIsDQotICAgICAgICAgICAgICBt
+dGFiX2ZpbGUsIGZpbGUsIG1udC0+bW50X2Rpcik7DQotI2VuZGlmIC8qIERFQlVHICovDQotICAg
+ICAgIGdvdG8gZXJyb3V0Ow0KLSAgIH0NCi0jZW5kaWYgLyogX19HTlVfXyAqLw0KICAgICptb3Vu
+dF9mbGFncyA9IEVYVDJfTUZfTU9VTlRFRDsNCg0KICNpZmRlZiBNTlRPUFRfUk8NCi0tIA0KMS44
+LjMuMQ0K
