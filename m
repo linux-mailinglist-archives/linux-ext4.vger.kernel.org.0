@@ -2,106 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B5BF71F2
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2019 11:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A75CF7246
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2019 11:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbfKKK32 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Nov 2019 05:29:28 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53207 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726810AbfKKK31 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Nov 2019 05:29:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1573468166;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pcVRVS2wigfNxAtSVYLPPaPRSK4c2t19oDRB3orBUZ8=;
-        b=Qu8oR+yS+SqKnZKhq7MLdSGa7rTRFICVguQD0H8Odfe6wr9GUAVwXwMnBOJSX7jzKbEi5o
-        gzUH6SjKbp9xeBjhAjRy6mERaKnfY9eSs1cQBcUOMDvMOm6UcGlBD92+7O6wB8xKtXIHXA
-        ZrAYGJhK0OkDbK4QJiUdDjUt72GFF2s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-z809MnJvNym6fsK2ylp1rQ-1; Mon, 11 Nov 2019 05:29:23 -0500
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 531491005500;
-        Mon, 11 Nov 2019 10:29:21 +0000 (UTC)
-Received: from dustball.usersys.redhat.com (unknown [10.43.17.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 640765D6A3;
-        Mon, 11 Nov 2019 10:29:18 +0000 (UTC)
-From:   Jan Stancek <jstancek@redhat.com>
-To:     darrick.wong@oracle.com, naresh.kamboju@linaro.org,
-        hch@infradead.org
-Cc:     ltp@lists.linux.it, linux-next@vger.kernel.org,
+        id S1726829AbfKKKga (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 Nov 2019 05:36:30 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:57580 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726768AbfKKKga (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 11 Nov 2019 05:36:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=Swru49g7s+A94QhHKZRBNdA6C
+        k60AaFFEPs7AMy17/rEKs+sBONGiV2W42BotF5KCRcdxI+hx/S/PgvVwvbZcjiPZtqFATl74qkZWp
+        k6dyUb94on2lnXQ4SY8ws/qbU5lATtgfKAzjXrHL3eTIzLCoJvI2OTxmL/sS+zX7MzL2EeIl1hrF0
+        J6gtImUnhDKxgeBu1UlbCjo14cVJdcRPJJSW2zD2niWBiErzo/IK3+yVL25rCY15sC8Yjpbjf1FKw
+        GGz2eSTK0O3fIZFrzceSD5Kah6lGgZLSZXZ32PkAJIPYRqR7/rmXmpu5oXfnYEkPVbHUkI965S7PZ
+        MNG+g2EJw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iU73T-0007BK-Hy; Mon, 11 Nov 2019 10:36:19 +0000
+Date:   Mon, 11 Nov 2019 02:36:19 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jan Stancek <jstancek@redhat.com>
+Cc:     darrick.wong@oracle.com, naresh.kamboju@linaro.org,
+        hch@infradead.org, ltp@lists.linux.it, linux-next@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, chrubis@suse.cz,
         linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
         broonie@kernel.org, arnd@arndb.de, lkft-triage@lists.linaro.org,
-        linux-ext4@vger.kernel.org, tytso@mit.edu, jstancek@redhat.com
-Subject: [PATCH] iomap: fix return value of iomap_dio_bio_actor on 32bit systems
-Date:   Mon, 11 Nov 2019 11:28:10 +0100
-Message-Id: <b757ff64ddf68519fc3d55b66fcd8a1d4b436395.1573467154.git.jstancek@redhat.com>
-In-Reply-To: <20191111083815.GA29540@infradead.org>
+        linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [PATCH] iomap: fix return value of iomap_dio_bio_actor on 32bit
+ systems
+Message-ID: <20191111103619.GA25583@infradead.org>
 References: <20191111083815.GA29540@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-MC-Unique: z809MnJvNym6fsK2ylp1rQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+ <b757ff64ddf68519fc3d55b66fcd8a1d4b436395.1573467154.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b757ff64ddf68519fc3d55b66fcd8a1d4b436395.1573467154.git.jstancek@redhat.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Naresh reported LTP diotest4 failing for 32bit x86 and arm -next
-kernels on ext4. Same problem exists in 5.4-rc7 on xfs.
+Looks good,
 
-The failure comes down to:
-  openat(AT_FDCWD, "testdata-4.5918", O_RDWR|O_DIRECT) =3D 4
-  mmap2(NULL, 4096, PROT_READ, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) =3D 0xb7f7=
-b000
-  read(4, 0xb7f7b000, 4096)              =3D 0 // expects -EFAULT
-
-Problem is conversion at iomap_dio_bio_actor() return. Ternary
-operator has a return type and an attempt is made to convert each
-of operands to the type of the other. In this case "ret" (int)
-is converted to type of "copied" (unsigned long). Both have size
-of 4 bytes:
-    size_t copied =3D 0;
-    int ret =3D -14;
-    long long actor_ret =3D copied ? copied : ret;
-
-    On x86_64: actor_ret =3D=3D -14;
-    On x86   : actor_ret =3D=3D 4294967282
-
-Replace ternary operator with 2 return statements to avoid this
-unwanted conversion.
-
-Fixes: 4721a6010990 ("iomap: dio data corruption and spurious errors when p=
-ipes fill")
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- fs/iomap/direct-io.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 1fc28c2da279..7c58f51d7da7 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -318,7 +318,9 @@ static void iomap_dio_bio_end_io(struct bio *bio)
- =09=09if (pad)
- =09=09=09iomap_dio_zero(dio, iomap, pos, fs_block_size - pad);
- =09}
--=09return copied ? copied : ret;
-+=09if (copied)
-+=09=09return copied;
-+=09return ret;
- }
-=20
- static loff_t
---=20
-1.8.3.1
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
