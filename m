@@ -2,108 +2,290 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1964F76C6
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2019 15:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DEBF7868
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2019 17:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbfKKOoB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 Nov 2019 09:44:01 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:36924 "EHLO huawei.com"
+        id S1727024AbfKKQHx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 Nov 2019 11:07:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43252 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726832AbfKKOoB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 11 Nov 2019 09:44:01 -0500
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id ACF0049714017543CCD7;
-        Mon, 11 Nov 2019 22:43:54 +0800 (CST)
-Received: from DGGEMM512-MBS.china.huawei.com ([169.254.4.39]) by
- DGGEMM406-HUB.china.huawei.com ([10.3.20.214]) with mapi id 14.03.0439.000;
- Mon, 11 Nov 2019 22:43:47 +0800
-From:   Guiyao <guiyao@huawei.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Mingfangsen <mingfangsen@huawei.com>,
-        "ebiggers@google.com" <ebiggers@google.com>,
-        "aceballos@gmail.com" <aceballos@gmail.com>,
-        "vertaling@coevern.nl" <vertaling@coevern.nl>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIHYyXSBlMmZzcHJvZ3M6IENoZWNrIGRldmljZSBpZCBp?=
- =?gb2312?Q?n_advance_to_skip_fake_device_name?=
-Thread-Topic: [PATCH v2] e2fsprogs: Check device id in advance to skip fake
- device name
-Thread-Index: AdWYmobA6kLp3Wt1RVKDbvNk/crgBQ==
-Date:   Mon, 11 Nov 2019 14:43:46 +0000
-Message-ID: <005F77DB9A260B4E91664DDF22573C66E9D380C7@dggemm512-mbs.china.huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.173.220.158]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1726845AbfKKQHw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 11 Nov 2019 11:07:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 13F64AE92;
+        Mon, 11 Nov 2019 16:07:49 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id BA5631E47E5; Mon, 11 Nov 2019 17:07:48 +0100 (CET)
+Date:   Mon, 11 Nov 2019 17:07:48 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/5] fs/xfs: Allow toggle of physical DAX flag
+Message-ID: <20191111160748.GE13307@quack2.suse.cz>
+References: <20191020155935.12297-1-ira.weiny@intel.com>
+ <20191020155935.12297-6-ira.weiny@intel.com>
+ <20191021004536.GD8015@dread.disaster.area>
+ <20191021224931.GA25526@iweiny-DESK2.sc.intel.com>
+ <20191108131238.GK20863@quack2.suse.cz>
+ <20191108134606.GL20863@quack2.suse.cz>
+ <20191108193612.GA4800@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191108193612.GA4800@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-SGkgVGhlb2RvcmUsDQoNClRoYW5rcyBmb3IgeW91ciByZXNwb25zZSBhbmQgeW91ciByZXdyaXRp
-bmcuDQoNCkFjdHVhbGx5LCB3ZSBmb3VuZCBzb21lIGluc2FuZSBzeXN0ZW0gYWRtaW5pc3RyYXRv
-cnMsIHRoZXkgbm90IG9ubHkgZG8gc29tZXRoaW5nIGxpa2UgIm1vdW50IC10IHRtcGZzIC9kZXYv
-c2RiIC90bXAgIiwgYnV0IGFsc28gdGhleSBkbyAiIGxuIC1zIC9kZXYvc2RiIGFiYyAiLCB0aGVu
-ICJyZXNpemUyZnMgYWJjIHh4eCIuIDooDQoNClNvIHdlIGhhdmUgdG8gYWRkIHRoZSBmaXhpbmcg
-Y29kZSBpbiBib3RoIHNpZGVzIG9mICJuYW1lIG1hdGNoZWQiIGFuZCAibmFtZSBub3QgbWF0Y2hl
-ZCIuDQoNCkZvciB0aGUgY29tcGlsaW5nIGlzc3VlLCBpdCdzIG15IGZhdWx0IGluIHByZXZpb3Vz
-IHBhdGNoLCBhbmQgYWRkZWQgdGhlIG1hY3JvIGluIGEgd3JvbmcgbGluZS4NCg0KU28sIEkgcmV3
-cm90ZSBpdCBhZ2FpbiwgYW5kIHBsZWFzZSBnaXZlIG1vcmUgYWR2aXNlLiBUaGFuayB5b3UgaW4g
-YWR2YW5jZS4NCg0KDQpkaWZmIC0tZ2l0IGEvbGliL2V4dDJmcy9pc21vdW50ZWQuYyBiL2xpYi9l
-eHQyZnMvaXNtb3VudGVkLmMNCmluZGV4IDZjZDQ5N2QuLjcyOTc2OWUgMTAwNjQ0DQotLS0gYS9s
-aWIvZXh0MmZzL2lzbW91bnRlZC5jDQorKysgYi9saWIvZXh0MmZzL2lzbW91bnRlZC5jDQpAQCAt
-OTcsNiArOTcsOSBAQCBzdGF0aWMgZXJyY29kZV90IGNoZWNrX21udGVudF9maWxlKGNvbnN0IGNo
-YXIgKm10YWJfZmlsZSwgY29uc3QgY2hhciAqZmlsZSwNCiAgICAgICAgICAgICAgICAgICBpbnQg
-Km1vdW50X2ZsYWdzLCBjaGFyICptdHB0LCBpbnQgbXRsZW4pDQogew0KICAgIHN0cnVjdCBtbnRl
-bnQgICAqbW50Ow0KKyNpZm5kZWYgX19HTlVfXw0KKyAgIHN0cnVjdCBzdGF0IGRpcl9zdF9idWY7
-DQorI2VuZGlmICAvKiBfX0dOVV9fICovDQogICAgc3RydWN0IHN0YXQgc3RfYnVmOw0KICAgIGVy
-cmNvZGVfdCAgIHJldHZhbCA9IDA7DQogICAgZGV2X3QgICAgICAgZmlsZV9kZXY9MCwgZmlsZV9y
-ZGV2PTA7DQpAQCAtMTI4LDEzICsxMzEsMzIgQEAgc3RhdGljIGVycmNvZGVfdCBjaGVja19tbnRl
-bnRfZmlsZShjb25zdCBjaGFyICptdGFiX2ZpbGUsIGNvbnN0IGNoYXIgKmZpbGUsDQogICAgd2hp
-bGUgKChtbnQgPSBnZXRtbnRlbnQgKGYpKSAhPSBOVUxMKSB7DQogICAgICAgIGlmIChtbnQtPm1u
-dF9mc25hbWVbMF0gIT0gJy8nKQ0KICAgICAgICAgICAgY29udGludWU7DQotICAgICAgIGlmIChz
-dHJjbXAoZmlsZSwgbW50LT5tbnRfZnNuYW1lKSA9PSAwKQ0KKyNpZm5kZWYgX19HTlVfXw0KKyAg
-ICAgICBpZiAoc3RhdChtbnQtPm1udF9kaXIsICZkaXJfc3RfYnVmKSAhPSAwKQ0KKyAgICAgICAg
-ICAgY29udGludWU7DQorI2VuZGlmDQorICAgICAgIGlmIChzdHJjbXAoZmlsZSwgbW50LT5tbnRf
-ZnNuYW1lKSA9PSAwKSB7DQorI2lmbmRlZiBfX0dOVV9fDQorICAgICAgICAgICBpZiAoZmlsZV9y
-ZGV2ICYmIChmaWxlX3JkZXYgIT0gZGlyX3N0X2J1Zi5zdF9kZXYpKSB7DQorI2lmZGVmIERFQlVH
-DQorICAgICAgICAgICAgICAgcHJpbnRmKCJCb2d1cyBlbnRyeSBpbiAlcyEgICINCisgICAgICAg
-ICAgICAgICAgICAgICAgIiglcyBkb2VzIG5vdCBleGlzdClcbiIsDQorICAgICAgICAgICAgICAg
-ICAgICAgIG10YWJfZmlsZSwgbW50LT5tbnRfZGlyKTsNCisjZW5kaWYgLyogREVCVUcgKi8NCisg
-ICAgICAgICAgICAgICBjb250aW51ZTsNCisgICAgICAgICAgIH0NCisjZW5kaWYgLyogX19HTlVf
-XyAqLw0KICAgICAgICAgICAgYnJlYWs7DQorICAgICAgIH0NCisNCiAgICAgICAgaWYgKHN0YXQo
-bW50LT5tbnRfZnNuYW1lLCAmc3RfYnVmKSA9PSAwKSB7DQogICAgICAgICAgICBpZiAoZXh0MmZz
-UF9pc19kaXNrX2RldmljZShzdF9idWYuc3RfbW9kZSkpIHsNCiAjaWZuZGVmIF9fR05VX18NCi0g
-ICAgICAgICAgICAgICBpZiAoZmlsZV9yZGV2ICYmIChmaWxlX3JkZXYgPT0gc3RfYnVmLnN0X3Jk
-ZXYpKQ0KLSAgICAgICAgICAgICAgICAgICBicmVhazsNCisgICAgICAgICAgICAgICBpZiAoZmls
-ZV9yZGV2ICYmIChmaWxlX3JkZXYgPT0gc3RfYnVmLnN0X3JkZXYpKSB7DQorICAgICAgICAgICAg
-ICAgICAgIGlmIChmaWxlX3JkZXYgPT0gZGlyX3N0X2J1Zi5zdF9kZXYpDQorICAgICAgICAgICAg
-ICAgICAgICAgICBicmVhazsNCisgICAgICAgICAgICAgICB9DQorDQogICAgICAgICAgICAgICAg
-aWYgKGNoZWNrX2xvb3BfbW91bnRlZChtbnQtPm1udF9mc25hbWUsDQogICAgICAgICAgICAgICAg
-ICAgICAgICBzdF9idWYuc3RfcmRldiwgZmlsZV9kZXYsDQogICAgICAgICAgICAgICAgICAgICAg
-ICBmaWxlX2lubykgPT0gMSkNCkBAIC0xNjgsMzIgKzE5MCw2IEBAIHN0YXRpYyBlcnJjb2RlX3Qg
-Y2hlY2tfbW50ZW50X2ZpbGUoY29uc3QgY2hhciAqbXRhYl9maWxlLCBjb25zdCBjaGFyICpmaWxl
-LA0KICNlbmRpZiAvKiBfX0dOVV9fICovDQogICAgICAgIGdvdG8gZXJyb3V0Ow0KICAgIH0NCi0j
-aWZuZGVmIF9fR05VX18gLyogVGhlIEdOVSBodXJkIGlzIGRlZmljaWVudDsgd2hhdCBlbHNlIGlz
-IG5ldz8gKi8NCi0gICAvKiBWYWxpZGF0ZSB0aGUgZW50cnkgaW4gY2FzZSAvZXRjL210YWIgaXMg
-b3V0IG9mIGRhdGUgKi8NCi0gICAvKg0KLSAgICAqIFdlIG5lZWQgdG8gYmUgcGFyYW5vaWQsIGJl
-Y2F1c2Ugc29tZSBicm9rZW4gZGlzdHJpYnV0aW9ucw0KLSAgICAqIChyZWFkOiBTbGFja3dhcmUp
-IGRvbid0IGluaXRpYWxpemUgL2V0Yy9tdGFiIGJlZm9yZSBjaGVja2luZw0KLSAgICAqIGFsbCBv
-ZiB0aGUgbm9uLXJvb3QgZmlsZXN5c3RlbXMgb24gdGhlIGRpc2suDQotICAgICovDQotICAgaWYg
-KHN0YXQobW50LT5tbnRfZGlyLCAmc3RfYnVmKSA8IDApIHsNCi0gICAgICAgcmV0dmFsID0gZXJy
-bm87DQotICAgICAgIGlmIChyZXR2YWwgPT0gRU5PRU5UKSB7DQotI2lmZGVmIERFQlVHDQotICAg
-ICAgICAgICBwcmludGYoIkJvZ3VzIGVudHJ5IGluICVzISAgKCVzIGRvZXMgbm90IGV4aXN0KVxu
-IiwNCi0gICAgICAgICAgICAgICAgICBtdGFiX2ZpbGUsIG1udC0+bW50X2Rpcik7DQotI2VuZGlm
-IC8qIERFQlVHICovDQotICAgICAgICAgICByZXR2YWwgPSAwOw0KLSAgICAgICB9DQotICAgICAg
-IGdvdG8gZXJyb3V0Ow0KLSAgIH0NCi0gICBpZiAoZmlsZV9yZGV2ICYmIChzdF9idWYuc3RfZGV2
-ICE9IGZpbGVfcmRldikpIHsNCi0jaWZkZWYgREVCVUcNCi0gICAgICAgcHJpbnRmKCJCb2d1cyBl
-bnRyeSBpbiAlcyEgICglcyBub3QgbW91bnRlZCBvbiAlcylcbiIsDQotICAgICAgICAgICAgICBt
-dGFiX2ZpbGUsIGZpbGUsIG1udC0+bW50X2Rpcik7DQotI2VuZGlmIC8qIERFQlVHICovDQotICAg
-ICAgIGdvdG8gZXJyb3V0Ow0KLSAgIH0NCi0jZW5kaWYgLyogX19HTlVfXyAqLw0KICAgICptb3Vu
-dF9mbGFncyA9IEVYVDJfTUZfTU9VTlRFRDsNCg0KICNpZmRlZiBNTlRPUFRfUk8NCi0tIA0KMS44
-LjMuMQ0K
+On Fri 08-11-19 11:36:13, Ira Weiny wrote:
+> On Fri, Nov 08, 2019 at 02:46:06PM +0100, Jan Kara wrote:
+> > On Fri 08-11-19 14:12:38, Jan Kara wrote:
+> > > On Mon 21-10-19 15:49:31, Ira Weiny wrote:
+> > > > On Mon, Oct 21, 2019 at 11:45:36AM +1100, Dave Chinner wrote:
+> > > > > On Sun, Oct 20, 2019 at 08:59:35AM -0700, ira.weiny@intel.com wrote:
+> > > > > That, fundamentally, is the issue here - it's not setting/clearing
+> > > > > the DAX flag that is the issue, it's doing a swap of the
+> > > > > mapping->a_ops while there may be other code using that ops
+> > > > > structure.
+> > > > > 
+> > > > > IOWs, if there is any code anywhere in the kernel that
+> > > > > calls an address space op without holding one of the three locks we
+> > > > > hold here (i_rwsem, MMAPLOCK, ILOCK) then it can race with the swap
+> > > > > of the address space operations.
+> > > > > 
+> > > > > By limiting the address space swap to file sizes of zero, we rule
+> > > > > out the page fault path (mmap of a zero length file segv's with an
+> > > > > access beyond EOF on the first read/write page fault, right?).
+> > > > 
+> > > > Yes I checked that and thought we were safe here...
+> > > > 
+> > > > > However, other aops callers that might run unlocked and do the wrong
+> > > > > thing if the aops pointer is swapped between check of the aop method
+> > > > > existing and actually calling it even if the file size is zero?
+> > > > > 
+> > > > > A quick look shows that FIBMAP (ioctl_fibmap())) looks susceptible
+> > > > > to such a race condition with the current definitions of the XFS DAX
+> > > > > aops. I'm guessing there will be others, but I haven't looked
+> > > > > further than this...
+> > > > 
+> > > > I'll check for others and think on what to do about this.  ext4 will have the
+> > > > same problem I think.  :-(
+> > > 
+> > > Just as a datapoint, ext4 is bold and sets inode->i_mapping->a_ops on
+> > > existing inodes when switching journal data flag and so far it has not
+> > > blown up. What we did to deal with issues Dave describes is that we
+> > > introduced percpu rw-semaphore guarding switching of aops and then inside
+> > > problematic functions redirect callbacks in the right direction under this
+> > > semaphore. Somewhat ugly but it seems to work.
+> 
+> Ah I am glad you brought this up.  I had not seen this before.
+> 
+> Is that s_journal_flag_rwsem?
+
+Yes.
+
+> In the general case I don't think that correctly protects against:
+> 
+> 	if (a_ops->call)
+> 		a_ops->call();
+> 
+> Because not all operations are defined in both ext4_aops and
+> ext4_journalled_aops.  Specifically migratepage.
+> 
+> move_to_new_page() specifically follows the pattern above with migratepage.  So
+> is there a bug here?
+
+Looks like there could be.
+
+> > Thinking about this some more, perhaps this scheme could be actually
+> > transformed in something workable. We could have a global (or maybe per-sb
+> > but I'm not sure it's worth it) percpu rwsem and we could transform aops
+> > calls into:
+> > 
+> > percpu_down_read(aops_rwsem);
+> > do_call();
+> > percpu_up_read(aops_rwsem);
+> > 
+> > With some macro magic it needn't be even that ugly.
+> 
+> I think this is safer.  And what I have been investigating/coding up.
+> Because that also would protect against the above with:
+> 
+> percpu_down_read(aops_rwsem);
+> 	if (a_ops->call)
+> 		a_ops->call();
+> percpu_up_read(aops_rwsem);
+> 
+> However I have been looking at SRCU because we also have patterns like:
+> 
+> 
+> 	generic_file_buffered_read
+> 		if (a_ops->is_partially_uptodate)
+> 			a_ops->is_partially_uptodate()
+> 		page_cache_sync_readahead
+> 			force_page_cache_readahead
+> 				if (!a_ops->readpage && !a_ops->readpages)
+> 					return;
+> 				__do_page_cache_readahead
+> 					read_pages
+> 						if (a_ops->readpages)
+> 							a_ops->readpages()
+> 						a_ops->readpage
+> 
+> 
+> So we would have to pass the a_ops through to use a rwsem.  Where SRCU I
+> think would be fine to just take the SRCU read lock multiple times.  Am I
+> wrong?
+
+So the idea I had would not solve this issue because we'd release the rwsem
+once we return from ->is_partially_uptodate(). This example shows that we
+actually expect consistency among different aops as they are called in
+sequence and that's much more difficult to achieve than just a consistency
+within single aop call.
+
+> We also have a 3rd (2nd?) issue.  There are callers who check for the
+> presence of an operation to be used later.  For example do_dentry_open():
+> 
+> do_dentry_open()
+> {
+> ...
+> 	if (<flags> & O_DIRECT)
+> 		if (!<a_ops> || !<a_ops>->direct_IO)
+> 			return -EINVAL;
+> ...
+> }
+> 
+> After this open direct_IO better be there AFAICT so changing the a_ops
+> later would not be good.  For ext4 direct_IO is defined for all the
+> a_ops...  so I guess that is not a big deal.  However, is the user really
+> getting the behavior they expect in this case?
+
+In this particular case I don't think there's any practical harm for any
+filesystem but in general this is another instance where consistency of
+aops over time is assumed.
+
+> I'm afraid of requiring FSs to have to follow rules in defining their a_ops.
+> Because I'm afraid maintaining those rules would be hard and would eventually
+> lead to crashes when someone did it wrong.
+
+I guess this very much depends on the rules. But yes, anything non-obvious
+or hard to check would quickly lead to bugs, I agree. But IMHO fully
+general solution to above problems would clutter the generic code in rather
+ugly way as well because usage of aops is pretty widespread in mm and fs
+code. It isn't just a few places that call them...
+
+But I think we could significantly reduce the problem by looking at what's
+in aops. We have lots of operations there that operate on pages. If we
+mandate that before and during switching of aops, you must make sure
+there's nothing in page cache for the inode, you've already dealt with 90%
+of the problems.
+
+Beside these we have:
+* write_begin - that creates page in page cache so above rule should stop
+  it as well
+* bmap - honestly I'd be inclined to just move this to inode_operations
+  just like fiemap. There's nothing about address_space in its functionality.
+* swap_activate / swap_deactivate - Either I'd move these to
+  file_operations (what's there about address_space, right), or since all
+  instances of this only care about the inode, we can as well just pass
+  only inode to the function and move it to inode_operations.
+
+And then the really problematic ones:
+* direct_IO - Logically with how the IO path is structured, it belongs in
+  aops so I wouldn't move it. With the advance of iomap it is on its way to
+  being removed altogether but that will take a long time to happen
+  completely. So for now I'd mandate that direct_IO path must be locked out
+  while switching aops.
+* readpages - these should be locked out by the rule that page creation is
+  forbidden.
+* writepages - these need to be locked out when switching aops.
+
+And that should be it. So I don't think there's a need for reference-counting
+of aops in the generic code, especially since I don't think it can be done
+in an elegant way (but feel free to correct me). I think that just
+providing a way to lock-out above three calls would be enough.
+
+> So for this 3rd (2nd) case I think we should simply take a reference to the
+> a_ops and fail changing the mode.  For the DAX case that means the user is best
+> served by taking a write lease on the file to ensure there are no other opens
+> which could cause issues.
+> 
+> Would that work for changing the journaling mode?
+> 
+> And I _think_ this is the only issue we have with this right now. But if other
+> callers of a_ops needed the pattern of using the a_ops at a time across context
+> changes they would need to ensure this reference was taken.
+> 
+> What I have come up with thus far is an interface like:
+> 
+> /*
+>  * as_get_a_ops() -- safely get the a_ops from the address_space specified
+>  *
+>  * @as: address space to get a_ops from
+>  * @ref: used to indicate if a reference is required on this a_ops
+>  * @tok: srcu token to be returned in as_put_a_ops()
+>  *
+>  * The a_ops returned is protected from changing until as_put_a_ops().
+>  *
+>  * If ref is specified then ref must also be specified in as_put_a_ops() to
+>  * release this reference.  In this case a reference is taken on the a_ops
+>  * which will prevent it from changing until the reference is released.
+>  *
+>  * References should _ONLY_ be taken when the a_ops needs to be constant
+>  * across a user context switch because doing so will block changing the a_ops
+>  * until that reference is released.
+>  *
+>  * Examples of using a reference are checks for specific a_ops pointers which
+>  * are expected to support functionality at a later date (example direct_IO)
+>  */
+> static inline const struct address_space_operations *
+> as_get_a_ops(struct address_space *as, bool ref, int *tok)
+> {
+> 	...
+> }
+> 
+> static inline void
+> as_assign_a_ops(struct address_space *as,
+>                 const struct address_space_operations *a_ops)
+> {
+> 	...
+> }
+> 
+> static inline void as_put_a_ops(struct address_space *as, int tok, bool ref)
+> {
+> 	...
+> }
+> 
+> 
+> I'm still working out the details of using SRCU and a ref count.  I have made
+> at least 1 complete pass of all the a_ops users and I think this would cover
+> them all.
+
+Well, my concern with the use of interface like this is:
+
+a) The clutter in the generic code
+b) It's difficult to make this work with SRCU because presumably you want
+   to use synchronize_srcu() while switching aops. But then you have three
+   operations to do:
+   1) switch aops
+   2) set inode flag
+   3) synchronize_srcu
+
+   and depending on the order in which you do these either "old aops"
+   operations will see inode with a flag or "new aops" will see the inode
+   without a flag and either can confuse those functions...
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
