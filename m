@@ -2,68 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9973F871E
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2019 04:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB18F91DA
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2019 15:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbfKLDh7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 11 Nov 2019 22:37:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726910AbfKLDh6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 11 Nov 2019 22:37:58 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 205433] BUG: KASAN: use-after-free in
- ext4_put_super+0xb1d/0xd80
-Date:   Tue, 12 Nov 2019 03:37:57 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: high
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: ASSIGNED
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: tytso@mit.edu
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_status cc assigned_to attachments.created
-Message-ID: <bug-205433-13602-6GYQLVqmir@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-205433-13602@https.bugzilla.kernel.org/>
-References: <bug-205433-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1727529AbfKLOTz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Nov 2019 09:19:55 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2449 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726939AbfKLOTy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 12 Nov 2019 09:19:54 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id 13B42CF8AD799CD96443;
+        Tue, 12 Nov 2019 22:19:50 +0800 (CST)
+Received: from DGGEMM421-HUB.china.huawei.com (10.1.198.38) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 12 Nov 2019 22:19:49 +0800
+Received: from DGGEMM512-MBS.china.huawei.com ([169.254.4.39]) by
+ dggemm421-hub.china.huawei.com ([10.1.198.38]) with mapi id 14.03.0439.000;
+ Tue, 12 Nov 2019 22:19:43 +0800
+From:   Guiyao <guiyao@huawei.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Mingfangsen <mingfangsen@huawei.com>,
+        "ebiggers@google.com" <ebiggers@google.com>,
+        "aceballos@gmail.com" <aceballos@gmail.com>,
+        "vertaling@coevern.nl" <vertaling@coevern.nl>
+Subject: =?gb2312?B?tPC4tDogtPC4tDogW1BBVENIIHYyXSBlMmZzcHJvZ3M6IENoZWNrIGRldmlj?=
+ =?gb2312?Q?e_id_in_advance_to_skip_fake_device_name?=
+Thread-Topic: =?gb2312?B?tPC4tDogW1BBVENIIHYyXSBlMmZzcHJvZ3M6IENoZWNrIGRldmljZSBpZCBp?=
+ =?gb2312?Q?n_advance_to_skip_fake_device_name?=
+Thread-Index: AdWYmobA6kLp3Wt1RVKDbvNk/crgBf//rXYA//5BT8A=
+Date:   Tue, 12 Nov 2019 14:19:43 +0000
+Message-ID: <005F77DB9A260B4E91664DDF22573C66E9D38A07@dggemm512-mbs.china.huawei.com>
+References: <005F77DB9A260B4E91664DDF22573C66E9D380C7@dggemm512-mbs.china.huawei.com>
+ <20191111172028.GE7017@mit.edu>
+In-Reply-To: <20191111172028.GE7017@mit.edu>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.173.220.158]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=205433
-
-Theodore Tso (tytso@mit.edu) changed:
-
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-             Status|NEW                         |ASSIGNED
-                 CC|                            |tytso@mit.edu
-           Assignee|fs_ext4@kernel-bugs.osdl.or |tytso@mit.edu
-                   |g                           |
-
---- Comment #2 from Theodore Tso (tytso@mit.edu) ---
-Created attachment 285869
-  --> https://bugzilla.kernel.org/attachment.cgi?id=285869&action=edit
-ext4: work around deleting a file with i_nlink == 0 safely
-
-Here's the fix to the issue.  (BTW, in the future please feel free to send a
-ping instead of messing with the severity.)
-
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+SGksIFRlZCwNCg0KWWVzLCBJIGFncmVlIHdpdGggeW91LCBsZXQncyByZW1vdmUgdGhlICIjaWZk
+ZWYvI2lmbmRlZiAiIGNvZGUuIDopDQoNCkFuZCBJIGhhdmUgdGVzdGVkIHlvdXIgcGF0Y2gsIGl0
+IGNhbiB3b3JrIHdlbGwgaW4gY2FzZSAxLCBidXQgY2Fubm90IHdvcmsgaW4gY2FzZSAyLg0KDQoj
+bW91bnQgLXQgdG1wZnMgL2Rldi9zZGIgdG1wDQojbW91bnQgL2Rldi9zZGIgc2RiDQoNCkNhc2Ux
+Og0KI3Jlc2l6ZTJmcyAvZGV2L3NkYiA3Rw0KLy8gaXQgY2FuIHN1Y2Nlc3MsIGFuZCB0aGUgY29y
+cmVjdCBzZGIgcmVzaXplZC4NCg0KQ2FzZTI6DQojdW1vdW50IHNkYg0KI2xuIC1zIC9kZXYvc2Ri
+IGFiYw0KI3Jlc2l6ZTJmcyBhYmMgOEcNCkZpbGVzeXN0ZW0gYXQgYWJjIGlzIG1vdW50ZWQgb24g
+L3Jvb3QvdG1wOyBvbi1saW5lIHJlc2l6aW5nIHJlcXVpcmVkDQpvbGRfZGVzY19ibG9ja3MgPSAy
+LCBuZXdfZGVzY19ibG9ja3MgPSAyIA0KcmVzaXplMmZzOiBLZXJuZWwgZG9lcyBub3Qgc3VwcG9y
+dCBvbmxpbmUgcmVzaXppbmcNCg0KaXQgaXMgdGhlIHJlYXNvbiBJIGFkZGVkIHNvbWUgY29kZSBo
+ZXJlLCBhbmQgaGFkIHRvIGFkZCAiZGlyX3N0X2J1ZiAiLg0KDQo+ICAgICAgICAgaWYgKHN0YXQo
+bW50LT5tbnRfZnNuYW1lLCAmc3RfYnVmKSA9PSAwKSB7DQo+ICAgICAgICAgICAgIGlmIChleHQy
+ZnNQX2lzX2Rpc2tfZGV2aWNlKHN0X2J1Zi5zdF9tb2RlKSkgeyAgI2lmbmRlZiANCj4gX19HTlVf
+Xw0KPiAtICAgICAgICAgICAgICAgaWYgKGZpbGVfcmRldiAmJiAoZmlsZV9yZGV2ID09IHN0X2J1
+Zi5zdF9yZGV2KSkNCj4gLSAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAgICAgICAg
+ICAgIGlmIChmaWxlX3JkZXYgJiYgKGZpbGVfcmRldiA9PSBzdF9idWYuc3RfcmRldikpIHsNCj4g
+KyAgICAgICAgICAgICAgICAgICBpZiAoZmlsZV9yZGV2ID09IGRpcl9zdF9idWYuc3RfZGV2KQ0K
+PiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAgICAgICAgICAgIH0NCg0K
+DQpUbyBiZSBob25lc3QsIEkgdGhpbmsgdGhlIHNjZW5lIG9mIGNhc2UgMiBpcyByZWFsbHkgc3Ry
+YW5nZS4NCg0KVGhhbmsgeW91Lg0KDQoNCk9uIE1vbiwgTm92IDExLCAyMDE5IGF0IDAyOjQzOjQ2
+UE0gKzAwMDAsIEd1aXlhbyB3cm90ZToNCj4gDQo+IEFjdHVhbGx5LCB3ZSBmb3VuZCBzb21lIGlu
+c2FuZSBzeXN0ZW0gYWRtaW5pc3RyYXRvcnMsIHRoZXkgbm90IG9ubHkgZG8gDQo+IHNvbWV0aGlu
+ZyBsaWtlICJtb3VudCAtdCB0bXBmcyAvZGV2L3NkYiAvdG1wICIsIGJ1dCBhbHNvIHRoZXkgZG8g
+IiBsbiANCj4gLXMgL2Rldi9zZGIgYWJjICIsIHRoZW4gInJlc2l6ZTJmcyBhYmMgeHh4Ii4gOigN
+Cg0KU28gSSBkb24ndCBjb25zaWRlciBvdXJzZWx2ZXMgbmVjZXNzYXJpbHkgb2JsaWdhdGVkIHRv
+IHR3aXN0IG91cnNlbHZlcyBpbnRvIGtub3RzIGZvciBpbnNhbmUgc3lzdGVtIGFkbWluaXN0cmF0
+b3JzLiAgOi0pDQoNCkRpZCB5b3UgdGVzdCB0aGUgcGF0Y2ggdGhhdCBJIHNlbnQgb3V0PyAgSXQg
+aGFuZGxlcyB0aGF0IGNhc2UgYWxyZWFkeToNCg0KJSBncmVwIC9kZXYvbG9vcCAvcHJvYy9tb3Vu
+dHMNCi9kZXYvbG9vcDAgL21udDIgdG1wZnMgcncscmVsYXRpbWUgMCAwDQovZGV2L2xvb3AwIC9t
+bnQgZXh0NCBydyxyZWxhdGltZSAwIDANCiUgbG4gLXMgL2Rldi9sb29wMCBhYmMNCiUgLi90c3Rf
+aXNtb3VudGVkIGFiYw0KRGV2aWNlIGFiYyByZXBvcnRzIGZsYWdzIDExDQphYmMgaXMgYXBwYXJl
+bnRseSBpbiB1c2UuDQphYmMgaXMgbW91bnRlZC4NCmFiYyBpcyBtb3VudGVkIG9uIC9tbnQyLg0K
+DQo+IFNvIHdlIGhhdmUgdG8gYWRkIHRoZSBmaXhpbmcgY29kZSBpbiBib3RoIHNpZGVzIG9mICJu
+YW1lIG1hdGNoZWQiIGFuZCAibmFtZSBub3QgbWF0Y2hlZCIuDQo+IA0KPiBGb3IgdGhlIGNvbXBp
+bGluZyBpc3N1ZSwgaXQncyBteSBmYXVsdCBpbiBwcmV2aW91cyBwYXRjaCwgYW5kIGFkZGVkIHRo
+ZSBtYWNybyBpbiBhIHdyb25nIGxpbmUuDQo+IA0KPiBTbywgSSByZXdyb3RlIGl0IGFnYWluLCBh
+bmQgcGxlYXNlIGdpdmUgbW9yZSBhZHZpc2UuIFRoYW5rIHlvdSBpbiBhZHZhbmNlLg0KDQpHaXZl
+biB0aGF0IEkgaGF2ZSBhIHBhdGNoIHdoaWNoIEkndmUgYWxyZWFkeSB0ZXN0ZWQsIGFuZCB3aGlj
+aCBpcyBhIHN1YnN0YW50aWFsIGNsZWFuIHVwIGluIHRlcm1zIG9mIHJlbW92aW5nICNpZmRlZiBj
+YXNlcyBhbmQgbnVtYmVyIG9mIGxpbmVzIG9mIGNvZGU6DQoNCiBsaWIvZXh0MmZzL2lzbW91bnRl
+ZC5jIHwgMzkgKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQogIDEgZmls
+ZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAyNyBkZWxldGlvbnMoLSkNCiAgDQpJJ20gaW5j
+bGluZWQgdG8gc3RpY2sgd2l0aCBtaW5lLg0KDQpCdXQgaGVyZSdzIHRoZSBxdWljayByZXZpZXcu
+DQoNCj4gIHsNCj4gICAgIHN0cnVjdCBtbnRlbnQgICAqbW50Ow0KPiArI2lmbmRlZiBfX0dOVV9f
+DQo+ICsgICBzdHJ1Y3Qgc3RhdCBkaXJfc3RfYnVmOw0KPiArI2VuZGlmICAvKiBfX0dOVV9fICov
+DQoNCkxvdHMgb2YgZXh0cmEgI2lmZGVmLyNpZm5kZWYgaXMgdW5kZXNpcmFibGUuICBBcyBpdCB0
+dXJucyBvdXQsIGl0IGlzbid0IG5lY2Vzc2FyeSB0byBoYXZlIGEgc2VwYXJhdGUgZGlyX3N0X2J1
+ZiBhdCBhbGwuDQoNCj4gQEAgLTEyOCwxMyArMTMxLDMyIEBAIHN0YXRpYyBlcnJjb2RlX3QgY2hl
+Y2tfbW50ZW50X2ZpbGUoY29uc3QgY2hhciAqbXRhYl9maWxlLCBjb25zdCBjaGFyICpmaWxlLA0K
+PiAgICAgd2hpbGUgKChtbnQgPSBnZXRtbnRlbnQgKGYpKSAhPSBOVUxMKSB7DQo+ICAgICAgICAg
+aWYgKG1udC0+bW50X2ZzbmFtZVswXSAhPSAnLycpDQo+ICAgICAgICAgICAgIGNvbnRpbnVlOw0K
+PiAtICAgICAgIGlmIChzdHJjbXAoZmlsZSwgbW50LT5tbnRfZnNuYW1lKSA9PSAwKQ0KPiArI2lm
+bmRlZiBfX0dOVV9fDQo+ICsgICAgICAgaWYgKHN0YXQobW50LT5tbnRfZGlyLCAmZGlyX3N0X2J1
+ZikgIT0gMCkNCj4gKyAgICAgICAgICAgY29udGludWU7DQo+ICsjZW5kaWYNCj4gKyAgICAgICBp
+ZiAoc3RyY21wKGZpbGUsIG1udC0+bW50X2ZzbmFtZSkgPT0gMCkgeyAjaWZuZGVmIF9fR05VX18N
+Cj4gKyAgICAgICAgICAgaWYgKGZpbGVfcmRldiAmJiAoZmlsZV9yZGV2ICE9IGRpcl9zdF9idWYu
+c3RfZGV2KSkgew0KDQpUaGlzIGRvZXNuJ3QgbmVlZCB0byBiZSB1bmRlciAjaWZuZGVmIF9fR05V
+X18uICBJbiB0aGUgR05VIGh1cmQgY2FzZSwgZmlsZV9yZGV2IHdpbGwgYmUgemVybywgc28gdGhl
+IGNvbXBpbGVyIHdpbGwgcmVtb3ZlIHRoZSBpZiBzdGF0ZW1lbnQgZm9yIHVzLCB3aXRob3V0IG5l
+ZWRpbmcgYW4gYWRkaXRpb25hbCAjaWZuZGVmIF9fR05VX18gdGVzdC4NCg0KPiAgICAgICAgIGlm
+IChzdGF0KG1udC0+bW50X2ZzbmFtZSwgJnN0X2J1ZikgPT0gMCkgew0KPiAgICAgICAgICAgICBp
+ZiAoZXh0MmZzUF9pc19kaXNrX2RldmljZShzdF9idWYuc3RfbW9kZSkpIHsgICNpZm5kZWYgDQo+
+IF9fR05VX18NCj4gLSAgICAgICAgICAgICAgIGlmIChmaWxlX3JkZXYgJiYgKGZpbGVfcmRldiA9
+PSBzdF9idWYuc3RfcmRldikpDQo+IC0gICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ICsgICAg
+ICAgICAgICAgICBpZiAoZmlsZV9yZGV2ICYmIChmaWxlX3JkZXYgPT0gc3RfYnVmLnN0X3JkZXYp
+KSB7DQo+ICsgICAgICAgICAgICAgICAgICAgaWYgKGZpbGVfcmRldiA9PSBkaXJfc3RfYnVmLnN0
+X2RldikNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ICsgICAgICAgICAgICAg
+ICB9DQo+ICsNCg0KVGhlIHJlYXNvbiB3aHkgdGhpcyBpc24ndCBuZWNlc3NhcnkgaXMgYmVjYXVz
+ZSB3ZSdyZSB1c2luZyBzdGF0LCBhbmQgc3RhdCBmb2xsb3dzIHN5bWxpbmtzLiAgU28gd2hlbiB5
+b3UgZG8gImxuIC1zIC9kZXYvc2RiIGFiYyIsIGFuZCB0aGVuIHdlIHN0YXQgYWJjLCBzdF9idWYu
+c3RfcmRldiBjb250YWlucyB0aGUgZGV2aWNlIG5vZGUgb2YgL2Rldi9zYmMsIG5vdCB0aGUgc3lt
+Ym9saWMgbGluayBvZiBhYmMuICBTbyBhZGRpbmcgYSBjaGVjayBmb3IgZGlyX3N0X2J1Zi5zdF9k
+ZXYgaXMgbm90IG5lZWRlZC4NCg0KQ2hlZXJzLA0KDQoJCQkJCS0gVGVkDQo=
