@@ -2,125 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB18F91DA
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2019 15:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9BFF9582
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2019 17:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727529AbfKLOTz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Nov 2019 09:19:55 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2449 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726939AbfKLOTy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 Nov 2019 09:19:54 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 13B42CF8AD799CD96443;
-        Tue, 12 Nov 2019 22:19:50 +0800 (CST)
-Received: from DGGEMM421-HUB.china.huawei.com (10.1.198.38) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 12 Nov 2019 22:19:49 +0800
-Received: from DGGEMM512-MBS.china.huawei.com ([169.254.4.39]) by
- dggemm421-hub.china.huawei.com ([10.1.198.38]) with mapi id 14.03.0439.000;
- Tue, 12 Nov 2019 22:19:43 +0800
-From:   Guiyao <guiyao@huawei.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Mingfangsen <mingfangsen@huawei.com>,
-        "ebiggers@google.com" <ebiggers@google.com>,
-        "aceballos@gmail.com" <aceballos@gmail.com>,
-        "vertaling@coevern.nl" <vertaling@coevern.nl>
-Subject: =?gb2312?B?tPC4tDogtPC4tDogW1BBVENIIHYyXSBlMmZzcHJvZ3M6IENoZWNrIGRldmlj?=
- =?gb2312?Q?e_id_in_advance_to_skip_fake_device_name?=
-Thread-Topic: =?gb2312?B?tPC4tDogW1BBVENIIHYyXSBlMmZzcHJvZ3M6IENoZWNrIGRldmljZSBpZCBp?=
- =?gb2312?Q?n_advance_to_skip_fake_device_name?=
-Thread-Index: AdWYmobA6kLp3Wt1RVKDbvNk/crgBf//rXYA//5BT8A=
-Date:   Tue, 12 Nov 2019 14:19:43 +0000
-Message-ID: <005F77DB9A260B4E91664DDF22573C66E9D38A07@dggemm512-mbs.china.huawei.com>
-References: <005F77DB9A260B4E91664DDF22573C66E9D380C7@dggemm512-mbs.china.huawei.com>
- <20191111172028.GE7017@mit.edu>
-In-Reply-To: <20191111172028.GE7017@mit.edu>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.173.220.158]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1727178AbfKLQXz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 12 Nov 2019 11:23:55 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59138 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726008AbfKLQXy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 12 Nov 2019 11:23:54 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xACGJbf7140510
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2019 11:23:53 -0500
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2w7y24kd97-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2019 11:23:52 -0500
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Tue, 12 Nov 2019 16:23:51 -0000
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 12 Nov 2019 16:23:49 -0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xACGNmEJ61276290
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Nov 2019 16:23:48 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 325244203F;
+        Tue, 12 Nov 2019 16:23:48 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E3F334204C;
+        Tue, 12 Nov 2019 16:23:41 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.34.195])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Nov 2019 16:23:41 +0000 (GMT)
+Subject: Re: [PATCH] fs: ext4: remove unused variable warning in
+ parse_options()
+To:     Olof Johansson <olof@lixom.net>, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+References: <20191111022523.34256-1-olof@lixom.net>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Tue, 12 Nov 2019 21:53:39 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20191111022523.34256-1-olof@lixom.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19111216-0020-0000-0000-0000038594D2
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19111216-0021-0000-0000-000021DB9F79
+Message-Id: <20191112162341.E3F334204C@d06av24.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-12_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1910280000 definitions=main-1911120138
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-SGksIFRlZCwNCg0KWWVzLCBJIGFncmVlIHdpdGggeW91LCBsZXQncyByZW1vdmUgdGhlICIjaWZk
-ZWYvI2lmbmRlZiAiIGNvZGUuIDopDQoNCkFuZCBJIGhhdmUgdGVzdGVkIHlvdXIgcGF0Y2gsIGl0
-IGNhbiB3b3JrIHdlbGwgaW4gY2FzZSAxLCBidXQgY2Fubm90IHdvcmsgaW4gY2FzZSAyLg0KDQoj
-bW91bnQgLXQgdG1wZnMgL2Rldi9zZGIgdG1wDQojbW91bnQgL2Rldi9zZGIgc2RiDQoNCkNhc2Ux
-Og0KI3Jlc2l6ZTJmcyAvZGV2L3NkYiA3Rw0KLy8gaXQgY2FuIHN1Y2Nlc3MsIGFuZCB0aGUgY29y
-cmVjdCBzZGIgcmVzaXplZC4NCg0KQ2FzZTI6DQojdW1vdW50IHNkYg0KI2xuIC1zIC9kZXYvc2Ri
-IGFiYw0KI3Jlc2l6ZTJmcyBhYmMgOEcNCkZpbGVzeXN0ZW0gYXQgYWJjIGlzIG1vdW50ZWQgb24g
-L3Jvb3QvdG1wOyBvbi1saW5lIHJlc2l6aW5nIHJlcXVpcmVkDQpvbGRfZGVzY19ibG9ja3MgPSAy
-LCBuZXdfZGVzY19ibG9ja3MgPSAyIA0KcmVzaXplMmZzOiBLZXJuZWwgZG9lcyBub3Qgc3VwcG9y
-dCBvbmxpbmUgcmVzaXppbmcNCg0KaXQgaXMgdGhlIHJlYXNvbiBJIGFkZGVkIHNvbWUgY29kZSBo
-ZXJlLCBhbmQgaGFkIHRvIGFkZCAiZGlyX3N0X2J1ZiAiLg0KDQo+ICAgICAgICAgaWYgKHN0YXQo
-bW50LT5tbnRfZnNuYW1lLCAmc3RfYnVmKSA9PSAwKSB7DQo+ICAgICAgICAgICAgIGlmIChleHQy
-ZnNQX2lzX2Rpc2tfZGV2aWNlKHN0X2J1Zi5zdF9tb2RlKSkgeyAgI2lmbmRlZiANCj4gX19HTlVf
-Xw0KPiAtICAgICAgICAgICAgICAgaWYgKGZpbGVfcmRldiAmJiAoZmlsZV9yZGV2ID09IHN0X2J1
-Zi5zdF9yZGV2KSkNCj4gLSAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAgICAgICAg
-ICAgIGlmIChmaWxlX3JkZXYgJiYgKGZpbGVfcmRldiA9PSBzdF9idWYuc3RfcmRldikpIHsNCj4g
-KyAgICAgICAgICAgICAgICAgICBpZiAoZmlsZV9yZGV2ID09IGRpcl9zdF9idWYuc3RfZGV2KQ0K
-PiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAgICAgICAgICAgIH0NCg0K
-DQpUbyBiZSBob25lc3QsIEkgdGhpbmsgdGhlIHNjZW5lIG9mIGNhc2UgMiBpcyByZWFsbHkgc3Ry
-YW5nZS4NCg0KVGhhbmsgeW91Lg0KDQoNCk9uIE1vbiwgTm92IDExLCAyMDE5IGF0IDAyOjQzOjQ2
-UE0gKzAwMDAsIEd1aXlhbyB3cm90ZToNCj4gDQo+IEFjdHVhbGx5LCB3ZSBmb3VuZCBzb21lIGlu
-c2FuZSBzeXN0ZW0gYWRtaW5pc3RyYXRvcnMsIHRoZXkgbm90IG9ubHkgZG8gDQo+IHNvbWV0aGlu
-ZyBsaWtlICJtb3VudCAtdCB0bXBmcyAvZGV2L3NkYiAvdG1wICIsIGJ1dCBhbHNvIHRoZXkgZG8g
-IiBsbiANCj4gLXMgL2Rldi9zZGIgYWJjICIsIHRoZW4gInJlc2l6ZTJmcyBhYmMgeHh4Ii4gOigN
-Cg0KU28gSSBkb24ndCBjb25zaWRlciBvdXJzZWx2ZXMgbmVjZXNzYXJpbHkgb2JsaWdhdGVkIHRv
-IHR3aXN0IG91cnNlbHZlcyBpbnRvIGtub3RzIGZvciBpbnNhbmUgc3lzdGVtIGFkbWluaXN0cmF0
-b3JzLiAgOi0pDQoNCkRpZCB5b3UgdGVzdCB0aGUgcGF0Y2ggdGhhdCBJIHNlbnQgb3V0PyAgSXQg
-aGFuZGxlcyB0aGF0IGNhc2UgYWxyZWFkeToNCg0KJSBncmVwIC9kZXYvbG9vcCAvcHJvYy9tb3Vu
-dHMNCi9kZXYvbG9vcDAgL21udDIgdG1wZnMgcncscmVsYXRpbWUgMCAwDQovZGV2L2xvb3AwIC9t
-bnQgZXh0NCBydyxyZWxhdGltZSAwIDANCiUgbG4gLXMgL2Rldi9sb29wMCBhYmMNCiUgLi90c3Rf
-aXNtb3VudGVkIGFiYw0KRGV2aWNlIGFiYyByZXBvcnRzIGZsYWdzIDExDQphYmMgaXMgYXBwYXJl
-bnRseSBpbiB1c2UuDQphYmMgaXMgbW91bnRlZC4NCmFiYyBpcyBtb3VudGVkIG9uIC9tbnQyLg0K
-DQo+IFNvIHdlIGhhdmUgdG8gYWRkIHRoZSBmaXhpbmcgY29kZSBpbiBib3RoIHNpZGVzIG9mICJu
-YW1lIG1hdGNoZWQiIGFuZCAibmFtZSBub3QgbWF0Y2hlZCIuDQo+IA0KPiBGb3IgdGhlIGNvbXBp
-bGluZyBpc3N1ZSwgaXQncyBteSBmYXVsdCBpbiBwcmV2aW91cyBwYXRjaCwgYW5kIGFkZGVkIHRo
-ZSBtYWNybyBpbiBhIHdyb25nIGxpbmUuDQo+IA0KPiBTbywgSSByZXdyb3RlIGl0IGFnYWluLCBh
-bmQgcGxlYXNlIGdpdmUgbW9yZSBhZHZpc2UuIFRoYW5rIHlvdSBpbiBhZHZhbmNlLg0KDQpHaXZl
-biB0aGF0IEkgaGF2ZSBhIHBhdGNoIHdoaWNoIEkndmUgYWxyZWFkeSB0ZXN0ZWQsIGFuZCB3aGlj
-aCBpcyBhIHN1YnN0YW50aWFsIGNsZWFuIHVwIGluIHRlcm1zIG9mIHJlbW92aW5nICNpZmRlZiBj
-YXNlcyBhbmQgbnVtYmVyIG9mIGxpbmVzIG9mIGNvZGU6DQoNCiBsaWIvZXh0MmZzL2lzbW91bnRl
-ZC5jIHwgMzkgKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQogIDEgZmls
-ZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAyNyBkZWxldGlvbnMoLSkNCiAgDQpJJ20gaW5j
-bGluZWQgdG8gc3RpY2sgd2l0aCBtaW5lLg0KDQpCdXQgaGVyZSdzIHRoZSBxdWljayByZXZpZXcu
-DQoNCj4gIHsNCj4gICAgIHN0cnVjdCBtbnRlbnQgICAqbW50Ow0KPiArI2lmbmRlZiBfX0dOVV9f
-DQo+ICsgICBzdHJ1Y3Qgc3RhdCBkaXJfc3RfYnVmOw0KPiArI2VuZGlmICAvKiBfX0dOVV9fICov
-DQoNCkxvdHMgb2YgZXh0cmEgI2lmZGVmLyNpZm5kZWYgaXMgdW5kZXNpcmFibGUuICBBcyBpdCB0
-dXJucyBvdXQsIGl0IGlzbid0IG5lY2Vzc2FyeSB0byBoYXZlIGEgc2VwYXJhdGUgZGlyX3N0X2J1
-ZiBhdCBhbGwuDQoNCj4gQEAgLTEyOCwxMyArMTMxLDMyIEBAIHN0YXRpYyBlcnJjb2RlX3QgY2hl
-Y2tfbW50ZW50X2ZpbGUoY29uc3QgY2hhciAqbXRhYl9maWxlLCBjb25zdCBjaGFyICpmaWxlLA0K
-PiAgICAgd2hpbGUgKChtbnQgPSBnZXRtbnRlbnQgKGYpKSAhPSBOVUxMKSB7DQo+ICAgICAgICAg
-aWYgKG1udC0+bW50X2ZzbmFtZVswXSAhPSAnLycpDQo+ICAgICAgICAgICAgIGNvbnRpbnVlOw0K
-PiAtICAgICAgIGlmIChzdHJjbXAoZmlsZSwgbW50LT5tbnRfZnNuYW1lKSA9PSAwKQ0KPiArI2lm
-bmRlZiBfX0dOVV9fDQo+ICsgICAgICAgaWYgKHN0YXQobW50LT5tbnRfZGlyLCAmZGlyX3N0X2J1
-ZikgIT0gMCkNCj4gKyAgICAgICAgICAgY29udGludWU7DQo+ICsjZW5kaWYNCj4gKyAgICAgICBp
-ZiAoc3RyY21wKGZpbGUsIG1udC0+bW50X2ZzbmFtZSkgPT0gMCkgeyAjaWZuZGVmIF9fR05VX18N
-Cj4gKyAgICAgICAgICAgaWYgKGZpbGVfcmRldiAmJiAoZmlsZV9yZGV2ICE9IGRpcl9zdF9idWYu
-c3RfZGV2KSkgew0KDQpUaGlzIGRvZXNuJ3QgbmVlZCB0byBiZSB1bmRlciAjaWZuZGVmIF9fR05V
-X18uICBJbiB0aGUgR05VIGh1cmQgY2FzZSwgZmlsZV9yZGV2IHdpbGwgYmUgemVybywgc28gdGhl
-IGNvbXBpbGVyIHdpbGwgcmVtb3ZlIHRoZSBpZiBzdGF0ZW1lbnQgZm9yIHVzLCB3aXRob3V0IG5l
-ZWRpbmcgYW4gYWRkaXRpb25hbCAjaWZuZGVmIF9fR05VX18gdGVzdC4NCg0KPiAgICAgICAgIGlm
-IChzdGF0KG1udC0+bW50X2ZzbmFtZSwgJnN0X2J1ZikgPT0gMCkgew0KPiAgICAgICAgICAgICBp
-ZiAoZXh0MmZzUF9pc19kaXNrX2RldmljZShzdF9idWYuc3RfbW9kZSkpIHsgICNpZm5kZWYgDQo+
-IF9fR05VX18NCj4gLSAgICAgICAgICAgICAgIGlmIChmaWxlX3JkZXYgJiYgKGZpbGVfcmRldiA9
-PSBzdF9idWYuc3RfcmRldikpDQo+IC0gICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ICsgICAg
-ICAgICAgICAgICBpZiAoZmlsZV9yZGV2ICYmIChmaWxlX3JkZXYgPT0gc3RfYnVmLnN0X3JkZXYp
-KSB7DQo+ICsgICAgICAgICAgICAgICAgICAgaWYgKGZpbGVfcmRldiA9PSBkaXJfc3RfYnVmLnN0
-X2RldikNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ICsgICAgICAgICAgICAg
-ICB9DQo+ICsNCg0KVGhlIHJlYXNvbiB3aHkgdGhpcyBpc24ndCBuZWNlc3NhcnkgaXMgYmVjYXVz
-ZSB3ZSdyZSB1c2luZyBzdGF0LCBhbmQgc3RhdCBmb2xsb3dzIHN5bWxpbmtzLiAgU28gd2hlbiB5
-b3UgZG8gImxuIC1zIC9kZXYvc2RiIGFiYyIsIGFuZCB0aGVuIHdlIHN0YXQgYWJjLCBzdF9idWYu
-c3RfcmRldiBjb250YWlucyB0aGUgZGV2aWNlIG5vZGUgb2YgL2Rldi9zYmMsIG5vdCB0aGUgc3lt
-Ym9saWMgbGluayBvZiBhYmMuICBTbyBhZGRpbmcgYSBjaGVjayBmb3IgZGlyX3N0X2J1Zi5zdF9k
-ZXYgaXMgbm90IG5lZWRlZC4NCg0KQ2hlZXJzLA0KDQoJCQkJCS0gVGVkDQo=
+
+
+On 11/11/19 7:55 AM, Olof Johansson wrote:
+> Commit c33fbe8f673c5 ("ext4: Enable blocksize < pagesize for
+> dioread_nolock") removed the only user of 'sbi' outside of the ifdef,
+> so it caused a new warning:
+> 
+> fs/ext4/super.c:2068:23: warning: unused variable 'sbi' [-Wunused-variable]
+> 
+> Fixes: c33fbe8f673c5 ("ext4: Enable blocksize < pagesize for dioread_nolock")
+> Signed-off-by: Olof Johansson <olof@lixom.net>
+
+hmm, I see that I had CONFIG_QUOTA enabled, so missed this.
+Thanks for the patch.
+
+You may add:
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+> ---
+>   fs/ext4/super.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index f3279210f0ba9..ee8c42d8a04f0 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -2065,7 +2065,7 @@ static int parse_options(char *options, struct super_block *sb,
+>   			 unsigned int *journal_ioprio,
+>   			 int is_remount)
+>   {
+> -	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> +	struct ext4_sb_info __maybe_unused *sbi = EXT4_SB(sb);
+>   	char *p, __maybe_unused *usr_qf_name, __maybe_unused *grp_qf_name;
+>   	substring_t args[MAX_OPT_ARGS];
+>   	int token;
+> 
+
