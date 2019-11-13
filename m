@@ -2,82 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EEBFA43A
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2019 03:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9911AFB6F2
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2019 19:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728750AbfKMCPM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 12 Nov 2019 21:15:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728043AbfKMB47 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 12 Nov 2019 20:56:59 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8EAC22470;
-        Wed, 13 Nov 2019 01:56:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573610218;
-        bh=65esZw1aId9cAb4fmPQLAQBAEwuFCvYbnG/uf8OmSco=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nYIRSaKaeVXCYTmMwl1gQg+c2z8vv6sJHDFv5DOBVS/9y8mL11ccSeDToJn5R1aYj
-         XwPveki0BP2Nl6+qq/XrUjR5WMDTO/LL8Re18d1vuF7Un/8LbJ8yqBXDKiJdKFJGt8
-         5TKx/E1wm6kjXZXfpgMoU+0+z/ciKlW0EP4R1mMg=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.co.uk>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Lukas Czerner <lczerner@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 025/115] ext4: fix build error when DX_DEBUG is defined
-Date:   Tue, 12 Nov 2019 20:54:52 -0500
-Message-Id: <20191113015622.11592-25-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191113015622.11592-1-sashal@kernel.org>
-References: <20191113015622.11592-1-sashal@kernel.org>
+        id S1727700AbfKMSAf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 13 Nov 2019 13:00:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43264 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726120AbfKMSAf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 13 Nov 2019 13:00:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 0135DADE4;
+        Wed, 13 Nov 2019 18:00:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 731841E1498; Wed, 13 Nov 2019 19:00:32 +0100 (CET)
+Date:   Wed, 13 Nov 2019 19:00:32 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Matthew Bobrowski <mbobrowski@mbobrowski.org>,
+        linux-ext4@vger.kernel.org, Ted Tso <tytso@mit.edu>
+Subject: Splice & iomap dio problems
+Message-ID: <20191113180032.GB12013@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
+Hello,
 
-[ Upstream commit 799578ab16e86b074c184ec5abbda0bc698c7b0b ]
+I've spent today tracking down the syzkaller report of a WARN_ON hit in
+iov_iter_pipe() [1]. The immediate problem is that syzkaller reproducer
+(calling sendfile(2) from different threads at the same time a file to the
+same file in rather evil way) results in splice code leaking pipe pages
+(nrbufs doesn't return to 0 after read+write in the splice) and eventually
+we run out of pipe pages and hit the warning in iov_iter_pipe(). The
+problem is not specific to ext4, I can see in my tracing that when the
+underlying filesystem is XFS, we can leak the pipe pages in the same way
+(but for XFS somehow the problem doesn't happen as often).  Rather the
+problem seems to be in how iomap direct IO code, pipe iter code, and splice
+code interact.
 
-Enabling DX_DEBUG triggers the build error below.  info is an attribute
-of  the dxroot structure.
+So the problematic situation is when we do direct IO read into pipe pages
+and the read hits EOF which is not on page boundary. Say the file has 4608
+(4096+512) bytes, block size == page size == 4096. What happens is that iomap
+code maps the extent, gets that the extent size is 8192 (mapping ignores
+i_size). Then we call iomap_dio_bio_actor(), which creates its private
+iter, truncates it to 8192, and calls bio_iov_iter_get_pages(). That
+eventually results in preparing two pipe buffers with length 4096 to accept
+the read. Then read completes, in iomap_dio_complete() we truncate the return
+value from 8192 (which was the real amount of IO we performed) to 4608. Now
+this amount (4608) gets passed through splice code to
+iter_file_splice_write(), we write out that amount, but then when cleaning
+up pipe buffers, the last pipe buffer has still 3584 unused so we leave
+the pipe buffer allocated and effectively leak it.
 
-linux/fs/ext4/namei.c:2264:12: error: ‘info’
-undeclared (first use in this function); did you mean ‘insl’?
-	   	  info->indirect_levels));
+Now I was also investigating why the old direct IO code doesn't leak pipe
+buffers like this and the trick is done by the iov_iter_revert() call
+generic_file_read_iter(). This results in setting iter position right to
+the position where direct IO read reported it ended (4608) and truncating
+pipe buffers after this point. So splice code then sees the second pipe
+buffer has length only 512 which matches the amount it was asked to write
+and so the pipe buffer gets freed after the write in
+iter_file_splice_write().
 
-Fixes: e08ac99fa2a2 ("ext4: add largedir feature")
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/namei.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The question is how to best fix this. The quick fix is to add
+iov_iter_revert() call to iomap_dio_rw() so that in case of sync IO (we
+always do only sync IO to pipes), we properly set iter position in case of
+short read / write. But it looks somewhat hacky to me and this whole
+interaction of iter and pipes looks fragile to me.
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 162e853dc5d65..212b01861d941 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2293,7 +2293,7 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
- 			dxroot->info.indirect_levels += 1;
- 			dxtrace(printk(KERN_DEBUG
- 				       "Creating %d level index...\n",
--				       info->indirect_levels));
-+				       dxroot->info.indirect_levels));
- 			err = ext4_handle_dirty_dx_node(handle, dir, frame->bh);
- 			if (err)
- 				goto journal_error;
+Another option I can see is to truncate the iter to min(i_size-pos, length) in
+iomap_dio_bio_actor() which *should* do the trick AFAICT. But I'm not sure
+if it won't break something else.
+
+Any other ideas?
+
+As a side note the logic copying iter in iomap_dio_bio_actor() looks
+suspicious. We copy 'dio->submit.iter' to 'iter' but then in the loop we call
+iov_iter_advance() on dio->submit.iter. So if bio_iov_iter_get_pages()
+didn't return enough pages and we loop again, 'iter' will have stale
+contents and things go sideways from there? What am I missing? And why do
+we do that strange copying of iter instead of using iov_iter_truncate() and
+iov_iter_reexpand() on the 'dio->submit.iter' directly?
+
+								Honza
+
+[1] https://lore.kernel.org/lkml/000000000000d60aa50596c63063@google.com
+
 -- 
-2.20.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
