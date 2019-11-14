@@ -2,63 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C874FCBCB
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2019 18:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD65FCF07
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2019 21:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbfKNR2A (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Nov 2019 12:28:00 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38934 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725601AbfKNR2A (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 14 Nov 2019 12:28:00 -0500
-Received: from callcc.thunk.org (guestnat-104-133-0-98.corp.google.com [104.133.0.98] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xAEHRs2I028128
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Nov 2019 12:27:55 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id A58514202FD; Thu, 14 Nov 2019 12:27:54 -0500 (EST)
-Date:   Thu, 14 Nov 2019 12:27:54 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jesse Grodman <jgrodman@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: Suggested change for superblock journal hint
-Message-ID: <20191114172754.GB4579@mit.edu>
-References: <CACtp79ADncLAs560QNKCZtX937XaB6-37Xz2SYP7PyonJjRtwg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACtp79ADncLAs560QNKCZtX937XaB6-37Xz2SYP7PyonJjRtwg@mail.gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        id S1726505AbfKNUB6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Nov 2019 15:01:58 -0500
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:39724 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726444AbfKNUB6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 14 Nov 2019 15:01:58 -0500
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id ACB6D2E152C;
+        Thu, 14 Nov 2019 23:01:54 +0300 (MSK)
+Received: from sas1-7fab0cd91cd2.qloud-c.yandex.net (sas1-7fab0cd91cd2.qloud-c.yandex.net [2a02:6b8:c14:3a93:0:640:7fab:cd9])
+        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id JJXvP3aroV-1sIeV3Dt;
+        Thu, 14 Nov 2019 23:01:54 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1573761714; bh=GnQFMIkMVjacXA5wEOUiBzHV78Dm9W/eccNJXi+qLiY=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=m7C44SqmoEohpwOfhIkZSbvtdNVM1ayCaf1MHiFydtzXDu/oJgUcWy7EuPPfriC1t
+         IfqDiWyiI4xOtqXmOVat8dKG5c2e0sBtb+26qH72igcI29XOwos1HQxOMIAwi3ijnd
+         ePV99EKC7/ypG/J1rUcuvXkC1EeGc1ZUuIjXU2rQ=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from 95.108.174.193-red.dhcp.yndx.net (95.108.174.193-red.dhcp.yndx.net [95.108.174.193])
+        by sas1-7fab0cd91cd2.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id weyrU94q4p-1sVGvBCs;
+        Thu, 14 Nov 2019 23:01:54 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+From:   Dmitry Monakhov <dmonakhov@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     darrick.wong@oracle.com, tytso@mit.edu,
+        Dmitry Monakhov <dmonakhov@gmail.com>
+Subject: [PATCH 1/2] ext4: fix symbolic enum printing in trace output
+Date:   Thu, 14 Nov 2019 20:01:46 +0000
+Message-Id: <20191114200147.1073-1-dmonakhov@gmail.com>
+X-Mailer: git-send-email 2.18.0
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 05:05:06PM +0200, Jesse Grodman wrote:
-> Hi,
-> 
-> I encountered the scenario that a full fsck check was being run
-> unnecessarily when the major / minor number of my external journal was
-> being fixed by fsck. This PR changes that so that this change does
-> trigger the full fsck run: github.com/tytso/e2fsprogs/pull/26
+Trace's macro __print_flags() produce raw event's decraration w/o knowing actual
+flags value
 
-Hi Jessie,
+cat /sys/kernel/debug/tracing/events/ext4/ext4_ext_map_blocks_exit/format
+..
+__print_flags(REC->mflags, "", { (1 << BH_New),
 
-It's preferable that patches e2fsprogs be sent to the linux-ext4 list,
-so they can get reviewed by the full ext4 community.  That being said,
-I will accept minor patches sent via a pull request if they full meet
-the requirements for kernel patches:
+For that reason we have to explicitly define it via special macro TRACE_DEFINE_ENUM()
+Also add missed EXTENT_STATUS_REFERENCED flag.
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+#Before patch
+ext4:ext4_ext_map_blocks_exit: dev 253,0 ino 2 flags  lblk 0 pblk 4177 len 1 mflags 0x20 ret 1
+ext4:ext4_ext_map_blocks_exit: dev 253,0 ino 12 flags CREATE lblk 0 pblk 34304 len 1 mflags 0x60 ret 1
 
-Note in particular the requirements for the Developer's Certification
-of Origin (aka the Signed-off-by tag).  That has specific legal
-meanings (for example, you are certifying that your employer allows
-you to contribute to open source projects, or at least, *this* open
-source project), so please take a close look at that.
+#With patch
+ext4:ext4_ext_map_blocks_exit: dev 253,0 ino 2 flags  lblk 0 pblk 4177 len 1 mflags M ret 1
+ext4:ext4_ext_map_blocks_exit: dev 253,0 ino 12 flags CREATE lblk 0 pblk 34816 len 1 mflags NM ret 1
 
-Cheers,
+Signed-off-by: Dmitry Monakhov <dmonakhov@gmail.com>
+---
+ include/trace/events/ext4.h | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
-					- Ted
+diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
+index 182c9fe..3bf7128 100644
+--- a/include/trace/events/ext4.h
++++ b/include/trace/events/ext4.h
+@@ -48,6 +48,16 @@ struct partial_cluster;
+ 	{ EXT4_GET_BLOCKS_KEEP_SIZE,		"KEEP_SIZE" },		\
+ 	{ EXT4_GET_BLOCKS_ZERO,			"ZERO" })
+ 
++/*
++ * __print_flags() requires that all enum values be wrapped in the
++ * TRACE_DEFINE_ENUM macro so that the enum value can be encoded in the ftrace
++ * ring buffer.
++ */
++TRACE_DEFINE_ENUM(BH_New);
++TRACE_DEFINE_ENUM(BH_Mapped);
++TRACE_DEFINE_ENUM(BH_Unwritten);
++TRACE_DEFINE_ENUM(BH_Boundary);
++
+ #define show_mflags(flags) __print_flags(flags, "",	\
+ 	{ EXT4_MAP_NEW,		"N" },			\
+ 	{ EXT4_MAP_MAPPED,	"M" },			\
+@@ -62,11 +72,18 @@ struct partial_cluster;
+ 	{ EXT4_FREE_BLOCKS_NOFREE_FIRST_CLUSTER,"1ST_CLUSTER" },\
+ 	{ EXT4_FREE_BLOCKS_NOFREE_LAST_CLUSTER,	"LAST_CLUSTER" })
+ 
++TRACE_DEFINE_ENUM(ES_WRITTEN_B);
++TRACE_DEFINE_ENUM(ES_UNWRITTEN_B);
++TRACE_DEFINE_ENUM(ES_DELAYED_B);
++TRACE_DEFINE_ENUM(ES_HOLE_B);
++TRACE_DEFINE_ENUM(ES_REFERENCED_B);
++
+ #define show_extent_status(status) __print_flags(status, "",	\
+ 	{ EXTENT_STATUS_WRITTEN,	"W" },			\
+ 	{ EXTENT_STATUS_UNWRITTEN,	"U" },			\
+ 	{ EXTENT_STATUS_DELAYED,	"D" },			\
+-	{ EXTENT_STATUS_HOLE,		"H" })
++	{ EXTENT_STATUS_HOLE,		"H" },			\
++	{ EXTENT_STATUS_REFERENCED,	"R" })
+ 
+ #define show_falloc_mode(mode) __print_flags(mode, "|",		\
+ 	{ FALLOC_FL_KEEP_SIZE,		"KEEP_SIZE"},		\
+-- 
+2.7.4
+
