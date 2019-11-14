@@ -2,158 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA4DFC072
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2019 08:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18BEFC1D9
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2019 09:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbfKNHDm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 14 Nov 2019 02:03:42 -0500
-Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:56370 "EHLO
-        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726491AbfKNHDm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 14 Nov 2019 02:03:42 -0500
-Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 5C4762E1434;
-        Thu, 14 Nov 2019 10:03:39 +0300 (MSK)
-Received: from sas2-2e05890d47f7.qloud-c.yandex.net (sas2-2e05890d47f7.qloud-c.yandex.net [2a02:6b8:c08:bd8e:0:640:2e05:890d])
-        by mxbackcorp1j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id m4gTrxi4AI-3dpaWMZ6;
-        Thu, 14 Nov 2019 10:03:39 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1573715019; bh=ZquIgbcaOsP/D1v88E6EEHCAsiNBykH0vtfHs5vfC9s=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=gYcyeXUl5k7aX/L/GOFtH76JkRJO7ph4WLVsmWSO2J1a1doIZCxSFCLwUUFDM4DnO
-         VhHCv1kQ2Pw3rfZh5d7qTQeoHgkQw+fQeDl+hs+V87XXcQFLyPxBH+ahDxRLHVbhFr
-         Wd2VriL2Nq3pmHyVUWqh2gW8ngAbgxJxgTEv5tnA=
-Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from 95.108.174.193-red.dhcp.yndx.net (95.108.174.193-red.dhcp.yndx.net [95.108.174.193])
-        by sas2-2e05890d47f7.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id MuwuNopcmR-3dWK20Iu;
-        Thu, 14 Nov 2019 10:03:39 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Monakhov <dmonakhov@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Dmitry Monakhov <dmonakhov@gmail.com>
-Subject: [PATCH 2/2] ext4: Fix extent_status trace events
-Date:   Thu, 14 Nov 2019 07:03:30 +0000
-Message-Id: <20191114070330.14115-3-dmonakhov@gmail.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20191114070330.14115-1-dmonakhov@gmail.com>
-References: <20191114070330.14115-1-dmonakhov@gmail.com>
+        id S1726024AbfKNIuA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 14 Nov 2019 03:50:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33160 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725976AbfKNIuA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 14 Nov 2019 03:50:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 0602BADCB;
+        Thu, 14 Nov 2019 08:49:57 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9EA121E4AD2; Thu, 14 Nov 2019 09:49:57 +0100 (CET)
+Date:   Thu, 14 Nov 2019 09:49:57 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/19 v3] ext4: Fix transaction overflow due to revoke
+ descriptors
+Message-ID: <20191114084957.GA28486@quack2.suse.cz>
+References: <20191003215523.7313-1-jack@suse.cz>
+ <20191112220614.GA11089@mit.edu>
+ <20191113094545.GC6367@quack2.suse.cz>
+ <20191114052652.GB11994@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191114052652.GB11994@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
- - show pblock only if it has meaningful value
- - Add missed EXTENT_STATUS_REFERENCED decoder
- - Define status flags as explicit numbers instead of implicit enum ones
+On Thu 14-11-19 00:26:52, Theodore Y. Ts'o wrote:
+> On Wed, Nov 13, 2019 at 10:45:45AM +0100, Jan Kara wrote:
+> > Thanks for the heads up! I didn't do any performance testing with the jbd2
+> > changes specifically and our internal performance testing grid only checks
+> > Linus' kernel so it didn't yet even try to run that code. I'll queue some
+> > sqlite insert tests internally with my changes to see whether I'm able to
+> > reproduce. I don't have NVME disks available quickly but I guess SATA SSD
+> > could do the job as well...
+> 
+> Sorry, false alarm.  What Phoronix was testing was 5.3 versus 5.4-rcX,
+> using Ubuntu's bleeding-edge kernels.  It wouldn't have any of the
+> ext4 patches we have queued for the *next* merge window.
 
-# before
-   ext4:ext4_es_lookup_extent_exit: dev 253,0 ino 12 found 1 [1/4294967294) 576460752303423487 0x8
-   ext4:ext4_es_lookup_extent_exit: dev 253,0 ino 12 found 1 [2/4294967293) 576460752303423487 0x18
-   ext4:ext4_es_lookup_extent_exit: dev 253,0 ino 12 found 1 [3/4294967292) 576460752303423487 0x18
-   ext4:ext4_es_lookup_extent_exit: dev 253,0 ino 12 found 1 [4/4294967291) 576460752303423487 0x18
-# after
-   ext4:ext4_es_lookup_extent_exit: dev 253,0 ino 12 found 1 [1/4294967294) 0 H
-   ext4:ext4_es_lookup_extent_exit: dev 253,0 ino 12 found 1 [2/4294967293) 0 HR
-   ext4:ext4_es_lookup_extent_exit: dev 253,0 ino 12 found 1 [3/4294967292) 0 HR
-   ext4:ext4_es_lookup_extent_exit: dev 253,0 ino 12 found 1 [4/4294967291) 0 HR
+OK, thanks for looking! I've run some tests on my test setup anyway...
 
-Signed-off-by: Dmitry Monakhov <dmonakhov@gmail.com>
----
- fs/ext4/extents_status.h    | 21 +++++++++++++--------
- include/trace/events/ext4.h | 11 ++++++-----
- 2 files changed, 19 insertions(+), 13 deletions(-)
+> That being said, I wasn't able to reproduce performance delta using
+> upstream kernels, running on a Google Compute Engine VM, machtype
+> n1-highcpu-8, using a GCE Local SSD (SCSI-attached) for the first
+> benchmark, which I believe was the pts/sqlite benchmark using a thread
+> count of 1:
+> 
+>      Phoronix Test Suite 9.0.1
+>      SQLite 3.30.1
+>      Threads / Copies: 1
+>      Seconds < Lower Is Better
+>      5.3.0 ..................... 225 |===========================================
+>      5.4.0-rc3 ................. 224 |==========================================
+>      5.4-rc3-80-gafb2442fa429 .. 227 |===========================================
+>      5.4.0-rc7 ................. 223 |==========================================
+> 
+>      Processor: Intel Xeon (4 Cores / 8 Threads), Chipset: Intel 440FX
+>      82441FX PMC, Memory: 1 x 7373 MB RAM, Disk: 11GB PersistentDisk +
+>      403GB EphemeralDisk, Network: Red Hat Virtio device
+> 
+>      OS: Debian 10, Kernel: 5.4.0-rc3-xfstests (x86_64) 20191113, Compiler:
+>      GCC 8.3.0, File-System: ext4, System Layer: KVM
+> 
+> This was done using an extension to a gce-xfstests test appliance, to
+> which I hope to be adding an automation engine where it will kexec
+> into a series of kernels, run the benchmarks and then spit out the
+> report somewhere.  For now, the benchmarks are run manually.
+> 
+> (Adding commentary and click-baity titles is left as an exercise to
+> the reader.  :-)
+> 
+> 						- Ted
+> 						
+> P.S.  For all that I like to make snarky comments about Phoronix.com,
+> I have to admit Michael Larabel has done a pretty good job with his
+> performance test engine.  I probably would have choosen a different
+> implementation than PHP, and I'd have added an explicit way to specify
+> the file system to be tested other than mounting it on top of
+> /var/lib/phoronix-test-suite, and at least have the option of placing
+> the benchmarks' build trees and binaries in a different location than
+> the file system under test.
+> 
+> But that being said, he's collecting a decent set of benchmark tools,
+> and it is pretty cool that it has an automated way of collecting the
+> benchmark results, including the pretty graphs suitable for web
+> articles and conference slide decks ("and now, we turn to the rigged
+> benchmarks section of the presentation designed to show my new feature
+> in the best possible light...").
 
-diff --git a/fs/ext4/extents_status.h b/fs/ext4/extents_status.h
-index 131a8b7..64b8fd1 100644
---- a/fs/ext4/extents_status.h
-+++ b/fs/ext4/extents_status.h
-@@ -30,14 +30,13 @@
- /*
-  * These flags live in the high bits of extent_status.es_pblk
-  */
--enum {
--	ES_WRITTEN_B,
--	ES_UNWRITTEN_B,
--	ES_DELAYED_B,
--	ES_HOLE_B,
--	ES_REFERENCED_B,
--	ES_FLAGS
--};
-+
-+#define ES_WRITTEN_B     0
-+#define ES_UNWRITTEN_B   1
-+#define ES_DELAYED_B     2
-+#define ES_HOLE_B        3
-+#define ES_REFERENCED_B  4
-+#define ES_FLAGS         5
- 
- #define ES_SHIFT (sizeof(ext4_fsblk_t)*8 - ES_FLAGS)
- #define ES_MASK (~((ext4_fsblk_t)0) << ES_SHIFT)
-@@ -208,6 +207,12 @@ static inline ext4_fsblk_t ext4_es_pblock(struct extent_status *es)
- 	return es->es_pblk & ~ES_MASK;
- }
- 
-+static inline ext4_fsblk_t ext4_es_show_pblock(struct extent_status *es)
-+{
-+	ext4_fsblk_t pblock = ext4_es_pblock(es);
-+	return pblock == ~ES_MASK ? 0 : pblock;
-+}
-+
- static inline void ext4_es_store_pblock(struct extent_status *es,
- 					ext4_fsblk_t pb)
- {
-diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-index d68e9e5..bdb5fc4 100644
---- a/include/trace/events/ext4.h
-+++ b/include/trace/events/ext4.h
-@@ -66,7 +66,8 @@ struct partial_cluster;
- 	{ EXTENT_STATUS_WRITTEN,	"W" },			\
- 	{ EXTENT_STATUS_UNWRITTEN,	"U" },			\
- 	{ EXTENT_STATUS_DELAYED,	"D" },			\
--	{ EXTENT_STATUS_HOLE,		"H" })
-+	{ EXTENT_STATUS_HOLE,		"H" },			\
-+	{ EXTENT_STATUS_REFERENCED,	"R" })
- 
- #define show_falloc_mode(mode) __print_flags(mode, "|",		\
- 	{ FALLOC_FL_KEEP_SIZE,		"KEEP_SIZE"},		\
-@@ -2262,7 +2263,7 @@ DECLARE_EVENT_CLASS(ext4__es_extent,
- 		__entry->ino	= inode->i_ino;
- 		__entry->lblk	= es->es_lblk;
- 		__entry->len	= es->es_len;
--		__entry->pblk	= ext4_es_pblock(es);
-+		__entry->pblk	= ext4_es_show_pblock(es);
- 		__entry->status	= ext4_es_status(es);
- 	),
- 
-@@ -2351,7 +2352,7 @@ TRACE_EVENT(ext4_es_find_extent_range_exit,
- 		__entry->ino	= inode->i_ino;
- 		__entry->lblk	= es->es_lblk;
- 		__entry->len	= es->es_len;
--		__entry->pblk	= ext4_es_pblock(es);
-+		__entry->pblk	= ext4_es_show_pblock(es);
- 		__entry->status	= ext4_es_status(es);
- 	),
- 
-@@ -2405,7 +2406,7 @@ TRACE_EVENT(ext4_es_lookup_extent_exit,
- 		__entry->ino	= inode->i_ino;
- 		__entry->lblk	= es->es_lblk;
- 		__entry->len	= es->es_len;
--		__entry->pblk	= ext4_es_pblock(es);
-+		__entry->pblk	= ext4_es_show_pblock(es);
- 		__entry->status	= ext4_es_status(es);
- 		__entry->found	= found;
- 	),
-@@ -2573,7 +2574,7 @@ TRACE_EVENT(ext4_es_insert_delayed_block,
- 		__entry->ino		= inode->i_ino;
- 		__entry->lblk		= es->es_lblk;
- 		__entry->len		= es->es_len;
--		__entry->pblk		= ext4_es_pblock(es);
-+		__entry->pblk		= ext4_es_show_pblock(es);
- 		__entry->status		= ext4_es_status(es);
- 		__entry->allocated	= allocated;
- 	),
+Let me make a small marketing pitch mmtest [1] :) For me running the test is
+just:
+  * Boot the right kernel on the machine
+  * Run:
+   ./run-mmtests.sh -c configs/config-db-sqlite-insert-medium-ext4 \
+      --no-monitor Whatever_run_name_1
+
+Now the config file already has proper partition, fstype, mkfs opts etc.
+configured so it's a bit of cheating but still :). And when I have data for
+both kernels, I do:
+  cd work/log
+  ../../compare_kernels.sh
+
+and get a table with the comparison of the two benchmarking runs with
+averages, standard deviations, percentiles, and other more advanced
+statistical stuff to distinguish signal from noise. We also have support
+for gathering various monitoring while the test is running (turbostat,
+iostat, vmstat, ...) and graphing all the results (although the graphs are
+more aimed at quick analysis of what's going on rather than at presenting
+results to a public).
+
+So for this campaign I've compared "5.3+some SUSE patches" to "5.4-rc7+your
+'dev' branch". And the results look like:
+
+sqlite
+                              5.3-SUSE                5.4-rc7
+                                                     ext4-dev
+Min       Trans     2181.67 (   0.00%)     2412.72 (  10.59%)
+Hmean     Trans     2399.39 (   0.00%)     2602.73 *   8.47%*
+Stddev    Trans      172.15 (   0.00%)      141.61 (  17.74%)
+CoeffVar  Trans        7.14 (   0.00%)        5.43 (  24.00%)
+Max       Trans     2671.84 (   0.00%)     3027.81 (  13.32%)
+...
+
+These are Trans/Sec values so there's actually a small improvement on this
+machine. But it's somwhat difficult to tell because the benchmark variation
+is rather high (likely due to powersafe cpufreq governor if I should guess).
+
+								Honza
+
+[1] git://github.com/gormanm/mmtests
 -- 
-2.7.4
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
