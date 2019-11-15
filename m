@@ -2,248 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E1BFE462
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2019 18:54:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C461AFE583
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2019 20:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbfKORyd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 15 Nov 2019 12:54:33 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:44188 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbfKORyd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Nov 2019 12:54:33 -0500
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1iVfnY-0004ix-Pc; Fri, 15 Nov 2019 18:54:20 +0100
-Date:   Fri, 15 Nov 2019 18:54:20 +0100
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Gleixner <anna-maria@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Julia Cartwright <julia@ni.com>, Theodore Tso <tytso@mit.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.com>, Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Joel Becker <jlbec@evilplan.org>
-Subject: [PATCH v2] fs/buffer: Make BH_Uptodate_Lock bit_spin_lock a regular
- spinlock_t
-Message-ID: <20191115175420.cotwwz5tmcwvllsq@linutronix.de>
-References: <20190820170818.oldsdoumzashhcgh@linutronix.de>
- <20190820171721.GA4949@bombadil.infradead.org>
- <alpine.DEB.2.21.1908201959240.2223@nanos.tec.linutronix.de>
- <20191011112525.7dksg6ixb5c3hxn5@linutronix.de>
- <20191115145638.GA5461@quack2.suse.cz>
+        id S1726549AbfKOTWa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Nov 2019 14:22:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34062 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726308AbfKOTWa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 15 Nov 2019 14:22:30 -0500
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36094206D9;
+        Fri, 15 Nov 2019 19:22:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573845749;
+        bh=upuiRVOg48zBrOcDo8mSF+x02Zd4aynU2rKOYkmP0Ug=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bjZdfDwhBnWRxGaakLSBtRR3lNyx9RSw1w8Q+az70jtKCUxDBYcteMj6kM7uw1+BJ
+         mT5QmqPPX5h41lBPcVfK/APGOyYDw5helVm2UUL7TRYd0VcOKDXrzEOKHmiyfg5EGU
+         WfIiJ5bxXeb0nzFxv6xnpeSLrmHLYQl8Nq/0zAJ4=
+Date:   Fri, 15 Nov 2019 11:22:27 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-fscrypt@vger.kernel.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Paul Crowley <paulcrowley@google.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        keyrings@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, David Howells <dhowells@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Ondrej Kozina <okozina@redhat.com>
+Subject: Re: [PATCH] fscrypt: support passing a keyring key to
+ FS_IOC_ADD_ENCRYPTION_KEY
+Message-ID: <20191115192227.GA150987@sol.localdomain>
+References: <20191107001259.115018-1-ebiggers@kernel.org>
+ <20191115172832.GA21300@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20191115145638.GA5461@quack2.suse.cz>
+In-Reply-To: <20191115172832.GA21300@linux.intel.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On Fri, Nov 15, 2019 at 07:28:53PM +0200, Jarkko Sakkinen wrote:
+> 
+> I don't see anything obviously wrong. Just would reformat it a bit.
+> How you tested it?
+> 
 
-Bit spinlocks are problematic if PREEMPT_RT is enabled, because they
-disable preemption, which is undesired for latency reasons and breaks when
-regular spinlocks are taken within the bit_spinlock locked region because
-regular spinlocks are converted to 'sleeping spinlocks' on RT. So RT
-replaces the bit spinlocks with regular spinlocks to avoid this problem.
-Bit spinlocks are also not covered by lock debugging, e.g. lockdep.
+I'm not sure all the blank lines you're suggesting would be an improvement.
+The ones in fscrypt_provisioning_key_preparse() might make sense though.
 
-Substitute the BH_Uptodate_Lock bit spinlock with a regular spinlock.
+I'm working on an xfstest for this:
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-[bigeasy: remove the wrapper and use always spinlock_t and move it into
-          the padding hole]
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
+	https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/xfstests-dev.git/commit/?h=fscrypt-provisioning&id=24ab6abb7cf6a80be44b7c72b73f0519ccaa5a97
 
-v1…v2: Move the spinlock_t to the padding hole as per Jan Kara. pahole says
-its total size remained unchanged, before
+It's not quite ready, though.  I'll post it for review when it is.
 
-| atomic_t                   b_count;              /*    96     4 */
-|
-| /* size: 104, cachelines: 2, members: 12 */
-| /* padding: 4 */
-| /* last cacheline: 40 bytes */
+Someone is also planning to update Android userspace to use this.  So if there
+are any issues from that, I'll hear about it.
 
-after
-
-| atomic_t                   b_count;              /*    96     4 */
-| spinlock_t                 uptodate_lock;        /*   100     4 */
-|
-| /* size: 104, cachelines: 2, members: 13 */
-| /* last cacheline: 40 bytes */
-
- fs/buffer.c                 | 19 +++++++------------
- fs/ext4/page-io.c           |  8 +++-----
- fs/ntfs/aops.c              |  9 +++------
- include/linux/buffer_head.h |  6 +++---
- 4 files changed, 16 insertions(+), 26 deletions(-)
-
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 0ac4ae15ea4dc..2c6f2b41a88e4 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -277,8 +277,7 @@ static void end_buffer_async_read(struct buffer_head *bh, int uptodate)
- 	 * decide that the page is now completely done.
- 	 */
- 	first = page_buffers(page);
--	local_irq_save(flags);
--	bit_spin_lock(BH_Uptodate_Lock, &first->b_state);
-+	spin_lock_irqsave(&first->uptodate_lock, flags);
- 	clear_buffer_async_read(bh);
- 	unlock_buffer(bh);
- 	tmp = bh;
-@@ -291,8 +290,7 @@ static void end_buffer_async_read(struct buffer_head *bh, int uptodate)
- 		}
- 		tmp = tmp->b_this_page;
- 	} while (tmp != bh);
--	bit_spin_unlock(BH_Uptodate_Lock, &first->b_state);
--	local_irq_restore(flags);
-+	spin_unlock_irqrestore(&first->uptodate_lock, flags);
- 
- 	/*
- 	 * If none of the buffers had errors and they are all
-@@ -304,8 +302,7 @@ static void end_buffer_async_read(struct buffer_head *bh, int uptodate)
- 	return;
- 
- still_busy:
--	bit_spin_unlock(BH_Uptodate_Lock, &first->b_state);
--	local_irq_restore(flags);
-+	spin_unlock_irqrestore(&first->uptodate_lock, flags);
- 	return;
- }
- 
-@@ -333,8 +330,7 @@ void end_buffer_async_write(struct buffer_head *bh, int uptodate)
- 	}
- 
- 	first = page_buffers(page);
--	local_irq_save(flags);
--	bit_spin_lock(BH_Uptodate_Lock, &first->b_state);
-+	spin_lock_irqsave(&first->uptodate_lock, flags);
- 
- 	clear_buffer_async_write(bh);
- 	unlock_buffer(bh);
-@@ -346,14 +342,12 @@ void end_buffer_async_write(struct buffer_head *bh, int uptodate)
- 		}
- 		tmp = tmp->b_this_page;
- 	}
--	bit_spin_unlock(BH_Uptodate_Lock, &first->b_state);
--	local_irq_restore(flags);
-+	spin_unlock_irqrestore(&first->uptodate_lock, flags);
- 	end_page_writeback(page);
- 	return;
- 
- still_busy:
--	bit_spin_unlock(BH_Uptodate_Lock, &first->b_state);
--	local_irq_restore(flags);
-+	spin_unlock_irqrestore(&first->uptodate_lock, flags);
- 	return;
- }
- EXPORT_SYMBOL(end_buffer_async_write);
-@@ -3422,6 +3416,7 @@ struct buffer_head *alloc_buffer_head(gfp_t gfp_flags)
- 	struct buffer_head *ret = kmem_cache_zalloc(bh_cachep, gfp_flags);
- 	if (ret) {
- 		INIT_LIST_HEAD(&ret->b_assoc_buffers);
-+		spin_lock_init(&ret->uptodate_lock);
- 		preempt_disable();
- 		__this_cpu_inc(bh_accounting.nr);
- 		recalc_bh_state();
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index 893913d1c2fe3..592816713e0d6 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -125,11 +125,10 @@ static void ext4_finish_bio(struct bio *bio)
- 		}
- 		bh = head = page_buffers(page);
- 		/*
--		 * We check all buffers in the page under BH_Uptodate_Lock
-+		 * We check all buffers in the page under uptodate_lock
- 		 * to avoid races with other end io clearing async_write flags
- 		 */
--		local_irq_save(flags);
--		bit_spin_lock(BH_Uptodate_Lock, &head->b_state);
-+		spin_lock_irqsave(&head->uptodate_lock, flags);
- 		do {
- 			if (bh_offset(bh) < bio_start ||
- 			    bh_offset(bh) + bh->b_size > bio_end) {
-@@ -141,8 +140,7 @@ static void ext4_finish_bio(struct bio *bio)
- 			if (bio->bi_status)
- 				buffer_io_error(bh);
- 		} while ((bh = bh->b_this_page) != head);
--		bit_spin_unlock(BH_Uptodate_Lock, &head->b_state);
--		local_irq_restore(flags);
-+		spin_unlock_irqrestore(&head->uptodate_lock, flags);
- 		if (!under_io) {
- 			fscrypt_free_bounce_page(bounce_page);
- 			end_page_writeback(page);
-diff --git a/fs/ntfs/aops.c b/fs/ntfs/aops.c
-index 7202a1e39d70c..14ca433b3a9e4 100644
---- a/fs/ntfs/aops.c
-+++ b/fs/ntfs/aops.c
-@@ -92,8 +92,7 @@ static void ntfs_end_buffer_async_read(struct buffer_head *bh, int uptodate)
- 				"0x%llx.", (unsigned long long)bh->b_blocknr);
- 	}
- 	first = page_buffers(page);
--	local_irq_save(flags);
--	bit_spin_lock(BH_Uptodate_Lock, &first->b_state);
-+	spin_lock_irqsave(&first->uptodate_lock, flags);
- 	clear_buffer_async_read(bh);
- 	unlock_buffer(bh);
- 	tmp = bh;
-@@ -108,8 +107,7 @@ static void ntfs_end_buffer_async_read(struct buffer_head *bh, int uptodate)
- 		}
- 		tmp = tmp->b_this_page;
- 	} while (tmp != bh);
--	bit_spin_unlock(BH_Uptodate_Lock, &first->b_state);
--	local_irq_restore(flags);
-+	spin_unlock_irqrestore(&first->uptodate_lock, flags);
- 	/*
- 	 * If none of the buffers had errors then we can set the page uptodate,
- 	 * but we first have to perform the post read mst fixups, if the
-@@ -142,8 +140,7 @@ static void ntfs_end_buffer_async_read(struct buffer_head *bh, int uptodate)
- 	unlock_page(page);
- 	return;
- still_busy:
--	bit_spin_unlock(BH_Uptodate_Lock, &first->b_state);
--	local_irq_restore(flags);
-+	spin_unlock_irqrestore(&first->uptodate_lock, flags);
- 	return;
- }
- 
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index 7b73ef7f902d4..e3f8421d17bab 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -22,9 +22,6 @@ enum bh_state_bits {
- 	BH_Dirty,	/* Is dirty */
- 	BH_Lock,	/* Is locked */
- 	BH_Req,		/* Has been submitted for I/O */
--	BH_Uptodate_Lock,/* Used by the first bh in a page, to serialise
--			  * IO completion of other buffers in the page
--			  */
- 
- 	BH_Mapped,	/* Has a disk mapping */
- 	BH_New,		/* Disk mapping was newly created by get_block */
-@@ -76,6 +73,9 @@ struct buffer_head {
- 	struct address_space *b_assoc_map;	/* mapping this buffer is
- 						   associated with */
- 	atomic_t b_count;		/* users using this buffer_head */
-+	spinlock_t	uptodate_lock;	/* Used by the first bh in a page, to
-+					 * serialise IO completion of other
-+					 * buffers in the page */
- };
- 
- /*
--- 
-2.24.0
-
+- Eric
