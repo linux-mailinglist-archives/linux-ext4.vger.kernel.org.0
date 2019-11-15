@@ -2,145 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AE9FDAF9
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2019 11:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841A1FDB35
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2019 11:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727526AbfKOKRO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Nov 2019 05:17:14 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:53936 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727036AbfKOKRN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Nov 2019 05:17:13 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAFAELeI021035;
-        Fri, 15 Nov 2019 10:16:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=kEBzW5bFpEsigVBsTTXhd4LHdOdlS9x/rndpgUook+0=;
- b=QmXceClB8p34iys5VDuKVySkAzZ4nh9dFKS4BNrvUbfMN+yZoNVZN1iKt1naAftTGmYu
- jHsxmKfERo5ya7YAeJdViHurp4hZkbUAj/IQDfw5hfaYAd/bjOJelRpVNCzih9pVH1TV
- HOZPCDXCpZDwrewquKXdkU2eC8LX5HgWReEARQ29ZX6kXJR2uyRhHiIPHCfn9L7egDEE
- DVoejjxyLFLd4dwDVvz8+LR5atlQLwEFKvdocAoqlCgYcJB/v5yWjdvzgOze0pX4szs9
- ymxaqO/tpKr/emc5HaxhwwFC1QioLZMmw3h87eIDCcFyC9FbN4fFgICksIk1dYWHXPxw +w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2w9gxpje2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Nov 2019 10:16:50 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAFADEql008030;
-        Fri, 15 Nov 2019 10:16:49 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2w9h148fjm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Nov 2019 10:16:49 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAFAGm0d007595;
-        Fri, 15 Nov 2019 10:16:48 GMT
-Received: from dhcp-10-175-208-51.vpn.oracle.com (/10.175.208.51)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 15 Nov 2019 02:16:48 -0800
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
-        linux-kselftest@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        keescook@chromium.org, yzaikin@google.com,
-        akpm@linux-foundation.org, yamada.masahiro@socionext.com,
-        catalin.marinas@arm.com, joe.lawrence@redhat.com,
-        penguin-kernel@i-love.sakura.ne.jp, schowdary@nvidia.com,
-        urezki@gmail.com, andriy.shevchenko@linux.intel.com,
-        corbet@lwn.net, tytso@mit.edu, adilger.kernel@dilger.ca,
-        mcgrof@kernel.org, changbin.du@intel.com,
-        linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org,
-        sboyd@kernel.org, Alan Maguire <alan.maguire@oracle.com>,
-        Knut Omang <knut.omang@oracle.com>
-Subject: [PATCH v4 linux-kselftest-test 6/6] kunit: update documentation to describe module-based build
-Date:   Fri, 15 Nov 2019 10:16:12 +0000
-Message-Id: <1573812972-10529-7-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1573812972-10529-1-git-send-email-alan.maguire@oracle.com>
-References: <1573812972-10529-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9441 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=4 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1911150096
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9441 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=4 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1911150096
+        id S1727210AbfKOKWQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Nov 2019 05:22:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58396 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727180AbfKOKWQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 15 Nov 2019 05:22:16 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 9A412B266;
+        Fri, 15 Nov 2019 10:22:14 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3FA1E1E3BEA; Fri, 15 Nov 2019 11:22:14 +0100 (CET)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Eric Biggers <ebiggers@kernel.org>,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH] jbd2: Make jbd2_handle_buffer_credits() handle reserved handles
+Date:   Fri, 15 Nov 2019 11:22:10 +0100
+Message-Id: <20191115102210.29445-1-jack@suse.cz>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Documentation should describe how to build kunit and tests as
-modules.
+The helper jbd2_handle_buffer_credits() doesn't correctly handle reserved
+handles which can lead to crashes. Fix it getting of journal pointer to
+work for reserved handles as well.
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Knut Omang <knut.omang@oracle.com>
+Fixes: a9a8344ee171 ("ext4, jbd2: Provide accessor function for handle credits")
+Reported-by: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- Documentation/dev-tools/kunit/faq.rst   |  3 ++-
- Documentation/dev-tools/kunit/index.rst |  3 +++
- Documentation/dev-tools/kunit/usage.rst | 16 ++++++++++++++++
- 3 files changed, 21 insertions(+), 1 deletion(-)
+ include/linux/jbd2.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/dev-tools/kunit/faq.rst b/Documentation/dev-tools/kunit/faq.rst
-index bf20951..ea55b24 100644
---- a/Documentation/dev-tools/kunit/faq.rst
-+++ b/Documentation/dev-tools/kunit/faq.rst
-@@ -29,7 +29,8 @@ Yes, well, mostly.
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 3115eeb44039..a23a3528e07a 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1648,10 +1648,14 @@ static inline tid_t  jbd2_get_latest_transaction(journal_t *journal)
+ 	return tid;
+ }
  
- For the most part, the KUnit core framework (what you use to write the tests)
- can compile to any architecture; it compiles like just another part of the
--kernel and runs when the kernel boots. However, there is some infrastructure,
-+kernel and runs when the kernel boots, or when built as a module, when the
-+module is loaded.  However, there is some infrastructure,
- like the KUnit Wrapper (``tools/testing/kunit/kunit.py``) that does not support
- other architectures.
+-
+ static inline int jbd2_handle_buffer_credits(handle_t *handle)
+ {
+-	journal_t *journal = handle->h_transaction->t_journal;
++	journal_t *journal;
++
++	if (!handle->h_reserved)
++		journal = handle->h_transaction->t_journal;
++	else
++		journal = handle->h_journal;
  
-diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
-index 26ffb46..7ddc385 100644
---- a/Documentation/dev-tools/kunit/index.rst
-+++ b/Documentation/dev-tools/kunit/index.rst
-@@ -48,6 +48,9 @@ to a standalone program that can be run like any other program directly inside
- of a host operating system; to be clear, it does not require any virtualization
- support; it is just a regular program.
- 
-+Alternatively, kunit and kunit tests can be built as modules and tests will
-+run when the test module is loaded.
-+
- KUnit is fast. Excluding build time, from invocation to completion KUnit can run
- several dozen tests in only 10 to 20 seconds; this might not sound like a big
- deal to some people, but having such fast and easy to run tests fundamentally
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index c6e6963..82f9213 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -539,6 +539,22 @@ Interspersed in the kernel logs you might see the following:
- 
- Congratulations, you just ran a KUnit test on the x86 architecture!
- 
-+In a similar manner, kunit and kunit tests can also be built as modules,
-+so if you wanted to run tests in this way you might add the following config
-+options to your ``.config``:
-+
-+.. code-block:: none
-+
-+	CONFIG_KUNIT=m
-+	CONFIG_KUNIT_EXAMPLE_TEST=m
-+
-+Once the kernel is built and installed, a simple
-+
-+.. code-block:: bash
-+	modprobe example-test
-+
-+...will run the tests.
-+
- Writing new tests for other architectures
- -----------------------------------------
- 
+ 	return handle->h_total_credits -
+ 		DIV_ROUND_UP(handle->h_revoke_credits_requested,
 -- 
-1.8.3.1
+2.16.4
 
