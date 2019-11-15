@@ -2,98 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D997BFDA4C
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2019 11:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102BDFDAF1
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2019 11:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727241AbfKOKCY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Nov 2019 05:02:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42392 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726930AbfKOKCY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 15 Nov 2019 05:02:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 74F04AFF0;
-        Fri, 15 Nov 2019 10:02:22 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 1E9791E3BEA; Fri, 15 Nov 2019 11:02:22 +0100 (CET)
-Date:   Fri, 15 Nov 2019 11:02:22 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 20/25] jbd2: Reserve space for revoke descriptor blocks
-Message-ID: <20191115100222.GC9043@quack2.suse.cz>
-References: <20191003215523.7313-1-jack@suse.cz>
- <20191105164437.32602-20-jack@suse.cz>
- <20191115075223.GA152352@sol.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191115075223.GA152352@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727419AbfKOKRB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Nov 2019 05:17:01 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40658 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727036AbfKOKRB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Nov 2019 05:17:01 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAFAEDUw039024;
+        Fri, 15 Nov 2019 10:16:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2019-08-05;
+ bh=CF76dqOjLnDtVQlj2rFziNpDdLSq1Rr16rBQHbvLv6Y=;
+ b=oz2J5i6SWla6EFKSOlRg/p9BdA+ThBZTvWPdbMKB1MZi4F8LGeQ8zoEorL+9r4JuRVau
+ LGefioAdpod/CqI0I1YmeD3soK98CM/pCqtZZeUObqXDSKMgrUipqZ8v8nsi3a52Ur9L
+ XBsibtJOjIGoeT5XxRQCsb1UQkRpljWQR6g1ha+HFOtY6V3gPtDYWFT5DcpNyOdK2/lo
+ vHZ+Da1AXrlqKfFrFcdrJfATcuBv9J5ePQ9djRKYDMXU82laEltokpss7ZsRI9DKVQI7
+ FjH0PvkT2ThMXaJZceEOBr31hITRSGWu63akOpV+85r+2/ILoj6sIzVS/7pxSIccgF9R 0g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2w9gxpjd2f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Nov 2019 10:16:34 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAFADLCv120961;
+        Fri, 15 Nov 2019 10:16:33 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2w9h17s1v4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Nov 2019 10:16:33 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAFAGPlf016278;
+        Fri, 15 Nov 2019 10:16:25 GMT
+Received: from dhcp-10-175-208-51.vpn.oracle.com (/10.175.208.51)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 15 Nov 2019 02:16:24 -0800
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org, yamada.masahiro@socionext.com,
+        catalin.marinas@arm.com, joe.lawrence@redhat.com,
+        penguin-kernel@i-love.sakura.ne.jp, schowdary@nvidia.com,
+        urezki@gmail.com, andriy.shevchenko@linux.intel.com,
+        corbet@lwn.net, tytso@mit.edu, adilger.kernel@dilger.ca,
+        mcgrof@kernel.org, changbin.du@intel.com,
+        linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org,
+        sboyd@kernel.org, Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v4 linux-kselftest-test 0/6] kunit: support building core/tests as modules
+Date:   Fri, 15 Nov 2019 10:16:06 +0000
+Message-Id: <1573812972-10529-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9441 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911150096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9441 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911150096
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 14-11-19 23:52:23, Eric Biggers wrote:
-> On Tue, Nov 05, 2019 at 05:44:26PM +0100, Jan Kara wrote:
-> >  static inline int jbd2_handle_buffer_credits(handle_t *handle)
-> >  {
-> > -	return handle->h_buffer_credits;
-> > +	journal_t *journal = handle->h_transaction->t_journal;
-> > +
-> > +	return handle->h_buffer_credits -
-> > +		DIV_ROUND_UP(handle->h_revoke_credits_requested,
-> > +			     journal->j_revoke_records_per_block);
-> >  }
-> 
-> This patch is causing a crash with 'kvm-xfstests -c dioread_nolock ext4/024'.
-> Looks like this code incorrectly assumes that h_transaction is always valid
-> rather than the other member of the union, h_journal.
+The current kunit execution model is to provide base kunit functionality
+and tests built-in to the kernel.  The aim of this series is to allow
+building kunit itself and tests as modules.  This in turn allows a
+simple form of selective execution; load the module you wish to test.
+In doing so, kunit itself (if also built as a module) will be loaded as
+an implicit dependency.
 
-Right, thanks for the report! Just out of curiosity: You have to have that
-tracepoint enabled for the crash to trigger, don't you? Because I'm pretty
-sure I did dioread_nolock runs...
+Because this requires a core API modification - if a module delivers
+multiple suites, they must be declared with the kunit_test_suites()
+macro - we're proposing this patch set as a candidate to be applied to the
+test tree before too many kunit consumers appear.  We attempt to deal
+with existing consumers in patch 3.
 
-I'll send a fix shortly.
+Changes since v3:
+ - removed symbol lookup patch for separate submission later
+ - removed use of sysctl_hung_task_timeout_seconds (patch 4, as discussed
+   with Brendan and Stephen)
+ - disabled build of string-stream-test when CONFIG_KUNIT_TEST=m; this
+   is to avoid having to deal with symbol lookup issues
+ - changed string-stream-impl.h back to string-stream.h (Brendan)
+ - added module build support to new list, ext4 tests
 
-								Honza
+Changes since v2:
+ - moved string-stream.h header to lib/kunit/string-stream-impl.h (Brendan)
+   (patch 1)
+ - split out non-exported interfaces in try-catch-impl.h (Brendan)
+   (patch 2)
+ - added kunit_find_symbol() and KUNIT_INIT_SYMBOL to lookup non-exported
+   symbols (patches 3, 4)
+ - removed #ifdef MODULE around module licenses (Randy, Brendan, Andy)
+   (patch 4)
+ - replaced kunit_test_suite() with kunit_test_suites() rather than
+   supporting both (Brendan) (patch 4)
+ - lookup sysctl_hung_task_timeout_secs as kunit may be built as a module
+   and the symbol may not be available (patch 5)
 
-> 
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000614
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 0 P4D 0 
-> Oops: 0000 [#1] SMP
-> CPU: 1 PID: 105 Comm: kworker/u4:3 Not tainted 5.4.0-rc3-00020-gfdc3ef882a5d #18
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20191013_105130-anatol 04/01/2014
-> Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work
-> RIP: 0010:jbd2_handle_buffer_credits include/linux/jbd2.h:1656 [inline]
-> RIP: 0010:__ext4_journal_start_reserved+0x38/0x1f0 fs/ext4/ext4_jbd2.c:122
-> Code: 83 ec 10 48 81 ff ff 0f 00 00 89 75 d4 89 55 d0 0f 86 f5 00 00 00 48 8b 07 49 89 fc 48 8b 5d 08 4c 8b a8 40 07 00 6
-> RSP: 0018:ffffc90000457d40 EFLAGS: 00010296
-> RAX: 0000000000000038 RBX: ffffffff812e68fb RCX: 000000000000000c
-> RDX: 000000000000000b RSI: 000000000000137f RDI: ffff8880779c5468
-> RBP: ffffc90000457d78 R08: 0000000000001000 R09: 0000000000001000
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880779c5468
-> R13: ffff88807b726000 R14: ffff8880779ad9e8 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff88807fd00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000614 CR3: 000000007a0dd000 CR4: 00000000003406e0
-> Call Trace:
->  ext4_convert_unwritten_extents+0x8b/0x250 fs/ext4/extents.c:4991
->  ext4_end_io fs/ext4/page-io.c:152 [inline]
->  ext4_do_flush_completed_IO fs/ext4/page-io.c:226 [inline]
->  ext4_end_io_rsv_work+0x11a/0x1f0 fs/ext4/page-io.c:240
->  process_one_work+0x227/0x5b0 kernel/workqueue.c:2269
->  worker_thread+0x4b/0x3c0 kernel/workqueue.c:2415
->  kthread+0x125/0x140 kernel/kthread.c:255
->  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-> CR2: 0000000000000614
-> ---[ end trace d8eaf4e1225480d5 ]---
+Alan Maguire (6):
+  kunit: move string-stream.h to lib/kunit
+  kunit: hide unexported try-catch interface in try-catch-impl.h
+  kunit: allow kunit tests to be loaded as a module
+  kunit: remove timeout dependence on sysctl_hung_task_timeout_seconds
+  kunit: allow kunit to be loaded as a module
+  kunit: update documentation to describe module-based build
+
+ Documentation/dev-tools/kunit/faq.rst   |   3 +-
+ Documentation/dev-tools/kunit/index.rst |   3 +
+ Documentation/dev-tools/kunit/usage.rst |  16 ++
+ fs/ext4/Kconfig                         |   2 +-
+ fs/ext4/Makefile                        |   5 +
+ fs/ext4/inode-test.c                    |   4 +-
+ include/kunit/assert.h                  |   3 +-
+ include/kunit/string-stream.h           |  51 -----
+ include/kunit/test.h                    |  35 +++-
+ include/kunit/try-catch.h               |  10 -
+ kernel/sysctl-test.c                    |   4 +-
+ lib/Kconfig.debug                       |   4 +-
+ lib/kunit/Kconfig                       |   6 +-
+ lib/kunit/Makefile                      |  14 +-
+ lib/kunit/assert.c                      |  10 +
+ lib/kunit/example-test.c                |  88 ---------
+ lib/kunit/kunit-example-test.c          |  90 +++++++++
+ lib/kunit/kunit-test.c                  | 334 ++++++++++++++++++++++++++++++++
+ lib/kunit/string-stream-test.c          |   5 +-
+ lib/kunit/string-stream.c               |   3 +-
+ lib/kunit/string-stream.h               |  51 +++++
+ lib/kunit/test-test.c                   | 331 -------------------------------
+ lib/kunit/test.c                        |  25 ++-
+ lib/kunit/try-catch-impl.h              |  28 +++
+ lib/kunit/try-catch.c                   |  37 +---
+ lib/list-test.c                         |   4 +-
+ 26 files changed, 628 insertions(+), 538 deletions(-)
+ delete mode 100644 include/kunit/string-stream.h
+ delete mode 100644 lib/kunit/example-test.c
+ create mode 100644 lib/kunit/kunit-example-test.c
+ create mode 100644 lib/kunit/kunit-test.c
+ create mode 100644 lib/kunit/string-stream.h
+ delete mode 100644 lib/kunit/test-test.c
+ create mode 100644 lib/kunit/try-catch-impl.h
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+1.8.3.1
+
