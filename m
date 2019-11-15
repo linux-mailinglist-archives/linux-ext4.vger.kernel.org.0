@@ -2,86 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A04C6FE1CD
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2019 16:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08FFFE3AA
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2019 18:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727678AbfKOPtn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 15 Nov 2019 10:49:43 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:40585 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727559AbfKOPtm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 15 Nov 2019 10:49:42 -0500
-Received: by mail-io1-f68.google.com with SMTP id p6so10904045iod.7
-        for <linux-ext4@vger.kernel.org>; Fri, 15 Nov 2019 07:49:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=X5NAAOrJ3bS32ihsXavVCESX6DNfXdWEE7aVqtLVIHM=;
-        b=T96mBsWswYjsm0w7ecYkWpV509ib/ulk9bHbI0Xwo0rzkePegh7rSfOcmzGbyf8vTc
-         lns/HOXyf4/6jOYDVIgZ/CZyIfN2m2y88qVdmXSABhNsP0MXDIRsHGSOOd7wWkwuGiQx
-         ehcoBpFXp6INIFq3jwmveina1L3fsWjpzHRhMvlhwo8OJ8Dy4xuFXwCrYZiL/Ja/dmiU
-         sEvBblBcC09ww5H/W1Li3rJXBc1TYjMn46kjeboNwYGUiqFeNnjz46iJxarBlBzUTpau
-         7EU4w1MkRxjhgPFrJ2/ipVqnuE4IawmENFYcW1JVUg9OFLrEKZvfb77T8+3XayPV4Zd+
-         KrHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=X5NAAOrJ3bS32ihsXavVCESX6DNfXdWEE7aVqtLVIHM=;
-        b=Yi0woX+XhgYEZF/aRxVhlJfgmGe4C1Yr65nzwC6qQOd96oPb+A+I6xCWWUgWIj+LzF
-         TCI8T9371ArfKCVedBY8eANRP95BhSkIQYM1z6QS9JyiE9PxnV9SBVu/PonMcfj592Rl
-         Jlaoh/CUkjImqBUA6VEvthFfNyTBH7G3E1y44GlbWphVVAEJaiziVdC9WvqDRSUAr9JI
-         WHQneuaP1yRpYc9+bSWBOljPc6utEzfUxFDjnOpnOT0ukEUN1ZvRJWO4/1E6ma5TpHex
-         QbmSOnZPWh+O8L84ATSS7pV65EvX3Rv0IpGD+Lhb8iq7r69k72uqGwiW7bTltQEjk1f4
-         ICFg==
-X-Gm-Message-State: APjAAAV+8++E172MNcwxn1K+N34Beq/88XpWxC48Y/Pl1MT9bJ6gnpYG
-        FYXV16hlYWKIMb0W09Wm0pgAROL26ym4iyzN7g==
-X-Google-Smtp-Source: APXvYqxEj1beLI6zhjihT/lmX2Dk324PGcIr8veC5c+0F/PFQKT7AeNYgljOGh72OwNqCMMZvqGkvMbSAqCkDjgGkjg=
-X-Received: by 2002:a5e:8e02:: with SMTP id a2mr1343031ion.269.1573832982053;
- Fri, 15 Nov 2019 07:49:42 -0800 (PST)
+        id S1727585AbfKORKc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 15 Nov 2019 12:10:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727528AbfKORKb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 15 Nov 2019 12:10:31 -0500
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA76A20728;
+        Fri, 15 Nov 2019 17:10:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573837831;
+        bh=AYpJCtRDeIr/6khByOnwja84+YsEz0CugiiJsz7p4aw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qRFFuxEiTGZWaUfCNAIN7/4jpzJtUkhN+xSjdB3uWkTp4qTSHyNq8o0DS6jPNSdSX
+         qMV1uElx+5HKVwgH90rHBkVeOLaNx+lBc7op7P+ug035yvEq+MefRDXnuNdrOCsIrZ
+         4XFydWryF6EFYyj8eaoGQAERl/WFxVDadEU08zEM=
+Date:   Fri, 15 Nov 2019 09:10:29 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 20/25] jbd2: Reserve space for revoke descriptor blocks
+Message-ID: <20191115171029.GA701@sol.localdomain>
+References: <20191003215523.7313-1-jack@suse.cz>
+ <20191105164437.32602-20-jack@suse.cz>
+ <20191115075223.GA152352@sol.localdomain>
+ <20191115100222.GC9043@quack2.suse.cz>
+ <20191115142033.GA23689@mit.edu>
 MIME-Version: 1.0
-Received: by 2002:a02:7749:0:0:0:0:0 with HTTP; Fri, 15 Nov 2019 07:49:41
- -0800 (PST)
-Reply-To: moneygram.1820@outlook.fr
-From:   "Ms.Mary Coster" <info.zennitbankplcnigerian@gmail.com>
-Date:   Fri, 15 Nov 2019 16:49:41 +0100
-Message-ID: <CABHzvrkUQbbmg0Gr7foD3OjAJiY7Fd37=SW3mU=fnOPOcOyNdQ@mail.gmail.com>
-Subject: Goodnews, I have deposited your transfer total amount US$4.8million
- Dollars with Money Gram this morning. we agreed you will be receiving it
- $5000.00 daily.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191115142033.GA23689@mit.edu>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Attn, Dear
-Goodnews, I have deposited your transfer total amount US$4.8million
-Dollars with Money Gram this morning. we agreed you will be receiving
-it $5000.00 daily.
-Contact Mr. John Dave Director, Money Gram to pick up your first Money
-Gram payment $5000.00 today.
-Contact Person; Mr. John Dave Director, Money Gram,International
-Remittance-Benin
-Email; moneygram.1820@outlook.fr
-Telephone; +229 62619517
-Please re-confirm your address to him once again such as listed below.
-1.Your Full Name..............................
-2.Address.........................
-3.Country....................
-4.Sex.........................................
-5.Your telephone numbers..........................
-6. Copy of your ID...........................
-This is to avoid sending your funds to wrong person, He is waiting to
-hear from you urgent today.
-Let me know once you pick up your transfer $5000.00 today.
-Finally, Note I have paid for the service fees, but only money will
-send to him is $90.00 transfer fee before you can pick up the transfer
-today.
-Ask, Mr. John Dave Director, Money Gram to give you direction where to
-send your transfer fee $90.00 only to Him Immediately so that you can
-pick up $5000.00 us dollars today.
-Thanks for undrstanding.
-Mary Coster
-m.coster@aol.com
+On Fri, Nov 15, 2019 at 09:20:33AM -0500, Theodore Y. Ts'o wrote:
+> On Fri, Nov 15, 2019 at 11:02:22AM +0100, Jan Kara wrote:
+> > On Thu 14-11-19 23:52:23, Eric Biggers wrote:
+> > > On Tue, Nov 05, 2019 at 05:44:26PM +0100, Jan Kara wrote:
+> > > >  static inline int jbd2_handle_buffer_credits(handle_t *handle)
+> > > >  {
+> > > > -	return handle->h_buffer_credits;
+> > > > +	journal_t *journal = handle->h_transaction->t_journal;
+> > > > +
+> > > > +	return handle->h_buffer_credits -
+> > > > +		DIV_ROUND_UP(handle->h_revoke_credits_requested,
+> > > > +			     journal->j_revoke_records_per_block);
+> > > >  }
+> > > 
+> > > This patch is causing a crash with 'kvm-xfstests -c dioread_nolock ext4/024'.
+> > > Looks like this code incorrectly assumes that h_transaction is always valid
+> > > rather than the other member of the union, h_journal.
+> > 
+> > Right, thanks for the report! Just out of curiosity: You have to have that
+> > tracepoint enabled for the crash to trigger, don't you? Because I'm pretty
+> > sure I did dioread_nolock runs...
+> 
+> I've been *definitely* been doing dioread_nolock runs (including two
+> last night), with no failures.
+> 
+> ext4/dioread_nolock: 485 tests, 40 skipped, 5142 seconds
+> 
+
+No I didn't enable the tracepoint.  I think the difference is that I had
+CONFIG_UBSAN enabled.  I get the crash if I use the following kconfig:
+
+	curl -o .config 'https://git.kernel.org/pub/scm/fs/ext2/xfstests-bld.git/plain/kernel-configs/x86_64-config-5.4'
+	echo CONFIG_UBSAN=y >> .config
+	make olddefconfig
+
+... but not if I don't enable UBSAN.
+
+No idea why UBSAN makes a difference here, though.  I'm using gcc 9.2.0.
+
+- Eric
