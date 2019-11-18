@@ -2,102 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 943C2100D3D
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2019 21:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BB5100E9F
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2019 23:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726717AbfKRUll convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 18 Nov 2019 15:41:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726536AbfKRUll (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 18 Nov 2019 15:41:41 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 205569] New: potential data race (likely benign) on
- inode->i_state (reading and writing to different bits)
-Date:   Mon, 18 Nov 2019 20:41:40 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: mengxu.gatech@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression
-Message-ID: <bug-205569-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1726939AbfKRWKE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Nov 2019 17:10:04 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:35465 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbfKRWKE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Nov 2019 17:10:04 -0500
+Received: by mail-qv1-f65.google.com with SMTP id y18so7272119qve.2;
+        Mon, 18 Nov 2019 14:10:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NualcDfguDgEjHtduWi88xZn4omxjI3UeIzUlhWiQrw=;
+        b=WTGTR34TPtn1w+i+oEM0gDV2g0w3z8EEPf8iQhSME/jk+EARikr7ezreNlPaNxVp0/
+         YmvYdmnI6bKPqkyBf4LkAYu28BD1FtJ+uH5+RXKD9mdJmREwcx6kX6cYFqGTZEoERhkK
+         1X15V201FBNuc80B7H7W2DlUBugwHNWc49met0c42T65MgIiILj2lhr+vH8tnyEF4jV/
+         oUZwM24rrPEmgBLRjGDPV5/srwVdrKgw1jDDCn9J5G4HgKtl27BWrNh4OHBFg5IGo30b
+         zWjJO0E9hIH60jv7NPhRFiy1TAmeu6AdrFNruKRwkhpJd6izWU39Eo9q6z2617MOJUNX
+         V6/A==
+X-Gm-Message-State: APjAAAUmp5ab2H07MSJ4tfHf3FV9X5LMiCRdWoblwp8ZXLIOG0iGRDKs
+        Pu4tmJd9GwfpsjhRUc2DGhQ=
+X-Google-Smtp-Source: APXvYqyoEDZZt0Rgs1EpYh0eSDV5u4vQXfyFo35uB7Lo5TheTFOWs5mmMPoo+XcXjJ5Mzj5pp50iPQ==
+X-Received: by 2002:ad4:4201:: with SMTP id k1mr21638916qvp.33.1574115002654;
+        Mon, 18 Nov 2019 14:10:02 -0800 (PST)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id r4sm8585486qkd.9.2019.11.18.14.10.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Nov 2019 14:10:01 -0800 (PST)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 7D15B401EA; Mon, 18 Nov 2019 22:09:58 +0000 (UTC)
+Date:   Mon, 18 Nov 2019 22:09:58 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, keescook@chromium.org,
+        yzaikin@google.com, akpm@linux-foundation.org,
+        yamada.masahiro@socionext.com, catalin.marinas@arm.com,
+        joe.lawrence@redhat.com, penguin-kernel@i-love.sakura.ne.jp,
+        schowdary@nvidia.com, urezki@gmail.com,
+        andriy.shevchenko@linux.intel.com, corbet@lwn.net, tytso@mit.edu,
+        adilger.kernel@dilger.ca, changbin.du@intel.com,
+        linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org,
+        sboyd@kernel.org, Knut Omang <knut.omang@oracle.com>
+Subject: Re: [PATCH v4 linux-kselftest-test 4/6] kunit: remove timeout
+ dependence on sysctl_hung_task_timeout_seconds
+Message-ID: <20191118220958.GS11244@42.do-not-panic.com>
+References: <1573812972-10529-1-git-send-email-alan.maguire@oracle.com>
+ <1573812972-10529-5-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1573812972-10529-5-git-send-email-alan.maguire@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=205569
+On Fri, Nov 15, 2019 at 10:16:10AM +0000, Alan Maguire wrote:
+> In discussion of how to handle timeouts, it was noted that if
+> sysctl_hung_task_timeout_seconds is exceeded for a kunit test,
+> the test task will be killed and an oops generated.  This should
+> suffice as a means of debugging such timeout issues for now.
+> 
+> Hence remove use of sysctl_hung_task_timeout_secs, which has the
+> added benefit of avoiding the need to export that symbol from
+> the core kernel.
+> 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Knut Omang <knut.omang@oracle.com>
 
-            Bug ID: 205569
-           Summary: potential data race (likely benign) on inode->i_state
-                    (reading and writing to different bits)
-           Product: File System
-           Version: 2.5
-    Kernel Version: 5.4-rc5
-          Hardware: All
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: normal
-          Priority: P1
-         Component: ext4
-          Assignee: fs_ext4@kernel-bugs.osdl.org
-          Reporter: mengxu.gatech@gmail.com
-        Regression: No
+This seems like a workaround for sysctl_hung_task_timeout_secs not being
+exported. If true, this can be addressed by creating a symbol namespace
+(new) and using that namespace on this path.
 
-I am reporting a potential data race (maybe benign) in the ext4 layer on
-inode->i_state, with reading and writing to the same byte but different bits:
-I_DIRTY_PAGES (bit 2) and I_NEW | I_FREEING (bit 3 and 5), observable during
-the write-back phase.
-
-The function call trace is shown below:
-
-[Thread 1: SYS_rmdir]
-__do_sys_rmdir
-  do_rmdir
-    vfs_rmdir
-      ext4_rmdir
-        ext4_orphan_add
-          [READ] WARN_ON_ONCE(!(inode->i_state & (I_NEW | I_FREEING)) &&
-                     !inode_is_locked(inode));
-
-[Thread 2: write-back thread]
-wb_workfn
-  wb_do_writeback
-    wb_writeback
-      writeback_sb_inodes
-        __writeback_single_inode
-            [WRITE] dirty = inode->i_state & I_DIRTY;
-
-
-I could confirm that the WRITE may happen before and after the READ operation
-by controlling the timing of the two threads, i.e., by setting breakpoints
-before the WRITE statement.
-
-However, I am not very sure about the implication of such a data race (e.g.,
-causing violations of assumptions). I would appreciate if you could help check
-on this potential bug and advise whether this is a harmful data race or it
-is intended. Thank you!
-
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+  Luis
