@@ -2,93 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2998FFCF2
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2019 02:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D8FFFDC0
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2019 06:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbfKRBuU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 17 Nov 2019 20:50:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40462 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726063AbfKRBuR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 17 Nov 2019 20:50:17 -0500
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49593206DB
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Nov 2019 01:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574041817;
-        bh=LZlDGm5uvJGSNyiT4adb691+9iEkzuYU+UsDDFCXi8U=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=e8PCtwsY68F4qr3WmDyYmzNwSFQoa3nFH233emmZtebX+8Lx7uU+W2OkKnaqtLG1S
-         aXCtqvxSeIGQCkvk9Qw72bdX9gqP1nxpL9jpbFTI9PihmVR/VImUKYdyk+qzV4lVgR
-         PKb5I+rX7moAi75ciiU9S2nCdoq/6bf2LHsp62eY=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Subject: [PATCH 6/6] chattr.1: say "cleared" instead of "reset"
-Date:   Sun, 17 Nov 2019 17:48:52 -0800
-Message-Id: <20191118014852.390686-7-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191118014852.390686-1-ebiggers@kernel.org>
-References: <20191118014852.390686-1-ebiggers@kernel.org>
+        id S1726414AbfKRFLQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Nov 2019 00:11:16 -0500
+Received: from sender3-of-o52.zoho.com.cn ([124.251.121.247]:21961 "EHLO
+        sender2.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725816AbfKRFLP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Nov 2019 00:11:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1574053816; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=nOqkrGkbDhtS3JDMvQRPuCCRI17CD3aKZSTRZtWSBRtIjONCrKc6v+eLP7IuCi+Tkb0VZoRzf+u9HRwRyoZxjpE3o/LBCY/xtjVY9lmLKSyHDBAtPBSmHY/MkEagt4xEyqco26PSMXg93wv5ol1WfKIHQt+zoEOWThlUcRAGN+8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1574053816; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=BsgB+uLSbI/A7RpGrDvhjCegyC49pCxyhfWI2lOuUfk=; 
+        b=PTPwfFgv2WlRWueS8Em/r/X8tv6FghRBaJJqvDQHrdYADltuXdTTk+PPpD9x7DXGGxiajBFuHx+ywgo4prEMy5XC3vRT4LdJwBbfwIffx2ETasq8EpSMJaSyDqKAEK4aliVEMaWCccd8f334fuTtopvX2yodxA6oYCsKxH3LQIs=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1574053816;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        l=1765; bh=BsgB+uLSbI/A7RpGrDvhjCegyC49pCxyhfWI2lOuUfk=;
+        b=Hd4TEPjE8y+eT9uAecADUdrpdpM8idvHMa1WowClTYYDjvX+VFqMB/ZTpEKHKjQi
+        efzGVbutkWe2JrkyEhT91eL6JxU5nE58/YJUeOzq8cRZoz3qf/lUNAW3IQPj19sZVxj
+        2ViUFwDHjLT3p5JQPt2yg7VxII6IbzbJfqaDVpmA=
+Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
+        with SMTPS id 1574053813058511.6204774440098; Mon, 18 Nov 2019 13:10:13 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org
+Cc:     darrick.wong@oracle.com, jaegeuk@kernel.org, chao@kernel.org,
+        tytso@mit.edu, adilger.kernel@dilger.ca,
+        Chengguang Xu <cgxu519@mykernel.net>
+Message-ID: <20191118050949.15629-1-cgxu519@mykernel.net>
+Subject: [RFC PATCH 1/3] ext4: show prjquota info on statfs for a file
+Date:   Mon, 18 Nov 2019 13:09:47 +0800
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Currently we replace filesystem statistics using prjquota info
+on statfs when specified directory has project id inherit flag.
+However, statfs on a file(accurately non-dir) which is under the
+project quota dir(with inherit flag) still shows whole filesystem
+statistics. In container use case, it will give container user
+inconsistent experience and cause confusion about available free
+space.
 
-Setting a bit to 0 is normally called "clearing", not "resetting"; and
-chattr.1 already says "clear" in some places.  Use "clear" consistently.
+Detail info like below:
+We use project quota to limit disk space usage for a container
+and run df command inside container.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Run df on a directory:
+
+[root /]# df -h /etc/
+Filesystem=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Size=C2=A0 Used Avail Use% Mounted=
+ on
+kataShared=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.0G=C2=A0=C2=A0 13M 1012M=C2=A0=
+=C2=A0 2% /
+
+Run df on a file:
+
+[root /]# df -h /etc/exports
+Filesystem=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Size=C2=A0 Used Avail Use% Mounted=
+ on
+kataShared=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.5T=C2=A0 778M=C2=A0 1.5T=C2=A0=
+=C2=A0 1% /
+
+Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
 ---
- misc/chattr.1.in | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/ext4/super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/misc/chattr.1.in b/misc/chattr.1.in
-index 870397ae..66e791db 100644
---- a/misc/chattr.1.in
-+++ b/misc/chattr.1.in
-@@ -115,7 +115,7 @@ the blocks on disk.  It may not be removed using
- .BR chattr (1).
- .PP
- A file, directory, or symlink with the 'E' attribute set is encrypted by the
--filesystem.  This attribute may not be set or reset using
-+filesystem.  This attribute may not be set or cleared using
- .BR chattr (1),
- although it can be displayed by
- .BR lsattr (1).
-@@ -132,7 +132,7 @@ Only the superuser or a process possessing the CAP_LINUX_IMMUTABLE
- capability can set or clear this attribute.
- .PP
- The 'I' attribute is used by the htree code to indicate that a directory
--is being indexed using hashed trees.  It may not be set or reset using
-+is being indexed using hashed trees.  It may not be set or cleared using
- .BR chattr (1),
- although it can be displayed by
- .BR lsattr (1).
-@@ -146,7 +146,8 @@ attribute has no effect.  Only the superuser or a process possessing the
- CAP_SYS_RESOURCE capability can set or clear this attribute.
- .PP
- A file with the 'N' attribute set indicates that the file has data
--stored inline, within the inode itself. It may not be set or reset using
-+stored inline, within the inode itself. It may not be set or cleared
-+using
- .BR chattr (1),
- although it can be displayed by
- .BR lsattr (1).
-@@ -193,7 +194,7 @@ A file with the 'V' attribute set has fs-verity enabled.  It cannot be
- written to, and the filesystem will automatically verify all data read
- from it against a cryptographic hash that covers the entire file's
- contents, e.g. via a Merkle tree.  This makes it possible to efficiently
--authenticate the file.  This attribute may not be set or reset using
-+authenticate the file.  This attribute may not be set or cleared using
- .BR chattr (1),
- although it can be displayed by
- .BR lsattr (1).
--- 
-2.24.0
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index dd654e53ba3d..3fba22b54f5c 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5607,7 +5607,8 @@ static int ext4_statfs(struct dentry *dentry, struct =
+kstatfs *buf)
+ =09buf->f_fsid.val[1] =3D (fsid >> 32) & 0xFFFFFFFFUL;
+=20
+ #ifdef CONFIG_QUOTA
+-=09if (ext4_test_inode_flag(dentry->d_inode, EXT4_INODE_PROJINHERIT) &&
++=09if ((ext4_test_inode_flag(dentry->d_inode, EXT4_INODE_PROJINHERIT) ||
++=09     !S_ISDIR(dentry->d_inode->i_mode)) &&
+ =09    sb_has_quota_limits_enabled(sb, PRJQUOTA))
+ =09=09ext4_statfs_project(sb, EXT4_I(dentry->d_inode)->i_projid, buf);
+ #endif
+--=20
+2.20.1
+
+
 
