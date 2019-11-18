@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD11FFDBE
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2019 06:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4BCFFDC1
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2019 06:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbfKRFLK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 18 Nov 2019 00:11:10 -0500
-Received: from sender3-of-o52.zoho.com.cn ([124.251.121.247]:21960 "EHLO
+        id S1726347AbfKRFLN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 18 Nov 2019 00:11:13 -0500
+Received: from sender3-of-o52.zoho.com.cn ([124.251.121.247]:21962 "EHLO
         sender2.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725208AbfKRFLK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Nov 2019 00:11:10 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1574053818; cv=none; 
+        with ESMTP id S1725934AbfKRFLN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 18 Nov 2019 00:11:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1574053820; cv=none; 
         d=zoho.com.cn; s=zohoarc; 
-        b=CFiTydxXmqD9bMG7v780o3N8ddqWN6K3FCgyTdlTsez+ICLl9SEtemLlO1rFmwdlnFVn0KaMzc1ve2S2pA//ZQDSMywCMchSASZ55qhlGgITwNozY47/lo2c/INkLP4RSjDGEAEdUnzyuSWpR2MhhKkB3r8PeWHkAF6uLKrdeQw=
+        b=O70woNDRmcMXazDUfoFGwElRurDEqQkMMtwkKp5K6lJNE3JlmbUwmddwyfDJ7Kkk5NEvifaMbe3QSg6S5Iv6S1jQYwHVE6d1/0UQ7O/xMDxDChXuolGDg50qnLURp0ieO5L6an++ZJmdOKHov5kAWqEcrQy87VGwPGrP2RT4zGY=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1574053818; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=W+4d37NiUZrTVp/T//URhJAtULIpMWsOCTG3JUgcQbA=; 
-        b=SfZrHruFtbvLbpQPjNc72IC+JSlnZfJ+XGA4IFDCxatxJXqhBCbg8JNLUagIec/KDcUIuQTVBtngdQoSW3hkUMbcgLGEpH8Fm+eXwz7ARt58nKunz86ZgaxuRX//6Mv41ix92didw44LkKsvKlQgBBZdKpmg9s6dWyjCHjCQdl8=
+        t=1574053820; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=GDu82HfY7CnDAb1EdcuqFswUt9CFFN7VyyP2enB6TlQ=; 
+        b=NDFYFZseRQVlvn4/MTP/3tm5xReBr2b8K0fkVe9XORh9WOWXlGgKFK4Poqc0odvNBXvnoxWJupOFspTrPLGsgl5L8vMj4wc2cPV2Dhk2Iwd7ERh1HPNWQtIZLW9WzYmgnq0cqPFlHanvOHDqjAiQQWS1CunrfKkT8g2lzoj2Y0o=
 ARC-Authentication-Results: i=1; mx.zoho.com.cn;
         dkim=pass  header.i=mykernel.net;
         spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
         dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1574053818;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1574053820;
         s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
         h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        l=1801; bh=W+4d37NiUZrTVp/T//URhJAtULIpMWsOCTG3JUgcQbA=;
-        b=Jz7cAV9vUe3W4KyujDLRcYQXLcQV6tl7gVqHx1v+Ljon9oHqojtRod0Rc50n5YC5
-        ZkEOZtA8Vu7ezLL5/F5sGKbob4KLpIxLDCTIwMJBQFp3pj5hakvhUeJmc/iSvEmO7Gl
-        mbdedSI3usWavsqw8+/jaZGYDbtDrn2dLYPcKTdA=
+        l=1682; bh=GDu82HfY7CnDAb1EdcuqFswUt9CFFN7VyyP2enB6TlQ=;
+        b=SvQFCdziN57bDfl1glECMMWGyxlsxq9Aynk00GSL3RpiZdBV94P6CXT5PQ7cPCMs
+        wN/J3OMCE6VSFOTFYPs2cvzwGGBK6Mzzx1e2xeeEmYZ7+14+K4gzJ04m7HZQNDFmtlr
+        V4RcyxibAcDC8EEC3xIl29I12Q7l48+i8mv7Tutg=
 Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 157405381681740.021350625482796; Mon, 18 Nov 2019 13:10:16 +0800 (CST)
+        with SMTPS id 1574053818929531.7015154867489; Mon, 18 Nov 2019 13:10:18 +0800 (CST)
 From:   Chengguang Xu <cgxu519@mykernel.net>
 To:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org
 Cc:     darrick.wong@oracle.com, jaegeuk@kernel.org, chao@kernel.org,
         tytso@mit.edu, adilger.kernel@dilger.ca,
         Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191118050949.15629-2-cgxu519@mykernel.net>
-Subject: [RFC PATCH 2/3] f2fs: show prjquota info on statfs for a file
-Date:   Mon, 18 Nov 2019 13:09:48 +0800
+Message-ID: <20191118050949.15629-3-cgxu519@mykernel.net>
+Subject: [RFC PATCH 3/3] xfs: show prjquota info on statfs for a file
+Date:   Mon, 18 Nov 2019 13:09:49 +0800
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191118050949.15629-1-cgxu519@mykernel.net>
 References: <20191118050949.15629-1-cgxu519@mykernel.net>
@@ -82,26 +82,23 @@ kataShared=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1.5T=C2=A0 778M=C2=A0 1.5T=C2=A0=
 
 Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
 ---
- fs/f2fs/super.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/xfs/xfs_super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 1443cee15863..c5b9a92d606b 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1287,8 +1287,9 @@ static int f2fs_statfs(struct dentry *dentry, struct =
-kstatfs *buf)
- =09buf->f_fsid.val[1] =3D (u32)(id >> 32);
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index 8d1df9f8be07..9f4d9e86572a 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -1125,7 +1125,8 @@ xfs_fs_statfs(
+ =09statp->f_ffree =3D max_t(int64_t, ffree, 0);
 =20
- #ifdef CONFIG_QUOTA
--=09if (is_inode_flag_set(dentry->d_inode, FI_PROJ_INHERIT) &&
--=09=09=09sb_has_quota_limits_enabled(sb, PRJQUOTA)) {
-+=09if ((is_inode_flag_set(dentry->d_inode, FI_PROJ_INHERIT) ||
+=20
+-=09if ((ip->i_d.di_flags & XFS_DIFLAG_PROJINHERIT) &&
++=09if (((ip->i_d.di_flags & XFS_DIFLAG_PROJINHERIT) ||
 +=09     !S_ISDIR(dentry->d_inode->i_mode)) &&
-+=09    sb_has_quota_limits_enabled(sb, PRJQUOTA)) {
- =09=09f2fs_statfs_project(sb, F2FS_I(dentry->d_inode)->i_projid, buf);
- =09}
- #endif
+ =09    ((mp->m_qflags & (XFS_PQUOTA_ACCT|XFS_PQUOTA_ENFD))) =3D=3D
+ =09=09=09      (XFS_PQUOTA_ACCT|XFS_PQUOTA_ENFD))
+ =09=09xfs_qm_statvfs(ip, statp);
 --=20
 2.20.1
 
