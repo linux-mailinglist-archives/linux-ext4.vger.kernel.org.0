@@ -2,125 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB6C102DB0
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2019 21:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC60102DEA
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2019 22:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727082AbfKSUnr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Nov 2019 15:43:47 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:52065 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726711AbfKSUnr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 19 Nov 2019 15:43:47 -0500
-Received: from dread.disaster.area (pa49-181-255-80.pa.nsw.optusnet.com.au [49.181.255.80])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 2216E43F136;
-        Wed, 20 Nov 2019 07:43:41 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1iXALc-0007gT-7X; Wed, 20 Nov 2019 07:43:40 +1100
-Date:   Wed, 20 Nov 2019 07:43:40 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        darrick.wong@oracle.com, jaegeuk@kernel.org, chao@kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca
-Subject: Re: [RFC PATCH 3/3] xfs: show prjquota info on statfs for a file
-Message-ID: <20191119204340.GZ4614@dread.disaster.area>
-References: <20191118050949.15629-1-cgxu519@mykernel.net>
- <20191118050949.15629-3-cgxu519@mykernel.net>
+        id S1727194AbfKSVFy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Nov 2019 16:05:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726711AbfKSVFy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 19 Nov 2019 16:05:54 -0500
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2FEBD222DC;
+        Tue, 19 Nov 2019 21:05:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574197553;
+        bh=DBpI4iM5O9hiEAhz6mGIcdSDeSA9Ihp/Rvjf2ZJbcLI=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=hSiQRdVHF3+EHNwjY/mdNQlbamgaIc5j6OhNJbroNTcJtsnX4A56h3aT7Huk764qO
+         tgSL6z8A2ZJuWBEcy7zI6PzcXFDtvFYeCv3Pyqw2qajXLZv47bijKbsVezggXA2BX3
+         PMGzrrOHlsxXaUmQEQmV1bBCRK8FgvfomObdDJ5w=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191118050949.15629-3-cgxu519@mykernel.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
-        a=XqaD5fcB6dAc7xyKljs8OA==:117 a=XqaD5fcB6dAc7xyKljs8OA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=8nJEP1OIZ-IA:10 a=MeAgGD-zjQ4A:10
-        a=aKLo6qE4AAAA:8 a=7-415B0cAAAA:8 a=2IXG0JadBsM__kedw_oA:9
-        a=wPNLvfGTeEIA:10 a=O0NXIRw7_9tMP-H1FTy7:22 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1573812972-10529-4-git-send-email-alan.maguire@oracle.com>
+References: <1573812972-10529-1-git-send-email-alan.maguire@oracle.com> <1573812972-10529-4-git-send-email-alan.maguire@oracle.com>
+Subject: Re: [PATCH v4 linux-kselftest-test 3/6] kunit: allow kunit tests to be loaded as a module
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org, yamada.masahiro@socionext.com,
+        catalin.marinas@arm.com, joe.lawrence@redhat.com,
+        penguin-kernel@i-love.sakura.ne.jp, schowdary@nvidia.com,
+        urezki@gmail.com, andriy.shevchenko@linux.intel.com,
+        corbet@lwn.net, tytso@mit.edu, adilger.kernel@dilger.ca,
+        mcgrof@kernel.org, changbin.du@intel.com,
+        linux-ext4@vger.kernel.org, linux-doc@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Knut Omang <knut.omang@oracle.com>
+To:     Alan Maguire <alan.maguire@oracle.com>, brendanhiggins@google.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
+User-Agent: alot/0.8.1
+Date:   Tue, 19 Nov 2019 13:05:52 -0800
+Message-Id: <20191119210553.2FEBD222DC@mail.kernel.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Nov 18, 2019 at 01:09:49PM +0800, Chengguang Xu wrote:
-> Currently we replace filesystem statistics using prjquota info
-> on statfs when specified directory has project id inherit flag.
-> However, statfs on a file(accurately non-dir) which is under the
-> project quota dir(with inherit flag) still shows whole filesystem
-> statistics. In container use case, it will give container user
-> inconsistent experience and cause confusion about available free
-> space.
-> 
-> Detail info like below:
-> We use project quota to limit disk space usage for a container
-> and run df command inside container.
-> 
-> Run df on a directory:
-> 
-> [root /]# df -h /etc/
-> Filesystem      Size  Used Avail Use% Mounted on
-> kataShared      1.0G   13M 1012M   2% /
-> 
-> Run df on a file:
-> 
-> [root /]# df -h /etc/exports
-> Filesystem      Size  Used Avail Use% Mounted on
-> kataShared      1.5T  778M  1.5T   1% /
-> 
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+Quoting Alan Maguire (2019-11-15 02:16:09)
+> As tests are added to kunit, it will become less feasible to execute
+> all built tests together.  By supporting modular tests we provide
+> a simple way to do selective execution on a running system; specifying
+>=20
+> CONFIG_KUNIT=3Dy
+> CONFIG_KUNIT_EXAMPLE_TEST=3Dm
+>=20
+> ...means we can simply "insmod example-test.ko" to run the tests.
+>=20
+> To achieve this we need to do the following:
+>=20
+> o export the required symbols in kunit
+> o string-stream tests utilize non-exported symbols so for now we skip
+>   building them when CONFIG_KUNIT_TEST=3Dm.
+> o support a new way of declaring test suites.  Because a module cannot
+>   do multiple late_initcall()s, we provide a kunit_test_suites() macro
+>   to declare multiple suites within the same module at once.
+> o some test module names would have been too general ("test-test"
+>   and "example-test" for kunit tests, "inode-test" for ext4 tests);
+>   rename these as appropriate ("kunit-test", "kunit-example-test"
+>   and "ext4-inode-test" respectively).
+>=20
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Knut Omang <knut.omang@oracle.com>
 > ---
->  fs/xfs/xfs_super.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> index 8d1df9f8be07..9f4d9e86572a 100644
-> --- a/fs/xfs/xfs_super.c
-> +++ b/fs/xfs/xfs_super.c
-> @@ -1125,7 +1125,8 @@ xfs_fs_statfs(
->  	statp->f_ffree = max_t(int64_t, ffree, 0);
->  
->  
-> -	if ((ip->i_d.di_flags & XFS_DIFLAG_PROJINHERIT) &&
-> +	if (((ip->i_d.di_flags & XFS_DIFLAG_PROJINHERIT) ||
-> +	     !S_ISDIR(dentry->d_inode->i_mode)) &&
->  	    ((mp->m_qflags & (XFS_PQUOTA_ACCT|XFS_PQUOTA_ENFD))) ==
->  			      (XFS_PQUOTA_ACCT|XFS_PQUOTA_ENFD))
->  		xfs_qm_statvfs(ip, statp);
+>  fs/ext4/Kconfig                |   2 +-
+>  fs/ext4/Makefile               |   5 +
+>  fs/ext4/inode-test.c           |   4 +-
+>  include/kunit/test.h           |  35 +++--
+>  kernel/sysctl-test.c           |   4 +-
+>  lib/Kconfig.debug              |   4 +-
+>  lib/kunit/Kconfig              |   4 +-
+>  lib/kunit/Makefile             |  10 +-
+>  lib/kunit/assert.c             |   8 +
+>  lib/kunit/example-test.c       |  88 -----------
+>  lib/kunit/kunit-example-test.c |  90 +++++++++++
+>  lib/kunit/kunit-test.c         | 334 +++++++++++++++++++++++++++++++++++=
+++++++
+>  lib/kunit/string-stream-test.c |   2 +-
+>  lib/kunit/test-test.c          | 333 -----------------------------------=
+-----
+>  lib/kunit/test.c               |   8 +
+>  lib/kunit/try-catch.c          |   2 +
+>  lib/list-test.c                |   4 +-
 
-So this also changes statfs() for non-directory quota uses. It will
-now *always* report project quota info for a file, whether directory
-quotas are in use or not. This is going to confuse users who see the
-full filesystem info when they statfs a directory, then see project
-quota limits when they statfs a file.
+Can you generate your patches with -M or -C? Hopefully that will find
+copies and only show us the diff between the two files.
 
-i.e. all this patch does is move the inconsistency in reporting to
-non-directory based project quota users.
-
-So from that perspective, this is not a viable solution.
-
-What is a viable solution is to add an explicit dirquota mount
-option (which we've recently discussed) that explicitly presents all
-directory quota specific behaviours to userspace without tying them
-to the internal project quota-based on-disk implementation. This is
-the only sane way to solve this problem as it tells the filesysetm
-exactly what behaviour set it should be exposing to userspace.
-
-IOWs, the statfs code should probably end up looking like this:
-
--	if ((ip->i_d.di_flags & XFS_DIFLAG_PROJINHERIT) &&
-+	if ((mp->m_flags & XFS_MOUNT_DIRQUOTA) &&
- 	    ((mp->m_qflags & (XFS_PQUOTA_ACCT|XFS_PQUOTA_ENFD))) ==
- 			      (XFS_PQUOTA_ACCT|XFS_PQUOTA_ENFD))
- 		xfs_qm_statvfs(ip, statp);
-
-Cheers,
-
-Dave.
-
--- 
-Dave Chinner
-david@fromorbit.com
+>  17 files changed, 494 insertions(+), 443 deletions(-)
+>  delete mode 100644 lib/kunit/example-test.c
+>  create mode 100644 lib/kunit/kunit-example-test.c
+>  create mode 100644 lib/kunit/kunit-test.c
+>  delete mode 100644 lib/kunit/test-test.c
