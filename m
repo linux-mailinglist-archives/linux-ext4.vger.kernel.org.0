@@ -2,58 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F95F102BC2
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2019 19:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C765F102BD1
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2019 19:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbfKSSg3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Nov 2019 13:36:29 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:34696 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbfKSSg2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Nov 2019 13:36:28 -0500
-Received: by mail-pl1-f193.google.com with SMTP id h13so12238679plr.1
-        for <linux-ext4@vger.kernel.org>; Tue, 19 Nov 2019 10:36:28 -0800 (PST)
+        id S1727262AbfKSSkG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Nov 2019 13:40:06 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:35055 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727014AbfKSSkG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Nov 2019 13:40:06 -0500
+Received: by mail-pf1-f196.google.com with SMTP id q13so12621287pff.2
+        for <linux-ext4@vger.kernel.org>; Tue, 19 Nov 2019 10:40:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cqd1PZl4Bd7PEGTyuVkaWzR8dbBXh+gC15PgfLfD0Zw=;
-        b=vVGW3EfTq7IwmL6p+BTaKa+qb54m/uF752AGPg8O3AB19vr2fJ/XiITO6xRm37/htM
-         wgspP/qnrZ1knIUwpY9LkcSAxvEW7iwhMFr5lE+KUXiSfqUzYWgLg9s2yaZu0etKbwbl
-         4vPlCLufd/3gzStPsWsGMNY7I1o6en96LUpHN/Y0QlKwMSABDJk/uQmFIVMjQ0F1eiNk
-         1DXuJ4+1FQK3UILFjofyOz+sf4XqFrOkSyZVopEKE/90f1tx+zZBAwopmSMT6fJUCUmt
-         iuodJG/jzNR98u9s3lij09Ql46xDCZn8QZ5zpDUnSXzbMtU9uA7PJrsByrH5UVZbeSrQ
-         FI0g==
+        bh=jYjHSJvr+i9FC2v2zgsP96Au9uEuo58MANuvF+6NBVc=;
+        b=NUGJDsr28kvTJwQuryficrX4gXw/AobGQnRXWancIWkQP7PcSBto66I8D5b42NRltE
+         27La5zT90RZnbEQ1OBhGD2mDBi75K2lvQmz7TupyV1w/HSKYypXFadmxMcx8iG6/mItU
+         eIjyY4kdNTdpg8AoS8qrlGisrWhZycLVtH+lXlcBVO98y//SiozIEiHLej5AJf4BIrxE
+         fIrYsWP9bjs+cHHL8dNOpCiXZUeU1IKeWHqTeuLn494HYaxyDxwvmeUNNFmIP38AH4wa
+         T/W3uTL1hJ10BV115Nic1e2HxRoU+nF+47C4MHytRVz4Pe21r+0CFbQU5p4vmmxfljqt
+         zh/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cqd1PZl4Bd7PEGTyuVkaWzR8dbBXh+gC15PgfLfD0Zw=;
-        b=EFke7it9BF5PE9Ecy1Bcd1UB7lP8tdtqqf8vEOIRgJcdGBbpKgyUf9SjAWVaDeRm+O
-         8nLwcQ/bQ8FXbz+FWqO7VJRno/rFsKtoqnGXiyLafaCVSZTlKJ74fegSHYGj8gdInELz
-         tg2OnwBwafFBLcFrsf6dDD8SQxxOlrdzbEnqNpj6bN7eM8HIfjCDNiy3aCM03iXhD2Sj
-         LsJQHvY8WDK+6ggQTWYFrmsK+AIhW69VwzVH/nV2CFNKolHimCBasOB4Vv9j5KrkulAQ
-         t/7NPw6ZkK9e9LWh72dqe7OqpwJIMPGcJkV1j7snM26lyS2GUwXdt+kK9xGi8DsJ54hT
-         /1UA==
-X-Gm-Message-State: APjAAAWHxIHee0NOXHCt+pxXGUc/I7Dgf3qtmR+6k2gmDHmfIRLe7DiY
-        S4NwTv+COIncpcKQzzytKFhmCi8v4gPGdP9YvG+/wQ==
-X-Google-Smtp-Source: APXvYqwntEoFXFSkd8roeQK4Vfw0pBJCXkLH0R0JAgVf2MFOls4Cp8WPWrVjsoHG2ZZbgV3p9gNovSTX97zEa+suatw=
-X-Received: by 2002:a17:90a:d155:: with SMTP id t21mr8032255pjw.84.1574188587517;
- Tue, 19 Nov 2019 10:36:27 -0800 (PST)
+        bh=jYjHSJvr+i9FC2v2zgsP96Au9uEuo58MANuvF+6NBVc=;
+        b=V/XdUjL2HMyLWydwpnb1oifcTIRvqhQTRh4dpf/j4fGtw34ZD5k2H1SXvNJEOQQ1uZ
+         DjRiSPZwrfPrl2IfRSjK6XR0RdrNKZV2z9VUvPIDph8pquG+tiqvsW+njWQ7erSDu1rT
+         5hzT7A897pWQJ3Hm9O2r8j9tFzXK5EebIN9YbotIdl29RIZvscp1faHVZuL+Jes1FaNc
+         MaYP/m5Pj+wWfNI2kOfDNci6dmirJ+J2kmlL3GLicjvYVOoldUPi/eblrin1qmc13IAr
+         ndXBNP/xesdDpNN8NqBvNE6Pef/O68oeknuAzURAZ0KtpOEUMMbgfCyqITu9pPL+hLMg
+         GQig==
+X-Gm-Message-State: APjAAAUIsfxd215j51qF5uLumc1MGRBR973Qqcxj4Xb/NRE5pAyKdOeu
+        LGBB1tqb1XEnspEswmHY0a7GpUVAByxg+t9NPp9CMA==
+X-Google-Smtp-Source: APXvYqyYCaJxCJoYIws4UTVjprf7I2OP+MEoJ45u03fPl7RX8dgda4nxwXp+wwGez7023IC2zXDCdaX8JfxDrzbjMrY=
+X-Received: by 2002:a63:712:: with SMTP id 18mr1253250pgh.384.1574188805300;
+ Tue, 19 Nov 2019 10:40:05 -0800 (PST)
 MIME-Version: 1.0
-References: <1573812972-10529-1-git-send-email-alan.maguire@oracle.com>
- <1573812972-10529-2-git-send-email-alan.maguire@oracle.com> <20191117013336.F23F820730@mail.kernel.org>
-In-Reply-To: <20191117013336.F23F820730@mail.kernel.org>
+References: <1573812972-10529-1-git-send-email-alan.maguire@oracle.com> <1573812972-10529-2-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1573812972-10529-2-git-send-email-alan.maguire@oracle.com>
 From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Tue, 19 Nov 2019 10:36:15 -0800
-Message-ID: <CAFd5g44115hPDMJNWPnyLZ_3zJMBzA+6MHxCLCA1ddkYipDtkA@mail.gmail.com>
+Date:   Tue, 19 Nov 2019 10:39:53 -0800
+Message-ID: <CAFd5g455qerOtZ0nQNGiCKJ9Uqu1=y7y2OfrCKU0HUjY3LDJcg@mail.gmail.com>
 Subject: Re: [PATCH v4 linux-kselftest-test 1/6] kunit: move string-stream.h
  to lib/kunit
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
         "open list:KERNEL SELFTEST FRAMEWORK" 
         <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         KUnit Development <kunit-dev@googlegroups.com>,
         Kees Cook <keescook@chromium.org>,
@@ -68,6 +66,7 @@ Cc:     Alan Maguire <alan.maguire@oracle.com>,
         Luis Chamberlain <mcgrof@kernel.org>, changbin.du@intel.com,
         linux-ext4@vger.kernel.org,
         "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Knut Omang <knut.omang@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
@@ -75,47 +74,17 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Nov 16, 2019 at 5:33 PM Stephen Boyd <sboyd@kernel.org> wrote:
+On Fri, Nov 15, 2019 at 2:17 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> Quoting Alan Maguire (2019-11-15 02:16:07)
-> > string-stream interfaces are not intended for external use;
-> > move them from include/kunit to lib/kunit accordingly.
-> >
-> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> > Signed-off-by: Knut Omang <knut.omang@oracle.com>
+> string-stream interfaces are not intended for external use;
+> move them from include/kunit to lib/kunit accordingly.
 >
-> The sign off chain is incorrect here. Is Knut tag supposed to be
-> Co-developed-by?
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Knut Omang <knut.omang@oracle.com>
 
-I am not sure what the relationship between Alan and Knut on this
-patch. Nevertheless, Signed-off-by is required either way, but it
-seems that Co-developed-by is optional depending on how Alan and Knut
-would like to share credit for this patch, at least that is based on
-my reading of the submitting patches guide:
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
+Stephen pointed out a couple of nits, but beyond that this looks good to me.
 
-> > diff --git a/include/kunit/assert.h b/include/kunit/assert.h
-> > index db6a0fc..ad889b5 100644
-> > --- a/include/kunit/assert.h
-> > +++ b/include/kunit/assert.h
-> > @@ -9,10 +9,11 @@
-> >  #ifndef _KUNIT_ASSERT_H
-> >  #define _KUNIT_ASSERT_H
-> >
-> > -#include <kunit/string-stream.h>
-> >  #include <linux/err.h>
-> > +#include <linux/kernel.h>
->
-> Why is this included now?
-
-Nice catch! I think I would have missed that.
-
-> >
-> >  struct kunit;
-> > +struct string_stream;
-> >
-> >  /**
-> >   * enum kunit_assert_type - Type of expectation/assertion.
-
-Cheers!
+Thanks for all your hard work!
