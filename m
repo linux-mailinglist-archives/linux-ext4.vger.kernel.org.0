@@ -2,477 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 406EB1031D8
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2019 04:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 509E2103290
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2019 05:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbfKTDCd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 19 Nov 2019 22:02:33 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33664 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727378AbfKTDCd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 19 Nov 2019 22:02:33 -0500
-Received: from callcc.thunk.org (guestnat-104-133-8-103.corp.google.com [104.133.8.103] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xAK32RRk011243
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Nov 2019 22:02:29 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 95FBB4202FD; Tue, 19 Nov 2019 22:02:27 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>
-Subject: [RFC PATCH] ext4: save the error code which triggered an ext4_error() in the superblock
-Date:   Tue, 19 Nov 2019 22:02:24 -0500
-Message-Id: <20191120030224.22190-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.23.0
+        id S1727535AbfKTEf0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 19 Nov 2019 23:35:26 -0500
+Received: from mail-eopbgr790084.outbound.protection.outlook.com ([40.107.79.84]:3710
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727264AbfKTEf0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 19 Nov 2019 23:35:26 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AUZ73t5TgjcVs2Go1aAqoGx0a67OmTOPviqMnPiuWnRoyq/MKK1f5U2PyF6IROi1NdG1s6w4mJY/Qq28gPcejZA4L5l/ZVsic1p1CmvMDZQGJrDVDHFiJ9SlY1KETEk1TtEBhEP6mwLFchjCaGVOaMnHzilLx3KMgPqCndmaHCL3fWwDAB3JTjoMLMRd3Vptsr7Ws6yK+/fdHitYYE379y9PwZIoIyPBp4Gx+IIK4CwkMeFvjubwjl3xvAsVn0CuYzOxSqMojkSHZxgIc1+E2dx/wX/CvU35BcxB61ohcvF3YEm1uT8bKQl7lpl+d+ptjsFG+XJLP4fHNEtHBerRqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wFEDrvto1DzvB4l7IUYyBM27uAy6swDcUDqYVJLMuDs=;
+ b=WSVLi7jSBMyOVq+9MMN19gsXsppEDqU2t6Rl4P+4y266PJiJ6fmaJysZFfZhlbMi+VZ9DlWloyTCaRGbUKcUOhB4fSk/knM3LUMLw4nF9hZl33kg/WGP1f8UnxY/PsXu2GMe8SiJHWCWsPodalg16Y9ITGO+HeaDQpR/fAvSYROJGPnqK197gVzfJamfuIXDr7LoXGO/ypV4lS6BzCS5zGFAO7XlmLpz9mflgcJ9VagqmoI9PMYe1RuMPLl7sMo5km0SxHH23GNOWppTlXhwWvJsTBUOJLKmy/jpOskWLPD1eE6D3C0YBgleQni7htRLZeEPJjwNbfzzHnh57QriDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=ddn.com; dmarc=pass action=none header.from=ddn.com; dkim=pass
+ header.d=ddn.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ddn.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wFEDrvto1DzvB4l7IUYyBM27uAy6swDcUDqYVJLMuDs=;
+ b=ZExIvIQg34+p57GYj5g92qCdDkr1UEZfH9h2pkY7M6TZ7GMWB6yr8T2afNrrTJ7vG8tXRFjR8OPkOjEBBCU0Qcsw7rzJqvWC9HmP5bHTfIFleWriC6pgvmzwbf+byo4Wk7F98DN0PM+l0/Qn2YQ43RU7sAdL+1UbWiyUJnAko3Q=
+Received: from BL0PR1901MB2004.namprd19.prod.outlook.com (52.132.24.157) by
+ BL0PR1901MB2050.namprd19.prod.outlook.com (52.132.25.30) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2451.26; Wed, 20 Nov 2019 04:35:22 +0000
+Received: from BL0PR1901MB2004.namprd19.prod.outlook.com
+ ([fe80::8587:2f91:6a7b:8655]) by BL0PR1901MB2004.namprd19.prod.outlook.com
+ ([fe80::8587:2f91:6a7b:8655%4]) with mapi id 15.20.2451.031; Wed, 20 Nov 2019
+ 04:35:22 +0000
+From:   Li Dongyang <dongyangli@ddn.com>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+CC:     "adilger@dilger.ca" <adilger@dilger.ca>
+Subject: [PATCH v3 1/5] libext2fs: optimize ext2fs_convert_subcluster_bitmap()
+Thread-Topic: [PATCH v3 1/5] libext2fs: optimize
+ ext2fs_convert_subcluster_bitmap()
+Thread-Index: AQHVn1vr3nLuCuqfSkeK2sMViUbk/w==
+Date:   Wed, 20 Nov 2019 04:35:21 +0000
+Message-ID: <20191120043448.249988-1-dongyangli@ddn.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: SY3PR01CA0134.ausprd01.prod.outlook.com
+ (2603:10c6:0:1b::19) To BL0PR1901MB2004.namprd19.prod.outlook.com
+ (2603:10b6:207:38::29)
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=dli@ddn.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.24.0
+x-originating-ip: [150.203.248.39]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5b9be9e9-b55c-4df0-48da-08d76d730dac
+x-ms-traffictypediagnostic: BL0PR1901MB2050:
+x-microsoft-antispam-prvs: <BL0PR1901MB20500383EB99A744F119B886BA4F0@BL0PR1901MB2050.namprd19.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-forefront-prvs: 02272225C5
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39850400004)(396003)(346002)(366004)(136003)(376002)(199004)(189003)(4326008)(5660300002)(25786009)(66476007)(2501003)(102836004)(26005)(7736002)(99286004)(66556008)(256004)(52116002)(2351001)(66946007)(2906002)(36756003)(6512007)(386003)(6506007)(186003)(316002)(6436002)(66446008)(5640700003)(64756008)(6486002)(8936002)(476003)(486006)(6916009)(50226002)(1076003)(305945005)(478600001)(71190400001)(71200400001)(14454004)(66066001)(8676002)(6116002)(3846002)(81156014)(2616005)(81166006);DIR:OUT;SFP:1101;SCL:1;SRVR:BL0PR1901MB2050;H:BL0PR1901MB2004.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: ddn.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: boLUOjOgTGyTj8tyRCI5mawxuytl+kPmUGxuiXZ9ZSrVza5NZKFV7FFc7McUgd1huBTKZxqQBxCXOuo/01kb57oO7RdKJP4gh0cl8fVRd8DOdR+9sEbTBzehXKRpbaKm31dsTGSho8gjfig57GsgtHFNx0HqK/XhZOEhOZDlaNLW3xvidzVjoJ9T68Raw75oQeg1Kqcao+9cbnNWY+eYPrG3VYvxWNTVds2F7bV507xirvsoSFmvF9zXRXCC7w0Znvqj/JXSWYkSAIPVO/gM68GeJ6bt7CKfLuIfi3uxFnZKOL71XhSVKYi2VTD9GLxvuMph80YYP56Ib76QX2HZ0XkI13GLFChZzUXfiwcwNNvk+BaE/uHCvPvjaDDLKrmy3/OLmGvuAjRxWVOzpSzxaCaV+xoRgjyN0Dox81gI2ReBuJc0lmI6CyXOsEPS589S
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: ddn.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b9be9e9-b55c-4df0-48da-08d76d730dac
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2019 04:35:21.9292
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WCCdqU5xQQ9Xy1pNJVk4lHZM9NZRXjqSeTMrxkoNAQ2lEqMJsfuH9Qt7aJTfNqwj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR1901MB2050
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This allows the cause of an ext4_error() report to be categorized
-based on whether it was triggered due to an I/O error, or an memory
-allocation error, or other possible causes.  Most errors are caused by
-a detected file system inconsistency, so the default code stored in
-the superblock will be EXT4_ERR_EFSCORRUPTED.
+For a bigalloc filesystem, converting the block bitmap from blocks
+to chunks in ext2fs_convert_subcluster_bitmap() can take a long time
+when the device is huge, because we test the bitmap
+bit-by-bit using ext2fs_test_block_bitmap2().
+Use ext2fs_find_first_set_block_bitmap2() which is more efficient
+for mke2fs when the fs is mostly empty.
 
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+e2fsck can also benefit from this during pass1 block scanning.
+
+Time taken for "mke2fs -O bigalloc,extent -C 131072 -b 4096" on a 1PB
+device:
+
+without patch:
+real    27m49.457s
+user    21m36.474s
+sys     6m9.514s
+
+with patch:
+real    6m31.908s
+user    0m1.806s
+sys    6m29.697s
+
+Signed-off-by: Li Dongyang <dongyangli@ddn.com>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 ---
- fs/ext4/balloc.c    |  1 +
- fs/ext4/ext4.h      | 30 +++++++++++++++++++-
- fs/ext4/ext4_jbd2.c |  3 ++
- fs/ext4/extents.c   |  1 +
- fs/ext4/ialloc.c    |  2 ++
- fs/ext4/inline.c    |  2 ++
- fs/ext4/inode.c     |  8 +++++-
- fs/ext4/mballoc.c   |  4 +++
- fs/ext4/mmp.c       |  6 +++-
- fs/ext4/namei.c     |  4 +++
- fs/ext4/super.c     | 67 ++++++++++++++++++++++++++++++++++++++++++++-
- fs/ext4/xattr.c     |  4 ++-
- 12 files changed, 127 insertions(+), 5 deletions(-)
+ lib/ext2fs/gen_bitmap64.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index 0b202e00d93f..102c38527a10 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -506,6 +506,7 @@ int ext4_wait_block_bitmap(struct super_block *sb, ext4_group_t block_group,
- 		return -EFSCORRUPTED;
- 	wait_on_buffer(bh);
- 	if (!buffer_uptodate(bh)) {
-+		ext4_set_errno(sb, EIO);
- 		ext4_error(sb, "Cannot read block bitmap - "
- 			   "block_group = %u, block_bitmap = %llu",
- 			   block_group, (unsigned long long) bh->b_blocknr);
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 61987c106511..74967d4772fb 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1343,7 +1343,8 @@ struct ext4_super_block {
- 	__u8	s_lastcheck_hi;
- 	__u8	s_first_error_time_hi;
- 	__u8	s_last_error_time_hi;
--	__u8	s_pad[2];
-+	__u8	s_first_error_errno;
-+	__u8    s_last_error_errno;
- 	__le16  s_encoding;		/* Filename charset encoding */
- 	__le16  s_encoding_flags;	/* Filename charset encoding flags */
- 	__le32	s_reserved[95];		/* Padding to the end of the block */
-@@ -1574,6 +1575,32 @@ static inline int ext4_valid_inum(struct super_block *sb, unsigned long ino)
- 		 ino <= le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count));
- }
- 
-+/*
-+ * Error number codes for s_{first,last}_error_errno
-+ *
-+ * Linux errno numbers are architecture specific, so we need to translate
-+ * them into something which is architecture independent.   We don't define
-+ * codes for all errno's; just the ones which are most likely to be the cause
-+ * of an ext4_error() call.
-+ */
-+#define EXT4_ERR_UNKNOWN	 1
-+#define EXT4_ERR_EIO		 2
-+#define EXT4_ERR_ENOMEM		 3
-+#define EXT4_ERR_EFSBADCRC	 4
-+#define EXT4_ERR_EFSCORRUPTED	 5
-+#define EXT4_ERR_ENOSPC		 6
-+#define EXT4_ERR_ENOKEY		 7
-+#define EXT4_ERR_EROFS		 8
-+#define EXT4_ERR_EFBIG		 9
-+#define EXT4_ERR_EEXIST		10
-+#define EXT4_ERR_ERANGE		11
-+#define EXT4_ERR_EOVERFLOW	12
-+#define EXT4_ERR_EBUSY		13
-+#define EXT4_ERR_ENOTDIR	14
-+#define EXT4_ERR_ENOTEMPTY	15
-+#define EXT4_ERR_ESHUTDOWN	16
-+#define EXT4_ERR_EFAULT		17
-+
- /*
-  * Inode dynamic state flags
-  */
-@@ -2686,6 +2713,7 @@ extern const char *ext4_decode_error(struct super_block *sb, int errno,
- extern void ext4_mark_group_bitmap_corrupted(struct super_block *sb,
- 					     ext4_group_t block_group,
- 					     unsigned int flags);
-+extern void ext4_set_errno(struct super_block *sb, int err);
- 
- extern __printf(4, 5)
- void __ext4_error(struct super_block *, const char *, unsigned int,
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index d3b8cdea5df7..19217a3f1ae4 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -58,6 +58,7 @@ static int ext4_journal_check_start(struct super_block *sb)
- 	 * take the FS itself readonly cleanly.
- 	 */
- 	if (journal && is_journal_aborted(journal)) {
-+		ext4_set_errno(sb, -journal->j_errno);
- 		ext4_abort(sb, "Detected aborted journal");
- 		return -EROFS;
+diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
+index 6e4d8b71..f1dd1891 100644
+--- a/lib/ext2fs/gen_bitmap64.c
++++ b/lib/ext2fs/gen_bitmap64.c
+@@ -799,8 +799,7 @@ errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsys =
+fs,
+ 	ext2fs_generic_bitmap_64 bmap, cmap;
+ 	ext2fs_block_bitmap	gen_bmap =3D *bitmap, gen_cmap;
+ 	errcode_t		retval;
+-	blk64_t			i, b_end, c_end;
+-	int			n, ratio;
++	blk64_t			i, next, b_end, c_end;
+=20
+ 	bmap =3D (ext2fs_generic_bitmap_64) gen_bmap;
+ 	if (fs->cluster_ratio_bits =3D=3D ext2fs_get_bitmap_granularity(gen_bmap)=
+)
+@@ -817,18 +816,13 @@ errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsy=
+s fs,
+ 	bmap->end =3D bmap->real_end;
+ 	c_end =3D cmap->end;
+ 	cmap->end =3D cmap->real_end;
+-	n =3D 0;
+-	ratio =3D 1 << fs->cluster_ratio_bits;
+ 	while (i < bmap->real_end) {
+-		if (ext2fs_test_block_bitmap2(gen_bmap, i)) {
+-			ext2fs_mark_block_bitmap2(gen_cmap, i);
+-			i +=3D ratio - n;
+-			n =3D 0;
+-			continue;
+-		}
+-		i++; n++;
+-		if (n >=3D ratio)
+-			n =3D 0;
++		retval =3D ext2fs_find_first_set_block_bitmap2(gen_bmap,
++						i, bmap->real_end, &next);
++		if (retval)
++			break;
++		ext2fs_mark_block_bitmap2(gen_cmap, next);
++		i =3D EXT2FS_C2B(fs, EXT2FS_B2C(fs, next) + 1);
  	}
-@@ -249,6 +250,7 @@ int __ext4_forget(const char *where, unsigned int line, handle_t *handle,
- 	if (err) {
- 		ext4_journal_abort_handle(where, line, __func__,
- 					  bh, handle, err);
-+		ext4_set_errno(inode->i_sb, -err);
- 		__ext4_abort(inode->i_sb, where, line,
- 			   "error %d when attempting revoke", err);
- 	}
-@@ -320,6 +322,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
- 				es = EXT4_SB(inode->i_sb)->s_es;
- 				es->s_last_error_block =
- 					cpu_to_le64(bh->b_blocknr);
-+				ext4_set_errno(inode->i_sb, EIO);
- 				ext4_error_inode(inode, where, line,
- 						 bh->b_blocknr,
- 					"IO error syncing itable block");
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 0e8708b77da6..ee83fe7c98aa 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -492,6 +492,7 @@ static int __ext4_ext_check(const char *function, unsigned int line,
- 	return 0;
- 
- corrupted:
-+	ext4_set_errno(inode->i_sb, -err);
- 	ext4_error_inode(inode, function, line, 0,
- 			 "pblk %llu bad header/extent: %s - magic %x, "
- 			 "entries %u, max %u(%u), depth %u(%u)",
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index fa8c3c485e4b..31a5fd6f5e6a 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -194,6 +194,7 @@ ext4_read_inode_bitmap(struct super_block *sb, ext4_group_t block_group)
- 	wait_on_buffer(bh);
- 	if (!buffer_uptodate(bh)) {
- 		put_bh(bh);
-+		ext4_set_errno(sb, EIO);
- 		ext4_error(sb, "Cannot read inode bitmap - "
- 			   "block_group = %u, inode_bitmap = %llu",
- 			   block_group, bitmap_blk);
-@@ -1228,6 +1229,7 @@ struct inode *ext4_orphan_get(struct super_block *sb, unsigned long ino)
- 	inode = ext4_iget(sb, ino, EXT4_IGET_NORMAL);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
-+		ext4_set_errno(sb, -err);
- 		ext4_error(sb, "couldn't read orphan inode %lu (err %d)",
- 			   ino, err);
- 		return inode;
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 2fec62d764fa..e61603f47035 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -98,6 +98,7 @@ int ext4_get_max_inline_size(struct inode *inode)
- 
- 	error = ext4_get_inode_loc(inode, &iloc);
- 	if (error) {
-+		ext4_set_errno(inode->i_sb, -error);
- 		ext4_error_inode(inode, __func__, __LINE__, 0,
- 				 "can't get inode location %lu",
- 				 inode->i_ino);
-@@ -1761,6 +1762,7 @@ bool empty_inline_dir(struct inode *dir, int *has_inline_data)
- 
- 	err = ext4_get_inode_loc(dir, &iloc);
- 	if (err) {
-+		ext4_set_errno(dir->i_sb, -err);
- 		EXT4_ERROR_INODE(dir, "error %d getting inode %lu block",
- 				 err, dir->i_ino);
- 		return true;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index de70f19bfa7e..b67ffa24ae0a 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -271,6 +271,7 @@ void ext4_evict_inode(struct inode *inode)
- 	if (inode->i_blocks) {
- 		err = ext4_truncate(inode);
- 		if (err) {
-+			ext4_set_errno(inode->i_sb, -err);
- 			ext4_error(inode->i_sb,
- 				   "couldn't truncate inode %lu (err %d)",
- 				   inode->i_ino, err);
-@@ -2478,10 +2479,12 @@ static int mpage_map_and_submit_extent(handle_t *handle,
- 			EXT4_I(inode)->i_disksize = disksize;
- 		up_write(&EXT4_I(inode)->i_data_sem);
- 		err2 = ext4_mark_inode_dirty(handle, inode);
--		if (err2)
-+		if (err2) {
-+			ext4_set_errno(inode->i_sb, -err2);
- 			ext4_error(inode->i_sb,
- 				   "Failed to mark inode %lu dirty",
- 				   inode->i_ino);
-+		}
- 		if (!err)
- 			err = err2;
- 	}
-@@ -4338,6 +4341,7 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 		blk_finish_plug(&plug);
- 		wait_on_buffer(bh);
- 		if (!buffer_uptodate(bh)) {
-+			ext4_set_errno(inode->i_sb, EIO);
- 			EXT4_ERROR_INODE_BLOCK(inode, block,
- 					       "unable to read itable block");
- 			brelse(bh);
-@@ -4552,6 +4556,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 	}
- 
- 	if (!ext4_inode_csum_verify(inode, raw_inode, ei)) {
-+		ext4_set_errno(inode->i_sb, EFSBADCRC);
- 		ext4_error_inode(inode, function, line, 0,
- 				 "iget: checksum invalid");
- 		ret = -EFSBADCRC;
-@@ -5090,6 +5095,7 @@ int ext4_write_inode(struct inode *inode, struct writeback_control *wbc)
- 		if (wbc->sync_mode == WB_SYNC_ALL && !wbc->for_sync)
- 			sync_dirty_buffer(iloc.bh);
- 		if (buffer_req(iloc.bh) && !buffer_uptodate(iloc.bh)) {
-+			ext4_set_errno(inode->i_sb, EIO);
- 			EXT4_ERROR_INODE_BLOCK(inode, iloc.bh->b_blocknr,
- 					 "IO error syncing inode");
- 			err = -EIO;
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a3e2767bdf2f..f64838187559 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3895,6 +3895,7 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
- 	bitmap_bh = ext4_read_block_bitmap(sb, group);
- 	if (IS_ERR(bitmap_bh)) {
- 		err = PTR_ERR(bitmap_bh);
-+		ext4_set_errno(sb, -err);
- 		ext4_error(sb, "Error %d reading block bitmap for %u",
- 			   err, group);
- 		return 0;
-@@ -4063,6 +4064,7 @@ void ext4_discard_preallocations(struct inode *inode)
- 		err = ext4_mb_load_buddy_gfp(sb, group, &e4b,
- 					     GFP_NOFS|__GFP_NOFAIL);
- 		if (err) {
-+			ext4_set_errno(sb, -err);
- 			ext4_error(sb, "Error %d loading buddy information for %u",
- 				   err, group);
- 			continue;
-@@ -4071,6 +4073,7 @@ void ext4_discard_preallocations(struct inode *inode)
- 		bitmap_bh = ext4_read_block_bitmap(sb, group);
- 		if (IS_ERR(bitmap_bh)) {
- 			err = PTR_ERR(bitmap_bh);
-+			ext4_set_errno(sb, -err);
- 			ext4_error(sb, "Error %d reading block bitmap for %u",
- 					err, group);
- 			ext4_mb_unload_buddy(&e4b);
-@@ -4325,6 +4328,7 @@ ext4_mb_discard_lg_preallocations(struct super_block *sb,
- 		err = ext4_mb_load_buddy_gfp(sb, group, &e4b,
- 					     GFP_NOFS|__GFP_NOFAIL);
- 		if (err) {
-+			ext4_set_errno(sb, -err);
- 			ext4_error(sb, "Error %d loading buddy information for %u",
- 				   err, group);
- 			continue;
-diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-index 2305b4374fd3..1c44b1a32001 100644
---- a/fs/ext4/mmp.c
-+++ b/fs/ext4/mmp.c
-@@ -173,8 +173,10 @@ static int kmmpd(void *data)
- 		 * (s_mmp_update_interval * 60) seconds.
- 		 */
- 		if (retval) {
--			if ((failed_writes % 60) == 0)
-+			if ((failed_writes % 60) == 0) {
-+				ext4_set_errno(sb, -retval);
- 				ext4_error(sb, "Error writing to MMP block");
-+			}
- 			failed_writes++;
- 		}
- 
-@@ -205,6 +207,7 @@ static int kmmpd(void *data)
- 
- 			retval = read_mmp_block(sb, &bh_check, mmp_block);
- 			if (retval) {
-+				ext4_set_errno(sb, -retval);
- 				ext4_error(sb, "error reading MMP data: %d",
- 					   retval);
- 				goto exit_thread;
-@@ -218,6 +221,7 @@ static int kmmpd(void *data)
- 					     "Error while updating MMP info. "
- 					     "The filesystem seems to have been"
- 					     " multiply mounted.");
-+				ext4_set_errno(sb, EBUSY);
- 				ext4_error(sb, "abort");
- 				put_bh(bh_check);
- 				retval = -EBUSY;
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index a67cae3c8ff5..cee7c28e070d 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -156,6 +156,7 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
- 		if (ext4_dx_csum_verify(inode, dirent))
- 			set_buffer_verified(bh);
- 		else {
-+			ext4_set_errno(inode->i_sb, EFSBADCRC);
- 			ext4_error_inode(inode, func, line, block,
- 					 "Directory index failed checksum");
- 			brelse(bh);
-@@ -166,6 +167,7 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
- 		if (ext4_dirblock_csum_verify(inode, bh))
- 			set_buffer_verified(bh);
- 		else {
-+			ext4_set_errno(inode->i_sb, EFSBADCRC);
- 			ext4_error_inode(inode, func, line, block,
- 					 "Directory block failed checksum");
- 			brelse(bh);
-@@ -1527,6 +1529,7 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 			goto next;
- 		wait_on_buffer(bh);
- 		if (!buffer_uptodate(bh)) {
-+			ext4_set_errno(sb, EIO);
- 			EXT4_ERROR_INODE(dir, "reading directory lblock %lu",
- 					 (unsigned long) block);
- 			brelse(bh);
-@@ -1537,6 +1540,7 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 		    !is_dx_internal_node(dir, block,
- 					 (struct ext4_dir_entry *)bh->b_data) &&
- 		    !ext4_dirblock_csum_verify(dir, bh)) {
-+			ext4_set_errno(sb, EFSBADCRC);
- 			EXT4_ERROR_INODE(dir, "checksumming directory "
- 					 "block %lu", (unsigned long)block);
- 			brelse(bh);
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 7796e2ffc294..32adaa70dde6 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -367,6 +367,8 @@ static void __save_error_info(struct super_block *sb, const char *func,
- 	ext4_update_tstamp(es, s_last_error_time);
- 	strncpy(es->s_last_error_func, func, sizeof(es->s_last_error_func));
- 	es->s_last_error_line = cpu_to_le32(line);
-+	if (es->s_last_error_errno == 0)
-+		es->s_last_error_errno = EXT4_ERR_EFSCORRUPTED;
- 	if (!es->s_first_error_time) {
- 		es->s_first_error_time = es->s_last_error_time;
- 		es->s_first_error_time_hi = es->s_last_error_time_hi;
-@@ -631,6 +633,66 @@ const char *ext4_decode_error(struct super_block *sb, int errno,
- 	return errstr;
- }
- 
-+void ext4_set_errno(struct super_block *sb, int err)
-+{
-+	if (err < 0)
-+		err = -err;
-+
-+	switch (err) {
-+	case EIO:
-+		err = EXT4_ERR_EIO;
-+		break;
-+	case ENOMEM:
-+		err = EXT4_ERR_ENOMEM;
-+		break;
-+	case EFSBADCRC:
-+		err = EXT4_ERR_EFSBADCRC;
-+		break;
-+	case EFSCORRUPTED:
-+		err = EXT4_ERR_EFSCORRUPTED;
-+		break;
-+	case ENOSPC:
-+		err = EXT4_ERR_ENOSPC;
-+		break;
-+	case ENOKEY:
-+		err = EXT4_ERR_ENOKEY;
-+		break;
-+	case EROFS:
-+		err = EXT4_ERR_EROFS;
-+		break;
-+	case EFBIG:
-+		err = EXT4_ERR_EFBIG;
-+		break;
-+	case EEXIST:
-+		err = EXT4_ERR_EEXIST;
-+		break;
-+	case ERANGE:
-+		err = EXT4_ERR_ERANGE;
-+		break;
-+	case EOVERFLOW:
-+		err = EXT4_ERR_EOVERFLOW;
-+		break;
-+	case EBUSY:
-+		err = EXT4_ERR_EBUSY;
-+		break;
-+	case ENOTDIR:
-+		err = EXT4_ERR_ENOTDIR;
-+		break;
-+	case ENOTEMPTY:
-+		err = EXT4_ERR_ENOTEMPTY;
-+		break;
-+	case ESHUTDOWN:
-+		err = EXT4_ERR_ESHUTDOWN;
-+		break;
-+	case EFAULT:
-+		err = EXT4_ERR_EFAULT;
-+		break;
-+	default:
-+		err = EXT4_ERR_UNKNOWN;
-+	}
-+	EXT4_SB(sb)->s_es->s_last_error_errno = err;
-+}
-+
- /* __ext4_std_error decodes expected errors from journaling functions
-  * automatically and invokes the appropriate error response.  */
- 
-@@ -655,6 +717,7 @@ void __ext4_std_error(struct super_block *sb, const char *function,
- 		       sb->s_id, function, line, errstr);
- 	}
- 
-+	ext4_set_errno(sb, -errno);
- 	save_error_info(sb, function, line);
- 	ext4_handle_error(sb);
- }
-@@ -982,8 +1045,10 @@ static void ext4_put_super(struct super_block *sb)
- 		aborted = is_journal_aborted(sbi->s_journal);
- 		err = jbd2_journal_destroy(sbi->s_journal);
- 		sbi->s_journal = NULL;
--		if ((err < 0) && !aborted)
-+		if ((err < 0) && !aborted) {
-+			ext4_set_errno(sb, -err);
- 			ext4_abort(sb, "Couldn't clean up the journal");
-+		}
- 	}
- 
- 	ext4_unregister_sysfs(sb);
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 8966a5439a22..246fbeeb6366 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2879,9 +2879,11 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
- 		bh = ext4_sb_bread(inode->i_sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
- 		if (IS_ERR(bh)) {
- 			error = PTR_ERR(bh);
--			if (error == -EIO)
-+			if (error == -EIO) {
-+				ext4_set_errno(inode->i_sb, EIO);
- 				EXT4_ERROR_INODE(inode, "block %llu read error",
- 						 EXT4_I(inode)->i_file_acl);
-+			}
- 			bh = NULL;
- 			goto cleanup;
- 		}
--- 
-2.23.0
+ 	bmap->end =3D b_end;
+ 	cmap->end =3D c_end;
+--=20
+2.24.0
 
