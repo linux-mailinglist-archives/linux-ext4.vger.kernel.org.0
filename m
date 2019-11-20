@@ -2,303 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8F5103CA4
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2019 14:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EA6103CB9
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2019 14:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730273AbfKTNzT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Nov 2019 08:55:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51716 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727988AbfKTNzT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 20 Nov 2019 08:55:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D78BCAFA8;
-        Wed, 20 Nov 2019 13:55:14 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 3F5F71E484C; Wed, 20 Nov 2019 14:55:14 +0100 (CET)
-Date:   Wed, 20 Nov 2019 14:55:14 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     jack@suse.cz, tytso@mit.edu, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org
-Subject: Re: [RFCv3 3/4] ext4: start with shared iolock in case of DIO
- instead of excl. iolock
-Message-ID: <20191120135514.GD9509@quack2.suse.cz>
-References: <20191120050024.11161-1-riteshh@linux.ibm.com>
- <20191120050024.11161-4-riteshh@linux.ibm.com>
+        id S1730724AbfKTN53 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 20 Nov 2019 08:57:29 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:53840 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727988AbfKTN52 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Nov 2019 08:57:28 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAKDsQCo145409;
+        Wed, 20 Nov 2019 13:57:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2019-08-05;
+ bh=V/DFRPYzZOalGnsH/AEEGn8n7Gic4vXnO/GK2SB+TOg=;
+ b=IeSv2+O3ui/2wSCpPrho1PV53YzwyB2YAQgyhfMZIBjm0nGKzPyyX0LihDMcUh0intIK
+ x7YYGCP4psTF+42oxtrzaie5/S5pHp/jMWZCk6jlqezLOwPltRbGEkLalkL8AgLVBKrU
+ hrHwt9mQe2yKeUOuA7lxQUMedNgcSLcFjKvn8vSbnWECJMUsuz0E4T3Rz1ripER4DZwa
+ CPHwRvn9xWM2sM/FDv6+eNWdsvfGsZUBkDbNwc4XK8joYaZQOwi7aYKVA8D/12SulvAq
+ 6Msd4Hs1IWi3ACmWNkkv1AhjWVUneXZHF2PPr2Ggws6wuixhgru4kmRhyru6Nk4ESnds yA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2wa8htwpu2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Nov 2019 13:57:05 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAKDrYqn104080;
+        Wed, 20 Nov 2019 13:57:05 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 2wd46wf44t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 20 Nov 2019 13:57:05 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAKDv2kK028577;
+        Wed, 20 Nov 2019 13:57:02 GMT
+Received: from dhcp-10-175-162-125.vpn.oracle.com (/10.175.162.125)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 20 Nov 2019 05:57:02 -0800
+Date:   Wed, 20 Nov 2019 13:56:52 +0000 (GMT)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@dhcp-10-175-162-125.vpn.oracle.com
+To:     Brendan Higgins <brendanhiggins@google.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>,
+        David Gow <davidgow@google.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>, Kees Cook <keescook@chromium.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        catalin.marinas@arm.com, joe.lawrence@redhat.com,
+        penguin-kernel@i-love.sakura.ne.jp, urezki@gmail.com,
+        andriy.shevchenko@linux.intel.com,
+        Jonathan Corbet <corbet@lwn.net>, adilger.kernel@dilger.ca,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-ext4@vger.kernel.org,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Knut Omang <knut.omang@oracle.com>
+Subject: Re: [PATCH v4 linux-kselftest-test 3/6] kunit: allow kunit tests to
+ be loaded as a module
+In-Reply-To: <CAFd5g473rHeUk6EJ_KnvRin5LrKyW4cNQxNHXmT2zkai5V=q1w@mail.gmail.com>
+Message-ID: <alpine.LRH.2.20.1911201347190.19458@dhcp-10-175-162-125.vpn.oracle.com>
+References: <1573812972-10529-1-git-send-email-alan.maguire@oracle.com> <1573812972-10529-4-git-send-email-alan.maguire@oracle.com> <CAFd5g473rHeUk6EJ_KnvRin5LrKyW4cNQxNHXmT2zkai5V=q1w@mail.gmail.com>
+User-Agent: Alpine 2.20 (LRH 67 2015-01-07)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191120050024.11161-4-riteshh@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9446 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911200125
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9446 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911200125
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 20-11-19 10:30:23, Ritesh Harjani wrote:
-> Earlier there was no shared lock in DIO read path.
-> But this patch (16c54688592ce: ext4: Allow parallel DIO reads)
-> simplified some of the locking mechanism while still allowing
-> for parallel DIO reads by adding shared lock in inode DIO
-> read path.
+On Tue, 19 Nov 2019, Brendan Higgins wrote:
+
+> On Fri, Nov 15, 2019 at 2:16 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> >
+> > As tests are added to kunit, it will become less feasible to execute
+> > all built tests together.  By supporting modular tests we provide
+> > a simple way to do selective execution on a running system; specifying
+> >
+> > CONFIG_KUNIT=y
+> > CONFIG_KUNIT_EXAMPLE_TEST=m
+> >
+> > ...means we can simply "insmod example-test.ko" to run the tests.
+> >
+> > To achieve this we need to do the following:
+> >
+> > o export the required symbols in kunit
+> > o string-stream tests utilize non-exported symbols so for now we skip
+> >   building them when CONFIG_KUNIT_TEST=m.
+> > o support a new way of declaring test suites.  Because a module cannot
+> >   do multiple late_initcall()s, we provide a kunit_test_suites() macro
+> >   to declare multiple suites within the same module at once.
+> > o some test module names would have been too general ("test-test"
+> >   and "example-test" for kunit tests, "inode-test" for ext4 tests);
+> >   rename these as appropriate ("kunit-test", "kunit-example-test"
+> >   and "ext4-inode-test" respectively).
 > 
-> But this created problem with mixed read/write workload.
-> It is due to the fact that in DIO path, we first start with
-> exclusive lock and only when we determine that it is a ovewrite
-> IO, we downgrade the lock. This causes the problem, since
-> with above patch we have shared locking in DIO reads.
+> Hmm...should we maybe apply this naming scheme to all the tests then?
+> I think Kees might have suggested this. I am actually not sure whether
+> or not we should and would like to get other people's input.
 > 
-> So, this patch tries to fix this issue by starting with
-> shared lock and then switching to exclusive lock only
-> when required based on ext4_dio_write_checks().
+
+I'd be interested in other opinions here too; the approach I took here was 
+to apply the convention [subsystem]-[optional-suite]-test.ko. So for 
+example kunit-test.ko because the subsystem under test is kunit, etc.
+Implicit in this is the reasoning that the framework used isn't relevant 
+to the naming of the test module, but I'm happy to tweak the naming 
+scheme if another approach is preferred.  The current names from the 
+patchset are:
+
+kunit-test.ko		- tests for kunit itself
+kunit-example-test.ko	- example test using the kunit framework
+sysctl-test.ko		- sysctl kunit tests
+list-test.ko		- list kunit tests
+ext4-inode-test.ko	- ext4 kunit tests
+ 
+> It is a valid point that test-test or example-test are too general of
+> names for modules, but if this is the case, I think that inode-test is
+> probably too general as well. But if we are going that far, maybe we
+> should rename everything *-kunit-test.c.
 > 
-> Other than that, it also simplifies below cases:-
-> 
-> 1. Simplified ext4_unaligned_aio API to ext4_unaligned_io.
-> Previous API was abused in the sense that it was not really checking
-> for AIO anywhere also it used to check for extending writes.
-> So this API was renamed and simplified to ext4_unaligned_io()
-> which actully only checks if the IO is really unaligned.
-> 
-> Now, in case of unaligned direct IO, iomap_dio_rw needs to do
-> zeroing of partial block and that will require serialization
-> against other direct IOs in the same block. So we take a excl iolock
-> for any unaligned DIO.
-> In case of AIO we also need to wait for any outstanding IOs to
-> complete so that conversion from unwritten to written is completed
-> before anyone try to map the overlapping block. Hence we take
-> excl iolock and also wait for inode_dio_wait() for unaligned DIO case.
-> Please note since we are anyway taking an exclusive lock in unaligned IO,
-> inode_dio_wait() becomes a no-op in case of non-AIO DIO.
-> 
-> 2. Added ext4_extending_io(). This checks if the IO is extending the file.
-> 
-> 3. Added ext4_dio_write_checks().
-> In this we start with shared iolock and only switch to exclusive iolock
-> if required. So in most cases with aligned, non-extening, dioread_nolock
-> overwrites tries to write with a shared locking.
-> If not, then we restart the operation in ext4_dio_write_checks(),
-> after acquiring excl iolock.
-> 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
->  fs/ext4/file.c | 191 ++++++++++++++++++++++++++++++++++++-------------
->  1 file changed, 142 insertions(+), 49 deletions(-)
 
-Thanks for the patch! Some comments below...
+Yep, I figured inode-test.ko was too general also, so the Makefile 
+builds ext4-inode-test.ko from inode-test.c. See fs/ext4/Makefile.
 
-> @@ -365,15 +383,110 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
->  	.end_io = ext4_dio_write_end_io,
->  };
->  
-> +/*
-> + * The intention here is to start with shared lock acquired then see if any
-> + * condition requires an exclusive inode lock. If yes, then we restart the
-> + * whole operation by releasing the shared lock and acquiring exclusive lock.
-> + *
-> + * - For unaligned_io we never take shared lock as it may cause data corruption
-> + *   when two unaligned IO tries to modify the same block e.g. while zeroing.
-> + *
-> + * - For extending writes case we don't take the shared lock, since it requires
-> + *   updating inode i_disksize and/or orphan handling with exclusive lock.
-> + *
-> + * - shared locking will only be true mostly in case of overwrites with
-> + *   dioread_nolock mode. Otherwise we will switch to excl. iolock mode.
-> + */
-> +static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
-> +				 unsigned int *iolock, bool *unaligned_io,
-> +				 bool *extend)
-> +{
-> +	struct file *file = iocb->ki_filp;
-> +	struct inode *inode = file_inode(file);
-> +	loff_t offset = iocb->ki_pos;
-> +	loff_t final_size;
-> +	size_t count;
-> +	ssize_t ret;
-> +
-> +restart:
-> +	/* Fallback to buffered I/O if the inode does not support direct I/O. */
-> +	if (!ext4_dio_supported(inode)) {
-> +		ext4_iunlock(inode, *iolock);
-> +		return ext4_buffered_write_iter(iocb, from);
-> +	}
+Thanks!
 
-I don't think it is good to hide things like this fallback to buffered IO
-in ext4_dio_write_checks(). Similarly with 'unaligned_io' and 'extend'
-variables below. So I'd rather leave this in ext4_dio_write_iter() and just
-move file_modified() from ext4_write_checks() since that seems to be the
-only thing that cannot be always done with shared i_rwsem, can it?
-
-> +
-> +	ret = ext4_generic_write_checks(iocb, from);
-> +	if (ret <= 0) {
-> +		ext4_iunlock(inode, *iolock);
-> +		return ret;
-> +	}
-> +
-> +	/* Recalculate since offset & count may change above. */
-> +	offset = iocb->ki_pos;
-> +	count = iov_iter_count(from);
-> +	final_size = offset + count;
-> +
-> +	if (ext4_unaligned_io(inode, from, offset))
-> +		*unaligned_io = true;
-
-No need to recheck alignment here. That cannot change over time regardless
-of locks we hold...
-
-> +
-> +	if (ext4_extending_io(inode, offset, count))
-> +		*extend = true;
-> +	/*
-> +	 * Determine whether the IO operation will overwrite allocated
-> +	 * and initialized blocks. If so, check to see whether it is
-> +	 * possible to take the dioread_nolock path.
-> +	 *
-> +	 * We need exclusive i_rwsem for changing security info
-> +	 * in file_modified().
-> +	 */
-> +	if (*iolock == EXT4_IOLOCK_SHARED &&
-> +	    (!IS_NOSEC(inode) || *unaligned_io || *extend ||
-> +	     !ext4_should_dioread_nolock(inode) ||
-> +	     !ext4_overwrite_io(inode, offset, count))) {
-> +		ext4_iunlock(inode, *iolock);
-> +		*iolock = EXT4_IOLOCK_EXCL;
-> +		ext4_ilock(inode, *iolock);
-> +		goto restart;
-> +	}
-> +
-> +	ret = file_modified(file);
-> +	if (ret < 0) {
-> +		ext4_iunlock(inode, *iolock);
-> +		return ret;
-> +	}
-> +
-> +	return count;
-> +}
-> +
->  static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  {
->  	ssize_t ret;
-> -	size_t count;
-> -	loff_t offset;
->  	handle_t *handle;
->  	struct inode *inode = file_inode(iocb->ki_filp);
-> -	bool extend = false, overwrite = false, unaligned_aio = false;
-> -	unsigned int iolock = EXT4_IOLOCK_EXCL;
-> +	loff_t offset = iocb->ki_pos;
-> +	size_t count = iov_iter_count(from);
-> +	bool extend = false, unaligned_io = false;
-> +	unsigned int iolock = EXT4_IOLOCK_SHARED;
-> +
-> +	/*
-> +	 * We initially start with shared inode lock
-> +	 * unless it is unaligned IO which needs
-> +	 * exclusive lock anyways.
-> +	 */
-> +	if (ext4_unaligned_io(inode, from, offset)) {
-> +		unaligned_io = true;
-> +		iolock = EXT4_IOLOCK_EXCL;
-> +	}
-> +	/*
-> +	 * Extending writes need exclusive lock.
-> +	 */
-> +	if (ext4_extending_io(inode, offset, count)) {
-> +		extend = true;
-> +		iolock = EXT4_IOLOCK_EXCL;
-> +	}
-
-You cannot read EXT4_I(inode)->i_disksize without some lock (either
-inode->i_rwsem or EXT4_I(inode)->i_data_sem). So I'd just do here a quick
-check with i_size here (probably don't set extend, but just make note to
-start with exclusive i_rwsem) and later when we hold i_rwsem, we can do a
-reliable check.
-
-> +	if (iolock == EXT4_IOLOCK_SHARED && !ext4_should_dioread_nolock(inode))
-> +		iolock = EXT4_IOLOCK_EXCL;
->  
->  	if (iocb->ki_flags & IOCB_NOWAIT) {
->  		if (!ext4_ilock_nowait(inode, iolock))
-> @@ -382,47 +495,28 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  		ext4_ilock(inode, iolock);
->  	}
->  
-> -	if (!ext4_dio_supported(inode)) {
-> -		ext4_iunlock(inode, iolock);
-> -		/*
-> -		 * Fallback to buffered I/O if the inode does not support
-> -		 * direct I/O.
-> -		 */
-> -		return ext4_buffered_write_iter(iocb, from);
-> -	}
-> -
-> -	ret = ext4_write_checks(iocb, from);
-> -	if (ret <= 0) {
-> -		ext4_iunlock(inode, iolock);
-> +	ret = ext4_dio_write_checks(iocb, from, &iolock, &unaligned_io,
-> +				    &extend);
-> +	if (ret <= 0)
->  		return ret;
-> -	}
->  
-> -	/*
-> -	 * Unaligned asynchronous direct I/O must be serialized among each
-> -	 * other as the zeroing of partial blocks of two competing unaligned
-> -	 * asynchronous direct I/O writes can result in data corruption.
-> -	 */
->  	offset = iocb->ki_pos;
->  	count = iov_iter_count(from);
-> -	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS) &&
-> -	    !is_sync_kiocb(iocb) && ext4_unaligned_aio(inode, from, offset)) {
-> -		unaligned_aio = true;
-> -		inode_dio_wait(inode);
-> -	}
->  
->  	/*
-> -	 * Determine whether the I/O will overwrite allocated and initialized
-> -	 * blocks. If so, check to see whether it is possible to take the
-> -	 * dioread_nolock path.
-> +	 * Unaligned direct IO must be serialized among each other as zeroing
-> +	 * of partial blocks of two competing unaligned IOs can result in data
-> +	 * corruption.
-> +	 *
-> +	 * So we make sure we don't allow any unaligned IO in flight.
-> +	 * For IOs where we need not wait (like unaligned non-AIO DIO),
-> +	 * below inode_dio_wait() may anyway become a no-op, since we start
-> +	 * with exclusive lock.
->  	 */
-> -	if (!unaligned_aio && ext4_overwrite_io(inode, offset, count) &&
-> -	    ext4_should_dioread_nolock(inode)) {
-> -		overwrite = true;
-> -		ext4_ilock_demote(inode, iolock);
-> -		iolock = EXT4_IOLOCK_SHARED;
-> -	}
-> +	if (unaligned_io)
-> +		inode_dio_wait(inode);
->  
-> -	if (offset + count > EXT4_I(inode)->i_disksize) {
-> +	if (extend) {
->  		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
->  		if (IS_ERR(handle)) {
->  			ret = PTR_ERR(handle);
-> @@ -435,12 +529,11 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->  			goto out;
->  		}
->  
-> -		extend = true;
->  		ext4_journal_stop(handle);
->  	}
->  
->  	ret = iomap_dio_rw(iocb, from, &ext4_iomap_ops, &ext4_dio_write_ops,
-> -			   is_sync_kiocb(iocb) || unaligned_aio || extend);
-> +			   is_sync_kiocb(iocb) || unaligned_io || extend);
->  
->  	if (extend)
->  		ret = ext4_handle_inode_extension(inode, offset, ret, count);
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Alan
