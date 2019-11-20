@@ -2,72 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6E51040DD
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2019 17:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0B510420F
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2019 18:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729036AbfKTQfE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 20 Nov 2019 11:35:04 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:56024 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728488AbfKTQfD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 20 Nov 2019 11:35:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=MwZWupiSwoX5j5mENHy05kP0FGbIABMO7rM4iqDs5RY=; b=XVaRzTwwOoq7hudzEGLuX9k3n
-        uM8sKqABcsa6w1yOIAcJlYjbOhm3N9xRVOONrS+BpL1E0nNPub1CHPbYvikVjKVF83gA0PuNYW90Y
-        SioU9d2DR5GrA7wyoMguCWYjO5/6syitDEizuzVYliU2Thx7a0C6SLwpdJhY10UccagysVb9omnwz
-        EgVfA7yhE0AItWgroaFPYha37/r1VmuPhnuwTt1OPVbVF9Vn6mOL8/C3/lmzgmBYqYgmkDVSgWTtr
-        tE19NKad8yT5hYqoCtU3VyIAku1adrSVcLcT2DFWopP6LkGUnj6r9/aMEfUewbKFuBVB4U1sm5VDw
-        oZXksys3A==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iXSwW-0006Zw-IG; Wed, 20 Nov 2019 16:35:00 +0000
-Date:   Wed, 20 Nov 2019 08:35:00 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Matthew Bobrowski <mbobrowski@mbobrowski.org>, jack@suse.cz,
-        tytso@mit.edu, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFCv3 2/4] ext4: Add ext4_ilock & ext4_iunlock API
-Message-ID: <20191120163500.GT20752@bombadil.infradead.org>
-References: <20191120050024.11161-1-riteshh@linux.ibm.com>
- <20191120050024.11161-3-riteshh@linux.ibm.com>
- <20191120112339.GB30486@bobrowski>
- <20191120121831.9639B42047@d06av24.portsmouth.uk.ibm.com>
+        id S1728440AbfKTR1D convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 20 Nov 2019 12:27:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727639AbfKTR1D (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 20 Nov 2019 12:27:03 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 205609] New: Multiple bugs in __ext4_expand_extra_isize (OOB
+ write and UAF write)
+Date:   Wed, 20 Nov 2019 17:27:02 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tristmd@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-205609-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191120121831.9639B42047@d06av24.portsmouth.uk.ibm.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 05:48:30PM +0530, Ritesh Harjani wrote:
-> Not against your suggestion here.
-> But in kernel I do see a preference towards object followed by a verb.
-> At least in vfs I see functions like inode_lock()/unlock().
-> 
-> Plus I would not deny that this naming is also inspired from
-> xfs_ilock()/iunlock API names.
+https://bugzilla.kernel.org/show_bug.cgi?id=205609
 
-I see those names as being "classical Unix" heritage (eh, maybe SysV).
+            Bug ID: 205609
+           Summary: Multiple bugs in __ext4_expand_extra_isize (OOB write
+                    and UAF write)
+           Product: File System
+           Version: 2.5
+    Kernel Version: 5.x
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: tristmd@gmail.com
+        Regression: No
 
-> hmm, it was increasing the name of the macro if I do it that way.
-> But that's ok. Is below macro name better?
-> 
-> #define EXT4_INODE_IOLOCK_EXCL		(1 << 0)
-> #define EXT4_INODE_IOLOCK_SHARED	(1 << 1)
+BUG #1 - UAF write in __ext4_expand_extra_isize
+===
 
-In particular, Linux tends to prefer read/write instead of
-shared/exclusive terminology.  rwlocks, rwsems, rcu_read_lock, seqlocks.
-shared/exclusive is used by file locks.  And XFS ;-)
+KASAN: use-after-free in __ext4_expand_extra_isize+0x182/0x250
+fs/ext4/inode.c:5924
+Write of size 189
 
-I agree with Jan; just leave them opencoded.
+BUG #2 - OOB write
+===
 
-Probably worth adding inode_lock_downgrade() to fs.h instead of
-accessing i_rwsem directly.
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
