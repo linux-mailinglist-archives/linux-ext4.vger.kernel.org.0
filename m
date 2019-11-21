@@ -2,174 +2,256 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED3E104E6A
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2019 09:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5CD104F0D
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2019 10:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbfKUIwP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Nov 2019 03:52:15 -0500
-Received: from mail-eopbgr790042.outbound.protection.outlook.com ([40.107.79.42]:6592
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726343AbfKUIwP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 21 Nov 2019 03:52:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ty6XePl/DxCAq3GfTj05nPSybA31vhXGApWEYb/GVJDsmutEXw1Ko/ftIHoMFSa1I+r61xdaq5wM4GZBN78SMq1MTsezBU7SiYhYxBF2d/L0IRBCSb8Vsz/Lbm03mxWszoEIcfuuvpaVIGeL8ItiDh0/BnOiTwdx6smqtytIZx3p0zdK6Il9qw3RvIhbXE+2AxIvaoG8xPDMbkWkmD4sq6r2sChEM1tOE6jh7zZ4UTovX4Ki3cQA7uvUwssr1ByJZXiFkxJfCBSAGKCitYiTW4x/e5Nj8zJBhwHp2SiBIaT4TM7LcNYQIowcH73c0ofhbraJe51OkCjw42wNFJ34jQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9hdL6FhD0d3B/IdO8jdmt9pzTuOvQ3mBCXfux8BFU/c=;
- b=M02hbfC1eOx4MLskAahaeLFre/FqZAyh0NTKMbW78ftVsInsuJXJZT+I0XAFuSDbbD+ePcYCaLREdld1ul9NnwpRsvcYnhX2v1B+FVPoFa29/3OzxzZS2yHQeypcEe6sZaUYXFhLOEanUuo4mrlqEOmH4W8BSAwD2cO7mmefxffMrD+DlCSs+jjJAWm5c7+IbosfP4UP42Wo2qXr9crJXpdxT0nM/LI4/mekald+OdIOrrWcp4x3qKkhGPBh4qZtQVSeYmTnFvxyPgqDCAXx9Aur42s7ohE+CIsuWIYPEchHToDJW3VmYBpW+HDlSdgNdKbZlYzdmBaDLKXT0fdQ9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=whamcloud.com; dmarc=pass action=none
- header.from=whamcloud.com; dkim=pass header.d=whamcloud.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=whamcloud.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9hdL6FhD0d3B/IdO8jdmt9pzTuOvQ3mBCXfux8BFU/c=;
- b=JIqpWQNhk53gaAoEY4Fw/sg0Cs5rSdcUXn/lXMrOncx8Gon2lNMG2cluUQsnEqXIiCjLaBdssFE1vK4bhqK/Ta+t4rTc3W/bsH5F5A3LNWveczEZn29fg/7tda3lhg+SzkgdTMhcJ28qKEtvVlYj7tfYFqnpha8sL6Uo3TjDrmw=
-Received: from BN8PR19MB2883.namprd19.prod.outlook.com (20.178.218.221) by
- BN8PR19MB2530.namprd19.prod.outlook.com (20.178.223.212) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2451.30; Thu, 21 Nov 2019 08:52:11 +0000
-Received: from BN8PR19MB2883.namprd19.prod.outlook.com
- ([fe80::d09c:38e0:c805:f9d2]) by BN8PR19MB2883.namprd19.prod.outlook.com
- ([fe80::d09c:38e0:c805:f9d2%6]) with mapi id 15.20.2474.019; Thu, 21 Nov 2019
- 08:52:11 +0000
-From:   Alex Zhuravlev <azhuravlev@whamcloud.com>
-To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>
-CC:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+        id S1726351AbfKUJSs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Nov 2019 04:18:48 -0500
+Received: from mail-il1-f196.google.com ([209.85.166.196]:39598 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726014AbfKUJSs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Nov 2019 04:18:48 -0500
+Received: by mail-il1-f196.google.com with SMTP id a7so2568294ild.6
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Nov 2019 01:18:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=PnVSra4UoARhdb9UWaexbDqv7hjvezA0eH2trxDjt6c=;
+        b=j+og/Bu6CiNifl2UtWDcUhKLYw9jh4B7s0JeVw7hXSKF0E1hayw5DVMsbp6Vk9uacN
+         AMHFtbCeXFaz0TLSd+lahWZIHXn42iQwvc7ueNOK08N5Jxl4WBiXaqMqAAbgAImz25IE
+         rW94q5XkTJTWIDUDic0+YJex2eRrtGSo52L3PH9SCqb8xNyiv9yTT+FMmGCrRQskkctA
+         Bagarez2sedn2x5TKI7t7af0b7l7IHzCCg8z90b0i+hrQxP4gxvzVRAA4S5yHvyT4XEX
+         JnhZlp5xDSzyVu8cJTch88Lis/nS5tSWxgetVLn2xCTLccHwVpPokqmb/5Q5C1QoQwMx
+         nTcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=PnVSra4UoARhdb9UWaexbDqv7hjvezA0eH2trxDjt6c=;
+        b=Re388vmoG8HREtgX8v2fwG27osySctG7qKyxbQiJ0C/M1AggAtu5tyVSgpfvVVeqn6
+         oM//AbXd9c4iTcpZROsoPbDBm+ikuS26HpORysIy9o94wzGUdSafx+43FpHEgo7vTKN/
+         0TKzNRCoyhn9dNx03dxd6ZUhh3ZnUHJoBaW9Wh6PzhOmSVSKif7yH6us1a/Om4yrKZaq
+         7CAD/QZMmjVzZ5HU6K2PxINnKBg3+yzHxCLp1w4Xp0uswjvb/GdIvn72KltvvmL6KqAK
+         AQcW3sFN4O+8BwLrxzcX3rKgv41MzHOtjzf9lzEvnQYYDGvT0WV1hlfVW2IGDCjRy5kl
+         L5Hg==
+X-Gm-Message-State: APjAAAXGYa6yGiiLHZhx3xUCQ7HvUN4YIxChYEj9frJYXTuZ5DF70clk
+        KLxLULKDDnQBQqhAE/tIbDA=
+X-Google-Smtp-Source: APXvYqzo3u7lg8KWJ+n6HT78qOqUXUDsypO5CoSGlS9wdPtvE8jOxYyDjj2UyQyDtIJOwDILAJvLMw==
+X-Received: by 2002:a92:ce06:: with SMTP id b6mr8556004ilo.14.1574327927146;
+        Thu, 21 Nov 2019 01:18:47 -0800 (PST)
+Received: from [192.168.64.38] (chippewa-nat.cray.com. [136.162.34.1])
+        by smtp.gmail.com with ESMTPSA id d8sm845000ilr.82.2019.11.21.01.18.45
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Nov 2019 01:18:46 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
 Subject: Re: [RFC] improve malloc for large filesystems
-Thread-Topic: [RFC] improve malloc for large filesystems
-Thread-Index: AQHVn45AfmzanBfwskq4XYElVj+Zs6eUXWuAgADXAYCAABhfAIAABgOA
-Date:   Thu, 21 Nov 2019 08:52:10 +0000
-Message-ID: <9114E776-B44E-4CA5-BD49-C432A688C24E@whamcloud.com>
+From:   Artem Blagodarenko <artem.blagodarenko@gmail.com>
+In-Reply-To: <9114E776-B44E-4CA5-BD49-C432A688C24E@whamcloud.com>
+Date:   Thu, 21 Nov 2019 12:18:42 +0300
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <43DA6456-AAF9-4225-A79F-CF632AC5241B@gmail.com>
 References: <8738E8FF-820F-48A5-9150-7FF64219ED42@whamcloud.com>
  <20191120181353.GG4262@mit.edu>
  <9E04C147-D878-45CE-8473-EF8C67FE4E86@whamcloud.com>
  <4EB2303A-01A3-49AC-B713-195126DB621B@gmail.com>
-In-Reply-To: <4EB2303A-01A3-49AC-B713-195126DB621B@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=azhuravlev@whamcloud.com; 
-x-originating-ip: [128.72.176.24]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 36258d40-6757-4422-7701-08d76e6018f2
-x-ms-traffictypediagnostic: BN8PR19MB2530:
-x-microsoft-antispam-prvs: <BN8PR19MB2530A842231E2C30BF278202CB4E0@BN8PR19MB2530.namprd19.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 0228DDDDD7
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(376002)(346002)(136003)(396003)(39850400004)(199004)(189003)(186003)(53546011)(26005)(2616005)(11346002)(6506007)(33656002)(2906002)(316002)(66556008)(66476007)(71200400001)(71190400001)(66446008)(64756008)(36756003)(102836004)(99286004)(5660300002)(66946007)(6116002)(76116006)(91956017)(446003)(256004)(54906003)(3846002)(14444005)(6916009)(8936002)(6246003)(81156014)(81166006)(4326008)(8676002)(6512007)(6436002)(86362001)(229853002)(6486002)(25786009)(14454004)(66066001)(305945005)(7736002)(76176011)(478600001);DIR:OUT;SFP:1101;SCL:1;SRVR:BN8PR19MB2530;H:BN8PR19MB2883.namprd19.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: whamcloud.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WBEaAqqVomEmmqBUBe0Ri/dPcFX6AEnfmKsZaU/NsV/L7BiUpT6Q5LWXRSNRjJ/1YaSZaVnCfAabSisrkvD7qpKufipzxrNiGzGQ7eo7oOXEb8vBmrCT9eoZiLYBdo9zVqWC2y4pqspaAWINyXZjJ/aNQik6miAIcS3HaehCIUBbkne6sjF6j0mTRNZZqBR1L2EIQpXhW43awwl/4uN5aTP8WC/XXFvqAoO5M2ytXw/rjUQlDHSO7RszBRZoy8Y79kxPkgvCrpBx2GAlTSskbxL8Src06wvai7MJGIWxpXzGFZvaN2QPJzJaSMN/yJK0Hs3EPvXCxYPhjnTMssKq3SAUrCO1spXTklM1HwsDCwvyaTRaBOU5+44zyazwMnq9CJpKDU/KY1Zwqo1gZSKJFIn4xeCjyJvHt3lWXRxyMxeDElPDJ/FuUqkCVPcDPEab
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F5BC8ED0FBFA3048B6104514133E880A@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: whamcloud.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 36258d40-6757-4422-7701-08d76e6018f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2019 08:52:10.7985
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 753b6e26-6fd3-43e6-8248-3f1735d59bb4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n9phJDbGfA8DXrEyv6/af2tgioavALtYqX1fU2JUMQNPUHxhckxBDjmoUb0XAZP04qoohUnur4UMVqRN1++M+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR19MB2530
+ <9114E776-B44E-4CA5-BD49-C432A688C24E@whamcloud.com>
+To:     Alex Zhuravlev <azhuravlev@whamcloud.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-DQoNCj4gT24gMjEgTm92IDIwMTksIGF0IDExOjMwLCBBcnRlbSBCbGFnb2RhcmVua28gPGFydGVt
-LmJsYWdvZGFyZW5rb0BnbWFpbC5jb20+IHdyb3RlOg0KPiANCj4gSGVsbG8gQWxleCwNCj4gDQo+
-IENvZGUgbG9va3MgZ29vZCwgYnV0IEkgaGF2ZSBvYmplY3Rpb25zIGFib3V0IHRoZSBhcHByb2Fj
-aC4NCj4gDQo+IDUxMlRCIGRpc2sgd2l0aCA0ayBibG9jayBzaXplIGhhdmUgNDE5NDMwNCBncm91
-cHMuIFNvIDRrIGdyb3VwcyBpcyBvbmx5IH4wLjAxJSBvZiB3aG9sZSBkaXNrLg0KPiBDYW4gd2Ug
-bWFrZSBkZWNpc2lvbiB0byBicmVhayBzZWFyY2ggYW5kIGdldCBtaW5pbXVtIGJsb2NrcyBiYXNl
-ZCBvbiBzdWNoIGxpbWl0ZWQgZGF0YS4NCj4gSSBhbSBub3Qgc3VyZSB0aGF0IHNwZW5kaW5nIHNv
-bWUgdGltZSB0byBmaW5kIGdvb2QgZ3JvdXAgaXMgd29yc2UgdGhlbiBhbGxvY2F0ZSBibG9ja3Mg
-d2l0aG91dCANCj4gb3B0aW1pc2F0aW9uLiBFc3BlY2lhbGx5LCBpZiBkaXNrIGlzIHF1aXRlIGZy
-ZWUgYW5kIHRoZXJlIGFyZSBhIGxvdCBvZiBmcmVlIGJsb2NrIGdyb3Vwcy4NCg0KRXhhY3QgbnVt
-YmVyIGlzbuKAmXQgaGFyZGNvZGVkIGFuZCBzdWJqZWN0IHRvIGRpc2N1c3Npb24sIGJ1dCB5b3Ug
-ZG9u4oCZdCByZWFsbHkgd2FudCB0byBzY2FuIDRNIA0KZ3JvdXBzIChlc3BlY2lhbGx5IHVuaW5p
-dGlhbGlzZWQpIHRvIGZpbmQg4oCcYmVzdOKAnSBjaHVuay4NCg0KVGhpcyBjYW4gYmUgb3B0aW1p
-emVkIGZ1cnRoZXIgbGlrZSDigJxkb27igJl0IGNvdW50IGluaXRpYWxpemVkIGFuZC9vciBlbXB0
-eSBncm91cHPigJ0sIGJ1dCBzdGlsbCBzb21lIGxpbWl0DQpJcyByZXF1aXJlZCwgSU1PLiBOb3Rp
-Y2UgdGhpcyBsaW1pdCBkb2VzbuKAmXQgYXBwbHkgaWYgb25jZSB3ZSB0cmllZCB0byBmaW5kIOKA
-nGJlc3TigJ0sIGkuZS4gaXTigJlzIGFwcGxpZWQgb25seQ0Kd2l0aCBjcj0wIGFuZCBjcj0xLg0K
-DQoNClRoYW5rcywgQWxleA0KDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEFydGVtIEJsYWdvZGFy
-ZW5rby4NCj4+IE9uIDIxIE5vdiAyMDE5LCBhdCAxMDowMywgQWxleCBaaHVyYXZsZXYgPGF6aHVy
-YXZsZXZAd2hhbWNsb3VkLmNvbT4gd3JvdGU6DQo+PiANCj4+IA0KPj4gDQo+Pj4gT24gMjAgTm92
-IDIwMTksIGF0IDIxOjEzLCBUaGVvZG9yZSBZLiBUcydvIDx0eXRzb0BtaXQuZWR1PiB3cm90ZToN
-Cj4+PiANCj4+PiBIaSBBbGV4LA0KPj4+IA0KPj4+IEEgY291cGxlIG9mIGNvbW1lbnRzLiAgRmly
-c3QsIHBsZWFzZSBzZXBhcmF0ZSB0aGlzIHBhdGNoIHNvIHRoYXQgdGhlc2UNCj4+PiB0d28gc2Vw
-YXJhdGUgcGllY2VzIG9mIGZ1bmN0aW9uYWxpdHkgY2FuIGJlIHJldmlld2VkIGFuZCB0ZXN0ZWQN
-Cj4+PiBzZXBhcmF0ZWx5Og0KPj4+IA0KPj4gDQo+PiBUaGlzIGlzIHRoZSBmaXJzdCBwYXRjaCBv
-ZiB0aGUgc2VyaWVzLg0KPj4gDQo+PiBUaGFua3MsIEFsZXgNCj4+IA0KPj4gRnJvbSA4MWM0YjNi
-NWExN2Q5NDUyNWJiYzZkMmQ4OWIyMGY2NjE4YjA1YmM2IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAw
-MQ0KPj4gRnJvbTogQWxleCBaaHVyYXZsZXYgPGJ6enpAd2hhbWNsb3VkLmNvbT4NCj4+IERhdGU6
-IFRodSwgMjEgTm92IDIwMTkgMDk6NTM6MTMgKzAzMDANCj4+IFN1YmplY3Q6IFtQQVRDSCAxLzJd
-IGV4dDQ6IGxpbWl0IHNjYW5uaW5nIGZvciBhIGdvb2QgZ3JvdXANCj4+IA0KPj4gYXQgZmlyc3Qg
-dHdvIHJvdW5kcyB0byBwcmV2ZW50IHNpdHVhdGlvbiB3aGVuIDEweC0xMDB4IHRob3VzYW5kDQo+
-PiBvZiBncm91cHMgYXJlIHNjYW5uZWQsIGVzcGVjaWFsbHkgbm9uLWluaXRpYWxpemVkIGdyb3Vw
-cy4NCj4+IA0KPj4gU2lnbmVkLW9mZi1ieTogQWxleCBaaHVyYXZsZXYgPGJ6enpAd2hhbWNsb3Vk
-LmNvbT4NCj4+IC0tLQ0KPj4gZnMvZXh0NC9leHQ0LmggICAgfCAgMiArKw0KPj4gZnMvZXh0NC9t
-YmFsbG9jLmMgfCAxNCArKysrKysrKysrKystLQ0KPj4gZnMvZXh0NC9zeXNmcy5jICAgfCAgNCAr
-KysrDQo+PiAzIGZpbGVzIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0p
-DQo+PiANCj4+IGRpZmYgLS1naXQgYS9mcy9leHQ0L2V4dDQuaCBiL2ZzL2V4dDQvZXh0NC5oDQo+
-PiBpbmRleCAwM2RiM2U3MTY3NmMuLmQ0ZTQ3ZmRhZDg3YyAxMDA2NDQNCj4+IC0tLSBhL2ZzL2V4
-dDQvZXh0NC5oDQo+PiArKysgYi9mcy9leHQ0L2V4dDQuaA0KPj4gQEAgLTE0ODAsNiArMTQ4MCw4
-IEBAIHN0cnVjdCBleHQ0X3NiX2luZm8gew0KPj4gCS8qIHdoZXJlIGxhc3QgYWxsb2NhdGlvbiB3
-YXMgZG9uZSAtIGZvciBzdHJlYW0gYWxsb2NhdGlvbiAqLw0KPj4gCXVuc2lnbmVkIGxvbmcgc19t
-Yl9sYXN0X2dyb3VwOw0KPj4gCXVuc2lnbmVkIGxvbmcgc19tYl9sYXN0X3N0YXJ0Ow0KPj4gKwl1
-bnNpZ25lZCBpbnQgc19tYl90b3NjYW4wOw0KPj4gKwl1bnNpZ25lZCBpbnQgc19tYl90b3NjYW4x
-Ow0KPj4gDQo+PiAJLyogc3RhdHMgZm9yIGJ1ZGR5IGFsbG9jYXRvciAqLw0KPj4gCWF0b21pY190
-IHNfYmFsX3JlcXM7CS8qIG51bWJlciBvZiByZXFzIHdpdGggbGVuID4gMSAqLw0KPj4gZGlmZiAt
-LWdpdCBhL2ZzL2V4dDQvbWJhbGxvYy5jIGIvZnMvZXh0NC9tYmFsbG9jLmMNCj4+IGluZGV4IGEz
-ZTI3NjdiZGYyZi4uY2ViZDdkOGRmMGI4IDEwMDY0NA0KPj4gLS0tIGEvZnMvZXh0NC9tYmFsbG9j
-LmMNCj4+ICsrKyBiL2ZzL2V4dDQvbWJhbGxvYy5jDQo+PiBAQCAtMjA5OCw3ICsyMDk4LDcgQEAg
-c3RhdGljIGludCBleHQ0X21iX2dvb2RfZ3JvdXAoc3RydWN0IGV4dDRfYWxsb2NhdGlvbl9jb250
-ZXh0ICphYywNCj4+IHN0YXRpYyBub2lubGluZV9mb3Jfc3RhY2sgaW50DQo+PiBleHQ0X21iX3Jl
-Z3VsYXJfYWxsb2NhdG9yKHN0cnVjdCBleHQ0X2FsbG9jYXRpb25fY29udGV4dCAqYWMpDQo+PiB7
-DQo+PiAtCWV4dDRfZ3JvdXBfdCBuZ3JvdXBzLCBncm91cCwgaTsNCj4+ICsJZXh0NF9ncm91cF90
-IG5ncm91cHMsIHRvc2NhbiwgZ3JvdXAsIGk7DQo+PiAJaW50IGNyOw0KPj4gCWludCBlcnIgPSAw
-LCBmaXJzdF9lcnIgPSAwOw0KPj4gCXN0cnVjdCBleHQ0X3NiX2luZm8gKnNiaTsNCj4+IEBAIC0y
-MTY5LDcgKzIxNjksMTUgQEAgZXh0NF9tYl9yZWd1bGFyX2FsbG9jYXRvcihzdHJ1Y3QgZXh0NF9h
-bGxvY2F0aW9uX2NvbnRleHQgKmFjKQ0KPj4gCQkgKi8NCj4+IAkJZ3JvdXAgPSBhYy0+YWNfZ19l
-eC5mZV9ncm91cDsNCj4+IA0KPj4gLQkJZm9yIChpID0gMDsgaSA8IG5ncm91cHM7IGdyb3VwKyss
-IGkrKykgew0KPj4gKwkJLyogbGltaXQgbnVtYmVyIG9mIGdyb3VwcyB0byBzY2FuIGF0IHRoZSBm
-aXJzdCB0d28gcm91bmRzDQo+PiArCQkgKiB3aGVuIHdlIGhvcGUgdG8gZmluZCBzb21ldGhpbmcg
-cmVhbGx5IGdvb2QgKi8NCj4+ICsJCXRvc2NhbiA9IG5ncm91cHM7DQo+PiArCQlpZiAoY3IgPT0g
-MCkNCj4+ICsJCQl0b3NjYW4gPSBzYmktPnNfbWJfdG9zY2FuMDsNCj4+ICsJCWVsc2UgaWYgKGNy
-ID09IDEpDQo+PiArCQkJdG9zY2FuID0gc2JpLT5zX21iX3Rvc2NhbjE7DQo+PiArDQo+PiArCQlm
-b3IgKGkgPSAwOyBpIDwgdG9zY2FuOyBncm91cCsrLCBpKyspIHsNCj4+IAkJCWludCByZXQgPSAw
-Ow0KPj4gCQkJY29uZF9yZXNjaGVkKCk7DQo+PiAJCQkvKg0KPj4gQEAgLTI4NzIsNiArMjg4MCw4
-IEBAIHZvaWQgZXh0NF9wcm9jZXNzX2ZyZWVkX2RhdGEoc3RydWN0IHN1cGVyX2Jsb2NrICpzYiwg
-dGlkX3QgY29tbWl0X3RpZCkNCj4+IAkJCWJpb19wdXQoZGlzY2FyZF9iaW8pOw0KPj4gCQl9DQo+
-PiAJfQ0KPj4gKwlzYmktPnNfbWJfdG9zY2FuMCA9IDEwMjQ7DQo+PiArCXNiaS0+c19tYl90b3Nj
-YW4xID0gNDA5NjsNCj4+IA0KPj4gCWxpc3RfZm9yX2VhY2hfZW50cnlfc2FmZShlbnRyeSwgdG1w
-LCAmZnJlZWRfZGF0YV9saXN0LCBlZmRfbGlzdCkNCj4+IAkJZXh0NF9mcmVlX2RhdGFfaW5fYnVk
-ZHkoc2IsIGVudHJ5KTsNCj4+IGRpZmYgLS1naXQgYS9mcy9leHQ0L3N5c2ZzLmMgYi9mcy9leHQ0
-L3N5c2ZzLmMNCj4+IGluZGV4IGViMWVmYWQwZTIwYS4uYzk2ZWUyMGY1NDg3IDEwMDY0NA0KPj4g
-LS0tIGEvZnMvZXh0NC9zeXNmcy5jDQo+PiArKysgYi9mcy9leHQ0L3N5c2ZzLmMNCj4+IEBAIC0x
-OTgsNiArMTk4LDggQEAgRVhUNF9ST19BVFRSX0VTX1VJKGVycm9yc19jb3VudCwgc19lcnJvcl9j
-b3VudCk7DQo+PiBFWFQ0X0FUVFIoZmlyc3RfZXJyb3JfdGltZSwgMDQ0NCwgZmlyc3RfZXJyb3Jf
-dGltZSk7DQo+PiBFWFQ0X0FUVFIobGFzdF9lcnJvcl90aW1lLCAwNDQ0LCBsYXN0X2Vycm9yX3Rp
-bWUpOw0KPj4gRVhUNF9BVFRSKGpvdXJuYWxfdGFzaywgMDQ0NCwgam91cm5hbF90YXNrKTsNCj4+
-ICtFWFQ0X1JXX0FUVFJfU0JJX1VJKG1iX3Rvc2NhbjAsIHNfbWJfdG9zY2FuMCk7DQo+PiArRVhU
-NF9SV19BVFRSX1NCSV9VSShtYl90b3NjYW4xLCBzX21iX3Rvc2NhbjEpOw0KPj4gDQo+PiBzdGF0
-aWMgdW5zaWduZWQgaW50IG9sZF9idW1wX3ZhbCA9IDEyODsNCj4+IEVYVDRfQVRUUl9QVFIobWF4
-X3dyaXRlYmFja19tYl9idW1wLCAwNDQ0LCBwb2ludGVyX3VpLCAmb2xkX2J1bXBfdmFsKTsNCj4+
-IEBAIC0yMjgsNiArMjMwLDggQEAgc3RhdGljIHN0cnVjdCBhdHRyaWJ1dGUgKmV4dDRfYXR0cnNb
-XSA9IHsNCj4+IAlBVFRSX0xJU1QoZmlyc3RfZXJyb3JfdGltZSksDQo+PiAJQVRUUl9MSVNUKGxh
-c3RfZXJyb3JfdGltZSksDQo+PiAJQVRUUl9MSVNUKGpvdXJuYWxfdGFzayksDQo+PiArCUFUVFJf
-TElTVChtYl90b3NjYW4wKSwNCj4+ICsJQVRUUl9MSVNUKG1iX3Rvc2NhbjEpLA0KPj4gCU5VTEws
-DQo+PiB9Ow0KPj4gQVRUUklCVVRFX0dST1VQUyhleHQ0KTsNCj4+IC0tIA0KPj4gMi4yMC4xDQo+
-PiANCj4+IA0KPiANCg0K
+
+> On 21 Nov 2019, at 11:52, Alex Zhuravlev <azhuravlev@whamcloud.com> =
+wrote:
+>=20
+>=20
+>=20
+>> On 21 Nov 2019, at 11:30, Artem Blagodarenko =
+<artem.blagodarenko@gmail.com> wrote:
+>>=20
+>> Hello Alex,
+>>=20
+>> Code looks good, but I have objections about the approach.
+>>=20
+>> 512TB disk with 4k block size have 4194304 groups. So 4k groups is =
+only ~0.01% of whole disk.
+>> Can we make decision to break search and get minimum blocks based on =
+such limited data.
+>> I am not sure that spending some time to find good group is worse =
+then allocate blocks without=20
+>> optimisation. Especially, if disk is quite free and there are a lot =
+of free block groups.
+>=20
+> Exact number isn=E2=80=99t hardcoded and subject to discussion, but =
+you don=E2=80=99t really want to scan 4M=20
+> groups (especially uninitialised) to find =E2=80=9Cbest=E2=80=9D =
+chunk.
+>=20
+
+Then it looks reasonable to make it disabled by default (set 0, that =
+means =E2=80=9Cdo not limit=E2=80=9D) and enable it by passing number to =
+attribute.
+
+> This can be optimized further like =E2=80=9Cdon=E2=80=99t count =
+initialized and/or empty groups=E2=80=9D, but still some limit
+> Is required, IMO. Notice this limit doesn=E2=80=99t apply if once we =
+tried to find =E2=80=9Cbest=E2=80=9D, i.e. it=E2=80=99s applied only
+> with cr=3D0 and cr=3D1.
+
+cr=3D0 and cr=3D1 are also important. They allow to accelerate =
+allocator, by increasing allocation window.
+Step by step from smallest to the biggest value in preallocation table.
+Your optimisation can reset this allocation window grow.
+
+Assume we have one fragmented part of disk and all other parts are quite =
+free.
+Allocator will spend a lot of time to go through this fragmented part, =
+because  will brake cr0 and cr1 and get
+range that satisfy c3.=20
+
+c3 requirement is quite simple =E2=80=9Cget first group that have enough =
+free blocks to allocate requested range=E2=80=9D.
+With hight probability allocator find such group at the start of c3 =
+loop, so goal (allocator starts its searching from goal) will not =
+significantly changed.
+Thus allocator go through this fragmented range using small steps.
+
+Without suggested optimisation, allocator skips this fragmented range at =
+moment and continue to allocate blocks.
+
+Best regards,
+Artem Blagodarenko.
+
+>=20
+> Thanks, Alex
+>=20
+>>=20
+>> Best regards,
+>> Artem Blagodarenko.
+>>> On 21 Nov 2019, at 10:03, Alex Zhuravlev <azhuravlev@whamcloud.com> =
+wrote:
+>>>=20
+>>>=20
+>>>=20
+>>>> On 20 Nov 2019, at 21:13, Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>>>>=20
+>>>> Hi Alex,
+>>>>=20
+>>>> A couple of comments.  First, please separate this patch so that =
+these
+>>>> two separate pieces of functionality can be reviewed and tested
+>>>> separately:
+>>>>=20
+>>>=20
+>>> This is the first patch of the series.
+>>>=20
+>>> Thanks, Alex
+>>>=20
+>>> =46rom 81c4b3b5a17d94525bbc6d2d89b20f6618b05bc6 Mon Sep 17 00:00:00 =
+2001
+>>> From: Alex Zhuravlev <bzzz@whamcloud.com>
+>>> Date: Thu, 21 Nov 2019 09:53:13 +0300
+>>> Subject: [PATCH 1/2] ext4: limit scanning for a good group
+>>>=20
+>>> at first two rounds to prevent situation when 10x-100x thousand
+>>> of groups are scanned, especially non-initialized groups.
+>>>=20
+>>> Signed-off-by: Alex Zhuravlev <bzzz@whamcloud.com>
+>>> ---
+>>> fs/ext4/ext4.h    |  2 ++
+>>> fs/ext4/mballoc.c | 14 ++++++++++++--
+>>> fs/ext4/sysfs.c   |  4 ++++
+>>> 3 files changed, 18 insertions(+), 2 deletions(-)
+>>>=20
+>>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>>> index 03db3e71676c..d4e47fdad87c 100644
+>>> --- a/fs/ext4/ext4.h
+>>> +++ b/fs/ext4/ext4.h
+>>> @@ -1480,6 +1480,8 @@ struct ext4_sb_info {
+>>> 	/* where last allocation was done - for stream allocation */
+>>> 	unsigned long s_mb_last_group;
+>>> 	unsigned long s_mb_last_start;
+>>> +	unsigned int s_mb_toscan0;
+>>> +	unsigned int s_mb_toscan1;
+>>>=20
+>>> 	/* stats for buddy allocator */
+>>> 	atomic_t s_bal_reqs;	/* number of reqs with len > 1 */
+>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>>> index a3e2767bdf2f..cebd7d8df0b8 100644
+>>> --- a/fs/ext4/mballoc.c
+>>> +++ b/fs/ext4/mballoc.c
+>>> @@ -2098,7 +2098,7 @@ static int ext4_mb_good_group(struct =
+ext4_allocation_context *ac,
+>>> static noinline_for_stack int
+>>> ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>>> {
+>>> -	ext4_group_t ngroups, group, i;
+>>> +	ext4_group_t ngroups, toscan, group, i;
+>>> 	int cr;
+>>> 	int err =3D 0, first_err =3D 0;
+>>> 	struct ext4_sb_info *sbi;
+>>> @@ -2169,7 +2169,15 @@ ext4_mb_regular_allocator(struct =
+ext4_allocation_context *ac)
+>>> 		 */
+>>> 		group =3D ac->ac_g_ex.fe_group;
+>>>=20
+>>> -		for (i =3D 0; i < ngroups; group++, i++) {
+>>> +		/* limit number of groups to scan at the first two =
+rounds
+>>> +		 * when we hope to find something really good */
+>>> +		toscan =3D ngroups;
+>>> +		if (cr =3D=3D 0)
+>>> +			toscan =3D sbi->s_mb_toscan0;
+>>> +		else if (cr =3D=3D 1)
+>>> +			toscan =3D sbi->s_mb_toscan1;
+>>> +
+>>> +		for (i =3D 0; i < toscan; group++, i++) {
+>>> 			int ret =3D 0;
+>>> 			cond_resched();
+>>> 			/*
+>>> @@ -2872,6 +2880,8 @@ void ext4_process_freed_data(struct =
+super_block *sb, tid_t commit_tid)
+>>> 			bio_put(discard_bio);
+>>> 		}
+>>> 	}
+>>> +	sbi->s_mb_toscan0 =3D 1024;
+>>> +	sbi->s_mb_toscan1 =3D 4096;
+>>>=20
+>>> 	list_for_each_entry_safe(entry, tmp, &freed_data_list, efd_list)
+>>> 		ext4_free_data_in_buddy(sb, entry);
+>>> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+>>> index eb1efad0e20a..c96ee20f5487 100644
+>>> --- a/fs/ext4/sysfs.c
+>>> +++ b/fs/ext4/sysfs.c
+>>> @@ -198,6 +198,8 @@ EXT4_RO_ATTR_ES_UI(errors_count, s_error_count);
+>>> EXT4_ATTR(first_error_time, 0444, first_error_time);
+>>> EXT4_ATTR(last_error_time, 0444, last_error_time);
+>>> EXT4_ATTR(journal_task, 0444, journal_task);
+>>> +EXT4_RW_ATTR_SBI_UI(mb_toscan0, s_mb_toscan0);
+>>> +EXT4_RW_ATTR_SBI_UI(mb_toscan1, s_mb_toscan1);
+>>>=20
+>>> static unsigned int old_bump_val =3D 128;
+>>> EXT4_ATTR_PTR(max_writeback_mb_bump, 0444, pointer_ui, =
+&old_bump_val);
+>>> @@ -228,6 +230,8 @@ static struct attribute *ext4_attrs[] =3D {
+>>> 	ATTR_LIST(first_error_time),
+>>> 	ATTR_LIST(last_error_time),
+>>> 	ATTR_LIST(journal_task),
+>>> +	ATTR_LIST(mb_toscan0),
+>>> +	ATTR_LIST(mb_toscan1),
+>>> 	NULL,
+>>> };
+>>> ATTRIBUTE_GROUPS(ext4);
+>>> --=20
+>>> 2.20.1
+>>>=20
+>>>=20
+>>=20
+>=20
+
