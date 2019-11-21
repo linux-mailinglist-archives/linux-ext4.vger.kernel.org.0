@@ -2,256 +2,136 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5CD104F0D
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2019 10:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CF0105206
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2019 13:03:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbfKUJSs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 21 Nov 2019 04:18:48 -0500
-Received: from mail-il1-f196.google.com ([209.85.166.196]:39598 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbfKUJSs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Nov 2019 04:18:48 -0500
-Received: by mail-il1-f196.google.com with SMTP id a7so2568294ild.6
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Nov 2019 01:18:47 -0800 (PST)
+        id S1726760AbfKUMD1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 21 Nov 2019 07:03:27 -0500
+Received: from mail-io1-f51.google.com ([209.85.166.51]:46432 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbfKUMD1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 21 Nov 2019 07:03:27 -0500
+Received: by mail-io1-f51.google.com with SMTP id i11so3016588iol.13
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Nov 2019 04:03:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=PnVSra4UoARhdb9UWaexbDqv7hjvezA0eH2trxDjt6c=;
-        b=j+og/Bu6CiNifl2UtWDcUhKLYw9jh4B7s0JeVw7hXSKF0E1hayw5DVMsbp6Vk9uacN
-         AMHFtbCeXFaz0TLSd+lahWZIHXn42iQwvc7ueNOK08N5Jxl4WBiXaqMqAAbgAImz25IE
-         rW94q5XkTJTWIDUDic0+YJex2eRrtGSo52L3PH9SCqb8xNyiv9yTT+FMmGCrRQskkctA
-         Bagarez2sedn2x5TKI7t7af0b7l7IHzCCg8z90b0i+hrQxP4gxvzVRAA4S5yHvyT4XEX
-         JnhZlp5xDSzyVu8cJTch88Lis/nS5tSWxgetVLn2xCTLccHwVpPokqmb/5Q5C1QoQwMx
-         nTcA==
+        h=from:to:cc:subject:date:message-id;
+        bh=L/x9tUqQhjdpRa2LtXLBLTJ2xFdOcU6J44P4Yyl8c68=;
+        b=B3ntd+LBJtvOCmPSP/lGTQywwYMCWKqGHtp16wVlD534TwATKSEu3JZLH9nH1BDeDF
+         T25N1f2JE8xkDWhh1GgfZOZgud7zPxFsKCW0yrwNpizFqW8qVUdagM3RiCtheqq28N9I
+         RLfMSJsyRuf43nUd2Yzs7/C6unTmGGtlkL2GuHtswvVamtA+QVY63BhBxFxzBQIxeYmH
+         AH6VkeP9khrTCvDSYFbH9Qk0PpYYUqriFXmNpWmjRHrik05OPxALLZ4xEC/O3vWcUe7q
+         +qMz62/+O2fZEegf5hI0WEPs9sH7fVe542tGm+TvxDzUYzBqcLFNHUF3d0Z4j2oKnr/i
+         5w3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=PnVSra4UoARhdb9UWaexbDqv7hjvezA0eH2trxDjt6c=;
-        b=Re388vmoG8HREtgX8v2fwG27osySctG7qKyxbQiJ0C/M1AggAtu5tyVSgpfvVVeqn6
-         oM//AbXd9c4iTcpZROsoPbDBm+ikuS26HpORysIy9o94wzGUdSafx+43FpHEgo7vTKN/
-         0TKzNRCoyhn9dNx03dxd6ZUhh3ZnUHJoBaW9Wh6PzhOmSVSKif7yH6us1a/Om4yrKZaq
-         7CAD/QZMmjVzZ5HU6K2PxINnKBg3+yzHxCLp1w4Xp0uswjvb/GdIvn72KltvvmL6KqAK
-         AQcW3sFN4O+8BwLrxzcX3rKgv41MzHOtjzf9lzEvnQYYDGvT0WV1hlfVW2IGDCjRy5kl
-         L5Hg==
-X-Gm-Message-State: APjAAAXGYa6yGiiLHZhx3xUCQ7HvUN4YIxChYEj9frJYXTuZ5DF70clk
-        KLxLULKDDnQBQqhAE/tIbDA=
-X-Google-Smtp-Source: APXvYqzo3u7lg8KWJ+n6HT78qOqUXUDsypO5CoSGlS9wdPtvE8jOxYyDjj2UyQyDtIJOwDILAJvLMw==
-X-Received: by 2002:a92:ce06:: with SMTP id b6mr8556004ilo.14.1574327927146;
-        Thu, 21 Nov 2019 01:18:47 -0800 (PST)
-Received: from [192.168.64.38] (chippewa-nat.cray.com. [136.162.34.1])
-        by smtp.gmail.com with ESMTPSA id d8sm845000ilr.82.2019.11.21.01.18.45
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Nov 2019 01:18:46 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [RFC] improve malloc for large filesystems
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=L/x9tUqQhjdpRa2LtXLBLTJ2xFdOcU6J44P4Yyl8c68=;
+        b=JUyfUeMnXpFmyfZDZz0yyKf/Y+MepnQfyW3ri2EcqY6liMKOSgqUD7u0WjjqaLeepU
+         a+Q+AKvgOqh7/X+2yxhbr7Z8U5k1ZOYChL1xXtvW/X6w/e08PpUPoqKdYYAWBL0ochjv
+         hrhUaU9FkiGwOrv9yIbT8p0ZxBp8eZZHblHedUb5P/tL1WgfJaUkcACJYJ+gT87k6nwT
+         rJ6RcddUhj1URJgMkGTKin0lxD6E7DujiCvx9L1YJ7oC2IE5v//KOCDFi1Bz6lTIjr75
+         DQ5a3pkRoJmQP4ej6M50HSqLxMJMxBXitYxcqNH9Gq4QnVeViQRJSkD69I/RFxp2NezC
+         v7XA==
+X-Gm-Message-State: APjAAAWF9gVEU3K/849Zau0p0ZwSNuXlXr57bn+5QhwWPtRYBmkXztf8
+        BxFIMoCM9aA29E3eugY/0NB9DOfH4X3IEw==
+X-Google-Smtp-Source: APXvYqx8gz+zzfJFapLKFi54Puh2SQN2fQiCGAcpcVB87ocYp1tEUgRmX3TWv88cviv5aAKK8KQFCQ==
+X-Received: by 2002:a6b:4e05:: with SMTP id c5mr7514032iob.6.1574337806155;
+        Thu, 21 Nov 2019 04:03:26 -0800 (PST)
+Received: from C02TN4C6HTD6.us.cray.com (chippewa-nat.cray.com. [136.162.34.1])
+        by smtp.gmail.com with ESMTPSA id r16sm1069166ilk.63.2019.11.21.04.03.23
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Thu, 21 Nov 2019 04:03:25 -0800 (PST)
 From:   Artem Blagodarenko <artem.blagodarenko@gmail.com>
-In-Reply-To: <9114E776-B44E-4CA5-BD49-C432A688C24E@whamcloud.com>
-Date:   Thu, 21 Nov 2019 12:18:42 +0300
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <43DA6456-AAF9-4225-A79F-CF632AC5241B@gmail.com>
-References: <8738E8FF-820F-48A5-9150-7FF64219ED42@whamcloud.com>
- <20191120181353.GG4262@mit.edu>
- <9E04C147-D878-45CE-8473-EF8C67FE4E86@whamcloud.com>
- <4EB2303A-01A3-49AC-B713-195126DB621B@gmail.com>
- <9114E776-B44E-4CA5-BD49-C432A688C24E@whamcloud.com>
-To:     Alex Zhuravlev <azhuravlev@whamcloud.com>
-X-Mailer: Apple Mail (2.3273)
+X-Google-Original-From: Artem Blagodarenko <c17828@cray.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     adilger.kernel@dilger.ca, Vladimir Saveliev <c17830@cray.com>
+Subject: [REF] LUS-6746 debugfs: fake_fill_fs to fragment filesystem
+Date:   Thu, 21 Nov 2019 15:03:15 +0300
+Message-Id: <20191121120315.14481-1-c17828@cray.com>
+X-Mailer: git-send-email 2.14.3 (Apple Git-98)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Vladimir Saveliev <c17830@cray.com>
 
-> On 21 Nov 2019, at 11:52, Alex Zhuravlev <azhuravlev@whamcloud.com> =
-wrote:
->=20
->=20
->=20
->> On 21 Nov 2019, at 11:30, Artem Blagodarenko =
-<artem.blagodarenko@gmail.com> wrote:
->>=20
->> Hello Alex,
->>=20
->> Code looks good, but I have objections about the approach.
->>=20
->> 512TB disk with 4k block size have 4194304 groups. So 4k groups is =
-only ~0.01% of whole disk.
->> Can we make decision to break search and get minimum blocks based on =
-such limited data.
->> I am not sure that spending some time to find good group is worse =
-then allocate blocks without=20
->> optimisation. Especially, if disk is quite free and there are a lot =
-of free block groups.
->=20
-> Exact number isn=E2=80=99t hardcoded and subject to discussion, but =
-you don=E2=80=99t really want to scan 4M=20
-> groups (especially uninitialised) to find =E2=80=9Cbest=E2=80=9D =
-chunk.
->=20
+New command is added to debugfs: fake_fill_fs <filling in %>
 
-Then it looks reasonable to make it disabled by default (set 0, that =
-means =E2=80=9Cdo not limit=E2=80=9D) and enable it by passing number to =
-attribute.
+This command finds free blocks on a filesystem and mark as in use
+specified fraction of those.
 
-> This can be optimized further like =E2=80=9Cdon=E2=80=99t count =
-initialized and/or empty groups=E2=80=9D, but still some limit
-> Is required, IMO. Notice this limit doesn=E2=80=99t apply if once we =
-tried to find =E2=80=9Cbest=E2=80=9D, i.e. it=E2=80=99s applied only
-> with cr=3D0 and cr=3D1.
+Example: debugfs -w -R 'fake_fill_fs 50' <device>
 
-cr=3D0 and cr=3D1 are also important. They allow to accelerate =
-allocator, by increasing allocation window.
-Step by step from smallest to the biggest value in preallocation table.
-Your optimisation can reset this allocation window grow.
+This can be to used in order to quickly fragment a filesystem which
+may useful for block allocation improvement estimation.
 
-Assume we have one fragmented part of disk and all other parts are quite =
-free.
-Allocator will spend a lot of time to go through this fragmented part, =
-because  will brake cr0 and cr1 and get
-range that satisfy c3.=20
+Use it carefully, there is no way to recover free space but using
+e2fsck.
 
-c3 requirement is quite simple =E2=80=9Cget first group that have enough =
-free blocks to allocate requested range=E2=80=9D.
-With hight probability allocator find such group at the start of c3 =
-loop, so goal (allocator starts its searching from goal) will not =
-significantly changed.
-Thus allocator go through this fragmented range using small steps.
+Change-Id: Ib7ce7794eefac2726fef334810a5832d52a90398
+Signed-off-by: Vladimir Saveliev <c17830@cray.com>
+Signed-off-by: Artem Blagodarenko <c17828@cray.com>
+Cray-bug-id: LUS-6746
+---
+ debugfs/debug_cmds.ct |  2 ++
+ debugfs/debugfs.c     | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-Without suggested optimisation, allocator skips this fragmented range at =
-moment and continue to allocate blocks.
-
-Best regards,
-Artem Blagodarenko.
-
->=20
-> Thanks, Alex
->=20
->>=20
->> Best regards,
->> Artem Blagodarenko.
->>> On 21 Nov 2019, at 10:03, Alex Zhuravlev <azhuravlev@whamcloud.com> =
-wrote:
->>>=20
->>>=20
->>>=20
->>>> On 20 Nov 2019, at 21:13, Theodore Y. Ts'o <tytso@mit.edu> wrote:
->>>>=20
->>>> Hi Alex,
->>>>=20
->>>> A couple of comments.  First, please separate this patch so that =
-these
->>>> two separate pieces of functionality can be reviewed and tested
->>>> separately:
->>>>=20
->>>=20
->>> This is the first patch of the series.
->>>=20
->>> Thanks, Alex
->>>=20
->>> =46rom 81c4b3b5a17d94525bbc6d2d89b20f6618b05bc6 Mon Sep 17 00:00:00 =
-2001
->>> From: Alex Zhuravlev <bzzz@whamcloud.com>
->>> Date: Thu, 21 Nov 2019 09:53:13 +0300
->>> Subject: [PATCH 1/2] ext4: limit scanning for a good group
->>>=20
->>> at first two rounds to prevent situation when 10x-100x thousand
->>> of groups are scanned, especially non-initialized groups.
->>>=20
->>> Signed-off-by: Alex Zhuravlev <bzzz@whamcloud.com>
->>> ---
->>> fs/ext4/ext4.h    |  2 ++
->>> fs/ext4/mballoc.c | 14 ++++++++++++--
->>> fs/ext4/sysfs.c   |  4 ++++
->>> 3 files changed, 18 insertions(+), 2 deletions(-)
->>>=20
->>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->>> index 03db3e71676c..d4e47fdad87c 100644
->>> --- a/fs/ext4/ext4.h
->>> +++ b/fs/ext4/ext4.h
->>> @@ -1480,6 +1480,8 @@ struct ext4_sb_info {
->>> 	/* where last allocation was done - for stream allocation */
->>> 	unsigned long s_mb_last_group;
->>> 	unsigned long s_mb_last_start;
->>> +	unsigned int s_mb_toscan0;
->>> +	unsigned int s_mb_toscan1;
->>>=20
->>> 	/* stats for buddy allocator */
->>> 	atomic_t s_bal_reqs;	/* number of reqs with len > 1 */
->>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->>> index a3e2767bdf2f..cebd7d8df0b8 100644
->>> --- a/fs/ext4/mballoc.c
->>> +++ b/fs/ext4/mballoc.c
->>> @@ -2098,7 +2098,7 @@ static int ext4_mb_good_group(struct =
-ext4_allocation_context *ac,
->>> static noinline_for_stack int
->>> ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->>> {
->>> -	ext4_group_t ngroups, group, i;
->>> +	ext4_group_t ngroups, toscan, group, i;
->>> 	int cr;
->>> 	int err =3D 0, first_err =3D 0;
->>> 	struct ext4_sb_info *sbi;
->>> @@ -2169,7 +2169,15 @@ ext4_mb_regular_allocator(struct =
-ext4_allocation_context *ac)
->>> 		 */
->>> 		group =3D ac->ac_g_ex.fe_group;
->>>=20
->>> -		for (i =3D 0; i < ngroups; group++, i++) {
->>> +		/* limit number of groups to scan at the first two =
-rounds
->>> +		 * when we hope to find something really good */
->>> +		toscan =3D ngroups;
->>> +		if (cr =3D=3D 0)
->>> +			toscan =3D sbi->s_mb_toscan0;
->>> +		else if (cr =3D=3D 1)
->>> +			toscan =3D sbi->s_mb_toscan1;
->>> +
->>> +		for (i =3D 0; i < toscan; group++, i++) {
->>> 			int ret =3D 0;
->>> 			cond_resched();
->>> 			/*
->>> @@ -2872,6 +2880,8 @@ void ext4_process_freed_data(struct =
-super_block *sb, tid_t commit_tid)
->>> 			bio_put(discard_bio);
->>> 		}
->>> 	}
->>> +	sbi->s_mb_toscan0 =3D 1024;
->>> +	sbi->s_mb_toscan1 =3D 4096;
->>>=20
->>> 	list_for_each_entry_safe(entry, tmp, &freed_data_list, efd_list)
->>> 		ext4_free_data_in_buddy(sb, entry);
->>> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
->>> index eb1efad0e20a..c96ee20f5487 100644
->>> --- a/fs/ext4/sysfs.c
->>> +++ b/fs/ext4/sysfs.c
->>> @@ -198,6 +198,8 @@ EXT4_RO_ATTR_ES_UI(errors_count, s_error_count);
->>> EXT4_ATTR(first_error_time, 0444, first_error_time);
->>> EXT4_ATTR(last_error_time, 0444, last_error_time);
->>> EXT4_ATTR(journal_task, 0444, journal_task);
->>> +EXT4_RW_ATTR_SBI_UI(mb_toscan0, s_mb_toscan0);
->>> +EXT4_RW_ATTR_SBI_UI(mb_toscan1, s_mb_toscan1);
->>>=20
->>> static unsigned int old_bump_val =3D 128;
->>> EXT4_ATTR_PTR(max_writeback_mb_bump, 0444, pointer_ui, =
-&old_bump_val);
->>> @@ -228,6 +230,8 @@ static struct attribute *ext4_attrs[] =3D {
->>> 	ATTR_LIST(first_error_time),
->>> 	ATTR_LIST(last_error_time),
->>> 	ATTR_LIST(journal_task),
->>> +	ATTR_LIST(mb_toscan0),
->>> +	ATTR_LIST(mb_toscan1),
->>> 	NULL,
->>> };
->>> ATTRIBUTE_GROUPS(ext4);
->>> --=20
->>> 2.20.1
->>>=20
->>>=20
->>=20
->=20
+diff --git a/debugfs/debug_cmds.ct b/debugfs/debug_cmds.ct
+index 1ff6c9dc..12557888 100644
+--- a/debugfs/debug_cmds.ct
++++ b/debugfs/debug_cmds.ct
+@@ -229,5 +229,7 @@ request do_journal_write, "Write a transaction to the journal",
+ request do_journal_run, "Recover the journal",
+ 	journal_run, jr;
+ 
++request do_fake_fill_fs, "Make the filesystem to look as if it was full",
++	fake_fill_fs;
+ end;
+ 
+diff --git a/debugfs/debugfs.c b/debugfs/debugfs.c
+index 9b701455..25731883 100644
+--- a/debugfs/debugfs.c
++++ b/debugfs/debugfs.c
+@@ -2209,6 +2209,36 @@ err:
+ 	ext2fs_free_mem(&buf);
+ }
+ 
++void do_fake_fill_fs(int argc, char *argv[])
++{
++	__u64 block_count, i;
++	unsigned long v;
++	char *tmp;
++	int f;
++
++	if (common_args_process(argc, argv, 2, 2, argv[0],
++				"filling(%)", CHECK_FS_BITMAPS))
++		return;
++	if (check_fs_read_write(argv[0]))
++		return;
++	v = strtoul(argv[1], &tmp, 0);
++	if (v < 1 || v > 100) {
++		com_err("argv[0]", 0, "filling [1-100]");
++	}
++
++	block_count = ext2fs_blocks_count(current_fs->super);
++	for (i = 1, f = 0; i < block_count; i++) {
++		if (!ext2fs_test_block_bitmap2(current_fs->block_map, i)) {
++			f %= 100;
++			if (f < v)
++				ext2fs_block_alloc_stats2(current_fs, i, +1);
++			f ++;
++		}
++	}
++
++	ext2fs_mark_bb_dirty(current_fs);
++}
++
+ #ifndef READ_ONLY
+ void do_set_current_time(int argc, char *argv[],
+ 			 int sci_idx EXT2FS_ATTR((unused)),
+-- 
+2.14.3 (Apple Git-98)
 
