@@ -2,61 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA831094AC
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Nov 2019 21:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D06109533
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Nov 2019 22:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725882AbfKYUfm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 25 Nov 2019 15:35:42 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:37247 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbfKYUfm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Nov 2019 15:35:42 -0500
-Received: by mail-pj1-f68.google.com with SMTP id bb19so3578752pjb.4
-        for <linux-ext4@vger.kernel.org>; Mon, 25 Nov 2019 12:35:40 -0800 (PST)
+        id S1725924AbfKYVkE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 25 Nov 2019 16:40:04 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:43911 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbfKYVkE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 25 Nov 2019 16:40:04 -0500
+Received: by mail-pl1-f196.google.com with SMTP id q16so2904848plr.10
+        for <linux-ext4@vger.kernel.org>; Mon, 25 Nov 2019 13:40:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=dPQ6h7zFD1Oyhpvy1I4x06EbAiDf8R0y0ApMKnWZvr4=;
-        b=NFxYfGv/HncILw/twOPsiJnyKxN1kgTDHLbUbgJ6RFjfreov9M7YyVX4jycgwHFN0N
-         KdT3c67RyOQzUSOGiSardLlFjiP8+0QEnFDalVZ4NSyFbJXGe1DFHDUjJgdVjrM0pAWr
-         qwD1X4xmr2GuDB4piXhHujXBWLjzAXobSKt2nOSiPMcX8wo4BxLsDiTbPzEcgeiY9hc6
-         NT1rAEGTodac2TQFrnAY2EGvRTyis0IIokwBIps4sAeK402Z/EodsGQz933VkOW7V3O3
-         zjt+KXVDb4VM9vr2kHE6klwZz86/Ay4AWEPFSCu+OD+DP7RYVFIRPVlvgs7BLxJgen9n
-         1vbg==
+        bh=y+IhGar7jJTqUjwKHxr5so+mDc7a+WYT1U4bOcNJYVQ=;
+        b=Dt3faSKzCwKEiP6AU2QFFL7DVRrHH0ocqWPUcQ4FSLAn/KIdxE8I/HM6Y1L5T/ePWe
+         GyYCpqx8wPslKB/K+bJm79RUy5/xw8VzcaSXW7j0HEyxZq7NoVQfZH87OerV4nKQRMa1
+         7lVycK3kC7yGIlOQ3WKYr7e257siJzCyZE5mWnEag5tFJgffYUPn+CFd9kIGv2MolHsd
+         ZM7bTi1nw/VJsp9gjqY8c4RQp/mMyGhKdnFxMb1o3meUp11jRwOrguMCW+wQGnrQk7Pj
+         jcAyW94K/BCgomFkTHbBKqwwj4AZKqPxDNKg1e3AFa9yOgcSKr7iE3XpAVgRmSu7b5VF
+         HcUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=dPQ6h7zFD1Oyhpvy1I4x06EbAiDf8R0y0ApMKnWZvr4=;
-        b=WCt/m1c0e+oBJnXxO1G8zbb6Y8cJpLtpqAk6CybERehQPxqnhaKlP+kBiXRTWJhk28
-         ON5M+MfP6hdMCIIR6tbsuWV5xRxK4BUNvw9fnqD0F4SQ4JfFcKde1Dm/La3DaQnOs0nB
-         A4Sk5LKAmn7FpX6FT8SPTNGpNhr790tBwwsQvieMN7AY12zW0aJqbVJn1e9/sARGNMaD
-         VB0A/EUc4S+3JMMRSDe+4apJbAb9CeJssUfItUeW3GoPt+sS3bPvr8q0OYjEJtLY6Y4X
-         xXTniGuWVxA3Sh0qwX29jKv1fcfaMqJh+uyzr57NBPF4N5l5cDaHzYBDEBIk+siCE563
-         CViw==
-X-Gm-Message-State: APjAAAV7SiQ8LmOJzxXWX97GMjtnlKrB1tf7YZ1M4J5bJ0LNSwwMmohA
-        xLkJBcDQIyCPMx/VjfEr9NYYoQ==
-X-Google-Smtp-Source: APXvYqzVO8iAQ5MjYfDOwABQW45SoSRKHVaCBm154YZvjPAOB+Yzt2AwT/nHNlEXoM6bkg3x9IeZaw==
-X-Received: by 2002:a17:90a:fe07:: with SMTP id ck7mr1113269pjb.99.1574714140026;
-        Mon, 25 Nov 2019 12:35:40 -0800 (PST)
+        bh=y+IhGar7jJTqUjwKHxr5so+mDc7a+WYT1U4bOcNJYVQ=;
+        b=lBxjlpEt32M4r6sKGucAkpw1RgtvstxhYxvV0DUPwxMtYFy7qNRknEWd6HbcBJ7B/k
+         9rXwpSajSbenANbZz8cdC1++YdkzZ3ZAyKpY3vLfo9qeU75olEELRUzR8XI7WRWKOejv
+         0raw43CeMDRoBRrqRZBpOMWbWKQ6ETIQBFq9Afrns4JCfdfGKnvvhCSWu46mRXcO2T8k
+         rYA3YLEkXHBMRW+OhSMs+8nCt5RiHlUvzx4zvGD5Q6BOBu3OM1G0WUx/6IVDFFJLXxzy
+         UfHvJRiSSIuGlUVLrCZWZEmNOm/BiDVsa7WEOnZGROxf/5YqHbg2wo/TZIS9B4eQ8amI
+         wJ6g==
+X-Gm-Message-State: APjAAAXlHgdaetpTWke4jIivQ+QXp3P5z+raKXpLZXAwqUCqLtRfMcKT
+        NF8144W5uqvoVTqfGWm0eV3A2A==
+X-Google-Smtp-Source: APXvYqymFJvktXPKHr5TkfFWBlXs9+dIcedTdEYqCr8/dXYWOOYGlKxc7aUMRAsM0XxC1KL/AWTN1w==
+X-Received: by 2002:a17:90a:86c2:: with SMTP id y2mr1677072pjv.72.1574718003124;
+        Mon, 25 Nov 2019 13:40:03 -0800 (PST)
 Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id c28sm9453193pgc.65.2019.11.25.12.35.38
+        by smtp.gmail.com with ESMTPSA id d11sm10363817pfq.72.2019.11.25.13.40.01
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Nov 2019 12:35:39 -0800 (PST)
+        Mon, 25 Nov 2019 13:40:02 -0800 (PST)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <112BB9E8-55D1-4F4A-9872-63DCB8C804EF@dilger.ca>
+Message-Id: <E02E44A9-6206-4B73-B52F-C3A1BC4C7D1E@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_F3EFE867-C13C-4206-8F13-7B22BD096AF0";
+ boundary="Apple-Mail=_8B0EEE79-E2B0-48DD-B6D5-D659ABF991D0";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: Unnecessarily bad cache behavior for ext4_getattr()
-Date:   Mon, 25 Nov 2019 13:35:36 -0700
-In-Reply-To: <CAHk-=wivmk_j6KbTX+Er64mLrG8abXZo0M10PNdAnHc8fWXfsQ@mail.gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-References: <CAHk-=wivmk_j6KbTX+Er64mLrG8abXZo0M10PNdAnHc8fWXfsQ@mail.gmail.com>
+Subject: Re: [RFC] improve malloc for large filesystems
+Date:   Mon, 25 Nov 2019 14:39:59 -0700
+In-Reply-To: <BCFC8274-0A4E-42E7-9D11-647D47316BD2@whamcloud.com>
+Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+To:     Alex Zhuravlev <azhuravlev@whamcloud.com>,
+        =?utf-8?B?0JHQu9Cw0LPQvtC00LDRgNC10L3QutC+INCQ0YDRgtGR0Lw=?= 
+        <artem.blagodarenko@gmail.com>
+References: <8738E8FF-820F-48A5-9150-7FF64219ED42@whamcloud.com>
+ <20191120181353.GG4262@mit.edu>
+ <9E04C147-D878-45CE-8473-EF8C67FE4E86@whamcloud.com>
+ <4EB2303A-01A3-49AC-B713-195126DB621B@gmail.com>
+ <9114E776-B44E-4CA5-BD49-C432A688C24E@whamcloud.com>
+ <43DA6456-AAF9-4225-A79F-CF632AC5241B@gmail.com>
+ <BCFC8274-0A4E-42E7-9D11-647D47316BD2@whamcloud.com>
 X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -64,59 +71,86 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_F3EFE867-C13C-4206-8F13-7B22BD096AF0
+--Apple-Mail=_8B0EEE79-E2B0-48DD-B6D5-D659ABF991D0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
-	charset=us-ascii
+	charset=utf-8
 
-On Nov 24, 2019, at 5:19 PM, Linus Torvalds =
-<torvalds@linux-foundation.org> wrote:
+On Nov 21, 2019, at 7:41 AM, Alex Zhuravlev <azhuravlev@whamcloud.com> =
+wrote:
 >=20
-> It looks from profiles like ext4_getattr() is fairly expensive,
-> because it unnecessarily accesses the extended inode information and
-> causes extra cache misses.
+> On 21 Nov 2019, at 12:18, Artem Blagodarenko =
+<artem.blagodarenko@gmail.com> wrote:
+>> Assume we have one fragmented part of disk and all other parts are =
+quite free.
+>> Allocator will spend a lot of time to go through this fragmented =
+part, because
+>> will brake cr0 and cr1 and get range that satisfy c3.
 >=20
-> On an empty kernel allmodconfig build (which is a lot of "stat()"
-> calls by Make, and a lot of silly string stuff in user space due to
-> all the make variable games we play), ext4_getattr() was something
-> like 1% of the time according to the profile I gathered. It might be
-> bogus - maybe the cacheline ends up being accessed later anyway, but
-> it _looked_ like it was the whole "i_extra_isize" access that missed
-> in the cache.
+> Even at cr=3D3 we still search for the goal size.
 >=20
-> That's all for gathering the STATX_BTIME information, that the caller
-> doesn't even *want*.
->=20
-> How about a patch like the attached?
+> Thus we shouldn=E2=80=99t really allocate bad chunks because we break =
+cr=3D0 and cr=3D1,
+> we just stop to look for nicely looking groups and fallback to regular =
+(more
+> expensive) search for free extents.
 
-I think that looks quite reasonable.  I was going to comment that the
-nanosecond timestamps for [amc]time are also stored in the "extra_isize"
-part of the inode, but in this callpath they are already stored in the
-VFS inode and do not need to be extracted each time.
+I think it is important to understand what the actual goal size is at =
+this
+point.  The filesystems where we are seeing problems are _huge_ (650TiB =
+and
+larger) and are relatively full (70% or more) but take tens of minutes =
+to
+finish mounting.  Lustre does some small writes at mount time, but it =
+shouldn't
+take so long to find some small allocations for the config log update.
 
-So I'd think your patch should be good, modulo 80-column line wrap.
+The filesystems are automatically getting "s_stripe_size =3D 512" from =
+mke2fs
+(presumably from the underlying RAID), and I _think_ this is causing =
+mballoc
+to inflate the IO request to 8-16MB prealloc chunks, which would be much
+harder to find, and unnecessary for a small allocation.
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-
-
->  fs/ext4/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>> c3 requirement is quite simple =E2=80=9Cget first group that have =
+enough free
+>> blocks to allocate requested range=E2=80=9D.
 >=20
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 516faa280ced..617dc8835f5f 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5700,7 +5700,7 @@ int ext4_getattr(const struct path *path, struct =
-kstat *stat,
->  	struct ext4_inode_info *ei =3D EXT4_I(inode);
->  	unsigned int flags;
+> This is only group selection, then we try to find that extent within =
+that
+> group, can fail and move to the next group.
+> EXT4_MB_HINT_FIRST is set outside of the main cr=3D0..3 loop.
 >=20
-> -	if (EXT4_FITS_IN_INODE(raw_inode, ei, i_crtime)) {
-> +	if ((query_flags & STATX_BTIME) && EXT4_FITS_IN_INODE(raw_inode, =
-ei, i_crtime)) {
->  		stat->result_mask |=3D STATX_BTIME;
->  		stat->btime.tv_sec =3D ei->i_crtime.tv_sec;
->  		stat->btime.tv_nsec =3D ei->i_crtime.tv_nsec;
+>> With hight probability allocator find such group at the start of c3 =
+loop,
+>> so goal (allocator starts its searching from goal) will not =
+significantly
+>> changed. Thus allocator go through this fragmented range using small =
+steps.
+>>=20
+>> Without suggested optimisation, allocator skips this fragmented range =
+at
+>> moment and continue to allocate blocks.
+>=20
+> 1000 groups * 5ms avg.time =3D 5 seconds to skip 1000 bad =
+uninitialized groups. This is the real problem. You mentioned 4M =
+groups...
+
+Yes, these filesystems have 5M or more groups, which is a real problem.
+Alex is working on a patch to do prefetch of the bitmaps, and to read =
+them
+in chunks of flex_bg size (256 blocks =3D 1MB) to cut down on the number =
+of
+seeks needed to fetch them from disk.
+
+Using bigalloc would also help, and getting the number of block groups =
+lower
+will avoid the need for meta_bg (which puts each group descriptor into a
+separate group, rather than packed contiguously)  but we've had to fix a =
+few
+performance issues with bigalloc as well, and have not deployed it yet =
+in
+production.
 
 Cheers, Andreas
 
@@ -125,7 +159,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_F3EFE867-C13C-4206-8F13-7B22BD096AF0
+--Apple-Mail=_8B0EEE79-E2B0-48DD-B6D5-D659ABF991D0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -136,19 +170,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl3cOxgACgkQcqXauRfM
-H+AUkQ/8CsXZlodRBKWhhPQL21jL+FQnwsttSCsn2pSDxtx2PjM6/5CilGot/83a
-teKflF0dqus+bLKclBvP82hbE0m5szNxNIfDjb25WWhLuhyu9lQw4WcqIFjp51pz
-8je68rOFdVFkCSl4ZeQYS4bv9Piwe+/jDqQCI9TpqOBON8vhSFBA+vO5tEkS3NlZ
-H4Bk9j76H7Q3O7h+bwfPlla8x+L7l6iLLYbLrFe0DPPMM9eM03CWTfFlV1t+ytcI
-1d4j1tjqOO1ITB6+JH+OPr2++aPSK6SICRw+BlkDm/L/A1ndZzV+DMeJZwMY+OjO
-Nmvi4SG308dfL82Nxccm0ziAK40A0gbJt8Ut39uoERwLs55HV1fAwPXfs/CmHwRF
-moyYpaoEpz8CjXa/NPWjeB3YEPgE3hnqayUhVKphGnC5Jk0XL6WkfJiBSBLesiOv
-WQvVSWcWSKDGdamnl6ybJDZ43wmjjaBI5fksHw3OApqBk51YfmduDsl16K18tRXh
-dZs1FG+T3gbbAsTBT0Ts/TIYdcObgnAO0pomZRD1elpyF9zzVyO5qMlySBj0kHnE
-TVWhfe9PHsZLE3N7lkiAffVHSvy7PDeCb0eBUeiexSaF/4cZ3D4y86+tgZHSrHyu
-+K4XP5e0uPHLQ84aW14gyOfVZe9IRuSPk7+PXrDJ3Z6jVGU6XiE=
-=6npK
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl3cSi8ACgkQcqXauRfM
+H+A0fA//a4LOcDF3Nva6VDbKoBv0X0tSp9c3rrfR6TW4IiT3AxVivcwXnrKeYnc1
+LuP3glPgkGRLJnthfuzhO7WuuVXdor27gdMqQqix3RhFOajWwR8Vtx5OEiHBMIfX
+uf4jx9DWOHskCFdbBcL6p3q/yXGc0YcMhAVs0lLs05dGIQxnJjNfSTAHoDts3TOm
+4G8pQVeipL3u4JK+v+omgzVCDEkZsstb2OydMa81nEqnx5etb7rkPBxcVB59yQNh
+MVowNVuFk3OhK7DY9WgcpwmtyvXScaylqcl5RBVUnW3Euqe/RArhy5+H0iIhtd8v
+BSchWvrHmOXBITRDTJOv1s+RyRVPL2JDdM2J47vS0gpsB0URwZ7ATXDeCD5sZoUr
+yfgMv/BhGXz0o6EO5BYdZpPPbNt79xUAPgxIwAhnmGly6ACyLXPCXqFCEx27+77O
+nikfAwEIJzjVmtX9YOlqUKSabTlRyDD2BFI/iV8owgKtossgeEZD3ydsgAQjoV7m
+7pMuySO6y8Rfj/VI1JWtPsX3JDskB+m/gJ33yQslRTTkntRpaRwbooIKGGgQOn8d
+b6nINYvnfWYwMEbJi9LMHtRtkSvfkunCzqXooZj2L2i3xhPCRP68nIIkKb6xVaI0
+mmSeYjmQlkGTB22se6cGk1lpUbmJSUMFSI/916SuJ/XoExSr7cY=
+=1Q9d
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_F3EFE867-C13C-4206-8F13-7B22BD096AF0--
+--Apple-Mail=_8B0EEE79-E2B0-48DD-B6D5-D659ABF991D0--
