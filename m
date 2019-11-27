@@ -2,128 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF41F10ABB3
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2019 09:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8466710AFF9
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2019 14:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbfK0I2a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Nov 2019 03:28:30 -0500
-Received: from mail.phunq.net ([66.183.183.73]:58710 "EHLO phunq.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726125AbfK0I2a (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 27 Nov 2019 03:28:30 -0500
-Received: from [172.16.1.14]
-        by phunq.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
-        (Exim 4.92.3)
-        (envelope-from <daniel@phunq.net>)
-        id 1iZsgU-0003Z4-HJ; Wed, 27 Nov 2019 00:28:26 -0800
-Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
-To:     Vyacheslav Dubeyko <slava@dubeyko.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        "Darrick J. Wong" <djwong@kernel.org>
-References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
- <8ece0424ceeeffbc4df5d52bfa270a9522f81cda.camel@dubeyko.com>
-From:   Daniel Phillips <daniel@phunq.net>
-Message-ID: <5c9b5bd3-028a-5211-30a6-a5a8706b373e@phunq.net>
-Date:   Wed, 27 Nov 2019 00:28:26 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <8ece0424ceeeffbc4df5d52bfa270a9522f81cda.camel@dubeyko.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726603AbfK0NNC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Nov 2019 08:13:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39112 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726514AbfK0NNC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 27 Nov 2019 08:13:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 79398BB3E;
+        Wed, 27 Nov 2019 13:13:00 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 2B3F51E0B12; Wed, 27 Nov 2019 14:13:00 +0100 (CET)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        stable@vger.kernel.org
+Subject: [PATCH] ext4: Fix ext4_empty_dir() for directories with holes
+Date:   Wed, 27 Nov 2019 14:12:58 +0100
+Message-Id: <20191127131258.1163-1-jack@suse.cz>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2019-11-26 11:40 p.m., Vyacheslav Dubeyko wrote:
-> As far as I know, usually, a folder contains dozens or hundreds
-> files/folders in average. There are many research works that had showed
-> this fact. Do you mean some special use-case when folder could contain
-> the billion files? Could you share some research work that describes
-> some practical use-case with billion files per folder?
+Function ext4_empty_dir() doesn't correctly handle directories with
+holes and crashes on bh->b_data dereference when bh is NULL. Reorganize
+the loop to use 'offset' variable all the times instead of comparing
+pointers to current direntry with bh->b_data pointer. Also add more
+strict checking of '.' and '..' directory entries to avoid entering loop
+in possibly invalid state on corrupted filesystems.
 
-You are entirely correct that the vast majority of directories contain
-only a handful of files. That is my case (1). A few directories on a
-typical server can go into the tens of thousands of files. There was
-a time when we could not handle those efficiently, and now thanks to
-HTree we can. Some directories go into the millions, ask the Lustre
-people about that. If you could have a directory with a billion files
-then somebody will have a use for it. For example, you may be able to
-avoid a database for a particular application and just use the file
-system instead.
+References: CVE-2019-19037
+CC: stable@vger.kernel.org
+Fixes: 4e19d6b65fb4 ("ext4: allow directory holes")
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/namei.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-Now, scaling to a billion files is just one of several things that
-Shardmap does better than HTree. More immediately, Shardmap implements
-readdir simply, accurately and efficiently, unlike HTree. See here for
-some discussion:
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index a427d2031a8d..91083eb9c203 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2808,7 +2808,7 @@ bool ext4_empty_dir(struct inode *inode)
+ {
+ 	unsigned int offset;
+ 	struct buffer_head *bh;
+-	struct ext4_dir_entry_2 *de, *de1;
++	struct ext4_dir_entry_2 *de;
+ 	struct super_block *sb;
+ 
+ 	if (ext4_has_inline_data(inode)) {
+@@ -2833,19 +2833,25 @@ bool ext4_empty_dir(struct inode *inode)
+ 		return true;
+ 
+ 	de = (struct ext4_dir_entry_2 *) bh->b_data;
+-	de1 = ext4_next_entry(de, sb->s_blocksize);
+-	if (le32_to_cpu(de->inode) != inode->i_ino ||
+-			le32_to_cpu(de1->inode) == 0 ||
+-			strcmp(".", de->name) || strcmp("..", de1->name)) {
+-		ext4_warning_inode(inode, "directory missing '.' and/or '..'");
++	if (ext4_check_dir_entry(inode, NULL, de, bh, bh->b_data, bh->b_size,
++				 0) ||
++	    le32_to_cpu(de->inode) != inode->i_ino || strcmp(".", de->name)) {
++		ext4_warning_inode(inode, "directory missing '.'");
++		brelse(bh);
++		return true;
++	}
++	offset = ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
++	de = ext4_next_entry(de, sb->s_blocksize);
++	if (ext4_check_dir_entry(inode, NULL, de, bh, bh->b_data, bh->b_size,
++				 offset) ||
++	    le32_to_cpu(de->inode) == 0 || strcmp("..", de->name)) {
++		ext4_warning_inode(inode, "directory missing '..'");
+ 		brelse(bh);
+ 		return true;
+ 	}
+-	offset = ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize) +
+-		 ext4_rec_len_from_disk(de1->rec_len, sb->s_blocksize);
+-	de = ext4_next_entry(de1, sb->s_blocksize);
++	offset += ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
+ 	while (offset < inode->i_size) {
+-		if ((void *) de >= (void *) (bh->b_data+sb->s_blocksize)) {
++		if (!(offset & (sb->s_blocksize - 1))) {
+ 			unsigned int lblock;
+ 			brelse(bh);
+ 			lblock = offset >> EXT4_BLOCK_SIZE_BITS(sb);
+@@ -2856,12 +2862,11 @@ bool ext4_empty_dir(struct inode *inode)
+ 			}
+ 			if (IS_ERR(bh))
+ 				return true;
+-			de = (struct ext4_dir_entry_2 *) bh->b_data;
+ 		}
++		de = (struct ext4_dir_entry_2 *) bh->b_data +
++					(offset & (sb->s_blocksize - 1));
+ 		if (ext4_check_dir_entry(inode, NULL, de, bh,
+ 					 bh->b_data, bh->b_size, offset)) {
+-			de = (struct ext4_dir_entry_2 *)(bh->b_data +
+-							 sb->s_blocksize);
+ 			offset = (offset | (sb->s_blocksize - 1)) + 1;
+ 			continue;
+ 		}
+@@ -2870,7 +2875,6 @@ bool ext4_empty_dir(struct inode *inode)
+ 			return false;
+ 		}
+ 		offset += ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
+-		de = ext4_next_entry(de, sb->s_blocksize);
+ 	}
+ 	brelse(bh);
+ 	return true;
+-- 
+2.16.4
 
-   https://lwn.net/Articles/544520/
-   "Widening ext4's readdir() cookie"
-
-See the recommendation that is sometimes offered to work around
-HTree's issues with processing files in hash order. Basically, read
-the entire directory into memory, sort by inode number, then process
-in that order. As an application writer do you really want to do this,
-or would you prefer that the filesystem just take care of for you so
-the normal, simple and readable code is also the most efficient code?
-
-> If you are talking about improving the performance then do you mean
-> some special open-source implementation?
-
-I mean the same kind of kernel filesystem implementation that HTree
-currently has. Open source of course, GPLv2 to be specific.
-
->> For delete, Shardmap avoids write multiplication by appending tombstone
->> entries to index shards, thereby addressing a well known HTree delete
->> performance issue.
-> 
-> Do you mean Copy-On-Write policy here or some special technique?
-
-The technique Shardmap uses to reduce write amplication under heavy
-load is somewhat similar to the technique used by Google's Bigtable to
-achieve a similar result for data files. (However, the resemblance to
-Bigtable ends there.)
-
-Each update to a Shardmap index is done twice: once in a highly
-optimized hash table shard in cache, then again by appending an
-entry to the tail of the shard's media "fifo". Media writes are
-therefore mostly linear. I say mostly, because if there is a large
-number of shards then a single commit may need to update the tail
-block of each one, which still adds up to vastly fewer blocks than
-the BTree case, where it is easy to construct cases where every
-index block must be updated on every commit, a nasty example of
-n**2 performance overhead.
-
-> How could be good Shardmap for the SSD use-case? Do you mean that we
-> could reduce write amplification issue for NAND flash case?
-
-Correct. Reducing write amplification is particularly important for
-flash based storage. It also has a noticeable beneficial effect on
-efficiency under many common and not so common loads.
-
-> Let's imagine that it needs to implement the Shardmap approach. Could
-> you estimate the implementation and stabilization time? How expensive
-> and long-term efforts could it be?
-
-Shardmap is already implemented and stable, though it does need wider
-usage and testing. Code is available here:
-
-   https://github.com/danielbot/Shardmap
-
-Shardmap needs to be ported to kernel, already planned and in progress
-for Tux3. Now I am proposing that the Ext4 team should consider porting
-Shardmap to Ext4, or at least enter into a serious discussion of the
-logistics.
-
-Added Darrick to cc, as he is already fairly familiar with this subject,
-once was an Ext4 developer, and perhaps still is should the need arise.
-By the way, is there a reason that Ted's MIT address bounced on my
-original post?
-
-Regards,
-
-Daniel
