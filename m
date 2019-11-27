@@ -2,101 +2,231 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A641610B638
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2019 19:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0088910B6DA
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2019 20:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727497AbfK0Sz3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Nov 2019 13:55:29 -0500
-Received: from mail-pj1-f73.google.com ([209.85.216.73]:43115 "EHLO
-        mail-pj1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727495AbfK0Sz3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Nov 2019 13:55:29 -0500
-Received: by mail-pj1-f73.google.com with SMTP id cu13so11525949pjb.10
-        for <linux-ext4@vger.kernel.org>; Wed, 27 Nov 2019 10:55:29 -0800 (PST)
+        id S1727973AbfK0TfX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Nov 2019 14:35:23 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:41519 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727810AbfK0TfT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Nov 2019 14:35:19 -0500
+Received: by mail-lf1-f65.google.com with SMTP id m30so16261160lfp.8
+        for <linux-ext4@vger.kernel.org>; Wed, 27 Nov 2019 11:35:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=jREom96kPrkVRaSJyLna+V7rS+hyM0/IOYJmAKHXhJ0=;
-        b=KKH874W/XQVmgWAp4+TIjpezcCZMg9WjevRswlOEhCRGrlGtLoJSJ998VSH1NJ8off
-         ETqzp4z9r61DsXI5OOzxO1dOxSbUPvWWRdRhrWFkPP10dYW9RCg1ZQryuj3dkYz+gxJ5
-         DtU8JbwimD021VNRuBmQtQg7J/a9yGYC3r820DDjndqzww93M+cHAz7pkmg0TOuZEK2Q
-         CYgg0cJ8bji16VYOkrcB8fwGXNRZbigViayVf+N4UgJO3liQ0q6ajDGm/x58MZnTl/1P
-         2+uOMqAcJrRkmgy/iarFSuur4H13FgSFbQYyejfE4UwVUMs7kYPcN+LUpFx0octP5/Xk
-         bMug==
+        d=dubeyko-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=uTDWkxIvzQK+lQ6yvWXXgVNUrJqpN09xTPjHaxPQoxg=;
+        b=lJJ0Qj7D+dByWJS0P6lbl2YTSw5nnndoomDD1/OzRqldJjevFbG79ofjqOuANzJHli
+         l65FVcWNEp7RGL6g5oYA7NG9p3mxo+nRF4a3TXUdUQjpwmQitca7JJID5APlQ7L/gLWh
+         eyE+16ND26CWr5DhHmj5hPyJaj/Yi9QiYbQ7WF6GfkMfSbF3SkkrQY2b/bQ404Bv+bR5
+         TwxKwlbGI4guP7fMs6PipnKw5eaeC6HKgwgl3uaR6cYSXODM+K8LO9SVqJd8JcM4Z0u0
+         b46DIgYZCGVfmTXhT64lQsJIUii2Tou/XhLqm9K1EyGTL+VAyTXrblOWGsS5FKmJCAje
+         yDMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=jREom96kPrkVRaSJyLna+V7rS+hyM0/IOYJmAKHXhJ0=;
-        b=KWNzmUMGyVnWIp385lGd7yhHy4xa0lnMD0Q8aXF5h3b4U7NegCHiEO3KVuDF5Pbdxy
-         cBB0s4v0DMfA85JDqZn6wQChP6Tt6fguAqE3MEX52ihSDhSa+BpdekiziVh5FEVwSCIP
-         DAwAOE5LvOuITYedeAimEADuBnRC3WIBIgv2VguxwswiStPAB6qEi7IW7dqVofr2vJuy
-         iQVonIJkmfOOyPfiY30uXMKwdk6XqmQRK/p2HhRqJSpUxCpEo0aaj3OtQFkCWvzzzSB1
-         bZ4Ew46i/jsWMf0Q2QlgoS4FJ5oebSF6BWVeR/sQXPsoam15uViU+HDkYo3pstQq6cdk
-         6IFA==
-X-Gm-Message-State: APjAAAU0OX7LlcljsZwFACElp1HhLZDd2vKlHATXVKCOCVKkMZ0iUAbL
-        C1qbxMcz54V7nVXI/tgFZ05YtpRisz0=
-X-Google-Smtp-Source: APXvYqwxlZ6V4IoCz3uKIn8TZk+jPAYdMpXoG4X8hVyqJOopW33JqYNwm/AaIsk6WssYS/kXvFlKvTLavdAB
-X-Received: by 2002:a63:1b1b:: with SMTP id b27mr6222499pgb.402.1574880928437;
- Wed, 27 Nov 2019 10:55:28 -0800 (PST)
-Date:   Wed, 27 Nov 2019 10:55:24 -0800
-Message-Id: <20191127185524.40220-1-yzaikin@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
-Subject: [PATCH] fs/ext4/inode-test: Fix inode test on 32 bit platforms.
-From:   Iurii Zaikin <yzaikin@google.com>
-To:     skhan@linuxfoundation.org, brendanhiggins@google.com,
-        tytso@mit.edu, geert@linux-m68k.org
-Cc:     linux-ext4@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, Iurii Zaikin <yzaikin@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=uTDWkxIvzQK+lQ6yvWXXgVNUrJqpN09xTPjHaxPQoxg=;
+        b=uhn7nhq1ElJxTtcGteF/WKC4KixayhDxaPoDY5vhteTbThqPdPoyieHtdwRU1jG6ky
+         Tymp64wImUnehLdhQPV2LBX16E7t2dxYfUpLAr4iU0dklCKXp8KzUKbhaK/r8X5q39LL
+         AYWJIQ/GLHIVCFrFTQixnhrMb37AH8KLTThLCsZrE5VRUC5Xz9zsaf68YNorRrLxBjzA
+         MFYO8IV/bFbwgNm8CDaKLDYJ5R3M2QKTkWpl2+w/CLVZDAMzB4F/xgRelYlHmBTM4kqN
+         8gw+xcjSNVyqrGksW/nmrFM4DI0gNZIyTZwnJvn1iBv7goN1U9s/WBl6SwgYC3ytiaZe
+         oj5A==
+X-Gm-Message-State: APjAAAUGScrT/12gkvQq4yJzRGl0tTT7Aw75SoCoEYkBlw6Uu434pXLr
+        sAOgXw8AlZ4M4g/9OCfLciUK9g==
+X-Google-Smtp-Source: APXvYqyTR9+SLPlISNvDfDWPlEthYrImWYnPuGVb+3H6C39rsGqaoxdYBYdMOlpFIMkU7cN4gQ8WEg==
+X-Received: by 2002:a19:3f16:: with SMTP id m22mr26994057lfa.116.1574883316489;
+        Wed, 27 Nov 2019 11:35:16 -0800 (PST)
+Received: from ?IPv6:2a00:1370:812c:3592:7897:598b:7870:e1b? ([2a00:1370:812c:3592:7897:598b:7870:e1b])
+        by smtp.gmail.com with ESMTPSA id p24sm7366773lfc.96.2019.11.27.11.35.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Nov 2019 11:35:15 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3601.0.10\))
+Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
+From:   Viacheslav Dubeyko <slava@dubeyko.com>
+In-Reply-To: <5c9b5bd3-028a-5211-30a6-a5a8706b373e@phunq.net>
+Date:   Wed, 27 Nov 2019 22:35:13 +0300
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B9F8658C-B88F-44A1-BBEF-98A8259E0712@dubeyko.com>
+References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
+ <8ece0424ceeeffbc4df5d52bfa270a9522f81cda.camel@dubeyko.com>
+ <5c9b5bd3-028a-5211-30a6-a5a8706b373e@phunq.net>
+To:     Daniel Phillips <daniel@phunq.net>
+X-Mailer: Apple Mail (2.3601.0.10)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Fixes the issue caused by the fact that in C in the expression
-of the form -1234L only 1234L is the actual literal, the unary
-minus is an operation applied to the literal. Which means that
-to express the lower bound for the type one has to negate the
-upper bound and subtract 1.
-Original error:
-Expected test_data[i].expected.tv_sec == timestamp.tv_sec, but
-test_data[i].expected.tv_sec == -2147483648
-timestamp.tv_sec == 2147483648
-1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits: msb:1
-lower_bound:1 extra_bits: 0
-Expected test_data[i].expected.tv_sec == timestamp.tv_sec, but
-test_data[i].expected.tv_sec == 2147483648
-timestamp.tv_sec == 6442450944
-2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on:
-msb:1 lower_bound:1 extra_bits: 1
-Expected test_data[i].expected.tv_sec == timestamp.tv_sec, but
-test_data[i].expected.tv_sec == 6442450944
-timestamp.tv_sec == 10737418240
-2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on:
-msb:1 lower_bound:1 extra_bits: 2
-not ok 1 - inode_test_xtimestamp_decoding
-not ok 1 - ext4_inode_test
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Iurii Zaikin <yzaikin@google.com>
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- fs/ext4/inode-test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
-index 92a9da1774aa..bbce1c328d85 100644
---- a/fs/ext4/inode-test.c
-+++ b/fs/ext4/inode-test.c
-@@ -25,7 +25,7 @@
-  * For constructing the negative timestamp lower bound value.
-  * binary: 10000000 00000000 00000000 00000000
-  */
--#define LOWER_MSB_1 (-0x80000000L)
-+#define LOWER_MSB_1 (-(UPPER_MSB_0) - 1L)  /* avoid overflow */
- /*
-  * For constructing the negative timestamp upper bound value.
-  * binary: 11111111 11111111 11111111 11111111
---
-2.24.0.432.g9d3f5f5b63-goog
+> On Nov 27, 2019, at 11:28 AM, Daniel Phillips <daniel@phunq.net> =
+wrote:
+>=20
+> On 2019-11-26 11:40 p.m., Vyacheslav Dubeyko wrote:
+>> As far as I know, usually, a folder contains dozens or hundreds
+>> files/folders in average. There are many research works that had =
+showed
+>> this fact. Do you mean some special use-case when folder could =
+contain
+>> the billion files? Could you share some research work that describes
+>> some practical use-case with billion files per folder?
+>=20
+> You are entirely correct that the vast majority of directories contain
+> only a handful of files. That is my case (1). A few directories on a
+> typical server can go into the tens of thousands of files. There was
+> a time when we could not handle those efficiently, and now thanks to
+> HTree we can. Some directories go into the millions, ask the Lustre
+> people about that. If you could have a directory with a billion files
+> then somebody will have a use for it. For example, you may be able to
+> avoid a database for a particular application and just use the file
+> system instead.
+>=20
+> Now, scaling to a billion files is just one of several things that
+> Shardmap does better than HTree. More immediately, Shardmap implements
+> readdir simply, accurately and efficiently, unlike HTree. See here for
+> some discussion:
+>=20
+>   https://lwn.net/Articles/544520/
+>   "Widening ext4's readdir() cookie"
+>=20
+
+
+So, it looks like that Shardmap could be better for the case of billion =
+files in one folder.
+But what=E2=80=99s about the regular case when it could be =
+dozens/hundreds of files in one
+folder? Will Shardmap be better than HTree? If the ordinary user =
+hasn=E2=80=99t visible
+performance improvement then it makes sense to consider Shardmap like =
+the
+optional feature. What do you think?
+
+Does it mean that Shardmap is ext4 oriented only? Could it be used for =
+another
+file systems?
+
+
+> See the recommendation that is sometimes offered to work around
+> HTree's issues with processing files in hash order. Basically, read
+> the entire directory into memory, sort by inode number, then process
+> in that order. As an application writer do you really want to do this,
+> or would you prefer that the filesystem just take care of for you so
+> the normal, simple and readable code is also the most efficient code?
+>=20
+
+
+I slightly missed the point here. To read the whole directory sounds =
+like to read
+the dentries tree from the volume. As far as I can see, the dentries are =
+ordered
+by names or by hashes. But if we are talking about inode number then we =
+mean
+the inodes tree. So, I have misunderstanding here. What do you mean?
+
+
+>> If you are talking about improving the performance then do you mean
+>> some special open-source implementation?
+>=20
+> I mean the same kind of kernel filesystem implementation that HTree
+> currently has. Open source of course, GPLv2 to be specific.
+>=20
+
+I meant the Shardmap implementation. As far as I can see, the user-space =
+implementation
+is available only now. So, my question is still here. It=E2=80=99s hard =
+to say how efficient the Shardmap
+could be on kernel side as ext4 subsystem, for example.
+
+
+>>> For delete, Shardmap avoids write multiplication by appending =
+tombstone
+>>> entries to index shards, thereby addressing a well known HTree =
+delete
+>>> performance issue.
+>>=20
+>> Do you mean Copy-On-Write policy here or some special technique?
+>=20
+> The technique Shardmap uses to reduce write amplication under heavy
+> load is somewhat similar to the technique used by Google's Bigtable to
+> achieve a similar result for data files. (However, the resemblance to
+> Bigtable ends there.)
+>=20
+> Each update to a Shardmap index is done twice: once in a highly
+> optimized hash table shard in cache, then again by appending an
+> entry to the tail of the shard's media "fifo". Media writes are
+> therefore mostly linear. I say mostly, because if there is a large
+> number of shards then a single commit may need to update the tail
+> block of each one, which still adds up to vastly fewer blocks than
+> the BTree case, where it is easy to construct cases where every
+> index block must be updated on every commit, a nasty example of
+> n**2 performance overhead.
+>=20
+
+
+It sounds like adding updates in log-structured manner. But what=E2=80=99s=
+ about
+the obsolete/invalid blocks? Does it mean that it need to use some GC =
+technique
+here? I am not completely sure that it could be beneficial for the ext4.
+
+By the way, could the old index blocks be used like the snapshots in the =
+case
+of corruptions or other nasty issues?
+
+
+>> How could be good Shardmap for the SSD use-case? Do you mean that we
+>> could reduce write amplification issue for NAND flash case?
+>=20
+> Correct. Reducing write amplification is particularly important for
+> flash based storage. It also has a noticeable beneficial effect on
+> efficiency under many common and not so common loads.
+>=20
+>> Let's imagine that it needs to implement the Shardmap approach. Could
+>> you estimate the implementation and stabilization time? How expensive
+>> and long-term efforts could it be?
+>=20
+> Shardmap is already implemented and stable, though it does need wider
+> usage and testing. Code is available here:
+>=20
+>   https://github.com/danielbot/Shardmap
+>=20
+> Shardmap needs to be ported to kernel, already planned and in progress
+> for Tux3. Now I am proposing that the Ext4 team should consider =
+porting
+> Shardmap to Ext4, or at least enter into a serious discussion of the
+> logistics.
+>=20
+> Added Darrick to cc, as he is already fairly familiar with this =
+subject,
+> once was an Ext4 developer, and perhaps still is should the need =
+arise.
+> By the way, is there a reason that Ted's MIT address bounced on my
+> original post?
+>=20
+
+It=E2=80=99s hard to talk about stability because we haven=E2=80=99t =
+kernel-side implementation
+of Shardmap for ext4. I suppose that it needs to spend about a year for =
+the porting
+and twice more time for the stabilization. To port a user-space code to =
+the kernel
+could be the tricky task. Could you estimate how many lines of code the =
+core
+part of Shardmap contains? Does it need to change the ext4 on-disk =
+layout for
+this feature? How easy ext4 functionality can be modified for Shardmap =
+support?
+
+Thanks,
+Viacheslav Dubeyko.
+
