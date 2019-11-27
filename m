@@ -2,120 +2,88 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8466710AFF9
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2019 14:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B3410B140
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2019 15:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbfK0NNC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Nov 2019 08:13:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39112 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726514AbfK0NNC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 27 Nov 2019 08:13:02 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 79398BB3E;
-        Wed, 27 Nov 2019 13:13:00 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 2B3F51E0B12; Wed, 27 Nov 2019 14:13:00 +0100 (CET)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        stable@vger.kernel.org
-Subject: [PATCH] ext4: Fix ext4_empty_dir() for directories with holes
-Date:   Wed, 27 Nov 2019 14:12:58 +0100
-Message-Id: <20191127131258.1163-1-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
+        id S1727327AbfK0OZX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Nov 2019 09:25:23 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43124 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727313AbfK0OZX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Nov 2019 09:25:23 -0500
+Received: from callcc.thunk.org (97-71-153.205.biz.bhn.net [97.71.153.205] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xAREP9Sx018154
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Nov 2019 09:25:10 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9092F4202FD; Wed, 27 Nov 2019 09:25:08 -0500 (EST)
+Date:   Wed, 27 Nov 2019 09:25:08 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Daniel Phillips <daniel@phunq.net>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
+Message-ID: <20191127142508.GB5143@mit.edu>
+References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Function ext4_empty_dir() doesn't correctly handle directories with
-holes and crashes on bh->b_data dereference when bh is NULL. Reorganize
-the loop to use 'offset' variable all the times instead of comparing
-pointers to current direntry with bh->b_data pointer. Also add more
-strict checking of '.' and '..' directory entries to avoid entering loop
-in possibly invalid state on corrupted filesystems.
+A couple of quick observations about Shardmap.
 
-References: CVE-2019-19037
-CC: stable@vger.kernel.org
-Fixes: 4e19d6b65fb4 ("ext4: allow directory holes")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/namei.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+(1) It's licensed[1] under the GPLv3, so it's not compatible with the
+kernel license.  That doesn't matter much for ext4, because...
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index a427d2031a8d..91083eb9c203 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2808,7 +2808,7 @@ bool ext4_empty_dir(struct inode *inode)
- {
- 	unsigned int offset;
- 	struct buffer_head *bh;
--	struct ext4_dir_entry_2 *de, *de1;
-+	struct ext4_dir_entry_2 *de;
- 	struct super_block *sb;
- 
- 	if (ext4_has_inline_data(inode)) {
-@@ -2833,19 +2833,25 @@ bool ext4_empty_dir(struct inode *inode)
- 		return true;
- 
- 	de = (struct ext4_dir_entry_2 *) bh->b_data;
--	de1 = ext4_next_entry(de, sb->s_blocksize);
--	if (le32_to_cpu(de->inode) != inode->i_ino ||
--			le32_to_cpu(de1->inode) == 0 ||
--			strcmp(".", de->name) || strcmp("..", de1->name)) {
--		ext4_warning_inode(inode, "directory missing '.' and/or '..'");
-+	if (ext4_check_dir_entry(inode, NULL, de, bh, bh->b_data, bh->b_size,
-+				 0) ||
-+	    le32_to_cpu(de->inode) != inode->i_ino || strcmp(".", de->name)) {
-+		ext4_warning_inode(inode, "directory missing '.'");
-+		brelse(bh);
-+		return true;
-+	}
-+	offset = ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
-+	de = ext4_next_entry(de, sb->s_blocksize);
-+	if (ext4_check_dir_entry(inode, NULL, de, bh, bh->b_data, bh->b_size,
-+				 offset) ||
-+	    le32_to_cpu(de->inode) == 0 || strcmp("..", de->name)) {
-+		ext4_warning_inode(inode, "directory missing '..'");
- 		brelse(bh);
- 		return true;
- 	}
--	offset = ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize) +
--		 ext4_rec_len_from_disk(de1->rec_len, sb->s_blocksize);
--	de = ext4_next_entry(de1, sb->s_blocksize);
-+	offset += ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
- 	while (offset < inode->i_size) {
--		if ((void *) de >= (void *) (bh->b_data+sb->s_blocksize)) {
-+		if (!(offset & (sb->s_blocksize - 1))) {
- 			unsigned int lblock;
- 			brelse(bh);
- 			lblock = offset >> EXT4_BLOCK_SIZE_BITS(sb);
-@@ -2856,12 +2862,11 @@ bool ext4_empty_dir(struct inode *inode)
- 			}
- 			if (IS_ERR(bh))
- 				return true;
--			de = (struct ext4_dir_entry_2 *) bh->b_data;
- 		}
-+		de = (struct ext4_dir_entry_2 *) bh->b_data +
-+					(offset & (sb->s_blocksize - 1));
- 		if (ext4_check_dir_entry(inode, NULL, de, bh,
- 					 bh->b_data, bh->b_size, offset)) {
--			de = (struct ext4_dir_entry_2 *)(bh->b_data +
--							 sb->s_blocksize);
- 			offset = (offset | (sb->s_blocksize - 1)) + 1;
- 			continue;
- 		}
-@@ -2870,7 +2875,6 @@ bool ext4_empty_dir(struct inode *inode)
- 			return false;
- 		}
- 		offset += ext4_rec_len_from_disk(de->rec_len, sb->s_blocksize);
--		de = ext4_next_entry(de, sb->s_blocksize);
- 	}
- 	brelse(bh);
- 	return true;
--- 
-2.16.4
+[1] https://github.com/danielbot/Shardmap/blob/master/LICENSE
 
+
+(2) It's implemented as userspace code (e.g., it uses open(2),
+mmap(2), et. al) and using C++, so it would need to be reimplemented
+from scratch for use in the kernel.
+
+
+(3) It's not particularly well documented, making the above more
+challenging, but it appears to be a variation of an extensible hashing
+scheme, which was used by dbx and Berkley DB.
+
+
+(4) Because of (2), we won't be able to do any actual benchmarks for a
+while.  I just checked the latest version of Tux3[2], and it appears
+to be be still using a linear search scheme for its directory ---
+e.g., an O(n) lookup ala ext2.  So I'm guessing Shardmap may have been
+*designed* for Tux3, but it has not yet been *implemented* for Tux3?
+
+[2] https://github.com/OGAWAHirofumi/linux-tux3/blob/hirofumi/fs/tux3/dir.c#L283
+
+
+(5) The claim is made that readdir() accesses files sequentially; but
+there is also mention in Shardmap of compressing shards (e.g.,
+rewriting them) to squeeze out deleted and tombstone entries.  This
+pretty much guarantees that it will not be possible to satisfy POSIX
+requirements of telldir(2)/seekdir(3) (using a 32-bit or 64-bitt
+cookie), NFS (which also requires use of a 32-bit or 64-bit cookie
+while doing readdir scan), or readdir() semantics in the face of
+directory entries getting inserted or removed from the directory.
+
+(To be specific, POSIX requires readdir returns each entry in a
+directory once and only once, and in the case of a directory entry
+which is removed or inserted, that directory entry must be returned
+exactly zero or one times.  This is true even if telldir(2) ort
+seekdir(2) is used to memoize a particular location in the directory,
+which means you have a 32-bit or 64-bit cookie to define a particular
+location in the readdir(2) stream.  If the file system wants to be
+exportable via NFS, it must meet similar requirements ---- except the
+32-bit or 64-bit cookie MUST survive a reboot.)
+
+Regards,
+
+						- Ted
