@@ -2,78 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC77F10CF7C
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Nov 2019 22:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC0E10CFEE
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 00:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbfK1VR1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 Nov 2019 16:17:27 -0500
-Received: from mail.phunq.net ([66.183.183.73]:35968 "EHLO phunq.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726558AbfK1VR1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 28 Nov 2019 16:17:27 -0500
-Received: from [172.16.1.14]
-        by phunq.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
-        (Exim 4.92.3)
-        (envelope-from <daniel@phunq.net>)
-        id 1iaRAD-0006J6-Aq; Thu, 28 Nov 2019 13:17:25 -0800
-Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
- <20191127142508.GB5143@mit.edu>
- <c3636a43-6ae9-25d4-9483-34770b6929d0@phunq.net>
- <20191128022817.GE22921@mit.edu>
-From:   Daniel Phillips <daniel@phunq.net>
-Message-ID: <4c8c3948-5aa1-6a41-c0a9-cc694e89a579@phunq.net>
-Date:   Thu, 28 Nov 2019 13:17:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726610AbfK1XTx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Nov 2019 18:19:53 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50164 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726582AbfK1XTx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Nov 2019 18:19:53 -0500
+Received: from callcc.thunk.org (97-71-153.205.biz.bhn.net [97.71.153.205] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xASNJltA029092
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Nov 2019 18:19:48 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 5487F421A46; Thu, 28 Nov 2019 18:19:47 -0500 (EST)
+Date:   Thu, 28 Nov 2019 18:19:47 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Meng Xu <mengxu.gatech@gmail.com>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: potential data race on ext_inode_hdr(inode)->eh_depth,
+ ext_inode_hdr(inode)->eh_max between a creat and unlink syscall
+Message-ID: <20191128231947.GH22921@mit.edu>
+References: <CAAwBoOLoHTZGWFw5y_3MoMgZDQ3gCUQrsAO8Z=U4RwV9KyA_fA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20191128022817.GE22921@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAwBoOLoHTZGWFw5y_3MoMgZDQ3gCUQrsAO8Z=U4RwV9KyA_fA@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2019-11-27 6:28 p.m., Theodore Y. Ts'o wrote:
-> The use of C++ with templates is presumably one of the "less so"
-> parts, and it was that which I had in mind when I said,
-> "reimplementing from scratch".
+On Thu, Nov 28, 2019 at 12:03:04PM -0500, Meng Xu wrote:
+> I notice a potential data race on ext_inode_hdr(inode)->eh_depth,
+> ext_inode_hdr(inode)->eh_max between a create and unlink syscall.
+> Following is the trace:
+> 
+> [Setup]
+> mkdir("foo", 511) = 0;
+> open("foo", 65536, 511) = 3;
+> create("bar", 511) = 4;
+> symlink("foo", "sym_foo") = 0;
+> open("sym_foo", 65536, 511) = 5;
+> 
+> [Thread 1]
+> create("bar", 438);
+> 
+> __do_sys_creat
+>   ksys_open
+>     do_filp_open
+>       path_openat
+>         do_last
+>           handle_truncate
+>             do_truncate
+>               notify_change
+>                 ext4_setattr
+>                   ext4_truncate
+>                     ext4_ext_truncate
+>                       ext4_ext _remove_space
+>                         [WRITE, 2 bytes] ext_inode_hdr(inode)->eh_depth = 0;
+>                         [WRITE, 2 bytes] ext_inode_hdr(inode)->eh_max
+> = cpu_to_le16(ext4_ext_space_root(inode, 0));
+> 
+> [Thread 2]
+> unlink("sym_foo");
+> 
+> __do_sys_unlink
+>   do_unlinkat
+>     iput
+>       iput_final
+>         evict
+>           ext4_evict_inode
+>             ext4_orphan_del
+>               ext4_mark_iloc_dirty
+>                 ext4_do_update_inode
+>                   [READ, 4 bytes] raw_inode->i_block[block] = ei->i_data[block];
+> 
+> 
+> I could observe that the order between the READ and WRITE is not
+> deterministic and I was curious what will happen if the READ takes
+> place in the middle of the two WRITES? Does it cause any damages or
+> violations?
 
-Ah, duopack and tripack. Please consider the C code that was replaced.
-by those. See tons of bogus extra parameters resulting in nonsense like
-this:
+This makes no sense.  The inodes corresponding to "sym_foo" and "bar"
+are completely differenth.  So why would there be a data race?
 
-   set_entry(shard_entry(shard, bucket), key & bitmask(shard->lowbits), loc, next, shard->locbits, nextbits);
+How are you concluding that that there is, in fact, a data race?
 
-which in the c++ version looks like:
-
-   *entry = {trio.pack(next, loc, key & bitmask(lowbits))};
-
-They generate roughly identical machine code, but I know which one I prefer
-to maintain. That said, porting back to C (in progress right now) includes
-substituting some appropriate macro code for those sweet little variable
-field width structure templates. Which by the way are central to Shardmap's
-scalability and performance. These are what allow the index entry to stay
-at just 8 bytes over the entire range from one entry to one billion.
-
-So right, tripack and duopack weill be reimplemented from scratch, using 
-the template code as a model. Basically just expanding the templates by
-hand and adding in some macro sugar for clarity. Shardmap itself does not
-need to be rewritten from scratch in order to port to kernel, far from it.
-
-Regards,
-
-Daniel
-
-
-
-
-
-
-
+    	    	       	    	       - Ted
