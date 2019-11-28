@@ -2,191 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23ECB10C02C
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2019 23:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9607E10C243
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Nov 2019 03:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727286AbfK0W1b (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 27 Nov 2019 17:27:31 -0500
-Received: from mail.phunq.net ([66.183.183.73]:33890 "EHLO phunq.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726947AbfK0W1a (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 27 Nov 2019 17:27:30 -0500
-Received: from [172.16.1.14]
-        by phunq.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
-        (Exim 4.92.3)
-        (envelope-from <daniel@phunq.net>)
-        id 1ia5mS-00083g-5q; Wed, 27 Nov 2019 14:27:28 -0800
-Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+        id S1727811AbfK1C22 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 27 Nov 2019 21:28:28 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47089 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727432AbfK1C22 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 27 Nov 2019 21:28:28 -0500
+Received: from callcc.thunk.org (97-71-153.205.biz.bhn.net [97.71.153.205] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xAS2SHsO003384
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Nov 2019 21:28:18 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 1C4934202FD; Wed, 27 Nov 2019 21:28:17 -0500 (EST)
+Date:   Wed, 27 Nov 2019 21:28:17 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Daniel Phillips <daniel@phunq.net>
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-fsdevel@vger.kernel.org,
         OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
+Message-ID: <20191128022817.GE22921@mit.edu>
 References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
  <20191127142508.GB5143@mit.edu>
-From:   Daniel Phillips <daniel@phunq.net>
-Message-ID: <c3636a43-6ae9-25d4-9483-34770b6929d0@phunq.net>
-Date:   Wed, 27 Nov 2019 14:27:27 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+ <c3636a43-6ae9-25d4-9483-34770b6929d0@phunq.net>
 MIME-Version: 1.0
-In-Reply-To: <20191127142508.GB5143@mit.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3636a43-6ae9-25d4-9483-34770b6929d0@phunq.net>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ted,
-
-I trust you will find your initial points satisfactorily addressed below.
-
-On 2019-11-27 6:25 a.m., Theodore Y. Ts'o wrote:
-> A couple of quick observations about Shardmap.
+On Wed, Nov 27, 2019 at 02:27:27PM -0800, Daniel Phillips wrote:
+> > (2) It's implemented as userspace code (e.g., it uses open(2),
+> > mmap(2), et. al) and using C++, so it would need to be reimplemented
+> > from scratch for use in the kernel.
 > 
-> (1) It's licensed[1] under the GPLv3, so it's not compatible with the
-> kernel license.  That doesn't matter much for ext4, because...
+> Right. Some of these details, like open, are obviously trivial, others
+> less so. Reimplementing from scratch is an overstatement because the
+> actual intrusions of user space code are just a small portion of the code
+> and nearly all abstracted behind APIs that can be implemented as needed
+> for userspace or kernel in out of line helpers, so that the main source
+> is strictly unaware of the difference.
+
+The use of C++ with templates is presumably one of the "less so"
+parts, and it was that which I had in mind when I said,
+"reimplementing from scratch".
+
+> Also, most of this work is already being done for Tux3,
+
+Great, when that work is done, we can take a look at the code and
+see....
+
+> > (5) The claim is made that readdir() accesses files sequentially; but
+> > there is also mention in Shardmap of compressing shards (e.g.,
+> > rewriting them) to squeeze out deleted and tombstone entries.  This
+> > pretty much guarantees that it will not be possible to satisfy POSIX
+> > requirements of telldir(2)/seekdir(3) (using a 32-bit or 64-bitt
+> > cookie), NFS (which also requires use of a 32-bit or 64-bit cookie
+> > while doing readdir scan), or readdir() semantics in the face of
+> > directory entries getting inserted or removed from the directory.
 > 
-> [1] https://github.com/danielbot/Shardmap/blob/master/LICENSE
+> No problem, the data blocks are completely separate from the index so
+> readdir just walks through them in linear order a la classic UFS/Ext2.
+> What could possibly be simpler, faster or more POSIX compliant?
 
-The kernel port of Shardmap will (necessarily) be licensed under GPLv2.
+OK, so what you're saying then is for every single directory entry
+addition or removal, there must be (at least) two blocks which must be
+modified, an (at least one) index block, and a data block, no?  That
+makes it worse than htree, where most of the time we only need to
+modify a single leaf node.  We only have to touch an index block when
+a leaf node gets full and it needs to be split.
 
-> (2) It's implemented as userspace code (e.g., it uses open(2),
-> mmap(2), et. al) and using C++, so it would need to be reimplemented
-> from scratch for use in the kernel.
+Anyway, let's wait and see how you and Hirofumi-san work out those
+details for Tux3, and we can look at that and consider next steps at
+that time.
 
-Right. Some of these details, like open, are obviously trivial, others
-less so. Reimplementing from scratch is an overstatement because the
-actual intrusions of user space code are just a small portion of the code
-and nearly all abstracted behind APIs that can be implemented as needed
-for userspace or kernel in out of line helpers, so that the main source
-is strictly unaware of the difference. That said, we can just fork off a
-kernel version and not worry about keeping compatiblity with user space
-if you wish, though putting in the extra effort to make it dual mode
-would probably be helpful for e2fsck.
+Cheers,
 
-Also, most of this work is already being done for Tux3, so the only
-Ext4-specific work needing doing may well be the differences in atomic
-commit required to accommodate Ext4's ordered journaling, versus Tux3's
-(more precise) delta commit. To that end, we could discuss the atomic
-commit strategy that we use for the persistent memory implementation of
-Shardmap, which may turn out to be largely applicable to Ext4's journal
-transaction model.
-
-> (3) It's not particularly well documented, making the above more
-> challenging, but it appears to be a variation of an extensible hashing
-> scheme, which was used by dbx and Berkley DB.
-
-Sorry about that. There is this post from a few years back:
-
-   https://lkml.org/lkml/2013/6/18/869
-
-And there is a paper in the works. I can also follow up here with a post
-on Shardmap internals, a number of which are interesting and unique.
-
-Shardmap (introduced above as an "an O(1) extensible hash table") is indeed
-an extensible hashing scheme. Fixed size hash tables are impractical for
-databases and file system directories because small data sets waste too
-much table space and large data sets have too many collisions. Therefore
-every such design must incorporate some form of extensibility. Shardmap's
-extension scheme is unique, and worthy of note in its own right as a
-contribution to hash table technology. We did benchmark against Berkeley
-DB and found Shardmap to be markedly faster. I will hunt around for those
-numbers.
-
-Very briefly, the Shardmap index has two distinct forms, one optimized
-for media and the other for cache. These are bijective, each being
-constructable from the other. The media form (the backing store) only
-has a single purpose: to reconstruct the cache form on demand, one shard
-at a time.
-
-The cache form is the main source of Shardmap's efficiency. This is a
-two level hash table with each entry in the top level table being a
-pointer to a self contained hash table object. In contrast to other
-extensible hashing schemes, these cache shard are not themselves
-extensible. Rather, we simply rewrite entire shards into subshards
-as needed.
-
-The top level hash table is where the extensibility happens. At some
-threshold, the top level table is expanded by duplicating the pointers
-to the hash objects so that multiple buckets may reference the same
-hash object. When any of those objects passes a threshold number of
-entries, it is split into multiple, smaller hash objects, each with a
-unique pointer from the top level table. Traversing this two level
-table for lookup or existence tests takes just a few nanoseconds.
-
-Extending the hash in cache is mirrored by extending the media form,
-by serializing the cache shard into multiple linear regions on media.
-Now here is the key idea: even taking the cost of this media rewrite
-into account, insert performance remains O(1), just with a slightly
-higher constant factor. Shardmap exploits this subtle mathematical
-fact to get the best of both worlds: O(1) performance like a hash and
-extensibility like a BTree.
-
-In fact, if you wish to avoid that constant media rewrite factor
-entirely, Shardmap lets you do it, by allowing you to specify the
-number and size of shards at directory creation time. I have not
-benchmarked this, but it could improve average create performance by 20%
-or so. However, even with the "extra" media copy, Shardmap still has
-impressively high insert performance, in fact it is significantly
-faster than any of the high performance key value stores we have tried
-so far.
-
-> (4) Because of (2), we won't be able to do any actual benchmarks for a
-> while.
-
-(2) is not an issue, the copyright is entirely mine and the license can
-be retuned as convenient. Just indicate where the GPLv2 version should
-be posted and I will make it so. Perhaps a new Github repo, or Gitlab?
-
-> I just checked the latest version of Tux3[2], and it appears
-> to be be still using a linear search scheme for its directory ---
-> e.g., an O(n) lookup ala ext2.  So I'm guessing Shardmap may have been
-> *designed* for Tux3, but it has not yet been *implemented* for Tux3?
-> 
-> [2] https://github.com/OGAWAHirofumi/linux-tux3/blob/hirofumi/fs/tux3/dir.c#L283
-
-Correct, not yet ported to Tux3, however this work is in progress. There
-are some sticky little points to work out such as how to implement the
-largish cache shard objects without using virtual memory. The PAGEMAP
-compilation option in the current source breaks those objects up into
-pages, essentially doing virtual memory by hand, which will add some
-small amount of additional overhead to the kernel version versus the
-user space version, nothing to worry about. However it does make me wish
-that we had better kernel support for virtual memory.
-
-There are various other kernel porting details that are maybe a bit too
-fine grained for this post. Example: Shardmap is a memory mapped db but
-we don't have mmap in kernel, so must do this by hand also.
-
-> (5) The claim is made that readdir() accesses files sequentially; but
-> there is also mention in Shardmap of compressing shards (e.g.,
-> rewriting them) to squeeze out deleted and tombstone entries.  This
-> pretty much guarantees that it will not be possible to satisfy POSIX
-> requirements of telldir(2)/seekdir(3) (using a 32-bit or 64-bitt
-> cookie), NFS (which also requires use of a 32-bit or 64-bit cookie
-> while doing readdir scan), or readdir() semantics in the face of
-> directory entries getting inserted or removed from the directory.
-
-No problem, the data blocks are completely separate from the index so
-readdir just walks through them in linear order a la classic UFS/Ext2.
-What could possibly be simpler, faster or more POSIX compliant?
-
-> (To be specific, POSIX requires readdir returns each entry in a
-> directory once and only once, and in the case of a directory entry
-> which is removed or inserted, that directory entry must be returned
-> exactly zero or one times.  This is true even if telldir(2) ort
-> seekdir(2) is used to memoize a particular location in the directory,
-> which means you have a 32-bit or 64-bit cookie to define a particular
-> location in the readdir(2) stream.  If the file system wants to be
-> exportable via NFS, it must meet similar requirements ---- except the
-> 32-bit or 64-bit cookie MUST survive a reboot.)
-
-So we finally get to fix this nagging HTree defect after all these
-years. Thank you once again for that sweet hack, but with luck we
-will be able to obsolete it by this time next year.
-
-Regards,
-
-Daniel
+						- Ted
