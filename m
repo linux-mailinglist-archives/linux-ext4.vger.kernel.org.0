@@ -2,352 +2,187 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD4A10D6DC
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 15:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2DCA10D743
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 15:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbfK2OVD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 Nov 2019 09:21:03 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20941 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726971AbfK2OVD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Nov 2019 09:21:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575037261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VP6e4fS82ZVWbpnJBKYprOYp5qn0BT0NQcR/ZfMdaJk=;
-        b=cuMz57nipn5hctiIwFXgt+6Ih4qLKpXBpXNvIRwuErHjfyuVqwREkVzPQ0sl9cctHhNt7v
-        21jdeHoSBPrIoYjekV4WikcPxmIJ0/3IAtL1rxpgIJ+EFh4tdU72zwfmfBOBaGqiRpWD92
-        20MDfvdcms4ZlL9biXBZALKunlpup1k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-LJWOf1WKPIOJgC45aX2Gvw-1; Fri, 29 Nov 2019 09:21:00 -0500
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D44C8017CC;
-        Fri, 29 Nov 2019 14:20:56 +0000 (UTC)
-Received: from max.com (ovpn-204-19.brq.redhat.com [10.40.204.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2885110013A1;
-        Fri, 29 Nov 2019 14:20:47 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] fs: Fix page_mkwrite off-by-one errors
-Date:   Fri, 29 Nov 2019 15:20:45 +0100
-Message-Id: <20191129142045.7215-1-agruenba@redhat.com>
+        id S1726917AbfK2OqO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Nov 2019 09:46:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60510 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726893AbfK2OqN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 29 Nov 2019 09:46:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 9F917B1CC;
+        Fri, 29 Nov 2019 14:46:11 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 206CF1E0B7B; Fri, 29 Nov 2019 15:46:11 +0100 (CET)
+Date:   Fri, 29 Nov 2019 15:46:11 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "zhangyi (F)" <yi.zhang@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca, liangyun2@huawei.com
+Subject: Re: [PATCH] ext4, jbd2: ensure panic when there is no need to record
+ errno in the jbd2 sb
+Message-ID: <20191129144611.GA27588@quack2.suse.cz>
+References: <20191126144537.30020-1-yi.zhang@huawei.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-MC-Unique: LJWOf1WKPIOJgC45aX2Gvw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191126144537.30020-1-yi.zhang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The check in block_page_mkwrite meant to determine whether an offset is
-within the inode size is off by one.  This bug has spread to
-iomap_page_mkwrite and to several filesystems (ubifs, ext4, f2fs, ceph).
-To fix that, introduce a new page_mkwrite_check_truncate helper that
-checks for truncate and computes the bytes in the page up to EOF, and
-use that helper in the above mentioned filesystems and in btrfs.
+On Tue 26-11-19 22:45:37, zhangyi (F) wrote:
+> JBD2_REC_ERR flag used to indicate the errno has been updated when jbd2
+> aborted, and then __ext4_abort() and ext4_handle_error() can invoke
+> panic if ERRORS_PANIC is specified. But there is one exception, if jbd2
+> thread failed to submit commit record, it abort journal through
+> invoking __jbd2_journal_abort_hard() without set this flag, so we can
+> no longer panic. Fix this by set such flag even if there is no need to
+> record errno in the jbd2 super block.
+> 
+> Fixes: 4327ba52afd03 ("ext4, jbd2: ensure entering into panic after recording an error in superblock")
+> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+> Cc: <stable@vger.kernel.org>
 
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Thanks for the patch. This indeed looks like a bug. I was trying hard to
+understand why are we actually using __jbd2_journal_abort_hard() in
+fs/jbd2/commit.c in the first place. And after some digging, I think it is
+an oversight and we should just use jbd2_journal_abort(). The calls have been
+introduced by commit 818d276ceb83a "ext4: Add the journal checksum
+feature". Before that commit, we were just using jbd2_journal_abort() when
+writing commit block failed. And when we use jbd2_journal_abort() from
+everywhere, that will also deal with the problem you've found.
 
----
+Also as a nice cleanup we could then just drop __jbd2_journal_abort_hard(),
+__jbd2_journal_abort_soft() and have all the functionality in a single
+function jbd2_journal_abort().
 
-This patch has a trivial conflict with commit "iomap: Fix overflow in
-iomap_page_mkwrite" in Darrick's iomap pull request for 5.5:
+								Honza
 
-  https://lore.kernel.org/lkml/20191125190907.GN6219@magnolia/
----
- fs/btrfs/inode.c        | 15 ++++-----------
- fs/buffer.c             | 16 +++-------------
- fs/ceph/addr.c          |  2 +-
- fs/ext4/inode.c         | 14 ++++----------
- fs/f2fs/file.c          | 19 +++++++------------
- fs/iomap/buffered-io.c  | 17 ++++-------------
- fs/ubifs/file.c         |  3 +--
- include/linux/pagemap.h | 24 ++++++++++++++++++++++++
- 8 files changed, 48 insertions(+), 62 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 015910079e73..019948101bc2 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8990,13 +8990,11 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- =09ret =3D VM_FAULT_NOPAGE; /* make the VM retry the fault */
- again:
- =09lock_page(page);
--=09size =3D i_size_read(inode);
-=20
--=09if ((page->mapping !=3D inode->i_mapping) ||
--=09    (page_start >=3D size)) {
--=09=09/* page got truncated out from underneath us */
-+=09ret2 =3D page_mkwrite_check_truncate(page, inode);
-+=09if (ret2 < 0)
- =09=09goto out_unlock;
--=09}
-+=09zero_start =3D ret2;
- =09wait_on_page_writeback(page);
-=20
- =09lock_extent_bits(io_tree, page_start, page_end, &cached_state);
-@@ -9017,6 +9015,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- =09=09goto again;
- =09}
-=20
-+=09size =3D i_size_read(inode);
- =09if (page->index =3D=3D ((size - 1) >> PAGE_SHIFT)) {
- =09=09reserved_space =3D round_up(size - page_start,
- =09=09=09=09=09  fs_info->sectorsize);
-@@ -9049,12 +9048,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- =09}
- =09ret2 =3D 0;
-=20
--=09/* page is wholly or partially inside EOF */
--=09if (page_start + PAGE_SIZE > size)
--=09=09zero_start =3D offset_in_page(size);
--=09else
--=09=09zero_start =3D PAGE_SIZE;
--
- =09if (zero_start !=3D PAGE_SIZE) {
- =09=09kaddr =3D kmap(page);
- =09=09memset(kaddr + zero_start, 0, PAGE_SIZE - zero_start);
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 86a38b979323..b162ec65910e 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -2459,23 +2459,13 @@ int block_page_mkwrite(struct vm_area_struct *vma, =
-struct vm_fault *vmf,
- =09struct page *page =3D vmf->page;
- =09struct inode *inode =3D file_inode(vma->vm_file);
- =09unsigned long end;
--=09loff_t size;
- =09int ret;
-=20
- =09lock_page(page);
--=09size =3D i_size_read(inode);
--=09if ((page->mapping !=3D inode->i_mapping) ||
--=09    (page_offset(page) > size)) {
--=09=09/* We overload EFAULT to mean page got truncated */
--=09=09ret =3D -EFAULT;
-+=09ret =3D page_mkwrite_check_truncate(page, inode);
-+=09if (ret < 0)
- =09=09goto out_unlock;
--=09}
--
--=09/* page is wholly or partially inside EOF */
--=09if (((page->index + 1) << PAGE_SHIFT) > size)
--=09=09end =3D size & ~PAGE_MASK;
--=09else
--=09=09end =3D PAGE_SIZE;
-+=09end =3D ret;
-=20
- =09ret =3D __block_write_begin(page, 0, end, get_block);
- =09if (!ret)
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index 7ab616601141..ef958aa4adb4 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -1575,7 +1575,7 @@ static vm_fault_t ceph_page_mkwrite(struct vm_fault *=
-vmf)
- =09do {
- =09=09lock_page(page);
-=20
--=09=09if ((off > size) || (page->mapping !=3D inode->i_mapping)) {
-+=09=09if (page_mkwrite_check_truncate(page, inode) < 0) {
- =09=09=09unlock_page(page);
- =09=09=09ret =3D VM_FAULT_NOPAGE;
- =09=09=09break;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 516faa280ced..23bf095e0b29 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -6186,7 +6186,6 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
- {
- =09struct vm_area_struct *vma =3D vmf->vma;
- =09struct page *page =3D vmf->page;
--=09loff_t size;
- =09unsigned long len;
- =09int err;
- =09vm_fault_t ret;
-@@ -6222,18 +6221,13 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
- =09}
-=20
- =09lock_page(page);
--=09size =3D i_size_read(inode);
--=09/* Page got truncated from under us? */
--=09if (page->mapping !=3D mapping || page_offset(page) > size) {
-+=09err =3D page_mkwrite_check_truncate(page, inode);
-+=09if (err < 0) {
- =09=09unlock_page(page);
--=09=09ret =3D VM_FAULT_NOPAGE;
--=09=09goto out;
-+=09=09goto out_ret;
- =09}
-+=09len =3D err;
-=20
--=09if (page->index =3D=3D size >> PAGE_SHIFT)
--=09=09len =3D size & ~PAGE_MASK;
--=09else
--=09=09len =3D PAGE_SIZE;
- =09/*
- =09 * Return if we have all the buffers mapped. This avoids the need to do
- =09 * journal_start/journal_stop which can block and take a long time
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 29bc0a542759..973f731e7af4 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -51,7 +51,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *v=
-mf)
- =09struct inode *inode =3D file_inode(vmf->vma->vm_file);
- =09struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
- =09struct dnode_of_data dn =3D { .node_changed =3D false };
--=09int err;
-+=09int offset, err;
-=20
- =09if (unlikely(f2fs_cp_error(sbi))) {
- =09=09err =3D -EIO;
-@@ -70,13 +70,14 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault =
-*vmf)
- =09file_update_time(vmf->vma->vm_file);
- =09down_read(&F2FS_I(inode)->i_mmap_sem);
- =09lock_page(page);
--=09if (unlikely(page->mapping !=3D inode->i_mapping ||
--=09=09=09page_offset(page) > i_size_read(inode) ||
--=09=09=09!PageUptodate(page))) {
-+=09err =3D -EFAULT;
-+=09if (likely(PageUptodate(page)))
-+=09=09err =3D page_mkwrite_check_truncate(page, inode);
-+=09if (unlikely(err < 0)) {
- =09=09unlock_page(page);
--=09=09err =3D -EFAULT;
- =09=09goto out_sem;
- =09}
-+=09offset =3D err;
-=20
- =09/* block allocation */
- =09__do_map_lock(sbi, F2FS_GET_BLOCK_PRE_AIO, true);
-@@ -101,14 +102,8 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault=
- *vmf)
- =09if (PageMappedToDisk(page))
- =09=09goto out_sem;
-=20
--=09/* page is wholly or partially inside EOF */
--=09if (((loff_t)(page->index + 1) << PAGE_SHIFT) >
--=09=09=09=09=09=09i_size_read(inode)) {
--=09=09loff_t offset;
--
--=09=09offset =3D i_size_read(inode) & ~PAGE_MASK;
-+=09if (offset !=3D PAGE_SIZE)
- =09=09zero_user_segment(page, offset, PAGE_SIZE);
--=09}
- =09set_page_dirty(page);
- =09if (!PageUptodate(page))
- =09=09SetPageUptodate(page);
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index e25901ae3ff4..663b5071b154 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -1035,23 +1035,14 @@ vm_fault_t iomap_page_mkwrite(struct vm_fault *vmf,=
- const struct iomap_ops *ops)
- =09struct page *page =3D vmf->page;
- =09struct inode *inode =3D file_inode(vmf->vma->vm_file);
- =09unsigned long length;
--=09loff_t offset, size;
-+=09loff_t offset;
- =09ssize_t ret;
-=20
- =09lock_page(page);
--=09size =3D i_size_read(inode);
--=09if ((page->mapping !=3D inode->i_mapping) ||
--=09    (page_offset(page) > size)) {
--=09=09/* We overload EFAULT to mean page got truncated */
--=09=09ret =3D -EFAULT;
-+=09ret =3D page_mkwrite_check_truncate(page, inode);
-+=09if (ret < 0)
- =09=09goto out_unlock;
--=09}
--
--=09/* page is wholly or partially inside EOF */
--=09if (((page->index + 1) << PAGE_SHIFT) > size)
--=09=09length =3D offset_in_page(size);
--=09else
--=09=09length =3D PAGE_SIZE;
-+=09length =3D ret;
-=20
- =09offset =3D page_offset(page);
- =09while (length > 0) {
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index cd52585c8f4f..91f7a1f2db0d 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1563,8 +1563,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fau=
-lt *vmf)
- =09}
-=20
- =09lock_page(page);
--=09if (unlikely(page->mapping !=3D inode->i_mapping ||
--=09=09     page_offset(page) > i_size_read(inode))) {
-+=09if (unlikely(page_mkwrite_check_truncate(page, inode) < 0)) {
- =09=09/* Page got truncated out from underneath us */
- =09=09goto sigbus;
- =09}
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 37a4d9e32cd3..5a3f860470ad 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -636,4 +636,28 @@ static inline unsigned long dir_pages(struct inode *in=
-ode)
- =09=09=09       PAGE_SHIFT;
- }
-=20
-+/**
-+ * page_mkwrite_check_truncate - check if page was truncated
-+ * @page: the page to check
-+ * @inode: the inode to check the page against
-+ *
-+ * Returns the number of bytes in the page up to EOF,
-+ * or -EFAULT if the page was truncated.
-+ */
-+static inline int page_mkwrite_check_truncate(struct page *page,
-+=09=09=09=09=09      struct inode *inode)
-+{
-+=09loff_t size =3D i_size_read(inode);
-+=09pgoff_t end_index =3D (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
-+
-+=09if (page->mapping !=3D inode->i_mapping ||
-+=09    page->index >=3D end_index)
-+=09=09return -EFAULT;
-+=09if (page->index !=3D size >> PAGE_SHIFT) {
-+=09=09/* page is wholly inside EOF */
-+=09=09return PAGE_SIZE;
-+=09}
-+=09return offset_in_page(size);
-+}
-+
- #endif /* _LINUX_PAGEMAP_H */
---=20
-2.20.1
-
+> ---
+>  fs/ext4/super.c      |  4 ++--
+>  fs/jbd2/journal.c    | 46 +++++++++++++++++++++++++++++---------------
+>  include/linux/jbd2.h |  4 +++-
+>  3 files changed, 36 insertions(+), 18 deletions(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index dd654e53ba3d..76cde5fb8207 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -482,7 +482,7 @@ static void ext4_handle_error(struct super_block *sb)
+>  		sb->s_flags |= SB_RDONLY;
+>  	} else if (test_opt(sb, ERRORS_PANIC)) {
+>  		if (EXT4_SB(sb)->s_journal &&
+> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
+> +		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_ABORT_FINISHED))
+>  			return;
+>  		panic("EXT4-fs (device %s): panic forced after error\n",
+>  			sb->s_id);
+> @@ -701,7 +701,7 @@ void __ext4_abort(struct super_block *sb, const char *function,
+>  	}
+>  	if (test_opt(sb, ERRORS_PANIC) && !system_going_down()) {
+>  		if (EXT4_SB(sb)->s_journal &&
+> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
+> +		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_ABORT_FINISHED))
+>  			return;
+>  		panic("EXT4-fs panic from previous error\n");
+>  	}
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 1c58859aa592..eb5e60df0da4 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -2072,13 +2072,7 @@ int jbd2_journal_wipe(journal_t *journal, int write)
+>   * Two internal functions, which provide abort to the jbd layer
+>   * itself are here.
+>   */
+> -
+> -/*
+> - * Quick version for internal journal use (doesn't lock the journal).
+> - * Aborts hard --- we mark the abort as occurred, but do _nothing_ else,
+> - * and don't attempt to make any other journal updates.
+> - */
+> -void __jbd2_journal_abort_hard(journal_t *journal)
+> +static void __jbd2_journal_abort(journal_t *journal)
+>  {
+>  	transaction_t *transaction;
+>  
+> @@ -2096,8 +2090,33 @@ void __jbd2_journal_abort_hard(journal_t *journal)
+>  	write_unlock(&journal->j_state_lock);
+>  }
+>  
+> -/* Soft abort: record the abort error status in the journal superblock,
+> - * but don't do any other IO. */
+> +/*
+> + * Mark journal abort finished when the errno in the sb has been recorded
+> + * or no need to record.
+> + */
+> +static void __jbd2_journal_finish_abort(journal_t *journal)
+> +{
+> +	write_lock(&journal->j_state_lock);
+> +	journal->j_flags |= JBD2_ABORT_FINISHED;
+> +	write_unlock(&journal->j_state_lock);
+> +}
+> +
+> +/*
+> + * Quick version for internal journal use (doesn't lock the journal).
+> + * Aborts hard --- we mark the abort as occurred, but do _nothing_ else,
+> + * and don't attempt to make any other journal updates.
+> + */
+> +void __jbd2_journal_abort_hard(journal_t *journal)
+> +{
+> +	/* Nothing need to be recorded, mark it as finished directly */
+> +	__jbd2_journal_abort(journal);
+> +	__jbd2_journal_finish_abort(journal);
+> +}
+> +
+> +/*
+> + * Soft abort: record the abort error status in the journal superblock,
+> + * but don't do any other IO.
+> + */
+>  static void __journal_abort_soft (journal_t *journal, int errno)
+>  {
+>  	int old_errno;
+> @@ -2116,14 +2135,11 @@ static void __journal_abort_soft (journal_t *journal, int errno)
+>  	}
+>  	write_unlock(&journal->j_state_lock);
+>  
+> -	__jbd2_journal_abort_hard(journal);
+> +	__jbd2_journal_abort(journal);
+>  
+> -	if (errno) {
+> +	if (errno)
+>  		jbd2_journal_update_sb_errno(journal);
+> -		write_lock(&journal->j_state_lock);
+> -		journal->j_flags |= JBD2_REC_ERR;
+> -		write_unlock(&journal->j_state_lock);
+> -	}
+> +	__jbd2_journal_finish_abort(journal);
+>  }
+>  
+>  /**
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 603fbc4e2f70..870f7f2f912c 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -1248,7 +1248,9 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
+>  #define JBD2_ABORT_ON_SYNCDATA_ERR	0x040	/* Abort the journal on file
+>  						 * data write error in ordered
+>  						 * mode */
+> -#define JBD2_REC_ERR	0x080	/* The errno in the sb has been recorded */
+> +#define JBD2_ABORT_FINISHED		0x080	/* Abort finished, the errno
+> +						 * in the sb has been recorded
+> +						 * if necessary */
+>  
+>  /*
+>   * Function declarations for the journaling transaction and buffer
+> -- 
+> 2.17.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
