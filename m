@@ -2,139 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D68BB10D8C7
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 18:05:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A85B210D8D2
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 18:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbfK2RFg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 29 Nov 2019 12:05:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726608AbfK2RFf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 29 Nov 2019 12:05:35 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 205707] New: LINUX KERNEL 5.3.10 - ext4_xattr_set_entry
- use-after-free
-Date:   Fri, 29 Nov 2019 17:05:34 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tristmd@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression
-Message-ID: <bug-205707-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1726957AbfK2RSk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Nov 2019 12:18:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55410 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726909AbfK2RSk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 29 Nov 2019 12:18:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id C71B6ABED;
+        Fri, 29 Nov 2019 17:18:37 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 02BAE1E0B7B; Fri, 29 Nov 2019 18:18:36 +0100 (CET)
+Date:   Fri, 29 Nov 2019 18:18:36 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org
+Subject: Re: [RFCv3 4/4] ext4: Move to shared iolock even without
+ dioread_nolock mount opt
+Message-ID: <20191129171836.GB27588@quack2.suse.cz>
+References: <20191120050024.11161-1-riteshh@linux.ibm.com>
+ <20191120050024.11161-5-riteshh@linux.ibm.com>
+ <20191120143257.GE9509@quack2.suse.cz>
+ <20191126105122.75EC6A4060@b06wcsmtp001.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191126105122.75EC6A4060@b06wcsmtp001.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=205707
+Hello Ritesh!
 
-            Bug ID: 205707
-           Summary: LINUX KERNEL 5.3.10 - ext4_xattr_set_entry
-                    use-after-free
-           Product: File System
-           Version: 2.5
-    Kernel Version: 5.3.10
-          Hardware: All
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: normal
-          Priority: P1
-         Component: ext4
-          Assignee: fs_ext4@kernel-bugs.osdl.org
-          Reporter: tristmd@gmail.com
-        Regression: No
+On Tue 26-11-19 16:21:15, Ritesh Harjani wrote:
+> On 11/20/19 8:02 PM, Jan Kara wrote:
+> > On Wed 20-11-19 10:30:24, Ritesh Harjani wrote:
+> > > We were using shared locking only in case of dioread_nolock
+> > > mount option in case of DIO overwrites. This mount condition
+> > > is not needed anymore with current code, since:-
+> > > 
+> > > 1. No race between buffered writes & DIO overwrites.
+> > > Since buffIO writes takes exclusive locks & DIO overwrites
+> > > will take share locking. Also DIO path will make sure
+> > > to flush and wait for any dirty page cache data.
+> > > 
+> > > 2. No race between buffered reads & DIO overwrites, since there
+> > > is no block allocation that is possible with DIO overwrites.
+> > > So no stale data exposure should happen. Same is the case
+> > > between DIO reads & DIO overwrites.
+> > > 
+> > > 3. Also other paths like truncate is protected,
+> > > since we wait there for any DIO in flight to be over.
+> > > 
+> > > 4. In case of buffIO writes followed by DIO reads:
+> > > Since here also we take exclusive locks in ext4_write_begin/end().
+> > > There is no risk of exposing any stale data in this case.
+> > > Since after ext4_write_end, iomap_dio_rw() will wait to flush &
+> > > wait for any dirty page cache data.
+> > > 
+> > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> > 
+> > There's one more case to consider here as I mentioned in [1]. There can be
+> 
+> Yes, I should have mentioned about this in cover letter and about my
+> thoughts on that.
+> I was of the opinion that since the race is already existing
+> and it may not be caused due to this patch, so we should handle that in
+> incremental fashion and as a separate patch series after this one.
+> Let me know your thoughts on above.
 
-LINUX KERNEL 5.3.10 - ext4_xattr_set_entry use-after-free
+Yes, I'm fine with that.
 
-0x01 - Introduction
-===
+> Also, I wanted to have some more discussions on this race before
+> making the changes.
+> But nevertheless, it's the right time to discuss those changes here.
+> 
+> > mmap write instantiating dirty page and then someone starting writeback
+> > against that page while DIO read is running still theoretically leading to
+> > stale data exposure. Now this patch does not have influence on that race
+> > but:
+> 
+> Yes, agreed.
+> 
+> > 
+> > 1) We need to close the race mentioned above. Maybe we could do that by
+> > proactively allocating unwritten blocks for a page being faulted when there
+> > is direct IO running against the file - the one who fills holes through
+> > mmap write while direct IO is running on the file deserves to suffer the
+> > performance penalty...
+> 
+> I was giving this a thought. So even if we try to penalize mmap
+> write as you mentioned above, what I am not sure about it, is that, how can
+> we reliably detect that the DIO is in progress?
+> 
+> Say even if we try to check for atomic_read(&inode->i_dio_count) in mmap
+> ext4_page_mkwrite path, it cannot be reliable unless there is some sort of a
+> lock protection, no?
+> Because after the check the DIO can still snoop in, right?
 
-# Product: Linux Kernel 
-# Version: 5.3.10 (and probably other versions)
-# Bug: UAF (Read)
-# Tested on: GNU/Linux Debian 9 x86_64
+Yes, doing this reliably will need some code tweaking. Also thinking about
+this in detail, doing a reliable check in ext4_page_mkwrite() is
+somewhat difficult so it will be probably less error-prone to deal with the
+race in the writeback path.
 
+My preferred way of dealing with this would be to move inode_dio_begin()
+call in iomap_dio_rw() a bit earlier before page cache invalidation and add
+there smp_mb_after_atomic() (so that e.g. nrpages checks cannot get
+reordered before the increment).  Then the check on i_dio_count in
+ext4_writepages() will be reliable if we do it after gathering and locking
+pages for writeback (i.e., in mpage_map_and_submit_extent()) - either we
+see i_dio_count elevated and use the safe (but slower) writeback using
+unwritten extents, or we see don't and then we are sure DIO will not start
+until writeback of the pages we have locked has finished because of
+filemap_write_and_wait() call in iomap_dio_rw().
 
-0x02 - Crash report
-===
-
-EXT4-fs (sda): Unrecognized mount option
-"fsuuid=Pcc366a�-1035-3ea9-7c93-j1a9eda2" or missing value
-==================================================================
-BUG: KASAN: use-after-free in ext4_xattr_set_entry+0x2a6b/0x3440
-fs/ext4/xattr.c:1600
-Read of size 4 at addr ffff88800aaf0002 by task syz-executor.3/354
-
-CPU: 0 PID: 354 Comm: syz-executor.3 Not tainted 5.3.10 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xca/0x13e lib/dump_stack.c:113
- print_address_description+0x67/0x360 mm/kasan/report.c:351
- __kasan_report.cold.7+0x1a/0x3b mm/kasan/report.c:482
- kasan_report+0xe/0x12 mm/kasan/common.c:618
- ext4_xattr_set_entry+0x2a6b/0x3440 fs/ext4/xattr.c:1600
- ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2236
- ext4_xattr_set_handle+0x70e/0xff0 fs/ext4/xattr.c:2392
- ext4_initxattrs+0xb8/0x120 fs/ext4/xattr_security.c:43
- security_inode_init_security security/security.c:956 [inline]
- security_inode_init_security+0x186/0x310 security/security.c:929
- __ext4_new_inode+0x4000/0x49c0 fs/ext4/ialloc.c:1160
-EXT4-fs error (device sda): ext4_xattr_set_entry:1603: inode #15574: comm
-syz-executor.0: corrupted xattr entries
- ext4_mkdir+0x266/0xd10 fs/ext4/namei.c:2763
- vfs_mkdir+0x3ae/0x5c0 fs/namei.c:3815
- do_mkdirat+0x144/0x250 fs/namei.c:3838
- do_syscall_64+0xbc/0x560 arch/x86/entry/common.c:296
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x464cd7
-Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
-84 00 00 00 00 00 0f 1f 44 00 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01
-c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc3097ec68 EFLAGS: 00000202 ORIG_RAX: 0000000000000053
-RAX: ffffffffffffffda RBX: 00007ffc3097ecb0 RCX: 0000000000464cd7
-RDX: 00000000004a5f12 RSI: 00000000000001ff RDI: 00007ffc3097ecb0
-RBP: 00007ffc3097ecac R08: 0000000000000000 R09: 0000000000000006
-R10: 0000000000000000 R11: 0000000000000202 R12: 00000000000e9973
-R13: 0000000000000004 R14: 00000000000e9937 R15: 00000000ffffffff
-
-The buggy address belongs to the page:
-page:ffffea00002abc00 refcount:0 mapcount:-128 mapping:0000000000000000
-index:0x1
-flags: 0x100000000000000()
-raw: 0100000000000000 ffffea00002aee08 ffffea00002a9c08 0000000000000000
-raw: 0000000000000001 0000000000000003 00000000ffffff7f 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88800aaeff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88800aaeff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff88800aaf0000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                   ^
- ffff88800aaf0080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88800aaf0100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
+								Honza
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
