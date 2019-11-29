@@ -2,94 +2,139 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9512D10D898
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 17:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D68BB10D8C7
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 18:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbfK2QgB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 29 Nov 2019 11:36:01 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:44102 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbfK2QgA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Nov 2019 11:36:00 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id A3CB6607BDB2;
-        Fri, 29 Nov 2019 17:35:56 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id kOcQPONK-3hk; Fri, 29 Nov 2019 17:35:54 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id D5E1B6083139;
-        Fri, 29 Nov 2019 17:35:53 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Au7ORLC9cK4z; Fri, 29 Nov 2019 17:35:53 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 8329F607BDB2;
-        Fri, 29 Nov 2019 17:35:53 +0100 (CET)
-Date:   Fri, 29 Nov 2019 17:35:53 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Darrick <darrick.wong@oracle.com>,
-        torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>, tytso <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-xfs@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <51833696.101442.1575045353332.JavaMail.zimbra@nod.at>
-In-Reply-To: <20191129142045.7215-1-agruenba@redhat.com>
-References: <20191129142045.7215-1-agruenba@redhat.com>
-Subject: Re: [PATCH v2] fs: Fix page_mkwrite off-by-one errors
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1726926AbfK2RFg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Fri, 29 Nov 2019 12:05:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726608AbfK2RFf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 29 Nov 2019 12:05:35 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 205707] New: LINUX KERNEL 5.3.10 - ext4_xattr_set_entry
+ use-after-free
+Date:   Fri, 29 Nov 2019 17:05:34 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tristmd@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-205707-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Topic: Fix page_mkwrite off-by-one errors
-Thread-Index: OwUcLuBZ37Awg+4d3rXFBEMLhx0YIg==
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "Andreas Gruenbacher" <agruenba@redhat.com>
-> An: "Christoph Hellwig" <hch@infradead.org>, "Darrick" <darrick.wong@oracle.com>
-> CC: "Andreas Gruenbacher" <agruenba@redhat.com>, "torvalds" <torvalds@linux-foundation.org>, "linux-kernel"
-> <linux-kernel@vger.kernel.org>, "Al Viro" <viro@zeniv.linux.org.uk>, "Jeff Layton" <jlayton@kernel.org>, "Sage Weil"
-> <sage@redhat.com>, "Ilya Dryomov" <idryomov@gmail.com>, "tytso" <tytso@mit.edu>, "Andreas Dilger"
-> <adilger.kernel@dilger.ca>, "Jaegeuk Kim" <jaegeuk@kernel.org>, "Chao Yu" <chao@kernel.org>, linux-xfs@vger.kernel.org,
-> "linux-fsdevel" <linux-fsdevel@vger.kernel.org>, "richard" <richard@nod.at>, "Artem Bityutskiy" <dedekind1@gmail.com>,
-> "Adrian Hunter" <adrian.hunter@intel.com>, ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
-> linux-f2fs-devel@lists.sourceforge.net, "linux-mtd" <linux-mtd@lists.infradead.org>, "Chris Mason" <clm@fb.com>, "Josef
-> Bacik" <josef@toxicpanda.com>, "David Sterba" <dsterba@suse.com>, "linux-btrfs" <linux-btrfs@vger.kernel.org>
-> Gesendet: Freitag, 29. November 2019 15:20:45
-> Betreff: [PATCH v2] fs: Fix page_mkwrite off-by-one errors
+https://bugzilla.kernel.org/show_bug.cgi?id=205707
 
-> The check in block_page_mkwrite meant to determine whether an offset is
-> within the inode size is off by one.  This bug has spread to
-> iomap_page_mkwrite and to several filesystems (ubifs, ext4, f2fs, ceph).
-> To fix that, introduce a new page_mkwrite_check_truncate helper that
-> checks for truncate and computes the bytes in the page up to EOF, and
-> use that helper in the above mentioned filesystems and in btrfs.
-> 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+            Bug ID: 205707
+           Summary: LINUX KERNEL 5.3.10 - ext4_xattr_set_entry
+                    use-after-free
+           Product: File System
+           Version: 2.5
+    Kernel Version: 5.3.10
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: tristmd@gmail.com
+        Regression: No
 
-Thank you for fixing UBIFS!
+LINUX KERNEL 5.3.10 - ext4_xattr_set_entry use-after-free
 
-Acked-by: Richard Weinberger <richard@nod.at>
+0x01 - Introduction
+===
 
-Thanks,
-//richard
+# Product: Linux Kernel 
+# Version: 5.3.10 (and probably other versions)
+# Bug: UAF (Read)
+# Tested on: GNU/Linux Debian 9 x86_64
+
+
+0x02 - Crash report
+===
+
+EXT4-fs (sda): Unrecognized mount option
+"fsuuid=Pcc366a�-1035-3ea9-7c93-j1a9eda2" or missing value
+==================================================================
+BUG: KASAN: use-after-free in ext4_xattr_set_entry+0x2a6b/0x3440
+fs/ext4/xattr.c:1600
+Read of size 4 at addr ffff88800aaf0002 by task syz-executor.3/354
+
+CPU: 0 PID: 354 Comm: syz-executor.3 Not tainted 5.3.10 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xca/0x13e lib/dump_stack.c:113
+ print_address_description+0x67/0x360 mm/kasan/report.c:351
+ __kasan_report.cold.7+0x1a/0x3b mm/kasan/report.c:482
+ kasan_report+0xe/0x12 mm/kasan/common.c:618
+ ext4_xattr_set_entry+0x2a6b/0x3440 fs/ext4/xattr.c:1600
+ ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2236
+ ext4_xattr_set_handle+0x70e/0xff0 fs/ext4/xattr.c:2392
+ ext4_initxattrs+0xb8/0x120 fs/ext4/xattr_security.c:43
+ security_inode_init_security security/security.c:956 [inline]
+ security_inode_init_security+0x186/0x310 security/security.c:929
+ __ext4_new_inode+0x4000/0x49c0 fs/ext4/ialloc.c:1160
+EXT4-fs error (device sda): ext4_xattr_set_entry:1603: inode #15574: comm
+syz-executor.0: corrupted xattr entries
+ ext4_mkdir+0x266/0xd10 fs/ext4/namei.c:2763
+ vfs_mkdir+0x3ae/0x5c0 fs/namei.c:3815
+ do_mkdirat+0x144/0x250 fs/namei.c:3838
+ do_syscall_64+0xbc/0x560 arch/x86/entry/common.c:296
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x464cd7
+Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f
+84 00 00 00 00 00 0f 1f 44 00 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01
+c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc3097ec68 EFLAGS: 00000202 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 00007ffc3097ecb0 RCX: 0000000000464cd7
+RDX: 00000000004a5f12 RSI: 00000000000001ff RDI: 00007ffc3097ecb0
+RBP: 00007ffc3097ecac R08: 0000000000000000 R09: 0000000000000006
+R10: 0000000000000000 R11: 0000000000000202 R12: 00000000000e9973
+R13: 0000000000000004 R14: 00000000000e9937 R15: 00000000ffffffff
+
+The buggy address belongs to the page:
+page:ffffea00002abc00 refcount:0 mapcount:-128 mapping:0000000000000000
+index:0x1
+flags: 0x100000000000000()
+raw: 0100000000000000 ffffea00002aee08 ffffea00002a9c08 0000000000000000
+raw: 0000000000000001 0000000000000003 00000000ffffff7f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88800aaeff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88800aaeff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88800aaf0000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                   ^
+ ffff88800aaf0080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff88800aaf0100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
