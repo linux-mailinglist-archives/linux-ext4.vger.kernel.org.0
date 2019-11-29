@@ -2,121 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9175810D4EC
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 12:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B7B10D5E7
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 13:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbfK2LdQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 29 Nov 2019 06:33:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40166 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726360AbfK2LdQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 29 Nov 2019 06:33:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 68875AF38;
-        Fri, 29 Nov 2019 11:33:14 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 232F81E0B6A; Fri, 29 Nov 2019 12:33:14 +0100 (CET)
-Date:   Fri, 29 Nov 2019 12:33:14 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext2, quota, reiserfs cleanups and fixes
-Message-ID: <20191129113314.GC1121@quack2.suse.cz>
+        id S1726806AbfK2MzZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 29 Nov 2019 07:55:25 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41046 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726360AbfK2MzZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 29 Nov 2019 07:55:25 -0500
+Received: from callcc.thunk.org (97-71-153.205.biz.bhn.net [97.71.153.205] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xATCtJcw013959
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Nov 2019 07:55:20 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 18923421A48; Fri, 29 Nov 2019 07:55:19 -0500 (EST)
+Date:   Fri, 29 Nov 2019 07:55:19 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     syzbot <syzbot+1e407c24e65e1fca3ecf@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: use-after-free Write in ext4_mark_inode_dirty
+Message-ID: <20191129125519.GA16443@mit.edu>
+References: <000000000000fd1f29059877e56a@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <000000000000fd1f29059877e56a@google.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-  Hello Linus,
+On Fri, Nov 29, 2019 at 12:20:10AM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    a2d79c71 Merge tag 'for-5.3/io_uring-20190711' of git://gi..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1632a03fa00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=bf58f4f254e2639
+> dashboard link: https://syzkaller.appspot.com/bug?extid=1e407c24e65e1fca3ecf
+> compiler:       clang version 9.0.0 (/home/glider/llvm/clang
+> 80fee25776c2fb61e74c1ecb1a523375c2500b69)
 
-  could you please pull from
+#syz dup: KASAN: use-after-free Write in __ext4_expand_extra_isize (2)
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs.git for_v5.5-rc1
-
-The pull contains:
-  * Refactoring of quota on/off kernel internal interfaces (mostly for
-    ubifs quota support as ubifs does not want to have inodes holding quota
-    information)
-  * A few other small quota fixes and cleanups
-  * Various small ext2 fixes and cleanups
-  * Reiserfs xattr fix and one cleanup
-
-Top of the tree is 545886fead7a. The full shortlog is:
-
-Chengguang Xu (15):
-      quota: avoid increasing DQST_LOOKUPS when iterating over dirty/inuse list
-      quota: code cleanup for hash bits calculation
-      quota: check quota type in early stage
-      quota: minor code cleanup for v1_format_ops
-      ext2: adjust block num when retry allocation
-      ext2: add missing brelse in ext2_new_blocks()
-      ext2: return error when fail to allocating memory in ioctl
-      ext2: don't set *count in the case of failure in ext2_try_to_allocate()
-      ext2: check err when partial != NULL
-      ext2: introduce new helper ext2_group_last_block_no()
-      ext2: code cleanup by calling ext2_group_last_block_no()
-      ext2: skip unnecessary operations in ext2_try_to_allocate()
-      ext2: code cleanup for ext2_try_to_allocate()
-      ext2: fix improper function comment
-      ext2: code cleanup for descriptor_loc()
-
-Dmitry Monakhov (2):
-      quota: fix livelock in dquot_writeback_dquots
-      quota: Check that quota is not dirty before release
-
-Jan Kara (9):
-      quota: Factor out setup of quota inode
-      quota: Simplify dquot_resume()
-      quota: Rename vfs_load_quota_inode() to dquot_load_quota_inode()
-      fs: Use dquot_load_quota_inode() from filesystems
-      quota: Drop dquot_enable()
-      quota: Make dquot_disable() work without quota inodes
-      quota: Handle quotas without quota inodes in dquot_get_state()
-      Pull series refactoring quota enabling and disabling code.
-      ext2: Simplify initialization in ext2_try_to_allocate()
-
-Jeff Mahoney (1):
-      reiserfs: fix extended attributes on the root directory
-
-Konstantin Khlebnikov (1):
-      fs/quota: handle overflows of sysctl fs.quota.* and report as unsigned long
-
-Nikitas Angelinas (1):
-      reiserfs: replace open-coded atomic_dec_and_mutex_lock()
-
-The diffstat is
-
- fs/ext2/balloc.c         |  75 +++++-------
- fs/ext2/ext2.h           |  12 ++
- fs/ext2/inode.c          |   7 +-
- fs/ext2/ioctl.c          |   5 +-
- fs/ext2/super.c          |  13 +--
- fs/ext4/super.c          |   2 +-
- fs/f2fs/super.c          |   2 +-
- fs/ocfs2/quota_global.c  |   2 +-
- fs/ocfs2/super.c         |   4 +-
- fs/quota/dquot.c         | 289 +++++++++++++++++++++++------------------------
- fs/quota/quota.c         |   7 +-
- fs/quota/quota_v1.c      |   1 -
- fs/reiserfs/file.c       |  10 +-
- fs/reiserfs/inode.c      |  12 +-
- fs/reiserfs/namei.c      |   7 +-
- fs/reiserfs/reiserfs.h   |   2 +
- fs/reiserfs/super.c      |   2 +
- fs/reiserfs/xattr.c      |  19 ++--
- fs/reiserfs/xattr_acl.c  |   4 +-
- include/linux/quota.h    |   2 +-
- include/linux/quotaops.h |  14 ++-
- 21 files changed, 248 insertions(+), 243 deletions(-)
-
-							Thanks
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+     	  	 		      	 - Ted
