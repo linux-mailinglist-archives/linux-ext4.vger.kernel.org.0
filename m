@@ -2,95 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC0E10CFEE
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 00:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5E510D05F
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2019 02:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbfK1XTx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 28 Nov 2019 18:19:53 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50164 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726582AbfK1XTx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Nov 2019 18:19:53 -0500
-Received: from callcc.thunk.org (97-71-153.205.biz.bhn.net [97.71.153.205] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xASNJltA029092
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Nov 2019 18:19:48 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 5487F421A46; Thu, 28 Nov 2019 18:19:47 -0500 (EST)
-Date:   Thu, 28 Nov 2019 18:19:47 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Meng Xu <mengxu.gatech@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: potential data race on ext_inode_hdr(inode)->eh_depth,
- ext_inode_hdr(inode)->eh_max between a creat and unlink syscall
-Message-ID: <20191128231947.GH22921@mit.edu>
-References: <CAAwBoOLoHTZGWFw5y_3MoMgZDQ3gCUQrsAO8Z=U4RwV9KyA_fA@mail.gmail.com>
+        id S1726716AbfK2BhL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 28 Nov 2019 20:37:11 -0500
+Received: from sender3-of-o52.zoho.com.cn ([124.251.121.247]:21948 "EHLO
+        sender3.zoho.com.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726696AbfK2BhL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 28 Nov 2019 20:37:11 -0500
+ARC-Seal: i=1; a=rsa-sha256; t=1574991427; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=pYw/w8L5Mimngy+6F+rEdDl9QKmrxy8PKJmq4zZNrlCh8cq0Tyu3ZDlBg1Oqh0fRJ/GnOe08iUn7GmvsKMEcsLVviBjk8gqmSKXValF6dG+hAYchpWXy2YrnFZyXTZ4kpUsG5tXoyQ9czs6U5R2yWNjB3Rkwu/Azc+2RswRCTDY=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1574991427; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=6Gd+K7iZkeXmPQdKtVEkuM2BwhHSn2yjXqABVv19SX4=; 
+        b=lEqEgnJtbJCuh2Se4G3v/l/9lHuJKV+uI7ArL6Y2CB7bu0SZjP9XQ9B2i760DdkXGKec3QnezSoG5f7IfK6P59y5xSsNuDQD7x2qkQ99cfb2QsXLQPO9+c/rvGiabMo1Pe99CHaLXPnf6csvsXsw5SX8G1qyOd4sgFjGg4mZMjA=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1574991427;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        l=680; bh=6Gd+K7iZkeXmPQdKtVEkuM2BwhHSn2yjXqABVv19SX4=;
+        b=bZ1gHvfbs8NwWxX+f5906/spLk0uuiA9yjag06XUDd6Opof6Hg+M+dNidu6qzPln
+        KytxXGqHtovbOXJ/sOXuPc6jGGhab54lgzQjZ73mHW5j4/IrOWqRYDBUog626roZE7e
+        bdF+B3ilTaWcFnQ5NC1oeaaMtiOgPGNX1/OqRyZI=
+Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
+        with SMTPS id 1574991425595539.8182833620485; Fri, 29 Nov 2019 09:37:05 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
+Message-ID: <20191129013636.7624-1-cgxu519@mykernel.net>
+Subject: [Resend PATCH] ext2: set proper errno in error case of ext2_fill_super()
+Date:   Fri, 29 Nov 2019 09:36:36 +0800
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAwBoOLoHTZGWFw5y_3MoMgZDQ3gCUQrsAO8Z=U4RwV9KyA_fA@mail.gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Nov 28, 2019 at 12:03:04PM -0500, Meng Xu wrote:
-> I notice a potential data race on ext_inode_hdr(inode)->eh_depth,
-> ext_inode_hdr(inode)->eh_max between a create and unlink syscall.
-> Following is the trace:
-> 
-> [Setup]
-> mkdir("foo", 511) = 0;
-> open("foo", 65536, 511) = 3;
-> create("bar", 511) = 4;
-> symlink("foo", "sym_foo") = 0;
-> open("sym_foo", 65536, 511) = 5;
-> 
-> [Thread 1]
-> create("bar", 438);
-> 
-> __do_sys_creat
->   ksys_open
->     do_filp_open
->       path_openat
->         do_last
->           handle_truncate
->             do_truncate
->               notify_change
->                 ext4_setattr
->                   ext4_truncate
->                     ext4_ext_truncate
->                       ext4_ext _remove_space
->                         [WRITE, 2 bytes] ext_inode_hdr(inode)->eh_depth = 0;
->                         [WRITE, 2 bytes] ext_inode_hdr(inode)->eh_max
-> = cpu_to_le16(ext4_ext_space_root(inode, 0));
-> 
-> [Thread 2]
-> unlink("sym_foo");
-> 
-> __do_sys_unlink
->   do_unlinkat
->     iput
->       iput_final
->         evict
->           ext4_evict_inode
->             ext4_orphan_del
->               ext4_mark_iloc_dirty
->                 ext4_do_update_inode
->                   [READ, 4 bytes] raw_inode->i_block[block] = ei->i_data[block];
-> 
-> 
-> I could observe that the order between the READ and WRITE is not
-> deterministic and I was curious what will happen if the READ takes
-> place in the middle of the two WRITES? Does it cause any damages or
-> violations?
+Set proper errno in the case of failure of
+initializing percpu variables.
 
-This makes no sense.  The inodes corresponding to "sym_foo" and "bar"
-are completely differenth.  So why would there be a data race?
+Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+---
+Forgot to cc ext4 maillist, so resend it.
 
-How are you concluding that that there is, in fact, a data race?
+ fs/ext2/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-    	    	       	    	       - Ted
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index 30c630d73f0f..74a9e3e71c13 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -1147,6 +1147,7 @@ static int ext2_fill_super(struct super_block *sb, vo=
+id *data, int silent)
+ =09=09=09=09ext2_count_dirs(sb), GFP_KERNEL);
+ =09}
+ =09if (err) {
++=09=09ret =3D err;
+ =09=09ext2_msg(sb, KERN_ERR, "error: insufficient memory");
+ =09=09goto failed_mount3;
+ =09}
+--=20
+2.20.1
+
+
+
