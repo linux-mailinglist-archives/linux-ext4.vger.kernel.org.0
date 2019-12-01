@@ -2,105 +2,196 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FC810E04E
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Dec 2019 04:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0638410E10E
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Dec 2019 09:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727186AbfLADvT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 30 Nov 2019 22:51:19 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:39082 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727012AbfLADvT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 30 Nov 2019 22:51:19 -0500
-Received: by mail-pg1-f195.google.com with SMTP id b137so14230525pga.6;
-        Sat, 30 Nov 2019 19:51:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jxgA6dJnA/dGvMRrEelT9MYN+n9ka+vhMkWWG7BgB2M=;
-        b=FaXUxc/ieqHGSyxG54PAJ2Nps9gjPrpA0ofS4jtugNSYRbBvJ3I3XutMBnhsUCI6Iw
-         Vqjxja0IfCnhW1ZQairkzedaSQhySx0ML8uycnBl1Hf/IYCTPDFkxx0xyvad9Bp+HXlt
-         iW1ElX+TIxM1lU3SE0ijXzKbJQkst9KZFJwpotBYNUd6HFO1wDo9q6Khal9ChsuyEgnK
-         FIqI3DFEVis5IOmhK10+k5qjP0+ohsRuLre2WltR00n/NpX51E7qWDhvS2OXI3uLJ3B6
-         HzRe3eQJgJcnRN+iS7+i5yQXK9QbXvRlZmliFGL//uqWn2jVfqCxLEhBHXIW4GX2liZJ
-         mraw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jxgA6dJnA/dGvMRrEelT9MYN+n9ka+vhMkWWG7BgB2M=;
-        b=czuTFVG94r82Pqn4RgWxFQWyyq2mSthn535y6JIY84zUanLl5sP+dJbLNrazChtxCM
-         7BY8F2T9TIc00WJQXoJADEBehMqLuTRvZS0h4Y8/MayQyHLOuulPls+AszfKqbIiwTXI
-         ZRnv9x+knyB7mQDWhY2DcyKrjeGhndQJPoRRDIWWHlWIA3/5NliW6axP57GmVnm3Brll
-         tCWqhrM9dpjQlWy5S0TH2BFrNheZJO6j/UMyLJs9jcb5+YyicwqAu21qa9C8tZ7pmqoN
-         mTqGAlMKfraoRUOh7TMZps7zElnrDDvxoLf61xJtv5LZISq5WTmjFLi3SzWavO8GgWcK
-         US7g==
-X-Gm-Message-State: APjAAAW4uUuQqiMDOlX3dbhHlV6NSPPF/g5YssEV1pjYE8SvFD0LfbXg
-        5e4RkxzWj5dQPwYU57Hu/IROEFUM
-X-Google-Smtp-Source: APXvYqyCNUMu2NoyX7GVHrnhdhm32U9ViQxb/MYUOONemByuBlp/v9EEuWquWNP9hRCR7JCJbGObQg==
-X-Received: by 2002:a65:6209:: with SMTP id d9mr24775834pgv.22.1575172278134;
-        Sat, 30 Nov 2019 19:51:18 -0800 (PST)
-Received: from debian.net.fpt ([2405:4800:58f7:32f8:99ed:5ecf:a28d:555e])
-        by smtp.gmail.com with ESMTPSA id c12sm3208096pfo.92.2019.11.30.19.51.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Nov 2019 19:51:17 -0800 (PST)
-From:   Phong Tran <tranmanphong@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, paulmck@kernel.org,
-        joel@joelfernandes.org
+        id S1726066AbfLAIVu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 1 Dec 2019 03:21:50 -0500
+Received: from mail.phunq.net ([66.183.183.73]:38372 "EHLO phunq.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725817AbfLAIVu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 1 Dec 2019 03:21:50 -0500
+Received: from [172.16.1.14]
+        by phunq.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
+        (Exim 4.92.3)
+        (envelope-from <daniel@phunq.net>)
+        id 1ibKUG-0007z8-4U; Sun, 01 Dec 2019 00:21:48 -0800
+Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        rcu@vger.kernel.org, Phong Tran <tranmanphong@gmail.com>
-Subject: [PATCH] ext4: use rcu API in debug_print_tree
-Date:   Sun,  1 Dec 2019 10:51:07 +0700
-Message-Id: <20191201035107.24355-1-tranmanphong@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        linux-fsdevel@vger.kernel.org,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
+ <20191127142508.GB5143@mit.edu>
+ <c3636a43-6ae9-25d4-9483-34770b6929d0@phunq.net>
+ <20191128022817.GE22921@mit.edu>
+ <3b5f28e5-2b88-47bb-1b32-5c2fed989f0b@phunq.net>
+ <20191130175046.GA6655@mit.edu>
+From:   Daniel Phillips <daniel@phunq.net>
+Message-ID: <76ddbdba-55ba-3426-2e29-0fa17db9b6d8@phunq.net>
+Date:   Sun, 1 Dec 2019 00:21:47 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191130175046.GA6655@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-struct ext4_sb_info.system_blks was marked __rcu.
-But access the pointer without using RCU lock and dereference.
-Sparse warning with __rcu notation:
 
-block_validity.c:139:29: warning: incorrect type in argument 1 (different address spaces)
-block_validity.c:139:29:    expected struct rb_root const *
-block_validity.c:139:29:    got struct rb_root [noderef] <asn:4> *
 
-Signed-off-by: Phong Tran <tranmanphong@gmail.com>
----
- fs/ext4/block_validity.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On 2019-11-30 9:50 a.m., Theodore Y. Ts'o wrote:
+> On Wed, Nov 27, 2019 at 08:27:59PM -0800, Daniel Phillips wrote:
+>> You are right that Shardmap also must update the shard fifo tail block,
+>> however there is only one index shard up to 64K entries, so all the new
+>> index entries go into the same tail block(s).
+> 
+> So how big is an index shard?  If it is 64k entries, and each entry is
+> 16 bytes (8 bytes hash, 8 bytes block number), then a shard is a
+> megabyte, right?  Are entries in an index shard stored in sorted or
+> unsorted manner?  If they are stored in an unsorted manner, then when
+> trying to do a lookup, you need to search all of the index shard ---
+> which means for a directory that is being frequently accessed, the
+> entire index shard has to be kept in memory, no?  (Or paged in as
+> necessary, if you are using mmap in userspace).
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index d4d4fdfac1a6..1ee04e76bbe0 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -133,10 +133,13 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
- {
- 	struct rb_node *node;
- 	struct ext4_system_zone *entry;
-+	struct ext4_system_blocks *system_blks;
- 	int first = 1;
- 
- 	printk(KERN_INFO "System zones: ");
--	node = rb_first(&sbi->system_blks->root);
-+	rcu_read_lock();
-+	system_blks = rcu_dereference(sbi->system_blks);
-+	node = rb_first(&system_blks->root);
- 	while (node) {
- 		entry = rb_entry(node, struct ext4_system_zone, node);
- 		printk(KERN_CONT "%s%llu-%llu", first ? "" : ", ",
-@@ -144,6 +147,7 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
- 		first = 0;
- 		node = rb_next(node);
- 	}
-+	rcu_read_unlock();
- 	printk(KERN_CONT "\n");
- }
- 
--- 
-2.20.1
+Exactly correct, except that in cache a shard is a hash table, while
+on media it is just an unordered collection that is entered into hash
+buckets at shard load time.
 
+This is actually the main defining characteristic of Shardmap, both
+giving rise to the theoretical read multiply issue alluded to above
+and on the positive side, acting as a kind of cache read ahead due to
+the coarse demand read granularity. In other words, each time we hit
+a not present shard, we read multiple blocks of the given shard into
+cache all at once, instead of loading blocks piecemeal with lots of
+inefficient little reads. This is especially beneficial for spinning
+disk, which we Tux3 devs still worry about, and I would think, you
+also. Paraphrasing the immortal bard, "it's not dead yet".
+
+Shard size is tunable at directory creation time. A shard entry is
+actually 8 bytes, not 16, because block number can initially be very
+small, just 10 bits by default, leaving 53 bits for the hash and one
+bit to indicate tombstone or not. As the directory size increases,
+the block number field size increases to accommodate more record
+blocks and the hash field size decreases, however number of shards
+increases at the same rate (more or less linear, enforced by logic)
+so that, together with the hash bits implied by the shard number,
+the hash resolution stays constant. Isn't that nice?
+
+The importance of hash resolution is that, at high scale any hash
+collision within a bucket must be resolved by accessing the record
+block and resolving it there. So high collision rate corresponds to
+significant slowdown in operations, getting worse linearly as the
+directory expands. This is N**2 behavior in the sense that the time
+to perform N operations increases as N**2 (IOW our usual definition
+of file system performance.) It turns out that 53 hash bits are
+sufficient to hold the collision rate to a few tens in one billion
+inserts, insignificant at that scale, even more so at typical scale.
+
+The question of cache footprint is indeed central, as you imply. 8
+bytes per entry cuts the cache footprint in half, so that is nice.
+But would it be better if we could hold only the pieces of index
+in cache that we actually need? This question is far more subtle
+than it first seems. Here is a possibly surprising mathematical
+fact: when number of accesses is similar to the number of cache
+blocks the cache footprint of any randomly accessed index is the
+entire cache. This entirely independent of the index algorithm in
+use: you see exactly the same behavior with BTrees. The best and
+possibly only remedy is to make the index as compact as possible,
+hence the impact of 8 byte vs 16 byte entries.
+
+This highlights another significant advantage that Shardmap has
+over HTree: HTree embeds its entries directly in the index while
+Shardmap separates them out into traditional record entry blocks.
+The HTree strategy does save significant CPU by avoiding one
+block level deference, however as mentioned earlier, this merely
+allows HTree to tie Shardmap in block accesses at the lowest
+index scale, because Shardmap does one of its accesses into a
+cache object, this avoiding radix tree overhead. The cost of
+HTree's strategy at high scale, or with a large number of
+directories open, is large, a factor of 2 or more greater cache
+pressure depending on average name size.
+
+So Shardmap is significantly more cache friendly than HTree, however,
+as you deduced, if cache thrashing does happen then Shardmap with
+shard size in the 256K to 1 Mbyte range might have to read a hundred
+times as many blocks to reload an evicted shard than HTree does to
+load a single btree block. On the other hand, the thrashing knee 
+occurs with 3-5 times less cache for Shardmap than HTree, so which
+one wins here? I say Shardmap, because Shardmap does more with less
+cache. If you are thrashing that badly then your machine must be
+grossly misconfigured for its load.
+
+Now suppose you wanted to fix this theoretical read multiplication,
+then how? An emerging technique aimed at precisely the kind of dual
+format caching scheme that Shardmap uses has been dubbed "anticache".
+Instead of evicting and reloading the cache object, page the cache
+to swap, or any available backing store (e.g., to the file system
+volume itself). Then the cache object can be reloaded at your choice
+of granularity, for example, 4K pages, loaded in via the hash table
+walk algorithm. This will be one or more steps: 1) look up hash chain
+head in table possibly loading a page; 2+) if entry not already found
+then look up in next chain entry, possibly loading a page.
+
+The thing is, I can't imagine any Linux configuration that could hit
+this, short of an artificial construction. Take the case of a 1M file
+directory. The shardmap media fifos for that will be 8MB, there will
+be 16 of them (depending on tuning) and each cache shard will be
+somewhere around 640K or 160 pages per shard for a total of 1280
+cache pages, or 5 MB cache footprint. If this is going to put your
+system into thrash then I submit that the real problem is not
+Shardmap.
+
+So this theoretical read multiplication issue is essentially just a
+question of how fast can we thrash. If somebody does come up with a
+valid use case where we need to thrash faster than now, we can always
+implement anticache or something similar, and maybe make that a
+generic facility while at it, because again, the real problem is not
+Shardmap, it is somebody feeding in an inappropriate load for their
+machine configuration.
+
+>> Important example: how is atomic directory commit going to work for
+>> Ext4?
+> 
+> The same way all metadata updates work in ext4.  Which is to say, you
+> need to declare the maximum number of 4k metadata blocks that an
+> operation might need to change when calling ext4_journal_start() to
+> create a handle; and before modifying a 4k block, you need to call
+> ext4_journal_get_write_access(), passing in the handle and the block's
+> buffer_head.  After modifying the block, you must call
+> ext4_handle_dirty_metadata() on the buffer_head.  And when you are
+> doing with the changes in an atomic metadata operation, you call
+> ext4_journal_stop() on the handle.
+> 
+> This hasn't changed since the days of ext3 and htree.
+
+OK good. And I presume that directory updates are prevented until
+the journal transaction is at least fully written to buffers. Maybe
+delayed until the journal transaction is actually committed?
+
+In Tux3 we don't block directory updates during backend commit, and I
+just assumed that Ext4 and others also do that now, so thanks for the
+correction. As far I can see, there will be no new issue with Shardmap,
+as you say. My current plan is that user space mmap will become kmap in
+kernel. I am starting on this part for Tux3 right now. My goal is to
+refine the current Shardmap data access api to hide the fact that mmap
+is used in user space but kmap in kernel. Again, I wish we actually had
+mmap in kernel and maybe we should consider properly supporting it in
+the future, perhaps by improving kmalloc.
+
+One thing we do a bit differently frou our traditional fs is, in the
+common, unfragmented case, mass inserts go into the same block until
+the block is full. So we get a significant speedup by avoiding a page
+cache lookup and kmap per insert. Borrowing a bit of mechanism from
+the persistent memory version of Shardmap, we create the new entries
+in a separate cache page. Then, on commit, copy this "front buffer" to
+the page cache. I think that will translate pretty well to Ext4 also.
+
+Regards,
+
+Daniel
