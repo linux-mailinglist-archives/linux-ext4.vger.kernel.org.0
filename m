@@ -2,63 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9EE10E3F9
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Dec 2019 00:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E2F10E447
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Dec 2019 02:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727297AbfLAXvu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Sun, 1 Dec 2019 18:51:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33898 "EHLO mail.kernel.org"
+        id S1727339AbfLBBpH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 1 Dec 2019 20:45:07 -0500
+Received: from mail.phunq.net ([66.183.183.73]:38782 "EHLO phunq.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727266AbfLAXvu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 1 Dec 2019 18:51:50 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 205707] LINUX KERNEL 5.3.10 - ext4_xattr_set_entry
- use-after-free
-Date:   Sun, 01 Dec 2019 23:51:49 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: PATCH_ALREADY_AVAILABLE
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_status cc resolution
-Message-ID: <bug-205707-13602-NMPkjIJwfR@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-205707-13602@https.bugzilla.kernel.org/>
-References: <bug-205707-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1727279AbfLBBpH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 1 Dec 2019 20:45:07 -0500
+Received: from [172.16.1.14]
+        by phunq.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
+        (Exim 4.92.3)
+        (envelope-from <daniel@phunq.net>)
+        id 1ibalt-00027V-Dm; Sun, 01 Dec 2019 17:45:05 -0800
+Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
+ <20191127142508.GB5143@mit.edu>
+From:   Daniel Phillips <daniel@phunq.net>
+Message-ID: <6b6242d9-f88b-824d-afe9-d42382a93b34@phunq.net>
+Date:   Sun, 1 Dec 2019 17:45:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <20191127142508.GB5143@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=205707
+On 2019-11-27 6:25 a.m., Theodore Y. Ts'o wrote:
+> (3) It's not particularly well documented...
 
-Theodore Tso (tytso@mit.edu) changed:
+We regard that as an issue needing attention. Here is a pretty picture
+to get started:
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-             Status|NEW                         |RESOLVED
-                 CC|                            |tytso@mit.edu
-         Resolution|---                         |PATCH_ALREADY_AVAILABLE
+   https://github.com/danielbot/Shardmap/wiki/Shardmap-media-format
 
---- Comment #1 from Theodore Tso (tytso@mit.edu) ---
-I'm pretty sure this was fixed by 4ea99936a16 ("ext4: add more paranoia
-checking in ext4_expand_extra_isize handling").
+This needs some explaining. The bottom part of the directory file is
+a simple linear range of directory blocks, with a freespace map block
+appearing once every 4K blocks or so. This freespace mapping needs a
+post of its own, it is somewhat subtle. This will be a couple of posts
+in the future.
 
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+The Shardmap index appears at a higher logical address, sufficiently
+far above the directory base to accommodate a reasonable number of
+record entry blocks below it. We try not to place the index at so high
+an address that the radix tree gets extra levels, slowing everything
+down.
+
+When the index needs to be expanded, either because some shard exceeded
+a threshold number of entries, or the record entry blocks ran into the
+the bottom of the index, then a new index tier with more shards is
+created at a higher logical address. The lower index tier is not copied
+immediately to the upper tier, but rather, each shard is incrementally
+split when it hits the threshold because of an insert. This bounds the
+latency of any given insert to the time needed to split one shard, which
+we target nominally at less than one millisecond. Thus, Shardmap takes a
+modest step in the direction of real time response.
+
+Each index tier is just a simple array of shards, each of which fills
+up with 8 byte entries from bottom to top. The count of entries in each
+shard is stored separately in a table just below the shard array. So at
+shard load time, we can determine rapidly from the count table which
+tier a given shard belongs to. There are other advantages to breaking
+the shard counts out separately having to do with the persistent memory
+version of Shardmap, interesting details that I will leave for later.
+
+When all lower tier shards have been deleted, the lower tier may be
+overwritten by the expanding record entry block region. In practice,
+a Shardmap file normally has just one tier most of the time, the other
+tier existing only long enough to complete the incremental expansion
+of the shard table, insert by insert.
+
+There is a small header in the lowest record entry block, giving the
+positions of the one or two index tiers, count of entry blocks, and
+various tuning parameters such as maximum shard size and average depth
+of cache hash collision lists.
+
+That is it for media format. Very simple, is it not? My next post
+will explain the Shardmap directory block format, with a focus on
+deficiencies of the traditional Ext2 format that were addressed.
+
+Regards,
+
+Daniel
