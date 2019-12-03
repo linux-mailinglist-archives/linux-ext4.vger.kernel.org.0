@@ -2,137 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8B810FF12
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 14:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D1910FF94
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 15:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbfLCNsG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Dec 2019 08:48:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59922 "EHLO mx1.suse.de"
+        id S1726139AbfLCOGI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Dec 2019 09:06:08 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56724 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726024AbfLCNsG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 3 Dec 2019 08:48:06 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A05F0ADB5;
-        Tue,  3 Dec 2019 13:48:04 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 334C81E0B7B; Tue,  3 Dec 2019 14:48:04 +0100 (CET)
-Date:   Tue, 3 Dec 2019 14:48:04 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org
-Subject: Re: [RFCv3 4/4] ext4: Move to shared iolock even without
- dioread_nolock mount opt
-Message-ID: <20191203134804.GF8206@quack2.suse.cz>
-References: <20191120050024.11161-1-riteshh@linux.ibm.com>
- <20191120050024.11161-5-riteshh@linux.ibm.com>
- <20191120143257.GE9509@quack2.suse.cz>
- <20191126105122.75EC6A4060@b06wcsmtp001.portsmouth.uk.ibm.com>
- <20191129171836.GB27588@quack2.suse.cz>
- <20191203115445.6F802AE059@d06av26.portsmouth.uk.ibm.com>
- <20191203123929.GE8206@quack2.suse.cz>
- <20191203131048.A4559A4051@d06av23.portsmouth.uk.ibm.com>
+        id S1726098AbfLCOGI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 3 Dec 2019 09:06:08 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id BAF78FE5C9ED4561F2BD;
+        Tue,  3 Dec 2019 22:06:05 +0800 (CST)
+Received: from [127.0.0.1] (10.173.220.179) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Tue, 3 Dec 2019
+ 22:05:56 +0800
+Subject: Re: [PATCH v2 3/4] Partially revert "ext4: pass -ESHUTDOWN code to
+ jbd2 layer"
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <jack@suse.com>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <liangyun2@huawei.com>,
+        <luoshijie1@huawei.com>
+References: <20191203092756.26129-1-yi.zhang@huawei.com>
+ <20191203092756.26129-4-yi.zhang@huawei.com>
+ <20191203122312.GD8206@quack2.suse.cz>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <982c155e-1495-5a8f-70c4-41da7e047e12@huawei.com>
+Date:   Tue, 3 Dec 2019 22:05:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191203131048.A4559A4051@d06av23.portsmouth.uk.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191203122312.GD8206@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.220.179]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 03-12-19 18:40:47, Ritesh Harjani wrote:
-> On 12/3/19 6:09 PM, Jan Kara wrote:
-> > 
-> > Hello Ritesh!
-> > 
-> > On Tue 03-12-19 17:24:44, Ritesh Harjani wrote:
-> > > On 11/29/19 10:48 PM, Jan Kara wrote:
-> > > > > Also, I wanted to have some more discussions on this race before
-> > > > > making the changes.
-> > > > > But nevertheless, it's the right time to discuss those changes here.
-> > > > > 
-> > > > > > mmap write instantiating dirty page and then someone starting writeback
-> > > > > > against that page while DIO read is running still theoretically leading to
-> > > > > > stale data exposure. Now this patch does not have influence on that race
-> > > > > > but:
-> > > > > 
-> > > > > Yes, agreed.
-> > > > > 
-> > > > > > 
-> > > > > > 1) We need to close the race mentioned above. Maybe we could do that by
-> > > > > > proactively allocating unwritten blocks for a page being faulted when there
-> > > > > > is direct IO running against the file - the one who fills holes through
-> > > > > > mmap write while direct IO is running on the file deserves to suffer the
-> > > > > > performance penalty...
-> > > > > 
-> > > > > I was giving this a thought. So even if we try to penalize mmap
-> > > > > write as you mentioned above, what I am not sure about it, is that, how can
-> > > > > we reliably detect that the DIO is in progress?
-> > > > > 
-> > > > > Say even if we try to check for atomic_read(&inode->i_dio_count) in mmap
-> > > > > ext4_page_mkwrite path, it cannot be reliable unless there is some sort of a
-> > > > > lock protection, no?
-> > > > > Because after the check the DIO can still snoop in, right?
-> > > > 
-> > > > Yes, doing this reliably will need some code tweaking. Also thinking about
-> > > > this in detail, doing a reliable check in ext4_page_mkwrite() is
-> > > > somewhat difficult so it will be probably less error-prone to deal with the
-> > > > race in the writeback path.
-> > > 
-> > > hmm. But if we don't do in ext4_page_mkwrite, then I am afraid on
-> > > how to handle nodelalloc scenario. Where we will directly go and
-> > > allocate block via ext4_get_block() in ext4_page_mkwrite(),
-> > > as explained below.
-> > > I guess we may need some tweaking at both places.
-> > 
-> > Ok, I forgot to mention that. Yes, the nodelalloc case in
-> > ext4_page_mkwrite() still needs tweaking. But that is not performance
-> > sensitive path at all. So we can just have there:
+On 2019/12/3 20:23, Jan Kara wrote:
+> On Tue 03-12-19 17:27:55, zhangyi (F) wrote:
+>> This partially reverts commit fb7c02445c497943e7296cd3deee04422b63acb8.
+>>
+>> Commit fb7c02445c49 ("ext4: pass -ESHUTDOWN code to jbd2 layer") want to
+>> allow jbd2 layer to distinguish shutdown journal abort from other error
+>> cases, but this patch seems unnecessary because we distinguished those
+>> cases well through a zero errno parameter when shutting down, thus the
+>> jbd2 aborting peocess will not record the errno. So partially reverts
+>> this commit and keep the proper locking.
+>>
+>> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
 > 
-> hmm. I was of the opinion that why use unwritten blocks or move
-> from written to unwritten method while we can still avoid it.
+> Ted has written this so he'll have the definitive answer but I think the idea
+> of ESHUTDOWN is that if the filesystem was shutdown, we want ESHUTDOWN to
+> be recorded in the journal sb and not some other error. That's why there's
+> logic in __journal_abort_soft() making sure that ESHUTDOWN takes precedence
+> over any other error. Because it can happen that after EXT4_FLAGS_SHUTDOWN
+> flag is set, some other place records different error in journal
+> superblock before we get to jbd2_journal_abort() and record ESHUTDOWN...
 > 
-> > 
-> > 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
-> > 		get_block = ext4_get_block_unwritten;
-> > 	else
-> > 		get_block = ext4_get_block;
-> > 
+
+Thanks for the explanation, I understand now, we need to prevent record
+errno in journal superblock and keep the filesystem just as it is after
+EXT4_FLAGS_SHUTDOWN is set. So there is a bug now because it only
+overwrite errno if it was 0, I will fix it together.
+
+Thanks,
+Yi
+
 > 
-> Although adding a function ext4_dio_check_get_block() as described in
-> previous email is also trivial, which could avoid using unwritten
-> blocks here when DIO is not in progress.
-> But if you think it's not worth it, then I will go with your suggestion
-> here.
+>> ---
+>>  fs/ext4/ioctl.c   |  4 ++--
+>>  fs/jbd2/journal.c | 22 +++++++---------------
+>>  2 files changed, 9 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+>> index 0b7f316fd30f..f99eeba5767d 100644
+>> --- a/fs/ext4/ioctl.c
+>> +++ b/fs/ext4/ioctl.c
+>> @@ -597,13 +597,13 @@ static int ext4_shutdown(struct super_block *sb, unsigned long arg)
+>>  		set_bit(EXT4_FLAGS_SHUTDOWN, &sbi->s_ext4_flags);
+>>  		if (sbi->s_journal && !is_journal_aborted(sbi->s_journal)) {
+>>  			(void) ext4_force_commit(sb);
+>> -			jbd2_journal_abort(sbi->s_journal, -ESHUTDOWN);
+>> +			jbd2_journal_abort(sbi->s_journal, 0);
+>>  		}
+>>  		break;
+>>  	case EXT4_GOING_FLAGS_NOLOGFLUSH:
+>>  		set_bit(EXT4_FLAGS_SHUTDOWN, &sbi->s_ext4_flags);
+>>  		if (sbi->s_journal && !is_journal_aborted(sbi->s_journal))
+>> -			jbd2_journal_abort(sbi->s_journal, -ESHUTDOWN);
+>> +			jbd2_journal_abort(sbi->s_journal, 0);
+>>  		break;
+>>  	default:
+>>  		return -EINVAL;
+>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>> index a78b07841080..f3f9e0b994ef 100644
+>> --- a/fs/jbd2/journal.c
+>> +++ b/fs/jbd2/journal.c
+>> @@ -1475,14 +1475,11 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+>>  void jbd2_journal_update_sb_errno(journal_t *journal)
+>>  {
+>>  	journal_superblock_t *sb = journal->j_superblock;
+>> -	int errcode;
+>>  
+>>  	lock_buffer(journal->j_sb_buffer);
+>> -	errcode = journal->j_errno;
+>> -	if (errcode == -ESHUTDOWN)
+>> -		errcode = 0;
+>> -	jbd_debug(1, "JBD2: updating superblock error (errno %d)\n", errcode);
+>> -	sb->s_errno    = cpu_to_be32(errcode);
+>> +	jbd_debug(1, "JBD2: updating superblock error (errno %d)\n",
+>> +		  journal->j_errno);
+>> +	sb->s_errno = cpu_to_be32(journal->j_errno);
+>>  
+>>  	jbd2_write_superblock(journal, REQ_SYNC | REQ_FUA);
+>>  }
+>> @@ -2100,20 +2097,15 @@ void __jbd2_journal_abort_hard(journal_t *journal)
+>>   * but don't do any other IO. */
+>>  static void __journal_abort_soft (journal_t *journal, int errno)
+>>  {
+>> -	int old_errno;
+>> -
+>>  	write_lock(&journal->j_state_lock);
+>> -	old_errno = journal->j_errno;
+>> -	if (!journal->j_errno || errno == -ESHUTDOWN)
+>> -		journal->j_errno = errno;
+>> -
+>>  	if (journal->j_flags & JBD2_ABORT) {
+>>  		write_unlock(&journal->j_state_lock);
+>> -		if (!old_errno && old_errno != -ESHUTDOWN &&
+>> -		    errno == -ESHUTDOWN)
+>> -			jbd2_journal_update_sb_errno(journal);
+>>  		return;
+>>  	}
+>> +
+>> +	if (!journal->j_errno)
+>> +		journal->j_errno = errno;
+>> +
+>>  	write_unlock(&journal->j_state_lock);
+>>  
+>>  	__jbd2_journal_abort_hard(journal);
+>> -- 
+>> 2.17.2
+>>
 
-Yeah, I would prefer to keep it simple. Otherwise you would have a rare
-subcase of a rare case meaning that code path will hardly ever get tested
-and that's not good for maintainability... Also note that check is not 100%
-reliable. There's still a race like:
-
-ext4_page_mkwrite()
-  block_page_mkwrite()
-    lock_page(page);
-    ...
-    -> get_block()
-      if (inode_dio_count(inode) > 0)
-      -> false - use ext4_get_block()
-					iomap_dio_rw()
-					  inode_dio_begin()
-					  filemap_write_and_wait()
-					    -> no dirty page yet -> bails
-					  invalidate_mapping_pages2()
-    set_page_dirty(page);
-  unlock_page(page);
- 					    -> bails with error because the
-					    page is dirty. Warning is
-					    issued but stale data is still
-					    exposed.
-
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
