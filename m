@@ -2,327 +2,145 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 015C710FE6C
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 14:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B1110FED4
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 14:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726114AbfLCNK7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Dec 2019 08:10:59 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:30792 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726024AbfLCNK6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Dec 2019 08:10:58 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xB3D7H0c037653
-        for <linux-ext4@vger.kernel.org>; Tue, 3 Dec 2019 08:10:57 -0500
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2wnqn422sg-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Dec 2019 08:10:56 -0500
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Tue, 3 Dec 2019 13:10:54 -0000
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 3 Dec 2019 13:10:50 -0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xB3DA9d746662020
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 3 Dec 2019 13:10:09 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA786A4053;
-        Tue,  3 Dec 2019 13:10:49 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A4559A4051;
-        Tue,  3 Dec 2019 13:10:48 +0000 (GMT)
-Received: from [9.199.158.219] (unknown [9.199.158.219])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  3 Dec 2019 13:10:48 +0000 (GMT)
-Subject: Re: [RFCv3 4/4] ext4: Move to shared iolock even without
- dioread_nolock mount opt
+        id S1726074AbfLCN3V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Dec 2019 08:29:21 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6741 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725957AbfLCN3V (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 3 Dec 2019 08:29:21 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 0FA609B09C375BFB8CD9;
+        Tue,  3 Dec 2019 21:29:17 +0800 (CST)
+Received: from [127.0.0.1] (10.173.220.179) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Tue, 3 Dec 2019
+ 21:29:10 +0800
+Subject: Re: [PATCH v2 2/4] ext4, jbd2: ensure panic when journal aborting
+ with zero errno
 To:     Jan Kara <jack@suse.cz>
-Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org
-References: <20191120050024.11161-1-riteshh@linux.ibm.com>
- <20191120050024.11161-5-riteshh@linux.ibm.com>
- <20191120143257.GE9509@quack2.suse.cz>
- <20191126105122.75EC6A4060@b06wcsmtp001.portsmouth.uk.ibm.com>
- <20191129171836.GB27588@quack2.suse.cz>
- <20191203115445.6F802AE059@d06av26.portsmouth.uk.ibm.com>
- <20191203123929.GE8206@quack2.suse.cz>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Tue, 3 Dec 2019 18:40:47 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+CC:     <linux-ext4@vger.kernel.org>, <jack@suse.com>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <liangyun2@huawei.com>,
+        <luoshijie1@huawei.com>
+References: <20191203092756.26129-1-yi.zhang@huawei.com>
+ <20191203092756.26129-3-yi.zhang@huawei.com>
+ <20191203121046.GC8206@quack2.suse.cz>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <0194132e-66a2-728e-e2d9-f084cf935fb4@huawei.com>
+Date:   Tue, 3 Dec 2019 21:29:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191203123929.GE8206@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20191203121046.GC8206@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 19120313-0012-0000-0000-0000037059FA
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19120313-0013-0000-0000-000021AC1613
-Message-Id: <20191203131048.A4559A4051@d06av23.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-03_03:2019-12-02,2019-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- impostorscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999
- priorityscore=1501 suspectscore=2 adultscore=0 lowpriorityscore=0
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912030102
+X-Originating-IP: [10.173.220.179]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-On 12/3/19 6:09 PM, Jan Kara wrote:
-> 
-> Hello Ritesh!
-> 
-> On Tue 03-12-19 17:24:44, Ritesh Harjani wrote:
->> On 11/29/19 10:48 PM, Jan Kara wrote:
->>>> Also, I wanted to have some more discussions on this race before
->>>> making the changes.
->>>> But nevertheless, it's the right time to discuss those changes here.
->>>>
->>>>> mmap write instantiating dirty page and then someone starting writeback
->>>>> against that page while DIO read is running still theoretically leading to
->>>>> stale data exposure. Now this patch does not have influence on that race
->>>>> but:
->>>>
->>>> Yes, agreed.
->>>>
->>>>>
->>>>> 1) We need to close the race mentioned above. Maybe we could do that by
->>>>> proactively allocating unwritten blocks for a page being faulted when there
->>>>> is direct IO running against the file - the one who fills holes through
->>>>> mmap write while direct IO is running on the file deserves to suffer the
->>>>> performance penalty...
->>>>
->>>> I was giving this a thought. So even if we try to penalize mmap
->>>> write as you mentioned above, what I am not sure about it, is that, how can
->>>> we reliably detect that the DIO is in progress?
->>>>
->>>> Say even if we try to check for atomic_read(&inode->i_dio_count) in mmap
->>>> ext4_page_mkwrite path, it cannot be reliable unless there is some sort of a
->>>> lock protection, no?
->>>> Because after the check the DIO can still snoop in, right?
->>>
->>> Yes, doing this reliably will need some code tweaking. Also thinking about
->>> this in detail, doing a reliable check in ext4_page_mkwrite() is
->>> somewhat difficult so it will be probably less error-prone to deal with the
->>> race in the writeback path.
+On 2019/12/3 20:10, Jan Kara wrote:
+> On Tue 03-12-19 17:27:54, zhangyi (F) wrote:
+>> JBD2_REC_ERR flag used to indicate the errno has been updated when jbd2
+>> aborted, and then __ext4_abort() and ext4_handle_error() can invoke
+>> panic if ERRORS_PANIC is specified. But if the journal has been aborted
+>> with zero errno, jbd2_journal_abort() didn't set this flag so we can
+>> no longer panic. Fix this by rename JBD2_REC_ERR to JBD2_ABORT_DONE and
+>> set such flag even if there is no need to record errno in the jbd2 super
+>> block.
 >>
->> hmm. But if we don't do in ext4_page_mkwrite, then I am afraid on
->> how to handle nodelalloc scenario. Where we will directly go and
->> allocate block via ext4_get_block() in ext4_page_mkwrite(),
->> as explained below.
->> I guess we may need some tweaking at both places.
+>> Fixes: 4327ba52afd03 ("ext4, jbd2: ensure entering into panic after recording an error in superblock")
+>> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
 > 
-> Ok, I forgot to mention that. Yes, the nodelalloc case in
-> ext4_page_mkwrite() still needs tweaking. But that is not performance
-> sensitive path at all. So we can just have there:
-
-hmm. I was of the opinion that why use unwritten blocks or move
-from written to unwritten method while we can still avoid it.
-
+> OK, makes sense. You can add:
 > 
-> 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
-> 		get_block = ext4_get_block_unwritten;
-> 	else
-> 		get_block = ext4_get_block;
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> Although I'd note that after your patch 1, there is only a single place
+> that will call jbd2_journal_abort() with 0 errno - namely one place in
+> fs/jbd2/checkpoint.c and I think it would make sense for that call site to
+> just pass -EIO and we can completely drop the checks whether errno != 0.
 > 
 
-Although adding a function ext4_dio_check_get_block() as described in
-previous email is also trivial, which could avoid using unwritten
-blocks here when DIO is not in progress.
-But if you think it's not worth it, then I will go with your suggestion
-here.
+Thanks for review. I think a zero errno designed for the case that no
+further changes to the journal, and the journal on the disk is
+consistent and can recover well, so we don't want to record the errno
+and mark the filesystem error. But now it looks that we don't have
+such strong cases (shutdown is an exception) and pass none-zero errno
+is also OK for every jbd2_journal_abort().
 
+Thanks,
+Yi.
 
-
-> and be done with it. And yes, for inodes using indirect blocks, direct IO
-> reads can still theoretically expose data from blocks instantiated by hole
-> filling from ext4_page_mkwrite(). But that race has always been there
-> regardless of DIO locking and is hardly fixable with that on-disk format.
-> 
-
-Agreed.
-
-
-> 								Honza
-> 
+>> ---
+>>  fs/ext4/super.c      |  4 ++--
+>>  fs/jbd2/journal.c    | 10 +++++-----
+>>  include/linux/jbd2.h |  3 ++-
+>>  3 files changed, 9 insertions(+), 8 deletions(-)
 >>
->>
->>>
->>> My preferred way of dealing with this would be to move inode_dio_begin()
->>> call in iomap_dio_rw() a bit earlier before page cache invalidation and add
->>> there smp_mb_after_atomic() (so that e.g. nrpages checks cannot get
->>> reordered before the increment).  Then the check on i_dio_count in
->>> ext4_writepages() will be reliable if we do it after gathering and locking
->>> pages for writeback (i.e., in mpage_map_and_submit_extent()) - either we
->>> see i_dio_count elevated and use the safe (but slower) writeback using
->>> unwritten extents, or we see don't and then we are sure DIO will not start
->>> until writeback of the pages we have locked has finished because of
->>> filemap_write_and_wait() call in iomap_dio_rw().
->>>
->>>
->>
->> Thanks for explaining this in detail. I guess I understand this part now
->> Earlier my understanding towards mapping->nrpages was not complete.
->>
->> AFAIU, with your above suggestion the race won't happen for delalloc
->> cases. But what if it is a nodelalloc mount option?
->>
->> Say with above changes i.e. after tweaking iomap_dio_rw() code as you
->> mentioned above. Below race could still happen, right?
->>
->> iomap_dio_rw()					
->> filemap_write_and_wait_range() 			
->> inode_dio_begin()
->> smp_mb__after_atomic()
->> invalidate_inode_pages2_range()				
->> 						ext4_page_mkwrite()
->> 						block_page_mkwrite()
->> 		  				  lock_page()
->> 						  ext4_get_block()
->>
->> ext4_map_blocks()
->> //this will return IOMAP_MAPPED entry
->>
->> submit_bio()
->> // this goes and reads the block
->> // with stale data allocated,
->> // by ext4_page_mkwrite()
->>
->>
->> Now, I am assuming that ext4_get_block() via ext4_page_mkwrite() path
->> may try to create the block for hole then and there itself.
->> And if submit_bio() from DIO path is serviced late i.e. after
->> ext4_get_block() has already allocated block there, then this may expose
->> stale data. Thoughts?
->>
->>
->> So to avoid both such races in delalloc & in nodelalloc path,
->> we should add the checks at both ext4_writepages() & also at
->> ext4_page_mkwrite().
->>
->> For ext4_page_mkwrite(), why don't we just change the "get_block"
->> function pointer which is passed to block_page_mkwrite()
->> as below. This should solve our race since
->> ext4_dio_check_get_block() will be only called with lock_page()
->> held. And also with inode_dio_begin() now moved up before
->> invalidate_inode_pages2_range(), we could be sure
->> about DIO is currently running or not in ext4_page_mkwrite() path.
->>
->> Does this looks correct to you?
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 381813205f99..74c33d03592c 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -806,6 +806,19 @@ int ext4_get_block_unwritten(struct inode *inode,
->> sector_t iblock,
->>   			       EXT4_GET_BLOCKS_IO_CREATE_EXT);
->>   }
->>
->> +int ext4_dio_check_get_block(struct inode *inode, sector_t iblock,
->> +		   struct buffer_head *bh, int create)
->> +{
->> +	get_block_t *get_block;
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index dd654e53ba3d..25b0c883bd15 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -482,7 +482,7 @@ static void ext4_handle_error(struct super_block *sb)
+>>  		sb->s_flags |= SB_RDONLY;
+>>  	} else if (test_opt(sb, ERRORS_PANIC)) {
+>>  		if (EXT4_SB(sb)->s_journal &&
+>> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
+>> +		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_ABORT_DONE))
+>>  			return;
+>>  		panic("EXT4-fs (device %s): panic forced after error\n",
+>>  			sb->s_id);
+>> @@ -701,7 +701,7 @@ void __ext4_abort(struct super_block *sb, const char *function,
+>>  	}
+>>  	if (test_opt(sb, ERRORS_PANIC) && !system_going_down()) {
+>>  		if (EXT4_SB(sb)->s_journal &&
+>> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
+>> +		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_ABORT_DONE))
+>>  			return;
+>>  		panic("EXT4-fs panic from previous error\n");
+>>  	}
+>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>> index 1c58859aa592..a78b07841080 100644
+>> --- a/fs/jbd2/journal.c
+>> +++ b/fs/jbd2/journal.c
+>> @@ -2118,12 +2118,12 @@ static void __journal_abort_soft (journal_t *journal, int errno)
+>>  
+>>  	__jbd2_journal_abort_hard(journal);
+>>  
+>> -	if (errno) {
+>> +	if (errno)
+>>  		jbd2_journal_update_sb_errno(journal);
+>> -		write_lock(&journal->j_state_lock);
+>> -		journal->j_flags |= JBD2_REC_ERR;
+>> -		write_unlock(&journal->j_state_lock);
+>> -	}
 >> +
->> +	if (!atomic_read(&inode->i_dio_count))
->> +		get_block = ext4_get_block;
->> +	else
->> +		get_block = ext4_get_block_unwritten;
->> +
->> +	return get_block(inode, iblock, bh, create);
->> +}
->> +
->>   /* Maximum number of blocks we map for direct IO at once. */
->>   #define DIO_MAX_BLOCKS 4096
->>
->> @@ -2332,7 +2345,8 @@ static int mpage_map_one_extent(handle_t *handle,
->> struct mpage_da_data *mpd)
->>   	struct inode *inode = mpd->inode;
->>   	struct ext4_map_blocks *map = &mpd->map;
->>   	int get_blocks_flags;
->> -	int err, dioread_nolock;
->> +	int err;
->> +	bool dio_in_progress = atomic_read(&inode->i_dio_count);
->>
->>   	trace_ext4_da_write_pages_extent(inode, map);
->>   	/*
->> @@ -2353,8 +2367,14 @@ static int mpage_map_one_extent(handle_t *handle,
->> struct mpage_da_data *mpd)
->>   	get_blocks_flags = EXT4_GET_BLOCKS_CREATE |
->>   			   EXT4_GET_BLOCKS_METADATA_NOFAIL |
->>   			   EXT4_GET_BLOCKS_IO_SUBMIT;
->> -	dioread_nolock = ext4_should_dioread_nolock(inode);
->> -	if (dioread_nolock)
->> +
->> +	/*
->> +	 * There could be race between DIO read & ext4_page_mkwrite
->> +	 * where in delalloc case, we may go and try to allocate the
->> +	 * block here but if DIO read is in progress then it may expose
->> +	 * stale data, hence use unwritten blocks for allocation
->> +	 * when DIO is in progress.
->> +	 */
->> +	if (dio_in_progress)
->>   		get_blocks_flags |= EXT4_GET_BLOCKS_IO_CREATE_EXT;
->>   	if (map->m_flags & (1 << BH_Delay))
->>   		get_blocks_flags |= EXT4_GET_BLOCKS_DELALLOC_RESERVE;
->> @@ -2362,7 +2382,7 @@ static int mpage_map_one_extent(handle_t *handle,
->> struct mpage_da_data *mpd)
->>   	err = ext4_map_blocks(handle, inode, map, get_blocks_flags);
->>   	if (err < 0)
->>   		return err;
->> -	if (dioread_nolock && (map->m_flags & EXT4_MAP_UNWRITTEN)) {
->> +	if (dio_in_progress && (map->m_flags & EXT4_MAP_UNWRITTEN)) {
->>   		if (!mpd->io_submit.io_end->handle &&
->>   		    ext4_handle_valid(handle)) {
->>   			mpd->io_submit.io_end->handle = handle->h_rsv_handle;
->> @@ -5906,10 +5926,7 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->>   	}
->>   	unlock_page(page);
->>   	/* OK, we need to fill the hole... */
->> -	if (ext4_should_dioread_nolock(inode))
->> -		get_block = ext4_get_block_unwritten;
->> -	else
->> -		get_block = ext4_get_block;
->> +	get_block = ext4_dio_check_get_block;
->>   retry_alloc:
->>   	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE,
->>   				    ext4_writepage_trans_blocks(inode));
->> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
->> index 2f88d64c2a4d..09d0601e5ecb 100644
->> --- a/fs/iomap/direct-io.c
->> +++ b/fs/iomap/direct-io.c
->> @@ -465,6 +465,8 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->>   	if (ret)
->>   		goto out_free_dio;
->>
->> +	inode_dio_begin(inode);
->> +	smp_mb__after_atomic();
->>   	/*
->>   	 * Try to invalidate cache pages for the range we're direct
->>   	 * writing.  If this invalidation fails, tough, the write will
->> @@ -484,8 +486,6 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->>   			goto out_free_dio;
->>   	}
->>
->> -	inode_dio_begin(inode);
->> -
->>   	blk_start_plug(&plug);
->>   	do {
->>   		ret = iomap_apply(inode, pos, count, flags, ops, dio,
->>
->>
->>
->> -ritesh
+>> +	write_lock(&journal->j_state_lock);
+>> +	journal->j_flags |= JBD2_ABORT_DONE;
+>> +	write_unlock(&journal->j_state_lock);
+>>  }
+>>  
+>>  /**
+>> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+>> index 603fbc4e2f70..71cab887fb98 100644
+>> --- a/include/linux/jbd2.h
+>> +++ b/include/linux/jbd2.h
+>> @@ -1248,7 +1248,8 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
+>>  #define JBD2_ABORT_ON_SYNCDATA_ERR	0x040	/* Abort the journal on file
+>>  						 * data write error in ordered
+>>  						 * mode */
+>> -#define JBD2_REC_ERR	0x080	/* The errno in the sb has been recorded */
+>> +#define JBD2_ABORT_DONE	0x080	/* Abort done, the errno in the sb has been
+>> +				 * recorded if necessary */
+>>  
+>>  /*
+>>   * Function declarations for the journaling transaction and buffer
+>> -- 
+>> 2.17.2
 >>
 
