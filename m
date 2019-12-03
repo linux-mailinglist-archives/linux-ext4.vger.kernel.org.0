@@ -2,145 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B1110FED4
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 14:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8B810FF12
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 14:48:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbfLCN3V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Dec 2019 08:29:21 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6741 "EHLO huawei.com"
+        id S1726105AbfLCNsG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Dec 2019 08:48:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59922 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725957AbfLCN3V (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 3 Dec 2019 08:29:21 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 0FA609B09C375BFB8CD9;
-        Tue,  3 Dec 2019 21:29:17 +0800 (CST)
-Received: from [127.0.0.1] (10.173.220.179) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Tue, 3 Dec 2019
- 21:29:10 +0800
-Subject: Re: [PATCH v2 2/4] ext4, jbd2: ensure panic when journal aborting
- with zero errno
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <jack@suse.com>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <liangyun2@huawei.com>,
-        <luoshijie1@huawei.com>
-References: <20191203092756.26129-1-yi.zhang@huawei.com>
- <20191203092756.26129-3-yi.zhang@huawei.com>
- <20191203121046.GC8206@quack2.suse.cz>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <0194132e-66a2-728e-e2d9-f084cf935fb4@huawei.com>
-Date:   Tue, 3 Dec 2019 21:29:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726024AbfLCNsG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 3 Dec 2019 08:48:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A05F0ADB5;
+        Tue,  3 Dec 2019 13:48:04 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 334C81E0B7B; Tue,  3 Dec 2019 14:48:04 +0100 (CET)
+Date:   Tue, 3 Dec 2019 14:48:04 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org
+Subject: Re: [RFCv3 4/4] ext4: Move to shared iolock even without
+ dioread_nolock mount opt
+Message-ID: <20191203134804.GF8206@quack2.suse.cz>
+References: <20191120050024.11161-1-riteshh@linux.ibm.com>
+ <20191120050024.11161-5-riteshh@linux.ibm.com>
+ <20191120143257.GE9509@quack2.suse.cz>
+ <20191126105122.75EC6A4060@b06wcsmtp001.portsmouth.uk.ibm.com>
+ <20191129171836.GB27588@quack2.suse.cz>
+ <20191203115445.6F802AE059@d06av26.portsmouth.uk.ibm.com>
+ <20191203123929.GE8206@quack2.suse.cz>
+ <20191203131048.A4559A4051@d06av23.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20191203121046.GC8206@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.220.179]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191203131048.A4559A4051@d06av23.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2019/12/3 20:10, Jan Kara wrote:
-> On Tue 03-12-19 17:27:54, zhangyi (F) wrote:
->> JBD2_REC_ERR flag used to indicate the errno has been updated when jbd2
->> aborted, and then __ext4_abort() and ext4_handle_error() can invoke
->> panic if ERRORS_PANIC is specified. But if the journal has been aborted
->> with zero errno, jbd2_journal_abort() didn't set this flag so we can
->> no longer panic. Fix this by rename JBD2_REC_ERR to JBD2_ABORT_DONE and
->> set such flag even if there is no need to record errno in the jbd2 super
->> block.
->>
->> Fixes: 4327ba52afd03 ("ext4, jbd2: ensure entering into panic after recording an error in superblock")
->> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+On Tue 03-12-19 18:40:47, Ritesh Harjani wrote:
+> On 12/3/19 6:09 PM, Jan Kara wrote:
+> > 
+> > Hello Ritesh!
+> > 
+> > On Tue 03-12-19 17:24:44, Ritesh Harjani wrote:
+> > > On 11/29/19 10:48 PM, Jan Kara wrote:
+> > > > > Also, I wanted to have some more discussions on this race before
+> > > > > making the changes.
+> > > > > But nevertheless, it's the right time to discuss those changes here.
+> > > > > 
+> > > > > > mmap write instantiating dirty page and then someone starting writeback
+> > > > > > against that page while DIO read is running still theoretically leading to
+> > > > > > stale data exposure. Now this patch does not have influence on that race
+> > > > > > but:
+> > > > > 
+> > > > > Yes, agreed.
+> > > > > 
+> > > > > > 
+> > > > > > 1) We need to close the race mentioned above. Maybe we could do that by
+> > > > > > proactively allocating unwritten blocks for a page being faulted when there
+> > > > > > is direct IO running against the file - the one who fills holes through
+> > > > > > mmap write while direct IO is running on the file deserves to suffer the
+> > > > > > performance penalty...
+> > > > > 
+> > > > > I was giving this a thought. So even if we try to penalize mmap
+> > > > > write as you mentioned above, what I am not sure about it, is that, how can
+> > > > > we reliably detect that the DIO is in progress?
+> > > > > 
+> > > > > Say even if we try to check for atomic_read(&inode->i_dio_count) in mmap
+> > > > > ext4_page_mkwrite path, it cannot be reliable unless there is some sort of a
+> > > > > lock protection, no?
+> > > > > Because after the check the DIO can still snoop in, right?
+> > > > 
+> > > > Yes, doing this reliably will need some code tweaking. Also thinking about
+> > > > this in detail, doing a reliable check in ext4_page_mkwrite() is
+> > > > somewhat difficult so it will be probably less error-prone to deal with the
+> > > > race in the writeback path.
+> > > 
+> > > hmm. But if we don't do in ext4_page_mkwrite, then I am afraid on
+> > > how to handle nodelalloc scenario. Where we will directly go and
+> > > allocate block via ext4_get_block() in ext4_page_mkwrite(),
+> > > as explained below.
+> > > I guess we may need some tweaking at both places.
+> > 
+> > Ok, I forgot to mention that. Yes, the nodelalloc case in
+> > ext4_page_mkwrite() still needs tweaking. But that is not performance
+> > sensitive path at all. So we can just have there:
 > 
-> OK, makes sense. You can add:
+> hmm. I was of the opinion that why use unwritten blocks or move
+> from written to unwritten method while we can still avoid it.
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> > 
+> > 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+> > 		get_block = ext4_get_block_unwritten;
+> > 	else
+> > 		get_block = ext4_get_block;
+> > 
 > 
-> Although I'd note that after your patch 1, there is only a single place
-> that will call jbd2_journal_abort() with 0 errno - namely one place in
-> fs/jbd2/checkpoint.c and I think it would make sense for that call site to
-> just pass -EIO and we can completely drop the checks whether errno != 0.
-> 
+> Although adding a function ext4_dio_check_get_block() as described in
+> previous email is also trivial, which could avoid using unwritten
+> blocks here when DIO is not in progress.
+> But if you think it's not worth it, then I will go with your suggestion
+> here.
 
-Thanks for review. I think a zero errno designed for the case that no
-further changes to the journal, and the journal on the disk is
-consistent and can recover well, so we don't want to record the errno
-and mark the filesystem error. But now it looks that we don't have
-such strong cases (shutdown is an exception) and pass none-zero errno
-is also OK for every jbd2_journal_abort().
+Yeah, I would prefer to keep it simple. Otherwise you would have a rare
+subcase of a rare case meaning that code path will hardly ever get tested
+and that's not good for maintainability... Also note that check is not 100%
+reliable. There's still a race like:
 
-Thanks,
-Yi.
+ext4_page_mkwrite()
+  block_page_mkwrite()
+    lock_page(page);
+    ...
+    -> get_block()
+      if (inode_dio_count(inode) > 0)
+      -> false - use ext4_get_block()
+					iomap_dio_rw()
+					  inode_dio_begin()
+					  filemap_write_and_wait()
+					    -> no dirty page yet -> bails
+					  invalidate_mapping_pages2()
+    set_page_dirty(page);
+  unlock_page(page);
+ 					    -> bails with error because the
+					    page is dirty. Warning is
+					    issued but stale data is still
+					    exposed.
 
->> ---
->>  fs/ext4/super.c      |  4 ++--
->>  fs/jbd2/journal.c    | 10 +++++-----
->>  include/linux/jbd2.h |  3 ++-
->>  3 files changed, 9 insertions(+), 8 deletions(-)
->>
->> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> index dd654e53ba3d..25b0c883bd15 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -482,7 +482,7 @@ static void ext4_handle_error(struct super_block *sb)
->>  		sb->s_flags |= SB_RDONLY;
->>  	} else if (test_opt(sb, ERRORS_PANIC)) {
->>  		if (EXT4_SB(sb)->s_journal &&
->> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
->> +		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_ABORT_DONE))
->>  			return;
->>  		panic("EXT4-fs (device %s): panic forced after error\n",
->>  			sb->s_id);
->> @@ -701,7 +701,7 @@ void __ext4_abort(struct super_block *sb, const char *function,
->>  	}
->>  	if (test_opt(sb, ERRORS_PANIC) && !system_going_down()) {
->>  		if (EXT4_SB(sb)->s_journal &&
->> -		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
->> +		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_ABORT_DONE))
->>  			return;
->>  		panic("EXT4-fs panic from previous error\n");
->>  	}
->> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
->> index 1c58859aa592..a78b07841080 100644
->> --- a/fs/jbd2/journal.c
->> +++ b/fs/jbd2/journal.c
->> @@ -2118,12 +2118,12 @@ static void __journal_abort_soft (journal_t *journal, int errno)
->>  
->>  	__jbd2_journal_abort_hard(journal);
->>  
->> -	if (errno) {
->> +	if (errno)
->>  		jbd2_journal_update_sb_errno(journal);
->> -		write_lock(&journal->j_state_lock);
->> -		journal->j_flags |= JBD2_REC_ERR;
->> -		write_unlock(&journal->j_state_lock);
->> -	}
->> +
->> +	write_lock(&journal->j_state_lock);
->> +	journal->j_flags |= JBD2_ABORT_DONE;
->> +	write_unlock(&journal->j_state_lock);
->>  }
->>  
->>  /**
->> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
->> index 603fbc4e2f70..71cab887fb98 100644
->> --- a/include/linux/jbd2.h
->> +++ b/include/linux/jbd2.h
->> @@ -1248,7 +1248,8 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
->>  #define JBD2_ABORT_ON_SYNCDATA_ERR	0x040	/* Abort the journal on file
->>  						 * data write error in ordered
->>  						 * mode */
->> -#define JBD2_REC_ERR	0x080	/* The errno in the sb has been recorded */
->> +#define JBD2_ABORT_DONE	0x080	/* Abort done, the errno in the sb has been
->> +				 * recorded if necessary */
->>  
->>  /*
->>   * Function declarations for the journaling transaction and buffer
->> -- 
->> 2.17.2
->>
-
+									Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
