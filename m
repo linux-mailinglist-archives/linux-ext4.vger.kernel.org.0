@@ -2,59 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21444111B7D
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 23:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9619B111D06
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 23:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbfLCWPH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Dec 2019 17:15:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727836AbfLCWPF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 3 Dec 2019 17:15:05 -0500
-Subject: Re: [GIT PULL] iomap: small cleanups for 5.5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575411305;
-        bh=uxAYgjvrlHNlmiCCJJqc9Q/JExua1lXYWmd3ARgKnts=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=kRoYWwWl0CPBdqprVYYTyLwIi8ius2GbIqlj69oudyF3ehvVhfIlHd0eDNdCNsok4
-         GzHPk8SsiAeGOW7ONJH3IWp1P0UfPV47gMy+Z0pjaXEE8Uig+7B3zyjlOu+jO0Qhvp
-         04OfXS/BGnJJndqMZNaV+4gHYtwiapbON1EnSD9g=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20191203160856.GC7323@magnolia>
-References: <20191203160856.GC7323@magnolia>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20191203160856.GC7323@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
- tags/iomap-5.5-merge-13
-X-PR-Tracked-Commit-Id: 88cfd30e188fcf6fd8304586c936a6f22fb665e5
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2a31aca5006749f7d4655836c61d4a53bfae8e53
-Message-Id: <157541130508.3528.9113610201591318656.pr-tracker-bot@kernel.org>
-Date:   Tue, 03 Dec 2019 22:15:05 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de, agruenba@redhat.com,
-        rpeterso@redhat.com, cluster-devel@redhat.com,
+        id S1729643AbfLCWtj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Dec 2019 17:49:39 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:33646 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729447AbfLCWti (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Dec 2019 17:49:38 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3MY79D110765;
+        Tue, 3 Dec 2019 22:49:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=uYMuACAdoNAl6fAtZMdOLI9RRVa7NSCuglLVW02y4Vk=;
+ b=qAfHc5tUR8AnZ+grEo2Tf/wPWys1CJCprYekENY6UUdzeO4NBXQsRnNdeoRnWFFAY71y
+ zNME2blxqhZUPE1kvQ+Ihr5PD+qU8zi40EBdO3+d2s9gzDi4yLhHpTAVHa2IW+pgzXHi
+ 1keQKv7Vj9cq3uwGnik3I4uVN2DmKJkT9XP5WXbIuSs9aLwIPwgtb8bDGb+NXPlLJah5
+ xY3pUyiGF3oZsrf/NO2W5d+wofNZtqqQM6/Hovpbg0z9eJlB6AQlFtFSBoKiW19uNezl
+ t+PbFit8ec8x0s0tlaiTWXZIXEtIzrOWvio2wvKPxaMS116pu63FlYVcD2WY+yhmpxBg 0g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2wkh2raqfm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Dec 2019 22:49:21 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xB3MYHoO082700;
+        Tue, 3 Dec 2019 22:49:20 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 2wnvqx4r8y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Dec 2019 22:49:20 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xB3MnHeU021188;
+        Tue, 3 Dec 2019 22:49:17 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 03 Dec 2019 14:49:17 -0800
+Date:   Tue, 3 Dec 2019 14:49:15 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Christoph Hellwig <hch@lst.de>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        cluster-devel <cluster-devel@redhat.com>,
         linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
+        "Theodore Ts'o" <tytso@mit.edu>
+Subject: Re: [GIT PULL] iomap: small cleanups for 5.5
+Message-ID: <20191203224915.GK7335@magnolia>
+References: <20191203160856.GC7323@magnolia>
+ <CAHk-=wh3vin7WyMpBGWxZovGp51wa=U0T=TXqnQPVMBiEpdvsQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh3vin7WyMpBGWxZovGp51wa=U0T=TXqnQPVMBiEpdvsQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9460 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912030165
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9460 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912030165
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Tue, 3 Dec 2019 08:08:56 -0800:
+On Tue, Dec 03, 2019 at 01:21:01PM -0800, Linus Torvalds wrote:
+> On Tue, Dec 3, 2019 at 8:09 AM Darrick J. Wong <djwong@kernel.org> wrote:
+> > Please pull this series containing some more new iomap code for 5.5.
+> > There's not much this time -- just removing some local variables that
+> > don't need to exist in the iomap directio code.
+> 
+> Hmm. The tag message (which was also in the email thanks to git
+> request-pull) is very misleading.
+> 
+> Pulled, but please check these things.
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.5-merge-13
+Sorry about that sloppiness, I'll avoid that in the future.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2a31aca5006749f7d4655836c61d4a53bfae8e53
+--D
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+>            Linus
