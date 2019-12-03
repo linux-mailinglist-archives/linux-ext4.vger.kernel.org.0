@@ -2,180 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E0010F4F2
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 03:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A99FD10F6A6
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 06:11:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbfLCCYB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Dec 2019 21:24:01 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34605 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726138AbfLCCYA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Dec 2019 21:24:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575339838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O0EX3vVcvGDZXblDe7Rv/FsS5mhTO0YUbuVmRSPhwMA=;
-        b=JOfNcYP+tQLdE4QsiUXNjjhhJ7qei9NVmFOCzyJuMMcCkN+TkDyY8K/L3poDUxkNMXUvHc
-        L4oRMqPqH3LjuKwO5FUijqMNUi1si1oT1BdE54gRE9dnPP5AgTpzEBGGtWu10WdSliG0xV
-        eyAyQQ83IIACz6AjGPGCt9AJqFVx8CI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-368-2M_xvtKyM3isUt9S-04QCw-1; Mon, 02 Dec 2019 21:23:55 -0500
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7833CDB62;
-        Tue,  3 Dec 2019 02:23:52 +0000 (UTC)
-Received: from ming.t460p (ovpn-8-19.pek2.redhat.com [10.72.8.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9E10B10016DA;
-        Tue,  3 Dec 2019 02:23:41 +0000 (UTC)
-Date:   Tue, 3 Dec 2019 10:23:37 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Andrea Vai <andrea.vai@unipv.it>
-Cc:     "Schmid, Carsten" <Carsten_Schmid@mentor.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        USB list <linux-usb@vger.kernel.org>,
-        SCSI development list <linux-scsi@vger.kernel.org>,
-        Himanshu Madhani <himanshu.madhani@cavium.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Omar Sandoval <osandov@fb.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Hans Holmberg <Hans.Holmberg@wdc.com>,
-        Kernel development list <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: Re: AW: Slow I/O on USB media after commit
- f664a3cc17b7d0a2bc3b3ab96181e1029b0ec0e6
-Message-ID: <20191203022337.GE25002@ming.t460p>
-References: <20191126023253.GA24501@ming.t460p>
- <0598fe2754bf0717d81f7e72d3e9b3230c608cc6.camel@unipv.it>
- <alpine.LNX.2.21.1.1911271055200.8@nippy.intranet>
- <cb6e84781c4542229a3f31572cef19ab@SVR-IES-MBX-03.mgc.mentorg.com>
- <c1358b840b3a4971aa35a25d8495c2c8953403ea.camel@unipv.it>
- <20191128091712.GD15549@ming.t460p>
- <f82fd5129e3dcacae703a689be60b20a7fedadf6.camel@unipv.it>
- <20191129005734.GB1829@ming.t460p>
- <20191129023555.GA8620@ming.t460p>
- <320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it>
-MIME-Version: 1.0
-In-Reply-To: <320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-MC-Unique: 2M_xvtKyM3isUt9S-04QCw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+        id S1726466AbfLCFLS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Dec 2019 00:11:18 -0500
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:49111 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbfLCFLS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Dec 2019 00:11:18 -0500
+Received: by mail-pf1-f202.google.com with SMTP id u13so1445300pfl.15
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Dec 2019 21:11:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=JS26lqPOsyf+GCzfh2q7I14K35HWfvfL+jqbIeTiEhs=;
+        b=K1e8TPhpNMFVfy3zpUvxGh3rgUGzKKm5sRwldvLEOIz/KQFH4IXBVzoD7xIeXW+sI+
+         OHuBZYRP4c76okFVaCmF7t+ZhiyQ47NNKd8za4hEYxZ/9eN2nJNM68LEf9dSAhEHOwN4
+         a9+fCrUqBS2/vijwnB/zHYZ3QZP70NycgF/0gJuHNVgL4OVsK9mXOkllWTRUysHBF+wa
+         Gak/gb8gp9GJqewrQ7lybxNuknjIdN/43X38dwmp6wpmPxfFAzDAyu5634JeWK/S45eI
+         j3VRm8PmCQYeh3ZNcfCFmHhOhd5swp1KGjEMgNcsj8Lz9Zt42UsPXNuvXXoYDhc3LwDH
+         UWxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=JS26lqPOsyf+GCzfh2q7I14K35HWfvfL+jqbIeTiEhs=;
+        b=Zn3uhYaIj2ReD1JeC3oMK/mW7FgEUrfRGdi5h3TyHXdVT8jHMYEficSjHiWgoIof8w
+         kbybuKM9ef2vgDnPH9jvdz5YSJFNSkwFWmrN+cCemsY2e5SfRiQhWwjkK+vDGosYkG6G
+         miAcAokmsQIFBTKD5iMSrOvsHjdknS/IUv8sUyOHJku2SNxo5/t+jPcwumih92S3T2p3
+         3OhyDS85is9i1Ysm+KGZdRsUbG/a66/4OvqDp2Av2Kv58E7wmTCImrs+ddNnTm6LnnJb
+         eMWy4n95jW8eeYK6P5M2K65TqPRCTGSBQqm50Pi5DCYCpR92+wmZ75cdjLOCeoVkZ+mY
+         Y3gg==
+X-Gm-Message-State: APjAAAUc01qglu+vLoEeAaFWlz31oZJhCc/q66gT+76L6G/mdWQd3N50
+        VhHY3qzKs4RFu6XGky7mdXeDSpQYAUc=
+X-Google-Smtp-Source: APXvYqwAUHq1SM7kgd3huIBZdhakSOyUU8oN/jfGh2+n4qRA8Pa17aUBVqzak3AMNCxa4UE+GvJKUKnGXqc=
+X-Received: by 2002:a63:4104:: with SMTP id o4mr3339080pga.169.1575349877576;
+ Mon, 02 Dec 2019 21:11:17 -0800 (PST)
+Date:   Mon,  2 Dec 2019 21:10:41 -0800
+Message-Id: <20191203051049.44573-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
+Subject: [PATCH 0/8] Support for Casefolding and Encryption
+From:   Daniel Rosenberg <drosen@google.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Nov 29, 2019 at 03:41:01PM +0100, Andrea Vai wrote:
-> Il giorno ven, 29/11/2019 alle 10.35 +0800, Ming Lei ha scritto:
-> > On Fri, Nov 29, 2019 at 08:57:34AM +0800, Ming Lei wrote:
-> >=20
-> > > [...]
-> >=20
-> > > Andrea, can you collect the following log when running the test
-> > > on current new(bad) kernel?
-> > >=20
-> > > =09/usr/share/bcc/tools/stackcount  -K blk_mq_make_request
-> >=20
-> > Instead, please run the following trace, given insert may be
-> > called from other paths, such as flush plug:
-> >=20
-> > =09/usr/share/bcc/tools/stackcount -K t:block:block_rq_insert
->=20
-> Attached, for new (patched) bad kernel.
->=20
-> Produced by: start the trace script (with the pendrive already
-> plugged), wait some seconds, run the test (1 trial, 1 GB), wait for
-> the test to finish, stop the trace.
->=20
-> The copy took ~1700 seconds.
+Ext4 and F2FS currently both support casefolding and encryption, but not at the
+same time. These patches aim to rectify that.
 
-See the two path[1][2] of inserting request, and path[1] is triggered
-4358 times, and the path[2] is triggered 5763 times.
+Since directory names are stored case preserved, we cannot just take the hash
+of the ciphertext. Instead we use the siphash of the casefolded name. With this
+we no longer have a direct path from an encrypted name to the hash without the
+key. To deal with this, fscrypt now always includes the hash in the name it
+presents when the key is not present. There is a pre-existing bug where you can
+change parts of the hash and still match the name so long as the disruption to
+the hash does not happen to affect lookup on that filesystem. I'm not sure how
+to fix that without making ext4 lookups slower in the more common case.
 
-The path[2] is expected behaviour. Not sure path [1] is correct, given
-ext4_release_file() is supposed to be called when this inode is
-released. That means the file is closed 4358 times during 1GB file
-copying to usb storage.
+I moved the identical dcache operations for ext4 and f2fs into the VFS, as any
+filesystem that uses casefolding will need the same code. This will also allow
+further optimizations to that path, although my current changes don't take
+advantage of that yet.
 
-Cc filesystem list.
+For Ext4, this also means that we need to store the hash on disk. We only do so
+for encrypted and casefolded directories to avoid on disk format changes.
+Previously encryption and casefolding could not live on the same filesystem,
+and we're relaxing that requirement. F2fs is a bit more straightforward since
+it already stores hashes on disk.
+
+I've updated the related tools with just enough to enable the feature. I still
+need to adjust their respective fsck's, although without access to the keys,
+they won't be able to verify the hashes of casefolded and encrypted names.
 
 
-[1] insert requests when returning to user mode from syscall
+Daniel Rosenberg (8):
+  fscrypt: Add siphash and hash key for policy v2
+  fscrypt: Don't allow v1 policies with casefolding
+  fscrypt: Change format of no-key token
+  vfs: Fold casefolding into vfs
+  f2fs: Handle casefolding with Encryption
+  ext4: Use struct super_blocks' casefold data
+  ext4: Hande casefolding with encryption
+  ext4: Optimize match for casefolded encrypted dirs
 
-  b'blk_mq_sched_request_inserted'
-  b'blk_mq_sched_request_inserted'
-  b'dd_insert_requests'
-  b'blk_mq_sched_insert_requests'
-  b'blk_mq_flush_plug_list'
-  b'blk_flush_plug_list'
-  b'io_schedule_prepare'
-  b'io_schedule'
-  b'rq_qos_wait'
-  b'wbt_wait'
-  b'__rq_qos_throttle'
-  b'blk_mq_make_request'
-  b'generic_make_request'
-  b'submit_bio'
-  b'ext4_io_submit'
-  b'ext4_writepages'
-  b'do_writepages'
-  b'__filemap_fdatawrite_range'
-  b'ext4_release_file'
-  b'__fput'
-  b'task_work_run'
-  b'exit_to_usermode_loop'
-  b'do_syscall_64'
-  b'entry_SYSCALL_64_after_hwframe'
-    4358
+ Documentation/filesystems/ext4/directory.rst |  27 ++
+ fs/crypto/Kconfig                            |   1 +
+ fs/crypto/fname.c                            | 204 +++++++++---
+ fs/crypto/fscrypt_private.h                  |   9 +
+ fs/crypto/keysetup.c                         |  29 +-
+ fs/crypto/policy.c                           |  26 +-
+ fs/dcache.c                                  |  35 ++
+ fs/ext4/dir.c                                |  72 +----
+ fs/ext4/ext4.h                               |  87 +++--
+ fs/ext4/hash.c                               |  26 +-
+ fs/ext4/ialloc.c                             |   5 +-
+ fs/ext4/inline.c                             |  41 +--
+ fs/ext4/namei.c                              | 318 ++++++++++++-------
+ fs/ext4/super.c                              |  21 +-
+ fs/f2fs/dir.c                                | 115 +++----
+ fs/f2fs/f2fs.h                               |  14 +-
+ fs/f2fs/hash.c                               |  25 +-
+ fs/f2fs/inline.c                             |   9 +-
+ fs/f2fs/super.c                              |  17 +-
+ fs/f2fs/sysfs.c                              |   8 +-
+ fs/inode.c                                   |   8 +
+ fs/namei.c                                   |  43 ++-
+ include/linux/fs.h                           |  12 +
+ include/linux/fscrypt.h                      | 107 +++----
+ 24 files changed, 797 insertions(+), 462 deletions(-)
 
-[2] insert requests from writeback wq context
-
-  b'blk_mq_sched_request_inserted'
-  b'blk_mq_sched_request_inserted'
-  b'dd_insert_requests'
-  b'blk_mq_sched_insert_requests'
-  b'blk_mq_flush_plug_list'
-  b'blk_flush_plug_list'
-  b'io_schedule_prepare'
-  b'io_schedule'
-  b'rq_qos_wait'
-  b'wbt_wait'
-  b'__rq_qos_throttle'
-  b'blk_mq_make_request'
-  b'generic_make_request'
-  b'submit_bio'
-  b'ext4_io_submit'
-  b'ext4_bio_write_page'
-  b'mpage_submit_page'
-  b'mpage_process_page_bufs'
-  b'mpage_prepare_extent_to_map'
-  b'ext4_writepages'
-  b'do_writepages'
-  b'__writeback_single_inode'
-  b'writeback_sb_inodes'
-  b'__writeback_inodes_wb'
-  b'wb_writeback'
-  b'wb_workfn'
-  b'process_one_work'
-  b'worker_thread'
-  b'kthread'
-  b'ret_from_fork'
-    5763
-
-Thanks,
-Ming
+-- 
+2.24.0.393.g34dc348eaf-goog
 
