@@ -2,93 +2,186 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9399A1101DC
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 17:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B364C11051B
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 20:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbfLCQJC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Dec 2019 11:09:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56552 "EHLO mail.kernel.org"
+        id S1727350AbfLCTac (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Dec 2019 14:30:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbfLCQJB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 3 Dec 2019 11:09:01 -0500
-Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726079AbfLCTac (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 3 Dec 2019 14:30:32 -0500
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1298720803;
-        Tue,  3 Dec 2019 16:08:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BB2020640;
+        Tue,  3 Dec 2019 19:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575389341;
-        bh=II2Re7DbLEzmE5QGm8g7+xtzJhss5SFBy59u/YHHGbc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=U6o2veH80qspdetmd7FL+MAWqRv1jcItsZq6pQ+y6CaccFHqW0ZQTThF3vv7/wIQV
-         MlFsXQLWTU/6iLL8SSIm1O9clf1JFoiTAibzkbCDXkCmpcsXuadjqlvyBf8dBRrhPR
-         yB2vpNhBXZ5lsXc7xFGUPSEHrJ/Drn/9RmGuJDY0=
-Date:   Tue, 3 Dec 2019 08:08:56 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de, agruenba@redhat.com,
-        rpeterso@redhat.com, cluster-devel@redhat.com,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: [GIT PULL] iomap: small cleanups for 5.5
-Message-ID: <20191203160856.GC7323@magnolia>
+        s=default; t=1575401430;
+        bh=3gyEXfaqpedy6uRB/8VMCVxDlcKhW09vYVAVCCnolyc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FgKYpKIkk9MEV83ohzNgDB9G/T4o/iQ9m7o1UFMrbwOfpVwLcE5dD9OHGkoTo2LwO
+         PnmEWqfvlFJ7EEGzDeoEmMV/1up/GnGaLng94nHb2TTD2h7CF+SsoBT/rBFnFdPT08
+         Bdspll56L0sEIIuHxA4aDIZrtITbN6Fv1Bv4tK0E=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org,
+        Victor Hsieh <victorhsieh@google.com>
+Subject: [PATCH] fs-verity: implement readahead for FS_IOC_ENABLE_VERITY
+Date:   Tue,  3 Dec 2019 11:30:01 -0800
+Message-Id: <20191203193001.66906-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Linus,
+From: Eric Biggers <ebiggers@google.com>
 
-Please pull this series containing some more new iomap code for 5.5.
-There's not much this time -- just removing some local variables that
-don't need to exist in the iomap directio code.
+When it builds the first level of the Merkle tree, FS_IOC_ENABLE_VERITY
+sequentially reads each page of the file using read_mapping_page().
+This works fine if the file's data is already in pagecache, which should
+normally be the case, since this ioctl is normally used immediately
+after writing out the file.
 
-The branch merges cleanly against this morning's HEAD and survived a few
-days' worth of xfstests.  The merge was completely straightforward, so
-please let me know if you run into anything weird(er than my dorky tag
-message).
+But in any other case this implementation performs very poorly, since
+only one page is read at a time.
 
---D
+Fix this by implementing readahead using the functions from
+mm/readahead.c.
 
-The following changes since commit 419e9c38aa075ed0cd3c13d47e15954b686bcdb6:
+This improves performance in the uncached case by about 20x, as seen in
+the following benchmarks done on a 250MB file (on x86_64 with SHA-NI):
 
-  iomap: Fix pipe page leakage during splicing (2019-11-22 08:36:02 -0800)
+    FS_IOC_ENABLE_VERITY uncached (before) 3.299s
+    FS_IOC_ENABLE_VERITY uncached (after)  0.160s
+    FS_IOC_ENABLE_VERITY cached            0.147s
+    sha256sum uncached                     0.191s
+    sha256sum cached                       0.145s
 
-are available in the Git repository at:
+Note: we could instead switch to kernel_read().  But that would mean
+we'd no longer be hashing the data directly from the pagecache, which is
+a nice optimization of its own.  And using kernel_read() would require
+allocating another temporary buffer, hashing the data and tree pages
+separately, and explicitly zero-padding the last page -- so it wouldn't
+really be any simpler than direct pagecache access, at least for now.
 
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.5-merge-13
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/verity/enable.c | 46 ++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 40 insertions(+), 6 deletions(-)
 
-for you to fetch changes up to 88cfd30e188fcf6fd8304586c936a6f22fb665e5:
+diff --git a/fs/verity/enable.c b/fs/verity/enable.c
+index eabc6ac19906..f7eaffa60196 100644
+--- a/fs/verity/enable.c
++++ b/fs/verity/enable.c
+@@ -13,14 +13,44 @@
+ #include <linux/sched/signal.h>
+ #include <linux/uaccess.h>
+ 
+-static int build_merkle_tree_level(struct inode *inode, unsigned int level,
++/*
++ * Read a file data page for Merkle tree construction.  Do aggressive readahead,
++ * since we're sequentially reading the entire file.
++ */
++static struct page *read_file_data_page(struct inode *inode,
++					struct file_ra_state *ra,
++					struct file *filp,
++					pgoff_t index,
++					pgoff_t num_pages_in_file)
++{
++	struct page *page;
++
++	page = find_get_page(inode->i_mapping, index);
++	if (!page || !PageUptodate(page)) {
++		if (page)
++			put_page(page);
++		page_cache_sync_readahead(inode->i_mapping, ra, filp,
++					  index, num_pages_in_file - index);
++		page = read_mapping_page(inode->i_mapping, index, NULL);
++		if (IS_ERR(page))
++			return page;
++	}
++	if (PageReadahead(page))
++		page_cache_async_readahead(inode->i_mapping, ra, filp, page,
++					   index, num_pages_in_file - index);
++	return page;
++}
++
++static int build_merkle_tree_level(struct file *filp, unsigned int level,
+ 				   u64 num_blocks_to_hash,
+ 				   const struct merkle_tree_params *params,
+ 				   u8 *pending_hashes,
+ 				   struct ahash_request *req)
+ {
++	struct inode *inode = file_inode(filp);
+ 	const struct fsverity_operations *vops = inode->i_sb->s_vop;
+ 	unsigned int pending_size = 0;
++	struct file_ra_state ra = { 0 };
+ 	u64 dst_block_num;
+ 	u64 i;
+ 	int err;
+@@ -36,6 +66,8 @@ static int build_merkle_tree_level(struct inode *inode, unsigned int level,
+ 		dst_block_num = 0; /* unused */
+ 	}
+ 
++	file_ra_state_init(&ra, inode->i_mapping);
++
+ 	for (i = 0; i < num_blocks_to_hash; i++) {
+ 		struct page *src_page;
+ 
+@@ -45,7 +77,8 @@ static int build_merkle_tree_level(struct inode *inode, unsigned int level,
+ 
+ 		if (level == 0) {
+ 			/* Leaf: hashing a data block */
+-			src_page = read_mapping_page(inode->i_mapping, i, NULL);
++			src_page = read_file_data_page(inode, &ra, filp, i,
++						       num_blocks_to_hash);
+ 			if (IS_ERR(src_page)) {
+ 				err = PTR_ERR(src_page);
+ 				fsverity_err(inode,
+@@ -103,17 +136,18 @@ static int build_merkle_tree_level(struct inode *inode, unsigned int level,
+ }
+ 
+ /*
+- * Build the Merkle tree for the given inode using the given parameters, and
++ * Build the Merkle tree for the given file using the given parameters, and
+  * return the root hash in @root_hash.
+  *
+  * The tree is written to a filesystem-specific location as determined by the
+  * ->write_merkle_tree_block() method.  However, the blocks that comprise the
+  * tree are the same for all filesystems.
+  */
+-static int build_merkle_tree(struct inode *inode,
++static int build_merkle_tree(struct file *filp,
+ 			     const struct merkle_tree_params *params,
+ 			     u8 *root_hash)
+ {
++	struct inode *inode = file_inode(filp);
+ 	u8 *pending_hashes;
+ 	struct ahash_request *req;
+ 	u64 blocks;
+@@ -139,7 +173,7 @@ static int build_merkle_tree(struct inode *inode,
+ 	blocks = (inode->i_size + params->block_size - 1) >>
+ 		 params->log_blocksize;
+ 	for (level = 0; level <= params->num_levels; level++) {
+-		err = build_merkle_tree_level(inode, level, blocks, params,
++		err = build_merkle_tree_level(filp, level, blocks, params,
+ 					      pending_hashes, req);
+ 		if (err)
+ 			goto out;
+@@ -227,7 +261,7 @@ static int enable_verity(struct file *filp,
+ 	 */
+ 	pr_debug("Building Merkle tree...\n");
+ 	BUILD_BUG_ON(sizeof(desc->root_hash) < FS_VERITY_MAX_DIGEST_SIZE);
+-	err = build_merkle_tree(inode, &params, desc->root_hash);
++	err = build_merkle_tree(filp, &params, desc->root_hash);
+ 	if (err) {
+ 		fsverity_err(inode, "Error %d building Merkle tree", err);
+ 		goto rollback;
+-- 
+2.24.0
 
-  iomap: remove unneeded variable in iomap_dio_rw() (2019-11-26 09:28:47 -0800)
-
-----------------------------------------------------------------
-New code for 5.5:
-- Make iomap_dio_rw callers explicitly tell us if they want us to wait
-- Port the xfs writeback code to iomap to complete the buffered io
-  library functions
-- Refactor the unshare code to share common pieces
-- Add support for performing copy on write with buffered writes
-- Other minor fixes
-- Fix unchecked return in iomap_bmap
-- Fix a type casting bug in a ternary statement in iomap_dio_bio_actor
-- Improve tracepoints for easier diagnostic ability
-- Fix pipe page leakage in directio reads
-- Clean up iter usage in directio paths
-
-----------------------------------------------------------------
-Jan Kara (1):
-      iomap: Do not create fake iter in iomap_dio_bio_actor()
-
-Johannes Thumshirn (1):
-      iomap: remove unneeded variable in iomap_dio_rw()
-
- fs/iomap/direct-io.c | 39 ++++++++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 17 deletions(-)
