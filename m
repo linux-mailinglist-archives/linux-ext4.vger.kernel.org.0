@@ -2,192 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F00AB10F335
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 00:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532CD10F464
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 02:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbfLBXL3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Dec 2019 18:11:29 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:39885 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbfLBXL2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Dec 2019 18:11:28 -0500
-Received: by mail-pl1-f193.google.com with SMTP id o9so713124plk.6
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Dec 2019 15:11:28 -0800 (PST)
+        id S1725997AbfLCBLl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Dec 2019 20:11:41 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:42553 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbfLCBLl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Dec 2019 20:11:41 -0500
+Received: by mail-lj1-f196.google.com with SMTP id e28so1711063ljo.9
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Dec 2019 17:11:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6ttWimjLiXo63sviyZXeskbVa8xbd/IUQeCe9EeQR2I=;
-        b=07JfQToOePKknamvbiMnGD/w7Ik2MKvRUdZyYWPALMrR1m63c5WhBC3NTZvsGCvkmg
-         LJ8x8qg/sAdJVkYz/9j86JNuAloTBB56ZXQGpds+uo0V0sjL2/NXbKqHpbJxMfndhMJ+
-         YDtTNK9VK3qIgYaL43TBNND4s2KDZ1djWDuBUSQGbFSBruEgxShPKwT5+pk6AhXLwWVW
-         6nTy5QH3AWxYTpOzetI1+rU0R7XhEIRM6fnktSz6OwP1InRx0pDqSohsyM1Z3NcKStj6
-         0iJWgzBiOBZ0w8bfymOXRHFVdV9uZm1A0Xnz+LInd73arJYWaPHGEYrdbTvFEqN47eO8
-         AE6g==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f16wPMX3Hv5+5LpFCWWiK7eqWkk4a1TMh+b2JYuh2L4=;
+        b=KquqAkqUVTyG83FELzXx6nZWqrQom0qPebBeM3l4nUnY0IjRxfw5jl9f4rhB4P0Ys1
+         yMMjUqHh9Atftq9/aMH7vPLqvTYv5hjkMQeepjJof4arWmddxk+x0kYqi0oEsm1gm01r
+         c0+/cFEMdOFDQe0735Al7ThhTziCMU1XmN/7g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6ttWimjLiXo63sviyZXeskbVa8xbd/IUQeCe9EeQR2I=;
-        b=my2IN4Yvt3vHRtSteYWDEaCO+BDw2Fn1kYvdYfTSAvvshi6a+gqnCl2KTvCQ4p49OI
-         b0JbS0vp1npD/cI2ruRGsfDEo5efPe47X3gthC0Yg8smPzMI03EdJS3gveBvC0OLXEkG
-         K/SbTCdtniKlt0TO30UpNP4szFGXTftQkF6LHtJXvGOWgHH7wdZrBKk7QqUdr0au23XJ
-         DIO7jHzPP3nFpaCOaI8MyJSfe8Mbu0PeHkLIYkErqj9rjyb0FVkStH53mUGpzS4ftwub
-         L+ytgzfBXOZE406qJNS7hEeTHBFIexS3aS9vJ2UnGhBJoNSa4P5EUCclJQLGZZtLSs5M
-         mpyg==
-X-Gm-Message-State: APjAAAXCO66a7Uu5W9p5D7tTlpA4m9f2a5i5M6ZXtcqyi/Bt7LrQ5zrj
-        /i57BAR7sdwcJYmAq3c/03Qo
-X-Google-Smtp-Source: APXvYqxSUTsW2jHcg+3zHC4y4PzD26UjmdTsw/aGLBYVnEMAl5wDdTD4j1/sNpnU0t45fmaRH2xKIQ==
-X-Received: by 2002:a17:90b:3109:: with SMTP id gc9mr1889774pjb.30.1575328287945;
-        Mon, 02 Dec 2019 15:11:27 -0800 (PST)
-Received: from bobrowski.net (bobrowski.net. [110.232.114.101])
-        by smtp.gmail.com with ESMTPSA id m68sm576196pfm.85.2019.12.02.15.11.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Dec 2019 15:11:27 -0800 (PST)
-Date:   Tue, 3 Dec 2019 10:11:20 +1100
-From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     syzbot <syzbot+bea68382bae9490e7dd6@syzkaller.appspotmail.com>,
-        darrick.wong@oracle.com, hch@infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-ext4@vger.kernel.org
-Subject: Re: KASAN: use-after-free Read in iov_iter_alignment
-Message-ID: <20191202231118.GA7527@bobrowski.net>
-References: <000000000000ad9f910598bbb867@google.com>
- <20191202211037.GF2695@dread.disaster.area>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f16wPMX3Hv5+5LpFCWWiK7eqWkk4a1TMh+b2JYuh2L4=;
+        b=YaMARcJWlRiE6p+BcJZ8oITCZUvnBCbMnz1YV/uR+RH0SA/kpO1W+xknLiRNiL2emP
+         nqD/+LsOZn0LKyFgfbX/mRZYOCX7t9AhWhQ400UIFqAcKc4BiKKXHVljXmBZHTZ9w9NC
+         ZgxKogT60jxpYsKGNsAzcDYQDp4Rc8jk3QxRxw1QVh6yqlCQWdy953eqAjxPD+mCwXo8
+         c7LTD/3aRBDmOaExiS02DqaFTqUJA6wmze+3zyzaSRue/bG/EDHVNPT5N5l2y5vmltec
+         ZmkB3TS9Y8o4qlobYL6ucGean/qh0AYG8kEnBgA4QsO0Zg9CFlFM6QZV3rOi7HRuh6yL
+         mBTQ==
+X-Gm-Message-State: APjAAAWj8pXSzBLiTZ+IrGRFXXfpdgQQlJKe7WNxz5DHRfDUFzXxnfyK
+        LZ7ozvpxpkUzy9cSP1NRcAqM06R4GWM=
+X-Google-Smtp-Source: APXvYqzmjZJ3R5yN5n/77Bb/cBV/+vBUs8+czQKfiyeE3AycvcnnJYyT3Jz0v6WRrDGVpEEWAoTsFw==
+X-Received: by 2002:a2e:980b:: with SMTP id a11mr924072ljj.189.1575335498600;
+        Mon, 02 Dec 2019 17:11:38 -0800 (PST)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id y7sm475845ljn.31.2019.12.02.17.11.38
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Dec 2019 17:11:38 -0800 (PST)
+Received: by mail-lj1-f172.google.com with SMTP id s22so1737360ljs.7
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Dec 2019 17:11:38 -0800 (PST)
+X-Received: by 2002:a2e:86c4:: with SMTP id n4mr889870ljj.97.1575335193641;
+ Mon, 02 Dec 2019 17:06:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191202211037.GF2695@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20191129142045.7215-1-agruenba@redhat.com>
+In-Reply-To: <20191129142045.7215-1-agruenba@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 2 Dec 2019 17:06:17 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj5caXKoukPyM7Zc6A0Q+E-pBGHSV64iZe8t98OerXR_w@mail.gmail.com>
+Message-ID: <CAHk-=wj5caXKoukPyM7Zc6A0Q+E-pBGHSV64iZe8t98OerXR_w@mail.gmail.com>
+Subject: Re: [PATCH v2] fs: Fix page_mkwrite off-by-one errors
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Artem Bityutskiy <dedekind1@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        ceph-devel@vger.kernel.org,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Dec 03, 2019 at 08:10:37AM +1100, Dave Chinner wrote:
-> [cc linux-ext4@vger.kernel.org - this is reported from the new ext4
-> dio->iomap code]
-> 
-> On Mon, Dec 02, 2019 at 09:15:08AM -0800, syzbot wrote:
-> > Hello,
-> > 
-> > syzbot found the following crash on:
-> > 
-> > HEAD commit:    b94ae8ad Merge tag 'seccomp-v5.5-rc1' of git://git.kernel...
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=135a8d7ae00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c2e464ae414aee8c
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=bea68382bae9490e7dd6
-> > compiler:       clang version 9.0.0 (/home/glider/llvm/clang
-> > 80fee25776c2fb61e74c1ecb1a523375c2500b69)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1135cb36e00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e90abce00000
-> > 
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+bea68382bae9490e7dd6@syzkaller.appspotmail.com
-> > 
-> > ==================================================================
-> > BUG: KASAN: use-after-free in iov_iter_alignment+0x6a1/0x7b0
-> > lib/iov_iter.c:1225
-> > Read of size 4 at addr ffff888098d40f54 by task loop0/8203
-> > 
-> > CPU: 0 PID: 8203 Comm: loop0 Not tainted 5.4.0-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> > Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:77 [inline]
-> >  dump_stack+0x1fb/0x318 lib/dump_stack.c:118
-> >  print_address_description+0x75/0x5c0 mm/kasan/report.c:374
-> >  __kasan_report+0x14b/0x1c0 mm/kasan/report.c:506
-> >  kasan_report+0x26/0x50 mm/kasan/common.c:634
-> >  __asan_report_load4_noabort+0x14/0x20 mm/kasan/generic_report.c:131
-> >  iov_iter_alignment+0x6a1/0x7b0 lib/iov_iter.c:1225
-> >  iomap_dio_bio_actor+0x1a7/0x11e0 fs/iomap/direct-io.c:203
-> >  iomap_dio_actor+0x2b4/0x4a0 fs/iomap/direct-io.c:375
-> >  iomap_apply+0x370/0x490 fs/iomap/apply.c:80
-> >  iomap_dio_rw+0x8ad/0x1010 fs/iomap/direct-io.c:493
-> >  ext4_dio_read_iter fs/ext4/file.c:77 [inline]
-> >  ext4_file_read_iter+0x834/0xc20 fs/ext4/file.c:128
-> >  lo_rw_aio+0xcbb/0xea0 include/linux/fs.h:1889
-> 
-> loopback -> ext4 direct IO, bad access on iov passed to iomap DIO
-> code.
-> 
-> >  do_req_filebacked drivers/block/loop.c:616 [inline]
-> >  loop_handle_cmd drivers/block/loop.c:1952 [inline]
-> >  loop_queue_work+0x13ab/0x2590 drivers/block/loop.c:1966
-> >  kthread_worker_fn+0x449/0x700 kernel/kthread.c:671
-> >  loop_kthread_worker_fn+0x40/0x60 drivers/block/loop.c:901
-> >  kthread+0x332/0x350 kernel/kthread.c:255
-> >  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-> > 
-> > Allocated by task 4198:
-> >  save_stack mm/kasan/common.c:69 [inline]
-> >  set_track mm/kasan/common.c:77 [inline]
-> >  __kasan_kmalloc+0x11c/0x1b0 mm/kasan/common.c:510
-> >  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:518
-> >  slab_post_alloc_hook mm/slab.h:584 [inline]
-> >  slab_alloc mm/slab.c:3319 [inline]
-> >  kmem_cache_alloc+0x1f5/0x2e0 mm/slab.c:3483
-> >  mempool_alloc_slab+0x4d/0x70 mm/mempool.c:513
-> >  mempool_alloc+0x104/0x5e0 mm/mempool.c:393
-> >  bio_alloc_bioset+0x1b0/0x5f0 block/bio.c:477
-> >  bio_alloc include/linux/bio.h:400 [inline]
-> >  mpage_alloc fs/mpage.c:79 [inline]
-> >  do_mpage_readpage+0x1685/0x1d10 fs/mpage.c:306
-> >  mpage_readpages+0x2a9/0x440 fs/mpage.c:404
-> >  blkdev_readpages+0x2c/0x40 fs/block_dev.c:620
-> >  read_pages+0xad/0x4d0 mm/readahead.c:126
-> >  __do_page_cache_readahead+0x480/0x530 mm/readahead.c:212
-> >  force_page_cache_readahead mm/readahead.c:243 [inline]
-> >  page_cache_sync_readahead+0x329/0x3b0 mm/readahead.c:522
-> >  generic_file_buffered_read+0x41d/0x2570 mm/filemap.c:2051
-> >  generic_file_read_iter+0xa9/0x450 mm/filemap.c:2324
-> >  blkdev_read_iter+0x12e/0x140 fs/block_dev.c:2039
-> >  call_read_iter include/linux/fs.h:1889 [inline]
-> >  new_sync_read fs/read_write.c:414 [inline]
-> >  __vfs_read+0x59e/0x730 fs/read_write.c:427
-> >  vfs_read+0x1dd/0x420 fs/read_write.c:461
-> >  ksys_read+0x117/0x220 fs/read_write.c:587
-> >  __do_sys_read fs/read_write.c:597 [inline]
-> >  __se_sys_read fs/read_write.c:595 [inline]
-> >  __x64_sys_read+0x7b/0x90 fs/read_write.c:595
-> >  do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:294
-> >  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> > 
-> > Freed by task 4205:
-> >  save_stack mm/kasan/common.c:69 [inline]
-> >  set_track mm/kasan/common.c:77 [inline]
-> >  kasan_set_free_info mm/kasan/common.c:332 [inline]
-> >  __kasan_slab_free+0x12a/0x1e0 mm/kasan/common.c:471
-> >  kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
-> >  __cache_free mm/slab.c:3425 [inline]
-> >  kmem_cache_free+0x81/0xf0 mm/slab.c:3693
-> >  mempool_free_slab+0x1d/0x30 mm/mempool.c:520
-> >  mempool_free+0xd5/0x350 mm/mempool.c:502
-> >  bio_put+0x38b/0x460 block/bio.c:255
-> >  mpage_end_io+0x2f5/0x330 fs/mpage.c:58
-> >  bio_endio+0x4ff/0x570 block/bio.c:1818
-> >  req_bio_endio block/blk-core.c:245 [inline]
-> >  blk_update_request+0x438/0x10d0 block/blk-core.c:1464
-> >  scsi_end_request+0x8c/0xa20 drivers/scsi/scsi_lib.c:579
-> >  scsi_io_completion+0x17c/0x1b80 drivers/scsi/scsi_lib.c:963
-> >  scsi_finish_command+0x3b3/0x560 drivers/scsi/scsi.c:228
-> >  scsi_softirq_done+0x289/0x310 drivers/scsi/scsi_lib.c:1477
-> >  blk_done_softirq+0x312/0x370 block/blk-softirq.c:37
-> >  __do_softirq+0x333/0x7c4 arch/x86/include/asm/paravirt.h:762
-> 
-> Looks like buffered read IO on a loopback device on an ext4 image
-> file, and something is being tripped over in the new ext4 direct IO
-> path.  Might be an iomap issue, might be an ext4 issue, but it looks
-> like the buffered read bio completion is running while the iov is
-> still being submitted...
+On Fri, Nov 29, 2019 at 6:21 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+>
+> +/**
+> + * page_mkwrite_check_truncate - check if page was truncated
+> + * @page: the page to check
+> + * @inode: the inode to check the page against
+> + *
+> + * Returns the number of bytes in the page up to EOF,
+> + * or -EFAULT if the page was truncated.
+> + */
+> +static inline int page_mkwrite_check_truncate(struct page *page,
+> +                                             struct inode *inode)
+> +{
+> +       loff_t size = i_size_read(inode);
+> +       pgoff_t end_index = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
 
-Thanks Dave.
+This special end_index calculation seems to be redundant.
 
-I will take a look at this when I get home this evening and see
-whether I can pinpoint what's going on here...
+You later want "size >> PAGE_SHIFT" for another test, and that's
+actually the important part.
 
-/M
+The "+ PAGE_SIZE - 1" case is purely to handle the "AT the page
+boundary is special" case, but since you have to calculate
+"offset_in_page(size)" anyway, that's entirely redundant - the answer
+is part of that.
+
+So I think it would be better to write the logic as
+
+        loff_t size = i_size_read(inode);
+        pgoff_t index = size >> PAGE_SHIFT;
+        int offset = offset_in_page(size);
+
+        if (page->mapping != inode->i_mapping)
+                return -EFAULT;
+
+        /* Page is wholly past the EOF page */
+        if (page->index > index)
+                return -EFAULT;
+        /* page is wholly inside EOF */
+        if (page->index < index)
+                return PAGE_SIZE;
+        /* bytes in a page? If 0, it's past EOF */
+        return offset ? offset : -PAGE_SIZE;
+
+instead. That avoids the unnecessary "round up" part, and simply uses
+the same EOF index for everything.
+
+              Linus
