@@ -2,139 +2,180 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D12110F4B3
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 02:52:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E0010F4F2
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 03:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbfLCBw0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Dec 2019 20:52:26 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:33967 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726066AbfLCBw0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Dec 2019 20:52:26 -0500
-Received: by mail-io1-f67.google.com with SMTP id z193so1859356iof.1;
-        Mon, 02 Dec 2019 17:52:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TxhmjFxB0fSH7WF0Z6dyOJrwDyDBweaa0/5KnNO4AIw=;
-        b=Xah07E77EL/ykU6H/9fOr3zX6G7oIlWdMl7pW0DtOY4vE5v7mHQywBuRicQbOxpksI
-         oVlMR+lFoPd7LKC19a9HB2/wy/+jDp1nqd76VCZFCXYDbcb0C0lFjdfWx07BFtI61NyQ
-         ULUpd+qRbkc1lNFMKvsoL6LpvtelvqGIpA+TiKw+pssj6AYPYx8QilsR5BTdNjSgzXV4
-         TzOcqVnnTq03A9VJMHGxKZI9llFscQefkxFMrIAIJ8purFDg+fn3Sgw7mITq1bI0VNc4
-         ggGt0dKL3T+x/JX3njY7HBts2xJIycvxD925/sF8Btt8swkgBaabvykwCkAgzw+wuURe
-         7mSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TxhmjFxB0fSH7WF0Z6dyOJrwDyDBweaa0/5KnNO4AIw=;
-        b=hU6FQJAWDthk/buOxzAm/mmxDjZ12pcNOatoFfO1OFMXT4sRKOU5BiLmjzDrpptUhi
-         HIzseY1+gdmSy1NdmtVooRUYFfX4QRPKMNhK7Xi5H4JMufM8AeHTvMyu1/Qfcxa0qxUq
-         Cr4zOyPyjQ9g2b7FPlk5t8sUn3b7TYAadjMBzhukwDJojB6tjLNwC81r5v0XFaa84uje
-         nMHZJVc7ReqOxsUitYgrjwdLmvAXN0SaiFlsdKGfWwPd5KUJ1ZY21BoH0a7mbUhZmF5E
-         ypHBHvP+lkTI2qoYTAarcHhelx4xGuR3IKTuEPfOSKzvL4+4JXyr01mtaFojCEhk4zL3
-         6k3A==
-X-Gm-Message-State: APjAAAXp4RK/6DGAd1ivw/hL1rRWrV89kMpM25mPaUzgVatIQBdz4MQJ
-        Qz1wpl1hQsMCGbnAMxADpiDnc5+8UKUrtQesH7U=
-X-Google-Smtp-Source: APXvYqz/HtSAKmFvtGA3vewcbEqy6GpkXcTpGWeY7zvzD8UPDmBHZYqWa5qgMjPw9AT+xjcV03w5DfEQU74871jze0c=
-X-Received: by 2002:a02:a915:: with SMTP id n21mr3314772jam.117.1575337945183;
- Mon, 02 Dec 2019 17:52:25 -0800 (PST)
+        id S1726410AbfLCCYB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Dec 2019 21:24:01 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34605 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726138AbfLCCYA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Dec 2019 21:24:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575339838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O0EX3vVcvGDZXblDe7Rv/FsS5mhTO0YUbuVmRSPhwMA=;
+        b=JOfNcYP+tQLdE4QsiUXNjjhhJ7qei9NVmFOCzyJuMMcCkN+TkDyY8K/L3poDUxkNMXUvHc
+        L4oRMqPqH3LjuKwO5FUijqMNUi1si1oT1BdE54gRE9dnPP5AgTpzEBGGtWu10WdSliG0xV
+        eyAyQQ83IIACz6AjGPGCt9AJqFVx8CI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-2M_xvtKyM3isUt9S-04QCw-1; Mon, 02 Dec 2019 21:23:55 -0500
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7833CDB62;
+        Tue,  3 Dec 2019 02:23:52 +0000 (UTC)
+Received: from ming.t460p (ovpn-8-19.pek2.redhat.com [10.72.8.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9E10B10016DA;
+        Tue,  3 Dec 2019 02:23:41 +0000 (UTC)
+Date:   Tue, 3 Dec 2019 10:23:37 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Andrea Vai <andrea.vai@unipv.it>
+Cc:     "Schmid, Carsten" <Carsten_Schmid@mentor.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        USB list <linux-usb@vger.kernel.org>,
+        SCSI development list <linux-scsi@vger.kernel.org>,
+        Himanshu Madhani <himanshu.madhani@cavium.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Omar Sandoval <osandov@fb.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Hans Holmberg <Hans.Holmberg@wdc.com>,
+        Kernel development list <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: Re: AW: Slow I/O on USB media after commit
+ f664a3cc17b7d0a2bc3b3ab96181e1029b0ec0e6
+Message-ID: <20191203022337.GE25002@ming.t460p>
+References: <20191126023253.GA24501@ming.t460p>
+ <0598fe2754bf0717d81f7e72d3e9b3230c608cc6.camel@unipv.it>
+ <alpine.LNX.2.21.1.1911271055200.8@nippy.intranet>
+ <cb6e84781c4542229a3f31572cef19ab@SVR-IES-MBX-03.mgc.mentorg.com>
+ <c1358b840b3a4971aa35a25d8495c2c8953403ea.camel@unipv.it>
+ <20191128091712.GD15549@ming.t460p>
+ <f82fd5129e3dcacae703a689be60b20a7fedadf6.camel@unipv.it>
+ <20191129005734.GB1829@ming.t460p>
+ <20191129023555.GA8620@ming.t460p>
+ <320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it>
 MIME-Version: 1.0
-References: <20191129142045.7215-1-agruenba@redhat.com> <CAHk-=wj5caXKoukPyM7Zc6A0Q+E-pBGHSV64iZe8t98OerXR_w@mail.gmail.com>
-In-Reply-To: <CAHk-=wj5caXKoukPyM7Zc6A0Q+E-pBGHSV64iZe8t98OerXR_w@mail.gmail.com>
-From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
-Date:   Tue, 3 Dec 2019 02:52:13 +0100
-Message-ID: <CAHpGcMLe2Qy=RdcyFPav5Rfto9M4S9VdsX6E=b3FEywtUNQdqg@mail.gmail.com>
-Subject: Re: [PATCH v2] fs: Fix page_mkwrite off-by-one errors
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Artem Bityutskiy <dedekind1@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MC-Unique: 2M_xvtKyM3isUt9S-04QCw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Am Di., 3. Dez. 2019 um 02:09 Uhr schrieb Linus Torvalds
-<torvalds@linux-foundation.org>:
->
-> On Fri, Nov 29, 2019 at 6:21 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> >
-> > +/**
-> > + * page_mkwrite_check_truncate - check if page was truncated
-> > + * @page: the page to check
-> > + * @inode: the inode to check the page against
-> > + *
-> > + * Returns the number of bytes in the page up to EOF,
-> > + * or -EFAULT if the page was truncated.
-> > + */
-> > +static inline int page_mkwrite_check_truncate(struct page *page,
-> > +                                             struct inode *inode)
-> > +{
-> > +       loff_t size = i_size_read(inode);
-> > +       pgoff_t end_index = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
->
-> This special end_index calculation seems to be redundant.
->
-> You later want "size >> PAGE_SHIFT" for another test, and that's
-> actually the important part.
->
-> The "+ PAGE_SIZE - 1" case is purely to handle the "AT the page
-> boundary is special" case, but since you have to calculate
-> "offset_in_page(size)" anyway, that's entirely redundant - the answer
-> is part of that.
->
-> So I think it would be better to write the logic as
->
->         loff_t size = i_size_read(inode);
->         pgoff_t index = size >> PAGE_SHIFT;
->         int offset = offset_in_page(size);
->
->         if (page->mapping != inode->i_mapping)
->                 return -EFAULT;
->
->         /* Page is wholly past the EOF page */
->         if (page->index > index)
->                 return -EFAULT;
->         /* page is wholly inside EOF */
->         if (page->index < index)
->                 return PAGE_SIZE;
->         /* bytes in a page? If 0, it's past EOF */
->         return offset ? offset : -PAGE_SIZE;
->
-> instead. That avoids the unnecessary "round up" part, and simply uses
-> the same EOF index for everything.
+On Fri, Nov 29, 2019 at 03:41:01PM +0100, Andrea Vai wrote:
+> Il giorno ven, 29/11/2019 alle 10.35 +0800, Ming Lei ha scritto:
+> > On Fri, Nov 29, 2019 at 08:57:34AM +0800, Ming Lei wrote:
+> >=20
+> > > [...]
+> >=20
+> > > Andrea, can you collect the following log when running the test
+> > > on current new(bad) kernel?
+> > >=20
+> > > =09/usr/share/bcc/tools/stackcount  -K blk_mq_make_request
+> >=20
+> > Instead, please run the following trace, given insert may be
+> > called from other paths, such as flush plug:
+> >=20
+> > =09/usr/share/bcc/tools/stackcount -K t:block:block_rq_insert
+>=20
+> Attached, for new (patched) bad kernel.
+>=20
+> Produced by: start the trace script (with the pendrive already
+> plugged), wait some seconds, run the test (1 trial, 1 GB), wait for
+> the test to finish, stop the trace.
+>=20
+> The copy took ~1700 seconds.
 
-And if we rearrange things slightly, we end up with:
+See the two path[1][2] of inserting request, and path[1] is triggered
+4358 times, and the path[2] is triggered 5763 times.
 
-        /* page is wholly inside EOF */
-        if (page->index < index)
-                return PAGE_SIZE;
-        /* page is wholly past EOF */
-        if (page->index > index || !offset)
-                return -EFAULT;
-        /* page is partially inside EOF */
-        return offset;
+The path[2] is expected behaviour. Not sure path [1] is correct, given
+ext4_release_file() is supposed to be called when this inode is
+released. That means the file is closed 4358 times during 1GB file
+copying to usb storage.
+
+Cc filesystem list.
+
+
+[1] insert requests when returning to user mode from syscall
+
+  b'blk_mq_sched_request_inserted'
+  b'blk_mq_sched_request_inserted'
+  b'dd_insert_requests'
+  b'blk_mq_sched_insert_requests'
+  b'blk_mq_flush_plug_list'
+  b'blk_flush_plug_list'
+  b'io_schedule_prepare'
+  b'io_schedule'
+  b'rq_qos_wait'
+  b'wbt_wait'
+  b'__rq_qos_throttle'
+  b'blk_mq_make_request'
+  b'generic_make_request'
+  b'submit_bio'
+  b'ext4_io_submit'
+  b'ext4_writepages'
+  b'do_writepages'
+  b'__filemap_fdatawrite_range'
+  b'ext4_release_file'
+  b'__fput'
+  b'task_work_run'
+  b'exit_to_usermode_loop'
+  b'do_syscall_64'
+  b'entry_SYSCALL_64_after_hwframe'
+    4358
+
+[2] insert requests from writeback wq context
+
+  b'blk_mq_sched_request_inserted'
+  b'blk_mq_sched_request_inserted'
+  b'dd_insert_requests'
+  b'blk_mq_sched_insert_requests'
+  b'blk_mq_flush_plug_list'
+  b'blk_flush_plug_list'
+  b'io_schedule_prepare'
+  b'io_schedule'
+  b'rq_qos_wait'
+  b'wbt_wait'
+  b'__rq_qos_throttle'
+  b'blk_mq_make_request'
+  b'generic_make_request'
+  b'submit_bio'
+  b'ext4_io_submit'
+  b'ext4_bio_write_page'
+  b'mpage_submit_page'
+  b'mpage_process_page_bufs'
+  b'mpage_prepare_extent_to_map'
+  b'ext4_writepages'
+  b'do_writepages'
+  b'__writeback_single_inode'
+  b'writeback_sb_inodes'
+  b'__writeback_inodes_wb'
+  b'wb_writeback'
+  b'wb_workfn'
+  b'process_one_work'
+  b'worker_thread'
+  b'kthread'
+  b'ret_from_fork'
+    5763
 
 Thanks,
-Andreas
+Ming
+
