@@ -2,62 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CA510F6BB
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 06:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704AB10F745
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 06:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727142AbfLCFLm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Dec 2019 00:11:42 -0500
-Received: from mail-pg1-f201.google.com ([209.85.215.201]:40606 "EHLO
-        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727126AbfLCFLj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Dec 2019 00:11:39 -0500
-Received: by mail-pg1-f201.google.com with SMTP id z12so1096589pgf.7
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Dec 2019 21:11:39 -0800 (PST)
+        id S1726805AbfLCF32 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Dec 2019 00:29:28 -0500
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:33633 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726444AbfLCF32 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Dec 2019 00:29:28 -0500
+Received: by mail-pf1-f201.google.com with SMTP id t13so1489134pfh.0
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Dec 2019 21:29:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=8c3eVVk8ABGDZTJOomUNLBljUeAWHPLfmm8OYMOygK0=;
-        b=oteLf7N3qbZYVjncqfLGA35MNoLNyK5bhXImCiwSRn+6fiSbsFuJbMRE6gWfyVjNPe
-         Og932LtndCbABZdP1w0ocZDRInigouXSWrDI3b8o3dKLEFTZKzkADdIKDQYo4b/DHdFk
-         mbMDSCm3b0aqMpX0xNVYs8YjTftAE9V3OzJr1klNESjbku9d/N6rK+PeOBegUEgZ0CII
-         cIVtfx0krdmO0+9m0DyAzo4H+HvtdeikT93i5iYvInW+TE3f7JX61Ee4NEmpN632Mw83
-         CnGeO3lKi2fHV9V7pvjyUBedXrE45c7uAyu85CRsKhyQsT3S3O3fPS8xBRflmMvRYGPr
-         YR3Q==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=/PZuvjxFpiHxBxqmZZS2DIf/mUXIgszqKKP6+YA75fE=;
+        b=bw01QGxc7pcn2yVbZZ0nqE3Fu2jYn4PGVSSJmBvOGf4dmVs6bo+m30ngfK65tAsOci
+         xUpbZVzDLxL5Gx1P9zYhE+m3v5NrIXI7Rpwec4vEsGZoPHmPcIPzQEfVQhYa12Q7hrBB
+         ZzJCTfWgZ4AdOPAPq3Xiuy7UA0t+keaUNCFHCOKcC9h8s5HnpU8eCeUFxA8LiCGRwGI4
+         c0MiTsILl1t2fpJZunCbbpOR9s/dRWf/7VOxqr4dOppMgvH3YfLpkSBRc/Z2dE7t8Zir
+         46eMo+ASXZsM2hHpGJNFp7sNK03eyApp2IEAMEbhroxY1hAjVMWpiSbJDP1Np9sCtTUh
+         q/Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=8c3eVVk8ABGDZTJOomUNLBljUeAWHPLfmm8OYMOygK0=;
-        b=dQGHW/USfmoRfOFKiIcpO1UY9CNMgbUWiuGk3ij0p/3SVjO91rauYGLb7MfKqaMyff
-         sOH/I+whfyZrpMtDAeYozSCkPNuRYfGyayvaj5Bh0elSL3GNEZNit6em9k7hcLLMvZzY
-         vd4pm6O/Or/G8l6V/NSWIvpO5Tw0s65fBCqA5Bf8hQsjZQZ6VgBxhdwfC8vVSByBwy9V
-         HIbBL8vI9dhd11jtCFNP2Tb2TJRc3V4YRasmAw2CH/oj6ihk0MoN4L0mdG4IlmJFmu2e
-         trOhcipSxtYO013Lt44atc/JSygQsqbZvom9w7KI3y5WcWxkHl1ejpfOGFuqeBrooSoc
-         Y/1w==
-X-Gm-Message-State: APjAAAUtf+sVHmzchJ2FliRnuG79OS935vgfxOYRQr7/fLhBuoYQzXSv
-        FshU+r4oA+EmbHd37t+btWx2b+fYm5U=
-X-Google-Smtp-Source: APXvYqxs0GmfjTuZRzU9OqqYkBnp2/dJZPB77L72bpUcJ78IvKiht+67nFiNcmf43OSpi5CswMqkIUEsYvs=
-X-Received: by 2002:a63:c849:: with SMTP id l9mr3486754pgi.330.1575349898899;
- Mon, 02 Dec 2019 21:11:38 -0800 (PST)
-Date:   Mon,  2 Dec 2019 21:10:49 -0800
-In-Reply-To: <20191203051049.44573-1-drosen@google.com>
-Message-Id: <20191203051049.44573-9-drosen@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=/PZuvjxFpiHxBxqmZZS2DIf/mUXIgszqKKP6+YA75fE=;
+        b=HMAj9nFp8Gd6csZgkH+IJX/6sDK4vW/FbOl+zVIx/l3v3013NXlUE39ju0bAS89gtA
+         qPCQgRzRVmKrbSwFUMAqA0tTjjZUQmXyNC8rjTuvpVp6Vg33Oj4pIFCt63cX8Mrcb1sB
+         X4eynZszy9ITQyOBv5XAlAKy3eB5SXp9scTnkD6U2ihEjzxUB3mVXJN5Ew1nJzRZ4+LH
+         P7tJhJLpIwaZYT0zEMzrQ4QDDPB3AFxfkX0tkrE8lrLgcv2x2vs+y2T2XNuYQO8Bdp8P
+         5/nzbY3Pwtu+VVj/x6ci+ieIqpUK3aLQRiMZNaICFTg1ZRZJEfo4TiA3MIMHbtW/PJTG
+         f83g==
+X-Gm-Message-State: APjAAAUJ1t0Q/BqrETHzmAebSX/6vOb1ATrZDAKZC2Sx8YztXVFOEcv4
+        PcjB9o69z4yVE9TvQhcRESbUa7S7bNs=
+X-Google-Smtp-Source: APXvYqz1gFG/vtMpjY11UukOuaOFnKrrhGKaaW/tl7gK2jtu7Vgr7WnCmYQnIp+P3p+o0bam49oMiK/5nHg=
+X-Received: by 2002:a65:56c9:: with SMTP id w9mr3374564pgs.296.1575350967131;
+ Mon, 02 Dec 2019 21:29:27 -0800 (PST)
+Date:   Mon,  2 Dec 2019 21:29:23 -0800
+Message-Id: <20191203052923.65477-1-drosen@google.com>
 Mime-Version: 1.0
-References: <20191203051049.44573-1-drosen@google.com>
 X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
-Subject: [PATCH 8/8] ext4: Optimize match for casefolded encrypted dirs
+Subject: [PATCH] tune2fs: Support casefolded encryption
 From:   Daniel Rosenberg <drosen@google.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
@@ -65,192 +53,112 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Matching names with casefolded encrypting directories requires
-decrypting entries to confirm case since we are case preserving. We can
-avoid needing to decrypt if our hash values don't match.
+This allows enabling casefold and encryption at the same
+time. Fsck still needs to be adjusted to deal wtih this.
 
+Change-Id: Ic9ed63180ef28c36e083cee85ade432e4bfcc654
 Signed-off-by: Daniel Rosenberg <drosen@google.com>
 ---
- fs/ext4/ext4.h  | 17 ++++++++-------
- fs/ext4/namei.c | 57 ++++++++++++++++++++++++++-----------------------
- 2 files changed, 39 insertions(+), 35 deletions(-)
+ misc/mke2fs.c  |  9 ---------
+ misc/tune2fs.c | 37 ++++++++++++++++++++++++++++++-------
+ 2 files changed, 30 insertions(+), 16 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index f06bab489d37..f104c46a6895 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2393,9 +2393,9 @@ extern unsigned ext4_free_clusters_after_init(struct super_block *sb,
- ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
- 
- #ifdef CONFIG_UNICODE
--extern void ext4_fname_setup_ci_filename(struct inode *dir,
-+extern int ext4_fname_setup_ci_filename(struct inode *dir,
- 					 const struct qstr *iname,
--					 struct fscrypt_str *fname);
-+					 struct ext4_filename *fname);
- #endif
- 
- #ifdef CONFIG_FS_ENCRYPTION
-@@ -2426,9 +2426,9 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
- 	ext4_fname_from_fscrypt_name(fname, &name);
- 
- #ifdef CONFIG_UNICODE
--	ext4_fname_setup_ci_filename(dir, iname, &fname->cf_name);
-+	err = ext4_fname_setup_ci_filename(dir, iname, fname);
- #endif
--	return 0;
-+	return err;
- }
- 
- static inline int ext4_fname_prepare_lookup(struct inode *dir,
-@@ -2445,9 +2445,9 @@ static inline int ext4_fname_prepare_lookup(struct inode *dir,
- 	ext4_fname_from_fscrypt_name(fname, &name);
- 
- #ifdef CONFIG_UNICODE
--	ext4_fname_setup_ci_filename(dir, &dentry->d_name, &fname->cf_name);
-+	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
- #endif
--	return 0;
-+	return err;
- }
- 
- static inline void ext4_fname_free_filename(struct ext4_filename *fname)
-@@ -2472,15 +2472,16 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
- 					    int lookup,
- 					    struct ext4_filename *fname)
- {
-+	int err = 0;
- 	fname->usr_fname = iname;
- 	fname->disk_name.name = (unsigned char *) iname->name;
- 	fname->disk_name.len = iname->len;
- 
- #ifdef CONFIG_UNICODE
--	ext4_fname_setup_ci_filename(dir, iname, &fname->cf_name);
-+	err = ext4_fname_setup_ci_filename(dir, iname, fname);
- #endif
- 
--	return 0;
-+	return err;
- }
- 
- static inline int ext4_fname_prepare_lookup(struct inode *dir,
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index f536cfc626bd..58b58fb532ba 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -784,7 +784,9 @@ dx_probe(struct ext4_filename *fname, struct inode *dir,
- 	if (hinfo->hash_version <= DX_HASH_TEA)
- 		hinfo->hash_version += EXT4_SB(dir->i_sb)->s_hash_unsigned;
- 	hinfo->seed = EXT4_SB(dir->i_sb)->s_hash_seed;
--	if (fname && fname_name(fname))
-+	/* hash is already computed for encrypted casefolded directory */
-+	if (fname && fname_name(fname) &&
-+				!(IS_ENCRYPTED(dir) && IS_CASEFOLDED(dir)))
- 		ext4fs_dirhash(dir, fname_name(fname), fname_len(fname), hinfo);
- 	hash = hinfo->hash;
- 
-@@ -1352,19 +1354,21 @@ int ext4_ci_compare(struct inode *parent, const struct qstr *name,
- 	return ret;
- }
- 
--void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
--				  struct fscrypt_str *cf_name)
-+int ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
-+				  struct ext4_filename *name)
- {
-+	struct fscrypt_str *cf_name = &name->cf_name;
-+	struct dx_hash_info *hinfo = &name->hinfo;
- 	int len;
- 
--	if (!IS_CASEFOLDED(dir) || !dir->i_sb->s_encoding) {
-+	if (!needs_casefold(dir) || !dir->i_sb->s_encoding) {
- 		cf_name->name = NULL;
--		return;
-+		return 0;
+diff --git a/misc/mke2fs.c b/misc/mke2fs.c
+index da29ab39..879e3914 100644
+--- a/misc/mke2fs.c
++++ b/misc/mke2fs.c
+@@ -2460,15 +2460,6 @@ profile_error:
+ 		}
  	}
  
- 	cf_name->name = kmalloc(EXT4_NAME_LEN, GFP_NOFS);
- 	if (!cf_name->name)
--		return;
-+		return -ENOMEM;
- 
- 	len = utf8_casefold(dir->i_sb->s_encoding,
- 			    iname, cf_name->name,
-@@ -1372,10 +1376,18 @@ void ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
- 	if (len <= 0) {
- 		kfree(cf_name->name);
- 		cf_name->name = NULL;
--		return;
- 	}
- 	cf_name->len = (unsigned) len;
-+	if (!IS_ENCRYPTED(dir))
-+		return 0;
- 
-+	hinfo->hash_version = DX_HASH_SIPHASH;
-+	hinfo->seed = NULL;
-+	if (cf_name->name)
-+		ext4fs_dirhash(dir, cf_name->name, cf_name->len, hinfo);
-+	else
-+		ext4fs_dirhash(dir, iname->name, iname->len, hinfo);
-+	return 0;
- }
- #endif
- 
-@@ -1405,16 +1417,12 @@ static bool ext4_match(struct inode *parent,
- 			struct qstr cf = {.name = fname->cf_name.name,
- 					  .len = fname->cf_name.len};
- 			if (IS_ENCRYPTED(parent)) {
--				struct dx_hash_info hinfo;
+-	if (ext2fs_has_feature_casefold(&fs_param) &&
+-	    ext2fs_has_feature_encrypt(&fs_param)) {
+-		com_err(program_name, 0, "%s",
+-			_("The encrypt and casefold features are not "
+-			  "compatible.\nThey can not be both enabled "
+-			  "simultaneously.\n"));
+-		      exit (1);
+-	}
 -
--				hinfo.hash_version = DX_HASH_SIPHASH;
--				hinfo.seed = NULL;
--				ext4fs_dirhash(parent, fname->cf_name.name,
--						fname_len(fname), &hinfo);
--				if (hinfo.hash != EXT4_DIRENT_HASH(de) ||
--						hinfo.minor_hash !=
--						    EXT4_DIRENT_MINOR_HASH(de))
-+				if (fname->hinfo.hash != EXT4_DIRENT_HASH(de) ||
-+					fname->hinfo.minor_hash !=
-+						EXT4_DIRENT_MINOR_HASH(de)) {
-+
- 					return 0;
-+				}
- 			}
- 			return !ext4_ci_compare(parent, &cf, de->name,
- 							de->name_len, true);
-@@ -2036,15 +2044,11 @@ void ext4_insert_dentry(struct inode *dir,
- 	de->name_len = fname_len(fname);
- 	memcpy(de->name, fname_name(fname), fname_len(fname));
- 	if (ext4_hash_in_dirent(dir)) {
--		struct dx_hash_info hinfo;
-+		struct dx_hash_info *hinfo = &fname->hinfo;
+ 	/* Don't allow user to set both metadata_csum and uninit_bg bits. */
+ 	if (ext2fs_has_feature_metadata_csum(&fs_param) &&
+ 	    ext2fs_has_feature_gdt_csum(&fs_param))
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index c31c9a7c..b19ee5ca 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -101,6 +101,8 @@ static int rewrite_checksums;
+ static int feature_64bit;
+ static int fsck_requested;
+ static char *undo_file;
++static int encoding = 0;
++static char encoding_flags = 0;
  
--		hinfo.hash_version = DX_HASH_SIPHASH;
--		hinfo.seed = NULL;
--		ext4fs_dirhash(dir, fname_usr_name(fname),
--				fname_len(fname), &hinfo);
--		EXT4_EXTENDED_DIRENT(de)->hash = cpu_to_le32(hinfo.hash);
-+		EXT4_EXTENDED_DIRENT(de)->hash = cpu_to_le32(hinfo->hash);
- 		EXT4_EXTENDED_DIRENT(de)->minor_hash =
--				cpu_to_le32(hinfo.minor_hash);
-+						cpu_to_le32(hinfo->minor_hash);
+ int journal_size, journal_flags;
+ char *journal_device;
+@@ -160,7 +162,8 @@ static __u32 ok_features[3] = {
+ 		EXT4_FEATURE_INCOMPAT_64BIT |
+ 		EXT4_FEATURE_INCOMPAT_ENCRYPT |
+ 		EXT4_FEATURE_INCOMPAT_CSUM_SEED |
+-		EXT4_FEATURE_INCOMPAT_LARGEDIR,
++		EXT4_FEATURE_INCOMPAT_LARGEDIR |
++		EXT4_FEATURE_INCOMPAT_CASEFOLD,
+ 	/* R/O compat */
+ 	EXT2_FEATURE_RO_COMPAT_LARGE_FILE |
+ 		EXT4_FEATURE_RO_COMPAT_HUGE_FILE|
+@@ -1403,12 +1406,6 @@ mmp_error:
  	}
- }
  
-@@ -2195,10 +2199,9 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
- 	if (fname->hinfo.hash_version <= DX_HASH_TEA)
- 		fname->hinfo.hash_version += EXT4_SB(dir->i_sb)->s_hash_unsigned;
- 	fname->hinfo.seed = EXT4_SB(dir->i_sb)->s_hash_seed;
--	if (ext4_hash_in_dirent(dir))
--		ext4fs_dirhash(dir, fname_usr_name(fname),
--				fname_len(fname), &fname->hinfo);
--	else
+ 	if (FEATURE_ON(E2P_FEATURE_INCOMPAT, EXT4_FEATURE_INCOMPAT_ENCRYPT)) {
+-		if (ext2fs_has_feature_casefold(sb)) {
+-			fputs(_("Cannot enable encrypt feature on filesystems "
+-				"with the encoding feature enabled.\n"),
+-			      stderr);
+-			return 1;
+-		}
+ 		fs->super->s_encrypt_algos[0] =
+ 			EXT4_ENCRYPTION_MODE_AES_256_XTS;
+ 		fs->super->s_encrypt_algos[1] =
+@@ -2146,6 +2143,24 @@ static int parse_extended_opts(ext2_filsys fs, const char *opts)
+ 				continue;
+ 			}
+ 			ext_mount_opts = strdup(arg);
++		} else if (!strcmp(token, "encoding")) {
++			if (!arg) {
++				r_usage++;
++				continue;
++			}
 +
-+	/* casefolded encrypted hashes are computed on fname setup */
-+	if (!ext4_hash_in_dirent(dir))
- 		ext4fs_dirhash(dir, fname_name(fname),
- 				fname_len(fname), &fname->hinfo);
++			encoding = e2p_str2encoding(arg);
++			if (encoding < 0) {
++				fprintf(stderr, _("Invalid encoding: %s"), arg);
++				r_usage++;
++				continue;
++			}
++		} else if (!strcmp(token, "encoding_flags")) {
++			if (!arg) {
++				r_usage++;
++				continue;
++			}
++			encoding_flags = *arg;
+ 		} else
+ 			r_usage++;
+ 	}
+@@ -3325,6 +3340,14 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 		       ext_mount_opts);
+ 		free(ext_mount_opts);
+ 	}
++	if (encoding > 0) {
++		sb->s_encoding = encoding;
++		ext2fs_mark_super_dirty(fs);
++	}
++	if (encoding_flags) {
++		sb->s_encoding_flags = encoding_flags;
++		ext2fs_mark_super_dirty(fs);
++	}
  
+ 	free(device_name);
+ 	remove_error_table(&et_ext2_error_table);
 -- 
 2.24.0.393.g34dc348eaf-goog
 
