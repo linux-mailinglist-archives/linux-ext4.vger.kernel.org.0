@@ -2,29 +2,29 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA1F10FA71
+	by mail.lfdr.de (Postfix) with ESMTP id C5FB110FA70
 	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2019 10:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725954AbfLCJG4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Dec 2019 04:06:56 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:32966 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726086AbfLCJGz (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        id S1726144AbfLCJGz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Tue, 3 Dec 2019 04:06:55 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:32976 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725954AbfLCJGy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 3 Dec 2019 04:06:54 -0500
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A2D401B315D0F6C06F56;
+        by Forcepoint Email with ESMTP id A7D0FD1BEC34D5C3C84C;
         Tue,  3 Dec 2019 17:06:52 +0800 (CST)
 Received: from huawei.com (10.175.124.28) by DGGEMS411-HUB.china.huawei.com
  (10.3.19.211) with Microsoft SMTP Server id 14.3.439.0; Tue, 3 Dec 2019
- 17:06:45 +0800
+ 17:06:46 +0800
 From:   "zhangyi (F)" <yi.zhang@huawei.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <jack@suse.com>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
         <yi.zhang@huawei.com>, <liangyun2@huawei.com>,
         <luoshijie1@huawei.com>
-Subject: [PATCH v2 2/4] ext4, jbd2: ensure panic when journal aborting with zero errno
-Date:   Tue, 3 Dec 2019 17:27:54 +0800
-Message-ID: <20191203092756.26129-3-yi.zhang@huawei.com>
+Subject: [PATCH v2 3/4] Partially revert "ext4: pass -ESHUTDOWN code to jbd2 layer"
+Date:   Tue, 3 Dec 2019 17:27:55 +0800
+Message-ID: <20191203092756.26129-4-yi.zhang@huawei.com>
 X-Mailer: git-send-email 2.17.2
 In-Reply-To: <20191203092756.26129-1-yi.zhang@huawei.com>
 References: <20191203092756.26129-1-yi.zhang@huawei.com>
@@ -37,80 +37,88 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-JBD2_REC_ERR flag used to indicate the errno has been updated when jbd2
-aborted, and then __ext4_abort() and ext4_handle_error() can invoke
-panic if ERRORS_PANIC is specified. But if the journal has been aborted
-with zero errno, jbd2_journal_abort() didn't set this flag so we can
-no longer panic. Fix this by rename JBD2_REC_ERR to JBD2_ABORT_DONE and
-set such flag even if there is no need to record errno in the jbd2 super
-block.
+This partially reverts commit fb7c02445c497943e7296cd3deee04422b63acb8.
 
-Fixes: 4327ba52afd03 ("ext4, jbd2: ensure entering into panic after recording an error in superblock")
+Commit fb7c02445c49 ("ext4: pass -ESHUTDOWN code to jbd2 layer") want to
+allow jbd2 layer to distinguish shutdown journal abort from other error
+cases, but this patch seems unnecessary because we distinguished those
+cases well through a zero errno parameter when shutting down, thus the
+jbd2 aborting peocess will not record the errno. So partially reverts
+this commit and keep the proper locking.
+
 Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
 ---
- fs/ext4/super.c      |  4 ++--
- fs/jbd2/journal.c    | 10 +++++-----
- include/linux/jbd2.h |  3 ++-
- 3 files changed, 9 insertions(+), 8 deletions(-)
+ fs/ext4/ioctl.c   |  4 ++--
+ fs/jbd2/journal.c | 22 +++++++---------------
+ 2 files changed, 9 insertions(+), 17 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dd654e53ba3d..25b0c883bd15 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -482,7 +482,7 @@ static void ext4_handle_error(struct super_block *sb)
- 		sb->s_flags |= SB_RDONLY;
- 	} else if (test_opt(sb, ERRORS_PANIC)) {
- 		if (EXT4_SB(sb)->s_journal &&
--		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
-+		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_ABORT_DONE))
- 			return;
- 		panic("EXT4-fs (device %s): panic forced after error\n",
- 			sb->s_id);
-@@ -701,7 +701,7 @@ void __ext4_abort(struct super_block *sb, const char *function,
- 	}
- 	if (test_opt(sb, ERRORS_PANIC) && !system_going_down()) {
- 		if (EXT4_SB(sb)->s_journal &&
--		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_REC_ERR))
-+		  !(EXT4_SB(sb)->s_journal->j_flags & JBD2_ABORT_DONE))
- 			return;
- 		panic("EXT4-fs panic from previous error\n");
- 	}
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 0b7f316fd30f..f99eeba5767d 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -597,13 +597,13 @@ static int ext4_shutdown(struct super_block *sb, unsigned long arg)
+ 		set_bit(EXT4_FLAGS_SHUTDOWN, &sbi->s_ext4_flags);
+ 		if (sbi->s_journal && !is_journal_aborted(sbi->s_journal)) {
+ 			(void) ext4_force_commit(sb);
+-			jbd2_journal_abort(sbi->s_journal, -ESHUTDOWN);
++			jbd2_journal_abort(sbi->s_journal, 0);
+ 		}
+ 		break;
+ 	case EXT4_GOING_FLAGS_NOLOGFLUSH:
+ 		set_bit(EXT4_FLAGS_SHUTDOWN, &sbi->s_ext4_flags);
+ 		if (sbi->s_journal && !is_journal_aborted(sbi->s_journal))
+-			jbd2_journal_abort(sbi->s_journal, -ESHUTDOWN);
++			jbd2_journal_abort(sbi->s_journal, 0);
+ 		break;
+ 	default:
+ 		return -EINVAL;
 diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 1c58859aa592..a78b07841080 100644
+index a78b07841080..f3f9e0b994ef 100644
 --- a/fs/jbd2/journal.c
 +++ b/fs/jbd2/journal.c
-@@ -2118,12 +2118,12 @@ static void __journal_abort_soft (journal_t *journal, int errno)
+@@ -1475,14 +1475,11 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+ void jbd2_journal_update_sb_errno(journal_t *journal)
+ {
+ 	journal_superblock_t *sb = journal->j_superblock;
+-	int errcode;
+ 
+ 	lock_buffer(journal->j_sb_buffer);
+-	errcode = journal->j_errno;
+-	if (errcode == -ESHUTDOWN)
+-		errcode = 0;
+-	jbd_debug(1, "JBD2: updating superblock error (errno %d)\n", errcode);
+-	sb->s_errno    = cpu_to_be32(errcode);
++	jbd_debug(1, "JBD2: updating superblock error (errno %d)\n",
++		  journal->j_errno);
++	sb->s_errno = cpu_to_be32(journal->j_errno);
+ 
+ 	jbd2_write_superblock(journal, REQ_SYNC | REQ_FUA);
+ }
+@@ -2100,20 +2097,15 @@ void __jbd2_journal_abort_hard(journal_t *journal)
+  * but don't do any other IO. */
+ static void __journal_abort_soft (journal_t *journal, int errno)
+ {
+-	int old_errno;
+-
+ 	write_lock(&journal->j_state_lock);
+-	old_errno = journal->j_errno;
+-	if (!journal->j_errno || errno == -ESHUTDOWN)
+-		journal->j_errno = errno;
+-
+ 	if (journal->j_flags & JBD2_ABORT) {
+ 		write_unlock(&journal->j_state_lock);
+-		if (!old_errno && old_errno != -ESHUTDOWN &&
+-		    errno == -ESHUTDOWN)
+-			jbd2_journal_update_sb_errno(journal);
+ 		return;
+ 	}
++
++	if (!journal->j_errno)
++		journal->j_errno = errno;
++
+ 	write_unlock(&journal->j_state_lock);
  
  	__jbd2_journal_abort_hard(journal);
- 
--	if (errno) {
-+	if (errno)
- 		jbd2_journal_update_sb_errno(journal);
--		write_lock(&journal->j_state_lock);
--		journal->j_flags |= JBD2_REC_ERR;
--		write_unlock(&journal->j_state_lock);
--	}
-+
-+	write_lock(&journal->j_state_lock);
-+	journal->j_flags |= JBD2_ABORT_DONE;
-+	write_unlock(&journal->j_state_lock);
- }
- 
- /**
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 603fbc4e2f70..71cab887fb98 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1248,7 +1248,8 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
- #define JBD2_ABORT_ON_SYNCDATA_ERR	0x040	/* Abort the journal on file
- 						 * data write error in ordered
- 						 * mode */
--#define JBD2_REC_ERR	0x080	/* The errno in the sb has been recorded */
-+#define JBD2_ABORT_DONE	0x080	/* Abort done, the errno in the sb has been
-+				 * recorded if necessary */
- 
- /*
-  * Function declarations for the journaling transaction and buffer
 -- 
 2.17.2
 
