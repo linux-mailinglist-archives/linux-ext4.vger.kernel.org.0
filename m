@@ -2,198 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F46112B73
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Dec 2019 13:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E96112BAF
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Dec 2019 13:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727778AbfLDMZ3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Dec 2019 07:25:29 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45776 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727845AbfLDMZ2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 4 Dec 2019 07:25:28 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 651B52258A56AF8FFAB0;
-        Wed,  4 Dec 2019 20:25:26 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Wed, 4 Dec 2019
- 20:25:19 +0800
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <jack@suse.com>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <yi.zhang@huawei.com>, <liangyun2@huawei.com>,
-        <luoshijie1@huawei.com>
-Subject: [PATCH v3 4/4] jbd2: clean __jbd2_journal_abort_hard() and __journal_abort_soft()
-Date:   Wed, 4 Dec 2019 20:46:14 +0800
-Message-ID: <20191204124614.45424-5-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20191204124614.45424-1-yi.zhang@huawei.com>
-References: <20191204124614.45424-1-yi.zhang@huawei.com>
+        id S1727859AbfLDMnB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Dec 2019 07:43:01 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39624 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727752AbfLDMm6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 4 Dec 2019 07:42:58 -0500
+Received: by mail-qt1-f195.google.com with SMTP id g1so7565356qtj.6
+        for <linux-ext4@vger.kernel.org>; Wed, 04 Dec 2019 04:42:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
+        b=AkbuvF8WWOeGkFuNbpEiUPeHs0D9XYCrvYJnn3sJBPk0l/N+bAJ+lU7by52a8c0/XL
+         X5y/+uJVi5SRPzgKpD7LZp2RSO63H/dWhNB+Sgv8CnTmnW6HnNvEkrD3pvFKiHue+ji0
+         Cyct4Vs7hozR5hYKDh8cJJMkT72K9aPHj93bK1Ew++bIIM698i5hGwNXpwVN8RyOlTlg
+         ekVZP06isuUhwZwFxkLwU0Sye3HMnEDkq9yUmWZzxA1JTm8RzibEufZxYTJilauyHwzc
+         pKJFDkaXtzzvkeOyU7ajhljX9QykaA8Ur2FHYJunK1Sxosbxld4ODKAYs9j7AB06Aipc
+         jW5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=SWzs3svZdfoJNhQZue5B0UPApGf3QNVhTsPQAsjB3v0=;
+        b=EKdW8z/x6+Ri5kcAQ+PbSm9qSo6lWm+ZNH+H0Ag/w/O5Be7LRiE8SD7hdCBmBuo+5/
+         uMuKncPjGb+D36or4QCgosYbvY7VW+nfgiZFb726/luUnbJxgF5bOvFK0l9SBEZfGKjO
+         MJo6zWjLZFPSVtqbZMoMRPwCQNAHsKvnGIoHyFrzEJ2H6HmhZDeX7ejYtUKuKgtpBOde
+         q5o6Ik75xR2aoClCBQ9g7MQvPu9bXDoXAVcJIbSLDdJaU5j0gPZZ5zR4pkXDW4C04z6Q
+         llB3vNqxiiOsLUx4HxtpvT9sJddJzeAFJmfs+UguQHb3SiGwh0jAchA0Wgp5U510AEm/
+         TfdQ==
+X-Gm-Message-State: APjAAAWIm7EvYwEJo+qMu+gubD75g77XQksQ2eHKzxlo3fLchaqdCDUX
+        jJX2+ARSPu+ZoqubzO/vqXiqykVBxsfK+Gdmnoo=
+X-Google-Smtp-Source: APXvYqzw3gCG5cnmI6368TWfhjS/+LLSHd6b95oZCOsPTpsAjIN23auDStB1pQ1PTnMah1qk6gl8uYsnTPaZ7k01uH0=
+X-Received: by 2002:ac8:4a81:: with SMTP id l1mr2434940qtq.357.1575463377714;
+ Wed, 04 Dec 2019 04:42:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Received: by 2002:ac8:2f0c:0:0:0:0:0 with HTTP; Wed, 4 Dec 2019 04:42:57 -0800 (PST)
+Reply-To: moneygram.1820@outlook.fr
+From:   "Rev.Dr Emmanuel Okoye CEO Ecobank-benin" 
+        <westernunion.benin982@gmail.com>
+Date:   Wed, 4 Dec 2019 13:42:57 +0100
+Message-ID: <CAP=nHBJXiPmPL21x=_0BHWRk_3N3Yax+tTxcFi=t=AhN7g==1Q@mail.gmail.com>
+Subject: God has remembered your prayers I have already sent you Money Gram
+ payment of $5000.00 today, MG 1029-8096
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-__jbd2_journal_abort_hard() has never been used, now we can merge
-__jbd2_journal_abort_hard() and __journal_abort_soft() these two
-functions into jbd2_journal_abort() and remove them.
+Attn, dear Beneficiary.
 
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
----
- fs/jbd2/journal.c    | 103 ++++++++++++++++++-------------------------
- include/linux/jbd2.h |   1 -
- 2 files changed, 42 insertions(+), 62 deletions(-)
+God has remembered your prayers
+I have already sent you Money Gram payment of $5000.00 today, MG 1029-8096
+This is because we have finally concluded to effect your transfer
+funds of $4.8,000.000usd
+through MONEY GRAM International Fund transfer Service
+Each payment will be sending to you by $5000.00 daily until the
+($4.8,000.000usd) is completely transferred
+we have this morning sent  MONEY GRAM payment of $5,000.00 in your name today
+So contact the MONEY GRAM Agent to pick up this first payment of $5000 now
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 93be6e0311da..e59d9b6e4596 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -96,7 +96,6 @@ EXPORT_SYMBOL(jbd2_journal_release_jbd_inode);
- EXPORT_SYMBOL(jbd2_journal_begin_ordered_truncate);
- EXPORT_SYMBOL(jbd2_inode_cache);
- 
--static void __journal_abort_soft (journal_t *journal, int errno);
- static int jbd2_journal_create_slab(size_t slab_size);
- 
- #ifdef CONFIG_JBD2_DEBUG
-@@ -805,7 +804,7 @@ int jbd2_journal_bmap(journal_t *journal, unsigned long blocknr,
- 					"at offset %lu on %s\n",
- 			       __func__, blocknr, journal->j_devname);
- 			err = -EIO;
--			__journal_abort_soft(journal, err);
-+			jbd2_journal_abort(journal, err);
- 		}
- 	} else {
- 		*retp = blocknr; /* +journal->j_blk_offset */
-@@ -2065,64 +2064,6 @@ int jbd2_journal_wipe(journal_t *journal, int write)
- 	return err;
- }
- 
--/*
-- * Journal abort has very specific semantics, which we describe
-- * for journal abort.
-- *
-- * Two internal functions, which provide abort to the jbd layer
-- * itself are here.
-- */
--
--/*
-- * Quick version for internal journal use (doesn't lock the journal).
-- * Aborts hard --- we mark the abort as occurred, but do _nothing_ else,
-- * and don't attempt to make any other journal updates.
-- */
--void __jbd2_journal_abort_hard(journal_t *journal)
--{
--	transaction_t *transaction;
--
--	if (journal->j_flags & JBD2_ABORT)
--		return;
--
--	printk(KERN_ERR "Aborting journal on device %s.\n",
--	       journal->j_devname);
--
--	write_lock(&journal->j_state_lock);
--	journal->j_flags |= JBD2_ABORT;
--	transaction = journal->j_running_transaction;
--	if (transaction)
--		__jbd2_log_start_commit(journal, transaction->t_tid);
--	write_unlock(&journal->j_state_lock);
--}
--
--/* Soft abort: record the abort error status in the journal superblock,
-- * but don't do any other IO. */
--static void __journal_abort_soft (journal_t *journal, int errno)
--{
--	int old_errno;
--
--	write_lock(&journal->j_state_lock);
--	old_errno = journal->j_errno;
--	if (!journal->j_errno || errno == -ESHUTDOWN)
--		journal->j_errno = errno;
--
--	if (journal->j_flags & JBD2_ABORT) {
--		write_unlock(&journal->j_state_lock);
--		if (old_errno != -ESHUTDOWN && errno == -ESHUTDOWN)
--			jbd2_journal_update_sb_errno(journal);
--		return;
--	}
--	write_unlock(&journal->j_state_lock);
--
--	__jbd2_journal_abort_hard(journal);
--
--	jbd2_journal_update_sb_errno(journal);
--	write_lock(&journal->j_state_lock);
--	journal->j_flags |= JBD2_REC_ERR;
--	write_unlock(&journal->j_state_lock);
--}
--
- /**
-  * void jbd2_journal_abort () - Shutdown the journal immediately.
-  * @journal: the journal to shutdown.
-@@ -2166,7 +2107,47 @@ static void __journal_abort_soft (journal_t *journal, int errno)
- 
- void jbd2_journal_abort(journal_t *journal, int errno)
- {
--	__journal_abort_soft(journal, errno);
-+	transaction_t *transaction;
-+
-+	/*
-+	 * ESHUTDOWN always takes precedence because a file system check
-+	 * caused by any other journal abort error is not required after
-+	 * a shutdown triggered.
-+	 */
-+	write_lock(&journal->j_state_lock);
-+	if (journal->j_flags & JBD2_ABORT) {
-+		int old_errno = journal->j_errno;
-+
-+		write_unlock(&journal->j_state_lock);
-+		if (old_errno != -ESHUTDOWN && errno == -ESHUTDOWN) {
-+			journal->j_errno = errno;
-+			jbd2_journal_update_sb_errno(journal);
-+		}
-+		return;
-+	}
-+
-+	/*
-+	 * Mark the abort as occurred and start current running transaction
-+	 * to release all journaled buffer.
-+	 */
-+	pr_err("Aborting journal on device %s.\n", journal->j_devname);
-+
-+	journal->j_flags |= JBD2_ABORT;
-+	journal->j_errno = errno;
-+	transaction = journal->j_running_transaction;
-+	if (transaction)
-+		__jbd2_log_start_commit(journal, transaction->t_tid);
-+	write_unlock(&journal->j_state_lock);
-+
-+	/*
-+	 * Record errno to the journal super block, so that fsck and jbd2
-+	 * layer could realise that a filesystem check is needed.
-+	 */
-+	jbd2_journal_update_sb_errno(journal);
-+
-+	write_lock(&journal->j_state_lock);
-+	journal->j_flags |= JBD2_REC_ERR;
-+	write_unlock(&journal->j_state_lock);
- }
- 
- /**
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 603fbc4e2f70..e3e271bfb0e7 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1402,7 +1402,6 @@ extern int	   jbd2_journal_skip_recovery	(journal_t *);
- extern void	   jbd2_journal_update_sb_errno(journal_t *);
- extern int	   jbd2_journal_update_sb_log_tail	(journal_t *, tid_t,
- 				unsigned long, int);
--extern void	   __jbd2_journal_abort_hard	(journal_t *);
- extern void	   jbd2_journal_abort      (journal_t *, int);
- extern int	   jbd2_journal_errno      (journal_t *);
- extern void	   jbd2_journal_ack_err    (journal_t *);
--- 
-2.17.2
+Contact person Mrs. Alan Ude
+Dir. MONEY GRAM Service,Benin
+Phone number: +229 98856728
+E-mail: moneygram.1820@outlook.fr
 
+Ask him to give you the complete mtcn, sender name, question and
+answer to enable you
+pick up the $5000.00 sent today,
+Also you are instructed to re-confirm your information's
+to Mrs.Alan Ude as listed below to avoid wrong transactions.
+
+(1Your Full name:............................................
+(2 Phone number.....................................................
+(3 Contact address:.....................................
+(4 Age:..................................................................
+(5 Country..............................................
+(6) Sex .................................................................
+(7) your occupation...........................................
+
+(8)Passport/By Attach or Drivers License Number:
+Contact Mrs. Alan Ude for your MONEY GRAM payment of $4.8,000.000usd
+Note please: I have paid service fees for you but the only money you
+are required
+to send to Mrs. Alan Ude is $90.00 only Transfer fee before you can
+pick up your transfer today.
+
+Send it to via Money Gram
+Receiver's Name-----Alan Ude
+Country----------Benin
+Address-----------Cotonou
+Quest--------Honest
+Ans-----------Trust
+
+I done all my best for you to receive your transfer now ok.
+We need your urgent reply
+Best Regards
+Rev.Dr Emmanuel Okoye
+CEO Ecobank-benin
+
+If we did not receive it urgent from you today,
+I will go ahead and release you funds to Mrs. Lyndia Ppaulson as your
+representative.
