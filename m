@@ -2,125 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53865113931
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 02:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 885F711393F
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 02:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728374AbfLEBSI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Dec 2019 20:18:08 -0500
-Received: from mga03.intel.com ([134.134.136.65]:2377 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727146AbfLEBSI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 4 Dec 2019 20:18:08 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Dec 2019 17:18:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,279,1571727600"; 
-   d="scan'208";a="208989540"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 04 Dec 2019 17:18:03 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1icfmJ-0009QL-P1; Thu, 05 Dec 2019 09:17:59 +0800
-Date:   Thu, 5 Dec 2019 09:17:15 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     kbuild-all@lists.01.org, Theodore Ts'o <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
-Subject: Re: [PATCH 5/8] f2fs: Handle casefolding with Encryption
-Message-ID: <201912050955.3f2DMo5g%lkp@intel.com>
-References: <20191203051049.44573-6-drosen@google.com>
+        id S1728100AbfLEBXb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Dec 2019 20:23:31 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:45270 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727146AbfLEBXb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 4 Dec 2019 20:23:31 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 86B9320323A9A0248481;
+        Thu,  5 Dec 2019 09:23:29 +0800 (CST)
+Received: from [127.0.0.1] (10.173.220.179) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Thu, 5 Dec 2019
+ 09:23:20 +0800
+Subject: Re: [PATCH v3 3/4] jbd2: make sure ESHUTDOWN to be recorded in the
+ journal superblock
+To:     Jan Kara <jack@suse.cz>, <tytso@mit.edu>
+CC:     <linux-ext4@vger.kernel.org>, <jack@suse.com>,
+        <adilger.kernel@dilger.ca>, <liangyun2@huawei.com>,
+        <luoshijie1@huawei.com>
+References: <20191204124614.45424-1-yi.zhang@huawei.com>
+ <20191204124614.45424-4-yi.zhang@huawei.com>
+ <20191204170528.GH8206@quack2.suse.cz>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <1f8eb86e-53c0-a547-a1e5-b7411d36ac3e@huawei.com>
+Date:   Thu, 5 Dec 2019 09:23:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191203051049.44573-6-drosen@google.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20191204170528.GH8206@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.220.179]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Daniel,
+On 2019/12/5 1:05, Jan Kara wrote:
+> On Wed 04-12-19 20:46:13, zhangyi (F) wrote:
+>> Commit fb7c02445c49 ("ext4: pass -ESHUTDOWN code to jbd2 layer") want
+>> to allow jbd2 layer to distinguish shutdown journal abort from other
+>> error cases. So the ESHUTDOWN should be taken precedence over any other
+>> errno which has already been recoded after EXT4_FLAGS_SHUTDOWN is set,
+>> but it only update errno in the journal suoerblock now if the old errno
+>> is 0.
+>>
+>> Fixes: fb7c02445c49 ("ext4: pass -ESHUTDOWN code to jbd2 layer")
+>> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+> 
+> Yeah, I think this is correct if I understand the logic correctly but I'd
+> like Ted to have a look at this. Anyway, feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
 
-Thank you for the patch! Perhaps something to improve:
+Thanks for review.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on next-20191202 next-20191204]
-[cannot apply to ext4/dev f2fs/dev-test v5.4 v5.4-rc8 v5.4-rc7 v5.4]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+Hi Ted, do you have time to look at this patch?
 
-url:    https://github.com/0day-ci/linux/commits/Daniel-Rosenberg/Support-for-Casefolding-and-Encryption/20191203-131410
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 76bb8b05960c3d1668e6bee7624ed886cbd135ba
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-91-g817270f-dirty
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+Thanks,
+Yi.
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
+> 
+>> ---
+>>  fs/jbd2/journal.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>> index b2d6e7666d0f..93be6e0311da 100644
+>> --- a/fs/jbd2/journal.c
+>> +++ b/fs/jbd2/journal.c
+>> @@ -2109,8 +2109,7 @@ static void __journal_abort_soft (journal_t *journal, int errno)
+>>  
+>>  	if (journal->j_flags & JBD2_ABORT) {
+>>  		write_unlock(&journal->j_state_lock);
+>> -		if (!old_errno && old_errno != -ESHUTDOWN &&
+>> -		    errno == -ESHUTDOWN)
+>> +		if (old_errno != -ESHUTDOWN && errno == -ESHUTDOWN)
+>>  			jbd2_journal_update_sb_errno(journal);
+>>  		return;
+>>  	}
+>> -- 
+>> 2.17.2
+>>
 
-
-sparse warnings: (new ones prefixed by >>)
-
->> fs/f2fs/dir.c:205:13: sparse: sparse: incorrect type in assignment (different base types) @@    expected int len @@    got restricted __le16 [usertyint len @@
->> fs/f2fs/dir.c:205:13: sparse:    expected int len
-   fs/f2fs/dir.c:205:13: sparse:    got restricted __le16 [usertype] name_len
---
->> fs/f2fs/hash.c:90:27: sparse: sparse: incorrect type in assignment (different base types) @@    expected restricted __le32 [usertype] f2fs_hash @@    got __le32 [usertype] f2fs_hash @@
->> fs/f2fs/hash.c:90:27: sparse:    expected restricted __le32 [usertype] f2fs_hash
->> fs/f2fs/hash.c:90:27: sparse:    got unsigned long long
-   fs/f2fs/hash.c:133:24: sparse: sparse: incorrect type in return expression (different base types) @@    expected restricted __le32 @@    got e32 @@
-   fs/f2fs/hash.c:133:24: sparse:    expected restricted __le32
-   fs/f2fs/hash.c:133:24: sparse:    got int
-   fs/f2fs/hash.c:141:11: sparse: sparse: incorrect type in assignment (different base types) @@    expected int r @@    got restricted __int r @@
-   fs/f2fs/hash.c:141:11: sparse:    expected int r
-   fs/f2fs/hash.c:141:11: sparse:    got restricted __le32
-   fs/f2fs/hash.c:144:16: sparse: sparse: incorrect type in return expression (different base types) @@    expected restricted __le32 @@    got le32 @@
-   fs/f2fs/hash.c:144:16: sparse:    expected restricted __le32
-   fs/f2fs/hash.c:144:16: sparse:    got int r
-
-vim +205 fs/f2fs/dir.c
-
-   199	
-   200		if (de->hash_code != namehash)
-   201			return false;
-   202	
-   203	#ifdef CONFIG_UNICODE
-   204		name = d->filename[bit_pos];
- > 205		len = de->name_len;
-   206	
-   207		if (sb->s_encoding && needs_casefold(parent)) {
-   208			if (cf_str->name) {
-   209				struct qstr cf = {.name = cf_str->name,
-   210						  .len = cf_str->len};
-   211				return !f2fs_ci_compare(parent, &cf, name, len, true);
-   212			}
-   213			return !f2fs_ci_compare(parent, fname->usr_fname, name, len,
-   214						false);
-   215		}
-   216	#endif
-   217		if (fscrypt_match_name(fname, d->filename[bit_pos],
-   218					le16_to_cpu(de->name_len)))
-   219			return true;
-   220		return false;
-   221	}
-   222	
-
----
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
