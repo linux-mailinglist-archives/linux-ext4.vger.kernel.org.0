@@ -2,127 +2,151 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D103113BEB
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 07:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF60113DDE
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 10:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbfLEGqp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Dec 2019 01:46:45 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14244 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726137AbfLEGqm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Dec 2019 01:46:42 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xB56gPX2106523
-        for <linux-ext4@vger.kernel.org>; Thu, 5 Dec 2019 01:46:41 -0500
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2wpd12t88d-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Thu, 05 Dec 2019 01:46:40 -0500
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Thu, 5 Dec 2019 06:46:38 -0000
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 5 Dec 2019 06:46:35 -0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xB56kY1V62062626
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 5 Dec 2019 06:46:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B748CA4055;
-        Thu,  5 Dec 2019 06:46:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2EA95A404D;
-        Thu,  5 Dec 2019 06:46:33 +0000 (GMT)
-Received: from dhcp-9-199-159-163.in.ibm.com (unknown [9.199.159.163])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  5 Dec 2019 06:46:33 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     jack@suse.cz, tytso@mit.edu, linux-ext4@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org,
-        riteshh@linux.ibm.com, joseph.qi@linux.alibaba.com
-Subject: [PATCHv4 3/3] ext4: Move to shared i_rwsem even without dioread_nolock mount opt
-Date:   Thu,  5 Dec 2019 12:16:24 +0530
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191205064624.13419-1-riteshh@linux.ibm.com>
-References: <20191205064624.13419-1-riteshh@linux.ibm.com>
+        id S1729093AbfLEJ1V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Dec 2019 04:27:21 -0500
+Received: from mx2.kistler.com ([91.223.79.45]:47691 "EHLO mx2.kistler.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726384AbfLEJ1V (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 5 Dec 2019 04:27:21 -0500
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Dec 2019 04:27:19 EST
+IronPort-SDR: 3TDFRW6HiydWNveLlLUy6Oth30agrwa9DzJRSM1U5SGiRYZyES+TPgLj1QRCTE1VFCgTNWl9Qx
+ 988I0GQP9YGA==
+X-IronPort-AV: E=Sophos;i="5.69,280,1571695200"; 
+   d="scan'208";a="3976666"
+Received: from kihagsepp01.int.kistler.com (HELO sl-win-seppm-1.int.kistler.com) ([192.168.52.67])
+  by mx2.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Dec 2019 10:20:09 +0100
+Received: from mx1.kistler.com (kihagciip01.int.kistler.com [192.168.52.57])
+        by sl-win-seppm-1.int.kistler.com (Postfix) with ESMTPS
+        for <linux-ext4@vger.kernel.org>; Thu,  5 Dec 2019 10:20:09 +0100 (CET)
+IronPort-SDR: W/ZREavCwdrNMGgCADkw4lKBXzv1186jEM6Q84cQjEBXpSuccQqC+3dMvGrd4ayLXtLQARbkiJ
+ VS6/UK6CxNgA==
+X-IronPort-AV: E=Sophos;i="5.69,280,1571695200"; 
+   d="scan'208";a="22356115"
+Received: from sw-win-exch-2.int.kistler.com ([192.168.100.96])
+  by mx1.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Dec 2019 10:20:09 +0100
+Received: from SW-WIN-EXCH-2.int.kistler.com (192.168.100.96) by
+ SW-WIN-EXCH-2.int.kistler.com (192.168.100.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 5 Dec 2019 10:20:08 +0100
+Received: from SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f]) by
+ SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f%9]) with mapi id
+ 15.01.1847.003; Thu, 5 Dec 2019 10:20:08 +0100
+From:   Viliam Lejcik <Viliam.Lejcik@kistler.com>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
+Thread-Topic: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
+Thread-Index: AdWrTPhiKFIdjLi2SZakmenb1WHIog==
+Date:   Thu, 5 Dec 2019 09:20:08 +0000
+Message-ID: <149308ea5ffc429f9b3af5ecbfdabfe4@kistler.com>
+Accept-Language: en-US, de-CH
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [192.168.100.89]
+x-c2processedorg: 78a97207-3cfa-406d-a777-069c09c1300a
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19120506-0012-0000-0000-000003717005
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19120506-0013-0000-0000-000021AD3338
-Message-Id: <20191205064624.13419-4-riteshh@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-05_01:2019-12-04,2019-12-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- phishscore=0 adultscore=0 priorityscore=1501 mlxlogscore=522
- impostorscore=0 spamscore=0 suspectscore=3 malwarescore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912050052
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We were using shared locking only in case of dioread_nolock mount option in case
-of DIO overwrites. This mount condition is not needed anymore with current code,
-since:-
-
-1. No race between buffered writes & DIO overwrites. Since buffIO writes takes
-exclusive lock & DIO overwrites will take shared locking. Also DIO path will
-make sure to flush and wait for any dirty page cache data.
-
-2. No race between buffered reads & DIO overwrites, since there is no block
-allocation that is possible with DIO overwrites. So no stale data exposure
-should happen. Same is the case between DIO reads & DIO overwrites.
-
-3. Also other paths like truncate is protected, since we wait there for any DIO
-in flight to be over.
-
-4. In case of buffIO writes followed by DIO reads:- since here also we take
-exclusive lock in ext4_write_begin/end(). There is no risk of exposing any
-stale data in this case. Since after ext4_write_end, iomap_dio_rw() will flush &
-wait for any dirty page cache data to be written.
-
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- fs/ext4/file.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index cbafaec9e4fc..682ed956eb02 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -392,8 +392,8 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
-  * - For extending writes case we don't take the shared lock, since it requires
-  *   updating inode i_disksize and/or orphan handling with exclusive lock.
-  *
-- * - shared locking will only be true mostly with overwrites in dioread_nolock
-- *   mode. Otherwise we will switch to exclusive i_rwsem lock.
-+ * - shared locking will only be true mostly with overwrites. Otherwise we will
-+ *   switch to exclusive i_rwsem lock.
-  */
- static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
- 				     bool *ilock_shared, bool *extend)
-@@ -415,14 +415,11 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
- 		*extend = true;
- 	/*
- 	 * Determine whether the IO operation will overwrite allocated
--	 * and initialized blocks. If so, check to see whether it is
--	 * possible to take the dioread_nolock path.
--	 *
-+	 * and initialized blocks.
- 	 * We need exclusive i_rwsem for changing security info
- 	 * in file_modified().
- 	 */
- 	if (*ilock_shared && (!IS_NOSEC(inode) || *extend ||
--	     !ext4_should_dioread_nolock(inode) ||
- 	     !ext4_overwrite_io(inode, offset, count))) {
- 		inode_unlock_shared(inode);
- 		*ilock_shared = false;
--- 
-2.21.0
-
+V2UgcHJvdmlkZSBhIGN1c3RvbSBMaW51eCBkaXN0cmlidXRpb24sIGJhc2VkIG9uIHlvY3RvLXBy
+b2plY3QgKHBva3kgMi42LjEpLiBXaXRoIGJpdGJha2Ugd2UndmUgYnVpbHQgYW4gaW1hZ2UsIHdo
+aWNoIGJlY29tZXMgY29ycnVwdGVkIGR1cmluZyBpbnN0YWxsYXRpb24gdG8gdGhlIFNTRCBvZiB0
+aGUgZW1iZWRkZWQgZGV2aWNlLiBXZSdyZSBzZXR0aW5nIHRoZSBmaWxlc3lzdGVtIFVVSUQgKG5v
+dCBwYXJ0aXRpb24gVVVJRCkgdXNpbmcgdHVuZTJmcywgc28gdGhlIGJvb3Rsb2FkZXIgY2FuIGZp
+bmQgaXQuIFdlIG5vdGljZWQgdGhpcyBwcm9ibGVtIGJlY2F1c2Ugd2UgZm91bmQgYSBkaXJlY3Rv
+cnkgdGhhdCBjb3VsZG4ndCBiZSByZWFkLg0KDQp8IHJvb3RAYm9hcmQ6fiMgZGlyIC92YXIvbGli
+L29wa2cvaW5mbw0KfCBsczogcmVhZGluZyBkaXJlY3RvcnkgJy92YXIvbGliL29wa2cvaW5mbyc6
+IEJhZCBtZXNzYWdlIHRvdGFsIDANCg0KVGhpcyBiZWhhdmlvciBjYW4gYmUgcmVwcm9kdWNlZCBv
+biBhbiBleHQ0IGZzIGltYWdlLCBzbyB0aGVyZSdzIG5vIG5lZWQgdG8gcnVuIGl0IG9uIHRoZSBk
+ZXZpY2UuDQoNCkZpcnN0bHksIGxldCBjaGVjayB0aGF0IHRoZSBpbWFnZSBoYXMgYmVlbiBidWls
+dCBjb3JyZWN0bHk6DQoNCnwgcm9vdEBib2FyZDp+IyBmc2NrLmV4dDQgLWZuIGNvcmUtaW1hZ2Uu
+ZXh0NA0KfCBlMmZzY2sgMS40NC4xICgyNC1NYXItMjAxOCkNCnwgUGFzcyAxOiBDaGVja2luZyBp
+bm9kZXMsIGJsb2NrcywgYW5kIHNpemVzDQp8IFBhc3MgMjogQ2hlY2tpbmcgZGlyZWN0b3J5IHN0
+cnVjdHVyZQ0KfCBQYXNzIDM6IENoZWNraW5nIGRpcmVjdG9yeSBjb25uZWN0aXZpdHkNCnwgUGFz
+cyA0OiBDaGVja2luZyByZWZlcmVuY2UgY291bnRzDQp8IFBhc3MgNTogQ2hlY2tpbmcgZ3JvdXAg
+c3VtbWFyeSBpbmZvcm1hdGlvbg0KfCBjb3JlLWltYWdlLmV4dDQ6IDEzNDE3Lzg1MzQ0IGZpbGVz
+ICgwLjYlIG5vbi1jb250aWd1b3VzKSwgMjUwNTc1LzM0MDA2MCBibG9ja3MNCg0KVGhlbiB3ZSB3
+YW50IHRvIHNldCBVVUlEIHRvIGZzIChyYW5kb20gb25lIGZvciB0aGlzIGV4YW1wbGUpIHdpdGgg
+dHVuZTJmczoNCg0KfCByb290QGJvYXJkOn4jIHR1bmUyZnMgLVUgcmFuZG9tIGNvcmUtaW1hZ2Uu
+ZXh0NA0KfCB0dW5lMmZzIDEuNDQuMSAoMjQtTWFyLTIwMTgpDQp8IFNldHRpbmcgVVVJRCBvbiBh
+IGNoZWNrc3VtbWVkIGZpbGVzeXN0ZW0gY291bGQgdGFrZSBzb21lIHRpbWUuDQp8IFByb2NlZWQg
+YW55d2F5IChvciB3YWl0IDUgc2Vjb25kcyB0byBwcm9jZWVkKSA/ICh5LE4pIHkNCnwNCnwgVGhp
+cyBvcGVyYXRpb24gcmVxdWlyZXMgYSBmcmVzaGx5IGNoZWNrZWQgZmlsZXN5c3RlbS4NCnwNCnwg
+UGxlYXNlIHJ1biBlMmZzY2sgLWZEIG9uIHRoZSBmaWxlc3lzdGVtLg0KDQpJdCBzYXlzIHRoYXQg
+b24gYSBjaGVja3N1bW1lZCBmcyBhbGwgbWV0YWRhdGEgYmxvY2tzIGhhdmUgdG8gYmUgcmV3cml0
+dGVuICgnbWV0YWRhdGFfY3N1bScgZnMgZmVhdHVyZXMgZmxhZyBzZXQgaW4gc3VwZXJibG9jayks
+IHdoYXQgZmFpbGVkIHNvbWV3aGVyZSBpbiBiZXR3ZWVuICgnbm90IGNsZWFuJyBmcyBzdGF0ZSBp
+biBzdXBlcmJsb2NrKS4gV2UgY2FuIGZpeCBpdCB3aXRoIGZzY2s6DQoNCnwgcm9vdEBib2FyZDp+
+IyBmc2NrLmV4dDQgLWZ5IGNvcmUtaW1hZ2UuZXh0NA0KfCBlMmZzY2sgMS40NC4xICgyNC1NYXIt
+MjAxOCkNCnwgUGFzcyAxOiBDaGVja2luZyBpbm9kZXMsIGJsb2NrcywgYW5kIHNpemVzDQp8IFBh
+c3MgMjogQ2hlY2tpbmcgZGlyZWN0b3J5IHN0cnVjdHVyZQ0KfCBQcm9ibGVtIGluIEhUUkVFIGRp
+cmVjdG9yeSBpbm9kZSAxNzc6IGludGVybmFsIG5vZGUgZmFpbHMgY2hlY2tzdW0uDQp8IENsZWFy
+IEhUcmVlIGluZGV4PyB5ZXMNCnwNCnwgUGFzcyAzOiBDaGVja2luZyBkaXJlY3RvcnkgY29ubmVj
+dGl2aXR5DQp8IFBhc3MgM0E6IE9wdGltaXppbmcgZGlyZWN0b3JpZXMNCnwgUGFzcyA0OiBDaGVj
+a2luZyByZWZlcmVuY2UgY291bnRzDQp8IFBhc3MgNTogQ2hlY2tpbmcgZ3JvdXAgc3VtbWFyeSBp
+bmZvcm1hdGlvbg0KfA0KfCBjb3JlLWltYWdlLmV4dDQ6ICoqKioqIEZJTEUgU1lTVEVNIFdBUyBN
+T0RJRklFRCAqKioqKg0KfCBjb3JlLWltYWdlLmV4dDQ6IDEzNDE3Lzg1MzQ0IGZpbGVzICgwLjYl
+IG5vbi1jb250aWd1b3VzKSwgMjUwNTc1LzM0MDA2MCBibG9ja3MNCg0KSWYgSSByZXJ1biB0dW5l
+MmZzIG9uIHRoZSBzYW1lIGZpeGVkIGltYWdlLCBpdCBjb3JydXB0cyBpdCBhZ2Fpbi4NCg0KTGV0
+IGhhdmUgYSBkZWVwZXIgbG9vayB0byB0aGUgY29ycnVwdGVkIGlub2RlIDE3NyAtIGl0IGlzIHBh
+dGggL3Zhci9saWIvb3BrZy9pbmZvLywgYW5kIHRoZXJlJ3MgMjcxMiBmaWxlcyB1bmRlciBpdC4g
+SGVyZSBpcyBpdHMgSFRSRUUgc3RydWN0dXJlOg0KDQp8IHJvb3RAYm9hcmQ6fiMgZGVidWdmcyAt
+UiAiaHRyZWVfZHVtcCAvdmFyL2xpYi9vcGtnL2luZm8iIGNvcmUtaW1hZ2UuZXh0NA0KfCBSb290
+IG5vZGUgZHVtcDoNCnwgIFJlc2VydmVkIHplcm86IDANCnwgIEhhc2ggVmVyc2lvbjogMQ0KfCAg
+SW5mbyBsZW5ndGg6IDgNCnwgIEluZGlyZWN0IGxldmVsczogMQ0KfCAgRmxhZ3M6IDANCnwgTnVt
+YmVyIG9mIGVudHJpZXMgKGNvdW50KTogMQ0KfCBOdW1iZXIgb2YgZW50cmllcyAobGltaXQpOiAx
+MjMNCnwgQ2hlY2tzdW06IDB4OGRjMWUyZGINCnwgRW50cnkgIzA6IEhhc2ggMHgwMDAwMDAwMCwg
+YmxvY2sgMTI3DQp8DQp8IEVudHJ5ICMwOiBIYXNoIDB4MDAwMDAwMDAsIGJsb2NrIDEyNw0KfCBO
+dW1iZXIgb2YgZW50cmllcyAoY291bnQpOiAxMjYNCnwgTnVtYmVyIG9mIGVudHJpZXMgKGxpbWl0
+KTogMTI2DQp8IENoZWNrc3VtOiAweDllNTRiNWM3DQp8IEVudHJ5ICMwOiBIYXNoIDB4MDAwMDAw
+MDAsIGJsb2NrIDENCnwgRW50cnkgIzE6IEhhc2ggMHgwMWJkZGJlMCwgYmxvY2sgMg0KfCAuLi4N
+CnwgRW50cnkgIzEyNDogSGFzaCAweGZkNTVhYjMwLCBibG9jayAxMjUNCnwgRW50cnkgIzEyNTog
+SGFzaCAweGZmYTk2NDkyLCBibG9jayAxMjYNCnwNCnwgRW50cnkgIzA6IEhhc2ggMHgwMDAwMDAw
+MCwgYmxvY2sgMQ0KfCBSZWFkaW5nIGRpcmVjdG9yeSBibG9jayAxLCBwaHlzIDE3ODYzDQp8IDE2
+NTAgMHgwMDBmOWVlMC1iYzRhY2U3MiAoNTIpIHBlcmwtbW9kdWxlLXRhcC1wYXJzZXItc291cmNl
+aGFuZGxlci5saXN0DQp8IDEyMjggMHgwMDFkMDZlOC1hZGE5OTg5NyAoNDApIHBlcmwtbW9kdWxl
+LW5ldC1zZXJ2ZW50LmNvbnRyb2wNCnwgLi4uDQp8IDI3NjIgMHhmZjc3YjQ5Mi1hOWI5OGUzMSAo
+MjI4KSBwZXJsLW1vZHVsZS1qc29uLXBwLmNvbnRyb2wNCnwgbGVhZiBibG9jayBjaGVja3N1bTog
+MHhlY2NiMDA0ZA0KfCBFbnRyeSAjMTI1OiBIYXNoIDB4ZmZhOTY0OTIsIGJsb2NrIDEyNg0KfCBS
+ZWFkaW5nIGRpcmVjdG9yeSBibG9jayAxMjYsIHBoeXMgMjQ3OTM4DQp8IDEzOTAgMHhmZmE5NjQ5
+Mi03Mzg0MTU2MSAoMzYpIGxtc2Vuc29ycy1zZW5zb3JzLmNvbnRyb2wNCnwgMTAyMiAweGZmYWY3
+M2I0LWE2Zjc1YjFiICg5NzYpIHBlcmwtbW9kdWxlLWJ5dGVzLmNvbnRyb2wNCnwgbGVhZiBibG9j
+ayBjaGVja3N1bTogMHgwZjljODA5Mg0KfCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KVGhlIHBy
+b2JsZW0gZm9yIHR1bmUyZnMgaXMgdGhlICJOdW1iZXIgb2YgZW50cmllcyIsIHdoZW4gY291bnQ9
+PWxpbWl0ICgxMjYpLiBJbiB0aGlzIGNhc2UgaXQgZmFpbHMgd2l0aGluIHRoZSBmb2xsb3dpbmcg
+J2lmJyBzdGF0ZW1lbnQ6DQpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vZnMvZXh0Mi9l
+MmZzcHJvZ3MuZ2l0L3RyZWUvbWlzYy90dW5lMmZzLmMjbjU0NA0KDQpUaGVuIGl0IHByaW50cyBv
+dXQgZXJyb3IsIHNldHMgJ25vdCBjbGVhbicgZnMgc3RhdGUgaW4gc3VwZXJibG9jaywgYW5kIGV4
+aXRzLiBXaGF0IGZzY2sgZG9lcywgaXQgcmVjb21wdXRlcyBjaGVja3N1bXMsIHNldHMgJ2NsZWFu
+JyBmcyBzdGF0ZSwgYW5kIHRoYXQncyBhbGwuIEl0IGRvZXNuJ3QgY2hhbmdlIG51bWJlciBvZiBl
+bnRyaWVzLCBjb3VudCtsaW1pdCBzdGF5cyB0aGUgc2FtZSAoMTI2KS4gU28gdGhhdCdzIHdoeSBy
+ZXJ1bm5pbmcgdHVuZTJmcyBjb3JydXB0cyB0aGUgZnMgYWdhaW4uDQoNCkFuZCBoZXJlIGlzIHRo
+ZSBxdWVzdGlvbiAtIGhvdyBpdCBzaG91bGQgYmVoYXZlIGNvcnJlY3RseT8gV2hvJ3MgcmVzcG9u
+c2libGUgZm9yIHRoaXMgaXNzdWU/DQotIHR1bmUyZnMgLSBzaG91bGQgaXQgaWdub3JlIHRoZSAn
+aWYnIHN0YXRlbWVudD8gKEkgdHJpZWQgdG8gY29tbWVudCBpdCBvdXQgYW5kIHR1bmUyZnMgdGhl
+biBkaWQgaXRzIGpvYiBzdWNjZXNzZnVsbHksIHByb3ZlZCB3aXRoIGZzY2spLA0KLSBmc2NrIC0g
+c2hvdWxkIGl0IHJlYnVpbGQgdGhlIGRpciwgYXMgc3RhdGVkIGluIHRoZSBjb21tZW50IGFib3Zl
+IHRoZSAnaWYnIHN0YXRlbWVudD8gKGh0cmVlIGJsb2NrIGlzIGZ1bGwgdGhlbiByZWJ1aWxkIHRo
+ZSBkaXIpLA0KLSBta2ZzIC0gc2hvdWxkIGl0IG5vdCBidWlsZCB0aGUgaW1hZ2Ugd2l0aCBmdWxs
+IG51bWJlciBvZiBlbnRyaWVzPyAoY291bnQ9PWxpbWl0KS4NCg0KVGhpcyBpc3N1ZSBpcyBub3Qg
+cmVsYXRlZCB0byB0aGUgdXNlZCB2ZXJzaW9uIG9mIGUyZnNwcm9ncyAoMS40NC4xKSwgSSBjb21w
+aWxlZCBhbmQgdHJpZWQgb3V0IHZlcnNpb25zIDEuNDMgLSAxLjQ1LjQgYW5kIHRoZXkgYmVoYXZl
+IHRoZSBzYW1lIHdheS4gSSBhbHNvIHRyaWVkIHRvIGdlbmVyYXRlIG90aGVyIGltYWdlcyAoc3Vj
+aCBhcyBjb3JlLWltYWdlLW1pbmltYWwpLCBidXQgbm8gb25lIGVsc2UgbGVhZCB0byB0aGUgY29y
+cnVwdGlvbi4gSWYgbmVlZGVkLCBJIG1heSBnaXZlIHlvdSBhY2Nlc3MgdG8gdGhlIGNvcnJ1cHRl
+ZCBpbWFnZSBmb3IgZnVydGhlciBpbnZlc3RpZ2F0aW9uLg0KDQpJJ20gbm90IGV4cGVydCBpbiBl
+eHQ0LCBzbyBJJ2QgYXBwcmVjaWF0ZSBhbnkgYWR2aWNlLiBUaGFuayB5b3UuDQoNCkJSLA0KVmls
+bw0KDQoNCkNvbmZpZGVudGlhbGl0eSBOb3RpY2U6IFRoaXMgZS1tYWlsIGlzIHByaXZpbGVnZWQg
+YW5kIGNvbmZpZGVudGlhbCBhbmQgZm9yIHRoZSB1c2Ugb2YgdGhlIGFkZHJlc3NlZSBvbmx5LiBT
+aG91bGQgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4gZXJyb3IgcGxlYXNlIG5vdGlm
+eSB1cyBieSByZXBseWluZyBkaXJlY3RseSB0byB0aGUgc2VuZGVyIG9yIGJ5IHNlbmRpbmcgYSBt
+ZXNzYWdlIHRvIGluZm9Aa2lzdGxlci5jb20uIFVuYXV0aG9yaXNlZCBkaXNzZW1pbmF0aW9uLCBk
+aXNjbG9zdXJlIG9yIGNvcHlpbmcgb2YgdGhlIGNvbnRlbnRzIG9mIHRoaXMgZS1tYWlsLCBvciBh
+bnkgc2ltaWxhciBhY3Rpb24sIGlzIHByb2hpYml0ZWQuDQo=
