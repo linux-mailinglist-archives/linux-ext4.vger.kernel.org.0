@@ -2,131 +2,169 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D6D113E7A
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 10:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EE4114079
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 13:03:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbfLEJqa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Dec 2019 04:46:30 -0500
-Received: from mail.phunq.net ([66.183.183.73]:48442 "EHLO phunq.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728604AbfLEJqa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 5 Dec 2019 04:46:30 -0500
-Received: from [172.16.1.14]
-        by phunq.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
-        (Exim 4.92.3)
-        (envelope-from <daniel@phunq.net>)
-        id 1icniN-0002Yo-Lt; Thu, 05 Dec 2019 01:46:27 -0800
-Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
-To:     Vyacheslav Dubeyko <slava@dubeyko.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
- <20191127142508.GB5143@mit.edu>
- <6b6242d9-f88b-824d-afe9-d42382a93b34@phunq.net>
- <9ed62cfea37bfebfb76e378d482bd521c7403c1f.camel@dubeyko.com>
-From:   Daniel Phillips <daniel@phunq.net>
-Message-ID: <c61706fb-3534-72b9-c4ae-0f0972bc566b@phunq.net>
-Date:   Thu, 5 Dec 2019 01:46:27 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729439AbfLEMDN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Dec 2019 07:03:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55080 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729165AbfLEMDN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 5 Dec 2019 07:03:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id BA5A3AD17;
+        Thu,  5 Dec 2019 12:03:09 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 974D71E0B80; Thu,  5 Dec 2019 13:03:07 +0100 (CET)
+Date:   Thu, 5 Dec 2019 13:03:07 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     jack@suse.cz, tytso@mit.edu, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org,
+        joseph.qi@linux.alibaba.com
+Subject: Re: [PATCHv4 2/3] ext4: Start with shared i_rwsem in case of DIO
+ instead of exclusive
+Message-ID: <20191205120307.GA32639@quack2.suse.cz>
+References: <20191205064624.13419-1-riteshh@linux.ibm.com>
+ <20191205064624.13419-3-riteshh@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <9ed62cfea37bfebfb76e378d482bd521c7403c1f.camel@dubeyko.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191205064624.13419-3-riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2019-12-04 7:55 a.m., Vyacheslav Dubeyko wrote:
->> That is it for media format. Very simple, is it not? My next post
->> will explain the Shardmap directory block format, with a focus on
->> deficiencies of the traditional Ext2 format that were addressed.
+On Thu 05-12-19 12:16:23, Ritesh Harjani wrote:
+> Earlier there was no shared lock in DIO read path. But this patch
+> (16c54688592ce: ext4: Allow parallel DIO reads)
+> simplified some of the locking mechanism while still allowing for parallel DIO
+> reads by adding shared lock in inode DIO read path.
 > 
-> I've tried to take a look into the source code. And it was not easy
-> try. :)
+> But this created problem with mixed read/write workload. It is due to the fact
+> that in DIO path, we first start with exclusive lock and only when we determine
+> that it is a ovewrite IO, we downgrade the lock. This causes the problem, since
+> we still have shared locking in DIO reads.
+> 
+> So, this patch tries to fix this issue by starting with shared lock and then
+> switching to exclusive lock only when required based on ext4_dio_write_checks().
+> 
+> Other than that, it also simplifies below cases:-
+> 
+> 1. Simplified ext4_unaligned_aio API to ext4_unaligned_io. Previous API was
+> abused in the sense that it was not really checking for AIO anywhere also it
+> used to check for extending writes. So this API was renamed and simplified to
+> ext4_unaligned_io() which actully only checks if the IO is really unaligned.
+> 
+> Now, in case of unaligned direct IO, iomap_dio_rw needs to do zeroing of partial
+> block and that will require serialization against other direct IOs in the same
+> block. So we take a exclusive inode lock for any unaligned DIO. In case of AIO
+> we also need to wait for any outstanding IOs to complete so that conversion from
+> unwritten to written is completed before anyone try to map the overlapping block.
+> Hence we take exclusive inode lock and also wait for inode_dio_wait() for
+> unaligned DIO case. Please note since we are anyway taking an exclusive lock in
+> unaligned IO, inode_dio_wait() becomes a no-op in case of non-AIO DIO.
+> 
+> 2. Added ext4_extending_io(). This checks if the IO is extending the file.
+> 
+> 3. Added ext4_dio_write_checks(). In this we start with shared inode lock and
+> only switch to exclusive lock if required. So in most cases with aligned,
+> non-extending, dioread_nolock & overwrites, it tries to write with a shared
+> lock. If not, then we restart the operation in ext4_dio_write_checks(), after
+> acquiring exclusive lock.
+> 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-Let's see what we can do about that, starting with removing the duopack
-(media index entry) and tripack (cache index entry) templates. Now that
-the design has settled down we don't need that level of generality so
-much any more. The replacements are mostly C-style now and by the time
-the Tux3 kernel port is done, will be officially C.
+Cool, the patch looks good to me. You can add:
 
-So far I only described the media format, implemented in define_layout(),
-which I hope is self explanatory. You should be able to tie it back to
-this diagram pretty easily.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-   https://github.com/danielbot/Shardmap/wiki/Shardmap-media-format
+Two small nits below:
 
-> I expected to have the bird-fly understanding from shardmap.h
-> file. My expectation was to find the initial set of structure
-> declarations with the good comments.
+> -static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
+> +static ssize_t ext4_generic_write_checks(struct kiocb *iocb,
+> +					 struct iov_iter *from)
+>  {
+>  	struct inode *inode = file_inode(iocb->ki_filp);
+>  	ssize_t ret;
+> @@ -228,11 +235,21 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
+>  		iov_iter_truncate(from, sbi->s_bitmap_maxbytes - iocb->ki_pos);
+>  	}
+>  
+> +	return iov_iter_count(from);
+> +}
 
-Our wiki is slowly getting populated with design documentation. Most of
-what you see in shardmap.h is concerned with the Shardmap cache form,
-where all the action happens. I have not said much about that yet, but
-there is a post on the way. The main structures are struct shard (a
-self contained hash table) and struct keymap (a key value store
-populated with shards). Those are obvious I think, please correct me
-if I am wrong. A more tricky one is struct tier, which implements our
-incremental hash table expansion. You might expect that to be a bit
-subtle, and it is.
+You return iov_iter_count() from ext4_generic_write_checks()...
 
-Before getting into those details, there is an upcoming post about
-the record block format, which is pretty non-abstract and, I think,
-easy enough to understand from the API declaration in shardmap.h and
-the code in recops.c.
+> +static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+> +				     bool *ilock_shared, bool *extend)
+> +{
+> +	struct file *file = iocb->ki_filp;
+> +	struct inode *inode = file_inode(file);
+> +	loff_t offset;
+> +	size_t count;
+> +	ssize_t ret;
+> +
+> +restart:
+> +	ret = ext4_generic_write_checks(iocb, from);
+> +	if (ret <= 0)
+> +		goto out;
+> +
+> +	offset = iocb->ki_pos;
+> +	count = iov_iter_count(from);
 
-There is a diagram here:
+But you don't use the returned count here and just call iov_iter_count()
+again (which is cheap anyway but still it's strange).
 
-   https://github.com/danielbot/Shardmap/wiki/Shardmap-record-block-format
+> +	if (ext4_extending_io(inode, offset, count))
+> +		*extend = true;
+> +	/*
+> +	 * Determine whether the IO operation will overwrite allocated
+> +	 * and initialized blocks. If so, check to see whether it is
+> +	 * possible to take the dioread_nolock path.
+> +	 *
+> +	 * We need exclusive i_rwsem for changing security info
+> +	 * in file_modified().
+> +	 */
+> +	if (*ilock_shared && (!IS_NOSEC(inode) || *extend ||
+> +	     !ext4_should_dioread_nolock(inode) ||
+> +	     !ext4_overwrite_io(inode, offset, count))) {
+> +		inode_unlock_shared(inode);
+> +		*ilock_shared = false;
+> +		inode_lock(inode);
+> +		goto restart;
+> +	}
+> +
+> +	ret = file_modified(file);
+> +	if (ret < 0)
+> +		goto out;
+> +
+> +	return count;
 
-but the post this belongs to is not quite ready to go out yet. That one
-will be an interlude before for the cache form discussion, which is
-where the magic happens, things like rehash and reshard and add_tier,
-and the way the hash code gets chopped up as it runs through the access
-stack.
+And then you return count from ext4_dio_write_checks() here...
 
-Here is a diagram of the cache structures, very simple:
+> -	ret = ext4_write_checks(iocb, from);
+> -	if (ret <= 0) {
+> -		inode_unlock(inode);
+> +	ret = ext4_dio_write_checks(iocb, from, &ilock_shared, &extend);
+> +	if (ret <= 0)
+>  		return ret;
+> -	}
+>  
+> -	/*
+> -	 * Unaligned asynchronous direct I/O must be serialized among each
+> -	 * other as the zeroing of partial blocks of two competing unaligned
+> -	 * asynchronous direct I/O writes can result in data corruption.
+> -	 */
+>  	offset = iocb->ki_pos;
+>  	count = iov_iter_count(from);
 
-   https://github.com/danielbot/Shardmap/wiki/Shardmap-cache-format
+And then again just don't use the value here...
 
-And here is a diagram of the Shardmap three level hashing scheme,
-which ties everything together:
-
-   https://github.com/danielbot/Shardmap/wiki/Shardmap-hashing-scheme
-
-This needs explanation. It is something new that you won't find in any
-textbook, this is the big reveal right here.
-
-> But, frankly speaking, it's very
-> complicated path for the concept understanding. Even from C++ point of
-> view, the class declarations look very complicated if there are mixing
-> of fields with methods declarations.
-
-In each class, fields are declared first, then methods. In the kernel
-port of course we will not have classes, and the function names will be
-longer as usual.
-
-> So, I believe it makes sense to declare the necessary set of structures
-> in the file's beginning with the good comments. Even it will be good to
-> split the structure declarations and methods in different files. I
-> believe it will ease the way to understand the concept. Otherwise, it
-> will be tough to review such code.
-
-Declaring structures and functions in the same file is totally normal
-for kernel code, you don't really want these in separate files unless
-they break out naturally that way.
-
-This code is dense, there is a lot going on in not very many lines. So
-we need lots of lines of documentation to make up for that, which has
-not been a priority until now, so please bear with me. And please do
-not hesitate to ask specific questions - the answers may well end up in
-the wiki.
-
-Regards,
-
-Daniel
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
