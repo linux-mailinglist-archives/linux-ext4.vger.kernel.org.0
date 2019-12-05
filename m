@@ -2,151 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF60113DDE
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 10:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D6D113E7A
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 10:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729093AbfLEJ1V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Dec 2019 04:27:21 -0500
-Received: from mx2.kistler.com ([91.223.79.45]:47691 "EHLO mx2.kistler.com"
+        id S1729128AbfLEJqa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Dec 2019 04:46:30 -0500
+Received: from mail.phunq.net ([66.183.183.73]:48442 "EHLO phunq.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726384AbfLEJ1V (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 5 Dec 2019 04:27:21 -0500
-X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Dec 2019 04:27:19 EST
-IronPort-SDR: 3TDFRW6HiydWNveLlLUy6Oth30agrwa9DzJRSM1U5SGiRYZyES+TPgLj1QRCTE1VFCgTNWl9Qx
- 988I0GQP9YGA==
-X-IronPort-AV: E=Sophos;i="5.69,280,1571695200"; 
-   d="scan'208";a="3976666"
-Received: from kihagsepp01.int.kistler.com (HELO sl-win-seppm-1.int.kistler.com) ([192.168.52.67])
-  by mx2.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Dec 2019 10:20:09 +0100
-Received: from mx1.kistler.com (kihagciip01.int.kistler.com [192.168.52.57])
-        by sl-win-seppm-1.int.kistler.com (Postfix) with ESMTPS
-        for <linux-ext4@vger.kernel.org>; Thu,  5 Dec 2019 10:20:09 +0100 (CET)
-IronPort-SDR: W/ZREavCwdrNMGgCADkw4lKBXzv1186jEM6Q84cQjEBXpSuccQqC+3dMvGrd4ayLXtLQARbkiJ
- VS6/UK6CxNgA==
-X-IronPort-AV: E=Sophos;i="5.69,280,1571695200"; 
-   d="scan'208";a="22356115"
-Received: from sw-win-exch-2.int.kistler.com ([192.168.100.96])
-  by mx1.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Dec 2019 10:20:09 +0100
-Received: from SW-WIN-EXCH-2.int.kistler.com (192.168.100.96) by
- SW-WIN-EXCH-2.int.kistler.com (192.168.100.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 5 Dec 2019 10:20:08 +0100
-Received: from SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f]) by
- SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f%9]) with mapi id
- 15.01.1847.003; Thu, 5 Dec 2019 10:20:08 +0100
-From:   Viliam Lejcik <Viliam.Lejcik@kistler.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
-Thread-Topic: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
-Thread-Index: AdWrTPhiKFIdjLi2SZakmenb1WHIog==
-Date:   Thu, 5 Dec 2019 09:20:08 +0000
-Message-ID: <149308ea5ffc429f9b3af5ecbfdabfe4@kistler.com>
-Accept-Language: en-US, de-CH
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [192.168.100.89]
-x-c2processedorg: 78a97207-3cfa-406d-a777-069c09c1300a
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728604AbfLEJqa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 5 Dec 2019 04:46:30 -0500
+Received: from [172.16.1.14]
+        by phunq.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
+        (Exim 4.92.3)
+        (envelope-from <daniel@phunq.net>)
+        id 1icniN-0002Yo-Lt; Thu, 05 Dec 2019 01:46:27 -0800
+Subject: Re: [RFC] Thing 1: Shardmap fox Ext4
+To:     Vyacheslav Dubeyko <slava@dubeyko.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
+ <20191127142508.GB5143@mit.edu>
+ <6b6242d9-f88b-824d-afe9-d42382a93b34@phunq.net>
+ <9ed62cfea37bfebfb76e378d482bd521c7403c1f.camel@dubeyko.com>
+From:   Daniel Phillips <daniel@phunq.net>
+Message-ID: <c61706fb-3534-72b9-c4ae-0f0972bc566b@phunq.net>
+Date:   Thu, 5 Dec 2019 01:46:27 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <9ed62cfea37bfebfb76e378d482bd521c7403c1f.camel@dubeyko.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-V2UgcHJvdmlkZSBhIGN1c3RvbSBMaW51eCBkaXN0cmlidXRpb24sIGJhc2VkIG9uIHlvY3RvLXBy
-b2plY3QgKHBva3kgMi42LjEpLiBXaXRoIGJpdGJha2Ugd2UndmUgYnVpbHQgYW4gaW1hZ2UsIHdo
-aWNoIGJlY29tZXMgY29ycnVwdGVkIGR1cmluZyBpbnN0YWxsYXRpb24gdG8gdGhlIFNTRCBvZiB0
-aGUgZW1iZWRkZWQgZGV2aWNlLiBXZSdyZSBzZXR0aW5nIHRoZSBmaWxlc3lzdGVtIFVVSUQgKG5v
-dCBwYXJ0aXRpb24gVVVJRCkgdXNpbmcgdHVuZTJmcywgc28gdGhlIGJvb3Rsb2FkZXIgY2FuIGZp
-bmQgaXQuIFdlIG5vdGljZWQgdGhpcyBwcm9ibGVtIGJlY2F1c2Ugd2UgZm91bmQgYSBkaXJlY3Rv
-cnkgdGhhdCBjb3VsZG4ndCBiZSByZWFkLg0KDQp8IHJvb3RAYm9hcmQ6fiMgZGlyIC92YXIvbGli
-L29wa2cvaW5mbw0KfCBsczogcmVhZGluZyBkaXJlY3RvcnkgJy92YXIvbGliL29wa2cvaW5mbyc6
-IEJhZCBtZXNzYWdlIHRvdGFsIDANCg0KVGhpcyBiZWhhdmlvciBjYW4gYmUgcmVwcm9kdWNlZCBv
-biBhbiBleHQ0IGZzIGltYWdlLCBzbyB0aGVyZSdzIG5vIG5lZWQgdG8gcnVuIGl0IG9uIHRoZSBk
-ZXZpY2UuDQoNCkZpcnN0bHksIGxldCBjaGVjayB0aGF0IHRoZSBpbWFnZSBoYXMgYmVlbiBidWls
-dCBjb3JyZWN0bHk6DQoNCnwgcm9vdEBib2FyZDp+IyBmc2NrLmV4dDQgLWZuIGNvcmUtaW1hZ2Uu
-ZXh0NA0KfCBlMmZzY2sgMS40NC4xICgyNC1NYXItMjAxOCkNCnwgUGFzcyAxOiBDaGVja2luZyBp
-bm9kZXMsIGJsb2NrcywgYW5kIHNpemVzDQp8IFBhc3MgMjogQ2hlY2tpbmcgZGlyZWN0b3J5IHN0
-cnVjdHVyZQ0KfCBQYXNzIDM6IENoZWNraW5nIGRpcmVjdG9yeSBjb25uZWN0aXZpdHkNCnwgUGFz
-cyA0OiBDaGVja2luZyByZWZlcmVuY2UgY291bnRzDQp8IFBhc3MgNTogQ2hlY2tpbmcgZ3JvdXAg
-c3VtbWFyeSBpbmZvcm1hdGlvbg0KfCBjb3JlLWltYWdlLmV4dDQ6IDEzNDE3Lzg1MzQ0IGZpbGVz
-ICgwLjYlIG5vbi1jb250aWd1b3VzKSwgMjUwNTc1LzM0MDA2MCBibG9ja3MNCg0KVGhlbiB3ZSB3
-YW50IHRvIHNldCBVVUlEIHRvIGZzIChyYW5kb20gb25lIGZvciB0aGlzIGV4YW1wbGUpIHdpdGgg
-dHVuZTJmczoNCg0KfCByb290QGJvYXJkOn4jIHR1bmUyZnMgLVUgcmFuZG9tIGNvcmUtaW1hZ2Uu
-ZXh0NA0KfCB0dW5lMmZzIDEuNDQuMSAoMjQtTWFyLTIwMTgpDQp8IFNldHRpbmcgVVVJRCBvbiBh
-IGNoZWNrc3VtbWVkIGZpbGVzeXN0ZW0gY291bGQgdGFrZSBzb21lIHRpbWUuDQp8IFByb2NlZWQg
-YW55d2F5IChvciB3YWl0IDUgc2Vjb25kcyB0byBwcm9jZWVkKSA/ICh5LE4pIHkNCnwNCnwgVGhp
-cyBvcGVyYXRpb24gcmVxdWlyZXMgYSBmcmVzaGx5IGNoZWNrZWQgZmlsZXN5c3RlbS4NCnwNCnwg
-UGxlYXNlIHJ1biBlMmZzY2sgLWZEIG9uIHRoZSBmaWxlc3lzdGVtLg0KDQpJdCBzYXlzIHRoYXQg
-b24gYSBjaGVja3N1bW1lZCBmcyBhbGwgbWV0YWRhdGEgYmxvY2tzIGhhdmUgdG8gYmUgcmV3cml0
-dGVuICgnbWV0YWRhdGFfY3N1bScgZnMgZmVhdHVyZXMgZmxhZyBzZXQgaW4gc3VwZXJibG9jayks
-IHdoYXQgZmFpbGVkIHNvbWV3aGVyZSBpbiBiZXR3ZWVuICgnbm90IGNsZWFuJyBmcyBzdGF0ZSBp
-biBzdXBlcmJsb2NrKS4gV2UgY2FuIGZpeCBpdCB3aXRoIGZzY2s6DQoNCnwgcm9vdEBib2FyZDp+
-IyBmc2NrLmV4dDQgLWZ5IGNvcmUtaW1hZ2UuZXh0NA0KfCBlMmZzY2sgMS40NC4xICgyNC1NYXIt
-MjAxOCkNCnwgUGFzcyAxOiBDaGVja2luZyBpbm9kZXMsIGJsb2NrcywgYW5kIHNpemVzDQp8IFBh
-c3MgMjogQ2hlY2tpbmcgZGlyZWN0b3J5IHN0cnVjdHVyZQ0KfCBQcm9ibGVtIGluIEhUUkVFIGRp
-cmVjdG9yeSBpbm9kZSAxNzc6IGludGVybmFsIG5vZGUgZmFpbHMgY2hlY2tzdW0uDQp8IENsZWFy
-IEhUcmVlIGluZGV4PyB5ZXMNCnwNCnwgUGFzcyAzOiBDaGVja2luZyBkaXJlY3RvcnkgY29ubmVj
-dGl2aXR5DQp8IFBhc3MgM0E6IE9wdGltaXppbmcgZGlyZWN0b3JpZXMNCnwgUGFzcyA0OiBDaGVj
-a2luZyByZWZlcmVuY2UgY291bnRzDQp8IFBhc3MgNTogQ2hlY2tpbmcgZ3JvdXAgc3VtbWFyeSBp
-bmZvcm1hdGlvbg0KfA0KfCBjb3JlLWltYWdlLmV4dDQ6ICoqKioqIEZJTEUgU1lTVEVNIFdBUyBN
-T0RJRklFRCAqKioqKg0KfCBjb3JlLWltYWdlLmV4dDQ6IDEzNDE3Lzg1MzQ0IGZpbGVzICgwLjYl
-IG5vbi1jb250aWd1b3VzKSwgMjUwNTc1LzM0MDA2MCBibG9ja3MNCg0KSWYgSSByZXJ1biB0dW5l
-MmZzIG9uIHRoZSBzYW1lIGZpeGVkIGltYWdlLCBpdCBjb3JydXB0cyBpdCBhZ2Fpbi4NCg0KTGV0
-IGhhdmUgYSBkZWVwZXIgbG9vayB0byB0aGUgY29ycnVwdGVkIGlub2RlIDE3NyAtIGl0IGlzIHBh
-dGggL3Zhci9saWIvb3BrZy9pbmZvLywgYW5kIHRoZXJlJ3MgMjcxMiBmaWxlcyB1bmRlciBpdC4g
-SGVyZSBpcyBpdHMgSFRSRUUgc3RydWN0dXJlOg0KDQp8IHJvb3RAYm9hcmQ6fiMgZGVidWdmcyAt
-UiAiaHRyZWVfZHVtcCAvdmFyL2xpYi9vcGtnL2luZm8iIGNvcmUtaW1hZ2UuZXh0NA0KfCBSb290
-IG5vZGUgZHVtcDoNCnwgIFJlc2VydmVkIHplcm86IDANCnwgIEhhc2ggVmVyc2lvbjogMQ0KfCAg
-SW5mbyBsZW5ndGg6IDgNCnwgIEluZGlyZWN0IGxldmVsczogMQ0KfCAgRmxhZ3M6IDANCnwgTnVt
-YmVyIG9mIGVudHJpZXMgKGNvdW50KTogMQ0KfCBOdW1iZXIgb2YgZW50cmllcyAobGltaXQpOiAx
-MjMNCnwgQ2hlY2tzdW06IDB4OGRjMWUyZGINCnwgRW50cnkgIzA6IEhhc2ggMHgwMDAwMDAwMCwg
-YmxvY2sgMTI3DQp8DQp8IEVudHJ5ICMwOiBIYXNoIDB4MDAwMDAwMDAsIGJsb2NrIDEyNw0KfCBO
-dW1iZXIgb2YgZW50cmllcyAoY291bnQpOiAxMjYNCnwgTnVtYmVyIG9mIGVudHJpZXMgKGxpbWl0
-KTogMTI2DQp8IENoZWNrc3VtOiAweDllNTRiNWM3DQp8IEVudHJ5ICMwOiBIYXNoIDB4MDAwMDAw
-MDAsIGJsb2NrIDENCnwgRW50cnkgIzE6IEhhc2ggMHgwMWJkZGJlMCwgYmxvY2sgMg0KfCAuLi4N
-CnwgRW50cnkgIzEyNDogSGFzaCAweGZkNTVhYjMwLCBibG9jayAxMjUNCnwgRW50cnkgIzEyNTog
-SGFzaCAweGZmYTk2NDkyLCBibG9jayAxMjYNCnwNCnwgRW50cnkgIzA6IEhhc2ggMHgwMDAwMDAw
-MCwgYmxvY2sgMQ0KfCBSZWFkaW5nIGRpcmVjdG9yeSBibG9jayAxLCBwaHlzIDE3ODYzDQp8IDE2
-NTAgMHgwMDBmOWVlMC1iYzRhY2U3MiAoNTIpIHBlcmwtbW9kdWxlLXRhcC1wYXJzZXItc291cmNl
-aGFuZGxlci5saXN0DQp8IDEyMjggMHgwMDFkMDZlOC1hZGE5OTg5NyAoNDApIHBlcmwtbW9kdWxl
-LW5ldC1zZXJ2ZW50LmNvbnRyb2wNCnwgLi4uDQp8IDI3NjIgMHhmZjc3YjQ5Mi1hOWI5OGUzMSAo
-MjI4KSBwZXJsLW1vZHVsZS1qc29uLXBwLmNvbnRyb2wNCnwgbGVhZiBibG9jayBjaGVja3N1bTog
-MHhlY2NiMDA0ZA0KfCBFbnRyeSAjMTI1OiBIYXNoIDB4ZmZhOTY0OTIsIGJsb2NrIDEyNg0KfCBS
-ZWFkaW5nIGRpcmVjdG9yeSBibG9jayAxMjYsIHBoeXMgMjQ3OTM4DQp8IDEzOTAgMHhmZmE5NjQ5
-Mi03Mzg0MTU2MSAoMzYpIGxtc2Vuc29ycy1zZW5zb3JzLmNvbnRyb2wNCnwgMTAyMiAweGZmYWY3
-M2I0LWE2Zjc1YjFiICg5NzYpIHBlcmwtbW9kdWxlLWJ5dGVzLmNvbnRyb2wNCnwgbGVhZiBibG9j
-ayBjaGVja3N1bTogMHgwZjljODA5Mg0KfCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KVGhlIHBy
-b2JsZW0gZm9yIHR1bmUyZnMgaXMgdGhlICJOdW1iZXIgb2YgZW50cmllcyIsIHdoZW4gY291bnQ9
-PWxpbWl0ICgxMjYpLiBJbiB0aGlzIGNhc2UgaXQgZmFpbHMgd2l0aGluIHRoZSBmb2xsb3dpbmcg
-J2lmJyBzdGF0ZW1lbnQ6DQpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vZnMvZXh0Mi9l
-MmZzcHJvZ3MuZ2l0L3RyZWUvbWlzYy90dW5lMmZzLmMjbjU0NA0KDQpUaGVuIGl0IHByaW50cyBv
-dXQgZXJyb3IsIHNldHMgJ25vdCBjbGVhbicgZnMgc3RhdGUgaW4gc3VwZXJibG9jaywgYW5kIGV4
-aXRzLiBXaGF0IGZzY2sgZG9lcywgaXQgcmVjb21wdXRlcyBjaGVja3N1bXMsIHNldHMgJ2NsZWFu
-JyBmcyBzdGF0ZSwgYW5kIHRoYXQncyBhbGwuIEl0IGRvZXNuJ3QgY2hhbmdlIG51bWJlciBvZiBl
-bnRyaWVzLCBjb3VudCtsaW1pdCBzdGF5cyB0aGUgc2FtZSAoMTI2KS4gU28gdGhhdCdzIHdoeSBy
-ZXJ1bm5pbmcgdHVuZTJmcyBjb3JydXB0cyB0aGUgZnMgYWdhaW4uDQoNCkFuZCBoZXJlIGlzIHRo
-ZSBxdWVzdGlvbiAtIGhvdyBpdCBzaG91bGQgYmVoYXZlIGNvcnJlY3RseT8gV2hvJ3MgcmVzcG9u
-c2libGUgZm9yIHRoaXMgaXNzdWU/DQotIHR1bmUyZnMgLSBzaG91bGQgaXQgaWdub3JlIHRoZSAn
-aWYnIHN0YXRlbWVudD8gKEkgdHJpZWQgdG8gY29tbWVudCBpdCBvdXQgYW5kIHR1bmUyZnMgdGhl
-biBkaWQgaXRzIGpvYiBzdWNjZXNzZnVsbHksIHByb3ZlZCB3aXRoIGZzY2spLA0KLSBmc2NrIC0g
-c2hvdWxkIGl0IHJlYnVpbGQgdGhlIGRpciwgYXMgc3RhdGVkIGluIHRoZSBjb21tZW50IGFib3Zl
-IHRoZSAnaWYnIHN0YXRlbWVudD8gKGh0cmVlIGJsb2NrIGlzIGZ1bGwgdGhlbiByZWJ1aWxkIHRo
-ZSBkaXIpLA0KLSBta2ZzIC0gc2hvdWxkIGl0IG5vdCBidWlsZCB0aGUgaW1hZ2Ugd2l0aCBmdWxs
-IG51bWJlciBvZiBlbnRyaWVzPyAoY291bnQ9PWxpbWl0KS4NCg0KVGhpcyBpc3N1ZSBpcyBub3Qg
-cmVsYXRlZCB0byB0aGUgdXNlZCB2ZXJzaW9uIG9mIGUyZnNwcm9ncyAoMS40NC4xKSwgSSBjb21w
-aWxlZCBhbmQgdHJpZWQgb3V0IHZlcnNpb25zIDEuNDMgLSAxLjQ1LjQgYW5kIHRoZXkgYmVoYXZl
-IHRoZSBzYW1lIHdheS4gSSBhbHNvIHRyaWVkIHRvIGdlbmVyYXRlIG90aGVyIGltYWdlcyAoc3Vj
-aCBhcyBjb3JlLWltYWdlLW1pbmltYWwpLCBidXQgbm8gb25lIGVsc2UgbGVhZCB0byB0aGUgY29y
-cnVwdGlvbi4gSWYgbmVlZGVkLCBJIG1heSBnaXZlIHlvdSBhY2Nlc3MgdG8gdGhlIGNvcnJ1cHRl
-ZCBpbWFnZSBmb3IgZnVydGhlciBpbnZlc3RpZ2F0aW9uLg0KDQpJJ20gbm90IGV4cGVydCBpbiBl
-eHQ0LCBzbyBJJ2QgYXBwcmVjaWF0ZSBhbnkgYWR2aWNlLiBUaGFuayB5b3UuDQoNCkJSLA0KVmls
-bw0KDQoNCkNvbmZpZGVudGlhbGl0eSBOb3RpY2U6IFRoaXMgZS1tYWlsIGlzIHByaXZpbGVnZWQg
-YW5kIGNvbmZpZGVudGlhbCBhbmQgZm9yIHRoZSB1c2Ugb2YgdGhlIGFkZHJlc3NlZSBvbmx5LiBT
-aG91bGQgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4gZXJyb3IgcGxlYXNlIG5vdGlm
-eSB1cyBieSByZXBseWluZyBkaXJlY3RseSB0byB0aGUgc2VuZGVyIG9yIGJ5IHNlbmRpbmcgYSBt
-ZXNzYWdlIHRvIGluZm9Aa2lzdGxlci5jb20uIFVuYXV0aG9yaXNlZCBkaXNzZW1pbmF0aW9uLCBk
-aXNjbG9zdXJlIG9yIGNvcHlpbmcgb2YgdGhlIGNvbnRlbnRzIG9mIHRoaXMgZS1tYWlsLCBvciBh
-bnkgc2ltaWxhciBhY3Rpb24sIGlzIHByb2hpYml0ZWQuDQo=
+On 2019-12-04 7:55 a.m., Vyacheslav Dubeyko wrote:
+>> That is it for media format. Very simple, is it not? My next post
+>> will explain the Shardmap directory block format, with a focus on
+>> deficiencies of the traditional Ext2 format that were addressed.
+> 
+> I've tried to take a look into the source code. And it was not easy
+> try. :)
+
+Let's see what we can do about that, starting with removing the duopack
+(media index entry) and tripack (cache index entry) templates. Now that
+the design has settled down we don't need that level of generality so
+much any more. The replacements are mostly C-style now and by the time
+the Tux3 kernel port is done, will be officially C.
+
+So far I only described the media format, implemented in define_layout(),
+which I hope is self explanatory. You should be able to tie it back to
+this diagram pretty easily.
+
+   https://github.com/danielbot/Shardmap/wiki/Shardmap-media-format
+
+> I expected to have the bird-fly understanding from shardmap.h
+> file. My expectation was to find the initial set of structure
+> declarations with the good comments.
+
+Our wiki is slowly getting populated with design documentation. Most of
+what you see in shardmap.h is concerned with the Shardmap cache form,
+where all the action happens. I have not said much about that yet, but
+there is a post on the way. The main structures are struct shard (a
+self contained hash table) and struct keymap (a key value store
+populated with shards). Those are obvious I think, please correct me
+if I am wrong. A more tricky one is struct tier, which implements our
+incremental hash table expansion. You might expect that to be a bit
+subtle, and it is.
+
+Before getting into those details, there is an upcoming post about
+the record block format, which is pretty non-abstract and, I think,
+easy enough to understand from the API declaration in shardmap.h and
+the code in recops.c.
+
+There is a diagram here:
+
+   https://github.com/danielbot/Shardmap/wiki/Shardmap-record-block-format
+
+but the post this belongs to is not quite ready to go out yet. That one
+will be an interlude before for the cache form discussion, which is
+where the magic happens, things like rehash and reshard and add_tier,
+and the way the hash code gets chopped up as it runs through the access
+stack.
+
+Here is a diagram of the cache structures, very simple:
+
+   https://github.com/danielbot/Shardmap/wiki/Shardmap-cache-format
+
+And here is a diagram of the Shardmap three level hashing scheme,
+which ties everything together:
+
+   https://github.com/danielbot/Shardmap/wiki/Shardmap-hashing-scheme
+
+This needs explanation. It is something new that you won't find in any
+textbook, this is the big reveal right here.
+
+> But, frankly speaking, it's very
+> complicated path for the concept understanding. Even from C++ point of
+> view, the class declarations look very complicated if there are mixing
+> of fields with methods declarations.
+
+In each class, fields are declared first, then methods. In the kernel
+port of course we will not have classes, and the function names will be
+longer as usual.
+
+> So, I believe it makes sense to declare the necessary set of structures
+> in the file's beginning with the good comments. Even it will be good to
+> split the structure declarations and methods in different files. I
+> believe it will ease the way to understand the concept. Otherwise, it
+> will be tough to review such code.
+
+Declaring structures and functions in the same file is totally normal
+for kernel code, you don't really want these in separate files unless
+they break out naturally that way.
+
+This code is dense, there is a lot going on in not very many lines. So
+we need lots of lines of documentation to make up for that, which has
+not been a priority until now, so please bear with me. And please do
+not hesitate to ask specific questions - the answers may well end up in
+the wiki.
+
+Regards,
+
+Daniel
