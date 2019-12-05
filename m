@@ -2,150 +2,227 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E741140E5
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 13:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB021141B2
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Dec 2019 14:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729426AbfLEMgk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 5 Dec 2019 07:36:40 -0500
-Received: from mx2.kistler.com ([91.223.79.45]:25717 "EHLO mx2.kistler.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729048AbfLEMgj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 5 Dec 2019 07:36:39 -0500
-IronPort-SDR: Qc4w95Z8gGcawUiaAHVDfMpjz5lfdCY6mobF6U1hezxl5T99lGbJFf87vcN3At7Zv2RyYfd+NB
- iGJuQJPsHxMg==
-X-IronPort-AV: E=Sophos;i="5.69,281,1571695200"; 
-   d="scan'208";a="3977809"
-Received: from kihagsepp01.int.kistler.com (HELO sl-win-seppm-1.int.kistler.com) ([192.168.52.67])
-  by mx2.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Dec 2019 13:36:36 +0100
-Received: from mx1.kistler.com (kihagciip01.int.kistler.com [192.168.52.57])
-        by sl-win-seppm-1.int.kistler.com (Postfix) with ESMTPS
-        for <linux-ext4@vger.kernel.org>; Thu,  5 Dec 2019 13:36:36 +0100 (CET)
-IronPort-SDR: K6N/xnzPizcHuCxeV+kLe0bQVpBVcAEGQjBRSTDrTViLtzipOpkZsMlrycIElJaIFqgmIexUtM
- pyhy0LElgcXA==
-X-IronPort-AV: E=Sophos;i="5.69,281,1571695200"; 
-   d="scan'208";a="22363054"
-Received: from sw-win-exch-2.int.kistler.com ([192.168.100.96])
-  by mx1.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Dec 2019 13:36:35 +0100
-Received: from SW-WIN-EXCH-2.int.kistler.com (192.168.100.96) by
- SW-WIN-EXCH-2.int.kistler.com (192.168.100.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 5 Dec 2019 13:36:35 +0100
-Received: from SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f]) by
- SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f%9]) with mapi id
- 15.01.1847.003; Thu, 5 Dec 2019 13:36:35 +0100
-From:   Viliam Lejcik <Viliam.Lejcik@kistler.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
-Thread-Topic: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
-Thread-Index: AdWrTPhiKFIdjLi2SZakmenb1WHIogAGv0/Q
-Date:   Thu, 5 Dec 2019 12:36:35 +0000
-Message-ID: <5fd4546cdc7f43f282716afb1e1a18cb@kistler.com>
-Accept-Language: en-US, de-CH
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [192.168.100.89]
-x-c2processedorg: 78a97207-3cfa-406d-a777-069c09c1300a
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729642AbfLENkR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 5 Dec 2019 08:40:17 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27640 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729637AbfLENkR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 5 Dec 2019 08:40:17 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xB5Davel011432
+        for <linux-ext4@vger.kernel.org>; Thu, 5 Dec 2019 08:40:15 -0500
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2wq114e3db-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Thu, 05 Dec 2019 08:40:15 -0500
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Thu, 5 Dec 2019 13:40:13 -0000
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 5 Dec 2019 13:40:09 -0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xB5De8ia46596288
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 5 Dec 2019 13:40:08 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B295D42041;
+        Thu,  5 Dec 2019 13:40:08 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 605A44203F;
+        Thu,  5 Dec 2019 13:40:07 +0000 (GMT)
+Received: from [9.199.159.163] (unknown [9.199.159.163])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  5 Dec 2019 13:40:07 +0000 (GMT)
+Subject: Re: [PATCHv4 2/3] ext4: Start with shared i_rwsem in case of DIO
+ instead of exclusive
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org,
+        joseph.qi@linux.alibaba.com
+References: <20191205064624.13419-1-riteshh@linux.ibm.com>
+ <20191205064624.13419-3-riteshh@linux.ibm.com>
+ <20191205120307.GA32639@quack2.suse.cz>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Thu, 5 Dec 2019 19:10:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <20191205120307.GA32639@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 19120513-0016-0000-0000-000002D1A2B5
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19120513-0017-0000-0000-00003333A792
+Message-Id: <20191205134007.605A44203F@d06av24.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-05_03:2019-12-04,2019-12-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 phishscore=0 mlxscore=0 lowpriorityscore=0
+ mlxlogscore=999 malwarescore=0 impostorscore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912050114
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-SGkgYWxsLA0KDQpXZSBwcm92aWRlIGEgY3VzdG9tIExpbnV4IGRpc3RyaWJ1dGlvbiwgYmFzZWQg
-b24geW9jdG8tcHJvamVjdCAocG9reSAyLjYuMSkuIFdpdGggYml0YmFrZSB3ZSd2ZSBidWlsdCBh
-biBpbWFnZSwgd2hpY2ggYmVjb21lcyBjb3JydXB0ZWQgZHVyaW5nIGluc3RhbGxhdGlvbiB0byB0
-aGUgU1NEIG9mIHRoZSBlbWJlZGRlZCBkZXZpY2UuIFdlJ3JlIHNldHRpbmcgdGhlIGZpbGVzeXN0
-ZW0gVVVJRCAobm90IHBhcnRpdGlvbiBVVUlEKSB1c2luZyB0dW5lMmZzLCBzbyB0aGUgYm9vdGxv
-YWRlciBjYW4gZmluZCBpdC4gV2Ugbm90aWNlZCB0aGlzIHByb2JsZW0gYmVjYXVzZSB3ZSBmb3Vu
-ZCBhIGRpcmVjdG9yeSB0aGF0IGNvdWxkbid0IGJlIHJlYWQuDQoNCnwgcm9vdEBib2FyZDp+IyBk
-aXIgL3Zhci9saWIvb3BrZy9pbmZvDQp8IGxzOiByZWFkaW5nIGRpcmVjdG9yeSAnL3Zhci9saWIv
-b3BrZy9pbmZvJzogQmFkIG1lc3NhZ2UgdG90YWwgMA0KDQpUaGlzIGJlaGF2aW9yIGNhbiBiZSBy
-ZXByb2R1Y2VkIG9uIGFuIGV4dDQgZnMgaW1hZ2UsIHNvIHRoZXJlJ3Mgbm8gbmVlZCB0byBydW4g
-aXQgb24gdGhlIGRldmljZS4NCg0KRmlyc3RseSwgbGV0IGNoZWNrIHRoYXQgdGhlIGltYWdlIGhh
-cyBiZWVuIGJ1aWx0IGNvcnJlY3RseToNCg0KfCByb290QGJvYXJkOn4jIGZzY2suZXh0NCAtZm4g
-Y29yZS1pbWFnZS5leHQ0DQp8IGUyZnNjayAxLjQ0LjEgKDI0LU1hci0yMDE4KQ0KfCBQYXNzIDE6
-IENoZWNraW5nIGlub2RlcywgYmxvY2tzLCBhbmQgc2l6ZXMNCnwgUGFzcyAyOiBDaGVja2luZyBk
-aXJlY3Rvcnkgc3RydWN0dXJlDQp8IFBhc3MgMzogQ2hlY2tpbmcgZGlyZWN0b3J5IGNvbm5lY3Rp
-dml0eQ0KfCBQYXNzIDQ6IENoZWNraW5nIHJlZmVyZW5jZSBjb3VudHMNCnwgUGFzcyA1OiBDaGVj
-a2luZyBncm91cCBzdW1tYXJ5IGluZm9ybWF0aW9uDQp8IGNvcmUtaW1hZ2UuZXh0NDogMTM0MTcv
-ODUzNDQgZmlsZXMgKDAuNiUgbm9uLWNvbnRpZ3VvdXMpLCAyNTA1NzUvMzQwMDYwIGJsb2Nrcw0K
-DQpUaGVuIHdlIHdhbnQgdG8gc2V0IFVVSUQgdG8gZnMgKHJhbmRvbSBvbmUgZm9yIHRoaXMgZXhh
-bXBsZSkgd2l0aCB0dW5lMmZzOg0KDQp8IHJvb3RAYm9hcmQ6fiMgdHVuZTJmcyAtVSByYW5kb20g
-Y29yZS1pbWFnZS5leHQ0DQp8IHR1bmUyZnMgMS40NC4xICgyNC1NYXItMjAxOCkNCnwgU2V0dGlu
-ZyBVVUlEIG9uIGEgY2hlY2tzdW1tZWQgZmlsZXN5c3RlbSBjb3VsZCB0YWtlIHNvbWUgdGltZS4N
-CnwgUHJvY2VlZCBhbnl3YXkgKG9yIHdhaXQgNSBzZWNvbmRzIHRvIHByb2NlZWQpID8gKHksTikg
-eQ0KfA0KfCBUaGlzIG9wZXJhdGlvbiByZXF1aXJlcyBhIGZyZXNobHkgY2hlY2tlZCBmaWxlc3lz
-dGVtLg0KfA0KfCBQbGVhc2UgcnVuIGUyZnNjayAtZkQgb24gdGhlIGZpbGVzeXN0ZW0uDQoNCkl0
-IHNheXMgdGhhdCBvbiBhIGNoZWNrc3VtbWVkIGZzIGFsbCBtZXRhZGF0YSBibG9ja3MgaGF2ZSB0
-byBiZSByZXdyaXR0ZW4gKCdtZXRhZGF0YV9jc3VtJyBmcyBmZWF0dXJlcyBmbGFnIHNldCBpbiBz
-dXBlcmJsb2NrKSwgd2hhdCBmYWlsZWQgc29tZXdoZXJlIGluIGJldHdlZW4gKCdub3QgY2xlYW4n
-IGZzIHN0YXRlIHNldCBpbiBzdXBlcmJsb2NrKS4gV2UgY2FuIGZpeCBpdCB3aXRoIGZzY2s6DQoN
-Cnwgcm9vdEBib2FyZDp+IyBmc2NrLmV4dDQgLWZ5IGNvcmUtaW1hZ2UuZXh0NA0KfCBlMmZzY2sg
-MS40NC4xICgyNC1NYXItMjAxOCkNCnwgUGFzcyAxOiBDaGVja2luZyBpbm9kZXMsIGJsb2Nrcywg
-YW5kIHNpemVzDQp8IFBhc3MgMjogQ2hlY2tpbmcgZGlyZWN0b3J5IHN0cnVjdHVyZQ0KfCBQcm9i
-bGVtIGluIEhUUkVFIGRpcmVjdG9yeSBpbm9kZSAxNzc6IGludGVybmFsIG5vZGUgZmFpbHMgY2hl
-Y2tzdW0uDQp8IENsZWFyIEhUcmVlIGluZGV4PyB5ZXMNCnwNCnwgUGFzcyAzOiBDaGVja2luZyBk
-aXJlY3RvcnkgY29ubmVjdGl2aXR5DQp8IFBhc3MgM0E6IE9wdGltaXppbmcgZGlyZWN0b3JpZXMN
-CnwgUGFzcyA0OiBDaGVja2luZyByZWZlcmVuY2UgY291bnRzDQp8IFBhc3MgNTogQ2hlY2tpbmcg
-Z3JvdXAgc3VtbWFyeSBpbmZvcm1hdGlvbg0KfA0KfCBjb3JlLWltYWdlLmV4dDQ6ICoqKioqIEZJ
-TEUgU1lTVEVNIFdBUyBNT0RJRklFRCAqKioqKg0KfCBjb3JlLWltYWdlLmV4dDQ6IDEzNDE3Lzg1
-MzQ0IGZpbGVzICgwLjYlIG5vbi1jb250aWd1b3VzKSwgMjUwNTc1LzM0MDA2MCBibG9ja3MNCg0K
-SWYgSSByZXJ1biB0dW5lMmZzIG9uIHRoZSBzYW1lIGZpeGVkIGltYWdlLCBpdCBjb3JydXB0cyBp
-dCBhZ2Fpbi4NCg0KTGV0IGhhdmUgYSBkZWVwZXIgbG9vayB0byB0aGUgY29ycnVwdGVkIGlub2Rl
-IDE3NyAtIGl0IGlzIHBhdGggL3Zhci9saWIvb3BrZy9pbmZvLywgYW5kIHRoZXJlJ3MgMjcxMiBm
-aWxlcyB1bmRlciBpdC4gSGVyZSBpcyBpdHMgSFRSRUUgc3RydWN0dXJlOg0KDQp8IHJvb3RAYm9h
-cmQ6fiMgZGVidWdmcyAtUiAiaHRyZWVfZHVtcCAvdmFyL2xpYi9vcGtnL2luZm8iIGNvcmUtaW1h
-Z2UuZXh0NA0KfCBSb290IG5vZGUgZHVtcDoNCnwgIFJlc2VydmVkIHplcm86IDANCnwgIEhhc2gg
-VmVyc2lvbjogMQ0KfCAgSW5mbyBsZW5ndGg6IDgNCnwgIEluZGlyZWN0IGxldmVsczogMQ0KfCAg
-RmxhZ3M6IDANCnwgTnVtYmVyIG9mIGVudHJpZXMgKGNvdW50KTogMQ0KfCBOdW1iZXIgb2YgZW50
-cmllcyAobGltaXQpOiAxMjMNCnwgQ2hlY2tzdW06IDB4OGRjMWUyZGINCnwgRW50cnkgIzA6IEhh
-c2ggMHgwMDAwMDAwMCwgYmxvY2sgMTI3DQp8DQp8IEVudHJ5ICMwOiBIYXNoIDB4MDAwMDAwMDAs
-IGJsb2NrIDEyNw0KfCBOdW1iZXIgb2YgZW50cmllcyAoY291bnQpOiAxMjYNCnwgTnVtYmVyIG9m
-IGVudHJpZXMgKGxpbWl0KTogMTI2DQp8IENoZWNrc3VtOiAweDllNTRiNWM3DQp8IEVudHJ5ICMw
-OiBIYXNoIDB4MDAwMDAwMDAsIGJsb2NrIDENCnwgRW50cnkgIzE6IEhhc2ggMHgwMWJkZGJlMCwg
-YmxvY2sgMg0KfCAuLi4NCnwgRW50cnkgIzEyNDogSGFzaCAweGZkNTVhYjMwLCBibG9jayAxMjUN
-CnwgRW50cnkgIzEyNTogSGFzaCAweGZmYTk2NDkyLCBibG9jayAxMjYNCnwNCnwgRW50cnkgIzA6
-IEhhc2ggMHgwMDAwMDAwMCwgYmxvY2sgMQ0KfCBSZWFkaW5nIGRpcmVjdG9yeSBibG9jayAxLCBw
-aHlzIDE3ODYzDQp8IDE2NTAgMHgwMDBmOWVlMC1iYzRhY2U3MiAoNTIpIHBlcmwtbW9kdWxlLXRh
-cC1wYXJzZXItc291cmNlaGFuZGxlci5saXN0DQp8IDEyMjggMHgwMDFkMDZlOC1hZGE5OTg5NyAo
-NDApIHBlcmwtbW9kdWxlLW5ldC1zZXJ2ZW50LmNvbnRyb2wNCnwgLi4uDQp8IDI3NjIgMHhmZjc3
-YjQ5Mi1hOWI5OGUzMSAoMjI4KSBwZXJsLW1vZHVsZS1qc29uLXBwLmNvbnRyb2wNCnwgbGVhZiBi
-bG9jayBjaGVja3N1bTogMHhlY2NiMDA0ZA0KfCBFbnRyeSAjMTI1OiBIYXNoIDB4ZmZhOTY0OTIs
-IGJsb2NrIDEyNg0KfCBSZWFkaW5nIGRpcmVjdG9yeSBibG9jayAxMjYsIHBoeXMgMjQ3OTM4DQp8
-IDEzOTAgMHhmZmE5NjQ5Mi03Mzg0MTU2MSAoMzYpIGxtc2Vuc29ycy1zZW5zb3JzLmNvbnRyb2wN
-CnwgMTAyMiAweGZmYWY3M2I0LWE2Zjc1YjFiICg5NzYpIHBlcmwtbW9kdWxlLWJ5dGVzLmNvbnRy
-b2wNCnwgbGVhZiBibG9jayBjaGVja3N1bTogMHgwZjljODA5Mg0KfCAtLS0tLS0tLS0tLS0tLS0t
-LS0tLS0NCg0KVGhlIHByb2JsZW0gZm9yIHR1bmUyZnMgaXMgIk51bWJlciBvZiBlbnRyaWVzIiwg
-d2hlbiBjb3VudD09bGltaXQgKDEyNikuIEluIHRoaXMgY2FzZSBpdCBmYWlscyB3aXRoaW4gdGhl
-IGZvbGxvd2luZyAnaWYnIHN0YXRlbWVudDoNCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
-bS9mcy9leHQyL2UyZnNwcm9ncy5naXQvdHJlZS9taXNjL3R1bmUyZnMuYyNuNTQ0DQoNClRoZW4g
-aXQgcHJpbnRzIG91dCBlcnJvciwgc2V0cyAnbm90IGNsZWFuJyBmcyBzdGF0ZSBpbiBzdXBlcmJs
-b2NrLCBhbmQgZXhpdHMuIFdoYXQgZnNjayBkb2VzLCBpdCByZWNvbXB1dGVzIGNoZWNrc3Vtcywg
-c2V0cyAnY2xlYW4nIGZzIHN0YXRlLCBhbmQgdGhhdCdzIGFsbC4gSXQgZG9lc24ndCBjaGFuZ2Ug
-bnVtYmVyIG9mIGVudHJpZXMsIGNvdW50K2xpbWl0IHN0YXlzIHRoZSBzYW1lICgxMjYpLiBTbyB0
-aGF0J3Mgd2h5IHJlcnVubmluZyB0dW5lMmZzIGNvcnJ1cHRzIHRoZSBmcyBhZ2Fpbi4NCg0KQW5k
-IGhlcmUgaXMgdGhlIHF1ZXN0aW9uIC0gaG93IGl0IHNob3VsZCBiZWhhdmUgY29ycmVjdGx5PyBX
-aG8ncyByZXNwb25zaWJsZSBmb3IgdGhpcyBpc3N1ZT8NCi0gdHVuZTJmcyAtIHNob3VsZCBpdCBp
-Z25vcmUgdGhlICdpZicgc3RhdGVtZW50PyAoSSB0cmllZCB0byBjb21tZW50IGl0IG91dCBhbmQg
-dHVuZTJmcyB0aGVuIGRpZCBpdHMgam9iIHN1Y2Nlc3NmdWxseSwgcHJvdmVkIHdpdGggZnNjayks
-DQotIGZzY2sgLSBzaG91bGQgaXQgcmVidWlsZCB0aGUgZGlyLCBhcyBzdGF0ZWQgaW4gdGhlIGNv
-bW1lbnQgYWJvdmUgdGhlICdpZicgc3RhdGVtZW50PyAoaHRyZWUgYmxvY2sgaXMgZnVsbCB0aGVu
-IHJlYnVpbGQgdGhlIGRpciksDQotIG1rZnMgLSBzaG91bGQgaXQgbm90IGJ1aWxkIHRoZSBpbWFn
-ZSB3aXRoIGZ1bGwgbnVtYmVyIG9mIGVudHJpZXM/IChjb3VudD09bGltaXQpLg0KDQpUaGlzIGlz
-c3VlIGlzIG5vdCByZWxhdGVkIHRvIHRoZSB1c2VkIHZlcnNpb24gb2YgZTJmc3Byb2dzICgxLjQ0
-LjEpLCBJIGNvbXBpbGVkIGFuZCB0cmllZCBvdXQgdmVyc2lvbnMgMS40MyAtIDEuNDUuNCBhbmQg
-dGhleSBiZWhhdmUgdGhlIHNhbWUgd2F5LiBJIGFsc28gdHJpZWQgdG8gZ2VuZXJhdGUgb3RoZXIg
-aW1hZ2VzIChzdWNoIGFzIGNvcmUtaW1hZ2UtbWluaW1hbCksIGJ1dCBubyBvbmUgZWxzZSBsZWFk
-IHRvIHRoZSBjb3JydXB0aW9uLiBJZiBuZWVkZWQsIEkgbWF5IGdpdmUgeW91IGFjY2VzcyB0byB0
-aGUgY29ycnVwdGVkIGltYWdlIGZvciBmdXJ0aGVyIGludmVzdGlnYXRpb24uDQoNCkknbSBub3Qg
-ZXhwZXJ0IGluIGV4dDQsIHNvIEknZCBhcHByZWNpYXRlIGFueSBhZHZpY2UuIFRoYW5rIHlvdS4N
-Cg0KQlIsDQpWaWxvDQoNCg0KQ29uZmlkZW50aWFsaXR5IE5vdGljZTogVGhpcyBlLW1haWwgaXMg
-cHJpdmlsZWdlZCBhbmQgY29uZmlkZW50aWFsIGFuZCBmb3IgdGhlIHVzZSBvZiB0aGUgYWRkcmVz
-c2VlIG9ubHkuIFNob3VsZCB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGUtbWFpbCBpbiBlcnJvciBw
-bGVhc2Ugbm90aWZ5IHVzIGJ5IHJlcGx5aW5nIGRpcmVjdGx5IHRvIHRoZSBzZW5kZXIgb3IgYnkg
-c2VuZGluZyBhIG1lc3NhZ2UgdG8gaW5mb0BraXN0bGVyLmNvbS4gVW5hdXRob3Jpc2VkIGRpc3Nl
-bWluYXRpb24sIGRpc2Nsb3N1cmUgb3IgY29weWluZyBvZiB0aGUgY29udGVudHMgb2YgdGhpcyBl
-LW1haWwsIG9yIGFueSBzaW1pbGFyIGFjdGlvbiwgaXMgcHJvaGliaXRlZC4NCg==
+Hello Jan,
+
+Thanks a lot for your reviews.
+
+On 12/5/19 5:33 PM, Jan Kara wrote:
+> On Thu 05-12-19 12:16:23, Ritesh Harjani wrote:
+>> Earlier there was no shared lock in DIO read path. But this patch
+>> (16c54688592ce: ext4: Allow parallel DIO reads)
+>> simplified some of the locking mechanism while still allowing for parallel DIO
+>> reads by adding shared lock in inode DIO read path.
+>>
+>> But this created problem with mixed read/write workload. It is due to the fact
+>> that in DIO path, we first start with exclusive lock and only when we determine
+>> that it is a ovewrite IO, we downgrade the lock. This causes the problem, since
+>> we still have shared locking in DIO reads.
+>>
+>> So, this patch tries to fix this issue by starting with shared lock and then
+>> switching to exclusive lock only when required based on ext4_dio_write_checks().
+>>
+>> Other than that, it also simplifies below cases:-
+>>
+>> 1. Simplified ext4_unaligned_aio API to ext4_unaligned_io. Previous API was
+>> abused in the sense that it was not really checking for AIO anywhere also it
+>> used to check for extending writes. So this API was renamed and simplified to
+>> ext4_unaligned_io() which actully only checks if the IO is really unaligned.
+>>
+>> Now, in case of unaligned direct IO, iomap_dio_rw needs to do zeroing of partial
+>> block and that will require serialization against other direct IOs in the same
+>> block. So we take a exclusive inode lock for any unaligned DIO. In case of AIO
+>> we also need to wait for any outstanding IOs to complete so that conversion from
+>> unwritten to written is completed before anyone try to map the overlapping block.
+>> Hence we take exclusive inode lock and also wait for inode_dio_wait() for
+>> unaligned DIO case. Please note since we are anyway taking an exclusive lock in
+>> unaligned IO, inode_dio_wait() becomes a no-op in case of non-AIO DIO.
+>>
+>> 2. Added ext4_extending_io(). This checks if the IO is extending the file.
+>>
+>> 3. Added ext4_dio_write_checks(). In this we start with shared inode lock and
+>> only switch to exclusive lock if required. So in most cases with aligned,
+>> non-extending, dioread_nolock & overwrites, it tries to write with a shared
+>> lock. If not, then we restart the operation in ext4_dio_write_checks(), after
+>> acquiring exclusive lock.
+>>
+>> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> 
+> Cool, the patch looks good to me. You can add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+
+great!
+
+> 
+> Two small nits below:
+> 
+>> -static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
+>> +static ssize_t ext4_generic_write_checks(struct kiocb *iocb,
+>> +					 struct iov_iter *from)
+>>   {
+>>   	struct inode *inode = file_inode(iocb->ki_filp);
+>>   	ssize_t ret;
+>> @@ -228,11 +235,21 @@ static ssize_t ext4_write_checks(struct kiocb *iocb, struct iov_iter *from)
+>>   		iov_iter_truncate(from, sbi->s_bitmap_maxbytes - iocb->ki_pos);
+>>   	}
+>>   
+>> +	return iov_iter_count(from);
+>> +}
+> 
+> You return iov_iter_count() from ext4_generic_write_checks()...
+> 
+>> +static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
+>> +				     bool *ilock_shared, bool *extend)
+>> +{
+>> +	struct file *file = iocb->ki_filp;
+>> +	struct inode *inode = file_inode(file);
+>> +	loff_t offset;
+>> +	size_t count;
+>> +	ssize_t ret;
+>> +
+>> +restart:
+>> +	ret = ext4_generic_write_checks(iocb, from);
+>> +	if (ret <= 0)
+>> +		goto out;
+>> +
+>> +	offset = iocb->ki_pos;
+>> +	count = iov_iter_count(from);
+> 
+> But you don't use the returned count here and just call iov_iter_count()
+> again (which is cheap anyway but still it's strange).
+
+Yes. iov_iter_count() (as you also said) is anyway a inline function
+which only does from->count, which comes at no cost.
+But re-assigning a ssize_t value to size_t is something I was getting
+uncomfortable with. Although I agree that it should be completely fine
+here, I just was not convinced to use that instead of directly accessing
+it from iov_iter_count() for better readability reasons.
+
+But unless you feel otherwise, I could make those changes at 2 places
+which you mentioned.
+
+> 
+>> +	if (ext4_extending_io(inode, offset, count))
+>> +		*extend = true;
+>> +	/*
+>> +	 * Determine whether the IO operation will overwrite allocated
+>> +	 * and initialized blocks. If so, check to see whether it is
+>> +	 * possible to take the dioread_nolock path.
+>> +	 *
+>> +	 * We need exclusive i_rwsem for changing security info
+>> +	 * in file_modified().
+>> +	 */
+>> +	if (*ilock_shared && (!IS_NOSEC(inode) || *extend ||
+>> +	     !ext4_should_dioread_nolock(inode) ||
+>> +	     !ext4_overwrite_io(inode, offset, count))) {
+>> +		inode_unlock_shared(inode);
+>> +		*ilock_shared = false;
+>> +		inode_lock(inode);
+>> +		goto restart;
+>> +	}
+>> +
+>> +	ret = file_modified(file);
+>> +	if (ret < 0)
+>> +		goto out;
+>> +
+>> +	return count;
+> 
+> And then you return count from ext4_dio_write_checks() here...
+
+ditto
+> 
+>> -	ret = ext4_write_checks(iocb, from);
+>> -	if (ret <= 0) {
+>> -		inode_unlock(inode);
+>> +	ret = ext4_dio_write_checks(iocb, from, &ilock_shared, &extend);
+>> +	if (ret <= 0)
+>>   		return ret;
+>> -	}
+>>   
+>> -	/*
+>> -	 * Unaligned asynchronous direct I/O must be serialized among each
+>> -	 * other as the zeroing of partial blocks of two competing unaligned
+>> -	 * asynchronous direct I/O writes can result in data corruption.
+>> -	 */
+>>   	offset = iocb->ki_pos;
+>>   	count = iov_iter_count(from);
+> 
+> And then again just don't use the value here...
+
+ditto
+> 
+> 								Honza
+> 
+
