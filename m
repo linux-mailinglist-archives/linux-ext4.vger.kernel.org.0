@@ -2,82 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B94A9115802
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Dec 2019 20:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE986115A60
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Dec 2019 01:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbfLFTy5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Dec 2019 14:54:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60982 "EHLO mail.kernel.org"
+        id S1726407AbfLGAqI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Dec 2019 19:46:08 -0500
+Received: from mail.phunq.net ([66.183.183.73]:52232 "EHLO phunq.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbfLFTy5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 6 Dec 2019 14:54:57 -0500
-Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FE602464E;
-        Fri,  6 Dec 2019 19:54:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575662096;
-        bh=AB1Ig2/Xqpn71+VubvnuzWhRAX5d8Nz/rud1mSkjboQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RNeNrKqHvlyfUcLZig+rXyh5vu3eJXPlpR9GcFOhAWnamqUZaToyUQ8lLxyuGNT1V
-         oC1gDNR/bWMbM/xEdpzZ1z3sYkZbMa9hYyHt1VpBdCVodP1vI6s9xz2m2G9oDRqMVN
-         +N9488mSj9IkVwjOVlrx+sikPnKW+z3gAWUulRAY=
-Date:   Fri, 6 Dec 2019 11:54:56 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de, agruenba@redhat.com,
-        rpeterso@redhat.com, cluster-devel@redhat.com,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: [GIT PULL] iomap: fixes for 5.5
-Message-ID: <20191206195456.GB9464@magnolia>
+        id S1726388AbfLGAqI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 6 Dec 2019 19:46:08 -0500
+Received: from [172.16.1.14]
+        by phunq.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
+        (Exim 4.92.3)
+        (envelope-from <daniel@phunq.net>)
+        id 1idOEX-0006U5-SC; Fri, 06 Dec 2019 16:46:05 -0800
+Subject: Re: [RFC] Thing 1: Shardmap for Ext4
+To:     Vyacheslav Dubeyko <slava@dubeyko.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+References: <176a1773-f5ea-e686-ec7b-5f0a46c6f731@phunq.net>
+ <20191127142508.GB5143@mit.edu>
+ <6b6242d9-f88b-824d-afe9-d42382a93b34@phunq.net>
+ <9ed62cfea37bfebfb76e378d482bd521c7403c1f.camel@dubeyko.com>
+ <c61706fb-3534-72b9-c4ae-0f0972bc566b@phunq.net>
+ <37c9494c40998d23d0d68afaa5a7f942a23e8986.camel@dubeyko.com>
+From:   Daniel Phillips <daniel@phunq.net>
+Message-ID: <a05837a0-a352-fc8d-5c9c-28d8065961fd@phunq.net>
+Date:   Fri, 6 Dec 2019 16:46:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <37c9494c40998d23d0d68afaa5a7f942a23e8986.camel@dubeyko.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Linus,
+On 2019-12-06 3:47 a.m., Vyacheslav Dubeyko wrote:
+> On Thu, 2019-12-05 at 01:46 -0800, Daniel Phillips wrote:
+>> On 2019-12-04 7:55 a.m., Vyacheslav Dubeyko wrote:
+>>>>
+> 
+> <snipped and reoredered>
+> 
+>> And here is a diagram of the Shardmap three level hashing scheme,
+>> which ties everything together:
+>>
+>>     https://github.com/danielbot/Shardmap/wiki/Shardmap-hashing-scheme
+>>
+>> This needs explanation. It is something new that you won't find in
+>> any
+>> textbook, this is the big reveal right here.
+>>
+> 
+> This diagram is pretty good and provides the high-level view of the
+> whole scheme. But, maybe, it makes sense to show the granularity of
+> hash code. It looks like the low hash is the hash of a name. Am I
+> correct?
 
-Please pull these iomap bug fixes for 5.5-rc1, which fix a race
-condition and a use-after-free error.
+Not quite. A 64 bit hash code is computed per name, then divided up into
+three parts as shown in the diagram. Each part of the hash addresses a
+different level of the Shardmap index hierarchy: high bits address the
+top level shard array, giving a pointer to a shard; middle bits address
+a hash bucket within that shard; low bits are used to resolve collisions
+within the hash bucket (and collisions still may occur even when the low
+bits are considered, forcing a record block access and full string
+compare.
 
-The branch has survived overnight xfstests runs and merges cleanly with
-this morning's master.  Please let me know if anything strange happens.
+> But how the mid- and high- parts of the hash code are defined?
 
---D
+Given the above description, does the diagram make sense? If so I will
+add this description to the wiki.
 
-The following changes since commit 88cfd30e188fcf6fd8304586c936a6f22fb665e5:
+> It looks like that cached shard stores LBAs of record entry blocks are
+> associated with the low hash values.
 
-  iomap: remove unneeded variable in iomap_dio_rw() (2019-11-26 09:28:47 -0800)
+Rather, associated with the entire hash value.
 
-are available in the Git repository at:
+> But what does it mean that shard is cached?
 
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.5-merge-14
+This is the cache form of the shard, meaning that the unordered hash/lba
+index pairs (duopack) were read in from media and loaded into this cache
+object (or newly created by recent directory operations.)
 
-for you to fetch changes up to c275779ff2dd51c96eaae04fac5d766421d6c596:
+> Here is a diagram of the cache structures, very simple:
+>>
+>>     https://github.com/danielbot/Shardmap/wiki/Shardmap-cache-format
+> 
+> This diagram is not easy to relate with the previous one. So, shard
+> table and shard array are the same entities or not?
 
-  iomap: stop using ioend after it's been freed in iomap_finish_ioend() (2019-12-05 07:41:16 -0800)
+They are, and I have updated the hashing scheme diagram to refer to both
+as "array". I will similarly update the code, which currently calls the
+shard array field "map".
 
-----------------------------------------------------------------
-Fixes for 5.5-rc1:
-- Fix a UAF when reporting writeback errors
-- Fix a race condition when handling page uptodate on a blocksize <
-  pagesize file that is also fragmented
+> Or do you mean that
+> shard table is storeed on the volume but shard array is constructed in
+> memory?
 
-----------------------------------------------------------------
-Christoph Hellwig (1):
-      iomap: fix sub-page uptodate handling
+Sorry about that, it should be clear now. On the volume, a simple
+unordered collection of hash:lba pairs is stored per shard, which is
+reorganized into shard cache form (a hash table object) at demand-load
+time.
 
-Zorro Lang (1):
-      iomap: stop using ioend after it's been freed in iomap_finish_ioend()
+>> There is a diagram here:
+>>
+> https://github.com/danielbot/Shardmap/wiki/Shardmap-record-block-format
+> 
+> I am slightly confused here. Does header be located at the bottom of
+> the record block?
 
- fs/iomap/buffered-io.c | 40 ++++++++++++++++++++++++++++------------
- 1 file changed, 28 insertions(+), 12 deletions(-)
+The header (just 32 bytes at the moment, possibly to be expanded to 48
+or 64) is stored at the top of the zeroth record entry block, which is
+therefore a little smaller than any other record entry block.
+
+> My understanding is that records grow from top of the
+> block down to the header direction. Am I correct? Why header is not
+> located at the top of the block with entry dictionary? Any special
+> purpose here?
+
+That should be clear now. I will add the above descriptive text to the
+wiki.
+
+Regards,
+
+Daniel
