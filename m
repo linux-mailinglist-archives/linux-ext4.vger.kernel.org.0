@@ -2,130 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3013116F60
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 15:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239F9117161
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 17:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbfLIOoM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Dec 2019 09:44:12 -0500
-Received: from mx1.kistler.com ([91.223.79.44]:43280 "EHLO mx1.kistler.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727307AbfLIOoJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 9 Dec 2019 09:44:09 -0500
-IronPort-SDR: NwN8KPtKFxmduX++I8GiuFanD3KfUhBl72UeaNgTEfwVkSZg9dMPr9vxcfWfGEO7P55qtDiG+P
- aHPFEhk1x3XQ==
-X-IronPort-AV: E=Sophos;i="5.69,296,1571695200"; 
-   d="scan'208";a="22439109"
-Received: from kihagsepp01.int.kistler.com (HELO sl-win-seppm-1.int.kistler.com) ([192.168.52.67])
-  by mx1.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Dec 2019 15:44:08 +0100
-Received: from mx1.kistler.com (kihagciip01.int.kistler.com [192.168.52.57])
-        by sl-win-seppm-1.int.kistler.com (Postfix) with ESMTPS
-        for <linux-ext4@vger.kernel.org>; Mon,  9 Dec 2019 15:44:07 +0100 (CET)
-IronPort-SDR: etJ+8zEOAXtKTihn4ZPuvTMDWGBrDLZ0X5m243rPZTaFuO26zRqdVyrfPBf0MWQValmCr2UIzK
- hI03f2RGOCiw==
-X-IronPort-AV: E=Sophos;i="5.69,296,1571695200"; 
-   d="scan'208";a="22439108"
-Received: from sw-win-exch-1.int.kistler.com ([192.168.100.95])
-  by mx1.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Dec 2019 15:44:07 +0100
-Received: from SW-WIN-EXCH-2.int.kistler.com (192.168.100.96) by
- SW-WIN-EXCH-1.int.kistler.com (192.168.100.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 9 Dec 2019 15:44:07 +0100
-Received: from SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f]) by
- SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f%9]) with mapi id
- 15.01.1847.003; Mon, 9 Dec 2019 15:44:07 +0100
-From:   Viliam Lejcik <Viliam.Lejcik@kistler.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: RE: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
-Thread-Topic: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
-Thread-Index: AdWrTPhiKFIdjLi2SZakmenb1WHIogAGv0/QAB4CLIAAr25vwA==
-Date:   Mon, 9 Dec 2019 14:44:07 +0000
-Message-ID: <9a8c71a7c2a14c839e343f33a346e431@kistler.com>
-References: <5fd4546cdc7f43f282716afb1e1a18cb@kistler.com>
- <20191206035101.GA62394@mit.edu>
-In-Reply-To: <20191206035101.GA62394@mit.edu>
-Accept-Language: en-US, de-CH
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [192.168.100.90]
-x-c2processedorg: 78a97207-3cfa-406d-a777-069c09c1300a
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726491AbfLIQUa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Dec 2019 11:20:30 -0500
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:32982 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbfLIQUa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Dec 2019 11:20:30 -0500
+Received: by mail-wm1-f42.google.com with SMTP id y23so259927wma.0;
+        Mon, 09 Dec 2019 08:20:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WBIobri3MkGop/QDs53NXiO6RTUjcrDu0iF/QcG86H0=;
+        b=W4rrS4w8J3X0s/knW10xoM7c0XvfkfBWKTpkJv7UBseXclDelL+x9rXP7Toz7IePVV
+         E5JzmhHlqkJIHH5mn99dwLDDvtuUF32qwp1jcmmbOYO9Vx9Xa51TZUx2qhVksqgzSF6C
+         vkuu8dAlkddPpEADOrxVKmHQ8zrhfZi7ak47Vhg/Xektz7G4ICP9gHMA3onOstOx7DA8
+         Gbg3tBaeCRW879E08AF9uT1GP73T9Ro8s3Y5q2RwoPXHxALwKbg8mPZvvVOvtkaY33PM
+         /R7quTP54GV5ANZbI5Gh2bNUwoRz/CGy5lW2XqUhfKuy0D60x5FGxD8kfBmIVJPI5Vl9
+         3eOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WBIobri3MkGop/QDs53NXiO6RTUjcrDu0iF/QcG86H0=;
+        b=hE7kX2P7fDXb+ye04ucoAP12JmDC240Lyt3W7uEqEZw0gI2j9DV+HxLvPxUq+SBGmE
+         +cIBDSdO2LeWUMskZymPlzY3vFIvuqIFFjK7ykoHDxukpYwixzxRD8/nYv4iYbC9PfmS
+         EnC1S8IXBGAG0n1BqEwSdqpE6vKiRNIVInNl1KaqCzUZppSj8R4wI3B//BDeeHxywXDt
+         /FZIkYk0hkSrCKhdXSBu4lmLmcI8nuD6YgLikBhXd8sBcvZpoXdnOgQ4kLnWhFJ0D2zL
+         V4IoKpUEk+pjLdgIYrUoagBoGrE8xx1klUWC6wyH1/aBlaozPJ/FX9U5mnWeeMuD8xxt
+         TuWw==
+X-Gm-Message-State: APjAAAWIzfSkapAplWoamI0mt5orHIfhWDR/mAqNFG3qo8wxrRLh70ks
+        ZAwcriJV0cuLcNSNWBgswP0=
+X-Google-Smtp-Source: APXvYqyL3Ao5jyCATnxdfctwvZ3CBAbBWb4P4ED0mJcOmAm4L1BkpLHWjA2CTQz7JIP995Or8WFlMA==
+X-Received: by 2002:a7b:c38c:: with SMTP id s12mr25766920wmj.96.1575908427479;
+        Mon, 09 Dec 2019 08:20:27 -0800 (PST)
+Received: from [10.68.217.182] ([217.70.210.43])
+        by smtp.gmail.com with ESMTPSA id n10sm27650061wrt.14.2019.12.09.08.20.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Dec 2019 08:20:26 -0800 (PST)
+Subject: Re: [Lsf-pc] [LSF/MM TOPIC] The end of the DAX experiment
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     lsf-pc@lists.linux-foundation.org,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+References: <CAPcyv4jyCDJTpGZB6qVX7_FiaxJfDzWA1cw8dfPjHM2j3j3yqQ@mail.gmail.com>
+ <20190214134622.GG4525@dhcp22.suse.cz>
+ <CAPcyv4gxFKBQ9eVdn+pNEzBXRfw6Qwfmu21H2i5uj-PyFmRAGQ@mail.gmail.com>
+From:   Boaz Harrosh <openosd@gmail.com>
+Message-ID: <5a45a763-d060-7cb1-9772-dd6e9f5f868a@gmail.com>
+Date:   Mon, 9 Dec 2019 18:20:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
+In-Reply-To: <CAPcyv4gxFKBQ9eVdn+pNEzBXRfw6Qwfmu21H2i5uj-PyFmRAGQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-SGkgVGhlb2RvcmUsDQoNClRoYW5rIHlvdSBmb3IgeW91ciBhbmFseXNpcy4gQXMgeW91IHN1Z2dl
-c3RlZCwgZmluYWxseSB3ZSBkZWNpZGVkIHRvIGluY3JlYXNlIGJsb2NrIHNpemUgdG8gNEssIGFu
-ZCBpdCBzZWVtcyB0aGF0IHByb2JsZW0gaXMgcmVzb2x2ZWQuDQoNCkJ5IGRlZmF1bHQsIHlvY3Rv
-L2JpdGJha2UgZG8gbm90IGNvbmZpZ3VyZSB0aGUgYmxvY2sgc2l6ZSwgc28gdGhhdCBta2ZzLmV4
-dDQgdXNlZCBkZWZhdWx0IHZhbHVlIC0gMUsuIFdlIGZpeGVkIGl0IGxpa2UgaGVyZTogKHNlZSB0
-aGUgbGFzdCBsaW5lKQ0KaHR0cHM6Ly9naXQueW9jdG9wcm9qZWN0Lm9yZy9jZ2l0L2NnaXQuY2dp
-L21ldGEtcWNvbS90cmVlL2NvbmYvbWFjaGluZS9kcmFnb25ib2FyZC04MjBjLmNvbmY/aD1tYXN0
-ZXIjbjI2DQoNCkJSLA0KVmlsbw0KDQoNCkNvbmZpZGVudGlhbGl0eSBOb3RpY2U6IFRoaXMgZS1t
-YWlsIGlzIHByaXZpbGVnZWQgYW5kIGNvbmZpZGVudGlhbCBhbmQgZm9yIHRoZSB1c2Ugb2YgdGhl
-IGFkZHJlc3NlZSBvbmx5LiBTaG91bGQgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4g
-ZXJyb3IgcGxlYXNlIG5vdGlmeSB1cyBieSByZXBseWluZyBkaXJlY3RseSB0byB0aGUgc2VuZGVy
-IG9yIGJ5IHNlbmRpbmcgYSBtZXNzYWdlIHRvIGluZm9Aa2lzdGxlci5jb20uIFVuYXV0aG9yaXNl
-ZCBkaXNzZW1pbmF0aW9uLCBkaXNjbG9zdXJlIG9yIGNvcHlpbmcgb2YgdGhlIGNvbnRlbnRzIG9m
-IHRoaXMgZS1tYWlsLCBvciBhbnkgc2ltaWxhciBhY3Rpb24sIGlzIHByb2hpYml0ZWQuDQotLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogVGhlb2RvcmUgWS4gVHMnbyA8dHl0c29AbWl0
-LmVkdT4NClNlbnQ6IEZyaWRheSwgNi4gRGVjZW1iZXIgMjAxOSA0OjUxDQpUbzogTGVqY2lrIFZp
-bGlhbSA8VmlsaWFtLkxlamNpa0BraXN0bGVyLmNvbT4NCkNjOiBsaW51eC1leHQ0QHZnZXIua2Vy
-bmVsLm9yZw0KU3ViamVjdDogUmU6IGUyZnNwcm9nczogc2V0dGluZyBVVUlEIHdpdGggdHVuZTJm
-cyBjb3JydXB0cyBhbiBleHQ0IGZzIGltYWdlDQoNCk9uIFRodSwgRGVjIDA1LCAyMDE5IGF0IDEy
-OjM2OjM1UE0gKzAwMDAsIFZpbGlhbSBMZWpjaWsgd3JvdGU6DQo+DQo+IFRoZSBwcm9ibGVtIGZv
-ciB0dW5lMmZzIGlzICJOdW1iZXIgb2YgZW50cmllcyIsIHdoZW4gY291bnQ9PWxpbWl0DQo+ICgx
-MjYpLiBJbiB0aGlzIGNhc2UgaXQgZmFpbHMgd2l0aGluIHRoZSBmb2xsb3dpbmcgJ2lmJyBzdGF0
-ZW1lbnQ6DQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9mcy9leHQyL2UyZnNwcm9n
-cy5naXQvdHJlZS9taXNjL3R1bmUyZnMuYyNuNTQ0DQo+DQo+IFRoZW4gaXQgcHJpbnRzIG91dCBl
-cnJvciwgc2V0cyAnbm90IGNsZWFuJyBmcyBzdGF0ZSBpbiBzdXBlcmJsb2NrLA0KPiBhbmQgZXhp
-dHMuIFdoYXQgZnNjayBkb2VzLCBpdCByZWNvbXB1dGVzIGNoZWNrc3Vtcywgc2V0cyAnY2xlYW4n
-IGZzDQo+IHN0YXRlLCBhbmQgdGhhdCdzIGFsbC4gSXQgZG9lc24ndCBjaGFuZ2UgbnVtYmVyIG9m
-IGVudHJpZXMsDQo+IGNvdW50K2xpbWl0IHN0YXlzIHRoZSBzYW1lICgxMjYpLiBTbyB0aGF0J3Mg
-d2h5IHJlcnVubmluZyB0dW5lMmZzDQo+IGNvcnJ1cHRzIHRoZSBmcyBhZ2Fpbi4NCg0KU28gd2hh
-dCdzIGdvaW5nIG9uIGlzIHRoYXQgdGhlIGNvZGUgaW4gcXVlc3Rpb24gd2FzIG9yaWdpbmFsbHkN
-CmRlc2lnbmVkIGZvciBmaWxlIHN5c3RlbXMgd2l0aCBhIDRrIGJsb2NrIHNpemUsIGFuZCB3aGVu
-ICphZGRpbmcqIGENCmNoZWNrc3VtIHRvIGEgZGlyZWN0b3J5IHdoaWNoIGRpZG4ndCBhbHJlYWR5
-IGhhdmUgYSBjaGVja3N1bSAidGFpbCINCmFscmVhZHkgcmVzZXJ2ZWQuICBJbiB0aGF0IGNhc2Us
-IHlvdSBoYXZlIHRvIHJlY3JlYXRlIHRoZSBodHJlZSBpbmRleA0KZm9yIHRoYXQgZGlyZWN0b3J5
-LiAgU2luY2UgdHVuZTJmcyBkaWRuJ3Qgd2FudCB0byBkZWFsIHdpdGggdGhhdA0KY29ybmVyIGNh
-c2UsIGl0IHdvdWxkIHRocm93IHVwIGl0cyBoYW5kcyBhbmQgdGVsbCB0aGUgdXNlciB0byBydW4N
-CmUyZnNjayAtZkQuICBTaW5jZSB0aGUgVVVJRCBoYWQgYWxyYWR5IGJlZW4gY2hhbmdlZCwgYW5k
-IHRoZSBjaGVja3N1bQ0Kc2VlZCB3YXMgYmFzZWQgb24gdGhlIGNoZWNrc3VtIHNlZWQsIGUyZnNj
-ayB3b3VsZCByZXBvcnQgY29ycnVwdGlvbnMsDQpidXQgdGhhdCB3YXMgYWN0dWFsbHkgd2hhdCB3
-YXMgZXhwZWN0ZWQuICBVbmZvcnR1bmF0ZWx5IHRoZSBtZXNzYWdlDQpwcmludGVkIGJ5IHR1bmUy
-ZnMgaXMgc3VwZXItY29uZnVzaW5nLCBhbmQgbG9naWMgZm9yIGNoZWNraW5nIGZvciB0aGlzDQpj
-YXNlIGlzIGZhdWx0eSBpbiB0aGF0IChhKSBpdCBkb2Vzbid0IHRha2UgaW50byBhY2NvdW50IHRo
-ZSBibG9jaw0Kc2l6ZSwgYW5kIChiKSBpdCBkb2Vzbid0IHRha2UgaW50byBhY2NvdW50IGlmIHRo
-ZXJlIGlzIGEgY2hlY2tzdW0NCiJ0YWlsIiBhbHJlYWR5IHByZXNlbnQgZm9yIHRoYXQgcGFydGlj
-dWxhciBodHJlZSBkaXJlY3RvcnkuDQoNCk1vc3QgcGVvcGxlIGRvbid0IHNlZSB0aGlzIGJlY2F1
-c2UgdGhleSBhcmUgdXNpbmcgZmlsZSBzeXN0ZW1zIHdpdGggNGsNCmJsb2NrIHNpemVzLCBhbmQg
-aXQncyBtdWNoIGxlc3MgbGlrZWx5IHRoZXkgd2lsbCBydW4gaW50byB0aGF0DQpzaXR1YXRpb24s
-IHNpbmNlIHRoZSBpbnRlcmlvciBub2RlIGZhbm91dCBpcyBzaWduaWZpY2FudGx5IGxhcmdlciB3
-aXRoDQo0ayBibG9ja3MuICAoSXMgdGhlcmUgYSByZWFzb24geW91IGFyZSB1c2luZyBhIDFrIGJs
-b2NrIHNpemU/ICBUaGlzDQphZGRzIHF1aXRlIGEgYml0IG9mIGluZWZmaWNpZW5jeSB0byB0aGUg
-ZmlsZSBzeXN0ZW0sIGFuZCB3aGlsZSBpdCBkb2VzDQpyZWR1Y2UgaW50ZXJuYWwgZnJhZ21lbnRh
-dGlvbiwgYnl0ZXMgYXJlIHF1aXRlIGNoZWFwIHRoZXNlIGRheXMsIGFuZA0KaXQncyBwcm9iYWJs
-eSBub3Qgd29ydGggaXQgaWYgeW91IGNhcmUgYWJvdXQgcGVyZm9ybWFuY2UgYXQgYWxsIHRvIHVz
-ZQ0KYSAxayBibG9jayBzaXplIGluc3RlYWQgb2YgYSA0ayBibG9jayBzaXplLikNCg0KVGhlIHdv
-cmthcm91bmQgSSB3b3VsZCBzdWdnZXN0IGlzIGFzc3VtaW5nIHlvdSBhcmUgdXNpbmcgYSBrZXJu
-ZWwNCndoaWNoIGlzIDQuNCBvciBuZXdlciAoYW5kIGluIDIwMTksIHlvdSByZWFsbHkgc2hvdWxk
-KSwgdG8gdHVybiBvbiB0aGUNCm1ldGFkYXRhX2NzdW1fc2VlZCBmaWVsZCwgZWl0aGVyIHdoZW4g
-dGhlIGZpbGUgc3lzdGVtIGlzIG9yaWdpbmFsbHkNCmZvcm1hdHRlZCwgb3IgdXNpbmcgInR1bmUy
-ZnMgLU8gXm1ldGFkYXRhX2NzdW1fc2VlZCIuICBUaGlzIGFsbG93cyB5b3UNCnRvIGNoYW5nZSB0
-aGUgVVVJRCB3aXRob3V0IG5lZWRpbmcgdG8gcmV3cml0ZSBhbGwgb2YgdGhlIG1ldGFkYXRhDQpi
-bG9ja3MsIHdoaWNoIGlzIGZhc3Rlciwgd29ya3Mgd2hpbGUgdGhlIGZpbGUgc3lzdGVtIGlzIG1v
-dW50ZWQsIGFuZA0KYXZvaWRzIHRoZSBidWcgaW4gdHVuZTJmcy4NCg0KU28gdXNpbmcgdGhlIHRl
-c3QgZmlsZSBzeXN0ZW0geW91IHNlbnQgbWUsIHRoaXMgd29ya3MganVzdCBmaW5lOg0KDQolIHR1
-bmUyZnMgLU8gbWV0YWRhdGFfY3N1bV9zZWVkIC1VIHJhbmRvbSAgY29yZS1pbWFnZS5leHQ0DQp0
-dW5lMmZzIDEuNDUuNCAoMjMtU2VwLTIwMTkpDQolIGUyZnNjayAtZnkgISQNCmUyZnNjayAtZnkg
-Y29yZS1pbWFnZS5leHQ0DQplMmZzY2sgMS40NS40ICgyMy1TZXAtMjAxOSkNClBhc3MgMTogQ2hl
-Y2tpbmcgaW5vZGVzLCBibG9ja3MsIGFuZCBzaXplcw0KUGFzcyAyOiBDaGVja2luZyBkaXJlY3Rv
-cnkgc3RydWN0dXJlDQpQYXNzIDM6IENoZWNraW5nIGRpcmVjdG9yeSBjb25uZWN0aXZpdHkNClBh
-c3MgNDogQ2hlY2tpbmcgcmVmZXJlbmNlIGNvdW50cw0KUGFzcyA1OiBDaGVja2luZyBncm91cCBz
-dW1tYXJ5IGluZm9ybWF0aW9uDQpjb3JlLWltYWdlLmV4dDQ6IDEzMjM3Lzg5NDA4IGZpbGVzICgw
-LjYlIG5vbi1jb250aWd1b3VzKSwgMjQ5ODg4LzM1NzA2NCBibG9ja3MNCg0KY2hlZXJzLA0KDQot
-IFRlZA0K
+On 14/02/2019 20:25, Dan Williams wrote:
+> On Thu, Feb 14, 2019 at 5:46 AM Michal Hocko <mhocko@kernel.org> wrote:
+>>
+>> On Wed 06-02-19 13:12:59, Dan Williams wrote:
+>> [...]
+>>> * Userfaultfd for file-backed mappings and DAX
+>>
+>> I assume that other topics are meant to be FS track but this one is MM,
+>> right?
+> 
+> Yes, but I think it is the lowest priority of all the noted sub-topics
+> in this proposal. The DAX-reflink discussion, where a given
+> physical-page may need to be mapped into multiple inodes at different
+> offsets, might be more fruitful to have as a joint discussion with MM.
+> 
+
+This topic is very interesting to me.
+In current ZUFS implementation we support this option for a long time.
+
+IE: Map same pte_t into different indexes of the same file-mappings as well as
+in vma(s) of different files, at different indexes. Including invalidation
+of mapping of a pwrite into such a shared page.
+(A write to a shared block will allocate a new block for writing)
+
+This effort off-course involves the participation of the FileSystem
+to give a list of files and indexes for map_unmapping().
+I can explain if you want how we did this.
+
+Cheers
+Boaz
