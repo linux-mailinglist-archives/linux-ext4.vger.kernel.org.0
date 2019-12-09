@@ -2,295 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CABD1164C3
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 02:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A606F1165C3
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 05:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbfLIBXu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 8 Dec 2019 20:23:50 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41394 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726621AbfLIBXu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Dec 2019 20:23:50 -0500
-Received: from callcc.thunk.org (ec2-52-55-121-20.compute-1.amazonaws.com [52.55.121.20])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xB91NXwh017182
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 8 Dec 2019 20:23:44 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 041DA421A48; Sun,  8 Dec 2019 20:23:27 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH -v3] ext4: simulate various I/O and checksum errors when reading metadata
-Date:   Sun,  8 Dec 2019 20:23:17 -0500
-Message-Id: <20191209012317.59398-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <8504AF0E-39F8-4C56-86EE-9945E15C1A16@dilger.ca>
+        id S1726968AbfLIEOB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 8 Dec 2019 23:14:01 -0500
+Received: from mail-pf1-f174.google.com ([209.85.210.174]:40051 "EHLO
+        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726916AbfLIEOB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 8 Dec 2019 23:14:01 -0500
+Received: by mail-pf1-f174.google.com with SMTP id q8so6513414pfh.7
+        for <linux-ext4@vger.kernel.org>; Sun, 08 Dec 2019 20:14:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=3GvdW2CuuDCjmaIXoH+aO02+O+7dJNZOnUzcKt51VDI=;
+        b=bAPALUQnmHMyMv3VeoJ/HRpBirGud1Pulxaf3ZzC/vvQmfxAWe2mTMSpIBXxNCGXiS
+         jtALtUUI1kOa3WrX19geTFyCqTiQDARXsA6Y9nY2KR8FNxoVgrFpG7PSMGsvp4tnSH0k
+         rnaRuyjieVCZ5jJ8ndO/HFtb0Ue8p39Nj9Kvr00sVMCQ8OKNWeQbAEmO8WOmxB8fzYxu
+         9/PxGbA70yYCWvwokZJTUtWwGAvo3tMeGav1Wv5E6Pi4DQb28iv5Zbq2uda1mzx0vQsu
+         aKe+ZiMOA3r94adprutXbhHVIHSrtdaTu5wIgHwsJL+fTWlp3S1fAI5PWKGsSfehgfiV
+         1YiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=3GvdW2CuuDCjmaIXoH+aO02+O+7dJNZOnUzcKt51VDI=;
+        b=c9ddCoipgR1Gf+/0J7Xs+tf2UnkIgmNSLHa7ZmMBimMc8jz35FF9HE2I6++1/bxBz9
+         H43//OCgP0Qv05BZQiKWl5h0fSpK8T3/PYHhzAdS4Wm6nOfFclH1lWGout6ESfwzucVw
+         qzHskpNaQcYlTJ+gAnhSVJ+BswR5HiPsRow4bUp7yNKZtaY/WahPhhqQOUr1+lxnKmCm
+         eLwDnMsBp0uBNErilYjUTq4h1qwiCbkbBkIkfD297DuFDdfIP/S2NDZoMhG+vArqRcPG
+         fkiVF3I56OFdyVsKzcwcJTqDYuh8+CWxOmGsjB4GnpwvYu+JNlDr/ol308cA83oslGEo
+         6O3w==
+X-Gm-Message-State: APjAAAVPcTRwXvEG+veDZT/yii8fCCdpslwCR29a1acQ1p8mLxYtUP8p
+        ST0HIuxxkAU5Of6P2BkdTm3/waomEYwhbw==
+X-Google-Smtp-Source: APXvYqz2ZSoZdTvIHigjzXZpocwWFisBQ5wG8TNMY8FNUFBoQ6yfmObph2+yw8AI/EgH3xGKxBOZRg==
+X-Received: by 2002:a63:ed49:: with SMTP id m9mr16448383pgk.304.1575864840700;
+        Sun, 08 Dec 2019 20:14:00 -0800 (PST)
+Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id k6sm24577977pfi.119.2019.12.08.20.13.59
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 08 Dec 2019 20:13:59 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <14336F5B-D8D2-4B73-A60C-3B63997F0827@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_304B8726-7F83-4798-A158-4B5701D60DAE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH -v3] ext4: simulate various I/O and checksum errors when
+ reading metadata
+Date:   Sun, 8 Dec 2019 21:14:08 -0700
+In-Reply-To: <20191209012317.59398-1-tytso@mit.edu>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
 References: <8504AF0E-39F8-4C56-86EE-9945E15C1A16@dilger.ca>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <20191209012317.59398-1-tytso@mit.edu>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This allows us to test various error handling code paths
 
-Previous-Version-Link: https://lore.kernel.org/r/20191204032335.7683-2-tytso@mit.edu
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
+--Apple-Mail=_304B8726-7F83-4798-A158-4B5701D60DAE
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Andreas, thanks for the sugestion!  I've made this change in the v3 patch.
+On Dec 8, 2019, at 6:23 PM, Theodore Ts'o <tytso@mit.edu> wrote:
+>=20
+> This allows us to test various error handling code paths
+>=20
+> Previous-Version-Link: =
+https://lore.kernel.org/r/20191204032335.7683-2-tytso@mit.edu
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> ---
+>=20
+> +
+> +static inline bool ext4_simulate_fail(struct super_block *sb,
+> +				     unsigned long code)
+> +{
+> +#ifdef CONFIG_EXT4_DEBUG
+> +	struct ext4_sb_info *sbi =3D EXT4_SB(sb);
+> +
+> +	if (sbi->s_simulate_fail !=3D code)
 
-Notes:
-    v2: change ext4_simulate_fail() to return a bool instead of an int
-    v3: use integer codes instead of bitflags to indicate which failure to simulate
+This should be marked unlikely(), as it is definitely one of the places
+that is legitimately rarely true.  Sorry for not pointing this out on
+the previous version of the patch.
 
- fs/ext4/balloc.c |  4 +++-
- fs/ext4/ext4.h   | 38 ++++++++++++++++++++++++++++++++++++++
- fs/ext4/ialloc.c |  4 +++-
- fs/ext4/inode.c  |  6 +++++-
- fs/ext4/namei.c  | 11 ++++++++---
- fs/ext4/sysfs.c  | 23 +++++++++++++++++++++++
- 6 files changed, 80 insertions(+), 6 deletions(-)
+Cheers, Andreas
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index 102c38527a10..5f993a411251 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -371,7 +371,8 @@ static int ext4_validate_block_bitmap(struct super_block *sb,
- 	if (buffer_verified(bh))
- 		goto verified;
- 	if (unlikely(!ext4_block_bitmap_csum_verify(sb, block_group,
--			desc, bh))) {
-+						    desc, bh) ||
-+		     ext4_simulate_fail(sb, EXT4_SIM_BBITMAP_CRC))) {
- 		ext4_unlock_group(sb, block_group);
- 		ext4_error(sb, "bg %u: bad block bitmap checksum", block_group);
- 		ext4_mark_group_bitmap_corrupted(sb, block_group,
-@@ -505,6 +506,7 @@ int ext4_wait_block_bitmap(struct super_block *sb, ext4_group_t block_group,
- 	if (!desc)
- 		return -EFSCORRUPTED;
- 	wait_on_buffer(bh);
-+	ext4_simulate_fail_bh(sb, bh, EXT4_SIM_BBITMAP_EIO);
- 	if (!buffer_uptodate(bh)) {
- 		ext4_set_errno(sb, EIO);
- 		ext4_error(sb, "Cannot read block bitmap - "
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 1c9ac0fc8715..689c8efc7dd1 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1557,6 +1557,9 @@ struct ext4_sb_info {
- 	/* Barrier between changing inodes' journal flags and writepages ops. */
- 	struct percpu_rw_semaphore s_journal_flag_rwsem;
- 	struct dax_device *s_daxdev;
-+#ifdef CONFIG_EXT4_DEBUG
-+	unsigned long s_simulate_fail;
-+#endif
- };
- 
- static inline struct ext4_sb_info *EXT4_SB(struct super_block *sb)
-@@ -1575,6 +1578,41 @@ static inline int ext4_valid_inum(struct super_block *sb, unsigned long ino)
- 		 ino <= le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count));
- }
- 
-+/*
-+ * Simulate_fail codes
-+ */
-+#define EXT4_SIM_BBITMAP_EIO	1
-+#define EXT4_SIM_BBITMAP_CRC	2
-+#define EXT4_SIM_IBITMAP_EIO	3
-+#define EXT4_SIM_IBITMAP_CRC	4
-+#define EXT4_SIM_INODE_EIO	5
-+#define EXT4_SIM_INODE_CRC	6
-+#define EXT4_SIM_DIRBLOCK_EIO	7
-+#define EXT4_SIM_DIRBLOCK_CRC	8
-+
-+static inline bool ext4_simulate_fail(struct super_block *sb,
-+				     unsigned long code)
-+{
-+#ifdef CONFIG_EXT4_DEBUG
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+
-+	if (sbi->s_simulate_fail != code)
-+		return false;
-+	sbi->s_simulate_fail = 0;
-+	return true;
-+#else
-+	return false;
-+#endif
-+}
-+
-+static inline void ext4_simulate_fail_bh(struct super_block *sb,
-+					 struct buffer_head *bh,
-+					 unsigned long code)
-+{
-+	if (!IS_ERR(bh) && ext4_simulate_fail(sb, code))
-+		clear_buffer_uptodate(bh);
-+}
-+
- /*
-  * Error number codes for s_{first,last}_error_errno
-  *
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 9979e1a55be5..8e5bb8a3f151 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -94,7 +94,8 @@ static int ext4_validate_inode_bitmap(struct super_block *sb,
- 		goto verified;
- 	blk = ext4_inode_bitmap(sb, desc);
- 	if (!ext4_inode_bitmap_csum_verify(sb, block_group, desc, bh,
--					   EXT4_INODES_PER_GROUP(sb) / 8)) {
-+					   EXT4_INODES_PER_GROUP(sb) / 8) ||
-+	    ext4_simulate_fail(sb, EXT4_SIM_IBITMAP_CRC)) {
- 		ext4_unlock_group(sb, block_group);
- 		ext4_error(sb, "Corrupt inode bitmap - block_group = %u, "
- 			   "inode_bitmap = %llu", block_group, blk);
-@@ -192,6 +193,7 @@ ext4_read_inode_bitmap(struct super_block *sb, ext4_group_t block_group)
- 	get_bh(bh);
- 	submit_bh(REQ_OP_READ, REQ_META | REQ_PRIO, bh);
- 	wait_on_buffer(bh);
-+	ext4_simulate_fail_bh(sb, bh, EXT4_SIM_IBITMAP_EIO);
- 	if (!buffer_uptodate(bh)) {
- 		put_bh(bh);
- 		ext4_set_errno(sb, EIO);
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 1aed7c653b42..128e51c37b93 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4243,6 +4243,8 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 	bh = sb_getblk(sb, block);
- 	if (unlikely(!bh))
- 		return -ENOMEM;
-+	if (ext4_simulate_fail(sb, EXT4_SIM_INODE_EIO))
-+		goto simulate_eio;
- 	if (!buffer_uptodate(bh)) {
- 		lock_buffer(bh);
- 
-@@ -4341,6 +4343,7 @@ static int __ext4_get_inode_loc(struct inode *inode,
- 		blk_finish_plug(&plug);
- 		wait_on_buffer(bh);
- 		if (!buffer_uptodate(bh)) {
-+		simulate_eio:
- 			ext4_set_errno(inode->i_sb, EIO);
- 			EXT4_ERROR_INODE_BLOCK(inode, block,
- 					       "unable to read itable block");
-@@ -4555,7 +4558,8 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 					      sizeof(gen));
- 	}
- 
--	if (!ext4_inode_csum_verify(inode, raw_inode, ei)) {
-+	if (!ext4_inode_csum_verify(inode, raw_inode, ei) ||
-+	    ext4_simulate_fail(sb, EXT4_SIM_INODE_CRC)) {
- 		ext4_set_errno(inode->i_sb, EFSBADCRC);
- 		ext4_error_inode(inode, function, line, 0,
- 				 "iget: checksum invalid");
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index c74ed04d6781..3a0f65e21e8f 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -109,7 +109,10 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
- 	struct ext4_dir_entry *dirent;
- 	int is_dx_block = 0;
- 
--	bh = ext4_bread(NULL, inode, block, 0);
-+	if (ext4_simulate_fail(inode->i_sb, EXT4_SIM_DIRBLOCK_EIO))
-+		bh = ERR_PTR(-EIO);
-+	else
-+		bh = ext4_bread(NULL, inode, block, 0);
- 	if (IS_ERR(bh)) {
- 		__ext4_warning(inode->i_sb, func, line,
- 			       "inode #%lu: lblock %lu: comm %s: "
-@@ -153,7 +156,8 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
- 	 * caller is sure it should be an index block.
- 	 */
- 	if (is_dx_block && type == INDEX) {
--		if (ext4_dx_csum_verify(inode, dirent))
-+		if (ext4_dx_csum_verify(inode, dirent) &&
-+		    !ext4_simulate_fail(inode->i_sb, EXT4_SIM_DIRBLOCK_CRC))
- 			set_buffer_verified(bh);
- 		else {
- 			ext4_set_errno(inode->i_sb, EFSBADCRC);
-@@ -164,7 +168,8 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
- 		}
- 	}
- 	if (!is_dx_block) {
--		if (ext4_dirblock_csum_verify(inode, bh))
-+		if (ext4_dirblock_csum_verify(inode, bh) &&
-+		    !ext4_simulate_fail(inode->i_sb, EXT4_SIM_DIRBLOCK_CRC))
- 			set_buffer_verified(bh);
- 		else {
- 			ext4_set_errno(inode->i_sb, EFSBADCRC);
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index eb1efad0e20a..a990d28d191b 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -29,6 +29,7 @@ typedef enum {
- 	attr_last_error_time,
- 	attr_feature,
- 	attr_pointer_ui,
-+	attr_pointer_ul,
- 	attr_pointer_atomic,
- 	attr_journal_task,
- } attr_id_t;
-@@ -160,6 +161,9 @@ static struct ext4_attr ext4_attr_##_name = {			\
- #define EXT4_RW_ATTR_SBI_UI(_name,_elname)	\
- 	EXT4_ATTR_OFFSET(_name, 0644, pointer_ui, ext4_sb_info, _elname)
- 
-+#define EXT4_RW_ATTR_SBI_UL(_name,_elname)	\
-+	EXT4_ATTR_OFFSET(_name, 0644, pointer_ul, ext4_sb_info, _elname)
-+
- #define EXT4_ATTR_PTR(_name,_mode,_id,_ptr) \
- static struct ext4_attr ext4_attr_##_name = {			\
- 	.attr = {.name = __stringify(_name), .mode = _mode },	\
-@@ -194,6 +198,9 @@ EXT4_RW_ATTR_SBI_UI(warning_ratelimit_interval_ms, s_warning_ratelimit_state.int
- EXT4_RW_ATTR_SBI_UI(warning_ratelimit_burst, s_warning_ratelimit_state.burst);
- EXT4_RW_ATTR_SBI_UI(msg_ratelimit_interval_ms, s_msg_ratelimit_state.interval);
- EXT4_RW_ATTR_SBI_UI(msg_ratelimit_burst, s_msg_ratelimit_state.burst);
-+#ifdef CONFIG_EXT4_DEBUG
-+EXT4_RW_ATTR_SBI_UL(simulate_fail, s_simulate_fail);
-+#endif
- EXT4_RO_ATTR_ES_UI(errors_count, s_error_count);
- EXT4_ATTR(first_error_time, 0444, first_error_time);
- EXT4_ATTR(last_error_time, 0444, last_error_time);
-@@ -228,6 +235,9 @@ static struct attribute *ext4_attrs[] = {
- 	ATTR_LIST(first_error_time),
- 	ATTR_LIST(last_error_time),
- 	ATTR_LIST(journal_task),
-+#ifdef CONFIG_EXT4_DEBUG
-+	ATTR_LIST(simulate_fail),
-+#endif
- 	NULL,
- };
- ATTRIBUTE_GROUPS(ext4);
-@@ -318,6 +328,11 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
- 		else
- 			return snprintf(buf, PAGE_SIZE, "%u\n",
- 					*((unsigned int *) ptr));
-+	case attr_pointer_ul:
-+		if (!ptr)
-+			return 0;
-+		return snprintf(buf, PAGE_SIZE, "%lu\n",
-+				*((unsigned long *) ptr));
- 	case attr_pointer_atomic:
- 		if (!ptr)
- 			return 0;
-@@ -361,6 +376,14 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
- 		else
- 			*((unsigned int *) ptr) = t;
- 		return len;
-+	case attr_pointer_ul:
-+		if (!ptr)
-+			return 0;
-+		ret = kstrtoul(skip_spaces(buf), 0, &t);
-+		if (ret)
-+			return ret;
-+		*((unsigned long *) ptr) = t;
-+		return len;
- 	case attr_inode_readahead:
- 		return inode_readahead_blks_store(sbi, buf, len);
- 	case attr_trigger_test_error:
--- 
-2.23.0
 
+
+
+
+
+--Apple-Mail=_304B8726-7F83-4798-A158-4B5701D60DAE
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl3tyhEACgkQcqXauRfM
+H+BY4Q//VZBqM/Wcy9Y9tICKLkHCtEluB9sPz12GDf7QwpSPT0vqGG+cm7DPm7Y4
+/kHNZTn3imM4iN8BuvM4m9I0xEcgUc0U8WbKxa2aXY+x40v3ltelA9Xp5jGyqivv
+iLqm3O/d5M2pnfV+1aXab41ulOaKwmryIAIbGBkZo33Kn4wc/jLsjeOtnl7T1XJa
+9nleRZ9SfNmwcqLM1WyLAEqd8q/L5hEK7coPXqKoqeV+pnv2qEBCK25oovko6zNT
+cha9yWB7pgEVO2/vQfOtpU8ipEurcjKTeMt6w8oDU79APTW2AwEzh4yh54qhfTgA
+MPB57yO2k1KZbWEjqGmhcqmFNlrcqAphNtSC6dLy/B+y0YLa2JqfM310IMv9ujeL
+ueoVULNHpHeSOAP3UBxBazS4kG5q/2c3Ha+JvTCKR3m1QYM8fVigAhfCbDI/O5K0
+h6skJwU6ANJTvgnMUsyvEEhPX4HMVYIMutQFYVw+paASuS3Fe/M2mrjR3/jxM6dA
+JEQ6F5TGZmXcNkj2TlHC24hUL40HEb79DFx7xjaBQpG9Ho4+R+JrspyP9YvgXc3H
+7iEtXRw+OsqGG+hQjn5U7jFHzjSru9Zx/mw2feYk3y4lu0mXD24hLTARmw5N4+DW
+/KQRWijJ5vzm6ohexlUprdImbVchTDFu17tyPclrz9KAvadWjDA=
+=TXtr
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_304B8726-7F83-4798-A158-4B5701D60DAE--
