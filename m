@@ -2,34 +2,34 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DE01177C3
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 21:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C565A117863
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 22:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbfLIUvB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Dec 2019 15:51:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45882 "EHLO mail.kernel.org"
+        id S1726495AbfLIVYW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Dec 2019 16:24:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbfLIUvB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 9 Dec 2019 15:51:01 -0500
+        id S1726366AbfLIVYW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 9 Dec 2019 16:24:22 -0500
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 20B4E2068E;
-        Mon,  9 Dec 2019 20:51:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C3EC206E0;
+        Mon,  9 Dec 2019 21:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575924660;
-        bh=oCaaWnTFgChg9u4LKnle9ELlHgCeHYXQyxSgx1NPH1E=;
+        s=default; t=1575926661;
+        bh=AuIH2TuNaKEm6dBcgepjEUobcygYmoPNcrv739g/VaE=;
         h=From:To:Cc:Subject:Date:From;
-        b=2c87cQA+9qJ3QJ73oMKaGjjmI69neV7VyZ/4P1heGa9J5RJTYUspnEA/Pby9verd2
-         8tsl6+f+6tLT2LyJYcBJjmJFo7F+EL+Neh3REDU6qcnK5Of2l6yNaiq+hEmiLUCb6B
-         FqSRQ0p4YDK6aYEbtYVxr+bQCFsuhHh6ApHcVL7A=
+        b=J7m6m+s8RzaSoJKCdliMpJXYf99LrPNVjrWWU2WJDaJ5oXTnD7gq/qxP7Nnkl7bvY
+         9PNeNoBVhuNoLzJNODdkdHgY3KTved7XvffkkEBncbYyJ+pfRxQYH9P6RSnEtkLUng
+         YE4h6d65aZU+lFiYDvliDOzoPEfYiBHfVmDGLMdk=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH] fscrypt: introduce fscrypt_needs_contents_encryption()
-Date:   Mon,  9 Dec 2019 12:50:21 -0800
-Message-Id: <20191209205021.231767-1-ebiggers@kernel.org>
+        linux-mtd@lists.infradead.org
+Subject: [PATCH] fscrypt: don't check for ENOKEY from fscrypt_get_encryption_info()
+Date:   Mon,  9 Dec 2019 13:23:48 -0800
+Message-Id: <20191209212348.243331-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,57 +40,55 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Add a function fscrypt_needs_contents_encryption() which takes an inode
-and returns true if it's an encrypted regular file and the kernel was
-built with fscrypt support.
-
-This will allow replacing duplicated checks of IS_ENCRYPTED() &&
-S_ISREG() on the I/O paths in ext4 and f2fs, while also optimizing out
-unneeded code when !CONFIG_FS_ENCRYPTION.
+fscrypt_get_encryption_info() returns 0 if the encryption key is
+unavailable; it never returns ENOKEY.  So remove checks for ENOKEY.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- include/linux/fscrypt.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ fs/ext4/dir.c  | 2 +-
+ fs/f2fs/dir.c  | 2 +-
+ fs/ubifs/dir.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index cb18b5fbcef92..2a29f56b1a1cb 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -72,6 +72,21 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- 	return READ_ONCE(inode->i_crypt_info) != NULL;
- }
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index 9fdd2b269d617..4c9d3ff394a5d 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -116,7 +116,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
  
-+/**
-+ * fscrypt_needs_contents_encryption() - check whether an inode needs
-+ *					 contents encryption
-+ *
-+ * Return: %true iff the inode is an encrypted regular file and the kernel was
-+ * built with fscrypt support.
-+ *
-+ * If you need to know whether the encrypt bit is set even when the kernel was
-+ * built without fscrypt support, you must use IS_ENCRYPTED() directly instead.
-+ */
-+static inline bool fscrypt_needs_contents_encryption(const struct inode *inode)
-+{
-+	return IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode);
-+}
-+
- static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
- {
- 	return inode->i_sb->s_cop->dummy_context &&
-@@ -269,6 +284,11 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
- 	return false;
- }
+ 	if (IS_ENCRYPTED(inode)) {
+ 		err = fscrypt_get_encryption_info(inode);
+-		if (err && err != -ENOKEY)
++		if (err)
+ 			return err;
+ 	}
  
-+static inline bool fscrypt_needs_contents_encryption(const struct inode *inode)
-+{
-+	return false;
-+}
-+
- static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
- {
- 	return false;
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index c967cacf979ef..d9ad842945df5 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -987,7 +987,7 @@ static int f2fs_readdir(struct file *file, struct dir_context *ctx)
+ 
+ 	if (IS_ENCRYPTED(inode)) {
+ 		err = fscrypt_get_encryption_info(inode);
+-		if (err && err != -ENOKEY)
++		if (err)
+ 			goto out;
+ 
+ 		err = fscrypt_fname_alloc_buffer(inode, F2FS_NAME_LEN, &fstr);
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 0b98e3c8b461d..acc4f942d25b6 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -512,7 +512,7 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
+ 
+ 	if (encrypted) {
+ 		err = fscrypt_get_encryption_info(dir);
+-		if (err && err != -ENOKEY)
++		if (err)
+ 			return err;
+ 
+ 		err = fscrypt_fname_alloc_buffer(dir, UBIFS_MAX_NLEN, &fstr);
 -- 
 2.24.0.393.g34dc348eaf-goog
 
