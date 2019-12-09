@@ -2,34 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C565A117863
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 22:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2A211788A
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 22:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbfLIVYW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Dec 2019 16:24:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54216 "EHLO mail.kernel.org"
+        id S1726614AbfLIVdI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Dec 2019 16:33:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726366AbfLIVYW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 9 Dec 2019 16:24:22 -0500
+        id S1726354AbfLIVdH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 9 Dec 2019 16:33:07 -0500
 Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C3EC206E0;
-        Mon,  9 Dec 2019 21:24:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 383E72071E;
+        Mon,  9 Dec 2019 21:33:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575926661;
-        bh=AuIH2TuNaKEm6dBcgepjEUobcygYmoPNcrv739g/VaE=;
+        s=default; t=1575927187;
+        bh=sazSRY1r8F1TEbx3JI+yAVvJF6WPJx2Um+B19LoeA8U=;
         h=From:To:Cc:Subject:Date:From;
-        b=J7m6m+s8RzaSoJKCdliMpJXYf99LrPNVjrWWU2WJDaJ5oXTnD7gq/qxP7Nnkl7bvY
-         9PNeNoBVhuNoLzJNODdkdHgY3KTved7XvffkkEBncbYyJ+pfRxQYH9P6RSnEtkLUng
-         YE4h6d65aZU+lFiYDvliDOzoPEfYiBHfVmDGLMdk=
+        b=vcVaWl8f8m2EK6Cgx6TiwQXaQRhxW+3n9hd/RGrkcVfKZJYCeqRmzhnfaCFsd88i5
+         O8LAY0icOUsEiNzTmeEBB5m057COzfsRdyQffIg7+VXKkVK1zr+uVpVf/V9WE3LxDI
+         8J59PQQcZ22uLpMYocJXFITnd6Czk/sXDBcQWFIU=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH] fscrypt: don't check for ENOKEY from fscrypt_get_encryption_info()
-Date:   Mon,  9 Dec 2019 13:23:48 -0800
-Message-Id: <20191209212348.243331-1-ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [PATCH] ext4: remove unnecessary ifdefs in htree_dirblock_to_tree()
+Date:   Mon,  9 Dec 2019 13:32:25 -0800
+Message-Id: <20191209213225.18477-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,55 +39,46 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-fscrypt_get_encryption_info() returns 0 if the encryption key is
-unavailable; it never returns ENOKEY.  So remove checks for ENOKEY.
+The ifdefs for CONFIG_FS_ENCRYPTION in htree_dirblock_to_tree() are
+unnecessary, as the called functions are already stubbed out when
+!CONFIG_FS_ENCRYPTION.  Remove them.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/ext4/dir.c  | 2 +-
- fs/f2fs/dir.c  | 2 +-
- fs/ubifs/dir.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ fs/ext4/namei.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index 9fdd2b269d617..4c9d3ff394a5d 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -116,7 +116,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 
- 	if (IS_ENCRYPTED(inode)) {
- 		err = fscrypt_get_encryption_info(inode);
--		if (err && err != -ENOKEY)
-+		if (err)
- 			return err;
- 	}
- 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index c967cacf979ef..d9ad842945df5 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -987,7 +987,7 @@ static int f2fs_readdir(struct file *file, struct dir_context *ctx)
- 
- 	if (IS_ENCRYPTED(inode)) {
- 		err = fscrypt_get_encryption_info(inode);
--		if (err && err != -ENOKEY)
-+		if (err)
- 			goto out;
- 
- 		err = fscrypt_fname_alloc_buffer(inode, F2FS_NAME_LEN, &fstr);
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 0b98e3c8b461d..acc4f942d25b6 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -512,7 +512,7 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
- 
- 	if (encrypted) {
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index a856997d87b54..d4c2cc73fe71d 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1002,7 +1002,6 @@ static int htree_dirblock_to_tree(struct file *dir_file,
+ 	top = (struct ext4_dir_entry_2 *) ((char *) de +
+ 					   dir->i_sb->s_blocksize -
+ 					   EXT4_DIR_REC_LEN(0));
+-#ifdef CONFIG_FS_ENCRYPTION
+ 	/* Check if the directory is encrypted */
+ 	if (IS_ENCRYPTED(dir)) {
  		err = fscrypt_get_encryption_info(dir);
--		if (err && err != -ENOKEY)
-+		if (err)
+@@ -1017,7 +1016,7 @@ static int htree_dirblock_to_tree(struct file *dir_file,
  			return err;
+ 		}
+ 	}
+-#endif
++
+ 	for (; de < top; de = ext4_next_entry(de, dir->i_sb->s_blocksize)) {
+ 		if (ext4_check_dir_entry(dir, NULL, de, bh,
+ 				bh->b_data, bh->b_size,
+@@ -1065,9 +1064,7 @@ static int htree_dirblock_to_tree(struct file *dir_file,
+ 	}
+ errout:
+ 	brelse(bh);
+-#ifdef CONFIG_FS_ENCRYPTION
+ 	fscrypt_fname_free_buffer(&fname_crypto_str);
+-#endif
+ 	return count;
+ }
  
- 		err = fscrypt_fname_alloc_buffer(dir, UBIFS_MAX_NLEN, &fstr);
 -- 
 2.24.0.393.g34dc348eaf-goog
 
