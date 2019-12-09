@@ -2,149 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CE9116E23
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 14:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3013116F60
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2019 15:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727758AbfLINql (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Dec 2019 08:46:41 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:37274 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727584AbfLINql (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Dec 2019 08:46:41 -0500
-Received: by mail-qt1-f195.google.com with SMTP id w47so15577839qtk.4
-        for <linux-ext4@vger.kernel.org>; Mon, 09 Dec 2019 05:46:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rKY8nQ/36ZYIRL43SesLbBNstgqfPCGGmMTonTZ2il8=;
-        b=hhCalqlm3yqxnVlbPMkN+bqjjPU1bLUwUu3cuuoLZLdYXudklunO0/Cy7XlY6y/hiO
-         x4IgOw3ukPGPAyzgTOcs+D4SDsU4GHbqhhhPNtM/mnp1IGFP9VncVld5dJRpCCuvKXEO
-         cCSQmfPxl0a6iker/1a+SnLv1Ke4zYEK4dOfZk0cPOldAgFySxnl62XwrgGhpo7d1DSI
-         jNzpeaL9Nf/LdrrfoDm1iM3jrZYyniYmCF+HfzAFDILzUtqo+HYu5O7O8l4V/9HtJKAA
-         65iHaf1v9+OA4h0TqaOwmx9K3TZdEN/riUkRfFD3fP0Q9CJnS0V4D40WXdHslPUASTU7
-         PlCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rKY8nQ/36ZYIRL43SesLbBNstgqfPCGGmMTonTZ2il8=;
-        b=JHC6Ykdce9XoLnOExft2UgnqhlLXJYj7rsO6WxSKNpP8wNrRaxbGMwjTjbgFraRxCG
-         /FKVHL0xr85kOaTR0iiHq7+XCFZ9BvSJyZ9j2GhLXRLasyBmo+q3ydEEgfrd6Dp/H4wY
-         gmV0YCoxx4Mbv/t6aKz7cDxWLDqCS9295Vgac+AYy+rEox0VJXmoQ9MVm/bg5gOQflYy
-         cdSeuQTIm1XsFkOcYQ5v7aGU2gG3MkTp+QYMGlk4EFqrtFHgZZw74XjcsaeukhSqKUJM
-         KAmNJJ9NLaL1QW6GRemPzg4CtjMB3pcdYzmlwVlcP05wQmIvximv4dOOPGe+GDP24IoY
-         MqNA==
-X-Gm-Message-State: APjAAAUeyCsqvI3ZqKZ8Z4uk7yqHxosv8x2jb+XKjIwtB7TpE56BBUlv
-        EZ8OQUnJxd98Sb8SzV4jRaejHAyXFK1V1Qrr02EEUQ==
-X-Google-Smtp-Source: APXvYqwOoj3Iq7H9MPlRC6Alm7SDeJtbsGl5BNZVmlYeK7ddFNdnLC8TuI2UoS45aEwChxo5375NC80kUhkvzKtCHnw=
-X-Received: by 2002:ac8:2489:: with SMTP id s9mr25022912qts.257.1575899199309;
- Mon, 09 Dec 2019 05:46:39 -0800 (PST)
+        id S1727894AbfLIOoM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Dec 2019 09:44:12 -0500
+Received: from mx1.kistler.com ([91.223.79.44]:43280 "EHLO mx1.kistler.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727307AbfLIOoJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 9 Dec 2019 09:44:09 -0500
+IronPort-SDR: NwN8KPtKFxmduX++I8GiuFanD3KfUhBl72UeaNgTEfwVkSZg9dMPr9vxcfWfGEO7P55qtDiG+P
+ aHPFEhk1x3XQ==
+X-IronPort-AV: E=Sophos;i="5.69,296,1571695200"; 
+   d="scan'208";a="22439109"
+Received: from kihagsepp01.int.kistler.com (HELO sl-win-seppm-1.int.kistler.com) ([192.168.52.67])
+  by mx1.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Dec 2019 15:44:08 +0100
+Received: from mx1.kistler.com (kihagciip01.int.kistler.com [192.168.52.57])
+        by sl-win-seppm-1.int.kistler.com (Postfix) with ESMTPS
+        for <linux-ext4@vger.kernel.org>; Mon,  9 Dec 2019 15:44:07 +0100 (CET)
+IronPort-SDR: etJ+8zEOAXtKTihn4ZPuvTMDWGBrDLZ0X5m243rPZTaFuO26zRqdVyrfPBf0MWQValmCr2UIzK
+ hI03f2RGOCiw==
+X-IronPort-AV: E=Sophos;i="5.69,296,1571695200"; 
+   d="scan'208";a="22439108"
+Received: from sw-win-exch-1.int.kistler.com ([192.168.100.95])
+  by mx1.kistler.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Dec 2019 15:44:07 +0100
+Received: from SW-WIN-EXCH-2.int.kistler.com (192.168.100.96) by
+ SW-WIN-EXCH-1.int.kistler.com (192.168.100.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 9 Dec 2019 15:44:07 +0100
+Received: from SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f]) by
+ SW-WIN-EXCH-2.int.kistler.com ([fe80::ccdb:f438:cac9:d73f%9]) with mapi id
+ 15.01.1847.003; Mon, 9 Dec 2019 15:44:07 +0100
+From:   Viliam Lejcik <Viliam.Lejcik@kistler.com>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+Subject: RE: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
+Thread-Topic: e2fsprogs: setting UUID with tune2fs corrupts an ext4 fs image
+Thread-Index: AdWrTPhiKFIdjLi2SZakmenb1WHIogAGv0/QAB4CLIAAr25vwA==
+Date:   Mon, 9 Dec 2019 14:44:07 +0000
+Message-ID: <9a8c71a7c2a14c839e343f33a346e431@kistler.com>
+References: <5fd4546cdc7f43f282716afb1e1a18cb@kistler.com>
+ <20191206035101.GA62394@mit.edu>
+In-Reply-To: <20191206035101.GA62394@mit.edu>
+Accept-Language: en-US, de-CH
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [192.168.100.90]
+x-c2processedorg: 78a97207-3cfa-406d-a777-069c09c1300a
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20171219215906.GA12465@gmail.com> <20191209132914.907306-1-rafaeldtinoco@ubuntu.com>
-In-Reply-To: <20191209132914.907306-1-rafaeldtinoco@ubuntu.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 9 Dec 2019 14:46:27 +0100
-Message-ID: <CACT4Y+YtpOZ1c0QV4-q_b-CrGMGRALwoFTNPgxZuUC9S9J3gfA@mail.gmail.com>
-Subject: Re: ppc64el kernel access of bad area (ext4_htree_store_dirent->rb_insert_color)
-To:     Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-Cc:     Eric Biggers <ebiggers3@gmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        syzbot 
-        <bot+eb13811afcefe99cfe45081054e7883f569f949d@syzkaller.appspotmail.com>,
-        linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Dec 9, 2019 at 2:29 PM Rafael David Tinoco
-<rafaeldtinoco@ubuntu.com> wrote:
->
-> It looks like the same stacktrace that was reported in this thread. This =
-has
-> been reported to ppc64el AND we got a reproducer (ocfs2-tools autopkgtest=
-s).
->
-> [ 85.605850] Faulting instruction address: 0xc000000000e81168
-> [ 85.605901] Oops: Kernel access of bad area, sig: 11 [#1]
-> [ 85.605970] LE PAGE_SIZE=3D64K MMU=3DHash SMP NR_CPUS=3D2048 NUMA pSerie=
-s
-> [ 85.606029] Modules linked in: ocfs2 quota_tree ocfs2_dlmfs ocfs2_stack_=
-o2cb ocfs2_dlm ocfs2_nodemanager ocfs2_stackglue iptable_mangle xt_TCPMSS x=
-t_tcpudp bpfilter dm_multipath scsi_dh_rdac scsi_dh_emc scsi_dh_alua vmx_cr=
-ypto crct10dif_vpmsum sch_fq_codel ip_tables x_tables autofs4 btrfs xor zst=
-d_compress raid6_pq libcrc32c crc32c_vpmsum virtio_net virtio_blk net_failo=
-ver failover
-> [ 85.606291] CPU: 0 PID: 1 Comm: systemd Not tainted 5.3.0-18-generic #19=
--Ubuntu
-> [ 85.606350] NIP: c000000000e81168 LR: c00000000054f240 CTR: 000000000000=
-0000
-> [ 85.606410] REGS: c00000005a3e3700 TRAP: 0300 Not tainted (5.3.0-18-gene=
-ric)
-> [ 85.606469] MSR: 8000000000009033 <SF,EE,ME,IR,DR,RI,LE> CR: 28024448 XE=
-R: 00000000
-> [ 85.606531] CFAR: 0000701f9806f638 DAR: 0000000001744098 DSISR: 40000000=
- IRQMASK: 0
-> [ 85.606531] GPR00: 0000000000007374 c00000005a3e3990 c0000000019c9100 c0=
-0000004fe462a8
-> [ 85.606531] GPR04: c00000005856d840 000000000000000e 0000000074656772 c0=
-0000004fe4a568
-> [ 85.606531] GPR08: 0000000000000000 c000000058568004 0000000001744090 00=
-00000000000000
-> [ 85.606531] GPR12: 00000000e8086002 c000000001d60000 00007fffddd522d0 00=
-00000000000000
-> [ 85.606531] GPR16: 0000000000000000 0000000000000000 0000000000000000 c0=
-0000000755e07c
-> [ 85.606531] GPR20: c0000000598caca8 c00000005a3e3a58 0000000000000000 c0=
-00000058292f00
-> [ 85.606531] GPR24: c000000000eea710 0000000000000000 c00000005856d840 c0=
-0000000755e074
-> [ 85.606531] GPR28: 000000006518907d c00000005a3e3a68 c00000004fe4b160 00=
-000000027c47b6
-> [ 85.607079] NIP [c000000000e81168] rb_insert_color+0x18/0x1c0
-> [ 85.607137] LR [c00000000054f240] ext4_htree_store_dirent+0x140/0x1c0
-> [ 85.607186] Call Trace:
-> [ 85.607208] [c00000005a3e3990] [c00000000054f158] ext4_htree_store_diren=
-t+0x58/0x1c0 (unreliable)
-> [ 85.607279] [c00000005a3e39e0] [c000000000594cd8] htree_dirblock_to_tree=
-+0x1b8/0x380
-> [ 85.607340] [c00000005a3e3b00] [c0000000005962c0] ext4_htree_fill_tree+0=
-xc0/0x3f0
-> [ 85.607401] [c00000005a3e3c00] [c00000000054ebe4] ext4_readdir+0x814/0xc=
-e0
-> [ 85.607459] [c00000005a3e3d40] [c000000000472d6c] iterate_dir+0x1fc/0x28=
-0
-> [ 85.607511] [c00000005a3e3d90] [c0000000004746f0] ksys_getdents64+0xa0/0=
-x1f0
-> [ 85.607572] [c00000005a3e3e00] [c000000000474868] sys_getdents64+0x28/0x=
-130
-> [ 85.607622] [c00000005a3e3e20] [c00000000000b388] system_call+0x5c/0x70
-> [ 85.607672] Instruction dump:
-> [ 85.607703] 4082ffe8 4e800020 38600000 4e800020 60000000 60000000 e92300=
-00 2c290000
-> [ 85.607764] 4182018c e9490000 71480001 4c820020 <e90a0008> 7c284840 2fa8=
-0000 4182006c
-> [ 85.607827] ---[ end trace cfc53af0f8d62cef ]---
-> [ 85.610600]
-> [ 86.611522] BUG: Unable to handle kernel data access at 0xc000030058567e=
-ff
-> [ 86.611604] Faulting instruction address: 0xc000000000403aa8
-> [ 86.611656] Oops: Kernel access of bad area, sig: 11 [#2]
-> [ 86.611697] LE PAGE_SIZE=3D64K MMU=3DHash SMP NR_CPUS=3D2048 NUMA pSerie=
-s
-> [ 86.611748] Modules linked in: ocfs2 quota_tr
->
-> Thread from beginning 2018, so I guess this issue is pretty intermittent =
-but
-> might exist, and, perhaps, its related to specific arches/machines ?
-
-FTR, here is the original thread/bug (at least my email client did not
-thread them together):
-https://groups.google.com/g/syzkaller-bugs/c/YBhhSkrImIM/m/3HMv_dFUCwAJ
-https://syzkaller.appspot.com/bug?extid=3Deb13811afcefe99cfe45081054e7883f5=
-69f949d
+SGkgVGhlb2RvcmUsDQoNClRoYW5rIHlvdSBmb3IgeW91ciBhbmFseXNpcy4gQXMgeW91IHN1Z2dl
+c3RlZCwgZmluYWxseSB3ZSBkZWNpZGVkIHRvIGluY3JlYXNlIGJsb2NrIHNpemUgdG8gNEssIGFu
+ZCBpdCBzZWVtcyB0aGF0IHByb2JsZW0gaXMgcmVzb2x2ZWQuDQoNCkJ5IGRlZmF1bHQsIHlvY3Rv
+L2JpdGJha2UgZG8gbm90IGNvbmZpZ3VyZSB0aGUgYmxvY2sgc2l6ZSwgc28gdGhhdCBta2ZzLmV4
+dDQgdXNlZCBkZWZhdWx0IHZhbHVlIC0gMUsuIFdlIGZpeGVkIGl0IGxpa2UgaGVyZTogKHNlZSB0
+aGUgbGFzdCBsaW5lKQ0KaHR0cHM6Ly9naXQueW9jdG9wcm9qZWN0Lm9yZy9jZ2l0L2NnaXQuY2dp
+L21ldGEtcWNvbS90cmVlL2NvbmYvbWFjaGluZS9kcmFnb25ib2FyZC04MjBjLmNvbmY/aD1tYXN0
+ZXIjbjI2DQoNCkJSLA0KVmlsbw0KDQoNCkNvbmZpZGVudGlhbGl0eSBOb3RpY2U6IFRoaXMgZS1t
+YWlsIGlzIHByaXZpbGVnZWQgYW5kIGNvbmZpZGVudGlhbCBhbmQgZm9yIHRoZSB1c2Ugb2YgdGhl
+IGFkZHJlc3NlZSBvbmx5LiBTaG91bGQgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyBlLW1haWwgaW4g
+ZXJyb3IgcGxlYXNlIG5vdGlmeSB1cyBieSByZXBseWluZyBkaXJlY3RseSB0byB0aGUgc2VuZGVy
+IG9yIGJ5IHNlbmRpbmcgYSBtZXNzYWdlIHRvIGluZm9Aa2lzdGxlci5jb20uIFVuYXV0aG9yaXNl
+ZCBkaXNzZW1pbmF0aW9uLCBkaXNjbG9zdXJlIG9yIGNvcHlpbmcgb2YgdGhlIGNvbnRlbnRzIG9m
+IHRoaXMgZS1tYWlsLCBvciBhbnkgc2ltaWxhciBhY3Rpb24sIGlzIHByb2hpYml0ZWQuDQotLS0t
+LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogVGhlb2RvcmUgWS4gVHMnbyA8dHl0c29AbWl0
+LmVkdT4NClNlbnQ6IEZyaWRheSwgNi4gRGVjZW1iZXIgMjAxOSA0OjUxDQpUbzogTGVqY2lrIFZp
+bGlhbSA8VmlsaWFtLkxlamNpa0BraXN0bGVyLmNvbT4NCkNjOiBsaW51eC1leHQ0QHZnZXIua2Vy
+bmVsLm9yZw0KU3ViamVjdDogUmU6IGUyZnNwcm9nczogc2V0dGluZyBVVUlEIHdpdGggdHVuZTJm
+cyBjb3JydXB0cyBhbiBleHQ0IGZzIGltYWdlDQoNCk9uIFRodSwgRGVjIDA1LCAyMDE5IGF0IDEy
+OjM2OjM1UE0gKzAwMDAsIFZpbGlhbSBMZWpjaWsgd3JvdGU6DQo+DQo+IFRoZSBwcm9ibGVtIGZv
+ciB0dW5lMmZzIGlzICJOdW1iZXIgb2YgZW50cmllcyIsIHdoZW4gY291bnQ9PWxpbWl0DQo+ICgx
+MjYpLiBJbiB0aGlzIGNhc2UgaXQgZmFpbHMgd2l0aGluIHRoZSBmb2xsb3dpbmcgJ2lmJyBzdGF0
+ZW1lbnQ6DQo+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9mcy9leHQyL2UyZnNwcm9n
+cy5naXQvdHJlZS9taXNjL3R1bmUyZnMuYyNuNTQ0DQo+DQo+IFRoZW4gaXQgcHJpbnRzIG91dCBl
+cnJvciwgc2V0cyAnbm90IGNsZWFuJyBmcyBzdGF0ZSBpbiBzdXBlcmJsb2NrLA0KPiBhbmQgZXhp
+dHMuIFdoYXQgZnNjayBkb2VzLCBpdCByZWNvbXB1dGVzIGNoZWNrc3Vtcywgc2V0cyAnY2xlYW4n
+IGZzDQo+IHN0YXRlLCBhbmQgdGhhdCdzIGFsbC4gSXQgZG9lc24ndCBjaGFuZ2UgbnVtYmVyIG9m
+IGVudHJpZXMsDQo+IGNvdW50K2xpbWl0IHN0YXlzIHRoZSBzYW1lICgxMjYpLiBTbyB0aGF0J3Mg
+d2h5IHJlcnVubmluZyB0dW5lMmZzDQo+IGNvcnJ1cHRzIHRoZSBmcyBhZ2Fpbi4NCg0KU28gd2hh
+dCdzIGdvaW5nIG9uIGlzIHRoYXQgdGhlIGNvZGUgaW4gcXVlc3Rpb24gd2FzIG9yaWdpbmFsbHkN
+CmRlc2lnbmVkIGZvciBmaWxlIHN5c3RlbXMgd2l0aCBhIDRrIGJsb2NrIHNpemUsIGFuZCB3aGVu
+ICphZGRpbmcqIGENCmNoZWNrc3VtIHRvIGEgZGlyZWN0b3J5IHdoaWNoIGRpZG4ndCBhbHJlYWR5
+IGhhdmUgYSBjaGVja3N1bSAidGFpbCINCmFscmVhZHkgcmVzZXJ2ZWQuICBJbiB0aGF0IGNhc2Us
+IHlvdSBoYXZlIHRvIHJlY3JlYXRlIHRoZSBodHJlZSBpbmRleA0KZm9yIHRoYXQgZGlyZWN0b3J5
+LiAgU2luY2UgdHVuZTJmcyBkaWRuJ3Qgd2FudCB0byBkZWFsIHdpdGggdGhhdA0KY29ybmVyIGNh
+c2UsIGl0IHdvdWxkIHRocm93IHVwIGl0cyBoYW5kcyBhbmQgdGVsbCB0aGUgdXNlciB0byBydW4N
+CmUyZnNjayAtZkQuICBTaW5jZSB0aGUgVVVJRCBoYWQgYWxyYWR5IGJlZW4gY2hhbmdlZCwgYW5k
+IHRoZSBjaGVja3N1bQ0Kc2VlZCB3YXMgYmFzZWQgb24gdGhlIGNoZWNrc3VtIHNlZWQsIGUyZnNj
+ayB3b3VsZCByZXBvcnQgY29ycnVwdGlvbnMsDQpidXQgdGhhdCB3YXMgYWN0dWFsbHkgd2hhdCB3
+YXMgZXhwZWN0ZWQuICBVbmZvcnR1bmF0ZWx5IHRoZSBtZXNzYWdlDQpwcmludGVkIGJ5IHR1bmUy
+ZnMgaXMgc3VwZXItY29uZnVzaW5nLCBhbmQgbG9naWMgZm9yIGNoZWNraW5nIGZvciB0aGlzDQpj
+YXNlIGlzIGZhdWx0eSBpbiB0aGF0IChhKSBpdCBkb2Vzbid0IHRha2UgaW50byBhY2NvdW50IHRo
+ZSBibG9jaw0Kc2l6ZSwgYW5kIChiKSBpdCBkb2Vzbid0IHRha2UgaW50byBhY2NvdW50IGlmIHRo
+ZXJlIGlzIGEgY2hlY2tzdW0NCiJ0YWlsIiBhbHJlYWR5IHByZXNlbnQgZm9yIHRoYXQgcGFydGlj
+dWxhciBodHJlZSBkaXJlY3RvcnkuDQoNCk1vc3QgcGVvcGxlIGRvbid0IHNlZSB0aGlzIGJlY2F1
+c2UgdGhleSBhcmUgdXNpbmcgZmlsZSBzeXN0ZW1zIHdpdGggNGsNCmJsb2NrIHNpemVzLCBhbmQg
+aXQncyBtdWNoIGxlc3MgbGlrZWx5IHRoZXkgd2lsbCBydW4gaW50byB0aGF0DQpzaXR1YXRpb24s
+IHNpbmNlIHRoZSBpbnRlcmlvciBub2RlIGZhbm91dCBpcyBzaWduaWZpY2FudGx5IGxhcmdlciB3
+aXRoDQo0ayBibG9ja3MuICAoSXMgdGhlcmUgYSByZWFzb24geW91IGFyZSB1c2luZyBhIDFrIGJs
+b2NrIHNpemU/ICBUaGlzDQphZGRzIHF1aXRlIGEgYml0IG9mIGluZWZmaWNpZW5jeSB0byB0aGUg
+ZmlsZSBzeXN0ZW0sIGFuZCB3aGlsZSBpdCBkb2VzDQpyZWR1Y2UgaW50ZXJuYWwgZnJhZ21lbnRh
+dGlvbiwgYnl0ZXMgYXJlIHF1aXRlIGNoZWFwIHRoZXNlIGRheXMsIGFuZA0KaXQncyBwcm9iYWJs
+eSBub3Qgd29ydGggaXQgaWYgeW91IGNhcmUgYWJvdXQgcGVyZm9ybWFuY2UgYXQgYWxsIHRvIHVz
+ZQ0KYSAxayBibG9jayBzaXplIGluc3RlYWQgb2YgYSA0ayBibG9jayBzaXplLikNCg0KVGhlIHdv
+cmthcm91bmQgSSB3b3VsZCBzdWdnZXN0IGlzIGFzc3VtaW5nIHlvdSBhcmUgdXNpbmcgYSBrZXJu
+ZWwNCndoaWNoIGlzIDQuNCBvciBuZXdlciAoYW5kIGluIDIwMTksIHlvdSByZWFsbHkgc2hvdWxk
+KSwgdG8gdHVybiBvbiB0aGUNCm1ldGFkYXRhX2NzdW1fc2VlZCBmaWVsZCwgZWl0aGVyIHdoZW4g
+dGhlIGZpbGUgc3lzdGVtIGlzIG9yaWdpbmFsbHkNCmZvcm1hdHRlZCwgb3IgdXNpbmcgInR1bmUy
+ZnMgLU8gXm1ldGFkYXRhX2NzdW1fc2VlZCIuICBUaGlzIGFsbG93cyB5b3UNCnRvIGNoYW5nZSB0
+aGUgVVVJRCB3aXRob3V0IG5lZWRpbmcgdG8gcmV3cml0ZSBhbGwgb2YgdGhlIG1ldGFkYXRhDQpi
+bG9ja3MsIHdoaWNoIGlzIGZhc3Rlciwgd29ya3Mgd2hpbGUgdGhlIGZpbGUgc3lzdGVtIGlzIG1v
+dW50ZWQsIGFuZA0KYXZvaWRzIHRoZSBidWcgaW4gdHVuZTJmcy4NCg0KU28gdXNpbmcgdGhlIHRl
+c3QgZmlsZSBzeXN0ZW0geW91IHNlbnQgbWUsIHRoaXMgd29ya3MganVzdCBmaW5lOg0KDQolIHR1
+bmUyZnMgLU8gbWV0YWRhdGFfY3N1bV9zZWVkIC1VIHJhbmRvbSAgY29yZS1pbWFnZS5leHQ0DQp0
+dW5lMmZzIDEuNDUuNCAoMjMtU2VwLTIwMTkpDQolIGUyZnNjayAtZnkgISQNCmUyZnNjayAtZnkg
+Y29yZS1pbWFnZS5leHQ0DQplMmZzY2sgMS40NS40ICgyMy1TZXAtMjAxOSkNClBhc3MgMTogQ2hl
+Y2tpbmcgaW5vZGVzLCBibG9ja3MsIGFuZCBzaXplcw0KUGFzcyAyOiBDaGVja2luZyBkaXJlY3Rv
+cnkgc3RydWN0dXJlDQpQYXNzIDM6IENoZWNraW5nIGRpcmVjdG9yeSBjb25uZWN0aXZpdHkNClBh
+c3MgNDogQ2hlY2tpbmcgcmVmZXJlbmNlIGNvdW50cw0KUGFzcyA1OiBDaGVja2luZyBncm91cCBz
+dW1tYXJ5IGluZm9ybWF0aW9uDQpjb3JlLWltYWdlLmV4dDQ6IDEzMjM3Lzg5NDA4IGZpbGVzICgw
+LjYlIG5vbi1jb250aWd1b3VzKSwgMjQ5ODg4LzM1NzA2NCBibG9ja3MNCg0KY2hlZXJzLA0KDQot
+IFRlZA0K
