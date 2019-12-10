@@ -2,118 +2,58 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF4C117B87
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2019 00:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B551D117D70
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2019 03:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbfLIXg2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Dec 2019 18:36:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726592AbfLIXg1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 9 Dec 2019 18:36:27 -0500
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 991B7206D3
-        for <linux-ext4@vger.kernel.org>; Mon,  9 Dec 2019 23:36:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575934586;
-        bh=7X5izyTa35DtFX/RC5B2vM3OWWRfmj3AGQK8mKHiAEQ=;
-        h=From:To:Subject:Date:From;
-        b=Ow54M07oXk9HOLvcW59QfUoyCQabGlomKmOYa1N2TAE2vDq/CA87GXYVF1KBmUflF
-         d1R3ZaVP0VmnXrgmlsO2vyoudGEszS93fGoroGhc8oC7vbe/S6l47MM+iKZ+tX5gUg
-         0cCEY3wYSMwepaPLSyCKWB3EzwEPZrAmZRv+T0CI=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Subject: [PATCH] ext4: uninline ext4_inode_journal_mode()
-Date:   Mon,  9 Dec 2019 15:36:02 -0800
-Message-Id: <20191209233602.117778-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
+        id S1726642AbfLJCBl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Dec 2019 21:01:41 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56186 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726605AbfLJCBl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Dec 2019 21:01:41 -0500
+Received: from callcc.thunk.org (guestnat-104-132-34-105.corp.google.com [104.132.34.105] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xBA21Ukk012184
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 9 Dec 2019 21:01:32 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9468A421A48; Mon,  9 Dec 2019 21:01:30 -0500 (EST)
+Date:   Mon, 9 Dec 2019 21:01:30 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+Cc:     ebiggers3@gmail.com, adilger.kernel@dilger.ca,
+        bot+eb13811afcefe99cfe45081054e7883f569f949d@syzkaller.appspotmail.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: ppc64el kernel access of bad area
+ (ext4_htree_store_dirent->rb_insert_color)
+Message-ID: <20191210020130.GA61323@mit.edu>
+References: <20171219215906.GA12465@gmail.com>
+ <20191209132914.907306-1-rafaeldtinoco@ubuntu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191209132914.907306-1-rafaeldtinoco@ubuntu.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Mon, Dec 09, 2019 at 10:29:14AM -0300, Rafael David Tinoco wrote:
+> It looks like the same stacktrace that was reported in this thread. This has
+> been reported to ppc64el AND we got a reproducer (ocfs2-tools autopkgtests).
 
-Determining an inode's journaling mode has gotten more complicated over
-time.  Move ext4_inode_journal_mode() from an inline function into
-ext4_jbd2.c to reduce the compiled code size.
+Can you share your reproducer?  Is it a super-simple reproducer that
+doesn't require a complex setup and which can be triggered in some
+kind of virtual machine (under KVM, etc.)?
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/ext4/ext4_jbd2.c | 22 ++++++++++++++++++++++
- fs/ext4/ext4_jbd2.h | 22 +---------------------
- 2 files changed, 23 insertions(+), 21 deletions(-)
+> Thread from beginning 2018, so I guess this issue is pretty intermittent but
+> might exist, and, perhaps, its related to specific arches/machines ?
 
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index d3b8cdea5df75..621c9e19d081f 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -7,6 +7,28 @@
- 
- #include <trace/events/ext4.h>
- 
-+int ext4_inode_journal_mode(struct inode *inode)
-+{
-+	if (EXT4_JOURNAL(inode) == NULL)
-+		return EXT4_INODE_WRITEBACK_DATA_MODE;	/* writeback */
-+	/* We do not support data journalling with delayed allocation */
-+	if (!S_ISREG(inode->i_mode) ||
-+	    ext4_test_inode_flag(inode, EXT4_INODE_EA_INODE) ||
-+	    test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
-+	    (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA) &&
-+	    !test_opt(inode->i_sb, DELALLOC))) {
-+		/* We do not support data journalling for encrypted data */
-+		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode))
-+			return EXT4_INODE_ORDERED_DATA_MODE;  /* ordered */
-+		return EXT4_INODE_JOURNAL_DATA_MODE;	/* journal data */
-+	}
-+	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_ORDERED_DATA)
-+		return EXT4_INODE_ORDERED_DATA_MODE;	/* ordered */
-+	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_WRITEBACK_DATA)
-+		return EXT4_INODE_WRITEBACK_DATA_MODE;	/* writeback */
-+	BUG();
-+}
-+
- /* Just increment the non-pointer handle value */
- static handle_t *ext4_get_nojournal(void)
- {
-diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-index a6b9b66dbfade..7ea4f6fa173b4 100644
---- a/fs/ext4/ext4_jbd2.h
-+++ b/fs/ext4/ext4_jbd2.h
-@@ -463,27 +463,7 @@ int ext4_force_commit(struct super_block *sb);
- #define EXT4_INODE_ORDERED_DATA_MODE	0x02 /* ordered data mode */
- #define EXT4_INODE_WRITEBACK_DATA_MODE	0x04 /* writeback data mode */
- 
--static inline int ext4_inode_journal_mode(struct inode *inode)
--{
--	if (EXT4_JOURNAL(inode) == NULL)
--		return EXT4_INODE_WRITEBACK_DATA_MODE;	/* writeback */
--	/* We do not support data journalling with delayed allocation */
--	if (!S_ISREG(inode->i_mode) ||
--	    ext4_test_inode_flag(inode, EXT4_INODE_EA_INODE) ||
--	    test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
--	    (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA) &&
--	    !test_opt(inode->i_sb, DELALLOC))) {
--		/* We do not support data journalling for encrypted data */
--		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode))
--			return EXT4_INODE_ORDERED_DATA_MODE;  /* ordered */
--		return EXT4_INODE_JOURNAL_DATA_MODE;	/* journal data */
--	}
--	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_ORDERED_DATA)
--		return EXT4_INODE_ORDERED_DATA_MODE;	/* ordered */
--	if (test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_WRITEBACK_DATA)
--		return EXT4_INODE_WRITEBACK_DATA_MODE;	/* writeback */
--	BUG();
--}
-+int ext4_inode_journal_mode(struct inode *inode);
- 
- static inline int ext4_should_journal_data(struct inode *inode)
- {
--- 
-2.24.0.393.g34dc348eaf-goog
+What syzbot reported (a) had no reproducer, (b) only reproduced twice
+on linux-next in 2017, and never since.  So if you're seeing something
+in 2019 in ppc64el, it may not be the same issue.
 
+   	   	       	       	      - Ted
