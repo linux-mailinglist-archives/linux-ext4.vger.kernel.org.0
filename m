@@ -2,38 +2,37 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD5F11B25F
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2019 16:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB7811B311
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2019 16:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388211AbfLKPfp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Dec 2019 10:35:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44912 "EHLO mail.kernel.org"
+        id S2388408AbfLKPi2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Dec 2019 10:38:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733249AbfLKPfo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 11 Dec 2019 10:35:44 -0500
+        id S2388309AbfLKPi1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 11 Dec 2019 10:38:27 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B80B12465B;
-        Wed, 11 Dec 2019 15:35:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B176422527;
+        Wed, 11 Dec 2019 15:38:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576078543;
-        bh=Tx3kSEwE6ylePXAPDzE2LCN8rgqLVHwCTmUZNQTDgN0=;
+        s=default; t=1576078706;
+        bh=NX0S9Qx6zPAjKxQOAmvpsNw3KnU41sQnZPjSKneBC6I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SjedRVlzeQDjOFEM0yBng+kUQiUVswDv6uZ13I1xH6vv9h495R3584wq6ugPx5X+0
-         jqvehDbwwGcMtyoTmrJA9dP5AbYirftfhOqA1iWzAkOrSgY0ZyF6OUvZ3q5s5HXjv0
-         EfBN4EErz3PUw7aV2WMD2V40vqpKtBoV9gEYleWQ=
+        b=qO8MM0Gz0D6dbNHomFBFDZweecZcR15HUv6bxB5e76VW6uGBNG2Fn2sgxSmiiO/fp
+         uwBrnha56FJJliJstZh4fbVmHeHpkvelNsJd3rPLY/ZIj6qacq5iA/JV74/7LPruqP
+         xVhQ7/tgSVFAtICukeOWTClq0EMMeU2FEvMZdLkg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>, stable@kernel.org,
-        Andreas Dilger <adilger@dilger.ca>,
+Cc:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
         Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 31/42] ext4: work around deleting a file with i_nlink == 0 safely
-Date:   Wed, 11 Dec 2019 10:34:59 -0500
-Message-Id: <20191211153510.23861-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 12/37] jbd2: Fix statistics for the number of logged blocks
+Date:   Wed, 11 Dec 2019 10:37:48 -0500
+Message-Id: <20191211153813.24126-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191211153510.23861-1-sashal@kernel.org>
-References: <20191211153510.23861-1-sashal@kernel.org>
+In-Reply-To: <20191211153813.24126-1-sashal@kernel.org>
+References: <20191211153813.24126-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,63 +42,59 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit c7df4a1ecb8579838ec8c56b2bb6a6716e974f37 ]
+[ Upstream commit 015c6033068208d6227612c878877919f3fcf6b6 ]
 
-If the file system is corrupted such that a file's i_links_count is
-too small, then it's possible that when unlinking that file, i_nlink
-will already be zero.  Previously we were working around this kind of
-corruption by forcing i_nlink to one; but we were doing this before
-trying to delete the directory entry --- and if the file system is
-corrupted enough that ext4_delete_entry() fails, then we exit with
-i_nlink elevated, and this causes the orphan inode list handling to be
-FUBAR'ed, such that when we unmount the file system, the orphan inode
-list can get corrupted.
+jbd2 statistics counting number of blocks logged in a transaction was
+wrong. It didn't count the commit block and more importantly it didn't
+count revoke descriptor blocks. Make sure these get properly counted.
 
-A better way to fix this is to simply skip trying to call drop_nlink()
-if i_nlink is already zero, thus moving the check to the place where
-it makes the most sense.
-
-https://bugzilla.kernel.org/show_bug.cgi?id=205433
-
-Link: https://lore.kernel.org/r/20191112032903.8828-1-tytso@mit.edu
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20191105164437.32602-13-jack@suse.cz
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ fs/jbd2/commit.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 29dc02758a52b..b8082ca9e3bac 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3078,18 +3078,17 @@ static int ext4_unlink(struct inode *dir, struct dentry *dentry)
- 	if (IS_DIRSYNC(dir))
- 		ext4_handle_sync(handle);
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index 2d964ce456060..ebbd7d054cabd 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -740,7 +740,6 @@ start_journal_io:
+ 				submit_bh(WRITE_SYNC, bh);
+ 			}
+ 			cond_resched();
+-			stats.run.rs_blocks_logged += bufs;
  
--	if (inode->i_nlink == 0) {
--		ext4_warning_inode(inode, "Deleting file '%.*s' with no links",
--				   dentry->d_name.len, dentry->d_name.name);
--		set_nlink(inode, 1);
--	}
- 	retval = ext4_delete_entry(handle, dir, de, bh);
- 	if (retval)
- 		goto end_unlink;
- 	dir->i_ctime = dir->i_mtime = ext4_current_time(dir);
- 	ext4_update_dx_flag(dir);
- 	ext4_mark_inode_dirty(handle, dir);
--	drop_nlink(inode);
-+	if (inode->i_nlink == 0)
-+		ext4_warning_inode(inode, "Deleting file '%.*s' with no links",
-+				   dentry->d_name.len, dentry->d_name.name);
-+	else
-+		drop_nlink(inode);
- 	if (!inode->i_nlink)
- 		ext4_orphan_add(handle, inode);
- 	inode->i_ctime = ext4_current_time(inode);
+ 			/* Force a new descriptor to be generated next
+                            time round the loop. */
+@@ -827,6 +826,7 @@ start_journal_io:
+ 		if (unlikely(!buffer_uptodate(bh)))
+ 			err = -EIO;
+ 		jbd2_unfile_log_bh(bh);
++		stats.run.rs_blocks_logged++;
+ 
+ 		/*
+ 		 * The list contains temporary buffer heads created by
+@@ -872,6 +872,7 @@ start_journal_io:
+ 		BUFFER_TRACE(bh, "ph5: control buffer writeout done: unfile");
+ 		clear_buffer_jwrite(bh);
+ 		jbd2_unfile_log_bh(bh);
++		stats.run.rs_blocks_logged++;
+ 		__brelse(bh);		/* One for getblk */
+ 		/* AKPM: bforget here */
+ 	}
+@@ -893,6 +894,7 @@ start_journal_io:
+ 	}
+ 	if (cbh)
+ 		err = journal_wait_on_commit_record(journal, cbh);
++	stats.run.rs_blocks_logged++;
+ 	if (jbd2_has_feature_async_commit(journal) &&
+ 	    journal->j_flags & JBD2_BARRIER) {
+ 		blkdev_issue_flush(journal->j_dev, GFP_NOFS, NULL);
 -- 
 2.20.1
 
