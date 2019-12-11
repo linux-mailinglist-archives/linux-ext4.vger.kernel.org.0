@@ -2,190 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7E8118FDE
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2019 19:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11F111A18C
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2019 03:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727685AbfLJSgw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Dec 2019 13:36:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727633AbfLJSgw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 10 Dec 2019 13:36:52 -0500
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A67E20663;
-        Tue, 10 Dec 2019 18:36:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576003011;
-        bh=CgasdbtH3xcl2z0h0Kpxvo4k9RsFdfEY7tZI8ubO6AQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ts1eFIaCmEokD3v+0sQE0NtgVgt/X5zZLcd9pI3yGGnUswABOG3RZYDVAbecNOLmx
-         3kGiziH/g0I4/WoG7RleYTRs+8LdQoKhgnbU8RFJGDxY/4tF5zocNPLn+9P7AmUMNS
-         ujUUOLf7E+IUcjSx3Vdv3wideomXuC3rtn0EvyTQ=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org,
-        Victor Hsieh <victorhsieh@google.com>
-Subject: [PATCH v2] fs-verity: implement readahead for FS_IOC_ENABLE_VERITY
-Date:   Tue, 10 Dec 2019 10:35:31 -0800
-Message-Id: <20191210183531.179836-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.24.0.525.g8f36a354ae-goog
+        id S1727764AbfLKCmJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Dec 2019 21:42:09 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54503 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726619AbfLKCmJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Dec 2019 21:42:09 -0500
+Received: from callcc.thunk.org (guestnat-104-132-34-105.corp.google.com [104.132.34.105] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xBB2fb0M007024
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 10 Dec 2019 21:41:38 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9BA5D421A48; Tue, 10 Dec 2019 21:41:37 -0500 (EST)
+Date:   Tue, 10 Dec 2019 21:41:37 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Andrea Vai <andrea.vai@unipv.it>,
+        "Schmid, Carsten" <Carsten_Schmid@mentor.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        USB list <linux-usb@vger.kernel.org>,
+        SCSI development list <linux-scsi@vger.kernel.org>,
+        Himanshu Madhani <himanshu.madhani@cavium.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Omar Sandoval <osandov@fb.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Hans Holmberg <Hans.Holmberg@wdc.com>,
+        Kernel development list <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: AW: Slow I/O on USB media after commit
+ f664a3cc17b7d0a2bc3b3ab96181e1029b0ec0e6
+Message-ID: <20191211024137.GB61323@mit.edu>
+References: <cb6e84781c4542229a3f31572cef19ab@SVR-IES-MBX-03.mgc.mentorg.com>
+ <c1358b840b3a4971aa35a25d8495c2c8953403ea.camel@unipv.it>
+ <20191128091712.GD15549@ming.t460p>
+ <f82fd5129e3dcacae703a689be60b20a7fedadf6.camel@unipv.it>
+ <20191129005734.GB1829@ming.t460p>
+ <20191129023555.GA8620@ming.t460p>
+ <320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it>
+ <20191203022337.GE25002@ming.t460p>
+ <8196b014b1a4d91169bf3b0d68905109aeaf2191.camel@unipv.it>
+ <20191210080550.GA5699@ming.t460p>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191210080550.GA5699@ming.t460p>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Tue, Dec 10, 2019 at 04:05:50PM +0800, Ming Lei wrote:
+> > > The path[2] is expected behaviour. Not sure path [1] is correct,
+> > > given
+> > > ext4_release_file() is supposed to be called when this inode is
+> > > released. That means the file is closed 4358 times during 1GB file
+> > > copying to usb storage.
+> > > 
+> > > [1] insert requests when returning to user mode from syscall
+> > > 
+> > >   b'blk_mq_sched_request_inserted'
+> > >   b'blk_mq_sched_request_inserted'
+> > >   b'dd_insert_requests'
+> > >   b'blk_mq_sched_insert_requests'
+> > >   b'blk_mq_flush_plug_list'
+> > >   b'blk_flush_plug_list'
+> > >   b'io_schedule_prepare'
+> > >   b'io_schedule'
+> > >   b'rq_qos_wait'
+> > >   b'wbt_wait'
+> > >   b'__rq_qos_throttle'
+> > >   b'blk_mq_make_request'
+> > >   b'generic_make_request'
+> > >   b'submit_bio'
+> > >   b'ext4_io_submit'
+> > >   b'ext4_writepages'
+> > >   b'do_writepages'
+> > >   b'__filemap_fdatawrite_range'
+> > >   b'ext4_release_file'
+> > >   b'__fput'
+> > >   b'task_work_run'
+> > >   b'exit_to_usermode_loop'
+> > >   b'do_syscall_64'
+> > >   b'entry_SYSCALL_64_after_hwframe'
+> > >     4358
 
-When it builds the first level of the Merkle tree, FS_IOC_ENABLE_VERITY
-sequentially reads each page of the file using read_mapping_page().
-This works fine if the file's data is already in pagecache, which should
-normally be the case, since this ioctl is normally used immediately
-after writing out the file.
+I'm guessing that your workload is repeatedly truncating a file (or
+calling open with O_TRUNC) and then writing data to it.  When you do
+this, then when the file is closed, we assume that since you were
+replacing the previous contents of a file with new contents, that you
+would be unhappy if the file contents was replaced by a zero length
+file after a crash.  That's because ten years, ago there were a *huge*
+number of crappy applications that would replace a file by reading it
+into memory, truncating it, and then write out the new contents of the
+file.  This could be a high score file for a game, or a KDE or GNOME
+state file, etc.
 
-But in any other case this implementation performs very poorly, since
-only one page is read at a time.
+So if someone does open, truncate, write, close, we still immediately
+writing out the data on the close, assuming that the programmer really
+wanted open, truncate, write, fsync, close, but was too careless to
+actually do the right thing.
 
-Fix this by implementing readahead using the functions from
-mm/readahead.c.
+Some workaround[1] like this is done by all of the major file systems,
+and was fallout the agreement from the "O_PONIES"[2] controversy.
+This was discussed and agreed to at the 2009 LSF/MM workshop.  (See
+the "rename, fsync, and ponies" section.)
 
-This improves performance in the uncached case by about 20x, as seen in
-the following benchmarks done on a 250MB file (on x86_64 with SHA-NI):
+[1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/317781/comments/45
+[2] https://blahg.josefsipek.net/?p=364
+[3] https://lwn.net/Articles/327601/
 
-    FS_IOC_ENABLE_VERITY uncached (before) 3.299s
-    FS_IOC_ENABLE_VERITY uncached (after)  0.160s
-    FS_IOC_ENABLE_VERITY cached            0.147s
-    sha256sum uncached                     0.191s
-    sha256sum cached                       0.145s
+So if you're seeing a call to filemap_fdatawrite_range as the result
+of a fput, that's why.
 
-Note: we could instead switch to kernel_read().  But that would mean
-we'd no longer be hashing the data directly from the pagecache, which is
-a nice optimization of its own.  And using kernel_read() would require
-allocating another temporary buffer, hashing the data and tree pages
-separately, and explicitly zero-padding the last page -- so it wouldn't
-really be any simpler than direct pagecache access, at least for now.
+In any case, this behavior has been around for a decade, and it
+appears to be incidental to your performance difficulties with your
+USB thumbdrive and block-mq.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
-
-Changed v1 => v2:
-- Only do sync readahead when the page wasn't found in the pagecache at all.
-- Use ->f_mapping so that the inode doesn't have to be passed.
-
-
- fs/verity/enable.c | 45 +++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 39 insertions(+), 6 deletions(-)
-
-diff --git a/fs/verity/enable.c b/fs/verity/enable.c
-index eabc6ac199064..60e74dc9c242a 100644
---- a/fs/verity/enable.c
-+++ b/fs/verity/enable.c
-@@ -13,13 +13,42 @@
- #include <linux/sched/signal.h>
- #include <linux/uaccess.h>
- 
--static int build_merkle_tree_level(struct inode *inode, unsigned int level,
-+/*
-+ * Read a file data page for Merkle tree construction.  Do aggressive readahead,
-+ * since we're sequentially reading the entire file.
-+ */
-+static struct page *read_file_data_page(struct file *filp, pgoff_t index,
-+					struct file_ra_state *ra,
-+					unsigned long remaining_pages)
-+{
-+	struct page *page;
-+
-+	page = find_get_page(filp->f_mapping, index);
-+	if (!page || !PageUptodate(page)) {
-+		if (page)
-+			put_page(page);
-+		else
-+			page_cache_sync_readahead(filp->f_mapping, ra, filp,
-+						  index, remaining_pages);
-+		page = read_mapping_page(filp->f_mapping, index, NULL);
-+		if (IS_ERR(page))
-+			return page;
-+	}
-+	if (PageReadahead(page))
-+		page_cache_async_readahead(filp->f_mapping, ra, filp, page,
-+					   index, remaining_pages);
-+	return page;
-+}
-+
-+static int build_merkle_tree_level(struct file *filp, unsigned int level,
- 				   u64 num_blocks_to_hash,
- 				   const struct merkle_tree_params *params,
- 				   u8 *pending_hashes,
- 				   struct ahash_request *req)
- {
-+	struct inode *inode = file_inode(filp);
- 	const struct fsverity_operations *vops = inode->i_sb->s_vop;
-+	struct file_ra_state ra = { 0 };
- 	unsigned int pending_size = 0;
- 	u64 dst_block_num;
- 	u64 i;
-@@ -36,6 +65,8 @@ static int build_merkle_tree_level(struct inode *inode, unsigned int level,
- 		dst_block_num = 0; /* unused */
- 	}
- 
-+	file_ra_state_init(&ra, filp->f_mapping);
-+
- 	for (i = 0; i < num_blocks_to_hash; i++) {
- 		struct page *src_page;
- 
-@@ -45,7 +76,8 @@ static int build_merkle_tree_level(struct inode *inode, unsigned int level,
- 
- 		if (level == 0) {
- 			/* Leaf: hashing a data block */
--			src_page = read_mapping_page(inode->i_mapping, i, NULL);
-+			src_page = read_file_data_page(filp, i, &ra,
-+						       num_blocks_to_hash - i);
- 			if (IS_ERR(src_page)) {
- 				err = PTR_ERR(src_page);
- 				fsverity_err(inode,
-@@ -103,17 +135,18 @@ static int build_merkle_tree_level(struct inode *inode, unsigned int level,
- }
- 
- /*
-- * Build the Merkle tree for the given inode using the given parameters, and
-+ * Build the Merkle tree for the given file using the given parameters, and
-  * return the root hash in @root_hash.
-  *
-  * The tree is written to a filesystem-specific location as determined by the
-  * ->write_merkle_tree_block() method.  However, the blocks that comprise the
-  * tree are the same for all filesystems.
-  */
--static int build_merkle_tree(struct inode *inode,
-+static int build_merkle_tree(struct file *filp,
- 			     const struct merkle_tree_params *params,
- 			     u8 *root_hash)
- {
-+	struct inode *inode = file_inode(filp);
- 	u8 *pending_hashes;
- 	struct ahash_request *req;
- 	u64 blocks;
-@@ -139,7 +172,7 @@ static int build_merkle_tree(struct inode *inode,
- 	blocks = (inode->i_size + params->block_size - 1) >>
- 		 params->log_blocksize;
- 	for (level = 0; level <= params->num_levels; level++) {
--		err = build_merkle_tree_level(inode, level, blocks, params,
-+		err = build_merkle_tree_level(filp, level, blocks, params,
- 					      pending_hashes, req);
- 		if (err)
- 			goto out;
-@@ -227,7 +260,7 @@ static int enable_verity(struct file *filp,
- 	 */
- 	pr_debug("Building Merkle tree...\n");
- 	BUILD_BUG_ON(sizeof(desc->root_hash) < FS_VERITY_MAX_DIGEST_SIZE);
--	err = build_merkle_tree(inode, &params, desc->root_hash);
-+	err = build_merkle_tree(filp, &params, desc->root_hash);
- 	if (err) {
- 		fsverity_err(inode, "Error %d building Merkle tree", err);
- 		goto rollback;
--- 
-2.24.0.525.g8f36a354ae-goog
-
+						- Ted
