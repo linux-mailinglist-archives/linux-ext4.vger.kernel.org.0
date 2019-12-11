@@ -2,38 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77FFB11B368
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2019 16:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 794D811B1D0
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2019 16:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388131AbfLKPmW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Dec 2019 10:42:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33530 "EHLO mail.kernel.org"
+        id S2387993AbfLKPc5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Dec 2019 10:32:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387460AbfLKP1o (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 11 Dec 2019 10:27:44 -0500
+        id S2387719AbfLKP2t (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 11 Dec 2019 10:28:49 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A99124654;
-        Wed, 11 Dec 2019 15:27:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C97B424679;
+        Wed, 11 Dec 2019 15:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576078064;
-        bh=MjdZ+Si+IyCzLycAPuoWRfPaAcvQ0FOabRUeFZvgcVI=;
+        s=default; t=1576078128;
+        bh=MZxWCjPMdzRp2j19rWZIMdoTzcngRZidA8+i0wdeXIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XN5qIAbr1HxcziihpbIZPswYXnAnAuzNjVjV6XRVjpBNCabMxshSDZElrQjH2mlhI
-         PJ1GN4qeeMU9HE8Dg4fbBYiM/J/d8piqZlHVMH7u1t4/d8Hn8WeFSo3eRhK663q3tR
-         X6tQLLttbsu7KCErCUgxv4LSgyangnJOHy7iBCNM=
+        b=CJjGn9CR4Z8TzbgNNSGZDqqpOVXNg1C5Was9EoB8tHDZIG6+bcGKVjmlplnMTCOd6
+         Hu5GUsKlVbfTH3Q2e//pEZGmUS60TIKoSTJ8uWzjt/V2wtXWfmgooa90mjpRMSsZZ+
+         64rIVz8iamQdouWnZAbKi2Lg8venVM/Hgk9wvamw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>, stable@kernel.org,
-        Andreas Dilger <adilger@dilger.ca>,
-        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 56/79] ext4: work around deleting a file with i_nlink == 0 safely
-Date:   Wed, 11 Dec 2019 10:26:20 -0500
-Message-Id: <20191211152643.23056-56-sashal@kernel.org>
+Cc:     Matthew Bobrowski <mbobrowski@mbobrowski.org>,
+        Jan Kara <jack@suse.cz>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 16/58] ext4: update direct I/O read lock pattern for IOCB_NOWAIT
+Date:   Wed, 11 Dec 2019 10:27:49 -0500
+Message-Id: <20191211152831.23507-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191211152643.23056-1-sashal@kernel.org>
-References: <20191211152643.23056-1-sashal@kernel.org>
+In-Reply-To: <20191211152831.23507-1-sashal@kernel.org>
+References: <20191211152831.23507-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,63 +45,45 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Matthew Bobrowski <mbobrowski@mbobrowski.org>
 
-[ Upstream commit c7df4a1ecb8579838ec8c56b2bb6a6716e974f37 ]
+[ Upstream commit 548feebec7e93e58b647dba70b3303dcb569c914 ]
 
-If the file system is corrupted such that a file's i_links_count is
-too small, then it's possible that when unlinking that file, i_nlink
-will already be zero.  Previously we were working around this kind of
-corruption by forcing i_nlink to one; but we were doing this before
-trying to delete the directory entry --- and if the file system is
-corrupted enough that ext4_delete_entry() fails, then we exit with
-i_nlink elevated, and this causes the orphan inode list handling to be
-FUBAR'ed, such that when we unmount the file system, the orphan inode
-list can get corrupted.
+This patch updates the lock pattern in ext4_direct_IO_read() to not
+block on inode lock in cases of IOCB_NOWAIT direct I/O reads. The
+locking condition implemented here is similar to that of 942491c9e6d6
+("xfs: fix AIM7 regression").
 
-A better way to fix this is to simply skip trying to call drop_nlink()
-if i_nlink is already zero, thus moving the check to the place where
-it makes the most sense.
-
-https://bugzilla.kernel.org/show_bug.cgi?id=205433
-
-Link: https://lore.kernel.org/r/20191112032903.8828-1-tytso@mit.edu
+Fixes: 16c54688592c ("ext4: Allow parallel DIO reads")
+Signed-off-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Link: https://lore.kernel.org/r/c5d5e759f91747359fbd2c6f9a36240cf75ad79f.1572949325.git.mbobrowski@mbobrowski.org
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ fs/ext4/inode.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index badbb8b4f0f17..f56d6f1950b98 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3056,18 +3056,17 @@ static int ext4_unlink(struct inode *dir, struct dentry *dentry)
- 	if (IS_DIRSYNC(dir))
- 		ext4_handle_sync(handle);
- 
--	if (inode->i_nlink == 0) {
--		ext4_warning_inode(inode, "Deleting file '%.*s' with no links",
--				   dentry->d_name.len, dentry->d_name.name);
--		set_nlink(inode, 1);
--	}
- 	retval = ext4_delete_entry(handle, dir, de, bh);
- 	if (retval)
- 		goto end_unlink;
- 	dir->i_ctime = dir->i_mtime = current_time(dir);
- 	ext4_update_dx_flag(dir);
- 	ext4_mark_inode_dirty(handle, dir);
--	drop_nlink(inode);
-+	if (inode->i_nlink == 0)
-+		ext4_warning_inode(inode, "Deleting file '%.*s' with no links",
-+				   dentry->d_name.len, dentry->d_name.name);
-+	else
-+		drop_nlink(inode);
- 	if (!inode->i_nlink)
- 		ext4_orphan_add(handle, inode);
- 	inode->i_ctime = current_time(inode);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index b3d5fd84b4856..f746abfd96977 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3787,7 +3787,13 @@ static ssize_t ext4_direct_IO_read(struct kiocb *iocb, struct iov_iter *iter)
+ 	 * writes & truncates and since we take care of writing back page cache,
+ 	 * we are protected against page writeback as well.
+ 	 */
+-	inode_lock_shared(inode);
++	if (iocb->ki_flags & IOCB_NOWAIT) {
++		if (!inode_trylock_shared(inode))
++			return -EAGAIN;
++	} else {
++		inode_lock_shared(inode);
++	}
++
+ 	ret = filemap_write_and_wait_range(mapping, iocb->ki_pos,
+ 					   iocb->ki_pos + count - 1);
+ 	if (ret)
 -- 
 2.20.1
 
