@@ -2,172 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7E911C677
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2019 08:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153D711CD18
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2019 13:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbfLLHeb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Dec 2019 02:34:31 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:45927 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728134AbfLLHeb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Dec 2019 02:34:31 -0500
-Received: by mail-wr1-f68.google.com with SMTP id j42so1505432wrj.12
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Dec 2019 23:34:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=unipv-it.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Ouu20+mE9n/tPYHmfkHzcHWK0RTLjVdq3889eJu3VP0=;
-        b=lmtQeDO0RVMVq5UaQ/yHPY07AfXs62TQ590bzWxxhQaAA/OaOB21aNqrC1Zlo45s+i
-         0vqOpszc8Sfm2BBuncYr8tlj7W9bIc7EYH4J1UDr3BBFEYge7eIFNYAJWO2NQIzACRy8
-         sSVzNMIr1hZEY5iikGTDJf2NPrHPoeHl5AG5OylC98AeaeJw96Euvod9mMvblTCJGjD9
-         6qsE8uOYHKRAsu1xmiY5Az/7p9YfDoB1FtlTfUJDUJsN9RxZJ0sIKI+lDVR/bCYUud7F
-         n3m5AqVOLGyqEbqy9t5Cdr6E/ifNMpVhVtWyCb8LVjExB3CRLPxurspWLQshKirl27l9
-         TJtA==
+        id S1729206AbfLLMZi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Dec 2019 07:25:38 -0500
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:42478 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729202AbfLLMZh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Dec 2019 07:25:37 -0500
+Received: by mail-vs1-f68.google.com with SMTP id b79so1372176vsd.9
+        for <linux-ext4@vger.kernel.org>; Thu, 12 Dec 2019 04:25:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Ouu20+mE9n/tPYHmfkHzcHWK0RTLjVdq3889eJu3VP0=;
-        b=lJMtT10wlC9v3QbhptlcqxzGxJxXvE7FpwNLYj6odBakZDV1dh/WShnBE0Oa8V3bzq
-         oTOV2CP7/JnY4vi6IBBnLX6Hojo4paZheMJBkTm1aTj1O2MOQaOSVg5fe8vOv9kxV0OX
-         jIrbpsklri8cThm+PJPGHw/irgX4m8L1cz5LUVgFOdmEKZsSl38PQcPLyRD5b3/OnPZR
-         cP1JK4do2J6N/qFcRs6S1Wzsi1p2VYmfdTTRVL3FBIGcUwZpvv5U0Z4RQ0rtxgyBzrBk
-         zEVe6lkp9IaYfG2lXEcaR1GSPnSjfVUJzs4ARnS347yrQCldS5a2n7lyvhcPzHJOVDQN
-         nxHA==
-X-Gm-Message-State: APjAAAWduuFUlHu8tiadtS4vY6bpqVQfPtvNL0O/Kr4KnIzDGg3n4FoY
-        l86yjT5tGCCI7IS/K1s9qIDtAw==
-X-Google-Smtp-Source: APXvYqwlTzWP0XWOqGIJf4UvsmxnRFuIxB+FV85xriWGt31SdJo44/OLaYrtTWBOIOO+0sMh8wDsnw==
-X-Received: by 2002:a5d:6802:: with SMTP id w2mr4385600wru.353.1576136068427;
-        Wed, 11 Dec 2019 23:34:28 -0800 (PST)
-Received: from angus.unipv.it (angus.unipv.it. [193.206.67.163])
-        by smtp.gmail.com with ESMTPSA id o66sm1101251wmo.20.2019.12.11.23.34.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2019 23:34:27 -0800 (PST)
-Message-ID: <430b562eeba371ef3b917193246b9eb6c46be71e.camel@unipv.it>
-Subject: Re: AW: Slow I/O on USB media after commit
- f664a3cc17b7d0a2bc3b3ab96181e1029b0ec0e6
-From:   Andrea Vai <andrea.vai@unipv.it>
-To:     Ming Lei <ming.lei@redhat.com>, "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     "Schmid, Carsten" <Carsten_Schmid@mentor.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jens Axboe <axboe@kernel.dk>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        USB list <linux-usb@vger.kernel.org>,
-        SCSI development list <linux-scsi@vger.kernel.org>,
-        Himanshu Madhani <himanshu.madhani@cavium.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Omar Sandoval <osandov@fb.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Hans Holmberg <Hans.Holmberg@wdc.com>,
-        Kernel development list <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Date:   Thu, 12 Dec 2019 08:34:26 +0100
-In-Reply-To: <20191211213316.GA14983@ming.t460p>
-References: <f82fd5129e3dcacae703a689be60b20a7fedadf6.camel@unipv.it>
-         <20191129005734.GB1829@ming.t460p> <20191129023555.GA8620@ming.t460p>
-         <320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it>
-         <20191203022337.GE25002@ming.t460p>
-         <8196b014b1a4d91169bf3b0d68905109aeaf2191.camel@unipv.it>
-         <20191210080550.GA5699@ming.t460p> <20191211024137.GB61323@mit.edu>
-         <20191211040058.GC6864@ming.t460p> <20191211160745.GA129186@mit.edu>
-         <20191211213316.GA14983@ming.t460p>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=nWE0WzVk2grc01UMXx5PdJZzQ50JohF0IYTXTeaie6o=;
+        b=qmaz1HOLDMZp3ozRB7ulE2MLkB5uOP2K1se742e8Kv1tKq4v62qNXXHiCiioB8L7cn
+         /L9KgeNyQEyvrp8/qkUFbVIGwMXsfdkkuCXGlx/y4jjcQbbBxLSZeE+nOYBYt5dzF7Vu
+         agG2Pn7dYNCepHFmlmtINj/WpuCwwgZwOaqp8tZtAcz6qmkQzwT62vW5qXdsVMjkjo4t
+         C4JwwrVTAvp1HdeThdlGZLRPcC6eV7aSxoqlVDL5MJ3IiXtEUd+e6Dc61Z6JoEwR7KZ9
+         OM5ddtkCfg9Zy8tdVehzJ1vjh+9Puz0rbzA+ERnKmJ0CkZPuKUjLyJNeX57hUgraCpIH
+         KLdg==
+X-Gm-Message-State: APjAAAUdRsN7iD4SgPSwdifQ5esU7TRle6HgG2YiltsCAPN/tZ/AHHVY
+        ZL/22Qi+Bl1ZF6HW+Ob8kbjWHw==
+X-Google-Smtp-Source: APXvYqzB8fkahlfaqCAztd+46vvQ5AP/bVlMfwhSSRj1jq3Sbi328Kl5S6JcM1xF5SpZEXmfgisJJg==
+X-Received: by 2002:a67:bd0d:: with SMTP id y13mr6736335vsq.125.1576153535713;
+        Thu, 12 Dec 2019 04:25:35 -0800 (PST)
+Received: from [192.168.100.205] ([168.181.51.72])
+        by smtp.gmail.com with ESMTPSA id s207sm3045069vss.10.2019.12.12.04.25.33
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 12 Dec 2019 04:25:35 -0800 (PST)
+Subject: Re: ppc64el kernel access of bad area
+ (ext4_htree_store_dirent->rb_insert_color)
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     ebiggers3@gmail.com, adilger.kernel@dilger.ca,
+        bot+eb13811afcefe99cfe45081054e7883f569f949d@syzkaller.appspotmail.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <20171219215906.GA12465@gmail.com>
+ <20191209132914.907306-1-rafaeldtinoco@ubuntu.com>
+ <20191210020130.GA61323@mit.edu>
+From:   Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=rafaeldtinoco@ubuntu.com; keydata=
+ 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
+ m+Bc0IpWoGZLnE2VPg==
+Message-ID: <2c227a55-5465-e264-dfb8-5ad49412df69@ubuntu.com>
+Date:   Thu, 12 Dec 2019 09:25:32 -0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
+In-Reply-To: <20191210020130.GA61323@mit.edu>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Il giorno gio, 12/12/2019 alle 05.33 +0800, Ming Lei ha scritto:
-> On Wed, Dec 11, 2019 at 11:07:45AM -0500, Theodore Y. Ts'o wrote:
-> > On Wed, Dec 11, 2019 at 12:00:58PM +0800, Ming Lei wrote:
-> > > I didn't reproduce the issue in my test environment, and follows
-> > > Andrea's test commands[1]:
-> > > 
-> > >   mount UUID=$uuid /mnt/pendrive 2>&1 |tee -a $logfile
-> > >   SECONDS=0
-> > >   cp $testfile /mnt/pendrive 2>&1 |tee -a $logfile
-> > >   umount /mnt/pendrive 2>&1 |tee -a $logfile
-> > > 
-> > > The 'cp' command supposes to open/close the file just once,
-> however
-> > > ext4_release_file() & write pages is observed to run for 4358
-> times
-> > > when executing the above 'cp' test.
-> > 
-> > Why are we sure the ext4_release_file() / _fput() is coming from
-> the
-> > cp command, as opposed to something else that might be running on
-> the
-> > system under test?  _fput() is called by the kernel when the last
-> 
-> Please see the log:
-> 
-> https://lore.kernel.org/linux-scsi/3af3666920e7d46f8f0c6d88612f143ffabc743c.camel@unipv.it/2-log_ming.zip
-> 
-> Which is collected by:
-> 
-> #!/bin/sh
-> MAJ=$1
-> MIN=$2
-> MAJ=$(( $MAJ << 20 ))
-> DEV=$(( $MAJ | $MIN ))
-> 
-> /usr/share/bcc/tools/trace -t -C \
->     't:block:block_rq_issue (args->dev == '$DEV') "%s %d %d", args-
-> >rwbs, args->sector, args->nr_sector' \
->     't:block:block_rq_insert (args->dev == '$DEV') "%s %d %d", args-
-> >rwbs, args->sector, args->nr_sector'
-> 
-> $MAJ:$MIN points to the USB storage disk.
-> 
-> From the above IO trace, there are two write paths, one is from cp,
-> another is from writeback wq.
-> 
-> The stackcount trace[1] is consistent with the IO trace log since it
-> only shows two IO paths, that is why I concluded that the write done
-> via
-> ext4_release_file() is from 'cp'.
-> 
-> [1] 
-> https://lore.kernel.org/linux-scsi/320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it/2-log_ming_20191129_150609.zip
-> 
-> > reference to a struct file is released.  (Specifically, if you
-> have a
-> > fd which is dup'ed, it's only when the last fd corresponding to
-> the
-> > struct file is closed, and the struct file is about to be
-> released,
-> > does the file system's f_ops->release function get called.)
-> > 
-> > So the first question I'd ask is whether there is anything else
-> going
-> > on the system, and whether the writes are happening to the USB
-> thumb
-> > drive, or to some other storage device.  And if there is something
-> > else which is writing to the pendrive, maybe that's why no one
-> else
-> > has been able to reproduce the OP's complaint....
-> 
-> OK, we can ask Andrea to confirm that via the following trace, which
-> will add pid/comm info in the stack trace:
-> 
-> /usr/share/bcc/tools/stackcount  blk_mq_sched_request_inserted
-> 
-> Andrea, could you collect the above log again when running new/bad
-> kernel for confirming if the write done by ext4_release_file() is
-> from
-> the 'cp' process?
 
-Yes, I will try to do it as soon as possible and let you know.
-I will also try xfs or btrfs, as you suggested in another message.
 
-Thanks, and bye
-Andrea
+>> It looks like the same stacktrace that was reported in this thread. This has
+>> been reported to ppc64el AND we got a reproducer (ocfs2-tools autopkgtests).
+> Can you share your reproducer?  Is it a super-simple reproducer that
+> doesn't require a complex setup and which can be triggered in some
+> kind of virtual machine (under KVM, etc.)?
+
+Yep, its the autopkgtests (debian/tests/*) from ocfs2-tools in bare
+metal ppc64el. A bunch of "mkfs.ocfs2, fsck.ocfs2, debugfs.ocfs2,
+mount.ocfs2" commands testing package. I got access to same HW that
+generated the trace, I'll generate a kdump and share more data soon.
 
