@@ -2,125 +2,172 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C9711C5AB
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2019 06:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7E911C677
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2019 08:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727896AbfLLF4R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Dec 2019 00:56:17 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46920 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727873AbfLLF4P (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 12 Dec 2019 00:56:15 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBC5jWTD102600
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Dec 2019 00:56:14 -0500
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2wsm2gcfam-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Thu, 12 Dec 2019 00:56:14 -0500
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Thu, 12 Dec 2019 05:56:12 -0000
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 12 Dec 2019 05:56:09 -0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xBC5u8YO53674056
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Dec 2019 05:56:08 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6BF3FAE051;
-        Thu, 12 Dec 2019 05:56:08 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0ECEDAE056;
-        Thu, 12 Dec 2019 05:56:07 +0000 (GMT)
-Received: from dhcp-9-199-158-163.in.ibm.com (unknown [9.199.158.163])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 12 Dec 2019 05:56:06 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     jack@suse.cz, tytso@mit.edu, linux-ext4@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, mbobrowski@mbobrowski.org,
-        joseph.qi@linux.alibaba.com, Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: [PATCHv5 3/3] ext4: Move to shared i_rwsem even without dioread_nolock mount opt
-Date:   Thu, 12 Dec 2019 11:25:57 +0530
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191212055557.11151-1-riteshh@linux.ibm.com>
-References: <20191212055557.11151-1-riteshh@linux.ibm.com>
+        id S1728140AbfLLHeb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Dec 2019 02:34:31 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:45927 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728134AbfLLHeb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Dec 2019 02:34:31 -0500
+Received: by mail-wr1-f68.google.com with SMTP id j42so1505432wrj.12
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Dec 2019 23:34:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=unipv-it.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Ouu20+mE9n/tPYHmfkHzcHWK0RTLjVdq3889eJu3VP0=;
+        b=lmtQeDO0RVMVq5UaQ/yHPY07AfXs62TQ590bzWxxhQaAA/OaOB21aNqrC1Zlo45s+i
+         0vqOpszc8Sfm2BBuncYr8tlj7W9bIc7EYH4J1UDr3BBFEYge7eIFNYAJWO2NQIzACRy8
+         sSVzNMIr1hZEY5iikGTDJf2NPrHPoeHl5AG5OylC98AeaeJw96Euvod9mMvblTCJGjD9
+         6qsE8uOYHKRAsu1xmiY5Az/7p9YfDoB1FtlTfUJDUJsN9RxZJ0sIKI+lDVR/bCYUud7F
+         n3m5AqVOLGyqEbqy9t5Cdr6E/ifNMpVhVtWyCb8LVjExB3CRLPxurspWLQshKirl27l9
+         TJtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Ouu20+mE9n/tPYHmfkHzcHWK0RTLjVdq3889eJu3VP0=;
+        b=lJMtT10wlC9v3QbhptlcqxzGxJxXvE7FpwNLYj6odBakZDV1dh/WShnBE0Oa8V3bzq
+         oTOV2CP7/JnY4vi6IBBnLX6Hojo4paZheMJBkTm1aTj1O2MOQaOSVg5fe8vOv9kxV0OX
+         jIrbpsklri8cThm+PJPGHw/irgX4m8L1cz5LUVgFOdmEKZsSl38PQcPLyRD5b3/OnPZR
+         cP1JK4do2J6N/qFcRs6S1Wzsi1p2VYmfdTTRVL3FBIGcUwZpvv5U0Z4RQ0rtxgyBzrBk
+         zEVe6lkp9IaYfG2lXEcaR1GSPnSjfVUJzs4ARnS347yrQCldS5a2n7lyvhcPzHJOVDQN
+         nxHA==
+X-Gm-Message-State: APjAAAWduuFUlHu8tiadtS4vY6bpqVQfPtvNL0O/Kr4KnIzDGg3n4FoY
+        l86yjT5tGCCI7IS/K1s9qIDtAw==
+X-Google-Smtp-Source: APXvYqwlTzWP0XWOqGIJf4UvsmxnRFuIxB+FV85xriWGt31SdJo44/OLaYrtTWBOIOO+0sMh8wDsnw==
+X-Received: by 2002:a5d:6802:: with SMTP id w2mr4385600wru.353.1576136068427;
+        Wed, 11 Dec 2019 23:34:28 -0800 (PST)
+Received: from angus.unipv.it (angus.unipv.it. [193.206.67.163])
+        by smtp.gmail.com with ESMTPSA id o66sm1101251wmo.20.2019.12.11.23.34.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Dec 2019 23:34:27 -0800 (PST)
+Message-ID: <430b562eeba371ef3b917193246b9eb6c46be71e.camel@unipv.it>
+Subject: Re: AW: Slow I/O on USB media after commit
+ f664a3cc17b7d0a2bc3b3ab96181e1029b0ec0e6
+From:   Andrea Vai <andrea.vai@unipv.it>
+To:     Ming Lei <ming.lei@redhat.com>, "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     "Schmid, Carsten" <Carsten_Schmid@mentor.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        USB list <linux-usb@vger.kernel.org>,
+        SCSI development list <linux-scsi@vger.kernel.org>,
+        Himanshu Madhani <himanshu.madhani@cavium.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Omar Sandoval <osandov@fb.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Hans Holmberg <Hans.Holmberg@wdc.com>,
+        Kernel development list <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Date:   Thu, 12 Dec 2019 08:34:26 +0100
+In-Reply-To: <20191211213316.GA14983@ming.t460p>
+References: <f82fd5129e3dcacae703a689be60b20a7fedadf6.camel@unipv.it>
+         <20191129005734.GB1829@ming.t460p> <20191129023555.GA8620@ming.t460p>
+         <320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it>
+         <20191203022337.GE25002@ming.t460p>
+         <8196b014b1a4d91169bf3b0d68905109aeaf2191.camel@unipv.it>
+         <20191210080550.GA5699@ming.t460p> <20191211024137.GB61323@mit.edu>
+         <20191211040058.GC6864@ming.t460p> <20191211160745.GA129186@mit.edu>
+         <20191211213316.GA14983@ming.t460p>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19121205-0008-0000-0000-000003400364
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19121205-0009-0000-0000-00004A600371
-Message-Id: <20191212055557.11151-4-riteshh@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-12_01:2019-12-12,2019-12-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=588
- clxscore=1015 bulkscore=0 mlxscore=0 impostorscore=0 adultscore=0
- suspectscore=3 lowpriorityscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912120036
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We were using shared locking only in case of dioread_nolock mount option in case
-of DIO overwrites. This mount condition is not needed anymore with current code,
-since:-
+Il giorno gio, 12/12/2019 alle 05.33 +0800, Ming Lei ha scritto:
+> On Wed, Dec 11, 2019 at 11:07:45AM -0500, Theodore Y. Ts'o wrote:
+> > On Wed, Dec 11, 2019 at 12:00:58PM +0800, Ming Lei wrote:
+> > > I didn't reproduce the issue in my test environment, and follows
+> > > Andrea's test commands[1]:
+> > > 
+> > >   mount UUID=$uuid /mnt/pendrive 2>&1 |tee -a $logfile
+> > >   SECONDS=0
+> > >   cp $testfile /mnt/pendrive 2>&1 |tee -a $logfile
+> > >   umount /mnt/pendrive 2>&1 |tee -a $logfile
+> > > 
+> > > The 'cp' command supposes to open/close the file just once,
+> however
+> > > ext4_release_file() & write pages is observed to run for 4358
+> times
+> > > when executing the above 'cp' test.
+> > 
+> > Why are we sure the ext4_release_file() / _fput() is coming from
+> the
+> > cp command, as opposed to something else that might be running on
+> the
+> > system under test?  _fput() is called by the kernel when the last
+> 
+> Please see the log:
+> 
+> https://lore.kernel.org/linux-scsi/3af3666920e7d46f8f0c6d88612f143ffabc743c.camel@unipv.it/2-log_ming.zip
+> 
+> Which is collected by:
+> 
+> #!/bin/sh
+> MAJ=$1
+> MIN=$2
+> MAJ=$(( $MAJ << 20 ))
+> DEV=$(( $MAJ | $MIN ))
+> 
+> /usr/share/bcc/tools/trace -t -C \
+>     't:block:block_rq_issue (args->dev == '$DEV') "%s %d %d", args-
+> >rwbs, args->sector, args->nr_sector' \
+>     't:block:block_rq_insert (args->dev == '$DEV') "%s %d %d", args-
+> >rwbs, args->sector, args->nr_sector'
+> 
+> $MAJ:$MIN points to the USB storage disk.
+> 
+> From the above IO trace, there are two write paths, one is from cp,
+> another is from writeback wq.
+> 
+> The stackcount trace[1] is consistent with the IO trace log since it
+> only shows two IO paths, that is why I concluded that the write done
+> via
+> ext4_release_file() is from 'cp'.
+> 
+> [1] 
+> https://lore.kernel.org/linux-scsi/320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it/2-log_ming_20191129_150609.zip
+> 
+> > reference to a struct file is released.  (Specifically, if you
+> have a
+> > fd which is dup'ed, it's only when the last fd corresponding to
+> the
+> > struct file is closed, and the struct file is about to be
+> released,
+> > does the file system's f_ops->release function get called.)
+> > 
+> > So the first question I'd ask is whether there is anything else
+> going
+> > on the system, and whether the writes are happening to the USB
+> thumb
+> > drive, or to some other storage device.  And if there is something
+> > else which is writing to the pendrive, maybe that's why no one
+> else
+> > has been able to reproduce the OP's complaint....
+> 
+> OK, we can ask Andrea to confirm that via the following trace, which
+> will add pid/comm info in the stack trace:
+> 
+> /usr/share/bcc/tools/stackcount  blk_mq_sched_request_inserted
+> 
+> Andrea, could you collect the above log again when running new/bad
+> kernel for confirming if the write done by ext4_release_file() is
+> from
+> the 'cp' process?
 
-1. No race between buffered writes & DIO overwrites. Since buffIO writes takes
-exclusive lock & DIO overwrites will take shared locking. Also DIO path will
-make sure to flush and wait for any dirty page cache data.
+Yes, I will try to do it as soon as possible and let you know.
+I will also try xfs or btrfs, as you suggested in another message.
 
-2. No race between buffered reads & DIO overwrites, since there is no block
-allocation that is possible with DIO overwrites. So no stale data exposure
-should happen. Same is the case between DIO reads & DIO overwrites.
-
-3. Also other paths like truncate is protected, since we wait there for any DIO
-in flight to be over.
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-Tested-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- fs/ext4/file.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 1da49dffa3df..9c2711bce0f9 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -392,8 +392,8 @@ static const struct iomap_dio_ops ext4_dio_write_ops = {
-  * - For extending writes case we don't take the shared lock, since it requires
-  *   updating inode i_disksize and/or orphan handling with exclusive lock.
-  *
-- * - shared locking will only be true mostly with overwrites in dioread_nolock
-- *   mode. Otherwise we will switch to exclusive i_rwsem lock.
-+ * - shared locking will only be true mostly with overwrites. Otherwise we will
-+ *   switch to exclusive i_rwsem lock.
-  */
- static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
- 				     bool *ilock_shared, bool *extend)
-@@ -415,14 +415,11 @@ static ssize_t ext4_dio_write_checks(struct kiocb *iocb, struct iov_iter *from,
- 		*extend = true;
- 	/*
- 	 * Determine whether the IO operation will overwrite allocated
--	 * and initialized blocks. If so, check to see whether it is
--	 * possible to take the dioread_nolock path.
--	 *
-+	 * and initialized blocks.
- 	 * We need exclusive i_rwsem for changing security info
- 	 * in file_modified().
- 	 */
- 	if (*ilock_shared && (!IS_NOSEC(inode) || *extend ||
--	     !ext4_should_dioread_nolock(inode) ||
- 	     !ext4_overwrite_io(inode, offset, count))) {
- 		inode_unlock_shared(inode);
- 		*ilock_shared = false;
--- 
-2.21.0
+Thanks, and bye
+Andrea
 
