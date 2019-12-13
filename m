@@ -2,46 +2,40 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE0911DC15
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2019 03:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCF711E0F7
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2019 10:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731514AbfLMC2F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Dec 2019 21:28:05 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49838 "EHLO huawei.com"
+        id S1725906AbfLMJht (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Dec 2019 04:37:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40392 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731330AbfLMC2F (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 12 Dec 2019 21:28:05 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 319C9A4CF5683E5283DA;
-        Fri, 13 Dec 2019 10:28:03 +0800 (CST)
-Received: from [127.0.0.1] (10.133.210.141) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Fri, 13 Dec 2019
- 10:27:52 +0800
+        id S1725793AbfLMJht (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 13 Dec 2019 04:37:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5CE64AF84;
+        Fri, 13 Dec 2019 09:37:47 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9546D1E0CAF; Fri, 13 Dec 2019 10:37:46 +0100 (CET)
+Date:   Fri, 13 Dec 2019 10:37:46 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     yangerkun <yangerkun@huawei.com>
+Cc:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org,
+        yi.zhang@huawei.com, houtao1@huawei.com
 Subject: Re: [PATCH] ext4: reserve revoke credits in __ext4_new_inode
-To:     <tytso@mit.edu>, <jack@suse.cz>
-CC:     <linux-ext4@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <houtao1@huawei.com>
+Message-ID: <20191213093746.GA15331@quack2.suse.cz>
 References: <20191213014900.47228-1-yangerkun@huawei.com>
-From:   yangerkun <yangerkun@huawei.com>
-Message-ID: <44ca8b47-816f-db44-33e4-2f7d12cc462f@huawei.com>
-Date:   Fri, 13 Dec 2019 10:27:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20191213014900.47228-1-yangerkun@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.133.210.141]
-X-CFilter-Loop: Reflected
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
-On 2019/12/13 9:49, yangerkun wrote:
+On Fri 13-12-19 09:49:00, yangerkun wrote:
 > It's possible that __ext4_new_inode will release the xattr block, so
 > it will trigger a warning since there is revoke credits will be 0 if
 > the handle == NULL. The below scripts can reproduce it easily.
@@ -73,13 +67,12 @@ On 2019/12/13 9:49, yangerkun wrote:
 > 
 > [root@localhost ~]# cat repro.sh
 > while [ 1 -eq 1 ]; do
->      rm -rf dir
->      rm -rf dir1/dir1
->      mkdir dir
->      for i in {1..8}; do  setfacl -dm "u:test"$i":rx" dir; done
-                                            ^^^^should be user_
->      setfacl -m "u:user_9:rx" dir &
->      mkdir dir1/dir1 &
+>     rm -rf dir
+>     rm -rf dir1/dir1
+>     mkdir dir
+>     for i in {1..8}; do  setfacl -dm "u:test"$i":rx" dir; done
+>     setfacl -m "u:user_9:rx" dir &
+>     mkdir dir1/dir1 &
 > done
 > 
 > Before exec repro.sh, dir1 has inherit the default acl from dir, and
@@ -97,7 +90,7 @@ On 2019/12/13 9:49, yangerkun wrote:
 > refcount of ext4_xattr_header
 > will be 1)
 > 				...
->                                  mkdir dir1/dir1
+>                                 mkdir dir1/dir1
 > 				->....->ext4_init_acl
 > 				->__ext4_set_acl(set default acl,
 > 			          will reuse blk1, and h_refcount
@@ -111,8 +104,8 @@ On 2019/12/13 9:49, yangerkun wrote:
 > 				  h_refcount of blk1 is 2, will create
 > 				  blk3 to store xattr)
 > 
->    ->ext4_xattr_release_block(dec
->    h_refcount of blk1 to 1)
+>   ->ext4_xattr_release_block(dec
+>   h_refcount of blk1 to 1)
 > 				  ->ext4_xattr_release_block(dec
 > 				    h_refcount and since it is 0,
 > 				    will release the block and trigger
@@ -120,24 +113,35 @@ On 2019/12/13 9:49, yangerkun wrote:
 > 
 > Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: yangerkun <yangerkun@huawei.com>
+
+Subtle. Thanks for debugging this! The patch looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->   fs/ext4/ialloc.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>  fs/ext4/ialloc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
 > diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
 > index dc333e8e51e8..8ca4a23129aa 100644
 > --- a/fs/ext4/ialloc.c
 > +++ b/fs/ext4/ialloc.c
 > @@ -921,8 +921,8 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
->   		if (!handle) {
->   			BUG_ON(nblocks <= 0);
->   			handle = __ext4_journal_start_sb(dir->i_sb, line_no,
+>  		if (!handle) {
+>  			BUG_ON(nblocks <= 0);
+>  			handle = __ext4_journal_start_sb(dir->i_sb, line_no,
 > -							 handle_type, nblocks,
 > -							 0, 0);
 > +				 handle_type, nblocks, 0,
 > +				 ext4_trans_default_revoke_credits(sb));
->   			if (IS_ERR(handle)) {
->   				err = PTR_ERR(handle);
->   				ext4_std_error(sb, err);
+>  			if (IS_ERR(handle)) {
+>  				err = PTR_ERR(handle);
+>  				ext4_std_error(sb, err);
+> -- 
+> 2.17.2
 > 
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
