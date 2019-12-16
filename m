@@ -2,241 +2,184 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B39F9120242
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2019 11:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3411202A7
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2019 11:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727482AbfLPKWY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Dec 2019 05:22:24 -0500
-Received: from mout.kundenserver.de ([212.227.126.133]:43777 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbfLPKWY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Dec 2019 05:22:24 -0500
-Received: from mail-qv1-f50.google.com ([209.85.219.50]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1Mdevh-1i7Slb1FYH-00ZetK; Mon, 16 Dec 2019 11:22:22 +0100
-Received: by mail-qv1-f50.google.com with SMTP id d17so2506779qvs.2;
-        Mon, 16 Dec 2019 02:22:21 -0800 (PST)
-X-Gm-Message-State: APjAAAVnixKY2K1AijPtPI8cn5PBubZxuBTsML7F40/fB/Yd/AGqYu4x
-        UwgunJK4+kd1JmgWGcwoLb1NJWGzX6Cm02dbXAE=
-X-Google-Smtp-Source: APXvYqxPGSK6LeyO+gRi/v38BhaWvjYVHEXiuyvyhofiGg3YMMrBq53W9Xc9WoTfO3zKoL1kD1MAvEvJdd8d1f9tMg8=
-X-Received: by 2002:a0c:e7c7:: with SMTP id c7mr3192857qvo.222.1576491740858;
- Mon, 16 Dec 2019 02:22:20 -0800 (PST)
+        id S1727403AbfLPKc1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Dec 2019 05:32:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51266 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727311AbfLPKc1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 16 Dec 2019 05:32:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 06E68AB87;
+        Mon, 16 Dec 2019 10:32:21 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 52DC11E0B2E; Mon, 16 Dec 2019 11:32:21 +0100 (CET)
+Date:   Mon, 16 Dec 2019 11:32:21 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Matthew Bobrowski <mbobrowski@mbobrowski.org>
+Cc:     Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>,
+        syzbot <syzbot+bea68382bae9490e7dd6@syzkaller.appspotmail.com>,
+        darrick.wong@oracle.com, hch@infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-ext4@vger.kernel.org
+Subject: Re: KASAN: use-after-free Read in iov_iter_alignment
+Message-ID: <20191216103221.GA22157@quack2.suse.cz>
+References: <000000000000ad9f910598bbb867@google.com>
+ <20191202211037.GF2695@dread.disaster.area>
+ <20191202231118.GA7527@bobrowski.net>
+ <20191213113030.GE15474@quack2.suse.cz>
+ <20191215102422.GA3967@morpheus.bobrowski.net>
 MIME-Version: 1.0
-References: <CA+G9fYuO7vMjsqkyXHZSU-pKEk0L0t9kQTfnd5xopVADyGwprw@mail.gmail.com>
-In-Reply-To: <CA+G9fYuO7vMjsqkyXHZSU-pKEk0L0t9kQTfnd5xopVADyGwprw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 16 Dec 2019 11:22:04 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a38ZhQcA0Vj-EtNzmH7+iuoOhPrQUzN-avxJn9iU2K5=Q@mail.gmail.com>
-Message-ID: <CAK8P3a38ZhQcA0Vj-EtNzmH7+iuoOhPrQUzN-avxJn9iU2K5=Q@mail.gmail.com>
-Subject: Re: mainline-5.5.0-rc1: do_mount_root+0x6c/0x10d - kernel crash while
- mounting rootfs
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:skxAi3myck29pudFFtj7zTCUAssaNOTHAcJszHz89Z8cvZ8g8KM
- 2WJZAaKR7U6VpPJFQ18WMfcUKjqgxSYM+muAwKsh94vvSXeMDR9QkrtVWY3VPB3lYpoPo1W
- oQLclGQqX/YhymFmwK4rVNT/9X6vG6zvqNiFAN4RM2OFkvgA5dM3WZZJ4uHeXBg/S0vOkDp
- Fv6Vvqa3cfZ9WY76gpTng==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:o04HCeEeGtw=:nqN2I7636F+bGurANvbLYF
- gauWg/sMYpQcGbzCdS/VQ/xPDikArki9PXQpoWJzq+S0diOB7vTSh5SSzzFIlU3FWE2If1JXG
- JKUeFHiH1X3qdv3ONxfVA9GQ6qDvxLY3fN7eVjsqtCiRkep30G7CKzuNLSopsNjAp/2SI1UpF
- 0fokUBbY8fEKLTBXTtbVNevYBZYlgcCRhO5xF+VfSsWsG75TkURUSinNLSDFuSdKbTrNvSyPW
- W0Nu5VAGmtkHihwNwdsSoi6ett5mmJ5iNNzRU50npV5DsOnMkGuXo/0yEiH+MVDbl+oQZ6C4Q
- HqDUCnIZXQpLePgsDGbPUAFMzet41A7w/6q4xlPd9qjbgjrK1miLsQ1ethJSgS/BvVsyc98nh
- jrxrpXqnMHjywN/RQNHHXC2+5IWYfgCx1SjAgS4n8PYVDkvhzGyBbpDocQEUmh3HTVppPR9Qy
- pYpH/Wj7oazaJ4yHvBJOFGzuH0PS72t2gJoI4XMd45yZKRsYsJ7bzK9wYCC+ddBs7csMs5h4b
- yYl+0KPGedh2MHkVrU0KkUgrv6pK8iBB8apktQhD3hTSDbM4FBw0gUNdIEaHRyB3N4kXi9gry
- Q5ciO94hOlTs84qWqaTiy1sCYNJBwZJeuL3oT6ZzbnX28kqOTAwZgh3F/07Yd7jd+TsEXvN1p
- 5O723T+TVvB5GlJaRw15jlcp1C2SQk5MW9lWYjhMuhdt1UyOHttyQPhZ9y9kw5GK/oK6EOLA2
- ttpaOOKlE9nKko3BaZQmfcbX7wnK8tpofM4gl7buOSZYB6w2zSeyPF62JNlQawiQ6S77siL8+
- 7LvlVZZjNKtuIz/lVuDuNQEUeGlipU3Pt3YEwIyMrGvo9lnJjXhrT11r/rdiuvHFUKRDCwfgh
- dX7/AWyjsp0FCmsG6pMw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191215102422.GA3967@morpheus.bobrowski.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 10:15 AM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> The following kernel crash reported on qemu_x86_64 boot running
-> 5.5.0-rc1 mainline kernel.
+On Sun 15-12-19 21:24:24, Matthew Bobrowski wrote:
+> On Fri, Dec 13, 2019 at 12:30:30PM +0100, Jan Kara wrote:
+> > On Tue 03-12-19 10:11:20, Matthew Bobrowski wrote:
+> > > On Tue, Dec 03, 2019 at 08:10:37AM +1100, Dave Chinner wrote:
+> > > > [cc linux-ext4@vger.kernel.org - this is reported from the new ext4
+> > > > dio->iomap code]
+> > > > 
+> > > > On Mon, Dec 02, 2019 at 09:15:08AM -0800, syzbot wrote:
+> > > > > Hello,
+> > > > > 
+> > > > > syzbot found the following crash on:
+> > > > > 
+> > > > > HEAD commit:    b94ae8ad Merge tag 'seccomp-v5.5-rc1' of git://git.kernel...
+> > > > > git tree:       upstream
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=135a8d7ae00000
+> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c2e464ae414aee8c
+> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=bea68382bae9490e7dd6
+> > > > > compiler:       clang version 9.0.0 (/home/glider/llvm/clang
+> > > > > 80fee25776c2fb61e74c1ecb1a523375c2500b69)
+> > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1135cb36e0000
+> > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e90abce00000
+> > > > > 
+> > > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > > > Reported-by: syzbot+bea68382bae9490e7dd6@syzkaller.appspotmail.com
+> > > > > 
+> > > > > ==================================================================
+> > > > > BUG: KASAN: use-after-free in iov_iter_alignment+0x6a1/0x7b0
+> > > > > lib/iov_iter.c:1225
+> > > > > Read of size 4 at addr ffff888098d40f54 by task loop0/8203
+> > > > > 
+> > > > > CPU: 0 PID: 8203 Comm: loop0 Not tainted 5.4.0-syzkaller #0
+> > > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> > > > > Google 01/01/2011
+> > > > > Call Trace:
+> > > > >  __dump_stack lib/dump_stack.c:77 [inline]
+> > > > >  dump_stack+0x1fb/0x318 lib/dump_stack.c:118
+> > > > >  print_address_description+0x75/0x5c0 mm/kasan/report.c:374
+> > > > >  __kasan_report+0x14b/0x1c0 mm/kasan/report.c:506
+> > > > >  kasan_report+0x26/0x50 mm/kasan/common.c:634
+> > > > >  __asan_report_load4_noabort+0x14/0x20 mm/kasan/generic_report.c:131
+> > > > >  iov_iter_alignment+0x6a1/0x7b0 lib/iov_iter.c:1225
+> > > > >  iomap_dio_bio_actor+0x1a7/0x11e0 fs/iomap/direct-io.c:203
+> > > > >  iomap_dio_actor+0x2b4/0x4a0 fs/iomap/direct-io.c:375
+> > > > >  iomap_apply+0x370/0x490 fs/iomap/apply.c:80
+> > > > >  iomap_dio_rw+0x8ad/0x1010 fs/iomap/direct-io.c:493
+> > > > >  ext4_dio_read_iter fs/ext4/file.c:77 [inline]
+> > > > >  ext4_file_read_iter+0x834/0xc20 fs/ext4/file.c:128
+> > > > >  lo_rw_aio+0xcbb/0xea0 include/linux/fs.h:1889
+> > > > 
+> > > > loopback -> ext4 direct IO, bad access on iov passed to iomap DIO
+> > > > code.
+> > > > 
+> > > > >  do_req_filebacked drivers/block/loop.c:616 [inline]
+> > > > >  loop_handle_cmd drivers/block/loop.c:1952 [inline]
+> > > > >  loop_queue_work+0x13ab/0x2590 drivers/block/loop.c:1966
+> > > > >  kthread_worker_fn+0x449/0x700 kernel/kthread.c:671
+> > > > >  loop_kthread_worker_fn+0x40/0x60 drivers/block/loop.c:901
+> > > > >  kthread+0x332/0x350 kernel/kthread.c:255
+> > > > >  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+> > > > > 
+> > > > > Allocated by task 4198:
+> > > > >  save_stack mm/kasan/common.c:69 [inline]
+> > > > >  set_track mm/kasan/common.c:77 [inline]
+> > > > >  __kasan_kmalloc+0x11c/0x1b0 mm/kasan/common.c:510
+> > > > >  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:518
+> > > > >  slab_post_alloc_hook mm/slab.h:584 [inline]
+> > > > >  slab_alloc mm/slab.c:3319 [inline]
+> > > > >  kmem_cache_alloc+0x1f5/0x2e0 mm/slab.c:3483
+> > > > >  mempool_alloc_slab+0x4d/0x70 mm/mempool.c:513
+> > > > >  mempool_alloc+0x104/0x5e0 mm/mempool.c:393
+> > > > >  bio_alloc_bioset+0x1b0/0x5f0 block/bio.c:477
+> > > > >  bio_alloc include/linux/bio.h:400 [inline]
+> > > > >  mpage_alloc fs/mpage.c:79 [inline]
+> > > > >  do_mpage_readpage+0x1685/0x1d10 fs/mpage.c:306
+> > > > >  mpage_readpages+0x2a9/0x440 fs/mpage.c:404
+> > > > >  blkdev_readpages+0x2c/0x40 fs/block_dev.c:620
+> > > > >  read_pages+0xad/0x4d0 mm/readahead.c:126
+> > > > >  __do_page_cache_readahead+0x480/0x530 mm/readahead.c:212
+> > > > >  force_page_cache_readahead mm/readahead.c:243 [inline]
+> > > > >  page_cache_sync_readahead+0x329/0x3b0 mm/readahead.c:522
+> > > > >  generic_file_buffered_read+0x41d/0x2570 mm/filemap.c:2051
+> > > > >  generic_file_read_iter+0xa9/0x450 mm/filemap.c:2324
+> > > > >  blkdev_read_iter+0x12e/0x140 fs/block_dev.c:2039
+> > > > >  call_read_iter include/linux/fs.h:1889 [inline]
+> > > > >  new_sync_read fs/read_write.c:414 [inline]
+> > > > >  __vfs_read+0x59e/0x730 fs/read_write.c:427
+> > > > >  vfs_read+0x1dd/0x420 fs/read_write.c:461
+> > > > >  ksys_read+0x117/0x220 fs/read_write.c:587
+> > > > >  __do_sys_read fs/read_write.c:597 [inline]
+> > > > >  __se_sys_read fs/read_write.c:595 [inline]
+> > > > >  __x64_sys_read+0x7b/0x90 fs/read_write.c:595
+> > > > >  do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:294
+> > > > >  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> > > > > 
+> > > > > Freed by task 4205:
+> > > > >  save_stack mm/kasan/common.c:69 [inline]
+> > > > >  set_track mm/kasan/common.c:77 [inline]
+> > > > >  kasan_set_free_info mm/kasan/common.c:332 [inline]
+> > > > >  __kasan_slab_free+0x12a/0x1e0 mm/kasan/common.c:471
+> > > > >  kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
+> > > > >  __cache_free mm/slab.c:3425 [inline]
+> > > > >  kmem_cache_free+0x81/0xf0 mm/slab.c:3693
+> > > > >  mempool_free_slab+0x1d/0x30 mm/mempool.c:520
+> > > > >  mempool_free+0xd5/0x350 mm/mempool.c:502
+> > > > >  bio_put+0x38b/0x460 block/bio.c:255
+> > > > >  mpage_end_io+0x2f5/0x330 fs/mpage.c:58
+> > > > >  bio_endio+0x4ff/0x570 block/bio.c:1818
+> > > > >  req_bio_endio block/blk-core.c:245 [inline]
+> > > > >  blk_update_request+0x438/0x10d0 block/blk-core.c:1464
+> > > > >  scsi_end_request+0x8c/0xa20 drivers/scsi/scsi_lib.c:579
+> > > > >  scsi_io_completion+0x17c/0x1b80 drivers/scsi/scsi_lib.c:963
+> > > > >  scsi_finish_command+0x3b3/0x560 drivers/scsi/scsi.c:228
+> > > > >  scsi_softirq_done+0x289/0x310 drivers/scsi/scsi_lib.c:1477
+> > > > >  blk_done_softirq+0x312/0x370 block/blk-softirq.c:37
+> > > > >  __do_softirq+0x333/0x7c4 arch/x86/include/asm/paravirt.h:762
+> > > > 
+> > > > Looks like buffered read IO on a loopback device on an ext4 image
+> > > > file, and something is being tripped over in the new ext4 direct IO
+> > > > path.  Might be an iomap issue, might be an ext4 issue, but it looks
+> > > > like the buffered read bio completion is running while the iov is
+> > > > still being submitted...
+> > > 
+> > > Thanks Dave.
+> > > 
+> > > I will take a look at this when I get home this evening and see
+> > > whether I can pinpoint what's going on here...
+> > 
+> > Any luck in diagnosing this Matthew?
+> 
+> No, not yet. I just purchased my first home and I'm not far out from
+> my wedding day, so I've had my hands tied behind by back doing all
+> that crap. I will try get to it sometime this week.
 
-I looked for too long at v5.5-rc1 completely puzzled by how you got to this
-object code before realizing that this is a git snapshot between -rc1 and -rc2.
+Sure, no problem, I'll try to find some time to look into this as well.
+Congratulations to your marriage BTW :)
 
-The code in question was changed by a recent series from Dominik Brodowski,
-the main difference being commit cccaa5e33525 ("init: use do_mount() instead
-of ksys_mount()").
-
-It looks like the NULL-check in ksys_mount()/copy_mount_options() is missing
-from the new mount_block_root, so it passes a NULL pointer into strncpy().
-
-Something like this should fix it (not tested):
-
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index f55cbd9cb818..be6c8dae6ec0 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -392,16 +392,20 @@ static int __init do_mount_root(const char
-*name, const char *fs,
- {
-        struct super_block *s;
-        char *data_page;
--       struct page *p;
-+       struct page *p = NULL;
-        int ret;
-
--       /* do_mount() requires a full page as fifth argument */
--       p = alloc_page(GFP_KERNEL);
--       if (!p)
--               return -ENOMEM;
-+       if (data) {
-+               /* do_mount() requires a full page as fifth argument */
-+               p = alloc_page(GFP_KERNEL);
-+               if (!p)
-+                       return -ENOMEM;
-
--       data_page = page_address(p);
--       strncpy(data_page, data, PAGE_SIZE - 1);
-+               data_page = page_address(p);
-+               strncpy(data_page, data, PAGE_SIZE - 1);
-+       } else {
-+               data_page = NULL;
-+       }
-
-        ret = do_mount(name, "/root", fs, flags, data_page);
-        if (ret)
-@@ -417,7 +421,9 @@ static int __init do_mount_root(const char *name,
-const char *fs,
-               MAJOR(ROOT_DEV), MINOR(ROOT_DEV));
-
- out:
--       put_page(p);
-+       if (p)
-+               put_page(p);
-+
-        return ret;
- }
-
-> Regressions detected on arm64, arm, qemu_x86_64, and qemu_i386.
-> Where as x86_64 and i386 boot pass on devices.
->
-> qemu_x86_64 kernel crash log,
-> -------------------------------------------
-> [    1.680229] BUG: kernel NULL pointer dereference, address: 0000000000000000
-> [    1.681148] #PF: supervisor read access in kernel mode
-> [    1.681150] #PF: error_code(0x0000) - not-present page
-> [    1.681150] PGD 0 P4D 0
-> [    1.681150] Oops: 0000 [#1] SMP NOPTI
-> [    1.681150] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.5.0-rc1 #1
-> [    1.681150] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS 1.12.0-1 04/01/2014
-> [    1.681150] RIP: 0010:strncpy+0x12/0x30
-> [    1.681150] Code: 89 e5 48 83 c6 01 0f b6 4e ff 48 83 c2 01 84 c9
-> 88 4a ff 75 ed 5d c3 90 55 48 85 d2 48 89 f8 48 89 e5 74 1e 48 01 fa
-> 48 89 f9 <44> 0f b6 06 41 80 f8 01 44 88 01 48 83 de ff 48 83 c1 01 48
-> 39 d1
-> [    1.681150] RSP: 0018:ffffacea40013e00 EFLAGS: 00010286
-> [    1.681150] RAX: ffff9eff78f4f000 RBX: ffffd91104e3d3c0 RCX: ffff9eff78f4f000
-> [    1.681150] RDX: ffff9eff78f4ffff RSI: 0000000000000000 RDI: ffff9eff78f4f000
-> [    1.681150] RBP: ffffacea40013e00 R08: ffff9eff78f4f000 R09: 0000000000000000
-> [    1.681150] R10: ffffd91104e3d3c0 R11: 0000000000000000 R12: 0000000000008001
-> [    1.681150] R13: 00000000fffffff4 R14: ffffffffa5d9aa89 R15: ffff9eff78f4e000
-> [    1.681150] FS:  0000000000000000(0000) GS:ffff9eff7bc00000(0000)
-> knlGS:0000000000000000
-> [    1.681150] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    1.681150] CR2: 0000000000000000 CR3: 0000000113010000 CR4: 00000000003406f0
-> [    1.681150] Call Trace:
-> [    1.681150]  do_mount_root+0x6c/0x10d
-> [    1.681150]  mount_block_root+0x103/0x226
-> [    1.681150]  ? do_mknodat+0x16e/0x200
-> [    1.681150]  ? set_debug_rodata+0x17/0x17
-> [    1.681150]  mount_root+0x114/0x133
-> [    1.681150]  prepare_namespace+0x139/0x16a
-> [    1.681150]  kernel_init_freeable+0x21b/0x22f
-> [    1.681150]  ? rest_init+0x250/0x250
-> [    1.681150]  kernel_init+0xe/0x110
-> [    1.681150]  ret_from_fork+0x27/0x50
-> [    1.681150] Modules linked in:
-> [    1.681150] CR2: 0000000000000000
-> [    1.681150] ---[ end trace d7ad8453a7546454 ]---
-> [    1.681150] RIP: 0010:strncpy+0x12/0x30
-> [    1.681150] Code: 89 e5 48 83 c6 01 0f b6 4e ff 48 83 c2 01 84 c9
-> 88 4a ff 75 ed 5d c3 90 55 48 85 d2 48 89 f8 48 89 e5 74 1e 48 01 fa
-> 48 89 f9 <44> 0f b6 06 41 80 f8 01 44 88 01 48 83 de ff 48 83 c1 01 48
-> 39 d1
-> [    1.681150] RSP: 0018:ffffacea40013e00 EFLAGS: 00010286
-> [    1.681150] RAX: ffff9eff78f4f000 RBX: ffffd91104e3d3c0 RCX: ffff9eff78f4f000
-> [    1.681150] RDX: ffff9eff78f4ffff RSI: 0000000000000000 RDI: ffff9eff78f4f000
-> [    1.681150] RBP: ffffacea40013e00 R08: ffff9eff78f4f000 R09: 0000000000000000
-> [    1.681150] R10: ffffd91104e3d3c0 R11: 0000000000000000 R12: 0000000000008001
-> [    1.681150] R13: 00000000fffffff4 R14: ffffffffa5d9aa89 R15: ffff9eff78f4e000
-> [    1.681150] FS:  0000000000000000(0000) GS:ffff9eff7bc00000(0000)
-> knlGS:0000000000000000
-> [    1.681150] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    1.681150] CR2: 0000000000000000 CR3: 0000000113010000 CR4: 00000000003406f0
-> [    1.681150] BUG: sleeping function called from invalid context at
-> /usr/src/kernel/include/linux/percpu-rwsem.h:38
-> [    1.681150] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid:
-> 1, name: swapper/0
-> [    1.681150] INFO: lockdep is turned off.
-> [    1.681150] irq event stamp: 2360074
-> [    1.681150] hardirqs last  enabled at (2360073):
-> [<ffffffffa48f4c8c>] get_page_from_freelist+0x21c/0x1430
-> [    1.681150] hardirqs last disabled at (2360074):
-> [<ffffffffa4601eab>] trace_hardirqs_off_thunk+0x1a/0x1c
-> [    1.681150] softirqs last  enabled at (2359990):
-> [<ffffffffa5800338>] __do_softirq+0x338/0x43a
-> [    1.681150] softirqs last disabled at (2359975):
-> [<ffffffffa4701828>] irq_exit+0xb8/0xc0
-> [    1.681150] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G      D
->   5.5.0-rc1 #1
-> [    1.681150] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS 1.12.0-1 04/01/2014
-> [    1.681150] Call Trace:
-> [    1.681150]  dump_stack+0x7a/0xa5
-> [    1.681150]  ___might_sleep+0x163/0x250
-> [    1.681150]  __might_sleep+0x4a/0x80
-> [    1.681150]  exit_signals+0x33/0x2d0
-> [    1.681150]  do_exit+0xb6/0xcd0
-> [    1.681150]  ? prepare_namespace+0x139/0x16a
-> [    1.681150]  ? kernel_init_freeable+0x21b/0x22f
-> [    1.681150]  ? rest_init+0x250/0x250
-> [    1.681150]  rewind_stack_do_exit+0x17/0x20
-> [    1.736632] Kernel panic - not syncing: Attempted to kill init!
-> exitcode=0x00000009
-> [    1.737579] Kernel Offset: 0x23600000 from 0xffffffff81000000
-> (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
->
-> Full log,
-> qemu_x86_64,
-> https://lkft.validation.linaro.org/scheduler/job/1054430#L573
-> qemu_i386:
-> https://lkft.validation.linaro.org/scheduler/job/1054335#L571
->
-> metadata:
->   git branch: master
->   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->   git commit: 9603e22104439ddfa6a077f1a0e5d8c662beec6c
->   git describe: v5.5-rc1-308-g9603e2210443
->   make_kernelversion: 5.5.0-rc1
->   kernel-config:
-> http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkft/linux-mainline/2325/config
->   build-url: https://ci.linaro.org/job/openembedded-lkft-linux-mainline/DISTRO=lkft,MACHINE=intel-corei7-64,label=docker-lkft/2325/
->   build-location:
-> http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkft/linux-mainline/2325
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
