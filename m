@@ -2,90 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3DE122F24
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2019 15:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F52012300A
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2019 16:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729208AbfLQOri (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Dec 2019 09:47:38 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:40348 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728573AbfLQOri (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 17 Dec 2019 09:47:38 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C19E15D16B50E293F60B;
-        Tue, 17 Dec 2019 22:47:35 +0800 (CST)
-Received: from [127.0.0.1] (10.177.251.225) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.439.0; Tue, 17 Dec 2019
- 22:47:25 +0800
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ritesh Harjani <riteshh@linux.ibm.com>
-CC:     "hushiyuan@huawei.com" <hushiyuan@huawei.com>,
-        "linfeilong@huawei.com" <linfeilong@huawei.com>
-From:   Yunfeng Ye <yeyunfeng@huawei.com>
-Subject: [PATCH v2] ext4: fix Wunused-but-set-variable warning in
- ext4_add_entry()
-Message-ID: <cb5eb904-224a-9701-c38f-cb23514b1fff@huawei.com>
-Date:   Tue, 17 Dec 2019 22:46:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1728420AbfLQPUP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Dec 2019 10:20:15 -0500
+Received: from zeniv.linux.org.uk ([195.92.253.2]:46490 "EHLO
+        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727797AbfLQPUO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Dec 2019 10:20:14 -0500
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ihEdw-0005lt-Cj; Tue, 17 Dec 2019 15:20:12 +0000
+Date:   Tue, 17 Dec 2019 15:20:12 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH 02/17] ext4: Add fs parameter description
+Message-ID: <20191217152012.GY4203@ZenIV.linux.org.uk>
+References: <20191106101457.11237-1-lczerner@redhat.com>
+ <20191106101457.11237-3-lczerner@redhat.com>
+ <20191217004419.GA6833@ZenIV.linux.org.uk>
+ <20191217121956.amsymslmuoy6kzu4@work>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.177.251.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191217121956.amsymslmuoy6kzu4@work>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Warning is found when compile with "-Wunused-but-set-variable":
+On Tue, Dec 17, 2019 at 01:19:56PM +0100, Lukas Czerner wrote:
+> On Tue, Dec 17, 2019 at 12:44:19AM +0000, Al Viro wrote:
+> > On Wed, Nov 06, 2019 at 11:14:42AM +0100, Lukas Czerner wrote:
+> > > +	fsparam_string_empty
+> > > +			("usrjquota",		Opt_usrjquota),
+> > > +	fsparam_string_empty
+> > > +			("grpjquota",		Opt_grpjquota),
+> > 
+> > Umm...  That makes ...,usrjquota,... equivalent to ...,usrjquota=,...
+> > unless I'm misreading the series.  Different from mainline, right?
+> 
+> Unfortunatelly yes, I do not think this is a problem, but if you have a
+> solution within the new mount api framework I am happy to use it.
 
-fs/ext4/namei.c: In function ‘ext4_add_entry’:
-fs/ext4/namei.c:2167:23: warning: variable ‘sbi’ set but not used
-[-Wunused-but-set-variable]
-  struct ext4_sb_info *sbi;
-                       ^~~
-Fix this by moving the variable @sbi under CONFIG_UNICODE.
+Er...  Dump the fsparam_string_empty() use and instead of your
++       if (token == Opt_usrjquota) {
++               if (result.negated)
++                       return clear_qf_name(sb, USRQUOTA);
++               else
++                       return set_qf_name(sb, USRQUOTA, param);
+do
++       if (token == Opt_usrjquota) {
++               if (!param->string[0])
++                       return clear_qf_name(sb, USRQUOTA);
++               else
++                       return set_qf_name(sb, USRQUOTA, param);
+with the same for grpjquota?
 
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
-v1 -> v2:
- - add "Reviewed-by"
+> > > +	fsparam_bool	("barrier",		Opt_barrier),
+> > > +	fsparam_flag	("nobarrier",		Opt_nobarrier),
+> > 
+> > That's even more interesting.  Current mainline:
+> > 		barrier		OK, sets EXT4_MOUNT_BARRIER
+> > 		barrier=0	OK, sets EXT4_MOUNT_BARRIER
+> > 		barrier=42	OK, sets EXT4_MOUNT_BARRIER
+> > 		barrier=yes	error
+> > 		barrier=no	error
+> > 		nobarrier	OK, clears EXT4_MOUNT_BARRIER
+> > Unless I'm misreading your series, you get
+> > 		barrier		error
+> 
+> Not really, this seems to be working as expected. Assuming that this
+> didn't change since 5.4.0-rc6. I does make sense to me that specifying
+> bool type parameter without any options would express "true".
+> 
+> 
+> > 		barrier=0	OK, sets EXT4_MOUNT_BARRIER
+> 
+> 
+> > 		barrier=42	error
+> > 		barrier=yes	OK, sets EXT4_MOUNT_BARRIER
+> > 		barrier=no	OK, sets EXT4_MOUNT_BARRIER
+> 
+> Those three are different, just because of how param_book() work. I do
+> not really see a problem with it, but if we want to keep it exactly the
+> same as current mainline it would be difficult with how the current api
+> works. Any suggestions ?
 
- fs/ext4/namei.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+If fsparam_bool() doesn't do the right thing, perhaps it shouldn't be
+used in the first place?  Or changed, for that matter - it's not as if
+we had many users of that thing and the only in-tree one is definitely
+breaking userland ABI.
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index a856997d87b5..617349be460f 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2164,7 +2164,9 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
- 	struct buffer_head *bh = NULL;
- 	struct ext4_dir_entry_2 *de;
- 	struct super_block *sb;
-+#ifdef CONFIG_UNICODE
- 	struct ext4_sb_info *sbi;
-+#endif
- 	struct ext4_filename fname;
- 	int	retval;
- 	int	dx_fallback=0;
-@@ -2176,12 +2178,12 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
- 		csum_size = sizeof(struct ext4_dir_entry_tail);
+In case of ext4, after rereading that code (and getting some sleep) the
+current behaviour is, AFAICS to accept barrier | nobarrier | barrier=<number>
+with the last case being equialent to nobarrier when number is 0 and barrier
+in all other cases.  Is that an accurate description?
 
- 	sb = dir->i_sb;
--	sbi = EXT4_SB(sb);
- 	blocksize = sb->s_blocksize;
- 	if (!dentry->d_name.len)
- 		return -EINVAL;
+If so, I would prefer
+	fsparam_flag_no("barrier", Opt_barrier),	// barrier | nobarrier
+	fsparam_u32("barrier", Opt_barrier),		// barrier=<number>
+as the solution, with fs_parse() having been taught to allow argument-bearing
+and argument-less options with the same name, picking the right one.  That
+way Opt_nobarrier gets removed as well...
 
- #ifdef CONFIG_UNICODE
-+	sbi = EXT4_SB(sb);
- 	if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
- 	    sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
- 		return -EINVAL;
--- 
-2.7.4
-
+I'll push a branch with that stuff later today; will post when it's out...
