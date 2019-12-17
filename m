@@ -2,65 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8866B121FED
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2019 01:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93101122AFF
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2019 13:12:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbfLQAoV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Dec 2019 19:44:21 -0500
-Received: from zeniv.linux.org.uk ([195.92.253.2]:35220 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726556AbfLQAoV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Dec 2019 19:44:21 -0500
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ih0yJ-00022g-O0; Tue, 17 Dec 2019 00:44:20 +0000
-Date:   Tue, 17 Dec 2019 00:44:19 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 02/17] ext4: Add fs parameter description
-Message-ID: <20191217004419.GA6833@ZenIV.linux.org.uk>
-References: <20191106101457.11237-1-lczerner@redhat.com>
- <20191106101457.11237-3-lczerner@redhat.com>
+        id S1727534AbfLQMMx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Dec 2019 07:12:53 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:48100 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726383AbfLQMMx (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 17 Dec 2019 07:12:53 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 5C06BCEFF042AA3B7916;
+        Tue, 17 Dec 2019 20:12:49 +0800 (CST)
+Received: from [127.0.0.1] (10.177.251.225) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.439.0; Tue, 17 Dec 2019
+ 20:12:43 +0800
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "hushiyuan@huawei.com" <hushiyuan@huawei.com>,
+        "linfeilong@huawei.com" <linfeilong@huawei.com>
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+Subject: [PATCH] ext4: fix Wunused-but-set-variable warning in
+ ext4_add_entry()
+Message-ID: <c351e548-f094-aa90-bf8e-b267284c493e@huawei.com>
+Date:   Tue, 17 Dec 2019 20:11:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191106101457.11237-3-lczerner@redhat.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.177.251.225]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Nov 06, 2019 at 11:14:42AM +0100, Lukas Czerner wrote:
-> +	fsparam_string_empty
-> +			("usrjquota",		Opt_usrjquota),
-> +	fsparam_string_empty
-> +			("grpjquota",		Opt_grpjquota),
+Warning is found when compile with "-Wunused-but-set-variable":
 
-Umm...  That makes ...,usrjquota,... equivalent to ...,usrjquota=,...
-unless I'm misreading the series.  Different from mainline, right?
+fs/ext4/namei.c: In function ‘ext4_add_entry’:
+fs/ext4/namei.c:2167:23: warning: variable ‘sbi’ set but not used
+[-Wunused-but-set-variable]
+  struct ext4_sb_info *sbi;
+                       ^~~
+Fix this by moving the variable @sbi under CONFIG_UNICODE.
 
-> +	fsparam_bool	("barrier",		Opt_barrier),
-> +	fsparam_flag	("nobarrier",		Opt_nobarrier),
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+---
+ fs/ext4/namei.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-That's even more interesting.  Current mainline:
-		barrier		OK, sets EXT4_MOUNT_BARRIER
-		barrier=0	OK, sets EXT4_MOUNT_BARRIER
-		barrier=42	OK, sets EXT4_MOUNT_BARRIER
-		barrier=yes	error
-		barrier=no	error
-		nobarrier	OK, clears EXT4_MOUNT_BARRIER
-Unless I'm misreading your series, you get
-		barrier		error
-		barrier=0	OK, sets EXT4_MOUNT_BARRIER
-		barrier=42	error
-		barrier=yes	OK, sets EXT4_MOUNT_BARRIER
-		barrier=no	OK, sets EXT4_MOUNT_BARRIER
-		nobarrier	OK, clears EXT4_MOUNT_BARRIER
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index a856997d87b5..617349be460f 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2164,7 +2164,9 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+ 	struct buffer_head *bh = NULL;
+ 	struct ext4_dir_entry_2 *de;
+ 	struct super_block *sb;
++#ifdef CONFIG_UNICODE
+ 	struct ext4_sb_info *sbi;
++#endif
+ 	struct ext4_filename fname;
+ 	int	retval;
+ 	int	dx_fallback=0;
+@@ -2176,12 +2178,12 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
+ 		csum_size = sizeof(struct ext4_dir_entry_tail);
 
-Granted, mainline behaviour is... unintuitive, to put it mildly,
-but the replacement is just as strange _and_ incompatible with the
-existing one.
+ 	sb = dir->i_sb;
+-	sbi = EXT4_SB(sb);
+ 	blocksize = sb->s_blocksize;
+ 	if (!dentry->d_name.len)
+ 		return -EINVAL;
 
-Am I missing something subtle there?
+ #ifdef CONFIG_UNICODE
++	sbi = EXT4_SB(sb);
+ 	if (ext4_has_strict_mode(sbi) && IS_CASEFOLDED(dir) &&
+ 	    sbi->s_encoding && utf8_validate(sbi->s_encoding, &dentry->d_name))
+ 		return -EINVAL;
+-- 
+2.7.4
+
