@@ -2,109 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C25122B4C
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2019 13:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F02122E59
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2019 15:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727656AbfLQMUF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Dec 2019 07:20:05 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54049 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726859AbfLQMUF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Dec 2019 07:20:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576585204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=B0+KY2LgohuAAUeLzqgL5r7ybIqzWDh0cTOzyxzvRko=;
-        b=SUKC6clyluwOGCEhhe41LeX8/XfIcP10IH4xoijLBi2rpL+jSgHKMcW9FF3DVrPSz+dHyY
-        dunuHONI/1hg1Jbs3cyPaYz0qTl8JL/NC6cL/Ta6C5Y5mML/Md8n+nLz7Vgop/DwI+J9ow
-        yrmrgVm3WgYZS4uAIQNjxkMXy0fqW+E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-81-h1B4o9tNNeSyw-9rJna_GA-1; Tue, 17 Dec 2019 07:20:03 -0500
-X-MC-Unique: h1B4o9tNNeSyw-9rJna_GA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D77D8056B1;
-        Tue, 17 Dec 2019 12:20:02 +0000 (UTC)
-Received: from work (ovpn-205-130.brq.redhat.com [10.40.205.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 027AD7C830;
-        Tue, 17 Dec 2019 12:20:00 +0000 (UTC)
-Date:   Tue, 17 Dec 2019 13:19:56 +0100
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 02/17] ext4: Add fs parameter description
-Message-ID: <20191217121956.amsymslmuoy6kzu4@work>
-References: <20191106101457.11237-1-lczerner@redhat.com>
- <20191106101457.11237-3-lczerner@redhat.com>
- <20191217004419.GA6833@ZenIV.linux.org.uk>
+        id S1728810AbfLQORb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Dec 2019 09:17:31 -0500
+Received: from relay.sw.ru ([185.231.240.75]:46920 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728554AbfLQORa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 17 Dec 2019 09:17:30 -0500
+Received: from dhcp-172-16-24-104.sw.ru ([172.16.24.104])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1ihDeB-0005aE-AS; Tue, 17 Dec 2019 17:16:23 +0300
+Subject: Re: [PATCH RFC 0/3] block,ext4: Introduce REQ_OP_ASSIGN_RANGE to
+ reflect extents allocation in block device internals
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, axboe@kernel.dk
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, ming.lei@redhat.com,
+        osandov@fb.com, jthumshirn@suse.de, minwoo.im.dev@gmail.com,
+        damien.lemoal@wdc.com, andrea.parri@amarulasolutions.com,
+        hare@suse.com, tj@kernel.org, ajay.joshi@wdc.com, sagi@grimberg.me,
+        dsterba@suse.com, chaitanya.kulkarni@wdc.com, bvanassche@acm.org,
+        dhowells@redhat.com, asml.silence@gmail.com
+References: <157599668662.12112.10184894900037871860.stgit@localhost.localdomain>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <750538f7-33af-d98d-47d1-9753fd87e8fd@virtuozzo.com>
+Date:   Tue, 17 Dec 2019 17:16:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191217004419.GA6833@ZenIV.linux.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <157599668662.12112.10184894900037871860.stgit@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 12:44:19AM +0000, Al Viro wrote:
-> On Wed, Nov 06, 2019 at 11:14:42AM +0100, Lukas Czerner wrote:
-> > +	fsparam_string_empty
-> > +			("usrjquota",		Opt_usrjquota),
-> > +	fsparam_string_empty
-> > +			("grpjquota",		Opt_grpjquota),
+Hi!
+
+Any comments on this?
+
+Thanks
+
+On 10.12.2019 19:56, Kirill Tkhai wrote:
+> Information about continuous extent placement may be useful
+> for some block devices. Say, distributed network filesystems,
+> which provide block device interface, may use this information
+> for better blocks placement over the nodes in their cluster,
+> and for better performance. Block devices, which map a file
+> on another filesystem (loop), may request the same length extent
+> on underlining filesystem for less fragmentation and for batching
+> allocation requests. Also, hypervisors like QEMU may use this
+> information for optimization of cluster allocations.
 > 
-> Umm...  That makes ...,usrjquota,... equivalent to ...,usrjquota=,...
-> unless I'm misreading the series.  Different from mainline, right?
-
-Unfortunatelly yes, I do not think this is a problem, but if you have a
-solution within the new mount api framework I am happy to use it.
-
+> This patchset introduces REQ_OP_ASSIGN_RANGE, which is going
+> to be used for forwarding user's fallocate(0) requests into
+> block device internals. It rather similar to existing
+> REQ_OP_DISCARD, REQ_OP_WRITE_ZEROES, etc. The corresponding
+> exported primitive is called blkdev_issue_assign_range().
+> See [1/3] for the details.
 > 
-> > +	fsparam_bool	("barrier",		Opt_barrier),
-> > +	fsparam_flag	("nobarrier",		Opt_nobarrier),
+> Patch [2/3] teaches loop driver to handle REQ_OP_ASSIGN_RANGE
+> requests by calling fallocate(0).
 > 
-> That's even more interesting.  Current mainline:
-> 		barrier		OK, sets EXT4_MOUNT_BARRIER
-> 		barrier=0	OK, sets EXT4_MOUNT_BARRIER
-> 		barrier=42	OK, sets EXT4_MOUNT_BARRIER
-> 		barrier=yes	error
-> 		barrier=no	error
-> 		nobarrier	OK, clears EXT4_MOUNT_BARRIER
-> Unless I'm misreading your series, you get
-> 		barrier		error
-
-Not really, this seems to be working as expected. Assuming that this
-didn't change since 5.4.0-rc6. I does make sense to me that specifying
-bool type parameter without any options would express "true".
-
-
-> 		barrier=0	OK, sets EXT4_MOUNT_BARRIER
-
-
-> 		barrier=42	error
-> 		barrier=yes	OK, sets EXT4_MOUNT_BARRIER
-> 		barrier=no	OK, sets EXT4_MOUNT_BARRIER
-
-Those three are different, just because of how param_book() work. I do
-not really see a problem with it, but if we want to keep it exactly the
-same as current mainline it would be difficult with how the current api
-works. Any suggestions ?
-
-Thanks!
--Lukas
-
-> 		nobarrier	OK, clears EXT4_MOUNT_BARRIER
+> Patch [3/3] makes ext4 to notify a block device about fallocate(0).
 > 
-> Granted, mainline behaviour is... unintuitive, to put it mildly,
-> but the replacement is just as strange _and_ incompatible with the
-> existing one.
+> Here is a simple test I did:
+> https://gist.github.com/tkhai/5b788651cdb74c1dbff3500745878856
 > 
-> Am I missing something subtle there?
+> I attached a file on ext4 to loop. Then, created ext4 partition
+> on loop device and started the test in the partition. Direct-io
+> is enabled on loop.
+> 
+> The test fallocates 4G file and writes from some offset with
+> given step, then it chooses another offset and repeats. After
+> the test all the blocks in the file become written.
+> 
+> The results shows that batching extents-assigning requests improves
+> the performance:
+> 
+> Before patchset: real ~ 1min 27sec
+> After patchset:  real ~ 1min 16sec (18% better)
+> 
+> Ordinary fallocate() before writes improves the performance
+> by batching the requests. These results just show, the same
+> is in case of forwarding extents information to underlining
+> filesystem.
+> ---
+> 
+> Kirill Tkhai (3):
+>       block: Add support for REQ_OP_ASSIGN_RANGE operation
+>       loop: Forward REQ_OP_ASSIGN_RANGE into fallocate(0)
+>       ext4: Notify block device about fallocate(0)-assigned blocks
+> 
+> 
+>  block/blk-core.c          |    4 +++
+>  block/blk-lib.c           |   70 +++++++++++++++++++++++++++++++++++++++++++++
+>  block/blk-merge.c         |   21 ++++++++++++++
+>  block/bounce.c            |    1 +
+>  drivers/block/loop.c      |    5 +++
+>  fs/ext4/ext4.h            |    1 +
+>  fs/ext4/extents.c         |   11 ++++++-
+>  include/linux/bio.h       |    3 ++
+>  include/linux/blk_types.h |    2 +
+>  include/linux/blkdev.h    |   29 +++++++++++++++++++
+>  10 files changed, 145 insertions(+), 2 deletions(-)
+> 
+> --
+> Signed-off-by: Kirill Tkhai <ktkhai@virtuozzo.com>
 > 
 
