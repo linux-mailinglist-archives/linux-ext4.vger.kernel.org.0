@@ -2,93 +2,155 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E40124B14
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2019 16:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BBD124F9B
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2019 18:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbfLRPNy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Dec 2019 10:13:54 -0500
-Received: from mail-il1-f195.google.com ([209.85.166.195]:42258 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727185AbfLRPNx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Dec 2019 10:13:53 -0500
-Received: by mail-il1-f195.google.com with SMTP id a6so1963020ili.9
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Dec 2019 07:13:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=R9l9mbjTMtC+3agOxuj88vgGSGUSi1shzIvbtHPQHDA=;
-        b=Q3vp2fJ40VWpq9rX2ikiWTUrhuiQJXzCeUu43e1oIIOk8rzGCPMljco+W3g3Sdt7mK
-         0zMp27lNXT81ott0dYeyE6wCdI4c1wfi5qCqRmoGIMvdtgle/6NMWI0GJrkD30CBojRq
-         hZbdgtbn9F/6uhvfSLkMdN7NhUpQoMVScRn9uDFKZJxofy0MWDF6kZw53YXeVt8sjWjA
-         Dd9TBzj4Ogplv/txGap2r0I252pQP7l7XSY4YOVhZ7qL539zlqhtO9W4mad505PIZ9Xp
-         yYy+XyL34oyC2pvEIWTDP8EMj+Gj6Cu0eHyc7GTPTD7Enq1rjLHU3JyAyX8LQzaLW/WP
-         +a+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=R9l9mbjTMtC+3agOxuj88vgGSGUSi1shzIvbtHPQHDA=;
-        b=jh6VE2ZbNMCz+5+XzTiEJ2TvhpU8YYx85Chy7dcKxLnsMQkXjKLZl7vpfXOTcByLNw
-         O7jVNaNg50M9gX8AgevHWvr6nhRCa0iuVkW7AD94moTUoL7BP3q1wo99KHRHcxVjwkmb
-         RfZIIsvE+w57fVrZRsb48mzf78MkEx9Fz9mCbL60PvHBBa2kM9MsLQfEY3H7oviI/2u8
-         P1/ENkYFW1bzXXByvind/nYJOB6SrALXy8n6298EfLB4lgqQMYaJ+BDG1ldpAaIl1fHX
-         XVTiqITjYLfaLwP5AJlUlGp3lhezb9bXTNAqzxV1ZEonTbCRZsqaXrbbrMmQBsB3CdAI
-         6UQQ==
-X-Gm-Message-State: APjAAAWy+pEq8+IOOSKouM9PvWirxRrwV3gZma3pFU40qd/W51yMqlk7
-        CaqJyVdb7QmfrZT+Z2ri/NbiicJ33G9CiBDBbw==
-X-Google-Smtp-Source: APXvYqzpDMY1kfzvQTGFYFDuSf5Wkv4RFsY3uCP+mpqq6wLn7kqjCTzLCYufYBbbmMCBsVo5PHwr9dpQEEDI7K8RY00=
-X-Received: by 2002:a92:cc90:: with SMTP id x16mr2363556ilo.269.1576682033220;
- Wed, 18 Dec 2019 07:13:53 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a02:6603:0:0:0:0:0 with HTTP; Wed, 18 Dec 2019 07:13:52
- -0800 (PST)
-Reply-To: dhl.expresscourier102156@outlook.fr
-From:   "MS. MARYANNA B. THOMASON" <info.zennitbankplcnigerian@gmail.com>
-Date:   Wed, 18 Dec 2019 16:13:52 +0100
-Message-ID: <CABHzvrnY8Lhdw4Y2q97jvAVrRpM9CVLFkw=Ved7y1GhGqHiAdw@mail.gmail.com>
-Subject: I WANT TO YOU TO TREAT THIS EMAIL VERY URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1727141AbfLRRoq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Dec 2019 12:44:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51902 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727130AbfLRRoq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Dec 2019 12:44:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 25A8EB1B3;
+        Wed, 18 Dec 2019 17:44:44 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 6F6F91E0B38; Wed, 18 Dec 2019 18:44:38 +0100 (CET)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Berrocal, Eduardo" <eduardo.berrocal@intel.com>,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH] ext4: Optimize ext4 DIO overwrites
+Date:   Wed, 18 Dec 2019 18:44:33 +0100
+Message-Id: <20191218174433.19380-1-jack@suse.cz>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Attn Dear.
+Currently we start transaction for mapping every extent for writing
+using direct IO. This is unnecessary when we know we are overwriting
+already allocated blocks and the overhead of starting a transaction can
+be significant especially for multithreaded workloads doing small writes.
+Use iomap operations that avoid starting a transaction for direct IO
+overwrites.
 
-Urgent delivery Notification of your ATM MASTER CARD, Dhl-Benin is
-ready for delivery of your ATM Master card worth $15.800=E2=80=99000=E2=80=
-=9900, as
-approved this morning, Date, 18/12/2019. Through the Intruction from
-INTERNATIONAL MONETARY FUNDS, I.M.F official Directors.
+This improves throughput of 4k random writes - fio jobfile:
+[global]
+rw=randrw
+norandommap=1
+invalidate=0
+bs=4k
+numjobs=16
+time_based=1
+ramp_time=30
+runtime=120
+group_reporting=1
+ioengine=psync
+direct=1
+size=16G
+filename=file1.0.0:file1.0.1:file1.0.2:file1.0.3:file1.0.4:file1.0.5:file1.0.6:file1.0.7:file1.0.8:file1.0.9:file1.0.10:file1.0.11:file1.0.12:file1.0.13:file1.0.14:file1.0.15:file1.0.16:file1.0.17:file1.0.18:file1.0.19:file1.0.20:file1.0.21:file1.0.22:file1.0.23:file1.0.24:file1.0.25:file1.0.26:file1.0.27:file1.0.28:file1.0.29:file1.0.30:file1.0.31
+file_service_type=random
+nrfiles=32
 
-REGISTRATION NO :EG58945
-PARCEL NUMBER: 140479
-Delivery Schuleded now,
-Finally all we required from you is your ATM Card Proccessing Delivery
-fees $19.00 only which you must send to this DHL service to enable us
-dispatch the parcel to your destination today.
+from 3018MB/s to 4059MB/s in my test VM running test against simulated
+pmem device (note that before iomap conversion, this workload was able
+to achieve 3708MB/s because old direct IO path avoided transaction start
+for overwrites as well). For dax, the win is even larger improving
+throughput from 3042MB/s to 4311MB/s.
 
-Here is our receiving payment details.
-You are advised to send it Via Money Gram Service.
+Reported-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/ext4.h  |  1 +
+ fs/ext4/file.c  |  4 +++-
+ fs/ext4/inode.c | 21 +++++++++++++++++++++
+ 3 files changed, 25 insertions(+), 1 deletion(-)
 
-Receiver's Name--------Alan Ude
-Country-------Benin Republic.
-City/ Address--------Cotonou
-Test Question--------In God
-Answer-------We Trust
-Amount------------$US19.00 only
-Mtcn-------------
-Sender's Name-------
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index f8578caba40d..e31fc5749a19 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3390,6 +3390,7 @@ static inline void ext4_clear_io_unwritten_flag(ext4_io_end_t *io_end)
+ }
+ 
+ extern const struct iomap_ops ext4_iomap_ops;
++extern const struct iomap_ops ext4_iomap_overwrite_ops;
+ extern const struct iomap_ops ext4_iomap_report_ops;
+ 
+ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 6a7293a5cda2..f8e4af72d64d 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -370,6 +370,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	loff_t offset;
+ 	handle_t *handle;
+ 	struct inode *inode = file_inode(iocb->ki_filp);
++	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
+ 	bool extend = false, overwrite = false, unaligned_aio = false;
+ 
+ 	if (iocb->ki_flags & IOCB_NOWAIT) {
+@@ -415,6 +416,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	if (!unaligned_aio && ext4_overwrite_io(inode, offset, count) &&
+ 	    ext4_should_dioread_nolock(inode)) {
+ 		overwrite = true;
++		iomap_ops = &ext4_iomap_overwrite_ops;
+ 		downgrade_write(&inode->i_rwsem);
+ 	}
+ 
+@@ -435,7 +437,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		ext4_journal_stop(handle);
+ 	}
+ 
+-	ret = iomap_dio_rw(iocb, from, &ext4_iomap_ops, &ext4_dio_write_ops,
++	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+ 			   is_sync_kiocb(iocb) || unaligned_aio || extend);
+ 
+ 	if (extend)
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 28f28de0c1b6..e1eb4493aacc 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3448,6 +3448,22 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 	return 0;
+ }
+ 
++static int ext4_iomap_overwrite_begin(struct inode *inode, loff_t offset,
++		loff_t length, unsigned flags, struct iomap *iomap,
++		struct iomap *srcmap)
++{
++	int ret;
++
++	/*
++	 * Even for writes we don't need to allocate blocks, so just pretend
++	 * we are reading to save overhead of starting a transaction.
++	 */
++	flags &= ~IOMAP_WRITE;
++	ret = ext4_iomap_begin(inode, offset, length, flags, iomap, srcmap);
++	WARN_ON_ONCE(iomap->type != IOMAP_MAPPED);
++	return ret;
++}
++
+ static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
+ 			  ssize_t written, unsigned flags, struct iomap *iomap)
+ {
+@@ -3469,6 +3485,11 @@ const struct iomap_ops ext4_iomap_ops = {
+ 	.iomap_end		= ext4_iomap_end,
+ };
+ 
++const struct iomap_ops ext4_iomap_overwrite_ops = {
++	.iomap_begin		= ext4_iomap_overwrite_begin,
++	.iomap_end		= ext4_iomap_end,
++};
++
+ static bool ext4_iomap_is_delalloc(struct inode *inode,
+ 				   struct ext4_map_blocks *map)
+ {
+-- 
+2.16.4
 
-Your delivery  ATM card worth $15.800=E2=80=99000=E2=80=9900,
-Is Due for delivery to your address today upon confirmation of
-required fee from you asap.
-
-Call us on this phone number for any inquiry. +229 62819378
-Awaiting your urgent response.
-
-MS. MARYANNA B. THOMASON, Shipment director, DHL Express
-Courier Company-Benin
