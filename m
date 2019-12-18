@@ -2,103 +2,93 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B94861241CA
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2019 09:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C761241E8
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2019 09:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbfLRIdQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Dec 2019 03:33:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34558 "EHLO mx2.suse.de"
+        id S1726652AbfLRIiv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Dec 2019 03:38:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37882 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbfLRIdP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Dec 2019 03:33:15 -0500
+        id S1725955AbfLRIiv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Dec 2019 03:38:51 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A4111B274;
-        Wed, 18 Dec 2019 08:33:12 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 7038CAC52;
+        Wed, 18 Dec 2019 08:38:49 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id AC4EC1E0B2D; Wed, 18 Dec 2019 09:33:01 +0100 (CET)
-Date:   Wed, 18 Dec 2019 09:33:01 +0100
+        id 066621E0B2D; Wed, 18 Dec 2019 09:38:39 +0100 (CET)
+Date:   Wed, 18 Dec 2019 09:38:39 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Paul Richards <paul.richards@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
-Subject: Re: Query about ext4 commit interval vs dirty_expire_centisecs
-Message-ID: <20191218083301.GA4083@quack2.suse.cz>
-References: <CAMoswejffB4ys=2C5zL_j9SBrdka8MJWV3hpwber9cggo=1GQQ@mail.gmail.com>
- <20191213155912.GH15474@quack2.suse.cz>
- <CAMoswegmo08i-7TMpbM7x=RHiRsu-g40Vq2wmPzYsx7=gCi5MA@mail.gmail.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] ext2: Adjust indentation in ext2_fill_super
+Message-ID: <20191218083838.GB4083@quack2.suse.cz>
+References: <20191218031519.15450-1-natechancellor@gmail.com>
+ <20191218031930.31393-1-natechancellor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMoswegmo08i-7TMpbM7x=RHiRsu-g40Vq2wmPzYsx7=gCi5MA@mail.gmail.com>
+In-Reply-To: <20191218031930.31393-1-natechancellor@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 17-12-19 14:42:48, Paul Richards wrote:
-> On Fri, 13 Dec 2019 at 15:59, Jan Kara <jack@suse.cz> wrote:
-> >
-> > Hello!
-> >
-> > On Tue 19-11-19 08:47:31, Paul Richards wrote:
-> > > I'm trying to understand the interaction between the ext4 `commit`
-> > > interval option, and the `vm.dirty_expire_centisecs` tuneable.
-> > >
-> > > The ext4 `commit` documentation says:
-> > >
-> > > > Ext4 can be told to sync all its data and metadata every 'nrsec' seconds. The default value is 5 seconds. This means that if you lose your power, you will lose as much as the latest 5 seconds of work (your filesystem will not be damaged though, thanks to the journaling).
-> > >
-> > > The `dirty_expire_centisecs` documentation says:
-> > >
-> > > > This tunable is used to define when dirty data is old enough to be eligible for writeout by the kernel flusher threads. It is expressed in 100'ths of a second. Data which has been dirty in-memory for longer than this interval will be written out next time a flusher thread wakes up.
-> > >
-> > >
-> > > Superficially these sound like they have a very similar effect.  They
-> > > periodically flush out data that hasn't been explicitly fsync'd by the
-> > > application.  I'd like to understand a bit more the interaction
-> > > between these.
-> >
-> > Yes, the effect is rather similar but not quite the same. The first thing
-> > to observe is kind of obvious fact that ext4 commit interval influences
-> > just the particular filesystem while dirty_expire_centisecs influences
-> > behavior of global writeback over all filesystems.
-> >
-> > Secondly, commit interval is really the maximum age of ext4 transation.  So
-> > if there is metadata change pending in the journal, it will become
-> > persistent at latest after this time. So for say 'mkdir' that will be
-> > persistent at latest after this time. For data operations things are more
-> > complex. E.g. when delayed allocation is used (which is the default), the
-> > change gets logged in the journal only during writeback. So it can take up
-> > to dirty_expire_centisecs for data to be written back from page cache, that
-> > results in filesystem journalling block allocations etc. and then it can
-> > take upto commit interval for these changes to become persistent. So in
-> > this case the intervals add up. There are also other special cases
-> > somewhere in between but generally it is reasonable to assume that data gets
-> > automatically persistent in dirty_expire_centisecs + commit_interval time.
-> > Note both these times are actually times when writeback is triggered so
-> > if the disk gets too busy, the actual time when data is completely on disk
-> > may be much higher.
-> >
+On Tue 17-12-19 20:19:31, Nathan Chancellor wrote:
+> Clang warns:
 > 
-> Thanks for taking the time to reply!
+> ../fs/ext2/super.c:1076:3: warning: misleading indentation; statement is
+> not part of the previous 'if' [-Wmisleading-indentation]
+>         sbi->s_groups_count = ((le32_to_cpu(es->s_blocks_count) -
+>         ^
+> ../fs/ext2/super.c:1074:2: note: previous statement is here
+>         if (EXT2_BLOCKS_PER_GROUP(sb) == 0)
+>         ^
+> 1 warning generated.
 > 
-> Since automatic persisting of data occurs only after
-> dirty_expire_centisecs + commit_interval,
-> should the ext4 docs be corrected?  They currently state (for the
-> commit interval option):
+> This warning occurs because there is a space before the tab on this
+> line. Remove it so that the indentation is consistent with the Linux
+> kernel coding style and clang no longer warns.
 > 
-> "The default value is 5 seconds. This means that if you lose
-> your power, you will lose as much as the latest 5 seconds of work"
+> Fixes: 41f04d852e35 ("[PATCH] ext2: fix mounts at 16T")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/827
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Yes, probably that should be clarified. Where did you find this wording?
-Because my ext4 manpage just states:
-
-        commit=nrsec
-              Start  a  journal commit every nrsec seconds.  The default value
-              is 5 seconds.  Zero means default.
+Thanks! I've added the patch to my tree.
 
 								Honza
+
+> ---
+> 
+> v1 -> v2:
+> 
+> * Adjust link to point to the right issue.
+> 
+>  fs/ext2/super.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+> index 8643f98e9578..4a4ab683250d 100644
+> --- a/fs/ext2/super.c
+> +++ b/fs/ext2/super.c
+> @@ -1073,9 +1073,9 @@ static int ext2_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	if (EXT2_BLOCKS_PER_GROUP(sb) == 0)
+>  		goto cantfind_ext2;
+> - 	sbi->s_groups_count = ((le32_to_cpu(es->s_blocks_count) -
+> - 				le32_to_cpu(es->s_first_data_block) - 1)
+> - 					/ EXT2_BLOCKS_PER_GROUP(sb)) + 1;
+> +	sbi->s_groups_count = ((le32_to_cpu(es->s_blocks_count) -
+> +				le32_to_cpu(es->s_first_data_block) - 1)
+> +					/ EXT2_BLOCKS_PER_GROUP(sb)) + 1;
+>  	db_count = (sbi->s_groups_count + EXT2_DESC_PER_BLOCK(sb) - 1) /
+>  		   EXT2_DESC_PER_BLOCK(sb);
+>  	sbi->s_group_desc = kmalloc_array (db_count,
+> -- 
+> 2.24.1
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
