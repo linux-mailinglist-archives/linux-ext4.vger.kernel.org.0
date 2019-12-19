@@ -2,148 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B861266A0
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2019 17:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8255C126DF4
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2019 20:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbfLSQTQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Dec 2019 11:19:16 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:49928 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbfLSQTP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Dec 2019 11:19:15 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBJGETXG144130;
-        Thu, 19 Dec 2019 16:18:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=UtF7imOhmPSAXDklZ55E8gWyotvBGV1fxPBlvWgNXg4=;
- b=BwMuhclqCDRk/5p5+uSr1dgeBFeUMHqNZJZEgt6NDMAFdZDSU9YvfQCndcso1xY/tvEM
- b1c7SGbeZOfqsicbnwWD7Mhw6ifyFuxI9pkmFeQ5W9tsexpv8GZjtkQ3a6jNAOGMO5uU
- plvrVCzA8ubGr5DLLEdYbNM/It4ScnW1zd/QVi/VfsUYdjf6HX2Rlmw1aEEKO7r4t6cC
- QpYWhoJx0im7XtIyQP1/NZ+bEeLQpeLf8t2q7JgWm+NQ/SWbX6e7m6yea7RelGf+b32f
- wNrUxJ3jwCS25iHM1iuQQWnm1JlZNHmfiER/F8t6hU/9C3++mKoEfKPfE5inq4n8F7Yn Yg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2x01jabu2v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Dec 2019 16:18:46 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBJGENdo192678;
-        Thu, 19 Dec 2019 16:18:46 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 2x0bgm3770-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Dec 2019 16:18:46 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xBJGIir0019985;
-        Thu, 19 Dec 2019 16:18:44 GMT
-Received: from dhcp-10-175-212-35.vpn.oracle.com (/10.175.212.35)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Dec 2019 08:18:44 -0800
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     brendanhiggins@google.com, linux-kselftest@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        keescook@chromium.org, yzaikin@google.com,
-        akpm@linux-foundation.org, yamada.masahiro@socionext.com,
-        catalin.marinas@arm.com, joe.lawrence@redhat.com,
-        penguin-kernel@i-love.sakura.ne.jp, urezki@gmail.com,
-        andriy.shevchenko@linux.intel.com, corbet@lwn.net,
-        davidgow@google.com, adilger.kernel@dilger.ca, tytso@mit.edu,
-        mcgrof@kernel.org, linux-doc@vger.kernel.org, rjw@rjwysocki.net,
-        pavel@ucw.cz, len.brown@intel.com, gregkh@linuxfoundation.org,
-        krzk@kernel.org, linux-pm@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
-        Knut Omang <knut.omang@oracle.com>
-Subject: [PATCH v7 linux-kselftest-test 6/6] kunit: update documentation to describe module-based build
-Date:   Thu, 19 Dec 2019 16:17:39 +0000
-Message-Id: <1576772259-31382-7-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1576772259-31382-1-git-send-email-alan.maguire@oracle.com>
-References: <1576772259-31382-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9476 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=4 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912190135
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9476 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=4 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912190135
+        id S1726992AbfLST2a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Dec 2019 14:28:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36958 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726836AbfLST2a (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 19 Dec 2019 14:28:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id C4415AEFD;
+        Thu, 19 Dec 2019 19:28:28 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4964E1E0B44; Thu, 19 Dec 2019 20:28:23 +0100 (CET)
+Date:   Thu, 19 Dec 2019 20:28:23 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Berrocal, Eduardo" <eduardo.berrocal@intel.com>
+Subject: Re: [PATCH] ext4: Optimize ext4 DIO overwrites
+Message-ID: <20191219192823.GA5389@quack2.suse.cz>
+References: <20191218174433.19380-1-jack@suse.cz>
+ <20191219135329.529E3A404D@d06av23.portsmouth.uk.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191219135329.529E3A404D@d06av23.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Documentation should describe how to build kunit and tests as
-modules.
+On Thu 19-12-19 19:23:28, Ritesh Harjani wrote:
+> On 12/18/19 11:14 PM, Jan Kara wrote:
+> > Currently we start transaction for mapping every extent for writing
+> > using direct IO. This is unnecessary when we know we are overwriting
+> > already allocated blocks and the overhead of starting a transaction can
+> > be significant especially for multithreaded workloads doing small writes.
+> > Use iomap operations that avoid starting a transaction for direct IO
+> > overwrites.
+> > 
+> > This improves throughput of 4k random writes - fio jobfile:
+> > [global]
+> > rw=randrw
+> > norandommap=1
+> > invalidate=0
+> > bs=4k
+> > numjobs=16
+> > time_based=1
+> > ramp_time=30
+> > runtime=120
+> > group_reporting=1
+> > ioengine=psync
+> > direct=1
+> > size=16G
+> > filename=file1.0.0:file1.0.1:file1.0.2:file1.0.3:file1.0.4:file1.0.5:file1.0.6:file1.0.7:file1.0.8:file1.0.9:file1.0.10:file1.0.11:file1.0.12:file1.0.13:file1.0.14:file1.0.15:file1.0.16:file1.0.17:file1.0.18:file1.0.19:file1.0.20:file1.0.21:file1.0.22:file1.0.23:file1.0.24:file1.0.25:file1.0.26:file1.0.27:file1.0.28:file1.0.29:file1.0.30:file1.0.31
+> > file_service_type=random
+> > nrfiles=32
+> > 
+> > from 3018MB/s to 4059MB/s in my test VM running test against simulated
+> > pmem device (note that before iomap conversion, this workload was able
+> > to achieve 3708MB/s because old direct IO path avoided transaction start
+> > for overwrites as well). For dax, the win is even larger improving
+> > throughput from 3042MB/s to 4311MB/s.
+> 
+> However for dax via ext4_dax_write_iter() path, we still need a way to
+> detect if it's overwrite and that path can be optimized too right?
+> I see, that this path could use both `shared inode locking` and
+> `no journal transaction` optimizations in case of overwrites. Correct?
 
-Co-developed-by: Knut Omang <knut.omang@oracle.com>
-Signed-off-by: Knut Omang <knut.omang@oracle.com>
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
----
- Documentation/dev-tools/kunit/faq.rst   |  3 ++-
- Documentation/dev-tools/kunit/index.rst |  3 +++
- Documentation/dev-tools/kunit/usage.rst | 16 ++++++++++++++++
- 3 files changed, 21 insertions(+), 1 deletion(-)
+I don't think we can really afford the shared locking in
+ext4_dax_write_iter() as POSIX requires overlapping writes to be
+serialized. But we could still optimize-away the transaction starts.
 
-diff --git a/Documentation/dev-tools/kunit/faq.rst b/Documentation/dev-tools/kunit/faq.rst
-index bf20951..ea55b24 100644
---- a/Documentation/dev-tools/kunit/faq.rst
-+++ b/Documentation/dev-tools/kunit/faq.rst
-@@ -29,7 +29,8 @@ Yes, well, mostly.
- 
- For the most part, the KUnit core framework (what you use to write the tests)
- can compile to any architecture; it compiles like just another part of the
--kernel and runs when the kernel boots. However, there is some infrastructure,
-+kernel and runs when the kernel boots, or when built as a module, when the
-+module is loaded.  However, there is some infrastructure,
- like the KUnit Wrapper (``tools/testing/kunit/kunit.py``) that does not support
- other architectures.
- 
-diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
-index 26ffb46..7ddc385 100644
---- a/Documentation/dev-tools/kunit/index.rst
-+++ b/Documentation/dev-tools/kunit/index.rst
-@@ -48,6 +48,9 @@ to a standalone program that can be run like any other program directly inside
- of a host operating system; to be clear, it does not require any virtualization
- support; it is just a regular program.
- 
-+Alternatively, kunit and kunit tests can be built as modules and tests will
-+run when the test module is loaded.
-+
- KUnit is fast. Excluding build time, from invocation to completion KUnit can run
- several dozen tests in only 10 to 20 seconds; this might not sound like a big
- deal to some people, but having such fast and easy to run tests fundamentally
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index c6e6963..82f9213 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -539,6 +539,22 @@ Interspersed in the kernel logs you might see the following:
- 
- Congratulations, you just ran a KUnit test on the x86 architecture!
- 
-+In a similar manner, kunit and kunit tests can also be built as modules,
-+so if you wanted to run tests in this way you might add the following config
-+options to your ``.config``:
-+
-+.. code-block:: none
-+
-+	CONFIG_KUNIT=m
-+	CONFIG_KUNIT_EXAMPLE_TEST=m
-+
-+Once the kernel is built and installed, a simple
-+
-+.. code-block:: bash
-+	modprobe example-test
-+
-+...will run the tests.
-+
- Writing new tests for other architectures
- -----------------------------------------
- 
+> > Reported-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> 
+> This was one of the next AI I too wanted to do. I guess since everyone
+> loves performance improvements. :)
+> 
+> No problem with current patch. Looks good. Gave it a run too on my
+> system.
+> 
+> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+Thanks!
+
+> However depending on which patch lands first one may need a
+> re-basing. Will conflict with this-
+> https://marc.info/?l=linux-ext4&m=157613016931238&w=2
+
+Yes, but the conflict is minor and trivial to resolve.
+
+								Honza
 -- 
-1.8.3.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
