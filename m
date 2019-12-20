@@ -2,212 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E931272B4
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2019 02:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37176127312
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2019 02:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbfLTBN3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Dec 2019 20:13:29 -0500
-Received: from mail-pj1-f49.google.com ([209.85.216.49]:55025 "EHLO
-        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbfLTBN3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Dec 2019 20:13:29 -0500
-Received: by mail-pj1-f49.google.com with SMTP id ep17so3342353pjb.4
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Dec 2019 17:13:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=Jai7uigPqUL4YPUB+WsJ9AVMnMbwIv5GOyLJbKmVW7g=;
-        b=DOLSzMKNiB8x76dofioL1GThHAgbNK7sLzSuiF4ePr2grgLOenowW6efSazzkOOOZj
-         cS5I/5orGV6+OA6yurKdMhMHBoMSn/WsjRhhodSkK2paWMoAwpUrpsvXb+E1ldQ1GBIQ
-         LBDfqCoviNyn0WQDy1uUmohxICleDW5p3JeEIKcUUEMx0LAzbkGXrnjvX3hyVilAw9Ix
-         cXvRJs5UMfDU1zp1k0P/ckO8ZNrRwE0sjeE39EjpaoersRNzoi1FZacklXkgv4N0gJsM
-         owvzmwBlqvk/I8e0XbYid7lipQEnQ4+X7DGAHoMSHnTM1gTBMSC8aQTfqGp7qayMj/4Y
-         IkZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=Jai7uigPqUL4YPUB+WsJ9AVMnMbwIv5GOyLJbKmVW7g=;
-        b=Ke4CuJM/EPn0xI5P+2ERwceT1GZt8O4PxXsoZkO4MPxEM+Un3StpDv20dt0GXUQfYB
-         YxeVKpUM6EUYb1670r5L0w7w5K2MarOI/jBZGyzckIPzk6nds4msHAOI/iMVRVqOgeaJ
-         DBa56ONEXCXs9INiqkN/CQBzUrOLfHsF2PTiQuSVp7LATrV8EsQtYWF20qLzTBQ+27t4
-         2YV9hoEu+ReN6Nt8w0Mp/MYPIwcn7NAZ33vCyHzAxK+9I+RNItNn3oRWh/+3gihzLnok
-         PdieYfk/1myZN1iRS9nekaHpFcTVghe5ErnvqdEcugihbPc2kTP1TV+Q+jfmUJ2mgsYA
-         eG1g==
-X-Gm-Message-State: APjAAAU+2MNGzEIlA2/vHNWWt2Yjd0i4PnMwWd+2oWUHtgVzeM7Eo+Cj
-        0PydifpeBXNATxagfrdjjvU5e0+YDyAhDQ==
-X-Google-Smtp-Source: APXvYqx7aNZxPKdrqMsDnY6NAxqjwIMZ+VI/RwsBwNLPXa5APNeaVkGm3ZmnLeZP9WP/kdPYDNpuTA==
-X-Received: by 2002:a17:902:7288:: with SMTP id d8mr11725113pll.341.1576804408119;
-        Thu, 19 Dec 2019 17:13:28 -0800 (PST)
-Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id w66sm10295696pfw.102.2019.12.19.17.13.26
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Dec 2019 17:13:27 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <F15C759F-AD76-43B6-99A4-1CE902FA3017@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_654D28AC-05FB-4971-9E59-0B8ED61BAACB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: 
-Date:   Thu, 19 Dec 2019 18:13:22 -0700
-In-Reply-To: <CAPnMXWX7LvMXWTTWf6WHSuOaU7EVVPRz88i-T0h9NBRy6imeKQ@mail.gmail.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-To:     liming wu <wu860403@gmail.com>
-References: <CAPnMXWX7LvMXWTTWf6WHSuOaU7EVVPRz88i-T0h9NBRy6imeKQ@mail.gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        id S1727151AbfLTBzW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Dec 2019 20:55:22 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:34658 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726963AbfLTBzW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Dec 2019 20:55:22 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBK1YQvW178885;
+        Fri, 20 Dec 2019 01:54:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=yvWe495ldICiygqOjZaczcPhEGKNXC0rTc5IDLPnmg0=;
+ b=TQC1fmettNcpPG+K0+r5uCWd4QbxtaXxHbLeXWr6uYZR0w8qvXec9nz2V3nqd/rsA7G0
+ +840JBvsu6VKJK0saZjQckAjjnp3kM4dblPfYXGbEs6kOTqCsU7OW8wjY5CnXpL2LVer
+ Lmz0GdGblAcbt2Tlx9FAhFLBvNgeNw/RSenBOGDSPlfRZLnmki+NxIsW8YFZwIy6GZZK
+ hlPDQBNnE4+QSs86PfkG+PE3xqR9RW6pxgXerp5yENFxo/3DxiR0GA3F0q17n3+WbNMY
+ pqBf0lTcc0y/yuvaL051enyPxjy0h7i1rmPaa5WviRThLmxMKt2VRj5MnaWWhMKGJBst 2g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2x01jae617-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Dec 2019 01:54:48 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBK1sfDV073498;
+        Fri, 20 Dec 2019 01:54:48 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2x04mst1n8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 20 Dec 2019 01:54:47 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xBK1rgwj030477;
+        Fri, 20 Dec 2019 01:53:44 GMT
+Received: from localhost (/10.145.178.64)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 19 Dec 2019 17:53:41 -0800
+Date:   Thu, 19 Dec 2019 17:53:39 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ming.lei@redhat.com, osandov@fb.com,
+        jthumshirn@suse.de, minwoo.im.dev@gmail.com, damien.lemoal@wdc.com,
+        andrea.parri@amarulasolutions.com, hare@suse.com, tj@kernel.org,
+        ajay.joshi@wdc.com, sagi@grimberg.me, dsterba@suse.com,
+        chaitanya.kulkarni@wdc.com, bvanassche@acm.org,
+        dhowells@redhat.com, asml.silence@gmail.com
+Subject: Re: [PATCH RFC 1/3] block: Add support for REQ_OP_ASSIGN_RANGE
+ operation
+Message-ID: <20191220015338.GB7473@magnolia>
+References: <157599668662.12112.10184894900037871860.stgit@localhost.localdomain>
+ <157599696813.12112.14140818972910110796.stgit@localhost.localdomain>
+ <yq1woatc8zd.fsf@oracle.com>
+ <3f2e341b-dea4-c5d0-8eb0-568b6ad2f17b@virtuozzo.com>
+ <yq1a77oc56s.fsf@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yq1a77oc56s.fsf@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9476 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912200011
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9476 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912200010
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Dec 19, 2019 at 05:37:47PM -0500, Martin K. Petersen wrote:
+> 
+> Kirill,
+> 
+> > Hm. BLKDEV_ZERO_NOUNMAP is used in __blkdev_issue_write_zeroes() only.
+> > So, do I understand right that we should the below two?:
+> >
+> > 1) Introduce a new flag BLKDEV_ZERO_ALLOCATE for
+> > blkdev_issue_write_zeroes().
+> 
+> > 2) Introduce a new flag REQ_NOZERO in enum req_opf.
+> 
+> Something like that. If zeroing is a problem for you.
+> 
+> Right now we offer the following semantics:
+> 
+> 	Deallocate, no zeroing (discard)
+> 
+> 	Optionally deallocate, zeroing (zeroout)
+> 
+> 	Allocate, zeroing (zeroout + NOUNMAP)
+> 
+> Some devices also implement a fourth option which would be:
+> 
+> 	Anchor: Allocate, no zeroing
 
---Apple-Mail=_654D28AC-05FB-4971-9E59-0B8ED61BAACB
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+What happens if you anchor and then try to read the results?  IO error?
 
-These messages indicate your storage is not working properly.
-It doesn't have anything to do with ext3/ext4.
+(Yeah, I'm being lazy and not digging through SBC-3, sorry...)
 
+--D
 
-
-> On Dec 19, 2019, at 5:31 AM, liming wu <wu860403@gmail.com> wrote:
->=20
-> Hi
->=20
->=20
-> Who can help analyze the following message . Or give me some advice, I
-> will appreciate it very much.
->=20
-> Dec 17 22:14:42 bdsitdb222 kernel: Buffer I/O error on device dm-7,
-> logical block 810449
-> Dec 17 22:14:42 bdsitdb222 kernel: lost page write due to I/O error on =
-dm-7
-> Dec 17 22:14:48 bdsitdb222 kernel: Buffer I/O error on device dm-7,
-> logical block 283536
-> Dec 17 22:14:48 bdsitdb222 kernel: lost page write due to I/O error on =
-dm-7
-> Dec 17 22:14:48 bdsitdb222 kernel: Buffer I/O error on device dm-7,
-> logical block 283537
-> Dec 17 22:14:48 bdsitdb222 kernel: lost page write due to I/O error on =
-dm-7
-> Dec 17 22:14:48 bdsitdb222 kernel: JBD: Detected IO errors while
-> flushing file data on dm-7
-> Dec 17 22:15:42 bdsitdb222 kernel: Buffer I/O error on device dm-8,
-> logical block 127859
-> Dec 17 22:15:42 bdsitdb222 kernel: lost page write due to I/O error on =
-dm-8
-> Dec 17 22:15:42 bdsitdb222 kernel: JBD: Detected IO errors while
-> flushing file data on dm-8
-> Dec 17 22:15:48 bdsitdb222 kernel: Aborting journal on device dm-7.
-> Dec 17 22:15:48 bdsitdb222 kernel: EXT3-fs (dm-7): error in
-> ext3_new_blocks: Journal has aborted
-> Dec 17 22:15:48 bdsitdb222 kernel: EXT3-fs (dm-7): error in
-> ext3_reserve_inode_write: Journal has aborted
-> Dec 17 22:16:42 bdsitdb222 kernel: Aborting journal on device dm-8.
-> Dec 17 22:16:42 bdsitdb222 kernel: EXT3-fs (dm-7): error:
-> ext3_journal_start_sb: Detected aborted journal
-> Dec 17 22:16:42 bdsitdb222 kernel: EXT3-fs (dm-7): error: remounting
-> filesystem read-only
-> Dec 17 22:16:48 bdsitdb222 kernel: Buffer I/O error on device dm-7,
-> logical block 23527938
-> Dec 17 22:16:48 bdsitdb222 kernel: lost page write due to I/O error on =
-dm-7
-> Dec 17 22:16:48 bdsitdb222 kernel: Buffer I/O error on device dm-7,
-> logical block 0
-> Dec 17 22:16:48 bdsitdb222 kernel: lost page write due to I/O error on =
-dm-7
-> Dec 17 22:16:48 bdsitdb222 kernel: JBD: I/O error detected when
-> updating journal superblock for dm-7.
-> Dec 17 22:17:05 bdsitdb222 kernel: EXT3-fs (dm-7): error in
-> ext3_orphan_add: Journal has aborted
-> Dec 17 22:17:05 bdsitdb222 kernel: __journal_remove_journal_head:
-> freeing b_committed_data
->=20
-> plus info:
-> it's KVM
-> # uname -a
-> Linux bdsitdb222 2.6.32-279.19.1.el6.62.x86_64 #6 SMP Mon Dec 3
-> 22:54:25 CST 2018 x86_64 x86_64 x86_64 GNU/Linux1
->=20
-> # cat /proc/mounts
-> rootfs / rootfs rw 0 0
-> proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
-> sysfs /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
-> devtmpfs /dev devtmpfs
-> rw,nosuid,relatime,size=3D8157352k,nr_inodes=3D2039338,mode=3D755 0 0
-> devpts /dev/pts devpts rw,relatime,gid=3D5,mode=3D620,ptmxmode=3D000 0 =
-0
-> tmpfs /dev/shm tmpfs rw,nosuid,nodev,relatime 0 0
-> /dev/mapper/systemvg-rootlv / ext4 rw,relatime,barrier=3D1,data=3Dordere=
-d 0 0
-> /proc/bus/usb /proc/bus/usb usbfs rw,relatime 0 0
-> /dev/vda1 /boot ext4 rw,relatime,barrier=3D1,data=3Dordered 0 0
-> /dev/mapper/systemvg-homelv /home ext4 =
-rw,relatime,barrier=3D1,data=3Dordered 0 0
-> /dev/mapper/systemvg-optlv /opt ext3
-> rw,relatime,errors=3Dcontinue,barrier=3D1,data=3Dordered 0 0
-> /dev/mapper/systemvg-tmplv /tmp ext3
-> rw,relatime,errors=3Dcontinue,barrier=3D1,data=3Dordered 0 0
-> /dev/mapper/systemvg-usrlv /usr ext4 =
-rw,relatime,barrier=3D1,data=3Dordered 0 0
-> /dev/mapper/systemvg-varlv /var ext4 =
-rw,relatime,barrier=3D1,data=3Dordered 0 0
-> /dev/mapper/datavg-datalv /mysql/data ext3
-> rw,relatime,errors=3Dcontinue,barrier=3D1,data=3Dordered 0 0
-> /dev/mapper/datavg-binloglv /mysql/binlog ext3
-> rw,relatime,errors=3Dcontinue,barrier=3D1,data=3Dordered 0 0
-> none /proc/sys/fs/binfmt_misc binfmt_misc rw,relatime 0 0
-> sunrpc /var/lib/nfs/rpc_pipefs rpc_pipefs rw,relatime 0 0
-> none /sys/kernel/debug debugfs rw,relatime 0 0
->=20
-> # ll /dev/mapper/
-> total 0
-> crw-rw---- 1 root root 10, 58 Dec 19 19:21 control
-> lrwxrwxrwx 1 root root      7 Dec 19 19:21 datavg-binloglv -> ../dm-3
-> lrwxrwxrwx 1 root root      7 Dec 19 19:21 datavg-datalv -> ../dm-2
-> lrwxrwxrwx 1 root root      7 Dec 19 19:21 systemvg-homelv -> ../dm-4
-> lrwxrwxrwx 1 root root      7 Dec 19 19:21 systemvg-optlv -> ../dm-7
-> lrwxrwxrwx 1 root root      7 Dec 19 19:21 systemvg-rootlv -> ../dm-1
-> lrwxrwxrwx 1 root root      7 Dec 19 19:21 systemvg-swaplv -> ../dm-0
-> lrwxrwxrwx 1 root root      7 Dec 19 19:21 systemvg-tmplv -> ../dm-6
-> lrwxrwxrwx 1 root root      7 Dec 19 19:21 systemvg-usrlv -> ../dm-8
-> lrwxrwxrwx 1 root root      7 Dec 19 19:21 systemvg-varlv -> ../dm-5
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_654D28AC-05FB-4971-9E59-0B8ED61BAACB
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl38IDIACgkQcqXauRfM
-H+Dd+g//ZVCcACTjSkLABqaVOLGUROVjWf+YUZz8vunNeUGzkC75bcZqjLoa98Vj
-ds94ja4n8RNOhbVauStvGVTK90TxHes5pgqwb7toMvMGuN0J5JlcaADRZ/RTew2x
-dTIUG2ukWj/DnaIlklwW1rTgH0cU4rxr6zkv9G7wIIv0/qgBaXNgrr3OAPzM3JVf
-Ba8VdZ61M+Z2siDHyimBGMfUldHphsYhYoWvjj5rcmooM26WF6LNYvw0rqdsrDp5
-B9pBOtfPrEKp7jNAAeD7aRv6ScKmDiiEHRMJY83vNgC/WnRX7QU+HU1vIK6JDdQD
-SydkGKXaLtmZskhA3MCQZc2mSBXiyeEHuCjB1+eRYxzODRi67sdqQ20WtCbaRKfs
-OFRkNJZz/bqHnWkzvPgtXW6MvUWQL/GONsVZp6Uhj8dchfbhnU8ff41ra4ixSgwQ
-0RMUKxKGpCoz1Z4J+dypdeomTxs0MKBOk7+IQUtwBMIQcdh2bqxHxeEzuo6AsDIZ
-5H4LT6OqwYwWHJb2uxAqolpHDwY6ZDp8dEn31CylGC/gxXaESbMAIPMcXPKWn9Y9
-VkyGGEbPsClC1euzyeBeUWxxg7fU2ejDLabIHqkHwf1YBYulq0CFFbFjolRt4FIN
-l7Fj5wfXAfMV+Uittbw0Vnlvq5go0au9C9EJ42kB7un0Y2diLlI=
-=MxFB
------END PGP SIGNATURE-----
-
---Apple-Mail=_654D28AC-05FB-4971-9E59-0B8ED61BAACB--
+> > Won't this confuse a reader that we have blkdev_issue_write_zeroes(),
+> > which does not write zeroes sometimes? Maybe we should rename
+> > blkdev_issue_write_zeroes() in some more generic name?
+> 
+> Maybe. The naming is what it is for hysterical raisins and reflects how
+> things are implemented in the storage protocols. I wouldn't worry too
+> much about that. We can rename things if need be but we shouldn't plumb
+> an essentially identical operation through the block stack just to
+> expose a different name at the top.
+> 
+> -- 
+> Martin K. Petersen	Oracle Linux Engineering
