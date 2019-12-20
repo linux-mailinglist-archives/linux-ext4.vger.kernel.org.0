@@ -2,101 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F16DB127375
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2019 03:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37674127A4F
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2019 12:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbfLTCXH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Dec 2019 21:23:07 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:58666 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726963AbfLTCXH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Dec 2019 21:23:07 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBK2Ft2F010080;
-        Fri, 20 Dec 2019 02:22:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2019-08-05;
- bh=UJWbPBLIw8v2NtR3K7tOCA0lIPKrvRnjfNoGkJqvNLw=;
- b=o5pMNgBDCHodm/dDo4k5bp6zaRnszLzYsSQ6dlBmtYwhtkmGmUloMpGFYtzOWATVgkKc
- 2cvRtFmz+7cLmKVFuPt69Qwm4Fheg1CTuVGtiv9Hk9EcQc7ALk1PKUKjnJKSDw9JcBcU
- 9K5s3KfPUohCuerXob0/O/tJHDFwxn+qDkIwhA8vmatQ2UFQtbcrVm111kgd6Op98QiM
- 4KfJuubjS51m2LNYMgPfuCagwdwIKqGed23iSBwX7LgoKeTIsn/ThLeDgseP8IPrV3fB
- 61cLD202Ge8PbHEKBRXsn3BOgJ/CnTy3YoALqRdZNCHyEleu7oPathSVdRJ9CvKp6PjA cQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2x01jae80k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Dec 2019 02:22:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBK2JN0t072948;
-        Fri, 20 Dec 2019 02:22:46 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2wyxqjmt50-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 20 Dec 2019 02:22:46 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xBK2MfI4026306;
-        Fri, 20 Dec 2019 02:22:41 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 19 Dec 2019 18:22:41 -0800
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ming.lei@redhat.com, osandov@fb.com,
-        jthumshirn@suse.de, minwoo.im.dev@gmail.com, damien.lemoal@wdc.com,
-        andrea.parri@amarulasolutions.com, hare@suse.com, tj@kernel.org,
-        ajay.joshi@wdc.com, sagi@grimberg.me, dsterba@suse.com,
-        chaitanya.kulkarni@wdc.com, bvanassche@acm.org,
+        id S1727252AbfLTL4P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 20 Dec 2019 06:56:15 -0500
+Received: from relay.sw.ru ([185.231.240.75]:41354 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727177AbfLTL4P (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 20 Dec 2019 06:56:15 -0500
+Received: from dhcp-172-16-24-104.sw.ru ([172.16.24.104])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1iiGs9-0006Sg-TL; Fri, 20 Dec 2019 14:55:10 +0300
+Subject: Re: [PATCH RFC 1/3] block: Add support for REQ_OP_ASSIGN_RANGE
+ operation
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        tytso@mit.edu, adilger.kernel@dilger.ca, ming.lei@redhat.com,
+        osandov@fb.com, jthumshirn@suse.de, minwoo.im.dev@gmail.com,
+        damien.lemoal@wdc.com, andrea.parri@amarulasolutions.com,
+        hare@suse.com, tj@kernel.org, ajay.joshi@wdc.com, sagi@grimberg.me,
+        dsterba@suse.com, chaitanya.kulkarni@wdc.com, bvanassche@acm.org,
         dhowells@redhat.com, asml.silence@gmail.com
-Subject: Re: [PATCH RFC 1/3] block: Add support for REQ_OP_ASSIGN_RANGE operation
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
 References: <157599668662.12112.10184894900037871860.stgit@localhost.localdomain>
-        <157599696813.12112.14140818972910110796.stgit@localhost.localdomain>
-        <yq1woatc8zd.fsf@oracle.com>
-        <3f2e341b-dea4-c5d0-8eb0-568b6ad2f17b@virtuozzo.com>
-        <yq1a77oc56s.fsf@oracle.com> <20191220015338.GB7473@magnolia>
-Date:   Thu, 19 Dec 2019 21:22:36 -0500
-In-Reply-To: <20191220015338.GB7473@magnolia> (Darrick J. Wong's message of
-        "Thu, 19 Dec 2019 17:53:39 -0800")
-Message-ID: <yq1a77nag7n.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+ <157599696813.12112.14140818972910110796.stgit@localhost.localdomain>
+ <yq1woatc8zd.fsf@oracle.com>
+ <3f2e341b-dea4-c5d0-8eb0-568b6ad2f17b@virtuozzo.com>
+ <yq1a77oc56s.fsf@oracle.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <625c9ee4-bedb-ff60-845e-2d440c4f58aa@virtuozzo.com>
+Date:   Fri, 20 Dec 2019 14:55:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9476 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1912200014
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9476 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1912200014
+In-Reply-To: <yq1a77oc56s.fsf@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi, Martin,
 
-Darrick,
+On 20.12.2019 01:37, Martin K. Petersen wrote:
+> 
+> Kirill,
+> 
+>> Hm. BLKDEV_ZERO_NOUNMAP is used in __blkdev_issue_write_zeroes() only.
+>> So, do I understand right that we should the below two?:
+>>
+>> 1) Introduce a new flag BLKDEV_ZERO_ALLOCATE for
+>> blkdev_issue_write_zeroes().
+> 
+>> 2) Introduce a new flag REQ_NOZERO in enum req_opf.
+> 
+> Something like that. If zeroing is a problem for you.
 
-[Anchor]
+My intention is to use this in fs allocators to notify virtual block devices
+about allocated blocks (like in patch [3/3]). Filesystems allocators know about
+written and unwritten extents, and they don't need a zeroing of allocated blocks.
 
-> What happens if you anchor and then try to read the results?  IO
-> error?
+Since a block range allocation action is less complicated (and faster), than
+operation of allocation + zeroing of allocated blocks (at least for some devices),
+we just choose it as the fastest. This is the reason we avoid zeroing.
 
-Depends on the device. Typically you get the same results as UNMAP.
+> Right now we offer the following semantics:
+> 
+> 	Deallocate, no zeroing (discard)
+> 
+> 	Optionally deallocate, zeroing (zeroout)
+> 
+> 	Allocate, zeroing (zeroout + NOUNMAP)
+> 
+> Some devices also implement a fourth option which would be:
+> 
+> 	Anchor: Allocate, no zeroing
+> 
+>> Won't this confuse a reader that we have blkdev_issue_write_zeroes(),
+>> which does not write zeroes sometimes? Maybe we should rename
+>> blkdev_issue_write_zeroes() in some more generic name?
+> 
+> Maybe. The naming is what it is for hysterical raisins and reflects how
+> things are implemented in the storage protocols. I wouldn't worry too
+> much about that. We can rename things if need be but we shouldn't plumb
+> an essentially identical operation through the block stack just to
+> expose a different name at the top.
 
-Anchoring is essentially a way to preallocate blocks on a thinly
-provisioned device. If you then run out of actual storage capacity you
-won't get a write failure writing to those LBAs. It is intended to
-protect block ranges that do not tolerate write failures (journals,
-metadata).
+Not introduction a new operation is a good thing. Especially, since we don't
+need a specific max_xxx_xxx_sectors != max_write_zeroes_sectors for it.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+I'll rework the patch in this way (it seems it will become pretty small
+after that).
+
+One more thing to discuss. The new REQ_NOZERO flag won't be supported
+by many block devices (their number will be even less, than number of
+REQ_OP_WRITE_ZEROES supporters). Will this be a good thing, in case
+of we will be completing BLKDEV_ZERO_ALLOCATE bios in __blkdev_issue_write_zeroes()
+before splitting? I mean introduction of some flag in struct request_queue::limits.
+Completion of them with -EOPNOTSUPP in block devices drivers looks
+suboptimal for me.
+
+Thanks,
+Kirill
