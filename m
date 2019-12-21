@@ -2,56 +2,57 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A97128B81
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Dec 2019 21:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DC2128B82
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Dec 2019 21:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726940AbfLUU05 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 21 Dec 2019 15:26:57 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:49896 "EHLO
+        id S1727382AbfLUU1H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 21 Dec 2019 15:27:07 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:49903 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726593AbfLUU05 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Dec 2019 15:26:57 -0500
+        with ESMTP id S1726593AbfLUU1H (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Dec 2019 15:27:07 -0500
 Received: from mail-pf1-f199.google.com ([209.85.210.199])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <mfo@canonical.com>)
-        id 1iilKv-0007LX-UW
-        for linux-ext4@vger.kernel.org; Sat, 21 Dec 2019 20:26:54 +0000
-Received: by mail-pf1-f199.google.com with SMTP id p126so2943072pfb.9
-        for <linux-ext4@vger.kernel.org>; Sat, 21 Dec 2019 12:26:53 -0800 (PST)
+        id 1iilL6-0007Nh-As
+        for linux-ext4@vger.kernel.org; Sat, 21 Dec 2019 20:27:04 +0000
+Received: by mail-pf1-f199.google.com with SMTP id x21so4621726pfp.12
+        for <linux-ext4@vger.kernel.org>; Sat, 21 Dec 2019 12:27:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=cZJnzCdSrrv2RZCPOARBmKGnM2pvfZNA8hg0rBoQYZE=;
-        b=EAKVcgh0WxSUOI8DXHyv5EJioRl4Dil9cA219bIf/XH5A/FgLqwL3irvELJbgwGlf4
-         2DWCBHRHI6NjYSQB5ewSfCiA1ZStSG5UUcQxZiJ27WbKPDXEd8hAqwM1V5GqJbrEfi4i
-         KspIk8qZUF9nCfIgCwhHcdjpktC4PB2PB7TGRF+pL8CuNmKc1KP78Lspxr2IvnlWOcr3
-         kLByp2d2eCYdJXug858lyFfNXhhaQ8IADjo+bcEg1ht0JO42cK1vTnjNbf+JIoCq7AsI
-         a7B3HM0Om88Ro6wkCPrp2YlhDTOBR9BOZIUlf0X5u+YbAkJdumz9MgPNI7erme5srUgT
-         6iog==
-X-Gm-Message-State: APjAAAUXBJ1ru019dUKQAYC7vFnRrawZd2JZtj6wDlXDeOFfVJFiPI9n
-        srcbQqQkYhkfexZ/IlC9xuKrpgRjLi92JRsJnt02SalfQ/Jm3DseRGb5L2Vc5a7nFdrAFnzjlXK
-        BH6v/ejVxZB5C3re9ib34RtnkbedQdeKodmZU4RE=
-X-Received: by 2002:a63:4f54:: with SMTP id p20mr22743169pgl.246.1576960012512;
-        Sat, 21 Dec 2019 12:26:52 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxuEp+T7Cqq5onJlv+o4GBPq5BhZSFQwqLJg6qwlVGVxq29BNEn20G2y7SOH+ogJg0iiXo2qQ==
-X-Received: by 2002:a63:4f54:: with SMTP id p20mr22743149pgl.246.1576960012125;
-        Sat, 21 Dec 2019 12:26:52 -0800 (PST)
+        bh=oVjD4c0NDVnsp7B7kS7VtzD9g7iYUeEkZjiXHdxL4DE=;
+        b=jQrbzdiUS6czHUtIGOF1S/ETQZd+3bBVV1ADjSkp9DeaUh5XYSmhklk/CvHe9bAnuw
+         Xs3RtqBMtqy1RDJS32SouJ1ZIti1pgDfCbBjvrhirN2I621JWh+AG2jWZzHCxYRIAoOu
+         O6HrHOvkdByROEoqoSrcxfUfRVsDjPyTHlOiQh3r9zLMj431NOLIxMzJ3tZvEe9VOFUM
+         rl/Xfo3wnV50tVAImcT53NgTeIIluhTeJfmgbCwm5PLkAt2lAg9NRA9hrthLdvmmL8I0
+         GQUk+U4jYkYe/fBDHDvWb0K4C/16QzZDkWth8N/CsBYMso0GZJZEKB5Q1TDjFr0Vj0e7
+         BJtA==
+X-Gm-Message-State: APjAAAWtEbD0nqyG09UGPDrzuaNpmMLnBB/vfSDIG94sAPn6xiyV0tij
+        w1RNa1x3ijPDI9k2u8D+SUQz0BnbjIs+TO1C3HiYuAFIuBJA2TagJygmi2uiBBDS9u9xxnoTbG4
+        WXeNHU55g9zFVve9j2vjdUo3Rg8/RsFK/nAZDLHk=
+X-Received: by 2002:a63:cb48:: with SMTP id m8mr23366716pgi.128.1576960022864;
+        Sat, 21 Dec 2019 12:27:02 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzrcHrxlJVTXy9EZ8jjHdJA4X/21iFqa6O3uNGyjUcgUNRtmj6bG+UIa8kjFGYAppIKgSQ2SQ==
+X-Received: by 2002:a63:cb48:: with SMTP id m8mr23366692pgi.128.1576960022468;
+        Sat, 21 Dec 2019 12:27:02 -0800 (PST)
 Received: from localhost.localdomain ([170.81.134.253])
-        by smtp.gmail.com with ESMTPSA id r7sm18554467pfg.34.2019.12.21.12.26.43
+        by smtp.gmail.com with ESMTPSA id r7sm18554467pfg.34.2019.12.21.12.26.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Dec 2019 12:26:51 -0800 (PST)
+        Sat, 21 Dec 2019 12:27:02 -0800 (PST)
 From:   mfo@canonical.com
 To:     tytso@mit.edu
 Cc:     dann.frazier@canonical.com, linux-ext4@vger.kernel.org,
         mauricio.foliveira@gmail.com
-Subject: Re: ext4 fsck vs. kernel recovery policy
-Date:   Sat, 21 Dec 2019 17:26:29 -0300
-Message-Id: <20191221202630.30718-1-mfo@canonical.com>
+Subject: [RFC 1/1] ext4: set page writeback on journalled writepage
+Date:   Sat, 21 Dec 2019 17:26:30 -0300
+Message-Id: <20191221202630.30718-2-mfo@canonical.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190830012236.GC10779@mit.edu>
+In-Reply-To: <20191221202630.30718-1-mfo@canonical.com>
 References: <20190830012236.GC10779@mit.edu>
+ <20191221202630.30718-1-mfo@canonical.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -59,235 +60,256 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Mauricio Faria de Oliveira <mfo@canonical.com>
 
-On Thu, 29 Aug 2019 21:22:36 -0400, Theodore Y. Ts'o wrote:
-> Dann, any interest in trying to code this fix?
+Work in progress / request for comments to fix issue with
+journal consistency errors on unclean shutdown with mmap()
+on ext4 data=journal,journal_checksum mode.
 
-Hi Ted,
-
-Dann and I discussed this a little bit, and I could try to code this fix.
-
-It's working for the most part (i.e., no regressions on xfstests, and it
-runs our test-case / stress-ng mmap/file test without issues), but I had
-a few questions about a couple of deadlocks I've hit/fixed (that I think
-may still happen on other paths), and your opinion/advice on the code.
-
-I'm sending the RFC patch too (on v5.5-rc2) to describe these questions.
-It's clearly not final. Any comments/feedback would be much appreciated!
-
-Apologies for the long email upfront; hope the extra context does help.
-
-On Thu, 29 Aug 2019 21:22:36 -0400, Theodore Y. Ts'o wrote:
-> The fix is going to have to involve fixing __ext4_journalled_writepage()
-> to call set_page_writeback() before it unlocks the page, <snip>
-
-
-Q1: That's the page_unlock() in 'out:', right?  
-
-Otherwise (in page_unlock() after get_page()) the code hits a deadlock
-in the next page_lock(), against write_cache_pages(), because it calls
-page_lock() and then wait_on_page_writeback().
-
-
-Q2: Must set_page_writeback() occur before ext4_journal_stop() ?
-
-I think so, to prevent a race condition between the journal commit hook
-running shortly after ext4_journal_stop() trying to end_page_writeback()
-before set_page_writeback() runs (which hits a BUG()),
-but wondered if any guarantees exist that could relax this case/order.
-
-
-> <snip> adding a list of
-> pages under data=journalled writeback which is attached to the
-> transaction handle, have the jbd2 commit hook call end_page_writeback()
-> on all of these pages, <snip>
-
-Q3: Instead of coding something new for this, I re-used something,
-but it seems to be relatively more overhead -- what do you think?
-
-I relied on 'struct ext4_journal_cb_entry' and ext4_journal_callback_add(),
-which adds such callback entries in handle->h_transaction->t_private_list.
-
-Those entries are called back from ext4_journal_commit_callback(), which is
-'sbi->s_journal->j_commit_callback' called by jbd2_journal_commit_transaction().
-
-This is relatively more costly/higher overhead compared with your suggestion:
-
-i.e., allocates memory for callback entry, and on the commit hook loops over
-a list of callback entries and call their function pointers on their private
-data field / page pointer, then call end_page_writeback() and kfree() entry;
-
-vs. still allocating memory for a callback entry item (just a page pointer)
-but then just calling one function to go over a list of page pointers, and
-call end_page_writeback() on them.
-
-
-> <snip> and then in the places where ext4 calls
-> wait_for_stable_page() or grab_cache_page_write_begin(),
-> we need to add:
-> 
-> 	if (ext4_should_journal_data(inode))
-> 		wait_on_page_writeback(page);
->
-
-Q4: When done between ext4_journal_start() and ext4_journal_stop() this
-hit a deadlock with jbd2_journal_commit_transaction(), described below.
-
-I wonder if this is due to an implementation/logic error on my code.
-If you could please provide some detail about it, that'd be helpful.
-
-The deadlock is:
-
-Task 1) stress-ng: calls jbd2_journal_force_commit().
-
-Task 2) jbd2 task: calls jbd2_journal_commit_transaction(),
-  which is waiting on 'write_lock(&j_state_lock)' in the
- 'while (atomic_read(&commit_transaction->t_updates))' loop.
-
-If I understand it correctly, this is waiting on updates to the
-transaction handle to finish, ie they called ext4_journal_start()
-but _not yet_ ext4_journal_stop() (where jbd2 drops 't_updates').
-
-Then there is,
-
-Task 3) stress-ng: calls ext4_write_begin() and is stopped at
-  wait_on_page_writeback() between ext4_journal_start()/_stop(),
-  right after wait_for_stable_page(), per the algorithm described.
-
-(all stack traces provided later in the email)
-
-So wait_on_page_writeback() waits for jbd2_journal_commit_transaction()
-to eventually callback end_page_writeback() - but that is waiting for
-wait_on_page_writeback() to finish and then call ext4_journal_stop().
-
-That deadlock could be fixed by moving the wait_on_page_writeback()
-before ext4_journal_start().  
-
-But since wait_for_stable_page() is already in place, and it can
-call wait_on_page_writeback() too and thus hit the same deadlock,
-
-I wonder if this issue is more general and has to be fixed for this
-implementation, or this implementation has to change to adapt to the
-existing logic, and avoid this issue.
-
-
-> It's all relatively straightforward except for the part where we have to
-> attach a list of pages to the currently running transaction.  That
-> will require adding  some plumbing into the jbd2 layer.
-
-There was this other issue I had to work around, again not sure if it's
-a problem on my code, or something that actually needs to be considered.
-
-If set_page_writeback() is used on the msync() / ext4_sync_file() path,
-there's a delay of seconds in file_write_and_wait_range() as it calls
-wait_on_page_writeback(), until the periodic journal commit clears it.
-
-msync()
--> ext4_sync_file()
-   -> file_write_and_wait_range() 
-      -> __filemap_fdatawrite_range()
-         -> ...
-            -> __ext4_journalled_writepage()
-      -> __filemap_fdatawait_range()
-         -> wait_on_page_writeback()
-
-So, I added a 'sync' parameter to __ext4_journalled_writepage(), and it's
-only true in that path (checks for (wbc->sync_mode == WB_SYNC_ALL)).
-
-Q5: Is it okay to skip set/end_page_writeback() for this path, since
-ext4_sync_file() already calls ext4_force_commit() for data=journal?
-
-Q6: Or should __ext4_journalled_writepage() use ext4_handle_sync()
-in the sync case, or maybe on both sync/async cases anyway?
-
-
-Thank you,
-Mauricio
-
-
-Test-case:
+Reference:
+  https://lore.kernel.org/linux-ext4/20190830012236.GC10779@mit.edu/
 ---
-
-# mkfs.ext4 -F $DEV && \
-  mount -o data=journal,journal_checksum $DEV $PATH && \
-  cd $PATH && \
-  stress-ng --mmap 512 --mmap-file -t 1w
-
-
-Stack traces from Q4:
----
-
-Task 1)
-comm stress-ng-mmap state D
-[<0>] jbd2_log_wait_commit+0xa7/0x110
-[<0>] __jbd2_journal_force_commit+0x53/0x90
-[<0>] jbd2_journal_force_commit+0x18/0x30
-[<0>] ext4_sync_file+0x140/0x3c0
-[<0>] __x64_sys_msync+0x193/0x200
-[<0>] do_syscall_64+0x43/0x110
-[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-
-Task 2)
-comm jbd2/vdc-8 state D
-[<0>] jbd2_journal_commit_transaction+0x242/0x187f
-[<0>] kjournald2+0xb2/0x280
-[<0>] kthread+0xf6/0x130
-[<0>] ret_from_fork+0x35/0x40
-
-jbd2_journal_commit_transaction+0x242 is:
-
-while (atomic_read(&commit_transaction->t_updates)) {
-...
-	if (atomic_read(&commit_transaction->t_updates)) {
-	...
-	write_lock(&journal->j_state_lock); // <<-- HERE.
-
-
-Task 3)
-comm stress-ng-mmap state D
-[<0>] wait_on_page_bit+0xfe/0x1c0
-[<0>] ext4_write_begin+0x215/0x640
-[<0>] generic_perform_write+0xba/0x1c0
-[<0>] __generic_file_write_iter+0x143/0x1c0
-[<0>] ext4_file_write_iter+0xdc/0x380
-[<0>] new_sync_write+0x116/0x1b0
-[<0>] vfs_write+0xb1/0x190
-[<0>] ksys_write+0x5a/0xd0
-[<0>] do_syscall_64+0x43/0x110
-[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-ext4_write_begin+0x215/0x640 is:
-
-retry_journal:
-...
-        handle = ext4_journal_start(...)
-...
-        /* In case writeback began while the page was unlocked */
-        wait_for_stable_page(page);
-        if (ext4_should_journal_data(inode))
-                wait_on_page_writeback(page); // <<-- HERE.
-...
-
-
-Other tasks:
-
-comm stress-ng-mmap state D
-[<0>] wait_transaction_locked+0x82/0xc0
-[<0>] add_transaction_credits+0xd5/0x290
-[<0>] start_this_handle+0xf6/0x450
-[<0>] jbd2__journal_start+0xd7/0x1e0
-...
-(from: syscall, pagefault)
-
-
-Mauricio Faria de Oliveira (1):
-  ext4: set page writeback on journalled writepage
-
  fs/ext4/ext4_jbd2.h | 11 ++++++
  fs/ext4/inline.c    | 13 +++++++
  fs/ext4/inode.c     | 82 ++++++++++++++++++++++++++++++++++++++++++---
  3 files changed, 102 insertions(+), 4 deletions(-)
 
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index a6b9b66dbfad..8b51ca8231b7 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -144,6 +144,17 @@ struct ext4_journal_cb_entry {
+ 	/* user data goes here */
+ };
+ 
++/**
++ * struct ext4_journal_cb_entry_simple - Simple structure for callback information.
++ *
++ * This struct is a 'simple' structure on top of the base/seed structure,
++ * which adds a private data pointer to be used by the callback function.
++ */
++struct ext4_journal_cb_entry_simple {
++	struct ext4_journal_cb_entry jce;
++	void *jce_private;
++};
++
+ /**
+  * ext4_journal_callback_add: add a function to call after transaction commit
+  * @handle: active journal transaction handle to register callback on
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 2fec62d764fa..a168fe497d5d 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -565,6 +565,9 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
++	/* XXX(mfo): deadlock with journal? */
++	if (ext4_should_journal_data(inode))
++		wait_on_page_writeback(page);
+ 
+ 	ext4_write_lock_xattr(inode, &no_expand);
+ 	sem_held = 1;
+@@ -693,6 +696,9 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
++	/* XXX(mfo): deadlock with journal? */
++	if (ext4_should_journal_data(inode))
++		wait_on_page_writeback(page);
+ 
+ 	*pagep = page;
+ 	down_read(&EXT4_I(inode)->xattr_sem);
+@@ -808,6 +814,10 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
+ 	page = grab_cache_page_write_begin(mapping, 0, flags);
+ 	if (!page)
+ 		return -ENOMEM;
++	/* XXX(mfo): should not deadlock with journal;
++	 * this is only called after ext4_journal_stop(). */
++	if (ext4_should_journal_data(inode))
++		wait_on_page_writeback(page);
+ 
+ 	down_read(&EXT4_I(inode)->xattr_sem);
+ 	if (!ext4_has_inline_data(inode)) {
+@@ -911,6 +921,9 @@ int ext4_da_write_inline_data_begin(struct address_space *mapping,
+ 		ret = -ENOMEM;
+ 		goto out_journal;
+ 	}
++	/* XXX(mfo): deadlock with journal? */
++	if (ext4_should_journal_data(inode))
++		wait_on_page_writeback(page);
+ 
+ 	down_read(&EXT4_I(inode)->xattr_sem);
+ 	if (!ext4_has_inline_data(inode)) {
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 28f28de0c1b6..ca31db5f81f0 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -139,7 +139,7 @@ static inline int ext4_begin_ordered_truncate(struct inode *inode,
+ 
+ static void ext4_invalidatepage(struct page *page, unsigned int offset,
+ 				unsigned int length);
+-static int __ext4_journalled_writepage(struct page *page, unsigned int len);
++static int __ext4_journalled_writepage(struct page *page, unsigned int len, bool sync);
+ static int ext4_bh_delay_or_unwritten(handle_t *handle, struct buffer_head *bh);
+ static int ext4_meta_trans_blocks(struct inode *inode, int lblocks,
+ 				  int pextents);
+@@ -1155,6 +1155,15 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
+ 	unlock_page(page);
+ 
+ retry_journal:
++
++	/* XXX(mfo): deadlock with journal: fix attempt.
++	 * does just wait_on_page_writeback() need (un)lock_page() ? */
++	if (ext4_should_journal_data(inode)) {
++		lock_page(page);
++		wait_on_page_writeback(page);
++		unlock_page(page);
++	}
++
+ 	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE, needed_blocks);
+ 	if (IS_ERR(handle)) {
+ 		put_page(page);
+@@ -1170,6 +1179,7 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
+ 		goto retry_grab;
+ 	}
+ 	/* In case writeback began while the page was unlocked */
++	/* XXX(mfo): this may call wait_on_page_writeback() and deadlock. */
+ 	wait_for_stable_page(page);
+ 
+ #ifdef CONFIG_FS_ENCRYPTION
+@@ -1841,8 +1851,21 @@ static int bput_one(handle_t *handle, struct buffer_head *bh)
+ 	return 0;
+ }
+ 
++static void __ext4_jce_finish_page_writeback(struct super_block *sb,
++					     struct ext4_journal_cb_entry *jce,
++					     int error)
++{
++	struct ext4_journal_cb_entry_simple *jce_simple =
++		(struct ext4_journal_cb_entry_simple *) jce;
++	struct page *page = (struct page *) jce_simple->jce_private;
++
++	end_page_writeback(page);
++	kfree(jce);
++}
++
+ static int __ext4_journalled_writepage(struct page *page,
+-				       unsigned int len)
++				       unsigned int len,
++				       bool sync)
+ {
+ 	struct address_space *mapping = page->mapping;
+ 	struct inode *inode = mapping->host;
+@@ -1851,6 +1874,7 @@ static int __ext4_journalled_writepage(struct page *page,
+ 	int ret = 0, err = 0;
+ 	int inline_data = ext4_has_inline_data(inode);
+ 	struct buffer_head *inode_bh = NULL;
++	struct ext4_journal_cb_entry_simple *jce = NULL;
+ 
+ 	ClearPageChecked(page);
+ 
+@@ -1875,13 +1899,25 @@ static int __ext4_journalled_writepage(struct page *page,
+ 	 * out from under us.
+ 	 */
+ 	get_page(page);
++	/* XXX(mfo): do NOT set_page_writeback() here; as the next lock_page()
++	 * could deadlock with write_cache_pages() (since it calls lock_page()
++	 * and then wait_on_page_writeback()).
++	 */
++	//set_page_writeback(page);
+ 	unlock_page(page);
+ 
++	if (!sync) {
++		jce = kzalloc(sizeof(*jce), GFP_NOFS);
++		if (!jce) {
++			ret = -ENOMEM;
++			goto out_no_pagelock;
++		}
++	}
++
+ 	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE,
+ 				    ext4_writepage_trans_blocks(inode));
+ 	if (IS_ERR(handle)) {
+ 		ret = PTR_ERR(handle);
+-		put_page(page);
+ 		goto out_no_pagelock;
+ 	}
+ 	BUG_ON(!ext4_handle_valid(handle));
+@@ -1906,7 +1942,25 @@ static int __ext4_journalled_writepage(struct page *page,
+ 	}
+ 	if (ret == 0)
+ 		ret = err;
++
+ 	EXT4_I(inode)->i_datasync_tid = handle->h_transaction->t_tid;
++
++	/* XXX(mfo): only call set_page_writeback() and add callback to end_page_writeback()
++	 * on journal commit on the *a*sync case;  otherwise msync() blocks until periodic
++	 * journal commit happens, waiting on page writeback.
++	 * msync() -> ext4_sync_file() -> __filemap_fdatawait_range() -> wait_on_page_writeback()
++	 *
++	 * Confirm wether the *sync* case does *not* need ext4_handle_sync() ?
++	 * as msync() -> ext4_sync_file() already calls ext4_force_commit() for data=journal.
++	 */
++	if (!sync) {
++		/* Add journal callback entry to finish page writeback and free itself */
++		set_page_writeback(page);
++		jce->jce_private = page;
++		ext4_journal_callback_add(handle, __ext4_jce_finish_page_writeback,
++					  (struct ext4_journal_cb_entry *) jce);
++	}
++
+ 	err = ext4_journal_stop(handle);
+ 	if (!ret)
+ 		ret = err;
+@@ -1918,6 +1972,15 @@ static int __ext4_journalled_writepage(struct page *page,
+ out:
+ 	unlock_page(page);
+ out_no_pagelock:
++	/*
++	 * Error leg for handle not yet initialized (jce allocation error)
++	 * or failed to. Either way kfree(jce) is ok (it's NULL or valid.)
++	 */
++	if (IS_ERR_OR_NULL(handle)) {
++		put_page(page);
++		kfree(jce);
++	}
++
+ 	brelse(inode_bh);
+ 	return ret;
+ }
+@@ -2029,7 +2092,8 @@ static int ext4_writepage(struct page *page,
+ 		 * It's mmapped pagecache.  Add buffers and journal it.  There
+ 		 * doesn't seem much point in redirtying the page here.
+ 		 */
+-		return __ext4_journalled_writepage(page, len);
++		return __ext4_journalled_writepage(page, len,
++						   (wbc->sync_mode == WB_SYNC_ALL));
+ 
+ 	ext4_io_submit_init(&io_submit, wbc);
+ 	io_submit.io_end = ext4_init_io_end(inode, GFP_NOFS);
+@@ -2974,6 +3038,14 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
+ 	 * of file which has an already mapped buffer.
+ 	 */
+ retry_journal:
++
++	/* XXX(mfo): see comment in non-da ext4_write_begin(). */
++	if (ext4_should_journal_data(inode)) {
++		lock_page(page);
++		wait_on_page_writeback(page);
++		unlock_page(page);
++	}
++
+ 	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE,
+ 				ext4_da_write_credits(inode, pos, len));
+ 	if (IS_ERR(handle)) {
+@@ -5929,6 +6001,8 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+ 					    ext4_bh_unmapped)) {
+ 			/* Wait so that we don't change page under IO */
+ 			wait_for_stable_page(page);
++			if (ext4_should_journal_data(inode))
++				wait_on_page_writeback(page);
+ 			ret = VM_FAULT_LOCKED;
+ 			goto out;
+ 		}
 -- 
 2.17.1
 
