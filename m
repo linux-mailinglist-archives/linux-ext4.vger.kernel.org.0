@@ -2,125 +2,106 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C221288DC
-	for <lists+linux-ext4@lfdr.de>; Sat, 21 Dec 2019 12:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E813128AF3
+	for <lists+linux-ext4@lfdr.de>; Sat, 21 Dec 2019 19:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbfLULeh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 21 Dec 2019 06:34:37 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:50902 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbfLULeh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Dec 2019 06:34:37 -0500
-Received: by mail-pj1-f68.google.com with SMTP id r67so5304715pjb.0
-        for <linux-ext4@vger.kernel.org>; Sat, 21 Dec 2019 03:34:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=tFHBLDmUFkbld6WxKvLD5qto3/rPkNsHbIZafhsnJM4=;
-        b=Xb7gO56DB8GSYC+ydlBr0GYAAhVFNf/p3DrEJFFevqlFpMbinP4gqFNus6ia80e4D5
-         e6d/nOrLkAFh9mFaq+/o0Bft9TUQ8TjJ9vG3nr/Nau6rr6QGWBo0AYDahjnKArzFYiQB
-         RjPms110oBCAna7qypheBxZGQqd/VKbrYuvxGtOGo+qIOEVsgnrkqwjgfvwxqQWvYMFD
-         a7FHRHphxuSwnOB21jAn8MXPYlqH3x7AnhsJJer5oPtkVHJak+W3C54l7cYN3IQuslQ5
-         9O4AUd+3bvfUJCD7ScCd28SHd59iJTGw4isP2BiBsi8lCgOG8/j6266QKL6l8CqXJMRJ
-         sXIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=tFHBLDmUFkbld6WxKvLD5qto3/rPkNsHbIZafhsnJM4=;
-        b=GotQchtjMQCXrmK0r5uhysOS3tXlWawfT/BrgzHLelP85/QHLB/5XySoWP4nE5EYIz
-         abRCgZhKl27Cl/87sxZYCm1U6UhgPF2L3T0ioSmfUYah9EMttc9NtJQNiD8OHpDN6x38
-         HJ6si+mOcoy1iGcNcbnHSWXD+F+RBJLzP7G0DUydmK6hThl1wK9A5rAmzbOQWjjDxt50
-         8LXlWCkoJkfvQSpuB/c1MpTcyhOhnaGwxuC/3iITrtVfLjdeZRmg8jGlJJQm4lj52IPO
-         IfX0eFPqM/6JEJvkNskrHiM5Pb6UN1gSp1gj4tOC+V76UW5hj+M20AGVCXK+QBGmHb1d
-         foDQ==
-X-Gm-Message-State: APjAAAXU3ex4GMLGs9PVohPbGyW+29JzsSnDAPSn7mfhHeBfPxqmwqcN
-        5otPj6gCoXmGBCfVKaTLPrte3L2v
-X-Google-Smtp-Source: APXvYqwKkzliQrSdFhQ3cTp6d/RiCoooIXBTnp13tUfzYiHQSDWuoYrUn44X7TmqSs9rmwvBfTB43g==
-X-Received: by 2002:a17:902:409:: with SMTP id 9mr20754093ple.245.1576928076182;
-        Sat, 21 Dec 2019 03:34:36 -0800 (PST)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id m71sm16405944pje.0.2019.12.21.03.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Dec 2019 03:34:35 -0800 (PST)
-Date:   Sat, 21 Dec 2019 19:34:28 +0800
-From:   Murphy Zhou <jencce.kernel@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>
-Subject: [PATCH] ext4: ensure revoke credits when set xattr
-Message-ID: <20191221105508.nrvonawwtz5a6bfz@xzhoux.usersys.redhat.com>
+        id S1727106AbfLUS5p (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 21 Dec 2019 13:57:45 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:40626 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbfLUS5p (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 21 Dec 2019 13:57:45 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBLIsYgC105795;
+        Sat, 21 Dec 2019 18:57:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2019-08-05;
+ bh=D2wcasH1ZhiCVNdqmYp9V03i7PEyRJEfWju3qTFe+5A=;
+ b=YNcJqv62W9/CZb6j+sLKFv8RjQJTMAMnpPgtc8agrx8zDCLYh0M/2VSc4RD0EcBxuCkT
+ qcx0O8gPGM/L1Ck8vp87nnMLr3OWmFEBbAaUY0FjlqvIeDuEvJJn1MRl6Iymgu2a5m+1
+ H2NOdQkL6IRUuxbWEkRPPOWp6vPU//khGOnt12U+Nn1XQoju7xqrY1yDrYHdl2se0ChA
+ X0Ff9V33AFUX5vdSNnLRUpIGQ6gFop/SIbYJ8Q6VaJODL9Sn4E+ETyUSC5dfZvm3LUwr
+ yIWfsermwHsVUUwiZJMRT3hVavh/0R+D+YtrK5B0Y5f2AMzbIKBvhy+xzSHe05WuaKbH Ww== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 2x1att9mv4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 21 Dec 2019 18:57:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xBLIn6jb110474;
+        Sat, 21 Dec 2019 18:55:06 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2x19f5ku4w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 21 Dec 2019 18:55:06 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xBLIssO7006659;
+        Sat, 21 Dec 2019 18:54:56 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 21 Dec 2019 10:54:54 -0800
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ming.lei@redhat.com, osandov@fb.com,
+        jthumshirn@suse.de, minwoo.im.dev@gmail.com, damien.lemoal@wdc.com,
+        andrea.parri@amarulasolutions.com, hare@suse.com, tj@kernel.org,
+        ajay.joshi@wdc.com, sagi@grimberg.me, dsterba@suse.com,
+        chaitanya.kulkarni@wdc.com, bvanassche@acm.org,
+        dhowells@redhat.com, asml.silence@gmail.com
+Subject: Re: [PATCH RFC 1/3] block: Add support for REQ_OP_ASSIGN_RANGE operation
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <157599668662.12112.10184894900037871860.stgit@localhost.localdomain>
+        <157599696813.12112.14140818972910110796.stgit@localhost.localdomain>
+        <yq1woatc8zd.fsf@oracle.com>
+        <3f2e341b-dea4-c5d0-8eb0-568b6ad2f17b@virtuozzo.com>
+        <yq1a77oc56s.fsf@oracle.com>
+        <625c9ee4-bedb-ff60-845e-2d440c4f58aa@virtuozzo.com>
+Date:   Sat, 21 Dec 2019 13:54:50 -0500
+In-Reply-To: <625c9ee4-bedb-ff60-845e-2d440c4f58aa@virtuozzo.com> (Kirill
+        Tkhai's message of "Fri, 20 Dec 2019 14:55:09 +0300")
+Message-ID: <yq1pngh7blx.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9478 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912210166
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9478 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1912210167
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-It is possible that we need to release and forget blocks
-during set xattr block, especially with 128 inode size,
-so we need enough revoke credits to do that. Or we'll
-hit WARNING since commit:
-	[83448bd] ext4: Reserve revoke credits for freed blocks
 
-This can be triggered easily in a kinda corner case:
---------------
+Kirill,
 
-namegen()
-{
-	echo "fstest_`dd if=/dev/urandom bs=1k count=1 2>/dev/null | md5sum  | cut -c -10`"
-}
+> One more thing to discuss. The new REQ_NOZERO flag won't be supported
+> by many block devices (their number will be even less, than number of
+> REQ_OP_WRITE_ZEROES supporters). Will this be a good thing, in case of
+> we will be completing BLKDEV_ZERO_ALLOCATE bios in
+> __blkdev_issue_write_zeroes() before splitting? I mean introduction of
+> some flag in struct request_queue::limits.  Completion of them with
+> -EOPNOTSUPP in block devices drivers looks suboptimal for me.
 
-md0="/`namegen`"
-d0=`namegen`
-d1=`namegen`
-d2=`namegen`
+We already have the NOFALLBACK flag to let the user make that decision.
 
-fallocate -l 200m test.img
-mkfs.ext4 -F -b 4096 -I 128 test.img
-mkdir -p $md0
-mount -o loop test.img $md0 || exit
-pushd $md0
+If that flag is not specified, and I receive an allocate request for a
+SCSI device that does not support ANCHOR, my expectation would be that I
+would do a regular write same.
 
-mkdir ${d0}
-setfacl -d -m 'u::rwx' ${d0}
-mkdir ${d0}/${d1} # hit warning
-echo $?
-mkdir ${d0}/${d2}
-rm -rf ${d0}
+If it's a filesystem that is the recipient of the operation and not a
+SCSI device, how to react would depend on how the filesystem handles
+unwritten extents, etc.
 
-popd
-umount -d $md0
-rm -rf $md0 test.img
---------------
-
-Which is derived from the pjd test suite[1].
-
-Patch tested by xfstests auto group.
-
-[1] https://sourceforge.net/p/ntfs-3g/pjd-fstest/ci/master/tree/
-
-Signed-off-by: Murphy Zhou <jencce.kernel@gmail.com>
----
- fs/ext4/xattr.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 8966a54..5c32c54 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2319,6 +2319,12 @@ static struct buffer_head *ext4_xattr_get_block(struct inode *inode)
- 			error = -ENOSPC;
- 			goto cleanup;
- 		}
-+		error = ext4_journal_ensure_credits(handle, credits,
-+				ext4_trans_default_revoke_credits(inode->i_sb));
-+		if (error < 0) {
-+			EXT4_ERROR_INODE(inode, "ensure credits (error %d)", error);
-+			goto cleanup;
-+		}
- 	}
- 
- 	error = ext4_reserve_inode_write(handle, inode, &is.iloc);
 -- 
-1.8.3.1
+Martin K. Petersen	Oracle Linux Engineering
