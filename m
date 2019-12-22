@@ -2,85 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBAB128E86
-	for <lists+linux-ext4@lfdr.de>; Sun, 22 Dec 2019 15:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 642EE128FAF
+	for <lists+linux-ext4@lfdr.de>; Sun, 22 Dec 2019 20:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725922AbfLVO0J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 22 Dec 2019 09:26:09 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44541 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725852AbfLVO0J (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 22 Dec 2019 09:26:09 -0500
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xBMEQ3AH013577
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 22 Dec 2019 09:26:04 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 7E9C1420822; Sun, 22 Dec 2019 09:26:03 -0500 (EST)
-Date:   Sun, 22 Dec 2019 09:26:03 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] ext4 fixes for 5.5-rc3
-Message-ID: <20191222142603.GA357248@mit.edu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        id S1727458AbfLVTKO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 22 Dec 2019 14:10:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726726AbfLVTKO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 22 Dec 2019 14:10:14 -0500
+Subject: Re: [GIT PULL] ext4 fixes for 5.5-rc3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577041813;
+        bh=1jSit8CQeOHrXtfDi5X5qF0E8hZqEJBF1s2hOuJ13Ko=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=OxJJQAmRYxkz0yadqGu9dkEXuMJ03EVfOP+zUhWgFb31mbt1QGEHomU96gF698x8F
+         81Fb7U08sntbcAW6SZ+TSGjaGGc5LSCPxOlmiECfyaNNGnopg3XBZBeS+WL74S81bF
+         QrbckfzFg9iprEdXb/pALNrTbB7fK9lH0jLV+zaU=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20191222142603.GA357248@mit.edu>
+References: <20191222142603.GA357248@mit.edu>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20191222142603.GA357248@mit.edu>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+ tags/ext4_for_linus_stable
+X-PR-Tracked-Commit-Id: 23f6b02405343103791c6a9533d73716cdf0c672
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a396560706d457058b9f54f184b6f5973c82032c
+Message-Id: <157704181392.1067.2996457268147875057.pr-tracker-bot@kernel.org>
+Date:   Sun, 22 Dec 2019 19:10:13 +0000
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+The pull request you sent on Sun, 22 Dec 2019 09:26:03 -0500:
 
-The following changes since commit dfdeeb41fb08fbe11d3cfefba9c0fcd00c95a36d:
+> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
 
-  Merge branch 'tt/misc' into dev (2019-11-19 12:25:42 -0500)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a396560706d457058b9f54f184b6f5973c82032c
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
-
-for you to fetch changes up to 23f6b02405343103791c6a9533d73716cdf0c672:
-
-  ext4: clarify impact of 'commit' mount option (2019-12-21 21:36:53 -0500)
-
-----------------------------------------------------------------
-Ext4 bug fixes (including a regression fix) for 5.5
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      ext4: unlock on error in ext4_expand_extra_isize()
-
-Jan Kara (3):
-      ext4: fix ext4_empty_dir() for directories with holes
-      ext4: check for directory entries too close to block end
-      ext4: clarify impact of 'commit' mount option
-
-Phong Tran (1):
-      ext4: use RCU API in debug_print_tree
-
-Randy Dunlap (1):
-      jbd2: fix kernel-doc notation warning
-
-Theodore Ts'o (2):
-      ext4: optimize __ext4_check_dir_entry()
-      ext4: validate the debug_want_extra_isize mount option at parse time
-
-Yunfeng Ye (1):
-      ext4: fix unused-but-set-variable warning in ext4_add_entry()
-
-yangerkun (1):
-      ext4: reserve revoke credits in __ext4_new_inode
-
- Documentation/admin-guide/ext4.rst |  19 +++++----
- fs/ext4/block_validity.c           |   6 ++-
- fs/ext4/dir.c                      |   6 ++-
- fs/ext4/ialloc.c                   |   4 +-
- fs/ext4/inode.c                    |   4 +-
- fs/ext4/namei.c                    |  36 +++++++++--------
- fs/ext4/super.c                    | 143 +++++++++++++++++++++++++++++++++-----------------------------------
- include/linux/jbd2.h               |   2 +-
- 8 files changed, 116 insertions(+), 104 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
