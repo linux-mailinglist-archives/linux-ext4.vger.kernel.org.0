@@ -2,149 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E8212928F
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Dec 2019 08:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 015691292FE
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Dec 2019 09:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbfLWHxt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Dec 2019 02:53:49 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:39509 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725810AbfLWHxt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Dec 2019 02:53:49 -0500
-Received: by mail-pl1-f193.google.com with SMTP id g6so3924178plp.6
-        for <linux-ext4@vger.kernel.org>; Sun, 22 Dec 2019 23:53:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YA1byZ0X3QxVQ8DhAKAhOXGjebNP768Lq7LIPfs+a8M=;
-        b=Qaw+zjLEdB0acO8gimX6hByDh4IynKDGfbxIBJyByGTkOfi4JkU2BZ3n3sEnqkn7ok
-         K2IvJjzNH1Ji18rnWJyU5OtEVEV1ZFj74Mi05tAGqvhxzogPp7Mbkc3g2xApBsHGiXqU
-         gAyHmuKaiI+ubLyWRpOKowpEfJX51KiBL2aXQ6AmFY1XiPCofyqhShD+E89CW6Ny0XHb
-         u+wB+3ykyjeJPSJ8m/1Smq0RWu7of91K23wqGUtK7GKP4pYUQri4UYHf3DakPpYnwqts
-         Kax1OvpDlAP/YqYtaG9gp5SzKhrE9qaQi5tnEm9JfILLzuNry4Jw4u3vms8Nkyf9X8YN
-         p5kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YA1byZ0X3QxVQ8DhAKAhOXGjebNP768Lq7LIPfs+a8M=;
-        b=GzMprY4mlXzIPo4RUBvKMzXXATC5XCcL6X7LYP0szOO34RUEDSB2MtvzWrCa4lv0Pj
-         EZeuo8MGdWB1foCAdMONmnQEaaoYCx7SwJpSwUh6EEGRk9r+6j0KvF56zaGCzJuEuwJK
-         eYYDudxUbueJM9D+lzjFuomVljV1AWcDg16purn3g4UQFw3vnyuYf6SAdAABCyNaabaI
-         e0zvLFL3xLFv5rHegRxXCMbiRsA6xgRk8+iQq49bJ8MZqxtRSRp6ReJplMxuzDCFv2AQ
-         O5YEabQGFnvvg50GKDKlgqAAG2MD8JgixF60NxSFv51cT/r/7k1J9TFJsRUzflbUY+Nh
-         OMsw==
-X-Gm-Message-State: APjAAAVGk9nIiYhRlJrzpr4PXK2CEL8Fdhtp/+QWiJerSjR+WshyiELh
-        0QfHz3TVuGnATfIjJH0Nvfs=
-X-Google-Smtp-Source: APXvYqwWAyMRGKGU+jAh1uomvxz3owAkg1N6N5xpW/fXa6KMEIYrVEJid41CaJCfpvCKp+2z+Y3I9g==
-X-Received: by 2002:a17:90b:f0f:: with SMTP id br15mr32312044pjb.138.1577087628909;
-        Sun, 22 Dec 2019 23:53:48 -0800 (PST)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id m3sm18755277pfh.116.2019.12.22.23.53.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Dec 2019 23:53:48 -0800 (PST)
-Date:   Mon, 23 Dec 2019 15:53:41 +0800
-From:   Murphy Zhou <jencce.kernel@gmail.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Murphy Zhou <jencce.kernel@gmail.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] ext4: ensure revoke credits when set xattr
-Message-ID: <20191223075341.wrg4xzn3vp3kugol@xzhoux.usersys.redhat.com>
-References: <20191221105508.nrvonawwtz5a6bfz@xzhoux.usersys.redhat.com>
- <20191222020627.GA108990@mit.edu>
+        id S1725909AbfLWIU7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Dec 2019 03:20:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725855AbfLWIU7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 23 Dec 2019 03:20:59 -0500
+Received: from localhost (36-236-5-169.dynamic-ip.hinet.net [36.236.5.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93FF2206D3;
+        Mon, 23 Dec 2019 08:20:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577089258;
+        bh=p56QVij9RMXU1ekO5M0MbCScJhCEKQdVf0cDyyT/gqs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UNO/+6nadgj02xrLzwL1eLT2R0lROfKXyYj40CgCFsc6pasSd0w/wMe/hi/rCqYVP
+         +5Uyfily1NngF/S1N12I+3LbDK2WCLkewGj79EnBX/kZ5+/MqVNtpCk5QBBDxU3KCy
+         q3DzXR1yqlajygAzrmf9+gdCln1ac8K3MaJFFQs0=
+From:   Andy Lutomirski <luto@kernel.org>
+To:     Ted Ts'o <tytso@mit.edu>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Stephan Mueller <smueller@chronox.de>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH v3 0/8] Rework random blocking
+Date:   Mon, 23 Dec 2019 00:20:43 -0800
+Message-Id: <cover.1577088521.git.luto@kernel.org>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191222020627.GA108990@mit.edu>
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Ted,
+This makes two major semantic changes to Linux's random APIs:
 
-On Sat, Dec 21, 2019 at 09:06:27PM -0500, Theodore Y. Ts'o wrote:
-> On Sat, Dec 21, 2019 at 07:34:28PM +0800, Murphy Zhou wrote:
-> > It is possible that we need to release and forget blocks
-> > during set xattr block, especially with 128 inode size,
-> > so we need enough revoke credits to do that. Or we'll
-> > hit WARNING since commit:
-> > 	[83448bd] ext4: Reserve revoke credits for freed blocks
-> > 
-> > This can be triggered easily in a kinda corner case...
-> 
-> Thanks for reporting the problem.  However, your fix isn't quite
-> correct.  The problem is that ext4_journal_ensure_credits() ultimately
-> calls jbd2_journal_extend(), which has the following documentation.
-> 
-> /**
->  * int jbd2_journal_extend() - extend buffer credits.
->  * @handle:  handle to 'extend'
->  * @nblocks: nr blocks to try to extend by.
->  * @revoke_records: number of revoke records to try to extend by.
->  *
->  * Some transactions, such as large extends and truncates, can be done
->  * atomically all at once or in several stages.  The operation requests
->  * a credit for a number of buffer modifications in advance, but can
->  * extend its credit if it needs more.
->  *
->  * jbd2_journal_extend tries to give the running handle more buffer credits.
->  * It does not guarantee that allocation - this is a best-effort only.
->  * The calling process MUST be able to deal cleanly with a failure to
->  * extend here.
-> 
-> > +		error = ext4_journal_ensure_credits(handle, credits,
-> > +				ext4_trans_default_revoke_credits(inode->i_sb));
-> > +		if (error < 0) {
-> > +			EXT4_ERROR_INODE(inode, "ensure credits (error %d)", error);
-> > +			goto cleanup;
-> > +		}
-> 
-> Calling ext4_error() is not dealing cleanly with failure; doing this
-> is tricky (see how we do it for truncate) since some change may have
-> already been made to the file system via the current handle, and
-> keeping the file system consistent requires a lot of careful design
-> work.
+It adds getentropy(..., GRND_INSECURE).  This causes getentropy to
+always return *something*.  There is no guarantee whatsoever that
+the result will be cryptographically random or even unique, but the
+kernel will give the best quality random output it can.  The name is
+a big hint: the resulting output is INSECURE.
 
-Thanks very much for the reviewing and explaination. Much appreciate!
-I did not notice this and consider about this.
+The purpose of this is to allow programs that genuinely want
+best-effort entropy to get it without resorting to /dev/urandom.
+Plenty of programs do this because they need to do *something*
+during boot and they can't afford to wait.  Calling it "INSECURE" is
+probably the best we can do to discourage using this API for things
+that need security.
 
-> 
-> Fortunately, there's a simpler way to do this.  All we need to do is
-> to do is to start the handle with the necessary revoke credits:
-> 
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 8966a5439a22..c4ae268d5dcb 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -2475,7 +2475,8 @@ ext4_xattr_set(struct inode *inode, int name_index, const char *name,
->  	if (error)
->  		return error;
->  
-> -	handle = ext4_journal_start(inode, EXT4_HT_XATTR, credits);
-> +	handle = ext4_journal_start_with_revoke(inode, EXT4_HT_XATTR, credits,
-> +			ext4_trans_default_revoke_credits(inode->i_sb));
->  	if (IS_ERR(handle)) {
->  		error = PTR_ERR(handle);
->  	} else {
-> 
-> The other problem is that I'm not able to reproduce the failure using
-> your shell script.  What version of the kernel were you using, and was
-> there any thing special needed to trigger the complaint?
+This series also removes the blocking pool and makes /dev/random
+work just like getentropy(..., 0) and makes GRND_RANDOM a no-op.  I
+believe that Linux's blocking pool has outlived its usefulness.
+Linux's CRNG generates output that is good enough to use even for
+key generation.  The blocking pool is not stronger in any material
+way, and keeping it around requires a lot of infrastructure of
+dubious value.
 
-I was using latest Linus tree, and nothing special is needed except
-the 128 bit inode size, which requires to find new block.
+This series should not break any existing programs.  /dev/urandom is
+unchanged.  /dev/random will still block just after booting, but it
+will block less than it used to.  getentropy() with existing flags
+will return output that is, for practical purposes, just as strong
+as before.
 
-Aha, after your tag "ext4_for_linus_stable" has been merged into Linus
-tree, I can't reproduce it either.
+There are some open questions and future work here:
 
-I guess it's fixed by:
-	a70fd5ac2ea7 yangerkun ext4: reserve revoke credits in __ext4_new_inode
-Becuase the warning i hitting is also in __ext4_new_inode code path.
+Should the kernel provide an interface to get software-generated
+"true random" numbers?  I can think of only one legitimate reason to
+use such an interface: compliance with government standards.  If the
+kernel provides such an interface going forward, I think it should
+be a brand new character device, and it should have a default mode
+0440 or similar.  Software-generated "true random numbers" are a
+very limited resource, and resource exhaustion is a big deal.  Ask
+anyone who has twiddled their thumbs while waiting for gnupg to
+generate a key.  If we think the kernel might do such a thing, then
+patches 5-8 could be tabled for now.
 
-Thanks!
-Xiong
+Alternatively, perhaps the kernel should instead provide a
+privileged interface to read out raw samples from the various
+entropy sources, and users who care could have a user daemon that
+does something intelligent with them.  This would push the mess of
+trying to comply with whatever standards are involved to userspace.
+Userspace could then export "true randomness" via CUSE if it is so
+inclined, or could have a socket with a well-known name, or whatever
+else seems appropriate.
 
-> 
->       	  		       	  	  - Ted
+I think that each available hwrng device should have its own
+character device, which will make it much easier to use sensibly
+from user mode.  But I don't think this series needs to block on
+this.
+
+Changes from v2:
+ - Fix some bugs in the conditions that cause warnings.  Patch 2 is new.
+ - Rebase to Linus' tree today.  This didn't change anything.
+
+Changes from v1:
+ - Rebased to v5.3.  No other changes.
+
+Andy Lutomirski (8):
+  random: Don't wake crng_init_wait when crng_init == 1
+  random: Add a urandom_read_nowait() for random APIs that don't warn
+  random: Add GRND_INSECURE to return best-effort non-cryptographic
+    bytes
+  random: Ignore GRND_RANDOM in getentropy(2)
+  random: Make /dev/random be almost like /dev/urandom
+  random: Remove the blocking pool
+  random: Delete code to pull data into pools
+  random: Remove kernel.random.read_wakeup_threshold
+
+ drivers/char/random.c       | 245 +++++-------------------------------
+ include/uapi/linux/random.h |   4 +-
+ 2 files changed, 37 insertions(+), 212 deletions(-)
+
+-- 
+2.23.0
+
