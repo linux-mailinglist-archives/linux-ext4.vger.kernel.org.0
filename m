@@ -2,27 +2,27 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6569F129305
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Dec 2019 09:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316CC129306
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Dec 2019 09:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbfLWIVH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Dec 2019 03:21:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38684 "EHLO mail.kernel.org"
+        id S1726733AbfLWIVK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Dec 2019 03:21:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725855AbfLWIVF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 23 Dec 2019 03:21:05 -0500
+        id S1726680AbfLWIVJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 23 Dec 2019 03:21:09 -0500
 Received: from localhost (36-236-5-169.dynamic-ip.hinet.net [36.236.5.169])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89E3520715;
-        Mon, 23 Dec 2019 08:21:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53A862073A;
+        Mon, 23 Dec 2019 08:21:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577089265;
-        bh=XeFchNmcZbVFLTtXDEHSwMt1Lj3xsRNy7aafhPPE0z4=;
+        s=default; t=1577089268;
+        bh=yhFKFV2M8IVRdKt/jk/YAVP+IDJiL/eZhJKGWL/fJmw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xkiXLYCKS8ogBXsb7jvhMKmp3BCxIBxS0e3TpXACkT7lZonNTgQUgMuaO9OXvrzF7
-         j8oGlGiWxKUQtKZfzv2qOTqOrfa/K31DVSDq11rL6kaHaBWfxECCMTeT9y3UtITqvf
-         ByBhlDIIFoFBCZgcwQlq18VV+2Z8NYJwCd1ObSfc=
+        b=LP5/95pzggJ/fF7QjTRyw5EkeWW7uhGq0dh2s7OfKwpm/EeAeFyGB5OMU7pV6R38Y
+         2gt10UaeFCR7EMKrE8YVRQD3hAH+1sJPwDUtyaj0AXM88mEs2+2Pe9uYh3mqSmn0pZ
+         5XAchGRv2tYQa+cSRdo/+ChDo9tzZkDGgAWbca0A=
 From:   Andy Lutomirski <luto@kernel.org>
 To:     Ted Ts'o <tytso@mit.edu>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -40,9 +40,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         linux-man <linux-man@vger.kernel.org>,
         Stephan Mueller <smueller@chronox.de>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v3 2/8] random: Add a urandom_read_nowait() for random APIs that don't warn
-Date:   Mon, 23 Dec 2019 00:20:45 -0800
-Message-Id: <c87ab200588de746431d9f916501ef11e5242b13.1577088521.git.luto@kernel.org>
+Subject: [PATCH v3 3/8] random: Add GRND_INSECURE to return best-effort non-cryptographic bytes
+Date:   Mon, 23 Dec 2019 00:20:46 -0800
+Message-Id: <d5473b56cf1fa900ca4bd2b3fc1e5b8874399919.1577088521.git.luto@kernel.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1577088521.git.luto@kernel.org>
 References: <cover.1577088521.git.luto@kernel.org>
@@ -53,70 +53,56 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-/dev/random and getrandom() never warn.  Split the meat of
-urandom_read() into urandom_read_nowarn() and leave the warning code
-in urandom_read().
-
-This has no effect on kernel behavior, but it makes subsequent
-patches more straightforward.  It also makes the fact that
-getrandom() never warns more obvious.
-
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- drivers/char/random.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ drivers/char/random.c       | 11 +++++++++--
+ include/uapi/linux/random.h |  2 ++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index c6252a3a4aec..7b46751772e5 100644
+index 7b46751772e5..675b8a48e18a 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -2018,12 +2018,23 @@ random_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
- 	return _random_read(file->f_flags & O_NONBLOCK, buf, nbytes);
- }
- 
-+static ssize_t
-+urandom_read_nowarn(struct file *file, char __user *buf, size_t nbytes,
-+		    loff_t *ppos)
-+{
-+	int ret;
-+
-+	nbytes = min_t(size_t, nbytes, INT_MAX >> (ENTROPY_SHIFT + 3));
-+	ret = extract_crng_user(buf, nbytes);
-+	trace_urandom_read(8 * nbytes, 0, ENTROPY_BITS(&input_pool));
-+	return ret;
-+}
-+
- static ssize_t
- urandom_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
+@@ -2193,7 +2193,14 @@ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
  {
- 	unsigned long flags;
- 	static int maxwarn = 10;
--	int ret;
+ 	int ret;
  
- 	if (!crng_ready() && maxwarn > 0) {
- 		maxwarn--;
-@@ -2035,10 +2046,8 @@ urandom_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
- 		crng_init_cnt = 0;
- 		spin_unlock_irqrestore(&primary_crng.lock, flags);
- 	}
--	nbytes = min_t(size_t, nbytes, INT_MAX >> (ENTROPY_SHIFT + 3));
--	ret = extract_crng_user(buf, nbytes);
--	trace_urandom_read(8 * nbytes, 0, ENTROPY_BITS(&input_pool));
--	return ret;
+-	if (flags & ~(GRND_NONBLOCK|GRND_RANDOM))
++	if (flags & ~(GRND_NONBLOCK|GRND_RANDOM|GRND_INSECURE))
++		return -EINVAL;
 +
-+	return urandom_read_nowarn(file, buf, nbytes, ppos);
- }
++	/*
++	 * Requesting insecure and blocking randomness at the same time makes
++	 * no sense.
++	 */
++	if ((flags & (GRND_INSECURE|GRND_RANDOM)) == (GRND_INSECURE|GRND_RANDOM))
+ 		return -EINVAL;
  
- static __poll_t
-@@ -2200,7 +2209,7 @@ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
- 		if (unlikely(ret))
- 			return ret;
- 	}
--	return urandom_read(NULL, buf, count, NULL);
-+	return urandom_read_nowarn(NULL, buf, count, NULL);
- }
+ 	if (count > INT_MAX)
+@@ -2202,7 +2209,7 @@ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
+ 	if (flags & GRND_RANDOM)
+ 		return _random_read(flags & GRND_NONBLOCK, buf, count);
  
- /********************************************************************
+-	if (!crng_ready()) {
++	if (!(flags & GRND_INSECURE) && !crng_ready()) {
+ 		if (flags & GRND_NONBLOCK)
+ 			return -EAGAIN;
+ 		ret = wait_for_random_bytes();
+diff --git a/include/uapi/linux/random.h b/include/uapi/linux/random.h
+index 26ee91300e3e..c092d20088d3 100644
+--- a/include/uapi/linux/random.h
++++ b/include/uapi/linux/random.h
+@@ -49,8 +49,10 @@ struct rand_pool_info {
+  *
+  * GRND_NONBLOCK	Don't block and return EAGAIN instead
+  * GRND_RANDOM		Use the /dev/random pool instead of /dev/urandom
++ * GRND_INSECURE	Return non-cryptographic random bytes
+  */
+ #define GRND_NONBLOCK	0x0001
+ #define GRND_RANDOM	0x0002
++#define GRND_INSECURE	0x0004
+ 
+ #endif /* _UAPI_LINUX_RANDOM_H */
 -- 
 2.23.0
 
