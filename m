@@ -2,27 +2,27 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 316CC129306
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Dec 2019 09:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1ED512931B
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Dec 2019 09:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbfLWIVK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Dec 2019 03:21:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38772 "EHLO mail.kernel.org"
+        id S1726795AbfLWIVN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 23 Dec 2019 03:21:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbfLWIVJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 23 Dec 2019 03:21:09 -0500
+        id S1726764AbfLWIVM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 23 Dec 2019 03:21:12 -0500
 Received: from localhost (36-236-5-169.dynamic-ip.hinet.net [36.236.5.169])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53A862073A;
-        Mon, 23 Dec 2019 08:21:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BD60207FF;
+        Mon, 23 Dec 2019 08:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577089268;
-        bh=yhFKFV2M8IVRdKt/jk/YAVP+IDJiL/eZhJKGWL/fJmw=;
+        s=default; t=1577089272;
+        bh=ikpSlqoCM76TUjA3pD9Z0hpXBk9zItSJFElxa1lvb98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LP5/95pzggJ/fF7QjTRyw5EkeWW7uhGq0dh2s7OfKwpm/EeAeFyGB5OMU7pV6R38Y
-         2gt10UaeFCR7EMKrE8YVRQD3hAH+1sJPwDUtyaj0AXM88mEs2+2Pe9uYh3mqSmn0pZ
-         5XAchGRv2tYQa+cSRdo/+ChDo9tzZkDGgAWbca0A=
+        b=oZkepFCOD4sOJfU2XzVn5e0qLiEhofXGJpToN9JRaWa6gztJRCCIzoLSP7JZTcwjG
+         1/2zVUO+rXgNYD9D1cOLB10URUxkuls7yOHA8RVkZDJKtm67hqF2bF5uChx+keeBvG
+         iyEwICwjZLDqvk/wQSwKqyu+NA4yxRiRjyyhW6D4=
 From:   Andy Lutomirski <luto@kernel.org>
 To:     Ted Ts'o <tytso@mit.edu>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -40,9 +40,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         linux-man <linux-man@vger.kernel.org>,
         Stephan Mueller <smueller@chronox.de>,
         Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v3 3/8] random: Add GRND_INSECURE to return best-effort non-cryptographic bytes
-Date:   Mon, 23 Dec 2019 00:20:46 -0800
-Message-Id: <d5473b56cf1fa900ca4bd2b3fc1e5b8874399919.1577088521.git.luto@kernel.org>
+Subject: [PATCH v3 4/8] random: Ignore GRND_RANDOM in getentropy(2)
+Date:   Mon, 23 Dec 2019 00:20:47 -0800
+Message-Id: <705c5a091b63cc5da70c99304bb97e0109be0a26.1577088521.git.luto@kernel.org>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1577088521.git.luto@kernel.org>
 References: <cover.1577088521.git.luto@kernel.org>
@@ -53,56 +53,45 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+The separate blocking pool is going away.  Start by ignoring
+GRND_RANDOM in getentropy(2).
+
+This should not materially break any API.  Any code that worked
+without this change should work at least as well with this change.
+
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- drivers/char/random.c       | 11 +++++++++--
- include/uapi/linux/random.h |  2 ++
- 2 files changed, 11 insertions(+), 2 deletions(-)
+ drivers/char/random.c       | 3 ---
+ include/uapi/linux/random.h | 2 +-
+ 2 files changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 7b46751772e5..675b8a48e18a 100644
+index 675b8a48e18a..c0a3032b30ca 100644
 --- a/drivers/char/random.c
 +++ b/drivers/char/random.c
-@@ -2193,7 +2193,14 @@ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
- {
- 	int ret;
- 
--	if (flags & ~(GRND_NONBLOCK|GRND_RANDOM))
-+	if (flags & ~(GRND_NONBLOCK|GRND_RANDOM|GRND_INSECURE))
-+		return -EINVAL;
-+
-+	/*
-+	 * Requesting insecure and blocking randomness at the same time makes
-+	 * no sense.
-+	 */
-+	if ((flags & (GRND_INSECURE|GRND_RANDOM)) == (GRND_INSECURE|GRND_RANDOM))
- 		return -EINVAL;
- 
+@@ -2206,9 +2206,6 @@ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
  	if (count > INT_MAX)
-@@ -2202,7 +2209,7 @@ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
- 	if (flags & GRND_RANDOM)
- 		return _random_read(flags & GRND_NONBLOCK, buf, count);
+ 		count = INT_MAX;
  
--	if (!crng_ready()) {
-+	if (!(flags & GRND_INSECURE) && !crng_ready()) {
+-	if (flags & GRND_RANDOM)
+-		return _random_read(flags & GRND_NONBLOCK, buf, count);
+-
+ 	if (!(flags & GRND_INSECURE) && !crng_ready()) {
  		if (flags & GRND_NONBLOCK)
  			return -EAGAIN;
- 		ret = wait_for_random_bytes();
 diff --git a/include/uapi/linux/random.h b/include/uapi/linux/random.h
-index 26ee91300e3e..c092d20088d3 100644
+index c092d20088d3..dcc1b3e6106f 100644
 --- a/include/uapi/linux/random.h
 +++ b/include/uapi/linux/random.h
-@@ -49,8 +49,10 @@ struct rand_pool_info {
+@@ -48,7 +48,7 @@ struct rand_pool_info {
+  * Flags for getrandom(2)
   *
   * GRND_NONBLOCK	Don't block and return EAGAIN instead
-  * GRND_RANDOM		Use the /dev/random pool instead of /dev/urandom
-+ * GRND_INSECURE	Return non-cryptographic random bytes
+- * GRND_RANDOM		Use the /dev/random pool instead of /dev/urandom
++ * GRND_RANDOM		No effect
+  * GRND_INSECURE	Return non-cryptographic random bytes
   */
  #define GRND_NONBLOCK	0x0001
- #define GRND_RANDOM	0x0002
-+#define GRND_INSECURE	0x0004
- 
- #endif /* _UAPI_LINUX_RANDOM_H */
 -- 
 2.23.0
 
