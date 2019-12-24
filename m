@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FC8129EE3
+	by mail.lfdr.de (Postfix) with ESMTP id 26DB7129EE2
 	for <lists+linux-ext4@lfdr.de>; Tue, 24 Dec 2019 09:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbfLXIPH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Dec 2019 03:15:07 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:38586 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726283AbfLXIPC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Dec 2019 03:15:02 -0500
-Received: by mail-pj1-f66.google.com with SMTP id l35so906961pje.3
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Dec 2019 00:15:02 -0800 (PST)
+        id S1726316AbfLXIPG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Dec 2019 03:15:06 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:37881 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbfLXIPD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Dec 2019 03:15:03 -0500
+Received: by mail-pg1-f193.google.com with SMTP id q127so10072355pga.4
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Dec 2019 00:15:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dbOlDnxV+GK1aaD0Bt/PhJHkCAy3ZyRqlyL+k1KTE1U=;
-        b=iPR8OYGXoQBWQ01vLlCdoIpypDwiQbRbgHdSfunL3TSDKUy8/bUaoWlHSQYcnH8KfS
-         SSbJ+H4w+6sENjaeQEfCgI5Cf5mbm+qoP1Q+leEnrzdA6vu6RarHVvg6JFDxMJwzPE2n
-         atUfNPDS7h8NRlifsDLz2pc3kBuDkzJDhmMfMiUb0aPlkDJMj+IX5dwKioMpUbOmn9aF
-         63o1CLaI1oGGhxUCnl8HptE8T+5U6PH+EnNYFIM8SH/6FGGLq3M0YAH9Fn9vGgoYDuPJ
-         8IvKkQ0CURBo6oUuNbW10vIBPTWG5Scmh7/Xn2zsWuIQNzpIwwnvqXqGSfFHw4x76oow
-         uhvQ==
+        bh=lpd1rPArrPeJjFaR96JDERSrJC9w4eH0xTCNUoNrxqU=;
+        b=p9T4t+FCpTN5RpFL/dvzVWENDeoXp+kr32bhHfExuqKVgovvHAmAYNuvpefGA3j4pp
+         xG+Kp5P6JFEo62dyKOYjIxZF6tCPMvtrKVqf3lm3zX7yfeH9rScnhRIG1MrJicvvwLxq
+         dA3FUmov+cGRF7UJ6jUM8mSev5vyPCFoXNBHLzcbwTnYX7Xoiz0jIjCAk8Vd/4Y8+D4a
+         YIOB2IjyWU+5EYSt0T0UmZUwWZtbRIja0qtrp0+59VSFys1s1FZvjV8TyCU3mOOlf9Wz
+         /tz1epA0sbZKkLUij75KMoQV7YbnXxsGROvSlv/d5PqriDs79LY8Y9JvhA612EPtaETJ
+         qquA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dbOlDnxV+GK1aaD0Bt/PhJHkCAy3ZyRqlyL+k1KTE1U=;
-        b=V+4seGnWVpxsKlQrXUEfo+b2QCiwK7xOk/a8cxFeHGMHaqTuCarQbVzMrhROEURzUN
-         gPXBSWXyyr2a6yd5VwZPZ44OpkVSrLAT0cfX4Reqev94z6/SNVhgJ6PhB1UbgHfanJ+/
-         VcjhW/qF5WROrZtLnmGEYuxnI3adNN7J8x9NQeDAwqk0Cmjuq/68DM7xnbyPTz8GcAdG
-         ehscosVJQW9iJQA2b32dMa89znKNOUC4cSBcZdGPCXWb/9xD20cekw9vPrC120baCJrZ
-         av9A5Dy3Hu2LjkzDiFdaEKIPn7Vdii4Qkg+CYRnRh1p2TYVSBubbbMsK0n0nMvr5Zpls
-         6POw==
-X-Gm-Message-State: APjAAAVVyzALxxUIwzz6XiaLrerJLGLKHUqQsnAxTRdYcseg1pvPF3CX
-        2FSILLsl8/c5l5vE/KOHQZzmKSJU
-X-Google-Smtp-Source: APXvYqyW+JlJTvVCI9FN4exa3X+oORSQS8vI5QIYp38MC3zdylZrFZSRTmXGo5nFtnaVw3zG+YwxKA==
-X-Received: by 2002:a17:90a:3243:: with SMTP id k61mr4427257pjb.46.1577175301676;
-        Tue, 24 Dec 2019 00:15:01 -0800 (PST)
+        bh=lpd1rPArrPeJjFaR96JDERSrJC9w4eH0xTCNUoNrxqU=;
+        b=jbqBPjfWa+0a67my0pRbZ3ur0sjgeBTWBWjB19UocrUUL0evXCHBGo8UYtrFhUkNiG
+         BHctoHtS+TDPkP/73/+INrhiSU3GPMB4F+DS3eQA2V5ifUitmkh7a2O2nVQlJUiFh9S3
+         TGFt4exKguMHGaYnJyC524v4+CtJjgBNXmYRP90NsLmLt8815nLjk19RgvuII3husBVj
+         fM9ghfYStI79j8irUELTe6YIgRmVinmECpyJGyVEQ4d7lqC2/HP+OtAHXtBSa5/xmF+U
+         GpJxi3opOjkrPIL/EQF35YbLVSZoWjJBH79oXBb96giqjkdI2bRqbqbm2RmTb+sHxJCG
+         n/sQ==
+X-Gm-Message-State: APjAAAWob/W+VATMOXL/LzGJN6n1kFbO+6pZQsclTHFA67UhhSSnTRWj
+        Jh43IMaLOjyTSgeO6BkQkahFEDBp
+X-Google-Smtp-Source: APXvYqyflGgJ7oEJrA/5xJc8Syow7zzPSxHnmVZOzIlmhy2tS9/LTXL1FzUyNfENsgRUNerubiLdkw==
+X-Received: by 2002:a65:49ca:: with SMTP id t10mr36841866pgs.37.1577175302262;
+        Tue, 24 Dec 2019 00:15:02 -0800 (PST)
 Received: from harshads0.svl.corp.google.com ([2620:15c:2cd:202:ec1e:207a:e951:9a5b])
         by smtp.googlemail.com with ESMTPSA id f8sm27370781pfn.2.2019.12.24.00.15.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -47,9 +47,9 @@ Received: from harshads0.svl.corp.google.com ([2620:15c:2cd:202:ec1e:207a:e951:9
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v4 17/20] ext4: add idempotent helpers to manipulate bitmaps
-Date:   Tue, 24 Dec 2019 00:13:21 -0800
-Message-Id: <20191224081324.95807-17-harshadshirwadkar@gmail.com>
+Subject: [PATCH v4 18/20] ext4: disable certain features in replay path
+Date:   Tue, 24 Dec 2019 00:13:22 -0800
+Message-Id: <20191224081324.95807-18-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
 In-Reply-To: <20191224081324.95807-1-harshadshirwadkar@gmail.com>
 References: <20191224081324.95807-1-harshadshirwadkar@gmail.com>
@@ -60,332 +60,347 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-For fast commit replay path, we need idempotent helpers that mark
-inodes used, data blocks as used or free. It's important these are
-idempotent and that's because we can crash while we are replaying.
+Replay path uses similar code paths for replaying committed changes.
+But since it runs before full initialization of the file system and
+also since we don't have to be super careful about performance, we
+can and need to disable certain file system features during the replay
+path. More specifically, we disable most of the extent status tree
+stuff, mballoc and some places where we mark file system with errors.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/ext4/ext4.h    |   1 +
- fs/ext4/ialloc.c  | 113 ++++++++++++++++++++++++++++++++++++++
- fs/ext4/mballoc.c | 135 +++++++++++++++++++++++++++++++++++++++++++++-
- fs/ext4/mballoc.h |   2 +
- 4 files changed, 250 insertions(+), 1 deletion(-)
+ fs/ext4/balloc.c         |  7 +++++-
+ fs/ext4/ext4_jbd2.c      |  2 +-
+ fs/ext4/extents_status.c | 24 +++++++++++++++++++
+ fs/ext4/ialloc.c         | 52 +++++++++++++++++++++++++++-------------
+ fs/ext4/inode.c          | 15 ++++++++----
+ fs/ext4/mballoc.c        | 22 +++++++++++------
+ 6 files changed, 92 insertions(+), 30 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index f2603deefe51..1957f30a7f2e 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2601,6 +2601,7 @@ extern int ext4fs_dirhash(const struct inode *dir, const char *name, int len,
- 			  struct dx_hash_info *hinfo);
+diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
+index 14787065d030..2cf39a6b9f7a 100644
+--- a/fs/ext4/balloc.c
++++ b/fs/ext4/balloc.c
+@@ -360,7 +360,12 @@ static int ext4_validate_block_bitmap(struct super_block *sb,
+ 				      struct buffer_head *bh)
+ {
+ 	ext4_fsblk_t	blk;
+-	struct ext4_group_info *grp = ext4_get_group_info(sb, block_group);
++	struct ext4_group_info *grp;
++
++	if (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)
++		return 0;
++
++	grp = ext4_get_group_info(sb, block_group);
  
- /* ialloc.c */
-+extern int ext4_mark_inode_used(struct super_block *sb, int ino);
- extern struct inode *__ext4_new_inode(handle_t *, struct inode *, umode_t,
- 				      const struct qstr *qstr, __u32 goal,
- 				      uid_t *owner, __u32 i_flags,
+ 	if (buffer_verified(bh))
+ 		return 0;
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index f371f1f0f914..7c6cdbc63aa6 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -77,7 +77,7 @@ handle_t *__ext4_journal_start_sb(struct super_block *sb, unsigned int line,
+ 		return ERR_PTR(err);
+ 
+ 	journal = EXT4_SB(sb)->s_journal;
+-	if (!journal)
++	if (!journal || (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))
+ 		return ext4_get_nojournal();
+ 	return jbd2__journal_start(journal, blocks, rsv_blocks, GFP_NOFS,
+ 				   type, line);
+diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+index d996b44d2265..69c16ac7416e 100644
+--- a/fs/ext4/extents_status.c
++++ b/fs/ext4/extents_status.c
+@@ -311,6 +311,9 @@ void ext4_es_find_extent_range(struct inode *inode,
+ 			       ext4_lblk_t lblk, ext4_lblk_t end,
+ 			       struct extent_status *es)
+ {
++	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++		return;
++
+ 	trace_ext4_es_find_extent_range_enter(inode, lblk);
+ 
+ 	read_lock(&EXT4_I(inode)->i_es_lock);
+@@ -361,6 +364,9 @@ bool ext4_es_scan_range(struct inode *inode,
+ {
+ 	bool ret;
+ 
++	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++		return false;
++
+ 	read_lock(&EXT4_I(inode)->i_es_lock);
+ 	ret = __es_scan_range(inode, matching_fn, lblk, end);
+ 	read_unlock(&EXT4_I(inode)->i_es_lock);
+@@ -404,6 +410,9 @@ bool ext4_es_scan_clu(struct inode *inode,
+ {
+ 	bool ret;
+ 
++	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++		return false;
++
+ 	read_lock(&EXT4_I(inode)->i_es_lock);
+ 	ret = __es_scan_clu(inode, matching_fn, lblk);
+ 	read_unlock(&EXT4_I(inode)->i_es_lock);
+@@ -812,6 +821,9 @@ int ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+ 	int err = 0;
+ 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+ 
++	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++		return 0;
++
+ 	es_debug("add [%u/%u) %llu %x to extent status tree of inode %lu\n",
+ 		 lblk, len, pblk, status, inode->i_ino);
+ 
+@@ -873,6 +885,9 @@ void ext4_es_cache_extent(struct inode *inode, ext4_lblk_t lblk,
+ 	struct extent_status newes;
+ 	ext4_lblk_t end = lblk + len - 1;
+ 
++	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++		return;
++
+ 	newes.es_lblk = lblk;
+ 	newes.es_len = len;
+ 	ext4_es_store_pblock_status(&newes, pblk, status);
+@@ -908,6 +923,9 @@ int ext4_es_lookup_extent(struct inode *inode, ext4_lblk_t lblk,
+ 	struct rb_node *node;
+ 	int found = 0;
+ 
++	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++		return 0;
++
+ 	trace_ext4_es_lookup_extent_enter(inode, lblk);
+ 	es_debug("lookup extent in block %u\n", lblk);
+ 
+@@ -1419,6 +1437,9 @@ int ext4_es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+ 	int err = 0;
+ 	int reserved = 0;
+ 
++	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++		return 0;
++
+ 	trace_ext4_es_remove_extent(inode, lblk, len);
+ 	es_debug("remove [%u/%u) from extent status tree of inode %lu\n",
+ 		 lblk, len, inode->i_ino);
+@@ -1969,6 +1990,9 @@ int ext4_es_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk,
+ 	struct extent_status newes;
+ 	int err = 0;
+ 
++	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++		return 0;
++
+ 	es_debug("add [%u/1) delayed to extent status tree of inode %lu\n",
+ 		 lblk, inode->i_ino);
+ 
 diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 764ff4c56233..f1a1432f9ffa 100644
+index f1a1432f9ffa..24a2d7171cd4 100644
 --- a/fs/ext4/ialloc.c
 +++ b/fs/ext4/ialloc.c
-@@ -729,6 +729,119 @@ static int find_inode_bit(struct super_block *sb, ext4_group_t group,
- 	return 1;
- }
+@@ -82,7 +82,12 @@ static int ext4_validate_inode_bitmap(struct super_block *sb,
+ 				      struct buffer_head *bh)
+ {
+ 	ext4_fsblk_t	blk;
+-	struct ext4_group_info *grp = ext4_get_group_info(sb, block_group);
++	struct ext4_group_info *grp;
++
++	if (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)
++		return 0;
++
++	grp = ext4_get_group_info(sb, block_group);
  
-+int ext4_mark_inode_used(struct super_block *sb, int ino)
-+{
-+	unsigned long max_ino = le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count);
-+	struct buffer_head *inode_bitmap_bh = NULL, *group_desc_bh = NULL;
-+	struct ext4_group_desc *gdp;
-+	ext4_group_t group;
-+	int bit;
-+	int err = -EFSCORRUPTED;
-+
-+	if (ino < EXT4_FIRST_INO(sb) || ino > max_ino)
-+		goto out;
-+
-+	group = (ino - 1) / EXT4_INODES_PER_GROUP(sb);
-+	bit = (ino - 1) % EXT4_INODES_PER_GROUP(sb);
-+	inode_bitmap_bh = ext4_read_inode_bitmap(sb, group);
-+	if (IS_ERR(inode_bitmap_bh))
-+		return PTR_ERR(inode_bitmap_bh);
-+
-+	if (ext4_test_bit(bit, inode_bitmap_bh->b_data)) {
-+		err = -EEXIST;
-+		goto out;
-+	}
-+
-+	gdp = ext4_get_group_desc(sb, group, &group_desc_bh);
-+	if (!gdp || !group_desc_bh) {
-+		err = -EINVAL;
-+		goto out;
-+	}
-+
-+	ext4_set_bit(bit, inode_bitmap_bh->b_data);
-+
-+	BUFFER_TRACE(inode_bitmap_bh, "call ext4_handle_dirty_metadata");
-+	err = ext4_handle_dirty_metadata(NULL, NULL, inode_bitmap_bh);
-+	if (err) {
-+		ext4_std_error(sb, err);
-+		goto out;
-+	}
-+	sync_dirty_buffer(inode_bitmap_bh);
-+	BUFFER_TRACE(group_desc_bh, "get_write_access");
-+
-+	/* We may have to initialize the block bitmap if it isn't already */
-+	if (ext4_has_group_desc_csum(sb) &&
-+	    gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)) {
-+		struct buffer_head *block_bitmap_bh;
-+
-+		block_bitmap_bh = ext4_read_block_bitmap(sb, group);
-+		if (IS_ERR(block_bitmap_bh)) {
-+			err = PTR_ERR(block_bitmap_bh);
-+			goto out;
+ 	if (buffer_verified(bh))
+ 		return 0;
+@@ -287,15 +292,17 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
+ 	bit = (ino - 1) % EXT4_INODES_PER_GROUP(sb);
+ 	bitmap_bh = ext4_read_inode_bitmap(sb, block_group);
+ 	/* Don't bother if the inode bitmap is corrupt. */
+-	grp = ext4_get_group_info(sb, block_group);
+ 	if (IS_ERR(bitmap_bh)) {
+ 		fatal = PTR_ERR(bitmap_bh);
+ 		bitmap_bh = NULL;
+ 		goto error_return;
+ 	}
+-	if (unlikely(EXT4_MB_GRP_IBITMAP_CORRUPT(grp))) {
+-		fatal = -EFSCORRUPTED;
+-		goto error_return;
++	if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
++		grp = ext4_get_group_info(sb, block_group);
++		if (unlikely(EXT4_MB_GRP_IBITMAP_CORRUPT(grp))) {
++			fatal = -EFSCORRUPTED;
++			goto error_return;
 +		}
-+
-+		BUFFER_TRACE(block_bitmap_bh, "dirty block bitmap");
-+		err = ext4_handle_dirty_metadata(NULL, NULL, block_bitmap_bh);
-+		sync_dirty_buffer(block_bitmap_bh);
-+
-+		/* recheck and clear flag under lock if we still need to */
-+		ext4_lock_group(sb, group);
-+		if (ext4_has_group_desc_csum(sb) &&
-+		    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
-+			gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
-+			ext4_free_group_clusters_set(sb, gdp,
-+				ext4_free_clusters_after_init(sb, group, gdp));
-+			ext4_block_bitmap_csum_set(sb, group, gdp,
-+						   block_bitmap_bh);
-+			ext4_group_desc_csum_set(sb, group, gdp);
-+		}
-+		ext4_unlock_group(sb, group);
-+		brelse(block_bitmap_bh);
-+
-+		if (err) {
-+			ext4_std_error(sb, err);
-+			goto out;
-+		}
-+	}
-+
-+	/* Update the relevant bg descriptor fields */
-+	if (ext4_has_group_desc_csum(sb)) {
-+		int free;
-+
-+		ext4_lock_group(sb, group); /* while we modify the bg desc */
-+		free = EXT4_INODES_PER_GROUP(sb) -
-+			ext4_itable_unused_count(sb, gdp);
-+		if (gdp->bg_flags & cpu_to_le16(EXT4_BG_INODE_UNINIT)) {
-+			gdp->bg_flags &= cpu_to_le16(~EXT4_BG_INODE_UNINIT);
-+			free = 0;
-+		}
-+
-+		/*
-+		 * Check the relative inode number against the last used
-+		 * relative inode number in this group. if it is greater
-+		 * we need to update the bg_itable_unused count
-+		 */
-+		if (bit >= free)
-+			ext4_itable_unused_set(sb, gdp,
-+					(EXT4_INODES_PER_GROUP(sb) - bit - 1));
-+	} else {
-+		ext4_lock_group(sb, group);
-+	}
-+
-+	ext4_free_inodes_set(sb, gdp, ext4_free_inodes_count(sb, gdp) - 1);
-+	if (ext4_has_group_desc_csum(sb)) {
-+		ext4_inode_bitmap_csum_set(sb, group, gdp, inode_bitmap_bh,
-+					   EXT4_INODES_PER_GROUP(sb) / 8);
-+		ext4_group_desc_csum_set(sb, group, gdp);
-+	}
-+
-+	ext4_unlock_group(sb, group);
-+	err = ext4_handle_dirty_metadata(NULL, NULL, group_desc_bh);
-+	sync_dirty_buffer(group_desc_bh);
-+out:
-+	return err;
-+}
-+
- /*
-  * There are two policies for allocating an inode.  If the new inode is
-  * a directory, then a forward search is made for a block group with both
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a3e2767bdf2f..05ca9001f8fa 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3033,6 +3033,92 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
- 	return err;
- }
- 
-+void ext4_mb_mark_used(struct super_block *sb, ext4_fsblk_t block,
-+		       int len)
-+{
-+	struct buffer_head *bitmap_bh = NULL;
-+	struct ext4_group_desc *gdp;
-+	struct buffer_head *gdp_bh;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	ext4_group_t group;
-+	ext4_fsblk_t cluster;
-+	ext4_grpblk_t blkoff;
-+	int i, clen, err;
-+	int already_allocated_count;
-+
-+	cluster = EXT4_B2C(sbi, block);
-+	clen = EXT4_B2C(sbi, len);
-+
-+	ext4_get_group_no_and_offset(sb, block, &group, &blkoff);
-+	bitmap_bh = ext4_read_block_bitmap(sb, group);
-+	if (IS_ERR(bitmap_bh)) {
-+		err = PTR_ERR(bitmap_bh);
-+		bitmap_bh = NULL;
-+		goto out_err;
-+	}
-+
-+	err = -EIO;
-+	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
-+	if (!gdp)
-+		goto out_err;
-+
-+	if (!ext4_data_block_valid(sbi, block, len)) {
-+		ext4_error(sb, "Allocating blks %llu-%llu which overlap mdata",
-+			   cluster, cluster+clen);
-+		/* File system mounted not to panic on error
-+		 * Fix the bitmap and return EFSCORRUPTED
-+		 * We leak some of the blocks here.
-+		 */
-+		ext4_lock_group(sb, group);
-+		ext4_set_bits(bitmap_bh->b_data, blkoff, clen);
-+		ext4_unlock_group(sb, group);
-+		err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
-+		if (!err)
-+			err = -EFSCORRUPTED;
-+		sync_dirty_buffer(bitmap_bh);
-+		goto out_err;
-+	}
-+
-+	ext4_lock_group(sb, group);
-+	already_allocated_count = 0;
-+	for (i = 0; i < clen; i++)
-+		if (mb_test_bit(blkoff + i, bitmap_bh->b_data))
-+			already_allocated_count++;
-+
-+	ext4_set_bits(bitmap_bh->b_data, blkoff, clen);
-+	if (ext4_has_group_desc_csum(sb) &&
-+	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
-+		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
-+		ext4_free_group_clusters_set(sb, gdp,
-+					     ext4_free_clusters_after_init(sb,
-+						group, gdp));
-+	}
-+	clen = ext4_free_group_clusters(sb, gdp) - clen +
-+	       already_allocated_count;
-+	ext4_free_group_clusters_set(sb, gdp, clen);
-+	ext4_block_bitmap_csum_set(sb, group, gdp, bitmap_bh);
-+	ext4_group_desc_csum_set(sb, group, gdp);
-+
-+	ext4_unlock_group(sb, group);
-+
-+	if (sbi->s_log_groups_per_flex) {
-+		ext4_group_t flex_group = ext4_flex_group(sbi, group);
-+
-+		atomic64_sub(len,
-+			     &sbi->s_flex_groups[flex_group].free_clusters);
-+	}
-+
-+	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
-+	if (err)
-+		goto out_err;
-+	sync_dirty_buffer(bitmap_bh);
-+	err = ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
-+	sync_dirty_buffer(gdp_bh);
-+
-+out_err:
-+	brelse(bitmap_bh);
-+}
-+
- /*
-  * here we normalize request for locality group
-  * Group request are normalized to s_mb_group_prealloc, which goes to
-@@ -4692,6 +4778,47 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
- 	return 0;
- }
- 
-+void ext4_free_blocks_simple(struct inode *inode, ext4_fsblk_t block,
-+			     unsigned long count)
-+{
-+	struct buffer_head *bitmap_bh;
-+	struct super_block *sb = inode->i_sb;
-+	struct ext4_group_desc *gdp;
-+	struct buffer_head *gdp_bh;
-+	ext4_group_t group;
-+	ext4_grpblk_t blkoff;
-+	int already_freed = 0, err, i;
-+
-+	ext4_get_group_no_and_offset(sb, block, &group, &blkoff);
-+	bitmap_bh = ext4_read_block_bitmap(sb, group);
-+	if (IS_ERR(bitmap_bh)) {
-+		err = PTR_ERR(bitmap_bh);
-+		pr_warn("Failed to read block bitmap\n");
-+		return;
-+	}
-+	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
-+	if (!gdp)
-+		return;
-+
-+	for (i = 0; i < count; i++) {
-+		if (!mb_test_bit(blkoff + i, bitmap_bh->b_data))
-+			already_freed++;
-+	}
-+	mb_clear_bits(bitmap_bh->b_data, blkoff, count);
-+	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
-+	if (err)
-+		return;
-+	ext4_free_group_clusters_set(
-+		sb, gdp, ext4_free_group_clusters(sb, gdp) +
-+		count - already_freed);
-+	ext4_block_bitmap_csum_set(sb, group, gdp, bitmap_bh);
-+	ext4_group_desc_csum_set(sb, group, gdp);
-+	ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
-+	sync_dirty_buffer(bitmap_bh);
-+	sync_dirty_buffer(gdp_bh);
-+	brelse(bitmap_bh);
-+}
-+
- /**
-  * ext4_free_blocks() -- Free given blocks and update quota
-  * @handle:		handle for this transaction
-@@ -4718,6 +4845,13 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
- 	int err = 0;
- 	int ret;
- 
-+	sbi = EXT4_SB(sb);
-+
-+	if (sbi->s_mount_state & EXT4_FC_REPLAY) {
-+		ext4_free_blocks_simple(inode, block, count);
-+		return;
-+	}
-+
- 	might_sleep();
- 	if (bh) {
- 		if (block)
-@@ -4726,7 +4860,6 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
- 			block = bh->b_blocknr;
  	}
  
--	sbi = EXT4_SB(sb);
- 	if (!(flags & EXT4_FREE_BLOCKS_VALIDATED) &&
- 	    !ext4_data_block_valid(sbi, block, count)) {
- 		ext4_error(sb, "Freeing blocks not in datazone - "
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index 88c98f17e3d9..1881710041b6 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -215,4 +215,6 @@ ext4_mballoc_query_range(
- 	ext4_mballoc_query_range_fn	formatter,
- 	void				*priv);
+ 	BUFFER_TRACE(bitmap_bh, "get_write_access");
+@@ -871,7 +878,7 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
+ 	struct inode *ret;
+ 	ext4_group_t i;
+ 	ext4_group_t flex_group;
+-	struct ext4_group_info *grp;
++	struct ext4_group_info *grp = NULL;
+ 	int encrypt = 0;
  
-+void ext4_mb_mark_used(struct super_block *sb, ext4_fsblk_t block,
-+		       int len);
- #endif
+ 	/* Cannot create files in a deleted directory */
+@@ -1009,15 +1016,21 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
+ 		if (ext4_free_inodes_count(sb, gdp) == 0)
+ 			goto next_group;
+ 
+-		grp = ext4_get_group_info(sb, group);
+-		/* Skip groups with already-known suspicious inode tables */
+-		if (EXT4_MB_GRP_IBITMAP_CORRUPT(grp))
+-			goto next_group;
++		if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
++			grp = ext4_get_group_info(sb, group);
++			/*
++			 * Skip groups with already-known suspicious inode
++			 * tables
++			 */
++			if (EXT4_MB_GRP_IBITMAP_CORRUPT(grp))
++				goto next_group;
++		}
+ 
+ 		brelse(inode_bitmap_bh);
+ 		inode_bitmap_bh = ext4_read_inode_bitmap(sb, group);
+ 		/* Skip groups with suspicious inode tables */
+-		if (EXT4_MB_GRP_IBITMAP_CORRUPT(grp) ||
++		if (((!(sbi->s_mount_state & EXT4_FC_REPLAY))
++		     && EXT4_MB_GRP_IBITMAP_CORRUPT(grp)) ||
+ 		    IS_ERR(inode_bitmap_bh)) {
+ 			inode_bitmap_bh = NULL;
+ 			goto next_group;
+@@ -1036,7 +1049,7 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
+ 			goto next_group;
+ 		}
+ 
+-		if (!handle) {
++		if ((!(sbi->s_mount_state & EXT4_FC_REPLAY)) && !handle) {
+ 			BUG_ON(nblocks <= 0);
+ 			handle = __ext4_journal_start_sb(dir->i_sb, line_no,
+ 							 handle_type, nblocks,
+@@ -1140,9 +1153,15 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
+ 	/* Update the relevant bg descriptor fields */
+ 	if (ext4_has_group_desc_csum(sb)) {
+ 		int free;
+-		struct ext4_group_info *grp = ext4_get_group_info(sb, group);
+-
+-		down_read(&grp->alloc_sem); /* protect vs itable lazyinit */
++		struct ext4_group_info *grp = NULL;
++
++		if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
++			grp = ext4_get_group_info(sb, group);
++			down_read(&grp->alloc_sem); /*
++						     * protect vs itable
++						     * lazyinit
++						     */
++		}
+ 		ext4_lock_group(sb, group); /* while we modify the bg desc */
+ 		free = EXT4_INODES_PER_GROUP(sb) -
+ 			ext4_itable_unused_count(sb, gdp);
+@@ -1158,7 +1177,8 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
+ 		if (ino > free)
+ 			ext4_itable_unused_set(sb, gdp,
+ 					(EXT4_INODES_PER_GROUP(sb) - ino));
+-		up_read(&grp->alloc_sem);
++		if (!(sbi->s_mount_state & EXT4_FC_REPLAY))
++			up_read(&grp->alloc_sem);
+ 	} else {
+ 		ext4_lock_group(sb, group);
+ 	}
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index e902000dac51..f8090f5ce5e4 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -527,7 +527,8 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 		return -EFSCORRUPTED;
+ 
+ 	/* Lookup extent status tree firstly */
+-	if (ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
++	if (!(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) &&
++	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
+ 		if (ext4_es_is_written(&es) || ext4_es_is_unwritten(&es)) {
+ 			map->m_pblk = ext4_es_pblock(&es) +
+ 					map->m_lblk - es.es_lblk;
+@@ -969,7 +970,8 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+ 	int create = map_flags & EXT4_GET_BLOCKS_CREATE;
+ 	int err;
+ 
+-	J_ASSERT(handle != NULL || create == 0);
++	J_ASSERT((EXT4_SB(inode->i_sb)->s_mount_state | EXT4_FC_REPLAY)
++		 || handle != NULL || create == 0);
+ 
+ 	map.m_lblk = block;
+ 	map.m_len = 1;
+@@ -985,7 +987,8 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+ 		return ERR_PTR(-ENOMEM);
+ 	if (map.m_flags & EXT4_MAP_NEW) {
+ 		J_ASSERT(create != 0);
+-		J_ASSERT(handle != NULL);
++		J_ASSERT((EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
++			 || (handle != NULL));
+ 
+ 		/*
+ 		 * Now that we do not always journal data, we should
+@@ -4896,8 +4899,10 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 	}
+ 
+ 	if (!ext4_inode_csum_verify(inode, raw_inode, ei)) {
+-		ext4_error_inode(inode, function, line, 0,
+-				 "iget: checksum invalid");
++
++		if (!(EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))
++			ext4_error_inode(inode, function, line, 0,
++					 "iget: checksum invalid");
+ 		ret = -EFSBADCRC;
+ 		goto bad_inode;
+ 	}
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 05ca9001f8fa..4f2d611e5a75 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -1449,14 +1449,17 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+ 
+ 		blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
+ 		blocknr += EXT4_C2B(sbi, block);
+-		ext4_grp_locked_error(sb, e4b->bd_group,
+-				      inode ? inode->i_ino : 0,
+-				      blocknr,
+-				      "freeing already freed block "
+-				      "(bit %u); block bitmap corrupt.",
+-				      block);
+-		ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
++		if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
++			ext4_grp_locked_error(sb, e4b->bd_group,
++					      inode ? inode->i_ino : 0,
++					      blocknr,
++					      "freeing already freed block "
++					      "(bit %u); block bitmap corrupt.",
++					      block);
++			ext4_mark_group_bitmap_corrupted(
++				sb, e4b->bd_group,
+ 				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
++		}
+ 		mb_regenerate_buddy(e4b);
+ 		goto done;
+ 	}
+@@ -4088,6 +4091,9 @@ void ext4_discard_preallocations(struct inode *inode)
+ 		return;
+ 	}
+ 
++	if (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)
++		return;
++
+ 	mb_debug(1, "discard preallocation for inode %lu\n", inode->i_ino);
+ 	trace_ext4_discard_preallocations(inode);
+ 
+@@ -4561,6 +4567,8 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
+ 	sb = ar->inode->i_sb;
+ 	sbi = EXT4_SB(sb);
+ 
++	WARN_ON(sbi->s_mount_state & EXT4_FC_REPLAY);
++
+ 	trace_ext4_request_blocks(ar);
+ 
+ 	/* Allow to use superuser reservation for quota file */
 -- 
 2.24.1.735.g03f4e72817-goog
 
