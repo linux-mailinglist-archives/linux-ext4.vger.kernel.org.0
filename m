@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1FC129EDE
+	by mail.lfdr.de (Postfix) with ESMTP id AD17E129EDF
 	for <lists+linux-ext4@lfdr.de>; Tue, 24 Dec 2019 09:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbfLXIPC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S1726287AbfLXIPC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Tue, 24 Dec 2019 03:15:02 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:38759 "EHLO
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:38760 "EHLO
         mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbfLXIPB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Dec 2019 03:15:01 -0500
-Received: by mail-pf1-f193.google.com with SMTP id x185so10419915pfc.5
-        for <linux-ext4@vger.kernel.org>; Tue, 24 Dec 2019 00:15:00 -0800 (PST)
+        with ESMTP id S1726250AbfLXIPC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Dec 2019 03:15:02 -0500
+Received: by mail-pf1-f193.google.com with SMTP id x185so10419928pfc.5
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Dec 2019 00:15:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=R9RngX34LDeZmMMgmNpZJ49nX/UFl1ytSa1Gai5v7dM=;
-        b=iWV9YZuu063K6Y4butyTDM/8Gsy6vakdDU6yxcm8eoQvwwekbDIn7yP1FyKj4k0hms
-         /I+z9AdjZDMgEClYQ8m4qoo+CiYAb9wBqFn+JUo+Sx90Gn849903UeKqG4YTfKccUVN8
-         aEpBmMJ8fQUjNjvAf6OqsdGr1DOU1cMIJJ2/9M2m7hRuB+o5UbRJjf2wfFv/dVNhlHbK
-         AQZT3/vi7yUN+JC7scPuRkPLQjkNbtIHYpwUL3JijjlE7MvcWEw+jVZ4Nncr6z0dlgrV
-         /R+EpSglXmX2CRZno8jMOG0IfJHiJnKjcu5plcjwG8o9a0bAO6jqMP1tE+dkOIwisZIn
-         yd2w==
+        bh=+rhdIUp0JlKEJ7hMySHf7VAtUKJ7QbVudbbCaYIxY7g=;
+        b=hJnwG1ImZyFRaxKoywJ9XxSlAsKszdKr36KkKGg/lEfEdSIAb/C0oiZjntSy/2441n
+         ZWS1UQDsPW1wCDyvYg/yCUYWjNTSyFxsEidTuQ7eIvdcoiHjVwnlqw4KFK7EzcTwMDf4
+         UAcKR9UDDw625lDbAuGeDT8OJHu9S7jnJNJxsLlQtqnv/n0X7bTCpX0C5A0JO4aszaZ4
+         RxcMxSYRFfm4IQpRauhWbnb71T0a/d/qh5Z3wCCRwVhOPys0B0suEUT3sazHWeRXTYEl
+         ZFoPImHlIWCs4BybBh8NrYscVjP7MavpuTSDyxYPtPno0lLMUMgmxnF52SVeRhz7trz+
+         uj1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=R9RngX34LDeZmMMgmNpZJ49nX/UFl1ytSa1Gai5v7dM=;
-        b=Je3kdSSAwXB9JXp03Gxqscjt5c2hc5C7aylHnOnKnbpNRMQjYP3ill4SIJCzVJZeta
-         +ZTVJDA6Y/WikVjLADNz6IcA/0f3PQK8bUgaMjPLXR0FF8Mja1pZICJLrB5+jxdPuI2M
-         A3yLLAg732k4p5Bg3MZaQeQ2myEdfmyIju539kR+ndQZs6tCCV3H0hLHRtNcCxnMEyOo
-         i965NRkiv6peAw6CXx1UQpmjBqomI32eEZHqaqruNeNMnQKJlN3g7V+yfRDEwjpXhJVf
-         3ixyQro0r2DbtTFrBotgfmlN3Jy3OEw+NZJRlkl1KbUY95Cw41Y8CEyn3NVog4gcwnO7
-         JmmA==
-X-Gm-Message-State: APjAAAVWuV/0zep0BqrQWrC+3YxORO1t6zOnL0kV6ng2zVyZqK26oB1y
-        TA1nv7gzV+25Oorx2/GVlRERCRCp
-X-Google-Smtp-Source: APXvYqzvD2EKHW9ZfsCAMqUmJAstc44IMuxm6WPcz+q2tRu7caz58f21QHz8SszU3CZM5rFhEtCAdA==
-X-Received: by 2002:a63:1322:: with SMTP id i34mr36535629pgl.163.1577175299944;
-        Tue, 24 Dec 2019 00:14:59 -0800 (PST)
+        bh=+rhdIUp0JlKEJ7hMySHf7VAtUKJ7QbVudbbCaYIxY7g=;
+        b=I37KC3Uci8L/4Z+J8/p5209BoPNALNo+pPsLZmFBnQnblcM/er06+eB99wJcvGDVLF
+         KUaJTVfDAd01CvzE+jZ17aOVi8bTDdpFAC1/L0gVWrRTW3PB4uTpMkFspEG3vdNqbcqH
+         AQIwkSLYrWRl+VeNJ3Xd26ucp/wzrgvq24kkfa3DJSDSpak5GMBrmzFNRCIcbzM4rxBW
+         1TfBdw7IBrvYEZdQ56BGiCMWAQN6/eIYDAkDX0IW5r3eZ7PGPDFX5Hj8m34qTK39zk8p
+         S+wBfo9i9q7NiUXwt1PxeZL5LKMc7wXdA8vLBOmyLiFsihg0NfIR3lVisY0pULY0R0PD
+         rq2Q==
+X-Gm-Message-State: APjAAAVQKXl1vcofqFbLQgZHox6pSGNod19cFxje/2VEKBSu7ZudCmlG
+        34wrrFmBjp9vT/YdkXJvDP+tE2x9
+X-Google-Smtp-Source: APXvYqzwiLIgB59BwAzHamEKEhsO+1M7hDzoXOaCCEotXFVaz04WqUMJ/LAclOpHPSAbFmUZIlkxpw==
+X-Received: by 2002:a63:770c:: with SMTP id s12mr37069448pgc.25.1577175300995;
+        Tue, 24 Dec 2019 00:15:00 -0800 (PST)
 Received: from harshads0.svl.corp.google.com ([2620:15c:2cd:202:ec1e:207a:e951:9a5b])
-        by smtp.googlemail.com with ESMTPSA id f8sm27370781pfn.2.2019.12.24.00.14.59
+        by smtp.googlemail.com with ESMTPSA id f8sm27370781pfn.2.2019.12.24.00.15.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Dec 2019 00:14:59 -0800 (PST)
+        Tue, 24 Dec 2019 00:15:00 -0800 (PST)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v4 15/20] jbd2: add fast commit recovery path support
-Date:   Tue, 24 Dec 2019 00:13:19 -0800
-Message-Id: <20191224081324.95807-15-harshadshirwadkar@gmail.com>
+Subject: [PATCH v4 16/20] ext4: fast commit recovery path preparation
+Date:   Tue, 24 Dec 2019 00:13:20 -0800
+Message-Id: <20191224081324.95807-16-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
 In-Reply-To: <20191224081324.95807-1-harshadshirwadkar@gmail.com>
 References: <20191224081324.95807-1-harshadshirwadkar@gmail.com>
@@ -60,155 +60,227 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Add fc_do_one_pass to invoke file system specific replay
-callback and pass discovered fast commit blocks to let
-file system handle those.
+Prepare for making ext4 fast commit recovery path changes. Make a few
+existing functions visible. Break and add a  wrapper around
+ext4_get_inode_loc to allow reading inode from disk without having
+a corresponding VFS inode.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/jbd2/recovery.c   | 67 +++++++++++++++++++++++++++++++++++++++++---
- include/linux/jbd2.h | 13 +++++++++
- 2 files changed, 76 insertions(+), 4 deletions(-)
+ fs/ext4/ext4.h              |  7 +++++++
+ fs/ext4/inode.c             | 32 ++++++++++++++++++--------------
+ fs/ext4/ioctl.c             |  6 +++---
+ fs/ext4/namei.c             |  2 +-
+ include/trace/events/ext4.h |  8 ++++----
+ 5 files changed, 33 insertions(+), 22 deletions(-)
 
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index a4967b27ffb6..09f069e59c36 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -35,7 +35,6 @@ struct recovery_info
- 	int		nr_revoke_hits;
- };
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 9c2f67c64b4f..f2603deefe51 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2651,6 +2651,8 @@ extern int ext4_trim_fs(struct super_block *, struct fstrim_range *);
+ extern void ext4_process_freed_data(struct super_block *sb, tid_t commit_tid);
  
--enum passtype {PASS_SCAN, PASS_REVOKE, PASS_REPLAY};
- static int do_one_pass(journal_t *journal,
- 				struct recovery_info *info, enum passtype pass);
- static int scan_revoke_records(journal_t *, struct buffer_head *,
-@@ -225,10 +224,63 @@ static int count_tags(journal_t *journal, struct buffer_head *bh)
- /* Make sure we wrap around the log correctly! */
- #define wrap(journal, var)						\
- do {									\
--	if (var >= (journal)->j_last)					\
--		var -= ((journal)->j_last - (journal)->j_first);	\
-+	unsigned long _wrap_last =					\
-+		jbd2_has_feature_fast_commit(journal) ?			\
-+			(journal)->j_last_fc : (journal)->j_last;	\
-+									\
-+	if (var >= _wrap_last)						\
-+		var -= (_wrap_last - (journal)->j_first);		\
- } while (0)
+ /* inode.c */
++void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
++			 struct ext4_inode_info *ei);
+ int ext4_inode_is_fast_symlink(struct inode *inode);
+ struct buffer_head *ext4_getblk(handle_t *, struct inode *, ext4_lblk_t, int);
+ struct buffer_head *ext4_bread(handle_t *, struct inode *, ext4_lblk_t, int);
+@@ -2699,6 +2701,8 @@ extern int  ext4_sync_inode(handle_t *, struct inode *);
+ extern void ext4_dirty_inode(struct inode *, int);
+ extern int ext4_change_inode_journal_flag(struct inode *, int);
+ extern int ext4_get_inode_loc(struct inode *, struct ext4_iloc *);
++extern int ext4_get_fc_inode_loc(struct super_block *sb, unsigned long ino,
++			  struct ext4_iloc *iloc);
+ extern int ext4_inode_attach_jinode(struct inode *inode);
+ extern int ext4_can_truncate(struct inode *inode);
+ extern int ext4_truncate(struct inode *);
+@@ -2734,12 +2738,15 @@ extern int ext4_ind_remove_space(handle_t *handle, struct inode *inode,
+ /* ioctl.c */
+ extern long ext4_ioctl(struct file *, unsigned int, unsigned long);
+ extern long ext4_compat_ioctl(struct file *, unsigned int, unsigned long);
++extern void ext4_reset_inode_seed(struct inode *inode);
  
-+static int fc_do_one_pass(journal_t *journal,
-+			  struct recovery_info *info, enum passtype pass)
+ /* migrate.c */
+ extern int ext4_ext_migrate(struct inode *);
+ extern int ext4_ind_migrate(struct inode *inode);
+ 
+ /* namei.c */
++extern int ext4_init_new_dir(handle_t *handle, struct inode *dir,
++			     struct inode *inode);
+ extern int ext4_dirblock_csum_verify(struct inode *inode,
+ 				     struct buffer_head *bh);
+ extern int ext4_orphan_add(handle_t *, struct inode *);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index c4cde431d5fa..e902000dac51 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -103,8 +103,8 @@ static int ext4_inode_csum_verify(struct inode *inode, struct ext4_inode *raw,
+ 	return provided == calculated;
+ }
+ 
+-static void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
+-				struct ext4_inode_info *ei)
++void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
++			 struct ext4_inode_info *ei)
+ {
+ 	__u32 csum;
+ 
+@@ -4548,22 +4548,21 @@ int ext4_truncate(struct inode *inode)
+  * data in memory that is needed to recreate the on-disk version of this
+  * inode.
+  */
+-static int __ext4_get_inode_loc(struct inode *inode,
++static int __ext4_get_inode_loc(struct super_block *sb, unsigned long ino,
+ 				struct ext4_iloc *iloc, int in_mem)
+ {
+ 	struct ext4_group_desc	*gdp;
+ 	struct buffer_head	*bh;
+-	struct super_block	*sb = inode->i_sb;
+ 	ext4_fsblk_t		block;
+ 	struct blk_plug		plug;
+ 	int			inodes_per_block, inode_offset;
+ 
+ 	iloc->bh = NULL;
+-	if (inode->i_ino < EXT4_ROOT_INO ||
+-	    inode->i_ino > le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count))
++	if (ino < EXT4_ROOT_INO ||
++	    ino > le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count))
+ 		return -EFSCORRUPTED;
+ 
+-	iloc->block_group = (inode->i_ino - 1) / EXT4_INODES_PER_GROUP(sb);
++	iloc->block_group = (ino - 1) / EXT4_INODES_PER_GROUP(sb);
+ 	gdp = ext4_get_group_desc(sb, iloc->block_group, NULL);
+ 	if (!gdp)
+ 		return -EIO;
+@@ -4572,7 +4571,7 @@ static int __ext4_get_inode_loc(struct inode *inode,
+ 	 * Figure out the offset within the block group inode table
+ 	 */
+ 	inodes_per_block = EXT4_SB(sb)->s_inodes_per_block;
+-	inode_offset = ((inode->i_ino - 1) %
++	inode_offset = ((ino - 1) %
+ 			EXT4_INODES_PER_GROUP(sb));
+ 	block = ext4_inode_table(sb, gdp) + (inode_offset / inodes_per_block);
+ 	iloc->offset = (inode_offset % inodes_per_block) * EXT4_INODE_SIZE(sb);
+@@ -4671,15 +4670,14 @@ static int __ext4_get_inode_loc(struct inode *inode,
+ 		 * has in-inode xattrs, or we don't have this inode in memory.
+ 		 * Read the block from disk.
+ 		 */
+-		trace_ext4_load_inode(inode);
++		trace_ext4_load_inode(sb, ino);
+ 		get_bh(bh);
+ 		bh->b_end_io = end_buffer_read_sync;
+ 		submit_bh(REQ_OP_READ, REQ_META | REQ_PRIO, bh);
+ 		blk_finish_plug(&plug);
+ 		wait_on_buffer(bh);
+ 		if (!buffer_uptodate(bh)) {
+-			EXT4_ERROR_INODE_BLOCK(inode, block,
+-					       "unable to read itable block");
++			ext4_error(sb, "unable to read itable block");
+ 			brelse(bh);
+ 			return -EIO;
+ 		}
+@@ -4692,10 +4690,16 @@ static int __ext4_get_inode_loc(struct inode *inode,
+ int ext4_get_inode_loc(struct inode *inode, struct ext4_iloc *iloc)
+ {
+ 	/* We have all inode data except xattrs in memory here. */
+-	return __ext4_get_inode_loc(inode, iloc,
++	return __ext4_get_inode_loc(inode->i_sb, inode->i_ino, iloc,
+ 		!ext4_test_inode_state(inode, EXT4_STATE_XATTR));
+ }
+ 
++int ext4_get_fc_inode_loc(struct super_block *sb, unsigned long ino,
++			  struct ext4_iloc *iloc)
 +{
-+	unsigned int expected_commit_id = info->end_transaction;
-+	unsigned long next_fc_block;
-+	struct buffer_head *bh;
-+	unsigned int seq;
-+	journal_header_t *jhdr;
-+	int err = 0;
-+
-+	next_fc_block = journal->j_first_fc;
-+
-+	while (next_fc_block <= journal->j_last_fc) {
-+		jbd_debug(3, "Fast commit replay: next block %ld",
-+			  next_fc_block);
-+		err = jread(&bh, journal, next_fc_block);
-+		if (err) {
-+			jbd_debug(3, "Fast commit replay: read error");
-+			break;
-+		}
-+
-+		jhdr = (journal_header_t *)bh->b_data;
-+		seq = be32_to_cpu(jhdr->h_sequence);
-+		if (be32_to_cpu(jhdr->h_magic) != JBD2_MAGIC_NUMBER ||
-+		    seq != expected_commit_id) {
-+			jbd_debug(3, "Fast commit replay: magic / commitid error [%d / %d / %d]\n",
-+				  be32_to_cpu(jhdr->h_magic), seq,
-+				  expected_commit_id);
-+			break;
-+		}
-+		jbd_debug(3, "Processing fast commit blk with seq %d",
-+			  seq);
-+		if (journal->j_fc_replay_callback) {
-+			err = journal->j_fc_replay_callback(
-+						journal, bh, pass,
-+						next_fc_block -
-+						journal->j_first_fc);
-+			if (err)
-+				break;
-+		}
-+		next_fc_block++;
-+	}
-+
-+	if (err)
-+		jbd_debug(3, "Fast commit replay failed, err = %d\n", err);
-+
-+	return err;
++	return __ext4_get_inode_loc(sb, ino, iloc, 0);
 +}
 +
- /**
-  * jbd2_journal_recover - recovers a on-disk journal
-  * @journal: the journal to recover
-@@ -470,7 +522,7 @@ static int do_one_pass(journal_t *journal,
- 				break;
+ static bool ext4_should_use_dax(struct inode *inode)
+ {
+ 	if (!test_opt(inode->i_sb, DAX))
+@@ -4845,7 +4849,7 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
+ 	ei = EXT4_I(inode);
+ 	iloc.bh = NULL;
  
- 		jbd_debug(2, "Scanning for sequence ID %u at %lu/%lu\n",
--			  next_commit_ID, next_log_block, journal->j_last);
-+			  next_commit_ID, next_log_block, journal->j_last_fc);
+-	ret = __ext4_get_inode_loc(inode, &iloc, 0);
++	ret = __ext4_get_inode_loc(sb, inode->i_ino, &iloc, 0);
+ 	if (ret < 0)
+ 		goto bad_inode;
+ 	raw_inode = ext4_raw_inode(&iloc);
+@@ -5423,7 +5427,7 @@ int ext4_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 	} else {
+ 		struct ext4_iloc iloc;
  
- 		/* Skip over each chunk of the transaction looking
- 		 * either the next descriptor block or the final commit
-@@ -768,6 +820,9 @@ static int do_one_pass(journal_t *journal,
- 			if (err)
- 				goto failed;
- 			continue;
-+		case JBD2_FC_BLOCK:
-+			pr_warn("Unexpectedly found fast commit block.\n");
-+			continue;
+-		err = __ext4_get_inode_loc(inode, &iloc, 0);
++		err = __ext4_get_inode_loc(inode->i_sb, inode->i_ino, &iloc, 0);
+ 		if (err)
+ 			return err;
+ 		/*
+diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
+index 2bc655b2164e..59ff5f90ed2a 100644
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -86,7 +86,7 @@ static void swap_inode_data(struct inode *inode1, struct inode *inode2)
+ 	i_size_write(inode2, isize);
+ }
  
- 		default:
- 			jbd_debug(3, "Unrecognised magic %d, end of scan.\n",
-@@ -799,6 +854,10 @@ static int do_one_pass(journal_t *journal,
- 				success = -EIO;
- 		}
- 	}
-+
-+	if (jbd2_has_feature_fast_commit(journal) && pass != PASS_REVOKE)
-+		success = fc_do_one_pass(journal, info, pass);
-+
- 	if (block_error && success == 0)
- 		success = -EIO;
- 	return success;
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index d450dcb93e51..0b49c8ff0563 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -757,6 +757,8 @@ jbd2_time_diff(unsigned long start, unsigned long end)
+-static void reset_inode_seed(struct inode *inode)
++void ext4_reset_inode_seed(struct inode *inode)
+ {
+ 	struct ext4_inode_info *ei = EXT4_I(inode);
+ 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+@@ -199,8 +199,8 @@ static long swap_inode_boot_loader(struct super_block *sb,
  
- #define JBD2_NR_BATCH	64
+ 	inode->i_generation = prandom_u32();
+ 	inode_bl->i_generation = prandom_u32();
+-	reset_inode_seed(inode);
+-	reset_inode_seed(inode_bl);
++	ext4_reset_inode_seed(inode);
++	ext4_reset_inode_seed(inode_bl);
  
-+enum passtype {PASS_SCAN, PASS_REVOKE, PASS_REPLAY};
-+
- /**
-  * struct journal_s - The journal_s type is the concrete type associated with
-  *     journal_t.
-@@ -1220,6 +1222,17 @@ struct journal_s
- 	 * after every commit operation.
- 	 */
- 	void (*j_fc_cleanup_callback)(struct journal_s *journal);
-+
-+	/*
-+	 * @j_fc_replay_callback:
-+	 *
-+	 * File-system specific function that performs replay of a fast
-+	 * commit. JBD2 calls this function for each fast commit block found in
-+	 * the journal.
-+	 */
-+	int (*j_fc_replay_callback)(struct journal_s *journal,
-+				    struct buffer_head *bh,
-+				    enum passtype pass, int off);
- };
+ 	ext4_discard_preallocations(inode);
  
- #define jbd2_might_wait_for_commit(j) \
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index b732c0bb1d51..48fea5ce8530 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2710,7 +2710,7 @@ struct ext4_dir_entry_2 *ext4_init_dot_dotdot(struct inode *inode,
+ 	return ext4_next_entry(de, blocksize);
+ }
+ 
+-static int ext4_init_new_dir(handle_t *handle, struct inode *dir,
++int ext4_init_new_dir(handle_t *handle, struct inode *dir,
+ 			     struct inode *inode)
+ {
+ 	struct buffer_head *dir_block = NULL;
+diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
+index e47059a02fec..8da371b38332 100644
+--- a/include/trace/events/ext4.h
++++ b/include/trace/events/ext4.h
+@@ -1738,9 +1738,9 @@ TRACE_EVENT(ext4_ext_load_extent,
+ );
+ 
+ TRACE_EVENT(ext4_load_inode,
+-	TP_PROTO(struct inode *inode),
++	TP_PROTO(struct super_block *sb, unsigned long ino),
+ 
+-	TP_ARGS(inode),
++	TP_ARGS(sb, ino),
+ 
+ 	TP_STRUCT__entry(
+ 		__field(	dev_t,	dev		)
+@@ -1748,8 +1748,8 @@ TRACE_EVENT(ext4_load_inode,
+ 	),
+ 
+ 	TP_fast_assign(
+-		__entry->dev		= inode->i_sb->s_dev;
+-		__entry->ino		= inode->i_ino;
++		__entry->dev		= sb->s_dev;
++		__entry->ino		= ino;
+ 	),
+ 
+ 	TP_printk("dev %d,%d ino %ld",
 -- 
 2.24.1.735.g03f4e72817-goog
 
