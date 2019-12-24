@@ -2,73 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB5612A3DB
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Dec 2019 19:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5470312A402
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Dec 2019 20:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbfLXSQi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 24 Dec 2019 13:16:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726322AbfLXSQi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 24 Dec 2019 13:16:38 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+        id S1726893AbfLXTJz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Dec 2019 14:09:55 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:45442 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbfLXTJz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Dec 2019 14:09:55 -0500
+Received: by mail-pf1-f195.google.com with SMTP id 2so11091541pfg.12
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Dec 2019 11:09:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/azddeZDYHtTFeT47JuHvo5bbLivs6cp1kJ+er2eAao=;
+        b=LF8kzOXdvcdRfGZl0iONTic1Q8CzxxHe2ktBEQNfjMrHFUoJrkEKtJcxwyDC/EF81p
+         +Av1U1nRRLl2Zz7Vp353Z6okN+8GwCcrKk0wkfvzk3XHeqg6CNWWi0PmVvjlDpB4TeDa
+         On6tx3hIJ3fj2QmtAlph0pj9/ZC/sAdIsi8b/nr+MSCwybFfo4QTmNBt362/HdcFWGau
+         CMHHatv0GEfy9t/kZh+yrjC4aUcXWUfDGz40cZPEVwbFqLfidG1gxTVDlgx7hSKars2T
+         NFKHYhZ57pAKuGKIoHcH+o12BWlxI8qbW2gjdXQGsltkZrbdgcvoY9O26D8ssfeTbXaz
+         WTNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/azddeZDYHtTFeT47JuHvo5bbLivs6cp1kJ+er2eAao=;
+        b=NDCOFoczDb8cGvOzZntwFK1Bdw+XKp6Zwn0nbKCRVq5OhJxknglUJGBnt9UKSx4EY9
+         Hsvh0e7GeD/K93jfvWhnxLXLDFM4QuIPUfl/jB6Acp/S66+Kv/g39q2G/kKS+TUClzb/
+         9say3q/G9Bx9qShT/WcTj0U740pCnGCtpVEOhpNiudIUUsY5B5ekW+iGMuneNA83PMd9
+         07/4YyiGJDwkQkKtFWCtNLj2y1VVZYmbJooQVKt3BKjDwWDl4AVqj8c/NdzmnDjJvYnA
+         KSt1nLu7RUyFkusbIm6UUX/YmmoVGW7wCGutT+cM9SO7zHrh7q6xNp4Fxi7FGK2OcELW
+         wzXQ==
+X-Gm-Message-State: APjAAAX0inESB+tRkpuYU9ryyXJz333hPmpCARuDNLRUAarkRy2ZhAJw
+        Of97Ty9RCps4EdQ/f3OWHbiY/Ss1
+X-Google-Smtp-Source: APXvYqyF7GyoBcGiS5Pv+y0NlzgMU4T7IlY5KhpLTAAOkGul/dSrsZjpDW+guI562mNuYS4gbJKmrA==
+X-Received: by 2002:a62:f842:: with SMTP id c2mr39588426pfm.104.1577214594246;
+        Tue, 24 Dec 2019 11:09:54 -0800 (PST)
+Received: from harshads0.svl.corp.google.com ([2620:15c:2cd:202:ec1e:207a:e951:9a5b])
+        by smtp.googlemail.com with ESMTPSA id o19sm4931227pjr.2.2019.12.24.11.09.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Dec 2019 11:09:53 -0800 (PST)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 To:     linux-ext4@vger.kernel.org
-Subject: [Bug 205957] Ext4 64 bit hash breaks 32 bit glibc 2.28+
-Date:   Tue, 24 Dec 2019 18:16:37 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: adilger.kernelbugzilla@dilger.ca
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-205957-13602-H8nsmeKGIj@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-205957-13602@https.bugzilla.kernel.org/>
-References: <bug-205957-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH] ext4: force buffer up-to-date while marking it dirty
+Date:   Tue, 24 Dec 2019 11:09:40 -0800
+Message-Id: <20191224190940.157952-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=205957
+Writeback errors can leave buffer in not up-to-date state when there
+are errors during background writes. Force buffer up-to-date while
+marking it dirty.
 
-Andreas Dilger (adilger.kernelbugzilla@dilger.ca) changed:
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+---
+ fs/ext4/ext4_jbd2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |adilger.kernelbugzilla@dilg
-                   |                            |er.ca
-
---- Comment #2 from Andreas Dilger (adilger.kernelbugzilla@dilger.ca) ---
-IMHO, it is broken to be calling a 64-bit interface like getdents64() and then
-be unhappy when it is returning 64-bit values.  As previously stated, it would
-be possible to add a "32bitapi" mount option to force ext4 to always return
-32-bit offset values, as is done with NFS. 
-
-The alternative is for QEMU's telldir() to see that d_off is a 64-bit value,
-but is exporting a 32-bit interface and downshift the offset to fit into a
-32-bit field. It would store a '64BITOFFSET' flag in the file descriptor in
-this case, and if seekdir() is called on that fd it will upshift the offset to
-a 64-bit value again.  That will lose the low bits of the offset, but that is
-unlikely to be noticeable until there are more than 65000 entries in a
-directory.  Since the hash values are uniformly distributed, they will almost
-immediately exceed 32 bits, and telldir() is uncommon for use after the first
-entry is read, so this detection will work reliably.
-
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index 7c70b08d104c..ac50bd4e1f2f 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -292,6 +292,7 @@ int __ext4_handle_dirty_metadata(const char *where, unsigned int line,
+ 					 handle->h_buffer_credits, err);
+ 		}
+ 	} else {
++		set_buffer_uptodate(bh);
+ 		if (inode)
+ 			mark_buffer_dirty_inode(bh, inode);
+ 		else
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+2.24.1.735.g03f4e72817-goog
+
