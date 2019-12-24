@@ -2,54 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CED95129E3C
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Dec 2019 07:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DDE129EBE
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Dec 2019 09:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbfLXGtm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Dec 2019 01:49:42 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:46952 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbfLXGtm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Dec 2019 01:49:42 -0500
-Received: by mail-wr1-f65.google.com with SMTP id z7so18912629wrl.13
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Dec 2019 22:49:39 -0800 (PST)
+        id S1726065AbfLXIER (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Dec 2019 03:04:17 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:34853 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726088AbfLXIEQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Dec 2019 03:04:16 -0500
+Received: by mail-wm1-f68.google.com with SMTP id p17so1819445wmb.0
+        for <linux-ext4@vger.kernel.org>; Tue, 24 Dec 2019 00:04:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=unipv-it.20150623.gappssmtp.com; s=20150623;
         h=message-id:subject:from:to:cc:date:in-reply-to:references
          :user-agent:mime-version:content-transfer-encoding;
-        bh=Du3w8o4be0YrPPaCkoujjN4fjZHuiFhvUdHnNG8GiXA=;
-        b=xo/+5mAtkGrSMXmN3dzVYXFvFKdi79jVzFHyAR1q7tGeErbGpJuKOjy3KF53yUe6WP
-         wCtoeKrw+xm7PO+8U4jfxyCvO44yw1/TlLGPWZgW3q3JFzu81zqarZyAYielqlGlXIu7
-         iKqI2kw/JzsJ9vJVdlf7+L6IjAq+8PYGaqrefRz4tqHuMBbK0txIfWL0AQnExpOPoAQq
-         RbNSpnPWpirQY2QojFrv4SDseYki/2IEK0GgeF3gO3mrRrgRyY0IvZ0yFLKInyt4sF6W
-         JzFSykGv4RD5IAz2jqO45seMAre//6RSgEzy5ykeOs56jPa22uSjIAyzI19SRGTqTaB6
-         snzg==
+        bh=DyaDE0uN7UsnBhjmWjo/jrjq/N3oCsBgDSD3hMOpR6A=;
+        b=PhkSXyZTh+3PYRWoFtL2HeSiZvdItOJPsa30beZJ8kjXaOSiXe/E41VPQGT0cbXxS1
+         RmfGxSWAu1Y3TqL492KANfftJ884YyzEoX1gH3gx6r4+LdHDjzXaWnB9pc676LpX1amu
+         MSMQJdJ22j9lMirhi450/6JMM7Pma7lgmJS7p0OSZGjOAHkeuCHuhXhXiXLJUHOnud+v
+         DWW0crp6e0fQuL+KSsJYj6awTIr4kUbVb0oVlusBrvmOTI6GzfNXOtEa31zHF0pSVBJ0
+         Ud7nnEegoHUzGRD1JYGH2e+dkqAcQ9nl611R/FcwjTMbS0Hos8aExeVFL9HWKhSRcW4Q
+         JsKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Du3w8o4be0YrPPaCkoujjN4fjZHuiFhvUdHnNG8GiXA=;
-        b=pFKBbmUKk97FDRAJ1DzAcA26lB1QP6TjnElDsX5DvjpfTJo57a1KfD3WghQpGLfXNd
-         WP4wgZYhV7Rbp1nQAthwxI/z+pOJsCmHGtY0YFfKg16A0w36GqG4zHGsSHcLfkARhQvy
-         lybyDI1xo1IghdsfsLiCtDr6sqLdiWbEcZ2PaPjf8b9fZkGZRhcKDbg2wN9ucQPVGZxr
-         596fKBDqi87ewlx13s8UzZx4fAiu12voc6v/dB+yic03PCsUYuwvOXtIOs1oph8nqmct
-         vfe15p42WVIVfNfwVV+ouf2P33XA06YmqpcRZKVuMONYuhPOpS3eCG1mjNQRhEniDCDe
-         Nizg==
-X-Gm-Message-State: APjAAAXgeRuAkVV8FcD9OUV+DKQI4mcs0c+HgmwGT9ZuMeYVbU1UnQgD
-        U9x+a1s3+bFb1IkC6pX+xCzOHg==
-X-Google-Smtp-Source: APXvYqzK4i70c8JMuCt/z/08xxUl65emDBiqKV0XE4PJ2lO+Y0Oxfarqmn4UeP3nUVE4Oj2YCmqBYw==
-X-Received: by 2002:a5d:5307:: with SMTP id e7mr34577062wrv.146.1577170179120;
-        Mon, 23 Dec 2019 22:49:39 -0800 (PST)
+        bh=DyaDE0uN7UsnBhjmWjo/jrjq/N3oCsBgDSD3hMOpR6A=;
+        b=VNhEB/mGXtfvtNB9xoIVLRT8Wyk/TYQWrGELL5M9YZuHsjz0mc4bL5LIbsRUvr4RH4
+         hTUCs16AAGWee21QTDOAcUnBvn+R9UG2h1L5bBz5RcfOp3yywCdOrPeIJcNEh2w/ok0p
+         rIB9Zk3wv+zqCI/oKVa2ZnXYqGDC8noSiMq2Q4e8pB+NoiEmnymx+dGPqKvTNPRfNlIW
+         PVeOeiUjQnGAMAt8zycTMoDz42pHK6tgIwJcS3+3Qtvy5cWRrmh5TRmWlIEb5Mvs4uiH
+         IdtyRhcPCxQy+wpguFr1wHBp6gEmshxrNvde+pYR8uWXdnRdZ1KxVqn5gkxVBjiresiE
+         hLrw==
+X-Gm-Message-State: APjAAAXBLCjbTF8t3/ns4JkWu7yRQsQPKde8MGBfriSJXLtoeqkjCiwK
+        FAnygKg2YqPJ8O6gDAPtdNdTiQ==
+X-Google-Smtp-Source: APXvYqz/OKme102tFoq8nMH9DpI9OpMJ9Sp/5vH9lEQkt0YwrhKb3LhhTBEy3F8DmtHgyd8XAqQ+AQ==
+X-Received: by 2002:a1c:3803:: with SMTP id f3mr2987789wma.134.1577174652677;
+        Tue, 24 Dec 2019 00:04:12 -0800 (PST)
 Received: from angus.unipv.it (angus.unipv.it. [193.206.67.163])
-        by smtp.gmail.com with ESMTPSA id d16sm25168758wrg.27.2019.12.23.22.49.37
+        by smtp.gmail.com with ESMTPSA id e18sm23340732wrw.70.2019.12.24.00.04.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Dec 2019 22:49:38 -0800 (PST)
-Message-ID: <e3dc2a3e0221c0a0beb91172ba2bff1f6acc0cb7.camel@unipv.it>
+        Tue, 24 Dec 2019 00:04:11 -0800 (PST)
+Message-ID: <28e0ca9257a834c04221d083e7024a0155744835.camel@unipv.it>
 Subject: Re: AW: Slow I/O on USB media after commit
  f664a3cc17b7d0a2bc3b3ab96181e1029b0ec0e6
 From:   Andrea Vai <andrea.vai@unipv.it>
-To:     Ming Lei <ming.lei@redhat.com>, "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     "Schmid, Carsten" <Carsten_Schmid@mentor.com>,
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Schmid, Carsten" <Carsten_Schmid@mentor.com>,
         Finn Thain <fthain@telegraphics.com.au>,
         Damien Le Moal <Damien.LeMoal@wdc.com>,
         Alan Stern <stern@rowland.harvard.edu>,
@@ -65,17 +66,17 @@ Cc:     "Schmid, Carsten" <Carsten_Schmid@mentor.com>,
         Hans Holmberg <Hans.Holmberg@wdc.com>,
         Kernel development list <linux-kernel@vger.kernel.org>,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Date:   Tue, 24 Dec 2019 07:49:37 +0100
-In-Reply-To: <20191224012707.GA13083@ming.t460p>
-References: <20191211213316.GA14983@ming.t460p>
+Date:   Tue, 24 Dec 2019 09:04:10 +0100
+In-Reply-To: <20191224013237.GB13083@ming.t460p>
+References: <20191210080550.GA5699@ming.t460p>
+         <20191211024137.GB61323@mit.edu> <20191211040058.GC6864@ming.t460p>
+         <20191211160745.GA129186@mit.edu> <20191211213316.GA14983@ming.t460p>
          <f38db337cf26390f7c7488a0bc2076633737775b.camel@unipv.it>
          <20191218094830.GB30602@ming.t460p>
          <b1b6a0e9d690ecd9432025acd2db4ac09f834040.camel@unipv.it>
-         <20191223130828.GA25948@ming.t460p> <20191223162619.GA3282@mit.edu>
-         <4c85fd3f2ec58694cc1ff7ab5c88d6e11ab6efec.camel@unipv.it>
-         <20191223172257.GB3282@mit.edu>
-         <bb5d395fe47f033be0b8ed96cbebf8867d2416c4.camel@unipv.it>
-         <20191223195301.GC3282@mit.edu> <20191224012707.GA13083@ming.t460p>
+         <20191223130828.GA25948@ming.t460p>
+         <fc6f73fc5f57ade8890b472d63c7f0bd559de538.camel@unipv.it>
+         <20191224013237.GB13083@ming.t460p>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
 MIME-Version: 1.0
@@ -85,131 +86,299 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Il giorno mar, 24/12/2019 alle 09.27 +0800, Ming Lei ha scritto:
-> Hi Ted,
-> 
-> On Mon, Dec 23, 2019 at 02:53:01PM -0500, Theodore Y. Ts'o wrote:
-> > On Mon, Dec 23, 2019 at 07:45:57PM +0100, Andrea Vai wrote:
-> > > basically, it's:
-> > > 
-> > >   mount UUID=$uuid /mnt/pendrive
-> > >   SECONDS=0
-> > >   cp $testfile /mnt/pendrive
-> > >   umount /mnt/pendrive
-> > >   tempo=$SECONDS
-> > > 
-> > > and it copies one file only. Anyway, you can find the whole
-> script
-> > > attached.
-> > 
-> > OK, so whether we are doing the writeback at the end of cp, or
+Il giorno mar, 24/12/2019 alle 09.32 +0800, Ming Lei ha scritto:
+> On Mon, Dec 23, 2019 at 03:02:35PM +0100, Andrea Vai wrote:
+> > Il giorno lun, 23/12/2019 alle 21.08 +0800, Ming Lei ha scritto:
+> > > On Mon, Dec 23, 2019 at 12:22:45PM +0100, Andrea Vai wrote:
+> > > > Il giorno mer, 18/12/2019 alle 17.48 +0800, Ming Lei ha
+> scritto:
+> > > > > On Wed, Dec 18, 2019 at 09:25:02AM +0100, Andrea Vai wrote:
+> > > > > > Il giorno gio, 12/12/2019 alle 05.33 +0800, Ming Lei ha
+> > > scritto:
+> > > > > > > On Wed, Dec 11, 2019 at 11:07:45AM -0500, Theodore Y.
+> Ts'o
+> > > > > wrote:
+> > > > > > > > On Wed, Dec 11, 2019 at 12:00:58PM +0800, Ming Lei
+> wrote:
+> > > > > > > > > I didn't reproduce the issue in my test environment,
+> and
+> > > > > follows
+> > > > > > > > > Andrea's test commands[1]:
+> > > > > > > > > 
+> > > > > > > > >   mount UUID=$uuid /mnt/pendrive 2>&1 |tee -a
+> $logfile
+> > > > > > > > >   SECONDS=0
+> > > > > > > > >   cp $testfile /mnt/pendrive 2>&1 |tee -a $logfile
+> > > > > > > > >   umount /mnt/pendrive 2>&1 |tee -a $logfile
+> > > > > > > > > 
+> > > > > > > > > The 'cp' command supposes to open/close the file
+> just
+> > > once,
+> > > > > > > however
+> > > > > > > > > ext4_release_file() & write pages is observed to run
+> for
+> > > > > 4358
+> > > > > > > times
+> > > > > > > > > when executing the above 'cp' test.
+> > > > > > > > 
+> > > > > > > > Why are we sure the ext4_release_file() / _fput() is
+> > > coming
+> > > > > from
+> > > > > > > the
+> > > > > > > > cp command, as opposed to something else that might be
+> > > running
+> > > > > on
+> > > > > > > the
+> > > > > > > > system under test?  _fput() is called by the kernel
 > when
-> > you do the umount, it's probably not going to make any
-> difference.  We
-> > can get rid of the stack trace in question by changing the script
-> to
-> > be basically:
-> > 
-> > mount UUID=$uuid /mnt/pendrive
-> > SECONDS=0
-> > rm -f /mnt/pendrive/$testfile
-> > cp $testfile /mnt/pendrive
-> > umount /mnt/pendrive
-> > tempo=$SECONDS
-> > 
-> > I predict if you do that, you'll see that all of the time is spent
-> in
-> > the umount, when we are trying to write back the file.
-> > 
-> > I really don't think then this is a file system problem at
-> all.  It's
-> > just that USB I/O is slow, for whatever reason.  We'll see a stack
-> > trace in the writeback code waiting for the I/O to be completed,
-> but
-> > that doesn't mean that the root cause is in the writeback code or
-> in
-> > the file system which is triggering the writeback.
-> 
-> Wrt. the slow write on this usb storage, it is caused by two
-> writeback
-> path, one is the writeback wq, another is from ext4_release_file()
-> which
-> is triggered from exit_to_usermode_loop().
-> 
-> When the two write path is run concurrently, the sequential write
-> order
-> is broken, then write performance drops much on this particular usb
-> storage.
-> 
-> The ext4_release_file() should be run from read() or write() syscall
-> if
-> Fedora 30's 'cp' is implemented correctly. IMO, it isn't expected
-> behavior
-> for ext4_release_file() to be run thousands of times when just
-> running 'cp' once, see comment of ext4_release_file():
-> 
-> 	/*
-> 	 * Called when an inode is released. Note that this is
-> different
-> 	 * from ext4_file_open: open gets called at every open, but
-> release
-> 	 * gets called only when /all/ the files are closed.
-> 	 */
-> 	static int ext4_release_file(struct inode *inode, struct file
-> *filp)
-> 
-> > 
-> > I suspect the next step is use a blktrace, to see what kind of I/O
+> > > the
+> > > > > last
+> > > > > > > 
+> > > > > > > Please see the log:
+> > > > > > > 
+> > > > > > > 
+> > > > > 
+> > > 
+> https://lore.kernel.org/linux-scsi/3af3666920e7d46f8f0c6d88612f143ffabc743c.camel@unipv.it/2-log_ming.zip
+> > > > > > > 
+> > > > > > > Which is collected by:
+> > > > > > > 
+> > > > > > > #!/bin/sh
+> > > > > > > MAJ=$1
+> > > > > > > MIN=$2
+> > > > > > > MAJ=$(( $MAJ << 20 ))
+> > > > > > > DEV=$(( $MAJ | $MIN ))
+> > > > > > > 
+> > > > > > > /usr/share/bcc/tools/trace -t -C \
+> > > > > > >     't:block:block_rq_issue (args->dev == '$DEV') "%s %d
+> > > %d",
+> > > > > args-
+> > > > > > > >rwbs, args->sector, args->nr_sector' \
+> > > > > > >     't:block:block_rq_insert (args->dev == '$DEV') "%s
+> %d
+> > > %d",
+> > > > > args-
+> > > > > > > >rwbs, args->sector, args->nr_sector'
+> > > > > > > 
+> > > > > > > $MAJ:$MIN points to the USB storage disk.
+> > > > > > > 
+> > > > > > > From the above IO trace, there are two write paths, one
 > is
-> > being sent to the USB drive, and how long it takes for the I/O to
-> > complete.  You might also try to capture the output of "iostat -x
-> 1"
-> > while the script is running, and see what the difference might be
-> > between a kernel version that has the problem and one that
-> doesn't,
-> > and see if that gives us a clue.
+> > > from
+> > > > > cp,
+> > > > > > > another is from writeback wq.
+> > > > > > > 
+> > > > > > > The stackcount trace[1] is consistent with the IO trace
+> log
+> > > > > since it
+> > > > > > > only shows two IO paths, that is why I concluded that
+> the
+> > > write
+> > > > > done
+> > > > > > > via
+> > > > > > > ext4_release_file() is from 'cp'.
+> > > > > > > 
+> > > > > > > [1] 
+> > > > > > > 
+> > > > > 
+> > > 
+> https://lore.kernel.org/linux-scsi/320b315b9c87543d4fb919ecbdf841596c8fbcea.camel@unipv.it/2-log_ming_20191129_150609.zip
+> > > > > > > 
+> > > > > > > > reference to a struct file is
+> released.  (Specifically, if
+> > > you
+> > > > > > > have a
+> > > > > > > > fd which is dup'ed, it's only when the last fd
+> > > corresponding
+> > > > > to
+> > > > > > > the
+> > > > > > > > struct file is closed, and the struct file is about to
+> be
+> > > > > > > released,
+> > > > > > > > does the file system's f_ops->release function get
+> > > called.)
+> > > > > > > > 
+> > > > > > > > So the first question I'd ask is whether there is
+> anything
+> > > > > else
+> > > > > > > going
+> > > > > > > > on the system, and whether the writes are happening to
+> the
+> > > USB
+> > > > > > > thumb
+> > > > > > > > drive, or to some other storage device.  And if there
+> is
+> > > > > something
+> > > > > > > > else which is writing to the pendrive, maybe that's
+> why no
+> > > one
+> > > > > > > else
+> > > > > > > > has been able to reproduce the OP's complaint....
+> > > > > > > 
+> > > > > > > OK, we can ask Andrea to confirm that via the following
+> > > trace,
+> > > > > which
+> > > > > > > will add pid/comm info in the stack trace:
+> > > > > > > 
+> > > > > > > /usr/share/bcc/tools/stackcount
+> > > blk_mq_sched_request_inserted
+> > > > > > > 
+> > > > > > > Andrew, could you collect the above log again when
+> running
+> > > > > new/bad
+> > > > > > > kernel for confirming if the write done by
+> > > ext4_release_file()
+> > > > > is
+> > > > > > > from
+> > > > > > > the 'cp' process?
+> > > > > > 
+> > > > > > You can find the stackcount log attached. It has been
+> produced
+> > > by:
+> > > > > > 
+> > > > > > - /usr/share/bcc/tools/stackcount
+> > > blk_mq_sched_request_inserted >
+> > > > > trace.log
+> > > > > > - wait some seconds
+> > > > > > - run the test (1 copy trial), wait for the test to
+> finish,
+> > > wait
+> > > > > some seconds
+> > > > > > - stop the trace (ctrl+C)
+> > > > > 
+> > > > > Thanks for collecting the log, looks your 'stackcount'
+> doesn't
+> > > > > include
+> > > > > comm/pid info, seems there is difference between your bcc
+> and
+> > > > > my bcc in fedora 30.
+> > > > > 
+> > > > > Could you collect above log again via the following command?
+> > > > > 
+> > > > > /usr/share/bcc/tools/stackcount -P -K
+> t:block:block_rq_insert
+> > > > > 
+> > > > > which will show the comm/pid info.
+> > > > 
+> > > > ok, attached (trace_20191219.txt), the test (1 trial) took
+> 3684
+> > > > seconds.
+> > > 
+> > > From the above trace:
+> > > 
+> > >   b'blk_mq_sched_request_inserted'
+> > >   b'blk_mq_sched_request_inserted'
+> > >   b'dd_insert_requests'
+> > >   b'blk_mq_sched_insert_requests'
+> > >   b'blk_mq_flush_plug_list'
+> > >   b'blk_flush_plug_list'
+> > >   b'io_schedule_prepare'
+> > >   b'io_schedule'
+> > >   b'rq_qos_wait'
+> > >   b'wbt_wait'
+> > >   b'__rq_qos_throttle'
+> > >   b'blk_mq_make_request'
+> > >   b'generic_make_request'
+> > >   b'submit_bio'
+> > >   b'ext4_io_submit'
+> > >   b'ext4_writepages'
+> > >   b'do_writepages'
+> > >   b'__filemap_fdatawrite_range'
+> > >   b'ext4_release_file'
+> > >   b'__fput'
+> > >   b'task_work_run'
+> > >   b'exit_to_usermode_loop'
+> > >   b'do_syscall_64'
+> > >   b'entry_SYSCALL_64_after_hwframe'
+> > >     b'cp' [19863]
+> > >     4400
+> > > 
+> > > So this write is clearly from 'cp' process, and it should be one
+> > > ext4 fs issue.
+> > > 
+> > > Ted, can you take a look at this issue?
+> > > 
+> > > > 
+> > > > > > I also tried the usual test with btrfs and xfs. Btrfs
+> behavior
+> > > > > looks
+> > > > > > "good". xfs seems sometimes better, sometimes worse, I
+> would
+> > > say.
+> > > > > I
+> > > > > > don't know if it matters, anyway you can also find the
+> results
+> > > of
+> > > > > the
+> > > > > > two tests (100 trials each). Basically, btrfs is always
+> > > between 68
+> > > > > and
+> > > > > > 89 seconds, with a cyclicity (?) with "period=2 trials".
+> xfs
+> > > looks
+> > > > > > almost always very good (63-65s), but sometimes "bad"
+> (>300s).
+> > > > > 
+> > > > > If you are interested in digging into this one, the
+> following
+> > > trace
+> > > > > should be helpful:
+> > > > > 
+> > > > > 
+> > > 
+> https://lore.kernel.org/linux-scsi/f38db337cf26390f7c7488a0bc2076633737775b.camel@unipv.it/T/#m5aa008626e07913172ad40e1eb8e5f2ffd560fc6
+> > > > > 
+> > > > 
+> > > > Attached:
+> > > > - trace_xfs_20191223.txt (7 trials, then aborted while doing
+> the
+> > > 8th),
+> > > > times to complete:
+> > > > 64s
+> > > > 63s
+> > > > 64s
+> > > > 833s
+> > > > 1105s
+> > > > 63s
+> > > > 64s
+> > > 
+> > > oops, looks we have to collect io insert trace with the
+> following
+> > > bcc script
+> > > on xfs for confirming if there is similar issue with ext4, could
+> you
+> > > run
+> > > it again on xfs? And only post the trace done in case of slow
+> 'cp'.
+> > > 
+> > > 
+> > > #!/bin/sh
+> > > 
+> > > MAJ=$1
+> > > MIN=$2
+> > > MAJ=$(( $MAJ << 20 ))
+> > > DEV=$(( $MAJ | $MIN ))
+> > > 
+> > > /usr/share/bcc/tools/trace -t -C \
+> > >     't:block:block_rq_issue (args->dev == '$DEV') "%s %d %d",
+> args-
+> > > >rwbs, args->sector, args->nr_sector' \
+> > >     't:block:block_rq_insert (args->dev == '$DEV') "%s %d %d",
+> args-
+> > > >rwbs, args->sector, args->nr_sector'
+> > > 
+> > > 
+> > here it is (1 trial, 313 seconds to finish)
 > 
-> That isn't necessary, given we have concluded that the bad write
-> performance is caused by broken write order.
+> The above log shows similar issue with ext4 since there is another
+> writeback IO path from 'cp' process. And the following trace can
+> show if
+> it is same with ext4's issue:
 > 
-> > 
-> > > > And then send me
-> > > btw, please tell me if "me" means only you or I cc: all the
-> > > recipients, as usual
-> > 
-> > Well, I don't think we know what the root cause is.  Ming is
-> focusing
-> > on that stack trace, but I think it's a red herring.....  And if
-> it's
-> > not a file system problem, then other people will be best suited
-> to
-> > debug the issue.
-> 
-> So far, the reason points to the extra writeback path from
-> exit_to_usermode_loop().
-> If it is not from close() syscall, the issue should be related with
-> file reference
-> count. If it is from close() syscall, the issue might be in 'cp''s
-> implementation.
-> 
-> Andrea, please collect the following log or the strace log requested
-> by Ted, then
-> we can confirm if the extra writeback is from close() or
-> read/write() syscall:
-> 
-> # pass PID of 'cp' to this script
-> #!/bin/sh
-> PID=$1
-> /usr/share/bcc/tools/trace -P $PID  -t -C \
->     't:block:block_rq_insert "%s %d %d", args->rwbs, args->sector,
-> args->nr_sector' \
->     't:syscalls:sys_exit_close ' \
->     't:syscalls:sys_exit_read ' \
->     't:syscalls:sys_exit_write '
+> /usr/share/bcc/tools/stackcount -P -K t:block:block_rq_insert
 
-Sorry if I am a bit confused, should I run it on ext4 or xfs, or
-doesn't matter? What if I get it on a "fast" run? Should I throw it
-away and try again until I get a slow one, or it doesn't matter?
+sorry, also here please tell me which conditions should I use to run
+the test (ext4 or xfs? slow run or not important?)
 
 Thanks,
 Andrea
