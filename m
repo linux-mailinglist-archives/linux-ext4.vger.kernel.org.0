@@ -2,69 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC35E12AD37
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Dec 2019 16:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3310E12AD40
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Dec 2019 16:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726450AbfLZPbb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Dec 2019 10:31:31 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44937 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726236AbfLZPbb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Dec 2019 10:31:31 -0500
-Received: from callcc.thunk.org (96-72-84-49-static.hfc.comcastbusiness.net [96.72.84.49] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xBQFVITQ021452
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 26 Dec 2019 10:31:20 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 65041420485; Thu, 26 Dec 2019 10:31:18 -0500 (EST)
-Date:   Thu, 26 Dec 2019 10:31:18 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     joseph.qi@linux.alibaba.com, Liu Bo <bo.liu@linux.alibaba.com>
-Subject: Discussion: is it time to remove dioread_nolock?
-Message-ID: <20191226153118.GA17237@mit.edu>
+        id S1726513AbfLZPjm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Dec 2019 10:39:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbfLZPjm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 26 Dec 2019 10:39:42 -0500
+Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9597C206A4
+        for <linux-ext4@vger.kernel.org>; Thu, 26 Dec 2019 15:39:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577374781;
+        bh=p9zKn/41L5nDfI/gqqK4Ty/IGWKYg6d9TuZ8CBGTEQg=;
+        h=From:To:Subject:Date:From;
+        b=ZKrbkPWSXvn87XKUftDn1Oa6k1i1wd6wak6EOyLsLwHg0/ROqcRdHYZP1gDheGr7O
+         Qt9pp17cIDnIC8xEkoUUt8f91iIpKjt51xlq3pFt7Gai5xdOMzQuMAHvvQFND46WxQ
+         7JVV1eD+c5aL1K8br5625qKqkxLhPbE7qu5ROZdo=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-ext4@vger.kernel.org
+Subject: [PATCH] ext4: remove unnecessary selections from EXT3_FS
+Date:   Thu, 26 Dec 2019 09:39:20 -0600
+Message-Id: <20191226153920.4466-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-With inclusion of Ritesh's inode lock scalability patches[1], the
-traditional performance reasons for dioread_nolock --- namely,
-removing the need to take an exclusive lock for Direct I/O read
-operations --- has been removed.
+From: Eric Biggers <ebiggers@google.com>
 
-[1] https://lore.kernel.org/r/20191212055557.11151-1-riteshh@linux.ibm.com
+Since EXT3_FS already selects EXT4_FS, there's no reason for it to
+redundantly select all the selections of EXT4_FS -- notwithstanding the
+comments that claim otherwise.
 
-So... is it time to remove the code which supports dioread_nolock?
-Doing so would simplify the code base, and reduce the test matrix.
-This would also make it easier to restructure the write path when
-allocating blocks so that the extent tree is updated after writing out
-the data blocks, by clearing away the underbrush of dioread nolock
-first.
+Remove these redundant selections to avoid confusion.
 
-If we do this, we'd leave the dioread_nolock mount option for
-backwards compatibility, but it would be a no-op and not actually do
-anything.
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+ fs/ext4/Kconfig | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Any objections before I look into ripping out dioread_nolock?
-
-The one possible concern that I considered was for Alibaba, which was
-doing something interesting with dioread_nolock plus nodelalloc.  But
-looking at Liu Bo's explanation[2], I believe that their workload
-would be satisfied simply by using the standard ext4 mount options
-(that is, the default mode has the performance benefits when doing
-parallel DIO reads, and so the need for nodelalloc to mitigate the
-tail latency concerns which Alibaba was seeing in their workload would
-not be needed).  Could Liu or someone from Alibaba confirm, perhaps
-with some benchmarks using their workload?
-
-[2] https://lore.kernel.org/linux-ext4/20181121013035.ab4xp7evjyschecy@US-160370MP2.local/
-
-    	  	     	      	   	- Ted
-
+diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+index ef42ab040905..5841fd8aa706 100644
+--- a/fs/ext4/Kconfig
++++ b/fs/ext4/Kconfig
+@@ -4,12 +4,7 @@
+ # kernels after the removal of ext3 driver.
+ config EXT3_FS
+ 	tristate "The Extended 3 (ext3) filesystem"
+-	# These must match EXT4_FS selects...
+ 	select EXT4_FS
+-	select JBD2
+-	select CRC16
+-	select CRYPTO
+-	select CRYPTO_CRC32C
+ 	help
+ 	  This config option is here only for backward compatibility. ext3
+ 	  filesystem is now handled by the ext4 driver.
+@@ -33,7 +28,6 @@ config EXT3_FS_SECURITY
+ 
+ config EXT4_FS
+ 	tristate "The Extended 4 (ext4) filesystem"
+-	# Please update EXT3_FS selects when changing these
+ 	select JBD2
+ 	select CRC16
+ 	select CRYPTO
+-- 
+2.24.1
 
