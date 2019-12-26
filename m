@@ -2,32 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D219A12AD41
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Dec 2019 16:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5157712AD44
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Dec 2019 16:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbfLZPkX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Dec 2019 10:40:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47830 "EHLO mail.kernel.org"
+        id S1726513AbfLZPlT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Dec 2019 10:41:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726513AbfLZPkX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 26 Dec 2019 10:40:23 -0500
+        id S1726336AbfLZPlT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 26 Dec 2019 10:41:19 -0500
 Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 985F8206A4
-        for <linux-ext4@vger.kernel.org>; Thu, 26 Dec 2019 15:40:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA472206A4;
+        Thu, 26 Dec 2019 15:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577374822;
-        bh=U52JRgNxFt6kzbBceCrmFR55pAOS2KvvO+IkEw+2shY=;
-        h=From:To:Subject:Date:From;
-        b=JBY2Y1KiPR7Y6mn1cILHY34OqK/gEIyjxPoBz5yCTYYi+xhGjn6KFDNDtwHcGWUzM
-         eOlfjpCZKXk0+I/iybyX40iCbFGPxPgcGuMTVzunCnj7ESOG1KDuU8fXtU+pszKqiV
-         tON0Smg/wwC6Fq2FQ5zkjjtAeqwYtCgkdW67/YNg=
+        s=default; t=1577374879;
+        bh=k34ID4CM5KwTXBHzWGuBSNb3G/RtrYHSsw5Hl0omWtc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hQSp1mAthg18MOIB9fsbveiTu7kFinMYQ/5WkO0Zv8v5n5unklmOruQFmbXyOTqUx
+         kyjxfGNT8lUHEk7F+FpfgUtiIFJMz6ahcq5HbC8PCmCjqBYI8wLLWgWbxhVGvCPnK4
+         NBbVPjO28prDfdaIdr9pe49NFRkFVNyWtq8+dkEc=
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-ext4@vger.kernel.org
-Subject: [PATCH] docs: ext4.rst: add encryption and verity to features list
-Date:   Thu, 26 Dec 2019 09:40:07 -0600
-Message-Id: <20191226154007.4569-1-ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org
+Subject: [PATCH] ext4: handle decryption error in __ext4_block_zero_page_range()
+Date:   Thu, 26 Dec 2019 09:41:05 -0600
+Message-Id: <20191226154105.4704-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,26 +39,40 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Eric Biggers <ebiggers@google.com>
 
-Mention encryption and verity in the ext4 features list.
+fscrypt_decrypt_pagecache_blocks() can fail, because it uses
+skcipher_request_alloc(), which uses kmalloc(), which can fail; and also
+because it calls crypto_skcipher_decrypt(), which can fail depending on
+the driver that actually implements the crypto.
+
+Therefore it's not appropriate to WARN on decryption error in
+__ext4_block_zero_page_range().
+
+Remove the WARN and just handle the error instead.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- Documentation/admin-guide/ext4.rst | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/ext4/inode.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/ext4.rst b/Documentation/admin-guide/ext4.rst
-index 9bc93f0ce0c9..9443fcef1876 100644
---- a/Documentation/admin-guide/ext4.rst
-+++ b/Documentation/admin-guide/ext4.rst
-@@ -92,6 +92,8 @@ Currently Available
- * efficient new ordered mode in JBD2 and ext4 (avoid using buffer head to force
-   the ordering)
- * Case-insensitive file name lookups
-+* file-based encryption support (fscrypt)
-+* file-based verity support (fsverity)
- 
- [1] Filesystems with a block size of 1k may see a limit imposed by the
- directory hash tree having a maximum depth of two.
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 629a25d999f0..b8f8afd2e8b2 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3701,8 +3701,12 @@ static int __ext4_block_zero_page_range(handle_t *handle,
+ 		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode)) {
+ 			/* We expect the key to be set. */
+ 			BUG_ON(!fscrypt_has_encryption_key(inode));
+-			WARN_ON_ONCE(fscrypt_decrypt_pagecache_blocks(
+-					page, blocksize, bh_offset(bh)));
++			err = fscrypt_decrypt_pagecache_blocks(page, blocksize,
++							       bh_offset(bh));
++			if (err) {
++				clear_buffer_uptodate(bh);
++				goto unlock;
++			}
+ 		}
+ 	}
+ 	if (ext4_should_journal_data(inode)) {
 -- 
 2.24.1
 
