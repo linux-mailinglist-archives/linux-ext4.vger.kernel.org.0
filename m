@@ -2,84 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E400612AD64
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Dec 2019 17:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A8812ADA3
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Dec 2019 18:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbfLZQLk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Dec 2019 11:11:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbfLZQLk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 26 Dec 2019 11:11:40 -0500
-Received: from zzz.tds (h75-100-12-111.burkwi.broadband.dynamic.tds.net [75.100.12.111])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A8BF206CB;
-        Thu, 26 Dec 2019 16:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577376699;
-        bh=eIQ2GXEdslJ7L4LC+4Jz1YODyvsdHBOfk70hJwoxkH8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rmaTmp27/3j9854wLtx36wYMteKO7I/zrVD+DtQDoOlZp6t9hvYNs1x8aeiJvhvKk
-         2L+OnIcRQefB6E6VNA6opb/v1vMG+VGIMaGeDg3vXG6nrr75mmdvUWT13F4FBV+Q4q
-         k3kV+KGpK3OmAnZS8egDixTPY7FP66Rmh1oL3EI8=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH] ext4: re-enable extent zeroout optimization on encrypted files
-Date:   Thu, 26 Dec 2019 10:11:14 -0600
-Message-Id: <20191226161114.53606-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S1726513AbfLZRRq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Dec 2019 12:17:46 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57774 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726480AbfLZRRq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Dec 2019 12:17:46 -0500
+Received: from callcc.thunk.org (96-72-102-169-static.hfc.comcastbusiness.net [96.72.102.169] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xBQHHWX5016268
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Dec 2019 12:17:33 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id B3B6E420485; Thu, 26 Dec 2019 12:17:31 -0500 (EST)
+Date:   Thu, 26 Dec 2019 12:17:31 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Berrocal, Eduardo" <eduardo.berrocal@intel.com>
+Subject: Re: [PATCH] ext4: Optimize ext4 DIO overwrites
+Message-ID: <20191226171731.GE3158@mit.edu>
+References: <20191218174433.19380-1-jack@suse.cz>
+ <20191219135329.529E3A404D@d06av23.portsmouth.uk.ibm.com>
+ <20191219192823.GA5389@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191219192823.GA5389@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Dec 19, 2019 at 08:28:23PM +0100, Jan Kara wrote:
+> > However depending on which patch lands first one may need a
+> > re-basing. Will conflict with this-
+> > https://marc.info/?l=linux-ext4&m=157613016931238&w=2
+> 
+> Yes, but the conflict is minor and trivial to resolve.
+> 
 
-For encrypted files, commit 36086d43f657 ("ext4 crypto: fix bugs in
-ext4_encrypted_zeroout()") disabled the optimization where when a write
-occurs to the middle of an unwritten extent, the head and/or tail of the
-extent (when they aren't too large) are zeroed out, turned into an
-initialized extent, and merged with the part being written to.  This
-optimization helps prevent fragmentation of the extent tree.
+Is this the correct resolution?
 
-However, disabling this optimization also made fscrypt_zeroout_range()
-nearly impossible to test, as now it's only reachable via the very rare
-case in ext4_split_extent_at() where allocating a new extent tree block
-fails due to ENOSPC.  'gce-xfstests -c ext4/encrypt -g auto' doesn't
-even hit this at all.
-
-It's preferable to avoid really rare cases that are hard to test.
-
-That commit also cited data corruption in xfstest generic/127 as a
-reason to disable the extent zeroout optimization, but that's no longer
-reproducible anymore.  It also cited fscrypt_zeroout_range() having poor
-performance, but I've written a patch to fix that.
-
-Therefore, re-enable the extent zeroout optimization on encrypted files.
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/ext4/extents.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index dae66e8f0c3a..fee19c9f5fe3 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3718,9 +3718,6 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
- 		max_zeroout = sbi->s_extent_max_zeroout_kb >>
- 			(inode->i_sb->s_blocksize_bits - 10);
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -447,6 +447,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	struct inode *inode = file_inode(iocb->ki_filp);
+ 	loff_t offset = iocb->ki_pos;
+ 	size_t count = iov_iter_count(from);
++	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
+ 	bool extend = false, unaligned_io = false;
+ 	bool ilock_shared = true;
  
--	if (IS_ENCRYPTED(inode))
--		max_zeroout = 0;
--
- 	/*
- 	 * five cases:
- 	 * 1. split the extent into three extents.
--- 
-2.24.1
+@@ -526,7 +527,9 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		ext4_journal_stop(handle);
+ 	}
+ 
+-	ret = iomap_dio_rw(iocb, from, &ext4_iomap_ops, &ext4_dio_write_ops,
++	if (ilock_shared)
++		iomap_ops = &ext4_iomap_overwrite_ops;
++	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+ 			   is_sync_kiocb(iocb) || unaligned_io || extend);
+ 
+ 	if (extend)
 
+     	   	    	      	  - Ted
+				  
