@@ -2,85 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFE112B4EF
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 14:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AF112B5EC
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 17:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726675AbfL0NrC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 Dec 2019 08:47:02 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34979 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbfL0NrC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Dec 2019 08:47:02 -0500
-Received: by mail-wr1-f67.google.com with SMTP id g17so26114292wro.2
-        for <linux-ext4@vger.kernel.org>; Fri, 27 Dec 2019 05:47:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yZ/6rUUablOcK/gSYaJ1J/S/ZDD9h2V3ve00gP29MQk=;
-        b=THit34ZiuBw3+jK+KFUpFLkmYXbdb8/ZNnqSHVM3awyzn328KcupVxnWUwSM0HHhJp
-         eBw/DlTUztk8K/20SSqzjfR89ps7DzEs438AAVC8HjyTJjyQ542rT077LvEIJ/hWTZtC
-         MsaqUYZsWOc6LvyRRypYMnmqzN11zLaVxArrLwr0ckZbEUyo9j0n0bYxO8JAp/D8Eb1p
-         8CsiT5HyvC5Etjl5tMPJCge/VpZsPMp1+20XOGQm8TE33+xjvJnNYN6yLGxYX4a6Nbh4
-         mmrnaVp61OyGX/itgnT7Y/fre7Vz4CvcR1TiVLvL3hIA0h5Ramj0K2MMMU/LUjQOt4El
-         Tqtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yZ/6rUUablOcK/gSYaJ1J/S/ZDD9h2V3ve00gP29MQk=;
-        b=Cx3wuxcEn0dLYLj6z+gb9OFWzhh8i5MHylQu9uXipINIjU9QMZE8WwKAxPC7OzDiEN
-         /ZqT3nmX6CgmqDIw4FjjqGqbamSgkQ5Vc1jTn5i8NuQvHl4vd4lJAKQvm/qzSuGCP3af
-         cHS6E98sDR7gxOfNdIGKD95LMVTkAY64HpGgu4IcGBEeYBa61tcExhAcgP2LHT68mbKo
-         RSEVK0F+Vp/Yk3qBnlnBHmDBcCiCmvNwcRPzMbnFf+xPfa1E+tL3CHdcXCnmZeX/DD5v
-         TQOqAsB+fqNJ/E9Ur+5ANc1cMMXggpGsQ6I7RY8LME0RcFtTfiFfCIy7mDN+G4E32krz
-         55iw==
-X-Gm-Message-State: APjAAAU8R2cvYABozJJ5kfNPUFJNITaKzXyjExqmLlTucW3mJZWPHD05
-        jH8LKCDsmWsH9N43ndzPlnvU1Q==
-X-Google-Smtp-Source: APXvYqz5bF4p5vRQNTNOjHdV17xFXC4IuIbpDB90AxO030jdtkF1VMtwEkIyLQC/u0SoPSTSkeoWQQ==
-X-Received: by 2002:a5d:4045:: with SMTP id w5mr47677833wrp.59.1577454420599;
-        Fri, 27 Dec 2019 05:47:00 -0800 (PST)
-Received: from maco2.ams.corp.google.com (a83-162-234-235.adsl.xs4all.nl. [83.162.234.235])
-        by smtp.gmail.com with ESMTPSA id b10sm35648532wrt.90.2019.12.27.05.46.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Dec 2019 05:46:59 -0800 (PST)
-From:   Martijn Coenen <maco@android.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@google.com, sspatil@google.com, drosen@google.com,
-        Martijn Coenen <maco@android.com>
-Subject: [PATCH] ext4: Add EXT4_IOC_FSGETXATTR/EXT4_IOC_FSSETXATTR to compat_ioctl.
-Date:   Fri, 27 Dec 2019 14:46:39 +0100
-Message-Id: <20191227134639.35869-1-maco@android.com>
-X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
+        id S1726677AbfL0QhV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 27 Dec 2019 11:37:21 -0500
+Received: from mga14.intel.com ([192.55.52.115]:52887 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726379AbfL0QhV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 27 Dec 2019 11:37:21 -0500
+X-Amp-Result: UNSCANNABLE
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Dec 2019 08:37:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,363,1571727600"; 
+   d="scan'208";a="269113835"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 27 Dec 2019 08:37:19 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1iksc3-000Etr-83; Sat, 28 Dec 2019 00:37:19 +0800
+Date:   Sat, 28 Dec 2019 00:36:03 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: Re: [PATCH v4 14/20] ext4: main commit routine for fast commits
+Message-ID: <201912280016.GUXJDWZo%lkp@intel.com>
+References: <20191224081324.95807-14-harshadshirwadkar@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191224081324.95807-14-harshadshirwadkar@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-These are backed by 'struct fsxattr' which has the same size on all
-architectures.
+Hi Harshad,
 
-Signed-off-by: Martijn Coenen <maco@android.com>
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on tip/perf/core]
+[cannot apply to ext4/dev linus/master v5.5-rc3 next-20191220]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Harshad-Shirwadkar/ext4-update-docs-for-fast-commit-feature/20191225-200339
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ceb9e77324fa661b1001a0ae66f061b5fcb4e4e6
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-129-g341daf20-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+   fs/ext4/ext4_jbd2.c:611:5: sparse: sparse: symbol '__ext4_fc_track_range' was not declared. Should it be static?
+>> fs/ext4/ext4_jbd2.c:825:6: sparse: sparse: symbol 'submit_fc_bh' was not declared. Should it be static?
+>> fs/ext4/ext4_jbd2.c:1156:5: sparse: sparse: symbol 'ext4_fc_perform_hard_commit' was not declared. Should it be static?
+   fs/ext4/ext4_jbd2.c:500:12: sparse: sparse: context imbalance in '__ext4_dentry_update' - unexpected unlock
+>> fs/ext4/ext4_jbd2.c:923:20: sparse: sparse: context imbalance in 'wait_all_inode_data' - unexpected unlock
+
+Please review and possibly fold the followup patch.
+
 ---
- fs/ext4/ioctl.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index e8870fff8224..a0ec750018dd 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -1377,6 +1377,8 @@ long ext4_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case EXT4_IOC_CLEAR_ES_CACHE:
- 	case EXT4_IOC_GETSTATE:
- 	case EXT4_IOC_GET_ES_CACHE:
-+	case EXT4_IOC_FSGETXATTR:
-+	case EXT4_IOC_FSSETXATTR:
- 		break;
- 	default:
- 		return -ENOIOCTLCMD;
--- 
-2.24.1.735.g03f4e72817-goog
-
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
