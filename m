@@ -2,36 +2,26 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1D112BB36
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 22:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3619F12BB90
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 23:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbfL0VXS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 Dec 2019 16:23:18 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:33975 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbfL0VXS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Dec 2019 16:23:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1577481793;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=48HBB2KfXhaTD/qKcyXvjDtuDdQKvhQn4iJRH8czAHc=;
-        b=sHNc5GIJcBv1YC7VHqLOoxtLqIcvP+yKhYxHTW0BgzAHPjTfxgf7zwI66IjwpltvSj
-        Dx4ffCMv9Hs4ay0lNwSt9h6/CdbylLT8CQqAIV9O6wFBngZrv/RiCAv/Kxuq+NfxdUDC
-        Yw4o3AccmU+IUh73JJVxbRnfzN2vMd8X2yxUcUOonS7HuwElEsOLLdrRpcHz7vBRny7I
-        tPfga5t/+j9es1w0txBMWLbdMsjnY6UP9Im5zaA0F2cyEXejLxgdCUzxgXEbIjzXcQ5W
-        j6o4akOL/1kg6pPWcnTcevgdyRS1Pq0IboJKMjylJCDF+0BMx6XGRUSWharFlbcvsngJ
-        SewA==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzHHXDbJ/ScSKV5"
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 46.1.3 DYNA|AUTH)
-        with ESMTPSA id e09841vBRLMNGRC
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Fri, 27 Dec 2019 22:22:23 +0100 (CET)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+        id S1726075AbfL0WKM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 27 Dec 2019 17:10:12 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51298 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725306AbfL0WKL (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Dec 2019 17:10:11 -0500
+Received: from callcc.thunk.org (96-72-84-49-static.hfc.comcastbusiness.net [96.72.84.49] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xBRM8vac001407
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Dec 2019 17:08:59 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 75080420485; Fri, 27 Dec 2019 17:08:57 -0500 (EST)
+Date:   Fri, 27 Dec 2019 17:08:57 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Stephan Mueller <smueller@chronox.de>
 Cc:     Andy Lutomirski <luto@amacapital.net>,
         Andy Lutomirski <luto@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -48,137 +38,104 @@ Cc:     Andy Lutomirski <luto@amacapital.net>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         linux-man <linux-man@vger.kernel.org>
 Subject: Re: [PATCH v3 0/8] Rework random blocking
-Date:   Fri, 27 Dec 2019 22:22:23 +0100
-Message-ID: <15817620.rmTN4T87Wr@tauon.chronox.de>
-In-Reply-To: <20191227130436.GC70060@mit.edu>
-References: <20191226140423.GB3158@mit.edu> <4048434.Q8HajmOrkZ@tauon.chronox.de> <20191227130436.GC70060@mit.edu>
+Message-ID: <20191227220857.GD70060@mit.edu>
+References: <20191226140423.GB3158@mit.edu>
+ <4048434.Q8HajmOrkZ@tauon.chronox.de>
+ <20191227130436.GC70060@mit.edu>
+ <15817620.rmTN4T87Wr@tauon.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15817620.rmTN4T87Wr@tauon.chronox.de>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Am Freitag, 27. Dezember 2019, 14:04:36 CET schrieb Theodore Y. Ts'o:
-
-Hi Theodore,
-
-> On Fri, Dec 27, 2019 at 11:29:22AM +0100, Stephan Mueller wrote:
-> > My definition of TRNG is identical to the German AIS 31 and I guess
-> > identical to your definition of a TRNG.
-> > 
-> > A TRNG will produce an amount of random data that is equal to the amount
-> > of
-> > "fresh" entropy that was provided by the noise source. I.e. it should be
-> > identical to the blocking_pool behavior.
+On Fri, Dec 27, 2019 at 10:22:23PM +0100, Stephan Mueller wrote:
 > 
-> This begs the question of determining: (a) how much "fresh entropy"
-> you can actually get from a noise source, (b) at what rate the "fresh
-> entropy" is arriving, and (c) what assurance(s) you have that the
-> noise source is actually working correctly.
+> I am unsure but it sounds like you are refuting your blocking_pool 
+> implementation. Nothing more and nothing less than the blocking_pool, just 
+> with a more modern and further analyzed DRNG is what was referenced as a TRNG.
+
+Yes, and that's why I am planning on taking Andy's patches to drop the
+blocking pool.  Trying to make the claim that you can read one byte
+from /dev/random if and only if one byte of entropy has flowed into
+it.... is a mug's game, for the reasons I gave above.
+
+> Or maybe the terminology of TRNG (i.e. "true") is offending. I have no concern 
+> to have it replaced with some other terminology. Yet, I was just taking one 
+> well-defined term.
+
+But my point is that it *isn't* a well defined term, precisely because
+it's completely unclear what application programmer can expect when
+they try to use some hypothetical GRANDOM_TRUERANDOM flag.  What does
+that *mean*?  The kernel can't offer up any guarantees about whether
+or not the noise source has been appropriately characterized.  All
+say, a GPG or OpenSSL developer can do is get the vague sense that
+TRUERANDOM is "better" and of course, they want the best security, so
+of *course* they are going to try to use it.  At which point it will
+block, and when some other clever user (maybe a distro release
+engineer) puts it into an init script, then systems will stop working
+and users will complain to Linus.
+
+And then we'll have companies like Intel claiming that RDSEED has been
+very carefully characterized --- by them --- and we should *obviously*
+trust it, and wire up RDSEED so that TRUERANDOM will have a near
+infinite supply of really good entropy.  And they might even be
+correct.  But this way lies a huge mess which is fundamentally social,
+not technical.
+
+The claim we can make for getrandom(2) is that we do the best job that
+we can, and we feed in as many sources as possible and hope that at
+least one or more sources is not known to the attacker.  One of the
+sources could very well be AES(NSA_KEY, SEQ++).  But that still will
+protect us from the Chinese and Russian crypto teams.  And we can hope
+that the NSA doesn't have access to the inter-packet arrival times on
+the local area network, or the radio strength as recorded from the
+WiFi radio, etc. etc.  But note that we didn't make any claims of how
+many bits of entropy that we have; it helps that we are implicitly
+making a claim that we trust the crypto algorithms.   
+
+> > So let's take a step back and ask the question: "Exactly what _value_
+> > do you want to provide by creating some kind of true random
+> > interface?"  What does this enable?  What applications does this
+> > really help?
 > 
-> You can't make those assurances from software alone; it needs to be an
-> aspect of holistic design of the hardware's design; the supply chain,
-> and the software.  So if we are going to claime that we have something
-> like GRND_TRUERANDOM or /dev/trandom, or whatever, it needs to work on
-> IOT devices running ARM, RISC-V, MIPS, PowerPC, x86.  Some of these
-> architectures have no instruction reordering and are stupid simple;
-> some of these hardware platforms may have no high-resolution clock or
-> cryptographic instructions.
-> 
-> In addition, if you use a hardware device which is USB attached, how
-> does the kernel know that it really is the device that you think it
-> is?  The only way you know that a ChaosKey is a ChaosKey is by its USB
-> vendor and product id --- which can be easily forged by an attacker,
-> either in the supply chain or delivery path, or who walks up to the
-> laptop, yanks out the ChaosKey and replaces it with a "PutinKey" or a
-> "NSAKey".
-> 
-> So creating somethinig which shows up as "true random number
-> generator" as a generic Linux concept seems to me to be fraught
-> endeavor, and I'm not at all convince people need it.
+> There are simply cryptographers who have use cases for such random numbers. 
+> The core use case is to seed other DRNGs and avoiding the chaining of free-
+> running DRNGs.
 
-I am unsure but it sounds like you are refuting your blocking_pool 
-implementation. Nothing more and nothing less than the blocking_pool, just 
-with a more modern and further analyzed DRNG is what was referenced as a TRNG.
+For this very specialized use case, what I think the kernel should
+provide is maximal transparency; that is, given the DRBG direct access
+to the TPM's random number generator, or direct access to the
+ChaosKey, and the userspace DRBG should be able to get a list of the
+various hardware RNG's, and select one, with the characterization
+being done userspace, not in the kernel.
 
-Or maybe the terminology of TRNG (i.e. "true") is offending. I have no concern 
-to have it replaced with some other terminology. Yet, I was just taking one 
-well-defined term.
+The kernel shouldn't be mixing various noise sources together, and it
+certainly shouldn't be trying to claim that it knows how many bits of
+entropy that it gets when is trying to play some jitter entropy game
+on a stupid-simple CPU architecture for IOT/Embedded user cases where
+everything is synchronized off of a single master oscillator, and
+there is no CPU instruction reordering or register renaming, etc.,
+etc.
 
-Yet, I fully agree that a noise source always must be vetted. This is what I 
-tried with random.c in [1], specifically section 6.1 for x86 systems.
+You can talk about providing tools that try to make these estimations
+--- but these sorts of things would have to be done on each user's
+hardware, and for most distro users, it's just not practical.
 
-For my LRNG, I tried that in [2] section 3.2 compliant to SP800-90B. In order 
-to provide a means to everybody to perform such entropy analysis, the entire 
-tool set required for it is provided:
+So if it's just for cryptographers, then let it all be done in
+userspace, and let's not make it easy for GPG, OpenSSL, etc., to all
+say, "We want TrueRandom(tm); we won't settle for less".  We can talk
+about how do we provide the interfaces so that those cryptographers
+can get the information they need so they can get access to the raw
+noise sources, separated out and named, and with possibly some way
+that the noise source can authenticate itself to the Cryptographer's
+userspace library/application.
 
-- with CONFIG_LRNG_TESTING providing an interface to the raw unconditioned 
-noise
+But all of this should probably not be in drivers/char/random.c, and
+we probably need to figure out a better kernel to userspace interface
+than what we have with /dev/hwrng.
 
-- with [3] providing a tool set to gather all data needed for an SP800-90B 
-compliant quantitative analysis
-
-Unfortunately due to license restrictions, I cannot make the same tool set 
-available used for the quantiative study provided with [1] section 6.1.
-
-Finally, to support the conclusions drawn from a noise source analysis, the 
-health tests provided with LRNG compliant to SP800-90B are available with 
-CONFIG_LRNG_HEALTH_TESTS. These tests help in identifying weak or broken noise 
-sources.
-
-It is fully clear that such studies of non-physical noise sources do not have 
-a stochastical model which implies that we cannot make global statements. That 
-is the limitation when using such noise sources. Though, the implementation 
-should have sufficient "leeway" (i.e. underestmation) when crediting entropy 
-to some events.
-> 
-> > - add a new GRND_TRUERANDOM flag to getrandom(2) which allows access to
-> > the
-> > TRNG. Andy did not like it because he mentioned that it may be misused
-> > since the syscall is unprivileged.
-> 
-> Even if we could solve the "how the hell can the kernel guarantee that
-> the noise source is legitimate" problem in a general way that works
-> across all of the architectures, we still have the problem that
-> everyone thinks they need "the good stuff".
-> 
-> Suppose the system call was privileged and "true randomness" could
-> only be accessed as root.  What would happen?  Application programmers
-> would give instructions requiring that their application be installed
-> as root to be more secure, "because that way you can get access the
-> _really_ good random numbers".
-
-That is why I think that it is no bug when this interface can DoS other users 
-wanting to access the very same resource. This is the price to pay for getting 
-access to this type of data.
-> 
-> So let's take a step back and ask the question: "Exactly what _value_
-> do you want to provide by creating some kind of true random
-> interface?"  What does this enable?  What applications does this
-> really help?
-
-There are simply cryptographers who have use cases for such random numbers. 
-The core use case is to seed other DRNGs and avoiding the chaining of free-
-running DRNGs.
-
-This is a common approach that you can see in action with the RDSEED 
-instruction, for example.
-> 
-> As I thought while watching the latest Star Wars movie: Why?  Why?
-> Whywhywhy?
-> 
-> 					- Ted
-
-[1] https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Publications/Studies/
-LinuxRNG/LinuxRNG_EN.pdf?__blob=publicationFile&v=11
-
-[2] https://chronox.de/lrng/doc/lrng.pdf
-
-[3] https://chronox.de/lrng/lrng-tests-20191123.tar.xz
-
-Ciao
-Stephan
-
-
+					- Ted
