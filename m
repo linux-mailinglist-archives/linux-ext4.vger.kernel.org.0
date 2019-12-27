@@ -2,111 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C71E812B4C0
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 14:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C29212B4C5
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 14:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727250AbfL0NFw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 Dec 2019 08:05:52 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50541 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726605AbfL0NFw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Dec 2019 08:05:52 -0500
-Received: from callcc.thunk.org (96-72-102-169-static.hfc.comcastbusiness.net [96.72.102.169] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xBRD4baO001674
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Dec 2019 08:04:38 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id ACFE1420485; Fri, 27 Dec 2019 08:04:36 -0500 (EST)
-Date:   Fri, 27 Dec 2019 08:04:36 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Stephan Mueller <smueller@chronox.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-Subject: Re: [PATCH v3 0/8] Rework random blocking
-Message-ID: <20191227130436.GC70060@mit.edu>
-References: <20191226140423.GB3158@mit.edu>
- <26B7EEAE-1166-4B45-9534-E00C5B2767C1@amacapital.net>
- <4048434.Q8HajmOrkZ@tauon.chronox.de>
+        id S1726562AbfL0NKb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 27 Dec 2019 08:10:31 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:54376 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726053AbfL0NKb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 27 Dec 2019 08:10:31 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Tm24V6j_1577452226;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Tm24V6j_1577452226)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 27 Dec 2019 21:10:27 +0800
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Subject: Re: Discussion: is it time to remove dioread_nolock?
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     Liu Bo <bo.liu@linux.alibaba.com>,
+        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+References: <20191226153118.GA17237@mit.edu>
+Message-ID: <dc324872-9720-0590-5501-043c84d9ddc6@linux.alibaba.com>
+Date:   Fri, 27 Dec 2019 21:10:26 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4048434.Q8HajmOrkZ@tauon.chronox.de>
+In-Reply-To: <20191226153118.GA17237@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 27, 2019 at 11:29:22AM +0100, Stephan Mueller wrote:
+Hi Ted,
+After applying Ritesh's patches, from my test result, there is no
+obvious performance difference between default mount options and
+with dioread_lock (delalloc or nodelalloc).
+I'm not sure if dioread_nolock was used for other purpose in the
+scenario reported by Bo Liu. Maybe Xiaoguang could give some inputs.
+
+Thanks,
+Joseph
+
+
+On 19/12/26 23:31, Theodore Y. Ts'o wrote:
+> With inclusion of Ritesh's inode lock scalability patches[1], the
+> traditional performance reasons for dioread_nolock --- namely,
+> removing the need to take an exclusive lock for Direct I/O read
+> operations --- has been removed.
 > 
-> My definition of TRNG is identical to the German AIS 31 and I guess identical 
-> to your definition of a TRNG.
+> [1] https://lore.kernel.org/r/20191212055557.11151-1-riteshh@linux.ibm.com
 > 
-> A TRNG will produce an amount of random data that is equal to the amount of 
-> "fresh" entropy that was provided by the noise source. I.e. it should be 
-> identical to the blocking_pool behavior.
-
-This begs the question of determining: (a) how much "fresh entropy"
-you can actually get from a noise source, (b) at what rate the "fresh
-entropy" is arriving, and (c) what assurance(s) you have that the
-noise source is actually working correctly.
-
-You can't make those assurances from software alone; it needs to be an
-aspect of holistic design of the hardware's design; the supply chain,
-and the software.  So if we are going to claime that we have something
-like GRND_TRUERANDOM or /dev/trandom, or whatever, it needs to work on
-IOT devices running ARM, RISC-V, MIPS, PowerPC, x86.  Some of these
-architectures have no instruction reordering and are stupid simple;
-some of these hardware platforms may have no high-resolution clock or
-cryptographic instructions.
-
-In addition, if you use a hardware device which is USB attached, how
-does the kernel know that it really is the device that you think it
-is?  The only way you know that a ChaosKey is a ChaosKey is by its USB
-vendor and product id --- which can be easily forged by an attacker,
-either in the supply chain or delivery path, or who walks up to the
-laptop, yanks out the ChaosKey and replaces it with a "PutinKey" or a
-"NSAKey".
-
-So creating somethinig which shows up as "true random number
-generator" as a generic Linux concept seems to me to be fraught
-endeavor, and I'm not at all convince people need it.
-
-> - add a new GRND_TRUERANDOM flag to getrandom(2) which allows access to the 
-> TRNG. Andy did not like it because he mentioned that it may be misused since 
-> the syscall is unprivileged.
-
-Even if we could solve the "how the hell can the kernel guarantee that
-the noise source is legitimate" problem in a general way that works
-across all of the architectures, we still have the problem that
-everyone thinks they need "the good stuff".
-
-Suppose the system call was privileged and "true randomness" could
-only be accessed as root.  What would happen?  Application programmers
-would give instructions requiring that their application be installed
-as root to be more secure, "because that way you can get access the
-_really_ good random numbers".
-
-So let's take a step back and ask the question: "Exactly what _value_
-do you want to provide by creating some kind of true random
-interface?"  What does this enable?  What applications does this
-really help?
-
-As I thought while watching the latest Star Wars movie: Why?  Why?
-Whywhywhy?
-
-					- Ted
+> So... is it time to remove the code which supports dioread_nolock?
+> Doing so would simplify the code base, and reduce the test matrix.
+> This would also make it easier to restructure the write path when
+> allocating blocks so that the extent tree is updated after writing out
+> the data blocks, by clearing away the underbrush of dioread nolock
+> first.
+> 
+> If we do this, we'd leave the dioread_nolock mount option for
+> backwards compatibility, but it would be a no-op and not actually do
+> anything.
+> 
+> Any objections before I look into ripping out dioread_nolock?
+> 
+> The one possible concern that I considered was for Alibaba, which was
+> doing something interesting with dioread_nolock plus nodelalloc.  But
+> looking at Liu Bo's explanation[2], I believe that their workload
+> would be satisfied simply by using the standard ext4 mount options
+> (that is, the default mode has the performance benefits when doing
+> parallel DIO reads, and so the need for nodelalloc to mitigate the
+> tail latency concerns which Alibaba was seeing in their workload would
+> not be needed).  Could Liu or someone from Alibaba confirm, perhaps
+> with some benchmarks using their workload?
+> 
+> [2] https://lore.kernel.org/linux-ext4/20181121013035.ab4xp7evjyschecy@US-160370MP2.local/
+> 
+>     	  	     	      	   	- Ted
+> 
