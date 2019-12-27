@@ -2,37 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 822CE12B3BF
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 10:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4258812B3E2
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 11:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbfL0J4V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 Dec 2019 04:56:21 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:32666 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbfL0J4V (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Dec 2019 04:56:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1577440576;
+        id S1726491AbfL0KaK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 27 Dec 2019 05:30:10 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.169]:24796 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726270AbfL0KaK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Dec 2019 05:30:10 -0500
+X-Greylist: delayed 80746 seconds by postgrey-1.27 at vger.kernel.org; Fri, 27 Dec 2019 05:30:09 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1577442607;
         s=strato-dkim-0002; d=chronox.de;
         h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
         X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=5aK1+NDtiYPzmCQNo6eOoKi5LVv00vD927S/Nr7xXCQ=;
-        b=DvH6WDDn1bSu20Gpp1igKsqlTG4Pyo3mEP+uVREQIVL41YEUSgEYGZ+z42USPTQUk6
-        cFfLZRfTSWcXXwFosCBC0L58+rtR4ABdC0XyNpaHRs043JlleVpRtzTek4EDO1vELfOs
-        TrgbbS2T6ToBdzdlEiFJbvivPuuJmxuyLO6olxSgq5KKFmEtHLTkO38Hm+eeuzhD57eu
-        H3pYJ1ymEFmS96W5hOc+lIPzPjF22GGBYrHuKFoGh4QlFgKT6IP171kHl5M/GlcBj5JP
-        ROhzm/eEStiVYaBJJKa4QTYrtBP4FdemJN+w1984AEUFciqOKcO1YtsxTDgTYw0dDzh4
-        P5vw==
+        bh=Qx0iM8FINnvF6+4nf5gRDxQg8HM8PCrY5XDC09oP3uk=;
+        b=ULYFxwWgTUvxznZh3jbUvrtbLdfp1lGKxl3Sv6qMMY3hF5tyJ53LQaEF/HY6qI7DUF
+        rzIG8OVgPRnTGS/lH5McC3m6aqGsZQTcznqt21uab5qAFFJEggbN7k3QFH/nvrX85oVO
+        p60Xx6isGMhx8nJ3VZGYqyr/Rrsm71+lRwcAdLfiK19aLzNba4me6TuMGHuUGPaq34Kk
+        ZDWBcRuoZJEjIUIVWOAUPTKrdEUdCqQAThPFpJDLqjcD84tbZhCn0BXY5aOu8rpauyxb
+        xVgwMRb9obst7bEytkoq1zpA4Fmc4QcPQyOQQZXtA42hC5vrsH6lOUQdYGZD/IJM6JDZ
+        flHQ==
 X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzHHXDbJ/ScSKV5"
 X-RZG-CLASS-ID: mo00
 Received: from tauon.chronox.de
         by smtp.strato.de (RZmta 46.1.3 DYNA|AUTH)
-        with ESMTPSA id e09841vBR9tRE0W
+        with ESMTPSA id e09841vBRATME7m
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-        Fri, 27 Dec 2019 10:55:27 +0100 (CET)
+        Fri, 27 Dec 2019 11:29:22 +0100 (CET)
 From:   Stephan Mueller <smueller@chronox.de>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Andy Lutomirski <luto@kernel.org>, Ted Ts'o <tytso@mit.edu>,
+To:     Andy Lutomirski <luto@amacapital.net>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Andy Lutomirski <luto@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Linux API <linux-api@vger.kernel.org>,
         Kees Cook <keescook@chromium.org>,
@@ -47,10 +49,10 @@ Cc:     Andy Lutomirski <luto@kernel.org>, Ted Ts'o <tytso@mit.edu>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         linux-man <linux-man@vger.kernel.org>
 Subject: Re: [PATCH v3 0/8] Rework random blocking
-Date:   Fri, 27 Dec 2019 10:55:27 +0100
-Message-ID: <2958196.rnPSVNvCH9@tauon.chronox.de>
-In-Reply-To: <E464D551-1631-4EA8-ADFB-852E16D29CA9@amacapital.net>
-References: <4820831.xlnk3tY4r2@tauon.chronox.de> <E464D551-1631-4EA8-ADFB-852E16D29CA9@amacapital.net>
+Date:   Fri, 27 Dec 2019 11:29:22 +0100
+Message-ID: <4048434.Q8HajmOrkZ@tauon.chronox.de>
+In-Reply-To: <26B7EEAE-1166-4B45-9534-E00C5B2767C1@amacapital.net>
+References: <20191226140423.GB3158@mit.edu> <26B7EEAE-1166-4B45-9534-E00C5B2767C1@amacapital.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
@@ -59,161 +61,168 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Am Donnerstag, 26. Dezember 2019, 13:46:52 CET schrieb Andy Lutomirski:
+Am Freitag, 27. Dezember 2019, 00:29:20 CET schrieb Andy Lutomirski:
 
-Hi Andy,
+Hi Ted, Andy,
 
-> > On Dec 26, 2019, at 8:04 PM, Stephan Mueller <smueller@chronox.de> wrot=
-e:
-> >=20
-> > =EF=BB=BFAm Donnerstag, 26. Dezember 2019, 12:12:29 CET schrieb Andy Lu=
-tomirski:
-> >=20
-> > Hi Andy,
-> >=20
-> >>>> On Dec 26, 2019, at 5:29 PM, Stephan M=C3=BCller <smueller@chronox.d=
-e>=20
-wrote:
-> >>> =EF=BB=BFAm Montag, 23. Dezember 2019, 09:20:43 CET schrieb Andy Luto=
-mirski:
-> >>>=20
-> >>> Hi Andy,
-> >>>=20
-> >>>> There are some open questions and future work here:
-> >>>>=20
-> >>>> Should the kernel provide an interface to get software-generated
-> >>>> "true random" numbers?  I can think of only one legitimate reason to
-> >>>> use such an interface: compliance with government standards.  If the
-> >>>> kernel provides such an interface going forward, I think it should
-> >>>> be a brand new character device, and it should have a default mode
-> >>>> 0440 or similar.  Software-generated "true random numbers" are a
-> >>>> very limited resource, and resource exhaustion is a big deal.  Ask
-> >>>> anyone who has twiddled their thumbs while waiting for gnupg to
-> >>>> generate a key.  If we think the kernel might do such a thing, then
-> >>>> patches 5-8 could be tabled for now.
-> >>>=20
-> >>> What about offering a compile-time option to enable or disable such
-> >>> code?
-> >>> Note, with the existing random.c code base, there is no need to have a
-> >>> separate blocking_pool. The ChaCha20 DRNG could be used for that very
-> >>> same
-> >>> purpose, provided that in case these true random numbers are generated
-> >>> when
-> >>> the Chacha20 DRNG received an equal amount of "unused" entropy.
+> >> On Dec 26, 2019, at 10:04 PM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
 > >>=20
-> >> This scares me. The DRNG should be simple and easy to understand. If
-> >> we=E2=80=99re
-> >> tapping extra numbers in some weird way, then I would be more comforta=
-ble
-> >> with some clear assurance that this doesn=E2=80=99t break the security=
-=2E If we=E2=80=99re
-> >> tapping numbers in the same way as normal urandom, then I don=E2=80=99=
-t really
-> >> see
-> >> the point.
+> >> =EF=BB=BFOn Thu, Dec 26, 2019 at 01:03:34PM +0100, Stephan Mueller wro=
+te:
+> >> Agreed. I was just trying to outline that the removal of the
+> >> blocking_pool is a good thing. Even when we decide that random.c should
+> >> receive a TRNG, we do not need to re-add a blocking pool, but can easi=
+ly
+> >> use the existing ChaCha20 DRNG (most likely with its own instance).
 > >=20
-> > Agreed. I was just trying to outline that the removal of the blocking_p=
-ool
-> > is a good thing. Even when we decide that random.c should receive a TRN=
-G,
-> > we do not need to re-add a blocking pool, but can easily use the existi=
-ng
-> > ChaCha20 DRNG (most likely with its own instance).
->=20
-> Fair enough.
->=20
-> >>>> Alternatively, perhaps the kernel should instead provide a
-> >>>> privileged interface to read out raw samples from the various
-> >>>> entropy sources, and users who care could have a user daemon that
-> >>>> does something intelligent with them.  This would push the mess of
-> >>>> trying to comply with whatever standards are involved to userspace.
-> >>>> Userspace could then export "true randomness" via CUSE if it is so
-> >>>> inclined, or could have a socket with a well-known name, or whatever
-> >>>> else seems appropriate.
-> >>>=20
-> >>> With the patch set v26 of my LRNG I offer another possible alternative
-> >>> avoiding any additional character device file and preventing the
-> >>> starvation of legitimate use cases: the LRNG has an entropy pool that
-> >>> leaves different levels of entropy in the pool depending on the use
-> >>> cases
-> >>> of this data.
-> >>>=20
-> >>> If an unprivileged caller requests true random data, at least 1024 bi=
-ts
-> >>> of
-> >>> entropy is left in the pool. I.e. all entropy above that point is
-> >>> available
-> >>> for this request type. Note, even namespaces fall into this category
-> >>> considering that unprivileged users can create a user name space in
-> >>> which
-> >>> they can become root.
-> >>=20
-> >> This doesn=E2=80=99t solve the problem. If two different users run stu=
-pid
-> >> programs
-> >> like gnupg, they will starve each other.
+> > Well, it depends on what you mean by "TRNG" --- the ChaCha20 DRNG only
+> > has a state of 256 bits.  So if you want to only depend on "true
+> > entropy" you can't extract more than 256 bits without violating that
+> > assumption, at least if you're using a very strict definition of TRNG.
+
+
+My definition of TRNG is identical to the German AIS 31 and I guess identic=
+al=20
+to your definition of a TRNG.
+
+A TRNG will produce an amount of random data that is equal to the amount of=
+=20
+"fresh" entropy that was provided by the noise source. I.e. it should be=20
+identical to the blocking_pool behavior.
+
+This definition is slightly stricter than the SP800-90A definition of "a DR=
+BG=20
+with prediction resistance" which requires a reseed with entropy equal to t=
+he=20
+security strength of the DRBG, but allows one generate operation which at m=
+ost=20
+generates 2^19 random bits.
+
+Such TRNG has two components
+
+1. the noise source / the entropy pool
+
+2. the random number generator
+
+All I try to say is that the random number generator does not need to be a=
+=20
+special implementation of, say, a blocking_pool, but it can be any type of=
+=20
+DRNG (ChaCha20, SP800-90A DRBG, ...).
+
+To manage that DRNG, the logic needs to ensure that the maximum entropy=20
+content assumed to be present in the DRNG is min(entropy_from_noise_source,=
+=20
+security_strength_DRNG). For the case of the blocking_pool, the security=20
+strength is 1024 bits which means that at most the blocking_pool can hold u=
+p=20
+to 1024 bits. With a ChaCha20 DRNG, the security strength is 256 bits.=20
+SP800-90A defines the security strengths of the DRBGs.
+
+That said, for a TRNG, the DRNG part must be seeded with the amount of entr=
+opy=20
+equaling the requested numbers of random bits, but at most with entropy=20
+equaling the security strength of the DRNG. If the caller wants more random=
+=20
+data, the request must be chunked to ensure that the DRNG is always reseede=
+d=20
+before satisfying the chunk of the request.
+
 > >=20
-> > But such scenario will always occur, will it not? If there are two call=
-ers
-> > for a limited resource, they will content if one "over-uses" the
-> > resource. My idea was to provide an interface where its use does not
-> > starve other more relevant use cases (e.g. seeding of the DRNGs). I.e. a
-> > user of a TRNG has the right to be DoSed - that is the price to pay when
-> > using this concept.
->=20
-> Maybe I=E2=80=99m just cynical, but I expect that, if the feature is avai=
-lable to
-> everyone, then lots of user programmers will use it even though they don=
-=E2=80=99t
-> need to.  If, on the other hand, there is a barrier to entry, then people
-> will be more likely to stop and think.
+> > By getting rid of the blocking pool, and making /dev/random work like
+> > getrandom with flags set to 0, we're effectively abandoning any kind
+> > of assertion that /dev/random is some kind of TRNG.  This is not
+> > insane; this is what the *BSD's have always done.
 
-I would tend to agree with you. But if the man page provides an appropriate=
+Correct, and I am not disputing it. And I think that making Linux to behave=
 =20
-warning that such DoS is the price to pay, wouldn't you say it is sufficien=
-t?=20
-I guess you will say no :-)
+like the BSD's and guaranteeing that the DRNG is fully seeded based on Andy=
+'s=20
+patch set is a good thing.
 
-Thus, if you can convince Greg to allow us creating another device node, I =
-am=20
-definitely not in the way of creating and using it. All my suggestions simp=
-ly=20
-try to bridge the gap between Greg's rather reluctant agreement and our nee=
-ds.
+All I try to say is that there are use cases where a TRNG with the initiall=
+y=20
+defined operation is required. This most prominent use case is the German A=
+IS=20
+31 and the (re)seeding requirements of deterministic RNGs.
+> >=20
+> > But once we do this, and /dev/random takes on the semantics of "block
+> > until the CRNG has been initialized, and then it won't block after
+> > that", if we change it so that it now has some different semantics,
+> > such as "one you extract a 256-bit key, the read from /dev/random will
+> > block until we can refill it, which might take seconds, minutes or
+> > hours", will be considered a regression, and we can't do that.
+>=20
+> I don=E2=80=99t think Stephan was proposing that. He was proposing a way =
+to
+> implement a new interface that blocks.
 
-The good thing is IMHO that we are only talking about the actual kernel/use=
-r=20
-interface. The plumbing behind it will be identical - at least in my LRNG=20
-implementation, I can use the very same handler function for accessing the=
+Thank you, Andy. Yes. I am trying to propose a separate interface.
+
+Our discussion currently produced the following suggestions:
+
+=2D add a new GRND_TRUERANDOM flag to getrandom(2) which allows access to t=
+he=20
+TRNG. Andy did not like it because he mentioned that it may be misused sinc=
+e=20
+the syscall is unprivileged. I had some suggestions to overcome this proble=
+m,=20
+but not all of Andy's considerations could be addressed with this suggestio=
+n.=20
+As an idea, my current LRNG system call implementation looks like:
+
+SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
+                unsigned int, flags)
+{
+        if (flags & ~(GRND_NONBLOCK|GRND_RANDOM|GRND_INSECURE|
+GRND_TRUERANDOM))
+                return -EINVAL;
+
+        /*
+         * Requesting insecure and blocking randomness at the same time mak=
+es
+         * no sense.
+         */
+        if ((flags &
+             (GRND_INSECURE|GRND_RANDOM)) =3D=3D (GRND_INSECURE|GRND_RANDOM=
+))
+                return -EINVAL;
+
+        /* Only allow GRND_TRUERANDOM by itself or with NONBLOCK */
+        if ((flags & GRND_TRUERANDOM) &&
+            ((flags &~ GRND_TRUERANDOM) !=3D 0) &&
+            ((flags &~ (GRND_TRUERANDOM | GRND_NONBLOCK)) !=3D 0))
+                return -EINVAL;
+
+        if (count > INT_MAX)
+                count =3D INT_MAX;
+
+        if (flags & GRND_TRUERANDOM)
+                return lrng_read_common_block(flags & GRND_NONBLOCK, buf,
+                                              count, lrng_trng_get);
+        if (flags & GRND_INSECURE)
+                return lrng_sdrng_read(NULL, buf, count, NULL);
+
+        return lrng_read_common_block(flags & GRND_NONBLOCK, buf, count,
+                                      lrng_sdrng_get_sleep);
+
+}
+
+
+=2D Andy mentioned that he likes the approach with having another new char=
 =20
-TRNG with either the device file or the getrandom syscall. I guess the same=
-=20
-would be applicable to any possible random.c TRNG implementation.
+device with permissions 440 to provide an interface to the TRNG as more=20
+appropriate. However, Greg was reluctant to add a new device file.
 
->=20
-> Even gnupg could have been more clever =E2=80=94 when generating a 4096-b=
-it RSA key,
-> there is no actual need for 4096 bits of entropy, however entropy is
-> defined. 256 bits would have been more than adequate.
+I personally am indifferent. All I am suggesting is to have a TRNG offered =
+to=20
+user space.
 
-I am in violent agreement.
->=20
-> (FWIW, my personal view is that 512 bits, in the sense of =E2=80=9Cthe di=
-stribution
-> being sampled produces no output with probability greater than about
-> 2^-512=E2=80=9D, is a good upper limit for even the most paranoid.  This =
-is because
-> it=E2=80=99s reasonable to assume that an attacker can=E2=80=99t do more =
-than 2^128
-> operations. As djb has noted, multi-target attacks mean that you can
-> amplify success probability in some cases by a factor that won=E2=80=99t =
-exceed
-> 2^128.  Some day, quantum computers might square-root everything, giving
-> 512 bits. Actually, quantum computers won=E2=80=99t square root everythin=
-g, but
-> much more complicated analysis is needed to get a believable bound.)
->=20
-> =E2=80=94Andy
+> > Of course, we can hope that people will be using getrandom() and there
+> > will be very few new users of the /dev/random pathname.  But nothing
+> > is ever guaranteed..
+> >=20
+> >                       - Ted
 
 
 
