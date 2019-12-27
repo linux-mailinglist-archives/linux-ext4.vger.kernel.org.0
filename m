@@ -2,140 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3619F12BB90
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 23:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9A712BBB3
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 23:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbfL0WKM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 Dec 2019 17:10:12 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51298 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725306AbfL0WKL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Dec 2019 17:10:11 -0500
-Received: from callcc.thunk.org (96-72-84-49-static.hfc.comcastbusiness.net [96.72.84.49] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id xBRM8vac001407
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 27 Dec 2019 17:08:59 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 75080420485; Fri, 27 Dec 2019 17:08:57 -0500 (EST)
-Date:   Fri, 27 Dec 2019 17:08:57 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Stephan Mueller <smueller@chronox.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-Subject: Re: [PATCH v3 0/8] Rework random blocking
-Message-ID: <20191227220857.GD70060@mit.edu>
-References: <20191226140423.GB3158@mit.edu>
- <4048434.Q8HajmOrkZ@tauon.chronox.de>
- <20191227130436.GC70060@mit.edu>
- <15817620.rmTN4T87Wr@tauon.chronox.de>
+        id S1725957AbfL0WwS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 27 Dec 2019 17:52:18 -0500
+Received: from mga04.intel.com ([192.55.52.120]:20875 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725820AbfL0WwS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 27 Dec 2019 17:52:18 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Dec 2019 14:52:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,364,1571727600"; 
+   d="scan'208";a="243351232"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 27 Dec 2019 14:52:16 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1ikySu-000ElT-3D; Sat, 28 Dec 2019 06:52:16 +0800
+Date:   Sat, 28 Dec 2019 06:51:40 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: Re: [PATCH v4 19/20] ext4: add fast commit replay path
+Message-ID: <201912280641.QyyfUJRx%lkp@intel.com>
+References: <20191224081324.95807-19-harshadshirwadkar@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <15817620.rmTN4T87Wr@tauon.chronox.de>
+In-Reply-To: <20191224081324.95807-19-harshadshirwadkar@gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 27, 2019 at 10:22:23PM +0100, Stephan Mueller wrote:
-> 
-> I am unsure but it sounds like you are refuting your blocking_pool 
-> implementation. Nothing more and nothing less than the blocking_pool, just 
-> with a more modern and further analyzed DRNG is what was referenced as a TRNG.
+Hi Harshad,
 
-Yes, and that's why I am planning on taking Andy's patches to drop the
-blocking pool.  Trying to make the claim that you can read one byte
-from /dev/random if and only if one byte of entropy has flowed into
-it.... is a mug's game, for the reasons I gave above.
+Thank you for the patch! Perhaps something to improve:
 
-> Or maybe the terminology of TRNG (i.e. "true") is offending. I have no concern 
-> to have it replaced with some other terminology. Yet, I was just taking one 
-> well-defined term.
+[auto build test WARNING on tip/perf/core]
+[cannot apply to ext4/dev linus/master v5.5-rc3 next-20191220]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
 
-But my point is that it *isn't* a well defined term, precisely because
-it's completely unclear what application programmer can expect when
-they try to use some hypothetical GRANDOM_TRUERANDOM flag.  What does
-that *mean*?  The kernel can't offer up any guarantees about whether
-or not the noise source has been appropriately characterized.  All
-say, a GPG or OpenSSL developer can do is get the vague sense that
-TRUERANDOM is "better" and of course, they want the best security, so
-of *course* they are going to try to use it.  At which point it will
-block, and when some other clever user (maybe a distro release
-engineer) puts it into an init script, then systems will stop working
-and users will complain to Linus.
+url:    https://github.com/0day-ci/linux/commits/Harshad-Shirwadkar/ext4-update-docs-for-fast-commit-feature/20191225-200339
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ceb9e77324fa661b1001a0ae66f061b5fcb4e4e6
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-129-g341daf20-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
 
-And then we'll have companies like Intel claiming that RDSEED has been
-very carefully characterized --- by them --- and we should *obviously*
-trust it, and wire up RDSEED so that TRUERANDOM will have a near
-infinite supply of really good entropy.  And they might even be
-correct.  But this way lies a huge mess which is fundamentally social,
-not technical.
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
 
-The claim we can make for getrandom(2) is that we do the best job that
-we can, and we feed in as many sources as possible and hope that at
-least one or more sources is not known to the attacker.  One of the
-sources could very well be AES(NSA_KEY, SEQ++).  But that still will
-protect us from the Chinese and Russian crypto teams.  And we can hope
-that the NSA doesn't have access to the inter-packet arrival times on
-the local area network, or the radio strength as recorded from the
-WiFi radio, etc. etc.  But note that we didn't make any claims of how
-many bits of entropy that we have; it helps that we are implicitly
-making a claim that we trust the crypto algorithms.   
 
-> > So let's take a step back and ask the question: "Exactly what _value_
-> > do you want to provide by creating some kind of true random
-> > interface?"  What does this enable?  What applications does this
-> > really help?
-> 
-> There are simply cryptographers who have use cases for such random numbers. 
-> The core use case is to seed other DRNGs and avoiding the chaining of free-
-> running DRNGs.
+sparse warnings: (new ones prefixed by >>)
 
-For this very specialized use case, what I think the kernel should
-provide is maximal transparency; that is, given the DRBG direct access
-to the TPM's random number generator, or direct access to the
-ChaosKey, and the userspace DRBG should be able to get a list of the
-various hardware RNG's, and select one, with the characterization
-being done userspace, not in the kernel.
+   fs/ext4/ext4_jbd2.c:612:5: sparse: sparse: symbol '__ext4_fc_track_range' was not declared. Should it be static?
+   fs/ext4/ext4_jbd2.c:826:6: sparse: sparse: symbol 'submit_fc_bh' was not declared. Should it be static?
+>> fs/ext4/ext4_jbd2.c:1398:13: sparse: sparse: cast to restricted __le16
+>> fs/ext4/ext4_jbd2.c:1403:18: sparse: sparse: incorrect type in assignment (different base types)
+>> fs/ext4/ext4_jbd2.c:1403:18: sparse:    expected unsigned int [usertype] old_csum
+>> fs/ext4/ext4_jbd2.c:1403:18: sparse:    got restricted __le32 [usertype] fc_csum
+   fs/ext4/ext4_jbd2.c:1406:25: sparse: sparse: incorrect type in assignment (different base types)
+>> fs/ext4/ext4_jbd2.c:1406:25: sparse:    expected restricted __le32 [usertype] fc_csum
+>> fs/ext4/ext4_jbd2.c:1406:25: sparse:    got unsigned int [usertype] old_csum
+   fs/ext4/ext4_jbd2.c:1608:5: sparse: sparse: symbol 'ext4_fc_perform_hard_commit' was not declared. Should it be static?
+   fs/ext4/ext4_jbd2.c:501:12: sparse: sparse: context imbalance in '__ext4_dentry_update' - unexpected unlock
+   fs/ext4/ext4_jbd2.c:924:20: sparse: sparse: context imbalance in 'wait_all_inode_data' - unexpected unlock
 
-The kernel shouldn't be mixing various noise sources together, and it
-certainly shouldn't be trying to claim that it knows how many bits of
-entropy that it gets when is trying to play some jitter entropy game
-on a stupid-simple CPU architecture for IOT/Embedded user cases where
-everything is synchronized off of a single master oscillator, and
-there is no CPU instruction reordering or register renaming, etc.,
-etc.
+vim +1398 fs/ext4/ext4_jbd2.c
 
-You can talk about providing tools that try to make these estimations
---- but these sorts of things would have to be done on each user's
-hardware, and for most distro users, it's just not practical.
+  1364	
+  1365	static int ext4_journal_fc_replay_scan(journal_t *journal,
+  1366					       struct buffer_head *bh, int off)
+  1367	{
+  1368		struct super_block *sb = journal->j_private;
+  1369		struct ext4_sb_info *sbi = EXT4_SB(sb);
+  1370		struct ext4_fc_replay_state *state;
+  1371		struct ext4_fc_commit_hdr *fc_hdr;
+  1372		__u32 csum, old_csum;
+  1373		__u8 *start, *end;
+  1374	
+  1375		state = &sbi->s_fc_replay_state;
+  1376		fc_hdr = (struct ext4_fc_commit_hdr *)
+  1377			  ((__u8 *)bh->b_data + sizeof(journal_header_t));
+  1378	
+  1379		start = (u8 *)fc_hdr;
+  1380		end = (__u8 *)bh->b_data + journal->j_blocksize;
+  1381	
+  1382		/* Check if we already concluded that this fast commit is not useful */
+  1383		if (state->fc_replay_expected_off && state->fc_replay_error)
+  1384			goto out_err;
+  1385	
+  1386		if (le32_to_cpu(fc_hdr->fc_magic) != EXT4_FC_MAGIC) {
+  1387			state->fc_replay_error = -ENOENT;
+  1388			goto out_err;
+  1389		}
+  1390	
+  1391		if (off != state->fc_replay_expected_off) {
+  1392			state->fc_replay_error = -EFSCORRUPTED;
+  1393			goto out_err;
+  1394		}
+  1395	
+  1396		state->fc_replay_expected_off++;
+  1397	
+> 1398		if (le16_to_cpu(fc_hdr->fc_features)) {
+  1399			state->fc_replay_error = -EOPNOTSUPP;
+  1400			goto out_err;
+  1401		}
+  1402	
+> 1403		old_csum = fc_hdr->fc_csum;
+  1404		fc_hdr->fc_csum = 0;
+  1405		csum = ext4_chksum(sbi, 0, start, end - start);
+> 1406		fc_hdr->fc_csum = old_csum;
+  1407	
+  1408		if (csum != le32_to_cpu(fc_hdr->fc_csum)) {
+  1409			state->fc_replay_error = -EFSBADCRC;
+  1410			goto out_err;
+  1411		}
+  1412	
+  1413		trace_ext4_journal_fc_replay_scan(sb, state->fc_replay_error, off);
+  1414		return 0;
+  1415	
+  1416	out_err:
+  1417		trace_ext4_journal_fc_replay_scan(sb, state->fc_replay_error, off);
+  1418		return state->fc_replay_error;
+  1419	}
+  1420	
 
-So if it's just for cryptographers, then let it all be done in
-userspace, and let's not make it easy for GPG, OpenSSL, etc., to all
-say, "We want TrueRandom(tm); we won't settle for less".  We can talk
-about how do we provide the interfaces so that those cryptographers
-can get the information they need so they can get access to the raw
-noise sources, separated out and named, and with possibly some way
-that the noise source can authenticate itself to the Cryptographer's
-userspace library/application.
-
-But all of this should probably not be in drivers/char/random.c, and
-we probably need to figure out a better kernel to userspace interface
-than what we have with /dev/hwrng.
-
-					- Ted
+---
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
