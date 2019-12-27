@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFC012B289
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 09:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4A612B28A
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 09:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbfL0IFh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 Dec 2019 03:05:37 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:41338 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726156AbfL0IFh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Dec 2019 03:05:37 -0500
-Received: by mail-pl1-f193.google.com with SMTP id bd4so11447883plb.8
-        for <linux-ext4@vger.kernel.org>; Fri, 27 Dec 2019 00:05:37 -0800 (PST)
+        id S1726377AbfL0IFl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 27 Dec 2019 03:05:41 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:45973 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbfL0IFk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 27 Dec 2019 03:05:40 -0500
+Received: by mail-pg1-f194.google.com with SMTP id b9so14083032pgk.12
+        for <linux-ext4@vger.kernel.org>; Fri, 27 Dec 2019 00:05:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=y9IP3vGhdoAH4adCJgVBCBJgsdlu41+GlgA29+CqjKc=;
-        b=o4/wMylmxzzXiJtOJ5jIgDqFxi+MSHjUCpiOGySlZ9HvmAJUkb/BN3oH7RMhVdnW7t
-         xGBBI0UHrMw6zbO9lUJiqJKLSux8FLqVBiv0IyiciOW2vSUDCa//xWMjM4cU4UMNQFO1
-         0PqhUewrbwkIUhSQOZtOdLyg65hNQeA+IDxY3EYwC+cCEs6PjP2flMVKmzqqsdILMdCq
-         LTSkWiRWvB8nELsy/67XPoXE4q9jsezVHPAeSWrnLB5QGNZnx8iJdZxS/6srIGkGW9ME
-         ScJFbY92gBtHz7LNKWU1+cpaModUv/Mk9qqeRvWrSWzY90QmDru6zxnrF6/2mcK+tOR5
-         Mt6Q==
+        bh=ueKguZLzy18z12qXeVNc9OiGCJRatlfdVYkk0am1Q9o=;
+        b=sbUHdutjOW+gNWIDO8E6PvcjtjstTml02xLxuI5RkpIwNZd3RGyjTZkDZER1s4MP4X
+         SukBu+4wPbo2DQunXZZrN/yEYH78LP+1q+gIZG/q89CojrYbqN4FV+qt+P8yHT14bBJM
+         N8kRC3TDHtjLpsPSyRQBTIpQ7xQa6AcJ67Cp2BBxMoi3c5pPw74hCksSo7Ysord2gq67
+         bDEIBMh1tkQzX285+LfCxlXx1a5A9G4Zu2VhdAbe2+49tvsKfRMJI5QwXYDFnVbBKf7u
+         Ly8+wZQ5bJ+mKji7HKZbogQCyAgOqj2uAFSz+NvpzluS5VfHKqhx8rp62FtWUlOfWWij
+         lliQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=y9IP3vGhdoAH4adCJgVBCBJgsdlu41+GlgA29+CqjKc=;
-        b=JtXowhXnnPWh8KMiKLfSsZM8UEaVoLmUEirplC5Y6m2ZkxvuaobxgMLd+2Cn7zXxZH
-         7qmAJ34sgbknwLsNkpuAAK2GY9wvPnjrhBG5MEtlPctSFpC0coEldCGgkLezMy9nPg0I
-         CMhSRHnnhLN392vVcrwH7N6Lg19ei7CdM8YU85S4JH0mXss6WNKPTksSiPc5cFeJNBmq
-         uPuufDBhfJCfKMI0skUyQwZKPQpaMJtJa/A+0e30cj/AdW/MRtrYK8cNZC0z671W+7zT
-         PDRb6ZJDJrDI85848wml2ybWuM8NmSVtLgobWNx+rsXWzrV9CBxChwX4cGJOq05vMTK5
-         di8w==
-X-Gm-Message-State: APjAAAWB6A7URY+3lLezVGBqpV3XFMxq7jxdXDQV5afRIEe7IpeJCK4k
-        eGp3QC5GbGurHCX6sMQs7Zs=
-X-Google-Smtp-Source: APXvYqyeXqyb3ygrD5b9RjhMiVk3ekl/LwBjVoK2g8cI9BNuwUZERdnDDO9v2JDqf4VwK7r+zhhjtg==
-X-Received: by 2002:a17:90a:9bc3:: with SMTP id b3mr24459571pjw.64.1577433936871;
-        Fri, 27 Dec 2019 00:05:36 -0800 (PST)
+        bh=ueKguZLzy18z12qXeVNc9OiGCJRatlfdVYkk0am1Q9o=;
+        b=I4mzM7oJUxhGzUsowUWURszZxSNvbuzUS+1uY6fx3PidQsUCFPcS11eygL/2WWVNvz
+         kFKL6PPPwfo2ZcgQMkZs0Yi0a7UnTkrdm+nzWUYl7BMpu+ziv0CiaZYNzup7Fhd9EvVE
+         O09chpBLmiLjdqlr2OuPnnz3RDkRCA0xgIv8bZuwUwbhlKz+4+VEJiMvfgGiYyjWPKoO
+         2L8DfK+d/n8VC3Y9cQPWD/AP+ML8FLUphI4IPYCVWtMVzZ7ApqGcwTQ7xZBKBqweqqjA
+         AEFkgT98ME4p4CpxW0DAbnEIHrQpwSnYzjxqzhqnHVR+3T40puQC8pYfYPr3RZOtK+sI
+         8Ftw==
+X-Gm-Message-State: APjAAAUiSGXQHt54wPA9iA6XWmZoQQ5/tB0TnwINQyN/pkEz3/QPj9hg
+        gp0Vq1igN6ompJQdWfRmdIc=
+X-Google-Smtp-Source: APXvYqxbsrOylJtXq88vFQF7e5m3ZZF0eSDcqIbg6dJ46UDs/DU+bCXmQ38m/hOb8N18IPcJGM1Aeg==
+X-Received: by 2002:a63:1807:: with SMTP id y7mr50491656pgl.94.1577433940209;
+        Fri, 27 Dec 2019 00:05:40 -0800 (PST)
 Received: from hpz4g4.kern.oss.ntt.co.jp ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id 3sm37271702pfi.13.2019.12.27.00.05.35
+        by smtp.gmail.com with ESMTPSA id 3sm37271702pfi.13.2019.12.27.00.05.38
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 27 Dec 2019 00:05:36 -0800 (PST)
+        Fri, 27 Dec 2019 00:05:39 -0800 (PST)
 From:   Naoto Kobayashi <naoto.kobayashi4c@gmail.com>
 To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     Naoto Kobayashi <naoto.kobayashi4c@gmail.com>,
         linux-ext4@vger.kernel.org
-Subject: [PATCH v2 2/3] ext4: Rename ext4_kvmalloc() to ext4_kvmalloc_nofs() and drop its flags argument
-Date:   Fri, 27 Dec 2019 17:05:22 +0900
-Message-Id: <20191227080523.31808-3-naoto.kobayashi4c@gmail.com>
+Subject: [PATCH v2 3/3] ext4: Prevent ext4_kvmalloc_nofs() from re-entering the filesystem and deadlocking
+Date:   Fri, 27 Dec 2019 17:05:23 +0900
+Message-Id: <20191227080523.31808-4-naoto.kobayashi4c@gmail.com>
 X-Mailer: git-send-email 2.16.6
 In-Reply-To: <20191227080523.31808-1-naoto.kobayashi4c@gmail.com>
 References: <20191227080523.31808-1-naoto.kobayashi4c@gmail.com>
@@ -58,94 +58,48 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Rename ext4_kvmalloc() to ext4_kvmalloc_nofs() and drop
-its flags argument, because ext4_kvmalloc() callers must be
-under GFP_NOFS (otherwise, they should use generic kvmalloc()
-helper function).
+Even if __vmalloc() receives GFP_NOFS, this function allocates
+data pages and auxiliary structures (e.g. pagetables) with __GFP_FS[1].
+To prevent memory reclaim from re-entering the filesystem here and
+potentially deadlocking, use memalloc_nofs_save() that gets
+__vmalloc() to drop __GFP_FS.
+
+[1] linux-tree/Documentation/core-api/gfp-mask-fs-io.rst
 
 Signed-off-by: Naoto Kobayashi <naoto.kobayashi4c@gmail.com>
 ---
- fs/ext4/ext4.h   |  2 +-
- fs/ext4/resize.c | 10 ++++------
- fs/ext4/super.c  |  6 +++---
- fs/ext4/xattr.c  |  2 +-
- 4 files changed, 9 insertions(+), 11 deletions(-)
+ fs/ext4/super.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index b25089e3896d..e1bdeffca0ad 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2677,7 +2677,7 @@ extern struct buffer_head *ext4_sb_bread(struct super_block *sb,
- extern int ext4_seq_options_show(struct seq_file *seq, void *offset);
- extern int ext4_calculate_overhead(struct super_block *sb);
- extern void ext4_superblock_csum_set(struct super_block *sb);
--extern void *ext4_kvmalloc(size_t size, gfp_t flags);
-+extern void *ext4_kvmalloc_nofs(size_t size);
- extern int ext4_alloc_flex_bg_array(struct super_block *sb,
- 				    ext4_group_t ngroup);
- extern const char *ext4_decode_error(struct super_block *sb, int errno,
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index a8c0f2b5b6e1..7998bbe66eed 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -824,9 +824,8 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
- 	if (unlikely(err))
- 		goto errout;
-
--	n_group_desc = ext4_kvmalloc((gdb_num + 1) *
--				     sizeof(struct buffer_head *),
--				     GFP_NOFS);
-+	n_group_desc = ext4_kvmalloc_nofs((gdb_num + 1) *
-+				     sizeof(struct buffer_head *));
- 	if (!n_group_desc) {
- 		err = -ENOMEM;
- 		ext4_warning(sb, "not enough memory for %lu groups",
-@@ -900,9 +899,8 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
- 	gdb_bh = ext4_sb_bread(sb, gdblock, 0);
- 	if (IS_ERR(gdb_bh))
- 		return PTR_ERR(gdb_bh);
--	n_group_desc = ext4_kvmalloc((gdb_num + 1) *
--				     sizeof(struct buffer_head *),
--				     GFP_NOFS);
-+	n_group_desc = ext4_kvmalloc_nofs((gdb_num + 1) *
-+				     sizeof(struct buffer_head *));
- 	if (!n_group_desc) {
- 		brelse(gdb_bh);
- 		err = -ENOMEM;
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 83a231dedcbf..e8965aa6ecce 100644
+index e8965aa6ecce..7f4c9a43a3f3 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -204,13 +204,13 @@ void ext4_superblock_csum_set(struct super_block *sb)
- 	es->s_checksum = ext4_superblock_csum(sb, es);
- }
+@@ -43,6 +43,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/iversion.h>
+ #include <linux/unicode.h>
++#include <linux/sched/mm.h>
 
--void *ext4_kvmalloc(size_t size, gfp_t flags)
-+void *ext4_kvmalloc_nofs(size_t size)
+ #include <linux/kthread.h>
+ #include <linux/freezer.h>
+@@ -206,11 +207,13 @@ void ext4_superblock_csum_set(struct super_block *sb)
+
+ void *ext4_kvmalloc_nofs(size_t size)
  {
++	unsigned int nofs_flag;
  	void *ret;
 
--	ret = kmalloc(size, flags | __GFP_NOWARN);
-+	ret = kmalloc(size, GFP_NOFS | __GFP_NOWARN);
- 	if (!ret)
--		ret = __vmalloc(size, flags, PAGE_KERNEL);
-+		ret = __vmalloc(size, GFP_NOFS, PAGE_KERNEL);
+-	ret = kmalloc(size, GFP_NOFS | __GFP_NOWARN);
+-	if (!ret)
+-		ret = __vmalloc(size, GFP_NOFS, PAGE_KERNEL);
++	/* kvmalloc() does not support GFP_NOFS */
++	nofs_flag = memalloc_nofs_save();
++	ret = kvmalloc(size, GFP_KERNEL);
++	memalloc_nofs_restore(nofs_flag);
  	return ret;
  }
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 8966a5439a22..d5bc970ef331 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1456,7 +1456,7 @@ ext4_xattr_inode_cache_find(struct inode *inode, const void *value,
- 	if (!ce)
- 		return NULL;
-
--	ea_data = ext4_kvmalloc(value_len, GFP_NOFS);
-+	ea_data = ext4_kvmalloc_nofs(value_len);
- 	if (!ea_data) {
- 		mb_cache_entry_put(ea_inode_cache, ce);
- 		return NULL;
 --
 2.16.6
 
