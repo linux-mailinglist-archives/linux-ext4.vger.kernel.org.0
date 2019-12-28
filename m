@@ -2,143 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9A712BBB3
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Dec 2019 23:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D2D12BC35
+	for <lists+linux-ext4@lfdr.de>; Sat, 28 Dec 2019 03:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725957AbfL0WwS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 27 Dec 2019 17:52:18 -0500
-Received: from mga04.intel.com ([192.55.52.120]:20875 "EHLO mga04.intel.com"
+        id S1726369AbfL1CHO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 27 Dec 2019 21:07:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbfL0WwS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 27 Dec 2019 17:52:18 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Dec 2019 14:52:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,364,1571727600"; 
-   d="scan'208";a="243351232"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 27 Dec 2019 14:52:16 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1ikySu-000ElT-3D; Sat, 28 Dec 2019 06:52:16 +0800
-Date:   Sat, 28 Dec 2019 06:51:40 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: Re: [PATCH v4 19/20] ext4: add fast commit replay path
-Message-ID: <201912280641.QyyfUJRx%lkp@intel.com>
-References: <20191224081324.95807-19-harshadshirwadkar@gmail.com>
+        id S1725860AbfL1CHO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 27 Dec 2019 21:07:14 -0500
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89275222C2
+        for <linux-ext4@vger.kernel.org>; Sat, 28 Dec 2019 02:07:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577498833;
+        bh=U/nAnG2hJ81tt6C4DRheFtDEpu00ZrtqXVwbAsZZP9M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1c6ghWj9lBinB1rJ06SZnLd56bVBBBe9bPlVBfLZzT9lOViU8sgKn5WWYaCABTVCU
+         mV7JlPuz2lmd9hnM4J1CtbAGqIFv9gcLmZftS+0Wi0uiScZE3GN7E8NGM/yYR0L1wd
+         RGzetWX/uhSMgeHn4e0hXigTRJ7NGS4dE6kAfqv4=
+Received: by mail-wm1-f49.google.com with SMTP id p9so9498141wmc.2
+        for <linux-ext4@vger.kernel.org>; Fri, 27 Dec 2019 18:07:13 -0800 (PST)
+X-Gm-Message-State: APjAAAXcN0qDYItA2rgyVZCVcGSmaXxxS1FRTiKIojNv7oaDWXtKxuHQ
+        +ev7WV8AFPdl3cZP+319+5u7z5QfTnsH/QypeD/K/Q==
+X-Google-Smtp-Source: APXvYqxn3Rv02S1te2llnFcs0CQZm6YywFRNddMkZ5rLIdJvih5IqiGw4PeCUC2MXu651WWfDw7Wdf6pIKHDbHZ3lio=
+X-Received: by 2002:a7b:cbc9:: with SMTP id n9mr21666330wmi.89.1577498831945;
+ Fri, 27 Dec 2019 18:07:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191224081324.95807-19-harshadshirwadkar@gmail.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+References: <20191226140423.GB3158@mit.edu> <4048434.Q8HajmOrkZ@tauon.chronox.de>
+ <20191227130436.GC70060@mit.edu> <15817620.rmTN4T87Wr@tauon.chronox.de> <20191227220857.GD70060@mit.edu>
+In-Reply-To: <20191227220857.GD70060@mit.edu>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 27 Dec 2019 18:06:56 -0800
+X-Gmail-Original-Message-ID: <CALCETrUyVx_qb2yYH8D_z1T2bVu5RAEr71G0MTzEksBKKM1QsA@mail.gmail.com>
+Message-ID: <CALCETrUyVx_qb2yYH8D_z1T2bVu5RAEr71G0MTzEksBKKM1QsA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] Rework random blocking
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Stephan Mueller <smueller@chronox.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Harshad,
+On Fri, Dec 27, 2019 at 2:09 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
 
-Thank you for the patch! Perhaps something to improve:
+> So if it's just for cryptographers, then let it all be done in
+> userspace, and let's not make it easy for GPG, OpenSSL, etc., to all
+> say, "We want TrueRandom(tm); we won't settle for less".  We can talk
+> about how do we provide the interfaces so that those cryptographers
+> can get the information they need so they can get access to the raw
+> noise sources, separated out and named, and with possibly some way
+> that the noise source can authenticate itself to the Cryptographer's
+> userspace library/application.
+>
+> But all of this should probably not be in drivers/char/random.c, and
+> we probably need to figure out a better kernel to userspace interface
+> than what we have with /dev/hwrng.
 
-[auto build test WARNING on tip/perf/core]
-[cannot apply to ext4/dev linus/master v5.5-rc3 next-20191220]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+I'm thinking of having a real class device and chardev for each hwrng
+device.  Authentication is entirely in userspace: whatever user code
+is involved can look at the sysfs hierarchy and decide to what extent
+it trusts a given source.  This could be done based on bus topology or
+based on anything else.
 
-url:    https://github.com/0day-ci/linux/commits/Harshad-Shirwadkar/ext4-update-docs-for-fast-commit-feature/20191225-200339
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ceb9e77324fa661b1001a0ae66f061b5fcb4e4e6
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.1-129-g341daf20-dirty
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+The kernel could also separately expose various noise sources, and the
+user code can do whatever it wants with them.  But these should be
+explicitly unconditioned, un-entropy-extracted sources -- user code
+can run its favorite algorithm to extract something it believes to be
+useful.  The only conceptually tricky bit is keeping user code like
+this from interfering with the in-kernel RNG.
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
-
-   fs/ext4/ext4_jbd2.c:612:5: sparse: sparse: symbol '__ext4_fc_track_range' was not declared. Should it be static?
-   fs/ext4/ext4_jbd2.c:826:6: sparse: sparse: symbol 'submit_fc_bh' was not declared. Should it be static?
->> fs/ext4/ext4_jbd2.c:1398:13: sparse: sparse: cast to restricted __le16
->> fs/ext4/ext4_jbd2.c:1403:18: sparse: sparse: incorrect type in assignment (different base types)
->> fs/ext4/ext4_jbd2.c:1403:18: sparse:    expected unsigned int [usertype] old_csum
->> fs/ext4/ext4_jbd2.c:1403:18: sparse:    got restricted __le32 [usertype] fc_csum
-   fs/ext4/ext4_jbd2.c:1406:25: sparse: sparse: incorrect type in assignment (different base types)
->> fs/ext4/ext4_jbd2.c:1406:25: sparse:    expected restricted __le32 [usertype] fc_csum
->> fs/ext4/ext4_jbd2.c:1406:25: sparse:    got unsigned int [usertype] old_csum
-   fs/ext4/ext4_jbd2.c:1608:5: sparse: sparse: symbol 'ext4_fc_perform_hard_commit' was not declared. Should it be static?
-   fs/ext4/ext4_jbd2.c:501:12: sparse: sparse: context imbalance in '__ext4_dentry_update' - unexpected unlock
-   fs/ext4/ext4_jbd2.c:924:20: sparse: sparse: context imbalance in 'wait_all_inode_data' - unexpected unlock
-
-vim +1398 fs/ext4/ext4_jbd2.c
-
-  1364	
-  1365	static int ext4_journal_fc_replay_scan(journal_t *journal,
-  1366					       struct buffer_head *bh, int off)
-  1367	{
-  1368		struct super_block *sb = journal->j_private;
-  1369		struct ext4_sb_info *sbi = EXT4_SB(sb);
-  1370		struct ext4_fc_replay_state *state;
-  1371		struct ext4_fc_commit_hdr *fc_hdr;
-  1372		__u32 csum, old_csum;
-  1373		__u8 *start, *end;
-  1374	
-  1375		state = &sbi->s_fc_replay_state;
-  1376		fc_hdr = (struct ext4_fc_commit_hdr *)
-  1377			  ((__u8 *)bh->b_data + sizeof(journal_header_t));
-  1378	
-  1379		start = (u8 *)fc_hdr;
-  1380		end = (__u8 *)bh->b_data + journal->j_blocksize;
-  1381	
-  1382		/* Check if we already concluded that this fast commit is not useful */
-  1383		if (state->fc_replay_expected_off && state->fc_replay_error)
-  1384			goto out_err;
-  1385	
-  1386		if (le32_to_cpu(fc_hdr->fc_magic) != EXT4_FC_MAGIC) {
-  1387			state->fc_replay_error = -ENOENT;
-  1388			goto out_err;
-  1389		}
-  1390	
-  1391		if (off != state->fc_replay_expected_off) {
-  1392			state->fc_replay_error = -EFSCORRUPTED;
-  1393			goto out_err;
-  1394		}
-  1395	
-  1396		state->fc_replay_expected_off++;
-  1397	
-> 1398		if (le16_to_cpu(fc_hdr->fc_features)) {
-  1399			state->fc_replay_error = -EOPNOTSUPP;
-  1400			goto out_err;
-  1401		}
-  1402	
-> 1403		old_csum = fc_hdr->fc_csum;
-  1404		fc_hdr->fc_csum = 0;
-  1405		csum = ext4_chksum(sbi, 0, start, end - start);
-> 1406		fc_hdr->fc_csum = old_csum;
-  1407	
-  1408		if (csum != le32_to_cpu(fc_hdr->fc_csum)) {
-  1409			state->fc_replay_error = -EFSBADCRC;
-  1410			goto out_err;
-  1411		}
-  1412	
-  1413		trace_ext4_journal_fc_replay_scan(sb, state->fc_replay_error, off);
-  1414		return 0;
-  1415	
-  1416	out_err:
-  1417		trace_ext4_journal_fc_replay_scan(sb, state->fc_replay_error, off);
-  1418		return state->fc_replay_error;
-  1419	}
-  1420	
-
----
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+--Andy
