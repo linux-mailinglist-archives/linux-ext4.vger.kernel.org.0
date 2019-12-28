@@ -2,97 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8985112BCEE
-	for <lists+linux-ext4@lfdr.de>; Sat, 28 Dec 2019 08:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 870B312BCFA
+	for <lists+linux-ext4@lfdr.de>; Sat, 28 Dec 2019 08:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbfL1HBb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 28 Dec 2019 02:01:31 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:29841 "EHLO 1wt.eu"
+        id S1726307AbfL1Huh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 28 Dec 2019 02:50:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725857AbfL1HBb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 28 Dec 2019 02:01:31 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id xBS71BFU002595;
-        Sat, 28 Dec 2019 08:01:11 +0100
-Date:   Sat, 28 Dec 2019 08:01:11 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Stephan Mueller <smueller@chronox.de>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-Subject: Re: [PATCH v3 0/8] Rework random blocking
-Message-ID: <20191228070111.GB2519@1wt.eu>
-References: <20191226140423.GB3158@mit.edu>
- <4048434.Q8HajmOrkZ@tauon.chronox.de>
- <20191227130436.GC70060@mit.edu>
- <15817620.rmTN4T87Wr@tauon.chronox.de>
- <20191227220857.GD70060@mit.edu>
+        id S1725857AbfL1Huh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 28 Dec 2019 02:50:37 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 205957] Ext4 64 bit hash breaks 32 bit glibc 2.28+
+Date:   Sat, 28 Dec 2019 07:50:36 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: adilger.kernelbugzilla@dilger.ca
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-205957-13602-ce7D5uRyXO@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-205957-13602@https.bugzilla.kernel.org/>
+References: <bug-205957-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191227220857.GD70060@mit.edu>
-User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 27, 2019 at 05:08:57PM -0500, Theodore Y. Ts'o wrote:
-> > Or maybe the terminology of TRNG (i.e. "true") is offending. I have no concern 
-> > to have it replaced with some other terminology. Yet, I was just taking one 
-> > well-defined term.
-> 
-> But my point is that it *isn't* a well defined term, precisely because
-> it's completely unclear what application programmer can expect when
-> they try to use some hypothetical GRANDOM_TRUERANDOM flag.  What does
-> that *mean*?
+https://bugzilla.kernel.org/show_bug.cgi?id=205957
 
-I've also seen this term used and abused too many times and this bothers
-me because the expectations around it are the cause of the current
-situation.
+--- Comment #10 from Andreas Dilger (adilger.kernelbugzilla@dilger.ca) ---
+IMHO, adding a new syscall for this is a lot of complexity that could be
+avoided.  Using an ioctl() or fadvise() to set the "32-bitness" of the file
+descriptor would seem like a simpler implementation that could be handled
+directly by an ext4 patch rather than having to change every architecture just
+to pass this flag.
 
-Randomness doesn't exist by itself. It's what characterizes the
-unpredictable nature of something. I.e. our inability to model it and
-guess what will happen based on what we know. 200 years ago we'd have
-considered the weather as a true random source. Now we have super
-computers making this moot. In the current state of art we consider
-that cesium decay or tunnel noise are unpredictable and excellent
-random sources, until one day we figure that magnetic fields,
-temperature or gamma rays strongly affect them.
+Then, in the cases that QEMU is running in the confusing "I want 32-bit values
+returned from a 64-bit system call" mode, it would call the ioctl(fd,
+FS_IOC_32BITHASH) once before calling getdents64(fd, ...).
 
-So in practice we should only talk about the complexity of the model we
-rely on. The more complex it is (i.e. the most independent variables it
-relies on), the less predictable it is and the more random it is. Jitter
-entropy and RAM contents are good examples of this: they may be highly
-unpredictable on some platforms and almost constant on others. And for
-sure, software cannot fix this, it can at best make the output *look*
-like it's unpredictable. Once someone can model all variables of the
-environment this is not true random anymore.
-
-That's why the best we can do is to combine as many sources as possible
-hoping that nobody can model enough of them, and produce an output which
-never ever reveals these sources' internal states. *This* is what software
-can and must do. And once the initial entropy is hidden enough and there
-is enough of it, there's no reason for it to ever get depleted if these
-initial bits cannot be guessed nor brute-forced.
-
-And quite frankly I'd rather just speak about the diversity of sources
-than "true" randomness. Just asking a user to press 10 random keys and
-to enter a random word for some operations can break many assumptions
-an attacker could have about the environment, by just adding one extra,
-less controllable, source.
-
-Just my two cents,
-Willy
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
