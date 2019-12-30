@@ -2,114 +2,193 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2FE12C30F
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Dec 2019 16:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7869E12CF95
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Dec 2019 12:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbfL2PI4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 29 Dec 2019 10:08:56 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:36391 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726455AbfL2PIz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 29 Dec 2019 10:08:55 -0500
-Received: by mail-oi1-f195.google.com with SMTP id c16so10554052oic.3
-        for <linux-ext4@vger.kernel.org>; Sun, 29 Dec 2019 07:08:55 -0800 (PST)
+        id S1727406AbfL3LeN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 30 Dec 2019 06:34:13 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43335 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727360AbfL3LeN (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 30 Dec 2019 06:34:13 -0500
+Received: by mail-pf1-f194.google.com with SMTP id x6so17030861pfo.10
+        for <linux-ext4@vger.kernel.org>; Mon, 30 Dec 2019 03:34:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=JpqRu20LZHxdWN1UW9AkuUQvQXkCetz6nWnrVXZaXRg=;
-        b=S+uZxX+EaQmPyB6zJ2fqU/hUZuwlpmMS4Hu3op3yUKzfg+ck49mpuWaMrCl8Ro03Sf
-         P05YwiT9hWqZYAfCCPEX/l/A8d5Fay2EEpm05+o4kmdiBfoEXLTD88+5f/1LLws9AsN+
-         nYHetUMmzMlUs+pTTZ+yL/MCwEHdNtXJ0AjyriI6S2AWH91p4gMxlmiILlQscp4l5bZP
-         tkmzsKjJd/j+6FFjOYdh2mz4cu9GyxzT7vp8Scpt+up6IoUN2jTI5FKBH1OyxHyM7U56
-         9gMqeHWsAx7qlHry2TcgBE5OUIKF7xYIP7qIHkbtrVOCZgz1eZlnSJt0mat7uv7604if
-         SXLw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Iob/hlUn2QCCh378BWskZvI0mfeUwZZM+IJ1tulZqj8=;
+        b=LZollxCMVLE3m2O1vO3vscBmRyWQoQVB5wbu2hsDWxah4CCroeN7BIlJ79tdlFEJOP
+         IklNy83km5ZjvdgarSb8nUyTlRAgF9wBmB+DnuJ+ugstE4dxBKgjznYF7WKJyUI+0pL3
+         ix/eA5ZjJ0Ym/bhXyGsnYAWmRtq20y2dssibfPIoEhlPw2xT1HDbOgDJEYy1mo9ub6qW
+         vHZCjdW9mtIqs74Pyv9AUXRk3uSVsb6tpxxdRTZMTlzIGwsx5s1mbUjjN7Zq/jXC01nh
+         KvutoWFm3FK8QtBe2+10UK9z/1DoOExk9YnzJaTrduhoePMfk7rLlqk/WEAQy2Jx07Mq
+         VCEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=JpqRu20LZHxdWN1UW9AkuUQvQXkCetz6nWnrVXZaXRg=;
-        b=CSgPzYqEccyoYbbGivoBJ1V2ld9uhtI4wFFbo6XDRDRCa3e92xYvLpLNOG9LJ9iZq/
-         LfPrHjC6XKlqv/pG2mcprBurO75RvSCqwfc5txXNQl0FdBQsZKvxnapbAbeed7qJe73j
-         R9Jt8iVjrjgxNhWwv0DuOiNRxPihLYYKjpL7e2Hcm2MNPaRExv/zUCjwSbJjZWcW48Mh
-         m6CU2XwC4CLXpfSwS+lvQUWggxvuJVyec+epXIbfiwuD+rt54zCDyTecp1otKLov5DeW
-         /R2OJNA6bkmG2MvB7MAx0nDwgHaPHBrM7PYYQiVACwFY8oYQS+C2dlXB1B2F4wVjBsBA
-         KG/g==
-X-Gm-Message-State: APjAAAVzvlyo35DT71JkY8kveKnmOMSuWWUJ5dIuYzUHRtnRfBTXSXIM
-        Prj95Ezz/2MZOouo4QuNF3BsgQ==
-X-Google-Smtp-Source: APXvYqxjo/qRxZba1IgLCKplUt2/vIzbNAMP97x3QWuUCy1ztu/OkNu7bZ2vnDIB9uXXfpGv2kA/vQ==
-X-Received: by 2002:aca:758a:: with SMTP id q132mr5236846oic.162.1577632134837;
-        Sun, 29 Dec 2019 07:08:54 -0800 (PST)
-Received: from [26.83.181.6] ([172.58.107.236])
-        by smtp.gmail.com with ESMTPSA id t25sm12835238oij.17.2019.12.29.07.08.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 29 Dec 2019 07:08:54 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3 0/8] Rework random blocking
-Date:   Sun, 29 Dec 2019 23:08:50 +0800
-Message-Id: <AA6F6C68-CC2E-45ED-974D-1667769AF679@amacapital.net>
-References: <20191229144904.GB7177@mit.edu>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Stephan Mueller <smueller@chronox.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-In-Reply-To: <20191229144904.GB7177@mit.edu>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-X-Mailer: iPhone Mail (17C54)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Iob/hlUn2QCCh378BWskZvI0mfeUwZZM+IJ1tulZqj8=;
+        b=NUYS0P9lM0eLWwMtGXgUyI7gW+ylEiClBlPHh3prvzGHjo8LrSiICoXrISA9e10v/r
+         aO9abclB9rGB/0oXc/5ouB6Nu3G7K8s0oqT5lSqi8n5z8fAOgyG452f4vBNBZHcWEsob
+         vQFvAsrx64YUAHxgMwE589ZZ/phH4WXtJ1IgnsIK/r1hx2LpLvvZ18GLtG1yaAeuSIQ2
+         Gwjap91jVrU6+9tb9C5OHBBl/QDeAoAZa8f428UpHYmtTp1fzjPmHYwhV2XbQc4yjd54
+         XeQZdJ50kgUnBuLbfKRzq46afZ3Pyj8BQClXYSGUUPaChgfEL9P0KF31FiI8JlQ/Dowx
+         k4RQ==
+X-Gm-Message-State: APjAAAVjFmzW3FAWvfJCt8IQKvFpgZ75JMJiH4Vnq6RVf2ZkADAkFxRw
+        f1jQMliPFoNZhc6KWny3yJe1QNQPLik=
+X-Google-Smtp-Source: APXvYqw2J8fu5q1GAxBiOaQtqhl0ge7deiveuqcG5BhDVtSkvJNL1Z2IaaEWB7aCJ+eJHC6NalLQmQ==
+X-Received: by 2002:a65:620d:: with SMTP id d13mr53506678pgv.252.1577705651951;
+        Mon, 30 Dec 2019 03:34:11 -0800 (PST)
+Received: from ddnmon.localdomain (fs276ec80e.tkyc203.ap.nuro.jp. [39.110.200.14])
+        by smtp.gmail.com with ESMTPSA id c14sm24097187pjr.24.2019.12.30.03.34.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Dec 2019 03:34:11 -0800 (PST)
+From:   Wang Shilong <wangshilong1991@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     lixi@ddn.com, adilger@dilger.ca, dongyangli@ddn.com,
+        Wang Shilong <wshilong@ddn.com>
+Subject: [PATCH] e2fsprogs: fix to use inode i_blocks correctly
+Date:   Mon, 30 Dec 2019 20:36:06 +0900
+Message-Id: <1577705766-20736-1-git-send-email-wangshilong1991@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Wang Shilong <wshilong@ddn.com>
 
+According to following logic:
 
-> On Dec 29, 2019, at 10:49 PM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
->=20
-> =EF=BB=BFOn Fri, Dec 27, 2019 at 06:06:56PM -0800, Andy Lutomirski wrote:
->>=20
->> I'm thinking of having a real class device and chardev for each hwrng
->> device.  Authentication is entirely in userspace: whatever user code
->> is involved can look at the sysfs hierarchy and decide to what extent
->> it trusts a given source.  This could be done based on bus topology or
->> based on anything else.
->=20
-> Yes, that's what I was thinking.  Another project on my "when I can
-> get a round tuit" list is to change how drivers/char/random.c taps
-> into the hwrng devices, mixing in a bit from each of these devies in a
-> round-robin fashion, instead of just feeding from a single hwrng.
->=20
->> The kernel could also separately expose various noise sources, and the
->> user code can do whatever it wants with them.  But these should be
->> explicitly unconditioned, un-entropy-extracted sources -- user code
->> can run its favorite algorithm to extract something it believes to be
->> useful.  The only conceptually tricky bit is keeping user code like
->> this from interfering with the in-kernel RNG.
->=20
-> The other problem is the unconditioned values of the noise sources may
-> leak unacceptable amounts of information about system operation.  The
-> most obvious example of this would be keyboard and mouse sources,
-> where today we mix in not only the timing information, but the actual
-> input values (e.g., the keyboard scancodes) into the entropy pool.
-> Exposing this to userspace, even if it is via a privileged system
-> call, would be... unwise.
->=20
->         =20
+"If the huge_file feature flag is not set on the filesystem,
+the file consumes i_blocks_lo 512-byte blocks on disk.
+If huge_file is set and EXT4_HUGE_FILE_FL is NOT set in
+inode.i_flags, then the file consumes i_blocks_lo + (i_blocks_hi << 32)
+512-byte blocks on disk. If huge_file is set and EXT4_HUGE_FILE_FL IS set
+in inode.i_flags, then this file consumes (i_blocks_lo + i_blocks_hi << 32)
+filesystem blocks on disk."
 
-Hmm. We could give only the timing.
+blocks_from_inode() did not return wrong inode blocks, and
+ext2fs_inode_i_blocks() is not taking EXT4_HUGE_FILE_FL into account
+at all, while the some callers deal it correctly, some not. This patch
+try to unify to handle it in ext2fs_inode_i_blocks() to return.
+blocks(based on 512 bytes)
 
-We could also say that the official interface for this is to use tracepoints=
- and punt everything into userspace.=
+Signed-off-by: Wang Shilong <wshilong@ddn.com>
+---
+ debugfs/filefrag.c    |  4 ----
+ e2fsck/extents.c      |  6 +-----
+ lib/ext2fs/blknum.c   | 13 ++++++++++---
+ lib/support/mkquota.c |  3 ++-
+ misc/fuse2fs.c        | 19 +------------------
+ 5 files changed, 14 insertions(+), 31 deletions(-)
+
+diff --git a/debugfs/filefrag.c b/debugfs/filefrag.c
+index 961b6962..3e818b19 100644
+--- a/debugfs/filefrag.c
++++ b/debugfs/filefrag.c
+@@ -145,10 +145,6 @@ static void filefrag(ext2_ino_t ino, struct ext2_inode *inode,
+ 	if (fs->options & VERBOSE_OPT) {
+ 		blk64_t num_blocks = ext2fs_inode_i_blocks(current_fs, inode);
+ 
+-		if (!ext2fs_has_feature_huge_file(current_fs->super) ||
+-		    !(inode->i_flags & EXT4_HUGE_FILE_FL))
+-			num_blocks /= current_fs->blocksize / 512;
+-
+ 		fprintf(fs->f, "\n%s has %llu block(s), i_size is %llu\n",
+ 			fs->name, num_blocks, EXT2_I_SIZE(inode));
+ 	}
+diff --git a/e2fsck/extents.c b/e2fsck/extents.c
+index 3073725a..d9509297 100644
+--- a/e2fsck/extents.c
++++ b/e2fsck/extents.c
+@@ -304,11 +304,7 @@ extents_loaded:
+ 
+ 	delta = ext2fs_inode_i_blocks(ctx->fs, EXT2_INODE(&inode)) - start_val;
+ 	if (delta) {
+-		if (!ext2fs_has_feature_huge_file(ctx->fs->super) ||
+-		    !(inode.i_flags & EXT4_HUGE_FILE_FL))
+-			delta <<= 9;
+-		else
+-			delta *= ctx->fs->blocksize;
++		delta *= 512;
+ 		quota_data_add(ctx->qctx, &inode, ino, delta);
+ 	}
+ 
+diff --git a/lib/ext2fs/blknum.c b/lib/ext2fs/blknum.c
+index 18af3408..6ab843c4 100644
+--- a/lib/ext2fs/blknum.c
++++ b/lib/ext2fs/blknum.c
+@@ -80,9 +80,16 @@ blk64_t ext2fs_inode_data_blocks2(ext2_filsys fs,
+ blk64_t ext2fs_inode_i_blocks(ext2_filsys fs,
+ 					struct ext2_inode *inode)
+ {
+-	return (inode->i_blocks |
+-		(ext2fs_has_feature_huge_file(fs->super) ?
+-		 (__u64)inode->osd2.linux2.l_i_blocks_hi << 32 : 0));
++	blkcnt_t i_blocks = inode->i_blocks;
++
++	if (ext2fs_has_feature_huge_file(fs->super)) {
++		i_blocks += ((long long) inode->osd2.linux2.l_i_blocks_hi) << 32;
++		if (inode->i_flags & EXT4_HUGE_FILE_FL)
++			i_blocks *= (fs->blocksize / 512);
++
++	}
++
++	return i_blocks;
+ }
+ 
+ /*
+diff --git a/lib/support/mkquota.c b/lib/support/mkquota.c
+index ddb53124..2b0c6fb5 100644
+--- a/lib/support/mkquota.c
++++ b/lib/support/mkquota.c
+@@ -504,7 +504,8 @@ errcode_t quota_compute_usage(quota_ctx_t qctx)
+ 		    (ino == EXT2_ROOT_INO ||
+ 		     ino >= EXT2_FIRST_INODE(fs->super))) {
+ 			space = ext2fs_inode_i_blocks(fs,
+-						      EXT2_INODE(inode)) << 9;
++						      EXT2_INODE(inode));
++			space *= 512;;
+ 			quota_data_add(qctx, inode, ino, space);
+ 			quota_data_inodes(qctx, inode, ino, +1);
+ 		}
+diff --git a/misc/fuse2fs.c b/misc/fuse2fs.c
+index dc7a0392..748e3f7c 100644
+--- a/misc/fuse2fs.c
++++ b/misc/fuse2fs.c
+@@ -755,23 +755,6 @@ static void *op_init(struct fuse_conn_info *conn)
+ 	return ff;
+ }
+ 
+-static blkcnt_t blocks_from_inode(ext2_filsys fs,
+-				  struct ext2_inode_large *inode)
+-{
+-	blkcnt_t b;
+-
+-	b = inode->i_blocks;
+-	if (ext2fs_has_feature_huge_file(fs->super))
+-		b += ((long long) inode->osd2.linux2.l_i_blocks_hi) << 32;
+-
+-	if (!ext2fs_has_feature_huge_file(fs->super) ||
+-	    !(inode->i_flags & EXT4_HUGE_FILE_FL))
+-		b *= fs->blocksize / 512;
+-	b *= EXT2FS_CLUSTER_RATIO(fs);
+-
+-	return b;
+-}
+-
+ static int stat_inode(ext2_filsys fs, ext2_ino_t ino, struct stat *statbuf)
+ {
+ 	struct ext2_inode_large inode;
+@@ -795,7 +778,7 @@ static int stat_inode(ext2_filsys fs, ext2_ino_t ino, struct stat *statbuf)
+ 	statbuf->st_gid = inode.i_gid;
+ 	statbuf->st_size = EXT2_I_SIZE(&inode);
+ 	statbuf->st_blksize = fs->blocksize;
+-	statbuf->st_blocks = blocks_from_inode(fs, &inode);
++	statbuf->st_blocks = ext2fs_inode_i_blocks(fs, &inode);
+ 	EXT4_INODE_GET_XTIME(i_atime, &tv, &inode);
+ 	statbuf->st_atime = tv.tv_sec;
+ 	EXT4_INODE_GET_XTIME(i_mtime, &tv, &inode);
+-- 
+2.21.0
+
