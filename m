@@ -2,114 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B0712E3A1
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Jan 2020 09:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572F412E586
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Jan 2020 12:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727753AbgABIIH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Jan 2020 03:08:07 -0500
-Received: from mail-il1-f181.google.com ([209.85.166.181]:39116 "EHLO
-        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727714AbgABIIG (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Jan 2020 03:08:06 -0500
-Received: by mail-il1-f181.google.com with SMTP id x5so33509795ila.6;
-        Thu, 02 Jan 2020 00:08:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FVWIK2jrMiZ2hqvmNKsLEYjxusYcMZUIWglnH8mawmI=;
-        b=j53lP8fYSXf6aYyvL8iSrfUXk6I+ezIkYkyE0UIKOolUYwvKxBBc/Rqdzfo3eC7k4z
-         dSuefjzRjvD/K7sZb7YKtEf6e/9dmKwHE55Di0u5iX2Pg7AGUVNIWZZgNGDfTFI7daX9
-         Rw3EgfnZ84GYByb1kas9jxv9TTmvu0AOY/3sQrZUTFBhY4TFJbQrnakyhOZtcowv5N2M
-         f+M/G0/bA1WVEakSPkizvSu6tA5emb0MKnCZujsOjSoJ1rDSXTVYXct5triPeu58tP/R
-         WqXgrcfPwzSNddWwk+4ZWIqruHXx+hYJeSO46I/qbq5Li7dk8t4MsucmbDMfEGQ0aYTz
-         XJUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FVWIK2jrMiZ2hqvmNKsLEYjxusYcMZUIWglnH8mawmI=;
-        b=earc/IoVMa/aXm5IbXfsrfRpUE4SI8aY/RxXNiAjjs6Omqkor+f++XjtjNxWUN4G30
-         72SdjPkrfUVof/6TXlB/sqvWKwrshOf3450ESz2FZcXkFCODQ5/4biIk8MHd1HG0G3ZC
-         DdU7CaHvq+cIXP6JUMxC9yECFeVBJv41HFE8QY6bCyjv94Y3yeu+ux3sNsWtCGBm12LN
-         GFnw7iSg8E3G0wuwwN/6MGhryPf2grJtQX1ZY1kbeaYkJGu830T10d8i/XI9y+n/u+YZ
-         cdX0602rUr7CveD65Q9q/j3KdoO6cw4FzeG9D8BIuUFCCAAhSz7tZZqXTzlFGhDb/Up9
-         iEng==
-X-Gm-Message-State: APjAAAVfwYB+vuuY2Wq9ULuF1reZ5VunLZG/twfDxp7wSv/LqBsSLoLv
-        DVNC3o0VIA0J7Zz5PFnWNvsSEwRJm2FLjUuvbEZA4jh3rMc=
-X-Google-Smtp-Source: APXvYqzKuZiS9hk42zQxj9hP2CNvgmA370dl7wlPLbY+cNy5FeliLUy30NYH16xo1anCR1oDk2U/qlc0asfcH2ZeTvE=
-X-Received: by 2002:a92:3984:: with SMTP id h4mr65496279ilf.36.1577952485668;
- Thu, 02 Jan 2020 00:08:05 -0800 (PST)
-MIME-Version: 1.0
+        id S1728145AbgABLIb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Jan 2020 06:08:31 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36921 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728144AbgABLIa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Jan 2020 06:08:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1577963309;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GNvakkxQuOqMQUj1eGVGpZIiH2Cj2LW8lOBGntXxElo=;
+        b=hkKZsfFnywJsWJIsUL5U0nawEhgntgHmgMyLGvQAjiGNCFtE1ZmKuay5Q1ex65sXh0Ya/Q
+        1Hb1RQ0ZU7JoiibhmBv0xNnteNDKOqxyrTadBE6Zj1nUMf0U5B4dlxcDCRIrIhpwkCNX5p
+        UH1w8mKuqCk4TFa7gloWYBsLNCJOrqc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-kZSTbWABO1GvDq5y6MrkwQ-1; Thu, 02 Jan 2020 06:08:22 -0500
+X-MC-Unique: kZSTbWABO1GvDq5y6MrkwQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 25F0B800D4C;
+        Thu,  2 Jan 2020 11:08:21 +0000 (UTC)
+Received: from 10.255.255.10 (ovpn-204-196.brq.redhat.com [10.40.204.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 123CB1A7E4;
+        Thu,  2 Jan 2020 11:08:19 +0000 (UTC)
+Date:   Thu, 2 Jan 2020 12:08:17 +0100
+From:   Karel Zak <kzak@redhat.com>
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc:     util-linux@vger.kernel.org,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [bugreport] "hwclock -w" reset time instead of setting the right
+ time
+Message-ID: <20200102110817.ahqaqidw3ztw3kax@10.255.255.10>
 References: <CABXGCsODr3tMpQxJ_nhWQQg5WGakFt4Yu5B8ev6ErOkc+zv9kA@mail.gmail.com>
- <20200101141748.GA191637@mit.edu> <CABXGCsOv26W6aqB5WPMe-mEynmwy55DTfTeL5Dg9vRq6+Y6WvA@mail.gmail.com>
-In-Reply-To: <CABXGCsOv26W6aqB5WPMe-mEynmwy55DTfTeL5Dg9vRq6+Y6WvA@mail.gmail.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Thu, 2 Jan 2020 13:08:41 +0500
-Message-ID: <CABXGCsNkzPrjqMRaWpssorxzhMLWBvLeSw9BpKYr_DW4LJQECQ@mail.gmail.com>
-Subject: [bugreport] "hwclock -w" reset time instead of setting the right time
-To:     util-linux@vger.kernel.org,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>
-Cc:     linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ <20200101141748.GA191637@mit.edu>
+ <CABXGCsOv26W6aqB5WPMe-mEynmwy55DTfTeL5Dg9vRq6+Y6WvA@mail.gmail.com>
+ <CABXGCsNkzPrjqMRaWpssorxzhMLWBvLeSw9BpKYr_DW4LJQECQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABXGCsNkzPrjqMRaWpssorxzhMLWBvLeSw9BpKYr_DW4LJQECQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-"hwclock -w" reset time instead of setting the right time on M/B "ROG
-Strix X570-I Gaming"
-Demonstration: https://youtu.be/QRB7ZLiEfrc
-Some DE like GNOME has automatic time synchronization option and there
-is a feeling that hardware time reset after each Linux boot.
+On Thu, Jan 02, 2020 at 01:08:41PM +0500, Mikhail Gavrilov wrote:
+> "hwclock -w" reset time instead of setting the right time on M/B "ROG
+> Strix X570-I Gaming"
+> Demonstration: https://youtu.be/QRB7ZLiEfrc
+> Some DE like GNOME has automatic time synchronization option and there
+> is a feeling that hardware time reset after each Linux boot.
 
---
-Best Regards,
-Mike Gavrilov.
-On Thu, 2 Jan 2020 at 04:19, Mikhail Gavrilov
-<mikhail.v.gavrilov@gmail.com> wrote:
->
-> On Wed, 1 Jan 2020 at 19:17, Theodore Y. Ts'o <tytso@mit.edu> wrote:
-> >
-> > The problem is casued by the fact that the mount time is incorrect,
-> > which indicates that the system time was incorrect at the time when
-> > the file system was mounted and when it fsck was run.  Since the last
-> > write time was in the future, this triggered "time is insane" check.
-> >
-> > This is inconsistent with your report that started happening when you
-> > switched to a new motherboard.  That's because the real time clock is
-> > not reporting the correct time when the system is booted.  Later on,
-> > in the boot cycle, after the root file system is checked and remounted
-> > read-write, the system time is getting set from an internet time
-> > server.  This then causes the last write time to be ahead of the last
-> > mount time, and "in the future" with respect to the real time clock.
-> >
-> > Normally, the hardware clock's time gets set to match system time when
-> > it is set from network time, or when the system is getting shut down
-> > cleanly, but your init scripts aren't doing this properly --- or you
-> > normally shut down your system by just flipping the power switch, and
-> > not letting the shutdown sequence run correctly.  The other possibilty
-> > is the real time clock on your system is just completly busted
-> > (although normally when that happens, the last mount time would be in
-> > the 1970's.)
-> >
-> > Running "/sbin/hwclock -w" as root may fix things; as is figuring out
-> > why this isn't run automatically by your boot scripts.  Another
-> > workaround is to add to /etc/e2fsck.conf the following:
-> >
-> > [options]
-> >         broken_system_lock = true
-> >
-> > This will disable e2fsck's time checks.
-> >
->
-> Thank you very much for the tip, I would never have guessed that the
-> cause of this issue in hwclock.
-> I started to watch hwclock through the motherboard BIOS and found that
-> hwclock resets every time after booting Linux.
-> Demonstration: https://youtu.be/TBrLNFbBaPo
-> Apparently for this reason, "hwclock -w" did not help me, workaround
-> with "broken_system_clock = true" is working, but I would like to fix
-> the root of the cause.
-> Who can help with this?
->
+ Can you try "hwclock -w -v" to get more details?
+
+ For example on my workstation:
+
+        # ./hwclock -w -v
+        hwclock from util-linux 2.35-rc1-20-63f8
+        System Time: 1577963091.683987
+        Trying to open: /dev/rtc0
+        Using the rtc interface to the clock.
+        Last drift adjustment done at 1531914946 seconds after 1969
+        Last calibration done at 1531914946 seconds after 1969
+        Hardware clock is on UTC time
+        Assuming hardware clock is kept in UTC time.
+        RTC type: 'rtc_cmos'
+        Using delay: 0.500000 seconds
+        missed it - 1577963091.684767 is too far past 1577963091.500000 (0.184767 > 0.001000)
+        1577963092.500000 is close enough to 1577963092.500000 (0.000000 < 0.002000)
+        Set RTC to 1577963092 (1577963091 + 1; refsystime = 1577963091.000000)
+        Setting Hardware Clock to 11:04:52 = 1577963092 seconds since 1969
+        ioctl(RTC_SET_TIME) was successful.
+        Not adjusting drift factor because the --update-drift option was not used.
+        New /etc/adjtime data:
+        0.000000 1577963091 0.000000
+        1577963091
+        UTC
+
+
+    Karel
+
+
+-- 
+ Karel Zak  <kzak@redhat.com>
+ http://karelzak.blogspot.com
+
