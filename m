@@ -2,102 +2,90 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA0912FB0A
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2020 18:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4193A12FB6B
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2020 18:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgACRBQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Jan 2020 12:01:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57376 "EHLO mail.kernel.org"
+        id S1728158AbgACRN6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Jan 2020 12:13:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbgACRBQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 3 Jan 2020 12:01:16 -0500
+        id S1727988AbgACRN5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 3 Jan 2020 12:13:57 -0500
 Received: from gmail.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74DB2206DB;
-        Fri,  3 Jan 2020 17:01:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41B6820866;
+        Fri,  3 Jan 2020 17:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578070875;
-        bh=HMuouXSipp7GyOORuZndvSxu7oJc36nPRlBYJnzTvfI=;
+        s=default; t=1578071637;
+        bh=AuRBl8v/uqnhyO59/fcEhO8X0GrJrjk9X+uGwmn6iPE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0c6Riaif5UCXPFg0KmFe/6EcY83zl1CgNxWZ8G9Th6X6ej3StmUMFqe7YT76jAdF+
-         CIgJI5O8guUL/J87QCnIeoZODInfIQmP1XJ2yd2xCr2ie5qx3g3ZeH35l31c6fQXxQ
-         SbrnR6jcQ3akMOEV8pNdkAJPuJpI84QatL6I2wrw=
-Date:   Fri, 3 Jan 2020 09:01:14 -0800
+        b=WjHl5s11l6p/ZZ2cE+Gms9M+r5fbBdtpkBoPQvsf+w4vofN9SL7w3OrjCZjSExGbQ
+         66F8Xf/g5Rclf9S95up/kOzsPeZebE/TH76wPezXQIz8J1OpiuGQBsB3E18iDq4+DL
+         i8ZCOjYhQ9AANFSzuONApx4WfqiTKJlC+GGzTA2c=
+Date:   Fri, 3 Jan 2020 09:13:55 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
 Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] fscrypt: don't check for ENOKEY from
- fscrypt_get_encryption_info()
-Message-ID: <20200103170113.GJ19521@gmail.com>
-References: <20191209212348.243331-1-ebiggers@kernel.org>
+        linux-fsdevel@vger.kernel.org,
+        Victor Hsieh <victorhsieh@google.com>
+Subject: Re: [PATCH v2] fs-verity: implement readahead for
+ FS_IOC_ENABLE_VERITY
+Message-ID: <20200103171355.GP19521@gmail.com>
+References: <20191210183531.179836-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191209212348.243331-1-ebiggers@kernel.org>
+In-Reply-To: <20191210183531.179836-1-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Dec 09, 2019 at 01:23:48PM -0800, Eric Biggers wrote:
+On Tue, Dec 10, 2019 at 10:35:31AM -0800, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> fscrypt_get_encryption_info() returns 0 if the encryption key is
-> unavailable; it never returns ENOKEY.  So remove checks for ENOKEY.
+> When it builds the first level of the Merkle tree, FS_IOC_ENABLE_VERITY
+> sequentially reads each page of the file using read_mapping_page().
+> This works fine if the file's data is already in pagecache, which should
+> normally be the case, since this ioctl is normally used immediately
+> after writing out the file.
+> 
+> But in any other case this implementation performs very poorly, since
+> only one page is read at a time.
+> 
+> Fix this by implementing readahead using the functions from
+> mm/readahead.c.
+> 
+> This improves performance in the uncached case by about 20x, as seen in
+> the following benchmarks done on a 250MB file (on x86_64 with SHA-NI):
+> 
+>     FS_IOC_ENABLE_VERITY uncached (before) 3.299s
+>     FS_IOC_ENABLE_VERITY uncached (after)  0.160s
+>     FS_IOC_ENABLE_VERITY cached            0.147s
+>     sha256sum uncached                     0.191s
+>     sha256sum cached                       0.145s
+> 
+> Note: we could instead switch to kernel_read().  But that would mean
+> we'd no longer be hashing the data directly from the pagecache, which is
+> a nice optimization of its own.  And using kernel_read() would require
+> allocating another temporary buffer, hashing the data and tree pages
+> separately, and explicitly zero-padding the last page -- so it wouldn't
+> really be any simpler than direct pagecache access, at least for now.
 > 
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  fs/ext4/dir.c  | 2 +-
->  fs/f2fs/dir.c  | 2 +-
->  fs/ubifs/dir.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-> index 9fdd2b269d617..4c9d3ff394a5d 100644
-> --- a/fs/ext4/dir.c
-> +++ b/fs/ext4/dir.c
-> @@ -116,7 +116,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
->  
->  	if (IS_ENCRYPTED(inode)) {
->  		err = fscrypt_get_encryption_info(inode);
-> -		if (err && err != -ENOKEY)
-> +		if (err)
->  			return err;
->  	}
->  
-> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-> index c967cacf979ef..d9ad842945df5 100644
-> --- a/fs/f2fs/dir.c
-> +++ b/fs/f2fs/dir.c
-> @@ -987,7 +987,7 @@ static int f2fs_readdir(struct file *file, struct dir_context *ctx)
->  
->  	if (IS_ENCRYPTED(inode)) {
->  		err = fscrypt_get_encryption_info(inode);
-> -		if (err && err != -ENOKEY)
-> +		if (err)
->  			goto out;
->  
->  		err = fscrypt_fname_alloc_buffer(inode, F2FS_NAME_LEN, &fstr);
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 0b98e3c8b461d..acc4f942d25b6 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -512,7 +512,7 @@ static int ubifs_readdir(struct file *file, struct dir_context *ctx)
->  
->  	if (encrypted) {
->  		err = fscrypt_get_encryption_info(dir);
-> -		if (err && err != -ENOKEY)
-> +		if (err)
->  			return err;
->  
->  		err = fscrypt_fname_alloc_buffer(dir, UBIFS_MAX_NLEN, &fstr);
-> -- 
-> 2.24.0.393.g34dc348eaf-goog
+> Changed v1 => v2:
+> - Only do sync readahead when the page wasn't found in the pagecache at all.
+> - Use ->f_mapping so that the inode doesn't have to be passed.
+> 
+> 
+>  fs/verity/enable.c | 45 +++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 39 insertions(+), 6 deletions(-)
 > 
 
-Applied to fscrypt.git#master for 5.6.
+Applied to fscrypt.git#fsverity for 5.6.
 
 - Eric
