@@ -2,96 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A76C612FAF7
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2020 17:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4D512FB05
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2020 17:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728061AbgACQ5a (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Jan 2020 11:57:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49830 "EHLO mail.kernel.org"
+        id S1728008AbgACQ74 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Jan 2020 11:59:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727969AbgACQ53 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 3 Jan 2020 11:57:29 -0500
+        id S1727769AbgACQ7z (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 3 Jan 2020 11:59:55 -0500
 Received: from gmail.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5DA7206DB;
-        Fri,  3 Jan 2020 16:57:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC5C0206DB;
+        Fri,  3 Jan 2020 16:59:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578070649;
-        bh=RL+yaap+s7Gb++esPrb+ddyBAFUgLJGNTPp2fhE5Iv0=;
+        s=default; t=1578070795;
+        bh=ZJB44nwQCm+aExn/7YF4Pm9qKNyOqji2YX/ddgZw6MA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kxXw7SXw9knA6E1AFwsb7GlSx8TbEgrh+y/7fgxxpaTXB0F5IZCHr/2+nyXyPozfw
-         ILl+8PJ4ckpEtM8xPBGI2xuFFCndo7KoiDhyzVqKfQU8Jg6s2/6sW1x7+8GxdVCmlv
-         Etw2e1txnGpwPLJlYb/D0D+m8j+Y3f1VWe9VXDjA=
-Date:   Fri, 3 Jan 2020 08:57:27 -0800
+        b=d0ZSVo4iAU0Jg+Kfkv1mMZzq2u58fh94l/QoCV3mWj5kWbWEb1UzhtXhtNo726bmq
+         AkaBMt9KkEU3NNLtx5TQsgoU/AMX1PwBNLaojqXGnkPYoY6gh4kP4e2l4RMTzNuyNb
+         lMOYUHC7ztxrnnJ7QJ6IfLenIjd3r7FHx8ZMe2hU=
+Date:   Fri, 3 Jan 2020 08:59:53 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
-Cc:     keyrings@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Paul Crowley <paulcrowley@google.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Ondrej Kozina <okozina@redhat.com>
-Subject: Re: [PATCH v2] fscrypt: support passing a keyring key to
- FS_IOC_ADD_ENCRYPTION_KEY
-Message-ID: <20200103165727.GB19521@gmail.com>
-References: <20191119222447.226853-1-ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] fscrypt: introduce fscrypt_needs_contents_encryption()
+Message-ID: <20200103165953.GH19521@gmail.com>
+References: <20191209205021.231767-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191119222447.226853-1-ebiggers@kernel.org>
+In-Reply-To: <20191209205021.231767-1-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Nov 19, 2019 at 02:24:47PM -0800, Eric Biggers wrote:
+On Mon, Dec 09, 2019 at 12:50:21PM -0800, Eric Biggers wrote:
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> Extend the FS_IOC_ADD_ENCRYPTION_KEY ioctl to allow the raw key to be
-> specified by a Linux keyring key, rather than specified directly.
+> Add a function fscrypt_needs_contents_encryption() which takes an inode
+> and returns true if it's an encrypted regular file and the kernel was
+> built with fscrypt support.
 > 
-> This is useful because fscrypt keys belong to a particular filesystem
-> instance, so they are destroyed when that filesystem is unmounted.
-> Usually this is desired.  But in some cases, userspace may need to
-> unmount and re-mount the filesystem while keeping the keys, e.g. during
-> a system update.  This requires keeping the keys somewhere else too.
-> 
-> The keys could be kept in memory in a userspace daemon.  But depending
-> on the security architecture and assumptions, it can be preferable to
-> keep them only in kernel memory, where they are unreadable by userspace.
-> 
-> We also can't solve this by going back to the original fscrypt API
-> (where for each file, the master key was looked up in the process's
-> keyring hierarchy) because that caused lots of problems of its own.
-> 
-> Therefore, add the ability for FS_IOC_ADD_ENCRYPTION_KEY to accept a
-> Linux keyring key.  This solves the problem by allowing userspace to (if
-> needed) save the keys securely in a Linux keyring for re-provisioning,
-> while still using the new fscrypt key management ioctls.
-> 
-> This is analogous to how dm-crypt accepts a Linux keyring key, but the
-> key is then stored internally in the dm-crypt data structures rather
-> than being looked up again each time the dm-crypt device is accessed.
-> 
-> Use a custom key type "fscrypt-provisioning" rather than one of the
-> existing key types such as "logon".  This is strongly desired because it
-> enforces that these keys are only usable for a particular purpose: for
-> fscrypt as input to a particular KDF.  Otherwise, the keys could also be
-> passed to any kernel API that accepts a "logon" key with any service
-> prefix, e.g. dm-crypt, UBIFS, or (recently proposed) AF_ALG.  This would
-> risk leaking information about the raw key despite it ostensibly being
-> unreadable.  Of course, this mistake has already been made for multiple
-> kernel APIs; but since this is a new API, let's do it right.
-> 
-> This patch has been tested using an xfstest which I wrote to test it.
+> This will allow replacing duplicated checks of IS_ENCRYPTED() &&
+> S_ISREG() on the I/O paths in ext4 and f2fs, while also optimizing out
+> unneeded code when !CONFIG_FS_ENCRYPTION.
 > 
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  include/linux/fscrypt.h | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+> index cb18b5fbcef92..2a29f56b1a1cb 100644
+> --- a/include/linux/fscrypt.h
+> +++ b/include/linux/fscrypt.h
+> @@ -72,6 +72,21 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+>  	return READ_ONCE(inode->i_crypt_info) != NULL;
+>  }
+>  
+> +/**
+> + * fscrypt_needs_contents_encryption() - check whether an inode needs
+> + *					 contents encryption
+> + *
+> + * Return: %true iff the inode is an encrypted regular file and the kernel was
+> + * built with fscrypt support.
+> + *
+> + * If you need to know whether the encrypt bit is set even when the kernel was
+> + * built without fscrypt support, you must use IS_ENCRYPTED() directly instead.
+> + */
+> +static inline bool fscrypt_needs_contents_encryption(const struct inode *inode)
+> +{
+> +	return IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode);
+> +}
+> +
+>  static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
+>  {
+>  	return inode->i_sb->s_cop->dummy_context &&
+> @@ -269,6 +284,11 @@ static inline bool fscrypt_has_encryption_key(const struct inode *inode)
+>  	return false;
+>  }
+>  
+> +static inline bool fscrypt_needs_contents_encryption(const struct inode *inode)
+> +{
+> +	return false;
+> +}
+> +
+>  static inline bool fscrypt_dummy_context_enabled(struct inode *inode)
+>  {
+>  	return false;
+> -- 
+> 2.24.0.393.g34dc348eaf-goog
+> 
 
 Applied to fscrypt.git#master for 5.6.
 
