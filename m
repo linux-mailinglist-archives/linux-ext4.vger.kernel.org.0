@@ -2,90 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4193A12FB6B
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2020 18:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD7612FDA1
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2020 21:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgACRN6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Jan 2020 12:13:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727988AbgACRN5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 3 Jan 2020 12:13:57 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41B6820866;
-        Fri,  3 Jan 2020 17:13:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578071637;
-        bh=AuRBl8v/uqnhyO59/fcEhO8X0GrJrjk9X+uGwmn6iPE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WjHl5s11l6p/ZZ2cE+Gms9M+r5fbBdtpkBoPQvsf+w4vofN9SL7w3OrjCZjSExGbQ
-         66F8Xf/g5Rclf9S95up/kOzsPeZebE/TH76wPezXQIz8J1OpiuGQBsB3E18iDq4+DL
-         i8ZCOjYhQ9AANFSzuONApx4WfqiTKJlC+GGzTA2c=
-Date:   Fri, 3 Jan 2020 09:13:55 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org,
-        Victor Hsieh <victorhsieh@google.com>
-Subject: Re: [PATCH v2] fs-verity: implement readahead for
- FS_IOC_ENABLE_VERITY
-Message-ID: <20200103171355.GP19521@gmail.com>
-References: <20191210183531.179836-1-ebiggers@kernel.org>
+        id S1727912AbgACUT5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 3 Jan 2020 15:19:57 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:33789 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727894AbgACUTq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Jan 2020 15:19:46 -0500
+Received: by mail-qv1-f68.google.com with SMTP id z3so16703011qvn.0
+        for <linux-ext4@vger.kernel.org>; Fri, 03 Jan 2020 12:19:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=40ACnQIUnpge54Cj+EODMXbGQ2AM0yGbootCDBdgIh0=;
+        b=AWCc/ylFmQ91zZEJrbKovcmODhKduqUVkKGxHK8uCtVvWppAnjCzAVhlqtuTB6Zv3H
+         fwGfadWPG5OWx3vtouAanI9rAb4+nCSTS9ougZHH94RmFVRXusGOhSeq6LcZbXUbpYke
+         LecHuReAxOHZIAlNr0puF8IN10taJseJbu/8dZmgE65qy44VHc90CsjCbMPz9YIW56uc
+         KAocddCq9fbTe+4eLEe4ukQAx3KuF/S8Bs/5ss0PU18bAsmodPObJCziaNGvW+fW97nj
+         vqPpR6NvW2UHqccwDYrcuioTdRRCTX8F5vGOe97A6Uj5iUQG4sbm5c76feOsNIPb/J8O
+         nOKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=40ACnQIUnpge54Cj+EODMXbGQ2AM0yGbootCDBdgIh0=;
+        b=ZVTtLPOcy3IdEPeCgVeeIyHVtkRCPnhgiN53eGh8snmAQiHz8qs3PSaIJ9/BQbV+Ap
+         JZpRh47i2lTE5lI4kzFqG11ErXjwq20wgbjSBzOJiG1NxYS792UCniD6zmaIbFFvv7Gi
+         Jn5zItJbijLW2HTgUSw9Tm0WbHMroTi2PD+hWUwkd0CA6c1FfrAQqueoqgKeALZbrxV/
+         XxnzSUNrwiXXT/CAPqCydRuo4DRH6OmHG2i4xerDbIA47UT/pYD/gNNeFoR/tIlF6gFl
+         bwc4fFYRPBB2/3sMkUallT/H9HkYpsPECm0bBo3A7BKQ4X9oI7gYZHMGza+yEVHch27+
+         w3uw==
+X-Gm-Message-State: APjAAAWtE2pDIddSv55y5tjJedwlWT79HNaftrvjxvT0cUYBdeKxypgm
+        VFaP1wGhLYsypYKyEAkXIHiPme1BKtOK7KKxxy0=
+X-Google-Smtp-Source: APXvYqwTD0MzQRfSqMjBdpNUeZAJzfDvhrEGhXGCrMyvXGb//+N8M9ASxsqTbkQfP5NbaV7n6hKI5gEfY+hOjDS6Fyg=
+X-Received: by 2002:ad4:478b:: with SMTP id z11mr69635758qvy.185.1578082785331;
+ Fri, 03 Jan 2020 12:19:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191210183531.179836-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:ac8:4410:0:0:0:0:0 with HTTP; Fri, 3 Jan 2020 12:19:45 -0800 (PST)
+From:   "Rev.Dr Emmanuel Okoye CEO Ecobank-benin" 
+        <westernunion.benin982@gmail.com>
+Date:   Fri, 3 Jan 2020 21:19:45 +0100
+Message-ID: <CAP=nHBKxfmbdRg7q4-1jdSUL6+zok9agasMSrXV5CsEJEmZz3A@mail.gmail.com>
+Subject: I promise you must be happy today, God has uplifted you and your
+ family ok
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 10:35:31AM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> When it builds the first level of the Merkle tree, FS_IOC_ENABLE_VERITY
-> sequentially reads each page of the file using read_mapping_page().
-> This works fine if the file's data is already in pagecache, which should
-> normally be the case, since this ioctl is normally used immediately
-> after writing out the file.
-> 
-> But in any other case this implementation performs very poorly, since
-> only one page is read at a time.
-> 
-> Fix this by implementing readahead using the functions from
-> mm/readahead.c.
-> 
-> This improves performance in the uncached case by about 20x, as seen in
-> the following benchmarks done on a 250MB file (on x86_64 with SHA-NI):
-> 
->     FS_IOC_ENABLE_VERITY uncached (before) 3.299s
->     FS_IOC_ENABLE_VERITY uncached (after)  0.160s
->     FS_IOC_ENABLE_VERITY cached            0.147s
->     sha256sum uncached                     0.191s
->     sha256sum cached                       0.145s
-> 
-> Note: we could instead switch to kernel_read().  But that would mean
-> we'd no longer be hashing the data directly from the pagecache, which is
-> a nice optimization of its own.  And using kernel_read() would require
-> allocating another temporary buffer, hashing the data and tree pages
-> separately, and explicitly zero-padding the last page -- so it wouldn't
-> really be any simpler than direct pagecache access, at least for now.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> Changed v1 => v2:
-> - Only do sync readahead when the page wasn't found in the pagecache at all.
-> - Use ->f_mapping so that the inode doesn't have to be passed.
-> 
-> 
->  fs/verity/enable.c | 45 +++++++++++++++++++++++++++++++++++++++------
->  1 file changed, 39 insertions(+), 6 deletions(-)
-> 
+Dear Friend
 
-Applied to fscrypt.git#fsverity for 5.6.
+i hope all is well with you,if so, glory be to God almighty. I'm very
+happy to inform you, about my success in getting payment funds under
+the cooperation of a new partner from United States of
+America.Presently I am in uk for investment projects with my own share
+of the total sum. I didn't forget your past efforts. IMF finally
+approved your compensation payment funds this morning by prepaid (ATM)
+Debit card of US$12,500.000.00Million Dollars, Since you not received
+this payment yet, I was not certified
+but it is not your fault and not my fault, I hold nothing against
+you.than bank official whom has been detaining the transfer in the
+bank, trying to claim your funds by themselves.
 
-- Eric
+Therefore, in appreciation of your effort I have raised an
+International prepaid (ATM) Debit card of US$12,500.000.00 in your
+favor as compensation to you.
+
+Now, i want you to contact my Diplomatic Agent, His name is Mike Benz
+on His  e-mail Address (mikebenz550@aol.com
+
+ask Him to send the Prepaid (ATM) Debit card to you. Bear in mind that
+the money is in Prepaid (ATM) Debit card, not cash, so you need to
+send to him,
+your full name
+address  where the prepaid (ATM) Debit card will be delivered to you,
+including your cell phone number. Finally, I left explicit
+instructions with him, on how to send the (ATM CARD) to you.
+
+The Prepaid (ATM) Debit card, will be send to you through my
+Diplomatic Agent Mr. Mike Benz immediately you contact him. So contact
+my Diplomatic Agent Mr. Mike Benz immediately you receive this letter.
+Below is his contact information:
+
+NAME : MIKE BENZ
+EMAIL ADDRESS: mikebenz550@aol.com
+Text Him, (256) 284-4886
+
+Request for Delivery of the Prepaid (ATM) Debit card  to you today.
+Note, please I have paid for the whole service fees for you, so the
+only money you will send to my Diplomatic Agent Mr. Mike Benz is
+$50.00 for your prepaid (ATM) Debit card DELIVERY FEE to your address
+ok.
+Let me know once you receive this Card at your address.
+Best regards,
+Rev.Dr, George Adadar
