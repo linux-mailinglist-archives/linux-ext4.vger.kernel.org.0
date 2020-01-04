@@ -2,119 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1086D12FDE7
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2020 21:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C191302E8
+	for <lists+linux-ext4@lfdr.de>; Sat,  4 Jan 2020 16:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgACU0q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 3 Jan 2020 15:26:46 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47201 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726050AbgACU0q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 3 Jan 2020 15:26:46 -0500
-Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 003KQ8JY013722
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Jan 2020 15:26:09 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 522F24200AF; Fri,  3 Jan 2020 15:26:08 -0500 (EST)
-Date:   Fri, 3 Jan 2020 15:26:08 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+        id S1726004AbgADPFl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 4 Jan 2020 10:05:41 -0500
+Received: from mga05.intel.com ([192.55.52.43]:13333 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725928AbgADPFl (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 4 Jan 2020 10:05:41 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Jan 2020 07:05:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,395,1571727600"; 
+   d="scan'208";a="217018878"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 04 Jan 2020 07:05:40 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1inkzk-0008wQ-2W; Sat, 04 Jan 2020 23:05:40 +0800
+Date:   Sat, 4 Jan 2020 23:04:57 +0800
+From:   kbuild test robot <lkp@intel.com>
 To:     Daniel Rosenberg <drosen@google.com>
-Cc:     linux-ext4@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 4/8] vfs: Fold casefolding into vfs
-Message-ID: <20200103202608.GB4253@mit.edu>
-References: <20191203051049.44573-1-drosen@google.com>
- <20191203051049.44573-5-drosen@google.com>
+Cc:     kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: [ext4:pu 13/14] fs/ext4/namei.c:1424:12-13: WARNING: return of 0/1
+ in function 'ext4_match' with return type bool
+Message-ID: <202001042353.ELj62MwN%lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191203051049.44573-5-drosen@google.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Dec 02, 2019 at 09:10:45PM -0800, Daniel Rosenberg wrote:
-> @@ -228,6 +229,13 @@ static inline int dentry_string_cmp(const unsigned char *cs, const unsigned char
->  
->  #endif
->  
-> +bool needs_casefold(const struct inode *dir)
-> +{
-> +	return IS_CASEFOLDED(dir) &&
-> +			(!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir));
-> +}
-> +EXPORT_SYMBOL(needs_casefold);
-> +
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git pu
+head:   84df4cb550cf6bfd1d92585fb11736774d07cad5
+commit: 50d710db6f001ce37e13efd62b09bd8c0fc593e8 [13/14] ext4: Hande casefolding with encryption
 
-I'd suggest adding a check to make sure that dir->i_sb->s_encoding is
-non-NULL before needs_casefold() returns non-NULL.  Otherwise a bug
-(or a fuzzed file system) which manages to set the S_CASEFOLD flag without having s_encoding be initialized might cause a NULL dereference.
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
 
-Also, maybe make needs_casefold() an inline function which returns 0
-if CONFIG_UNICODE is not defined?  That way the need for #ifdef
-CONFIG_UNICODE could be reduced.
 
-> @@ -247,7 +255,19 @@ static inline int dentry_cmp(const struct dentry *dentry, const unsigned char *c
->  	 * be no NUL in the ct/tcount data)
->  	 */
->  	const unsigned char *cs = READ_ONCE(dentry->d_name.name);
-> +#ifdef CONFIG_UNICODE
-> +	struct inode *parent = dentry->d_parent->d_inode;
->  
-> +	if (unlikely(needs_casefold(parent))) {
-> +		const struct qstr n1 = QSTR_INIT(cs, tcount);
-> +		const struct qstr n2 = QSTR_INIT(ct, tcount);
-> +		int result = utf8_strncasecmp(dentry->d_sb->s_encoding,
-> +						&n1, &n2);
-> +
-> +		if (result >= 0 || sb_has_enc_strict_mode(dentry->d_sb))
-> +			return result;
-> +	}
-> +#endif
+coccinelle warnings: (new ones prefixed by >>)
 
-This is an example of how we could drop the #ifdef CONFIG_UNICODE
-(moving the declaration of 'parent' into the #if statement) if
-needs_casefold() always returns 0 if !defined(CONFIG_UNICODE).
+>> fs/ext4/namei.c:1424:12-13: WARNING: return of 0/1 in function 'ext4_match' with return type bool
 
-> @@ -2404,7 +2424,22 @@ struct dentry *d_hash_and_lookup(struct dentry *dir, struct qstr *name)
->  	 * calculate the standard hash first, as the d_op->d_hash()
->  	 * routine may choose to leave the hash value unchanged.
->  	 */
-> +#ifdef CONFIG_UNICODE
-> +	unsigned char *hname = NULL;
-> +	int hlen = name->len;
-> +
-> +	if (IS_CASEFOLDED(dir->d_inode)) {
-> +		hname = kmalloc(PATH_MAX, GFP_ATOMIC);
-> +		if (!hname)
-> +			return ERR_PTR(-ENOMEM);
-> +		hlen = utf8_casefold(dir->d_sb->s_encoding,
-> +					name, hname, PATH_MAX);
-> +	}
-> +	name->hash = full_name_hash(dir, hname ?: name->name, hlen);
-> +	kfree(hname);
-> +#else
->  	name->hash = full_name_hash(dir, name->name, name->len);
-> +#endif
+Please review and possibly fold the followup patch.
 
-Perhaps this could be refactored out?  It's also used in
-link_path_walk() and lookup_one_len_common().
-
-(Note, there was some strageness in lookup_one_len_common(), where
-hname is freed twice, the first time using kvfree() which I don't
-believe is needed.  But this can be fixed as part of the refactoring.)
-
-	   	    	     	    	  - Ted
+---
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
