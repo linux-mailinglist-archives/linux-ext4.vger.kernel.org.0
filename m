@@ -2,24 +2,24 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C92413339B
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2020 22:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E511333A3
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2020 22:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729025AbgAGVEN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jan 2020 16:04:13 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36392 "EHLO
+        id S1728912AbgAGVUO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jan 2020 16:20:14 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36466 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728799AbgAGVEL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jan 2020 16:04:11 -0500
+        with ESMTP id S1728167AbgAGVEh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jan 2020 16:04:37 -0500
 Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 007L2vFj024569
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 007L3U6Q024697
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 7 Jan 2020 16:02:58 -0500
+        Tue, 7 Jan 2020 16:03:31 -0500
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 67AA74207DF; Tue,  7 Jan 2020 16:02:57 -0500 (EST)
-Date:   Tue, 7 Jan 2020 16:02:57 -0500
+        id 4E9094207DF; Tue,  7 Jan 2020 16:03:30 -0500 (EST)
+Date:   Tue, 7 Jan 2020 16:03:30 -0500
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
 To:     Andy Lutomirski <luto@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -36,30 +36,28 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         linux-man <linux-man@vger.kernel.org>,
         Stephan Mueller <smueller@chronox.de>
-Subject: Re: [PATCH v3 5/8] random: Make /dev/random be almost like
- /dev/urandom
-Message-ID: <20200107210257.GJ3619@mit.edu>
+Subject: Re: [PATCH v3 6/8] random: Remove the blocking pool
+Message-ID: <20200107210330.GK3619@mit.edu>
 References: <cover.1577088521.git.luto@kernel.org>
- <5e6ac8831c6cf2e56a7a4b39616d1732b2bdd06c.1577088521.git.luto@kernel.org>
+ <511225a224bf0a291149d3c0b8b45393cd03ab96.1577088521.git.luto@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5e6ac8831c6cf2e56a7a4b39616d1732b2bdd06c.1577088521.git.luto@kernel.org>
+In-Reply-To: <511225a224bf0a291149d3c0b8b45393cd03ab96.1577088521.git.luto@kernel.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Dec 23, 2019 at 12:20:48AM -0800, Andy Lutomirski wrote:
-> This patch changes the read semantics of /dev/random to be the same
-> as /dev/urandom except that reads will block until the CRNG is
-> ready.
+On Mon, Dec 23, 2019 at 12:20:49AM -0800, Andy Lutomirski wrote:
+> There is no longer any interface to read data from the blocking
+> pool, so remove it.
 > 
-> None of the cleanups that this enables have been done yet.  As a
-> result, this gives a warning about an unused function.
+> This enables quite a bit of code deletion, much of which will be
+> done in subsequent patches.
 > 
 > Signed-off-by: Andy Lutomirski <luto@kernel.org>
 
 Applied, thanks.
 
-						- Ted
+					- Ted
