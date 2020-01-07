@@ -2,145 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE69132E45
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2020 19:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDFB133007
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2020 20:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgAGSTd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Jan 2020 13:19:33 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37281 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727925AbgAGSTc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jan 2020 13:19:32 -0500
-Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 007IJREj031741
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 7 Jan 2020 13:19:28 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 704074207DF; Tue,  7 Jan 2020 13:19:27 -0500 (EST)
-Date:   Tue, 7 Jan 2020 13:19:27 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     linux-ext4@vger.kernel.org
-Subject: [ANNOUNCE] e2fsprogs v1.45.5
-Message-ID: <20200107181927.GD3619@mit.edu>
+        id S1728736AbgAGT4i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jan 2020 14:56:38 -0500
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:35351 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728687AbgAGT4h (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jan 2020 14:56:37 -0500
+Received: by mail-ed1-f66.google.com with SMTP id f8so650377edv.2
+        for <linux-ext4@vger.kernel.org>; Tue, 07 Jan 2020 11:56:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=lUsTd9lJYwK928kai9reachpHe0HC9Hv8/gDLGwtaBI=;
+        b=m/Udengj3famfT4AeeQ1IRW+yMW7VasUnASahB37i/PoeHrkRBk2CGyFKYNukmjW7S
+         L8SRka5Jakx3oOkJPsG2IofN9vOqI+MJeZI3Q0YE0hhIfxJgla/Mvi4GlBIJ0+PXKJyR
+         fGhtIsUmeS9lphgKJPwASTV0Wis5x+akjvA6FztTMBR/K8fgi7sOjdtLa1OeTeeGw/oC
+         WuhGv+1qsxod0shrSr56iRhzuujf6ypC8mQV8JosjFfNeYtuq3xDGNFupimiXFOQL0SO
+         8SxYRsEAywqZcf7WmcQRmN/Qkf20W+/a6rRSJl252WjsQoa/SZxLvQ4mGRJVkfZ3ex9s
+         ABpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=lUsTd9lJYwK928kai9reachpHe0HC9Hv8/gDLGwtaBI=;
+        b=IyPZ4iIMIfzmvzmfsAKfWKvlnRm34snzhVbjzsFFL2TyXBvzKbpmW4ivYxFZjwH9t4
+         PVO8AR0bcwfs0HpknZcxmYog2BEWKnp/Rak7uFJiAV/cZa3PpWi5ztEG1FSAXWEMtz1Q
+         tbjfIvFQKt8YlpzAVIbp0aoIFSyNk39NLGWREOItsWYU8YhRjCol5fNnC/P7UuWC6h3x
+         hHD1ge4C6PGkwwG7f/ivUSy436+JzTWeuR0FSMpYRYu446hDwkXTL+2VzeCNOS8UsO5/
+         g17bbWbtGcAIVmMefnMSGO3wH9E3c352YcwSP1TB/CAO5WmjUs2sIkGA+BRFNe2AD5Gc
+         AQ+w==
+X-Gm-Message-State: APjAAAUEjxKIyKaBuQ4nVT9koq0ilr6AY6MfwEHer6524akppTKN7VUm
+        xHxbQ5+7cXppTKAbH3GbaQgCGhjl/sM2qafWhIw=
+X-Google-Smtp-Source: APXvYqzNbcT08PcgNHBR6CjdjGMonF1aREtl3FixKkalZzLFfyP3YZsjOtPyVn2SjFoUiZ8TzNVIEuitC7fnDU0d3Kk=
+X-Received: by 2002:a17:907:20ef:: with SMTP id rh15mr1111482ejb.325.1578426995176;
+ Tue, 07 Jan 2020 11:56:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: by 2002:a17:906:72c6:0:0:0:0 with HTTP; Tue, 7 Jan 2020 11:56:34
+ -0800 (PST)
+Reply-To: dhlexpresscouriercompany.nyusa@gmail.com
+From:   "Dr. William Johnson" <currency1000000@gmail.com>
+Date:   Tue, 7 Jan 2020 20:56:34 +0100
+Message-ID: <CAPqfnSEyU1pBR_7HT2g1KK7i8caLMBQ8yPA8KRDVm+MN-K_Z4w@mail.gmail.com>
+Subject: contact Dhl office New York to receive your Prepaid ATM Master Card
+ worth $15.8Million US DOLLARS now.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-I've released e2fsprogs 1.45.5 in all of the usual places; it's tagged
-in the git trees on git.kernel.org, github, and sourceforge, and
-available for download at:
- 
-http://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.45.5
- 
-and
- 
-http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.45.5.tar.gz
-
-The release notes for 1.45.5 can be found below.  Note that if your
-system/distribution allows malicious users to trick the system into
-running e2fsck on an untrustworthy source as root, you are strongly
-recommended to take this release, or else cherry-pick the following
-commits:
-
-8dd73c14 - e2fsck: abort if there is a corrupted directory block when rehashing
-71ba1375 - e2fsck: don't try to rehash a deleted directory
-101e73e9 - e2fsck: fix use after free in calculate_tree()
-
-Cheers,
-
-					- Ted
-
-E2fsprogs 1.45.5 (January 7, 2020)
-==================================
-
-Updates/Fixes since v1.45.4:
-
-Fixes
------
-
-E2fsck will no longer force a full file system check if time-based
-forced checks are disabled and the last mount time or last write time in
-the superblock are in the future.
-
-Fix a potential out of bounds write when checking a maliciously
-corrupted file system.  This is probably not exploitable on 64-bit
-platforms, but may be exploitable on 32-bit binaries depending on how
-the compiler lays out the stack variables.  (Addresses CVE-2019-5188)
-
-Fixed spurious weekly e-mails when e2scrub_all is run via a cron job
-on non-systemd systems.  (Addresses Debian Bug: #944033)
-
-Remove an unnecessary sleep in e2scrub which could add up to an
-additional two second delay during the boot up.  Also, avoid trying
-to reap aborted snapshots if it has been disabled via e2scrub.conf.
-(Addresses Debian Bug: #948193)
-
-If a mischievous system administrator mounts a pseudo-file system such
-as tmpfs with a device name that duplicates another mounted file system,
-this could potentially confuse resize2fs when it needs to find the mount
-point of a mounted file system.  (Who would have guessed?)  Add some
-sanity checking so that we can make libext2fs more robust against such
-insanity, at least on Linux.  (GNU HURD doesn't support st_rdev.)
-
-Tune2fs now prohibits enabling or disabling uninit_bg if the file system
-is mounted, since this could result in the file system getting
-corrupted, and there is an unfortunate AskUbuntu article suggesting this
-as a way to modify a file system's UUID on a live file system.  (Ext4
-now has a way to do this safely, using the metadata_csum_seed feature,
-which was added in the 4.4 Linux kernel.)
-
-Fix potential crash in e2fsck when rebuilding very large directories on
-file systems which have the new large_dir feature enable.
-
-Fix support of 32-bit uid's and gid's in fuse2fs and in mke2fs -d.
-
-Fix mke2fs's setting bad blocks to bigalloc file systems.
-
-Fix a bug where fuse2fs would incorrectly report the i_blocks fields for
-bigalloc file systems.
-
-Resize2fs's minimum size estimates (via resize2fs -M) estimates are now
-more accurate when run on mounted file systems.
-
-Fixed potential memory leak in read_bitmap() in libext2fs.
-
-Fixed various UBsan failures found when fuzzing file system images.
-(Addresses Google Bug: #128130353)
-
-Updated and clarified various man pages.
-
-
-Performance, Internal Implementation, Development Support etc.
---------------------------------------------------------------
-
-Speed up e2fsck on file systems with a very large number of inodes
-caused by repeated calls to gettext().
-
-The inode_io io_manager can now support files which are greater than
-2GB.
-
-The ext2_off_t and ext2_off64_t are now signed types so that
-ext2fs_file_lseek() and ext2fs_file_llseek() can work correctly.
-
-Reserve codepoint for the fast_commit feature.
-
-Fixed various Debian packaging issues.
-
-Fix portability problems for Illumous and on hurd/i386 (Addresses Debian
-Bug: #944649)
-
-Always compile the ext2fs_swap_* functions even on little-endian
-architectures, so that debian/libext2fs.symbols can be consistent across
-architectures.
-
-Synchronized changes from Android's AOSP e2fsprogs tree.
-
-Updated config.guess and config.sub with newer versions from the FSF.
-
-Update the Chinese and Malay translations from the translation project.
+ATTN Dear Beneficiary.
+Goodnews
+I have Registered your Prepaid ATM Master Card
+worth $15.800,000.00 US DOLLARS with Courier company
+asigned to deliver it to you today.
+So contact Dhl office New York to receive your Prepaid ATM Master Card
+worth $15.8Million US DOLLARS now.
+Contact Person: Mrs. Mary Michael, Director, DHL Courier Company-NY USA. 10218
+Email. dhlexpresscouriercompany.nyusa@gmail.com
+Call the office +(202) 890-8752
+Rec-Confirmed your mailing address to the office as I listed below.
+Your Full Name--------------
+House Address-----------
+Your working Phone Number----------------
+ID copy-------------------------
+Sex-----------------------------
+Note,delivery fee to your address is only $25.00. send it to this
+company urgent on itunes card today so that DHL will deliver this
+Prepaid ATM Master Card to you today according to our finally
+agreement.
+Thanks for coperations,
+Dr. William Johnson
