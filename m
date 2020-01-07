@@ -2,111 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBD2131DEF
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2020 04:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA12131EE6
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2020 06:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727495AbgAGDYy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Jan 2020 22:24:54 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:47188 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727377AbgAGDYy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jan 2020 22:24:54 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0073EXIE025855;
-        Tue, 7 Jan 2020 03:24:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : references : date : in-reply-to : message-id : mime-version :
- content-type; s=corp-2019-08-05;
- bh=eEDEB5cRiaDaMI401AFI3YVYzUZ8UFoQLMybywdErVQ=;
- b=QDSlbGupGflTHfqrIDNN0pRGV03FnSpuCfigptfoFqoaA1spKKkx9D4dFkT4G4dyADdK
- KTO58n7GOAw3kOHJ5OmGz/YSqQg9fDfUNSklRPcfXSCAqcfdiNi9SqY6ibt54v1OEe8o
- 9PP/h4km77fvB47MLrijeXfen1XxOvm/ZX15n+BOWpB/H+l1LbMKKx86T6uoq04LxhhH
- +rbvtc5p71h5DvFiZfvaDTlRYtzajq18gFUJdRJa1d47RvZshe2sbcrWXL8ZETcIHDyY
- Q3PgPRP0rHuCR0C+zmXK685klXj7A+DIwARvEDZYW2EhGqLzHOLmRyOBpZWxc9UyXaoV ew== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2xajnpts86-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Jan 2020 03:24:23 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0073EOoh192221;
-        Tue, 7 Jan 2020 03:24:23 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 2xb4uq6njs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Jan 2020 03:24:22 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0073ODw1027853;
-        Tue, 7 Jan 2020 03:24:14 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 06 Jan 2020 19:24:13 -0800
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, ming.lei@redhat.com, osandov@fb.com,
-        jthumshirn@suse.de, minwoo.im.dev@gmail.com, damien.lemoal@wdc.com,
-        andrea.parri@amarulasolutions.com, hare@suse.com, tj@kernel.org,
-        ajay.joshi@wdc.com, sagi@grimberg.me, dsterba@suse.com,
-        chaitanya.kulkarni@wdc.com, bvanassche@acm.org,
-        dhowells@redhat.com, asml.silence@gmail.com
-Subject: Re: [PATCH RFC 1/3] block: Add support for REQ_OP_ASSIGN_RANGE operation
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-References: <157599668662.12112.10184894900037871860.stgit@localhost.localdomain>
-        <157599696813.12112.14140818972910110796.stgit@localhost.localdomain>
-        <yq1woatc8zd.fsf@oracle.com>
-        <3f2e341b-dea4-c5d0-8eb0-568b6ad2f17b@virtuozzo.com>
-        <yq1a77oc56s.fsf@oracle.com>
-        <625c9ee4-bedb-ff60-845e-2d440c4f58aa@virtuozzo.com>
-        <yq1pngh7blx.fsf@oracle.com>
-        <405b9106-0a97-0821-c41d-58ab8d0e2d09@virtuozzo.com>
-Date:   Mon, 06 Jan 2020 22:24:09 -0500
-In-Reply-To: <405b9106-0a97-0821-c41d-58ab8d0e2d09@virtuozzo.com> (Kirill
-        Tkhai's message of "Mon, 23 Dec 2019 11:51:34 +0300")
-Message-ID: <yq1o8vg2bl2.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9492 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001070025
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9492 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001070025
+        id S1725987AbgAGFQr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Jan 2020 00:16:47 -0500
+Received: from mail-ua1-f73.google.com ([209.85.222.73]:54435 "EHLO
+        mail-ua1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgAGFQr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Jan 2020 00:16:47 -0500
+Received: by mail-ua1-f73.google.com with SMTP id i12so10744803uak.21
+        for <linux-ext4@vger.kernel.org>; Mon, 06 Jan 2020 21:16:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=cfX1tvKpjBFaGwVknnvW2VBwxewGwbcoGgPS02CBSEM=;
+        b=Q40BGR+McgMbCgqtKK+XRsRmJJBj/BH4LjOY1inQamlLz1Onc25gJfKSbGCbLp3BV6
+         kKbmIcg1Qs8OlNWNQNQVhlpP5eQeWpb8bdcg/T1uA1M21Nwy3AmiDfyWJt0tvnczfV4l
+         F5+GHxcTVIFp5EjxqoKHbB5BR5AscstZMpWufBT8/BJSWPsoka2tUFUerrjyIkmcUjjK
+         wZ3VxyoNX/QvFD5IuLtoVSHr99qrCNN1Y+s01aUz0lsnsY4sqo6j8cw1VnQNt7bNfDGH
+         /9+qGi2HEFX3SqvMkNy9rSPpAhx5BvUPP3MMTK/c1L92gGjvYGn+U5QaEIouLcVwROXe
+         FVsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=cfX1tvKpjBFaGwVknnvW2VBwxewGwbcoGgPS02CBSEM=;
+        b=ooUPoJNj6Pd+Y/1AQiiiwFrE9qOG7kTBU7HaEVVFCoXbFJL2gFIJ8UyWkzUeb/XKUA
+         JqDcB9ysIh9uI65XK/Lb623/PBW+ITgi9mjiRdQYP0JS5kg+wfMJ+3ToM+EERDhyrSgF
+         Psm1YQe9a+/ywq5eff3XgCHj60yljDTEtqxsK5MP4qr6tHGBVidbGORp5xwvV84/OSiL
+         riJLVBDgGqvZJXKarTI09R3AtLMDF97dneumgaFJMMD+335tYqPmMtowcJnP2MnClMpd
+         yy16NyDRLVAsDPDRI2QI3j7U/NtmqDSEygAvICGFN+6d9lYKmMY0kW2QwSoLgMFAKb1n
+         VYrA==
+X-Gm-Message-State: APjAAAU85kMRgVmPAh+wdPbiufHDPxQhfQLHCb4JLYDrGYKmC6L4njM5
+        eXrcY/9MxY+gjK1mmghrFz2Y9eIuKz4=
+X-Google-Smtp-Source: APXvYqzc67czlLj1xc/BSkQkduLdtiKKbLVUdrPq7hUPjUVp5UmYvrkDtchUfmBzIECNLQOquU+7Qzeor7M=
+X-Received: by 2002:a1f:8d57:: with SMTP id p84mr56402733vkd.65.1578374205529;
+ Mon, 06 Jan 2020 21:16:45 -0800 (PST)
+Date:   Mon,  6 Jan 2020 21:16:32 -0800
+Message-Id: <20200107051638.40893-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
+Subject: [PATCH v2 0/6] Support for Casefolding and Encryption
+From:   Daniel Rosenberg <drosen@google.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Ext4 and F2FS currently both support casefolding and encryption, but not at
+the same time. These patches aim to rectify that.
 
-Kirill,
+Since directory names are stored case preserved, we cannot just take the hash
+of the ciphertext. Instead we use the siphash of the casefolded name. With this
+we no longer have a direct path from an encrypted name to the hash without the
+key. To deal with this, fscrypt now always includes the hash in the name it
+presents when the key is not present. There is a pre-existing bug where you can
+change parts of the hash and still match the name so long as the disruption to
+the hash does not happen to affect lookup on that filesystem. I'm not sure how
+to fix that without making ext4 lookups slower in the more common case.
 
-Sorry, the holiday break got in the way.
+I moved the identical dcache operations for ext4 and f2fs into the VFS, as any
+filesystem that uses casefolding will need the same code. This will also allow
+further optimizations to that path, although my current changes don't take
+advantage of that yet.
 
-> But I also worry about NOFALLBACK case. There are possible block
-> devices, which support write zeroes, but they can't allocate blocks
-> (block allocation are just not appliable for them, say, these are all
-> ordinary hdd).
+For Ext4, this also means that we need to store the hash on disk. We only do so
+for encrypted and casefolded directories to avoid on disk format changes.
+Previously encryption and casefolding could not live on the same filesystem,
+and we're relaxing that requirement. F2fs is a bit more straightforward since
+it already stores hashes on disk.
 
-Correct. We shouldn't go down this path unless a device is thinly
-provisioned (i.e. max_discard_sectors > 0).
+I've updated the related tools with just enough to enable the feature. I still
+need to adjust their respective fsck's, although without access to the keys,
+they won't be able to verify the hashes of casefolded and encrypted names.
 
-> But won't it be a good thing to return EOPNOTSUPP right from
-> __blkdev_issue_write_zeroes() in case of block device can't allocate
-> blocks (q->limits.write_zeroes_can_allocate in the patch below)? Here
-> is just a way to underline block devices, which support write zeroes,
-> but allocation of blocks is meant nothing for them (wasting of time).
+changes:
+fscrypt moved to separate thread to rebase on fscrypt dev branch
+addressed feedback, plus some minor fixes
 
-I don't like "write_zeroes_can_allocate" because that makes assumptions
-about WRITE ZEROES being the command of choice. I suggest we call it
-"max_allocate_sectors" to mirror "max_discard_sectors". I.e. put
-emphasis on the semantic operation and not the plumbing.
+Daniel Rosenberg (6):
+  TMP: fscrypt: Add support for casefolding with encryption
+  vfs: Fold casefolding into vfs
+  f2fs: Handle casefolding with Encryption
+  ext4: Use struct super_blocks' casefold data
+  ext4: Hande casefolding with encryption
+  ext4: Optimize match for casefolded encrypted dirs
+
+ Documentation/filesystems/ext4/directory.rst |  27 ++
+ fs/crypto/Kconfig                            |   1 +
+ fs/crypto/fname.c                            | 234 ++++++++++---
+ fs/crypto/fscrypt_private.h                  |   9 +
+ fs/crypto/keysetup.c                         |  32 +-
+ fs/crypto/policy.c                           |  45 ++-
+ fs/dcache.c                                  |  28 ++
+ fs/ext4/dir.c                                |  75 +----
+ fs/ext4/ext4.h                               |  87 +++--
+ fs/ext4/hash.c                               |  26 +-
+ fs/ext4/ialloc.c                             |   5 +-
+ fs/ext4/inline.c                             |  41 ++-
+ fs/ext4/namei.c                              | 326 ++++++++++++-------
+ fs/ext4/super.c                              |  21 +-
+ fs/f2fs/dir.c                                | 114 +++----
+ fs/f2fs/f2fs.h                               |  14 +-
+ fs/f2fs/hash.c                               |  25 +-
+ fs/f2fs/inline.c                             |   9 +-
+ fs/f2fs/super.c                              |  17 +-
+ fs/f2fs/sysfs.c                              |   8 +-
+ fs/inode.c                                   |   7 +
+ fs/namei.c                                   |  41 ++-
+ include/linux/fs.h                           |  10 +
+ include/linux/fscrypt.h                      |  96 ++----
+ include/linux/unicode.h                      |  14 +
+ 25 files changed, 835 insertions(+), 477 deletions(-)
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.24.1.735.g03f4e72817-goog
+
