@@ -2,99 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BBD131CD7
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2020 01:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBD2131DEF
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2020 04:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727322AbgAGAnu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Jan 2020 19:43:50 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58593 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727233AbgAGAnu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jan 2020 19:43:50 -0500
-Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0070hccC028499
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Jan 2020 19:43:39 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 8D7434200AF; Mon,  6 Jan 2020 19:43:38 -0500 (EST)
-Date:   Mon, 6 Jan 2020 19:43:38 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, joseph.qi@linux.alibaba.com,
-        Liu Bo <bo.liu@linux.alibaba.com>
-Subject: Re: Discussion: is it time to remove dioread_nolock?
-Message-ID: <20200107004338.GB125832@mit.edu>
-References: <20191226153118.GA17237@mit.edu>
- <9042a8f4-985a-fc83-c059-241c9440200c@linux.alibaba.com>
- <20200106122457.A10F7AE053@d06av26.portsmouth.uk.ibm.com>
+        id S1727495AbgAGDYy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Jan 2020 22:24:54 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:47188 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727377AbgAGDYy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Jan 2020 22:24:54 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0073EXIE025855;
+        Tue, 7 Jan 2020 03:24:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2019-08-05;
+ bh=eEDEB5cRiaDaMI401AFI3YVYzUZ8UFoQLMybywdErVQ=;
+ b=QDSlbGupGflTHfqrIDNN0pRGV03FnSpuCfigptfoFqoaA1spKKkx9D4dFkT4G4dyADdK
+ KTO58n7GOAw3kOHJ5OmGz/YSqQg9fDfUNSklRPcfXSCAqcfdiNi9SqY6ibt54v1OEe8o
+ 9PP/h4km77fvB47MLrijeXfen1XxOvm/ZX15n+BOWpB/H+l1LbMKKx86T6uoq04LxhhH
+ +rbvtc5p71h5DvFiZfvaDTlRYtzajq18gFUJdRJa1d47RvZshe2sbcrWXL8ZETcIHDyY
+ Q3PgPRP0rHuCR0C+zmXK685klXj7A+DIwARvEDZYW2EhGqLzHOLmRyOBpZWxc9UyXaoV ew== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2xajnpts86-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Jan 2020 03:24:23 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 0073EOoh192221;
+        Tue, 7 Jan 2020 03:24:23 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2xb4uq6njs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Jan 2020 03:24:22 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0073ODw1027853;
+        Tue, 7 Jan 2020 03:24:14 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 06 Jan 2020 19:24:13 -0800
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ming.lei@redhat.com, osandov@fb.com,
+        jthumshirn@suse.de, minwoo.im.dev@gmail.com, damien.lemoal@wdc.com,
+        andrea.parri@amarulasolutions.com, hare@suse.com, tj@kernel.org,
+        ajay.joshi@wdc.com, sagi@grimberg.me, dsterba@suse.com,
+        chaitanya.kulkarni@wdc.com, bvanassche@acm.org,
+        dhowells@redhat.com, asml.silence@gmail.com
+Subject: Re: [PATCH RFC 1/3] block: Add support for REQ_OP_ASSIGN_RANGE operation
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <157599668662.12112.10184894900037871860.stgit@localhost.localdomain>
+        <157599696813.12112.14140818972910110796.stgit@localhost.localdomain>
+        <yq1woatc8zd.fsf@oracle.com>
+        <3f2e341b-dea4-c5d0-8eb0-568b6ad2f17b@virtuozzo.com>
+        <yq1a77oc56s.fsf@oracle.com>
+        <625c9ee4-bedb-ff60-845e-2d440c4f58aa@virtuozzo.com>
+        <yq1pngh7blx.fsf@oracle.com>
+        <405b9106-0a97-0821-c41d-58ab8d0e2d09@virtuozzo.com>
+Date:   Mon, 06 Jan 2020 22:24:09 -0500
+In-Reply-To: <405b9106-0a97-0821-c41d-58ab8d0e2d09@virtuozzo.com> (Kirill
+        Tkhai's message of "Mon, 23 Dec 2019 11:51:34 +0300")
+Message-ID: <yq1o8vg2bl2.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200106122457.A10F7AE053@d06av26.portsmouth.uk.ibm.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9492 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001070025
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9492 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001070025
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jan 06, 2020 at 05:54:56PM +0530, Ritesh Harjani wrote:
-> > The initial reason we use dioread_nolock is that it'll also allocate
-> > unwritten extents for buffered write, and normally the corresponding
-> > inode won't be added to jbd2 transaction's t_inode_list, so while
-> > commiting transaction, it won't flush inodes' dirty pages, then
-> > transaction will commit quickly, otherwise in extream case, the time
-> 
-> I do notice this in ext4_map_blocks(). We add inode to t_inode_list only
-> in case if we allocate written blocks. I guess this was done to avoid
-> stale data exposure problem. So now due to ordered mode, we may end up
-> flushing all dirty data pages in committing transaction before the
-> metadata is flushed.
-> 
-> Do you have any benchmarks or workload where we could see this problem?
-> And could this actually be a problem with any real world workload too?
 
-After thinking about this some more, I've changed my mind.
+Kirill,
 
-I think this is something which *can* be very noticeable in some real
-world workloads.  If the workload is doing a lot of allocating,
-buffered writes to an inode, and the writeback thread starts doing the
-writeback for that inode right before a commit starts, then the commit
-can take a long time.  The problem is that if the storage device is
-particularly slow --- for example, a slow USB drive, or a 32 GiB
-Standard Persistent Disk in a Google Compute Environment (which has a
-max sustained throughput of 3 MiB/s), it doesn't take a lot of queued
-writeback I/O to trigger a hung task warning.  Even if hung task panic
-isn't enabled, if the commit thread is busied out for a minute or two,
-anything that is blocked on a commit completing --- such a fsync(2)
-system call, could end up getting blocked for a long time, and that
-could easily make a userspace application sad.
+Sorry, the holiday break got in the way.
 
-> Jan/Ted, your opinion on this pls?
-> 
-> I do see that there was a proposal by Ted @ [1] which should
-> also solve this problem. I do have plans to work on Ted's proposal, but
-> meanwhile, should we preserve this mount option for above mentioned use
-> case? Or should we make it a no-op now?
+> But I also worry about NOFALLBACK case. There are possible block
+> devices, which support write zeroes, but they can't allocate blocks
+> (block allocation are just not appliable for them, say, these are all
+> ordinary hdd).
 
-> [1] - https://marc.info/?l=linux-ext4&m=157244559501734&w=2
+Correct. We shouldn't go down this path unless a device is thinly
+provisioned (i.e. max_discard_sectors > 0).
 
-I agree that this was not the original intent of dioread_nolock, but I
-until we can implement [1], dioread_nolock is the only workaround real
-workaround we have today.  (Well, data=writeback also works, but that
-has other problems.)
+> But won't it be a good thing to return EOPNOTSUPP right from
+> __blkdev_issue_write_zeroes() in case of block device can't allocate
+> blocks (q->limits.write_zeroes_can_allocate in the patch below)? Here
+> is just a way to underline block devices, which support write zeroes,
+> but allocation of blocks is meant nothing for them (wasting of time).
 
-If dropping dioread_nolock makes it easier to implement [1], we can
-certainly make that one of the first patches in a patch series which
-changes how we ext4_writepages() works so it writes the data blocks
-before it updates the metadata blocks.  But unless there are some real
-downsides to keeping the code around in the kernel until then, I'm not
-sure it's worth it to take away the diorad_nolock functionality until
-we have a good replacement --- even if that wasn't the original
-purpose of the code.
+I don't like "write_zeroes_can_allocate" because that makes assumptions
+about WRITE ZEROES being the command of choice. I suggest we call it
+"max_allocate_sectors" to mirror "max_discard_sectors". I.e. put
+emphasis on the semantic operation and not the plumbing.
 
-What do other folks think?
-
-					- Ted
+-- 
+Martin K. Petersen	Oracle Linux Engineering
