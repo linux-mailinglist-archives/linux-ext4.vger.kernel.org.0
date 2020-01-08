@@ -2,114 +2,370 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A44E4133CAD
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2020 09:11:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC91D133DEC
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2020 10:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgAHILT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jan 2020 03:11:19 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:44353 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgAHILT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jan 2020 03:11:19 -0500
-Received: by mail-pg1-f195.google.com with SMTP id x7so1169379pgl.11
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Jan 2020 00:11:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rUue1DCP3hEjtK7CuLTd3s374OML36ouGMsr5aZSPss=;
-        b=OhpmP9mgnxi17cddtcq/09MRP4EMn/tQyWa1Ifia6Nef6hMwj1ZXh0Gx2RvIyftTyL
-         Oe1LRIPK5WkDjxfQkNL/hbvEVnFnApltAgK2NFpwjr+tbK9rCwT9pFPcQouK32rRqNGw
-         /nlsBvvDsXna+eazoz7lPwK80rfYCUHKm1oH3qpceRnjh30HIeV1G3qEHb4WUCLkNwaw
-         +Hlbu9Xfo66VdCC+VISYGLyN4cqZdUZ68ni0Q6EPfLgcHVB4ASpRziLDRGAhUS9pzUYL
-         Zm9mptraBLw0DaFJ80Ix7WqGulwhrbi3SXNefY4yANu/4IOKbLAb56kwdG4JJTjkUknF
-         sKMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rUue1DCP3hEjtK7CuLTd3s374OML36ouGMsr5aZSPss=;
-        b=j1ugStsQf4RQbyMGIRYg5sI3troGy2TsisOZoSQ/onm0cYfxFD7wxKjP2Gp9KohFuP
-         q0FrxqWC7ROu02fyGF0HnmTv/+7M91bLukNn0Nw+i9agEbrxyeiPm8c5zlIXbTaEHUY6
-         Ah8XMz02CC96Imi57+i9mwEEoWOUKHPc0QaX113w2/O7+qLDoc8FOGNVFefUGsTvfEnr
-         7i2ax8otyqHF6RZer6oXcZnx4eRPaRhU4/CalztVSV/pPWadoKFj32CFv8V+tAqhqzFv
-         g0t+XeVhOzIXQsm5e/eH6sQr1ibNFeR5YUMpVSo/o8wKw1UBwM0xBQ8G8tNBwMdlpyn0
-         S5Sw==
-X-Gm-Message-State: APjAAAUwb/M1WJoOXDZXiIUuX0EszEEC++lhLw3VpOZcr8RojZGJu0/z
-        d4zmFb9FmQC0/T+MrL+iiM1A2bbU
-X-Google-Smtp-Source: APXvYqwpsmkFjCZk903wQd7kT+Djdup7eOy05m7aaPCAQ8l5N+3K8j7K27h6ie5HVYdXZqjUte6+rQ==
-X-Received: by 2002:a63:cd06:: with SMTP id i6mr4115388pgg.48.1578471078648;
-        Wed, 08 Jan 2020 00:11:18 -0800 (PST)
-Received: from hpz4g4.kern.oss.ntt.co.jp ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id e9sm2477820pgn.49.2020.01.08.00.11.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jan 2020 00:11:18 -0800 (PST)
-Subject: Re: [PATCH] ext4: Prevent ext4_kvmalloc re-entring the filesystem and
- deadlocking
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-References: <20191226071008.7812-1-naoto.kobayashi4c@gmail.com>
- <20191226143934.GC3158@mit.edu>
-From:   Naoto Kobayashi <naoto.kobayashi4c@gmail.com>
-Message-ID: <b16c5913-2dd5-5d62-1eea-cda96ec2d973@gmail.com>
-Date:   Wed, 8 Jan 2020 17:11:13 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1727324AbgAHJJ3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Jan 2020 04:09:29 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:33410 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727112AbgAHJJ3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 8 Jan 2020 04:09:29 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 855672A8A9A212927650;
+        Wed,  8 Jan 2020 17:09:25 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.439.0; Wed, 8 Jan 2020
+ 17:09:23 +0800
+Subject: Re: [PATCH v3] fs: Fix page_mkwrite off-by-one errors
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, Jeff Layton <jlayton@kernel.org>,
+        Sage Weil <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        <linux-xfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        "Artem Bityutskiy" <dedekind1@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        <ceph-devel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-mtd@lists.infradead.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, <linux-btrfs@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>
+References: <20191218130935.32402-1-agruenba@redhat.com>
+ <20200107232031.GD472641@magnolia>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <e0b3d239-dd8a-de08-3b1b-42a2eb2b366f@huawei.com>
+Date:   Wed, 8 Jan 2020 17:09:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20191226143934.GC3158@mit.edu>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200107232031.GD472641@magnolia>
+Content-Type: text/plain; charset="windows-1252"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2019/12/26 23:39, Theodore Y. Ts'o wrote:
-> On Thu, Dec 26, 2019 at 04:10:08PM +0900, Naoto Kobayashi wrote:
->> Although __vmalloc() doesn't support GFP_NOFS[1],
->> ext4_kvmalloc/kvzalloc caller may be under GFP_NOFS context
->> (e.g. fs/ext4/resize.c::add_new_gdb). In such cases, the memory
->> reclaim can re-entr the filesystem and potentially deadlock.
+On 2020/1/8 7:20, Darrick J. Wong wrote:
+> On Wed, Dec 18, 2019 at 02:09:35PM +0100, Andreas Gruenbacher wrote:
+>> Hi Darrick,
 >>
->> To prevent the memory relcaim re-entring the filesystem,
->> use memalloc_nofs_save/restore that gets __vmalloc() to drop
->> __GFP_FS flag.
+>> can this fix go in via the xfs tree?
 >>
->> [1] linux-tree/Documentation/core-api/gfp-mask-fs-io.rst
+>> Thanks,
+>> Andreas
 >>
->> Signed-off-by: Naoto Kobayashi <naoto.kobayashi4c@gmail.com>
+>> --
+>>
+>> The check in block_page_mkwrite that is meant to determine whether an
+>> offset is within the inode size is off by one.  This bug has been copied
+>> into iomap_page_mkwrite and several filesystems (ubifs, ext4, f2fs,
+>> ceph).
+>>
+>> Fix that by introducing a new page_mkwrite_check_truncate helper that
+>> checks for truncate and computes the bytes in the page up to EOF.  Use
+>> the helper in the above mentioned filesystems.
+>>
+>> In addition, use the new helper in btrfs as well.
+>>
+>> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+>> Acked-by: David Sterba <dsterba@suse.com> (btrfs part)
+>> Acked-by: Richard Weinberger <richard@nod.at> (ubifs part)
+>> ---
+>>  fs/btrfs/inode.c        | 15 ++++-----------
+>>  fs/buffer.c             | 16 +++-------------
+>>  fs/ceph/addr.c          |  2 +-
+>>  fs/ext4/inode.c         | 14 ++++----------
+>>  fs/f2fs/file.c          | 19 +++++++------------
 > 
-> Good catch!  However, we're not actually using ext4_kvzalloc()
-> anywhere, at least not any more.  And also, all the users of
-> ext4_kvmalloc() are using GFP_NOFS (otherwise, they would have been
-> converted over to use the generic kvmalloc() helper function).
-> 
-> So... a cleaner fix would be to (a) delete ext4_kvmazalloc(), (b)
-> rename ext4_kvmalloc() to ext4_kvmalloc_nofs(), and drop its flags
-> argument, and then the calls memalloc_nfs_save/restore() to
-> ext4_kvmalloc_nofs() --- and so we won't need the
-> 
-> 	if (!(flags & __GFP_FS))
-> 
-> test.
-> 
-> Could you make those changes and resend the patch?
-> 
-> Thanks,
-> 
-> 					- Ted
-> 
+> Well, the f2fs developers never acked this and there was a conflict when
+> I put this into for-next, so I removed the f2fs part (and fixed the
+> unused variable warning in the ext4 part)...
 
-Thank you for the review! I made the changes you suggested and resent
-the patch.
+Sorry for late reply.
 
-  [PATCH v2 0/3] ext4: Prevent memory reclaim from re-entering the filesystem and deadlocking
-  https://marc.info/?l=linux-ext4&m=157743393000807&w=2
+Acked-by: Chao Yu <yuchao0@huawei.com>
 
-Would you review the patch?
+BTW, to avoid such conflict, does f2fs need to rebase/fix its last code
+on current patch?
 
 Thanks,
 
-                                       - Naoto
+> 
+> --D
+> 
+>>  fs/iomap/buffered-io.c  | 18 +++++-------------
+>>  fs/ubifs/file.c         |  3 +--
+>>  include/linux/pagemap.h | 28 ++++++++++++++++++++++++++++
+>>  8 files changed, 53 insertions(+), 62 deletions(-)
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 56032c518b26..86c6fcd8139d 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -9016,13 +9016,11 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>>  	ret = VM_FAULT_NOPAGE; /* make the VM retry the fault */
+>>  again:
+>>  	lock_page(page);
+>> -	size = i_size_read(inode);
+>>  
+>> -	if ((page->mapping != inode->i_mapping) ||
+>> -	    (page_start >= size)) {
+>> -		/* page got truncated out from underneath us */
+>> +	ret2 = page_mkwrite_check_truncate(page, inode);
+>> +	if (ret2 < 0)
+>>  		goto out_unlock;
+>> -	}
+>> +	zero_start = ret2;
+>>  	wait_on_page_writeback(page);
+>>  
+>>  	lock_extent_bits(io_tree, page_start, page_end, &cached_state);
+>> @@ -9043,6 +9041,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>>  		goto again;
+>>  	}
+>>  
+>> +	size = i_size_read(inode);
+>>  	if (page->index == ((size - 1) >> PAGE_SHIFT)) {
+>>  		reserved_space = round_up(size - page_start,
+>>  					  fs_info->sectorsize);
+>> @@ -9075,12 +9074,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>>  	}
+>>  	ret2 = 0;
+>>  
+>> -	/* page is wholly or partially inside EOF */
+>> -	if (page_start + PAGE_SIZE > size)
+>> -		zero_start = offset_in_page(size);
+>> -	else
+>> -		zero_start = PAGE_SIZE;
+>> -
+>>  	if (zero_start != PAGE_SIZE) {
+>>  		kaddr = kmap(page);
+>>  		memset(kaddr + zero_start, 0, PAGE_SIZE - zero_start);
+>> diff --git a/fs/buffer.c b/fs/buffer.c
+>> index d8c7242426bb..53aabde57ca7 100644
+>> --- a/fs/buffer.c
+>> +++ b/fs/buffer.c
+>> @@ -2499,23 +2499,13 @@ int block_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf,
+>>  	struct page *page = vmf->page;
+>>  	struct inode *inode = file_inode(vma->vm_file);
+>>  	unsigned long end;
+>> -	loff_t size;
+>>  	int ret;
+>>  
+>>  	lock_page(page);
+>> -	size = i_size_read(inode);
+>> -	if ((page->mapping != inode->i_mapping) ||
+>> -	    (page_offset(page) > size)) {
+>> -		/* We overload EFAULT to mean page got truncated */
+>> -		ret = -EFAULT;
+>> +	ret = page_mkwrite_check_truncate(page, inode);
+>> +	if (ret < 0)
+>>  		goto out_unlock;
+>> -	}
+>> -
+>> -	/* page is wholly or partially inside EOF */
+>> -	if (((page->index + 1) << PAGE_SHIFT) > size)
+>> -		end = size & ~PAGE_MASK;
+>> -	else
+>> -		end = PAGE_SIZE;
+>> +	end = ret;
+>>  
+>>  	ret = __block_write_begin(page, 0, end, get_block);
+>>  	if (!ret)
+>> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+>> index 7ab616601141..ef958aa4adb4 100644
+>> --- a/fs/ceph/addr.c
+>> +++ b/fs/ceph/addr.c
+>> @@ -1575,7 +1575,7 @@ static vm_fault_t ceph_page_mkwrite(struct vm_fault *vmf)
+>>  	do {
+>>  		lock_page(page);
+>>  
+>> -		if ((off > size) || (page->mapping != inode->i_mapping)) {
+>> +		if (page_mkwrite_check_truncate(page, inode) < 0) {
+>>  			unlock_page(page);
+>>  			ret = VM_FAULT_NOPAGE;
+>>  			break;
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 28f28de0c1b6..51ab1d2cac80 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -5871,7 +5871,6 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>>  {
+>>  	struct vm_area_struct *vma = vmf->vma;
+>>  	struct page *page = vmf->page;
+>> -	loff_t size;
+>>  	unsigned long len;
+>>  	int err;
+>>  	vm_fault_t ret;
+>> @@ -5907,18 +5906,13 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>>  	}
+>>  
+>>  	lock_page(page);
+>> -	size = i_size_read(inode);
+>> -	/* Page got truncated from under us? */
+>> -	if (page->mapping != mapping || page_offset(page) > size) {
+>> +	err = page_mkwrite_check_truncate(page, inode);
+>> +	if (err < 0) {
+>>  		unlock_page(page);
+>> -		ret = VM_FAULT_NOPAGE;
+>> -		goto out;
+>> +		goto out_ret;
+>>  	}
+>> +	len = err;
+>>  
+>> -	if (page->index == size >> PAGE_SHIFT)
+>> -		len = size & ~PAGE_MASK;
+>> -	else
+>> -		len = PAGE_SIZE;
+>>  	/*
+>>  	 * Return if we have all the buffers mapped. This avoids the need to do
+>>  	 * journal_start/journal_stop which can block and take a long time
+>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>> index 85af112e868d..0e77b2e6f873 100644
+>> --- a/fs/f2fs/file.c
+>> +++ b/fs/f2fs/file.c
+>> @@ -51,7 +51,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+>>  	struct inode *inode = file_inode(vmf->vma->vm_file);
+>>  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>  	struct dnode_of_data dn = { .node_changed = false };
+>> -	int err;
+>> +	int offset, err;
+>>  
+>>  	if (unlikely(f2fs_cp_error(sbi))) {
+>>  		err = -EIO;
+>> @@ -70,13 +70,14 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+>>  	file_update_time(vmf->vma->vm_file);
+>>  	down_read(&F2FS_I(inode)->i_mmap_sem);
+>>  	lock_page(page);
+>> -	if (unlikely(page->mapping != inode->i_mapping ||
+>> -			page_offset(page) > i_size_read(inode) ||
+>> -			!PageUptodate(page))) {
+>> +	err = -EFAULT;
+>> +	if (likely(PageUptodate(page)))
+>> +		err = page_mkwrite_check_truncate(page, inode);
+>> +	if (unlikely(err < 0)) {
+>>  		unlock_page(page);
+>> -		err = -EFAULT;
+>>  		goto out_sem;
+>>  	}
+>> +	offset = err;
+>>  
+>>  	/* block allocation */
+>>  	__do_map_lock(sbi, F2FS_GET_BLOCK_PRE_AIO, true);
+>> @@ -101,14 +102,8 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+>>  	if (PageMappedToDisk(page))
+>>  		goto out_sem;
+>>  
+>> -	/* page is wholly or partially inside EOF */
+>> -	if (((loff_t)(page->index + 1) << PAGE_SHIFT) >
+>> -						i_size_read(inode)) {
+>> -		loff_t offset;
+>> -
+>> -		offset = i_size_read(inode) & ~PAGE_MASK;
+>> +	if (offset != PAGE_SIZE)
+>>  		zero_user_segment(page, offset, PAGE_SIZE);
+>> -	}
+>>  	set_page_dirty(page);
+>>  	if (!PageUptodate(page))
+>>  		SetPageUptodate(page);
+>> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+>> index d33c7bc5ee92..1aaf157fd6e9 100644
+>> --- a/fs/iomap/buffered-io.c
+>> +++ b/fs/iomap/buffered-io.c
+>> @@ -1062,24 +1062,16 @@ vm_fault_t iomap_page_mkwrite(struct vm_fault *vmf, const struct iomap_ops *ops)
+>>  	struct page *page = vmf->page;
+>>  	struct inode *inode = file_inode(vmf->vma->vm_file);
+>>  	unsigned long length;
+>> -	loff_t offset, size;
+>> +	loff_t offset;
+>>  	ssize_t ret;
+>>  
+>>  	lock_page(page);
+>> -	size = i_size_read(inode);
+>> -	offset = page_offset(page);
+>> -	if (page->mapping != inode->i_mapping || offset > size) {
+>> -		/* We overload EFAULT to mean page got truncated */
+>> -		ret = -EFAULT;
+>> +	ret = page_mkwrite_check_truncate(page, inode);
+>> +	if (ret < 0)
+>>  		goto out_unlock;
+>> -	}
+>> -
+>> -	/* page is wholly or partially inside EOF */
+>> -	if (offset > size - PAGE_SIZE)
+>> -		length = offset_in_page(size);
+>> -	else
+>> -		length = PAGE_SIZE;
+>> +	length = ret;
+>>  
+>> +	offset = page_offset(page);
+>>  	while (length > 0) {
+>>  		ret = iomap_apply(inode, offset, length,
+>>  				IOMAP_WRITE | IOMAP_FAULT, ops, page,
+>> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+>> index cd52585c8f4f..91f7a1f2db0d 100644
+>> --- a/fs/ubifs/file.c
+>> +++ b/fs/ubifs/file.c
+>> @@ -1563,8 +1563,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+>>  	}
+>>  
+>>  	lock_page(page);
+>> -	if (unlikely(page->mapping != inode->i_mapping ||
+>> -		     page_offset(page) > i_size_read(inode))) {
+>> +	if (unlikely(page_mkwrite_check_truncate(page, inode) < 0)) {
+>>  		/* Page got truncated out from underneath us */
+>>  		goto sigbus;
+>>  	}
+>> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+>> index 37a4d9e32cd3..ccb14b6a16b5 100644
+>> --- a/include/linux/pagemap.h
+>> +++ b/include/linux/pagemap.h
+>> @@ -636,4 +636,32 @@ static inline unsigned long dir_pages(struct inode *inode)
+>>  			       PAGE_SHIFT;
+>>  }
+>>  
+>> +/**
+>> + * page_mkwrite_check_truncate - check if page was truncated
+>> + * @page: the page to check
+>> + * @inode: the inode to check the page against
+>> + *
+>> + * Returns the number of bytes in the page up to EOF,
+>> + * or -EFAULT if the page was truncated.
+>> + */
+>> +static inline int page_mkwrite_check_truncate(struct page *page,
+>> +					      struct inode *inode)
+>> +{
+>> +	loff_t size = i_size_read(inode);
+>> +	pgoff_t index = size >> PAGE_SHIFT;
+>> +	int offset = offset_in_page(size);
+>> +
+>> +	if (page->mapping != inode->i_mapping)
+>> +		return -EFAULT;
+>> +
+>> +	/* page is wholly inside EOF */
+>> +	if (page->index < index)
+>> +		return PAGE_SIZE;
+>> +	/* page is wholly past EOF */
+>> +	if (page->index > index || !offset)
+>> +		return -EFAULT;
+>> +	/* page is partially inside EOF */
+>> +	return offset;
+>> +}
+>> +
+>>  #endif /* _LINUX_PAGEMAP_H */
+>> -- 
+>> 2.20.1
+>>
+> .
+> 
