@@ -2,110 +2,368 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE77133F8C
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2020 11:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BD3134131
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2020 12:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgAHKpl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Jan 2020 05:45:41 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34054 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726098AbgAHKpl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Jan 2020 05:45:41 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 008AjaDA095709
-        for <linux-ext4@vger.kernel.org>; Wed, 8 Jan 2020 05:45:39 -0500
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2xd0wjxahv-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Jan 2020 05:45:38 -0500
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Wed, 8 Jan 2020 10:45:26 -0000
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 8 Jan 2020 10:45:22 -0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 008AjLUE42664070
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Jan 2020 10:45:21 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 80B2342047;
-        Wed,  8 Jan 2020 10:45:21 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3BC4A4203F;
-        Wed,  8 Jan 2020 10:45:20 +0000 (GMT)
-Received: from [9.199.159.43] (unknown [9.199.159.43])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Jan 2020 10:45:20 +0000 (GMT)
-Subject: Re: Discussion: is it time to remove dioread_nolock?
-To:     Jan Kara <jack@suse.cz>, "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        joseph.qi@linux.alibaba.com, Liu Bo <bo.liu@linux.alibaba.com>
-References: <20191226153118.GA17237@mit.edu>
- <9042a8f4-985a-fc83-c059-241c9440200c@linux.alibaba.com>
- <20200106122457.A10F7AE053@d06av26.portsmouth.uk.ibm.com>
- <20200107004338.GB125832@mit.edu> <20200107082212.GA25547@quack2.suse.cz>
- <20200107171109.GB3619@mit.edu> <20200107172236.GJ25547@quack2.suse.cz>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Wed, 8 Jan 2020 16:15:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727380AbgAHLvf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Jan 2020 06:51:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726290AbgAHLvf (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 8 Jan 2020 06:51:35 -0500
+Received: from localhost (c-98-234-77-170.hsd1.ca.comcast.net [98.234.77.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 495E1206DA;
+        Wed,  8 Jan 2020 11:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578484293;
+        bh=UaIxLZUI75Nhbq0wZwJ9Y9VnTVdDPODF8I6Yh67fzSA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tFFKdgGabDv2XpV7p5rWZmsHOHdxYqIOYTmoNUoMI7xPlmiNp1RObtxD7yRvcSbHb
+         eKRLtPgSy39OK+usHe3gQVmMj7vkwqn+nMkZ9QSE8sGMkcqeimCxhcieeoWeqreZI1
+         1bzWtwfZcbYU1e2boj4CmHBo+rM2WbUrcIPue6gk=
+Date:   Wed, 8 Jan 2020 03:51:32 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Sage Weil <sage@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chao Yu <chao@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Artem Bityutskiy <dedekind1@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        ceph-devel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH v3] fs: Fix page_mkwrite off-by-one errors
+Message-ID: <20200108115132.GA28331@jaegeuk-macbookpro.roam.corp.google.com>
+References: <20191218130935.32402-1-agruenba@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200107172236.GJ25547@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20010810-0020-0000-0000-0000039EDC00
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20010810-0021-0000-0000-000021F63B4A
-Message-Id: <20200108104520.3BC4A4203F@d06av24.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-08_03:2020-01-08,2020-01-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- suspectscore=0 spamscore=0 impostorscore=0 mlxlogscore=944
- lowpriorityscore=0 clxscore=1015 phishscore=0 mlxscore=0
- priorityscore=1501 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-2001080092
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191218130935.32402-1-agruenba@redhat.com>
+User-Agent: Mutt/1.8.2 (2017-04-18)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Ted/Jan,
+Hi Andreas,
 
-On 1/7/20 10:52 PM, Jan Kara wrote:
-> On Tue 07-01-20 12:11:09, Theodore Y. Ts'o wrote:
->> Hmm..... There's actually an even more radical option we could use,
->> given that Ritesh has made dioread_nolock work on block sizes < page
->> size.  We could make dioread_nolock the default, until we can revamp
->> ext4_writepages() to write the data blocks first....
-
-Agreed. I guess it should be a straight forward change to make.
-It should be just removing test_opt(inode->i_sb, DIOREAD_NOLOCK) 
-condition from ext4_should_dioread_nolock().
-
+On 12/18, Andreas Gruenbacher wrote:
+> Hi Darrick,
 > 
-> Yes, that's a good point. And I'm not opposed to that if it makes the life
-> simpler. But I'd like to see some performance numbers showing how much is
-> writeback using unwritten extents slower so that we don't introduce too big
-> regression with this...
+> can this fix go in via the xfs tree?
 > 
+> Thanks,
+> Andreas
+> 
+> --
+> 
+> The check in block_page_mkwrite that is meant to determine whether an
+> offset is within the inode size is off by one.  This bug has been copied
+> into iomap_page_mkwrite and several filesystems (ubifs, ext4, f2fs,
+> ceph).
+> 
+> Fix that by introducing a new page_mkwrite_check_truncate helper that
+> checks for truncate and computes the bytes in the page up to EOF.  Use
+> the helper in the above mentioned filesystems.
+> 
+> In addition, use the new helper in btrfs as well.
+> 
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> Acked-by: David Sterba <dsterba@suse.com> (btrfs part)
+> Acked-by: Richard Weinberger <richard@nod.at> (ubifs part)
+> ---
+>  fs/btrfs/inode.c        | 15 ++++-----------
+>  fs/buffer.c             | 16 +++-------------
+>  fs/ceph/addr.c          |  2 +-
+>  fs/ext4/inode.c         | 14 ++++----------
+>  fs/f2fs/file.c          | 19 +++++++------------
+>  fs/iomap/buffered-io.c  | 18 +++++-------------
+>  fs/ubifs/file.c         |  3 +--
+>  include/linux/pagemap.h | 28 ++++++++++++++++++++++++++++
+>  8 files changed, 53 insertions(+), 62 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 56032c518b26..86c6fcd8139d 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -9016,13 +9016,11 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>  	ret = VM_FAULT_NOPAGE; /* make the VM retry the fault */
+>  again:
+>  	lock_page(page);
+> -	size = i_size_read(inode);
+>  
+> -	if ((page->mapping != inode->i_mapping) ||
+> -	    (page_start >= size)) {
+> -		/* page got truncated out from underneath us */
+> +	ret2 = page_mkwrite_check_truncate(page, inode);
+> +	if (ret2 < 0)
+>  		goto out_unlock;
+> -	}
+> +	zero_start = ret2;
+>  	wait_on_page_writeback(page);
+>  
+>  	lock_extent_bits(io_tree, page_start, page_end, &cached_state);
+> @@ -9043,6 +9041,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>  		goto again;
+>  	}
+>  
+> +	size = i_size_read(inode);
+>  	if (page->index == ((size - 1) >> PAGE_SHIFT)) {
+>  		reserved_space = round_up(size - page_start,
+>  					  fs_info->sectorsize);
+> @@ -9075,12 +9074,6 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+>  	}
+>  	ret2 = 0;
+>  
+> -	/* page is wholly or partially inside EOF */
+> -	if (page_start + PAGE_SIZE > size)
+> -		zero_start = offset_in_page(size);
+> -	else
+> -		zero_start = PAGE_SIZE;
+> -
+>  	if (zero_start != PAGE_SIZE) {
+>  		kaddr = kmap(page);
+>  		memset(kaddr + zero_start, 0, PAGE_SIZE - zero_start);
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index d8c7242426bb..53aabde57ca7 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -2499,23 +2499,13 @@ int block_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf,
+>  	struct page *page = vmf->page;
+>  	struct inode *inode = file_inode(vma->vm_file);
+>  	unsigned long end;
+> -	loff_t size;
+>  	int ret;
+>  
+>  	lock_page(page);
+> -	size = i_size_read(inode);
+> -	if ((page->mapping != inode->i_mapping) ||
+> -	    (page_offset(page) > size)) {
+> -		/* We overload EFAULT to mean page got truncated */
+> -		ret = -EFAULT;
+> +	ret = page_mkwrite_check_truncate(page, inode);
+> +	if (ret < 0)
+>  		goto out_unlock;
+> -	}
+> -
+> -	/* page is wholly or partially inside EOF */
+> -	if (((page->index + 1) << PAGE_SHIFT) > size)
+> -		end = size & ~PAGE_MASK;
+> -	else
+> -		end = PAGE_SIZE;
+> +	end = ret;
+>  
+>  	ret = __block_write_begin(page, 0, end, get_block);
+>  	if (!ret)
+> diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+> index 7ab616601141..ef958aa4adb4 100644
+> --- a/fs/ceph/addr.c
+> +++ b/fs/ceph/addr.c
+> @@ -1575,7 +1575,7 @@ static vm_fault_t ceph_page_mkwrite(struct vm_fault *vmf)
+>  	do {
+>  		lock_page(page);
+>  
+> -		if ((off > size) || (page->mapping != inode->i_mapping)) {
+> +		if (page_mkwrite_check_truncate(page, inode) < 0) {
+>  			unlock_page(page);
+>  			ret = VM_FAULT_NOPAGE;
+>  			break;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 28f28de0c1b6..51ab1d2cac80 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5871,7 +5871,6 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>  {
+>  	struct vm_area_struct *vma = vmf->vma;
+>  	struct page *page = vmf->page;
+> -	loff_t size;
+>  	unsigned long len;
+>  	int err;
+>  	vm_fault_t ret;
+> @@ -5907,18 +5906,13 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>  	}
+>  
+>  	lock_page(page);
+> -	size = i_size_read(inode);
+> -	/* Page got truncated from under us? */
+> -	if (page->mapping != mapping || page_offset(page) > size) {
+> +	err = page_mkwrite_check_truncate(page, inode);
+> +	if (err < 0) {
+>  		unlock_page(page);
+> -		ret = VM_FAULT_NOPAGE;
+> -		goto out;
+> +		goto out_ret;
+>  	}
+> +	len = err;
+>  
+> -	if (page->index == size >> PAGE_SHIFT)
+> -		len = size & ~PAGE_MASK;
+> -	else
+> -		len = PAGE_SIZE;
+>  	/*
+>  	 * Return if we have all the buffers mapped. This avoids the need to do
+>  	 * journal_start/journal_stop which can block and take a long time
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 85af112e868d..0e77b2e6f873 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -51,7 +51,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+>  	struct inode *inode = file_inode(vmf->vma->vm_file);
+>  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>  	struct dnode_of_data dn = { .node_changed = false };
+> -	int err;
+> +	int offset, err;
+>  
+>  	if (unlikely(f2fs_cp_error(sbi))) {
+>  		err = -EIO;
+> @@ -70,13 +70,14 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+>  	file_update_time(vmf->vma->vm_file);
+>  	down_read(&F2FS_I(inode)->i_mmap_sem);
+>  	lock_page(page);
+> -	if (unlikely(page->mapping != inode->i_mapping ||
+> -			page_offset(page) > i_size_read(inode) ||
+> -			!PageUptodate(page))) {
+> +	err = -EFAULT;
+> +	if (likely(PageUptodate(page)))
+> +		err = page_mkwrite_check_truncate(page, inode);
+> +	if (unlikely(err < 0)) {
+>  		unlock_page(page);
+> -		err = -EFAULT;
+>  		goto out_sem;
+>  	}
+> +	offset = err;
 
-Yes, let me try to get some performance numbers with dioread_nolock as
-the default option for buffered write on my setup.
+This is a bit odd, so how about this?
 
-AFAIU this should also fix the stale data exposure race between DIO
-read and ext4_page_mkwrite, since we will by default be using unwritten
-extents.
-Currently I am testing the patch to fix this race which is based on our 
-previous discussion. Will anyway post that. After that I can also 
-collect the performance numbers for this suggested option (to make
-dioread_nolock as default)
+	offset = -EFAULT;
+	if (likely(PageUptodate(page))
+		offset = page_mkwrite_check_truncate(page, inode);
 
+	if (unlikely(offset < 0) {
+		unlock_page(page);
+		err = offset;
+		goto out_sem;
+	}
 
--ritesh
+I think Linus will address the merge conflict simply later.
 
+Thanks,
+
+>  
+>  	/* block allocation */
+>  	__do_map_lock(sbi, F2FS_GET_BLOCK_PRE_AIO, true);
+> @@ -101,14 +102,8 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+>  	if (PageMappedToDisk(page))
+>  		goto out_sem;
+>  
+> -	/* page is wholly or partially inside EOF */
+> -	if (((loff_t)(page->index + 1) << PAGE_SHIFT) >
+> -						i_size_read(inode)) {
+> -		loff_t offset;
+> -
+> -		offset = i_size_read(inode) & ~PAGE_MASK;
+> +	if (offset != PAGE_SIZE)
+>  		zero_user_segment(page, offset, PAGE_SIZE);
+> -	}
+>  	set_page_dirty(page);
+>  	if (!PageUptodate(page))
+>  		SetPageUptodate(page);
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index d33c7bc5ee92..1aaf157fd6e9 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -1062,24 +1062,16 @@ vm_fault_t iomap_page_mkwrite(struct vm_fault *vmf, const struct iomap_ops *ops)
+>  	struct page *page = vmf->page;
+>  	struct inode *inode = file_inode(vmf->vma->vm_file);
+>  	unsigned long length;
+> -	loff_t offset, size;
+> +	loff_t offset;
+>  	ssize_t ret;
+>  
+>  	lock_page(page);
+> -	size = i_size_read(inode);
+> -	offset = page_offset(page);
+> -	if (page->mapping != inode->i_mapping || offset > size) {
+> -		/* We overload EFAULT to mean page got truncated */
+> -		ret = -EFAULT;
+> +	ret = page_mkwrite_check_truncate(page, inode);
+> +	if (ret < 0)
+>  		goto out_unlock;
+> -	}
+> -
+> -	/* page is wholly or partially inside EOF */
+> -	if (offset > size - PAGE_SIZE)
+> -		length = offset_in_page(size);
+> -	else
+> -		length = PAGE_SIZE;
+> +	length = ret;
+>  
+> +	offset = page_offset(page);
+>  	while (length > 0) {
+>  		ret = iomap_apply(inode, offset, length,
+>  				IOMAP_WRITE | IOMAP_FAULT, ops, page,
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index cd52585c8f4f..91f7a1f2db0d 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -1563,8 +1563,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
+>  	}
+>  
+>  	lock_page(page);
+> -	if (unlikely(page->mapping != inode->i_mapping ||
+> -		     page_offset(page) > i_size_read(inode))) {
+> +	if (unlikely(page_mkwrite_check_truncate(page, inode) < 0)) {
+>  		/* Page got truncated out from underneath us */
+>  		goto sigbus;
+>  	}
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index 37a4d9e32cd3..ccb14b6a16b5 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -636,4 +636,32 @@ static inline unsigned long dir_pages(struct inode *inode)
+>  			       PAGE_SHIFT;
+>  }
+>  
+> +/**
+> + * page_mkwrite_check_truncate - check if page was truncated
+> + * @page: the page to check
+> + * @inode: the inode to check the page against
+> + *
+> + * Returns the number of bytes in the page up to EOF,
+> + * or -EFAULT if the page was truncated.
+> + */
+> +static inline int page_mkwrite_check_truncate(struct page *page,
+> +					      struct inode *inode)
+> +{
+> +	loff_t size = i_size_read(inode);
+> +	pgoff_t index = size >> PAGE_SHIFT;
+> +	int offset = offset_in_page(size);
+> +
+> +	if (page->mapping != inode->i_mapping)
+> +		return -EFAULT;
+> +
+> +	/* page is wholly inside EOF */
+> +	if (page->index < index)
+> +		return PAGE_SIZE;
+> +	/* page is wholly past EOF */
+> +	if (page->index > index || !offset)
+> +		return -EFAULT;
+> +	/* page is partially inside EOF */
+> +	return offset;
+> +}
+> +
+>  #endif /* _LINUX_PAGEMAP_H */
+> -- 
+> 2.20.1
