@@ -2,24 +2,26 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F92C136314
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jan 2020 23:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6567136354
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jan 2020 23:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729022AbgAIWKs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Jan 2020 17:10:48 -0500
-Received: from excelsior.roeckx.be ([195.234.45.115]:36751 "EHLO
-        excelsior.roeckx.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbgAIWKs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Jan 2020 17:10:48 -0500
-X-Greylist: delayed 493 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Jan 2020 17:10:46 EST
-Received: from intrepid.roeckx.be (localhost [127.0.0.1])
-        by excelsior.roeckx.be (Postfix) with ESMTP id 3842EA8A05A9;
-        Thu,  9 Jan 2020 22:02:31 +0000 (UTC)
-Received: by intrepid.roeckx.be (Postfix, from userid 1000)
-        id EB6ED1FE0C79; Thu,  9 Jan 2020 23:02:30 +0100 (CET)
-Date:   Thu, 9 Jan 2020 23:02:30 +0100
-From:   Kurt Roeckx <kurt@roeckx.be>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+        id S1728585AbgAIWlc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Jan 2020 17:41:32 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58864 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725807AbgAIWlb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Jan 2020 17:41:31 -0500
+Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 009MeBo3011340
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 9 Jan 2020 17:40:12 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 57CE24207DF; Thu,  9 Jan 2020 17:40:11 -0500 (EST)
+Date:   Thu, 9 Jan 2020 17:40:11 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Kurt Roeckx <kurt@roeckx.be>
 Cc:     Stephan Mueller <smueller@chronox.de>,
         Andy Lutomirski <luto@amacapital.net>,
         Andy Lutomirski <luto@kernel.org>,
@@ -37,77 +39,75 @@ Cc:     Stephan Mueller <smueller@chronox.de>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
         linux-man <linux-man@vger.kernel.org>
 Subject: Re: [PATCH v3 0/8] Rework random blocking
-Message-ID: <20200109220230.GA39185@roeckx.be>
+Message-ID: <20200109224011.GD41242@mit.edu>
 References: <20191226140423.GB3158@mit.edu>
  <4048434.Q8HajmOrkZ@tauon.chronox.de>
  <20191227130436.GC70060@mit.edu>
  <15817620.rmTN4T87Wr@tauon.chronox.de>
  <20191227220857.GD70060@mit.edu>
+ <20200109220230.GA39185@roeckx.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191227220857.GD70060@mit.edu>
+In-Reply-To: <20200109220230.GA39185@roeckx.be>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Dec 27, 2019 at 05:08:57PM -0500, Theodore Y. Ts'o wrote:
-> On Fri, Dec 27, 2019 at 10:22:23PM +0100, Stephan Mueller wrote:
-> > > So let's take a step back and ask the question: "Exactly what _value_
-> > > do you want to provide by creating some kind of true random
-> > > interface?"  What does this enable?  What applications does this
-> > > really help?
-> > 
-> > There are simply cryptographers who have use cases for such random numbers. 
-> > The core use case is to seed other DRNGs and avoiding the chaining of free-
-> > running DRNGs.
+On Thu, Jan 09, 2020 at 11:02:30PM +0100, Kurt Roeckx wrote:
 > 
-> For this very specialized use case, what I think the kernel should
-> provide is maximal transparency; that is, given the DRBG direct access
-> to the TPM's random number generator, or direct access to the
-> ChaosKey, and the userspace DRBG should be able to get a list of the
-> various hardware RNG's, and select one, with the characterization
-> being done userspace, not in the kernel.
+> One thing the NIST DRBGs have is prediction resistance, which is
+> done by reseeding. If you chain DRBGs, you tell your parent DRBG
+> that you want prediction resistance, so your parent will also
+> reseed. There currently is no way to tell the kernel to reseed.
 
-One thing the NIST DRBGs have is prediction resistance, which is
-done by reseeding. If you chain DRBGs, you tell your parent DRBG
-that you want prediction resistance, so your parent will also
-reseed. There currently is no way to tell the kernel to reseed.
+It would be simple enough to add a new flag, perhaps GRND_RESEED, to
+getrandom() which requests that the kernel reseed first.  This would
+require sufficient amounts of entropy in the input pool to do the
+reseed; if there is not enough, the getrandom() call would block until
+there was enough.  If GRND_NONBLOCK is supplied, then getrandom()
+would return EAGAIN if there wasn't sufficient entropy.
 
-This reseed option might be something that some people would like
-to see. If such an option is added, I expect that the kernel might
-block until it has gotten enough new entropy from it's entropy
-sources. But I don't actually see a need to add such an option.
+Is this what you want?
 
-If the kernel provides a good RNG, the only reason I can see why
-you would like to have direct access to a hwrng is to verify that
-it's working correctly. That might mean that you put it in some
-special mode where it returns raw unprocessed values. If the device
-is in such a mode, it's output will not provide the same entropy
-per bit, and so I would expect the kernel to stop using it directly.
+What should happen if two racing processes simultaneously call
+getrandom(2) with GRND_RESEED?  Do they need to be serialized with a
+separate reseed for each one?  Does it matter whether, after the
+reseed, some other process calling getrandom(2) manages to get output
+from the CRNG before the process requesting the RESEED gets a chance
+to use the reseeded CRNG?
 
-I guess there might be people who would like to use it directly,
-but I think we should instead encourage them kernel RNG.
+This can all be fixed by adding more locking, of course, but then the
+crazy people who think that:
 
-> You can talk about providing tools that try to make these estimations
-> --- but these sorts of things would have to be done on each user's
-> hardware, and for most distro users, it's just not practical.
+      dd if=/dev/random of=/dev/sdb
 
-I would check my own hardware if such an option was available. I
-think it can be useful to see if the current estimates in the
-kernel are conservative enough or not. But it would require that
-you can know what the entropy source is, like the keyboard or
-harddisk.
+needs to be able to work at HDD, SSD, or networking line speeds, will
+complain that all of this locking has slowed down /dev/[u]random, and
+they can't get their hundreds of megabytes/second out of the CRNG....
 
-> So if it's just for cryptographers, then let it all be done in
-> userspace, and let's not make it easy for GPG, OpenSSL, etc., to all
-> say, "We want TrueRandom(tm); we won't settle for less".
+> I would check my own hardware if such an option was available. I
+> think it can be useful to see if the current estimates in the
+> kernel are conservative enough or not. But it would require that
+> you can know what the entropy source is, like the keyboard or
+> harddisk.
 
-I don't think we want that. As far as I know, the only reason for
-using /dev/random is that /dev/urandom returns data before it
-has sufficient entropy.
+Creating such an interface is not high on my priority list.  If
+someone wants to send a proposal for such an interface, followed by a
+patch, I'm happy to take a look at it.  I am worried about the
+potential information leakage that such an interface might provide,
+though.  So at the very least, it should be something that can be
+disabled via build-time config, and perhaps hidden behind
+CONFIG_EXPERIMENTAL.  I really would want to make it clear that it's
+only for use by experts who are interesting in tinkering, and not
+something which is enabled in a distro kernel.
 
+> I don't think we want that. As far as I know, the only reason for
+> using /dev/random is that /dev/urandom returns data before it
+> has sufficient entropy.
 
-Kurt
+Is there any objections to just using getrandom(2)?
+
+   	     		   	      - Ted
 
