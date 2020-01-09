@@ -2,59 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6200C135F38
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jan 2020 18:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BD813617C
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jan 2020 21:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731672AbgAIRY4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Jan 2020 12:24:56 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33824 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728444AbgAIRY4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Jan 2020 12:24:56 -0500
-Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 009HOpHk031966
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 9 Jan 2020 12:24:52 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 846494207DF; Thu,  9 Jan 2020 12:24:51 -0500 (EST)
-Date:   Thu, 9 Jan 2020 12:24:51 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] ext4: export information about first/last errors via
- /sys/fs/ext4/<dev>
-Message-ID: <20200109172451.GD33929@mit.edu>
-References: <20191224000541.88473-1-tytso@mit.edu>
- <20200109091240.GA27035@quack2.suse.cz>
+        id S1727963AbgAIUC3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 9 Jan 2020 15:02:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725763AbgAIUC3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 9 Jan 2020 15:02:29 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 205957] Ext4 64 bit hash breaks 32 bit glibc 2.28+
+Date:   Thu, 09 Jan 2020 20:02:26 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: aladjev.andrew@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-205957-13602-lXGDdKBUZc@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-205957-13602@https.bugzilla.kernel.org/>
+References: <bug-205957-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200109091240.GA27035@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 09, 2020 at 10:12:40AM +0100, Jan Kara wrote:
-> On Mon 23-12-19 19:05:41, Theodore Ts'o wrote:
-> > Make {first,last}_error_{ino,block,line,func,errcode} available via
-> > sysfs.
-> > 
-> > Also add a missing newline for {first,last}_error_time.
-> > 
-> > Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> 
-> The patch looks good to me. You can add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> I'm just wondering a bit why do you need this? Some system monitoring
-> thing?
+https://bugzilla.kernel.org/show_bug.cgi?id=205957
 
-Yes, precisely.  Especially in cloud environments, where the disk
-often gets deleted when the VM is terminated, so reading the this
-information from the superblock won't be possible.
+--- Comment #16 from aladjev.andrew@gmail.com (aladjev.andrew@gmail.com) ---
+We don't need to create a patch for kernel about this compat syscall, because
+it already supports "__X32_SYSCALL_BIT". We need just to enable it using
+"CONFIG_X86_X32=y" kernel config. Recompiled kernel will expose all x86 related
+syscalls in x32 mode.
 
-						- Ted
+I've tested that "__X32_SYSCALL_BIT + 217" works completely the same as my
+"SYS_getdents64_x32". Function "in_x32_syscall" works perfect.
+
+We can patch glibc to redirect getdents64 syscall to x32 compatible one. My
+previous assumption was wrong. Patching qemu will be very bad solution, because
+it means that large file support will be broken in all applications, not only
+glibc.
+
+For now only glibc wants to convert dirent64 to dirent just by copying fields.
+Regular application don't want to emulate getdents using getdents64 and it will
+not touch dirent64. So we shouldn't interfere in qemu syscalls.
+
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
