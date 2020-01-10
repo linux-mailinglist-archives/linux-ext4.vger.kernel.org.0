@@ -2,23 +2,23 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B16013773E
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2020 20:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E37A13770E
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2020 20:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729147AbgAJTbQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Jan 2020 14:31:16 -0500
-Received: from mga14.intel.com ([192.55.52.115]:10924 "EHLO mga14.intel.com"
+        id S1728646AbgAJT37 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Jan 2020 14:29:59 -0500
+Received: from mga05.intel.com ([192.55.52.43]:59396 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728566AbgAJT35 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 10 Jan 2020 14:29:57 -0500
+        id S1727709AbgAJT36 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 10 Jan 2020 14:29:58 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jan 2020 11:29:56 -0800
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jan 2020 11:29:58 -0800
 X-IronPort-AV: E=Sophos;i="5.69,418,1571727600"; 
-   d="scan'208";a="272503818"
+   d="scan'208";a="255125193"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.157])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jan 2020 11:29:56 -0800
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Jan 2020 11:29:58 -0800
 From:   ira.weiny@intel.com
 To:     linux-kernel@vger.kernel.org
 Cc:     Ira Weiny <ira.weiny@intel.com>,
@@ -30,9 +30,9 @@ Cc:     Ira Weiny <ira.weiny@intel.com>,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
-Subject: [RFC PATCH V2 01/12] fs/stat: Define DAX statx attribute
-Date:   Fri, 10 Jan 2020 11:29:31 -0800
-Message-Id: <20200110192942.25021-2-ira.weiny@intel.com>
+Subject: [RFC PATCH V2 02/12] fs/xfs: Isolate the physical DAX flag from effective
+Date:   Fri, 10 Jan 2020 11:29:32 -0800
+Message-Id: <20200110192942.25021-3-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200110192942.25021-1-ira.weiny@intel.com>
 References: <20200110192942.25021-1-ira.weiny@intel.com>
@@ -45,65 +45,38 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Ira Weiny <ira.weiny@intel.com>
 
-In order for users to determine if a file is currently operating in DAX
-mode (effective DAX).  Define a statx attribute value and set that
-attribute if the effective DAX flag is set.
+xfs_ioctl_setattr_dax_invalidate() currently checks if the DAX flag is
+changing as a quick check.
 
-To go along with this we propose the following addition to the statx man
-page:
+But the implementation mixes the physical (XFS_DIFLAG2_DAX) and
+effective (S_DAX) DAX flags.
 
-STATX_ATTR_DAX
-
-	DAX (cpu direct access) is a file mode that attempts to minimize
-	software cache effects for both I/O and memory mappings of this
-	file.  It requires a capable device, a compatible filesystem
-	block size, and filesystem opt-in. It generally assumes all
-	accesses are via cpu load / store instructions which can
-	minimize overhead for small accesses, but adversely affect cpu
-	utilization for large transfers. File I/O is done directly
-	to/from user-space buffers. While the DAX property tends to
-	result in data being transferred synchronously it does not give
-	the guarantees of synchronous I/O that data and necessary
-	metadata are transferred. Memory mapped I/O may be performed
-	with direct mappings that bypass system memory buffering. Again
-	while memory-mapped I/O tends to result in data being
-	transferred synchronously it does not guarantee synchronous
-	metadata updates. A dax file may optionally support being mapped
-	with the MAP_SYNC flag which does allow cpu store operations to
-	be considered synchronous modulo cpu cache effects.
+Remove the use of the effective flag when determining if a change of the
+physical flag is required.
 
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- fs/stat.c                 | 3 +++
- include/uapi/linux/stat.h | 1 +
- 2 files changed, 4 insertions(+)
+ fs/xfs/xfs_ioctl.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/stat.c b/fs/stat.c
-index 030008796479..894699c74dde 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -79,6 +79,9 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
- 	if (IS_AUTOMOUNT(inode))
- 		stat->attributes |= STATX_ATTR_AUTOMOUNT;
+diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+index 7b35d62ede9f..fe37708cea8f 100644
+--- a/fs/xfs/xfs_ioctl.c
++++ b/fs/xfs/xfs_ioctl.c
+@@ -1195,9 +1195,11 @@ xfs_ioctl_setattr_dax_invalidate(
+ 	}
  
-+	if (IS_DAX(inode))
-+		stat->attributes |= STATX_ATTR_DAX;
-+
- 	if (inode->i_op->getattr)
- 		return inode->i_op->getattr(path, stat, request_mask,
- 					    query_flags);
-diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-index ad80a5c885d5..e5f9d5517f6b 100644
---- a/include/uapi/linux/stat.h
-+++ b/include/uapi/linux/stat.h
-@@ -169,6 +169,7 @@ struct statx {
- #define STATX_ATTR_ENCRYPTED		0x00000800 /* [I] File requires key to decrypt in fs */
- #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
- #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
-+#define STATX_ATTR_DAX			0x00002000 /* [I] File is DAX */
+ 	/* If the DAX state is not changing, we have nothing to do here. */
+-	if ((fa->fsx_xflags & FS_XFLAG_DAX) && IS_DAX(inode))
++	if ((fa->fsx_xflags & FS_XFLAG_DAX) &&
++	    (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX))
+ 		return 0;
+-	if (!(fa->fsx_xflags & FS_XFLAG_DAX) && !IS_DAX(inode))
++	if (!(fa->fsx_xflags & FS_XFLAG_DAX) &&
++	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX))
+ 		return 0;
  
- 
- #endif /* _UAPI_LINUX_STAT_H */
+ 	if (S_ISDIR(inode->i_mode))
 -- 
 2.21.0
 
