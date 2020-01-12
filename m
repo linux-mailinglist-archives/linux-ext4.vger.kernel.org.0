@@ -2,93 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA73137B1F
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 Jan 2020 03:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 860671384AE
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 Jan 2020 04:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgAKC1J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Jan 2020 21:27:09 -0500
-Received: from smtp.h3c.com ([60.191.123.50]:30106 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728062AbgAKC1I (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 10 Jan 2020 21:27:08 -0500
-Received: from DAG2EX10-IDC.srv.huawei-3com.com ([10.8.0.73])
-        by h3cspam02-ex.h3c.com with ESMTPS id 00B2Qhl7005200
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 11 Jan 2020 10:26:43 +0800 (GMT-8)
-        (envelope-from li.kai4@h3c.com)
-Received: from DAG2EX10-IDC.srv.huawei-3com.com (10.8.0.73) by
- DAG2EX10-IDC.srv.huawei-3com.com (10.8.0.73) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 11 Jan 2020 10:26:44 +0800
-Received: from BJHUB01-EX.srv.huawei-3com.com (10.63.20.169) by
- DAG2EX10-IDC.srv.huawei-3com.com (10.8.0.73) with Microsoft SMTP Server
- (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.1.1713.5
- via Frontend Transport; Sat, 11 Jan 2020 10:26:44 +0800
-Received: from RDVDI-L14391V.h3c.huawei-3com.com (10.125.108.72) by
- rndsmtp.h3c.com (10.63.20.174) with Microsoft SMTP Server id 14.3.408.0; Sat,
- 11 Jan 2020 10:26:33 +0800
-From:   Kai Li <li.kai4@h3c.com>
-To:     <jack@suse.cz>
-CC:     <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <joseph.qi@linux.alibaba.com>,
-        <gechangwei@live.cn>, <wang.yongd@h3c.com>, <wang.xibo@h3c.com>,
-        Kai Li <li.kai4@h3c.com>
-Subject: [PATCH] jbd2: clear JBD2_ABORT flag before journal_reset to update log tail info when load journal
-Date:   Sat, 11 Jan 2020 10:25:42 +0800
-Message-ID: <20200111022542.5008-1-li.kai4@h3c.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S1732098AbgALDpb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 11 Jan 2020 22:45:31 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38864 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732096AbgALDpb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Jan 2020 22:45:31 -0500
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00C3jQaI020231
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 11 Jan 2020 22:45:27 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id CEB634207DF; Sat, 11 Jan 2020 22:45:26 -0500 (EST)
+Date:   Sat, 11 Jan 2020 22:45:26 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     xiaohui li <lixiaohui1@xiaomi.corp-partner.google.com>
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH v4 01/20] ext4: update docs for fast commit feature
+Message-ID: <20200112034526.GB359630@mit.edu>
+References: <20191224081324.95807-1-harshadshirwadkar@gmail.com>
+ <CAAJeciV7bVN9HKz=FTQ1eSLXX_7E2ccuH9Za3vzBWHsgHuZEiw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.125.108.72]
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 00B2Qhl7005200
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAJeciV7bVN9HKz=FTQ1eSLXX_7E2ccuH9Za3vzBWHsgHuZEiw@mail.gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Fixes: 85e0c4e89c1b "jbd2: if the journal is aborted then don't allow update of the log tail"
+On Thu, Jan 09, 2020 at 12:29:01PM +0800, xiaohui li wrote:
+> maybe i have not understand the difficulty of the fast commit coding work.
+> so I appreciate it very much if you give some more detailed
+> descriptions about the patches correlationship of v4 fast commit,
+> especially the reason why need have so many patches.
+> 
+> from my viewpoint, the purpose of doing this fast commit function is
+> to resolve the ext4 fsync time-cost-so-much problem.
+> firstly we need to resolve some actual customer problems which exist
+> in ext4 filesystems when doing this fast commit function.
+> 
+> so the first release version of fast commit is just only to accomplish
+> the goal of reducing the time cost of fsync because of jbd2 order
+> shortcoming described in ijournal paper from my opinion.
+> it need not do so many other unnecessary things.
 
-If journal is dirty when mount, it will be replayed but jbd2 sb
-log tail cannot be updated to mark a new start because
-journal->j_flags has already been set with JBD2_ABORT first
-in journal_init_common.
-When a new transaction is committed, it will be recorded in block 1
-first(journal->j_tail is set to 1 in journal_reset). If emergency
-restart again before journal super block is updated unfortunately,
-the new recorded trans will not be replayed in the next mount.
-It is danerous which may lead to metadata corruption for file system.
+As Harshad has mentioned, one of the reasons why an incremental
+approach does not make sense is that once we release a version of fast
+commit into a mainline kernel, we have to worry about what happens if
+users start trying to use it, and we have to provide backwards
+compatibility for it.  So if we were to break up fast commit into 5
+parts, then we would have to allocate 5 feature bits, and we would
+have to support each version of fast commit --- essentially forever.
 
-Signed-off-by: Kai Li <li.kai4@h3c.com>
----
- fs/jbd2/journal.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+As far as why are we doing this, we absolutely have a specific use
+case in mind, and that's to improve ext4's performance when used on a
+NFS server.  The NFS protocol requires that any file system operation
+requested by a client is persisted before the server sends an
+acknowledgement back to the client.  For the workloads that are heavy
+with metadata updates, avoiding the need to do a full jbd2 commit for
+every NFS RPC request which modifies metadata will a big difference to
+the NFS server's performance.
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 5e408ee24a1a..069b22eba795 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1710,6 +1710,11 @@ int jbd2_journal_load(journal_t *journal)
- 		       journal->j_devname);
- 		return -EFSCORRUPTED;
- 	}
-+	/*
-+	 * clear JBD2_ABORT flag initialized in journal_init_common
-+	 * here to update log tail information with the newest seq.
-+	 */
-+	journal->j_flags &= ~JBD2_ABORT;
- 
- 	/* OK, we've finished with the dynamic journal bits:
- 	 * reinitialise the dynamic contents of the superblock in memory
-@@ -1717,7 +1722,6 @@ int jbd2_journal_load(journal_t *journal)
- 	if (journal_reset(journal))
- 		goto recovery_error;
- 
--	journal->j_flags &= ~JBD2_ABORT;
- 	journal->j_flags |= JBD2_LOADED;
- 	return 0;
- 
--- 
-2.24.0.windows.2
+This is why we are interested in making things like renames to be fast
+commit eligible, and not just the smaller set of system calls needed
+by (for example) SQLite.
 
+Regards,
+
+						- Ted
