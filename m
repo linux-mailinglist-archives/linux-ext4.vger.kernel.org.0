@@ -2,72 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A84138B6A
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2020 06:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9891138FB5
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2020 12:04:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387590AbgAMFwp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Jan 2020 00:52:45 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:34095 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728831AbgAMFw0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jan 2020 00:52:26 -0500
-Received: by mail-oi1-f194.google.com with SMTP id l136so7229647oig.1
-        for <linux-ext4@vger.kernel.org>; Sun, 12 Jan 2020 21:52:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
-        b=El5YZgtDEXJCHEtZrRB1ujEJT5GnrR9nqQvx3oNXkD1KXWKAy5lE4fahagwXmNRBuY
-         Z373bCStdjZZAvrcMmyjZhqXNYKD7qS8gpQ1uKt4Zm/CJYofbOmd6y2KCfdaIf8lu4gx
-         e04Qq2Wd5k0QzXhgODgXLh9+BTAbr7mIJG1kvrHD2cB5892G2QaMtoQjZ8YbwAsn/v/R
-         qN1ulSwy8kLJzDOOwwvDkEa6g0paOaNUUW6lO8NcaOsOsQMTh2eV34LXY/bnRxfyDcL+
-         OFIAYoYpyWTxvo4nB11oXa8J2BNLiFXnr18VfN4DCPOmpXqWPT8f/9GzmZX8VWLxs4VK
-         s+8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
-        b=EXjY8/uL7AuWc71OPzyIQ7nYvFsBjlI2fpgraAMgVheXGXW3DC/sWFgFRB8rDk6HS/
-         ISVMDD7rOmxgKvS86IEmfuCQZXFsxQ8tG+eXHREyAZSvWuTwvl88kr7nHWMfufyYFfEu
-         NQY27FGXf2iMCyI8SfbWzQTtAaWFMlT7JiFV9cbrEifWgBwBJqQlCTjKBaGSWCazwb5X
-         jtLxLyop5YaSxEn41fvtzc1PHtOC6a2TKKrF+vGNzCDoo56/mYQqiRQ46dIMCa6PD27u
-         jst2Wb4fpabJ5BnK6FcCIaYaxmaRUIhmwUjEFbA9z7uDClJQz7kzJ4VxtfYnMS0E7fIE
-         mS5w==
-X-Gm-Message-State: APjAAAVfF37L5ctDeFqd2KATV8eb9mHrdp3tnDkVizfrPOet27nEz9Jn
-        39OTz6LJ2FSonHaLeLiwoaPC6tD/R6a3huZDBeM=
-X-Google-Smtp-Source: APXvYqy7JhGBt0ZjJ/1t4CT74GIhTuvbOMnCynReBbsGRcTAfZPwoiLBCe9XiPA9xaK1JAPmy14eucUMWI9DLkbKsUo=
-X-Received: by 2002:a54:4713:: with SMTP id k19mr11513430oik.113.1578894745174;
- Sun, 12 Jan 2020 21:52:25 -0800 (PST)
+        id S1726163AbgAMLEc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Jan 2020 06:04:32 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46514 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725992AbgAMLEc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 13 Jan 2020 06:04:32 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00DAvkSD121645
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Jan 2020 06:04:30 -0500
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2xfbs7n5d6-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Jan 2020 06:04:30 -0500
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Mon, 13 Jan 2020 11:04:28 -0000
+Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 13 Jan 2020 11:04:26 -0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 00DB3a2B35127708
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Jan 2020 11:03:37 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 535874204C;
+        Mon, 13 Jan 2020 11:04:25 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5B27F42045;
+        Mon, 13 Jan 2020 11:04:24 +0000 (GMT)
+Received: from dhcp-9-199-159-93.in.ibm.com (unknown [9.199.159.93])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 13 Jan 2020 11:04:24 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, jack@suse.cz, Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [RFC 0/2] ext4: Fix stale data read exposure problem with DIO read/page_mkwrite
+Date:   Mon, 13 Jan 2020 16:34:20 +0530
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Received: by 2002:a4a:41cb:0:0:0:0:0 with HTTP; Sun, 12 Jan 2020 21:52:24
- -0800 (PST)
-Reply-To: rickschaech@gmail.com
-From:   Rick Schaech <cathben72@gmail.com>
-Date:   Mon, 13 Jan 2020 01:52:24 -0400
-Message-ID: <CAEcBxO=TAnFn5LzizHa22hUC0Db5FuiZJF28m=yX3_9m--jRqg@mail.gmail.com>
-Subject: I wait for your swift response,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 20011311-0020-0000-0000-000003A034CA
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20011311-0021-0000-0000-000021F7A37B
+Message-Id: <cover.1578907890.git.riteshh@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-13_03:2020-01-13,2020-01-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ priorityscore=1501 mlxlogscore=969 suspectscore=0 adultscore=0
+ clxscore=1011 bulkscore=0 malwarescore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001130094
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Dear, I'm Mr Rick Schaech, I am the General Account Auditor, Though i
-know we have not meet each other before but sometimes in life God have
-a reason of bringing two people from two different countries together
-as business partners or life partners.
+Hello All, 
 
-My dear friend, I have the sum of 15.7 Million USD i wish to put in
-your name due to the death of my late client who died several years
-ago as his next of kin column still remain blank. Though the internet
-medium is highly abuse these days but am assuring you that this
-transaction is legitimate and I am contacting you that we may have a
-deal, note for your cooperation and collaboration 40% of the sum will
-be for you while the other 60% will be for me as well. I wait for your
-swift response for more details. please forward your response to my
-personal E-mail: rickschaech@gmail.com
+Sorry for the delay on this patchset. I guess it's because there were
+lot of other context switches while working at it.
 
-Yours sincerely,
-Rick Schaech.
+Please note that this is a RFC patch and also a WIP (due to a open problem
+listed below).
+There is also another thread going on where making dioread_nolock as default
+mount opt [1] is being discussed. That approach should also solve the given
+race at hand. But since nothing is finalized yet, so I wanted to get this patch
+out for early review/discussion.
+
+About patch
+===========
+
+Currently there is a small race window as pointed out by Jan [2] where, when
+ext4 tries to allocate a written block for mapped files and if DIO read is in
+progress, then this may result into stale data read exposure problem.
+
+This patch tries to fix the mentioned issue by:
+1. For non-delalloc path, page_mkwrite will use unwritten blocks by
+   default for extent based files.
+
+2. For delalloc path, we check if DIO is in progress during writeback.
+   If yes, then we use unwritten blocks method to avoid this race.
+
+Patch-1: This moves the inode_dio_begin() call before calling for
+filemap_write_and_wait_range.
+
+Patch-2: This implementes the points (1) & (2) mentioned above.
+
+Testing:
+========
+xfstests "-g auto" ran fine except one warn_on issue.
+
+Below tests are giving kernel WARN_ON from "ext4_journalled_invalidatepage()",
+with 1024 blocksize, 4K pagesize & with "nodelalloc,data=journal" mount opt.
+- generic/013, generic/269, generic/270
+
+In case if someone has any pointers around this, I could dig more deeper into
+this. 
+
+References
+==========
+[1] https://www.spinics.net/lists/linux-ext4/msg69224.html
+[2] https://lore.kernel.org/linux-ext4/20190926134726.GA28555@quack2.suse.cz/ 
+
+
+Ritesh Harjani (2):
+  iomap: direct-io: Move inode_dio_begin before
+    filemap_write_and_wait_range
+  ext4: Fix stale data read issue with DIO read & ext4_page_mkwrite path
+
+ fs/ext4/inode.c      | 45 +++++++++++++++++++++++++++++++-------------
+ fs/iomap/direct-io.c | 17 +++++++++++++----
+ 2 files changed, 45 insertions(+), 17 deletions(-)
+
+-- 
+2.21.0
+
