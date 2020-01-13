@@ -2,78 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 860671384AE
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 Jan 2020 04:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A84138B6A
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2020 06:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732098AbgALDpb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 11 Jan 2020 22:45:31 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:38864 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732096AbgALDpb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Jan 2020 22:45:31 -0500
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00C3jQaI020231
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 11 Jan 2020 22:45:27 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id CEB634207DF; Sat, 11 Jan 2020 22:45:26 -0500 (EST)
-Date:   Sat, 11 Jan 2020 22:45:26 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     xiaohui li <lixiaohui1@xiaomi.corp-partner.google.com>
-Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH v4 01/20] ext4: update docs for fast commit feature
-Message-ID: <20200112034526.GB359630@mit.edu>
-References: <20191224081324.95807-1-harshadshirwadkar@gmail.com>
- <CAAJeciV7bVN9HKz=FTQ1eSLXX_7E2ccuH9Za3vzBWHsgHuZEiw@mail.gmail.com>
+        id S2387590AbgAMFwp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Jan 2020 00:52:45 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:34095 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728831AbgAMFw0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jan 2020 00:52:26 -0500
+Received: by mail-oi1-f194.google.com with SMTP id l136so7229647oig.1
+        for <linux-ext4@vger.kernel.org>; Sun, 12 Jan 2020 21:52:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
+        b=El5YZgtDEXJCHEtZrRB1ujEJT5GnrR9nqQvx3oNXkD1KXWKAy5lE4fahagwXmNRBuY
+         Z373bCStdjZZAvrcMmyjZhqXNYKD7qS8gpQ1uKt4Zm/CJYofbOmd6y2KCfdaIf8lu4gx
+         e04Qq2Wd5k0QzXhgODgXLh9+BTAbr7mIJG1kvrHD2cB5892G2QaMtoQjZ8YbwAsn/v/R
+         qN1ulSwy8kLJzDOOwwvDkEa6g0paOaNUUW6lO8NcaOsOsQMTh2eV34LXY/bnRxfyDcL+
+         OFIAYoYpyWTxvo4nB11oXa8J2BNLiFXnr18VfN4DCPOmpXqWPT8f/9GzmZX8VWLxs4VK
+         s+8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
+        b=EXjY8/uL7AuWc71OPzyIQ7nYvFsBjlI2fpgraAMgVheXGXW3DC/sWFgFRB8rDk6HS/
+         ISVMDD7rOmxgKvS86IEmfuCQZXFsxQ8tG+eXHREyAZSvWuTwvl88kr7nHWMfufyYFfEu
+         NQY27FGXf2iMCyI8SfbWzQTtAaWFMlT7JiFV9cbrEifWgBwBJqQlCTjKBaGSWCazwb5X
+         jtLxLyop5YaSxEn41fvtzc1PHtOC6a2TKKrF+vGNzCDoo56/mYQqiRQ46dIMCa6PD27u
+         jst2Wb4fpabJ5BnK6FcCIaYaxmaRUIhmwUjEFbA9z7uDClJQz7kzJ4VxtfYnMS0E7fIE
+         mS5w==
+X-Gm-Message-State: APjAAAVfF37L5ctDeFqd2KATV8eb9mHrdp3tnDkVizfrPOet27nEz9Jn
+        39OTz6LJ2FSonHaLeLiwoaPC6tD/R6a3huZDBeM=
+X-Google-Smtp-Source: APXvYqy7JhGBt0ZjJ/1t4CT74GIhTuvbOMnCynReBbsGRcTAfZPwoiLBCe9XiPA9xaK1JAPmy14eucUMWI9DLkbKsUo=
+X-Received: by 2002:a54:4713:: with SMTP id k19mr11513430oik.113.1578894745174;
+ Sun, 12 Jan 2020 21:52:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAJeciV7bVN9HKz=FTQ1eSLXX_7E2ccuH9Za3vzBWHsgHuZEiw@mail.gmail.com>
+Received: by 2002:a4a:41cb:0:0:0:0:0 with HTTP; Sun, 12 Jan 2020 21:52:24
+ -0800 (PST)
+Reply-To: rickschaech@gmail.com
+From:   Rick Schaech <cathben72@gmail.com>
+Date:   Mon, 13 Jan 2020 01:52:24 -0400
+Message-ID: <CAEcBxO=TAnFn5LzizHa22hUC0Db5FuiZJF28m=yX3_9m--jRqg@mail.gmail.com>
+Subject: I wait for your swift response,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 09, 2020 at 12:29:01PM +0800, xiaohui li wrote:
-> maybe i have not understand the difficulty of the fast commit coding work.
-> so I appreciate it very much if you give some more detailed
-> descriptions about the patches correlationship of v4 fast commit,
-> especially the reason why need have so many patches.
-> 
-> from my viewpoint, the purpose of doing this fast commit function is
-> to resolve the ext4 fsync time-cost-so-much problem.
-> firstly we need to resolve some actual customer problems which exist
-> in ext4 filesystems when doing this fast commit function.
-> 
-> so the first release version of fast commit is just only to accomplish
-> the goal of reducing the time cost of fsync because of jbd2 order
-> shortcoming described in ijournal paper from my opinion.
-> it need not do so many other unnecessary things.
+Dear, I'm Mr Rick Schaech, I am the General Account Auditor, Though i
+know we have not meet each other before but sometimes in life God have
+a reason of bringing two people from two different countries together
+as business partners or life partners.
 
-As Harshad has mentioned, one of the reasons why an incremental
-approach does not make sense is that once we release a version of fast
-commit into a mainline kernel, we have to worry about what happens if
-users start trying to use it, and we have to provide backwards
-compatibility for it.  So if we were to break up fast commit into 5
-parts, then we would have to allocate 5 feature bits, and we would
-have to support each version of fast commit --- essentially forever.
+My dear friend, I have the sum of 15.7 Million USD i wish to put in
+your name due to the death of my late client who died several years
+ago as his next of kin column still remain blank. Though the internet
+medium is highly abuse these days but am assuring you that this
+transaction is legitimate and I am contacting you that we may have a
+deal, note for your cooperation and collaboration 40% of the sum will
+be for you while the other 60% will be for me as well. I wait for your
+swift response for more details. please forward your response to my
+personal E-mail: rickschaech@gmail.com
 
-As far as why are we doing this, we absolutely have a specific use
-case in mind, and that's to improve ext4's performance when used on a
-NFS server.  The NFS protocol requires that any file system operation
-requested by a client is persisted before the server sends an
-acknowledgement back to the client.  For the workloads that are heavy
-with metadata updates, avoiding the need to do a full jbd2 commit for
-every NFS RPC request which modifies metadata will a big difference to
-the NFS server's performance.
-
-This is why we are interested in making things like renames to be fast
-commit eligible, and not just the smaller set of system calls needed
-by (for example) SQLite.
-
-Regards,
-
-						- Ted
+Yours sincerely,
+Rick Schaech.
