@@ -2,85 +2,50 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F26D13AF79
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2020 17:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE84013AF8C
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2020 17:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728761AbgANQef (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Jan 2020 11:34:35 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26248 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728757AbgANQef (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Jan 2020 11:34:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579019674;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=A61MDN9On2l+D0CHOHwV8RQgKf/LW4H2brHB54z57mg=;
-        b=VtvOr6YF8lpN48BLT7s49eylbLLaKlhlyW3033dI4WxlWPBu95K82WcwvNQcWaJmsxkSRA
-        vL/pPAlLMWSVNUxfbyrjvWxE6mCtRW8zFRdRkG7KuoXMpe/dLzyjWnkStSY4HuAyCvwz5j
-        4O3HiPZbjkaUbvkiDF0BP4tf/gAjKM0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-0Z8kJG3eO2Csx02l0D7gRA-1; Tue, 14 Jan 2020 11:34:30 -0500
-X-MC-Unique: 0Z8kJG3eO2Csx02l0D7gRA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA5A0150153;
-        Tue, 14 Jan 2020 16:34:28 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 53BA780A48;
-        Tue, 14 Jan 2020 16:34:26 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, hch@lst.de,
-        tytso@mit.edu, adilger.kernel@dilger.ca, darrick.wong@oracle.com,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-cc:     dhowells@redhat.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Making linkat() able to overwrite the target
+        id S1728516AbgANQhD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Jan 2020 11:37:03 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:56522 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbgANQhC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Jan 2020 11:37:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=bJVaCxrwr35SB36/aaUlnDWktHBHuj0zzwzpoSHUEtA=; b=tnFM93Uqm/bykCKgamD0hnO71
+        XP1CdKWoB/HK8TuWpqMrQ0x7QXiwnq7GRhtz7bqqa8ph2tOVP64c/qJ6FV+NNEhibNfzlJ33o0my8
+        VFd/lvz/GQXoMFth57L1AqL+pZVlnWS8Z3Ozg/aeGbg+dfe+s77cZ1CBC5BisFCpAWWkF/XtHTzFy
+        ouDrykJY4LPC1t5d0q3LfuY3KYUom7mhZThvlRNIq1BNCTSiGZNca3erHg1roAp0Td5NKBAa8KXlG
+        uXMpsG4rgoHZHlve0dkxHtZFQnYtt/4gOPp3SVqzW+WCR5IUkPImENsEHHkHssABcRNYUE1g/Dc/j
+        XX3jgrXHQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1irPBe-00037l-Hn; Tue, 14 Jan 2020 16:37:02 +0000
+Date:   Tue, 14 Jan 2020 08:37:02 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz
+Subject: Re: [RFC 1/2] iomap: direct-io: Move inode_dio_begin before
+ filemap_write_and_wait_range
+Message-ID: <20200114163702.GA7127@infradead.org>
+References: <cover.1578907890.git.riteshh@linux.ibm.com>
+ <27607a16327fe9664f32d09abe565af0d1ae56c9.1578907891.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3325.1579019665.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 14 Jan 2020 16:34:25 +0000
-Message-ID: <3326.1579019665@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <27607a16327fe9664f32d09abe565af0d1ae56c9.1578907891.git.riteshh@linux.ibm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-With my rewrite of fscache and cachefiles:
+Please add at very least the fsdevel and xfs lists to iomap patches.
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log=
-/?h=3Dfscache-iter
-
-when a file gets invalidated by the server - and, under some circumstances=
-,
-modified locally - I have the cache create a temporary file with vfs_tmpfi=
-le()
-that I'd like to just link into place over the old one - but I can't becau=
-se
-vfs_link() doesn't allow you to do that.  Instead I have to either unlink =
-the
-old one and then link the new one in or create it elsewhere and rename acr=
-oss.
-
-Would it be possible to make linkat() take a flag, say AT_LINK_REPLACE, th=
-at
-causes the target to be replaced and not give EEXIST?  Or make it so that
-rename() can take a tmpfile as the source and replace the target with that=
-.  I
-presume that, either way, this would require journal changes on ext4, xfs =
-and
-btrfs.
-
-Thanks,
-David
-
+Using i_dio_count for any kind of detection is bogus.  If you want to
+pass flags to the writeback code please do so explicitly through
+struct writeback_control.
