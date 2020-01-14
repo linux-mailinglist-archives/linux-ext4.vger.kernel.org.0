@@ -2,149 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3059B13B28B
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2020 20:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A5913B2F7
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2020 20:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgANTA6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Jan 2020 14:00:58 -0500
-Received: from mga06.intel.com ([134.134.136.31]:52152 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726450AbgANTA6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 14 Jan 2020 14:00:58 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jan 2020 11:00:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,319,1574150400"; 
-   d="scan'208";a="219689462"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Jan 2020 11:00:57 -0800
-Date:   Tue, 14 Jan 2020 11:00:57 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH V2 10/12] fs/xfs: Fix truncate up
-Message-ID: <20200114190057.GB7871@iweiny-DESK2.sc.intel.com>
-References: <20200110192942.25021-1-ira.weiny@intel.com>
- <20200110192942.25021-11-ira.weiny@intel.com>
- <20200113222755.GP8247@magnolia>
- <20200114004047.GC29860@iweiny-DESK2.sc.intel.com>
- <20200114011407.GT8247@magnolia>
+        id S1728880AbgANT1D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Jan 2020 14:27:03 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:38548 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728688AbgANT1D (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Jan 2020 14:27:03 -0500
+Received: by mail-qt1-f196.google.com with SMTP id c24so2727298qtp.5
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Jan 2020 11:27:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=aJt6sr02+cPWFTf++BZXppcl8L9Qc4Zp51cj05VTask=;
+        b=oPrqQqSe/ADv8qbMh9YJz6dG8lmq0i8sYcGqcKoHUevTV/iKnZZdCh1Zl9pqk7gfjy
+         HYWWbwQp7/zq8Xif8qLlCBaRykT7I0Y20XZR9d4vI4H4yUa7ZQkaOSXqOTIdw5Pd4GLx
+         2dqFBW3x3atoix9XhEkom81Zh6wsgnl/EYNywLM+dy1DLUlEoIrR9ivzk6iqGM+4uTg1
+         C6NHzcU46ysDJZGjUMoBIDGO8XcK6I6OB8oBQkmcj5JopfmgztE7lYRFpjGRyn1WZKhx
+         6ykQT1i82ZStGLCZpydQ1Hjf7Fnf+GIPYnsiIs7k3sxdVnOXQdqhg2FuLSeaYtalcKYV
+         iE3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aJt6sr02+cPWFTf++BZXppcl8L9Qc4Zp51cj05VTask=;
+        b=a63hLWKneddC4LuFqoVVryGQqjiYaHXlRXhDNTEUJ8nIDYfqaPC6TPZtv7QyhKklZ6
+         xdODQWfAjvcMsp2Wr9qftpkIOIkyMv571VzQJG57Lit4P+wXMI9gcGgie8AJ4jYx5PLS
+         xWK/aFQmQVV5GvHsvjhxNg7RzWfdPjcVi7B+nJR2l4ZSyVN3RR3SaMr6MhicIEUw8lQn
+         JwESlbKJgdwavUaVkL/Ej3cIq6YJrWihoLWLjpV/CtSkNzb3syc+RWzFrOE8CH8yuGaF
+         LYzxXNXsj8HBROTjNnNxNZqf+TdP1YrphkMAXgY1KMyqCfqRlEzseihO3bSxZdE4NaHL
+         k2aw==
+X-Gm-Message-State: APjAAAU9DEqqGSJ48Thwd20VBqPb/awVXkgs5E9rs9zGZR5zXAFfsJNS
+        OT5Kk/RU1e1I8N25Q3IHymNmpQ==
+X-Google-Smtp-Source: APXvYqySNCcNEO4FrkFCq2T3jATCYAK3ivaV1e2ZWAedX1tbYHW/XNiQzo5q+3L4u1x3cX9oTES0GA==
+X-Received: by 2002:aed:2465:: with SMTP id s34mr158395qtc.158.1579030021872;
+        Tue, 14 Jan 2020 11:27:01 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id 17sm8063238qtz.85.2020.01.14.11.27.01
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 Jan 2020 11:27:01 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1irRq8-0006GA-MO; Tue, 14 Jan 2020 15:27:00 -0400
+Date:   Tue, 14 Jan 2020 15:27:00 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: RFC: hold i_rwsem until aio completes
+Message-ID: <20200114192700.GC22037@ziepe.ca>
+References: <20200114161225.309792-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200114011407.GT8247@magnolia>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200114161225.309792-1-hch@lst.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jan 13, 2020 at 05:14:07PM -0800, Darrick J. Wong wrote:
-> On Mon, Jan 13, 2020 at 04:40:47PM -0800, Ira Weiny wrote:
-> > On Mon, Jan 13, 2020 at 02:27:55PM -0800, Darrick J. Wong wrote:
-> > > On Fri, Jan 10, 2020 at 11:29:40AM -0800, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> > > > 
-> > > > When zeroing the end of a file we must account for bytes contained in
-> > > > the final page which are past EOF.
-> > > > 
-> > > > Extend the range passed to iomap_zero_range() to reach LLONG_MAX which
-> > > > will include all bytes of the final page.
-> > > > 
-> > > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > > > ---
-> > > >  fs/xfs/xfs_iops.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > > > index a2f2604c3187..a34b04e8ac9c 100644
-> > > > --- a/fs/xfs/xfs_iops.c
-> > > > +++ b/fs/xfs/xfs_iops.c
-> > > > @@ -910,7 +910,7 @@ xfs_setattr_size(
-> > > >  	 */
-> > > >  	if (newsize > oldsize) {
-> > > >  		trace_xfs_zero_eof(ip, oldsize, newsize - oldsize);
-> > > > -		error = iomap_zero_range(inode, oldsize, newsize - oldsize,
-> > > > +		error = iomap_zero_range(inode, oldsize, LLONG_MAX - oldsize,
-> > > 
-> > > Huh?  Won't this cause the file size to be set to LLONG_MAX?
-> > 
-> > Not as I understand the code.
+On Tue, Jan 14, 2020 at 05:12:13PM +0100, Christoph Hellwig wrote:
+> Hi all,
 > 
-> iomap_zero_range uses the standard iomap_write_{begin,end} functions,
-> which means that if you pass it an (offset, length) that extend beyond
-> EOF it will change isize to offset+length.
+> Asynchronous read/write operations currently use a rather magic locking
+> scheme, were access to file data is normally protected using a rw_semaphore,
+> but if we are doing aio where the syscall returns to userspace before the
+> I/O has completed we also use an atomic_t to track the outstanding aio
+> ops.  This scheme has lead to lots of subtle bugs in file systems where
+> didn't wait to the count to reach zero, and due to its adhoc nature also
+> means we have to serialize direct I/O writes that are smaller than the
+> file system block size.
 
-I don't see that but I'll take your word for it...  That is unfortunate because
-I would have thought that the full page would have been zero'ed by something
-already.
+I've seen similar locking patterns quite a lot, enough I've thought
+about having a dedicated locking primitive to do it. It really wants
+to be a rwsem, but as here the rwsem rules don't allow it.
 
-I found code in xfs_free_file_space() with this comment:
+The common pattern I'm looking at looks something like this:
 
-        /*
-         * If we zeroed right up to EOF and EOF straddles a page boundary we
-         * must make sure that the post-EOF area is also zeroed because the
-         * page could be mmap'd and iomap_zero_range doesn't do that for us.
-         * Writeback of the eof page will do this, albeit clumsily.
-         */
+ 'try begin read'() // aka down_read_trylock()
 
-But that just calls filemap_write_and_wait_range()...  :-/
+  /* The lockdep release hackery you describe,
+     the rwsem remains read locked */
+ 'exit reader'()
 
-> 
-> > But as I said in the cover I am not 100% sure of
-> > this fix.
-> 
-> > From what I can tell xfs_ioctl_setattr_dax_invalidate() should invalidate the
-> > mappings and the page cache and the traces I have indicate that the DAX mode
-> > is not changing or was properly held off.
-> 
-> Hmm, that implies the invalidation didn't work.  Can you find a way to
-> report the contents of the page cache after the dax mode change
-> invalidation fails?  I wonder if this is something dorky like rounding
-> down such that the EOF page doesn't actually get invalidated?
-> 
-> Hmm, no, xfs_ioctl_setattr_dax_invalidate should be nuking all the
-> pages... do you have a quick reproducer?
+ .. delegate unlock to work queue, timer, irq, etc ..
 
-I thought I did...
+in the new context:
 
-What I have done is take this patch:
+ 're_enter reader'() // Get our lockdep tracking back
 
-https://www.spinics.net/lists/fstests/msg13313.html
+ 'end reader'() // aka up_read()
 
-and put [run_fsx ""] in a loop... (diff below) And without this truncate fix
-patch it was failing in about 5 - 10 iterations.  But I'm running it right now
-and it has gone for 30+...  :-(
+vs a typical write side:
 
-I am 90% confident that this series works for 100% of the use cases we have.  I
-think this is an existing bug which I've just managed to find.  And again I'm
-not comfortable with this patch either.  So I'm not trying to argue for it but
-I just don't know what could be wrong...
+ 'begin write'() // aka down_write()
 
-Ira
+ /* There is no reason to unlock it before kfree of the rwsem memory.
+    Somehow the user prevents any new down_read_trylock()'s */
+ 'abandon writer'() // The object will be kfree'd with a locked writer
+ kfree()
 
-diff --git a/tests/generic/999 b/tests/generic/999
-index 6dd5529dbc65..929c20c6db04 100755
---- a/tests/generic/999
-+++ b/tests/generic/999
-@@ -274,7 +274,9 @@ function run_fsx {
-        pid=""
- }
- 
--run_fsx ""
-+while [ 1 ]; do
-+       run_fsx ""
-+done
- run_fsx "-A"
- run_fsx "-Z -r 4096 -w 4096"
+The typical goal is to provide an object destruction path that can
+serialize and fence all readers wherever they may be before proceeding
+to some synchronous destruction.
 
+Usually this gets open coded with some atomic/kref/refcount and a
+completion or wait queue. Often implemented wrongly, lacking the write
+favoring bias in the rwsem, and lacking any lockdep tracking on the
+naked completion.
+
+Not to discourage your patch, but to ask if we can make the solution
+more broadly applicable?
+
+Thanks,
+Jason
