@@ -2,45 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0556A139EB5
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2020 02:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD59139ECF
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2020 02:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgANBEe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Jan 2020 20:04:34 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:36218 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728896AbgANBEe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jan 2020 20:04:34 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E13GnB085465;
-        Tue, 14 Jan 2020 01:04:25 GMT
+        id S1729335AbgANBOc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Jan 2020 20:14:32 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:55482 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729088AbgANBOb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Jan 2020 20:14:31 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E1D8wG105720;
+        Tue, 14 Jan 2020 01:14:19 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=corp-2019-08-05;
- bh=7jBHH4oOQP9IrNSe4g8pOXVxUUR5i6Dekv8HSEosktE=;
- b=q49gJ62uRjgjD6IaNwvxQbHBzO6WlK2GucQc7AR6OZxlLWMotZvd9XOqZ1vGG69Z4EDX
- VdqF5U1wK8g7Pr5lFGBTg171P7DQcUiHDEVHRi6/Ram8BKUz2XY7UwMuqehMf9sXUmn3
- ukFgJeiSNQmrdmFcMjMf2jXrH8xOtd01f6iVSEUEIGnXpJfbs3N836jRs8Vev2s2F7hK
- A+LNbxni8wynofU3YSaldKp1HASUi7JevUc3AtTgVnPuhO+ZvD6dXq34cFrboLoze392
- KhyyQiB62M/bOTmkmAL4cC8B8G02w1g2miOIee+/7joxjYF4ctqXl/qiE6Dy8gUfWPUF wg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2xf73tjkcb-1
+ bh=yE5ZIDVe1jfzOcNsCuRD6Iv9+W3jDx2HylSrlN9qdRo=;
+ b=MXOxCSBOkPhJlVXFDJ3iV6F5h0Fe3HKRJELLTGucvYYfFDDWxFVgtumdLr3/wsh4LeVA
+ c4VgGUGdCCYBNP0YmbUK5plpU2jhzoYPy6+L33zNa1THIkSu9athoQ64n8JtHJhn9vLy
+ QALBwxlHMok0sNGXiTsWJy5hI04EJqizdPcXGnef4SuBAuXwllaljN0viOJNaSFCRltx
+ mOkM3F+CNJIaGO+GjwZdHLlbJ7jQkoBEH18bhzQmIaVJNLOaK2ZCok4KB/h68LOwiFC/
+ l8CK6jmvrPexmHwR+Rye8nDJrq1UQlgjwi9zSvIZivSqGBcmS/2ckKNTENJlNAL162jv Ng== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2xf73yanqe-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Jan 2020 01:04:24 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E14FB5170858;
-        Tue, 14 Jan 2020 01:04:23 GMT
+        Tue, 14 Jan 2020 01:14:18 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00E1DOVX189803;
+        Tue, 14 Jan 2020 01:14:18 GMT
 Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2xh2sbjdc2-1
+        by aserp3020.oracle.com with ESMTP id 2xh30xg3tr-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Jan 2020 01:04:22 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00E13OGJ020546;
-        Tue, 14 Jan 2020 01:03:24 GMT
+        Tue, 14 Jan 2020 01:14:17 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00E1E9mN016284;
+        Tue, 14 Jan 2020 01:14:11 GMT
 Received: from localhost (/67.169.218.210)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 13 Jan 2020 17:03:24 -0800
-Date:   Mon, 13 Jan 2020 17:03:22 -0800
+        with ESMTP ; Mon, 13 Jan 2020 17:14:09 -0800
+Date:   Mon, 13 Jan 2020 17:14:07 -0800
 From:   "Darrick J. Wong" <darrick.wong@oracle.com>
 To:     Ira Weiny <ira.weiny@intel.com>
 Cc:     linux-kernel@vger.kernel.org,
@@ -51,167 +51,96 @@ Cc:     linux-kernel@vger.kernel.org,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH V2 07/12] fs: Add locking for a dynamic inode 'mode'
-Message-ID: <20200114010322.GS8247@magnolia>
+Subject: Re: [RFC PATCH V2 10/12] fs/xfs: Fix truncate up
+Message-ID: <20200114011407.GT8247@magnolia>
 References: <20200110192942.25021-1-ira.weiny@intel.com>
- <20200110192942.25021-8-ira.weiny@intel.com>
- <20200113221218.GM8247@magnolia>
- <20200114002005.GA29860@iweiny-DESK2.sc.intel.com>
+ <20200110192942.25021-11-ira.weiny@intel.com>
+ <20200113222755.GP8247@magnolia>
+ <20200114004047.GC29860@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200114002005.GA29860@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20200114004047.GC29860@iweiny-DESK2.sc.intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9499 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001140007
+ engine=8.0.1-1911140001 definitions=main-2001140008
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9499 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
  suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001140007
+ definitions=main-2001140008
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jan 13, 2020 at 04:20:05PM -0800, Ira Weiny wrote:
-> On Mon, Jan 13, 2020 at 02:12:18PM -0800, Darrick J. Wong wrote:
-> > On Fri, Jan 10, 2020 at 11:29:37AM -0800, ira.weiny@intel.com wrote:
+On Mon, Jan 13, 2020 at 04:40:47PM -0800, Ira Weiny wrote:
+> On Mon, Jan 13, 2020 at 02:27:55PM -0800, Darrick J. Wong wrote:
+> > On Fri, Jan 10, 2020 at 11:29:40AM -0800, ira.weiny@intel.com wrote:
 > > > From: Ira Weiny <ira.weiny@intel.com>
-> 
-> [snip]
-> 
-> > >  
-> > >  The File Object
-> > >  ---------------
-> > > @@ -437,6 +459,8 @@ As of kernel 2.6.22, the following members are defined:
-> > >  		int (*atomic_open)(struct inode *, struct dentry *, struct file *,
-> > >  				   unsigned open_flag, umode_t create_mode);
-> > >  		int (*tmpfile) (struct inode *, struct dentry *, umode_t);
-> > > +		void (*lock_mode)(struct inode *);
-> > > +		void (*unlock_mode)(struct inode *);
+> > > 
+> > > When zeroing the end of a file we must account for bytes contained in
+> > > the final page which are past EOF.
+> > > 
+> > > Extend the range passed to iomap_zero_range() to reach LLONG_MAX which
+> > > will include all bytes of the final page.
+> > > 
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > ---
+> > >  fs/xfs/xfs_iops.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > > index a2f2604c3187..a34b04e8ac9c 100644
+> > > --- a/fs/xfs/xfs_iops.c
+> > > +++ b/fs/xfs/xfs_iops.c
+> > > @@ -910,7 +910,7 @@ xfs_setattr_size(
+> > >  	 */
+> > >  	if (newsize > oldsize) {
+> > >  		trace_xfs_zero_eof(ip, oldsize, newsize - oldsize);
+> > > -		error = iomap_zero_range(inode, oldsize, newsize - oldsize,
+> > > +		error = iomap_zero_range(inode, oldsize, LLONG_MAX - oldsize,
 > > 
-> > Yikes.  "mode" has a specific meaning for inodes, and this lock isn't
-> > related to i_mode.  This lock protects aops from changing while an
-> > address space operation is in use.
+> > Huh?  Won't this cause the file size to be set to LLONG_MAX?
 > 
-> Ah...  yea ok mode is a bad name.
-> 
-> > 
-> > >  	};
-> > >  
-> > >  Again, all methods are called without any locks being held, unless
-> > > @@ -584,6 +608,12 @@ otherwise noted.
-> > >  	atomically creating, opening and unlinking a file in given
-> > >  	directory.
-> > >  
-> > > +``lock_mode``
-> > > +	called to prevent operations which depend on the inode's mode from
-> > > +        proceeding should a mode change be in progress
-> > 
-> > "Inodes can't change mode, because files do not suddenly become
-> > directories". ;)
-> 
-> Yea sorry.
-> 
-> > 
-> > Oh, you meant "lock_XXXX is called to prevent a change in the pagecache
-> > mode from proceeding while there are address space operations in
-> > progress".  So these are really more aops get and put functions...
-> 
-> At first I actually did have aops get/put functions but this is really
-> protecting more than the aops vector because as Christoph said there are file
-> operations which need to be protected not just address space operations.
-> 
-> But I agree "mode" is a bad name...  Sorry...
+> Not as I understand the code.
 
-inode_fops_{get,set}(), then?
+iomap_zero_range uses the standard iomap_write_{begin,end} functions,
+which means that if you pass it an (offset, length) that extend beyond
+EOF it will change isize to offset+length.
 
-inode_start_fileop()
-inode_end_fileop() ?
+> But as I said in the cover I am not 100% sure of
+> this fix.
 
-Trying to avoid sounding foppish <COUGH>
+> From what I can tell xfs_ioctl_setattr_dax_invalidate() should invalidate the
+> mappings and the page cache and the traces I have indicate that the DAX mode
+> is not changing or was properly held off.
 
-> > 
-> > > +``unlock_mode``
-> > > +	called when critical mode dependent operation is complete
-> > >  
-> > >  The Address Space Object
-> > >  ========================
-> > > diff --git a/fs/ioctl.c b/fs/ioctl.c
-> > > index 7c9a5df5a597..ed6ab5303a24 100644
-> > > --- a/fs/ioctl.c
-> > > +++ b/fs/ioctl.c
-> > > @@ -55,18 +55,29 @@ EXPORT_SYMBOL(vfs_ioctl);
-> > >  static int ioctl_fibmap(struct file *filp, int __user *p)
-> > >  {
-> > >  	struct address_space *mapping = filp->f_mapping;
-> > > +	struct inode *inode = filp->f_inode;
-> > >  	int res, block;
-> > >  
-> > > +	lock_inode_mode(inode);
-> > > +
-> > >  	/* do we support this mess? */
-> > > -	if (!mapping->a_ops->bmap)
-> > > -		return -EINVAL;
-> > > -	if (!capable(CAP_SYS_RAWIO))
-> > > -		return -EPERM;
-> > > +	if (!mapping->a_ops->bmap) {
-> > > +		res = -EINVAL;
-> > > +		goto out;
-> > > +	}
-> > > +	if (!capable(CAP_SYS_RAWIO)) {
-> > > +		res = -EPERM;
-> > > +		goto out;
-> > 
-> > Why does the order of these checks change here?
-> 
-> I don't understand?  The order does not change we just can't return without
-> releasing the lock.  And to protect against bmap changing the lock needs to be
-> taken first.
+Hmm, that implies the invalidation didn't work.  Can you find a way to
+report the contents of the page cache after the dax mode change
+invalidation fails?  I wonder if this is something dorky like rounding
+down such that the EOF page doesn't actually get invalidated?
 
-Doh.  -ENOCOFFEE, I plead.
+Hmm, no, xfs_ioctl_setattr_dax_invalidate should be nuking all the
+pages... do you have a quick reproducer?
 
 --D
 
-> [snip]
-> 
-> > >  
-> > > +static inline void lock_inode_mode(struct inode *inode)
-> > 
-> > inode_aops_get()?
-> 
-> Let me think on this.  This is not just getting a reference to the aops vector.
-> It is more than that...  and inode_get is not right either!  ;-P
-> 
-> > 
-> > > +{
-> > > +	WARN_ON_ONCE(inode->i_op->lock_mode &&
-> > > +		     !inode->i_op->unlock_mode);
-> > > +	if (inode->i_op->lock_mode)
-> > > +		inode->i_op->lock_mode(inode);
-> > > +}
-> > > +static inline void unlock_inode_mode(struct inode *inode)
-> > > +{
-> > > +	WARN_ON_ONCE(inode->i_op->unlock_mode &&
-> > > +		     !inode->i_op->lock_mode);
-> > > +	if (inode->i_op->unlock_mode)
-> > > +		inode->i_op->unlock_mode(inode);
-> > > +}
-> > > +
-> > >  static inline ssize_t call_read_iter(struct file *file, struct kiocb *kio,
-> > >  				     struct iov_iter *iter)
-> > 
-> > inode_aops_put()?
-> 
-> ...  something like that but not 'aops'...
+> Any other suggestions as to the problem are welcome.
 > 
 > Ira
+> 
 > 
 > > 
 > > --D
 > > 
+> > >  				&did_zeroing, &xfs_buffered_write_iomap_ops);
+> > >  	} else {
+> > >  		error = iomap_truncate_page(inode, newsize, &did_zeroing,
+> > > -- 
+> > > 2.21.0
+> > > 
