@@ -2,60 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1B013B036
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2020 18:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE9D13B0B8
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2020 18:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgANRCz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Jan 2020 12:02:55 -0500
-Received: from zeniv.linux.org.uk ([195.92.253.2]:42680 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgANRCy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Jan 2020 12:02:54 -0500
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1irPac-0087wB-8a; Tue, 14 Jan 2020 17:02:50 +0000
-Date:   Tue, 14 Jan 2020 17:02:50 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, hch@lst.de, tytso@mit.edu,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Making linkat() able to overwrite the target
-Message-ID: <20200114170250.GA8904@ZenIV.linux.org.uk>
-References: <3326.1579019665@warthog.procyon.org.uk>
+        id S1728810AbgANRTh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Jan 2020 12:19:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44248 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728850AbgANRTh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 14 Jan 2020 12:19:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id E9989AD05;
+        Tue, 14 Jan 2020 17:19:35 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DF62D1E0CB4; Tue, 14 Jan 2020 18:19:34 +0100 (CET)
+Date:   Tue, 14 Jan 2020 18:19:34 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        tytso@mit.edu, jack@suse.cz
+Subject: Re: [RFC 1/2] iomap: direct-io: Move inode_dio_begin before
+ filemap_write_and_wait_range
+Message-ID: <20200114171934.GB22081@quack2.suse.cz>
+References: <cover.1578907890.git.riteshh@linux.ibm.com>
+ <27607a16327fe9664f32d09abe565af0d1ae56c9.1578907891.git.riteshh@linux.ibm.com>
+ <20200114163702.GA7127@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3326.1579019665@warthog.procyon.org.uk>
+In-Reply-To: <20200114163702.GA7127@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 04:34:25PM +0000, David Howells wrote:
-> With my rewrite of fscache and cachefiles:
-> 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter
-> 
-> when a file gets invalidated by the server - and, under some circumstances,
-> modified locally - I have the cache create a temporary file with vfs_tmpfile()
-> that I'd like to just link into place over the old one - but I can't because
-> vfs_link() doesn't allow you to do that.  Instead I have to either unlink the
-> old one and then link the new one in or create it elsewhere and rename across.
-> 
-> Would it be possible to make linkat() take a flag, say AT_LINK_REPLACE, that
-> causes the target to be replaced and not give EEXIST?  Or make it so that
-> rename() can take a tmpfile as the source and replace the target with that.  I
-> presume that, either way, this would require journal changes on ext4, xfs and
-> btrfs.
+On Tue 14-01-20 08:37:02, Christoph Hellwig wrote:
+> Using i_dio_count for any kind of detection is bogus.  If you want to
+> pass flags to the writeback code please do so explicitly through
+> struct writeback_control.
 
-Umm...  I don't like the idea of linkat() doing that - you suddenly get new
-fun cases to think about (what should happen when the target is a mountpoint,
-for starters?) _and_ you would have to add a magical flag to vfs_link() so
-that it would know which tests to do.  As for rename...  How would that
-work?  AT_EMPTY_PATH for source?  What happens if two threads do that
-at the same time?  Should that case be always "create a new link, even
-if you've got it by plain lookup somewhere"?  Worse, suppose you do that
-to given tmpfile; what should happen to /proc/self/fd/* link to it?  Should
-it point to new location, or...?
+We want to detect in the writeback path whether there's direct IO (read)
+currently running for the inode. Not for the writeback issued from
+iomap_dio_rw() but for any arbitrary writeback that iomap_dio_rw() can be
+racing with - so struct writeback_control won't help. Now if you want to
+see the ugly details why this hack is needed, see my other email to Ritesh
+in this thread with details of the race.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
