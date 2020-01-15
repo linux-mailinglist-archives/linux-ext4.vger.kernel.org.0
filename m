@@ -2,81 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F44B13C67F
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 15:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A389513C68F
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 15:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgAOOso (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jan 2020 09:48:44 -0500
-Received: from verein.lst.de ([213.95.11.211]:51328 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726248AbgAOOso (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Jan 2020 09:48:44 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1C5BC68B20; Wed, 15 Jan 2020 15:48:40 +0100 (CET)
-Date:   Wed, 15 Jan 2020 15:48:39 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Problems with determining data presence by examining extents?
-Message-ID: <20200115144839.GA30301@lst.de>
-References: <20200115133101.GA28583@lst.de> <4467.1579020509@warthog.procyon.org.uk> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca> <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com> <26093.1579098922@warthog.procyon.org.uk>
+        id S1729179AbgAOOtv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jan 2020 09:49:51 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:37821 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729092AbgAOOtu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 09:49:50 -0500
+Received: by mail-qv1-f68.google.com with SMTP id f16so7452011qvi.4
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Jan 2020 06:49:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cm5cr0KkaFdqdflwJkN3g1ehM0Qx8fj0jos08WlEqzM=;
+        b=lqMsQAnXFU2Rt1775zA/Y9RpU+D9BdtIlQNRV5pcYeoMkgjr8kts7UivMPIOiL0e5n
+         f10UOZ9PUDQKAc4uo8oxCDRPATVBy+4x0jxET5bAEYC/jRQba05LCqA5mFdDPXZKT+lb
+         OBhCmsKyjTUS/lbEpqcO3YgoacGz12Msnp2wVNAfyc8QXres7PpHjPHKsi2ZXkAcjK24
+         L01d3NeJlem45mPJulNzAcL08AlMmZ5ok7aIP/9KMn5V/0cTFYAPgtVCpTokVMp8STJN
+         Oyz87SA3j4IaBLjvR+j0YWYGrVgSfqgGG1K43pIfxbDt8YK8NEtcqI1PpfT+bfXVdzrt
+         6cIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cm5cr0KkaFdqdflwJkN3g1ehM0Qx8fj0jos08WlEqzM=;
+        b=GmfEZbon/Dyi1yf/Res79rIMBDiYgMOLepPxi1S8Lib+L/FSbXucgX0wBszMeqOk6y
+         9A20V3FOaufmEKHX/y/WvBZDlICN4p2IofVqsK35C5y1ViwT3hTdbr7PknS8fWoflejv
+         MWgOIYpMJcu+7dc2fuwO6sOdMUDuiDYYuzNNi+Wqn9+5SBrfArXkJVPllbScAYj0uF+4
+         o3+vvPPvJeqDS4Qk8V7wYphlkEcLAbePyDHTQtcUYrfulBFxmQaVBkainnQ2zb7QpgZm
+         0MRAXhHDIaE3XqAQOPqmDtQt+1/cIPiDwd0NqLRYke4dpAR1A8SAMrFQGUE/6MVQI4Q6
+         1CGQ==
+X-Gm-Message-State: APjAAAVKYoSbARLfZTKy5szSUbhCAz50R5u5yDmeHGzGNRWT2niNromx
+        Ue6s3cAMWs710+PgDf3+qcmfag==
+X-Google-Smtp-Source: APXvYqyFIeQqkTbqfmHkLFxl6XwrUnGz4rIsK+5vF2sMxHxXVPVwnMtL57gUSF9TASMuieCBEj6hKA==
+X-Received: by 2002:a05:6214:11a8:: with SMTP id u8mr26158641qvv.16.1579099789994;
+        Wed, 15 Jan 2020 06:49:49 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id n32sm9400465qtk.66.2020.01.15.06.49.49
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 15 Jan 2020 06:49:49 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1irjzQ-0008QI-RY; Wed, 15 Jan 2020 10:49:48 -0400
+Date:   Wed, 15 Jan 2020 10:49:48 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: RFC: hold i_rwsem until aio completes
+Message-ID: <20200115144948.GB25201@ziepe.ca>
+References: <20200114161225.309792-1-hch@lst.de>
+ <20200114192700.GC22037@ziepe.ca>
+ <20200115065614.GC21219@lst.de>
+ <20200115132428.GA25201@ziepe.ca>
+ <20200115143347.GL2827@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <26093.1579098922@warthog.procyon.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200115143347.GL2827@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 02:35:22PM +0000, David Howells wrote:
-> > If we can't get that easily it can be emulated using lseek SEEK_DATA /
-> > SEEK_HOLE assuming no other thread could be writing to the file, or the
-> > raciness doesn't matter.
+On Wed, Jan 15, 2020 at 03:33:47PM +0100, Peter Zijlstra wrote:
+> On Wed, Jan 15, 2020 at 09:24:28AM -0400, Jason Gunthorpe wrote:
 > 
-> Another thread could be writing to the file, and the raciness matters if I
-> want to cache the result of calling SEEK_HOLE - though it might be possible
-> just to mask it off.
-
-Well, if you have other threads changing the file (writing, punching holes,
-truncating, etc) you have lost with any interface that isn't an atomic
-give me that data or tell me its a hole.  And even if that if you allow
-threads that aren't part of your fscache implementation to do the
-modifications you have lost.  If on the other hand they are part of
-fscache you should be able to synchronize your threads somehow.
-
-> One problem I have with SEEK_HOLE is that there's no upper bound on it.  Say
-> I have a 1GiB cachefile that's completely populated and I want to find out if
-> the first byte is present or not.  I call:
+> > I was interested because you are talking about allowing the read/write side
+> > of a rw sem to be held across a return to user space/etc, which is the
+> > same basic problem.
 > 
-> 	end = vfs_llseek(file, SEEK_HOLE, 0);
-> 
-> It will have to scan the metadata of the entire 1GiB file and will then
-> presumably return the EOF position.  Now this might only be a mild irritation
-> as I can cache this information for later use, but it does put potentially put
-> a performance hiccough in the case of someone only reading the first page or
-> so of the file (say the file program).  On the other hand, probably most of
-> the files in the cache are likely to be complete - in which case, it's
-> probably quite cheap.
+> No it is not; allowing the lock to be held across userspace doesn't
+> change the owner. This is a crucial difference, PI depends on there
+> being a distinct owner. That said, allowing the lock to be held across
+> userspace still breaks PI in that it completely wrecks the ability to
+> analyze the critical section.
 
-At least for XFS all the metadata is read from disk at once anyway,
-so you only spend a few more cycles walking through a pretty efficient
-in-memory data structure.
+I'm not sure what you are contrasting?
 
-> However, SEEK_HOLE doesn't help with the issue of the filesystem 'altering'
-> the content of the file by adding or removing blocks of zeros.
+I was remarking that I see many places open code a rwsem using an
+atomic and a completion specifically because they need to do the
+things Christoph identified:
 
-As does any other method.  If you need that fine grained control you
-need to track the information yourself.
+> (1) no unlocking by another process than the one that acquired it
+> (2) no return to userspace with locks held
+
+As an example flow: obtain the read side lock, schedual a work queue,
+return to user space, and unlock the read side from the work queue.
+
+If we can make some general primative that addresses this then maybe
+those open coded places can convert as well?
+
+Regards,
+Jason
