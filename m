@@ -2,82 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB6513B9FF
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 07:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D6C13BB3D
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 09:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729093AbgAOG4S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jan 2020 01:56:18 -0500
-Received: from verein.lst.de ([213.95.11.211]:49228 "EHLO verein.lst.de"
+        id S1729015AbgAOIgY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jan 2020 03:36:24 -0500
+Received: from verein.lst.de ([213.95.11.211]:49581 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726075AbgAOG4S (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Jan 2020 01:56:18 -0500
+        id S1726513AbgAOIgX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 15 Jan 2020 03:36:23 -0500
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id E956E68AFE; Wed, 15 Jan 2020 07:56:14 +0100 (CET)
-Date:   Wed, 15 Jan 2020 07:56:14 +0100
+        id D06A568B05; Wed, 15 Jan 2020 09:36:19 +0100 (CET)
+Date:   Wed, 15 Jan 2020 09:36:19 +0100
 From:   Christoph Hellwig <hch@lst.de>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: RFC: hold i_rwsem until aio completes
-Message-ID: <20200115065614.GC21219@lst.de>
-References: <20200114161225.309792-1-hch@lst.de> <20200114192700.GC22037@ziepe.ca>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, hch@lst.de,
+        tytso@mit.edu, adilger.kernel@dilger.ca, darrick.wong@oracle.com,
+        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Making linkat() able to overwrite the target
+Message-ID: <20200115083619.GA23039@lst.de>
+References: <3326.1579019665@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200114192700.GC22037@ziepe.ca>
+In-Reply-To: <3326.1579019665@warthog.procyon.org.uk>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 03:27:00PM -0400, Jason Gunthorpe wrote:
-> I've seen similar locking patterns quite a lot, enough I've thought
-> about having a dedicated locking primitive to do it. It really wants
-> to be a rwsem, but as here the rwsem rules don't allow it.
+On Tue, Jan 14, 2020 at 04:34:25PM +0000, David Howells wrote:
 > 
-> The common pattern I'm looking at looks something like this:
+> when a file gets invalidated by the server - and, under some circumstances,
+> modified locally - I have the cache create a temporary file with vfs_tmpfile()
+> that I'd like to just link into place over the old one - but I can't because
+> vfs_link() doesn't allow you to do that.  Instead I have to either unlink the
+> old one and then link the new one in or create it elsewhere and rename across.
 > 
->  'try begin read'() // aka down_read_trylock()
-> 
->   /* The lockdep release hackery you describe,
->      the rwsem remains read locked */
->  'exit reader'()
-> 
->  .. delegate unlock to work queue, timer, irq, etc ..
-> 
-> in the new context:
-> 
->  're_enter reader'() // Get our lockdep tracking back
-> 
->  'end reader'() // aka up_read()
-> 
-> vs a typical write side:
-> 
->  'begin write'() // aka down_write()
-> 
->  /* There is no reason to unlock it before kfree of the rwsem memory.
->     Somehow the user prevents any new down_read_trylock()'s */
->  'abandon writer'() // The object will be kfree'd with a locked writer
->  kfree()
-> 
-> The typical goal is to provide an object destruction path that can
-> serialize and fence all readers wherever they may be before proceeding
-> to some synchronous destruction.
-> 
-> Usually this gets open coded with some atomic/kref/refcount and a
-> completion or wait queue. Often implemented wrongly, lacking the write
-> favoring bias in the rwsem, and lacking any lockdep tracking on the
-> naked completion.
-> 
-> Not to discourage your patch, but to ask if we can make the solution
-> more broadly applicable?
+> Would it be possible to make linkat() take a flag, say AT_LINK_REPLACE, that
+> causes the target to be replaced and not give EEXIST?  Or make it so that
+> rename() can take a tmpfile as the source and replace the target with that.  I
+> presume that, either way, this would require journal changes on ext4, xfs and
+> btrfs.
 
-Your requirement seems a little different, and in fact in many ways
-similar to the percpu_ref primitive.
+This sounds like a very useful primitive, and from the low-level XFS
+point of view should be very easy to implement and will not require any
+on-disk changes.  I can't really think of any good userspace interface but
+a new syscall, though.
