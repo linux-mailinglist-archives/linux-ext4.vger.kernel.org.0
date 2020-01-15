@@ -2,128 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7169213C699
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 15:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C361C13C6B8
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 15:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729232AbgAOOuf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jan 2020 09:50:35 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22773 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729153AbgAOOue (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 09:50:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579099832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8Rf0cEa0njBpHKWLGMJpGbHzTU22PMR2115XgkwcWqQ=;
-        b=jOc6OuBvmqst6B9qgzTwUPn2S+h+3RyPVaSGzXtHbgOvkg0k2yVPIQ453EY1suu/j9/6+0
-        vlZ/y81HdNINz6DCGN+s50P+NbEQoHPQ1n/T/Rl7qYdBxAPvlE/gX2D4Wo4aFgSzS/s9T7
-        FNEGgVSg6hGoZedfwb9wlYDd5lkKNZk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-57-vzBayW3DM1KeNyA2oRU0Gg-1; Wed, 15 Jan 2020 09:50:29 -0500
-X-MC-Unique: vzBayW3DM1KeNyA2oRU0Gg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB0948A243E;
-        Wed, 15 Jan 2020 14:50:26 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0FD2984332;
-        Wed, 15 Jan 2020 14:50:22 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <6330a53c-781b-83d7-8293-405787979736@gmx.com>
-References: <6330a53c-781b-83d7-8293-405787979736@gmx.com> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <4467.1579020509@warthog.procyon.org.uk> <23358.1579097103@warthog.procyon.org.uk>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, hch@lst.de, tytso@mit.edu,
-        adilger.kernel@dilger.ca, darrick.wong@oracle.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Problems with determining data presence by examining extents?
+        id S1729125AbgAOO4u (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jan 2020 09:56:50 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:60024 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729015AbgAOO4t (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 09:56:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ueg3OFT4kDDVnrKmNSjzXklCJQ8E0kesClJTnzAK4Hw=; b=MULYh9qQhPZifhFoRWQQ4MEro
+        40Hq2YrEYrRHHXRHThQgih82mfaN4X/wJ5eee8qJSBPxdNnDWmKqYKOLBPwuYQAKjidtNplUL0hWb
+        G6m9o3yZSQrT/uIdSWC/nt2Dp920J4ItjGKZEa0a1rySLUNACa2JYLslwfxzIQL6SJNyP6BhpcpXb
+        eZ9p6LwD8iWXOjqcKihqE5iy6m5aTaxAPydLiCylgeAE0F4QNad5HCd7/wwjxQ74dXoqJEwazhiKK
+        KOnLa05rzfKIJjcRQ0SDiCewj6A5Iwqvm6jwbRUdRvbN5YooPekV+mYCgh5ZD+5NkidMwyh7uUVFt
+        CI8Rkp3lw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1irk6B-00049E-3F; Wed, 15 Jan 2020 14:56:47 +0000
+Date:   Wed, 15 Jan 2020 06:56:47 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [RFC 1/2] iomap: direct-io: Move inode_dio_begin before
+ filemap_write_and_wait_range
+Message-ID: <20200115145647.GA8791@infradead.org>
+References: <cover.1578907890.git.riteshh@linux.ibm.com>
+ <27607a16327fe9664f32d09abe565af0d1ae56c9.1578907891.git.riteshh@linux.ibm.com>
+ <20200113215159.GA8235@magnolia>
+ <20200114090507.GA6466@quack2.suse.cz>
+ <20200114163818.GB7127@infradead.org>
+ <20200115091925.GC31450@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <27262.1579099822.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 15 Jan 2020 14:50:22 +0000
-Message-ID: <27263.1579099822@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200115091925.GC31450@quack2.suse.cz>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+On Wed, Jan 15, 2020 at 10:19:25AM +0100, Jan Kara wrote:
+> On Tue 14-01-20 08:38:18, Christoph Hellwig wrote:
+> > On Tue, Jan 14, 2020 at 10:05:07AM +0100, Jan Kara wrote:
+> > > 
+> > > Well, XFS always performs buffered writeback using unwritten extents so at
+> > > least the immediate problem of stale data exposure ext4 has does not happen
+> > > there AFAICT. 
+> > 
+> > Currently XFS never uses unwritten extents when converting delalloc
+> > extents.
+> 
+> I see, it is a long time since I last looked at that part of XFS code. So
+> then I think XFS might be prone to the same kind of race and data exposure
+> as I outlined in [1]...
 
-> "Unaligned" means "unaligned to fs sector size". In btrfs it's page
-> size, thus it shouldn't be a problem for your 256K block size.
-
-Cool.
-
-> > Same answer as above.  Btw, since I'm using DIO reads and writes, woul=
-d these
-> > get compressed?
-> =
-
-> Yes. DIO will also be compressed unless you set the inode to nocompressi=
-on.
-> =
-
-> And you may not like this btrfs internal design:
-> Compressed extent can only be as large as 128K (uncompressed size).
-> =
-
-> So 256K block write will be split into 2 extents anyway.
-> And since compressed extent will cause non-continuous physical offset,
-> it will always be two extents to fiemap, even you're always writing in
-> 256K block size.
-> =
-
-> Not sure if this matters though.
-
-Not a problem, provided I can read them with a single DIO read.  I just ne=
-ed
-to know whether the data is present.  I don't need to know where it is or =
-what
-hoops the filesystem goes through to get it.
-
-> > I'm not sure this isn't the same answer as above either, except if thi=
-s
-> > results in parts of the file being "filled in" with blocks of zeros th=
-at I
-> > haven't supplied.
-> =
-
-> The example would be, you have written 256K data, all filled with 0xaa.
-> And it committed to disk.
-> Then the next time you write another 256K data, all filled with 0xaa.
-> Then instead of writing this data onto disk, the fs chooses to reuse
-> your previous written data, doing a reflink to it.
-
-That's fine as long as the filesystem says it's there when I ask for it.
-Having it shared isn't a problem.
-
-But that brings me back to the original issue and that's the potential pro=
-blem
-of the filesystem optimising storage by adding or removing blocks of zero
-bytes.  If either of those can happen, I cannot rely on the filesystem
-metadata.
-
-> So fiemap would report your latter 256K has the same bytenr of your
-> previous 256K write (since it's reflinked), and with SHARED flag.
-
-It might be better for me to use SEEK_HOLE than fiemap - barring the sligh=
-t
-issues that SEEK_HOLE has no upper bound and that writes may be taking pla=
-ce
-at the same time.
-
-David
-
+I think not using unwritten extents for filling holes inside i_size will
+always lead to the potential for stale data exposure in one form or
+another.  Because of that Darrick has started looking into always using
+unwritten extents for buffered writes inside i_size.
