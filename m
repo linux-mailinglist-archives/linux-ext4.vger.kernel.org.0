@@ -2,71 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B156313C62A
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 15:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C373313C63B
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 15:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729037AbgAOOd7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jan 2020 09:33:59 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:41876 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgAOOd6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 09:33:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ocli91BL+s6cyrAhg7WkojTpfADiap1nxPT4SxAedzw=; b=tjJPtw9yH/qzdfnHd/0Tg4XM1
-        N9ZXDuLEoPijn7fFyz59nCDWohkV/2dOvJPpDU2It+cHWikpgvom4e+7YXHwBqQc4oreE0txkzog2
-        u4bejyWBAGiUhyDSKG7+7Al1NNJsZOFrKx5UGxrj+3+dDvqucqU8+FhJ3USoyzBXXSAisoZmm2cfm
-        afIPFnROkNQz4LDeaWq0KbPlBaRljjAQDwDaX8voRwgRmcEb3rsccJ59uqAxpHC3EVmBAKZMy2DQS
-        22DWjrnw26k46n22bIWnsoloZtuqV/66JWl9HMpXEAGfQBSyH1z0WePlruqGDLBo5fwTUb4SK+rC4
-        G0f5/Lh8g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1irjjy-0001bu-Cy; Wed, 15 Jan 2020 14:33:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0596130257C;
-        Wed, 15 Jan 2020 15:32:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 599A720B2867B; Wed, 15 Jan 2020 15:33:47 +0100 (CET)
-Date:   Wed, 15 Jan 2020 15:33:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: RFC: hold i_rwsem until aio completes
-Message-ID: <20200115143347.GL2827@hirez.programming.kicks-ass.net>
-References: <20200114161225.309792-1-hch@lst.de>
- <20200114192700.GC22037@ziepe.ca>
- <20200115065614.GC21219@lst.de>
- <20200115132428.GA25201@ziepe.ca>
+        id S1729146AbgAOOff (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jan 2020 09:35:35 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43661 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726418AbgAOOff (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 09:35:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579098934;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=02gzqhLOtgbp3kYs0sEj7toypycUFhqtBNRxiOLtfDo=;
+        b=IwLPGwt81206FTl0a+78MJDXYYQNqhcjusuovIbSlWYU1JYTyWP9ujE8cNJOdFTFp3dBsx
+        iEG3qlniPKOzkY3+Fbi3gIcWvmw27xjHXVIcarHsix2r1Vp9fT2mQSJNcIFcIrtMXWbC31
+        MKNw1XCjM8rxCJC4zY2m4evBmmAAfzQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-8SlNiMreOIWVPvbUAcL_5g-1; Wed, 15 Jan 2020 09:35:30 -0500
+X-MC-Unique: 8SlNiMreOIWVPvbUAcL_5g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12180802B79;
+        Wed, 15 Jan 2020 14:35:26 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3B2AF5C28C;
+        Wed, 15 Jan 2020 14:35:23 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200115133101.GA28583@lst.de>
+References: <20200115133101.GA28583@lst.de> <4467.1579020509@warthog.procyon.org.uk> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca> <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     dhowells@redhat.com, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Problems with determining data presence by examining extents?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200115132428.GA25201@ziepe.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <26092.1579098922.1@warthog.procyon.org.uk>
+Date:   Wed, 15 Jan 2020 14:35:22 +0000
+Message-ID: <26093.1579098922@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 09:24:28AM -0400, Jason Gunthorpe wrote:
+Christoph Hellwig <hch@lst.de> wrote:
 
-> I was interested because you are talking about allowing the read/write side
-> of a rw sem to be held across a return to user space/etc, which is the
-> same basic problem.
+> If we can't get that easily it can be emulated using lseek SEEK_DATA /
+> SEEK_HOLE assuming no other thread could be writing to the file, or the
+> raciness doesn't matter.
 
-No it is not; allowing the lock to be held across userspace doesn't
-change the owner. This is a crucial difference, PI depends on there
-being a distinct owner. That said, allowing the lock to be held across
-userspace still breaks PI in that it completely wrecks the ability to
-analyze the critical section.
+Another thread could be writing to the file, and the raciness matters if I
+want to cache the result of calling SEEK_HOLE - though it might be possible
+just to mask it off.
+
+One problem I have with SEEK_HOLE is that there's no upper bound on it.  Say
+I have a 1GiB cachefile that's completely populated and I want to find out if
+the first byte is present or not.  I call:
+
+	end = vfs_llseek(file, SEEK_HOLE, 0);
+
+It will have to scan the metadata of the entire 1GiB file and will then
+presumably return the EOF position.  Now this might only be a mild irritation
+as I can cache this information for later use, but it does put potentially put
+a performance hiccough in the case of someone only reading the first page or
+so of the file (say the file program).  On the other hand, probably most of
+the files in the cache are likely to be complete - in which case, it's
+probably quite cheap.
+
+However, SEEK_HOLE doesn't help with the issue of the filesystem 'altering'
+the content of the file by adding or removing blocks of zeros.
+
+David
+
