@@ -2,166 +2,256 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9CA13CD69
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 20:49:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5F513CDD3
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 21:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729324AbgAOTst (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jan 2020 14:48:49 -0500
-Received: from mail-pj1-f47.google.com ([209.85.216.47]:36368 "EHLO
-        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729261AbgAOTst (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 14:48:49 -0500
-Received: by mail-pj1-f47.google.com with SMTP id n59so407581pjb.1
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Jan 2020 11:48:48 -0800 (PST)
+        id S1729874AbgAOULE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jan 2020 15:11:04 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:45559 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726566AbgAOULC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 15:11:02 -0500
+Received: by mail-oi1-f194.google.com with SMTP id n16so16659723oie.12
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Jan 2020 12:11:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=mfOcggh9Ij5VrzzcP3dcYGzGv0U+3av4+wN4xCGn2hk=;
-        b=M2G/cnOwd/oFmzBASlg+3RqBtFzOPZybUgUGoE9A1sLNkSCuwWLyFz2lW64IfdFsna
-         9AQlZom4Ba5CyPqMjBQA9C8+RfYOs4T01nBk8B65/Bw+x9sEBjnQ6K0vJV9mxZ9obt45
-         Ne9RJHAP1nLs32+Jb691Ph6cfKzWcmSk+Aa6QPjwHLTNctgothN38yQaunuF4KymMEEf
-         DtYQauwDrpMgfCwd8NNFuICuDQ+/l5cBD996TlyR071ifvOazmG94Wv9lYxbWzb2YNI+
-         VUka4MMOF1pRwsSud1zk7CK7oRnQ801uD42ZPcimYEJn/+pvVwX2TMKJ0gSq72E7NiKn
-         8rMg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZNerA6RTqwQW5nW1+H5K5Uzw8BJvKQMgJNhaZlAlRYY=;
+        b=Ft97un5QqUrNcT2a7r5rLK9Bcn1CGDH85x4lJi33iI5GvOUxp6vygNblPKWeya2a6T
+         X0HIFeiVeuqE2D+saniOTNQWGbo8MKlSfUS0UMcJydL2FDE+2jKMsz4cG8rlk4viB2Af
+         XNOMJ7xGAtdXm+eUDptNXQIDCN2NzQECzscSmosJ8UBLtvVbQyDAkNwphXsSrXWo+gHH
+         0+cAUmAJVgbv/2p186TFDFyE8v6/+vZ52woVxENpm0uiusWM1856TiiKqNg9Y2DT7K4c
+         IpkO011AaT1GzD9R+yLn0F0pLwaUYU35sLW3epoiCfwAhUYYzDgavjcxnV4iB8iiBj9o
+         aAUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=mfOcggh9Ij5VrzzcP3dcYGzGv0U+3av4+wN4xCGn2hk=;
-        b=enUme3a6nGsD51P2LKWfpUaN0OYuLkWSjlt8Rg5EKqf+60ygWuUEReB0etWFes4esD
-         ejQ9Inz7m7vXlbRypOvaKMj8nJVtfyq25Gdt1u+Hyga3hZQyyrlAfmAJLhZgi1WEzvAX
-         b+Mz73x8IQxar6S0TIemWnggkIVighOsuAOxQrxeB1CN8q908sf/xIzleTRkaQVF+Lz1
-         byVoMu96l1dAkULZfIioUc9Mb2VwEzVuNVAdxep2AVoKMHrez2mKPSalmbRAI01FqKyR
-         /sEcKKwnv4iDP7qCQZ2pl92D9FY/H2gjnqyHFhR93b68svVRooF5wgHfRAQAZi36jHaR
-         jNZg==
-X-Gm-Message-State: APjAAAUG+cvKqUOjZTdDrH8a+fqZsk0zTqTZ/TLOuHbb2Q/92aqLCICD
-        risuUpTUgqftetic7sm7RYu7tQ==
-X-Google-Smtp-Source: APXvYqxP6WhNjxkfuE0g6khT7UyihhalBizsQoBp9O693hV+s+j7MHh19YyDAax8jCcjC9KTJ2bxsQ==
-X-Received: by 2002:a17:90a:b78d:: with SMTP id m13mr1882398pjr.100.1579117728439;
-        Wed, 15 Jan 2020 11:48:48 -0800 (PST)
-Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id g67sm23485209pfb.66.2020.01.15.11.48.46
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Jan 2020 11:48:47 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <C0F67EC5-7B5D-4179-9F28-95B84D9CC326@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_CC498D30-739D-4ED3-A222-2F501C8D578D";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: Problems with determining data presence by examining extents?
-Date:   Wed, 15 Jan 2020 12:48:44 -0700
-In-Reply-To: <20200115133101.GA28583@lst.de>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZNerA6RTqwQW5nW1+H5K5Uzw8BJvKQMgJNhaZlAlRYY=;
+        b=FjSJZG1Y3y75gfxhbGymN04GcuBLxkPiMhQM/cHRB++0m691mNCNqzkZ3m3IPR2FzV
+         WiRjg7pXLfkt5kH3OC9HRE+1e5k3lqkv5zrDK2qXRtPPlrXdwdrWC65i37InCIyM6SFk
+         mI1lz02Z/lrJcJ4O37xbbQERx1NnzY400BJG3rrnt0k3dzemRj4QKvPMD5iPA+WMVbWQ
+         e+evRCXoRbTokfGpTLg55FcG4MRT5kTTieUPKcEaZ1a28WYIQ8hjI4b2rbo73FxnAQrk
+         3Z4cE5Ntq0i8i0n6e0H2EOGMLj/tB3gAe28z1L91ZTq9njwHAffx3mNhJjxYUolVVd/o
+         x7YQ==
+X-Gm-Message-State: APjAAAUD8cvG/RJISX5fRcxe5pii7VBS1uF83o1Tay7xK+9OSUGOEaJw
+        baMWhmGghrIiRJ1e4T/SebfaamLyHkGISgAR0e9tsQ==
+X-Google-Smtp-Source: APXvYqy4QzkLRwHtNjw7i40YuJZZHoFexa5gvsypx6CfMbxJrtBLTMJ4KWIy4ssx6HgqeUaer81G89JVSuVTbWsb3m4=
+X-Received: by 2002:aca:3f54:: with SMTP id m81mr1208667oia.73.1579119061327;
+ Wed, 15 Jan 2020 12:11:01 -0800 (PST)
+MIME-Version: 1.0
+References: <20200110192942.25021-1-ira.weiny@intel.com> <20200110192942.25021-2-ira.weiny@intel.com>
+ <20200115113715.GB2595@quack2.suse.cz> <20200115173834.GD8247@magnolia> <20200115194512.GF23311@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20200115194512.GF23311@iweiny-DESK2.sc.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 15 Jan 2020 12:10:50 -0800
+Message-ID: <CAPcyv4hwefzruFj02YHYiy8nOpHJFGLKksjiXoRUGpT3C2rDag@mail.gmail.com>
+Subject: Re: [RFC PATCH V2 01/12] fs/stat: Define DAX statx attribute
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Jan Kara <jack@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
         "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
         linux-ext4 <linux-ext4@vger.kernel.org>,
         linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-To:     David Howells <dhowells@redhat.com>, Christoph Hellwig <hch@lst.de>
-References: <4467.1579020509@warthog.procyon.org.uk>
- <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com>
- <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca>
- <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com>
- <20200115133101.GA28583@lst.de>
-X-Mailer: Apple Mail (2.3273)
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Jan 15, 2020 at 11:45 AM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> On Wed, Jan 15, 2020 at 09:38:34AM -0800, Darrick J. Wong wrote:
+> > On Wed, Jan 15, 2020 at 12:37:15PM +0100, Jan Kara wrote:
+> > > On Fri 10-01-20 11:29:31, ira.weiny@intel.com wrote:
+> > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > >
+> > > > In order for users to determine if a file is currently operating in DAX
+> > > > mode (effective DAX).  Define a statx attribute value and set that
+> > > > attribute if the effective DAX flag is set.
+> > > >
+> > > > To go along with this we propose the following addition to the statx man
+> > > > page:
+> > > >
+> > > > STATX_ATTR_DAX
+> > > >
+> > > >   DAX (cpu direct access) is a file mode that attempts to minimize
+> >
+> > "..is a file I/O mode"?
+>
+> or  "... is a file state ..."?
+>
+> > > >   software cache effects for both I/O and memory mappings of this
+> > > >   file.  It requires a capable device, a compatible filesystem
+> > > >   block size, and filesystem opt-in.
+> >
+> > "...a capable storage device..."
+>
+> Done
+>
+> >
+> > What does "compatible fs block size" mean?  How does the user figure out
+> > if their fs blocksize is compatible?  Do we tell users to refer their
+> > filesystem's documentation here?
+>
+> Perhaps it is wrong for this to be in the man page at all?  Would it be better
+> to assume the file system and block device are already configured properly by
+> the admin?
+>
+> For which the blocksize restrictions are already well documented.  ie:
+>
+> https://www.kernel.org/doc/Documentation/filesystems/dax.txt
+>
+> ?
+>
+> How about changing the text to:
+>
+>         It requires a block device and file system which have been configured
+>         to support DAX.
+>
+> ?
 
---Apple-Mail=_CC498D30-739D-4ED3-A222-2F501C8D578D
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+The goal was to document the gauntlet of checks that
+__generic_fsdax_supported() performs so someone could debug "why am I
+not able to get dax operation?"
 
-On Jan 15, 2020, at 6:31 AM, Christoph Hellwig <hch@lst.de> wrote:
-> 
-> On Wed, Jan 15, 2020 at 09:10:44PM +0800, Qu Wenruo wrote:
->>> That allows userspace to distinguish fe_physical addresses that may be
->>> on different devices.  This isn't in the kernel yet, since it is mostly
->>> useful only for Btrfs and nobody has implemented it there.  I can give
->>> you details if working on this for Btrfs is of interest to you.
->> 
->> IMHO it's not good enough.
->> 
->> The concern is, one extent can exist on multiple devices (mirrors for
->> RAID1/RAID10/RAID1C2/RAID1C3, or stripes for RAID5/6).
->> I didn't see how it can be easily implemented even with extra fields.
->> 
->> And even we implement it, it can be too complex or bug prune to fill
->> per-device info.
-> 
-> It's also completely bogus for the use cases to start with.  fiemap
-> is a debug tool reporting the file system layout.  Using it for anything
-> related to actual data storage and data integrity is a receipe for
-> disaster.  As said the right thing for the use case would be something
-> like the NFS READ_PLUS operation.  If we can't get that easily it can
-> be emulated using lseek SEEK_DATA / SEEK_HOLE assuming no other thread
-> could be writing to the file, or the raciness doesn't matter.
+>
+> >
+> > > > It generally assumes all
+> > > >   accesses are via cpu load / store instructions which can
+> > > >   minimize overhead for small accesses, but adversely affect cpu
+> > > >   utilization for large transfers.
+> >
+> > Will this always be true for persistent memory?
 
-I don't think either of those will be any better than FIEMAP, if the reason
-is that the underlying filesystem is filling in holes with actual data
-blocks to optimize the IO pattern.  SEEK_HOLE would not find a hole in
-the block allocation, and would happily return the block of zeroes to
-the caller.  Also, it isn't clear if SEEK_HOLE considers an allocated but
-unwritten extent to be a hole or a block?
+For direct-mapped pmem there is no opportunity to do dma offload so it
+will always be true that application dax access consumes cpu to do I/O
+where something like NVMe does not. There has been unfruitful to date
+experiments with the driver using an offload engine for kernel
+internal I/O, but if you're use case is kernel internal I/O bound then
+you don't need dax.
 
-I think what is needed here is an fadvise/ioctl that tells the filesystem
-"don't allocate blocks unless actually written" for that file.  Storing
-anything in a separate data structure is a recipe for disaster, since it
-will become inconsistent after a crash, or filesystem corruption+e2fsck,
-and will unnecessarily bloat the on-disk metadata for every file to hold
-redundant information.
+>
+> I'm not clear.  Did you mean; "this" == adverse utilization for large transfers?
+>
+> >
+> > I wasn't even aware that large transfers adversely affected CPU
+> > utilization. ;)
+>
+> Sure vs using a DMA engine for example.
 
-I don't see COW/reflink/compression as being a problem in this case, since
-what cachefiles cares about is whether there is _any_ data for a given
-logical offset, not where/how the data is stored.  IF FIEMAP was used for
-a btrfs backing filesystem, it would need the "EXTENT_DATA_COMPRESSED"
-feature to be implemented as well, so that it can distinguish the logical
-vs. physical allocations.  I don't think that would be needed for SEEK_HOLE
-and SEEK_DATA, so long as they handle unwritten extents properly (and are
-correctly implemented in the first place, some filesystems fall back to
-always returning the next block for SEEK_DATA).
+Right, this is purely a statement about cpu memcpy vs device-dma.
 
-Cheers, Andreas
+>
+> >
+> > > >  File I/O is done directly
+> > > >   to/from user-space buffers. While the DAX property tends to
+> > > >   result in data being transferred synchronously it does not give
+> >
+> > "...transferred synchronously, it does not..."
+>
+> done.
+>
+> >
+> > > >   the guarantees of synchronous I/O that data and necessary
+> >
+> > "...it does not guarantee that I/O or file metadata have been flushed to
+> > the storage device."
+>
+> The lack of guarantee here is mainly regarding metadata.
+>
+> How about:
+>
+>         While the DAX property tends to result in data being transferred
+>         synchronously, it does not give the same guarantees of
+>         synchronous I/O where data and the necessary metadata are
+>         transferred together.
+>
+> >
+> > > >   metadata are transferred. Memory mapped I/O may be performed
+> > > >   with direct mappings that bypass system memory buffering.
+> >
+> > "...with direct memory mappings that bypass kernel page cache."
+>
+> Done.
+>
+> >
+> > > > Again
+> > > >   while memory-mapped I/O tends to result in data being
+> >
+> > I would move the sentence about "Memory mapped I/O..." to directly after
+> > the sentence about file I/O being done directly to and from userspace so
+> > that you don't need to repeat this statement.
+>
+> Done.
+>
+> >
+> > > >   transferred synchronously it does not guarantee synchronous
+> > > >   metadata updates. A dax file may optionally support being mapped
+> > > >   with the MAP_SYNC flag which does allow cpu store operations to
+> > > >   be considered synchronous modulo cpu cache effects.
+> >
+> > How does one detect or work around or deal with "cpu cache effects"?  I
+> > assume some sort of CPU cache flush instruction is what is meant here,
+> > but I think we could mention the basics of what has to be done here:
+> >
+> > "A DAX file may support being mapped with the MAP_SYNC flag, which
+> > enables a program to use CPU cache flush operations to persist CPU store
+> > operations without an explicit fsync(2).  See mmap(2) for more
+> > information."?
+>
+> That sounds better.  I like the reference to mmap as well.
+>
+> Ok I changed a couple of things as well.  How does this sound?
+>
+>
+> STATX_ATTR_DAX
+>
+>         DAX (cpu direct access) is a file mode that attempts to minimize
 
+s/mode/state/?
 
+>         software cache effects for both I/O and memory mappings of this
+>         file.  It requires a block device and file system which have
+>         been configured to support DAX.
 
+It may not require a block device in the future.
 
+>
+>         DAX generally assumes all accesses are via cpu load / store
+>         instructions which can minimize overhead for small accesses, but
+>         may adversely affect cpu utilization for large transfers.
+>
+>         File I/O is done directly to/from user-space buffers and memory
+>         mapped I/O may be performed with direct memory mappings that
+>         bypass kernel page cache.
+>
+>         While the DAX property tends to result in data being transferred
+>         synchronously, it does not give the same guarantees of
+>         synchronous I/O where data and the necessary metadata are
 
+Maybe use "O_SYNC I/O" explicitly to further differentiate the 2
+meanings of "synchronous" in this sentence?
 
---Apple-Mail=_CC498D30-739D-4ED3-A222-2F501C8D578D
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+>         transferred together.
+>
+>         A DAX file may support being mapped with the MAP_SYNC flag,
+>         which enables a program to use CPU cache flush operations to
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
+s/operations/instructions/
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl4fbJ0ACgkQcqXauRfM
-H+CGqw//clrcdoV9kWx8edXSbVsdv8WiQjBERU0J4tkQgIcsIPB4/w1kWk/qsk56
-Cew1K8m6uWzKmrOb9pOdDUQeSVMiqoCEFJKabnEu17miBjRBeQofftQazJ66VCDt
-jTpqDmTIJlX6GPHmJQf52V+YMzRqdZhWPBwU2DOiLzXktvPt8zLJdUQLhvHv5xom
-rKXBFqi3ZKW8MAtVN4xdwMCpgqzqgwE/ZEciZkIQmkt71eo2+mqg5DxYGDjBbV8r
-u/KQm0mkh1otrCgskTUcb7mhnf52uWkpZQZTtBD246ShTvnuU0MaCSqv3HhLHVo+
-p5/q5S3oFE67Odc/Tj3vFW0N2R5uX0o20tGr4TFoRl5enngiCM2OTg3Pqh2fq8vc
-hrOw8SARGuhCq5QNOyydtpQ1YO1QTT6TTxVJTxXEkkxWyexPBtufupKUCRVhTkC2
-nfh704xUn137Gcr5Rk8p2io54s8kKnLUE5sVGU44TrD0voG6f8OD/eI1vr7XWLIw
-5pNtxLfFLe0LNFX5+5M0FfmJxuXyVqzUT5co79d3AHVwjN0/LYmuN+ICgWomBy34
-fm2S4mdW1SyLCK8T3LVXX5/JFpK+e0jzQ8DFUhumUzES+q0uMRSdDQjxRX5asdX2
-z3CT+qbgnMElZuf+JaARqPC/tV8z+FlawJv/xgVq7eXpmILQjA0=
-=1vdd
------END PGP SIGNATURE-----
+>         persist CPU store operations without an explicit fsync(2).  See
+>         mmap(2) for more information.
 
---Apple-Mail=_CC498D30-739D-4ED3-A222-2F501C8D578D--
+I think this also wants a reference to the Linux interpretation of
+platform "persistence domains" we were discussing that here [1], but
+maybe it should be part of a "pmem" manpage that can be referenced
+from this man page.
+
+[1]: http://lore.kernel.org/r/20200108064905.170394-1-aneesh.kumar@linux.ibm.com
