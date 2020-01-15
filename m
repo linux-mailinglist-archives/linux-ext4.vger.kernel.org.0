@@ -2,111 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 851C413C394
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 14:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FB013C4DE
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 15:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbgAONuV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jan 2020 08:50:21 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56468 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728986AbgAONuV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 08:50:21 -0500
+        id S1729146AbgAOOFO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jan 2020 09:05:14 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52326 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729026AbgAOOFO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 09:05:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579096220;
+        s=mimecast20190719; t=1579097113;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=w+swK9osAIFZi3cI9plfEPgc0HcD0yrb1cBEuZ3PWuI=;
-        b=CE5Gv8OjqLpwR9x9G/v76Xqsw0JqrzhccwgY88x6gdAN0WaRJQ1VdgeGQcXRwPWACULl2v
-        oNtIL+FQwUKOArNC8LmAiGj4u4p8kQxT43j+P6eBP7asPoRTuO4vC+s1Ko0YZIUIE2nBNd
-        pVVMWJeBj15pTcbdfH0lU2r3IJJoQjk=
+        bh=1n/T1HYTx3Wj9p4CFNGnVwbEfYR6X36ZeaddeQ07/js=;
+        b=HMSZ20cjbwTc3rLRP+/78QaP53VNmf8ooFNZz4zPqut3OhtLBW/Xd8hvO58t1xDKY+J8zn
+        Nb/OzM14jtOf9jdeNC7aTVkbVIgY7ghGv5XrFzYDXlSsVn7NH9XU3Pyb56nMz15tcSeFlC
+        NCjpC2+x6uiPjKKUAgBGC64E44mFdfs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-15-GOHqpJ9cNSinEYjPiomTzw-1; Wed, 15 Jan 2020 08:50:16 -0500
-X-MC-Unique: GOHqpJ9cNSinEYjPiomTzw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-101-d9xR5pR-NzCKmch7BK0_fA-1; Wed, 15 Jan 2020 09:05:09 -0500
+X-MC-Unique: d9xR5pR-NzCKmch7BK0_fA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 837421005502;
-        Wed, 15 Jan 2020 13:50:14 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 867D010AF3DA;
+        Wed, 15 Jan 2020 14:05:07 +0000 (UTC)
 Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 142CC19C5B;
-        Wed, 15 Jan 2020 13:50:11 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DF8221084200;
+        Wed, 15 Jan 2020 14:05:03 +0000 (UTC)
 Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
         Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
         Kingdom.
         Registered in England and Wales under Company Registration No. 3798903
 From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200114224917.GA165687@mit.edu>
-References: <20200114224917.GA165687@mit.edu> <4467.1579020509@warthog.procyon.org.uk>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+In-Reply-To: <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com>
+References: <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <4467.1579020509@warthog.procyon.org.uk>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, hch@lst.de, adilger.kernel@dilger.ca,
-        darrick.wong@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-ext4@vger.kernel.org,
+        viro@zeniv.linux.org.uk, hch@lst.de, tytso@mit.edu,
+        adilger.kernel@dilger.ca, darrick.wong@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-ext4@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: Problems with determining data presence by examining extents?
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <22055.1579096211.1@warthog.procyon.org.uk>
-Date:   Wed, 15 Jan 2020 13:50:11 +0000
-Message-ID: <22056.1579096211@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-ID: <23357.1579097103.1@warthog.procyon.org.uk>
+Date:   Wed, 15 Jan 2020 14:05:03 +0000
+Message-ID: <23358.1579097103@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Theodore Y. Ts'o <tytso@mit.edu> wrote:
+Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 
-> but I'm not sure we would want to make any guarantees with respect to (b).
+> At least for btrfs, only unaligned extents get padding zeros.
 
-Um.  That would potentially make disconnected operation problematic.  Now,
-it's unlikely that I'll want to store a 256KiB block of zeros, but not
-impossible.
+What is "unaligned" defined as?  The revised cachefiles reads and writes 256k
+blocks, except for the last - which gets rounded up to the nearest page (which
+I'm assuming will be some multiple of the direct-I/O granularity).  The actual
+size of the data is noted in an xattr so I don't need to rely on the size of
+the cachefile.
 
-> I suspect I understand why you want this; I've fielded some requests
-> for people wanting to do something very like this at $WORK, for what I
-> assume to be for the same reason you're seeking to do this; to create
-> do incremental caching of files and letting the file system track what
-> has and hasn't been cached yet.
+> (c): A multi-device fs (btrfs) can have their own logical address mapping.
+> Meaning the bytenr returned makes no sense to end user, unless used for
+> that fs specific address space.
 
-Exactly so.  If I can't tap in to the filesystem's own map of what data is
-present in a file, then I have to do it myself in parallel.  Keeping my own
-list or map has a number of issues:
+For the purpose of cachefiles, I don't care where it is, only whether or not
+it exists.  Further, if a DIO read will return a short read when it hits a
+hole, then I only really care about detecting whether the first byte exists in
+the block.
 
- (1) It's redundant.  I have to maintain a second copy of what the filesystem
-     already maintains.  This uses extra space.
+It might be cheaper, I suppose, to initiate the read and have it fail
+immediately if no data at all is present in the block than to do a separate
+ask of the filesystem.
 
- (2) My map may get out of step with the filesystem after a crash.  The
-     filesystem has tools to deal with this in its own structures.
+> You won't like this case either.
+> (d): Compressed extents
+> One compressed extent can represents more data than its on-disk size.
 
- (3) If the file is very large and sparse, then keeping a bit-per-block map in
-     a single xattr may not suffice or may become unmanageable.  There's a
-     limit of 64k, which for bit-per-256k limits the maximum mappable size to
-     1TiB (I could use multiple xattrs, but some filesystems may have total
-     xattr limits) and whatever the size, I need a single buffer big enough to
-     hold it.
+Same answer as above.  Btw, since I'm using DIO reads and writes, would these
+get compressed?
 
-     I could use a second file as a metadata cache - but that has worse
-     coherency properties.  (As I understand it, setxattr is synchronous and
-     journalled.)
+> And even more bad news:
+> (e): write time dedupe
+> Although no fs known has implemented it yet (btrfs used to try to
+> support that, and I guess XFS could do it in theory too), you won't
+> known when a fs could get such "awesome" feature.
 
-> If we were going to add such a facility, what we could perhaps do is
-> to define a new flag indicating that a particular file should have no
-> extent mapping optimization applied, such that FIEMAP would return a
-> mapping if and only if userspace had written to a particular block, or
-> had requested that a block be preallocated using fallocate().  The
-> flag could only be set on a zero-length file, and this might disable
-> certain advanced file system features, such as reflink, at the file
-> system's discretion; and there might be unspecified performance
-> impacts if this flag is set on a file.
+I'm not sure this isn't the same answer as above either, except if this
+results in parts of the file being "filled in" with blocks of zeros that I
+haven't supplied.  Couldn't this be disabled on an inode-by-inode basis, say
+with an ioctl?
 
-That would be fine for cachefiles.
+> > Without being able to trust the filesystem to tell me accurately what I've
+> > written into it, I have to use some other mechanism.  Currently, I've
+> > switched to storing a map in an xattr with 1 bit per 256k block, but that
+> > gets hard to use if the file grows particularly large and also has
+> > integrity consequences - though those are hopefully limited as I'm now
+> > using DIO to store data into the cache.
+> 
+> Would you like to explain why you want to know such fs internal info?
 
-Also, I don't need to know *where* the data is, only that the first byte of my
-block exists - if a DIO read returns short when it reaches a hole.
+As Andreas pointed out, fscache+cachefiles is used to cache data locally for
+network filesystems (9p, afs, ceph, cifs, nfs).  Cached files may be sparse,
+with unreferenced blocks not currently stored in the cache.
+
+I'm attempting to move to a model where I don't use bmap and don't monitor
+bit-waitqueues to find out when page flags flip on backing files so that I can
+copy data out, but rather use DIO directly to/from the network filesystem
+inode pages.
+
+Since the backing filesystem has to keep track of whether data is stored in a
+file, it would seem a shame to have to maintain a parallel copy on the same
+medium, with the coherency issues that entail.
 
 David
+
 
