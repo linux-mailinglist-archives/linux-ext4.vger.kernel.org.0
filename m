@@ -2,61 +2,67 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1D513BB47
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 09:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4A713BC0B
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 10:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728961AbgAOIi6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jan 2020 03:38:58 -0500
-Received: from verein.lst.de ([213.95.11.211]:49605 "EHLO verein.lst.de"
+        id S1729400AbgAOJIt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jan 2020 04:08:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36348 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726513AbgAOIi6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Jan 2020 03:38:58 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9E17968B05; Wed, 15 Jan 2020 09:38:54 +0100 (CET)
-Date:   Wed, 15 Jan 2020 09:38:54 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, hch@lst.de,
-        tytso@mit.edu, adilger.kernel@dilger.ca, darrick.wong@oracle.com,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Problems with determining data presence by examining extents?
-Message-ID: <20200115083854.GB23039@lst.de>
-References: <4467.1579020509@warthog.procyon.org.uk>
+        id S1729267AbgAOJIt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 15 Jan 2020 04:08:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 52515AC4B;
+        Wed, 15 Jan 2020 09:08:48 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 359871E0CBC; Wed, 15 Jan 2020 10:08:46 +0100 (CET)
+Date:   Wed, 15 Jan 2020 10:08:46 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jan Kara <jack@suse.cz>, Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [RFC 1/2] iomap: direct-io: Move inode_dio_begin before
+ filemap_write_and_wait_range
+Message-ID: <20200115090846.GB31450@quack2.suse.cz>
+References: <cover.1578907890.git.riteshh@linux.ibm.com>
+ <27607a16327fe9664f32d09abe565af0d1ae56c9.1578907891.git.riteshh@linux.ibm.com>
+ <20200114163702.GA7127@infradead.org>
+ <20200114171934.GB22081@quack2.suse.cz>
+ <20200114182736.GA27370@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4467.1579020509@warthog.procyon.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200114182736.GA27370@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 04:48:29PM +0000, David Howells wrote:
-> Again with regard to my rewrite of fscache and cachefiles:
+On Tue 14-01-20 10:27:36, Christoph Hellwig wrote:
+> On Tue, Jan 14, 2020 at 06:19:34PM +0100, Jan Kara wrote:
+> > We want to detect in the writeback path whether there's direct IO (read)
+> > currently running for the inode. Not for the writeback issued from
+> > iomap_dio_rw() but for any arbitrary writeback that iomap_dio_rw() can be
+> > racing with - so struct writeback_control won't help. Now if you want to
+> > see the ugly details why this hack is needed, see my other email to Ritesh
+> > in this thread with details of the race.
 > 
-> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter
-> 
-> I've got rid of my use of bmap()!  Hooray!
-> 
-> However, I'm informed that I can't trust the extent map of a backing file to
-> tell me accurately whether content exists in a file because:
-> 
->  (a) Not-quite-contiguous extents may be joined by insertion of blocks of
->      zeros by the filesystem optimising itself.  This would give me a false
->      positive when trying to detect the presence of data.
-> 
->  (b) Blocks of zeros that I write into the file may get punched out by
->      filesystem optimisation since a read back would be expected to read zeros
->      there anyway, provided it's below the EOF.  This would give me a false
->      negative.
+> How do we get other writeback after iomap_dio_rw wrote everything out?
 
-The whole idea of an out of band interface is going to be racy and suffer
-from implementation loss.  I think what you want is something similar to
-the NFSv4.2 READ_PLUS operation - give me that if there is any and
-otherwise tell me that there is a hole.  I think this could be a new
-RWF_NOHOLE or similar flag, just how to return the hole size would be
-a little awkward.  Maybe return a specific negative error code (ENODATA?)
-and advance the iov anyway.
+You create dirty page using mmap in the range read by iomap_dio_rw() and then
+background writeback happens at unfortunate time... Email [1] has the exact
+traces.
+
+> Either way I'm trying to kill i_dio_count as it has all kinds of
+> problems, see the patch sent out earlier today.
+
+OK, I'll see that patch.
+
+								Honza
+
+[1] https://lore.kernel.org/linux-ext4/20200114094741.GC6466@quack2.suse.cz
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
