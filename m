@@ -2,65 +2,111 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C3213C2D6
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 14:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851C413C394
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Jan 2020 14:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgAONbH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Jan 2020 08:31:07 -0500
-Received: from verein.lst.de ([213.95.11.211]:50875 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729057AbgAONbG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Jan 2020 08:31:06 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4D61968BE1; Wed, 15 Jan 2020 14:31:02 +0100 (CET)
-Date:   Wed, 15 Jan 2020 14:31:01 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Andreas Dilger <adilger@dilger.ca>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S1728998AbgAONuV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Jan 2020 08:50:21 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56468 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728986AbgAONuV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Jan 2020 08:50:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579096220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w+swK9osAIFZi3cI9plfEPgc0HcD0yrb1cBEuZ3PWuI=;
+        b=CE5Gv8OjqLpwR9x9G/v76Xqsw0JqrzhccwgY88x6gdAN0WaRJQ1VdgeGQcXRwPWACULl2v
+        oNtIL+FQwUKOArNC8LmAiGj4u4p8kQxT43j+P6eBP7asPoRTuO4vC+s1Ko0YZIUIE2nBNd
+        pVVMWJeBj15pTcbdfH0lU2r3IJJoQjk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-GOHqpJ9cNSinEYjPiomTzw-1; Wed, 15 Jan 2020 08:50:16 -0500
+X-MC-Unique: GOHqpJ9cNSinEYjPiomTzw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 837421005502;
+        Wed, 15 Jan 2020 13:50:14 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-52.rdu2.redhat.com [10.10.120.52])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 142CC19C5B;
+        Wed, 15 Jan 2020 13:50:11 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200114224917.GA165687@mit.edu>
+References: <20200114224917.GA165687@mit.edu> <4467.1579020509@warthog.procyon.org.uk>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, hch@lst.de, adilger.kernel@dilger.ca,
+        darrick.wong@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Subject: Re: Problems with determining data presence by examining extents?
-Message-ID: <20200115133101.GA28583@lst.de>
-References: <4467.1579020509@warthog.procyon.org.uk> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca> <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <22055.1579096211.1@warthog.procyon.org.uk>
+Date:   Wed, 15 Jan 2020 13:50:11 +0000
+Message-ID: <22056.1579096211@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 09:10:44PM +0800, Qu Wenruo wrote:
-> > That allows userspace to distinguish fe_physical addresses that may be
-> > on different devices.  This isn't in the kernel yet, since it is mostly
-> > useful only for Btrfs and nobody has implemented it there.  I can give
-> > you details if working on this for Btrfs is of interest to you.
-> 
-> IMHO it's not good enough.
-> 
-> The concern is, one extent can exist on multiple devices (mirrors for
-> RAID1/RAID10/RAID1C2/RAID1C3, or stripes for RAID5/6).
-> I didn't see how it can be easily implemented even with extra fields.
-> 
-> And even we implement it, it can be too complex or bug prune to fill
-> per-device info.
+Theodore Y. Ts'o <tytso@mit.edu> wrote:
 
-It's also completely bogus for the use cases to start with.  fiemap
-is a debug tool reporting the file system layout.  Using it for anything
-related to actual data storage and data integrity is a receipe for
-disaster.  As said the right thing for the use case would be something
-like the NFS READ_PLUS operation.  If we can't get that easily it can
-be emulated using lseek SEEK_DATA / SEEK_HOLE assuming no other thread
-could be writing to the file, or the raciness doesn't matter.
+> but I'm not sure we would want to make any guarantees with respect to (b).
+
+Um.  That would potentially make disconnected operation problematic.  Now,
+it's unlikely that I'll want to store a 256KiB block of zeros, but not
+impossible.
+
+> I suspect I understand why you want this; I've fielded some requests
+> for people wanting to do something very like this at $WORK, for what I
+> assume to be for the same reason you're seeking to do this; to create
+> do incremental caching of files and letting the file system track what
+> has and hasn't been cached yet.
+
+Exactly so.  If I can't tap in to the filesystem's own map of what data is
+present in a file, then I have to do it myself in parallel.  Keeping my own
+list or map has a number of issues:
+
+ (1) It's redundant.  I have to maintain a second copy of what the filesystem
+     already maintains.  This uses extra space.
+
+ (2) My map may get out of step with the filesystem after a crash.  The
+     filesystem has tools to deal with this in its own structures.
+
+ (3) If the file is very large and sparse, then keeping a bit-per-block map in
+     a single xattr may not suffice or may become unmanageable.  There's a
+     limit of 64k, which for bit-per-256k limits the maximum mappable size to
+     1TiB (I could use multiple xattrs, but some filesystems may have total
+     xattr limits) and whatever the size, I need a single buffer big enough to
+     hold it.
+
+     I could use a second file as a metadata cache - but that has worse
+     coherency properties.  (As I understand it, setxattr is synchronous and
+     journalled.)
+
+> If we were going to add such a facility, what we could perhaps do is
+> to define a new flag indicating that a particular file should have no
+> extent mapping optimization applied, such that FIEMAP would return a
+> mapping if and only if userspace had written to a particular block, or
+> had requested that a block be preallocated using fallocate().  The
+> flag could only be set on a zero-length file, and this might disable
+> certain advanced file system features, such as reflink, at the file
+> system's discretion; and there might be unspecified performance
+> impacts if this flag is set on a file.
+
+That would be fine for cachefiles.
+
+Also, I don't need to know *where* the data is, only that the first byte of my
+block exists - if a DIO read returns short when it reaches a hole.
+
+David
+
