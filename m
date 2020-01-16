@@ -2,38 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D8C13E9CA
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 18:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A9813EAB5
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 18:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388356AbgAPRkF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jan 2020 12:40:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56900 "EHLO mail.kernel.org"
+        id S2406484AbgAPRpj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jan 2020 12:45:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393579AbgAPRkD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:40:03 -0500
+        id S2406125AbgAPRpi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:45:38 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A6B624705;
-        Thu, 16 Jan 2020 17:40:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0A0924765;
+        Thu, 16 Jan 2020 17:45:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579196403;
-        bh=GaxRd32QNh4xzUPFjDuNEJZDlmxG95D33bABRsKWwp0=;
+        s=default; t=1579196737;
+        bh=terYlf6LZ4zVfnn7QrhYUSK0XOj0A4n4+/9JO6jJDuU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UFeTE8LSIpofzbuqAcfTImiKPoge4K+o/tM7hNYfco1QRRC+BTLqmNcJbLk3mefEe
-         5q3DcGYDkB6RaaIyiqO72z5Wm67alBvDH9KEB/2md2dP2zm+2ie98r4ZjvftrJusEc
-         fniJwUy7QCLJzh1kDBEzAxSlOMduzOADbIulSzug=
+        b=KKK7SfuCJ/wI+AbwvdSt+hhWD0dUKhcTctEnnNpdUONQ2S6JEyoNeAzWXyCN9Va6I
+         nfy7iP2sNKfxNO4+Daxd6sDMIMDta1TLKHBLpRL0S+8BKqGVo1Q7VHtlX38+ZX+N8R
+         PBlH+b/iZTl8rt1KOs/wPgUEhvmemuYsumPXBRgo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Colin Ian King <colin.king@canonical.com>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 179/251] ext4: set error return correctly when ext4_htree_store_dirent fails
-Date:   Thu, 16 Jan 2020 12:35:28 -0500
-Message-Id: <20200116173641.22137-139-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 119/174] ext4: set error return correctly when ext4_htree_store_dirent fails
+Date:   Thu, 16 Jan 2020 12:41:56 -0500
+Message-Id: <20200116174251.24326-119-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116173641.22137-1-sashal@kernel.org>
-References: <20200116173641.22137-1-sashal@kernel.org>
+In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
+References: <20200116174251.24326-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -62,10 +62,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 9a13f86fed62..4df4d31057b3 100644
+index 0dcd33f62637..00f9433eea23 100644
 --- a/fs/ext4/inline.c
 +++ b/fs/ext4/inline.c
-@@ -1417,7 +1417,7 @@ int htree_inlinedir_to_tree(struct file *dir_file,
+@@ -1418,7 +1418,7 @@ int htree_inlinedir_to_tree(struct file *dir_file,
  		err = ext4_htree_store_dirent(dir_file, hinfo->hash,
  					      hinfo->minor_hash, de, &tmp_str);
  		if (err) {
