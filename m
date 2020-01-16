@@ -2,78 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A9813EAB5
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 18:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCF313EC35
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 18:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406484AbgAPRpj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jan 2020 12:45:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37504 "EHLO mail.kernel.org"
+        id S2406432AbgAPRzG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jan 2020 12:55:06 -0500
+Received: from mga06.intel.com ([134.134.136.31]:13777 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406125AbgAPRpi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:45:38 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0A0924765;
-        Thu, 16 Jan 2020 17:45:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579196737;
-        bh=terYlf6LZ4zVfnn7QrhYUSK0XOj0A4n4+/9JO6jJDuU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KKK7SfuCJ/wI+AbwvdSt+hhWD0dUKhcTctEnnNpdUONQ2S6JEyoNeAzWXyCN9Va6I
-         nfy7iP2sNKfxNO4+Daxd6sDMIMDta1TLKHBLpRL0S+8BKqGVo1Q7VHtlX38+ZX+N8R
-         PBlH+b/iZTl8rt1KOs/wPgUEhvmemuYsumPXBRgo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 119/174] ext4: set error return correctly when ext4_htree_store_dirent fails
-Date:   Thu, 16 Jan 2020 12:41:56 -0500
-Message-Id: <20200116174251.24326-119-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200116174251.24326-1-sashal@kernel.org>
-References: <20200116174251.24326-1-sashal@kernel.org>
+        id S2406025AbgAPRzF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:55:05 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Jan 2020 09:55:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,327,1574150400"; 
+   d="scan'208";a="214168129"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga007.jf.intel.com with ESMTP; 16 Jan 2020 09:55:02 -0800
+Date:   Thu, 16 Jan 2020 09:55:02 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH V2 01/12] fs/stat: Define DAX statx attribute
+Message-ID: <20200116175501.GC24522@iweiny-DESK2.sc.intel.com>
+References: <20200110192942.25021-1-ira.weiny@intel.com>
+ <20200110192942.25021-2-ira.weiny@intel.com>
+ <20200115113715.GB2595@quack2.suse.cz>
+ <20200115173834.GD8247@magnolia>
+ <20200115194512.GF23311@iweiny-DESK2.sc.intel.com>
+ <CAPcyv4hwefzruFj02YHYiy8nOpHJFGLKksjiXoRUGpT3C2rDag@mail.gmail.com>
+ <20200115223821.GG23311@iweiny-DESK2.sc.intel.com>
+ <20200116053935.GB8235@magnolia>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200116053935.GB8235@magnolia>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Jan 15, 2020 at 09:39:35PM -0800, Darrick J. Wong wrote:
+> On Wed, Jan 15, 2020 at 02:38:21PM -0800, Ira Weiny wrote:
+> > On Wed, Jan 15, 2020 at 12:10:50PM -0800, Dan Williams wrote:
+> > > On Wed, Jan 15, 2020 at 11:45 AM Ira Weiny <ira.weiny@intel.com> wrote:
+> > > >
+> > > > On Wed, Jan 15, 2020 at 09:38:34AM -0800, Darrick J. Wong wrote:
+> > > > > On Wed, Jan 15, 2020 at 12:37:15PM +0100, Jan Kara wrote:
+> > > > > > On Fri 10-01-20 11:29:31, ira.weiny@intel.com wrote:
+> > > > > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > > > >
+> > 
 
-[ Upstream commit 7a14826ede1d714f0bb56de8167c0e519041eeda ]
+[snip]
 
-Currently when the call to ext4_htree_store_dirent fails the error return
-variable 'ret' is is not being set to the error code and variable count is
-instead, hence the error code is not being returned.  Fix this by assigning
-ret to the error return code.
+> > 
+> > Sure, but for now I think referencing mmap for details on MAP_SYNC works.
+> > 
+> > I suspect that we may have some word smithing once I get this series in and we
+> > submit a change to the statx man page itself.  Can I move forward with the
+> > following for this patch?
+> > 
+> > <quote>
+> > STATX_ATTR_DAX
+> > 
+> >         The file is in the DAX (cpu direct access) state.  DAX state
+> 
+> Hmm, now that I see it written out, I <cough> kind of like "DAX mode"
+> better now. :/
+> 
+> "The file is in DAX (CPU direct access) mode.  DAX mode attempts..."
 
-Addresses-Coverity: ("Unused value")
-Fixes: 8af0f0822797 ("ext4: fix readdir error in the case of inline_data+dir_index")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/inline.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sure...  now you tell me...  ;-)
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 0dcd33f62637..00f9433eea23 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -1418,7 +1418,7 @@ int htree_inlinedir_to_tree(struct file *dir_file,
- 		err = ext4_htree_store_dirent(dir_file, hinfo->hash,
- 					      hinfo->minor_hash, de, &tmp_str);
- 		if (err) {
--			count = err;
-+			ret = err;
- 			goto out;
- 		}
- 		count++;
--- 
-2.20.1
+Seriously, we could use mode here in the man page as this is less confusing to
+say "DAX mode".
+
+But I think the code should still use 'state' because mode is just too
+overloaded.  You were not the only one who was thrown by my use of mode and I
+don't want that confusion when we look at this code 2 weeks from now...
+
+https://www.reddit.com/r/ProgrammerHumor/comments/852og2/only_god_knows/
+
+;-)
+
+> 
+> >         attempts to minimize software cache effects for both I/O and
+> >         memory mappings of this file.  It requires a file system which
+> >         has been configured to support DAX.
+> > 
+> >         DAX generally assumes all accesses are via cpu load / store
+> >         instructions which can minimize overhead for small accesses, but
+> >         may adversely affect cpu utilization for large transfers.
+> > 
+> >         File I/O is done directly to/from user-space buffers and memory
+> >         mapped I/O may be performed with direct memory mappings that
+> >         bypass kernel page cache.
+> > 
+> >         While the DAX property tends to result in data being transferred
+> >         synchronously, it does not give the same guarantees of
+> >         synchronous I/O where data and the necessary metadata are
+> >         transferred together.
+> 
+> (I'm frankly not sure that synchronous I/O actually guarantees that the
+> metadata has hit stable storage...)
+
+I'll let you and Dan work this one out...  ;-)
+
+Ira
 
