@@ -2,22 +2,22 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC25413D6CA
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 10:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B50913D700
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 10:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730558AbgAPJYt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jan 2020 04:24:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55526 "EHLO mx2.suse.de"
+        id S1730779AbgAPJiJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jan 2020 04:38:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34458 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726684AbgAPJYt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Jan 2020 04:24:49 -0500
+        id S1726864AbgAPJiJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 16 Jan 2020 04:38:09 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id BEE2FAE95;
-        Thu, 16 Jan 2020 09:24:46 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 7D042B1AB;
+        Thu, 16 Jan 2020 09:38:07 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 517A11E0CBC; Thu, 16 Jan 2020 10:24:46 +0100 (CET)
-Date:   Thu, 16 Jan 2020 10:24:46 +0100
+        id 213631E0CBC; Thu, 16 Jan 2020 10:38:07 +0100 (CET)
+Date:   Thu, 16 Jan 2020 10:38:07 +0100
 From:   Jan Kara <jack@suse.cz>
 To:     ira.weiny@intel.com
 Cc:     linux-kernel@vger.kernel.org,
@@ -29,54 +29,58 @@ Cc:     linux-kernel@vger.kernel.org,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH V2 08/12] fs/xfs: Add lock/unlock mode to xfs
-Message-ID: <20200116092446.GA8446@quack2.suse.cz>
+Subject: Re: [RFC PATCH V2 05/12] fs: remove unneeded IS_DAX() check
+Message-ID: <20200116093807.GB8446@quack2.suse.cz>
 References: <20200110192942.25021-1-ira.weiny@intel.com>
- <20200110192942.25021-9-ira.weiny@intel.com>
+ <20200110192942.25021-6-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200110192942.25021-9-ira.weiny@intel.com>
+In-Reply-To: <20200110192942.25021-6-ira.weiny@intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri 10-01-20 11:29:38, ira.weiny@intel.com wrote:
+On Fri 10-01-20 11:29:35, ira.weiny@intel.com wrote:
 > From: Ira Weiny <ira.weiny@intel.com>
 > 
-> XFS requires regular files to be locked while changing to/from DAX mode.
+> The IS_DAX() check in io_is_direct() causes a race between changing the
+> DAX mode and creating the iocb flags.
 > 
-> Define a new DAX lock type and implement the [un]lock_mode() inode
-> operation callbacks.
-> 
-> We define a new XFS_DAX_* lock type to carry the lock through the
-> transaction because we don't want to use IOLOCK as that would cause
-> performance issues with locking of the inode itself.
+> Remove the check because DAX now emulates the page cache API and
+> therefore it does not matter if the file mode is DAX or not when the
+> iocb flags are created.
 > 
 > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-...
-> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-> index 492e53992fa9..693ca66bd89b 100644
-> --- a/fs/xfs/xfs_inode.h
-> +++ b/fs/xfs/xfs_inode.h
-> @@ -67,6 +67,9 @@ typedef struct xfs_inode {
->  	spinlock_t		i_ioend_lock;
->  	struct work_struct	i_ioend_work;
->  	struct list_head	i_ioend_list;
-> +
-> +	/* protect changing the mode to/from DAX */
-> +	struct percpu_rw_semaphore i_dax_sem;
->  } xfs_inode_t;
 
-This adds overhead of ~32k per inode for typical distro kernel. That's not
-going to fly. That's why ext4 has similar kind of lock in the superblock
-shared by all inodes. For read side it does not matter because that's
-per-cpu and shared lock. For write side we don't care as changing inode
-access mode should be rare.
+The patch looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
+
+> ---
+>  include/linux/fs.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index d7584bcef5d3..e11989502eac 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3365,7 +3365,7 @@ extern int file_update_time(struct file *file);
+>  
+>  static inline bool io_is_direct(struct file *filp)
+>  {
+> -	return (filp->f_flags & O_DIRECT) || IS_DAX(filp->f_mapping->host);
+> +	return (filp->f_flags & O_DIRECT);
+>  }
+>  
+>  static inline bool vma_is_dax(struct vm_area_struct *vma)
+> -- 
+> 2.21.0
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
