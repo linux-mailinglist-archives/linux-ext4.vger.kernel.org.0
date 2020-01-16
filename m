@@ -2,164 +2,184 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F9C13F8D2
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 20:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EFD13FC13
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 23:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437719AbgAPTVO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jan 2020 14:21:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393384AbgAPTVH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Jan 2020 14:21:07 -0500
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E2D820661;
-        Thu, 16 Jan 2020 19:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579202466;
-        bh=rUr1wlexBA7T5J5m/OSW8iFgPsbrK8hJ/8NOCZzbZK8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=2o/B2tfu8Tgm7+qJkztQ+IGIiSVLQQD4L+vz4mFLQQhxf/05CdxlNQXabL5dVTBRE
-         kEfexecpizCN0hk37ZSmvwuUVv+OLvaeWfK50X4ddeBfHKX66XFfOlGUhdJ4n1ut+1
-         uXug04sCgFEERthHjP/SNqZMkyCDOjxtcExOMNdA=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org,
-        Barani Muthukumaran <bmuthuku@codeaurora.org>,
-        Gaurav Kashyap <gaurkash@codeaurora.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-api@vger.kernel.org
-Subject: [PATCH] fscrypt: reserve flags for hardware-wrapped keys feature
-Date:   Thu, 16 Jan 2020 11:20:08 -0800
-Message-Id: <20200116192008.35766-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.25.0.rc1.283.g88dfdc4193-goog
+        id S2389911AbgAPWTZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jan 2020 17:19:25 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:34262 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730287AbgAPWTZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jan 2020 17:19:25 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00GMIZCT028592;
+        Thu, 16 Jan 2020 22:19:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=pSB2tRyVqfE4FbpMpFBrw+fyJNwr6cCK25cTALnwLyY=;
+ b=YbYZf2iMfQ0oj9lrYrWplU6V4r8tHTIrX/m9H9tXvHV/66K6hi2SGUvyAM05LrDCFWUu
+ jzKFCvl/TB48hwPfkgXfinfnVhElpNyOyKFsYelrNrI18fAaDmsT0K2W8WqsTRix/JRH
+ aNxXEsfDC9MFjmOgVtKE0P5raFrIUwDkrjbdKFpxsKzmtR6f/kN8q2HBt2T1aMEFjDpp
+ qbcdqyswojJCf5dRQTJdrmDZemzilSdTTl582qj9Sa8VcOX3KLMaE7Q7EaI/+8HBj1xG
+ XnkPHCHqfNqJcdsJ5hSVqGmvV2s0UzWJTJmivkOVaoWxNVQRpgKUswIyZzHRrQ5sSq9b eg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2xf73u5bwf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Jan 2020 22:19:12 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00GMIbpT174550;
+        Thu, 16 Jan 2020 22:19:11 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2xjxp3w3bf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Jan 2020 22:19:11 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00GMJ9Xq003562;
+        Thu, 16 Jan 2020 22:19:09 GMT
+Received: from localhost (/10.145.179.16)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 16 Jan 2020 14:19:09 -0800
+Date:   Thu, 16 Jan 2020 14:19:06 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH V2 01/12] fs/stat: Define DAX statx attribute
+Message-ID: <20200116221906.GF8247@magnolia>
+References: <20200110192942.25021-2-ira.weiny@intel.com>
+ <20200115113715.GB2595@quack2.suse.cz>
+ <20200115173834.GD8247@magnolia>
+ <20200115194512.GF23311@iweiny-DESK2.sc.intel.com>
+ <CAPcyv4hwefzruFj02YHYiy8nOpHJFGLKksjiXoRUGpT3C2rDag@mail.gmail.com>
+ <20200115223821.GG23311@iweiny-DESK2.sc.intel.com>
+ <20200116053935.GB8235@magnolia>
+ <20200116175501.GC24522@iweiny-DESK2.sc.intel.com>
+ <20200116180421.GD8235@magnolia>
+ <20200116185235.GE24522@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200116185235.GE24522@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9502 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001160178
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9502 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001160178
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Thu, Jan 16, 2020 at 10:52:36AM -0800, Ira Weiny wrote:
+> On Thu, Jan 16, 2020 at 10:04:21AM -0800, Darrick J. Wong wrote:
+> > On Thu, Jan 16, 2020 at 09:55:02AM -0800, Ira Weiny wrote:
+> > > On Wed, Jan 15, 2020 at 09:39:35PM -0800, Darrick J. Wong wrote:
+> > > > On Wed, Jan 15, 2020 at 02:38:21PM -0800, Ira Weiny wrote:
+> > > > > On Wed, Jan 15, 2020 at 12:10:50PM -0800, Dan Williams wrote:
+> > > > > > On Wed, Jan 15, 2020 at 11:45 AM Ira Weiny <ira.weiny@intel.com> wrote:
+> > > > > > >
+> > > > > > > On Wed, Jan 15, 2020 at 09:38:34AM -0800, Darrick J. Wong wrote:
+> > > > > > > > On Wed, Jan 15, 2020 at 12:37:15PM +0100, Jan Kara wrote:
+> > > > > > > > > On Fri 10-01-20 11:29:31, ira.weiny@intel.com wrote:
+> > > > > > > > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > > > > > > >
+> > > > > 
+> > > 
+> > > [snip]
+> > > 
+> > > > > 
+> > > > > Sure, but for now I think referencing mmap for details on MAP_SYNC works.
+> > > > > 
+> > > > > I suspect that we may have some word smithing once I get this series in and we
+> > > > > submit a change to the statx man page itself.  Can I move forward with the
+> > > > > following for this patch?
+> > > > > 
+> > > > > <quote>
+> > > > > STATX_ATTR_DAX
+> > > > > 
+> > > > >         The file is in the DAX (cpu direct access) state.  DAX state
+> > > > 
+> > > > Hmm, now that I see it written out, I <cough> kind of like "DAX mode"
+> > > > better now. :/
+> > > > 
+> > > > "The file is in DAX (CPU direct access) mode.  DAX mode attempts..."
+> > > 
+> > > Sure...  now you tell me...  ;-)
+> > > 
+> > > Seriously, we could use mode here in the man page as this is less confusing to
+> > > say "DAX mode".
+> > > 
+> > > But I think the code should still use 'state' because mode is just too
+> > > overloaded.  You were not the only one who was thrown by my use of mode and I
+> > > don't want that confusion when we look at this code 2 weeks from now...
+> > > 
+> > > https://www.reddit.com/r/ProgrammerHumor/comments/852og2/only_god_knows/
+> > > 
+> > > ;-)
+> > 
+> > Ok, let's leave it alone for now then.
+> 
+> Cool could I get a reviewed by?
 
-Reserve flags for the hardware-wrapped keys feature which is being
-worked on [1].  FSCRYPT_POLICY_FLAG_HW_WRAPPED_KEY will denote that the
-encryption policy needs a hardware-wrapped key to be unlocked.
-FSCRYPT_ADD_KEY_FLAG_HW_WRAPPED will denote that the key being added is
-a hardware-wrapped key.
+My bike shed is painted green with purple polka dots,
 
-This reservation is tentative, and these codepoints may be reused if the
-feature is not upstreamed.
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-[1] https://android-review.googlesource.com/c/kernel/common/+/1200864
+--D
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- Documentation/filesystems/fscrypt.rst | 5 +++--
- fs/crypto/keyring.c                   | 5 ++++-
- fs/crypto/policy.c                    | 4 +++-
- include/uapi/linux/fscrypt.h          | 9 ++++++---
- 4 files changed, 16 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
-index 9c53336d06a438..4c443d7b1fc6b5 100644
---- a/Documentation/filesystems/fscrypt.rst
-+++ b/Documentation/filesystems/fscrypt.rst
-@@ -639,7 +639,8 @@ follows::
-             struct fscrypt_key_specifier key_spec;
-             __u32 raw_size;
-             __u32 key_id;
--            __u32 __reserved[8];
-+            __u32 flags;
-+            __u32 __reserved[7];
-             __u8 raw[];
-     };
- 
-@@ -658,7 +659,7 @@ follows::
- 
-     struct fscrypt_provisioning_key_payload {
-             __u32 type;
--            __u32 __reserved;
-+            __u32 flags;
-             __u8 raw[];
-     };
- 
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index 098ff2e0f0bb41..fc27f5d08d7dbe 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -477,7 +477,7 @@ static int fscrypt_provisioning_key_preparse(struct key_preparsed_payload *prep)
- 	    payload->type != FSCRYPT_KEY_SPEC_TYPE_IDENTIFIER)
- 		return -EINVAL;
- 
--	if (payload->__reserved)
-+	if (payload->flags)
- 		return -EINVAL;
- 
- 	prep->payload.data[0] = kmemdup(payload, prep->datalen, GFP_KERNEL);
-@@ -606,6 +606,9 @@ int fscrypt_ioctl_add_key(struct file *filp, void __user *_uarg)
- 	if (!valid_key_spec(&arg.key_spec))
- 		return -EINVAL;
- 
-+	if (arg.flags)
-+		return -EINVAL;
-+
- 	if (memchr_inv(arg.__reserved, 0, sizeof(arg.__reserved)))
- 		return -EINVAL;
- 
-diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
-index f1cff83c151acf..36a2bb077b6910 100644
---- a/fs/crypto/policy.c
-+++ b/fs/crypto/policy.c
-@@ -139,7 +139,9 @@ static bool fscrypt_supported_v2_policy(const struct fscrypt_policy_v2 *policy,
- 		return false;
- 	}
- 
--	if (policy->flags & ~FSCRYPT_POLICY_FLAGS_VALID) {
-+	if (policy->flags & ~(FSCRYPT_POLICY_FLAGS_PAD_MASK |
-+			      FSCRYPT_POLICY_FLAG_DIRECT_KEY |
-+			      FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64)) {
- 		fscrypt_warn(inode, "Unsupported encryption flags (0x%02x)",
- 			     policy->flags);
- 		return false;
-diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
-index 0d8a6f47711c32..fad624a4c5feda 100644
---- a/include/uapi/linux/fscrypt.h
-+++ b/include/uapi/linux/fscrypt.h
-@@ -19,7 +19,8 @@
- #define FSCRYPT_POLICY_FLAGS_PAD_MASK		0x03
- #define FSCRYPT_POLICY_FLAG_DIRECT_KEY		0x04
- #define FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64	0x08
--#define FSCRYPT_POLICY_FLAGS_VALID		0x0F
-+#define FSCRYPT_POLICY_FLAG_HW_WRAPPED_KEY	0x10
-+#define FSCRYPT_POLICY_FLAGS_VALID		0x1F
- 
- /* Encryption algorithms */
- #define FSCRYPT_MODE_AES_256_XTS		1
-@@ -116,7 +117,7 @@ struct fscrypt_key_specifier {
-  */
- struct fscrypt_provisioning_key_payload {
- 	__u32 type;
--	__u32 __reserved;
-+	__u32 flags;
- 	__u8 raw[];
- };
- 
-@@ -125,7 +126,9 @@ struct fscrypt_add_key_arg {
- 	struct fscrypt_key_specifier key_spec;
- 	__u32 raw_size;
- 	__u32 key_id;
--	__u32 __reserved[8];
-+#define FSCRYPT_ADD_KEY_FLAG_HW_WRAPPED			0x00000001
-+	__u32 flags;
-+	__u32 __reserved[7];
- 	__u8 raw[];
- };
- 
-
-base-commit: 2d8f7f119b0b2ce5e7ff0e8024b0763bf42b99c9
--- 
-2.25.0.rc1.283.g88dfdc4193-goog
-
+> And Jan is this reword of the man page/commit ok to keep your reviewed by?
+> 
+> > 
+> > I'm not even sure what 'DAX' stands for.  Direct Access to ...
+> > Professor Xavier? 8-)
+> 
+> That is pronounced 'Direct A'Xes'  you know, for chopping wood!
+> 
+> Thanks everyone,
+> Ira
+> 
+> > 
+> > > > 
+> > > > >         attempts to minimize software cache effects for both I/O and
+> > > > >         memory mappings of this file.  It requires a file system which
+> > > > >         has been configured to support DAX.
+> > > > > 
+> > > > >         DAX generally assumes all accesses are via cpu load / store
+> > > > >         instructions which can minimize overhead for small accesses, but
+> > > > >         may adversely affect cpu utilization for large transfers.
+> > > > > 
+> > > > >         File I/O is done directly to/from user-space buffers and memory
+> > > > >         mapped I/O may be performed with direct memory mappings that
+> > > > >         bypass kernel page cache.
+> > > > > 
+> > > > >         While the DAX property tends to result in data being transferred
+> > > > >         synchronously, it does not give the same guarantees of
+> > > > >         synchronous I/O where data and the necessary metadata are
+> > > > >         transferred together.
+> > > > 
+> > > > (I'm frankly not sure that synchronous I/O actually guarantees that the
+> > > > metadata has hit stable storage...)
+> > > 
+> > > I'll let you and Dan work this one out...  ;-)
+> > 
+> > Hehe.  I think the wording here is fine.
+> > 
+> > --D
+> > 
+> > > Ira
+> > > 
