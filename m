@@ -2,77 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C034513DCC9
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 15:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A9213DE56
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 16:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgAPOAH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jan 2020 09:00:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42742 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbgAPOAH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Jan 2020 09:00:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 1341EAD5E;
-        Thu, 16 Jan 2020 14:00:04 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 62CD91E06F1; Thu, 16 Jan 2020 15:00:04 +0100 (CET)
-Date:   Thu, 16 Jan 2020 15:00:04 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: RFC: hold i_rwsem until aio completes
-Message-ID: <20200116140004.GE8446@quack2.suse.cz>
-References: <20200114161225.309792-1-hch@lst.de>
+        id S1726574AbgAPPMx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jan 2020 10:12:53 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36308 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726151AbgAPPMx (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jan 2020 10:12:53 -0500
+Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00GFCe9c029404
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Jan 2020 10:12:43 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 68A044207DF; Thu, 16 Jan 2020 10:12:39 -0500 (EST)
+Date:   Thu, 16 Jan 2020 10:12:39 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Naoto Kobayashi <naoto.kobayashi4c@gmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] ext4: Rename ext4_kvmalloc() to
+ ext4_kvmalloc_nofs() and drop its flags argument
+Message-ID: <20200116151239.GA253859@mit.edu>
+References: <20191227080523.31808-1-naoto.kobayashi4c@gmail.com>
+ <20191227080523.31808-3-naoto.kobayashi4c@gmail.com>
+ <20200113223237.GL76141@mit.edu>
+ <20200116123724.GD8446@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200114161225.309792-1-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200116123724.GD8446@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello!
-
-On Tue 14-01-20 17:12:13, Christoph Hellwig wrote:
-> Asynchronous read/write operations currently use a rather magic locking
-> scheme, were access to file data is normally protected using a rw_semaphore,
-> but if we are doing aio where the syscall returns to userspace before the
-> I/O has completed we also use an atomic_t to track the outstanding aio
-> ops.  This scheme has lead to lots of subtle bugs in file systems where
-> didn't wait to the count to reach zero, and due to its adhoc nature also
-> means we have to serialize direct I/O writes that are smaller than the
-> file system block size.
+On Thu, Jan 16, 2020 at 01:37:24PM +0100, Jan Kara wrote:
 > 
-> All this is solved by releasing i_rwsem only when the I/O has actually
-> completed, but doings so is against to mantras of Linux locking primites:
-> 
->  (1) no unlocking by another process than the one that acquired it
->  (2) no return to userspace with locks held
+> Ted, I don't think this patch is needed at all - see my email [1]. Sadly
+> Naoto didn't reply to my question whether he really saw any deadlock /
+> lockdep splat or whether it was just a theoretical concern he had...
 
-I'd like to note that using i_dio_count has also one advantage you didn't
-mention. For AIO case, if you need to hold i_rwsem in exclusive mode,
-holding the i_rwsem just for submission part is a significant performance
-advantage (shorter lock hold times allow for higher IO parallelism). I
-guess this could be mitigated by downgrading the lock to shared mode
-once the IO is submitted. But there will be still some degradation visible
-for the cases of mixed exclusive and shared acquisitions because shared
-holders will be blocking exclusive ones for longer time.
+Thanks, good point.  So what we should do instead is just drop
+ext4_kvmalloc() entirely.
 
-This may be especially painful for filesystems that don't implement DIO
-overwrites with i_rwsem in shared mode...
-
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+						- Ted
