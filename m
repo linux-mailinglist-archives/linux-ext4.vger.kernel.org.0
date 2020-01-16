@@ -2,128 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C0413DF39
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 16:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B6913E4E0
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Jan 2020 18:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgAPPux (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jan 2020 10:50:53 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42987 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726151AbgAPPux (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 16 Jan 2020 10:50:53 -0500
-Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00GFoe2b010819
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jan 2020 10:50:41 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 24E674207DF; Thu, 16 Jan 2020 10:50:40 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     jack@suse.cz, naoto.kobayashi4c@gmail.com,
-        "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH] ext4: drop ext4_kvmalloc()
-Date:   Thu, 16 Jan 2020 10:50:31 -0500
-Message-Id: <20200116155031.266620-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200116151239.GA253859@mit.edu>
-References: <20200116151239.GA253859@mit.edu>
+        id S2390233AbgAPRL0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Jan 2020 12:11:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389964AbgAPRK1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:10:27 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 878D324686;
+        Thu, 16 Jan 2020 17:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579194627;
+        bh=BlTZ47v3BJ2PsceNhAY7KD1vlOSX4CzRUdfkpDxBaUk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jAk+QO8aa5kx9V4uW+MgkswquXORBCfdZizwbcoNL8ut1Y+OMs0H4EG0ugwdRQgc0
+         vMFBZf5G5qhDkyWB1o+n4VoaO4Wm737Me6uHc8jzxF3m6kRSgjbunZ7BeBt84WY/RH
+         KzCSf0Mn1zWFgeVSDu8YBEPOgx/Jda6ayLEQh5z8=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 487/671] ext4: set error return correctly when ext4_htree_store_dirent fails
+Date:   Thu, 16 Jan 2020 12:02:05 -0500
+Message-Id: <20200116170509.12787-224-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
+References: <20200116170509.12787-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-As Jan pointed out[1], as of commit 81378da64de ("jbd2: mark the
-transaction context with the scope GFP_NOFS context") we use
-memalloc_nofs_{save,restore}() while a jbd2 handle is active.  So
-ext4_kvmalloc() so we can call allocate using GFP_NOFS is no longer
-necessary.
+From: Colin Ian King <colin.king@canonical.com>
 
-[1] https://lore.kernel.org/r/20200109100007.GC27035@quack2.suse.cz
+[ Upstream commit 7a14826ede1d714f0bb56de8167c0e519041eeda ]
+
+Currently when the call to ext4_htree_store_dirent fails the error return
+variable 'ret' is is not being set to the error code and variable count is
+instead, hence the error code is not being returned.  Fix this by assigning
+ret to the error return code.
+
+Addresses-Coverity: ("Unused value")
+Fixes: 8af0f0822797 ("ext4: fix readdir error in the case of inline_data+dir_index")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/ext4.h   |  1 -
- fs/ext4/resize.c | 10 ++++------
- fs/ext4/super.c  | 10 ----------
- fs/ext4/xattr.c  |  2 +-
- 4 files changed, 5 insertions(+), 18 deletions(-)
+ fs/ext4/inline.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 5e621b0da4da..9a2ee2428ecc 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2740,7 +2740,6 @@ extern struct buffer_head *ext4_sb_bread(struct super_block *sb,
- extern int ext4_seq_options_show(struct seq_file *seq, void *offset);
- extern int ext4_calculate_overhead(struct super_block *sb);
- extern void ext4_superblock_csum_set(struct super_block *sb);
--extern void *ext4_kvmalloc(size_t size, gfp_t flags);
- extern int ext4_alloc_flex_bg_array(struct super_block *sb,
- 				    ext4_group_t ngroup);
- extern const char *ext4_decode_error(struct super_block *sb, int errno,
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index a8c0f2b5b6e1..86a2500ed292 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -824,9 +824,8 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
- 	if (unlikely(err))
- 		goto errout;
- 
--	n_group_desc = ext4_kvmalloc((gdb_num + 1) *
--				     sizeof(struct buffer_head *),
--				     GFP_NOFS);
-+	n_group_desc = kvmalloc((gdb_num + 1) * sizeof(struct buffer_head *),
-+				GFP_KERNEL);
- 	if (!n_group_desc) {
- 		err = -ENOMEM;
- 		ext4_warning(sb, "not enough memory for %lu groups",
-@@ -900,9 +899,8 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
- 	gdb_bh = ext4_sb_bread(sb, gdblock, 0);
- 	if (IS_ERR(gdb_bh))
- 		return PTR_ERR(gdb_bh);
--	n_group_desc = ext4_kvmalloc((gdb_num + 1) *
--				     sizeof(struct buffer_head *),
--				     GFP_NOFS);
-+	n_group_desc = kvmalloc((gdb_num + 1) * sizeof(struct buffer_head *),
-+				GFP_KERNEL);
- 	if (!n_group_desc) {
- 		brelse(gdb_bh);
- 		err = -ENOMEM;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 84a86d9b790f..ecf36a23e0c4 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -204,16 +204,6 @@ void ext4_superblock_csum_set(struct super_block *sb)
- 	es->s_checksum = ext4_superblock_csum(sb, es);
- }
- 
--void *ext4_kvmalloc(size_t size, gfp_t flags)
--{
--	void *ret;
--
--	ret = kmalloc(size, flags | __GFP_NOWARN);
--	if (!ret)
--		ret = __vmalloc(size, flags, PAGE_KERNEL);
--	return ret;
--}
--
- ext4_fsblk_t ext4_block_bitmap(struct super_block *sb,
- 			       struct ext4_group_desc *bg)
- {
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 246fbeeb6366..8cac7d95c3ad 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1456,7 +1456,7 @@ ext4_xattr_inode_cache_find(struct inode *inode, const void *value,
- 	if (!ce)
- 		return NULL;
- 
--	ea_data = ext4_kvmalloc(value_len, GFP_NOFS);
-+	ea_data = kvmalloc(value_len, GFP_KERNEL);
- 	if (!ea_data) {
- 		mb_cache_entry_put(ea_inode_cache, ce);
- 		return NULL;
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 56f6e1782d5f..4572cb057951 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -1419,7 +1419,7 @@ int htree_inlinedir_to_tree(struct file *dir_file,
+ 		err = ext4_htree_store_dirent(dir_file, hinfo->hash,
+ 					      hinfo->minor_hash, de, &tmp_str);
+ 		if (err) {
+-			count = err;
++			ret = err;
+ 			goto out;
+ 		}
+ 		count++;
 -- 
-2.24.1
+2.20.1
 
