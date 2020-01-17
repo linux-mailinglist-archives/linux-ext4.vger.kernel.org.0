@@ -2,68 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 412EF1409AA
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 13:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D18140EDA
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 17:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbgAQMY0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jan 2020 07:24:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48788 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726991AbgAQMY0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 17 Jan 2020 07:24:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C5FB4C06F;
-        Fri, 17 Jan 2020 12:24:24 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 596761E0D53; Fri, 17 Jan 2020 13:24:20 +0100 (CET)
-Date:   Fri, 17 Jan 2020 13:24:20 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     linux-ext4@vger.kernel.org
-Cc:     Ted Tso <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Subject: ext2fs_link() corrupting a directory
-Message-ID: <20200117122420.GJ17141@quack2.suse.cz>
+        id S1729203AbgAQQWE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jan 2020 11:22:04 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:45700 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729148AbgAQQWE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jan 2020 11:22:04 -0500
+Received: by mail-pg1-f195.google.com with SMTP id b9so11880813pgk.12
+        for <linux-ext4@vger.kernel.org>; Fri, 17 Jan 2020 08:22:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B/QRDv8e8iQEqDNCGkiiDK4fWPlSZEWb6aUg/XWFLNs=;
+        b=DZers6f/bW85HgG9w6xwZ2W7ctE6cirUkp9BOXc4wzAQLJ8hbclatauI3Jbj0CHoK3
+         raCk5YguGXY7ntXQRwWygDUTHFX/ZCxFHtLg4MqKOtAOzrmkgYDKukHBZdsdmmARTe9Z
+         fnLvAzVpSyJ56zmYkFOTG/DAmSwYrs/z+jBQ1/D2HMxFlX1/xxY0ZLvqOLtGkZa+yjv2
+         JKxSQ/w95eNIT6dgTUPizuLLgOKUIoJJnsLDEbahCyq0yKkwKH2o00mJJYXQ+FJr72DS
+         G9izbKZMiUcKxaJ7+RA2zelE0AAv5k9TLUCWR8l0KG815UdhT9gTDuB7xezO08fHmJwl
+         YLLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B/QRDv8e8iQEqDNCGkiiDK4fWPlSZEWb6aUg/XWFLNs=;
+        b=tZ072OZasdYreM0HHA1AEjMm08XHFiVZa+aqnSPx7cdNPSewF5kIBxVuaE9XOTRbEW
+         myQOtlqo+99p0BmpJwIFCiPaCzAfBsohZ3FBr2QmVqLLtsThRg4FGnEDaDj1sfHbVA2i
+         XEuco6+Pj/BcDZ+W6f3kf26xQzKrrOyHz9t1Pj/WfTFdQVASi2Y+XGv6hJyfmEOhPmv1
+         whYVStGJWMQm6dbS2GBJP32wCtEDbnABLR47lCFGLeISYiPk8ljEJ/iL/gQ/3jNhlDZX
+         uoNIuc5qT3uRhohsVyNt4E4eUSknxFL+HOC/SmmsqHxdPfUEz8o7RGuNvZxFkVArhx6A
+         5+Uw==
+X-Gm-Message-State: APjAAAVkMcH/NldXDwoRBPZNe+i/UBz8kHPzO4uivHsKdkLo7IMpPZ0p
+        nKzPs1Bucu8cBglBfCJnm7F9NQ==
+X-Google-Smtp-Source: APXvYqwcs87BORO66K1Fb2Q4UZMx1Tbzz2nRXGK4re5uWiRJWWTgWw8OWfntW6QesxVSMp+PIgbbIQ==
+X-Received: by 2002:a63:d00f:: with SMTP id z15mr45867227pgf.143.1579278123365;
+        Fri, 17 Jan 2020 08:22:03 -0800 (PST)
+Received: from vader ([2601:602:8b80:8e0:e6a7:a0ff:fe0b:c9a8])
+        by smtp.gmail.com with ESMTPSA id b128sm28618425pga.43.2020.01.17.08.22.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2020 08:22:02 -0800 (PST)
+Date:   Fri, 17 Jan 2020 08:22:01 -0800
+From:   Omar Sandoval <osandov@osandov.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Colin Walters <walters@verbum.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Chris Mason <clm@fb.com>, josef@toxicpanda.com,
+        dsterba@suse.com, linux-ext4 <linux-ext4@vger.kernel.org>,
+        xfs <linux-xfs@vger.kernel.org>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Making linkat() able to overwrite the target
+Message-ID: <20200117162201.GA282012@vader>
+References: <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com>
+ <20200114170250.GA8904@ZenIV.linux.org.uk>
+ <3326.1579019665@warthog.procyon.org.uk>
+ <9351.1579025170@warthog.procyon.org.uk>
+ <359591.1579261375@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <359591.1579261375@warthog.procyon.org.uk>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+On Fri, Jan 17, 2020 at 11:42:55AM +0000, David Howells wrote:
+> Hi Omar,
+> 
+> Do you still have your AT_REPLACE patches?  You said that you'd post a v4
+> series, though I don't see it.  I could make use of such a feature in
+> cachefiles inside the kernel.  For my original question, see:
+> 
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-iter
+> 
+> And do you have ext4 support for it?
 
-I was tracking down a filesystem corruption issue with one proposed
-xfstests testcase. After some debugging I've found out that the problem
-actually is not in the kernel but rather in e2fsck (libext2fs
-respectively). The testcase deletes lost+found, e2fsck recreates it. But
-after the testcase / is h-tree directory. So ext2fs_link() creates
-lost+found in / and clears EXT4_INODE_INDEX flag. Now because the
-filesystem has metadata checksums, clearing the index flag needs to also
-rewrite all directory blocks with h-tree index blocks because the layout
-now needs to be different.  ext2fs_link() actually tries to do this in its
-link_proc() but if the space for new directory entry is found before we
-walk all the h-tree index blocks, we terminate the iteration and some index
-blocks remain unconverted resulting in checksum errors and other weirdness
-later on.
+Hi,
 
-The question is how to best fix this. The easiest fix is to just make
-link_proc() iterate through all directory blocks when it needs to do the
-index blocks conversion. But this seems somewhat stupid. Also there's
-another problem with clearing EXT4_INODE_INDEX in ext2fs_link() - if the
-directory has more than 65000 subdirectories, clearing EXT4_INODE_INDEX is
-not allowed because large directory link count handling is supported only
-for EXT4_INODE_INDEX directories.
+Yes I still have those patches lying around and I'd be happy to dust
+them off and resend them. I don't have ext4 support. I'd be willing to
+take a stab at ext4 once Al is happy with the VFS part unless someone
+more familiar with ext4 wants to contribute that support.
 
-So what do we do with this? For e2fsck, we could just link the new entry
-into the directory and force rehashing later. But ext2fs_link() can be
-called also from other tools and it should be a self-contained API... Any
-ideas? Should we just bite the bullet and implement ext2fs_link() for
-h-tree dirs properly?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks for reviving interesting in this!
