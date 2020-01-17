@@ -2,76 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A655F140114
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 01:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F263C1404AA
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 08:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730885AbgAQAqt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Jan 2020 19:46:49 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:49139 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726378AbgAQAqt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Jan 2020 19:46:49 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2C01D7539;
-        Thu, 16 Jan 2020 19:46:48 -0500 (EST)
-Received: from imap21 ([10.202.2.71])
-  by compute3.internal (MEProxy); Thu, 16 Jan 2020 19:46:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Bj7tew
-        rLhTxxbIYjCh4rz27oO210/CiYYk7GplSzEy8=; b=qMwotpyqVTtZxaUuZvgUko
-        wa5sLBLFtrXwpDa6S8AFaeWgpPYxfYAWW4fNRTZYXnCOy4TM3qYvYXG7Oy2lNJ9w
-        k1GOrmd3u/FGA/hXXYRVFu/4gPZkGzSqJVl1eU9/otOiPQDIjaDEzTH1qG3z+YdY
-        aGteF1iysrJ4MP/y2OCAXMriq+kvEpaOykzzBguva1mpl9Z+p86NyvhiZ3QdnEU0
-        c8+CB8HAMkdSKMYrGZtehj8+WIjyjtI3koNoMhjNTTC+oJpMOaUkTOPCZIoh9TtT
-        xRfvG71B/j54TBy1OWgPfWH3eccrE31EZ+HGxxWTZL4yPVudnHlRLx4IZTJSpp2A
-        ==
-X-ME-Sender: <xms:9wMhXkU7VZX7XD8FoBgC0Xmb4M-AGRdq5c5NozFMLuiaOPGfVR2Ecw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrtdeigddvfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfveholhhi
-    nhcuhggrlhhtvghrshdfuceofigrlhhtvghrshesvhgvrhgsuhhmrdhorhhgqeenucffoh
-    hmrghinhepkhgvrhhnvghlrdhorhhgnecurfgrrhgrmhepmhgrihhlfhhrohhmpeifrghl
-    thgvrhhssehvvghrsghumhdrohhrghenucevlhhushhtvghrufhiiigvpedt
-X-ME-Proxy: <xmx:9wMhXiqac_TG3DDoK0mUIthfFYVjFCbyUDTuPI4F_X3uxp_RZGtqgQ>
-    <xmx:9wMhXoS7TPA7XqiiOWlwjEC5EP6glsQt41-voAKHAipjpMF9yLd2Ww>
-    <xmx:9wMhXk1qPSX_LJ1olcICAhuImDgUJgs679uyS3tTsCqgvy3ios9aeQ>
-    <xmx:-AMhXi4NkJbWfDI6wfFdyhZMX_-weCeRVZYG87X59qU_RNY_xG7RKg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id DD1EE660061; Thu, 16 Jan 2020 19:46:46 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.1.7-754-g09d1619-fmstable-20200113v1
-Mime-Version: 1.0
-Message-Id: <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com>
-In-Reply-To: <9351.1579025170@warthog.procyon.org.uk>
-References: <20200114170250.GA8904@ZenIV.linux.org.uk>
- <3326.1579019665@warthog.procyon.org.uk>
- <9351.1579025170@warthog.procyon.org.uk>
-Date:   Thu, 16 Jan 2020 19:46:25 -0500
-From:   "Colin Walters" <walters@verbum.org>
-To:     "David Howells" <dhowells@redhat.com>,
-        "Al Viro" <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, "Christoph Hellwig" <hch@lst.de>,
-        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Chris Mason" <clm@fb.com>, josef@toxicpanda.com, dsterba@suse.com,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Making linkat() able to overwrite the target
-Content-Type: text/plain
+        id S1729125AbgAQHyU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jan 2020 02:54:20 -0500
+Received: from mga09.intel.com ([134.134.136.24]:65323 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726981AbgAQHyU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 17 Jan 2020 02:54:20 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Jan 2020 23:54:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,329,1574150400"; 
+   d="scan'208";a="214388850"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 16 Jan 2020 23:54:18 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1isMSP-000Cgf-H9; Fri, 17 Jan 2020 15:54:17 +0800
+Date:   Fri, 17 Jan 2020 15:53:27 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: [ext4:dev] BUILD INCOMPLETE
+ 2c9dbf521b5a7f6db9886984e05a248884b694e7
+Message-ID: <5e2167f7.YQDL8zomjTgWyzrx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 14, 2020, at 1:06 PM, David Howells wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
+branch HEAD: 2c9dbf521b5a7f6db9886984e05a248884b694e7  ext4: Add EXT4_IOC_FSGETXATTR/EXT4_IOC_FSSETXATTR to compat_ioctl
 
-> Yes, I suggested AT_LINK_REPLACE as said magical flag.
+TIMEOUT after 2884m
 
-This came up before right?
 
-https://lore.kernel.org/linux-fsdevel/cover.1524549513.git.osandov@fb.com/
+Sorry we cannot finish the testset for your branch within a reasonable time.
+It's our fault -- either some build server is down or some build worker is busy
+doing bisects for _other_ trees. The branch will get more complete coverage and
+possible error reports when our build infrastructure is restored or catches up.
+There will be no more build success notification for this branch head, but you
+can expect reasonably good test coverage after waiting for 1 day.
+
+configs timed out: 18
+
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+
+configs tested: 84
+configs skipped: 1
+
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+parisc                            allnoconfig
+parisc                            allyesonfig
+parisc                         b180_defconfig
+parisc                        c3000_defconfig
+parisc                              defconfig
+i386                             alldefconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+s390                             alldefconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                               rhel-7.6
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+csky                 randconfig-a001-20200117
+openrisc             randconfig-a001-20200117
+s390                 randconfig-a001-20200117
+sh                   randconfig-a001-20200117
+xtensa               randconfig-a001-20200117
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+c6x                  randconfig-a001-20200117
+h8300                randconfig-a001-20200117
+microblaze           randconfig-a001-20200117
+nios2                randconfig-a001-20200117
+sparc64              randconfig-a001-20200117
+
+---
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
