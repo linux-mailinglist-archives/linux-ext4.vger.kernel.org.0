@@ -2,85 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D992140708
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 10:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765101407FB
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 11:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgAQJ5g (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jan 2020 04:57:36 -0500
-Received: from mail-il1-f196.google.com ([209.85.166.196]:44934 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgAQJ5g (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jan 2020 04:57:36 -0500
-Received: by mail-il1-f196.google.com with SMTP id z12so20794122iln.11;
-        Fri, 17 Jan 2020 01:57:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D2iv/H6UUaNNB2wpyKUhzLnF/ZjtEziCyO0ynW904oU=;
-        b=lEKhV452mvESziCXpI+s4sMxPGiIoDNhNNtdO1u5G1u6Icw8sIy3JYP9kJPMF8+jiB
-         2We/A/aGTdin03iiVhMN7lDtBO+NJ66fmGPFykAKxZVW8Q1+hvCr6cDYOgvFlnhPUs/Z
-         iTb22gF9mqbLaS4r80j0brQL6frUI3onep4R5St9MDwHrpzmJv9MDisyS46ql7Yi+mSt
-         NzhtirvbOj0her2XJeuglRWTIwSmFFXME+3qFOHTXkTpnIctje4BMv2fMnMN7ytwffjJ
-         qQ4uhKJO7ub6f5ip0ui1vulLZtZvYMXFn+oY7t4+5ROwDYswfD5Q/EmY3dxcPH4oeqzi
-         M+Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D2iv/H6UUaNNB2wpyKUhzLnF/ZjtEziCyO0ynW904oU=;
-        b=eRJB5CsxPHvxnDJBplevyE6+JQEkFzR8k+hmJotbs7DbVhUREvrVSr/VBUD4JQhQkv
-         V3r2cxQC1ZWo9foMEM/CiWJgbIzzAI6x9JwMxU+vaEV9ZkXa+fO5Ka2rNtd9u60Koq5L
-         DdXmLwWGGyuYcXSGh9wBXezZnon3Vo8GKeioD4GMLI8LUBZ4RLRZzajzPP+sNvr39paH
-         Ev7gc5pZdk62rAa0gV++Bn6CfW/k6J/LsC+NwAtSF007jO5i71bIcgn76BuFg7R6ImLF
-         I7xaUpL9U4XU0OF8/3GvcK9UFGx9u7vGWdi4rwmj2/LIwtfecwQXjzF5THS48FUt7Dx5
-         82Aw==
-X-Gm-Message-State: APjAAAXjkZlLafjE1zfsDU0hbht1oKb0RLs70prxeSpyEJowPPIX3/0F
-        5F72ecVQ9RQtPLaP4eauq5ycSg3FOqb+Vrypio2xUA==
-X-Google-Smtp-Source: APXvYqwXlxCPM800tjJKMn9q0fTbt1G6E+pDLkKp14cOzG84ftedeRJt5gDSF1/VZifpKyNkSjSA0GITpbV3zIY02Ws=
-X-Received: by 2002:a92:d5c3:: with SMTP id d3mr2295902ilq.250.1579255055251;
- Fri, 17 Jan 2020 01:57:35 -0800 (PST)
+        id S1726513AbgAQKaw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jan 2020 05:30:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40132 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726371AbgAQKav (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 17 Jan 2020 05:30:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 49C5CABBD;
+        Fri, 17 Jan 2020 10:30:49 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 979461E0D53; Fri, 17 Jan 2020 11:30:48 +0100 (CET)
+Date:   Fri, 17 Jan 2020 11:30:48 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>, jack@suse.cz,
+        naoto.kobayashi4c@gmail.com
+Subject: Re: [PATCH] ext4: drop ext4_kvmalloc()
+Message-ID: <20200117103048.GB17141@quack2.suse.cz>
+References: <20200116151239.GA253859@mit.edu>
+ <20200116155031.266620-1-tytso@mit.edu>
 MIME-Version: 1.0
-References: <20200114170250.GA8904@ZenIV.linux.org.uk> <3326.1579019665@warthog.procyon.org.uk>
- <9351.1579025170@warthog.procyon.org.uk> <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com>
-In-Reply-To: <2397bb4a-2ca2-4b44-8c79-64efba9aa04d@www.fastmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 17 Jan 2020 11:57:24 +0200
-Message-ID: <CAOQ4uxgxOzJ+ptExNAJvTJmeW6HNcg7h6siqRzMjYjw3sMYqmQ@mail.gmail.com>
-Subject: Re: Making linkat() able to overwrite the target
-To:     Colin Walters <walters@verbum.org>,
-        David Howells <dhowells@redhat.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        xfs <linux-xfs@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200116155031.266620-1-tytso@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 5:52 AM Colin Walters <walters@verbum.org> wrote:
->
-> On Tue, Jan 14, 2020, at 1:06 PM, David Howells wrote:
->
-> > Yes, I suggested AT_LINK_REPLACE as said magical flag.
->
-> This came up before right?
->
-> https://lore.kernel.org/linux-fsdevel/cover.1524549513.git.osandov@fb.com/
+On Thu 16-01-20 10:50:31, Theodore Ts'o wrote:
+> As Jan pointed out[1], as of commit 81378da64de ("jbd2: mark the
+> transaction context with the scope GFP_NOFS context") we use
+> memalloc_nofs_{save,restore}() while a jbd2 handle is active.  So
+> ext4_kvmalloc() so we can call allocate using GFP_NOFS is no longer
+> necessary.
+> 
+> [1] https://lore.kernel.org/r/20200109100007.GC27035@quack2.suse.cz
 
-David,
+Your signed-off-by is missing but otherwise the patch looks good to me. You
+can add:
 
-This sounds like a good topic to be discussed at LSF/MM (hint hint)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Thanks,
-Amir.
+								Honza
+
+> ---
+>  fs/ext4/ext4.h   |  1 -
+>  fs/ext4/resize.c | 10 ++++------
+>  fs/ext4/super.c  | 10 ----------
+>  fs/ext4/xattr.c  |  2 +-
+>  4 files changed, 5 insertions(+), 18 deletions(-)
+> 
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 5e621b0da4da..9a2ee2428ecc 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -2740,7 +2740,6 @@ extern struct buffer_head *ext4_sb_bread(struct super_block *sb,
+>  extern int ext4_seq_options_show(struct seq_file *seq, void *offset);
+>  extern int ext4_calculate_overhead(struct super_block *sb);
+>  extern void ext4_superblock_csum_set(struct super_block *sb);
+> -extern void *ext4_kvmalloc(size_t size, gfp_t flags);
+>  extern int ext4_alloc_flex_bg_array(struct super_block *sb,
+>  				    ext4_group_t ngroup);
+>  extern const char *ext4_decode_error(struct super_block *sb, int errno,
+> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+> index a8c0f2b5b6e1..86a2500ed292 100644
+> --- a/fs/ext4/resize.c
+> +++ b/fs/ext4/resize.c
+> @@ -824,9 +824,8 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
+>  	if (unlikely(err))
+>  		goto errout;
+>  
+> -	n_group_desc = ext4_kvmalloc((gdb_num + 1) *
+> -				     sizeof(struct buffer_head *),
+> -				     GFP_NOFS);
+> +	n_group_desc = kvmalloc((gdb_num + 1) * sizeof(struct buffer_head *),
+> +				GFP_KERNEL);
+>  	if (!n_group_desc) {
+>  		err = -ENOMEM;
+>  		ext4_warning(sb, "not enough memory for %lu groups",
+> @@ -900,9 +899,8 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
+>  	gdb_bh = ext4_sb_bread(sb, gdblock, 0);
+>  	if (IS_ERR(gdb_bh))
+>  		return PTR_ERR(gdb_bh);
+> -	n_group_desc = ext4_kvmalloc((gdb_num + 1) *
+> -				     sizeof(struct buffer_head *),
+> -				     GFP_NOFS);
+> +	n_group_desc = kvmalloc((gdb_num + 1) * sizeof(struct buffer_head *),
+> +				GFP_KERNEL);
+>  	if (!n_group_desc) {
+>  		brelse(gdb_bh);
+>  		err = -ENOMEM;
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 84a86d9b790f..ecf36a23e0c4 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -204,16 +204,6 @@ void ext4_superblock_csum_set(struct super_block *sb)
+>  	es->s_checksum = ext4_superblock_csum(sb, es);
+>  }
+>  
+> -void *ext4_kvmalloc(size_t size, gfp_t flags)
+> -{
+> -	void *ret;
+> -
+> -	ret = kmalloc(size, flags | __GFP_NOWARN);
+> -	if (!ret)
+> -		ret = __vmalloc(size, flags, PAGE_KERNEL);
+> -	return ret;
+> -}
+> -
+>  ext4_fsblk_t ext4_block_bitmap(struct super_block *sb,
+>  			       struct ext4_group_desc *bg)
+>  {
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index 246fbeeb6366..8cac7d95c3ad 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -1456,7 +1456,7 @@ ext4_xattr_inode_cache_find(struct inode *inode, const void *value,
+>  	if (!ce)
+>  		return NULL;
+>  
+> -	ea_data = ext4_kvmalloc(value_len, GFP_NOFS);
+> +	ea_data = kvmalloc(value_len, GFP_KERNEL);
+>  	if (!ea_data) {
+>  		mb_cache_entry_put(ea_inode_cache, ce);
+>  		return NULL;
+> -- 
+> 2.24.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
