@@ -2,65 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8DE140F28
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 17:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B0E140F35
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 17:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgAQQlg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jan 2020 11:41:36 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39661 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726603AbgAQQlf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jan 2020 11:41:35 -0500
-Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00HGesH5016861
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Jan 2020 11:40:56 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 44E2E4207DF; Fri, 17 Jan 2020 11:40:54 -0500 (EST)
-Date:   Fri, 17 Jan 2020 11:40:54 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fscrypt@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org,
-        Barani Muthukumaran <bmuthuku@codeaurora.org>,
-        Gaurav Kashyap <gaurkash@codeaurora.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-api@vger.kernel.org
-Subject: Re: [PATCH] fscrypt: reserve flags for hardware-wrapped keys feature
-Message-ID: <20200117164054.GD448999@mit.edu>
-References: <20200116192008.35766-1-ebiggers@kernel.org>
- <20200117081246.GA16846@infradead.org>
+        id S1727766AbgAQQn5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jan 2020 11:43:57 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:23025 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726901AbgAQQn4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jan 2020 11:43:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579279435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ywZah/acU88OdI0elxdfP2wlFAEGYbYZ2X9Wl0Y+ps=;
+        b=aPONDv90XNmbxI3XjQCdAGwZTtIDrtRA9Q0T72fYp+mdaEnn8imbL7tTgheeHPMfkJt2OT
+        s77r75OsSZkYkLphG+JFZ9Az5m3JWc/KcMMVMyxyJjYy8hriYMTh8802fxzF64aZ/u/dpS
+        aCfw7gMeKiYcC7nNmoJZoneHrxc/d3c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-LeC-d3cZMfmN1hLN6_W0bg-1; Fri, 17 Jan 2020 11:43:49 -0500
+X-MC-Unique: LeC-d3cZMfmN1hLN6_W0bg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DDF66125B;
+        Fri, 17 Jan 2020 16:43:42 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-49.rdu2.redhat.com [10.10.120.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BDA115C54A;
+        Fri, 17 Jan 2020 16:43:39 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200116101344.GA16435@lst.de>
+References: <20200116101344.GA16435@lst.de> <20200115144839.GA30301@lst.de> <20200115133101.GA28583@lst.de> <4467.1579020509@warthog.procyon.org.uk> <00fc7691-77d5-5947-5493-5c97f262da81@gmx.com> <27181AE2-C63F-4932-A022-8B0563C72539@dilger.ca> <afa71c13-4f99-747a-54ec-579f11f066a0@gmx.com> <26093.1579098922@warthog.procyon.org.uk> <28755.1579100378@warthog.procyon.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     dhowells@redhat.com, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Problems with determining data presence by examining extents?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200117081246.GA16846@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <469987.1579279418.1@warthog.procyon.org.uk>
+Date:   Fri, 17 Jan 2020 16:43:38 +0000
+Message-ID: <469988.1579279418@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 12:12:46AM -0800, Christoph Hellwig wrote:
-> On Thu, Jan 16, 2020 at 11:20:08AM -0800, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Reserve flags for the hardware-wrapped keys feature which is being
-> > worked on [1].  FSCRYPT_POLICY_FLAG_HW_WRAPPED_KEY will denote that the
-> > encryption policy needs a hardware-wrapped key to be unlocked.
-> > FSCRYPT_ADD_KEY_FLAG_HW_WRAPPED will denote that the key being added is
-> > a hardware-wrapped key.
-> > 
-> > This reservation is tentative, and these codepoints may be reused if the
-> > feature is not upstreamed.
-> 
-> NAK.  While the feature itself sounds really useful we don't just
-> reserve format bits for code not upstream.
+Christoph Hellwig <hch@lst.de> wrote:
 
-I disagree; saving a codepoint to avoid accidental collision of a
-feature bit is a good and proper thing to do.
+> File systems usually pad zeroes where they have to, typically for
+> sub-blocksize writes.   Disabling this would break data integrity.
 
-Reviewed-by: Theodore Ts'o <tytso@mit.edu>
+I understand that.  I can, however, round up the netfs I/O granule size and
+alignment to a multiple of the cachefile I/O block size.  Also, I'm doing DIO,
+so I have to use block size multiples.
 
-							- Ted
+But if the filesystem can avoid bridging large, appropriately sized and
+aligned blocks, then I can use it.
+
+David
 
