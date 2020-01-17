@@ -2,136 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D522F140FCD
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 18:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74201412F9
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Jan 2020 22:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728982AbgAQRY4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 17 Jan 2020 12:24:56 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:40450 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727519AbgAQRYz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 17 Jan 2020 12:24:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579281894;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9xJSRhNfq8Tr3ojPfxyB93atGe8xjio+WX3BHwdtb3E=;
-        b=fBfVQH3NTGthNIG5ljm1qBQ7yORU3jsNmq1M4QoJYscnbw0LaxGnRXLeVxa1iUtSF3jJe5
-        mRffyAdG4v+b0HKvPgjAacz/poimYp6KaEToetcc4cRa/Vf+aVfZHhozybwuK9GCF8oavQ
-        T50cDKBPuDjk1H3Al+oZvCl7ilPYLuQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-ancvZ7HdO96rWud3lYvvqg-1; Fri, 17 Jan 2020 12:24:50 -0500
-X-MC-Unique: ancvZ7HdO96rWud3lYvvqg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5196A800D41;
-        Fri, 17 Jan 2020 17:24:48 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0E45A7DB34;
-        Fri, 17 Jan 2020 17:24:48 +0000 (UTC)
-Received: from zmail17.collab.prod.int.phx2.redhat.com (zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 9262787092;
-        Fri, 17 Jan 2020 17:24:47 +0000 (UTC)
-Date:   Fri, 17 Jan 2020 12:24:47 -0500 (EST)
-From:   Jan Stancek <jstancek@redhat.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>, tytso@mit.edu,
-        adilger@dilger.ca
-Cc:     LTP List <ltp@lists.linux.it>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, chrubis <chrubis@suse.cz>,
-        linux-ext4@vger.kernel.org
-Message-ID: <1555311261.2497849.1579281887353.JavaMail.zimbra@redhat.com>
-In-Reply-To: <CA+G9fYuBdcZvE6VPm9i2=F0mK5u3j6Z+RHbFBQ1zh9qbN_4kaw@mail.gmail.com>
-References: <CA+G9fYuBdcZvE6VPm9i2=F0mK5u3j6Z+RHbFBQ1zh9qbN_4kaw@mail.gmail.com>
-Subject: Re: LTP: statx06: FAIL: Birth time < before time
+        id S1729251AbgAQV1W (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Jan 2020 16:27:22 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58709 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729235AbgAQV1V (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 17 Jan 2020 16:27:21 -0500
+Received: from callcc.thunk.org (guestnat-104-133-0-111.corp.google.com [104.133.0.111] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00HLQvqE015166
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Jan 2020 16:26:59 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id AB7EF4207DF; Fri, 17 Jan 2020 16:26:57 -0500 (EST)
+Date:   Fri, 17 Jan 2020 16:26:57 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Kai Li <li.kai4@h3c.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joseph.qi@linux.alibaba.com,
+        gechangwei@live.cn, wang.yongd@h3c.com, wang.xibo@h3c.com
+Subject: Re: [PATCH] jbd2: clear JBD2_ABORT flag before journal_reset to
+ update log tail info when load journal
+Message-ID: <20200117212657.GF448999@mit.edu>
+References: <20200111022542.5008-1-li.kai4@h3c.com>
+ <20200114103119.GE6466@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.17.25, 10.4.195.23]
-Thread-Topic: statx06: FAIL: Birth time < before time
-Thread-Index: BGRUuw3BMnr+jewWkQoEmCDnUAKxyQ==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200114103119.GE6466@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-
------ Original Message -----
-> LTP syscalls statx06 test case getting failed from linux next 20200115
-> tag onwards on all x86_64, i386, arm and arm64 devices
+On Tue, Jan 14, 2020 at 11:31:19AM +0100, Jan Kara wrote:
+> Thanks for the patch! Just some small comments below:
 > 
-> Test output:
-> statx06.c:152: FAIL: Birth time < before time
-
-[CC Theo & linux-ext4]
-
-It's returning '0' in stx_btime for STATX_ALL or STATX_BTIME.
-
-Looking at changes, I suspect:
-  commit 927353987d503b24e1813245563cde0c6167af6e
-  Author: Theodore Ts'o <tytso@mit.edu>
-  Date:   Thu Nov 28 22:26:51 2019 -0500
-    ext4: avoid fetching btime in ext4_getattr() unless requested
-
-and that perhaps it should be instead...
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index c8355f022e6e..6d76eb6d2e7f 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5398,7 +5398,7 @@ int ext4_getattr(const struct path *path, struct kstat *stat,
-        struct ext4_inode_info *ei = EXT4_I(inode);
-        unsigned int flags;
-
--       if ((query_flags & STATX_BTIME) &&
-+       if ((request_mask & STATX_BTIME) &&
-            EXT4_FITS_IN_INODE(raw_inode, ei, i_crtime)) {
-                stat->result_mask |= STATX_BTIME;
-                stat->btime.tv_sec = ei->i_crtime.tv_sec;
-
-That allows test to pass again.
-
-> statx06.c:156: PASS: Modified time Passed
-> statx06.c:156: PASS: Access time Passed
-> statx06.c:156: PASS: Change time Passed
+> On Sat 11-01-20 10:25:42, Kai Li wrote:
+> > Fixes: 85e0c4e89c1b "jbd2: if the journal is aborted then don't allow update of the log tail"
 > 
-> strace output snippet:
-> [pid   498] clock_getres(CLOCK_REALTIME_COARSE, {tv_sec=0, tv_nsec=1000000})
-> = 0
-> [pid   498] nanosleep({tv_sec=0, tv_nsec=1000000}, NULL) = 0
-> [pid   498] openat(AT_FDCWD, \"mount_ext/test_file.txt\",
-> O_RDWR|O_CREAT, 0666) = 3
-> [pid   498] clock_getres(CLOCK_REALTIME_COARSE, {tv_sec=0, tv_nsec=1000000})
-> = 0
-> [pid   498] nanosleep({tv_sec=0, tv_nsec=1000000}, NULL) = 0
-> [pid   498] statx(AT_FDCWD, \"mount_ext/test_file.txt\",
-> AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_BASIC_STATS,
-> stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=0, ...}) = 0
-> [pid   498] write(2, \"statx06.c:152: \33[1;31mFAIL: \33[0m\"...,
-> 57statx06.c:152: [1;31mFAIL: [0mBirth time < before time
-> ) = 57
+> This tag should come at the bottom of the changelog (close to your
+> Signed-off-by).
 > 
-> Full test log link,
-> https://lkft.validation.linaro.org/scheduler/job/1107634#L2276
+> > If journal is dirty when mount, it will be replayed but jbd2 sb
+> > log tail cannot be updated to mark a new start because
+> > journal->j_flags has already been set with JBD2_ABORT first
+> > in journal_init_common.
+> > When a new transaction is committed, it will be recorded in block 1
+> > first(journal->j_tail is set to 1 in journal_reset). If emergency
+> > restart again before journal super block is updated unfortunately,
+> > the new recorded trans will not be replayed in the next mount.
+> > It is danerous which may lead to metadata corruption for file system.
 > 
-> Test results comparison link,
-> https://qa-reports.linaro.org/lkft/linux-next-oe/tests/ltp-syscalls-tests/statx06
+> I'd slightly rephrase the text here so that it is more easily readable and
+> correct some grammar mistakes. Something like:
 > 
-> Test case link,
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/statx/statx06.c
+> If the journal is dirty when the filesystem is mounted, jbd2 will replay
+> the journal but the journal superblock will not be updated by
+> journal_reset() because JBD2_ABORT flag is still set (it was set in
+> journal_init_common()). This is problematic because when a new transaction
+> is then committed, it will be recorded in block 1 (journal->j_tail was set
+> to 1 in journal_reset()). If unclean shutdown happens again before the
+> journal superblock is updated, the new recorded transaction will not be
+> replayed during the next mount (because of stale sb->s_start and
+> sb->s_sequence values) which can lead to filesystem corruption.
 > 
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+> Otherwise the patch looks good to me so feel free to add:
 > 
+> Reviewed-by: Jan Kara <jack@suse.cz>
 > 
+> (again this is added to the bottom of the changelog like the 'Fixes' tag or
+> 'Signed-off-by' tag).
 
+Thanks, applied with a fixed up commit description.
+
+		       	     	       - Ted
