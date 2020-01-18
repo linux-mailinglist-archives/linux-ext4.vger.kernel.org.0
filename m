@@ -2,206 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5835214163A
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 Jan 2020 07:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A87BD1416B1
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 Jan 2020 10:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgARGqR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 18 Jan 2020 01:46:17 -0500
-Received: from mga06.intel.com ([134.134.136.31]:63204 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725913AbgARGqR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 18 Jan 2020 01:46:17 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jan 2020 22:46:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,333,1574150400"; 
-   d="scan'208";a="220943349"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Jan 2020 22:46:15 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1ishs6-0003Uo-Vo; Sat, 18 Jan 2020 14:46:14 +0800
-Date:   Sat, 18 Jan 2020 14:45:13 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS 7976dd39e377166f85d4cb39aa1a793e01a2adaf
-Message-ID: <5e22a979.k8GRTSnbUpGF65f3%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726738AbgARJLM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 18 Jan 2020 04:11:12 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:41699 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726628AbgARJLM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 18 Jan 2020 04:11:12 -0500
+Received: from dread.disaster.area (pa49-181-172-170.pa.nsw.optusnet.com.au [49.181.172.170])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 17D1F7EB72C;
+        Sat, 18 Jan 2020 20:11:07 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1isk8H-0003Ey-Eq; Sat, 18 Jan 2020 20:11:05 +1100
+Date:   Sat, 18 Jan 2020 20:11:05 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH V2 01/12] fs/stat: Define DAX statx attribute
+Message-ID: <20200118091105.GA9407@dread.disaster.area>
+References: <20200110192942.25021-1-ira.weiny@intel.com>
+ <20200110192942.25021-2-ira.weiny@intel.com>
+ <20200115113715.GB2595@quack2.suse.cz>
+ <20200115173834.GD8247@magnolia>
+ <20200115194512.GF23311@iweiny-DESK2.sc.intel.com>
+ <CAPcyv4hwefzruFj02YHYiy8nOpHJFGLKksjiXoRUGpT3C2rDag@mail.gmail.com>
+ <20200115223821.GG23311@iweiny-DESK2.sc.intel.com>
+ <20200116053935.GB8235@magnolia>
+ <CAPcyv4jDMsPj_vZwDOgPkfHLELZWqeJugKgKNVKbpiZ9th683g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4jDMsPj_vZwDOgPkfHLELZWqeJugKgKNVKbpiZ9th683g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=IIEU8dkfCNxGYurWsojP/w==:117 a=IIEU8dkfCNxGYurWsojP/w==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=Jdjhy38mL1oA:10
+        a=yPCof4ZbAAAA:8 a=7-415B0cAAAA:8 a=Ei6hhWl3_lwP0hYN7Z4A:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
-branch HEAD: 7976dd39e377166f85d4cb39aa1a793e01a2adaf  ext4: drop ext4_kvmalloc()
+On Wed, Jan 15, 2020 at 10:05:00PM -0800, Dan Williams wrote:
+> On Wed, Jan 15, 2020 at 9:39 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+> [..]
+> > >         attempts to minimize software cache effects for both I/O and
+> > >         memory mappings of this file.  It requires a file system which
+> > >         has been configured to support DAX.
+> > >
+> > >         DAX generally assumes all accesses are via cpu load / store
+> > >         instructions which can minimize overhead for small accesses, but
+> > >         may adversely affect cpu utilization for large transfers.
+> > >
+> > >         File I/O is done directly to/from user-space buffers and memory
+> > >         mapped I/O may be performed with direct memory mappings that
+> > >         bypass kernel page cache.
+> > >
+> > >         While the DAX property tends to result in data being transferred
+> > >         synchronously, it does not give the same guarantees of
+> > >         synchronous I/O where data and the necessary metadata are
+> > >         transferred together.
+> >
+> > (I'm frankly not sure that synchronous I/O actually guarantees that the
+> > metadata has hit stable storage...)
+> 
+> Oh? That text was motivated by the open(2) man page description of O_SYNC.
 
-elapsed time: 711m
+Ugh. "synchronous I/O" means two different things, depending on
+context. In the AIO context, it means "process context waits for operation
+completion direct", but in the O_SYNC context, it means "we guarantee
+data integrity for each I/O submitted".
 
-configs tested: 152
-configs skipped: 1
+Indeed, O_SYNC AIO is a thing. i.e. we can do an "async sync
+write" to guarantee data integrity without directly waiting for
+it. Now try describing that only using the words "synchronous
+write" to describe both behaviours. :)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+IOWs, if you are talking about data integrity, you need to
+explicitly say "O_SYNC semantics", not "synchronous write", because
+"synchronous write" is totally ambiguous without the O_SYNC context
+of the open(2) man page...
 
-csky                 randconfig-a001-20200118
-openrisc             randconfig-a001-20200118
-s390                 randconfig-a001-20200118
-sh                   randconfig-a001-20200118
-xtensa               randconfig-a001-20200118
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-arc                  randconfig-a001-20200118
-arm                  randconfig-a001-20200118
-arm64                randconfig-a001-20200118
-ia64                 randconfig-a001-20200118
-powerpc              randconfig-a001-20200118
-sparc                randconfig-a001-20200118
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-x86_64               randconfig-e001-20200118
-x86_64               randconfig-e002-20200118
-x86_64               randconfig-e003-20200118
-i386                 randconfig-e001-20200118
-i386                 randconfig-e002-20200118
-i386                 randconfig-e003-20200118
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                              fedora-25
-x86_64                                  kexec
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-x86_64               randconfig-f001-20200118
-x86_64               randconfig-f002-20200118
-x86_64               randconfig-f003-20200118
-i386                 randconfig-f001-20200118
-i386                 randconfig-f002-20200118
-i386                 randconfig-f003-20200118
-c6x                  randconfig-a001-20200118
-h8300                randconfig-a001-20200118
-microblaze           randconfig-a001-20200118
-nios2                randconfig-a001-20200118
-sparc64              randconfig-a001-20200118
-parisc                            allnoconfig
-parisc                            allyesonfig
-parisc                         b180_defconfig
-parisc                        c3000_defconfig
-parisc                              defconfig
-alpha                randconfig-a001-20200118
-m68k                 randconfig-a001-20200118
-mips                 randconfig-a001-20200118
-nds32                randconfig-a001-20200118
-parisc               randconfig-a001-20200118
-riscv                randconfig-a001-20200118
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-x86_64               randconfig-b001-20200118
-x86_64               randconfig-b002-20200118
-x86_64               randconfig-b003-20200118
-i386                 randconfig-b001-20200118
-i386                 randconfig-b002-20200118
-i386                 randconfig-b003-20200118
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-i386                             alldefconfig
-i386                              allnoconfig
-i386                                defconfig
-x86_64               randconfig-g001-20200118
-x86_64               randconfig-g002-20200118
-x86_64               randconfig-g003-20200118
-i386                 randconfig-g001-20200118
-i386                 randconfig-g002-20200118
-i386                 randconfig-g003-20200118
-x86_64               randconfig-c001-20200118
-x86_64               randconfig-c002-20200118
-x86_64               randconfig-c003-20200118
-i386                 randconfig-c001-20200118
-i386                 randconfig-c002-20200118
-i386                 randconfig-c003-20200118
-x86_64               randconfig-h001-20200118
-x86_64               randconfig-h002-20200118
-x86_64               randconfig-h003-20200118
-i386                 randconfig-h001-20200118
-i386                 randconfig-h002-20200118
-i386                 randconfig-h003-20200118
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-arm                              allmodconfig
-arm                         at91_dt_defconfig
-arm64                               defconfig
-arm                        multi_v5_defconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-arm                               allnoconfig
-arm                           efm32_defconfig
-arm                           sunxi_defconfig
-arm64                             allnoconfig
-arm64                            allmodconfig
-arm                          exynos_defconfig
-arm                        shmobile_defconfig
-arm                        multi_v7_defconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
+Cheers,
 
----
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+Dave.
+
+-- 
+Dave Chinner
+david@fromorbit.com
