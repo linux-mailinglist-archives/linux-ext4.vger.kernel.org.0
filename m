@@ -2,123 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD871416C7
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 Jan 2020 10:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30E54141A14
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 Jan 2020 23:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgARJ2r (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 18 Jan 2020 04:28:47 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:47614 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726811AbgARJ2r (ORCPT
+        id S1727060AbgARWlQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 18 Jan 2020 17:41:16 -0500
+Received: from [198.137.202.133] ([198.137.202.133]:36394 "EHLO
+        bombadil.infradead.org" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S1727008AbgARWlP (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 18 Jan 2020 04:28:47 -0500
-Received: from dread.disaster.area (pa49-181-172-170.pa.nsw.optusnet.com.au [49.181.172.170])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 96D4543FD14;
-        Sat, 18 Jan 2020 20:28:39 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1iskPG-0003Oh-RX; Sat, 18 Jan 2020 20:28:38 +1100
-Date:   Sat, 18 Jan 2020 20:28:38 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Sat, 18 Jan 2020 17:41:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=vyYDHKvf8gCiisBHbQ1RzC91plzB3US9sNYD80kKiaU=; b=i3JtNAjSE6Cmh9ec2614Kqpaz
+        pDvpbDSOyBvB5PYbf5RdTTHw3IkY3UyZpv7p/iS4hp7Y9znPQfJD+m39U6zVkL2DauuWgBMqi5L6k
+        jvo3y72b8rppMJdJ9NaEy2r18bFFClCbtPYjg0xMA5nzaIgtIVvgdNLXmKIc1jPPF82YEO5Ii+1fL
+        FhaMWUP32RjrC/UzIS+KZorvqO8WST7q8Kq+EYPnVo+qmSfEk4WccgUg1LwSLoXPiz5WFq72ByCpC
+        lGnF3ASEkbw8TAr/Ofw/A25tEeIt+ePR+ef3xIYFoGgSnA9SMJOOGREbOVuP2NsjmBYp+dgSBicrR
+        dCE+PeD2g==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iswlg-0001Y2-1d; Sat, 18 Jan 2020 22:40:36 +0000
+Date:   Sat, 18 Jan 2020 14:40:35 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: RFC: hold i_rwsem until aio completes
-Message-ID: <20200118092838.GB9407@dread.disaster.area>
+Message-ID: <20200118224035.GA26801@bombadil.infradead.org>
 References: <20200114161225.309792-1-hch@lst.de>
+ <20200114192700.GC22037@ziepe.ca>
+ <20200115065614.GC21219@lst.de>
+ <20200115132428.GA25201@ziepe.ca>
+ <20200115143347.GL2827@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200114161225.309792-1-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
-        a=IIEU8dkfCNxGYurWsojP/w==:117 a=IIEU8dkfCNxGYurWsojP/w==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=Jdjhy38mL1oA:10
-        a=7-415B0cAAAA:8 a=ITVTHrnrj4Og1yiqg0wA:9 a=CjuIK1q_8ugA:10
-        a=igBNqPyMv6gA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200115143347.GL2827@hirez.programming.kicks-ass.net>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 05:12:13PM +0100, Christoph Hellwig wrote:
-> Hi all,
+On Wed, Jan 15, 2020 at 03:33:47PM +0100, Peter Zijlstra wrote:
+> On Wed, Jan 15, 2020 at 09:24:28AM -0400, Jason Gunthorpe wrote:
 > 
-> Asynchronous read/write operations currently use a rather magic locking
-> scheme, were access to file data is normally protected using a rw_semaphore,
-> but if we are doing aio where the syscall returns to userspace before the
-> I/O has completed we also use an atomic_t to track the outstanding aio
-> ops.  This scheme has lead to lots of subtle bugs in file systems where
-> didn't wait to the count to reach zero, and due to its adhoc nature also
-> means we have to serialize direct I/O writes that are smaller than the
-> file system block size.
+> > I was interested because you are talking about allowing the read/write side
+> > of a rw sem to be held across a return to user space/etc, which is the
+> > same basic problem.
 > 
-> All this is solved by releasing i_rwsem only when the I/O has actually
-> completed, but doings so is against to mantras of Linux locking primites:
-> 
->  (1) no unlocking by another process than the one that acquired it
->  (2) no return to userspace with locks held
-> 
-> It actually happens we have various places that work around this.  A few
-> callers do non-owner unlocks of rwsems, which are pretty nasty for
-> PREEMPT_RT as the owner tracking doesn't work.  OTOH the file system
-> freeze code has both problems and works around them a little better,
-> although in a somewhat awkward way, in that it releases the lockdep
-> object when returning to userspace, and reacquires it when done, and
-> also clears the rwsem owner when returning to userspace, and then sets
-> the new onwer before unlocking.
-> 
-> This series tries to follow that scheme, also it doesn't fully work.  The
-> first issue is that the rwsem code has a bug where it doesn't properly
-> handle clearing the owner.  This series has a patch to fix that, but it
-> is ugly and might not be correct so some help is needed.  Second I/O
-> completions often come from interrupt context, which means the re-acquire
-> is recorded as from irq context, leading to warnings about incorrect
-> contexts.  I wonder if we could just have a bit in lockdep that says
-> returning to userspace is ok for this particular lock?  That would also
-> clean up the fsfreeze situation a lot.
-> 
-> Let me know what you think of all this.  While I converted all the iomap
-> using file systems only XFS is actually tested.
+> No it is not; allowing the lock to be held across userspace doesn't
+> change the owner. This is a crucial difference, PI depends on there
+> being a distinct owner. That said, allowing the lock to be held across
+> userspace still breaks PI in that it completely wrecks the ability to
+> analyze the critical section.
 
-I think it's pretty gross, actually. It  makes the same mistake made
-with locking in the old direct IO code - it encodes specific lock
-operations via flags into random locations in the DIO path. This is
-a very slippery slope, and IMO it is an layering violation to encode
-specific filesystem locking smeantics into a layer that is supposed
-to be generic and completely filesystem agnostic. i.e.  this
-mechanism breaks if a filesystem moves to a different type of lock
-(e.g. range locks), and history teaches us that we'll end up making
-a horrible, unmaintainable mess to support different locking
-mechanisms and contexts.
+Thinking about this from a PI point of view, the problem is not that we
+returned to userspace still holding the lock, it's that boosting this
+process's priority will not help release the lock faster because this
+process no longer owns the lock.
 
-I think that we should be moving to a model where the filesystem
-provides an unlock method in the iomap operations structure, and if
-the method is present in iomap_dio_complete() it gets called for the
-filesystem to unlock the inode at the appropriate point. This also
-allows the filesystem to provide a different method for read or
-write unlock, depending on what type of lock it held at submission.
-This gets rid of the need for the iomap code to know what type of
-lock the caller holds, too.
-
-This way we always have a consistent point in the AIO/DIO completion
-model where the inode gets unlocked, it only gets called for the IO
-contexts where the filesystem wants/needs unlock on IO competion
-semantics, and it's completely filesystem IO-lock implementation
-agnostic. And for filesystems that use the inode i_rwsem, we can
-just provide simple helper functions for their read/write unlock
-methods.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+If we had a lock owner handoff API (ie I can donate my lock to another
+owner), that would solve this problem.  We'd want to have special owners
+to denote "RCU" "bottom halves" or "irq" so we know what we can do about
+PI.  I don't think we need a "I have stolen this lock from somebody else"
+API, but maybe I'm wrong there.
