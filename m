@@ -2,77 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E54141A14
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 Jan 2020 23:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D61A141F8E
+	for <lists+linux-ext4@lfdr.de>; Sun, 19 Jan 2020 19:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727060AbgARWlQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 18 Jan 2020 17:41:16 -0500
-Received: from [198.137.202.133] ([198.137.202.133]:36394 "EHLO
-        bombadil.infradead.org" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1727008AbgARWlP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 18 Jan 2020 17:41:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=vyYDHKvf8gCiisBHbQ1RzC91plzB3US9sNYD80kKiaU=; b=i3JtNAjSE6Cmh9ec2614Kqpaz
-        pDvpbDSOyBvB5PYbf5RdTTHw3IkY3UyZpv7p/iS4hp7Y9znPQfJD+m39U6zVkL2DauuWgBMqi5L6k
-        jvo3y72b8rppMJdJ9NaEy2r18bFFClCbtPYjg0xMA5nzaIgtIVvgdNLXmKIc1jPPF82YEO5Ii+1fL
-        FhaMWUP32RjrC/UzIS+KZorvqO8WST7q8Kq+EYPnVo+qmSfEk4WccgUg1LwSLoXPiz5WFq72ByCpC
-        lGnF3ASEkbw8TAr/Ofw/A25tEeIt+ePR+ef3xIYFoGgSnA9SMJOOGREbOVuP2NsjmBYp+dgSBicrR
-        dCE+PeD2g==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iswlg-0001Y2-1d; Sat, 18 Jan 2020 22:40:36 +0000
-Date:   Sat, 18 Jan 2020 14:40:35 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Waiman Long <longman@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: RFC: hold i_rwsem until aio completes
-Message-ID: <20200118224035.GA26801@bombadil.infradead.org>
-References: <20200114161225.309792-1-hch@lst.de>
- <20200114192700.GC22037@ziepe.ca>
- <20200115065614.GC21219@lst.de>
- <20200115132428.GA25201@ziepe.ca>
- <20200115143347.GL2827@hirez.programming.kicks-ass.net>
+        id S1728935AbgASSoq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 19 Jan 2020 13:44:46 -0500
+Received: from mail-il1-f193.google.com ([209.85.166.193]:33998 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728842AbgASSoi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Jan 2020 13:44:38 -0500
+Received: by mail-il1-f193.google.com with SMTP id s15so25538367iln.1
+        for <linux-ext4@vger.kernel.org>; Sun, 19 Jan 2020 10:44:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/o+CA7VDRA7UR3HGeT8+/tYzwEnOXwq5B8ZHP2/HeYc=;
+        b=gmKBxPx84PXNKr5CdAEsBl4o6OI0Ul1T9kdeNuOonXVMsPZvHaiVfrF6wsqmkO6amC
+         OhpUNNF3SMjaFtPDB5q+oWHWGLwTM1KQcLAEAJsxead1wkkS8vgEkLcKKIbpXv93k89C
+         Il/b6fig8uFQ2ful9dClSdBh6ES0WHCRI487g5LzaF7Sg904xrrN8vXROMW6UBU7S6v1
+         1KY36Pw5SyxrOXfagNts4/xbaFFgof1/AzREyQlil09RYVWfcnHmKvyC/eKHTr8xAdVR
+         8OHIBUIT1uRPI/WtlHnD2gmL8PhGi3ea1Do5nFE3xaprr/6eI7i7Fk2drMcN+8BwExKd
+         ZFxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/o+CA7VDRA7UR3HGeT8+/tYzwEnOXwq5B8ZHP2/HeYc=;
+        b=PG/iBgg6kmyAULDf2jopTOEaVkJclXRQb/lmcjIUPlu0jN3fmUAdEE9XAebTlntqMX
+         BqAnsUBtzYke+AP7qfieBXfXIK7LRXXq9YuPwsvbvFklchrJFCFrXVKJ4N3vhWKbU2m6
+         LBj6FFpW+0IZ9olKsAqW9e4xgrgJ2JY9K2SudvEHYphm1CZJ3CUjxqHZ5wCzFwKAGu8c
+         gj7WnnZy/0O3F3AuuQjJot6RJdTxiNpCxjmtL09ldph+MXt9gROPquENZsqrOHatCTbg
+         tnmf4mfml7YmLTywBU4StdzJjChvvJlYwMU5bdfP7wPM33X4dXJ2ELcBht7uX8p/YxMP
+         4JEw==
+X-Gm-Message-State: APjAAAXh/VHjBVtmkv/oAi7+caYPhYNkt6k7qvfUyoXvvsqUxEQ6a3AV
+        WWx4O3nVFRFAKdIPlPrCgUkWfeMbY5w6yp6wfmg=
+X-Google-Smtp-Source: APXvYqw0/+WGODIUvKkziyHBLuQsuF4sA8inGcr6D1fE0jlGptJu92UkXoVDxAQCBYSMyoJXI0/9BUQNIZC+z8C9ask=
+X-Received: by 2002:a92:5c52:: with SMTP id q79mr7225189ilb.11.1579459477506;
+ Sun, 19 Jan 2020 10:44:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200115143347.GL2827@hirez.programming.kicks-ass.net>
+Received: by 2002:a02:95c8:0:0:0:0:0 with HTTP; Sun, 19 Jan 2020 10:44:37
+ -0800 (PST)
+Reply-To: favordens@email.com
+From:   Favor Desmond <contecindy5@gmail.com>
+Date:   Sun, 19 Jan 2020 18:44:37 +0000
+Message-ID: <CAOfCPNxP6Zd30BF2yc=mXgSsiq_K60AW+CVH-5JzXJEsBrwaJA@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 03:33:47PM +0100, Peter Zijlstra wrote:
-> On Wed, Jan 15, 2020 at 09:24:28AM -0400, Jason Gunthorpe wrote:
-> 
-> > I was interested because you are talking about allowing the read/write side
-> > of a rw sem to be held across a return to user space/etc, which is the
-> > same basic problem.
-> 
-> No it is not; allowing the lock to be held across userspace doesn't
-> change the owner. This is a crucial difference, PI depends on there
-> being a distinct owner. That said, allowing the lock to be held across
-> userspace still breaks PI in that it completely wrecks the ability to
-> analyze the critical section.
-
-Thinking about this from a PI point of view, the problem is not that we
-returned to userspace still holding the lock, it's that boosting this
-process's priority will not help release the lock faster because this
-process no longer owns the lock.
-
-If we had a lock owner handoff API (ie I can donate my lock to another
-owner), that would solve this problem.  We'd want to have special owners
-to denote "RCU" "bottom halves" or "irq" so we know what we can do about
-PI.  I don't think we need a "I have stolen this lock from somebody else"
-API, but maybe I'm wrong there.
+Hello Dear
+Greetings to you,I am Favor Desmond from Ivory coast currently living
+in  Togo Republic,I would like to know you more, so that i can tell
+you little amount myself and my photo, email address is
+favordens@email.com
+Thanks
+Favor
