@@ -2,109 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FABE142181
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jan 2020 02:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A9914227F
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jan 2020 05:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729049AbgATBff (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 19 Jan 2020 20:35:35 -0500
-Received: from zeniv.linux.org.uk ([195.92.253.2]:41284 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728931AbgATBff (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 19 Jan 2020 20:35:35 -0500
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1itLyS-00Bl2j-If; Mon, 20 Jan 2020 01:35:28 +0000
-Date:   Mon, 20 Jan 2020 01:35:28 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        id S1729145AbgATEs5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 19 Jan 2020 23:48:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729043AbgATEs5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 19 Jan 2020 23:48:57 -0500
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABBFE20684;
+        Mon, 20 Jan 2020 04:48:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579495736;
+        bh=Q7wJnp7QsNYnS0LU3C/JSOl8FKpk9+5t4Fs/69qFKaU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WWfWDdlTcogjcjQNU7ROuxO9HC011fHFtUPXK4hPXps9XoUf8wkg5rPYzIs0S+7R9
+         Bm7MzTfJ66XlmhgQPPYFgppZoeT45/WoRsEp/8WF3PJpLBnRpY9f0bUJZpaV9aYp0P
+         rPkd74JC+efpVynWmII+acK6DerXye6tMRIUVY6g=
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-fscrypt@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com,
         Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 5/9] vfs: Fold casefolding into vfs
-Message-ID: <20200120013528.GY8904@ZenIV.linux.org.uk>
-References: <20200117214246.235591-1-drosen@google.com>
- <20200117214246.235591-6-drosen@google.com>
+        Daniel Rosenberg <drosen@google.com>
+Subject: [PATCH v4 0/4] fscrypt preparations for encryption+casefolding
+Date:   Sun, 19 Jan 2020 20:43:57 -0800
+Message-Id: <20200120044401.325453-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200117214246.235591-6-drosen@google.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 01:42:42PM -0800, Daniel Rosenberg wrote:
-> Ext4 and F2fs are both using casefolding, and they, along with any other
-> filesystem that adds the feature, will be using identical dentry_ops.
-> Additionally, those dentry ops interfere with the dentry_ops required
-> for fscrypt once we add support for casefolding and encryption.
-> Moving this into the vfs removes code duplication as well as the
-> complication with encryption.
-> 
-> Currently this is pretty close to just moving the existing f2fs/ext4
-> code up a level into the vfs,
+This is a cleaned up version of the fscrypt patches to prepare for
+directories that are both encrypted and casefolded.
 
-... buggering the filesystems (and boxen) that never planned to use
-that garbage.
+Patches 1-3 start deriving a SipHash key for the new dirhash method that
+will be used by encrypted+casefolded directories.  To avoid unnecessary
+overhead, we only do this if the directory is actually casefolded.
 
-> @@ -247,7 +248,19 @@ static inline int dentry_cmp(const struct dentry *dentry, const unsigned char *c
->  	 * be no NUL in the ct/tcount data)
->  	 */
->  	const unsigned char *cs = READ_ONCE(dentry->d_name.name);
-> +#ifdef CONFIG_UNICODE
-> +	struct inode *parent = dentry->d_parent->d_inode;
+Patch 4 modifies the fscrypt no-key names to always include the dirhash,
+since with the new dirhash method the dirhash will no longer be
+computable from the ciphertext filename without the key.  It also fixes
+a longstanding issue where there could be collisions in the no-key
+names, due to not using a proper cryptographic hash to abbreviate names.
 
-What happens if dentry gets moved under you?  And that's not mentioning the joy
-of extra cachelines to shit the cache with.  For every sodding dentry in the
-hashchain you are walking.
+For more information see the main patch series, which includes the
+filesystem-specific changes:
+https://lkml.kernel.org/linux-fscrypt/20200117214246.235591-1-drosen@google.com/T/#u
 
-> +	if (unlikely(needs_casefold(parent))) {
-> +		const struct qstr n1 = QSTR_INIT(cs, tcount);
-> +		const struct qstr n2 = QSTR_INIT(ct, tcount);
-> +		int result = utf8_strncasecmp(dentry->d_sb->s_encoding,
-> +						&n1, &n2);
+This applies to fscrypt.git#master.
 
-Is that safe in face of renames?  We are *NOT* guaranteed ->d_lock here;
-->d_name can change under you just fine.  False negatives are OK, but
-there's a lot more ways for the things to go wrong.
+Daniel Rosenberg (3):
+  fscrypt: don't allow v1 policies with casefolding
+  fscrypt: derive dirhash key for casefolded directories
+  fscrypt: improve format of no-key names
 
->  static int link_path_walk(const char *name, struct nameidata *nd)
->  {
+Eric Biggers (1):
+  fscrypt: clarify what is meant by a per-file key
 
-> +#ifdef CONFIG_UNICODE
-> +		if (needs_casefold(nd->path.dentry->d_inode)) {
-> +			struct qstr str = QSTR_INIT(name, PATH_MAX);
-> +
-> +			hname = kmalloc(PATH_MAX, GFP_ATOMIC);
-> +			if (!hname)
-> +				return -ENOMEM;
-> +			hlen = utf8_casefold(nd->path.dentry->d_sb->s_encoding,
-> +						&str, hname, PATH_MAX);
-> +		}
-> +		hash_len = hash_name(nd->path.dentry, hname ?: name);
-> +		kfree(hname);
-> +		hname = NULL;
-> +#else
->  		hash_len = hash_name(nd->path.dentry, name);
-> -
-> +#endif
+ Documentation/filesystems/fscrypt.rst |  40 +++--
+ fs/crypto/Kconfig                     |   1 +
+ fs/crypto/fname.c                     | 239 ++++++++++++++++++++------
+ fs/crypto/fscrypt_private.h           |  19 +-
+ fs/crypto/hooks.c                     |  44 +++++
+ fs/crypto/keysetup.c                  |  81 ++++++---
+ fs/crypto/keysetup_v1.c               |   4 +-
+ fs/crypto/policy.c                    |   7 +
+ fs/inode.c                            |   3 +-
+ include/linux/fscrypt.h               |  94 +++-------
+ 10 files changed, 360 insertions(+), 172 deletions(-)
 
-Are you serious?
-	1) who said that ->d_inode is stable here?  If we are in RCU mode,
-it won't be.
-	2) page-sized kmalloc/kfree *ON* *COMPONENT* *AFTER* *COMPONENT*?
 
-> +static inline bool needs_casefold(const struct inode *dir)
-> +{
-> +	return IS_CASEFOLDED(dir) && dir->i_sb->s_encoding &&
-> +			(!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir));
+base-commit: 2d8f7f119b0b2ce5e7ff0e8024b0763bf42b99c9
+-- 
+2.25.0
 
-... and again, you are pulling in a lot of cachelines.
-
-<understatement> IMO the whole thing is not a good idea. </understatement>
