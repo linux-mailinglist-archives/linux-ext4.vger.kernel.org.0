@@ -2,104 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F76142349
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jan 2020 07:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D106143242
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jan 2020 20:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgATGbK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 20 Jan 2020 01:31:10 -0500
-Received: from smtp.h3c.com ([60.191.123.56]:10667 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgATGbJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Jan 2020 01:31:09 -0500
-Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
-        by h3cspam01-ex.h3c.com with ESMTPS id 00K6UV8G061761
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Jan 2020 14:30:31 +0800 (GMT-8)
-        (envelope-from li.kai4@h3c.com)
-Received: from DAG2EX07-IDC.srv.huawei-3com.com (10.8.0.70) by
- DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 20 Jan 2020 14:30:33 +0800
-Received: from DAG2EX07-IDC.srv.huawei-3com.com ([fe80::d67:df5a:88dc:99de])
- by DAG2EX07-IDC.srv.huawei-3com.com ([fe80::d67:df5a:88dc:99de%9]) with mapi
- id 15.01.1713.004; Mon, 20 Jan 2020 14:30:33 +0800
-From:   Likai <li.kai4@h3c.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
-        "gechangwei@live.cn" <gechangwei@live.cn>,
-        Wangyong <wang.yongD@h3c.com>, Wangxibo <wang.xibo@h3c.com>
-Subject: Re: [PATCH] jbd2: clear JBD2_ABORT flag before journal_reset to
- update log tail info when load journal
-Thread-Topic: [PATCH] jbd2: clear JBD2_ABORT flag before journal_reset to
- update log tail info when load journal
-Thread-Index: AQHVyCaRHtk3NUs57kilnbYsclaMFg==
-Date:   Mon, 20 Jan 2020 06:30:33 +0000
-Message-ID: <453bb3b47a214a429abb5c2e38c494c8@h3c.com>
-References: <20200111022542.5008-1-li.kai4@h3c.com>
- <20200114103119.GE6466@quack2.suse.cz> <20200117212657.GF448999@mit.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.125.108.72]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728665AbgATTcC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Jan 2020 14:32:02 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:34701 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727075AbgATTcA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jan 2020 14:32:00 -0500
+Received: by mail-ed1-f67.google.com with SMTP id l8so630722edw.1
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Jan 2020 11:31:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=z7I/Kq2V0EnXiuoACdRbnwoAql3KZ080nwyXVjlruyU=;
+        b=kLfnsSTIjE2YEe6HI6GtqXd6cMnhTRLMcstoRngEtLrpsW8Des52P9cJGak3H8TgGi
+         7pI7x0ReUsZVA5020Qw65cEVulbgAqf7PV7Yj5z98jIQHYXuhdjNseji1wTJmoRk9owd
+         jH0nw85bxKb6JNDbbMZz77rTtrhB/lrp1T9+1Yzp1e0fAmiYnPF2y/wqE3N2vxlEpqDg
+         Q62+v45VGQo8fprIjkXGYdl8n0+0lt4RTeTWLmEirmHeh05e1zsbOQ1RyEmjVmqN0eJc
+         PRg9w7tG3wGqyiL8Rgrtjody799fKx6nbHvtMQHhCmcCncWFfzoetJS1edNfQP320vCH
+         Vilg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=z7I/Kq2V0EnXiuoACdRbnwoAql3KZ080nwyXVjlruyU=;
+        b=AB+e/++5Um5GU71ls5DGxpRfDKAAK5sde9/NHr5HaefC6rFICQFPmYumRTBEnWd/q2
+         RrI+bxLmMFPIgN6itTmFX2RYuYif4cHKhPWsBkvVXOq/ypOM3enDvZHW4+bf3ER7wjuX
+         WhhTznruN6KD61e9hnq4hsvBH3wZTWj0lohjCrQK8UCB/QcoZk3BwlPE8ViGf+7GmzsN
+         gcZ0IveHG78vXZpVlIIGvFPl/l9nqybWhYARBE2w1aJw7Cd6a5HAyaiZu10N362jR6Ld
+         GDh/7cehZ/gj2eNdZNsvFFJQALmq6BlAovxLneQjZ9JvuKL/M4zApcgovWUAPaUxU0cL
+         K/og==
+X-Gm-Message-State: APjAAAVtUywHxe9r0Qy9oFu7tU860gm5PzjXA5NRp4VdWSWzI50a/ylx
+        REddF5FlQp/I6xQY4Ix/WQzMm/mjWKtKFhM58SI=
+X-Google-Smtp-Source: APXvYqwPh6D8ihOXjaVWGs/0GLulEekGPU0xOOyxhr7PagnLX+E8xWeQy/UQ09ZNp2jZFCCt0xVGiodDu+D5No4niKg=
+X-Received: by 2002:a05:6402:505:: with SMTP id m5mr609398edv.15.1579548719077;
+ Mon, 20 Jan 2020 11:31:59 -0800 (PST)
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 00K6UV8G061761
+Received: by 2002:a05:6402:22dc:0:0:0:0 with HTTP; Mon, 20 Jan 2020 11:31:57
+ -0800 (PST)
+Reply-To: mcclainejohn.13@gmail.com
+From:   "Prof, William Roberts" <eco.bank1204@gmail.com>
+Date:   Mon, 20 Jan 2020 20:31:57 +0100
+Message-ID: <CAOE+jAB9Cv76tHqc-hO92yWjVshCsALoX=zT1ruNmX+0-Bjyxw@mail.gmail.com>
+Subject: Contact Diplomatic Agent, Mr. Mcclaine John to receive your ATM CARD
+ valued the sum of $12.8Million United States Dollars
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/1/18 5:27, Theodore Y. Ts'o wrote:
-> On Tue, Jan 14, 2020 at 11:31:19AM +0100, Jan Kara wrote:
->> Thanks for the patch! Just some small comments below:
->>
->> On Sat 11-01-20 10:25:42, Kai Li wrote:
->>> Fixes: 85e0c4e89c1b "jbd2: if the journal is aborted then don't allow update of the log tail"
->> This tag should come at the bottom of the changelog (close to your
->> Signed-off-by).
->>
->>> If journal is dirty when mount, it will be replayed but jbd2 sb
->>> log tail cannot be updated to mark a new start because
->>> journal->j_flags has already been set with JBD2_ABORT first
->>> in journal_init_common.
->>> When a new transaction is committed, it will be recorded in block 1
->>> first(journal->j_tail is set to 1 in journal_reset). If emergency
->>> restart again before journal super block is updated unfortunately,
->>> the new recorded trans will not be replayed in the next mount.
->>> It is danerous which may lead to metadata corruption for file system.
->> I'd slightly rephrase the text here so that it is more easily readable and
->> correct some grammar mistakes. Something like:
->>
->> If the journal is dirty when the filesystem is mounted, jbd2 will replay
->> the journal but the journal superblock will not be updated by
->> journal_reset() because JBD2_ABORT flag is still set (it was set in
->> journal_init_common()). This is problematic because when a new transaction
->> is then committed, it will be recorded in block 1 (journal->j_tail was set
->> to 1 in journal_reset()). If unclean shutdown happens again before the
->> journal superblock is updated, the new recorded transaction will not be
->> replayed during the next mount (because of stale sb->s_start and
->> sb->s_sequence values) which can lead to filesystem corruption.
->>
->> Otherwise the patch looks good to me so feel free to add:
->>
->> Reviewed-by: Jan Kara <jack@suse.cz>
->>
->> (again this is added to the bottom of the changelog like the 'Fixes' tag or
->> 'Signed-off-by' tag).
-> Thanks, applied with a fixed up commit description.
->
-> 		       	     	       - Ted
->
-Sorry for reply so late due to my business trip recently.  This new
-comment is ok and more clear. Thanks.
+Attn: Dear Beneficiary,
 
-                                                                       
-                                                                       
-      - Kai
+I wish to inform you that the diplomatic agent conveying your ATM CARD
+valued the sum of $12.8Million United States Dollars has misplaced
+your address and he is currently stranded at (George Bush
+International Airport) Houston Texas USA now
+We required you to reconfirm the following information's below to him
+so that he can deliver your Payment CARD to you today or tomorrow
+morning as information provided with open communications via email and
+telephone for security reasons.
+HERE IS THE DETAILS  HE NEED FROM YOU URGENT
+YOUR FULL NAME:========
+ADDRESS:========
+MOBILE NO:========
+NAME OF YOUR NEAREST AIRPORT:========
+A COPY OF YOUR IDENTIFICATION :========
 
+Note; do contact the diplomatic agent immediately through the
+information's listed below
+Contact Person: Diplomatic Agent, Mr. Mcclaine John
+EMAIL: mcclainejohn.13@gmail.com
+Tel:(223) 777-7518
+
+Contact the diplomatic agent immediately
+because he is waiting to hear from you today with the needed information's.
+
+NOTE: The Diplomatic agent does not know that the content of the
+consignment box is $12.800,000,00 Million United States Dollars and on
+no circumstances should you let him know the content. The consignment
+was moved from here as family treasures, so never allow him to open
+the box. Please I have paid delivery fees for you but the only money
+you must send to Mcclaine John is your ATM CARD delivery fee $25.00
+only. text Him as you contact Him Immediately
+
+Thanks,
+with Regards.
+Prof, William Roberts
+Director DHL COURIER SERVICES-Benin
