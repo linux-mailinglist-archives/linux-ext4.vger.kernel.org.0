@@ -2,94 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D106143242
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jan 2020 20:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2451433A9
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jan 2020 23:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgATTcC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Jan 2020 14:32:02 -0500
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:34701 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727075AbgATTcA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jan 2020 14:32:00 -0500
-Received: by mail-ed1-f67.google.com with SMTP id l8so630722edw.1
-        for <linux-ext4@vger.kernel.org>; Mon, 20 Jan 2020 11:31:59 -0800 (PST)
+        id S1726843AbgATWH2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Jan 2020 17:07:28 -0500
+Received: from mail-yb1-f178.google.com ([209.85.219.178]:46039 "EHLO
+        mail-yb1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726607AbgATWH2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Jan 2020 17:07:28 -0500
+Received: by mail-yb1-f178.google.com with SMTP id x191so427086ybg.12
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Jan 2020 14:07:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=z7I/Kq2V0EnXiuoACdRbnwoAql3KZ080nwyXVjlruyU=;
-        b=kLfnsSTIjE2YEe6HI6GtqXd6cMnhTRLMcstoRngEtLrpsW8Des52P9cJGak3H8TgGi
-         7pI7x0ReUsZVA5020Qw65cEVulbgAqf7PV7Yj5z98jIQHYXuhdjNseji1wTJmoRk9owd
-         jH0nw85bxKb6JNDbbMZz77rTtrhB/lrp1T9+1Yzp1e0fAmiYnPF2y/wqE3N2vxlEpqDg
-         Q62+v45VGQo8fprIjkXGYdl8n0+0lt4RTeTWLmEirmHeh05e1zsbOQ1RyEmjVmqN0eJc
-         PRg9w7tG3wGqyiL8Rgrtjody799fKx6nbHvtMQHhCmcCncWFfzoetJS1edNfQP320vCH
-         Vilg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FpBXP/w+8SIEYoxVwGXwuaoPYITn2ikOLrYsRB74gYo=;
+        b=lRYAxgbXdJfCnS1cZcU0E/B0aqctC9YcWvrmomcSDc5MUqnMiK0XXZgv5YeAvl+zQ2
+         pSU+89j2zd7oweNxdgREa3EXg/iqJMqU2WHB+6Nrh++oG1DOEZZ+lE18gFPr8AjkoO7v
+         KAactp80I1jsLVQOpuBE+19g6CWRP6c9q2SZn5KlAb0vIjye8BOlcUZV/MwjMZ36scKy
+         ZgskvsPUYH858VYJ4o8kOboofwt5I4ptqVhZVz0JPm0difW1mfvmKdymF0Bb6Xce4U1R
+         cmfuYOgcZKgoek/14OApDoCqFx3JFU2kNVVqf5vm2vSEzYxhSy1A04cUktfI+ytk3L58
+         hPfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=z7I/Kq2V0EnXiuoACdRbnwoAql3KZ080nwyXVjlruyU=;
-        b=AB+e/++5Um5GU71ls5DGxpRfDKAAK5sde9/NHr5HaefC6rFICQFPmYumRTBEnWd/q2
-         RrI+bxLmMFPIgN6itTmFX2RYuYif4cHKhPWsBkvVXOq/ypOM3enDvZHW4+bf3ER7wjuX
-         WhhTznruN6KD61e9hnq4hsvBH3wZTWj0lohjCrQK8UCB/QcoZk3BwlPE8ViGf+7GmzsN
-         gcZ0IveHG78vXZpVlIIGvFPl/l9nqybWhYARBE2w1aJw7Cd6a5HAyaiZu10N362jR6Ld
-         GDh/7cehZ/gj2eNdZNsvFFJQALmq6BlAovxLneQjZ9JvuKL/M4zApcgovWUAPaUxU0cL
-         K/og==
-X-Gm-Message-State: APjAAAVtUywHxe9r0Qy9oFu7tU860gm5PzjXA5NRp4VdWSWzI50a/ylx
-        REddF5FlQp/I6xQY4Ix/WQzMm/mjWKtKFhM58SI=
-X-Google-Smtp-Source: APXvYqwPh6D8ihOXjaVWGs/0GLulEekGPU0xOOyxhr7PagnLX+E8xWeQy/UQ09ZNp2jZFCCt0xVGiodDu+D5No4niKg=
-X-Received: by 2002:a05:6402:505:: with SMTP id m5mr609398edv.15.1579548719077;
- Mon, 20 Jan 2020 11:31:59 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FpBXP/w+8SIEYoxVwGXwuaoPYITn2ikOLrYsRB74gYo=;
+        b=RGP9Xs/fwtCsnawgiItJRoZtEqwLtoIOykLplUrFqQE8uDEVGbGLaqfuNxH4EWBz5j
+         4gh+4poSrbm3n1rUKt5DJ1dYYj5QHy6J5zpPZmlZYDqlXT4sQQwipfkfrh4Up9IcsDYZ
+         XUnb+dg+kAcEe5lg/SdXJPTHXW5zwfR8CAnIIMYLAZsWIivvdZHqjeeyf2TeAQmBy7Y0
+         e3+rkccfgKtmcVeOKUYfOEqykwgi2tNFWgzTasVJhcoH0CSOQKtnQPoyFZzkh2GfAJXJ
+         NJAWd5MNOCE3MrrDt8i883JB6I2fImm8rENTxdCQ2/Fy6KjYLHeazJ1Pe4Prfl/KYzrY
+         IwGA==
+X-Gm-Message-State: APjAAAUKXVYTlCRnM6tluZzky66WiMKVIT8udPdUtYbRWGhU2yoZKm2c
+        koqqdEzHZhHX59uoaaS1L6LXpkayDf0BwGLn5d2wJrMU
+X-Google-Smtp-Source: APXvYqzQlhQG2Pljur5SWmOVyDQ4BrgHtZkl+HGX55znYh4YQI5slsy6OwYWarQEA7UgjlWM6G2Fuh59rvjSvmcKnAM=
+X-Received: by 2002:a25:be0c:: with SMTP id h12mr1436640ybk.251.1579558047258;
+ Mon, 20 Jan 2020 14:07:27 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a05:6402:22dc:0:0:0:0 with HTTP; Mon, 20 Jan 2020 11:31:57
- -0800 (PST)
-Reply-To: mcclainejohn.13@gmail.com
-From:   "Prof, William Roberts" <eco.bank1204@gmail.com>
-Date:   Mon, 20 Jan 2020 20:31:57 +0100
-Message-ID: <CAOE+jAB9Cv76tHqc-hO92yWjVshCsALoX=zT1ruNmX+0-Bjyxw@mail.gmail.com>
-Subject: Contact Diplomatic Agent, Mr. Mcclaine John to receive your ATM CARD
- valued the sum of $12.8Million United States Dollars
-To:     undisclosed-recipients:;
+References: <CAAMvbhFjLCLiLKhu5s7QtLdUY29h8eZ2pHd120o94gDduo+BLw@mail.gmail.com>
+ <20200114212551.GE140865@mit.edu>
+In-Reply-To: <20200114212551.GE140865@mit.edu>
+From:   James Courtier-Dutton <james.dutton@gmail.com>
+Date:   Mon, 20 Jan 2020 22:06:50 +0000
+Message-ID: <CAAMvbhGeRv1ipkUjauArjX8r03SCZnmb+aPtrtCEu4g6W8Cqcw@mail.gmail.com>
+Subject: Re: ext4 recovery
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4 <linux-ext4@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Attn: Dear Beneficiary,
+On Tue, 14 Jan 2020 at 21:25, Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> On Tue, Jan 14, 2020 at 04:03:53PM +0000, James Courtier-Dutton wrote:
+> >
+> > Say I started with 1 disk using LVM with an ext4 partition.
+> > I then added another disk. Added it to the LVM group, expanded the
+> > ext4 partition to then fill 2 disks.
+> > I then added another disk. Added it to the LVM group, expanded the
+> > ext4 partition to then fill 3 disks.
+>
+> Where you using RAID 0, or some more advanced RAID level?
+>
+> > One of the disk has now failed.
+>
+> How has it failed?  It is dead dead dead?  Or are there a large number
+> of sector errors?
+>
+> > Are there any tools available for ext4 that could help recover this?
+> > Note, I am a single user, not a company, so there is no money to give
+> > to a data recovery company, so I wish to try myself.
+>
+> How valuable is your data?  The first thing I would recommend, if your
+> data is worth it (and only you can make that decision) is to create a
+> new RAID set (using larger disks if that helps reduce the price) so
+> you can make an block-level image backup using the dd_rescue program.
+>
+> If you can, then run e2fsck on the backup copy, and then see what you
+> can recover from that image set.  This will save time (how much is
+> your time worth?) and perhaps increase the amount of data you can
+> recover (how much is your data worth?).
+>
+>                                         - Ted
 
-I wish to inform you that the diplomatic agent conveying your ATM CARD
-valued the sum of $12.8Million United States Dollars has misplaced
-your address and he is currently stranded at (George Bush
-International Airport) Houston Texas USA now
-We required you to reconfirm the following information's below to him
-so that he can deliver your Payment CARD to you today or tomorrow
-morning as information provided with open communications via email and
-telephone for security reasons.
-HERE IS THE DETAILS  HE NEED FROM YOU URGENT
-YOUR FULL NAME:========
-ADDRESS:========
-MOBILE NO:========
-NAME OF YOUR NEAREST AIRPORT:========
-A COPY OF YOUR IDENTIFICATION :========
+Hi,
 
-Note; do contact the diplomatic agent immediately through the
-information's listed below
-Contact Person: Diplomatic Agent, Mr. Mcclaine John
-EMAIL: mcclainejohn.13@gmail.com
-Tel:(223) 777-7518
+Thank you all for the help.
+I have made some progress.
+Disk 1 is 100% OK.
+Disk 2 did dd_rescue and recovered about 30% of the sectors.
+Disk 3 is 100% OK.
 
-Contact the diplomatic agent immediately
-because he is waiting to hear from you today with the needed information's.
+I have made images of all of that. LVM worked out what order they went
+in, and ext4 even let me mount the LVM volume.
+I have managed to recover a lot of the data, so thank you for the hints.
+What I would like to do now is find out which files were on Disk 2.
+I have found the fiemap  IOCTL that gives me the logical sectors for
+the file itself.
+How do I convert the value from the IOCTL into a physical sector, or
+at least an offset into the LVM volume?
+I can then work at that sector 0 to A is on Disk 1,  A to B is on Disk
+2, and B to C is on Disk 3.
 
-NOTE: The Diplomatic agent does not know that the content of the
-consignment box is $12.800,000,00 Million United States Dollars and on
-no circumstances should you let him know the content. The consignment
-was moved from here as family treasures, so never allow him to open
-the box. Please I have paid delivery fees for you but the only money
-you must send to Mcclaine John is your ATM CARD delivery fee $25.00
-only. text Him as you contact Him Immediately
+For example, this is how it is done on btrfs. What is the equivalent on ext4?
 
-Thanks,
-with Regards.
-Prof, William Roberts
-Director DHL COURIER SERVICES-Benin
+$ sudo filefrag -v UEFI_Spec_2_8_final.pdf
+Filesystem type is: 9123683e
+File size of UEFI_Spec_2_8_final.pdf is 18586279 (4538 blocks of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..    4537:    9798022..   9802559:   4538:             last,eof
+UEFI_Spec_2_8_final.pdf: 1 extent found
+$ sudo btrfs-map-logical -l $[9798022*4096] /dev/nvme0n1p7
+mirror 1 logical 40132698112 physical 31475654656 device /dev/nvme0n1p7
+$ sudo dd if=/dev/nvme0n1p7 bs=1
+skip=31475654656 count=64 2>/dev/null | hexdump -C
+00000000  25 50 44 46 2d 31 2e 36  0d 25 e2 e3 cf d3 0d 0a  |%PDF-1.6.%......|
+00000010  33 30 35 35 31 39 20 30  20 6f 62 6a 0d 3c 3c 2f  |305519 0 obj.<</|
+00000020  46 69 6c 74 65 72 2f 46  6c 61 74 65 44 65 63 6f  |Filter/FlateDeco|
+00000030  64 65 2f 46 69 72 73 74  20 31 31 37 39 2f 4c 65  |de/First 1179/Le|
+00000040
+
+
+Kind Regards
+
+James
