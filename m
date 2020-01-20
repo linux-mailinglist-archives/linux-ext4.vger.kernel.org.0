@@ -2,110 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AEF142302
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jan 2020 07:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F76142349
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Jan 2020 07:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725851AbgATGIU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Jan 2020 01:08:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57488 "EHLO mail.kernel.org"
+        id S1726136AbgATGbK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 20 Jan 2020 01:31:10 -0500
+Received: from smtp.h3c.com ([60.191.123.56]:10667 "EHLO h3cspam01-ex.h3c.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgATGIT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Jan 2020 01:08:19 -0500
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23AF72073A;
-        Mon, 20 Jan 2020 06:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579500499;
-        bh=vXDa7ReBep0t1iBlcWB2T87bMhiP9s/H3lDJdDPQErA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EJxMqhiexC9D9GSnjVpbpE4UHvRvOuMwYSeWTItv76T9/XLZAhlRkdKtuajoYsnOL
-         W+aW/xjnINdGJt+apMkE1TNd44JCaKBAopXzdosKByIwtlst8dLFX9KLF9i7sxZAFE
-         JZoFJFK8ttdCd8/ZDgBx6pkKhG6qVsDNoEeTH/ak=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: [PATCH] fscrypt: don't print name of busy file when removing key
-Date:   Sun, 19 Jan 2020 22:07:32 -0800
-Message-Id: <20200120060732.390362-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.25.0
+        id S1725837AbgATGbJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 20 Jan 2020 01:31:09 -0500
+Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
+        by h3cspam01-ex.h3c.com with ESMTPS id 00K6UV8G061761
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Jan 2020 14:30:31 +0800 (GMT-8)
+        (envelope-from li.kai4@h3c.com)
+Received: from DAG2EX07-IDC.srv.huawei-3com.com (10.8.0.70) by
+ DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 20 Jan 2020 14:30:33 +0800
+Received: from DAG2EX07-IDC.srv.huawei-3com.com ([fe80::d67:df5a:88dc:99de])
+ by DAG2EX07-IDC.srv.huawei-3com.com ([fe80::d67:df5a:88dc:99de%9]) with mapi
+ id 15.01.1713.004; Mon, 20 Jan 2020 14:30:33 +0800
+From:   Likai <li.kai4@h3c.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "joseph.qi@linux.alibaba.com" <joseph.qi@linux.alibaba.com>,
+        "gechangwei@live.cn" <gechangwei@live.cn>,
+        Wangyong <wang.yongD@h3c.com>, Wangxibo <wang.xibo@h3c.com>
+Subject: Re: [PATCH] jbd2: clear JBD2_ABORT flag before journal_reset to
+ update log tail info when load journal
+Thread-Topic: [PATCH] jbd2: clear JBD2_ABORT flag before journal_reset to
+ update log tail info when load journal
+Thread-Index: AQHVyCaRHtk3NUs57kilnbYsclaMFg==
+Date:   Mon, 20 Jan 2020 06:30:33 +0000
+Message-ID: <453bb3b47a214a429abb5c2e38c494c8@h3c.com>
+References: <20200111022542.5008-1-li.kai4@h3c.com>
+ <20200114103119.GE6466@quack2.suse.cz> <20200117212657.GF448999@mit.edu>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.125.108.72]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 00K6UV8G061761
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On 2020/1/18 5:27, Theodore Y. Ts'o wrote:
+> On Tue, Jan 14, 2020 at 11:31:19AM +0100, Jan Kara wrote:
+>> Thanks for the patch! Just some small comments below:
+>>
+>> On Sat 11-01-20 10:25:42, Kai Li wrote:
+>>> Fixes: 85e0c4e89c1b "jbd2: if the journal is aborted then don't allow update of the log tail"
+>> This tag should come at the bottom of the changelog (close to your
+>> Signed-off-by).
+>>
+>>> If journal is dirty when mount, it will be replayed but jbd2 sb
+>>> log tail cannot be updated to mark a new start because
+>>> journal->j_flags has already been set with JBD2_ABORT first
+>>> in journal_init_common.
+>>> When a new transaction is committed, it will be recorded in block 1
+>>> first(journal->j_tail is set to 1 in journal_reset). If emergency
+>>> restart again before journal super block is updated unfortunately,
+>>> the new recorded trans will not be replayed in the next mount.
+>>> It is danerous which may lead to metadata corruption for file system.
+>> I'd slightly rephrase the text here so that it is more easily readable and
+>> correct some grammar mistakes. Something like:
+>>
+>> If the journal is dirty when the filesystem is mounted, jbd2 will replay
+>> the journal but the journal superblock will not be updated by
+>> journal_reset() because JBD2_ABORT flag is still set (it was set in
+>> journal_init_common()). This is problematic because when a new transaction
+>> is then committed, it will be recorded in block 1 (journal->j_tail was set
+>> to 1 in journal_reset()). If unclean shutdown happens again before the
+>> journal superblock is updated, the new recorded transaction will not be
+>> replayed during the next mount (because of stale sb->s_start and
+>> sb->s_sequence values) which can lead to filesystem corruption.
+>>
+>> Otherwise the patch looks good to me so feel free to add:
+>>
+>> Reviewed-by: Jan Kara <jack@suse.cz>
+>>
+>> (again this is added to the bottom of the changelog like the 'Fixes' tag or
+>> 'Signed-off-by' tag).
+> Thanks, applied with a fixed up commit description.
+>
+> 		       	     	       - Ted
+>
+Sorry for reply so late due to my business trip recently.  This new
+comment is ok and more clear. Thanks.
 
-When an encryption key can't be fully removed due to file(s) protected
-by it still being in-use, we shouldn't really print the path to one of
-these files to the kernel log, since parts of this path are likely to be
-encrypted on-disk, and (depending on how the system is set up) the
-confidentiality of this path might be lost by printing it to the log.
-
-This is a trade-off: a single file path often doesn't matter at all,
-especially if it's a directory; the kernel log might still be protected
-in some way; and I had originally hoped that any "inode(s) still busy"
-bugs (which are security weaknesses in their own right) would be quickly
-fixed and that to do so it would be super helpful to always know the
-file path and not have to run 'find dir -inum $inum' after the fact.
-
-But in practice, these bugs can be hard to fix (e.g. due to asynchronous
-process killing that is difficult to eliminate, for performance
-reasons), and also not tied to specific files, so knowing a file path
-doesn't necessarily help.
-
-So to be safe, for now let's just show the inode number, not the path.
-If someone really wants to know a path they can use 'find -inum'.
-
-Fixes: b1c0ec3599f4 ("fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl")
-Cc: <stable@vger.kernel.org> # v5.4+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/keyring.c | 15 ++-------------
- 1 file changed, 2 insertions(+), 13 deletions(-)
-
-diff --git a/fs/crypto/keyring.c b/fs/crypto/keyring.c
-index 098ff2e0f0bb4..ab41b25d4fa1b 100644
---- a/fs/crypto/keyring.c
-+++ b/fs/crypto/keyring.c
-@@ -776,9 +776,6 @@ static int check_for_busy_inodes(struct super_block *sb,
- 	struct list_head *pos;
- 	size_t busy_count = 0;
- 	unsigned long ino;
--	struct dentry *dentry;
--	char _path[256];
--	char *path = NULL;
- 
- 	spin_lock(&mk->mk_decrypted_inodes_lock);
- 
-@@ -797,22 +794,14 @@ static int check_for_busy_inodes(struct super_block *sb,
- 					 struct fscrypt_info,
- 					 ci_master_key_link)->ci_inode;
- 		ino = inode->i_ino;
--		dentry = d_find_alias(inode);
- 	}
- 	spin_unlock(&mk->mk_decrypted_inodes_lock);
- 
--	if (dentry) {
--		path = dentry_path(dentry, _path, sizeof(_path));
--		dput(dentry);
--	}
--	if (IS_ERR_OR_NULL(path))
--		path = "(unknown)";
--
- 	fscrypt_warn(NULL,
--		     "%s: %zu inode(s) still busy after removing key with %s %*phN, including ino %lu (%s)",
-+		     "%s: %zu inode(s) still busy after removing key with %s %*phN, including ino %lu",
- 		     sb->s_id, busy_count, master_key_spec_type(&mk->mk_spec),
- 		     master_key_spec_len(&mk->mk_spec), (u8 *)&mk->mk_spec.u,
--		     ino, path);
-+		     ino);
- 	return -EBUSY;
- }
- 
--- 
-2.25.0
+                                                                       
+                                                                       
+      - Kai
 
