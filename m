@@ -2,100 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D608A144D55
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2020 09:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AABB144DE4
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2020 09:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726077AbgAVIWA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Jan 2020 03:22:00 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:51989 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725868AbgAVIWA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Jan 2020 03:22:00 -0500
-Received: from dread.disaster.area (pa49-181-218-253.pa.nsw.optusnet.com.au [49.181.218.253])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 4087E82054C;
-        Wed, 22 Jan 2020 19:21:56 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1iuBGt-0002mm-AC; Wed, 22 Jan 2020 19:21:55 +1100
-Date:   Wed, 22 Jan 2020 19:21:55 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        xfs <xfs@e29208.dscx.akamaiedge.net>,
-        Steve French <smfrench@gmail.com>, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        lsf-pc@lists.linux-foundation.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [Lsf-pc] [LFS/MM TOPIC] fs reflink issues, fs online
- scrub/check, etc
-Message-ID: <20200122082155.GA9317@dread.disaster.area>
-References: <20160210191715.GB6339@birch.djwong.org>
- <20160210191848.GC6346@birch.djwong.org>
- <CAH2r5mtM2nCicTKGFAjYtOG92TKKQdTbZxaD-_-RsWYL=Tn2Nw@mail.gmail.com>
- <0089aff3-c4d3-214e-30d7-012abf70623a@gmx.com>
- <CAOQ4uxjd-YWe5uHqfSW9iSdw-hQyFCwo84cK8ebJVJSY_vda3Q@mail.gmail.com>
- <20200121161840.GA8236@magnolia>
- <20200121220112.GB14467@bombadil.infradead.org>
- <CAPcyv4iPX4fDZGFwCkJxMDc-+1DjOMVZYVqnE=XTZpis6ZLFww@mail.gmail.com>
+        id S1726135AbgAVIrK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Jan 2020 03:47:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38570 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726005AbgAVIrK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Jan 2020 03:47:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6E017AE2D;
+        Wed, 22 Jan 2020 08:47:08 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DFA621E0A4F; Wed, 22 Jan 2020 09:47:02 +0100 (CET)
+Date:   Wed, 22 Jan 2020 09:47:02 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Shijie Luo <luoshijie1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz
+Subject: Re: [PATCH] ext4,jbd2: fix comment and code style
+Message-ID: <20200122084702.GA12845@quack2.suse.cz>
+References: <20200122072625.16487-1-luoshijie1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4iPX4fDZGFwCkJxMDc-+1DjOMVZYVqnE=XTZpis6ZLFww@mail.gmail.com>
+In-Reply-To: <20200122072625.16487-1-luoshijie1@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=TU0PeEMO9XNyODJ+pEfdLw==:117 a=TU0PeEMO9XNyODJ+pEfdLw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=Jdjhy38mL1oA:10
-        a=JfrnYn6hAAAA:8 a=7YfXLusrAAAA:8 a=7-415B0cAAAA:8 a=S4ei3vxw9mJ_NyWoTJ0A:9
-        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=SLz71HocmBbuEhFRYD3r:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 04:47:27PM -0800, Dan Williams wrote:
-> On Tue, Jan 21, 2020 at 2:02 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Tue, Jan 21, 2020 at 08:18:40AM -0800, Darrick J. Wong wrote:
-> > > On Tue, Jan 21, 2020 at 09:35:22AM +0200, Amir Goldstein wrote:
-> > > > On Tue, Jan 21, 2020 at 3:19 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> > > > >
-> > > > > Didn't see the original mail, so reply here.
-> > > >
-> > > > Heh! Original email was from 2016, but most of Darrick's wish list is
-> > > > still relevant in 2020 :)
-> > >
-> > > Grumble grumble stable behavior of clonerange/deduperange ioctls across
-> > > filesystems grumble grumble.
-> > >
-> > > > I for one would be very interested in getting an update on the
-> > > > progress of pagecache
-> > > > page sharing if there is anyone working on it.
-> > >
-> > > Me too.  I guess it's the 21st, I should really send in a proposal for
-> > > *this year's* LSFMMBPFLOLBBQ.
-> >
-> > I still have Strong Opinions on how pagecache page sharing should be done
-> > ... and half a dozen more important projects ahead of it in my queue.
-> > So I have no update on this.
+On Wed 22-01-20 02:26:25, Shijie Luo wrote:
+> Fix comment and remove unnecessary blank.
 > 
-> We should plan to huddle on this especially if I don't get an RFC for
-> dax-reflink support out before the summit.
+> Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
 
-It would be a good idea to share your ideas about how you plan to
-solve this problem earlier rather than later so you don't waste time
-going down a path that is incompatible with what the filesystems
-need to/want to/can do.
+Looks good. You can add:
 
-Cheers,
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Dave.
+								Honza
+
+> ---
+>  fs/ext4/inline.c      | 2 +-
+>  fs/jbd2/transaction.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+> index 2fec62d764fa..a6695e1d246c 100644
+> --- a/fs/ext4/inline.c
+> +++ b/fs/ext4/inline.c
+> @@ -849,7 +849,7 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
+>  
+>  /*
+>   * Prepare the write for the inline data.
+> - * If the the data can be written into the inode, we just read
+> + * If the data can be written into the inode, we just read
+>   * the page and make it uptodate, and start the journal.
+>   * Otherwise read the page, makes it dirty so that it can be
+>   * handle in writepages(the i_disksize update is left to the
+> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+> index 27b9f9dee434..f7a9da75b160 100644
+> --- a/fs/jbd2/transaction.c
+> +++ b/fs/jbd2/transaction.c
+> @@ -1595,7 +1595,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
+>   * Allow this call even if the handle has aborted --- it may be part of
+>   * the caller's cleanup after an abort.
+>   */
+> -int jbd2_journal_forget (handle_t *handle, struct buffer_head *bh)
+> +int jbd2_journal_forget(handle_t *handle, struct buffer_head *bh)
+>  {
+>  	transaction_t *transaction = handle->h_transaction;
+>  	journal_t *journal;
+> -- 
+> 2.19.1
+> 
 -- 
-Dave Chinner
-david@fromorbit.com
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
