@@ -2,72 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AC4145EDF
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2020 23:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 164FC145EEE
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Jan 2020 00:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgAVW7U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Jan 2020 17:59:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36556 "EHLO mail.kernel.org"
+        id S1726101AbgAVXGx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Jan 2020 18:06:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgAVW7U (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Jan 2020 17:59:20 -0500
+        id S1725884AbgAVXGw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Jan 2020 18:06:52 -0500
 Received: from gmail.com (unknown [104.132.1.77])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D5E221835;
-        Wed, 22 Jan 2020 22:59:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9A802465A;
+        Wed, 22 Jan 2020 23:06:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579733959;
-        bh=PEgc7glKU+eTUcoJvJSY2cFK4bxB8lTHfVQY/rxd9nQ=;
+        s=default; t=1579734412;
+        bh=iDK9mhfatk0/hNugU/WPUPfmhu1Thz7bh75Z2DXYU/0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1/1qVGJ7dgvX7BRXVza1/cj12O3YybXAukgv+DgcaApLwrlHilg0Po8C+0NaZuKjh
-         R1bg0kmBt9xA2/0vvYiPXtzqPC8DeYarFzR6h5qgSEH9/4aWbqvufBlWv9/+ty1LwW
-         7pz4DFyw1ZzxD4MZh5XqQMX62UN3Nhccj2yWOsuE=
-Date:   Wed, 22 Jan 2020 14:59:18 -0800
+        b=MdMedgKfSUinhQoW7EX8dAKvj1YwqwHzlbb1cbzLT6dOt2HZWykDyFD3k2cNyhQyK
+         8GB5uINMlhWRPvQRr20QS8SxKPsazWkqZ9NELkASmhvpjUozkcfUA+LLJ+HQqgq/Lb
+         YogycmIn0nDOqv8LkTPXOOSGVMsOMS5102vK6M3Q=
+Date:   Wed, 22 Jan 2020 15:06:50 -0800
 From:   Eric Biggers <ebiggers@kernel.org>
 To:     linux-fscrypt@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH] fscrypt: don't print name of busy file when removing key
-Message-ID: <20200122225917.GA182745@gmail.com>
-References: <20200120060732.390362-1-ebiggers@kernel.org>
+Cc:     Daniel Rosenberg <drosen@google.com>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v5 0/6] fscrypt preparations for encryption+casefolding
+Message-ID: <20200122230649.GC182745@gmail.com>
+References: <20200120223201.241390-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200120060732.390362-1-ebiggers@kernel.org>
+In-Reply-To: <20200120223201.241390-1-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Jan 19, 2020 at 10:07:32PM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Mon, Jan 20, 2020 at 02:31:55PM -0800, Eric Biggers wrote:
+> This is a cleaned up and fixed version of the fscrypt patches to prepare
+> for directories that are both encrypted and casefolded.
 > 
-> When an encryption key can't be fully removed due to file(s) protected
-> by it still being in-use, we shouldn't really print the path to one of
-> these files to the kernel log, since parts of this path are likely to be
-> encrypted on-disk, and (depending on how the system is set up) the
-> confidentiality of this path might be lost by printing it to the log.
+> Patches 1-3 start deriving a SipHash key for the new dirhash method that
+> will be used by encrypted+casefolded directories.  To avoid unnecessary
+> overhead, we only do this if the directory is actually casefolded.
 > 
-> This is a trade-off: a single file path often doesn't matter at all,
-> especially if it's a directory; the kernel log might still be protected
-> in some way; and I had originally hoped that any "inode(s) still busy"
-> bugs (which are security weaknesses in their own right) would be quickly
-> fixed and that to do so it would be super helpful to always know the
-> file path and not have to run 'find dir -inum $inum' after the fact.
+> Patch 4 fixes a bug in UBIFS where it didn't gracefully handle invalid
+> hash values in fscrypt no-key names.  This is an existing bug, but the
+> new fscrypt no-key name format (patch 6) made it much easier to trigger;
+> it started being hit by 'kvm-xfstests -c ubifs -g encrypt'.
 > 
-> But in practice, these bugs can be hard to fix (e.g. due to asynchronous
-> process killing that is difficult to eliminate, for performance
-> reasons), and also not tied to specific files, so knowing a file path
-> doesn't necessarily help.
+> Patch 5 updates UBIFS to make it ready for the new fscrypt no-key name
+> format that always includes the dirhash.
 > 
-> So to be safe, for now let's just show the inode number, not the path.
-> If someone really wants to know a path they can use 'find -inum'.
+> Patch 6 modifies the fscrypt no-key names to always include the dirhash,
+> since with the new dirhash method the dirhash will no longer be
+> computable from the ciphertext filename without the key.  It also fixes
+> a longstanding issue where there could be collisions in the no-key
+> names, due to not using a proper cryptographic hash to abbreviate names.
 > 
-> Fixes: b1c0ec3599f4 ("fscrypt: add FS_IOC_REMOVE_ENCRYPTION_KEY ioctl")
-> Cc: <stable@vger.kernel.org> # v5.4+
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> For more information see the main patch series, which includes the
+> filesystem-specific changes:
+> https://lkml.kernel.org/linux-fscrypt/20200117214246.235591-1-drosen@google.com/T/#u
+> 
+> This applies to fscrypt.git#master.
+> 
+> Changed v4 => v5:
+>   - Fixed UBIFS encryption to work with the new no-key name format.
 
-Applied to fscrypt.git#master for 5.6.
+I've applied this series to fscrypt.git#master; however I'd still like Acked-bys
+from the UBIFS maintainers on the two UBIFS patches, as well as more
+Reviewed-bys from anyone interested.  If I don't hear anything from anyone, I
+might drop these to give more time, especially if there isn't an v5.5-rc8.
 
 - Eric
