@@ -2,94 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 120B2144913
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2020 01:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCF014493D
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Jan 2020 02:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728890AbgAVArj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Jan 2020 19:47:39 -0500
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:45682 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728829AbgAVAri (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jan 2020 19:47:38 -0500
-Received: by mail-oi1-f193.google.com with SMTP id n16so4495443oie.12
-        for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2020 16:47:38 -0800 (PST)
+        id S1728931AbgAVBQt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Jan 2020 20:16:49 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:42421 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728911AbgAVBQt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 21 Jan 2020 20:16:49 -0500
+Received: by mail-lj1-f194.google.com with SMTP id y4so4881558ljj.9
+        for <linux-ext4@vger.kernel.org>; Tue, 21 Jan 2020 17:16:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qgc0iX5jWDK/scHdhoA8juXPQoQsUvfVwrRbravpzos=;
-        b=lMiwjQRp/U79c5YbiXWzA+yz9MA/57nZ6SfTX7AXP0jP4JKhu4Gmm1jPcgi6IQHH0J
-         xONW4QJCFrqmP6bzDRwog2IQXvYn2/NqxWVP9nEjb5NaqnFzEQ2wVJBtruUh1xLP1oDL
-         +kL99B4XRgZYviSaQMzRwQ0I3hLZ2vqpH835kEbCTj7d2vlZKuJ5HtK7I8MTdPrks+WT
-         arRknCy0wHpQ2U0urVAE+uB/TPj2meaaax/55rTlx1e7rWgF+q0vmW+FihOQc0jmZ7+N
-         3IKG8qHRQwxm82ts/XGbq85SP7wcnOGflBZr6rHTEbPYUw8CEsirDBSGhFwMCoZd6C4y
-         PDLQ==
+        bh=aTrmpDPbM7QagWgFbn/XvaDbssQKCtZ+aK7kQ78b1YQ=;
+        b=sbjgI932IVsBnwvZcFBnekfHjH6LPvKho84iI0IqHn/lre/vnHDKZVHxM1chNODhEO
+         oeBlWCXMu1xE41wCdmoAkJJWr3Xo/D+ju9vZ24VZpOnhSgfRdcQ5am2PHHrxTnbqi0XX
+         b6eAwer8WCvSMIGV6+9Wm90f1KZ3856dgqPB2hB+SbeEq0VAirrYLusuJK6x9OvIXK1e
+         QDAc9rab8nWgGfMDGKUKmikIqpQ1Tb6qVVp8u1rUGV3i6DXFmO0XieZmSerhbsGxj1Kd
+         Nom76vDbxrBnAL633zaFY9rrVrFB9Ton5m1jJHrUpOo8xzUYC7WMuWNZ+fTJ5iMxzctH
+         wfaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qgc0iX5jWDK/scHdhoA8juXPQoQsUvfVwrRbravpzos=;
-        b=tGcTo9t3QX8qC+c55h99mDL3kMQLN2k1NreGNMwe3E5oRqNmbCRT/P6tiFUO+pIh0j
-         3nirm27GU5KqX/v2GaxJviWmH2bXKgJCzzn3H8HUV2yiK6fDXS7xRxfq2D+q4/3uNhha
-         AXOpXNyXJq/MCWamfRvPLerJnSj4XgS6ZjmptnEyCARv0sQGr01EO3XFbYvA47wB7mWR
-         rkYwdDC2Ywo7LuUk8OISLvrAU3MVsatggUMl6J3slse9b+cSnSCyHzS39jOIIssiyhDE
-         xnYVomCDi0yd1Q+ywutwWaa/9JlFBE3+TKV6zaUy7lo5buOk0u2D3wQ7vW4jB1u/xvrJ
-         IJhA==
-X-Gm-Message-State: APjAAAVzOXrYQgbD0nhXqr697hNm3RVrqK2Mv4LA+zw1XnOLRm0ur1u4
-        oSFHc3ULehHSpsB7tqge0ONkiIi7+jIVXSvJ680ABQ==
-X-Google-Smtp-Source: APXvYqwPmge4gr4m0egcJLU8saT19SQnmehCQslKhVWRpVaoiJpETtrJCyR6KZeUzd6Mpf0AhBpQIKo1KZvVbaSv5gg=
-X-Received: by 2002:aca:4c9:: with SMTP id 192mr5321168oie.105.1579654058213;
- Tue, 21 Jan 2020 16:47:38 -0800 (PST)
+        bh=aTrmpDPbM7QagWgFbn/XvaDbssQKCtZ+aK7kQ78b1YQ=;
+        b=cPvBh0nt1fpAwgOvkO/P8gazP+ahCXGnzfKhi0dkHB/5I3L/tGgbcbKTAwLej0TFj3
+         lQwQ27os80Oi0KazYZWUskWzVqStXJnGOPqSKJ7mJLs2e7is2LJ38O67YnxXroNVWL1m
+         3Twr1zy6jk8xpixLGp6cpjseBtTXbUFRWqkrAUMxM1u8ShQxYXLo3jusC3Eka802Jtju
+         /1usavoPSze1Vv0CvdC0CV9dtmLbo5nNlesfzfS6VOIbkZThJxyHBF6KlJPkI5fAnJfG
+         lIUmI7v/kn0tijdFq5x+aEEO5Z7oau2NFvX67HIuizdlTR+nCcbpYJgV7Naq6ptUOTJX
+         h/uw==
+X-Gm-Message-State: APjAAAXFd1RFp92Mb3COj7uugBso5FFRnYC346Uq49s7CUNh/qJTpjKK
+        94DjPYvbMV3jM6zT6quBx05kk9MLSpQkKE8A2sZ/yQ==
+X-Google-Smtp-Source: APXvYqx9Wcig2VJsMhSPvoP5661qvRVt8CMWdEp0WvbCQ34genipkG1eA/ei4esFDAtnsgj2YEIbFdJHl+MGczi/Wzs=
+X-Received: by 2002:a2e:b52b:: with SMTP id z11mr18133901ljm.155.1579655807322;
+ Tue, 21 Jan 2020 17:16:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20160210191715.GB6339@birch.djwong.org> <20160210191848.GC6346@birch.djwong.org>
- <CAH2r5mtM2nCicTKGFAjYtOG92TKKQdTbZxaD-_-RsWYL=Tn2Nw@mail.gmail.com>
- <0089aff3-c4d3-214e-30d7-012abf70623a@gmx.com> <CAOQ4uxjd-YWe5uHqfSW9iSdw-hQyFCwo84cK8ebJVJSY_vda3Q@mail.gmail.com>
- <20200121161840.GA8236@magnolia> <20200121220112.GB14467@bombadil.infradead.org>
-In-Reply-To: <20200121220112.GB14467@bombadil.infradead.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 21 Jan 2020 16:47:27 -0800
-Message-ID: <CAPcyv4iPX4fDZGFwCkJxMDc-+1DjOMVZYVqnE=XTZpis6ZLFww@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LFS/MM TOPIC] fs reflink issues, fs online scrub/check, etc
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        xfs <xfs@e29208.dscx.akamaiedge.net>,
-        Steve French <smfrench@gmail.com>, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        lsf-pc@lists.linux-foundation.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20200120223201.241390-1-ebiggers@kernel.org> <20200120223201.241390-4-ebiggers@kernel.org>
+In-Reply-To: <20200120223201.241390-4-ebiggers@kernel.org>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Tue, 21 Jan 2020 17:16:36 -0800
+Message-ID: <CA+PiJmT1GPgLBYak51V04jtyDjOFPzSeaTxKryCqy3Ak6yAo6A@mail.gmail.com>
+Subject: Re: [PATCH v5 3/6] fscrypt: clarify what is meant by a per-file key
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fscrypt@vger.kernel.org, kernel-team@android.com,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 2:02 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Mon, Jan 20, 2020 at 2:34 PM Eric Biggers <ebiggers@kernel.org> wrote:
 >
-> On Tue, Jan 21, 2020 at 08:18:40AM -0800, Darrick J. Wong wrote:
-> > On Tue, Jan 21, 2020 at 09:35:22AM +0200, Amir Goldstein wrote:
-> > > On Tue, Jan 21, 2020 at 3:19 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> > > >
-> > > > Didn't see the original mail, so reply here.
-> > >
-> > > Heh! Original email was from 2016, but most of Darrick's wish list is
-> > > still relevant in 2020 :)
-> >
-> > Grumble grumble stable behavior of clonerange/deduperange ioctls across
-> > filesystems grumble grumble.
-> >
-> > > I for one would be very interested in getting an update on the
-> > > progress of pagecache
-> > > page sharing if there is anyone working on it.
-> >
-> > Me too.  I guess it's the 21st, I should really send in a proposal for
-> > *this year's* LSFMMBPFLOLBBQ.
+> From: Eric Biggers <ebiggers@google.com>
 >
-> I still have Strong Opinions on how pagecache page sharing should be done
-> ... and half a dozen more important projects ahead of it in my queue.
-> So I have no update on this.
+> Now that there's sometimes a second type of per-file key (the dirhash
+> key), clarify some function names, macros, and documentation that
+> specifically deal with per-file *encryption* keys.
+>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-We should plan to huddle on this especially if I don't get an RFC for
-dax-reflink support out before the summit.
+Looks good to me. Feel free to add
+Reviewed-by: Daniel Rosenberg <drosen@google>
