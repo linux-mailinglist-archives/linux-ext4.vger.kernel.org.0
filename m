@@ -2,83 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 164FC145EEE
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Jan 2020 00:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867B01461F8
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Jan 2020 07:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgAVXGx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Jan 2020 18:06:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbgAVXGw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Jan 2020 18:06:52 -0500
-Received: from gmail.com (unknown [104.132.1.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9A802465A;
-        Wed, 22 Jan 2020 23:06:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579734412;
-        bh=iDK9mhfatk0/hNugU/WPUPfmhu1Thz7bh75Z2DXYU/0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MdMedgKfSUinhQoW7EX8dAKvj1YwqwHzlbb1cbzLT6dOt2HZWykDyFD3k2cNyhQyK
-         8GB5uINMlhWRPvQRr20QS8SxKPsazWkqZ9NELkASmhvpjUozkcfUA+LLJ+HQqgq/Lb
-         YogycmIn0nDOqv8LkTPXOOSGVMsOMS5102vK6M3Q=
-Date:   Wed, 22 Jan 2020 15:06:50 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-fscrypt@vger.kernel.org
-Cc:     Daniel Rosenberg <drosen@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v5 0/6] fscrypt preparations for encryption+casefolding
-Message-ID: <20200122230649.GC182745@gmail.com>
-References: <20200120223201.241390-1-ebiggers@kernel.org>
+        id S1725828AbgAWG03 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Jan 2020 01:26:29 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:43612 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725818AbgAWG03 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 Jan 2020 01:26:29 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5ABC5251AEB906ECCCD1;
+        Thu, 23 Jan 2020 14:26:27 +0800 (CST)
+Received: from [127.0.0.1] (10.173.222.42) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.439.0; Thu, 23 Jan 2020
+ 14:26:25 +0800
+Subject: Re: [PATCH] jbd2: modify assert condition in
+ __journal_remove_journal_head
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-ext4@vger.kernel.org>, <tytso@mit.edu>
+References: <20200122070548.64664-1-luoshijie1@huawei.com>
+ <20200122085024.GB12845@quack2.suse.cz>
+From:   Shijie Luo <luoshijie1@huawei.com>
+Message-ID: <9bbea221-f99e-45d5-039a-9663d0104ce5@huawei.com>
+Date:   Thu, 23 Jan 2020 14:26:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200120223201.241390-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200122085024.GB12845@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.173.222.42]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Jan 20, 2020 at 02:31:55PM -0800, Eric Biggers wrote:
-> This is a cleaned up and fixed version of the fscrypt patches to prepare
-> for directories that are both encrypted and casefolded.
-> 
-> Patches 1-3 start deriving a SipHash key for the new dirhash method that
-> will be used by encrypted+casefolded directories.  To avoid unnecessary
-> overhead, we only do this if the directory is actually casefolded.
-> 
-> Patch 4 fixes a bug in UBIFS where it didn't gracefully handle invalid
-> hash values in fscrypt no-key names.  This is an existing bug, but the
-> new fscrypt no-key name format (patch 6) made it much easier to trigger;
-> it started being hit by 'kvm-xfstests -c ubifs -g encrypt'.
-> 
-> Patch 5 updates UBIFS to make it ready for the new fscrypt no-key name
-> format that always includes the dirhash.
-> 
-> Patch 6 modifies the fscrypt no-key names to always include the dirhash,
-> since with the new dirhash method the dirhash will no longer be
-> computable from the ciphertext filename without the key.  It also fixes
-> a longstanding issue where there could be collisions in the no-key
-> names, due to not using a proper cryptographic hash to abbreviate names.
-> 
-> For more information see the main patch series, which includes the
-> filesystem-specific changes:
-> https://lkml.kernel.org/linux-fscrypt/20200117214246.235591-1-drosen@google.com/T/#u
-> 
-> This applies to fscrypt.git#master.
-> 
-> Changed v4 => v5:
->   - Fixed UBIFS encryption to work with the new no-key name format.
 
-I've applied this series to fscrypt.git#master; however I'd still like Acked-bys
-from the UBIFS maintainers on the two UBIFS patches, as well as more
-Reviewed-bys from anyone interested.  If I don't hear anything from anyone, I
-might drop these to give more time, especially if there isn't an v5.5-rc8.
+On 2020/1/22 16:50, Jan Kara wrote:
+> On Wed 22-01-20 02:05:48, Shijie Luo wrote:
+>> Only when jh->b_jcount = 0 in jbd2_journal_put_journal_head, we are allowed
+>> to call __journal_remove_journal_head.
+>>
+>> Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+> Thanks for the patch. You're right but given that
+> __journal_remove_journal_head() has exactly one caller and that checks for
+> jh->b_jcount == 0 just before calling __journal_remove_journal_head(), I
+> think the assertion is pretty pointless. So I'd rather just remove it
+> completely.
+>
+> 								Honza
+Thanks for your review. It 's much better to remove the assertion.
+>> ---
+>>   fs/jbd2/journal.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>> index 5e408ee24a1a..4f417a7f1ae0 100644
+>> --- a/fs/jbd2/journal.c
+>> +++ b/fs/jbd2/journal.c
+>> @@ -2556,7 +2556,7 @@ static void __journal_remove_journal_head(struct buffer_head *bh)
+>>   {
+>>   	struct journal_head *jh = bh2jh(bh);
+>>   
+>> -	J_ASSERT_JH(jh, jh->b_jcount >= 0);
+>> +	J_ASSERT_JH(jh, jh->b_jcount == 0);
+>>   	J_ASSERT_JH(jh, jh->b_transaction == NULL);
+>>   	J_ASSERT_JH(jh, jh->b_next_transaction == NULL);
+>>   	J_ASSERT_JH(jh, jh->b_cp_transaction == NULL);
+>> -- 
+>> 2.19.1
+>>
 
-- Eric
