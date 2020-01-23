@@ -2,98 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 597AC1477A1
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jan 2020 05:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3D114782B
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jan 2020 06:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730597AbgAXEbD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Jan 2020 23:31:03 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:46474 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729900AbgAXEbC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Jan 2020 23:31:02 -0500
-Received: by mail-lj1-f193.google.com with SMTP id m26so862904ljc.13
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Jan 2020 20:31:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YARMc3ae9hSUEoLGMas34bGpYXx9jRcQkvor0pcL47o=;
-        b=KDHO7h9B/b3mjy26Oj4EeSJIUNyQLYKaSj3d1nBNy4K7dVvqvhrzQt3G+uksHtglCC
-         GEn7l0fqTV7YiLooSM8wJDBDZ3zMa1NiXyT+I4cRb1BWaZgPHz2JpFTvojB+HO94ozad
-         MFaWKBQ9Zo4BEUhjLXI4paXN7kyNHtoN96Dwri5CF7MjQQUEfySc0AQBNxyC2R8iJZCg
-         guQxm94eI0DXd65SS/rnuHoJaoHhIN0BgEW5d7+6uC/9ey1p7B8TnBe/F7DCn8v2dGTO
-         IOVEJ7yvZF/HCRcAWrK9qPC6Itzo8kSjahJNwMYca4x2RJsn6vyrLjbauzKhHQ8haKAe
-         U9uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YARMc3ae9hSUEoLGMas34bGpYXx9jRcQkvor0pcL47o=;
-        b=Gm4qgQKHc6wTsA86T/z5Dnd8LMGZT0SkEDo02G+Rv8FAk8U6AVGqL0yK3NF6ycVtQM
-         jkIOnUJzkLwLTjU2F09rGUYGeXTHueUWi6DIYnMBhvYmfLomkceJiGf907V7/oDlKSXh
-         I8MJvDLiby8PfoCDeyTi1yGTNFgRbJDAuaxLHh8AKwN9nxXtXPJTmRHgQMe4gTpoaIHM
-         GC7zdxz28kjNUXATQ+qndM8drP2SeLQKGD5yN+c+R7NDjpkL2ux6+dtcIXGCMNkMb82g
-         DZvy4JOqqRqqjaywk982roSpws2bU6BANk9HQQXYUqpH4aIg2kurvQG7gtxEtwl6XHnT
-         y5OA==
-X-Gm-Message-State: APjAAAW3RU+uw5q2d20bhWdDwS5Q9Dxt3Fi53iPhL966iQ+jyR3Bvh89
-        BqammNHLknJK60Y4OSy3tKAg+Gf3eqMRUVZBlN76Mw==
-X-Google-Smtp-Source: APXvYqxDuXJqv/c/SqXLq4l0cAQvIWw6dIaAJm1RLNe4FSj10K4FMOIdAwv3/v/qIrOL5GnNI2cG/1NfCFFst9nvTGM=
-X-Received: by 2002:a2e:7816:: with SMTP id t22mr1024528ljc.161.1579840260417;
- Thu, 23 Jan 2020 20:31:00 -0800 (PST)
+        id S1730222AbgAXF2T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Jan 2020 00:28:19 -0500
+Received: from dexter.tse.jus.br ([187.29.147.30]:59932 "EHLO
+        dexter.tse.jus.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729740AbgAXF2Q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jan 2020 00:28:16 -0500
+X-Greylist: delayed 14415 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Jan 2020 00:28:12 EST
+X-AuditID: c0a8cb02-a5fff70000000ac3-b9-5e29f784bef6
+Received: from zimbra.tre-am.jus.br (zimbra.tre-am.gov.br [10.22.41.16])
+        by dexter.tse.jus.br (Mail) with SMTP id 9A.1A.02755.487F92E5; Thu, 23 Jan 2020 17:44:04 -0200 (-02)
+To:     undisclosed-recipients:;
+Received: from localhost (zimbra.tre-am.jus.br [127.0.0.1])
+        by zimbra.tre-am.jus.br (Postfix) with ESMTP id BE9096985150;
+        Thu, 23 Jan 2020 16:43:54 -0400 (-04)
+Received: from zimbra.tre-am.jus.br ([127.0.0.1])
+        by localhost (zimbra.tre-am.jus.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 4OsDEPNp-3Nv; Thu, 23 Jan 2020 16:43:54 -0400 (-04)
+Received: from localhost (zimbra.tre-am.jus.br [127.0.0.1])
+        by zimbra.tre-am.jus.br (Postfix) with ESMTP id 8F3AE698514E;
+        Thu, 23 Jan 2020 16:43:54 -0400 (-04)
+X-Virus-Scanned: amavisd-new at zimbra.tre-am.jus.br
+Received: from zimbra.tre-am.jus.br ([127.0.0.1])
+        by localhost (zimbra.tre-am.jus.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id orzFeHuycYdr; Thu, 23 Jan 2020 16:43:54 -0400 (-04)
+Received: from zimbra.tre-am.jus.br (zimbra.tre-am.jus.br [127.0.0.1])
+        by zimbra.tre-am.jus.br (Postfix) with ESMTP id 3122B6965DE1;
+        Thu, 23 Jan 2020 16:43:54 -0400 (-04)
+Date:   Thu, 23 Jan 2020 16:43:54 -0400 (AMT)
+From:   Mrs Radka <igor.santos@tre-am.jus.br>
+Reply-To: atanasovaradka01@hotmail.com
+Message-ID: <196960285.55850.1579812234187.JavaMail.zimbra@tre-am.jus.br>
+Subject: Bitte lesen Sie den 24-01-2019
 MIME-Version: 1.0
-References: <20200117214246.235591-1-drosen@google.com> <20200117214246.235591-6-drosen@google.com>
- <20200120013528.GY8904@ZenIV.linux.org.uk>
-In-Reply-To: <20200120013528.GY8904@ZenIV.linux.org.uk>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Thu, 23 Jan 2020 20:30:49 -0800
-Message-ID: <CA+PiJmQPFG7OehStFfNQE_7MGwgozhaa0TxZd+aHL2cFLMFbsA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/9] vfs: Fold casefolding into vfs
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [149.140.81.151]
+X-Mailer: Zimbra 8.8.8_GA_2096 (zclient/8.8.8_GA_2096)
+Thread-Index: edS6dpSZHdLjTUsuOogKZ826Lk5ShQ==
+Thread-Topic: Bitte lesen Sie den 24-01-2019
+X-Brightmail-Tracker: H4sIAAAAAAAAA01UbUxTVxj29H70Urnalg/vOj9mQ3CIw84Y9y5xTmNY7jRTE5KFzIhWe6V8
+        FdIWEHWRyYwFy0RUGEVQERCpiLA5/GRacUBFJIogCOoEqeIEZVOioO7etkD/vHnv87znOc9z
+        zsmlMPnvEgUVpTNyep06VklKcIl/kPSzn4eDIlTFrX7Q1PASgfmGGYOntmYc+gabCDAVFhFQ
+        V3VNBFeOVCHoObYJUgteEGDpzMXB3n+CgOw3aqjrbiAhr7CLhN3PziAwvfsPQWHdAA4dQ68J
+        MJ8+Q0DW0TQM9rSfJeGfsi4xdO0vxcHa0Y/gdm4mCY6sDBEcrm/DYaDFQsK1jvckVN3sxuB+
+        +xMM6vJTEeys3CuGB5lPSMj5tUQMGUMdCAaOjmAwaHNg8OZFDQF7LCYC6pt6cSioeEvC69Q0
+        HBxv68WQPdqF4OKhJgTnih8T0GdeC105l0iwppXiSxewrY0mnC3ZtQtjsw/vx9mGP60idm/u
+        A4Ideb+VfbjvAsmWp9eK2fyRIjF7IvMSwRbfrsbZzqt9GNvevYgtuPOIYMvuVGNsi72TWDPz
+        B8liDRcblcTp5y/ZINEW3RvAEhrRlu6GUTIVnUQZyItipAuZ0oOj4gwkoeTSSsRUvjM7CV/p
+        dKYgv4dwEccQk2NqcX9cQczfTQX4ODNqbSTHtOpv1onGp1p7LiDXxynE2POKcGEKlwYzvdZB
+        TOhJvv+l7IETl0sDGXOuxYnT0m8Z+4cGpxEf6RymrbZd7MJlTGNer3Me4/HRwluYq5/F1Dw/
+        hLlcKJmWD0/Ern4R83r3IXegEOZRXynp6ucx1mYzloX8LB6yFg9Zi4fsEYSVI5mG28I/2BCj
+        gQuJTjSEbNRXI/7lXi67LjqLKtKeh9iQlEJKb5raERQhJ9RJhpQ4G1pJiZR+NITy0JSN8ZoU
+        rdqgXa9PjOUMSl/aPmluhJwehzcmxsYoFXQl4lGfcVTHJRtiOSO/tQ0xFMYvQ9/zarRGnbKV
+        08e7xGzoYwpXTqMtAafWyaWRaiMXw3EJnH6M3UBR0vSR7JdIgevidZySoWU4v4tMz0VyWzZH
+        xRrHRnmN6zN4eakn4zQ2g6YKeMLfk/D0JqK8bIilvHmDZZiQy5CgjjNERbp1feiGd/xy7zHU
+        qfkR3SeMysfACT072kF11hUWYVTVNaHWOOvli8f4+ri8mK9Pzwm1ffBSCSZ3hlJMo+cLoaSC
+        mjZRN55J4U9Pa5kTIZ/qQQjbK6bTbQd5T34e+ISDfhTKX6cP/ZPg0Jv/WU1kkdM+QpbJbtAZ
+        haHbhNuUuTFPHZZ/A7508rxA4VCMaqPnoazOCBQOxY26D+U7AZSPgRNSilRRArKVnPb64nxw
+        X0bFK2/VrItDFQsyVEdHMsuTV4RF+Utk6qVeKYlN1m0qk2NOUlz03d6AJfTgsuFn/tVM6P3M
+        8FzY5gi/Oe+GatUrX/P2mKWTW1c47h+ImQnpa2ul5l4TI9vZbPnxumpS+77g9aGbF/d0sP5T
+        /th8d/YneT61V7gkRfOAan6+vCdn4ZqkSaPDjqc1eZrZxZvqh1c3Hgn+9OGjWmtyoaXtYQ++
+        XfsVLF+daM/9Jj7A1MVdnh72r/W4ThSeJRrUnF535sDXB0RRccOKVfeGrkbjYeVBt7abV/w2
+        dbfMd1l02p1azdDKq+cDI8v/On4+rF/75bLwk7MDbkWUpS9X4gat+vO5mN6g/h9L7i6cRwYA
+        AA==
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> ... buggering the filesystems (and boxen) that never planned to use
-> that garbage.
->
-I'm planning to rework this as dentry ops again. Your other comments
-point out some issues that also exist in the old dentry_operations, so
-that's a good opportunity to fix those up. How do you feel about just
-having the two entries in struct super_block? With them there, I can
-add the dentry_operations to fs/unicode where they won't bother anyone
-else, while not making every filesystem that uses it have to carry
-near identical code.
 
->
-> Are you serious?
->         1) who said that ->d_inode is stable here?  If we are in RCU mode,
-> it won't be.
->         2) page-sized kmalloc/kfree *ON* *COMPONENT* *AFTER* *COMPONENT*?
->
 
-#2 is the part that made me the saddest in the patch. I'm planning to
-move this to the unicode subsystem so it can just walk through the
-name as it computes the hash without needing any allocation.
-
->
-> ... and again, you are pulling in a lot of cachelines.
->
-
-I probably should've just given it a DCACHE flag, like what fscrypt is
-using. A simple flag there would've done everything that I'm doing
-without making the cache super sad and making any attempts at making
-it actually work with RCU much simpler.
-
-> <understatement> IMO the whole thing is not a good idea. </understatement>
+  Ich bin Frau ATANASOVA RADKA. Es ist wichtig, dass Sie mit mir Kontakt aufnehmen. Ich habe einen Vorschlag, den Sie machen werden Erw&auml;gen. Kontaktieren Sie mich per: atanasovaradka01@hotmail.com
