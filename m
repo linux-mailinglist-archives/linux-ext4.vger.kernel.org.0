@@ -2,78 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3D114782B
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jan 2020 06:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8D61477D7
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jan 2020 06:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbgAXF2T (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Jan 2020 00:28:19 -0500
-Received: from dexter.tse.jus.br ([187.29.147.30]:59932 "EHLO
-        dexter.tse.jus.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729740AbgAXF2Q (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jan 2020 00:28:16 -0500
-X-Greylist: delayed 14415 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Jan 2020 00:28:12 EST
-X-AuditID: c0a8cb02-a5fff70000000ac3-b9-5e29f784bef6
-Received: from zimbra.tre-am.jus.br (zimbra.tre-am.gov.br [10.22.41.16])
-        by dexter.tse.jus.br (Mail) with SMTP id 9A.1A.02755.487F92E5; Thu, 23 Jan 2020 17:44:04 -0200 (-02)
-To:     undisclosed-recipients:;
-Received: from localhost (zimbra.tre-am.jus.br [127.0.0.1])
-        by zimbra.tre-am.jus.br (Postfix) with ESMTP id BE9096985150;
-        Thu, 23 Jan 2020 16:43:54 -0400 (-04)
-Received: from zimbra.tre-am.jus.br ([127.0.0.1])
-        by localhost (zimbra.tre-am.jus.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 4OsDEPNp-3Nv; Thu, 23 Jan 2020 16:43:54 -0400 (-04)
-Received: from localhost (zimbra.tre-am.jus.br [127.0.0.1])
-        by zimbra.tre-am.jus.br (Postfix) with ESMTP id 8F3AE698514E;
-        Thu, 23 Jan 2020 16:43:54 -0400 (-04)
-X-Virus-Scanned: amavisd-new at zimbra.tre-am.jus.br
-Received: from zimbra.tre-am.jus.br ([127.0.0.1])
-        by localhost (zimbra.tre-am.jus.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id orzFeHuycYdr; Thu, 23 Jan 2020 16:43:54 -0400 (-04)
-Received: from zimbra.tre-am.jus.br (zimbra.tre-am.jus.br [127.0.0.1])
-        by zimbra.tre-am.jus.br (Postfix) with ESMTP id 3122B6965DE1;
-        Thu, 23 Jan 2020 16:43:54 -0400 (-04)
-Date:   Thu, 23 Jan 2020 16:43:54 -0400 (AMT)
-From:   Mrs Radka <igor.santos@tre-am.jus.br>
-Reply-To: atanasovaradka01@hotmail.com
-Message-ID: <196960285.55850.1579812234187.JavaMail.zimbra@tre-am.jus.br>
-Subject: Bitte lesen Sie den 24-01-2019
+        id S1726518AbgAXFEj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Jan 2020 00:04:39 -0500
+Received: from sonic310-22.consmr.mail.gq1.yahoo.com ([98.137.69.148]:44678
+        "EHLO sonic310-22.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726351AbgAXFEh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 24 Jan 2020 00:04:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1579842276; bh=KxVB/E86lNKNhPTU2/RM2/D0ts46IDAvVmg873JVtI4=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Subject; b=J9TObx8dEXgW7r+jATz5Yr4s7+z500v0s+p0CDTHFKdA73WjMIZOruK/shez9tLr/hBvzVDz+u0TKwhVf6JsJEGeS5ouRptFVF5KulTctzepq8K/DETAQm3BW/QhsGKWaqVHYcCLt+P5ZwSRbwxocDkZZ/m6oi72esrjpsFmBxOD4uqMhw9W3zIpUhPUPi/XSFxnBs0IZ/gbSVCHvIVOsy2TvW1ZwulXz/KSrM9U9VYWjLNEDff+qTlx/IB9vV/lC/iJG5Ux52oujcahCs7QXESkAKi0sSru/TUPxj4SH3utCNX7RP6anjdPvgFKibVt/YH6loZQXPVLGMDzvUlXXw==
+X-YMail-OSG: Uc6NeP0VM1nmfwyyfJft38JRGlFtmVIVadugRNgCQQPlasdldofbxmv9XY2SRRv
+ c2XF9DV4wrM.lSl37DCJxJwA1ZN1_PbrZtOBJ5MayiXI9WNdNe.L1yGEg1MKDMwwTkDPTrkTd3pp
+ 5eqh56aDCNt179q4wX85kLpW4xjtpZ1SMtNKHouolgA9cuXn1v38WKfJjLsma9GdxFwgpJ3.1dYn
+ Qk_uSCEHt7tnNIp33CXea3xOLhkJWPUwgSvaK2oaPHwQGRjSYigyzwG8KIn0EpBOVYONWHM404iQ
+ SWDRrn292EKpMLFmxrAiE3bmy0j0aUHt2BFDfr5a_ncZnAPf5.5RFc3NVlpBeIF.E3NLHbNggfVk
+ Er_gw2QUtgyTFMcGUFKHJ2DAcZC5cbWNuvYgrwRxotUGXGAXinwRvvTlGwjc48qj5eY1q.dn4nyl
+ COt_c_kB07JsC7dkQkym.GCzUgCswzVPM5X.jn0iv2cpR5PAf2yMwIgnkEolm4PxaUVs4kcE2D7v
+ EI2UB6XQoL_zIIww242AooZQNqhzYOokrZZmyAOSF2YPcVzNFRsTEPIfbSslre_gSBaZz.JeMi.d
+ oJy3Tv3j6BJYDLxuecH3iWuFVOYTbYeud3hCHm_MxquPLevVAr_B_WIoanZ6C7WtAtRuCOTygDR5
+ jD2WFZbXv5xHy1pevldBj9R6eTQefam9xzuqaNTnAwrtjdR4FjtJnczb2lJnEXQNJH1TKNTMouDU
+ DneHw3RhQT73gIcK8jGxBC_EoG31Fx9q8ORa4G8PSu62GvuWhsyt7.WZTly1CZCo.kDN6zq2weLm
+ vjxw74U73JRTFVb0bWi2TMxWSJWP.dcyXaGyAmQ3jmd5_Tf8lDgOK3jf6iESV4T62w2VrP6xR2cO
+ 9FN3aWwDMTu__52XTnQFlwZac2G00._Rx3JzWuQ8BTthW.Crl8RWFyfnm2bhk.ZfEjBLDQ3tv4Mz
+ pmE7Lx61eSR46OzfqBD7INCLnP9g5HNHTug8vpXuCxza359Nk5t5Z7_ODqvCN_gyiRCvqAGsjPgR
+ eC23JS3CpGagk7tcXhv4lOySQBng48w7csOecCr5EAK8djklj0crKAz9NbZgGS55q47ZSbEEh5uV
+ ulqtzrz0mmPl0fJux3.ApAVOwpUu03rINtyqr4R7fe7fVBGE5aSa_tx7aLb2qBzuXFSvMie2qyxA
+ MFvQhSzAhTGN0_akTcpm6KuGZbqGt4OURebaUVffRFXoERRSOFQJQIOuPZW2XA3ELlagAy_qZkH1
+ zWyDpETlchCSf0DUl_hpU5nD9o6rrY03LZfDqCF1G8C1l0RUgpxvp.4CQ1mUoOFDL93oXSkbjnwS
+ DeOnHjBHxAkGJfexW8YD0mWiDo5y7ihu24KoLaBmD3bdD6PuP2mnYu9Y96Z_idwkl3IHLO2QpWku
+ U8MKFwC7nHgeBhYJQwAqetIjP_3Zb7pql9YY1
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.gq1.yahoo.com with HTTP; Fri, 24 Jan 2020 05:04:36 +0000
+Received: by smtp405.mail.gq1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID da8cd968291b387cfb3bcafe1576746f;
+          Fri, 24 Jan 2020 05:04:32 +0000 (UTC)
+Date:   Fri, 24 Jan 2020 13:04:25 +0800
+From:   Gao Xiang <hsiangkao@aol.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Daniel Rosenberg <drosen@google.com>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: Re: [PATCH] ext4: fix race conditions in ->d_compare() and ->d_hash()
+Message-ID: <20200124050423.GA31271@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20200124041234.159740-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [149.140.81.151]
-X-Mailer: Zimbra 8.8.8_GA_2096 (zclient/8.8.8_GA_2096)
-Thread-Index: edS6dpSZHdLjTUsuOogKZ826Lk5ShQ==
-Thread-Topic: Bitte lesen Sie den 24-01-2019
-X-Brightmail-Tracker: H4sIAAAAAAAAA01UbUxTVxj29H70Urnalg/vOj9mQ3CIw84Y9y5xTmNY7jRTE5KFzIhWe6V8
-        FdIWEHWRyYwFy0RUGEVQERCpiLA5/GRacUBFJIogCOoEqeIEZVOioO7etkD/vHnv87znOc9z
-        zsmlMPnvEgUVpTNyep06VklKcIl/kPSzn4eDIlTFrX7Q1PASgfmGGYOntmYc+gabCDAVFhFQ
-        V3VNBFeOVCHoObYJUgteEGDpzMXB3n+CgOw3aqjrbiAhr7CLhN3PziAwvfsPQWHdAA4dQ68J
-        MJ8+Q0DW0TQM9rSfJeGfsi4xdO0vxcHa0Y/gdm4mCY6sDBEcrm/DYaDFQsK1jvckVN3sxuB+
-        +xMM6vJTEeys3CuGB5lPSMj5tUQMGUMdCAaOjmAwaHNg8OZFDQF7LCYC6pt6cSioeEvC69Q0
-        HBxv68WQPdqF4OKhJgTnih8T0GdeC105l0iwppXiSxewrY0mnC3ZtQtjsw/vx9mGP60idm/u
-        A4Ideb+VfbjvAsmWp9eK2fyRIjF7IvMSwRbfrsbZzqt9GNvevYgtuPOIYMvuVGNsi72TWDPz
-        B8liDRcblcTp5y/ZINEW3RvAEhrRlu6GUTIVnUQZyItipAuZ0oOj4gwkoeTSSsRUvjM7CV/p
-        dKYgv4dwEccQk2NqcX9cQczfTQX4ODNqbSTHtOpv1onGp1p7LiDXxynE2POKcGEKlwYzvdZB
-        TOhJvv+l7IETl0sDGXOuxYnT0m8Z+4cGpxEf6RymrbZd7MJlTGNer3Me4/HRwluYq5/F1Dw/
-        hLlcKJmWD0/Ern4R83r3IXegEOZRXynp6ucx1mYzloX8LB6yFg9Zi4fsEYSVI5mG28I/2BCj
-        gQuJTjSEbNRXI/7lXi67LjqLKtKeh9iQlEJKb5raERQhJ9RJhpQ4G1pJiZR+NITy0JSN8ZoU
-        rdqgXa9PjOUMSl/aPmluhJwehzcmxsYoFXQl4lGfcVTHJRtiOSO/tQ0xFMYvQ9/zarRGnbKV
-        08e7xGzoYwpXTqMtAafWyaWRaiMXw3EJnH6M3UBR0vSR7JdIgevidZySoWU4v4tMz0VyWzZH
-        xRrHRnmN6zN4eakn4zQ2g6YKeMLfk/D0JqK8bIilvHmDZZiQy5CgjjNERbp1feiGd/xy7zHU
-        qfkR3SeMysfACT072kF11hUWYVTVNaHWOOvli8f4+ri8mK9Pzwm1ffBSCSZ3hlJMo+cLoaSC
-        mjZRN55J4U9Pa5kTIZ/qQQjbK6bTbQd5T34e+ISDfhTKX6cP/ZPg0Jv/WU1kkdM+QpbJbtAZ
-        haHbhNuUuTFPHZZ/A7508rxA4VCMaqPnoazOCBQOxY26D+U7AZSPgRNSilRRArKVnPb64nxw
-        X0bFK2/VrItDFQsyVEdHMsuTV4RF+Utk6qVeKYlN1m0qk2NOUlz03d6AJfTgsuFn/tVM6P3M
-        8FzY5gi/Oe+GatUrX/P2mKWTW1c47h+ImQnpa2ul5l4TI9vZbPnxumpS+77g9aGbF/d0sP5T
-        /th8d/YneT61V7gkRfOAan6+vCdn4ZqkSaPDjqc1eZrZxZvqh1c3Hgn+9OGjWmtyoaXtYQ++
-        XfsVLF+daM/9Jj7A1MVdnh72r/W4ThSeJRrUnF535sDXB0RRccOKVfeGrkbjYeVBt7abV/w2
-        dbfMd1l02p1azdDKq+cDI8v/On4+rF/75bLwk7MDbkWUpS9X4gat+vO5mN6g/h9L7i6cRwYA
-        AA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200124041234.159740-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailer: WebService/1.1.14873 hermes Apache-HttpAsyncClient/4.1.4 (Java/1.8.0_181)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi Eric,
+
+On Thu, Jan 23, 2020 at 08:12:34PM -0800, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Since ->d_compare() and ->d_hash() can be called in RCU-walk mode,
+> ->d_parent and ->d_inode can be concurrently modified, and in
+> particular, ->d_inode may be changed to NULL.  For ext4_d_hash() this
+> resulted in a reproducible NULL dereference if a lookup is done in a
+> directory being deleted, e.g. with:
+> 
+> 	int main()
+> 	{
+> 		if (fork()) {
+> 			for (;;) {
+> 				mkdir("subdir", 0700);
+> 				rmdir("subdir");
+> 			}
+> 		} else {
+> 			for (;;)
+> 				access("subdir/file", 0);
+> 		}
+> 	}
+> 
+> ... or by running the 't_encrypted_d_revalidate' program from xfstests.
+> Both repros work in any directory on a filesystem with the encoding
+> feature, even if the directory doesn't actually have the casefold flag.
+> 
+> I couldn't reproduce a crash in ext4_d_compare(), but it appears that a
+> similar crash is possible there.
+> 
+> Fix these bugs by reading ->d_parent and ->d_inode using READ_ONCE() and
+> falling back to the case sensitive behavior if the inode is NULL.
+> 
+> Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+> Fixes: b886ee3e778e ("ext4: Support case-insensitive file name lookups")
+> Cc: <stable@vger.kernel.org> # v5.2+
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/ext4/dir.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> index 8964778aabefb..0129d14629881 100644
+> --- a/fs/ext4/dir.c
+> +++ b/fs/ext4/dir.c
+> @@ -671,9 +671,11 @@ static int ext4_d_compare(const struct dentry *dentry, unsigned int len,
+>  			  const char *str, const struct qstr *name)
+>  {
+>  	struct qstr qstr = {.name = str, .len = len };
+> -	struct inode *inode = dentry->d_parent->d_inode;
+> +	const struct dentry *parent = READ_ONCE(dentry->d_parent);
+
+I'm not sure if we really need READ_ONCE d_parent here (p.s. d_parent
+won't be NULL anyway), and d_seq will guard all its validity. If I'm
+wrong, correct me kindly...
+
+Otherwise, it looks good to me...
+Reviewed-by: Gao Xiang <gaoxiang25@huawei.com>
+
+Thanks,
+Gao Xiang
 
 
-  Ich bin Frau ATANASOVA RADKA. Es ist wichtig, dass Sie mit mir Kontakt aufnehmen. Ich habe einen Vorschlag, den Sie machen werden Erw&auml;gen. Kontaktieren Sie mich per: atanasovaradka01@hotmail.com
+> +	const struct inode *inode = READ_ONCE(parent->d_inode);
+>  
+> -	if (!IS_CASEFOLDED(inode) || !EXT4_SB(inode->i_sb)->s_encoding) {
+> +	if (!inode || !IS_CASEFOLDED(inode) ||
+> +	    !EXT4_SB(inode->i_sb)->s_encoding) {
+>  		if (len != name->len)
+>  			return -1;
+>  		return memcmp(str, name->name, len);
+> @@ -686,10 +688,11 @@ static int ext4_d_hash(const struct dentry *dentry, struct qstr *str)
+>  {
+>  	const struct ext4_sb_info *sbi = EXT4_SB(dentry->d_sb);
+>  	const struct unicode_map *um = sbi->s_encoding;
+> +	const struct inode *inode = READ_ONCE(dentry->d_inode);
+>  	unsigned char *norm;
+>  	int len, ret = 0;
+>  
+> -	if (!IS_CASEFOLDED(dentry->d_inode) || !um)
+> +	if (!inode || !IS_CASEFOLDED(inode) || !um)
+>  		return 0;
+>  
+>  	norm = kmalloc(PATH_MAX, GFP_ATOMIC);
+> -- 
+> 2.25.0
+> 
