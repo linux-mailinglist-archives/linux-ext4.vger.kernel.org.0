@@ -2,120 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6940D147780
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jan 2020 05:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597AC1477A1
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jan 2020 05:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730120AbgAXEQ2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Jan 2020 23:16:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729797AbgAXEQ2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 23 Jan 2020 23:16:28 -0500
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 920902070A;
-        Fri, 24 Jan 2020 04:16:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579839387;
-        bh=kj/UPIlxMTG1LNrRNQzAQibp9tj2WikH8O930HrmAmU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a67IdEUAnRcrrHdsQK7Nbl5g7OMOKGhUa7H2t42Ofc5V4ViYMbnvhK/a34YlJ+krO
-         vmTgWu/vfSimME2bI6MPvtXho8XRo0ExKGAxkWCy262Xx8CsCGhYC/qMYhcQmegp9w
-         qkPDAlLSC701dz3K1kcrqiHoKDf0AfVYXDtnfgjk=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-f2fs-devel@lists.sourceforge.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Daniel Rosenberg <drosen@google.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH 2/2] f2fs: fix race conditions in ->d_compare() and ->d_hash()
-Date:   Thu, 23 Jan 2020 20:15:49 -0800
-Message-Id: <20200124041549.159983-3-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200124041549.159983-1-ebiggers@kernel.org>
-References: <20200124041549.159983-1-ebiggers@kernel.org>
+        id S1730597AbgAXEbD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Jan 2020 23:31:03 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:46474 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729900AbgAXEbC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Jan 2020 23:31:02 -0500
+Received: by mail-lj1-f193.google.com with SMTP id m26so862904ljc.13
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Jan 2020 20:31:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YARMc3ae9hSUEoLGMas34bGpYXx9jRcQkvor0pcL47o=;
+        b=KDHO7h9B/b3mjy26Oj4EeSJIUNyQLYKaSj3d1nBNy4K7dVvqvhrzQt3G+uksHtglCC
+         GEn7l0fqTV7YiLooSM8wJDBDZ3zMa1NiXyT+I4cRb1BWaZgPHz2JpFTvojB+HO94ozad
+         MFaWKBQ9Zo4BEUhjLXI4paXN7kyNHtoN96Dwri5CF7MjQQUEfySc0AQBNxyC2R8iJZCg
+         guQxm94eI0DXd65SS/rnuHoJaoHhIN0BgEW5d7+6uC/9ey1p7B8TnBe/F7DCn8v2dGTO
+         IOVEJ7yvZF/HCRcAWrK9qPC6Itzo8kSjahJNwMYca4x2RJsn6vyrLjbauzKhHQ8haKAe
+         U9uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YARMc3ae9hSUEoLGMas34bGpYXx9jRcQkvor0pcL47o=;
+        b=Gm4qgQKHc6wTsA86T/z5Dnd8LMGZT0SkEDo02G+Rv8FAk8U6AVGqL0yK3NF6ycVtQM
+         jkIOnUJzkLwLTjU2F09rGUYGeXTHueUWi6DIYnMBhvYmfLomkceJiGf907V7/oDlKSXh
+         I8MJvDLiby8PfoCDeyTi1yGTNFgRbJDAuaxLHh8AKwN9nxXtXPJTmRHgQMe4gTpoaIHM
+         GC7zdxz28kjNUXATQ+qndM8drP2SeLQKGD5yN+c+R7NDjpkL2ux6+dtcIXGCMNkMb82g
+         DZvy4JOqqRqqjaywk982roSpws2bU6BANk9HQQXYUqpH4aIg2kurvQG7gtxEtwl6XHnT
+         y5OA==
+X-Gm-Message-State: APjAAAW3RU+uw5q2d20bhWdDwS5Q9Dxt3Fi53iPhL966iQ+jyR3Bvh89
+        BqammNHLknJK60Y4OSy3tKAg+Gf3eqMRUVZBlN76Mw==
+X-Google-Smtp-Source: APXvYqxDuXJqv/c/SqXLq4l0cAQvIWw6dIaAJm1RLNe4FSj10K4FMOIdAwv3/v/qIrOL5GnNI2cG/1NfCFFst9nvTGM=
+X-Received: by 2002:a2e:7816:: with SMTP id t22mr1024528ljc.161.1579840260417;
+ Thu, 23 Jan 2020 20:31:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200117214246.235591-1-drosen@google.com> <20200117214246.235591-6-drosen@google.com>
+ <20200120013528.GY8904@ZenIV.linux.org.uk>
+In-Reply-To: <20200120013528.GY8904@ZenIV.linux.org.uk>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Thu, 23 Jan 2020 20:30:49 -0800
+Message-ID: <CA+PiJmQPFG7OehStFfNQE_7MGwgozhaa0TxZd+aHL2cFLMFbsA@mail.gmail.com>
+Subject: Re: [PATCH v3 5/9] vfs: Fold casefolding into vfs
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+> ... buggering the filesystems (and boxen) that never planned to use
+> that garbage.
+>
+I'm planning to rework this as dentry ops again. Your other comments
+point out some issues that also exist in the old dentry_operations, so
+that's a good opportunity to fix those up. How do you feel about just
+having the two entries in struct super_block? With them there, I can
+add the dentry_operations to fs/unicode where they won't bother anyone
+else, while not making every filesystem that uses it have to carry
+near identical code.
 
-Since ->d_compare() and ->d_hash() can be called in RCU-walk mode,
-->d_parent and ->d_inode can be concurrently modified, and in
-particular, ->d_inode may be changed to NULL.  For f2fs_d_hash() this
-resulted in a reproducible NULL dereference if a lookup is done in a
-directory being deleted, e.g. with:
+>
+> Are you serious?
+>         1) who said that ->d_inode is stable here?  If we are in RCU mode,
+> it won't be.
+>         2) page-sized kmalloc/kfree *ON* *COMPONENT* *AFTER* *COMPONENT*?
+>
 
-	int main()
-	{
-		if (fork()) {
-			for (;;) {
-				mkdir("subdir", 0700);
-				rmdir("subdir");
-			}
-		} else {
-			for (;;)
-				access("subdir/file", 0);
-		}
-	}
+#2 is the part that made me the saddest in the patch. I'm planning to
+move this to the unicode subsystem so it can just walk through the
+name as it computes the hash without needing any allocation.
 
-... or by running the 't_encrypted_d_revalidate' program from xfstests.
-Both repros work in any directory on a filesystem with the encoding
-feature, even if the directory doesn't actually have the casefold flag.
+>
+> ... and again, you are pulling in a lot of cachelines.
+>
 
-I couldn't reproduce a crash in f2fs_d_compare(), but it appears that a
-similar crash is possible there.
+I probably should've just given it a DCACHE flag, like what fscrypt is
+using. A simple flag there would've done everything that I'm doing
+without making the cache super sad and making any attempts at making
+it actually work with RCU much simpler.
 
-Fix these bugs by reading ->d_parent and ->d_inode using READ_ONCE() and
-falling back to the case sensitive behavior if the inode is NULL.
-
-Reported-by: Al Viro <viro@zeniv.linux.org.uk>
-Fixes: 2c2eb7a300cd ("f2fs: Support case-insensitive file name lookups")
-Cc: <stable@vger.kernel.org> # v5.4+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/f2fs/dir.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index aea9e2806144d..d7c9a2cda4899 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -1083,24 +1083,27 @@ static int f2fs_d_compare(const struct dentry *dentry, unsigned int len,
- 			  const char *str, const struct qstr *name)
- {
- 	struct qstr qstr = {.name = str, .len = len };
-+	const struct dentry *parent = READ_ONCE(dentry->d_parent);
-+	const struct inode *inode = READ_ONCE(parent->d_inode);
- 
--	if (!IS_CASEFOLDED(dentry->d_parent->d_inode)) {
-+	if (!inode || !IS_CASEFOLDED(inode)) {
- 		if (len != name->len)
- 			return -1;
- 		return memcmp(str, name->name, len);
- 	}
- 
--	return f2fs_ci_compare(dentry->d_parent->d_inode, name, &qstr, false);
-+	return f2fs_ci_compare(inode, name, &qstr, false);
- }
- 
- static int f2fs_d_hash(const struct dentry *dentry, struct qstr *str)
- {
- 	struct f2fs_sb_info *sbi = F2FS_SB(dentry->d_sb);
- 	const struct unicode_map *um = sbi->s_encoding;
-+	const struct inode *inode = READ_ONCE(dentry->d_inode);
- 	unsigned char *norm;
- 	int len, ret = 0;
- 
--	if (!IS_CASEFOLDED(dentry->d_inode))
-+	if (!inode || !IS_CASEFOLDED(inode))
- 		return 0;
- 
- 	norm = f2fs_kmalloc(sbi, PATH_MAX, GFP_ATOMIC);
--- 
-2.25.0
-
+> <understatement> IMO the whole thing is not a good idea. </understatement>
