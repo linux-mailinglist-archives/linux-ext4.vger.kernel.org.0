@@ -2,70 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FB01496CA
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2020 18:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD54F149788
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2020 20:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgAYRJT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 25 Jan 2020 12:09:19 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49927 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725843AbgAYRJT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 25 Jan 2020 12:09:19 -0500
-Received: from callcc.thunk.org (rrcs-67-53-201-206.west.biz.rr.com [67.53.201.206])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00PH8d9t012751
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 25 Jan 2020 12:08:42 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 193AD420324; Sat, 25 Jan 2020 12:08:39 -0500 (EST)
-Date:   Sat, 25 Jan 2020 12:08:39 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Jan Kara <jack@suse.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Paul Mackerras <paulus@samba.org>, linux-ppp@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH] Documentation: changes.rst: update several outdated
- project URLs
-Message-ID: <20200125170839.GM1108497@mit.edu>
-References: <efb1f518-9e66-c472-d124-4b7d91e56639@infradead.org>
- <20200125034622.GA1107489@mit.edu>
- <c91c1ae1-7eb6-e6fd-57e3-aa8e8f356d45@infradead.org>
+        id S1727046AbgAYTou (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 25 Jan 2020 14:44:50 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:59538 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbgAYTou (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 25 Jan 2020 14:44:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=0ZMGv3oBke4qgEgEWLJ/O03PCwZbetUWl8MszuyJc3E=; b=iukevvX9wHFfu3JIg1tr6gVc/
+        JwJE61o+VY7KxTDz9InYcyVcbamX1y02guAD3rWE2GMFBd6m2M560rZ9H3IdzZ7mREF8HfqjNOxF7
+        HlJjW/HzTAr+MQDnqg4+ap4KCIzzg0CvE0iBtGvOYLNOiEVgKse1AFNaAcpAnsLdvzyQ+tS0PerbZ
+        t5ty0p/lHmff1/2YUFwEYdYp9wzoQkDc38nEKsZ+jm2E8oJgAiMXjCButFfqjsPdn0CHgtX1TFbzu
+        4tuijwgd1IjFP1Dl0+zEUez39wsvlMoBZL+xtptLXo4jcPUPXyt9UU4IzOBc+Dq2WViHshRY6wYB0
+        R5QNBIB6A==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ivRMP-0004OA-SC; Sat, 25 Jan 2020 19:44:49 +0000
+Date:   Sat, 25 Jan 2020 11:44:49 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH 03/12] readahead: Put pages in cache earlier
+Message-ID: <20200125194449.GO4675@bombadil.infradead.org>
+References: <20200125013553.24899-1-willy@infradead.org>
+ <20200125013553.24899-4-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c91c1ae1-7eb6-e6fd-57e3-aa8e8f356d45@infradead.org>
+In-Reply-To: <20200125013553.24899-4-willy@infradead.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 08:03:03PM -0800, Randy Dunlap wrote:
-> 
-> So drop the git URL also?
+On Fri, Jan 24, 2020 at 05:35:44PM -0800, Matthew Wilcox wrote:
+> @@ -192,8 +194,18 @@ unsigned long __do_page_cache_readahead(struct address_space *mapping,
+>  		page = __page_cache_alloc(gfp_mask);
+>  		if (!page)
+>  			break;
+> -		page->index = page_offset;
+> -		list_add(&page->lru, &page_pool);
+> +		if (use_list) {
+> +			page->index = page_offset;
+> +			list_add(&page->lru, &page_pool);
+> +		} else if (!add_to_page_cache_lru(page, mapping, page_offset,
+> +					gfp_mask)) {
+> +			if (nr_pages)
+> +				read_pages(mapping, filp, &page_pool,
+> +						page_offset - nr_pages,
+> +						nr_pages);
+> +			nr_pages = 0;
 
-Let's keep the git URL; sorry I wasn't precise in my previous message.
-I was referring to where the tarballs could be downloaded.
+This is missing a call to put_page().
 
-      		   	     	      - Ted
-
-P.S. I guess I should mention that there is one reason why some folks
-might still want to download from sourceforge; if they want the
-tarball signed by me, that's the only place you can get it.  For
-$REASONS, the .gpg file on kernel.org is signed by the kernel.org
-automation, and of course the git tree has tags signed for me.  But
-for folks who want the tarball signed by me --- Debian and its
-derivatives want that, for example --- they need to go to sourceforge.
-I dunno if the RPM-based distributions still care about gpg signed
-tarballs.  I'm guessing though that the people who care know where to
-find it.
+> +			continue;
+> +		}
+>  		if (page_idx == nr_to_read - lookahead_size)
+>  			SetPageReadahead(page);
+>  		nr_pages++;
