@@ -2,62 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DA01492D5
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2020 02:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFACD1492FC
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2020 03:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387629AbgAYB52 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Jan 2020 20:57:28 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45763 "EHLO
+        id S2387675AbgAYCW3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Jan 2020 21:22:29 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50608 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387608AbgAYB52 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jan 2020 20:57:28 -0500
+        with ESMTP id S2387542AbgAYCW2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jan 2020 21:22:28 -0500
 Received: from callcc.thunk.org (rrcs-67-53-201-206.west.biz.rr.com [67.53.201.206])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00P1vLQO025103
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00P2MMmX030225
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Jan 2020 20:57:23 -0500
+        Fri, 24 Jan 2020 21:22:24 -0500
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id E88C942014A; Fri, 24 Jan 2020 20:57:20 -0500 (EST)
-Date:   Fri, 24 Jan 2020 20:57:20 -0500
+        id 55E1642014A; Fri, 24 Jan 2020 21:22:21 -0500 (EST)
+Date:   Fri, 24 Jan 2020 21:22:21 -0500
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Colin Zou <colin.zou@gmail.com>
+To:     Dmitry Monakhov <dmonakhov@gmail.com>
 Cc:     linux-ext4@vger.kernel.org
-Subject: Re: Help: ext4 jbd2 IO requests slow down fsync
-Message-ID: <20200125015720.GJ147870@mit.edu>
-References: <CACZyaBsCb7KxQce27C79WhD5BKekq4Gi4z_P4h_xYvQ8_zv26A@mail.gmail.com>
+Subject: Re: [PATCH] ext4: fix extent_status fragmentation for plain files
+Message-ID: <20200125022221.GL147870@mit.edu>
+References: <20191106122502.19986-1-dmonakhov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACZyaBsCb7KxQce27C79WhD5BKekq4Gi4z_P4h_xYvQ8_zv26A@mail.gmail.com>
+In-Reply-To: <20191106122502.19986-1-dmonakhov@gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Jan 23, 2020 at 10:28:47PM -0800, Colin Zou wrote:
+On Wed, Nov 06, 2019 at 12:25:02PM +0000, Dmitry Monakhov wrote:
+> It is appeared that extent are not cached for inodes with depth == 0
+> which result in suboptimal extent status populating inside ext4_map_blocks()
+> by map's result where size requested is usually smaller than extent size so
+> cache becomes fragmented
 > 
-> I used to run my application on ext3 on SSD and recently switched to
-> ext4. However, my application sees performance regression. The root
-> cause is, iosnoop shows that the workload includes a lot of fsync and
-> every fsync does data IO and also jbd2 IO. While on ext3, it seldom
-> does journal IO. Is there a way to tune ext4 to increase fsync
-> performance? Say, by reducing jbd2 IO requests?
 
-If you're not seeing journal I/O from ext3 after an fsync, you're not
-looking at things correctly.  At the very *least* there will be
-journal I/O for the commit block, unless all of the work was done
-earlier in a previous journal commit.
+I've done some more performance testing, and analysis, and while for
+some workloads this will cause a slight increase in memory, most of
+the time, it's going to be a wash.  The one case where I could imagine
+is where a large number of files are scanned to determine what type
+they are (e.g., using file(1) command) and this causes the first block
+(and only the first block) to be read.  In that case, if there are
+four discontiguous regions in the inode's i_blocks[] area, this will
+cause multiple extents_status structs to be allocated that will never
+be used.
 
-In general, ext4 and ext3 will be doing roughly the same amount of I/O
-to the journal.  In some cases, depending on the workload, ext4
-*might* need to do more data I/O for the file being synced.  That's
-because with ext3, if there is an intervening periodic 5 second
-journal commit, some or all of the data I/O may have been forced out
-to disk earlier due to said 5 second sync.
+For most cases, though, the memory utilization will be the same or
+better, and I can see how this could make a difference in the workload
+that you described.
 
-What sort of workload does your application do?  How much data blocks
-are you writing before each fsync(), and how often are the fsync()
-operations?
+I experimented with a patch that only pulled into the extents status
+cache the single physical extent that was found, e.g.
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 393533ff0527..1aad7c0bc0af 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -901,9 +901,18 @@ ext4_find_extent(struct inode *inode, ext4_lblk_t block,
+ 	/* find extent */
+ 	ext4_ext_binsearch(inode, path + ppos, block);
+ 	/* if not an empty leaf */
+-	if (path[ppos].p_ext)
+-		path[ppos].p_block = ext4_ext_pblock(path[ppos].p_ext);
+-
++	if (path[ppos].p_ext) {
++		struct ext4_extent *ex = path[ppos].p_ext;
++
++		path[ppos].p_block = ext4_ext_pblock(ex);
++		if (!(flags & EXT4_EX_NOCACHE) && depth == 0)
++			ext4_es_cache_extent(inode, le32_to_cpu(ex->ee_block),
++					     ext4_ext_get_actual_len(ex),
++					     ext4_ext_pblock(ex),
++					     ext4_ext_is_unwritten(ex) ?
++					     EXTENT_STATUS_UNWRITTEN :
++					     EXTENT_STATUS_WRITTEN);
++	}
+ 	ext4_ext_show_path(inode, path);
+ 
+ 	return path;
+
+But as I experimented with it, I realized that it really didn't make
+that much difference in practice, so I decided to go with your
+original proposed patch.  Apologies for it taking a while for me to do
+the analysis/experiments.
+
+Cheers,
 
 						- Ted
