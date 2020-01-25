@@ -2,72 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD54F149788
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2020 20:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E331497C3
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2020 21:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgAYTou (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 25 Jan 2020 14:44:50 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:59538 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbgAYTou (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 25 Jan 2020 14:44:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=0ZMGv3oBke4qgEgEWLJ/O03PCwZbetUWl8MszuyJc3E=; b=iukevvX9wHFfu3JIg1tr6gVc/
-        JwJE61o+VY7KxTDz9InYcyVcbamX1y02guAD3rWE2GMFBd6m2M560rZ9H3IdzZ7mREF8HfqjNOxF7
-        HlJjW/HzTAr+MQDnqg4+ap4KCIzzg0CvE0iBtGvOYLNOiEVgKse1AFNaAcpAnsLdvzyQ+tS0PerbZ
-        t5ty0p/lHmff1/2YUFwEYdYp9wzoQkDc38nEKsZ+jm2E8oJgAiMXjCButFfqjsPdn0CHgtX1TFbzu
-        4tuijwgd1IjFP1Dl0+zEUez39wsvlMoBZL+xtptLXo4jcPUPXyt9UU4IzOBc+Dq2WViHshRY6wYB0
-        R5QNBIB6A==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ivRMP-0004OA-SC; Sat, 25 Jan 2020 19:44:49 +0000
-Date:   Sat, 25 Jan 2020 11:44:49 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH 03/12] readahead: Put pages in cache earlier
-Message-ID: <20200125194449.GO4675@bombadil.infradead.org>
-References: <20200125013553.24899-1-willy@infradead.org>
- <20200125013553.24899-4-willy@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200125013553.24899-4-willy@infradead.org>
+        id S1726690AbgAYUZp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 25 Jan 2020 15:25:45 -0500
+Received: from smtp-out-no.shaw.ca ([64.59.134.9]:36318 "EHLO
+        smtp-out-no.shaw.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgAYUZp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 25 Jan 2020 15:25:45 -0500
+Received: from cabot.adilger.int ([70.77.216.213])
+        by shaw.ca with ESMTP
+        id vRzyisJvNkqGXvRzziDdFI; Sat, 25 Jan 2020 13:25:44 -0700
+X-Authority-Analysis: v=2.3 cv=c/jVvi1l c=1 sm=1 tr=0
+ a=BQvS1EmAg2ttxjPVUuc1UQ==:117 a=BQvS1EmAg2ttxjPVUuc1UQ==:17 a=RPJ6JBhKAAAA:8
+ a=_CvfgrRZgBlTxnZNDbMA:9 a=fa_un-3J20JGBB2Tu-mn:22
+From:   Andreas Dilger <adilger@dilger.ca>
+To:     tytso@mit.edu
+Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH] ext4: don't assume that mmp_nodename/bdevname have NUL
+Date:   Sat, 25 Jan 2020 13:25:42 -0700
+Message-Id: <1579983942-11927-1-git-send-email-adilger@dilger.ca>
+X-Mailer: git-send-email 1.8.0
+X-CMAE-Envelope: MS4wfMHlIp+RiMhlSWRAiX58bb02uwmPWC9QHnxRVzJ2wHkykifLXnsNDbjBRgDcZFkNhZO2B3K8IK4shr3h96BycgWRLtJWSEwgQmt4YUG05FrhLuCcM+CY
+ jpysTbHHwBLTXHg7evm68VK3X+0ayzHKj/iy+L54LmMQg7xRvEYKbtTWQMwMtB/O95KKZ8sMb/YI3UXe8esAqF58Xzm9iDLpfxK8VAgJGDuaEVWohdhO7kfR
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 05:35:44PM -0800, Matthew Wilcox wrote:
-> @@ -192,8 +194,18 @@ unsigned long __do_page_cache_readahead(struct address_space *mapping,
->  		page = __page_cache_alloc(gfp_mask);
->  		if (!page)
->  			break;
-> -		page->index = page_offset;
-> -		list_add(&page->lru, &page_pool);
-> +		if (use_list) {
-> +			page->index = page_offset;
-> +			list_add(&page->lru, &page_pool);
-> +		} else if (!add_to_page_cache_lru(page, mapping, page_offset,
-> +					gfp_mask)) {
-> +			if (nr_pages)
-> +				read_pages(mapping, filp, &page_pool,
-> +						page_offset - nr_pages,
-> +						nr_pages);
-> +			nr_pages = 0;
+Don't assume that the mmp_nodename and mmp_bdevname strings are NUL
+terminated, since they are filled in by snprintf(), which is not
+guaranteed to do so.
 
-This is missing a call to put_page().
+Signed-off-by: Andreas Dilger <adilger@dilger.ca>
+---
+ fs/ext4/mmp.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-> +			continue;
-> +		}
->  		if (page_idx == nr_to_read - lookahead_size)
->  			SetPageReadahead(page);
->  		nr_pages++;
+diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+index 2305b43..612476e 100644
+--- a/fs/ext4/mmp.c
++++ b/fs/ext4/mmp.c
+@@ -120,10 +120,10 @@ void __dump_mmp_msg(struct super_block *sb, struct mmp_struct *mmp,
+ {
+ 	__ext4_warning(sb, function, line, "%s", msg);
+ 	__ext4_warning(sb, function, line,
+-		       "MMP failure info: last update time: %llu, last update "
+-		       "node: %s, last update device: %s",
+-		       (long long unsigned int) le64_to_cpu(mmp->mmp_time),
+-		       mmp->mmp_nodename, mmp->mmp_bdevname);
++		       "MMP failure info: last update time: %llu, last update node: %.*s, last update device: %.*s",
++		       (long long unsigned int)le64_to_cpu(mmp->mmp_time),
++		       sizeof(mmp->mmp_nodename), mmp->mmp_nodename,
++		       sizeof(mmp->mmp_bdevname), mmp->mmp_bdevname);
+ }
+ 
+ /*
+@@ -375,7 +375,8 @@ int ext4_multi_mount_protect(struct super_block *sb,
+ 	/*
+ 	 * Start a kernel thread to update the MMP block periodically.
+ 	 */
+-	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data, "kmmpd-%s",
++	EXT4_SB(sb)->s_mmp_tsk = kthread_run(kmmpd, mmpd_data, "kmmpd-%.*s",
++					     sizeof(mmp->mmp_bdevname),
+ 					     bdevname(bh->b_bdev,
+ 						      mmp->mmp_bdevname));
+ 	if (IS_ERR(EXT4_SB(sb)->s_mmp_tsk)) {
+-- 
+1.8.0
+
