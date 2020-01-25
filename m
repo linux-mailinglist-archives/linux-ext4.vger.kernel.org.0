@@ -2,132 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E62148F71
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Jan 2020 21:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F7B1492A4
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Jan 2020 02:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387476AbgAXUhi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Jan 2020 15:37:38 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58454 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387393AbgAXUhh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jan 2020 15:37:37 -0500
-Received: from callcc.thunk.org (rrcs-67-53-201-206.west.biz.rr.com [67.53.201.206])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 00OKbPBc002715
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Jan 2020 15:37:29 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 1664942014A; Fri, 24 Jan 2020 15:37:25 -0500 (EST)
-Date:   Fri, 24 Jan 2020 15:37:25 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jean-Louis Dupond <jean-louis@dupond.be>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: Filesystem corruption after unreachable storage
-Message-ID: <20200124203725.GH147870@mit.edu>
-References: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
+        id S1729816AbgAYBgA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Jan 2020 20:36:00 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:36760 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387678AbgAYBf7 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Jan 2020 20:35:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=r6GOkDmHzXzhSVqOAD8xlLIM6J6vOicE1/PE/yHNhJg=; b=u/qkoarH8z0iijq33ZVQ9301v
+        9Rwk5QUWYJuir0JRz2g3gAvmwfEk2dveuO6cp6kOah1H+gU5RcgFpZyz8DOTwcq4u41wsYNesptA0
+        DXWwxdfd621h81YVmJJ6QyYt9XLzBwRj4Jjxdi+im2s9zwR/Mdkn5Xy9ag9DkFKXzAcHngeQJznAY
+        IH/oeFxaS/lqVzfpSuTithOrftDc8EsfLSUsRuMvpblcWkatJapDh1LX+b0NnrjN3vpcLlh3vxdyB
+        4FxYQxNjeDWA6ghvaA058mgMgNJpasVgaPd45I3lX1j0F1vfqg5aArs0bf9j0xFTI4zgAeO6rnM94
+        yjHIU1COw==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ivAMd-0006VA-6E; Sat, 25 Jan 2020 01:35:55 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com
+Subject: [PATCH 00/12] Change readahead API
+Date:   Fri, 24 Jan 2020 17:35:41 -0800
+Message-Id: <20200125013553.24899-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 11:57:10AM +0100, Jean-Louis Dupond wrote:
-> 
-> There was a short disruption of the SAN, which caused it to be unavailable
-> for 20-25 minutes for the ESXi.
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-20-25 minutes is "short"?  I guess it depends on your definition / POV.  :-)
+This series adds a readahead address_space operation to eventually
+replace the readpages operation.  The key difference is that
+pages are added to the page cache as they are allocated (and
+then looked up by the filesystem) instead of passing them on a
+list to the readpages operation and having the filesystem add
+them to the page cache.  It's a net reduction in code for each
+implementation, more efficient than walking a list, and solves
+the direct-write vs buffered-read problem reported by yu kuai at
+https://lore.kernel.org/linux-fsdevel/20200116063601.39201-1-yukuai3@huawei.com/
 
-> What was observed in the VM was the following:
-> <hung task warning>
+Matthew Wilcox (Oracle) (12):
+  mm: Fix the return type of __do_page_cache_readahead
+  readahead: Ignore return value of ->readpages
+  readahead: Put pages in cache earlier
+  mm: Add readahead address space operation
+  fs: Convert mpage_readpages to mpage_readahead
+  btrfs: Convert from readpages to readahead
+  erofs: Convert uncompressed files from readpages to readahead
+  erofs: Convert compressed files from readpages to readahead
+  ext4: Convert from readpages to readahead
+  f2fs: Convert from readpages to readahead
+  fuse: Convert from readpages to readahead
+  iomap: Convert from readpages to readahead
 
-OK, to be expected.
+ Documentation/filesystems/locking.rst |  7 ++-
+ Documentation/filesystems/vfs.rst     | 11 ++++
+ drivers/staging/exfat/exfat_super.c   |  9 ++--
+ fs/block_dev.c                        |  9 ++--
+ fs/btrfs/extent_io.c                  | 15 ++----
+ fs/btrfs/extent_io.h                  |  2 +-
+ fs/btrfs/inode.c                      | 18 +++----
+ fs/erofs/data.c                       | 34 +++++-------
+ fs/erofs/zdata.c                      | 21 +++-----
+ fs/ext2/inode.c                       | 12 ++---
+ fs/ext4/ext4.h                        |  2 +-
+ fs/ext4/inode.c                       | 24 ++++-----
+ fs/ext4/readpage.c                    | 20 +++----
+ fs/f2fs/data.c                        | 33 +++++-------
+ fs/fat/inode.c                        |  8 +--
+ fs/fuse/file.c                        | 35 ++++++------
+ fs/gfs2/aops.c                        | 20 ++++---
+ fs/hpfs/file.c                        |  8 +--
+ fs/iomap/buffered-io.c                | 74 ++++++--------------------
+ fs/iomap/trace.h                      |  2 +-
+ fs/isofs/inode.c                      |  9 ++--
+ fs/jfs/inode.c                        |  8 +--
+ fs/mpage.c                            | 38 +++++---------
+ fs/nilfs2/inode.c                     | 13 ++---
+ fs/ocfs2/aops.c                       | 32 +++++------
+ fs/omfs/file.c                        |  8 +--
+ fs/qnx6/inode.c                       |  8 +--
+ fs/reiserfs/inode.c                   | 10 ++--
+ fs/udf/inode.c                        |  8 +--
+ fs/xfs/xfs_aops.c                     | 10 ++--
+ include/linux/fs.h                    |  2 +
+ include/linux/iomap.h                 |  2 +-
+ include/linux/mpage.h                 |  2 +-
+ include/linux/pagemap.h               | 12 +++++
+ include/trace/events/erofs.h          |  6 +--
+ include/trace/events/f2fs.h           |  6 +--
+ mm/internal.h                         |  2 +-
+ mm/migrate.c                          |  2 +-
+ mm/readahead.c                        | 76 +++++++++++++++++----------
+ 39 files changed, 289 insertions(+), 329 deletions(-)
 
-> 
-> - After 1080 seconds (SCSi Timeout of 180 * 5 Retries + 1):
-> [5878128.028672] sd 0:0:1:0: timing out command, waited 1080s
-> [5878128.028701] sd 0:0:1:0: [sdb] tag#592 FAILED Result: hostbyte=DID_OK
-> driverbyte=DRIVER_OK
-> [5878128.028703] sd 0:0:1:0: [sdb] tag#592 CDB: Write(10) 2a 00 06 0c b4 c8
-> 00 00 08 00
-> [5878128.028704] print_req_error: I/O error, dev sdb, sector 101496008
-> [5878128.028736] EXT4-fs warning (device dm-2): ext4_end_bio:323: I/O error
-> 10 writing to inode 3145791 (offset 0 size 0 starting block 12686745)
-> 
-> So you see the I/O is getting aborted.
+-- 
+2.24.1
 
-Also expected.
-
-
-> - When the SAN came back, then the filesystem went Read-Only:
-> [5878601.212415] EXT4-fs error (device dm-2): ext4_journal_check_start:61:
-> Detected aborted journal
-
-Yep....
-
-> Now I did a hard reset of the machine, and a manual fsck was needed to get
-> it booting again.
-> Fsck was showing the following:
-> "Inodes that were part of a corrupted orphan linked list found."
-> 
-> Manual fsck started with the following:
-> Inodes that were part of a corrupted orphan linked list found. Fix<y>?
-> Inode 165708 was part of the orphaned inode list. FIXED
-> 
-> Block bitmap differences: -(863328--863355)
-> Fix<y>?
-> 
-> What worries me is that almost all of the VM's (out of 500) were showing the
-> same error.
-
-So that's a bit surprising...
-
-> And even some (+-10) were completely corrupt.
-
-What do you mean by "completely corrupt"?  Can you send an e2fsck
-transcript of file systems that were "completely corrupt"?
-
-> Is there for example a chance that the filesystem gets corrupted the moment
-> the SAN storage was back accessible?
-
-Hmm...  the one possibility I can think of off the top of my head is
-that in order to mark the file system as containing an error, we need
-to write to the superblock.  The head of the linked list of orphan
-inodes is also in the superblock.  If that had gotten modified in the
-intervening 20-25 minutes, it's possible that this would result in
-orphaned inodes not on the linked list, causing that error.
-
-It doesn't explain the more severe cases of corruption, though.
-
-> I also have some snapshot available of a corrupted disk if some additional
-> debugging info is required.
-
-Before e2fsck was run?  Can you send me a copy of the output of
-dumpe2fs run on that disk, and then transcript of e2fsck -fy run on a
-copy of that snapshot?
-
-> It would be great to gather some feedback on how to improve the situation
-> (next to of course have no SAN outage :)).
-
-Something that you could consider is setting up your system to trigger
-a panic/reboot on a hung task timeout, or when ext4 detects an error
-(see the man page of tune2fs and mke2fs and the -e option for those
-programs).
-
-There are tradeoffs with this, but if you've lost the SAN for 15-30
-minutes, the file systems are going to need to be checked anyway, and
-the machine will certainly not be serving.  So forcing a reboot might
-be the best thing to do.
-
-> On KVM for example there is a unlimited timeout (afaik) until the storage is
-> back, and the VM just continues running after storage recovery.
-
-Well, you can adjust the SCSI timeout, if you want to give that a try....
-
-Cheers,
-
-					- Ted
