@@ -2,162 +2,125 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4307714A06D
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jan 2020 10:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCFB14A317
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Jan 2020 12:34:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgA0JGq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Jan 2020 04:06:46 -0500
-Received: from mga14.intel.com ([192.55.52.115]:42710 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729143AbgA0JGq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 27 Jan 2020 04:06:46 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Jan 2020 01:06:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,369,1574150400"; 
-   d="scan'208";a="223189988"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 27 Jan 2020 01:06:44 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1iw0M0-000GV6-Ar; Mon, 27 Jan 2020 17:06:44 +0800
-Date:   Mon, 27 Jan 2020 17:06:31 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD INCOMPLETE
- 7f6225e446cc8dfa4c3c7959a4de3dd03ec277bf
-Message-ID: <5e2ea817.X3gnTX9XzrhN9Kw0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727534AbgA0Lee (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Jan 2020 06:34:34 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:52066 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725990AbgA0Lee (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Jan 2020 06:34:34 -0500
+Received: from mail-qt1-f197.google.com ([209.85.160.197])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <mfo@canonical.com>)
+        id 1iw2f2-0002SB-LT
+        for linux-ext4@vger.kernel.org; Mon, 27 Jan 2020 11:34:32 +0000
+Received: by mail-qt1-f197.google.com with SMTP id n4so774249qtv.5
+        for <linux-ext4@vger.kernel.org>; Mon, 27 Jan 2020 03:34:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+ZSiRpNxTymFPV8y2OnlSYe8O6QEF9ESzz+EPrKDBb8=;
+        b=Ai367q/gpDI2//2AOuVKsUShwZriHMBEBshbK8ReVcyeFI/IG3x/Gc8F9VgF6Y7Dn5
+         C+egMzapdhg9bcbbpuJrO2DpekpM6g09rPz/T5yuwdMMnr+WgTCk+v4fCbLCY9wUV2Yp
+         RC0s/J9aUc9DA8WiHjGlPAKskta50SrhR77qaZOALcN89SOnhyqQqZ5zu1JqYbcZ8dnu
+         nNUwttXpfUKz4wqO22MCCdcldGRq111CDfL9MqIN6sY8drLBTohhVgGpcxH5uvFk30uc
+         p9sZdWEvdBYOiU30kgrMGPc0rvOs3YReHKn4d8VSt36vhViQQJP5zFZvlFXEqhkJDOGI
+         y4aA==
+X-Gm-Message-State: APjAAAXFh93XmDcrFlyzKD/r+gNZrD/hhOOEH4FtcCNZ726VvbzwpUHI
+        Gn9mhE2mSP/kuL3hBVp3Pr3x0DJhK8s7WVIja1385edDQ9S6uFzWd9mSPckYgSVuCI7mPBcwb87
+        0/R7kPTXww4CENWWnJFf+lHCbMh/e8tpbotkCDCY=
+X-Received: by 2002:a37:b8b:: with SMTP id 133mr15753019qkl.418.1580124871778;
+        Mon, 27 Jan 2020 03:34:31 -0800 (PST)
+X-Google-Smtp-Source: APXvYqwv+KfqbkV7m7O7OBZlqFUJ2K/D/+UZ/VYD5Vq7/Brmop6gDJW1C6TFWnjpx8yNLjb6LM3E6Q==
+X-Received: by 2002:a37:b8b:: with SMTP id 133mr15753003qkl.418.1580124871520;
+        Mon, 27 Jan 2020 03:34:31 -0800 (PST)
+Received: from localhost.localdomain ([2804:14c:4e7:1017:876:4f8b:50cb:9457])
+        by smtp.gmail.com with ESMTPSA id d25sm9582003qtq.11.2020.01.27.03.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2020 03:34:30 -0800 (PST)
+From:   Mauricio Faria de Oliveira <mfo@canonical.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>
+Cc:     dann frazier <dann.frazier@canonical.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: Re: ext4 fsck vs. kernel recovery policy
+Date:   Mon, 27 Jan 2020 08:34:27 -0300
+Message-Id: <20200127113427.20214-1-mfo@canonical.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190830012236.GC10779@mit.edu>
+References: <20190830012236.GC10779@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
-branch HEAD: 7f6225e446cc8dfa4c3c7959a4de3dd03ec277bf  jbd2: clean __jbd2_journal_abort_hard() and __journal_abort_soft()
+On Thu, 29 Aug 2019 21:22:36 -0400, Theodore Y. Ts'o wrote:
+> On Thu, Aug 29, 2019 at 04:53:48PM -0600, dann frazier wrote:
+>> JBD2: Invalid checksum recovering data block 517634 in log
+>> 
+>> So is it correct to say that the checksum errors were identifying
+>> filesystem correctness issues, and therefore e2fsck was needed to
+>> correct them?
+> 
+> That's correct.  More precisely, checksum errors for journal blocks
+> are presumed to mean that file system might be corrupt, so a full
+> e2fsck check was needed to make sure the file system was consistent.
+> 
+> > You're probably right - this issue is very easy to reproduce w/
+> > data=journal,journal_checksum. I was never able to reproduce it
+> > otherwise.
+> 
+> I've looked at the data block numbers that you've reported, and they
+> come from a journald file.  The problem is with data=journal +
+> journal_checksum + mmap.  Unfortunately, we don't handle that
+> combination correctly at the moment.
+> 
+> The fix is going to have to involve fixing __ext4_journalled_writepage()
+> to call set_page_writeback() before it unlocks the page, adding a list of
+> pages under data=journalled writeback which is attached to the
+> transaction handle, have the jbd2 commit hook call end_page_writeback()
+> on all of these pages, and then in the places where ext4 calls
+> wait_for_stable_page() or grab_cache_page_write_begin(),
+> we need to add:
+> 
+> 	if (ext4_should_journal_data(inode))
+> 		wait_on_page_writeback(page);
+> 
 
-TIMEOUT after 2885m
+If I understood and wrote things correctly, this can hit a deadlock between
 
+1) jbd2_journal_commit_transaction() -- waiting for t_updates to drop (i.e.,
+   ext4_journal_stop() to be called), blocking commit / end_page_writeback().
 
-Sorry we cannot finish the testset for your branch within a reasonable time.
-It's our fault -- either some build server is down or some build worker is busy
-doing bisects for _other_ trees. The branch will get more complete coverage and
-possible error reports when our build infrastructure is restored or catches up.
-There will be no more build success notification for this branch head, but you
-can expect reasonably good test coverage after waiting for 1 day.
+and
 
-configs timed out: 60
+2) ext4_write_begin() -- waiting in wait_on_page_writeback() in between the
+   calls to ext4_journal_start()/stop(), blocking t_updates from dropping.
 
-arc                              allyesconfig
-arc                                 defconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-i386                             alldefconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-mips                         64r6el_defconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
+I worked around it moving wait_on_page_writeback() before ext4_journal_start(),
+but wonder if this is really expected and the algorithm needs tuning/changes,
+or not expected and thus an implementation error. (First time with ext4 code.)
 
-configs tested: 39
-configs skipped: 1
+P.S.: sorry to bother again about it (I already wrote/pinged on [1, 2]) but
+this does seem interesting and shows an issue we're interested in fixing up.
 
-m68k                          multi_defconfig
-m68k                       m5475evb_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                           sun3_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-arm64                randconfig-a001-20200126
-ia64                 randconfig-a001-20200126
-arm                  randconfig-a001-20200126
-arc                  randconfig-a001-20200126
-sparc                randconfig-a001-20200126
-mips                             allmodconfig
-mips                           32r2_defconfig
-mips                             allyesconfig
-mips                              allnoconfig
-riscv                          rv32_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-riscv                    nommu_virt_defconfig
-riscv                            allyesconfig
-nds32                               defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-parisc                        c3000_defconfig
-parisc                         b180_defconfig
-parisc                              defconfig
-parisc                            allnoconfig
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                         rhel-7.2-clear
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                                  defconfig
+Thanks again for your help/suggestions on this.
 
----
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+[1] https://lore.kernel.org/linux-ext4/20191221202630.30718-1-mfo@canonical.com/
+[2] https://lore.kernel.org/linux-ext4/20191221202630.30718-2-mfo@canonical.com/
+
+cheers,
+Mauricio
+
+> It's all relatively straightforward except for the part where we have to
+> attach a list of pages to the currently running transaction.  That
+> will require adding  some plumbing into the jbd2 layer.
+> 
+> Dann, any interest in trying to code this fix?
+> 
+>       	  	      	     	     	  - Ted
