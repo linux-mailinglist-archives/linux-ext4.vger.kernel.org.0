@@ -2,127 +2,206 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC50D14B0B7
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jan 2020 09:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A3E14B26E
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Jan 2020 11:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725882AbgA1IMJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Jan 2020 03:12:09 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:42661 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgA1IMJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Jan 2020 03:12:09 -0500
-Received: by mail-lf1-f65.google.com with SMTP id y19so8377175lfl.9
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Jan 2020 00:12:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YtcRS1L5k8wBwwPdgRKCV0zDBNlxax9vadneAgBCrDM=;
-        b=YsPuHSyJhbIqoeJPTniUj3/nc9kroQ5qUmdrzSLMXulbuST72e/qK6II+7d2ypcXnL
-         WQoSVOv4y9f3Ov9svBNHmkQ16+V+HhE5ezmG18N673upe2+lor6gIHHtJd3a7p1v4qA+
-         Fsxg2JFNAHVGCkVHzFvd7NiYxfQgKUd9XmN1g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YtcRS1L5k8wBwwPdgRKCV0zDBNlxax9vadneAgBCrDM=;
-        b=gNaszqCwiyXEORtRVkpiPdxs3/sUAlEBK/OpXGwLMwkLd4YiehNw4bwZIdSl6lpby2
-         M9niFRsplG7zz+UM8jiwzkQcw9f/V1uMndf5EVY4ZRqSh93yD8dm9unYM15mZiQZqXSV
-         MGCsV3FLHujzZ0aVICiJpHJs67w7g5GqSOfzLkNuQEgpjICCa1CgbqisZvV+V4p8MWxO
-         EL6UF2uVFjwSaPrjDo7A9fw2XgcxQKFy/+syAH9RhgNs2zoBwZDW+G9qEYUGb17sdjP/
-         Ly7+cIIRXWeQ/KEER0Me+sebxix2fB8g8ItZCrfGsM7XdM/taggAbafFuwRmulgsTFWa
-         gSrg==
-X-Gm-Message-State: APjAAAWWBMt0Y2eFHD8RGjsK7GN3uhHuK8Z554FaUs9VceWJxaOzhXfu
-        IRfKQ+T9gStVq7YsDKw5pAzv6dwgXkhXW7Uq
-X-Google-Smtp-Source: APXvYqxHAUbMIrGBLdv8Yti7EDHcHua1MWBUehPXejuLPYcnKyCX57FpmTzajDy4Sg/aAffBMQXHgA==
-X-Received: by 2002:ac2:5964:: with SMTP id h4mr1665454lfp.213.1580199127298;
-        Tue, 28 Jan 2020 00:12:07 -0800 (PST)
-Received: from [172.16.11.50] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id i13sm9246212ljg.89.2020.01.28.00.12.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jan 2020 00:12:06 -0800 (PST)
-Subject: Re: vmlinux ELF header sometimes corrupt
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        id S1725948AbgA1KSo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Jan 2020 05:18:44 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47948 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725901AbgA1KSo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 Jan 2020 05:18:44 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00SACT9O090372
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Jan 2020 05:18:42 -0500
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2xrvw7m0kh-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Jan 2020 05:18:42 -0500
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Tue, 28 Jan 2020 10:18:39 -0000
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 28 Jan 2020 10:18:37 -0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 00SAIaYp21627118
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Jan 2020 10:18:36 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 276EFAE056;
+        Tue, 28 Jan 2020 10:18:36 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E67C5AE051;
+        Tue, 28 Jan 2020 10:18:33 +0000 (GMT)
+Received: from dhcp-9-199-158-40.in.ibm.com (unknown [9.199.158.40])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 28 Jan 2020 10:18:33 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
         linux-ext4@vger.kernel.org
-References: <71aa76d0-a3b8-b4f3-a7c3-766cfb75412f@rasmusvillemoes.dk>
-Message-ID: <5997e9b6-95fd-405b-05f8-16f9e34d9d87@rasmusvillemoes.dk>
-Date:   Tue, 28 Jan 2020 09:12:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+Cc:     linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
+        hch@infradead.org, cmaiolino@redhat.com,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [RFCv2 0/4] ext4: bmap & fiemap conversion to use iomap
+Date:   Tue, 28 Jan 2020 15:48:24 +0530
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <71aa76d0-a3b8-b4f3-a7c3-766cfb75412f@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 20012810-0012-0000-0000-000003816240
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20012810-0013-0000-0000-000021BDB50D
+Message-Id: <cover.1580121790.git.riteshh@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-28_02:2020-01-24,2020-01-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ malwarescore=0 phishscore=0 spamscore=0 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1911200001 definitions=main-2001280083
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 22/01/2020 18.52, Rasmus Villemoes wrote:
-> I'm building for a ppc32 (mpc8309) target using Yocto, and I'm hitting a
-> very hard to debug problem that maybe someone else has encountered. This
-> doesn't happen always, perhaps 1 in 8 times or something like that.
-> 
-> The issue is that when the build gets to do "${CROSS}objcopy -O binary
-> ... vmlinux", vmlinux is not (no longer) a proper ELF file, so naturally
-> that fails with
-> 
->   powerpc-oe-linux-objcopy:vmlinux: file format not recognized
-> 
-> So I hacked link-vmlinux.sh to stash copies of vmlinux before and after
-> sortextable vmlinux. Both of those are proper ELF files, and comparing
-> the corrupted vmlinux to vmlinux.after_sort they are identical after the
-> first 52 bytes; in vmlinux, those first 52 bytes are all 0.
-> 
-> I also saved stat(1) info to see if vmlinux is being replaced or
-> modified in-place.
-> 
-> $ cat vmlinux.stat.after_sort
->   File: 'vmlinux'
->   Size: 8608456     Blocks: 16696      IO Block: 4096   regular file
-> Device: 811h/2065d  Inode: 21919132    Links: 1
-> Access: (0755/-rwxr-xr-x)  Uid: ( 1000/    user)   Gid: ( 1001/    user)
-> Access: 2020-01-22 10:52:38.946703081 +0000
-> Modify: 2020-01-22 10:52:38.954703105 +0000
-> Change: 2020-01-22 10:52:38.954703105 +0000
-> 
-> $ stat vmlinux
->   File: 'vmlinux'
->   Size: 8608456         Blocks: 16688      IO Block: 4096   regular file
-> Device: 811h/2065d      Inode: 21919132    Links: 1
-> Access: (0755/-rwxr-xr-x)  Uid: ( 1000/    user)   Gid: ( 1001/    user)
-> Access: 2020-01-22 17:20:00.650379057 +0000
-> Modify: 2020-01-22 10:52:38.954703105 +0000
-> Change: 2020-01-22 10:52:38.954703105 +0000
-> 
-> So the inode number and mtime/ctime are exactly the same, but for some
-> reason Blocks: has changed? This is on an ext4 filesystem, but I don't
-> suspect the filesystem to be broken, because it's always just vmlinux
-> that ends up corrupt, and always in exactly this way with the first 52
-> bytes having been wiped.
+Hello All,
 
-So, I think I take that last part back. I just hit a case where I built
-the kernel manually, made a copy of vmlinux to vmlinux.copy, and file(1)
-said both were fine (and cmp(1) agreed they were identical). Then I went
-off and did work elsewhere with a lot of I/O. When I came back to the
-linux build dir, vmlinux was broken, exactly as before. So I now suspect
-it to be some kind of "while the file is in the pagecache, everything is
-fine, but when it's read back from disk it's broken".
+Background
+==========
+There are RFCv2 patches to move ext4 bmap & fiemap calls to use iomap APIs.
+This reduces the users of ext4_get_block API and thus a step towards getting
+rid of buffer_heads from ext4. Also reduces a lot of code by making use of
+existing iomap_ops (except for xattr implementation).
 
-My ext4 fs does have inline_data enabled, which could explain why the
-corruption happens in the beginning. It's just very odd that it only
-ever seems to trigger for vmlinux and not other files, but perhaps the
-I/O patterns that ld and/or sortextable does are exactly what are needed
-to trigger the bug.
+Testing (done on ext4 master branch)
+========
+'xfstests -g auto' passes with default mkfs/mount configuration
+(v/s which also pass with vanilla kernel without this patch). Except
+generic/473 which also failes on XFS. This seems to be the test case issue
+since it expects the data in slightly different way as compared to what iomap
+returns.
+Point 2.a below describes more about this.
 
-I've done a long overdue kernel update, and there are quite a few
-fs/ext4/ -stable patches in there, so now I'll see if it still happens.
-And if anything more comes of this, I'll remove the kbuild and ppc lists
-from cc, sorry for the noise.
+Observations/Review required
+============================
+1. bmap related old v/s new method differences:-
+	a. In case if addr > INT_MAX, it issues a warning and
+	   returns 0 as the block no. While earlier it used to return the
+	   truncated value with no warning.
+	b. block no. is only returned in case of iomap->type is IOMAP_MAPPED,
+	   but not when iomap->type is IOMAP_UNWRITTEN. While with previously
+	   we used to get block no. for both of above cases.
 
-Rasmus
+2. Fiemap related old v/s new method differences:-
+	a. iomap_fiemap returns the disk extent information in exact
+	   correspondence with start of user requested logical offset till the
+	   length requested by user. While in previous implementation the
+	   returned information used to give the complete extent information if
+	   the range requested by user lies in between the extent mapping.
+	b. iomap_fiemap adds the FIEMAP_EXTENT_LAST flag also at the last
+	   fiemap_extent mapping range requested by the user via fm_length (
+	   if that has a valid mapped extent on the disk). But if the user
+	   requested for more fm_length which could not be mapped in the last
+	   fiemap_extent, then the flag is not set.
+	   
+
+e.g. output for above differences 2.a & 2.b
+===========================================
+create a file with below cmds. 
+1. fallocate -o 0 -l 8K testfile.txt
+2. xfs_io -c "pwrite 8K 8K" testfile.txt
+3. check extent mapping:- xfs_io -c "fiemap -v" testfile.txt
+4. run this binary on with and without these patches:- ./a.out (test_fiemap_diff.c) [4]
+
+o/p of xfs_io -c "fiemap -v"
+============================================
+With this patch on patched kernel:-
+testfile.txt:
+ EXT: FILE-OFFSET      BLOCK-RANGE          TOTAL FLAGS
+   0: [0..15]:         122802736..122802751    16 0x800
+   1: [16..31]:        122687536..122687551    16   0x1
+
+without patch on vanilla kernel (no difference):-
+testfile.txt:
+ EXT: FILE-OFFSET      BLOCK-RANGE          TOTAL FLAGS
+   0: [0..15]:         332211376..332211391    16 0x800
+   1: [16..31]:        332722392..332722407    16   0x1
+
+
+o/p of a.out without patch:-
+================
+riteshh-> ./a.out 
+logical: [       0..      15] phys: 332211376..332211391 flags: 0x800 tot: 16
+(0) extent flag = 2048
+
+o/p of a.out with patch (both point 2.a & 2.b could be seen)
+=======================
+riteshh-> ./a.out
+logical: [       0..       7] phys: 122802736..122802743 flags: 0x801 tot: 8
+(0) extent flag = 2049
+
+FYI - In test_fiemap_diff.c test we had 
+a. fm_extent_count = 1
+b. fm_start = 0
+c. fm_length = 4K
+Whereas when we change fm_extent_count = 32, then we don't see any difference.
+
+e.g. output for above difference listed in point 1.b
+====================================================
+
+o/p without patch (block no returned for unwritten block as well)
+=========Testing IOCTL FIBMAP=========
+File size = 16384, blkcnt = 4, blocksize = 4096
+  0   41526422
+  1   41526423
+  2   41590299
+  3   41590300
+
+o/p with patch (0 returned for unwritten block)
+=========Testing IOCTL FIBMAP=========
+File size = 16384, blkcnt = 4, blocksize = 4096
+  0          0          0
+  1          0          0
+  2   15335942      29953
+  3   15335943      29953
+
+
+Summary:-
+========
+Due to some of the observational differences to user, listed above,
+requesting to please help with a careful review in moving this to iomap.
+Digging into some older threads, it looks like these differences should be fine,
+since the same tools have been working fine with XFS (which uses iomap based
+implementation) [1]
+Also as Ted suggested in [3]: Fiemap & bmap spec could be made based on the ext4
+implementation. But since all the tools also work with xfs which uses iomap
+based fiemap, so we should be good there.
+
+
+References of some previous discussions:
+=======================================
+[1]: https://www.spinics.net/lists/linux-fsdevel/msg128370.html
+[2]: https://www.spinics.net/lists/linux-fsdevel/msg127675.html
+[3]: https://www.spinics.net/lists/linux-fsdevel/msg128368.html
+[4]: https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/tools/test_fiemap_diff.c
+[RFCv1]: https://www.spinics.net/lists/linux-ext4/msg67077.html 
+
+
+Ritesh Harjani (4):
+  ext4: Add IOMAP_F_MERGED for non-extent based mapping
+  ext4: Optimize ext4_ext_precache for 0 depth
+  ext4: Move ext4 bmap to use iomap infrastructure.
+  ext4: Move ext4_fiemap to use iomap infrastructure
+
+ fs/ext4/extents.c | 288 +++++++---------------------------------------
+ fs/ext4/inline.c  |  41 -------
+ fs/ext4/inode.c   |   6 +-
+ 3 files changed, 49 insertions(+), 286 deletions(-)
+
+-- 
+2.21.0
+
