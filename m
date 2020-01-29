@@ -2,185 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E19AE14D36A
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Jan 2020 00:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 686D814D41C
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Jan 2020 00:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgA2XPT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Jan 2020 18:15:19 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:52452 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727024AbgA2XPT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Jan 2020 18:15:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=YE5ymmg/Qoh5EFK9pVvYeClJYE682bbCQnrC66d+TOc=; b=hxaoehU77S1fZAy677mOd1sm1
-        JjfnFRlZxbzaUUX53Ti75TXmkGdG7ltwdyqeib0jlXtiXKYLAqubtBIyQh9RF9pmtRUuvMoQhx4ON
-        lZDuGYZNIdASkaBwDckHywVVyTOkSmI6rgb4VCbHm8cusVXnFx5zmAQFMMhbyrKyCXsZRMmlyhio5
-        yXOc5zcqDiGjp3VZJHkF0/1i9A5i9i61s+4oayNZRySecQKFeNMUiPRvQHpg2TJ6Zl7ssEpLFrLgD
-        wu3x2p4pbdKNN4Zi6AQRLwS5/IuCzWi5nCDhRX/Jk5hX/7YkSgCEnm0noXgupWgg91QCoQWp/d5R3
-        qPFjnIM/A==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iwwYH-0007Ig-Te; Wed, 29 Jan 2020 23:15:18 +0000
-To:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Paul Mackerras <paulus@samba.org>, linux-ppp@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2] Documentation: changes.rst: update several outdated
- project URLs
-Message-ID: <a9c3c509-8f30-fcc4-d9e0-b53aeaa89e4f@infradead.org>
-Date:   Wed, 29 Jan 2020 15:15:15 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726856AbgA2XyY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Jan 2020 18:54:24 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23892 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726648AbgA2XyY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 29 Jan 2020 18:54:24 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00TNp2cP087479
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Jan 2020 18:54:23 -0500
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2xrj74838v-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Jan 2020 18:54:23 -0500
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Wed, 29 Jan 2020 23:54:20 -0000
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 29 Jan 2020 23:54:18 -0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 00TNsHS423658672
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Jan 2020 23:54:17 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 72E32A404D;
+        Wed, 29 Jan 2020 23:54:17 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 96EBCA4051;
+        Wed, 29 Jan 2020 23:54:15 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.92.238])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Jan 2020 23:54:15 +0000 (GMT)
+Subject: Re: [RFCv2 4/4] ext4: Move ext4_fiemap to use iomap infrastructure
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, cmaiolino@redhat.com
+References: <cover.1580121790.git.riteshh@linux.ibm.com>
+ <0147a2923d339bdef5802dde8d5019d719f0d796.1580121790.git.riteshh@linux.ibm.com>
+ <20200128152830.GA3673284@magnolia>
+ <20200129061939.61BFF11C04C@d06av25.portsmouth.uk.ibm.com>
+ <20200129161839.GA3674276@magnolia>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Thu, 30 Jan 2020 05:24:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200129161839.GA3674276@magnolia>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20012923-0020-0000-0000-000003A533C4
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20012923-0021-0000-0000-000021FCE685
+Message-Id: <20200129235415.96EBCA4051@d06av23.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-29_08:2020-01-28,2020-01-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ malwarescore=0 mlxlogscore=922 impostorscore=0 phishscore=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1911200001 definitions=main-2001290185
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-Update projects URLs in the changes.rst file.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Cc: Jan Kara <jack@suse.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: linux-ext4@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>
-Cc: netfilter-devel@vger.kernel.org
-Cc: coreteam@netfilter.org
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linux-ppp@vger.kernel.org
-Cc: reiserfs-devel@vger.kernel.org
-Cc: Darrick J. Wong <darrick.wong@oracle.com>
-Cc: linux-xfs@vger.kernel.org
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Acked-by: Theodore Ts'o <tytso@mit.edu>
----
-v2 changes:
-. add Ack and Review tags;
-. update as requested by Darrick and Ted;
+On 1/29/20 9:48 PM, Darrick J. Wong wrote:
+> On Wed, Jan 29, 2020 at 11:49:38AM +0530, Ritesh Harjani wrote:
+>> Hello Darrick,
+>>
+>> On 1/28/20 8:58 PM, Darrick J. Wong wrote:
+>>> On Tue, Jan 28, 2020 at 03:48:28PM +0530, Ritesh Harjani wrote:
+>>>> Since ext4 already defines necessary iomap_ops required to move to iomap
+>>>> for fiemap, so this patch makes those changes to use existing iomap_ops
+>>>> for ext4_fiemap and thus removes all unwanted code.
+>>>>
+>>>> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+>>>> ---
+>>>>    fs/ext4/extents.c | 279 +++++++---------------------------------------
+>>>>    fs/ext4/inline.c  |  41 -------
+>>>>    2 files changed, 38 insertions(+), 282 deletions(-)
+>>>>
+>>>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+>>>> index 0de548bb3c90..901caee2fcb1 100644
+>>>> --- a/fs/ext4/extents.c
+>>>> +++ b/fs/ext4/extents.c
+>>>
+>>> <snip> Just a cursory glance...
+>>>
+>>>> @@ -5130,40 +4927,42 @@ static int ext4_xattr_fiemap(struct inode *inode,
+>>>>    				EXT4_I(inode)->i_extra_isize;
+>>>>    		physical += offset;
+>>>>    		length = EXT4_SB(inode->i_sb)->s_inode_size - offset;
+>>>> -		flags |= FIEMAP_EXTENT_DATA_INLINE;
+>>>>    		brelse(iloc.bh);
+>>>>    	} else { /* external block */
+>>>>    		physical = (__u64)EXT4_I(inode)->i_file_acl << blockbits;
+>>>>    		length = inode->i_sb->s_blocksize;
+>>>>    	}
+>>>> -	if (physical)
+>>>> -		error = fiemap_fill_next_extent(fieinfo, 0, physical,
+>>>> -						length, flags);
+>>>> -	return (error < 0 ? error : 0);
+>>>> +	iomap->addr = physical;
+>>>> +	iomap->offset = 0;
+>>>> +	iomap->length = length;
+>>>> +	iomap->type = IOMAP_INLINE;
+>>>> +	iomap->flags = 0;
+>>>
+>>> Er... external "ACL" blocks aren't IOMAP_INLINE.
+>>
+>> Sorry, I should have mentioned about this too in the cover letter.
+>> So current patchset is mainly only converting bmap & fiemap to use iomap
+>> APIs. Even the original implementation does not have external ACL block
+>> implemented for xattr_fiemap.
+> 
+> Er ... yes it did.  The "} else { /* external block */" block sets
+> physical to i_file_acl.
 
- Documentation/process/changes.rst                    |   14 ++++++----
- Documentation/translations/it_IT/process/changes.rst |   14 ++++++----
- 2 files changed, 18 insertions(+), 10 deletions(-)
+Oops.. my bad. I got it confused with EA inode feature.
+Urghh... I should remove my bias while looking at a review comment.
 
---- linux-next-20200129.orig/Documentation/translations/it_IT/process/changes.rst
-+++ linux-next-20200129/Documentation/translations/it_IT/process/changes.rst
-@@ -390,7 +390,8 @@ Mkinitrd
- E2fsprogs
- ---------
- 
--- <http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.29.tar.gz>
-+- <https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/>
-+- <https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/>
- 
- JFSutils
- --------
-@@ -400,12 +401,13 @@ JFSutils
- Reiserfsprogs
- -------------
- 
--- <http://www.kernel.org/pub/linux/utils/fs/reiserfs/>
-+- <https://git.kernel.org/pub/scm/linux/kernel/git/jeffm/reiserfsprogs.git/>
- 
- Xfsprogs
- --------
- 
--- <ftp://oss.sgi.com/projects/xfs/>
-+- <https://git.kernel.org/pub/scm/fs/xfs/xfsprogs-dev.git>
-+- <https://www.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/>
- 
- Pcmciautils
- -----------
-@@ -444,7 +446,9 @@ Rete
- PPP
- ---
- 
--- <ftp://ftp.samba.org/pub/ppp/>
-+- <https://download.samba.org/pub/ppp/>
-+- <https://git.ozlabs.org/?p=ppp.git>
-+- <https://github.com/paulusmack/ppp/>
- 
- 
- NFS-utils
-@@ -455,7 +459,7 @@ NFS-utils
- Iptables
- --------
- 
--- <http://www.iptables.org/downloads.html>
-+- <https://netfilter.org/projects/iptables/index.html>
- 
- Ip-route2
- ---------
---- linux-next-20200129.orig/Documentation/process/changes.rst
-+++ linux-next-20200129/Documentation/process/changes.rst
-@@ -383,7 +383,8 @@ Mkinitrd
- E2fsprogs
- ---------
- 
--- <http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.29.tar.gz>
-+- <https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/>
-+- <https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/>
- 
- JFSutils
- --------
-@@ -393,12 +394,13 @@ JFSutils
- Reiserfsprogs
- -------------
- 
--- <http://www.kernel.org/pub/linux/utils/fs/reiserfs/>
-+- <https://git.kernel.org/pub/scm/linux/kernel/git/jeffm/reiserfsprogs.git/>
- 
- Xfsprogs
- --------
- 
--- <ftp://oss.sgi.com/projects/xfs/>
-+- <https://git.kernel.org/pub/scm/fs/xfs/xfsprogs-dev.git>
-+- <https://www.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/>
- 
- Pcmciautils
- -----------
-@@ -437,7 +439,9 @@ Networking
- PPP
- ---
- 
--- <ftp://ftp.samba.org/pub/ppp/>
-+- <https://download.samba.org/pub/ppp/>
-+- <https://git.ozlabs.org/?p=ppp.git>
-+- <https://github.com/paulusmack/ppp/>
- 
- NFS-utils
- ---------
-@@ -447,7 +451,7 @@ NFS-utils
- Iptables
- --------
- 
--- <http://www.iptables.org/downloads.html>
-+- <https://netfilter.org/projects/iptables/index.html>
- 
- Ip-route2
- ---------
+so I think for i_file_acl (external block) we should set
+iomap->type = IOMAP_MAPPED.
+
+Will fix this and submit in the same thread. Thanks for catching it.
+
+> 
+>> Let me spend some time to implement it. But I would still like to keep
+>> that as a separate patch.
+>>
+>> But thanks for looking into it. There's this point 2.a & 2.b mentioned in
+>> the cover letter where I could really use your help in understanding
+>> if all of that is a known behavior from iomap_fiemap side
+>> (whenever you have some time of course :) )
+> 
+> i'll go have a look.
+
+Thanks.
+
+
+> 
+> --D
+> 
+>> -ritesh
+>>
 
