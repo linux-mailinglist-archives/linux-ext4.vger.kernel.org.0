@@ -2,134 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0250C14C66D
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jan 2020 07:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE7E14C6EA
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Jan 2020 08:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbgA2GTu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Jan 2020 01:19:50 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55274 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726020AbgA2GTu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 29 Jan 2020 01:19:50 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00T6AJ87145142
-        for <linux-ext4@vger.kernel.org>; Wed, 29 Jan 2020 01:19:49 -0500
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2xrjmvnpnd-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Wed, 29 Jan 2020 01:19:49 -0500
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Wed, 29 Jan 2020 06:19:46 -0000
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 29 Jan 2020 06:19:42 -0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 00T6JfBP54722726
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Jan 2020 06:19:41 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4505A11C058;
-        Wed, 29 Jan 2020 06:19:41 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 61BFF11C04C;
-        Wed, 29 Jan 2020 06:19:39 +0000 (GMT)
-Received: from [9.199.159.131] (unknown [9.199.159.131])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Jan 2020 06:19:38 +0000 (GMT)
-Subject: Re: [RFCv2 4/4] ext4: Move ext4_fiemap to use iomap infrastructure
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        hch@infradead.org, cmaiolino@redhat.com
-References: <cover.1580121790.git.riteshh@linux.ibm.com>
- <0147a2923d339bdef5802dde8d5019d719f0d796.1580121790.git.riteshh@linux.ibm.com>
- <20200128152830.GA3673284@magnolia>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Wed, 29 Jan 2020 11:49:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726206AbgA2Hgc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Jan 2020 02:36:32 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:48012 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726043AbgA2Hgc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 29 Jan 2020 02:36:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Avo4He8qBbr62a57mfvK3GgHqTnsEBDHZsSXy+0DrDc=; b=LdYZZJcitPY8XqIYzSWrI3n6a
+        QkN2rM38s0xPABU4IaSmMAD0IcMtkGUqtda6IdfNzG5VLdsSGGalRzRbzvF//cYMivtu6Xcc2Cmxk
+        VSL7rh7CYTYzGDwM5Hjv62HsMuEXdUBE16TdUwoprPnmsGDqP4khbIe3Zi0nIMKsJoV85P6QQ6o6R
+        zH14Qh75FW8sQJ6IeiVHktJ1LrsapCO/yywXaG594849tljISh2o6RkzgtXRIrORO5ABtL/JPKv58
+        zxA1yVVVRPxZnEnJq1DpxgQidpUy/d1adbSyck8fyIx5Xwp7Al87wrDbbqxgH3VQsacpX8DhC9iZZ
+        K5V88hy/w==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iwhtm-0000OR-Gj; Wed, 29 Jan 2020 07:36:30 +0000
+Date:   Tue, 28 Jan 2020 23:36:30 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4 <linux-ext4@vger.kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Chao Yu <yuchao0@huawei.com>,
+        linux-fscrypt@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v4] fs: introduce is_dot_or_dotdot helper for cleanup
+Message-ID: <20200129073630.GF6615@bombadil.infradead.org>
+References: <20200128221112.GA30200@bombadil.infradead.org>
+ <1901841E-AE43-4AE2-B8F0-8F745B00664F@dilger.ca>
 MIME-Version: 1.0
-In-Reply-To: <20200128152830.GA3673284@magnolia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20012906-0016-0000-0000-000002E1A29F
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20012906-0017-0000-0000-000033446736
-Message-Id: <20200129061939.61BFF11C04C@d06av25.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-28_09:2020-01-28,2020-01-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 bulkscore=0 lowpriorityscore=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 adultscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1911200001 definitions=main-2001290050
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1901841E-AE43-4AE2-B8F0-8F745B00664F@dilger.ca>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Darrick,
-
-On 1/28/20 8:58 PM, Darrick J. Wong wrote:
-> On Tue, Jan 28, 2020 at 03:48:28PM +0530, Ritesh Harjani wrote:
->> Since ext4 already defines necessary iomap_ops required to move to iomap
->> for fiemap, so this patch makes those changes to use existing iomap_ops
->> for ext4_fiemap and thus removes all unwanted code.
->>
->> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
->> ---
->>   fs/ext4/extents.c | 279 +++++++---------------------------------------
->>   fs/ext4/inline.c  |  41 -------
->>   2 files changed, 38 insertions(+), 282 deletions(-)
->>
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index 0de548bb3c90..901caee2fcb1 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
+On Tue, Jan 28, 2020 at 06:23:18PM -0700, Andreas Dilger wrote:
+> On Jan 28, 2020, at 3:11 PM, Matthew Wilcox <willy@infradead.org> wrote:
+> > I've tried to get Ted's opinion on this a few times with radio silence.
+> > Or email is broken.  Anyone else care to offer an opinion?
 > 
-> <snip> Just a cursory glance...
-> 
->> @@ -5130,40 +4927,42 @@ static int ext4_xattr_fiemap(struct inode *inode,
->>   				EXT4_I(inode)->i_extra_isize;
->>   		physical += offset;
->>   		length = EXT4_SB(inode->i_sb)->s_inode_size - offset;
->> -		flags |= FIEMAP_EXTENT_DATA_INLINE;
->>   		brelse(iloc.bh);
->>   	} else { /* external block */
->>   		physical = (__u64)EXT4_I(inode)->i_file_acl << blockbits;
->>   		length = inode->i_sb->s_blocksize;
->>   	}
->>   
->> -	if (physical)
->> -		error = fiemap_fill_next_extent(fieinfo, 0, physical,
->> -						length, flags);
->> -	return (error < 0 ? error : 0);
->> +	iomap->addr = physical;
->> +	iomap->offset = 0;
->> +	iomap->length = length;
->> +	iomap->type = IOMAP_INLINE;
->> +	iomap->flags = 0;
-> 
-> Er... external "ACL" blocks aren't IOMAP_INLINE.
+> Maybe I'm missing something, but I think the discussion of the len == 0
+> case is now moot, since PATCH v6 (which is the latest version that I can
+> find) is checking for "len >= 1" before accessing name[0]:
 
-Sorry, I should have mentioned about this too in the cover letter.
-So current patchset is mainly only converting bmap & fiemap to use iomap 
-APIs. Even the original implementation does not have external ACL block
-implemented for xattr_fiemap.
+Regardless of _this_ patch, the question is "Should ext4 be checking
+for filenames of zero length and reporting -EUCLEAN if it finds any?"
+I believe the answer is yes, since it's clearly a corrupted filesystem,
+but I may be missing something.
 
-Let me spend some time to implement it. But I would still like to keep
-that as a separate patch.
+Thanks for your reply.
 
-But thanks for looking into it. There's this point 2.a & 2.b mentioned 
-in the cover letter where I could really use your help in understanding
-if all of that is a known behavior from iomap_fiemap side
-(whenever you have some time of course :) )
-
--ritesh
+> >> fscrypt_get_symlink():
+> >>       if (cstr.len == 0)
+> >>                return ERR_PTR(-EUCLEAN);
+> >> ext4_readdir():
+> >> 	Does not currently check de->name_len.  I believe this check should
+> >> 	be added to __ext4_check_dir_entry() because a zero-length directory
+> >> 	entry can affect both encrypted and non-encrypted directory entries.
+> >> dx_show_leaf():
+> >> 	Same as ext4_readdir().  Should probably call ext4_check_dir_entry()?
+> >> htree_dirblock_to_tree():
+> >> 	Would be covered by a fix to ext4_check_dir_entry().
+> >> f2fs_fill_dentries():
+> >> 	if (de->name_len == 0) {
+> >> 		...
+> >> ubifs_readdir():
+> >> 	Does not currently check de->name_len.  Also affects non-encrypted
+> >> 	directory entries.
+> >> 
+> >> So of the six callers, two of them already check the dirent length for
+> >> being zero, and four of them ought to anyway, but don't.  I think they
+> >> should be fixed, but clearly we don't historically check for this kind
+> >> of data corruption (strangely), so I don't think that's a reason to hold
+> >> up this patch until the individual filesystems are fixed.
 
