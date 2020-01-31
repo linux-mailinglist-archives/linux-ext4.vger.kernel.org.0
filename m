@@ -2,53 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB7114E632
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 Jan 2020 00:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C058014E7C7
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 Jan 2020 05:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgA3XuR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Jan 2020 18:50:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
+        id S1727986AbgAaEH4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Jan 2020 23:07:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727830AbgA3XuR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 30 Jan 2020 18:50:17 -0500
-Subject: Re: [GIT PULL] ext4 changes for 5.6
+        id S1727448AbgAaEH4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 30 Jan 2020 23:07:56 -0500
+Received: from localhost (unknown [148.87.23.8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72D6E2067C;
+        Fri, 31 Jan 2020 04:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580428216;
-        bh=q9mn1FfMiKVKZPXSs9GnfDX4utx5V83YBgWvfVNNg9Y=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ABXFMiwwgpBEjY8xx5OM4hzzbs4qbXIUzu+7FNz0l+4LJ7rzRkt6l7rZNtikxvHH/
-         EWLbUjDXe9xbDiQZG16GBEuhTSbUSrYOT7K+NSE9wY2ieejnQKmKVeOrODLTCtDRAj
-         P7RWl15bJGqvJr9bFz74+z+iQpbErvU8YslAVLA8=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200130005817.GA331314@mit.edu>
-References: <20200130005817.GA331314@mit.edu>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200130005817.GA331314@mit.edu>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
- tags/ext4_for_linus
-X-PR-Tracked-Commit-Id: 7f6225e446cc8dfa4c3c7959a4de3dd03ec277bf
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e5da4c933c50d98d7990a7c1ca0bbf8946e80c4a
-Message-Id: <158042821678.30792.14650350060155285879.pr-tracker-bot@kernel.org>
-Date:   Thu, 30 Jan 2020 23:50:16 +0000
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
+        s=default; t=1580443675;
+        bh=XIeaxEWK1mrLmoM0G35VztUKYFHHBWwEZ5TMhYQByAA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=0rNPOyR8wazibZtS/ZpAm7xqwqBjKRW1XxnbUfWxlFl5vb4gd+4wleYkCz9cLfef5
+         4HosjGjdO9LEikhqbVtai7z1s2N0USMA8fHRpfcJgTnCOTPDOKY6RvNmufFw83B0Tt
+         UtgU6cBndE745V+qMczHEkYzp6Z16ic+qfMXiqwU=
+Date:   Thu, 30 Jan 2020 20:07:53 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de, agruenba@redhat.com,
+        rpeterso@redhat.com, cluster-devel@redhat.com,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: [GIT PULL] iomap: new code for 5.6
+Message-ID: <20200131040753.GB6869@magnolia>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Wed, 29 Jan 2020 19:58:17 -0500:
+Hi Linus,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+Please pull this set of new code for 5.6.  There's a single patch fixing
+an off-by-one error when we're checking to see how far we're gotten into
+an EOF page.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e5da4c933c50d98d7990a7c1ca0bbf8946e80c4a
+--D
 
-Thank you!
+The following changes since commit fd6988496e79a6a4bdb514a4655d2920209eb85d:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+  Linux 5.5-rc4 (2019-12-29 15:29:16 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.6-merge-3
+
+for you to fetch changes up to 243145bc4336684c69f95de0a303b31f2e5bf264:
+
+  fs: Fix page_mkwrite off-by-one errors (2020-01-06 08:58:23 -0800)
+
+----------------------------------------------------------------
+New code for 5.6:
+- Fix an off-by-one error when checking if offset is within inode size
+
+----------------------------------------------------------------
+Andreas Gruenbacher (1):
+      fs: Fix page_mkwrite off-by-one errors
+
+ fs/iomap/buffered-io.c  | 18 +++++-------------
+ include/linux/pagemap.h | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 13 deletions(-)
