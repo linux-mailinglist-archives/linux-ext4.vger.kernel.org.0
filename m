@@ -2,240 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C3314F664
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2020 05:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D94314F84F
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2020 16:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgBAEHr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 31 Jan 2020 23:07:47 -0500
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:44732 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgBAEHr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 31 Jan 2020 23:07:47 -0500
-Received: by mail-pl1-f179.google.com with SMTP id d9so3587917plo.11
-        for <linux-ext4@vger.kernel.org>; Fri, 31 Jan 2020 20:07:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:mime-version:subject:message-id:date:cc:to;
-        bh=zAbmiwgPDgJ20WL5HTVlc7uPMUxuJ7MTjvjYNkKdbVc=;
-        b=G0QSevO/OtXIyMF69BeVZ3np71qjUoQcuL0utY5ajrExmmOCgwZnTfoqbsbzFkKGMm
-         35iOaifSzjrSuNDQJdpCdKnSv9j1WVTZFF3mJvdYKN74X5kiKOgzWoknt/ERnSvETes9
-         bmqE3AUgZv2DixQkf8CMHq+K8k1rbsQlNkiz1+l/26orznxqyPQsR+dlqhsVklx0uSlP
-         RAfBaBK/G7pwlcq3EaZckeqk0rgA77JomEgPeLoXbv+OZy8FNmlv6Bia1dcCkkXLWlRD
-         ZjxlhXjRWaQ6GjCdg615JZo2g0jlS2i2yLjDxg08SJWuGZEhDobQpbRnioJZUY5SdoUW
-         EmQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:mime-version:subject:message-id:date:cc:to;
-        bh=zAbmiwgPDgJ20WL5HTVlc7uPMUxuJ7MTjvjYNkKdbVc=;
-        b=pqPBJbhMROUp1cqqQCRdO/U1nVU3Keqxt8+0BVs28f272xBZoHwCz5Vsg9oRmNUpY2
-         IJDKSAyAek86V76Ca9KgH800/UK55A2yPS0y2xhjrFivDo5rZOqytW0fZn/OKL+Cm/Ru
-         uvYmI1IdHcwuSLocFr4fixFhtdNSFayvmno4iiYAsZGBAkjQCUu5V5wdmzPgimS59XEl
-         2yWFxiKAK1YSZ36qGXEzuPvQYZx2svLjx61Oyp4E1a+Gg2lpOrYws9X75CVE6OVS29n3
-         piUduiQHfPY9KC/i4dFayfZDnsjq5OarKLrRLx+ikCVCkpHtSBw4AV3D2r/0tfPqVcNl
-         Xaew==
-X-Gm-Message-State: APjAAAVKPIFv+0kZyFjX6g+n+I08rKkmtGQQnZdmyEsefQGd0TRs8xrR
-        wFTJxsj8OAq/ofE9T2RVDM5BR9dLIYXHuQ==
-X-Google-Smtp-Source: APXvYqxa9ysychrJuZUEoIqO7NhgciY1rrgtvF5GuiLSbEcujxugFo51/klOgNG1vENDmHlRK7IqSA==
-X-Received: by 2002:a17:90a:5d85:: with SMTP id t5mr16344475pji.126.1580530066077;
-        Fri, 31 Jan 2020 20:07:46 -0800 (PST)
-Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id 6sm11885328pgh.0.2020.01.31.20.07.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 31 Jan 2020 20:07:45 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_265A083A-375E-42B9-A5C0-B43CA36AE901";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: e2fsck dir_info corruption
-Message-Id: <00CED351-2128-4DF8-B286-7774CCC1FC0A@dilger.ca>
-Date:   Fri, 31 Jan 2020 21:07:42 -0700
-Cc:     linux-ext4 <linux-ext4@vger.kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+        id S1726804AbgBAPMn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 1 Feb 2020 10:12:43 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:51822 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbgBAPMm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 1 Feb 2020 10:12:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=dB7ywmsatelLVL7Psw2UVkpn4TS1ismlyPRVqvsNN4I=; b=RnoVi6fUM/M58i6TYhoTLY0TL
+        V7I9zpJWwCzNP2scBs5DKrt7H9v8YkzB+zy/W4DudHEy5O3nZ2nS+CmMmx7gYjNpb//bY/tIKKSyZ
+        BoIYl7MaogIfsM0Y9tjCirctp4DMLxm6KpweOFcDQtxE+etr4078ycEjYIbRbs9F7wyfbU5GGbVy3
+        fnFz1u13IqALNOQOFhi0zXFNp8K2To+TxPFBQ7dryOGOMrqog5fJewQfdZiz2SpgzlRxhq5dAlgjj
+        JO1o3SZNAvTMRVCpWVcSJwTwalk4DOgKQ0oSw60THP3NVyDBfjsNRTxzLp1iNTUgC+HvKJkv6LBzz
+        TzfPOsY9g==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ixuRu-0006HE-1K; Sat, 01 Feb 2020 15:12:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com
+Subject: [PATCH v4 00/12] Change readahead API
+Date:   Sat,  1 Feb 2020 07:12:28 -0800
+Message-Id: <20200201151240.24082-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
---Apple-Mail=_265A083A-375E-42B9-A5C0-B43CA36AE901
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+I would particularly value feedback on this from the gfs2 and ocfs2
+maintainers.  They have non-trivial changes, and a review on patch 5
+would be greatly appreciated.
 
-I've been trying to track down a failure with e2fsck on a large =
-filesystem.  Running e2fsck-1.45.2 repeatedly and consistently reports =
-an error in pass2:
+This series adds a readahead address_space operation to eventually
+replace the readpages operation.  The key difference is that
+pages are added to the page cache as they are allocated (and
+then looked up by the filesystem) instead of passing them on a
+list to the readpages operation and having the filesystem add
+them to the page cache.  It's a net reduction in code for each
+implementation, more efficient than walking a list, and solves
+the direct-write vs buffered-read problem reported by yu kuai at
+https://lore.kernel.org/linux-fsdevel/20200116063601.39201-1-yukuai3@huawei.com/
 
-Internal error: couldn't find dir_info for <ino>
+v4:
+ - Rebase on current Linus (a62aa6f7f50a ("Merge tag 'gfs2-for-5.6'"))
+ - Add comment to __do_page_cache_readahead() acknowledging we don't
+   care _that_ much about setting PageReadahead.
+ - Fix the return value check of add_to_page_cache_lru().
+ - Add a missing call to put_page() in __do_page_cache_readahead() if
+   we fail to insert the page.
+ - Improve the documentation of ->readahead (including indentation
+   problem identified by Randy).
+ - Fix off by one error in read_pages() (Dave Chinner).
+ - Fix nr_pages manipulation in btrfs (Dave Chinner).
+ - Remove bogus refcount fix in erofs (Gao Xiang, Dave Chinner).
+ - Update ext4 patch for Merkle tree readahead.
+ - Update f2fs patch for Merkle tree readahead.
+ - Reinstate next_page label in f2fs_readpages() now it's used by the
+   compression code.
+ - Reinstate call to fuse_wait_on_page_writeback (Miklos Szeredi).
+ - Remove a double-unlock in the error path in fuse.
+ - Remove an odd fly-speck in fuse_readpages().
+ - Make nr_pages loop in fuse_readpages less convoluted (Dave Chinner).
 
-The inode number is consistent across multiple runs, but examining it =
-with
-debugfs shows that it is a normal directory with no problems.  In order =
-to
-complete the e2fsck, we tried using "debugfs -w -R 'clri <ino>'" to =
-erase
-the inode, but this just shifted the error onto a slightly later =
-directory
-(which would itself now be reported consistently).
+Matthew Wilcox (Oracle) (12):
+  mm: Fix the return type of __do_page_cache_readahead
+  readahead: Ignore return value of ->readpages
+  readahead: Put pages in cache earlier
+  mm: Add readahead address space operation
+  fs: Convert mpage_readpages to mpage_readahead
+  btrfs: Convert from readpages to readahead
+  erofs: Convert uncompressed files from readpages to readahead
+  erofs: Convert compressed files from readpages to readahead
+  ext4: Convert from readpages to readahead
+  f2fs: Convert from readpages to readahead
+  fuse: Convert from readpages to readahead
+  iomap: Convert from readpages to readahead
 
-The filesystem is 6TB with 2.3B inodes, about 1.8B of which are in use.  =
-The
-inode numbers reporting problems are in the range of 1.2B.  e2fsck is =
-using
-about 45GB of RAM (with some swap on an NVMe SSD, so much faster than =
-the
-HDD the filesystem image is on).  It takes about 3-4h to hit this =
-problem.
+ Documentation/filesystems/locking.rst |  7 ++-
+ Documentation/filesystems/vfs.rst     | 14 +++++
+ drivers/staging/exfat/exfat_super.c   |  9 +--
+ fs/block_dev.c                        |  9 +--
+ fs/btrfs/extent_io.c                  | 19 +++---
+ fs/btrfs/extent_io.h                  |  2 +-
+ fs/btrfs/inode.c                      | 18 +++---
+ fs/erofs/data.c                       | 33 ++++------
+ fs/erofs/zdata.c                      | 21 +++----
+ fs/ext2/inode.c                       | 12 ++--
+ fs/ext4/ext4.h                        |  5 +-
+ fs/ext4/inode.c                       | 24 ++++----
+ fs/ext4/readpage.c                    | 20 +++---
+ fs/ext4/verity.c                      | 16 +++--
+ fs/f2fs/data.c                        | 35 +++++------
+ fs/f2fs/f2fs.h                        |  5 +-
+ fs/f2fs/verity.c                      | 16 +++--
+ fs/fat/inode.c                        |  8 +--
+ fs/fuse/file.c                        | 37 +++++------
+ fs/gfs2/aops.c                        | 20 +++---
+ fs/hpfs/file.c                        |  8 +--
+ fs/iomap/buffered-io.c                | 74 +++++-----------------
+ fs/iomap/trace.h                      |  2 +-
+ fs/isofs/inode.c                      |  9 +--
+ fs/jfs/inode.c                        |  8 +--
+ fs/mpage.c                            | 38 ++++--------
+ fs/nilfs2/inode.c                     | 13 ++--
+ fs/ocfs2/aops.c                       | 32 +++++-----
+ fs/omfs/file.c                        |  8 +--
+ fs/qnx6/inode.c                       |  8 +--
+ fs/reiserfs/inode.c                   | 10 +--
+ fs/udf/inode.c                        |  8 +--
+ fs/xfs/xfs_aops.c                     | 10 +--
+ include/linux/fs.h                    |  2 +
+ include/linux/iomap.h                 |  2 +-
+ include/linux/mpage.h                 |  2 +-
+ include/linux/pagemap.h               | 12 ++++
+ include/trace/events/erofs.h          |  6 +-
+ include/trace/events/f2fs.h           |  6 +-
+ mm/internal.h                         |  2 +-
+ mm/migrate.c                          |  2 +-
+ mm/readahead.c                        | 89 ++++++++++++++++++---------
+ 42 files changed, 332 insertions(+), 349 deletions(-)
 
-I was able to run e2fsck under gdb, though this slows it down =
-significantly
-(10-100x slower), if there are conditional breakpoints since they need =
-to
-be evaluated for each inode, which makes it impossible to use this way.
+-- 
+2.24.1
 
-What I've discovered is quite interesting.  The ctx->dir_info->array is
-filled in properly for the bad inode, and the array is OK at the start =
-of
-pass2 (2 is the root inode, and $66 holds the bad inode number):
-
-    (gdb) p e2fsck_get_dir_info(ctx, 2)
-    $171 =3D (struct dir_info *) 0x7ffabf2bd010
-    (gdb) p *$171
-    $172 =3D {ino =3D 2, dotdot =3D 0, parent =3D 2}
-    (gdb) p $66
-    $173 =3D 1222630490
-    (gdb) p e2fsck_get_dir_info(ctx, $66)
-    $174 =3D (struct dir_info *) 0x7ffb3d327f54
-    (gdb) p *$174
-    $175 =3D {ino =3D 1222630490, dotdot =3D 0, parent =3D 0}
-
-The dir_info array itself is over 4GB in size (not sure if this is =
-relevant
-or not), with 380M directories, but the bad inode is only about half way
-through the array ($140 is the index of the problematic entry):
-
-    (gdb) p $140
-    $176 =3D 176197275
-    (gdb) p p ctx->dir_info->array[$140]
-    $177 =3D {ino =3D 1222630490, dotdot =3D 0, parent =3D 0}
-    (gdb) p *ctx->dir_info
-    $178 =3D {count =3D 381539950, size =3D 381539965,
-      array =3D 0x7ffabf2bd010, last_lookup =3D 0x0,
-      tdb_fn =3D 0x0, tdb =3D 0x0}
-    (gdb) p $178.count * sizeof(ctx->dir_info->array[0])
-    $179 =3D 4578479400
-
-I put a hardware watchpoint on the ".parent" and ".dotdot" fields of =
-this
-entry so that I could watch as e2fsck_dir_info_set_dotdot() updated it,
-but I didn't think to put one on the ".ino" field, since I thought it =
-would
-be static.
-
-    (gdb) info break
-    Num     Type           Disp Enb Address    What
-    15      hw watchpoint  keep y              -location $177->parent
-    16      hw watchpoint  keep y              -location $177->dotdot
-
-The watchpoint triggered, and saw that the entry was changed by =
-qsort_r(),
-which at first I thought "OK, the dir_info array needs to be sorted, =
-because
-a binary search is used on it", but in fact the array is *created* in =
-order
-during the inode table scan and does not need to be sorted.  As can be =
-seen
-from the stack, it is *another* array that is being sorted that =
-overwrites
-the dir_info entry:
-
-    Hardware watchpoint 16: -location $177->dotdot
-
-    Old value =3D 0
-    New value =3D 1581603653
-    0x0000003b2ea381f7 in _quicksort ()
-       from /lib64/libc.so.6
-    (gdb) p $141
-    $179 =3D {ino =3D 1222630490, dotdot =3D 0, parent =3D 0}
-    (gdb) bt
-    #0  0x0000003b2ea381e1 in _quicksort ()
-      from /lib64/libc.so.6
-    #1  0x0000003b2ea38f82 in qsort_r ()
-      from /lib64/libc.so.6
-    #2  0x000000000045447b in ext2fs_dblist_sort2 (
-        dblist=3D0x6c9a90,
-        sortfunc=3D0x428c3d <special_dir_block_cmp>)
-        at dblist.c:189
-    #3  0x00000000004285bc in e2fsck_pass2 (
-        ctx=3D0x6c4000) at pass2.c:180
-    #4  0x000000000041646b in e2fsck_run (ctx=3D0x6c4000)
-        at e2fsck.c:253
-    #5  0x0000000000415210 in main (argc=3D4,
-        argv=3D0x7fffffffe088) at unix.c:2047
-    (gdb) p ctx->dir_info->array[$140]
-    $207 =3D {ino =3D 0, dotdot =3D 1581603653, parent =3D 0}
-    (gdb) f 3
-    #3  0x00000000004285bc in e2fsck_pass2 (
-        ctx=3D0x6c4000) at pass2.c:180
-    180       ext2fs_dblist_sort2(fs->dblist, special_dir_block_cmp);
-
-AFAIK, the ext2fs_dblist_sort2() is for the directory *blocks*, and =
-should
-not be changing the dir_info at all.  Is this a bug in qsort or glibc?
-
-What I just noticed writing this email is that the fs->dblist.list =
-address
-is right in the middle of the dir_info array address range:
-
-    (gdb) p *fs->dblist
-    $210 =3D {magic =3D 2133571340, fs =3D 0x6c4460,
-      size =3D 763079922, count =3D 388821313, sorted =3D 0,
-      list =3D 0x7ffad011e010}
-    (gdb) p &ctx->dir_info->array[0]
-    $211 =3D (struct dir_info *) 0x7ffabf2bd010
-    (gdb) p &ctx->dir_info->array[$140]
-    $212 =3D (struct dir_info *) 0x7ffb3d327f54
-
-which might explain why sorting dblist is messing with dir_info?  I =
-don't
-_think_ it is a problem with my build or swap, which is different from
-the system that this was originally reproduced on.
-
-Any thoughts on how to continue debugging this?
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_265A083A-375E-42B9-A5C0-B43CA36AE901
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl40+Y8ACgkQcqXauRfM
-H+DZhBAAmaTVseNMFhTtm7oFfggyFRvSCy5t3zxzIwxSQ323FHhyxu4fsvA8UbFm
-0fKZowPmAu/lGBbnuOeR6VLuw2mu5P+vFgGDMj0zjnHP3BfGPzKuImVMzyyCN/VI
-TZjNecRvnbrOciQB/ZTPztwa3TevJtIPwG5q30gQmPbmJN779YOBe2VqHCIkNDXq
-RMONTtlchfYiD4cF6MpE49mHJ7dIMX7cIImGyoZpB2NvXKTfKdu0j8gAsejLm1vc
-czxIPMusitklU0vxQsiMGSE7mv8Aki/6BvJJN3cNFeizydp6HRLUXJtt3dPa7hRu
-rvAlGvAVIekMm/LolOv87mu5j6syDFcGwfZwsMi5ZMDL6+w/7YdkVi0i6edpJuQz
-/lZnNVkxpjsbQFAallhTS86aQSGX+N+cgShjil/Vaf4jIlF5Nya09m2lOL4A8ymB
-eVvqhFRWctJu4aVayG3scLmQrX06PV6nVn93fptil74xiKDz4cAaTG032p0L/wCK
-cT/ik9yBa/olVFcP5iH47RTETNVY03PttGIOwV7TzAx75+rvgdo7grVe166loWvD
-pH31CWNC447jlLYArgLPMrABlR/s8KoccJO/tUsF8g3v6bvGa4LS39wUHxIbfgGA
-yKyxsH7c4BmpNWdg1L3uHBg0Qk8zsTNhSj83vKeUrbaXVpbIaSA=
-=Wir1
------END PGP SIGNATURE-----
-
---Apple-Mail=_265A083A-375E-42B9-A5C0-B43CA36AE901--
