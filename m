@@ -2,29 +2,29 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D94314F84F
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2020 16:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3977114F84B
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Feb 2020 16:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbgBAPMn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S1726900AbgBAPMn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Sat, 1 Feb 2020 10:12:43 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:51822 "EHLO
+Received: from bombadil.infradead.org ([198.137.202.133]:51818 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgBAPMm (ORCPT
+        with ESMTP id S1726677AbgBAPMm (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Sat, 1 Feb 2020 10:12:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=dB7ywmsatelLVL7Psw2UVkpn4TS1ismlyPRVqvsNN4I=; b=RnoVi6fUM/M58i6TYhoTLY0TL
-        V7I9zpJWwCzNP2scBs5DKrt7H9v8YkzB+zy/W4DudHEy5O3nZ2nS+CmMmx7gYjNpb//bY/tIKKSyZ
-        BoIYl7MaogIfsM0Y9tjCirctp4DMLxm6KpweOFcDQtxE+etr4078ycEjYIbRbs9F7wyfbU5GGbVy3
-        fnFz1u13IqALNOQOFhi0zXFNp8K2To+TxPFBQ7dryOGOMrqog5fJewQfdZiz2SpgzlRxhq5dAlgjj
-        JO1o3SZNAvTMRVCpWVcSJwTwalk4DOgKQ0oSw60THP3NVyDBfjsNRTxzLp1iNTUgC+HvKJkv6LBzz
-        TzfPOsY9g==;
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From
+        :Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6RY0UUjdaQhDdTRUN9wz8mjIn266EGtHTTMcbVMwTms=; b=sg8vRCPjK4w0XFjy7NZSoRgAsd
+        sBqqUd+isaXbSIeuUVYJtJcfV1jXRDPy/1U16VGmZmw7bTQ2rLIGBTuQKAD/evbIN/2CGbqf86yup
+        XZ76ZxqM71IlldJbmwKxuiwssBnvs5ewBtmJYaNdUdUO6dOPG3sciLrooImEXaiNT1xW8H07J2elq
+        MLCqW63FKLppkTHRkeZA8wHWWlexMlCPdis108H2QqcdbP7xU7qfs0u4ZevSD35ABj+qvZpfKPRbf
+        WCKm37R+Iue4NcPjCNjV5Q89mRHaRwM5fowkUIPipwzn+iV7HDCMv8T9DB6eFWwAwMXNJ5OgUQWmH
+        9h9aE2Jw==;
 Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ixuRu-0006HE-1K; Sat, 01 Feb 2020 15:12:42 +0000
+        id 1ixuRu-0006HP-4H; Sat, 01 Feb 2020 15:12:42 +0000
 From:   Matthew Wilcox <willy@infradead.org>
 To:     linux-fsdevel@vger.kernel.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -33,10 +33,12 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
         linux-xfs@vger.kernel.org, cluster-devel@redhat.com,
         ocfs2-devel@oss.oracle.com
-Subject: [PATCH v4 00/12] Change readahead API
-Date:   Sat,  1 Feb 2020 07:12:28 -0800
-Message-Id: <20200201151240.24082-1-willy@infradead.org>
+Subject: [PATCH v4 03/12] readahead: Put pages in cache earlier
+Date:   Sat,  1 Feb 2020 07:12:31 -0800
+Message-Id: <20200201151240.24082-4-willy@infradead.org>
 X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200201151240.24082-1-willy@infradead.org>
+References: <20200201151240.24082-1-willy@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
@@ -46,99 +48,152 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-I would particularly value feedback on this from the gfs2 and ocfs2
-maintainers.  They have non-trivial changes, and a review on patch 5
-would be greatly appreciated.
+At allocation time, put the pages in the cache unless we're using
+->readpages.
 
-This series adds a readahead address_space operation to eventually
-replace the readpages operation.  The key difference is that
-pages are added to the page cache as they are allocated (and
-then looked up by the filesystem) instead of passing them on a
-list to the readpages operation and having the filesystem add
-them to the page cache.  It's a net reduction in code for each
-implementation, more efficient than walking a list, and solves
-the direct-write vs buffered-read problem reported by yu kuai at
-https://lore.kernel.org/linux-fsdevel/20200116063601.39201-1-yukuai3@huawei.com/
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: linux-btrfs@vger.kernel.org
+Cc: linux-erofs@lists.ozlabs.org
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net
+Cc: linux-xfs@vger.kernel.org
+Cc: cluster-devel@redhat.com
+Cc: ocfs2-devel@oss.oracle.com
+---
+ mm/readahead.c | 64 ++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 44 insertions(+), 20 deletions(-)
 
-v4:
- - Rebase on current Linus (a62aa6f7f50a ("Merge tag 'gfs2-for-5.6'"))
- - Add comment to __do_page_cache_readahead() acknowledging we don't
-   care _that_ much about setting PageReadahead.
- - Fix the return value check of add_to_page_cache_lru().
- - Add a missing call to put_page() in __do_page_cache_readahead() if
-   we fail to insert the page.
- - Improve the documentation of ->readahead (including indentation
-   problem identified by Randy).
- - Fix off by one error in read_pages() (Dave Chinner).
- - Fix nr_pages manipulation in btrfs (Dave Chinner).
- - Remove bogus refcount fix in erofs (Gao Xiang, Dave Chinner).
- - Update ext4 patch for Merkle tree readahead.
- - Update f2fs patch for Merkle tree readahead.
- - Reinstate next_page label in f2fs_readpages() now it's used by the
-   compression code.
- - Reinstate call to fuse_wait_on_page_writeback (Miklos Szeredi).
- - Remove a double-unlock in the error path in fuse.
- - Remove an odd fly-speck in fuse_readpages().
- - Make nr_pages loop in fuse_readpages less convoluted (Dave Chinner).
-
-Matthew Wilcox (Oracle) (12):
-  mm: Fix the return type of __do_page_cache_readahead
-  readahead: Ignore return value of ->readpages
-  readahead: Put pages in cache earlier
-  mm: Add readahead address space operation
-  fs: Convert mpage_readpages to mpage_readahead
-  btrfs: Convert from readpages to readahead
-  erofs: Convert uncompressed files from readpages to readahead
-  erofs: Convert compressed files from readpages to readahead
-  ext4: Convert from readpages to readahead
-  f2fs: Convert from readpages to readahead
-  fuse: Convert from readpages to readahead
-  iomap: Convert from readpages to readahead
-
- Documentation/filesystems/locking.rst |  7 ++-
- Documentation/filesystems/vfs.rst     | 14 +++++
- drivers/staging/exfat/exfat_super.c   |  9 +--
- fs/block_dev.c                        |  9 +--
- fs/btrfs/extent_io.c                  | 19 +++---
- fs/btrfs/extent_io.h                  |  2 +-
- fs/btrfs/inode.c                      | 18 +++---
- fs/erofs/data.c                       | 33 ++++------
- fs/erofs/zdata.c                      | 21 +++----
- fs/ext2/inode.c                       | 12 ++--
- fs/ext4/ext4.h                        |  5 +-
- fs/ext4/inode.c                       | 24 ++++----
- fs/ext4/readpage.c                    | 20 +++---
- fs/ext4/verity.c                      | 16 +++--
- fs/f2fs/data.c                        | 35 +++++------
- fs/f2fs/f2fs.h                        |  5 +-
- fs/f2fs/verity.c                      | 16 +++--
- fs/fat/inode.c                        |  8 +--
- fs/fuse/file.c                        | 37 +++++------
- fs/gfs2/aops.c                        | 20 +++---
- fs/hpfs/file.c                        |  8 +--
- fs/iomap/buffered-io.c                | 74 +++++-----------------
- fs/iomap/trace.h                      |  2 +-
- fs/isofs/inode.c                      |  9 +--
- fs/jfs/inode.c                        |  8 +--
- fs/mpage.c                            | 38 ++++--------
- fs/nilfs2/inode.c                     | 13 ++--
- fs/ocfs2/aops.c                       | 32 +++++-----
- fs/omfs/file.c                        |  8 +--
- fs/qnx6/inode.c                       |  8 +--
- fs/reiserfs/inode.c                   | 10 +--
- fs/udf/inode.c                        |  8 +--
- fs/xfs/xfs_aops.c                     | 10 +--
- include/linux/fs.h                    |  2 +
- include/linux/iomap.h                 |  2 +-
- include/linux/mpage.h                 |  2 +-
- include/linux/pagemap.h               | 12 ++++
- include/trace/events/erofs.h          |  6 +-
- include/trace/events/f2fs.h           |  6 +-
- mm/internal.h                         |  2 +-
- mm/migrate.c                          |  2 +-
- mm/readahead.c                        | 89 ++++++++++++++++++---------
- 42 files changed, 332 insertions(+), 349 deletions(-)
-
+diff --git a/mm/readahead.c b/mm/readahead.c
+index fc77d13af556..7daef0038b14 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -114,10 +114,10 @@ int read_cache_pages(struct address_space *mapping, struct list_head *pages,
+ EXPORT_SYMBOL(read_cache_pages);
+ 
+ static void read_pages(struct address_space *mapping, struct file *filp,
+-		struct list_head *pages, unsigned int nr_pages, gfp_t gfp)
++		struct list_head *pages, pgoff_t start,
++		unsigned int nr_pages)
+ {
+ 	struct blk_plug plug;
+-	unsigned page_idx;
+ 
+ 	blk_start_plug(&plug);
+ 
+@@ -125,18 +125,17 @@ static void read_pages(struct address_space *mapping, struct file *filp,
+ 		mapping->a_ops->readpages(filp, mapping, pages, nr_pages);
+ 		/* Clean up the remaining pages */
+ 		put_pages_list(pages);
+-		goto out;
+-	}
++	} else {
++		struct page *page;
++		unsigned long index;
+ 
+-	for (page_idx = 0; page_idx < nr_pages; page_idx++) {
+-		struct page *page = lru_to_page(pages);
+-		list_del(&page->lru);
+-		if (!add_to_page_cache_lru(page, mapping, page->index, gfp))
++		xa_for_each_range(&mapping->i_pages, index, page, start,
++				start + nr_pages - 1) {
+ 			mapping->a_ops->readpage(filp, page);
+-		put_page(page);
++			put_page(page);
++		}
+ 	}
+ 
+-out:
+ 	blk_finish_plug(&plug);
+ }
+ 
+@@ -153,13 +152,14 @@ unsigned long __do_page_cache_readahead(struct address_space *mapping,
+ 		unsigned long lookahead_size)
+ {
+ 	struct inode *inode = mapping->host;
+-	struct page *page;
+ 	unsigned long end_index;	/* The last page we want to read */
+ 	LIST_HEAD(page_pool);
+ 	int page_idx;
++	pgoff_t page_offset;
+ 	unsigned long nr_pages = 0;
+ 	loff_t isize = i_size_read(inode);
+ 	gfp_t gfp_mask = readahead_gfp_mask(mapping);
++	bool use_list = mapping->a_ops->readpages;
+ 
+ 	if (isize == 0)
+ 		goto out;
+@@ -170,21 +170,32 @@ unsigned long __do_page_cache_readahead(struct address_space *mapping,
+ 	 * Preallocate as many pages as we will need.
+ 	 */
+ 	for (page_idx = 0; page_idx < nr_to_read; page_idx++) {
+-		pgoff_t page_offset = offset + page_idx;
++		struct page *page;
+ 
++		page_offset = offset + page_idx;
+ 		if (page_offset > end_index)
+ 			break;
+ 
+ 		page = xa_load(&mapping->i_pages, page_offset);
+ 		if (page && !xa_is_value(page)) {
+ 			/*
+-			 * Page already present?  Kick off the current batch of
+-			 * contiguous pages before continuing with the next
+-			 * batch.
++			 * Page already present?  Kick off the current batch
++			 * of contiguous pages before continuing with the
++			 * next batch.
+ 			 */
+ 			if (nr_pages)
+-				read_pages(mapping, filp, &page_pool, nr_pages,
+-						gfp_mask);
++				read_pages(mapping, filp, &page_pool,
++						page_offset - nr_pages,
++						nr_pages);
++			/*
++			 * It's possible this page is the page we should
++			 * be marking with PageReadahead.  However, we
++			 * don't have a stable ref to this page so it might
++			 * be reallocated to another user before we can set
++			 * the bit.  There's probably another page in the
++			 * cache marked with PageReadahead from the other
++			 * process which accessed this file.
++			 */
+ 			nr_pages = 0;
+ 			continue;
+ 		}
+@@ -192,8 +203,20 @@ unsigned long __do_page_cache_readahead(struct address_space *mapping,
+ 		page = __page_cache_alloc(gfp_mask);
+ 		if (!page)
+ 			break;
+-		page->index = page_offset;
+-		list_add(&page->lru, &page_pool);
++		if (use_list) {
++			page->index = page_offset;
++			list_add(&page->lru, &page_pool);
++		} else if (add_to_page_cache_lru(page, mapping, page_offset,
++					gfp_mask) < 0) {
++			if (nr_pages)
++				read_pages(mapping, filp, &page_pool,
++						page_offset - nr_pages,
++						nr_pages);
++			put_page(page);
++			nr_pages = 0;
++			continue;
++		}
++
+ 		if (page_idx == nr_to_read - lookahead_size)
+ 			SetPageReadahead(page);
+ 		nr_pages++;
+@@ -205,7 +228,8 @@ unsigned long __do_page_cache_readahead(struct address_space *mapping,
+ 	 * will then handle the error.
+ 	 */
+ 	if (nr_pages)
+-		read_pages(mapping, filp, &page_pool, nr_pages, gfp_mask);
++		read_pages(mapping, filp, &page_pool, page_offset - nr_pages,
++				nr_pages);
+ 	BUG_ON(!list_empty(&page_pool));
+ out:
+ 	return nr_pages;
 -- 
 2.24.1
 
