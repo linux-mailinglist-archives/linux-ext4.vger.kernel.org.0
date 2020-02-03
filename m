@@ -2,82 +2,248 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0CC150055
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Feb 2020 02:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B21150099
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Feb 2020 03:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbgBCBqI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 2 Feb 2020 20:46:08 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46746 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726971AbgBCBqI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 2 Feb 2020 20:46:08 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 085A328BEFA
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v6 1/5] unicode: Add standard casefolded d_ops
-Organization: Collabora
-References: <20200128230328.183524-1-drosen@google.com>
-        <20200128230328.183524-2-drosen@google.com>
-Date:   Sun, 02 Feb 2020 20:45:59 -0500
-In-Reply-To: <20200128230328.183524-2-drosen@google.com> (Daniel Rosenberg's
-        message of "Tue, 28 Jan 2020 15:03:24 -0800")
-Message-ID: <85sgjsxx2g.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1727097AbgBCCh5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 2 Feb 2020 21:37:57 -0500
+Received: from mail-qk1-f201.google.com ([209.85.222.201]:41773 "EHLO
+        mail-qk1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726971AbgBCCh5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 2 Feb 2020 21:37:57 -0500
+Received: by mail-qk1-f201.google.com with SMTP id r145so8521926qke.8
+        for <linux-ext4@vger.kernel.org>; Sun, 02 Feb 2020 18:37:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=/A62wtchxxr6pmGDNo5M680m/zAULxQ5Kw2nST+QzPA=;
+        b=DMZGrQbm8vhUIJUOUN3UJgAPFrCwVKGj0Ac/kNnwpe9/Xj4VjALEbM/dM+70sD4xcY
+         U0FsMqyIneY1aIyJyzuHcK65GQ3O49A2bTmMB6TmdKHJuTYKLXBvumYvz++Ek6nvxYg6
+         YnN5JlxAoFVZM190WHLWjpep3PSV1MKnNWabvF8PYR+BT3FRM41K0O8cPix9EmFD6F3K
+         HJiDpy2ga5PeNxDpRjC7p+rNaPRuRSxqnNdBU9fHVEtNmAxY2FtwebT3h/G3I6zbw1Lm
+         NVILO5IlXvVvaE+LRDnda2eZ2k7m7lyMJlN4chRVYaKhKaIcfz/EWAC7/fG7RKoYEnh+
+         VPjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=/A62wtchxxr6pmGDNo5M680m/zAULxQ5Kw2nST+QzPA=;
+        b=n6DHvhTtUbQAuW2BIog+upYb3heKUdyjPwyWF7GHUUsjxVqPjKt9IJ05ZtK2VxhPS9
+         OQVArwuH1XP7BR2Apk/w9bgcSCdWNOVzmKijpLbvUFSOfrNUnuJRE5YOtv9i+YX4gjFn
+         PckQd7z+crTxLvEZynjIdIcJzcRdiq0X9pekE+NG/wAR4og8qTH8m5KY+NbNZaIAe+8B
+         QJDKcyJyd8O1fJ4vPigEMTYcpH9984ARS48uO4sGDBCG3Ig4Vi+IomkjcE+1AN7y5a74
+         VuXtmgd9F80ck5B/0LYjaxFvCpYabwLVUxQfvgJO5Felq1u1lyF6oITj8Z1P+iRpYLX9
+         0haQ==
+X-Gm-Message-State: APjAAAVLBk9L8WlSXazsyilTEkRBwJD4AH7xfx+Vwp2cDVH7rWtqb10F
+        qAhEjMY8KqsftjtBpkDSfxYbv8oXZLFXVCb2iOtgN2+zAiJCUJ3zfXzyxbL7LUuryM2S+FZEpNy
+        yIv0S/zLOq7biOkQcdc0VB/9CV2w4q3Ic8bzU+CbA7aCLhsVL60jezR+kM8LAjYVEJDcYh3SYSW
+        Ptdes0mXk=
+X-Google-Smtp-Source: APXvYqxnhKEs4p5hbOaWR8DNV5GUG81wOqewvAzEaM51XKro/Q6c4diA6Yn/K5KqjI1rLawYmk9t5hAV9oax5YEMnGE=
+X-Received: by 2002:ac8:7501:: with SMTP id u1mr21964184qtq.149.1580697474395;
+ Sun, 02 Feb 2020 18:37:54 -0800 (PST)
+Date:   Mon,  3 Feb 2020 13:37:41 +1100
+Message-Id: <20200203023741.218441-1-jeremyvisser@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
+Subject: [PATCH] chattr.1: improve attribute formatting with labels and
+ indented paragraphs
+From:   Jeremy Visser <jeremyvisser@google.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Jeremy Visser <jeremyvisser@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Daniel Rosenberg <drosen@google.com> writes:
+By convention, lists of options in man pages use a label followed by an
+indented description, such as this example from the Options section:
 
-> diff --git a/include/linux/unicode.h b/include/linux/unicode.h
-> index 990aa97d80496..5de313abeaf98 100644
-> --- a/include/linux/unicode.h
-> +++ b/include/linux/unicode.h
-> @@ -4,6 +4,8 @@
->  
->  #include <linux/init.h>
->  #include <linux/dcache.h>
-> +#include <linux/fscrypt.h>
-> +#include <linux/fs.h>
->  
->  struct unicode_map {
->  	const char *charset;
-> @@ -30,4 +32,19 @@ int utf8_casefold(const struct unicode_map *um, const struct qstr *str,
->  struct unicode_map *utf8_load(const char *version);
->  void utf8_unload(struct unicode_map *um);
->  
-> +int utf8_ci_d_hash(const struct dentry *dentry, struct qstr *str);
-> +int utf8_ci_d_compare(const struct dentry *dentry, unsigned int len,
-> +			  const char *str, const struct qstr *name);
+     -R     Recursively change attributes of directories and
+            their contents.
 
+But the Attributes section places the available attributes mid-sentence,
+which makes it visually more difficult to parse:
 
-I don't think fs/unicode is the right place for these very specific
-filesystem functions, just because they happen to use unicode.  It is an
-encoding library, it doesn't care about dentries, nor should know how to
-handle them.  It exposes a simple api to manipulate and convert utf8 strings.
+     A file with the 'a' attribute set can only be opened
+     in append mode for writing.  [...]
 
-I saw change was after the desire to not have these functions polluting
-the VFS hot path, but that has nothing to do with placing them here.
+     When a file with the 'A' attribute set is accessed, its
+     atime record is not modified.  [...]
 
-Would libfs be better?  or a casefolding library in fs/casefold.c?
+This patch places a label beside each attribute description, which (in
+my opinion) improves readability, especially when visually skimming the
+list.  For example:
 
+     a      A file with the 'a' attribute set can only be
+            opened in append mode for writing.
 
+     A      When a file with the 'A' attribute set is accessed,
+            its atime record is not modified.
+
+Signed-off-by: Jeremy Visser <jeremyvisser@google.com>
+---
+ misc/chattr.1.in | 59 ++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 40 insertions(+), 19 deletions(-)
+
+diff --git a/misc/chattr.1.in b/misc/chattr.1.in
+index 66e791db..71e910c9 100644
+--- a/misc/chattr.1.in
++++ b/misc/chattr.1.in
+@@ -79,20 +79,25 @@ Set the file's version/generation number.
+ .BI \-p " project"
+ Set the file's project number.
+ .SH ATTRIBUTES
++.TP
++.B a
+ A file with the 'a' attribute set can only be opened in append mode for
+ writing.  Only the superuser or a process possessing the
+ CAP_LINUX_IMMUTABLE capability can set or clear this attribute.
+-.PP
++.TP
++.B A
+ When a file with the 'A' attribute set is accessed, its atime record is
+ not modified.  This avoids a certain amount of disk I/O for laptop
+ systems.
+-.PP
++.TP
++.B c
+ A file with the 'c' attribute set is automatically compressed on the disk
+ by the kernel.  A read from this file returns uncompressed data.  A write to
+ this file compresses data before storing them on the disk.  Note: please
+ make sure to read the bugs and limitations section at the end of this
+ document.
+-.PP
++.TP
++.B C
+ A file with the 'C' attribute set will not be subject to copy-on-write
+ updates.  This flag is only supported on file systems which perform
+ copy-on-write.  (Note: For btrfs, the 'C' flag should be
+@@ -101,42 +106,50 @@ data blocks, it is undefined when the blocks assigned to the file will
+ be fully stable.  If the 'C' flag is set on a directory, it will have no
+ effect on the directory, but new files created in that directory will
+ have the No_COW attribute set.)
+-.PP
++.TP
++.B d
+ A file with the 'd' attribute set is not a candidate for backup when the
+ .BR dump (8)
+ program is run.
+-.PP
++.TP
++.B D
+ When a directory with the 'D' attribute set is modified,
+ the changes are written synchronously to the disk; this is equivalent to
+ the 'dirsync' mount option applied to a subset of the files.
+-.PP
++.TP
++.B e
+ The 'e' attribute indicates that the file is using extents for mapping
+ the blocks on disk.  It may not be removed using
+ .BR chattr (1).
+-.PP
++.TP
++.B E
+ A file, directory, or symlink with the 'E' attribute set is encrypted by the
+ filesystem.  This attribute may not be set or cleared using
+ .BR chattr (1),
+ although it can be displayed by
+ .BR lsattr (1).
+-.PP
++.TP
++.B F
+ A directory with the 'F' attribute set indicates that all the path
+ lookups inside that directory are made in a case-insensitive fashion.
+ This attribute can only be changed in empty directories on file systems
+ with the casefold feature enabled.
+-.PP
++.TP
++.B i
+ A file with the 'i' attribute cannot be modified: it cannot be deleted or
+ renamed, no link can be created to this file, most of the file's
+ metadata can not be modified, and the file can not be opened in write mode.
+ Only the superuser or a process possessing the CAP_LINUX_IMMUTABLE
+ capability can set or clear this attribute.
+-.PP
++.TP
++.B I
+ The 'I' attribute is used by the htree code to indicate that a directory
+ is being indexed using hashed trees.  It may not be set or cleared using
+ .BR chattr (1),
+ although it can be displayed by
+ .BR lsattr (1).
+-.PP
++.TP
++.B j
+ A file with the 'j' attribute has all of its data written to the ext3 or
+ ext4 journal before being written to the file itself, if the file system
+ is mounted with the "data=ordered" or "data=writeback" options and the
+@@ -144,14 +157,16 @@ file system has a journal.  When the filesystem is mounted with the
+ "data=journal" option all file data is already journalled and this
+ attribute has no effect.  Only the superuser or a process possessing the
+ CAP_SYS_RESOURCE capability can set or clear this attribute.
+-.PP
++.TP
++.B N
+ A file with the 'N' attribute set indicates that the file has data
+ stored inline, within the inode itself. It may not be set or cleared
+ using
+ .BR chattr (1),
+ although it can be displayed by
+ .BR lsattr (1).
+-.PP
++.TP
++.B P
+ A directory with the 'P' attribute set will enforce a hierarchical
+ structure for project id's.  This means that files and directory created
+ in the directory will inherit the project id of the directory, rename
+@@ -159,22 +174,26 @@ operations are constrained so when a file or directory is moved into
+ another directory, that the project id's much match.  In addition, a
+ hard link to file can only be created when the project id for the file
+ and the destination directory match.
+-.PP
++.TP
++.B s
+ When a file with the 's' attribute set is deleted, its blocks are zeroed
+ and written back to the disk.  Note: please make sure to read the bugs
+ and limitations section at the end of this document.
+-.PP
++.TP
++.B S
+ When a file with the 'S' attribute set is modified,
+ the changes are written synchronously to the disk; this is equivalent to
+ the 'sync' mount option applied to a subset of the files.
+-.PP
++.TP
++.B t
+ A file with the 't' attribute will not have a partial block fragment at
+ the end of the file merged with other files (for those filesystems which
+ support tail-merging).  This is necessary for applications such as LILO
+ which read the filesystem directly, and which don't understand tail-merged
+ files.  Note: As of this writing, the ext2, ext3, and ext4 filesystems do
+ not support tail-merging.
+-.PP
++.TP
++.B T
+ A directory with the 'T' attribute will be deemed to be the top of
+ directory hierarchies for the purposes of the Orlov block allocator.
+ This is a hint to the block allocator used by ext3 and ext4 that the
+@@ -184,12 +203,14 @@ idea to set the 'T' attribute on the /home directory, so that /home/john
+ and /home/mary are placed into separate block groups.  For directories
+ where this attribute is not set, the Orlov block allocator will try to
+ group subdirectories closer together where possible.
+-.PP
++.TP
++.B u
+ When a file with the 'u' attribute set is deleted, its contents are
+ saved.  This allows the user to ask for its undeletion.  Note: please
+ make sure to read the bugs and limitations section at the end of this
+ document.
+-.PP
++.TP
++.B V
+ A file with the 'V' attribute set has fs-verity enabled.  It cannot be
+ written to, and the filesystem will automatically verify all data read
+ from it against a cryptographic hash that covers the entire file's
 -- 
-Gabriel Krisman Bertazi
+2.25.0.341.g760bfbb309-goog
+
