@@ -2,81 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C565B152467
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2020 02:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18B9152514
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2020 04:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbgBEBL2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 4 Feb 2020 20:11:28 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:34890 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727745AbgBEBL1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Feb 2020 20:11:27 -0500
-Received: by mail-ed1-f65.google.com with SMTP id f8so569421edv.2
-        for <linux-ext4@vger.kernel.org>; Tue, 04 Feb 2020 17:11:24 -0800 (PST)
+        id S1727887AbgBEDFQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Feb 2020 22:05:16 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:38951 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727902AbgBEDFP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Feb 2020 22:05:15 -0500
+Received: by mail-lf1-f67.google.com with SMTP id t23so363361lfk.6
+        for <linux-ext4@vger.kernel.org>; Tue, 04 Feb 2020 19:05:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Tzy7wMVHVGsylIbDRV1sp0LbucRQL/BdoHUbiMTR4dU=;
-        b=VOCKDZVJBRmZ/CJ+gzmglmcREuncJJUyRPhUacqfcvTWnRw+8k+3nJh46AyCH/V9q8
-         2M95Nn7084c893/onAbTMeKJuJUfSR5zTEIKYs/nzBpSbG1n0rWXtVepjzEGVlDCjrbU
-         f1ASsHa9CWolwBEtIzQuKe2xbcr5UAPifB4Zm45H8pYhgY1uQCNvW0UG54X4ZFWJhV7o
-         9C+hlK/XMt9o9BbHJ9tEr2CSUYHC8Cl88BrECwO4Wd6ckthT5IHKBYKvOVAfGAcfmic9
-         3ojz11cQkq4m/8CGXVTXPwmPh2qBaTz49eGlObWjInJ9e47n2n/SQKXYPyh4cdqVaRgm
-         DmYA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5WF1go+DuJvbwgdXeUhoD65NaX1JQ7zRHimo51GmC8M=;
+        b=a/rT7owEo3U/lPRFn35JOyHmNdZNKq3CUN5eC0vmSOAlGMUJJc7ELCvSX1Mh8APfaa
+         lAlLVERWXR5pYN81ddhMclRnb/OmN5Fx2KddB7KuZLDfFPyFM3c5qNNCCjwGgxr+r3s1
+         DNCcaZvM6VYKACKmTz/OjiTlKJVFN9VL8YzEYvQS2U83lFvZUm1XWKOklUIkQxQvXozG
+         vNU7Zo1syf0hTTILG3oFQfUcj+JQqVr59fj+c5MCVuSCuEvLrPxTFeYRhYsiMU1wniYS
+         k/ew5rFlhFL2LzMHulEuIV3u33upCBPfLhXENQXAIsbZYUZT2I99yQmfa/FkquxeDAIP
+         aNXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Tzy7wMVHVGsylIbDRV1sp0LbucRQL/BdoHUbiMTR4dU=;
-        b=Xfa9CrUPiDpgEZsBm0JpoOgSKxtyvXYi+l/nsbf5SFItuLkCxlW1zPM24SqncFw2+2
-         GrtUmcP9bqXbnIc76mmb3ixs4KJSuhZotuJSQ2rMMGjnwOuiLcCul6wssYgDPdsx+YPb
-         zmGNC7tya6sd0FtMHV6yUOTi6RuptUWpHBovPAGFyGvenDGmcFJ+owM0/GlB2jFKhujq
-         ixCHNKwbrnJr0MyF7G21GSIuSpVKKyCap+XJxUmGAF4BnsT3BsYR0Oeq+TEQ6+5OoMxR
-         cIgMbJBPBHVsYItjmrGAmZi6gOTL8/HCFi8UetEVMsQK7ecjxsKbaeXL/fnlYN22djON
-         HTfQ==
-X-Gm-Message-State: APjAAAUId2PRHulGd1gDg9glKA9QwvOg6ThIjRIDFNvcM8T+bal8Kiwi
-        nM/5XHJr6VNZedFxkXzJykngypAsPkWzlNIab0A=
-X-Google-Smtp-Source: APXvYqz01dwC2ETsSwMZQEtliSEC2H/lT4KE5RRPEYuKybSwAjqkq8h/ZyzmlGu9YeFQv7zQumUj5FSSFYYlMDZfvlQ=
-X-Received: by 2002:aa7:c71a:: with SMTP id i26mr2883416edq.300.1580865083863;
- Tue, 04 Feb 2020 17:11:23 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5WF1go+DuJvbwgdXeUhoD65NaX1JQ7zRHimo51GmC8M=;
+        b=aQc+TZwei1P8NJeBGSNnziVxHRpI2JpIeFP1DdFxHBSkk7dw8tjP2wwU4m3PvEYcjN
+         C/RvANGndPqerUs8LXkN6x9kDbJK70EVpsS/ZfX/dZD6KEPl8lqTOz4si+w305tIOTXM
+         OgXGmmC7TKOUPzXnpTjysBoec2N18TdzPEYAwQCXD9nS/n7IfOu+LfQZSbJk6NGSzPli
+         yUxWBNreimiqiw2j7XkPtUI5YKCVJewT5y0+z9c7ouQuYC8CDO8MX0FWLqDYdC7Nt3c4
+         M1/kifvYKZXOSOgIwtFgw5B13F/qXErAbd4XTxua9f1Jb/8MASD81vmPVE0qQW9AHG2z
+         iCGQ==
+X-Gm-Message-State: APjAAAXug1B8DZmG2UVQBQaybVYFPBOo0y11OLuBOpK2/r7uQrhH10Ao
+        FgUqhvNHM1bl6qdYLbwPgaaAc035hXZZclaHyI5/UQ==
+X-Google-Smtp-Source: APXvYqzeG4caRRvcRllow4EA73MGmU6WFhFNYJbaTAD8sJamhzsXSFSCQuZUYpZgWEJovRgzDpyi7R9sxFKJltzNJtg=
+X-Received: by 2002:a19:4a92:: with SMTP id x140mr17094713lfa.29.1580871913677;
+ Tue, 04 Feb 2020 19:05:13 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a17:906:1a14:0:0:0:0 with HTTP; Tue, 4 Feb 2020 17:11:23
- -0800 (PST)
-Reply-To: mdzsesszika672@yahoo.com
-From:   "Isabella Dzsesszika." <mrsisabelladz@gmail.com>
-Date:   Wed, 5 Feb 2020 02:11:23 +0100
-Message-ID: <CA+0n1ATsvEKQt5SyeqeuaUy5pvy6EOXEYjChHHMx23-vZtNu4g@mail.gmail.com>
-Subject: From Mrs. Isabella Dzsesszika
-To:     undisclosed-recipients:;
+References: <20200128230328.183524-1-drosen@google.com> <20200128230328.183524-2-drosen@google.com>
+ <85sgjsxx2g.fsf@collabora.com>
+In-Reply-To: <85sgjsxx2g.fsf@collabora.com>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Tue, 4 Feb 2020 19:05:02 -0800
+Message-ID: <CA+PiJmS3kbK8220QaccP5jJ7dSf4xv3UrStQvLskAtCN+=vG_A@mail.gmail.com>
+Subject: Re: [PATCH v6 1/5] unicode: Add standard casefolded d_ops
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
--- 
+On Sun, Feb 2, 2020 at 5:46 PM Gabriel Krisman Bertazi
+<krisman@collabora.com> wrote:
+>
+>
+> I don't think fs/unicode is the right place for these very specific
+> filesystem functions, just because they happen to use unicode.  It is an
+> encoding library, it doesn't care about dentries, nor should know how to
+> handle them.  It exposes a simple api to manipulate and convert utf8 strings.
+>
+> I saw change was after the desire to not have these functions polluting
+> the VFS hot path, but that has nothing to do with placing them here.
+>
+> Would libfs be better?  or a casefolding library in fs/casefold.c?
+>
+>
+> --
+> Gabriel Krisman Bertazi
 
-By Mrs. Isabella Dzsesszika
-
-I am Ms. Isabella Dzsesszika widow who suffers from long illness
-(cancer), there are funds I have inherited from my late loving husband
-Mr. Mseswa Dzsesszika, the sum of (US $ 1.5 million) that he has in
-the bank before his death, I need an honest and God-fearing person who
-can use these resources for God's work.
-
-I have made this decision because I have no child who inherits this
-money, and I do not want a situation where this money is used in a
-godless way. That is why I make that decision and my doctor has
-confirmed to me that I have less than three weeks to live, knowing
-that I have chosen a charity or a person who uses this money to
-support the poor and who Needy in accordance with my instructions.
-
-I want an organization that will use this fund for orphanages, schools
-and churches, widows, to spread the word and work of God. Please, if
-you could use these resources for the work of the Lord, please answer
-me. As soon as I receive your answer, I will give you further
-instructions on how to meet the requirements of these funds.
-
-Your sister in Christ,
-
-Mrs. Isabella Dzsesszika
+The hash function needs access to utf8ncursor, but apart from that,
+libfs would make sense. utf8ncursor is the only reason I have them
+here. How do you feel about exposing utf8cursor or something similar?
