@@ -2,59 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5FB15230E
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2020 00:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C565B152467
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Feb 2020 02:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727690AbgBDXk7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 4 Feb 2020 18:40:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727687AbgBDXk7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 4 Feb 2020 18:40:59 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 206419] online resize + fstrim -> bad block checksum
-Date:   Tue, 04 Feb 2020 23:40:58 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: bugzilla.kernel.org@plan9.de
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-206419-13602-ArShzbabgi@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-206419-13602@https.bugzilla.kernel.org/>
-References: <bug-206419-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1727714AbgBEBL2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 4 Feb 2020 20:11:28 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:34890 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727745AbgBEBL1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 4 Feb 2020 20:11:27 -0500
+Received: by mail-ed1-f65.google.com with SMTP id f8so569421edv.2
+        for <linux-ext4@vger.kernel.org>; Tue, 04 Feb 2020 17:11:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Tzy7wMVHVGsylIbDRV1sp0LbucRQL/BdoHUbiMTR4dU=;
+        b=VOCKDZVJBRmZ/CJ+gzmglmcREuncJJUyRPhUacqfcvTWnRw+8k+3nJh46AyCH/V9q8
+         2M95Nn7084c893/onAbTMeKJuJUfSR5zTEIKYs/nzBpSbG1n0rWXtVepjzEGVlDCjrbU
+         f1ASsHa9CWolwBEtIzQuKe2xbcr5UAPifB4Zm45H8pYhgY1uQCNvW0UG54X4ZFWJhV7o
+         9C+hlK/XMt9o9BbHJ9tEr2CSUYHC8Cl88BrECwO4Wd6ckthT5IHKBYKvOVAfGAcfmic9
+         3ojz11cQkq4m/8CGXVTXPwmPh2qBaTz49eGlObWjInJ9e47n2n/SQKXYPyh4cdqVaRgm
+         DmYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Tzy7wMVHVGsylIbDRV1sp0LbucRQL/BdoHUbiMTR4dU=;
+        b=Xfa9CrUPiDpgEZsBm0JpoOgSKxtyvXYi+l/nsbf5SFItuLkCxlW1zPM24SqncFw2+2
+         GrtUmcP9bqXbnIc76mmb3ixs4KJSuhZotuJSQ2rMMGjnwOuiLcCul6wssYgDPdsx+YPb
+         zmGNC7tya6sd0FtMHV6yUOTi6RuptUWpHBovPAGFyGvenDGmcFJ+owM0/GlB2jFKhujq
+         ixCHNKwbrnJr0MyF7G21GSIuSpVKKyCap+XJxUmGAF4BnsT3BsYR0Oeq+TEQ6+5OoMxR
+         cIgMbJBPBHVsYItjmrGAmZi6gOTL8/HCFi8UetEVMsQK7ecjxsKbaeXL/fnlYN22djON
+         HTfQ==
+X-Gm-Message-State: APjAAAUId2PRHulGd1gDg9glKA9QwvOg6ThIjRIDFNvcM8T+bal8Kiwi
+        nM/5XHJr6VNZedFxkXzJykngypAsPkWzlNIab0A=
+X-Google-Smtp-Source: APXvYqz01dwC2ETsSwMZQEtliSEC2H/lT4KE5RRPEYuKybSwAjqkq8h/ZyzmlGu9YeFQv7zQumUj5FSSFYYlMDZfvlQ=
+X-Received: by 2002:aa7:c71a:: with SMTP id i26mr2883416edq.300.1580865083863;
+ Tue, 04 Feb 2020 17:11:23 -0800 (PST)
 MIME-Version: 1.0
+Received: by 2002:a17:906:1a14:0:0:0:0 with HTTP; Tue, 4 Feb 2020 17:11:23
+ -0800 (PST)
+Reply-To: mdzsesszika672@yahoo.com
+From:   "Isabella Dzsesszika." <mrsisabelladz@gmail.com>
+Date:   Wed, 5 Feb 2020 02:11:23 +0100
+Message-ID: <CA+0n1ATsvEKQt5SyeqeuaUy5pvy6EOXEYjChHHMx23-vZtNu4g@mail.gmail.com>
+Subject: From Mrs. Isabella Dzsesszika
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=206419
-
---- Comment #1 from bugzilla.kernel.org@plan9.de ---
-I was able to umount the filesystem and ran e2fsck, which offered:
-
-Inode 34852 extent tree (at level 2) could be narrower.  Optimize<y>? yes
-
-And then went on to correct bitmpa differences - no sign of the bitmap block
-checksum error. Afterwards, I mounted again and now fstrim works without
-complaints.
-
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+
+By Mrs. Isabella Dzsesszika
+
+I am Ms. Isabella Dzsesszika widow who suffers from long illness
+(cancer), there are funds I have inherited from my late loving husband
+Mr. Mseswa Dzsesszika, the sum of (US $ 1.5 million) that he has in
+the bank before his death, I need an honest and God-fearing person who
+can use these resources for God's work.
+
+I have made this decision because I have no child who inherits this
+money, and I do not want a situation where this money is used in a
+godless way. That is why I make that decision and my doctor has
+confirmed to me that I have less than three weeks to live, knowing
+that I have chosen a charity or a person who uses this money to
+support the poor and who Needy in accordance with my instructions.
+
+I want an organization that will use this fund for orphanages, schools
+and churches, widows, to spread the word and work of God. Please, if
+you could use these resources for the work of the Lord, please answer
+me. As soon as I receive your answer, I will give you further
+instructions on how to meet the requirements of these funds.
+
+Your sister in Christ,
+
+Mrs. Isabella Dzsesszika
