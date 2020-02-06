@@ -2,56 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3D6154C38
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2020 20:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DADD7154F1C
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2020 23:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgBFTZy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 6 Feb 2020 14:25:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgBFTZx (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 6 Feb 2020 14:25:53 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 206443] general protection fault in ext4 during simultaneous
- online resize and write operations
-Date:   Thu, 06 Feb 2020 19:25:53 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: surajjs@amazon.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-206443-13602-dP3iN6Gmz6@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-206443-13602@https.bugzilla.kernel.org/>
-References: <bug-206443-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1726628AbgBFWw7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Feb 2020 17:52:59 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33102 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726502AbgBFWw6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Feb 2020 17:52:58 -0500
+Received: from callcc.thunk.org (guestnat-104-133-0-101.corp.google.com [104.133.0.101] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 016MqrrW014535
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 6 Feb 2020 17:52:55 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id BE9D9420324; Thu,  6 Feb 2020 17:52:52 -0500 (EST)
+Date:   Thu, 6 Feb 2020 17:52:52 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: EXT4: unsupported inode size: 4096
+Message-ID: <20200206225252.GA3673@mit.edu>
+References: <20200206153542.GA30449@MAIL.13thfloor.at>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
+In-Reply-To: <20200206153542.GA30449@MAIL.13thfloor.at>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=206443
 
---- Comment #6 from Suraj (surajjs@amazon.com) ---
-Initial bug was hit reliably (~95% of the time) within 30 minutes.
-The following traces only occurred on ~50% of runs and some times taking up to
-5 hours to hit.
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, Feb 06, 2020 at 04:35:42PM +0100, Herbert Poetzl wrote:
+> 
+> I recently updated one of my servers from an older 4.19
+> Linux kernel to the latest 5.5 kernel mainly because of 
+> the many filesystem improvements, just to find that some
+> of my filesystems simply cannot be mounted anymore.
+
+Thanks for the bug report!  This was actually a regression caused by
+recent security fix (which landed after 5.5, but which backported to
+the 5.5 stable kernel).
+
+The following should fix things.  Please let me know if you still have
+problems after applying this fix.
+
+					- Ted
+
+
+--envbJBWh7q8WU6mo
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-ext4-fix-support-for-inode-sizes-1024-bytes.patch"
+
+From e0c963ab41e21bea32565a36654523687be3e7f0 Mon Sep 17 00:00:00 2001
+From: Theodore Ts'o <tytso@mit.edu>
+Date: Thu, 6 Feb 2020 17:35:01 -0500
+Subject: [PATCH] ext4: fix support for inode sizes > 1024 bytes
+
+A recent commit, 9803387c55f7 ("ext4: validate the
+debug_want_extra_isize mount option at parse time"), moved mount-time
+checks around.  One of those changes moved the inode size check before
+the blocksize variable was set to the blocksize of the file system.
+After 9803387c55f7 was set to the minimum allowable blocksize, which
+in practice on most systems would be 1024 bytes.  This cuased file
+systems with inode sizes larger than 1024 bytes to be rejected with a
+message:
+
+EXT4-fs (sdXX): unsupported inode size: 4096
+
+Fixes: 9803387c55f7 ("ext4: validate the debug_want_extra_isize mount option at parse time")
+Cc: stable@kernel.org
+Reported-by: Herbert Poetzl <herbert@13thfloor.at>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/super.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 88b213bd32bc..eebcf9b9272d 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3814,6 +3814,15 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	 */
+ 	sbi->s_li_wait_mult = EXT4_DEF_LI_WAIT_MULT;
+ 
++	blocksize = BLOCK_SIZE << le32_to_cpu(es->s_log_block_size);
++	if (blocksize < EXT4_MIN_BLOCK_SIZE ||
++	    blocksize > EXT4_MAX_BLOCK_SIZE) {
++		ext4_msg(sb, KERN_ERR,
++		       "Unsupported filesystem blocksize %d (%d log_block_size)",
++			 blocksize, le32_to_cpu(es->s_log_block_size));
++		goto failed_mount;
++	}
++
+ 	if (le32_to_cpu(es->s_rev_level) == EXT4_GOOD_OLD_REV) {
+ 		sbi->s_inode_size = EXT4_GOOD_OLD_INODE_SIZE;
+ 		sbi->s_first_ino = EXT4_GOOD_OLD_FIRST_INO;
+@@ -3831,6 +3840,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 			ext4_msg(sb, KERN_ERR,
+ 			       "unsupported inode size: %d",
+ 			       sbi->s_inode_size);
++			ext4_msg(sb, KERN_ERR, "blocksize: %d", blocksize);
+ 			goto failed_mount;
+ 		}
+ 		/*
+@@ -4033,14 +4043,6 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (!ext4_feature_set_ok(sb, (sb_rdonly(sb))))
+ 		goto failed_mount;
+ 
+-	blocksize = BLOCK_SIZE << le32_to_cpu(es->s_log_block_size);
+-	if (blocksize < EXT4_MIN_BLOCK_SIZE ||
+-	    blocksize > EXT4_MAX_BLOCK_SIZE) {
+-		ext4_msg(sb, KERN_ERR,
+-		       "Unsupported filesystem blocksize %d (%d log_block_size)",
+-			 blocksize, le32_to_cpu(es->s_log_block_size));
+-		goto failed_mount;
+-	}
+ 	if (le32_to_cpu(es->s_log_block_size) >
+ 	    (EXT4_MAX_BLOCK_LOG_SIZE - EXT4_MIN_BLOCK_LOG_SIZE)) {
+ 		ext4_msg(sb, KERN_ERR,
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+2.24.1
+
+
+--envbJBWh7q8WU6mo--
