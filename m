@@ -2,110 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCCC15480C
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2020 16:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA23154821
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Feb 2020 16:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727441AbgBFP2P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Feb 2020 10:28:15 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10164 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727325AbgBFP2P (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 6 Feb 2020 10:28:15 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C940644224E036578578;
-        Thu,  6 Feb 2020 23:28:09 +0800 (CST)
-Received: from [127.0.0.1] (10.173.220.179) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.439.0; Thu, 6 Feb 2020
- 23:28:01 +0800
-Subject: Re: [PATCH 2/2] jbd2: do not clear the BH_Mapped flag when forgetting
- a metadata buffer
-To:     Jan Kara <jack@suse.cz>
-CC:     <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
-        <luoshijie1@huawei.com>, <zhangxiaoxu5@huawei.com>
-References: <20200203140458.37397-1-yi.zhang@huawei.com>
- <20200203140458.37397-3-yi.zhang@huawei.com>
- <20200206114647.GB3994@quack2.suse.cz>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <6c03b515-d128-06be-2e38-56a01ee63263@huawei.com>
-Date:   Thu, 6 Feb 2020 23:28:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1727595AbgBFPcO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Feb 2020 10:32:14 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29295 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727358AbgBFPcO (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Feb 2020 10:32:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1581003133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JkkJGmIOTY9azTSJOAyBmE/D2+0ai1ViZFBb2hElwXY=;
+        b=RXFilHkL0l4CdO/k9Iutj05OWHrxZUSNyC/IzGraARKo1KSIg/sJ0t/PhYzpcbJ9Tg2tDH
+        EjErpkDonCg6mzManGLDIO957sHEuWmaoEUz3s8R/3HJ1t3hTEH0xkrGTm7jPyw4ApJC+J
+        D+awNsE/TVeI6eJnyApHShjVz8afQFw=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-wsCx9fyWMA6ccKMHl2Nu-g-1; Thu, 06 Feb 2020 10:32:11 -0500
+X-MC-Unique: wsCx9fyWMA6ccKMHl2Nu-g-1
+Received: by mail-oi1-f197.google.com with SMTP id o5so2992435oif.9
+        for <linux-ext4@vger.kernel.org>; Thu, 06 Feb 2020 07:32:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JkkJGmIOTY9azTSJOAyBmE/D2+0ai1ViZFBb2hElwXY=;
+        b=ZjZZNj/dhYikcnPcwYBdl245NEtVbzxJoUOUJLEAwbPBP6zomSmKr6IOXCR97X/JdD
+         nAt4O1kfGvD4oT10NTKOlgbvRjYQkXjSJd8Ipn+MIFcj5QowYq4pC8y3xlh1Z62TGEw+
+         hd9xtl5/HpW4TtSJvu5b2c0Cea9lbU0om9y7r/Rak3Cf1tELuAdSUeXt4d2qiylh2kJU
+         S8BbrEFBPz7vFHdUorgUr8x+wUuCx7mFLj8PahgH26+gVAqhxDZ19l+NLp/2HuUgasx1
+         dkfXzXUqPmH3E1iaW1NVyVfQWgWXWQl/7OQIs9vinO8wb/+mZDdxhlCskg9QFhD/8+at
+         DCiA==
+X-Gm-Message-State: APjAAAUO8HN0nIrkl358Q50ZAyxfeEW3q6k9JB9o8KMo1D90778wMyPr
+        BVS+t1Fq6q4OHd9MoBtvtgbRBFRogpZ9DvKAZiP+gaLd7lp8EcEhbNafqLkxrvfH80FB0Q6Q8m4
+        6byVpZNUdQixewDRVPqxJcYDffU3zSZcS/Djb4Q==
+X-Received: by 2002:aca:48d0:: with SMTP id v199mr7121520oia.10.1581003130622;
+        Thu, 06 Feb 2020 07:32:10 -0800 (PST)
+X-Google-Smtp-Source: APXvYqz63b3BCvjFz9bZiKofXwlA69pEYM2GvuAIssv4co0has6j21zg9p8DSROFpl+t1g3/AiFAiFF1ObcmOqpV8Jw=
+X-Received: by 2002:aca:48d0:: with SMTP id v199mr7121485oia.10.1581003130363;
+ Thu, 06 Feb 2020 07:32:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200206114647.GB3994@quack2.suse.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.220.179]
-X-CFilter-Loop: Reflected
+References: <20200114161225.309792-1-hch@lst.de> <20200114161225.309792-6-hch@lst.de>
+In-Reply-To: <20200114161225.309792-6-hch@lst.de>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Thu, 6 Feb 2020 16:31:58 +0100
+Message-ID: <CAHc6FU45m59PjBWWO=F740_jyOtKSwc__XfYhP84WkpK0uqcWQ@mail.gmail.com>
+Subject: Re: [Cluster-devel] [PATCH 05/12] gfs2: fix O_SYNC write handling
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-xfs@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks for the comments.
+Hi Christoph,
 
-On 2020/2/6 19:46, Jan Kara wrote:
-> On Mon 03-02-20 22:04:58, zhangyi (F) wrote:
-[..]
->> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
->> index 6396fe70085b..a649cdd1c5e5 100644
->> --- a/fs/jbd2/commit.c
->> +++ b/fs/jbd2/commit.c
->> @@ -987,10 +987,13 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->>  		if (buffer_freed(bh) && !jh->b_next_transaction) {
->>  			clear_buffer_freed(bh);
->>  			clear_buffer_jbddirty(bh);
->> -			clear_buffer_mapped(bh);
->> -			clear_buffer_new(bh);
->> -			clear_buffer_req(bh);
->> -			bh->b_bdev = NULL;
->> +			if (buffer_unmap(bh)) {
->> +				clear_buffer_unmap(bh);
->> +				clear_buffer_mapped(bh);
->> +				clear_buffer_new(bh);
->> +				clear_buffer_req(bh);
->> +				bh->b_bdev = NULL;
->> +			}
-> 
-> Any reason why you don't want to clear buffer_req and buffer_new flags for
-> all buffers as well? I agree that b_bdev setting and buffer_mapped need
-> special treatment.
-> 
-IIUC, for the buffer coming from jbd2_journal_forget() is always 'block
-device backed' metadata buffer (not pretty sure), and for these metadata
-buffer, buffer_new flag will not be set. At the same time, since it's
-always mapped, so it's fine to keep the buffer_req flag even it's freed
-by the filesystem now, because it means the block device has committed
-this buffer, and it seems that it does not affect we reuse this buffer.
-Am I missing something ?
+thanks for this patch, and sorry for taking so long to react.
 
-> Also rather than introducing this new buffer_unmap bit, I'd use the fact
-> this special treatment is needed only for buffers coming from the block device
-> mapping. And we can check for that like:
-> 
-> 		/*
-> 		 * We can (and need to) unmap buffer only for normal mappings.
-> 		 * Block device buffers need to stay mapped all the time.
-> 		 * We need to be careful about the check because the page
-> 		 * mapping can get cleared under our hands.
-> 		 */
-> 		mapping = READ_ONCE(bh->b_page->mapping);
-> 		if (mapping && !sb_is_blkdev_sb(mapping->host->i_sb)) {
-> 			...
-> 		}
-> 
-It looks better, I will use this checking in the next iteration.
+On Tue, Jan 14, 2020 at 5:54 PM Christoph Hellwig <hch@lst.de> wrote:
+> Don't ignore the return value from generic_write_sync for the direct to
+> buffered I/O callback case when written is non-zero.  Also don't bother
+> to call generic_write_sync for the pure direct I/O case, as iomap_dio_rw
+> already takes care of that.
 
-> Longer term, we might want to rework how the handling of truncated buffers
-> works with JDB2. There's lots of duplication between jbd2_journal_forget()
-> and jbd2_journal_unmap_buffer(), the dirtiness is tracked in jh->b_modified
-> as well as buffer_jbddirty() and it is further redundant with the journal
-> list the buffer is currently on. So I suspect it could all be simplified if
-> we took a fresh look at things.
-> 
-Indeed, it is tricky and not pretty easy to understand now, refactoring
-these is awesome int the future.
+I like the idea, but the patch as is doesn't quite work: iomap_dio_rw
+already bumps iocb->ki_pos, so we end up with the wrong value by
+adding the (direct + buffered) write size again.
+We'd probably also be better served by replacing
+filemap_write_and_wait_range with generic_write_sync + IOCB_DSYNC in
+the buffered fallback case. I'll send an update that you'll hopefully
+like.
 
-Thanks,
-Yi.
+Andreas
 
