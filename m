@@ -2,90 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D0515526F
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2020 07:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C69155765
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2020 13:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgBGG2Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Feb 2020 01:28:16 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58978 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726417AbgBGG2P (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 7 Feb 2020 01:28:15 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 760528F4932E45783125;
-        Fri,  7 Feb 2020 14:28:04 +0800 (CST)
-Received: from huawei.com (10.175.104.225) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.439.0; Fri, 7 Feb 2020
- 14:27:56 +0800
-From:   Shijie Luo <luoshijie1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <jack@suse.cz>, <luoshijie1@huawei.com>,
-        <zhangyi@huawei.com>
-Subject: [PATCH] ext4: add cond_resched() to ext4_protect_reserved_inode
-Date:   Fri, 7 Feb 2020 01:27:16 -0500
-Message-ID: <20200207062716.3068-1-luoshijie1@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.225]
-X-CFilter-Loop: Reflected
+        id S1727003AbgBGMIU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Feb 2020 07:08:20 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:57469 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726860AbgBGMIU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Feb 2020 07:08:20 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04396;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0TpMBOET_1581077279;
+Received: from localhost(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TpMBOET_1581077279)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 07 Feb 2020 20:08:13 +0800
+From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, jack@suse.cz,
+        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Subject: [PATCH] ext4: start to support iopoll method
+Date:   Fri,  7 Feb 2020 20:07:58 +0800
+Message-Id: <20200207120758.2411-1-xiaoguang.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When journal size is set too big by "mkfs.ext4 -J size=", or when
-we mount a crafted image to make journal inode->i_size too big,
-the loop, "while (i < num)", holds cpu too long. This could cause
-soft lockup.
+Since commit "b1b4705d54ab ext4: introduce direct I/O read using
+iomap infrastructure", we can easily make ext4 support iopoll
+method, just use iomap_dio_iopoll().
 
-[  529.357541] Call trace:
-[  529.357551]  dump_backtrace+0x0/0x198
-[  529.357555]  show_stack+0x24/0x30
-[  529.357562]  dump_stack+0xa4/0xcc
-[  529.357568]  watchdog_timer_fn+0x300/0x3e8
-[  529.357574]  __hrtimer_run_queues+0x114/0x358
-[  529.357576]  hrtimer_interrupt+0x104/0x2d8
-[  529.357580]  arch_timer_handler_virt+0x38/0x58
-[  529.357584]  handle_percpu_devid_irq+0x90/0x248
-[  529.357588]  generic_handle_irq+0x34/0x50
-[  529.357590]  __handle_domain_irq+0x68/0xc0
-[  529.357593]  gic_handle_irq+0x6c/0x150
-[  529.357595]  el1_irq+0xb8/0x140
-[  529.357599]  __ll_sc_atomic_add_return_acquire+0x14/0x20
-[  529.357668]  ext4_map_blocks+0x64/0x5c0 [ext4]
-[  529.357693]  ext4_setup_system_zone+0x330/0x458 [ext4]
-[  529.357717]  ext4_fill_super+0x2170/0x2ba8 [ext4]
-[  529.357722]  mount_bdev+0x1a8/0x1e8
-[  529.357746]  ext4_mount+0x44/0x58 [ext4]
-[  529.357748]  mount_fs+0x50/0x170
-[  529.357752]  vfs_kern_mount.part.9+0x54/0x188
-[  529.357755]  do_mount+0x5ac/0xd78
-[  529.357758]  ksys_mount+0x9c/0x118
-[  529.357760]  __arm64_sys_mount+0x28/0x38
-[  529.357764]  el0_svc_common+0x78/0x130
-[  529.357766]  el0_svc_handler+0x38/0x78
-[  529.357769]  el0_svc+0x8/0xc
-[  541.356516] watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [mount:18674]
-
-Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
 ---
- fs/ext4/block_validity.c | 1 +
+ fs/ext4/file.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index 1ee04e76bbe0..0a734ffb4310 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -207,6 +207,7 @@ static int ext4_protect_reserved_inode(struct super_block *sb,
- 		return PTR_ERR(inode);
- 	num = (inode->i_size + sb->s_blocksize - 1) >> sb->s_blocksize_bits;
- 	while (i < num) {
-+		cond_resched();
- 		map.m_lblk = i;
- 		map.m_len = num - i;
- 		n = ext4_map_blocks(NULL, inode, &map, 0);
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index 5f225881176b..0d624250a62b 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -872,6 +872,7 @@ const struct file_operations ext4_file_operations = {
+ 	.llseek		= ext4_llseek,
+ 	.read_iter	= ext4_file_read_iter,
+ 	.write_iter	= ext4_file_write_iter,
++	.iopoll		= iomap_dio_iopoll,
+ 	.unlocked_ioctl = ext4_ioctl,
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl	= ext4_compat_ioctl,
 -- 
-2.19.1
+2.17.2
 
