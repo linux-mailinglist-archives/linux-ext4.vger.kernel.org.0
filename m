@@ -2,179 +2,172 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AF1154FFB
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2020 02:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C1E1550DE
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2020 04:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbgBGBSA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Feb 2020 20:18:00 -0500
-Received: from smtp-out-so.shaw.ca ([64.59.136.137]:60362 "EHLO
-        smtp-out-so.shaw.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727341AbgBGBR7 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Feb 2020 20:17:59 -0500
-Received: from cabot.adilger.int ([70.77.216.213])
-        by shaw.ca with ESMTP
-        id zs9SiRcpt17ZDzs9WiUgmm; Thu, 06 Feb 2020 18:09:50 -0700
-X-Authority-Analysis: v=2.3 cv=ZsqT1OzG c=1 sm=1 tr=0
- a=BQvS1EmAg2ttxjPVUuc1UQ==:117 a=BQvS1EmAg2ttxjPVUuc1UQ==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=RPJ6JBhKAAAA:8 a=ySfo2T4IAAAA:8
- a=FaBPmBmokNLrZCp-OeEA:9 a=fa_un-3J20JGBB2Tu-mn:22 a=ZUkhVnNHqyo2at-WnAgH:22
-From:   Andreas Dilger <adilger@whamcloud.com>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@whamcloud.com>,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: [PATCH 9/9] misc: handle very large files with filefrag
-Date:   Thu,  6 Feb 2020 18:09:46 -0700
-Message-Id: <1581037786-62789-9-git-send-email-adilger@whamcloud.com>
-X-Mailer: git-send-email 1.8.0
-In-Reply-To: <1581037786-62789-1-git-send-email-adilger@whamcloud.com>
-References: <1581037786-62789-1-git-send-email-adilger@whamcloud.com>
-X-CMAE-Envelope: MS4wfCHFKYyVwTbMSdzILXV/ZzhITSbAJ1orY4M4amqh9Q6vQun2CxmuFZyZXL97gNl2y2ZZiJKkbNJ0ZfSuXxHFdVuxkHQCHGLfB86PTPP1JDBUexb7fH6+
- /OdoHj9ml1MEWVZ+Yehw4JwRhAfgvv01JkbFxqV91muDdZDjnkrtbMlKQ+ivUEMfIjgjUlVPTd4cMzxltj/fYESJ5IQxCGnTjWYsZiXzxAObojX2i9eyBrGK
- UqqCp6jX2MjkZPSD/GRkumZGSdqZOgwvZ6UOzUzRw8A=
+        id S1726755AbgBGDNb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Feb 2020 22:13:31 -0500
+Received: from MAIL.13thfloor.at ([213.145.232.33]:58376 "EHLO
+        MAIL.13thfloor.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726597AbgBGDNb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Feb 2020 22:13:31 -0500
+Received: by mail.13thfloor.at (Postfix, from userid 1001)
+        id 0B9D416309; Fri,  7 Feb 2020 04:13:26 +0100 (CET)
+Date:   Fri, 7 Feb 2020 04:13:25 +0100
+From:   Herbert Poetzl <herbert@13thfloor.at>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: EXT4: unsupported inode size: 4096
+Message-ID: <20200207031325.GA27737@MAIL.13thfloor.at>
+References: <B9D2B0DE-EAD0-461B-9BA3-E55ADDE38F72@dilger.ca>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <B9D2B0DE-EAD0-461B-9BA3-E55ADDE38F72@dilger.ca>
+User-Agent: Mutt/1.5.11
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Avoid overflowing the column-width calc printing files over 4B blocks.
+On Thu, Feb 06, 2020 at 10:55:04PM +0000, Andreas Dilger wrote:
 
-Document the [KMG] suffixes for the "-b <blocksize>" option.
+> --Apple-Mail=_7CDF64A9-C7FD-4E08-9AB4-1843C57439EC
+> Content-Transfer-Encoding: 7bit
+> Content-Type: text/plain;
+> 	charset=us-ascii
 
-The blocksize is limited to at most 1GiB blocksize to avoid shifting
-all extents down to zero GB in size.  Even the use of 1GB blocksize
-is unlikely, but non-ext4 filesystems may use multi-GB extents.
+> On Feb 6, 2020, at 8:35 AM, Herbert Poetzl <herbert@13thfloor.at> wrote:
 
-Signed-off-by: Andreas Dilger <adilger@dilger.ca>
-Lustre-bug-id: https://jira.whamcloud.com/browse/LU-13197
----
- misc/filefrag.8.in |  4 ++--
- misc/filefrag.c    | 36 ++++++++++++++++++++++++------------
- 2 files changed, 26 insertions(+), 14 deletions(-)
+>> I recently updated one of my servers from an older 4.19
+>> Linux kernel to the latest 5.5 kernel mainly because of
+>> the many filesystem improvements, just to find that some
+>> of my filesystems simply cannot be mounted anymore.
 
-diff --git a/misc/filefrag.8.in b/misc/filefrag.8.in
-index 5292672..4b89e72 100644
---- a/misc/filefrag.8.in
-+++ b/misc/filefrag.8.in
-@@ -33,8 +33,8 @@ testing purposes.
- .BI \-b blocksize
- Use
- .I blocksize
--in bytes for output instead of the filesystem blocksize.
--For compatibility with earlier versions of
-+in bytes, or with [KMG] suffix, up to 1GB for output instead of the
-+filesystem blocksize.  For compatibility with earlier versions of
- .BR filefrag ,
- if
- .I blocksize
-diff --git a/misc/filefrag.c b/misc/filefrag.c
-index 1eec146..032535f 100644
---- a/misc/filefrag.c
-+++ b/misc/filefrag.c
-@@ -53,7 +53,7 @@ extern int optind;
- #include <ext2fs/fiemap.h>
- 
- int verbose = 0;
--int blocksize;		/* Use specified blocksize (default 1kB) */
-+unsigned int blocksize;	/* Use specified blocksize (default 1kB) */
- int sync_file = 0;	/* fsync file before getting the mapping */
- int xattr_map = 0;	/* get xattr mapping */
- int force_bmap;	/* force use of FIBMAP instead of FIEMAP */
-@@ -73,7 +73,7 @@ const char *hex_fmt = "%4d: %*llx..%*llx: %*llx..%*llx: %6llx: %s\n";
- #define	EXT4_EXTENTS_FL			0x00080000 /* Inode uses extents */
- #define	EXT3_IOC_GETFLAGS		_IOR('f', 1, long)
- 
--static int int_log2(int arg)
-+static int ulong_log2(unsigned long arg)
- {
- 	int     l = 0;
- 
-@@ -85,7 +85,7 @@ static int int_log2(int arg)
- 	return l;
- }
- 
--static int int_log10(unsigned long long arg)
-+static int ulong_log10(unsigned long long arg)
- {
- 	int     l = 0;
- 
-@@ -452,17 +452,17 @@ static int frag_report(const char *filename)
- 	}
- 	last_device = st.st_dev;
- 
--	width = int_log10(fsinfo.f_blocks);
-+	width = ulong_log10(fsinfo.f_blocks);
- 	if (width > physical_width)
- 		physical_width = width;
- 
- 	numblocks = (st.st_size + blksize - 1) / blksize;
- 	if (blocksize != 0)
--		blk_shift = int_log2(blocksize);
-+		blk_shift = ulong_log2(blocksize);
- 	else
--		blk_shift = int_log2(blksize);
-+		blk_shift = ulong_log2(blksize);
- 
--	width = int_log10(numblocks);
-+	width = ulong_log10(numblocks);
- 	if (width > logical_width)
- 		logical_width = width;
- 	if (verbose)
-@@ -517,7 +517,7 @@ out_close:
- 
- static void usage(const char *progname)
- {
--	fprintf(stderr, "Usage: %s [-b{blocksize}] [-BeksvxX] file ...\n",
-+	fprintf(stderr, "Usage: %s [-b{blocksize}[KMG]] [-BeksvxX] file ...\n",
- 		progname);
- 	exit(1);
- }
-@@ -535,7 +535,9 @@ int main(int argc, char**argv)
- 		case 'b':
- 			if (optarg) {
- 				char *end;
--				blocksize = strtoul(optarg, &end, 0);
-+				unsigned long val;
-+
-+				val = strtoul(optarg, &end, 0);
- 				if (end) {
- #if __GNUC_PREREQ (7, 0)
- #pragma GCC diagnostic push
-@@ -544,15 +546,15 @@ int main(int argc, char**argv)
- 					switch (end[0]) {
- 					case 'g':
- 					case 'G':
--						blocksize *= 1024;
-+						val *= 1024;
- 						/* fall through */
- 					case 'm':
- 					case 'M':
--						blocksize *= 1024;
-+						val *= 1024;
- 						/* fall through */
- 					case 'k':
- 					case 'K':
--						blocksize *= 1024;
-+						val *= 1024;
- 						break;
- 					default:
- 						break;
-@@ -561,6 +563,16 @@ int main(int argc, char**argv)
- #pragma GCC diagnostic pop
- #endif
- 				}
-+				/* Specifying too large a blocksize will just
-+				 * shift all extents down to zero length. Even
-+				 * 1GB is questionable, but caveat emptor. */
-+				if (val > 1024 * 1024 * 1024) {
-+					fprintf(stderr,
-+						"%s: blocksize %lu over 1GB\n",
-+						argv[0], val);
-+					usage(argv[0]);
-+				}
-+				blocksize = val;
- 			} else { /* Allow -b without argument for compat. Remove
- 				  * this eventually so "-b {blocksize}" works */
- 				fprintf(stderr, "%s: -b needs a blocksize "
--- 
-1.8.0
+>> The kernel reports: EXT4-fs: unsupported inode size: 4096
 
+>> Here is a simple test to reproduce the issue:
+
+>>  truncate --size 16G data
+>>  losetup /dev/loop0 data
+>>  mkfs.ext4 -I 4096 /dev/loop0
+>>  mount /dev/loop0 /media
+
+> Does this still fail if you also specify "-b 4096"?
+
+mkfs.ext4 -b 4096 -I 4096 /dev/loop0
+mount /dev/loop0 /media
+
+[66723.456449] EXT4-fs (loop0): unsupported inode size: 4096
+
+>> [33700.299204] EXT4-fs (loop0): unsupported inode size: 4096
+
+> It looks like this is a bug in the code?  This check is using
+
+> 3641:	blocksize = sb_min_blocksize(sb, EXT4_MIN_BLOCK_SIZE);
+
+> 3782:		if ((sbi->s_inode_size < EXT4_GOOD_OLD_INODE_SIZE) ||
+> 3783:		    (!is_power_of_2(sbi->s_inode_size)) ||
+> 3784:		    (sbi->s_inode_size > blocksize)) {
+> 3785:			ext4_msg(sb, KERN_ERR,
+> 3786:			       "unsupported inode size: %d",
+> 3787:			       sbi->s_inode_size);
+> 3788:			goto failed_mount;
+> 3789:		}
+
+> which is set from the hardware sector size of the device, while
+> the ext4 filesystem blocksize is not set until later during
+> mount:
+
+> 3991:	blocksize = BLOCK_SIZE << le32_to_cpu(es->s_log_block_size);
+
+> It looks like this was just introduced in commitv5.4-rc3-96-g9803387 
+> "ext4: validate the debug_want_extra_isize mount option at 
+> parse time" so it is a relatively recent change, and looks 
+> to be unintentional. 
+
+> This check was previously on line 4033, after "blocksize" was
+> updated from the superblock, but it wasn't noticed because it
+> works for all "normal" filesystems.
+
+> I suspect nobody has noticed because having an inode *size* of
+> 4KB is very unusual, while having an inode *ratio* of 4KB is
+> more normal (one 256-byte inode for each 4096-byte block in the
+> filesystem). Was the use of "-I 4096" intentional, or did you
+> mean to use "-i 4096"?
+
+> The only reason to have a 4096-byte inode *size* is if you have a
+> ton of xattrs for every file and/or you have tiny files (< 3.5KB)
+> and you are using inline data.
+
+Indeed the filesystems in question have a huge number of small
+files with lots and lots of xattrs for each file.
+
+IIRC, back when I created them, I ran some tests iterating 
+over various block and group sizes and simply chose the one
+with the best performance over a given testset.
+
+>> Note: this works perfectly fine under 4.19.84 and 4.14.145.
+
+>> My guess so far is that somehow the ext4 filesystem now
+>> checks that the inode size is not larger than the logical
+>> block size of the underlying block device.
+
+>>  # cat /sys/block/loop0/queue/logical_block_size
+>>  512
+
+> Yes, this appears to be the case.  We have LOT of filesystems that
+> are using 1024-byte inodes, but I suspect that most of them are on
+> devices that report 4096-byte sector size and/or are running older
+> kernels that have not included this bug.
+
+>> Any ideas how to address this problem and get the file-
+>> systems to mount under Linux 5.5?
+
+> Probably the easiest, and likely correct, fix is to move the update
+> of "blocksize" from line 3991: up to before this check.  
+
+> There are a bunch of sanity checks that should also be moved
+> for a proper patch, but the one-line fix is enough to get your
+> filesystems mounting again.
+
+Yes, I can confirm that moving line 3991 before the check
+fixes the issue and the test as well as the filesystem
+mount passes without problems.
+
+Thanks a bunch for the quick and accurate information!
+Appreciated!
+
+> Cheers, Andreas
+
+All the best,
+Herbert
+
+
+> --Apple-Mail=_7CDF64A9-C7FD-4E08-9AB4-1843C57439EC
+> Content-Transfer-Encoding: 7bit
+> Content-Disposition: attachment;
+> 	filename=signature.asc
+> Content-Type: application/pgp-signature;
+> 	name=signature.asc
+> Content-Description: Message signed with OpenPGP
+
+> -----BEGIN PGP SIGNATURE-----
+> Comment: GPGTools - http://gpgtools.org
+
+> iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl48mUgACgkQcqXauRfM
+> H+ASGg/8DycAju0NbXzVaKiOvovbvjZRyJq7nF6M+KBJevm0928uLjg8qkWvIdXp
+> Jj1AM93mikp4A/BULggBBpa8wOCIG9Z7bx1tATaQrvQh/3cI5KuWd7ssfTR9INWJ
+> yzgZ1Y/1vjwiU/YD1i922CK4M3sEwmB5fzrNC/H9HruwHpuMe0ek44lNmsuNPjGh
+> c+hBkTFlmOPF9n9bW4mr2Da/v1BA+ffSI2NJW3TejR7k6UvvNKWpLrbzheMSMVCf
+> y5xuD9mWuh/1FL77tdDfDVbPo6VRS6I1JBoz14EUl9mz6IrCWulVgIIi/7NzRviF
+> onDLo/t3pA/2Yx5G+AAVsIM9tClXXGbNT4WquU2vrO9CdnuRT6rr1pc8vKCz7lch
+> 2US+UhmorTVVd/NeXQMxT2i6NPNbRsoaBqxP5TcLAtp8b5aDAUCUSAHyIEWtoydm
+> GRPRfXZJauqBYDffGdBWsvsMmepceMC4CMiezfoIWBbfnMfH8wVI+D3qEO6gLDkr
+> sNm1/dl/7BfIFjF3ndItsgKTVCGIiFgQ86juEDwDwO/+UB9O9K7nngoEe0ZLt/sy
+> Kn7RLdkOGR689vc/1WArbM31HntWbp88xTe3s2tPlWv4r9hVZebZXFIAYrwvqviS
+> NrZwqOyjeAmlHWJcqaXQS7kV6tYDpT6Je7weNgZmQA1Xc7Ig12o=
+> =rKs+
+> -----END PGP SIGNATURE-----
+
+> --Apple-Mail=_7CDF64A9-C7FD-4E08-9AB4-1843C57439EC-
