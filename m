@@ -2,370 +2,349 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8F1154FF4
-	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2020 02:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB580154FF9
+	for <lists+linux-ext4@lfdr.de>; Fri,  7 Feb 2020 02:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbgBGBR4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 6 Feb 2020 20:17:56 -0500
-Received: from smtp-out-so.shaw.ca ([64.59.136.138]:60352 "EHLO
+        id S1727379AbgBGBR6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 6 Feb 2020 20:17:58 -0500
+Received: from smtp-out-so.shaw.ca ([64.59.136.139]:60360 "EHLO
         smtp-out-so.shaw.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726597AbgBGBR4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Feb 2020 20:17:56 -0500
-X-Greylist: delayed 487 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 Feb 2020 20:17:55 EST
+        with ESMTP id S1726997AbgBGBR6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 6 Feb 2020 20:17:58 -0500
 Received: from cabot.adilger.int ([70.77.216.213])
         by shaw.ca with ESMTP
-        id zs9SiRcpt17ZDzs9TiUglz; Thu, 06 Feb 2020 18:09:47 -0700
+        id zs9SiRcpt17ZDzs9UiUgm7; Thu, 06 Feb 2020 18:09:48 -0700
 X-Authority-Analysis: v=2.3 cv=ZsqT1OzG c=1 sm=1 tr=0
- a=BQvS1EmAg2ttxjPVUuc1UQ==:117 a=BQvS1EmAg2ttxjPVUuc1UQ==:17 a=ySfo2T4IAAAA:8
- a=lB0dNpNiAAAA:8 a=C-CyL1Y4a80PmgHQpMUA:9 a=ttwSxyGnxULQJk_7:21
- a=vGe2sljOHrG3OYsp:21 a=ZUkhVnNHqyo2at-WnAgH:22 a=c-ZiYqmG3AbHTdtsH08C:22
+ a=BQvS1EmAg2ttxjPVUuc1UQ==:117 a=BQvS1EmAg2ttxjPVUuc1UQ==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=RPJ6JBhKAAAA:8 a=lB0dNpNiAAAA:8
+ a=ySfo2T4IAAAA:8 a=n5g6tTv5hIqwu9bi9qwA:9 a=SxFnjEeBbgVWZi-6:21
+ a=ScjRz5q2cr_2IdMi:21 a=fa_un-3J20JGBB2Tu-mn:22 a=c-ZiYqmG3AbHTdtsH08C:22
+ a=ZUkhVnNHqyo2at-WnAgH:22
 From:   Andreas Dilger <adilger@whamcloud.com>
 To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@whamcloud.com>
-Subject: [PATCH 1/9] e2fsck: fix e2fsck_allocate_memory() overflow
-Date:   Thu,  6 Feb 2020 18:09:38 -0700
-Message-Id: <1581037786-62789-1-git-send-email-adilger@whamcloud.com>
+Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@whamcloud.com>,
+        Andreas Dilger <adilger@dilger.ca>
+Subject: [PATCH 2/9] e2fsck: use proper types for variables
+Date:   Thu,  6 Feb 2020 18:09:39 -0700
+Message-Id: <1581037786-62789-2-git-send-email-adilger@whamcloud.com>
 X-Mailer: git-send-email 1.8.0
+In-Reply-To: <1581037786-62789-1-git-send-email-adilger@whamcloud.com>
+References: <1581037786-62789-1-git-send-email-adilger@whamcloud.com>
 X-CMAE-Envelope: MS4wfLK7gBrgKJNGOHfX1CHZbneT2U9JJA3dxlDPySRMNgC2ASvzZ47PYyF9unL9nZncZPi3XguckEEosvJM1QBdXWH3UzpF+FNyFUh+p3zQClhbuVUyWMWj
- r4758mVEYxSdKoglu+n2OEZjyK4CbDjP8BgVE2CiErEqgEvqCKDIlipahXeqVSWRmmPttdLURfZmT1slREN/D8kISyKXnlJ5rjNuZjytzuYrMBC7t/tzAVOX
- DMYVjjJBp0FP4kYY8PSUXg==
+ r4758mVEYxSdKpNsFB9J54Oa2hH4/lv2QtJ178JLy/zOi12ApnAxVQkc3jmnwubQqBTwlUkfh1B9fPXMTZNStJXjLBwW/FTw30FeTKRnGg93NXUX+0kUfvAx
+ 8osttYS6SEueqd3b00Q1dEDawpjbTIj2tWq0hXjYEVw=
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-e2fsck_allocate_memory() takes an "unsigned int size" argument, which
-will overflow for allocations above 4GB.  This happens for dir_info
-and dx_dir_info arrays when there are more than 350M directories in a
-filesystem, and for the dblist array above 180M directories.
+Use ext2_ino_t instead of ino_t for referencing inode numbers.
+Use loff_t for for file offsets, and dgrp_t for group numbers.
 
-There is also a risk of overflow during the binary search in both
-e2fsck_get_dir_info() and e2fsck_get_dx_dir_info() when the midpoint
-of the array is calculated, if there would be more than 2B directories
-in the filesystem and working above the half way point.
+Cast products to ssize_t before multiplication to avoid overflow.
 
-Also, in some places inode numbers are "int" instead of "ext2_ino_t",
-which can also cause problems with the array size calculations, and
-makes it hard to identify where inode numbers are used.
-
-Fix e2fsck_allocate_memory() to take an "unsigned long" argument to
-match ext2fs_get_mem(), so that it can do single memory allocations
-over 4GB.
-
-Fix e2fsck_get_dir_info() and e2fsck_get_dx_dir_info() to temporarily
-use an unsigned long long value to calculate the midpoint (which will
-always fit into an ext2_ino_t again afterward).
-
-Change variables that hold inode numbers to be ext2_ino_t, and print
-them as unsigned values instead of printing negative inode numbers.
-
-Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
+Signed-off-by: Andreas Dilger <adilger@dilger.ca>
 Reviewed-by: Shilong Wang <wshilong@ddn.com>
 Lustre-bug-id: https://jira.whamcloud.com/browse/LU-13197
 ---
- e2fsck/dirinfo.c    | 37 +++++++++++++++++++------------------
- e2fsck/dx_dirinfo.c | 11 ++++++-----
- e2fsck/e2fsck.h     |  8 ++++----
- e2fsck/logfile.c    |  2 +-
- e2fsck/pass2.c      | 11 ++++++-----
- e2fsck/util.c       |  7 +++----
- 6 files changed, 39 insertions(+), 37 deletions(-)
+ e2fsck/dx_dirinfo.c |  6 +++---
+ e2fsck/e2fsck.h     | 11 ++++++-----
+ e2fsck/rehash.c     |  2 +-
+ e2fsck/super.c      |  2 +-
+ lib/ext2fs/imager.c | 34 +++++++++++++++++++---------------
+ misc/create_inode.c |  2 +-
+ misc/dumpe2fs.c     |  2 +-
+ misc/e2fuzz.c       |  8 ++++----
+ misc/e2image.c      |  2 +-
+ misc/tune2fs.c      |  2 +-
+ 10 files changed, 38 insertions(+), 33 deletions(-)
 
-diff --git a/e2fsck/dirinfo.c b/e2fsck/dirinfo.c
-index cceadac..49d624c 100644
---- a/e2fsck/dirinfo.c
-+++ b/e2fsck/dirinfo.c
-@@ -17,8 +17,8 @@
- #include <ext2fs/tdb.h>
- 
- struct dir_info_db {
--	int		count;
--	int		size;
-+	ext2_ino_t	count;
-+	ext2_ino_t	size;
- 	struct dir_info *array;
- 	struct dir_info *last_lookup;
- #ifdef CONFIG_TDB
-@@ -28,7 +28,7 @@ struct dir_info_db {
- };
- 
- struct dir_info_iter {
--	int	i;
-+	ext2_ino_t	i;
- #ifdef CONFIG_TDB
- 	TDB_DATA	tdb_iter;
- #endif
-@@ -46,7 +46,7 @@ static void e2fsck_put_dir_info(e2fsck_t ctx, struct dir_info *dir);
- static void setup_tdb(e2fsck_t ctx, ext2_ino_t num_dirs)
- {
- 	struct dir_info_db	*db = ctx->dir_info;
--	unsigned int		threshold;
-+	ext2_ino_t		threshold;
- 	errcode_t		retval;
- 	mode_t			save_umask;
- 	char			*tdb_dir, uuid[40];
-@@ -130,12 +130,12 @@ static void setup_db(e2fsck_t ctx)
- void e2fsck_add_dir_info(e2fsck_t ctx, ext2_ino_t ino, ext2_ino_t parent)
- {
- 	struct dir_info		*dir, *old_array;
--	int			i, j;
-+	ext2_ino_t		i, j;
- 	errcode_t		retval;
- 	unsigned long		old_size;
- 
- #ifdef DIRINFO_DEBUG
--	printf("add_dir_info for inode (%lu, %lu)...\n", ino, parent);
-+	printf("add_dir_info for inode (%u, %u)...\n", ino, parent);
- #endif
- 	if (!ctx->dir_info)
- 		setup_db(ctx);
-@@ -149,7 +149,7 @@ void e2fsck_add_dir_info(e2fsck_t ctx, ext2_ino_t ino, ext2_ino_t parent)
- 					   &ctx->dir_info->array);
- 		if (retval) {
- 			fprintf(stderr, "Couldn't reallocate dir_info "
--				"structure to %d entries\n",
-+				"structure to %u entries\n",
- 				ctx->dir_info->size);
- 			fatal_error(ctx, 0);
- 			ctx->dir_info->size -= 10;
-@@ -204,13 +204,13 @@ void e2fsck_add_dir_info(e2fsck_t ctx, ext2_ino_t ino, ext2_ino_t parent)
- static struct dir_info *e2fsck_get_dir_info(e2fsck_t ctx, ext2_ino_t ino)
- {
- 	struct dir_info_db	*db = ctx->dir_info;
--	int			low, high, mid;
-+	ext2_ino_t low, high, mid;
- 
- 	if (!db)
- 		return 0;
- 
- #ifdef DIRINFO_DEBUG
--	printf("e2fsck_get_dir_info %d...", ino);
-+	printf("e2fsck_get_dir_info %u...", ino);
- #endif
- 
- #ifdef CONFIG_TDB
-@@ -235,7 +235,7 @@ static struct dir_info *e2fsck_get_dir_info(e2fsck_t ctx, ext2_ino_t ino)
- 		ret_dir_info.dotdot = buf->dotdot;
- 		ret_dir_info.parent = buf->parent;
- #ifdef DIRINFO_DEBUG
--		printf("(%d,%d,%d)\n", ino, buf->dotdot, buf->parent);
-+		printf("(%u,%u,%u)\n", ino, buf->dotdot, buf->parent);
- #endif
- 		free(data.dptr);
- 		return &ret_dir_info;
-@@ -246,10 +246,10 @@ static struct dir_info *e2fsck_get_dir_info(e2fsck_t ctx, ext2_ino_t ino)
- 		return db->last_lookup;
- 
- 	low = 0;
--	high = ctx->dir_info->count-1;
-+	high = ctx->dir_info->count - 1;
- 	if (ino == ctx->dir_info->array[low].ino) {
- #ifdef DIRINFO_DEBUG
--		printf("(%d,%d,%d)\n", ino,
-+		printf("(%u,%u,%u)\n", ino,
- 		       ctx->dir_info->array[low].dotdot,
- 		       ctx->dir_info->array[low].parent);
- #endif
-@@ -257,7 +257,7 @@ static struct dir_info *e2fsck_get_dir_info(e2fsck_t ctx, ext2_ino_t ino)
- 	}
- 	if (ino == ctx->dir_info->array[high].ino) {
- #ifdef DIRINFO_DEBUG
--		printf("(%d,%d,%d)\n", ino,
-+		printf("(%u,%u,%u)\n", ino,
- 		       ctx->dir_info->array[high].dotdot,
- 		       ctx->dir_info->array[high].parent);
- #endif
-@@ -265,12 +265,13 @@ static struct dir_info *e2fsck_get_dir_info(e2fsck_t ctx, ext2_ino_t ino)
- 	}
- 
- 	while (low < high) {
--		mid = (low+high)/2;
-+		/* sum may overflow, but result will fit into mid again */
-+		mid = (unsigned long long)(low + high) / 2;
- 		if (mid == low || mid == high)
- 			break;
- 		if (ino == ctx->dir_info->array[mid].ino) {
- #ifdef DIRINFO_DEBUG
--			printf("(%d,%d,%d)\n", ino,
-+			printf("(%u,%u,%u)\n", ino,
- 			       ctx->dir_info->array[mid].dotdot,
- 			       ctx->dir_info->array[mid].parent);
- #endif
-@@ -294,7 +295,7 @@ static void e2fsck_put_dir_info(e2fsck_t ctx EXT2FS_NO_TDB_UNUSED,
- #endif
- 
- #ifdef DIRINFO_DEBUG
--	printf("e2fsck_put_dir_info (%d, %d, %d)...", dir->ino, dir->dotdot,
-+	printf("e2fsck_put_dir_info (%u, %u, %u)...", dir->ino, dir->dotdot,
- 	       dir->parent);
- #endif
- 
-@@ -329,7 +330,7 @@ void e2fsck_free_dir_info(e2fsck_t ctx)
- 			if (unlink(ctx->dir_info->tdb_fn) < 0)
- 				com_err("e2fsck_free_dir_info", errno,
- 					_("while freeing dir_info tdb file"));
--			free(ctx->dir_info->tdb_fn);
-+			ext2fs_free_mem(&ctx->dir_info->tdb_fn);
- 		}
- #endif
- 		if (ctx->dir_info->array)
-@@ -412,7 +413,7 @@ struct dir_info *e2fsck_dir_info_iter(e2fsck_t ctx, struct dir_info_iter *iter)
- 		return 0;
- 
- #ifdef DIRINFO_DEBUG
--	printf("iter(%d, %d, %d)...", ctx->dir_info->array[iter->i].ino,
-+	printf("iter(%u, %u, %u)...", ctx->dir_info->array[iter->i].ino,
- 	       ctx->dir_info->array[iter->i].dotdot,
- 	       ctx->dir_info->array[iter->i].parent);
- #endif
 diff --git a/e2fsck/dx_dirinfo.c b/e2fsck/dx_dirinfo.c
-index c0b0e9a..89672b7 100644
+index 89672b7..f0f6084 100644
 --- a/e2fsck/dx_dirinfo.c
 +++ b/e2fsck/dx_dirinfo.c
-@@ -17,7 +17,7 @@ void e2fsck_add_dx_dir(e2fsck_t ctx, ext2_ino_t ino, struct ext2_inode *inode,
- 		       int num_blocks)
- {
- 	struct dx_dir_info *dir;
--	int		i, j;
-+	ext2_ino_t	i, j;
- 	errcode_t	retval;
- 	unsigned long	old_size;
- 
-@@ -41,7 +41,7 @@ void e2fsck_add_dx_dir(e2fsck_t ctx, ext2_ino_t ino, struct ext2_inode *inode,
- 					   &ctx->dx_dir_info);
- 		if (retval) {
- 			fprintf(stderr, "Couldn't reallocate dx_dir_info "
--				"structure to %d entries\n",
-+				"structure to %u entries\n",
- 				ctx->dx_dir_info_size);
- 			fatal_error(ctx, 0);
- 			ctx->dx_dir_info_size -= 10;
-@@ -86,7 +86,7 @@ void e2fsck_add_dx_dir(e2fsck_t ctx, ext2_ino_t ino, struct ext2_inode *inode,
+@@ -138,7 +138,7 @@ void e2fsck_free_dx_dir_info(e2fsck_t ctx)
+ /*
+  * Return the count of number of directories in the dx_dir_info structure
   */
- struct dx_dir_info *e2fsck_get_dx_dir_info(e2fsck_t ctx, ext2_ino_t ino)
+-int e2fsck_get_num_dx_dirinfo(e2fsck_t ctx)
++ext2_ino_t e2fsck_get_num_dx_dirinfo(e2fsck_t ctx)
  {
--	int	low, high, mid;
-+	ext2_ino_t low, high, mid;
- 
- 	low = 0;
- 	high = ctx->dx_dir_info_count-1;
-@@ -98,7 +98,8 @@ struct dx_dir_info *e2fsck_get_dx_dir_info(e2fsck_t ctx, ext2_ino_t ino)
- 		return &ctx->dx_dir_info[high];
- 
- 	while (low < high) {
--		mid = (low+high)/2;
-+		/* sum may overflow, but result will fit into mid again */
-+		mid = (unsigned long long)(low + high) / 2;
- 		if (mid == low || mid == high)
- 			break;
- 		if (ino == ctx->dx_dir_info[mid].ino)
-@@ -116,8 +117,8 @@ struct dx_dir_info *e2fsck_get_dx_dir_info(e2fsck_t ctx, ext2_ino_t ino)
+ 	return ctx->dx_dir_info_count;
+ }
+@@ -146,10 +146,10 @@ int e2fsck_get_num_dx_dirinfo(e2fsck_t ctx)
+ /*
+  * A simple interator function
   */
- void e2fsck_free_dx_dir_info(e2fsck_t ctx)
+-struct dx_dir_info *e2fsck_dx_dir_info_iter(e2fsck_t ctx, int *control)
++struct dx_dir_info *e2fsck_dx_dir_info_iter(e2fsck_t ctx, ext2_ino_t *control)
  {
--	int	i;
- 	struct dx_dir_info *dir;
-+	ext2_ino_t i;
+ 	if (*control >= ctx->dx_dir_info_count)
+ 		return 0;
  
- 	if (ctx->dx_dir_info) {
- 		dir = ctx->dx_dir_info;
+-	return(ctx->dx_dir_info + (*control)++);
++	return ctx->dx_dir_info + (*control)++;
+ }
 diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
-index 2d359b3..253f8b5 100644
+index 253f8b5..5e7db42 100644
 --- a/e2fsck/e2fsck.h
 +++ b/e2fsck/e2fsck.h
-@@ -318,9 +318,9 @@ struct e2fsck_struct {
- 	/*
- 	 * Indexed directory information
- 	 */
--	int		dx_dir_info_count;
--	int		dx_dir_info_size;
--	struct dx_dir_info *dx_dir_info;
-+	ext2_ino_t		dx_dir_info_count;
-+	ext2_ino_t		dx_dir_info_size;
-+	struct dx_dir_info	*dx_dir_info;
+@@ -235,12 +235,12 @@ struct e2fsck_struct {
+ 	char	*problem_log_fn;
+ 	int	flags;		/* E2fsck internal flags */
+ 	int	options;
+-	int	blocksize;	/* blocksize */
++	unsigned blocksize;	/* blocksize */
+ 	blk64_t	use_superblock;	/* sb requested by user */
+ 	blk64_t	superblock;	/* sb used to open fs */
+ 	blk64_t	num_blocks;	/* Total number of blocks */
+-	blk64_t free_blocks;
+-	ino_t	free_inodes;
++	blk64_t	free_blocks;
++	ext2_ino_t free_inodes;
+ 	int	mount_flags;
+ 	int	openfs_flags;
+ 	blkid_cache blkid;	/* blkid cache */
+@@ -478,8 +478,9 @@ extern void e2fsck_add_dx_dir(e2fsck_t ctx, ext2_ino_t ino,
+ 			      struct ext2_inode *inode, int num_blocks);
+ extern struct dx_dir_info *e2fsck_get_dx_dir_info(e2fsck_t ctx, ext2_ino_t ino);
+ extern void e2fsck_free_dx_dir_info(e2fsck_t ctx);
+-extern int e2fsck_get_num_dx_dirinfo(e2fsck_t ctx);
+-extern struct dx_dir_info *e2fsck_dx_dir_info_iter(e2fsck_t ctx, int *control);
++extern ext2_ino_t e2fsck_get_num_dx_dirinfo(e2fsck_t ctx);
++extern struct dx_dir_info *e2fsck_dx_dir_info_iter(e2fsck_t ctx,
++						   ext2_ino_t *control);
  
- 	/*
- 	 * Directories to hash
-@@ -595,7 +595,7 @@ int check_backup_super_block(e2fsck_t ctx);
- void check_resize_inode(e2fsck_t ctx);
+ /* ea_refcount.c */
+ typedef __u64 ea_key_t;
+diff --git a/e2fsck/rehash.c b/e2fsck/rehash.c
+index a5fc1be..c9d667b 100644
+--- a/e2fsck/rehash.c
++++ b/e2fsck/rehash.c
+@@ -83,7 +83,7 @@ struct fill_dir_struct {
+ 	int max_array, num_array;
+ 	unsigned int dir_size;
+ 	int compress;
+-	ino_t parent;
++	ext2_ino_t parent;
+ 	ext2_ino_t dir;
+ };
  
- /* util.c */
--extern void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned int size,
-+extern void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned long size,
- 				    const char *description);
- extern int ask(e2fsck_t ctx, const char * string, int def);
- extern int ask_yn(e2fsck_t ctx, const char * string, int def);
-diff --git a/e2fsck/logfile.c b/e2fsck/logfile.c
-index 3eeefd1..63e9a12 100644
---- a/e2fsck/logfile.c
-+++ b/e2fsck/logfile.c
-@@ -353,7 +353,7 @@ void set_up_logging(e2fsck_t ctx)
- 					    ctx->problem_log_fn);
- }
- #else
--void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned int size,
-+void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned long size,
- 			     const char *description)
+diff --git a/e2fsck/super.c b/e2fsck/super.c
+index e5932be..3aa1e87 100644
+--- a/e2fsck/super.c
++++ b/e2fsck/super.c
+@@ -595,7 +595,7 @@ void check_super_block(e2fsck_t ctx)
+ 	blk64_t	should_be;
+ 	struct problem_context	pctx;
+ 	blk64_t	free_blocks = 0;
+-	ino_t	free_inodes = 0;
++	ext2_ino_t free_inodes = 0;
+ 	int     csum_flag, clear_test_fs_flag;
+ 
+ 	inodes_per_block = EXT2_INODES_PER_BLOCK(fs->super);
+diff --git a/lib/ext2fs/imager.c b/lib/ext2fs/imager.c
+index 7fd06f7..fee27ac 100644
+--- a/lib/ext2fs/imager.c
++++ b/lib/ext2fs/imager.c
+@@ -61,19 +61,20 @@ static int check_zero_block(char *buf, int blocksize)
+ 
+ errcode_t ext2fs_image_inode_write(ext2_filsys fs, int fd, int flags)
  {
- 	void *ret;
-diff --git a/e2fsck/pass2.c b/e2fsck/pass2.c
-index 8b40e93..5c3f7b8 100644
---- a/e2fsck/pass2.c
-+++ b/e2fsck/pass2.c
-@@ -131,7 +131,8 @@ void e2fsck_pass2(e2fsck_t ctx)
- 	struct dx_dir_info	*dx_dir;
- 	struct dx_dirblock_info	*dx_db;
- 	int			b;
--	int			i, depth;
-+	ext2_ino_t		i;
-+	int			depth;
- 	problem_t		code;
- 	int			bad_dir;
- 	int (*check_dir_func)(ext2_filsys fs,
-@@ -586,10 +587,10 @@ static void parse_int_node(ext2_filsys fs,
- #ifdef DX_DEBUG
- 		printf("Root node dump:\n");
- 		printf("\t Reserved zero: %u\n", root->reserved_zero);
--		printf("\t Hash Version: %d\n", root->hash_version);
--		printf("\t Info length: %d\n", root->info_length);
--		printf("\t Indirect levels: %d\n", root->indirect_levels);
--		printf("\t Flags: %d\n", root->unused_flags);
-+		printf("\t Hash Version: %u\n", root->hash_version);
-+		printf("\t Info length: %u\n", root->info_length);
-+		printf("\t Indirect levels: %u\n", root->indirect_levels);
-+		printf("\t Flags: %x\n", root->unused_flags);
+-	unsigned int	group, left, c, d;
++	dgrp_t		group;
++	ssize_t		left, c, d;
+ 	char		*buf, *cp;
+ 	blk64_t		blk;
+ 	ssize_t		actual;
+ 	errcode_t	retval;
+-	off_t		r;
++	loff_t		r;
+ 
+ 	buf = malloc(fs->blocksize * BUF_BLOCKS);
+ 	if (!buf)
+ 		return ENOMEM;
+ 
+ 	for (group = 0; group < fs->group_desc_count; group++) {
+-		blk = ext2fs_inode_table_loc(fs, (unsigned)group);
++		blk = ext2fs_inode_table_loc(fs, group);
+ 		if (!blk) {
+ 			retval = EXT2_ET_MISSING_INODE_TABLE;
+ 			goto errout;
+@@ -107,23 +108,25 @@ errcode_t ext2fs_image_inode_write(ext2_filsys fs, int fd, int flags)
+ 					continue;
+ 				}
+ 				/* Find non-zero blocks */
+-				for (d=1; d < c; d++) {
+-					if (check_zero_block(cp + d*fs->blocksize, fs->blocksize))
++				for (d = 1; d < c; d++) {
++					if (check_zero_block(cp +
++							     d * fs->blocksize,
++							     fs->blocksize))
+ 						break;
+ 				}
+ 			skip_sparse:
+-				actual = write(fd, cp, fs->blocksize * d);
++				actual = write(fd, cp, d * fs->blocksize);
+ 				if (actual == -1) {
+ 					retval = errno;
+ 					goto errout;
+ 				}
+-				if (actual != (ssize_t) (fs->blocksize * d)) {
++				if (actual != d * fs->blocksize) {
+ 					retval = EXT2_ET_SHORT_WRITE;
+ 					goto errout;
+ 				}
+ 				blk += d;
+ 				left -= d;
+-				cp += fs->blocksize * d;
++				cp += d * fs->blocksize;
+ 				c -= d;
+ 			}
+ 		}
+@@ -141,7 +144,8 @@ errout:
+ errcode_t ext2fs_image_inode_read(ext2_filsys fs, int fd,
+ 				  int flags EXT2FS_ATTR((unused)))
+ {
+-	unsigned int	group, c, left;
++	dgrp_t		group;
++	ssize_t		c, left;
+ 	char		*buf;
+ 	blk64_t		blk;
+ 	ssize_t		actual;
+@@ -152,7 +156,7 @@ errcode_t ext2fs_image_inode_read(ext2_filsys fs, int fd,
+ 		return ENOMEM;
+ 
+ 	for (group = 0; group < fs->group_desc_count; group++) {
+-		blk = ext2fs_inode_table_loc(fs, (unsigned)group);
++		blk = ext2fs_inode_table_loc(fs, group);
+ 		if (!blk) {
+ 			retval = EXT2_ET_MISSING_INODE_TABLE;
+ 			goto errout;
+@@ -167,7 +171,7 @@ errcode_t ext2fs_image_inode_read(ext2_filsys fs, int fd,
+ 				retval = errno;
+ 				goto errout;
+ 			}
+-			if (actual != (ssize_t) (fs->blocksize * c)) {
++			if (actual != fs->blocksize * c) {
+ 				retval = EXT2_ET_SHORT_READ;
+ 				goto errout;
+ 			}
+@@ -249,7 +253,7 @@ errcode_t ext2fs_image_super_write(ext2_filsys fs, int fd,
+ 	}
  #endif
  
- 		ent = (struct ext2_dx_entry *) (block_buf + 24 + root->info_length);
-diff --git a/e2fsck/util.c b/e2fsck/util.c
-index db6a1cc..300993d 100644
---- a/e2fsck/util.c
-+++ b/e2fsck/util.c
-@@ -116,7 +116,7 @@ void log_err(e2fsck_t ctx, const char *fmt, ...)
+-	actual = write(fd, cp, fs->blocksize * fs->desc_blocks);
++	actual = write(fd, cp, (ssize_t)fs->blocksize * fs->desc_blocks);
+ 
+ 
+ #ifdef WORDS_BIGENDIAN
+@@ -265,7 +269,7 @@ errcode_t ext2fs_image_super_write(ext2_filsys fs, int fd,
+ 		retval = errno;
+ 		goto errout;
  	}
+-	if (actual != (ssize_t) (fs->blocksize * fs->desc_blocks)) {
++	if (actual != (ssize_t)fs->blocksize * fs->desc_blocks) {
+ 		retval = EXT2_ET_SHORT_WRITE;
+ 		goto errout;
+ 	}
+@@ -287,7 +291,7 @@ errcode_t ext2fs_image_super_read(ext2_filsys fs, int fd,
+ 	ssize_t		actual, size;
+ 	errcode_t	retval;
+ 
+-	size = fs->blocksize * (fs->group_desc_count + 1);
++	size = (ssize_t)fs->blocksize * (fs->group_desc_count + 1);
+ 	buf = malloc(size);
+ 	if (!buf)
+ 		return ENOMEM;
+@@ -311,7 +315,7 @@ errcode_t ext2fs_image_super_read(ext2_filsys fs, int fd,
+ 	memcpy(fs->super, buf, SUPERBLOCK_SIZE);
+ 
+ 	memcpy(fs->group_desc, buf + fs->blocksize,
+-	       fs->blocksize * fs->group_desc_count);
++	       (ssize_t)fs->blocksize * fs->group_desc_count);
+ 
+ 	retval = 0;
+ 
+diff --git a/misc/create_inode.c b/misc/create_inode.c
+index 0091b72..6387425 100644
+--- a/misc/create_inode.c
++++ b/misc/create_inode.c
+@@ -599,7 +599,7 @@ out:
+ 	return err;
  }
  
--void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned int size,
-+void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned long size,
- 			     const char *description)
+-static int is_hardlink(struct hdlinks_s *hdlinks, dev_t dev, ino_t ino)
++static int is_hardlink(struct hdlinks_s *hdlinks, dev_t dev, ext2_ino_t ino)
  {
- 	void *ret;
-@@ -125,13 +125,12 @@ void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned int size,
- #ifdef DEBUG_ALLOCATE_MEMORY
- 	printf("Allocating %u bytes for %s...\n", size, description);
- #endif
--	ret = malloc(size);
--	if (!ret) {
-+	if (ext2fs_get_memzero(size, &ret)) {
- 		sprintf(buf, "Can't allocate %u bytes for %s\n",
- 			size, description);
- 		fatal_error(ctx, buf);
- 	}
--	memset(ret, 0, size);
-+
- 	return ret;
- }
+ 	int i;
  
+diff --git a/misc/dumpe2fs.c b/misc/dumpe2fs.c
+index 384ce92..b812c93 100644
+--- a/misc/dumpe2fs.c
++++ b/misc/dumpe2fs.c
+@@ -362,7 +362,7 @@ static void print_inline_journal_information(ext2_filsys fs)
+ 	struct ext2_inode	inode;
+ 	ext2_file_t		journal_file;
+ 	errcode_t		retval;
+-	ino_t			ino = fs->super->s_journal_inum;
++	ext2_ino_t		ino = fs->super->s_journal_inum;
+ 	char			buf[1024];
+ 
+ 	if (fs->flags & EXT2_FLAG_IMAGE_FILE)
+diff --git a/misc/e2fuzz.c b/misc/e2fuzz.c
+index 8576d4e..7c0f776 100644
+--- a/misc/e2fuzz.c
++++ b/misc/e2fuzz.c
+@@ -181,9 +181,9 @@ static int process_fs(const char *fsname)
+ 	int flags, fd;
+ 	ext2_filsys fs = NULL;
+ 	ext2fs_block_bitmap corrupt_map;
+-	off_t hsize, count, off, offset, corrupt_bytes;
++	loff_t hsize, count, off, offset, corrupt_bytes;
+ 	unsigned char c;
+-	off_t i;
++	loff_t i;
+ 
+ 	/* If mounted rw, force dryrun mode */
+ 	ret = ext2fs_check_if_mounted(fsname, &flags);
+@@ -277,8 +277,8 @@ static int process_fs(const char *fsname)
+ 			c |= 0x80;
+ 		if (verbose)
+ 			printf("Corrupting byte %lld in block %lld to 0x%x\n",
+-			       (long long) off % fs->blocksize,
+-			       (long long) off / fs->blocksize, c);
++			       off % fs->blocksize,
++			       off / fs->blocksize, c);
+ 		if (dryrun)
+ 			continue;
+ #ifdef HAVE_PWRITE64
+diff --git a/misc/e2image.c b/misc/e2image.c
+index 30f2543..2c0e14d 100644
+--- a/misc/e2image.c
++++ b/misc/e2image.c
+@@ -312,7 +312,7 @@ struct process_block_struct {
+  * structure, so there's no point in letting the ext2fs library read
+  * the inode again.
+  */
+-static ino_t stashed_ino = 0;
++static ext2_ino_t stashed_ino = 0;
+ static struct ext2_inode *stashed_inode;
+ 
+ static errcode_t meta_get_blocks(ext2_filsys fs EXT2FS_ATTR((unused)),
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 7d2d38d..0324cbb 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -365,7 +365,7 @@ static errcode_t remove_journal_inode(ext2_filsys fs)
+ {
+ 	struct ext2_inode	inode;
+ 	errcode_t		retval;
+-	ino_t			ino = fs->super->s_journal_inum;
++	ext2_ino_t		ino = fs->super->s_journal_inum;
+ 
+ 	retval = ext2fs_read_inode(fs, ino,  &inode);
+ 	if (retval) {
 -- 
 1.8.0
 
