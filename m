@@ -2,44 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDE015624A
-	for <lists+linux-ext4@lfdr.de>; Sat,  8 Feb 2020 02:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC8D156251
+	for <lists+linux-ext4@lfdr.de>; Sat,  8 Feb 2020 02:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727243AbgBHBeq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 7 Feb 2020 20:34:46 -0500
-Received: from mail-pj1-f73.google.com ([209.85.216.73]:37691 "EHLO
-        mail-pj1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727118AbgBHBep (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Feb 2020 20:34:45 -0500
-Received: by mail-pj1-f73.google.com with SMTP id dw15so2350884pjb.2
-        for <linux-ext4@vger.kernel.org>; Fri, 07 Feb 2020 17:34:45 -0800 (PST)
+        id S1726995AbgBHBf5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 7 Feb 2020 20:35:57 -0500
+Received: from mail-pg1-f202.google.com ([209.85.215.202]:53502 "EHLO
+        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726743AbgBHBf5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 7 Feb 2020 20:35:57 -0500
+Received: by mail-pg1-f202.google.com with SMTP id y15so770231pgk.20
+        for <linux-ext4@vger.kernel.org>; Fri, 07 Feb 2020 17:35:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:message-id:mime-version:subject:from:to:cc;
         bh=GmdJt27134kNRYXiKp4wrB+O4TXMZQXM52BZBGOfEtM=;
-        b=ZzptqxUsermKYJMyiUDjvBiGxUIdwqTzJfy+wNJraQ/fqxPgGbS6BGRKrTpYZT99NP
-         LQVDbxgl6rqVunRCW0ICPGiKpNThIj+TdvQ5TjjeSLkpDlJtuWqpEnxBlBrS2HEtG+RW
-         9z2HN6g50wLJeFY9fmYqHHVVeKmyWOB0q7ii4xnMViegdwpFM70+FfqSZe7YAxDz9qPz
-         rQI68XvesZcSELHJhYuD8Anx5KlcByOodivzB6VfODhyuo8qsoR7iOlqkI0zS2IW8J1A
-         G74nrd0ARErEc3uP+liYKFfxifqkv4AUuLVaYmPTGE7ECQxADA+maD2kLEzIxEDZMkLy
-         HKfQ==
+        b=NEywg0M14MnLDWsKOucPQs1roEACrJM00yn5kNJb9zMFZHTZqInTtQiy8IBGz9p2Hj
+         S2N+jRLMGwbFKmZnn0koP7Tcjk3PRRe25bAoZCO6ZvkOdazou5mlWmZGxidYIkcSGuOg
+         Nc74v+ubh+mtZLefCCwVuXd9BDeFc8qAxw99sNFE3K2Kpg4BaE72oOWDN6XOg4MbOAr3
+         dE6k/7AgKUChxUQkZAzZOa2U+EcNbV65+xrCtvviZzWWuHM3cy3/YjezlVDdUeYdz/l0
+         cT1t9iCftO1kkoHUVh9CSB9TUY9yRGjwmslRWvlUSeA23a9y0cc6gFqjzMT4jbC4J+6s
+         Ch8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
         bh=GmdJt27134kNRYXiKp4wrB+O4TXMZQXM52BZBGOfEtM=;
-        b=JEu5ZePbwn997tJ7wZCjDo2a8BR0PNR8HVaBhqrT+iAee93db2KjA65Vbb8f6IgI7G
-         53I7uDptYn0sdIki9sTzV6wjgmtX4qaqQ6gRqPoGAKhhMJ+eGRo0g85YrL3dC+xR080H
-         rIojG5LY3eNEhWS4J24MUqs6Y4tMOhDqvnu+4B2VELcVDuhAImRhYDUm936hJxo/QzBS
-         qrONsp7VIRVGLyhHWCzW4cNwZQIEyCslIim+4lr9ClWxQ8jeaXbKfV2i8LcjuZWsckQr
-         VTJbrqZcDk5mB+dBRJdMrhMZCC8R8KT3XJKBoVgppf2iMCnoAdpxENHKcN9rBGMDEaIz
-         o18A==
-X-Gm-Message-State: APjAAAVpzMNFuIRf5mSKBjz9m29c/smk/t9tHA3N1M3KS0qWRuNV64eh
-        NKm6/cVtricBE7Mp5RDBT10gjGfg6Bk=
-X-Google-Smtp-Source: APXvYqxT2SICJR0/scVLMtmD7Drj2JGcZpB0cicjSWB5iCPIziOWFDKhaM/J3laVncF61b47rtO91OtcfaA=
-X-Received: by 2002:a63:1c1d:: with SMTP id c29mr2121466pgc.14.1581125684457;
- Fri, 07 Feb 2020 17:34:44 -0800 (PST)
-Date:   Fri,  7 Feb 2020 17:34:30 -0800
-Message-Id: <20200208013438.240137-1-drosen@google.com>
+        b=iKhTzGDBYUFAamURKtR7txOMeRIieu9snKzS4CJPgYzB5M8nyxWBXsi83kYmJNoMxv
+         Cbs+uUOQROqe/eiQM8uBd0FHcEXxjSPErFTu8kfk0RqOQorFbmxCrXwx2353sNiZvIGO
+         or3elDVSoWURjRP7N5jhPtP5emX/Uu/UPZGNTxdNWgksJVLdJj76UfWmL4exl2z4NYo5
+         EPmImkDW5TFFuNX5RkCBAHI9xBms+jPW6iIFu8XZ8jW5F5O3FGD/6o4xQkLOCUCUGktk
+         hGoAc0h0i+DgZIyAJhzKxG7MLYYFpfe7J+NniJiWB9nv9jHLBJ1gznVdLpx0DiEfDMbq
+         R8lQ==
+X-Gm-Message-State: APjAAAV/sKnIBUUZS/9goi+1vWIElDiHUf0hU724VmbD16s3VfTEoGzG
+        7O2NtoZ3sB2EXk3DwNsx28EN+Ne3Hd8=
+X-Google-Smtp-Source: APXvYqzX2zjDvOsycNvWYLOgK+VBNHyLR+WR4NBkkN5UhCL4Cx9+zC71iQcfsB2K3n5Ocuz6cv+mlKk8NrQ=
+X-Received: by 2002:a63:211f:: with SMTP id h31mr1939792pgh.299.1581125756217;
+ Fri, 07 Feb 2020 17:35:56 -0800 (PST)
+Date:   Fri,  7 Feb 2020 17:35:44 -0800
+Message-Id: <20200208013552.241832-1-drosen@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
 Subject: [PATCH v7 0/8] Support fof Casefolding and Encryption
