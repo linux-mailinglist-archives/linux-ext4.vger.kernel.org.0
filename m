@@ -2,80 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38367157183
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Feb 2020 10:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690F31572C2
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Feb 2020 11:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727022AbgBJJSo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Feb 2020 04:18:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39634 "EHLO mx2.suse.de"
+        id S1727003AbgBJKVt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Feb 2020 05:21:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45616 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726796AbgBJJSo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 10 Feb 2020 04:18:44 -0500
+        id S1726796AbgBJKVt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 10 Feb 2020 05:21:49 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id DE08BB1A0;
-        Mon, 10 Feb 2020 09:18:42 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id B4204B1BA;
+        Mon, 10 Feb 2020 10:21:47 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5D4491E0E2C; Mon, 10 Feb 2020 10:18:41 +0100 (CET)
-Date:   Mon, 10 Feb 2020 10:18:41 +0100
+        id B3E3B1E0E2C; Mon, 10 Feb 2020 11:21:46 +0100 (CET)
+Date:   Mon, 10 Feb 2020 11:21:46 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 3/3] tests: Add tests for ext2fs_link() into htree dir
-Message-ID: <20200210091841.GA12923@quack2.suse.cz>
-References: <20200205100138.30053-1-jack@suse.cz>
- <20200205100138.30053-4-jack@suse.cz>
- <E9A04E5E-96E0-48FC-AC41-FCA8193E058E@dilger.ca>
- <20200206101659.GJ14001@quack2.suse.cz>
- <ECC8B296-AB11-46B6-898E-F7A85E8AC1EA@dilger.ca>
+To:     Shijie Luo <luoshijie1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
+        zhangyi@huawei.com
+Subject: Re: [PATCH] ext4: add cond_resched() to ext4_protect_reserved_inode
+Message-ID: <20200210102146.GD12923@quack2.suse.cz>
+References: <20200207062716.3068-1-luoshijie1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ECC8B296-AB11-46B6-898E-F7A85E8AC1EA@dilger.ca>
+In-Reply-To: <20200207062716.3068-1-luoshijie1@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 06-02-20 16:04:16, Andreas Dilger wrote:
-> On Feb 6, 2020, at 3:16 AM, Jan Kara <jack@suse.cz> wrote:
-> > 
-> > On Wed 05-02-20 11:11:13, Andreas Dilger wrote:
-> >> On Feb 5, 2020, at 3:01 AM, Jan Kara <jack@suse.cz> wrote:
-> >>> 
-> >>> Add two tests adding 50000 files into a htree directory to test various
-> >>> cases of htree modification.
-> >> 
-> >> Note that there is already tests/f_large_dir that is creating a large
-> >> directory via debugfs.  Maybe that could be extended rather than adding
-> >> another long-running test to do almost the same thing?
-> > 
-> > I didn't know tests/f_large_dir exists. Thanks for the pointer. There are
-> > just two problems with this:
-> > 
-> > 1) I wanted to test both with & without metadata_csum because the code
-> > paths are somewhat different.
-> > 
-> > 2) Currently we don't have implemented conversion of normal dir into
-> > indexed one so I need to start with a fs image that already has indexed
-> > directory.
-> > 
-> > I suppose I could modify tests/f_large_dir to start with an image to
-> > address 2) if people are OK with that. And I could just create
-> > tests/f_large_dir_csum to address 1).
+On Fri 07-02-20 01:27:16, Shijie Luo wrote:
+> When journal size is set too big by "mkfs.ext4 -J size=", or when
+> we mount a crafted image to make journal inode->i_size too big,
+> the loop, "while (i < num)", holds cpu too long. This could cause
+> soft lockup.
 > 
-> This would be quite a large image?  I thought "e2fsck -fD" would re-pack
-> htree directories (via e2fsck/rehash.c), so it seems like you could create
-> a non-htree test filesystem like f_large_dir, set the feature and inode
-> flags, and then run e2fsck -fD on it?  That would also test the rehash code.
+> [  529.357541] Call trace:
+> [  529.357551]  dump_backtrace+0x0/0x198
+> [  529.357555]  show_stack+0x24/0x30
+> [  529.357562]  dump_stack+0xa4/0xcc
+> [  529.357568]  watchdog_timer_fn+0x300/0x3e8
+> [  529.357574]  __hrtimer_run_queues+0x114/0x358
+> [  529.357576]  hrtimer_interrupt+0x104/0x2d8
+> [  529.357580]  arch_timer_handler_virt+0x38/0x58
+> [  529.357584]  handle_percpu_devid_irq+0x90/0x248
+> [  529.357588]  generic_handle_irq+0x34/0x50
+> [  529.357590]  __handle_domain_irq+0x68/0xc0
+> [  529.357593]  gic_handle_irq+0x6c/0x150
+> [  529.357595]  el1_irq+0xb8/0x140
+> [  529.357599]  __ll_sc_atomic_add_return_acquire+0x14/0x20
+> [  529.357668]  ext4_map_blocks+0x64/0x5c0 [ext4]
+> [  529.357693]  ext4_setup_system_zone+0x330/0x458 [ext4]
+> [  529.357717]  ext4_fill_super+0x2170/0x2ba8 [ext4]
+> [  529.357722]  mount_bdev+0x1a8/0x1e8
+> [  529.357746]  ext4_mount+0x44/0x58 [ext4]
+> [  529.357748]  mount_fs+0x50/0x170
+> [  529.357752]  vfs_kern_mount.part.9+0x54/0x188
+> [  529.357755]  do_mount+0x5ac/0xd78
+> [  529.357758]  ksys_mount+0x9c/0x118
+> [  529.357760]  __arm64_sys_mount+0x28/0x38
+> [  529.357764]  el0_svc_common+0x78/0x130
+> [  529.357766]  el0_svc_handler+0x38/0x78
+> [  529.357769]  el0_svc+0x8/0xc
+> [  541.356516] watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [mount:18674]
+> 
+> Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
 
-The image is not big - ~70k packed - (it is enough to have two filled
-directory blocks for the kernel to enable DIR_INDEX feature). But the idea
-with using e2fsck -fD is certainly interesting, I'll try that.
+Thanks for the patch. It looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
+
+> ---
+>  fs/ext4/block_validity.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
+> index 1ee04e76bbe0..0a734ffb4310 100644
+> --- a/fs/ext4/block_validity.c
+> +++ b/fs/ext4/block_validity.c
+> @@ -207,6 +207,7 @@ static int ext4_protect_reserved_inode(struct super_block *sb,
+>  		return PTR_ERR(inode);
+>  	num = (inode->i_size + sb->s_blocksize - 1) >> sb->s_blocksize_bits;
+>  	while (i < num) {
+> +		cond_resched();
+>  		map.m_lblk = i;
+>  		map.m_len = num - i;
+>  		n = ext4_map_blocks(NULL, inode, &map, 0);
+> -- 
+> 2.19.1
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
