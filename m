@@ -2,156 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6782157DD1
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Feb 2020 15:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7472E157E93
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Feb 2020 16:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgBJOwb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 10 Feb 2020 09:52:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54220 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727810AbgBJOwb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 10 Feb 2020 09:52:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0DB5FAC4B;
-        Mon, 10 Feb 2020 14:52:28 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 845501E0E2C; Mon, 10 Feb 2020 15:43:17 +0100 (CET)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] ext4: Fix checksum errors with indexed dirs
-Date:   Mon, 10 Feb 2020 15:43:16 +0100
-Message-Id: <20200210144316.22081-1-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
+        id S1729340AbgBJPP6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 10 Feb 2020 10:15:58 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25421 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729056AbgBJPP5 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 10 Feb 2020 10:15:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1581347756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NzDCSfm6cuunZU862JWTkUXnbupHV/su3v7Wgsoqbzs=;
+        b=EFXoHGnwLdVScgoU1SgziBN/AV/7t1jKAjDcVyns0renq6kpP96yMHhTnkLx8IJ8GXrR4c
+        UsJIQjia3Fsust4T3TFrY7C4vtfycrUid2Ypv7WJU0sLOghndcbisau5MjNcCbP71ZtJ10
+        E/9MwvZpaN3Yk6W/dNJ9mYct3G6MkiU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-nKf9PzXeNJCJKCiTeHZpxQ-1; Mon, 10 Feb 2020 10:15:52 -0500
+X-MC-Unique: nKf9PzXeNJCJKCiTeHZpxQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECFF7184AEB8;
+        Mon, 10 Feb 2020 15:15:49 +0000 (UTC)
+Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 566FC857A9;
+        Mon, 10 Feb 2020 15:15:48 +0000 (UTC)
+From:   Jeff Moyer <jmoyer@redhat.com>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 00/12] Enable per-file/directory DAX operations V3
+References: <20200208193445.27421-1-ira.weiny@intel.com>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date:   Mon, 10 Feb 2020 10:15:47 -0500
+In-Reply-To: <20200208193445.27421-1-ira.weiny@intel.com> (ira weiny's message
+        of "Sat, 8 Feb 2020 11:34:33 -0800")
+Message-ID: <x49imke1nj0.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-DIR_INDEX has been introduced as a compat ext4 feature. That means that
-even kernels / tools that don't understand the feature may modify the
-filesystem. This works because for kernels not understanding indexed dir
-format, internal htree nodes appear just as empty directory entries.
-Index dir aware kernels then check the htree structure is still
-consistent before using the data. This all worked reasonably well until
-metadata checksums were introduced. The problem is that these
-effectively made DIR_INDEX only ro-compatible because internal htree
-nodes store checksums in a different place than normal directory blocks.
-Thus any modification ignorant to DIR_INDEX (or just clearing
-EXT4_INDEX_FL from the inode) will effectively cause checksum mismatch
-and trigger kernel errors. So we have to be more careful when dealing
-with indexed directories on filesystems with checksumming enabled.
+Hi, Ira,
 
-1) We just disallow loading any directory inodes with EXT4_INDEX_FL when
-DIR_INDEX is not enabled. This is harsh but it should be very rare (it
-means someone disabled DIR_INDEX on existing filesystem and didn't run
-e2fsck), e2fsck can fix the problem, and we don't want to answer the
-difficult question: "Should we rather corrupt the directory more or
-should we ignore that DIR_INDEX feature is not set?"
+Could you please include documentation patches as part of this series?
 
-2) When we find out htree structure is corrupted (but the filesystem and
-the directory should in support htrees), we continue just ignoring htree
-information for reading but we refuse to add new entries to the
-directory to avoid corrupting it more.
-
-CC: stable@vger.kernel.org
-Fixes: dbe89444042a ("ext4: Calculate and verify checksums for htree nodes")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/dir.c   | 14 ++++++++------
- fs/ext4/ext4.h  |  5 ++++-
- fs/ext4/inode.c | 12 ++++++++++++
- fs/ext4/namei.c |  7 +++++++
- 4 files changed, 31 insertions(+), 7 deletions(-)
-
-Changes since v1:
-- fixed some style nits spotted by Andreas
-
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index 9f00fc0bf21d..cb9ea593b544 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -129,12 +129,14 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
- 		if (err != ERR_BAD_DX_DIR) {
- 			return err;
- 		}
--		/*
--		 * We don't set the inode dirty flag since it's not
--		 * critical that it get flushed back to the disk.
--		 */
--		ext4_clear_inode_flag(file_inode(file),
--				      EXT4_INODE_INDEX);
-+		/* Can we just clear INDEX flag to ignore htree information? */
-+		if (!ext4_has_metadata_csum(sb)) {
-+			/*
-+			 * We don't set the inode dirty flag since it's not
-+			 * critical that it gets flushed back to the disk.
-+			 */
-+			ext4_clear_inode_flag(inode, EXT4_INODE_INDEX);
-+		}
- 	}
- 
- 	if (ext4_has_inline_data(inode)) {
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index f8578caba40d..1fd6c1e2ce2a 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2482,8 +2482,11 @@ void ext4_insert_dentry(struct inode *inode,
- 			struct ext4_filename *fname);
- static inline void ext4_update_dx_flag(struct inode *inode)
- {
--	if (!ext4_has_feature_dir_index(inode->i_sb))
-+	if (!ext4_has_feature_dir_index(inode->i_sb)) {
-+		/* ext4_iget() should have caught this... */
-+		WARN_ON_ONCE(ext4_has_feature_metadata_csum(inode->i_sb));
- 		ext4_clear_inode_flag(inode, EXT4_INODE_INDEX);
-+	}
- }
- static const unsigned char ext4_filetype_table[] = {
- 	DT_UNKNOWN, DT_REG, DT_DIR, DT_CHR, DT_BLK, DT_FIFO, DT_SOCK, DT_LNK
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 629a25d999f0..25191201ccdc 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4615,6 +4615,18 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 		ret = -EFSCORRUPTED;
- 		goto bad_inode;
- 	}
-+	/*
-+	 * If dir_index is not enabled but there's dir with INDEX flag set,
-+	 * we'd normally treat htree data as empty space. But with metadata
-+	 * checksumming that corrupts checksums so forbid that.
-+	 */
-+	if (!ext4_has_feature_dir_index(sb) && ext4_has_metadata_csum(sb) &&
-+	    ext4_test_inode_flag(inode, EXT4_INODE_INDEX)) {
-+		ext4_error_inode(inode, function, line, 0,
-+			 "iget: Dir with htree data on filesystem without dir_index feature.");
-+		ret = -EFSCORRUPTED;
-+		goto bad_inode;
-+	}
- 	ei->i_disksize = inode->i_size;
- #ifdef CONFIG_QUOTA
- 	ei->i_reserved_quota = 0;
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 1cb42d940784..deb9f7a02976 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2207,6 +2207,13 @@ static int ext4_add_entry(handle_t *handle, struct dentry *dentry,
- 		retval = ext4_dx_add_entry(handle, &fname, dir, inode);
- 		if (!retval || (retval != ERR_BAD_DX_DIR))
- 			goto out;
-+		/* Can we just ignore htree data? */
-+		if (ext4_has_metadata_csum(sb)) {
-+			EXT4_ERROR_INODE(dir,
-+				"Directory has corrupted htree index.");
-+			retval = -EFSCORRUPTED;
-+			goto out;
-+		}
- 		ext4_clear_inode_flag(dir, EXT4_INODE_INDEX);
- 		dx_fallback++;
- 		ext4_mark_inode_dirty(handle, dir);
--- 
-2.16.4
+Thanks,
+Jeff
 
