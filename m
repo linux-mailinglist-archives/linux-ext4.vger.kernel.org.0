@@ -2,316 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D317159AE3
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 22:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 800A6159AF3
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 22:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729434AbgBKVCl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Feb 2020 16:02:41 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:41458 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729371AbgBKVCl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Feb 2020 16:02:41 -0500
-Received: by mail-qv1-f68.google.com with SMTP id s7so5705935qvn.8
-        for <linux-ext4@vger.kernel.org>; Tue, 11 Feb 2020 13:02:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=5iQ7mIDb3ZtmXBfRff6ibh+z+Ngj3WHPuWqFV9lP1oI=;
-        b=qOiriR2129sD7wIydJI73cuhFMIoh8Xj3tw817C2m+zcqUHTq1y4aFzv4PxKrZWQQO
-         abtdYcnsGJK0rINUrBvKaElvHmpeiIsjfaSC8n6ozJTh+y8vjNqATGbgNQuPxIPDeD9G
-         413DDJfUUf4Z9wAq0Mye8cATQzcHn1EEJCqtDl10YhxzyeYO9loDxW7LwLORWQNN24lh
-         Y+3FEyuKP7ZFpxht1mobIV/UYZaWEQXrUHtrynTTojgBQkCFcn+utv0DYGiJuKi6+v2z
-         l3fcGB6vBYoAG1lb4520o+RHt4FNUsO86FN0FXlyG37+zoLSrMx6VrvDzxt8XOvfs3J0
-         DQOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=5iQ7mIDb3ZtmXBfRff6ibh+z+Ngj3WHPuWqFV9lP1oI=;
-        b=H+4n6g/pcXFQ+PRjeErErcdQDNNJlvS4cXWJlWRx0crX3Q/w5qdgpnrH0dhAoJh85d
-         gjKaFMhfQeVx6KsBFYSJQT+PruUz3NVgiTMGDm6W6uL/yvw68L2nT5y54NXO4o9BikEz
-         D4U2Z0VHkxuOlhhPHKgldMtC9u1ukwtC4WghVepRorOjA3aDiuV91DXJoIslw6P+wsSV
-         RiqsB0MkjE9vEEUvmK3jCRB5BKjaPks2vAOZ3tTuYtJ/+6BrNGNWM9yFQ/7dpMWzhGLE
-         WL+aJjMH1zuCBDOu5mb2Rzo3O1JClchWlZLABv20Pi8Ypl4Tfpnbqhz3CPh204g+oiOV
-         crfw==
-X-Gm-Message-State: APjAAAW5Fb8sLqox7HVGqhbZ8ZiG6vq9LdaCsX0Pguqmjz347jsbkAkK
-        IcXuafjbf6TDTw9fCYUBOH+nS6b1
-X-Google-Smtp-Source: APXvYqzZZsjgEUv3L7qpzkde8nPc+XNh5dizPT5DKO8NgNVCIZsvYWnOcmePV0hZEb6EgVPBfnvVWA==
-X-Received: by 2002:a05:6214:8cb:: with SMTP id da11mr16024712qvb.228.1581454960028;
-        Tue, 11 Feb 2020 13:02:40 -0800 (PST)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id 17sm132530qkr.116.2020.02.11.13.02.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 11 Feb 2020 13:02:39 -0800 (PST)
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH] ext4: remove EXT4_EOFBLOCKS_FL and associated code
-Date:   Tue, 11 Feb 2020 16:02:16 -0500
-Message-Id: <20200211210216.24960-1-enwlinux@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S1731912AbgBKVIk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Feb 2020 16:08:40 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27829 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729031AbgBKVIk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Feb 2020 16:08:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1581455318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=ACQocJcgpVb/FIe32fwrtamffCgXxNG9bC+VN8b56IM=;
+        b=EtGMDkd+rEkGGBDfIF5XoJOiwsEdOTu1clpXjT99hWSfgyuV1YOE16TGA4ADHPJddPWlZn
+        PFBkMYhp0agTn22OKjVUtghdo3TxUYFKj02dOwN05YZRcxPh3gtT0CvgLu//Z/Iqw6fS40
+        pRsrZISrmHg1yLXa32sdalwafWV59Js=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-c8m2Z6pJPZK8Dqa4Fhj56A-1; Tue, 11 Feb 2020 16:08:36 -0500
+X-MC-Unique: c8m2Z6pJPZK8Dqa4Fhj56A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B614A800D41;
+        Tue, 11 Feb 2020 21:08:35 +0000 (UTC)
+Received: from [IPv6:::1] (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 52F0F5C10F;
+        Tue, 11 Feb 2020 21:08:35 +0000 (UTC)
+Subject: Re: [PATCH v2] tst_libext2fs: Avoid multiple definition of global
+ variables
+From:   Eric Sandeen <sandeen@redhat.com>
+To:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu
+References: <20200130132122.21150-1-lczerner@redhat.com>
+ <20200210152459.19903-1-lczerner@redhat.com>
+ <f75ab2d5-9c59-a190-6fa5-c5f0e645da9c@redhat.com>
+Autocrypt: addr=sandeen@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <76c6906f-a248-0087-0508-74a3c74405c2@redhat.com>
+Date:   Tue, 11 Feb 2020 15:08:34 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.2
+MIME-Version: 1.0
+In-Reply-To: <f75ab2d5-9c59-a190-6fa5-c5f0e645da9c@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The EXT4_EOFBLOCKS_FL inode flag is used to indicate whether a file
-contains unwritten blocks past i_size.  It's set when ext4_fallocate
-is called with the KEEP_SIZE flag to extend a file with an unwritten
-extent.  However, this flag hasn't been useful functionally since
-March, 2012, when a decision was made to remove it from ext4.
+On 2/11/20 2:22 PM, Eric Sandeen wrote:
+> On 2/10/20 9:24 AM, Lukas Czerner wrote:
+>> gcc version 10 changed the default from -fcommon to -fno-common and as a
+>> result e2fsprogs make check tests fail because tst_libext2fs.c end up
+>> with a build error.
+>>
+>> This is because it defines two global variables debug_prog_name and
+>> extra_cmds that are already defined in debugfs/debugfs.c. With -fcommon
+>> linker was able to resolve those into the same object, however with
+>> -fno-common it's no longer able to do it and we end up with multiple
+>> definition errors.
+>>
+>> Fix the problem by using SKIP_GLOBDEFS macro to skip the variables
+>> definition in debugfs.c. Note that debug_prog_name is also defined in
+>> lib/ext2fs/extent.c when DEBUG macro is used, but this does not work even
+>> with older gcc versions and is never used regardless so I am not going to
+>> bother with it.
+>>
+>> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+>> ---
+>> v2: Previous fix wasn't really working properly
+> 
+> What was not working properly?
+> 
+> It seemed reasonable to me.  The new mechanism looks like it would work,
+> but the first patch seemed more obvious, so I'd like to know what the problem
+> was.
 
-All traces of EXT4_EOFBLOCKS_FL were removed from e2fsprogs version
-1.42.2 by commit 010dc7b90d97 ("e2fsck: remove EXT4_EOFBLOCKS_FL flag
-handling") at that time.  Now that enough time has passed to make
-e2fsprogs versions containing this modification common, this patch now
-removes the code associated with EXT4_EOFBLOCKS_FL from the kernel as
-well.
+I built e2fsprogs & ran make check from git on Fedora Rawhide w/ your first patch,
+and it all seemed to work fine so I'll just stand by for more info.  :)
 
-This change has two implications.  First, because pre-1.42.2 e2fsck
-versions only look for a problem if EXT4_EOFBLOCKS_FL is set, and
-because that bit will never be set by newer kernels containing this
-patch, old versions of e2fsck won't have a compatibility problem with
-files created by newer kernels.
-
-Second, newer kernels will not clear EXT4_EOFBLOCKS_FL inode flag bits
-belonging to a file written by an older kernel.  If set, it will remain
-in that state until the file is deleted.  Because e2fsck versions since
-1.42.2 don't check the flag at all, no adverse effect is expected.
-However, pre-1.42.2 e2fsck versions that do check the flag may report
-that it is set when it ought not to be after a file has been truncated
-or had its unwritten blocks written.  In this case, the old version of
-e2fsck will offer to clear the flag.  No adverse effect would then
-occur whether the user chooses to clear the flag or not.
-
-Signed-off-by: Eric Whitney <enwlinux@gmail.com>
----
- fs/ext4/ext4.h    |  5 ++-
- fs/ext4/extents.c | 92 +++++--------------------------------------------------
- fs/ext4/inode.c   |  2 --
- fs/ext4/ioctl.c   | 12 --------
- 4 files changed, 9 insertions(+), 102 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 9a2ee2428ecc..d8a79ddebce6 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -414,7 +414,7 @@ struct flex_groups {
- #define EXT4_EXTENTS_FL			0x00080000 /* Inode uses extents */
- #define EXT4_VERITY_FL			0x00100000 /* Verity protected inode */
- #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for large EA */
--#define EXT4_EOFBLOCKS_FL		0x00400000 /* Blocks allocated beyond EOF */
-+/* 0x00400000 was formerly EXT4_EOFBLOCKS_FL */
- #define EXT4_INLINE_DATA_FL		0x10000000 /* Inode has inline data. */
- #define EXT4_PROJINHERIT_FL		0x20000000 /* Create with parents projid */
- #define EXT4_CASEFOLD_FL		0x40000000 /* Casefolded file */
-@@ -487,7 +487,7 @@ enum {
- 	EXT4_INODE_EXTENTS	= 19,	/* Inode uses extents */
- 	EXT4_INODE_VERITY	= 20,	/* Verity protected inode */
- 	EXT4_INODE_EA_INODE	= 21,	/* Inode used for large EA */
--	EXT4_INODE_EOFBLOCKS	= 22,	/* Blocks allocated beyond EOF */
-+/* 22 was formerly EXT4_INODE_EOFBLOCKS */
- 	EXT4_INODE_INLINE_DATA	= 28,	/* Data in inode. */
- 	EXT4_INODE_PROJINHERIT	= 29,	/* Create with parents projid */
- 	EXT4_INODE_RESERVED	= 31,	/* reserved for ext4 lib */
-@@ -533,7 +533,6 @@ static inline void ext4_check_flag_values(void)
- 	CHECK_FLAG_VALUE(EXTENTS);
- 	CHECK_FLAG_VALUE(VERITY);
- 	CHECK_FLAG_VALUE(EA_INODE);
--	CHECK_FLAG_VALUE(EOFBLOCKS);
- 	CHECK_FLAG_VALUE(INLINE_DATA);
- 	CHECK_FLAG_VALUE(PROJINHERIT);
- 	CHECK_FLAG_VALUE(RESERVED);
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 954013d6076b..89aa9c7ae293 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3874,59 +3874,6 @@ static int ext4_convert_unwritten_extents_endio(handle_t *handle,
- 	return err;
- }
- 
--/*
-- * Handle EOFBLOCKS_FL flag, clearing it if necessary
-- */
--static int check_eofblocks_fl(handle_t *handle, struct inode *inode,
--			      ext4_lblk_t lblk,
--			      struct ext4_ext_path *path,
--			      unsigned int len)
--{
--	int i, depth;
--	struct ext4_extent_header *eh;
--	struct ext4_extent *last_ex;
--
--	if (!ext4_test_inode_flag(inode, EXT4_INODE_EOFBLOCKS))
--		return 0;
--
--	depth = ext_depth(inode);
--	eh = path[depth].p_hdr;
--
--	/*
--	 * We're going to remove EOFBLOCKS_FL entirely in future so we
--	 * do not care for this case anymore. Simply remove the flag
--	 * if there are no extents.
--	 */
--	if (unlikely(!eh->eh_entries))
--		goto out;
--	last_ex = EXT_LAST_EXTENT(eh);
--	/*
--	 * We should clear the EOFBLOCKS_FL flag if we are writing the
--	 * last block in the last extent in the file.  We test this by
--	 * first checking to see if the caller to
--	 * ext4_ext_get_blocks() was interested in the last block (or
--	 * a block beyond the last block) in the current extent.  If
--	 * this turns out to be false, we can bail out from this
--	 * function immediately.
--	 */
--	if (lblk + len < le32_to_cpu(last_ex->ee_block) +
--	    ext4_ext_get_actual_len(last_ex))
--		return 0;
--	/*
--	 * If the caller does appear to be planning to write at or
--	 * beyond the end of the current extent, we then test to see
--	 * if the current extent is the last extent in the file, by
--	 * checking to make sure it was reached via the rightmost node
--	 * at each level of the tree.
--	 */
--	for (i = depth-1; i >= 0; i--)
--		if (path[i].p_idx != EXT_LAST_INDEX(path[i].p_hdr))
--			return 0;
--out:
--	ext4_clear_inode_flag(inode, EXT4_INODE_EOFBLOCKS);
--	return ext4_mark_inode_dirty(handle, inode);
--}
--
- static int
- convert_initialized_extent(handle_t *handle, struct inode *inode,
- 			   struct ext4_map_blocks *map,
-@@ -3991,9 +3938,7 @@ convert_initialized_extent(handle_t *handle, struct inode *inode,
- 	ext4_ext_show_leaf(inode, path);
- 
- 	ext4_update_inode_fsync_trans(handle, inode, 1);
--	err = check_eofblocks_fl(handle, inode, map->m_lblk, path, map->m_len);
--	if (err)
--		return err;
-+
- 	map->m_flags |= EXT4_MAP_UNWRITTEN;
- 	if (allocated > map->m_len)
- 		allocated = map->m_len;
-@@ -4007,7 +3952,9 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
- 			struct ext4_ext_path **ppath, int flags,
- 			unsigned int allocated, ext4_fsblk_t newblock)
- {
-+#ifdef EXT_DEBUG
- 	struct ext4_ext_path *path = *ppath;
-+#endif
- 	int ret = 0;
- 	int err = 0;
- 
-@@ -4047,11 +3994,9 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
- 		}
- 		ret = ext4_convert_unwritten_extents_endio(handle, inode, map,
- 							   ppath);
--		if (ret >= 0) {
-+		if (ret >= 0)
- 			ext4_update_inode_fsync_trans(handle, inode, 1);
--			err = check_eofblocks_fl(handle, inode, map->m_lblk,
--						 path, map->m_len);
--		} else
-+		else
- 			err = ret;
- 		map->m_flags |= EXT4_MAP_MAPPED;
- 		map->m_pblk = newblock;
-@@ -4100,12 +4045,6 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
- 
- map_out:
- 	map->m_flags |= EXT4_MAP_MAPPED;
--	if ((flags & EXT4_GET_BLOCKS_KEEP_SIZE) == 0) {
--		err = check_eofblocks_fl(handle, inode, map->m_lblk, path,
--					 map->m_len);
--		if (err < 0)
--			goto out2;
--	}
- out1:
- 	if (allocated > map->m_len)
- 		allocated = map->m_len;
-@@ -4459,12 +4398,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 	}
- 
- 	err = 0;
--	if ((flags & EXT4_GET_BLOCKS_KEEP_SIZE) == 0)
--		err = check_eofblocks_fl(handle, inode, map->m_lblk,
--					 path, ar.len);
--	if (!err)
--		err = ext4_ext_insert_extent(handle, inode, &path,
--					     &newex, flags);
-+	err = ext4_ext_insert_extent(handle, inode, &path, &newex, flags);
- 
- 	if (err && free_on_err) {
- 		int fb_flags = flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE ?
-@@ -4645,10 +4579,6 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 				epos = new_size;
- 			if (ext4_update_inode_size(inode, epos) & 0x1)
- 				inode->i_mtime = inode->i_ctime;
--		} else {
--			if (epos > inode->i_size)
--				ext4_set_inode_flag(inode,
--						    EXT4_INODE_EOFBLOCKS);
- 		}
- 		ext4_mark_inode_dirty(handle, inode);
- 		ext4_update_inode_fsync_trans(handle, inode, 1);
-@@ -4802,16 +4732,8 @@ static long ext4_zero_range(struct file *file, loff_t offset,
- 	}
- 
- 	inode->i_mtime = inode->i_ctime = current_time(inode);
--	if (new_size) {
-+	if (new_size)
- 		ext4_update_inode_size(inode, new_size);
--	} else {
--		/*
--		* Mark that we allocate beyond EOF so the subsequent truncate
--		* can proceed even if the new size is the same as i_size.
--		*/
--		if (offset + len > inode->i_size)
--			ext4_set_inode_flag(inode, EXT4_INODE_EOFBLOCKS);
--	}
- 	ext4_mark_inode_dirty(handle, inode);
- 
- 	/* Zero out partial block at the edges of the range */
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 3313168b680f..bd968f85031e 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4144,8 +4144,6 @@ int ext4_truncate(struct inode *inode)
- 	if (!ext4_can_truncate(inode))
- 		return 0;
- 
--	ext4_clear_inode_flag(inode, EXT4_INODE_EOFBLOCKS);
--
- 	if (inode->i_size == 0 && !test_opt(inode->i_sb, NO_AUTO_DA_ALLOC))
- 		ext4_set_inode_state(inode, EXT4_STATE_DA_ALLOC_CLOSE);
- 
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index a0ec750018dd..d0b00fab0531 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -327,18 +327,6 @@ static int ext4_ioctl_setflags(struct inode *inode,
- 	if ((flags ^ oldflags) & EXT4_EXTENTS_FL)
- 		migrate = 1;
- 
--	if (flags & EXT4_EOFBLOCKS_FL) {
--		/* we don't support adding EOFBLOCKS flag */
--		if (!(oldflags & EXT4_EOFBLOCKS_FL)) {
--			err = -EOPNOTSUPP;
--			goto flags_out;
--		}
--	} else if (oldflags & EXT4_EOFBLOCKS_FL) {
--		err = ext4_truncate(inode);
--		if (err)
--			goto flags_out;
--	}
--
- 	if ((flags ^ oldflags) & EXT4_CASEFOLD_FL) {
- 		if (!ext4_has_feature_casefold(sb)) {
- 			err = -EOPNOTSUPP;
--- 
-2.11.0
+-Eric
 
