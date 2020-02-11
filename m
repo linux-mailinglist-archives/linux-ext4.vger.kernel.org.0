@@ -2,72 +2,104 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 115D7158E8E
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 13:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF4C158F40
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 13:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgBKMeb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Feb 2020 07:34:31 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:35876 "EHLO
+        id S1727791AbgBKMyP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Feb 2020 07:54:15 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:48964 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728031AbgBKMeb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Feb 2020 07:34:31 -0500
+        with ESMTP id S1727041AbgBKMyP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Feb 2020 07:54:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uIlXDShEskfTvbYftNPC1eqkJUsB5szLvdV7iweWe4s=; b=SeyBbYthoa6L+1pKSTBoqxCFni
-        wTJRyOqUnVlYvD37j4HGWVkO1X/D0fyafdbCfsynh7E7Nd3cyOFPC/SIb5jUOMZyzdEvncdXAzReF
-        vQYgsmrVkB4zwfd6rrwB1SvDqqK2SKFVfjZfVMxT8s5K4GJS8hhniBqwoUBwsteVgZNIUfpPcQ5aP
-        0IPMIzBXCcgmYEtwqCZOxnn68TEw92XrWsLDyQuhAe5AlzAF01rYALZpzjl8uENQAqVFM68FPSZW4
-        JFup/EfcWoR5+TyIkZIBfhMJ9badlt8+Epn37DVY1zowNGoeUikWKpJqKg7VeqVpO/jC94HcPn328
-        u1r5UcAQ==;
+        bh=+uQN30cS5Bj87iEEBzdOLx8lg9+i0ExEu8VOZjq8Ndo=; b=eWC7poTUmbgHCYbKut5tUcDZwL
+        w3YYTT854/6orjDXWt0o8myOrLaqYxmNildHwtqHwB9P6sAmRSzUVkC2ndTa5MBo6vPhEIM38iBQg
+        3QFH9rbgbTMx5jUAauOSubj91u3I4QqJCftUeJ3u2BRZFY7uw1LRQwqgp3/dZBByXH8F5OzZAb0t+
+        miBihdnvmVJGXqnRBr1rG3atRoSZFunPwyyK3rI6Tg1RqDm7wVtET7WbIVm0KlJr9sAYInPEKF3Lu
+        GTYeC4TiyWPK4e73vfdDf6T1j5MFZMYQQejC42VttS5bt+wx+jfOtOIGuI60RBaTCQF1YD4hRLaX6
+        1eYOefYA==;
 Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j1UkI-0006ev-Kh; Tue, 11 Feb 2020 12:34:30 +0000
-Date:   Tue, 11 Feb 2020 04:34:30 -0800
+        id 1j1V3O-0006U6-1C; Tue, 11 Feb 2020 12:54:14 +0000
+Date:   Tue, 11 Feb 2020 04:54:13 -0800
 From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v5 01/13] mm: Fix the return type of
- __do_page_cache_readahead
-Message-ID: <20200211123430.GT8731@bombadil.infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v5 04/13] mm: Add readahead address space operation
+Message-ID: <20200211125413.GU8731@bombadil.infradead.org>
 References: <20200211010348.6872-1-willy@infradead.org>
- <20200211010348.6872-2-willy@infradead.org>
- <SN4PR0401MB3598602411B75B46F5267B829B180@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200211010348.6872-5-willy@infradead.org>
+ <20200211045230.GD10776@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SN4PR0401MB3598602411B75B46F5267B829B180@SN4PR0401MB3598.namprd04.prod.outlook.com>
+In-Reply-To: <20200211045230.GD10776@dread.disaster.area>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 08:19:14AM +0000, Johannes Thumshirn wrote:
-> On 11/02/2020 02:05, Matthew Wilcox wrote:
-> > even though I'm pretty sure we're not going to readahead more than 2^32
-> > pages ever.
+On Tue, Feb 11, 2020 at 03:52:30PM +1100, Dave Chinner wrote:
+> > +struct readahead_control {
+> > +	struct file *file;
+> > +	struct address_space *mapping;
+> > +/* private: use the readahead_* accessors instead */
+> > +	pgoff_t start;
+> > +	unsigned int nr_pages;
+> > +	unsigned int batch_count;
+> > +};
+> > +
+> > +static inline struct page *readahead_page(struct readahead_control *rac)
+> > +{
+> > +	struct page *page;
+> > +
+> > +	if (!rac->nr_pages)
+> > +		return NULL;
+> > +
+> > +	page = xa_load(&rac->mapping->i_pages, rac->start);
+> > +	VM_BUG_ON_PAGE(!PageLocked(page), page);
+> > +	rac->batch_count = hpage_nr_pages(page);
+> > +	rac->start += rac->batch_count;
 > 
-> And 640K is more memory than anyone will ever need on a computer *scnr*
+> There's no mention of large page support in the patch description
+> and I don't recall this sort of large page batching in previous
+> iterations.
+> 
+> This seems like new functionality to me, not directly related to
+> the initial ->readahead API change? What have I missed?
 
-Sure, but bandwidth just isn't increasing quickly enough to have
-this make sense.  2^32 pages even on our smallest page size machines
-is 16GB.  Right now, we cap readahead at just 256kB.  If we did try to
-readahead 16GB, we'd be occupying a PCIe gen4 x4 drive for two seconds,
-just satisfying this one readahead.  PCIe has historically doubled in
-bandwidth every three years or so, so to get this down to something
-reasonable like a hundredth of a second, we're looking at PCIe gen12 in
-twenty years or so.  And I bet we still won't do it (also, I doubt PCIe
-will continue doubling bandwidth every three years).
+I had a crisis of confidence when I was working on this -- the loop
+originally looked like this:
 
-And Linus has forbidden individual IOs over 2GB anyway, so not happening
-until he's forced to see the error of his ways ;-)
+#define readahead_for_each(rac, page)                                   \
+        for (; (page = readahead_page(rac)); rac->nr_pages--)
+
+and then I started thinking about what I'd need to do to support large
+pages, and that turned into
+
+#define readahead_for_each(rac, page)                                   \
+        for (; (page = readahead_page(rac));				\
+		rac->nr_pages -= hpage_nr_pages(page))
+
+but I realised that was potentially a use-after-free because 'page' has
+certainly had put_page() called on it by then.  I had a brief period
+where I looked at moving put_page() away from being the filesystem's
+responsibility and into the iterator, but that would introduce more
+changes into the patchset, as well as causing problems for filesystems
+that want to break out of the loop.
+
+By this point, I was also looking at the readahead_for_each_batch()
+iterator that btrfs uses, and so we have the batch count anyway, and we
+might as well use it to store the number of subpages of the large page.
+And so it became easier to just put the whole ball of wax into the initial
+patch set, rather than introduce the iterator now and then fix it up in
+the patch set that I'm basing on this.
+
+So yes, there's a certain amount of excess functionality in this patch
+set ... I can remove it for the next release.
