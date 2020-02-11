@@ -2,136 +2,120 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BB8159767
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 18:57:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2080159A3C
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 21:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730690AbgBKRzK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Feb 2020 12:55:10 -0500
-Received: from mga12.intel.com ([192.55.52.136]:27492 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729205AbgBKRzK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 11 Feb 2020 12:55:10 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Feb 2020 09:55:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,428,1574150400"; 
-   d="scan'208";a="266342730"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Feb 2020 09:55:09 -0800
-Date:   Tue, 11 Feb 2020 09:55:09 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 06/12] fs/xfs: Check if the inode supports DAX under
- lock
-Message-ID: <20200211175509.GD12866@iweiny-DESK2.sc.intel.com>
-References: <20200208193445.27421-1-ira.weiny@intel.com>
- <20200208193445.27421-7-ira.weiny@intel.com>
- <20200211061639.GH10776@dread.disaster.area>
+        id S1730576AbgBKUIf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Feb 2020 15:08:35 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:38631 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728537AbgBKUIf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 11 Feb 2020 15:08:35 -0500
+Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 2D0293A3899;
+        Wed, 12 Feb 2020 07:08:28 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j1bpa-0002l0-DL; Wed, 12 Feb 2020 07:08:26 +1100
+Date:   Wed, 12 Feb 2020 07:08:26 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v5 04/13] mm: Add readahead address space operation
+Message-ID: <20200211200826.GK10776@dread.disaster.area>
+References: <20200211010348.6872-1-willy@infradead.org>
+ <20200211010348.6872-5-willy@infradead.org>
+ <20200211045230.GD10776@dread.disaster.area>
+ <20200211125413.GU8731@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200211061639.GH10776@dread.disaster.area>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200211125413.GU8731@bombadil.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=7-415B0cAAAA:8 a=EnYlyWvjhy6VBD_eMqkA:9 a=CdacwtsPoHkD4rhW:21
+        a=vlsg44Ume0T2P6Xz:21 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 05:16:39PM +1100, Dave Chinner wrote:
-> On Sat, Feb 08, 2020 at 11:34:39AM -0800, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
+On Tue, Feb 11, 2020 at 04:54:13AM -0800, Matthew Wilcox wrote:
+> On Tue, Feb 11, 2020 at 03:52:30PM +1100, Dave Chinner wrote:
+> > > +struct readahead_control {
+> > > +	struct file *file;
+> > > +	struct address_space *mapping;
+> > > +/* private: use the readahead_* accessors instead */
+> > > +	pgoff_t start;
+> > > +	unsigned int nr_pages;
+> > > +	unsigned int batch_count;
+> > > +};
+> > > +
+> > > +static inline struct page *readahead_page(struct readahead_control *rac)
+> > > +{
+> > > +	struct page *page;
+> > > +
+> > > +	if (!rac->nr_pages)
+> > > +		return NULL;
+> > > +
+> > > +	page = xa_load(&rac->mapping->i_pages, rac->start);
+> > > +	VM_BUG_ON_PAGE(!PageLocked(page), page);
+> > > +	rac->batch_count = hpage_nr_pages(page);
+> > > +	rac->start += rac->batch_count;
 > > 
-> > One of the checks for an inode supporting DAX is if the inode is
-> > reflinked.  During a non-DAX to DAX state change we could race with
-> > the file being reflinked and end up with a reflinked file being in DAX
-> > state.
+> > There's no mention of large page support in the patch description
+> > and I don't recall this sort of large page batching in previous
+> > iterations.
 > > 
-> > Prevent this race by checking for DAX support under the MMAP_LOCK.
+> > This seems like new functionality to me, not directly related to
+> > the initial ->readahead API change? What have I missed?
 > 
-> The on disk inode flags are protected by the XFS_ILOCK, not the
-> MMAP_LOCK. i.e. the MMAPLOCK provides data access serialisation, not
-> metadata modification serialisation.
-
-Ah...
-
+> I had a crisis of confidence when I was working on this -- the loop
+> originally looked like this:
 > 
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  fs/xfs/xfs_ioctl.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-> > index da1eb2bdb386..4ff402fd6636 100644
-> > --- a/fs/xfs/xfs_ioctl.c
-> > +++ b/fs/xfs/xfs_ioctl.c
-> > @@ -1194,10 +1194,6 @@ xfs_ioctl_setattr_dax_invalidate(
-> >  
-> >  	*join_flags = 0;
-> >  
-> > -	if ((fa->fsx_xflags & FS_XFLAG_DAX) == FS_XFLAG_DAX &&
-> > -	    !xfs_inode_supports_dax(ip))
-> > -		return -EINVAL;
-> > -
-> >  	/* If the DAX state is not changing, we have nothing to do here. */
-> >  	if ((fa->fsx_xflags & FS_XFLAG_DAX) &&
-> >  	    (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX))
-> > @@ -1211,6 +1207,13 @@ xfs_ioctl_setattr_dax_invalidate(
-> >  
-> >  	/* lock, flush and invalidate mapping in preparation for flag change */
-> >  	xfs_ilock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
-> > +
-> > +	if ((fa->fsx_xflags & FS_XFLAG_DAX) == FS_XFLAG_DAX &&
-> > +	    !xfs_inode_supports_dax(ip)) {
-> > +		error = -EINVAL;
-> > +		goto out_unlock;
-> > +	}
+> #define readahead_for_each(rac, page)                                   \
+>         for (; (page = readahead_page(rac)); rac->nr_pages--)
 > 
-> Yes, you might be able to get away with reflink vs dax flag
-> serialisation on the inode flag modification, but it is not correct and
-> leaves a landmine for future inode flag modifications that are done
-> without holding either the MMAP or IOLOCK.
+> and then I started thinking about what I'd need to do to support large
+> pages, and that turned into
 > 
-> e.g. concurrent calls to xfs_ioctl_setattr() setting/clearing flags
-> other than the on disk DAX flag are all serialised by the ILOCK_EXCL
-> and will no be serialised against this DAX check. Hence if there are
-> other flags that we add in future that affect the result of
-> xfs_inode_supports_dax(), this code will not be correctly
-> serialised.
+> #define readahead_for_each(rac, page)                                   \
+>         for (; (page = readahead_page(rac));				\
+> 		rac->nr_pages -= hpage_nr_pages(page))
 > 
-> This raciness in checking the DAX flags is the reason that
-> xfs_ioctl_setattr_xflags() redoes all the reflink vs dax checks once
-> it's called under the XFS_ILOCK_EXCL during the actual change
-> transaction....
-
-Ok I found this by trying to make sure that the xfs_inode_supports_dax() call
-was always returning valid data.  So I don't have a specific test which was
-failing.
-
-Looking at the code again, it sounds like I was wrong about which locks protect
-what and with your explanation above it looks like there is nothing to be done
-here and I can drop the patch.
-
-Would you agree?
-
-Thanks for the review!
-Ira
-
+> but I realised that was potentially a use-after-free because 'page' has
+> certainly had put_page() called on it by then.  I had a brief period
+> where I looked at moving put_page() away from being the filesystem's
+> responsibility and into the iterator, but that would introduce more
+> changes into the patchset, as well as causing problems for filesystems
+> that want to break out of the loop.
 > 
-> Cheers,
+> By this point, I was also looking at the readahead_for_each_batch()
+> iterator that btrfs uses, and so we have the batch count anyway, and we
+> might as well use it to store the number of subpages of the large page.
+> And so it became easier to just put the whole ball of wax into the initial
+> patch set, rather than introduce the iterator now and then fix it up in
+> the patch set that I'm basing on this.
 > 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+> So yes, there's a certain amount of excess functionality in this patch
+> set ... I can remove it for the next release.
+
+I'd say "Just document it" as that was the main reason I noticed it.
+Or perhaps add the batching function as a stand-alone patch so it's
+clear that the batch interface solves two problems at once - large
+pages and the btrfs page batching implementation...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
