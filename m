@@ -2,132 +2,370 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 800A6159AF3
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 22:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8933F159B9C
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 22:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731912AbgBKVIk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Feb 2020 16:08:40 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27829 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729031AbgBKVIk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Feb 2020 16:08:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581455318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ACQocJcgpVb/FIe32fwrtamffCgXxNG9bC+VN8b56IM=;
-        b=EtGMDkd+rEkGGBDfIF5XoJOiwsEdOTu1clpXjT99hWSfgyuV1YOE16TGA4ADHPJddPWlZn
-        PFBkMYhp0agTn22OKjVUtghdo3TxUYFKj02dOwN05YZRcxPh3gtT0CvgLu//Z/Iqw6fS40
-        pRsrZISrmHg1yLXa32sdalwafWV59Js=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-c8m2Z6pJPZK8Dqa4Fhj56A-1; Tue, 11 Feb 2020 16:08:36 -0500
-X-MC-Unique: c8m2Z6pJPZK8Dqa4Fhj56A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B614A800D41;
-        Tue, 11 Feb 2020 21:08:35 +0000 (UTC)
-Received: from [IPv6:::1] (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 52F0F5C10F;
-        Tue, 11 Feb 2020 21:08:35 +0000 (UTC)
-Subject: Re: [PATCH v2] tst_libext2fs: Avoid multiple definition of global
- variables
-From:   Eric Sandeen <sandeen@redhat.com>
-To:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu
-References: <20200130132122.21150-1-lczerner@redhat.com>
- <20200210152459.19903-1-lczerner@redhat.com>
- <f75ab2d5-9c59-a190-6fa5-c5f0e645da9c@redhat.com>
-Autocrypt: addr=sandeen@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <76c6906f-a248-0087-0508-74a3c74405c2@redhat.com>
-Date:   Tue, 11 Feb 2020 15:08:34 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.2
+        id S1727658AbgBKVtY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Feb 2020 16:49:24 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:40171 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727111AbgBKVtX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 11 Feb 2020 16:49:23 -0500
+Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 4C41B3A18EC;
+        Wed, 12 Feb 2020 08:49:17 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j1dPB-0003JU-4l; Wed, 12 Feb 2020 08:49:17 +1100
+Date:   Wed, 12 Feb 2020 08:49:17 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 07/12] fs: Add locking for a dynamic DAX state
+Message-ID: <20200211214917.GO10776@dread.disaster.area>
+References: <20200208193445.27421-1-ira.weiny@intel.com>
+ <20200208193445.27421-8-ira.weiny@intel.com>
+ <20200211080035.GI10776@dread.disaster.area>
+ <20200211201430.GE12866@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <f75ab2d5-9c59-a190-6fa5-c5f0e645da9c@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200211201430.GE12866@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
+        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=QyXUC8HyAAAA:8 a=IA0wh2spAAAA:8 a=7-415B0cAAAA:8 a=4Ffqh7wDj7HJeC31HGgA:9
+        a=J374GnaVcFbFhY0E:21 a=b6up51jCCPp4SvUk:21 a=CjuIK1q_8ugA:10
+        a=WisJBrqZyNwA:10 a=WYX0T_o7Jp3h_ymY5bZZ:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2/11/20 2:22 PM, Eric Sandeen wrote:
-> On 2/10/20 9:24 AM, Lukas Czerner wrote:
->> gcc version 10 changed the default from -fcommon to -fno-common and as a
->> result e2fsprogs make check tests fail because tst_libext2fs.c end up
->> with a build error.
->>
->> This is because it defines two global variables debug_prog_name and
->> extra_cmds that are already defined in debugfs/debugfs.c. With -fcommon
->> linker was able to resolve those into the same object, however with
->> -fno-common it's no longer able to do it and we end up with multiple
->> definition errors.
->>
->> Fix the problem by using SKIP_GLOBDEFS macro to skip the variables
->> definition in debugfs.c. Note that debug_prog_name is also defined in
->> lib/ext2fs/extent.c when DEBUG macro is used, but this does not work even
->> with older gcc versions and is never used regardless so I am not going to
->> bother with it.
->>
->> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
->> ---
->> v2: Previous fix wasn't really working properly
+On Tue, Feb 11, 2020 at 12:14:31PM -0800, Ira Weiny wrote:
+> On Tue, Feb 11, 2020 at 07:00:35PM +1100, Dave Chinner wrote:
+> > On Sat, Feb 08, 2020 at 11:34:40AM -0800, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > DAX requires special address space operations but many other functions
+> > > check the IS_DAX() state.
+> > > 
+> > > While DAX is a property of the inode we perfer a lock at the super block
+> > > level because of the overhead of a rwsem within the inode.
+> > > 
+> > > Define a vfs per superblock percpu rs semaphore to lock the DAX state
+> > 
+> > ????
 > 
-> What was not working properly?
+> oops...  I must have forgotten to update the commit message when I did the
+> global RW sem.  I implemented the per-SB, percpu rwsem first but it was
+> suggested that the percpu nature of the lock combined with the anticipated
+> infrequent use of the write side made using a global easier.
 > 
-> It seemed reasonable to me.  The new mechanism looks like it would work,
-> but the first patch seemed more obvious, so I'd like to know what the problem
-> was.
+> But before I proceed on V4 I'd like to get consensus on which of the 2 locking
+> models to go with.
+> 
+> 	1) percpu per superblock lock
+> 	2) per inode rwsem
+> 
+> Depending on my mood I can convince myself of both being performant but the
+> percpu is very attractive because I don't anticipate many changes of state
+> during run time.  OTOH concurrent threads accessing the same file at run time
+> may also be low so there is likely to be little read contention across CPU's on
+> the per-inode lock?
+> 
+> Opinions?
+> 
+> > 
+> > > while performing various VFS layer operations.  Write lock calls are
+> > > provided here but are used in subsequent patches by the file systems
+> > > themselves.
+> > > 
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > ---
+> > > Changes from V2
+> > > 
+> > > 	Rebase on linux-next-08-02-2020
+> > > 
+> > > 	Fix locking order
+> > > 	Change all references from mode to state where appropriate
+> > > 	add CONFIG_FS_DAX requirement for state change
+> > > 	Use a static branch to enable locking only when a dax capable
+> > > 		device has been seen.
+> > > 
+> > > 	Move the lock to a global vfs lock
+> > > 
+> > > 		this does a few things
+> > > 			1) preps us better for ext4 support
+> > > 			2) removes funky callbacks from inode ops
+> > > 			3) remove complexity from XFS and probably from
+> > > 			   ext4 later
+> > > 
+> > > 		We can do this because
+> > > 			1) the locking order is required to be at the
+> > > 			   highest level anyway, so why complicate xfs
+> > > 			2) We had to move the sem to the super_block
+> > > 			   because it is too heavy for the inode.
+> > > 			3) After internal discussions with Dan we
+> > > 			   decided that this would be easier, just as
+> > > 			   performant, and with slightly less overhead
+> > > 			   than in the VFS SB.
+> > > 
+> > > 		We also change the functions names to up/down;
+> > > 		read/write as appropriate.  Previous names were over
+> > > 		simplified.
+> > 
+> > This, IMO, is a bit of a train wreck.
+> > 
+> > This patch has nothing to do with "DAX state", it's about
+> > serialising access to the aops vector.
+> 
+> It is a bit more than just the aops vector.  It also has to protect against
+> checks of IS_DAX() which occur through many of the file operations.
 
-I built e2fsprogs & ran make check from git on Fedora Rawhide w/ your first patch,
-and it all seemed to work fine so I'll just stand by for more info.  :)
+I think you are looking at this incorrectly. The IS_DAX() construct
+is just determining what path to the aops method we take. regardless
+of whether IS_DAX() is true or not, we need to execute an aop
+method, and so aops vector protection is required regardless of how
+IS_DAX() evaluates.
 
--Eric
+But we do require IS_DAX() to evaluate consistently through an
+entire aops protected region, as there may be multiple aops method
+calls in a aops context (e.g. write page faults). Hence we have to
+ensure that IS_DAX() changes atomically w.r.t. to the aops vector
+switches. This is simply:
 
+	sb_aops_lock()
+	inode->i_flags |= S_DAX
+	sb_aops_switch(new_aops)
+	sb_aops_unlock().
+
+This guarantees that inside sb_aops_start/end(), IS_DAX() checks
+are stable because we change the state atomically with the aops
+vector.
+
+We are *not* providing serialisation of inode->i_flags access or
+updates here; all we need to do is ensure that the S_DAX flag is
+consistent and stable across an aops access region.  If we are not
+in an aops call chain or will not call an aops method, we just don't
+care if the IS_DAX() call is racy as whatever we call is still
+static and if it's DAAX sensitive it can call IS_DAX() itself when
+needed.
+
+Again, this isn't about DAX at all, it's about being able to switch
+aops vectors in a safe and reliable manner. The IS_DAX() constraints
+are really a minor addition on top of the "stable aops vector"
+regions we are laying down here.
+
+
+> > Big problems I see here:
+> > 
+> > 1. static key to turn it on globally.
+> >   - just a gross hack around doing it properly with a per-sb
+> >     mechanism and enbaling it only on filesystems that are on DAX
+> >     capable block devices.
+> 
+> Fair enough.  This was a reaction to Darricks desire to get this out of the way
+> when DAX was not in the system.  The static branch seemed like a good thing for
+> users who don't have DAX capable hardware while running kernels and FS's which
+> have DAX enabled.
+> 
+> http://lkml.iu.edu/hypermail/linux/kernel/2001.1/05691.html
+
+I think that's largely premature optimisation, and it backs us into
+the "all or nothing" corner which is a bad place to be for what is
+per-filesystem functionality.
+
+> >   - you're already passing in an inode to all these functions. It's
+> >     trivial to do:
+> > 
+> > 	if (!inode->i_sb->s_flags & S_DYNAMIC_AOPS)
+> > 		return
+> > 	/* do sb->s_aops_lock manipulation */
+> 
+> Yea that would be ok IMO.
+> 
+> Darrick would just having this be CONFIG_FS_DAX as per this patch be ok with
+> you.  I guess the static key may have been a bit of overkill?
+> 
+> > 
+> > 2. global lock
+> >   - OMG!
+> 
+> I know.  The thinking on this is that the locking is percpu which is near
+> 0 overhead in the read case and we are rarely going to take exclusive access.
+
+The problem is that users can effectively run:
+
+$ xfs_io -c "chattr -R -D -x" /path/to/dax_fs
+
+And then it walks over millions of individual inodes turning off
+the DAX flag on each of them. And if each of those inodes takes a
+global per-cpu rwsem that blocks all read/write IO and page faults
+on everything even for a short time, then this is will have a major
+impact on the entire system and users will be very unhappy.
+
+> >   - global lock will cause entire system IO/page fault stalls
+> >     when someone does recursive/bulk DAX flag modification
+> >     operations. Per-cpu rwsem Contention on  large systems will be
+> >     utterly awful.
+> 
+> Yea that is probably bad...  I certainly did not test the responsiveness of
+> this.  FWIW if the system only has 1 FS the per-SB lock is not going to be any
+> different from the global which was part of our thinking.
+
+Don't forget that things like /proc, /sys, etc are all filesystems.
+Hence the global lock will affect accesses to -everything- in the
+system, not just the DAX enabled filesystem. Global locks are -bad-.
+
+> >   - ext4's use case almost never hits the exclusive lock side of the
+> >     percpu-rwsem - only when changing the journal mode flag on the
+> >     inode. And it only affects writeback in progress, so it's not
+> >     going to have massive concurrency on it like a VFS level global
+> >     lock has. -> Bad model to follow.
+> 
+> I admit I did not research the ext4's journal mode locking that much.
+> 
+> >   - per-sb lock is trivial - see #1 - which limits scope to single
+> >     filesystem
+> 
+> I agree and...  well the commit message shows I actually implemented it that
+> way at first...  :-/
+> 
+> >   - per-inode rwsem would make this problem go away entirely.
+> 
+> But would that be ok for concurrent read performance which is going to be used
+> 99.99% of the time?  Maybe Darricks comments made me panic a little bit too
+> much overhead WRT locking and its potential impact on users not using DAX?
+
+I know that a rwsem in shared mode can easily handle 2M lock
+cycles/s across a 32p machine without contention (concurrent AIO-DIO
+read/writes to a single file) so the baseline performance of a rwsem
+is likely good enough to start from.
+
+It's simple, and we can run tests easily enough to find out where it
+starts to become a performance limitation. This whole "global percpu
+rwsem thing stinks like premature optimisation. Do the simple,
+straight forward thing first, then get numbers and analysis the
+limitations to determine what the second generation of the
+functionality needs to fix.
+
+IMO, we don't have to solve every scalability problem with the
+initial implementation. Let's just make it work first, then worry
+about extreme scalability when we have some idea of where those
+scalability problems are.
+
+> > 3. If we can use a global per-cpu rwsem, why can't we just use a
+> >    per-inode rwsem?
+> 
+> Per-cpu lock was attractive because of its near 0 overhead to take the read
+> lock which happens a lot during normal operations.
+> 
+> >   - locking context rules are the same
+> >   - rwsem scales pretty damn well for shared ops
+> 
+> Does it?  I'm not sure.
+
+If you haven't tested it, then we are definitely in the realm of
+premature optimisation...
+
+> 
+> >   - no "global" contention problems
+> >   - small enough that we can put another rwsem in the inode.
+> 
+> Everything else I agree with...  :-D
+> 
+> > 
+> > 4. "inode_dax_state_up_read"
+> >   - Eye bleeds.
+> >   - this is about the aops structure serialisation, not dax.
+> >   - The name makes no sense in the places that it has been added.
+> 
+> Again it is about more than just the aops.  IS_DAX() needs to be protected in
+> all the file operations calls as well or we can get races with the logic in
+> those calls and a state switch.
+> 
+> > 
+> > 5. We already have code that does almost exactly what we need: the
+> >    superblock freezing infrastructure.
+> 
+> I think freeze does a lot more than we need.
+> 
+> >   - freezing implements a "hold operations on this superblock until
+> >     further notice" model we can easily follow.
+> >   - sb_start_write/sb_end_write provides a simple API model and a
+> >     clean, clear and concise naming convention we can use, too.
+> 
+> Ok as a model...  If going with the per-SB lock.
+
+Ok, you completely missed my point. You're still looking at this as
+a set of "locks" and serialisation.
+
+Freezing is *not a lock* - it provides a series of "drain points"
+where we can transparently block new operations, then wait for all
+existing operations to complete so we can make a state change, and
+then once that is done we unblock all the waiters....
+
+IOWs, the freeze model provides an ordered barrier mechanism, and
+that's precisely what we need for aops protection...
+
+Yes, it may be implemented with locks internally, but that's
+implementation detail of the barrier mechanism, not an indication
+what functionality it is actually providing.
+
+> After working through my
+> response I'm leaning toward a per-inode lock again.  This was the way I did
+> this to begin with.
+> 
+> I want feedback before reworking for V4, please.
+
+IMO, always do the simple thing first.
+
+Only do a more complex thing if the simple thing doesn't work or
+doesn't perform sufficiently well for an initial implemenation.
+Otherwise we end up with crazy solutions from premature optimisation
+that simply aren't viable.
+
+> > Really, I'm struggling to understand how we got to "global locking
+> > that stops the world" from "need to change per-inode state
+> > atomically". Can someone please explain to me why this patch isn't
+> > just a simple set of largely self-explanitory functions like this:
+> > 
+> > XX_start_aop()
+> > XX_end_aop()
+> > 
+> > XX_lock_aops()
+> > XX_switch_aops(aops)
+> > XX_unlock_aops()
+> > 
+> > where "XX" is "sb" or "inode" depending on what locking granularity
+> > is used...
+> 
+> Because failing to protect the logic around IS_DAX() results in failures in the
+> read/write and direct IO paths.
+> 
+> So we need to lock the file operations as well.
+
+Again, there is no "locking" here. We just need to annotate regions
+where the aops vector must remain stable. If a fop calls an aop that
+the aops vector does not change while it is the middle of executing
+the fop. Hence such fops calls will need to be inside
+XX_start_aop()/XX_end_aop() markers.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
