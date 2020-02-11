@@ -2,86 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4143D159A71
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 21:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5E2159A96
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Feb 2020 21:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731079AbgBKUWW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 11 Feb 2020 15:22:22 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44343 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731076AbgBKUWW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 11 Feb 2020 15:22:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581452540;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5bD3yovag2fIgarV4jsr+j0HIPraUUFbfuVz3Lcns4Q=;
-        b=E6h1GvALIMk+6N0fN809qn/LNerEWauu/ZE97eF3pAgpB80Q+Ug7DrLH3w1dLtQjF7O4Vd
-        vy0mMzr59Qq2c3miJScrmLjeM8mrmyQuHmGCGIluI7E2vvEeWA3F6GunhgNFj50Rso/CBq
-        FaMX/bqlkOTI6jl+TEIEQxcTKwswlFw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-M4rYFIEIMFODbqhK1iaeew-1; Tue, 11 Feb 2020 15:22:16 -0500
-X-MC-Unique: M4rYFIEIMFODbqhK1iaeew-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B31E36125A;
-        Tue, 11 Feb 2020 20:22:15 +0000 (UTC)
-Received: from [IPv6:::1] (ovpn04.gateway.prod.ext.phx2.redhat.com [10.5.9.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B4C1110246E3;
-        Tue, 11 Feb 2020 20:22:14 +0000 (UTC)
-Subject: Re: [PATCH v2] tst_libext2fs: Avoid multiple definition of global
- variables
-To:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu
-References: <20200130132122.21150-1-lczerner@redhat.com>
- <20200210152459.19903-1-lczerner@redhat.com>
-From:   Eric Sandeen <sandeen@redhat.com>
-Message-ID: <f75ab2d5-9c59-a190-6fa5-c5f0e645da9c@redhat.com>
-Date:   Tue, 11 Feb 2020 14:22:13 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.2
+        id S1731127AbgBKUiJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 11 Feb 2020 15:38:09 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45707 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728063AbgBKUiJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 11 Feb 2020 15:38:09 -0500
+Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id F25C17EAB21;
+        Wed, 12 Feb 2020 07:38:04 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j1cIG-0002wd-CD; Wed, 12 Feb 2020 07:38:04 +1100
+Date:   Wed, 12 Feb 2020 07:38:04 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 04/12] fs/xfs: Clean up DAX support check
+Message-ID: <20200211203804.GL10776@dread.disaster.area>
+References: <20200208193445.27421-1-ira.weiny@intel.com>
+ <20200208193445.27421-5-ira.weiny@intel.com>
+ <20200211055745.GG10776@dread.disaster.area>
+ <20200211162830.GB12866@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200210152459.19903-1-lczerner@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200211162830.GB12866@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
+        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=DmWA4bM_9KjgS68gnp8A:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2/10/20 9:24 AM, Lukas Czerner wrote:
-> gcc version 10 changed the default from -fcommon to -fno-common and as a
-> result e2fsprogs make check tests fail because tst_libext2fs.c end up
-> with a build error.
+On Tue, Feb 11, 2020 at 08:28:30AM -0800, Ira Weiny wrote:
+> On Tue, Feb 11, 2020 at 04:57:45PM +1100, Dave Chinner wrote:
+> > On Sat, Feb 08, 2020 at 11:34:37AM -0800, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > Rather than open coding xfs_inode_supports_dax() in
+> > > xfs_ioctl_setattr_dax_invalidate() export xfs_inode_supports_dax() and
+> > > call it in preparation for swapping dax flags.
+> > > 
+> > > This also means updating xfs_inode_supports_dax() to return true for a
+> > > directory.
+> > 
+> > That's not correct. This now means S_DAX gets set on directory inodes
+> > because both xfs_inode_supports_dax() and the on-disk inode flag
+> > checks return true in xfs_diflags_to_iflags(). Hence when we
+> > instantiate a directory inode with a DAX inherit hint set on it
+> > we'll set S_DAX on the inode and so IS_DAX() will return true for
+> > directory inodes...
 > 
-> This is because it defines two global variables debug_prog_name and
-> extra_cmds that are already defined in debugfs/debugfs.c. With -fcommon
-> linker was able to resolve those into the same object, however with
-> -fno-common it's no longer able to do it and we end up with multiple
-> definition errors.
+> I'm not following.  Don't we want S_DAX to get set on directory inodes?
+
+No, because S_DAX is used for controlling direct user data access,
+and we *never* let users directly access directory data. Even the
+filesystems don't access directory data directly - the transactional
+change model of journaling filesystems requires metadata to be
+buffered in memory and never directly modified.
+
+Hence when filesystems like ext4 keep their directory data in the
+page cache, we do not want the kernel to think that this inode is
+accessed through the DAX subsystem - it is accessed via the buffered
+IO interfaces like page_cache_sync_readahead() and writeback is
+controlled by the journal. Hence setting S_DAX on these inodes is
+incorrect.
+
+Whilst XFS doesn't use the page cache for it's metadata
+buffering, the issue is the same as it's also a journalling
+filesystem. hence setting S_DAX on XFS directory inodes is also
+incorrect.
+
+> IIRC what we wanted was something like this where IS_DAX is the current state
+> and "dax" is the inode flag:
 > 
-> Fix the problem by using SKIP_GLOBDEFS macro to skip the variables
-> definition in debugfs.c. Note that debug_prog_name is also defined in
-> lib/ext2fs/extent.c when DEBUG macro is used, but this does not work even
-> with older gcc versions and is never used regardless so I am not going to
-> bother with it.
+> / <IS_DAX=0 dax=0>
+> 	dir1 <IS_DAX=0 dax=0>
+> 		f0 <IS_DAX=0 dax=0>
+> 		f1 <IS_DAX=1 dax=1>
+> 	dir2 <IS_DAX=1 dax=1>
+> 		f2 <IS_DAX=1 dax=1>
+> 		f3 <IS_DAX=0 dax=0>
+> 		dir3 <IS_DAX=1 dax=1>
+> 			f4 <IS_DAX=1 dax=1>
+> 		dir4 <IS_DAX=0 dax=0>
+> 			f5 <IS_DAX=0 dax=0>
+> 		f6 <IS_DAX=1 dax=1>
 > 
-> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> ---
-> v2: Previous fix wasn't really working properly
+> Where f1, dir2, f3, and dir4 required explicit state changes when they were
+> created.  Because they inherited their dax state from the parent.  All the
+> other creations happened based on the DAX state of the parent directory.  So we
+> need to store and know the state of the directories.  What am I missing?
 
-What was not working properly?
+I think that you are conflating internal filesystem feature
+management details (the inheritance of the DAX flag feature of
+directories) with kernel IO path behaviour (the inode S_DAX flag).
 
-It seemed reasonable to me.  The new mechanism looks like it would work,
-but the first patch seemed more obvious, so I'd like to know what the problem
-was.
+i.e. IS_DAX() indicates whether DAX is _actively being used_ to
+access the data of a regular file inode, not to indicate whether the
+on-disk flags used to manage default behaviour are set or not.
 
-Thanks,
--Eric
+Cheers,
 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
