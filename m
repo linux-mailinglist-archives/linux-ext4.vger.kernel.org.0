@@ -2,57 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AABD15AF96
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2020 19:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5B115B150
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2020 20:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728866AbgBLSSM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Feb 2020 13:18:12 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:41994 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727279AbgBLSSL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Feb 2020 13:18:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4+pGNKZQNPPjUYhUfxAE2vdkfqWETPzu/0lbzblOiLM=; b=qC1Fti8lZ0koII3U5Sa2TjOM28
-        nosTSzdm25oQSeIMGq07AVlCw20djEBGUpWliyiKQwITDdQcoaxm1uXqtkNjwxfTpJNhiOtI8jhOb
-        r7GEIlGzU7vqitlAbk9aJYzHnlfzWJw31vQC/Z3Til1uih5qj+enBDV26fhdRz3DdCxYbTIaNuUIX
-        2OnWR1DrQfnRApPtzcldB3qtqOzSKFM+aq41f9gck471QDMk1xCwWxmFurCQfy00JF0ZQaamhxAYP
-        Bw2GDAtxWrBD9CBq026AuSAIvMitA8b0oUDL/p3WShFpcX4ybJFYzF5XIQaHgMzYrROtQoZVzZ4bv
-        WrZl7SaA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j1waR-0004Q0-E1; Wed, 12 Feb 2020 18:18:11 +0000
-Date:   Wed, 12 Feb 2020 10:18:11 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v5 04/13] mm: Add readahead address space operation
-Message-ID: <20200212181811.GC9756@infradead.org>
-References: <20200211010348.6872-1-willy@infradead.org>
- <20200211010348.6872-5-willy@infradead.org>
+        id S1728962AbgBLTtz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Feb 2020 14:49:55 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:47643 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727439AbgBLTtz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 12 Feb 2020 14:49:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1581536994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U+GXIvAMcn/l9xGhAfn01B4ypUvtlhAuMLYkyfgVwcY=;
+        b=fIM9sQtUEZKNa9LeRJ7RIadgaOxd5lTIBt8v/Ag//QH56CpgKzcccMn+bv4hPlm05PAiPP
+        Sdk34PCTT4Zh+Bd7STF+51NzAAL6RWZSSwfLCsEWOhxuB6mURTuYCLqXrokw+tUxYXqr60
+        dtjeJbbxLBYRXzmSOJ/CL+hbGawRmJc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-tJPaTru3NKio2wfOesUvGg-1; Wed, 12 Feb 2020 14:49:52 -0500
+X-MC-Unique: tJPaTru3NKio2wfOesUvGg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81E12800EB2;
+        Wed, 12 Feb 2020 19:49:50 +0000 (UTC)
+Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 01CED60BF4;
+        Wed, 12 Feb 2020 19:49:48 +0000 (UTC)
+From:   Jeff Moyer <jmoyer@redhat.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 00/12] Enable per-file/directory DAX operations V3
+References: <20200208193445.27421-1-ira.weiny@intel.com>
+        <x49imke1nj0.fsf@segfault.boston.devel.redhat.com>
+        <20200211201718.GF12866@iweiny-DESK2.sc.intel.com>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date:   Wed, 12 Feb 2020 14:49:48 -0500
+In-Reply-To: <20200211201718.GF12866@iweiny-DESK2.sc.intel.com> (Ira Weiny's
+        message of "Tue, 11 Feb 2020 12:17:18 -0800")
+Message-ID: <x49sgjf1t7n.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200211010348.6872-5-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Feb 10, 2020 at 05:03:39PM -0800, Matthew Wilcox wrote:
-> +struct readahead_control {
-> +	struct file *file;
-> +	struct address_space *mapping;
-> +/* private: use the readahead_* accessors instead */
-> +	pgoff_t start;
-> +	unsigned int nr_pages;
-> +	unsigned int batch_count;
+Ira Weiny <ira.weiny@intel.com> writes:
 
-We often use __ prefixes for the private fields to make that a little
-more clear.
+> On Mon, Feb 10, 2020 at 10:15:47AM -0500, Jeff Moyer wrote:
+>> Hi, Ira,
+>> 
+>> Could you please include documentation patches as part of this series?
+>
+> I do have an update to the vfs.rst doc in
+>
+> 	fs: Add locking for a dynamic DAX state
+>
+> I'm happy to do more but was there something specific you would like to see?
+> Or documentation in xfs perhaps?
+
+Sorry, I was referring to your statx man page addition.  It would be
+nice if we could find a home for the information in your cover letter,
+too.  Right now, I'm not sure how application developers are supposed to
+figure out how to use the per-inode settings.
+
+If I read your cover letter correctly, the mount option overrides any
+on-disk setting.  Is that right?  Given that we document the dax mount
+option as "the way to get dax," it may be a good idea to allow for a
+user to selectively disable dax, even when -o dax is specified.  Is that
+possible?
+
+-Jeff
+
