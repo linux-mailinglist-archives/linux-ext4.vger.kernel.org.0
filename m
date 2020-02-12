@@ -2,121 +2,123 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A1A15A700
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2020 11:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F99C15A9D7
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2020 14:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727602AbgBLKu2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Feb 2020 05:50:28 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:33043 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgBLKu2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Feb 2020 05:50:28 -0500
-Received: by mail-pl1-f195.google.com with SMTP id ay11so834650plb.0;
-        Wed, 12 Feb 2020 02:50:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KwYUt36/m5Zra9oiWnv5NglJ51Q8JRyxfXbpzb8jNMo=;
-        b=YFhtNSX2HQfROr6X2rfRntcwEYqvfehNLEdmf2lgJ+WO9/+QsLA7DIEoLdYr/cO8Iq
-         xh71UXRcbEzYM6wexqqD9g+Fl7bw5IZiCWqdxHkicngBTraUPWnRvT0IQg+U4NAIj+0v
-         BGAsSXGLiO+EzVZMmhJSVsANUjLQ7ANixOJKoLMvCYczq52oDxqFDxcDJeX1+HU2vvAc
-         UWoEJmIYtt21dCg6v1Z7EOL5ztQC9TaFnlkV5XBgXvaqIL7x65LHmPuuu0YUrjU6yjK+
-         XmZCSupkTQzKuzH0p7bTXT/eelKq+x756T6VunGkVxU82kaEXXixU3WLWQnQ4H3kcUGz
-         LGZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KwYUt36/m5Zra9oiWnv5NglJ51Q8JRyxfXbpzb8jNMo=;
-        b=KSLwvcAo47cs95LWXE7MM48NGYFRJLHkJlvXuicomXhtoUnr5KXIqZQ3QcDi0ivWdi
-         2jht31ab5s27ggPEoeLMVmWKyICCgG+6FNrScJBSbVSMg7xo/6xhfbHm7io9GDtjTvYJ
-         cSnYWPC/DV09DaBTETSyBZm43hEPSS4QpVDwVO+py0lUxDk2yhH7IVCGezcbX0AUI2AQ
-         3JHPNMJL1s+x/ptxAKvcmfED2r45nBgpBouZarhAy8Bq/Xjn0Uq3NNsa238jpKFjO+4H
-         yRybhx3c2LNdLbQ8dN2TrBy97amS2pdd1XBMADRfCDghOokCDfu9Mo0QgVX8sRya4qhX
-         qcYQ==
-X-Gm-Message-State: APjAAAVK9Nyou5AJCXse+hHEe2bxqmosS8orKj9E/voQgkkkvNfu5E3P
-        qHp5BzGXM6SxgaPDZNjo0oepDfpz
-X-Google-Smtp-Source: APXvYqx7vb0poKTK4gqwe4IOMPVElxX76jI2v8Y03uSAcMQ6UdVEsm13u5A1ppfdOfTqwu2JRiBD4A==
-X-Received: by 2002:a17:902:b484:: with SMTP id y4mr22203579plr.126.1581504627326;
-        Wed, 12 Feb 2020 02:50:27 -0800 (PST)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id r62sm389569pfc.89.2020.02.12.02.50.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2020 02:50:26 -0800 (PST)
-Date:   Wed, 12 Feb 2020 18:50:19 +0800
-From:   Murphy Zhou <jencce.kernel@gmail.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Murphy Zhou <jencce.kernel@gmail.com>, linux-ext4@vger.kernel.org,
-        fstests@vger.kernel.org
-Subject: Re: ext4 dio RWF_NOWAIT change
-Message-ID: <20200212105019.5zah56u2l47oh3gf@xzhoux.usersys.redhat.com>
-References: <20200205091344.u5c3nnblezzh5xgb@xzhoux.usersys.redhat.com>
- <20200207153824.GA122530@mit.edu>
+        id S1727692AbgBLNPF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Feb 2020 08:15:05 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:32978 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727662AbgBLNPF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 12 Feb 2020 08:15:05 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B697FB66C9EA9CABA19B;
+        Wed, 12 Feb 2020 21:15:02 +0800 (CST)
+Received: from [127.0.0.1] (10.173.220.179) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Wed, 12 Feb 2020
+ 21:14:56 +0800
+Subject: Re: [PATCH 2/2] jbd2: do not clear the BH_Mapped flag when forgetting
+ a metadata buffer
+To:     Jan Kara <jack@suse.cz>
+CC:     <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
+        <luoshijie1@huawei.com>, <zhangxiaoxu5@huawei.com>
+References: <20200203140458.37397-1-yi.zhang@huawei.com>
+ <20200203140458.37397-3-yi.zhang@huawei.com>
+ <20200206114647.GB3994@quack2.suse.cz>
+ <bc3e2187-b1a7-b21e-db9f-c8c01b97368f@huawei.com>
+ <20200212084740.GB25573@quack2.suse.cz>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <f6cf792e-93cc-14c7-82c9-474799640038@huawei.com>
+Date:   Wed, 12 Feb 2020 21:14:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200207153824.GA122530@mit.edu>
+In-Reply-To: <20200212084740.GB25573@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.220.179]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 07, 2020 at 10:38:24AM -0500, Theodore Y. Ts'o wrote:
-> On Wed, Feb 05, 2020 at 05:13:44PM +0800, Murphy Zhou wrote:
-> > Hi,
-> > 
-> > Kernel commit 378f32bab3714f04c4e0c3aee4129f6703805550
-> > Author: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-> > Date:   Tue Nov 5 23:02:39 2019 +1100
-> > 
-> >     ext4: introduce direct I/O write using iomap infrastructure
-> > 
-> > 
-> > Changed the logic of dio+RWF_NOWAIT
-> > 
-> > from:
-> > 
-> > -       if (!inode_trylock(inode)) {
-> > -               if (iocb->ki_flags & IOCB_NOWAIT)
-> > -                       return -EAGAIN;
-> > -               inode_lock(inode);
-> > -       }
-> > 
-> > 
-> > to:
-> > 
-> > +       if (iocb->ki_flags & IOCB_NOWAIT) {
-> > +               if (!inode_trylock(inode))
-> > +                       return -EAGAIN;
-> > +       } else {
-> > +               inode_lock(inode);
-> > +       }
-> > 
-> > 
-> > fstests generic/471 expecet EAGAIN on this situation, so it started to
-> > fail since than.
-> 
-> I don't understand why this specific change would cause the situation.
-> In the generic/471 test, here iocb->ki_flags will have IOCB_NOWAIT
-> set, and in that case I don't see how there would be a change in
-> behavior with respect to EAGAIN being returned.
-> 
-> In any case, I've been suppressing generic/471 because of concerns
-> that the test is bogus so I hadn't noticed.  From
-> kvm-xfstests/test-appliance/files/root/fs/global_exclude:
-> 
-> # The test generic/471 tests the RWF_NOWAIT flag; however
-> # how it is supposed to work with file systems is disputed,
-> # and not all device drivers support it.  As a result
-> # it doesn't work if an LVM device driver is in use (as is the
-> # case with gce-xfstests).  So let's suppress it for now.  For
-> # more details see:
-> # https://lore.kernel.org/linux-block/20190723220502.GX7777@dread.disaster.area/
-> generic/471
-> 
-> 							- Ted
+Hi,
 
-Thanks for all the details! Ted.
+On 2020/2/12 16:47, Jan Kara wrote:
+> On Tue 11-02-20 14:51:10, zhangyi (F) wrote:
+>> On 2020/2/6 19:46, Jan Kara wrote:
+>>> On Mon 03-02-20 22:04:58, zhangyi (F) wrote:
+>>>> Commit 904cdbd41d74 ("jbd2: clear dirty flag when revoking a buffer from
+>>>> an older transaction") set the BH_Freed flag when forgetting a metadata
+>>>> buffer which belongs to the committing transaction, it indicate the
+>>>> committing process clear dirty bits when it is done with the buffer. But
+>>>> it also clear the BH_Mapped flag at the same time, which may trigger
+>>>> below NULL pointer oops when block_size < PAGE_SIZE.
+>>>>
+>>>> rmdir 1             kjournald2                 mkdir 2
+>>>>                     jbd2_journal_commit_transaction
+>>>> 		    commit transaction N
+>>>> jbd2_journal_forget
+>>>> set_buffer_freed(bh1)
+>>>>                     jbd2_journal_commit_transaction
+>>>>                      commit transaction N+1
+>>>>                      ...
+>>>>                      clear_buffer_mapped(bh1)
+>>>>                                                ext4_getblk(bh2 ummapped)
+>>>>                                                ...
+>>>>                                                grow_dev_page
+>>>>                                                 init_page_buffers
+>>>>                                                  bh1->b_private=NULL
+>>>>                                                  bh2->b_private=NULL
+>>>>                      jbd2_journal_put_journal_head(jh1)
+>>>>                       __journal_remove_journal_head(hb1)
+>>>> 		       jh1 is NULL and trigger oops
+>>>>
+>>>> *) Dir entry block bh1 and bh2 belongs to one page, and the bh2 has
+>>>>    already been unmapped.
+>>>>
+>>>> For the metadata buffer we forgetting, clear the dirty flags is enough,
+>>>> so this patch add BH_Unmap flag for the journal_unmap_buffer() case and
+>>>> keep the mapped flag for the metadata buffer.
+>>>>
+>>>> Fixes: 904cdbd41d74 ("jbd2: clear dirty flag when revoking a buffer from an older transaction")
+>>>> Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+>> [..]
+>>>
+>>> Also rather than introducing this new buffer_unmap bit, I'd use the fact
+>>> this special treatment is needed only for buffers coming from the block device
+>>> mapping. And we can check for that like:
+>>>
+>>> 		/*
+>>> 		 * We can (and need to) unmap buffer only for normal mappings.
+>>> 		 * Block device buffers need to stay mapped all the time.
+>>> 		 * We need to be careful about the check because the page
+>>> 		 * mapping can get cleared under our hands.
+>>> 		 */
+>>> 		mapping = READ_ONCE(bh->b_page->mapping);
+>>> 		if (mapping && !sb_is_blkdev_sb(mapping->host->i_sb)) {
+>>> 			...
+>>> 		}
+>>
+>> Think about it again, it may missing clearing of mapped flag if 'mapping'
+>> of journalled data page was cleared, and finally trigger exception if
+>> we reuse the buffer again. So I think it should be:
+>>
+>> 		if (!(mapping && sb_is_blkdev_sb(mapping->host->i_sb))) {
+>> 			...
+>> 		}
+> 
+> Well, if b_page->mapping got cleared, it means the page got fully truncated
+> and in such case buffers can never be reused - the page and buffers will be
+> freed once we are done with them. So what you are concerned about cannot
+> happen. But you're right it is good to explain this in the comment.
+> 
+Yes, you are right, the page and buffer will be freed in release_buffer_page()
+and it seems there is no exception, I will send V3 to back to use the judgement
+condition as you suggested and add comments after tests.
 
-Murphy
+Thanks,
+Yi.
+
