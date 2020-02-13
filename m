@@ -2,61 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0B215BB1B
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2020 10:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C80D615BC81
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2020 11:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729494AbgBMJDt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 13 Feb 2020 04:03:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44796 "EHLO mail.kernel.org"
+        id S1729736AbgBMKQI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Feb 2020 05:16:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51206 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729428AbgBMJDs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Feb 2020 04:03:48 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 104311] Out of bounds read in test suite of e2fsprogs
-Date:   Thu, 13 Feb 2020 09:03:48 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext2@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext2
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: hanno@hboeck.de
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: CODE_FIX
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext2@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_status resolution
-Message-ID: <bug-104311-13602-3924Hgq8XU@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-104311-13602@https.bugzilla.kernel.org/>
-References: <bug-104311-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
-MIME-Version: 1.0
+        id S1729428AbgBMKQH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 13 Feb 2020 05:16:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 86A2CAD63;
+        Thu, 13 Feb 2020 10:16:05 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 260CE1E0E01; Thu, 13 Feb 2020 11:16:05 +0100 (CET)
+From:   Jan Kara <jack@suse.cz>
+To:     Ted Tso <tytso@mit.edu>
+Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Subject: [PATCH 0/7 v2] e2fsprogs: Better handling of indexed directories
+Date:   Thu, 13 Feb 2020 11:15:55 +0100
+Message-Id: <20200213101602.29096-1-jack@suse.cz>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=104311
+Hello,
 
-Hanno Boeck (hanno@hboeck.de) changed:
+Currently, libext2fs does not implement adding entry into htree directory. It
+just bluntly clears EXT2_INDEX_FL and then treats the directory as non-indexed.
+This breaks when metadata checksums are enabled and although ext2fs_link()
+tries to fixup the directory, it doesn't always fixup all the checksums and
+I have some doubts about practicality of just discarding htree information for
+really large directories. This patch series implements full support for adding
+entry into htree directory and some tests to test the functionality.
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-             Status|NEW                         |RESOLVED
-         Resolution|---                         |CODE_FIX
+The first patch in the series is somewhat unrelated, it just clarifies handling
+of overflown directory i_nlink handling in e2fsck which confused me initially
+when analyzing the issue.
 
---- Comment #1 from Hanno Boeck (hanno@hboeck.de) ---
-Fixed in
-https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/commit/lib/ext2fs/tst_badblocks.c?id=f449486d631987983b4275d246b7bbbb551f3235
+The second patch fixes a bug in e2fsck when rehashing indexed directories which
+I've found during testing my series.
 
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+The third patch prepares ext2fs_mkdir() and ext2fs_symlink() to safely work
+with ext2fs_link() - this demonstrates there's a breakage potential in the
+following changes to ext2fs_link() for external applications using
+ext2fs_link() because it can now modify the directory inode and allocate
+blocks. If people are concerned about this, we could create ext2fs_link2()
+with the new behavior and just restrict ext2fs_link() to bail with error
+when called on indexed directory with metadata_csum enabled.
+
+Next three patches implement the support for linking into indexed directories
+and tests.
+
+The last patch then fixes tune2fs to properly recompute directory checksums
+when disabling dir_index feature.
+
+Changes since v1:
+* Fixed growing of h-tree to 3-levels
+* Added e2fsck fix
+* Added tune2fs fix
+* Fixed ext2fs_mkdir() and ext2fs_symlink() to work with new ext2fs_link()
+* Reworked tests
+
+								Honza
