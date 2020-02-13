@@ -2,307 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4213115BC87
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2020 11:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0069615BF99
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2020 14:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbgBMKQM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Feb 2020 05:16:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51276 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729757AbgBMKQL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Feb 2020 05:16:11 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C4260B0B6;
-        Thu, 13 Feb 2020 10:16:05 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4311F1E0E5D; Thu, 13 Feb 2020 11:16:05 +0100 (CET)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 7/7] tune2fs: Update dir checksums when clearing dir_index feature
-Date:   Thu, 13 Feb 2020 11:16:02 +0100
-Message-Id: <20200213101602.29096-8-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200213101602.29096-1-jack@suse.cz>
-References: <20200213101602.29096-1-jack@suse.cz>
+        id S1730014AbgBMNnW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Feb 2020 08:43:22 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:51498 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729801AbgBMNnW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 13 Feb 2020 08:43:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=57P4Q/GU2ra8qTXmZpI2Z/3+4gqtkjqSHRcsBClNQtg=; b=rSzaYz7/rumIfdFG+MdlTwtWLq
+        KJDbhGYitV4p48O5SGrNFqm7b6XrkzPNvpJkvwLsbmPzqOjljvrrI/kGme5i39kPjSCbZwMVJj/gp
+        /vZh8pgUFXWHWX8sVicFVEOt39rpppNWYqPj6hi4J8dYGEOsWyymiKiHcRkxOz883kzq6ZSKHqjk3
+        fsehuyu0gDewtgLxKPXDc7teJpZ6SJQvrPw6Tb1R8zCLV/rYe5SP5WtC5ElJI7KBaqIo6dB7dEuoo
+        fa9oGjFgIiPAK7v7SmERxvNZ+0wRUV+dCDxCmPFGbyPDr/p1ZkogJK5cSzTw9SfomXbDVvK3/M17m
+        Yx42/x7g==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j2Elw-0008Pa-QR; Thu, 13 Feb 2020 13:43:16 +0000
+Date:   Thu, 13 Feb 2020 05:43:16 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: Re: [PATCH 00/12] Change readahead API
+Message-ID: <20200213134316.GK7778@bombadil.infradead.org>
+References: <20200125013553.24899-1-willy@infradead.org>
+ <20200212203852.8b7e0b28974e41227bd97329@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200212203852.8b7e0b28974e41227bd97329@linux-foundation.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When clearing dir_index feature while metadata_csum is enabled, we have
-to rewrite checksums of all indexed directories to update checksums of
-internal tree nodes.
+On Wed, Feb 12, 2020 at 08:38:52PM -0800, Andrew Morton wrote:
+> On Fri, 24 Jan 2020 17:35:41 -0800 Matthew Wilcox <willy@infradead.org> wrote:
+> 
+> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > 
+> > This series adds a readahead address_space operation to eventually
+> > replace the readpages operation.  The key difference is that
+> > pages are added to the page cache as they are allocated (and
+> > then looked up by the filesystem) instead of passing them on a
+> > list to the readpages operation and having the filesystem add
+> > them to the page cache.  It's a net reduction in code for each
+> > implementation, more efficient than walking a list, and solves
+> > the direct-write vs buffered-read problem reported by yu kuai at
+> > https://lore.kernel.org/linux-fsdevel/20200116063601.39201-1-yukuai3@huawei.com/
+> 
+> Unclear which patch fixes this and how it did it?
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- misc/tune2fs.c | 143 ++++++++++++++++++++++++++++++++++++++-------------------
- 1 file changed, 95 insertions(+), 48 deletions(-)
+I suppose the problem isn't fixed until patch 13/13 is applied.
+What yu kuai is seeing is a race where readahead allocates a page,
+then passes it to iomap_readpages, which calls xfs_read_iomap_begin()
+which looks up the extent.  Then thread 2 does DIO which modifies the
+extent, because there's nothing to say that thread 1 is still using it.
+With this patch series, the readpages code puts the locked pages in the
+cache before calling iomap_readpages, so any racing write will block on
+the locked page until readahead is completed.
 
-diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-index a0448f63d1d5..254246fd858b 100644
---- a/misc/tune2fs.c
-+++ b/misc/tune2fs.c
-@@ -508,7 +508,8 @@ struct rewrite_dir_context {
- 	char *buf;
- 	errcode_t errcode;
- 	ext2_ino_t dir;
--	int is_htree;
-+	int is_htree:1;
-+	int clear_htree:1;
- };
+If you're tempted to put this into -mm, I have a couple of new changes;
+one to fix a kernel-doc warning for mpage_readahead() and one to add
+kernel-doc for iomap_readahead():
+
++++ b/fs/mpage.c
+@@ -339,9 +339,7 @@
  
- static int rewrite_dir_block(ext2_filsys fs,
-@@ -527,8 +528,13 @@ static int rewrite_dir_block(ext2_filsys fs,
- 	if (ctx->errcode)
- 		return BLOCK_ABORT;
- 
--	/* if htree node... */
--	if (ctx->is_htree)
-+	/*
-+	 * if htree node... Note that if we are clearing htree structures from
-+	 * the directory, we treat the htree internal block as an ordinary leaf.
-+	 * The code below will do the right thing and make space for checksum
-+	 * there.
-+	 */
-+	if (ctx->is_htree && !ctx->clear_htree)
- 		ext2fs_get_dx_countlimit(fs, (struct ext2_dir_entry *)ctx->buf,
- 					 &dcl, &dcl_offset);
- 	if (dcl) {
-@@ -657,7 +663,8 @@ static errcode_t rewrite_directory(ext2_filsys fs, ext2_ino_t dir,
- 	if (retval)
- 		return retval;
- 
--	ctx.is_htree = (inode->i_flags & EXT2_INDEX_FL);
-+	ctx.is_htree = !!(inode->i_flags & EXT2_INDEX_FL);
-+	ctx.clear_htree = !ext2fs_has_feature_dir_index(fs->super);
- 	ctx.dir = dir;
- 	ctx.errcode = 0;
- 	retval = ext2fs_block_iterate3(fs, dir, BLOCK_FLAG_READ_ONLY |
-@@ -668,6 +675,13 @@ static errcode_t rewrite_directory(ext2_filsys fs, ext2_ino_t dir,
- 	if (retval)
- 		return retval;
- 
-+	if (ctx.is_htree && ctx.clear_htree) {
-+		inode->i_flags &= ~EXT2_INDEX_FL;
-+		retval = ext2fs_write_inode(fs, dir, inode);
-+		if (retval)
-+			return retval;
-+	}
-+
- 	return ctx.errcode;
+ /**
+  * mpage_readahead - start reads against pages
+- * @mapping: the address_space
+- * @start: The number of the first page to read.
+- * @nr_pages: The number of consecutive pages to read.
++ * @rac: Describes which pages to read.
+  * @get_block: The filesystem's block mapper function.
+  *
+  * This function walks the pages and the blocks within each page, building and
+
++++ b/fs/iomap/buffered-io.c
+@@ -395,6 +395,21 @@
+ 	return done;
  }
  
-@@ -822,28 +836,67 @@ static void rewrite_one_inode(struct rewrite_context *ctx, ext2_ino_t ino,
- 		fatal_err(retval, "while rewriting extended attribute");
- }
- 
--/*
-- * Forcibly set checksums in all inodes.
-- */
--static void rewrite_inodes(ext2_filsys fs)
-+#define REWRITE_EA_FL		0x01	/* Rewrite EA inodes */
-+#define REWRITE_DIR_FL		0x02	/* Rewrite directories */
-+#define REWRITE_NONDIR_FL	0x04	/* Rewrite other inodes */
-+#define REWRITE_ALL (REWRITE_EA_FL | REWRITE_DIR_FL | REWRITE_NONDIR_FL)
-+
-+static void rewrite_inodes_pass(struct rewrite_context *ctx, unsigned int flags)
- {
- 	ext2_inode_scan	scan;
- 	errcode_t	retval;
- 	ext2_ino_t	ino;
- 	struct ext2_inode *inode;
--	int pass;
-+	int rewrite;
-+
-+	retval = ext2fs_get_mem(ctx->inode_size, &inode);
-+	if (retval)
-+		fatal_err(retval, "while allocating memory");
-+
-+	retval = ext2fs_open_inode_scan(ctx->fs, 0, &scan);
-+	if (retval)
-+		fatal_err(retval, "while opening inode scan");
-+
-+	do {
-+		retval = ext2fs_get_next_inode_full(scan, &ino, inode,
-+						    ctx->inode_size);
-+		if (retval)
-+			fatal_err(retval, "while getting next inode");
-+		if (!ino)
-+			break;
-+
-+		rewrite = 0;
-+		if (inode->i_flags & EXT4_EA_INODE_FL) {
-+			if (flags & REWRITE_EA_FL)
-+				rewrite = 1;
-+		} else if (LINUX_S_ISDIR(inode->i_mode)) {
-+			if (flags & REWRITE_DIR_FL)
-+				rewrite = 1;
-+		} else {
-+			if (flags & REWRITE_NONDIR_FL)
-+				rewrite = 1;
-+		}
-+		if (rewrite)
-+			rewrite_one_inode(ctx, ino, inode);
-+	} while (ino);
-+	ext2fs_close_inode_scan(scan);
-+	ext2fs_free_mem(&inode);
-+}
-+
-+/*
-+ * Forcibly rewrite checksums in inodes specified by 'flags'
++/**
++ * iomap_readahead - Attempt to read pages from a file.
++ * @rac: Describes the pages to be read.
++ * @ops: The operations vector for the filesystem.
++ *
++ * This function is for filesystems to call to implement their readahead
++ * address_space operation.
++ *
++ * Context: The file is pinned by the caller, and the pages to be read are
++ * all locked and have an elevated refcount.  This function will unlock
++ * the pages (once I/O has completed on them, or I/O has been determined to
++ * not be necessary).  It will also decrease the refcount once the pages
++ * have been submitted for I/O.  After this point, the page may be removed
++ * from the page cache, and should not be referenced.
 + */
-+static void rewrite_inodes(ext2_filsys fs, unsigned int flags)
-+{
- 	struct rewrite_context ctx = {
- 		.fs = fs,
- 		.inode_size = EXT2_INODE_SIZE(fs->super),
- 	};
-+	errcode_t retval;
- 
- 	if (fs->super->s_creator_os == EXT2_OS_HURD)
- 		return;
- 
--	retval = ext2fs_get_mem(ctx.inode_size, &inode);
--	if (retval)
--		fatal_err(retval, "while allocating memory");
--
- 	retval = ext2fs_get_memzero(ctx.inode_size, &ctx.zero_inode);
- 	if (retval)
- 		fatal_err(retval, "while allocating memory");
-@@ -862,39 +915,16 @@ static void rewrite_inodes(ext2_filsys fs)
- 	 *
- 	 * pass 2: go over other inodes to update their checksums.
- 	 */
--	if (ext2fs_has_feature_ea_inode(fs->super))
--		pass = 1;
--	else
--		pass = 2;
--	for (;pass <= 2; pass++) {
--		retval = ext2fs_open_inode_scan(fs, 0, &scan);
--		if (retval)
--			fatal_err(retval, "while opening inode scan");
--
--		do {
--			retval = ext2fs_get_next_inode_full(scan, &ino, inode,
--							    ctx.inode_size);
--			if (retval)
--				fatal_err(retval, "while getting next inode");
--			if (!ino)
--				break;
--
--			if (((pass == 1) &&
--			     (inode->i_flags & EXT4_EA_INODE_FL)) ||
--			    ((pass == 2) &&
--			     !(inode->i_flags & EXT4_EA_INODE_FL)))
--				rewrite_one_inode(&ctx, ino, inode);
--		} while (ino);
--
--		ext2fs_close_inode_scan(scan);
--	}
-+	if (ext2fs_has_feature_ea_inode(fs->super) && (flags & REWRITE_EA_FL))
-+		rewrite_inodes_pass(&ctx, REWRITE_EA_FL);
-+	flags &= ~REWRITE_EA_FL;
-+	rewrite_inodes_pass(&ctx, flags);
- 
- 	ext2fs_free_mem(&ctx.zero_inode);
- 	ext2fs_free_mem(&ctx.ea_buf);
--	ext2fs_free_mem(&inode);
- }
- 
--static void rewrite_metadata_checksums(ext2_filsys fs)
-+static void rewrite_metadata_checksums(ext2_filsys fs, unsigned int flags)
+ void iomap_readahead(struct readahead_control *rac, const struct iomap_ops *ops)
  {
- 	errcode_t retval;
- 	dgrp_t i;
-@@ -906,7 +936,7 @@ static void rewrite_metadata_checksums(ext2_filsys fs)
- 	retval = ext2fs_read_bitmaps(fs);
- 	if (retval)
- 		fatal_err(retval, "while reading bitmaps");
--	rewrite_inodes(fs);
-+	rewrite_inodes(fs, flags);
- 	ext2fs_mark_ib_dirty(fs);
- 	ext2fs_mark_bb_dirty(fs);
- 	ext2fs_mmp_update2(fs, 1);
-@@ -1205,6 +1235,23 @@ mmp_error:
- 			uuid_generate((unsigned char *) sb->s_hash_seed);
- 	}
- 
-+	if (FEATURE_OFF(E2P_FEATURE_COMPAT, EXT2_FEATURE_COMPAT_DIR_INDEX) &&
-+	    ext2fs_has_feature_metadata_csum(sb)) {
-+		check_fsck_needed(fs,
-+			_("Disabling directory index on filesystem with "
-+			  "checksums could take some time."));
-+		if (mount_flags & EXT2_MF_MOUNTED) {
-+			fputs(_("Cannot disable dir_index on a mounted "
-+				"filesystem!\n"), stderr);
-+			exit(1);
-+		}
-+		/*
-+		 * Clearing dir_index on checksummed filesystem requires
-+		 * rewriting all directories to update checksums.
-+		 */
-+		rewrite_checksums |= REWRITE_DIR_FL;
-+	}
-+
- 	if (FEATURE_OFF(E2P_FEATURE_INCOMPAT, EXT4_FEATURE_INCOMPAT_FLEX_BG)) {
- 		if (ext2fs_check_desc(fs)) {
- 			fputs(_("Clearing the flex_bg flag would "
-@@ -1248,7 +1295,7 @@ mmp_error:
- 				 "The larger fields afforded by this feature "
- 				 "enable full-strength checksumming.  "
- 				 "Run resize2fs -b to rectify.\n"));
--		rewrite_checksums = 1;
-+		rewrite_checksums = REWRITE_ALL;
- 		/* metadata_csum supersedes uninit_bg */
- 		ext2fs_clear_feature_gdt_csum(fs->super);
- 
-@@ -1276,7 +1323,7 @@ mmp_error:
- 				"filesystem!\n"), stderr);
- 			exit(1);
- 		}
--		rewrite_checksums = 1;
-+		rewrite_checksums = REWRITE_ALL;
- 
- 		/* Enable uninit_bg unless the user expressly turned it off */
- 		memcpy(test_features, old_features, sizeof(test_features));
-@@ -1458,7 +1505,7 @@ mmp_error:
- 			}
- 			check_fsck_needed(fs, _("Recalculating checksums "
- 						"could take some time."));
--			rewrite_checksums = 1;
-+			rewrite_checksums = REWRITE_ALL;
- 		}
- 	}
- 
-@@ -3196,7 +3243,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 			check_fsck_needed(fs,
- 				_("Setting the UUID on this "
- 				  "filesystem could take some time."));
--			rewrite_checksums = 1;
-+			rewrite_checksums = REWRITE_ALL;
- 		}
- 
- 		if (ext2fs_has_group_desc_csum(fs)) {
-@@ -3307,7 +3354,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 		if (retval == 0) {
- 			printf(_("Setting inode size %lu\n"),
- 							new_inode_size);
--			rewrite_checksums = 1;
-+			rewrite_checksums = REWRITE_ALL;
- 		} else {
- 			printf("%s", _("Failed to change inode size\n"));
- 			rc = 1;
-@@ -3316,7 +3363,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
- 	}
- 
- 	if (rewrite_checksums)
--		rewrite_metadata_checksums(fs);
-+		rewrite_metadata_checksums(fs, rewrite_checksums);
- 
- 	if (l_flag)
- 		list_super(sb);
--- 
-2.16.4
+ 	struct inode *inode = rac->mapping->host;
 
+I'll do a v6 with those changes soon, but I would really like a bit more
+review from filesystem people, particularly ocfs2 and gfs2.
