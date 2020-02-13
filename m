@@ -2,91 +2,78 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5B115B150
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Feb 2020 20:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B32F15B596
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2020 01:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbgBLTtz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 12 Feb 2020 14:49:55 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:47643 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727439AbgBLTtz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 12 Feb 2020 14:49:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1581536994;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U+GXIvAMcn/l9xGhAfn01B4ypUvtlhAuMLYkyfgVwcY=;
-        b=fIM9sQtUEZKNa9LeRJ7RIadgaOxd5lTIBt8v/Ag//QH56CpgKzcccMn+bv4hPlm05PAiPP
-        Sdk34PCTT4Zh+Bd7STF+51NzAAL6RWZSSwfLCsEWOhxuB6mURTuYCLqXrokw+tUxYXqr60
-        dtjeJbbxLBYRXzmSOJ/CL+hbGawRmJc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-tJPaTru3NKio2wfOesUvGg-1; Wed, 12 Feb 2020 14:49:52 -0500
-X-MC-Unique: tJPaTru3NKio2wfOesUvGg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81E12800EB2;
-        Wed, 12 Feb 2020 19:49:50 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 01CED60BF4;
-        Wed, 12 Feb 2020 19:49:48 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 00/12] Enable per-file/directory DAX operations V3
-References: <20200208193445.27421-1-ira.weiny@intel.com>
-        <x49imke1nj0.fsf@segfault.boston.devel.redhat.com>
-        <20200211201718.GF12866@iweiny-DESK2.sc.intel.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Wed, 12 Feb 2020 14:49:48 -0500
-In-Reply-To: <20200211201718.GF12866@iweiny-DESK2.sc.intel.com> (Ira Weiny's
-        message of "Tue, 11 Feb 2020 12:17:18 -0800")
-Message-ID: <x49sgjf1t7n.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1729317AbgBMACM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 12 Feb 2020 19:02:12 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:45765 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729176AbgBMACJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 12 Feb 2020 19:02:09 -0500
+Received: by mail-lf1-f65.google.com with SMTP id 203so2860502lfa.12
+        for <linux-ext4@vger.kernel.org>; Wed, 12 Feb 2020 16:02:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1cKEY5t+7UGLMNY+kX0FLiVY/W040LvYDjzlGdRgdPU=;
+        b=RWMKeXpeGH42+rpaTBaY7XsCjlCSDu3yJVkKUXDmdy4hkiakoosIZZ+d6uVCYzDWDO
+         5iDnrZGxcIKb+OHP+CZIph9gqmrhIvdOCh83QjoFOz+7B10tPAayX01fsmMvjpokoX0b
+         AH5PlkrZr2ScnDuRrZT5ZrELJuBK0rOOsQit0eMG6DfcghkgL8Ve4+nywycY5ATpb5+M
+         RAGz01B0puB+TR2LJREbJOM+s0lFCZ+xPZHUVcuAJgdJ5cIfZFz846DWzIe8TbgqLBsY
+         xjCVqGIlPd6DqGjVSKCe+3wczgidrU0xrXzv+jjs0MJ23BXdYAAGrVrkYUFxaxA76ALS
+         dbvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1cKEY5t+7UGLMNY+kX0FLiVY/W040LvYDjzlGdRgdPU=;
+        b=iGlzeTtXc8OUS1dmIECMj75xo8zvpf4Gp3C82YtJaWUMibZBAl32Y8mJd3sfb49Jp4
+         cyuxeNkfFI/3hpiwbMJv8IHrY4yuTcRNJL6M6khl/T3AwdGPU3KtBah6I9nIR1RezgvV
+         Ab+IfdFDpwLff6qwm7N8F2EmhAgvmpTrm/As8enM0Oma9LPHYfq8cIF1ZFqSN0ZAHAI3
+         7ZULrosFQN+XpI3A9ys6DJeEC+WtRReeE5xrpn3b1H1Qh+oG7FMNcSADUgb0bnRR/YHL
+         OhVUJGfapO4qOooHsv4rbMYOwFlu7tHwGrpkqr8t1DchWrdUNSM58uLpRvWi8XsSd9Mk
+         twNg==
+X-Gm-Message-State: APjAAAV+owBDOdZO3WABeKABxTnMYk3cSWY8SmmlhhorO7d0iwFJRNKV
+        bAvEZtBDWqEo2un1pjrg1sxPs4gempv+8eB9xBD8nA==
+X-Google-Smtp-Source: APXvYqx8tFG5jjHLonQJ8VXqCYuU/q3EHBj9Gtz8fRGkf+RG/SmbKainaG6ZMk409GO5DMimCh3Q4tyg2oufzLGpEck=
+X-Received: by 2002:a05:6512:2035:: with SMTP id s21mr7421997lfs.99.1581552127242;
+ Wed, 12 Feb 2020 16:02:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20200208013552.241832-1-drosen@google.com> <20200212061217.GK870@sol.localdomain>
+In-Reply-To: <20200212061217.GK870@sol.localdomain>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Wed, 12 Feb 2020 16:01:56 -0800
+Message-ID: <CA+PiJmTS2fnCPwFnDimvTxZynaxAB1_mrYeTWySVvpbW_wA-mA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/8] Support fof Casefolding and Encryption
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ira Weiny <ira.weiny@intel.com> writes:
-
-> On Mon, Feb 10, 2020 at 10:15:47AM -0500, Jeff Moyer wrote:
->> Hi, Ira,
->> 
->> Could you please include documentation patches as part of this series?
+On Tue, Feb 11, 2020 at 10:12 PM Eric Biggers <ebiggers@kernel.org> wrote:
 >
-> I do have an update to the vfs.rst doc in
+> On Fri, Feb 07, 2020 at 05:35:44PM -0800, Daniel Rosenberg wrote:
+> > Support fof Casefolding and Encryption
 >
-> 	fs: Add locking for a dynamic DAX state
+> You should fix the typo in the subject in the next version.  I assumed you'd
+> notice, but both v6 and v7 have this...
 >
-> I'm happy to do more but was there something specific you would like to see?
-> Or documentation in xfs perhaps?
+> - Eric
 
-Sorry, I was referring to your statx man page addition.  It would be
-nice if we could find a home for the information in your cover letter,
-too.  Right now, I'm not sure how application developers are supposed to
-figure out how to use the per-inode settings.
-
-If I read your cover letter correctly, the mount option overrides any
-on-disk setting.  Is that right?  Given that we document the dax mount
-option as "the way to get dax," it may be a good idea to allow for a
-user to selectively disable dax, even when -o dax is specified.  Is that
-possible?
-
--Jeff
-
+Yeah, noticed just after I sent v7 :'(
