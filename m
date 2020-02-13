@@ -2,27 +2,27 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A9615BC86
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2020 11:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4213115BC87
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2020 11:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729761AbgBMKQK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 13 Feb 2020 05:16:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51246 "EHLO mx2.suse.de"
+        id S1729763AbgBMKQM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 13 Feb 2020 05:16:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51276 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729572AbgBMKQI (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 13 Feb 2020 05:16:08 -0500
+        id S1729757AbgBMKQL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 13 Feb 2020 05:16:11 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C41C6AFA9;
+        by mx2.suse.de (Postfix) with ESMTP id C4260B0B6;
         Thu, 13 Feb 2020 10:16:05 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 3DD111E0E55; Thu, 13 Feb 2020 11:16:05 +0100 (CET)
+        id 4311F1E0E5D; Thu, 13 Feb 2020 11:16:05 +0100 (CET)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 6/7] tests: Add test to excercise indexed directories with metadata_csum
-Date:   Thu, 13 Feb 2020 11:16:01 +0100
-Message-Id: <20200213101602.29096-7-jack@suse.cz>
+Subject: [PATCH 7/7] tune2fs: Update dir checksums when clearing dir_index feature
+Date:   Thu, 13 Feb 2020 11:16:02 +0100
+Message-Id: <20200213101602.29096-8-jack@suse.cz>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20200213101602.29096-1-jack@suse.cz>
 References: <20200213101602.29096-1-jack@suse.cz>
@@ -31,160 +31,278 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Indexed directories have somewhat different format when metadata_csum is
-enabled. Add test to excercise linking in indexed directories and e2fsck
-rehash code in this case.
+When clearing dir_index feature while metadata_csum is enabled, we have
+to rewrite checksums of all indexed directories to update checksums of
+internal tree nodes.
 
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- tests/f_large_dir_csum/expect       | 32 ++++++++++++++
- tests/f_large_dir_csum/is_slow_test |  0
- tests/f_large_dir_csum/name         |  1 +
- tests/f_large_dir_csum/script       | 84 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 117 insertions(+)
- create mode 100644 tests/f_large_dir_csum/expect
- create mode 100644 tests/f_large_dir_csum/is_slow_test
- create mode 100644 tests/f_large_dir_csum/name
- create mode 100644 tests/f_large_dir_csum/script
+ misc/tune2fs.c | 143 ++++++++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 95 insertions(+), 48 deletions(-)
 
-diff --git a/tests/f_large_dir_csum/expect b/tests/f_large_dir_csum/expect
-new file mode 100644
-index 000000000000..aa9f33f1d25d
---- /dev/null
-+++ b/tests/f_large_dir_csum/expect
-@@ -0,0 +1,32 @@
-+Creating filesystem with 31002 1k blocks and 64 inodes
-+Superblock backups stored on blocks: 
-+	8193, 24577
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index a0448f63d1d5..254246fd858b 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -508,7 +508,8 @@ struct rewrite_dir_context {
+ 	char *buf;
+ 	errcode_t errcode;
+ 	ext2_ino_t dir;
+-	int is_htree;
++	int is_htree:1;
++	int clear_htree:1;
+ };
+ 
+ static int rewrite_dir_block(ext2_filsys fs,
+@@ -527,8 +528,13 @@ static int rewrite_dir_block(ext2_filsys fs,
+ 	if (ctx->errcode)
+ 		return BLOCK_ABORT;
+ 
+-	/* if htree node... */
+-	if (ctx->is_htree)
++	/*
++	 * if htree node... Note that if we are clearing htree structures from
++	 * the directory, we treat the htree internal block as an ordinary leaf.
++	 * The code below will do the right thing and make space for checksum
++	 * there.
++	 */
++	if (ctx->is_htree && !ctx->clear_htree)
+ 		ext2fs_get_dx_countlimit(fs, (struct ext2_dir_entry *)ctx->buf,
+ 					 &dcl, &dcl_offset);
+ 	if (dcl) {
+@@ -657,7 +663,8 @@ static errcode_t rewrite_directory(ext2_filsys fs, ext2_ino_t dir,
+ 	if (retval)
+ 		return retval;
+ 
+-	ctx.is_htree = (inode->i_flags & EXT2_INDEX_FL);
++	ctx.is_htree = !!(inode->i_flags & EXT2_INDEX_FL);
++	ctx.clear_htree = !ext2fs_has_feature_dir_index(fs->super);
+ 	ctx.dir = dir;
+ 	ctx.errcode = 0;
+ 	retval = ext2fs_block_iterate3(fs, dir, BLOCK_FLAG_READ_ONLY |
+@@ -668,6 +675,13 @@ static errcode_t rewrite_directory(ext2_filsys fs, ext2_ino_t dir,
+ 	if (retval)
+ 		return retval;
+ 
++	if (ctx.is_htree && ctx.clear_htree) {
++		inode->i_flags &= ~EXT2_INDEX_FL;
++		retval = ext2fs_write_inode(fs, dir, inode);
++		if (retval)
++			return retval;
++	}
 +
-+Allocating group tables:    done                            
-+Writing inode tables:    done                            
-+Writing superblocks and filesystem accounting information:    done
+ 	return ctx.errcode;
+ }
+ 
+@@ -822,28 +836,67 @@ static void rewrite_one_inode(struct rewrite_context *ctx, ext2_ino_t ino,
+ 		fatal_err(retval, "while rewriting extended attribute");
+ }
+ 
+-/*
+- * Forcibly set checksums in all inodes.
+- */
+-static void rewrite_inodes(ext2_filsys fs)
++#define REWRITE_EA_FL		0x01	/* Rewrite EA inodes */
++#define REWRITE_DIR_FL		0x02	/* Rewrite directories */
++#define REWRITE_NONDIR_FL	0x04	/* Rewrite other inodes */
++#define REWRITE_ALL (REWRITE_EA_FL | REWRITE_DIR_FL | REWRITE_NONDIR_FL)
 +
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 3A: Optimizing directories
-+Pass 4: Checking reference counts
-+Inode 13 ref count is 1, should be 5.  Fix? yes
++static void rewrite_inodes_pass(struct rewrite_context *ctx, unsigned int flags)
+ {
+ 	ext2_inode_scan	scan;
+ 	errcode_t	retval;
+ 	ext2_ino_t	ino;
+ 	struct ext2_inode *inode;
+-	int pass;
++	int rewrite;
 +
-+Pass 5: Checking group summary information
++	retval = ext2fs_get_mem(ctx->inode_size, &inode);
++	if (retval)
++		fatal_err(retval, "while allocating memory");
 +
-+test.img: ***** FILE SYSTEM WAS MODIFIED *****
-+test.img: 13/64 files (0.0% non-contiguous), 766/31002 blocks
-+Exit status is 1
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 3A: Optimizing directories
-+Pass 4: Checking reference counts
-+Inode 13 ref count is 5, should be 46504.  Fix? yes
++	retval = ext2fs_open_inode_scan(ctx->fs, 0, &scan);
++	if (retval)
++		fatal_err(retval, "while opening inode scan");
 +
-+Pass 5: Checking group summary information
++	do {
++		retval = ext2fs_get_next_inode_full(scan, &ino, inode,
++						    ctx->inode_size);
++		if (retval)
++			fatal_err(retval, "while getting next inode");
++		if (!ino)
++			break;
 +
-+test.img: ***** FILE SYSTEM WAS MODIFIED *****
-+test.img: 13/64 files (0.0% non-contiguous), 16390/31002 blocks
-+Exit status is 1
-diff --git a/tests/f_large_dir_csum/is_slow_test b/tests/f_large_dir_csum/is_slow_test
-new file mode 100644
-index 000000000000..e69de29bb2d1
-diff --git a/tests/f_large_dir_csum/name b/tests/f_large_dir_csum/name
-new file mode 100644
-index 000000000000..2b37c8c21f79
---- /dev/null
-+++ b/tests/f_large_dir_csum/name
-@@ -0,0 +1 @@
-+optimize 3 level htree directories with metadata checksums
-diff --git a/tests/f_large_dir_csum/script b/tests/f_large_dir_csum/script
-new file mode 100644
-index 000000000000..286a965d5e6a
---- /dev/null
-+++ b/tests/f_large_dir_csum/script
-@@ -0,0 +1,84 @@
-+OUT=$test_name.log
-+EXP=$test_dir/expect
-+E2FSCK=../e2fsck/e2fsck
++		rewrite = 0;
++		if (inode->i_flags & EXT4_EA_INODE_FL) {
++			if (flags & REWRITE_EA_FL)
++				rewrite = 1;
++		} else if (LINUX_S_ISDIR(inode->i_mode)) {
++			if (flags & REWRITE_DIR_FL)
++				rewrite = 1;
++		} else {
++			if (flags & REWRITE_NONDIR_FL)
++				rewrite = 1;
++		}
++		if (rewrite)
++			rewrite_one_inode(ctx, ino, inode);
++	} while (ino);
++	ext2fs_close_inode_scan(scan);
++	ext2fs_free_mem(&inode);
++}
 +
-+NAMELEN=255
-+DIRENT_SZ=8
-+BLOCKSZ=1024
-+INODESZ=128
-+CSUM_SZ=8
-+CSUM_TAIL_SZ=12
-+DIRENT_PER_LEAF=$(((BLOCKSZ - CSUM_TAIL_SZ) / (NAMELEN + DIRENT_SZ)))
-+HEADER=32
-+INDEX_SZ=8
-+INDEX_L1=$(((BLOCKSZ - HEADER - CSUM_SZ) / INDEX_SZ))
-+INDEX_L2=$(((BLOCKSZ - DIRENT_SZ - CSUM_SZ) / INDEX_SZ))
-+DIRBLK=$((3 + INDEX_L1 * INDEX_L2))
-+ENTRIES=$((DIRBLK * DIRENT_PER_LEAF))
-+# directory leaf blocks - get twice as much because the leaves won't be full
-+# and there are also other filesystem blocks.
-+FSIZE=$((DIRBLK * 2))
-+
-+$MKE2FS -b 1024 -O extents,64bit,large_dir,uninit_bg,metadata_csum -N 50 \
-+	-I $INODESZ -F $TMPFILE $FSIZE > $OUT.new 2>&1
-+RC=$?
-+if [ $RC -eq 0 ]; then
++/*
++ * Forcibly rewrite checksums in inodes specified by 'flags'
++ */
++static void rewrite_inodes(ext2_filsys fs, unsigned int flags)
 +{
-+	# First some initial fs setup to create indexed dir
-+	echo "mkdir /foo"
-+	echo "cd /foo"
-+	touch $TMPFILE.tmp
-+	echo "write $TMPFILE.tmp foofile"
-+	i=0
-+	while test $i -lt $DIRENT_PER_LEAF ; do
-+		printf "ln foofile f%0254u\n" $i
-+		i=$((i + 1));
-+	done
-+	echo "expand ./"
-+	printf "ln foofile f%0254u\n" $i
-+} | $DEBUGFS -w $TMPFILE > /dev/null 2>> $OUT.new
-+	RC=$?
-+	# e2fsck should optimize the dir to become indexed
-+	$E2FSCK -yfD $TMPFILE >> $OUT.new 2>&1
-+	status=$?
-+	echo Exit status is $status >> $OUT.new
-+fi
+ 	struct rewrite_context ctx = {
+ 		.fs = fs,
+ 		.inode_size = EXT2_INODE_SIZE(fs->super),
+ 	};
++	errcode_t retval;
+ 
+ 	if (fs->super->s_creator_os == EXT2_OS_HURD)
+ 		return;
+ 
+-	retval = ext2fs_get_mem(ctx.inode_size, &inode);
+-	if (retval)
+-		fatal_err(retval, "while allocating memory");
+-
+ 	retval = ext2fs_get_memzero(ctx.inode_size, &ctx.zero_inode);
+ 	if (retval)
+ 		fatal_err(retval, "while allocating memory");
+@@ -862,39 +915,16 @@ static void rewrite_inodes(ext2_filsys fs)
+ 	 *
+ 	 * pass 2: go over other inodes to update their checksums.
+ 	 */
+-	if (ext2fs_has_feature_ea_inode(fs->super))
+-		pass = 1;
+-	else
+-		pass = 2;
+-	for (;pass <= 2; pass++) {
+-		retval = ext2fs_open_inode_scan(fs, 0, &scan);
+-		if (retval)
+-			fatal_err(retval, "while opening inode scan");
+-
+-		do {
+-			retval = ext2fs_get_next_inode_full(scan, &ino, inode,
+-							    ctx.inode_size);
+-			if (retval)
+-				fatal_err(retval, "while getting next inode");
+-			if (!ino)
+-				break;
+-
+-			if (((pass == 1) &&
+-			     (inode->i_flags & EXT4_EA_INODE_FL)) ||
+-			    ((pass == 2) &&
+-			     !(inode->i_flags & EXT4_EA_INODE_FL)))
+-				rewrite_one_inode(&ctx, ino, inode);
+-		} while (ino);
+-
+-		ext2fs_close_inode_scan(scan);
+-	}
++	if (ext2fs_has_feature_ea_inode(fs->super) && (flags & REWRITE_EA_FL))
++		rewrite_inodes_pass(&ctx, REWRITE_EA_FL);
++	flags &= ~REWRITE_EA_FL;
++	rewrite_inodes_pass(&ctx, flags);
+ 
+ 	ext2fs_free_mem(&ctx.zero_inode);
+ 	ext2fs_free_mem(&ctx.ea_buf);
+-	ext2fs_free_mem(&inode);
+ }
+ 
+-static void rewrite_metadata_checksums(ext2_filsys fs)
++static void rewrite_metadata_checksums(ext2_filsys fs, unsigned int flags)
+ {
+ 	errcode_t retval;
+ 	dgrp_t i;
+@@ -906,7 +936,7 @@ static void rewrite_metadata_checksums(ext2_filsys fs)
+ 	retval = ext2fs_read_bitmaps(fs);
+ 	if (retval)
+ 		fatal_err(retval, "while reading bitmaps");
+-	rewrite_inodes(fs);
++	rewrite_inodes(fs, flags);
+ 	ext2fs_mark_ib_dirty(fs);
+ 	ext2fs_mark_bb_dirty(fs);
+ 	ext2fs_mmp_update2(fs, 1);
+@@ -1205,6 +1235,23 @@ mmp_error:
+ 			uuid_generate((unsigned char *) sb->s_hash_seed);
+ 	}
+ 
++	if (FEATURE_OFF(E2P_FEATURE_COMPAT, EXT2_FEATURE_COMPAT_DIR_INDEX) &&
++	    ext2fs_has_feature_metadata_csum(sb)) {
++		check_fsck_needed(fs,
++			_("Disabling directory index on filesystem with "
++			  "checksums could take some time."));
++		if (mount_flags & EXT2_MF_MOUNTED) {
++			fputs(_("Cannot disable dir_index on a mounted "
++				"filesystem!\n"), stderr);
++			exit(1);
++		}
++		/*
++		 * Clearing dir_index on checksummed filesystem requires
++		 * rewriting all directories to update checksums.
++		 */
++		rewrite_checksums |= REWRITE_DIR_FL;
++	}
 +
-+if [ $RC -eq 0 ]; then
-+{
-+	START=$SECONDS
-+	i=$(($DIRENT_PER_LEAF+1))
-+	last=$i
-+	echo "cd /foo"
-+	while test $i -lt $ENTRIES ; do
-+	    ELAPSED=$((SECONDS - START))
-+	    if test $((i % 5000)) -eq 0 -a $ELAPSED -gt 10; then
-+		RATE=$(((i - last) / ELAPSED))
-+		echo "$test_name: $i/$ENTRIES links, ${ELAPSED}s @ $RATE/s" >&2
-+		START=$SECONDS
-+		last=$i
-+	    fi
-+	    printf "ln foofile f%0254u\n" $i
-+	    i=$((i + 1))
-+	done
-+} | $DEBUGFS -w $TMPFILE > /dev/null 2>> $OUT.new
-+	RC=$?
-+fi
-+
-+if [ $RC -eq 0 ]; then
-+	$E2FSCK -yfD $TMPFILE >> $OUT.new 2>&1
-+	status=$?
-+	echo Exit status is $status >> $OUT.new
-+	sed -f $cmd_dir/filter.sed -e "s;$TMPFILE;test.img;" $OUT.new > $OUT
-+	rm -f $OUT.new
-+
-+	cmp -s $OUT $EXP
-+	RC=$?
-+fi
-+if [ $RC -eq 0 ]; then
-+	echo "$test_name: $test_description: ok"
-+	touch $test_name.ok
-+else
-+	echo "$test_name: $test_description: failed"
-+	diff -u $EXP $OUT > $test_name.failed
-+fi
+ 	if (FEATURE_OFF(E2P_FEATURE_INCOMPAT, EXT4_FEATURE_INCOMPAT_FLEX_BG)) {
+ 		if (ext2fs_check_desc(fs)) {
+ 			fputs(_("Clearing the flex_bg flag would "
+@@ -1248,7 +1295,7 @@ mmp_error:
+ 				 "The larger fields afforded by this feature "
+ 				 "enable full-strength checksumming.  "
+ 				 "Run resize2fs -b to rectify.\n"));
+-		rewrite_checksums = 1;
++		rewrite_checksums = REWRITE_ALL;
+ 		/* metadata_csum supersedes uninit_bg */
+ 		ext2fs_clear_feature_gdt_csum(fs->super);
+ 
+@@ -1276,7 +1323,7 @@ mmp_error:
+ 				"filesystem!\n"), stderr);
+ 			exit(1);
+ 		}
+-		rewrite_checksums = 1;
++		rewrite_checksums = REWRITE_ALL;
+ 
+ 		/* Enable uninit_bg unless the user expressly turned it off */
+ 		memcpy(test_features, old_features, sizeof(test_features));
+@@ -1458,7 +1505,7 @@ mmp_error:
+ 			}
+ 			check_fsck_needed(fs, _("Recalculating checksums "
+ 						"could take some time."));
+-			rewrite_checksums = 1;
++			rewrite_checksums = REWRITE_ALL;
+ 		}
+ 	}
+ 
+@@ -3196,7 +3243,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 			check_fsck_needed(fs,
+ 				_("Setting the UUID on this "
+ 				  "filesystem could take some time."));
+-			rewrite_checksums = 1;
++			rewrite_checksums = REWRITE_ALL;
+ 		}
+ 
+ 		if (ext2fs_has_group_desc_csum(fs)) {
+@@ -3307,7 +3354,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 		if (retval == 0) {
+ 			printf(_("Setting inode size %lu\n"),
+ 							new_inode_size);
+-			rewrite_checksums = 1;
++			rewrite_checksums = REWRITE_ALL;
+ 		} else {
+ 			printf("%s", _("Failed to change inode size\n"));
+ 			rc = 1;
+@@ -3316,7 +3363,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 	}
+ 
+ 	if (rewrite_checksums)
+-		rewrite_metadata_checksums(fs);
++		rewrite_metadata_checksums(fs, rewrite_checksums);
+ 
+ 	if (l_flag)
+ 		list_super(sb);
 -- 
 2.16.4
 
