@@ -2,69 +2,121 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C80D615BC81
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2020 11:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A1515BC84
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Feb 2020 11:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbgBMKQI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        id S1729745AbgBMKQI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
         Thu, 13 Feb 2020 05:16:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51206 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:51208 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729428AbgBMKQH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        id S1729494AbgBMKQH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
         Thu, 13 Feb 2020 05:16:07 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 86A2CAD63;
+        by mx2.suse.de (Postfix) with ESMTP id 86415ACD0;
         Thu, 13 Feb 2020 10:16:05 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 260CE1E0E01; Thu, 13 Feb 2020 11:16:05 +0100 (CET)
+        id 27EEB1E0A51; Thu, 13 Feb 2020 11:16:05 +0100 (CET)
 From:   Jan Kara <jack@suse.cz>
 To:     Ted Tso <tytso@mit.edu>
 Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 0/7 v2] e2fsprogs: Better handling of indexed directories
-Date:   Thu, 13 Feb 2020 11:15:55 +0100
-Message-Id: <20200213101602.29096-1-jack@suse.cz>
+Subject: [PATCH 1/7] e2fsck: Clarify overflow link count error message
+Date:   Thu, 13 Feb 2020 11:15:56 +0100
+Message-Id: <20200213101602.29096-2-jack@suse.cz>
 X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20200213101602.29096-1-jack@suse.cz>
+References: <20200213101602.29096-1-jack@suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+When directory link count is set to overflow value (1) but during pass 4
+we find out the exact link count would fit, we either silently fix this
+(which is not great because e2fsck then reports the fs was modified but
+output doesn't indicate why in any way), or we report that link count is
+wrong and ask whether we should fix it (in case -n option was
+specified). The second case is even more misleading because it suggests
+non-trivial fs corruption which then gets silently fixed on the next
+run. Similarly to how we fix up other non-problems, just create a new
+error message for the case directory link count is not overflown anymore
+and always report it to clarify what is going on.
 
-Currently, libext2fs does not implement adding entry into htree directory. It
-just bluntly clears EXT2_INDEX_FL and then treats the directory as non-indexed.
-This breaks when metadata checksums are enabled and although ext2fs_link()
-tries to fixup the directory, it doesn't always fixup all the checksums and
-I have some doubts about practicality of just discarding htree information for
-really large directories. This patch series implements full support for adding
-entry into htree directory and some tests to test the functionality.
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ e2fsck/pass4.c   | 20 ++++++++++++++++----
+ e2fsck/problem.c |  5 +++++
+ e2fsck/problem.h |  3 +++
+ 3 files changed, 24 insertions(+), 4 deletions(-)
 
-The first patch in the series is somewhat unrelated, it just clarifies handling
-of overflown directory i_nlink handling in e2fsck which confused me initially
-when analyzing the issue.
+diff --git a/e2fsck/pass4.c b/e2fsck/pass4.c
+index 10be7f87180d..8c2d2f1fca12 100644
+--- a/e2fsck/pass4.c
++++ b/e2fsck/pass4.c
+@@ -237,6 +237,8 @@ void e2fsck_pass4(e2fsck_t ctx)
+ 			link_counted = 1;
+ 		}
+ 		if (link_counted != link_count) {
++			int fix_nlink = 0;
++
+ 			e2fsck_read_inode_full(ctx, i, EXT2_INODE(inode),
+ 					       inode_size, "pass4");
+ 			pctx.ino = i;
+@@ -250,10 +252,20 @@ void e2fsck_pass4(e2fsck_t ctx)
+ 			pctx.num = link_counted;
+ 			/* i_link_count was previously exceeded, but no longer
+ 			 * is, fix this but don't consider it an error */
+-			if ((isdir && link_counted > 1 &&
+-			     (inode->i_flags & EXT2_INDEX_FL) &&
+-			     link_count == 1 && !(ctx->options & E2F_OPT_NO)) ||
+-			    fix_problem(ctx, PR_4_BAD_REF_COUNT, &pctx)) {
++			if (isdir && link_counted > 1 &&
++			    (inode->i_flags & EXT2_INDEX_FL) &&
++			    link_count == 1) {
++				if ((ctx->options & E2F_OPT_READONLY) == 0) {
++					fix_nlink =
++						fix_problem(ctx,
++							PR_4_DIR_OVERFLOW_REF_COUNT,
++							&pctx);
++				}
++			} else {
++				fix_nlink = fix_problem(ctx, PR_4_BAD_REF_COUNT,
++						&pctx);
++			}
++			if (fix_nlink) {
+ 				inode->i_links_count = link_counted;
+ 				e2fsck_write_inode_full(ctx, i,
+ 							EXT2_INODE(inode),
+diff --git a/e2fsck/problem.c b/e2fsck/problem.c
+index c7c0ba986006..e79c853b2096 100644
+--- a/e2fsck/problem.c
++++ b/e2fsck/problem.c
+@@ -2035,6 +2035,11 @@ static struct e2fsck_problem problem_table[] = {
+ 	  N_("@d exceeds max links, but no DIR_NLINK feature in @S.\n"),
+ 	  PROMPT_FIX, 0, 0, 0, 0 },
+ 
++	/* Directory inode ref count set to overflow but could be exact value */
++	{ PR_4_DIR_OVERFLOW_REF_COUNT,
++	  N_("@d @i %i ref count set to overflow but could be exact value %N.  "),
++	  PROMPT_FIX, PR_PREEN_OK, 0, 0, 0 },
++
+ 	/* Pass 5 errors */
+ 
+ 	/* Pass 5: Checking group summary information */
+diff --git a/e2fsck/problem.h b/e2fsck/problem.h
+index c7f65f6dee0f..4185e5175cab 100644
+--- a/e2fsck/problem.h
++++ b/e2fsck/problem.h
+@@ -1164,6 +1164,9 @@ struct problem_context {
+ /* directory exceeds max links, but no DIR_NLINK feature in superblock */
+ #define PR_4_DIR_NLINK_FEATURE		0x040006
+ 
++/* Directory ref count set to overflow but it doesn't have to be */
++#define PR_4_DIR_OVERFLOW_REF_COUNT	0x040007
++
+ /*
+  * Pass 5 errors
+  */
+-- 
+2.16.4
 
-The second patch fixes a bug in e2fsck when rehashing indexed directories which
-I've found during testing my series.
-
-The third patch prepares ext2fs_mkdir() and ext2fs_symlink() to safely work
-with ext2fs_link() - this demonstrates there's a breakage potential in the
-following changes to ext2fs_link() for external applications using
-ext2fs_link() because it can now modify the directory inode and allocate
-blocks. If people are concerned about this, we could create ext2fs_link2()
-with the new behavior and just restrict ext2fs_link() to bail with error
-when called on indexed directory with metadata_csum enabled.
-
-Next three patches implement the support for linking into indexed directories
-and tests.
-
-The last patch then fixes tune2fs to properly recompute directory checksums
-when disabling dir_index feature.
-
-Changes since v1:
-* Fixed growing of h-tree to 3-levels
-* Added e2fsck fix
-* Added tune2fs fix
-* Fixed ext2fs_mkdir() and ext2fs_symlink() to work with new ext2fs_link()
-* Reworked tests
-
-								Honza
