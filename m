@@ -2,37 +2,34 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 807C915E7F8
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Feb 2020 17:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C78715E7DA
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Feb 2020 17:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404487AbgBNQRb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 14 Feb 2020 11:17:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
+        id S2394293AbgBNQ42 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 14 Feb 2020 11:56:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404480AbgBNQRa (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:17:30 -0500
+        id S2392476AbgBNQR7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:17:59 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1749246ED;
-        Fri, 14 Feb 2020 16:17:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 273B2246F8;
+        Fri, 14 Feb 2020 16:17:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581697049;
-        bh=eD/DJ1LstZ9eNOd8Ti1BbuQe6wDVPeHT7k72/pE1F6o=;
+        s=default; t=1581697078;
+        bh=y20f20EyVym5ZJBttPilPcZuoK1w1Z50nYChb4w15uA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NNXtlQMyhJauqjBME8wsHKKtAQE5z1Fww5Kv+oTpfHr/NyTwB2Ocj4JGUjS8LkZNm
-         i6a9UFDRrsFe729Sj/FNVPyenzFE5eWftP5m9D90TR7TUGASYQNU2/oWSFmrPGCM72
-         1vxLO9H9ylySxSEtku3+sIYM909GnQgnTc/DnHcU=
+        b=gxQ8ZI5Dk5PtcIMOdTdg9EjTJnd9WIr5VqhUg9cQvgEeLx4w2/HO3FpZoSMNI7Hni
+         SSYpsU/xVYEUafOqFwf1CAe70ZnEp56UD6b3hu1nZFyYwmmT/YbaLUk7i9QYJhSPvn
+         uVQgy8E1YK7IsCJWaakJenFbC29riLDAKjSYk07k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, Jan Kara <jack@suse.cz>,
-        Matthew Bobrowski <mbobrowski@mbobrowski.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 010/186] ext4: fix ext4_dax_read/write inode locking sequence for IOCB_NOWAIT
-Date:   Fri, 14 Feb 2020 11:14:19 -0500
-Message-Id: <20200214161715.18113-10-sashal@kernel.org>
+Cc:     Kai Li <li.kai4@h3c.com>, Theodore Ts'o <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 033/186] jbd2: clear JBD2_ABORT flag before journal_reset to update log tail info when load journal
+Date:   Fri, 14 Feb 2020 11:14:42 -0500
+Message-Id: <20200214161715.18113-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214161715.18113-1-sashal@kernel.org>
 References: <20200214161715.18113-1-sashal@kernel.org>
@@ -45,57 +42,53 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ritesh Harjani <riteshh@linux.ibm.com>
+From: Kai Li <li.kai4@h3c.com>
 
-[ Upstream commit f629afe3369e9885fd6e9cc7a4f514b6a65cf9e9 ]
+[ Upstream commit a09decff5c32060639a685581c380f51b14e1fc2 ]
 
-Apparently our current rwsem code doesn't like doing the trylock, then
-lock for real scheme.  So change our dax read/write methods to just do the
-trylock for the RWF_NOWAIT case.
-This seems to fix AIM7 regression in some scalable filesystems upto ~25%
-in some cases. Claimed in commit 942491c9e6d6 ("xfs: fix AIM7 regression")
+If the journal is dirty when the filesystem is mounted, jbd2 will replay
+the journal but the journal superblock will not be updated by
+journal_reset() because JBD2_ABORT flag is still set (it was set in
+journal_init_common()). This is problematic because when a new transaction
+is then committed, it will be recorded in block 1 (journal->j_tail was set
+to 1 in journal_reset()). If unclean shutdown happens again before the
+journal superblock is updated, the new recorded transaction will not be
+replayed during the next mount (because of stale sb->s_start and
+sb->s_sequence values) which can lead to filesystem corruption.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Matthew Bobrowski <mbobrowski@mbobrowski.org>
-Tested-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Link: https://lore.kernel.org/r/20191212055557.11151-2-riteshh@linux.ibm.com
+Fixes: 85e0c4e89c1b ("jbd2: if the journal is aborted then don't allow update of the log tail")
+Signed-off-by: Kai Li <li.kai4@h3c.com>
+Link: https://lore.kernel.org/r/20200111022542.5008-1-li.kai4@h3c.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/file.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ fs/jbd2/journal.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 4ede0af9d6fe3..acec134da57df 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -38,9 +38,10 @@ static ssize_t ext4_dax_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 	struct inode *inode = file_inode(iocb->ki_filp);
- 	ssize_t ret;
- 
--	if (!inode_trylock_shared(inode)) {
--		if (iocb->ki_flags & IOCB_NOWAIT)
-+	if (iocb->ki_flags & IOCB_NOWAIT) {
-+		if (!inode_trylock_shared(inode))
- 			return -EAGAIN;
-+	} else {
- 		inode_lock_shared(inode);
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index d3cce5c86fd90..b72be822f04f2 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1687,6 +1687,11 @@ int jbd2_journal_load(journal_t *journal)
+ 		       journal->j_devname);
+ 		return -EFSCORRUPTED;
  	}
- 	/*
-@@ -188,9 +189,10 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	struct inode *inode = file_inode(iocb->ki_filp);
- 	ssize_t ret;
++	/*
++	 * clear JBD2_ABORT flag initialized in journal_init_common
++	 * here to update log tail information with the newest seq.
++	 */
++	journal->j_flags &= ~JBD2_ABORT;
  
--	if (!inode_trylock(inode)) {
--		if (iocb->ki_flags & IOCB_NOWAIT)
-+	if (iocb->ki_flags & IOCB_NOWAIT) {
-+		if (!inode_trylock(inode))
- 			return -EAGAIN;
-+	} else {
- 		inode_lock(inode);
- 	}
- 	ret = ext4_write_checks(iocb, from);
+ 	/* OK, we've finished with the dynamic journal bits:
+ 	 * reinitialise the dynamic contents of the superblock in memory
+@@ -1694,7 +1699,6 @@ int jbd2_journal_load(journal_t *journal)
+ 	if (journal_reset(journal))
+ 		goto recovery_error;
+ 
+-	journal->j_flags &= ~JBD2_ABORT;
+ 	journal->j_flags |= JBD2_LOADED;
+ 	return 0;
+ 
 -- 
 2.20.1
 
