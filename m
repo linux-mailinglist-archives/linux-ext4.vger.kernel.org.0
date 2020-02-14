@@ -2,35 +2,35 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D0215EA68
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Feb 2020 18:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B11B615E89A
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Feb 2020 18:01:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404615AbgBNRNk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 14 Feb 2020 12:13:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40486 "EHLO mail.kernel.org"
+        id S2392568AbgBNQQW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 14 Feb 2020 11:16:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391499AbgBNQMq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:12:46 -0500
+        id S2388586AbgBNQQU (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 14 Feb 2020 11:16:20 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4669246A1;
-        Fri, 14 Feb 2020 16:12:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB44724681;
+        Fri, 14 Feb 2020 16:16:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696765;
-        bh=8V+AhVnwvZDjdmCMcsAyXitcpcmm+EABiM6EKbbfb0M=;
+        s=default; t=1581696979;
+        bh=SiFgmLsWC+GVvtrufp79tdOr8W/hicsAcz6/OWW1t/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WMuLyhNwbUIqyp2aZmLFSp92K4x9Wvkrb7DO1o/2oxhJTOjywLlUdDdwcejUXz6C6
-         PA1So4n8Km5ThLfwoORQW5MS5KhR/tbaJS+S0CsZllVdrlavv7NURyHe5AGb/0IBms
-         /V/b/wUIPgc6uGqk9XTuZVMrNH5vvgSUOexPCZwo=
+        b=Dd9GJveG1ECYjJHludCWhtKSBuNLmT51QXjenu3SIDpJqoYh1Cq0fhfuExgbjXP4P
+         LEdvlLDKvn8OSo+aXpFVUVHIC733YNhmRi1iX12HJt0Gh3GFWHDiLBcdrWCdXdX5U8
+         pCOzxawxj0OZ4IlvOdNZop9Lcb2hyBjx8HT/RdUE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "zhangyi (F)" <yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 045/252] ext4, jbd2: ensure panic when aborting with zero errno
-Date:   Fri, 14 Feb 2020 11:08:20 -0500
-Message-Id: <20200214161147.15842-45-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 216/252] jbd2: switch to use jbd2_journal_abort() when failed to submit the commit record
+Date:   Fri, 14 Feb 2020 11:11:11 -0500
+Message-Id: <20200214161147.15842-216-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200214161147.15842-1-sashal@kernel.org>
 References: <20200214161147.15842-1-sashal@kernel.org>
@@ -45,72 +45,46 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: "zhangyi (F)" <yi.zhang@huawei.com>
 
-[ Upstream commit 51f57b01e4a3c7d7bdceffd84de35144e8c538e7 ]
+[ Upstream commit d0a186e0d3e7ac05cc77da7c157dae5aa59f95d9 ]
 
-JBD2_REC_ERR flag used to indicate the errno has been updated when jbd2
-aborted, and then __ext4_abort() and ext4_handle_error() can invoke
-panic if ERRORS_PANIC is specified. But if the journal has been aborted
-with zero errno, jbd2_journal_abort() didn't set this flag so we can
-no longer panic. Fix this by always record the proper errno in the
-journal superblock.
+We invoke jbd2_journal_abort() to abort the journal and record errno
+in the jbd2 superblock when committing journal transaction besides the
+failure on submitting the commit record. But there is no need for the
+case and we can also invoke jbd2_journal_abort() instead of
+__jbd2_journal_abort_hard().
 
-Fixes: 4327ba52afd03 ("ext4, jbd2: ensure entering into panic after recording an error in superblock")
+Fixes: 818d276ceb83a ("ext4: Add the journal checksum feature")
 Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20191204124614.45424-3-yi.zhang@huawei.com
+Link: https://lore.kernel.org/r/20191204124614.45424-2-yi.zhang@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/checkpoint.c |  2 +-
- fs/jbd2/journal.c    | 15 ++++-----------
- 2 files changed, 5 insertions(+), 12 deletions(-)
+ fs/jbd2/commit.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-index 26f8d7e46462e..66409cbd3ed54 100644
---- a/fs/jbd2/checkpoint.c
-+++ b/fs/jbd2/checkpoint.c
-@@ -165,7 +165,7 @@ void __jbd2_log_wait_for_space(journal_t *journal)
- 				       "journal space in %s\n", __func__,
- 				       journal->j_devname);
- 				WARN_ON(1);
--				jbd2_journal_abort(journal, 0);
-+				jbd2_journal_abort(journal, -EIO);
- 			}
- 			write_lock(&journal->j_state_lock);
- 		} else {
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 568ca0ca0127c..1a96287f92647 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -2142,12 +2142,10 @@ static void __journal_abort_soft (journal_t *journal, int errno)
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index 020bd7a0d8e03..d4e6288b4bb46 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -781,7 +781,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+ 		err = journal_submit_commit_record(journal, commit_transaction,
+ 						 &cbh, crc32_sum);
+ 		if (err)
+-			__jbd2_journal_abort_hard(journal);
++			jbd2_journal_abort(journal, err);
+ 	}
  
- 	__jbd2_journal_abort_hard(journal);
- 
--	if (errno) {
--		jbd2_journal_update_sb_errno(journal);
--		write_lock(&journal->j_state_lock);
--		journal->j_flags |= JBD2_REC_ERR;
--		write_unlock(&journal->j_state_lock);
--	}
-+	jbd2_journal_update_sb_errno(journal);
-+	write_lock(&journal->j_state_lock);
-+	journal->j_flags |= JBD2_REC_ERR;
-+	write_unlock(&journal->j_state_lock);
- }
- 
- /**
-@@ -2189,11 +2187,6 @@ static void __journal_abort_soft (journal_t *journal, int errno)
-  * failure to disk.  ext3_error, for example, now uses this
-  * functionality.
-  *
-- * Errors which originate from within the journaling layer will NOT
-- * supply an errno; a null errno implies that absolutely no further
-- * writes are done to the journal (unless there are any already in
-- * progress).
-- *
-  */
- 
- void jbd2_journal_abort(journal_t *journal, int errno)
+ 	blk_finish_plug(&plug);
+@@ -874,7 +874,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+ 		err = journal_submit_commit_record(journal, commit_transaction,
+ 						&cbh, crc32_sum);
+ 		if (err)
+-			__jbd2_journal_abort_hard(journal);
++			jbd2_journal_abort(journal, err);
+ 	}
+ 	if (cbh)
+ 		err = journal_wait_on_commit_record(journal, cbh);
 -- 
 2.20.1
 
