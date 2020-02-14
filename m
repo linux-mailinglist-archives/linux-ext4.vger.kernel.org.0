@@ -2,38 +2,38 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E61E15E8A1
-	for <lists+linux-ext4@lfdr.de>; Fri, 14 Feb 2020 18:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1429215EFFB
+	for <lists+linux-ext4@lfdr.de>; Fri, 14 Feb 2020 18:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392511AbgBNRBm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 14 Feb 2020 12:01:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47122 "EHLO mail.kernel.org"
+        id S2388914AbgBNRvs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 14 Feb 2020 12:51:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392564AbgBNQQV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 14 Feb 2020 11:16:21 -0500
+        id S2388682AbgBNP6q (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:58:46 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13D502467D;
-        Fri, 14 Feb 2020 16:16:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F1D32082F;
+        Fri, 14 Feb 2020 15:58:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581696980;
-        bh=qqlDImGmJ/ltysibA8Y/8cqTSseCIAt8Tv2oNnF45rs=;
+        s=default; t=1581695925;
+        bh=HBEjq1paGB5LGNFy0S5qRFVFFZ5U6qH5RZm96Y6ETXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F/tclDCcYingECbw2penmEH25D8wO7jZ0rBJZ53P+jkoIqywvnt1qnrrYdHyoRUee
-         aVxo3jkkwdizuKSH7RkDc6Y9Mtjb6G740oMkrx/nxlBDN4Cm4z0k5GSDYrI0sr1r+d
-         4BMWTKFNaKnqJjQxPYBxbqFSQTtzFxrRoChX7mVw=
+        b=IuvpQa2f6Pd6b0SHr9qxTYTtA9SQFc2Pk+uKON5xkRm0KxpYuB1wRq/jl2+xrJAti
+         dyycKYbwOTscVYVfCZGEu1xc0Grn3kq/C/vKrFQFZP8JYOwLFt4X+8IJ2F51yzhTnt
+         iOecj/SjuokWzRMzXqzFonFLA3tUvi7JQGpuQbDA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "zhangyi (F)" <yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>,
         Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 217/252] jbd2: make sure ESHUTDOWN to be recorded in the journal superblock
-Date:   Fri, 14 Feb 2020 11:11:12 -0500
-Message-Id: <20200214161147.15842-217-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.5 462/542] jbd2: switch to use jbd2_journal_abort() when failed to submit the commit record
+Date:   Fri, 14 Feb 2020 10:47:34 -0500
+Message-Id: <20200214154854.6746-462-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200214161147.15842-1-sashal@kernel.org>
-References: <20200214161147.15842-1-sashal@kernel.org>
+In-Reply-To: <20200214154854.6746-1-sashal@kernel.org>
+References: <20200214154854.6746-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,39 +45,46 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: "zhangyi (F)" <yi.zhang@huawei.com>
 
-[ Upstream commit 0e98c084a21177ef136149c6a293b3d1eb33ff92 ]
+[ Upstream commit d0a186e0d3e7ac05cc77da7c157dae5aa59f95d9 ]
 
-Commit fb7c02445c49 ("ext4: pass -ESHUTDOWN code to jbd2 layer") want
-to allow jbd2 layer to distinguish shutdown journal abort from other
-error cases. So the ESHUTDOWN should be taken precedence over any other
-errno which has already been recoded after EXT4_FLAGS_SHUTDOWN is set,
-but it only update errno in the journal suoerblock now if the old errno
-is 0.
+We invoke jbd2_journal_abort() to abort the journal and record errno
+in the jbd2 superblock when committing journal transaction besides the
+failure on submitting the commit record. But there is no need for the
+case and we can also invoke jbd2_journal_abort() instead of
+__jbd2_journal_abort_hard().
 
-Fixes: fb7c02445c49 ("ext4: pass -ESHUTDOWN code to jbd2 layer")
+Fixes: 818d276ceb83a ("ext4: Add the journal checksum feature")
 Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20191204124614.45424-4-yi.zhang@huawei.com
+Link: https://lore.kernel.org/r/20191204124614.45424-2-yi.zhang@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/journal.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/jbd2/commit.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 1a96287f92647..a15a22d209090 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -2133,8 +2133,7 @@ static void __journal_abort_soft (journal_t *journal, int errno)
- 
- 	if (journal->j_flags & JBD2_ABORT) {
- 		write_unlock(&journal->j_state_lock);
--		if (!old_errno && old_errno != -ESHUTDOWN &&
--		    errno == -ESHUTDOWN)
-+		if (old_errno != -ESHUTDOWN && errno == -ESHUTDOWN)
- 			jbd2_journal_update_sb_errno(journal);
- 		return;
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index 7f0b362b38429..2494095e0340b 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -782,7 +782,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+ 		err = journal_submit_commit_record(journal, commit_transaction,
+ 						 &cbh, crc32_sum);
+ 		if (err)
+-			__jbd2_journal_abort_hard(journal);
++			jbd2_journal_abort(journal, err);
  	}
+ 
+ 	blk_finish_plug(&plug);
+@@ -875,7 +875,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+ 		err = journal_submit_commit_record(journal, commit_transaction,
+ 						&cbh, crc32_sum);
+ 		if (err)
+-			__jbd2_journal_abort_hard(journal);
++			jbd2_journal_abort(journal, err);
+ 	}
+ 	if (cbh)
+ 		err = journal_wait_on_commit_record(journal, cbh);
 -- 
 2.20.1
 
