@@ -2,53 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E09160609
-	for <lists+linux-ext4@lfdr.de>; Sun, 16 Feb 2020 20:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6A116065A
+	for <lists+linux-ext4@lfdr.de>; Sun, 16 Feb 2020 21:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbgBPTuT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 16 Feb 2020 14:50:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgBPTuT (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 16 Feb 2020 14:50:19 -0500
-Subject: Re: [GIT PULL] ext4 bug fixes for 5.6-rc2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581882618;
-        bh=WKQi7KUTHW18qnotC/iBi1/osnN5kFcWzVplBEWyJTE=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=MByUNTGxMW68v1jryVA9dxxuPvVph3I/b/CPgtmmFHfBTsJU1mPWPotRHVQAyv2xu
-         DEepOJAuoiyfD9igKZYHlYRCoG0Wc7qbtJF6U9sk1/27BLulzubE6598Qp16tAn1F+
-         MxL2uGmXKoJ9zxprVBBE+yI0ExkyJpf22SOEDnMQ=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200216025822.GA721338@mit.edu>
-References: <20200216025822.GA721338@mit.edu>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200216025822.GA721338@mit.edu>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
- tags/ext4_for_linus_stable
-X-PR-Tracked-Commit-Id: d65d87a07476aa17df2dcb3ad18c22c154315bec
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8a8b80967b421218d89c1af61e759c54ab94fdb6
-Message-Id: <158188261850.7458.819464209091406484.pr-tracker-bot@kernel.org>
-Date:   Sun, 16 Feb 2020 19:50:18 +0000
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     torvalds@linux-foundation.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1726142AbgBPUdG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 16 Feb 2020 15:33:06 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54942 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726036AbgBPUdG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 16 Feb 2020 15:33:06 -0500
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01GKWwoU016290
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 16 Feb 2020 15:32:58 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 27A3342032C; Sun, 16 Feb 2020 15:32:58 -0500 (EST)
+Date:   Sun, 16 Feb 2020 15:32:58 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200216203258.GE566898@mit.edu>
+References: <20200215233817.GA670792@mit.edu>
+ <20200216121246.GG2935@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200216121246.GG2935@paulmck-ThinkPad-P72>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pull request you sent on Sat, 15 Feb 2020 21:58:22 -0500:
+On Sun, Feb 16, 2020 at 04:12:46AM -0800, Paul E. McKenney wrote:
+> > +void ext4_kvfree_array_rcu(void *to_free)
+> > +{
+> > +	struct ext4_rcu_ptr *ptr = kzalloc(sizeof(*ptr), GFP_KERNEL);
+> > +
+> > +	if (ptr) {
+> > +		ptr->ptr = to_free;
+> > +		call_rcu(&ptr->rcu, ext4_rcu_ptr_callback);
+> > +		return;
+> > +	}
+> > +	synchronize_rcu();
+> > +	kvfree(ptr);
+> > +}
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
+Whoops, that last statement should be kvfree(to_free), of course.
+I'll fix that up in my tree.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8a8b80967b421218d89c1af61e759c54ab94fdb6
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+		     	      	       - Ted
