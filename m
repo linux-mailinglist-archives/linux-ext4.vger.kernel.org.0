@@ -2,43 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 549E716175D
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Feb 2020 17:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C24161AC8
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Feb 2020 19:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729814AbgBQQNK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Feb 2020 11:13:10 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:47134 "EHLO
+        id S1730203AbgBQSsK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Feb 2020 13:48:10 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:48148 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729681AbgBQQMe (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Feb 2020 11:12:34 -0500
+        with ESMTP id S1729896AbgBQSqW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Feb 2020 13:46:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Q9SZPxTbPLz6j6tK62QfIeWLVlpiA+w6l/NB+3pECmg=; b=EdRsb1AXRcVTMlidBO9tNFHUAT
-        y+S36HIr5DlaBFKno/0X/MiguCK5iMugYoSULHvOCu8pnva6s7hBQA0mdGxH2Zf+YXLAKYbkCH2rf
-        DWtFE/htZRMWukINsF2K9/2AZA3y+euBPKRq+AxshpGNN9Wn1Er2N2egwSP5yx+PM7wwmXkhrWz+X
-        u/dgKg9lgLLUYr22mRsTkueuhb6lDZLP58sN4zBdTZj3t4FfEXCW8PaXqHl9X1aDnE5SIjfU+4wid
-        LWdNP1WJ5unK/LrlEpGKPtq7kXGXa1tYX+Kz3ej8da5+YEvfBYmXjBIQww8s1ls1kLyPm9WjIFY3d
-        TRiwehvg==;
-Received: from ip-109-41-129-189.web.vodafone.de ([109.41.129.189] helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j3j0c-0006ue-6n; Mon, 17 Feb 2020 16:12:34 +0000
-Received: from mchehab by bombadil.infradead.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@bombadil.infradead.org>)
-        id 1j3j0a-000faC-7A; Mon, 17 Feb 2020 17:12:32 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH 16/44] docs: filesystems: convert ext2.txt to ReST
-Date:   Mon, 17 Feb 2020 17:12:02 +0100
-Message-Id: <fde6721f0303259d830391e351dbde48f67f3ec7.1581955849.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <cover.1581955849.git.mchehab+huawei@kernel.org>
-References: <cover.1581955849.git.mchehab+huawei@kernel.org>
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=T1hWdYf0rB2BfBCCA/ycayjeULcD1RhEgE660nEF24U=; b=sDP0FQJf/K4vAFf0xbBt1NG5yU
+        BQo1zx2sDVZ4f5cBkmFWO1G5RYV/E561hS2Td5IkHpV55ScSQW46Pj3wPG/gZaXv5iWHZLxlFtSnT
+        BjLdIL++tZJlAw+Xzc28cr0VXtl8dDkruXjAEG9us+5NgJF/WpeRWy/LlJXX4j3I+4+SEJhRWETgz
+        Pc3A3JXDX5ggpPhYiDZYGDq58my+Q7ybdYT8YK8UL/adpWVgbm5fu+cJicN73uRbmjyuszU+cwKHN
+        CfFecxgyQQHpcERi6MFkYvGkiqN5jvoxW64RDHCkUV7Phh5O9263P2GEglbrJexeT6DAt54eb4wHq
+        2EZUCDbw==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j3lPL-00058b-99; Mon, 17 Feb 2020 18:46:15 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, ocfs2-devel@oss.oracle.com,
+        linux-xfs@vger.kernel.org
+Subject: [PATCH v6 00/19] Change readahead API
+Date:   Mon, 17 Feb 2020 10:45:41 -0800
+Message-Id: <20200217184613.19668-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
@@ -46,126 +42,124 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-- Add a SPDX header;
-- Some whitespace fixes and new line breaks;
-- Mark literal blocks as such;
-- Add table markups;
-- Use footnoote markups;
-- Add it to filesystems/index.rst.
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../filesystems/{ext2.txt => ext2.rst}        | 41 ++++++++++++-------
- Documentation/filesystems/index.rst           |  1 +
- 2 files changed, 27 insertions(+), 15 deletions(-)
- rename Documentation/filesystems/{ext2.txt => ext2.rst} (91%)
+This series adds a readahead address_space operation to eventually
+replace the readpages operation.  The key difference is that
+pages are added to the page cache as they are allocated (and
+then looked up by the filesystem) instead of passing them on a
+list to the readpages operation and having the filesystem add
+them to the page cache.  It's a net reduction in code for each
+implementation, more efficient than walking a list, and solves
+the direct-write vs buffered-read problem reported by yu kuai at
+https://lore.kernel.org/linux-fsdevel/20200116063601.39201-1-yukuai3@huawei.com/
 
-diff --git a/Documentation/filesystems/ext2.txt b/Documentation/filesystems/ext2.rst
-similarity index 91%
-rename from Documentation/filesystems/ext2.txt
-rename to Documentation/filesystems/ext2.rst
-index 94c2cf0292f5..d83dbbb162e2 100644
---- a/Documentation/filesystems/ext2.txt
-+++ b/Documentation/filesystems/ext2.rst
-@@ -1,3 +1,5 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
- 
- The Second Extended Filesystem
- ==============================
-@@ -14,8 +16,9 @@ Options
- Most defaults are determined by the filesystem superblock, and can be
- set using tune2fs(8). Kernel-determined defaults are indicated by (*).
- 
--bsddf			(*)	Makes `df' act like BSD.
--minixdf				Makes `df' act like Minix.
-+====================    ===     ================================================
-+bsddf			(*)	Makes ``df`` act like BSD.
-+minixdf				Makes ``df`` act like Minix.
- 
- check=none, nocheck	(*)	Don't do extra checking of bitmaps on mount
- 				(check=normal and check=strict options removed)
-@@ -62,6 +65,7 @@ quota, usrquota			Enable user disk quota support
- 
- grpquota			Enable group disk quota support
- 				(requires CONFIG_QUOTA).
-+====================    ===     ================================================
- 
- noquota option ls silently ignored by ext2.
- 
-@@ -294,9 +298,9 @@ respective fsck programs.
- If you're exceptionally paranoid, there are 3 ways of making metadata
- writes synchronous on ext2:
- 
--per-file if you have the program source: use the O_SYNC flag to open()
--per-file if you don't have the source: use "chattr +S" on the file
--per-filesystem: add the "sync" option to mount (or in /etc/fstab)
-+- per-file if you have the program source: use the O_SYNC flag to open()
-+- per-file if you don't have the source: use "chattr +S" on the file
-+- per-filesystem: add the "sync" option to mount (or in /etc/fstab)
- 
- the first and last are not ext2 specific but do force the metadata to
- be written synchronously.  See also Journaling below.
-@@ -316,10 +320,12 @@ Most of these limits could be overcome with slight changes in the on-disk
- format and using a compatibility flag to signal the format change (at
- the expense of some compatibility).
- 
--Filesystem block size:     1kB        2kB        4kB        8kB
--
--File size limit:          16GB      256GB     2048GB     2048GB
--Filesystem size limit:  2047GB     8192GB    16384GB    32768GB
-+=====================  =======    =======    =======   ========
-+Filesystem block size      1kB        2kB        4kB        8kB
-+=====================  =======    =======    =======   ========
-+File size limit           16GB      256GB     2048GB     2048GB
-+Filesystem size limit   2047GB     8192GB    16384GB    32768GB
-+=====================  =======    =======    =======   ========
- 
- There is a 2.4 kernel limit of 2048GB for a single block device, so no
- filesystem larger than that can be created at this time.  There is also
-@@ -370,19 +376,24 @@ ext4 and journaling.
- References
- ==========
- 
-+=======================	===============================================
- The kernel source	file:/usr/src/linux/fs/ext2/
- e2fsprogs (e2fsck)	http://e2fsprogs.sourceforge.net/
- Design & Implementation	http://e2fsprogs.sourceforge.net/ext2intro.html
- Journaling (ext3)	ftp://ftp.uk.linux.org/pub/linux/sct/fs/jfs/
- Filesystem Resizing	http://ext2resize.sourceforge.net/
--Compression (*)		http://e2compr.sourceforge.net/
-+Compression [1]_	http://e2compr.sourceforge.net/
-+=======================	===============================================
- 
- Implementations for:
-+
-+=======================	===========================================================
- Windows 95/98/NT/2000	http://www.chrysocome.net/explore2fs
--Windows 95 (*)		http://www.yipton.net/content.html#FSDEXT2
--DOS client (*)		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
--OS/2 (+)		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
-+Windows 95 [1]_		http://www.yipton.net/content.html#FSDEXT2
-+DOS client [1]_		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
-+OS/2 [2]_		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
- RISC OS client		http://www.esw-heim.tu-clausthal.de/~marco/smorbrod/IscaFS/
-+=======================	===========================================================
- 
--(*) no longer actively developed/supported (as of Apr 2001)
--(+) no longer actively developed/supported (as of Mar 2009)
-+.. [1] no longer actively developed/supported (as of Apr 2001)
-+.. [2] no longer actively developed/supported (as of Mar 2009)
-diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index 03a493b27920..102b3b65486a 100644
---- a/Documentation/filesystems/index.rst
-+++ b/Documentation/filesystems/index.rst
-@@ -62,6 +62,7 @@ Documentation for filesystem implementations.
-    ecryptfs
-    efivarfs
-    erofs
-+   ext2
-    fuse
-    overlayfs
-    virtiofs
+The only unconverted filesystems are those which use fscache.
+Their conversion is pending Dave Howells' rewrite which will make the
+conversion substantially easier.
+
+v6:
+ - Name the private members of readahead_control with a leading underscore
+   (suggested by Christoph Hellwig)
+ - Fix whitespace in rst file
+ - Remove misleading comment in btrfs patch
+ - Add readahead_next() API and use it in iomap
+ - Add iomap_readahead kerneldoc.
+ - Fix the mpage_readahead kerneldoc
+ - Make various readahead functions return void
+ - Keep readahead_index() and readahead_offset() pointing to the start of
+   this batch through the body.  No current user requires this, but it's
+   less surprising.
+ - Add kerneldoc for page_cache_readahead_limit
+ - Make page_idx an unsigned long, and rename it to just 'i'
+ - Get rid of page_offset local variable
+ - Add patch to call memalloc_nofs_save() before allocating pages (suggested
+   by Michal Hocko)
+ - Resplit a lot of patches for more logical progression and easier review
+   (suggested by John Hubbard)
+ - Added sign-offs where received, and I deemed still relevant
+
+v5 switched to passing a readahead_control struct (mirroring the
+writepages_control struct passed to writepages).  This has a number of
+advantages:
+ - It fixes a number of bugs in various implementations, eg forgetting to
+   increment 'start', an off-by-one error in 'nr_pages' or treating 'start'
+   as a byte offset instead of a page offset.
+ - It allows us to change the arguments without changing all the
+   implementations of ->readahead which just call mpage_readahead() or
+   iomap_readahead()
+ - Figuring out which pages haven't been attempted by the implementation
+   is more natural this way.
+ - There's less code in each implementation.
+
+Matthew Wilcox (Oracle) (19):
+  mm: Return void from various readahead functions
+  mm: Ignore return value of ->readpages
+  mm: Use readahead_control to pass arguments
+  mm: Rearrange readahead loop
+  mm: Remove 'page_offset' from readahead loop
+  mm: rename readahead loop variable to 'i'
+  mm: Put readahead pages in cache earlier
+  mm: Add readahead address space operation
+  mm: Add page_cache_readahead_limit
+  fs: Convert mpage_readpages to mpage_readahead
+  btrfs: Convert from readpages to readahead
+  erofs: Convert uncompressed files from readpages to readahead
+  erofs: Convert compressed files from readpages to readahead
+  ext4: Convert from readpages to readahead
+  f2fs: Convert from readpages to readahead
+  fuse: Convert from readpages to readahead
+  iomap: Restructure iomap_readpages_actor
+  iomap: Convert from readpages to readahead
+  mm: Use memalloc_nofs_save in readahead path
+
+ Documentation/filesystems/locking.rst |   6 +-
+ Documentation/filesystems/vfs.rst     |  13 ++
+ drivers/staging/exfat/exfat_super.c   |   7 +-
+ fs/block_dev.c                        |   7 +-
+ fs/btrfs/extent_io.c                  |  46 ++-----
+ fs/btrfs/extent_io.h                  |   3 +-
+ fs/btrfs/inode.c                      |  16 +--
+ fs/erofs/data.c                       |  39 ++----
+ fs/erofs/zdata.c                      |  29 ++--
+ fs/ext2/inode.c                       |  10 +-
+ fs/ext4/ext4.h                        |   3 +-
+ fs/ext4/inode.c                       |  23 ++--
+ fs/ext4/readpage.c                    |  22 ++-
+ fs/ext4/verity.c                      |  35 +----
+ fs/f2fs/data.c                        |  50 +++----
+ fs/f2fs/f2fs.h                        |   5 +-
+ fs/f2fs/verity.c                      |  35 +----
+ fs/fat/inode.c                        |   7 +-
+ fs/fuse/file.c                        |  46 +++----
+ fs/gfs2/aops.c                        |  23 ++--
+ fs/hpfs/file.c                        |   7 +-
+ fs/iomap/buffered-io.c                | 118 +++++++----------
+ fs/iomap/trace.h                      |   2 +-
+ fs/isofs/inode.c                      |   7 +-
+ fs/jfs/inode.c                        |   7 +-
+ fs/mpage.c                            |  38 ++----
+ fs/nilfs2/inode.c                     |  15 +--
+ fs/ocfs2/aops.c                       |  34 ++---
+ fs/omfs/file.c                        |   7 +-
+ fs/qnx6/inode.c                       |   7 +-
+ fs/reiserfs/inode.c                   |   8 +-
+ fs/udf/inode.c                        |   7 +-
+ fs/xfs/xfs_aops.c                     |  13 +-
+ fs/zonefs/super.c                     |   7 +-
+ include/linux/fs.h                    |   2 +
+ include/linux/iomap.h                 |   3 +-
+ include/linux/mpage.h                 |   4 +-
+ include/linux/pagemap.h               |  90 +++++++++++++
+ include/trace/events/erofs.h          |   6 +-
+ include/trace/events/f2fs.h           |   6 +-
+ mm/internal.h                         |   8 +-
+ mm/migrate.c                          |   2 +-
+ mm/readahead.c                        | 184 +++++++++++++++++---------
+ 43 files changed, 474 insertions(+), 533 deletions(-)
+
+
+base-commit: 11a48a5a18c63fd7621bb050228cebf13566e4d8
 -- 
-2.24.1
+2.25.0
 
