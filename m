@@ -2,79 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E45D9161B29
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Feb 2020 20:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0B1161BA6
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Feb 2020 20:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgBQTCT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Feb 2020 14:02:19 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43516 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728728AbgBQTCT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Feb 2020 14:02:19 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id A833F292457
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fscrypt@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v7 1/8] unicode: Add utf8_casefold_iter
-Organization: Collabora
-References: <20200208013552.241832-1-drosen@google.com>
-        <20200208013552.241832-2-drosen@google.com>
-        <20200212033800.GC870@sol.localdomain>
-        <CA+PiJmT_8EzyFO283_E62+UC6vtCGOJXKHAFqnH3QM9LA+PHAw@mail.gmail.com>
-Date:   Mon, 17 Feb 2020 14:02:10 -0500
-In-Reply-To: <CA+PiJmT_8EzyFO283_E62+UC6vtCGOJXKHAFqnH3QM9LA+PHAw@mail.gmail.com>
-        (Daniel Rosenberg's message of "Fri, 14 Feb 2020 13:47:37 -0800")
-Message-ID: <8536b95971.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1728667AbgBQTdc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Feb 2020 14:33:32 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58953 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726781AbgBQTdc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Feb 2020 14:33:32 -0500
+Received: from callcc.thunk.org (75-104-88-254.mobility.exede.net [75.104.88.254] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01HJXG2Q007801
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Feb 2020 14:33:23 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9E1AD4211EF; Mon, 17 Feb 2020 14:33:14 -0500 (EST)
+Date:   Mon, 17 Feb 2020 14:33:14 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200217193314.GA12604@mit.edu>
+References: <20200215233817.GA670792@mit.edu>
+ <20200216121246.GG2935@paulmck-ThinkPad-P72>
+ <20200217160827.GA5685@pc636>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200217160827.GA5685@pc636>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Daniel Rosenberg <drosen@google.com> writes:
+On Mon, Feb 17, 2020 at 05:08:27PM +0100, Uladzislau Rezki wrote:
+> Hello, Joel, Paul, Ted. 
+> 
+> > 
+> > Good point!
+> > 
+> > Now that kfree_rcu() is on its way to being less of a hack deeply
+> > entangled into the bowels of RCU, this might be fairly easy to implement.
+> > It might well be simply a matter of a function pointer and a kvfree_rcu()
+> > API.  Adding Uladzislau Rezki and Joel Fernandez on CC for their thoughts.
+> > 
+> I think it makes sense. For example i see there is a similar demand in
+> the mm/list_lru.c too. As for implementation, it will not be hard, i think. 
+> 
+> The easiest way is to inject kvfree() support directly into existing kfree_call_rcu()
+> logic(probably will need to rename that function), i.e. to free vmalloc() allocations
+> only in "emergency path" by just calling kvfree(). So that function in its turn will
+> figure out if it is _vmalloc_ address or not and trigger corresponding "free" path.
 
-> On Tue, Feb 11, 2020 at 7:38 PM Eric Biggers <ebiggers@kernel.org> wrote:
->>
->> Indirect function calls are expensive these days for various reasons, including
->> Spectre mitigations and CFI.  Are you sure it's okay from a performance
->> perspective to make an indirect call for every byte of the pathname?
->>
->> > +typedef int (*utf8_itr_actor_t)(struct utf8_itr_context *, int byte, int pos);
->>
->> The byte argument probably should be 'u8', to avoid confusion about whether it's
->> a byte or a Unicode codepoint.
->>
+The other difference between ext4_kvfree_array_rcu() and kfree_rcu()
+is that kfree_rcu() is a magic macro which frees a structure, which
+has to contain a struct rcu_head.  In this case, I'm freeing a pointer
+to set of structures, or in another case, a set of buffer_heads, which
+do *not* have an rcu_head structure.
 
-just for the record, we use int utf8byte because it can fail
-error codes, but that is not the case here.  It should be u8.
+> struct test_kvfree_rcu {
+>        unsigned char array[PAGE_SIZE * 2];
+>        struct rcu_head rcu;
+> };
 
->
-> Gabriel, what do you think here? I could change it to either exposing
-> the things necessary to do the hashing in libfs, or instead of the
-> general purpose iterator, just have a hash function inside of unicode
-> that will compute the hash given a seed value.
+I suspect I'd still want to use the ext4_kfree_array_rcu(), for a
+couple of reasons.  First of all, the array is variably sized.  So we
+don't know how big it is.  That could be fixed via something like 
 
-Sorry for the delay, I'm away on a long vacation and intentionally
-staying away from my laptop :)
+struct test_kvfree_rcu {
+       struct rcu_head rcu;
+       struct test_s [];
+};
 
-Eric has a very good point, if not prohibitively, it is unnecessarily
-expensive for a hot path.  Why not expose utf8ncursor and utf8byte to
-libfs and implement the hash in libfs?
+... but the other issue is that we have code where we have arrays of
+arrays, e.g.:
 
--- 
-Gabriel Krisman Bertazi
+	struct ext4_group_info ***s_group_info;
+
+which is an array of array of pointers to ext4_group_info.  Trying to
+cram in the rcu_head makes the code more complicated --- and also,
+resizing file systems is something that happens often, and I don't
+want to optimize it by keeping rcu_head structs around all the time.
+
+This is why at least for *this* use case, it's actually better to
+allocate temp array just before callig call_rcu(), and if I can't
+allocate it due to memory pressure, we'll it's OK to use
+synchronize_rcu() followed by kvfree().
+
+Cheers,
+
+						- Ted
