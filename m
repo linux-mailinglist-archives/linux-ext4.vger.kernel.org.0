@@ -2,174 +2,170 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAF51616FE
-	for <lists+linux-ext4@lfdr.de>; Mon, 17 Feb 2020 17:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 549E716175D
+	for <lists+linux-ext4@lfdr.de>; Mon, 17 Feb 2020 17:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbgBQQIj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 17 Feb 2020 11:08:39 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:45729 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgBQQIj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Feb 2020 11:08:39 -0500
-Received: by mail-lf1-f68.google.com with SMTP id 203so12238887lfa.12
-        for <linux-ext4@vger.kernel.org>; Mon, 17 Feb 2020 08:08:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zpUtYYYKt6wzJhX3LmXRTbfSCKjGKcoBGWi5MqIx9/8=;
-        b=dTILJvqb88Mv+kzD4eLuXI67qGD5SLWpy6H1HP55y9s6JH5m3w3TN++A5rp51dEU+5
-         A80wUeUVvbiZh4TnFsrjcAp0XK82LY5Hi5lrnqvY+Pv55SC44mlCyD26pAlP1ReaoK79
-         vj9O97rMZifJfCXO29Ej4O+kOEYHgyLvd52Ufpu2lNvpEoOWx4FSj5G7kS4Lusrb2Meb
-         t0i+/IOaA5p65vzVM5jOnjW+VoSpBWBy2JMadEz+fg7aU7/EbxA2squxzA1HA1GD3RFw
-         wJWL25lGnJ/WNZ9YSSsgXSVZtAnfikhslMFZXCQ2e+JbGBehRwtgDBWMGh2JpMAdiEpf
-         nEsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zpUtYYYKt6wzJhX3LmXRTbfSCKjGKcoBGWi5MqIx9/8=;
-        b=kYSWVq1cb3SJZDJ9LTipZV5NKEP2/3AG9ONJAJ0lfpBbyHKiZMZEZyM3MDGjJEzyXa
-         6ni12XyETIsnVTHeiHP8p5y7k2U0q/p+payYrcA+z5s08NW+qtbiLbnpZPo+OtM+mpRI
-         KWWpaHoKJOqM2sqIjVpCXKKE6zzjyS48UAzbh1U2Qw+7AdTBvkB2eRJrt9m2c4N0xDac
-         3rY3hDlxYQg3fJrPRShRbPC5XTe+k0aVziuVGQZ8IJMH1tiqxDdhvXiv7ZXILwFBiJRr
-         c9hiBe8HEeiZ9aa5cmpPtznTrgcA6ihUurKXGXg+dW/su222a7D7Xc8QFa2bgEtHrD8o
-         eheg==
-X-Gm-Message-State: APjAAAUW3aSN9MIdiawYJ4R2ra0JyoxMPnhvUR/ggTdlq+d171Q5iJ2B
-        W2oyPekdeCsS5O9jdPKM0Fo=
-X-Google-Smtp-Source: APXvYqw9fL4DIYIp9dOM84u4Q/cYkLjAX2nzbZbZcslXpFE8Ba3g5N/TaMDjAWKisMXv4XkzY1ahqw==
-X-Received: by 2002:a19:7d04:: with SMTP id y4mr8398784lfc.111.1581955716074;
-        Mon, 17 Feb 2020 08:08:36 -0800 (PST)
-Received: from pc636 ([37.139.158.167])
-        by smtp.gmail.com with ESMTPSA id y7sm593496lfk.83.2020.02.17.08.08.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Feb 2020 08:08:35 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 17 Feb 2020 17:08:27 +0100
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Suraj Jitindar Singh <surajjs@amazon.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
- write operations
-Message-ID: <20200217160827.GA5685@pc636>
-References: <20200215233817.GA670792@mit.edu>
- <20200216121246.GG2935@paulmck-ThinkPad-P72>
+        id S1729814AbgBQQNK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 17 Feb 2020 11:13:10 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:47134 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729681AbgBQQMe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 17 Feb 2020 11:12:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=Q9SZPxTbPLz6j6tK62QfIeWLVlpiA+w6l/NB+3pECmg=; b=EdRsb1AXRcVTMlidBO9tNFHUAT
+        y+S36HIr5DlaBFKno/0X/MiguCK5iMugYoSULHvOCu8pnva6s7hBQA0mdGxH2Zf+YXLAKYbkCH2rf
+        DWtFE/htZRMWukINsF2K9/2AZA3y+euBPKRq+AxshpGNN9Wn1Er2N2egwSP5yx+PM7wwmXkhrWz+X
+        u/dgKg9lgLLUYr22mRsTkueuhb6lDZLP58sN4zBdTZj3t4FfEXCW8PaXqHl9X1aDnE5SIjfU+4wid
+        LWdNP1WJ5unK/LrlEpGKPtq7kXGXa1tYX+Kz3ej8da5+YEvfBYmXjBIQww8s1ls1kLyPm9WjIFY3d
+        TRiwehvg==;
+Received: from ip-109-41-129-189.web.vodafone.de ([109.41.129.189] helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j3j0c-0006ue-6n; Mon, 17 Feb 2020 16:12:34 +0000
+Received: from mchehab by bombadil.infradead.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@bombadil.infradead.org>)
+        id 1j3j0a-000faC-7A; Mon, 17 Feb 2020 17:12:32 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH 16/44] docs: filesystems: convert ext2.txt to ReST
+Date:   Mon, 17 Feb 2020 17:12:02 +0100
+Message-Id: <fde6721f0303259d830391e351dbde48f67f3ec7.1581955849.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <cover.1581955849.git.mchehab+huawei@kernel.org>
+References: <cover.1581955849.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200216121246.GG2935@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello, Joel, Paul, Ted. 
+- Add a SPDX header;
+- Some whitespace fixes and new line breaks;
+- Mark literal blocks as such;
+- Add table markups;
+- Use footnoote markups;
+- Add it to filesystems/index.rst.
 
-> 
-> Good point!
-> 
-> Now that kfree_rcu() is on its way to being less of a hack deeply
-> entangled into the bowels of RCU, this might be fairly easy to implement.
-> It might well be simply a matter of a function pointer and a kvfree_rcu()
-> API.  Adding Uladzislau Rezki and Joel Fernandez on CC for their thoughts.
-> 
-I think it makes sense. For example i see there is a similar demand in
-the mm/list_lru.c too. As for implementation, it will not be hard, i think. 
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ .../filesystems/{ext2.txt => ext2.rst}        | 41 ++++++++++++-------
+ Documentation/filesystems/index.rst           |  1 +
+ 2 files changed, 27 insertions(+), 15 deletions(-)
+ rename Documentation/filesystems/{ext2.txt => ext2.rst} (91%)
 
-The easiest way is to inject kvfree() support directly into existing kfree_call_rcu()
-logic(probably will need to rename that function), i.e. to free vmalloc() allocations
-only in "emergency path" by just calling kvfree(). So that function in its turn will
-figure out if it is _vmalloc_ address or not and trigger corresponding "free" path.
-
-Just an example:
-
-<snip>
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index 75a2eded7aa2..0c4af5d0e3f8 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -806,6 +806,11 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
-                kfree_call_rcu(head, (rcu_callback_t)(unsigned long)(offset)); \
-        } while (0)
-
-+#define __kvfree_rcu(head, offset) \
-+       do { \
-+               kfree_call_rcu(head, (rcu_callback_t)(unsigned long)(offset)); \
-+       } while (0)
+diff --git a/Documentation/filesystems/ext2.txt b/Documentation/filesystems/ext2.rst
+similarity index 91%
+rename from Documentation/filesystems/ext2.txt
+rename to Documentation/filesystems/ext2.rst
+index 94c2cf0292f5..d83dbbb162e2 100644
+--- a/Documentation/filesystems/ext2.txt
++++ b/Documentation/filesystems/ext2.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
- /**
-  * kfree_rcu() - kfree an object after a grace period.
-  * @ptr:       pointer to kfree
-@@ -840,6 +845,14 @@ do {                                                                       \
-                __kfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
- } while (0)
-
-+#define kvfree_rcu_my(ptr, rhf)                                                \
-+do {                                                                   \
-+       typeof (ptr) ___p = (ptr);                                      \
-+                                                                       \
-+       if (___p)                                                       \
-+               __kvfree_rcu(&((___p)->rhf), offsetof(typeof(*(ptr)), rhf)); \
-+} while (0)
+ 
+ The Second Extended Filesystem
+ ==============================
+@@ -14,8 +16,9 @@ Options
+ Most defaults are determined by the filesystem superblock, and can be
+ set using tune2fs(8). Kernel-determined defaults are indicated by (*).
+ 
+-bsddf			(*)	Makes `df' act like BSD.
+-minixdf				Makes `df' act like Minix.
++====================    ===     ================================================
++bsddf			(*)	Makes ``df`` act like BSD.
++minixdf				Makes ``df`` act like Minix.
+ 
+ check=none, nocheck	(*)	Don't do extra checking of bitmaps on mount
+ 				(check=normal and check=strict options removed)
+@@ -62,6 +65,7 @@ quota, usrquota			Enable user disk quota support
+ 
+ grpquota			Enable group disk quota support
+ 				(requires CONFIG_QUOTA).
++====================    ===     ================================================
+ 
+ noquota option ls silently ignored by ext2.
+ 
+@@ -294,9 +298,9 @@ respective fsck programs.
+ If you're exceptionally paranoid, there are 3 ways of making metadata
+ writes synchronous on ext2:
+ 
+-per-file if you have the program source: use the O_SYNC flag to open()
+-per-file if you don't have the source: use "chattr +S" on the file
+-per-filesystem: add the "sync" option to mount (or in /etc/fstab)
++- per-file if you have the program source: use the O_SYNC flag to open()
++- per-file if you don't have the source: use "chattr +S" on the file
++- per-filesystem: add the "sync" option to mount (or in /etc/fstab)
+ 
+ the first and last are not ext2 specific but do force the metadata to
+ be written synchronously.  See also Journaling below.
+@@ -316,10 +320,12 @@ Most of these limits could be overcome with slight changes in the on-disk
+ format and using a compatibility flag to signal the format change (at
+ the expense of some compatibility).
+ 
+-Filesystem block size:     1kB        2kB        4kB        8kB
+-
+-File size limit:          16GB      256GB     2048GB     2048GB
+-Filesystem size limit:  2047GB     8192GB    16384GB    32768GB
++=====================  =======    =======    =======   ========
++Filesystem block size      1kB        2kB        4kB        8kB
++=====================  =======    =======    =======   ========
++File size limit           16GB      256GB     2048GB     2048GB
++Filesystem size limit   2047GB     8192GB    16384GB    32768GB
++=====================  =======    =======    =======   ========
+ 
+ There is a 2.4 kernel limit of 2048GB for a single block device, so no
+ filesystem larger than that can be created at this time.  There is also
+@@ -370,19 +376,24 @@ ext4 and journaling.
+ References
+ ==========
+ 
++=======================	===============================================
+ The kernel source	file:/usr/src/linux/fs/ext2/
+ e2fsprogs (e2fsck)	http://e2fsprogs.sourceforge.net/
+ Design & Implementation	http://e2fsprogs.sourceforge.net/ext2intro.html
+ Journaling (ext3)	ftp://ftp.uk.linux.org/pub/linux/sct/fs/jfs/
+ Filesystem Resizing	http://ext2resize.sourceforge.net/
+-Compression (*)		http://e2compr.sourceforge.net/
++Compression [1]_	http://e2compr.sourceforge.net/
++=======================	===============================================
+ 
+ Implementations for:
 +
- /*
-  * Place this after a lock-acquisition primitive to guarantee that
-  * an UNLOCK+LOCK pair acts as a full barrier.  This guarantee applies
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 394a83bd7ff4..1a05bb44951b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2783,11 +2783,10 @@ static void kfree_rcu_work(struct work_struct *work)
-                rcu_lock_acquire(&rcu_callback_map);
-                trace_rcu_invoke_kfree_callback(rcu_state.name, head, offset);
++=======================	===========================================================
+ Windows 95/98/NT/2000	http://www.chrysocome.net/explore2fs
+-Windows 95 (*)		http://www.yipton.net/content.html#FSDEXT2
+-DOS client (*)		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
+-OS/2 (+)		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
++Windows 95 [1]_		http://www.yipton.net/content.html#FSDEXT2
++DOS client [1]_		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
++OS/2 [2]_		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
+ RISC OS client		http://www.esw-heim.tu-clausthal.de/~marco/smorbrod/IscaFS/
++=======================	===========================================================
  
--               if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset)))
--                       kfree((void *)head - offset);
-+               kvfree((void *)head - offset);
- 
--                rcu_lock_release(&rcu_callback_map);
--                cond_resched_tasks_rcu_qs();
-+               rcu_lock_release(&rcu_callback_map);
-+               cond_resched_tasks_rcu_qs();
-        }
- }
- 
-@@ -2964,7 +2963,8 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-         * Under high memory pressure GFP_NOWAIT can fail,
-         * in that case the emergency path is maintained.
-         */
--       if (unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func))) {
-+       if (is_vmalloc_addr((void *) head - (unsigned long) func) ||
-+                       unlikely(!kfree_call_rcu_add_ptr_to_bulk(krcp, head, func))) {
-                head->func = func;
-                head->next = krcp->head;
-                krcp->head = head;
-<snip>
+-(*) no longer actively developed/supported (as of Apr 2001)
+-(+) no longer actively developed/supported (as of Mar 2009)
++.. [1] no longer actively developed/supported (as of Apr 2001)
++.. [2] no longer actively developed/supported (as of Mar 2009)
+diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+index 03a493b27920..102b3b65486a 100644
+--- a/Documentation/filesystems/index.rst
++++ b/Documentation/filesystems/index.rst
+@@ -62,6 +62,7 @@ Documentation for filesystem implementations.
+    ecryptfs
+    efivarfs
+    erofs
++   ext2
+    fuse
+    overlayfs
+    virtiofs
+-- 
+2.24.1
 
-How to use it:
-
-<snip>
-struct test_kvfree_rcu {
-       unsigned char array[PAGE_SIZE * 2];
-       struct rcu_head rcu;
-};
-
-struct test_kvfree_rcu *p;
-
-p = vmalloc(sizeof(struct test_kvfree_rcu));
-kvfree_rcu_my((struct test_kvfree_rcu *) p, rcu);
-<snip>
-
-Any thoughts?
-
-Thank you!
-
---
-Vlad Rezki
