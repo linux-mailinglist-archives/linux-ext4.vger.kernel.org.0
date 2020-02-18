@@ -2,123 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1612162507
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 11:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26417162748
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 14:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgBRK4j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 05:56:39 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10636 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726496AbgBRK4i (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 Feb 2020 05:56:38 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6D391E9C42D8BE5EA82B;
-        Tue, 18 Feb 2020 18:56:35 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.439.0; Tue, 18 Feb 2020
- 18:56:25 +0800
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-To:     <gregkh@linuxfoundation.org>
-CC:     <stable@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <jack@suse.cz>, <tytso@mit.edu>, <yi.zhang@huawei.com>
-Subject: [PATCH 4.4 2/2] jbd2: do not clear the BH_Mapped flag when forgetting a metadata buffer
-Date:   Tue, 18 Feb 2020 18:55:15 +0800
-Message-ID: <20200218105515.6548-2-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20200218105515.6548-1-yi.zhang@huawei.com>
-References: <20200218105515.6548-1-yi.zhang@huawei.com>
+        id S1726680AbgBRNmb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 08:42:31 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:49330 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726569AbgBRNmb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 08:42:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=sRRfkuIro3UJgk7ronBRbu9Qpl4FSkPX98/JT02cIzQ=; b=WiqMBzR3mGIQcEq161KXuYNNqn
+        oGEGsCAD1sh6ZxDHFnwWKQ2UwAbxLDKaVUSstZlvvZi3x4yIlHuLp2u6l7YrszKdgcpLhi972Q0/M
+        v2lPX/oCVktUYRubwI/oT4ULqsPrfYeqx1ppvykbJky0SIGyrQDEEKC6qeiOAZIZLEEa8fGbwzymS
+        SKIhK0eTvDnycS/K6GjH9DoFUk9lT4+Bh4Q7le4HVT8wkpD+696fuAoTeI+nAElAF/93gchu8m6kq
+        3yyLRS2ZUp2AAlJpuu2kf3UYi/qoxOxEhYzdrtFmaDyvoJBUAzp1grGpHZPuH40DCWRoboP4begWK
+        g4B3syeQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j438w-0002EE-C5; Tue, 18 Feb 2020 13:42:30 +0000
+Date:   Tue, 18 Feb 2020 05:42:30 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 00/19] Change readahead API
+Message-ID: <20200218134230.GN7778@bombadil.infradead.org>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200218045633.GH10776@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200218045633.GH10776@dread.disaster.area>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[ Upstream commit c96dceeabf765d0b1b1f29c3bf50a5c01315b820 ]
+On Tue, Feb 18, 2020 at 03:56:33PM +1100, Dave Chinner wrote:
+> Latest version in your git tree:
+> 
+> $ ▶ glo -n 5 willy/readahead
+> 4be497096c04 mm: Use memalloc_nofs_save in readahead path
+> ff63497fcb98 iomap: Convert from readpages to readahead
+> 26aee60e89b5 iomap: Restructure iomap_readpages_actor
+> 8115bcca7312 fuse: Convert from readpages to readahead
+> 3db3d10d9ea1 f2fs: Convert from readpages to readahead
+> $
+> 
+> merged into a 5.6-rc2 tree fails at boot on my test vm:
+> 
+> [    2.423116] ------------[ cut here ]------------
+> [    2.424957] list_add double add: new=ffffea000efff4c8, prev=ffff8883bfffee60, next=ffffea000efff4c8.
+> [    2.428259] WARNING: CPU: 4 PID: 1 at lib/list_debug.c:29 __list_add_valid+0x67/0x70
+> [    2.457484] Call Trace:
+> [    2.458171]  __pagevec_lru_add_fn+0x15f/0x2c0
+> [    2.459376]  pagevec_lru_move_fn+0x87/0xd0
+> [    2.460500]  ? pagevec_move_tail_fn+0x2d0/0x2d0
+> [    2.461712]  lru_add_drain_cpu+0x8d/0x160
+> [    2.462787]  lru_add_drain+0x18/0x20
 
-Commit 904cdbd41d74 ("jbd2: clear dirty flag when revoking a buffer from
-an older transaction") set the BH_Freed flag when forgetting a metadata
-buffer which belongs to the committing transaction, it indicate the
-committing process clear dirty bits when it is done with the buffer. But
-it also clear the BH_Mapped flag at the same time, which may trigger
-below NULL pointer oops when block_size < PAGE_SIZE.
-
-rmdir 1             kjournald2                 mkdir 2
-                    jbd2_journal_commit_transaction
-		    commit transaction N
-jbd2_journal_forget
-set_buffer_freed(bh1)
-                    jbd2_journal_commit_transaction
-                     commit transaction N+1
-                     ...
-                     clear_buffer_mapped(bh1)
-                                               ext4_getblk(bh2 ummapped)
-                                               ...
-                                               grow_dev_page
-                                                init_page_buffers
-                                                 bh1->b_private=NULL
-                                                 bh2->b_private=NULL
-                     jbd2_journal_put_journal_head(jh1)
-                      __journal_remove_journal_head(hb1)
-		       jh1 is NULL and trigger oops
-
-*) Dir entry block bh1 and bh2 belongs to one page, and the bh2 has
-   already been unmapped.
-
-For the metadata buffer we forgetting, we should always keep the mapped
-flag and clear the dirty flags is enough, so this patch pick out the
-these buffers and keep their BH_Mapped flag.
-
-Link: https://lore.kernel.org/r/20200213063821.30455-3-yi.zhang@huawei.com
-Fixes: 904cdbd41d74 ("jbd2: clear dirty flag when revoking a buffer from an older transaction")
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
----
- fs/jbd2/commit.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
-
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index 3bf86d912b76..7fe61edb1bb9 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -996,12 +996,29 @@ restart_loop:
- 		 * pagesize and it is attached to the last partial page.
- 		 */
- 		if (buffer_freed(bh) && !jh->b_next_transaction) {
-+			struct address_space *mapping;
-+
- 			clear_buffer_freed(bh);
- 			clear_buffer_jbddirty(bh);
--			clear_buffer_mapped(bh);
--			clear_buffer_new(bh);
--			clear_buffer_req(bh);
--			bh->b_bdev = NULL;
-+
-+			/*
-+			 * Block device buffers need to stay mapped all the
-+			 * time, so it is enough to clear buffer_jbddirty and
-+			 * buffer_freed bits. For the file mapping buffers (i.e.
-+			 * journalled data) we need to unmap buffer and clear
-+			 * more bits. We also need to be careful about the check
-+			 * because the data page mapping can get cleared under
-+			 * out hands, which alse need not to clear more bits
-+			 * because the page and buffers will be freed and can
-+			 * never be reused once we are done with them.
-+			 */
-+			mapping = READ_ONCE(bh->b_page->mapping);
-+			if (mapping && !sb_is_blkdev_sb(mapping->host->i_sb)) {
-+				clear_buffer_mapped(bh);
-+				clear_buffer_new(bh);
-+				clear_buffer_req(bh);
-+				bh->b_bdev = NULL;
-+			}
- 		}
- 
- 		if (buffer_jbddirty(bh)) {
--- 
-2.17.2
+Are you sure that was 4be497096c04 ?  I ask because there was a
+version pushed to that git tree that did contain a list double-add
+(due to a mismerge when shuffling patches).  I noticed it and fixed
+it, and 4be497096c04 doesn't have that problem.  I also test with
+CONFIG_DEBUG_LIST turned on, but this problem you hit is going to be
+probabilistic because it'll depend on the timing between whatever other
+list is being used and the page actually being added to the LRU.
 
