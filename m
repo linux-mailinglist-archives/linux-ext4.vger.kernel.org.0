@@ -2,161 +2,162 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B3216280A
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 15:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9540116299D
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 16:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgBROXK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 09:23:10 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:57543 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726645AbgBROXJ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 Feb 2020 09:23:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582035787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yanaYNgQLH0uUtud3acbkiI6ejUUQwCJBKP2V2ns7X8=;
-        b=MXSKRDwEMF60TiOky73pvdM5NbpTpiCe1muuMvEq+lFHzRCsMpZC4zGFmv+irnNpeOr4DH
-        0f3J7FkmGHOFj/mdMYbTUv4sLBdl4TXxP8YT9Rp0ajAJIqkrv/FT1YRJtYFqwvv7w+nXs4
-        l2l5qNatGTsjXOUt4ywcDbmdsX+6OWA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-BocrCsN1P4KXbaY1-CgJdQ-1; Tue, 18 Feb 2020 09:23:02 -0500
-X-MC-Unique: BocrCsN1P4KXbaY1-CgJdQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CA66107ACC5;
-        Tue, 18 Feb 2020 14:23:00 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6CAD0100164D;
-        Tue, 18 Feb 2020 14:22:59 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v3 00/12] Enable per-file/directory DAX operations V3
-References: <20200213190156.GA22854@iweiny-DESK2.sc.intel.com>
-        <20200213190513.GB22854@iweiny-DESK2.sc.intel.com>
-        <20200213195839.GG6870@magnolia>
-        <20200213232923.GC22854@iweiny-DESK2.sc.intel.com>
-        <CAPcyv4hkWoC+xCqicH1DWzmU2DcpY0at_A6HaBsrdLbZ6qzWow@mail.gmail.com>
-        <20200214200607.GA18593@iweiny-DESK2.sc.intel.com>
-        <x4936bcdfso.fsf@segfault.boston.devel.redhat.com>
-        <20200214215759.GA20548@iweiny-DESK2.sc.intel.com>
-        <x49y2t4bz8t.fsf@segfault.boston.devel.redhat.com>
-        <x49tv3sbwu5.fsf@segfault.boston.devel.redhat.com>
-        <20200218023535.GA14509@iweiny-DESK2.sc.intel.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Tue, 18 Feb 2020 09:22:58 -0500
-In-Reply-To: <20200218023535.GA14509@iweiny-DESK2.sc.intel.com> (Ira Weiny's
-        message of "Mon, 17 Feb 2020 18:35:36 -0800")
-Message-ID: <x49zhdgasal.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1726582AbgBRPmX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 10:42:23 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:36464 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726338AbgBRPmX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 10:42:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oQ+wHGdx1ULBXPBam1g8Uipf1yyfaaqxmlrcZ982o9k=; b=Wj2hN1Ys6lneGYnt6lyt28p7dX
+        xcPHY3DggtQF0V8rHudxsyMEruSBB+yksYd5K4jTPpH1Sb6FwieHFjL9L4y2tE2u/FKfJKGHM07zk
+        7aVuKRme2EL4Yz9RAVR+an3Misj05c3UKPtIB2h8TZRI5Is3OFhiQdPCfewKzO/jjjB0pr4J84clk
+        JoeAVeGLWbHKY/xgLceP9WBHTLk19SxEnQx8FM7lcnxbWFWqoM7F8w+JhQvm0Ci7daJwE+nGYHtn3
+        +8vcZGb7YOcxncpzTgWcLFEqCwt6gz/YgXx5oaJ9EhecdpELGPuj8YQkK5ZbDKGuAWwReHfNZzohN
+        EfWd+hMA==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j450w-0007Ik-FJ; Tue, 18 Feb 2020 15:42:22 +0000
+Date:   Tue, 18 Feb 2020 07:42:22 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 07/19] mm: Put readahead pages in cache earlier
+Message-ID: <20200218154222.GQ7778@bombadil.infradead.org>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-12-willy@infradead.org>
+ <20200218061459.GM10776@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200218061459.GM10776@dread.disaster.area>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Ira Weiny <ira.weiny@intel.com> writes:
+On Tue, Feb 18, 2020 at 05:14:59PM +1100, Dave Chinner wrote:
+> On Mon, Feb 17, 2020 at 10:45:52AM -0800, Matthew Wilcox wrote:
+> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> > 
+> > At allocation time, put the pages in the cache unless we're using
+> > ->readpages.  Add the readahead_for_each() iterator for the benefit of
+> > the ->readpage fallback.  This iterator supports huge pages, even though
+> > none of the filesystems to be converted do yet.
+> 
+> This could be better written - took me some time to get my head
+> around it and the code.
+> 
+> "When populating the page cache for readahead, mappings that don't
+> use ->readpages need to have their pages added to the page cache
+> before ->readpage is called. Do this insertion earlier so that the
+> pages can be looked up immediately prior to ->readpage calls rather
+> than passing them on a linked list. This early insert functionality
+> is also required by the upcoming ->readahead method that will
+> replace ->readpages.
+> 
+> Optimise and simplify the readpage loop by adding a
+> readahead_for_each() iterator to provide the pages we need to read.
+> This iterator also supports huge pages, even though none of the
+> filesystems have been converted to use them yet."
 
-> Yep...  and a long weekend if you are in the US...  I ran the test with V4 and
-> got the panic below.
->
-> Is this similar to what you see?  If so I'll work on it in V4.  FWIW with '-o
+Thanks, I'll use that.
 
-Yes, precisely.
+> > +static inline struct page *readahead_page(struct readahead_control *rac)
+> > +{
+> > +	struct page *page;
+> > +
+> > +	if (!rac->_nr_pages)
+> > +		return NULL;
+> 
+> Hmmmm.
+> 
+> > +
+> > +	page = xa_load(&rac->mapping->i_pages, rac->_start);
+> > +	VM_BUG_ON_PAGE(!PageLocked(page), page);
+> > +	rac->_batch_count = hpage_nr_pages(page);
+> 
+> So we could have rac->_nr_pages = 2, and then we get an order 2
+> large page returned, and so rac->_batch_count = 4.
 
-> dax' specified I don't see how fsstress is causing an issue with my patch set.
-> Does fsstress attempt to change dax states?  I don't see that in the test but
-> I'm not real familiar with generic/013 and fsstress.
+Well, no, we couldn't.  rac->_nr_pages is incremented by 4 when we add
+an order-2 page to the readahead.  I can put a
+	BUG_ON(rac->_batch_count > rac->_nr_pages)
+in here to be sure to catch any logic error like that.
 
-Not that I'm aware of, no.
+> > @@ -159,6 +152,7 @@ void __do_page_cache_readahead(struct address_space *mapping,
+> >  	unsigned long i;
+> >  	loff_t isize = i_size_read(inode);
+> >  	gfp_t gfp_mask = readahead_gfp_mask(mapping);
+> > +	bool use_list = mapping->a_ops->readpages;
+> >  	struct readahead_control rac = {
+> >  		.mapping = mapping,
+> >  		.file = filp,
+> 
+> [ I do find these unstructured mixes of declarations and
+> initialisations dense and difficult to read.... ]
 
-> If my disassembly of read_pages is correct it looks like readpage is null which
-> makes sense because all files should be IS_DAX() == true due to the mount option...
->
-> But tracing code indicates that the patch:
->
-> 	fs: remove unneeded IS_DAX() check
->
-> ... may be the culprit and the following fix may work...
->
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 3a7863ba51b9..7eaf74a2a39b 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2257,7 +2257,7 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
->         if (!count)
->                 goto out; /* skip atime */
->  
-> -       if (iocb->ki_flags & IOCB_DIRECT) {
-> +       if (iocb->ki_flags & IOCB_DIRECT || IS_DAX(inode)) {
->                 struct file *file = iocb->ki_filp;
->                 struct address_space *mapping = file->f_mapping;
->                 struct inode *inode = mapping->host;
+Fair ... although I didn't create this mess, I can tidy it up a bit.
 
-Well, you'll have to up-level the inode variable instantiation,
-obviously.  That solves this particular issue.  The next traceback
-you'll hit is in the writeback path:
+> > -		page->index = offset;
+> > -		list_add(&page->lru, &page_pool);
+> > +		if (use_list) {
+> > +			page->index = offset;
+> > +			list_add(&page->lru, &page_pool);
+> > +		} else if (add_to_page_cache_lru(page, mapping, offset,
+> > +					gfp_mask) < 0) {
+> > +			put_page(page);
+> > +			goto read;
+> > +		}
+> 
+> Ok, so that's why you put read code at the end of the loop. To turn
+> the code into spaghetti :/
+> 
+> How much does this simplify down when we get rid of ->readpages and
+> can restructure the loop? This really seems like you're trying to
+> flatten two nested loops into one by the use of goto....
 
-[  116.044545] ------------[ cut here ]------------
-[  116.049163] WARNING: CPU: 48 PID: 4469 at fs/dax.c:862 dax_writeback_mapping_range+0x397/0x530
-...
-[  116.134509] CPU: 48 PID: 4469 Comm: fsstress Not tainted 5.6.0-rc1+ #43
-[  116.141121] Hardware name: Intel Corporation S2600WFD/S2600WFD, BIOS SE5C620.86B.0D.01.0395.022720191340 02/27/2019
-[  116.151549] RIP: 0010:dax_writeback_mapping_range+0x397/0x530
-[  116.157294] Code: ff ff 31 db 48 8b 7c 24 28 c6 07 00 0f 1f 40 00 fb 48 8b 7c 24 10 e8 98 fc 29 00 0f 1f 44 00 00 e9 f1 fc ff ff 4c 8b 64 24 08 <0f> 0b be fb ff ff ff 4c 89 e7 e8 fa 87 ed ff f0 41 80 8c 24 80 00
-[  116.176036] RSP: 0018:ffffb9b162fa7c18 EFLAGS: 00010046
-[  116.181261] RAX: 0000000000000000 RBX: 00000000000001ac RCX: 0000000000000020
-[  116.188387] RDX: 0000000000000000 RSI: 00000000000001ac RDI: ffffb9b162fa7c40
-[  116.195519] RBP: 0000000000000020 R08: ffff9a73dc24d6b0 R09: 0000000000000020
-[  116.202648] R10: 0000000000000000 R11: 0000000000000238 R12: ffff9a73d92c66b8
-[  116.209774] R13: ffffe4a09f0cb200 R14: 0000000000000000 R15: ffffe4a09f0cb200
-[  116.216907] FS:  00007f2dbcd22b80(0000) GS:ffff9a7420c00000(0000) knlGS:0000000000000000
-[  116.224992] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  116.230735] CR2: 00007fa21808b648 CR3: 000000179e0a2003 CR4: 00000000007606e0
-[  116.237860] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  116.244990] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  116.252115] PKRU: 55555554
-[  116.254827] Call Trace:
-[  116.257286]  do_writepages+0x41/0xd0
-[  116.260862]  __filemap_fdatawrite_range+0xcb/0x100
-[  116.265653]  filemap_write_and_wait_range+0x38/0x90
-[  116.270579]  xfs_setattr_size+0x2c2/0x3e0 [xfs]
-[  116.275126]  xfs_file_fallocate+0x239/0x440 [xfs]
-[  116.279831]  ? selinux_file_permission+0x108/0x140
-[  116.284622]  vfs_fallocate+0x14d/0x2f0
-[  116.288374]  ksys_fallocate+0x3c/0x80
-[  116.292039]  __x64_sys_fallocate+0x1a/0x20
-[  116.296139]  do_syscall_64+0x55/0x1d0
-[  116.299806]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  116.304856] RIP: 0033:0x7f2dbc21983b
-[  116.308435] Code: ff ff eb ba 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 8d 05 25 0e 2d 00 49 89 ca 8b 00 85 c0 75 14 b8 1d 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 5d c3 0f 1f 40 00 41 55 49 89 cd 41 54 49 89
+I see it as having two failure cases in this loop.  One for "page is
+already present" (which already existed) and one for "allocated a page,
+but failed to add it to the page cache" (which used to be done later).
+I didn't want to duplicate the "call read_pages()" code.  So I reshuffled
+the code rather than add a nested loop.  I don't think the nested loop
+is easier to read (we'll be at 5 levels of indentation for some statements).
+Could do it this way ...
 
-That's here:
-
+@@ -218,18 +218,17 @@ void page_cache_readahead_limit(struct address_space *mapping,
+                } else if (add_to_page_cache_lru(page, mapping, offset,
+                                        gfp_mask) < 0) {
+                        put_page(page);
+-                       goto read;
++read:
++                       if (readahead_count(&rac))
++                               read_pages(&rac, &page_pool);
++                       rac._nr_pages = 0;
++                       rac._start = ++offset;
++                       continue;
+                }
+                if (i == nr_to_read - lookahead_size)
+                        SetPageReadahead(page);
+                rac._nr_pages++;
+                offset++;
+-               continue;
+-read:
+-               if (readahead_count(&rac))
+-                       read_pages(&rac, &page_pool);
+-               rac._nr_pages = 0;
+-               rac._start = ++offset;
+        }
+ 
         /*
-         * A page got tagged dirty in DAX mapping? Something is seriously
-         * wrong.
-         */
-        if (WARN_ON(!xa_is_value(entry)))
-                return -EIO;
 
-Cheers,
-Jeff
-
+but I'm not sure that's any better.
