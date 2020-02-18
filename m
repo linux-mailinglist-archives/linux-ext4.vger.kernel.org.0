@@ -2,149 +2,119 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E63A163625
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 23:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F46D163654
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 23:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgBRWdV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 17:33:21 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18969 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726352AbgBRWdV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 17:33:21 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e4c65e90000>; Tue, 18 Feb 2020 14:32:09 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 18 Feb 2020 14:33:20 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 18 Feb 2020 14:33:20 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 18 Feb
- 2020 22:33:19 +0000
-Subject: Re: [PATCH v6 04/19] mm: Rearrange readahead loop
-To:     Matthew Wilcox <willy@infradead.org>,
-        <linux-fsdevel@vger.kernel.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
-        <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <cluster-devel@redhat.com>, <ocfs2-devel@oss.oracle.com>,
-        <linux-xfs@vger.kernel.org>
+        id S1726779AbgBRWqQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 17:46:16 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:43265 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726438AbgBRWqQ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 18 Feb 2020 17:46:16 -0500
+Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 2C6AA3A311C;
+        Wed, 19 Feb 2020 09:46:11 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j4Bd4-0003kz-H7; Wed, 19 Feb 2020 09:46:10 +1100
+Date:   Wed, 19 Feb 2020 09:46:10 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v6 03/19] mm: Use readahead_control to pass arguments
+Message-ID: <20200218224610.GT10776@dread.disaster.area>
 References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-5-willy@infradead.org>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <6ecedc28-a999-8673-e4b1-349b0c23fdfd@nvidia.com>
-Date:   Tue, 18 Feb 2020 14:33:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ <20200217184613.19668-4-willy@infradead.org>
+ <20200218050300.GI10776@dread.disaster.area>
+ <20200218135618.GO7778@bombadil.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20200217184613.19668-5-willy@infradead.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1582065129; bh=yWG75TuvaIkixcYjAReAuF+49IUj/8WtcUdupEFzEyw=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=klykhDzbfDnFoiAzHG0F/sl3+zuD/yu0U05wkkG5YL25K0mXMn/SZDKS/OPYoMjVi
-         mBSMyFlXKKo4UAQQuQv/lsdIWAvE7WxiS+oOmcGMSJDykk7YuHI6JFzdcykchFj71k
-         zIa5A9cfCBqyTcR6zGjigkGmcGSCKI7dxvmn+IuKHqErApkB59r3L/Gj+RxcTKKVSI
-         +btrOqRw+4ZZVhqAz1RhfcawzguTRlv7l99v2wGxH6VlakfW2nQLeICs16ez9TeiWQ
-         ZpdA450G/HarSR+IiezZDL9QVYoCyXag0rX4h00yKEt9Soza8Wdn/b85Sc2AMZZmq3
-         fR1BnLTnbzkPg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200218135618.GO7778@bombadil.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=7-415B0cAAAA:8 a=-669WvyOGAhHUzcTJR8A:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2/17/20 10:45 AM, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On Tue, Feb 18, 2020 at 05:56:18AM -0800, Matthew Wilcox wrote:
+> On Tue, Feb 18, 2020 at 04:03:00PM +1100, Dave Chinner wrote:
+> > On Mon, Feb 17, 2020 at 10:45:44AM -0800, Matthew Wilcox wrote:
+> > > +static void read_pages(struct readahead_control *rac, struct list_head *pages,
+> > > +		gfp_t gfp)
+> > >  {
+> > > +	const struct address_space_operations *aops = rac->mapping->a_ops;
+> > >  	struct blk_plug plug;
+> > >  	unsigned page_idx;
+> > 
+> > Splitting out the aops rather than the mapping here just looks
+> > weird, especially as you need the mapping later in the function.
+> > Using aops doesn't even reduce the code side....
 > 
-> Move the declaration of 'page' to inside the loop and move the 'kick
-> off a fresh batch' code to the end of the function for easier use in
-> subsequent patches.
+> It does in subsequent patches ... I agree it looks a little weird here,
+> but I think in the final form, it makes sense:
+
+Ok. Perhaps just an additional commit comment to say "read_pages() is
+changed to be aops centric as @rac abstracts away all other
+implementation details by the end of the patchset."
+
+> > > +			if (readahead_count(&rac))
+> > > +				read_pages(&rac, &page_pool, gfp_mask);
+> > > +			rac._nr_pages = 0;
+> > 
+> > Hmmm. Wondering ig it make sense to move the gfp_mask to the readahead
+> > control structure - if we have to pass the gfp_mask down all the
+> > way along side the rac, then I think it makes sense to do that...
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  mm/readahead.c | 21 +++++++++++++--------
->  1 file changed, 13 insertions(+), 8 deletions(-)
+> So we end up removing it later on in this series, but I do wonder if
+> it would make sense anyway.  By the end of the series, we still have
+> this in iomap:
 > 
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index 15329309231f..3eca59c43a45 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -154,7 +154,6 @@ void __do_page_cache_readahead(struct address_space *mapping,
->  		unsigned long lookahead_size)
->  {
->  	struct inode *inode = mapping->host;
-> -	struct page *page;
->  	unsigned long end_index;	/* The last page we want to read */
->  	LIST_HEAD(page_pool);
->  	int page_idx;
-> @@ -175,6 +174,7 @@ void __do_page_cache_readahead(struct address_space *mapping,
->  	 * Preallocate as many pages as we will need.
->  	 */
->  	for (page_idx = 0; page_idx < nr_to_read; page_idx++) {
-> +		struct page *page;
->  		pgoff_t page_offset = offset + page_idx;
->  
->  		if (page_offset > end_index)
-> @@ -183,14 +183,14 @@ void __do_page_cache_readahead(struct address_space *mapping,
->  		page = xa_load(&mapping->i_pages, page_offset);
->  		if (page && !xa_is_value(page)) {
->  			/*
-> -			 * Page already present?  Kick off the current batch of
-> -			 * contiguous pages before continuing with the next
-> -			 * batch.
-> +			 * Page already present?  Kick off the current batch
-> +			 * of contiguous pages before continuing with the
-> +			 * next batch.  This page may be the one we would
-> +			 * have intended to mark as Readahead, but we don't
-> +			 * have a stable reference to this page, and it's
-> +			 * not worth getting one just for that.
->  			 */
-> -			if (readahead_count(&rac))
-> -				read_pages(&rac, &page_pool, gfp_mask);
-> -			rac._nr_pages = 0;
-> -			continue;
-
-
-A fine point:  you'll get better readability and a less complex function by
-factoring that into a static subroutine, instead of jumping around with 
-goto's. (This clearly wants to be a subroutine, and in fact you've effectively 
-created one inside this function, at the "read:" label. Either way, though...
-
-
-> +			goto read;
->  		}
->  
->  		page = __page_cache_alloc(gfp_mask);
-> @@ -201,6 +201,11 @@ void __do_page_cache_readahead(struct address_space *mapping,
->  		if (page_idx == nr_to_read - lookahead_size)
->  			SetPageReadahead(page);
->  		rac._nr_pages++;
-> +		continue;
-> +read:
-> +		if (readahead_count(&rac))
-> +			read_pages(&rac, &page_pool, gfp_mask);
-> +		rac._nr_pages = 0;
->  	}
->  
->  	/*
+>                 if (ctx->rac) /* same as readahead_gfp_mask */
+>                         gfp |= __GFP_NORETRY | __GFP_NOWARN;
 > 
+> and we could get rid of that by passing gfp flags down in the rac.  On the
+> other hand, I don't know why it doesn't just use readahead_gfp_mask()
+> here anyway ... Christoph?
 
-...no errors spotted, I'm confident that this patch is correct,
+mapping->gfp_mask is awful. Is it a mask, or is it a valid set of
+allocation flags? Or both?  Some callers to mapping_gfp_constraint()
+uses it as a mask, some callers to mapping_gfp_constraint() use it
+as base flags that context specific flags get masked out of,
+readahead_gfp_mask() callers use it as the entire set of gfp flags
+for allocation.
 
-    Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+That whole API sucks - undocumented as to what it's suposed to do
+and how it's supposed to be used. Hence it's difficult to use
+correctly or understand whether it's being used correctly. And
+reading callers only leads to more confusion and crazy code like in
+do_mpage_readpage() where readahead returns a mask that are used as
+base flags and normal reads return a masked set of base flags...
 
+The iomap code is obviously correct when it comes to gfp flag
+manipulation. We start with GFP_KERNEL context, then constrain it
+via the mask held in mapping->gfp_mask, then if it's readahead we
+allow the allocation to silently fail.
 
-thanks,
+Simple to read and understand code, versus having weird code that
+requires the reader to decipher an undocumented and inconsistent API
+to understand how the gfp flags have been calculated and are valid.
+
+Cheers,
+
+Dave.
 -- 
-John Hubbard
-NVIDIA
+Dave Chinner
+david@fromorbit.com
