@@ -2,207 +2,175 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0565162135
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 07:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 486D8162160
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 08:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgBRG6E (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 01:58:04 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:33665 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726072AbgBRG6D (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 Feb 2020 01:58:03 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 7C5BF3A2771;
-        Tue, 18 Feb 2020 17:57:59 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j3wpS-0006Wf-5F; Tue, 18 Feb 2020 17:57:58 +1100
-Date:   Tue, 18 Feb 2020 17:57:58 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 11/19] btrfs: Convert from readpages to readahead
-Message-ID: <20200218065758.GQ10776@dread.disaster.area>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-19-willy@infradead.org>
+        id S1726168AbgBRHLi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 02:11:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36772 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726072AbgBRHLh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 18 Feb 2020 02:11:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 5CCECAF21;
+        Tue, 18 Feb 2020 07:11:35 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8C8F61E0CF7; Tue, 18 Feb 2020 08:11:34 +0100 (CET)
+Date:   Tue, 18 Feb 2020 08:11:34 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 16/44] docs: filesystems: convert ext2.txt to ReST
+Message-ID: <20200218071134.GB16121@quack2.suse.cz>
+References: <cover.1581955849.git.mchehab+huawei@kernel.org>
+ <fde6721f0303259d830391e351dbde48f67f3ec7.1581955849.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200217184613.19668-19-willy@infradead.org>
+In-Reply-To: <fde6721f0303259d830391e351dbde48f67f3ec7.1581955849.git.mchehab+huawei@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
-        a=JfrnYn6hAAAA:8 a=7-415B0cAAAA:8 a=cHVu4ezWpKoVtZSsmu8A:9
-        a=a6t_wt_lAo5S5IOh:21 a=CcahuoPPjRgWG3dV:21 a=CjuIK1q_8ugA:10
-        a=1CNFftbPRP8L7MoqJWF3:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 10:45:59AM -0800, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On Mon 17-02-20 17:12:02, Mauro Carvalho Chehab wrote:
+> - Add a SPDX header;
+> - Some whitespace fixes and new line breaks;
+> - Mark literal blocks as such;
+> - Add table markups;
+> - Use footnoote markups;
+> - Add it to filesystems/index.rst.
 > 
-> Use the new readahead operation in btrfs.  Add a
-> readahead_for_each_batch() iterator to optimise the loop in the XArray.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Thanks! You can add:
+
+Acked-by: Jan Kara <jack@suse.cz>
+
+Again, please tell me if you want me to pickup this patch.
+
+								Honza
+
 > ---
->  fs/btrfs/extent_io.c    | 46 +++++++++++++----------------------------
->  fs/btrfs/extent_io.h    |  3 +--
->  fs/btrfs/inode.c        | 16 +++++++-------
->  include/linux/pagemap.h | 27 ++++++++++++++++++++++++
->  4 files changed, 49 insertions(+), 43 deletions(-)
+>  .../filesystems/{ext2.txt => ext2.rst}        | 41 ++++++++++++-------
+>  Documentation/filesystems/index.rst           |  1 +
+>  2 files changed, 27 insertions(+), 15 deletions(-)
+>  rename Documentation/filesystems/{ext2.txt => ext2.rst} (91%)
 > 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index c0f202741e09..e97a6acd6f5d 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -4278,52 +4278,34 @@ int extent_writepages(struct address_space *mapping,
->  	return ret;
->  }
->  
-> -int extent_readpages(struct address_space *mapping, struct list_head *pages,
-> -		     unsigned nr_pages)
-> +void extent_readahead(struct readahead_control *rac)
->  {
->  	struct bio *bio = NULL;
->  	unsigned long bio_flags = 0;
->  	struct page *pagepool[16];
->  	struct extent_map *em_cached = NULL;
-> -	struct extent_io_tree *tree = &BTRFS_I(mapping->host)->io_tree;
-> -	int nr = 0;
-> +	struct extent_io_tree *tree = &BTRFS_I(rac->mapping->host)->io_tree;
->  	u64 prev_em_start = (u64)-1;
-> +	int nr;
->  
-> -	while (!list_empty(pages)) {
-> -		u64 contig_end = 0;
-> -
-> -		for (nr = 0; nr < ARRAY_SIZE(pagepool) && !list_empty(pages);) {
-> -			struct page *page = lru_to_page(pages);
-> -
-> -			prefetchw(&page->flags);
-> -			list_del(&page->lru);
-> -			if (add_to_page_cache_lru(page, mapping, page->index,
-> -						readahead_gfp_mask(mapping))) {
-> -				put_page(page);
-> -				break;
-> -			}
-> -
-> -			pagepool[nr++] = page;
-> -			contig_end = page_offset(page) + PAGE_SIZE - 1;
-> -		}
-> +	readahead_for_each_batch(rac, pagepool, ARRAY_SIZE(pagepool), nr) {
-> +		u64 contig_start = page_offset(pagepool[0]);
-> +		u64 contig_end = page_offset(pagepool[nr - 1]) + PAGE_SIZE - 1;
-
-So this assumes a contiguous page range is returned, right?
-
->  
-> -		if (nr) {
-> -			u64 contig_start = page_offset(pagepool[0]);
-> +		ASSERT(contig_start + nr * PAGE_SIZE - 1 == contig_end);
-
-Ok, yes it does. :)
-
-I don't see how readahead_for_each_batch() guarantees that, though.
-
->  
-> -			ASSERT(contig_start + nr * PAGE_SIZE - 1 == contig_end);
-> -
-> -			contiguous_readpages(tree, pagepool, nr, contig_start,
-> -				     contig_end, &em_cached, &bio, &bio_flags,
-> -				     &prev_em_start);
-> -		}
-> +		contiguous_readpages(tree, pagepool, nr, contig_start,
-> +				contig_end, &em_cached, &bio, &bio_flags,
-> +				&prev_em_start);
->  	}
->  
->  	if (em_cached)
->  		free_extent_map(em_cached);
->  
-> -	if (bio)
-> -		return submit_one_bio(bio, 0, bio_flags);
-> -	return 0;
-> +	if (bio) {
-> +		if (submit_one_bio(bio, 0, bio_flags))
-> +			return;
-> +	}
->  }
-
-Shouldn't that just be
-
-	if (bio)
-		submit_one_bio(bio, 0, bio_flags);
-
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 4f36c06d064d..1bbb60a0bf16 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -669,6 +669,33 @@ static inline void readahead_next(struct readahead_control *rac)
->  #define readahead_for_each(rac, page)					\
->  	for (; (page = readahead_page(rac)); readahead_next(rac))
->  
-> +static inline unsigned int readahead_page_batch(struct readahead_control *rac,
-> +		struct page **array, unsigned int size)
-> +{
-> +	unsigned int batch = 0;
-
-Confusing when put alongside rac->_batch_count counting the number
-of pages in the batch, and "batch" being the index into the page
-array, and they aren't the same counts....
-
-> +	XA_STATE(xas, &rac->mapping->i_pages, rac->_start);
-> +	struct page *page;
+> diff --git a/Documentation/filesystems/ext2.txt b/Documentation/filesystems/ext2.rst
+> similarity index 91%
+> rename from Documentation/filesystems/ext2.txt
+> rename to Documentation/filesystems/ext2.rst
+> index 94c2cf0292f5..d83dbbb162e2 100644
+> --- a/Documentation/filesystems/ext2.txt
+> +++ b/Documentation/filesystems/ext2.rst
+> @@ -1,3 +1,5 @@
+> +.. SPDX-License-Identifier: GPL-2.0
 > +
-> +	rac->_batch_count = 0;
-> +	xas_for_each(&xas, page, rac->_start + rac->_nr_pages - 1) {
-
-That just iterates pages in the start,end doesn't it? What
-guarantees that this fills the array with a contiguous page range?
-
-> +		VM_BUG_ON_PAGE(!PageLocked(page), page);
-> +		VM_BUG_ON_PAGE(PageTail(page), page);
-> +		array[batch++] = page;
-> +		rac->_batch_count += hpage_nr_pages(page);
-> +		if (PageHead(page))
-> +			xas_set(&xas, rac->_start + rac->_batch_count);
-
-What on earth does this do? Comments please!
-
+>  
+>  The Second Extended Filesystem
+>  ==============================
+> @@ -14,8 +16,9 @@ Options
+>  Most defaults are determined by the filesystem superblock, and can be
+>  set using tune2fs(8). Kernel-determined defaults are indicated by (*).
+>  
+> -bsddf			(*)	Makes `df' act like BSD.
+> -minixdf				Makes `df' act like Minix.
+> +====================    ===     ================================================
+> +bsddf			(*)	Makes ``df`` act like BSD.
+> +minixdf				Makes ``df`` act like Minix.
+>  
+>  check=none, nocheck	(*)	Don't do extra checking of bitmaps on mount
+>  				(check=normal and check=strict options removed)
+> @@ -62,6 +65,7 @@ quota, usrquota			Enable user disk quota support
+>  
+>  grpquota			Enable group disk quota support
+>  				(requires CONFIG_QUOTA).
+> +====================    ===     ================================================
+>  
+>  noquota option ls silently ignored by ext2.
+>  
+> @@ -294,9 +298,9 @@ respective fsck programs.
+>  If you're exceptionally paranoid, there are 3 ways of making metadata
+>  writes synchronous on ext2:
+>  
+> -per-file if you have the program source: use the O_SYNC flag to open()
+> -per-file if you don't have the source: use "chattr +S" on the file
+> -per-filesystem: add the "sync" option to mount (or in /etc/fstab)
+> +- per-file if you have the program source: use the O_SYNC flag to open()
+> +- per-file if you don't have the source: use "chattr +S" on the file
+> +- per-filesystem: add the "sync" option to mount (or in /etc/fstab)
+>  
+>  the first and last are not ext2 specific but do force the metadata to
+>  be written synchronously.  See also Journaling below.
+> @@ -316,10 +320,12 @@ Most of these limits could be overcome with slight changes in the on-disk
+>  format and using a compatibility flag to signal the format change (at
+>  the expense of some compatibility).
+>  
+> -Filesystem block size:     1kB        2kB        4kB        8kB
+> -
+> -File size limit:          16GB      256GB     2048GB     2048GB
+> -Filesystem size limit:  2047GB     8192GB    16384GB    32768GB
+> +=====================  =======    =======    =======   ========
+> +Filesystem block size      1kB        2kB        4kB        8kB
+> +=====================  =======    =======    =======   ========
+> +File size limit           16GB      256GB     2048GB     2048GB
+> +Filesystem size limit   2047GB     8192GB    16384GB    32768GB
+> +=====================  =======    =======    =======   ========
+>  
+>  There is a 2.4 kernel limit of 2048GB for a single block device, so no
+>  filesystem larger than that can be created at this time.  There is also
+> @@ -370,19 +376,24 @@ ext4 and journaling.
+>  References
+>  ==========
+>  
+> +=======================	===============================================
+>  The kernel source	file:/usr/src/linux/fs/ext2/
+>  e2fsprogs (e2fsck)	http://e2fsprogs.sourceforge.net/
+>  Design & Implementation	http://e2fsprogs.sourceforge.net/ext2intro.html
+>  Journaling (ext3)	ftp://ftp.uk.linux.org/pub/linux/sct/fs/jfs/
+>  Filesystem Resizing	http://ext2resize.sourceforge.net/
+> -Compression (*)		http://e2compr.sourceforge.net/
+> +Compression [1]_	http://e2compr.sourceforge.net/
+> +=======================	===============================================
+>  
+>  Implementations for:
 > +
-> +		if (batch == size)
-> +			break;
-> +	}
-> +
-> +	return batch;
-> +}
-
-Seems a bit big for an inline function.
-
-> +
-> +#define readahead_for_each_batch(rac, array, size, nr)			\
-> +	for (; (nr = readahead_page_batch(rac, array, size));		\
-> +			readahead_next(rac))
-
-I had to go look at the caller to work out what "size" refered to
-here.
-
-This is complex enough that it needs proper API documentation.
-
-Cheers,
-
-Dave.
-
+> +=======================	===========================================================
+>  Windows 95/98/NT/2000	http://www.chrysocome.net/explore2fs
+> -Windows 95 (*)		http://www.yipton.net/content.html#FSDEXT2
+> -DOS client (*)		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
+> -OS/2 (+)		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
+> +Windows 95 [1]_		http://www.yipton.net/content.html#FSDEXT2
+> +DOS client [1]_		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
+> +OS/2 [2]_		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
+>  RISC OS client		http://www.esw-heim.tu-clausthal.de/~marco/smorbrod/IscaFS/
+> +=======================	===========================================================
+>  
+> -(*) no longer actively developed/supported (as of Apr 2001)
+> -(+) no longer actively developed/supported (as of Mar 2009)
+> +.. [1] no longer actively developed/supported (as of Apr 2001)
+> +.. [2] no longer actively developed/supported (as of Mar 2009)
+> diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+> index 03a493b27920..102b3b65486a 100644
+> --- a/Documentation/filesystems/index.rst
+> +++ b/Documentation/filesystems/index.rst
+> @@ -62,6 +62,7 @@ Documentation for filesystem implementations.
+>     ecryptfs
+>     efivarfs
+>     erofs
+> +   ext2
+>     fuse
+>     overlayfs
+>     virtiofs
+> -- 
+> 2.24.1
+> 
 -- 
-Dave Chinner
-david@fromorbit.com
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
