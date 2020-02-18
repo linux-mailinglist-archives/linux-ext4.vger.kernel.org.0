@@ -2,175 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 486D8162160
-	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 08:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28731621B0
+	for <lists+linux-ext4@lfdr.de>; Tue, 18 Feb 2020 08:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgBRHLi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 02:11:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36772 "EHLO mx2.suse.de"
+        id S1726157AbgBRHtR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 02:49:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50774 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgBRHLh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 Feb 2020 02:11:37 -0500
+        id S1726139AbgBRHtR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 18 Feb 2020 02:49:17 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5CCECAF21;
-        Tue, 18 Feb 2020 07:11:35 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3C130AE06;
+        Tue, 18 Feb 2020 07:49:15 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8C8F61E0CF7; Tue, 18 Feb 2020 08:11:34 +0100 (CET)
-Date:   Tue, 18 Feb 2020 08:11:34 +0100
+        id A2BE51E0CF7; Tue, 18 Feb 2020 08:49:14 +0100 (CET)
+Date:   Tue, 18 Feb 2020 08:49:14 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 16/44] docs: filesystems: convert ext2.txt to ReST
-Message-ID: <20200218071134.GB16121@quack2.suse.cz>
-References: <cover.1581955849.git.mchehab+huawei@kernel.org>
- <fde6721f0303259d830391e351dbde48f67f3ec7.1581955849.git.mchehab+huawei@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] ext4: fix race between writepages and enabling
+ EXT4_EXTENTS_FL
+Message-ID: <20200218074914.GD16121@quack2.suse.cz>
+References: <20200218002151.1581441-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fde6721f0303259d830391e351dbde48f67f3ec7.1581955849.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20200218002151.1581441-1-ebiggers@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 17-02-20 17:12:02, Mauro Carvalho Chehab wrote:
-> - Add a SPDX header;
-> - Some whitespace fixes and new line breaks;
-> - Mark literal blocks as such;
-> - Add table markups;
-> - Use footnoote markups;
-> - Add it to filesystems/index.rst.
+On Mon 17-02-20 16:21:51, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> If EXT4_EXTENTS_FL is set on an inode while ext4_writepages() is running
+> on it, the following warning in ext4_add_complete_io() can be hit:
+> 
+> WARNING: CPU: 1 PID: 0 at fs/ext4/page-io.c:234 ext4_put_io_end_defer+0xf0/0x120
+> 
+> Here's a minimal reproducer (not 100% reliable) (root isn't required):
+> 
+> 	while true; do
+> 		sync
+> 	done &
+> 	while true; do
+> 		rm -f file
+> 		touch file
+> 		chattr -e file
+> 		echo X >> file
+> 		chattr +e file
+> 	done
+> 
+> The problem is that in ext4_writepages(), ext4_should_dioread_nolock()
+> (which only returns true on extent-based files) is checked once to set
+> the number of reserved journal credits, and also again later to select
+> the flags for ext4_map_blocks() and copy the reserved journal handle to
+> ext4_io_end::handle.  But if EXT4_EXTENTS_FL is being concurrently set,
+> the first check can see dioread_nolock disabled while the later one can
+> see it enabled, causing the reserved handle to unexpectedly be NULL.
+> 
+> Fix this by checking ext4_should_dioread_nolock() only once and storing
+> the result in struct mpage_da_data.  This way, each ext4_writepages()
+> call uses a consistent dioread_nolock setting.
+> 
+> This was originally reported by syzbot without a reproducer at
+> https://syzkaller.appspot.com/bug?extid=2202a584a00fffd19fbf,
+> but now that dioread_nolock is the default I also started seeing this
+> when running syzkaller locally.
+> 
+> Reported-by: syzbot+2202a584a00fffd19fbf@syzkaller.appspotmail.com
+> Fixes: 6b523df4fb5a ("ext4: use transaction reservation for extent conversion in ext4_end_io")
+> Cc: stable@kernel.org
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Thanks! You can add:
+What you propose is probably enough to stop this particular race but I
+think there are other races that can get triggered by inode conversion
+to/from extent format. So I think we rather need to make inode
+format conversion much more careful (or we could just remove that
+functionality because I'm not sure if anybody actually uses it).
 
-Acked-by: Jan Kara <jack@suse.cz>
-
-Again, please tell me if you want me to pickup this patch.
+WRT making inode format conversion more careful you can have a look at how
+ext4_change_inode_journal_flag() works. I uses EXT4_I(inode)->i_mmap_sem to
+block page faults, it also uses sbi->s_journal_flag_rwsem to avoid races
+with writepages and I belive the migration code should do the same.
 
 								Honza
-
-> ---
->  .../filesystems/{ext2.txt => ext2.rst}        | 41 ++++++++++++-------
->  Documentation/filesystems/index.rst           |  1 +
->  2 files changed, 27 insertions(+), 15 deletions(-)
->  rename Documentation/filesystems/{ext2.txt => ext2.rst} (91%)
-> 
-> diff --git a/Documentation/filesystems/ext2.txt b/Documentation/filesystems/ext2.rst
-> similarity index 91%
-> rename from Documentation/filesystems/ext2.txt
-> rename to Documentation/filesystems/ext2.rst
-> index 94c2cf0292f5..d83dbbb162e2 100644
-> --- a/Documentation/filesystems/ext2.txt
-> +++ b/Documentation/filesystems/ext2.rst
-> @@ -1,3 +1,5 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
->  
->  The Second Extended Filesystem
->  ==============================
-> @@ -14,8 +16,9 @@ Options
->  Most defaults are determined by the filesystem superblock, and can be
->  set using tune2fs(8). Kernel-determined defaults are indicated by (*).
->  
-> -bsddf			(*)	Makes `df' act like BSD.
-> -minixdf				Makes `df' act like Minix.
-> +====================    ===     ================================================
-> +bsddf			(*)	Makes ``df`` act like BSD.
-> +minixdf				Makes ``df`` act like Minix.
->  
->  check=none, nocheck	(*)	Don't do extra checking of bitmaps on mount
->  				(check=normal and check=strict options removed)
-> @@ -62,6 +65,7 @@ quota, usrquota			Enable user disk quota support
->  
->  grpquota			Enable group disk quota support
->  				(requires CONFIG_QUOTA).
-> +====================    ===     ================================================
->  
->  noquota option ls silently ignored by ext2.
->  
-> @@ -294,9 +298,9 @@ respective fsck programs.
->  If you're exceptionally paranoid, there are 3 ways of making metadata
->  writes synchronous on ext2:
->  
-> -per-file if you have the program source: use the O_SYNC flag to open()
-> -per-file if you don't have the source: use "chattr +S" on the file
-> -per-filesystem: add the "sync" option to mount (or in /etc/fstab)
-> +- per-file if you have the program source: use the O_SYNC flag to open()
-> +- per-file if you don't have the source: use "chattr +S" on the file
-> +- per-filesystem: add the "sync" option to mount (or in /etc/fstab)
->  
->  the first and last are not ext2 specific but do force the metadata to
->  be written synchronously.  See also Journaling below.
-> @@ -316,10 +320,12 @@ Most of these limits could be overcome with slight changes in the on-disk
->  format and using a compatibility flag to signal the format change (at
->  the expense of some compatibility).
->  
-> -Filesystem block size:     1kB        2kB        4kB        8kB
-> -
-> -File size limit:          16GB      256GB     2048GB     2048GB
-> -Filesystem size limit:  2047GB     8192GB    16384GB    32768GB
-> +=====================  =======    =======    =======   ========
-> +Filesystem block size      1kB        2kB        4kB        8kB
-> +=====================  =======    =======    =======   ========
-> +File size limit           16GB      256GB     2048GB     2048GB
-> +Filesystem size limit   2047GB     8192GB    16384GB    32768GB
-> +=====================  =======    =======    =======   ========
->  
->  There is a 2.4 kernel limit of 2048GB for a single block device, so no
->  filesystem larger than that can be created at this time.  There is also
-> @@ -370,19 +376,24 @@ ext4 and journaling.
->  References
->  ==========
->  
-> +=======================	===============================================
->  The kernel source	file:/usr/src/linux/fs/ext2/
->  e2fsprogs (e2fsck)	http://e2fsprogs.sourceforge.net/
->  Design & Implementation	http://e2fsprogs.sourceforge.net/ext2intro.html
->  Journaling (ext3)	ftp://ftp.uk.linux.org/pub/linux/sct/fs/jfs/
->  Filesystem Resizing	http://ext2resize.sourceforge.net/
-> -Compression (*)		http://e2compr.sourceforge.net/
-> +Compression [1]_	http://e2compr.sourceforge.net/
-> +=======================	===============================================
->  
->  Implementations for:
-> +
-> +=======================	===========================================================
->  Windows 95/98/NT/2000	http://www.chrysocome.net/explore2fs
-> -Windows 95 (*)		http://www.yipton.net/content.html#FSDEXT2
-> -DOS client (*)		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
-> -OS/2 (+)		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
-> +Windows 95 [1]_		http://www.yipton.net/content.html#FSDEXT2
-> +DOS client [1]_		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
-> +OS/2 [2]_		ftp://metalab.unc.edu/pub/Linux/system/filesystems/ext2/
->  RISC OS client		http://www.esw-heim.tu-clausthal.de/~marco/smorbrod/IscaFS/
-> +=======================	===========================================================
->  
-> -(*) no longer actively developed/supported (as of Apr 2001)
-> -(+) no longer actively developed/supported (as of Mar 2009)
-> +.. [1] no longer actively developed/supported (as of Apr 2001)
-> +.. [2] no longer actively developed/supported (as of Mar 2009)
-> diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-> index 03a493b27920..102b3b65486a 100644
-> --- a/Documentation/filesystems/index.rst
-> +++ b/Documentation/filesystems/index.rst
-> @@ -62,6 +62,7 @@ Documentation for filesystem implementations.
->     ecryptfs
->     efivarfs
->     erofs
-> +   ext2
->     fuse
->     overlayfs
->     virtiofs
-> -- 
-> 2.24.1
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
