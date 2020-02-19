@@ -2,114 +2,107 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4938163BB7
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 04:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43AA1163C4B
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 05:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgBSD52 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 22:57:28 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:36781 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726492AbgBSD51 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 Feb 2020 22:57:27 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id A8BC07EB672;
-        Wed, 19 Feb 2020 14:57:21 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j4GUC-0005gh-AV; Wed, 19 Feb 2020 14:57:20 +1100
-Date:   Wed, 19 Feb 2020 14:57:20 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 00/19] Change readahead API
-Message-ID: <20200219035720.GI10776@dread.disaster.area>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200218045633.GH10776@dread.disaster.area>
- <20200218134230.GN7778@bombadil.infradead.org>
- <20200218212652.GR10776@dread.disaster.area>
- <20200219034525.GH10776@dread.disaster.area>
- <20200219034832.GL24185@bombadil.infradead.org>
+        id S1726539AbgBSE4x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 23:56:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726496AbgBSE4x (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 18 Feb 2020 23:56:53 -0500
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA4BB24656;
+        Wed, 19 Feb 2020 04:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582088212;
+        bh=xFc6OcTuvdGiMRsQCXREU/om/wxR+1L+h7QD0F0PHt4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bmbrDewhEPgRU39s62+lRWvxOOFM5NqFhHOPHyUKb/FDV2QLIkeuHzJeFvnhczGmA
+         0N46enSeEPKwwr6V6uI9n2rMvGqC08LBGaKvLFKq5yxnd3LL1ckBfhv1J99u71Tl07
+         G9NZ1k5lw1dkJdhMTLJNUitRSBSVkKPHDOR+3UPY=
+Date:   Tue, 18 Feb 2020 20:56:51 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH] ext4: fix race between writepages and enabling
+ EXT4_EXTENTS_FL
+Message-ID: <20200219045651.GF1075@sol.localdomain>
+References: <20200218002151.1581441-1-ebiggers@kernel.org>
+ <20200218074914.GD16121@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200219034832.GL24185@bombadil.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=l697ptgUJYAA:10
-        a=7-415B0cAAAA:8 a=4gE3ddVfANxGN4fhDGwA:9 a=QEXdDO2ut3YA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200218074914.GD16121@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 07:48:32PM -0800, Matthew Wilcox wrote:
-> On Wed, Feb 19, 2020 at 02:45:25PM +1100, Dave Chinner wrote:
-> > On Wed, Feb 19, 2020 at 08:26:52AM +1100, Dave Chinner wrote:
-> > > On Tue, Feb 18, 2020 at 05:42:30AM -0800, Matthew Wilcox wrote:
-> > > > On Tue, Feb 18, 2020 at 03:56:33PM +1100, Dave Chinner wrote:
-> > > > > Latest version in your git tree:
-> > > > > 
-> > > > > $ ▶ glo -n 5 willy/readahead
-> > > > > 4be497096c04 mm: Use memalloc_nofs_save in readahead path
-> > > > > ff63497fcb98 iomap: Convert from readpages to readahead
-> > > > > 26aee60e89b5 iomap: Restructure iomap_readpages_actor
-> > > > > 8115bcca7312 fuse: Convert from readpages to readahead
-> > > > > 3db3d10d9ea1 f2fs: Convert from readpages to readahead
-> > > > > $
-> > > > > 
-> > > > > merged into a 5.6-rc2 tree fails at boot on my test vm:
-> > > > > 
-> > > > > [    2.423116] ------------[ cut here ]------------
-> > > > > [    2.424957] list_add double add: new=ffffea000efff4c8, prev=ffff8883bfffee60, next=ffffea000efff4c8.
-> > > > > [    2.428259] WARNING: CPU: 4 PID: 1 at lib/list_debug.c:29 __list_add_valid+0x67/0x70
-> > > > > [    2.457484] Call Trace:
-> > > > > [    2.458171]  __pagevec_lru_add_fn+0x15f/0x2c0
-> > > > > [    2.459376]  pagevec_lru_move_fn+0x87/0xd0
-> > > > > [    2.460500]  ? pagevec_move_tail_fn+0x2d0/0x2d0
-> > > > > [    2.461712]  lru_add_drain_cpu+0x8d/0x160
-> > > > > [    2.462787]  lru_add_drain+0x18/0x20
-> > > > 
-> > > > Are you sure that was 4be497096c04 ?  I ask because there was a
-> > > 
-> > > Yes, because it's the only version I've actually merged into my
-> > > working tree, compiled and tried to run. :P
-> > > 
-> > > > version pushed to that git tree that did contain a list double-add
-> > > > (due to a mismerge when shuffling patches).  I noticed it and fixed
-> > > > it, and 4be497096c04 doesn't have that problem.  I also test with
-> > > > CONFIG_DEBUG_LIST turned on, but this problem you hit is going to be
-> > > > probabilistic because it'll depend on the timing between whatever other
-> > > > list is being used and the page actually being added to the LRU.
-> > > 
-> > > I'll see if I can reproduce it.
+On Tue, Feb 18, 2020 at 08:49:14AM +0100, Jan Kara wrote:
+> On Mon 17-02-20 16:21:51, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
 > > 
-> > Just updated to a current TOT Linus kernel and your latest branch,
-> > and so far this is 100% reproducable.
+> > If EXT4_EXTENTS_FL is set on an inode while ext4_writepages() is running
+> > on it, the following warning in ext4_add_complete_io() can be hit:
 > > 
-> > Not sure how I'm going to debug it yet, because it's init that is
-> > triggering it....
+> > WARNING: CPU: 1 PID: 0 at fs/ext4/page-io.c:234 ext4_put_io_end_defer+0xf0/0x120
+> > 
+> > Here's a minimal reproducer (not 100% reliable) (root isn't required):
+> > 
+> > 	while true; do
+> > 		sync
+> > 	done &
+> > 	while true; do
+> > 		rm -f file
+> > 		touch file
+> > 		chattr -e file
+> > 		echo X >> file
+> > 		chattr +e file
+> > 	done
+> > 
+> > The problem is that in ext4_writepages(), ext4_should_dioread_nolock()
+> > (which only returns true on extent-based files) is checked once to set
+> > the number of reserved journal credits, and also again later to select
+> > the flags for ext4_map_blocks() and copy the reserved journal handle to
+> > ext4_io_end::handle.  But if EXT4_EXTENTS_FL is being concurrently set,
+> > the first check can see dioread_nolock disabled while the later one can
+> > see it enabled, causing the reserved handle to unexpectedly be NULL.
+> > 
+> > Fix this by checking ext4_should_dioread_nolock() only once and storing
+> > the result in struct mpage_da_data.  This way, each ext4_writepages()
+> > call uses a consistent dioread_nolock setting.
+> > 
+> > This was originally reported by syzbot without a reproducer at
+> > https://syzkaller.appspot.com/bug?extid=2202a584a00fffd19fbf,
+> > but now that dioread_nolock is the default I also started seeing this
+> > when running syzkaller locally.
+> > 
+> > Reported-by: syzbot+2202a584a00fffd19fbf@syzkaller.appspotmail.com
+> > Fixes: 6b523df4fb5a ("ext4: use transaction reservation for extent conversion in ext4_end_io")
+> > Cc: stable@kernel.org
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > 
-> Eric found it ...
+> What you propose is probably enough to stop this particular race but I
+> think there are other races that can get triggered by inode conversion
+> to/from extent format. So I think we rather need to make inode
+> format conversion much more careful (or we could just remove that
+> functionality because I'm not sure if anybody actually uses it).
+> 
+> WRT making inode format conversion more careful you can have a look at how
+> ext4_change_inode_journal_flag() works. I uses EXT4_I(inode)->i_mmap_sem to
+> block page faults, it also uses sbi->s_journal_flag_rwsem to avoid races
+> with writepages and I belive the migration code should do the same.
 
-Yeah, just saw that and am applying his patch to test it...
+I was looking at that earlier, but I was a bit concerned that people could
+complain about a performance regression due to EXTENTS_FL no longer being
+settable/clearable on different files concurrently.
 
-> still not sure why I don't see it.
+But if we think this functionality is rarely used and that no one would care,
+then sure, we should go with that solution instead.  I'll probably rename
+s_journal_flag_rwsem to s_writepages_rwsem since it will become for both the
+EXTENTS and JOURNAL_DATA flags.
 
-No readahead configured on your device?
-
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+- Eric
