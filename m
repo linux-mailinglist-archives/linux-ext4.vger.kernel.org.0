@@ -2,65 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33837163ACD
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 04:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E1E163AD8
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 04:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbgBSDId (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 22:08:33 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:51567 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728203AbgBSDIc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 Feb 2020 22:08:32 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 302613A3618;
-        Wed, 19 Feb 2020 14:08:30 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j4Fiv-0005LJ-3d; Wed, 19 Feb 2020 14:08:29 +1100
-Date:   Wed, 19 Feb 2020 14:08:29 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 13/19] erofs: Convert compressed files from readpages
- to readahead
-Message-ID: <20200219030829.GB10776@dread.disaster.area>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-23-willy@infradead.org>
+        id S1728279AbgBSDKi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 22:10:38 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:28837 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728280AbgBSDKi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 22:10:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1582081837; x=1613617837;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=/IeOXZFEImLP23fnQIbZ0isIjjVE+31UmVP9q10URvk=;
+  b=Bce/wDAM13QLuXxwoaINdIxsMgezZ5C1LiI/iyVzbYVLF3ftZ9vf8uho
+   bjYCTM819ylCfvbnn9e5B/jVwO0MYjvVv27Nm9opD2hGnanbNTdi+c9q8
+   1adyBRZBltReDeolI8sRZPqBfZE9sksQURxyV0twtFcab+ri55HhjqWnp
+   E=;
+IronPort-SDR: sucj/9iHjZJBzWWs/wMcbdITLbv6Of6fOCy2WfcEsOZjDUeQOIs0DRaNvr5FCCVZgbau3rb1Ap
+ jgLI6Rq5ogGg==
+X-IronPort-AV: E=Sophos;i="5.70,458,1574121600"; 
+   d="scan'208";a="16986530"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 Feb 2020 03:10:24 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com (Postfix) with ESMTPS id 462FCA2BCC;
+        Wed, 19 Feb 2020 03:10:22 +0000 (UTC)
+Received: from EX13D30UWC001.ant.amazon.com (10.43.162.128) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 19 Feb 2020 03:10:22 +0000
+Received: from u3c3f5cfe23135f.ant.amazon.com (10.43.161.235) by
+ EX13D30UWC001.ant.amazon.com (10.43.162.128) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 19 Feb 2020 03:10:22 +0000
+From:   Suraj Jitindar Singh <surajjs@amazon.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <sblbir@amazon.com>, <sjitindarsingh@gmail.com>,
+        "Suraj Jitindar Singh" <surajjs@amazon.com>
+Subject: [PATCH 0/3] ext4: Fix potential races when performing online resizing
+Date:   Tue, 18 Feb 2020 19:08:48 -0800
+Message-ID: <20200219030851.2678-1-surajjs@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200217184613.19668-23-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
-        a=JfrnYn6hAAAA:8 a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8 a=u2C7FWrkCVI-TO_F4_EA:9
-        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.235]
+X-ClientProxiedBy: EX13D33UWB004.ant.amazon.com (10.43.161.225) To
+ EX13D30UWC001.ant.amazon.com (10.43.162.128)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 10:46:03AM -0800, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Use the new readahead operation in erofs.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  fs/erofs/zdata.c | 29 +++++++++--------------------
->  1 file changed, 9 insertions(+), 20 deletions(-)
+This patch series fixes 2 additional races between array resizing and
+array element access when performing online resizing of the arrays
+s_group_info and s_flex_groups.
 
-Looks fine.
+These patches apply on top of the patch:
+[PATCH RFC] ext4: fix potential race between online resizing and write operations
 
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
+The macro sbi_array_rcu_deref() is introduced for simplicity but can be
+removed if undesired.
+
+Tested by performing the following:
+truncate -s 100G /tmp/foo
+sudo bash -c 'while true; do dd if=/dev/zero of=/mnt/xxx bs=1M count=1; sync; \
+rm /mnt/xxx; done' &
+while true; do mkfs.ext4 -b 1024 -E resize=26213883 /tmp/foo 2096635 -F; \
+sudo mount -o loop /tmp/foo /mnt; sudo resize2fs /dev/loop0 26213883; \
+sudo umount /mnt; done
+
+Suraj Jitindar Singh (3):
+  ext4: introduce macro sbi_array_rcu_deref() to access rcu protected
+    fields
+  ext4: fix potential race between s_group_info online resizing and
+    access
+  ext4: fix potential race between s_flex_groups online resizing and
+    access
+
+ fs/ext4/balloc.c  | 11 +++++-----
+ fs/ext4/ext4.h    | 25 +++++++++++++++++----
+ fs/ext4/ialloc.c  | 21 +++++++++++-------
+ fs/ext4/mballoc.c | 19 ++++++++++------
+ fs/ext4/resize.c  |  4 ++--
+ fs/ext4/super.c   | 56 ++++++++++++++++++++++++++++++++---------------
+ 6 files changed, 91 insertions(+), 45 deletions(-)
 
 -- 
-Dave Chinner
-david@fromorbit.com
+2.17.1
+
