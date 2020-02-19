@@ -2,85 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 217A9164025
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 10:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4121641AA
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 11:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgBSJT4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Feb 2020 04:19:56 -0500
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:53624 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726202AbgBSJT4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 19 Feb 2020 04:19:56 -0500
-Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 7E8502E14A0;
-        Wed, 19 Feb 2020 12:19:54 +0300 (MSK)
-Received: from vla1-5a8b76e65344.qloud-c.yandex.net (vla1-5a8b76e65344.qloud-c.yandex.net [2a02:6b8:c0d:3183:0:640:5a8b:76e6])
-        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id bnLtzLBnAl-JrLOssYR;
-        Wed, 19 Feb 2020 12:19:54 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1582103994; bh=8YSxTUOk5w5fh0SdmqFzB3e8NK2TQ0pJ0mEf0yBxVkU=;
-        h=Message-ID:Date:To:From:Subject:Cc;
-        b=0P3CPGb2mu269bYBBnvbhd7iWK7YVRiq39369+or8VaLRyqfbKF7Zpt+F3pjI/Nw/
-         P/kmuUzDSaz6gKZxQtOTfTfRgpgEO6zGoiSSKDsYEA4/qb+ywfZWPUoluhyNq1D3qJ
-         UMSqZTUCRcAmYckVnx9vnESAAfkKdnv/ThvS7jJY=
-Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:8448:fbcc:1dac:c863])
-        by vla1-5a8b76e65344.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 6Ek3u93F2Y-JqUSIcYI;
-        Wed, 19 Feb 2020 12:19:52 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-Subject: [PATCH] ext4: fix handling mount -o remount,nolazytime
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-To:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Cc:     Karel Zak <kzak@redhat.com>,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Date:   Wed, 19 Feb 2020 12:19:52 +0300
-Message-ID: <158210399258.5335.3994877510070204710.stgit@buzz>
-User-Agent: StGit/0.17.1-dirty
+        id S1726677AbgBSKXG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Feb 2020 05:23:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53182 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726270AbgBSKXF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 19 Feb 2020 05:23:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A9E9BB296;
+        Wed, 19 Feb 2020 10:23:04 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D4D371E0EB5; Wed, 19 Feb 2020 11:23:03 +0100 (CET)
+Date:   Wed, 19 Feb 2020 11:23:03 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 7/7] tune2fs: Update dir checksums when clearing
+ dir_index feature
+Message-ID: <20200219102303.GL16121@quack2.suse.cz>
+References: <20200213101602.29096-1-jack@suse.cz>
+ <20200213101602.29096-8-jack@suse.cz>
+ <7BA5024A-9600-4D2E-8D23-7A0F900BFE7F@dilger.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7BA5024A-9600-4D2E-8D23-7A0F900BFE7F@dilger.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Tool "mount" from util-linux >= 2.27 knows about flag MS_LAZYTIME and
-handles options "lazytime" and "nolazytime" as fs-independent.
+On Tue 18-02-20 13:50:33, Andreas Dilger wrote:
+> On Feb 13, 2020, at 3:16 AM, Jan Kara <jack@suse.cz> wrote:
+> > 
+> > When clearing dir_index feature while metadata_csum is enabled, we have
+> > to rewrite checksums of all indexed directories to update checksums of
+> > internal tree nodes.
+> > 
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
+> > 
+> > +#define REWRITE_EA_FL		0x01	/* Rewrite EA inodes */
+> > +#define REWRITE_DIR_FL		0x02	/* Rewrite directories */
+> > +#define REWRITE_NONDIR_FL	0x04	/* Rewrite other inodes */
+> > +#define REWRITE_ALL (REWRITE_EA_FL | REWRITE_DIR_FL | REWRITE_NONDIR_FL)
+> > +
+> > +static void rewrite_inodes_pass(struct rewrite_context *ctx, unsigned int flags)
+> > {
+> 
+> My preference these days is to put constants like the above into a named
+> enum, and then use the enum as the argument to the function rather than
+> a very generic "int flags" argument.  That makes it clear to the reader
+> what values the flags may hold, and can immediately tag to the enum, like:
+> 
+> enum rewrite_inodes_flags {
+> 	REWRITE_EA_FL	  = 0x01	/* Rewrite EA inodes */
+> 	REWRITE_DIR_FL	  = 0x02	/* Rewrite directories */
+> 	REWRITE_NONDIR_FL = 0x04	/* Rewrite other inodes */
+> 	REWRITE_ALL	  = REWRITE_EA_FL | REWRITE_DIR_FL | REWRITE_NONDIR_FL
+> };
+> 
+> static void rewrite_inodes_pass(struct rewrite_context *ctx,
+> 				enum rewrite_inodes_flags rif_flags)
+> static void rewrite_inodes(ext2_filsys fs, enum rewrite_inodes_flags rif_flags)
+> static void rewrite_metadata_checksums(ext2_filsys fs,
+> 				       enum rewrite_inodes_flags rif_flags)
+> 
+> Otherwise, when looking at a function that takes "int flags" as an argument,
+> you have to dig through the code to see what kind of flags these are, and
+> what possible values they might have.  This is often even more confusing when
+> there are multiple different kinds of flags accessed within a single function
+> (not the case here, but happens often enough).
+> 
+> I'm not _against_ the patch, just thought I'd suggest an improvement and see
+> what people think about it.
 
-For ext4 it works for enabling lazytime: mount(MS_REMOUNT | MS_LAZYTIME),
-but does not work for disabling: mount(MS_REMOUNT).
+Yeah, the documentation with enum type is nice. What I somewhat dislike is
+that enum suggests 'enumeration' but we actually use values (like say
+REWRITE_EA_FL | REWRITE_DIR_FL) which are not really enumerated in the type
+definitition. So your scheme works only because enum in C is just an int
+with a lipstick on it. So I'm somewhat undecided. Ted, what's your opinion
+on this?
 
-Currently ext4 has performance issue in lazytime implementation caused by
-contention around inode_hash_lock in ext4_update_other_inodes_time().
-
-Fortunately lazytime still could be disabled without unmounting by passing
-"nolazytime" as fs-specific mount option: mount(MS_REMOUNT, "nolazytime").
-But modern versions of tool "mount" cannot do that.
-
-This patch fixes remount for modern tool and keeps backward compatibility.
-
-Fixes: a2fd66d069d8 ("ext4: set lazytime on remount if MS_LAZYTIME is set by mount")
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Link: https://lore.kernel.org/lkml/158040603451.1879.7954684107752709143.stgit@buzz/
----
- fs/ext4/super.c |    3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index f464dff09774..c901dc957b97 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5339,6 +5339,9 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 	if (sbi->s_journal && sbi->s_journal->j_task->io_context)
- 		journal_ioprio = sbi->s_journal->j_task->io_context->ioprio;
- 
-+	if (!(*flags & SB_LAZYTIME))
-+		sb->s_flags &= ~SB_LAZYTIME;
-+
- 	if (!parse_options(data, sb, NULL, &journal_ioprio, 1)) {
- 		err = -EINVAL;
- 		goto restore_opts;
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
