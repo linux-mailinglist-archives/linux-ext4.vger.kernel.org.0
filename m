@@ -2,129 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AF4163D21
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 07:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D962163E63
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 09:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726213AbgBSGkM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Feb 2020 01:40:12 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:48643 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726156AbgBSGkL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 19 Feb 2020 01:40:11 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 93B223A38C1;
-        Wed, 19 Feb 2020 17:40:06 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j4J1h-0006cP-MZ; Wed, 19 Feb 2020 17:40:05 +1100
-Date:   Wed, 19 Feb 2020 17:40:05 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 17/19] iomap: Restructure iomap_readpages_actor
-Message-ID: <20200219064005.GL10776@dread.disaster.area>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-31-willy@infradead.org>
- <20200219032900.GE10776@dread.disaster.area>
- <20200219060415.GO24185@bombadil.infradead.org>
+        id S1726469AbgBSIEi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Feb 2020 03:04:38 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:53394 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726156AbgBSIEi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 19 Feb 2020 03:04:38 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 0B6B6196E4C4E26B936A;
+        Wed, 19 Feb 2020 16:04:35 +0800 (CST)
+Received: from huawei.com (10.175.104.225) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Wed, 19 Feb 2020
+ 16:04:25 +0800
+From:   Shijie Luo <luoshijie1@huawei.com>
+To:     <linux-ext4@vger.kernel.org>
+CC:     <tytso@mit.edu>, <jack@suse.cz>, <luoshijie1@huawei.com>,
+        <lutianxiong@huawei.com>
+Subject: [PATCH v2] ext4: add cond_resched() to __ext4_find_entry()
+Date:   Wed, 19 Feb 2020 03:03:36 -0500
+Message-ID: <20200219080336.34865-1-luoshijie1@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200219060415.GO24185@bombadil.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
-        a=7-415B0cAAAA:8 a=r7nCFNou5KQKI5VhP1MA:9 a=-52OSV3k6aGjHW0a:21
-        a=qFaRso0K34Rwt0Du:21 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.225]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 10:04:15PM -0800, Matthew Wilcox wrote:
-> On Wed, Feb 19, 2020 at 02:29:00PM +1100, Dave Chinner wrote:
-> > On Mon, Feb 17, 2020 at 10:46:11AM -0800, Matthew Wilcox wrote:
-> > > @@ -418,6 +412,15 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
-> > >  		}
-> > >  		ret = iomap_readpage_actor(inode, pos + done, length - done,
-> > >  				ctx, iomap, srcmap);
-> > > +		if (WARN_ON(ret == 0))
-> > > +			break;
-> > 
-> > This error case now leaks ctx->cur_page....
-> 
-> Yes ... and I see the consequence.  I mean, this is a "shouldn't happen",
-> so do we want to put effort into cleanup here ...
+We tested a soft lockup problem in linux 4.19 which could also
+be found in linux 5.x.
 
-Well, the normal thing for XFS is that a production kernel cleans up
-and handles the error gracefully with a WARN_ON_ONCE, while a debug
-kernel build will chuck a tanty and burn the house down so to make
-the developers aware that there is a "should not happen" situation
-occurring....
+When dir inode takes up a large number of blocks, and if the
+directory is growing when we are searching, it's possible the
+restart branch could be called many times, and the do while loop
+could hold cpu a long time.
 
-> > > @@ -451,11 +454,7 @@ iomap_readpages(struct address_space *mapping, struct list_head *pages,
-> > >  done:
-> > >  	if (ctx.bio)
-> > >  		submit_bio(ctx.bio);
-> > > -	if (ctx.cur_page) {
-> > > -		if (!ctx.cur_page_in_bio)
-> > > -			unlock_page(ctx.cur_page);
-> > > -		put_page(ctx.cur_page);
-> > > -	}
-> > > +	BUG_ON(ctx.cur_page);
-> > 
-> > And so will now trigger both a warn and a bug....
-> 
-> ... or do we just want to run slap bang into this bug?
-> 
-> Option 1: Remove the check for 'ret == 0' altogether, as we had it before.
-> That puts us into endless loop territory for a failure mode, and it's not
-> parallel with iomap_readpage().
-> 
-> Option 2: Remove the WARN_ON from the check.  Then we just hit the BUG_ON,
-> but we don't know why we did it.
-> 
-> Option 3: Set cur_page to NULL.  We'll hit the WARN_ON, avoid the BUG_ON,
-> might end up with a page in the page cache which is never unlocked.
+Here is the call trace in linux 4.19.
 
-None of these are appealing.
+[  473.756186] Call trace:
+[  473.756196]  dump_backtrace+0x0/0x198
+[  473.756199]  show_stack+0x24/0x30
+[  473.756205]  dump_stack+0xa4/0xcc
+[  473.756210]  watchdog_timer_fn+0x300/0x3e8
+[  473.756215]  __hrtimer_run_queues+0x114/0x358
+[  473.756217]  hrtimer_interrupt+0x104/0x2d8
+[  473.756222]  arch_timer_handler_virt+0x38/0x58
+[  473.756226]  handle_percpu_devid_irq+0x90/0x248
+[  473.756231]  generic_handle_irq+0x34/0x50
+[  473.756234]  __handle_domain_irq+0x68/0xc0
+[  473.756236]  gic_handle_irq+0x6c/0x150
+[  473.756238]  el1_irq+0xb8/0x140
+[  473.756286]  ext4_es_lookup_extent+0xdc/0x258 [ext4]
+[  473.756310]  ext4_map_blocks+0x64/0x5c0 [ext4]
+[  473.756333]  ext4_getblk+0x6c/0x1d0 [ext4]
+[  473.756356]  ext4_bread_batch+0x7c/0x1f8 [ext4]
+[  473.756379]  ext4_find_entry+0x124/0x3f8 [ext4]
+[  473.756402]  ext4_lookup+0x8c/0x258 [ext4]
+[  473.756407]  __lookup_hash+0x8c/0xe8
+[  473.756411]  filename_create+0xa0/0x170
+[  473.756413]  do_mkdirat+0x6c/0x140
+[  473.756415]  __arm64_sys_mkdirat+0x28/0x38
+[  473.756419]  el0_svc_common+0x78/0x130
+[  473.756421]  el0_svc_handler+0x38/0x78
+[  473.756423]  el0_svc+0x8/0xc
+[  485.755156] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [tmp:5149]
 
-> Option 4: Do the unlock/put page dance before setting the cur_page to NULL.
-> We might double-unlock the page.
+Add cond_resched() to avoid soft lockup and to provide a better
+system responding.
 
-why would we double unlock the page?
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+---
+ fs/ext4/namei.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Oh, the readahead cursor doesn't handle the case of partial page
-submission, which would result in IO completion unlocking the page.
-
-Ok, that's what the ctx.cur_page_in_bio check is used to detect i.e.
-if we've got a page that the readahead cursor points at, and we
-haven't actually added it to a bio, then we can leave it to the
-read_pages() to unlock and clean up. If it's in a bio, then IO
-completion will unlock it and so we only have to drop the submission
-reference and move the readahead cursor forwards so read_pages()
-doesn't try to unlock this page. i.e:
-
-	/* clean up partial page submission failures */
-	if (ctx.cur_page && ctx.cur_page_in_bio) {
-		put_page(ctx.cur_page);
-		readahead_next(rac);
-	}
-
-looks to me like it will handle the case of "ret == 0" in the actor
-function just fine.
-
-Cheers,
-
-Dave.
-
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 129d2ebae00d..9a1836632f51 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1511,6 +1511,7 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
+ 		/*
+ 		 * We deal with the read-ahead logic here.
+ 		 */
++		cond_resched();
+ 		if (ra_ptr >= ra_max) {
+ 			/* Refill the readahead buffer */
+ 			ra_ptr = 0;
 -- 
-Dave Chinner
-david@fromorbit.com
+2.19.1
+
