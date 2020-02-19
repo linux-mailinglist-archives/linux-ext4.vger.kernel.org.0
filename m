@@ -2,65 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D35163AEF
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 04:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D63163AEA
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 04:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgBSDQc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 22:16:32 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:49905 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728203AbgBSDQc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 Feb 2020 22:16:32 -0500
-Received: from dread.disaster.area (pa49-179-138-28.pa.nsw.optusnet.com.au [49.179.138.28])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 0C8703A2239;
-        Wed, 19 Feb 2020 14:16:28 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j4Fqc-0005MI-Kp; Wed, 19 Feb 2020 14:16:26 +1100
-Date:   Wed, 19 Feb 2020 14:16:26 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 14/19] ext4: Convert from readpages to readahead
-Message-ID: <20200219031626.GC10776@dread.disaster.area>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-25-willy@infradead.org>
+        id S1728326AbgBSDQe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 22:16:34 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:29717 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728323AbgBSDQd (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 22:16:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1582082193; x=1613618193;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=E5N/7o6VGZBa7BVMDB3WxPy4rXL39R8UjJoASxTcpwI=;
+  b=D4CHQbjMEvc2gloE9BViuPlyFRg+EyufVvy2YSmCf5G+XePNZy/grwGR
+   RB9qMi134VS9cjA0D5lNT9GcvNzy3twcC2RCd3EvMDmOWg5lzIrd8wa/k
+   UADalIPrS4DWof1RY6cWE/z/it3rSFExg6L5vusDWgZRgvkH3/c0qNtUH
+   U=;
+IronPort-SDR: nPGXDLSlq1mgpB0ur0SHuDd4GWdYk2MTS3/Xd9ybZfESAZUt/hp1VWZzaP4wcIpIfB8EPJ9OGb
+ GZDeqCULsGAg==
+X-IronPort-AV: E=Sophos;i="5.70,458,1574121600"; 
+   d="scan'208";a="16987779"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 Feb 2020 03:16:33 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id CF97EA27EF;
+        Wed, 19 Feb 2020 03:16:31 +0000 (UTC)
+Received: from EX13D01UWB004.ant.amazon.com (10.43.161.157) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Wed, 19 Feb 2020 03:16:31 +0000
+Received: from EX13D30UWC001.ant.amazon.com (10.43.162.128) by
+ EX13d01UWB004.ant.amazon.com (10.43.161.157) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 19 Feb 2020 03:16:30 +0000
+Received: from EX13D30UWC001.ant.amazon.com ([10.43.162.128]) by
+ EX13D30UWC001.ant.amazon.com ([10.43.162.128]) with mapi id 15.00.1367.000;
+ Wed, 19 Feb 2020 03:16:30 +0000
+From:   "Jitindar SIngh, Suraj" <surajjs@amazon.com>
+To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "Singh, Balbir" <sblbir@amazon.com>
+Subject: Re: [PATCH 1/3] ext4: introduce macro sbi_array_rcu_deref() to access
+ rcu protected fields
+Thread-Topic: [PATCH 1/3] ext4: introduce macro sbi_array_rcu_deref() to
+ access rcu protected fields
+Thread-Index: AQHV5tIfD/jLG261uU+fJ5kjcslyZ6gh2FEA
+Date:   Wed, 19 Feb 2020 03:16:30 +0000
+Message-ID: <6db70858fc2e9792cff585650891f5f9896cf28a.camel@amazon.com>
+References: <20200219030851.2678-1-surajjs@amazon.com>
+         <20200219030851.2678-2-surajjs@amazon.com>
+In-Reply-To: <20200219030851.2678-2-surajjs@amazon.com>
+Accept-Language: en-AU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.162.53]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A1C1F5BBF8C56C4B9BAF1FC68098AFDF@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200217184613.19668-25-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
-        a=zAxSp4fFY/GQY8/esVNjqw==:117 a=zAxSp4fFY/GQY8/esVNjqw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
-        a=JfrnYn6hAAAA:8 a=7-415B0cAAAA:8 a=gdF_tSV0u4M_20XL-lkA:9
-        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Feb 17, 2020 at 10:46:05AM -0800, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> 
-> Use the new readahead operation in ext4
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-There's nothing I can see in this that would cause that list
-corruption I saw with ext4.
-
-I'll re-introduce the patch and see if it falls over again.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+K0NjIHN0YWJsZQ0KKGNvcnJlY3RseSB0aGlzIHRpbWUpDQoNCk9uIFR1ZSwgMjAyMC0wMi0xOCBh
+dCAxOTowOCAtMDgwMCwgU3VyYWogSml0aW5kYXIgU2luZ2ggd3JvdGU6DQo+IFRoZSBzX2dyb3Vw
+X2Rlc2MgZmllbGQgaW4gdGhlIHN1cGVyIGJsb2NrIGluZm8gKHNiaSkgaXMgcHJvdGVjdGVkIGJ5
+DQo+IHJjdSB0bw0KPiBwcmV2ZW50IGFjY2VzcyB0byBhbiBpbnZhbGlkIHBvaW50ZXIgZHVyaW5n
+IG9ubGluZSByZXNpemUgb3BlcmF0aW9ucy4NCj4gVGhlcmUgYXJlIDIgb3RoZXIgYXJyYXlzIGlu
+IHNiaSwgc19ncm91cF9pbmZvIGFuZCBzX2ZsZXhfZ3JvdXBzLA0KPiB3aGljaA0KPiByZXF1aXJl
+IHNpbWlsYXIgcmN1IHByb3RlY3Rpb24gd2hpY2ggaXMgaW50cm9kdWNlZCBpbiB0aGUgc3Vic2Vx
+dWVudA0KPiBwYXRjaGVzLiBJbnRyb2R1Y2UgYSBoZWxwZXIgbWFjcm8gc2JpX2FycmF5X3JjdV9k
+ZXJlZigpIHRvIGJlIHVzZWQgdG8NCj4gcHJvdmlkZSByY3UgcHJvdGVjdGVkIGFjY2VzcyB0byBz
+dWNoIGZpZWxkcy4NCj4gDQo+IEFsc28gdXBkYXRlIHRoZSBjdXJyZW50IHNfZ3JvdXBfZGVzYyBh
+Y2Nlc3Mgc2l0ZSB0byB1c2UgdGhlIG1hY3JvLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogU3VyYWog
+Sml0aW5kYXIgU2luZ2ggPHN1cmFqanNAYW1hem9uLmNvbT4NCkNjOiBzdGFibGVAdmdlci5rZXJu
+ZWwub3JnDQo+IENjOiBzdGFibGVAdmdlci1rZXJuZWwub3JnDQo+IC0tLQ0KPiAgZnMvZXh0NC9i
+YWxsb2MuYyB8IDExICsrKysrLS0tLS0tDQo+ICBmcy9leHQ0L2V4dDQuaCAgIHwgMTcgKysrKysr
+KysrKysrKysrKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKSwgNiBkZWxl
+dGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9mcy9leHQ0L2JhbGxvYy5jIGIvZnMvZXh0NC9i
+YWxsb2MuYw0KPiBpbmRleCA1MzY4YmY2NzMwMGIuLjhmZDBiM2NkYWI0YyAxMDA2NDQNCj4gLS0t
+IGEvZnMvZXh0NC9iYWxsb2MuYw0KPiArKysgYi9mcy9leHQ0L2JhbGxvYy5jDQo+IEBAIC0yODEs
+MTQgKzI4MSwxMyBAQCBzdHJ1Y3QgZXh0NF9ncm91cF9kZXNjICoNCj4gZXh0NF9nZXRfZ3JvdXBf
+ZGVzYyhzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLA0KPiAgDQo+ICAJZ3JvdXBfZGVzYyA9IGJsb2Nr
+X2dyb3VwID4+IEVYVDRfREVTQ19QRVJfQkxPQ0tfQklUUyhzYik7DQo+ICAJb2Zmc2V0ID0gYmxv
+Y2tfZ3JvdXAgJiAoRVhUNF9ERVNDX1BFUl9CTE9DSyhzYikgLSAxKTsNCj4gLQlyY3VfcmVhZF9s
+b2NrKCk7DQo+IC0JYmhfcCA9IHJjdV9kZXJlZmVyZW5jZShzYmktPnNfZ3JvdXBfZGVzYylbZ3Jv
+dXBfZGVzY107DQo+ICsJYmhfcCA9IHNiaV9hcnJheV9yY3VfZGVyZWYoc2JpLCBzX2dyb3VwX2Rl
+c2MsIGdyb3VwX2Rlc2MpOw0KPiAgCS8qDQo+IC0JICogV2UgY2FuIHVubG9jayBoZXJlIHNpbmNl
+IHRoZSBwb2ludGVyIGJlaW5nIGRlcmVmZXJlbmNlZA0KPiB3b24ndCBiZQ0KPiAtCSAqIGRlcmVm
+ZXJlbmNlZCBhZ2Fpbi4gQnkgbG9va2luZyBhdCB0aGUgdXNhZ2UgaW4gYWRkX25ld19nZGIoKQ0K
+PiB0aGUNCj4gLQkgKiB2YWx1ZSBpc24ndCBtb2RpZmllZCwganVzdCB0aGUgcG9pbnRlciwgYW5k
+IHNvIGl0IHJlbWFpbnMNCj4gdmFsaWQuDQo+ICsJICogc2JpX2FycmF5X3JjdV9kZXJlZiByZXR1
+cm5zIHdpdGggcmN1IHVubG9ja2VkLCB0aGlzIGlzIG9rDQo+IHNpbmNlDQo+ICsJICogdGhlIHBv
+aW50ZXIgYmVpbmcgZGVyZWZlcmVuY2VkIHdvbid0IGJlIGRlcmVmZXJlbmNlZCBhZ2Fpbi4NCj4g
+QnkNCj4gKwkgKiBsb29raW5nIGF0IHRoZSB1c2FnZSBpbiBhZGRfbmV3X2dkYigpIHRoZSB2YWx1
+ZSBpc24ndA0KPiBtb2RpZmllZCwNCj4gKwkgKiBqdXN0IHRoZSBwb2ludGVyLCBhbmQgc28gaXQg
+cmVtYWlucyB2YWxpZC4NCj4gIAkgKi8NCj4gLQlyY3VfcmVhZF91bmxvY2soKTsNCj4gIAlpZiAo
+IWJoX3ApIHsNCj4gIAkJZXh0NF9lcnJvcihzYiwgIkdyb3VwIGRlc2NyaXB0b3Igbm90IGxvYWRl
+ZCAtICINCj4gIAkJCSAgICJibG9ja19ncm91cCA9ICV1LCBncm91cF9kZXNjID0gJXUsIGRlc2Mg
+PQ0KPiAldSIsDQo+IGRpZmYgLS1naXQgYS9mcy9leHQ0L2V4dDQuaCBiL2ZzL2V4dDQvZXh0NC5o
+DQo+IGluZGV4IDE0OWVlMGFiNmQ2NC4uMjM2ZmM2NTAwMzQwIDEwMDY0NA0KPiAtLS0gYS9mcy9l
+eHQ0L2V4dDQuaA0KPiArKysgYi9mcy9leHQ0L2V4dDQuaA0KPiBAQCAtMTU3Niw2ICsxNTc2LDIz
+IEBAIHN0YXRpYyBpbmxpbmUgaW50IGV4dDRfdmFsaWRfaW51bShzdHJ1Y3QNCj4gc3VwZXJfYmxv
+Y2sgKnNiLCB1bnNpZ25lZCBsb25nIGlubykNCj4gIAkJIGlubyA8PSBsZTMyX3RvX2NwdShFWFQ0
+X1NCKHNiKS0+c19lcy0NCj4gPnNfaW5vZGVzX2NvdW50KSk7DQo+ICB9DQo+ICANCj4gKy8qDQo+
+ICsgKiBSZXR1cm5zOiBzYmktPmZpZWxkW2luZGV4XQ0KPiArICogVXNlZCB0byBhY2Nlc3MgYW4g
+YXJyYXkgZWxlbWVudCBmcm9tIHRoZSBmb2xsb3dpbmcgc2JpIGZpZWxkcw0KPiB3aGljaCByZXF1
+aXJlDQo+ICsgKiByY3UgcHJvdGVjdGlvbiB0byBhdm9pZCBkZXJlZmVyZW5jaW5nIGFuIGludmFs
+aWQgcG9pbnRlciBkdWUgdG8NCj4gcmVhc3NpZ25tZW50DQo+ICsgKiAtIHNfZ3JvdXBfZGVzYw0K
+PiArICogLSBzX2dyb3VwX2luZm8NCj4gKyAqIC0gc19mbGV4X2dyb3VwDQo+ICsgKi8NCj4gKyNk
+ZWZpbmUgc2JpX2FycmF5X3JjdV9kZXJlZihzYmksIGZpZWxkLCBpbmRleCkJCQkNCj4gCSAgIFwN
+Cj4gKyh7CQkJCQkJCQkJDQo+ICAgIFwNCj4gKwl0eXBlb2YoKigoc2JpKS0+ZmllbGQpKSBfdjsJ
+CQkJCQ0KPiAgICBcDQo+ICsJcmN1X3JlYWRfbG9jaygpOwkJCQkJCSAgIFwNCj4gKwlfdiA9ICgo
+dHlwZW9mKChzYmkpLT5maWVsZCkpcmN1X2RlcmVmZXJlbmNlKChzYmkpLQ0KPiA+ZmllbGQpKVtp
+bmRleF07IFwNCj4gKwlyY3VfcmVhZF91bmxvY2soKTsJCQkJCQkNCj4gICAgXA0KPiArCV92OwkJ
+CQkJCQkJDQo+ICAgIFwNCj4gK30pDQo+ICsNCj4gIC8qDQo+ICAgKiBTaW11bGF0ZV9mYWlsIGNv
+ZGVzDQo+ICAgKi8NCg==
