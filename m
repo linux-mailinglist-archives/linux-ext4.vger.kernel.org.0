@@ -2,107 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43AA1163C4B
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 05:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 908F1163C72
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 06:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgBSE4x (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 23:56:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726496AbgBSE4x (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 Feb 2020 23:56:53 -0500
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA4BB24656;
-        Wed, 19 Feb 2020 04:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582088212;
-        bh=xFc6OcTuvdGiMRsQCXREU/om/wxR+1L+h7QD0F0PHt4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bmbrDewhEPgRU39s62+lRWvxOOFM5NqFhHOPHyUKb/FDV2QLIkeuHzJeFvnhczGmA
-         0N46enSeEPKwwr6V6uI9n2rMvGqC08LBGaKvLFKq5yxnd3LL1ckBfhv1J99u71Tl07
-         G9NZ1k5lw1dkJdhMTLJNUitRSBSVkKPHDOR+3UPY=
-Date:   Tue, 18 Feb 2020 20:56:51 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH] ext4: fix race between writepages and enabling
- EXT4_EXTENTS_FL
-Message-ID: <20200219045651.GF1075@sol.localdomain>
-References: <20200218002151.1581441-1-ebiggers@kernel.org>
- <20200218074914.GD16121@quack2.suse.cz>
+        id S1726175AbgBSFWc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Feb 2020 00:22:32 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:43950 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725819AbgBSFWb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Feb 2020 00:22:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=v3wjYvTxIvyqdBjcTZbZ6V6XXTZeeNXrItglyOMcggo=; b=Auyp6lhSbAEYNk7jcncbMkY0Ws
+        XinG1c/KH2WIappKRapF9o4axpn9L8oQskBlHlBLw9XQ0nXbJnkDsqfh2SkyzmQK0YhzpKp/QBFO0
+        bpEGyHFQ+YA3qxJU00WEU/tiwjkGuEnVYcW0g3zXVubgFDKWaDvoJvN6VkjVPrCo/uQ+QP9jf8QO3
+        9qiXCqAzx7Awla3qaJlBefBlwM8EQeYBIUB12k8qt69YC/AIm0vwjb3K/41acVQTK6Lg81YYNgtrt
+        gWZkFfEHpJDHCeifbBhNb09jKli8nY0l/0Vau09mO9a0Cb/TiGxAZcwsAaM0Zi6C3GyPPjl+GKcMg
+        Evj5uHjQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j4Hoc-0008Pr-3p; Wed, 19 Feb 2020 05:22:30 +0000
+Date:   Tue, 18 Feb 2020 21:22:30 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v6 19/19] mm: Use memalloc_nofs_save in readahead path
+Message-ID: <20200219052230.GM24185@bombadil.infradead.org>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-33-willy@infradead.org>
+ <20200219034324.GG10776@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200218074914.GD16121@quack2.suse.cz>
+In-Reply-To: <20200219034324.GG10776@dread.disaster.area>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 08:49:14AM +0100, Jan Kara wrote:
-> On Mon 17-02-20 16:21:51, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
+On Wed, Feb 19, 2020 at 02:43:24PM +1100, Dave Chinner wrote:
+> On Mon, Feb 17, 2020 at 10:46:13AM -0800, Matthew Wilcox wrote:
+> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 > > 
-> > If EXT4_EXTENTS_FL is set on an inode while ext4_writepages() is running
-> > on it, the following warning in ext4_add_complete_io() can be hit:
+> > Ensure that memory allocations in the readahead path do not attempt to
+> > reclaim file-backed pages, which could lead to a deadlock.  It is
+> > possible, though unlikely this is the root cause of a problem observed
+> > by Cong Wang.
 > > 
-> > WARNING: CPU: 1 PID: 0 at fs/ext4/page-io.c:234 ext4_put_io_end_defer+0xf0/0x120
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > Reported-by: Cong Wang <xiyou.wangcong@gmail.com>
+> > Suggested-by: Michal Hocko <mhocko@suse.com>
+> > ---
+> >  mm/readahead.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
 > > 
-> > Here's a minimal reproducer (not 100% reliable) (root isn't required):
-> > 
-> > 	while true; do
-> > 		sync
-> > 	done &
-> > 	while true; do
-> > 		rm -f file
-> > 		touch file
-> > 		chattr -e file
-> > 		echo X >> file
-> > 		chattr +e file
-> > 	done
-> > 
-> > The problem is that in ext4_writepages(), ext4_should_dioread_nolock()
-> > (which only returns true on extent-based files) is checked once to set
-> > the number of reserved journal credits, and also again later to select
-> > the flags for ext4_map_blocks() and copy the reserved journal handle to
-> > ext4_io_end::handle.  But if EXT4_EXTENTS_FL is being concurrently set,
-> > the first check can see dioread_nolock disabled while the later one can
-> > see it enabled, causing the reserved handle to unexpectedly be NULL.
-> > 
-> > Fix this by checking ext4_should_dioread_nolock() only once and storing
-> > the result in struct mpage_da_data.  This way, each ext4_writepages()
-> > call uses a consistent dioread_nolock setting.
-> > 
-> > This was originally reported by syzbot without a reproducer at
-> > https://syzkaller.appspot.com/bug?extid=2202a584a00fffd19fbf,
-> > but now that dioread_nolock is the default I also started seeing this
-> > when running syzkaller locally.
-> > 
-> > Reported-by: syzbot+2202a584a00fffd19fbf@syzkaller.appspotmail.com
-> > Fixes: 6b523df4fb5a ("ext4: use transaction reservation for extent conversion in ext4_end_io")
-> > Cc: stable@kernel.org
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > diff --git a/mm/readahead.c b/mm/readahead.c
+> > index 94d499cfb657..8f9c0dba24e7 100644
+> > --- a/mm/readahead.c
+> > +++ b/mm/readahead.c
+> > @@ -22,6 +22,7 @@
+> >  #include <linux/mm_inline.h>
+> >  #include <linux/blk-cgroup.h>
+> >  #include <linux/fadvise.h>
+> > +#include <linux/sched/mm.h>
+> >  
+> >  #include "internal.h"
+> >  
+> > @@ -174,6 +175,18 @@ void page_cache_readahead_limit(struct address_space *mapping,
+> >  		._nr_pages = 0,
+> >  	};
+> >  
+> > +	/*
+> > +	 * Partway through the readahead operation, we will have added
+> > +	 * locked pages to the page cache, but will not yet have submitted
+> > +	 * them for I/O.  Adding another page may need to allocate memory,
+> > +	 * which can trigger memory reclaim.  Telling the VM we're in
+> > +	 * the middle of a filesystem operation will cause it to not
+> > +	 * touch file-backed pages, preventing a deadlock.  Most (all?)
+> > +	 * filesystems already specify __GFP_NOFS in their mapping's
+> > +	 * gfp_mask, but let's be explicit here.
+> > +	 */
+> > +	unsigned int nofs = memalloc_nofs_save();
+> > +
 > 
-> What you propose is probably enough to stop this particular race but I
-> think there are other races that can get triggered by inode conversion
-> to/from extent format. So I think we rather need to make inode
-> format conversion much more careful (or we could just remove that
-> functionality because I'm not sure if anybody actually uses it).
-> 
-> WRT making inode format conversion more careful you can have a look at how
-> ext4_change_inode_journal_flag() works. I uses EXT4_I(inode)->i_mmap_sem to
-> block page faults, it also uses sbi->s_journal_flag_rwsem to avoid races
-> with writepages and I belive the migration code should do the same.
+> So doesn't this largely remove the need for all the gfp flag futzing
+> in the readahead path? i.e. almost all readahead allocations are now
+> going to be GFP_NOFS | GFP_NORETRY | GFP_NOWARN ?
 
-I was looking at that earlier, but I was a bit concerned that people could
-complain about a performance regression due to EXTENTS_FL no longer being
-settable/clearable on different files concurrently.
+I don't think it ensures the GFP_NORETRY | GFP_NOWARN, just the GFP_NOFS
+part.  IOW, we'll still need a readahead_gfp() macro at some point ... I
+don't want to add that to this already large series though.
 
-But if we think this functionality is rarely used and that no one would care,
-then sure, we should go with that solution instead.  I'll probably rename
-s_journal_flag_rwsem to s_writepages_rwsem since it will become for both the
-EXTENTS and JOURNAL_DATA flags.
-
-- Eric
+Michal also wants to kill mapping->gfp_mask, btw.
