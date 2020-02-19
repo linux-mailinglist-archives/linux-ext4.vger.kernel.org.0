@@ -2,98 +2,85 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D962163E63
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 09:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217A9164025
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 10:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgBSIEi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Feb 2020 03:04:38 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:53394 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726156AbgBSIEi (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 19 Feb 2020 03:04:38 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 0B6B6196E4C4E26B936A;
-        Wed, 19 Feb 2020 16:04:35 +0800 (CST)
-Received: from huawei.com (10.175.104.225) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.439.0; Wed, 19 Feb 2020
- 16:04:25 +0800
-From:   Shijie Luo <luoshijie1@huawei.com>
-To:     <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <jack@suse.cz>, <luoshijie1@huawei.com>,
-        <lutianxiong@huawei.com>
-Subject: [PATCH v2] ext4: add cond_resched() to __ext4_find_entry()
-Date:   Wed, 19 Feb 2020 03:03:36 -0500
-Message-ID: <20200219080336.34865-1-luoshijie1@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726582AbgBSJT4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Feb 2020 04:19:56 -0500
+Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:53624 "EHLO
+        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726202AbgBSJT4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 19 Feb 2020 04:19:56 -0500
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 7E8502E14A0;
+        Wed, 19 Feb 2020 12:19:54 +0300 (MSK)
+Received: from vla1-5a8b76e65344.qloud-c.yandex.net (vla1-5a8b76e65344.qloud-c.yandex.net [2a02:6b8:c0d:3183:0:640:5a8b:76e6])
+        by mxbackcorp1o.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id bnLtzLBnAl-JrLOssYR;
+        Wed, 19 Feb 2020 12:19:54 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1582103994; bh=8YSxTUOk5w5fh0SdmqFzB3e8NK2TQ0pJ0mEf0yBxVkU=;
+        h=Message-ID:Date:To:From:Subject:Cc;
+        b=0P3CPGb2mu269bYBBnvbhd7iWK7YVRiq39369+or8VaLRyqfbKF7Zpt+F3pjI/Nw/
+         P/kmuUzDSaz6gKZxQtOTfTfRgpgEO6zGoiSSKDsYEA4/qb+ywfZWPUoluhyNq1D3qJ
+         UMSqZTUCRcAmYckVnx9vnESAAfkKdnv/ThvS7jJY=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:8448:fbcc:1dac:c863])
+        by vla1-5a8b76e65344.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 6Ek3u93F2Y-JqUSIcYI;
+        Wed, 19 Feb 2020 12:19:52 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+Subject: [PATCH] ext4: fix handling mount -o remount,nolazytime
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+To:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+Cc:     Karel Zak <kzak@redhat.com>,
+        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Date:   Wed, 19 Feb 2020 12:19:52 +0300
+Message-ID: <158210399258.5335.3994877510070204710.stgit@buzz>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We tested a soft lockup problem in linux 4.19 which could also
-be found in linux 5.x.
+Tool "mount" from util-linux >= 2.27 knows about flag MS_LAZYTIME and
+handles options "lazytime" and "nolazytime" as fs-independent.
 
-When dir inode takes up a large number of blocks, and if the
-directory is growing when we are searching, it's possible the
-restart branch could be called many times, and the do while loop
-could hold cpu a long time.
+For ext4 it works for enabling lazytime: mount(MS_REMOUNT | MS_LAZYTIME),
+but does not work for disabling: mount(MS_REMOUNT).
 
-Here is the call trace in linux 4.19.
+Currently ext4 has performance issue in lazytime implementation caused by
+contention around inode_hash_lock in ext4_update_other_inodes_time().
 
-[  473.756186] Call trace:
-[  473.756196]  dump_backtrace+0x0/0x198
-[  473.756199]  show_stack+0x24/0x30
-[  473.756205]  dump_stack+0xa4/0xcc
-[  473.756210]  watchdog_timer_fn+0x300/0x3e8
-[  473.756215]  __hrtimer_run_queues+0x114/0x358
-[  473.756217]  hrtimer_interrupt+0x104/0x2d8
-[  473.756222]  arch_timer_handler_virt+0x38/0x58
-[  473.756226]  handle_percpu_devid_irq+0x90/0x248
-[  473.756231]  generic_handle_irq+0x34/0x50
-[  473.756234]  __handle_domain_irq+0x68/0xc0
-[  473.756236]  gic_handle_irq+0x6c/0x150
-[  473.756238]  el1_irq+0xb8/0x140
-[  473.756286]  ext4_es_lookup_extent+0xdc/0x258 [ext4]
-[  473.756310]  ext4_map_blocks+0x64/0x5c0 [ext4]
-[  473.756333]  ext4_getblk+0x6c/0x1d0 [ext4]
-[  473.756356]  ext4_bread_batch+0x7c/0x1f8 [ext4]
-[  473.756379]  ext4_find_entry+0x124/0x3f8 [ext4]
-[  473.756402]  ext4_lookup+0x8c/0x258 [ext4]
-[  473.756407]  __lookup_hash+0x8c/0xe8
-[  473.756411]  filename_create+0xa0/0x170
-[  473.756413]  do_mkdirat+0x6c/0x140
-[  473.756415]  __arm64_sys_mkdirat+0x28/0x38
-[  473.756419]  el0_svc_common+0x78/0x130
-[  473.756421]  el0_svc_handler+0x38/0x78
-[  473.756423]  el0_svc+0x8/0xc
-[  485.755156] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [tmp:5149]
+Fortunately lazytime still could be disabled without unmounting by passing
+"nolazytime" as fs-specific mount option: mount(MS_REMOUNT, "nolazytime").
+But modern versions of tool "mount" cannot do that.
 
-Add cond_resched() to avoid soft lockup and to provide a better
-system responding.
+This patch fixes remount for modern tool and keeps backward compatibility.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+Fixes: a2fd66d069d8 ("ext4: set lazytime on remount if MS_LAZYTIME is set by mount")
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Link: https://lore.kernel.org/lkml/158040603451.1879.7954684107752709143.stgit@buzz/
 ---
- fs/ext4/namei.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/super.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 129d2ebae00d..9a1836632f51 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1511,6 +1511,7 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 		/*
- 		 * We deal with the read-ahead logic here.
- 		 */
-+		cond_resched();
- 		if (ra_ptr >= ra_max) {
- 			/* Refill the readahead buffer */
- 			ra_ptr = 0;
--- 
-2.19.1
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index f464dff09774..c901dc957b97 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5339,6 +5339,9 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 	if (sbi->s_journal && sbi->s_journal->j_task->io_context)
+ 		journal_ioprio = sbi->s_journal->j_task->io_context->ioprio;
+ 
++	if (!(*flags & SB_LAZYTIME))
++		sb->s_flags &= ~SB_LAZYTIME;
++
+ 	if (!parse_options(data, sb, NULL, &journal_ioprio, 1)) {
+ 		err = -EINVAL;
+ 		goto restore_opts;
 
