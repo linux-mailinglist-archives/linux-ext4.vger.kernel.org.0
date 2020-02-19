@@ -2,92 +2,79 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F828164A1D
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 17:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF126164B0D
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 17:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgBSQWt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Feb 2020 11:22:49 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45090 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726648AbgBSQWt (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Feb 2020 11:22:49 -0500
-Received: from callcc.thunk.org (guestnat-104-133-8-109.corp.google.com [104.133.8.109] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01JGMg0M026172
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Feb 2020 11:22:44 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 865C64211EF; Wed, 19 Feb 2020 11:22:42 -0500 (EST)
-Date:   Wed, 19 Feb 2020 11:22:42 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Subject: Re: [PATCH] ext4: fix handling mount -o remount,nolazytime
-Message-ID: <20200219162242.GI330201@mit.edu>
-References: <158210399258.5335.3994877510070204710.stgit@buzz>
+        id S1726768AbgBSQwn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Feb 2020 11:52:43 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:36130 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726450AbgBSQwn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Feb 2020 11:52:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cgHnf3SMrTZMA4DpDgtFfVIHiHWSF/Dqsrx7GRLBvxI=; b=H1FNokl1Ks6Q/eFXln6I/UnzU6
+        uNPywSHLbBZMMZub1YA6iLdFROQLpb7R/fkeHp2sx0LOh1LezwyK8b9RGHm1SZgBBgV0hcuEYRTAQ
+        merEyI+w6w69t8v9PstDfEANDQwcW54pT4F2pguMCpy3hjaFfoP4hfJjnowwZoEaPgkKVPELazSh7
+        6MLj14ZI0IkhiXqV5kOdKJZhGS6aIbjkm7qAH2uiQ1ZhpJTCeJ83OSUkPpb8l4bDwSTNNn54WBzkn
+        Xy0Vd/PJU5zw6BFXMmfy5bDA3dtZOsOmWEUwuKUFuf61CMwyRMl2Tf/PF4JJ6E7Tim/Qm4mru/2Bl
+        SNgQBpHQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j4SaX-0004DT-TU; Wed, 19 Feb 2020 16:52:41 +0000
+Date:   Wed, 19 Feb 2020 08:52:41 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
+        linux-ext4@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v6 08/19] mm: Add readahead address space operation
+Message-ID: <20200219165241.GR24185@bombadil.infradead.org>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-14-willy@infradead.org>
+ <20200219031044.GA1075@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <158210399258.5335.3994877510070204710.stgit@buzz>
+In-Reply-To: <20200219031044.GA1075@sol.localdomain>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 12:19:52PM +0300, Konstantin Khlebnikov wrote:
-> Tool "mount" from util-linux >= 2.27 knows about flag MS_LAZYTIME and
-> handles options "lazytime" and "nolazytime" as fs-independent.
+On Tue, Feb 18, 2020 at 07:10:44PM -0800, Eric Biggers wrote:
+> > +``readahead``
+> > +	Called by the VM to read pages associated with the address_space
+> > +	object.  The pages are consecutive in the page cache and are
+> > +	locked.  The implementation should decrement the page refcount
+> > +	after starting I/O on each page.  Usually the page will be
+> > +	unlocked by the I/O completion handler.  If the function does
+> > +	not attempt I/O on some pages, the caller will decrement the page
+> > +	refcount and unlock the pages for you.	Set PageUptodate if the
+> > +	I/O completes successfully.  Setting PageError on any page will
+> > +	be ignored; simply unlock the page if an I/O error occurs.
+> > +
 > 
-> For ext4 it works for enabling lazytime: mount(MS_REMOUNT | MS_LAZYTIME),
-> but does not work for disabling: mount(MS_REMOUNT).
-> 
-> Currently ext4 has performance issue in lazytime implementation caused by
-> contention around inode_hash_lock in ext4_update_other_inodes_time().
-> 
-> Fortunately lazytime still could be disabled without unmounting by passing
-> "nolazytime" as fs-specific mount option: mount(MS_REMOUNT, "nolazytime").
-> But modern versions of tool "mount" cannot do that.
-> 
-> This patch fixes remount for modern tool and keeps backward compatibility.
+> This is unclear about how "not attempting I/O" works and how that affects who is
+> responsible for putting and unlocking the pages.  How does the caller know which
+> pages were not attempted?  Can any arbitrary subset of pages be not attempted,
+> or just the last N pages?
 
-Actually, if you are using ancient versions of mount that don't know
-about MS_LAZYTIME, then when you do something like mount -o
-remount,usrquota /dev/sdb" with your patch, it will disable
-MS_LAZYTIME, which would be a backwards incompatible change.
+Changed to:
 
-So if we make this change, and there is someone who wants to use
-lazytime on some ancient enterprise linux system which is still using
-an old version of util-linux, and then take a kernel with this change,
-then it will result in a change in the behavior they will see.  The
-good news is that RHEL 8 is using util-linux 2.32, but RHEL 7 is still
-using util-linux 2.23.
+``readahead``
+        Called by the VM to read pages associated with the address_space
+        object.  The pages are consecutive in the page cache and are
+        locked.  The implementation should decrement the page refcount
+        after starting I/O on each page.  Usually the page will be
+        unlocked by the I/O completion handler.  If the filesystem decides
+        to stop attempting I/O before reaching the end of the readahead
+        window, it can simply return.  The caller will decrement the page
+        refcount and unlock the remaining pages for you.  Set PageUptodate
+        if the I/O completes successfully.  Setting PageError on any page
+        will be ignored; simply unlock the page if an I/O error occurs.
 
-Lazytime is not enabled by default, so this issue is really only a
-problem for someone which explicitly enables lazytime using a newer
-version of util-linux, and then disables lazytime with a newer version
-of util-linux.  So the behaviour of a2fd66d069d8 ("ext4: set lazytime
-on remount if MS_LAZYTIME is set by mount") was in fact an explicit
-decision to do things in that way.
-
-So maybe we might want to change things, assuming that it's unlikely
-users will try to be running new kernels on ancient distros.  But I
-really wouldn't want to add a Fixes tag, and I would want to make sure
-this doesn't get backported to older kernels, since the change does
-*not* keep backwards compatibility.
-
-Unfortunately, it's not possible to do this without breaking
-compatibility for at least some systems.  The question is whether or
-not we think systems running util-linux less than 2.27 is something we
-care about for new kernels.  Times may have changed since
-a2fd66d069d8.
-
-So I might be willing to take this patch (I invite comments from
-others), but there will need to be a DO NOT BACKPORT warning in the
-commit description.
-
-Cheers,
-
-						- Ted
