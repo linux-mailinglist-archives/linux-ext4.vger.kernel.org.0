@@ -2,347 +2,226 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B472E16395E
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 02:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD8C163994
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 02:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgBSBcd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 20:32:33 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3956 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbgBSBcd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 20:32:33 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e4c900f0000>; Tue, 18 Feb 2020 17:31:59 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 18 Feb 2020 17:32:31 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 18 Feb 2020 17:32:31 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 19 Feb
- 2020 01:32:31 +0000
-Subject: Re: [PATCH v6 09/19] mm: Add page_cache_readahead_limit
-To:     Matthew Wilcox <willy@infradead.org>,
-        <linux-fsdevel@vger.kernel.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
-        <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <cluster-devel@redhat.com>, <ocfs2-devel@oss.oracle.com>,
-        <linux-xfs@vger.kernel.org>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-16-willy@infradead.org>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <1263603d-f446-c447-2eac-697d105fa76c@nvidia.com>
-Date:   Tue, 18 Feb 2020 17:32:31 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S1728025AbgBSBtp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 20:49:45 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:55312 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727686AbgBSBtp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 18 Feb 2020 20:49:45 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04452;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0TqKW12C_1582076981;
+Received: from 30.0.178.92(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TqKW12C_1582076981)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 19 Feb 2020 09:49:41 +0800
+Subject: Re: [PATCH v2] io_uring: fix poll_list race for
+ SETUP_IOPOLL|SETUP_SQPOLL
+To:     io-uring@vger.kernel.org
+Cc:     axboe@kernel.dk, joseph.qi@linux.alibaba.com,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+References: <20200218162800.3089-1-xiaoguang.wang@linux.alibaba.com>
+From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Message-ID: <f1809c94-fe71-2bb3-62cc-51389440f1cb@linux.alibaba.com>
+Date:   Wed, 19 Feb 2020 09:49:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200217184613.19668-16-willy@infradead.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <20200218162800.3089-1-xiaoguang.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1582075919; bh=a8ZomntyDZQd4T0ETmKn7kyy8sPKQZmX4XFar/4v0t8=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=D1CWU0QJZ/vJUMktO/sgLa0NnHUxAzBi1kB3pVWooMjgO2jXs6q5zixf/wAqu/IOj
-         hr6pMYPnaPYV3Ou3y08ljYOt3n9jfzxdK6636RtEz2ipjrYs3b4hz65TVfyMrWizE8
-         BxPE/Qh4U52+XVl1w9Y1JqrHWmAs8zmb1n5IGtB0T/8XlxD4CpXKwc33AZc13ZXKhr
-         j3FFEWf0HWoIz+2Nn/3nFVgupnlhaFia1orj1/9DKmtEAFVKf0ZH9VZvLLwMWQNW7A
-         KAP7iN3AiTFahALL3seMXUw0/Tn+K2lQR+L66VGAqWlcnZtVglzmkuRCBxmUoAyDSr
-         JDYpNY+TxVunw==
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2/17/20 10:45 AM, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+hi,
+
+Cc ext4 mail list as well, in case someone runs into the same issue.
+
+Regards,
+Xiaoguang Wang
+
+> After making ext4 support iopoll method:
+>    let ext4_file_operations's iopoll method be iomap_dio_iopoll(),
+> we found fio can easily hang in fio_ioring_getevents() with below fio
+> job:
+>      rm -f testfile; sync;
+>      sudo fio -name=fiotest -filename=testfile -iodepth=128 -thread
+> -rw=write -ioengine=io_uring  -hipri=1 -sqthread_poll=1 -direct=1
+> -bs=4k -size=10G -numjobs=8 -runtime=2000 -group_reporting
+> with IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL enabled.
 > 
-> ext4 and f2fs have duplicated the guts of the readahead code so
-> they can read past i_size.  Instead, separate out the guts of the
-> readahead code so they can call it directly.
+> There are two issues that results in this hang, one reason is that
+> when IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL are enabled, fio
+> does not use io_uring_enter to get completed events, it relies on
+> kernel io_sq_thread to poll for completed events.
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Another reason is that there is a race: when io_submit_sqes() in
+> io_sq_thread() submits a batch of sqes, variable 'inflight' will
+> record the number of submitted reqs, then io_sq_thread will poll for
+> reqs which have been added to poll_list. But note, if some previous
+> reqs have been punted to io worker, these reqs will won't be in
+> poll_list timely. io_sq_thread() will only poll for a part of previous
+> submitted reqs, and then find poll_list is empty, reset variable
+> 'inflight' to be zero. If app just waits these deferred reqs and does
+> not wake up io_sq_thread again, then hang happens.
+> 
+> For app that entirely relies on io_sq_thread to poll completed requests,
+> let io_iopoll_req_issued() wake up io_sq_thread properly when adding new
+> element to poll_list.
+> 
+> Fixes: 2b2ed9750fc9 ("io_uring: fix bad inflight accounting for SETUP_IOPOLL|SETUP_SQTHREAD")
+> Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+> 
 > ---
->  fs/ext4/verity.c        | 35 ++---------------------
->  fs/f2fs/verity.c        | 35 ++---------------------
->  include/linux/pagemap.h |  4 +++
->  mm/readahead.c          | 61 +++++++++++++++++++++++++++++------------
->  4 files changed, 52 insertions(+), 83 deletions(-)
-
-
-Just some minor ideas below, mostly documentation, so:
-
-    Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-
+> V2:
+>      simple code cleanups and add necessary comments.
+> ---
+>   fs/io_uring.c | 72 ++++++++++++++++++++++++++++-----------------------
+>   1 file changed, 40 insertions(+), 32 deletions(-)
 > 
-> diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-> index dc5ec724d889..f6e0bf05933e 100644
-> --- a/fs/ext4/verity.c
-> +++ b/fs/ext4/verity.c
-> @@ -342,37 +342,6 @@ static int ext4_get_verity_descriptor(struct inode *inode, void *buf,
->  	return desc_size;
->  }
->  
-> -/*
-> - * Prefetch some pages from the file's Merkle tree.
-> - *
-> - * This is basically a stripped-down version of __do_page_cache_readahead()
-> - * which works on pages past i_size.
-> - */
-> -static void ext4_merkle_tree_readahead(struct address_space *mapping,
-> -				       pgoff_t start_index, unsigned long count)
-> -{
-> -	LIST_HEAD(pages);
-> -	unsigned int nr_pages = 0;
-> -	struct page *page;
-> -	pgoff_t index;
-> -	struct blk_plug plug;
-> -
-> -	for (index = start_index; index < start_index + count; index++) {
-> -		page = xa_load(&mapping->i_pages, index);
-> -		if (!page || xa_is_value(page)) {
-> -			page = __page_cache_alloc(readahead_gfp_mask(mapping));
-> -			if (!page)
-> -				break;
-> -			page->index = index;
-> -			list_add(&page->lru, &pages);
-> -			nr_pages++;
-> -		}
-> -	}
-> -	blk_start_plug(&plug);
-> -	ext4_mpage_readpages(mapping, &pages, NULL, nr_pages, true);
-> -	blk_finish_plug(&plug);
-> -}
-> -
->  static struct page *ext4_read_merkle_tree_page(struct inode *inode,
->  					       pgoff_t index,
->  					       unsigned long num_ra_pages)
-> @@ -386,8 +355,8 @@ static struct page *ext4_read_merkle_tree_page(struct inode *inode,
->  		if (page)
->  			put_page(page);
->  		else if (num_ra_pages > 1)
-> -			ext4_merkle_tree_readahead(inode->i_mapping, index,
-> -						   num_ra_pages);
-> +			page_cache_readahead_limit(inode->i_mapping, NULL,
-> +					index, LONG_MAX, num_ra_pages, 0);
-
-
-LONG_MAX seems bold at first, but then again I can't think of anything smaller 
-that makes any sense, and the previous code didn't have a limit either...OK.
-
-I also wondered about the NULL file parameter, and wonder if we're stripping out
-information that is needed for authentication, given that that's what the newly
-written kerneldoc says the "file" arg is for. But it seems that if we're this 
-deep in the fs code's read routines, file system authentication has long since 
-been addressed.
-
-Any actually I don't yet (still working through the patches) see any authentication,
-so maybe that parameter will turn out to be unnecessary.
-
-Anyway, It's nice to see this factored out into a single routine.
-
-
->  		page = read_mapping_page(inode->i_mapping, index, NULL);
->  	}
->  	return page;
-> diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
-> index d7d430a6f130..71a3e36721fa 100644
-> --- a/fs/f2fs/verity.c
-> +++ b/fs/f2fs/verity.c
-> @@ -222,37 +222,6 @@ static int f2fs_get_verity_descriptor(struct inode *inode, void *buf,
->  	return size;
->  }
->  
-> -/*
-> - * Prefetch some pages from the file's Merkle tree.
-> - *
-> - * This is basically a stripped-down version of __do_page_cache_readahead()
-> - * which works on pages past i_size.
-> - */
-> -static void f2fs_merkle_tree_readahead(struct address_space *mapping,
-> -				       pgoff_t start_index, unsigned long count)
-> -{
-> -	LIST_HEAD(pages);
-> -	unsigned int nr_pages = 0;
-> -	struct page *page;
-> -	pgoff_t index;
-> -	struct blk_plug plug;
-> -
-> -	for (index = start_index; index < start_index + count; index++) {
-> -		page = xa_load(&mapping->i_pages, index);
-> -		if (!page || xa_is_value(page)) {
-> -			page = __page_cache_alloc(readahead_gfp_mask(mapping));
-> -			if (!page)
-> -				break;
-> -			page->index = index;
-> -			list_add(&page->lru, &pages);
-> -			nr_pages++;
-> -		}
-> -	}
-> -	blk_start_plug(&plug);
-> -	f2fs_mpage_readpages(mapping, &pages, NULL, nr_pages, true);
-> -	blk_finish_plug(&plug);
-> -}
-> -
->  static struct page *f2fs_read_merkle_tree_page(struct inode *inode,
->  					       pgoff_t index,
->  					       unsigned long num_ra_pages)
-> @@ -266,8 +235,8 @@ static struct page *f2fs_read_merkle_tree_page(struct inode *inode,
->  		if (page)
->  			put_page(page);
->  		else if (num_ra_pages > 1)
-> -			f2fs_merkle_tree_readahead(inode->i_mapping, index,
-> -						   num_ra_pages);
-> +			page_cache_readahead_limit(inode->i_mapping, NULL,
-> +					index, LONG_MAX, num_ra_pages, 0);
->  		page = read_mapping_page(inode->i_mapping, index, NULL);
->  	}
->  	return page;
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index bd4291f78f41..4f36c06d064d 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -389,6 +389,10 @@ extern struct page * read_cache_page_gfp(struct address_space *mapping,
->  				pgoff_t index, gfp_t gfp_mask);
->  extern int read_cache_pages(struct address_space *mapping,
->  		struct list_head *pages, filler_t *filler, void *data);
-> +void page_cache_readahead_limit(struct address_space *mapping,
-> +		struct file *file, pgoff_t offset, pgoff_t end_index,
-> +		unsigned long nr_to_read, unsigned long lookahead_size);
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 77f22c3da30f..b6d7c45d0d0d 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -1793,6 +1793,9 @@ static void io_iopoll_req_issued(struct io_kiocb *req)
+>   		list_add(&req->list, &ctx->poll_list);
+>   	else
+>   		list_add_tail(&req->list, &ctx->poll_list);
 > +
->  
->  static inline struct page *read_mapping_page(struct address_space *mapping,
->  				pgoff_t index, void *data)
-> diff --git a/mm/readahead.c b/mm/readahead.c
-> index 975ff5e387be..94d499cfb657 100644
-> --- a/mm/readahead.c
-> +++ b/mm/readahead.c
-> @@ -142,35 +142,38 @@ static void read_pages(struct readahead_control *rac, struct list_head *pages)
->  	blk_finish_plug(&plug);
->  }
->  
-> -/*
-> - * __do_page_cache_readahead() actually reads a chunk of disk.  It allocates
-> - * the pages first, then submits them for I/O. This avoids the very bad
-> - * behaviour which would occur if page allocations are causing VM writeback.
-> - * We really don't want to intermingle reads and writes like that.
-> +/**
-> + * page_cache_readahead_limit - Start readahead beyond a file's i_size.
-
-
-Maybe: 
-
-    "Start readahead to a caller-specified end point" ?
-
-(It's only *potentially* beyond files's i_size.)
-
-
-> + * @mapping: File address space.
-> + * @file: This instance of the open file; used for authentication.
-> + * @offset: First page index to read.
-> + * @end_index: The maximum page index to read.
-> + * @nr_to_read: The number of pages to read.
-
-
-How about:
-
-    "The number of pages to read, as long as end_index is not exceeded."
-
-
-> + * @lookahead_size: Where to start the next readahead.
-
-
-Pre-existing, but...it's hard to understand how a size is "where to start".
-Should we rename this arg?
-
-> + *
-> + * This function is for filesystems to call when they want to start
-> + * readahead potentially beyond a file's stated i_size.  If you want
-> + * to start readahead on a normal file, you probably want to call
-> + * page_cache_async_readahead() or page_cache_sync_readahead() instead.
-> + *
-> + * Context: File is referenced by caller.  Mutexes may be held by caller.
-> + * May sleep, but will not reenter filesystem to reclaim memory.
-
-
-In fact, can we say "must not reenter filesystem"? 
-
-
->   */
-> -void __do_page_cache_readahead(struct address_space *mapping,
-> -		struct file *filp, pgoff_t offset, unsigned long nr_to_read,
-> -		unsigned long lookahead_size)
-> +void page_cache_readahead_limit(struct address_space *mapping,
-> +		struct file *file, pgoff_t offset, pgoff_t end_index,
-> +		unsigned long nr_to_read, unsigned long lookahead_size)
->  {
-> -	struct inode *inode = mapping->host;
-> -	unsigned long end_index;	/* The last page we want to read */
->  	LIST_HEAD(page_pool);
->  	unsigned long i;
-> -	loff_t isize = i_size_read(inode);
->  	gfp_t gfp_mask = readahead_gfp_mask(mapping);
->  	bool use_list = mapping->a_ops->readpages;
->  	struct readahead_control rac = {
->  		.mapping = mapping,
-> -		.file = filp,
-> +		.file = file,
->  		._start = offset,
->  		._nr_pages = 0,
->  	};
->  
-> -	if (isize == 0)
-> -		return;
+> +	if (ctx->flags & IORING_SETUP_SQPOLL && wq_has_sleeper(&ctx->sqo_wait))
+> +		wake_up(&ctx->sqo_wait);
+>   }
+>   
+>   static void io_file_put(struct io_submit_state *state)
+> @@ -5011,9 +5014,9 @@ static int io_sq_thread(void *data)
+>   	const struct cred *old_cred;
+>   	mm_segment_t old_fs;
+>   	DEFINE_WAIT(wait);
+> -	unsigned inflight;
+>   	unsigned long timeout;
+> -	int ret;
+> +	int ret = 0;
+> +	bool needs_uring_lock = false;
+>   
+>   	complete(&ctx->completions[1]);
+>   
+> @@ -5021,39 +5024,21 @@ static int io_sq_thread(void *data)
+>   	set_fs(USER_DS);
+>   	old_cred = override_creds(ctx->creds);
+>   
+> -	ret = timeout = inflight = 0;
+> +	if (ctx->flags & IORING_SETUP_IOPOLL)
+> +		needs_uring_lock = true;
+> +	timeout = jiffies + ctx->sq_thread_idle;
+>   	while (!kthread_should_park()) {
+>   		unsigned int to_submit;
+>   
+> -		if (inflight) {
+> +		if (!list_empty(&ctx->poll_list)) {
+>   			unsigned nr_events = 0;
+>   
+> -			if (ctx->flags & IORING_SETUP_IOPOLL) {
+> -				/*
+> -				 * inflight is the count of the maximum possible
+> -				 * entries we submitted, but it can be smaller
+> -				 * if we dropped some of them. If we don't have
+> -				 * poll entries available, then we know that we
+> -				 * have nothing left to poll for. Reset the
+> -				 * inflight count to zero in that case.
+> -				 */
+> -				mutex_lock(&ctx->uring_lock);
+> -				if (!list_empty(&ctx->poll_list))
+> -					__io_iopoll_check(ctx, &nr_events, 0);
+> -				else
+> -					inflight = 0;
+> -				mutex_unlock(&ctx->uring_lock);
+> -			} else {
+> -				/*
+> -				 * Normal IO, just pretend everything completed.
+> -				 * We don't have to poll completions for that.
+> -				 */
+> -				nr_events = inflight;
+> -			}
 > -
-> -	end_index = ((isize - 1) >> PAGE_SHIFT);
-> -
->  	/*
->  	 * Preallocate as many pages as we will need.
->  	 */
-> @@ -225,6 +228,30 @@ void __do_page_cache_readahead(struct address_space *mapping,
->  		read_pages(&rac, &page_pool);
->  	BUG_ON(!list_empty(&page_pool));
->  }
-> +EXPORT_SYMBOL_GPL(page_cache_readahead_limit);
+> -			inflight -= nr_events;
+> -			if (!inflight)
+> +			mutex_lock(&ctx->uring_lock);
+> +			if (!list_empty(&ctx->poll_list))
+> +				__io_iopoll_check(ctx, &nr_events, 0);
+> +			if (list_empty(&ctx->poll_list))
+>   				timeout = jiffies + ctx->sq_thread_idle;
+> +			mutex_unlock(&ctx->uring_lock);
+>   		}
+>   
+>   		to_submit = io_sqring_entries(ctx);
+> @@ -5070,7 +5055,7 @@ static int io_sq_thread(void *data)
+>   			 * more IO, we should wait for the application to
+>   			 * reap events and wake us up.
+>   			 */
+> -			if (inflight ||
+> +			if (!list_empty(&ctx->poll_list) ||
+>   			    (!time_after(jiffies, timeout) && ret != -EBUSY &&
+>   			    !percpu_ref_is_dying(&ctx->refs))) {
+>   				cond_resched();
+> @@ -5089,6 +5074,24 @@ static int io_sq_thread(void *data)
+>   				cur_mm = NULL;
+>   			}
+>   
+> +			/*
+> +			 * While doing polled IO, before going to sleep, we need
+> +			 * to check if there are new reqs added to poll_list, it
+> +			 * is because reqs may have been punted to io worker and
+> +			 * will be added to poll_list later, hence check the
+> +			 * poll_list again, meanwhile we need to hold uring_lock
+> +			 * to do this check, otherwise we may lose wakeup event
+> +			 * in io_iopoll_req_issued().
+> +			 */
+> +			if (needs_uring_lock) {
+> +				mutex_lock(&ctx->uring_lock);
+> +				if (!list_empty(&ctx->poll_list)) {
+> +					mutex_unlock(&ctx->uring_lock);
+> +					cond_resched();
+> +					continue;
+> +				}
+> +			}
 > +
-> +/*
-> + * __do_page_cache_readahead() actually reads a chunk of disk.  It allocates
-> + * the pages first, then submits them for I/O. This avoids the very bad
-> + * behaviour which would occur if page allocations are causing VM writeback.
-> + * We really don't want to intermingle reads and writes like that.
-> + */
-> +void __do_page_cache_readahead(struct address_space *mapping,
-> +		struct file *file, pgoff_t offset, unsigned long nr_to_read,
-> +		unsigned long lookahead_size)
-> +{
-> +	struct inode *inode = mapping->host;
-> +	unsigned long end_index;	/* The last page we want to read */
-> +	loff_t isize = i_size_read(inode);
-> +
-> +	if (isize == 0)
-> +		return;
-> +
-> +	end_index = ((isize - 1) >> PAGE_SHIFT);
-> +
-> +	page_cache_readahead_limit(mapping, file, offset, end_index,
-> +			nr_to_read, lookahead_size);
-> +}
->  
->  /*
->   * Chunk the readahead into 2 megabyte units, so that we don't pin too much
+>   			prepare_to_wait(&ctx->sqo_wait, &wait,
+>   						TASK_INTERRUPTIBLE);
+>   
+> @@ -5101,16 +5104,22 @@ static int io_sq_thread(void *data)
+>   			if (!to_submit || ret == -EBUSY) {
+>   				if (kthread_should_park()) {
+>   					finish_wait(&ctx->sqo_wait, &wait);
+> +					if (needs_uring_lock)
+> +						mutex_unlock(&ctx->uring_lock);
+>   					break;
+>   				}
+>   				if (signal_pending(current))
+>   					flush_signals(current);
+> +				if (needs_uring_lock)
+> +					mutex_unlock(&ctx->uring_lock);
+>   				schedule();
+>   				finish_wait(&ctx->sqo_wait, &wait);
+>   
+>   				ctx->rings->sq_flags &= ~IORING_SQ_NEED_WAKEUP;
+>   				continue;
+>   			}
+> +			if (needs_uring_lock)
+> +				mutex_unlock(&ctx->uring_lock);
+>   			finish_wait(&ctx->sqo_wait, &wait);
+>   
+>   			ctx->rings->sq_flags &= ~IORING_SQ_NEED_WAKEUP;
+> @@ -5119,8 +5128,7 @@ static int io_sq_thread(void *data)
+>   		mutex_lock(&ctx->uring_lock);
+>   		ret = io_submit_sqes(ctx, to_submit, NULL, -1, &cur_mm, true);
+>   		mutex_unlock(&ctx->uring_lock);
+> -		if (ret > 0)
+> -			inflight += ret;
+> +		timeout = jiffies + ctx->sq_thread_idle;
+>   	}
+>   
+>   	set_fs(old_fs);
 > 
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
