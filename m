@@ -2,126 +2,159 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D63163AEA
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 04:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE21C163AF8
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 04:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728326AbgBSDQe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 22:16:34 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:29717 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728323AbgBSDQd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 22:16:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1582082193; x=1613618193;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=E5N/7o6VGZBa7BVMDB3WxPy4rXL39R8UjJoASxTcpwI=;
-  b=D4CHQbjMEvc2gloE9BViuPlyFRg+EyufVvy2YSmCf5G+XePNZy/grwGR
-   RB9qMi134VS9cjA0D5lNT9GcvNzy3twcC2RCd3EvMDmOWg5lzIrd8wa/k
-   UADalIPrS4DWof1RY6cWE/z/it3rSFExg6L5vusDWgZRgvkH3/c0qNtUH
-   U=;
-IronPort-SDR: nPGXDLSlq1mgpB0ur0SHuDd4GWdYk2MTS3/Xd9ybZfESAZUt/hp1VWZzaP4wcIpIfB8EPJ9OGb
- GZDeqCULsGAg==
-X-IronPort-AV: E=Sophos;i="5.70,458,1574121600"; 
-   d="scan'208";a="16987779"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 Feb 2020 03:16:33 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id CF97EA27EF;
-        Wed, 19 Feb 2020 03:16:31 +0000 (UTC)
-Received: from EX13D01UWB004.ant.amazon.com (10.43.161.157) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Wed, 19 Feb 2020 03:16:31 +0000
-Received: from EX13D30UWC001.ant.amazon.com (10.43.162.128) by
- EX13d01UWB004.ant.amazon.com (10.43.161.157) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 19 Feb 2020 03:16:30 +0000
-Received: from EX13D30UWC001.ant.amazon.com ([10.43.162.128]) by
- EX13D30UWC001.ant.amazon.com ([10.43.162.128]) with mapi id 15.00.1367.000;
- Wed, 19 Feb 2020 03:16:30 +0000
-From:   "Jitindar SIngh, Suraj" <surajjs@amazon.com>
-To:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "Singh, Balbir" <sblbir@amazon.com>
-Subject: Re: [PATCH 1/3] ext4: introduce macro sbi_array_rcu_deref() to access
- rcu protected fields
-Thread-Topic: [PATCH 1/3] ext4: introduce macro sbi_array_rcu_deref() to
- access rcu protected fields
-Thread-Index: AQHV5tIfD/jLG261uU+fJ5kjcslyZ6gh2FEA
-Date:   Wed, 19 Feb 2020 03:16:30 +0000
-Message-ID: <6db70858fc2e9792cff585650891f5f9896cf28a.camel@amazon.com>
-References: <20200219030851.2678-1-surajjs@amazon.com>
-         <20200219030851.2678-2-surajjs@amazon.com>
-In-Reply-To: <20200219030851.2678-2-surajjs@amazon.com>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.162.53]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A1C1F5BBF8C56C4B9BAF1FC68098AFDF@amazon.com>
-Content-Transfer-Encoding: base64
+        id S1728323AbgBSDRU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 22:17:20 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10027 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728203AbgBSDRU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 22:17:20 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e4ca89f0000>; Tue, 18 Feb 2020 19:16:47 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 18 Feb 2020 19:17:19 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 18 Feb 2020 19:17:19 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 19 Feb
+ 2020 03:17:19 +0000
+Subject: Re: [PATCH v6 17/19] iomap: Restructure iomap_readpages_actor
+To:     Matthew Wilcox <willy@infradead.org>,
+        <linux-fsdevel@vger.kernel.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-btrfs@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
+        <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <cluster-devel@redhat.com>, <ocfs2-devel@oss.oracle.com>,
+        <linux-xfs@vger.kernel.org>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-31-willy@infradead.org>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <d4803ef9-7a2f-965f-8f0f-c5e15396d892@nvidia.com>
+Date:   Tue, 18 Feb 2020 19:17:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20200217184613.19668-31-willy@infradead.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1582082207; bh=qudh4G4mbAakXyxDC+CEEfYfnwTeUkkYc+c7DnUQ5iw=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=YslRlare92/3kKy2ALdiRw0V4leVlhB+OQ2oTCia+X/cOeEhILWlZgjniE6GIN3l+
+         GrCYIb7qY2r0mt7gmyLFsOrUF1a+I4fEnIhLtzNfT8q1GKHB5igJo/82WfvUBj7rDW
+         UFJv/dlLBUbcosBLSj9TopeTp6oClzjJ1Kpb+8b1fSY0G1eCISE4bKDBcJJtMMI1CT
+         4iBbTKL2IhwyI9qcJsmvCTSjJGJxxS/r9E9pcv0+56/p+lZW3IkcA9kTY2BrcqBJ0d
+         NZhpcuPzYZ+mrkj414zWNzMsUZRQBdbFd4hBeNlv1s5LJX19bnMStWaOU3ItxgSXyZ
+         89tOyTLlKSRuQ==
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-K0NjIHN0YWJsZQ0KKGNvcnJlY3RseSB0aGlzIHRpbWUpDQoNCk9uIFR1ZSwgMjAyMC0wMi0xOCBh
-dCAxOTowOCAtMDgwMCwgU3VyYWogSml0aW5kYXIgU2luZ2ggd3JvdGU6DQo+IFRoZSBzX2dyb3Vw
-X2Rlc2MgZmllbGQgaW4gdGhlIHN1cGVyIGJsb2NrIGluZm8gKHNiaSkgaXMgcHJvdGVjdGVkIGJ5
-DQo+IHJjdSB0bw0KPiBwcmV2ZW50IGFjY2VzcyB0byBhbiBpbnZhbGlkIHBvaW50ZXIgZHVyaW5n
-IG9ubGluZSByZXNpemUgb3BlcmF0aW9ucy4NCj4gVGhlcmUgYXJlIDIgb3RoZXIgYXJyYXlzIGlu
-IHNiaSwgc19ncm91cF9pbmZvIGFuZCBzX2ZsZXhfZ3JvdXBzLA0KPiB3aGljaA0KPiByZXF1aXJl
-IHNpbWlsYXIgcmN1IHByb3RlY3Rpb24gd2hpY2ggaXMgaW50cm9kdWNlZCBpbiB0aGUgc3Vic2Vx
-dWVudA0KPiBwYXRjaGVzLiBJbnRyb2R1Y2UgYSBoZWxwZXIgbWFjcm8gc2JpX2FycmF5X3JjdV9k
-ZXJlZigpIHRvIGJlIHVzZWQgdG8NCj4gcHJvdmlkZSByY3UgcHJvdGVjdGVkIGFjY2VzcyB0byBz
-dWNoIGZpZWxkcy4NCj4gDQo+IEFsc28gdXBkYXRlIHRoZSBjdXJyZW50IHNfZ3JvdXBfZGVzYyBh
-Y2Nlc3Mgc2l0ZSB0byB1c2UgdGhlIG1hY3JvLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogU3VyYWog
-Sml0aW5kYXIgU2luZ2ggPHN1cmFqanNAYW1hem9uLmNvbT4NCkNjOiBzdGFibGVAdmdlci5rZXJu
-ZWwub3JnDQo+IENjOiBzdGFibGVAdmdlci1rZXJuZWwub3JnDQo+IC0tLQ0KPiAgZnMvZXh0NC9i
-YWxsb2MuYyB8IDExICsrKysrLS0tLS0tDQo+ICBmcy9leHQ0L2V4dDQuaCAgIHwgMTcgKysrKysr
-KysrKysrKysrKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKSwgNiBkZWxl
-dGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9mcy9leHQ0L2JhbGxvYy5jIGIvZnMvZXh0NC9i
-YWxsb2MuYw0KPiBpbmRleCA1MzY4YmY2NzMwMGIuLjhmZDBiM2NkYWI0YyAxMDA2NDQNCj4gLS0t
-IGEvZnMvZXh0NC9iYWxsb2MuYw0KPiArKysgYi9mcy9leHQ0L2JhbGxvYy5jDQo+IEBAIC0yODEs
-MTQgKzI4MSwxMyBAQCBzdHJ1Y3QgZXh0NF9ncm91cF9kZXNjICoNCj4gZXh0NF9nZXRfZ3JvdXBf
-ZGVzYyhzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLA0KPiAgDQo+ICAJZ3JvdXBfZGVzYyA9IGJsb2Nr
-X2dyb3VwID4+IEVYVDRfREVTQ19QRVJfQkxPQ0tfQklUUyhzYik7DQo+ICAJb2Zmc2V0ID0gYmxv
-Y2tfZ3JvdXAgJiAoRVhUNF9ERVNDX1BFUl9CTE9DSyhzYikgLSAxKTsNCj4gLQlyY3VfcmVhZF9s
-b2NrKCk7DQo+IC0JYmhfcCA9IHJjdV9kZXJlZmVyZW5jZShzYmktPnNfZ3JvdXBfZGVzYylbZ3Jv
-dXBfZGVzY107DQo+ICsJYmhfcCA9IHNiaV9hcnJheV9yY3VfZGVyZWYoc2JpLCBzX2dyb3VwX2Rl
-c2MsIGdyb3VwX2Rlc2MpOw0KPiAgCS8qDQo+IC0JICogV2UgY2FuIHVubG9jayBoZXJlIHNpbmNl
-IHRoZSBwb2ludGVyIGJlaW5nIGRlcmVmZXJlbmNlZA0KPiB3b24ndCBiZQ0KPiAtCSAqIGRlcmVm
-ZXJlbmNlZCBhZ2Fpbi4gQnkgbG9va2luZyBhdCB0aGUgdXNhZ2UgaW4gYWRkX25ld19nZGIoKQ0K
-PiB0aGUNCj4gLQkgKiB2YWx1ZSBpc24ndCBtb2RpZmllZCwganVzdCB0aGUgcG9pbnRlciwgYW5k
-IHNvIGl0IHJlbWFpbnMNCj4gdmFsaWQuDQo+ICsJICogc2JpX2FycmF5X3JjdV9kZXJlZiByZXR1
-cm5zIHdpdGggcmN1IHVubG9ja2VkLCB0aGlzIGlzIG9rDQo+IHNpbmNlDQo+ICsJICogdGhlIHBv
-aW50ZXIgYmVpbmcgZGVyZWZlcmVuY2VkIHdvbid0IGJlIGRlcmVmZXJlbmNlZCBhZ2Fpbi4NCj4g
-QnkNCj4gKwkgKiBsb29raW5nIGF0IHRoZSB1c2FnZSBpbiBhZGRfbmV3X2dkYigpIHRoZSB2YWx1
-ZSBpc24ndA0KPiBtb2RpZmllZCwNCj4gKwkgKiBqdXN0IHRoZSBwb2ludGVyLCBhbmQgc28gaXQg
-cmVtYWlucyB2YWxpZC4NCj4gIAkgKi8NCj4gLQlyY3VfcmVhZF91bmxvY2soKTsNCj4gIAlpZiAo
-IWJoX3ApIHsNCj4gIAkJZXh0NF9lcnJvcihzYiwgIkdyb3VwIGRlc2NyaXB0b3Igbm90IGxvYWRl
-ZCAtICINCj4gIAkJCSAgICJibG9ja19ncm91cCA9ICV1LCBncm91cF9kZXNjID0gJXUsIGRlc2Mg
-PQ0KPiAldSIsDQo+IGRpZmYgLS1naXQgYS9mcy9leHQ0L2V4dDQuaCBiL2ZzL2V4dDQvZXh0NC5o
-DQo+IGluZGV4IDE0OWVlMGFiNmQ2NC4uMjM2ZmM2NTAwMzQwIDEwMDY0NA0KPiAtLS0gYS9mcy9l
-eHQ0L2V4dDQuaA0KPiArKysgYi9mcy9leHQ0L2V4dDQuaA0KPiBAQCAtMTU3Niw2ICsxNTc2LDIz
-IEBAIHN0YXRpYyBpbmxpbmUgaW50IGV4dDRfdmFsaWRfaW51bShzdHJ1Y3QNCj4gc3VwZXJfYmxv
-Y2sgKnNiLCB1bnNpZ25lZCBsb25nIGlubykNCj4gIAkJIGlubyA8PSBsZTMyX3RvX2NwdShFWFQ0
-X1NCKHNiKS0+c19lcy0NCj4gPnNfaW5vZGVzX2NvdW50KSk7DQo+ICB9DQo+ICANCj4gKy8qDQo+
-ICsgKiBSZXR1cm5zOiBzYmktPmZpZWxkW2luZGV4XQ0KPiArICogVXNlZCB0byBhY2Nlc3MgYW4g
-YXJyYXkgZWxlbWVudCBmcm9tIHRoZSBmb2xsb3dpbmcgc2JpIGZpZWxkcw0KPiB3aGljaCByZXF1
-aXJlDQo+ICsgKiByY3UgcHJvdGVjdGlvbiB0byBhdm9pZCBkZXJlZmVyZW5jaW5nIGFuIGludmFs
-aWQgcG9pbnRlciBkdWUgdG8NCj4gcmVhc3NpZ25tZW50DQo+ICsgKiAtIHNfZ3JvdXBfZGVzYw0K
-PiArICogLSBzX2dyb3VwX2luZm8NCj4gKyAqIC0gc19mbGV4X2dyb3VwDQo+ICsgKi8NCj4gKyNk
-ZWZpbmUgc2JpX2FycmF5X3JjdV9kZXJlZihzYmksIGZpZWxkLCBpbmRleCkJCQkNCj4gCSAgIFwN
-Cj4gKyh7CQkJCQkJCQkJDQo+ICAgIFwNCj4gKwl0eXBlb2YoKigoc2JpKS0+ZmllbGQpKSBfdjsJ
-CQkJCQ0KPiAgICBcDQo+ICsJcmN1X3JlYWRfbG9jaygpOwkJCQkJCSAgIFwNCj4gKwlfdiA9ICgo
-dHlwZW9mKChzYmkpLT5maWVsZCkpcmN1X2RlcmVmZXJlbmNlKChzYmkpLQ0KPiA+ZmllbGQpKVtp
-bmRleF07IFwNCj4gKwlyY3VfcmVhZF91bmxvY2soKTsJCQkJCQkNCj4gICAgXA0KPiArCV92OwkJ
-CQkJCQkJDQo+ICAgIFwNCj4gK30pDQo+ICsNCj4gIC8qDQo+ICAgKiBTaW11bGF0ZV9mYWlsIGNv
-ZGVzDQo+ICAgKi8NCg==
+On 2/17/20 10:46 AM, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> 
+> By putting the 'have we reached the end of the page' condition at the end
+> of the loop instead of the beginning, we can remove the 'submit the last
+> page' code from iomap_readpages().  Also check that iomap_readpage_actor()
+> didn't return 0, which would lead to an endless loop.
+
+
+Also added a new WARN_ON() and BUG(), although I'm wondering about the BUG
+below...
+
+
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  fs/iomap/buffered-io.c | 25 ++++++++++++-------------
+>  1 file changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index cb3511eb152a..44303f370b2d 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -400,15 +400,9 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
+>  		void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct iomap_readpage_ctx *ctx = data;
+> -	loff_t done, ret;
+> +	loff_t ret, done = 0;
+>  
+> -	for (done = 0; done < length; done += ret) {
+
+
+nit: this "for" loop was perfect just the way it was. :) I'd vote here for reverting
+the change to a "while" loop. Because with this change, now the code has to 
+separately initialize "done", separately increment "done", and the beauty of a
+for loop is that the loop init and control is all clearly in one place. For things
+that follow that model (as in this case!), that's a Good Thing.
+
+And I don't see any technical reason (even in the following patch) that requires 
+this change.
+
+
+> -		if (ctx->cur_page && offset_in_page(pos + done) == 0) {
+> -			if (!ctx->cur_page_in_bio)
+> -				unlock_page(ctx->cur_page);
+> -			put_page(ctx->cur_page);
+> -			ctx->cur_page = NULL;
+> -		}
+> +	while (done < length) {
+>  		if (!ctx->cur_page) {
+>  			ctx->cur_page = iomap_next_page(inode, ctx->pages,
+>  					pos, length, &done);
+> @@ -418,6 +412,15 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
+>  		}
+>  		ret = iomap_readpage_actor(inode, pos + done, length - done,
+>  				ctx, iomap, srcmap);
+> +		if (WARN_ON(ret == 0))
+> +			break;
+> +		done += ret;
+> +		if (offset_in_page(pos + done) == 0) {
+> +			if (!ctx->cur_page_in_bio)
+> +				unlock_page(ctx->cur_page);
+> +			put_page(ctx->cur_page);
+> +			ctx->cur_page = NULL;
+> +		}
+>  	}
+>  
+>  	return done;
+> @@ -451,11 +454,7 @@ iomap_readpages(struct address_space *mapping, struct list_head *pages,
+>  done:
+>  	if (ctx.bio)
+>  		submit_bio(ctx.bio);
+> -	if (ctx.cur_page) {
+> -		if (!ctx.cur_page_in_bio)
+> -			unlock_page(ctx.cur_page);
+> -		put_page(ctx.cur_page);
+> -	}
+> +	BUG_ON(ctx.cur_page);
+
+
+Is a full BUG_ON() definitely called for here? Seems like a WARN might suffice...
+
+
+>  
+>  	/*
+>  	 * Check that we didn't lose a page due to the arcance calling
+> 
+
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
