@@ -2,226 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD8C163994
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 02:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B84163A15
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 03:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbgBSBtp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 20:49:45 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:55312 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727686AbgBSBtp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 18 Feb 2020 20:49:45 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04452;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0TqKW12C_1582076981;
-Received: from 30.0.178.92(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TqKW12C_1582076981)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 19 Feb 2020 09:49:41 +0800
-Subject: Re: [PATCH v2] io_uring: fix poll_list race for
- SETUP_IOPOLL|SETUP_SQPOLL
-To:     io-uring@vger.kernel.org
-Cc:     axboe@kernel.dk, joseph.qi@linux.alibaba.com,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-References: <20200218162800.3089-1-xiaoguang.wang@linux.alibaba.com>
-From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Message-ID: <f1809c94-fe71-2bb3-62cc-51389440f1cb@linux.alibaba.com>
-Date:   Wed, 19 Feb 2020 09:49:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726882AbgBSCXC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 21:23:02 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:46908 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726735AbgBSCXB (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 21:23:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AmBYu3mpTxz55oEbZdrXdPhOFuVVUVpBKAkDMjhC+bk=; b=ZnvNzleUFxBP7YT/XJ7y0Rz/bu
+        VkddBEMMXKNPUEPIHNmeV0img3eiMCgmTDLWhnmF0LgRkhumSClEFtJ8h9QNQ1gTWJ7cQ7oYl5y2T
+        LQq1+MXm3VWWly+rUeCiBOlqF7kPYFOalIjZFbqYzu76qbt0PLrQYATKJKLlxP1jWBvgL8vVEl1oK
+        PZK3QLY1XvI1RwzN3cfFLeaib3/PQmj6eNOnYQSQu+wNZ3jLp3NgdPPwpBmDQq/4dju6xWjfr9B1l
+        Je53RqtXvIb3d5xbLSBBBArNi+TgTTRpln+YO9xoRn4KQfP+zLPQhoOJyXxsL0Z4nCcXJHdASLsqc
+        D4fDP3AQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j4F0v-0003R5-2P; Wed, 19 Feb 2020 02:23:01 +0000
+Date:   Tue, 18 Feb 2020 18:23:00 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 09/19] mm: Add page_cache_readahead_limit
+Message-ID: <20200219022300.GJ24185@bombadil.infradead.org>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-16-willy@infradead.org>
+ <1263603d-f446-c447-2eac-697d105fa76c@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20200218162800.3089-1-xiaoguang.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1263603d-f446-c447-2eac-697d105fa76c@nvidia.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-hi,
+On Tue, Feb 18, 2020 at 05:32:31PM -0800, John Hubbard wrote:
+> > +			page_cache_readahead_limit(inode->i_mapping, NULL,
+> > +					index, LONG_MAX, num_ra_pages, 0);
+> 
+> 
+> LONG_MAX seems bold at first, but then again I can't think of anything smaller 
+> that makes any sense, and the previous code didn't have a limit either...OK.
 
-Cc ext4 mail list as well, in case someone runs into the same issue.
+Probably worth looking at Dave's review of this and what we've just
+negotiated on the other subthread ... LONG_MAX is gone.
 
-Regards,
-Xiaoguang Wang
+> I also wondered about the NULL file parameter, and wonder if we're stripping out
+> information that is needed for authentication, given that that's what the newly
+> written kerneldoc says the "file" arg is for. But it seems that if we're this 
+> deep in the fs code's read routines, file system authentication has long since 
+> been addressed.
 
-> After making ext4 support iopoll method:
->    let ext4_file_operations's iopoll method be iomap_dio_iopoll(),
-> we found fio can easily hang in fio_ioring_getevents() with below fio
-> job:
->      rm -f testfile; sync;
->      sudo fio -name=fiotest -filename=testfile -iodepth=128 -thread
-> -rw=write -ioengine=io_uring  -hipri=1 -sqthread_poll=1 -direct=1
-> -bs=4k -size=10G -numjobs=8 -runtime=2000 -group_reporting
-> with IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL enabled.
+The authentication is for network filesystems.  Local filesystems
+generally don't use the 'file' parameter, and since we're going to be
+calling back into the filesystem's own readahead routine, we know it's
+not needed.
+
+> Any actually I don't yet (still working through the patches) see any authentication,
+> so maybe that parameter will turn out to be unnecessary.
 > 
-> There are two issues that results in this hang, one reason is that
-> when IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL are enabled, fio
-> does not use io_uring_enter to get completed events, it relies on
-> kernel io_sq_thread to poll for completed events.
+> Anyway, It's nice to see this factored out into a single routine.
+
+I'm kind of thinking about pushing the rac in the other direction too,
+so page_cache_readahead_unlimited(rac, nr_to_read, lookahead_size).
+
+> > +/**
+> > + * page_cache_readahead_limit - Start readahead beyond a file's i_size.
 > 
-> Another reason is that there is a race: when io_submit_sqes() in
-> io_sq_thread() submits a batch of sqes, variable 'inflight' will
-> record the number of submitted reqs, then io_sq_thread will poll for
-> reqs which have been added to poll_list. But note, if some previous
-> reqs have been punted to io worker, these reqs will won't be in
-> poll_list timely. io_sq_thread() will only poll for a part of previous
-> submitted reqs, and then find poll_list is empty, reset variable
-> 'inflight' to be zero. If app just waits these deferred reqs and does
-> not wake up io_sq_thread again, then hang happens.
 > 
-> For app that entirely relies on io_sq_thread to poll completed requests,
-> let io_iopoll_req_issued() wake up io_sq_thread properly when adding new
-> element to poll_list.
+> Maybe: 
 > 
-> Fixes: 2b2ed9750fc9 ("io_uring: fix bad inflight accounting for SETUP_IOPOLL|SETUP_SQTHREAD")
-> Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+>     "Start readahead to a caller-specified end point" ?
 > 
-> ---
-> V2:
->      simple code cleanups and add necessary comments.
-> ---
->   fs/io_uring.c | 72 ++++++++++++++++++++++++++++-----------------------
->   1 file changed, 40 insertions(+), 32 deletions(-)
+> (It's only *potentially* beyond files's i_size.)
+
+My current tree has:
+ * page_cache_readahead_exceed - Start unchecked readahead.
+
+
+> > + * @mapping: File address space.
+> > + * @file: This instance of the open file; used for authentication.
+> > + * @offset: First page index to read.
+> > + * @end_index: The maximum page index to read.
+> > + * @nr_to_read: The number of pages to read.
 > 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 77f22c3da30f..b6d7c45d0d0d 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -1793,6 +1793,9 @@ static void io_iopoll_req_issued(struct io_kiocb *req)
->   		list_add(&req->list, &ctx->poll_list);
->   	else
->   		list_add_tail(&req->list, &ctx->poll_list);
-> +
-> +	if (ctx->flags & IORING_SETUP_SQPOLL && wq_has_sleeper(&ctx->sqo_wait))
-> +		wake_up(&ctx->sqo_wait);
->   }
->   
->   static void io_file_put(struct io_submit_state *state)
-> @@ -5011,9 +5014,9 @@ static int io_sq_thread(void *data)
->   	const struct cred *old_cred;
->   	mm_segment_t old_fs;
->   	DEFINE_WAIT(wait);
-> -	unsigned inflight;
->   	unsigned long timeout;
-> -	int ret;
-> +	int ret = 0;
-> +	bool needs_uring_lock = false;
->   
->   	complete(&ctx->completions[1]);
->   
-> @@ -5021,39 +5024,21 @@ static int io_sq_thread(void *data)
->   	set_fs(USER_DS);
->   	old_cred = override_creds(ctx->creds);
->   
-> -	ret = timeout = inflight = 0;
-> +	if (ctx->flags & IORING_SETUP_IOPOLL)
-> +		needs_uring_lock = true;
-> +	timeout = jiffies + ctx->sq_thread_idle;
->   	while (!kthread_should_park()) {
->   		unsigned int to_submit;
->   
-> -		if (inflight) {
-> +		if (!list_empty(&ctx->poll_list)) {
->   			unsigned nr_events = 0;
->   
-> -			if (ctx->flags & IORING_SETUP_IOPOLL) {
-> -				/*
-> -				 * inflight is the count of the maximum possible
-> -				 * entries we submitted, but it can be smaller
-> -				 * if we dropped some of them. If we don't have
-> -				 * poll entries available, then we know that we
-> -				 * have nothing left to poll for. Reset the
-> -				 * inflight count to zero in that case.
-> -				 */
-> -				mutex_lock(&ctx->uring_lock);
-> -				if (!list_empty(&ctx->poll_list))
-> -					__io_iopoll_check(ctx, &nr_events, 0);
-> -				else
-> -					inflight = 0;
-> -				mutex_unlock(&ctx->uring_lock);
-> -			} else {
-> -				/*
-> -				 * Normal IO, just pretend everything completed.
-> -				 * We don't have to poll completions for that.
-> -				 */
-> -				nr_events = inflight;
-> -			}
-> -
-> -			inflight -= nr_events;
-> -			if (!inflight)
-> +			mutex_lock(&ctx->uring_lock);
-> +			if (!list_empty(&ctx->poll_list))
-> +				__io_iopoll_check(ctx, &nr_events, 0);
-> +			if (list_empty(&ctx->poll_list))
->   				timeout = jiffies + ctx->sq_thread_idle;
-> +			mutex_unlock(&ctx->uring_lock);
->   		}
->   
->   		to_submit = io_sqring_entries(ctx);
-> @@ -5070,7 +5055,7 @@ static int io_sq_thread(void *data)
->   			 * more IO, we should wait for the application to
->   			 * reap events and wake us up.
->   			 */
-> -			if (inflight ||
-> +			if (!list_empty(&ctx->poll_list) ||
->   			    (!time_after(jiffies, timeout) && ret != -EBUSY &&
->   			    !percpu_ref_is_dying(&ctx->refs))) {
->   				cond_resched();
-> @@ -5089,6 +5074,24 @@ static int io_sq_thread(void *data)
->   				cur_mm = NULL;
->   			}
->   
-> +			/*
-> +			 * While doing polled IO, before going to sleep, we need
-> +			 * to check if there are new reqs added to poll_list, it
-> +			 * is because reqs may have been punted to io worker and
-> +			 * will be added to poll_list later, hence check the
-> +			 * poll_list again, meanwhile we need to hold uring_lock
-> +			 * to do this check, otherwise we may lose wakeup event
-> +			 * in io_iopoll_req_issued().
-> +			 */
-> +			if (needs_uring_lock) {
-> +				mutex_lock(&ctx->uring_lock);
-> +				if (!list_empty(&ctx->poll_list)) {
-> +					mutex_unlock(&ctx->uring_lock);
-> +					cond_resched();
-> +					continue;
-> +				}
-> +			}
-> +
->   			prepare_to_wait(&ctx->sqo_wait, &wait,
->   						TASK_INTERRUPTIBLE);
->   
-> @@ -5101,16 +5104,22 @@ static int io_sq_thread(void *data)
->   			if (!to_submit || ret == -EBUSY) {
->   				if (kthread_should_park()) {
->   					finish_wait(&ctx->sqo_wait, &wait);
-> +					if (needs_uring_lock)
-> +						mutex_unlock(&ctx->uring_lock);
->   					break;
->   				}
->   				if (signal_pending(current))
->   					flush_signals(current);
-> +				if (needs_uring_lock)
-> +					mutex_unlock(&ctx->uring_lock);
->   				schedule();
->   				finish_wait(&ctx->sqo_wait, &wait);
->   
->   				ctx->rings->sq_flags &= ~IORING_SQ_NEED_WAKEUP;
->   				continue;
->   			}
-> +			if (needs_uring_lock)
-> +				mutex_unlock(&ctx->uring_lock);
->   			finish_wait(&ctx->sqo_wait, &wait);
->   
->   			ctx->rings->sq_flags &= ~IORING_SQ_NEED_WAKEUP;
-> @@ -5119,8 +5128,7 @@ static int io_sq_thread(void *data)
->   		mutex_lock(&ctx->uring_lock);
->   		ret = io_submit_sqes(ctx, to_submit, NULL, -1, &cur_mm, true);
->   		mutex_unlock(&ctx->uring_lock);
-> -		if (ret > 0)
-> -			inflight += ret;
-> +		timeout = jiffies + ctx->sq_thread_idle;
->   	}
->   
->   	set_fs(old_fs);
 > 
+> How about:
+> 
+>     "The number of pages to read, as long as end_index is not exceeded."
+
+API change makes this irrelevant ;-)
+
+> > + * @lookahead_size: Where to start the next readahead.
+> 
+> Pre-existing, but...it's hard to understand how a size is "where to start".
+> Should we rename this arg?
+
+It should probably be lookahead_count.
+
+> > + *
+> > + * This function is for filesystems to call when they want to start
+> > + * readahead potentially beyond a file's stated i_size.  If you want
+> > + * to start readahead on a normal file, you probably want to call
+> > + * page_cache_async_readahead() or page_cache_sync_readahead() instead.
+> > + *
+> > + * Context: File is referenced by caller.  Mutexes may be held by caller.
+> > + * May sleep, but will not reenter filesystem to reclaim memory.
+> 
+> In fact, can we say "must not reenter filesystem"? 
+
+I think it depends which side of the API you're looking at which wording
+you prefer ;-)
+
