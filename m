@@ -2,62 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B68961645B8
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 14:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF38164748
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 15:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbgBSNiA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 19 Feb 2020 08:38:00 -0500
-Received: from scm.imp.edu.mx ([132.247.16.103]:21971 "EHLO scm.imp.edu.mx"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727762AbgBSNh7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 19 Feb 2020 08:37:59 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by scm.imp.edu.mx (Postfix) with ESMTP id C909E18AD1C;
-        Wed, 19 Feb 2020 06:11:28 -0600 (CST)
-X-Virus-Scanned: by SpamTitan at imp.edu.mx
-Received: from scm.imp.edu.mx (localhost [127.0.0.1])
-        by scm.imp.edu.mx (Postfix) with ESMTP id 2FB1E18D9F9;
-        Wed, 19 Feb 2020 04:51:47 -0600 (CST)
-Authentication-Results: scm.imp.edu.mx; none
-Received: from imp.edu.mx (unknown [10.249.93.105])
-        by scm.imp.edu.mx (Postfix) with ESMTP id 304AF18D9D5;
-        Wed, 19 Feb 2020 04:51:43 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by imp.edu.mx (Postfix) with ESMTP id 142C6180635F4C;
-        Wed, 19 Feb 2020 04:51:44 -0600 (CST)
-Received: from imp.edu.mx ([127.0.0.1])
-        by localhost (imp.edu.mx [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id drikqDSaXNZ7; Wed, 19 Feb 2020 04:51:44 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by imp.edu.mx (Postfix) with ESMTP id E9078180635F42;
-        Wed, 19 Feb 2020 04:51:43 -0600 (CST)
-X-Virus-Scanned: amavisd-new at imp.edu.mx
-Received: from imp.edu.mx ([127.0.0.1])
-        by localhost (imp.edu.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nlvgsIzZRblX; Wed, 19 Feb 2020 04:51:43 -0600 (CST)
-Received: from [45.147.4.119] (unknown [45.147.4.119])
-        by imp.edu.mx (Postfix) with ESMTPSA id 27589180635F4C;
-        Wed, 19 Feb 2020 04:51:42 -0600 (CST)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1726707AbgBSOlS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Feb 2020 09:41:18 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:42694 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726604AbgBSOlS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Feb 2020 09:41:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8IjL+yb/Cvlwh+xltU0HFRJYWZSYd/0FIacDvgc30so=; b=Eo/FW4XK2MuSbkpKnJbuW9HCuj
+        73f56TSPDRJWs9q1g09/mEtWKWQ18dLecvixOGx9CQrSJtukF5EkaFwD5s1ht+yOHUqESKEvXDwPh
+        0v+9/vEPWpbgPitIQ0XolL/sviBTw/NadpXb0u4CKascGnRG+HiMvDnBy0Jkt6uvI5gFKz3giVYlB
+        Ck/tmLQEiMP713+GIAGDUXFKV2BakBAcoFfN+jeMAlvrKRVftT0bs67UdlA5WD5YSSloWQRhWWsuF
+        MXO0LNm1doYTcnPW+W+SjPVPp2BkpvBSZrMWKMZnHtRlYVoCghmzLJdCT71Da+z4QJbJE1SoGqiJT
+        7R18A8DA==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j4QXN-00044x-SK; Wed, 19 Feb 2020 14:41:17 +0000
+Date:   Wed, 19 Feb 2020 06:41:17 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v6 07/19] mm: Put readahead pages in cache earlier
+Message-ID: <20200219144117.GP24185@bombadil.infradead.org>
+References: <20200217184613.19668-1-willy@infradead.org>
+ <20200217184613.19668-12-willy@infradead.org>
+ <e3671faa-dfb3-ceba-3120-a445b2982a95@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: 19-02-2020
-To:     Recipients <mucios@imp.edu.mx>
-From:   "urs portmann" <mucios@imp.edu.mx>
-Date:   Wed, 19 Feb 2020 21:51:40 +1100
-Reply-To: onube@qq.com
-Message-Id: <20200219105142.27589180635F4C@imp.edu.mx>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e3671faa-dfb3-ceba-3120-a445b2982a95@nvidia.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Guten Morgen,
-                                          19-02-2020
-Wir haben versucht, Sie zu erreichen und haben noch nichts von Ihnen gehört. Haben Sie unsere letzte E-Mail über Ihre S.p.e.n.d.e erhalten? Wenn nicht, melden Sie sich bitte bei uns, um weitere Informationen zu erhalten.
+On Tue, Feb 18, 2020 at 04:01:43PM -0800, John Hubbard wrote:
+> How about this instead? It uses the "for" loop fully and more naturally,
+> and is easier to read. And it does the same thing:
+> 
+> static inline struct page *readahead_page(struct readahead_control *rac)
+> {
+> 	struct page *page;
+> 
+> 	if (!rac->_nr_pages)
+> 		return NULL;
+> 
+> 	page = xa_load(&rac->mapping->i_pages, rac->_start);
+> 	VM_BUG_ON_PAGE(!PageLocked(page), page);
+> 	rac->_batch_count = hpage_nr_pages(page);
+> 
+> 	return page;
+> }
+> 
+> static inline struct page *readahead_next(struct readahead_control *rac)
+> {
+> 	rac->_nr_pages -= rac->_batch_count;
+> 	rac->_start += rac->_batch_count;
+> 
+> 	return readahead_page(rac);
+> }
+> 
+> #define readahead_for_each(rac, page)			\
+> 	for (page = readahead_page(rac); page != NULL;	\
+> 	     page = readahead_page(rac))
 
-Wir warten darauf, von Ihnen zu hören, sobald Sie diese Nachricht erhalten, die Sie bei der weiteren Vorgehensweise unterstützt.
+I'll go you one better ... how about we do this instead:
 
-Mfg
-urs portmann
+static inline struct page *readahead_page(struct readahead_control *rac)
+{
+        struct page *page;
+
+        BUG_ON(rac->_batch_count > rac->_nr_pages);
+        rac->_nr_pages -= rac->_batch_count;
+        rac->_index += rac->_batch_count;
+        rac->_batch_count = 0;
+
+        if (!rac->_nr_pages)
+                return NULL;
+
+        page = xa_load(&rac->mapping->i_pages, rac->_index);
+        VM_BUG_ON_PAGE(!PageLocked(page), page);
+        rac->_batch_count = hpage_nr_pages(page);
+
+        return page;
+}
+
+#define readahead_for_each(rac, page)                                   \
+        while ((page = readahead_page(rac)))
+
+No more readahead_next() to forget to add to filesystems which don't use
+the readahead_for_each() iterator.  Ahem.
