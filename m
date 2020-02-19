@@ -2,126 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BBA164B80
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 18:06:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E3A164DA7
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 19:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgBSRGo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Feb 2020 12:06:44 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:37054 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgBSRGn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Feb 2020 12:06:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6hWL64aU7/cD1s4UTpPss89s1pka8CcWGCJ5BHjUC9M=; b=YD6KASfCXNzBE2g7U8C3OPAIMa
-        RN+ihaDs+TqA1PVmJY/G+571Br5Ulv0XQc9EhsoYwQWJIGDt5eVY3v+7OW0ZDPPydpAvd+XANKK7o
-        Yieli5fHS4G8IkuA6ZGWdtYi3uF69BcBtjkIg1txQfTuEC38FUNQpMva7d6LZIwTpJqOi2eTnjQ26
-        vNRvjsTCftaqhGEu3hEvctNIgYhTUrWaBzOu7hsE+5KmGRNAeS2s5R2DU2EMQh/fz/4XG6YC8Yfkl
-        lb7zA1cZfGKpjcKVeyriFSjz0Jf9srJLBGVWu7kMAFznlMRG+bjJHweFWDFekIpMDNj5yFPnAlDOG
-        rO8cGwug==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j4So6-00016p-If; Wed, 19 Feb 2020 17:06:42 +0000
-Date:   Wed, 19 Feb 2020 09:06:42 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 17/19] iomap: Restructure iomap_readpages_actor
-Message-ID: <20200219170642.GS24185@bombadil.infradead.org>
-References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-31-willy@infradead.org>
- <20200219032900.GE10776@dread.disaster.area>
- <20200219060415.GO24185@bombadil.infradead.org>
- <20200219064005.GL10776@dread.disaster.area>
+        id S1726613AbgBSS3o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Feb 2020 13:29:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726605AbgBSS3o (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 19 Feb 2020 13:29:44 -0500
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 950D920801;
+        Wed, 19 Feb 2020 18:29:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582136983;
+        bh=GM2tZkBx+Ffxja5cfikINLqzNGEaP4EDD/oYC2S2yco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nzj6HjDvSyT9+H7J/j5P3Yz5GU5CYvT/w1oh5klpZYk0zgkNKLByRU0ly1gLAjFZp
+         nIK4rSnqXyXnijvrMpcUAcGWdcuUI6wRhmd+82oj6Y4VfjDYbtKw0Qq/qc6PPkoqZX
+         6GBLIxBBeazAXkphlu4wqppkHIoRgpKn0hm42fq4=
+Date:   Wed, 19 Feb 2020 10:29:42 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH v2] ext4: fix race between writepages and enabling
+ EXT4_EXTENTS_FL
+Message-ID: <20200219182942.GC2312@sol.localdomain>
+References: <20200219053523.87474-1-ebiggers@kernel.org>
+ <20200219104422.GN16121@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200219064005.GL10776@dread.disaster.area>
+In-Reply-To: <20200219104422.GN16121@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 05:40:05PM +1100, Dave Chinner wrote:
-> Ok, that's what the ctx.cur_page_in_bio check is used to detect i.e.
-> if we've got a page that the readahead cursor points at, and we
-> haven't actually added it to a bio, then we can leave it to the
-> read_pages() to unlock and clean up. If it's in a bio, then IO
-> completion will unlock it and so we only have to drop the submission
-> reference and move the readahead cursor forwards so read_pages()
-> doesn't try to unlock this page. i.e:
+On Wed, Feb 19, 2020 at 11:44:22AM +0100, Jan Kara wrote:
+> On Tue 18-02-20 21:35:23, Eric Biggers wrote:
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > If EXT4_EXTENTS_FL is set on an inode while ext4_writepages() is running
+> > on it, the following warning in ext4_add_complete_io() can be hit:
+> > 
+> > WARNING: CPU: 1 PID: 0 at fs/ext4/page-io.c:234 ext4_put_io_end_defer+0xf0/0x120
+> > 
+> > Here's a minimal reproducer (not 100% reliable) (root isn't required):
+> > 
+> >         while true; do
+> >                 sync
+> >         done &
+> >         while true; do
+> >                 rm -f file
+> >                 touch file
+> >                 chattr -e file
+> >                 echo X >> file
+> >                 chattr +e file
+> >         done
+> > 
+> > The problem is that in ext4_writepages(), ext4_should_dioread_nolock()
+> > (which only returns true on extent-based files) is checked once to set
+> > the number of reserved journal credits, and also again later to select
+> > the flags for ext4_map_blocks() and copy the reserved journal handle to
+> > ext4_io_end::handle.  But if EXT4_EXTENTS_FL is being concurrently set,
+> > the first check can see dioread_nolock disabled while the later one can
+> > see it enabled, causing the reserved handle to unexpectedly be NULL.
+> > 
+> > Since changing EXT4_EXTENTS_FL is uncommon, and there may be other races
+> > related to doing so as well, fix this by synchronizing changing
+> > EXT4_EXTENTS_FL with ext4_writepages() via the existing
+> > s_journal_flag_rwsem -- renamed to s_writepages_rwsem.
+> > 
+> > This was originally reported by syzbot without a reproducer at
+> > https://syzkaller.appspot.com/bug?extid=2202a584a00fffd19fbf,
+> > but now that dioread_nolock is the default I also started seeing this
+> > when running syzkaller locally.
+> > 
+> > Reported-by: syzbot+2202a584a00fffd19fbf@syzkaller.appspotmail.com
+> > Fixes: 6b523df4fb5a ("ext4: use transaction reservation for extent conversion in ext4_end_io")
+> > Cc: stable@kernel.org
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > 
-> 	/* clean up partial page submission failures */
-> 	if (ctx.cur_page && ctx.cur_page_in_bio) {
-> 		put_page(ctx.cur_page);
-> 		readahead_next(rac);
-> 	}
+> The patch looks good to me. Just I'd split out the renaming to a separate
+> patch. 
 > 
-> looks to me like it will handle the case of "ret == 0" in the actor
-> function just fine.
 
-Here's what I ended up with:
+Sure, I'll do that.
 
-@@ -400,15 +400,9 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
-                void *data, struct iomap *iomap, struct iomap *srcmap)
- {
-        struct iomap_readpage_ctx *ctx = data;
--       loff_t done, ret;
--
--       for (done = 0; done < length; done += ret) {
--               if (ctx->cur_page && offset_in_page(pos + done) == 0) {
--                       if (!ctx->cur_page_in_bio)
--                               unlock_page(ctx->cur_page);
--                       put_page(ctx->cur_page);
--                       ctx->cur_page = NULL;
--               }
-+       loff_t ret, done = 0;
-+
-+       while (done < length) {
-                if (!ctx->cur_page) {
-                        ctx->cur_page = iomap_next_page(inode, ctx->pages,
-                                        pos, length, &done);
-@@ -418,6 +412,20 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
-                }
-                ret = iomap_readpage_actor(inode, pos + done, length - done,
-                                ctx, iomap, srcmap);
-+               done += ret;
-+
-+               /* Keep working on a partial page */
-+               if (ret && offset_in_page(pos + done))
-+                       continue;
-+
-+               if (!ctx->cur_page_in_bio)
-+                       unlock_page(ctx->cur_page);
-+               put_page(ctx->cur_page);
-+               ctx->cur_page = NULL;
-+
-+               /* Don't loop forever if we made no progress */
-+               if (WARN_ON(!ret))
-+                       break;
-        }
- 
-        return done;
-@@ -451,11 +459,7 @@ iomap_readpages(struct address_space *mapping, struct list_head *pages,
- done:
-        if (ctx.bio)
-                submit_bio(ctx.bio);
--       if (ctx.cur_page) {
--               if (!ctx.cur_page_in_bio)
--                       unlock_page(ctx.cur_page);
--               put_page(ctx.cur_page);
--       }
-+       BUG_ON(ctx.cur_page);
- 
-        /*
-         * Check that we didn't lose a page due to the arcance calling
-
-so we'll WARN if we get a ret == 0 (matching ->readpage), and we'll
-BUG if we ever see a page being leaked out of readpages_actor, which
-is a thing that should never happen and we definitely want to be noisy
-about if it does.
+- Eric
