@@ -2,33 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CE3163AD7
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 04:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC9C163AD5
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 04:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgBSDKh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 22:10:37 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:28837 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728279AbgBSDKg (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 22:10:36 -0500
+        id S1728219AbgBSDK3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 22:10:29 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:23187 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728203AbgBSDK2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 22:10:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1582081836; x=1613617836;
+  t=1582081828; x=1613617828;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=e1oXJfZBSx36T8zyqlO7Ym0sxxdftjyL/oc8QOwGnV8=;
-  b=U8bAmS7gjatXjlRGsD/kgVmJivvWu7sPODohlrIty5DwKIih5kq/TVRz
-   FMKdcF51y2qV1lw6gsq9MTNEGjIPZJg3Fdd1iOIxNO8NrCp18nyutA3zt
-   wkKs8ig7Xeh+QjzpbB9SawY4xnvrnU0Wke45NGogmd5RUcFz8oY9llvLD
-   c=;
-IronPort-SDR: iw7D6vEZjVsgrOJTCP4ICogjQU/2m6YQHtSB6AmgtpK//Y6SfZDwy1AvDJgXeHFGlpe2r5lp5b
- lnmWApqcS0/g==
+  bh=DhMXLWHV7d0ROSCfd/lCm0V7ffWZv48HScuqDT9+n30=;
+  b=p4EHHQoztmHOVq17tJdK3NUqmzuzr56Q1P0QSXTrWRBbaCjGghyoa5vp
+   b8dPuzZw6PKmyjpSvkEe03FYpqERdMmdAURGx8jtmHa8RrfyGs2FePR0e
+   iWl8Cl9Kb1mHrNJtY3FGKzrvUVqb3unkO1kE8cXtTNd43Rt7BBIKfgzoJ
+   E=;
+IronPort-SDR: 5+qfslswfqxx2QKJijJrc0FF/YD8iucDC3YBnqtR0poUqW5sBF5qtHaHn8MC3jPlLsFgmBMDs2
+ Y/3K5vltLOzQ==
 X-IronPort-AV: E=Sophos;i="5.70,458,1574121600"; 
-   d="scan'208";a="16986532"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 19 Feb 2020 03:10:25 +0000
+   d="scan'208";a="17534441"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 19 Feb 2020 03:10:25 +0000
 Received: from EX13MTAUWC001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 61B63A27DF;
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id BA401A2B89;
         Wed, 19 Feb 2020 03:10:23 +0000 (UTC)
 Received: from EX13D30UWC001.ant.amazon.com (10.43.162.128) by
  EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
@@ -40,10 +40,10 @@ From:   Suraj Jitindar Singh <surajjs@amazon.com>
 To:     <linux-ext4@vger.kernel.org>
 CC:     <tytso@mit.edu>, <sblbir@amazon.com>, <sjitindarsingh@gmail.com>,
         "Suraj Jitindar Singh" <surajjs@amazon.com>,
-        <stable@vger-kernel.org>
-Subject: [PATCH 1/3] ext4: introduce macro sbi_array_rcu_deref() to access rcu protected fields
-Date:   Tue, 18 Feb 2020 19:08:49 -0800
-Message-ID: <20200219030851.2678-2-surajjs@amazon.com>
+        <stable@vger.kernel.org>
+Subject: [PATCH 2/3] ext4: fix potential race between s_group_info online resizing and access
+Date:   Tue, 18 Feb 2020 19:08:50 -0800
+Message-ID: <20200219030851.2678-3-surajjs@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200219030851.2678-1-surajjs@amazon.com>
 References: <20200219030851.2678-1-surajjs@amazon.com>
@@ -57,74 +57,72 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The s_group_desc field in the super block info (sbi) is protected by rcu to
-prevent access to an invalid pointer during online resize operations.
-There are 2 other arrays in sbi, s_group_info and s_flex_groups, which
-require similar rcu protection which is introduced in the subsequent
-patches. Introduce a helper macro sbi_array_rcu_deref() to be used to
-provide rcu protected access to such fields.
+During an online resize an array of pointers to s_group_info gets replaced
+so it can get enlarged. If there is a concurrent access to the array in
+ext4_get_group_info() and this memory has been reused then this can lead to
+an invalid memory access.
 
-Also update the current s_group_desc access site to use the macro.
-
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206443
 Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
-Cc: stable@vger-kernel.org
+Cc: stable@vger.kernel.org
 ---
- fs/ext4/balloc.c | 11 +++++------
- fs/ext4/ext4.h   | 17 +++++++++++++++++
- 2 files changed, 22 insertions(+), 6 deletions(-)
+ fs/ext4/ext4.h    |  6 +++---
+ fs/ext4/mballoc.c | 10 ++++++----
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index 5368bf67300b..8fd0b3cdab4c 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -281,14 +281,13 @@ struct ext4_group_desc * ext4_get_group_desc(struct super_block *sb,
- 
- 	group_desc = block_group >> EXT4_DESC_PER_BLOCK_BITS(sb);
- 	offset = block_group & (EXT4_DESC_PER_BLOCK(sb) - 1);
--	rcu_read_lock();
--	bh_p = rcu_dereference(sbi->s_group_desc)[group_desc];
-+	bh_p = sbi_array_rcu_deref(sbi, s_group_desc, group_desc);
- 	/*
--	 * We can unlock here since the pointer being dereferenced won't be
--	 * dereferenced again. By looking at the usage in add_new_gdb() the
--	 * value isn't modified, just the pointer, and so it remains valid.
-+	 * sbi_array_rcu_deref returns with rcu unlocked, this is ok since
-+	 * the pointer being dereferenced won't be dereferenced again. By
-+	 * looking at the usage in add_new_gdb() the value isn't modified,
-+	 * just the pointer, and so it remains valid.
- 	 */
--	rcu_read_unlock();
- 	if (!bh_p) {
- 		ext4_error(sb, "Group descriptor not loaded - "
- 			   "block_group = %u, group_desc = %u, desc = %u",
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 149ee0ab6d64..236fc6500340 100644
+index 236fc6500340..3f4aaaae7da6 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -1576,6 +1576,23 @@ static inline int ext4_valid_inum(struct super_block *sb, unsigned long ino)
- 		 ino <= le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count));
+@@ -2994,13 +2994,13 @@ static inline
+ struct ext4_group_info *ext4_get_group_info(struct super_block *sb,
+ 					    ext4_group_t group)
+ {
+-	 struct ext4_group_info ***grp_info;
++	 struct ext4_group_info **grp_info;
+ 	 long indexv, indexh;
+ 	 BUG_ON(group >= EXT4_SB(sb)->s_groups_count);
+-	 grp_info = EXT4_SB(sb)->s_group_info;
+ 	 indexv = group >> (EXT4_DESC_PER_BLOCK_BITS(sb));
+ 	 indexh = group & ((EXT4_DESC_PER_BLOCK(sb)) - 1);
+-	 return grp_info[indexv][indexh];
++	 grp_info = sbi_array_rcu_deref(EXT4_SB(sb), s_group_info, indexv);
++	 return grp_info[indexh];
  }
  
-+/*
-+ * Returns: sbi->field[index]
-+ * Used to access an array element from the following sbi fields which require
-+ * rcu protection to avoid dereferencing an invalid pointer due to reassignment
-+ * - s_group_desc
-+ * - s_group_info
-+ * - s_flex_group
-+ */
-+#define sbi_array_rcu_deref(sbi, field, index)				   \
-+({									   \
-+	typeof(*((sbi)->field)) _v;					   \
-+	rcu_read_lock();						   \
-+	_v = ((typeof((sbi)->field))rcu_dereference((sbi)->field))[index]; \
-+	rcu_read_unlock();						   \
-+	_v;								   \
-+})
-+
  /*
-  * Simulate_fail codes
-  */
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index f64838187559..0d9b17afc85f 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2356,7 +2356,7 @@ int ext4_mb_alloc_groupinfo(struct super_block *sb, ext4_group_t ngroups)
+ {
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	unsigned size;
+-	struct ext4_group_info ***new_groupinfo;
++	struct ext4_group_info ***old_groupinfo, ***new_groupinfo;
+ 
+ 	size = (ngroups + EXT4_DESC_PER_BLOCK(sb) - 1) >>
+ 		EXT4_DESC_PER_BLOCK_BITS(sb);
+@@ -2369,13 +2369,15 @@ int ext4_mb_alloc_groupinfo(struct super_block *sb, ext4_group_t ngroups)
+ 		ext4_msg(sb, KERN_ERR, "can't allocate buddy meta group");
+ 		return -ENOMEM;
+ 	}
+-	if (sbi->s_group_info) {
++	old_groupinfo = sbi->s_group_info;
++	if (sbi->s_group_info)
+ 		memcpy(new_groupinfo, sbi->s_group_info,
+ 		       sbi->s_group_info_size * sizeof(*sbi->s_group_info));
+-		kvfree(sbi->s_group_info);
+-	}
+ 	sbi->s_group_info = new_groupinfo;
++	rcu_assign_pointer(sbi->s_group_info, new_groupinfo);
+ 	sbi->s_group_info_size = size / sizeof(*sbi->s_group_info);
++	if (old_groupinfo)
++		ext4_kvfree_array_rcu(old_groupinfo);
+ 	ext4_debug("allocated s_groupinfo array for %d meta_bg's\n", 
+ 		   sbi->s_group_info_size);
+ 	return 0;
 -- 
 2.17.1
 
