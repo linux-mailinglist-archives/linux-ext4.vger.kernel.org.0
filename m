@@ -2,124 +2,141 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B84163A15
-	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 03:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED44163A43
+	for <lists+linux-ext4@lfdr.de>; Wed, 19 Feb 2020 03:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgBSCXC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 18 Feb 2020 21:23:02 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:46908 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726735AbgBSCXB (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 18 Feb 2020 21:23:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AmBYu3mpTxz55oEbZdrXdPhOFuVVUVpBKAkDMjhC+bk=; b=ZnvNzleUFxBP7YT/XJ7y0Rz/bu
-        VkddBEMMXKNPUEPIHNmeV0img3eiMCgmTDLWhnmF0LgRkhumSClEFtJ8h9QNQ1gTWJ7cQ7oYl5y2T
-        LQq1+MXm3VWWly+rUeCiBOlqF7kPYFOalIjZFbqYzu76qbt0PLrQYATKJKLlxP1jWBvgL8vVEl1oK
-        PZK3QLY1XvI1RwzN3cfFLeaib3/PQmj6eNOnYQSQu+wNZ3jLp3NgdPPwpBmDQq/4dju6xWjfr9B1l
-        Je53RqtXvIb3d5xbLSBBBArNi+TgTTRpln+YO9xoRn4KQfP+zLPQhoOJyXxsL0Z4nCcXJHdASLsqc
-        D4fDP3AQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j4F0v-0003R5-2P; Wed, 19 Feb 2020 02:23:01 +0000
-Date:   Tue, 18 Feb 2020 18:23:00 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 09/19] mm: Add page_cache_readahead_limit
-Message-ID: <20200219022300.GJ24185@bombadil.infradead.org>
+        id S1727987AbgBSCfp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 18 Feb 2020 21:35:45 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3016 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726768AbgBSCfp (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 18 Feb 2020 21:35:45 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 83358F8D75B7100BDEA5;
+        Wed, 19 Feb 2020 10:35:42 +0800 (CST)
+Received: from dggeme762-chm.china.huawei.com (10.3.19.108) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Wed, 19 Feb 2020 10:35:42 +0800
+Received: from architecture4 (10.160.196.180) by
+ dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1713.5; Wed, 19 Feb 2020 10:35:41 +0800
+Date:   Wed, 19 Feb 2020 10:34:22 +0800
+From:   Gao Xiang <gaoxiang25@huawei.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
+        <linux-erofs@lists.ozlabs.org>, <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <cluster-devel@redhat.com>, <ocfs2-devel@oss.oracle.com>,
+        <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH v6 11/16] erofs: Convert compressed files from readpages
+ to readahead
+Message-ID: <20200219023422.GA83440@architecture4>
 References: <20200217184613.19668-1-willy@infradead.org>
- <20200217184613.19668-16-willy@infradead.org>
- <1263603d-f446-c447-2eac-697d105fa76c@nvidia.com>
+ <20200217184613.19668-20-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1263603d-f446-c447-2eac-697d105fa76c@nvidia.com>
+In-Reply-To: <20200217184613.19668-20-willy@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.160.196.180]
+X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
+ dggeme762-chm.china.huawei.com (10.3.19.108)
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 05:32:31PM -0800, John Hubbard wrote:
-> > +			page_cache_readahead_limit(inode->i_mapping, NULL,
-> > +					index, LONG_MAX, num_ra_pages, 0);
+On Mon, Feb 17, 2020 at 10:46:00AM -0800, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> 
+> Use the new readahead operation in erofs.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
+It looks good to me, although some further optimization exists
+but we could make a straight-forward transform first, and
+I haven't tested the whole series for now...
+Will test it later.
+
+Acked-by: Gao Xiang <gaoxiang25@huawei.com>
+
+Thanks,
+Gao Xiang
+
+> ---
+>  fs/erofs/zdata.c | 29 +++++++++--------------------
+>  1 file changed, 9 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> index 17f45fcb8c5c..7c02015d501d 100644
+> --- a/fs/erofs/zdata.c
+> +++ b/fs/erofs/zdata.c
+> @@ -1303,28 +1303,23 @@ static bool should_decompress_synchronously(struct erofs_sb_info *sbi,
+>  	return nr <= sbi->max_sync_decompress_pages;
+>  }
+>  
+> -static int z_erofs_readpages(struct file *filp, struct address_space *mapping,
+> -			     struct list_head *pages, unsigned int nr_pages)
+> +static void z_erofs_readahead(struct readahead_control *rac)
+>  {
+> -	struct inode *const inode = mapping->host;
+> +	struct inode *const inode = rac->mapping->host;
+>  	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
+>  
+> -	bool sync = should_decompress_synchronously(sbi, nr_pages);
+> +	bool sync = should_decompress_synchronously(sbi, readahead_count(rac));
+>  	struct z_erofs_decompress_frontend f = DECOMPRESS_FRONTEND_INIT(inode);
+> -	gfp_t gfp = mapping_gfp_constraint(mapping, GFP_KERNEL);
+> -	struct page *head = NULL;
+> +	struct page *page, *head = NULL;
+>  	LIST_HEAD(pagepool);
+>  
+> -	trace_erofs_readpages(mapping->host, lru_to_page(pages)->index,
+> -			      nr_pages, false);
+> +	trace_erofs_readpages(inode, readahead_index(rac),
+> +			readahead_count(rac), false);
+>  
+> -	f.headoffset = (erofs_off_t)lru_to_page(pages)->index << PAGE_SHIFT;
+> -
+> -	for (; nr_pages; --nr_pages) {
+> -		struct page *page = lru_to_page(pages);
+> +	f.headoffset = readahead_offset(rac);
+>  
+> +	readahead_for_each(rac, page) {
+>  		prefetchw(&page->flags);
+> -		list_del(&page->lru);
+>  
+>  		/*
+>  		 * A pure asynchronous readahead is indicated if
+> @@ -1333,11 +1328,6 @@ static int z_erofs_readpages(struct file *filp, struct address_space *mapping,
+>  		 */
+>  		sync &= !(PageReadahead(page) && !head);
+>  
+> -		if (add_to_page_cache_lru(page, mapping, page->index, gfp)) {
+> -			list_add(&page->lru, &pagepool);
+> -			continue;
+> -		}
+> -
+>  		set_page_private(page, (unsigned long)head);
+>  		head = page;
+>  	}
+> @@ -1366,11 +1356,10 @@ static int z_erofs_readpages(struct file *filp, struct address_space *mapping,
+>  
+>  	/* clean up the remaining free pages */
+>  	put_pages_list(&pagepool);
+> -	return 0;
+>  }
+>  
+>  const struct address_space_operations z_erofs_aops = {
+>  	.readpage = z_erofs_readpage,
+> -	.readpages = z_erofs_readpages,
+> +	.readahead = z_erofs_readahead,
+>  };
+>  
+> -- 
+> 2.25.0
 > 
 > 
-> LONG_MAX seems bold at first, but then again I can't think of anything smaller 
-> that makes any sense, and the previous code didn't have a limit either...OK.
-
-Probably worth looking at Dave's review of this and what we've just
-negotiated on the other subthread ... LONG_MAX is gone.
-
-> I also wondered about the NULL file parameter, and wonder if we're stripping out
-> information that is needed for authentication, given that that's what the newly
-> written kerneldoc says the "file" arg is for. But it seems that if we're this 
-> deep in the fs code's read routines, file system authentication has long since 
-> been addressed.
-
-The authentication is for network filesystems.  Local filesystems
-generally don't use the 'file' parameter, and since we're going to be
-calling back into the filesystem's own readahead routine, we know it's
-not needed.
-
-> Any actually I don't yet (still working through the patches) see any authentication,
-> so maybe that parameter will turn out to be unnecessary.
-> 
-> Anyway, It's nice to see this factored out into a single routine.
-
-I'm kind of thinking about pushing the rac in the other direction too,
-so page_cache_readahead_unlimited(rac, nr_to_read, lookahead_size).
-
-> > +/**
-> > + * page_cache_readahead_limit - Start readahead beyond a file's i_size.
-> 
-> 
-> Maybe: 
-> 
->     "Start readahead to a caller-specified end point" ?
-> 
-> (It's only *potentially* beyond files's i_size.)
-
-My current tree has:
- * page_cache_readahead_exceed - Start unchecked readahead.
-
-
-> > + * @mapping: File address space.
-> > + * @file: This instance of the open file; used for authentication.
-> > + * @offset: First page index to read.
-> > + * @end_index: The maximum page index to read.
-> > + * @nr_to_read: The number of pages to read.
-> 
-> 
-> How about:
-> 
->     "The number of pages to read, as long as end_index is not exceeded."
-
-API change makes this irrelevant ;-)
-
-> > + * @lookahead_size: Where to start the next readahead.
-> 
-> Pre-existing, but...it's hard to understand how a size is "where to start".
-> Should we rename this arg?
-
-It should probably be lookahead_count.
-
-> > + *
-> > + * This function is for filesystems to call when they want to start
-> > + * readahead potentially beyond a file's stated i_size.  If you want
-> > + * to start readahead on a normal file, you probably want to call
-> > + * page_cache_async_readahead() or page_cache_sync_readahead() instead.
-> > + *
-> > + * Context: File is referenced by caller.  Mutexes may be held by caller.
-> > + * May sleep, but will not reenter filesystem to reclaim memory.
-> 
-> In fact, can we say "must not reenter filesystem"? 
-
-I think it depends which side of the API you're looking at which wording
-you prefer ;-)
-
