@@ -2,211 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDEC1659F3
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 10:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54A9165A5C
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 10:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgBTJPx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Feb 2020 04:15:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33390 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726501AbgBTJPx (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 20 Feb 2020 04:15:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7E558B4B6;
-        Thu, 20 Feb 2020 09:15:50 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6CD081E0AE1; Thu, 20 Feb 2020 10:15:48 +0100 (CET)
-Date:   Thu, 20 Feb 2020 10:15:48 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v3 2/2] ext4: fix race between writepages and enabling
- EXT4_EXTENTS_FL
-Message-ID: <20200220091548.GB13232@quack2.suse.cz>
-References: <20200219183047.47417-1-ebiggers@kernel.org>
- <20200219183047.47417-3-ebiggers@kernel.org>
+        id S1726829AbgBTJmY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Feb 2020 04:42:24 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:10305 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726501AbgBTJmX (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Feb 2020 04:42:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1582191743; x=1613727743;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=M+nyCipJmvciHSc+ZIPSuyMPQeAWQ1q0jyK4A6QbyLM=;
+  b=MxA8YZ6n5WJZNnpXuaFRkbklr7qBXwrG9uYdCZTVfcsUe8u6y0eVeNu4
+   Oz27YpSy3dSogiOOArdVrkuSYVtLopDlJbUGSXJ6vU4tVVrAiYYiRBPQo
+   a/7zmFBuBnJXuIXfGRFWkxI24k5imt1xMSh2VHYdOpBNQaFmHvpiEBayT
+   6WrUDFh9Dj0C1QZPoZtGjY5DVnqPOpQFHbr7YZ4No2Sf+CA+Cl6sWzqhO
+   XxpqShJw+bJgOE4ecg/IYt4jJnM9QP/cYi93fVbd70EErLCbIENyUPKCJ
+   hLe9t2SJlnN/yXfTGYVuevjv8jryhIOAnLvg+3WbHkqHMtPSLHAq/7nE1
+   Q==;
+IronPort-SDR: rf4RZS02dfBh5eg/Ser8Jycy8iQvg+TkSSxAtv5u02Qd6aGnPcTczKHkApuFeUjmaa5Q0D4v/G
+ gX0lLZZLqzaJ2N11xxrUjesOhwiN8ouTd7EFeqblUXEPle5mjwlk7fG4A/QEIkZ73HcNmKtn/Z
+ gnntC3MWr6gkE+g7ayEIr8rHGlToGcK/GSOVSyztHtVHW73tASiB/Y7qk9ILAfg4C8S9iOwFb6
+ aLC/LSjsd8LXVHUAaV+FI9R6RzXyPa4+NTU6ldgPGl5OqVPAubABx9lnaLhotPdOwVx1PiEt6u
+ 1Z8=
+X-IronPort-AV: E=Sophos;i="5.70,463,1574092800"; 
+   d="scan'208";a="130254905"
+Received: from mail-mw2nam10lp2104.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.104])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Feb 2020 17:42:21 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jgSc1LVfCQE13N/I9GVLU5//QU9A9SBcOAG/111XTiYLiA0gBNQ+rJUj7oZyiIjWT0dBwnVbwwibtKbyuVGkyg7KsFeoMgKLXpC2t5BKsBO9D4EXhbhtH2yFdBCgujFBrhKc/3GA8S+fvjsA1dXuKH1jRhsIHP2EdObhEKJd6C6Z1snOL2Y8xMxjFZJmCKB9Y0nQsiMOabrt1cJYDmfCIbh8aOhN24Ce1QgjIU4S/G4zYotpMyZOOq0qrWh3V5yrxg5jNFS+8PJwZjgjqppH8TpzDpYz9fO1Sm6COxTilJGYOQUu4LLcR/XA948TT+D5SCMee+Soi2dorkiqQvEyNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ChgseISPiUi/nxzwkkFQ1T9mWCaGRstOibBBGyDIMoA=;
+ b=iRU3W/MSmFD7bMtT+yBF3gwh8btxRMCFDcDaids8hbwnbBlGeXPTJgvM/AsSPkoAo6VuZpzpoUoA8LCiBSkcWNWaZlTjnjNil0kHAz9O3zfv2mlk5YpcIVAZC8wXnBAAN0zhvSkv1i5iWxhlKNT48zmyRqWzWZxu3vS52mxuIx9DZaRrJHv7bXn/o/ZY2oxeoS4ScX/H01nD06AV0/6nWdD+55KipWWKuOGz6jyt9c0Keu1tsKJkawlyiiJGRe6SOYv70EGLwGiLGLLMO4lZKMgpQvypOKZF2jGKYDCFg1TiVEC52w1dtODhhTKfNyG/OOrDiWifJqf24hUPm9zAmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ChgseISPiUi/nxzwkkFQ1T9mWCaGRstOibBBGyDIMoA=;
+ b=LmPep1/SEnW8o3O23FL4cRjLFHAH3r4N0C/0nJT1EUMsvJ4UnUMx5yvajyJ096aOPjpPb99qoiaNKEpMJLyPr4f+JkSGPO/u9P3mMYTsunSVzBtnP6efqUGGAKGgoojhiwxqq5nMWjMUX+4fIZ7i5ndfD3HHtGD4JykF0OAmBeQ=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com (10.167.139.149) by
+ SN4PR0401MB3712.namprd04.prod.outlook.com (10.167.140.147) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2729.34; Thu, 20 Feb 2020 09:42:19 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::e5f5:84d2:cabc:da32%5]) with mapi id 15.20.2729.032; Thu, 20 Feb 2020
+ 09:42:19 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH v7 14/24] btrfs: Convert from readpages to readahead
+Thread-Topic: [PATCH v7 14/24] btrfs: Convert from readpages to readahead
+Thread-Index: AQHV52gHXOnz3eutsEej0YiVm6PhQQ==
+Date:   Thu, 20 Feb 2020 09:42:19 +0000
+Message-ID: <SN4PR0401MB35987D7B76007B93B1C5CE5E9B130@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-15-willy@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Johannes.Thumshirn@wdc.com; 
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1f9f36ad-9c2b-4615-8f76-08d7b5e92dbc
+x-ms-traffictypediagnostic: SN4PR0401MB3712:
+x-microsoft-antispam-prvs: <SN4PR0401MB371296C64FC8338D311C5EC19B130@SN4PR0401MB3712.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 031996B7EF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(366004)(39860400002)(376002)(136003)(346002)(396003)(189003)(199004)(110136005)(316002)(54906003)(7696005)(71200400001)(81166006)(86362001)(81156014)(9686003)(8936002)(8676002)(55016002)(7416002)(478600001)(6506007)(5660300002)(91956017)(76116006)(52536014)(66556008)(64756008)(66446008)(66946007)(26005)(66476007)(2906002)(186003)(4744005)(53546011)(33656002)(4326008);DIR:OUT;SFP:1102;SCL:1;SRVR:SN4PR0401MB3712;H:SN4PR0401MB3598.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jUs4EXsOJ1h6Mc+meDzlGUyOWASlmGwVcRYbusjWjnYc2N384jN2exjY0BSvFVN0FbrY2HTenQi6UygtEostQlmrd0SQAAIc+uInuE+BWUKNacWm/BEB+H6kMR8IRlR0YJLAKFjSPP0MBUtybF9JS9TKOrSEona/RB9DL3WntLiiqekNqk6BLRFRpG5vk7nKbUDtj9umYVstira3cCP8LCyzU0Huu8qbMYhjogdOcam/WXhBUNpm8gZsCkTtd1+vBlY5iNQ9lJTde0UYlnkuzIch3fxsi/cwtdUY+xKnDy3qiyoUrTq29Pt4gY70yPdOKHv5H1aYjOe/ZaXIqLRGQ/ZdEV1eDkLOgN2VdthJ8MZEMkOt8uPyS0M7mG9uJC0+wHaffPZcYnLWM8FDhnYOwBP7RLfmNgPAtoxsxLIiKlfCzyOjJUevNmnvJudHquy8
+x-ms-exchange-antispam-messagedata: vbv93IQYZbgJP1Z/hVNS1KpHjde+X2GbFSSagnVuEXilWwOZBJ/D3AfJnfwu/zHRERd0cukJswJ4JEgDtj3c7EzoUWFBzGEdzjVjFLKlPOOWx0C4WiG6CDu/hfH6ZouoA7OKc2KGtXg8hiDrQHZ73w==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200219183047.47417-3-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f9f36ad-9c2b-4615-8f76-08d7b5e92dbc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2020 09:42:19.3955
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: j4ODXpF6prvGYEa2v+nxNMmTpJxN8bgfI7Uj2C391EZvB7+MVwN/HINz4ExXRz1C9miRXVR5mYpe3HK7nZvA0+DRHnOHhAuot8u9Iw21FCQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0401MB3712
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 19-02-20 10:30:47, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> If EXT4_EXTENTS_FL is set on an inode while ext4_writepages() is running
-> on it, the following warning in ext4_add_complete_io() can be hit:
-> 
-> WARNING: CPU: 1 PID: 0 at fs/ext4/page-io.c:234 ext4_put_io_end_defer+0xf0/0x120
-> 
-> Here's a minimal reproducer (not 100% reliable) (root isn't required):
-> 
->         while true; do
->                 sync
->         done &
->         while true; do
->                 rm -f file
->                 touch file
->                 chattr -e file
->                 echo X >> file
->                 chattr +e file
->         done
-> 
-> The problem is that in ext4_writepages(), ext4_should_dioread_nolock()
-> (which only returns true on extent-based files) is checked once to set
-> the number of reserved journal credits, and also again later to select
-> the flags for ext4_map_blocks() and copy the reserved journal handle to
-> ext4_io_end::handle.  But if EXT4_EXTENTS_FL is being concurrently set,
-> the first check can see dioread_nolock disabled while the later one can
-> see it enabled, causing the reserved handle to unexpectedly be NULL.
-> 
-> Since changing EXT4_EXTENTS_FL is uncommon, and there may be other races
-> related to doing so as well, fix this by synchronizing changing
-> EXT4_EXTENTS_FL with ext4_writepages() via the existing
-> s_writepages_rwsem (previously called s_journal_flag_rwsem).
-> 
-> This was originally reported by syzbot without a reproducer at
-> https://syzkaller.appspot.com/bug?extid=2202a584a00fffd19fbf,
-> but now that dioread_nolock is the default I also started seeing this
-> when running syzkaller locally.
-> 
-> Reported-by: syzbot+2202a584a00fffd19fbf@syzkaller.appspotmail.com
-> Fixes: 6b523df4fb5a ("ext4: use transaction reservation for extent conversion in ext4_end_io")
-> Cc: stable@kernel.org
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-
-The patch looks good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/ext4.h    |  5 ++++-
->  fs/ext4/migrate.c | 27 +++++++++++++++++++--------
->  2 files changed, 23 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 487a7b430b9dd..0a59006c621a0 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1552,7 +1552,10 @@ struct ext4_sb_info {
->  	struct ratelimit_state s_warning_ratelimit_state;
->  	struct ratelimit_state s_msg_ratelimit_state;
->  
-> -	/* Barrier between changing inodes' journal flags and writepages ops. */
-> +	/*
-> +	 * Barrier between writepages ops and changing any inode's JOURNAL_DATA
-> +	 * or EXTENTS flag.
-> +	 */
->  	struct percpu_rw_semaphore s_writepages_rwsem;
->  	struct dax_device *s_daxdev;
->  #ifdef CONFIG_EXT4_DEBUG
-> diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-> index 89725fa425732..fb6520f371355 100644
-> --- a/fs/ext4/migrate.c
-> +++ b/fs/ext4/migrate.c
-> @@ -407,6 +407,7 @@ static int free_ext_block(handle_t *handle, struct inode *inode)
->  
->  int ext4_ext_migrate(struct inode *inode)
->  {
-> +	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
->  	handle_t *handle;
->  	int retval = 0, i;
->  	__le32 *i_data;
-> @@ -431,6 +432,8 @@ int ext4_ext_migrate(struct inode *inode)
->  		 */
->  		return retval;
->  
-> +	percpu_down_write(&sbi->s_writepages_rwsem);
-> +
->  	/*
->  	 * Worst case we can touch the allocation bitmaps, a bgd
->  	 * block, and a block to link in the orphan list.  We do need
-> @@ -441,7 +444,7 @@ int ext4_ext_migrate(struct inode *inode)
->  
->  	if (IS_ERR(handle)) {
->  		retval = PTR_ERR(handle);
-> -		return retval;
-> +		goto out_unlock;
->  	}
->  	goal = (((inode->i_ino - 1) / EXT4_INODES_PER_GROUP(inode->i_sb)) *
->  		EXT4_INODES_PER_GROUP(inode->i_sb)) + 1;
-> @@ -452,7 +455,7 @@ int ext4_ext_migrate(struct inode *inode)
->  	if (IS_ERR(tmp_inode)) {
->  		retval = PTR_ERR(tmp_inode);
->  		ext4_journal_stop(handle);
-> -		return retval;
-> +		goto out_unlock;
->  	}
->  	i_size_write(tmp_inode, i_size_read(inode));
->  	/*
-> @@ -494,7 +497,7 @@ int ext4_ext_migrate(struct inode *inode)
->  		 */
->  		ext4_orphan_del(NULL, tmp_inode);
->  		retval = PTR_ERR(handle);
-> -		goto out;
-> +		goto out_tmp_inode;
->  	}
->  
->  	ei = EXT4_I(inode);
-> @@ -576,10 +579,11 @@ int ext4_ext_migrate(struct inode *inode)
->  	ext4_ext_tree_init(handle, tmp_inode);
->  out_stop:
->  	ext4_journal_stop(handle);
-> -out:
-> +out_tmp_inode:
->  	unlock_new_inode(tmp_inode);
->  	iput(tmp_inode);
-> -
-> +out_unlock:
-> +	percpu_up_write(&sbi->s_writepages_rwsem);
->  	return retval;
->  }
->  
-> @@ -589,7 +593,8 @@ int ext4_ext_migrate(struct inode *inode)
->  int ext4_ind_migrate(struct inode *inode)
->  {
->  	struct ext4_extent_header	*eh;
-> -	struct ext4_super_block		*es = EXT4_SB(inode->i_sb)->s_es;
-> +	struct ext4_sb_info		*sbi = EXT4_SB(inode->i_sb);
-> +	struct ext4_super_block		*es = sbi->s_es;
->  	struct ext4_inode_info		*ei = EXT4_I(inode);
->  	struct ext4_extent		*ex;
->  	unsigned int			i, len;
-> @@ -613,9 +618,13 @@ int ext4_ind_migrate(struct inode *inode)
->  	if (test_opt(inode->i_sb, DELALLOC))
->  		ext4_alloc_da_blocks(inode);
->  
-> +	percpu_down_write(&sbi->s_writepages_rwsem);
-> +
->  	handle = ext4_journal_start(inode, EXT4_HT_MIGRATE, 1);
-> -	if (IS_ERR(handle))
-> -		return PTR_ERR(handle);
-> +	if (IS_ERR(handle)) {
-> +		ret = PTR_ERR(handle);
-> +		goto out_unlock;
-> +	}
->  
->  	down_write(&EXT4_I(inode)->i_data_sem);
->  	ret = ext4_ext_check_inode(inode);
-> @@ -650,5 +659,7 @@ int ext4_ind_migrate(struct inode *inode)
->  errout:
->  	ext4_journal_stop(handle);
->  	up_write(&EXT4_I(inode)->i_data_sem);
-> +out_unlock:
-> +	percpu_up_write(&sbi->s_writepages_rwsem);
->  	return ret;
->  }
-> -- 
-> 2.25.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+On 19/02/2020 22:03, Matthew Wilcox wrote:=0A=
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>=0A=
+> =0A=
+> Use the new readahead operation in btrfs.  Add a=0A=
+> readahead_for_each_batch() iterator to optimise the loop in the XArray.=
+=0A=
+=0A=
+=0A=
+OK I must admit I haven't followed this series closely, but what =0A=
+happened to said readahead_for_each_batch()?=0A=
+=0A=
+As far as I can see it's now:=0A=
+=0A=
+[...]=0A=
+> +	while ((nr =3D readahead_page_batch(rac, pagepool))) {=0A=
+=0A=
+=0A=
