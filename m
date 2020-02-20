@@ -2,113 +2,169 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CBD166A6F
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 23:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A3B166A75
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 23:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbgBTWjK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Feb 2020 17:39:10 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:49450 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728992AbgBTWjK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Feb 2020 17:39:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PJX15g/idnsbi9mBK4m/qgB4NAR6fjeo4oenehrzb84=; b=tRp/RfyOc8MMAOEnFbjVZPeWaN
-        2KkzEKXiN/S1p09Bqu90S2Z278xQaeJcCcxdgeXrdpytnUBFOLEh/tcVUgBOZ3WDQA1fyr25gzLyH
-        gRM7sCok3nV4KM0JhdGQW17PpL0/Q+08nFcey+vxgYObaAojcT6v9r7vvwC4L45gbM+E1ObajSRbu
-        9fqhh3Le7FzPdJj54Iv5P1uuGStaEN80lg311yLhBq1nMBvGvQ80nBsaseT/97o8elxjyPsMZtK46
-        3NBlICNdJTCPRvVzyFRBHETaOyBq9s1mCrpI3p5mh7mcYzLn6aixyJdO3+xKTmslXOd/sUkUMeqtP
-        kTySNnYQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j4uTN-0006hx-9M; Thu, 20 Feb 2020 22:39:09 +0000
-Date:   Thu, 20 Feb 2020 14:39:09 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     dsterba@suse.cz, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 00/23] Change readahead API
-Message-ID: <20200220223909.GB24185@bombadil.infradead.org>
-References: <20200219210103.32400-1-willy@infradead.org>
- <20200220175400.GB2902@twin.jikos.cz>
+        id S1729109AbgBTWlS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Feb 2020 17:41:18 -0500
+Received: from mga14.intel.com ([192.55.52.115]:4616 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728992AbgBTWlS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 20 Feb 2020 17:41:18 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Feb 2020 14:41:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,466,1574150400"; 
+   d="scan'208";a="229035086"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 20 Feb 2020 14:41:16 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1j4uVP-000H4H-IE; Fri, 21 Feb 2020 06:41:15 +0800
+Date:   Fri, 21 Feb 2020 06:41:05 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Suraj Jitindar Singh <surajjs@amazon.com>
+Cc:     kbuild-all@lists.01.org, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, Balbir Singh <sblbir@amazon.com>
+Subject: [ext4:fix-bz-206443 5/6] fs/ext4/ext4.h:3002:21: sparse: sparse:
+ incompatible types in comparison expression (different address spaces):
+Message-ID: <202002210600.Z8rZrCyX%lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200220175400.GB2902@twin.jikos.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 06:54:00PM +0100, David Sterba wrote:
-> On Wed, Feb 19, 2020 at 01:00:39PM -0800, Matthew Wilcox wrote:
-> > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> > 
-> > This series adds a readahead address_space operation to eventually
-> > replace the readpages operation.  The key difference is that
-> > pages are added to the page cache as they are allocated (and
-> > then looked up by the filesystem) instead of passing them on a
-> > list to the readpages operation and having the filesystem add
-> > them to the page cache.  It's a net reduction in code for each
-> > implementation, more efficient than walking a list, and solves
-> > the direct-write vs buffered-read problem reported by yu kuai at
-> > https://lore.kernel.org/linux-fsdevel/20200116063601.39201-1-yukuai3@huawei.com/
-> > 
-> > The only unconverted filesystems are those which use fscache.
-> > Their conversion is pending Dave Howells' rewrite which will make the
-> > conversion substantially easier.
-> > 
-> > I want to thank the reviewers; Dave Chinner, John Hubbard and Christoph
-> > Hellwig have done a marvellous job of providing constructive criticism.
-> > Eric Biggers pointed out how I'd broken ext4 (which led to a substantial
-> > change).  I've tried to take it all on board, but I may have missed
-> > something simply because you've done such a thorough job.
-> > 
-> > This series can also be found at
-> > http://git.infradead.org/users/willy/linux-dax.git/shortlog/refs/tags/readahead_v7
-> > (I also pushed the readahead_v6 tag there in case anyone wants to diff, and
-> > they're both based on 5.6-rc2 so they're easy to diff)
-> > 
-> > v7:
-> >  - Now passes an xfstests run on ext4!
-> 
-> On btrfs it still chokes on the first test btrfs/001, with the following
-> warning, the test is stuck there.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git fix-bz-206443
+head:   c20bac9bf82cd6560d269aa1e885e036d9e418b3
+commit: 08999c46de7867f694b25689f2432f0861f4d33f [5/6] ext4: fix potential race between s_group_info online resizing and access
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-173-ge0787745-dirty
+        git checkout 08999c46de7867f694b25689f2432f0861f4d33f
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
 
-Thanks.  The warning actually wasn't the problem, but it did need to
-be addressed.  I got a test system up & running with btrfs, and it's
-currently on generic/027 with the following patch:
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 9c782c15f7f7..d23a224d2ad2 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -676,7 +676,7 @@ static inline unsigned int __readahead_batch(struct readahead_control *rac,
- 		struct page **array, unsigned int array_sz)
- {
- 	unsigned int i = 0;
--	XA_STATE(xas, &rac->mapping->i_pages, rac->_index);
-+	XA_STATE(xas, &rac->mapping->i_pages, 0);
- 	struct page *page;
- 
- 	BUG_ON(rac->_batch_count > rac->_nr_pages);
-@@ -684,6 +684,8 @@ static inline unsigned int __readahead_batch(struct readahead_control *rac,
- 	rac->_index += rac->_batch_count;
- 	rac->_batch_count = 0;
- 
-+	xas_set(&xas, rac->_index);
-+	rcu_read_lock();
- 	xas_for_each(&xas, page, rac->_index + rac->_nr_pages - 1) {
- 		VM_BUG_ON_PAGE(!PageLocked(page), page);
- 		VM_BUG_ON_PAGE(PageTail(page), page);
-@@ -702,6 +704,7 @@ static inline unsigned int __readahead_batch(struct readahead_control *rac,
- 		if (i == array_sz)
- 			break;
- 	}
-+	rcu_read_unlock();
- 
- 	return i;
- }
+
+sparse warnings: (new ones prefixed by >>)
+
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+--
+   fs/ext4/balloc.c:284:16: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   fs/ext4/balloc.c:284:16: sparse:    struct buffer_head *[noderef] <asn:4> *
+   fs/ext4/balloc.c:284:16: sparse:    struct buffer_head **
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+--
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+--
+>> fs/ext4/mballoc.c:2377:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/mballoc.c:2377:9: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/mballoc.c:2377:9: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+>> fs/ext4/ext4.h:3002:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info **[noderef] <asn:4> *
+>> fs/ext4/ext4.h:3002:21: sparse:    struct ext4_group_info ***
+
+vim +3002 fs/ext4/ext4.h
+
+  2992	
+  2993	static inline
+  2994	struct ext4_group_info *ext4_get_group_info(struct super_block *sb,
+  2995						    ext4_group_t group)
+  2996	{
+  2997		 struct ext4_group_info **grp_info;
+  2998		 long indexv, indexh;
+  2999		 BUG_ON(group >= EXT4_SB(sb)->s_groups_count);
+  3000		 indexv = group >> (EXT4_DESC_PER_BLOCK_BITS(sb));
+  3001		 indexh = group & ((EXT4_DESC_PER_BLOCK(sb)) - 1);
+> 3002		 grp_info = sbi_array_rcu_deref(EXT4_SB(sb), s_group_info, indexv);
+  3003		 return grp_info[indexh];
+  3004	}
+  3005	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
