@@ -2,83 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 963D216566B
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 05:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 148B3165677
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 06:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727806AbgBTEz1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 19 Feb 2020 23:55:27 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41932 "EHLO
+        id S1725942AbgBTFEk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Feb 2020 00:04:40 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43875 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727576AbgBTEz1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Feb 2020 23:55:27 -0500
+        with ESMTP id S1725811AbgBTFEk (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Feb 2020 00:04:40 -0500
 Received: from callcc.thunk.org (guestnat-104-133-8-109.corp.google.com [104.133.8.109] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01K4tEIg025137
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01K54WZ1027068
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Feb 2020 23:55:15 -0500
+        Thu, 20 Feb 2020 00:04:33 -0500
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 03B064211EF; Wed, 19 Feb 2020 23:55:13 -0500 (EST)
-Date:   Wed, 19 Feb 2020 23:55:13 -0500
+        id E9D5A4211EF; Thu, 20 Feb 2020 00:04:31 -0500 (EST)
+Date:   Thu, 20 Feb 2020 00:04:31 -0500
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Shijie Luo <luoshijie1@huawei.com>
-Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, lutianxiong@huawei.com
-Subject: Re: [PATCH] ext4: add cond_resched() to __ext4_find_entry()
-Message-ID: <20200220045513.GD476845@mit.edu>
-References: <20200215080206.13293-1-luoshijie1@huawei.com>
+To:     Suraj Jitindar Singh <surajjs@amazon.com>
+Cc:     linux-ext4@vger.kernel.org, sblbir@amazon.com,
+        sjitindarsingh@gmail.com, stable@vger-kernel.org
+Subject: Re: [PATCH 1/3] ext4: introduce macro sbi_array_rcu_deref() to
+ access rcu protected fields
+Message-ID: <20200220050431.GE476845@mit.edu>
+References: <20200219030851.2678-1-surajjs@amazon.com>
+ <20200219030851.2678-2-surajjs@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200215080206.13293-1-luoshijie1@huawei.com>
+In-Reply-To: <20200219030851.2678-2-surajjs@amazon.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Feb 15, 2020 at 03:02:06AM -0500, Shijie Luo wrote:
-> We tested a soft lockup problem in linux 4.19 which could also
-> be found in linux 5.x.
+On Tue, Feb 18, 2020 at 07:08:49PM -0800, Suraj Jitindar Singh wrote:
+> The s_group_desc field in the super block info (sbi) is protected by rcu to
+> prevent access to an invalid pointer during online resize operations.
+> There are 2 other arrays in sbi, s_group_info and s_flex_groups, which
+> require similar rcu protection which is introduced in the subsequent
+> patches. Introduce a helper macro sbi_array_rcu_deref() to be used to
+> provide rcu protected access to such fields.
 > 
-> When dir inode takes up a large number of blocks, and if the
-> directory is growing when we are searching, it's possible the
-> restart branch could be called many times, and the do while loop
-> could hold cpu a long time.
+> Also update the current s_group_desc access site to use the macro.
 > 
-> Here is the call trace in linux 4.19.
-> 
-> [  473.756186] Call trace:
-> [  473.756196]  dump_backtrace+0x0/0x198
-> [  473.756199]  show_stack+0x24/0x30
-> [  473.756205]  dump_stack+0xa4/0xcc
-> [  473.756210]  watchdog_timer_fn+0x300/0x3e8
-> [  473.756215]  __hrtimer_run_queues+0x114/0x358
-> [  473.756217]  hrtimer_interrupt+0x104/0x2d8
-> [  473.756222]  arch_timer_handler_virt+0x38/0x58
-> [  473.756226]  handle_percpu_devid_irq+0x90/0x248
-> [  473.756231]  generic_handle_irq+0x34/0x50
-> [  473.756234]  __handle_domain_irq+0x68/0xc0
-> [  473.756236]  gic_handle_irq+0x6c/0x150
-> [  473.756238]  el1_irq+0xb8/0x140
-> [  473.756286]  ext4_es_lookup_extent+0xdc/0x258 [ext4]
-> [  473.756310]  ext4_map_blocks+0x64/0x5c0 [ext4]
-> [  473.756333]  ext4_getblk+0x6c/0x1d0 [ext4]
-> [  473.756356]  ext4_bread_batch+0x7c/0x1f8 [ext4]
-> [  473.756379]  ext4_find_entry+0x124/0x3f8 [ext4]
-> [  473.756402]  ext4_lookup+0x8c/0x258 [ext4]
-> [  473.756407]  __lookup_hash+0x8c/0xe8
-> [  473.756411]  filename_create+0xa0/0x170
-> [  473.756413]  do_mkdirat+0x6c/0x140
-> [  473.756415]  __arm64_sys_mkdirat+0x28/0x38
-> [  473.756419]  el0_svc_common+0x78/0x130
-> [  473.756421]  el0_svc_handler+0x38/0x78
-> [  473.756423]  el0_svc+0x8/0xc
-> [  485.755156] watchdog: BUG: soft lockup - CPU#2 stuck for 22s! [tmp:5149]
-> 
-> Add cond_resched() to avoid soft lockup and to provide a better
-> system responding.
-> 
-> Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+> Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+> Cc: stable@vger-kernel.org
 
-Thanks, applied.
+Thanks, applied with the simplification suggested by Balbir.  Also
+note that I generally use stable@kernel.org instead of
+stable@vger.kernel.org, since that avoids sending excess mail to
+stable@vger.kernel.org mailing list.  (The stable kernel scripts look
+for stable@kernel.org as well as stable@vger.kernel.org.)  I've made
+that change in the version of the patch that I applied.
 
-					- Ted
+	     	       	   	      	  - Ted
