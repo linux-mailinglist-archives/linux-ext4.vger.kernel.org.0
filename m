@@ -2,87 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F5C16620C
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 17:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97306166237
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 17:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgBTQO3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Feb 2020 11:14:29 -0500
-Received: from apollo.dupie.be ([51.15.19.225]:60396 "EHLO apollo.dupie.be"
+        id S1728248AbgBTQUn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Feb 2020 11:20:43 -0500
+Received: from mga07.intel.com ([134.134.136.100]:56648 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726871AbgBTQO3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 20 Feb 2020 11:14:29 -0500
-Received: from [IPv6:2a00:1cf8:1200:3a80:20da:22c2:8761:2] (unknown [IPv6:2a00:1cf8:1200:3a80:20da:22c2:8761:2])
-        by apollo.dupie.be (Postfix) with ESMTPSA id DDB5280ABF3;
-        Thu, 20 Feb 2020 17:14:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dupond.be; s=dkim;
-        t=1582215268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MGl3OdfXA4TS8R0GlkFWlLkZqJmjiROHulSLt+I3tyc=;
-        b=DKaUZQbt0TQUAySGnnjp9J7PpJfwZs/rFrLeLlHFzOHT9iulH2vG6S/BvbDMX7qEPNhY9x
-        KiGtggr+E446h0ICNEH6y26YNOb/+GgvXU+yHwHAQ2W0BX5yP4JIwCSiar34G/Z4enWMjE
-        Guaa2YtSkqie8Oz0R6CIsFwKaPRrRlHApAI5fYCktwWx+F1rf6UucuRDhp5w9TG93RT683
-        7TSgii+GSOeO2BKgkiyH9qUlDspnoTlbbAgMeicj7CHLt4mTpxMA7ae9K+Xb/lkM7p7sAx
-        EB1WRG8XhRNqXTd//kOJaHh/8Eud0AHzcsoEHF0a60J6YxBVNeoOGhw8WSzK0g==
-From:   Jean-Louis Dupond <jean-louis@dupond.be>
-Subject: Re: Filesystem corruption after unreachable storage
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-References: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
- <20200124203725.GH147870@mit.edu>
- <3a7bc899-31d9-51f2-1ea9-b3bef2a98913@dupond.be>
- <20200220155022.GA532518@mit.edu>
-Message-ID: <7376c09c-63e3-488f-fcf8-89c81832ef2d@dupond.be>
-Date:   Thu, 20 Feb 2020 17:14:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727868AbgBTQUm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 20 Feb 2020 11:20:42 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Feb 2020 08:20:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,464,1574150400"; 
+   d="scan'208";a="383183911"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga004.jf.intel.com with ESMTP; 20 Feb 2020 08:20:28 -0800
+Date:   Thu, 20 Feb 2020 08:20:28 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jeff Moyer <jmoyer@redhat.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v3 00/12] Enable per-file/directory DAX operations V3
+Message-ID: <20200220162027.GA20772@iweiny-DESK2.sc.intel.com>
+References: <20200213232923.GC22854@iweiny-DESK2.sc.intel.com>
+ <CAPcyv4hkWoC+xCqicH1DWzmU2DcpY0at_A6HaBsrdLbZ6qzWow@mail.gmail.com>
+ <20200214200607.GA18593@iweiny-DESK2.sc.intel.com>
+ <x4936bcdfso.fsf@segfault.boston.devel.redhat.com>
+ <20200214215759.GA20548@iweiny-DESK2.sc.intel.com>
+ <x49y2t4bz8t.fsf@segfault.boston.devel.redhat.com>
+ <x49tv3sbwu5.fsf@segfault.boston.devel.redhat.com>
+ <20200218023535.GA14509@iweiny-DESK2.sc.intel.com>
+ <x49zhdgasal.fsf@segfault.boston.devel.redhat.com>
+ <20200218235429.GB14509@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200220155022.GA532518@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: nl-BE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200218235429.GB14509@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Tue, Feb 18, 2020 at 03:54:30PM -0800, 'Ira Weiny' wrote:
+> On Tue, Feb 18, 2020 at 09:22:58AM -0500, Jeff Moyer wrote:
+> > Ira Weiny <ira.weiny@intel.com> writes:
+> > > If my disassembly of read_pages is correct it looks like readpage is null which
+> > > makes sense because all files should be IS_DAX() == true due to the mount option...
+> > >
+> > > But tracing code indicates that the patch:
+> > >
+> > > 	fs: remove unneeded IS_DAX() check
+> > >
+> > > ... may be the culprit and the following fix may work...
+> > >
+> > > diff --git a/mm/filemap.c b/mm/filemap.c
+> > > index 3a7863ba51b9..7eaf74a2a39b 100644
+> > > --- a/mm/filemap.c
+> > > +++ b/mm/filemap.c
+> > > @@ -2257,7 +2257,7 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+> > >         if (!count)
+> > >                 goto out; /* skip atime */
+> > >  
+> > > -       if (iocb->ki_flags & IOCB_DIRECT) {
+> > > +       if (iocb->ki_flags & IOCB_DIRECT || IS_DAX(inode)) {
+> > >                 struct file *file = iocb->ki_filp;
+> > >                 struct address_space *mapping = file->f_mapping;
+> > >                 struct inode *inode = mapping->host;
+> > 
+> > Well, you'll have to up-level the inode variable instantiation,
+> > obviously.  That solves this particular issue.
+> 
+> Well...  This seems to be a random issue.  I've had BMC issues with
+> my server most of the day...  But even with this patch I still get the failure
+> in read_pages().  :-/
+> 
+> And I have gotten it to both succeed and fail with qemu...  :-/
 
-On 20/02/2020 16:50, Theodore Y. Ts'o wrote:
-> On Thu, Feb 20, 2020 at 10:08:44AM +0100, Jean-Louis Dupond wrote:
->> dumpe2fs -> see attachment
-> Looking at the dumpe2fs output, it's interesting that it was "clean
-> with errors", without any error information being logged in the
-> superblock.  What version of the kernel are you using?  I'm guessing
-> it's a fairly old one?
-Debian 10 (Buster), with kernel 4.19.67-2+deb10u1
->> Fsck:
->> # e2fsck -fy /dev/mapper/vg01-root
->> e2fsck 1.44.5 (15-Dec-2018)
-> And that's a old version of e2fsck as well.  Is this some kind of
-> stable/enterprise linux distro?
-Debian 10 indeed.
->> Pass 1: Checking inodes, blocks, and sizes
->> Inodes that were part of a corrupted orphan linked list found.  Fix? yes
->>
->> Inode 165708 was part of the orphaned inode list.  FIXED.
-> OK, this and the rest looks like it's relating to a file truncation or
-> deletion at the time of the disconnection.
->
->   > > > On KVM for example there is a unlimited timeout (afaik) until the
->>>> storage is
->>>> back, and the VM just continues running after storage recovery.
->>> Well, you can adjust the SCSI timeout, if you want to give that a try....
->> It has some other disadvantages? Or is it quite safe to increment the SCSI
->> timeout?
-> It should be pretty safe.
->
-> Can you reliably reproduce the problem by disconnecting the machine
-> from the SAN?
-Yep, can be reproduced by killing the connection to the SAN while the VM 
-is running, and then after the scsi timeout passed, re-enabled the SAN 
-connection.
-Then reset the machine, and then you need to run an fsck to have it back 
-online.
-> 						- Ted
+... here is the fix.  I made the change in xfs_diflags_to_linux() early on with
+out factoring in the flag logic changes we have agreed upon...
+
+diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+index 62d9f622bad1..d592949ad396 100644
+--- a/fs/xfs/xfs_ioctl.c
++++ b/fs/xfs/xfs_ioctl.c
+@@ -1123,11 +1123,11 @@ xfs_diflags_to_linux(
+                inode->i_flags |= S_NOATIME;
+        else
+                inode->i_flags &= ~S_NOATIME;
+-       if (xflags & FS_XFLAG_DAX)
++
++       if (xfs_inode_enable_dax(ip))
+                inode->i_flags |= S_DAX;
+        else
+                inode->i_flags &= ~S_DAX;
+-
+ }
+
+But the one thing which tripped me up, and concerns me, is we have 2 functions
+which set the inode flags.
+
+xfs_diflags_to_iflags()
+xfs_diflags_to_linux()
+
+xfs_diflags_to_iflags() is geared toward initialization but logically they do
+the same thing.  I see no reason to keep them separate.  Does anyone?
+
+Based on this find, the discussion on behavior in this thread, and the comments
+from Dave I'm reworking the series because the flag check/set functions have
+all changed and I really want to be as clear as possible with both the patches
+and the resulting code.[*]  So v4 should be out today including attempting to
+document what we have discussed here and being as clear as possible on the
+behavior.  :-D
+
+Thanks so much for testing this!
+
+Ira
+
+[*] I will probably throw in a patch to remove xfs_diflags_to_iflags() as I
+really don't see a reason to keep it.
+
