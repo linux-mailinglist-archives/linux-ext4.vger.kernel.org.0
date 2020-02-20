@@ -2,70 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F90165641
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 05:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8A716564F
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 05:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727875AbgBTE0Y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 19 Feb 2020 23:26:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727370AbgBTE0Y (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 19 Feb 2020 23:26:24 -0500
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 206443] general protection fault in ext4 during simultaneous
- online resize and write operations
-Date:   Thu, 20 Feb 2020 04:26:23 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-206443-13602-WKCFLZTcQL@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-206443-13602@https.bugzilla.kernel.org/>
-References: <bug-206443-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1728115AbgBTEea (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 19 Feb 2020 23:34:30 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37402 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727476AbgBTEea (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 19 Feb 2020 23:34:30 -0500
+Received: from callcc.thunk.org (guestnat-104-133-8-109.corp.google.com [104.133.8.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01K4YMgv020808
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 19 Feb 2020 23:34:23 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 1685F4211EF; Wed, 19 Feb 2020 23:34:22 -0500 (EST)
+Date:   Wed, 19 Feb 2020 23:34:22 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     "Jitindar SIngh, Suraj" <surajjs@amazon.com>
+Cc:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200220043422.GB476845@mit.edu>
+References: <20200215233817.GA670792@mit.edu>
+ <6ad43fbad38c8f986f35995ed61f9077abd3b0cc.camel@amazon.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ad43fbad38c8f986f35995ed61f9077abd3b0cc.camel@amazon.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=206443
+On Wed, Feb 19, 2020 at 03:09:07AM +0000, Jitindar SIngh, Suraj wrote:
+> 
+> One comment below where I think you free the wrong object.
 
---- Comment #14 from Theodore Tso (tytso@mit.edu) ---
-Patches to BZ don't have to be perfect, or mailing list ready.  But it would be
-nice if they actually applied (e.g., not be white-space damaged) and if they
-actually compiled (not be missing macro definitions).  :-)
+Yes, I had sent a self-correction about that mistake earlier in this
+thread.
 
-In my experience, bugzilla is good for collecting data when we are trying to
-root-cause a problem.    But it's a lot more work to look at a bug in BZ, since
-we have to download it first.   Where as if it is sent to the mailing list,
-it's a lot easier to review it and to send back comments.
+> With that fixed up:
+> Tested-by: Suraj Jitindar Singh <surajjs@amazon.com>
 
-For that matter, it's fine to send patches to the mailing list that aren't
-ready to be applied.   Using a [PATCH RFC] subject prefix is a good way to make
-that clear; Linus Torvalds has been known to post patches with "Warning!  I
-haven't even tried to compile it yet"; this is just to show the approach I'm
-thinking of.   What's important is to make sure expectations are set for why
-the patch is being sent to the list or being uploaded to BZ.
+Thanks for testing the patch and confirming that it fixes the problem
+you found!
 
-Thanks for your work on this bug!
-
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+							- Ted
