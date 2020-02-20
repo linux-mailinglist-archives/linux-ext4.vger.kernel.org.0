@@ -2,86 +2,63 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE62F1660DE
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 16:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5E816614C
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 16:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgBTPYl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Feb 2020 10:24:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50744 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728367AbgBTPYk (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 20 Feb 2020 10:24:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 23A62AD86;
-        Thu, 20 Feb 2020 15:24:39 +0000 (UTC)
-Date:   Thu, 20 Feb 2020 09:24:35 -0600
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-ext4@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, hch@infradead.org,
-        darrick.wong@oracle.com
-Subject: [PATCH v2] iomap: return partial I/O count on error in
- iomap_dio_bio_actor
-Message-ID: <20200220152435.ynuea43uvm4ewg2w@fiona>
+        id S1728585AbgBTPq6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Feb 2020 10:46:58 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:54610 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728289AbgBTPq6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Feb 2020 10:46:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MIppzgKk98lmK5PhJKrp7GozR9kPFtlmL48ezorCc2Q=; b=DTIPW2wRymIl8Y1SL0vTTAXhAG
+        10hulHiMjv5NYS4LI9tGOaNCrq4nd+C+RwR4aIN8ihR9+aKpx+HZIkoGOHfEnFNMl+INDxyFQoY1G
+        wK0oNdlDakpJIXlH/Rdyi22id259VnTAx5qpjDsXCFgk0c0Ba6PGbYp5ws76T/yfme48FejWp11tc
+        8yWg/4xpZUoZE457jQLbTfn8JIsSyn2s/OpknlYOJ/LtthzT+Hx2+0/nydFNhhkiFTiDCEWzANbN0
+        Rz/BfuH4fYG7aEMpINJKvlDs6q3KxUGykyuRHiYjes3Axb2zc8Jv3qa2R8QeX/MrPq40G9Uzfl2uK
+        7tqs90Ag==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j4o2U-0005BT-1l; Thu, 20 Feb 2020 15:46:58 +0000
+Date:   Thu, 20 Feb 2020 07:46:58 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH v7 14/24] btrfs: Convert from readpages to readahead
+Message-ID: <20200220154658.GA19577@infradead.org>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-15-willy@infradead.org>
+ <SN4PR0401MB35987D7B76007B93B1C5CE5E9B130@SN4PR0401MB3598.namprd04.prod.outlook.com>
+ <20200220134849.GV24185@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200220134849.GV24185@bombadil.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-In case of a block device error, written parameter in iomap_end()
-is zero as opposed to the amount of submitted I/O.
-Filesystems such as btrfs need to account for the I/O in ordered
-extents, even if it resulted in an error. Having (incomplete)
-submitted bytes in written gives the filesystem the amount of data
-which has been submitted before the error occurred, and the
-filesystem code can choose how to use it.
+On Thu, Feb 20, 2020 at 05:48:49AM -0800, Matthew Wilcox wrote:
+> btrfs: Convert from readpages to readahead
+>   
+> Implement the new readahead method in btrfs.  Add a readahead_page_batch()
+> to optimise fetching a batch of pages at once.
 
-The final returned error for iomap_dio_rw() is set by
-iomap_dio_complete().
-
-Partial writes in direct I/O are considered an error. So,
-->iomap_end() using written == 0 as error must be changed
-to written < length. In this case, ext4 is the only user.
-
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- fs/ext4/inode.c      | 2 +-
- fs/iomap/direct-io.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index e60aca791d3f..e50e7414351a 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3475,7 +3475,7 @@ static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
- 	 * the I/O. Any blocks that may have been allocated in preparation for
- 	 * the direct I/O will be reused during buffered I/O.
- 	 */
--	if (flags & (IOMAP_WRITE | IOMAP_DIRECT) && written == 0)
-+	if (flags & (IOMAP_WRITE | IOMAP_DIRECT) && written < length)
- 		return -ENOTBLK;
- 
- 	return 0;
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 41c1e7c20a1f..01865db1bd09 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -264,7 +264,7 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
- 		size_t n;
- 		if (dio->error) {
- 			iov_iter_revert(dio->submit.iter, copied);
--			copied = ret = 0;
-+			ret = 0;
- 			goto out;
- 		}
- 
--- 
-2.25.0
-
-
--- 
-Goldwyn
+Shouldn't this readahead_page_batch heper go into a separate patch so
+that it clearly stands out?
