@@ -2,63 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4AC166406
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 18:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5130A16641E
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 18:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgBTRJ6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Feb 2020 12:09:58 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:41228 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728173AbgBTRJ5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Feb 2020 12:09:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Z5evHnyRyXOCbcZF533zb10Dy1PCcLpiWvdEXqQf2Rw=; b=GsDcOSs+fxjgzm1n8eT9tSajrR
-        gHDFxhUdt0YA7MRWhW/IDERkWNTvNIBpoftja/F4p9WHvuXYQCKMcA8HE7tQ/R0Xe4ciCl6rjHgPZ
-        VTdJ5qya7FlldhQ5nN1RDElvkAPoLvVANGhpb3rVSWct9wywWPAvudjdgR0lZlxJ/Oea8uUvuF3Ui
-        9nDOdTi27q+i1SUL/cxFuqlXny6fm3Fb+yN+xtmFG4mFIzt5OWWZhEhlLjvMQ0RANsMd8fi92PNf/
-        S2aWrJkDu8M4IMj26v48alpS22yFW9mXsSMQ8Oku5vxP2rZNCtCzjByOVRtl8he6iC+fdqDlwVzPM
-        I2IaJGzA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j4pKj-0003TN-72; Thu, 20 Feb 2020 17:09:53 +0000
-Date:   Thu, 20 Feb 2020 09:09:53 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, hch@infradead.org,
-        cmaiolino@redhat.com
-Subject: Re: [RFCv2 0/4] ext4: bmap & fiemap conversion to use iomap
-Message-ID: <20200220170953.GA11221@infradead.org>
-References: <cover.1580121790.git.riteshh@linux.ibm.com>
- <20200130160018.GC3445353@magnolia>
- <20200205124750.AE9DDA404D@d06av23.portsmouth.uk.ibm.com>
- <20200205155733.GH6874@magnolia>
- <20200206052619.D4BBCA405F@b06wcsmtp001.portsmouth.uk.ibm.com>
- <20200206102254.GK14001@quack2.suse.cz>
- <20200220170304.80C3E52051@d06av21.portsmouth.uk.ibm.com>
+        id S1728173AbgBTRPz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Thu, 20 Feb 2020 12:15:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728528AbgBTRPz (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 20 Feb 2020 12:15:55 -0500
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 206613] New: On hitting tab key from terminal against a
+ directory name ending with ':\' doesnot shows files/dir inside it rather
+ shows dir name itself
+Date:   Thu, 20 Feb 2020 17:15:53 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: low
+X-Bugzilla-Who: cubonix@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression
+Message-ID: <bug-206613-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200220170304.80C3E52051@d06av21.portsmouth.uk.ibm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 10:33:03PM +0530, Ritesh Harjani wrote:
-> So I was making some changes along the above lines and I think we can take
-> below approach for filesystem which could determine the
-> _EXTENT_LAST relatively easily and for cases if it cannot
-> as Jan also mentioned we could keep the current behavior as is and let
-> iomap core decide the last disk extent.
+https://bugzilla.kernel.org/show_bug.cgi?id=206613
 
-Well, given that _EXTENT_LAST never worked properly on any file system
-since it was added this actually changes behavior and could break
-existing users.  I'd rather update the documentation to match reality
-rather than writing a lot of code for a feature no one obviously cared
-about for years.
+            Bug ID: 206613
+           Summary: On hitting tab key from terminal against a directory
+                    name ending with ':\' doesnot shows files/dir inside
+                    it rather shows dir name itself
+           Product: File System
+           Version: 2.5
+    Kernel Version: 5.5.0-050500-generic
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: low
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: cubonix@gmail.com
+        Regression: No
+
+Hi All.
+Recently I bought a new laptop for usability purpose of my wife I created some
+folders by Name C:\ D:\ E:\ and mounted  3 partitions (as she is a win user),
+lately I have observed if hit tab againt these 3 dir , it does not exposes
+files/dir which is contained. Which generally doesnot happens.
+
+Log Snippet
+===========
+root@jarvis:~# uname -a
+Linux jarvis 5.5.0-050500-generic #202001262030 SMP Mon Jan 27 01:33:36 UTC
+2020 x86_64 x86_64 x86_64 GNU/Linux
+root@jarvis:~# 
+root@jarvis:~# cat /etc/os-release 
+NAME="Ubuntu"
+VERSION="19.10 (Eoan Ermine)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 19.10"
+VERSION_ID="19.10"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=eoan
+UBUNTU_CODENAME=eoan
+
+When I normally hit tab against any dir it exposes files/dir 
+=============================================================
+root@jarvis:~# cd /
+bin/        cdrom/      etc/        lib/        lib64/      lost+found/ mnt/   
+    proc/       run/        srv/        tmp/        var/
+boot/       dev/        home/       lib32/      libx32/     media/      opt/   
+    root/       sbin/       sys/        usr/        
+root@jarvis:~# 
+
+But when I try to hit tab against any dir ending with :\
+==============================================================
+
+root@jarvis:/home/abhishek/Desktop# ls
+'C:\'  'D:\'  'E:\'
+
+abhishek@jarvis:~/Desktop$ cd 'C:\'^C =========>does not recommends any thing
+abhishek@jarvis:~/Desktop$ cd C:\\ =========>does not recommends any thing
+
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
