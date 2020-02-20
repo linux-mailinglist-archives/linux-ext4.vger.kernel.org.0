@@ -2,77 +2,87 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4FF166196
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 16:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F5C16620C
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Feb 2020 17:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728601AbgBTP52 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 20 Feb 2020 10:57:28 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:57658 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728410AbgBTP52 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 20 Feb 2020 10:57:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+/UHJ6F1pbYDweJDUZAgvqKfayrQBowwGTnz0WdYGiI=; b=otE+N0vtlyX9xN010Sejc78VWm
-        +Z6Nhr8BvmGUNrIO9afuJHhxoLPaunjuFqSB3Vbfkg92cFJ3CGndTAJiSloW8688jbu+LsyPnwsfM
-        7+EZh4a1KpVzbLiwzv7LZrgnYjvExYmxe48vBmhmvCOPmZ7sVJnLeHwyQwYksv3nnnaQLNldoXsYQ
-        u1gQv6uFtIOengP5ajM30qweiLUQ49UDY3r+ygUvyonu17lsTwaYIiH/5oz7IhvQ4fhsYNWJY/9Ww
-        eOATcZg8cPjWf2FcknrxS05+tCQGLf31jvSwLk8Ndl9n4CBxBjuYStE6NyuIbPzCKDkbX2IXV3hgI
-        bWJ8ZdIw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j4oCd-0000Ht-HF; Thu, 20 Feb 2020 15:57:27 +0000
-Date:   Thu, 20 Feb 2020 07:57:27 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH v7 14/24] btrfs: Convert from readpages to readahead
-Message-ID: <20200220155727.GA32232@infradead.org>
-References: <20200219210103.32400-1-willy@infradead.org>
- <20200219210103.32400-15-willy@infradead.org>
- <SN4PR0401MB35987D7B76007B93B1C5CE5E9B130@SN4PR0401MB3598.namprd04.prod.outlook.com>
- <20200220134849.GV24185@bombadil.infradead.org>
- <20200220154658.GA19577@infradead.org>
- <20200220155452.GX24185@bombadil.infradead.org>
+        id S1728123AbgBTQO3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 20 Feb 2020 11:14:29 -0500
+Received: from apollo.dupie.be ([51.15.19.225]:60396 "EHLO apollo.dupie.be"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726871AbgBTQO3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 20 Feb 2020 11:14:29 -0500
+Received: from [IPv6:2a00:1cf8:1200:3a80:20da:22c2:8761:2] (unknown [IPv6:2a00:1cf8:1200:3a80:20da:22c2:8761:2])
+        by apollo.dupie.be (Postfix) with ESMTPSA id DDB5280ABF3;
+        Thu, 20 Feb 2020 17:14:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dupond.be; s=dkim;
+        t=1582215268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MGl3OdfXA4TS8R0GlkFWlLkZqJmjiROHulSLt+I3tyc=;
+        b=DKaUZQbt0TQUAySGnnjp9J7PpJfwZs/rFrLeLlHFzOHT9iulH2vG6S/BvbDMX7qEPNhY9x
+        KiGtggr+E446h0ICNEH6y26YNOb/+GgvXU+yHwHAQ2W0BX5yP4JIwCSiar34G/Z4enWMjE
+        Guaa2YtSkqie8Oz0R6CIsFwKaPRrRlHApAI5fYCktwWx+F1rf6UucuRDhp5w9TG93RT683
+        7TSgii+GSOeO2BKgkiyH9qUlDspnoTlbbAgMeicj7CHLt4mTpxMA7ae9K+Xb/lkM7p7sAx
+        EB1WRG8XhRNqXTd//kOJaHh/8Eud0AHzcsoEHF0a60J6YxBVNeoOGhw8WSzK0g==
+From:   Jean-Louis Dupond <jean-louis@dupond.be>
+Subject: Re: Filesystem corruption after unreachable storage
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+References: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
+ <20200124203725.GH147870@mit.edu>
+ <3a7bc899-31d9-51f2-1ea9-b3bef2a98913@dupond.be>
+ <20200220155022.GA532518@mit.edu>
+Message-ID: <7376c09c-63e3-488f-fcf8-89c81832ef2d@dupond.be>
+Date:   Thu, 20 Feb 2020 17:14:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200220155452.GX24185@bombadil.infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200220155022.GA532518@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: nl-BE
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 07:54:52AM -0800, Matthew Wilcox wrote:
-> On Thu, Feb 20, 2020 at 07:46:58AM -0800, Christoph Hellwig wrote:
-> > On Thu, Feb 20, 2020 at 05:48:49AM -0800, Matthew Wilcox wrote:
-> > > btrfs: Convert from readpages to readahead
-> > >   
-> > > Implement the new readahead method in btrfs.  Add a readahead_page_batch()
-> > > to optimise fetching a batch of pages at once.
-> > 
-> > Shouldn't this readahead_page_batch heper go into a separate patch so
-> > that it clearly stands out?
-> 
-> I'll move it into 'Put readahead pages in cache earlier' for v8 (the
-> same patch where we add readahead_page())
 
-One argument for keeping it in a patch of its own is that btrfs appears
-to be the only user, and Goldwyn has a WIP conversion of btrfs to iomap,
-so it might go away pretty soon and we could just revert the commit.
-
-But this starts to get into really minor details, so I'll shut up now :)
+On 20/02/2020 16:50, Theodore Y. Ts'o wrote:
+> On Thu, Feb 20, 2020 at 10:08:44AM +0100, Jean-Louis Dupond wrote:
+>> dumpe2fs -> see attachment
+> Looking at the dumpe2fs output, it's interesting that it was "clean
+> with errors", without any error information being logged in the
+> superblock.  What version of the kernel are you using?  I'm guessing
+> it's a fairly old one?
+Debian 10 (Buster), with kernel 4.19.67-2+deb10u1
+>> Fsck:
+>> # e2fsck -fy /dev/mapper/vg01-root
+>> e2fsck 1.44.5 (15-Dec-2018)
+> And that's a old version of e2fsck as well.  Is this some kind of
+> stable/enterprise linux distro?
+Debian 10 indeed.
+>> Pass 1: Checking inodes, blocks, and sizes
+>> Inodes that were part of a corrupted orphan linked list found.  Fix? yes
+>>
+>> Inode 165708 was part of the orphaned inode list.  FIXED.
+> OK, this and the rest looks like it's relating to a file truncation or
+> deletion at the time of the disconnection.
+>
+>   > > > On KVM for example there is a unlimited timeout (afaik) until the
+>>>> storage is
+>>>> back, and the VM just continues running after storage recovery.
+>>> Well, you can adjust the SCSI timeout, if you want to give that a try....
+>> It has some other disadvantages? Or is it quite safe to increment the SCSI
+>> timeout?
+> It should be pretty safe.
+>
+> Can you reliably reproduce the problem by disconnecting the machine
+> from the SAN?
+Yep, can be reproduced by killing the connection to the SAN while the VM 
+is running, and then after the scsi timeout passed, re-enabled the SAN 
+connection.
+Then reset the machine, and then you need to run an fsck to have it back 
+online.
+> 						- Ted
