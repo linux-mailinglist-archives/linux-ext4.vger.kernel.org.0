@@ -2,152 +2,230 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2683C167F7C
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 15:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A174A1680D8
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 15:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728544AbgBUOCU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 09:02:20 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:40398 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728177AbgBUOCU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 09:02:20 -0500
-Received: by mail-qk1-f196.google.com with SMTP id b7so1863162qkl.7
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2020 06:02:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=message-id:subject:from:to:cc:date:mime-version
-         :content-transfer-encoding;
-        bh=um7lPv1LBuljpLOpMyjT5ZneVfeO3QkKMUB6cOndnuQ=;
-        b=ChuJyHRXyH3flsI5UN1z87G6eQPboOvCzxauNP6FALrl1bv/3YlwItsUTP82UaeUyg
-         SchWXMpwLkev9rsHZlCkn3i3uqH46JIbrIXUKFxqm59S9Ea09tvizc5EnACUJd2Aoixj
-         YYLSQQc9le19lKvbhs64Bjqo+meXy4IrypkSQO9OVc4gQ7TrLs81b/ExB6wcs5sn+ER2
-         ZZxeWCkzdpDY3dNchlY5WnKsVf7EqhbYIVquxJw1tcQbsXGdgr3LH+vLTLA72h0GGDMj
-         bdMCiGnS4jyriP3/GH4kPrL5wAZUgS45o0styIEPmITWh48dQ86L1ZFOiQZss8gbZhTv
-         NY9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:mime-version
-         :content-transfer-encoding;
-        bh=um7lPv1LBuljpLOpMyjT5ZneVfeO3QkKMUB6cOndnuQ=;
-        b=gEWGyyKf+cwetVBg72zu/iXDMCk62KS+S7j9aNbaSyi+RKZIiUjkA+OzXiWs8/k4M4
-         l1WQUaCbN6gJBwGxdeHkdlWj3l9yL1nN8rZvbQRXtwfxBuVafTiA0LYxsDKQGBPOu+IN
-         D9ZIQ3if3WzadUefhT+V14WcbIFnYUFoHTjDJnpxtjE/aPmvoRi5Vou4ZdrpngRmiENY
-         DqHX9kpnKS4HhFPIgpOO836LGJ7QU/JiHys9WnkzAQcY3XdOxkjaR6wb0BcDsKBhZUHF
-         JmMFgyP+Lf90y7S6+Ql0p2iPx9Losf/jlgFRzroia7mjjQ8UnJb+LjmXjVfEvKlY7x7H
-         esIQ==
-X-Gm-Message-State: APjAAAVYjxk3vTi3gALX+Bm5mN0mX1yE9dbSFmtvdYc8E5WVNY+1ZCDH
-        W/Y4aOjPATEfiMoEjqtWiJepHA==
-X-Google-Smtp-Source: APXvYqyZhz/RTvUFbeSCO+KFDnu274Z34j27ek5TIvQ0LS92vFGB62oipCzVNRKI0BXZwC3yPZWC5Q==
-X-Received: by 2002:a37:40c:: with SMTP id 12mr33826279qke.212.1582293738911;
-        Fri, 21 Feb 2020 06:02:18 -0800 (PST)
-Received: from dhcp-41-57.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
-        by smtp.gmail.com with ESMTPSA id m204sm1586426qke.35.2020.02.21.06.02.17
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Feb 2020 06:02:18 -0800 (PST)
-Message-ID: <1582293736.7365.109.camel@lca.pw>
-Subject: null-ptr-deref due to "ext4: fix potential race between online
- resizing and write operations"
-From:   Qian Cai <cai@lca.pw>
-To:     Suraj Jitindar Singh <surajjs@amazon.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Date:   Fri, 21 Feb 2020 09:02:16 -0500
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.22.6 (3.22.6-10.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729020AbgBUOx0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 09:53:26 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10663 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728754AbgBUOx0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 Feb 2020 09:53:26 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 5C19E587CD157E3E0F28;
+        Fri, 21 Feb 2020 22:53:23 +0800 (CST)
+Received: from [127.0.0.1] (10.133.210.141) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.439.0; Fri, 21 Feb 2020
+ 22:53:14 +0800
+Subject: Re: [PATCH] jbd2: fix ocfs2 corrupt when clearing block group bits
+To:     Jan Kara <jack@suse.cz>, wangyan <wangyan122@huawei.com>
+CC:     <jack@suse.com>, <tytso@mit.edu>, <linux-ext4@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        <stable@vger.kernel.org>, piaojun <piaojun@huawei.com>
+References: <f72a623f-b3f1-381a-d91d-d22a1c83a336@huawei.com>
+ <20200221091808.GA27165@quack2.suse.cz>
+From:   yangerkun <yangerkun@huawei.com>
+Message-ID: <7f839e10-90d6-c9e7-9ff9-5c395513cd13@huawei.com>
+Date:   Fri, 21 Feb 2020 22:53:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200221091808.GA27165@quack2.suse.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.133.210.141]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Reverted the linux-next commit c20bac9bf82c ("ext4: fix potential race between
-s_flex_groups online resizing and access") fixed the crash below (with line
-numbers),
+Hi,
 
-struct flex_groups *flex_group = sbi_array_rcu_deref(EXT4_SB(sb),
-                                                     s_flex_groups, g);
+Thanks for the patch! And according to the describes, I'd wonder does 
+there some scenes exits in ext4 can trigger the similar bug?
 
-[  575.924527][T13183] LTP: starting fanotify13
-[  576.010554][T31835] /dev/zero: Can't open blockdev
-[  576.867392][T31835] EXT4-fs (loop0): mounting ext3 file system using the ext4
-subsystem
-[  576.919604][T31835] EXT4-fs (loop0): mounted filesystem with ordered data
-mode. Opts: (null)
-[  576.920112][T31835] ext3 filesystem being mounted at /tmp/ltp-
-ZMONVGlgwi/o0A0RE/mntpoint supports timestamps until 2038 (0x7fffffff)
-[  576.948501][T31854] BUG: Kernel NULL pointer dereference on read at
-0x00000070
-[  576.948550][T31854] Faulting instruction address: 0xc008000010501bfc
-[  576.948573][T31854] Oops: Kernel access of bad area, sig: 11 [#1]
-[  576.948575][    C2] irq event stamp: 107073312
-[  576.948583][    C2] hardirqs last  enabled at (107073312):
-[<c00000000099a174>] _raw_spin_unlock_irqrestore+0x94/0xd0
-[  576.948595][T31854] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=256
-DEBUG_PAGEALLOC NUMA PowerNV
-[  576.948598][T31854] Modules linked in: brd ext4 crc16 mbcache jbd2 loop
-ip_tables x_tables xfs sd_mod bnx2x ahci libahci mdio libata tg3 libphy
-firmware_class dm_mirror dm_region_hash dm_log dm_mod
-[  576.948614][    C2] hardirqs last disabled at (107073311):
-[<c000000000999e0c>] _raw_spin_lock_irqsave+0x3c/0xa0
-[  576.948646][T31854] CPU: 52 PID: 31854 Comm: fanotify13 Not tainted 5.6.0-
-rc2-next-20200221 #7
-[  576.948689][    C2] softirqs last  enabled at (107073296):
-[<c000000000113b3c>] irq_enter+0x8c/0xc0
-[  576.948693][    C2] softirqs last disabled at (107073297):
-[<c000000000113cdc>] irq_exit+0x16c/0x1d0
-[  576.948754][T31854] NIP:  c008000010501bfc LR: c008000010501d94 CTR:
-c0000000001f1e30
-[  576.948758][T31854] REGS: c00000129f56f700 TRAP: 0300   Not tainted  (5.6.0-
-rc2-next-20200221)
-[  576.948945][T31854] MSR:  9000000000009033 <SF,HV,EE,ME,IR,DR,RI,LE>  CR:
-24004224  XER: 20040000
-[  576.948982][T31854] CFAR: c008000010501d9c DAR: 0000000000000070 DSISR:
-40000000 IRQMASK: 0 
-[  576.948982][T31854] GPR00: c008000010501d94 c00000129f56f990 c0080000105c1600
-0000000000000001 
-[  576.948982][T31854] GPR04: c000000001510808 0000000000000008 0000000005cf0ca2
-fffffffe5ca98558 
-[  576.948982][T31854] GPR08: 0000000000000001 0000000000000070 0000000000000000
-c00800001057b690 
-[  576.948982][T31854] GPR12: c0000000001f1e30 c000001ffffd5600 000000000000000e
-00000000000007ff 
-[  576.948982][T31854] GPR16: c00000129f56fa20 000000000000fff5 0000000000000001
-0000000000001dbc 
-[  576.948982][T31854] GPR20: 0000000000000000 000000000000002e 0000000000000800
-0000000000000020 
-[  576.948982][T31854] GPR24: 000000000000000e 0000000000000000 0000000000000000
-c000000001510808 
-[  576.948982][T31854] GPR28: c000001206b8d000 c0080000105d8227 c00000129f56fa20
-0000000000000001 
-[  576.949200][T31854] NIP [c008000010501bfc] get_orlov_stats+0x114/0x390 [ext4]
-get_orlov_stats at fs/ext4/ialloc.c:373 (discriminator 11)
-[  576.949232][T31854] LR [c008000010501d94] get_orlov_stats+0x2ac/0x390 [ext4]
-[  576.949243][T31854] Call Trace:
-[  576.949260][T31854] [c00000129f56f990] [c008000010501d94]
-get_orlov_stats+0x2ac/0x390 [ext4] (unreliable)
-get_orlov_stats at fs/ext4/ialloc.c:373 (discriminator 11)
-[  576.949301][T31854] [c00000129f56f9f0] [c00800001050231c]
-find_group_orlov+0x4a4/0x6b0 [ext4]
-find_group_orlov at fs/ext4/ialloc.c:467
-[  576.949334][T31854] [c00000129f56fae0] [c0080000105055c8]
-__ext4_new_inode+0x1450/0x23c0 [ext4]
-[  576.949367][T31854] [c00000129f56fc50] [c008000010547f2c]
-ext4_mkdir+0x104/0x590 [ext4]
-[  576.949399][T31854] [c00000129f56fd60] [c0000000004cbc64]
-vfs_mkdir+0x114/0x210
-[  576.949432][T31854] [c00000129f56fda0] [c0000000004d1a70]
-do_mkdirat+0xb0/0x1a0
-[  576.949454][T31854] [c00000129f56fe20] [c00000000000b378]
-system_call+0x5c/0x68
-[  576.949465][T31854] Instruction dump:
-[  576.949473][T31854] 3c620000 e8638730 7f44d378 38630068 48078ccd e8410018
-60000000 60000000 
-[  576.949497][T31854] 60000000 73490001 4182019c 7b091f24 <7f59482a> 4807a0d1
-e8410018 2fa30000 
-[  576.949522][T31854] ---[ end trace de4acb29e0d7791c ]---
-[  577.200573][T31854] 
-[  578.200652][T31854] Kernel panic - not syncing: Fatal exception
-[  579
+Thanks,
+Kun.
+
+On 2020/2/21 17:18, Jan Kara wrote:
+> On Thu 20-02-20 21:46:14, wangyan wrote:
+>> I found a NULL pointer dereference in ocfs2_block_group_clear_bits().
+>> The running environment:
+>> 	kernel version: 4.19
+>> 	A cluster with two nodes, 5 luns mounted on two nodes, and do some
+>> 	file operations like dd/fallocate/truncate/rm on every lun with storage
+>> 	network disconnection.
+>>
+>> The fallocate operation on dm-23-45 caused an null pointer dereference.
+>>
+>> The information of NULL pointer dereference as follows:
+>> 	[577992.878282] JBD2: Error -5 detected when updating journal superblock for dm-23-45.
+>> 	[577992.878290] Aborting journal on device dm-23-45.
+>> 	...
+>> 	[577992.890778] JBD2: Error -5 detected when updating journal superblock for dm-24-46.
+>> 	[577992.890908] __journal_remove_journal_head: freeing b_committed_data
+>> 	[577992.890916] (fallocate,88392,52):ocfs2_extend_trans:474 ERROR: status = -30
+>> 	[577992.890918] __journal_remove_journal_head: freeing b_committed_data
+>> 	[577992.890920] (fallocate,88392,52):ocfs2_rotate_tree_right:2500 ERROR: status = -30
+>> 	[577992.890922] __journal_remove_journal_head: freeing b_committed_data
+>> 	[577992.890924] (fallocate,88392,52):ocfs2_do_insert_extent:4382 ERROR: status = -30
+>> 	[577992.890928] (fallocate,88392,52):ocfs2_insert_extent:4842 ERROR: status = -30
+>> 	[577992.890928] __journal_remove_journal_head: freeing b_committed_data
+>> 	[577992.890930] (fallocate,88392,52):ocfs2_add_clusters_in_btree:4947 ERROR: status = -30
+>> 	[577992.890933] __journal_remove_journal_head: freeing b_committed_data
+>> 	[577992.890939] __journal_remove_journal_head: freeing b_committed_data
+>> 	[577992.890949] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+>> 	[577992.890950] Mem abort info:
+>> 	[577992.890951]   ESR = 0x96000004
+>> 	[577992.890952]   Exception class = DABT (current EL), IL = 32 bits
+>> 	[577992.890952]   SET = 0, FnV = 0
+>> 	[577992.890953]   EA = 0, S1PTW = 0
+>> 	[577992.890954] Data abort info:
+>> 	[577992.890955]   ISV = 0, ISS = 0x00000004
+>> 	[577992.890956]   CM = 0, WnR = 0
+>> 	[577992.890958] user pgtable: 4k pages, 48-bit VAs, pgdp = 00000000f8da07a9
+>> 	[577992.890960] [0000000000000020] pgd=0000000000000000
+>> 	[577992.890964] Internal error: Oops: 96000004 [#1] SMP
+>> 	[577992.890965] Process fallocate (pid: 88392, stack limit = 0x00000000013db2fd)
+>> 	[577992.890968] CPU: 52 PID: 88392 Comm: fallocate Kdump: loaded Tainted: G        W  OE     4.19.36 #1
+>> 	[577992.890969] Hardware name: Huawei TaiShan 2280 V2/BC82AMDD, BIOS 0.98 08/25/2019
+>> 	[577992.890971] pstate: 60400009 (nZCv daif +PAN -UAO)
+>> 	[577992.891054] pc : _ocfs2_free_suballoc_bits+0x63c/0x968 [ocfs2]
+>> 	[577992.891082] lr : _ocfs2_free_suballoc_bits+0x618/0x968 [ocfs2]
+>> 	[577992.891084] sp : ffff0000c8e2b810
+>> 	[577992.891085] x29: ffff0000c8e2b820 x28: 0000000000000000
+>> 	[577992.891087] x27: 00000000000006f3 x26: ffffa07957b02e70
+>> 	[577992.891089] x25: ffff807c59d50000 x24: 00000000000006f2
+>> 	[577992.891091] x23: 0000000000000001 x22: ffff807bd39abc30
+>> 	[577992.891093] x21: ffff0000811d9000 x20: ffffa07535d6a000
+>> 	[577992.891097] x19: ffff000001681638 x18: ffffffffffffffff
+>> 	[577992.891098] x17: 0000000000000000 x16: ffff000080a03df0
+>> 	[577992.891100] x15: ffff0000811d9708 x14: 203d207375746174
+>> 	[577992.891101] x13: 73203a524f525245 x12: 20373439343a6565
+>> 	[577992.891103] x11: 0000000000000038 x10: 0101010101010101
+>> 	[577992.891106] x9 : ffffa07c68a85d70 x8 : 7f7f7f7f7f7f7f7f
+>> 	[577992.891109] x7 : 0000000000000000 x6 : 0000000000000080
+>> 	[577992.891110] x5 : 0000000000000000 x4 : 0000000000000002
+>> 	[577992.891112] x3 : ffff000001713390 x2 : 2ff90f88b1c22f00
+>> 	[577992.891114] x1 : ffff807bd39abc30 x0 : 0000000000000000
+>> 	[577992.891116] Call trace:
+>> 	[577992.891139]  _ocfs2_free_suballoc_bits+0x63c/0x968 [ocfs2]
+>> 	[577992.891162]  _ocfs2_free_clusters+0x100/0x290 [ocfs2]
+>> 	[577992.891185]  ocfs2_free_clusters+0x50/0x68 [ocfs2]
+>> 	[577992.891206]  ocfs2_add_clusters_in_btree+0x198/0x5e0 [ocfs2]
+>> 	[577992.891227]  ocfs2_add_inode_data+0x94/0xc8 [ocfs2]
+>> 	[577992.891248]  ocfs2_extend_allocation+0x1bc/0x7a8 [ocfs2]
+>> 	[577992.891269]  ocfs2_allocate_extents+0x14c/0x338 [ocfs2]
+>> 	[577992.891290]  __ocfs2_change_file_space+0x3f8/0x610 [ocfs2]
+>> 	[577992.891309]  ocfs2_fallocate+0xe4/0x128 [ocfs2]
+>> 	[577992.891316]  vfs_fallocate+0x11c/0x250
+>> 	[577992.891317]  ksys_fallocate+0x54/0x88
+>> 	[577992.891319]  __arm64_sys_fallocate+0x28/0x38
+>> 	[577992.891323]  el0_svc_common+0x78/0x130
+>> 	[577992.891325]  el0_svc_handler+0x38/0x78
+>> 	[577992.891327]  el0_svc+0x8/0xc
+>>
+>> My analysis process as follows:
+>> ocfs2_fallocate
+>>    __ocfs2_change_file_space
+>>      ocfs2_allocate_extents
+>>        ocfs2_extend_allocation
+>>          ocfs2_add_inode_data
+>>            ocfs2_add_clusters_in_btree
+>>              ocfs2_insert_extent
+>>                ocfs2_do_insert_extent
+>>                  ocfs2_rotate_tree_right
+>>                    ocfs2_extend_rotate_transaction
+>>                      ocfs2_extend_trans
+>>                        jbd2_journal_restart
+>>                          jbd2__journal_restart
+>>                            /* handle->h_transaction is NULL,
+>>                             * is_handle_aborted(handle) is true
+>>                             */
+>>                            handle->h_transaction = NULL;
+>>                            start_this_handle
+>>                              return -EROFS;
+>>              ocfs2_free_clusters
+>>                _ocfs2_free_clusters
+>>                  _ocfs2_free_suballoc_bits
+>>                    ocfs2_block_group_clear_bits
+>>                      ocfs2_journal_access_gd
+>>                        __ocfs2_journal_access
+>>                          jbd2_journal_get_undo_access
+>>                            /* I think jbd2_write_access_granted() will
+>>                             * return true, because do_get_write_access()
+>>                             * will return -EROFS.
+>>                             */
+>>                            if (jbd2_write_access_granted(...)) return 0;
+>>                            do_get_write_access
+>>                              /* handle->h_transaction is NULL, it will
+>>                               * return -EROFS here, so do_get_write_access()
+>>                               * was not called.
+>>                               */
+>>                              if (is_handle_aborted(handle)) return -EROFS;
+>>                      /* bh2jh(group_bh) is NULL, caused NULL
+>>                         pointer dereference */
+>>                      undo_bg = (struct ocfs2_group_desc *)
+>>                                  bh2jh(group_bh)->b_committed_data;
+>>
+>> If handle->h_transaction == NULL, then jbd2_write_access_granted()
+>> does not really guarantee that journal_head will stay around,
+>> not even speaking of its b_committed_data. The bh2jh(group_bh)
+>> can be removed after ocfs2_journal_access_gd() and before call
+>> "bh2jh(group_bh)->b_committed_data". So, we should move
+>> is_handle_aborted() check from do_get_write_access() into
+>> jbd2_journal_get_undo_access() and jbd2_journal_get_write_access()
+>> before the call to jbd2_write_access_granted().
+>>
+>> Signed-off-by: Yan Wang <wangyan122@huawei.com>
+>> Reviewed-by: Jun Piao <piaojun@huawei.com>
+> 
+> Thanks! The patch looks good to me. You can add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+> 								Honza
+> 
+>> ---
+>>   fs/jbd2/transaction.c | 8 ++++++--
+>>   1 file changed, 6 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+>> index 2dd848a743ed..d181948c0390 100644
+>> --- a/fs/jbd2/transaction.c
+>> +++ b/fs/jbd2/transaction.c
+>> @@ -936,8 +936,6 @@ do_get_write_access(handle_t *handle, struct journal_head *jh,
+>>   	char *frozen_buffer = NULL;
+>>   	unsigned long start_lock, time_lock;
+>>
+>> -	if (is_handle_aborted(handle))
+>> -		return -EROFS;
+>>   	journal = transaction->t_journal;
+>>
+>>   	jbd_debug(5, "journal_head %p, force_copy %d\n", jh, force_copy);
+>> @@ -1189,6 +1187,9 @@ int jbd2_journal_get_write_access(handle_t *handle, struct buffer_head *bh)
+>>   	struct journal_head *jh;
+>>   	int rc;
+>>
+>> +	if (is_handle_aborted(handle))
+>> +		return -EROFS;
+>> +
+>>   	if (jbd2_write_access_granted(handle, bh, false))
+>>   		return 0;
+>>
+>> @@ -1326,6 +1327,9 @@ int jbd2_journal_get_undo_access(handle_t *handle, struct buffer_head *bh)
+>>   	struct journal_head *jh;
+>>   	char *committed_data = NULL;
+>>
+>> +	if (is_handle_aborted(handle))
+>> +		return -EROFS;
+>> +
+>>   	if (jbd2_write_access_granted(handle, bh, true))
+>>   		return 0;
+>>
+>> -- 
+>> 2.19.1
+>>
+
