@@ -2,332 +2,218 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 099AF166F33
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 06:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9429B16792F
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 10:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgBUFfU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 00:35:20 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59709 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725973AbgBUFfU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 00:35:20 -0500
-Received: from callcc.thunk.org (guestnat-104-133-8-109.corp.google.com [104.133.8.109] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01L5Z8lH022068
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 Feb 2020 00:35:10 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 5987D4211F2; Fri, 21 Feb 2020 00:35:08 -0500 (EST)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     Suraj Jitindar Singh <surajjs@amazon.com>,
-        "Theodore Ts'o" <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 3/3] ext4: fix potential race between s_flex_groups online resizing and access
-Date:   Fri, 21 Feb 2020 00:34:58 -0500
-Message-Id: <20200221053458.730016-4-tytso@mit.edu>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200221053458.730016-1-tytso@mit.edu>
-References: <20200221053458.730016-1-tytso@mit.edu>
+        id S1726884AbgBUJSM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 04:18:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45956 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726244AbgBUJSL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 Feb 2020 04:18:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 765DDB280;
+        Fri, 21 Feb 2020 09:18:09 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 862941E0BAE; Fri, 21 Feb 2020 10:18:08 +0100 (CET)
+Date:   Fri, 21 Feb 2020 10:18:08 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     wangyan <wangyan122@huawei.com>
+Cc:     jack@suse.com, tytso@mit.edu, linux-ext4@vger.kernel.org,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        stable@vger.kernel.org, piaojun <piaojun@huawei.com>
+Subject: Re: [PATCH] jbd2: fix ocfs2 corrupt when clearing block group bits
+Message-ID: <20200221091808.GA27165@quack2.suse.cz>
+References: <f72a623f-b3f1-381a-d91d-d22a1c83a336@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f72a623f-b3f1-381a-d91d-d22a1c83a336@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Suraj Jitindar Singh <surajjs@amazon.com>
+On Thu 20-02-20 21:46:14, wangyan wrote:
+> I found a NULL pointer dereference in ocfs2_block_group_clear_bits().
+> The running environment:
+> 	kernel version: 4.19
+> 	A cluster with two nodes, 5 luns mounted on two nodes, and do some
+> 	file operations like dd/fallocate/truncate/rm on every lun with storage
+> 	network disconnection.
+> 
+> The fallocate operation on dm-23-45 caused an null pointer dereference.
+> 
+> The information of NULL pointer dereference as follows:
+> 	[577992.878282] JBD2: Error -5 detected when updating journal superblock for dm-23-45.
+> 	[577992.878290] Aborting journal on device dm-23-45.
+> 	...
+> 	[577992.890778] JBD2: Error -5 detected when updating journal superblock for dm-24-46.
+> 	[577992.890908] __journal_remove_journal_head: freeing b_committed_data
+> 	[577992.890916] (fallocate,88392,52):ocfs2_extend_trans:474 ERROR: status = -30
+> 	[577992.890918] __journal_remove_journal_head: freeing b_committed_data
+> 	[577992.890920] (fallocate,88392,52):ocfs2_rotate_tree_right:2500 ERROR: status = -30
+> 	[577992.890922] __journal_remove_journal_head: freeing b_committed_data
+> 	[577992.890924] (fallocate,88392,52):ocfs2_do_insert_extent:4382 ERROR: status = -30
+> 	[577992.890928] (fallocate,88392,52):ocfs2_insert_extent:4842 ERROR: status = -30
+> 	[577992.890928] __journal_remove_journal_head: freeing b_committed_data
+> 	[577992.890930] (fallocate,88392,52):ocfs2_add_clusters_in_btree:4947 ERROR: status = -30
+> 	[577992.890933] __journal_remove_journal_head: freeing b_committed_data
+> 	[577992.890939] __journal_remove_journal_head: freeing b_committed_data
+> 	[577992.890949] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+> 	[577992.890950] Mem abort info:
+> 	[577992.890951]   ESR = 0x96000004
+> 	[577992.890952]   Exception class = DABT (current EL), IL = 32 bits
+> 	[577992.890952]   SET = 0, FnV = 0
+> 	[577992.890953]   EA = 0, S1PTW = 0
+> 	[577992.890954] Data abort info:
+> 	[577992.890955]   ISV = 0, ISS = 0x00000004
+> 	[577992.890956]   CM = 0, WnR = 0
+> 	[577992.890958] user pgtable: 4k pages, 48-bit VAs, pgdp = 00000000f8da07a9
+> 	[577992.890960] [0000000000000020] pgd=0000000000000000
+> 	[577992.890964] Internal error: Oops: 96000004 [#1] SMP
+> 	[577992.890965] Process fallocate (pid: 88392, stack limit = 0x00000000013db2fd)
+> 	[577992.890968] CPU: 52 PID: 88392 Comm: fallocate Kdump: loaded Tainted: G        W  OE     4.19.36 #1
+> 	[577992.890969] Hardware name: Huawei TaiShan 2280 V2/BC82AMDD, BIOS 0.98 08/25/2019
+> 	[577992.890971] pstate: 60400009 (nZCv daif +PAN -UAO)
+> 	[577992.891054] pc : _ocfs2_free_suballoc_bits+0x63c/0x968 [ocfs2]
+> 	[577992.891082] lr : _ocfs2_free_suballoc_bits+0x618/0x968 [ocfs2]
+> 	[577992.891084] sp : ffff0000c8e2b810
+> 	[577992.891085] x29: ffff0000c8e2b820 x28: 0000000000000000
+> 	[577992.891087] x27: 00000000000006f3 x26: ffffa07957b02e70
+> 	[577992.891089] x25: ffff807c59d50000 x24: 00000000000006f2
+> 	[577992.891091] x23: 0000000000000001 x22: ffff807bd39abc30
+> 	[577992.891093] x21: ffff0000811d9000 x20: ffffa07535d6a000
+> 	[577992.891097] x19: ffff000001681638 x18: ffffffffffffffff
+> 	[577992.891098] x17: 0000000000000000 x16: ffff000080a03df0
+> 	[577992.891100] x15: ffff0000811d9708 x14: 203d207375746174
+> 	[577992.891101] x13: 73203a524f525245 x12: 20373439343a6565
+> 	[577992.891103] x11: 0000000000000038 x10: 0101010101010101
+> 	[577992.891106] x9 : ffffa07c68a85d70 x8 : 7f7f7f7f7f7f7f7f
+> 	[577992.891109] x7 : 0000000000000000 x6 : 0000000000000080
+> 	[577992.891110] x5 : 0000000000000000 x4 : 0000000000000002
+> 	[577992.891112] x3 : ffff000001713390 x2 : 2ff90f88b1c22f00
+> 	[577992.891114] x1 : ffff807bd39abc30 x0 : 0000000000000000
+> 	[577992.891116] Call trace:
+> 	[577992.891139]  _ocfs2_free_suballoc_bits+0x63c/0x968 [ocfs2]
+> 	[577992.891162]  _ocfs2_free_clusters+0x100/0x290 [ocfs2]
+> 	[577992.891185]  ocfs2_free_clusters+0x50/0x68 [ocfs2]
+> 	[577992.891206]  ocfs2_add_clusters_in_btree+0x198/0x5e0 [ocfs2]
+> 	[577992.891227]  ocfs2_add_inode_data+0x94/0xc8 [ocfs2]
+> 	[577992.891248]  ocfs2_extend_allocation+0x1bc/0x7a8 [ocfs2]
+> 	[577992.891269]  ocfs2_allocate_extents+0x14c/0x338 [ocfs2]
+> 	[577992.891290]  __ocfs2_change_file_space+0x3f8/0x610 [ocfs2]
+> 	[577992.891309]  ocfs2_fallocate+0xe4/0x128 [ocfs2]
+> 	[577992.891316]  vfs_fallocate+0x11c/0x250
+> 	[577992.891317]  ksys_fallocate+0x54/0x88
+> 	[577992.891319]  __arm64_sys_fallocate+0x28/0x38
+> 	[577992.891323]  el0_svc_common+0x78/0x130
+> 	[577992.891325]  el0_svc_handler+0x38/0x78
+> 	[577992.891327]  el0_svc+0x8/0xc
+> 
+> My analysis process as follows:
+> ocfs2_fallocate
+>   __ocfs2_change_file_space
+>     ocfs2_allocate_extents
+>       ocfs2_extend_allocation
+>         ocfs2_add_inode_data
+>           ocfs2_add_clusters_in_btree
+>             ocfs2_insert_extent
+>               ocfs2_do_insert_extent
+>                 ocfs2_rotate_tree_right
+>                   ocfs2_extend_rotate_transaction
+>                     ocfs2_extend_trans
+>                       jbd2_journal_restart
+>                         jbd2__journal_restart
+>                           /* handle->h_transaction is NULL,
+>                            * is_handle_aborted(handle) is true
+>                            */
+>                           handle->h_transaction = NULL;
+>                           start_this_handle
+>                             return -EROFS;
+>             ocfs2_free_clusters
+>               _ocfs2_free_clusters
+>                 _ocfs2_free_suballoc_bits
+>                   ocfs2_block_group_clear_bits
+>                     ocfs2_journal_access_gd
+>                       __ocfs2_journal_access
+>                         jbd2_journal_get_undo_access
+>                           /* I think jbd2_write_access_granted() will
+>                            * return true, because do_get_write_access()
+>                            * will return -EROFS.
+>                            */
+>                           if (jbd2_write_access_granted(...)) return 0;
+>                           do_get_write_access
+>                             /* handle->h_transaction is NULL, it will
+>                              * return -EROFS here, so do_get_write_access()
+>                              * was not called.
+>                              */
+>                             if (is_handle_aborted(handle)) return -EROFS;
+>                     /* bh2jh(group_bh) is NULL, caused NULL
+>                        pointer dereference */
+>                     undo_bg = (struct ocfs2_group_desc *)
+>                                 bh2jh(group_bh)->b_committed_data;
+> 
+> If handle->h_transaction == NULL, then jbd2_write_access_granted()
+> does not really guarantee that journal_head will stay around,
+> not even speaking of its b_committed_data. The bh2jh(group_bh)
+> can be removed after ocfs2_journal_access_gd() and before call
+> "bh2jh(group_bh)->b_committed_data". So, we should move
+> is_handle_aborted() check from do_get_write_access() into
+> jbd2_journal_get_undo_access() and jbd2_journal_get_write_access()
+> before the call to jbd2_write_access_granted().
+> 
+> Signed-off-by: Yan Wang <wangyan122@huawei.com>
+> Reviewed-by: Jun Piao <piaojun@huawei.com>
 
-During an online resize an array of s_flex_groups structures gets replaced
-so it can get enlarged. If there is a concurrent access to the array and
-this memory has been reused then this can lead to an invalid memory access.
+Thanks! The patch looks good to me. You can add:
 
-The s_flex_group array has been converted into an array of pointers rather
-than an array of structures. This is to ensure that the information
-contained in the structures cannot get out of sync during a resize due to
-an accessor updating the value in the old structure after it has been
-copied but before the array pointer is updated. Since the structures them-
-selves are no longer copied but only the pointers to them this case is
-mitigated.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206443
-Previous-Patch-Link: https://lore.kernel.org/r/20200219030851.2678-4-surajjs@amazon.com
-Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
----
- fs/ext4/ext4.h    |  2 +-
- fs/ext4/ialloc.c  | 23 +++++++++------
- fs/ext4/mballoc.c |  9 ++++--
- fs/ext4/resize.c  |  7 +++--
- fs/ext4/super.c   | 72 ++++++++++++++++++++++++++++++++---------------
- 5 files changed, 76 insertions(+), 37 deletions(-)
+								Honza
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index b1ece5329738..614fefa7dc7a 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1512,7 +1512,7 @@ struct ext4_sb_info {
- 	unsigned int s_extent_max_zeroout_kb;
- 
- 	unsigned int s_log_groups_per_flex;
--	struct flex_groups *s_flex_groups;
-+	struct flex_groups * __rcu *s_flex_groups;
- 	ext4_group_t s_flex_groups_allocated;
- 
- 	/* workqueue for reserved extent conversions (buffered io) */
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index c66e8f9451a2..501118b9ba90 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -328,11 +328,13 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
- 
- 	percpu_counter_inc(&sbi->s_freeinodes_counter);
- 	if (sbi->s_log_groups_per_flex) {
--		ext4_group_t f = ext4_flex_group(sbi, block_group);
-+		struct flex_groups *fg;
- 
--		atomic_inc(&sbi->s_flex_groups[f].free_inodes);
-+		fg = sbi_array_rcu_deref(sbi, s_flex_groups,
-+					 ext4_flex_group(sbi, block_group));
-+		atomic_inc(&fg->free_inodes);
- 		if (is_directory)
--			atomic_dec(&sbi->s_flex_groups[f].used_dirs);
-+			atomic_dec(&fg->used_dirs);
- 	}
- 	BUFFER_TRACE(bh2, "call ext4_handle_dirty_metadata");
- 	fatal = ext4_handle_dirty_metadata(handle, NULL, bh2);
-@@ -368,12 +370,13 @@ static void get_orlov_stats(struct super_block *sb, ext4_group_t g,
- 			    int flex_size, struct orlov_stats *stats)
- {
- 	struct ext4_group_desc *desc;
--	struct flex_groups *flex_group = EXT4_SB(sb)->s_flex_groups;
-+	struct flex_groups *flex_group = sbi_array_rcu_deref(EXT4_SB(sb),
-+							     s_flex_groups, g);
- 
- 	if (flex_size > 1) {
--		stats->free_inodes = atomic_read(&flex_group[g].free_inodes);
--		stats->free_clusters = atomic64_read(&flex_group[g].free_clusters);
--		stats->used_dirs = atomic_read(&flex_group[g].used_dirs);
-+		stats->free_inodes = atomic_read(&flex_group->free_inodes);
-+		stats->free_clusters = atomic64_read(&flex_group->free_clusters);
-+		stats->used_dirs = atomic_read(&flex_group->used_dirs);
- 		return;
- 	}
- 
-@@ -1054,7 +1057,8 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
- 		if (sbi->s_log_groups_per_flex) {
- 			ext4_group_t f = ext4_flex_group(sbi, group);
- 
--			atomic_inc(&sbi->s_flex_groups[f].used_dirs);
-+			atomic_inc(&sbi_array_rcu_deref(sbi, s_flex_groups,
-+							f)->used_dirs);
- 		}
- 	}
- 	if (ext4_has_group_desc_csum(sb)) {
-@@ -1077,7 +1081,8 @@ struct inode *__ext4_new_inode(handle_t *handle, struct inode *dir,
- 
- 	if (sbi->s_log_groups_per_flex) {
- 		flex_group = ext4_flex_group(sbi, group);
--		atomic_dec(&sbi->s_flex_groups[flex_group].free_inodes);
-+		atomic_dec(&sbi_array_rcu_deref(sbi, s_flex_groups,
-+						flex_group)->free_inodes);
- 	}
- 
- 	inode->i_ino = ino + group * EXT4_INODES_PER_GROUP(sb);
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 1b46fb63692a..51a78eb65f3c 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3038,7 +3038,8 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac,
- 		ext4_group_t flex_group = ext4_flex_group(sbi,
- 							  ac->ac_b_ex.fe_group);
- 		atomic64_sub(ac->ac_b_ex.fe_len,
--			     &sbi->s_flex_groups[flex_group].free_clusters);
-+			     &sbi_array_rcu_deref(sbi, s_flex_groups,
-+						  flex_group)->free_clusters);
- 	}
- 
- 	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
-@@ -4936,7 +4937,8 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
- 	if (sbi->s_log_groups_per_flex) {
- 		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
- 		atomic64_add(count_clusters,
--			     &sbi->s_flex_groups[flex_group].free_clusters);
-+			     &sbi_array_rcu_deref(sbi, s_flex_groups,
-+						  flex_group)->free_clusters);
- 	}
- 
- 	/*
-@@ -5093,7 +5095,8 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
- 	if (sbi->s_log_groups_per_flex) {
- 		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
- 		atomic64_add(clusters_freed,
--			     &sbi->s_flex_groups[flex_group].free_clusters);
-+			     &sbi_array_rcu_deref(sbi, s_flex_groups,
-+						  flex_group)->free_clusters);
- 	}
- 
- 	ext4_mb_unload_buddy(&e4b);
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index 536cc9f38091..a50b51270ea9 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -1430,11 +1430,14 @@ static void ext4_update_super(struct super_block *sb,
- 		   percpu_counter_read(&sbi->s_freeclusters_counter));
- 	if (ext4_has_feature_flex_bg(sb) && sbi->s_log_groups_per_flex) {
- 		ext4_group_t flex_group;
-+		struct flex_groups *fg;
-+
- 		flex_group = ext4_flex_group(sbi, group_data[0].group);
-+		fg = sbi_array_rcu_deref(sbi, s_flex_groups, flex_group);
- 		atomic64_add(EXT4_NUM_B2C(sbi, free_blocks),
--			     &sbi->s_flex_groups[flex_group].free_clusters);
-+			     &fg->free_clusters);
- 		atomic_add(EXT4_INODES_PER_GROUP(sb) * flex_gd->count,
--			   &sbi->s_flex_groups[flex_group].free_inodes);
-+			   &fg->free_inodes);
- 	}
- 
- 	/*
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index e00bcc19099f..6b7e628b7903 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1015,6 +1015,7 @@ static void ext4_put_super(struct super_block *sb)
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_super_block *es = sbi->s_es;
- 	struct buffer_head **group_desc;
-+	struct flex_groups **flex_groups;
- 	int aborted = 0;
- 	int i, err;
- 
-@@ -1052,8 +1053,13 @@ static void ext4_put_super(struct super_block *sb)
- 	for (i = 0; i < sbi->s_gdb_count; i++)
- 		brelse(group_desc[i]);
- 	kvfree(group_desc);
-+	flex_groups = rcu_dereference(sbi->s_flex_groups);
-+	if (flex_groups) {
-+		for (i = 0; i < sbi->s_flex_groups_allocated; i++)
-+			kvfree(flex_groups[i]);
-+		kvfree(flex_groups);
-+	}
- 	rcu_read_unlock();
--	kvfree(sbi->s_flex_groups);
- 	percpu_counter_destroy(&sbi->s_freeclusters_counter);
- 	percpu_counter_destroy(&sbi->s_freeinodes_counter);
- 	percpu_counter_destroy(&sbi->s_dirs_counter);
-@@ -2384,8 +2390,8 @@ static int ext4_setup_super(struct super_block *sb, struct ext4_super_block *es,
- int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
--	struct flex_groups *new_groups;
--	int size;
-+	struct flex_groups **old_groups, **new_groups;
-+	int size, i;
- 
- 	if (!sbi->s_log_groups_per_flex)
- 		return 0;
-@@ -2394,22 +2400,37 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
- 	if (size <= sbi->s_flex_groups_allocated)
- 		return 0;
- 
--	size = roundup_pow_of_two(size * sizeof(struct flex_groups));
--	new_groups = kvzalloc(size, GFP_KERNEL);
-+	new_groups = kvzalloc(roundup_pow_of_two(size *
-+			      sizeof(*sbi->s_flex_groups)), GFP_KERNEL);
- 	if (!new_groups) {
--		ext4_msg(sb, KERN_ERR, "not enough memory for %d flex groups",
--			 size / (int) sizeof(struct flex_groups));
-+		ext4_msg(sb, KERN_ERR,
-+			 "not enough memory for %d flex group pointers", size);
- 		return -ENOMEM;
- 	}
--
--	if (sbi->s_flex_groups) {
--		memcpy(new_groups, sbi->s_flex_groups,
--		       (sbi->s_flex_groups_allocated *
--			sizeof(struct flex_groups)));
--		kvfree(sbi->s_flex_groups);
-+	for (i = sbi->s_flex_groups_allocated; i < size; i++) {
-+		new_groups[i] = kvzalloc(roundup_pow_of_two(
-+					 sizeof(struct flex_groups)),
-+					 GFP_KERNEL);
-+		if (!new_groups[i]) {
-+			for (i--; i >= sbi->s_flex_groups_allocated; i--)
-+				kvfree(new_groups[i]);
-+			kvfree(new_groups);
-+			ext4_msg(sb, KERN_ERR,
-+				 "not enough memory for %d flex groups", size);
-+			return -ENOMEM;
-+		}
- 	}
--	sbi->s_flex_groups = new_groups;
--	sbi->s_flex_groups_allocated = size / sizeof(struct flex_groups);
-+	rcu_read_lock();
-+	old_groups = rcu_dereference(sbi->s_flex_groups);
-+	if (old_groups)
-+		memcpy(new_groups, old_groups,
-+		       (sbi->s_flex_groups_allocated *
-+			sizeof(struct flex_groups *)));
-+	rcu_read_unlock();
-+	rcu_assign_pointer(sbi->s_flex_groups, new_groups);
-+	sbi->s_flex_groups_allocated = size;
-+	if (old_groups)
-+		ext4_kvfree_array_rcu(old_groups);
- 	return 0;
- }
- 
-@@ -2417,6 +2438,7 @@ static int ext4_fill_flex_info(struct super_block *sb)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_group_desc *gdp = NULL;
-+	struct flex_groups *fg;
- 	ext4_group_t flex_group;
- 	int i, err;
- 
-@@ -2434,12 +2456,11 @@ static int ext4_fill_flex_info(struct super_block *sb)
- 		gdp = ext4_get_group_desc(sb, i, NULL);
- 
- 		flex_group = ext4_flex_group(sbi, i);
--		atomic_add(ext4_free_inodes_count(sb, gdp),
--			   &sbi->s_flex_groups[flex_group].free_inodes);
-+		fg = sbi_array_rcu_deref(sbi, s_flex_groups, flex_group);
-+		atomic_add(ext4_free_inodes_count(sb, gdp), &fg->free_inodes);
- 		atomic64_add(ext4_free_group_clusters(sb, gdp),
--			     &sbi->s_flex_groups[flex_group].free_clusters);
--		atomic_add(ext4_used_dirs_count(sb, gdp),
--			   &sbi->s_flex_groups[flex_group].used_dirs);
-+			     &fg->free_clusters);
-+		atomic_add(ext4_used_dirs_count(sb, gdp), &fg->used_dirs);
- 	}
- 
- 	return 1;
-@@ -3641,6 +3662,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	struct buffer_head *bh, **group_desc;
- 	struct ext4_super_block *es = NULL;
- 	struct ext4_sb_info *sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
-+	struct flex_groups **flex_groups;
- 	ext4_fsblk_t block;
- 	ext4_fsblk_t sb_block = get_sb_block(&data);
- 	ext4_fsblk_t logical_sb_block;
-@@ -4692,8 +4714,14 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	ext4_unregister_li_request(sb);
- failed_mount6:
- 	ext4_mb_release(sb);
--	if (sbi->s_flex_groups)
--		kvfree(sbi->s_flex_groups);
-+	rcu_read_lock();
-+	flex_groups = rcu_dereference(sbi->s_flex_groups);
-+	if (flex_groups) {
-+		for (i = 0; i < sbi->s_flex_groups_allocated; i++)
-+			kvfree(flex_groups[i]);
-+		kvfree(flex_groups);
-+	}
-+	rcu_read_unlock();
- 	percpu_counter_destroy(&sbi->s_freeclusters_counter);
- 	percpu_counter_destroy(&sbi->s_freeinodes_counter);
- 	percpu_counter_destroy(&sbi->s_dirs_counter);
+> ---
+>  fs/jbd2/transaction.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+> index 2dd848a743ed..d181948c0390 100644
+> --- a/fs/jbd2/transaction.c
+> +++ b/fs/jbd2/transaction.c
+> @@ -936,8 +936,6 @@ do_get_write_access(handle_t *handle, struct journal_head *jh,
+>  	char *frozen_buffer = NULL;
+>  	unsigned long start_lock, time_lock;
+> 
+> -	if (is_handle_aborted(handle))
+> -		return -EROFS;
+>  	journal = transaction->t_journal;
+> 
+>  	jbd_debug(5, "journal_head %p, force_copy %d\n", jh, force_copy);
+> @@ -1189,6 +1187,9 @@ int jbd2_journal_get_write_access(handle_t *handle, struct buffer_head *bh)
+>  	struct journal_head *jh;
+>  	int rc;
+> 
+> +	if (is_handle_aborted(handle))
+> +		return -EROFS;
+> +
+>  	if (jbd2_write_access_granted(handle, bh, false))
+>  		return 0;
+> 
+> @@ -1326,6 +1327,9 @@ int jbd2_journal_get_undo_access(handle_t *handle, struct buffer_head *bh)
+>  	struct journal_head *jh;
+>  	char *committed_data = NULL;
+> 
+> +	if (is_handle_aborted(handle))
+> +		return -EROFS;
+> +
+>  	if (jbd2_write_access_granted(handle, bh, true))
+>  		return 0;
+> 
+> -- 
+> 2.19.1
+> 
 -- 
-2.24.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
