@@ -2,128 +2,220 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25716168848
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 21:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368D8168865
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 21:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgBUUWw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 15:22:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbgBUUWv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 21 Feb 2020 15:22:51 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E1F782072C;
-        Fri, 21 Feb 2020 20:22:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582316570;
-        bh=ahbD4YYmAwROEeD/RD10Vgtd8N1y/+y/7hupmWDmF9k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=aCBYH5VQ5ofGntUQg6o0sP2cmkdfffm2felA2nX+dv7QarqZwd0nqh1BaMFk/VdBv
-         zMx+oWhOk/STDuxu/3p6P7bBvmWmrlYynhZOlNm/LmnQlhgo5WD05exsHQMcFhOKLm
-         Uxga8ZPphz+IDakQ+OV2FrajJRjRptZQKuxBWfs4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B65C635226DB; Fri, 21 Feb 2020 12:22:50 -0800 (PST)
-Date:   Fri, 21 Feb 2020 12:22:50 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Suraj Jitindar Singh <surajjs@amazon.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
- write operations
-Message-ID: <20200221202250.GK2935@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200215233817.GA670792@mit.edu>
- <20200216121246.GG2935@paulmck-ThinkPad-P72>
- <20200217160827.GA5685@pc636>
- <20200217193314.GA12604@mit.edu>
- <20200218170857.GA28774@pc636>
- <20200220045233.GC476845@mit.edu>
- <20200221003035.GC2935@paulmck-ThinkPad-P72>
- <20200221131455.GA4904@pc636>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200221131455.GA4904@pc636>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728206AbgBUUk3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 15:40:29 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:35179 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726828AbgBUUk3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 15:40:29 -0500
+Received: by mail-pg1-f196.google.com with SMTP id v23so1581221pgk.2
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2020 12:40:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=j03hnTjPsBfir0Nox78vfTL7k3vASulpASEG8GdxSwA=;
+        b=Gq+a7Tz+yPUi78mKDnBzWnpasIVXPdKKcEWwXocn2dNvN0rLRdSP3mToE8uQLJlUEo
+         TURR7ynWSLemQId2EzzbXQ8benNZg5NWGOglEOBdgy3h1dZf1dTNUvk7x0c9m1RaC0o2
+         k6sx1BcrrO1CUo7AOVCbxEHqmV9MUOOJveR6CUoGsZNRCoIQEMvRD5jTf46l45/Zf0fz
+         poo5/+6eE/zWOHUT4GGmoVezljvrgn2WLuVKmHzAD0yST2dFZ2oqa71fXnSevR8A0YCb
+         /8xbJYEQdupwdIlQIAEEykv/CzbOkLCI+X4HJdHbMOXXoZNzOg0l8euh8hKz0B/r/Ap8
+         Sv5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=j03hnTjPsBfir0Nox78vfTL7k3vASulpASEG8GdxSwA=;
+        b=T89w+Oi7y0USUpj58zXgDNMiXMDOnn1+A4ZGHJ5sI+Dyd1DgCTUQayzoRHJgEM1Tj7
+         wtrjWXYwvYFThZYp0xZziVw7Uyq+1C8K4FYJxOU3Tblo8OTp8x5s/bO34aLSKEnPRx5o
+         DYr5JLGzMy4CjgjqG1GwffLti1TJPEbh4GxjAmlfLtCjTiGgdvIx4sfqwybSsTSxY2QM
+         nhiH5fDUGQV5VYq+Emcln2U5+FCz98xULz9FpUs5oDsjwoQfVGT/Kw2yqElMp+tlg9Na
+         gVoxFVzx9NXOu4jDHoiBcJCpYCwa3LC2+12VTp6PH8H5ZIPmqfSKgHdV9i07x2SEDrjv
+         A41A==
+X-Gm-Message-State: APjAAAWy3sSa7n5pXzvKNItygWuKCtGpmF3pHtOPVkN7FpHkO5ZREvZJ
+        z+ZFVtfmYHvw8rMYpVGSoOzbSw==
+X-Google-Smtp-Source: APXvYqzu87st5xVU4vqGre8XTaL7l6OCGkHXv/gXyigDrb6WJ57JFQTk03IejRMBiVYUeUNplX4NKA==
+X-Received: by 2002:a63:36c2:: with SMTP id d185mr42016113pga.59.1582317628681;
+        Fri, 21 Feb 2020 12:40:28 -0800 (PST)
+Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id y15sm3254431pgj.78.2020.02.21.12.40.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Feb 2020 12:40:27 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <6B909F7B-2C55-4D5D-AAFA-467F1A852B24@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_5BABCC3E-C177-4038-AA9E-86DEAA743FD2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: use non-movable memory for superblock readahead
+Date:   Fri, 21 Feb 2020 13:40:02 -0700
+In-Reply-To: <20200221192035.180546-1-guro@fb.com>
+Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Perepechko <andrew.perepechko@seagate.com>,
+        Theodore Ts'o <tytso@mit.edu>, Gioh Kim <gioh.kim@lge.com>,
+        Jan Kara <jack@suse.cz>
+To:     Roman Gushchin <guro@fb.com>
+References: <20200221192035.180546-1-guro@fb.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 02:14:55PM +0100, Uladzislau Rezki wrote:
-> On Thu, Feb 20, 2020 at 04:30:35PM -0800, Paul E. McKenney wrote:
-> > On Wed, Feb 19, 2020 at 11:52:33PM -0500, Theodore Y. Ts'o wrote:
-> > > On Tue, Feb 18, 2020 at 06:08:57PM +0100, Uladzislau Rezki wrote:
-> > > > now it becomes possible to use it like: 
-> > > > 	...
-> > > > 	void *p = kvmalloc(PAGE_SIZE);
-> > > > 	kvfree_rcu(p);
-> > > > 	...
-> > > > also have a look at the example in the mm/list_lru.c diff.
-> > > 
-> > > I certainly like the interface, thanks!  I'm going to be pushing
-> > > patches to fix this using ext4_kvfree_array_rcu() since there are a
-> > > number of bugs in ext4's online resizing which appear to be hitting
-> > > multiple cloud providers (with reports from both AWS and GCP) and I
-> > > want something which can be easily backported to stable kernels.
-> > > 
-> > > But once kvfree_rcu() hits mainline, I'll switch ext4 to use it, since
-> > > your kvfree_rcu() is definitely more efficient than my expedient
-> > > jury-rig.
-> > > 
-> > > I don't feel entirely competent to review the implementation, but I do
-> > > have one question.  It looks like the rcutiny implementation of
-> > > kfree_call_rcu() isn't going to do the right thing with kvfree_rcu(p).
-> > > Am I missing something?
-> > 
-> > Good catch!  I believe that rcu_reclaim_tiny() would need to do
-> > kvfree() instead of its current kfree().
-> > 
-> > Vlad, anything I am missing here?
-> >
-> Yes something like that. There are some open questions about
-> realization, when it comes to tiny RCU. Since we are talking
-> about "headless" kvfree_rcu() interface, i mean we can not link
-> freed "objects" between each other, instead we should place a
-> pointer directly into array that will be drained later on.
-> 
-> It would be much more easier to achieve that if we were talking
-> about the interface like: kvfree_rcu(p, rcu), but that is not our
-> case :)
-> 
-> So, for CONFIG_TINY_RCU we should implement very similar what we
-> have done for CONFIG_TREE_RCU or just simply do like Ted has done
-> with his
-> 
-> void ext4_kvfree_array_rcu(void *to_free)
-> 
-> i mean:
-> 
->    local_irq_save(flags);
->    struct foo *ptr = kzalloc(sizeof(*ptr), GFP_ATOMIC);
-> 
->    if (ptr) {
->            ptr->ptr = to_free;
->            call_rcu(&ptr->rcu, kvfree_callback);
->    }
->    local_irq_restore(flags);
 
-We really do still need the emergency case, in this case for when
-kzalloc() returns NULL.  Which does indeed mean an rcu_head in the thing
-being freed.  Otherwise, you end up with an out-of-memory deadlock where
-you could free memory only if you had memor to allocate.
+--Apple-Mail=_5BABCC3E-C177-4038-AA9E-86DEAA743FD2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-> Also there is one more open question what to do if GFP_ATOMIC
-> gets failed in case of having low memory condition. Probably
-> we can make use of "mempool interface" that allows to have
-> min_nr guaranteed pre-allocated pages. 
+On Feb 21, 2020, at 12:20 PM, Roman Gushchin <guro@fb.com> wrote:
+>=20
+> Since commit a8ac900b8163 ("ext4: use non-movable memory for the
+> superblock") buffers for ext4 superblock were allocated using
+> the sb_bread_unmovable() helper which allocated buffer heads
+> out of non-movable memory blocks. It was necessarily to not block
+> page migrations and do not cause cma allocation failures.
+>=20
+> However commit 85c8f176a611 ("ext4: preload block group descriptors")
+> broke this by introducing pre-reading of the ext4 superblock.
+> The problem is that __breadahead() is using __getblk() underneath,
+> which allocates buffer heads out of movable memory.
+>=20
+> It resulted in page migration failures I've seen on a machine
+> with an ext4 partition and a preallocated cma area.
+>=20
+> Fix this by introducing sb_breadahead_unmovable() and
+> __breadahead_gfp() helpers which use non-movable memory for buffer
+> head allocations and use them for the ext4 superblock readahead.
+>=20
+> Fixes: 85c8f176a611 ("ext4: preload block group descriptors")
+> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-But we really do still need to handle the case where everything runs out,
-even the pre-allocated pages.
+Makes sense.
 
-							Thanx, Paul
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> Cc: Andrew Perepechko <andrew.perepechko@seagate.com>
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Cc: Gioh Kim <gioh.kim@lge.com>
+> Cc: Jan Kara <jack@suse.cz>
+> ---
+> fs/buffer.c                 | 11 +++++++++++
+> fs/ext4/super.c             |  2 +-
+> include/linux/buffer_head.h |  8 ++++++++
+> 3 files changed, 20 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index 4299e100a05b..25462edd920e 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -1414,6 +1414,17 @@ void __breadahead(struct block_device *bdev, =
+sector_t block, unsigned size)
+> }
+> EXPORT_SYMBOL(__breadahead);
+>=20
+> +void __breadahead_gfp(struct block_device *bdev, sector_t block, =
+unsigned size,
+> +		      gfp_t gfp)
+> +{
+> +	struct buffer_head *bh =3D __getblk_gfp(bdev, block, size, gfp);
+> +	if (likely(bh)) {
+> +		ll_rw_block(REQ_OP_READ, REQ_RAHEAD, 1, &bh);
+> +		brelse(bh);
+> +	}
+> +}
+> +EXPORT_SYMBOL(__breadahead_gfp);
+> +
+> /**
+>  *  __bread_gfp() - reads a specified block and returns the bh
+>  *  @bdev: the block_device to read from
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 3a401f930bca..6a10f7d44719 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -4321,7 +4321,7 @@ static int ext4_fill_super(struct super_block =
+*sb, void *data, int silent)
+> 	/* Pre-read the descriptors into the buffer cache */
+> 	for (i =3D 0; i < db_count; i++) {
+> 		block =3D descriptor_loc(sb, logical_sb_block, i);
+> -		sb_breadahead(sb, block);
+> +		sb_breadahead_unmovable(sb, block);
+> 	}
+>=20
+> 	for (i =3D 0; i < db_count; i++) {
+> diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
+> index 7b73ef7f902d..b56cc825f64d 100644
+> --- a/include/linux/buffer_head.h
+> +++ b/include/linux/buffer_head.h
+> @@ -189,6 +189,8 @@ struct buffer_head *__getblk_gfp(struct =
+block_device *bdev, sector_t block,
+> void __brelse(struct buffer_head *);
+> void __bforget(struct buffer_head *);
+> void __breadahead(struct block_device *, sector_t block, unsigned int =
+size);
+> +void __breadahead_gfp(struct block_device *, sector_t block, unsigned =
+int size,
+> +		  gfp_t gfp);
+> struct buffer_head *__bread_gfp(struct block_device *,
+> 				sector_t block, unsigned size, gfp_t =
+gfp);
+> void invalidate_bh_lrus(void);
+> @@ -319,6 +321,12 @@ sb_breadahead(struct super_block *sb, sector_t =
+block)
+> 	__breadahead(sb->s_bdev, block, sb->s_blocksize);
+> }
+>=20
+> +static inline void
+> +sb_breadahead_unmovable(struct super_block *sb, sector_t block)
+> +{
+> +	__breadahead_gfp(sb->s_bdev, block, sb->s_blocksize, 0);
+> +}
+> +
+> static inline struct buffer_head *
+> sb_getblk(struct super_block *sb, sector_t block)
+> {
+> --
+> 2.24.1
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_5BABCC3E-C177-4038-AA9E-86DEAA743FD2
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5QQDYACgkQcqXauRfM
+H+BBjxAAlmV92opkdGquanhWcY0p1p8AapfFz1mlRtN3l7J7yyvJ+03hbx5bLKQx
+WbU0QvZQwseMJJAzjJgOeKyTrxUiqimNGsKlqlkXBvEabOtAd9PkkrTV/w8/sdPi
+vAG4KfRm/JypzEnpetYT0YJFNW1OkoCAF2hEmZy7vPBTugPWTQT79VCwKrC8+0VY
+rNkOqCYKs86Z3Mm1ocQboxEq0cNFHWNcFrElU8G5KemhdVACXs4BckEZ/iXFeiQd
+Hx/HWW0Yj0304jvGyDlkh1K9zkZNxj7rV7kPVgEr69N8FWcgQCBft+zljpTTJY/6
+E3ASvp+dd/2OMO+xQrihZbv02EO5TW30K1f4X1NTsG97CRPpiwa3JiFUUGjP9I2s
+/REuj3FhC54qpD487HhK3WN4ji+gaAmYsjghAV/P68Hevd/EWU/k8Fhsq7SXbr2B
+LnkBS9BloRC3Ca14QqG6hJL5KOnUXEcmIHu8eXzb3Yyg3EQhGZ8c/xFqBISNrL58
+JxT2cVaTFXDuhpYWEusXTGsSQke1X/duXJuEMm+VDXGY0DQQlGN2J6jSb7TXvr9r
++iZuTapW+0Pq1OqSRS/eTKcbH02vSnwoTKMe4Zh/xc+mwDJT6hH8GTikZl3kxaBb
+xi1f+LPwr8/w0BBZfbvJLVUpdufUao+7VFbI3kZVoyjlurXBNu8=
+=nxwv
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_5BABCC3E-C177-4038-AA9E-86DEAA743FD2--
