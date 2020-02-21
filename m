@@ -2,69 +2,132 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56790168A37
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 00:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A9D168A5F
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 00:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729173AbgBUXEX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 18:04:23 -0500
-Received: from mga01.intel.com ([192.55.52.88]:34606 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726826AbgBUXEX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 21 Feb 2020 18:04:23 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Feb 2020 15:04:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,470,1574150400"; 
-   d="scan'208";a="225361110"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by orsmga007.jf.intel.com with ESMTP; 21 Feb 2020 15:04:22 -0800
-Date:   Fri, 21 Feb 2020 15:04:22 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
+        id S1729187AbgBUX05 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 18:26:57 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:40705 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbgBUX05 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 18:26:57 -0500
+Received: by mail-oi1-f195.google.com with SMTP id a142so3302214oii.7
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2020 15:26:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0Qjb28JuFNd9gOL/WSqmB2kriWyv5u53CrYdkf6Wy1Y=;
+        b=TbwlC6/OrsWHxLiHo7OXqsvf/ROPkSFjJO1MBYg1yRPYgiKYPSofcItFNCaMiRPqUg
+         ekVKNLY9y1PeCxEUWaSDpZ27kasvrGCcmLmTlo26XYh0b/2TauVoNpEh5kth8ND8N5Ha
+         WooPz1Nm1JTzfThjUvTHDj61iIKbc2/48vx9sJnbA3uOgV0hFKgJ1Nh32QSV9HnXuzR9
+         bp5UUR33XZYEueszk5XSdy5dxhzlDPlnoyesaSyx7IXU5Iopv4iymYu2RXAjDyvIqgPT
+         LJF3lNwhgVAvbffRoFHg+eiJEAG6brTEsvGZFVYpbMG15bUtHaA1J0W4U/s+7/aq3YiG
+         GuBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0Qjb28JuFNd9gOL/WSqmB2kriWyv5u53CrYdkf6Wy1Y=;
+        b=QJBX7kvZ/AbKvWQZHUgC9+fnXCWRMN2kRODrROu3h9tRnSw9oRfMGHFihdMuSethiY
+         asmv/8wGDzcSpqcGt3scctjtiVKdAepoe/RapV/lur5SlygMPmYA7SBssfybw/3fM/cb
+         OrTtmPDhVGzPkFJSUVrFiPeIRnVrU+IZKUO0YBJk7KKfCRYQJiEziXryLImc+ZgnlRFp
+         W2LMeiS6CuceeaL2yozeveTmrxT4ycYKnr0kkqOxoIs4L40BwpjMXStZg+qDLTX2oSBj
+         59tGZOtdfc8KQb3iWeOz/luy1VZaFrFcvD2aUNFJNDlJXvXg4LdKZ7/KlAjx18jn6ojs
+         ufmg==
+X-Gm-Message-State: APjAAAV/tAVp35DKjmADpp463pjL+dxBvDnjy8pgY1PZzxzW+4C3HvTc
+        ZqIR87KluW0semFzvIyG7U3FFEp1HBi2WQKuJ4OgGQ==
+X-Google-Smtp-Source: APXvYqy2rdUEqZ3R4aMaqDNTBL6bwDfhIb/6cZCDZKDfBRXKgwgp6CIVU2tXnuzooMcwkImhJrj6TbiItSwmVWFD3ug=
+X-Received: by 2002:a05:6808:a83:: with SMTP id q3mr4285182oij.0.1582327616863;
+ Fri, 21 Feb 2020 15:26:56 -0800 (PST)
+MIME-Version: 1.0
+References: <20200221004134.30599-1-ira.weiny@intel.com> <20200221004134.30599-8-ira.weiny@intel.com>
+ <20200221174449.GB11378@lst.de> <20200221224419.GW10776@dread.disaster.area>
+In-Reply-To: <20200221224419.GW10776@dread.disaster.area>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 21 Feb 2020 15:26:45 -0800
+Message-ID: <CAPcyv4gueN4BsE94CGeO_rDad+MBs==5a+m7SKymJ_RywNCW3w@mail.gmail.com>
+Subject: Re: [PATCH V4 07/13] fs: Add locking for a dynamic address space
+ operations state
 To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+Cc:     Christoph Hellwig <hch@lst.de>, "Weiny, Ira" <ira.weiny@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V4 03/13] fs: Remove unneeded IS_DAX() check
-Message-ID: <20200221230421.GB6762@iweiny-DESK2.sc.intel.com>
-References: <20200221004134.30599-1-ira.weiny@intel.com>
- <20200221004134.30599-4-ira.weiny@intel.com>
- <20200221014225.GV10776@dread.disaster.area>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200221014225.GV10776@dread.disaster.area>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 12:42:25PM +1100, Dave Chinner wrote:
-> On Thu, Feb 20, 2020 at 04:41:24PM -0800, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Remove the check because DAX now has it's own read/write methods and
-> > file systems which support DAX check IS_DAX() prior to IOCB_DIRECT on
-> > their own.  Therefore, it does not matter if the file state is DAX when
-> > the iocb flags are created.
-> > 
-> > Reviewed-by: Jan Kara <jack@suse.cz>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> Yup, looks good.
-> 
-> Reviewed-by: Dave Chinner <dchinner@redhat.com>
+On Fri, Feb 21, 2020 at 2:44 PM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Fri, Feb 21, 2020 at 06:44:49PM +0100, Christoph Hellwig wrote:
+> > On Thu, Feb 20, 2020 at 04:41:28PM -0800, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > >
+> > > DAX requires special address space operations (aops).  Changing DAX
+> > > state therefore requires changing those aops.
+> > >
+> > > However, many functions require aops to remain consistent through a deep
+> > > call stack.
+> > >
+> > > Define a vfs level inode rwsem to protect aops throughout call stacks
+> > > which require them.
+> > >
+> > > Finally, define calls to be used in subsequent patches when aops usage
+> > > needs to be quiesced by the file system.
+> >
+> > I am very much against this.  There is a reason why we don't support
+> > changes of ops vectors at runtime anywhere else, because it is
+> > horribly complicated and impossible to get right.  IFF we ever want
+> > to change the DAX vs non-DAX mode (which I'm still not sold on) the
+> > right way is to just add a few simple conditionals and merge the
+> > aops, which is much easier to reason about, and less costly in overall
+> > overhead.
+>
+> *cough*
+>
+> That's exactly what the original code did. And it was broken
+> because page faults call multiple aops that are dependent on the
+> result of the previous aop calls setting up the state correctly for
+> the latter calls. And when S_DAX changes between those calls, shit
+> breaks.
+>
+> It's exactly the same problem as switching aops between two
+> dependent aops method calls - we don't solve anything by merging
+> aops and checking IS_DAX in each method because the race condition
+> is still there.
+>
+> /me throws his hands in the air and walks away
 
-Thanks,
-Ira
+Please come back, because I think it's also clear that the "we don't
+support changes of ops vectors at runtime" assertion is already being
+violated by ext4 [1]. So that leaves "IFF we ever want to change the
+dax vs non-dax mode" which I thought was already consensus given the
+lingering hopes about having some future where the kernel is able to
+dynamically optimize for dax vs non-dax based on memory media
+performance characteristics. I thought the only thing missing from the
+conclusion of the last conversation [2] was the "physical" vs
+"effective" split that we identified at LSF'19 [3]. Christoph, that
+split allows for for your concern about application intent to be
+considered / overridden by kernel policy, and it allows for
+communication of the effective state which applications need for
+resource planning [4] independent of MAP_SYNC and other dax semantics.
 
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+The status quo of globally enabling dax for all files is empirically
+the wrong choice for page-cache friendly workloads running on
+slower-than-DRAM pmem media.
+
+I am struggling to see how we address the above items without first
+having a dynamic / less than global-filesystem scope facility to
+control dax.
+
+[1]: https://lore.kernel.org/linux-fsdevel/20191108131238.GK20863@quack2.suse.cz
+[2]: https://lore.kernel.org/linux-fsdevel/20170927064001.GA27601@infradead.org
+[3]: https://lwn.net/Articles/787973/
+[4]: https://lwn.net/Articles/787233/
