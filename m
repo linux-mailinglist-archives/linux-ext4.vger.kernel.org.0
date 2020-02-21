@@ -2,246 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F32C216896D
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 22:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42710168993
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 22:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgBUVlM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 16:41:12 -0500
-Received: from smtp-out-no.shaw.ca ([64.59.134.12]:42470 "EHLO
-        smtp-out-no.shaw.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbgBUVlM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 16:41:12 -0500
-Received: from webber.adilger.ext ([70.77.216.213])
-        by shaw.ca with ESMTP
-        id 5G2mjUn0KkqGX5G2ojYHGS; Fri, 21 Feb 2020 14:41:10 -0700
-X-Authority-Analysis: v=2.3 cv=c/jVvi1l c=1 sm=1 tr=0
- a=BQvS1EmAg2ttxjPVUuc1UQ==:117 a=BQvS1EmAg2ttxjPVUuc1UQ==:17 a=ySfo2T4IAAAA:8
- a=78llN0OG3FWJ5FQ7z0cA:9 a=zph2JHZm_e-AFvCm:21 a=ZUkhVnNHqyo2at-WnAgH:22
-From:   Andreas Dilger <adilger@whamcloud.com>
-To:     tytso@mit.edu
-Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@whamcloud.com>
-Subject: [PATCH] libext2fs: don't use O_DIRECT for files on tmpfs
-Date:   Fri, 21 Feb 2020 14:40:56 -0700
-Message-Id: <20200221214056.39993-1-adilger@whamcloud.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1728967AbgBUVsz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 16:48:55 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:52348 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728135AbgBUVsz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 16:48:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MjU0vaJ+i1WQ4UQpS8eKlaynh2uwVXzGNQNy57Q9C9k=; b=iCNdT0BZXgtTW3Fw9E7mV20LZ3
+        6bABfCOOFRCJ7uEiieuVoc7VQvPYz9c1AqPQS7RqHIO2SPtmECRCJ7fINKg3kWrEwzycOHzoI2EXq
+        gb8xBz4Q6YqdlmdYSYmNzPYMGLnkARpEro+4SyAMM0qv/bPjVCXcHHSSe2kepGwYnmLclyWoT72Ri
+        xVH+asjJnQ5gia6IN546JKq8u1xVU9xK4MZ7CcV53GDFQceXlwOtV+auqB/eJnS3NjFkIZuYn1p/U
+        bzlnG8k5S9m/fPbCpIe+WYxJl419e2ENRT98jQ6jjA5WKiplo70Ono1aN5F+tvL7N8eBzKyaRDymg
+        11ulvQcg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j5GAH-0001lk-Uz; Fri, 21 Feb 2020 21:48:53 +0000
+Date:   Fri, 21 Feb 2020 13:48:53 -0800
+From:   Matthew Wilcox <willy@infradead.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH v7 01/24] mm: Move readahead prototypes from mm.h
+Message-ID: <20200221214853.GF24185@bombadil.infradead.org>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-2-willy@infradead.org>
+ <e065679e-222f-7323-9782-0c4471bb9233@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfLi7fgAed2uH4keEVyn3ccRZqHbH6JSakuVdNHHtigp683LkyWyB+oSolxcIMwe4zsZJlcbDZiRfibMpRej2pbS983omt+LGcj/Y18lYcHRMwpT5AqMT
- YrPLHtP7LUnnJ91+3MyKuIwFXJSvxhoRdp27JZCXNf6S5I7h+sDxkV3pI5kEcQocFuR3kmtlpbASvWtpUg94ChDIkMxPg6e2L2h1eBlS8v4SJsrijOZ/JF2X
- 6XayPsJHDnr4YAbZl4pfhg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e065679e-222f-7323-9782-0c4471bb9233@nvidia.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If a filesystem image is on tmpfs, opening it with O_DIRECT for
-reading the MMP will fail.  This is unnecessary, since the image
-file can't really be open on another node at this point.  If the
-open with O_DIRECT fails, retry without it when plausible.
+On Thu, Feb 20, 2020 at 06:43:31PM -0800, John Hubbard wrote:
+> Yes. But I think these files also need a similar change:
+> 
+>     fs/btrfs/disk-io.c
 
-Remove the special-casing of tmpfs from the mmp test cases.
+That gets pagemap.h through ctree.h, so I think it's fine.  It's
+already using mapping_set_gfp_mask(), so it already depends on pagemap.h.
 
-Change-Id: I41f4b31657b06f62f10be8d6e524d303dd36a321
-Signed-off-by: Andreas Dilger <adilger@whamcloud.com>
----
- lib/ext2fs/mmp.c             | 15 ++++++++++++++-
- tests/f_mmp/script           | 11 -----------
- tests/f_mmp_garbage/script   | 11 -----------
- tests/m_image_mmp/script     | 11 -----------
- tests/m_mmp/script           | 10 ----------
- tests/m_mmp_bad_csum/script  | 10 ----------
- tests/m_mmp_bad_magic/script | 10 ----------
- tests/t_mmp_1on/script       | 11 -----------
- tests/t_mmp_2off/script      | 11 -----------
- 9 files changed, 14 insertions(+), 86 deletions(-)
+>     fs/nfs/super.c
 
-diff --git a/lib/ext2fs/mmp.c b/lib/ext2fs/mmp.c
-index 2da935e0..e96a2273 100644
---- a/lib/ext2fs/mmp.c
-+++ b/lib/ext2fs/mmp.c
-@@ -57,8 +57,21 @@ errcode_t ext2fs_mmp_read(ext2_filsys fs, blk64_t mmp_blk, void *buf)
- 	 * regardless of how the io_manager is doing reads, to avoid caching of
- 	 * the MMP block by the io_manager or the VM.  It needs to be fresh. */
- 	if (fs->mmp_fd <= 0) {
--		fs->mmp_fd = open(fs->device_name, O_RDWR | O_DIRECT);
-+		int flags = O_RDWR | O_DIRECT;
-+
-+retry:
-+		fs->mmp_fd = open(fs->device_name, flags);
- 		if (fs->mmp_fd < 0) {
-+			struct stat st;
-+
-+			/* Avoid O_DIRECT for filesystem image files if open
-+			 * fails, since it breaks when running on tmpfs. */
-+			if (errno == EINVAL && (flags & O_DIRECT) &&
-+			    stat(fs->device_name, &st) == 0 &&
-+			    S_ISREG(st.st_mode)) {
-+				flags &= ~O_DIRECT;
-+				goto retry;
-+			}
- 			retval = EXT2_ET_MMP_OPEN_DIRECT;
- 			goto out;
- 		}
-diff --git a/tests/f_mmp/script b/tests/f_mmp/script
-index 07ae2321..f433bd5f 100644
---- a/tests/f_mmp/script
-+++ b/tests/f_mmp/script
-@@ -1,16 +1,5 @@
- FSCK_OPT=-yf
- 
--# use current directory instead of /tmp becase tmpfs doesn't support DIO
--rm -f $TMPFILE
--TMPFILE=$(mktemp ./tmp-$test_name.XXXXXX)
--
--stat -f $TMPFILE | grep -q "Type: tmpfs"
--if [ $? = 0 ]; then
--	rm -f $TMPFILE
--	echo "$test_name: $test_description: skipped for tmpfs (no O_DIRECT)"
--	return 0
--fi
--
- echo "make the test image ..." > $test_name.log
- $MKE2FS -q -F -o Linux -b 4096 -O mmp -E mmp_update_interval=1 $TMPFILE 100 >> $test_name.log 2>&1
- status=$?
-diff --git a/tests/f_mmp_garbage/script b/tests/f_mmp_garbage/script
-index 6d451a67..69be3387 100644
---- a/tests/f_mmp_garbage/script
-+++ b/tests/f_mmp_garbage/script
-@@ -1,16 +1,5 @@
- FSCK_OPT=-yf
- 
--# use current directory instead of /tmp becase tmpfs doesn't support DIO
--rm -f $TMPFILE
--TMPFILE=$(mktemp ./tmp-$test_name.XXXXXX)
--
--stat -f $TMPFILE | grep -q "Type: tmpfs"
--if [ $? = 0 ] ; then
--	rm -f $TMPFILE
--	echo "$test_name: $test_description: skipped for tmpfs (no O_DIRECT)"
--	return 0
--fi
--
- echo "make the test image ..." > $test_name.log
- $MKE2FS -q -F -o Linux -b 4096 -O mmp -E mmp_update_interval=1 $TMPFILE 100 >> $test_name.log 2>&1
- status=$?
-diff --git a/tests/m_image_mmp/script b/tests/m_image_mmp/script
-index bc6f320b..5af6f552 100644
---- a/tests/m_image_mmp/script
-+++ b/tests/m_image_mmp/script
-@@ -1,14 +1,3 @@
--# use current directory instead of /tmp becase tmpfs doesn't support DIO
--rm -f $TMPFILE
--TMPFILE=$(mktemp ./tmp-$test_name.XXXXXX)
--
--stat -f $TMPFILE | grep -q "Type: tmpfs"
--if [ $? = 0 ]; then
--	rm -f $TMPFILE
--	echo "$test_name: $test_description: skipped for tmpfs (no O_DIRECT)"
--	return 0
--fi
--
- $MKE2FS -q -F -o Linux -b 4096 -O mmp -E mmp_update_interval=1 $TMPFILE 100 >> $test_name.log 2>&1
- status=$?
- if [ "$status" != 0 ] ; then
-diff --git a/tests/m_mmp/script b/tests/m_mmp/script
-index 6a9394de..e456183c 100644
---- a/tests/m_mmp/script
-+++ b/tests/m_mmp/script
-@@ -3,16 +3,6 @@ FS_SIZE=65536
- MKE2FS_DEVICE_SECTSIZE=2048
- export MKE2FS_DEVICE_SECTSIZE
- 
--# use current directory instead of /tmp becase tmpfs doesn't support DIO
--rm -f $TMPFILE
--TMPFILE=$(mktemp ./tmp-$test_name.XXXXXX)
--
--stat -f $TMPFILE | grep -q "Type: tmpfs"
--if [ $? = 0 ]; then
--	rm -f $TMPFILE
--	echo "$test_name: $test_description: skipped for tmpfs (no O_DIRECT)"
--	return 0
--fi
- MKE2FS_OPTS="-b 4096 -O mmp"
- . $cmd_dir/run_mke2fs
- unset MKE2FS_DEVICE_SECTSIZE
-diff --git a/tests/m_mmp_bad_csum/script b/tests/m_mmp_bad_csum/script
-index 4c8fe165..a5e222eb 100644
---- a/tests/m_mmp_bad_csum/script
-+++ b/tests/m_mmp_bad_csum/script
-@@ -1,13 +1,3 @@
--# use current directory instead of /tmp becase tmpfs doesn't support DIO
--rm -f $TMPFILE
--TMPFILE=$(mktemp ./tmp-$test_name.XXXXXX)
--
--stat -f $TMPFILE | grep -q "Type: tmpfs"
--if [ $? = 0 ]; then
--	rm -f $TMPFILE
--	echo "$test_name: $test_description: skipped for tmpfs (no O_DIRECT)"
--	return 0
--fi
- gzip -dc < $test_dir/image.gz > $TMPFILE
- 
- OUT=$test_name.log
-diff --git a/tests/m_mmp_bad_magic/script b/tests/m_mmp_bad_magic/script
-index 4c8fe165..a5e222eb 100644
---- a/tests/m_mmp_bad_magic/script
-+++ b/tests/m_mmp_bad_magic/script
-@@ -1,13 +1,3 @@
--# use current directory instead of /tmp becase tmpfs doesn't support DIO
--rm -f $TMPFILE
--TMPFILE=$(mktemp ./tmp-$test_name.XXXXXX)
--
--stat -f $TMPFILE | grep -q "Type: tmpfs"
--if [ $? = 0 ]; then
--	rm -f $TMPFILE
--	echo "$test_name: $test_description: skipped for tmpfs (no O_DIRECT)"
--	return 0
--fi
- gzip -dc < $test_dir/image.gz > $TMPFILE
- 
- OUT=$test_name.log
-diff --git a/tests/t_mmp_1on/script b/tests/t_mmp_1on/script
-index cfed2ca8..733395ef 100644
---- a/tests/t_mmp_1on/script
-+++ b/tests/t_mmp_1on/script
-@@ -1,16 +1,5 @@
- FSCK_OPT=-yf
- 
--# use current directory instead of /tmp becase tmpfs doesn't support DIO
--rm -f $TMPFILE
--TMPFILE=$(mktemp ./tmp-$test_name.XXXXXX)
--
--stat -f $TMPFILE | grep -q "Type: tmpfs"
--if [ $? = 0 ] ; then
--	rm -f $TMPFILE
--	echo "$test_name: $test_description: skipped for tmpfs (no O_DIRECT)"
--	return 0
--fi
--
- $MKE2FS -q -F -o Linux -b 4096 $TMPFILE 100 > $test_name.log 2>&1
- status=$?
- if [ "$status" != 0 ] ; then
-diff --git a/tests/t_mmp_2off/script b/tests/t_mmp_2off/script
-index 6556201f..ccd859b2 100644
---- a/tests/t_mmp_2off/script
-+++ b/tests/t_mmp_2off/script
-@@ -1,16 +1,5 @@
- FSCK_OPT=-yf
- 
--# use current directory instead of /tmp becase tmpfs doesn't support DIO
--rm -f $TMPFILE
--TMPFILE=$(mktemp ./tmp-$test_name.XXXXXX)
--
--stat -f $TMPFILE | grep -q "Type: tmpfs"
--if [ $? = 0 ]; then
--	rm -f $TMPFILE
--	echo "$test_name: $test_description: skipped for tmpfs (no O_DIRECT)"
--	return 0
--fi
--
- $MKE2FS -q -F -o Linux -b 4096 -O mmp $TMPFILE 100 > $test_name.log 2>&1
- status=$?
- if [ "$status" != 0 ] ; then
--- 
-2.21.0 (Apple Git-122)
+That gets it through linux/nfs_fs.h.
 
+I was reluctant to not add it to blk-core.c because it doesn't seem
+necessarily intuitive that the block device core would include pagemap.h.
+
+That said, blkdev.h does include pagemap.h, so maybe I don't need to
+include it here.
+
+> ...because they also use VM_READAHEAD_PAGES, and do not directly include
+> pagemap.h yet.
+
+> > +#define VM_READAHEAD_PAGES	(SZ_128K / PAGE_SIZE)
+> > +
+> > +void page_cache_sync_readahead(struct address_space *, struct file_ra_state *,
+> > +		struct file *, pgoff_t index, unsigned long req_count);
+> 
+> Yes, "struct address_space *mapping" is weird, but I don't know if it's
+> "misleading", given that it's actually one of the things you have to learn
+> right from the beginning, with linux-mm, right? Or is that about to change?
+> 
+> I'm not asking to restore this to "struct address_space *mapping", but I thought
+> it's worth mentioning out loud, especially if you or others are planning on
+> changing those names or something. Just curious.
+
+No plans (on my part) to change the name, although I have heard people
+grumbling that there's very little need for it to be a separate struct
+from inode, except for the benefit of coda, which is not exactly a
+filesystem with a lot of users ...
+
+Anyway, no plans to change it.  If there were something _special_ about
+it like a theoretical:
+
+void mapping_dedup(struct address_space *canonical,
+		struct address_space *victim);
+
+then that's useful information and shouldn't be deleted.  But I don't
+think the word 'mapping' there conveys anything useful (other than the
+convention is to call a 'struct address_space' a mapping, which you'll
+see soon enough once you look at any of the .c files).
