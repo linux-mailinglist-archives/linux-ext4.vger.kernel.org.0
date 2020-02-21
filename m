@@ -2,52 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87954168514
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 18:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24F6168539
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 18:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgBURfk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 12:35:40 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:53690 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgBURfj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 12:35:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Wf0h9wuAEcKNRqQhK7eYyrG9qa7B8zzOGponbVZ3cRs=; b=qv4T8VovROjkqztEW3g3nhCy5f
-        gufHvXfCuF+Z6HXVdrnqn11v47JRrQd3KMc2Fb/NXQnDX0L8RgKN14XJA2vlmNyMfe8JNpLhmUVxc
-        z25YaTqKCBiGK2Hw+2/bd4pbgopKAf4/ve6jLC7QPgm5ZDn5+iUMGtD+1h9m9riV8t/UT8f4E2FIQ
-        ++ryHJSQL+q4p3uXFau3HwiSPe27IGSZ+hWHJ1wE/QCzd7pdwceRoXgVy0rGkR8NzQA6rJe3DsDAG
-        fBH7BRytlaQRbZINis5xOw58oyyhiPiKjWEb9vUxnB2uZFIru9OjRckeEqfDgK73xZAiXwS1jNsGy
-        osPBEkFQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j5CDD-0003J6-9C; Fri, 21 Feb 2020 17:35:39 +0000
-Date:   Fri, 21 Feb 2020 09:35:39 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v7 3/9] block: blk-crypto-fallback for Inline Encryption
-Message-ID: <20200221173539.GA6525@infradead.org>
-References: <20200221115050.238976-1-satyat@google.com>
- <20200221115050.238976-4-satyat@google.com>
+        id S1728433AbgBURmV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 12:42:21 -0500
+Received: from verein.lst.de ([213.95.11.211]:56711 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726393AbgBURmV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 Feb 2020 12:42:21 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C4E3668BFE; Fri, 21 Feb 2020 18:42:17 +0100 (CET)
+Date:   Fri, 21 Feb 2020 18:42:17 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V4 03/13] fs: Remove unneeded IS_DAX() check
+Message-ID: <20200221174217.GA11378@lst.de>
+References: <20200221004134.30599-1-ira.weiny@intel.com> <20200221004134.30599-4-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200221115050.238976-4-satyat@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200221004134.30599-4-ira.weiny@intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-High-level question:  Does the whole keyslot manager concept even make
-sense for the fallback?  With the work-queue we have item that exectutes
-at a time per cpu.  So just allocatea per-cpu crypto_skcipher for
-each encryption mode and there should never be a slot limitation.  Or
-do I miss something?
+On Thu, Feb 20, 2020 at 04:41:24PM -0800, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> Remove the check because DAX now has it's own read/write methods and
+> file systems which support DAX check IS_DAX() prior to IOCB_DIRECT on
+> their own.  Therefore, it does not matter if the file state is DAX when
+> the iocb flags are created.
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes from v3:
+> 	Reword commit message.
+> 	Reordered to be a 'pre-cleanup' patch
+> ---
+>  include/linux/fs.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 3cd4fe6b845e..63d1e533a07d 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3388,7 +3388,7 @@ extern int file_update_time(struct file *file);
+>  
+>  static inline bool io_is_direct(struct file *filp)
+>  {
+> -	return (filp->f_flags & O_DIRECT) || IS_DAX(filp->f_mapping->host);
+> +	return (filp->f_flags & O_DIRECT);
+
+Please just kill io_is_direct entirely.
