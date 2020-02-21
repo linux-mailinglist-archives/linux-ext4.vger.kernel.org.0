@@ -2,57 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AC0167A26
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 11:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586EC167C76
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Feb 2020 12:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728062AbgBUKIp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 05:08:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59298 "EHLO mx2.suse.de"
+        id S1728112AbgBULrN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 06:47:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60680 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727906AbgBUKIp (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 21 Feb 2020 05:08:45 -0500
+        id S1726989AbgBULrM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 Feb 2020 06:47:12 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CC2CAB1D6;
-        Fri, 21 Feb 2020 10:08:43 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 42F4DACF2;
+        Fri, 21 Feb 2020 11:47:10 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 49D521E0BAE; Fri, 21 Feb 2020 11:08:43 +0100 (CET)
+        id C690C1E0BAE; Fri, 21 Feb 2020 12:47:09 +0100 (CET)
+Date:   Fri, 21 Feb 2020 12:47:09 +0100
 From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH] ext4: Fix mount failure with quota configured as module
-Date:   Fri, 21 Feb 2020 11:08:35 +0100
-Message-Id: <20200221100835.9332-1-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+        tytso@mit.edu, "Darrick J. Wong" <darrick.wong@oracle.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cmaiolino@redhat.com
+Subject: Re: [RFCv2 0/4] ext4: bmap & fiemap conversion to use iomap
+Message-ID: <20200221114709.GB27165@quack2.suse.cz>
+References: <cover.1580121790.git.riteshh@linux.ibm.com>
+ <20200130160018.GC3445353@magnolia>
+ <20200205124750.AE9DDA404D@d06av23.portsmouth.uk.ibm.com>
+ <20200205155733.GH6874@magnolia>
+ <20200206052619.D4BBCA405F@b06wcsmtp001.portsmouth.uk.ibm.com>
+ <20200206102254.GK14001@quack2.suse.cz>
+ <20200220170304.80C3E52051@d06av21.portsmouth.uk.ibm.com>
+ <20200220170953.GA11221@infradead.org>
+ <20200221041644.53A9852052@d06av21.portsmouth.uk.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200221041644.53A9852052@d06av21.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When CONFIG_QFMT_V2 is configured as a module, the test in
-ext4_feature_set_ok() fails and so mount of filesystems with quota or
-project features fails. Fix the test to use IS_ENABLED macro which works
-properly even for modules.
+On Fri 21-02-20 09:46:43, Ritesh Harjani wrote:
+> 
+> 
+> On 2/20/20 10:39 PM, Christoph Hellwig wrote:
+> > On Thu, Feb 20, 2020 at 10:33:03PM +0530, Ritesh Harjani wrote:
+> > > So I was making some changes along the above lines and I think we can take
+> > > below approach for filesystem which could determine the
+> > > _EXTENT_LAST relatively easily and for cases if it cannot
+> > > as Jan also mentioned we could keep the current behavior as is and let
+> > > iomap core decide the last disk extent.
+> > 
+> > Well, given that _EXTENT_LAST never worked properly on any file system
+> > since it was added this actually changes behavior and could break
+> > existing users.  I'd rather update the documentation to match reality
+> > rather than writing a lot of code for a feature no one obviously cared
+> > about for years.
+> 
+> Well I agree to this. Since either ways the _EXTENT_LAST has never worked
+> properly or in the same manner across different filesystems.
+> In ext4 itself it works differently for extent v/s non-extent based FS.
+> So updating the documentation would be a right way to go from here.
+> 
+> Ted/Jan - do you agree here:-
+> Shall we move ahead with this patch series in converting ext4_fiemap to
+> use iomap APIs, without worrying about how _EXTENT_LAST is being set via
+> iomap core code?
 
-Fixes: d65d87a07476 ("ext4: improve explanation of a mount failure caused by a misconfigured kernel")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, I'd go ahead with the conversion and don't really bother with backward
+compatibility here. In the unlikely case someone comes with a real breakage
+this causes, we can always think about how to fix this.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index f464dff09774..576b69d2ca41 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3009,7 +3009,7 @@ static int ext4_feature_set_ok(struct super_block *sb, int readonly)
- 		return 0;
- 	}
- 
--#if !defined(CONFIG_QUOTA) || !defined(CONFIG_QFMT_V2)
-+#if !IS_ENABLED(CONFIG_QUOTA) || !IS_ENABLED(CONFIG_QFMT_V2)
- 	if (!readonly && (ext4_has_feature_quota(sb) ||
- 			  ext4_has_feature_project(sb))) {
- 		ext4_msg(sb, KERN_ERR,
+								Honza
 -- 
-2.16.4
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
