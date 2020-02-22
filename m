@@ -2,123 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FCA168CC1
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 06:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20AE6168E4F
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 11:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgBVFjI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 22 Feb 2020 00:39:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37930 "EHLO mail.kernel.org"
+        id S1726883AbgBVKqA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 22 Feb 2020 05:46:00 -0500
+Received: from mail.acc.umu.se ([130.239.18.156]:40306 "EHLO mail.acc.umu.se"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbgBVFjH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 22 Feb 2020 00:39:07 -0500
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F502208C3;
-        Sat, 22 Feb 2020 05:39:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582349946;
-        bh=tstnNHhaIvRVX4ExQFdDOhN9ZstDOzAqulx7HPJbK8Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nQfM6CCgx+pVqyEwP92qBWdLJjAuuh7iZeR3ncbtvvgsiun0gVfKr9vYHUxYAxjFP
-         abj9rUQsDl68oqGY5yOTPK4sCVbNj+yNYvjFQxlcOdCuS2hCQWRqLguVjvPBGtdKF8
-         jOKekVc3QEjPSLZ+EsQDPvTSXf7tADwaIwl6OAh4=
-Date:   Fri, 21 Feb 2020 21:39:05 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v7 7/9] fscrypt: add inline encryption support
-Message-ID: <20200222053905.GC848@sol.localdomain>
-References: <20200221115050.238976-1-satyat@google.com>
- <20200221115050.238976-8-satyat@google.com>
+        id S1726839AbgBVKqA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 22 Feb 2020 05:46:00 -0500
+X-Greylist: delayed 554 seconds by postgrey-1.27 at vger.kernel.org; Sat, 22 Feb 2020 05:45:59 EST
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by amavisd-new (Postfix) with ESMTP id 5474144B93
+        for <linux-ext4@vger.kernel.org>; Sat, 22 Feb 2020 11:36:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=acc.umu.se; s=mail1;
+        t=1582367804; bh=ldernLYjuXwpECkDEd1R3DvHTk64KLGprWnrkHgEUhU=;
+        h=Date:From:To:Subject:From;
+        b=QZYz074H0V9TrS/5ItMdPT7YOYPDGgsy5Kng8Twrrqv4m+rr3Kkeb2POnJXo7T4Xj
+         Eeq9ln+eW6l4OzKUV9omBtg1fwpBGLcsWhsTrlsL98NnPBitaIS3MhJzDcwklIiSX9
+         hRyFiME3NkSrHyQd2oHibWvEKpV0wG2dqcjtOp4IO1qFnTICYKTS0UcSBxSzOcaklh
+         5RuRY/AsXrad65VGlGWyvjsdv4XIvNkee0YskjsN9gS5n+GEr9k442Z+PaAIXirUKf
+         0hLB+GWxTQc6F693tjPyp0whWvL+OVa851ULQDBb9Z8mLxEQLWpmpbpJ4cmuWMD7ZB
+         /zkeI9HX0VtAQ==
+Received: from stalin.acc.umu.se (stalin.acc.umu.se [130.239.18.135])
+        by mail.acc.umu.se (Postfix) with ESMTP id AA35D44B90
+        for <linux-ext4@vger.kernel.org>; Sat, 22 Feb 2020 11:36:43 +0100 (CET)
+Received: by stalin.acc.umu.se (Postfix, from userid 10005)
+        id 9D4BB21B1B; Sat, 22 Feb 2020 11:36:43 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by stalin.acc.umu.se (Postfix) with ESMTP id 9968121B1A
+        for <linux-ext4@vger.kernel.org>; Sat, 22 Feb 2020 11:36:43 +0100 (CET)
+Date:   Sat, 22 Feb 2020 11:36:43 +0100 (CET)
+From:   Bo Branten <bosse@acc.umu.se>
+To:     linux-ext4@vger.kernel.org
+Subject: A question on directory checksums
+Message-ID: <alpine.DEB.2.21.2002221122100.23269@stalin.acc.umu.se>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200221115050.238976-8-satyat@google.com>
+Content-Type: text/plain; format=flowed; charset=US-ASCII
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 03:50:48AM -0800, Satya Tangirala wrote:
-> diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
-> index 65cb09fa6ead..7c157130c16a 100644
-> --- a/fs/crypto/keysetup.c
-> +++ b/fs/crypto/keysetup.c
-> @@ -19,6 +19,8 @@ struct fscrypt_mode fscrypt_modes[] = {
->  		.cipher_str = "xts(aes)",
->  		.keysize = 64,
->  		.ivsize = 16,
-> +		.blk_crypto_mode = BLK_ENCRYPTION_MODE_AES_256_XTS,
-> +		.blk_crypto_dun_bytes_required = 8,
->  	},
->  	[FSCRYPT_MODE_AES_256_CTS] = {
->  		.friendly_name = "AES-256-CTS-CBC",
-> @@ -31,6 +33,8 @@ struct fscrypt_mode fscrypt_modes[] = {
->  		.cipher_str = "essiv(cbc(aes),sha256)",
->  		.keysize = 16,
->  		.ivsize = 16,
-> +		.blk_crypto_mode = BLK_ENCRYPTION_MODE_AES_128_CBC_ESSIV,
-> +		.blk_crypto_dun_bytes_required = 8,
->  	},
->  	[FSCRYPT_MODE_AES_128_CTS] = {
->  		.friendly_name = "AES-128-CTS-CBC",
-> @@ -43,6 +47,8 @@ struct fscrypt_mode fscrypt_modes[] = {
->  		.cipher_str = "adiantum(xchacha12,aes)",
->  		.keysize = 32,
->  		.ivsize = 32,
-> +		.blk_crypto_mode = BLK_ENCRYPTION_MODE_ADIANTUM,
-> +		.blk_crypto_dun_bytes_required = 24,
->  	},
->  };
 
-The DUN bytes required is actually determined by the IV generation method too.
-Currently fscrypt has the following combinations:
+Hello,
 
-	AES-256-XTS: 8 bytes
-	AES-128-CBC-ESSIV: 8 bytes
-	Adiantum without DIRECT_KEY: 8 bytes
-	Adiantum with DIRECT_KEY: 24 bytes
+I am implementing support for metadata checksums on an ext4 driver for 
+another os and test this by writing something and then run e2fsck from 
+Linux to see what it says. When I create a new empty directory that only 
+contains . and .. I got this error message from e2fsck that I want to ask 
+you to clearify:
 
-I.e., DIRECT_KEY is only allowed with Adiantum, but not required for it.
+bo@bo-desktop:~$ sudo e2fsck -pvf /dev/sdb2
+/dev/sdb2: Directory inode 64, block #0, offset 0: directory has no checksum.
+FIXED.
 
-So it's technically incorrect to always pass dun_bytes_required=24 for Adiantum.
+Am I right that it is not the checksum on the inode that represents the 
+directory but the checksum in the directory entry tail in the first and 
+only block?
 
-And it's conceivable that in the future we could add an fscrypt setting that
-uses AES-256-XTS with 16 IV bytes.  Such a setting wouldn't be usable with UFS
-inline encryption, yet the existing AES-256-XTS settings still would.
+Also do "no checksum" means something different than wrong checksum, like 
+I have not initialized it correctly? (if I dont call 
+initialize_dirent_tail I will get another error message from e2fsck that 
+speficially says there is no room for the checksum so it can not be that)
 
-So, how about instead of putting .blk_crypto_dun_bytes_required in the
-crypto_mode table, using logic like:
-
-	dun_bytes_required = 8;
-	if (flags & FSCRYPT_POLICY_FLAG_DIRECT_KEY)
-		dun_bytes_required += 16;
-
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 3cd4fe6b845e..2331ff0464b2 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -1370,6 +1370,7 @@ extern int send_sigurg(struct fown_struct *fown);
->  #define SB_NODIRATIME	2048	/* Do not update directory access times */
->  #define SB_SILENT	32768
->  #define SB_POSIXACL	(1<<16)	/* VFS does not apply the umask */
-> +#define SB_INLINE_CRYPT	(1<<17)	/* inodes in SB use blk-crypto */
->  #define SB_KERNMOUNT	(1<<22) /* this is a kern_mount call */
->  #define SB_I_VERSION	(1<<23) /* Update inode I_version field */
->  #define SB_LAZYTIME	(1<<25) /* Update the on-disk [acm]times lazily */
-
-This flag probably should be called "SB_INLINECRYPT" to match the mount option,
-which is "inlinecrypt" not "inline_crypt".
-
-Also, the addition of this flag, along with the update to show_sb_opts() in
-fs/proc_namespace.c which I think is needed, maybe should go in a separate patch
-whose subject is prefixed with "fs: " to make it clearer to reviewers that this
-part is a VFS-level change.
-
-- Eric
+Bo Branten
