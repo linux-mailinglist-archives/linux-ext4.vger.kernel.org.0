@@ -2,235 +2,157 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF49168C19
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 03:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5F8168C5A
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 05:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbgBVCxV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 21:53:21 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:39780 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727876AbgBVCxV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 21:53:21 -0500
-Received: by mail-pg1-f195.google.com with SMTP id j15so1942830pgm.6;
-        Fri, 21 Feb 2020 18:53:19 -0800 (PST)
+        id S1728049AbgBVEbT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 23:31:19 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:44562 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727186AbgBVEbS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 23:31:18 -0500
+Received: by mail-qk1-f195.google.com with SMTP id j8so3891668qka.11
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2020 20:31:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:mime-version:content-id
-         :content-transfer-encoding:date:message-id;
-        bh=1z3f7gh3j3fiE9rxrLEGvbLwXZxMRaYP+Krq85jjut4=;
-        b=RdjFKa2eqcHE2qFULKSeJKJD7/sUHxMrIbepGCayNC+KlpE/nZ0Y4erVMGUzjZtNyp
-         wUZl/NKRODUdqAcrQ+/OF9ZGdokdWJGBkVNrHcn4FpfG4k2NSbGP9JeX/yN5YSajOdcT
-         SmkP5tMaXsx6kI776CgQbc/SdDogwqoWJxlFwbtrVgKNr0pfVdlGB6OFmsqzQqH/dh0Q
-         zK9xsKqqqVfDkcnrLMjPMZM+gMdHBQo2AfjbR9keiuZ0kbTVzczZPBhuqaisM3NhLhHQ
-         69VdXdIxXp0z83EAVTlYKRitY/CFuofrqftPc7U2L3gMNSEI+0Zk50T5UN62TM61X0US
-         EZ5w==
+        d=lca.pw; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CX8IlyO2NfaoYedky7RgY9iFI5Qm9KXskMaolJPwzcE=;
+        b=HURxGwm6wXjTFFfHTTe3ARqif8yoUISPdDmgETee13HaBdibZts47iyQcECyw2+uX2
+         Jq+CrCoiw3KLZfhUWHsC39rSkR+puexd4NSHZFiMWpyR56vYkGVyR3uDKDPLA3TaDfqz
+         NcFARAMh31DnnivAwrLoqs3hoWW9UWRV/4DYyywZUhg9JvvwDCj7BSYwQxrV0Xa31TGZ
+         4LNUwq+uLEYNsNg2ENSJL4TMUJrI3JFyQiIWZLJwiH6auWnTZyJvfYVzonEOnAIFqSju
+         nfbjkM6ZYqKDmX17//S2is7PQzogFZeBtY4Re2HAcIpaleWEREJXhMxbM+FUwwVMqBFO
+         c1BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:mime-version:content-id
-         :content-transfer-encoding:date:message-id;
-        bh=1z3f7gh3j3fiE9rxrLEGvbLwXZxMRaYP+Krq85jjut4=;
-        b=dwTwKSIvRIHiCBu27RT045tE+283p/VFlH4IKhJxkMFD72YTpKG5lzFO2gK/3d5Ibt
-         gZ3Z1EeD1D/qxuYBoVyjESCZLvl/6CIuWSqgkq69j0WoOiSs/C/K6+4ynW4qbpMXZ9xh
-         ubV5RLe8s53rv8RhrbghXapA+MZp3OkOo6nmLyXXzXCz8DBnxluSVSmm1v7p2hlwoTnz
-         JUHM7LQw+65xd/nhWIYgSm3I9eM7p4FU0niQFbVZDv8QBdIxuy5hT94D9Em5v74cfuLh
-         bj6m8OlajF92PLfI6JVCbCuLbBsDsSczScwKKGwZSad/MvjkdQSU3+TkfBfId412KDV/
-         HDeg==
-X-Gm-Message-State: APjAAAV/oJJX04SPb0GhVI47KTWYKXnZFle6oVaVLES1IJl5MsiWE0/t
-        TFM5XIui5LUDI+F815NicPM=
-X-Google-Smtp-Source: APXvYqxGaVdn4M5Qf2jOiy8BCFwhdLzhcNuSH0lNYhyWKKX14hrEopge6ocfz43X/P9p3lQzkCWDrQ==
-X-Received: by 2002:a63:f450:: with SMTP id p16mr18107136pgk.211.1582339998864;
-        Fri, 21 Feb 2020 18:53:18 -0800 (PST)
-Received: from jromail.nowhere (h219-110-108-104.catv02.itscom.jp. [219.110.108.104])
-        by smtp.gmail.com with ESMTPSA id f8sm4177843pfn.2.2020.02.21.18.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Feb 2020 18:53:18 -0800 (PST)
-Received: from localhost ([127.0.0.1] helo=jrobl) by jrobl id 1j5Kuq-0001Hn-LV ; Sat, 22 Feb 2020 11:53:16 +0900
-From:   "J. R. Okajima" <hooanon05g@gmail.com>
-To:     jack@suse.com, linux-ext4@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org
-Subject: ext2, possible circular locking dependency detected
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CX8IlyO2NfaoYedky7RgY9iFI5Qm9KXskMaolJPwzcE=;
+        b=bU+V6F9HOak6nmGTjtkokmgU/WszMtf3MxkBfn1CoxyRGgMq69w8H2iuGeiF1XBp3x
+         acr1WVZz8kaLcsUYSJklOVL86vlJ9kbuw/+BOqS5vmOGGHS2uLOzsoT2GrPQ+CwZtjiW
+         r8HpcAlvd2KmPRBsqeQ5LseVWWyVYzxj6/IawOwQAk8c4YxNqo52xLhD6HXb/0Gw4U0x
+         DQLh39+d6oi9PFaaz/t8bPGQw9ACfyS1o5eJtYUzeVuoixJNhwrwvfWLtq3A7eLe26rO
+         AbgbqZA+pFZ+hdes+bhTSEI2PY9K6rNCYTokNgaPw66sME37hW8/BBlESEWiWfll0jjq
+         ONKQ==
+X-Gm-Message-State: APjAAAVHFYyu/5MUXR0OhvARLhVHyBeY9szaoOUrHEofVsCxKK2kKWmG
+        u8uQ260swJOG0EbpuYe+6e3Nag==
+X-Google-Smtp-Source: APXvYqwlagE95Cmm9cuSjUVY21uZeKLdBNXVHVgFsu2VWrTbv59xsKLEJD7jAipNzxJzCnD2xFFdWg==
+X-Received: by 2002:a05:620a:150a:: with SMTP id i10mr13947361qkk.407.1582345877273;
+        Fri, 21 Feb 2020 20:31:17 -0800 (PST)
+Received: from ovpn-120-117.rdu2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id 184sm2578786qki.92.2020.02.21.20.31.15
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Feb 2020 20:31:16 -0800 (PST)
+From:   Qian Cai <cai@lca.pw>
+To:     tytso@mit.edu, jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@lca.pw>
+Subject: [PATCH] fs/jbd2: fix data races at struct journal_head
+Date:   Fri, 21 Feb 2020 23:31:11 -0500
+Message-Id: <20200222043111.2227-1-cai@lca.pw>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4945.1582339996.1@jrobl>
-Content-Transfer-Encoding: quoted-printable
-Date:   Sat, 22 Feb 2020 11:53:16 +0900
-Message-ID: <4946.1582339996@jrobl>
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello ext2 maintainers,
+journal_head::b_transaction and journal_head::b_next_transaction could
+be accessed concurrently as noticed by KCSAN,
 
-During my local fs stress test, I've encounter this.
-Is it false positive?
-Otherwise, I've made a small patch to stop reclaming recursively into FS
-from ext2_xattr_set().  Please consider taking this.
+ LTP: starting fsync04
+ /dev/zero: Can't open blockdev
+ EXT4-fs (loop0): mounting ext3 file system using the ext4 subsystem
+ EXT4-fs (loop0): mounted filesystem with ordered data mode. Opts: (null)
+ ==================================================================
+ BUG: KCSAN: data-race in __jbd2_journal_refile_buffer [jbd2] / jbd2_write_access_granted [jbd2]
 
-Once I've considered about whether it should be done in VFS layer or
-not.  I mean, every i_op->brabra() calls in VFS should be surrounded by
-memalloc_nofs_{save,restore}(), by a macro or something.  But I am
-afraid it may introduce unnecesary overheads, especially when FS code
-doesn't allocate memory.  So it is better to do it in real FS
-operations.
+ write to 0xffff99f9b1bd0e30 of 8 bytes by task 25721 on cpu 70:
+  __jbd2_journal_refile_buffer+0xdd/0x210 [jbd2]
+  __jbd2_journal_refile_buffer at fs/jbd2/transaction.c:2569
+  jbd2_journal_commit_transaction+0x2d15/0x3f20 [jbd2]
+  (inlined by) jbd2_journal_commit_transaction at fs/jbd2/commit.c:1034
+  kjournald2+0x13b/0x450 [jbd2]
+  kthread+0x1cd/0x1f0
+  ret_from_fork+0x27/0x50
 
+ read to 0xffff99f9b1bd0e30 of 8 bytes by task 25724 on cpu 68:
+  jbd2_write_access_granted+0x1b2/0x250 [jbd2]
+  jbd2_write_access_granted at fs/jbd2/transaction.c:1155
+  jbd2_journal_get_write_access+0x2c/0x60 [jbd2]
+  __ext4_journal_get_write_access+0x50/0x90 [ext4]
+  ext4_mb_mark_diskspace_used+0x158/0x620 [ext4]
+  ext4_mb_new_blocks+0x54f/0xca0 [ext4]
+  ext4_ind_map_blocks+0xc79/0x1b40 [ext4]
+  ext4_map_blocks+0x3b4/0x950 [ext4]
+  _ext4_get_block+0xfc/0x270 [ext4]
+  ext4_get_block+0x3b/0x50 [ext4]
+  __block_write_begin_int+0x22e/0xae0
+  __block_write_begin+0x39/0x50
+  ext4_write_begin+0x388/0xb50 [ext4]
+  generic_perform_write+0x15d/0x290
+  ext4_buffered_write_iter+0x11f/0x210 [ext4]
+  ext4_file_write_iter+0xce/0x9e0 [ext4]
+  new_sync_write+0x29c/0x3b0
+  __vfs_write+0x92/0xa0
+  vfs_write+0x103/0x260
+  ksys_write+0x9d/0x130
+  __x64_sys_write+0x4c/0x60
+  do_syscall_64+0x91/0xb05
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-J. R. Okajima
+ 5 locks held by fsync04/25724:
+  #0: ffff99f9911093f8 (sb_writers#13){.+.+}, at: vfs_write+0x21c/0x260
+  #1: ffff99f9db4c0348 (&sb->s_type->i_mutex_key#15){+.+.}, at: ext4_buffered_write_iter+0x65/0x210 [ext4]
+  #2: ffff99f5e7dfcf58 (jbd2_handle){++++}, at: start_this_handle+0x1c1/0x9d0 [jbd2]
+  #3: ffff99f9db4c0168 (&ei->i_data_sem){++++}, at: ext4_map_blocks+0x176/0x950 [ext4]
+  #4: ffffffff99086b40 (rcu_read_lock){....}, at: jbd2_write_access_granted+0x4e/0x250 [jbd2]
+ irq event stamp: 1407125
+ hardirqs last  enabled at (1407125): [<ffffffff980da9b7>] __find_get_block+0x107/0x790
+ hardirqs last disabled at (1407124): [<ffffffff980da8f9>] __find_get_block+0x49/0x790
+ softirqs last  enabled at (1405528): [<ffffffff98a0034c>] __do_softirq+0x34c/0x57c
+ softirqs last disabled at (1405521): [<ffffffff97cc67a2>] irq_exit+0xa2/0xc0
 
-----------------------------------------
-WARNING: possible circular locking dependency detected
-5.6.0-rc2aufsD+ #165 Tainted: G        W
-------------------------------------------------------
-kswapd0/94 is trying to acquire lock:
-ffff91f670bd7610 (sb_internal#2){.+.+}, at: ext2_evict_inode+0x7e/0x130
+ Reported by Kernel Concurrency Sanitizer on:
+ CPU: 68 PID: 25724 Comm: fsync04 Tainted: G L 5.6.0-rc2-next-20200221+ #7
+ Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
 
-but task is already holding lock:
-ffffffff8ca901e0 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x5/0x30
+The plain reads are outside of jh->b_state_lock critical section which result
+in data races. Fix them by adding pairs of READ|WRITE_ONCE().
 
-which lock already depends on the new lock.
+Signed-off-by: Qian Cai <cai@lca.pw>
+---
+ fs/jbd2/transaction.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-
-the existing dependency chain (in reverse order) is:
-
--> #2 (fs_reclaim){+.+.}:
-       fs_reclaim_acquire.part.98+0x29/0x30
-       __kmalloc+0x44/0x320
-       ext2_xattr_set+0xe7/0x880
-       __vfs_setxattr+0x66/0x80
-       __vfs_setxattr_noperm+0x67/0x1a0
-       vfs_setxattr+0x81/0xa0
-       setxattr+0x13b/0x1c0
-       path_setxattr+0xbe/0xe0
-       __x64_sys_setxattr+0x27/0x30
-       do_syscall_64+0x54/0x1f0
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
--> #1 (&ei->xattr_sem#2){++++}:
-       down_write+0x3d/0x70
-       ext2_xattr_delete_inode+0x26/0x200
-       ext2_evict_inode+0xc2/0x130
-       evict+0xd0/0x1a0
-       vfs_rmdir+0x15c/0x180
-       do_rmdir+0x1c6/0x220
-       do_syscall_64+0x54/0x1f0
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
--> #0 (sb_internal#2){.+.+}:
-       __lock_acquire+0xd30/0x1540
-       lock_acquire+0x90/0x170
-       __sb_start_write+0x135/0x220
-       ext2_evict_inode+0x7e/0x130
-       evict+0xd0/0x1a0
-       __dentry_kill+0xdc/0x180
-       shrink_dentry_list+0xdd/0x200
-       prune_dcache_sb+0x52/0x70
-       super_cache_scan+0xf3/0x1a0
-       do_shrink_slab+0x143/0x3a0
-       shrink_slab+0x22c/0x2c0
-       shrink_node+0x16c/0x670
-       balance_pgdat+0x2cc/0x530
-       kswapd+0xad/0x470
-       kthread+0x11d/0x140
-       ret_from_fork+0x24/0x50
-
-other info that might help us debug this:
-
-Chain exists of:
-  sb_internal#2 --> &ei->xattr_sem#2 --> fs_reclaim
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(&ei->xattr_sem#2);
-                               lock(fs_reclaim);
-  lock(sb_internal#2);
-
- *** DEADLOCK ***
-
-3 locks held by kswapd0/94:
- #0: ffffffff8ca901e0 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x5/0x3=
-0
- #1: ffffffff8ca81bc8 (shrinker_rwsem){++++}, at: shrink_slab+0x135/0x2c0
- #2: ffff91f670bd70d8 (&type->s_umount_key#45){++++}, at: trylock_super+0x=
-16/0x50
-
-stack backtrace:
-CPU: 4 PID: 94 Comm: kswapd0 Tainted: G        W         5.6.0-rc2aufsD+ #=
-165
-Hardware name: System manufacturer System Product Name/ROG STRIX H370-I GA=
-MING, BIOS 2418 06/04/2019
-Call Trace:
- dump_stack+0x71/0xa0
- check_noncircular+0x172/0x190
- __lock_acquire+0xd30/0x1540
- lock_acquire+0x90/0x170
- ? ext2_evict_inode+0x7e/0x130
- __sb_start_write+0x135/0x220
- ? ext2_evict_inode+0x7e/0x130
- ? shrink_dentry_list+0x24/0x200
- ext2_evict_inode+0x7e/0x130
- evict+0xd0/0x1a0
- __dentry_kill+0xdc/0x180
- shrink_dentry_list+0xdd/0x200
- prune_dcache_sb+0x52/0x70
- super_cache_scan+0xf3/0x1a0
- do_shrink_slab+0x143/0x3a0
- shrink_slab+0x22c/0x2c0
- shrink_node+0x16c/0x670
- balance_pgdat+0x2cc/0x530
- kswapd+0xad/0x470
- ? finish_wait+0x80/0x80
- ? balance_pgdat+0x530/0x530
- kthread+0x11d/0x140
- ? kthread_park+0x80/0x80
- ret_from_fork+0x24/0x50
-----------------------------------------
-a small patch
-
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 0456bc990b5e..85463fddbc17 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -61,6 +61,7 @@
- #include <linux/quotaops.h>
- #include <linux/rwsem.h>
- #include <linux/security.h>
-+#include <linux/sched/mm.h>
- #include "ext2.h"
- #include "xattr.h"
- #include "acl.h"
-@@ -413,6 +414,7 @@ ext2_xattr_set(struct inode *inode, int name_index, co=
-nst char *name,
- 	size_t name_len, free, min_offs =3D sb->s_blocksize;
- 	int not_found =3D 1, error;
- 	char *end;
-+	unsigned int nofs_flag;
- 	=
-
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index 2dd848a743ed..c5f7f6d0f33b 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -1152,8 +1152,8 @@ static bool jbd2_write_access_granted(handle_t *handle, struct buffer_head *bh,
+ 	/* For undo access buffer must have data copied */
+ 	if (undo && !jh->b_committed_data)
+ 		goto out;
+-	if (jh->b_transaction != handle->h_transaction &&
+-	    jh->b_next_transaction != handle->h_transaction)
++	if (READ_ONCE(jh->b_transaction) != handle->h_transaction &&
++	    READ_ONCE(jh->b_next_transaction) != handle->h_transaction)
+ 		goto out;
  	/*
- 	 * header -- Points either into bh, or to a temporarily
-@@ -532,7 +534,9 @@ ext2_xattr_set(struct inode *inode, int name_index, co=
-nst char *name,
- =
+ 	 * There are two reasons for the barrier here:
+@@ -2565,8 +2565,8 @@ bool __jbd2_journal_refile_buffer(struct journal_head *jh)
+ 	 * our jh reference and thus __jbd2_journal_file_buffer() must not
+ 	 * take a new one.
+ 	 */
+-	jh->b_transaction = jh->b_next_transaction;
+-	jh->b_next_transaction = NULL;
++	WRITE_ONCE(jh->b_transaction, jh->b_next_transaction);
++	WRITE_ONCE(jh->b_next_transaction, NULL);
+ 	if (buffer_freed(bh))
+ 		jlist = BJ_Forget;
+ 	else if (jh->b_modified)
+-- 
+2.21.0 (Apple Git-122.2)
 
- 			unlock_buffer(bh);
- 			ea_bdebug(bh, "cloning");
-+			nofs_flag =3D memalloc_nofs_save();
- 			header =3D kmemdup(HDR(bh), bh->b_size, GFP_KERNEL);
-+			memalloc_nofs_restore(nofs_flag);
- 			error =3D -ENOMEM;
- 			if (header =3D=3D NULL)
- 				goto cleanup;
-@@ -545,7 +549,9 @@ ext2_xattr_set(struct inode *inode, int name_index, co=
-nst char *name,
- 		}
- 	} else {
- 		/* Allocate a buffer where we construct the new block. */
-+		nofs_flag =3D memalloc_nofs_save();
- 		header =3D kzalloc(sb->s_blocksize, GFP_KERNEL);
-+		memalloc_nofs_restore(nofs_flag);
- 		error =3D -ENOMEM;
- 		if (header =3D=3D NULL)
- 			goto cleanup;
