@@ -2,132 +2,130 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A9D168A5F
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 00:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 176D1168ACE
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 01:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgBUX05 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 18:26:57 -0500
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:40705 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbgBUX05 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 18:26:57 -0500
-Received: by mail-oi1-f195.google.com with SMTP id a142so3302214oii.7
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2020 15:26:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0Qjb28JuFNd9gOL/WSqmB2kriWyv5u53CrYdkf6Wy1Y=;
-        b=TbwlC6/OrsWHxLiHo7OXqsvf/ROPkSFjJO1MBYg1yRPYgiKYPSofcItFNCaMiRPqUg
-         ekVKNLY9y1PeCxEUWaSDpZ27kasvrGCcmLmTlo26XYh0b/2TauVoNpEh5kth8ND8N5Ha
-         WooPz1Nm1JTzfThjUvTHDj61iIKbc2/48vx9sJnbA3uOgV0hFKgJ1Nh32QSV9HnXuzR9
-         bp5UUR33XZYEueszk5XSdy5dxhzlDPlnoyesaSyx7IXU5Iopv4iymYu2RXAjDyvIqgPT
-         LJF3lNwhgVAvbffRoFHg+eiJEAG6brTEsvGZFVYpbMG15bUtHaA1J0W4U/s+7/aq3YiG
-         GuBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0Qjb28JuFNd9gOL/WSqmB2kriWyv5u53CrYdkf6Wy1Y=;
-        b=QJBX7kvZ/AbKvWQZHUgC9+fnXCWRMN2kRODrROu3h9tRnSw9oRfMGHFihdMuSethiY
-         asmv/8wGDzcSpqcGt3scctjtiVKdAepoe/RapV/lur5SlygMPmYA7SBssfybw/3fM/cb
-         OrTtmPDhVGzPkFJSUVrFiPeIRnVrU+IZKUO0YBJk7KKfCRYQJiEziXryLImc+ZgnlRFp
-         W2LMeiS6CuceeaL2yozeveTmrxT4ycYKnr0kkqOxoIs4L40BwpjMXStZg+qDLTX2oSBj
-         59tGZOtdfc8KQb3iWeOz/luy1VZaFrFcvD2aUNFJNDlJXvXg4LdKZ7/KlAjx18jn6ojs
-         ufmg==
-X-Gm-Message-State: APjAAAV/tAVp35DKjmADpp463pjL+dxBvDnjy8pgY1PZzxzW+4C3HvTc
-        ZqIR87KluW0semFzvIyG7U3FFEp1HBi2WQKuJ4OgGQ==
-X-Google-Smtp-Source: APXvYqy2rdUEqZ3R4aMaqDNTBL6bwDfhIb/6cZCDZKDfBRXKgwgp6CIVU2tXnuzooMcwkImhJrj6TbiItSwmVWFD3ug=
-X-Received: by 2002:a05:6808:a83:: with SMTP id q3mr4285182oij.0.1582327616863;
- Fri, 21 Feb 2020 15:26:56 -0800 (PST)
+        id S1727506AbgBVAPe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 19:15:34 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19532 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727326AbgBVAP3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 19:15:29 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e50727e0001>; Fri, 21 Feb 2020 16:14:54 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 21 Feb 2020 16:15:28 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 21 Feb 2020 16:15:28 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 22 Feb
+ 2020 00:15:28 +0000
+Subject: Re: [PATCH v7 01/24] mm: Move readahead prototypes from mm.h
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-btrfs@vger.kernel.org>,
+        <linux-erofs@lists.ozlabs.org>, <linux-ext4@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <cluster-devel@redhat.com>, <ocfs2-devel@oss.oracle.com>,
+        <linux-xfs@vger.kernel.org>
+References: <20200219210103.32400-1-willy@infradead.org>
+ <20200219210103.32400-2-willy@infradead.org>
+ <e065679e-222f-7323-9782-0c4471bb9233@nvidia.com>
+ <20200221214853.GF24185@bombadil.infradead.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <69fa8779-3433-9d35-a1f4-f115dc86c6d8@nvidia.com>
+Date:   Fri, 21 Feb 2020 16:15:27 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200221004134.30599-1-ira.weiny@intel.com> <20200221004134.30599-8-ira.weiny@intel.com>
- <20200221174449.GB11378@lst.de> <20200221224419.GW10776@dread.disaster.area>
-In-Reply-To: <20200221224419.GW10776@dread.disaster.area>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 21 Feb 2020 15:26:45 -0800
-Message-ID: <CAPcyv4gueN4BsE94CGeO_rDad+MBs==5a+m7SKymJ_RywNCW3w@mail.gmail.com>
-Subject: Re: [PATCH V4 07/13] fs: Add locking for a dynamic address space
- operations state
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Christoph Hellwig <hch@lst.de>, "Weiny, Ira" <ira.weiny@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200221214853.GF24185@bombadil.infradead.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1582330494; bh=Xu1W/y2f9OTxnj+6T8DBBjck/f2ICJjqDeKYJhM73bw=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=p2+0C6I2/yxvNQ1pZnv87YfPksTddG+e8cc03+sVRvODjU2CaK7MWQBiokHBWhwgb
+         ieVI22Ga85j5LMOJVhYhtaccRh8zhO2H+xRsWBU/P8jaMdk1KeAHP1UgdQZbuh/fxI
+         hzO1rCi0fPdivx/Gdy87keJKQLfBTMl82lrGPg+HtMx4bbn1scu0JW30tCh15BSQmD
+         mQSimv7RYwfVWTinVZWGntdq5fdSKt8II8eY04QJynTy8RS0zcVz5otr5kwPPCZ2pE
+         v1Ek68IoRy4J0my4VYUXkHH4q/cEli9/t/FTx/7/JWNBZEw7tWg2FKjPvsTsMCyd6G
+         n45AbsLmye9OQ==
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 2:44 PM Dave Chinner <david@fromorbit.com> wrote:
->
-> On Fri, Feb 21, 2020 at 06:44:49PM +0100, Christoph Hellwig wrote:
-> > On Thu, Feb 20, 2020 at 04:41:28PM -0800, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > >
-> > > DAX requires special address space operations (aops).  Changing DAX
-> > > state therefore requires changing those aops.
-> > >
-> > > However, many functions require aops to remain consistent through a deep
-> > > call stack.
-> > >
-> > > Define a vfs level inode rwsem to protect aops throughout call stacks
-> > > which require them.
-> > >
-> > > Finally, define calls to be used in subsequent patches when aops usage
-> > > needs to be quiesced by the file system.
-> >
-> > I am very much against this.  There is a reason why we don't support
-> > changes of ops vectors at runtime anywhere else, because it is
-> > horribly complicated and impossible to get right.  IFF we ever want
-> > to change the DAX vs non-DAX mode (which I'm still not sold on) the
-> > right way is to just add a few simple conditionals and merge the
-> > aops, which is much easier to reason about, and less costly in overall
-> > overhead.
->
-> *cough*
->
-> That's exactly what the original code did. And it was broken
-> because page faults call multiple aops that are dependent on the
-> result of the previous aop calls setting up the state correctly for
-> the latter calls. And when S_DAX changes between those calls, shit
-> breaks.
->
-> It's exactly the same problem as switching aops between two
-> dependent aops method calls - we don't solve anything by merging
-> aops and checking IS_DAX in each method because the race condition
-> is still there.
->
-> /me throws his hands in the air and walks away
+On 2/21/20 1:48 PM, Matthew Wilcox wrote:
+> On Thu, Feb 20, 2020 at 06:43:31PM -0800, John Hubbard wrote:
+>> Yes. But I think these files also need a similar change:
+>>
+>>     fs/btrfs/disk-io.c
+> 
+> That gets pagemap.h through ctree.h, so I think it's fine.  It's
+> already using mapping_set_gfp_mask(), so it already depends on pagemap.h.
+> 
+>>     fs/nfs/super.c
+> 
+> That gets it through linux/nfs_fs.h.
+> 
+> I was reluctant to not add it to blk-core.c because it doesn't seem
+> necessarily intuitive that the block device core would include pagemap.h.
+> 
+> That said, blkdev.h does include pagemap.h, so maybe I don't need to
+> include it here.
 
-Please come back, because I think it's also clear that the "we don't
-support changes of ops vectors at runtime" assertion is already being
-violated by ext4 [1]. So that leaves "IFF we ever want to change the
-dax vs non-dax mode" which I thought was already consensus given the
-lingering hopes about having some future where the kernel is able to
-dynamically optimize for dax vs non-dax based on memory media
-performance characteristics. I thought the only thing missing from the
-conclusion of the last conversation [2] was the "physical" vs
-"effective" split that we identified at LSF'19 [3]. Christoph, that
-split allows for for your concern about application intent to be
-considered / overridden by kernel policy, and it allows for
-communication of the effective state which applications need for
-resource planning [4] independent of MAP_SYNC and other dax semantics.
+OK. Looks good (either through blkdev.h or as-is), so:
 
-The status quo of globally enabling dax for all files is empirically
-the wrong choice for page-cache friendly workloads running on
-slower-than-DRAM pmem media.
+    Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-I am struggling to see how we address the above items without first
-having a dynamic / less than global-filesystem scope facility to
-control dax.
 
-[1]: https://lore.kernel.org/linux-fsdevel/20191108131238.GK20863@quack2.suse.cz
-[2]: https://lore.kernel.org/linux-fsdevel/20170927064001.GA27601@infradead.org
-[3]: https://lwn.net/Articles/787973/
-[4]: https://lwn.net/Articles/787233/
+> 
+>> ...because they also use VM_READAHEAD_PAGES, and do not directly include
+>> pagemap.h yet.
+> 
+>>> +#define VM_READAHEAD_PAGES	(SZ_128K / PAGE_SIZE)
+>>> +
+>>> +void page_cache_sync_readahead(struct address_space *, struct file_ra_state *,
+>>> +		struct file *, pgoff_t index, unsigned long req_count);
+>>
+>> Yes, "struct address_space *mapping" is weird, but I don't know if it's
+>> "misleading", given that it's actually one of the things you have to learn
+>> right from the beginning, with linux-mm, right? Or is that about to change?
+>>
+>> I'm not asking to restore this to "struct address_space *mapping", but I thought
+>> it's worth mentioning out loud, especially if you or others are planning on
+>> changing those names or something. Just curious.
+> 
+> No plans (on my part) to change the name, although I have heard people
+> grumbling that there's very little need for it to be a separate struct
+> from inode, except for the benefit of coda, which is not exactly a
+> filesystem with a lot of users ...
+> 
+> Anyway, no plans to change it.  If there were something _special_ about
+> it like a theoretical:
+> 
+> void mapping_dedup(struct address_space *canonical,
+> 		struct address_space *victim);
+> 
+> then that's useful information and shouldn't be deleted.  But I don't
+> think the word 'mapping' there conveys anything useful (other than the
+> convention is to call a 'struct address_space' a mapping, which you'll
+> see soon enough once you look at any of the .c files).
+> 
+
+OK, that's consistent and makes sense.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
