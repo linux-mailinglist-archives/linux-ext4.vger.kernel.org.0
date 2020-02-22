@@ -2,55 +2,56 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5F8168C5A
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 05:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6182E168C5F
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 05:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728049AbgBVEbT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 23:31:19 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:44562 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727186AbgBVEbS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 23:31:18 -0500
-Received: by mail-qk1-f195.google.com with SMTP id j8so3891668qka.11
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2020 20:31:17 -0800 (PST)
+        id S1728132AbgBVEdE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 23:33:04 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:37504 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727025AbgBVEdE (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 23:33:04 -0500
+Received: by mail-qk1-f196.google.com with SMTP id c188so3934786qkg.4
+        for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2020 20:33:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=lca.pw; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=CX8IlyO2NfaoYedky7RgY9iFI5Qm9KXskMaolJPwzcE=;
-        b=HURxGwm6wXjTFFfHTTe3ARqif8yoUISPdDmgETee13HaBdibZts47iyQcECyw2+uX2
-         Jq+CrCoiw3KLZfhUWHsC39rSkR+puexd4NSHZFiMWpyR56vYkGVyR3uDKDPLA3TaDfqz
-         NcFARAMh31DnnivAwrLoqs3hoWW9UWRV/4DYyywZUhg9JvvwDCj7BSYwQxrV0Xa31TGZ
-         4LNUwq+uLEYNsNg2ENSJL4TMUJrI3JFyQiIWZLJwiH6auWnTZyJvfYVzonEOnAIFqSju
-         nfbjkM6ZYqKDmX17//S2is7PQzogFZeBtY4Re2HAcIpaleWEREJXhMxbM+FUwwVMqBFO
-         c1BA==
+        bh=OPdiCspFUoLNdKrsNyt7aSs4T7N6gYtV5I8j4acuNpk=;
+        b=kCtRbLdy7+38MLaQOqGvMn+7ARfqNP34p7Adh+Nw0vxvzdxkFuJqwccbrDTlSw/rIW
+         a6TiZ4wDah27pbw5okdb81kVQ8H9gn3q2+7squeRbWaDfx7wqIFMrussM/adOQ1558qu
+         vM/KRBsMBBX3s70MJmNT/XcO30s4LnsodDhHEE+vzXPnrx3DLSvMq0zWyXTE6OYBg+kR
+         SXOXG8CMZTPSTIxw0M78unzC4qPvAhF7QREFjpU4G/rxpJe9H07eq2hd8hcP44arR5jQ
+         D0J7NjGQuWpJdvcRRwkQ3qhAbrDKU4vfMhCtYX1fIZJH1SyJFDz9WAf349Fob4Ao1KEd
+         2/Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=CX8IlyO2NfaoYedky7RgY9iFI5Qm9KXskMaolJPwzcE=;
-        b=bU+V6F9HOak6nmGTjtkokmgU/WszMtf3MxkBfn1CoxyRGgMq69w8H2iuGeiF1XBp3x
-         acr1WVZz8kaLcsUYSJklOVL86vlJ9kbuw/+BOqS5vmOGGHS2uLOzsoT2GrPQ+CwZtjiW
-         r8HpcAlvd2KmPRBsqeQ5LseVWWyVYzxj6/IawOwQAk8c4YxNqo52xLhD6HXb/0Gw4U0x
-         DQLh39+d6oi9PFaaz/t8bPGQw9ACfyS1o5eJtYUzeVuoixJNhwrwvfWLtq3A7eLe26rO
-         AbgbqZA+pFZ+hdes+bhTSEI2PY9K6rNCYTokNgaPw66sME37hW8/BBlESEWiWfll0jjq
-         ONKQ==
-X-Gm-Message-State: APjAAAVHFYyu/5MUXR0OhvARLhVHyBeY9szaoOUrHEofVsCxKK2kKWmG
-        u8uQ260swJOG0EbpuYe+6e3Nag==
-X-Google-Smtp-Source: APXvYqwlagE95Cmm9cuSjUVY21uZeKLdBNXVHVgFsu2VWrTbv59xsKLEJD7jAipNzxJzCnD2xFFdWg==
-X-Received: by 2002:a05:620a:150a:: with SMTP id i10mr13947361qkk.407.1582345877273;
-        Fri, 21 Feb 2020 20:31:17 -0800 (PST)
+        bh=OPdiCspFUoLNdKrsNyt7aSs4T7N6gYtV5I8j4acuNpk=;
+        b=e+6wRC0Z1uQ3jr5zsnh4PX0aVaeOf9WFulX+P+zCopM0krWRN47tG0L3lHRaTAVC8K
+         W4VunSOeBKkucIZCB2rX+cWx9PpYLsNy9glAxysr7PqSGY69RSTvAdLL9lBYn7POLr/s
+         yG/R7pJHWjWdkadlelxgwCuwOhBblCWGn3qlNLfKXAj1TiUpecz4S7IKXg1aDmNYyaf0
+         21/gRWt6hsvUHWhNH44WT6VaVdLRxwBEc9Dd5UaV7rGb4djm4ABlYGybMVhVE3PRtvaZ
+         sPqdRPQnwU3ejLlc9cEyObhrK2znZXFA7szuotbzU45EL+zOMq+3Nzjanz6qKQk370Nx
+         3x/Q==
+X-Gm-Message-State: APjAAAU9/RCQtpHRY2j3AgYFKpjFLD7JUSJ9aZMxChe1N7QJK0kZoj6b
+        DGaUWV2WqX8tRk+OhWDb24XeHw==
+X-Google-Smtp-Source: APXvYqy262Ujqqx69YRIfaoGQM3oqw+MXZRaRJpxs5U7PdfiOQq4CReAY2bXktxNoCUNNXHXTer0nQ==
+X-Received: by 2002:a05:620a:15cf:: with SMTP id o15mr37586094qkm.140.1582345982183;
+        Fri, 21 Feb 2020 20:33:02 -0800 (PST)
 Received: from ovpn-120-117.rdu2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id 184sm2578786qki.92.2020.02.21.20.31.15
+        by smtp.gmail.com with ESMTPSA id j11sm2592733qkl.97.2020.02.21.20.33.01
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Feb 2020 20:31:16 -0800 (PST)
+        Fri, 21 Feb 2020 20:33:01 -0800 (PST)
 From:   Qian Cai <cai@lca.pw>
-To:     tytso@mit.edu, jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     tytso@mit.edu
+Cc:     adilger.kernel@dilger.ca, elver@google.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
         Qian Cai <cai@lca.pw>
-Subject: [PATCH] fs/jbd2: fix data races at struct journal_head
-Date:   Fri, 21 Feb 2020 23:31:11 -0500
-Message-Id: <20200222043111.2227-1-cai@lca.pw>
+Subject: [PATCH] ext4: fix a data race at inode->i_blocks
+Date:   Fri, 21 Feb 2020 23:32:58 -0500
+Message-Id: <20200222043258.2279-1-cai@lca.pw>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -59,39 +60,23 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-journal_head::b_transaction and journal_head::b_next_transaction could
-be accessed concurrently as noticed by KCSAN,
+inode->i_blocks could be accessed concurrently as noticed by KCSAN,
 
- LTP: starting fsync04
- /dev/zero: Can't open blockdev
- EXT4-fs (loop0): mounting ext3 file system using the ext4 subsystem
- EXT4-fs (loop0): mounted filesystem with ordered data mode. Opts: (null)
- ==================================================================
- BUG: KCSAN: data-race in __jbd2_journal_refile_buffer [jbd2] / jbd2_write_access_granted [jbd2]
+ BUG: KCSAN: data-race in ext4_do_update_inode [ext4] / inode_add_bytes
 
- write to 0xffff99f9b1bd0e30 of 8 bytes by task 25721 on cpu 70:
-  __jbd2_journal_refile_buffer+0xdd/0x210 [jbd2]
-  __jbd2_journal_refile_buffer at fs/jbd2/transaction.c:2569
-  jbd2_journal_commit_transaction+0x2d15/0x3f20 [jbd2]
-  (inlined by) jbd2_journal_commit_transaction at fs/jbd2/commit.c:1034
-  kjournald2+0x13b/0x450 [jbd2]
-  kthread+0x1cd/0x1f0
-  ret_from_fork+0x27/0x50
-
- read to 0xffff99f9b1bd0e30 of 8 bytes by task 25724 on cpu 68:
-  jbd2_write_access_granted+0x1b2/0x250 [jbd2]
-  jbd2_write_access_granted at fs/jbd2/transaction.c:1155
-  jbd2_journal_get_write_access+0x2c/0x60 [jbd2]
-  __ext4_journal_get_write_access+0x50/0x90 [ext4]
-  ext4_mb_mark_diskspace_used+0x158/0x620 [ext4]
-  ext4_mb_new_blocks+0x54f/0xca0 [ext4]
-  ext4_ind_map_blocks+0xc79/0x1b40 [ext4]
-  ext4_map_blocks+0x3b4/0x950 [ext4]
+ write to 0xffff9a00d4b982d0 of 8 bytes by task 22100 on cpu 118:
+  inode_add_bytes+0x65/0xf0
+  __inode_add_bytes at fs/stat.c:689
+  (inlined by) inode_add_bytes at fs/stat.c:702
+  ext4_mb_new_blocks+0x418/0xca0 [ext4]
+  ext4_ext_map_blocks+0x1a6b/0x27b0 [ext4]
+  ext4_map_blocks+0x1a9/0x950 [ext4]
   _ext4_get_block+0xfc/0x270 [ext4]
-  ext4_get_block+0x3b/0x50 [ext4]
+  ext4_get_block_unwritten+0x33/0x50 [ext4]
   __block_write_begin_int+0x22e/0xae0
   __block_write_begin+0x39/0x50
   ext4_write_begin+0x388/0xb50 [ext4]
+  ext4_da_write_begin+0x35f/0x8f0 [ext4]
   generic_perform_write+0x15d/0x290
   ext4_buffered_write_iter+0x11f/0x210 [ext4]
   ext4_file_write_iter+0xce/0x9e0 [ext4]
@@ -103,56 +88,56 @@ be accessed concurrently as noticed by KCSAN,
   do_syscall_64+0x91/0xb05
   entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
- 5 locks held by fsync04/25724:
-  #0: ffff99f9911093f8 (sb_writers#13){.+.+}, at: vfs_write+0x21c/0x260
-  #1: ffff99f9db4c0348 (&sb->s_type->i_mutex_key#15){+.+.}, at: ext4_buffered_write_iter+0x65/0x210 [ext4]
-  #2: ffff99f5e7dfcf58 (jbd2_handle){++++}, at: start_this_handle+0x1c1/0x9d0 [jbd2]
-  #3: ffff99f9db4c0168 (&ei->i_data_sem){++++}, at: ext4_map_blocks+0x176/0x950 [ext4]
-  #4: ffffffff99086b40 (rcu_read_lock){....}, at: jbd2_write_access_granted+0x4e/0x250 [jbd2]
- irq event stamp: 1407125
- hardirqs last  enabled at (1407125): [<ffffffff980da9b7>] __find_get_block+0x107/0x790
- hardirqs last disabled at (1407124): [<ffffffff980da8f9>] __find_get_block+0x49/0x790
- softirqs last  enabled at (1405528): [<ffffffff98a0034c>] __do_softirq+0x34c/0x57c
- softirqs last disabled at (1405521): [<ffffffff97cc67a2>] irq_exit+0xa2/0xc0
+ read to 0xffff9a00d4b982d0 of 8 bytes by task 8 on cpu 65:
+  ext4_do_update_inode+0x4a0/0xf60 [ext4]
+  ext4_inode_blocks_set at fs/ext4/inode.c:4815
+  ext4_mark_iloc_dirty+0xaf/0x160 [ext4]
+  ext4_mark_inode_dirty+0x129/0x3e0 [ext4]
+  ext4_convert_unwritten_extents+0x253/0x2d0 [ext4]
+  ext4_convert_unwritten_io_end_vec+0xc5/0x150 [ext4]
+  ext4_end_io_rsv_work+0x22c/0x350 [ext4]
+  process_one_work+0x54f/0xb90
+  worker_thread+0x80/0x5f0
+  kthread+0x1cd/0x1f0
+  ret_from_fork+0x27/0x50
+
+ 4 locks held by kworker/u256:0/8:
+  #0: ffff9a025abc4328 ((wq_completion)ext4-rsv-conversion){+.+.}, at: process_one_work+0x443/0xb90
+  #1: ffffab5a862dbe20 ((work_completion)(&ei->i_rsv_conversion_work)){+.+.}, at: process_one_work+0x443/0xb90
+  #2: ffff9a025a9d0f58 (jbd2_handle){++++}, at: start_this_handle+0x1c1/0x9d0 [jbd2]
+  #3: ffff9a00d4b985d8 (&(&ei->i_raw_lock)->rlock){+.+.}, at: ext4_do_update_inode+0xaa/0xf60 [ext4]
+ irq event stamp: 3009267
+ hardirqs last  enabled at (3009267): [<ffffffff980da9b7>] __find_get_block+0x107/0x790
+ hardirqs last disabled at (3009266): [<ffffffff980da8f9>] __find_get_block+0x49/0x790
+ softirqs last  enabled at (3009230): [<ffffffff98a0034c>] __do_softirq+0x34c/0x57c
+ softirqs last disabled at (3009223): [<ffffffff97cc67a2>] irq_exit+0xa2/0xc0
 
  Reported by Kernel Concurrency Sanitizer on:
- CPU: 68 PID: 25724 Comm: fsync04 Tainted: G L 5.6.0-rc2-next-20200221+ #7
+ CPU: 65 PID: 8 Comm: kworker/u256:0 Tainted: G L 5.6.0-rc2-next-20200221+ #7
  Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
+ Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work [ext4]
 
-The plain reads are outside of jh->b_state_lock critical section which result
-in data races. Fix them by adding pairs of READ|WRITE_ONCE().
+The plain read is outside of inode->i_lock critical section which
+results in a data race. Fix it by adding READ_ONCE() there.
 
 Signed-off-by: Qian Cai <cai@lca.pw>
 ---
- fs/jbd2/transaction.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/ext4/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 2dd848a743ed..c5f7f6d0f33b 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -1152,8 +1152,8 @@ static bool jbd2_write_access_granted(handle_t *handle, struct buffer_head *bh,
- 	/* For undo access buffer must have data copied */
- 	if (undo && !jh->b_committed_data)
- 		goto out;
--	if (jh->b_transaction != handle->h_transaction &&
--	    jh->b_next_transaction != handle->h_transaction)
-+	if (READ_ONCE(jh->b_transaction) != handle->h_transaction &&
-+	    READ_ONCE(jh->b_next_transaction) != handle->h_transaction)
- 		goto out;
- 	/*
- 	 * There are two reasons for the barrier here:
-@@ -2565,8 +2565,8 @@ bool __jbd2_journal_refile_buffer(struct journal_head *jh)
- 	 * our jh reference and thus __jbd2_journal_file_buffer() must not
- 	 * take a new one.
- 	 */
--	jh->b_transaction = jh->b_next_transaction;
--	jh->b_next_transaction = NULL;
-+	WRITE_ONCE(jh->b_transaction, jh->b_next_transaction);
-+	WRITE_ONCE(jh->b_next_transaction, NULL);
- 	if (buffer_freed(bh))
- 		jlist = BJ_Forget;
- 	else if (jh->b_modified)
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index e60aca791d3f..98cadd111942 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4812,7 +4812,7 @@ static int ext4_inode_blocks_set(handle_t *handle,
+ 				struct ext4_inode_info *ei)
+ {
+ 	struct inode *inode = &(ei->vfs_inode);
+-	u64 i_blocks = inode->i_blocks;
++	u64 i_blocks = READ_ONCE(inode->i_blocks);
+ 	struct super_block *sb = inode->i_sb;
+ 
+ 	if (i_blocks <= ~0U) {
 -- 
 2.21.0 (Apple Git-122.2)
 
