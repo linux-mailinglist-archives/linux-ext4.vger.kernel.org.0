@@ -2,142 +2,187 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6182E168C5F
-	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 05:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8172168C68
+	for <lists+linux-ext4@lfdr.de>; Sat, 22 Feb 2020 05:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbgBVEdE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 21 Feb 2020 23:33:04 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:37504 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbgBVEdE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 21 Feb 2020 23:33:04 -0500
-Received: by mail-qk1-f196.google.com with SMTP id c188so3934786qkg.4
-        for <linux-ext4@vger.kernel.org>; Fri, 21 Feb 2020 20:33:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OPdiCspFUoLNdKrsNyt7aSs4T7N6gYtV5I8j4acuNpk=;
-        b=kCtRbLdy7+38MLaQOqGvMn+7ARfqNP34p7Adh+Nw0vxvzdxkFuJqwccbrDTlSw/rIW
-         a6TiZ4wDah27pbw5okdb81kVQ8H9gn3q2+7squeRbWaDfx7wqIFMrussM/adOQ1558qu
-         vM/KRBsMBBX3s70MJmNT/XcO30s4LnsodDhHEE+vzXPnrx3DLSvMq0zWyXTE6OYBg+kR
-         SXOXG8CMZTPSTIxw0M78unzC4qPvAhF7QREFjpU4G/rxpJe9H07eq2hd8hcP44arR5jQ
-         D0J7NjGQuWpJdvcRRwkQ3qhAbrDKU4vfMhCtYX1fIZJH1SyJFDz9WAf349Fob4Ao1KEd
-         2/Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OPdiCspFUoLNdKrsNyt7aSs4T7N6gYtV5I8j4acuNpk=;
-        b=e+6wRC0Z1uQ3jr5zsnh4PX0aVaeOf9WFulX+P+zCopM0krWRN47tG0L3lHRaTAVC8K
-         W4VunSOeBKkucIZCB2rX+cWx9PpYLsNy9glAxysr7PqSGY69RSTvAdLL9lBYn7POLr/s
-         yG/R7pJHWjWdkadlelxgwCuwOhBblCWGn3qlNLfKXAj1TiUpecz4S7IKXg1aDmNYyaf0
-         21/gRWt6hsvUHWhNH44WT6VaVdLRxwBEc9Dd5UaV7rGb4djm4ABlYGybMVhVE3PRtvaZ
-         sPqdRPQnwU3ejLlc9cEyObhrK2znZXFA7szuotbzU45EL+zOMq+3Nzjanz6qKQk370Nx
-         3x/Q==
-X-Gm-Message-State: APjAAAU9/RCQtpHRY2j3AgYFKpjFLD7JUSJ9aZMxChe1N7QJK0kZoj6b
-        DGaUWV2WqX8tRk+OhWDb24XeHw==
-X-Google-Smtp-Source: APXvYqy262Ujqqx69YRIfaoGQM3oqw+MXZRaRJpxs5U7PdfiOQq4CReAY2bXktxNoCUNNXHXTer0nQ==
-X-Received: by 2002:a05:620a:15cf:: with SMTP id o15mr37586094qkm.140.1582345982183;
-        Fri, 21 Feb 2020 20:33:02 -0800 (PST)
-Received: from ovpn-120-117.rdu2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id j11sm2592733qkl.97.2020.02.21.20.33.01
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 Feb 2020 20:33:01 -0800 (PST)
-From:   Qian Cai <cai@lca.pw>
-To:     tytso@mit.edu
-Cc:     adilger.kernel@dilger.ca, elver@google.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qian Cai <cai@lca.pw>
-Subject: [PATCH] ext4: fix a data race at inode->i_blocks
-Date:   Fri, 21 Feb 2020 23:32:58 -0500
-Message-Id: <20200222043258.2279-1-cai@lca.pw>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
+        id S1728079AbgBVE7n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 21 Feb 2020 23:59:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33650 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726713AbgBVE7m (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 21 Feb 2020 23:59:42 -0500
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA3CE208C4;
+        Sat, 22 Feb 2020 04:59:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582347581;
+        bh=jdJmeQHWfLzP8iz4Tg3BFePEIfcyOXGqPSQppwKYUwU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q0HvI0crrpMhLs1nOWpn7ktNXLBProFVDGFa0wVWZuVo1gjW+5QBddmI96dXgFhxN
+         rEuxK240Ae6MPYrnjIXaj0GJotk49aI+loEDIQ2lTYmrBXGaFRhEeIv6gWE+d6aa1x
+         NmUalpfEJEEU2QAV4KffW/alTYtb+icN8cdA8YPY=
+Date:   Fri, 21 Feb 2020 20:59:39 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v7 5/9] scsi: ufs: UFS crypto API
+Message-ID: <20200222045939.GA848@sol.localdomain>
+References: <20200221115050.238976-1-satyat@google.com>
+ <20200221115050.238976-6-satyat@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200221115050.238976-6-satyat@google.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-inode->i_blocks could be accessed concurrently as noticed by KCSAN,
+On Fri, Feb 21, 2020 at 03:50:46AM -0800, Satya Tangirala wrote:
+> +static int ufshcd_crypto_cap_find(struct ufs_hba *hba,
+> +				  enum blk_crypto_mode_num crypto_mode,
+> +				  unsigned int data_unit_size)
+> +{
+> +	enum ufs_crypto_alg ufs_alg;
+> +	u8 data_unit_mask;
+> +	int cap_idx;
+> +	enum ufs_crypto_key_size ufs_key_size;
+> +	union ufs_crypto_cap_entry *ccap_array = hba->crypto_cap_array;
+> +
+> +	if (!ufshcd_hba_is_crypto_supported(hba))
+> +		return -EINVAL;
+> +
+> +	switch (crypto_mode) {
+> +	case BLK_ENCRYPTION_MODE_AES_256_XTS:
+> +		ufs_alg = UFS_CRYPTO_ALG_AES_XTS;
+> +		ufs_key_size = UFS_CRYPTO_KEY_SIZE_256;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+[...]
+> +bool ufshcd_blk_crypto_mode_num_for_alg_dusize(
+> +					enum ufs_crypto_alg ufs_crypto_alg,
+> +					enum ufs_crypto_key_size key_size,
+> +					enum blk_crypto_mode_num *blk_mode_num,
+> +					unsigned int *max_dun_bytes_supported)
+> +{
+> +	/*
+> +	 * This is currently the only mode that UFS and blk-crypto both support.
+> +	 */
+> +	if (ufs_crypto_alg == UFS_CRYPTO_ALG_AES_XTS &&
+> +	    key_size == UFS_CRYPTO_KEY_SIZE_256) {
+> +		*blk_mode_num = BLK_ENCRYPTION_MODE_AES_256_XTS;
+> +		*max_dun_bytes_supported = 8;
+> +		return true;
+> +	}
+> +
+> +	return false;
+> +}
 
- BUG: KCSAN: data-race in ext4_do_update_inode [ext4] / inode_add_bytes
+In UFS, max_dun_bytes_supported is always 8 because it's a property of how the
+DUN is conveyed in the UFS standard, not specific to the crypto algorithm.  So,
+ufshcd_hba_init_crypto() should just set to 8, and there's no need for this code
+that pretends like it could be a per-algorithm thing.
 
- write to 0xffff9a00d4b982d0 of 8 bytes by task 22100 on cpu 118:
-  inode_add_bytes+0x65/0xf0
-  __inode_add_bytes at fs/stat.c:689
-  (inlined by) inode_add_bytes at fs/stat.c:702
-  ext4_mb_new_blocks+0x418/0xca0 [ext4]
-  ext4_ext_map_blocks+0x1a6b/0x27b0 [ext4]
-  ext4_map_blocks+0x1a9/0x950 [ext4]
-  _ext4_get_block+0xfc/0x270 [ext4]
-  ext4_get_block_unwritten+0x33/0x50 [ext4]
-  __block_write_begin_int+0x22e/0xae0
-  __block_write_begin+0x39/0x50
-  ext4_write_begin+0x388/0xb50 [ext4]
-  ext4_da_write_begin+0x35f/0x8f0 [ext4]
-  generic_perform_write+0x15d/0x290
-  ext4_buffered_write_iter+0x11f/0x210 [ext4]
-  ext4_file_write_iter+0xce/0x9e0 [ext4]
-  new_sync_write+0x29c/0x3b0
-  __vfs_write+0x92/0xa0
-  vfs_write+0x103/0x260
-  ksys_write+0x9d/0x130
-  __x64_sys_write+0x4c/0x60
-  do_syscall_64+0x91/0xb05
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+Also, perhaps ufshcd_crypto_cap_find() and this would be better served by a
+table that maps between the different conventions for representing the
+algorithms?  For now it would just have one entry:
 
- read to 0xffff9a00d4b982d0 of 8 bytes by task 8 on cpu 65:
-  ext4_do_update_inode+0x4a0/0xf60 [ext4]
-  ext4_inode_blocks_set at fs/ext4/inode.c:4815
-  ext4_mark_iloc_dirty+0xaf/0x160 [ext4]
-  ext4_mark_inode_dirty+0x129/0x3e0 [ext4]
-  ext4_convert_unwritten_extents+0x253/0x2d0 [ext4]
-  ext4_convert_unwritten_io_end_vec+0xc5/0x150 [ext4]
-  ext4_end_io_rsv_work+0x22c/0x350 [ext4]
-  process_one_work+0x54f/0xb90
-  worker_thread+0x80/0x5f0
-  kthread+0x1cd/0x1f0
-  ret_from_fork+0x27/0x50
+	static const struct {
+		enum ufs_crypto_alg ufs_alg;
+		enum ufs_crypto_key_size ufs_key_size;
+		enum blk_crypto_mode_num blk_mode;
+	} ufs_crypto_algs[] = {
+		{
+			.ufs_alg = UFS_CRYPTO_ALG_AES_XTS,
+			.ufs_key_size = UFS_CRYPTO_KEY_SIZE_256, 
+			.blk_mode = BLK_ENCRYPTION_MODE_AES_256_XTS,
+		},
+	};      
 
- 4 locks held by kworker/u256:0/8:
-  #0: ffff9a025abc4328 ((wq_completion)ext4-rsv-conversion){+.+.}, at: process_one_work+0x443/0xb90
-  #1: ffffab5a862dbe20 ((work_completion)(&ei->i_rsv_conversion_work)){+.+.}, at: process_one_work+0x443/0xb90
-  #2: ffff9a025a9d0f58 (jbd2_handle){++++}, at: start_this_handle+0x1c1/0x9d0 [jbd2]
-  #3: ffff9a00d4b985d8 (&(&ei->i_raw_lock)->rlock){+.+.}, at: ext4_do_update_inode+0xaa/0xf60 [ext4]
- irq event stamp: 3009267
- hardirqs last  enabled at (3009267): [<ffffffff980da9b7>] __find_get_block+0x107/0x790
- hardirqs last disabled at (3009266): [<ffffffff980da8f9>] __find_get_block+0x49/0x790
- softirqs last  enabled at (3009230): [<ffffffff98a0034c>] __do_softirq+0x34c/0x57c
- softirqs last disabled at (3009223): [<ffffffff97cc67a2>] irq_exit+0xa2/0xc0
+But then it would be super easy to add another entry later.
 
- Reported by Kernel Concurrency Sanitizer on:
- CPU: 65 PID: 8 Comm: kworker/u256:0 Tainted: G L 5.6.0-rc2-next-20200221+ #7
- Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
- Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work [ext4]
+I think the only reason not to do that is if we didn't expect any more
+algorithms to be added later.  But in that case it would be simpler to remove
+ufshcd_blk_crypto_mode_num_for_alg_dusize() and just hard-code AES-256-XTS, and
+likewise make ufshcd_crypto_cap_find() use 'if' instead of 'switch'.
 
-The plain read is outside of inode->i_lock critical section which
-results in a data race. Fix it by adding READ_ONCE() there.
+(Note that ufshcd_blk_crypto_mode_num_for_alg_dusize() is also misnamed, as it
+doesn't have anything to do with the data unit size. And it should be 'static'.)
 
-Signed-off-by: Qian Cai <cai@lca.pw>
----
- fs/ext4/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +
+> +/**
+> + * ufshcd_hba_init_crypto - Read crypto capabilities, init crypto fields in hba
+> + * @hba: Per adapter instance
+> + *
+> + * Return: 0 if crypto was initialized or is not supported, else a -errno value.
+> + */
+> +int ufshcd_hba_init_crypto(struct ufs_hba *hba)
+> +{
+> +	int cap_idx = 0;
+> +	int err = 0;
+> +	enum blk_crypto_mode_num blk_mode_num;
+> +	unsigned int max_dun_bytes;
+> +
+> +	/* Default to disabling crypto */
+> +	hba->caps &= ~UFSHCD_CAP_CRYPTO;
+> +
+> +	/* Return 0 if crypto support isn't present */
+> +	if (!(hba->capabilities & MASK_CRYPTO_SUPPORT) ||
+> +	    (hba->quirks & UFSHCD_QUIRK_BROKEN_CRYPTO))
+> +		goto out;
+> +
+> +	/*
+> +	 * Crypto Capabilities should never be 0, because the
+> +	 * config_array_ptr > 04h. So we use a 0 value to indicate that
+> +	 * crypto init failed, and can't be enabled.
+> +	 */
+> +	hba->crypto_capabilities.reg_val =
+> +			cpu_to_le32(ufshcd_readl(hba, REG_UFS_CCAP));
+> +	hba->crypto_cfg_register =
+> +		(u32)hba->crypto_capabilities.config_array_ptr * 0x100;
+> +	hba->crypto_cap_array =
+> +		devm_kcalloc(hba->dev,
+> +			     hba->crypto_capabilities.num_crypto_cap,
+> +			     sizeof(hba->crypto_cap_array[0]),
+> +			     GFP_KERNEL);
+> +	if (!hba->crypto_cap_array) {
+> +		err = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	err = blk_ksm_init(&hba->ksm, hba->dev, ufshcd_num_keyslots(hba));
+> +	if (err)
+> +		goto out_free_caps;
+> +
+> +	hba->ksm.ksm_ll_ops = ufshcd_ksm_ops;
+> +	hba->ksm.ll_priv_data = hba;
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index e60aca791d3f..98cadd111942 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4812,7 +4812,7 @@ static int ext4_inode_blocks_set(handle_t *handle,
- 				struct ext4_inode_info *ei)
- {
- 	struct inode *inode = &(ei->vfs_inode);
--	u64 i_blocks = inode->i_blocks;
-+	u64 i_blocks = READ_ONCE(inode->i_blocks);
- 	struct super_block *sb = inode->i_sb;
- 
- 	if (i_blocks <= ~0U) {
--- 
-2.21.0 (Apple Git-122.2)
+ll_priv_data isn't used anymore, so it should be removed.
 
+> +
+> +	memset(hba->ksm.crypto_modes_supported, 0,
+> +	       sizeof(hba->ksm.crypto_modes_supported));
+> +	memset(hba->ksm.max_dun_bytes_supported, 0,
+> +	       sizeof(hba->ksm.max_dun_bytes_supported));
+
+No need to zero these arrays here, since it's already done by blk_ksm_init().
+
+> +	/*
+> +	 * Store all the capabilities now so that we don't need to repeatedly
+> +	 * access the device each time we want to know its capabilities
+> +	 */
+
+This comment is a bit misleading now, since now this loop also initializes the
+crypto_modes_supported array, which is *required* and not just a performance
+optimization.
+
+- Eric
