@@ -2,63 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AB116991B
-	for <lists+linux-ext4@lfdr.de>; Sun, 23 Feb 2020 18:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A60FA16992E
+	for <lists+linux-ext4@lfdr.de>; Sun, 23 Feb 2020 18:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgBWRkY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 23 Feb 2020 12:40:24 -0500
-Received: from mail.acc.umu.se ([130.239.18.156]:54409 "EHLO mail.acc.umu.se"
+        id S1727033AbgBWRuL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 23 Feb 2020 12:50:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726208AbgBWRkY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 23 Feb 2020 12:40:24 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by amavisd-new (Postfix) with ESMTP id 06BAF44B97
-        for <linux-ext4@vger.kernel.org>; Sun, 23 Feb 2020 18:40:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=acc.umu.se; s=mail1;
-        t=1582479622; bh=XVtFY6TZ90ifmAeaY6rGHfC5Uz2gPQbbpKv881u0+zs=;
-        h=Date:From:To:Subject:In-Reply-To:References:From;
-        b=tJADDVT5iQtUckmx0NRFtNu39Mk2Bwd9F0zdexYnTKtdw5RW5QqoLU/HR9UJZjgoc
-         Fxogc+0Pz/49Eo57H0sBlDG1emhY9uN6FezrEwufF6RPyXuEvHMfPQWyxwui4SOuXa
-         1/1IQy/SDRKlLLfk7cA5BrsValr4GmsPhmd0SkNHfuCaLs9j2/Dbi52J4706bteihN
-         nLCMRn1KAEqEGta5JCvhV3uIa7Kgdg0omgtOQCx7Awj4h6kNgEV0d9jOal8OIwGFdY
-         BIcnWKIN636yU0j4d/13+Zmd1it24wTbRzIzdw/0C6tiptV5+s2GcAqsiakImV6Ibo
-         0g+STiMoM9Jmw==
-Received: from stalin.acc.umu.se (stalin.acc.umu.se [130.239.18.135])
-        by mail.acc.umu.se (Postfix) with ESMTP id 641C544B93
-        for <linux-ext4@vger.kernel.org>; Sun, 23 Feb 2020 18:40:21 +0100 (CET)
-Received: by stalin.acc.umu.se (Postfix, from userid 10005)
-        id 5412121B1B; Sun, 23 Feb 2020 18:40:21 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by stalin.acc.umu.se (Postfix) with ESMTP id 4CA6821B1A
-        for <linux-ext4@vger.kernel.org>; Sun, 23 Feb 2020 18:40:21 +0100 (CET)
-Date:   Sun, 23 Feb 2020 18:40:21 +0100 (CET)
-From:   Bo Branten <bosse@acc.umu.se>
-To:     linux-ext4@vger.kernel.org
-Subject: Re: A question on directory checksums
-In-Reply-To: <alpine.DEB.2.21.2002221122100.23269@stalin.acc.umu.se>
-Message-ID: <alpine.DEB.2.21.2002231833120.135389@stalin.acc.umu.se>
-References: <alpine.DEB.2.21.2002221122100.23269@stalin.acc.umu.se>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+        id S1726208AbgBWRuL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 23 Feb 2020 12:50:11 -0500
+Subject: Re: [GIT PULL] ext4 bug fixes for 5.6-rc2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582480210;
+        bh=aGkUUNdudtdMjreO5BreUuCWHEu5YI+KmTD3P3FdV7I=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=qig4nw2nUQQtao2JR+biCJz9tQPoEDF96fYEuhXdQy87oSMKP0BZMTpW7oX9cx21V
+         X7H3pYvDrHtKknSNiLnYF4/B+oFnHYybSwDGQiLUcuXQ86iiSBK4O5mVyb23lX9v+O
+         8GnsTUpcsQ4+fIiVlUyFML7pA+QM+KRs4FsvcYTc=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200223034152.GA1035793@mit.edu>
+References: <20200223034152.GA1035793@mit.edu>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200223034152.GA1035793@mit.edu>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+ tags/ext4_for_linus_stable
+X-PR-Tracked-Commit-Id: 9db176bceb5c5df4990486709da386edadc6bd1d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a3163ca03f9913ba2c2fb6a06305f3dca98adfd1
+Message-Id: <158248021070.10261.5966340377820886917.pr-tracker-bot@kernel.org>
+Date:   Sun, 23 Feb 2020 17:50:10 +0000
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     torvalds@linux-foundation.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, 22 Feb 2020, Bo Branten wrote:
+The pull request you sent on Sat, 22 Feb 2020 22:41:52 -0500:
 
-> /dev/sdb2: Directory inode 64, block #0, offset 0: directory has no checksum.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
 
-I think I should tell you how I solved this: It was a good advice to use 
-debugfs, with it I could dump the directory block before and after running 
-e2fsck and then I found out that it was rec_len in the last directory 
-entry in a block that we did not initialize correctly, before it should 
-extend to the end of the block but with cecksums we should subtract 
-sizeof(struct ext4_dir_entry_tail) from it, thats why e2fsck did not look 
-at the checksum even if it was there.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a3163ca03f9913ba2c2fb6a06305f3dca98adfd1
 
-Thank you for youre help.
+Thank you!
 
-Bo Branten
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
