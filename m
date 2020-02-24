@@ -2,70 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 764C216A57D
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2020 12:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2598116A69F
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2020 13:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727302AbgBXLtb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Feb 2020 06:49:31 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58798 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727282AbgBXLta (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Feb 2020 06:49:30 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A64588F09A17B4D6FF50;
-        Mon, 24 Feb 2020 19:31:12 +0800 (CST)
-Received: from [127.0.0.1] (10.173.220.179) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Mon, 24 Feb 2020
- 19:31:07 +0800
-Subject: Re: [PATCH] ext4/021: make sure the fdatasync subprocess exits
-To:     Eryu Guan <guaneryu@gmail.com>
-CC:     <fstests@vger.kernel.org>, <linux-ext4@vger.kernel.org>
-References: <20200214022001.15563-1-yi.zhang@huawei.com>
- <20200223123411.GA3840@desktop>
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-Message-ID: <2c2b8a1b-64a3-8fd7-948f-ea7a777e2cf0@huawei.com>
-Date:   Mon, 24 Feb 2020 19:31:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <20200223123411.GA3840@desktop>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.220.179]
-X-CFilter-Loop: Reflected
+        id S1727719AbgBXM7U (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Feb 2020 07:59:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50076 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727715AbgBXM7T (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Feb 2020 07:59:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 2FB43AD79;
+        Mon, 24 Feb 2020 12:59:18 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id C198B1E0E33; Mon, 24 Feb 2020 13:59:17 +0100 (CET)
+From:   Jan Kara <jack@suse.cz>
+To:     <linux-ext4@vger.kernel.org>
+Cc:     "J. R. Okajima" <hooanon05g@gmail.com>, Jan Kara <jack@suse.cz>
+Subject: [PATCH] ext2: Silence lockdep warning about reclaim under xattr_sem
+Date:   Mon, 24 Feb 2020 13:59:16 +0100
+Message-Id: <20200224125916.17321-1-jack@suse.cz>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+Lockdep complains about a chain:
+  sb_internal#2 --> &ei->xattr_sem#2 --> fs_reclaim
 
-On 2020/2/23 20:34, Eryu Guan wrote:
-> On Fri, Feb 14, 2020 at 10:20:01AM +0800, zhangyi (F) wrote:
->> Now we just kill fdatasync_work process and wait nothing after the
->> test, so a busy unmount failure may appear if the fdatasync syscall
->> doesn't return in time.
->>
->>   umount: /tmp/scratch: target is busy.
->>   mount: /tmp/scratch: /dev/sdb already mounted on /tmp/scratch.
->>   !!! failed to remount /dev/sdb on /tmp/scratch
->>
->> This patch kill and wait the xfs_io fdatasync subprocess to make sure
->> _check_scratch_fs success.
-> 
-> Yeah, that's a problem.
-> 
-> I think you could add another "trap" in fdatasync_work, as what
-> btrfs/036 does:
-> 
-> 	trap "wait; exit" SIGTERM
-> 
-> So xfs_io will be waited by fdatasync_work before exiting.
-> 
+and shrink_dentry_list -> ext2_evict_inode -> ext2_xattr_delete_inode ->
+down_write(ei->xattr_sem) creating a locking cycle in the reclaim path.
+This is however a false positive because when we are in
+ext2_evict_inode() we are the only holder of the inode reference and
+nobody else should touch xattr_sem of that inode. So we cannot ever
+block on acquiring the xattr_sem in the reclaim path.
 
-Thanks for your suggestion, I will do that.
+Silence the lockdep warning by using down_write_trylock() in
+ext2_xattr_delete_inode() to not create false locking dependency.
 
-Thanks,
-Yi.
+Reported-by: "J. R. Okajima" <hooanon05g@gmail.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext2/xattr.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+I plan to queue this patch to my tree.
+
+diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+index 0456bc990b5e..4a2eea3ca188 100644
+--- a/fs/ext2/xattr.c
++++ b/fs/ext2/xattr.c
+@@ -790,7 +790,15 @@ ext2_xattr_delete_inode(struct inode *inode)
+ 	struct buffer_head *bh = NULL;
+ 	struct ext2_sb_info *sbi = EXT2_SB(inode->i_sb);
+ 
+-	down_write(&EXT2_I(inode)->xattr_sem);
++	/*
++	 * We are the only ones holding inode reference. The xattr_sem should
++ 	 * better be unlocked! We could as well just not acquire xattr_sem at
++	 * all but this makes the code more futureproof. OTOH we need trylock
++	 * here to avoid false-positive warning from lockdep about reclaim
++	 * circular dependency.
++	 */
++	if (WARN_ON(!down_write_trylock(&EXT2_I(inode)->xattr_sem)))
++		return;
+ 	if (!EXT2_I(inode)->i_file_acl)
+ 		goto cleanup;
+ 
+-- 
+2.16.4
 
