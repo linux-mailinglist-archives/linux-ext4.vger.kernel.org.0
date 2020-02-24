@@ -2,172 +2,127 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74224169943
-	for <lists+linux-ext4@lfdr.de>; Sun, 23 Feb 2020 18:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A9A169B3C
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2020 01:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727133AbgBWR6O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 23 Feb 2020 12:58:14 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:58786 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbgBWR6O (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 23 Feb 2020 12:58:14 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01NHvWju073441;
-        Sun, 23 Feb 2020 17:57:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=LL53eGqGjRhh2FS0FiyzWSm5OLgF8ml4hem9pzFTyEA=;
- b=PakxXawgs/LSVhmYsY1+zuFHltffRjwbw3lP6hwl72y2PLEa8jNl5Ujy9gt6xfZOb6Mz
- pZe861TUQ4w4vRL9H8BDN/Ft61yUxW8ZBT4mCp1Nsu1+ZVxqNgCaBMfkolgljQ/nzIEm
- VO3l937hvjq7rdJRQatg9AN9IDP9fTPQ6OaBJMyOSZbxjNXA0Pa3NCTlr7d5UixoLlJV
- YrAW+AhpE2AJpG3fsJITXVfY9m9jcm9agVJeDdzcJ59kdJlQYXV/vdxaxGBdHC43mQUa
- BqvSk6611lS95oLYQySLRzScVf7fgUh60vjQJvd694prMF7sLeHaJsUvpLosCClFBjqK OQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 2yavxrbtp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 23 Feb 2020 17:57:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01NHq2br019936;
-        Sun, 23 Feb 2020 17:55:31 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 2ybe3cnq93-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 23 Feb 2020 17:55:31 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 01NHtVwC036442;
-        Sun, 23 Feb 2020 17:55:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2ybe3cnq8s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 23 Feb 2020 17:55:31 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01NHtP55027269;
-        Sun, 23 Feb 2020 17:55:25 GMT
-Received: from localhost (/10.159.228.17)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 23 Feb 2020 09:55:25 -0800
-Date:   Sun, 23 Feb 2020 09:55:23 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 21/24] iomap: Restructure iomap_readpages_actor
-Message-ID: <20200223175523.GK9506@magnolia>
-References: <20200219210103.32400-1-willy@infradead.org>
- <20200219210103.32400-22-willy@infradead.org>
- <20200222004425.GG9506@magnolia>
- <20200222015435.GH24185@bombadil.infradead.org>
+        id S1727167AbgBXAfD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 23 Feb 2020 19:35:03 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:43679 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727151AbgBXAfD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 23 Feb 2020 19:35:03 -0500
+Received: from dread.disaster.area (pa49-195-185-106.pa.nsw.optusnet.com.au [49.195.185.106])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id B52CD3A211E;
+        Mon, 24 Feb 2020 11:34:57 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j61i4-0004s8-0Y; Mon, 24 Feb 2020 11:34:56 +1100
+Date:   Mon, 24 Feb 2020 11:34:55 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V4 09/13] fs/xfs: Add write aops lock to xfs layer
+Message-ID: <20200224003455.GY10776@dread.disaster.area>
+References: <20200221004134.30599-1-ira.weiny@intel.com>
+ <20200221004134.30599-10-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200222015435.GH24185@bombadil.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9540 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
- spamscore=0 clxscore=1015 suspectscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002230148
+In-Reply-To: <20200221004134.30599-10-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
+        a=bkRQb8bsQZKWSSj4M57YXw==:117 a=bkRQb8bsQZKWSSj4M57YXw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=jzfXMxHasCwLGlr9pT0A:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 05:54:35PM -0800, Matthew Wilcox wrote:
-> On Fri, Feb 21, 2020 at 04:44:25PM -0800, Darrick J. Wong wrote:
-> > On Wed, Feb 19, 2020 at 01:01:00PM -0800, Matthew Wilcox wrote:
-> > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> > > 
-> > > By putting the 'have we reached the end of the page' condition at the end
-> > > of the loop instead of the beginning, we can remove the 'submit the last
-> > > page' code from iomap_readpages().  Also check that iomap_readpage_actor()
-> > > didn't return 0, which would lead to an endless loop.
-> > > 
-> > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > > ---
-> > >  fs/iomap/buffered-io.c | 32 ++++++++++++++++++--------------
-> > >  1 file changed, 18 insertions(+), 14 deletions(-)
-> > > 
-> > > diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> > > index cb3511eb152a..31899e6cb0f8 100644
-> > > --- a/fs/iomap/buffered-io.c
-> > > +++ b/fs/iomap/buffered-io.c
-> > > @@ -400,15 +400,9 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
-> > >  		void *data, struct iomap *iomap, struct iomap *srcmap)
-> > >  {
-> > >  	struct iomap_readpage_ctx *ctx = data;
-> > > -	loff_t done, ret;
-> > > -
-> > > -	for (done = 0; done < length; done += ret) {
-> > > -		if (ctx->cur_page && offset_in_page(pos + done) == 0) {
-> > > -			if (!ctx->cur_page_in_bio)
-> > > -				unlock_page(ctx->cur_page);
-> > > -			put_page(ctx->cur_page);
-> > > -			ctx->cur_page = NULL;
-> > > -		}
-> > > +	loff_t ret, done = 0;
-> > > +
-> > > +	while (done < length) {
-> > >  		if (!ctx->cur_page) {
-> > >  			ctx->cur_page = iomap_next_page(inode, ctx->pages,
-> > >  					pos, length, &done);
-> > > @@ -418,6 +412,20 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
-> > >  		}
-> > >  		ret = iomap_readpage_actor(inode, pos + done, length - done,
-> > >  				ctx, iomap, srcmap);
-> > > +		done += ret;
-> > > +
-> > > +		/* Keep working on a partial page */
-> > > +		if (ret && offset_in_page(pos + done))
-> > > +			continue;
-> > > +
-> > > +		if (!ctx->cur_page_in_bio)
-> > > +			unlock_page(ctx->cur_page);
-> > > +		put_page(ctx->cur_page);
-> > > +		ctx->cur_page = NULL;
-> > > +
-> > > +		/* Don't loop forever if we made no progress */
-> > > +		if (WARN_ON(!ret))
-> > > +			break;
-> > >  	}
-> > >  
-> > >  	return done;
-> > > @@ -451,11 +459,7 @@ iomap_readpages(struct address_space *mapping, struct list_head *pages,
-> > >  done:
-> > >  	if (ctx.bio)
-> > >  		submit_bio(ctx.bio);
-> > > -	if (ctx.cur_page) {
-> > > -		if (!ctx.cur_page_in_bio)
-> > > -			unlock_page(ctx.cur_page);
-> > > -		put_page(ctx.cur_page);
-> > > -	}
-> > > +	BUG_ON(ctx.cur_page);
-> > 
-> > Whoah, is the system totally unrecoverably hosed at this point?
-> > 
-> > I get that this /shouldn't/ happen, but should we somehow end up with a
-> > page here, are we unable either to release it or even just leak it?  I'd
-> > have thought a WARN_ON would be just fine here.
+On Thu, Feb 20, 2020 at 04:41:30PM -0800, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> If we do find a page here, we don't actually know what to do with it.
-> It might be (currently) locked, it might have the wrong refcount.
-> Whatever is going on, it's probably better that we stop everything right
-> here rather than allow things to go further and possibly present bad
-> data to the application.  I mean, we could even be leaking the previous
-> contents of this page to userspace.  Or maybe the future contents of a
-> page which shouldn't be in the page cache any more, but userspace gets
-> a mapping to it.
+> XFS requires the use of the aops of an inode to quiesced prior to
+> changing it to/from the DAX aops vector.
 > 
-> I'm not enthusiastic about putting in some code here to try to handle
-> a "can't happen" case, since it's never going to be tested, and might
-> end up causing more problems than it tries to solve.  Let's just stop.
+> Take the aops write lock while changing DAX state.
+> 
+> We define a new XFS_DAX_EXCL lock type to carry the lock through to
+> transaction completion.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes from v3:
+> 	Change locking function names to reflect changes in previous
+> 	patches.
+> 
+> Changes from V2:
+> 	Change name of patch (WAS: fs/xfs: Add lock/unlock state to xfs)
+> 	Remove the xfs specific lock and move to the vfs layer.
+> 		We still use XFS_LOCK_DAX_EXCL to be able to pass this
+> 		flag through to the transaction code.  But we no longer
+> 		have a lock specific to xfs.  This removes a lot of code
+> 		from the XFS layer, preps us for using this in ext4, and
+> 		is actually more straight forward now that all the
+> 		locking requirements are better known.
+> 
+> 	Fix locking order comment
+> 	Rework for new 'state' names
+> 	(Other comments on the previous patch are not applicable with
+> 	new patch as much of the code was removed in favor of the vfs
+> 	level lock)
+> ---
+>  fs/xfs/xfs_inode.c | 22 ++++++++++++++++++++--
+>  fs/xfs/xfs_inode.h |  7 +++++--
+>  2 files changed, 25 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> index 35df324875db..5b014c428f0f 100644
+> --- a/fs/xfs/xfs_inode.c
+> +++ b/fs/xfs/xfs_inode.c
+> @@ -142,12 +142,12 @@ xfs_ilock_attr_map_shared(
+>   *
+>   * Basic locking order:
+>   *
+> - * i_rwsem -> i_mmap_lock -> page_lock -> i_ilock
+> + * s_dax_sem -> i_rwsem -> i_mmap_lock -> page_lock -> i_ilock
+>   *
+>   * mmap_sem locking order:
+>   *
+>   * i_rwsem -> page lock -> mmap_sem
+> - * mmap_sem -> i_mmap_lock -> page_lock
+> + * s_dax_sem -> mmap_sem -> i_mmap_lock -> page_lock
+>   *
+>   * The difference in mmap_sem locking order mean that we cannot hold the
+>   * i_mmap_lock over syscall based read(2)/write(2) based IO. These IO paths can
+> @@ -182,6 +182,9 @@ xfs_ilock(
+>  	       (XFS_ILOCK_SHARED | XFS_ILOCK_EXCL));
+>  	ASSERT((lock_flags & ~(XFS_LOCK_MASK | XFS_LOCK_SUBCLASS_MASK)) == 0);
+>  
+> +	if (lock_flags & XFS_DAX_EXCL)
+> +		inode_aops_down_write(VFS_I(ip));
 
-Seeing how Linus (and others like myself) are a bit allergic to BUG
-these days, could you add the first paragraph of the above justification
-as a comment adjacent to the BUG_ON(), please? :)
+I largely don't see the point of adding this to xfs_ilock/iunlock.
 
---D
+It's only got one caller, so I don't see much point in adding it to
+an interface that has over a hundred other call sites that don't
+need or use this lock. just open code it where it is needed in the
+ioctl code.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
