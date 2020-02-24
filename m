@@ -2,67 +2,70 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FDD16A499
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2020 12:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 764C216A57D
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2020 12:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbgBXLGw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Feb 2020 06:06:52 -0500
-Received: from mail.windriver.com ([147.11.1.11]:49339 "EHLO
-        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726509AbgBXLGw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Feb 2020 06:06:52 -0500
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail.windriver.com (8.15.2/8.15.2) with ESMTPS id 01OB6hT8007746
-        (version=TLSv1 cipher=AES256-SHA bits=256 verify=FAIL);
-        Mon, 24 Feb 2020 03:06:43 -0800 (PST)
-Received: from pek-lpg-core1.wrs.com (128.224.156.132) by
- ALA-HCA.corp.ad.wrs.com (147.11.189.50) with Microsoft SMTP Server id
- 14.3.468.0; Mon, 24 Feb 2020 03:06:43 -0800
-From:   Robert Yang <liezhi.yang@windriver.com>
-To:     <tytso@mit.edu>
-CC:     <linux-ext4@vger.kernel.org>
-Subject: [PATCH][e2fsprogs] misc/create_inode.c: set dir's mode correctly
-Date:   Mon, 24 Feb 2020 19:08:42 +0800
-Message-ID: <1582542522-97508-1-git-send-email-liezhi.yang@windriver.com>
-X-Mailer: git-send-email 2.7.4
+        id S1727302AbgBXLtb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Feb 2020 06:49:31 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58798 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727282AbgBXLta (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Feb 2020 06:49:30 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id A64588F09A17B4D6FF50;
+        Mon, 24 Feb 2020 19:31:12 +0800 (CST)
+Received: from [127.0.0.1] (10.173.220.179) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.439.0; Mon, 24 Feb 2020
+ 19:31:07 +0800
+Subject: Re: [PATCH] ext4/021: make sure the fdatasync subprocess exits
+To:     Eryu Guan <guaneryu@gmail.com>
+CC:     <fstests@vger.kernel.org>, <linux-ext4@vger.kernel.org>
+References: <20200214022001.15563-1-yi.zhang@huawei.com>
+ <20200223123411.GA3840@desktop>
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+Message-ID: <2c2b8a1b-64a3-8fd7-948f-ea7a777e2cf0@huawei.com>
+Date:   Mon, 24 Feb 2020 19:31:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200223123411.GA3840@desktop>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.220.179]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The dir's mode has been set by ext2fs_mkdir() with umask, so
-reset it to the source's mode in set_inode_extra().
+Hi,
 
-Fixed when source dir's mode is 521, but dst dir's mode is 721 which was
-incorrect.
+On 2020/2/23 20:34, Eryu Guan wrote:
+> On Fri, Feb 14, 2020 at 10:20:01AM +0800, zhangyi (F) wrote:
+>> Now we just kill fdatasync_work process and wait nothing after the
+>> test, so a busy unmount failure may appear if the fdatasync syscall
+>> doesn't return in time.
+>>
+>>   umount: /tmp/scratch: target is busy.
+>>   mount: /tmp/scratch: /dev/sdb already mounted on /tmp/scratch.
+>>   !!! failed to remount /dev/sdb on /tmp/scratch
+>>
+>> This patch kill and wait the xfs_io fdatasync subprocess to make sure
+>> _check_scratch_fs success.
+> 
+> Yeah, that's a problem.
+> 
+> I think you could add another "trap" in fdatasync_work, as what
+> btrfs/036 does:
+> 
+> 	trap "wait; exit" SIGTERM
+> 
+> So xfs_io will be waited by fdatasync_work before exiting.
+> 
 
-Signed-off-by: Robert Yang <liezhi.yang@windriver.com>
----
- misc/create_inode.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Thanks for your suggestion, I will do that.
 
-diff --git a/misc/create_inode.c b/misc/create_inode.c
-index 5161d5e..f82f74e 100644
---- a/misc/create_inode.c
-+++ b/misc/create_inode.c
-@@ -124,7 +124,14 @@ static errcode_t set_inode_extra(ext2_filsys fs, ext2_ino_t ino,
- 	ext2fs_set_i_uid_high(inode, st->st_uid >> 16);
- 	inode.i_gid = st->st_gid;
- 	ext2fs_set_i_gid_high(inode, st->st_gid >> 16);
--	inode.i_mode |= st->st_mode;
-+	/*
-+	 * The dir's mode has been set by ext2fs_mkdir() with umask, so
-+	 * reset it to the source's mode
-+	 */
-+	if S_ISDIR(st->st_mode)
-+		inode.i_mode = LINUX_S_IFDIR | st->st_mode;
-+	else
-+		inode.i_mode |= st->st_mode;
- 	inode.i_atime = st->st_atime;
- 	inode.i_mtime = st->st_mtime;
- 	inode.i_ctime = st->st_ctime;
--- 
-2.7.4
+Thanks,
+Yi.
 
