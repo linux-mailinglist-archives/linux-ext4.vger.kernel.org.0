@@ -2,143 +2,291 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E8316AC35
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2020 17:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E3D16AC90
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Feb 2020 18:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727648AbgBXQxY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Feb 2020 11:53:24 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:42030 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727108AbgBXQxY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Feb 2020 11:53:24 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01OGXk6G161015;
-        Mon, 24 Feb 2020 16:52:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=qQvLoc3+jAuvV02vRfkJ9Yw1PdW1Bn0rhGLTddtKqpU=;
- b=SBdKy4PkCyjA9p4DNjJcshIU3DwIMpNFsdE2tStj9Qp5FXU6ijiLTQcI/7LRWsIjYLHp
- g+0gk8Z5TSTDk2s4zPmxpbnWOQvnveAUuWxvt/Z0AoORrNs51oBxkJVoarDM9RS9uJvV
- vg5W6mivY42ZvhTqMuWEpRFgKI5RbgWnUrrsebAR5s3HuKLknCvQF/jQRGtfR/v4agqY
- xdKIDafPDu/jgv6mKBsTccYFU48Uu8+kPAAP01C1IVt36VjRvxagd24M0Zp/MzxlOE3S
- QPGGuQrkXYxRt1m4fPwQBsQHDD3O0hY7anZZGaWqHkPugsxrYY8jsrzCDvo3W2MQlrRC Hw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2ybvr4mwhb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Feb 2020 16:52:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01OGW70l165513;
-        Mon, 24 Feb 2020 16:52:48 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 2yby5cs488-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 24 Feb 2020 16:52:48 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 01OGq2Tj073644;
-        Mon, 24 Feb 2020 16:52:47 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 2yby5cs464-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 24 Feb 2020 16:52:47 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01OGqjpe019886;
-        Mon, 24 Feb 2020 16:52:45 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 24 Feb 2020 08:52:45 -0800
-Date:   Mon, 24 Feb 2020 08:52:44 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 22/24] iomap: Convert from readpages to readahead
-Message-ID: <20200224165244.GA6731@magnolia>
-References: <20200219210103.32400-1-willy@infradead.org>
- <20200219210103.32400-23-willy@infradead.org>
- <20200220154912.GC19577@infradead.org>
- <20200220165734.GZ24185@bombadil.infradead.org>
- <20200222010013.GH9506@magnolia>
- <20200224043355.GL24185@bombadil.infradead.org>
+        id S1727489AbgBXRCc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Feb 2020 12:02:32 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:42869 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbgBXRCc (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Feb 2020 12:02:32 -0500
+Received: by mail-lj1-f194.google.com with SMTP id d10so10903756ljl.9;
+        Mon, 24 Feb 2020 09:02:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kEZH26El7LbHnMTCcKjSEmfN6drHvY8nyMRzI4reNIs=;
+        b=TVFJJZhRdJI/fSpjbpdQI6bDcDel+iw/0zQxxDld08Aw7jS9pkaP4S7gL1KIXRjASt
+         IbOLcxu6H2RcJ6EhPZgJYr6jyABFDcyr0bdqIs+CC1sUGQrneulNbqxpWvuMk1xJ2+IO
+         73n9p7WAYPuQq4FGB0sW5NsV6xrCjWyTYZHMcisUd4x5qazjyHpVogWe4fPs8E0Omg4l
+         29UDjr9Z++QrwGIM+MyK4jpZ4c3ljaSb2Ikhfx/Ol/Uu8VvAQYl2SYAqqyDVEN61YCel
+         HE7uKpBY6Y8ztwyTnSOB4gOuZFoBkFh2W7c6h5QG4skYoEU5vB31CStaMV36CHsOFXcL
+         sEtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kEZH26El7LbHnMTCcKjSEmfN6drHvY8nyMRzI4reNIs=;
+        b=pBt7hCBmqM60sK6WlPP5w0Gzr8MFgXHZ5xQjEHuOZPR8786NYXmMBdcV1N0XXjoy38
+         mVZNPLnoIusBfsoYcxx6cI6a8VbFwrT+5LsMlCEpRUBG65c2ANUq6yug6wskAsaI/HV1
+         1W9qvUazySa1DxMn/lFl7BTI+Q6Ns7SpEOoxLDW0eogHo5lRm7IF3KrhRJv85/dzreB4
+         CGWCcjTnHvYSHl8wNnMtLpCGbrVLaygX5TCHqIV2IhUb12kBqAvgUKLa3Qi/VvvltSTw
+         yEBcSgJA7LRaipzARjY6B3GBg/a4O+8eSaL61uC7znD1xtQGf8FKS+Yurp8lEVweyCQO
+         V86g==
+X-Gm-Message-State: APjAAAWJvRfw0yQnTJ02rZonzlWa7x0252tVoX0zlULukoM/RcHjVmA4
+        cO9X4Gd9Bma9pM800SSbUAY=
+X-Google-Smtp-Source: APXvYqzWqTNwBzK9Dk1MDN+1y6ZvXjDdggeT6iZFk+01Ar9QCsAhmWLggU3WTMMdR/dDkpakCvGi8A==
+X-Received: by 2002:a2e:a490:: with SMTP id h16mr31419432lji.115.1582563748614;
+        Mon, 24 Feb 2020 09:02:28 -0800 (PST)
+Received: from pc636 ([37.139.158.167])
+        by smtp.gmail.com with ESMTPSA id w3sm6549715ljo.66.2020.02.24.09.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Feb 2020 09:02:27 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 24 Feb 2020 18:02:19 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200224170219.GA21229@pc636>
+References: <20200215233817.GA670792@mit.edu>
+ <20200216121246.GG2935@paulmck-ThinkPad-P72>
+ <20200217160827.GA5685@pc636>
+ <20200217193314.GA12604@mit.edu>
+ <20200218170857.GA28774@pc636>
+ <20200221120618.GA194360@google.com>
+ <20200221132817.GB194360@google.com>
+ <20200221192152.GA6306@pc636>
+ <20200222221253.GB191380@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200224043355.GL24185@bombadil.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9541 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- clxscore=1015 adultscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 mlxscore=0 impostorscore=0 suspectscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002240129
+In-Reply-To: <20200222221253.GB191380@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Feb 23, 2020 at 08:33:55PM -0800, Matthew Wilcox wrote:
-> On Fri, Feb 21, 2020 at 05:00:13PM -0800, Darrick J. Wong wrote:
-> > On Thu, Feb 20, 2020 at 08:57:34AM -0800, Matthew Wilcox wrote:
-> > > On Thu, Feb 20, 2020 at 07:49:12AM -0800, Christoph Hellwig wrote:
-> > > +/**
-> > > + * iomap_readahead - Attempt to read pages from a file.
-> > > + * @rac: Describes the pages to be read.
-> > > + * @ops: The operations vector for the filesystem.
-> > > + *
-> > > + * This function is for filesystems to call to implement their readahead
-> > > + * address_space operation.
-> > > + *
-> > > + * Context: The file is pinned by the caller, and the pages to be read are
-> > > + * all locked and have an elevated refcount.  This function will unlock
-> > > + * the pages (once I/O has completed on them, or I/O has been determined to
-> > > + * not be necessary).  It will also decrease the refcount once the pages
-> > > + * have been submitted for I/O.  After this point, the page may be removed
-> > > + * from the page cache, and should not be referenced.
-> > > + */
+> > > > 
+> > > > Overall this implementation is nice. You are basically avoiding allocating
+> > > > rcu_head like Ted did by using the array-of-pointers technique we used for
+> > > > the previous kfree_rcu() work.
+> > > > 
+> > > > One thing stands out, the path where we could not allocate a page for the new
+> > > > block node:
+> > > > 
+> > > > > @@ -3061,6 +3148,11 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > > >         if (krcp->initialized)
+> > > > >                 spin_unlock(&krcp->lock);
+> > > > >         local_irq_restore(flags);
+> > > > > +
+> > > > > +       if (!skip_call_rcu) {
+> > > > > +               synchronize_rcu();
+> > > > > +               kvfree(ptr_to_free);
+> > > > 
+> > > > We can't block, it has to be async otherwise everything else blocks, and I
+> > > > think this can also be used from interrupt handlers which would at least be
+> > > > an SWA violation. So perhaps it needs to allocate an rcu_head wrapper object
+> > > > itself for the 'emergeny case' and use the regular techniques.
+> > > > 
+> > > > Another thing that stands out is the code duplication, if we can make this
+> > > > reuse as much as of the previous code as possible, that'd be great. I'd like
+> > > > to avoid bvcached and bvhead if possible. Maybe we can store information
+> > > > about the fact that this is a 'special object' in some of the lower-order
+> > > > bits of the pointer. Then we can detect that it is 'special' and free it
+> > > > using kvfree() during the reclaim
 > > > 
-> > > > Isn't the context documentation something that belongs into the aop
-> > > > documentation?  I've never really seen the value of duplicating this
-> > > > information in method instances, as it is just bound to be out of date
-> > > > rather sooner than later.
-> > > 
-> > > I'm in two minds about it as well.  There's definitely no value in
-> > > providing kernel-doc for implementations of a common interface ... so
-> > > rather than fixing the nilfs2 kernel-doc, I just deleted it.  But this
-> > > isn't just the implementation, like nilfs2_readahead() is, it's a library
-> > > function for filesystems to call, so it deserves documentation.  On the
-> > > other hand, there's no real thought to this on the part of the filesystem;
-> > > the implementation just calls this with the appropriate ops pointer.
-> > > 
-> > > Then again, I kind of feel like we need more documentation of iomap to
-> > > help filesystems convert to using it.  But maybe kernel-doc isn't the
-> > > mechanism to provide that.
+> > > Basically what I did different is:
+> > > 1. Use the existing kfree_rcu_bulk_data::records array to store the
+> > >    to-be-freed array.
+> > > 2. In case of emergency, allocate a new wrapper and tag the pointer.
+> > >    Read the tag later to figure its an array wrapper and do additional kvfree.
+> > >
+> > I see your point and agree that duplication is odd and we should avoid
+> > it as much as possible. Also, i like the idea of using the wrapper as
+> > one more chance to build a "head" for headless object.
 > > 
-> > I think we need more documentation of the parts of iomap where it can
-> > call back into the filesystem (looking at you, iomap_dio_ops).
+> > I did not mix pointers because then you will need to understand what is what.
+> 
+> Well that's why I brought up the whole tagging idea. Then you don't need
+> separate pointers to manage either (edit: but maybe you do as you mentioned
+> vfree below..).
+> 
+Right. We can use tagging idea to separate kmalloc/vmalloc pointers to
+place them into different arrays. Because kvmalloc() can return either
+SLAB pointer or vmalloc one.
+
+> > It is OK for "emergency" path, because we simply can just serialize it by kvfree()
+> > call, it checks inside what the ptr address belong to:
 > > 
-> > I'm not opposed to letting this comment stay, though I don't see it as
-> > all that necessary since iomap_readahead implements a callout that's
-> > documented in vfs.rst and is thus subject to all the constraints listed
-> > in the (*readahead) documentation.
+> > <snip>
+> > void kvfree(const void *addr)
+> > {
+> >     if (is_vmalloc_addr(addr))
+> >         vfree(addr);
+> >     else
+> >         kfree(addr);
+> > }
+> > <snip>
+> > 
+> > whereas normal path, i mean "bulk one" where we store pointers into array
+> > would be broken. We can not call kfree_bulk(array, nr_entries) if the passed
+> > array contains "vmalloc" pointers, because it is different allocator. Therefore,
+> > i deliberately have made it as a special case.
 > 
-> Right.  And that's not currently in kernel-doc format, but should be.
-> Something for a different patchset, IMO.
+> Ok, it would be nice if you can verify that ptr_to_free passed to
+> kfree_call_rcu() is infact a vmalloc pointer.
 > 
-> What we need documenting _here_ is the conditions under which the
-> iomap_ops are called so the filesystem author doesn't need to piece them
-> together from three different places.  Here's what I currently have:
-> 
->  * Context: The @ops callbacks may submit I/O (eg to read the addresses of
->  * blocks from disc), and may wait for it.  The caller may be trying to
->  * access a different page, and so sleeping excessively should be avoided.
->  * It may allocate memory, but should avoid large allocations.  This
->  * function is called with memalloc_nofs set, so allocations will not cause
->  * the filesystem to be reentered.
+We can do that. We can check it by calling is_vmalloc_addr() on ptr. 
+So it is possible to differentiate.
 
-How large? :)
+> > > Perhaps the synchronize_rcu() should be done from a workqueue handler
+> > > to prevent IRQ crapping out?
+> > >
+> > I think so. For example one approach would be:
+> > 
+> > <snip>
+> > struct free_deferred {
+> >  struct llist_head list;
+> >  struct work_struct wq;
+> > };
+> > static DEFINE_PER_CPU(struct free_deferred, free_deferred);
+> > 
+> > static void free_work(struct work_struct *w)
+> > {
+> >   struct free_deferred *p = container_of(w, struct free_deferred, wq);
+> >   struct llist_node *t, *llnode;
+> > 
+> >   synchronize_rcu();
+> > 
+> >   llist_for_each_safe(llnode, t, llist_del_all(&p->list))
+> >      vfree((void *)llnode, 1);
+> > }
+> > 
+> > static inline void free_deferred_common(void *ptr_to_free)
+> > {
+> >     struct free_deferred *p = raw_cpu_ptr(&free_deferred);
+> > 
+> >     if (llist_add((struct llist_node *)ptr_to_free, &p->list))
+> 
+> Would this not corrupt the ptr_to_free pointer which readers might still be
+> accessing since grace period has not yet ended?
+> 
+> We cannot touch the ptr_to_free pointer until after the grace period has
+> ended.
+> 
+Right you are. We can do that only after grace period is passed, 
+after synchronize_rcu(). Good point :)
 
---D
+> > }
+> > <snip>
+> > 
+> > and it seems it should work. Because we know that KMALLOC_MIN_SIZE
+> > can not be less then machine word:
+> > 
+> > /*
+> >  * Kmalloc subsystem.
+> >  */
+> >  #ifndef KMALLOC_MIN_SIZE
+> >  #define KMALLOC_MIN_SIZE (1 << KMALLOC_SHIFT_LOW)
+> >  #endif
+> > 
+> > when it comes to vmalloc pointer it can not be less then one PAGE_SIZE :)
+> > 
+> > Another thing:
+> > 
+> > we are talking about "headless" variant that is special, therefore it
+> > implies to have some restrictions, since we need a dynamic memory to
+> > drive it. For example "headless" object can be freed from preemptible
+> > context only, because freeing can be inlined:
+> > 
+> > <snip>
+> > +   // NOT SURE if permitted due to IRQ. Maybe we
+> > +   // should try doing this from WQ?
+> > +   synchronize_rcu();
+> > +   kvfree(ptr);
+> > <snip>
+> > 
+> > Calling synchronize_rcu() from the IRQ context will screw the system up :)
+> > Because the current CPU will never pass the QS state if i do not miss something.
+> 
+> Yes are you right, calling synchronize_rcu() from IRQ context is a strict no-no.
+> 
+> I believe we could tap into the GFP_ATOMIC emergency memory pool for this
+> emergency situation. This pool is used for emergency cases. I think in
+> emergency we can grow an rcu_head on this pool.
+> 
+> > Also kvfree() itself can be called from the preemptible context only, excluding IRQ,
+> > there is a special path for it, otherwise vfree() can sleep. 
+> 
+> Ok that's good to know.
+> 
+> > > debug_objects bits wouldn't work obviously for the !emergency kvfree case,
+> > > not sure what we can do there.
+> > >
+> > Agree.
+> > 
+> > Thank you, Joel, for your comments!
+> 
+> No problem, I think we have a couple of ideas here.
+> 
+> What I also wanted to do was (may be after all this), see if we can create an
+> API for head-less kfree based on the same ideas. Not just for arrays for for
+> any object. Calling it, say, kfree_rcu_headless() and then use the bulk array
+> as we have been doing. That would save any users from having an rcu_head --
+> of course with all needed warnings about memory allocation failure. Vlad,
+> What do you think? Paul, any thoughts on this?
+> 
+I like it. It would be more clean interface. Also there are places where
+people do not embed the rcu_head into their stuctures for some reason
+and do like:
+
+
+<snip>
+    synchronize_rcu();
+    kfree(p);
+<snip>
+
+<snip>
+urezki@pc636:~/data/ssd/coding/linux-rcu$ find ./ -name "*.c" | xargs grep -C 1 -rn "synchronize_rcu" | grep kfree
+./arch/x86/mm/mmio-mod.c-314-           kfree(found_trace);
+./kernel/module.c-3910- kfree(mod->args);
+./kernel/trace/ftrace.c-5078-                   kfree(direct);
+./kernel/trace/ftrace.c-5155-                   kfree(direct);
+./kernel/trace/trace_probe.c-1087-      kfree(link);
+./fs/nfs/sysfs.c-113-           kfree(old);
+./fs/ext4/super.c-1701- kfree(old_qname);
+./net/ipv4/gre.mod.c-36-        { 0xfc3fcca2, "kfree_skb" },
+./net/core/sysctl_net_core.c-143-                               kfree(cur);
+./drivers/crypto/nx/nx-842-pseries.c-1010-      kfree(old_devdata);
+./drivers/misc/vmw_vmci/vmci_context.c-692-             kfree(notifier);
+./drivers/misc/vmw_vmci/vmci_event.c-213-       kfree(s);
+./drivers/infiniband/core/device.c:2162:                         * synchronize_rcu before the netdev is kfreed, so we
+./drivers/infiniband/hw/hfi1/sdma.c-1337-       kfree(dd->per_sdma);
+./drivers/net/ethernet/myricom/myri10ge/myri10ge.c-3582-        kfree(mgp->ss);
+./drivers/net/ethernet/myricom/myri10ge/myri10ge.mod.c-156-     { 0x37a0cba, "kfree" },
+./drivers/net/ethernet/mellanox/mlx5/core/fpga/tls.c:286:       synchronize_rcu(); /* before kfree(flow) */
+./drivers/net/ethernet/mellanox/mlxsw/core.c-1504-      kfree(rxl_item);
+./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6648- kfree(adapter->mbox_log);
+./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6650- kfree(adapter);
+./drivers/block/drbd/drbd_receiver.c-3804-      kfree(old_net_conf);
+./drivers/block/drbd/drbd_receiver.c-4176-                      kfree(old_disk_conf);
+./drivers/block/drbd/drbd_state.c-2074-         kfree(old_conf);
+./drivers/block/drbd/drbd_nl.c-1689-    kfree(old_disk_conf);
+./drivers/block/drbd/drbd_nl.c-2522-    kfree(old_net_conf);
+./drivers/block/drbd/drbd_nl.c-2935-            kfree(old_disk_conf);
+./drivers/mfd/dln2.c-178-               kfree(i);
+./drivers/staging/fwserial/fwserial.c-2122-     kfree(peer);
+<snip>
+
+--
+Vlad Rezki
