@@ -2,224 +2,209 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC9516B773
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 03:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C7916B789
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 03:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgBYCAT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Feb 2020 21:00:19 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:52646 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726962AbgBYCAT (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Feb 2020 21:00:19 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Tqr7L2F_1582596012;
-Received: from 30.15.229.215(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0Tqr7L2F_1582596012)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 25 Feb 2020 10:00:13 +0800
-Subject: Re: [PATCH v3] io_uring: fix poll_list race for
- SETUP_IOPOLL|SETUP_SQPOLL
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com
-References: <20200224070354.3774-1-xiaoguang.wang@linux.alibaba.com>
- <6ee28cc6-3c4c-a5cb-75d4-83bccf93fb2a@kernel.dk>
-From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Message-ID: <ca4803dc-af0c-5d6e-834a-343e3100f6f3@linux.alibaba.com>
-Date:   Tue, 25 Feb 2020 10:00:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1728793AbgBYCHJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Feb 2020 21:07:09 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:34478 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728489AbgBYCHJ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Feb 2020 21:07:09 -0500
+Received: by mail-qk1-f194.google.com with SMTP id 11so6521286qkd.1
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Feb 2020 18:07:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3mznXbsbUvYPe8XJoSstKhdOEAESChOu2NvRTa96OnE=;
+        b=ZiHhh13QsXN70Ie3m4A3k+ikWm/78R8O4lbb6ufEmPiNprHKas4nJapW16m4s7I3CU
+         mj2KFCW2rDiqVgsFKSfWuO2FUK7IY0jOtPL5T4wNI1uel1sCEV4idiAq3FZ7S0xWhAY0
+         j4SluSDH+xbyLZ3FNnHgmFO2/2eMNYASTTDd4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3mznXbsbUvYPe8XJoSstKhdOEAESChOu2NvRTa96OnE=;
+        b=QC92lc6nH7lHlV0/XsWM1I6O4uuKGVydN+a2Mzl/BY2DsMRhgTUPnQnzTLqlWQSYs2
+         +NQOCjf8pw9OGXBB82UsVtUTLV4mIg5B8D6YcJ1POXCuzi5iJDnRA2kqz0uQZUHJDL5b
+         oxaRIRCXSuE/gdfZhEvGI39zUqxIybjoNKv8+5rgYGU9G1cM9XFFkFk2Rki561n62kKN
+         wZ5Z4YeGUemuFWODCm3T60joueRDMUeGvOknjqlObQFCF2iaQ1x4A62ht4IDBviLwcQR
+         RI1QjcaiCLqFKmw8pg4BUulr4uWdMVMwvydg5ZQwlz3d7FEApWbfqQ2sEpeMzgSKQkz/
+         eAXw==
+X-Gm-Message-State: APjAAAVQ0r92RHG2P8cv6n2ECXdCAWpj27tIXIkg3ZqcFTccJd1k2h9v
+        k5tHi7FRqiq3RdB8wqGL22Ke6Q==
+X-Google-Smtp-Source: APXvYqxXN2kGyj8r+eTUAi0jxwBVvuizCQ+ex4C8syV7lN0zNdne2k4oiZ5pVdfLyYXtocBcJDpgKA==
+X-Received: by 2002:a05:620a:1037:: with SMTP id a23mr53404655qkk.82.1582596427646;
+        Mon, 24 Feb 2020 18:07:07 -0800 (PST)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id o127sm1850657qke.92.2020.02.24.18.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Feb 2020 18:07:06 -0800 (PST)
+Date:   Mon, 24 Feb 2020 21:07:05 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200225020705.GA253171@google.com>
+References: <20200217160827.GA5685@pc636>
+ <20200217193314.GA12604@mit.edu>
+ <20200218170857.GA28774@pc636>
+ <20200220045233.GC476845@mit.edu>
+ <20200221003035.GC2935@paulmck-ThinkPad-P72>
+ <20200221131455.GA4904@pc636>
+ <20200221202250.GK2935@paulmck-ThinkPad-P72>
+ <20200222222415.GC191380@google.com>
+ <20200223011018.GB2935@paulmck-ThinkPad-P72>
+ <20200224174030.GA22138@pc636>
 MIME-Version: 1.0
-In-Reply-To: <6ee28cc6-3c4c-a5cb-75d4-83bccf93fb2a@kernel.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200224174030.GA22138@pc636>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-hi,
+On Mon, Feb 24, 2020 at 06:40:30PM +0100, Uladzislau Rezki wrote:
+> On Sat, Feb 22, 2020 at 05:10:18PM -0800, Paul E. McKenney wrote:
+> > On Sat, Feb 22, 2020 at 05:24:15PM -0500, Joel Fernandes wrote:
+> > > On Fri, Feb 21, 2020 at 12:22:50PM -0800, Paul E. McKenney wrote:
+> > > > On Fri, Feb 21, 2020 at 02:14:55PM +0100, Uladzislau Rezki wrote:
+> > > > > On Thu, Feb 20, 2020 at 04:30:35PM -0800, Paul E. McKenney wrote:
+> > > > > > On Wed, Feb 19, 2020 at 11:52:33PM -0500, Theodore Y. Ts'o wrote:
+> > > > > > > On Tue, Feb 18, 2020 at 06:08:57PM +0100, Uladzislau Rezki wrote:
+> > > > > > > > now it becomes possible to use it like: 
+> > > > > > > > 	...
+> > > > > > > > 	void *p = kvmalloc(PAGE_SIZE);
+> > > > > > > > 	kvfree_rcu(p);
+> > > > > > > > 	...
+> > > > > > > > also have a look at the example in the mm/list_lru.c diff.
+> > > > > > > 
+> > > > > > > I certainly like the interface, thanks!  I'm going to be pushing
+> > > > > > > patches to fix this using ext4_kvfree_array_rcu() since there are a
+> > > > > > > number of bugs in ext4's online resizing which appear to be hitting
+> > > > > > > multiple cloud providers (with reports from both AWS and GCP) and I
+> > > > > > > want something which can be easily backported to stable kernels.
+> > > > > > > 
+> > > > > > > But once kvfree_rcu() hits mainline, I'll switch ext4 to use it, since
+> > > > > > > your kvfree_rcu() is definitely more efficient than my expedient
+> > > > > > > jury-rig.
+> > > > > > > 
+> > > > > > > I don't feel entirely competent to review the implementation, but I do
+> > > > > > > have one question.  It looks like the rcutiny implementation of
+> > > > > > > kfree_call_rcu() isn't going to do the right thing with kvfree_rcu(p).
+> > > > > > > Am I missing something?
+> > > > > > 
+> > > > > > Good catch!  I believe that rcu_reclaim_tiny() would need to do
+> > > > > > kvfree() instead of its current kfree().
+> > > > > > 
+> > > > > > Vlad, anything I am missing here?
+> > > > > >
+> > > > > Yes something like that. There are some open questions about
+> > > > > realization, when it comes to tiny RCU. Since we are talking
+> > > > > about "headless" kvfree_rcu() interface, i mean we can not link
+> > > > > freed "objects" between each other, instead we should place a
+> > > > > pointer directly into array that will be drained later on.
+> > > > > 
+> > > > > It would be much more easier to achieve that if we were talking
+> > > > > about the interface like: kvfree_rcu(p, rcu), but that is not our
+> > > > > case :)
+> > > > > 
+> > > > > So, for CONFIG_TINY_RCU we should implement very similar what we
+> > > > > have done for CONFIG_TREE_RCU or just simply do like Ted has done
+> > > > > with his
+> > > > > 
+> > > > > void ext4_kvfree_array_rcu(void *to_free)
+> > > > > 
+> > > > > i mean:
+> > > > > 
+> > > > >    local_irq_save(flags);
+> > > > >    struct foo *ptr = kzalloc(sizeof(*ptr), GFP_ATOMIC);
+> > > > > 
+> > > > >    if (ptr) {
+> > > > >            ptr->ptr = to_free;
+> > > > >            call_rcu(&ptr->rcu, kvfree_callback);
+> > > > >    }
+> > > > >    local_irq_restore(flags);
+> > > > 
+> > > > We really do still need the emergency case, in this case for when
+> > > > kzalloc() returns NULL.  Which does indeed mean an rcu_head in the thing
+> > > > being freed.  Otherwise, you end up with an out-of-memory deadlock where
+> > > > you could free memory only if you had memor to allocate.
+> > > 
+> > > Can we rely on GFP_ATOMIC allocations for these? These have emergency memory
+> > > pools which are reserved.
+> > 
+> > You can, at least until the emergency memory pools are exhausted.
+> > 
+> > > I was thinking a 2 fold approach (just thinking out loud..):
+> > > 
+> > > If kfree_call_rcu() is called in atomic context or in any rcu reader, then
+> > > use GFP_ATOMIC to grow an rcu_head wrapper on the atomic memory pool and
+> > > queue that.
+> > > 
+> I am not sure if that is acceptable, i mean what to do when GFP_ATOMIC
+> gets failed in atomic context? Or we can just consider it as out of
+> memory and another variant is to say that headless object can be called
+> from preemptible context only.
 
-> On 2/24/20 12:03 AM, Xiaoguang Wang wrote:
->> After making ext4 support iopoll method:
->>    let ext4_file_operations's iopoll method be iomap_dio_iopoll(),
->> we found fio can easily hang in fio_ioring_getevents() with below fio
->> job:
->>      rm -f testfile; sync;
->>      sudo fio -name=fiotest -filename=testfile -iodepth=128 -thread
->> -rw=write -ioengine=io_uring  -hipri=1 -sqthread_poll=1 -direct=1
->> -bs=4k -size=10G -numjobs=8 -runtime=2000 -group_reporting
->> with IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL enabled.
->>
->> There are two issues that results in this hang, one reason is that
->> when IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL are enabled, fio
->> does not use io_uring_enter to get completed events, it relies on
->> kernel io_sq_thread to poll for completed events.
->>
->> Another reason is that there is a race: when io_submit_sqes() in
->> io_sq_thread() submits a batch of sqes, variable 'inflight' will
->> record the number of submitted reqs, then io_sq_thread will poll for
->> reqs which have been added to poll_list. But note, if some previous
->> reqs have been punted to io worker, these reqs will won't be in
->> poll_list timely. io_sq_thread() will only poll for a part of previous
->> submitted reqs, and then find poll_list is empty, reset variable
->> 'inflight' to be zero. If app just waits these deferred reqs and does
->> not wake up io_sq_thread again, then hang happens.
->>
->> For app that entirely relies on io_sq_thread to poll completed requests,
->> let io_iopoll_req_issued() wake up io_sq_thread properly when adding new
->> element to poll_list.
-> 
-> I'm still not a huge fan of this solution. A few comments below:
-> 
->> +			if (!list_empty(&ctx->poll_list))
->> +				io_iopoll_getevents(ctx, &nr_events, 0);
->> +			if (list_empty(&ctx->poll_list))
->>   				timeout = jiffies + ctx->sq_thread_idle;
-> 
-> Just use an else?
-> 
->> +			/*
->> +			 * While doing polled IO, before going to sleep, we need
->> +			 * to check if there are new reqs added to poll_list, it
->> +			 * is because reqs may have been punted to io worker and
->> +			 * will be added to poll_list later, hence check the
->> +			 * poll_list again, meanwhile we need to hold uring_lock
->> +			 * to do this check, otherwise we may lose wakeup event
->> +			 * in io_iopoll_req_issued().
->> +			 */
->> +			if (needs_uring_lock) {
->> +				mutex_lock(&ctx->uring_lock);
->> +				if (!list_empty(&ctx->poll_list)) {
->> +					mutex_unlock(&ctx->uring_lock);
->> +					cond_resched();
->> +					continue;
->> +				}
->> +			}
-> 
-> Can't we just put this below the prepare_to_wait? I'm not convinced
-> this is closing the gaps, there should be no need to hold the uring
-> lock over this long stretch.
-> 
-> Modified version of yours below
-> 
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index d961945cb332..ffd9bfa84d86 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -1821,6 +1821,10 @@ static void io_iopoll_req_issued(struct io_kiocb *req)
->   		list_add(&req->list, &ctx->poll_list);
->   	else
->   		list_add_tail(&req->list, &ctx->poll_list);
-> +
-> +	if ((ctx->flags & IORING_SETUP_SQPOLL) &&
-> +	    wq_has_sleeper(&ctx->sqo_wait))
-> +		wake_up(&ctx->sqo_wait);
->   }
->   
->   static void io_file_put(struct io_submit_state *state)
-> @@ -5086,9 +5090,8 @@ static int io_sq_thread(void *data)
->   	const struct cred *old_cred;
->   	mm_segment_t old_fs;
->   	DEFINE_WAIT(wait);
-> -	unsigned inflight;
->   	unsigned long timeout;
-> -	int ret;
-> +	int ret = 0;
->   
->   	complete(&ctx->completions[1]);
->   
-> @@ -5096,39 +5099,19 @@ static int io_sq_thread(void *data)
->   	set_fs(USER_DS);
->   	old_cred = override_creds(ctx->creds);
->   
-> -	ret = timeout = inflight = 0;
-> +	timeout = jiffies + ctx->sq_thread_idle;
->   	while (!kthread_should_park()) {
->   		unsigned int to_submit;
->   
-> -		if (inflight) {
-> +		if (!list_empty(&ctx->poll_list)) {
->   			unsigned nr_events = 0;
->   
-> -			if (ctx->flags & IORING_SETUP_IOPOLL) {
-> -				/*
-> -				 * inflight is the count of the maximum possible
-> -				 * entries we submitted, but it can be smaller
-> -				 * if we dropped some of them. If we don't have
-> -				 * poll entries available, then we know that we
-> -				 * have nothing left to poll for. Reset the
-> -				 * inflight count to zero in that case.
-> -				 */
-> -				mutex_lock(&ctx->uring_lock);
-> -				if (!list_empty(&ctx->poll_list))
-> -					io_iopoll_getevents(ctx, &nr_events, 0);
-> -				else
-> -					inflight = 0;
-> -				mutex_unlock(&ctx->uring_lock);
-> -			} else {
-> -				/*
-> -				 * Normal IO, just pretend everything completed.
-> -				 * We don't have to poll completions for that.
-> -				 */
-> -				nr_events = inflight;
-> -			}
-> -
-> -			inflight -= nr_events;
-> -			if (!inflight)
-> +			mutex_lock(&ctx->uring_lock);
-> +			if (!list_empty(&ctx->poll_list))
-> +				io_iopoll_getevents(ctx, &nr_events, 0);
-> +			else
->   				timeout = jiffies + ctx->sq_thread_idle;
-> +			mutex_unlock(&ctx->uring_lock);
->   		}
->   
->   		to_submit = io_sqring_entries(ctx);
-> @@ -5157,7 +5140,7 @@ static int io_sq_thread(void *data)
->   			 * more IO, we should wait for the application to
->   			 * reap events and wake us up.
->   			 */
-> -			if (inflight ||
-> +			if (!list_empty(&ctx->poll_list) ||
->   			    (!time_after(jiffies, timeout) && ret != -EBUSY &&
->   			    !percpu_ref_is_dying(&ctx->refs))) {
->   				cond_resched();
-> @@ -5167,6 +5150,19 @@ static int io_sq_thread(void *data)
->   			prepare_to_wait(&ctx->sqo_wait, &wait,
->   						TASK_INTERRUPTIBLE);
->   
-> +			/*
-> +			 * While doing polled IO, before going to sleep, we need
-> +			 * to check if there are new reqs added to poll_list, it
-> +			 * is because reqs may have been punted to io worker and
-> +			 * will be added to poll_list later, hence check the
-> +			 * poll_list again.
-> +			 */
-> +			if ((ctx->flags & IORING_SETUP_IOPOLL) &&
-> +			    !list_empty_careful(&ctx->poll_list)) {
-> +				finish_wait(&ctx->sqo_wait, &wait);
-> +				continue;
-> +			}
-> +
->   			/* Tell userspace we may need a wakeup call */
->   			ctx->rings->sq_flags |= IORING_SQ_NEED_WAKEUP;
->   			/* make sure to read SQ tail after writing flags */
-> @@ -5194,8 +5190,7 @@ static int io_sq_thread(void *data)
->   		mutex_lock(&ctx->uring_lock);
->   		ret = io_submit_sqes(ctx, to_submit, NULL, -1, &cur_mm, true);
->   		mutex_unlock(&ctx->uring_lock);
-> -		if (ret > 0)
-> -			inflight += ret;
-> +		timeout = jiffies + ctx->sq_thread_idle;
->   	}
->   
->   	set_fs(old_fs);
-> 
-Thanks for your modified version, it works well and looks much better, after applying
-this version, I also don't see this hang issue again.
- From your codes, now I understand why we don't need to hold uring_lock, thanks.
-Should I send this v4 version with your codes?
+Yes that makes sense, and we can always put disclaimer in the API's comments
+saying if this object is expected to be freed a lot, then don't use the
+headless-API to be extra safe.
 
-Regards,
-Xiaoguang Wang
+BTW, GFP_ATOMIC the documentation says if GFP_ATOMIC reserves are depleted,
+the kernel can even panic some times, so if GFP_ATOMIC allocation fails, then
+there seems to be bigger problems in the system any way. I would say let us
+write a patch to allocate there and see what the -mm guys think.
+
+> > > Otherwise, grow an rcu_head on the stack of kfree_call_rcu() and call
+> > > synchronize_rcu() inline with it.
+> > > 
+> > >
+> What do you mean here, Joel? "grow an rcu_head on the stack"?
+
+By "grow on the stack", use the compiler-allocated rcu_head on the
+kfree_rcu() caller's stack.
+
+I meant here to say, if we are not in atomic context, then we use regular
+GFP_KERNEL allocation, and if that fails, then we just use the stack's
+rcu_head and call synchronize_rcu() or even synchronize_rcu_expedited since
+the allocation failure would mean the need for RCU to free some memory is
+probably great.
+
+> > > Use preemptible() andr task_struct's rcu_read_lock_nesting to differentiate
+> > > between the 2 cases.
+> > > 
+> If the current context is preemptable then we can inline synchronize_rcu()
+> together with freeing to handle such corner case, i mean when we are run
+> out of memory.
+
+Ah yes, exactly what I mean.
+
+> As for "task_struct's rcu_read_lock_nesting". Will it be enough just
+> have a look at preempt_count of current process? If we have for example
+> nested rcu_read_locks:
+> 
+> <snip>
+> rcu_read_lock()
+>     rcu_read_lock()
+>         rcu_read_lock()
+> <snip>
+> 
+> the counter would be 3.
+
+No, because preempt_count is not incremented during rcu_read_lock(). RCU
+reader sections can be preempted, they just cannot goto sleep in a reader
+section (unless the kernel is RT).
+
+thanks,
+
+ - Joel
 
