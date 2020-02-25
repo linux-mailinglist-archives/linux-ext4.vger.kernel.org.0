@@ -2,78 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D9B16EC6F
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 18:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D734216EC97
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 18:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731239AbgBYRYN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Feb 2020 12:24:13 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39879 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729817AbgBYRYN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Feb 2020 12:24:13 -0500
-Received: from callcc.thunk.org ([4.28.11.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01PHNurB008220
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 Feb 2020 12:23:58 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 1CA2A4211EF; Tue, 25 Feb 2020 12:23:55 -0500 (EST)
-Date:   Tue, 25 Feb 2020 12:23:55 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jean-Louis Dupond <jean-louis@dupond.be>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: Filesystem corruption after unreachable storage
-Message-ID: <20200225172355.GA14617@mit.edu>
-References: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
- <20200124203725.GH147870@mit.edu>
- <3a7bc899-31d9-51f2-1ea9-b3bef2a98913@dupond.be>
- <20200220155022.GA532518@mit.edu>
- <7376c09c-63e3-488f-fcf8-89c81832ef2d@dupond.be>
- <adc0517d-b46e-2879-f06c-34c3d7b7c5f6@dupond.be>
+        id S1729702AbgBYRgh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Feb 2020 12:36:37 -0500
+Received: from verein.lst.de ([213.95.11.211]:44528 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728051AbgBYRgh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 25 Feb 2020 12:36:37 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6F2B368BE1; Tue, 25 Feb 2020 18:36:33 +0100 (CET)
+Date:   Tue, 25 Feb 2020 18:36:33 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christoph Hellwig <hch@lst.de>, ira.weiny@intel.com,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V4 07/13] fs: Add locking for a dynamic address space
+ operations state
+Message-ID: <20200225173633.GA30843@lst.de>
+References: <20200221004134.30599-1-ira.weiny@intel.com> <20200221004134.30599-8-ira.weiny@intel.com> <20200221174449.GB11378@lst.de> <20200221224419.GW10776@dread.disaster.area> <20200224175603.GE7771@lst.de> <20200225000937.GA10776@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <adc0517d-b46e-2879-f06c-34c3d7b7c5f6@dupond.be>
+In-Reply-To: <20200225000937.GA10776@dread.disaster.area>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 25, 2020 at 02:19:09PM +0100, Jean-Louis Dupond wrote:
-> FYI,
+On Tue, Feb 25, 2020 at 11:09:37AM +1100, Dave Chinner wrote:
+> > No, the original code was broken because it didn't serialize between
+> > DAX and buffer access.
+> > 
+> > Take a step back and look where the problems are, and they are not
+> > mostly with the aops.  In fact the only aop useful for DAX is
+> > is ->writepages, and how it uses ->writepages is actually a bit of
+> > an abuse of that interface.
 > 
-> Just did same test with e2fsprogs 1.45.5 (from buster backports) and kernel
-> 5.4.13-1~bpo10+1.
-> And having exactly the same issue.
-> The VM needs a manual fsck after storage outage.
+> The races are all through the fops, too, which is one of the reasons
+> Darrick mentioned we should probably move this up to file ops
+> level...
+
+But the file ops are very simple to use.  Pass the flag in the iocb,
+and make sure the flag can only changed with i_rwsem held.  That part
+is pretty trivial, the interesting case is mmap because it is so
+spread out.
+
+> > So what we really need it just a way to prevent switching the flag
+> > when a file is mapped,
 > 
-> Don't know if its useful to test with 5.5 or 5.6?
-> But it seems like the issue still exists.
+> That's not sufficient.
+> 
+> We also have to prevent the file from being mapped *while we are
+> switching*. Nothing in the mmap() path actually serialises against
+> filesystem operations, and the initial behavioural checks in the
+> page fault path are similarly unserialised against changing the
+> S_DAX flag.
 
-This is going to be a long shot, but if you could try testing with
-5.6-rc3, or with this commit cherry-picked into a 5.4 or later kernel:
+And the important part here is ->mmap.  If ->mmap doesn't get through
+we are not going to see page faults.
 
-   commit 8eedabfd66b68a4623beec0789eac54b8c9d0fb6
-   Author: wangyan <wangyan122@huawei.com>
-   Date:   Thu Feb 20 21:46:14 2020 +0800
+> > and in the normal read/write path ensure the
+> > flag can't be switch while I/O is going on, which could either be
+> > done by ensuring it is only switched under i_rwsem or equivalent
+> > protection, or by setting the DAX flag once in the iocb similar to
+> > IOCB_DIRECT.
+> 
+> The iocb path is not the problem - that's entirely serialised
+> against S_DAX changes by the i_rwsem. The problem is that we have no
+> equivalent filesystem level serialisation for the entire mmap/page
+> fault path, and it checks S_DAX all over the place.
 
-       jbd2: fix ocfs2 corrupt when clearing block group bits
-       
-       I found a NULL pointer dereference in ocfs2_block_group_clear_bits().
-       The running environment:
-               kernel version: 4.19
-               A cluster with two nodes, 5 luns mounted on two nodes, and do some
-               file operations like dd/fallocate/truncate/rm on every lun with storage
-               network disconnection.
-       
-       The fallocate operation on dm-23-45 caused an null pointer dereference.
-       ...
+Not right now.  We have various IS_DAX checks outside it.  But it is
+easily fixable indeed.
 
-... it would be interesting to see if fixes things for you.  I can't
-guarantee that it will, but the trigger of the failure which wangyan
-found is very similar indeed.
+> /me wonders if the best thing to do is to add a ->fault callout to
+> tell the filesystem to lock/unlock the inode right up at the top of
+> the page fault path, outside even the mmap_sem.  That means all the
+> methods that the page fault calls are protected against S_DAX
+> changes, and it gives us a low cost method of serialising page
+> faults against DIO (e.g. via inode_dio_wait())....
 
-Thanks,
+Maybe.  Especially if it solves real problems and isn't just new
+overhead to add an esoteric feature.
 
-						- Ted
+> 
+> > And they easiest way to get all this done is as a first step to
+> > just allowing switching the flag when no blocks are allocated at
+> > all, similar to how the rt flag works.
+> 
+> False equivalence - it is not similar because the RT flag changes
+> and their associated state checks are *already fully serialised* by
+> the XFS_ILOCK_EXCL. S_DAX accesses have no such serialisation, and
+> that's the problem we need to solve...
+
+And my point is that if we ensure S_DAX can only be checked if there
+are no blocks on the file, is is fairly easy to provide the same
+guarantee.  And I've not heard any argument that we really need more
+flexibility than that.  In fact I think just being able to change it
+on the parent directory and inheriting the flag might be more than
+plenty, which would lead to a very simple implementation without any
+of the crazy overhead in this series.
