@@ -2,73 +2,224 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFFD16B75D
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 02:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC9516B773
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 03:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728735AbgBYBtu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Feb 2020 20:49:50 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:57754 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbgBYBtu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Feb 2020 20:49:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yPstBDWt6d6bgib6lzSxq/HWT4OJnZOw1KjPemQQZhk=; b=nq6XE/tSepneJylkylrJT/pjX0
-        Spd9n665DMmObVCAJQLiBcVE27W55R0GvvnwfhobI0nmTEDz86mNpQ7jYVEvZB4cBHnXuxzpqbtB2
-        dztcP9+wnlj1Npzqvcvw4SBbhcPINCOrW5w/GB5Voz46hys+/yy1cVSQJnvnClSLqQV0BlbT/xSnd
-        Nll+nW4Z23UwGg0w+NmFJ+j5Vj9uN8TwBH0aWud5eMbaqI91DlTxC7X8GQe99Ryifnf+8ekuv6cG5
-        v3Zi+BLESY98iLiL33OQI7hDesuLmsELZwns1M2tRR8quGkyU/jgISoLGdMjNj/zL8NWKAboOxtDf
-        qQluRdMA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j6PM5-0005vC-A1; Tue, 25 Feb 2020 01:49:49 +0000
-Date:   Mon, 24 Feb 2020 17:49:49 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v7 21/24] iomap: Restructure iomap_readpages_actor
-Message-ID: <20200225014949.GS24185@bombadil.infradead.org>
-References: <20200219210103.32400-1-willy@infradead.org>
- <20200219210103.32400-22-willy@infradead.org>
- <20200220154741.GB19577@infradead.org>
- <20200220162404.GY24185@bombadil.infradead.org>
- <20200224221749.GA22231@infradead.org>
+        id S1728541AbgBYCAT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Feb 2020 21:00:19 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:52646 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726962AbgBYCAT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 24 Feb 2020 21:00:19 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Tqr7L2F_1582596012;
+Received: from 30.15.229.215(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0Tqr7L2F_1582596012)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 25 Feb 2020 10:00:13 +0800
+Subject: Re: [PATCH v3] io_uring: fix poll_list race for
+ SETUP_IOPOLL|SETUP_SQPOLL
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com
+References: <20200224070354.3774-1-xiaoguang.wang@linux.alibaba.com>
+ <6ee28cc6-3c4c-a5cb-75d4-83bccf93fb2a@kernel.dk>
+From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Message-ID: <ca4803dc-af0c-5d6e-834a-343e3100f6f3@linux.alibaba.com>
+Date:   Tue, 25 Feb 2020 10:00:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200224221749.GA22231@infradead.org>
+In-Reply-To: <6ee28cc6-3c4c-a5cb-75d4-83bccf93fb2a@kernel.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 02:17:49PM -0800, Christoph Hellwig wrote:
-> On Thu, Feb 20, 2020 at 08:24:04AM -0800, Matthew Wilcox wrote:
-> > On Thu, Feb 20, 2020 at 07:47:41AM -0800, Christoph Hellwig wrote:
-> > > On Wed, Feb 19, 2020 at 01:01:00PM -0800, Matthew Wilcox wrote:
-> > > > From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> > > > 
-> > > > By putting the 'have we reached the end of the page' condition at the end
-> > > > of the loop instead of the beginning, we can remove the 'submit the last
-> > > > page' code from iomap_readpages().  Also check that iomap_readpage_actor()
-> > > > didn't return 0, which would lead to an endless loop.
-> > > 
-> > > I'm obviously biassed a I wrote the original code, but I find the new
-> > > very much harder to understand (not that the previous one was easy, this
-> > > is tricky code..).
-> > 
-> > Agreed, I found the original code hard to understand.  I think this is
-> > easier because now cur_page doesn't leak outside this loop, so it has
-> > an obvious lifecycle.
-> 
-> I really don't like this patch, and would prefer if the series goes
-> ahead without it, as the current sctructure works just fine even
-> with the readahead changes.
+hi,
 
-Dave Chinner specifically asked me to do it this way, so please fight
-amongst yourselves.
+> On 2/24/20 12:03 AM, Xiaoguang Wang wrote:
+>> After making ext4 support iopoll method:
+>>    let ext4_file_operations's iopoll method be iomap_dio_iopoll(),
+>> we found fio can easily hang in fio_ioring_getevents() with below fio
+>> job:
+>>      rm -f testfile; sync;
+>>      sudo fio -name=fiotest -filename=testfile -iodepth=128 -thread
+>> -rw=write -ioengine=io_uring  -hipri=1 -sqthread_poll=1 -direct=1
+>> -bs=4k -size=10G -numjobs=8 -runtime=2000 -group_reporting
+>> with IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL enabled.
+>>
+>> There are two issues that results in this hang, one reason is that
+>> when IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL are enabled, fio
+>> does not use io_uring_enter to get completed events, it relies on
+>> kernel io_sq_thread to poll for completed events.
+>>
+>> Another reason is that there is a race: when io_submit_sqes() in
+>> io_sq_thread() submits a batch of sqes, variable 'inflight' will
+>> record the number of submitted reqs, then io_sq_thread will poll for
+>> reqs which have been added to poll_list. But note, if some previous
+>> reqs have been punted to io worker, these reqs will won't be in
+>> poll_list timely. io_sq_thread() will only poll for a part of previous
+>> submitted reqs, and then find poll_list is empty, reset variable
+>> 'inflight' to be zero. If app just waits these deferred reqs and does
+>> not wake up io_sq_thread again, then hang happens.
+>>
+>> For app that entirely relies on io_sq_thread to poll completed requests,
+>> let io_iopoll_req_issued() wake up io_sq_thread properly when adding new
+>> element to poll_list.
+> 
+> I'm still not a huge fan of this solution. A few comments below:
+> 
+>> +			if (!list_empty(&ctx->poll_list))
+>> +				io_iopoll_getevents(ctx, &nr_events, 0);
+>> +			if (list_empty(&ctx->poll_list))
+>>   				timeout = jiffies + ctx->sq_thread_idle;
+> 
+> Just use an else?
+> 
+>> +			/*
+>> +			 * While doing polled IO, before going to sleep, we need
+>> +			 * to check if there are new reqs added to poll_list, it
+>> +			 * is because reqs may have been punted to io worker and
+>> +			 * will be added to poll_list later, hence check the
+>> +			 * poll_list again, meanwhile we need to hold uring_lock
+>> +			 * to do this check, otherwise we may lose wakeup event
+>> +			 * in io_iopoll_req_issued().
+>> +			 */
+>> +			if (needs_uring_lock) {
+>> +				mutex_lock(&ctx->uring_lock);
+>> +				if (!list_empty(&ctx->poll_list)) {
+>> +					mutex_unlock(&ctx->uring_lock);
+>> +					cond_resched();
+>> +					continue;
+>> +				}
+>> +			}
+> 
+> Can't we just put this below the prepare_to_wait? I'm not convinced
+> this is closing the gaps, there should be no need to hold the uring
+> lock over this long stretch.
+> 
+> Modified version of yours below
+> 
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index d961945cb332..ffd9bfa84d86 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -1821,6 +1821,10 @@ static void io_iopoll_req_issued(struct io_kiocb *req)
+>   		list_add(&req->list, &ctx->poll_list);
+>   	else
+>   		list_add_tail(&req->list, &ctx->poll_list);
+> +
+> +	if ((ctx->flags & IORING_SETUP_SQPOLL) &&
+> +	    wq_has_sleeper(&ctx->sqo_wait))
+> +		wake_up(&ctx->sqo_wait);
+>   }
+>   
+>   static void io_file_put(struct io_submit_state *state)
+> @@ -5086,9 +5090,8 @@ static int io_sq_thread(void *data)
+>   	const struct cred *old_cred;
+>   	mm_segment_t old_fs;
+>   	DEFINE_WAIT(wait);
+> -	unsigned inflight;
+>   	unsigned long timeout;
+> -	int ret;
+> +	int ret = 0;
+>   
+>   	complete(&ctx->completions[1]);
+>   
+> @@ -5096,39 +5099,19 @@ static int io_sq_thread(void *data)
+>   	set_fs(USER_DS);
+>   	old_cred = override_creds(ctx->creds);
+>   
+> -	ret = timeout = inflight = 0;
+> +	timeout = jiffies + ctx->sq_thread_idle;
+>   	while (!kthread_should_park()) {
+>   		unsigned int to_submit;
+>   
+> -		if (inflight) {
+> +		if (!list_empty(&ctx->poll_list)) {
+>   			unsigned nr_events = 0;
+>   
+> -			if (ctx->flags & IORING_SETUP_IOPOLL) {
+> -				/*
+> -				 * inflight is the count of the maximum possible
+> -				 * entries we submitted, but it can be smaller
+> -				 * if we dropped some of them. If we don't have
+> -				 * poll entries available, then we know that we
+> -				 * have nothing left to poll for. Reset the
+> -				 * inflight count to zero in that case.
+> -				 */
+> -				mutex_lock(&ctx->uring_lock);
+> -				if (!list_empty(&ctx->poll_list))
+> -					io_iopoll_getevents(ctx, &nr_events, 0);
+> -				else
+> -					inflight = 0;
+> -				mutex_unlock(&ctx->uring_lock);
+> -			} else {
+> -				/*
+> -				 * Normal IO, just pretend everything completed.
+> -				 * We don't have to poll completions for that.
+> -				 */
+> -				nr_events = inflight;
+> -			}
+> -
+> -			inflight -= nr_events;
+> -			if (!inflight)
+> +			mutex_lock(&ctx->uring_lock);
+> +			if (!list_empty(&ctx->poll_list))
+> +				io_iopoll_getevents(ctx, &nr_events, 0);
+> +			else
+>   				timeout = jiffies + ctx->sq_thread_idle;
+> +			mutex_unlock(&ctx->uring_lock);
+>   		}
+>   
+>   		to_submit = io_sqring_entries(ctx);
+> @@ -5157,7 +5140,7 @@ static int io_sq_thread(void *data)
+>   			 * more IO, we should wait for the application to
+>   			 * reap events and wake us up.
+>   			 */
+> -			if (inflight ||
+> +			if (!list_empty(&ctx->poll_list) ||
+>   			    (!time_after(jiffies, timeout) && ret != -EBUSY &&
+>   			    !percpu_ref_is_dying(&ctx->refs))) {
+>   				cond_resched();
+> @@ -5167,6 +5150,19 @@ static int io_sq_thread(void *data)
+>   			prepare_to_wait(&ctx->sqo_wait, &wait,
+>   						TASK_INTERRUPTIBLE);
+>   
+> +			/*
+> +			 * While doing polled IO, before going to sleep, we need
+> +			 * to check if there are new reqs added to poll_list, it
+> +			 * is because reqs may have been punted to io worker and
+> +			 * will be added to poll_list later, hence check the
+> +			 * poll_list again.
+> +			 */
+> +			if ((ctx->flags & IORING_SETUP_IOPOLL) &&
+> +			    !list_empty_careful(&ctx->poll_list)) {
+> +				finish_wait(&ctx->sqo_wait, &wait);
+> +				continue;
+> +			}
+> +
+>   			/* Tell userspace we may need a wakeup call */
+>   			ctx->rings->sq_flags |= IORING_SQ_NEED_WAKEUP;
+>   			/* make sure to read SQ tail after writing flags */
+> @@ -5194,8 +5190,7 @@ static int io_sq_thread(void *data)
+>   		mutex_lock(&ctx->uring_lock);
+>   		ret = io_submit_sqes(ctx, to_submit, NULL, -1, &cur_mm, true);
+>   		mutex_unlock(&ctx->uring_lock);
+> -		if (ret > 0)
+> -			inflight += ret;
+> +		timeout = jiffies + ctx->sq_thread_idle;
+>   	}
+>   
+>   	set_fs(old_fs);
+> 
+Thanks for your modified version, it works well and looks much better, after applying
+this version, I also don't see this hang issue again.
+ From your codes, now I understand why we don't need to hold uring_lock, thanks.
+Should I send this v4 version with your codes?
+
+Regards,
+Xiaoguang Wang
+
