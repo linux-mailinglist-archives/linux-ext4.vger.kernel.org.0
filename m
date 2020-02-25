@@ -2,106 +2,192 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3720116C1FC
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 14:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03AD16C388
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 15:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729317AbgBYNTJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Feb 2020 08:19:09 -0500
-Received: from apollo.dupie.be ([51.15.19.225]:37696 "EHLO apollo.dupie.be"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728981AbgBYNTJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 Feb 2020 08:19:09 -0500
-Received: from [10.10.1.141] (systeembeheer.combell.com [217.21.177.69])
-        by apollo.dupie.be (Postfix) with ESMTPSA id C97EE80A9BA;
-        Tue, 25 Feb 2020 14:19:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dupond.be; s=dkim;
-        t=1582636747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oiaT6grkcrVKG+eCFYwNFETk5vroLG4d3H4bch6WW5A=;
-        b=ktjayhjYGT7XHWbW3efFTdcYhpQ3zvo0frsxnWmRIwqDJVTQSIhZajHpeq93sEiQ5sgGvj
-        Rb2EW2IWtXonRMrAqKwiWfhd/YSC529zG3/4nRAM48GHNwSn8xQolP6tB0Q/+sKtFKrOP6
-        wpfgKQAiXaiWTilcb/HlwQqzBxjlmV5lbojcfJRI/L0MPYNY7Gu9kU30Sbv1ghJMZ9MJLm
-        V8v6qDBUQPRQbdCUhbzxQFm0x+JHYdwATFBFJKg1h0G2noMJQkn3ab/luWkPFBzX2Ko3U6
-        /pEoV6jtbOMcZxQceOH/hn3URcV0B80JI1ApSbx7oqzKn8RTVcRa7ggrv/N+lg==
-Subject: Re: Filesystem corruption after unreachable storage
-From:   Jean-Louis Dupond <jean-louis@dupond.be>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-References: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
- <20200124203725.GH147870@mit.edu>
- <3a7bc899-31d9-51f2-1ea9-b3bef2a98913@dupond.be>
- <20200220155022.GA532518@mit.edu>
- <7376c09c-63e3-488f-fcf8-89c81832ef2d@dupond.be>
-Message-ID: <adc0517d-b46e-2879-f06c-34c3d7b7c5f6@dupond.be>
-Date:   Tue, 25 Feb 2020 14:19:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <7376c09c-63e3-488f-fcf8-89c81832ef2d@dupond.be>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1730590AbgBYOM4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Feb 2020 09:12:56 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:60393 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730559AbgBYOM4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 25 Feb 2020 09:12:56 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0TqueJ98_1582639960;
+Received: from localhost(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TqueJ98_1582639960)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 25 Feb 2020 22:12:47 +0800
+From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+To:     io-uring@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, axboe@kernel.dk,
+        joseph.qi@linux.alibaba.com,
+        Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Subject: [PATCH v4] io_uring: fix poll_list race for SETUP_IOPOLL|SETUP_SQPOLL
+Date:   Tue, 25 Feb 2020 22:12:08 +0800
+Message-Id: <20200225141208.4208-1-xiaoguang.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-FYI,
+After making ext4 support iopoll method:
+  let ext4_file_operations's iopoll method be iomap_dio_iopoll(),
+we found fio can easily hang in fio_ioring_getevents() with below fio
+job:
+    rm -f testfile; sync;
+    sudo fio -name=fiotest -filename=testfile -iodepth=128 -thread
+-rw=write -ioengine=io_uring  -hipri=1 -sqthread_poll=1 -direct=1
+-bs=4k -size=10G -numjobs=8 -runtime=2000 -group_reporting
+with IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL enabled.
 
-Just did same test with e2fsprogs 1.45.5 (from buster backports) and 
-kernel 5.4.13-1~bpo10+1.
-And having exactly the same issue.
-The VM needs a manual fsck after storage outage.
+There are two issues that results in this hang, one reason is that
+when IORING_SETUP_SQPOLL and IORING_SETUP_IOPOLL are enabled, fio
+does not use io_uring_enter to get completed events, it relies on
+kernel io_sq_thread to poll for completed events.
 
-Don't know if its useful to test with 5.5 or 5.6?
-But it seems like the issue still exists.
+Another reason is that there is a race: when io_submit_sqes() in
+io_sq_thread() submits a batch of sqes, variable 'inflight' will
+record the number of submitted reqs, then io_sq_thread will poll for
+reqs which have been added to poll_list. But note, if some previous
+reqs have been punted to io worker, these reqs will won't be in
+poll_list timely. io_sq_thread() will only poll for a part of previous
+submitted reqs, and then find poll_list is empty, reset variable
+'inflight' to be zero. If app just waits these deferred reqs and does
+not wake up io_sq_thread again, then hang happens.
 
-Thanks
-Jean-Louis
+For app that entirely relies on io_sq_thread to poll completed requests,
+let io_iopoll_req_issued() wake up io_sq_thread properly when adding new
+element to poll_list, and when io_sq_thread prepares to sleep, check
+whether poll_list is empty again, if not empty, continue to poll.
 
-On 20/02/2020 17:14, Jean-Louis Dupond wrote:
->
-> On 20/02/2020 16:50, Theodore Y. Ts'o wrote:
->> On Thu, Feb 20, 2020 at 10:08:44AM +0100, Jean-Louis Dupond wrote:
->>> dumpe2fs -> see attachment
->> Looking at the dumpe2fs output, it's interesting that it was "clean
->> with errors", without any error information being logged in the
->> superblock.  What version of the kernel are you using?  I'm guessing
->> it's a fairly old one?
-> Debian 10 (Buster), with kernel 4.19.67-2+deb10u1
->>> Fsck:
->>> # e2fsck -fy /dev/mapper/vg01-root
->>> e2fsck 1.44.5 (15-Dec-2018)
->> And that's a old version of e2fsck as well.  Is this some kind of
->> stable/enterprise linux distro?
-> Debian 10 indeed.
->>> Pass 1: Checking inodes, blocks, and sizes
->>> Inodes that were part of a corrupted orphan linked list found.  Fix? 
->>> yes
->>>
->>> Inode 165708 was part of the orphaned inode list.  FIXED.
->> OK, this and the rest looks like it's relating to a file truncation or
->> deletion at the time of the disconnection.
->>
->>   > > > On KVM for example there is a unlimited timeout (afaik) until 
->> the
->>>>> storage is
->>>>> back, and the VM just continues running after storage recovery.
->>>> Well, you can adjust the SCSI timeout, if you want to give that a 
->>>> try....
->>> It has some other disadvantages? Or is it quite safe to increment 
->>> the SCSI
->>> timeout?
->> It should be pretty safe.
->>
->> Can you reliably reproduce the problem by disconnecting the machine
->> from the SAN?
-> Yep, can be reproduced by killing the connection to the SAN while the 
-> VM is running, and then after the scsi timeout passed, re-enabled the 
-> SAN connection.
-> Then reset the machine, and then you need to run an fsck to have it 
-> back online.
->>                         - Ted
+Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+
+---
+V2:
+    simple code cleanups and add necessary comments.
+
+V3:
+    rebase to v5.6-rc3.
+
+V4:
+    when io_sq_thread prepares to sleep, move the poll_list empty check
+after prepare_to_wait() and don't try to hold uring_lock.
+---
+ fs/io_uring.c | 59 +++++++++++++++++++++++----------------------------
+ 1 file changed, 27 insertions(+), 32 deletions(-)
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index de650df9ac53..6fcab0f88013 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1821,6 +1821,10 @@ static void io_iopoll_req_issued(struct io_kiocb *req)
+ 		list_add(&req->list, &ctx->poll_list);
+ 	else
+ 		list_add_tail(&req->list, &ctx->poll_list);
++
++	if ((ctx->flags & IORING_SETUP_SQPOLL) &&
++	    wq_has_sleeper(&ctx->sqo_wait))
++		wake_up(&ctx->sqo_wait);
+ }
+ 
+ static void io_file_put(struct io_submit_state *state)
+@@ -5081,9 +5085,8 @@ static int io_sq_thread(void *data)
+ 	const struct cred *old_cred;
+ 	mm_segment_t old_fs;
+ 	DEFINE_WAIT(wait);
+-	unsigned inflight;
+ 	unsigned long timeout;
+-	int ret;
++	int ret = 0;
+ 
+ 	complete(&ctx->completions[1]);
+ 
+@@ -5091,39 +5094,19 @@ static int io_sq_thread(void *data)
+ 	set_fs(USER_DS);
+ 	old_cred = override_creds(ctx->creds);
+ 
+-	ret = timeout = inflight = 0;
++	timeout = jiffies + ctx->sq_thread_idle;
+ 	while (!kthread_should_park()) {
+ 		unsigned int to_submit;
+ 
+-		if (inflight) {
++		if (!list_empty(&ctx->poll_list)) {
+ 			unsigned nr_events = 0;
+ 
+-			if (ctx->flags & IORING_SETUP_IOPOLL) {
+-				/*
+-				 * inflight is the count of the maximum possible
+-				 * entries we submitted, but it can be smaller
+-				 * if we dropped some of them. If we don't have
+-				 * poll entries available, then we know that we
+-				 * have nothing left to poll for. Reset the
+-				 * inflight count to zero in that case.
+-				 */
+-				mutex_lock(&ctx->uring_lock);
+-				if (!list_empty(&ctx->poll_list))
+-					io_iopoll_getevents(ctx, &nr_events, 0);
+-				else
+-					inflight = 0;
+-				mutex_unlock(&ctx->uring_lock);
+-			} else {
+-				/*
+-				 * Normal IO, just pretend everything completed.
+-				 * We don't have to poll completions for that.
+-				 */
+-				nr_events = inflight;
+-			}
+-
+-			inflight -= nr_events;
+-			if (!inflight)
++			mutex_lock(&ctx->uring_lock);
++			if (!list_empty(&ctx->poll_list))
++				io_iopoll_getevents(ctx, &nr_events, 0);
++			else
+ 				timeout = jiffies + ctx->sq_thread_idle;
++			mutex_unlock(&ctx->uring_lock);
+ 		}
+ 
+ 		to_submit = io_sqring_entries(ctx);
+@@ -5152,7 +5135,7 @@ static int io_sq_thread(void *data)
+ 			 * more IO, we should wait for the application to
+ 			 * reap events and wake us up.
+ 			 */
+-			if (inflight ||
++			if (!list_empty(&ctx->poll_list) ||
+ 			    (!time_after(jiffies, timeout) && ret != -EBUSY &&
+ 			    !percpu_ref_is_dying(&ctx->refs))) {
+ 				cond_resched();
+@@ -5162,6 +5145,19 @@ static int io_sq_thread(void *data)
+ 			prepare_to_wait(&ctx->sqo_wait, &wait,
+ 						TASK_INTERRUPTIBLE);
+ 
++			/*
++			 * While doing polled IO, before going to sleep, we need
++			 * to check if there are new reqs added to poll_list, it
++			 * is because reqs may have been punted to io worker and
++			 * will be added to poll_list later, hence check the
++			 * poll_list again.
++			 */
++			if ((ctx->flags & IORING_SETUP_IOPOLL) &&
++			    !list_empty_careful(&ctx->poll_list)) {
++				finish_wait(&ctx->sqo_wait, &wait);
++				continue;
++			}
++
+ 			/* Tell userspace we may need a wakeup call */
+ 			ctx->rings->sq_flags |= IORING_SQ_NEED_WAKEUP;
+ 			/* make sure to read SQ tail after writing flags */
+@@ -5189,8 +5185,7 @@ static int io_sq_thread(void *data)
+ 		mutex_lock(&ctx->uring_lock);
+ 		ret = io_submit_sqes(ctx, to_submit, NULL, -1, &cur_mm, true);
+ 		mutex_unlock(&ctx->uring_lock);
+-		if (ret > 0)
+-			inflight += ret;
++		timeout = jiffies + ctx->sq_thread_idle;
+ 	}
+ 
+ 	set_fs(old_fs);
+-- 
+2.17.2
+
