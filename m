@@ -2,85 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7DA16EF22
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 20:37:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1385916F0A6
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 21:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729536AbgBYThW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Feb 2020 14:37:22 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21873 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728146AbgBYThW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 Feb 2020 14:37:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582659441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3454YjUXRoDS+24Lzxnu4Pv0NqG7YV73o/VGu7/5u2E=;
-        b=MmFIV2bCFfKsScL4zbRKXb9IbJaKNNlhasHYPnSW6EodaAzOvlGhIFBPFqnHN2hU2xfdmc
-        6IZuIE8eXvoviUr+/7eQLNDd9ekMwTwuGpgD/oH4iQg2jCOn2fAejJX50YRRR0sEn1RQZh
-        WXBCorgyRMvo86IbzlBo0yzLQoCcLLI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-9ulGlCEBOoewJwoiFtQzDg-1; Tue, 25 Feb 2020 14:37:17 -0500
-X-MC-Unique: 9ulGlCEBOoewJwoiFtQzDg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2852C8017CC;
-        Tue, 25 Feb 2020 19:37:15 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C0FC65C296;
-        Tue, 25 Feb 2020 19:37:13 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>, jhallida@redhat.com
-Cc:     Dave Chinner <david@fromorbit.com>, ira.weiny@intel.com,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V4 07/13] fs: Add locking for a dynamic address space operations state
-References: <20200221004134.30599-1-ira.weiny@intel.com>
-        <20200221004134.30599-8-ira.weiny@intel.com>
-        <20200221174449.GB11378@lst.de>
-        <20200221224419.GW10776@dread.disaster.area>
-        <20200224175603.GE7771@lst.de>
-        <20200225000937.GA10776@dread.disaster.area>
-        <20200225173633.GA30843@lst.de>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Tue, 25 Feb 2020 14:37:12 -0500
-In-Reply-To: <20200225173633.GA30843@lst.de> (Christoph Hellwig's message of
-        "Tue, 25 Feb 2020 18:36:33 +0100")
-Message-ID: <x49fteyh313.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1729686AbgBYUxo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Feb 2020 15:53:44 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:58204 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728714AbgBYUxo (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 25 Feb 2020 15:53:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0nIut/TecVaZsuHVmLbUyjVdlBhfWH56z72PpkYyH98=; b=HBvYBNsDTr9+FUVJVQUVxq/OqU
+        Ud9jyuqW9J/D1v90ZliQbd4Lk0nN6wXxl8Po84ngJ9W7ilUdcLllAZ33NNbNlcERx6u5ASsJGvOUA
+        htzO4FNw04/6DfNGG4TOS3R7YB+q0LVQdwAuOuFWNYjDSGNY7JQ9NIgJndphNL8kTzETxiv3eNDIw
+        qsPpY8L9zwRsWMHntYbjMf/l3PL8+IyqV0zK4kdFshac192EdwZCRSAGxPB7ht0qodrrWy2C/MIM/
+        d6XkpjeA94drQYvJgNB+P7XskG1WldKAjE1E+6zXbBNXRvjGY2RIya/WAgnsIV2clYvvZIrSmrwiv
+        V55Qsz8w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1j6hD4-0004he-P4; Tue, 25 Feb 2020 20:53:42 +0000
+Date:   Tue, 25 Feb 2020 12:53:42 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, hch@infradead.org,
+        darrick.wong@oracle.com
+Subject: Re: [PATCH v2] iomap: return partial I/O count on error in
+ iomap_dio_bio_actor
+Message-ID: <20200225205342.GA12066@infradead.org>
+References: <20200220152355.5ticlkptc7kwrifz@fiona>
+ <20200221045110.612705204E@d06av21.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200221045110.612705204E@d06av21.portsmouth.uk.ibm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> writes:
+On Fri, Feb 21, 2020 at 10:21:04AM +0530, Ritesh Harjani wrote:
+> >   		if (dio->error) {
+> >   			iov_iter_revert(dio->submit.iter, copied);
+> > -			copied = ret = 0;
+> > +			ret = 0;
+> >   			goto out;
+> >   		}
+> 
+> But if I am seeing this correctly, even after there was a dio->error
+> if you return copied > 0, then the loop in iomap_dio_rw will continue
+> for next iteration as well. Until the second time it won't copy
+> anything since dio->error is set and from there I guess it may return
+> 0 which will break the loop.
 
-> And my point is that if we ensure S_DAX can only be checked if there
-> are no blocks on the file, is is fairly easy to provide the same
-> guarantee.  And I've not heard any argument that we really need more
-> flexibility than that.  In fact I think just being able to change it
-> on the parent directory and inheriting the flag might be more than
-> plenty, which would lead to a very simple implementation without any
-> of the crazy overhead in this series.
+In addition to that copied is also iov_iter_reexpand call.  We don't
+really need the re-expand in case of errors, and in fact we also
+have the iov_iter_revert call before jumping out, so this will
+need a little bit more of an audit and properly documented in the
+commit log.
 
-I know of one user who had at least mentioned it to me, so I cc'd him.
-Jonathan, can you describe your use case for being able to change a
-file between dax and non-dax modes?  Or, if I'm misremembering, just
-correct me?
+> 
+> Is this the correct flow? Shouldn't the while loop doing
+> iomap_apply in iomap_dio_rw should also break in case of
+> dio->error? Or did I miss anything?
 
-Thanks!
-Jeff
-
+We'd need something there iff we care about a good number of written
+in case of the error.  Goldwyn, can you explain what you need this
+number for in btrfs?  Maybe with a pointer to the current code base?
