@@ -2,174 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E37CC16B64E
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 01:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F5616B758
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 02:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbgBYAJq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 24 Feb 2020 19:09:46 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:54329 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728011AbgBYAJp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 24 Feb 2020 19:09:45 -0500
-Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 899633A1961;
-        Tue, 25 Feb 2020 11:09:39 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j6Nn7-0004kt-Lc; Tue, 25 Feb 2020 11:09:37 +1100
-Date:   Tue, 25 Feb 2020 11:09:37 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V4 07/13] fs: Add locking for a dynamic address space
- operations state
-Message-ID: <20200225000937.GA10776@dread.disaster.area>
-References: <20200221004134.30599-1-ira.weiny@intel.com>
- <20200221004134.30599-8-ira.weiny@intel.com>
- <20200221174449.GB11378@lst.de>
- <20200221224419.GW10776@dread.disaster.area>
- <20200224175603.GE7771@lst.de>
+        id S1728541AbgBYBs5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 24 Feb 2020 20:48:57 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:41017 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728664AbgBYBsy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 24 Feb 2020 20:48:54 -0500
+Received: by mail-qt1-f194.google.com with SMTP id l21so7994746qtr.8
+        for <linux-ext4@vger.kernel.org>; Mon, 24 Feb 2020 17:48:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lQ7GCo7cVwQFlLI9a2rMkRqHCZRbg3JBq4Afyow0Kjw=;
+        b=u9eyt5e7DOImqpnhRcwRosrVhrBa0EeN4ldTCttmJAwxh8och5yVQBD/Z1NimveKBy
+         JCehb1Mlczdo3yY7lezHYj6Vb/0YBlLVrwd0pP8BndXyMnDn+fLGxtXBlh0GiuGmLR5L
+         EI+Dakp7T+mYiWK/qrV58aATfyGciKuEl8DEg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lQ7GCo7cVwQFlLI9a2rMkRqHCZRbg3JBq4Afyow0Kjw=;
+        b=B6FEi1nv51ZKR/AioUq/mJwoD7IZKY7oAdskgcfVjiLJGWJ+fHypF96c+0cr7KKhje
+         T+1qAduLlDXle2v2b1gDam5X9JPvWr0948KgapR8M6JtULAQ/mtSF/qTdEzbdwrVfxhm
+         pH9l4gQwLZYGEt3K8r7KAkLc5DL+/9G7KnOr2Z2MGu2p83Tfu7R6YklP70PcDX7cmX+c
+         sOlPuL2hC4z9xJ26IyObt2RT0CDwqem1bMmqOMxP3gFQ/O6ENuKZYG9Fv6jEcDoinC4o
+         jJvsCpVXsOGmoRDGs8vCTLtzawGvMHHu+bE8mOgcvi00iQ2ypJp0SmPM2RRzvZuMIFWV
+         rQpQ==
+X-Gm-Message-State: APjAAAVE3iEMXK0uaWJtHPdd4skN8fX1voGNVJ+sLKUMXsJmZFSn77aZ
+        ocFJkpcxXsHCGRsm8gMvKT65aQ==
+X-Google-Smtp-Source: APXvYqyp8ViMH6odn4BmLMO9B5r+MxrJYojbCDAawTdrvd0x0I/XETGNP1jpPH6KxNDMYhjH7G1UkQ==
+X-Received: by 2002:ac8:4542:: with SMTP id z2mr49739414qtn.324.1582595333320;
+        Mon, 24 Feb 2020 17:48:53 -0800 (PST)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id f128sm4286143qke.54.2020.02.24.17.48.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Feb 2020 17:48:52 -0800 (PST)
+Date:   Mon, 24 Feb 2020 20:48:51 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>,
+        LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200225014851.GA237890@google.com>
+References: <20200215233817.GA670792@mit.edu>
+ <20200216121246.GG2935@paulmck-ThinkPad-P72>
+ <20200217160827.GA5685@pc636>
+ <20200217193314.GA12604@mit.edu>
+ <20200218170857.GA28774@pc636>
+ <20200221120618.GA194360@google.com>
+ <20200221132817.GB194360@google.com>
+ <20200221192152.GA6306@pc636>
+ <20200222221253.GB191380@google.com>
+ <20200224170219.GA21229@pc636>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200224175603.GE7771@lst.de>
+In-Reply-To: <20200224170219.GA21229@pc636>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
-        a=7-415B0cAAAA:8 a=Nhs22OFJWa-oc4Q03hQA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Feb 24, 2020 at 06:56:03PM +0100, Christoph Hellwig wrote:
-> On Sat, Feb 22, 2020 at 09:44:19AM +1100, Dave Chinner wrote:
-> > > I am very much against this.  There is a reason why we don't support
-> > > changes of ops vectors at runtime anywhere else, because it is
-> > > horribly complicated and impossible to get right.  IFF we ever want
-> > > to change the DAX vs non-DAX mode (which I'm still not sold on) the
-> > > right way is to just add a few simple conditionals and merge the
-> > > aops, which is much easier to reason about, and less costly in overall
-> > > overhead.
+[..]
+> > > > debug_objects bits wouldn't work obviously for the !emergency kvfree case,
+> > > > not sure what we can do there.
+> > > >
+> > > Agree.
+> > > 
+> > > Thank you, Joel, for your comments!
 > > 
-> > *cough*
+> > No problem, I think we have a couple of ideas here.
 > > 
-> > That's exactly what the original code did. And it was broken
-> > because page faults call multiple aops that are dependent on the
-> > result of the previous aop calls setting up the state correctly for
-> > the latter calls. And when S_DAX changes between those calls, shit
-> > breaks.
+> > What I also wanted to do was (may be after all this), see if we can create an
+> > API for head-less kfree based on the same ideas. Not just for arrays for for
+> > any object. Calling it, say, kfree_rcu_headless() and then use the bulk array
+> > as we have been doing. That would save any users from having an rcu_head --
+> > of course with all needed warnings about memory allocation failure. Vlad,
+> > What do you think? Paul, any thoughts on this?
+> > 
+> I like it. It would be more clean interface. Also there are places where
+> people do not embed the rcu_head into their stuctures for some reason
+> and do like:
 > 
-> No, the original code was broken because it didn't serialize between
-> DAX and buffer access.
 > 
-> Take a step back and look where the problems are, and they are not
-> mostly with the aops.  In fact the only aop useful for DAX is
-> is ->writepages, and how it uses ->writepages is actually a bit of
-> an abuse of that interface.
+> <snip>
+>     synchronize_rcu();
+>     kfree(p);
+> <snip>
+> 
+> <snip>
+> urezki@pc636:~/data/ssd/coding/linux-rcu$ find ./ -name "*.c" | xargs grep -C 1 -rn "synchronize_rcu" | grep kfree
+> ./arch/x86/mm/mmio-mod.c-314-           kfree(found_trace);
+> ./kernel/module.c-3910- kfree(mod->args);
+> ./kernel/trace/ftrace.c-5078-                   kfree(direct);
+> ./kernel/trace/ftrace.c-5155-                   kfree(direct);
+> ./kernel/trace/trace_probe.c-1087-      kfree(link);
+> ./fs/nfs/sysfs.c-113-           kfree(old);
+> ./fs/ext4/super.c-1701- kfree(old_qname);
+> ./net/ipv4/gre.mod.c-36-        { 0xfc3fcca2, "kfree_skb" },
+> ./net/core/sysctl_net_core.c-143-                               kfree(cur);
+> ./drivers/crypto/nx/nx-842-pseries.c-1010-      kfree(old_devdata);
+> ./drivers/misc/vmw_vmci/vmci_context.c-692-             kfree(notifier);
+> ./drivers/misc/vmw_vmci/vmci_event.c-213-       kfree(s);
+> ./drivers/infiniband/core/device.c:2162:                         * synchronize_rcu before the netdev is kfreed, so we
+> ./drivers/infiniband/hw/hfi1/sdma.c-1337-       kfree(dd->per_sdma);
+> ./drivers/net/ethernet/myricom/myri10ge/myri10ge.c-3582-        kfree(mgp->ss);
+> ./drivers/net/ethernet/myricom/myri10ge/myri10ge.mod.c-156-     { 0x37a0cba, "kfree" },
+> ./drivers/net/ethernet/mellanox/mlx5/core/fpga/tls.c:286:       synchronize_rcu(); /* before kfree(flow) */
+> ./drivers/net/ethernet/mellanox/mlxsw/core.c-1504-      kfree(rxl_item);
+> ./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6648- kfree(adapter->mbox_log);
+> ./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6650- kfree(adapter);
+> ./drivers/block/drbd/drbd_receiver.c-3804-      kfree(old_net_conf);
+> ./drivers/block/drbd/drbd_receiver.c-4176-                      kfree(old_disk_conf);
+> ./drivers/block/drbd/drbd_state.c-2074-         kfree(old_conf);
+> ./drivers/block/drbd/drbd_nl.c-1689-    kfree(old_disk_conf);
+> ./drivers/block/drbd/drbd_nl.c-2522-    kfree(old_net_conf);
+> ./drivers/block/drbd/drbd_nl.c-2935-            kfree(old_disk_conf);
+> ./drivers/mfd/dln2.c-178-               kfree(i);
+> ./drivers/staging/fwserial/fwserial.c-2122-     kfree(peer);
+> <snip>
 
-The races are all through the fops, too, which is one of the reasons
-Darrick mentioned we should probably move this up to file ops
-level...
+Wow that's pretty amazing, looks like could be very useful.
 
-> So what we really need it just a way to prevent switching the flag
-> when a file is mapped,
+Do you want to continue your patch and then post it, and we can discuss it?
+Or happy to take it as well.
 
-That's not sufficient.
+We could split work into 3 parts:
+1. Make changes for 2 separate per-CPU arrays. One for vfree and one for kfree.
+2. Add headless support for both as alternative API.
+3. Handle the low memory case somehow (I'll reply to the other thread).
 
-We also have to prevent the file from being mapped *while we are
-switching*. Nothing in the mmap() path actually serialises against
-filesystem operations, and the initial behavioural checks in the
-page fault path are similarly unserialised against changing the
-S_DAX flag.
+May be we can start with 1. where you can clean up your patch and post, and
+then I/we can work based on that?
 
-e.g. there's a race against ->mmap() with switching the the S_DAX
-flag. In xfs_file_mmap():
+thanks,
 
-        file_accessed(file);
-        vma->vm_ops = &xfs_file_vm_ops;
-        if (IS_DAX(inode))
-                vma->vm_flags |= VM_HUGEPAGE;
+ - Joel
 
-So if this runs while a switch from true to false is occurring,
-we've got a non-dax VMA with huge pages enabled, and the non-dax
-page fault path doesn't support this.
-
-If we are really lucky, we'll have IS_DAX() set just long
-enough to get through this check in xfs_filemap_huge_fault():
-
-        if (!IS_DAX(file_inode(vmf->vma->vm_file)))
-                return VM_FAULT_FALLBACK;
-
-and then we'll get into __xfs_filemap_fault() and block on the
-MMAPLOCK. When we actually get that lock, S_DAX will now be false
-and we have a huge page fault running through a path (page cache IO)
-that doesn't support huge pages...
-
-This is the sort of landmine switching S_DAX without serialisation
-causes. The methods themselves look sane, but it's cross-method
-dependencies for a stable S_DAX flag that is the real problem.
-
-Yes, we can probably fix this by adding XFS_MMAPLOCK_SHARED here,
-but means every filesystem has to solve the same race conditions
-itself. That's hard to get right and easy to get wrong. If the
-VFS/mm subsystem provides the infrastructure needed to use this
-functionality safely, then that is hard for filesystem developers to
-get wrong.....
-
-> and in the normal read/write path ensure the
-> flag can't be switch while I/O is going on, which could either be
-> done by ensuring it is only switched under i_rwsem or equivalent
-> protection, or by setting the DAX flag once in the iocb similar to
-> IOCB_DIRECT.
-
-The iocb path is not the problem - that's entirely serialised
-against S_DAX changes by the i_rwsem. The problem is that we have no
-equivalent filesystem level serialisation for the entire mmap/page
-fault path, and it checks S_DAX all over the place.
-
-It's basically the same limitation that we have with mmap vs direct
-IO - we can't lock out mmap when we do direct IO, so we cannot
-guarantee coherency between the two. Similar here - we cannot
-lockout mmap in any sane way, so we cannot guarantee coherency
-between mmap and changing the S_DAX flag.
-
-That's the underlying problem we need to solve here.
-
-/me wonders if the best thing to do is to add a ->fault callout to
-tell the filesystem to lock/unlock the inode right up at the top of
-the page fault path, outside even the mmap_sem.  That means all the
-methods that the page fault calls are protected against S_DAX
-changes, and it gives us a low cost method of serialising page
-faults against DIO (e.g. via inode_dio_wait())....
-
-> And they easiest way to get all this done is as a first step to
-> just allowing switching the flag when no blocks are allocated at
-> all, similar to how the rt flag works.
-
-False equivalence - it is not similar because the RT flag changes
-and their associated state checks are *already fully serialised* by
-the XFS_ILOCK_EXCL. S_DAX accesses have no such serialisation, and
-that's the problem we need to solve...
-
-In reality, I don't really care how we solve this problem, but we've
-been down the path you are suggesting at least twice before and each
-time we've ended up in a "that doesn't work" corner and had to
-persue other solutions. I don't like going around in circles.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
