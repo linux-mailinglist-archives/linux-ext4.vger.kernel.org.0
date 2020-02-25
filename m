@@ -2,164 +2,150 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA4B16F2B2
-	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 23:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37C316F2D5
+	for <lists+linux-ext4@lfdr.de>; Tue, 25 Feb 2020 23:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729042AbgBYWrr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Feb 2020 17:47:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728770AbgBYWrr (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 Feb 2020 17:47:47 -0500
-Received: from paulmck-ThinkPad-P72.home (unknown [163.114.132.128])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A3AE20732;
-        Tue, 25 Feb 2020 22:47:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1582670866;
-        bh=j/zsh2xhsRGa0zSWKaKjIpm75QoCCLplBUQwSlomtug=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tGx0KQTZH7UfFQLGgJZhost0CK2B6Uo5wKuYcryvp33WJjMiK9DYzP8MkzNDdYL2H
-         /YX7O0PF0rTqcHx4A1BFgB8Yps4acsL0hDhbPT4H1VEYxoqzP7VuAt81B3rjONOmP2
-         RGRpFeRw5IFbhsR5sqJGons1B60ROHmZToV9H5Ts=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 292EF3521A51; Tue, 25 Feb 2020 14:47:45 -0800 (PST)
-Date:   Tue, 25 Feb 2020 14:47:45 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Suraj Jitindar Singh <surajjs@amazon.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
- write operations
-Message-ID: <20200225224745.GX2935@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200218170857.GA28774@pc636>
- <20200220045233.GC476845@mit.edu>
- <20200221003035.GC2935@paulmck-ThinkPad-P72>
- <20200221131455.GA4904@pc636>
- <20200221202250.GK2935@paulmck-ThinkPad-P72>
- <20200222222415.GC191380@google.com>
- <20200223011018.GB2935@paulmck-ThinkPad-P72>
- <20200224174030.GA22138@pc636>
- <20200225020705.GA253171@google.com>
- <20200225185400.GA27919@pc636>
+        id S1729249AbgBYW7s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Feb 2020 17:59:48 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:45885 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728806AbgBYW7r (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 25 Feb 2020 17:59:47 -0500
+Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id A7E1D3A2C51;
+        Wed, 26 Feb 2020 09:59:42 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j6jAz-0004a5-3t; Wed, 26 Feb 2020 09:59:41 +1100
+Date:   Wed, 26 Feb 2020 09:59:41 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V4 09/13] fs/xfs: Add write aops lock to xfs layer
+Message-ID: <20200225225941.GO10776@dread.disaster.area>
+References: <20200221004134.30599-1-ira.weiny@intel.com>
+ <20200221004134.30599-10-ira.weiny@intel.com>
+ <20200224003455.GY10776@dread.disaster.area>
+ <20200224195735.GA11565@iweiny-DESK2.sc.intel.com>
+ <20200224223245.GZ10776@dread.disaster.area>
+ <20200225211228.GB15810@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200225185400.GA27919@pc636>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200225211228.GB15810@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=WlU5GPDpDACU7zcM-uYA:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 25, 2020 at 07:54:00PM +0100, Uladzislau Rezki wrote:
-> > > > > I was thinking a 2 fold approach (just thinking out loud..):
+On Tue, Feb 25, 2020 at 01:12:28PM -0800, Ira Weiny wrote:
+> On Tue, Feb 25, 2020 at 09:32:45AM +1100, Dave Chinner wrote:
+> > On Mon, Feb 24, 2020 at 11:57:36AM -0800, Ira Weiny wrote:
+> > > On Mon, Feb 24, 2020 at 11:34:55AM +1100, Dave Chinner wrote:
+> > > > On Thu, Feb 20, 2020 at 04:41:30PM -0800, ira.weiny@intel.com wrote:
+> > > > > From: Ira Weiny <ira.weiny@intel.com>
 > > > > > 
-> > > > > If kfree_call_rcu() is called in atomic context or in any rcu reader, then
-> > > > > use GFP_ATOMIC to grow an rcu_head wrapper on the atomic memory pool and
-> > > > > queue that.
-> > > > > 
-> > > I am not sure if that is acceptable, i mean what to do when GFP_ATOMIC
-> > > gets failed in atomic context? Or we can just consider it as out of
-> > > memory and another variant is to say that headless object can be called
-> > > from preemptible context only.
-> > 
-> > Yes that makes sense, and we can always put disclaimer in the API's comments
-> > saying if this object is expected to be freed a lot, then don't use the
-> > headless-API to be extra safe.
-> > 
-> Agree.
-> 
-> > BTW, GFP_ATOMIC the documentation says if GFP_ATOMIC reserves are depleted,
-> > the kernel can even panic some times, so if GFP_ATOMIC allocation fails, then
-> > there seems to be bigger problems in the system any way. I would say let us
-> > write a patch to allocate there and see what the -mm guys think.
-> > 
-> OK. It might be that they can offer something if they do not like our
-> approach. I will try to compose something and send the patch to see.
-> The tree.c implementation is almost done, whereas tiny one is on hold.
-> 
-> I think we should support batching as well as bulk interface there.
-> Another way is to workaround head-less object, just to attach the head
-> dynamically using kmalloc() and then call_rcu() but then it will not be
-> a fair headless support :)
-> 
-> What is your view?
-> 
-> > > > > Otherwise, grow an rcu_head on the stack of kfree_call_rcu() and call
-> > > > > synchronize_rcu() inline with it.
-> > > > > 
-> > > > >
-> > > What do you mean here, Joel? "grow an rcu_head on the stack"?
-> > 
-> > By "grow on the stack", use the compiler-allocated rcu_head on the
-> > kfree_rcu() caller's stack.
-> > 
-> > I meant here to say, if we are not in atomic context, then we use regular
-> > GFP_KERNEL allocation, and if that fails, then we just use the stack's
-> > rcu_head and call synchronize_rcu() or even synchronize_rcu_expedited since
-> > the allocation failure would mean the need for RCU to free some memory is
-> > probably great.
-> > 
-> Ah, i got it. I thought you meant something like recursion and then
-> unwinding the stack back somehow :)
-> 
-> > > > > Use preemptible() andr task_struct's rcu_read_lock_nesting to differentiate
-> > > > > between the 2 cases.
-> > > > > 
-> > > If the current context is preemptable then we can inline synchronize_rcu()
-> > > together with freeing to handle such corner case, i mean when we are run
-> > > out of memory.
-> > 
-> > Ah yes, exactly what I mean.
-> > 
-> OK.
-> 
-> > > As for "task_struct's rcu_read_lock_nesting". Will it be enough just
-> > > have a look at preempt_count of current process? If we have for example
-> > > nested rcu_read_locks:
 > > > 
-> > > <snip>
-> > > rcu_read_lock()
-> > >     rcu_read_lock()
-> > >         rcu_read_lock()
-> > > <snip>
+> > > [snip]
 > > > 
-> > > the counter would be 3.
+> > > > > 
+> > > > > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> > > > > index 35df324875db..5b014c428f0f 100644
+> > > > > --- a/fs/xfs/xfs_inode.c
+> > > > > +++ b/fs/xfs/xfs_inode.c
+> > > > > @@ -142,12 +142,12 @@ xfs_ilock_attr_map_shared(
+> > > > >   *
+> > > > >   * Basic locking order:
+> > > > >   *
+> > > > > - * i_rwsem -> i_mmap_lock -> page_lock -> i_ilock
+> > > > > + * s_dax_sem -> i_rwsem -> i_mmap_lock -> page_lock -> i_ilock
+> > > > >   *
+> > > > >   * mmap_sem locking order:
+> > > > >   *
+> > > > >   * i_rwsem -> page lock -> mmap_sem
+> > > > > - * mmap_sem -> i_mmap_lock -> page_lock
+> > > > > + * s_dax_sem -> mmap_sem -> i_mmap_lock -> page_lock
+> > > > >   *
+> > > > >   * The difference in mmap_sem locking order mean that we cannot hold the
+> > > > >   * i_mmap_lock over syscall based read(2)/write(2) based IO. These IO paths can
+> > > > > @@ -182,6 +182,9 @@ xfs_ilock(
+> > > > >  	       (XFS_ILOCK_SHARED | XFS_ILOCK_EXCL));
+> > > > >  	ASSERT((lock_flags & ~(XFS_LOCK_MASK | XFS_LOCK_SUBCLASS_MASK)) == 0);
+> > > > >  
+> > > > > +	if (lock_flags & XFS_DAX_EXCL)
+> > > > > +		inode_aops_down_write(VFS_I(ip));
+> > > > 
+> > > > I largely don't see the point of adding this to xfs_ilock/iunlock.
+> > > > 
+> > > > It's only got one caller, so I don't see much point in adding it to
+> > > > an interface that has over a hundred other call sites that don't
+> > > > need or use this lock. just open code it where it is needed in the
+> > > > ioctl code.
+> > > 
+> > > I know it seems overkill but if we don't do this we need to code a flag to be
+> > > returned from xfs_ioctl_setattr_dax_invalidate().  This flag is then used in
+> > > xfs_ioctl_setattr_get_trans() to create the transaction log item which can then
+> > > be properly used to unlock the lock in xfs_inode_item_release()
+> > > 
+> > > I don't know of a cleaner way to communicate to xfs_inode_item_release() to
+> > > unlock i_aops_sem after the transaction is complete.
 > > 
-> > No, because preempt_count is not incremented during rcu_read_lock(). RCU
-> > reader sections can be preempted, they just cannot goto sleep in a reader
-> > section (unless the kernel is RT).
-> > 
-> So in CONFIG_PREEMPT kernel we can identify if we are in atomic or not by
-> using rcu_preempt_depth() and in_atomic(). When it comes to !CONFIG_PREEMPT
-> then we skip it and consider as atomic. Something like:
+> > We manually unlock inodes after transactions in many cases -
+> > anywhere we do a rolling transaction, the inode locks do not get
+> > released by the transaction. Hence for a one-off case like this it
+> > doesn't really make sense to push all this infrastructure into the
+> > transaction subsystem. Especially as we can manually lock before and
+> > unlock after the transaction context without any real complexity.
 > 
-> <snip>
-> static bool is_current_in_atomic()
-> {
-> #ifdef CONFIG_PREEMPT_RCU
+> So does xfs_trans_commit() operate synchronously?
 
-If possible: if (IS_ENABLED(CONFIG_PREEMPT_RCU))
+What do you mean by "synchronously", and what are you expecting to
+occur (a)synchronously with respect to filesystem objects and/or
+on-disk state?
 
-Much nicer than #ifdef, and I -think- it should work in this case.
+Keep in mid that the xfs transaction subsystem is a complex
+asynchronous IO engine full of feedback loops and resource
+management, so asking if something is "synchronous" without any
+other context is a difficult question to answer :)
 
-							Thanx, Paul
+> I want to understand this better because I have fought with a lot of ABBA
+> issues with these locks.  So...  can I hold the lock until after
+> xfs_trans_commit() and safely unlock it there... because the XFS_MMAPLOCK_EXCL,
+> XFS_IOLOCK_EXCL, and XFS_ILOCK_EXCL will be released at that point?  Thus
+> preserving the following lock order.
 
->     if (!rcu_preempt_depth() && !in_atomic())
->         return false;
-> #endif
-> 
->     return true;
-> }
-> <snip>
-> 
-> Thanks!
-> 
-> --
-> Vlad Rezki
+See how operations like xfs_create, xfs_unlink, etc work. The don't
+specify flags to xfs_ijoin(), and so the transaction commits don't
+automatically unlock the inode. This is necessary so that rolling
+transactions are executed atomically w.r.t. inode access - no-one
+can lock and access the inode while a multi-commit rolling
+transaction on the inode is on-going.
+
+In this case it's just a single commit and we don't need to keep
+it locked after the change is made, so we can unlock the inode
+on commit. So for the XFS internal locks the code is fine and
+doesn't need to change. We just need to wrap the VFS aops lock (if
+we keep it) around the outside of all the XFS locking until the
+transaction commits and unlocks the XFS locks...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
