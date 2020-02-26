@@ -2,116 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F2016F841
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 07:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A05B16FAB3
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 10:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgBZG5N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Feb 2020 01:57:13 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:47864 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgBZG5N (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 01:57:13 -0500
-Received: by mail-il1-f199.google.com with SMTP id k9so2001806ilq.14
-        for <linux-ext4@vger.kernel.org>; Tue, 25 Feb 2020 22:57:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0A/aJuXil3fRC5ZrLYrxKglpBgEk4ru362RxrN9hh+E=;
-        b=c/Xd3ZAoejL1If5l4snL8f80PsV7wNH+vDqv9ZwGemSo32eaUeWg9VTGCRuhA2NQ0M
-         cdQ7ow3hZzNGNKWfRxe989hMQ/gEwT2/NAUNqkNFgEQqDCCP483kXKK94dluLG0sAlQF
-         0596m5dZGIHfWOVLV7lFvE3ln4PGNX2Pix99dihzj7sRoC5AsZdjSUhTHjyBvQMG6fRI
-         En3voDE6IDD2pRaRqIqyhKepaOXgkIWMg4DXr8SrogWxavbA3Y/yKFfL46seYTp3DM8x
-         5PWQHwfoflrWvfS8RxOzoMKtVXCVF13bC8+Ww+ZkqOFRgK4M57Fjk1QAA2uEJOP2jW10
-         /ZTQ==
-X-Gm-Message-State: APjAAAXQdMFAiqZE5MANgcdXnKrnG07tseU+7Ye3i4dCBH35M2fNLUqd
-        E2k/W17iCapaE+CuiMUpoG/bOLQJup+Kx6X4yUr/mQG+7coU
-X-Google-Smtp-Source: APXvYqyV/rMRdskpKjSHWEFPaRIKm1VB0/+VtKT2u9fmyU+7gwY/A3JVWR+TPyIwdYf2cRV/mCpX0Zvuw0gq4/zlBtr7VtcV/5/V
+        id S1727457AbgBZJ3J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Feb 2020 04:29:09 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32689 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727451AbgBZJ3I (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 04:29:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1582709347;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RNaeJf+Y7W3nqj/Iutjp5fRx0FEV1X+IuW8sp//EwUw=;
+        b=FieGxo6lQ0Wk47DUg08Kjo87jox1jZRlliAhUB1ygS2msCU2/+yRIh5eD/cDV2HCCeR77M
+        oswmO/lVShSUf9tag+libis8yYHQyhivVs2pxaW0sKTR1rdUIC29j9D+cs1rn7oMuxvq59
+        krlljfjcQz0MezC85SjabeI/8/jGVHM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-rW6VEPUJOpKfz0IxePnoJw-1; Wed, 26 Feb 2020 04:29:03 -0500
+X-MC-Unique: rW6VEPUJOpKfz0IxePnoJw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DAB6190D340;
+        Wed, 26 Feb 2020 09:29:01 +0000 (UTC)
+Received: from mohegan.the-transcend.com (unknown [10.36.118.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 764D310027BF;
+        Wed, 26 Feb 2020 09:28:58 +0000 (UTC)
+Subject: Re: [PATCH V4 07/13] fs: Add locking for a dynamic address space
+ operations state
+To:     Jeff Moyer <jmoyer@redhat.com>, Christoph Hellwig <hch@lst.de>
+Cc:     Dave Chinner <david@fromorbit.com>, ira.weiny@intel.com,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20200221004134.30599-1-ira.weiny@intel.com>
+ <20200221004134.30599-8-ira.weiny@intel.com> <20200221174449.GB11378@lst.de>
+ <20200221224419.GW10776@dread.disaster.area> <20200224175603.GE7771@lst.de>
+ <20200225000937.GA10776@dread.disaster.area> <20200225173633.GA30843@lst.de>
+ <x49fteyh313.fsf@segfault.boston.devel.redhat.com>
+From:   Jonathan Halliday <jonathan.halliday@redhat.com>
+Message-ID: <a126276c-d252-6050-b6ee-4d6448d45fac@redhat.com>
+Date:   Wed, 26 Feb 2020 09:28:57 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:3f0f:: with SMTP id m15mr2916799ila.164.1582700231027;
- Tue, 25 Feb 2020 22:57:11 -0800 (PST)
-Date:   Tue, 25 Feb 2020 22:57:11 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000e7156059f751d7b@google.com>
-Subject: WARNING in ext4_write_inode
-From:   syzbot <syzbot+1f9dc49e8de2582d90c2@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <x49fteyh313.fsf@segfault.boston.devel.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
 
-syzbot found the following crash on:
+Hi All
 
-HEAD commit:    d2eee258 Merge tag 'for-5.6-rc2-tag' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1706127ee00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e57a6b450fb9883
-dashboard link: https://syzkaller.appspot.com/bug?extid=1f9dc49e8de2582d90c2
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+I'm a middleware developer, focused on how Java (JVM) workloads can 
+benefit from app-direct mode pmem. Initially the target is apps that 
+need a fast binary log for fault tolerance: the classic database WAL use 
+case; transaction coordination systems; enterprise message bus 
+persistence and suchlike. Critically, there are cases where we use log 
+based storage, i.e. it's not the strict 'read rarely, only on recovery' 
+model that a classic db may have, but more of a 'append only, read many 
+times' event stream model.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+Think of the log oriented data storage as having logical segments (let's 
+implement them as files), of which the most recent is being appended to 
+(read_write) and the remaining N-1 older segments are full and sealed, 
+so effectively immutable (read_only) until discarded. The tail segment 
+needs to be in DAX mode for optimal write performance, as the size of 
+the append may be sub-block and we don't want the overhead of the kernel 
+call anyhow. So that's clearly a good fit for putting on a DAX fs mount 
+and using mmap with MAP_SYNC.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+1f9dc49e8de2582d90c2@syzkaller.appspotmail.com
+However, we want fast read access into the segments, to retrieve stored 
+records. The small access index can be built in volatile RAM (assuming 
+we're willing to take the startup overhead of a full file scan at 
+recovery time) but the data itself is big and we don't want to move it 
+all off pmem. Which means the requirements are now different: we want 
+the O/S cache to pull hot data into fast volatile RAM for us, which DAX 
+explicitly won't do. Effectively a poor man's 'memory mode' pmem, rather 
+than app-direct mode, except here we're using the O/S rather than the 
+hardware memory controller to do the cache management for us.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 2697 at fs/ext4/inode.c:5097 ext4_write_inode+0x4eb/0x5b0 fs/ext4/inode.c:5097
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 2697 Comm: xfsaild/loop1 Not tainted 5.6.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1fb/0x318 lib/dump_stack.c:118
- panic+0x264/0x7a9 kernel/panic.c:221
- __warn+0x209/0x210 kernel/panic.c:582
- report_bug+0x1b6/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:174 [inline]
- do_error_trap+0xcf/0x1c0 arch/x86/kernel/traps.c:267
- do_invalid_op+0x36/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:ext4_write_inode+0x4eb/0x5b0 fs/ext4/inode.c:5097
-Code: 65 48 8b 04 25 28 00 00 00 48 3b 45 d0 0f 85 d2 00 00 00 44 89 f8 48 83 c4 38 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 d5 37 72 ff <0f> 0b eb d2 e8 cc 37 72 ff 41 bf fb ff ff ff eb c5 89 d9 80 e1 07
-RSP: 0018:ffffc90001b97700 EFLAGS: 00010293
-RAX: ffffffff8204d1ab RBX: 0000000000000800 RCX: ffff888049612580
-RDX: 0000000000000000 RSI: 0000000000000800 RDI: 0000000000000000
-RBP: ffffc90001b97760 R08: ffffffff8204cd2e R09: ffffed1015d47004
-R10: ffffed1015d47004 R11: 0000000000000000 R12: ffff88809229e588
-R13: ffff888049612580 R14: 0000000000200844 R15: 0000000000000000
- write_inode fs/fs-writeback.c:1312 [inline]
- __writeback_single_inode+0x550/0x620 fs/fs-writeback.c:1511
- writeback_single_inode+0x3b9/0x800 fs/fs-writeback.c:1565
- sync_inode fs/fs-writeback.c:2602 [inline]
- sync_inode_metadata+0x7a/0xc0 fs/fs-writeback.c:2622
- ext4_fsync_nojournal fs/ext4/fsync.c:94 [inline]
- ext4_sync_file+0x4c9/0x890 fs/ext4/fsync.c:172
- vfs_fsync_range+0xfd/0x1a0 fs/sync.c:197
- generic_write_sync include/linux/fs.h:2867 [inline]
- ext4_buffered_write_iter+0x520/0x5c0 fs/ext4/file.c:277
- ext4_file_write_iter+0xb06/0x1810 include/linux/fs.h:796
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write fs/read_write.c:483 [inline]
- __vfs_write+0x5a1/0x740 fs/read_write.c:496
- __kernel_write+0x11d/0x350 fs/read_write.c:515
- do_acct_process+0xf9c/0x1390 kernel/acct.c:522
- slow_acct_process kernel/acct.c:581 [inline]
- acct_process+0x478/0x590 kernel/acct.c:607
- do_exit+0x580/0x2000 kernel/exit.c:791
- kthread+0x350/0x350 kernel/kthread.c:257
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Currently this requires closing the full (read_write) file, then copying 
+it to a non-DAX device and reopening it (read_only) there. Clearly 
+that's expensive and rather tedious. Instead, I'd like to close the 
+MAP_SYNC mmap, then, leaving the file where it is, reopen it in a mode 
+that will instead go via the O/S cache in the traditional manner. Bonus 
+points if I can do it over non-overlapping ranges in a file without 
+closing the DAX mode mmap, since then the segments are entirely logical 
+instead of needing separate physical files.
+
+I note a comment below regarding a per-directly setting, but don't have 
+the background to fully understand what's being suggested. However, I'll 
+note here that I can live with a per-directory granularity, as relinking 
+a file into a new dir is a constant time operation, whilst the move 
+described above isn't. So if a per-directory granularity is easier than 
+a per-file one that's fine, though as a person with only passing 
+knowledge of filesystem design I don't see how having multiple links to 
+a file can work cleanly in that case.
+
+Hope that helps.
+
+Jonathan
+
+P.S. I'll cheekily take the opportunity of having your attention to tack 
+on one minor gripe about the current system: The only way to know if a 
+mmap with MAP_SYNC will work is to try it and catch the error. Which 
+would be reasonable if it were free of side effects.  However, the 
+process requires first expanding the file to at least the size of the 
+desired map, which is done non-atomically i.e. is user visible. There 
+are thus nasty race conditions in the cleanup, where after a failed mmap 
+attempt (e.g the device doesn't support DAX), we try to shrink the file 
+back to its original size, but something else has already opened it at 
+its new, larger size. This is not theoretical: I got caught by it whilst 
+adapting some of our middleware to use pmem.  Therefore, some way to 
+probe the file path for its capability would be nice, much the same as I 
+can e.g. inspect file permissions to (more or less) evaluate if I can 
+write it without actually mutating it.  Thanks!
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On 25/02/2020 19:37, Jeff Moyer wrote:
+> Christoph Hellwig <hch@lst.de> writes:
+> 
+>> And my point is that if we ensure S_DAX can only be checked if there
+>> are no blocks on the file, is is fairly easy to provide the same
+>> guarantee.  And I've not heard any argument that we really need more
+>> flexibility than that.  In fact I think just being able to change it
+>> on the parent directory and inheriting the flag might be more than
+>> plenty, which would lead to a very simple implementation without any
+>> of the crazy overhead in this series.
+> 
+> I know of one user who had at least mentioned it to me, so I cc'd him.
+> Jonathan, can you describe your use case for being able to change a
+> file between dax and non-dax modes?  Or, if I'm misremembering, just
+> correct me?
+> 
+> Thanks!
+> Jeff
+> 
+
+-- 
+Registered in England and Wales under Company Registration No. 03798903 
+Directors: Michael Cunningham, Michael ("Mike") O'Neill, Eric Shander
+
