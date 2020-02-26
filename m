@@ -2,101 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C61117041C
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 17:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 018451704C5
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 17:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgBZQR6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Feb 2020 11:17:58 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:42252 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgBZQR6 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 11:17:58 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01QFvf0S033348;
-        Wed, 26 Feb 2020 16:17:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=WKDZDiIYwkHJ2rTuDV4wlnpR6BBfh5Fu3+ipePDTfXQ=;
- b=zCYArvRaXJmqXBidy/Q5qenDhKRVmcVzrktrvGTdPBebl7sI5xagcFXYUgC2ZTho07tX
- 8THf6oPBRBGDEimP3iO3azzyM8eFBSqhsmbQck3Xo9cvFeTLs8rxZH5Gs7qCs2bqBwep
- kDW0tlB18T7ZAWetfkGwd8DjYJE/ODI8GfgyauamE+0ynyOly7JgozmFqhfZYTLu8Voi
- ZhCEe385XKiZTK+ckxaYG3+QLbPUNsejpIf5y/VwD+yqAsgQdcIAiygRRlOkipSVLX47
- d+GvnJFJeLM5RBiaNxuCxHgL2QL6lTNHVcaDMdu8B9C8eH8Gfs9Irt/KJGDjeL68Z09I Pg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2ydcsrmqqg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Feb 2020 16:17:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01QGELGG110521;
-        Wed, 26 Feb 2020 16:17:45 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2ydcs2fs6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Feb 2020 16:17:45 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01QGHiaR030245;
-        Wed, 26 Feb 2020 16:17:44 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 26 Feb 2020 08:17:43 -0800
-Date:   Wed, 26 Feb 2020 08:17:42 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
-        tytso@mit.edu, linux-ext4@vger.kernel.org,
-        adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
-        hch@infradead.org, cmaiolino@redhat.com
-Subject: Re: [PATCHv3 6/6] Documentation: Correct the description of
- FIEMAP_EXTENT_LAST
-Message-ID: <20200226161742.GB8036@magnolia>
-References: <cover.1582702693.git.riteshh@linux.ibm.com>
- <279638c6939b1f6ef3ab32912cb51da1a967cf8e.1582702694.git.riteshh@linux.ibm.com>
- <20200226130503.GY24185@bombadil.infradead.org>
+        id S1727451AbgBZQq6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Feb 2020 11:46:58 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:39396 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726490AbgBZQqz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 11:46:55 -0500
+Received: by mail-oi1-f195.google.com with SMTP id 18so144605oij.6
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Feb 2020 08:46:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jfFrdPdZ9FoWsLEItIHfFzP9ymFVjyGzad5UqI1rEBE=;
+        b=LLkXP/3YzNaP8jdt0z93QGulQGLXQX0Trzd+WFJYkXo7XFWuAJ6wZlyGff03QwBHLf
+         4Plc4q/Qd0QJCdIf1e9GoeaXEwKZlw9ETZjCukpkMrdt9ZR/Sr44zYE50Gip8IOl5r/m
+         JYB1LSlrJ5+0Ka91jrB29f9SbGT869H3/DqAXOp34IH/Yoc3vP+//hshViJUUDDqS/LJ
+         QNCuX04I8VWPdsbprpmw1cyzBOjBzRkd1MECp+iNhZ3/lxaXqckVfJPRynNgiP/ijnQg
+         eiPa77p4MyvubAypJgQy1RxojQg1rNwgRioANNu+yBxI55olFfbCnrSGU/LHQ65MMRHT
+         vO+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jfFrdPdZ9FoWsLEItIHfFzP9ymFVjyGzad5UqI1rEBE=;
+        b=gf1N+zsCb5HgCKArT7tgWYyTCpvNBikm4h2mHwur6s/aDPjJBnhQA3pFwO2rPKrwXI
+         JxSYYdXOkK8WKikq1gypgqGFu9hMjhL68FBaNS/7Hi2siQ7eIH0l0Mg8zqv+yt+i778Z
+         H3pJ0gTrFZAdaUZAVl7+X/a6FmvLDdvIc10QZsFcQaBVHYPzI1pyidI+5Cz5xJa9q94v
+         3YKa0ztPU5dGnMhvBvc35j4ElPETZcfUIIljcf0JZ8WXmhb/fqWFJMvf/P8XoyTQN0bv
+         ZGQHkMRIA/lh58niH0NFBVXtj4tQ50Z2IksRlJQA2OXukigVJFtIXCZhQwYUCKjrlU/E
+         SLFA==
+X-Gm-Message-State: APjAAAVbtjMfev6wyUMTAxemX/2lTrg5IgFGtPJYCE7bjQq2pFdPUsQv
+        oRKPuvWseFP1NDRn2qqjQ9YrAuDUu2/3rj1ApQZ2UA==
+X-Google-Smtp-Source: APXvYqxqs6rTVc9eevxeNThlba+uZVaIe7nbgX9rqBRXGHLdPOffytT7975QEGYC3CSiSUYJqJj/25GH1DMT/gSZElU=
+X-Received: by 2002:aca:4c9:: with SMTP id 192mr4075244oie.105.1582735614183;
+ Wed, 26 Feb 2020 08:46:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200226130503.GY24185@bombadil.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9543 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002260111
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9543 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 spamscore=0 impostorscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002260111
+References: <20200221004134.30599-1-ira.weiny@intel.com> <20200221004134.30599-8-ira.weiny@intel.com>
+ <20200221174449.GB11378@lst.de> <20200221224419.GW10776@dread.disaster.area>
+ <20200224175603.GE7771@lst.de> <20200225000937.GA10776@dread.disaster.area>
+ <20200225173633.GA30843@lst.de> <x49fteyh313.fsf@segfault.boston.devel.redhat.com>
+ <a126276c-d252-6050-b6ee-4d6448d45fac@redhat.com>
+In-Reply-To: <a126276c-d252-6050-b6ee-4d6448d45fac@redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 26 Feb 2020 08:46:42 -0800
+Message-ID: <CAPcyv4iuWpHi-0SK_HS0zmfH87=G64U47VhthhpTjDCw_BMG8A@mail.gmail.com>
+Subject: Re: [PATCH V4 07/13] fs: Add locking for a dynamic address space
+ operations state
+To:     Jonathan Halliday <jonathan.halliday@redhat.com>
+Cc:     Jeff Moyer <jmoyer@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <david@fromorbit.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 05:05:03AM -0800, Matthew Wilcox wrote:
-> On Wed, Feb 26, 2020 at 03:27:08PM +0530, Ritesh Harjani wrote:
-> > Currently FIEMAP_EXTENT_LAST is not working consistently across
-> > different filesystem's fiemap implementations and thus this feature
-> > may be broken. So fix the documentation about this flag to meet the
-> > right expectations.
-> 
-> Are you saying filesystems have both false positives and false negatives?
-> I can understand how a filesystem might fail to set FIEMAP_EXTENT_LAST,
-> but not how a filesystem might set it when there's actually another
-> extent beyond this one.
-> 
-> >  * FIEMAP_EXTENT_LAST
-> > -This is the last extent in the file. A mapping attempt past this
-> > -extent will return nothing.
-> > +This is generally the last extent in the file. A mapping attempt past this
-> > +extent may return nothing. But the user must still confirm by trying to map
-> > +past this extent, since different filesystems implement this differently.
+On Wed, Feb 26, 2020 at 1:29 AM Jonathan Halliday
+<jonathan.halliday@redhat.com> wrote:
+>
+>
+> Hi All
+>
+> I'm a middleware developer, focused on how Java (JVM) workloads can
+> benefit from app-direct mode pmem. Initially the target is apps that
+> need a fast binary log for fault tolerance: the classic database WAL use
+> case; transaction coordination systems; enterprise message bus
+> persistence and suchlike. Critically, there are cases where we use log
+> based storage, i.e. it's not the strict 'read rarely, only on recovery'
+> model that a classic db may have, but more of a 'append only, read many
+> times' event stream model.
+>
+> Think of the log oriented data storage as having logical segments (let's
+> implement them as files), of which the most recent is being appended to
+> (read_write) and the remaining N-1 older segments are full and sealed,
+> so effectively immutable (read_only) until discarded. The tail segment
+> needs to be in DAX mode for optimal write performance, as the size of
+> the append may be sub-block and we don't want the overhead of the kernel
+> call anyhow. So that's clearly a good fit for putting on a DAX fs mount
+> and using mmap with MAP_SYNC.
+>
+> However, we want fast read access into the segments, to retrieve stored
+> records. The small access index can be built in volatile RAM (assuming
+> we're willing to take the startup overhead of a full file scan at
+> recovery time) but the data itself is big and we don't want to move it
+> all off pmem. Which means the requirements are now different: we want
+> the O/S cache to pull hot data into fast volatile RAM for us, which DAX
+> explicitly won't do. Effectively a poor man's 'memory mode' pmem, rather
+> than app-direct mode, except here we're using the O/S rather than the
+> hardware memory controller to do the cache management for us.
+>
+> Currently this requires closing the full (read_write) file, then copying
+> it to a non-DAX device and reopening it (read_only) there. Clearly
+> that's expensive and rather tedious. Instead, I'd like to close the
+> MAP_SYNC mmap, then, leaving the file where it is, reopen it in a mode
+> that will instead go via the O/S cache in the traditional manner. Bonus
+> points if I can do it over non-overlapping ranges in a file without
+> closing the DAX mode mmap, since then the segments are entirely logical
+> instead of needing separate physical files.
 
-"This flag means nothing and can be set arbitrarily by the fs for the lulz."
+Hi John,
 
-Yuck.  I was really hoping for "This is set on the last extent record in
-the dataset generated by the query parameters", particularly becaue
-that's how e2fsprogs utilties interpret that flag.
+IIRC we chatted about this at PIRL, right?
 
---D
+At the time it sounded more like mixed mode dax, i.e. dax writes, but
+cached reads. To me that's an optimization to optionally use dax for
+direct-I/O writes, with its existing set of page-cache coherence
+warts, and not a capability to dynamically switch the dax-mode.
+mmap+MAP_SYNC seems the wrong interface for this. This writeup
+mentions bypassing kernel call overhead, but I don't see how a
+dax-write syscall is cheaper than an mmap syscall plus fault. If
+direct-I/O to a dax capable file bypasses the block layer, isn't that
+about the maximum of kernel overhead that can be cut out of this use
+case? Otherwise MAP_SYNC is a facility to achieve efficient sub-block
+update-in-place writes not append writes.
