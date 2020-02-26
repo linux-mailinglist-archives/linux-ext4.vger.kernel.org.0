@@ -2,57 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFEA170344
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 16:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BF417037A
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 16:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728578AbgBZPzr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Feb 2020 10:55:47 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:51956 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728073AbgBZPzq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 10:55:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Fzv0zma6qNHzEymKrEWyqTitusIASlSI8vJyXmG2rJc=; b=D7H2FzbBGfi2n+JNeba/gdYqyy
-        bIjC1RC6wR8orJYPP9f8xd8bov3RjjVYOnJzPe4diHk1oURUDw4BV87duYPM2LJJrWdTBqmzpMF6r
-        9X2a5sGhpu0+buC9IRIR1bBaMIOAXeLtrATuvG+kr0DrATZKcq4PSvGuIAwRUaiK5inwJmAqaoAOM
-        YINQWRRM41eE9hnRno5tCSxgMLPD2IOINRAp6v/scLRjaH5rOK4h3Hb/xRyMOMzVvARLqj0KljAoZ
-        7ICJnrM6/FvMGFtaePismAf6+PJGACByG2yuJ9/sf046zxiIcfgjPWk5Feob+HTJIp05kw9i6hMj5
-        Z3yvlKsA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j6z1t-0007rU-Kj; Wed, 26 Feb 2020 15:55:21 +0000
-Date:   Wed, 26 Feb 2020 07:55:21 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     tytso@mit.edu, viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
-        snitzer@redhat.com, jack@suse.cz, ebiggers@google.com,
-        riteshh@linux.ibm.com, krisman@collabora.com, surajjs@amazon.com,
-        dmonakhov@gmail.com, mbobrowski@mbobrowski.org, enwlinux@gmail.com,
-        sblbir@amazon.com, khazhy@google.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
-Message-ID: <20200226155521.GA24724@infradead.org>
-References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
- <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
+        id S1728752AbgBZP5c (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Feb 2020 10:57:32 -0500
+Received: from mga12.intel.com ([192.55.52.136]:20933 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728590AbgBZP53 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 26 Feb 2020 10:57:29 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Feb 2020 07:57:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,488,1574150400"; 
+   d="scan'208";a="231443910"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga008.jf.intel.com with ESMTP; 26 Feb 2020 07:57:28 -0800
+Date:   Wed, 26 Feb 2020 07:57:28 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V4 07/13] fs: Add locking for a dynamic address space
+ operations state
+Message-ID: <20200226155727.GA22036@iweiny-DESK2.sc.intel.com>
+References: <20200221004134.30599-1-ira.weiny@intel.com>
+ <20200221004134.30599-8-ira.weiny@intel.com>
+ <20200221174449.GB11378@lst.de>
+ <20200221224419.GW10776@dread.disaster.area>
+ <20200224175603.GE7771@lst.de>
+ <20200225000937.GA10776@dread.disaster.area>
+ <20200226111740.GF10728@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200226111740.GF10728@quack2.suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
-> This adds a support of physical hint for fallocate2() syscall.
-> In case of @physical argument is set for ext4_fallocate(),
-> we try to allocate blocks only from [@phisical, @physical + len]
-> range, while other blocks are not used.
+On Wed, Feb 26, 2020 at 12:17:40PM +0100, Jan Kara wrote:
+> On Tue 25-02-20 11:09:37, Dave Chinner wrote:
+> > /me wonders if the best thing to do is to add a ->fault callout to
+> > tell the filesystem to lock/unlock the inode right up at the top of
+> > the page fault path, outside even the mmap_sem.  That means all the
+> > methods that the page fault calls are protected against S_DAX
+> > changes, and it gives us a low cost method of serialising page
+> > faults against DIO (e.g. via inode_dio_wait())....
+> 
+> Well, that's going to be pretty hard. The main problem is: you cannot
+> lookup VMA until you hold mmap_sem and the inode is inside the VMA. And
+> this is a fundamental problem because until you hold mmap_sem, the address
+> space can change and thus the virtual address you are faulting can be
+> changing inode it is mapped to. So you would have to do some dance like:
+> 
+> lock mmap_sem
+> lookup vma
+> get inode reference
+> drop mmap_sem
+> tell fs about page fault
+> lock mmap_sem
+> is the vma still the same?
+> 
+> And I'm pretty confident the overhead will be visible in page fault
+> intensive workloads...
 
-Sorry, but this is a complete bullshit interface.  Userspace has
-absolutely no business even thinking of physical placement.  If you
-want to align allocations to physical block granularity boundaries
-that is the file systems job, not the applications job.
+I did not get to this level of detail...  Rather I looked at it from a high
+level perspective and thought "does the mode need to change while someone has
+the mmap?"  My thought is, that it does not make a lot of sense.  Generally the
+user has mmaped with some use case in mind (either DAX or non-DAX) and it seems
+reasonable to keep that mode consistent while the map is in place.
+
+So I punted and restricted the change.
+
+Ira
+
+> 
+> 								Honza
+> 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
