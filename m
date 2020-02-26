@@ -2,56 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBDF170571
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 18:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95AF0170586
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 18:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728243AbgBZRFI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Feb 2020 12:05:08 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:56318 "EHLO
+        id S1727314AbgBZRH2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Feb 2020 12:07:28 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:57782 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727470AbgBZRFH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 12:05:07 -0500
+        with ESMTP id S1726214AbgBZRH2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 12:07:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RoCLmknvsOG65QXIhh4xiHuf4xfOWj6VnF+GxnaICfs=; b=oX9nzWXovMYD4UTYLkNhs6PXBa
-        oIB9l5x5rtHW1JoDiVI6sOyxW7pJ+HyHEsqAwBDopdMOX7IegyH2lw3JVaGwbReLlEYe8saCtdFib
-        M7Wpw/yMgU+xN7ib/6htSPNuyVSh8XVMA942gkBCgwUqvdbj2PwflJ2ei/wXMKFoREUPGZLiBoFPK
-        1KgJZHw9KD6DbIQSIwjsPjElCP3rOgFw7aIr7acjWVWU83b6RP6rL50zYGbqiD5lL7hZbwE/dzxfk
-        2uEaq3GU9vyXSZqJ2PbKMXlmDRBpvqc22XRN+TzMCxrEOJXNLtrFXf3lpGMd1qTNR4zkO5cza/wX3
-        aydJpzDg==;
+        bh=ZJi9hC4ehvqCcf6BlT7xvIkRN9seHzpJl6dLbb5ZRoM=; b=EiR9E4pRiVBrxOAfbZhMffZ3+i
+        Ol5Ip+ZZrYlhL+mB+pu99N95gdjW/F3y2Z7IeerpE6EtJ/VNYQv1iUIDYr8VvaaTT4WkF8sR/2nun
+        0ZPWOfMsbneBeAeCiTcC3tCwOzHeSTU7/DdSdBD9VKqHiUOBtS2uIfDf1EEdnlG9b7LBySCXHHftT
+        +j5GVuJjDmc8eW8b59vJiYX/4jB/OVr6jjD2TFu5q9GUn+qXyZ5V1hyexGPIjhtsfiJbZ5SD+mfwO
+        mRMegtoRIZ6mD01bXz8gces8xrJ2v4xWcOwg0hb2antvlx/u9r+GdNEECP/xbVSRsWYq6k0zUWzqu
+        GwB/MpMA==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j707P-0007Yw-IT; Wed, 26 Feb 2020 17:05:07 +0000
-Date:   Wed, 26 Feb 2020 09:05:07 -0800
+        id 1j709g-0008JU-1v; Wed, 26 Feb 2020 17:07:28 +0000
+Date:   Wed, 26 Feb 2020 09:07:28 -0800
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
         linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
         ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v8 17/25] btrfs: Convert from readpages to readahead
-Message-ID: <20200226170507.GC22837@infradead.org>
+Subject: Re: [PATCH v8 25/25] iomap: Convert from readpages to readahead
+Message-ID: <20200226170728.GD22837@infradead.org>
 References: <20200225214838.30017-1-willy@infradead.org>
- <20200225214838.30017-18-willy@infradead.org>
+ <20200225214838.30017-26-willy@infradead.org>
+ <20200226170425.GD8045@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200225214838.30017-18-willy@infradead.org>
+In-Reply-To: <20200226170425.GD8045@magnolia>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Feb 25, 2020 at 01:48:30PM -0800, Matthew Wilcox wrote:
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+On Wed, Feb 26, 2020 at 09:04:25AM -0800, Darrick J. Wong wrote:
+> > @@ -456,15 +435,8 @@ iomap_readpages(struct address_space *mapping, struct list_head *pages,
+> >  			unlock_page(ctx.cur_page);
+> >  		put_page(ctx.cur_page);
+> >  	}
+> > -
+> > -	/*
+> > -	 * Check that we didn't lose a page due to the arcance calling
+> > -	 * conventions..
+> > -	 */
+> > -	WARN_ON_ONCE(!ret && !list_empty(ctx.pages));
+> > -	return ret;
 > 
-> Implement the new readahead method in btrfs.  Add a readahead_page_batch()
-> to optimise fetching a batch of pages at once.
+> After all the discussion about "if we still have ctx.cur_page we should
+> just stop" in v7, I'm surprised that this patch now doesn't say much of
+> anything, not even a WARN_ON()?
 
-readahead_page_batch() isn't added in this patch anymore.
-
-Otherwise this looks good to me, although I don't feel confident
-enough to give a Reviewed-by for btrfs code.
+The code quoted above puts the cur_page reference.  By dropping the
+odd refactoring patch there is no need to check for cur_page being
+left as a special condition as that still is the normal loop exit
+state and properly handled, just as in the original iomap code.
