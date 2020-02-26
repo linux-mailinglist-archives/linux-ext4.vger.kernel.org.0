@@ -2,134 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77FF316FDBC
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 12:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D9716FDC6
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 12:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728265AbgBZLbe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Feb 2020 06:31:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43854 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727954AbgBZLbe (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 26 Feb 2020 06:31:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2F399AD5C;
-        Wed, 26 Feb 2020 11:31:31 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 52C641E0EA2; Wed, 26 Feb 2020 12:31:30 +0100 (CET)
-Date:   Wed, 26 Feb 2020 12:31:30 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Jonathan Halliday <jonathan.halliday@redhat.com>
-Cc:     Jeff Moyer <jmoyer@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <david@fromorbit.com>, ira.weiny@intel.com,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V4 07/13] fs: Add locking for a dynamic address space
- operations state
-Message-ID: <20200226113130.GG10728@quack2.suse.cz>
-References: <20200221004134.30599-1-ira.weiny@intel.com>
- <20200221004134.30599-8-ira.weiny@intel.com>
- <20200221174449.GB11378@lst.de>
- <20200221224419.GW10776@dread.disaster.area>
- <20200224175603.GE7771@lst.de>
- <20200225000937.GA10776@dread.disaster.area>
- <20200225173633.GA30843@lst.de>
- <x49fteyh313.fsf@segfault.boston.devel.redhat.com>
- <a126276c-d252-6050-b6ee-4d6448d45fac@redhat.com>
+        id S1728048AbgBZLc1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Feb 2020 06:32:27 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32748 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727974AbgBZLc0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 26 Feb 2020 06:32:26 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01QBRIUe064366
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Feb 2020 06:32:25 -0500
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2ydcntk3ft-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Feb 2020 06:32:25 -0500
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Wed, 26 Feb 2020 11:32:23 -0000
+Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 26 Feb 2020 11:32:20 -0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 01QBWJcM11731410
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Feb 2020 11:32:19 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD22852057;
+        Wed, 26 Feb 2020 11:32:19 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.58.45])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 16F065205A;
+        Wed, 26 Feb 2020 11:32:18 +0000 (GMT)
+Subject: Re: [PATCH v2] ext2: Silence lockdep warning about reclaim under
+ xattr_sem
+To:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+Cc:     "J. R. Okajima" <hooanon05g@gmail.com>
+References: <20200225120803.7901-1-jack@suse.cz>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Wed, 26 Feb 2020 17:02:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a126276c-d252-6050-b6ee-4d6448d45fac@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200225120803.7901-1-jack@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20022611-0020-0000-0000-000003ADBB67
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20022611-0021-0000-0000-00002205D5EA
+Message-Id: <20200226113219.16F065205A@d06av21.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-26_03:2020-02-26,2020-02-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=785 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 phishscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002260087
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
 
-On Wed 26-02-20 09:28:57, Jonathan Halliday wrote:
-> I'm a middleware developer, focused on how Java (JVM) workloads can benefit
-> from app-direct mode pmem. Initially the target is apps that need a fast
-> binary log for fault tolerance: the classic database WAL use case;
-> transaction coordination systems; enterprise message bus persistence and
-> suchlike. Critically, there are cases where we use log based storage, i.e.
-> it's not the strict 'read rarely, only on recovery' model that a classic db
-> may have, but more of a 'append only, read many times' event stream model.
+
+On 2/25/20 5:38 PM, Jan Kara wrote:
+> Lockdep complains about a chain:
+>    sb_internal#2 --> &ei->xattr_sem#2 --> fs_reclaim
 > 
-> Think of the log oriented data storage as having logical segments (let's
-> implement them as files), of which the most recent is being appended to
-> (read_write) and the remaining N-1 older segments are full and sealed, so
-> effectively immutable (read_only) until discarded. The tail segment needs to
-> be in DAX mode for optimal write performance, as the size of the append may
-> be sub-block and we don't want the overhead of the kernel call anyhow. So
-> that's clearly a good fit for putting on a DAX fs mount and using mmap with
-> MAP_SYNC.
+> and shrink_dentry_list -> ext2_evict_inode -> ext2_xattr_delete_inode ->
+> down_write(ei->xattr_sem) creating a locking cycle in the reclaim path.
+> This is however a false positive because when we are in
+> ext2_evict_inode() we are the only holder of the inode reference and
+> nobody else should touch xattr_sem of that inode. So we cannot ever
+> block on acquiring the xattr_sem in the reclaim path.
 > 
-> However, we want fast read access into the segments, to retrieve stored
-> records. The small access index can be built in volatile RAM (assuming we're
-> willing to take the startup overhead of a full file scan at recovery time)
-> but the data itself is big and we don't want to move it all off pmem. Which
-> means the requirements are now different: we want the O/S cache to pull hot
-> data into fast volatile RAM for us, which DAX explicitly won't do.
-> Effectively a poor man's 'memory mode' pmem, rather than app-direct mode,
-> except here we're using the O/S rather than the hardware memory controller
-> to do the cache management for us.
+> Silence the lockdep warning by using down_write_trylock() in
+> ext2_xattr_delete_inode() to not create false locking dependency.
 > 
-> Currently this requires closing the full (read_write) file, then copying it
-> to a non-DAX device and reopening it (read_only) there. Clearly that's
-> expensive and rather tedious. Instead, I'd like to close the MAP_SYNC mmap,
-> then, leaving the file where it is, reopen it in a mode that will instead go
-> via the O/S cache in the traditional manner. Bonus points if I can do it
-> over non-overlapping ranges in a file without closing the DAX mode mmap,
-> since then the segments are entirely logical instead of needing separate
-> physical files.
+> Reported-by: "J. R. Okajima" <hooanon05g@gmail.com>
+> Signed-off-by: Jan Kara <jack@suse.cz>
+
+Agreed with evict() will only be called when it's the last reference 
+going down and so we won't be blocked on xattr_sem.
+Thanks for clearly explaining the problem in the cover letter.
+
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
+
+> ---
+>   fs/ext2/xattr.c | 10 +++++++++-
+>   1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> I note a comment below regarding a per-directly setting, but don't have the
-> background to fully understand what's being suggested. However, I'll note
-> here that I can live with a per-directory granularity, as relinking a file
-> into a new dir is a constant time operation, whilst the move described above
-> isn't. So if a per-directory granularity is easier than a per-file one
-> that's fine, though as a person with only passing knowledge of filesystem
-> design I don't see how having multiple links to a file can work cleanly in
-> that case.
+> Changes since v1:
+> - changed WARN_ON to WARN_ON_ONCE
+> 
+> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+> index 0456bc990b5e..9ad07c7ef0b3 100644
+> --- a/fs/ext2/xattr.c
+> +++ b/fs/ext2/xattr.c
+> @@ -790,7 +790,15 @@ ext2_xattr_delete_inode(struct inode *inode)
+>   	struct buffer_head *bh = NULL;
+>   	struct ext2_sb_info *sbi = EXT2_SB(inode->i_sb);
+> 
+> -	down_write(&EXT2_I(inode)->xattr_sem);
+> +	/*
+> +	 * We are the only ones holding inode reference. The xattr_sem should
+> +	 * better be unlocked! We could as well just not acquire xattr_sem at
+> +	 * all but this makes the code more futureproof. OTOH we need trylock
+> +	 * here to avoid false-positive warning from lockdep about reclaim
+> +	 * circular dependency.
+> +	 */
+> +	if (WARN_ON_ONCE(!down_write_trylock(&EXT2_I(inode)->xattr_sem)))
+> +		return;
+>   	if (!EXT2_I(inode)->i_file_acl)
+>   		goto cleanup;
+> 
 
-Well, with per-directory setting, relinking the file will not magically
-make it stop using DAX. So your situation would be very similar to the
-current one, except "copy to non-DAX device" can be replaced by "copy to
-non-DAX directory". Maybe the "copy" part could be actually reflink which
-would make it faster.
-
-> P.S. I'll cheekily take the opportunity of having your attention to tack on
-> one minor gripe about the current system: The only way to know if a mmap
-> with MAP_SYNC will work is to try it and catch the error. Which would be
-> reasonable if it were free of side effects.  However, the process requires
-> first expanding the file to at least the size of the desired map, which is
-> done non-atomically i.e. is user visible. There are thus nasty race
-> conditions in the cleanup, where after a failed mmap attempt (e.g the device
-> doesn't support DAX), we try to shrink the file back to its original size,
-> but something else has already opened it at its new, larger size. This is
-> not theoretical: I got caught by it whilst adapting some of our middleware
-> to use pmem.  Therefore, some way to probe the file path for its capability
-> would be nice, much the same as I can e.g. inspect file permissions to (more
-> or less) evaluate if I can write it without actually mutating it.  Thanks!
-
-Well, reporting error on mmap(2) is the only way how to avoid
-time-to-check-time-to-use races. And these are very important when we are
-speaking about data integrity guarantees. So that's not going to change.
-But with Ira's patches you could use statx(2) to check whether file at
-least supports DAX and so avoid doing mmap check with the side effects in
-the common case where it's hopeless... I'd also think that you could
-currently do mmap check with the current file size and if it succeeds,
-expand the file to the desired size and mmap again. It's not ideal but it
-should work.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
