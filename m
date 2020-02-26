@@ -2,76 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C4716F60F
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 04:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EC616F654
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 05:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729623AbgBZDYO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Feb 2020 22:24:14 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10692 "EHLO huawei.com"
+        id S1726476AbgBZEDA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Feb 2020 23:03:00 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10693 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727880AbgBZDYO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 Feb 2020 22:24:14 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id AE8AEC40EFCBC33E271E;
-        Wed, 26 Feb 2020 11:24:12 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Wed, 26 Feb 2020
- 11:24:05 +0800
-From:   "zhangyi (F)" <yi.zhang@huawei.com>
-To:     <fstests@vger.kernel.org>, <guaneryu@gmail.com>
-CC:     <linux-ext4@vger.kernel.org>, <yi.zhang@huawei.com>
-Subject: [PATCH v2] ext4/021: make sure the fdatasync subprocess exits
-Date:   Wed, 26 Feb 2020 11:22:56 +0800
-Message-ID: <20200226032256.10978-1-yi.zhang@huawei.com>
-X-Mailer: git-send-email 2.17.2
+        id S1726024AbgBZEDA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 25 Feb 2020 23:03:00 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id ACD44E05E179D99C0981;
+        Wed, 26 Feb 2020 12:02:57 +0800 (CST)
+Received: from localhost.localdomain (10.90.53.225) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.439.0; Wed, 26 Feb 2020 12:02:50 +0800
+From:   yangerkun <yangerkun@huawei.com>
+To:     <tytso@mit.edu>, <jack@suse.com>
+CC:     <linux-ext4@vger.kernel.org>, <yangerkun@huawei.com>
+Subject: [PATCH] ext4: using matching invalidatepage in ext4_writepage
+Date:   Wed, 26 Feb 2020 12:10:02 +0800
+Message-ID: <20200226041002.13914-1-yangerkun@huawei.com>
+X-Mailer: git-send-email 2.23.0.rc2.8.gff66981f45
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.28]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.225]
 X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now we just kill fdatasync_work process and wait nothing after the
-test, so a busy unmount failure may appear if the fdatasync syscall
-doesn't return in time.
+Run generic/388 with journal data mode sometimes may trigger the warning
+in ext4_invalidatepage. Actually, we should use the matching invalidatepage
+in ext4_writepage.
 
-  umount: /tmp/scratch: target is busy.
-  mount: /tmp/scratch: /dev/sdb already mounted on /tmp/scratch.
-  !!! failed to remount /dev/sdb on /tmp/scratch
-
-This patch wait the xfs_io fdatasync subprocess exit to make sure
-_check_scratch_fs success.
-
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+Signed-off-by: yangerkun <yangerkun@huawei.com>
 ---
- tests/ext4/021 | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/ext4/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tests/ext4/021 b/tests/ext4/021
-index 519737e1..3fc38e89 100755
---- a/tests/ext4/021
-+++ b/tests/ext4/021
-@@ -80,6 +80,10 @@ _scratch_mount
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index fa0ff78dc033..78e805d42ada 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1974,7 +1974,7 @@ static int ext4_writepage(struct page *page,
+ 	bool keep_towrite = false;
  
- do_fdatasync_work()
- {
-+	# Wait for running subcommand before exitting so that
-+	# mountpoint is not busy when we try to unmount it
-+	trap "wait; exit" SIGTERM
-+
- 	while [ 1 ]; do
- 		$XFS_IO_PROG -f -c "fdatasync" $SCRATCH_MNT/testfile
- 	done
-@@ -89,6 +93,7 @@ do_fdatasync_work &
- datasync_work_pid=$!
- sleep 10
- kill $datasync_work_pid >/dev/null 2>&1
-+wait
- 
- # success, all done
- status=0
+ 	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb)))) {
+-		ext4_invalidatepage(page, 0, PAGE_SIZE);
++		inode->i_mapping->a_ops->invalidatepage(page, 0, PAGE_SIZE);
+ 		unlock_page(page);
+ 		return -EIO;
+ 	}
 -- 
-2.17.2
+2.23.0.rc2.8.gff66981f45
 
