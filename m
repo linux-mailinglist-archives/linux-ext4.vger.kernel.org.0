@@ -2,298 +2,170 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2C217003B
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 14:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F621701EB
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 16:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727305AbgBZNlY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Feb 2020 08:41:24 -0500
-Received: from relay.sw.ru ([185.231.240.75]:44744 "EHLO relay.sw.ru"
+        id S1727877AbgBZPG6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Feb 2020 10:06:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726974AbgBZNlX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 26 Feb 2020 08:41:23 -0500
-Received: from dhcp-172-16-24-104.sw.ru ([172.16.24.104] helo=localhost.localdomain)
-        by relay.sw.ru with esmtp (Exim 4.92.3)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1j6ww8-0006rf-CG; Wed, 26 Feb 2020 16:41:16 +0300
-Subject: [PATCH RFC 5/5] ext4: Add fallocate2() support
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-To:     tytso@mit.edu, viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
-        snitzer@redhat.com, jack@suse.cz, ebiggers@google.com,
-        riteshh@linux.ibm.com, krisman@collabora.com, surajjs@amazon.com,
-        ktkhai@virtuozzo.com, dmonakhov@gmail.com,
-        mbobrowski@mbobrowski.org, enwlinux@gmail.com, sblbir@amazon.com,
-        khazhy@google.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Date:   Wed, 26 Feb 2020 16:41:16 +0300
-Message-ID: <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
-In-Reply-To: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
-References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
-User-Agent: StGit/0.19
+        id S1726990AbgBZPG6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 26 Feb 2020 10:06:58 -0500
+Received: from paulmck-ThinkPad-P72.home (199-192-87-166.static.wiline.com [199.192.87.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41E122467D;
+        Wed, 26 Feb 2020 15:06:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1582729617;
+        bh=QT6GUyLzIUdRMVSaNAxDiNdKzTo0kQ+EQU+2BK797Sw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=FFkA0N8gusvWYmfVUiPUaZKzj8nUanEMpm09zuCMQphmDbzFDySX7V8AW8zC4dMbj
+         L1pOu3+jZuFEldIfaMbsKANrPIeQxVLBfl9Ecsgqxre6DfLfwizpPveoN5KwIKCRWZ
+         Sxr/hu+ZExeF+XTdQnCSJ2tk2GbIKQ4RDLecOr1w=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D1D253521EAF; Wed, 26 Feb 2020 07:06:56 -0800 (PST)
+Date:   Wed, 26 Feb 2020 07:06:56 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200226150656.GB2935@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200221003035.GC2935@paulmck-ThinkPad-P72>
+ <20200221131455.GA4904@pc636>
+ <20200221202250.GK2935@paulmck-ThinkPad-P72>
+ <20200222222415.GC191380@google.com>
+ <20200223011018.GB2935@paulmck-ThinkPad-P72>
+ <20200224174030.GA22138@pc636>
+ <20200225020705.GA253171@google.com>
+ <20200225185400.GA27919@pc636>
+ <20200225224745.GX2935@paulmck-ThinkPad-P72>
+ <20200226130440.GA30008@pc636>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200226130440.GA30008@pc636>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This adds a support of physical hint for fallocate2() syscall.
-In case of @physical argument is set for ext4_fallocate(),
-we try to allocate blocks only from [@phisical, @physical + len]
-range, while other blocks are not used.
+On Wed, Feb 26, 2020 at 02:04:40PM +0100, Uladzislau Rezki wrote:
+> On Tue, Feb 25, 2020 at 02:47:45PM -0800, Paul E. McKenney wrote:
+> > On Tue, Feb 25, 2020 at 07:54:00PM +0100, Uladzislau Rezki wrote:
+> > > > > > > I was thinking a 2 fold approach (just thinking out loud..):
+> > > > > > > 
+> > > > > > > If kfree_call_rcu() is called in atomic context or in any rcu reader, then
+> > > > > > > use GFP_ATOMIC to grow an rcu_head wrapper on the atomic memory pool and
+> > > > > > > queue that.
+> > > > > > > 
+> > > > > I am not sure if that is acceptable, i mean what to do when GFP_ATOMIC
+> > > > > gets failed in atomic context? Or we can just consider it as out of
+> > > > > memory and another variant is to say that headless object can be called
+> > > > > from preemptible context only.
+> > > > 
+> > > > Yes that makes sense, and we can always put disclaimer in the API's comments
+> > > > saying if this object is expected to be freed a lot, then don't use the
+> > > > headless-API to be extra safe.
+> > > > 
+> > > Agree.
+> > > 
+> > > > BTW, GFP_ATOMIC the documentation says if GFP_ATOMIC reserves are depleted,
+> > > > the kernel can even panic some times, so if GFP_ATOMIC allocation fails, then
+> > > > there seems to be bigger problems in the system any way. I would say let us
+> > > > write a patch to allocate there and see what the -mm guys think.
+> > > > 
+> > > OK. It might be that they can offer something if they do not like our
+> > > approach. I will try to compose something and send the patch to see.
+> > > The tree.c implementation is almost done, whereas tiny one is on hold.
+> > > 
+> > > I think we should support batching as well as bulk interface there.
+> > > Another way is to workaround head-less object, just to attach the head
+> > > dynamically using kmalloc() and then call_rcu() but then it will not be
+> > > a fair headless support :)
+> > > 
+> > > What is your view?
+> > > 
+> > > > > > > Otherwise, grow an rcu_head on the stack of kfree_call_rcu() and call
+> > > > > > > synchronize_rcu() inline with it.
+> > > > > > > 
+> > > > > > >
+> > > > > What do you mean here, Joel? "grow an rcu_head on the stack"?
+> > > > 
+> > > > By "grow on the stack", use the compiler-allocated rcu_head on the
+> > > > kfree_rcu() caller's stack.
+> > > > 
+> > > > I meant here to say, if we are not in atomic context, then we use regular
+> > > > GFP_KERNEL allocation, and if that fails, then we just use the stack's
+> > > > rcu_head and call synchronize_rcu() or even synchronize_rcu_expedited since
+> > > > the allocation failure would mean the need for RCU to free some memory is
+> > > > probably great.
+> > > > 
+> > > Ah, i got it. I thought you meant something like recursion and then
+> > > unwinding the stack back somehow :)
+> > > 
+> > > > > > > Use preemptible() andr task_struct's rcu_read_lock_nesting to differentiate
+> > > > > > > between the 2 cases.
+> > > > > > > 
+> > > > > If the current context is preemptable then we can inline synchronize_rcu()
+> > > > > together with freeing to handle such corner case, i mean when we are run
+> > > > > out of memory.
+> > > > 
+> > > > Ah yes, exactly what I mean.
+> > > > 
+> > > OK.
+> > > 
+> > > > > As for "task_struct's rcu_read_lock_nesting". Will it be enough just
+> > > > > have a look at preempt_count of current process? If we have for example
+> > > > > nested rcu_read_locks:
+> > > > > 
+> > > > > <snip>
+> > > > > rcu_read_lock()
+> > > > >     rcu_read_lock()
+> > > > >         rcu_read_lock()
+> > > > > <snip>
+> > > > > 
+> > > > > the counter would be 3.
+> > > > 
+> > > > No, because preempt_count is not incremented during rcu_read_lock(). RCU
+> > > > reader sections can be preempted, they just cannot goto sleep in a reader
+> > > > section (unless the kernel is RT).
+> > > > 
+> > > So in CONFIG_PREEMPT kernel we can identify if we are in atomic or not by
+> > > using rcu_preempt_depth() and in_atomic(). When it comes to !CONFIG_PREEMPT
+> > > then we skip it and consider as atomic. Something like:
+> > > 
+> > > <snip>
+> > > static bool is_current_in_atomic()
+> > > {
+> > > #ifdef CONFIG_PREEMPT_RCU
+> > 
+> > If possible: if (IS_ENABLED(CONFIG_PREEMPT_RCU))
+> > 
+> > Much nicer than #ifdef, and I -think- it should work in this case.
+> > 
+> OK. Thank you, Paul!
+> 
+> There is one point i would like to highlight it is about making caller
+> instead to be responsible for atomic or not decision. Like how kmalloc()
+> works, it does not really know the context it runs on, so it is up to
+> caller to inform.
+> 
+> The same way:
+> 
+> kvfree_rcu(p, atomic = true/false);
+> 
+> in this case we could cover !CONFIG_PREEMPT case also.
 
-ext4_fallocate(struct file *file, int mode,
-                    loff_t offset, loff_t len, u64 physical)
+Understood, but couldn't we instead use IS_ENABLED() to work out the
+actual situation at runtime and relieve the caller of this burden?
+Or am I missing a corner case?
 
-In case of some of blocks from the range are occupied, the syscall
-returns with error. This is the only difference from fallocate().
-The same as fallocate(), less then @len blocks may be allocated
-with error as a return value.
-
-We try to find hint blocks both in preallocated and ordinary blocks.
-Note, that ext4_mb_use_preallocated() looks for the hint only in
-inode's preallocations. In case of there are no desired block,
-further ext4_mb_discard_preallocations() tries to release group
-preallocations.
-
-Note, that this patch makes EXT4_MB_HINT_GOAL_ONLY flag be used,
-it used to be unused before for years.
-New EXT4_GET_BLOCKS_FROM_GOAL flag of ext4_map_blocks() is added.
-It indicates, that struct ext4_map_blocks::m_goal_pblk is valid.
-
-Signed-off-by: Kirill Tkhai <ktkhai@virtuozzo.com>
----
- fs/ext4/ext4.h    |    3 +++
- fs/ext4/extents.c |   31 ++++++++++++++++++++++++-------
- fs/ext4/inode.c   |   14 ++++++++++++++
- fs/ext4/mballoc.c |   17 ++++++++++++++---
- 4 files changed, 55 insertions(+), 10 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 5a98081c5369..299fbb8350ac 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -181,6 +181,7 @@ struct ext4_allocation_request {
- struct ext4_map_blocks {
- 	ext4_fsblk_t m_pblk;
- 	ext4_lblk_t m_lblk;
-+	ext4_fsblk_t m_goal_pblk;
- 	unsigned int m_len;
- 	unsigned int m_flags;
- };
-@@ -621,6 +622,8 @@ enum {
- 	/* Caller will submit data before dropping transaction handle. This
- 	 * allows jbd2 to avoid submitting data before commit. */
- #define EXT4_GET_BLOCKS_IO_SUBMIT		0x0400
-+	/* Caller wants blocks from provided physical offset */
-+#define EXT4_GET_BLOCKS_FROM_GOAL		0x0800
- 
- /*
-  * The bit position of these flags must not overlap with any of the
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 10d0188a712d..5f2790c1c4fb 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -4412,7 +4412,6 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 
- 	/* allocate new block */
- 	ar.inode = inode;
--	ar.goal = ext4_ext_find_goal(inode, path, map->m_lblk);
- 	ar.logical = map->m_lblk;
- 	/*
- 	 * We calculate the offset from the beginning of the cluster
-@@ -4437,6 +4436,13 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 		ar.flags |= EXT4_MB_DELALLOC_RESERVED;
- 	if (flags & EXT4_GET_BLOCKS_METADATA_NOFAIL)
- 		ar.flags |= EXT4_MB_USE_RESERVED;
-+	if (flags & EXT4_GET_BLOCKS_FROM_GOAL) {
-+		ar.flags |= EXT4_MB_HINT_TRY_GOAL|EXT4_MB_HINT_GOAL_ONLY;
-+		ar.goal = map->m_goal_pblk;
-+	} else {
-+		ar.goal = ext4_ext_find_goal(inode, path, map->m_lblk);
-+	}
-+
- 	newblock = ext4_mb_new_blocks(handle, &ar, &err);
- 	if (!newblock)
- 		goto out2;
-@@ -4580,8 +4586,8 @@ int ext4_ext_truncate(handle_t *handle, struct inode *inode)
- }
- 
- static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
--				  ext4_lblk_t len, loff_t new_size,
--				  int flags)
-+				  ext4_lblk_t len, ext4_fsblk_t goal_pblk,
-+				  loff_t new_size, int flags)
- {
- 	struct inode *inode = file_inode(file);
- 	handle_t *handle;
-@@ -4603,6 +4609,10 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 	 */
- 	if (len <= EXT_UNWRITTEN_MAX_LEN)
- 		flags |= EXT4_GET_BLOCKS_NO_NORMALIZE;
-+	if (goal_pblk != (ext4_fsblk_t)-1) {
-+		map.m_goal_pblk = goal_pblk;
-+		flags |= EXT4_GET_BLOCKS_FROM_GOAL;
-+	}
- 
- 	/*
- 	 * credits to insert 1 extent into extent tree
-@@ -4637,6 +4647,7 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 			break;
- 		}
- 		map.m_lblk += ret;
-+		map.m_goal_pblk += ret;
- 		map.m_len = len = len - ret;
- 		epos = (loff_t)map.m_lblk << inode->i_blkbits;
- 		inode->i_ctime = current_time(inode);
-@@ -4746,6 +4757,7 @@ static long ext4_zero_range(struct file *file, loff_t offset,
- 				round_down(offset, 1 << blkbits) >> blkbits,
- 				(round_up((offset + len), 1 << blkbits) -
- 				 round_down(offset, 1 << blkbits)) >> blkbits,
-+				(ext4_fsblk_t)-1,
- 				new_size, flags);
- 		if (ret)
- 			goto out_mutex;
-@@ -4778,8 +4790,8 @@ static long ext4_zero_range(struct file *file, loff_t offset,
- 		truncate_pagecache_range(inode, start, end - 1);
- 		inode->i_mtime = inode->i_ctime = current_time(inode);
- 
--		ret = ext4_alloc_file_blocks(file, lblk, max_blocks, new_size,
--					     flags);
-+		ret = ext4_alloc_file_blocks(file, lblk, max_blocks,
-+					     (ext4_fsblk_t)-1, new_size, flags);
- 		up_write(&EXT4_I(inode)->i_mmap_sem);
- 		if (ret)
- 			goto out_mutex;
-@@ -4839,10 +4851,12 @@ long ext4_fallocate(struct file *file, int mode,
- 		    loff_t offset, loff_t len, u64 physical)
- {
- 	struct inode *inode = file_inode(file);
-+	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	loff_t new_size = 0;
- 	unsigned int max_blocks;
- 	int ret = 0;
- 	int flags;
-+	ext4_fsblk_t pblk;
- 	ext4_lblk_t lblk;
- 	unsigned int blkbits = inode->i_blkbits;
- 
-@@ -4862,7 +4876,8 @@ long ext4_fallocate(struct file *file, int mode,
- 		     FALLOC_FL_INSERT_RANGE))
- 		return -EOPNOTSUPP;
- 
--	if (physical != (u64)-1)
-+	if (((mode & ~FALLOC_FL_KEEP_SIZE) || sbi->s_cluster_ratio > 1) &&
-+	    physical != (u64)-1)
- 		return -EOPNOTSUPP;
- 
- 	if (mode & FALLOC_FL_PUNCH_HOLE)
-@@ -4883,6 +4898,7 @@ long ext4_fallocate(struct file *file, int mode,
- 
- 	trace_ext4_fallocate_enter(inode, offset, len, mode);
- 	lblk = offset >> blkbits;
-+	pblk = physical == (u64)-1 ? (ext4_fsblk_t)-1 : physical >> blkbits;
- 
- 	max_blocks = EXT4_MAX_BLOCKS(len, offset, blkbits);
- 	flags = EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT;
-@@ -4911,7 +4927,8 @@ long ext4_fallocate(struct file *file, int mode,
- 	/* Wait all existing dio workers, newcomers will block on i_mutex */
- 	inode_dio_wait(inode);
- 
--	ret = ext4_alloc_file_blocks(file, lblk, max_blocks, new_size, flags);
-+	ret = ext4_alloc_file_blocks(file, lblk, max_blocks, pblk,
-+				     new_size, flags);
- 	if (ret)
- 		goto out;
- 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index fa0ff78dc033..1054ba65cc1b 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -580,6 +580,10 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 			return ret;
- 	}
- 
-+	if (retval > 0 && flags & EXT4_GET_BLOCKS_FROM_GOAL &&
-+	    map->m_pblk != map->m_goal_pblk)
-+		return -EEXIST;
-+
- 	/* If it is only a block(s) look up */
- 	if ((flags & EXT4_GET_BLOCKS_CREATE) == 0)
- 		return retval;
-@@ -672,6 +676,16 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 			}
- 		}
- 
-+		/*
-+		 * Concurrent thread could allocate extent with other m_pblk,
-+		 * and we got it during second call of ext4_ext_map_blocks().
-+		 */
-+		if (retval > 0 && flags & EXT4_GET_BLOCKS_FROM_GOAL &&
-+		    map->m_pblk != map->m_goal_pblk) {
-+			retval = -EEXIST;
-+			goto out_sem;
-+		}
-+
- 		/*
- 		 * If the extent has been zeroed out, we don't need to update
- 		 * extent status tree.
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index b1b3c5526d1a..ed25f47748a0 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3426,6 +3426,8 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 	struct ext4_prealloc_space *pa, *cpa = NULL;
- 	ext4_fsblk_t goal_block;
- 
-+	goal_block = ext4_grp_offs_to_block(ac->ac_sb, &ac->ac_g_ex);
-+
- 	/* only data can be preallocated */
- 	if (!(ac->ac_flags & EXT4_MB_HINT_DATA))
- 		return 0;
-@@ -3436,7 +3438,11 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 
- 		/* all fields in this condition don't change,
- 		 * so we can skip locking for them */
--		if (ac->ac_o_ex.fe_logical < pa->pa_lstart ||
-+		if (unlikely(ac->ac_flags & EXT4_MB_HINT_GOAL_ONLY) &&
-+		    (goal_block < pa->pa_pstart ||
-+		     goal_block >= pa->pa_pstart + pa->pa_len))
-+			continue;
-+		else if (ac->ac_o_ex.fe_logical < pa->pa_lstart ||
- 		    ac->ac_o_ex.fe_logical >= (pa->pa_lstart +
- 					       EXT4_C2B(sbi, pa->pa_len)))
- 			continue;
-@@ -3465,6 +3471,9 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 	if (!(ac->ac_flags & EXT4_MB_HINT_GROUP_ALLOC))
- 		return 0;
- 
-+	if (unlikely(ac->ac_flags & EXT4_MB_HINT_GOAL_ONLY))
-+		return 0;
-+
- 	/* inode may have no locality group for some reason */
- 	lg = ac->ac_lg;
- 	if (lg == NULL)
-@@ -3474,7 +3483,6 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 		/* The max size of hash table is PREALLOC_TB_SIZE */
- 		order = PREALLOC_TB_SIZE - 1;
- 
--	goal_block = ext4_grp_offs_to_block(ac->ac_sb, &ac->ac_g_ex);
- 	/*
- 	 * search for the prealloc space that is having
- 	 * minimal distance from the goal block.
-@@ -4261,8 +4269,11 @@ ext4_mb_initialize_context(struct ext4_allocation_context *ac,
- 	/* start searching from the goal */
- 	goal = ar->goal;
- 	if (goal < le32_to_cpu(es->s_first_data_block) ||
--			goal >= ext4_blocks_count(es))
-+			goal >= ext4_blocks_count(es)) {
-+		if (ar->flags & EXT4_MB_HINT_GOAL_ONLY)
-+			return -EINVAL;
- 		goal = le32_to_cpu(es->s_first_data_block);
-+	}
- 	ext4_get_group_no_and_offset(sb, goal, &group, &block);
- 
- 	/* set up allocation goals */
-
-
+							Thanx, Paul
