@@ -2,81 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C96B016F5D6
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 03:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C4716F60F
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 04:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730135AbgBZCzi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 25 Feb 2020 21:55:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53696 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728989AbgBZCzh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 25 Feb 2020 21:55:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id D474AAC4A;
-        Wed, 26 Feb 2020 02:55:35 +0000 (UTC)
-Date:   Tue, 25 Feb 2020 20:55:31 -0600
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com
-Subject: Re: [PATCH v2] iomap: return partial I/O count on error in
- iomap_dio_bio_actor
-Message-ID: <20200226025531.k7miaxfu2yzt3kh6@fiona>
-References: <20200220152355.5ticlkptc7kwrifz@fiona>
- <20200221045110.612705204E@d06av21.portsmouth.uk.ibm.com>
- <20200225205342.GA12066@infradead.org>
+        id S1729623AbgBZDYO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 25 Feb 2020 22:24:14 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10692 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727880AbgBZDYO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 25 Feb 2020 22:24:14 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id AE8AEC40EFCBC33E271E;
+        Wed, 26 Feb 2020 11:24:12 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Wed, 26 Feb 2020
+ 11:24:05 +0800
+From:   "zhangyi (F)" <yi.zhang@huawei.com>
+To:     <fstests@vger.kernel.org>, <guaneryu@gmail.com>
+CC:     <linux-ext4@vger.kernel.org>, <yi.zhang@huawei.com>
+Subject: [PATCH v2] ext4/021: make sure the fdatasync subprocess exits
+Date:   Wed, 26 Feb 2020 11:22:56 +0800
+Message-ID: <20200226032256.10978-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.17.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200225205342.GA12066@infradead.org>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 12:53 25/02, Christoph Hellwig wrote:
-> On Fri, Feb 21, 2020 at 10:21:04AM +0530, Ritesh Harjani wrote:
-> > >   		if (dio->error) {
-> > >   			iov_iter_revert(dio->submit.iter, copied);
-> > > -			copied = ret = 0;
-> > > +			ret = 0;
-> > >   			goto out;
-> > >   		}
-> > 
-> > But if I am seeing this correctly, even after there was a dio->error
-> > if you return copied > 0, then the loop in iomap_dio_rw will continue
-> > for next iteration as well. Until the second time it won't copy
-> > anything since dio->error is set and from there I guess it may return
-> > 0 which will break the loop.
-> 
-> In addition to that copied is also iov_iter_reexpand call.  We don't
-> really need the re-expand in case of errors, and in fact we also
-> have the iov_iter_revert call before jumping out, so this will
-> need a little bit more of an audit and properly documented in the
-> commit log.
-> 
-> > 
-> > Is this the correct flow? Shouldn't the while loop doing
-> > iomap_apply in iomap_dio_rw should also break in case of
-> > dio->error? Or did I miss anything?
-> 
-> We'd need something there iff we care about a good number of written
-> in case of the error.  Goldwyn, can you explain what you need this
-> number for in btrfs?  Maybe with a pointer to the current code base?
+Now we just kill fdatasync_work process and wait nothing after the
+test, so a busy unmount failure may appear if the fdatasync syscall
+doesn't return in time.
 
-btrfs needs to account for the bytes "processed", failed or
-uptodate. This is currently performed in
-fs/btrfs/inode.c:__end_write_update_ordered().
+  umount: /tmp/scratch: target is busy.
+  mount: /tmp/scratch: /dev/sdb already mounted on /tmp/scratch.
+  !!! failed to remount /dev/sdb on /tmp/scratch
 
-For the current development version, how I am using it is in my git
-branch btrfs-iomap-dio [1]. The related commit besides this patch
-is:
+This patch wait the xfs_io fdatasync subprocess exit to make sure
+_check_scratch_fs success.
 
-9aeb2b31d10b ("btrfs: Use ->iomap_end() instead of btrfs_dio_data")
+Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
+---
+ tests/ext4/021 | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-[1] https://github.com/goldwynr/linux/tree/btrfs-iomap-dio
-
+diff --git a/tests/ext4/021 b/tests/ext4/021
+index 519737e1..3fc38e89 100755
+--- a/tests/ext4/021
++++ b/tests/ext4/021
+@@ -80,6 +80,10 @@ _scratch_mount
+ 
+ do_fdatasync_work()
+ {
++	# Wait for running subcommand before exitting so that
++	# mountpoint is not busy when we try to unmount it
++	trap "wait; exit" SIGTERM
++
+ 	while [ 1 ]; do
+ 		$XFS_IO_PROG -f -c "fdatasync" $SCRATCH_MNT/testfile
+ 	done
+@@ -89,6 +93,7 @@ do_fdatasync_work &
+ datasync_work_pid=$!
+ sleep 10
+ kill $datasync_work_pid >/dev/null 2>&1
++wait
+ 
+ # success, all done
+ status=0
 -- 
-Goldwyn
+2.17.2
+
