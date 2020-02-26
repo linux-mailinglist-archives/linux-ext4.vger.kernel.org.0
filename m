@@ -2,60 +2,73 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A2A1709F4
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 21:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1A2170ADC
+	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 22:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbgBZUnY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Feb 2020 15:43:24 -0500
-Received: from mail-pj1-f45.google.com ([209.85.216.45]:38815 "EHLO
-        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727429AbgBZUnY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 15:43:24 -0500
-Received: by mail-pj1-f45.google.com with SMTP id j17so150614pjz.3
-        for <linux-ext4@vger.kernel.org>; Wed, 26 Feb 2020 12:43:24 -0800 (PST)
+        id S1727719AbgBZVvY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Feb 2020 16:51:24 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:40088 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727716AbgBZVvY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 16:51:24 -0500
+Received: by mail-pg1-f196.google.com with SMTP id t24so310611pgj.7
+        for <linux-ext4@vger.kernel.org>; Wed, 26 Feb 2020 13:51:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=XKa1DPnkzfMuVk1btZE4YmnN0uE9EQK8P7sBCiXotVQ=;
-        b=yw2QYhy96ruIvPHvsRFQ5pmVYRDG3Ayl+AtsTq/OmUsw1s+rQeNnsK9g9oWrb2HqLY
-         Wv6BSNfpV7TG6/s/UiHu5N0dQlJNmVi1Qm+jJeAc8ar9DNTaC2erK7/x5slG+hriONYu
-         QAUUzxM21bu4kc2LoByDe37Zzlb/ltpq7foElOf2TaBvmTX4jcsGVEnqxyqycilG6jIW
-         mkqsKW68p/IWGJkb5R8f6vFnd8P0UiPUH15Dn5cvK8k3OV/aZmmsu1wK+bkSDNTFnIMG
-         sSX/ZmtcgxgCjBuTG4PskOZOPvwTBCaEsRS6UX2xlgmT9MCJofk4y05A7hz/UnseCusI
-         lCIw==
+        bh=7ldHABlBD18zLPYrSu+cdH4KI93P+mg6f36otJlbi3M=;
+        b=BbODRCYf3qUCVc0FwRNhp0e9kHNKBcNi5nDzE6bM+LY9S5XKEQEW3DREWeM4ysZZ/t
+         8XbLYXnyYeVYbkp84Whzykfb6mD4JzwsjfxIRiEO5Dm8fKoY6z96HrGrWVDqIVuYDyHp
+         CJnuggS/T1OZrWHZpq7mPoFf8OYEaVX7TIhqcqt8fmJneCpBkLwWTgosUk3NP/ePs87T
+         6M6z3w/i6QqhqLLLV4BlVs6Z18GQKWhVRz+2yRnzkAb28fJYBZi+CvlxsSfBEJxYRz/y
+         i8RcaNC+QvbYo+KO0kPfNa1Uzmm7AAcsVsXM9x9VJZOp8aG/2KzENFU5DQWincHbnLnG
+         YHmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=XKa1DPnkzfMuVk1btZE4YmnN0uE9EQK8P7sBCiXotVQ=;
-        b=eQI0IRAel7ze1NgmP/KV+0L27XXGYcL+WGHrw80OBZdWa0ziCwlCAA8/VRTdg5NMJh
-         +5sqekALSKs/ibXnkOa9e3gy0YXVShEdkXgNs1jQjrspGqziB+nuYtGH7DqWj5facYFS
-         NaABVUb3YyXZNNcavRve5JcJdwPR4c+mPQ+Sf4Rsh7bO5bEtSBS4Io/ju/Djg8wYmieY
-         dSa2lliAuLD5C11M6nLxiFfGrgtEGOJWeTY1ajFpJf7lcJnHdaEuFBsRMQLg0PKxYIjf
-         JOS1boAK9s4sC9lvJGFQLkgSHF74JQu8FbJIxociZNiJ7wIx6ZAtGEuJwwolsUPhOjGI
-         WmHA==
-X-Gm-Message-State: APjAAAVIzaPRE2QxwC6h4JYYj7PLzilHR5c/s/jpqsTw6VVs/U1uhYFY
-        VUmpn0Bp3GZS9XUcX4OQOY3j4g==
-X-Google-Smtp-Source: APXvYqwh0QgYY1f8BlIy/0OEmgP/Kb9fPUa5PHkwF1MJZtPcRmpVL3ZItzcqXC5MNSIRT5vpIzkD5w==
-X-Received: by 2002:a17:902:8549:: with SMTP id d9mr1043862plo.153.1582749803765;
-        Wed, 26 Feb 2020 12:43:23 -0800 (PST)
+        bh=7ldHABlBD18zLPYrSu+cdH4KI93P+mg6f36otJlbi3M=;
+        b=Zaq9DYBzhYYJJq2TTKSpeTpvNQVD4JNbuG5V1LRNFfUOVoddKV1qaER8nu+tqBHVHb
+         2KrouEcXGzzqmCeqRPFgB0OVAIxwPAyEVn4XkAngDtTGzU3nn8KXT7u1eZl+s2J4J/Ur
+         VJxuhErRbbFSYotzvezShrA2xZz9U1J1wT990ASberGh6gzNmvXYCw+7BJL0OikslWAO
+         FAQsIdxisIRqo2V0lkjjlIAYr1badbZLMR4GGXLaFswbAuxcDVF7H+Ewc/EdVOzqo4TS
+         C4wSh1rjdOIzFCADdD1C9J18nxWa2GHsa7eXTXG+DPb/rDD2eKNlVWRuQYTK8pKwn1Mo
+         okEA==
+X-Gm-Message-State: APjAAAUZ+KjaYzXvp7Bbk/JOi1MHlmL0UGwO6zvJrCedMiTsz4AXM8Ff
+        uQVzWpbkbgBaW/Bc4m96swIc0g==
+X-Google-Smtp-Source: APXvYqxT1yiTPqoDhXgDTKgD5sJZm7rxtcjb/lfNHBR6wzTwindN+HTCBjfYXZwQ/t5YHcxlhoabRQ==
+X-Received: by 2002:a62:e112:: with SMTP id q18mr762213pfh.88.1582753883078;
+        Wed, 26 Feb 2020 13:51:23 -0800 (PST)
 Received: from cabot-wlan.adilger.int (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id c68sm4264417pfc.156.2020.02.26.12.43.22
+        by smtp.gmail.com with ESMTPSA id h7sm4371553pfq.36.2020.02.26.13.51.20
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 Feb 2020 12:43:22 -0800 (PST)
+        Wed, 26 Feb 2020 13:51:22 -0800 (PST)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <793F980F-5708-4DBB-8406-585E34C68CDB@dilger.ca>
+Message-Id: <A57E33D1-3D54-405A-8300-13F117DC4633@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_2F617E18-9892-4A2A-89D5-40F995837E43";
+ boundary="Apple-Mail=_D480D5B9-1B56-445A-98C9-E11CD8F90398";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: Getting issue while creating ext4 file system
-Date:   Wed, 26 Feb 2020 13:43:20 -0700
-In-Reply-To: <CAG-6nk9iqbkwUh_=v0xrH+YN81tN4eWWNQzOM8NHr-3uR8fveQ@mail.gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-To:     Alok Jain <jain.alok103@gmail.com>
-References: <CAG-6nk9iqbkwUh_=v0xrH+YN81tN4eWWNQzOM8NHr-3uR8fveQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
+Date:   Wed, 26 Feb 2020 14:51:18 -0700
+In-Reply-To: <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Mike Snitzer <snitzer@redhat.com>, Jan Kara <jack@suse.cz>,
+        Eric Biggers <ebiggers@google.com>, riteshh@linux.ibm.com,
+        krisman@collabora.com, surajjs@amazon.com, dmonakhov@gmail.com,
+        mbobrowski@mbobrowski.org, Eric Whitney <enwlinux@gmail.com>,
+        sblbir@amazon.com, Khazhismel Kumykov <khazhy@google.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
+ <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
+ <20200226155521.GA24724@infradead.org>
+ <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
 X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -63,37 +76,98 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_2F617E18-9892-4A2A-89D5-40F995837E43
-Content-Transfer-Encoding: 7bit
+--Apple-Mail=_D480D5B9-1B56-445A-98C9-E11CD8F90398
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Feb 25, 2020, at 2:41 AM, Alok Jain <jain.alok103@gmail.com> wrote:
-> 
-> Hi Guys,
-> 
-> Thanks for your time to look into this
-> While connecting a block volume to my instance I m getting the below error
-> Command: mkfs.ext4 /dev/sdd1
-> Error Message:
-> mke2fs 1.42.9 (28-Dec-2013)
-> Could not stat /dev/sdd1 --- No such file or directory
-> 
-> The device apparently does not exist; did you specify it correctly?
-> 
-> Before executing this command I did run iscsi command to attach
-> followed by these partition commands, all completed successfully
-> parted -s -a optimal /dev/sdd mklabel gpt
-> parted -s -a optimal /dev/sdd mkpart primary '1MiB -1'
-> Any idea?
+On Feb 26, 2020, at 1:05 PM, Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>=20
+> On 26.02.2020 18:55, Christoph Hellwig wrote:
+>> On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
+>>> This adds a support of physical hint for fallocate2() syscall.
+>>> In case of @physical argument is set for ext4_fallocate(),
+>>> we try to allocate blocks only from [@phisical, @physical + len]
+>>> range, while other blocks are not used.
+>>=20
+>> Sorry, but this is a complete bullshit interface.  Userspace has
+>> absolutely no business even thinking of physical placement.  If you
+>> want to align allocations to physical block granularity boundaries
+>> that is the file systems job, not the applications job.
+>=20
+> Why? There are two contradictory actions that filesystem can't do at =
+the same time:
+>=20
+> 1)place files on a distance from each other to minimize number of =
+extents
+>  on possible future growth;
+> 2)place small files in the same big block of block device.
+>=20
+> At initial allocation time you never know, which file will stop grow =
+in some
+> future, i.e. which file is suitable for compaction. This knowledge =
+becomes
+> available some time later.  Say, if a file has not been changed for a =
+month,
+> it is suitable for compaction with another files like it.
+>=20
+> If at allocation time you can determine a file, which won't grow in =
+the future,
+> don't be afraid, and just share your algorithm here.
 
-This doesn't look like an ext4 issue.  Did you actually check that
-/dev/sdd1 exists (e.g. "ls -l /dev/sd*")?  You may need to tell the
-kernel to reload the partition table and convince udev to create it.
+Very few files grow after they are initially written/closed.  Those that
+do are almost always opened with O_APPEND (e.g. log files).  It would be
+reasonable to have O_APPEND cause the filesystem to reserve blocks (in
+memory at least, maybe some small amount on disk like 1/4 of the current
+file size) for the file to grow after it is closed.  We might use the
+same heuristic for directories that grow long after initial creation.
 
-If it does exist, can you dump the partition table with something
-like "fdisk -l /dev/sdd", and read some data from the device with
-e.g. "file -s /dev/sdd1" or similar?
+The main exception there is VM images, because they are not really =
+"files"
+in the normal sense, but containers aggregating a lot of different =
+files,
+each created with patterns that are not visible to the VM host.  In that
+case, it would be better to have the VM host tell the filesystem that =
+the
+IO pattern is "random" and not try to optimize until the VM is cold.
+
+> In Virtuozzo we tried to compact ext4 with existing kernel interface:
+>=20
+> https://github.com/dmonakhov/e2fsprogs/blob/e4defrag2/misc/e4defrag2.c
+>=20
+> But it does not work well in many situations, and the main problem is =
+blocks allocation in desired place is not possible. Block allocator =
+can't behave
+> excellent for everything.
+>=20
+> If this interface bad, can you suggest another interface to make block
+> allocator to know the behavior expected from him in this specific =
+case?
+
+In ext4 there is already the "group" allocator, which combines multiple
+small files together into a single preallocation group, so that the IO
+to disk is large/contiguous.  The theory is that files written at the
+same time will have similar lifespans, but that isn't always true.
+
+If the files are large and still being written, the allocator will =
+reserve
+additional blocks (default 8MB I think) on the expectation that it will
+continue to write until it is closed.
+
+I think (correct me if I'm wrong) that your issue is with defragmenting
+small files to free up contiguous space in the filesystem?  I think once
+the free space is freed of small files that defragmenting large files is
+easily done.  Anything with more than 8-16MB extents will max out most
+storage anyway (seek rate * IO size).
+
+In that case, an interesting userspace interface would be an array of
+inode numbers (64-bit please) that should be packed together densely in
+the order they are provided (maybe a flag for that).  That allows the
+filesystem the freedom to find the physical blocks for the allocation,
+while userspace can tell which files are related to each other.
+
+Tools like "readahead" could also leverage this to "perfectly" allocate
+the files used during boot into a single stream of reads from the disk.
 
 Cheers, Andreas
 
@@ -102,7 +176,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_2F617E18-9892-4A2A-89D5-40F995837E43
+--Apple-Mail=_D480D5B9-1B56-445A-98C9-E11CD8F90398
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -113,19 +187,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5W2GkACgkQcqXauRfM
-H+Cjsw/+Ii8v6uYkGS++QJ/1GUBRQ2OC7Vx3qUMCgJH5MdF+tyBOcGMo3pAMqoZ6
-6lz3W+LUPVwiIuX+ZHvcS8Qk5ka473Bmv9Wonz1xW/H9fmnmcBBmtH2REsNK73me
-Vh9BJM8EV2TSpp8oirrPt6R4g0D+8gDDco3hKGqN1LJZ6Ahd+qSxyjzMt5pFZUrU
-XPX+UG0s7BqYusBEdWnXiB+dC+aHokhsIbOJWvgX7FNW5Ew8YKSBuZrFx3rsVrOu
-XKLmje7R6NQVUDsU5dM69mSdwWzoZVWdktZnSBmNk0RyU96LKWwNZBDWPrKJ4T8R
-uac6sPOhYeYGR8lPifTMN7/PLyYZ+iv+y0UPJYXvijZ5HN47ReeEbxzxMS6voQIn
-/PE4KKa7abPZcs2L0dAwwxD0juxmUuXZc7fjJziJmskSm7dKeqDIxYmOQ8b9YlbN
-CshEt1yYXaO3azDMi9ceaqryB+FCB57PU/x0GmU6+o4YWqYcJ/7hnRA4rG4m2nZy
-Eki1WZCgUPTdrMqnWE2qtZl5MtDLw/yUtZgqDHtvhL4xaLxyOrDrbkAIlFB2ikIn
-US5RDk9t66La0RZebhF1ZK8rPPfiDQMCuYZLLOyHDIhukpJ5La+RXBQNSWToVsGA
-Cuv5djFA+2XXNnRgOK5t/drBjHeSmayS+0QUWlCdSM6ZH709YYU=
-=6ndE
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5W6FYACgkQcqXauRfM
+H+ARrg/+M8YUY/LsY7U43iojx1GZazLqDMONgBDBXLFLlo9tfab/kekT78JLeRHt
+0gesFe8j9TIJ1aOv/Cqss+yyvzXvryXbAuk8rIcGNbixf83YQ4J0hN7Z07unb5PH
+6Og5VRhI/BuqXWVezvqY//FrKq+vZ1cZ6wIQPSJKFqa2W28DtqsRm2pY/Z9uhd1x
+CHTDPAFX7PHasI+76obGjbF2eNNMo9OTTODOseDWQer7lUkF2YO0IKi4diDCBoli
+FKVfzYt7lxi6Kz1qjsewPnFLAAp+paY1qIRTU9NCm1T2rUIjSg8j/XKc967NBNZY
+/ZFlWu6RCp3WcohZmMX6tZTPyhk5Ua/Y2cu5fuOhxxag+vvcokR8OzOe6ikVzyyq
+Jbs8mw8fdtUUJ9QLkUTtSnFpwKHN/uriGM1gzbtm8iN5sJI0mo5aDqHkwItMu7kp
+8+sHFqcSRlAQHzyAfz44bt6tyFyYSqMUwWOukOrnyDKNHIrNerZVKiM+4VPRdXkP
+zmboMuMpqFrsB4GdlRUWK8l4zSFXKSAlHYrpLdj3muCyzXqhtsG9fKbsFgEox7Yx
+AazQeV4PSTUuxQenRgNQidLRKNY+gGj09+jJsxk3u2T80gjX3Hd6FR9Scevu2nbe
+yvkZNBL2udbidu8lZYczpkcJ5RGoPMErC2ccwtx8dWKTMD84XAg=
+=L/2m
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_2F617E18-9892-4A2A-89D5-40F995837E43--
+--Apple-Mail=_D480D5B9-1B56-445A-98C9-E11CD8F90398--
