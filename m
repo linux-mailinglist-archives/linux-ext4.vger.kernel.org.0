@@ -2,38 +2,28 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA92170BDB
-	for <lists+linux-ext4@lfdr.de>; Wed, 26 Feb 2020 23:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7634170E92
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 03:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbgBZWsy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Feb 2020 17:48:54 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41251 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727763AbgBZWsx (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 26 Feb 2020 17:48:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1582757331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bl2QkrJDLwbDu4ZSTOfPGGOcOZ8+qVxS2i6Atb12Bik=;
-        b=Zu9jWQOybxnD3GGQHgBkX+sZ8dv//qg8E43QOP6NhAbyhSxW7gHSwJJFY5lSsvGBNGtqBH
-        PpsgSMzSBNWb/rhuRTv9+SL7yggPfYssx86aHKOHtQ+bLEz8L/j9HNBG0J2MWnWgB6IQTj
-        3N8c/EFa8kkbDD8nDcTsMZ7kU5IwsVs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-379-6ZcBhl4UPxmgSKsb3ltaFg-1; Wed, 26 Feb 2020 17:48:43 -0500
-X-MC-Unique: 6ZcBhl4UPxmgSKsb3ltaFg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1AD0107ACC4;
-        Wed, 26 Feb 2020 22:48:40 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A9F695D9CD;
-        Wed, 26 Feb 2020 22:48:39 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     ira.weiny@intel.com
+        id S1728252AbgB0Cn7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Feb 2020 21:43:59 -0500
+Received: from mga03.intel.com ([134.134.136.65]:57388 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728094AbgB0Cn6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 26 Feb 2020 21:43:58 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Feb 2020 18:43:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,490,1574150400"; 
+   d="scan'208";a="436874427"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga005.fm.intel.com with ESMTP; 26 Feb 2020 18:43:56 -0800
+Date:   Wed, 26 Feb 2020 18:43:56 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jeff Moyer <jmoyer@redhat.com>
 Cc:     linux-kernel@vger.kernel.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         "Darrick J. Wong" <darrick.wong@oracle.com>,
@@ -44,53 +34,60 @@ Cc:     linux-kernel@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH V4 00/13] Enable per-file/per-directory DAX operations V4
+Message-ID: <20200227024356.GB28721@iweiny-DESK2.sc.intel.com>
 References: <20200221004134.30599-1-ira.weiny@intel.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Wed, 26 Feb 2020 17:48:38 -0500
-In-Reply-To: <20200221004134.30599-1-ira.weiny@intel.com> (ira weiny's message
-        of "Thu, 20 Feb 2020 16:41:21 -0800")
-Message-ID: <x49pne13qyh.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+ <x49pne13qyh.fsf@segfault.boston.devel.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <x49pne13qyh.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, Ira,
+On Wed, Feb 26, 2020 at 05:48:38PM -0500, Jeff Moyer wrote:
+> Hi, Ira,
+> 
+> ira.weiny@intel.com writes:
+> 
+> > From: Ira Weiny <ira.weiny@intel.com>
+> >
+> > https://github.com/weiny2/linux-kernel/pull/new/dax-file-state-change-v4
+> >
+> > Changes from V3: 
+> > https://lore.kernel.org/lkml/20200208193445.27421-1-ira.weiny@intel.com/
+> >
+> > 	* Remove global locking...  :-D
+> > 	* put back per inode locking and remove pre-mature optimizations
+> > 	* Fix issues with Directories having IS_DAX() set
+> > 	* Fix kernel crash issues reported by Jeff
+> > 	* Add some clean up patches
+> > 	* Consolidate diflags to iflags functions
+> > 	* Update/add documentation
+> > 	* Reorder/rename patches quite a bit
+> 
+> I left out patches 1 and 2, but applied the rest and tested.  This
+> passes xfs tests in the following configurations:
+> 1) MKFS_OPTIONS="-m reflink=0" MOUNT_OPTIONS="-o dax"
+> 2) MKFS_OPTIONS="-m reflink=0"
+>    but with the added configuration step of setting the dax attribute on
+>    the mounted test directory.
+> 
+> I also tested to ensure that reflink fails when a file has the dax
+> attribute set.  I've got more testing to do, but figured I'd at least
+> let you know I've been looking at it.
 
-ira.weiny@intel.com writes:
+Thank you!
 
-> From: Ira Weiny <ira.weiny@intel.com>
->
-> https://github.com/weiny2/linux-kernel/pull/new/dax-file-state-change-v4
->
-> Changes from V3: 
-> https://lore.kernel.org/lkml/20200208193445.27421-1-ira.weiny@intel.com/
->
-> 	* Remove global locking...  :-D
-> 	* put back per inode locking and remove pre-mature optimizations
-> 	* Fix issues with Directories having IS_DAX() set
-> 	* Fix kernel crash issues reported by Jeff
-> 	* Add some clean up patches
-> 	* Consolidate diflags to iflags functions
-> 	* Update/add documentation
-> 	* Reorder/rename patches quite a bit
-
-I left out patches 1 and 2, but applied the rest and tested.  This
-passes xfs tests in the following configurations:
-1) MKFS_OPTIONS="-m reflink=0" MOUNT_OPTIONS="-o dax"
-2) MKFS_OPTIONS="-m reflink=0"
-   but with the added configuration step of setting the dax attribute on
-   the mounted test directory.
-
-I also tested to ensure that reflink fails when a file has the dax
-attribute set.  I've got more testing to do, but figured I'd at least
-let you know I've been looking at it.
+I need to update my xfstest which is specific to this as well...  I'll get to
+that tomorrow and send an updated patch...
 
 Thanks!
-Jeff
+Ira
 
+> 
+> Thanks!
+> Jeff
+> 
