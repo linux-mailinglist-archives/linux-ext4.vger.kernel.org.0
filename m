@@ -2,388 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B68171092
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 06:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE9417112F
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 07:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbgB0Fiy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Feb 2020 00:38:54 -0500
-Received: from mga07.intel.com ([134.134.136.100]:22722 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgB0Fix (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 27 Feb 2020 00:38:53 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Feb 2020 21:38:52 -0800
-X-IronPort-AV: E=Sophos;i="5.70,490,1574150400"; 
-   d="scan'208";a="241933233"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.157])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Feb 2020 21:38:52 -0800
-From:   ira.weiny@intel.com
-To:     fstests@vger.kernel.org
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH] xfs/XXX: Add xfs/XXX
-Date:   Wed, 26 Feb 2020 21:38:47 -0800
-Message-Id: <20200227053847.1888-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.21.0
+        id S1727409AbgB0G7q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Feb 2020 01:59:46 -0500
+Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:33030 "EHLO
+        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726575AbgB0G7q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 27 Feb 2020 01:59:46 -0500
+Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id CF1532E15F8;
+        Thu, 27 Feb 2020 09:59:41 +0300 (MSK)
+Received: from iva4-7c3d9abce76c.qloud-c.yandex.net (iva4-7c3d9abce76c.qloud-c.yandex.net [2a02:6b8:c0c:4e8e:0:640:7c3d:9abc])
+        by mxbackcorp1j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id cydo0sNlfQ-xeOKmSoa;
+        Thu, 27 Feb 2020 09:59:41 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1582786781; bh=LwWjZiS5EzXEz+bSSOqPaeyqH6VUxngb/TfuxMV5n4s=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=MQx13QXIYnIgGnoIddsDtjWXj5iwUdpAoMGhZ9JO/GzvdsHSpbM6VrS4LWai5sple
+         PkJxDiDaM7iG3Xoz/aXydRRT5eA+J70ZEK3iujiCyky9qKcsdjTOY+aeEsax0kC8G9
+         IJ6L4a2sRvi7aH+lDVR8Hw6nRMQRdGKB7GxfSic0=
+Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:8448:fbcc:1dac:c863])
+        by iva4-7c3d9abce76c.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 4wLRz4WkJW-xeVm1Z4H;
+        Thu, 27 Feb 2020 09:59:40 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     tytso@mit.edu, viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
+        snitzer@redhat.com, jack@suse.cz, ebiggers@google.com,
+        riteshh@linux.ibm.com, krisman@collabora.com, surajjs@amazon.com,
+        dmonakhov@gmail.com, mbobrowski@mbobrowski.org, enwlinux@gmail.com,
+        sblbir@amazon.com, khazhy@google.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
+ <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
+ <20200226155521.GA24724@infradead.org>
+ <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <19bddb89-c3c4-0f38-dca3-70164dc81a57@yandex-team.ru>
+Date:   Thu, 27 Feb 2020 09:59:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On 26/02/2020 23.05, Kirill Tkhai wrote:
+> On 26.02.2020 18:55, Christoph Hellwig wrote:
+>> On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
+>>> This adds a support of physical hint for fallocate2() syscall.
+>>> In case of @physical argument is set for ext4_fallocate(),
+>>> we try to allocate blocks only from [@phisical, @physical + len]
+>>> range, while other blocks are not used.
+>>
+>> Sorry, but this is a complete bullshit interface.  Userspace has
+>> absolutely no business even thinking of physical placement.  If you
+>> want to align allocations to physical block granularity boundaries
+>> that is the file systems job, not the applications job.
+> 
+> Why? There are two contradictory actions that filesystem can't do at the same time:
+> 
+> 1)place files on a distance from each other to minimize number of extents
+>    on possible future growth;
+> 2)place small files in the same big block of block device.
+> 
+> At initial allocation time you never know, which file will stop grow in some future,
+> i.e. which file is suitable for compaction. This knowledge becomes available some time later.
+> Say, if a file has not been changed for a month, it is suitable for compaction with
+> another files like it.
+> 
+> If at allocation time you can determine a file, which won't grow in the future, don't be afraid,
+> and just share your algorithm here.
+> 
+> In Virtuozzo we tried to compact ext4 with existing kernel interface:
+> 
+> https://github.com/dmonakhov/e2fsprogs/blob/e4defrag2/misc/e4defrag2.c
+> 
+> But it does not work well in many situations, and the main problem is blocks allocation
+> in desired place is not possible. Block allocator can't behave excellent for everything.
+> 
+> If this interface bad, can you suggest another interface to make block allocator to know
+> the behavior expected from him in this specific case?
 
-Add XXX to test the various setting of dax flags on files.
+Controlling exact place is odd. I suppose main reason for this that defragmentation
+process wants to control fragmentation during allocating new space.
 
-The final fsx test was derived from Christophs test here but I wanted
-more direct function tests as well so I bundled this together.
+Maybe flag FALLOC_FL_DONT_FRAGMENT (allocate exactly one extent or fail) could solve that problem?
 
-https://www.spinics.net/lists/linux-xfs/msg10124.html
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-This tests against V4 and V5:
-https://lore.kernel.org/lkml/20200227052442.22524-1-ira.weiny@intel.com/
----
- tests/xfs/999     | 279 ++++++++++++++++++++++++++++++++++++++++++++++
- tests/xfs/999.out |  21 ++++
- tests/xfs/group   |   1 +
- 3 files changed, 301 insertions(+)
- create mode 100755 tests/xfs/999
- create mode 100644 tests/xfs/999.out
-
-diff --git a/tests/xfs/999 b/tests/xfs/999
-new file mode 100755
-index 000000000000..b123f1f39894
---- /dev/null
-+++ b/tests/xfs/999
-@@ -0,0 +1,279 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2019 Intel, Corp.  All Rights Reserved.
-+#
-+# FSQA Test No. 999 (temporary)
-+#
-+# Test setting of DAX flag
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+status=1	# failure is the default!
-+
-+dax_dir=$TEST_DIR/dax-dir
-+dax_sub_dir=$TEST_DIR/dax-dir/dax-sub-dir
-+dax_inh_file=$dax_dir/dax-inh-file
-+dax_non_inh_file=$dax_dir/dax-non-inh-file
-+non_dax=$TEST_DIR/non-dax
-+dax_file=$TEST_DIR/dax-file
-+dax_file_copy=$TEST_DIR/dax-file-copy
-+dax_file_move=$TEST_DIR/dax-file-move
-+data_file=$TEST_DIR/data-file
-+
-+_cleanup() {
-+	rm -rf $TEST_DIR/*
-+}
-+
-+trap "_cleanup ; exit \$status" 0 1 2 3 15
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+
-+# real QA test starts here
-+_supported_os Linux
-+_require_xfs_io_command "lsattr"
-+_require_xfs_io_command "chattr" "x"
-+_require_xfs_io_command "statx"
-+_require_test
-+
-+function mount_no_dax {
-+	# mount SCRATCH_DEV with dax option, TEST_DEV not
-+	export MOUNT_OPTIONS=""
-+	export TEST_FS_MOUNT_OPTS=""
-+	_test_unmount
-+	_test_mount
-+	_fs_options $TEST_DEV | grep -qw "dax"
-+	if [ "$?" == "0" ]; then
-+		_notrun "we need $TEST_DEV mount without dax"
-+	fi
-+}
-+
-+function mount_dax {
-+	# mount SCRATCH_DEV with dax option, TEST_DEV not
-+	export MOUNT_OPTIONS=""
-+	export TEST_FS_MOUNT_OPTS=""
-+	_test_unmount
-+	_test_mount "-o dax"
-+	_fs_options $TEST_DEV | grep -qw "dax"
-+	if [ "$?" != "0" ]; then
-+		_notrun "we need $TEST_DEV mount with dax"
-+	fi
-+}
-+
-+function check_phys_dax {
-+	xfs_io -c 'lsattr' $1 | awk -e '{ print $1 }' | grep 'x' &> /dev/null
-+	if [ "$?" != "0" ]; then
-+		echo "FAILED: Did NOT find DAX flag on $1"
-+		status=1; exit
-+	fi
-+}
-+
-+function check_effective_dax {
-+	attr=`xfs_io -c 'statx -r' $1 | grep 'stat.attributes' | awk -e '{ print $3 }'`
-+	masked=$(( $attr & 0x2000 ))
-+	if [ "$masked" != "8192" ]; then
-+		echo "FAILED: Did NOT find VFS DAX flag on $1"
-+		status=1; exit
-+	fi
-+}
-+
-+function check_phys_no_dax {
-+	xfs_io -c 'lsattr' $1 | awk -e '{ print $1 }' | grep 'x' &> /dev/null
-+	if [ "$?" == "0" ]; then
-+		echo "FAILED: Found DAX flag on $1"
-+		status=1; exit
-+	fi
-+}
-+
-+function check_effective_no_dax {
-+	attr=`xfs_io -c 'statx -r' $1 | grep 'stat.attributes' | awk -e '{ print $3 }'`
-+	masked=$(( $attr & 0x2000 ))
-+	if [ "$masked" == "8192" ]; then
-+		echo "FAILED: Found VFS DAX flag on $1"
-+		status=1; exit
-+	fi
-+}
-+
-+echo "running tests..."
-+
-+echo "   *** mount w/o dax flag."
-+mount_no_dax
-+
-+echo "   *** mark dax-dir as dax enabled"
-+mkdir $dax_dir
-+xfs_io -c 'chattr +x' $dax_dir
-+check_phys_dax $dax_dir
-+
-+echo "   *** check file inheritance"
-+touch $dax_inh_file
-+check_phys_dax $dax_inh_file
-+check_effective_dax $dax_inh_file
-+
-+echo "   *** check directory inheritance"
-+mkdir $dax_sub_dir
-+check_phys_dax $dax_sub_dir
-+
-+echo "   *** check changing directory"
-+xfs_io -c 'chattr -x' $dax_dir
-+check_phys_no_dax $dax_dir
-+check_effective_no_dax $dax_dir
-+
-+echo "   *** check non file inheritance"
-+touch $dax_non_inh_file
-+check_phys_no_dax $dax_non_inh_file
-+check_effective_no_dax $dax_non_inh_file
-+
-+echo "   *** check that previous file stays enabled"
-+check_phys_dax $dax_inh_file
-+check_effective_dax $dax_inh_file
-+
-+echo "   *** Reset the directory"
-+xfs_io -c 'chattr +x' $dax_dir
-+check_phys_dax $dax_dir
-+
-+
-+# check mount override
-+# ====================
-+
-+echo "   *** Remount fs with mount flag"
-+mount_dax
-+touch $non_dax
-+check_phys_no_dax $non_dax
-+check_effective_dax $non_dax
-+
-+echo "   *** Check for non-dax files to be dax with mount option"
-+check_effective_dax $dax_non_inh_file
-+
-+echo "   *** check for file dax flag 'sticky-ness' after remount"
-+touch $dax_file
-+xfs_io -c 'chattr +x' $dax_file
-+check_phys_dax $dax_file
-+check_effective_dax $dax_file
-+
-+echo "   *** remount w/o mount flag"
-+mount_no_dax
-+check_phys_dax $dax_file
-+check_effective_dax $dax_file
-+
-+check_phys_no_dax $non_dax
-+check_effective_no_dax $non_dax
-+
-+
-+# Check non-zero file operations
-+# ==============================
-+
-+echo "   *** file should change effective but page cache should be empty"
-+$XFS_IO_PROG -f -c "pwrite 0 10000" $data_file > /dev/null
-+xfs_io -c 'chattr +x' $data_file
-+check_phys_dax $data_file
-+check_effective_dax $data_file
-+
-+
-+# Check inheritance on cp, mv
-+# ===========================
-+
-+echo "   *** check inheritance on cp, mv"
-+cp $non_dax $dax_dir/conv-dax
-+check_phys_dax $dax_dir/conv-dax
-+check_effective_dax $dax_dir/conv-dax
-+
-+echo "   *** Moved files 'don't inherit'"
-+mv $non_dax $dax_dir/move-dax
-+check_phys_no_dax $dax_dir/move-dax
-+check_effective_no_dax $dax_dir/move-dax
-+
-+# Check preservation of phys on cp, mv
-+# ====================================
-+
-+mv $dax_file $dax_file_move
-+check_phys_dax $dax_file_move
-+check_effective_dax $dax_file_move
-+
-+cp $dax_file_move $dax_file_copy
-+check_phys_no_dax $dax_file_copy
-+check_effective_no_dax $dax_file_copy
-+
-+
-+# Verify no mode changes on mmap
-+# ==============================
-+
-+echo "   *** check no mode change when mmaped"
-+
-+dd if=/dev/zero of=$dax_file bs=4096 count=10 > $tmp.log 2>&1
-+
-+# set known state.
-+xfs_io -c 'chattr -x' $dax_file
-+check_phys_no_dax $dax_file
-+check_effective_no_dax $dax_file
-+
-+python3 - << EOF > $tmp.log 2>&1 &
-+import mmap
-+import time
-+print ('mmaping "$dax_file"')
-+f=open("$dax_file", "r+b")
-+mm = mmap.mmap(f.fileno(), 0)
-+print ('mmaped "$dax_file"')
-+while True:
-+	time.sleep(1)
-+EOF
-+pid=$!
-+
-+sleep 1
-+
-+# attempt to should fail
-+xfs_io -c 'chattr +x' $dax_file > /dev/null 2>&1
-+check_phys_no_dax $dax_file
-+check_effective_no_dax $dax_file
-+
-+kill -TERM $pid > /dev/null 2>&1
-+wait $pid > /dev/null 2>&1
-+
-+# after mmap released should work
-+xfs_io -c 'chattr +x' $dax_file
-+check_phys_dax $dax_file
-+check_effective_dax $dax_file
-+
-+
-+# Finally run the test stolen from Christoph Hellwig to test changing the mode
-+# while performing a series of operations
-+# =============================================================================
-+
-+function run_fsx {
-+	options=$1
-+
-+	echo "   *** run 'fsx $options' racing with setting/clearing the DAX flag"
-+	$here/ltp/fsx $options -N 20000 $dax_file > $tmp.log 2>&1 &
-+	pid=$!
-+
-+	if [ ! -n "$pid" ]; then
-+		echo "FAILED to start fsx"
-+		exit 255
-+	fi
-+
-+	# NOTE: fsx runs much faster than these mode changes.
-+	for i in `seq 1 500`; do
-+		xfs_io -c 'chattr +x' $dax_file > /dev/null 2>&1
-+		xfs_io -c 'chattr -x' $dax_file > /dev/null 2>&1
-+	done
-+
-+	wait $pid
-+	status=$?
-+	if [ "$status" != "0" ]; then
-+		cat /sys/kernel/debug/tracing/trace > trace_output
-+		echo "FAILED: fsx exited with status : $status"
-+		echo "        see trace_output"
-+		head $dax_file.fsxlog
-+		exit $status
-+	fi
-+	pid=""
-+}
-+
-+run_fsx ""
-+run_fsx "-A"
-+run_fsx "-Z -r 4096 -w 4096"
-+
-+
-+status=0 ; exit
-diff --git a/tests/xfs/999.out b/tests/xfs/999.out
-new file mode 100644
-index 000000000000..ccb13770ca4d
---- /dev/null
-+++ b/tests/xfs/999.out
-@@ -0,0 +1,21 @@
-+QA output created by 999
-+running tests...
-+   *** mount w/o dax flag.
-+   *** mark dax-dir as dax enabled
-+   *** check file inheritance
-+   *** check directory inheritance
-+   *** check changing directory
-+   *** check non file inheritance
-+   *** check that previous file stays enabled
-+   *** Reset the directory
-+   *** Remount fs with mount flag
-+   *** Check for non-dax files to be dax with mount option
-+   *** check for file dax flag 'sticky-ness' after remount
-+   *** remount w/o mount flag
-+   *** file should change effective but page cache should be empty
-+   *** check inheritance on cp, mv
-+   *** Moved files 'don't inherit'
-+   *** check no mode change when mmaped
-+   *** run 'fsx ' racing with setting/clearing the DAX flag
-+   *** run 'fsx -A' racing with setting/clearing the DAX flag
-+   *** run 'fsx -Z -r 4096 -w 4096' racing with setting/clearing the DAX flag
-diff --git a/tests/xfs/group b/tests/xfs/group
-index 522d4bc44d1f..816883a268bf 100644
---- a/tests/xfs/group
-+++ b/tests/xfs/group
-@@ -511,3 +511,4 @@
- 511 auto quick quota
- 512 auto quick acl attr
- 513 auto mount
-+999 auto
--- 
-2.21.0
-
+Defragmentator could try allocate different sizes and automatically balance fragmentation factor
+without controlling exact disk offsets. Also it could reserve space for expected file growth.
