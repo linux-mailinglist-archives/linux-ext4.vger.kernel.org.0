@@ -2,205 +2,182 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B55D317171A
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 13:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 129EE1718DA
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 14:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgB0MZd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Feb 2020 07:25:33 -0500
-Received: from relay.sw.ru ([185.231.240.75]:60820 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729062AbgB0MZd (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 27 Feb 2020 07:25:33 -0500
-Received: from dhcp-172-16-24-104.sw.ru ([172.16.24.104])
-        by relay.sw.ru with esmtp (Exim 4.92.3)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1j7IDs-0005hu-OA; Thu, 27 Feb 2020 15:25:00 +0300
-Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mike Snitzer <snitzer@redhat.com>, Jan Kara <jack@suse.cz>,
-        Eric Biggers <ebiggers@google.com>, riteshh@linux.ibm.com,
-        krisman@collabora.com, surajjs@amazon.com, dmonakhov@gmail.com,
-        mbobrowski@mbobrowski.org, Eric Whitney <enwlinux@gmail.com>,
-        sblbir@amazon.com, Khazhismel Kumykov <khazhy@google.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
- <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
- <20200226155521.GA24724@infradead.org>
- <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
- <A57E33D1-3D54-405A-8300-13F117DC4633@dilger.ca>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <eda406cc-8ce3-e67a-37be-3e525b58d5a1@virtuozzo.com>
-Date:   Thu, 27 Feb 2020 15:24:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1729223AbgB0NhD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Feb 2020 08:37:03 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:35114 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729174AbgB0NhD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Feb 2020 08:37:03 -0500
+Received: by mail-qt1-f194.google.com with SMTP id 88so2268426qtc.2
+        for <linux-ext4@vger.kernel.org>; Thu, 27 Feb 2020 05:37:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qmWHrBJcN7ejSVHixLEQF5uOon7zKqN3Pq0dKTOIOQA=;
+        b=gD5vZAG+DtDI6uMe7e6gbKLoJzGc2b1JzVCqh3ZCuKklMl9+mMaBsC2uvDhNJY4QjQ
+         IJaO20Go8KeqL/nlH2dHYBVUfhu7h2hxlsVrq/WfdQfAXBmFPnQIi6D/eY1/4r4UhVSK
+         tHXY6/fbJlg9NUptWERv9NHNOJzVxeFnvx/kM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qmWHrBJcN7ejSVHixLEQF5uOon7zKqN3Pq0dKTOIOQA=;
+        b=CuLFkolCHOc2qe3tfUHdTdsXgZFOKvVeGXc2+nQfZquASKYlOHayPH6YaT5JemHo2f
+         IwTWTpHSLTw8eHfX47BfLrnNOPZMDql5puGCKhIF5JS3kT1qkpfvvm0pfi3+v6bHd9ht
+         t43W4FzvpiTtanMOMb20LeMnZC4bXCGSPs3+jRMleV9e+2+dTjTgysMxbG75KLgAbJPe
+         C353e6CxcecePy8TAr5ddQare0KqV6F+wJkIW4ya77tLoR9diZYzwtQKAKa/iw5fW2Dv
+         19XZRtT9DXiKUEjMS/ER7Usr8CIbzW0h0ncXWJ8UtP+sdCIlezqqM5rqMMLysuQaacxt
+         3Xkw==
+X-Gm-Message-State: APjAAAUFznx1FfeNLleZnZGsGGgxGqch6tkDtGAxxCYx1W8xdbLJ0jDh
+        wZcsmVfKeKUY6Ao6JZVf3ePo78RDRf0=
+X-Google-Smtp-Source: APXvYqwp18AbEZK2wRg/VcPpscOhe2m0EPo8Ss8nMji7xGvcuPlLImoWJj9VBdpsGs1q/H+5AZYlKA==
+X-Received: by 2002:ac8:7b9b:: with SMTP id p27mr5255681qtu.2.1582810621803;
+        Thu, 27 Feb 2020 05:37:01 -0800 (PST)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id 17sm600594qks.0.2020.02.27.05.37.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Feb 2020 05:37:01 -0800 (PST)
+Date:   Thu, 27 Feb 2020 08:37:00 -0500
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200227133700.GC161459@google.com>
+References: <20200218170857.GA28774@pc636>
+ <20200220045233.GC476845@mit.edu>
+ <20200221003035.GC2935@paulmck-ThinkPad-P72>
+ <20200221131455.GA4904@pc636>
+ <20200221202250.GK2935@paulmck-ThinkPad-P72>
+ <20200222222415.GC191380@google.com>
+ <20200223011018.GB2935@paulmck-ThinkPad-P72>
+ <20200224174030.GA22138@pc636>
+ <20200225020705.GA253171@google.com>
+ <20200225185400.GA27919@pc636>
 MIME-Version: 1.0
-In-Reply-To: <A57E33D1-3D54-405A-8300-13F117DC4633@dilger.ca>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200225185400.GA27919@pc636>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 27.02.2020 00:51, Andreas Dilger wrote:
-> On Feb 26, 2020, at 1:05 PM, Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->>
->> On 26.02.2020 18:55, Christoph Hellwig wrote:
->>> On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
->>>> This adds a support of physical hint for fallocate2() syscall.
->>>> In case of @physical argument is set for ext4_fallocate(),
->>>> we try to allocate blocks only from [@phisical, @physical + len]
->>>> range, while other blocks are not used.
->>>
->>> Sorry, but this is a complete bullshit interface.  Userspace has
->>> absolutely no business even thinking of physical placement.  If you
->>> want to align allocations to physical block granularity boundaries
->>> that is the file systems job, not the applications job.
->>
->> Why? There are two contradictory actions that filesystem can't do at the same time:
->>
->> 1)place files on a distance from each other to minimize number of extents
->>  on possible future growth;
->> 2)place small files in the same big block of block device.
->>
->> At initial allocation time you never know, which file will stop grow in some
->> future, i.e. which file is suitable for compaction. This knowledge becomes
->> available some time later.  Say, if a file has not been changed for a month,
->> it is suitable for compaction with another files like it.
->>
->> If at allocation time you can determine a file, which won't grow in the future,
->> don't be afraid, and just share your algorithm here.
+Sorry for slightly late reply.
+
+On Tue, Feb 25, 2020 at 07:54:00PM +0100, Uladzislau Rezki wrote:
+> > > > > I was thinking a 2 fold approach (just thinking out loud..):
+> > > > > 
+> > > > > If kfree_call_rcu() is called in atomic context or in any rcu reader, then
+> > > > > use GFP_ATOMIC to grow an rcu_head wrapper on the atomic memory pool and
+> > > > > queue that.
+> > > > > 
+> > > I am not sure if that is acceptable, i mean what to do when GFP_ATOMIC
+> > > gets failed in atomic context? Or we can just consider it as out of
+> > > memory and another variant is to say that headless object can be called
+> > > from preemptible context only.
+> > 
+> > Yes that makes sense, and we can always put disclaimer in the API's comments
+> > saying if this object is expected to be freed a lot, then don't use the
+> > headless-API to be extra safe.
+> > 
+> Agree.
 > 
-> Very few files grow after they are initially written/closed.  Those that
-> do are almost always opened with O_APPEND (e.g. log files).  It would be
-> reasonable to have O_APPEND cause the filesystem to reserve blocks (in
-> memory at least, maybe some small amount on disk like 1/4 of the current
-> file size) for the file to grow after it is closed.  We might use the
-> same heuristic for directories that grow long after initial creation.
-
-1)Lets see on a real example. I created a new ext4 and started the test below:
-https://gist.github.com/tkhai/afd8458c0a3cc082a1230370c7d89c99
-
-Here are two files written. One file is 4Kb. One file is 1Mb-4Kb.
-
-$filefrag -e test1.tmp test2.tmp 
-Filesystem type is: ef53
-File size of test1.tmp is 4096 (1 block of 4096 bytes)
- ext:     logical_offset:        physical_offset: length:   expected: flags:
-   0:        0..       0:      33793..     33793:      1:             last,eof
-test1.tmp: 1 extent found
-File size of test2.tmp is 1044480 (255 blocks of 4096 bytes)
- ext:     logical_offset:        physical_offset: length:   expected: flags:
-   0:        0..     254:      33536..     33790:    255:             last,eof
-test2.tmp: 1 extent found
-
-$debugfs:  testb 33791
-Block 33791 not in use
-
-test2.tmp started from 131Mb. In case of discard granuality is 1Mb, test1.tmp
-placement prevents us from discarding next 1Mb block.
-
-2)Another example. Let write two files: 1Mb-4Kb and 1Mb+4Kb:
-
-# filefrag -e test3.tmp test4.tmp 
-Filesystem type is: ef53
-File size of test3.tmp is 1052672 (257 blocks of 4096 bytes)
- ext:     logical_offset:        physical_offset: length:   expected: flags:
-   0:        0..     256:      35840..     36096:    257:             last,eof
-test3.tmp: 1 extent found
-File size of test4.tmp is 1044480 (255 blocks of 4096 bytes)
- ext:     logical_offset:        physical_offset: length:   expected: flags:
-   0:        0..     254:      35072..     35326:    255:             last,eof
-test4.tmp: 1 extent found
-
-They don't go sequentially, and here is fragmentation starts.
-
-After both the tests:
-$df -h
-/dev/loop0      2.0G   11M  1.8G   1% /root/mnt
-
-Filesystem is free, all last block groups are free. E.g.,
-
-Group 15: (Blocks 491520-524287) csum 0x3ef5 [INODE_UNINIT, ITABLE_ZEROED]
-  Block bitmap at 272 (bg #0 + 272), csum 0xd52c1f66
-  Inode bitmap at 288 (bg #0 + 288), csum 0x00000000
-  Inode table at 7969-8480 (bg #0 + 7969)
-  32768 free blocks, 8192 free inodes, 0 directories, 8192 unused inodes
-  Free blocks: 491520-524287
-  Free inodes: 122881-131072
-
-but two files are not packed together.
-
-So, ext4 block allocator does not work good for my workload. It even does not
-know anything about discard granuality of underlining block device. Does it?
-I assume no fs knows. Should I tell it?
-
-> The main exception there is VM images, because they are not really "files"
-> in the normal sense, but containers aggregating a lot of different files,
-> each created with patterns that are not visible to the VM host.  In that
-> case, it would be better to have the VM host tell the filesystem that the
-> IO pattern is "random" and not try to optimize until the VM is cold.
+> > BTW, GFP_ATOMIC the documentation says if GFP_ATOMIC reserves are depleted,
+> > the kernel can even panic some times, so if GFP_ATOMIC allocation fails, then
+> > there seems to be bigger problems in the system any way. I would say let us
+> > write a patch to allocate there and see what the -mm guys think.
+> > 
+> OK. It might be that they can offer something if they do not like our
+> approach. I will try to compose something and send the patch to see.
+> The tree.c implementation is almost done, whereas tiny one is on hold.
 > 
->> In Virtuozzo we tried to compact ext4 with existing kernel interface:
->>
->> https://github.com/dmonakhov/e2fsprogs/blob/e4defrag2/misc/e4defrag2.c
->>
->> But it does not work well in many situations, and the main problem is blocks allocation in desired place is not possible. Block allocator can't behave
->> excellent for everything.
->>
->> If this interface bad, can you suggest another interface to make block
->> allocator to know the behavior expected from him in this specific case?
+> I think we should support batching as well as bulk interface there.
+> Another way is to workaround head-less object, just to attach the head
+> dynamically using kmalloc() and then call_rcu() but then it will not be
+> a fair headless support :)
 > 
-> In ext4 there is already the "group" allocator, which combines multiple
-> small files together into a single preallocation group, so that the IO
-> to disk is large/contiguous.  The theory is that files written at the
-> same time will have similar lifespans, but that isn't always true.
+> What is your view?
+
+This kind of "head" will require backpointers to the original object as well
+right? And still wouldn't solve the "what if we run out of GFP_ATOMIC
+reserves". But let me know in a code snippet if possible about what you mean.
+
+> > > > > Otherwise, grow an rcu_head on the stack of kfree_call_rcu() and call
+> > > > > synchronize_rcu() inline with it.
+> > > > > 
+> > > > >
+> > > What do you mean here, Joel? "grow an rcu_head on the stack"?
+> > 
+> > By "grow on the stack", use the compiler-allocated rcu_head on the
+> > kfree_rcu() caller's stack.
+> > 
+> > I meant here to say, if we are not in atomic context, then we use regular
+> > GFP_KERNEL allocation, and if that fails, then we just use the stack's
+> > rcu_head and call synchronize_rcu() or even synchronize_rcu_expedited since
+> > the allocation failure would mean the need for RCU to free some memory is
+> > probably great.
+> > 
+> Ah, i got it. I thought you meant something like recursion and then
+> unwinding the stack back somehow :)
+
+Yeah something like that :) Use the compiler allocated space which you
+wouldn't run out of unless stack overflows.
+
+> > > As for "task_struct's rcu_read_lock_nesting". Will it be enough just
+> > > have a look at preempt_count of current process? If we have for example
+> > > nested rcu_read_locks:
+> > > 
+> > > <snip>
+> > > rcu_read_lock()
+> > >     rcu_read_lock()
+> > >         rcu_read_lock()
+> > > <snip>
+> > > 
+> > > the counter would be 3.
+> > 
+> > No, because preempt_count is not incremented during rcu_read_lock(). RCU
+> > reader sections can be preempted, they just cannot goto sleep in a reader
+> > section (unless the kernel is RT).
+> > 
+> So in CONFIG_PREEMPT kernel we can identify if we are in atomic or not by
+> using rcu_preempt_depth() and in_atomic(). When it comes to !CONFIG_PREEMPT
+> then we skip it and consider as atomic. Something like:
 > 
-> If the files are large and still being written, the allocator will reserve
-> additional blocks (default 8MB I think) on the expectation that it will
-> continue to write until it is closed.
+> <snip>
+> static bool is_current_in_atomic()
+
+Would be good to change this to is_current_in_rcu_reader() since
+rcu_preempt_depth() does not imply atomicity.
+
+> {
+> #ifdef CONFIG_PREEMPT_RCU
+>     if (!rcu_preempt_depth() && !in_atomic())
+>         return false;
+
+I think use if (!rcu_preempt_depth() && preemptible()) here.
+
+preemptible() checks for IRQ disabled section as well.
+
+> #endif
 > 
-> I think (correct me if I'm wrong) that your issue is with defragmenting
-> small files to free up contiguous space in the filesystem?  I think once
-> the free space is freed of small files that defragmenting large files is
-> easily done.  Anything with more than 8-16MB extents will max out most
-> storage anyway (seek rate * IO size).
+>     return true;
 
-My issue is mostly with files < 1Mb, because underlining device discard
-granuality is 1Mb. The result of fragmentation is that size of occupied
-1Mb blocks of device is 1.5 times bigger, than size of really written
-data (say, df -h). And this is the problem.
+Otherwise LGTM.
 
-> In that case, an interesting userspace interface would be an array of
-> inode numbers (64-bit please) that should be packed together densely in
-> the order they are provided (maybe a flag for that).  That allows the
-> filesystem the freedom to find the physical blocks for the allocation,
-> while userspace can tell which files are related to each other.
+thanks!
 
-So, this interface is 3-in-1:
+ - Joel
 
-1)finds a placement for inodes extents;
-2)assigns this space to some temporary donor inode;
-3)calls ext4_move_extents() for each of them.
+> }
+> <snip>
 
-Do I understand you right?
-
-If so, then IMO it's good to start from two inodes, because here may code
-a very difficult algorithm of placement of many inodes, which may require
-much memory. Is this OK?
-
-Can we introduce a flag, that some of inode is unmovable?
-
-Can this interface use a knowledge about underlining device discard granuality?
-
-In the answer to Dave, I wrote a proposition to make fallocate() care about
-i_write_hint. Could you please comment what you think about that too?
-
-Thanks,
-Kirill
