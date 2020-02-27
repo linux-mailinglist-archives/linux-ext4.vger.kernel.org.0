@@ -2,92 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7634170E92
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 03:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0561170EFE
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 04:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbgB0Cn7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 26 Feb 2020 21:43:59 -0500
-Received: from mga03.intel.com ([134.134.136.65]:57388 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728094AbgB0Cn6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 26 Feb 2020 21:43:58 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Feb 2020 18:43:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,490,1574150400"; 
-   d="scan'208";a="436874427"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Feb 2020 18:43:56 -0800
-Date:   Wed, 26 Feb 2020 18:43:56 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jeff Moyer <jmoyer@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V4 00/13] Enable per-file/per-directory DAX operations V4
-Message-ID: <20200227024356.GB28721@iweiny-DESK2.sc.intel.com>
-References: <20200221004134.30599-1-ira.weiny@intel.com>
- <x49pne13qyh.fsf@segfault.boston.devel.redhat.com>
+        id S1728265AbgB0DYt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 26 Feb 2020 22:24:49 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:54469 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728216AbgB0DYt (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 26 Feb 2020 22:24:49 -0500
+Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id D45133A315B;
+        Thu, 27 Feb 2020 14:24:44 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j79n1-00069d-U2; Thu, 27 Feb 2020 14:24:43 +1100
+Date:   Thu, 27 Feb 2020 14:24:43 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ritesh Harjani <riteshh@linux.ibm.com>, tytso@mit.edu,
+        linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-fsdevel@vger.kernel.org, hch@infradead.org,
+        cmaiolino@redhat.com
+Subject: Re: [PATCHv3 6/6] Documentation: Correct the description of
+ FIEMAP_EXTENT_LAST
+Message-ID: <20200227032443.GI10737@dread.disaster.area>
+References: <cover.1582702693.git.riteshh@linux.ibm.com>
+ <279638c6939b1f6ef3ab32912cb51da1a967cf8e.1582702694.git.riteshh@linux.ibm.com>
+ <20200226130503.GY24185@bombadil.infradead.org>
+ <20200226161742.GB8036@magnolia>
+ <20200226172653.GW10728@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <x49pne13qyh.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200226172653.GW10728@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=7-415B0cAAAA:8 a=UuCfLdhhvHlUIZ91etcA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 05:48:38PM -0500, Jeff Moyer wrote:
-> Hi, Ira,
+On Wed, Feb 26, 2020 at 06:26:53PM +0100, Jan Kara wrote:
+> On Wed 26-02-20 08:17:42, Darrick J. Wong wrote:
+> > On Wed, Feb 26, 2020 at 05:05:03AM -0800, Matthew Wilcox wrote:
+> > > On Wed, Feb 26, 2020 at 03:27:08PM +0530, Ritesh Harjani wrote:
+> > > > Currently FIEMAP_EXTENT_LAST is not working consistently across
+> > > > different filesystem's fiemap implementations and thus this feature
+> > > > may be broken. So fix the documentation about this flag to meet the
+> > > > right expectations.
+> > > 
+> > > Are you saying filesystems have both false positives and false negatives?
+> > > I can understand how a filesystem might fail to set FIEMAP_EXTENT_LAST,
+> > > but not how a filesystem might set it when there's actually another
+> > > extent beyond this one.
+> > > 
+> > > >  * FIEMAP_EXTENT_LAST
+> > > > -This is the last extent in the file. A mapping attempt past this
+> > > > -extent will return nothing.
+> > > > +This is generally the last extent in the file. A mapping attempt past this
+> > > > +extent may return nothing. But the user must still confirm by trying to map
+> > > > +past this extent, since different filesystems implement this differently.
+> > 
+> > "This flag means nothing and can be set arbitrarily by the fs for the lulz."
+> > 
+> > Yuck.  I was really hoping for "This is set on the last extent record in
+> > the dataset generated by the query parameters", particularly becaue
+> > that's how e2fsprogs utilties interpret that flag.
 > 
-> ira.weiny@intel.com writes:
+> The problem is that in some cases, we cannot determine whether the flag
+> should be set without doing work equivalent to another fiemap call. And it
+> just seems pointless to try to provide the flag in those cases.
 > 
-> > From: Ira Weiny <ira.weiny@intel.com>
-> >
-> > https://github.com/weiny2/linux-kernel/pull/new/dax-file-state-change-v4
-> >
-> > Changes from V3: 
-> > https://lore.kernel.org/lkml/20200208193445.27421-1-ira.weiny@intel.com/
-> >
-> > 	* Remove global locking...  :-D
-> > 	* put back per inode locking and remove pre-mature optimizations
-> > 	* Fix issues with Directories having IS_DAX() set
-> > 	* Fix kernel crash issues reported by Jeff
-> > 	* Add some clean up patches
-> > 	* Consolidate diflags to iflags functions
-> > 	* Update/add documentation
-> > 	* Reorder/rename patches quite a bit
-> 
-> I left out patches 1 and 2, but applied the rest and tested.  This
-> passes xfs tests in the following configurations:
-> 1) MKFS_OPTIONS="-m reflink=0" MOUNT_OPTIONS="-o dax"
-> 2) MKFS_OPTIONS="-m reflink=0"
->    but with the added configuration step of setting the dax attribute on
->    the mounted test directory.
-> 
-> I also tested to ensure that reflink fails when a file has the dax
-> attribute set.  I've got more testing to do, but figured I'd at least
-> let you know I've been looking at it.
+> But I agree with Matthew that seeing the flag without the extent really
+> being the last one shouldn't happen (unless someone is changing the file).
 
-Thank you!
+Which, of course, can happen. And it can even be the kernel (e.g.
+data writeback converting delalloc extents).
 
-I need to update my xfstest which is specific to this as well...  I'll get to
-that tomorrow and send an updated patch...
+IOWs, the information returned to userspace is out of date before it
+even gets to userspace, so userspace can't rely on the LAST flag to
+be correct in any situation. That's just an extension of the fact
+that userspace cannot rely on the extent map being correct and
+accurate in any situation....
 
-Thanks!
-Ira
+Cheers,
 
-> 
-> Thanks!
-> Jeff
-> 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
