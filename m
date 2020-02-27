@@ -2,231 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E772172A3D
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 22:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59905172A97
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 22:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730013AbgB0VeA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Feb 2020 16:34:00 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:43810 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726460AbgB0VeA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Feb 2020 16:34:00 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01RLMpsU030108;
-        Thu, 27 Feb 2020 21:33:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=SK3ORLcKLc32g22nLM5e6u2awazlkXAzyNrheC/M/BA=;
- b=lT5SdL84B4X3pWTeDR0nkPy5ugvzX8hus7R1OMp/2Bm/Crus2nfbx5DOs7IezcH/6IwS
- tR4fTgOPDF+iSnaBoY/c6d4P8Zxi79tNQFR6tQj6fPEkfMNyawQkHimbRgbnwYWG3yDL
- +MiHLGI1/TLX/rEaOi67VKHg4yy2RGVfZjQChzjkzHBMYFsRvelgVUF7DaUdCwMCUQew
- wz+Fb8NpAnu2n1MZtEUTQc+1aJ5NB903eA/f+XI83aU4UjKjhHz+BBw4HZAv+HfmzDHE
- r/lTWG6tFZlmooZawAY3GAttgzNVqj/RGhpchG5H9ry9N3SeI1vPL3rgZFLgmfzHhD4L pg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2ydct3ds5g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Feb 2020 21:33:59 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01RLIIK4052026;
-        Thu, 27 Feb 2020 21:33:58 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2ydcs6bw07-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 27 Feb 2020 21:33:58 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01RLXvef008864;
-        Thu, 27 Feb 2020 21:33:58 GMT
-Received: from localhost (/10.145.179.117)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 27 Feb 2020 13:33:57 -0800
-Subject: [PATCH 3/3] ext4: allow online filesystem uuid queries
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     darrick.wong@oracle.com
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Date:   Thu, 27 Feb 2020 13:33:54 -0800
-Message-ID: <158283923456.904118.14244827054399587376.stgit@magnolia>
-In-Reply-To: <158283921562.904118.13877489081184026686.stgit@magnolia>
-References: <158283921562.904118.13877489081184026686.stgit@magnolia>
-User-Agent: StGit/0.17.1-dirty
+        id S1729893AbgB0V4o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Feb 2020 16:56:44 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:36912 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729501AbgB0V4o (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 27 Feb 2020 16:56:44 -0500
+Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id A4DF83A32ED;
+        Fri, 28 Feb 2020 08:56:35 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j7R90-0004QR-Dr; Fri, 28 Feb 2020 08:56:34 +1100
+Date:   Fri, 28 Feb 2020 08:56:34 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, tytso@mit.edu,
+        viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
+        snitzer@redhat.com, jack@suse.cz, ebiggers@google.com,
+        riteshh@linux.ibm.com, krisman@collabora.com, surajjs@amazon.com,
+        dmonakhov@gmail.com, mbobrowski@mbobrowski.org, enwlinux@gmail.com,
+        sblbir@amazon.com, khazhy@google.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
+Message-ID: <20200227215634.GM10737@dread.disaster.area>
+References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
+ <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
+ <20200226155521.GA24724@infradead.org>
+ <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
+ <20200227073336.GJ10737@dread.disaster.area>
+ <2e2ae13e-0757-0831-216d-b363b1727a0d@virtuozzo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9544 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=1 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002270142
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9544 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 bulkscore=0
- impostorscore=0 spamscore=0 priorityscore=1501 malwarescore=0 adultscore=0
- phishscore=0 mlxlogscore=999 mlxscore=0 suspectscore=1 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002270142
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e2ae13e-0757-0831-216d-b363b1727a0d@virtuozzo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=SSkiD6HNAAAA:20 a=7-415B0cAAAA:8 a=hjJOWSJPumWB5AbckyoA:9
+        a=7Zwj6sZBwVKJAoWSPKxL6X1jA+E=:19 a=F-BD9Ut2gcChwI3g:21
+        a=9FFcs68v8UOzUGPP:21 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+On Thu, Feb 27, 2020 at 02:12:53PM +0300, Kirill Tkhai wrote:
+> On 27.02.2020 10:33, Dave Chinner wrote:
+> > On Wed, Feb 26, 2020 at 11:05:23PM +0300, Kirill Tkhai wrote:
+> >> On 26.02.2020 18:55, Christoph Hellwig wrote:
+> >>> On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
+> >>>> This adds a support of physical hint for fallocate2() syscall.
+> >>>> In case of @physical argument is set for ext4_fallocate(),
+> >>>> we try to allocate blocks only from [@phisical, @physical + len]
+> >>>> range, while other blocks are not used.
+> >>>
+> >>> Sorry, but this is a complete bullshit interface.  Userspace has
+> >>> absolutely no business even thinking of physical placement.  If you
+> >>> want to align allocations to physical block granularity boundaries
+> >>> that is the file systems job, not the applications job.
+> >>
+> >> Why? There are two contradictory actions that filesystem can't do at the same time:
+> >>
+> >> 1)place files on a distance from each other to minimize number of extents
+> >>   on possible future growth;
+> > 
+> > Speculative EOF preallocation at delayed allocation reservation time
+> > provides this.
+> > 
+> >> 2)place small files in the same big block of block device.
+> > 
+> > Delayed allocation during writeback packs files smaller than the
+> > stripe unit of the filesystem tightly.
+> > 
+> > So, yes, we do both of these things at the same time in XFS, and
+> > have for the past 10 years.
+> > 
+> >> At initial allocation time you never know, which file will stop grow in some future,
+> >> i.e. which file is suitable for compaction. This knowledge becomes available some time later.
+> >> Say, if a file has not been changed for a month, it is suitable for compaction with
+> >> another files like it.
+> >>
+> >> If at allocation time you can determine a file, which won't grow in the future, don't be afraid,
+> >> and just share your algorithm here.
+> >>
+> >> In Virtuozzo we tried to compact ext4 with existing kernel interface:
+> >>
+> >> https://github.com/dmonakhov/e2fsprogs/blob/e4defrag2/misc/e4defrag2.c
+> >>
+> >> But it does not work well in many situations, and the main problem is blocks allocation
+> >> in desired place is not possible. Block allocator can't behave excellent for everything.
+> >>
+> >> If this interface bad, can you suggest another interface to make block allocator to know
+> >> the behavior expected from him in this specific case?
+> > 
+> > Write once, long term data:
+> > 
+> > 	fcntl(fd, F_SET_RW_HINT, RWH_WRITE_LIFE_EXTREME);
+> > 
+> > That will allow the the storage stack to group all data with the
+> > same hint together, both in software and in hardware.
+> 
+> This is interesting option, but it only applicable before write is made. And it's only
+> applicable on your own applications. My usecase is defragmentation of containers, where
+> any applications may run. Most of applications never care whether long or short-term
+> data they write.
 
-Wire up the new ioctls to get and set the ext4 filesystem uuid.
+Why is that a problem? They'll be using the default write hint (i.e.
+NONE) and so a hint aware allocation policy will be separating that
+data from all the other data written with specific hints...
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/ext4/ioctl.c |  132 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 132 insertions(+)
+And you've mentioned that your application has specific *never write
+again* selection criteria for data it is repacking. And that
+involves rewriting that data.  IOWs, you know exactly what policy
+you want to apply before you rewrite the data, and so what other
+applications do is completely irrelevant for your repacker...
 
+> Maybe, we can make fallocate() care about F_SET_RW_HINT? Say, if RWH_WRITE_LIFE_EXTREME
+> is set, fallocate() tries to allocate space around another inodes with the same hint.
 
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index a0ec750018dd..c8d556c93cc7 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -813,6 +813,132 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
- 	return error;
- }
- 
-+static int ext4_ioc_getfsuuid(struct super_block *sb,
-+			      struct ioc_fsuuid __user *user_fu)
-+{
-+	struct ioc_fsuuid fu;
-+	struct ext4_super_block *es = EXT4_SB(sb)->s_es;
-+
-+	BUILD_BUG_ON(sizeof(es->s_uuid) != sizeof(uuid_t));
-+
-+	if (copy_from_user(&fu, user_fu, sizeof(fu)))
-+		return -EFAULT;
-+
-+	if (fu.fu_reserved || fu.fu_reserved1 || fu.fu_flags)
-+		return -EINVAL;
-+
-+	if (fu.fu_length == 0) {
-+		fu.fu_length = sizeof(es->s_uuid);
-+		goto out;
-+	}
-+
-+	if (fu.fu_length < sizeof(es->s_uuid))
-+		return -EINVAL;
-+
-+	if (copy_to_user(user_fu + 1, es->s_uuid, sizeof(es->s_uuid)))
-+		return -EFAULT;
-+	fu.fu_length = sizeof(es->s_uuid);
-+
-+out:
-+	if (copy_to_user(user_fu, &fu, sizeof(fu)))
-+		return -EFAULT;
-+	return 0;
-+}
-+
-+static int ext4_ioc_setfsuuid(struct file *filp, struct super_block *sb,
-+			      struct ioc_fsuuid __user *user_fu)
-+{
-+	struct ioc_fsuuid fu;
-+	uuid_t new_uuid;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	handle_t *handle;
-+	int err, err2;
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if (copy_from_user(&fu, user_fu, sizeof(fu)))
-+		return -EFAULT;
-+
-+	if (fu.fu_reserved || fu.fu_reserved1 ||
-+	    (fu.fu_flags & ~FS_IOC_SETFSUUID_ALL) ||
-+	    fu.fu_length != sizeof(uuid_t))
-+		return -EINVAL;
-+
-+	if (copy_from_user(&new_uuid, user_fu + 1, sizeof(uuid_t)))
-+		return -EFAULT;
-+	if (uuid_is_null(&new_uuid))
-+		return -EINVAL;
-+
-+	err = mnt_want_write_file(filp);
-+	if (err)
-+		return err;
-+
-+	handle = ext4_journal_start_sb(sb, EXT4_HT_RESIZE, 1);
-+	if (IS_ERR(handle)) {
-+		err = PTR_ERR(handle);
-+		goto out_drop_write;
-+	}
-+	err = ext4_journal_get_write_access(handle, sbi->s_sbh);
-+	if (err)
-+		goto out_cancel_trans;
-+
-+	/*
-+	 * Older ext4 filesystems with the group descriptor checksum feature
-+	 * but not the general metadata checksum features require all group
-+	 * descriptors to be rewritten to change the UUID.  We can't do that
-+	 * here, so just bail out.
-+	 */
-+	if (ext4_has_feature_gdt_csum(sb) && !ext4_has_metadata_csum(sb)) {
-+		err = -EOPNOTSUPP;
-+		goto out_cancel_trans;
-+	}
-+
-+	/*
-+	 * Prior to the addition of metadata checksumming, the uuid was only
-+	 * used in the superblock, so for those filesystems, all we need to do
-+	 * here is update the incore uuid and write the super to disk.
-+	 *
-+	 * On a metadata_csum filesystem, every metadata object has a checksum
-+	 * that is seeded with the checksum of the uuid that was set at
-+	 * mkfs time.  The seed value can be stored in the ondisk superblock
-+	 * or computed at mount time, depending on feature flags.
-+	 *
-+	 * If the csum_seed feature is not set, we need to turn on the
-+	 * csum_seed feature.  If userspace did not set FORCE_INCOMPAT we have
-+	 * to bail out.  Otherwise, copy the incore checksum seed to the ondisk
-+	 * superblock, set the csum_seed feature bit, and then we can update
-+	 * the incore uuid.
-+	 */
-+	if ((ext4_has_metadata_csum(sb) || ext4_has_feature_ea_inode(sb)) &&
-+	    !ext4_has_feature_csum_seed(sb) &&
-+	    memcmp(&new_uuid, sbi->s_es->s_uuid, sizeof(sbi->s_es->s_uuid))) {
-+		if (!(fu.fu_flags & FS_IOC_SETFSUUID_FORCE_INCOMPAT)) {
-+			err = -EOPNOTSUPP;
-+			goto out_cancel_trans;
-+		}
-+		sbi->s_es->s_checksum_seed = cpu_to_le32(sbi->s_csum_seed);
-+		ext4_set_feature_csum_seed(sb);
-+	}
-+	memcpy(sbi->s_es->s_uuid, &new_uuid, sizeof(uuid_t));
-+
-+	err = ext4_handle_dirty_super(handle, sb);
-+	if (err)
-+		goto out_cancel_trans;
-+
-+	/* Update incore state. */
-+	uuid_copy(&sb->s_uuid, &new_uuid);
-+	invalidate_bdev(sb->s_bdev);
-+
-+out_cancel_trans:
-+	err2 = ext4_journal_stop(handle);
-+	if (!err)
-+		err = err2;
-+out_drop_write:
-+	mnt_drop_write_file(filp);
-+	return err;
-+}
-+
- long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
- 	struct inode *inode = file_inode(filp);
-@@ -1304,6 +1430,12 @@ long ext4_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 			return -EOPNOTSUPP;
- 		return fsverity_ioctl_measure(filp, (void __user *)arg);
- 
-+	case FS_IOC_GETFSUUID:
-+		return ext4_ioc_getfsuuid(sb, (struct ioc_fsuuid __user *)arg);
-+	case FS_IOC_SETFSUUID:
-+		return ext4_ioc_setfsuuid(filp, sb,
-+					  (struct ioc_fsuuid __user *)arg);
-+
- 	default:
- 		return -ENOTTY;
- 	}
+That's exactly what I said:
 
+> > That will allow the the storage stack to group all data with the
+> > same hint together, both in software and in hardware.
+
+What the filesystem does with the hint is up to the filesystem
+and the policies that it's developers decide are appropriate. If
+your filesystem doesn't do what you need, talk to the filesystem
+developers about implementing the policy you require.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
