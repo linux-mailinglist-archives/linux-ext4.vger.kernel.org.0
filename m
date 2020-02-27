@@ -2,81 +2,84 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE9417112F
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 07:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCEB171189
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Feb 2020 08:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbgB0G7q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Feb 2020 01:59:46 -0500
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:33030 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726575AbgB0G7q (ORCPT
+        id S1728446AbgB0Hdp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Feb 2020 02:33:45 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:58589 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726999AbgB0Hdp (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 27 Feb 2020 01:59:46 -0500
-Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id CF1532E15F8;
-        Thu, 27 Feb 2020 09:59:41 +0300 (MSK)
-Received: from iva4-7c3d9abce76c.qloud-c.yandex.net (iva4-7c3d9abce76c.qloud-c.yandex.net [2a02:6b8:c0c:4e8e:0:640:7c3d:9abc])
-        by mxbackcorp1j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id cydo0sNlfQ-xeOKmSoa;
-        Thu, 27 Feb 2020 09:59:41 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1582786781; bh=LwWjZiS5EzXEz+bSSOqPaeyqH6VUxngb/TfuxMV5n4s=;
-        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
-        b=MQx13QXIYnIgGnoIddsDtjWXj5iwUdpAoMGhZ9JO/GzvdsHSpbM6VrS4LWai5sple
-         PkJxDiDaM7iG3Xoz/aXydRRT5eA+J70ZEK3iujiCyky9qKcsdjTOY+aeEsax0kC8G9
-         IJ6L4a2sRvi7aH+lDVR8Hw6nRMQRdGKB7GxfSic0=
-Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:8448:fbcc:1dac:c863])
-        by iva4-7c3d9abce76c.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id 4wLRz4WkJW-xeVm1Z4H;
-        Thu, 27 Feb 2020 09:59:40 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     tytso@mit.edu, viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
+        Thu, 27 Feb 2020 02:33:45 -0500
+Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 0A6A93A30FA;
+        Thu, 27 Feb 2020 18:33:37 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j7Dfs-0007i4-5j; Thu, 27 Feb 2020 18:33:36 +1100
+Date:   Thu, 27 Feb 2020 18:33:36 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, tytso@mit.edu,
+        viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
         snitzer@redhat.com, jack@suse.cz, ebiggers@google.com,
         riteshh@linux.ibm.com, krisman@collabora.com, surajjs@amazon.com,
         dmonakhov@gmail.com, mbobrowski@mbobrowski.org, enwlinux@gmail.com,
         sblbir@amazon.com, khazhy@google.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
+Message-ID: <20200227073336.GJ10737@dread.disaster.area>
 References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
  <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
  <20200226155521.GA24724@infradead.org>
  <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <19bddb89-c3c4-0f38-dca3-70164dc81a57@yandex-team.ru>
-Date:   Thu, 27 Feb 2020 09:59:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=l697ptgUJYAA:10
+        a=SSkiD6HNAAAA:20 a=7-415B0cAAAA:8 a=Rrx9BAELJYaVBBxEqmIA:9
+        a=dm0UahiCclTZQYsM:21 a=WexPZ7QWWnMIFWoD:21 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 26/02/2020 23.05, Kirill Tkhai wrote:
+On Wed, Feb 26, 2020 at 11:05:23PM +0300, Kirill Tkhai wrote:
 > On 26.02.2020 18:55, Christoph Hellwig wrote:
->> On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
->>> This adds a support of physical hint for fallocate2() syscall.
->>> In case of @physical argument is set for ext4_fallocate(),
->>> we try to allocate blocks only from [@phisical, @physical + len]
->>> range, while other blocks are not used.
->>
->> Sorry, but this is a complete bullshit interface.  Userspace has
->> absolutely no business even thinking of physical placement.  If you
->> want to align allocations to physical block granularity boundaries
->> that is the file systems job, not the applications job.
+> > On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
+> >> This adds a support of physical hint for fallocate2() syscall.
+> >> In case of @physical argument is set for ext4_fallocate(),
+> >> we try to allocate blocks only from [@phisical, @physical + len]
+> >> range, while other blocks are not used.
+> > 
+> > Sorry, but this is a complete bullshit interface.  Userspace has
+> > absolutely no business even thinking of physical placement.  If you
+> > want to align allocations to physical block granularity boundaries
+> > that is the file systems job, not the applications job.
 > 
 > Why? There are two contradictory actions that filesystem can't do at the same time:
 > 
 > 1)place files on a distance from each other to minimize number of extents
->    on possible future growth;
+>   on possible future growth;
+
+Speculative EOF preallocation at delayed allocation reservation time
+provides this.
+
 > 2)place small files in the same big block of block device.
-> 
+
+Delayed allocation during writeback packs files smaller than the
+stripe unit of the filesystem tightly.
+
+So, yes, we do both of these things at the same time in XFS, and
+have for the past 10 years.
+
 > At initial allocation time you never know, which file will stop grow in some future,
 > i.e. which file is suitable for compaction. This knowledge becomes available some time later.
 > Say, if a file has not been changed for a month, it is suitable for compaction with
@@ -95,10 +98,16 @@ On 26/02/2020 23.05, Kirill Tkhai wrote:
 > If this interface bad, can you suggest another interface to make block allocator to know
 > the behavior expected from him in this specific case?
 
-Controlling exact place is odd. I suppose main reason for this that defragmentation
-process wants to control fragmentation during allocating new space.
+Write once, long term data:
 
-Maybe flag FALLOC_FL_DONT_FRAGMENT (allocate exactly one extent or fail) could solve that problem?
+	fcntl(fd, F_SET_RW_HINT, RWH_WRITE_LIFE_EXTREME);
 
-Defragmentator could try allocate different sizes and automatically balance fragmentation factor
-without controlling exact disk offsets. Also it could reserve space for expected file growth.
+That will allow the the storage stack to group all data with the
+same hint together, both in software and in hardware.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
