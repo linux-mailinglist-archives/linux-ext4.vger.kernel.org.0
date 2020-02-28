@@ -2,70 +2,74 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6C31740A0
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 20:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9457117410B
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 21:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgB1T74 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Feb 2020 14:59:56 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:46558 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725769AbgB1T74 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Feb 2020 14:59:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xY8PKVfaI12cjGthFIErDX+1jB0/adgnMfS1LHlHQYY=; b=fKw+M+IHRBrPRjZvU4H43ipERs
-        60IJF3gBEXe9m6cyMBAB6C72c271LTysvqXbfPeDE/sEmchtoAHyNWEdfKHqJsONNLn+xeej9II3u
-        Ss9iE+sSJ3o5F0HYaJ6szarp7/WIUA8gkNN4VIFb31rC/PY2c2Y0Rp0kdslZRPnWLJUZAOkES8rU9
-        uN2z2jVfq22ledVbmZ+2cc9TgHvRgMIFEfs9mmUGg+CH7vamZqNtTnP9FJftzPbiBqIkn5c4c72yv
-        7JLZGc2d/5Gig0E40gsbzIDbukM837OPc3Lle+xozLSboNAO+I4mZMAqQ5giKbSHCwTv48kGxZ9aZ
-        2PPE9TXA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1j7lne-0004W7-NN; Fri, 28 Feb 2020 19:59:54 +0000
-Date:   Fri, 28 Feb 2020 11:59:54 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+        id S1725886AbgB1Ufm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Feb 2020 15:35:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54530 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbgB1Ufm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 28 Feb 2020 15:35:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id CB895AE95;
+        Fri, 28 Feb 2020 20:35:40 +0000 (UTC)
+Date:   Fri, 28 Feb 2020 14:35:38 -0600
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     Matthew Wilcox <willy@infradead.org>
 Cc:     Christoph Hellwig <hch@infradead.org>,
         Ritesh Harjani <riteshh@linux.ibm.com>,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         darrick.wong@oracle.com
 Subject: Re: [PATCH v2] iomap: return partial I/O count on error in
  iomap_dio_bio_actor
-Message-ID: <20200228195954.GJ29971@bombadil.infradead.org>
+Message-ID: <20200228203538.s52t64zcurna77cu@fiona>
 References: <20200220152355.5ticlkptc7kwrifz@fiona>
  <20200221045110.612705204E@d06av21.portsmouth.uk.ibm.com>
  <20200225205342.GA12066@infradead.org>
  <20200228194401.o736qvvr4zpklyiz@fiona>
+ <20200228195954.GJ29971@bombadil.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200228194401.o736qvvr4zpklyiz@fiona>
+In-Reply-To: <20200228195954.GJ29971@bombadil.infradead.org>
+User-Agent: NeoMutt/20180716
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 28, 2020 at 01:44:01PM -0600, Goldwyn Rodrigues wrote:
-> +++ b/fs/iomap/direct-io.c
-> @@ -264,7 +264,7 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
->  		size_t n;
->  		if (dio->error) {
->  			iov_iter_revert(dio->submit.iter, copied);
-> -			copied = ret = 0;
-> +			ret = 0;
->  			goto out;
+On 11:59 28/02, Matthew Wilcox wrote:
+> On Fri, Feb 28, 2020 at 01:44:01PM -0600, Goldwyn Rodrigues wrote:
+> > +++ b/fs/iomap/direct-io.c
+> > @@ -264,7 +264,7 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
+> >  		size_t n;
+> >  		if (dio->error) {
+> >  			iov_iter_revert(dio->submit.iter, copied);
+> > -			copied = ret = 0;
+> > +			ret = 0;
+> >  			goto out;
+> 
+> There's another change here ... look at the out label
+> 
+> out:
+>         /* Undo iter limitation to current extent */
+>         iov_iter_reexpand(dio->submit.iter, orig_count - copied);
+>         if (copied)
+>                 return copied;
+>         return ret;
+> 
+> so you're also changing by how much the iter is reexpanded.  I
+> don't know if it's the appropriate amount; I still don't quite get the
+> iov_iter complexities.
+> 
 
-There's another change here ... look at the out label
+Ah, okay. Now I understand what Christoph was saying.
 
-out:
-        /* Undo iter limitation to current extent */
-        iov_iter_reexpand(dio->submit.iter, orig_count - copied);
-        if (copied)
-                return copied;
-        return ret;
+I suppose it is safe to remove iov_iter_reexpand(). I don't see any
+other goto to this label which will have a non-zero copied value.
+And we have already performed the iov_iter_revert().
 
-so you're also changing by how much the iter is reexpanded.  I
-don't know if it's the appropriate amount; I still don't quite get the
-iov_iter complexities.
-
+-- 
+Goldwyn
