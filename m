@@ -2,115 +2,257 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E95D61733C5
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 10:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B9F1733E8
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 10:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgB1JXW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Feb 2020 04:23:22 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:57354 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgB1JXW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Feb 2020 04:23:22 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01S9HnBx025435;
-        Fri, 28 Feb 2020 09:23:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=2XF6ZOBCoWnr8ATklP4n3sz4SiQ/HWm0Y2hJayMjaao=;
- b=iCESF+ynmVsjWkTtzkJNcmdSeulR9nJ8jo4n76/Nrub8VCGjTktukZ5zWemJ0/wpfaH2
- fET1twL3Xssx04T38C1rOxdfgzcEHoYLUD6OMrsh8DgWs1fXFDf5+aogGWa8md7Qr6uE
- 5FB2AAZzCKh+LMam4uI9cz7tsqEbvAm5MF/smrerH/SQMXlaO5waoqtuX2IWxfNOiHmJ
- AWEUIFnKF7GByFnUbO/0qsyUA4QUAyl2U6/PhvgNeMBdfyskq5OWweoRZU9uYBa/zgot
- RqhgjKEzmGIBlaS7ZGfSmMSvlpP5HMgJ+D3MFJx9u5VLpDsRcr0Q+rZjJY8Yfca95vR1 Vg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2yehxrw3rf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 Feb 2020 09:23:12 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01S9MKPX161034;
-        Fri, 28 Feb 2020 09:23:11 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2ydcs803qr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 28 Feb 2020 09:23:11 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01S9N3Nk012879;
-        Fri, 28 Feb 2020 09:23:03 GMT
-Received: from kili.mountain (/129.205.23.165)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 28 Feb 2020 01:23:03 -0800
-Date:   Fri, 28 Feb 2020 12:22:56 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Suraj Jitindar Singh <surajjs@amazon.com>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Walter Harms <wharms@bfs.de>
-Subject: [PATCH] ext4: potential crash on allocation error in
- ext4_alloc_flex_bg_array()
-Message-ID: <20200228092142.7irbc44yaz3by7nb@kili.mountain>
+        id S1726785AbgB1J1Q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Feb 2020 04:27:16 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58140 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726207AbgB1J1Q (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 28 Feb 2020 04:27:16 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01S9LDPJ054071
+        for <linux-ext4@vger.kernel.org>; Fri, 28 Feb 2020 04:27:15 -0500
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2yepwjqn54-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Fri, 28 Feb 2020 04:27:15 -0500
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Fri, 28 Feb 2020 09:27:12 -0000
+Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 28 Feb 2020 09:27:08 -0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 01S9R7J630671348
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Feb 2020 09:27:07 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3DB5242047;
+        Fri, 28 Feb 2020 09:27:07 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 67F5542054;
+        Fri, 28 Feb 2020 09:27:04 +0000 (GMT)
+Received: from dhcp-9-199-158-200.in.ibm.com (unknown [9.199.158.200])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 28 Feb 2020 09:27:04 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
+        hch@infradead.org, cmaiolino@redhat.com, david@fromorbit.com,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [PATCHv5 0/6] ext4: bmap & fiemap conversion to use iomap
+Date:   Fri, 28 Feb 2020 14:56:53 +0530
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9544 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002280078
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9544 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- bulkscore=0 phishscore=0 spamscore=0 clxscore=1011 lowpriorityscore=0
- adultscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002280077
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 20022809-4275-0000-0000-000003A64901
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20022809-4276-0000-0000-000038BACC14
+Message-Id: <cover.1582880246.git.riteshh@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-28_02:2020-02-26,2020-02-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2
+ mlxlogscore=999 malwarescore=0 priorityscore=1501 clxscore=1015 mlxscore=0
+ adultscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002280078
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If sbi->s_flex_groups_allocated is zero and the first allocation fails
-then this code will crash.  The problem is that "i--" will set "i" to
--1 but when we compare "i >= sbi->s_flex_groups_allocated" then the -1
-is type promoted to unsigned and becomes UINT_MAX.  Since UINT_MAX
-is more than zero, the condition is true so we call kvfree(new_groups[-1]).
-The loop will carry on freeing invalid memory until it crashes.
+Hello All, 
 
-Fixes: 7c990728b99e ("ext4: fix potential race between s_flex_groups online resizing and access")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-I changed this from a -- loop to a ++ loop because I knew it would make
-Walter Harms happy.  He hates -- loops and I don't when his birthday so
-I'm celebrating it today.  :)
+PATCHv4 -> PATCHv5
+Fixed static symbol warning. Added Reported-by & Reviewed-by tags.
 
- fs/ext4/super.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Background
+==========
+These are v4 patches to move ext4 bmap & fiemap calls to use iomap APIs.
+Previous version can be found in links mentioned below.
+After some discussions with the community in [RFCv2] all of the below
+observational differences between the old and the new (iomap based
+implementation) has been agreed upon. It looks like we should be good to move
+ext4_fiemap & ext4_bmap too to iomap interface.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index ff1b764b0c0e..0c7c4adb664e 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2391,7 +2391,7 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct flex_groups **old_groups, **new_groups;
--	int size, i;
-+	int size, i, j;
- 
- 	if (!sbi->s_log_groups_per_flex)
- 		return 0;
-@@ -2412,8 +2412,8 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
- 					 sizeof(struct flex_groups)),
- 					 GFP_KERNEL);
- 		if (!new_groups[i]) {
--			for (i--; i >= sbi->s_flex_groups_allocated; i--)
--				kvfree(new_groups[i]);
-+			for (j = sbi->s_flex_groups_allocated; j < i; j++)
-+				kvfree(new_groups[j]);
- 			kvfree(new_groups);
- 			ext4_msg(sb, KERN_ERR,
- 				 "not enough memory for %d flex groups", size);
+FYI - this patch reduces the users of ext4_get_block API and thus a step
+towards getting rid of buffer_heads from ext4.
+Also reduces a lot of code by making use of existing iomap_ops.
+
+PATCHv3 -> PATCHv4
+==================
+1. Patch-1: Fixed indentation and checking of flags EXT4_MAP_UNWRITTEN.
+2. Patch-4: Moved the checking of offset beyond what indirect mapped file inode
+   can support, to early in ext4_iomap_begin_report().
+3. Patch-5: Fixed no in-inode & no external block case in case of xattr.
+   Returning -ENOENT in that case.
+4. Patch-6: Added more info in documentation about when FIEMAP_EXTENT_LAST could
+   be set.
+
+
+RFCv2 -> PATCHv3
+================
+1. Fixed IOMAP_INLINE & IOMAP_MAPPED flag setting in *xattr_fiemap() based
+   on, whether it is inline v/s external block.
+2. Fixed fiemap for non-extent based mapping. [PATCHv3 4/6] fixes it.
+3. Updated the documentation for description about FIEMAP_EXTENT_LAST flag.
+   [PATCHv3 6/6].
+
+
+Testing (done on ext4 master branch)
+========
+'xfstests -g quick' passes with default mkfs/mount configuration
+(v/s which also pass with vanilla kernel without this patch). Except
+generic/473 which also failes on XFS. This seems to be the test case issue
+since it expects the data in slightly different way as compared to what iomap
+returns.
+Point 2.a below describes more about this.
+
+Observations/Review required
+============================
+1. bmap related old v/s new method differences:-
+	a. In case if addr > INT_MAX, it issues a warning and
+	   returns 0 as the block no. While earlier it used to return the
+	   truncated value with no warning.
+	[Again this should be fine, it was just an observation worth mentioning]
+
+	b. block no. is only returned in case of iomap->type is IOMAP_MAPPED,
+	   but not when iomap->type is IOMAP_UNWRITTEN. While with previously
+	   we used to get block no. for both of above cases.
+	[Darrick:- not much reason to map unwritten blocks. So this may not
+	 be relevant here [5]]
+
+2. Fiemap related old v/s new method differences:-
+	a. iomap_fiemap returns the disk extent information in exact
+	   correspondence with start of user requested logical offset till the
+	   length requested by user. While in previous implementation the
+	   returned information used to give the complete extent information if
+	   the range requested by user lies in between the extent mapping.
+	[Both behaviors should be fine here as per documentation - [5]]
+
+	b. iomap_fiemap adds the FIEMAP_EXTENT_LAST flag also at the last
+	   fiemap_extent mapping range requested by the user via fm_length (
+	   if that has a valid mapped extent on the disk). But if the user
+	   requested for more fm_length which could not be mapped in the last
+	   fiemap_extent, then the flag is not set.
+	[This does not seems to be an issue after some community discussion.
+	Since this flag is not consistent across different filesystems.
+	In ext4 itself for extent v/s non-extent based mapping, this flag is
+	set differently. So we rather decided to update the documentation rather
+	than complicating it more, which anyway no one seems to cares about -
+	[6,7]]
+	   
+
+Below is CTRL-C -> CTRL-V from from previous versions
+=====================================================
+
+e.g. output for above differences 2.a & 2.b
+===========================================
+create a file with below cmds. 
+1. fallocate -o 0 -l 8K testfile.txt
+2. xfs_io -c "pwrite 8K 8K" testfile.txt
+3. check extent mapping:- xfs_io -c "fiemap -v" testfile.txt
+4. run this binary on with and without these patches:- ./a.out (test_fiemap_diff.c) [4]
+
+o/p of xfs_io -c "fiemap -v"
+============================================
+With this patch on patched kernel:-
+testfile.txt:
+ EXT: FILE-OFFSET      BLOCK-RANGE          TOTAL FLAGS
+   0: [0..15]:         122802736..122802751    16 0x800
+   1: [16..31]:        122687536..122687551    16   0x1
+
+without patch on vanilla kernel (no difference):-
+testfile.txt:
+ EXT: FILE-OFFSET      BLOCK-RANGE          TOTAL FLAGS
+   0: [0..15]:         332211376..332211391    16 0x800
+   1: [16..31]:        332722392..332722407    16   0x1
+
+
+o/p of a.out without patch:-
+================
+riteshh-> ./a.out 
+logical: [       0..      15] phys: 332211376..332211391 flags: 0x800 tot: 16
+(0) extent flag = 2048
+
+o/p of a.out with patch (both point 2.a & 2.b could be seen)
+=======================
+riteshh-> ./a.out
+logical: [       0..       7] phys: 122802736..122802743 flags: 0x801 tot: 8
+(0) extent flag = 2049
+
+FYI - In test_fiemap_diff.c test we had 
+a. fm_extent_count = 1
+b. fm_start = 0
+c. fm_length = 4K
+Whereas when we change fm_extent_count = 32, then we don't see any difference.
+
+e.g. output for above difference listed in point 1.b
+====================================================
+
+o/p without patch (block no returned for unwritten block as well)
+=========Testing IOCTL FIBMAP=========
+File size = 16384, blkcnt = 4, blocksize = 4096
+  0   41526422
+  1   41526423
+  2   41590299
+  3   41590300
+
+o/p with patch (0 returned for unwritten block)
+=========Testing IOCTL FIBMAP=========
+File size = 16384, blkcnt = 4, blocksize = 4096
+  0          0          0
+  1          0          0
+  2   15335942      29953
+  3   15335943      29953
+
+Summary:-
+========
+Due to some of the observational differences to user, listed above,
+requesting to please help with a careful review in moving this to iomap.
+Digging into some older threads, it looks like these differences should be fine,
+since the same tools have been working fine with XFS (which uses iomap based
+implementation) [1]
+Also as Ted suggested in [3]: Fiemap & bmap spec could be made based on the ext4
+implementation. But since all the tools also work with xfs which uses iomap
+based fiemap, so we should be good there.
+
+
+References of some previous discussions:
+=======================================
+[RFCv1]: https://www.spinics.net/lists/linux-ext4/msg67077.html
+[RFCv2]: https://marc.info/?l=linux-ext4&m=158020672413871&w=2 
+[PATCHv3]: https://www.spinics.net/lists/linux-ext4/msg70403.html
+[PATCHv4]: https://patchwork.ozlabs.org/project/linux-ext4/list/?series=161168
+[1]: https://www.spinics.net/lists/linux-fsdevel/msg128370.html
+[2]: https://www.spinics.net/lists/linux-fsdevel/msg127675.html
+[3]: https://www.spinics.net/lists/linux-fsdevel/msg128368.html
+[4]: https://raw.githubusercontent.com/riteshharjani/LinuxStudy/master/tools/test_fiemap_diff.c
+[5]: https://marc.info/?l=linux-fsdevel&m=158040005907862&w=2
+[6]: https://marc.info/?l=linux-fsdevel&m=158221859807604&w=2
+[7]: https://marc.info/?l=linux-ext4&m=158228563431539&w=2
+
+Ritesh Harjani (6):
+  ext4: Add IOMAP_F_MERGED for non-extent based mapping
+  ext4: Optimize ext4_ext_precache for 0 depth
+  ext4: Move ext4 bmap to use iomap infrastructure.
+  ext4: Make ext4_ind_map_blocks work with fiemap
+  ext4: Move ext4_fiemap to use iomap framework.
+  Documentation: Correct the description of FIEMAP_EXTENT_LAST
+
+ Documentation/filesystems/fiemap.txt |  10 +-
+ fs/ext4/extents.c                    | 299 +++++----------------------
+ fs/ext4/inline.c                     |  41 ----
+ fs/ext4/inode.c                      |  22 +-
+ 4 files changed, 80 insertions(+), 292 deletions(-)
+
 -- 
-2.11.0
+2.21.0
 
