@@ -2,108 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E59173FE5
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 19:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A388617406C
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 20:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbgB1Spk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Feb 2020 13:45:40 -0500
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:18167 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725769AbgB1Spk (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Feb 2020 13:45:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1582915539; x=1614451539;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=rGPLGhMYnYd4wUpUGnj7Hu45RX1YrowvYp9cRXp4l7w=;
-  b=Kd4nstSchub0BsTVjLxPknWLPcp2vFLSPNSc5AeWjVSGgzjW0Er4ssEj
-   QTdlno7jXYNizhlkG0E2UPC0LLK6NHXi6+oohVEhEVuvuiskBAUIMm38g
-   joaT9wOgOdFbFZI/+PzzO7byuFFH2PH/5BB+SA+9k7v5g6mR2+UyUxcra
-   Q=;
-IronPort-SDR: pbNzaGAa30Qzm/PIIiUN+igdPsBUzvsKCiNeEsZV7pxLLhA2NIFUpsL9QIM3oHJHUh9wgCxsf6
- ljO4azplMRIQ==
-X-IronPort-AV: E=Sophos;i="5.70,497,1574121600"; 
-   d="scan'208";a="28179324"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 28 Feb 2020 18:45:37 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 48F0B2220D7;
-        Fri, 28 Feb 2020 18:45:36 +0000 (UTC)
-Received: from EX13D30UWC002.ant.amazon.com (10.43.162.235) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Fri, 28 Feb 2020 18:45:11 +0000
-Received: from EX13D30UWC001.ant.amazon.com (10.43.162.128) by
- EX13D30UWC002.ant.amazon.com (10.43.162.235) with Microsoft SMTP Server (TLS)
- id 15.0.1367.3; Fri, 28 Feb 2020 18:45:11 +0000
-Received: from EX13D30UWC001.ant.amazon.com ([10.43.162.128]) by
- EX13D30UWC001.ant.amazon.com ([10.43.162.128]) with mapi id 15.00.1367.000;
- Fri, 28 Feb 2020 18:45:11 +0000
-From:   "Jitindar SIngh, Suraj" <surajjs@amazon.com>
-To:     "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "tytso@mit.edu" <tytso@mit.edu>
-CC:     "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "wharms@bfs.de" <wharms@bfs.de>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH] ext4: potential crash on allocation error in
- ext4_alloc_flex_bg_array()
-Thread-Topic: [PATCH] ext4: potential crash on allocation error in
- ext4_alloc_flex_bg_array()
-Thread-Index: AQHV7hjKyEoTApWK8EWcHHjePONMGagw8jYA
-Date:   Fri, 28 Feb 2020 18:45:11 +0000
-Message-ID: <97e4ea8a96c28aa5e8659c5779c86643cade1f96.camel@amazon.com>
-References: <20200228092142.7irbc44yaz3by7nb@kili.mountain>
-In-Reply-To: <20200228092142.7irbc44yaz3by7nb@kili.mountain>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.161.145]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B345B388A5A748468E89CFD7A11A9327@amazon.com>
-Content-Transfer-Encoding: base64
+        id S1726687AbgB1ToJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Feb 2020 14:44:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:32836 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726046AbgB1ToJ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 28 Feb 2020 14:44:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 539FFAD57;
+        Fri, 28 Feb 2020 19:44:06 +0000 (UTC)
+Date:   Fri, 28 Feb 2020 13:44:01 -0600
+From:   Goldwyn Rodrigues <rgoldwyn@suse.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com
+Subject: Re: [PATCH v2] iomap: return partial I/O count on error in
+ iomap_dio_bio_actor
+Message-ID: <20200228194401.o736qvvr4zpklyiz@fiona>
+References: <20200220152355.5ticlkptc7kwrifz@fiona>
+ <20200221045110.612705204E@d06av21.portsmouth.uk.ibm.com>
+ <20200225205342.GA12066@infradead.org>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="dkh3yhd3fkaztkba"
+Content-Disposition: inline
+In-Reply-To: <20200225205342.GA12066@infradead.org>
+User-Agent: NeoMutt/20180716
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTAyLTI4IGF0IDEyOjIyICswMzAwLCBEYW4gQ2FycGVudGVyIHdyb3RlOg0K
-PiBJZiBzYmktPnNfZmxleF9ncm91cHNfYWxsb2NhdGVkIGlzIHplcm8gYW5kIHRoZSBmaXJzdCBh
-bGxvY2F0aW9uDQo+IGZhaWxzDQo+IHRoZW4gdGhpcyBjb2RlIHdpbGwgY3Jhc2guICBUaGUgcHJv
-YmxlbSBpcyB0aGF0ICJpLS0iIHdpbGwgc2V0ICJpIiB0bw0KPiAtMSBidXQgd2hlbiB3ZSBjb21w
-YXJlICJpID49IHNiaS0+c19mbGV4X2dyb3Vwc19hbGxvY2F0ZWQiIHRoZW4gdGhlDQo+IC0xDQo+
-IGlzIHR5cGUgcHJvbW90ZWQgdG8gdW5zaWduZWQgYW5kIGJlY29tZXMgVUlOVF9NQVguICBTaW5j
-ZSBVSU5UX01BWA0KPiBpcyBtb3JlIHRoYW4gemVybywgdGhlIGNvbmRpdGlvbiBpcyB0cnVlIHNv
-IHdlIGNhbGwNCj4ga3ZmcmVlKG5ld19ncm91cHNbLTFdKS4NCj4gVGhlIGxvb3Agd2lsbCBjYXJy
-eSBvbiBmcmVlaW5nIGludmFsaWQgbWVtb3J5IHVudGlsIGl0IGNyYXNoZXMuDQo+IA0KPiBGaXhl
-czogN2M5OTA3MjhiOTllICgiZXh0NDogZml4IHBvdGVudGlhbCByYWNlIGJldHdlZW4gc19mbGV4
-X2dyb3Vwcw0KPiBvbmxpbmUgcmVzaXppbmcgYW5kIGFjY2VzcyIpDQo+IFNpZ25lZC1vZmYtYnk6
-IERhbiBDYXJwZW50ZXIgPGRhbi5jYXJwZW50ZXJAb3JhY2xlLmNvbT4NCg0KUmV2aWV3ZWQtYnk6
-IFN1cmFqIEppdGluZGFyIFNpbmdoIDxzdXJhampzQGFtYXpvbi5jb20+DQpDYzogPHN0YWJsZUBr
-ZXJuZWwub3JnPg0KDQo+IC0tLQ0KPiBJIGNoYW5nZWQgdGhpcyBmcm9tIGEgLS0gbG9vcCB0byBh
-ICsrIGxvb3AgYmVjYXVzZSBJIGtuZXcgaXQgd291bGQNCj4gbWFrZQ0KPiBXYWx0ZXIgSGFybXMg
-aGFwcHkuICBIZSBoYXRlcyAtLSBsb29wcyBhbmQgSSBkb24ndCB3aGVuIGhpcyBiaXJ0aGRheQ0K
-PiBzbw0KPiBJJ20gY2VsZWJyYXRpbmcgaXQgdG9kYXkuICA6KQ0KPiANCj4gIGZzL2V4dDQvc3Vw
-ZXIuYyB8IDYgKysrLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRl
-bGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2ZzL2V4dDQvc3VwZXIuYyBiL2ZzL2V4dDQv
-c3VwZXIuYw0KPiBpbmRleCBmZjFiNzY0YjBjMGUuLjBjN2M0YWRiNjY0ZSAxMDA2NDQNCj4gLS0t
-IGEvZnMvZXh0NC9zdXBlci5jDQo+ICsrKyBiL2ZzL2V4dDQvc3VwZXIuYw0KPiBAQCAtMjM5MSw3
-ICsyMzkxLDcgQEAgaW50IGV4dDRfYWxsb2NfZmxleF9iZ19hcnJheShzdHJ1Y3Qgc3VwZXJfYmxv
-Y2sNCj4gKnNiLCBleHQ0X2dyb3VwX3Qgbmdyb3VwKQ0KPiAgew0KPiAgCXN0cnVjdCBleHQ0X3Ni
-X2luZm8gKnNiaSA9IEVYVDRfU0Ioc2IpOw0KPiAgCXN0cnVjdCBmbGV4X2dyb3VwcyAqKm9sZF9n
-cm91cHMsICoqbmV3X2dyb3VwczsNCj4gLQlpbnQgc2l6ZSwgaTsNCj4gKwlpbnQgc2l6ZSwgaSwg
-ajsNCj4gIA0KPiAgCWlmICghc2JpLT5zX2xvZ19ncm91cHNfcGVyX2ZsZXgpDQo+ICAJCXJldHVy
-biAwOw0KPiBAQCAtMjQxMiw4ICsyNDEyLDggQEAgaW50IGV4dDRfYWxsb2NfZmxleF9iZ19hcnJh
-eShzdHJ1Y3Qgc3VwZXJfYmxvY2sNCj4gKnNiLCBleHQ0X2dyb3VwX3Qgbmdyb3VwKQ0KPiAgCQkJ
-CQkgc2l6ZW9mKHN0cnVjdCBmbGV4X2dyb3VwcykpLA0KPiAgCQkJCQkgR0ZQX0tFUk5FTCk7DQo+
-ICAJCWlmICghbmV3X2dyb3Vwc1tpXSkgew0KPiAtCQkJZm9yIChpLS07IGkgPj0gc2JpLT5zX2Zs
-ZXhfZ3JvdXBzX2FsbG9jYXRlZDsgaS0NCj4gLSkNCj4gLQkJCQlrdmZyZWUobmV3X2dyb3Vwc1tp
-XSk7DQo+ICsJCQlmb3IgKGogPSBzYmktPnNfZmxleF9ncm91cHNfYWxsb2NhdGVkOyBqIDwgaTsN
-Cj4gaisrKQ0KPiArCQkJCWt2ZnJlZShuZXdfZ3JvdXBzW2pdKTsNCj4gIAkJCWt2ZnJlZShuZXdf
-Z3JvdXBzKTsNCj4gIAkJCWV4dDRfbXNnKHNiLCBLRVJOX0VSUiwNCj4gIAkJCQkgIm5vdCBlbm91
-Z2ggbWVtb3J5IGZvciAlZCBmbGV4DQo+IGdyb3VwcyIsIHNpemUpOw0K
+
+--dkh3yhd3fkaztkba
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On 12:53 25/02, Christoph Hellwig wrote:
+> On Fri, Feb 21, 2020 at 10:21:04AM +0530, Ritesh Harjani wrote:
+> > >   		if (dio->error) {
+> > >   			iov_iter_revert(dio->submit.iter, copied);
+> > > -			copied = ret = 0;
+> > > +			ret = 0;
+> > >   			goto out;
+> > >   		}
+> > 
+> > But if I am seeing this correctly, even after there was a dio->error
+> > if you return copied > 0, then the loop in iomap_dio_rw will continue
+> > for next iteration as well. Until the second time it won't copy
+> > anything since dio->error is set and from there I guess it may return
+> > 0 which will break the loop.
+> 
+
+
+Reading the code again, there are a few clarifications.
+
+If iomap_end() handles (written < length) as an error, iomap_apply()
+will return an error immediately. It will not execute the 
+loop a second time.
+
+On the other hand, if there is no ->iomap_end() defined by the
+filesystem such as in the case of XFS, we will need to check for
+dio->error in the do {} while loop of iomap_dio_rw().
+
+> In addition to that copied is also iov_iter_reexpand call.  We don't
+> really need the re-expand in case of errors, and in fact we also
+> have the iov_iter_revert call before jumping out, so this will
+> need a little bit more of an audit and properly documented in the
+> commit log.
+
+We are still handling this as an error, so why are we concerned about
+expanding? There is no success/written returned in iomap_dio_rw() call
+in case of an error.
+
+Attached is an updated patch.
+
+
+-- 
+Goldwyn
+
+--dkh3yhd3fkaztkba
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0004-iomap-return-partial-I-O-count-on-error-in-iomap_dio.patch"
+
+From af694f4fc662daf5c62a78391ced5f8e2d4beed2 Mon Sep 17 00:00:00 2001
+From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Date: Thu, 13 Feb 2020 13:28:55 -0600
+Subject: [PATCH] iomap: return partial I/O count on error in
+ iomap_dio_bio_actor
+
+Currently, I/Os that complete with an error indicate this by passing
+written == 0 to the iomap_end function.  However, btrfs needs to know how
+many bytes were written for its own accounting.  Change the convention
+to pass the number of bytes which were actually written, and change the
+only user (ext4) to check for a short write instead of a zero length write.
+
+In case a filesystem does not define an ->iomap_end(), check for
+dio->error after the iomap_apply() call to diagnose the error.
+
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+---
+ fs/ext4/inode.c      | 2 +-
+ fs/iomap/direct-io.c | 6 +++++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index fa0ff78dc033..d52c70f851e6 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3475,7 +3475,7 @@ static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
+ 	 * the I/O. Any blocks that may have been allocated in preparation for
+ 	 * the direct I/O will be reused during buffered I/O.
+ 	 */
+-	if (flags & (IOMAP_WRITE | IOMAP_DIRECT) && written == 0)
++	if (flags & (IOMAP_WRITE | IOMAP_DIRECT) && written < length)
+ 		return -ENOTBLK;
+ 
+ 	return 0;
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index 41c1e7c20a1f..a0002311cc20 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -264,7 +264,7 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
+ 		size_t n;
+ 		if (dio->error) {
+ 			iov_iter_revert(dio->submit.iter, copied);
+-			copied = ret = 0;
++			ret = 0;
+ 			goto out;
+ 		}
+ 
+@@ -499,6 +499,10 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+ 	do {
+ 		ret = iomap_apply(inode, pos, count, flags, ops, dio,
+ 				iomap_dio_actor);
++
++		if (ret >= 0 && dio->error)
++			ret = dio->error;
++
+ 		if (ret <= 0) {
+ 			/* magic error code to fall back to buffered I/O */
+ 			if (ret == -ENOTBLK) {
+-- 
+2.25.0
+
+
+--dkh3yhd3fkaztkba--
