@@ -2,103 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFDE1735CF
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 12:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0389317375C
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 13:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgB1LGS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Feb 2020 06:06:18 -0500
-Received: from apollo.dupie.be ([51.15.19.225]:46604 "EHLO apollo.dupie.be"
+        id S1725876AbgB1Mm1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Feb 2020 07:42:27 -0500
+Received: from relay.sw.ru ([185.231.240.75]:51102 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726811AbgB1LGS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 28 Feb 2020 06:06:18 -0500
-Received: from [10.10.1.146] (systeembeheer.combell.com [217.21.177.69])
-        by apollo.dupie.be (Postfix) with ESMTPSA id 7E55680AC3C;
-        Fri, 28 Feb 2020 12:06:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dupond.be; s=dkim;
-        t=1582887974;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E0Pa7cpRLuMV2NYp/M4q6fJc7IXZYTneRZvDCVuvqsA=;
-        b=fvnlVGHpWXCJjzkyonoyKLnA2YaPyqON6A/KnAVvqeM2ZvReBGaNz+SBDfdeq9CHp5jUnd
-        YGAVbm4OAEeDTNrcBlV97lMuF8fhgx8puN0Za8Gsv3L8TFVzKnWCdyoPqFeh3isKloX922
-        fx6hIG47X6mgDAqf8kmVOdP7cIdk7AzZKIAAXUvhQwHLJhYLAV1FA7NTDarvS2dqls800x
-        4QJyov2jINvSR4hsyLfEtrDcI0cBSXB0CVHimJNnzxTDTxWYXgH1adqGc1eyXU08n/g3VP
-        rw9Kld5Wifm4KR2ZO6qF9aG2lH759MBwreEpkZHWbaluqmTecMedWIoKcNAJzg==
-Subject: Re: Filesystem corruption after unreachable storage
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-References: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
- <20200124203725.GH147870@mit.edu>
- <3a7bc899-31d9-51f2-1ea9-b3bef2a98913@dupond.be>
- <20200220155022.GA532518@mit.edu>
- <7376c09c-63e3-488f-fcf8-89c81832ef2d@dupond.be>
- <adc0517d-b46e-2879-f06c-34c3d7b7c5f6@dupond.be>
- <20200225172355.GA14617@mit.edu>
-From:   Jean-Louis Dupond <jean-louis@dupond.be>
-Message-ID: <d19e44af-585f-e4a2-5546-7a3345a0ee66@dupond.be>
-Date:   Fri, 28 Feb 2020 12:06:17 +0100
+        id S1725730AbgB1Mm0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 28 Feb 2020 07:42:26 -0500
+Received: from dhcp-172-16-24-104.sw.ru ([172.16.24.104])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1j7exk-0004yl-CC; Fri, 28 Feb 2020 15:41:52 +0300
+Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, tytso@mit.edu,
+        viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
+        snitzer@redhat.com, jack@suse.cz, ebiggers@google.com,
+        riteshh@linux.ibm.com, krisman@collabora.com, surajjs@amazon.com,
+        dmonakhov@gmail.com, mbobrowski@mbobrowski.org, enwlinux@gmail.com,
+        sblbir@amazon.com, khazhy@google.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
+ <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
+ <20200226155521.GA24724@infradead.org>
+ <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
+ <20200227073336.GJ10737@dread.disaster.area>
+ <2e2ae13e-0757-0831-216d-b363b1727a0d@virtuozzo.com>
+ <20200227215634.GM10737@dread.disaster.area>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <e4835807-52d2-cce4-ed11-cc58448d3140@virtuozzo.com>
+Date:   Fri, 28 Feb 2020 15:41:51 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200225172355.GA14617@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200227215634.GM10737@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 25/02/2020 18:23, Theodore Y. Ts'o wrote:
-> On Tue, Feb 25, 2020 at 02:19:09PM +0100, Jean-Louis Dupond wrote:
->> FYI,
+On 28.02.2020 00:56, Dave Chinner wrote:
+> On Thu, Feb 27, 2020 at 02:12:53PM +0300, Kirill Tkhai wrote:
+>> On 27.02.2020 10:33, Dave Chinner wrote:
+>>> On Wed, Feb 26, 2020 at 11:05:23PM +0300, Kirill Tkhai wrote:
+>>>> On 26.02.2020 18:55, Christoph Hellwig wrote:
+>>>>> On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
+>>>>>> This adds a support of physical hint for fallocate2() syscall.
+>>>>>> In case of @physical argument is set for ext4_fallocate(),
+>>>>>> we try to allocate blocks only from [@phisical, @physical + len]
+>>>>>> range, while other blocks are not used.
+>>>>>
+>>>>> Sorry, but this is a complete bullshit interface.  Userspace has
+>>>>> absolutely no business even thinking of physical placement.  If you
+>>>>> want to align allocations to physical block granularity boundaries
+>>>>> that is the file systems job, not the applications job.
+>>>>
+>>>> Why? There are two contradictory actions that filesystem can't do at the same time:
+>>>>
+>>>> 1)place files on a distance from each other to minimize number of extents
+>>>>   on possible future growth;
+>>>
+>>> Speculative EOF preallocation at delayed allocation reservation time
+>>> provides this.
+>>>
+>>>> 2)place small files in the same big block of block device.
+>>>
+>>> Delayed allocation during writeback packs files smaller than the
+>>> stripe unit of the filesystem tightly.
+>>>
+>>> So, yes, we do both of these things at the same time in XFS, and
+>>> have for the past 10 years.
+>>>
+>>>> At initial allocation time you never know, which file will stop grow in some future,
+>>>> i.e. which file is suitable for compaction. This knowledge becomes available some time later.
+>>>> Say, if a file has not been changed for a month, it is suitable for compaction with
+>>>> another files like it.
+>>>>
+>>>> If at allocation time you can determine a file, which won't grow in the future, don't be afraid,
+>>>> and just share your algorithm here.
+>>>>
+>>>> In Virtuozzo we tried to compact ext4 with existing kernel interface:
+>>>>
+>>>> https://github.com/dmonakhov/e2fsprogs/blob/e4defrag2/misc/e4defrag2.c
+>>>>
+>>>> But it does not work well in many situations, and the main problem is blocks allocation
+>>>> in desired place is not possible. Block allocator can't behave excellent for everything.
+>>>>
+>>>> If this interface bad, can you suggest another interface to make block allocator to know
+>>>> the behavior expected from him in this specific case?
+>>>
+>>> Write once, long term data:
+>>>
+>>> 	fcntl(fd, F_SET_RW_HINT, RWH_WRITE_LIFE_EXTREME);
+>>>
+>>> That will allow the the storage stack to group all data with the
+>>> same hint together, both in software and in hardware.
 >>
->> Just did same test with e2fsprogs 1.45.5 (from buster backports) and kernel
->> 5.4.13-1~bpo10+1.
->> And having exactly the same issue.
->> The VM needs a manual fsck after storage outage.
->>
->> Don't know if its useful to test with 5.5 or 5.6?
->> But it seems like the issue still exists.
-> This is going to be a long shot, but if you could try testing with
-> 5.6-rc3, or with this commit cherry-picked into a 5.4 or later kernel:
->
->     commit 8eedabfd66b68a4623beec0789eac54b8c9d0fb6
->     Author: wangyan <wangyan122@huawei.com>
->     Date:   Thu Feb 20 21:46:14 2020 +0800
->
->         jbd2: fix ocfs2 corrupt when clearing block group bits
->         
->         I found a NULL pointer dereference in ocfs2_block_group_clear_bits().
->         The running environment:
->                 kernel version: 4.19
->                 A cluster with two nodes, 5 luns mounted on two nodes, and do some
->                 file operations like dd/fallocate/truncate/rm on every lun with storage
->                 network disconnection.
->         
->         The fallocate operation on dm-23-45 caused an null pointer dereference.
->         ...
->
-> ... it would be interesting to see if fixes things for you.  I can't
-> guarantee that it will, but the trigger of the failure which wangyan
-> found is very similar indeed.
->
-> Thanks,
->
-> 						- Ted
-Unfortunately it was a too long shot :)
+>> This is interesting option, but it only applicable before write is made. And it's only
+>> applicable on your own applications. My usecase is defragmentation of containers, where
+>> any applications may run. Most of applications never care whether long or short-term
+>> data they write.
+> 
+> Why is that a problem? They'll be using the default write hint (i.e.
+> NONE) and so a hint aware allocation policy will be separating that
+> data from all the other data written with specific hints...
+> 
+> And you've mentioned that your application has specific *never write
+> again* selection criteria for data it is repacking. And that
+> involves rewriting that data.  IOWs, you know exactly what policy
+> you want to apply before you rewrite the data, and so what other
+> applications do is completely irrelevant for your repacker...
 
-Tested with a 5.4 kernel with that patch included, and also with 5.6-rc3.
-But both had the same issue.
+It is not a rewriting data, there is moving data to new place with EXT4_IOC_MOVE_EXT.
+This time extent is already allocated and its place is known. But if
 
-- Filesystem goes read-only when the storage comes back
-- Manual fsck needed on bootup to recover from it.
+>> Maybe, we can make fallocate() care about F_SET_RW_HINT? Say, if RWH_WRITE_LIFE_EXTREME
+>> is set, fallocate() tries to allocate space around another inodes with the same hint.
+> 
+> That's exactly what I said:
+>
+>>> That will allow the the storage stack to group all data with the
+>>> same hint together, both in software and in hardware.
 
-It would be great if we could make it not corrupt the filesystem on 
-storage recovery.
-I'm happy to test some patches if they are available :)
+... and fallocate() cares about the hint, this should work.
+ 
+> What the filesystem does with the hint is up to the filesystem
+> and the policies that it's developers decide are appropriate. If
+> your filesystem doesn't do what you need, talk to the filesystem
+> developers about implementing the policy you require.
 
-Thanks
-Jean-Louis
+Do XFS kernel defrag interfaces allow to pack some randomly chosen
+small files in 1Mb blocks? Do they allow to pack small 4Kb file into
+free space after a big file like in example:
+
+before:
+       BIG file                         Small file
+[single 16 Mb extent - 4Kb][unused 4Kb][4Kb extent]
+
+after:
+       BIG file             Small file     
+[single 16 Mb extent - 4Kb][4Kb extent][unused 4Kb]
+
+?
+
+Kirill
