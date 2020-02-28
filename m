@@ -2,215 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF145173190
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 08:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95D61733C5
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 10:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbgB1HIW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Feb 2020 02:08:22 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36948 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726682AbgB1HIV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Feb 2020 02:08:21 -0500
-Received: by mail-wr1-f67.google.com with SMTP id l5so1730899wrx.4
-        for <linux-ext4@vger.kernel.org>; Thu, 27 Feb 2020 23:08:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Y3bqnLpG6SCjOwt4nBEcww4YzAPzL9sw6D5C7BP4ss=;
-        b=kNuQWssR1j1UXJivHjADXdQbCi8KzkCDdcAGoFjr1Uw+1MhzsyD16SW420zCLbmsno
-         tpdi00UqDp6NzXw0u0aRt5DcUYBrUI9/uxDChuz8wrrUK3dbfkM7RvYv7v+NSBSh7o8y
-         Ss8/OZZddwlPFZhyOQKwrfliuld4tiTCISnUxODZGt4FNqF9k/CZKfEpn1FDyUKRQcrl
-         H0yy/F5VaFz3Yo+W7n8fXArZh+PiYXslU0AprptuMnlO2G7QFgDjs/KOjjMQVWUpNf7q
-         lSZC9QWP0eeU9JKFSIkEOYefvNSXxEYl45Pl1Z84H/LTZA/AG5MtbT6zkQWOFbr2rAOo
-         gPiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Y3bqnLpG6SCjOwt4nBEcww4YzAPzL9sw6D5C7BP4ss=;
-        b=CxZKLGL76othRr9mq8vpa0jjsu1LuRZlEUNcmhaJuGPk2Ley4ewqK5KGjkPU1mwXDq
-         t7l6G2r3G2qitybjh9XBNo+fexoO8k8eIG4M+jwLI7p4HCeB3RgETilxfBh0klhLHKmg
-         9u4S+0lI+FlID+VKbiu6sFxFzxVgOJUfZoII600uxQ/yk8uKr2jT66Tn8dtLRnfyc200
-         /THZnCQaXwakwVVeB5I65k3VjkrktkOj9QRnpO2wTTH9akODDQU+zJIh5mr0Gcbe+FHC
-         +kdzvT6txs+ZEu3KeK+N9XgOXkAQkwRpSRpvZyVzerVEOIqtE0jbyOg3kBlRhY0+J7jy
-         Dukw==
-X-Gm-Message-State: APjAAAUBk2axzN1yaS4fPPMqlj3GxXKUmrdd7PcYxAUcJIo1DW6G5RVE
-        8PdTk6X4q/mzawk5hDDyz9gqbXtnGi0f8gJbXbhyYA==
-X-Google-Smtp-Source: APXvYqwy838vGaHfU+raXOq8AVBEGhanWZziMBY3GYimgfDYKo0mTCncF7OS9/vpBdLq51cpEzoHDrwYM5ju/oQVf/E=
-X-Received: by 2002:a05:6000:110b:: with SMTP id z11mr3413854wrw.252.1582873698006;
- Thu, 27 Feb 2020 23:08:18 -0800 (PST)
+        id S1726538AbgB1JXW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Feb 2020 04:23:22 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:57354 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgB1JXW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Feb 2020 04:23:22 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01S9HnBx025435;
+        Fri, 28 Feb 2020 09:23:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=2XF6ZOBCoWnr8ATklP4n3sz4SiQ/HWm0Y2hJayMjaao=;
+ b=iCESF+ynmVsjWkTtzkJNcmdSeulR9nJ8jo4n76/Nrub8VCGjTktukZ5zWemJ0/wpfaH2
+ fET1twL3Xssx04T38C1rOxdfgzcEHoYLUD6OMrsh8DgWs1fXFDf5+aogGWa8md7Qr6uE
+ 5FB2AAZzCKh+LMam4uI9cz7tsqEbvAm5MF/smrerH/SQMXlaO5waoqtuX2IWxfNOiHmJ
+ AWEUIFnKF7GByFnUbO/0qsyUA4QUAyl2U6/PhvgNeMBdfyskq5OWweoRZU9uYBa/zgot
+ RqhgjKEzmGIBlaS7ZGfSmMSvlpP5HMgJ+D3MFJx9u5VLpDsRcr0Q+rZjJY8Yfca95vR1 Vg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2yehxrw3rf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Feb 2020 09:23:12 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01S9MKPX161034;
+        Fri, 28 Feb 2020 09:23:11 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2ydcs803qr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Feb 2020 09:23:11 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01S9N3Nk012879;
+        Fri, 28 Feb 2020 09:23:03 GMT
+Received: from kili.mountain (/129.205.23.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 28 Feb 2020 01:23:03 -0800
+Date:   Fri, 28 Feb 2020 12:22:56 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Suraj Jitindar Singh <surajjs@amazon.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Walter Harms <wharms@bfs.de>
+Subject: [PATCH] ext4: potential crash on allocation error in
+ ext4_alloc_flex_bg_array()
+Message-ID: <20200228092142.7irbc44yaz3by7nb@kili.mountain>
 MIME-Version: 1.0
-References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
-In-Reply-To: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
-From:   xiaohui li <lixiaohui1@xiaomi.corp-partner.google.com>
-Date:   Fri, 28 Feb 2020 15:07:45 +0800
-Message-ID: <CAAJeciXSq9yThwuFJ0WFO8-qiYzTD4GqVpVKHS0q5DHJ0f8X-Q@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/5] fs, ext4: Physical blocks placement hint for
- fallocate(0): fallocate2(). TP defrag.
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, viro@zeniv.linux.org.uk,
-        adilger.kernel@dilger.ca, snitzer@redhat.com, jack@suse.cz,
-        ebiggers@google.com, riteshh@linux.ibm.com, krisman@collabora.com,
-        surajjs@amazon.com, dmonakhov@gmail.com, mbobrowski@mbobrowski.org,
-        enwlinux@gmail.com, sblbir@amazon.com, khazhy@google.com,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9544 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002280078
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9544 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
+ bulkscore=0 phishscore=0 spamscore=0 clxscore=1011 lowpriorityscore=0
+ adultscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002280077
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-hi Kirill Tkhai:
+If sbi->s_flex_groups_allocated is zero and the first allocation fails
+then this code will crash.  The problem is that "i--" will set "i" to
+-1 but when we compare "i >= sbi->s_flex_groups_allocated" then the -1
+is type promoted to unsigned and becomes UINT_MAX.  Since UINT_MAX
+is more than zero, the condition is true so we call kvfree(new_groups[-1]).
+The loop will carry on freeing invalid memory until it crashes.
 
-I agree with your idea very much.
-I had also implemented a similar fallocate interface with the unique
-flag which call tell ext4 filesystems to allocate the special free
-physical extents.
-I had done the same work as your fallocate2 work last year.
+Fixes: 7c990728b99e ("ext4: fix potential race between s_flex_groups online resizing and access")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+I changed this from a -- loop to a ++ loop because I knew it would make
+Walter Harms happy.  He hates -- loops and I don't when his birthday so
+I'm celebrating it today.  :)
 
-but i think it has modified the core ext4 physical blocks allocator a
-lot, so the ext4 community may not accept it.
-so I didn't share it openly.
+ fs/ext4/super.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-but i think this fallocate2 interface just same as my work is also
-very useful in android mobile phone world.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index ff1b764b0c0e..0c7c4adb664e 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2391,7 +2391,7 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
+ {
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct flex_groups **old_groups, **new_groups;
+-	int size, i;
++	int size, i, j;
+ 
+ 	if (!sbi->s_log_groups_per_flex)
+ 		return 0;
+@@ -2412,8 +2412,8 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
+ 					 sizeof(struct flex_groups)),
+ 					 GFP_KERNEL);
+ 		if (!new_groups[i]) {
+-			for (i--; i >= sbi->s_flex_groups_allocated; i--)
+-				kvfree(new_groups[i]);
++			for (j = sbi->s_flex_groups_allocated; j < i; j++)
++				kvfree(new_groups[j]);
+ 			kvfree(new_groups);
+ 			ext4_msg(sb, KERN_ERR,
+ 				 "not enough memory for %d flex groups", size);
+-- 
+2.11.0
 
-today android phone has large capacity memory and storage, just the
-same as a computer.
-and current days, customer treat phone and make full use of it by just
-the same way as they treat computer in past days.
-so after install many software and unstall them for many times in
-android phone,  the ext4 physical layout on disk has become more
-fragmented
-(the number of extents per group is large).
-at this moment, when run a sequential write workload, you will find
-the sequential write performance is very bad.
-
-but after do defragment work on some fragmented ext4 groups, and then
-run the same workload again, the sequential write performance has
-improved greatly.
-and the fallocate2 interface is a necessary component of this
-defragment work shown above.
-
-so i also think this fallocate2 interface is an important and useful
-tools for ext4 filesystems.
-
-
-
-
-
-
-
-
-
-On Wed, Feb 26, 2020 at 9:41 PM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->
-> When discard granuality of a block device is bigger than filesystem block size,
-> fstrim does not effectively release device blocks. During the filesystem life,
-> some files become deleted, some remain alive, and this results in that many
-> device blocks are used incomletely (of course, the reason is not only in this,
-> but since this is not a problem of a filesystem, this is not a subject
-> of the patchset). This results in space lose for thin provisioning devices.
->
-> Say, a filesystem on a block device, which is provided by another filesystem
-> (say, distributed network filesystem). Semi-used blocks of the block device
-> result in bad performance and worse space usage of underlining filesystem.
-> Another example is ext4 with 4k block on loop on ext4 with 1m block. This
-> case also results in bad disk space usage.
->
-> Choosing a bigger block size is not a solution here, since small files become
-> taking much more disk space, than they used before, and the result excess
-> disk usage is the same.
->
-> The proposed solution is defragmentation of files based on block device
-> discard granuality knowledge. Files, which were not modified for a long time,
-> and read-only files, small files, etc, may be placed in the same block device
-> block together. I.e., compaction of some device blocks, which results
-> in releasing another device blocks.
->
-> The problem is current fallocate() does not allow to implement effective
-> way for such the defragmentation. The below describes the situation for ext4,
-> but this should touch all filesystems.
->
-> fallocate() goes thru standard blocks allocator, which try to behave very
-> good for life allocation cases: block placement and future file size
-> prediction, delayed blocks allocation, etc. But it almost impossible
-> to allocate blocks from specified place for our specific case. The only
-> ext4 block allocator option possible to use is that the allocator firstly
-> tries to allocate blocks from the same block group, that inode is related to.
-> But this is not enough for effective files compaction.
->
-> This patchset implements an extension of fallocate():
->
->         fallocate2(int fd, int mode, loff_t offset, loff_t len,
->                    unsigned long long physical)
->
-> The new argument is @physical offset from start of device, which is must
-> for block allocation. In case of [@physical, @physical + len] block range
-> is available for allocation, the syscall assigns the corresponding extent/
-> extents to inode. In case of the range or its part is occupied, the syscall
-> returns with error (maybe, smaller range will be allocated. The behavior
-> is the same as when fallocate() meets no space in the middle).
->
-> This interface allows to solve the formulated problem. Also, note, this
-> interface may allow to improve existing e4defrag algorithm: decrease
-> number of file extents more effective.
->
-> [1-2/5] are refactoring.
-> [3/5] adds fallocate2() body.
-> [4/5] prepares ext4_mb_discard_preallocations() for handling EXT4_MB_HINT_GOAL_ONLY
-> [5/5] adds fallocate2() support for ext4
->
-> Any comments are welcomed!
->
-> ---
->
-> Kirill Tkhai (5):
->       fs: Add new argument to file_operations::fallocate()
->       fs: Add new argument to vfs_fallocate()
->       fs: Add fallocate2() syscall
->       ext4: Prepare ext4_mb_discard_preallocations() for handling EXT4_MB_HINT_GOAL_ONLY
->       ext4: Add fallocate2() support
->
->
->  arch/x86/entry/syscalls/syscall_32.tbl |    1 +
->  arch/x86/entry/syscalls/syscall_64.tbl |    1 +
->  arch/x86/ia32/sys_ia32.c               |   10 +++++++
->  drivers/block/loop.c                   |    2 +
->  drivers/nvme/target/io-cmd-file.c      |    4 +--
->  drivers/staging/android/ashmem.c       |    2 +
->  drivers/target/target_core_file.c      |    2 +
->  fs/block_dev.c                         |    4 +--
->  fs/btrfs/file.c                        |    4 ++-
->  fs/ceph/file.c                         |    5 +++-
->  fs/cifs/cifsfs.c                       |    7 +++--
->  fs/cifs/smb2ops.c                      |    5 +++-
->  fs/ext4/ext4.h                         |    5 +++-
->  fs/ext4/extents.c                      |   35 ++++++++++++++++++++-----
->  fs/ext4/inode.c                        |   14 ++++++++++
->  fs/ext4/mballoc.c                      |   45 +++++++++++++++++++++++++-------
->  fs/f2fs/file.c                         |    4 ++-
->  fs/fat/file.c                          |    7 ++++-
->  fs/fuse/file.c                         |    5 +++-
->  fs/gfs2/file.c                         |    5 +++-
->  fs/hugetlbfs/inode.c                   |    5 +++-
->  fs/io_uring.c                          |    2 +
->  fs/ioctl.c                             |    5 ++--
->  fs/nfs/nfs4file.c                      |    6 ++++
->  fs/nfsd/vfs.c                          |    2 +
->  fs/ocfs2/file.c                        |    4 ++-
->  fs/open.c                              |   21 +++++++++++----
->  fs/overlayfs/file.c                    |    8 ++++--
->  fs/xfs/xfs_file.c                      |    5 +++-
->  include/linux/fs.h                     |    4 +--
->  include/linux/syscalls.h               |    8 +++++-
->  ipc/shm.c                              |    6 ++--
->  mm/madvise.c                           |    2 +
->  mm/shmem.c                             |    4 ++-
->  34 files changed, 190 insertions(+), 59 deletions(-)
->
-> --
-> Signed-off-by: Kirill Tkhai <ktkhai@virtuozzo.com>
->
