@@ -2,64 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 695AF172E0C
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 02:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C2C172F5F
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 04:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730468AbgB1BOb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 27 Feb 2020 20:14:31 -0500
-Received: from mga18.intel.com ([134.134.136.126]:60164 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730445AbgB1BOb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 27 Feb 2020 20:14:31 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Feb 2020 17:14:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,493,1574150400"; 
-   d="scan'208";a="230951144"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 27 Feb 2020 17:14:29 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1j7UEW-0002WU-Em; Fri, 28 Feb 2020 09:14:28 +0800
-Date:   Fri, 28 Feb 2020 03:18:49 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     kbuild-all@lists.01.org, jack@suse.cz, tytso@mit.edu,
-        linux-ext4@vger.kernel.org
-Subject: [RFC PATCH] ext4: ext4_iomap_xattr_ops can be static
-Message-ID: <20200227191849.GA79833@5ae7410f0801>
-References: <2341a116e39ff0934b1f90aee8f4e10ac0371648.1582800839.git.riteshh@linux.ibm.com>
+        id S1730700AbgB1Den (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 27 Feb 2020 22:34:43 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45090 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730630AbgB1Den (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 27 Feb 2020 22:34:43 -0500
+Received: from callcc.thunk.org (guestnat-104-133-8-109.corp.google.com [104.133.8.109] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 01S3Yax8019385
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 27 Feb 2020 22:34:38 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 45663421A71; Thu, 27 Feb 2020 22:34:36 -0500 (EST)
+Date:   Thu, 27 Feb 2020 22:34:36 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     linux-ext4@vger.kernel.org, sandeen@redhat.com
+Subject: Re: [PATCH v2] tst_libext2fs: Avoid multiple definition of global
+ variables
+Message-ID: <20200228033436.GA101220@mit.edu>
+References: <20200130132122.21150-1-lczerner@redhat.com>
+ <20200210152459.19903-1-lczerner@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2341a116e39ff0934b1f90aee8f4e10ac0371648.1582800839.git.riteshh@linux.ibm.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200210152459.19903-1-lczerner@redhat.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Mon, Feb 10, 2020 at 04:24:59PM +0100, Lukas Czerner wrote:
+> gcc version 10 changed the default from -fcommon to -fno-common and as a
+> result e2fsprogs make check tests fail because tst_libext2fs.c end up
+> with a build error.
+> 
+> This is because it defines two global variables debug_prog_name and
+> extra_cmds that are already defined in debugfs/debugfs.c. With -fcommon
+> linker was able to resolve those into the same object, however with
+> -fno-common it's no longer able to do it and we end up with multiple
+> definition errors.
+> 
+> Fix the problem by using SKIP_GLOBDEFS macro to skip the variables
+> definition in debugfs.c. Note that debug_prog_name is also defined in
+> lib/ext2fs/extent.c when DEBUG macro is used, but this does not work even
+> with older gcc versions and is never used regardless so I am not going to
+> bother with it.
+> 
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 
-Fixes: e3d16669487e ("ext4: Move ext4_fiemap to use iomap framework.")
-Signed-off-by: kbuild test robot <lkp@intel.com>
----
- extents.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied, thanks.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 204795232ce7e..42eeedd9db00c 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -4915,7 +4915,7 @@ static int ext4_iomap_xattr_begin(struct inode *inode, loff_t offset,
- 	return error;
- }
- 
--const struct iomap_ops ext4_iomap_xattr_ops = {
-+static const struct iomap_ops ext4_iomap_xattr_ops = {
- 	.iomap_begin		= ext4_iomap_xattr_begin,
- };
- 
+						- Ted
