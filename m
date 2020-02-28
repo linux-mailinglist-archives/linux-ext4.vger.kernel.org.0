@@ -2,98 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DC61735A7
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 11:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFDE1735CF
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Feb 2020 12:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbgB1Kwn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 28 Feb 2020 05:52:43 -0500
-Received: from mail-pf1-f171.google.com ([209.85.210.171]:37996 "EHLO
-        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726063AbgB1Kwn (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 28 Feb 2020 05:52:43 -0500
-Received: by mail-pf1-f171.google.com with SMTP id x185so1534630pfc.5
-        for <linux-ext4@vger.kernel.org>; Fri, 28 Feb 2020 02:52:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=RN6zANv1wITL8TbleHGlNtV1499dl/M9eVGhJjga7t4=;
-        b=L2FzD4B8aR+vxcPqD7FRaL5ipmy1Gsb+HtZ67SdK7yx0sskivNDHI2c+PMWY9lYXqt
-         e6rnlrxeEP2ksHL6c9qN4u73neWNM2XNnAYZbeS0G1d71jJRfUqru+7gdmqpDbo5fNrM
-         w8XKerfFgEj2bTaRYLPfNg24ntX4lDEEHjvBD6+IDrQMNmiijzI7ETMhytI7yvwS7P5P
-         h3AX7+Ul5Z3vtKOcaKtBVhO+LW3ro9mScq+oPW7oZp3iGWC2ZdSNTLfCf4Sd/v/VXYyr
-         Bh6KT9LHnMtSOYp0s9ThyErVnI5LezuTu4+41YR2kMoiuJPXA5Pwk1BBdEUYpkxYIdaa
-         lCPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=RN6zANv1wITL8TbleHGlNtV1499dl/M9eVGhJjga7t4=;
-        b=cgkKAeVC9GllSgZnwUI1paxK346RWjLVuRoGpx3Hsvc35HQ69IJolC6nh2yeNmql9h
-         ZPMj7eqea7CO4rgQM7w2JPgVKWUkIwssdQjVQEELunbGU6/GwWoF48EmiWvQtk6x0ijQ
-         Q5+O20j0rRey1pbM6hULXA3i+nA8oqlRmLtMJwTn/9eymc0xIZKYvEDDymcuNx3SFfM5
-         pvUI3YJXM2TckXhP7wkgn7ocLAsppjg4WSKyWtiYJWkKVsRM+tkvwkHx3PXQZdZSq+o4
-         4DEXz76q0ZyPBVBTiktQtQr0qyhX3pkL3jai7iwspij36Cu69PWcpKB2Xp8dxGMksvD6
-         pJSg==
-X-Gm-Message-State: APjAAAU5E8LhSxkh6DTe7PsyU7bYbHhOJiYfPRxZBcQM6AK+5ARMWJXo
-        p1a/2I6lz+2Z79ZAwnYD4jFxAbWM
-X-Google-Smtp-Source: APXvYqyVk/iPSFfJv0bM4p3rz9Kom/wmWnv97J0lcgqJtthFmy55oVKOV4+fdBCxNbJbNZj2mq0LXQ==
-X-Received: by 2002:a62:f251:: with SMTP id y17mr4004296pfl.204.1582887162109;
-        Fri, 28 Feb 2020 02:52:42 -0800 (PST)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id q25sm10757117pfg.41.2020.02.28.02.52.41
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Feb 2020 02:52:41 -0800 (PST)
-Date:   Fri, 28 Feb 2020 18:52:34 +0800
-From:   Murphy Zhou <jencce.kernel@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Subject: ENOSPC inline_data fsck failure
-Message-ID: <20200228105234.n5wt5x2vi3ftxuyh@xzhoux.usersys.redhat.com>
+        id S1726809AbgB1LGS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 28 Feb 2020 06:06:18 -0500
+Received: from apollo.dupie.be ([51.15.19.225]:46604 "EHLO apollo.dupie.be"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726811AbgB1LGS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 28 Feb 2020 06:06:18 -0500
+Received: from [10.10.1.146] (systeembeheer.combell.com [217.21.177.69])
+        by apollo.dupie.be (Postfix) with ESMTPSA id 7E55680AC3C;
+        Fri, 28 Feb 2020 12:06:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dupond.be; s=dkim;
+        t=1582887974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E0Pa7cpRLuMV2NYp/M4q6fJc7IXZYTneRZvDCVuvqsA=;
+        b=fvnlVGHpWXCJjzkyonoyKLnA2YaPyqON6A/KnAVvqeM2ZvReBGaNz+SBDfdeq9CHp5jUnd
+        YGAVbm4OAEeDTNrcBlV97lMuF8fhgx8puN0Za8Gsv3L8TFVzKnWCdyoPqFeh3isKloX922
+        fx6hIG47X6mgDAqf8kmVOdP7cIdk7AzZKIAAXUvhQwHLJhYLAV1FA7NTDarvS2dqls800x
+        4QJyov2jINvSR4hsyLfEtrDcI0cBSXB0CVHimJNnzxTDTxWYXgH1adqGc1eyXU08n/g3VP
+        rw9Kld5Wifm4KR2ZO6qF9aG2lH759MBwreEpkZHWbaluqmTecMedWIoKcNAJzg==
+Subject: Re: Filesystem corruption after unreachable storage
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+References: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
+ <20200124203725.GH147870@mit.edu>
+ <3a7bc899-31d9-51f2-1ea9-b3bef2a98913@dupond.be>
+ <20200220155022.GA532518@mit.edu>
+ <7376c09c-63e3-488f-fcf8-89c81832ef2d@dupond.be>
+ <adc0517d-b46e-2879-f06c-34c3d7b7c5f6@dupond.be>
+ <20200225172355.GA14617@mit.edu>
+From:   Jean-Louis Dupond <jean-louis@dupond.be>
+Message-ID: <d19e44af-585f-e4a2-5546-7a3345a0ee66@dupond.be>
+Date:   Fri, 28 Feb 2020 12:06:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20200225172355.GA14617@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
+On 25/02/2020 18:23, Theodore Y. Ts'o wrote:
+> On Tue, Feb 25, 2020 at 02:19:09PM +0100, Jean-Louis Dupond wrote:
+>> FYI,
+>>
+>> Just did same test with e2fsprogs 1.45.5 (from buster backports) and kernel
+>> 5.4.13-1~bpo10+1.
+>> And having exactly the same issue.
+>> The VM needs a manual fsck after storage outage.
+>>
+>> Don't know if its useful to test with 5.5 or 5.6?
+>> But it seems like the issue still exists.
+> This is going to be a long shot, but if you could try testing with
+> 5.6-rc3, or with this commit cherry-picked into a 5.4 or later kernel:
+>
+>     commit 8eedabfd66b68a4623beec0789eac54b8c9d0fb6
+>     Author: wangyan <wangyan122@huawei.com>
+>     Date:   Thu Feb 20 21:46:14 2020 +0800
+>
+>         jbd2: fix ocfs2 corrupt when clearing block group bits
+>         
+>         I found a NULL pointer dereference in ocfs2_block_group_clear_bits().
+>         The running environment:
+>                 kernel version: 4.19
+>                 A cluster with two nodes, 5 luns mounted on two nodes, and do some
+>                 file operations like dd/fallocate/truncate/rm on every lun with storage
+>                 network disconnection.
+>         
+>         The fallocate operation on dm-23-45 caused an null pointer dereference.
+>         ...
+>
+> ... it would be interesting to see if fixes things for you.  I can't
+> guarantee that it will, but the trigger of the failure which wangyan
+> found is very similar indeed.
+>
+> Thanks,
+>
+> 						- Ted
+Unfortunately it was a too long shot :)
 
-With inline_data mkfs option, generic/083 can easily trigger
-a fsck failure like this:
+Tested with a 5.4 kernel with that patch included, and also with 5.6-rc3.
+But both had the same issue.
 
--------------------------
-seed = 1583104156
-_check_generic_filesystem: filesystem on /dev/loop1 is inconsistent
-*** fsck.ext4 output ***
-fsck 1.46-WIP (09-Oct-2019)
-e2fsck 1.46-WIP (09-Oct-2019)
-Pass 1: Checking inodes, blocks, and sizes
-Inode 94 extent tree (at level 1) could be shorter.  Optimize? no
-...
-Pass 2: Checking directory structure
-Entry 'c6b' in /p2/d6/d100 (32920) has an incorrect filetype (was 3,
-should be 1).
-Fix? no
-Entry 'ca4' in /pa/d0/d4/d34/d26/dde (75) has an incorrect filetype (was
-3, should be 1).
-Fix? no
-...
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Inode 107 ref count is 2, should be 1.  Fix? no
-Unattached inode 119
-Connect to /lost+found? no
-...
--------------------------
+- Filesystem goes read-only when the storage comes back
+- Manual fsck needed on bootup to recover from it.
 
-The testcase is doing a simple testing: make a small(256M) fs,
-run fsstress in it,  make it out of space. Then fsck.
+It would be great if we could make it not corrupt the filesystem on 
+storage recovery.
+I'm happy to test some patches if they are available :)
 
-Not sure about is this an issue of ext4 filesystem or e2fsck
-needs more options.
-
-Thanks!
-
--- 
-Murphy
+Thanks
+Jean-Louis
