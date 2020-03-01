@@ -2,113 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E0B17509F
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2020 23:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC811750A5
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2020 23:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgCAWhw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 1 Mar 2020 17:37:52 -0500
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:56494 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726418AbgCAWhw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 1 Mar 2020 17:37:52 -0500
-Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id F069A3A1D80;
-        Mon,  2 Mar 2020 09:37:46 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j8XDV-0004U5-FH; Mon, 02 Mar 2020 09:37:45 +1100
-Date:   Mon, 2 Mar 2020 09:37:45 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V5 05/12] fs/xfs: Create function xfs_inode_enable_dax()
-Message-ID: <20200301223745.GE10776@dread.disaster.area>
-References: <20200227052442.22524-1-ira.weiny@intel.com>
- <20200227052442.22524-6-ira.weiny@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200227052442.22524-6-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
-        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=SS2py6AdgQ4A:10
-        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=SBY6GoZAAwZHPrv_PwMA:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        id S1726758AbgCAWpK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 1 Mar 2020 17:45:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726448AbgCAWpG (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 1 Mar 2020 17:45:06 -0500
+Subject: Re: [GIT PULL] more ext4 bug fixes for 5.6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583102706;
+        bh=gZyYeXYf82ORVsxbMK6z75AjXkouB2FvC3dwX4XXpbA=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=1eyS1CXbXzj9ntxL54eIWp3PrbEK94lK5ocaat7u6kTvB8An1SXVt1H5c8xuKduJl
+         l5E7CcL6LnrS2dK0sThHUy6b6dOsW2D/FPbG4PvG9iiL9t74HMi/RsUrNd4sWUL9UZ
+         oLLqPGOpJsdP4x6yoHcvJuRJ8yJnRpIDXsiBDHNg=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200301220708.GA91502@mit.edu>
+References: <20200301220708.GA91502@mit.edu>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200301220708.GA91502@mit.edu>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+ tags/ext4_for_linus_stable
+X-PR-Tracked-Commit-Id: 37b0b6b8b99c0e1c1f11abbe7cf49b6d03795b3f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e70869821a469029aeb056b4da96e5815cc5830e
+Message-Id: <158310270604.24436.18176466590107249777.pr-tracker-bot@kernel.org>
+Date:   Sun, 01 Mar 2020 22:45:06 +0000
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 09:24:35PM -0800, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> xfs_inode_supports_dax() should reflect if the inode can support DAX not
-> that it is enabled for DAX.
-> 
-> Change the use of xfs_inode_supports_dax() to reflect only if the inode
-> and underlying storage support dax.
-> 
-> Add a new function xfs_inode_enable_dax() which reflects if the inode
-> should be enabled for DAX.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes from v3:
-> 	Update functions and names to be more clear
-> 	Update commit message
-> 	Merge with
-> 		'fs/xfs: Clean up DAX support check'
-> 		don't allow IS_DAX() on a directory
-> 		use STATIC macro for static
-> 		make xfs_inode_supports_dax() static
-> ---
->  fs/xfs/xfs_iops.c | 25 +++++++++++++++++++------
->  1 file changed, 19 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> index 81f2f93caec0..ff711efc5247 100644
-> --- a/fs/xfs/xfs_iops.c
-> +++ b/fs/xfs/xfs_iops.c
-> @@ -1237,19 +1237,18 @@ static const struct inode_operations xfs_inline_symlink_inode_operations = {
->  };
->  
->  /* Figure out if this file actually supports DAX. */
-> -static bool
-> +STATIC bool
->  xfs_inode_supports_dax(
->  	struct xfs_inode	*ip)
->  {
->  	struct xfs_mount	*mp = ip->i_mount;
->  
->  	/* Only supported on non-reflinked files. */
-> -	if (!S_ISREG(VFS_I(ip)->i_mode) || xfs_is_reflink_inode(ip))
-> +	if (xfs_is_reflink_inode(ip))
->  		return false;
->  
-> -	/* DAX mount option or DAX iflag must be set. */
-> -	if (!(mp->m_flags & XFS_MOUNT_DAX) &&
-> -	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX))
-> +	/* Only supported on regular files. */
-> +	if (!S_ISREG(VFS_I(ip)->i_mode))
->  		return false;
+The pull request you sent on Sun, 1 Mar 2020 17:07:08 -0500:
 
-Why split the initial check? The "non-reflinked files" comment is
-pretty explicit, so splitting it just to add a "only support on
-regular files" comment doesn't actually add any value here.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
 
-Cheers,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e70869821a469029aeb056b4da96e5815cc5830e
 
-Dave.
+Thank you!
+
 -- 
-Dave Chinner
-david@fromorbit.com
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
