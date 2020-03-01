@@ -2,59 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB95175087
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2020 23:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E0B17509F
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2020 23:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgCAWHM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 1 Mar 2020 17:07:12 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56881 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726050AbgCAWHL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 1 Mar 2020 17:07:11 -0500
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 021M78Ha029007
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 1 Mar 2020 17:07:08 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 355AB42045B; Sun,  1 Mar 2020 17:07:08 -0500 (EST)
-Date:   Sun, 1 Mar 2020 17:07:08 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: [GIT PULL] more ext4 bug fixes for 5.6
-Message-ID: <20200301220708.GA91502@mit.edu>
+        id S1726688AbgCAWhw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 1 Mar 2020 17:37:52 -0500
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:56494 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726418AbgCAWhw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 1 Mar 2020 17:37:52 -0500
+Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id F069A3A1D80;
+        Mon,  2 Mar 2020 09:37:46 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1j8XDV-0004U5-FH; Mon, 02 Mar 2020 09:37:45 +1100
+Date:   Mon, 2 Mar 2020 09:37:45 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V5 05/12] fs/xfs: Create function xfs_inode_enable_dax()
+Message-ID: <20200301223745.GE10776@dread.disaster.area>
+References: <20200227052442.22524-1-ira.weiny@intel.com>
+ <20200227052442.22524-6-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200227052442.22524-6-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
+        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=SS2py6AdgQ4A:10
+        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=SBY6GoZAAwZHPrv_PwMA:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The following changes since commit f8788d86ab28f61f7b46eb6be375f8a726783636:
+On Wed, Feb 26, 2020 at 09:24:35PM -0800, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> xfs_inode_supports_dax() should reflect if the inode can support DAX not
+> that it is enabled for DAX.
+> 
+> Change the use of xfs_inode_supports_dax() to reflect only if the inode
+> and underlying storage support dax.
+> 
+> Add a new function xfs_inode_enable_dax() which reflects if the inode
+> should be enabled for DAX.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes from v3:
+> 	Update functions and names to be more clear
+> 	Update commit message
+> 	Merge with
+> 		'fs/xfs: Clean up DAX support check'
+> 		don't allow IS_DAX() on a directory
+> 		use STATIC macro for static
+> 		make xfs_inode_supports_dax() static
+> ---
+>  fs/xfs/xfs_iops.c | 25 +++++++++++++++++++------
+>  1 file changed, 19 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 81f2f93caec0..ff711efc5247 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -1237,19 +1237,18 @@ static const struct inode_operations xfs_inline_symlink_inode_operations = {
+>  };
+>  
+>  /* Figure out if this file actually supports DAX. */
+> -static bool
+> +STATIC bool
+>  xfs_inode_supports_dax(
+>  	struct xfs_inode	*ip)
+>  {
+>  	struct xfs_mount	*mp = ip->i_mount;
+>  
+>  	/* Only supported on non-reflinked files. */
+> -	if (!S_ISREG(VFS_I(ip)->i_mode) || xfs_is_reflink_inode(ip))
+> +	if (xfs_is_reflink_inode(ip))
+>  		return false;
+>  
+> -	/* DAX mount option or DAX iflag must be set. */
+> -	if (!(mp->m_flags & XFS_MOUNT_DAX) &&
+> -	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX))
+> +	/* Only supported on regular files. */
+> +	if (!S_ISREG(VFS_I(ip)->i_mode))
+>  		return false;
 
-  Linux 5.6-rc3 (2020-02-23 16:17:42 -0800)
+Why split the initial check? The "non-reflinked files" comment is
+pretty explicit, so splitting it just to add a "only support on
+regular files" comment doesn't actually add any value here.
 
-are available in the Git repository at:
+Cheers,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus_stable
-
-for you to fetch changes up to 37b0b6b8b99c0e1c1f11abbe7cf49b6d03795b3f:
-
-  ext4: potential crash on allocation error in ext4_alloc_flex_bg_array() (2020-02-29 17:48:08 -0500)
-
-----------------------------------------------------------------
-Two more bug fixes (including a regression) for 5.6
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      ext4: potential crash on allocation error in ext4_alloc_flex_bg_array()
-
-Qian Cai (1):
-      jbd2: fix data races at struct journal_head
-
- fs/ext4/super.c       | 6 +++---
- fs/jbd2/transaction.c | 8 ++++----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
