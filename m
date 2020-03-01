@@ -2,205 +2,276 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0F0174A5B
-	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2020 01:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0D5174CE5
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Mar 2020 12:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727237AbgCAAHE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 29 Feb 2020 19:07:04 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:60139 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727174AbgCAAHD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 29 Feb 2020 19:07:03 -0500
-Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 3E1C17EAD0F;
-        Sun,  1 Mar 2020 11:06:55 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1j8C8D-00053a-FV; Sun, 01 Mar 2020 11:06:53 +1100
-Date:   Sun, 1 Mar 2020 11:06:53 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mike Snitzer <snitzer@redhat.com>, Jan Kara <jack@suse.cz>,
-        Eric Biggers <ebiggers@google.com>, riteshh@linux.ibm.com,
-        krisman@collabora.com, surajjs@amazon.com, dmonakhov@gmail.com,
-        mbobrowski@mbobrowski.org, Eric Whitney <enwlinux@gmail.com>,
-        sblbir@amazon.com, Khazhismel Kumykov <khazhy@google.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
-Message-ID: <20200301000653.GS10737@dread.disaster.area>
-References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
- <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
- <20200226155521.GA24724@infradead.org>
- <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
- <A57E33D1-3D54-405A-8300-13F117DC4633@dilger.ca>
- <eda406cc-8ce3-e67a-37be-3e525b58d5a1@virtuozzo.com>
- <4933D88C-2A2D-4ACA-823E-BDFEE0CE143F@dilger.ca>
- <20200228211610.GQ10737@dread.disaster.area>
- <F2CA6010-F7E5-4891-A337-FA1FEB32B935@dilger.ca>
+        id S1726720AbgCALI4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 1 Mar 2020 06:08:56 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:39607 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgCALIz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 1 Mar 2020 06:08:55 -0500
+Received: by mail-wr1-f66.google.com with SMTP id y17so8858642wrn.6;
+        Sun, 01 Mar 2020 03:08:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wZfbP0qBSHSAHVKydAS1NsEpS5FpyxvjvWsYg4Q4s5M=;
+        b=mnBnTNNGj0z8nn/KLroR/8/jIABGWFda/cHXBUapX92/uuXy6qEJqmLClYQIO9nwwZ
+         N8GI/cxe/dcwgZ8rfPpyghzwAJf8c1CG82IMnNVQJ7gqO0GdNEiJNgeHpjQhuZ/v/o3H
+         Ru/Zx1562d6zvHyhBkVNEb5CyDmBQDbNL1G04ihLSmvCBiSbOKNlnIJYOHwG1LrdcqiZ
+         bV4DFI+RzoGzGyH+UlNW+sOvIPG0eVTnP/pvLLffPmK+341t03crZ2ONJwEc9S3aQMLm
+         ljacf1VCaN8BbhZfpIKqQ/OUJ9+42sSTPaNET7EWD94PqBFlZmE1TlJwJr5nvsqQkY6y
+         sK7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wZfbP0qBSHSAHVKydAS1NsEpS5FpyxvjvWsYg4Q4s5M=;
+        b=TcZ8O1GybM+D5nLU4WQ2ZCrtmZEnr12616MSdfAmi8tX/f+A3S3NUt/LBOw8o1ok7c
+         BKhzU4HSCRp4/7WiXnSzTAMogko9+GIC08GdtADn3VrNYHfHFsorkga/0kQlUGo5EkuY
+         XvRf3sEYM6avYynQxRFlEIIWXXcoekf7CG4qEo5lawVAjlIBhjsBZpJPEHDta/704b/I
+         MAIYJYSXMC7+xB6riJa373bqY/QKm7JAIisrVEVNec403bPi2Bx/Irk2AJXEZZvUk4gy
+         nDnQPMgnt9Fu0gY6qjSUPNNfRdnZ7CuHztx26NUwO2tVT1m8rLnwZhX+PgcfgZgFoHla
+         Q5Xw==
+X-Gm-Message-State: APjAAAWAUhR25Pb9v5qr4AxOizhCuwfjOzvBJJF+uyMdxG8oRI5YCx8X
+        g78vyHzMtqS1Pxnd/2aFdeY=
+X-Google-Smtp-Source: APXvYqzSOg9gGdLNhI1HB7CCr1xFm7j8WmfXg+bNPU+dr0IXr1xnTuVgkgiHWk7kLz+FZqGSdKsseQ==
+X-Received: by 2002:adf:ea42:: with SMTP id j2mr15423531wrn.377.1583060932175;
+        Sun, 01 Mar 2020 03:08:52 -0800 (PST)
+Received: from pc636 ([80.122.78.78])
+        by smtp.gmail.com with ESMTPSA id e11sm21092487wrm.80.2020.03.01.03.08.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Mar 2020 03:08:51 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Sun, 1 Mar 2020 12:08:43 +0100
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Suraj Jitindar Singh <surajjs@amazon.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] ext4: fix potential race between online resizing and
+ write operations
+Message-ID: <20200301110843.GA8725@pc636>
+References: <20200220045233.GC476845@mit.edu>
+ <20200221003035.GC2935@paulmck-ThinkPad-P72>
+ <20200221131455.GA4904@pc636>
+ <20200221202250.GK2935@paulmck-ThinkPad-P72>
+ <20200222222415.GC191380@google.com>
+ <20200223011018.GB2935@paulmck-ThinkPad-P72>
+ <20200224174030.GA22138@pc636>
+ <20200225020705.GA253171@google.com>
+ <20200225185400.GA27919@pc636>
+ <20200227133700.GC161459@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <F2CA6010-F7E5-4891-A337-FA1FEB32B935@dilger.ca>
+In-Reply-To: <20200227133700.GC161459@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
-        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=SS2py6AdgQ4A:10
-        a=7-415B0cAAAA:8 a=TYBLyS7eAAAA:8 a=d3t3XxdUcUBxI7EExOIA:9
-        a=vG0tVmWIGI90jERS:21 a=ssZfECPllHHjBRnG:21 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22 a=zvYvwCWiE4KgVXXeO06c:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Feb 29, 2020 at 01:12:52PM -0700, Andreas Dilger wrote:
-> On Feb 28, 2020, at 2:16 PM, Dave Chinner <david@fromorbit.com> wrote:
-> > 
-> > On Fri, Feb 28, 2020 at 08:35:19AM -0700, Andreas Dilger wrote:
-> >> On Feb 27, 2020, at 5:24 AM, Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
-> >>> 
-> >>> So, this interface is 3-in-1:
-> >>> 
-> >>> 1)finds a placement for inodes extents;
-> >> 
-> >> The target allocation size would be sum(size of inodes), which should
-> >> be relatively small in your case).
-> >> 
-> >>> 2)assigns this space to some temporary donor inode;
-> >> 
-> >> Maybe yes, or just reserves that space from being allocated by anyone.
-> >> 
-> >>> 3)calls ext4_move_extents() for each of them.
-> >> 
-> >> ... using the target space that was reserved earlier
-> >> 
-> >>> Do I understand you right?
-> >> 
-> >> Correct.  That is my "5 minutes thinking about an interface for grouping
-> >> small files together without exposing kernel internals" proposal for this.
-> > 
-> > You don't need any special kernel interface with XFS for this. It is
-> > simply:
-> > 
-> > 	mkdir tmpdir
-> > 	create O_TMPFILEs in tmpdir
-> > 
-> > Now all the tmpfiles you create and their data will be co-located
-> > around the location of the tmpdir inode. This is the natural
-> > placement policy of the filesystem. i..e the filesystem assumes that
-> > files in the same directory are all related, so will be accessed
-> > together and so should be located in relatively close proximity to
-> > each other.
+>
+> Sorry for slightly late reply.
 > 
-> Sure, this will likely get inodes allocate _close_ to each other on
-> ext4 as well (the new directory will preferentially be located in a
-> group that has free space), but it doesn't necessarily result in
-> all of the files being packed densely.  For 1MB+4KB and 1MB-4KB files
-> they will still prefer to be aligned on 1MB boundaries rather than
-> packed together.
+The same, i am on the vacation since last Thursday and the whole
+next week. Therefore will be delays due to restricted access
+to my emails :)
 
-Userspace can control that, too, simply by choosing to relocate only
-small files into a single directory, then relocating the large files
-in a separate set of operations after flushing the small files and
-having the packed tightly.
-
-Seriously, userspace has a *lot* of control of how data is located
-and packed simply by grouping the IO it wants to be written together
-into the same logical groups (i.e. directories) in the same temporal
-IO domain...
-
-> >>> Can we introduce a flag, that some of inode is unmovable?
-> >> 
-> >> There are very few flags left in the ext4_inode->i_flags for use.
-> >> You could use "IMMUTABLE" or "APPEND_ONLY" to mean that, but they
-> >> also have other semantics.  The EXT4_NOTAIL_FL is for not merging the
-> >> tail of a file, but ext4 doesn't have tails (that was in Reiserfs),
-> >> so we might consider it a generic "do not merge" flag if set?
+> On Tue, Feb 25, 2020 at 07:54:00PM +0100, Uladzislau Rezki wrote:
+> > > > > > I was thinking a 2 fold approach (just thinking out loud..):
+> > > > > > 
+> > > > > > If kfree_call_rcu() is called in atomic context or in any rcu reader, then
+> > > > > > use GFP_ATOMIC to grow an rcu_head wrapper on the atomic memory pool and
+> > > > > > queue that.
+> > > > > > 
+> > > > I am not sure if that is acceptable, i mean what to do when GFP_ATOMIC
+> > > > gets failed in atomic context? Or we can just consider it as out of
+> > > > memory and another variant is to say that headless object can be called
+> > > > from preemptible context only.
+> > > 
+> > > Yes that makes sense, and we can always put disclaimer in the API's comments
+> > > saying if this object is expected to be freed a lot, then don't use the
+> > > headless-API to be extra safe.
+> > > 
+> > Agree.
 > > 
-> > Indeed, thanks to XFS, ext4 already has an interface that can be
-> > used to set/clear a "no defrag" flag such as you are asking for.
-> > It's the FS_XFLAG_NODEFRAG bit in the FS_IOC_FS[GS]ETXATTR ioctl.
-> > In XFS, that manages the XFS_DIFLAG_NODEFRAG on-disk inode flag,
-> > and it has special meaning for directories. From the 'man 3 xfsctl'
-> > man page where this interface came from:
+> > > BTW, GFP_ATOMIC the documentation says if GFP_ATOMIC reserves are depleted,
+> > > the kernel can even panic some times, so if GFP_ATOMIC allocation fails, then
+> > > there seems to be bigger problems in the system any way. I would say let us
+> > > write a patch to allocate there and see what the -mm guys think.
+> > > 
+> > OK. It might be that they can offer something if they do not like our
+> > approach. I will try to compose something and send the patch to see.
+> > The tree.c implementation is almost done, whereas tiny one is on hold.
 > > 
-> >      Bit 13 (0x2000) - XFS_XFLAG_NODEFRAG
-> > 	No defragment file bit - the file should be skipped during a
-> > 	defragmentation operation. When applied to  a directory,
-> > 	new files and directories created will inherit the no-defrag
-> > 	bit.
+> > I think we should support batching as well as bulk interface there.
+> > Another way is to workaround head-less object, just to attach the head
+> > dynamically using kmalloc() and then call_rcu() but then it will not be
+> > a fair headless support :)
+> > 
+> > What is your view?
 > 
-> The interface is not the limiting factor here, but rather the number
-> of flags available in the inode.
-
-Yes, that's an internal ext4 issue, not a userspace API problem.
-
-> Since chattr/lsattr from e2fsprogs
-> was used as "common ground" for a few years, there are a number of
-> flags in the namespace that don't actually have any meaning for ext4.
-
-Yes, that's a shitty API bed that extN made for itself, isn't it?
-We've sucked at API design for a long, long time. :/
-
-But the chattr userspace application is also irrelevant to the
-problem at hand: it already uses the FS_IOC_FS[GS]ETXATTR ioctl
-interface for changing project quota IDs and the per-inode
-inheritance flag. Hence how it manages the new flag is irrelevant,
-but it also means we can't change the definition or behaviour of
-existing flags it controls regardless of what filesystem those flags
-act on.
-
-> One of those flags is:
+> This kind of "head" will require backpointers to the original object as well
+> right? And still wouldn't solve the "what if we run out of GFP_ATOMIC
+> reserves". But let me know in a code snippet if possible about what you mean.
 > 
-> #define EXT4_NOTAIL_FL    0x00008000 /* file tail should not be merged */
+Just to summarize. We would like to support head-less kvfree_rcu() interface.
+It implies that we have only pure pointer that is passed and that is it. Therefore
+we should maintain the dynamic arrays and place it there. Like we do for "bulk"
+logic, building arrays chains. Or just attach the head for tiny version. I prefer
+first variant because that is fair and will be aligned with tree RCU version.
+
+If we can not maintain the array path, i mean under low memory condition, it makes
+sense to try to attach a head(for array we allocate one page), i.e. to make an object
+with rcu_head the same as ww would free regular object that contains rcu_head filed
+in it: 
+
+<snip>
+static inline struct rcu_head *
+attach_rcu_head_to_object(void *obj, gfp_t gfp)
+{
+    unsigned long *ptr;
+
+    ptr = kmalloc(sizeof(unsigned long *) +
+        sizeof(struct rcu_head), gfp);
+    if (!ptr)
+        return NULL;
+
+    ptr[0] = (unsigned long) obj;
+    return ((struct rcu_head *) ++ptr);
+}
+...
+void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+...
+    if (head == NULL && is_vmalloc_addr((void *) func)) {
+        if (!vfree_call_rcu_add_ptr_to_bulk(krcp, (void *) func)) {
+            head = attach_rcu_head_to_object((void *) func, GFP_ATOMIC);
+            if (head) {
+                /* Set the offset and tag the headless object. */
+                func = (rcu_callback_t) (sizeof(unsigned long *) + 1);
+
+                head->func = func;
+                head->next = krcp->head;
+                krcp->head = head;
+   }
+
+later on when freeing the headless object to witch we attached the head:
+
+for (; head; head = next) {
+...
+  /* We tag the headless object, so check it. */
+  if (!(((unsigned long) head - offset) & BIT(0))) {
+   debug_rcu_head_unqueue(head);
+  } else {
+   offset -= 1;
+   headless_ptr = (void *) head - offset;
+  }
+...
+if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset))) {
+   /*
+    * here we kvfree() head-less object. The head was attached
+    * due to low memory condition.
+    */
+   if (headless_ptr)
+    kvfree((void *) *headless_ptr);
+
+   kfree((void *)head - offset);
+  }
+<snip>
+
+>
+> And still wouldn't solve the "what if we run out of GFP_ATOMIC reserves".
+>
+It will not solve corner case. But it makes sense anyway to do because the
+page allocator can say: no page, sorry, whereas slab can still serve our
+request because we need only sizeof(rcu_head) + sizeof(unsigned long *)
+bytes and not whole page.
+
+Also when we detect low memory condition we should add force flag to schedule
+the "monitor work" right away:
+
+<snip>
+ if (force)
+     schedule_delayed_work(&krcp->monitor_work, 0);
+<snip>
+
+> > > > > > Otherwise, grow an rcu_head on the stack of kfree_call_rcu() and call
+> > > > > > synchronize_rcu() inline with it.
+> > > > > > 
+> > > > > >
+> > > > What do you mean here, Joel? "grow an rcu_head on the stack"?
+> > > 
+> > > By "grow on the stack", use the compiler-allocated rcu_head on the
+> > > kfree_rcu() caller's stack.
+> > > 
+> > > I meant here to say, if we are not in atomic context, then we use regular
+> > > GFP_KERNEL allocation, and if that fails, then we just use the stack's
+> > > rcu_head and call synchronize_rcu() or even synchronize_rcu_expedited since
+> > > the allocation failure would mean the need for RCU to free some memory is
+> > > probably great.
+> > > 
+> > Ah, i got it. I thought you meant something like recursion and then
+> > unwinding the stack back somehow :)
 > 
-> This was added for Reiserfs, but it is not used by any other filesystem,
-> so generalizing it slightly to mean "no migrate" is reasonable.  That
-> doesn't affect Reiserfs in any way, and it would still be possible to
-> also wire up the XFS_XFLAG_NODEFRAG bit to be stored as that flag.
+> Yeah something like that :) Use the compiler allocated space which you
+> wouldn't run out of unless stack overflows.
+> 
+Hmm... Please show it here, because i am a bit confused how to do that :)
 
-Yes, ext4 could do that, but we are not allowed to redefine long
-standing userspace API flags to mean something completely different.
-That's effectively what you are proposing here if you allow ext4 to
-manipulate the same on-disk flag via both FS_NOTAIL_FL and
-FS_XFLAG_NODEFRAG. ie. the  FS_NOTAIL_FL flag is manipulated by
-FS_IOC_[GS]ETFLAGS and is marked both as user visible and modifiable
-by ext4 even though ti does nothing.
+> > > > As for "task_struct's rcu_read_lock_nesting". Will it be enough just
+> > > > have a look at preempt_count of current process? If we have for example
+> > > > nested rcu_read_locks:
+> > > > 
+> > > > <snip>
+> > > > rcu_read_lock()
+> > > >     rcu_read_lock()
+> > > >         rcu_read_lock()
+> > > > <snip>
+> > > > 
+> > > > the counter would be 3.
+> > > 
+> > > No, because preempt_count is not incremented during rcu_read_lock(). RCU
+> > > reader sections can be preempted, they just cannot goto sleep in a reader
+> > > section (unless the kernel is RT).
+> > > 
+> > So in CONFIG_PREEMPT kernel we can identify if we are in atomic or not by
+> > using rcu_preempt_depth() and in_atomic(). When it comes to !CONFIG_PREEMPT
+> > then we skip it and consider as atomic. Something like:
+> > 
+> > <snip>
+> > static bool is_current_in_atomic()
+> 
+> Would be good to change this to is_current_in_rcu_reader() since
+> rcu_preempt_depth() does not imply atomicity.
+>
+can_current_synchronize_rcu()? If can we just call:
 
-IOWs, to redefine this on-disk flag we would also need to have
-EXT4_IOC_GETFLAGS / EXT4_IOC_SETFLAGS reject attempts to set/clear
-FS_NOTAIL_FL with EOPNOTSUPP or EINVAL. Which we then risk breaking
-applications that use this flag even though ext4 does not implement
-anything other than setting/clearing the flag on demand.
+<snip>
+    synchronize_rcu() or synchronize_rcu_expedited();
+    kvfree();
+<snip>
 
-IOWs, we cannot change the meaning of the EXT4_NOTAIL_FL on disk
-flag, because that either changes the user visible behaviour of the
-on-disk flag or it changes the definition of a userspace API flag to
-mean something it was never meant to mean. Neither of those things
-are acceptible changes to make to a generic userspace API.
+> > {
+> > #ifdef CONFIG_PREEMPT_RCU
+> >     if (!rcu_preempt_depth() && !in_atomic())
+> >         return false;
+> 
+> I think use if (!rcu_preempt_depth() && preemptible()) here.
+> 
+> preemptible() checks for IRQ disabled section as well.
+> 
+Yes but in_atomic() does it as well, it also checks other atomic
+contexts like softirq handlers and NMI ones. So calling there
+synchronize_rcu() is not allowed.
 
-> It wouldn't be any issue at all to chose an arbitrary unused flag to
-> store this in ext4 inode internally, except that chattr/lsattr are used
-> by a variety of different filesystems, so whatever flag is chosen will
-> immediately also apply to any other filesystem that users use those
-> tools on.
+Thank you, Joel :)
 
-The impact on userspace is only a problem if you re-use a flag ext4
-already exposes to userspace. And that is not allowed if it causes
-the userspace API to be globally redefined for everyone. Which,
-clearly, it would.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+--
+Vlad Rezki
