@@ -2,89 +2,162 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B41BC1756C2
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2020 10:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E48175824
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2020 11:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727267AbgCBJRs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Mar 2020 04:17:48 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:32062 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726144AbgCBJRs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Mar 2020 04:17:48 -0500
-X-UUID: f41c14b013444c8b8059cd4b70c15acd-20200302
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Tm2dGLrDuwKIqwWQ0m6yCuCCVqgYcKl6heBDIiRcfnw=;
-        b=m/hQqlwlZqZcCb/1QUp0UCExNYbrk9++KsBF02NmBy/z0LHTDcXsjFrTuG1Zf3urS9X368of4Ko+LS0URaE24EUuO7V75ePvrrl8slLb7iiq+MjRAcUPr8//p0xJT6OkDqOd4GCkNnoFx4lylvtBkyXV4fqCQ5hG4JDNusRWGwU=;
-X-UUID: f41c14b013444c8b8059cd4b70c15acd-20200302
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1936260261; Mon, 02 Mar 2020 17:17:43 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1395.4; Mon, 2 Mar 2020 17:15:37 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
- Transport; Mon, 2 Mar 2020 17:17:04 +0800
-Message-ID: <1583140656.10509.2.camel@mtksdccf07>
-Subject: Re: [PATCH v7 6/9] scsi: ufs: Add inline encryption support to UFS
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-CC:     Christoph Hellwig <hch@infradead.org>,
-        Satya Tangirala <satyat@google.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang =?UTF-8?Q?=28=E7=8E=8B=E5=9C=8B=E9=B4=BB=29?= 
-        <kuohong.wang@mediatek.com>, Kim Boojin <boojin.kim@samsung.com>,
-        Ladvine D Almeida <Ladvine.DAlmeida@synopsys.com>,
-        Parshuram Raju Thombare <pthombar@cadence.com>
-Date:   Mon, 2 Mar 2020 17:17:36 +0800
-In-Reply-To: <1582699394.26304.96.camel@mtksdccf07>
-References: <20200221115050.238976-1-satyat@google.com>
-         <20200221115050.238976-7-satyat@google.com>
-         <20200221172244.GC438@infradead.org> <20200221181109.GB925@sol.localdomain>
-         <1582465656.26304.69.camel@mtksdccf07>
-         <20200224233759.GC30288@infradead.org>
-         <1582615285.26304.93.camel@mtksdccf07> <20200226011206.GD114977@gmail.com>
-         <1582699394.26304.96.camel@mtksdccf07>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1727030AbgCBKS0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Mar 2020 05:18:26 -0500
+Received: from relay.sw.ru ([185.231.240.75]:36310 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726654AbgCBKS0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 2 Mar 2020 05:18:26 -0500
+Received: from dhcp-172-16-24-104.sw.ru ([172.16.24.104])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1j8i91-00038m-Od; Mon, 02 Mar 2020 13:17:51 +0300
+Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, tytso@mit.edu,
+        viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
+        snitzer@redhat.com, jack@suse.cz, ebiggers@google.com,
+        riteshh@linux.ibm.com, krisman@collabora.com, surajjs@amazon.com,
+        dmonakhov@gmail.com, mbobrowski@mbobrowski.org, enwlinux@gmail.com,
+        sblbir@amazon.com, khazhy@google.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
+ <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
+ <20200226155521.GA24724@infradead.org>
+ <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
+ <20200227073336.GJ10737@dread.disaster.area>
+ <2e2ae13e-0757-0831-216d-b363b1727a0d@virtuozzo.com>
+ <20200227215634.GM10737@dread.disaster.area>
+ <e4835807-52d2-cce4-ed11-cc58448d3140@virtuozzo.com>
+ <20200229224124.GR10737@dread.disaster.area>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <8e729e06-9251-5df4-5ef8-67da61b3cfea@virtuozzo.com>
+Date:   Mon, 2 Mar 2020 13:17:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200229224124.GR10737@dread.disaster.area>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-SGkgRXJpYyBhbmQgYWxsLA0KDQpPbiBXZWQsIDIwMjAtMDItMjYgYXQgMTQ6NDMgKzA4MDAsIFN0
-YW5sZXkgQ2h1IHdyb3RlOg0KPiBIaSBFcmljLA0KPiANCj4gT24gVHVlLCAyMDIwLTAyLTI1IGF0
-IDE3OjEyIC0wODAwLCBFcmljIEJpZ2dlcnMgd3JvdGU6DQoNCj4gPiANCj4gPiBJJ20gbm90IHN1
-cmUgYWJvdXQgdGhlIFVGUyBjb250cm9sbGVycyBmcm9tIFN5bm9wc3lzLCBDYWRlbmNlLCBvciBT
-YW1zdW5nLCBhbGwNCj4gPiBvZiB3aGljaCBhcHBhcmVudGx5IGhhdmUgaW1wbGVtZW50ZWQgc29t
-ZSBmb3JtIG9mIHRoZSBjcnlwdG8gc3VwcG9ydCB0b28uICBCdXQgSQ0KPiA+IHdvdWxkbid0IGdl
-dCBteSBob3BlcyB1cCB0aGF0IGV2ZXJ5b25lIGZvbGxvd2VkIHRoZSBVRlMgc3RhbmRhcmQgcHJl
-Y2lzZWx5Lg0KPiA+IA0KPiA+IFNvIGlmIHRoZXJlIGFyZSBubyBvYmplY3Rpb25zLCBJTU8gd2Ug
-c2hvdWxkIG1ha2UgdGhlIGNyeXB0byBzdXBwb3J0IG9wdC1pbi4NCj4gPiANCj4gPiBUaGF0IG1h
-a2VzIGl0IGV2ZW4gbW9yZSBpbXBvcnRhbnQgdG8gdXBzdHJlYW0gdGhlIGNyeXB0byBzdXBwb3J0
-IGZvciBzcGVjaWZpYw0KPiA+IGhhcmR3YXJlIGxpa2UgdWZzLXFjb20gYW5kIHVmcy1tZWRpYXRl
-aywgc2luY2Ugb3RoZXJ3aXNlIHRoZSB1ZnNoY2QtY3J5cHRvIGNvZGUNCj4gPiB3b3VsZCBiZSB1
-bnVzYWJsZSBldmVuIHRoZW9yZXRpY2FsbHkuICBJJ20gdm9sdW50ZWVyaW5nIHRvIGhhbmRsZSB1
-ZnMtcWNvbSB3aXRoDQo+ID4gaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvbGludXgtYmxvY2svMjAy
-MDAxMTAwNjE2MzQuNDY3NDItMS1lYmlnZ2Vyc0BrZXJuZWwub3JnLy4NCj4gPiBTdGFubGV5LCBj
-b3VsZCB5b3Ugc2VuZCBvdXQgdWZzLW1lZGlhdGVrIHN1cHBvcnQgYXMgYW4gUkZDIHNvIHBlb3Bs
-ZSBjYW4gc2VlDQo+ID4gYmV0dGVyIHdoYXQgaXQgaW52b2x2ZXM/DQo+IA0KPiBTdXJlLCBJIHdp
-bGwgc2VuZCBvdXQgb3VyIFJGQyBwYXRjaGVzLiBQbGVhc2UgYWxsb3cgbWUgc29tZSB0aW1lIGZv
-cg0KPiBzdWJtaXNzaW9uLg0KDQpUaGUgdWZzLW1lZGlhdGVrIFJGQyBwYXRjaCBpcyB1cGxvYWRl
-ZCBhcw0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTQxNTA1MS8NCg0KVGhp
-cyBwYXRjaCBpcyByZWJhc2VkIHRvIHRoZSBsYXRlc3Qgd2lwLWlubGluZS1lbmNyeXB0aW9uIGJy
-YW5jaCBpbg0KRXJpYyBCaWdnZXJzJ3MgZ2l0Og0KaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIv
-c2NtL2xpbnV4L2tlcm5lbC9naXQvZWJpZ2dlcnMvbGludXguZ2l0Lw0KDQpUaGFua3MsDQpTdGFu
-bGV5IENodQ0K
+On 01.03.2020 01:41, Dave Chinner wrote:
+> On Fri, Feb 28, 2020 at 03:41:51PM +0300, Kirill Tkhai wrote:
+>> On 28.02.2020 00:56, Dave Chinner wrote:
+>>> On Thu, Feb 27, 2020 at 02:12:53PM +0300, Kirill Tkhai wrote:
+>>>> On 27.02.2020 10:33, Dave Chinner wrote:
+>>>>> On Wed, Feb 26, 2020 at 11:05:23PM +0300, Kirill Tkhai wrote:
+>>>>>> On 26.02.2020 18:55, Christoph Hellwig wrote:
+>>>>>>> On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
+>>>>>>>> This adds a support of physical hint for fallocate2() syscall.
+>>>>>>>> In case of @physical argument is set for ext4_fallocate(),
+>>>>>>>> we try to allocate blocks only from [@phisical, @physical + len]
+>>>>>>>> range, while other blocks are not used.
+>>>>>>>
+>>>>>>> Sorry, but this is a complete bullshit interface.  Userspace has
+>>>>>>> absolutely no business even thinking of physical placement.  If you
+>>>>>>> want to align allocations to physical block granularity boundaries
+>>>>>>> that is the file systems job, not the applications job.
+>>>>>>
+>>>>>> Why? There are two contradictory actions that filesystem can't do at the same time:
+>>>>>>
+>>>>>> 1)place files on a distance from each other to minimize number of extents
+>>>>>>   on possible future growth;
+>>>>>
+>>>>> Speculative EOF preallocation at delayed allocation reservation time
+>>>>> provides this.
+>>>>>
+>>>>>> 2)place small files in the same big block of block device.
+>>>>>
+>>>>> Delayed allocation during writeback packs files smaller than the
+>>>>> stripe unit of the filesystem tightly.
+>>>>>
+>>>>> So, yes, we do both of these things at the same time in XFS, and
+>>>>> have for the past 10 years.
+>>>>>
+>>>>>> At initial allocation time you never know, which file will stop grow in some future,
+>>>>>> i.e. which file is suitable for compaction. This knowledge becomes available some time later.
+>>>>>> Say, if a file has not been changed for a month, it is suitable for compaction with
+>>>>>> another files like it.
+>>>>>>
+>>>>>> If at allocation time you can determine a file, which won't grow in the future, don't be afraid,
+>>>>>> and just share your algorithm here.
+>>>>>>
+>>>>>> In Virtuozzo we tried to compact ext4 with existing kernel interface:
+>>>>>>
+>>>>>> https://github.com/dmonakhov/e2fsprogs/blob/e4defrag2/misc/e4defrag2.c
+>>>>>>
+>>>>>> But it does not work well in many situations, and the main problem is blocks allocation
+>>>>>> in desired place is not possible. Block allocator can't behave excellent for everything.
+>>>>>>
+>>>>>> If this interface bad, can you suggest another interface to make block allocator to know
+>>>>>> the behavior expected from him in this specific case?
+>>>>>
+>>>>> Write once, long term data:
+>>>>>
+>>>>> 	fcntl(fd, F_SET_RW_HINT, RWH_WRITE_LIFE_EXTREME);
+>>>>>
+>>>>> That will allow the the storage stack to group all data with the
+>>>>> same hint together, both in software and in hardware.
+>>>>
+>>>> This is interesting option, but it only applicable before write is made. And it's only
+>>>> applicable on your own applications. My usecase is defragmentation of containers, where
+>>>> any applications may run. Most of applications never care whether long or short-term
+>>>> data they write.
+>>>
+>>> Why is that a problem? They'll be using the default write hint (i.e.
+>>> NONE) and so a hint aware allocation policy will be separating that
+>>> data from all the other data written with specific hints...
+>>>
+>>> And you've mentioned that your application has specific *never write
+>>> again* selection criteria for data it is repacking. And that
+>>> involves rewriting that data.  IOWs, you know exactly what policy
+>>> you want to apply before you rewrite the data, and so what other
+>>> applications do is completely irrelevant for your repacker...
+>>
+>> It is not a rewriting data, there is moving data to new place with EXT4_IOC_MOVE_EXT.
+> 
+> "rewriting" is a technical term for reading data at rest and writing
+> it again, whether it be to the same location or to some other
+> location. Changing physical location of data, by definition,
+> requires rewriting data.
+> 
+> EXT4_IOC_MOVE_EXT = data rewrite + extent swap to update the
+> metadata in the original file to point at the new data. Hence it
+> appears to "move" from userspace perspective (hence the name) but
+> under the covers it is rewriting data and fiddling pointers...
 
+Yeah, I understand this. I mean that file remains accessible for external
+users, and external reads/writes are handled properly, and state of file
+remains consistent.
+
+>>> What the filesystem does with the hint is up to the filesystem
+>>> and the policies that it's developers decide are appropriate. If
+>>> your filesystem doesn't do what you need, talk to the filesystem
+>>> developers about implementing the policy you require.
+>>
+>> Do XFS kernel defrag interfaces allow to pack some randomly chosen
+>> small files in 1Mb blocks? Do they allow to pack small 4Kb file into
+>> free space after a big file like in example:
+> 
+> No. Randomly selecting small holes for small file writes is a
+> terrible idea from a performance perspective. Hence filling tiny
+> holes (not randomly!) is often only done for metadata allocation
+> (e.g. extent map blocks, which are largely random access anyway) or
+> if there is no other choice for data (e.g. at ENOSPC).
+
+I'm speaking more about the possibility. "Random" is from block allocator
+view. But from user view they are not random, these are unmodifiable files.
+Say, static content of website never changes, and these files may be packed
+together to decrease number of occupied 1Mb disc blocks.
+
+To pack all files on a disc together is terrible idea, I'm 100% agree with you.
+
+Kirill
