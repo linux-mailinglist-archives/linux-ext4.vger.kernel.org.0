@@ -2,86 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC5C175435
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2020 08:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCBE17553F
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2020 09:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgCBHE0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Mar 2020 02:04:26 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:38565 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgCBHE0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Mar 2020 02:04:26 -0500
-Received: by mail-pl1-f193.google.com with SMTP id p7so3833214pli.5
-        for <linux-ext4@vger.kernel.org>; Sun, 01 Mar 2020 23:04:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bR+IZGUsjrOq0qMGsXzOsmVidNKiUiSF2awIM19/sBM=;
-        b=kNkXk3S3Hywipda1q/hm31vnE8aCFWKYz7Y707Rx+Bx7XbrSB578W1DajlmLaZrClp
-         joJjretYM1mugM9/dVgDi14/CIVUqwcfNEjZqPAXJi9/lP9JZj81S1z6paji3rCd8v4C
-         OPYAi/qvxQeKR45YaV3nplDazB2xMr9R9tyBCEYMl1jxRIxsXFbVZCbEtn6tAG7nl2H8
-         F6nd+hXTvY1ZGcDVdcv/rc9qWTlV2j5Slxgcarq19w62aqhif5GeAJ0AGCz531rnPzAL
-         glA9QD04VCDyOIAB1uwpl8MqOdhRv7E/y11gZDhl5Me/4ygxgjKlKr5O+MtDnXTN1MtJ
-         9wVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bR+IZGUsjrOq0qMGsXzOsmVidNKiUiSF2awIM19/sBM=;
-        b=C6lYda4mlYYKwPcl2UeUeAbc6LJ3LmUQ4MTEOxNHIBuX7wMOOCk5lvPSnwLApKigiC
-         g5m0QdJXXYFUmrYtrxjdloYJKk7L7fUd/lT0DOefuoCY81tVninL2oU1DEX5yXSZZur0
-         Ac5FrdG36oZpR2WR51Fi/6++DO3u9hzQ16/aM+CKvRGQHNq1B4cZw2CURLz0Pot/tskW
-         MgID6l1L9+8zTJxzLguKwrB9V0kAYFT2XC8RYKh8RvXQFlhY+bXQy5Z1DqeRd4+CYMt5
-         lV1a/s3EKNuMmHrr1jcfyop0qMhNsRYU2RHcFNEJ/fyQxFvdsWET5psxCYP/OE676DyP
-         kaNA==
-X-Gm-Message-State: ANhLgQ1oZpTTxP0Wyz7e4uRo+CDw7DAZ6Yd2DRwZu5uv8JO50UjOG37r
-        I71h36SN1Q3jx9xX2ZLuGBXBLVpx
-X-Google-Smtp-Source: ADFU+vu9TQIw08zvQdqi7fEEnLBzL3AFBXLkCA5F3l/tPAo1SbP2pHXq2Hf0LErThdv9d28RRU6D/w==
-X-Received: by 2002:a17:90a:cc15:: with SMTP id b21mr2064615pju.136.1583132665879;
-        Sun, 01 Mar 2020 23:04:25 -0800 (PST)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id e4sm15873740pfi.99.2020.03.01.23.04.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2020 23:04:25 -0800 (PST)
-Date:   Mon, 2 Mar 2020 15:04:17 +0800
-From:   Murphy Zhou <jencce.kernel@gmail.com>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Murphy Zhou <jencce.kernel@gmail.com>, linux-ext4@vger.kernel.org
-Subject: Re: ENOSPC inline_data fsck failure
-Message-ID: <20200302070417.ldaoyxenqkixny43@xzhoux.usersys.redhat.com>
-References: <20200228105234.n5wt5x2vi3ftxuyh@xzhoux.usersys.redhat.com>
- <20200229181711.GD7378@mit.edu>
+        id S1726426AbgCBIKq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Mar 2020 03:10:46 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2752 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726313AbgCBIKq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Mar 2020 03:10:46 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0228AYGa082991
+        for <linux-ext4@vger.kernel.org>; Mon, 2 Mar 2020 03:10:44 -0500
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2yfmyqdp0a-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Mon, 02 Mar 2020 03:10:43 -0500
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Mon, 2 Mar 2020 08:10:15 -0000
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 2 Mar 2020 08:10:10 -0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0228A9M757344066
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 2 Mar 2020 08:10:10 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E485DA4055;
+        Mon,  2 Mar 2020 08:10:09 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8B710A4070;
+        Mon,  2 Mar 2020 08:10:07 +0000 (GMT)
+Received: from [9.199.158.200] (unknown [9.199.158.200])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  2 Mar 2020 08:10:07 +0000 (GMT)
+Subject: Re: [PATCHv5 6/6] Documentation: Correct the description of
+ FIEMAP_EXTENT_LAST
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, hch@infradead.org, cmaiolino@redhat.com,
+        david@fromorbit.com
+References: <cover.1582880246.git.riteshh@linux.ibm.com>
+ <5a00e8d4283d6849e0b8f408c8365b31fbc1d153.1582880246.git.riteshh@linux.ibm.com>
+ <20200228153650.GG29971@bombadil.infradead.org>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Mon, 2 Mar 2020 13:40:06 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200229181711.GD7378@mit.edu>
+In-Reply-To: <20200228153650.GG29971@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20030208-0028-0000-0000-000003DFD14E
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20030208-0029-0000-0000-000024A4F937
+Message-Id: <20200302081007.8B710A4070@d06av23.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-03-02_02:2020-02-28,2020-03-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003020063
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Feb 29, 2020 at 01:17:11PM -0500, Theodore Y. Ts'o wrote:
-> On Fri, Feb 28, 2020 at 06:52:34PM +0800, Murphy Zhou wrote:
-> > 
-> > With inline_data mkfs option, generic/083 can easily trigger
-> > a fsck failure like this:
-> > 
-> > The testcase is doing a simple testing: make a small(256M) fs,
-> > run fsstress in it,  make it out of space. Then fsck.
-> > 
-> > Not sure about is this an issue of ext4 filesystem or e2fsck
-> > needs more options.
-> 
-> This is an ext4 bug.  It's been on my radar screen to investigate one
-> of these days, but I've just never gotten around to it.  I'm guessing
-> the bug is the error handling case when an inline directory is getting
-> converted directory where its contents are stored in data blocks, and
-> the block allocation fails due to the ENOSPC.
-> 
-> 						- Ted
 
-Thanks Ted for the confirmation!
 
--- 
-Murphy
+On 2/28/20 9:06 PM, Matthew Wilcox wrote:
+> On Fri, Feb 28, 2020 at 02:56:59PM +0530, Ritesh Harjani wrote:
+>> Currently FIEMAP_EXTENT_LAST is not working consistently across
+>> different filesystem's fiemap implementations. So add more information
+>> about how else this flag could set in other implementation.
+>>
+>> Also in general, user should not completely rely on this flag as
+>> such since it could return false value for e.g.
+>> when there is a delalloc extent which might get converted during
+>> writeback, immediately after the fiemap calls return.
+>>
+>> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+>> ---
+>>   Documentation/filesystems/fiemap.txt | 10 +++++-----
+>>   1 file changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/Documentation/filesystems/fiemap.txt b/Documentation/filesystems/fiemap.txt
+>> index f6d9c99103a4..fedfa9b9dde5 100644
+>> --- a/Documentation/filesystems/fiemap.txt
+>> +++ b/Documentation/filesystems/fiemap.txt
+>> @@ -71,8 +71,7 @@ allocated is less than would be required to map the requested range,
+>>   the maximum number of extents that can be mapped in the fm_extent[]
+>>   array will be returned and fm_mapped_extents will be equal to
+>>   fm_extent_count. In that case, the last extent in the array will not
+>> -complete the requested range and will not have the FIEMAP_EXTENT_LAST
+>> -flag set (see the next section on extent flags).
+>> +complete the requested range.
+> 
+> This sentence still seems like it should be true.  If the filesystem knows
+> there are more extents to come, it will definitely not set the LAST flag.
+> 
+
+sure.
+
+>> @@ -96,7 +95,7 @@ block size of the file system.  With the exception of extents flagged as
+>>   FIEMAP_EXTENT_MERGED, adjacent extents will not be merged.
+>>   
+>>   The fe_flags field contains flags which describe the extent returned.
+>> -A special flag, FIEMAP_EXTENT_LAST is always set on the last extent in
+>> +A special flag, FIEMAP_EXTENT_LAST *may be* set on the last extent in
+>>   the file so that the process making fiemap calls can determine when no
+>>   more extents are available, without having to call the ioctl again.
+> 
+> I'm not sure I'd highlight 'may be' here.
+
+Sure.
+
+> 
+>> @@ -115,8 +114,9 @@ data. Note that the opposite is not true - it would be valid for
+>>   FIEMAP_EXTENT_NOT_ALIGNED to appear alone.
+>>   
+>>   * FIEMAP_EXTENT_LAST
+>> -This is the last extent in the file. A mapping attempt past this
+>> -extent will return nothing.
+>> +This is generally the last extent in the file. A mapping attempt past this
+>> +extent may return nothing. In some implementations this flag is also set on
+>> +the last dataset queried by the user (via fiemap->fm_length).
+> 
+> The word 'dataset' is used nowhere else in this document.  How about
+> 
+> "Some filesystems set this flag to indicate this extent is the last one in
+> the range queried by the user"
+
+Sure.
+
+Thanks for the review.
+Will make the suggested changes and send a v6.
+
+-ritesh
+
