@@ -2,44 +2,48 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E48175824
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2020 11:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240E117586A
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2020 11:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgCBKS0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Mar 2020 05:18:26 -0500
-Received: from relay.sw.ru ([185.231.240.75]:36310 "EHLO relay.sw.ru"
+        id S1727490AbgCBKdc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Mar 2020 05:33:32 -0500
+Received: from relay.sw.ru ([185.231.240.75]:36748 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726654AbgCBKS0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 2 Mar 2020 05:18:26 -0500
+        id S1727097AbgCBKdc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 2 Mar 2020 05:33:32 -0500
 Received: from dhcp-172-16-24-104.sw.ru ([172.16.24.104])
         by relay.sw.ru with esmtp (Exim 4.92.3)
         (envelope-from <ktkhai@virtuozzo.com>)
-        id 1j8i91-00038m-Od; Mon, 02 Mar 2020 13:17:51 +0300
+        id 1j8iNv-0003Co-6T; Mon, 02 Mar 2020 13:33:15 +0300
 Subject: Re: [PATCH RFC 5/5] ext4: Add fallocate2() support
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, tytso@mit.edu,
-        viro@zeniv.linux.org.uk, adilger.kernel@dilger.ca,
-        snitzer@redhat.com, jack@suse.cz, ebiggers@google.com,
-        riteshh@linux.ibm.com, krisman@collabora.com, surajjs@amazon.com,
-        dmonakhov@gmail.com, mbobrowski@mbobrowski.org, enwlinux@gmail.com,
-        sblbir@amazon.com, khazhy@google.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+To:     Dave Chinner <david@fromorbit.com>,
+        Andreas Dilger <adilger@dilger.ca>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Mike Snitzer <snitzer@redhat.com>, Jan Kara <jack@suse.cz>,
+        Eric Biggers <ebiggers@google.com>, riteshh@linux.ibm.com,
+        krisman@collabora.com, surajjs@amazon.com, dmonakhov@gmail.com,
+        mbobrowski@mbobrowski.org, Eric Whitney <enwlinux@gmail.com>,
+        sblbir@amazon.com, Khazhismel Kumykov <khazhy@google.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
 References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
  <158272447616.281342.14858371265376818660.stgit@localhost.localdomain>
  <20200226155521.GA24724@infradead.org>
  <06f9b82c-a519-7053-ec68-a549e02c6f6c@virtuozzo.com>
- <20200227073336.GJ10737@dread.disaster.area>
- <2e2ae13e-0757-0831-216d-b363b1727a0d@virtuozzo.com>
- <20200227215634.GM10737@dread.disaster.area>
- <e4835807-52d2-cce4-ed11-cc58448d3140@virtuozzo.com>
- <20200229224124.GR10737@dread.disaster.area>
+ <A57E33D1-3D54-405A-8300-13F117DC4633@dilger.ca>
+ <eda406cc-8ce3-e67a-37be-3e525b58d5a1@virtuozzo.com>
+ <4933D88C-2A2D-4ACA-823E-BDFEE0CE143F@dilger.ca>
+ <20200228211610.GQ10737@dread.disaster.area>
 From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <8e729e06-9251-5df4-5ef8-67da61b3cfea@virtuozzo.com>
-Date:   Mon, 2 Mar 2020 13:17:51 +0300
+Message-ID: <9c62dfec-4e01-c711-7a94-373616302d08@virtuozzo.com>
+Date:   Mon, 2 Mar 2020 13:33:13 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200229224124.GR10737@dread.disaster.area>
+In-Reply-To: <20200228211610.GQ10737@dread.disaster.area>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,116 +52,132 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 01.03.2020 01:41, Dave Chinner wrote:
-> On Fri, Feb 28, 2020 at 03:41:51PM +0300, Kirill Tkhai wrote:
->> On 28.02.2020 00:56, Dave Chinner wrote:
->>> On Thu, Feb 27, 2020 at 02:12:53PM +0300, Kirill Tkhai wrote:
->>>> On 27.02.2020 10:33, Dave Chinner wrote:
->>>>> On Wed, Feb 26, 2020 at 11:05:23PM +0300, Kirill Tkhai wrote:
->>>>>> On 26.02.2020 18:55, Christoph Hellwig wrote:
->>>>>>> On Wed, Feb 26, 2020 at 04:41:16PM +0300, Kirill Tkhai wrote:
->>>>>>>> This adds a support of physical hint for fallocate2() syscall.
->>>>>>>> In case of @physical argument is set for ext4_fallocate(),
->>>>>>>> we try to allocate blocks only from [@phisical, @physical + len]
->>>>>>>> range, while other blocks are not used.
->>>>>>>
->>>>>>> Sorry, but this is a complete bullshit interface.  Userspace has
->>>>>>> absolutely no business even thinking of physical placement.  If you
->>>>>>> want to align allocations to physical block granularity boundaries
->>>>>>> that is the file systems job, not the applications job.
->>>>>>
->>>>>> Why? There are two contradictory actions that filesystem can't do at the same time:
->>>>>>
->>>>>> 1)place files on a distance from each other to minimize number of extents
->>>>>>   on possible future growth;
->>>>>
->>>>> Speculative EOF preallocation at delayed allocation reservation time
->>>>> provides this.
->>>>>
->>>>>> 2)place small files in the same big block of block device.
->>>>>
->>>>> Delayed allocation during writeback packs files smaller than the
->>>>> stripe unit of the filesystem tightly.
->>>>>
->>>>> So, yes, we do both of these things at the same time in XFS, and
->>>>> have for the past 10 years.
->>>>>
->>>>>> At initial allocation time you never know, which file will stop grow in some future,
->>>>>> i.e. which file is suitable for compaction. This knowledge becomes available some time later.
->>>>>> Say, if a file has not been changed for a month, it is suitable for compaction with
->>>>>> another files like it.
->>>>>>
->>>>>> If at allocation time you can determine a file, which won't grow in the future, don't be afraid,
->>>>>> and just share your algorithm here.
->>>>>>
->>>>>> In Virtuozzo we tried to compact ext4 with existing kernel interface:
->>>>>>
->>>>>> https://github.com/dmonakhov/e2fsprogs/blob/e4defrag2/misc/e4defrag2.c
->>>>>>
->>>>>> But it does not work well in many situations, and the main problem is blocks allocation
->>>>>> in desired place is not possible. Block allocator can't behave excellent for everything.
->>>>>>
->>>>>> If this interface bad, can you suggest another interface to make block allocator to know
->>>>>> the behavior expected from him in this specific case?
->>>>>
->>>>> Write once, long term data:
->>>>>
->>>>> 	fcntl(fd, F_SET_RW_HINT, RWH_WRITE_LIFE_EXTREME);
->>>>>
->>>>> That will allow the the storage stack to group all data with the
->>>>> same hint together, both in software and in hardware.
->>>>
->>>> This is interesting option, but it only applicable before write is made. And it's only
->>>> applicable on your own applications. My usecase is defragmentation of containers, where
->>>> any applications may run. Most of applications never care whether long or short-term
->>>> data they write.
+On 29.02.2020 00:16, Dave Chinner wrote:
+> On Fri, Feb 28, 2020 at 08:35:19AM -0700, Andreas Dilger wrote:
+>> On Feb 27, 2020, at 5:24 AM, Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>>> On 27.02.2020 00:51, Andreas Dilger wrote:
+>>>> On Feb 26, 2020, at 1:05 PM, Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>>>> In that case, an interesting userspace interface would be an array of
+>>>> inode numbers (64-bit please) that should be packed together densely in
+>>>> the order they are provided (maybe a flag for that).  That allows the
+>>>> filesystem the freedom to find the physical blocks for the allocation,
+>>>> while userspace can tell which files are related to each other.
 >>>
->>> Why is that a problem? They'll be using the default write hint (i.e.
->>> NONE) and so a hint aware allocation policy will be separating that
->>> data from all the other data written with specific hints...
+>>> So, this interface is 3-in-1:
 >>>
->>> And you've mentioned that your application has specific *never write
->>> again* selection criteria for data it is repacking. And that
->>> involves rewriting that data.  IOWs, you know exactly what policy
->>> you want to apply before you rewrite the data, and so what other
->>> applications do is completely irrelevant for your repacker...
+>>> 1)finds a placement for inodes extents;
 >>
->> It is not a rewriting data, there is moving data to new place with EXT4_IOC_MOVE_EXT.
-> 
-> "rewriting" is a technical term for reading data at rest and writing
-> it again, whether it be to the same location or to some other
-> location. Changing physical location of data, by definition,
-> requires rewriting data.
-> 
-> EXT4_IOC_MOVE_EXT = data rewrite + extent swap to update the
-> metadata in the original file to point at the new data. Hence it
-> appears to "move" from userspace perspective (hence the name) but
-> under the covers it is rewriting data and fiddling pointers...
-
-Yeah, I understand this. I mean that file remains accessible for external
-users, and external reads/writes are handled properly, and state of file
-remains consistent.
-
->>> What the filesystem does with the hint is up to the filesystem
->>> and the policies that it's developers decide are appropriate. If
->>> your filesystem doesn't do what you need, talk to the filesystem
->>> developers about implementing the policy you require.
+>> The target allocation size would be sum(size of inodes), which should
+>> be relatively small in your case).
 >>
->> Do XFS kernel defrag interfaces allow to pack some randomly chosen
->> small files in 1Mb blocks? Do they allow to pack small 4Kb file into
->> free space after a big file like in example:
+>>> 2)assigns this space to some temporary donor inode;
+>>
+>> Maybe yes, or just reserves that space from being allocated by anyone.
+>>
+>>> 3)calls ext4_move_extents() for each of them.
+>>
+>> ... using the target space that was reserved earlier
+>>
+>>> Do I understand you right?
+>>
+>> Correct.  That is my "5 minutes thinking about an interface for grouping
+>> small files together without exposing kernel internals" proposal for this.
 > 
-> No. Randomly selecting small holes for small file writes is a
-> terrible idea from a performance perspective. Hence filling tiny
-> holes (not randomly!) is often only done for metadata allocation
-> (e.g. extent map blocks, which are largely random access anyway) or
-> if there is no other choice for data (e.g. at ENOSPC).
+> You don't need any special kernel interface with XFS for this. It is
+> simply:
+> 
+> 	mkdir tmpdir
+> 	create O_TMPFILEs in tmpdir
+> 
+> Now all the tmpfiles you create and their data will be co-located
+> around the location of the tmpdir inode. This is the natural
+> placement policy of the filesystem. i..e the filesystem assumes that
+> files in the same directory are all related, so will be accessed
+> together and so should be located in relatively close proximity to
+> each other.
 
-I'm speaking more about the possibility. "Random" is from block allocator
-view. But from user view they are not random, these are unmodifiable files.
-Say, static content of website never changes, and these files may be packed
-together to decrease number of occupied 1Mb disc blocks.
+Hm, but does this help for my problem? 1)allocate two files in the same directory
+and then 2)move source files there?
 
-To pack all files on a disc together is terrible idea, I'm 100% agree with you.
+In case of I have two 512K files ext4 allows the same:
 
-Kirill
+1)fallocate() 1M continuous space (this should ends with success in case of disc
+is not almost full);
+2)move both files into newly allocated space.
+
+But this doubles IO, since both of files have to be moved. The ideal solution
+would be to allocate space around one of them and to move the second file there.
+
+> This is a locality optimisation technique that is older than XFS. It
+> works remarkably well when the filesystem can spread directories
+> effectively across it's address space.  It also allows userspace to
+> use simple techniques to group (or separate) data files as desired.
+> Indeed, this is how xfs_fsr directs locality for it's tmpfiles when
+> relocating/defragmenting data....
+> 
+>>> If so, then IMO it's good to start from two inodes, because here may code
+>>> a very difficult algorithm of placement of many inodes, which may require
+>>> much memory. Is this OK?
+>>
+>> Well, if the files are small then it won't be a lot of memory.  Even so,
+>> the kernel would only need to copy a few MB at a time in order to get
+>> any decent performance, so I don't think that is a huge problem to have
+>> several MB of dirty data in flight.
+>>
+>>> Can we introduce a flag, that some of inode is unmovable?
+>>
+>> There are very few flags left in the ext4_inode->i_flags for use.
+>> You could use "IMMUTABLE" or "APPEND_ONLY" to mean that, but they
+>> also have other semantics.  The EXT4_NOTAIL_FL is for not merging the
+>> tail of a file, but ext4 doesn't have tails (that was in Reiserfs),
+>> so we might consider it a generic "do not merge" flag if set?
+> 
+> We've had that in XFS for as long as I can remember. Many
+> applications were sensitive to the exact layout of the files they
+> created themselves, so having xfs_fsr defrag/move them about would
+> cause performance SLAs to be broken.
+> 
+> Indeed, thanks to XFS, ext4 already has an interface that can be
+> used to set/clear a "no defrag" flag such as you are asking for.
+> It's the FS_XFLAG_NODEFRAG bit in the FS_IOC_FS[GS]ETXATTR ioctl.
+> In XFS, that manages the XFS_DIFLAG_NODEFRAG on-disk inode flag,
+> and it has special meaning for directories. From the 'man 3 xfsctl'
+> man page where this interface came from:
+> 
+>       Bit 13 (0x2000) - XFS_XFLAG_NODEFRAG
+> 	No defragment file bit - the file should be skipped during a
+> 	defragmentation operation. When applied to  a directory,
+> 	new files and directories created will inherit the no-defrag
+> 	bit.
+> 
+>>> Can this interface use a knowledge about underlining device discard granuality?
+>>
+>> As I wrote above, ext4+mballoc has a very good appreciation for alignment.
+>> That was written for RAID storage devices, but it doesn't matter what
+>> the reason is.  It isn't clear if flash discard alignment is easily
+>> used (it may not be a power-of-two value or similar), but wouldn't be
+>> harmful to try.
+> 
+> Yup, XFS has the similar (but more complex) alignment controls for
+> directing allocation to match the underlying storage
+> characteristics. e.g. stripe unit is also the "small file size
+> threshold" where the allocation policy changes from packing to
+> aligning and separating.
+> 
+>>> In the answer to Dave, I wrote a proposition to make fallocate() care about
+>>> i_write_hint. Could you please comment what you think about that too?
+>>
+>> I'm not against that.  How the two interact would need to be documented
+>> first and discussed to see if that makes sene, and then implemented.
+> 
+> Individual filesystems can make their own choices as to what they do
+> with write hints, including ignoring them and leaving it for the
+> storage device to decide where to physically place the data. Which,
+> in many cases, ignoring the hint is the right thing for the
+> filesystem to do...
+> 
+> Cheers,
+> 
+> Dave.
+> 
+
