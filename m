@@ -2,65 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE65D1756BE
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2020 10:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B41BC1756C2
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Mar 2020 10:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgCBJRN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Mar 2020 04:17:13 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:58533 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726144AbgCBJRN (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Mar 2020 04:17:13 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07417;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0TrOpaEa_1583140629;
-Received: from 30.5.112.20(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TrOpaEa_1583140629)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 02 Mar 2020 17:17:09 +0800
-Subject: Re: [PATCH] ext4: start to support iopoll method
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, jack@suse.cz,
-        joseph qi <joseph.qi@linux.alibaba.com>
-References: <20200207120758.2411-1-xiaoguang.wang@linux.alibaba.com>
-From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-Message-ID: <c535d8f5-e746-30dc-f3e8-aeed04fcb5b8@linux.alibaba.com>
-Date:   Mon, 2 Mar 2020 17:17:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727267AbgCBJRs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 2 Mar 2020 04:17:48 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:32062 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726144AbgCBJRs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Mar 2020 04:17:48 -0500
+X-UUID: f41c14b013444c8b8059cd4b70c15acd-20200302
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Tm2dGLrDuwKIqwWQ0m6yCuCCVqgYcKl6heBDIiRcfnw=;
+        b=m/hQqlwlZqZcCb/1QUp0UCExNYbrk9++KsBF02NmBy/z0LHTDcXsjFrTuG1Zf3urS9X368of4Ko+LS0URaE24EUuO7V75ePvrrl8slLb7iiq+MjRAcUPr8//p0xJT6OkDqOd4GCkNnoFx4lylvtBkyXV4fqCQ5hG4JDNusRWGwU=;
+X-UUID: f41c14b013444c8b8059cd4b70c15acd-20200302
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1936260261; Mon, 02 Mar 2020 17:17:43 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1395.4; Mon, 2 Mar 2020 17:15:37 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1395.4 via Frontend
+ Transport; Mon, 2 Mar 2020 17:17:04 +0800
+Message-ID: <1583140656.10509.2.camel@mtksdccf07>
+Subject: Re: [PATCH v7 6/9] scsi: ufs: Add inline encryption support to UFS
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        Satya Tangirala <satyat@google.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang =?UTF-8?Q?=28=E7=8E=8B=E5=9C=8B=E9=B4=BB=29?= 
+        <kuohong.wang@mediatek.com>, Kim Boojin <boojin.kim@samsung.com>,
+        Ladvine D Almeida <Ladvine.DAlmeida@synopsys.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+Date:   Mon, 2 Mar 2020 17:17:36 +0800
+In-Reply-To: <1582699394.26304.96.camel@mtksdccf07>
+References: <20200221115050.238976-1-satyat@google.com>
+         <20200221115050.238976-7-satyat@google.com>
+         <20200221172244.GC438@infradead.org> <20200221181109.GB925@sol.localdomain>
+         <1582465656.26304.69.camel@mtksdccf07>
+         <20200224233759.GC30288@infradead.org>
+         <1582615285.26304.93.camel@mtksdccf07> <20200226011206.GD114977@gmail.com>
+         <1582699394.26304.96.camel@mtksdccf07>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20200207120758.2411-1-xiaoguang.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-hi,
+SGkgRXJpYyBhbmQgYWxsLA0KDQpPbiBXZWQsIDIwMjAtMDItMjYgYXQgMTQ6NDMgKzA4MDAsIFN0
+YW5sZXkgQ2h1IHdyb3RlOg0KPiBIaSBFcmljLA0KPiANCj4gT24gVHVlLCAyMDIwLTAyLTI1IGF0
+IDE3OjEyIC0wODAwLCBFcmljIEJpZ2dlcnMgd3JvdGU6DQoNCj4gPiANCj4gPiBJJ20gbm90IHN1
+cmUgYWJvdXQgdGhlIFVGUyBjb250cm9sbGVycyBmcm9tIFN5bm9wc3lzLCBDYWRlbmNlLCBvciBT
+YW1zdW5nLCBhbGwNCj4gPiBvZiB3aGljaCBhcHBhcmVudGx5IGhhdmUgaW1wbGVtZW50ZWQgc29t
+ZSBmb3JtIG9mIHRoZSBjcnlwdG8gc3VwcG9ydCB0b28uICBCdXQgSQ0KPiA+IHdvdWxkbid0IGdl
+dCBteSBob3BlcyB1cCB0aGF0IGV2ZXJ5b25lIGZvbGxvd2VkIHRoZSBVRlMgc3RhbmRhcmQgcHJl
+Y2lzZWx5Lg0KPiA+IA0KPiA+IFNvIGlmIHRoZXJlIGFyZSBubyBvYmplY3Rpb25zLCBJTU8gd2Ug
+c2hvdWxkIG1ha2UgdGhlIGNyeXB0byBzdXBwb3J0IG9wdC1pbi4NCj4gPiANCj4gPiBUaGF0IG1h
+a2VzIGl0IGV2ZW4gbW9yZSBpbXBvcnRhbnQgdG8gdXBzdHJlYW0gdGhlIGNyeXB0byBzdXBwb3J0
+IGZvciBzcGVjaWZpYw0KPiA+IGhhcmR3YXJlIGxpa2UgdWZzLXFjb20gYW5kIHVmcy1tZWRpYXRl
+aywgc2luY2Ugb3RoZXJ3aXNlIHRoZSB1ZnNoY2QtY3J5cHRvIGNvZGUNCj4gPiB3b3VsZCBiZSB1
+bnVzYWJsZSBldmVuIHRoZW9yZXRpY2FsbHkuICBJJ20gdm9sdW50ZWVyaW5nIHRvIGhhbmRsZSB1
+ZnMtcWNvbSB3aXRoDQo+ID4gaHR0cHM6Ly9sa21sLmtlcm5lbC5vcmcvbGludXgtYmxvY2svMjAy
+MDAxMTAwNjE2MzQuNDY3NDItMS1lYmlnZ2Vyc0BrZXJuZWwub3JnLy4NCj4gPiBTdGFubGV5LCBj
+b3VsZCB5b3Ugc2VuZCBvdXQgdWZzLW1lZGlhdGVrIHN1cHBvcnQgYXMgYW4gUkZDIHNvIHBlb3Bs
+ZSBjYW4gc2VlDQo+ID4gYmV0dGVyIHdoYXQgaXQgaW52b2x2ZXM/DQo+IA0KPiBTdXJlLCBJIHdp
+bGwgc2VuZCBvdXQgb3VyIFJGQyBwYXRjaGVzLiBQbGVhc2UgYWxsb3cgbWUgc29tZSB0aW1lIGZv
+cg0KPiBzdWJtaXNzaW9uLg0KDQpUaGUgdWZzLW1lZGlhdGVrIFJGQyBwYXRjaCBpcyB1cGxvYWRl
+ZCBhcw0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTQxNTA1MS8NCg0KVGhp
+cyBwYXRjaCBpcyByZWJhc2VkIHRvIHRoZSBsYXRlc3Qgd2lwLWlubGluZS1lbmNyeXB0aW9uIGJy
+YW5jaCBpbg0KRXJpYyBCaWdnZXJzJ3MgZ2l0Og0KaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIv
+c2NtL2xpbnV4L2tlcm5lbC9naXQvZWJpZ2dlcnMvbGludXguZ2l0Lw0KDQpUaGFua3MsDQpTdGFu
+bGV5IENodQ0K
 
-Ted, could you please consider applying this patch? Iouring polling
-tests in ext4 needs this patch, Jan Kara has nicely reviewed this patch, thanks.
-
-Regards,
-Xiaoguang Wang
-
-> Since commit "b1b4705d54ab ext4: introduce direct I/O read using
-> iomap infrastructure", we can easily make ext4 support iopoll
-> method, just use iomap_dio_iopoll().
-> 
-> Signed-off-by: Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
-> ---
->   fs/ext4/file.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 5f225881176b..0d624250a62b 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -872,6 +872,7 @@ const struct file_operations ext4_file_operations = {
->   	.llseek		= ext4_llseek,
->   	.read_iter	= ext4_file_read_iter,
->   	.write_iter	= ext4_file_write_iter,
-> +	.iopoll		= iomap_dio_iopoll,
->   	.unlocked_ioctl = ext4_ioctl,
->   #ifdef CONFIG_COMPAT
->   	.compat_ioctl	= ext4_compat_ioctl,
-> 
