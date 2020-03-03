@@ -2,157 +2,192 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C68881777D7
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2020 14:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C50177AE8
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2020 16:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgCCNx5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Mar 2020 08:53:57 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:44251 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727585AbgCCNx5 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Mar 2020 08:53:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583243636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ou45CDmoGgxQtOQjQhYGAj4mIV8n4ICScH2/4oWCOoM=;
-        b=AinVYJM/FHHUx6ZRJb76aqlmKMuDuEDKGx1csvsbW2dZk0CIU1Lq6LDc+u2H8RrOCGgUql
-        UdJcCLpgpB24sz2mOoTNxRpB/i6pAkDC6nKXqLd1lcVygNVYVmHUnbpKDWXRjyvhF2kOXY
-        2LC8UHYASXoUDtB+dY3kyGNXtvseCxk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-fWPXsB2lMbyekBSw3drjMA-1; Tue, 03 Mar 2020 08:53:54 -0500
-X-MC-Unique: fWPXsB2lMbyekBSw3drjMA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E5FC13E4;
-        Tue,  3 Mar 2020 13:53:53 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-205-84.brq.redhat.com [10.40.205.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A2BFD5C1D8;
-        Tue,  3 Mar 2020 13:53:49 +0000 (UTC)
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Zdenek Kabelac <zkabelac@redhat.com>,
-        Karel Zak <kzak@redhat.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>
-Subject: [PATCH v2] libext2fs/ismounted.c: check open(O_EXCL) before mntent file
-Date:   Tue,  3 Mar 2020 14:53:48 +0100
-Message-Id: <20200303135348.20827-1-lczerner@redhat.com>
-In-Reply-To: <20200225143445.13182-1-lczerner@redhat.com>
-References: <20200225143445.13182-1-lczerner@redhat.com>
+        id S1730173AbgCCPrm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Mar 2020 10:47:42 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:37026 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728291AbgCCPrm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Mar 2020 10:47:42 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 023FeOd4074471;
+        Tue, 3 Mar 2020 15:47:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=DSh98OXNZBqX/7goKk1PCpebVxNc2LpXfEH1oAZ3aKw=;
+ b=KcB50+THWexCecBfE9eucUnuYXs+9SEEt3usQicDIV/tQqdly4opJByVWWBi4G7SQwJy
+ 2gPwazp5ciaSlD53jlb7xvtOO7dHE7gsvUzaZu99zZKHHN4EXwTpGfGAU3tPiAW0bIH2
+ IixVW22FjQR7kRsuvq1XlCrSsxjeanQM/kRhW9QvU6kvvLAL/UGO8d6gkzwl9svHFAcl
+ 8HWe1+4i2Ar4so+DeXQvDpKkGdeZ9hSHeY7MzDJOtzh/yumqMm7T2zcNiateWA+lCXOm
+ zyB3MP7ioTlgaopZQq5MT+1c+84MJEoB8LTJ9qWBor0Y69qCouxhSE1QQsVswjp1HT4I VQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2yffcug7g9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Mar 2020 15:47:18 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 023Fic17027448;
+        Tue, 3 Mar 2020 15:47:17 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2yg1p4qe2t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Mar 2020 15:47:17 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 023FlC8k031965;
+        Tue, 3 Mar 2020 15:47:12 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 03 Mar 2020 07:47:12 -0800
+Date:   Tue, 3 Mar 2020 07:47:09 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     jack@suse.cz, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, cmaiolino@redhat.com, david@fromorbit.com
+Subject: Re: [PATCHv5 3/6] ext4: Move ext4 bmap to use iomap infrastructure.
+Message-ID: <20200303154709.GB8037@magnolia>
+References: <cover.1582880246.git.riteshh@linux.ibm.com>
+ <8bbd53bd719d5ccfecafcce93f2bf1d7955a44af.1582880246.git.riteshh@linux.ibm.com>
+ <20200228152524.GE8036@magnolia>
+ <20200302085840.A41E3A4053@d06av23.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200302085840.A41E3A4053@d06av23.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9549 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003030113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9549 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
+ adultscore=0 suspectscore=0 spamscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003030113
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Currently the ext2fs_check_mount_point() will use the open(O_EXCL) check
-on linux after all the other checks are done. However it is not
-necessary to check mntent if open(O_EXCL) succeeds because it means that
-the device is not mounted.
+On Mon, Mar 02, 2020 at 02:28:39PM +0530, Ritesh Harjani wrote:
+> 
+> 
+> On 2/28/20 8:55 PM, Darrick J. Wong wrote:
+> > On Fri, Feb 28, 2020 at 02:56:56PM +0530, Ritesh Harjani wrote:
+> > > ext4_iomap_begin is already implemented which provides ext4_map_blocks,
+> > > so just move the API from generic_block_bmap to iomap_bmap for iomap
+> > > conversion.
+> > > 
+> > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> > > Reviewed-by: Jan Kara <jack@suse.cz>
+> > > ---
+> > >   fs/ext4/inode.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > > index 6cf3b969dc86..81fccbae0aea 100644
+> > > --- a/fs/ext4/inode.c
+> > > +++ b/fs/ext4/inode.c
+> > > @@ -3214,7 +3214,7 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
+> > >   			return 0;
+> > >   	}
+> > > -	return generic_block_bmap(mapping, block, ext4_get_block);
+> > > +	return iomap_bmap(mapping, block, &ext4_iomap_ops);
+> > 
+> > /me notes that iomap_bmap will filemap_write_and_wait for you, so one
+> > could optimize ext4_bmap to avoid the double-flush by moving the
+> > filemap_write_and_wait at the top of the function into the JDATA state
+> > clearing block.
+> 
+> IIUC, delalloc and data=journal mode are both mutually exclusive.
+> So we could get rid of calling filemap_write_and_wait() all together
+> from ext4_bmap().
+> And as you pointed filemap_write_and_wait() is called by default in
+> iomap_bmap which should cover for delalloc case.
+> 
+> 
+> @Jan/Darrick,
+> Could you check if the attached patch looks good. If yes then
+> will add your Reviewed-by and send a v6.
+> 
+> Thanks for the review!!
+> 
+> -ritesh
+> 
+> 
 
-Moreover the commit ea4d53b7 introduced a regression where a following
-set of commands fails:
+> From 93f560d9a483b4f389056e543012d0941734a8f4 Mon Sep 17 00:00:00 2001
+> From: Ritesh Harjani <riteshh@linux.ibm.com>
+> Date: Tue, 20 Aug 2019 18:36:33 +0530
+> Subject: [PATCH 3/6] ext4: Move ext4 bmap to use iomap infrastructure.
+> 
+> ext4_iomap_begin is already implemented which provides ext4_map_blocks,
+> so just move the API from generic_block_bmap to iomap_bmap for iomap
+> conversion.
+> 
+> Also no need to call for filemap_write_and_wait() any more in ext4_bmap
+> since data=journal mode anyway doesn't support delalloc and for all other
+> cases iomap_bmap() anyway calls the same function, so no need for doing
+> it twice.
+> 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-vgcreate mygroup /dev/sda
-lvcreate -L 1G -n lvol0 mygroup
-mkfs.ext4 /dev/mygroup/lvol0
-mount /dev/mygroup/lvol0 /mnt
-lvrename /dev/mygroup/lvol0 /dev/mygroup/lvol1
-lvcreate -L 1G -n lvol0 mygroup
-mkfs.ext4 /dev/mygroup/lvol0   <<<--- This fails
+Hmmm.  I don't recall how jdata actually works, but I get the impression
+here that we're trying to flush dirty data out to the journal and then
+out to disk, and then drop the JDATA state from the inode.  This
+mechanism exists (I guess?) so that dirty file pages get checkpointed
+out of jbd2 back into the filesystem so that bmap() returns meaningful
+results to lilo.
 
-It fails because it thinks that /dev/mygroup/lvol0 is mounted because
-the device name in /proc/mounts is not updated following the lvrename.
+This makes me wonder if you still need the filemap_write_and_wait in the
+JDATA case because otherwise the journal flush won't have the effect of
+writing all the dirty pagecache back to the filesystem?  OTOH I suppose
+the implicit write-and-wait call after we clear JDATA will not be
+writing to the journal.
 
-Move the open(O_EXCL) check before the mntent check and return
-immediatelly if the device is not busy.
+Even more weirdly, the FIEMAP code doesn't drop JDATA at all...?
 
-Fixes: ea4d53b7 ("libext2fs/ismounted.c: check device id in advance to sk=
-ip false device names")
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-Reported-by: Zdenek Kabelac <zkabelac@redhat.com>
-Reported-by: Karel Zak <kzak@redhat.com>
-Reviewed-by: Carlos Maiolino <cmaiolino@redhat.com>
----
- lib/ext2fs/ismounted.c | 42 +++++++++++++++++++++++++++---------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+--D
 
-diff --git a/lib/ext2fs/ismounted.c b/lib/ext2fs/ismounted.c
-index c0215692..46d330d9 100644
---- a/lib/ext2fs/ismounted.c
-+++ b/lib/ext2fs/ismounted.c
-@@ -352,6 +352,7 @@ errcode_t ext2fs_check_mount_point(const char *device=
-, int *mount_flags,
- 				  char *mtpt, int mtlen)
- {
- 	errcode_t	retval =3D 0;
-+	int 		busy =3D 0;
-=20
- 	if (getenv("EXT2FS_PRETEND_RO_MOUNT")) {
- 		*mount_flags =3D EXT2_MF_MOUNTED | EXT2_MF_READONLY;
-@@ -366,6 +367,30 @@ errcode_t ext2fs_check_mount_point(const char *devic=
-e, int *mount_flags,
- 		return 0;
- 	}
-=20
-+#ifdef __linux__ /* This only works on Linux 2.6+ systems */
-+	{
-+		struct stat st_buf;
-+
-+		if (stat(device, &st_buf) =3D=3D 0 &&
-+		    ext2fsP_is_disk_device(st_buf.st_mode)) {
-+			int fd =3D open(device, O_RDONLY | O_EXCL);
-+
-+			if (fd >=3D 0) {
-+				/*
-+				 * The device is not busy so it's
-+				 * definitelly not mounted. No need to
-+				 * to perform any more checks.
-+				 */
-+				close(fd);
-+				*mount_flags =3D 0;
-+				return 0;
-+			} else if (errno =3D=3D EBUSY) {
-+				busy =3D 1;
-+			}
-+		}
-+	}
-+#endif
-+
- 	if (is_swap_device(device)) {
- 		*mount_flags =3D EXT2_MF_MOUNTED | EXT2_MF_SWAP;
- 		strncpy(mtpt, "<swap>", mtlen);
-@@ -386,21 +411,8 @@ errcode_t ext2fs_check_mount_point(const char *devic=
-e, int *mount_flags,
- 	if (retval)
- 		return retval;
-=20
--#ifdef __linux__ /* This only works on Linux 2.6+ systems */
--	{
--		struct stat st_buf;
--
--		if (stat(device, &st_buf) =3D=3D 0 &&
--		    ext2fsP_is_disk_device(st_buf.st_mode)) {
--			int fd =3D open(device, O_RDONLY | O_EXCL);
--
--			if (fd >=3D 0)
--				close(fd);
--			else if (errno =3D=3D EBUSY)
--				*mount_flags |=3D EXT2_MF_BUSY;
--		}
--	}
--#endif
-+	if (busy)
-+		*mount_flags |=3D EXT2_MF_BUSY;
-=20
- 	return 0;
- }
---=20
-2.21.1
+> ---
+>  fs/ext4/inode.c | 12 +-----------
+>  1 file changed, 1 insertion(+), 11 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 6cf3b969dc86..fac8adbbb3f6 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3174,16 +3174,6 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
+>  	if (ext4_has_inline_data(inode))
+>  		return 0;
+>  
+> -	if (mapping_tagged(mapping, PAGECACHE_TAG_DIRTY) &&
+> -			test_opt(inode->i_sb, DELALLOC)) {
+> -		/*
+> -		 * With delalloc we want to sync the file
+> -		 * so that we can make sure we allocate
+> -		 * blocks for file
+> -		 */
+> -		filemap_write_and_wait(mapping);
+> -	}
+> -
+>  	if (EXT4_JOURNAL(inode) &&
+>  	    ext4_test_inode_state(inode, EXT4_STATE_JDATA)) {
+>  		/*
+> @@ -3214,7 +3204,7 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
+>  			return 0;
+>  	}
+>  
+> -	return generic_block_bmap(mapping, block, ext4_get_block);
+> +	return iomap_bmap(mapping, block, &ext4_iomap_ops);
+>  }
+>  
+>  static int ext4_readpage(struct file *file, struct page *page)
+> -- 
+> 2.21.0
+> 
 
