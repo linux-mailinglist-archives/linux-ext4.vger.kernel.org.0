@@ -2,66 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1E117819B
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2020 20:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE4C178534
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2020 23:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388294AbgCCSDx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 3 Mar 2020 13:03:53 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:43623 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388047AbgCCSDw (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Mar 2020 13:03:52 -0500
-Received: by mail-il1-f194.google.com with SMTP id o18so3560639ilg.10
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Mar 2020 10:03:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
-        b=RWZQeIL0G4T29AMwn81/jYklvI6cY3yAxn8RcOSfyHi66WVG1FrxiIYe6/N3tGrujT
-         L16ZuvBVe5nJgPZc/M6p7ETio8YLmxM5elTnmveqLus9xEeEW3PrtwnYQzXrej2LPOqS
-         ePTSSUdbBIm1PTkIuxJ23icCchfYgHoFVZnGxEwBDDbn5CiMYC5g0nuT+6YUHOTcICQn
-         MCu3svyVajBya/Ly+HeQpDAY+/Kt/om9XuOE60zvc+62Yc/sRiP9UGAKdhEXqmdXnYj3
-         hh9LmjmCUop5tSVO6wo/sWyW6vDXiEeRbS08tse4l9F+B4CRPpuwMAIuoCBkDAXjLi61
-         cJnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
-        b=p6k6twAqhwjsTV9+9XBHUX5MC623WT84Y5It6724Gn3CGra/ISV7QonHe2IwVcvCNR
-         OyXUf4a6gXH75c/rvvnZqvHRxJqp6uj4BR5MxhFKaTlf0b/g01MQiIjOqulHKVKeK4iw
-         R3PaJWPmSFjAdd56hOePu2138WC0kjppvbll/Up4Ke24OkAz9f8MlqC2/oAez0u3BKtd
-         PB7RKLpXI6TPY5xLeE7gsrYrBMdFWmrrO6Ktf5xLIobGXJrNgjUrpnz3CM51aoaSFVpo
-         jNQU1/cyrBFs0jzucMubwhOUDEjoN0+6D9usVwLeSzi1PD9Mf7Hgpj8r/25HPT0dbblE
-         qAlA==
-X-Gm-Message-State: ANhLgQ2eWnxTwXJA5vMkoK8HMp29iv8oHvbwf2zkvoXkcC47kuOlz6qm
-        87updX3gvV9vUJm8vfIZIQFbahwR6p5/1CHiv5Y=
-X-Google-Smtp-Source: ADFU+vtxCaxhzOdKDfyUMsukNtF9i7FsxURwvPDfAGfWZHOsYBIIDNeFLrWifUx6i3WVVTUJTC+kfBCnu5tKsYwnsOU=
-X-Received: by 2002:a92:9c57:: with SMTP id h84mr5678517ili.94.1583258631938;
- Tue, 03 Mar 2020 10:03:51 -0800 (PST)
+        id S1727441AbgCCWCx (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Mar 2020 17:02:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726465AbgCCWCx (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 3 Mar 2020 17:02:53 -0500
+Received: from redsun51.ssa.fujisawa.hgst.com (unknown [199.255.47.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FB2920848;
+        Tue,  3 Mar 2020 22:02:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583272972;
+        bh=HSQRJP3KSvC/KIrOlVjd0RML3XWoJX2YZfIRsQwxSB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MvP8NxNMn9ZmP58Tncs5HZmmUYtvCx6yR+iNKPIpUy1350U8oXlYnW4x/Zx5DoLyM
+         d+FDG6BSxDuNO6o8RyjjYIJyjgB5nsuoGF7uJlrdfo6r1jk/QvF/zUP0itfEx+3i21
+         G2HAQSGIJn6hjSybnviJcj0jD13ghBEYo+RCObYg=
+Date:   Wed, 4 Mar 2020 07:02:46 +0900
+From:   Keith Busch <kbusch@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     linux-nvme@lists.infradead.org, linux-ext4@vger.kernel.org
+Subject: Re: "I/O 8 QID 0 timeout, reset controller" on 5.6-rc2
+Message-ID: <20200303220246.GA20545@redsun51.ssa.fujisawa.hgst.com>
+References: <20200302020339.GA5532@zx2c4.com>
 MIME-Version: 1.0
-Received: by 2002:a02:9f04:0:0:0:0:0 with HTTP; Tue, 3 Mar 2020 10:03:51 -0800 (PST)
-Reply-To: dr.challynoah@gmail.com
-From:   DR CHALLY NOAH <mayorabrahamedge404@gmail.com>
-Date:   Tue, 3 Mar 2020 19:03:51 +0100
-Message-ID: <CALqVJWei9Umiw3V9aBt=DD1yV36_Nnu3F8RkmHvA_o5pvKCc1A@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200302020339.GA5532@zx2c4.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Dear,
-What Have Kept You Waiting To Claim Your $600,000.00 USD Compensation Award?
-This said fund was issued out by the UNITED NATIONS To compensate
-you.Please If You Have Not Claim Your Fund (Award),Kindly contact me
-at   DR.CHALLYNOAH@GMAIL.COM   for further details on how to proceed your
-fund (award)release to you or better still reply back Immediately You
-Receive This Information For An Urgent Confirmation And Release Of Your
-Fund To You Without Delays, as your email was listed among those to be
-compensated this year.Congratulations..
-Best Regards,
-Dr Chally Noah.
-Minister Of Finance On Foreign Remittance:
+On Mon, Mar 02, 2020 at 10:03:39AM +0800, Jason A. Donenfeld wrote:
+> Hi,
+> 
+> My torrent client was doing some I/O when the below happened. I'm
+> wondering if this is a known thing that's been fixed during the rc
+> cycle, a regression, or if my (pretty new) NVMe drive is failing.
+> 
+> Thanks,
+> Jason
+> 
+> Feb 24 20:36:58 thinkpad kernel: nvme nvme1: I/O 852 QID 15 timeout, aborting
+> Feb 24 20:37:29 thinkpad kernel: nvme nvme1: I/O 852 QID 15 timeout, reset controller
+> Feb 24 20:37:59 thinkpad kernel: nvme nvme1: I/O 8 QID 0 timeout, reset controller
+> Feb 24 20:39:00 thinkpad kernel: nvme nvme1: Device not ready; aborting reset
+> Feb 24 20:39:00 thinkpad kernel: nvme nvme1: Abort status: 0x371
+
+Sorry to say, this indicates the controller has become unresponsive.
+You usually see "timeout" messages in batches, though, so I wonder if
+only the one IO command timed out or if the controller just doesn't
+support an abort command limit.
+
+You can try throttling the queue depth and see if the problem goes away.
+The lowest possible depth can be set with kernel param
+"nvme.io_queue_depth=2".
