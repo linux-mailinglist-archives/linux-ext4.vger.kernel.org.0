@@ -2,180 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C37176886
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2020 00:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B1B17718F
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Mar 2020 09:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgCBXzF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 2 Mar 2020 18:55:05 -0500
-Received: from gateway23.websitewelcome.com ([192.185.50.119]:27152 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726728AbgCBXzF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 2 Mar 2020 18:55:05 -0500
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 2D29864EA3
-        for <linux-ext4@vger.kernel.org>; Mon,  2 Mar 2020 17:55:04 -0600 (CST)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 8utsjjqb3vBMd8utsjedku; Mon, 02 Mar 2020 17:55:04 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/dSFYZpWVwq0T06RRerWXyLAzBAZThOuuTd8z1yC3Hk=; b=W8SR6XUb7QkNKuimLokw+YWvTg
-        NLrHjR1W+DLwrN2xStpYlZRYg2feGrggRaR7ET/ToyJ3qL+WxHuoMK2COYyZHTPMyOxJMxJdlv4YQ
-        lXHrwonHK90jaN/rqfPj+oeXqb5Kf9hSLdKmsiRbbg6OJk8bE77sqGnk+Fy+1AfZL7pZZLX4KHocT
-        Sp9EQy7O8aoCSQt/x4uTGHuHpkXSZD9D28vL+6UbB8/S/7e2AW3N7PmSv022WExC3MFr3DvcLf2s3
-        nRhLv5VMlcJV9nFwuIpHc8Fm66QlzSIcUUYqZPXwcCnEYOdPKm+9K7KHahIuPk4BbOeYAkn03Njb7
-        jwD8YdWQ==;
-Received: from [200.39.25.214] (port=17332 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1j8utp-001Pcr-Rl; Mon, 02 Mar 2020 17:55:02 -0600
-Subject: Re: [PATCH] ext4: namei: Replace zero-length array with
- flexible-array member
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200213160648.GA7054@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <6d898c2b-e1c3-0d3a-3772-765ff3803ae4@embeddedor.com>
-Date:   Mon, 2 Mar 2020 17:57:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727796AbgCCIvM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 3 Mar 2020 03:51:12 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:36996 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727663AbgCCIvM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 3 Mar 2020 03:51:12 -0500
+Received: by mail-pl1-f193.google.com with SMTP id q4so1024522pls.4;
+        Tue, 03 Mar 2020 00:51:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=Q5VfVmQdgg9p+OFp/l0un3xaUEDV8bc7/C90UdhrYow=;
+        b=lfVWG1zTLXyJsgrUAAZZDBmHWh76xwXI0h459ycitFK75x9l2PjFRQ4zZUAeKSAka1
+         Sars18D+gIky6FBflMkZsf7k1amtba5q5hPR3hAdl4mQfjh6j9MZm55IzZIEc/CBchIw
+         XhTrjTxaHB6nZR5th5r65ikWHVEF9sfOjJ6MPWweynQ6SQaCFlwXSc+UavYDuaOYMIoF
+         BmdbtJG8uqf5+OOZ9w9GRHdmoD/gtII+rYP8nMypw2HQllSphp5IU+FH0NO1v3DgqFNB
+         IsH3dsWosSw09c/XQ8IHx/RX38l/03BFuKKIbs/Zi1QJugndwboJcWf+hL0CsOD/ytU3
+         0j6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=Q5VfVmQdgg9p+OFp/l0un3xaUEDV8bc7/C90UdhrYow=;
+        b=t81UfKx0TeN3yt8wxcDwtfEKvJ14E2BV4vpuWFYLjvuNON7akZ5fAo9ckd7otgxO50
+         T7g+wTuSi0vEFi539XnXSmNE3RKEcZZbhc6ipgBuiDFCXA+LvmESw/9W5LDxIOeTTpyv
+         Qwa4ISqXGc/hdckDlEEC+3YvVHAT5qdhl1ztqynQ8No+IW3/QH6J0woehqq5lvHRpQcV
+         qkRYuK90wyEBvDGMytHybhP3859HQ9dUKs1/dmYK4ZIo8bTJnL8wp2tnuo30ErvlGX3/
+         MDKnNnzb7PS+7si4a+PlyuRHXLCWupR5Oz3Xoy+iAWV+3M/XTLc9ez0i29gFGNX1Qx6Y
+         iicA==
+X-Gm-Message-State: ANhLgQ2KNBKIZW/b5/Dz98Ux+ZPWKhj3KBRZk+zr2kpapeuqE+KpGDsn
+        p8uR3Nr+Xa8n1nUUXOp2/orUAv1c
+X-Google-Smtp-Source: ADFU+vuQMZQD+h00eScJp0xk94cQ+VFN3uqIz2iiWUPMWpdktm6s61EryURJK4I+3jpmSI6wQmKq3w==
+X-Received: by 2002:a17:902:eb52:: with SMTP id i18mr3320901pli.125.1583225471091;
+        Tue, 03 Mar 2020 00:51:11 -0800 (PST)
+Received: from [10.80.50.61] ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id jx10sm1558821pjb.33.2020.03.03.00.51.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Mar 2020 00:51:10 -0800 (PST)
+To:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   brookxu <brookxu.cn@gmail.com>
+Subject: [PATCH] ext4: mark extents index blocks as dirty to avoid information
+ leakage
+Message-ID: <e988a1db-3105-07a0-6399-38af80656af1@gmail.com>
+Date:   Tue, 3 Mar 2020 16:51:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200213160648.GA7054@embeddedor>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 200.39.25.214
-X-Source-L: No
-X-Exim-ID: 1j8utp-001Pcr-Rl
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [200.39.25.214]:17332
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi all,
+From: Chunguang Xu <brookxu@tencent.com>
 
-Friendly ping: who can take this?
+In the scene of deleting a file, the physical block information in the
+extent will be cleared to 0, the buffer_head contains these extents is
+marked as dirty, and then managed by jbd2, which will clear the
+buffer_head's dirty flag by clear_buffer_dirty. However, when the entire
+extent block is deleted, it is revoked from the jbd2, but  the extents
+block is not redirtied.
 
-Thanks
---
-Gustavo
+Not quite reasonable here, for the following concerns:
 
-On 2/13/20 10:06, Gustavo A. R. Silva wrote:
-> The current codebase makes use of the zero-length array language
-> extension to the C90 standard, but the preferred mechanism to declare
-> variable-length types such as these ones is a flexible array member[1][2],
-> introduced in C99:
-> 
-> struct foo {
->         int stuff;
->         struct boo array[];
-> };
-> 
-> By making use of the mechanism above, we will get a compiler warning
-> in case the flexible array does not occur last in the structure, which
-> will help us prevent some kind of undefined behavior bugs from being
-> inadvertently introduced[3] to the codebase from now on.
-> 
-> Also, notice that, dynamic memory allocations won't be affected by
-> this change:
-> 
-> "Flexible array members have incomplete type, and so the sizeof operator
-> may not be applied. As a quirk of the original implementation of
-> zero-length arrays, sizeof evaluates to zero."[1]
-> 
-> This issue was found with the help of Coccinelle.
-> 
-> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> [2] https://github.com/KSPP/linux/issues/21
-> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> ---
->  fs/ext4/namei.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 129d2ebae00d..77c327d904bf 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -233,13 +233,13 @@ struct dx_root
->  		u8 unused_flags;
->  	}
->  	info;
-> -	struct dx_entry	entries[0];
-> +	struct dx_entry	entries[];
->  };
->  
->  struct dx_node
->  {
->  	struct fake_dirent fake;
-> -	struct dx_entry	entries[0];
-> +	struct dx_entry	entries[];
->  };
->  
->  
-> 
+1. This has the risk of information leakage and leads to an interesting
+phenomenon that deleting the entire file is no more secure than truncate
+to 1 byte, because the whole extents physical block clear to zero in cache
+will never written back as the page is not redirtied.
+
+2. For large files, the number of index block is usually very small.
+Ignoring index pages not get much more benefit in IO performance. But if
+we remark the page as dirty, the page is then written back by the system
+writeback mechanism asynchronously with little performance impact. As a
+result, the risk of information leakage can be avoided. At least not wrose
+than truncate file length to 1 byte
+
+Therefore, when the index block is released, we need to remark its page
+as dirty, so that the index block on the disk will be updated and the
+data is more security.
+
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+---
+ fs/ext4/ext4.h      | 1 +
+ fs/ext4/ext4_jbd2.c | 8 ++++++++
+ fs/ext4/extents.c   | 3 ++-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 61b37a0..f9a4d97 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -644,6 +644,7 @@ enum {
+ #define EXT4_FREE_BLOCKS_NOFREE_FIRST_CLUSTER    0x0010
+ #define EXT4_FREE_BLOCKS_NOFREE_LAST_CLUSTER    0x0020
+ #define EXT4_FREE_BLOCKS_RERESERVE_CLUSTER      0x0040
++#define EXT4_FREE_BLOCKS_METADATA_INDEX        0x0080
+ 
+ /*
+  * ioctl commands
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index 1f53d64..7974c62 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -275,7 +275,15 @@ int __ext4_forget(const char *where, unsigned int line, handle_t *handle,
+         ext4_set_errno(inode->i_sb, -err);
+         __ext4_abort(inode->i_sb, where, line,
+                "error %d when attempting revoke", err);
++    } else  {
++        /*
++         * we dirtied index block to ensure that related changes to
++         * the index block will be stored to disk.
++         */
++        if (is_metadata & EXT4_FREE_BLOCKS_METADATA_INDEX)
++            mark_buffer_dirty(bh);
+     }
++
+     BUFFER_TRACE(bh, "exit");
+     return err;
+ }
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 954013d..2ee0df0 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -2431,7 +2431,8 @@ static int ext4_ext_rm_idx(handle_t *handle, struct inode *inode,
+     trace_ext4_ext_rm_idx(inode, leaf);
+ 
+     ext4_free_blocks(handle, inode, NULL, leaf, 1,
+-             EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET);
++             EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET |
++             EXT4_FREE_BLOCKS_METADATA_INDEX);
+ 
+     while (--depth >= 0) {
+         if (path->p_idx != EXT_FIRST_INDEX(path->p_hdr))
+-- 
+1.8.3.1
+
