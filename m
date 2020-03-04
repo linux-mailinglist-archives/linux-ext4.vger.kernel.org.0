@@ -2,81 +2,137 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E466C178F77
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Mar 2020 12:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B450017908E
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Mar 2020 13:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387774AbgCDLTg (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 4 Mar 2020 06:19:36 -0500
-Received: from frisell.zx2c4.com ([192.95.5.64]:49729 "EHLO frisell.zx2c4.com"
+        id S2388053AbgCDMmP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 4 Mar 2020 07:42:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51316 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387398AbgCDLTg (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 4 Mar 2020 06:19:36 -0500
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 1e6388fa
-        for <linux-ext4@vger.kernel.org>;
-        Wed, 4 Mar 2020 11:15:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=543ZUe3zNqoDf0fPqwGkRrAU66k=; b=WXd4PK
-        oA7nYlSqRdOT59VAzxKhL091jDCzLlyk/7vs8Jh+FHDjR8J/4aBB43i+QMaBANpC
-        g4th2ZA2FeYdAHEaq8+jyrhtia2NGQsAynOG5I/6gGZB9VjvhLK+KOtJOcleMeoY
-        hFCqh51Kmc13j8d62fG5yOxW1jjjH6AVhD9uLNOU1tM5Vd92Q+HEF4G6FD97M/g2
-        eIoWGYzZhNioguHur+H/HtopA/UyUGn9/wLgA9ZfKCt4HQuu/unjsrSosJOZO6nY
-        Z2+Fl3ht5pos3eJ5cvjenB6n+5NDg5wHiCvB8vK38lJxpiULUo+0hQQoUHegSoA0
-        8vHM5Ms3gvvK0trQ==
-Received: by frisell.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id c94b14ec (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO)
-        for <linux-ext4@vger.kernel.org>;
-        Wed, 4 Mar 2020 11:15:01 +0000 (UTC)
-Received: by mail-il1-f180.google.com with SMTP id o18so1460667ilg.10
-        for <linux-ext4@vger.kernel.org>; Wed, 04 Mar 2020 03:19:34 -0800 (PST)
-X-Gm-Message-State: ANhLgQ2PGp4dNYPAcyqHOG3GzqlZZt1TY6TSmz++ezOcOGENbzAGHVca
-        eTuHBf8oHtgLP7yVAEcuPwiqBqwIW0U8H1+i08M=
-X-Google-Smtp-Source: ADFU+vsro5efBHb+brZoqyBYVH5tBP/vkJGryDQMGq+W1HS9ChXW3WfQZLwt9LDI13wRUFEy/IgGiG1kp1x9BCjLkxQ=
-X-Received: by 2002:a92:9913:: with SMTP id p19mr2338603ili.38.1583320773458;
- Wed, 04 Mar 2020 03:19:33 -0800 (PST)
+        id S2388023AbgCDMmP (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 4 Mar 2020 07:42:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 96B46B360;
+        Wed,  4 Mar 2020 12:42:12 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id C735B1E0E99; Wed,  4 Mar 2020 13:42:11 +0100 (CET)
+Date:   Wed, 4 Mar 2020 13:42:11 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, jack@suse.cz,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, cmaiolino@redhat.com, david@fromorbit.com
+Subject: Re: [PATCHv5 3/6] ext4: Move ext4 bmap to use iomap infrastructure.
+Message-ID: <20200304124211.GC21048@quack2.suse.cz>
+References: <cover.1582880246.git.riteshh@linux.ibm.com>
+ <8bbd53bd719d5ccfecafcce93f2bf1d7955a44af.1582880246.git.riteshh@linux.ibm.com>
+ <20200228152524.GE8036@magnolia>
+ <20200302085840.A41E3A4053@d06av23.portsmouth.uk.ibm.com>
+ <20200303154709.GB8037@magnolia>
 MIME-Version: 1.0
-References: <20200302020339.GA5532@zx2c4.com> <20200303220246.GA20545@redsun51.ssa.fujisawa.hgst.com>
-In-Reply-To: <20200303220246.GA20545@redsun51.ssa.fujisawa.hgst.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Wed, 4 Mar 2020 19:19:22 +0800
-X-Gmail-Original-Message-ID: <CAHmME9pfUFSRVX7Tamg0E5pTxk4Xx322nMoG6j1tTkoxtgaY+A@mail.gmail.com>
-Message-ID: <CAHmME9pfUFSRVX7Tamg0E5pTxk4Xx322nMoG6j1tTkoxtgaY+A@mail.gmail.com>
-Subject: Re: "I/O 8 QID 0 timeout, reset controller" on 5.6-rc2
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     linux-nvme@lists.infradead.org, linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200303154709.GB8037@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Mar 4, 2020 at 6:02 AM Keith Busch <kbusch@kernel.org> wrote:
->
-> On Mon, Mar 02, 2020 at 10:03:39AM +0800, Jason A. Donenfeld wrote:
-> > Hi,
-> >
-> > My torrent client was doing some I/O when the below happened. I'm
-> > wondering if this is a known thing that's been fixed during the rc
-> > cycle, a regression, or if my (pretty new) NVMe drive is failing.
-> >
-> > Thanks,
-> > Jason
-> >
-> > Feb 24 20:36:58 thinkpad kernel: nvme nvme1: I/O 852 QID 15 timeout, aborting
-> > Feb 24 20:37:29 thinkpad kernel: nvme nvme1: I/O 852 QID 15 timeout, reset controller
-> > Feb 24 20:37:59 thinkpad kernel: nvme nvme1: I/O 8 QID 0 timeout, reset controller
-> > Feb 24 20:39:00 thinkpad kernel: nvme nvme1: Device not ready; aborting reset
-> > Feb 24 20:39:00 thinkpad kernel: nvme nvme1: Abort status: 0x371
->
-> Sorry to say, this indicates the controller has become unresponsive.
-> You usually see "timeout" messages in batches, though, so I wonder if
-> only the one IO command timed out or if the controller just doesn't
-> support an abort command limit.
->
-> You can try throttling the queue depth and see if the problem goes away.
-> The lowest possible depth can be set with kernel param
-> "nvme.io_queue_depth=2".
+On Tue 03-03-20 07:47:09, Darrick J. Wong wrote:
+> On Mon, Mar 02, 2020 at 02:28:39PM +0530, Ritesh Harjani wrote:
+> > 
+> > 
+> > On 2/28/20 8:55 PM, Darrick J. Wong wrote:
+> > > On Fri, Feb 28, 2020 at 02:56:56PM +0530, Ritesh Harjani wrote:
+> > > > ext4_iomap_begin is already implemented which provides ext4_map_blocks,
+> > > > so just move the API from generic_block_bmap to iomap_bmap for iomap
+> > > > conversion.
+> > > > 
+> > > > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> > > > Reviewed-by: Jan Kara <jack@suse.cz>
+> > > > ---
+> > > >   fs/ext4/inode.c | 2 +-
+> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > > > index 6cf3b969dc86..81fccbae0aea 100644
+> > > > --- a/fs/ext4/inode.c
+> > > > +++ b/fs/ext4/inode.c
+> > > > @@ -3214,7 +3214,7 @@ static sector_t ext4_bmap(struct address_space *mapping, sector_t block)
+> > > >   			return 0;
+> > > >   	}
+> > > > -	return generic_block_bmap(mapping, block, ext4_get_block);
+> > > > +	return iomap_bmap(mapping, block, &ext4_iomap_ops);
+> > > 
+> > > /me notes that iomap_bmap will filemap_write_and_wait for you, so one
+> > > could optimize ext4_bmap to avoid the double-flush by moving the
+> > > filemap_write_and_wait at the top of the function into the JDATA state
+> > > clearing block.
+> > 
+> > IIUC, delalloc and data=journal mode are both mutually exclusive.
+> > So we could get rid of calling filemap_write_and_wait() all together
+> > from ext4_bmap().
+> > And as you pointed filemap_write_and_wait() is called by default in
+> > iomap_bmap which should cover for delalloc case.
+> > 
+> > 
+> > @Jan/Darrick,
+> > Could you check if the attached patch looks good. If yes then
+> > will add your Reviewed-by and send a v6.
+> > 
+> > Thanks for the review!!
+> > 
+> > -ritesh
+> > 
+> > 
+> 
+> > From 93f560d9a483b4f389056e543012d0941734a8f4 Mon Sep 17 00:00:00 2001
+> > From: Ritesh Harjani <riteshh@linux.ibm.com>
+> > Date: Tue, 20 Aug 2019 18:36:33 +0530
+> > Subject: [PATCH 3/6] ext4: Move ext4 bmap to use iomap infrastructure.
+> > 
+> > ext4_iomap_begin is already implemented which provides ext4_map_blocks,
+> > so just move the API from generic_block_bmap to iomap_bmap for iomap
+> > conversion.
+> > 
+> > Also no need to call for filemap_write_and_wait() any more in ext4_bmap
+> > since data=journal mode anyway doesn't support delalloc and for all other
+> > cases iomap_bmap() anyway calls the same function, so no need for doing
+> > it twice.
+> > 
+> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> 
+> Hmmm.  I don't recall how jdata actually works, but I get the impression
+> here that we're trying to flush dirty data out to the journal and then
+> out to disk, and then drop the JDATA state from the inode.  This
+> mechanism exists (I guess?) so that dirty file pages get checkpointed
+> out of jbd2 back into the filesystem so that bmap() returns meaningful
+> results to lilo.
 
-I was unfortunately never able to reproduce. This happened while
-downloading a torrent, and torrent clients have a history of creating
-"interesting" I/O patterns. Hardware is "Samsung SSD 970 EVO Plus
-2TB".
+Exactly. E.g. when we are journalling data, we fill hole through mmap, we will
+have block allocated as unwritten and we need to write it out so that the
+data gets to the journal and then do journal flush to get the data to disk
+so that lilo can read it from the devices. So removing
+filemap_write_and_wait() when journalling data is wrong.
+
+> This makes me wonder if you still need the filemap_write_and_wait in the
+> JDATA case because otherwise the journal flush won't have the effect of
+> writing all the dirty pagecache back to the filesystem?  OTOH I suppose
+> the implicit write-and-wait call after we clear JDATA will not be
+> writing to the journal.
+> 
+> Even more weirdly, the FIEMAP code doesn't drop JDATA at all...?
+
+Yeah, it should do that but that's only performance optimization so that we
+bother with journal flushing only when someone uses block mapping call on
+a file with journalled dirty data. So you can hardly notice the bug by
+testing...
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
