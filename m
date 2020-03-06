@@ -2,222 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A16ED17BFC2
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2020 14:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83AF717C006
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2020 15:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgCFN7f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Mar 2020 08:59:35 -0500
-Received: from mail-yw1-f43.google.com ([209.85.161.43]:38079 "EHLO
-        mail-yw1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgCFN7f (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Mar 2020 08:59:35 -0500
-Received: by mail-yw1-f43.google.com with SMTP id 10so2241285ywv.5
-        for <linux-ext4@vger.kernel.org>; Fri, 06 Mar 2020 05:59:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=1uJ6L3EXZYB4um3KDk25eQbKG3wkCz2sqLnQVqvNKTc=;
-        b=lTvtooV8trGLXdG1wWcajCtHf4TWeKEVlt0nWmtWEHjeiT4zuNU4RmxFgOx/Q0Rpmy
-         R0eUV0xsMDADXgKnNfJxc7jmvpqcVa8/hwjINhodAZaFhSjRxVKiRb099ytelwsdtynv
-         XNSi1GcYU3F7pCFZuZBMrw6Q5TBpbuSv//CSXYBzzf+oPvQy16xDuTqV26gRLTuNrVpc
-         7piyIwOPCeKxDOOhV173pvD6HFa5/T8Dqqj/A9D4FP8OLW69vJD8kDZGdbT4gpdJEbKg
-         ORQ9svYHInS2oeyTHiF8eliTuCg8CJKFfy+fTbuSS+zjReCOeU/vwJjdfKcnSNQlQNTe
-         fSNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=1uJ6L3EXZYB4um3KDk25eQbKG3wkCz2sqLnQVqvNKTc=;
-        b=PQpeXRFUvNwkncwL8PjvLbRrKSaTyaP/S8jkcNIURwB8qJOl8Hx+cx05I9I8OuHvBS
-         9jJjFCfXop7SMe//XWsJtWpsucib+FyjGTOZsW4Mk7K+WJZ2yGKZES7kqybEaP81eOU9
-         HFeUJS7nWlz2m43GtmLH2THomBJdk2WdCJX5h3dj/c9qyF7hc+gqAa4WD79EkL8Qhd0T
-         ElCU+govU6/V4KzSltcnqB3XOu2x/nCZpnqVSg22hpXOrdF+jucP+wGoymkzIfwuoJ++
-         9Y6tR0FOBy3wIjAyL17xWfWdl1Ts19hDeuAeQ8Ar6NreL9B43lj/DSx3KDS/utuhaa2W
-         4TIg==
-X-Gm-Message-State: ANhLgQ2nD6DNU2GBAlAttPi1ukFT8GkYQ3rV3oCTxfx9nuEXoHMMIIVV
-        Kwp2xndILEcyAufqAXyvjPpRrJ+fbtxFWlPMhveAQSejF8aFLw==
-X-Google-Smtp-Source: ADFU+vtnODpv3MlcTgVp1DQiy4beyvC7mbJ4/uVs+aXRbePGxyAu1/q3RPt4oJhU6UfiX54Qjizh4GJ1vgqs/3ClOmU=
-X-Received: by 2002:a25:ef09:: with SMTP id g9mr3805564ybd.326.1583503174040;
- Fri, 06 Mar 2020 05:59:34 -0800 (PST)
+        id S1726533AbgCFOP1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Mar 2020 09:15:27 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37369 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726368AbgCFOP1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Mar 2020 09:15:27 -0500
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 026EFN8K004649
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 6 Mar 2020 09:15:23 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 1762942045B; Fri,  6 Mar 2020 09:15:23 -0500 (EST)
+Date:   Fri, 6 Mar 2020 09:15:23 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Alok Jain <jain.alok103@gmail.com>
+Cc:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
+Subject: Re: Ext4 errors in linux /var/log/messages
+Message-ID: <20200306141523.GA121760@mit.edu>
+References: <CAG-6nk-Z7vsfa7fdpCfRAHQYvV+8jCRqAz7TBC-0LNi9qdPrwQ@mail.gmail.com>
 MIME-Version: 1.0
-From:   Alok Jain <jain.alok103@gmail.com>
-Date:   Fri, 6 Mar 2020 19:29:22 +0530
-Message-ID: <CAG-6nk-Z7vsfa7fdpCfRAHQYvV+8jCRqAz7TBC-0LNi9qdPrwQ@mail.gmail.com>
-Subject: Ext4 errors in linux /var/log/messages
-To:     linux-ext4@vger.kernel.org, Andreas Dilger <adilger@dilger.ca>
-Content-Type: multipart/mixed; boundary="00000000000030aaa505a0301004"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG-6nk-Z7vsfa7fdpCfRAHQYvV+8jCRqAz7TBC-0LNi9qdPrwQ@mail.gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
---00000000000030aaa505a0301004
-Content-Type: text/plain; charset="UTF-8"
+On Fri, Mar 06, 2020 at 07:29:22PM +0530, Alok Jain wrote:
+> Hi Guys,
+> 
+> Thanks for providing the forum to check the issue, I already got
+> really helpful responses and need one more help wrt to EXT4 log
+> messages coming in /var/log/messages file
+> 
+> 1) I have iSCSI device attached to my VM
+> 2) Copied and extracted files in the attached device
+> 3) Unmount and disconnected the device, post disconnect operation I
+> can see lots of EXT4 file system errors in /var/log/messages file,
+> attaching the same (err.txt) for review.
+> 
+> I am not sure what these log messages are correspond to as the device
+> was already disconnected at  Feb I1:22:42, but th*e ext4 log messages
+> came after that, can you please review and share your findings.
 
-Hi Guys,
+There's nothing really deep here.  Ext4 wasn't able to write to
+/dev/sdd1.  Assuming that /dev/sdd is your iSCSI device, it's probably
+because the connection to the iSCSI device had gotten disrupted.  This
+is similar to what you might see if you were writing to a USB
+thumbstick and the USB device is unceremoniously yanked out.
 
-Thanks for providing the forum to check the issue, I already got
-really helpful responses and need one more help wrt to EXT4 log
-messages coming in /var/log/messages file
+One possible scenario is thar while the umount was *started*, but it
+had not completed writing out dirty blocks before the iSCSI device was
+disconnected.  If that's true, this would be a case of operator error.
 
-1) I have iSCSI device attached to my VM
-2) Copied and extracted files in the attached device
-3) Unmount and disconnected the device, post disconnect operation I
-can see lots of EXT4 file system errors in /var/log/messages file,
-attaching the same (err.txt) for review.
-
-I am not sure what these log messages are correspond to as the device
-was already disconnected at  Feb 1:22:42, but the ext4 log messages
-came after that, can you please review and share your findings.
-
-Any help is appreciated
-
-Thanks,
-Alok
-
---00000000000030aaa505a0301004
-Content-Type: text/plain; charset="US-ASCII"; name="err.txt"
-Content-Disposition: attachment; filename="err.txt"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k7g8ufny0>
-X-Attachment-Id: f_k7g8ufny0
-
-RmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtlcm5lbDogRVhUNC1mcyB3YXJuaW5nIChkZXZpY2Ugc2Rk
-MSk6IGV4dDRfZW5kX2JpbzozMjM6IEkvTyBlcnJvciAxMCB3cml0aW5nIHRvIGlub2RlIDk3MDEw
-ODQgKG9mZnNldCAxNjc3NzIxNiBzaXplIDgzODg2MDggc3RhcnRpbmcgYmxvY2sgMjU4MzYyODgp
-CkZlYiAyOCAwMToyMjo0NiBzdHItMSBrZXJuZWw6IEJ1ZmZlciBJL08gZXJyb3Igb24gZGV2aWNl
-IHNkZDEsIGxvZ2ljYWwgYmxvY2sgMjU4MzU1MjAKRmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtlcm5l
-bDogQnVmZmVyIEkvTyBlcnJvciBvbiBkZXZpY2Ugc2RkMSwgbG9naWNhbCBibG9jayAyNTgzNTUy
-MQpGZWIgMjggMDE6MjI6NDYgc3RyLTEga2VybmVsOiBCdWZmZXIgSS9PIGVycm9yIG9uIGRldmlj
-ZSBzZGQxLCBsb2dpY2FsIGJsb2NrIDI1ODM1NTIyCkZlYiAyOCAwMToyMjo0NiBzdHItMSBrZXJu
-ZWw6IEJ1ZmZlciBJL08gZXJyb3Igb24gZGV2aWNlIHNkZDEsIGxvZ2ljYWwgYmxvY2sgMjU4MzU1
-MjMKRmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtlcm5lbDogQnVmZmVyIEkvTyBlcnJvciBvbiBkZXZp
-Y2Ugc2RkMSwgbG9naWNhbCBibG9jayAyNTgzNTUyNApGZWIgMjggMDE6MjI6NDYgc3RyLTEga2Vy
-bmVsOiBCdWZmZXIgSS9PIGVycm9yIG9uIGRldmljZSBzZGQxLCBsb2dpY2FsIGJsb2NrIDI1ODM1
-NTI1CkZlYiAyOCAwMToyMjo0NiBzdHItMSBrZXJuZWw6IEJ1ZmZlciBJL08gZXJyb3Igb24gZGV2
-aWNlIHNkZDEsIGxvZ2ljYWwgYmxvY2sgMjU4MzU1MjYKRmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtl
-cm5lbDogQnVmZmVyIEkvTyBlcnJvciBvbiBkZXZpY2Ugc2RkMSwgbG9naWNhbCBibG9jayAyNTgz
-NTUyNwpGZWIgMjggMDE6MjI6NDYgc3RyLTEga2VybmVsOiBCdWZmZXIgSS9PIGVycm9yIG9uIGRl
-dmljZSBzZGQxLCBsb2dpY2FsIGJsb2NrIDI1ODM1NTI4CkZlYiAyOCAwMToyMjo0NiBzdHItMSBr
-ZXJuZWw6IEJ1ZmZlciBJL08gZXJyb3Igb24gZGV2aWNlIHNkZDEsIGxvZ2ljYWwgYmxvY2sgMjU4
-MzU1MjkKRmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtlcm5lbDogRVhUNC1mcyB3YXJuaW5nIChkZXZp
-Y2Ugc2RkMSk6IGV4dDRfZW5kX2JpbzozMjM6IEkvTyBlcnJvciAxMCB3cml0aW5nIHRvIGlub2Rl
-IDk3MDEwODQgKG9mZnNldCAxNjc3NzIxNiBzaXplIDgzODg2MDggc3RhcnRpbmcgYmxvY2sgMjU4
-MzY4MDApCkZlYiAyOCAwMToyMjo0NiBzdHItMSBrZXJuZWw6IEVYVDQtZnMgd2FybmluZyAoZGV2
-aWNlIHNkZDEpOiBleHQ0X2VuZF9iaW86MzIzOiBJL08gZXJyb3IgMTAgd3JpdGluZyB0byBpbm9k
-ZSA5NzAxMDg0IChvZmZzZXQgMTY3NzcyMTYgc2l6ZSA4Mzg4NjA4IHN0YXJ0aW5nIGJsb2NrIDI1
-ODM3MzEyKQpGZWIgMjggMDE6MjI6NDYgc3RyLTEga2VybmVsOiBFWFQ0LWZzIHdhcm5pbmcgKGRl
-dmljZSBzZGQxKTogZXh0NF9lbmRfYmlvOjMyMzogSS9PIGVycm9yIDEwIHdyaXRpbmcgdG8gaW5v
-ZGUgOTcwMTA4NCAob2Zmc2V0IDE2Nzc3MjE2IHNpemUgODM4ODYwOCBzdGFydGluZyBibG9jayAy
-NTgzNzgyNCkKRmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtlcm5lbDogRVhUNC1mcyB3YXJuaW5nIChk
-ZXZpY2Ugc2RkMSk6IGV4dDRfZW5kX2JpbzozMjM6IEkvTyBlcnJvciAxMCB3cml0aW5nIHRvIGlu
-b2RlIDk3MDEwODQgKG9mZnNldCAyNTE2NTgyNCBzaXplIDQ5Njg0NDggc3RhcnRpbmcgYmxvY2sg
-MjU4MzgzMzYpCkZlYiAyOCAwMToyMjo0NiBzdHItMSBrZXJuZWw6IEVYVDQtZnMgd2FybmluZyAo
-ZGV2aWNlIHNkZDEpOiBleHQ0X2VuZF9iaW86MzIzOiBJL08gZXJyb3IgMTAgd3JpdGluZyB0byBp
-bm9kZSA5NzAxMDg0IChvZmZzZXQgMjUxNjU4MjQgc2l6ZSA0OTY4NDQ4IHN0YXJ0aW5nIGJsb2Nr
-IDI1ODM4ODQ4KQpGZWIgMjggMDE6MjI6NDYgc3RyLTEga2VybmVsOiBFWFQ0LWZzIHdhcm5pbmcg
-KGRldmljZSBzZGQxKTogZXh0NF9lbmRfYmlvOjMyMzogSS9PIGVycm9yIDEwIHdyaXRpbmcgdG8g
-aW5vZGUgOTcwMTA4NCAob2Zmc2V0IDI1MTY1ODI0IHNpemUgNDk2ODQ0OCBzdGFydGluZyBibG9j
-ayAyNTgzOTAzNykKRmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtlcm5lbDogRVhUNC1mcyB3YXJuaW5n
-IChkZXZpY2Ugc2RkMSk6IGV4dDRfZW5kX2JpbzozMjM6IEkvTyBlcnJvciAxMCB3cml0aW5nIHRv
-IGlub2RlIDEwNTA0MTcgKG9mZnNldCA4Mzg4NjA4IHNpemUgMzEwNDc2OCBzdGFydGluZyBibG9j
-ayAyNTgzOTU0OSkKRmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtlcm5lbDogRVhUNC1mcyB3YXJuaW5n
-IChkZXZpY2Ugc2RkMSk6IGV4dDRfZW5kX2JpbzozMjM6IEkvTyBlcnJvciAxMCB3cml0aW5nIHRv
-IGlub2RlIDEwNTA0MTcgKG9mZnNldCA4Mzg4NjA4IHNpemUgMzEwNDc2OCBzdGFydGluZyBibG9j
-ayAyNTgzOTc5NSkKRmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtlcm5lbDogRVhUNC1mcyB3YXJuaW5n
-IChkZXZpY2Ugc2RkMSk6IGV4dDRfZW5kX2JpbzozMjM6IEkvTyBlcnJvciAxMCB3cml0aW5nIHRv
-IGlub2RlIDEwNTA0MTcgKG9mZnNldCAwIHNpemUgODM4ODYwOCBzdGFydGluZyBibG9jayAyNTg0
-MDM4NCkKRmViIDI4IDAxOjIyOjQ2IHN0ci0xIGtlcm5lbDogY2FwYWJpbGl0eTogd2FybmluZzog
-YHR1cmJvc3RhdC40LjE0LicgdXNlcyAzMi1iaXQgY2FwYWJpbGl0aWVzIChsZWdhY3kgc3VwcG9y
-dCBpbiB1c2UpCkZlYiAyOCAwMToyMjo0NyBzdHItMSBrZXJuZWw6IEVYVDQtZnMgZXJyb3IgKGRl
-dmljZSBzZGQxKTogZXh0NF93YWl0X2Jsb2NrX2JpdG1hcDo1MTc6IGNvbW0ga3dvcmtlci91OTY6
-MzogQ2Fubm90IHJlYWQgYmxvY2sgYml0bWFwIC0gYmxvY2tfZ3JvdXAgPSAxNzgsIGJsb2NrX2Jp
-dG1hcCA9IDU3NjcxNzAKRmViIDI4IDAxOjIyOjQ3IHN0ci0xIGtlcm5lbDogRVhUNC1mcyAoc2Rk
-MSk6IERlbGF5ZWQgYmxvY2sgYWxsb2NhdGlvbiBmYWlsZWQgZm9yIGlub2RlIDE0NDI0MzggYXQg
-bG9naWNhbCBvZmZzZXQgMCB3aXRoIG1heCBibG9ja3MgNjM2IHdpdGggZXJyb3IgNQpGZWIgMjgg
-MDE6MjI6NDcgc3RyLTEga2VybmVsOiBFWFQ0LWZzIChzZGQxKTogVGhpcyBzaG91bGQgbm90IGhh
-cHBlbiEhIERhdGEgd2lsbCBiZSBsb3N0CkZlYiAyOCAwMToyMjo0NyBzdHItMSBrZXJuZWw6IEVY
-VDQtZnMgZXJyb3IgKGRldmljZSBzZGQxKTogZXh0NF93YWl0X2Jsb2NrX2JpdG1hcDo1MTc6IGNv
-bW0ga3dvcmtlci91OTY6MzogQ2Fubm90IHJlYWQgYmxvY2sgYml0bWFwIC0gYmxvY2tfZ3JvdXAg
-PSAxNzgsIGJsb2NrX2JpdG1hcCA9IDU3NjcxNzAKRmViIDI4IDAxOjIyOjQ3IHN0ci0xIGtlcm5l
-bDogRVhUNC1mcyAoc2RkMSk6IHByZXZpb3VzIEkvTyBlcnJvciB0byBzdXBlcmJsb2NrIGRldGVj
-dGVkCkZlYiAyOCAwMToyMjo0NyBzdHItMSBrZXJuZWw6IEVYVDQtZnMgKHNkZDEpOiBEZWxheWVk
-IGJsb2NrIGFsbG9jYXRpb24gZmFpbGVkIGZvciBpbm9kZSAxNDQyNTM0IGF0IGxvZ2ljYWwgb2Zm
-c2V0IDAgd2l0aCBtYXggYmxvY2tzIDc3MSB3aXRoIGVycm9yIDUKRmViIDI4IDAxOjIyOjQ3IHN0
-ci0xIGtlcm5lbDogRVhUNC1mcyAoc2RkMSk6IFRoaXMgc2hvdWxkIG5vdCBoYXBwZW4hISBEYXRh
-IHdpbGwgYmUgbG9zdApGZWIgMjggMDE6MjI6NDcgc3RyLTEga2VybmVsOiBFWFQ0LWZzIGVycm9y
-IChkZXZpY2Ugc2RkMSk6IGV4dDRfd2FpdF9ibG9ja19iaXRtYXA6NTE3OiBjb21tIGt3b3JrZXIv
-dTk2OjM6IENhbm5vdCByZWFkIGJsb2NrIGJpdG1hcCAtIGJsb2NrX2dyb3VwID0gMTc4LCBibG9j
-a19iaXRtYXAgPSA1NzY3MTcwCkZlYiAyOCAwMToyMjo0NyBzdHItMSBrZXJuZWw6IEVYVDQtZnMg
-KHNkZDEpOiBwcmV2aW91cyBJL08gZXJyb3IgdG8gc3VwZXJibG9jayBkZXRlY3RlZApGZWIgMjgg
-MDE6MjI6NDcgc3RyLTEga2VybmVsOiBFWFQ0LWZzIChzZGQxKTogRGVsYXllZCBibG9jayBhbGxv
-Y2F0aW9uIGZhaWxlZCBmb3IgaW5vZGUgMTQ0Mjg3MyBhdCBsb2dpY2FsIG9mZnNldCAwIHdpdGgg
-bWF4IGJsb2NrcyAyMTUgd2l0aCBlcnJvciA1CkZlYiAyOCAwMToyMjo0NyBzdHItMSBrZXJuZWw6
-IEVYVDQtZnMgKHNkZDEpOiBUaGlzIHNob3VsZCBub3QgaGFwcGVuISEgRGF0YSB3aWxsIGJlIGxv
-c3QKRmViIDI4IDAxOjIyOjQ3IHN0ci0xIGtlcm5lbDogRVhUNC1mcyBlcnJvciAoZGV2aWNlIHNk
-ZDEpOiBleHQ0X3dhaXRfYmxvY2tfYml0bWFwOjUxNzogY29tbSBrd29ya2VyL3U5NjozOiBDYW5u
-b3QgcmVhZCBibG9jayBiaXRtYXAgLSBibG9ja19ncm91cCA9IDE3OCwgYmxvY2tfYml0bWFwID0g
-NTc2NzE3MApGZWIgMjggMDE6MjI6NDcgc3RyLTEga2VybmVsOiBFWFQ0LWZzIChzZGQxKTogcHJl
-dmlvdXMgSS9PIGVycm9yIHRvIHN1cGVyYmxvY2sgZGV0ZWN0ZWQKRmViIDI4IDAxOjIyOjQ3IHN0
-ci0xIGtlcm5lbDogRVhUNC1mcyAoc2RkMSk6IERlbGF5ZWQgYmxvY2sgYWxsb2NhdGlvbiBmYWls
-ZWQgZm9yIGlub2RlIDE0NDI4NzggYXQgbG9naWNhbCBvZmZzZXQgMCB3aXRoIG1heCBibG9ja3Mg
-MTU1IHdpdGggZXJyb3IgNQpGZWIgMjggMDE6MjI6NDcgc3RyLTEga2VybmVsOiBFWFQ0LWZzIGVy
-cm9yIChkZXZpY2Ugc2RkMSk6IGV4dDRfd2FpdF9ibG9ja19iaXRtYXA6NTE3OiBjb21tIGt3b3Jr
-ZXIvdTk2OjM6IENhbm5vdCByZWFkIGJsb2NrIGJpdG1hcCAtIGJsb2NrX2dyb3VwID0gMTc4LCBi
-bG9ja19iaXRtYXAgPSA1NzY3MTcwCkZlYiAyOCAwMToyMjo0NyBzdHItMSBrZXJuZWw6IEVYVDQt
-ZnMgZXJyb3IgKGRldmljZSBzZGQxKTogZXh0NF93YWl0X2Jsb2NrX2JpdG1hcDo1MTc6IGNvbW0g
-a3dvcmtlci91OTY6MzogQ2Fubm90IHJlYWQgYmxvY2sgYml0bWFwIC0gYmxvY2tfZ3JvdXAgPSAx
-NzgsIGJsb2NrX2JpdG1hcCA9IDU3NjcxNzAKRmViIDI4IDAxOjIyOjQ3IHN0ci0xIGtlcm5lbDog
-RVhUNC1mcyBlcnJvciAoZGV2aWNlIHNkZDEpOiBleHQ0X3dhaXRfYmxvY2tfYml0bWFwOjUxNzog
-Y29tbSBrd29ya2VyL3U5NjozOiBDYW5ub3QgcmVhZCBibG9jayBiaXRtYXAgLSBibG9ja19ncm91
-cCA9IDE3OCwgYmxvY2tfYml0bWFwID0gNTc2NzE3MApGZWIgMjggMDE6MjI6NDcgc3RyLTEga2Vy
-bmVsOiBFWFQ0LWZzIGVycm9yIChkZXZpY2Ugc2RkMSk6IGV4dDRfd2FpdF9ibG9ja19iaXRtYXA6
-NTE3OiBjb21tIGt3b3JrZXIvdTk2OjM6IENhbm5vdCByZWFkIGJsb2NrIGJpdG1hcCAtIGJsb2Nr
-X2dyb3VwID0gMTc4LCBibG9ja19iaXRtYXAgPSA1NzY3MTcwCkZlYiAyOCAwMToyMjo0NyBzdHIt
-MSBrZXJuZWw6IEVYVDQtZnMgZXJyb3IgKGRldmljZSBzZGQxKTogZXh0NF93YWl0X2Jsb2NrX2Jp
-dG1hcDo1MTc6IGNvbW0ga3dvcmtlci91OTY6MzogQ2Fubm90IHJlYWQgYmxvY2sgYml0bWFwIC0g
-YmxvY2tfZ3JvdXAgPSAxNzgsIGJsb2NrX2JpdG1hcCA9IDU3NjcxNzAKRmViIDI4IDAxOjIyOjQ3
-IHN0ci0xIGtlcm5lbDogRVhUNC1mcyBlcnJvciAoZGV2aWNlIHNkZDEpOiBleHQ0X3dhaXRfYmxv
-Y2tfYml0bWFwOjUxNzogY29tbSBrd29ya2VyL3U5NjozOiBDYW5ub3QgcmVhZCBibG9jayBiaXRt
-YXAgLSBibG9ja19ncm91cCA9IDE3OCwgYmxvY2tfYml0bWFwID0gNTc2NzE3MApGZWIgMjggMDE6
-MjI6NDkgc3RyLTEga2VybmVsOiBKQkQyOiBFcnJvciAtNSBkZXRlY3RlZCB3aGVuIHVwZGF0aW5n
-IGpvdXJuYWwgc3VwZXJibG9jayBmb3Igc2RkMS04LgpGZWIgMjggMDE6MjI6NDkgc3RyLTEga2Vy
-bmVsOiBBYm9ydGluZyBqb3VybmFsIG9uIGRldmljZSBzZGQxLTguCkZlYiAyOCAwMToyMjo0OSBz
-dHItMSBrZXJuZWw6IEpCRDI6IERldGVjdGVkIElPIGVycm9ycyB3aGlsZSBmbHVzaGluZyBmaWxl
-IGRhdGEgb24gc2RkMS04CkZlYiAyOCAwMToyMjo0OSBzdHItMSBrZXJuZWw6IEFib3J0aW5nIGpv
-dXJuYWwgb24gZGV2aWNlIHNkZDEtOC4KRmViIDI4IDAxOjIyOjQ5IHN0ci0xIGtlcm5lbDogSkJE
-MjogRXJyb3IgLTUgZGV0ZWN0ZWQgd2hlbiB1cGRhdGluZyBqb3VybmFsIHN1cGVyYmxvY2sgZm9y
-IHNkZDEtOC4KRmViIDI4IDAxOjIyOjQ5IHN0ci0xIGtlcm5lbDogSkJEMjogRXJyb3IgLTUgZGV0
-ZWN0ZWQgd2hlbiB1cGRhdGluZyBqb3VybmFsIHN1cGVyYmxvY2sgZm9yIHNkZDEtOC4KRmViIDI4
-IDAxOjIyOjQ5IHN0ci0xIGtlcm5lbDogRVhUNC1mcyBlcnJvciAoZGV2aWNlIHNkZDEpOiBleHQ0
-X2pvdXJuYWxfY2hlY2tfc3RhcnQ6NjE6IERldGVjdGVkIGFib3J0ZWQgam91cm5hbApGZWIgMjgg
-MDE6MjI6NTEgc3RyLTEgYXVkaXNwZDogbm9kZT1pbnN0YW5jZTIwMTgxMjEyMDQyMzUzIHR5cGU9
-U1lTQ0FMTCBtc2c9YXVkaXQoMTU4Mjg1Mjk3MS43Mjg6ODQ0Mjg0KTogYXJjaD1jMDAwMDAzZSBz
-eXNjYWxsPTIgc3VjY2Vzcz15ZXMgZXhpdD01IGEwPTU1ZjViNjg4MzFiMCBhMT0yIGEyPTE4MCBh
-Mz1mZmZmZmZmOCBpdGVtcz0xIHBwaWQ9MzA3NjMgcGlkPTMwNzY1IGF1aWQ9NDI5NDk2NzI5NSB1
-aWQ9MCBnaWQ9MCBldWlkPTAgc3VpZD0wIGZzdWlkPTAgZWdpZD0wIHNnaWQ9MCBmc2dpZD0wIHR0
-eT0obm9uZSkgc2VzPTQyOTQ5NjcyOTUgY29tbT0iZmFpbGxvY2siIGV4ZT0iL3Vzci9zYmluL2Zh
-aWxsb2NrIiBzdWJqPXN5c3RlbV91OnN5c3RlbV9yOnNvc3JlcG9ydF90OnMwLXMwOmMwLmMxMDIz
-IGtleT0ibG9naW5zIgpGZWIgMjggMDE6MjI6NTEgc3RyLTEgYXVkaXNwZDogbm9kZT1pbnN0YW5j
-ZTIwMTgxMjEyMDQyMzUzIHR5cGU9Q1dEIG1zZz1hdWRpdCgxNTgyODUyOTcxLjcyODo4NDQyODQp
-OiBjd2Q9Ii92YXIvc3Bvb2wvYWJydC9jY3BwLTIwMjAtMDItMjgtMDE6MjI6MjctMzYwOSIKRmVi
-IDI4IDAxOjIyOjUxIHN0ci0xIGF1ZGlzcGQ6IG5vZGU9aW5zdGFuY2UyMDE4MTIxMjA0MjM1MyB0
-eXBlPVBBVEggbXNnPWF1ZGl0KDE1ODI4NTI5NzEuNzI4Ojg0NDI4NCk6IGl0ZW09MCBuYW1lPSIv
-dmFyL3J1bi9mYWlsbG9jay9wYW5kd2l2ZSIgaW5vZGU9NDI4NjUzNjQgZGV2PTAwOjE3IG1vZGU9
-MDEwMDYwMCBvdWlkPTExNTQ2ODkgb2dpZD0wIHJkZXY9MDA6MDAgb2JqPXN5c3RlbV91Om9iamVj
-dF9yOmZhaWxsb2dfdDpzMCBuYW1ldHlwZT1OT1JNQUwgY2FwX2ZwPTAwMDAwMDAwMDAwMDAwMDAg
-Y2FwX2ZpPTAwMDAwMDAwMDAwMDAwMDAgY2FwX2ZlPTAgY2FwX2Z2ZXI9MApGZWIgMjggMDE6MjI6
-NTEgc3RyLTEgYXVkaXNwZDogbm9kZT1pbnN0YW5jZTIwMTgxMjEyMDQyMzUzIHR5cGU9UFJPQ1RJ
-VExFIG1zZz1hdWRpdCgxNTgyODUyOTcxLjcyODo4NDQyODQpOiBwcm9jdGl0bGU9ImZhaWxsb2Nr
-IgpGZWIgMjggMDE6MjI6NTIgc3RyLTEga2VybmVsOiBFWFQ0LWZzIGVycm9yOiAzODE0IGNhbGxi
-YWNrcyBzdXBwcmVzc2VkCkZlYiAyOCAwMToyMjo1MiBzdHItMSBrZXJuZWw6IEVYVDQtZnMgZXJy
-b3IgKGRldmljZSBzZGQxKTogZXh0NF93YWl0X2Jsb2NrX2JpdG1hcDo1MTc6IGNvbW0gdW1vdW50
-OiBDYW5ub3QgcmVhZCBibG9jayBiaXRtYXAgLSBibG9ja19ncm91cCA9IDc3MywgYmxvY2tfYml0
-bWFwID0gMjUxNjU4MjkKRmViIDI4IDAxOjIyOjUyIHN0ci0xIGtlcm5lbDogRVhUNC1mczogMTE0
-NjYgY2FsbGJhY2tzIHN1cHByZXNzZWQKRmViIDI4IDAxOjIyOjUyIHN0ci0xIGtlcm5lbDogRVhU
-NC1mcyAoc2RkMSk6IHByZXZpb3VzIEkvTyBlcnJvciB0byBzdXBlcmJsb2NrIGRldGVjdGVkCkZl
-YiAyOCAwMToyMjo1MiBzdHItMSBrZXJuZWw6IEVYVDQtZnMgZXJyb3IgKGRldmljZSBzZGQxKTog
-ZXh0NF9kaXNjYXJkX3ByZWFsbG9jYXRpb25zOjQxMDQ6IGNvbW0gdW1vdW50OiBFcnJvciAtNSBy
-ZWFkaW5nIGJsb2NrIGJpdG1hcCBmb3IgNzczCkZlYiAyOCAwMToyMjo1MiBzdHItMSBrZXJuZWw6
-IEVYVDQtZnMgKHNkZDEpOiBwcmV2aW91cyBJL08gZXJyb3IgdG8gc3VwZXJibG9jayBkZXRlY3Rl
-ZA==
---00000000000030aaa505a0301004--
+	       	  	       	    	  - Ted
