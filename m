@@ -2,89 +2,97 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2069C17C61A
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2020 20:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B9E17C630
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2020 20:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgCFTPz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Mar 2020 14:15:55 -0500
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:57856 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726167AbgCFTPy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Mar 2020 14:15:54 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id EC3F78EE11D;
-        Fri,  6 Mar 2020 11:15:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1583522154;
-        bh=/OfiD8pxTy0cgbbgHjCoeXz2owVNFIiY43G+wjReSfw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=PU0dR+Erm3kVlerDUdH+FYaWPWMZ7wSzQCCUznWsyQOXnbUkE/KThxQq1+fsIspA2
-         mflun5XkW5/9ir3+HIlZEkfXk3cnNsg/eH/NFq/HDbNpcw1vhxlqfYqDGq1jPb9Fkd
-         kXh2jZeQEXAU1D9DT/CLYDD3rgTS6pEvuFqfagXU=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id AO-2jUBauNPH; Fri,  6 Mar 2020 11:15:53 -0800 (PST)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 230C78EE0F8;
-        Fri,  6 Mar 2020 11:15:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1583522153;
-        bh=/OfiD8pxTy0cgbbgHjCoeXz2owVNFIiY43G+wjReSfw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=JUf4tVJEbGPD8RouHJs2vAI2XwHhjBh563uBWSUYP64GyuQGyA2LvfCuzUJ7JAEsT
-         PCpGO1WVEjODSm5A03Vjrr6Y04jZl7c8HaE49oUbdWTID+1VVJfqiz1ARiOcpittO0
-         bwsOY7KVaOiyDyOGHzrPzyZX4KJKswK9B5NaS20w=
-Message-ID: <1583522151.3653.81.camel@HansenPartnership.com>
-Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Matthew Wilcox <willy@infradead.org>,
+        id S1726769AbgCFTVI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Mar 2020 14:21:08 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:55312 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726178AbgCFTVH (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Mar 2020 14:21:07 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 026J3uWH049450;
+        Fri, 6 Mar 2020 19:20:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=3DsRlM5HeQgYOkX3HErteET4VDOsu5ozhvfvH//y2EY=;
+ b=QUywfwVow9wBNj9q9QjqCgrqI/y4LNRvPwN31Ti03fsENhwk3/2dJVPPTHYkpBFK1/kX
+ 9oUYHfMMk2vW8TSa5DBIBittZFH7O/IKJ3hEOFT/tb9AWGJTzQEfTBHBNXAitXnhd7ut
+ JIztcJ4GbzT94fYGkRHoBiEcpuodQ8mYUReA8dt7/6KytiQw5oytw7JgG6RZibZBYc3Z
+ vIZqe/ogFb3iKEn3EUD7icLxe6BkBax6ko2w9Hnr7HaIrZGDkuw8HazQm4A6FILnBTM5
+ ulIKQlXMpDExRjcaW3m/MerkFkVjIbkUgx4p0R+k+sdXIielfjf0WHBEQwKlK2upVzZu /Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2ykgys3qjx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Mar 2020 19:20:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 026JD3RH069608;
+        Fri, 6 Mar 2020 19:20:55 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2yjuf4bud4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 06 Mar 2020 19:20:55 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 026JKrAg001268;
+        Fri, 6 Mar 2020 19:20:54 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 06 Mar 2020 11:20:53 -0800
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>,
         Josef Bacik <josef@toxicpanda.com>,
         lsf-pc <lsf-pc@lists.linuxfoundation.org>,
         Linux FS Devel <linux-fsdevel@vger.kernel.org>,
         linux-mm@kvack.org, linux-xfs@vger.kernel.org,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
-Date:   Fri, 06 Mar 2020 11:15:51 -0800
-In-Reply-To: <yq1eeu51ev0.fsf@oracle.com>
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
 References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
-         <20200306160548.GB25710@bombadil.infradead.org>
-         <1583516279.3653.71.camel@HansenPartnership.com>
-         <20200306180618.GN31668@ziepe.ca> <yq1eeu51ev0.fsf@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        <20200306160548.GB25710@bombadil.infradead.org>
+        <1583516279.3653.71.camel@HansenPartnership.com>
+        <20200306180618.GN31668@ziepe.ca> <yq1eeu51ev0.fsf@oracle.com>
+        <1583522151.3653.81.camel@HansenPartnership.com>
+Date:   Fri, 06 Mar 2020 14:20:50 -0500
+In-Reply-To: <1583522151.3653.81.camel@HansenPartnership.com> (James
+        Bottomley's message of "Fri, 06 Mar 2020 11:15:51 -0800")
+Message-ID: <yq1wo7xz3vx.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9552 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 adultscore=0 suspectscore=0 mlxlogscore=866 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003060117
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9552 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
+ mlxscore=0 mlxlogscore=925 bulkscore=0 impostorscore=0 phishscore=0
+ adultscore=0 priorityscore=1501 spamscore=0 clxscore=1015 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003060117
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 2020-03-06 at 14:07 -0500, Martin K. Petersen wrote:
-> Jason,
-> 
-> > Yes, I can confirm this from another smaller hotel-style conference
-> > I've been involved organizing on occasion. $600-$800 is required to
-> > break even without major sponsorship $$ for the ~100 people mark,
-> > and that is without the usual food and venue perks we see at
-> > plumbers/lsfmm.
-> 
-> Yep. Our actual per-person cost for LSF/MM/BPF is in excess of $1K.
-> That limits who we can invite. Personally I absolutely hate the
-> invitation aspect and process. But we are very constrained wrt. how
-> many we can actually accommodate by the amount of funding we get.
-> Things appear to be better this year, but sponsor mergers and
-> acquisitions have been a major concern the past few years.
 
-To be a bit mercenary (hey, it's my job, I'm Plumbers treasurer this
-year) our sponsors are mostly the same companies.  If we combine LSF/MM
-and Plumbers, I can't see too many of them stepping up to sponsor us
-twice, so we'll have a net loss of sponsor funding for the combined
-event as well.  This is likely another argument for doing two
-separately sponsored events.
+James,
 
-James
+> To be a bit mercenary (hey, it's my job, I'm Plumbers treasurer this
+> year) our sponsors are mostly the same companies.  If we combine
+> LSF/MM and Plumbers, I can't see too many of them stepping up to
+> sponsor us twice, so we'll have a net loss of sponsor funding for the
+> combined event as well.  This is likely another argument for doing two
+> separately sponsored events.
 
+Yep. And I do think it's beneficial to have two developer-focused events
+per year.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
