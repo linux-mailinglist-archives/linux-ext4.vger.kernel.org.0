@@ -2,155 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A029317C1D2
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2020 16:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE3C17C246
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2020 16:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgCFPal (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Mar 2020 10:30:41 -0500
-Received: from mail-il1-f196.google.com ([209.85.166.196]:36438 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726237AbgCFPal (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Mar 2020 10:30:41 -0500
-Received: by mail-il1-f196.google.com with SMTP id b17so2399320iln.3;
-        Fri, 06 Mar 2020 07:30:39 -0800 (PST)
+        id S1726859AbgCFP4D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Mar 2020 10:56:03 -0500
+Received: from mail-qt1-f175.google.com ([209.85.160.175]:44610 "EHLO
+        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726733AbgCFP4C (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Mar 2020 10:56:02 -0500
+Received: by mail-qt1-f175.google.com with SMTP id h16so2013471qtr.11
+        for <linux-ext4@vger.kernel.org>; Fri, 06 Mar 2020 07:56:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CaUvvlUUv9vAigVAnuJ2Dl3vfVEvB3Ndkue79uzAzJs=;
-        b=J6AvZ7QtBCSBaZVjgr1qzZNBaDxjmmwwvtrGr2f8BspXkp1CfeVJLJ0ALiA2tpfpIL
-         Dt+eMXbKcmgmlBm7c6dy8mZJ939UUU4k7YtGYNVhxHMxJVv2wsAQxRlqZIJaVBXTEjD4
-         cnU0hS2ybpJY3WR1Z1Mn1M0pgX95zbS7y0A84C+q01pzTNKPu1eoXGVKZc53cxZkg1dA
-         TKlZSUHkDNVKjksHKSaHwlXMcG4zXG64h20QFrHrl2K68PPvKTS10EDZTL46fAZV9NE5
-         a7naCRe+2J0VKofVE1gqRM+tvO7D+zRuwW+4cdfkBCvxiD2mrPbE5zPtKA3BraZpfn8h
-         jAvA==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=ezCPULtseWvdBonQ6V0xPRaeP4ZB/PxE/0zq2zKcecE=;
+        b=vrJLB0AMnGlO//iPUaQj4czq/Ymit0XSXn1kNCy8dDIfN4SAIn0VAB/1G2P2aIDpAU
+         Q27jZMqu4vigDxjEMZyxINWUtIYfkl6/mAt+DeCjj4wMTZs2RV/kEGdrj66XgR5U7ES2
+         wMm/c7XuXN1jlz66+O3Hn8wnQULPar1idqw7jtMSp27Zoz1C708TI1chwf9e+jI/GDFQ
+         vCbYi/CLGURNzDWhNREp1p+ANBwZhR29YBXFznGQq+ABEJUoUKb6c/lAAuCEMTH/AYd1
+         dHzKsl398YVeJCoLhooB/CBNL6dXtcStxFOrJ5HA0DD1cJht5EBgTz5+RJ/FijRjxZbf
+         TJFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CaUvvlUUv9vAigVAnuJ2Dl3vfVEvB3Ndkue79uzAzJs=;
-        b=ksgdW9UMkdK3xztjDMGFuyqt8bdmJ4eA6CgADN6HrGPo2DbAQPAbYmR1AOdOK+hTHB
-         OYpePTSeS7QvJ9qtceARVT6gO2R5ervmA1IDIFWNBwNI8OzdfC3Slg0RZPrfmhWLjw3t
-         y0fhOkeLe1ibS87CZyzKQsX3dHAjwIbD+CWKDvDkIo2uth51g/CqaSvSxuLkMyuwvi4S
-         xjFQTV9icTddBGrdRXV1oGpGxxzD3nu8QHIj3THV6GHW7fBNAPNmsXmse3jlzV5QFf5g
-         94/rLy+dgrDKP6y06lMwGTvYtpJkpy2r6QkylqVFcs7nUvPabHnquCCmidIViIIvCxmw
-         xBfA==
-X-Gm-Message-State: ANhLgQ07JhnsVGiFTRDf2vDLNCWhL9+igN8FWfqLMwWsE9R1VS9PXXJR
-        tkfcBf62UKzIQmlLVu50INmElfCb9u9KWRpRrEL92w==
-X-Google-Smtp-Source: ADFU+vu4KOzq3lSXEUVGr2ih0QhccA2P1sa4V5JsgJfhOk4JJl0/m84ZBrWnh+8HjLsfNQkEeeJ3lU/dThrteAO7iAQ=
-X-Received: by 2002:a92:9f1a:: with SMTP id u26mr3838288ili.72.1583508638771;
- Fri, 06 Mar 2020 07:30:38 -0800 (PST)
-MIME-Version: 1.0
-References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
-In-Reply-To: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Fri, 6 Mar 2020 17:30:27 +0200
-Message-ID: <CAOQ4uxjJ794BRJZeGKPMBmL7WbUVh1SHWXe9XaSfzq5d46hd0w@mail.gmail.com>
-Subject: Re: [Lsf-pc] [LSFMMBPF TOPIC] Killing LSFMMBPF
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ezCPULtseWvdBonQ6V0xPRaeP4ZB/PxE/0zq2zKcecE=;
+        b=C1Nj1PicSeQALU+gzC7qtQGINp9XcLGkeM9YOzLFuZonvG15APLcwtkoWrLO+7FZXU
+         Ncq2KwhDoKl+hm9KafcXaTIFWv/DArNFviIyHQDRdqmeLpndaCnQ7wpM1bU9QnFGrE9m
+         4h2W6TK+jhtQGQhx+Inypg2qVLNFCXFW17JThExHqE5IbXjiLTeTDaOUHCY64+F/Mnos
+         Wxx5yGB1PNLcotJgb4B0maSC6/ChCYfZUtquAGyUz37zEO1V8ufu7kNZtk/WHiulq7S/
+         GoqXZiDAXfzJNv+/MKN0fz0colW7Uz+aRjkAXXKJDq+xPziS9c2GqmQFYV5AEhoPfdWs
+         Tqkw==
+X-Gm-Message-State: ANhLgQ2DfX/9Ngkfx8ayk9O/oFe665iy44vv/PD6pj2+2h/kUNHi78x0
+        LGdEbi+Z5M1NSSgbdTTy57HAjA==
+X-Google-Smtp-Source: ADFU+vsPsQ92aQJlmertWUO6qTT3jd50HRGHtgKqPbNGPZeA9q+jXoLGczomOumHpidCeor50ODRsQ==
+X-Received: by 2002:aed:2823:: with SMTP id r32mr3419004qtd.320.1583510159759;
+        Fri, 06 Mar 2020 07:55:59 -0800 (PST)
+Received: from [192.168.1.106] ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id 4sm9421817qkl.79.2020.03.06.07.55.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Mar 2020 07:55:58 -0800 (PST)
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
         Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+Message-ID: <94dff81a-f0bb-1f91-999b-50bf29b75f4a@toxicpanda.com>
+Date:   Fri, 6 Mar 2020 10:55:57 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Mar 6, 2020 at 4:35 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
+On 3/6/20 9:35 AM, Josef Bacik wrote:
 > Hello,
->
-> This has been a topic that I've been thinking about a lot recently, mostly
-> because of the giant amount of work that has been organizing LSFMMBPF.  I was
-> going to wait until afterwards to bring it up, hoping that maybe it was just me
-> being done with the whole process and that time would give me a different
+> 
+> This has been a topic that I've been thinking about a lot recently, mostly 
+> because of the giant amount of work that has been organizing LSFMMBPF.  I was 
+> going to wait until afterwards to bring it up, hoping that maybe it was just me 
+> being done with the whole process and that time would give me a different 
 > perspective, but recent discussions has made it clear I'm not the only one.
->
-> LSFMMBPF is not useful to me personally, and not an optimal use of the
-> communities time.  The things that we want to get out of LSFMMBPF are (generally)
->
-> 1) Reach consensus on any multi-subsystem contentious changes that have come up
-> over the past year.
->
-> 2) Inform our fellow developers of new things that we are working on that we
-> would like help with, or need to think about for the upcoming year.
->
-> 3) "Hallway track".  We are after all a community, and I for one like spending
-> time with developers that I don't get to interact with on a daily basis.
->
-> 4) Provide a way to help integrate new developers into the community with face
-> time.  It is far easier to work with people once you can put a face to a name,
-> and this is especially valuable for new developers.
->
+> 
+> LSFMMBPF is not useful to me personally, and not an optimal use of the 
+> communities time.  The things that we want to get out of LSFMMBPF are (generally)
 
-5) There is another unspoken benefit that people wanted to get from LSF/MM (*)
-and you mentioned it below that is to get the high level VFS/MM maintainer
-in the room.
+It has been pointed out to me that this appears to make it sound like I think 
+the whole conference is useless.  I would like to make it clear that this is not 
+the case at all.  This is still the only conference that I make sure to make it 
+to every year, because all of the reasons I list.
 
-I think that was not always the case with Plumbers (not sure?), but if LF is
-going the make sure that Plumbers stays co-located with the maintainers
-summit and we "nominate" Plumbers as the official replacement for LSF/MM,
-then this will probably sort itself out.
+The point of me posting this is to get us to put some real thought into what 
+would be the most optimal way to accomplish the same things in a different way. 
+Maybe I should have titled it "Make LSFMMBPF great again!" instead.
 
-(*) I've intentionally left out BPF, because I think it always has a miniconf
-of its own in Plumbers anyway.
+I feel that there is a lot of fat to trim here, and many voices not being heard 
+because of the way the conference is organized.  If I'm the only one then that's 
+cool, but if I'm not I'd like people to think really hard about what the ideal 
+meetup looks like, and how we can move in that direction.  Thanks,
 
-> These are all really good goals, and why we love the idea of LSFMMBPF.  But
-> having attended these things every year for the last 13 years, it has become
-> less and less of these things, at least from my perspective.  A few problems (as
-> I see them) are
->
-> 1) The invitation process.  We've tried many different things, and I think we
-> generally do a good job here, but the fact is if I don't know somebody I'm not
-> going to give them a very high rating, making it difficult to actually bring in
-> new people.
->
-> 2) There are so many of us.  Especially with the addition of the BPF crowd we
-> are now larger than ever.  This makes problem #1 even more apparent, even if I
-> weighted some of the new people higher who's slot should they take instead?  I
-> have 0 problems finding 20 people in the FS community who should absolutely be
-> in the room.  But now I'm trying to squeeze in 1-5 extra people.  Propagate that
-> across all the tracks and now we're at an extra 20ish people.
->
-> 3) Half the people I want to talk to aren't even in the room.  This may be a
-> uniquely file system track problem, but most of my work is in btrfs, and I want
-> to talk to my fellow btrfs developers.  But again, we're trying to invite an
-> entire community, so many of them simply don't request invitations, or just
-> don't get invited.
->
-> 3) Sponsorships.  This is still the best way to get to all of the core
-> developers, so we're getting more and more sponsors in order to buy their slots
-> to get access to people.  This is working as intended, and I'm not putting down
-> our awesome sponsors, but this again adds to the amount of people that are
-> showing up at what is supposed to be a working conference.
->
-> 4) Presentations.  90% of the conference is 1-2 people standing at the front of
-> the room, talking to a room of 20-100 people, with only a few people in the
-> audience who cares.  We do our best to curate the presentations so we're not
-> wasting peoples time, but in the end I don't care what David Howells is doing
-> with mount, I trust him to do the right thing and he really just needs to trap
-> Viro in a room to work it out, he doesn't need all of us.
->
-> 5) Actually planning this thing.  I have been on the PC for at least the last 5
-> years, and this year I'm running the whole thing.  We specifically laid out
-> plans to rotate in new blood so this sort of thing stopped happening, and this
-> year we've done a good job of that.  However it is a giant amount of work for
-> anybody involved, especially for the whole conference chair.  Add in something
-> like COVID-19 to the mix and now I just want to burn the whole thing to the
-> ground.  Planning this thing is not free, it does require work and effort.
->
-> So what do I propose?  I propose we kill LSFMMBPF.
->
-> Many people have suggested this elsewhere, but I think we really need to
-> seriously consider it.  Most of us all go to the Linux Plumbers conference.  We
-
-Some of us have had to choose whether to go to LSF/MM or to Plumbers in a
-given year. I know that merging them will make it easier for me.
-
-Thanks,
-Amir.
+Josef
