@@ -2,94 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE3417C66D
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2020 20:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E16C317C67D
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Mar 2020 20:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgCFTls (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 6 Mar 2020 14:41:48 -0500
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:58338 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726185AbgCFTlr (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Mar 2020 14:41:47 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 240FC8EE11D;
-        Fri,  6 Mar 2020 11:41:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1583523707;
-        bh=QyH0EDJ1FUP6Cg70Ajo5UwLog6IJKhxqIqwcvgHKFno=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ggY4uvNcRhPuU2n6fZvD3i2Sjj2ROXVGWaKDMw26Qa4G1T1BY6lBdKV5NYvynPde4
-         CWtnCQanOW0yynZVXEMPURDEghbUCzIBZ6QiAZVRtYlDRn3rGK8kRt5Pco2QaQ+oQP
-         osLlnOSzWdRJHRBGRsgVoBex+rR7JtbkS2weLoSw=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id S_hz0NBx31Vr; Fri,  6 Mar 2020 11:41:46 -0800 (PST)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 559378EE0F8;
-        Fri,  6 Mar 2020 11:41:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1583523706;
-        bh=QyH0EDJ1FUP6Cg70Ajo5UwLog6IJKhxqIqwcvgHKFno=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=X2fDg85eJgE/fXmSmsMwLysLAKUTat/D9UP7xUPCwlbBYE/H18bd2pBu4e8TKSwzI
-         VsOJSCtAb25f3NDpDas4JghvIp8o2s0nqKA0BO+FDpSEBU6uc5ZBEjr6eo0A78NOg2
-         NMcvK9HZQBzURcSGWlaGWAdUIRalj5VH/mfp0Yro=
-Message-ID: <1583523705.3653.94.camel@HansenPartnership.com>
-Subject: Re: [LSFMMBPF TOPIC] long live LFSMMBPF
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>
+        id S1726194AbgCFTtA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 6 Mar 2020 14:49:00 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60746 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725922AbgCFTtA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 6 Mar 2020 14:49:00 -0500
+Received: from callcc.thunk.org (guestnat-104-133-0-105.corp.google.com [104.133.0.105] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 026JmhG1023168
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 6 Mar 2020 14:48:44 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 8CEDB42045B; Fri,  6 Mar 2020 14:48:43 -0500 (EST)
+Date:   Fri, 6 Mar 2020 14:48:43 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
         Linux FS Devel <linux-fsdevel@vger.kernel.org>,
         linux-mm@kvack.org, linux-xfs@vger.kernel.org,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
-Date:   Fri, 06 Mar 2020 11:41:45 -0800
-In-Reply-To: <76B62C4B-6ECB-482B-BF7D-95F42E43E7EB@fb.com>
+Subject: Re: [LSFMMBPF TOPIC] Killing LSFMMBPF
+Message-ID: <20200306194843.GA12490@mit.edu>
 References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
-         <76B62C4B-6ECB-482B-BF7D-95F42E43E7EB@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <20200306155611.GA167883@mit.edu>
+ <72708005-0810-1957-1e58-5b70779ab6db@toxicpanda.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72708005-0810-1957-1e58-5b70779ab6db@toxicpanda.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, 2020-03-06 at 14:27 -0500, Chris Mason wrote:
-> On 6 Mar 2020, at 9:35, Josef Bacik wrote:
-[...]
-> > 4) Planning becomes much simpler.  I've organized miniconf's at 
-> > plumbers before, it is far simpler than LSFMMBPF.  You only have
-> > to worry about one thing, is this presentation useful.  I no longer
-> > have to worry about am I inviting the right people, do we have
-> > enough money to cover the space.  Is there enough space for
-> > everybody?  Etc.
+On Fri, Mar 06, 2020 at 11:08:36AM -0500, Josef Bacik wrote:
 > 
-> We’ve talked about working closely with KS, Plumbers and the 
-> Linuxfoundation to make a big picture map of the content and
-> frequency  for these confs.
+> I'd be down for this.  Would you leave the thing open so anybody can
+> register, or would you still have an invitation system?  I really, really
+> despise the invitation system just because it's inherently self limiting.
+> However I do want to make sure we are getting relevant people in the room,
+> and not making it this "oh shit, I forgot to register, and now the
+> conference is full" sort of situations.  Thanks,
 
-And, lest anyone think we all operate in isolation, we do get together
-periodically to discuss venues, selection and combination.  The last
-big in-person meeting on this topic was at Plumbers in Vancouver in
-2019, where we had Plumbers, KS/MS, LSF/MM and the LF conference people
-all represented.
+There are lots of different ways it can be done.  The Maintainer's
+Summit is an invite-only half-day event.  That's mainly because it's
+about development processes, and there are lots of people who have a
+strong interest in that, but we want to keep it done to small number
+of people so we can have real conversations.
 
->   I’m sure Angela is having a busy few weeks, but lets work with her
-> to schedule this and talk it through.  OSS is a good fit  in terms of
-> being flexible enough to fit us in, hopefully we can make  that work.
+At Plumbers, the miniconfs leads can give a list of (six?) people they
+really want to be present.  A few get free registration; the others
+get guaranteed registrations thus bypassing the waitlist.  One of the
+problems is that the miniconf leads don't always get the list of
+people to the planning committee until late in the process, which made
+the waitlist management problem even more painful.  At the miniconf,
+there is social pressure so that the key attendees are seated near the
+front of the room, and there might be audience of a few hundred that
+are in listen-mostly mode, but for most technical topics, that isn't
+that much of a problem.
 
-And, for everyone who gave us feedback in the Plumbers surveys that co-
-locating with a big conference is *not* what you want because of
-various problems like hallway track disruptions due to other conference
-traffic and simply the difficulty of finding people, the current model
-under consideration is one conference organization (the LF) but two
-separate venues, sort of like OpenStack used to do for their big
-conference and design summit to minimize disruption and increase
-developer focus.
+I've also seen other cases where the room is small, and there is a
+list of people who have guaranteed access to the room, and everyone
+else (up to the fire limit) might have to sit or stand against the
+wall, etc.
 
-James
+If we have a conference with many tracks, the different tracks can
+have different admittance policies, such is as the case with the
+Maintainer's Summit, Kernel Summit, Miniconfs, etc.  So that's
+something which I think can be negotiated.
 
+I suspect that for most of the LSF/MM contential topics, I doubt we
+would have hundreds of people clamoring to get in on a discussion
+about to handle, say, clearing DAX flag on files that might still be
+in use by some RDMA drive.  That is *such* a fascinating topic, but I
+doubt there really will be a need to limit attendance.  :-)
+
+      	    	   	     	     - Ted
+
+P.S.  I do need to note that there is one big advantage to invite-only
+summts such as the LSF/MM and the old-style Kernel Summit.  Companies
+who really want to present about, say, dual-actuator HDD's, or the
+latest NVMe / Open Channel interface, are much more likely to pay $$$
+to get access to an invite-only event.  When we moved to the
+process-only Maintainer's Summit, and the Kernel Summit for the
+technical tracks, it most definitely hurt the amount of sponsorship
+dollars that we got for the Maintainer's Summit.
+
+That's not a bad thing, but it might mean that we will need to cut
+costs by drafting behind the LF, and maybe not having as nice evening
+receptions, or as nice attendee gifts like we used to do in the early
+years of the Kernel Summit.  Personally, I think that's *fine*; it's
+the collaboration with fellow developers which is highest on my list
+of priorities, and not the opportunities for fine dining or going to
+fun cities.  And if giving up on some of these amenities means that I
+can bring some of the more junior engineers on my team so they can
+meet other file system developers, I'm **all** for it.  But for some
+folks, they may view this tradeoff as a loss.
