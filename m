@@ -2,56 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7911117CFA5
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Mar 2020 19:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240BD17CFAB
+	for <lists+linux-ext4@lfdr.de>; Sat,  7 Mar 2020 19:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbgCGSwI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 7 Mar 2020 13:52:08 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33619 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726114AbgCGSwH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Mar 2020 13:52:07 -0500
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 027Iq09W029801
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 7 Mar 2020 13:52:01 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id C485A42045B; Sat,  7 Mar 2020 13:52:00 -0500 (EST)
-Date:   Sat, 7 Mar 2020 13:52:00 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/7] e2fsck: Clarify overflow link count error message
-Message-ID: <20200307185200.GD99899@mit.edu>
-References: <20200213101602.29096-1-jack@suse.cz>
- <20200213101602.29096-2-jack@suse.cz>
+        id S1726180AbgCGSy0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Mar 2020 13:54:26 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:37727 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgCGSy0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Mar 2020 13:54:26 -0500
+Received: by mail-pg1-f196.google.com with SMTP id z12so2724249pgl.4;
+        Sat, 07 Mar 2020 10:54:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hgakR1k+etmqZ1qtI59Bn7lxRJAnw6BxyTHQ7NAwUHc=;
+        b=uhMblmTA0gX11AWupAZO+iGi+z3N5+PbErYvU06nzHheULhKlLU7o12MayFK/xNYMx
+         MBEBhANDUwyHFpETZIDWw6tcj8NUNk/HYI1rXC0cGc4xvueJsVIk2wJwFXW0HXdD+Qk/
+         9MFVRiDaJ/bB1S4pTl2VRYXZIC/6tSjkcVA3D8dihysyEhX/cC7GM1qII1gWdyCL8De5
+         /gYwu1z0KtB2MU0Nz36d698ph9HCglg/Du9or1pTkew7/sFdNXyRc8RLxEK+vuCt+nFX
+         YKH7yajeRUqIz3PwR3TeKSNLQKQdjLn7q2+EabYPbokdMgHr8dLqCN6NIataf6hkdFSJ
+         cjAg==
+X-Gm-Message-State: ANhLgQ2fPJIpL/dwWmXIrM2e8WZWMNIq1xnwvIdAPdaDS0vy+AtydM89
+        4GlrnOOzSUlLu9VnA2R2tAg=
+X-Google-Smtp-Source: ADFU+vsSwnhn+TzuxM7ZREWEte+cfby1aTALdsgpcss9+r26bax0PftHXg/ANCN0NXOqwbB0K3fjHA==
+X-Received: by 2002:aa7:9f1c:: with SMTP id g28mr7357608pfr.140.1583607262396;
+        Sat, 07 Mar 2020 10:54:22 -0800 (PST)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id z15sm4451875pfg.152.2020.03.07.10.54.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Mar 2020 10:54:21 -0800 (PST)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 68F55401A8; Sat,  7 Mar 2020 18:54:20 +0000 (UTC)
+Date:   Sat, 7 Mar 2020 18:54:20 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        lsf-pc <lsf-pc@lists.linuxfoundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [LSFMMBPF TOPIC] LSFMMBPF 2020 COVID-19 status update
+Message-ID: <20200307185420.GG2236@42.do-not-panic.com>
+References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
+ <20200306155611.GA167883@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200213101602.29096-2-jack@suse.cz>
+In-Reply-To: <20200306155611.GA167883@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 11:15:56AM +0100, Jan Kara wrote:
-> When directory link count is set to overflow value (1) but during pass 4
-> we find out the exact link count would fit, we either silently fix this
-> (which is not great because e2fsck then reports the fs was modified but
-> output doesn't indicate why in any way), or we report that link count is
-> wrong and ask whether we should fix it (in case -n option was
-> specified). The second case is even more misleading because it suggests
-> non-trivial fs corruption which then gets silently fixed on the next
-> run. Similarly to how we fix up other non-problems, just create a new
-> error message for the case directory link count is not overflown anymore
-> and always report it to clarify what is going on.
-> 
-> Signed-off-by: Jan Kara <jack@suse.cz>
+On Fri, Mar 06, 2020 at 10:56:11AM -0500, Theodore Y. Ts'o wrote:
+> Should we have LSF/MM/BPF in 2020 and COVID-19?
 
-Applied with a fixup to to tests/f_many_subdirs/expect.1, thanks.
+I'll try to take a proactive approach by doing my own digging, where
+is what I have found, and few other proactive thoughts which might help:
 
-(Please remember run "make check" before commiting a change.)
+The latest update posted on the LSFMM page from March 2 states things
+are moving along as planned. After that on March 4th officials from the
+county made a trip to Coachella Valley (22 minutes away from the LSFFMM
+venue hotel) "to quell public fears about the spread of the novel
+coronavirus", and announced that "there are no plans to cancel any of
+the upcoming large events like Coachella, Stagecoach and the BNP" [0].
 
-		     	   	  - Ted
+So, hippies are still getting together.
+
+How about our brethren?
+
+If we have to learn from efforts required to continue on with the in
+light of the risks, we can look at what SCALE 18 is doing, taking place
+right now in Pasadena [1], their page lists a list of proactive measures
+required on their part to help alleviate fears and just good best
+practices at this point in time.
+
+The landscape seems positive, if we want, to move forward in Palm Springs then.
+
+When are attendees supposed to get notifications if they are invited?
+
+Since the nature of the conference however is unique in that it is
+world-wide and invite-only it makes me wonder if the value is reduced
+because of this and if we should cancel.
+
+Does the latency involved on the confirmation of attending decrease
+the value due to the current haphazard situation with COVID-19?
+
+I am involved in other conferences and am seeing personal driven
+cancelations for general concerns. For folks in the US it would be
+easier / less risky to travel, so my concerns would be less than others.
+But -- would we have higher personal cancelations from EU folks? What
+are folks thoughts on this right now? Is anyone in the EU not coming
+at all due to concerns who wouldn't mind voicing their concerns even
+if LSFMM continues?
+
+And then there is the other question: can we cancel? Or is that
+economically just  too late at this point?
+
+[0] https://kesq.com/news/2020/03/04/palm-springs-officials-to-hold-coronavirus-news-conference-on-thursday/
+[1] https://www.socallinuxexpo.org/scale/18x
+
+  Luis
