@@ -2,104 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB4A17CFC8
-	for <lists+linux-ext4@lfdr.de>; Sat,  7 Mar 2020 20:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F4817D089
+	for <lists+linux-ext4@lfdr.de>; Sun,  8 Mar 2020 00:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgCGTMW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 7 Mar 2020 14:12:22 -0500
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:48764 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726116AbgCGTMV (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Mar 2020 14:12:21 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D37C58EE0FD;
-        Sat,  7 Mar 2020 11:12:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1583608340;
-        bh=OTExqST3EIQqKYzie7fnIaR9F29Rbki864Xhub7443Q=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=lILO1w8M5X5MwVyf0UEV37EwwviKKsvMyy4/5iphxqtCwYMOHDpAIjCX1N3HBcACW
-         paVYE2nnpzAA6emW6A2rS2m1Ngr4nuk0SD5mL3oP0zYojh+pQUZsbn82C/A2ycnNej
-         EUvA3YXNlXdt1T6udIPdWAR2Rz05afODy1IufW54=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jvVAu3loizWQ; Sat,  7 Mar 2020 11:12:20 -0800 (PST)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id E099B8EE0D7;
-        Sat,  7 Mar 2020 11:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1583608340;
-        bh=OTExqST3EIQqKYzie7fnIaR9F29Rbki864Xhub7443Q=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=lILO1w8M5X5MwVyf0UEV37EwwviKKsvMyy4/5iphxqtCwYMOHDpAIjCX1N3HBcACW
-         paVYE2nnpzAA6emW6A2rS2m1Ngr4nuk0SD5mL3oP0zYojh+pQUZsbn82C/A2ycnNej
-         EUvA3YXNlXdt1T6udIPdWAR2Rz05afODy1IufW54=
-Message-ID: <1583608338.20291.28.camel@HansenPartnership.com>
-Subject: Re: [LSFMMBPF TOPIC] LSFMMBPF 2020 COVID-19 status update
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        lsf-pc <lsf-pc@lists.linuxfoundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, bpf@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org
-Date:   Sat, 07 Mar 2020 11:12:18 -0800
-In-Reply-To: <20200307185420.GG2236@42.do-not-panic.com>
-References: <b506a373-c127-b92e-9824-16e8267fc910@toxicpanda.com>
-         <20200306155611.GA167883@mit.edu>
-         <20200307185420.GG2236@42.do-not-panic.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726283AbgCGXRZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 7 Mar 2020 18:17:25 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34640 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726139AbgCGXRZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 7 Mar 2020 18:17:25 -0500
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 027NHJKL003345
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 7 Mar 2020 18:17:20 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 4AD7342045B; Sat,  7 Mar 2020 18:17:19 -0500 (EST)
+Date:   Sat, 7 Mar 2020 18:17:19 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 2/7] e2fsck: Fix indexed dir rehash failure with
+ metadata_csum enabled
+Message-ID: <20200307231719.GE99899@mit.edu>
+References: <20200213101602.29096-1-jack@suse.cz>
+ <20200213101602.29096-3-jack@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200213101602.29096-3-jack@suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, 2020-03-07 at 18:54 +0000, Luis Chamberlain wrote:
-> On Fri, Mar 06, 2020 at 10:56:11AM -0500, Theodore Y. Ts'o wrote:
-> > Should we have LSF/MM/BPF in 2020 and COVID-19?
-[...]
-> If we have to learn from efforts required to continue on with the in
-> light of the risks, we can look at what SCALE 18 is doing, taking
-> place right now in Pasadena [1], their page lists a list of proactive
-> measures required on their part to help alleviate fears and just good
-> best practices at this point in time.
+On Thu, Feb 13, 2020 at 11:15:57AM +0100, Jan Kara wrote:
+> E2fsck directory rehashing code can fail with ENOSPC due to a bug in
+> ext2fs_htree_intnode_maxrecs() which fails to take metadata checksum
+> into account and thus e.g. e2fsck can decide to create 1 indirect level
+> of index tree when two are actually needed. Fix the logic to account for
+> metadata checksum.
+> 
+> Signed-off-by: Jan Kara <jack@suse.cz>
 
-I agree Scale18x is the poster child for following WHO advice to the
-letter, but there are crucial differences:
+Applied with a minor change; I didn't want to make this change:
 
-   1. Scale18x has a lot of local attendees, so the conference can go
-      ahead somewhat easily with local content and local attendees.  We
-      have no-one for LSF/MM/BPF in Palm Springs.
-   2. Scale18x did have some issues with non-local content because of
-      corporate travel bans.  The whole of LSF/MM/BPF is non-local content
-      and would thus be significantly disrupted.
+> -_INLINE_ int ext2fs_htree_intnode_maxrecs(ext2_filsys fs, int blocks)
+> +static inline int ext2fs_htree_intnode_maxrecs(ext2_filsys fs, int blocks)
 
-The big problem with 2. is that a lot of corporate policies at the
-moment are unconsidered blanket bans.  Even corporations who do
-consider better might still be stricter than the WHO advice.  So my
-company, IBM, is saying events >1000 cancel and events <1000 use your
-own discretion provided they're promising to obey all the health
-guidelines.  If I'd been presenting at Scale18x I'd have had to cancel,
-even though under our guidelines I can still go to LSF/MM/BPF
+... because it would make ext2fs_htree_intmode_maxrecs disappear from libext2fs.so.
 
-> The landscape seems positive, if we want, to move forward in Palm
-> Springs then.
+So I changed this:
 
-For a counter example, just look at the LF Member summit which was due
-to happen just after Scale18x:
+> +	if (ext2fs_has_feature_metadata_csum(fs->super))
 
-https://events.linuxfoundation.org/lf-member-summit/
+to this:
 
-and that's a smaller event than Scale18x.  Remember too that the LF
-runs LSF/MM so if they decide to cancel, there's not much the
-organizing committee can do about it.
++       if ((EXT2_SB(fs->super)->s_feature_ro_compat &
++            EXT4_FEATURE_RO_COMPAT_METADATA_CSUM) != 0)
 
-James
+to fix the inline related compilation errors.
 
+					- Ted
