@@ -2,138 +2,129 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A96FB17E7A9
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2020 19:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7B417E83F
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2020 20:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727459AbgCIS6v (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Mar 2020 14:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727387AbgCIS6u (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 9 Mar 2020 14:58:50 -0400
-Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C906820866;
-        Mon,  9 Mar 2020 18:58:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583780330;
-        bh=B1UyNcxLW8PyJe3Q75G0rqEkEz05Wmj5+QamNjOuhpE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T7PsOBZw10bgq729PHYbEjWzwCGV7EzrsIszS8j0MmdQNps/ZBwz1vdlaqCCZT5TV
-         kYdLL1f3WRO8gXYwXh2WInGSNQZKlkEw/OwvgL8V95Zex7gvHoHc+q1daW5TZ5fXwS
-         nQgFwKiYLC9xg3s7LNqzl4cHDR7qK93ab5NWmqnQ=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-xfs@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] xfs: clear PF_MEMALLOC before exiting xfsaild thread
-Date:   Mon,  9 Mar 2020 11:57:14 -0700
-Message-Id: <20200309185714.42850-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200309181332.GJ1752567@magnolia>
-References: <20200309181332.GJ1752567@magnolia>
+        id S1726186AbgCITWq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Mar 2020 15:22:46 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:52095 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726118AbgCITWq (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Mar 2020 15:22:46 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 0273F2165;
+        Mon,  9 Mar 2020 15:22:43 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 09 Mar 2020 15:22:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=9OPUApP7XHwBJ2ua/845zHXN+Bx
+        CiMndYLVmUljdPfs=; b=Zx+aJhCQuuW9zL3vV9mkX5vIdNdmN8/IWDffz8jj8Gb
+        2VqO7mxto+/Dg70LiN2yzj5fiYHNKAZzx3yPelxgwUoQ+is2cdcJE5cIvJzPpLwP
+        1xPCpmX1WtFmzCKNubm6b5P2EF7CkKxJXHsEs6ybNxRzQCPJzbqZOZSd96rAWA/s
+        7nO1xn8GN/rhw5+44q9xquYivc/LsB5DNy1Sr7wODuT8vz1B9CEd7RzJQ6+yCPws
+        Q4BQsksfc1slCjyk7DZeBxKlsDmu+IkwTWvjrJ+31T+ybHClZpCgA7ZxHxIt60ze
+        0rjBlnXvVbJq19rll/30PhxY+fbw911ReY76p4D4+Zg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=9OPUAp
+        P7XHwBJ2ua/845zHXN+BxCiMndYLVmUljdPfs=; b=Jz9WWT0OhfWbV49D+wIuxm
+        3sJ9Kel6t8sFJrmVyv19hsEiQzOp4evJzLdEZVY55UsNPi/dB2hyJt29LHCe6dgR
+        e9kD+L7Mfl3qIo5ngts0zeS4esAEGVEiQFlDYmvxdL6dProHeRHBKtaE/tUyf/00
+        8oGdCWK0UbGe2iA2wkAaSoN7+HqKLQfmK+nd513rMwVTTJKW1TPnr406mI6fJgBD
+        SO+dv4s23dzemFtebeyTZ4TOCeYWUAeWda6lC3gkrRn/vRPfMhiXV1tyvQYLY7M6
+        H1SvTye3XXhWvy0SBwMOBi4R8fHduIcKySwDxPapJ+gRfXM3EFhrm2VGK8Ka2Q+A
+        ==
+X-ME-Sender: <xms:gpdmXp0izSospZhLf9jd8uC2VihdmnYjkksGoMYJO5iAvhtB2c7OrA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedruddukedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
+    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecukfhppe
+    eijedrudeitddrvddujedrvdehtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
+    mhepmhgrihhlfhhrohhmpegrnhgurhgvshesrghnrghrrgiivghlrdguvg
+X-ME-Proxy: <xmx:gpdmXqsjquW8ESXmD9dxw71lrZxnA5nkpUkgfENiIXmvTlgnk7KhPw>
+    <xmx:gpdmXt-8hZpIoe7KcTaKx1a6wafRA-cm_jvCbBkbXxQTt9fR8FhqqQ>
+    <xmx:gpdmXsFJrGZGb8n1mvKJXXT6i_-ZMHWQeAlCmdtbguoV7-ys584J8Q>
+    <xmx:g5dmXndVRmQTWz4NUF8L_57jSTW2SmewMAEhD-D5atrKfdws8K2IJA>
+Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0771F328005A;
+        Mon,  9 Mar 2020 15:22:42 -0400 (EDT)
+Date:   Mon, 9 Mar 2020 12:22:40 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Jeff Layton <jlayton@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org,
+        viro@zeniv.linux.org.uk, Theodore Ts'o <tytso@mit.edu>,
+        Stefan Metzmacher <metze@samba.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-nfs@vger.kernel.org, linux-api@vger.kernel.org,
+        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
+        jannh@google.com, darrick.wong@oracle.com, kzak@redhat.com,
+        linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/14] VFS: Filesystem information [ver #18]
+Message-ID: <20200309192240.nqf5bxylptw7mdm3@alap3.anarazel.de>
+References: <158376244589.344135.12925590041630631412.stgit@warthog.procyon.org.uk>
+ <2d31e2658e5f6651dc7d9908c4c12b6ba461fc88.camel@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d31e2658e5f6651dc7d9908c4c12b6ba461fc88.camel@redhat.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+Hi,
 
-Leaving PF_MEMALLOC set when exiting a kthread causes it to remain set
-during do_exit().  That can confuse things.  In particular, if BSD
-process accounting is enabled, then do_exit() writes data to an
-accounting file.  If that file has FS_SYNC_FL set, then this write
-occurs synchronously and can misbehave if PF_MEMALLOC is set.
+On 2020-03-09 13:50:59 -0400, Jeff Layton wrote:
+> The PostgreSQL devs asked a while back for some way to tell whether
+> there have been any writeback errors on a superblock w/o having to do
+> any sort of flush -- just "have there been any so far".
 
-For example, if the accounting file is located on an XFS filesystem,
-then a WARN_ON_ONCE() in iomap_do_writepage() is triggered and the data
-doesn't get written when it should.  Or if the accounting file is
-located on an ext4 filesystem without a journal, then a WARN_ON_ONCE()
-in ext4_write_inode() is triggered and the inode doesn't get written.
+Indeed.
 
-Fix this in xfsaild() by using the helper functions to save and restore
-PF_MEMALLOC.
 
-This can be reproduced as follows in the kvm-xfstests test appliance
-modified to add the 'acct' Debian package, and with kvm-xfstests's
-recommended kconfig modified to add CONFIG_BSD_PROCESS_ACCT=y:
+> I sent a patch a few weeks ago to make syncfs() return errors when there
+> have been writeback errors on the superblock. It's not merged yet, but
+> once we have something like that in place, we could expose info from the
+> errseq_t to userland using this interface.
 
-        mkfs.xfs -f /dev/vdb
-        mount /vdb
-        touch /vdb/file
-        chattr +S /vdb/file
-        accton /vdb/file
-        mkfs.xfs -f /dev/vdc
-        mount /vdc
-        umount /vdc
+I'm still a bit worried about the details of errseq_t being exposed to
+userland. Partially because it seems to restrict further evolution of
+errseq_t, and partially because it will likely up with userland trying
+to understand it (it's e.g. just too attractive to report a count of
+errors etc).
 
-It causes:
-	WARNING: CPU: 1 PID: 336 at fs/iomap/buffered-io.c:1534
-	CPU: 1 PID: 336 Comm: xfsaild/vdc Not tainted 5.6.0-rc5 #3
-	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20191223_100556-anatol 04/01/2014
-	RIP: 0010:iomap_do_writepage+0x16b/0x1f0 fs/iomap/buffered-io.c:1534
-	[...]
-	Call Trace:
-	 write_cache_pages+0x189/0x4d0 mm/page-writeback.c:2238
-	 iomap_writepages+0x1c/0x33 fs/iomap/buffered-io.c:1642
-	 xfs_vm_writepages+0x65/0x90 fs/xfs/xfs_aops.c:578
-	 do_writepages+0x41/0xe0 mm/page-writeback.c:2344
-	 __filemap_fdatawrite_range+0xd2/0x120 mm/filemap.c:421
-	 file_write_and_wait_range+0x71/0xc0 mm/filemap.c:760
-	 xfs_file_fsync+0x7a/0x2b0 fs/xfs/xfs_file.c:114
-	 generic_write_sync include/linux/fs.h:2867 [inline]
-	 xfs_file_buffered_aio_write+0x379/0x3b0 fs/xfs/xfs_file.c:691
-	 call_write_iter include/linux/fs.h:1901 [inline]
-	 new_sync_write+0x130/0x1d0 fs/read_write.c:483
-	 __kernel_write+0x54/0xe0 fs/read_write.c:515
-	 do_acct_process+0x122/0x170 kernel/acct.c:522
-	 slow_acct_process kernel/acct.c:581 [inline]
-	 acct_process+0x1d4/0x27c kernel/acct.c:607
-	 do_exit+0x83d/0xbc0 kernel/exit.c:791
-	 kthread+0xf1/0x140 kernel/kthread.c:257
-	 ret_from_fork+0x27/0x50 arch/x86/entry/entry_64.S:352
+Is there a reason to not instead report a 64bit counter instead of the
+cookie? In contrast to the struct file case we'd only have the space
+overhead once per superblock, rather than once per #files * #fd. And it
+seems that the maintenance of that counter could be done without
+widespread changes, e.g. instead/in addition to your change:
 
-This bug was originally reported by syzbot at
-https://lore.kernel.org/r/0000000000000e7156059f751d7b@google.com.
+> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> index ccb14b6a16b5..897439475315 100644
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@ -51,7 +51,10 @@ static inline void mapping_set_error(struct address_space *mapping, int error)
+>  		return;
+>
+>  	/* Record in wb_err for checkers using errseq_t based tracking */
+> -	filemap_set_wb_err(mapping, error);
+> +	__filemap_set_wb_err(mapping, error);
+> +
+> +	/* Record it in superblock */
+> +	errseq_set(&mapping->host->i_sb->s_wb_err, error);
+>
+>  	/* Record it in flags for now, for legacy callers */
+>  	if (error == -ENOSPC)
 
-Reported-by: syzbot+1f9dc49e8de2582d90c2@syzkaller.appspotmail.com
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
+Btw, seems like mapping_set_error() should have a non-inline cold path?
 
-v3: updated commit message again, this time to take into account the bug
-    also being reproducible when the accounting file is located on XFS.
+Greetings,
 
-v2: include more details in the commit message.
-
- fs/xfs/xfs_trans_ail.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/fs/xfs/xfs_trans_ail.c b/fs/xfs/xfs_trans_ail.c
-index 00cc5b8734be8..3bc570c90ad97 100644
---- a/fs/xfs/xfs_trans_ail.c
-+++ b/fs/xfs/xfs_trans_ail.c
-@@ -529,8 +529,9 @@ xfsaild(
- {
- 	struct xfs_ail	*ailp = data;
- 	long		tout = 0;	/* milliseconds */
-+	unsigned int	noreclaim_flag;
- 
--	current->flags |= PF_MEMALLOC;
-+	noreclaim_flag = memalloc_noreclaim_save();
- 	set_freezable();
- 
- 	while (1) {
-@@ -601,6 +602,7 @@ xfsaild(
- 		tout = xfsaild_push(ailp);
- 	}
- 
-+	memalloc_noreclaim_restore(noreclaim_flag);
- 	return 0;
- }
- 
--- 
-2.25.1
-
+Andres Freund
