@@ -2,637 +2,176 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 279C117E45D
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2020 17:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DB217E4B7
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2020 17:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727252AbgCIQMr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Mar 2020 12:12:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50889 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727236AbgCIQMq (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Mar 2020 12:12:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583770365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JEiveFNQRB6xvKW4+9+fSHTiogMB9YX+r/R6t8shAxg=;
-        b=iXMZ9JYHkPr0cpA/NA/UM6hdrxSlZdoPcO1j5CMaJxjfovBtCHkrSfK1EpH96S7F551zqu
-        NSRLE357S/5Ndo80SYFlYgWCTSAM4f4FqmZlUA4Hzuc44dMz9ykwBnRleKkrUjn3M+l5pl
-        SFtqRPyEx6k6CO/U0oxQZn0V9ydS3PY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-dRo7FFDnMNCJeSubJxOiaQ-1; Mon, 09 Mar 2020 12:12:41 -0400
-X-MC-Unique: dRo7FFDnMNCJeSubJxOiaQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D401801A02;
-        Mon,  9 Mar 2020 16:12:38 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-182.rdu2.redhat.com [10.10.120.182])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C01E460FF9;
-        Mon,  9 Mar 2020 16:12:35 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <158040603214.1879.6549790415691475804.stgit@buzz>
-References: <158040603214.1879.6549790415691475804.stgit@buzz>
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Subject: Re: [PATCH v2 1/2] vfs: add non-blocking mode for function find_inode_nowait()
+        id S1727059AbgCIQYp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Mar 2020 12:24:45 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:33918 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726758AbgCIQYp (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Mar 2020 12:24:45 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 029GNNwD101380;
+        Mon, 9 Mar 2020 16:24:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=IG8LvxfBY1OrePUu9eNqEJdMLNEqViWjxSiyKEsDlc8=;
+ b=W6Q0SiZek17CEMk08wEXIEihM4/z+9h/6sIqwi2h0Us6Cxh3P43dAPaMu6rL/cvyRXAt
+ Li4H3XeZTbQ1S5qbTJaIRsTNkWGpaXIEGQilezs8Lcn6WPh9fdcvwls9xCibCKFCzReP
+ YiggLeibhnzuYlCo0L9z3hWb+r/Vm0PDGi6Ll0wUl4TfSNimQb5TYxrH2ws5F36vJmNF
+ vHwVbKPacu/xEtG896Wtqqi7eEVwqI280WLy2JCCRsdk4i4mOa4t76nc8cQNaUB32XjE
+ n+NL4yLpiIQcl1WqtkQEPxNZTYwZ+Y+JfD9b0O6yf2i9KTVT6SVwajkjRuzg2npRHbOm +w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2ym48sqya1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Mar 2020 16:24:42 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 029GHI5O151727;
+        Mon, 9 Mar 2020 16:24:41 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2ymnb09uks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 09 Mar 2020 16:24:41 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 029GOeB6004199;
+        Mon, 9 Mar 2020 16:24:40 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 09 Mar 2020 09:24:40 -0700
+Date:   Mon, 9 Mar 2020 09:24:39 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] xfs: clear PF_MEMALLOC before exiting xfsaild thread
+Message-ID: <20200309162439.GB8045@magnolia>
+References: <20200309010410.GA371527@sol.localdomain>
+ <20200309043430.143206-1-ebiggers@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <413683.1583770355.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 09 Mar 2020 16:12:35 +0000
-Message-ID: <413684.1583770355@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200309043430.143206-1-ebiggers@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9555 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 suspectscore=0 adultscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2003090107
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9555 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 priorityscore=1501 lowpriorityscore=0
+ phishscore=0 adultscore=0 spamscore=0 mlxscore=0 clxscore=1011
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003090107
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Konstantin Khlebnikov <khlebnikov@yandex-team.ru> wrote:
+On Sun, Mar 08, 2020 at 09:34:30PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Leaving PF_MEMALLOC set when exiting a kthread causes it to remain set
+> during do_exit().  That can confuse things.  For example, if BSD process
+> accounting is enabled and the accounting file has FS_SYNC_FL set and is
+> located on an ext4 filesystem without a journal, then do_exit() ends up
+> calling ext4_write_inode().  That triggers the
+> WARN_ON_ONCE(current->flags & PF_MEMALLOC) there, as it assumes
+> (appropriately) that inodes aren't written when allocating memory.
+> 
+> Fix this in xfsaild() by using the helper functions to save and restore
+> PF_MEMALLOC.
+> 
+> This can be reproduced as follows in the kvm-xfstests test appliance
+> modified to add the 'acct' Debian package, and with kvm-xfstests's
+> recommended kconfig modified to add CONFIG_BSD_PROCESS_ACCT=y:
+> 
+> 	mkfs.ext2 -F /dev/vdb
+> 	mount /vdb -t ext4
+> 	touch /vdb/file
+> 	chattr +S /vdb/file
 
-> Currently concurrent inode lookup by number does not scale well because
-> inode hash table is protected with single spinlock. Someday inode hash
-> will become searchable under RCU (see linked patchset by David Howells).
+Does this trip if the process accounting file is also on an xfs
+filesystem?
 
-Something like this?
+> 	accton /vdb/file
+> 	mkfs.xfs -f /dev/vdc
+> 	mount /vdc
+> 	umount /vdc
 
-David
----
-vfs: Make the inode hash table RCU searchable
-    =
+...and if so, can this be turned into an fstests case, please?
 
-Make the inode hash table RCU searchable so that searches that want to
-access or modify an inode without taking a ref on that inode can do so
-without taking the inode hash table lock.
 
-The main thing this requires is some RCU annotation on the list
-manipulation operations.  Inodes are already freed by RCU in most cases.
+> 
+> It causes:
+> 	WARNING: CPU: 0 PID: 332 at fs/ext4/inode.c:5097 ext4_write_inode+0x140/0x1a0
+> 	CPU: 0 PID: 332 Comm: xfsaild/vdc Not tainted 5.6.0-rc5 #5
+> 	[...]
+> 	RIP: 0010:ext4_write_inode+0x140/0x1a0 fs/ext4/inode.c:5097
+> 	[...]
+> 	Call Trace:
+> 	 write_inode fs/fs-writeback.c:1312 [inline]
+> 	 __writeback_single_inode+0x465/0x5f0 fs/fs-writeback.c:1511
+> 	 writeback_single_inode+0xad/0x120 fs/fs-writeback.c:1565
+> 	 sync_inode fs/fs-writeback.c:2602 [inline]
+> 	 sync_inode_metadata+0x3d/0x57 fs/fs-writeback.c:2622
+> 	 ext4_fsync_nojournal fs/ext4/fsync.c:94 [inline]
+> 	 ext4_sync_file+0x243/0x4b0 fs/ext4/fsync.c:172
+> 	 generic_write_sync include/linux/fs.h:2867 [inline]
+> 	 ext4_buffered_write_iter+0xe1/0x130 fs/ext4/file.c:277
+> 	 call_write_iter include/linux/fs.h:1901 [inline]
+> 	 new_sync_write+0x130/0x1d0 fs/read_write.c:483
+> 	 __kernel_write+0x54/0xe0 fs/read_write.c:515
+> 	 do_acct_process+0x122/0x170 kernel/acct.c:522
+> 	 slow_acct_process kernel/acct.c:581 [inline]
+> 	 acct_process+0x1d4/0x27c kernel/acct.c:607
+> 	 do_exit+0x83d/0xbc0 kernel/exit.c:791
+> 	 kthread+0xf1/0x140 kernel/kthread.c:257
+> 	 ret_from_fork+0x27/0x50 arch/x86/entry/entry_64.S:352
+> 
+> This case was originally reported by syzbot at
+> https://lore.kernel.org/r/0000000000000e7156059f751d7b@google.com.
+> 
+> Reported-by: syzbot+1f9dc49e8de2582d90c2@syzkaller.appspotmail.com
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-Users of this interface must take care as the inode may be still under
-construction or may be being torn down around them.
+Looks ok,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-There are at least two instances where this can be of use:
+--D
 
- (1) Ext4 date stamp updating.
-
- (2) AFS callback breaking.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-cc: linux-ext4@vger.kernel.org
----
- fs/afs/callback.c  |   12 ++-
- fs/ext4/inode.c    |   44 +++++------
- fs/inode.c         |  209 ++++++++++++++++++++++++++++++++++-------------=
-------
- include/linux/fs.h |    8 --
- 4 files changed, 172 insertions(+), 101 deletions(-)
-
-diff --git a/fs/afs/callback.c b/fs/afs/callback.c
-index 2dca8df1a18d..0dcbd40732d1 100644
---- a/fs/afs/callback.c
-+++ b/fs/afs/callback.c
-@@ -252,6 +252,7 @@ static void afs_break_one_callback(struct afs_server *=
-server,
- 	struct afs_vnode *vnode;
- 	struct inode *inode;
- =
-
-+	rcu_read_lock();
- 	read_lock(&server->cb_break_lock);
- 	hlist_for_each_entry(vi, &server->cb_volumes, srv_link) {
- 		if (vi->vid < fid->vid)
-@@ -287,12 +288,16 @@ static void afs_break_one_callback(struct afs_server=
- *server,
- 		} else {
- 			data.volume =3D NULL;
- 			data.fid =3D *fid;
--			inode =3D ilookup5_nowait(cbi->sb, fid->vnode,
--						afs_iget5_test, &data);
-+
-+			/* See if we can find a matching inode - even an I_NEW
-+			 * inode needs to be marked as it can have its callback
-+			 * broken before we finish setting up the local inode.
-+			 */
-+			inode =3D find_inode_rcu(cbi->sb, fid->vnode,
-+					       afs_iget5_test, &data);
- 			if (inode) {
- 				vnode =3D AFS_FS_I(inode);
- 				afs_break_callback(vnode, afs_cb_break_for_callback);
--				iput(inode);
- 			} else {
- 				trace_afs_cb_miss(fid, afs_cb_break_for_callback);
- 			}
-@@ -301,6 +306,7 @@ static void afs_break_one_callback(struct afs_server *=
-server,
- =
-
- out:
- 	read_unlock(&server->cb_break_lock);
-+	rcu_read_unlock();
- }
- =
-
- /*
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index fa0ff78dc033..9eeb8a22dfdb 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4846,21 +4846,22 @@ static int ext4_inode_blocks_set(handle_t *handle,
- 	return 0;
- }
- =
-
--struct other_inode {
--	unsigned long		orig_ino;
--	struct ext4_inode	*raw_inode;
--};
--
--static int other_inode_match(struct inode * inode, unsigned long ino,
--			     void *data)
-+static void __ext4_update_other_inode_time(struct super_block *sb,
-+					   unsigned long orig_ino,
-+					   unsigned long ino,
-+					   struct ext4_inode *raw_inode)
- {
--	struct other_inode *oi =3D (struct other_inode *) data;
-+	struct inode *inode;
-+
-+	inode =3D find_inode_by_ino_rcu(sb, ino);
-+	if (!inode)
-+		return;
- =
-
--	if ((inode->i_ino !=3D ino) ||
--	    (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW |
-+	if ((inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW |
- 			       I_DIRTY_INODE)) ||
- 	    ((inode->i_state & I_DIRTY_TIME) =3D=3D 0))
--		return 0;
-+		return;
-+
- 	spin_lock(&inode->i_lock);
- 	if (((inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW |
- 				I_DIRTY_INODE)) =3D=3D 0) &&
-@@ -4871,16 +4872,15 @@ static int other_inode_match(struct inode * inode,=
- unsigned long ino,
- 		spin_unlock(&inode->i_lock);
- =
-
- 		spin_lock(&ei->i_raw_lock);
--		EXT4_INODE_SET_XTIME(i_ctime, inode, oi->raw_inode);
--		EXT4_INODE_SET_XTIME(i_mtime, inode, oi->raw_inode);
--		EXT4_INODE_SET_XTIME(i_atime, inode, oi->raw_inode);
--		ext4_inode_csum_set(inode, oi->raw_inode, ei);
-+		EXT4_INODE_SET_XTIME(i_ctime, inode, raw_inode);
-+		EXT4_INODE_SET_XTIME(i_mtime, inode, raw_inode);
-+		EXT4_INODE_SET_XTIME(i_atime, inode, raw_inode);
-+		ext4_inode_csum_set(inode, raw_inode, ei);
- 		spin_unlock(&ei->i_raw_lock);
--		trace_ext4_other_inode_update_time(inode, oi->orig_ino);
--		return -1;
-+		trace_ext4_other_inode_update_time(inode, orig_ino);
-+		return;
- 	}
- 	spin_unlock(&inode->i_lock);
--	return -1;
- }
- =
-
- /*
-@@ -4890,24 +4890,24 @@ static int other_inode_match(struct inode * inode,=
- unsigned long ino,
- static void ext4_update_other_inodes_time(struct super_block *sb,
- 					  unsigned long orig_ino, char *buf)
- {
--	struct other_inode oi;
- 	unsigned long ino;
- 	int i, inodes_per_block =3D EXT4_SB(sb)->s_inodes_per_block;
- 	int inode_size =3D EXT4_INODE_SIZE(sb);
- =
-
--	oi.orig_ino =3D orig_ino;
- 	/*
- 	 * Calculate the first inode in the inode table block.  Inode
- 	 * numbers are one-based.  That is, the first inode in a block
- 	 * (assuming 4k blocks and 256 byte inodes) is (n*16 + 1).
- 	 */
- 	ino =3D ((orig_ino - 1) & ~(inodes_per_block - 1)) + 1;
-+	rcu_read_lock();
- 	for (i =3D 0; i < inodes_per_block; i++, ino++, buf +=3D inode_size) {
- 		if (ino =3D=3D orig_ino)
- 			continue;
--		oi.raw_inode =3D (struct ext4_inode *) buf;
--		(void) find_inode_nowait(sb, ino, other_inode_match, &oi);
-+		__ext4_update_other_inode_time(sb, orig_ino, ino,
-+					       (struct ext4_inode *)buf);
- 	}
-+	rcu_read_unlock();
- }
- =
-
- /*
-diff --git a/fs/inode.c b/fs/inode.c
-index 7d57068b6b7a..a190c31e035f 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -496,7 +496,7 @@ void __insert_inode_hash(struct inode *inode, unsigned=
- long hashval)
- =
-
- 	spin_lock(&inode_hash_lock);
- 	spin_lock(&inode->i_lock);
--	hlist_add_head(&inode->i_hash, b);
-+	hlist_add_head_rcu(&inode->i_hash, b);
- 	spin_unlock(&inode->i_lock);
- 	spin_unlock(&inode_hash_lock);
- }
-@@ -512,7 +512,7 @@ void __remove_inode_hash(struct inode *inode)
- {
- 	spin_lock(&inode_hash_lock);
- 	spin_lock(&inode->i_lock);
--	hlist_del_init(&inode->i_hash);
-+	hlist_del_init_rcu(&inode->i_hash);
- 	spin_unlock(&inode->i_lock);
- 	spin_unlock(&inode_hash_lock);
- }
-@@ -807,8 +807,31 @@ long prune_icache_sb(struct super_block *sb, struct s=
-hrink_control *sc)
- }
- =
-
- static void __wait_on_freeing_inode(struct inode *inode);
-+
- /*
-- * Called with the inode lock held.
-+ * Find an inode.  Can be called with either the RCU read lock or the
-+ * inode cache lock held.  No check is made as to the validity of the
-+ * inode found.
-+ */
-+static struct inode *__find_inode_rcu(struct super_block *sb,
-+				      struct hlist_head *head,
-+				      int (*test)(struct inode *, void *),
-+				      void *data)
-+{
-+	struct inode *inode;
-+
-+	hlist_for_each_entry_rcu(inode, head, i_hash) {
-+		if (inode->i_sb =3D=3D sb &&
-+		    test(inode, data))
-+			return inode;
-+	}
-+
-+	return NULL;
-+}
-+
-+/*
-+ * Called with the inode hash lock held.  Waits until dying inodes are fr=
-eed,
-+ * dropping the inode hash lock temporarily to do so.
-  */
- static struct inode *find_inode(struct super_block *sb,
- 				struct hlist_head *head,
-@@ -818,11 +841,8 @@ static struct inode *find_inode(struct super_block *s=
-b,
- 	struct inode *inode =3D NULL;
- =
-
- repeat:
--	hlist_for_each_entry(inode, head, i_hash) {
--		if (inode->i_sb !=3D sb)
--			continue;
--		if (!test(inode, data))
--			continue;
-+	inode =3D __find_inode_rcu(sb, head, test, data);
-+	if (inode) {
- 		spin_lock(&inode->i_lock);
- 		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
- 			__wait_on_freeing_inode(inode);
-@@ -839,6 +859,26 @@ static struct inode *find_inode(struct super_block *s=
-b,
- 	return NULL;
- }
- =
-
-+/*
-+ * Find an inode by inode number.  Can be called with either the RCU
-+ * read lock or the inode cache lock held.  No check is made as to the
-+ * validity of the inode found.
-+ */
-+static struct inode *__find_inode_by_ino_rcu(struct super_block *sb,
-+					     struct hlist_head *head,
-+					     unsigned long ino)
-+{
-+	struct inode *inode;
-+
-+	hlist_for_each_entry_rcu(inode, head, i_hash) {
-+		if (inode->i_ino =3D=3D ino &&
-+		    inode->i_sb =3D=3D sb)
-+			return inode;
-+	}
-+
-+	return NULL;
-+}
-+
- /*
-  * find_inode_fast is the fast path version of find_inode, see the commen=
-t at
-  * iget_locked for details.
-@@ -849,11 +889,8 @@ static struct inode *find_inode_fast(struct super_blo=
-ck *sb,
- 	struct inode *inode =3D NULL;
- =
-
- repeat:
--	hlist_for_each_entry(inode, head, i_hash) {
--		if (inode->i_ino !=3D ino)
--			continue;
--		if (inode->i_sb !=3D sb)
--			continue;
-+	inode =3D __find_inode_by_ino_rcu(sb, head, ino);
-+	if (inode) {
- 		spin_lock(&inode->i_lock);
- 		if (inode->i_state & (I_FREEING|I_WILL_FREE)) {
- 			__wait_on_freeing_inode(inode);
-@@ -1106,7 +1143,7 @@ struct inode *inode_insert5(struct inode *inode, uns=
-igned long hashval,
- 	 */
- 	spin_lock(&inode->i_lock);
- 	inode->i_state |=3D I_NEW;
--	hlist_add_head(&inode->i_hash, head);
-+	hlist_add_head_rcu(&inode->i_hash, head);
- 	spin_unlock(&inode->i_lock);
- 	if (!creating)
- 		inode_sb_list_add(inode);
-@@ -1200,7 +1237,7 @@ struct inode *iget_locked(struct super_block *sb, un=
-signed long ino)
- 			inode->i_ino =3D ino;
- 			spin_lock(&inode->i_lock);
- 			inode->i_state =3D I_NEW;
--			hlist_add_head(&inode->i_hash, head);
-+			hlist_add_head_rcu(&inode->i_hash, head);
- 			spin_unlock(&inode->i_lock);
- 			inode_sb_list_add(inode);
- 			spin_unlock(&inode_hash_lock);
-@@ -1244,15 +1281,9 @@ static int test_inode_iunique(struct super_block *s=
-b, unsigned long ino)
- 	struct inode *inode;
- =
-
- 	spin_lock(&inode_hash_lock);
--	hlist_for_each_entry(inode, b, i_hash) {
--		if (inode->i_ino =3D=3D ino && inode->i_sb =3D=3D sb) {
--			spin_unlock(&inode_hash_lock);
--			return 0;
--		}
--	}
-+	inode =3D __find_inode_by_ino_rcu(sb, b, ino);
- 	spin_unlock(&inode_hash_lock);
--
--	return 1;
-+	return inode ? 0 : 1;
- }
- =
-
- /**
-@@ -1324,6 +1355,7 @@ EXPORT_SYMBOL(igrab);
-  *
-  * Note: I_NEW is not waited upon so you have to be very careful what you=
- do
-  * with the returned inode.  You probably should be using ilookup5() inst=
-ead.
-+ * It may still sleep waiting for I_FREE and I_WILL_FREE, however.
-  *
-  * Note2: @test is called with the inode_hash_lock held, so can't sleep.
-  */
-@@ -1406,54 +1438,84 @@ struct inode *ilookup(struct super_block *sb, unsi=
-gned long ino)
- EXPORT_SYMBOL(ilookup);
- =
-
- /**
-- * find_inode_nowait - find an inode in the inode cache
-- * @sb:		super block of file system to search
-- * @hashval:	hash value (usually inode number) to search for
-- * @match:	callback used for comparisons between inodes
-- * @data:	opaque data pointer to pass to @match
-- *
-- * Search for the inode specified by @hashval and @data in the inode
-- * cache, where the helper function @match will return 0 if the inode
-- * does not match, 1 if the inode does match, and -1 if the search
-- * should be stopped.  The @match function must be responsible for
-- * taking the i_lock spin_lock and checking i_state for an inode being
-- * freed or being initialized, and incrementing the reference count
-- * before returning 1.  It also must not sleep, since it is called with
-- * the inode_hash_lock spinlock held.
-- *
-- * This is a even more generalized version of ilookup5() when the
-- * function must never block --- find_inode() can block in
-- * __wait_on_freeing_inode() --- or when the caller can not increment
-- * the reference count because the resulting iput() might cause an
-- * inode eviction.  The tradeoff is that the @match funtion must be
-- * very carefully implemented.
-- */
--struct inode *find_inode_nowait(struct super_block *sb,
--				unsigned long hashval,
--				int (*match)(struct inode *, unsigned long,
--					     void *),
--				void *data)
-+ * find_inode_rcu - find an inode in the inode cache
-+ * @sb:		Super block of file system to search
-+ * @hashval:	Key to hash
-+ * @test:	Function to test match on an inode
-+ * @data:	Data for test function
-+ *
-+ * Search for the inode specified by @hashval and @data in the inode cach=
-e,
-+ * where the helper function @test will return 0 if the inode does not ma=
-tch
-+ * and 1 if it does.  The @test function must be responsible for taking t=
-he
-+ * i_lock spin_lock and checking i_state for an inode being freed or bein=
-g
-+ * initialized.
-+ *
-+ * If successful, this will return the inode for which the @test function
-+ * returned 1 and NULL otherwise.
-+ *
-+ * The @test function is not permitted to take a ref on any inode present=
-ed
-+ * unless the caller is holding the inode hashtable lock.  It is also not
-+ * permitted to sleep, since it may be called with the RCU read lock held=
-.
-+ *
-+ * The caller must hold either the RCU read lock or the inode hashtable l=
-ock.
-+ */
-+struct inode *find_inode_rcu(struct super_block *sb, unsigned long hashva=
-l,
-+			     int (*test)(struct inode *, void *), void *data)
- {
- 	struct hlist_head *head =3D inode_hashtable + hash(sb, hashval);
--	struct inode *inode, *ret_inode =3D NULL;
--	int mval;
-+	struct inode *inode;
- =
-
--	spin_lock(&inode_hash_lock);
--	hlist_for_each_entry(inode, head, i_hash) {
--		if (inode->i_sb !=3D sb)
--			continue;
--		mval =3D match(inode, hashval, data);
--		if (mval =3D=3D 0)
--			continue;
--		if (mval =3D=3D 1)
--			ret_inode =3D inode;
--		goto out;
-+	RCU_LOCKDEP_WARN(!lockdep_is_held(&inode_hash_lock) && !rcu_read_lock_he=
-ld(),
-+			 "suspicious find_inode_by_ino_rcu() usage");
-+
-+	hlist_for_each_entry_rcu(inode, head, i_hash) {
-+		if (inode->i_sb =3D=3D sb &&
-+		    !(READ_ONCE(inode->i_state) & (I_FREEING | I_WILL_FREE)) &&
-+		    test(inode, data))
-+			return inode;
- 	}
--out:
--	spin_unlock(&inode_hash_lock);
--	return ret_inode;
-+	return NULL;
-+}
-+EXPORT_SYMBOL(find_inode_rcu);
-+
-+/**
-+ * find_inode_by_rcu - Find an inode in the inode cache
-+ * @sb:		Super block of file system to search
-+ * @ino:	The inode number to match
-+ *
-+ * Search for the inode specified by @hashval and @data in the inode cach=
-e,
-+ * where the helper function @test will return 0 if the inode does not ma=
-tch
-+ * and 1 if it does.  The @test function must be responsible for taking t=
-he
-+ * i_lock spin_lock and checking i_state for an inode being freed or bein=
-g
-+ * initialized.
-+ *
-+ * If successful, this will return the inode for which the @test function
-+ * returned 1 and NULL otherwise.
-+ *
-+ * The @test function is not permitted to take a ref on any inode present=
-ed
-+ * unless the caller is holding the inode hashtable lock.  It is also not
-+ * permitted to sleep, since it may be called with the RCU read lock held=
-.
-+ *
-+ * The caller must hold either the RCU read lock or the inode hashtable l=
-ock.
-+ */
-+struct inode *find_inode_by_ino_rcu(struct super_block *sb,
-+				    unsigned long ino)
-+{
-+	struct hlist_head *head =3D inode_hashtable + hash(sb, ino);
-+	struct inode *inode;
-+
-+	RCU_LOCKDEP_WARN(!lockdep_is_held(&inode_hash_lock) && !rcu_read_lock_he=
-ld(),
-+			 "suspicious find_inode_by_ino_rcu() usage");
-+
-+	hlist_for_each_entry_rcu(inode, head, i_hash) {
-+		if (inode->i_ino =3D=3D ino &&
-+		    inode->i_sb =3D=3D sb &&
-+		    !(READ_ONCE(inode->i_state) & (I_FREEING | I_WILL_FREE)))
-+		    return inode;
-+	}
-+	return NULL;
- }
--EXPORT_SYMBOL(find_inode_nowait);
-+EXPORT_SYMBOL(find_inode_by_ino_rcu);
- =
-
- int insert_inode_locked(struct inode *inode)
- {
-@@ -1479,7 +1541,7 @@ int insert_inode_locked(struct inode *inode)
- 		if (likely(!old)) {
- 			spin_lock(&inode->i_lock);
- 			inode->i_state |=3D I_NEW | I_CREATING;
--			hlist_add_head(&inode->i_hash, head);
-+			hlist_add_head_rcu(&inode->i_hash, head);
- 			spin_unlock(&inode->i_lock);
- 			spin_unlock(&inode_hash_lock);
- 			return 0;
-@@ -1539,6 +1601,7 @@ static void iput_final(struct inode *inode)
- {
- 	struct super_block *sb =3D inode->i_sb;
- 	const struct super_operations *op =3D inode->i_sb->s_op;
-+	unsigned long state;
- 	int drop;
- =
-
- 	WARN_ON(inode->i_state & I_NEW);
-@@ -1554,16 +1617,20 @@ static void iput_final(struct inode *inode)
- 		return;
- 	}
- =
-
-+	state =3D READ_ONCE(inode->i_state);
- 	if (!drop) {
--		inode->i_state |=3D I_WILL_FREE;
-+		WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
- 		spin_unlock(&inode->i_lock);
-+
- 		write_inode_now(inode, 1);
-+
- 		spin_lock(&inode->i_lock);
--		WARN_ON(inode->i_state & I_NEW);
--		inode->i_state &=3D ~I_WILL_FREE;
-+		state =3D READ_ONCE(inode->i_state);
-+		WARN_ON(state & I_NEW);
-+		state &=3D ~I_WILL_FREE;
- 	}
- =
-
--	inode->i_state |=3D I_FREEING;
-+	WRITE_ONCE(inode->i_state, state | I_FREEING);
- 	if (!list_empty(&inode->i_lru))
- 		inode_lru_list_del(inode);
- 	spin_unlock(&inode->i_lock);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 3cd4fe6b845e..41f7cb439e34 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3057,11 +3057,9 @@ extern struct inode *inode_insert5(struct inode *in=
-ode, unsigned long hashval,
- 		void *data);
- extern struct inode * iget5_locked(struct super_block *, unsigned long, i=
-nt (*test)(struct inode *, void *), int (*set)(struct inode *, void *), vo=
-id *);
- extern struct inode * iget_locked(struct super_block *, unsigned long);
--extern struct inode *find_inode_nowait(struct super_block *,
--				       unsigned long,
--				       int (*match)(struct inode *,
--						    unsigned long, void *),
--				       void *data);
-+extern struct inode *find_inode_rcu(struct super_block *, unsigned long,
-+				    int (*)(struct inode *, void *), void *);
-+extern struct inode *find_inode_by_ino_rcu(struct super_block *, unsigned=
- long);
- extern int insert_inode_locked4(struct inode *, unsigned long, int (*test=
-)(struct inode *, void *), void *);
- extern int insert_inode_locked(struct inode *);
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
-
+> ---
+> 
+> v2: include more details in the commit message.
+> 
+>  fs/xfs/xfs_trans_ail.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/xfs/xfs_trans_ail.c b/fs/xfs/xfs_trans_ail.c
+> index 00cc5b8734be8..3bc570c90ad97 100644
+> --- a/fs/xfs/xfs_trans_ail.c
+> +++ b/fs/xfs/xfs_trans_ail.c
+> @@ -529,8 +529,9 @@ xfsaild(
+>  {
+>  	struct xfs_ail	*ailp = data;
+>  	long		tout = 0;	/* milliseconds */
+> +	unsigned int	noreclaim_flag;
+>  
+> -	current->flags |= PF_MEMALLOC;
+> +	noreclaim_flag = memalloc_noreclaim_save();
+>  	set_freezable();
+>  
+>  	while (1) {
+> @@ -601,6 +602,7 @@ xfsaild(
+>  		tout = xfsaild_push(ailp);
+>  	}
+>  
+> +	memalloc_noreclaim_restore(noreclaim_flag);
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
