@@ -2,29 +2,33 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 484C417E35F
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2020 16:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7767017E3A9
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2020 16:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgCIPSu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Mar 2020 11:18:50 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56353 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726446AbgCIPSu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Mar 2020 11:18:50 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-105.corp.google.com [104.133.0.105] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 029FIdAR028102
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 9 Mar 2020 11:18:41 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id ECE6B42045B; Mon,  9 Mar 2020 11:18:38 -0400 (EDT)
-Date:   Mon, 9 Mar 2020 11:18:38 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jean-Louis Dupond <jean-louis@dupond.be>
-Cc:     linux-ext4@vger.kernel.org
+        id S1726958AbgCIPdt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Mar 2020 11:33:49 -0400
+Received: from apollo.dupie.be ([51.15.19.225]:35516 "EHLO apollo.dupie.be"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726926AbgCIPdt (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 9 Mar 2020 11:33:49 -0400
+Received: from [10.10.1.146] (systeembeheer.combell.com [217.21.177.69])
+        by apollo.dupie.be (Postfix) with ESMTPSA id 0838280AE37;
+        Mon,  9 Mar 2020 16:33:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dupond.be; s=dkim;
+        t=1583768027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R1XXosTlIQobNknZjKha8pxExgwCG8py/92QnT7rCm0=;
+        b=Dw3Ic6sh9kl1lzKxsMchGtx36tTquKFjCwcaO2mcIGeWhhU2zmYBn4aKIsA4bQ2XzCUF8N
+        P7MxTRumybefR/ujYWBc0p8XeaWADvFwYClYR5plze54CRm5FaDwSfVYkXfqnXxPQ8JU79
+        o0LjIBOtPXsDJZB4KeSTY9NB6cjjA56sjbrCcOMlVbjhNKLRiGNoWwRFBB7UVa86Ox8bpV
+        HkzCRyKMvE3WBcfjTRlFtZuKogi5tVjUqAoMR+W+A8jGrAad5QJklRwNAHih4k/Ne/QzfF
+        q+HjhWm4MG+jX6mykXEMJnys31GPIEmLKdBzAYVUoZ38T2lYvxXquJKh4ghaFg==
 Subject: Re: Filesystem corruption after unreachable storage
-Message-ID: <20200309151838.GA4852@mit.edu>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
 References: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
  <20200124203725.GH147870@mit.edu>
  <3a7bc899-31d9-51f2-1ea9-b3bef2a98913@dupond.be>
@@ -34,54 +38,67 @@ References: <c829a701-3e22-8931-e5ca-2508f87f4d78@dupond.be>
  <20200225172355.GA14617@mit.edu>
  <d19e44af-585f-e4a2-5546-7a3345a0ee66@dupond.be>
  <50f93ccb-2b2c-15c5-8b08-facc3a25068a@dupond.be>
+ <20200309151838.GA4852@mit.edu>
+From:   Jean-Louis Dupond <jean-louis@dupond.be>
+Message-ID: <93e74f9f-6694-a3e9-4fac-981389522d25@dupond.be>
+Date:   Mon, 9 Mar 2020 16:33:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <50f93ccb-2b2c-15c5-8b08-facc3a25068a@dupond.be>
+In-Reply-To: <20200309151838.GA4852@mit.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Mar 09, 2020 at 02:52:38PM +0100, Jean-Louis Dupond wrote:
-> Did some more tests today.
-> 
-> Setting the SCSi timeout higher seems to be the most reliable solution.
-> When the storage recovers, the VM just recovers and we can continue :)
-> 
-> Also did test setting the filesystem option 'error=panic'.
-> When the storage recovers, the VM freezes. So a hard reset is needed. But on
-> boot a manual fsck is also needed like in the default situation.
-> So it seems like it still writes data to the FS before doing the panic?
-> You would expect it to not touch the fs anymore.
-> 
-> Would be nice if this situation could be a bit more error-proof :)
+On 9/03/2020 16:18, Theodore Y. Ts'o wrote:
+> Did the panic happen immediately, or did things hang until the storage
+> recovered, and*then*  it rebooted.  Or did the hard reset and reboot
+> happened before the storage network connection was restored?
 
-Did the panic happen immediately, or did things hang until the storage
-recovered, and *then* it rebooted.  Or did the hard reset and reboot
-happened before the storage network connection was restored?
+The panic (well it was just frozen, no stacktrace or automatic reboot) 
+did happen *after* storage came back online.
+So nothing happens while the storage is offline, even if we wait until 
+the scsi timeout is exceeded (180s * 6).
+It's only when the storage returns that the filesystem goes read-only / 
+panic (depending on the error setting).
+>
+> Fundamentally I think what's going on is that even though there is an
+> I/O error reported back to the OS, but in some cases, the outstanding
+> I/O actually happens.  So in the error=panic case, we do update the
+> superblock saying that the file system contains inconsistencies.  And
+> then we reboot.  But it appears that even though host rebooted, the
+> storage area network*did*  manage to send the I/O to the device.
+It seems that by updating the superblock to state that filesystem 
+contains errors, things are made worse.
+At the moment it does this, the storage is already accessible again, so 
+it seems logic the I/O is written.
+>
+> I'm not sure what we can really do here, other than simply making the
+> SCSI timeout infinite.  The problem is that storage area networks are
+> flaky.  Sometimes I/O's make it through, and even though we get an
+> error, it's an error from the local SCSI layer --- and it's possible
+> that I/O will make it through.  In other cases, even though the
+> storage area network was disconnected at the time we sent the I/O
+> saying the file system has problems, and then rebooted, the I/O
+> actually makes it through.  Given that, assuming that if we're not
+> sure, forcing an full file system check is better part of valor.
+If we do reset the VM before storage is back, the filesystem check just 
+goes fine in automatic mode.
+So I think we should (in some cases) not try to update the superblock 
+anymore on I/O errors, but just go read-only/panic.
+Cause it seems like updating the superblock makes things worse.
 
-Fundamentally I think what's going on is that even though there is an
-I/O error reported back to the OS, but in some cases, the outstanding
-I/O actually happens.  So in the error=panic case, we do update the
-superblock saying that the file system contains inconsistencies.  And
-then we reboot.  But it appears that even though host rebooted, the
-storage area network *did* manage to send the I/O to the device.
-
-I'm not sure what we can really do here, other than simply making the
-SCSI timeout infinite.  The problem is that storage area networks are
-flaky.  Sometimes I/O's make it through, and even though we get an
-error, it's an error from the local SCSI layer --- and it's possible
-that I/O will make it through.  In other cases, even though the
-storage area network was disconnected at the time we sent the I/O
-saying the file system has problems, and then rebooted, the I/O
-actually makes it through.  Given that, assuming that if we're not
-sure, forcing an full file system check is better part of valor.
-
-And if it hangs forever, and we do a hard reset reboot, I don't know
-*what* to trust from the storage area network.  Ideally, there would
-be some way to do a hard reset of the storage area network so that all
-outstanding I/O's from the host that we are about to reset will get
-forgotten before we do actually the hard reset.
-
-						- Ted
+Or changes could be made to e2fsck to allow automatic repair of this 
+kind of error for example?
+>
+> And if it hangs forever, and we do a hard reset reboot, I don't know
+> *what*  to trust from the storage area network.  Ideally, there would
+> be some way to do a hard reset of the storage area network so that all
+> outstanding I/O's from the host that we are about to reset will get
+> forgotten before we do actually the hard reset.
+>
+> 						- Ted
