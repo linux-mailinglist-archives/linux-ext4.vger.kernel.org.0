@@ -2,132 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB31E17D7BD
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2020 02:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC02217D89E
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2020 05:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgCIBY1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 8 Mar 2020 21:24:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59350 "EHLO mail.kernel.org"
+        id S1726165AbgCIEgF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Mar 2020 00:36:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726346AbgCIBY1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 8 Mar 2020 21:24:27 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725811AbgCIEgF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 9 Mar 2020 00:36:05 -0400
+Received: from sol.hsd1.ca.comcast.net (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D08D2064A;
-        Mon,  9 Mar 2020 01:24:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95EBD20674;
+        Mon,  9 Mar 2020 04:36:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583717066;
-        bh=72wt6abTXdZd2tpt0WJygez8l4q6+2mLPxpP0Bktgfg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sY2+Le5tLiyDZnWmMEU3521ZHiJ+JtD4RRWsVmldqyDoY/2DSOYNmxBMMvOCWf1Qj
-         9SM2dDoueJkLxaSmrfFd/gv8Z7V1w8NlWeKluCtrMNhcPEKBuBijZd02ktJOV22lwl
-         xP1q+dVQRNJvGAEmWcHVA94mvngCpvMPsVu2Y83U=
-Date:   Sun, 8 Mar 2020 18:24:24 -0700
+        s=default; t=1583728564;
+        bh=95aZjjyluMSPfUmxYUpMbl+whha09PwjkKv5ZZumBk4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oQQ6DEN8+XJaawHtRNhj/z+JL18YZZxUvKHYoy1UUAkrkQf6O8L2J8vuWKAJKTXrk
+         8GGZPnH3C4FzAOG9dnoBPEyudRM524LjnLTBEGt4MC1TvcYLnOvQ+PrWRkbYRZKJn2
+         lYyzFzWrBSTO0fOGKXPrgg/6Bc231NkYRVrsuTuU=
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] fs/direct-io.c: avoid workqueue allocation race
-Message-ID: <20200309012424.GB371527@sol.localdomain>
-References: <CACT4Y+Zt+fjBwJk-TcsccohBgxRNs37Hb4m6ZkZGy7u5P2+aaA@mail.gmail.com>
- <20200308055221.1088089-1-ebiggers@kernel.org>
- <20200308231253.GN10776@dread.disaster.area>
+To:     linux-xfs@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] xfs: clear PF_MEMALLOC before exiting xfsaild thread
+Date:   Sun,  8 Mar 2020 21:34:30 -0700
+Message-Id: <20200309043430.143206-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200309010410.GA371527@sol.localdomain>
+References: <20200309010410.GA371527@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200308231253.GN10776@dread.disaster.area>
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Mar 09, 2020 at 10:12:53AM +1100, Dave Chinner wrote:
-> On Sat, Mar 07, 2020 at 09:52:21PM -0800, Eric Biggers wrote:
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > When a thread loses the workqueue allocation race in
-> > sb_init_dio_done_wq(), lockdep reports that the call to
-> > destroy_workqueue() can deadlock waiting for work to complete.  This is
-> > a false positive since the workqueue is empty.  But we shouldn't simply
-> > skip the lockdep check for empty workqueues for everyone.
-> 
-> Why not? If the wq is empty, it can't deadlock, so this is a problem
-> with the workqueue lockdep annotations, not a problem with code that
-> is destroying an empty workqueue.
+From: Eric Biggers <ebiggers@google.com>
 
-Skipping the lockdep check when flushing an empty workqueue would reduce the
-ability of lockdep to detect deadlocks when flushing that workqueue.  I.e., it
-could cause lots of false negatives, since there are many cases where workqueues
-are *usually* empty when flushed/destroyed but it's still possible that they are
-nonempty.
+Leaving PF_MEMALLOC set when exiting a kthread causes it to remain set
+during do_exit().  That can confuse things.  For example, if BSD process
+accounting is enabled and the accounting file has FS_SYNC_FL set and is
+located on an ext4 filesystem without a journal, then do_exit() ends up
+calling ext4_write_inode().  That triggers the
+WARN_ON_ONCE(current->flags & PF_MEMALLOC) there, as it assumes
+(appropriately) that inodes aren't written when allocating memory.
 
-> 
-> > Just avoid this issue by using a mutex to serialize the workqueue
-> > allocation.  We still keep the preliminary check for ->s_dio_done_wq, so
-> > this doesn't affect direct I/O performance.
-> > 
-> > Also fix the preliminary check for ->s_dio_done_wq to use READ_ONCE(),
-> > since it's a data race.  (That part wasn't actually found by syzbot yet,
-> > but it could be detected by KCSAN in the future.)
-> > 
-> > Note: the lockdep false positive could alternatively be fixed by
-> > introducing a new function like "destroy_unused_workqueue()" to the
-> > workqueue API as previously suggested.  But I think it makes sense to
-> > avoid the double allocation anyway.
-> 
-> Fix the infrastructure, don't work around it be placing constraints
-> on how the callers can use the infrastructure to work around
-> problems internal to the infrastructure.
+Fix this in xfsaild() by using the helper functions to save and restore
+PF_MEMALLOC.
 
-Well, it's also preferable not to make our debugging tools less effective to
-support people doing weird things that they shouldn't really be doing anyway.
+This can be reproduced as follows in the kvm-xfstests test appliance
+modified to add the 'acct' Debian package, and with kvm-xfstests's
+recommended kconfig modified to add CONFIG_BSD_PROCESS_ACCT=y:
 
-(BTW, we need READ_ONCE() on ->sb_init_dio_done_wq anyway to properly annotate
-the data race.  That could be split into a separate patch though.)
+	mkfs.ext2 -F /dev/vdb
+	mount /vdb -t ext4
+	touch /vdb/file
+	chattr +S /vdb/file
+	accton /vdb/file
+	mkfs.xfs -f /dev/vdc
+	mount /vdc
+	umount /vdc
 
-Another idea that came up is to make each workqueue_struct track whether work
-has been queued on it or not yet, and make flush_workqueue() skip the lockdep
-check if the workqueue has always been empty.  (That could still cause lockdep
-false negatives, but not as many as if we checked if the workqueue is
-*currently* empty.)  Would you prefer that solution?  Adding more overhead to
-workqueues would be undesirable though, so I think it would have to be
-conditional on CONFIG_LOCKDEP, like (untested):
+It causes:
+	WARNING: CPU: 0 PID: 332 at fs/ext4/inode.c:5097 ext4_write_inode+0x140/0x1a0
+	CPU: 0 PID: 332 Comm: xfsaild/vdc Not tainted 5.6.0-rc5 #5
+	[...]
+	RIP: 0010:ext4_write_inode+0x140/0x1a0 fs/ext4/inode.c:5097
+	[...]
+	Call Trace:
+	 write_inode fs/fs-writeback.c:1312 [inline]
+	 __writeback_single_inode+0x465/0x5f0 fs/fs-writeback.c:1511
+	 writeback_single_inode+0xad/0x120 fs/fs-writeback.c:1565
+	 sync_inode fs/fs-writeback.c:2602 [inline]
+	 sync_inode_metadata+0x3d/0x57 fs/fs-writeback.c:2622
+	 ext4_fsync_nojournal fs/ext4/fsync.c:94 [inline]
+	 ext4_sync_file+0x243/0x4b0 fs/ext4/fsync.c:172
+	 generic_write_sync include/linux/fs.h:2867 [inline]
+	 ext4_buffered_write_iter+0xe1/0x130 fs/ext4/file.c:277
+	 call_write_iter include/linux/fs.h:1901 [inline]
+	 new_sync_write+0x130/0x1d0 fs/read_write.c:483
+	 __kernel_write+0x54/0xe0 fs/read_write.c:515
+	 do_acct_process+0x122/0x170 kernel/acct.c:522
+	 slow_acct_process kernel/acct.c:581 [inline]
+	 acct_process+0x1d4/0x27c kernel/acct.c:607
+	 do_exit+0x83d/0xbc0 kernel/exit.c:791
+	 kthread+0xf1/0x140 kernel/kthread.c:257
+	 ret_from_fork+0x27/0x50 arch/x86/entry/entry_64.S:352
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 301db4406bc37..72222c09bcaeb 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -263,6 +263,7 @@ struct workqueue_struct {
- 	char			*lock_name;
- 	struct lock_class_key	key;
- 	struct lockdep_map	lockdep_map;
-+	bool			used;
- #endif
- 	char			name[WQ_NAME_LEN]; /* I: workqueue name */
+This case was originally reported by syzbot at
+https://lore.kernel.org/r/0000000000000e7156059f751d7b@google.com.
+
+Reported-by: syzbot+1f9dc49e8de2582d90c2@syzkaller.appspotmail.com
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+---
+
+v2: include more details in the commit message.
+
+ fs/xfs/xfs_trans_ail.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/xfs/xfs_trans_ail.c b/fs/xfs/xfs_trans_ail.c
+index 00cc5b8734be8..3bc570c90ad97 100644
+--- a/fs/xfs/xfs_trans_ail.c
++++ b/fs/xfs/xfs_trans_ail.c
+@@ -529,8 +529,9 @@ xfsaild(
+ {
+ 	struct xfs_ail	*ailp = data;
+ 	long		tout = 0;	/* milliseconds */
++	unsigned int	noreclaim_flag;
  
-@@ -1404,6 +1405,9 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
- 	lockdep_assert_irqs_disabled();
+-	current->flags |= PF_MEMALLOC;
++	noreclaim_flag = memalloc_noreclaim_save();
+ 	set_freezable();
  
- 	debug_work_activate(work);
-+#ifdef CONFIG_LOCKDEP
-+	WRITE_ONCE(wq->used, true);
-+#endif
+ 	while (1) {
+@@ -601,6 +602,7 @@ xfsaild(
+ 		tout = xfsaild_push(ailp);
+ 	}
  
- 	/* if draining, only works from the same workqueue are allowed */
- 	if (unlikely(wq->flags & __WQ_DRAINING) &&
-@@ -2772,8 +2776,12 @@ void flush_workqueue(struct workqueue_struct *wq)
- 	if (WARN_ON(!wq_online))
- 		return;
++	memalloc_noreclaim_restore(noreclaim_flag);
+ 	return 0;
+ }
  
--	lock_map_acquire(&wq->lockdep_map);
--	lock_map_release(&wq->lockdep_map);
-+#ifdef CONFIG_LOCKDEP
-+	if (READ_ONCE(wq->used)) {
-+		lock_map_acquire(&wq->lockdep_map);
-+		lock_map_release(&wq->lockdep_map);
-+	}
-+#endif
- 
- 	mutex_lock(&wq->mutex);
+-- 
+2.25.1
+
