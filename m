@@ -2,175 +2,169 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3EB18024A
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Mar 2020 16:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16D418033D
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Mar 2020 17:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgCJPrH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Mar 2020 11:47:07 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47188 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726414AbgCJPrH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Mar 2020 11:47:07 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02AFV4EF045425;
-        Tue, 10 Mar 2020 15:47:04 GMT
+        id S1726851AbgCJQ2F (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Mar 2020 12:28:05 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:45134 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726692AbgCJQ2F (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Mar 2020 12:28:05 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02AGMYQ5152066;
+        Tue, 10 Mar 2020 16:28:01 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=corp-2020-01-29;
- bh=E+uMZnIg84WF7/AIVTmOQZkwnV32Fa5W9H+EdBj6650=;
- b=JDnp6Ib4bAs2/YTO+9cPgEPn+34hQ/oQ/Rmn9Iu1IXeDcqxch6P1wB7b3qGtzVp5sfIO
- RHSmlPhW1Zo4nGBF20GaAaL5KLXXtJI+iyV5XXEMKcDyR6gMXu4yik9ihmIb/bGiC8q3
- sm9Yc4OO64x6Keo4uuarWGY3YEoJIwMkn6XyqAmguzYBMCWqPzQMlFIsIPXx15Vp6nbu
- xB5EXYbbs5/hI8fMC05J3gOfuPhFcZTXxpmcsrSQfcIbktnpNV2ASrNPkDaerwKcTLYE
- lkbSWG59SeUIh/U/6C6GAD46N1zI7RlvwlhY4fM3yKzZs4J7vrlPwtaLhDt/MwFteemI +w== 
+ bh=kkPMDKXLTM2iEh+aZWGKygt+GgRaqCOy3rbqrHqUm4E=;
+ b=u1EDe8tfBpZdMRye89W8zqWmBkKGJpIyHrpGuFDZFHJQ0pcgR2C7QsnVOoilSnwg98yX
+ Uy9DXVd/98k7+g0jd+PBqN+RtCKRtqz9exO9Gmoean7qCQfaC2SleiI4cawro7iEWQJX
+ m2Qy/vh/XzT76/OOybi8YCexJxdZOcfUYLuXel4fG2Y2oTyTcHxt/4tkd22W/Civ2irx
+ UV1MmN/y2QnaJoqNO7wwssdlz5FhEcsUKv8tvA1uoDOst6IgyXBt/1vE1TS3Zsn0dJXU
+ 21G8S1F2xQ6AamR6HtwZr1JNnnyKu0MY6+XekVD5KML4/nIXLpdeXtEqvnz8mInwmNHG SA== 
 Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2yp9v61fmm-1
+        by userp2130.oracle.com with ESMTP id 2ym31uep2a-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Mar 2020 15:47:03 +0000
+        Tue, 10 Mar 2020 16:28:01 +0000
 Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02AFXgLt104499;
-        Tue, 10 Mar 2020 15:47:03 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 2yp8rjkx1b-1
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02AGBWH4025707;
+        Tue, 10 Mar 2020 16:28:00 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2yp8rju8k3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 10 Mar 2020 15:47:02 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 02AFl2X7029901;
-        Tue, 10 Mar 2020 15:47:02 GMT
+        Tue, 10 Mar 2020 16:28:00 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 02AGRxcK027962;
+        Tue, 10 Mar 2020 16:27:59 GMT
 Received: from localhost (/67.169.218.210)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 10 Mar 2020 08:47:01 -0700
-Date:   Tue, 10 Mar 2020 08:47:01 -0700
+        with ESMTP ; Tue, 10 Mar 2020 09:27:59 -0700
+Date:   Tue, 10 Mar 2020 09:27:58 -0700
 From:   "Darrick J. Wong" <darrick.wong@oracle.com>
 To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] xfs: clear PF_MEMALLOC before exiting xfsaild thread
-Message-ID: <20200310154701.GI8036@magnolia>
-References: <20200309181332.GJ1752567@magnolia>
- <20200309185714.42850-1-ebiggers@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] fs/direct-io.c: avoid workqueue allocation race
+Message-ID: <20200310162758.GJ8036@magnolia>
+References: <CACT4Y+Zt+fjBwJk-TcsccohBgxRNs37Hb4m6ZkZGy7u5P2+aaA@mail.gmail.com>
+ <20200308055221.1088089-1-ebiggers@kernel.org>
+ <20200308231253.GN10776@dread.disaster.area>
+ <20200309012424.GB371527@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200309185714.42850-1-ebiggers@kernel.org>
+In-Reply-To: <20200309012424.GB371527@sol.localdomain>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9556 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0 mlxscore=0
  spamscore=0 malwarescore=0 bulkscore=0 adultscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2003100100
+ definitions=main-2003100102
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9556 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
+ phishscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0 clxscore=1015
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2003100100
+ definitions=main-2003100102
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Mar 09, 2020 at 11:57:14AM -0700, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
+On Sun, Mar 08, 2020 at 06:24:24PM -0700, Eric Biggers wrote:
+> On Mon, Mar 09, 2020 at 10:12:53AM +1100, Dave Chinner wrote:
+> > On Sat, Mar 07, 2020 at 09:52:21PM -0800, Eric Biggers wrote:
+> > > From: Eric Biggers <ebiggers@google.com>
+> > > 
+> > > When a thread loses the workqueue allocation race in
+> > > sb_init_dio_done_wq(), lockdep reports that the call to
+> > > destroy_workqueue() can deadlock waiting for work to complete.  This is
+> > > a false positive since the workqueue is empty.  But we shouldn't simply
+> > > skip the lockdep check for empty workqueues for everyone.
+> > 
+> > Why not? If the wq is empty, it can't deadlock, so this is a problem
+> > with the workqueue lockdep annotations, not a problem with code that
+> > is destroying an empty workqueue.
 > 
-> Leaving PF_MEMALLOC set when exiting a kthread causes it to remain set
-> during do_exit().  That can confuse things.  In particular, if BSD
-> process accounting is enabled, then do_exit() writes data to an
-> accounting file.  If that file has FS_SYNC_FL set, then this write
-> occurs synchronously and can misbehave if PF_MEMALLOC is set.
+> Skipping the lockdep check when flushing an empty workqueue would reduce the
+> ability of lockdep to detect deadlocks when flushing that workqueue.  I.e., it
+> could cause lots of false negatives, since there are many cases where workqueues
+> are *usually* empty when flushed/destroyed but it's still possible that they are
+> nonempty.
 > 
-> For example, if the accounting file is located on an XFS filesystem,
-> then a WARN_ON_ONCE() in iomap_do_writepage() is triggered and the data
-> doesn't get written when it should.  Or if the accounting file is
-> located on an ext4 filesystem without a journal, then a WARN_ON_ONCE()
-> in ext4_write_inode() is triggered and the inode doesn't get written.
+> > 
+> > > Just avoid this issue by using a mutex to serialize the workqueue
+> > > allocation.  We still keep the preliminary check for ->s_dio_done_wq, so
+> > > this doesn't affect direct I/O performance.
+> > > 
+> > > Also fix the preliminary check for ->s_dio_done_wq to use READ_ONCE(),
+> > > since it's a data race.  (That part wasn't actually found by syzbot yet,
+> > > but it could be detected by KCSAN in the future.)
+> > > 
+> > > Note: the lockdep false positive could alternatively be fixed by
+> > > introducing a new function like "destroy_unused_workqueue()" to the
+> > > workqueue API as previously suggested.  But I think it makes sense to
+> > > avoid the double allocation anyway.
+> > 
+> > Fix the infrastructure, don't work around it be placing constraints
+> > on how the callers can use the infrastructure to work around
+> > problems internal to the infrastructure.
 > 
-> Fix this in xfsaild() by using the helper functions to save and restore
-> PF_MEMALLOC.
+> Well, it's also preferable not to make our debugging tools less effective to
+> support people doing weird things that they shouldn't really be doing anyway.
 > 
-> This can be reproduced as follows in the kvm-xfstests test appliance
-> modified to add the 'acct' Debian package, and with kvm-xfstests's
-> recommended kconfig modified to add CONFIG_BSD_PROCESS_ACCT=y:
+> (BTW, we need READ_ONCE() on ->sb_init_dio_done_wq anyway to properly annotate
+> the data race.  That could be split into a separate patch though.)
 > 
->         mkfs.xfs -f /dev/vdb
->         mount /vdb
->         touch /vdb/file
->         chattr +S /vdb/file
->         accton /vdb/file
->         mkfs.xfs -f /dev/vdc
->         mount /vdc
->         umount /vdc
-> 
-> It causes:
-> 	WARNING: CPU: 1 PID: 336 at fs/iomap/buffered-io.c:1534
-> 	CPU: 1 PID: 336 Comm: xfsaild/vdc Not tainted 5.6.0-rc5 #3
-> 	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20191223_100556-anatol 04/01/2014
-> 	RIP: 0010:iomap_do_writepage+0x16b/0x1f0 fs/iomap/buffered-io.c:1534
-> 	[...]
-> 	Call Trace:
-> 	 write_cache_pages+0x189/0x4d0 mm/page-writeback.c:2238
-> 	 iomap_writepages+0x1c/0x33 fs/iomap/buffered-io.c:1642
-> 	 xfs_vm_writepages+0x65/0x90 fs/xfs/xfs_aops.c:578
-> 	 do_writepages+0x41/0xe0 mm/page-writeback.c:2344
-> 	 __filemap_fdatawrite_range+0xd2/0x120 mm/filemap.c:421
-> 	 file_write_and_wait_range+0x71/0xc0 mm/filemap.c:760
-> 	 xfs_file_fsync+0x7a/0x2b0 fs/xfs/xfs_file.c:114
-> 	 generic_write_sync include/linux/fs.h:2867 [inline]
-> 	 xfs_file_buffered_aio_write+0x379/0x3b0 fs/xfs/xfs_file.c:691
-> 	 call_write_iter include/linux/fs.h:1901 [inline]
-> 	 new_sync_write+0x130/0x1d0 fs/read_write.c:483
-> 	 __kernel_write+0x54/0xe0 fs/read_write.c:515
-> 	 do_acct_process+0x122/0x170 kernel/acct.c:522
-> 	 slow_acct_process kernel/acct.c:581 [inline]
-> 	 acct_process+0x1d4/0x27c kernel/acct.c:607
-> 	 do_exit+0x83d/0xbc0 kernel/exit.c:791
-> 	 kthread+0xf1/0x140 kernel/kthread.c:257
-> 	 ret_from_fork+0x27/0x50 arch/x86/entry/entry_64.S:352
-> 
-> This bug was originally reported by syzbot at
-> https://lore.kernel.org/r/0000000000000e7156059f751d7b@google.com.
-> 
-> Reported-by: syzbot+1f9dc49e8de2582d90c2@syzkaller.appspotmail.com
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Another idea that came up is to make each workqueue_struct track whether work
+> has been queued on it or not yet, and make flush_workqueue() skip the lockdep
+> check if the workqueue has always been empty.  (That could still cause lockdep
+> false negatives, but not as many as if we checked if the workqueue is
+> *currently* empty.)  Would you prefer that solution?  Adding more overhead to
+> workqueues would be undesirable though, so I think it would have to be
+> conditional on CONFIG_LOCKDEP, like (untested):
 
-Seems reasonable to me, will give it a spin...
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+I can't speak for Dave, but if the problem here really is that lockdep's
+modelling of flush_workqueue()'s behavior could be improved to eliminate
+false reports, then this seems reasonable to me...
 
 --D
 
-> ---
-> 
-> v3: updated commit message again, this time to take into account the bug
->     also being reproducible when the accounting file is located on XFS.
-> 
-> v2: include more details in the commit message.
-> 
->  fs/xfs/xfs_trans_ail.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/xfs/xfs_trans_ail.c b/fs/xfs/xfs_trans_ail.c
-> index 00cc5b8734be8..3bc570c90ad97 100644
-> --- a/fs/xfs/xfs_trans_ail.c
-> +++ b/fs/xfs/xfs_trans_ail.c
-> @@ -529,8 +529,9 @@ xfsaild(
->  {
->  	struct xfs_ail	*ailp = data;
->  	long		tout = 0;	/* milliseconds */
-> +	unsigned int	noreclaim_flag;
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 301db4406bc37..72222c09bcaeb 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -263,6 +263,7 @@ struct workqueue_struct {
+>  	char			*lock_name;
+>  	struct lock_class_key	key;
+>  	struct lockdep_map	lockdep_map;
+> +	bool			used;
+>  #endif
+>  	char			name[WQ_NAME_LEN]; /* I: workqueue name */
 >  
-> -	current->flags |= PF_MEMALLOC;
-> +	noreclaim_flag = memalloc_noreclaim_save();
->  	set_freezable();
+> @@ -1404,6 +1405,9 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
+>  	lockdep_assert_irqs_disabled();
 >  
->  	while (1) {
-> @@ -601,6 +602,7 @@ xfsaild(
->  		tout = xfsaild_push(ailp);
->  	}
+>  	debug_work_activate(work);
+> +#ifdef CONFIG_LOCKDEP
+> +	WRITE_ONCE(wq->used, true);
+> +#endif
 >  
-> +	memalloc_noreclaim_restore(noreclaim_flag);
->  	return 0;
->  }
+>  	/* if draining, only works from the same workqueue are allowed */
+>  	if (unlikely(wq->flags & __WQ_DRAINING) &&
+> @@ -2772,8 +2776,12 @@ void flush_workqueue(struct workqueue_struct *wq)
+>  	if (WARN_ON(!wq_online))
+>  		return;
 >  
-> -- 
-> 2.25.1
-> 
+> -	lock_map_acquire(&wq->lockdep_map);
+> -	lock_map_release(&wq->lockdep_map);
+> +#ifdef CONFIG_LOCKDEP
+> +	if (READ_ONCE(wq->used)) {
+> +		lock_map_acquire(&wq->lockdep_map);
+> +		lock_map_release(&wq->lockdep_map);
+> +	}
+> +#endif
+>  
+>  	mutex_lock(&wq->mutex);
