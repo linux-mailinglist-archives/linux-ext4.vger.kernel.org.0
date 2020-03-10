@@ -2,125 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8AF17ED35
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Mar 2020 01:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A52B17F34F
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Mar 2020 10:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727450AbgCJAS1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Mar 2020 20:18:27 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:39277 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726937AbgCJAS0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Mar 2020 20:18:26 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 35D6B2B17;
-        Mon,  9 Mar 2020 20:18:25 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 09 Mar 2020 20:18:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=y2GQYGvf1VdVHeGmvE5sDqwzusj
-        gACWrEd8rXJZj1/8=; b=hCLjptm8wkq6KP7tCx7x9OtPNkX0eMvm5L8o2L97Wdo
-        y7vZrsFkN2f4S8Xv4R8dqRogUS/9W/QJ66jTev5Aoip48Jo0P4gB73pf4vehqIPK
-        JjNTp8MWQ1ArZcM945bWyUlu9TnTT7vRowJNgZw7oaWVz+6Ro+kUV+BvaTb/Axir
-        Rd6auBHkdyebUJ4UZ8DYveKmdHVSu6fdUbPx5wy2rYk0qCyFwSg38WMAwVPUg5Ku
-        GA4lOOXpIKxaAK22UekVw8FFJzKTa6OzjJ9Oxk/T3qcyaA35MUgwyxYjd1ZtgS6K
-        i5h6lcNjdPFhMmGhYyeM8m3cEHGO/5NZU3TbC7SzNdw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=y2GQYG
-        vf1VdVHeGmvE5sDqwzusjgACWrEd8rXJZj1/8=; b=hR1CHx7sGSLI0tfsHsnts5
-        3Hmffp3/lf5X5mVKSJZiHGvay1HEsa/lAhINcfhikONaFnXvPMdWcLXqeI65qu98
-        5IGZzvzrZLQ9rEQZTkcsAFr2dIvY4csYaQValDPkpQpiqkp6DIy7g6XepjoptqAM
-        TAM4ZHUlxf1IYp29XvsF7D7DaBJDJkw0kAtUKVLfY/O4E08dDeL6j/ykjMW5rpWe
-        5XcWL8In/VDf8l+3tnGbBDB8uwSj9B1NPqbn3/lNK7AcsnmcVtwEgK191sA2Nh4G
-        LIeRxCXeQnoCNpMDjJXnTOClDNOcp3XeJNhqoSjyqGciCTV5p+IuLeAxePrsi5bg
-        ==
-X-ME-Sender: <xms:z9xmXj9MdiMQxb3sWpQ0zpHMFqyrXHaQEw8NK1xMORNkzGXW3ZRTzQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrudduledgudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhgurhgv
-    shcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucfkphepie
-    ejrdduiedtrddvudejrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomheprghnughrvghssegrnhgrrhgriigvlhdruggv
-X-ME-Proxy: <xmx:z9xmXg-FyPlg1L30wL5k3gQsDNd-t7jy7bKj8Kt6liqh63q9EbY7mw>
-    <xmx:z9xmXuF-0sjXCm1U5Zku5J7ltPA7_BmZzh1YdA3oUYFbwW4JBHao7g>
-    <xmx:z9xmXicuLoixXJ2XZ_721dkzztz4dN0Kp240Oq1ekOXjgrpEZlsUkw>
-    <xmx:0dxmXho2KzunPEg77nJRP3TUrcGMSb00ReWWFfVGCGI3mSgfDxoD0Q>
-Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 007C43061856;
-        Mon,  9 Mar 2020 20:18:23 -0400 (EDT)
-Date:   Mon, 9 Mar 2020 17:18:21 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Jeff Layton <jlayton@redhat.com>
-Cc:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org,
-        viro@zeniv.linux.org.uk, Theodore Ts'o <tytso@mit.edu>,
+        id S1726391AbgCJJSU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Mar 2020 05:18:20 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:45454 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726390AbgCJJST (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Mar 2020 05:18:19 -0400
+Received: by mail-il1-f195.google.com with SMTP id p1so7327345ils.12
+        for <linux-ext4@vger.kernel.org>; Tue, 10 Mar 2020 02:18:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hhr2JQNCTfwAz5fM8AxpKXVAk7m03eW/WPRPp++R3bc=;
+        b=CLeuNfcd8lneEopBSQtHp3Kt+HipoV0gZP6IuZpydHV2/p4TlsVqkfu5HowfqMTXt4
+         B6Nes0PUjpXtVP2DD/+CYwm5MJkMF1NpiN6Pigz83+0gVtQu29MQJHpZf1loCCFWgnuY
+         NvSCicUjakpnIekJzu1+qB/DP+TL60iT/Mg+Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hhr2JQNCTfwAz5fM8AxpKXVAk7m03eW/WPRPp++R3bc=;
+        b=CpAhCKCTBX/eAC0cq5oFSPUcdcprIp08FIwvRlyUBw+LMRGAHFYZ/PtOMZB/Q9Zt+N
+         BklzkNGNuGRcPM5u9KVGn7xPqdaT9JMfU9KN98gp7SmU4/tDnGJuG06PvRZNvoWVELQl
+         qMkEqF9ykqa8Q+Q8ITPsxQE/sdHAcjf3yb8BqqtKNcARhKiAF7NPazLo4TujcIwQZxKj
+         AMy770j9/4ZGnE1XPNA62RzwZlwNd2vqWv7E41rbSuV2r+SSszNDenffnHhdN+MtIiEs
+         I2RhMM+6fEUpA4LFJEuYMUux0liB0VvTDVnERkSO8JW2LJFvyD3tsXuVPtYRaO8uqMsx
+         fnOQ==
+X-Gm-Message-State: ANhLgQ3pqlBzucbPVpbRtnXQmox4DpO+RvG8C4VZlgaE972aCzpFHhLf
+        46SPIj1NYLuUSm0ljEndkpKrE9Hlz7c4by4xv7mmnw==
+X-Google-Smtp-Source: ADFU+vugKYA3Ig1dwzBjyGS81nr/dzb7dU1rNPjVpJ6bTLDiyqMRJ04NHueIU+BRzWkQaOZi8m5WZXZZBMnnCNWaxaA=
+X-Received: by 2002:a92:9602:: with SMTP id g2mr18883520ilh.212.1583831899169;
+ Tue, 10 Mar 2020 02:18:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <158376244589.344135.12925590041630631412.stgit@warthog.procyon.org.uk>
+ <20200309200238.GB28467@miu.piliscsaba.redhat.com> <537182.1583794373@warthog.procyon.org.uk>
+In-Reply-To: <537182.1583794373@warthog.procyon.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 10 Mar 2020 10:18:08 +0100
+Message-ID: <CAJfpegt9TqfyJuk0G-OJdWLiKuxSeY0cQKK=1GVf1fStA9COBw@mail.gmail.com>
+Subject: Re: [PATCH 00/14] VFS: Filesystem information [ver #18]
+To:     David Howells <dhowells@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Theodore Ts'o" <tytso@mit.edu>,
         Stefan Metzmacher <metze@samba.org>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         linux-ext4@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
         Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-nfs@vger.kernel.org, linux-api@vger.kernel.org,
-        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
-        jannh@google.com, darrick.wong@oracle.com, kzak@redhat.com,
+        Linux NFS list <linux-nfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
         linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/14] VFS: Filesystem information [ver #18]
-Message-ID: <20200310001821.vb7qwfhnq67rsknn@alap3.anarazel.de>
-References: <158376244589.344135.12925590041630631412.stgit@warthog.procyon.org.uk>
- <2d31e2658e5f6651dc7d9908c4c12b6ba461fc88.camel@redhat.com>
- <20200309192240.nqf5bxylptw7mdm3@alap3.anarazel.de>
- <32c384ac3adf0cf924d3071a13af7edffe53cc2b.camel@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32c384ac3adf0cf924d3071a13af7edffe53cc2b.camel@redhat.com>
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi,
-
-On 2020-03-09 18:49:31 -0400, Jeff Layton wrote:
-> On Mon, 2020-03-09 at 12:22 -0700, Andres Freund wrote:
-> > On 2020-03-09 13:50:59 -0400, Jeff Layton wrote:
-> > > I sent a patch a few weeks ago to make syncfs() return errors when there
-> > > have been writeback errors on the superblock. It's not merged yet, but
-> > > once we have something like that in place, we could expose info from the
-> > > errseq_t to userland using this interface.
-> >
-> > I'm still a bit worried about the details of errseq_t being exposed to
-> > userland. Partially because it seems to restrict further evolution of
-> > errseq_t, and partially because it will likely up with userland trying
-> > to understand it (it's e.g. just too attractive to report a count of
-> > errors etc).
+On Mon, Mar 9, 2020 at 11:53 PM David Howells <dhowells@redhat.com> wrote:
 >
-> Trying to interpret the counter field won't really tell you anything.
-> The counter is not incremented unless someone has queried the value
-> since it was last checked. A single increment could represent a single
-> writeback error or 10000 identical ones.
+> Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> > >  (1) It can be targetted.  It makes it easy to query directly by path or
+> > >      fd, but can also query by mount ID or fscontext fd.  procfs and sysfs
+> > >      cannot do three of these things easily.
+> >
+> > See above: with the addition of open(path, O_PATH) it can do all of these.
+>
+> That's a horrible interface.  To query a file by path, you have to do:
+>
+>         fd = open(path, O_PATH);
+>         sprintf(procpath, "/proc/self/fdmount/%u/<attr>");
+>         fd2 = open(procpath, O_RDONLY);
+>         read(fd2, ...);
+>         close(fd2);
+>         close(fd);
+>
+> See point (3) about efficiency also.  You're having to open *two* files.
 
-Oh, right.  A zero errseq would still indicate something, but that's
-probably fine.
+I completely agree, opening two files is surely going to kill
+performance of application needing to retrieve a billion mount
+attributes per second.</sarcasm>
 
+> > >  (2) Easier to provide LSM oversight.  Is the accessing process allowed to
+> > >      query information pertinent to a particular file?
+> >
+> > Not quite sure why this would be easier for a new ad-hoc interface than for
+> > the well established filesystem API.
+>
+> You're right.  That's why fsinfo() uses standard pathwalk where possible,
+> e.g.:
+>
+>         fsinfo(AT_FDCWD, "/path/to/file", ...);
+>
+> or a fairly standard fd-querying interface:
+>
+>         fsinfo(fd, "", { resolve_flags = RESOLVE_EMPTY_PATH },  ...);
+>
+> to query an open file descriptor.  These are well-established filesystem APIs.
 
-> > Is there a reason to not instead report a 64bit counter instead of the
-> > cookie? In contrast to the struct file case we'd only have the space
-> > overhead once per superblock, rather than once per #files * #fd. And it
-> > seems that the maintenance of that counter could be done without
-> > widespread changes, e.g. instead/in addition to your change:
+Yes.  The problem is with the "..." part where you pass random
+structures to a function.   That's useful sometimes, but at the very
+least it breaks type safety, and not what I would call a "clean" API.
 
-> What problem would moving to a 64-bit counter solve? I get the concern
-> about people trying to get a counter out of the cookie field, but giving
-> people an explicit 64-bit counter seems even more open to
-> misinterpretation.
+> > Now onto the advantages of a filesystem based API:
+> >
+> >  - immediately usable from all programming languages, including scripts
+>
+> This is not true.  You can't open O_PATH from shell scripts, so you can't
+> query things by path that you can't or shouldn't open (dev file paths, for
+> example; symlinks).
 
-Well, you could get an actual error count out of it? I was thinking that
-that value would get incremented every time mapping_set_error() is
-called, which should make it a meaningful count?
+Yes.  However, you just wrote the core of a utility that could do this
+(in 6 lines, no less).  Now try that feat with fsinfo(2)!
 
-Greetings,
-
-Andres Freund
+Thanks,
+Miklos
