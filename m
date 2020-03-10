@@ -2,147 +2,152 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF1E180B66
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Mar 2020 23:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C86180BFC
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Mar 2020 00:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727728AbgCJWWc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 10 Mar 2020 18:22:32 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:60663 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727685AbgCJWWc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 10 Mar 2020 18:22:32 -0400
-Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 3FD997E9BA9;
-        Wed, 11 Mar 2020 09:22:28 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jBnGd-0004dQ-FO; Wed, 11 Mar 2020 09:22:27 +1100
-Date:   Wed, 11 Mar 2020 09:22:27 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] fs/direct-io.c: avoid workqueue allocation race
-Message-ID: <20200310222227.GP10776@dread.disaster.area>
-References: <CACT4Y+Zt+fjBwJk-TcsccohBgxRNs37Hb4m6ZkZGy7u5P2+aaA@mail.gmail.com>
- <20200308055221.1088089-1-ebiggers@kernel.org>
- <20200308231253.GN10776@dread.disaster.area>
- <20200309012424.GB371527@sol.localdomain>
- <20200310162758.GJ8036@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200310162758.GJ8036@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=SS2py6AdgQ4A:10
-        a=1XWaLZrsAAAA:8 a=7-415B0cAAAA:8 a=nc9e2v5Tfj97ZLR5cfIA:9
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        id S1727588AbgCJXCh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 10 Mar 2020 19:02:37 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:46449 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726325AbgCJXCh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 10 Mar 2020 19:02:37 -0400
+Received: by mail-pl1-f194.google.com with SMTP id w12so119391pll.13
+        for <linux-ext4@vger.kernel.org>; Tue, 10 Mar 2020 16:02:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=U59O1Foeqobf/5A+Fbao0QIwyZDJIAT+QYUdmJYQzjU=;
+        b=S7nD5nLK1kfHyqPQ3gqd2DS8vUDYgL55ddbe2Y0Tc5hxubbYY6N6mMfdnKBCDSlCAY
+         S3TLsAjlelMpqQcnbBgb7oinKGQ/3Xq+wqTqVEkgIIgIqrEo9TLYytr8x8Wmi79UzrIh
+         kzkp9UJ1Lltomwm0KHQrqxIz7sa84Wxtm7N8w1DQvW8D/mhFTJrulYXhXdNbhn0kvVtR
+         W5mphEYjY5TAPEE+OOEB84tNxhKc7blvCf/9Vv2Qc+o9jmyGHRwmU6vMK4E00rTe4qHg
+         0I36M0ic2UBXLQCgHKojTprHJ17QyzOBIsCnkUZ18wq3gGp+Ny2S9nc/E8nh028RDtbd
+         sU7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=U59O1Foeqobf/5A+Fbao0QIwyZDJIAT+QYUdmJYQzjU=;
+        b=PHjUvNzrRsGbqFBIHaoDoo+1+x+qGhtEfcFPkr9Va68rel7nKWH656b7k/gC715caT
+         W6ml6XAocEEYCQadClfFLD2IMdod55s67TS4PprGhOUAofAf3A5/zgH/LriQfpwQsddc
+         hPPskP5pOXJ5uX9LgcFSUMFMyD8Ll4V2M42DSNyoROqCz4v6SwnoPyHKFhwuOFnQ6cqn
+         QhMffF1fEp0iNz88YL6cvDpy4IrMYQjMDtS6CluWHisIBxVWryoSedHq1Bh9dYD/cPl5
+         hSXUtmh2se7fGCMVUWqz7BAHzALFhxiV/WNAdaJX/i+a1iFtnXsS7OaWVYEc//zNB64A
+         TdGQ==
+X-Gm-Message-State: ANhLgQ10YB5gjDVmbJmKU1HP29MuK3gJIcWd4pAHxC8g2hwsMq6OC++u
+        wtgjjw6JWNsZ0YtZCvL5R3bktdf1Gok=
+X-Google-Smtp-Source: ADFU+vvdQp7sqAFaZNhgIbkQf7PaeAEDPoyXO0J4hcmwgOC5Mu5TMqOSPfFK/lr5e9GCxBEKYDt1/g==
+X-Received: by 2002:a17:902:7896:: with SMTP id q22mr233309pll.120.1583881354163;
+        Tue, 10 Mar 2020 16:02:34 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id dw19sm3239918pjb.16.2020.03.10.16.02.33
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Mar 2020 16:02:33 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <2BF8E155-34A0-4913-9B81-DC6CA1A4F6E0@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_91421AA8-ED0D-48E8-8379-8C41047C5BF9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: mark block bitmap corrupted when found instead of
+ BUGON
+Date:   Tue, 10 Mar 2020 17:02:26 -0600
+In-Reply-To: <20200310150156.641-1-dmonakhov@gmail.com>
+Cc:     linux-ext4 <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>
+To:     Dmitry Monakhov <dmonakhov@gmail.com>
+References: <20200310150156.641-1-dmonakhov@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-[ Sorry, my responses are limited at the moment because I took a
-chunk out of a fingertip a couple of days ago and I can only do
-about half an hour before my hand and arm start to cramp from the
-weird positions and motions 3 finger typing results in.... ]
 
-On Tue, Mar 10, 2020 at 09:27:58AM -0700, Darrick J. Wong wrote:
-> On Sun, Mar 08, 2020 at 06:24:24PM -0700, Eric Biggers wrote:
-> > On Mon, Mar 09, 2020 at 10:12:53AM +1100, Dave Chinner wrote:
-> > > On Sat, Mar 07, 2020 at 09:52:21PM -0800, Eric Biggers wrote:
-> > > > From: Eric Biggers <ebiggers@google.com>
-> > > > 
-> > > > When a thread loses the workqueue allocation race in
-> > > > sb_init_dio_done_wq(), lockdep reports that the call to
-> > > > destroy_workqueue() can deadlock waiting for work to complete.  This is
-> > > > a false positive since the workqueue is empty.  But we shouldn't simply
-> > > > skip the lockdep check for empty workqueues for everyone.
-> > > 
-> > > Why not? If the wq is empty, it can't deadlock, so this is a problem
-> > > with the workqueue lockdep annotations, not a problem with code that
-> > > is destroying an empty workqueue.
-> > 
-> > Skipping the lockdep check when flushing an empty workqueue would reduce the
-> > ability of lockdep to detect deadlocks when flushing that workqueue.  I.e., it
-> > could cause lots of false negatives, since there are many cases where workqueues
-> > are *usually* empty when flushed/destroyed but it's still possible that they are
-> > nonempty.
-> > 
-> > > 
-> > > > Just avoid this issue by using a mutex to serialize the workqueue
-> > > > allocation.  We still keep the preliminary check for ->s_dio_done_wq, so
-> > > > this doesn't affect direct I/O performance.
-> > > > 
-> > > > Also fix the preliminary check for ->s_dio_done_wq to use READ_ONCE(),
-> > > > since it's a data race.  (That part wasn't actually found by syzbot yet,
-> > > > but it could be detected by KCSAN in the future.)
-> > > > 
-> > > > Note: the lockdep false positive could alternatively be fixed by
-> > > > introducing a new function like "destroy_unused_workqueue()" to the
-> > > > workqueue API as previously suggested.  But I think it makes sense to
-> > > > avoid the double allocation anyway.
-> > > 
-> > > Fix the infrastructure, don't work around it be placing constraints
-> > > on how the callers can use the infrastructure to work around
-> > > problems internal to the infrastructure.
-> > 
-> > Well, it's also preferable not to make our debugging tools less effective to
-> > support people doing weird things that they shouldn't really be doing anyway.
-> > 
-> > (BTW, we need READ_ONCE() on ->sb_init_dio_done_wq anyway to properly annotate
-> > the data race.  That could be split into a separate patch though.)
-> > 
-> > Another idea that came up is to make each workqueue_struct track whether work
-> > has been queued on it or not yet, and make flush_workqueue() skip the lockdep
-> > check if the workqueue has always been empty.  (That could still cause lockdep
-> > false negatives, but not as many as if we checked if the workqueue is
-> > *currently* empty.)  Would you prefer that solution?  Adding more overhead to
-> > workqueues would be undesirable though, so I think it would have to be
-> > conditional on CONFIG_LOCKDEP, like (untested):
-> 
-> I can't speak for Dave, but if the problem here really is that lockdep's
-> modelling of flush_workqueue()'s behavior could be improved to eliminate
-> false reports, then this seems reasonable to me...
+--Apple-Mail=_91421AA8-ED0D-48E8-8379-8C41047C5BF9
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Yeah, that's what I've been trying to say. IT seems much more
-reasonable to fix it for everyone once with a few lines of code than
-have to re-write every caller that might trip over this. e.g. think
-of all the failure teardown paths that destroy workqueues without
-having used them...
+On Mar 10, 2020, at 9:01 AM, Dmitry Monakhov <dmonakhov@gmail.com> =
+wrote:
+>=20
+> We already has similar code in ext4_mb_complex_scan_group(), but
+> ext4_mb_simple_scan_group() still affected.
+>=20
+> Other reports: https://www.spinics.net/lists/linux-ext4/msg60231.html
+>=20
+> Signed-off-by: Dmitry Monakhov <dmonakhov@gmail.com>
 
-So, yeah, this seems like a much better approach....
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-> > diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> > index 301db4406bc37..72222c09bcaeb 100644
-> > --- a/kernel/workqueue.c
-> > +++ b/kernel/workqueue.c
-> > @@ -263,6 +263,7 @@ struct workqueue_struct {
-> >  	char			*lock_name;
-> >  	struct lock_class_key	key;
-> >  	struct lockdep_map	lockdep_map;
-> > +	bool			used;
-> >  #endif
-> >  	char			name[WQ_NAME_LEN]; /* I: workqueue name */
-> >  
-> > @@ -1404,6 +1405,9 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
-> >  	lockdep_assert_irqs_disabled();
-> >  
-> >  	debug_work_activate(work);
-> > +#ifdef CONFIG_LOCKDEP
-> > +	WRITE_ONCE(wq->used, true);
-> > +#endif
+> ---
+> fs/ext4/mballoc.c | 11 +++++++++--
+> 1 file changed, 9 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 1027e01..97cd1a2 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1901,8 +1901,15 @@ void ext4_mb_simple_scan_group(struct =
+ext4_allocation_context *ac,
+> 		BUG_ON(buddy =3D=3D NULL);
+>=20
+> 		k =3D mb_find_next_zero_bit(buddy, max, 0);
+> -		BUG_ON(k >=3D max);
+> -
+> +		if (k >=3D max) {
+> +			ext4_grp_locked_error(ac->ac_sb, e4b->bd_group, =
+0, 0,
+> +				"%d free clusters of order %d. But found =
+0",
+> +				grp->bb_counters[i], i);
+> +			ext4_mark_group_bitmap_corrupted(ac->ac_sb,
+> +					 e4b->bd_group,
+> +					=
+EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+> +			break;
+> +		}
+> 		ac->ac_found++;
+>=20
+> 		ac->ac_b_ex.fe_len =3D 1 << i;
+> --
+> 2.7.4
+>=20
 
-....with an appropriate comment to explain why this code is needed.
 
-Cheers,
+Cheers, Andreas
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+
+
+
+
+
+--Apple-Mail=_91421AA8-ED0D-48E8-8379-8C41047C5BF9
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5oHIQACgkQcqXauRfM
+H+C8iRAAt3auppTYpj6wIHsJkAIpeThViFToNRBGK4P5+CVZqwVaHJbosgt4ycwL
+p1ttTa4jpJXqQxYodmMGK4XVfQP9VIva98xAYLeuU3M33HdOKa57TzNz3WXiEAkn
+xwNzCHehBqIpQxZe67UBretM5X88//TJNjF2iml+0M5j5XtvGgCjg7Sg1J/ChRPz
+T19Sf2oEm82MW8lEWezAqWll+E3aPLbX+YchIffeEAFZOKAO2Q9MJqfz/0UoXD1b
+lfuI2ZZP5mM3+DOi3eAEvJX/TZDF8NjC+pCOmfiiWjQt+d92Yn+jGVytXjJQSxEb
+6TQbKlJhobT8gmTh3KVUzchh2vYCRwGO7P/0aEWd+Au4JRJlWICC0mes6AqAMX8y
+W2csjccS6QIHjrENkcfdQ8HpW265kr1lnffNxgcssGI2w0ChHRBIxG6XyVSqpUqJ
+rPusqMZa4sL6uKuqfQqCN2P86K9dgbmq7g2bmquCZh4AcCaul8g4/doWnlgrrCIP
+aXMeGF1c562OaICSfvJZlJDGdoAyLj69Ptj6U3cXg7PydthlBt+wPHOxI8x/JNaP
+zmw5gjmeDhTQnx4KyBzIjUeq83a4zNfIlui4nS4I6GBxAAk90Io/ZFiw89VW2yVi
+ctUnzSL9JT4i8BBa8GCUGL+sWrGkzg/iZC/fzxdygCnSdh6GjzA=
+=ojSm
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_91421AA8-ED0D-48E8-8379-8C41047C5BF9--
