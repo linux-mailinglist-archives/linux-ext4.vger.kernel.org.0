@@ -2,46 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA0C17EC56
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Mar 2020 23:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8AF17ED35
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Mar 2020 01:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727413AbgCIWxM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 9 Mar 2020 18:53:12 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:59394 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726656AbgCIWxL (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Mar 2020 18:53:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1583794390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2rI8BG2LwE/WAlwyan0GLFodPzv/0iZV/5EOQthjqaU=;
-        b=DeV68icCbacGft4Dt+OxIDnxsuXVXE6ZXETMszsOqNUhIw/0L2ogdjaw/M2osDwj3bgtDm
-        qWs6tFAvG6oZC28kKIW7Ek8YDyezDcfspCqoQl8aOgCVdJS8gfh3d9KjGSSv6gEz6s2RqS
-        4hKelJ0uv59ay8kQ4evIG11xkqlSh18=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-341-0io6CmWXN42H4XZTVuBR1g-1; Mon, 09 Mar 2020 18:53:02 -0400
-X-MC-Unique: 0io6CmWXN42H4XZTVuBR1g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C654107ACC7;
-        Mon,  9 Mar 2020 22:52:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-120-182.rdu2.redhat.com [10.10.120.182])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 55D9673892;
-        Mon,  9 Mar 2020 22:52:54 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200309200238.GB28467@miu.piliscsaba.redhat.com>
-References: <20200309200238.GB28467@miu.piliscsaba.redhat.com> <158376244589.344135.12925590041630631412.stgit@warthog.procyon.org.uk>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
+        id S1727450AbgCJAS1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 9 Mar 2020 20:18:27 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:39277 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726937AbgCJAS0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 9 Mar 2020 20:18:26 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 35D6B2B17;
+        Mon,  9 Mar 2020 20:18:25 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 09 Mar 2020 20:18:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=y2GQYGvf1VdVHeGmvE5sDqwzusj
+        gACWrEd8rXJZj1/8=; b=hCLjptm8wkq6KP7tCx7x9OtPNkX0eMvm5L8o2L97Wdo
+        y7vZrsFkN2f4S8Xv4R8dqRogUS/9W/QJ66jTev5Aoip48Jo0P4gB73pf4vehqIPK
+        JjNTp8MWQ1ArZcM945bWyUlu9TnTT7vRowJNgZw7oaWVz+6Ro+kUV+BvaTb/Axir
+        Rd6auBHkdyebUJ4UZ8DYveKmdHVSu6fdUbPx5wy2rYk0qCyFwSg38WMAwVPUg5Ku
+        GA4lOOXpIKxaAK22UekVw8FFJzKTa6OzjJ9Oxk/T3qcyaA35MUgwyxYjd1ZtgS6K
+        i5h6lcNjdPFhMmGhYyeM8m3cEHGO/5NZU3TbC7SzNdw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=y2GQYG
+        vf1VdVHeGmvE5sDqwzusjgACWrEd8rXJZj1/8=; b=hR1CHx7sGSLI0tfsHsnts5
+        3Hmffp3/lf5X5mVKSJZiHGvay1HEsa/lAhINcfhikONaFnXvPMdWcLXqeI65qu98
+        5IGZzvzrZLQ9rEQZTkcsAFr2dIvY4csYaQValDPkpQpiqkp6DIy7g6XepjoptqAM
+        TAM4ZHUlxf1IYp29XvsF7D7DaBJDJkw0kAtUKVLfY/O4E08dDeL6j/ykjMW5rpWe
+        5XcWL8In/VDf8l+3tnGbBDB8uwSj9B1NPqbn3/lNK7AcsnmcVtwEgK191sA2Nh4G
+        LIeRxCXeQnoCNpMDjJXnTOClDNOcp3XeJNhqoSjyqGciCTV5p+IuLeAxePrsi5bg
+        ==
+X-ME-Sender: <xms:z9xmXj9MdiMQxb3sWpQ0zpHMFqyrXHaQEw8NK1xMORNkzGXW3ZRTzQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedrudduledgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhgurhgv
+    shcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucfkphepie
+    ejrdduiedtrddvudejrddvhedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomheprghnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:z9xmXg-FyPlg1L30wL5k3gQsDNd-t7jy7bKj8Kt6liqh63q9EbY7mw>
+    <xmx:z9xmXuF-0sjXCm1U5Zku5J7ltPA7_BmZzh1YdA3oUYFbwW4JBHao7g>
+    <xmx:z9xmXicuLoixXJ2XZ_721dkzztz4dN0Kp240Oq1ekOXjgrpEZlsUkw>
+    <xmx:0dxmXho2KzunPEg77nJRP3TUrcGMSb00ReWWFfVGCGI3mSgfDxoD0Q>
+Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 007C43061856;
+        Mon,  9 Mar 2020 20:18:23 -0400 (EDT)
+Date:   Mon, 9 Mar 2020 17:18:21 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Jeff Layton <jlayton@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>, torvalds@linux-foundation.org,
         viro@zeniv.linux.org.uk, Theodore Ts'o <tytso@mit.edu>,
         Stefan Metzmacher <metze@samba.org>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
@@ -51,118 +64,63 @@ Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
         linux-nfs@vger.kernel.org, linux-api@vger.kernel.org,
         raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
         jannh@google.com, darrick.wong@oracle.com, kzak@redhat.com,
-        jlayton@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
         linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 00/14] VFS: Filesystem information [ver #18]
+Message-ID: <20200310001821.vb7qwfhnq67rsknn@alap3.anarazel.de>
+References: <158376244589.344135.12925590041630631412.stgit@warthog.procyon.org.uk>
+ <2d31e2658e5f6651dc7d9908c4c12b6ba461fc88.camel@redhat.com>
+ <20200309192240.nqf5bxylptw7mdm3@alap3.anarazel.de>
+ <32c384ac3adf0cf924d3071a13af7edffe53cc2b.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <537181.1583794373.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 09 Mar 2020 22:52:53 +0000
-Message-ID: <537182.1583794373@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32c384ac3adf0cf924d3071a13af7edffe53cc2b.camel@redhat.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Miklos Szeredi <miklos@szeredi.hu> wrote:
+Hi,
 
-> >  (1) It can be targetted.  It makes it easy to query directly by path =
-or
-> >      fd, but can also query by mount ID or fscontext fd.  procfs and s=
-ysfs
-> >      cannot do three of these things easily.
-> =
+On 2020-03-09 18:49:31 -0400, Jeff Layton wrote:
+> On Mon, 2020-03-09 at 12:22 -0700, Andres Freund wrote:
+> > On 2020-03-09 13:50:59 -0400, Jeff Layton wrote:
+> > > I sent a patch a few weeks ago to make syncfs() return errors when there
+> > > have been writeback errors on the superblock. It's not merged yet, but
+> > > once we have something like that in place, we could expose info from the
+> > > errseq_t to userland using this interface.
+> >
+> > I'm still a bit worried about the details of errseq_t being exposed to
+> > userland. Partially because it seems to restrict further evolution of
+> > errseq_t, and partially because it will likely up with userland trying
+> > to understand it (it's e.g. just too attractive to report a count of
+> > errors etc).
+>
+> Trying to interpret the counter field won't really tell you anything.
+> The counter is not incremented unless someone has queried the value
+> since it was last checked. A single increment could represent a single
+> writeback error or 10000 identical ones.
 
-> See above: with the addition of open(path, O_PATH) it can do all of thes=
-e.
+Oh, right.  A zero errseq would still indicate something, but that's
+probably fine.
 
-That's a horrible interface.  To query a file by path, you have to do:
 
-	fd =3D open(path, O_PATH);
-	sprintf(procpath, "/proc/self/fdmount/%u/<attr>");
-	fd2 =3D open(procpath, O_RDONLY);
-	read(fd2, ...);
-	close(fd2);
-	close(fd);
+> > Is there a reason to not instead report a 64bit counter instead of the
+> > cookie? In contrast to the struct file case we'd only have the space
+> > overhead once per superblock, rather than once per #files * #fd. And it
+> > seems that the maintenance of that counter could be done without
+> > widespread changes, e.g. instead/in addition to your change:
 
-See point (3) about efficiency also.  You're having to open *two* files.
+> What problem would moving to a 64-bit counter solve? I get the concern
+> about people trying to get a counter out of the cookie field, but giving
+> people an explicit 64-bit counter seems even more open to
+> misinterpretation.
 
-> >  (2) Easier to provide LSM oversight.  Is the accessing process allowe=
-d to
-> >      query information pertinent to a particular file?
-> =
+Well, you could get an actual error count out of it? I was thinking that
+that value would get incremented every time mapping_set_error() is
+called, which should make it a meaningful count?
 
-> Not quite sure why this would be easier for a new ad-hoc interface than =
-for
-> the well established filesystem API.
+Greetings,
 
-You're right.  That's why fsinfo() uses standard pathwalk where possible,
-e.g.:
-
-	fsinfo(AT_FDCWD, "/path/to/file", ...);
-
-or a fairly standard fd-querying interface:
-
-	fsinfo(fd, "", { resolve_flags =3D RESOLVE_EMPTY_PATH },  ...);
-
-to query an open file descriptor.  These are well-established filesystem A=
-PIs.
-
-Where I vary from this is allowing direct specification of a mount ID also=
-,
-with a special flag to say that's what I'm doing:
-
-	fsinfo(AT_FDCWD, "23", { flags =3D FSINFO_QUERY_FLAGS_MOUNT },  ...);
-
-> >  (7) Don't have to create/delete a bunch of sysfs/procfs nodes each ti=
-me a
-> >      mount happens or is removed - and since systemd makes much use of
-> >      mount namespaces and mount propagation, this will create a lot of
-> >      nodes.
-> =
-
-> This patch creates a single struct mountfs_entry per mount, which is 48b=
-ytes.
-
-fsinfo() doesn't create any.  Furthermore, it seems that mounts get multip=
-lied
-8-10 times by systemd - though, as you say, it's not necessarily a great d=
-eal
-of memory.
-
-> Now onto the advantages of a filesystem based API:
-> =
-
->  - immediately usable from all programming languages, including scripts
-
-This is not true.  You can't open O_PATH from shell scripts, so you can't
-query things by path that you can't or shouldn't open (dev file paths, for
-example; symlinks).
-
-I imagine you're thinking of something like:
-
-	{
-		id=3D`cat /proc/self/fdmount/5/parent_mount`
-	} 5</my/path/to/my/file
-
-but what if /my/path/to/my/file is actually /dev/foobar?
-
-I've had a grep through the bash sources, but can't seem to find anywhere =
-that
-uses O_PATH.
-
->  - same goes for future extensions: no need to update libc, utils, langu=
-age
->    bindings, strace, etc...
-
-Applications and libraries using these attributes would have to change any=
-way
-to make use of additional information.
-
-But it's not a good argument since you now have to have text parsers that
-change over time.
-
-David
-
+Andres Freund
