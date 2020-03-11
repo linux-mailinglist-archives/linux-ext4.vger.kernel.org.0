@@ -2,82 +2,187 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47732181EC2
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Mar 2020 18:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3308E182236
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Mar 2020 20:26:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730376AbgCKRHv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Mar 2020 13:07:51 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:38148 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730423AbgCKRHv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Mar 2020 13:07:51 -0400
-Received: by mail-oi1-f195.google.com with SMTP id k21so2617005oij.5
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Mar 2020 10:07:50 -0700 (PDT)
+        id S1731086AbgCKT00 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Mar 2020 15:26:26 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:33626 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731034AbgCKT0Z (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Mar 2020 15:26:25 -0400
+Received: by mail-pf1-f194.google.com with SMTP id n7so1902267pfn.0
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Mar 2020 12:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l2lvDdSLPhmcM0nXdmXNuB/sfxCFsfZa1DAwoATiN2U=;
-        b=C9ioYl0fzU/vmkecoyhX5BivhKG5b1jtS5V7vkjWOi0PiELjheJ1R7QdbXo9TuQysN
-         1IY2fq/TBnNmInGLeEDCh9Qg2FQPnwr45qh6swtd5Q15fbPVwPnXkCsXB+xAGAvG4adz
-         4pNukYlTfGqeQfrlNRzbfK46LmVnw+4AdBzAKJ4KQ+UvRNhB5A0lbDMBYMN58JDrQch+
-         oX7mhxiYWNyX5vHzUU02K0pFLjUB+uLzDkt4Ih+CrGHBmXGEGor3jeQlS9bS4aed6zJR
-         BNVlWCs49Q2ZXXJf0Kl9+b5Oc1HBCpMZOUmjYXZdiHusPlLa5qph+Sy0JONGt0kTD9Q4
-         qxBA==
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=N8GeVwimrf194q+69nNoqJbKMtnU04MRfyht6Ybi7d8=;
+        b=GZj2zCxtZQN7rdwZIHCh7uyVzBz4scfrRmTUFR/VffGGdCMA5bFrHhL2JL5YEyT6mu
+         aqxBUwJ0thje1vnf+cT4Tay0UfVbeKhf+lSsKewwSLy9Q0va9cTYxrbI6Ubao8v9vOBE
+         AJI9KLn8rFoAN7kOyhqkKYI795+vxgGRLFa6aaR4vlWc6RZlfY3C6ipaA9g/e1d7xahd
+         gjW4sa1bK+aCX9/c3GsABv9kgNpQTmSGO3TKaVswW11iaElcHnHE0wzTabUUblTlzo2v
+         +AoUipGw4JhQO+irtU9G7gPPbenApQLW1gWXcivgE3hqR2chl+i047KTZ4IG9h2gulwf
+         /UBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l2lvDdSLPhmcM0nXdmXNuB/sfxCFsfZa1DAwoATiN2U=;
-        b=riYXQRyq8/UbD8zes/qFidGQKGruoJDCR5GHYjH5z3fRg4vD/T6To4sykq2LeVxIR3
-         CxpgOwNNIKuSivam+rJ0t1f90B6M78jN3jh0ozn9nrZIWPTPaYx0rv6j0NjFf9Ev4QOZ
-         QVn4ooakodlwipnvpJ/jXvJSs7c2/NcOu9A/54TdpVim1ijWjO6/RcItB++8CX9sHYzy
-         rpNwU2AIAF/6KkUJaHAb4fMtU7o3kOIPAGONLEdOCBsaS2QPeYQs60DABSFK5DOiiJWj
-         deIUMwK25jeM+0pe1CXR+rHCzz71D8fpMexxoyRpp4wxT+hVM4/zvGC1IacabzJjK0mU
-         qx6Q==
-X-Gm-Message-State: ANhLgQ1AlnbqAUiMHi8MxMJTjmE8xTjm1a52/fof6TnMKfZtyhoQVGyR
-        AaD0MAkrOkt5Zr12FgMCvGtuR7Qu0f3w21iXiwjkfA==
-X-Google-Smtp-Source: ADFU+vtHWaxjCHodf/i8X2TsY67+jZq3h7w3Q9evQy7tS+y4d+px/3vFxbGvBUdESzEm1GeGh5OUonvksn5m8/27xO4=
-X-Received: by 2002:a54:4585:: with SMTP id z5mr2651107oib.149.1583946470021;
- Wed, 11 Mar 2020 10:07:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200227052442.22524-1-ira.weiny@intel.com> <20200305155144.GA5598@lst.de>
- <20200309170437.GA271052@iweiny-DESK2.sc.intel.com> <20200311033614.GQ1752567@magnolia>
- <20200311063942.GE10776@dread.disaster.area> <20200311064412.GA11819@lst.de>
-In-Reply-To: <20200311064412.GA11819@lst.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 11 Mar 2020 10:07:38 -0700
-Message-ID: <CAPcyv4jk5i0hPpqbZNPhUH8wKPS66pd48xNoPnQpy6vt72+i=w@mail.gmail.com>
-Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations V5
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=N8GeVwimrf194q+69nNoqJbKMtnU04MRfyht6Ybi7d8=;
+        b=EFZtONaBK76kCxXKRfggwhcqIUXYV/QsGccKFxAB+DNI5rIbw+CpGf+qg4ZdigUB4f
+         kpZP+LZOyX4caF9ia0/6DJMcdr61nJWnzLxh9yra0vTjPoECo4heAIumAGTnShIKOv2q
+         oGEVeL1XEsdaBq0F3swJVQ66tvgTgNMCJ9h7emECCoGlkYXokwNjm0RBpwuGhygSf+3r
+         tElPFbtUUc91PjAPxReM2GMKOeXajpRT6lhLVSDXLWggLOsdeLP7YpgxrSgGnCfVZfzS
+         lBhXsBi2W335qJy6RW8y6wfsFUfkM4lUlYrwC+IHnq3c9Bl5w5/igPe137CYoWzfG/S2
+         3Udw==
+X-Gm-Message-State: ANhLgQ35I/KOl2oXXzjsaYpYgT4LVWQ+fVDnbfPLTxLc0fGs077HYtBf
+        rIMd2W6EtMOmM4bzuiJ3q0rS3Q==
+X-Google-Smtp-Source: ADFU+vu8rW01yUwE3dJ6eiLXrml4XQ97aTB4ttHKpl1VVIpAKWDBPNdmLEzNqgBxmiXxUuG4g+xnfA==
+X-Received: by 2002:a63:5547:: with SMTP id f7mr4302933pgm.166.1583954784511;
+        Wed, 11 Mar 2020 12:26:24 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id w124sm1859792pfd.71.2020.03.11.12.26.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 11 Mar 2020 12:26:23 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <C4175F35-E9D4-4B79-B1A0-047A51DE3287@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_905F47DD-E2D0-46C5-9E10-53ED895035D2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH RFC 0/5] fs, ext4: Physical blocks placement hint for
+ fallocate(0): fallocate2(). TP defrag.
+Date:   Wed, 11 Mar 2020 13:26:19 -0600
+In-Reply-To: <2b2bb85f-8062-648a-1b6e-7d655bf43c96@virtuozzo.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Mike Snitzer <snitzer@redhat.com>, Jan Kara <jack@suse.cz>,
+        Eric Biggers <ebiggers@google.com>, riteshh@linux.ibm.com,
+        krisman@collabora.com, surajjs@amazon.com,
+        Dmitry Monakhov <dmonakhov@gmail.com>,
+        mbobrowski@mbobrowski.org, Eric Whitney <enwlinux@gmail.com>,
+        sblbir@amazon.com, Khazhismel Kumykov <khazhy@google.com>,
         linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+References: <158272427715.281342.10873281294835953645.stgit@localhost.localdomain>
+ <20200302165637.GA6826@mit.edu>
+ <2b2bb85f-8062-648a-1b6e-7d655bf43c96@virtuozzo.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 11:44 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, Mar 11, 2020 at 05:39:42PM +1100, Dave Chinner wrote:
-> > IOWs, the dax_associate_page() related functionality probably needs
-> > to be a filesystem callout - part of the aops vector, I think, so
-> > that device dax can still use it. That way XFS can go it's own way,
-> > while ext4 and device dax can continue to use the existing mechanism
-> > mechanisn that is currently implemented....
->
-> s/XFS/XFS with rmap/, as most XFS file systems currently don't have
-> that enabled we'll also need to keep the legacy path around.
 
-Agree, it needs to be an opt-in capability as ext4 and xfs w/o rmap
-will stay on the legacy path for the foreseeable future.
+--Apple-Mail=_905F47DD-E2D0-46C5-9E10-53ED895035D2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Mar 3, 2020, at 2:57 AM, Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>=20
+> On 02.03.2020 19:56, Theodore Y. Ts'o wrote:
+>> Kirill,
+>>=20
+>> In a couple of your comments on this patch series, you mentioned
+>> "defragmentation".  Is that because you're trying to use this as part
+>> of e4defrag, or at least, using EXT4_IOC_MOVE_EXT?
+>>=20
+>> If that's the case, you should note that input parameter for that
+>> ioctl is:
+>>=20
+>> struct move_extent {
+>> 	__u32 reserved;		/* should be zero */
+>> 	__u32 donor_fd;		/* donor file descriptor */
+>> 	__u64 orig_start;	/* logical start offset in block for =
+orig */
+>> 	__u64 donor_start;	/* logical start offset in block for =
+donor */
+>> 	__u64 len;		/* block length to be moved */
+>> 	__u64 moved_len;	/* moved block length */
+>> };
+>>=20
+>> Note that the donor_start is separate from the start of the file that
+>> is being defragged.  So you could have the userspace application
+>> fallocate a large chunk of space for that donor file, and then use
+>> that donor file to defrag multiple files if you want to close pack
+>> them.
+>=20
+> The practice shows it's not so. Your suggestion was the first thing we =
+tried,
+> but it works bad and just doubles/triples IO.
+>=20
+> Let we have two files of 512Kb, and they are placed in separate 1Mb =
+clusters:
+>=20
+> [[512Kb file][512Kb free]][[512Kb file][512Kb free]]
+>=20
+> We want to pack both of files in the same 1Mb cluster. Packed together =
+on block
+> device, they will be in the same server of underlining distributed =
+storage file
+> system. This gives a big performance improvement, and this is the =
+price I aimed.
+>=20
+> In case of I fallocate a large hunk for both of them, I have to move =
+them
+> both to this new hunk. So, instead of moving 512Kb of data, we will =
+have to move
+> 1Mb of data, i.e. double size, which is counterproductive.
+>=20
+> Imaging another situation, when we have
+> [[1020Kb file]][4Kb free]][[4Kb file][1020Kb free]]
+>=20
+> Here we may just move [4Kb file] into [4Kb free]. But your suggestion =
+again
+> forces us to move 1Mb instead of 4Kb, which makes IO 256 times worse! =
+This is
+> terrible! And this is the thing I try prevent with finding a new =
+interface.
+
+One idea I had, which may work for your use case, is to run fallocate() =
+on
+the *1MB-4KB file* to allocate the last 4KB in that hunk, then use that =
+block
+as the donor file for the 1MB+4KB file.  The ext4 allocation algorithms =
+should
+always give you that 4KB chunk if it is free, and that avoids the need =
+to try
+and force the allocator to select that block through some other method.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_905F47DD-E2D0-46C5-9E10-53ED895035D2
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5pO1sACgkQcqXauRfM
+H+CUYQ/+N4uJb0zbYQEoZSC1KjJdap67W8NEO4Ja/2L++extPWuCUl9YQy7MEfoQ
+oF2C/7ryZReGDzXO3RPtZkQ5IuiQSLkcmVYhJJsDmyLGOxtNEDobV/UchLjGeYSH
+XcoQAZXi+bzvB27PYLkfFQ/rOJD24XP/vj9+brrN75fqapD1zdsqc7FdJr7JQuuU
+gvFfakB94J6+XCXrWH8VDsnliXK3ylwIoHKNbcUcEe/bLyozZ+Pa0Uld8nX/IvF0
+UMJwj2H456qeovLVmjm7F6/R62uGTnJU1D6LkgozdhM4hT+bBzf/5ReJgC0+R8pT
+UPu4cDUGSlmjZTfKWxbT5ZkrEUsM/gR6/wxIdWCZYHzHWov70Hud7fd0WJX/VGrd
+lP3/CxrI7+L1xF9BHFdyrOrFb52YjYDrK0PLbUBoT89VLbrdC7VFQZvLokq0VPMe
+Uf/n7aaLllgP2EfxgQNgB7HI5Qpo9XceFEDnFAR9ahj9d+pYns8+tr7qvdnpW/L8
+BQ0T96GtcAvtVlrdPL6Q/Bw4xS14h4AwUz8qgSYHb0JCoiML50uIVx62jJkPEGAr
+8RuofbHTOZQVxiaIJYsgCn7Eg5WNTVhYVxB/f1HTAz+K215EvA1HkSwaH0CY9LYE
+gfa2zfNxQ05c9TvNbe4JWcXcdLG06NxybRviCQ2G3Higtyh1Zf4=
+=l6lA
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_905F47DD-E2D0-46C5-9E10-53ED895035D2--
