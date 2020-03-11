@@ -2,58 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F1E1810B3
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Mar 2020 07:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE73D1810D2
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Mar 2020 07:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgCKG34 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Mar 2020 02:29:56 -0400
-Received: from verein.lst.de ([213.95.11.211]:57474 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726160AbgCKG34 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 11 Mar 2020 02:29:56 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id ADA7868C4E; Wed, 11 Mar 2020 07:29:52 +0100 (CET)
-Date:   Wed, 11 Mar 2020 07:29:52 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations
- V5
-Message-ID: <20200311062952.GA11519@lst.de>
-References: <20200227052442.22524-1-ira.weiny@intel.com> <20200305155144.GA5598@lst.de> <20200309170437.GA271052@iweiny-DESK2.sc.intel.com> <20200311033614.GQ1752567@magnolia>
+        id S1728263AbgCKGeF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Mar 2020 02:34:05 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:52144 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725976AbgCKGeF (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Mar 2020 02:34:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=PXWJMkmYQZtzBqa9T6Z/OooTHl
+        iLs9oLlg6UBOsvnoharqwzOsHoLebB9KBGfGmMc42QR+rRzOtEAsIu7Js0uSfsCsPluEjZEY4gm+T
+        yRWZ6YCPEuyAOvYHMqhZ8CDu1T9iGjvnV36RcZHcp55Nnjj7Hds0A2BhzBLV1i4w6vgV6yleZ3fdt
+        sOj29SBcRXElRDCQvqk2ez4+996Vsp0e4tX/laNomiHC/I3xHXfKk47l5DDsd2md1mcWpKIJI38AI
+        y97/mDjGFzH0W15VdZZrSBeo922COCKsiN6sg/hXF+Dx3iRDQvGZNd6ZuhfU2V8Wfr8uV9RtCQ57h
+        qFwBKxBA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jBuwP-0005Ba-7P; Wed, 11 Mar 2020 06:34:05 +0000
+Date:   Tue, 10 Mar 2020 23:34:05 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] xfs: clear PF_MEMALLOC before exiting xfsaild thread
+Message-ID: <20200311063405.GA13368@infradead.org>
+References: <20200309181332.GJ1752567@magnolia>
+ <20200309185714.42850-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200311033614.GQ1752567@magnolia>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200309185714.42850-1-ebiggers@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 08:36:14PM -0700, Darrick J. Wong wrote:
-> 1) Leave the inode flag (FS_XFLAG_DAX) as it is, and export the S_DAX
-> status via statx.  Document that changes to FS_XFLAG_DAX do not take
-> effect immediately and that one must check statx to find out the real
-> mode.  If we choose this, I would also deprecate the dax mount option;
-> send in my mkfs.xfs patch to make it so that you can set FS_XFLAG_DAX on
-> all files at mkfs time; and we can finally lay this whole thing to rest.
-> This is the closest to what we have today.
-> 
-> 2) Withdraw FS_XFLAG_DAX entirely, and let the kernel choose based on
-> usage patterns, hardware heuristics, or spiteful arbitrariness.
+Looks good,
 
-3) Only allow changing FS_XFLAG_DAX on directories or files that do
-not have blocks allocated to them yet, and side step all the hard
-problems.
-
-Which of course still side steps the hard question of what it actually
-is supposed to mean..
+Reviewed-by: Christoph Hellwig <hch@lst.de>
