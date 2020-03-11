@@ -2,105 +2,140 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9296182388
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Mar 2020 21:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF8F18260A
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Mar 2020 00:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbgCKUvi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Mar 2020 16:51:38 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:40954 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729093AbgCKUvh (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Mar 2020 16:51:37 -0400
-Received: by mail-qk1-f196.google.com with SMTP id m2so3532159qka.7
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Mar 2020 13:51:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=QTtaneo3wh2z0TL5PhS32xV1b/cXxegk+fltvl/LBIk=;
-        b=luGjYBe/OfEo6cu8tBiuHqE/jeVhdViL2vghuPQyh88z7n2f4OJDG2LSy3pzj3xHMA
-         /ht9SuC06R0D6XHlqCw3ragjWZPN8anolVjcvkCJb4MMsN1KViZtAq/7rpEPbTZrk5T5
-         jqgMGV6HotsZ/hSOqolZmuSho0hecDaGEcWevKF4eeJlqIZgERhwOauG8YJ+aEjbKpTT
-         9ZAwB9YXqCLPGIwWhVSdvim0kyNs2Jp6rL94tJlTTYrTT3zO8zEz4XYGttGwHGbH4gGw
-         s/LwOpg3ZLvUfjyi58DRKkZ70NKOSPvjpduKQFBrJA5NmXjsLaH78melUe4DgieCSpwD
-         WTTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QTtaneo3wh2z0TL5PhS32xV1b/cXxegk+fltvl/LBIk=;
-        b=oZbsNzvVHExxvK73H5qA4Ns5fXCEWnGVoIFg/MpP0uuVy6d+eLhwRiTWZapjDjxkpI
-         QQAL8jfq/JZklmwLO/PTv6TlQVWWarX+Z2ZArjBBKr2q3jsK2g0pBV3S+WlOZ+FcA0sT
-         uUZdy6a2VcVWLMuEWugxPqsMG6amYmI2ETafx8tY182h3E1WsQ0Rlj4DmZ5t4PGJXluy
-         R8Lwn157GKu2QbKCaNM3Jk91iXg4n9/W5xE80ARWTe/2xhHFEhRMeZ934vQ/IVlZ5ppv
-         TmPujUg/CeXW2OMDQ+sAHhRw86W4v0eWGYjNjnmUcJh0VJCvg10xw9AXzo6ifcKSIwym
-         4NWg==
-X-Gm-Message-State: ANhLgQ1EI3Zs7/5qUuKJbhm6XxxfrUesXTpZ7qW6SaUPs13SN5UhyT4g
-        U7TtoSa2zfq/2Twv7IuSfarWws7W
-X-Google-Smtp-Source: ADFU+vscAgw60xSlfBxi63Bs1eqRdc9q4GB0+DCiLDVSBmuZvQ6GsmG1W/NZon1tTEt5GhwLlXjvtw==
-X-Received: by 2002:a37:8707:: with SMTP id j7mr2202228qkd.394.1583959894824;
-        Wed, 11 Mar 2020 13:51:34 -0700 (PDT)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id 65sm26299047qtf.95.2020.03.11.13.51.34
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Mar 2020 13:51:34 -0700 (PDT)
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH] ext4: remove map_from_cluster from ext4_ext_map_blocks
-Date:   Wed, 11 Mar 2020 16:51:25 -0400
-Message-Id: <20200311205125.25061-1-enwlinux@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S1731529AbgCKXyP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Mar 2020 19:54:15 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:60067 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731399AbgCKXyP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 11 Mar 2020 19:54:15 -0400
+Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 6FB1C3A2B28;
+        Thu, 12 Mar 2020 10:54:10 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jCBAu-0005Ez-JZ; Thu, 12 Mar 2020 10:54:08 +1100
+Date:   Thu, 12 Mar 2020 10:54:08 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Linux Filesystem Development List 
+        <linux-fsdevel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH] writeback: avoid double-writing the inode on a lazytime
+ expiration
+Message-ID: <20200311235408.GX10737@dread.disaster.area>
+References: <20200306004555.GB225345@gmail.com>
+ <20200307020043.60118-1-tytso@mit.edu>
+ <20200311032009.GC46757@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200311032009.GC46757@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=SS2py6AdgQ4A:10
+        a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=7-415B0cAAAA:8 a=tSSHeJGq2Hsi8ItP-fQA:9
+        a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-We can use the variable allocated_clusters rather than map_from_clusters
-to control reserved block/cluster accounting in ext4_ext_map_blocks.
-This eliminates a variable and associated code and improves readability
-a little.
+On Tue, Mar 10, 2020 at 08:20:09PM -0700, Eric Biggers wrote:
+> On Fri, Mar 06, 2020 at 09:00:43PM -0500, Theodore Ts'o wrote:
+> > In the case that an inode has dirty timestamp for longer than the
+> > lazytime expiration timeout (or if all such inodes are being flushed
+> > out due to a sync or syncfs system call), we need to inform the file
+> > system that the inode is dirty so that the inode's timestamps can be
+> > copied out to the on-disk data structures.  That's because if the file
+> > system supports lazytime, it will have ignored the dirty_inode(inode,
+> > I_DIRTY_TIME) notification when the timestamp was modified in memory.q
+> > 
+> > Previously, this was accomplished by calling mark_inode_dirty_sync(),
+> > but that has the unfortunate side effect of also putting the inode the
+> > writeback list, and that's not necessary in this case, since we will
+> > immediately call write_inode() afterwards.
+> > 
+> > Eric Biggers noticed that this was causing problems for fscrypt after
+> > the key was removed[1].
+> > 
+> > [1] https://lore.kernel.org/r/20200306004555.GB225345@gmail.com
+> > 
+> > Reported-by: Eric Biggers <ebiggers@kernel.org>
+> > Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> > ---
+> >  fs/fs-writeback.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> > index 76ac9c7d32ec..32101349ba97 100644
+> > --- a/fs/fs-writeback.c
+> > +++ b/fs/fs-writeback.c
+> > @@ -1504,8 +1504,9 @@ __writeback_single_inode(struct inode *inode, struct writeback_control *wbc)
+> >  
+> >  	spin_unlock(&inode->i_lock);
+> >  
+> > -	if (dirty & I_DIRTY_TIME)
+> > -		mark_inode_dirty_sync(inode);
+> > +	/* This was a lazytime expiration; we need to tell the file system */
+> > +	if (dirty & I_DIRTY_TIME_EXPIRED && inode->i_sb->s_op->dirty_inode)
+> > +		inode->i_sb->s_op->dirty_inode(inode, I_DIRTY_TIME_EXPIRED);
+> >  	/* Don't write the inode if only I_DIRTY_PAGES was set */
+> >  	if (dirty & ~I_DIRTY_PAGES) {
+> >  		int err = write_inode(inode, wbc);
+> > -- 
+> 
+> Thanks Ted!  This fixes the fscrypt test failure.
+> 
+> However, are you sure this works correctly on all filesystems?  I'm not sure
+> about XFS.  XFS only implements ->dirty_inode(), not ->write_inode(), and in its
+> ->dirty_inode() it does:
+> 
+> 	static void
+> 	xfs_fs_dirty_inode(
+> 		struct inode                    *inode,
+> 		int                             flag)
+> 	{
+> 		struct xfs_inode                *ip = XFS_I(inode);
+> 		struct xfs_mount                *mp = ip->i_mount;
+> 		struct xfs_trans                *tp;
+> 
+> 		if (!(inode->i_sb->s_flags & SB_LAZYTIME))
+> 			return;
+> 		if (flag != I_DIRTY_SYNC || !(inode->i_state & I_DIRTY_TIME))
+> 			return;
+> 
+> 		if (xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp))
+> 			return;
+> 		xfs_ilock(ip, XFS_ILOCK_EXCL);
+> 		xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+> 		xfs_trans_log_inode(tp, ip, XFS_ILOG_TIMESTAMP);
+> 		xfs_trans_commit(tp);
+> 	}
+> 
+> 
+> So flag=I_DIRTY_TIME_EXPIRED will be a no-op.
+> 
+> Maybe you should be using I_DIRTY_SYNC instead?  Or perhaps XFS should be
+> checking for either I_DIRTY_TIME_EXPIRED or I_DIRTY_SYNC?
 
-Signed-off-by: Eric Whitney <enwlinux@gmail.com>
----
- fs/ext4/extents.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Right, XFS does not use the VFS inode writeback code at all - we
+track all metadata changes internally via journalling. The VFS uses
+I_DIRTY_SYNC to indicate and inode is metadata dirty and a writeback
+candidate. Hence if we need to mark an inode dirty for integrity
+purposes for _any reason_, then I_DIRTY_SYNC is the correct flag to
+be passing to ->dirty_inode.
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index bc96529d1509..b12c9e52746c 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -4181,7 +4181,6 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 	unsigned int allocated_clusters = 0;
- 	struct ext4_allocation_request ar;
- 	ext4_lblk_t cluster_offset;
--	bool map_from_cluster = false;
- 
- 	ext_debug("blocks %u/%u requested for inode %lu\n",
- 		  map->m_lblk, map->m_len, inode->i_ino);
-@@ -4296,7 +4295,6 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 	    get_implied_cluster_alloc(inode->i_sb, map, ex, path)) {
- 		ar.len = allocated = map->m_len;
- 		newblock = map->m_pblk;
--		map_from_cluster = true;
- 		goto got_allocated_blocks;
- 	}
- 
-@@ -4317,7 +4315,6 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 	    get_implied_cluster_alloc(inode->i_sb, map, ex2, path)) {
- 		ar.len = allocated = map->m_len;
- 		newblock = map->m_pblk;
--		map_from_cluster = true;
- 		goto got_allocated_blocks;
- 	}
- 
-@@ -4418,7 +4415,7 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 	 * clusters discovered to be delayed allocated.  Once allocated, a
- 	 * cluster is not included in the reserved count.
- 	 */
--	if (test_opt(inode->i_sb, DELALLOC) && !map_from_cluster) {
-+	if (test_opt(inode->i_sb, DELALLOC) && allocated_clusters) {
- 		if (flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE) {
- 			/*
- 			 * When allocating delayed allocated clusters, simply
+Cheers,
+
+Dave.
 -- 
-2.11.0
-
+Dave Chinner
+david@fromorbit.com
