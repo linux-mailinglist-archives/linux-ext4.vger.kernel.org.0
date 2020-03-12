@@ -2,96 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAF1183CAB
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Mar 2020 23:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 222B9183D44
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Mar 2020 00:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgCLWjU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Mar 2020 18:39:20 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:53705 "EHLO
+        id S1726832AbgCLXXo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Mar 2020 19:23:44 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:50464 "EHLO
         mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726620AbgCLWjU (ORCPT
+        by vger.kernel.org with ESMTP id S1726710AbgCLXXo (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 12 Mar 2020 18:39:20 -0400
+        Thu, 12 Mar 2020 19:23:44 -0400
 Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 5C5E13A451F;
-        Fri, 13 Mar 2020 09:39:14 +1100 (AEDT)
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 3092B3A4706;
+        Fri, 13 Mar 2020 10:23:38 +1100 (AEDT)
 Received: from dave by dread.disaster.area with local (Exim 4.92.3)
         (envelope-from <david@fromorbit.com>)
-        id 1jCWTx-00050P-3Y; Fri, 13 Mar 2020 09:39:13 +1100
-Date:   Fri, 13 Mar 2020 09:39:13 +1100
+        id 1jCXAv-0005Bb-BR; Fri, 13 Mar 2020 10:23:37 +1100
+Date:   Fri, 13 Mar 2020 10:23:37 +1100
 From:   Dave Chinner <david@fromorbit.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Linux Filesystem Development List 
-        <linux-fsdevel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH] writeback: avoid double-writing the inode on a lazytime
- expiration
-Message-ID: <20200312223913.GL10776@dread.disaster.area>
-References: <20200306004555.GB225345@gmail.com>
- <20200307020043.60118-1-tytso@mit.edu>
- <20200311032009.GC46757@gmail.com>
- <20200311125749.GA7159@mit.edu>
- <20200312000716.GY10737@dread.disaster.area>
- <20200312143445.GA19160@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     mbobrowski@mbobrowski.org, jack@suse.cz,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: Is ext4_dio_read_iter() broken?
+Message-ID: <20200312232337.GZ10737@dread.disaster.area>
+References: <969260.1584004779@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200312143445.GA19160@infradead.org>
+In-Reply-To: <969260.1584004779@warthog.procyon.org.uk>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
         a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
         a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=SS2py6AdgQ4A:10
-        a=7-415B0cAAAA:8 a=Q8GS4823LYj-8jRK8AkA:9 a=CjuIK1q_8ugA:10
+        a=7-415B0cAAAA:8 a=yP_QldvOnB6FU5zP-N4A:9 a=CjuIK1q_8ugA:10
         a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 07:34:45AM -0700, Christoph Hellwig wrote:
-> On Thu, Mar 12, 2020 at 11:07:17AM +1100, Dave Chinner wrote:
-> > > That's true, but when the timestamps were originally modified,
-> > > dirty_inode() will be called with flag == I_DIRTY_TIME, which will
-> > > *not* be a no-op; which is to say, XFS will force the timestamps to be
-> > > updated on disk when the timestamps are first dirtied, because it
-> > > doesn't support I_DIRTY_TIME.
-> > 
-> > We log the initial timestamp change, and then ignore timestamp
-> > updates until the dirty time expires and the inode is set
-> > I_DIRTY_SYNC via __mark_inode_dirty_sync(). IOWs, on expiry, we have
-> > time stamps that may be 24 hours out of date in memory, and they
-> > still need to be flushed to the journal.
-> > 
-> > However, your change does not mark the inode dirtying on expiry
-> > anymore, so...
-> > 
-> > > So I think we're fine.
-> > 
-> > ... we're not fine. This breaks XFS and any other filesystem that
-> > relies on a I_DIRTY_SYNC notification to handle dirty time expiry
-> > correctly.
+On Thu, Mar 12, 2020 at 09:19:39AM +0000, David Howells wrote:
+> Hi Matthew,
 > 
-> I haven't seen the original mail this replies to,
+> Is ext4_dio_read_iter() broken?  It calls:
+> 
+> 	file_accessed(iocb->ki_filp);
+> 
+> at the end of the function - but surely iocb should be expected to have been
+> freed when iocb->ki_complete() was called?
+> 
+> In my cachefiles rewrite, I'm seeing the attached kasan dump.  The offending
+> RIP, ext4_file_read_iter+0x12b is at the above line, where it is trying to
+> read iocb->ki_filp.
+> 
+> Here's an excerpt of the relevant bits from my code:
+> 
+> 	static void cachefiles_read_complete(struct kiocb *iocb, long ret, long ret2)
+> 	{
+> 		struct cachefiles_kiocb *ki =
+> 			container_of(iocb, struct cachefiles_kiocb, iocb);
+> 		struct fscache_io_request *req = ki->req;
+> 	...
+> 		fput(ki->iocb.ki_filp);
+> 		kfree(ki);
+> 		fscache_end_io_operation(req->cookie);
+> 	...
+> 	}
+> 
+> 	int cachefiles_read(struct fscache_object *obj,
+> 			    struct fscache_io_request *req,
+> 			    struct iov_iter *iter)
+> 	{
+> 		struct cachefiles_object *object =
+> 			container_of(obj, struct cachefiles_object, fscache);
+> 		struct cachefiles_kiocb *ki;
+> 		struct file *file = object->backing_file;
+> 		ssize_t ret = -ENOBUFS;
+> 	...
+> 		ki = kzalloc(sizeof(struct cachefiles_kiocb), GFP_KERNEL);
+> 		if (!ki)
+> 			goto presubmission_error;
+> 
+> 		ki->iocb.ki_filp	= get_file(file);
+> 		ki->iocb.ki_pos		= req->pos;
+> 		ki->iocb.ki_flags	= IOCB_DIRECT;
+> 		ki->iocb.ki_hint	= ki_hint_validate(file_write_hint(file));
+> 		ki->iocb.ki_ioprio	= get_current_ioprio();
+> 		ki->req			= req;
+> 
+> 		if (req->io_done)
+> 			ki->iocb.ki_complete = cachefiles_read_complete;
+> 
+> 		ret = rw_verify_area(READ, file, &ki->iocb.ki_pos, iov_iter_count(iter));
+> 		if (ret < 0)
+> 			goto presubmission_error_free;
+> 
+> 		fscache_get_io_request(req);
+> 		trace_cachefiles_read(object, file_inode(file), req);
+> 		ret = call_read_iter(file, &ki->iocb, iter);
+> 		...
+> 	}
+> 
+> The allocation point, cachefiles_read+0xd0, is the kzalloc() you can see and
+> the free point, cachefiles_read_complete+0x86, is the kfree() in the callback
+> function.
 
-The original problem was calling mark_inode_dirty_sync() on expiry
-during inode writeback was causing the inode to be put back on the
-dirty inode list and so ext4 was flushing it twice - once on expiry
-and once 5 seconds later on the next background writeback pass.
-
-This is a problem that XFS does not have because it does not
-implement ->write_inode...
-
-> but if we could
-> get the lazytime expirty by some other means (e.g. an explicit
-> callback), XFS could opt out of all the VFS inode tracking again,
-> which would simplify a few things.
-
-Yes, that would definitely make things simpler for XFS, and it would
-also solve the problem that the generic lazytime expiry code has....
+It looks to me like you are creating your own iocb that you are
+doing AIO+DIO on, and you aren't taking a reference count to the
+iocb yourself to ensure that it exists for the entire submission
+path. i.e. see how the AIO code uses ki_refcnt and iocb_put() to
+ensure the iocb does not get destroyed by IO completion before the
+submission path has completed.
 
 Cheers,
 
