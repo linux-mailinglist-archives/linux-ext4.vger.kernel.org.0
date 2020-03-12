@@ -2,36 +2,36 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EB31834CB
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Mar 2020 16:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D20AF1834C4
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Mar 2020 16:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbgCLPUl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Mar 2020 11:20:41 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:38884 "EHLO
+        id S1728134AbgCLPUm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Mar 2020 11:20:42 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:38970 "EHLO
         bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727770AbgCLPUj (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Mar 2020 11:20:39 -0400
+        with ESMTP id S1728112AbgCLPUm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 12 Mar 2020 11:20:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=jg5Ikjka+2a5oT8ZR/+QyqBsLnDSjPYKLVigMGA6FAo=; b=Za8E3LC12qGkc4+Mjqnns8zSqi
-        SW9tLFxOJ6wyopYr+Y60TxuT0TbFDa9NrucHKKlAXz5Kp6Q2D0Y8sM1xHi5X+/Drua2dd4rcZTTPU
-        6XvznsB2SalaqWsiLx719Kf6ZuxBRCuiH3OoiZk5j7PIsd9OjW5RvmMHaGJDIxlhgRJ+7ajWo1Vm0
-        BjpGeh6cETNEya3036xQq6FnsXBgQrITJBNWoh+TGHQ1eBbZ7hiTgXU5MK90aw6zMo4nlpfJvYL5M
-        dXbtDLjWvzBDHerJjbJEzwNjckuq677L0Ea5arHfubFB8hyQvwIN8RhHVp3ON+527VW9U5FVweetz
-        yosO9Nsw==;
+        bh=n13Q6DLqRjyLux3UpI7BbD9kN5e1dnMfZqd8xPQBgkw=; b=IQWvaI4+Bct4NMigql+B/eJSEK
+        aX53IxEH4gx6dsMqP2L52p4RIMRj1Pm2qVOv46QF/aKxlfRM2g+fcdxDMP5oy1nfQowK/tzRPgshF
+        ufbPU74k0+E1fKbnd4D+Xv/4DyPSIsMCMv2PwyBu3FBczKhhbpi7TiGy+qWhpxy7JTnJS3jHI1+z1
+        m8u4nTBjpWpvlWFtjQp5fvF4oMzfDm5giiTJrXF/7zxMg1v2+PNUB9+kPJKg8pkLsTQIDKS6mwyE+
+        y99kneMSa/GQJ7BtSBGp303nV278ST23bvJKrs/stswHGTAPbC8DDEbiDBesF/aR1HS8MQRz7reX7
+        Ml/xQ+wQ==;
 Received: from [2001:4bb8:184:5cad:8026:d98c:a056:3e33] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jCPdW-00081c-Nk; Thu, 12 Mar 2020 15:20:39 +0000
+        id 1jCPdZ-00083n-9a; Thu, 12 Mar 2020 15:20:41 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     linux-block@vger.kernel.org, linux-raid@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-ext4@vger.kernel.org,
         reiserfs-devel@vger.kernel.org
-Subject: [PATCH 20/21] block: move the various x86 Unix label formats out of genhd.h
-Date:   Thu, 12 Mar 2020 16:19:38 +0100
-Message-Id: <20200312151939.645254-21-hch@lst.de>
+Subject: [PATCH 21/21] block: merge partition-generic.c and check.c
+Date:   Thu, 12 Mar 2020 16:19:39 +0100
+Message-Id: <20200312151939.645254-22-hch@lst.de>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200312151939.645254-1-hch@lst.de>
 References: <20200312151939.645254-1-hch@lst.de>
@@ -43,333 +43,449 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-All these are just used in block/partitions/msdos.c, so move them out of the
-genhd.h driver included by every driver.
+Merge block/partition-generic.c and block/partitions/check.c into
+a single block/partitions/core.c as the content is closely related
+and both files are tiny.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/partitions/msdos.c | 125 ++++++++++++++++++++++++++++++++++
- include/linux/genhd.h    | 143 ---------------------------------------
- 2 files changed, 125 insertions(+), 143 deletions(-)
+ block/Makefile                                |   3 +-
+ block/partitions/Makefile                     |   3 +-
+ block/partitions/check.c                      | 179 ------------------
+ block/partitions/check.h                      |   5 -
+ .../core.c}                                   | 178 +++++++++++++++--
+ 5 files changed, 166 insertions(+), 202 deletions(-)
+ delete mode 100644 block/partitions/check.c
+ rename block/{partition-generic.c => partitions/core.c} (77%)
 
-diff --git a/block/partitions/msdos.c b/block/partitions/msdos.c
-index e44e2f0a02cc..8f2fcc080264 100644
---- a/block/partitions/msdos.c
-+++ b/block/partitions/msdos.c
-@@ -18,6 +18,12 @@
-  *  Check partition table on IDE disks for common CHS translations
-  *
-  *  Re-organised Feb 1998 Russell King
-+ *
-+ *  BSD disklabel support by Yossi Gottlieb <yogo@math.tau.ac.il>
-+ *  updated by Marc Espie <Marc.Espie@openbsd.org>
-+ *
-+ *  Unixware slices support by Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
-+ *  and Krzysztof G. Baranowski <kgb@knm.org.pl>
+diff --git a/block/Makefile b/block/Makefile
+index 1a43750f4b01..206b96e9387f 100644
+--- a/block/Makefile
++++ b/block/Makefile
+@@ -8,8 +8,7 @@ obj-$(CONFIG_BLOCK) := bio.o elevator.o blk-core.o blk-sysfs.o \
+ 			blk-exec.o blk-merge.o blk-softirq.o blk-timeout.o \
+ 			blk-lib.o blk-mq.o blk-mq-tag.o blk-stat.o \
+ 			blk-mq-sysfs.o blk-mq-cpumap.o blk-mq-sched.o ioctl.o \
+-			genhd.o partition-generic.o ioprio.o \
+-			badblocks.o partitions/ blk-rq-qos.o
++			genhd.o ioprio.o badblocks.o partitions/ blk-rq-qos.o
+ 
+ obj-$(CONFIG_BOUNCE)		+= bounce.o
+ obj-$(CONFIG_BLK_SCSI_REQUEST)	+= scsi_ioctl.o
+diff --git a/block/partitions/Makefile b/block/partitions/Makefile
+index 2f276b677c81..a7f05cdb02a8 100644
+--- a/block/partitions/Makefile
++++ b/block/partitions/Makefile
+@@ -3,8 +3,7 @@
+ # Makefile for the linux kernel.
+ #
+ 
+-obj-$(CONFIG_BLOCK) := check.o
+-
++obj-$(CONFIG_BLOCK) += core.o
+ obj-$(CONFIG_ACORN_PARTITION) += acorn.o
+ obj-$(CONFIG_AMIGA_PARTITION) += amiga.o
+ obj-$(CONFIG_ATARI_PARTITION) += atari.o
+diff --git a/block/partitions/check.c b/block/partitions/check.c
+deleted file mode 100644
+index 944c478b6f0b..000000000000
+--- a/block/partitions/check.c
++++ /dev/null
+@@ -1,179 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- *  fs/partitions/check.c
+- *
+- *  Code extracted from drivers/block/genhd.c
+- *  Copyright (C) 1991-1998  Linus Torvalds
+- *  Re-organised Feb 1998 Russell King
+- *
+- *  We now have independent partition support from the
+- *  block drivers, which allows all the partition code to
+- *  be grouped in one location, and it to be mostly self
+- *  contained.
+- *
+- *  Added needed MAJORS for new pairs, {hdi,hdj}, {hdk,hdl}
+- */
+-
+-#include <linux/slab.h>
+-#include <linux/vmalloc.h>
+-#include <linux/ctype.h>
+-#include <linux/genhd.h>
+-
+-#include "check.h"
+-
+-static int (*check_part[])(struct parsed_partitions *) = {
+-	/*
+-	 * Probe partition formats with tables at disk address 0
+-	 * that also have an ADFS boot block at 0xdc0.
+-	 */
+-#ifdef CONFIG_ACORN_PARTITION_ICS
+-	adfspart_check_ICS,
+-#endif
+-#ifdef CONFIG_ACORN_PARTITION_POWERTEC
+-	adfspart_check_POWERTEC,
+-#endif
+-#ifdef CONFIG_ACORN_PARTITION_EESOX
+-	adfspart_check_EESOX,
+-#endif
+-
+-	/*
+-	 * Now move on to formats that only have partition info at
+-	 * disk address 0xdc0.  Since these may also have stale
+-	 * PC/BIOS partition tables, they need to come before
+-	 * the msdos entry.
+-	 */
+-#ifdef CONFIG_ACORN_PARTITION_CUMANA
+-	adfspart_check_CUMANA,
+-#endif
+-#ifdef CONFIG_ACORN_PARTITION_ADFS
+-	adfspart_check_ADFS,
+-#endif
+-
+-#ifdef CONFIG_CMDLINE_PARTITION
+-	cmdline_partition,
+-#endif
+-#ifdef CONFIG_EFI_PARTITION
+-	efi_partition,		/* this must come before msdos */
+-#endif
+-#ifdef CONFIG_SGI_PARTITION
+-	sgi_partition,
+-#endif
+-#ifdef CONFIG_LDM_PARTITION
+-	ldm_partition,		/* this must come before msdos */
+-#endif
+-#ifdef CONFIG_MSDOS_PARTITION
+-	msdos_partition,
+-#endif
+-#ifdef CONFIG_OSF_PARTITION
+-	osf_partition,
+-#endif
+-#ifdef CONFIG_SUN_PARTITION
+-	sun_partition,
+-#endif
+-#ifdef CONFIG_AMIGA_PARTITION
+-	amiga_partition,
+-#endif
+-#ifdef CONFIG_ATARI_PARTITION
+-	atari_partition,
+-#endif
+-#ifdef CONFIG_MAC_PARTITION
+-	mac_partition,
+-#endif
+-#ifdef CONFIG_ULTRIX_PARTITION
+-	ultrix_partition,
+-#endif
+-#ifdef CONFIG_IBM_PARTITION
+-	ibm_partition,
+-#endif
+-#ifdef CONFIG_KARMA_PARTITION
+-	karma_partition,
+-#endif
+-#ifdef CONFIG_SYSV68_PARTITION
+-	sysv68_partition,
+-#endif
+-	NULL
+-};
+-
+-static struct parsed_partitions *allocate_partitions(struct gendisk *hd)
+-{
+-	struct parsed_partitions *state;
+-	int nr;
+-
+-	state = kzalloc(sizeof(*state), GFP_KERNEL);
+-	if (!state)
+-		return NULL;
+-
+-	nr = disk_max_parts(hd);
+-	state->parts = vzalloc(array_size(nr, sizeof(state->parts[0])));
+-	if (!state->parts) {
+-		kfree(state);
+-		return NULL;
+-	}
+-
+-	state->limit = nr;
+-
+-	return state;
+-}
+-
+-void free_partitions(struct parsed_partitions *state)
+-{
+-	vfree(state->parts);
+-	kfree(state);
+-}
+-
+-struct parsed_partitions *
+-check_partition(struct gendisk *hd, struct block_device *bdev)
+-{
+-	struct parsed_partitions *state;
+-	int i, res, err;
+-
+-	state = allocate_partitions(hd);
+-	if (!state)
+-		return NULL;
+-	state->pp_buf = (char *)__get_free_page(GFP_KERNEL);
+-	if (!state->pp_buf) {
+-		free_partitions(state);
+-		return NULL;
+-	}
+-	state->pp_buf[0] = '\0';
+-
+-	state->bdev = bdev;
+-	disk_name(hd, 0, state->name);
+-	snprintf(state->pp_buf, PAGE_SIZE, " %s:", state->name);
+-	if (isdigit(state->name[strlen(state->name)-1]))
+-		sprintf(state->name, "p");
+-
+-	i = res = err = 0;
+-	while (!res && check_part[i]) {
+-		memset(state->parts, 0, state->limit * sizeof(state->parts[0]));
+-		res = check_part[i++](state);
+-		if (res < 0) {
+-			/* We have hit an I/O error which we don't report now.
+-		 	* But record it, and let the others do their job.
+-		 	*/
+-			err = res;
+-			res = 0;
+-		}
+-
+-	}
+-	if (res > 0) {
+-		printk(KERN_INFO "%s", state->pp_buf);
+-
+-		free_page((unsigned long)state->pp_buf);
+-		return state;
+-	}
+-	if (state->access_beyond_eod)
+-		err = -ENOSPC;
+-	if (err)
+-	/* The partition is unrecognized. So report I/O errors if there were any */
+-		res = err;
+-	if (res) {
+-		strlcat(state->pp_buf,
+-			" unable to read partition table\n", PAGE_SIZE);
+-		printk(KERN_INFO "%s", state->pp_buf);
+-	}
+-
+-	free_page((unsigned long)state->pp_buf);
+-	free_partitions(state);
+-	return ERR_PTR(res);
+-}
+diff --git a/block/partitions/check.h b/block/partitions/check.h
+index 23e7adb79617..f845355489ec 100644
+--- a/block/partitions/check.h
++++ b/block/partitions/check.h
+@@ -23,11 +23,6 @@ struct parsed_partitions {
+ 	char *pp_buf;
+ };
+ 
+-void free_partitions(struct parsed_partitions *state);
+-
+-struct parsed_partitions *
+-check_partition(struct gendisk *, struct block_device *);
+-
+ typedef struct {
+ 	struct page *v;
+ } Sector;
+diff --git a/block/partition-generic.c b/block/partitions/core.c
+similarity index 77%
+rename from block/partition-generic.c
+rename to block/partitions/core.c
+index febfb8e96abb..682fe445c3ab 100644
+--- a/block/partition-generic.c
++++ b/block/partitions/core.c
+@@ -1,27 +1,177 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- *  Code extracted from drivers/block/genhd.c
+- *  Copyright (C) 1991-1998  Linus Torvalds
+- *  Re-organised Feb 1998 Russell King
+- *
+- *  We now have independent partition support from the
+- *  block drivers, which allows all the partition code to
+- *  be grouped in one location, and it to be mostly self
+- *  contained.
++ * Copyright (C) 1991-1998  Linus Torvalds
++ * Re-organised Feb 1998 Russell King
   */
- #include <linux/msdos_fs.h>
- #include <linux/msdos_partition.h>
-@@ -215,6 +221,30 @@ static void parse_extended(struct parsed_partitions *state,
- 	put_dev_sector(sect);
- }
- 
-+#define SOLARIS_X86_NUMSLICE	16
-+#define SOLARIS_X86_VTOC_SANE	(0x600DDEEEUL)
+-
+-#include <linux/init.h>
+-#include <linux/module.h>
+ #include <linux/fs.h>
+ #include <linux/slab.h>
+-#include <linux/kmod.h>
+ #include <linux/ctype.h>
+ #include <linux/genhd.h>
++#include <linux/vmalloc.h>
+ #include <linux/blktrace_api.h>
+ #include <linux/raid/detect.h>
+-#include "blk.h"
++#include "../blk.h"
++#include "check.h"
 +
-+struct solaris_x86_slice {
-+	__le16 s_tag;		/* ID tag of partition */
-+	__le16 s_flag;		/* permission flags */
-+	__le32 s_start;		/* start sector no of partition */
-+	__le32 s_size;		/* # of blocks in partition */
++static int (*check_part[])(struct parsed_partitions *) = {
++	/*
++	 * Probe partition formats with tables at disk address 0
++	 * that also have an ADFS boot block at 0xdc0.
++	 */
++#ifdef CONFIG_ACORN_PARTITION_ICS
++	adfspart_check_ICS,
++#endif
++#ifdef CONFIG_ACORN_PARTITION_POWERTEC
++	adfspart_check_POWERTEC,
++#endif
++#ifdef CONFIG_ACORN_PARTITION_EESOX
++	adfspart_check_EESOX,
++#endif
++
++	/*
++	 * Now move on to formats that only have partition info at
++	 * disk address 0xdc0.  Since these may also have stale
++	 * PC/BIOS partition tables, they need to come before
++	 * the msdos entry.
++	 */
++#ifdef CONFIG_ACORN_PARTITION_CUMANA
++	adfspart_check_CUMANA,
++#endif
++#ifdef CONFIG_ACORN_PARTITION_ADFS
++	adfspart_check_ADFS,
++#endif
++
++#ifdef CONFIG_CMDLINE_PARTITION
++	cmdline_partition,
++#endif
++#ifdef CONFIG_EFI_PARTITION
++	efi_partition,		/* this must come before msdos */
++#endif
++#ifdef CONFIG_SGI_PARTITION
++	sgi_partition,
++#endif
++#ifdef CONFIG_LDM_PARTITION
++	ldm_partition,		/* this must come before msdos */
++#endif
++#ifdef CONFIG_MSDOS_PARTITION
++	msdos_partition,
++#endif
++#ifdef CONFIG_OSF_PARTITION
++	osf_partition,
++#endif
++#ifdef CONFIG_SUN_PARTITION
++	sun_partition,
++#endif
++#ifdef CONFIG_AMIGA_PARTITION
++	amiga_partition,
++#endif
++#ifdef CONFIG_ATARI_PARTITION
++	atari_partition,
++#endif
++#ifdef CONFIG_MAC_PARTITION
++	mac_partition,
++#endif
++#ifdef CONFIG_ULTRIX_PARTITION
++	ultrix_partition,
++#endif
++#ifdef CONFIG_IBM_PARTITION
++	ibm_partition,
++#endif
++#ifdef CONFIG_KARMA_PARTITION
++	karma_partition,
++#endif
++#ifdef CONFIG_SYSV68_PARTITION
++	sysv68_partition,
++#endif
++	NULL
 +};
 +
-+struct solaris_x86_vtoc {
-+	unsigned int v_bootinfo[3];	/* info needed by mboot */
-+	__le32 v_sanity;		/* to verify vtoc sanity */
-+	__le32 v_version;		/* layout version */
-+	char	v_volume[8];		/* volume name */
-+	__le16	v_sectorsz;		/* sector size in bytes */
-+	__le16	v_nparts;		/* number of partitions */
-+	unsigned int v_reserved[10];	/* free space */
-+	struct solaris_x86_slice
-+		v_slice[SOLARIS_X86_NUMSLICE]; /* slice headers */
-+	unsigned int timestamp[SOLARIS_X86_NUMSLICE]; /* timestamp */
-+	char	v_asciilabel[128];	/* for compatibility */
-+};
-+
- /* james@bpgc.com: Solaris has a nasty indicator: 0x82 which also
-    indicates linux swap.  Be careful before believing this is Solaris. */
++static struct parsed_partitions *allocate_partitions(struct gendisk *hd)
++{
++	struct parsed_partitions *state;
++	int nr;
  
-@@ -270,6 +300,54 @@ static void parse_solaris_x86(struct parsed_partitions *state,
- #endif
- }
+-#include "partitions/check.h"
++	state = kzalloc(sizeof(*state), GFP_KERNEL);
++	if (!state)
++		return NULL;
++
++	nr = disk_max_parts(hd);
++	state->parts = vzalloc(array_size(nr, sizeof(state->parts[0])));
++	if (!state->parts) {
++		kfree(state);
++		return NULL;
++	}
++
++	state->limit = nr;
++
++	return state;
++}
++
++static void free_partitions(struct parsed_partitions *state)
++{
++	vfree(state->parts);
++	kfree(state);
++}
++
++static struct parsed_partitions *check_partition(struct gendisk *hd,
++		struct block_device *bdev)
++{
++	struct parsed_partitions *state;
++	int i, res, err;
++
++	state = allocate_partitions(hd);
++	if (!state)
++		return NULL;
++	state->pp_buf = (char *)__get_free_page(GFP_KERNEL);
++	if (!state->pp_buf) {
++		free_partitions(state);
++		return NULL;
++	}
++	state->pp_buf[0] = '\0';
++
++	state->bdev = bdev;
++	disk_name(hd, 0, state->name);
++	snprintf(state->pp_buf, PAGE_SIZE, " %s:", state->name);
++	if (isdigit(state->name[strlen(state->name)-1]))
++		sprintf(state->name, "p");
++
++	i = res = err = 0;
++	while (!res && check_part[i]) {
++		memset(state->parts, 0, state->limit * sizeof(state->parts[0]));
++		res = check_part[i++](state);
++		if (res < 0) {
++			/*
++			 * We have hit an I/O error which we don't report now.
++			 * But record it, and let the others do their job.
++			 */
++			err = res;
++			res = 0;
++		}
++
++	}
++	if (res > 0) {
++		printk(KERN_INFO "%s", state->pp_buf);
++
++		free_page((unsigned long)state->pp_buf);
++		return state;
++	}
++	if (state->access_beyond_eod)
++		err = -ENOSPC;
++	/*
++	 * The partition is unrecognized. So report I/O errors if there were any
++	 */
++	if (err)
++		res = err;
++	if (res) {
++		strlcat(state->pp_buf,
++			" unable to read partition table\n", PAGE_SIZE);
++		printk(KERN_INFO "%s", state->pp_buf);
++	}
++
++	free_page((unsigned long)state->pp_buf);
++	free_partitions(state);
++	return ERR_PTR(res);
++}
  
-+/* check against BSD src/sys/sys/disklabel.h for consistency */
-+#define BSD_DISKMAGIC	(0x82564557UL)	/* The disk magic number */
-+#define BSD_MAXPARTITIONS	16
-+#define OPENBSD_MAXPARTITIONS	16
-+#define BSD_FS_UNUSED		0 /* disklabel unused partition entry ID */
-+struct bsd_disklabel {
-+	__le32	d_magic;		/* the magic number */
-+	__s16	d_type;			/* drive type */
-+	__s16	d_subtype;		/* controller/d_type specific */
-+	char	d_typename[16];		/* type name, e.g. "eagle" */
-+	char	d_packname[16];		/* pack identifier */
-+	__u32	d_secsize;		/* # of bytes per sector */
-+	__u32	d_nsectors;		/* # of data sectors per track */
-+	__u32	d_ntracks;		/* # of tracks per cylinder */
-+	__u32	d_ncylinders;		/* # of data cylinders per unit */
-+	__u32	d_secpercyl;		/* # of data sectors per cylinder */
-+	__u32	d_secperunit;		/* # of data sectors per unit */
-+	__u16	d_sparespertrack;	/* # of spare sectors per track */
-+	__u16	d_sparespercyl;		/* # of spare sectors per cylinder */
-+	__u32	d_acylinders;		/* # of alt. cylinders per unit */
-+	__u16	d_rpm;			/* rotational speed */
-+	__u16	d_interleave;		/* hardware sector interleave */
-+	__u16	d_trackskew;		/* sector 0 skew, per track */
-+	__u16	d_cylskew;		/* sector 0 skew, per cylinder */
-+	__u32	d_headswitch;		/* head switch time, usec */
-+	__u32	d_trkseek;		/* track-to-track seek, usec */
-+	__u32	d_flags;		/* generic flags */
-+#define NDDATA 5
-+	__u32	d_drivedata[NDDATA];	/* drive-type specific information */
-+#define NSPARE 5
-+	__u32	d_spare[NSPARE];	/* reserved for future use */
-+	__le32	d_magic2;		/* the magic number (again) */
-+	__le16	d_checksum;		/* xor of data incl. partitions */
-+
-+			/* filesystem and partition information: */
-+	__le16	d_npartitions;		/* number of partitions in following */
-+	__le32	d_bbsize;		/* size of boot area at sn0, bytes */
-+	__le32	d_sbsize;		/* max size of fs superblock, bytes */
-+	struct	bsd_partition {		/* the partition table */
-+		__le32	p_size;		/* number of sectors in partition */
-+		__le32	p_offset;	/* starting sector */
-+		__le32	p_fsize;	/* filesystem basic fragment size */
-+		__u8	p_fstype;	/* filesystem type, see below */
-+		__u8	p_frag;		/* filesystem fragments per block */
-+		__le16	p_cpg;		/* filesystem cylinders per group */
-+	} d_partitions[BSD_MAXPARTITIONS];	/* actually may be more */
-+};
-+
- #if defined(CONFIG_BSD_DISKLABEL)
- /*
-  * Create devices for BSD partitions listed in a disklabel, under a
-@@ -354,6 +432,51 @@ static void parse_openbsd(struct parsed_partitions *state,
- #endif
- }
- 
-+#define UNIXWARE_DISKMAGIC     (0xCA5E600DUL)	/* The disk magic number */
-+#define UNIXWARE_DISKMAGIC2    (0x600DDEEEUL)	/* The slice table magic nr */
-+#define UNIXWARE_NUMSLICE      16
-+#define UNIXWARE_FS_UNUSED     0		/* Unused slice entry ID */
-+
-+struct unixware_slice {
-+	__le16   s_label;	/* label */
-+	__le16   s_flags;	/* permission flags */
-+	__le32   start_sect;	/* starting sector */
-+	__le32   nr_sects;	/* number of sectors in slice */
-+};
-+
-+struct unixware_disklabel {
-+	__le32	d_type;			/* drive type */
-+	__le32	d_magic;		/* the magic number */
-+	__le32	d_version;		/* version number */
-+	char	d_serial[12];		/* serial number of the device */
-+	__le32	d_ncylinders;		/* # of data cylinders per device */
-+	__le32	d_ntracks;		/* # of tracks per cylinder */
-+	__le32	d_nsectors;		/* # of data sectors per track */
-+	__le32	d_secsize;		/* # of bytes per sector */
-+	__le32	d_part_start;		/* # of first sector of this partition*/
-+	__le32	d_unknown1[12];		/* ? */
-+	__le32	d_alt_tbl;		/* byte offset of alternate table */
-+	__le32	d_alt_len;		/* byte length of alternate table */
-+	__le32	d_phys_cyl;		/* # of physical cylinders per device */
-+	__le32	d_phys_trk;		/* # of physical tracks per cylinder */
-+	__le32	d_phys_sec;		/* # of physical sectors per track */
-+	__le32	d_phys_bytes;		/* # of physical bytes per sector */
-+	__le32	d_unknown2;		/* ? */
-+	__le32	d_unknown3;		/* ? */
-+	__le32	d_pad[8];		/* pad */
-+
-+	struct unixware_vtoc {
-+		__le32	v_magic;		/* the magic number */
-+		__le32	v_version;		/* version number */
-+		char	v_name[8];		/* volume name */
-+		__le16	v_nslices;		/* # of slices */
-+		__le16	v_unknown1;		/* ? */
-+		__le32	v_reserved[10];		/* reserved */
-+		struct unixware_slice
-+			v_slice[UNIXWARE_NUMSLICE];	/* slice headers */
-+	} vtoc;
-+};  /* 408 */
-+
- /*
-  * Create devices for Unixware partitions listed in a disklabel, under a
-  * dos-like partition. See parse_extended() for more information.
-@@ -397,6 +520,8 @@ static void parse_unixware(struct parsed_partitions *state,
- #endif
- }
- 
-+#define MINIX_NR_SUBPARTITIONS  4
-+
- /*
-  * Minix 2.0.0/2.0.2 subpartition support.
-  * Anand Krishnamurthy <anandk@wiproge.med.ge.com>
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index df809e91ad99..21178f7b379c 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -424,149 +424,6 @@ static inline void set_capacity(struct gendisk *disk, sector_t size)
- 	disk->part0.nr_sects = size;
- }
- 
--#ifdef CONFIG_SOLARIS_X86_PARTITION
--
--#define SOLARIS_X86_NUMSLICE	16
--#define SOLARIS_X86_VTOC_SANE	(0x600DDEEEUL)
--
--struct solaris_x86_slice {
--	__le16 s_tag;		/* ID tag of partition */
--	__le16 s_flag;		/* permission flags */
--	__le32 s_start;		/* start sector no of partition */
--	__le32 s_size;		/* # of blocks in partition */
--};
--
--struct solaris_x86_vtoc {
--	unsigned int v_bootinfo[3];	/* info needed by mboot (unsupported) */
--	__le32 v_sanity;		/* to verify vtoc sanity */
--	__le32 v_version;		/* layout version */
--	char	v_volume[8];		/* volume name */
--	__le16	v_sectorsz;		/* sector size in bytes */
--	__le16	v_nparts;		/* number of partitions */
--	unsigned int v_reserved[10];	/* free space */
--	struct solaris_x86_slice
--		v_slice[SOLARIS_X86_NUMSLICE]; /* slice headers */
--	unsigned int timestamp[SOLARIS_X86_NUMSLICE]; /* timestamp (unsupported) */
--	char	v_asciilabel[128];	/* for compatibility */
--};
--
--#endif /* CONFIG_SOLARIS_X86_PARTITION */
--
--#ifdef CONFIG_BSD_DISKLABEL
--/*
-- * BSD disklabel support by Yossi Gottlieb <yogo@math.tau.ac.il>
-- * updated by Marc Espie <Marc.Espie@openbsd.org>
-- */
--
--/* check against BSD src/sys/sys/disklabel.h for consistency */
--
--#define BSD_DISKMAGIC	(0x82564557UL)	/* The disk magic number */
--#define BSD_MAXPARTITIONS	16
--#define OPENBSD_MAXPARTITIONS	16
--#define BSD_FS_UNUSED		0	/* disklabel unused partition entry ID */
--struct bsd_disklabel {
--	__le32	d_magic;		/* the magic number */
--	__s16	d_type;			/* drive type */
--	__s16	d_subtype;		/* controller/d_type specific */
--	char	d_typename[16];		/* type name, e.g. "eagle" */
--	char	d_packname[16];			/* pack identifier */ 
--	__u32	d_secsize;		/* # of bytes per sector */
--	__u32	d_nsectors;		/* # of data sectors per track */
--	__u32	d_ntracks;		/* # of tracks per cylinder */
--	__u32	d_ncylinders;		/* # of data cylinders per unit */
--	__u32	d_secpercyl;		/* # of data sectors per cylinder */
--	__u32	d_secperunit;		/* # of data sectors per unit */
--	__u16	d_sparespertrack;	/* # of spare sectors per track */
--	__u16	d_sparespercyl;		/* # of spare sectors per cylinder */
--	__u32	d_acylinders;		/* # of alt. cylinders per unit */
--	__u16	d_rpm;			/* rotational speed */
--	__u16	d_interleave;		/* hardware sector interleave */
--	__u16	d_trackskew;		/* sector 0 skew, per track */
--	__u16	d_cylskew;		/* sector 0 skew, per cylinder */
--	__u32	d_headswitch;		/* head switch time, usec */
--	__u32	d_trkseek;		/* track-to-track seek, usec */
--	__u32	d_flags;		/* generic flags */
--#define NDDATA 5
--	__u32	d_drivedata[NDDATA];	/* drive-type specific information */
--#define NSPARE 5
--	__u32	d_spare[NSPARE];	/* reserved for future use */
--	__le32	d_magic2;		/* the magic number (again) */
--	__le16	d_checksum;		/* xor of data incl. partitions */
--
--			/* filesystem and partition information: */
--	__le16	d_npartitions;		/* number of partitions in following */
--	__le32	d_bbsize;		/* size of boot area at sn0, bytes */
--	__le32	d_sbsize;		/* max size of fs superblock, bytes */
--	struct	bsd_partition {		/* the partition table */
--		__le32	p_size;		/* number of sectors in partition */
--		__le32	p_offset;	/* starting sector */
--		__le32	p_fsize;	/* filesystem basic fragment size */
--		__u8	p_fstype;	/* filesystem type, see below */
--		__u8	p_frag;		/* filesystem fragments per block */
--		__le16	p_cpg;		/* filesystem cylinders per group */
--	} d_partitions[BSD_MAXPARTITIONS];	/* actually may be more */
--};
--
--#endif	/* CONFIG_BSD_DISKLABEL */
--
--#ifdef CONFIG_UNIXWARE_DISKLABEL
--/*
-- * Unixware slices support by Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
-- * and Krzysztof G. Baranowski <kgb@knm.org.pl>
-- */
--
--#define UNIXWARE_DISKMAGIC     (0xCA5E600DUL)	/* The disk magic number */
--#define UNIXWARE_DISKMAGIC2    (0x600DDEEEUL)	/* The slice table magic nr */
--#define UNIXWARE_NUMSLICE      16
--#define UNIXWARE_FS_UNUSED     0		/* Unused slice entry ID */
--
--struct unixware_slice {
--	__le16   s_label;	/* label */
--	__le16   s_flags;	/* permission flags */
--	__le32   start_sect;	/* starting sector */
--	__le32   nr_sects;	/* number of sectors in slice */
--};
--
--struct unixware_disklabel {
--	__le32   d_type;               	/* drive type */
--	__le32   d_magic;                /* the magic number */
--	__le32   d_version;              /* version number */
--	char    d_serial[12];           /* serial number of the device */
--	__le32   d_ncylinders;           /* # of data cylinders per device */
--	__le32   d_ntracks;              /* # of tracks per cylinder */
--	__le32   d_nsectors;             /* # of data sectors per track */
--	__le32   d_secsize;              /* # of bytes per sector */
--	__le32   d_part_start;           /* # of first sector of this partition */
--	__le32   d_unknown1[12];         /* ? */
-- 	__le32	d_alt_tbl;              /* byte offset of alternate table */
-- 	__le32	d_alt_len;              /* byte length of alternate table */
-- 	__le32	d_phys_cyl;             /* # of physical cylinders per device */
-- 	__le32	d_phys_trk;             /* # of physical tracks per cylinder */
-- 	__le32	d_phys_sec;             /* # of physical sectors per track */
-- 	__le32	d_phys_bytes;           /* # of physical bytes per sector */
-- 	__le32	d_unknown2;             /* ? */
--	__le32   d_unknown3;             /* ? */
--	__le32	d_pad[8];               /* pad */
--
--	struct unixware_vtoc {
--		__le32	v_magic;		/* the magic number */
--		__le32	v_version;		/* version number */
--		char	v_name[8];		/* volume name */
--		__le16	v_nslices;		/* # of slices */
--		__le16	v_unknown1;		/* ? */
--		__le32	v_reserved[10];		/* reserved */
--		struct unixware_slice
--			v_slice[UNIXWARE_NUMSLICE];	/* slice headers */
--	} vtoc;
--
--};  /* 408 */
--
--#endif /* CONFIG_UNIXWARE_DISKLABEL */
--
--#ifdef CONFIG_MINIX_SUBPARTITION
--#   define MINIX_NR_SUBPARTITIONS  4
--#endif /* CONFIG_MINIX_SUBPARTITION */
--
- #define ADDPART_FLAG_NONE	0
- #define ADDPART_FLAG_RAID	1
- #define ADDPART_FLAG_WHOLEDISK	2
+ static ssize_t part_partition_show(struct device *dev,
+ 				   struct device_attribute *attr, char *buf)
 -- 
 2.24.1
 
