@@ -2,186 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E734182715
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Mar 2020 03:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF76D182738
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Mar 2020 04:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387650AbgCLCid (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 11 Mar 2020 22:38:33 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11663 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387501AbgCLCid (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 11 Mar 2020 22:38:33 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 5588834DF390C990012C;
-        Thu, 12 Mar 2020 10:38:27 +0800 (CST)
-Received: from [127.0.0.1] (10.184.189.50) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 12 Mar 2020
- 10:38:18 +0800
-Subject: Re: [PATCH] ocfs2: fix a null pointer derefrence in
- ocfs2_block_group_clear_bits()
-To:     Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>, Jan Kara <jack@suse.com>
-References: <1d38573d-61c7-be60-334e-c263caf7465c@huawei.com>
- <c56390f0-9f01-cd71-0b8e-b83d746bab74@huawei.com>
- <f702081e-1953-c2c1-76e4-f441302ab2f3@huawei.com>
- <7c5c64a8-0629-b301-6cbb-91d1c9f75fa0@linux.alibaba.com>
-CC:     piao jun <piaojun@huawei.com>,
-        ocfs2-devel <ocfs2-devel@oss.oracle.com>,
-        linux ext4 <linux-ext4@vger.kernel.org>,
-        linux kernel <linux-kernel@vger.kernel.org>
-From:   lishan <lishan24@huawei.com>
-Message-ID: <8017150f-0fa1-2804-4934-5e64ad04ae6e@huawei.com>
-Date:   Thu, 12 Mar 2020 10:38:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S2387743AbgCLDA2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 11 Mar 2020 23:00:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37176 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387453AbgCLDA1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 11 Mar 2020 23:00:27 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02C2xLP7175694;
+        Thu, 12 Mar 2020 03:00:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : references : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Qo/MY1wia4ChrahGN998AHrVHZxgV5G79qHPQfknXEE=;
+ b=upJxzfwZ0MvxTTGNmjZzcj2xWiYLF/vQCjx9sW0pIebH103o6ghhWrKm0de2cyNMkqlj
+ qQlIbNE2HJKH+nkuRN22bYXoyOeWnNi27y3Obp1t8sTgA1gjmqo/r68aqW49SWXqsioT
+ qYxrT3o3q2HGD6gJVuW3XAM4DRuqX5OdyOKdgEjGM3MQC6iAgjkY99G2fY5WNY0urmgq
+ 0DS/CBfH81dBRFPxzj53nFzg0bzQlLSW3PTHT3JagGqvMkU+3T0qUVWM+Cf+yhzBCcSv
+ 8H3o5CBNfwHub1ILPe5qAlR5QZ1mu4Wt4AEMv4w1m8BFrNBNWK6Ya1Ms0U7fVVTzLRWf /A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2yp7hmbek7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Mar 2020 03:00:16 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 02C2wfD3017433;
+        Thu, 12 Mar 2020 03:00:15 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2yp8q1thc4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 12 Mar 2020 03:00:15 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 02C30CLw018920;
+        Thu, 12 Mar 2020 03:00:12 GMT
+Received: from localhost (/10.159.134.61) by default (Oracle Beehive Gateway
+ v4.0) with ESMTP ; Wed, 11 Mar 2020 20:00:11 -0700
+USER-AGENT: Mutt/1.9.4 (2018-02-28)
 MIME-Version: 1.0
-In-Reply-To: <7c5c64a8-0629-b301-6cbb-91d1c9f75fa0@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
+Message-ID: <20200312030009.GJ8045@magnolia>
+Date:   Wed, 11 Mar 2020 20:00:09 -0700 (PDT)
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Ira Weiny <ira.weiny@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org
+Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations V5
+References: <20200227052442.22524-1-ira.weiny@intel.com>
+ <20200305155144.GA5598@lst.de>
+ <20200309170437.GA271052@iweiny-DESK2.sc.intel.com>
+ <20200311033614.GQ1752567@magnolia>
+ <20200311063942.GE10776@dread.disaster.area> <20200311064412.GA11819@lst.de>
+ <20200312004932.GH10776@dread.disaster.area>
+In-Reply-To: <20200312004932.GH10776@dread.disaster.area>
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.184.189.50]
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9557 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 suspectscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003120013
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9557 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2003120013
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, Jan Kara:
+On Thu, Mar 12, 2020 at 11:49:32AM +1100, Dave Chinner wrote:
+> On Wed, Mar 11, 2020 at 07:44:12AM +0100, Christoph Hellwig wrote:
+> > On Wed, Mar 11, 2020 at 05:39:42PM +1100, Dave Chinner wrote:
+> > > IOWs, the dax_associate_page() related functionality probably needs
+> > > to be a filesystem callout - part of the aops vector, I think, so
+> > > that device dax can still use it. That way XFS can go it's own way,
+> > > while ext4 and device dax can continue to use the existing mechanism
+> > > mechanisn that is currently implemented....
+> > 
+> > s/XFS/XFS with rmap/, as most XFS file systems currently don't have
+> > that enabled we'll also need to keep the legacy path around.
+> 
+> Sure, that's trivially easy to handle in the XFS code once the
+> callouts are in place.
+> 
+> But, quite frankly, we can enforce rmap to be enabled 
+> enabled because nobody is using a reflink enabled FS w/ DAX right
+> now. Everyone will have to mkfs their filesystems anyway to enable
+> reflink+dax, so we simply don't allow reflink+dax to be enabled
+> unless rmap is also enabled. Simple, easy, trivial.
 
-I have a long-standing problem,
-In the ocfs2 file system, there is a panic problem related to b_committed_data,
-details can be found in the historical mail.
+Heh, this reminds me that I need to get that rmap performance analysis
+report out to the list... it does have a fairly substantial performance
+impact (in its current not-terribly-optimized state) but otoh enables
+self-repair.
 
-Refer to the old version of the ext3 file system,
-ocfs2 file system uses the undo process to ensure that metadata
-which is not committed to disk is not reused.
+--D
 
-I understand that for transactions that have not been committed,
-b_committed_data will not be NULL, so,
-in what scenario do you think b_committed_data will be set to NULL?
-
-Thanks,
-Shan
-
-On 2020/3/11 9:15, Joseph Qi wrote:
+> Cheers,
 > 
-> 
-> On 2020/3/9 16:26, lishan wrote:
->> A NULL pointer panic dereference in ocfs2_block_group_clear_bits() happen again.
->> The information of NULL pointer stack as follows:
->>
->> PID: 81866  TASK: ffffa07c3c21ae80  CPU: 66  COMMAND: "fallocate"
->>   #0 [ffff0000b4d6b0b0] machine_kexec at ffff0000800a2954
->>   #1 [ffff0000b4d6b110] __crash_kexec at ffff0000801bab34
->>   #2 [ffff0000b4d6b2a0] panic at ffff0000800f02cc
->>   #3 [ffff0000b4d6b380] die at ffff00008008f6ac
->>   #4 [ffff0000b4d6b3d0] bug_handler at ffff00008008f744
->>   #5 [ffff0000b4d6b400] brk_handler at ffff000080085d1c
->>   #6 [ffff0000b4d6b420] do_debug_exception at ffff000080081194
->>   #7 [ffff0000b4d6b630] el1_dbg at ffff00008008332c
->>       PC: ffff00000190e9c0  [_ocfs2_free_suballoc_bits+1608]
->>       LR: ffff00000190e990  [_ocfs2_free_suballoc_bits+1560]
->>       SP: ffff0000b4d6b640  PSTATE: 60400009
->>      X29: ffff0000b4d6b650  X28: 0000000000000000  X27: 00000000000052f3
->>      X26: ffff807c511a9570  X25: ffff807ca0054000  X24: 00000000000052f2
->>      X23: 0000000000000001  X22: ffff807c7cde7a90  X21: ffff0000811d9000
->>      X20: ffff807c5e7d2000  X19: ffff00000190c768  X18: 0000000000000000
->>      X17: 0000000000000000  X16: ffff000080a032f0  X15: 0000000000000000
->>      X14: ffffffffffffffff  X13: fffffffffffffff7  X12: ffffffffffffffff
->>      X11: 0000000000000038  X10: 0101010101010101   X9: ffffffffffffffff
->>       X8: 7f7f7f7f7f7f7f7f   X7: 0000000000000000   X6: 0000000000000080
->>       X5: 0000000000000000   X4: 0000000000000002   X3: ffff00000199f390
->>       X2: a603c08321456e00   X1: ffff807c7cde7a90   X0: 0000000000000000
->>   #8 [ffff0000b4d6b650] _ocfs2_free_suballoc_bits at ffff00000190e9bc [ocfs2]
->>   #9 [ffff0000b4d6b710] _ocfs2_free_clusters at ffff0000019110d4 [ocfs2]
->>  #10 [ffff0000b4d6b790] ocfs2_free_clusters at ffff000001913e94 [ocfs2]
->>  #11 [ffff0000b4d6b7d0] __ocfs2_flush_truncate_log at ffff0000018b5294 [ocfs2]
->>  #12 [ffff0000b4d6b8a0] ocfs2_remove_btree_range at ffff0000018bb34c [ocfs2]
->>  #13 [ffff0000b4d6b960] ocfs2_commit_truncate at ffff0000018bc76c [ocfs2]
->>  #14 [ffff0000b4d6ba60] ocfs2_wipe_inode at ffff0000018e57bc [ocfs2]
->>  #15 [ffff0000b4d6bb00] ocfs2_evict_inode at ffff0000018e5db8 [ocfs2]
->>  #16 [ffff0000b4d6bb70] evict at ffff000080365040
->>  #17 [ffff0000b4d6bba0] iput at ffff0000803655d8
->>  #18 [ffff0000b4d6bbe0] ocfs2_dentry_iput at ffff0000018c60a0 [ocfs2]
->>  #19 [ffff0000b4d6bc30] dentry_unlink_inode at ffff00008035ef58
->>  #20 [ffff0000b4d6bc50] __dentry_kill at ffff000080360384
->>  #21 [ffff0000b4d6bc80] dentry_kill at ffff000080360670
->>  #22 [ffff0000b4d6bcb0] dput at ffff00008036093c
->>  #23 [ffff0000b4d6bcf0] __fput at ffff000080343930
->>  #24 [ffff0000b4d6bd40] ____fput at ffff000080343aac
->>  #25 [ffff0000b4d6bd60] task_work_run at ffff0000801172fc
->>
->> The direct panic reason is that bh2jh (group_bh)-> b_committed_data is null.
->> It is presumed that the network was disconnected during the write process,
->> causing the transaction abort. as follows:
->> jbd2_journal_abort
->>   .......
->>   jbd2_journal_commit_transaction
->>     jh->b_committed_data = NULL;
->>
->> _ocfs2_free_suballoc_bits
->>   ocfs2_block_group_clear_bits
->>     // undo_bg is now set to null
->>     BUG_ON(!undo_bg);
->>
->> When applying for free space, if b_committed_data is null,
->> it will be directly occupied, as follows:
->> ocfs2_cluster_group_search
->>   ocfs2_block_group_find_clear_bits
->>     ocfs2_test_bg_bit_allocatable:
->>       bg = (struct ocfs2_group_desc *) bh2jh(bg_bh)->b_committed_data;
->>       if (bg)
->>         ret = !ocfs2_test_bit(nr, (unsigned long *)bg->bg_bitmap);
->>       else
->>         ret = 1;
->> b_committed_data is an intermediate state backup for bitmap transaction commits,
->> newly applied space can overwrite previous dirty data,
->> so, I think, while free clusters, if b_committed_data is null, ignore it.
->> Host panic directly, too violent.
->>
->> Signed-off-by: Shan Li <lishan24@huawei.com>
->> Reviewed-by: Jun Piao <piaojun@huawei.com>
->> ---
->>  fs/ocfs2/suballoc.c | 9 +++++++--
->>  1 file changed, 7 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/ocfs2/suballoc.c b/fs/ocfs2/suballoc.c
->> index 939df99d2dec..aaf1b3cbd984 100644
->> --- a/fs/ocfs2/suballoc.c
->> +++ b/fs/ocfs2/suballoc.c
->> @@ -2412,14 +2412,19 @@ static int ocfs2_block_group_clear_bits(handle_t *handle,
->>  	if (undo_fn) {
->>  		spin_lock(&jh->b_state_lock);
->>  		undo_bg = (struct ocfs2_group_desc *) jh->b_committed_data;
->> -		BUG_ON(!undo_bg);
->> +		if (!undo_bg)
->> +			mlog(ML_NOTICE, "%s: group descriptor # %llu (device %s) journal "
->> +					"b_committed_data had been cleared.\n",
->> +					OCFS2_SB(alloc_inode->i_sb)->uuid_str,
->> +					(unsigned long long)le64_to_cpu(bg->bg_blkno),
->> +					alloc_inode->i_sb->s_id);
-> 
-> Seems a kind of workaround.
-> I am worrying about other abnormal cases of NULL b_committed_data, it
-> may lead to a corrupt filesystem.
-> So how about isolating the journal abort case?
-> 
-> Thanks,
-> Joseph
-> 
->>  	}
->>
->>  	tmp = num_bits;
->>  	while(tmp--) {
->>  		ocfs2_clear_bit((bit_off + tmp),
->>  				(unsigned long *) bg->bg_bitmap);
->> -		if (undo_fn)
->> +		if (undo_fn && undo_bg)
->>  			undo_fn(bit_off + tmp,
->>  				(unsigned long *) undo_bg->bg_bitmap);
->>  	}
->>
-> 
-> .
-> 
-
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
