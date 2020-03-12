@@ -2,65 +2,100 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8856183C49
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Mar 2020 23:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAF1183CAB
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Mar 2020 23:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgCLWUu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 12 Mar 2020 18:20:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726513AbgCLWUu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 12 Mar 2020 18:20:50 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E90D20637;
-        Thu, 12 Mar 2020 22:20:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584051649;
-        bh=AO36XPdzn8T0byP4kCHnxpBmX1FVVp3X2e6l2JfIBzQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dHkYDUfdELnxjoFUBM64ZraMawOd1uC1bD/o1kAQ8yN2zjBTE5PlW+Vz8CskI+FTf
-         j3puzuM4kZt9fhbIbdjbKXtb5vFOBsWNHolMctmFvnuTCLoZWzS3Tmss1NJETSDdSt
-         WSheqxk4nT5HiGvmENJp3tRZbt2lWiF3fsJaHDOY=
-Date:   Thu, 12 Mar 2020 15:20:42 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] xfs: clear PF_MEMALLOC before exiting xfsaild thread
-Message-ID: <20200312222042.GA816@sol.localdomain>
-References: <20200309010410.GA371527@sol.localdomain>
- <20200309043430.143206-1-ebiggers@kernel.org>
- <20200309162439.GB8045@magnolia>
+        id S1726799AbgCLWjU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 12 Mar 2020 18:39:20 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:53705 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726620AbgCLWjU (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 12 Mar 2020 18:39:20 -0400
+Received: from dread.disaster.area (pa49-195-202-68.pa.nsw.optusnet.com.au [49.195.202.68])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 5C5E13A451F;
+        Fri, 13 Mar 2020 09:39:14 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jCWTx-00050P-3Y; Fri, 13 Mar 2020 09:39:13 +1100
+Date:   Fri, 13 Mar 2020 09:39:13 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Linux Filesystem Development List 
+        <linux-fsdevel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] writeback: avoid double-writing the inode on a lazytime
+ expiration
+Message-ID: <20200312223913.GL10776@dread.disaster.area>
+References: <20200306004555.GB225345@gmail.com>
+ <20200307020043.60118-1-tytso@mit.edu>
+ <20200311032009.GC46757@gmail.com>
+ <20200311125749.GA7159@mit.edu>
+ <20200312000716.GY10737@dread.disaster.area>
+ <20200312143445.GA19160@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200309162439.GB8045@magnolia>
+In-Reply-To: <20200312143445.GA19160@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=mqTaRPt+QsUAtUurwE173Q==:117 a=mqTaRPt+QsUAtUurwE173Q==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=SS2py6AdgQ4A:10
+        a=7-415B0cAAAA:8 a=Q8GS4823LYj-8jRK8AkA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Mar 09, 2020 at 09:24:39AM -0700, Darrick J. Wong wrote:
+On Thu, Mar 12, 2020 at 07:34:45AM -0700, Christoph Hellwig wrote:
+> On Thu, Mar 12, 2020 at 11:07:17AM +1100, Dave Chinner wrote:
+> > > That's true, but when the timestamps were originally modified,
+> > > dirty_inode() will be called with flag == I_DIRTY_TIME, which will
+> > > *not* be a no-op; which is to say, XFS will force the timestamps to be
+> > > updated on disk when the timestamps are first dirtied, because it
+> > > doesn't support I_DIRTY_TIME.
 > > 
-> > 	mkfs.ext2 -F /dev/vdb
-> > 	mount /vdb -t ext4
-> > 	touch /vdb/file
-> > 	chattr +S /vdb/file
+> > We log the initial timestamp change, and then ignore timestamp
+> > updates until the dirty time expires and the inode is set
+> > I_DIRTY_SYNC via __mark_inode_dirty_sync(). IOWs, on expiry, we have
+> > time stamps that may be 24 hours out of date in memory, and they
+> > still need to be flushed to the journal.
+> > 
+> > However, your change does not mark the inode dirtying on expiry
+> > anymore, so...
+> > 
+> > > So I think we're fine.
+> > 
+> > ... we're not fine. This breaks XFS and any other filesystem that
+> > relies on a I_DIRTY_SYNC notification to handle dirty time expiry
+> > correctly.
 > 
-> Does this trip if the process accounting file is also on an xfs
-> filesystem?
-> 
-> > 	accton /vdb/file
-> > 	mkfs.xfs -f /dev/vdc
-> > 	mount /vdc
-> > 	umount /vdc
-> 
-> ...and if so, can this be turned into an fstests case, please?
-> 
+> I haven't seen the original mail this replies to,
 
-Test sent out at
-https://lkml.kernel.org/fstests/20200312221437.141484-1-ebiggers@kernel.org/
+The original problem was calling mark_inode_dirty_sync() on expiry
+during inode writeback was causing the inode to be put back on the
+dirty inode list and so ext4 was flushing it twice - once on expiry
+and once 5 seconds later on the next background writeback pass.
 
-- Eric
+This is a problem that XFS does not have because it does not
+implement ->write_inode...
+
+> but if we could
+> get the lazytime expirty by some other means (e.g. an explicit
+> callback), XFS could opt out of all the VFS inode tracking again,
+> which would simplify a few things.
+
+Yes, that would definitely make things simpler for XFS, and it would
+also solve the problem that the generic lazytime expiry code has....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
