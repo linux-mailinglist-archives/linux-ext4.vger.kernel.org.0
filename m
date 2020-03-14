@@ -2,52 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C4518501F
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Mar 2020 21:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9D0185421
+	for <lists+linux-ext4@lfdr.de>; Sat, 14 Mar 2020 04:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727325AbgCMUS2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 13 Mar 2020 16:18:28 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34843 "EHLO
+        id S1726593AbgCNDEK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 13 Mar 2020 23:04:10 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60400 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726620AbgCMUS2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Mar 2020 16:18:28 -0400
+        with ESMTP id S1726485AbgCNDEK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 13 Mar 2020 23:04:10 -0400
 Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02DKID93004327
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02E33b7u026484
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 13 Mar 2020 16:18:14 -0400
+        Fri, 13 Mar 2020 23:03:39 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 9F6EF420E5E; Fri, 13 Mar 2020 16:18:13 -0400 (EDT)
-Date:   Fri, 13 Mar 2020 16:18:13 -0400
+        id 6DA51420E5E; Fri, 13 Mar 2020 23:03:37 -0400 (EDT)
+Date:   Fri, 13 Mar 2020 23:03:37 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
 To:     Ritesh Harjani <riteshh@linux.ibm.com>
 Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, adilger.kernel@dilger.ca,
         linux-fsdevel@vger.kernel.org, darrick.wong@oracle.com,
-        hch@infradead.org, cmaiolino@redhat.com, david@fromorbit.com
-Subject: Re: [PATCHv5 4/6] ext4: Make ext4_ind_map_blocks work with fiemap
-Message-ID: <20200313201813.GK225435@mit.edu>
+        hch@infradead.org, cmaiolino@redhat.com, david@fromorbit.com,
+        kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCHv5 5/6] ext4: Move ext4_fiemap to use iomap framework.
+Message-ID: <20200314030337.GL225435@mit.edu>
 References: <cover.1582880246.git.riteshh@linux.ibm.com>
- <87fa0ddc5967fa707656212a3b66a7233425325c.1582880246.git.riteshh@linux.ibm.com>
+ <b9f45c885814fcdd0631747ff0fe08886270828c.1582880246.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87fa0ddc5967fa707656212a3b66a7233425325c.1582880246.git.riteshh@linux.ibm.com>
+In-Reply-To: <b9f45c885814fcdd0631747ff0fe08886270828c.1582880246.git.riteshh@linux.ibm.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Feb 28, 2020 at 02:56:57PM +0530, Ritesh Harjani wrote:
-> For indirect block mapping if the i_block > max supported block in inode
-> then ext4_ind_map_blocks() returns a -EIO error. But in case of fiemap
-> this could be a valid query to ->iomap_begin call.
-> So check if the offset >= s_bitmap_maxbytes in ext4_iomap_begin_report(),
-> then simply skip calling ext4_map_blocks().
+On Fri, Feb 28, 2020 at 02:56:58PM +0530, Ritesh Harjani wrote:
+> This patch moves ext4_fiemap to use iomap framework.
+> For xattr a new 'ext4_iomap_xattr_ops' is added.
 > 
 > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Reported-by: kbuild test robot <lkp@intel.com>
 > Reviewed-by: Jan Kara <jack@suse.cz>
 
 Thanks, applied.
 
-				- Ted
+					- Ted
+					
