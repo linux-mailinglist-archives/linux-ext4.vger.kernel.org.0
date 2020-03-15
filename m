@@ -2,66 +2,76 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DB2185EA0
-	for <lists+linux-ext4@lfdr.de>; Sun, 15 Mar 2020 18:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6A9185EA2
+	for <lists+linux-ext4@lfdr.de>; Sun, 15 Mar 2020 18:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgCORP3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 Mar 2020 13:15:29 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56579 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728634AbgCORP2 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Mar 2020 13:15:28 -0400
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02FHFKDt006146
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 15 Mar 2020 13:15:21 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 41358420EBA; Sun, 15 Mar 2020 13:15:20 -0400 (EDT)
-Date:   Sun, 15 Mar 2020 13:15:20 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 7/7] tune2fs: Update dir checksums when clearing
- dir_index feature
-Message-ID: <20200315171520.GT225435@mit.edu>
-References: <20200213101602.29096-1-jack@suse.cz>
- <20200213101602.29096-8-jack@suse.cz>
+        id S1728956AbgCORQz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 15 Mar 2020 13:16:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728947AbgCORQy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 15 Mar 2020 13:16:54 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC567206E9;
+        Sun, 15 Mar 2020 17:16:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584292614;
+        bh=+lmpvdxUBRgyrzSD7k7JSLFEM42g3oWA97s0+PhrLF8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fz8xheLuuQR+wB/DfIa8fMDHBJ96eTBl6qoUQEPumGFkmN+p2eeRitOsIvPQcwEWX
+         sRdvJhFc0FfCr/6CNrztD5Ta/DRrUiu5/aYHe+U70wAB9I8f7fFCSoPsWq5PyGQl0F
+         bbS551kFvD0b5ZrLw8+8RdX4rlEDR7PjNypkYRrs=
+Date:   Sun, 15 Mar 2020 10:16:52 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
+        Kuohong Wang <kuohong.wang@mediatek.com>,
+        Kim Boojin <boojin.kim@samsung.com>
+Subject: Re: [PATCH v8 10/11] f2fs: add inline encryption support
+Message-ID: <20200315171652.GA1055@sol.localdomain>
+References: <20200312080253.3667-1-satyat@google.com>
+ <20200312080253.3667-11-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200213101602.29096-8-jack@suse.cz>
+In-Reply-To: <20200312080253.3667-11-satyat@google.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Feb 13, 2020 at 11:16:02AM +0100, Jan Kara wrote:
-> When clearing dir_index feature while metadata_csum is enabled, we have
-> to rewrite checksums of all indexed directories to update checksums of
-> internal tree nodes.
-> 
-> Signed-off-by: Jan Kara <jack@suse.cz>
+On Thu, Mar 12, 2020 at 01:02:52AM -0700, Satya Tangirala wrote:
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 5355be6b6755..75817f0dc6f8 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -139,6 +139,9 @@ struct f2fs_mount_info {
+>  	int alloc_mode;			/* segment allocation policy */
+>  	int fsync_mode;			/* fsync policy */
+>  	bool test_dummy_encryption;	/* test dummy encryption */
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	bool inlinecrypt;		/* inline encryption enabled */
+> +#endif
+>  	block_t unusable_cap;		/* Amount of space allowed to be
+>  					 * unusable when disabling checkpoint
+>  					 */
 
-Thanks, applied.
+This bool is unused now.
 
-With regards to the enum, I agree with Jan that using an enum for
-bitfields isn't a great fit.  Also, in this case, where it's for a
-static function and the definitions don't go beyond a single file, the
-advantages of using an enum so we can have strong typing is much less
-useful.
+> @@ -1568,6 +1577,9 @@ static void default_options(struct f2fs_sb_info *sbi)
+>  	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
+>  	F2FS_OPTION(sbi).fsync_mode = FSYNC_MODE_POSIX;
+>  	F2FS_OPTION(sbi).test_dummy_encryption = false;
+> +#ifdef CONFIG_FS_ENCRYPTION
+> +	sbi->sb->s_flags &= ~SB_INLINECRYPT;
+> +#endif
 
-One thing which I did notice when trying to test this patch is that
+This really should be CONFIG_FS_ENCRYPTION_INLINE_CRYPT, but actually there's no
+need for the #ifdef at all.  Just clear the flag unconditionally.
 
-mke2fs -t ext4 -d /usr/projects/e2fsprogs /tmp/foo.img 1G
-
-...does not create any indexed directories.  That's because the
-changes to ext2fs_link() only teach e2fsprogs how to add a link to a
-directory which is already indexing.  We don't have code which takes a
-directory with a single directory block and which doesn't have
-directory indexing flag enabled, and converts to a indexed directory.
-
-That might be a nice thing to add at some point.
-
-     	      	     	      	     - Ted
+- Eric
