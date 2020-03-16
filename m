@@ -2,65 +2,95 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93112186953
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Mar 2020 11:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B54186DEB
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Mar 2020 15:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730700AbgCPKpG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Mar 2020 06:45:06 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11698 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730478AbgCPKpF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 16 Mar 2020 06:45:05 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 7D63C5D2B9DB25FD55C8;
-        Mon, 16 Mar 2020 18:45:02 +0800 (CST)
-Received: from [127.0.0.1] (10.133.210.141) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 16 Mar 2020
- 18:44:59 +0800
-Subject: Re: [PATCH] ext4: using matching invalidatepage in ext4_writepage
-To:     <tytso@mit.edu>, <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>
-References: <20200226041002.13914-1-yangerkun@huawei.com>
-From:   yangerkun <yangerkun@huawei.com>
-Message-ID: <9b5009e3-cc2f-4960-be94-30784e85c8b3@huawei.com>
-Date:   Mon, 16 Mar 2020 18:44:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1731675AbgCPO5i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Mar 2020 10:57:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33618 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731539AbgCPO5h (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 16 Mar 2020 10:57:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id CA7BDB213;
+        Mon, 16 Mar 2020 14:57:35 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3156D1E10DA; Mon, 16 Mar 2020 15:57:35 +0100 (CET)
+Date:   Mon, 16 Mar 2020 15:57:35 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ext2: xattr.h: Replace zero-length array with
+ flexible-array member
+Message-ID: <20200316145735.GA22684@quack2.suse.cz>
+References: <20200309180441.GA2992@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200226041002.13914-1-yangerkun@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.133.210.141]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200309180441.GA2992@embeddedor>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi, Ted, can you consider to apply this patch.
+On Mon 09-03-20 13:04:41, Gustavo A. R. Silva wrote:
+> The current codebase makes use of the zero-length array language
+> extension to the C90 standard, but the preferred mechanism to declare
+> variable-length types such as these ones is a flexible array member[1][2],
+> introduced in C99:
+> 
+> struct foo {
+>         int stuff;
+>         struct boo array[];
+> };
+> 
+> By making use of the mechanism above, we will get a compiler warning
+> in case the flexible array does not occur last in the structure, which
+> will help us prevent some kind of undefined behavior bugs from being
+> inadvertently introduced[3] to the codebase from now on.
+> 
+> Also, notice that, dynamic memory allocations won't be affected by
+> this change:
+> 
+> "Flexible array members have incomplete type, and so the sizeof operator
+> may not be applied. As a quirk of the original implementation of
+> zero-length arrays, sizeof evaluates to zero."[1]
+> 
+> This issue was found with the help of Coccinelle.
+> 
+> [1] https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> [2] https://github.com/KSPP/linux/issues/21
+> [3] commit 76497732932f ("cxgb3/l2t: Fix undefined behaviour")
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-On 2020/2/26 12:10, yangerkun wrote:
-> Run generic/388 with journal data mode sometimes may trigger the warning
-> in ext4_invalidatepage. Actually, we should use the matching invalidatepage
-> in ext4_writepage.
->
-> Signed-off-by: yangerkun <yangerkun@huawei.com>
+Thanks. I've added the patch to my tree.
+
+								Honza
+
 > ---
->   fs/ext4/inode.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index fa0ff78dc033..78e805d42ada 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1974,7 +1974,7 @@ static int ext4_writepage(struct page *page,
->   	bool keep_towrite = false;
->   
->   	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb)))) {
-> -		ext4_invalidatepage(page, 0, PAGE_SIZE);
-> +		inode->i_mapping->a_ops->invalidatepage(page, 0, PAGE_SIZE);
->   		unlock_page(page);
->   		return -EIO;
->   	}
-
+>  fs/ext2/xattr.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext2/xattr.h b/fs/ext2/xattr.h
+> index cee888cdc235..16272e6ddcf4 100644
+> --- a/fs/ext2/xattr.h
+> +++ b/fs/ext2/xattr.h
+> @@ -39,7 +39,7 @@ struct ext2_xattr_entry {
+>  	__le32	e_value_block;	/* disk block attribute is stored on (n/i) */
+>  	__le32	e_value_size;	/* size of attribute value */
+>  	__le32	e_hash;		/* hash value of name and value */
+> -	char	e_name[0];	/* attribute name */
+> +	char	e_name[];	/* attribute name */
+>  };
+>  
+>  #define EXT2_XATTR_PAD_BITS		2
+> -- 
+> 2.25.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
