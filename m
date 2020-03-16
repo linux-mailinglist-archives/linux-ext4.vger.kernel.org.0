@@ -2,126 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 560341860B4
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Mar 2020 01:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384E1186604
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Mar 2020 09:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729214AbgCPALY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 Mar 2020 20:11:24 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:35179 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729120AbgCPALY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Mar 2020 20:11:24 -0400
-Received: by mail-pj1-f65.google.com with SMTP id mq3so7605220pjb.0
-        for <linux-ext4@vger.kernel.org>; Sun, 15 Mar 2020 17:11:23 -0700 (PDT)
+        id S1729947AbgCPIBV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 16 Mar 2020 04:01:21 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:35029 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728302AbgCPIBV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 16 Mar 2020 04:01:21 -0400
+Received: by mail-pg1-f194.google.com with SMTP id 7so9294471pgr.2;
+        Mon, 16 Mar 2020 01:01:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=GnhMZeokFbzW6kVDSnfCEkuSPuSsLvvqftQyxztdC4Q=;
-        b=pCZJhIfF21hQHuwzv0gm7mTBffh7euXn+tru5yHgkSZF4X8EeruJ8V06gnGkk1Dcy6
-         YTxldruEcr2Z0+jbNOQ9NArEOwdKs18d4hg9a2aIM9Jc6J9bhI8+uqozq4WRSSmtR9Wk
-         frkO3CvULKRP9sThzFeSUctTZBjEnsbTgZgnJ0SAUxoe25CNbILiJfnvsfLs72TXj5MV
-         Bfw3fAD4a7ifVjahntHCs4AX55Er2kCXW1Gb5vnuVEjb+yEDe4sFdFkfLJeVRRFz/qe2
-         7s5/3Sk8BJPl53IKOEtAGfehPjFLiA9v6fpI7HNEljIRAzunmqSD3JK89xM/0tFCS2Bl
-         EpzA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=kgzIsaXzzgS+ugoZTepolnzMAM1edOw9x44MV63g4bw=;
+        b=t9LsGEiZByN2tSr65pYqj7k0d+8XlrFuLW5flEuZtMBeeUT7fNQzCpfISHZlgevRE4
+         eElK7aT7qGdm3aD3uEPmzykK/mZaBddswF5/n1Ckf//fV9KDXiiqYsL1L+RW8Ov/ZDzI
+         CV9Fs4SMF9gMjl/HOCzuaaNaNEaa2ynRvj292NoVIHX+1RTabKqz5HmYHoz0Kc3B+W5f
+         k5upL7mztsj0SU71/j8+/7Mrs0JiHDni1Zu3rhPOcGqmHJTqjzqtHAIvwtrAnTJNBsCM
+         PUehyoWzEuxX8noH1L33UOBl99O7h4s6hLSM7SnGk60Fb4zJ/SEpDahQbIpHqRgmMDwX
+         4+CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=GnhMZeokFbzW6kVDSnfCEkuSPuSsLvvqftQyxztdC4Q=;
-        b=rluVVMzvoBca/OqgFtPXq9pxE1KIPxFCw4/lzsgs103jd1a66LiarWcUxdT5vvYXtF
-         8/daN6Mlj6fdVxPpC2aPbvipd+Dbg+VgmCImP8GJfvsOtDc4kncqASpg9/0VSScGghz1
-         ++zmSsc9YggIdv5AJLdBP074BYUKcz8wBVkxxWFrmJlqKlGXASzkdTnsf7MpwBHoMW6K
-         W8V37rBYZgg72Nw6VmyrfbqGvcBZG8O4KPLRbCIHJokM7zRzZbQ6XiYG52lvGD/KpcUA
-         +k+i3b0oq12dq37qG4iyPU7fNKKHwG2w9OfK2fhv7lT6cP2R/ExTmKiTZApuc/kcYm90
-         qCvw==
-X-Gm-Message-State: ANhLgQ37pMObiFVrryWNinwEFHhWWj5ajuecWoUYIsa5bsxOji/g/pUD
-        VnQyS9MweTb3ZEB6EfkWDzgtaw==
-X-Google-Smtp-Source: ADFU+vsc3HsYcBs3OMy7BS0gWDgcVdVkmXUoBq/y0pp4M5lnwbm8rWZViZ39ekqLLclWvSRsi6J6BA==
-X-Received: by 2002:a17:902:54f:: with SMTP id 73mr23747166plf.255.1584317482965;
-        Sun, 15 Mar 2020 17:11:22 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id z8sm11320599pjq.10.2020.03.15.17.11.21
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 15 Mar 2020 17:11:22 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <173CAB23-6A80-44CE-AC8C-4A37E6625BFE@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_69130B7D-C680-4EA1-BD75-2A1DE933914F";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 7/7] tune2fs: Update dir checksums when clearing dir_index
- feature
-Date:   Sun, 15 Mar 2020 18:11:19 -0600
-In-Reply-To: <20200315171520.GT225435@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=kgzIsaXzzgS+ugoZTepolnzMAM1edOw9x44MV63g4bw=;
+        b=YG3gVCkUVVUVBRSsHc9rQL3diPBYnuXG1xs6rhQn86WKHrSlcz+uKjyaqjcWVKXKOV
+         acOWMB+U2FFce7xanbKGHh2YP8cEtl1hH0DgcsvvaqKhrU5ij/1f+LEdS/NK9wrdEh/N
+         m8igkyvbBKagCv2aFrAGdbVSHDCW6fSfJHF7NZXXHhfMrp/faCVqCt1MPzZh6dqGR3eM
+         uzT9WiPPefaPBcennHiRwCiAuYBMkVMENoEAgrMFuTDwktPssyGVC9YdrqiVCtd2k+yz
+         wb3DwswlzKCn3CakgPJCySj+xVCvlYM7pfxez6uoDQ1EmK332XhgBUfY/Mr58cb9Y2/D
+         YjQw==
+X-Gm-Message-State: ANhLgQ3z7Cs7lrWCcqQcRYYAbXnAgUfZQXypsoaTdw1UmZqLZ96gesDx
+        VXC5gky+MOOiP9NwYJ4/FlJpzQDU
+X-Google-Smtp-Source: ADFU+vv+8lt+/Nw4rxCfS3CzlzS05SlZW/RnNNxc5KjXJn3MqzVksm0+Q0xycwI7WGC8W0gVzBbCNw==
+X-Received: by 2002:a62:507:: with SMTP id 7mr6313751pff.222.1584345680008;
+        Mon, 16 Mar 2020 01:01:20 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id 144sm69861324pfc.45.2020.03.16.01.01.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Mar 2020 01:01:19 -0700 (PDT)
+Subject: Re: [PATCH] ext4: mark extents index blocks as dirty to avoid
+ information leakage
 To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-References: <20200213101602.29096-1-jack@suse.cz>
- <20200213101602.29096-8-jack@suse.cz> <20200315171520.GT225435@mit.edu>
-X-Mailer: Apple Mail (2.3273)
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <e988a1db-3105-07a0-6399-38af80656af1@gmail.com>
+ <20200312144642.GF7159@mit.edu>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <d9209144-4b20-61c7-aff3-942150806b9a@gmail.com>
+Date:   Mon, 16 Mar 2020 16:01:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200312144642.GF7159@mit.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Thanks for your reply, but threre's some points implement inconsistently
 
---Apple-Mail=_69130B7D-C680-4EA1-BD75-2A1DE933914F
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+1. + s attribute will cause a big performance problem. With only data
+   blocks but no index blocks, it is difficult to recover the complete
+   data. Therefore, we can also improve data security with the lowest
+   cost.
+2. In the SSD scenario, discard on some devices cannot guarantee that
+   data is erased. but if we update the dirty pages of memory to disk.
+   ssd will remap the corresponding lba, then the user will not be able
+   to access the old data, it's security.
+3. In the small file scenario, the file extent is stored on the inode.
+   Because the inode block will not be forgotten by jbd2, the extent on
+   the disk is always cleared after the small file is deleted. If security
+   is only pretended, why not take effect on the small file.
+4. If to facilitate data recovery, why do need to clear extents in
+   memory? This operation does not seem to make sense.
 
-On Mar 15, 2020, at 11:15 AM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
-> 
-> With regards to the enum, I agree with Jan that using an enum for
-> bitfields isn't a great fit.  Also, in this case, where it's for a
-> static function and the definitions don't go beyond a single file, the
-> advantages of using an enum so we can have strong typing is much less
-> useful.
+I think that the page of the index block is not updated to disk after
+the file is deleted, which may be a logical defect.
 
-I don't think that "enum" has to mean "sequential integers", but rather
-"an listing of related constants" as defined by Wikipedia:
-
-    An enumeration is a complete, ordered listing of all
-    the items in a collection.
-
-Giving a list of related constants a name makes the code easier to
-understand, especially when the variables have totally generic names
-like "flags".  I'm not saying it isn't possible to figure out what
-the possible values of that variable are, by hunting around the code
-to see what is assigned to it, but making the code easier to understand
-at first reading should have value by itself?
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_69130B7D-C680-4EA1-BD75-2A1DE933914F
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5uxCgACgkQcqXauRfM
-H+DBbw//SjaNE9owabfCllHK1L6n1Zr3rDQLRZyxOaapb1sY1CmQcHq3LlNP96mf
-mCu5jaSoS4wsefy35KzzGPb7QYO6KFD8J1uC3/4A1UppU6FTzgKEtpdgPMj5KJH+
-VdENxOkdEZpS17cm7Rq8u9AkZYqq4mWQ7ySj7GYND347lEyhwOmWc14JBT2Wsa3w
-fdHr04i3h7VYnwm5IfBEoDaxxfPU3CMr8g72DH0cotqu7z9GANyHnU+IVZA+ydkf
-CIV7yyfSCFc5cAGhXdpiHeXxQte9e2l9Av/7Y68bInALlrOK68Yunte30HFXqaNm
-nrCnzx6Hiz8l4n8icUvwexqPVQmYAFkAcV3EGWHwKLSKuyz/NYvSCI2IM3f5qcc5
-RXmaIyHpQR0pfpnxTrryfqDowWBNVd5jaDxJFORK3MX5Lf0l67OKO4CWQlVgvLSp
-6tPVOulKpeXQTqpY5rEzVTBV8j0u4m9T1MEpDB4OS7GcAEquuAMfpwCdrZ7mLEjC
-i2pwdXBOrqYLK3bPVRJ4XD2ddmhrrKZBA+EA4YuLmEM4dL2Pe1cQAvtdZPDpKkZN
-G1K8W4/lwIEo6K7RjIHiFP4PJvkfySfEgJasAuRDUkCjAMHqY05TM3J+g/Y0ivZe
-sP7DlSLyXsvXerX63l2XNaIRcJowMViVoAJJNnoADOlFdMnsQAU=
-=I82m
------END PGP SIGNATURE-----
-
---Apple-Mail=_69130B7D-C680-4EA1-BD75-2A1DE933914F--
+Theodore Y. Ts'o wrote on 2020/3/12 22:46:
+> On Tue, Mar 03, 2020 at 04:51:06PM +0800, brookxu wrote:
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> In the scene of deleting a file, the physical block information in the
+>> extent will be cleared to 0, the buffer_head contains these extents is
+>> marked as dirty, and then managed by jbd2, which will clear the
+>> buffer_head's dirty flag by clear_buffer_dirty. However, when the entire
+>> extent block is deleted, it is revoked from the jbd2, but  the extents
+>> block is not redirtied.
+>>
+>> Not quite reasonable here, for the following concerns:
+>>
+>> 1. This has the risk of information leakage and leads to an interesting
+>> phenomenon that deleting the entire file is no more secure than truncate
+>> to 1 byte, because the whole extents physical block clear to zero in cache
+>> will never written back as the page is not redirtied.
+>>
+>> 2. For large files, the number of index block is usually very small.
+>> Ignoring index pages not get much more benefit in IO performance. But if
+>> we remark the page as dirty, the page is then written back by the system
+>> writeback mechanism asynchronously with little performance impact. As a
+>> result, the risk of information leakage can be avoided. At least not wrose
+>> than truncate file length to 1 byte
+>>
+>> Therefore, when the index block is released, we need to remark its page
+>> as dirty, so that the index block on the disk will be updated and the
+>> data is more security.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> Trying to zero the extent block is only going to provide pretend
+> security; the data blocks are still there, and anyone looking for the
+> data can still find it if they look hard enough.  Also, for most
+> files, it really doesn't matter.
+>
+> So, no, I don't think this patch is appropriate.a
+>
+> If you are really worried about the security for deleted files, I
+> would suggest trying to implement the secure delete flag (chattr +s)
+> for ext4, and actually trying to zero out the data blocks for those
+> files where this kind of security is required.  (Please note that for
+> SSD's, this probably won't provide as much security as you would like
+> unless they implement the secure discard operation.)
+>
+> 							- Ted
