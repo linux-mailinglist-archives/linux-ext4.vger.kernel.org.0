@@ -2,120 +2,126 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 102D7185FB7
-	for <lists+linux-ext4@lfdr.de>; Sun, 15 Mar 2020 21:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 560341860B4
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Mar 2020 01:11:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729126AbgCOUQW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 15 Mar 2020 16:16:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729047AbgCOUQV (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 15 Mar 2020 16:16:21 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4834A205C9;
-        Sun, 15 Mar 2020 20:16:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584303380;
-        bh=5VqbqRCMOuCKrwhIgRoKM6xoalmVSXXR/W2soqbZ1L0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EcUzhGIuXaHU9vfOPWYtMg5tNxsoTitGkBlfvXySVUWt6Iu1NQNDAB8LCd1+0Nvyt
-         4XcWpBlIK/3A1T+NUUSkZwIzsU4SL3OLRuehrOjZp/6w9mEHq4mVL63J3TZCxfZEB0
-         4hZ1adM0h2K2JuNo4FFTY29yf4DUchHuTWpNOS4I=
-Date:   Sun, 15 Mar 2020 13:16:18 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v8 03/11] block: Make blk-integrity preclude hardware
- inline encryption
-Message-ID: <20200315201618.GH1055@sol.localdomain>
-References: <20200312080253.3667-1-satyat@google.com>
- <20200312080253.3667-4-satyat@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200312080253.3667-4-satyat@google.com>
+        id S1729214AbgCPALY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 15 Mar 2020 20:11:24 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:35179 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729120AbgCPALY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 15 Mar 2020 20:11:24 -0400
+Received: by mail-pj1-f65.google.com with SMTP id mq3so7605220pjb.0
+        for <linux-ext4@vger.kernel.org>; Sun, 15 Mar 2020 17:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=GnhMZeokFbzW6kVDSnfCEkuSPuSsLvvqftQyxztdC4Q=;
+        b=pCZJhIfF21hQHuwzv0gm7mTBffh7euXn+tru5yHgkSZF4X8EeruJ8V06gnGkk1Dcy6
+         YTxldruEcr2Z0+jbNOQ9NArEOwdKs18d4hg9a2aIM9Jc6J9bhI8+uqozq4WRSSmtR9Wk
+         frkO3CvULKRP9sThzFeSUctTZBjEnsbTgZgnJ0SAUxoe25CNbILiJfnvsfLs72TXj5MV
+         Bfw3fAD4a7ifVjahntHCs4AX55Er2kCXW1Gb5vnuVEjb+yEDe4sFdFkfLJeVRRFz/qe2
+         7s5/3Sk8BJPl53IKOEtAGfehPjFLiA9v6fpI7HNEljIRAzunmqSD3JK89xM/0tFCS2Bl
+         EpzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=GnhMZeokFbzW6kVDSnfCEkuSPuSsLvvqftQyxztdC4Q=;
+        b=rluVVMzvoBca/OqgFtPXq9pxE1KIPxFCw4/lzsgs103jd1a66LiarWcUxdT5vvYXtF
+         8/daN6Mlj6fdVxPpC2aPbvipd+Dbg+VgmCImP8GJfvsOtDc4kncqASpg9/0VSScGghz1
+         ++zmSsc9YggIdv5AJLdBP074BYUKcz8wBVkxxWFrmJlqKlGXASzkdTnsf7MpwBHoMW6K
+         W8V37rBYZgg72Nw6VmyrfbqGvcBZG8O4KPLRbCIHJokM7zRzZbQ6XiYG52lvGD/KpcUA
+         +k+i3b0oq12dq37qG4iyPU7fNKKHwG2w9OfK2fhv7lT6cP2R/ExTmKiTZApuc/kcYm90
+         qCvw==
+X-Gm-Message-State: ANhLgQ37pMObiFVrryWNinwEFHhWWj5ajuecWoUYIsa5bsxOji/g/pUD
+        VnQyS9MweTb3ZEB6EfkWDzgtaw==
+X-Google-Smtp-Source: ADFU+vsc3HsYcBs3OMy7BS0gWDgcVdVkmXUoBq/y0pp4M5lnwbm8rWZViZ39ekqLLclWvSRsi6J6BA==
+X-Received: by 2002:a17:902:54f:: with SMTP id 73mr23747166plf.255.1584317482965;
+        Sun, 15 Mar 2020 17:11:22 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id z8sm11320599pjq.10.2020.03.15.17.11.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 15 Mar 2020 17:11:22 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <173CAB23-6A80-44CE-AC8C-4A37E6625BFE@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_69130B7D-C680-4EA1-BD75-2A1DE933914F";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 7/7] tune2fs: Update dir checksums when clearing dir_index
+ feature
+Date:   Sun, 15 Mar 2020 18:11:19 -0600
+In-Reply-To: <20200315171520.GT225435@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+References: <20200213101602.29096-1-jack@suse.cz>
+ <20200213101602.29096-8-jack@suse.cz> <20200315171520.GT225435@mit.edu>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 01:02:45AM -0700, Satya Tangirala wrote:
-> diff --git a/block/blk-integrity.c b/block/blk-integrity.c
-> index ff1070edbb40..793ba23e8688 100644
-> --- a/block/blk-integrity.c
-> +++ b/block/blk-integrity.c
-> @@ -409,6 +409,13 @@ void blk_integrity_register(struct gendisk *disk, struct blk_integrity *template
->  	bi->tag_size = template->tag_size;
->  
->  	disk->queue->backing_dev_info->capabilities |= BDI_CAP_STABLE_WRITES;
-> +
-> +#ifdef BLK_INLINE_ENCRYPTION
-> +	if (disk->queue->ksm) {
-> +		pr_warn("blk-integrity: Integrity and hardware inline encryption are not supported together. Unregistering keyslot manager from request queue, to disable hardware inline encryption.");
-> +		blk_ksm_unregister(disk->queue);
-> +	}
-> +#endif
->  }
->  EXPORT_SYMBOL(blk_integrity_register);
 
-This ifdef is wrong, it should be CONFIG_BLK_INLINE_ENCRYPTION.
+--Apple-Mail=_69130B7D-C680-4EA1-BD75-2A1DE933914F
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-Also the log message is missing a trailing newline.
+On Mar 15, 2020, at 11:15 AM, Theodore Y. Ts'o <tytso@mit.edu> wrote:
+> 
+> With regards to the enum, I agree with Jan that using an enum for
+> bitfields isn't a great fit.  Also, in this case, where it's for a
+> static function and the definitions don't go beyond a single file, the
+> advantages of using an enum so we can have strong typing is much less
+> useful.
 
->  
-> diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
-> index 38df0652df80..a7970e18a122 100644
-> --- a/block/keyslot-manager.c
-> +++ b/block/keyslot-manager.c
-> @@ -25,6 +25,9 @@
->   * Upper layers will call blk_ksm_get_slot_for_key() to program a
->   * key into some slot in the inline encryption hardware.
->   */
-> +
-> +#define pr_fmt(fmt) "blk_ksm: " fmt
+I don't think that "enum" has to mean "sequential integers", but rather
+"an listing of related constants" as defined by Wikipedia:
 
-People aren't going to know what "blk_ksm" means in the logs.
-I think just use "blk-crypto" instead.
+    An enumeration is a complete, ordered listing of all
+    the items in a collection.
 
-> +
->  #include <crypto/algapi.h>
->  #include <linux/keyslot-manager.h>
->  #include <linux/atomic.h>
-> @@ -375,3 +378,20 @@ void blk_ksm_destroy(struct keyslot_manager *ksm)
->  	memzero_explicit(ksm, sizeof(*ksm));
->  }
->  EXPORT_SYMBOL_GPL(blk_ksm_destroy);
-> +
-> +bool blk_ksm_register(struct keyslot_manager *ksm, struct request_queue *q)
-> +{
-> +	if (blk_integrity_queue_supports_integrity(q)) {
-> +		pr_warn("Integrity and hardware inline encryption are not supported together. Won't register keyslot manager with request queue.");
-> +		return false;
-> +	}
-> +	q->ksm = ksm;
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_GPL(blk_ksm_register);
+Giving a list of related constants a name makes the code easier to
+understand, especially when the variables have totally generic names
+like "flags".  I'm not saying it isn't possible to figure out what
+the possible values of that variable are, by hunting around the code
+to see what is assigned to it, but making the code easier to understand
+at first reading should have value by itself?
+
+Cheers, Andreas
 
 
-People reading the logs won't know what a keyslot manager is and why they should
-care that one wasn't registered.  It would be better to say that hardware inline
-encryption is being disabled.
 
-Ideally the device name would be included in the message too.
 
-> +
-> +void blk_ksm_unregister(struct request_queue *q)
-> +{
-> +	q->ksm = NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(blk_ksm_unregister);
 
-blk_ksm_unregister() doesn't need to be exported.
+
+--Apple-Mail=_69130B7D-C680-4EA1-BD75-2A1DE933914F
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5uxCgACgkQcqXauRfM
+H+DBbw//SjaNE9owabfCllHK1L6n1Zr3rDQLRZyxOaapb1sY1CmQcHq3LlNP96mf
+mCu5jaSoS4wsefy35KzzGPb7QYO6KFD8J1uC3/4A1UppU6FTzgKEtpdgPMj5KJH+
+VdENxOkdEZpS17cm7Rq8u9AkZYqq4mWQ7ySj7GYND347lEyhwOmWc14JBT2Wsa3w
+fdHr04i3h7VYnwm5IfBEoDaxxfPU3CMr8g72DH0cotqu7z9GANyHnU+IVZA+ydkf
+CIV7yyfSCFc5cAGhXdpiHeXxQte9e2l9Av/7Y68bInALlrOK68Yunte30HFXqaNm
+nrCnzx6Hiz8l4n8icUvwexqPVQmYAFkAcV3EGWHwKLSKuyz/NYvSCI2IM3f5qcc5
+RXmaIyHpQR0pfpnxTrryfqDowWBNVd5jaDxJFORK3MX5Lf0l67OKO4CWQlVgvLSp
+6tPVOulKpeXQTqpY5rEzVTBV8j0u4m9T1MEpDB4OS7GcAEquuAMfpwCdrZ7mLEjC
+i2pwdXBOrqYLK3bPVRJ4XD2ddmhrrKZBA+EA4YuLmEM4dL2Pe1cQAvtdZPDpKkZN
+G1K8W4/lwIEo6K7RjIHiFP4PJvkfySfEgJasAuRDUkCjAMHqY05TM3J+g/Y0ivZe
+sP7DlSLyXsvXerX63l2XNaIRcJowMViVoAJJNnoADOlFdMnsQAU=
+=I82m
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_69130B7D-C680-4EA1-BD75-2A1DE933914F--
