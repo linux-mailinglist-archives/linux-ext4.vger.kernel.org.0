@@ -2,74 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A417E1876A3
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Mar 2020 01:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3407F1881A9
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Mar 2020 12:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733063AbgCQALn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 16 Mar 2020 20:11:43 -0400
-Received: from mail.uic.edu.hk ([61.143.62.86]:48979 "EHLO umgp.uic.edu.hk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1733047AbgCQALn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 16 Mar 2020 20:11:43 -0400
-X-IronPort-AV: E=Sophos;i="5.43,368,1503331200"; 
-   d="scan'208";a="17243176"
-Received: from unknown (HELO zpmail.uic.edu.hk) ([192.168.111.249])
-  by umgp.uic.edu.hk with ESMTP; 17 Mar 2020 08:11:35 +0800
-Received: from zpmail.uic.edu.hk (localhost [127.0.0.1])
-        by zpmail.uic.edu.hk (Postfix) with ESMTPS id D96D941C05A3;
-        Tue, 17 Mar 2020 08:11:32 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by zpmail.uic.edu.hk (Postfix) with ESMTP id D554341C0957;
-        Tue, 17 Mar 2020 08:11:31 +0800 (CST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 zpmail.uic.edu.hk D554341C0957
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uic.edu.hk;
-        s=6465647E-9D7B-11E8-B17B-42130C7FA3B9; t=1584403892;
-        bh=Wn2BcVyAdGxyDvB/5AnVfCr/iJTzisyuX4dwKssec6E=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=N1pNhkd2l8zz69kDtEsPH5n7SDL70Ak/Rgb/NYqC0+ZCBZFg/G0QkldxXmMRPmztz
-         HwkJ6HHAibMur3rytYhnqKeG349hpGDQCbhvoJdZWkvkFCa93STWbitRqMynzR+Wj5
-         wLEdN7i9CyVDDhspocQMykx6lSGq645dTckJSCrsFHg+uR95rTW6kz2/3F5tST7+Uo
-         ELvvW8oTRw+C3DdE82L8ao85KfwNAx6BRhhB+sNBssPbo3CqQ69/PO1/J9gy3aGO+s
-         FwDrxpCEm2RIo68N7oaYrAjY/FUGCbKk/MsqrV+VDqizldOqfTDFamlvQc82rVkjYy
-         rx6v80NBgwdtg==
-Received: from zpmail.uic.edu.hk ([127.0.0.1])
-        by localhost (zpmail.uic.edu.hk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gCmMIXxwS0HE; Tue, 17 Mar 2020 08:11:31 +0800 (CST)
-Received: from zpmail.uic.edu.hk (zpmail.uic.edu.hk [192.168.111.249])
-        by zpmail.uic.edu.hk (Postfix) with ESMTP id 1549641C058D;
-        Tue, 17 Mar 2020 08:11:27 +0800 (CST)
-Date:   Tue, 17 Mar 2020 08:11:26 +0800 (CST)
-From:   David Ibe <ylawrence@uic.edu.hk>
-Reply-To: David Ibe <davidibe718@gmail.com>
-Message-ID: <2065446646.63699156.1584403886963.JavaMail.zimbra@uic.edu.hk>
-Subject: 
+        id S1728797AbgCQLR5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Mar 2020 07:17:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45322 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728747AbgCQLRz (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 17 Mar 2020 07:17:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 5669BACAE;
+        Tue, 17 Mar 2020 11:17:53 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 9E26B1E121E; Tue, 17 Mar 2020 12:17:52 +0100 (CET)
+Date:   Tue, 17 Mar 2020 12:17:52 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
+        adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
+        Harish Sriram <harish@linux.ibm.com>
+Subject: Re: [PATCH] ext4: Check for non-zero journal inum in
+ ext4_calculate_overhead
+Message-ID: <20200317111752.GF22684@quack2.suse.cz>
+References: <20200316093038.25485-1-riteshh@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.111.160]
-X-Mailer: Zimbra 8.8.15_GA_3829 (ZimbraWebClient - GC80 (Win)/8.8.15_GA_3829)
-Thread-Index: 8IMjdxPQWBZshE+F+QJEttpRaFVxcQ==
-Thread-Topic: 
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200316093038.25485-1-riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Mon 16-03-20 15:00:38, Ritesh Harjani wrote:
+> While calculating overhead for internal journal, also check
+> that j_inum shouldn't be 0. Otherwise we get below error with
+> xfstests generic/050 with external journal (XXX_LOGDEV config) enabled.
+> 
+> It could be simply reproduced with loop device with an external journal
+> and marking blockdev as RO before mounting.
+> 
+> [ 3337.146838] EXT4-fs error (device pmem1p2): ext4_get_journal_inode:4634: comm mount: inode #0: comm mount: iget: illegal inode #
+> ------------[ cut here ]------------
+> generic_make_request: Trying to write to read-only block-device pmem1p2 (partno 2)
+> WARNING: CPU: 107 PID: 115347 at block/blk-core.c:788 generic_make_request_checks+0x6b4/0x7d0
+> CPU: 107 PID: 115347 Comm: mount Tainted: G             L   --------- -t - 4.18.0-167.el8.ppc64le #1
+> NIP:  c0000000006f6d44 LR: c0000000006f6d40 CTR: 0000000030041dd4
+> <...>
+> NIP [c0000000006f6d44] generic_make_request_checks+0x6b4/0x7d0
+> LR [c0000000006f6d40] generic_make_request_checks+0x6b0/0x7d0
+> <...>
+> Call Trace:
+> generic_make_request_checks+0x6b0/0x7d0 (unreliable)
+> generic_make_request+0x3c/0x420
+> submit_bio+0xd8/0x200
+> submit_bh_wbc+0x1e8/0x250
+> __sync_dirty_buffer+0xd0/0x210
+> ext4_commit_super+0x310/0x420 [ext4]
+> __ext4_error+0xa4/0x1e0 [ext4]
+> __ext4_iget+0x388/0xe10 [ext4]
+> ext4_get_journal_inode+0x40/0x150 [ext4]
+> ext4_calculate_overhead+0x5a8/0x610 [ext4]
+> ext4_fill_super+0x3188/0x3260 [ext4]
+> mount_bdev+0x778/0x8f0
+> ext4_mount+0x28/0x50 [ext4]
+> mount_fs+0x74/0x230
+> vfs_kern_mount.part.6+0x6c/0x250
+> do_mount+0x2fc/0x1280
+> sys_mount+0x158/0x180
+> system_call+0x5c/0x70
+> EXT4-fs (pmem1p2): no journal found
+> EXT4-fs (pmem1p2): can't get journal size
+> EXT4-fs (pmem1p2): mounted filesystem without journal. Opts: dax,norecovery
+> 
+> Reported-by: Harish Sriram <harish@linux.ibm.com>
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
+The patch looks good to me. You can add:
 
-Good Day,                
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-I am Mr. David Ibe, I work with the International Standards on Auditing, I have seen on records, that several times people has divert your funds into their own personal accounts.
+								Honza
 
-Now I am writing to you in respect of the amount which I have been able to send to you through our International United Nations accredited and approved Diplomat, who has arrived Africa, I want you to know that the diplomat would deliver the funds which I have packaged as a diplomatic compensation to you and the amount in the consignment is  $10,000,000.00 United State Dollars.
-
-I did not disclose the contents to the diplomat, but I told him that it is your compensation from the Auditing Corporate Governance and Stewardship, Auditing and Assurance Standards Board. I want you to know that these funds would help with your financial status as I have seen in records that you have spent a lot trying to receive these funds and I am not demanding so much from you but only 30% for my stress and logistics.
-
-I would like you to get back to me with your personal contact details, so that I can give you the contact information's of the diplomat who has arrived Africa and has been waiting to get your details so that he can proceed with the delivery to you.
-
-Yours Sincerely,
-Kindly forward your details to: mrdavidibe966@gmail.com
-Mr. David Ibe
-International Auditor,
-Corporate Governance and Stewardship
+> ---
+>  fs/ext4/super.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index de5398c07161..5dc65b7583cb 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -3609,7 +3609,8 @@ int ext4_calculate_overhead(struct super_block *sb)
+>  	 */
+>  	if (sbi->s_journal && !sbi->journal_bdev)
+>  		overhead += EXT4_NUM_B2C(sbi, sbi->s_journal->j_maxlen);
+> -	else if (ext4_has_feature_journal(sb) && !sbi->s_journal) {
+> +	else if (ext4_has_feature_journal(sb) && !sbi->s_journal && j_inum) {
+> +		/* j_inum for internal journal is non-zero */
+>  		j_inode = ext4_get_journal_inode(sb, j_inum);
+>  		if (j_inode) {
+>  			j_blocks = j_inode->i_size >> sb->s_blocksize_bits;
+> -- 
+> 2.21.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
