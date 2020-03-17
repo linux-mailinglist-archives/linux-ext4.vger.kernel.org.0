@@ -2,94 +2,224 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80752188905
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Mar 2020 16:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE245189163
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Mar 2020 23:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgCQPTy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Mar 2020 11:19:54 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:51928 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgCQPTy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Mar 2020 11:19:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=qF4Ay2037uPUSUMB4CI/jcU6NhGJJiHt+Bh9H6iNIEs=; b=MVUspZwlEA2YIkbP42nw6NcJtL
-        26u0hkT7viWbxDgKHBjz41sks91K1gul9ypz4w0B20aTAHORhl9XVsvAuf+pAb01suGNactdhSBHe
-        ITMWVfilrqglvQt3wOV0M70pfnTerGp3tlZMFmXpojwCZQbn5B6dU7f72QNYpZjvnY5bQnkYECs2p
-        EU8ABg0rEmHCsY8XWA8ysZ2AVV72IZlwHjCDtqy1v2Pu4q8d7rEJpj0V1vCaGtOVQaRwx0NsC7+lS
-        IATRml1c/6c83oFSKn2ud0hHYZBdLW+z/b012PQOMO9M7j0VP6OjjZVdJ/+wyJl21XZ4EnbSHUN9y
-        50tlfEFg==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jEE0T-0004y7-Ef; Tue, 17 Mar 2020 15:19:49 +0000
-Subject: Re: [PATCH] ext2: fix debug reference to ext2_xattr_cache
-To:     Jan Kara <jack@suse.cz>
-Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <88b8bde4-8c7a-6b44-9478-3ce13ecfab3a@infradead.org>
- <20200317114712.GH22684@quack2.suse.cz>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <9b4e1fa7-b4f8-b2a9-8269-04daeb3dfaaa@infradead.org>
-Date:   Tue, 17 Mar 2020 08:19:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20200317114712.GH22684@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1727179AbgCQW3B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Mar 2020 18:29:01 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45536 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727163AbgCQW3A (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Mar 2020 18:29:00 -0400
+Received: by mail-pg1-f196.google.com with SMTP id m15so12493627pgv.12
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Mar 2020 15:29:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=0lyGaEtpoR36zLPiwWYFHdQkK3uTz09qvDzxTC9qJgI=;
+        b=m0AH7r1QajvnwJDiSCHD1obDuxlvXoWJoeZTuKDL4FhB6Q9YFWG7G5iQxs4s1nUlKC
+         LHqxl0+/4Sxgym4e8EvZQP4y8fTIJQJrRLVbRS6imTF2VDjqOSmPsUtaMagUoBupXSOy
+         ZYNM7tXTkwMz6FiqmmP3njcsHB7Y+uppZ4XnIpcTWDkSG38p6zfIE5sBTP+W4AtGc9hi
+         65qvOTUveZKf1+TQm5zTAPcuPacMeahONbOQfFP/s7U5lLiiGd09HRpaiSnFs92bLa3R
+         1dMlW2pZxf0EEI9rBIqhxz6iR2sUtMLhbIzLaq8zwu2QhW+bI7kVvyN/3+XXu3VpNMIx
+         S7xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=0lyGaEtpoR36zLPiwWYFHdQkK3uTz09qvDzxTC9qJgI=;
+        b=Yte9H1javAgSa1I8zFLX9v5Ibrd++r2DOxdfSA8wDJ8XAezqkR4pNJCaxP/CDtnQeM
+         49uscbfD0aYFCLjcgXDyk+3xUS8oNuUSWSw0r7DNukc8xQpVtdXNdT+ewTKfAPAtyvPL
+         gpxQlUp7prbzSCYVCZqBf6xiKkzDH2Lkqh2kDWKJ+knbsQoZwFV0/PCo3zZJIWKXWgCF
+         baoPFpvF2YE9ZoOhakH19CrzyiUIJVmkSnUbVNjW7mnLJPkYaevOwOOyFu87YoYt4b6u
+         StzKorLwTtbWPqbEqV+sdMAz/9O5JrYa/63oEnVHg3y2MVXaBoVFOh61bGV55SoruNey
+         ZXFw==
+X-Gm-Message-State: ANhLgQ3+NcygqcpHrmxpfpwG4Yl8g3dFgW94GWfRRRgl6Y/qCZDEXi41
+        zPzJX0/qJGpnNRkizae6gVFuCg==
+X-Google-Smtp-Source: ADFU+vsp+4j6Fx+oPzHi/3kBAA+Q+4xgxKUsWM/GD5wIKIixyEDdMzG80DS72RAa77tlWbPEMffOYQ==
+X-Received: by 2002:aa7:91c7:: with SMTP id z7mr994278pfa.237.1584484139442;
+        Tue, 17 Mar 2020 15:28:59 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id j19sm4037676pfe.102.2020.03.17.15.28.57
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 17 Mar 2020 15:28:58 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <88FAA4EA-7DAF-478F-8DFE-747FAF4CF818@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_6A2BBFD8-44C3-4E14-A14D-CC95C0572A09";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: Give 32bit personalities 32bit hashes
+Date:   Tue, 17 Mar 2020 16:28:53 -0600
+In-Reply-To: <20200317113153.7945-1-linus.walleij@linaro.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org
+To:     Linus Walleij <linus.walleij@linaro.org>
+References: <20200317113153.7945-1-linus.walleij@linaro.org>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 3/17/20 4:47 AM, Jan Kara wrote:
-> On Fri 13-03-20 20:42:05, Randy Dunlap wrote:
->> From: Randy Dunlap <rdunlap@infradead.org>
->>
->> Fix a debug-only build error in ext2/xattr.c:
->>
->> When building without extra debugging, (and with another patch that uses
->> no_printk() instead of <empty> for the ext2-xattr debug-print macros,
->> this build error happens:
->>
->> ../fs/ext2/xattr.c: In function ‘ext2_xattr_cache_insert’:
->> ../fs/ext2/xattr.c:869:18: error: ‘ext2_xattr_cache’ undeclared (first use in this function); did you mean ‘ext2_xattr_list’?
->>      atomic_read(&ext2_xattr_cache->c_entry_count));
->>
->> Fix by moving struct mb_cache from fs/mbcache.c to <linux/mbcache.h>,
->> and then using the correct struct name in the debug-print macro.
->>
->> This wasn't converted when ext2 xattr cache was changed to use mbcache.
->>
->> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Jan Kara <jack@suse.com>
->> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
->> Cc: linux-ext4@vger.kernel.org
->> Cc: linux-fsdevel@vger.kernel.org
-> 
-> Thanks for the patch! I don't think exporting 'struct mb_cache' just for
-> this is reasonable. I've committed a patch which just removes the entry
-> count from the debug message (attached).
-> 
 
-Sure, that's good.  I have a patch like that one on my system also. :)
+--Apple-Mail=_6A2BBFD8-44C3-4E14-A14D-CC95C0572A09
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-> 
->> ---
->> This is ancient, from the beginning of git history.
->>
->> Or just kill of that print of c_entry_count...
->>
->>  fs/ext2/xattr.c         |    2 +-
->>  fs/mbcache.c            |   34 ----------------------------------
->>  include/linux/mbcache.h |   35 ++++++++++++++++++++++++++++++++++-
->>  3 files changed, 35 insertions(+), 36 deletions(-)
+On Mar 17, 2020, at 5:31 AM, Linus Walleij <linus.walleij@linaro.org> =
+wrote:
+>=20
+> It was brought to my attention that this bug from 2018 was
+> still unresolved: 32 bit emulators like QEMU were given
+> 64 bit hashes when running 32 bit emulation on 64 bit systems.
+>=20
+> The personality(2) system call supports to let processes
+> indicate that they are 32 bit Linux to the kernel. This
+> was suggested by Teo in the original thread, so I just wired
+> it up and it solves the problem.
+>=20
+> Programs that need the 32 bit hash only need to issue the
+> personality(PER_LINUX32) call and things start working.
 
--- 
-~Randy
+I'm generally with with this from the ext4 point of view.
 
+That said, I'd think it would be preferable for ease of use and
+compatibility that applications didn't have to be modified
+(e.g. have QEMU or glibc internally set PER_LINUX32 for this
+process before the 32-bit syscall is called, given that it knows
+whether it is emulating a 32-bit runtime or not).
+
+The other way to handle this would be for ARM32 to check the
+PER_LINUX32 flag via is_compat_task() so that there wouldn't
+need to be any changes to the ext4 code at all?
+
+Cheers, Andreas
+
+
+> I made a test program like this:
+>=20
+>  #include <dirent.h>
+>  #include <errno.h>
+>  #include <stdio.h>
+>  #include <string.h>
+>  #include <sys/types.h>
+>  #include <sys/personality.h>
+>=20
+>  int main(int argc, char** argv) {
+>    DIR* dir;
+>    personality(PER_LINUX32);
+>    dir =3D opendir("/boot");
+>    printf("dir=3D%p\n", dir);
+>    printf("readdir(dir)=3D%p\n", readdir(dir));
+>    printf("errno=3D%d: %s\n", errno, strerror(errno));
+>    return 0;
+>  }
+>=20
+> This was compiled with an ARM32 toolchain from Bootlin using
+> glibc 2.28 and thus suffering from the bug.
+>=20
+> Before the patch:
+>=20
+>  $ ./readdir-bug
+>  dir=3D0x86000
+>  readdir(dir)=3D(nil)
+>  errno=3D75: Value too large for defined data type
+>=20
+> After the patch:
+>=20
+>  $ ./readdir-bug
+>  dir=3D0x86000
+>  readdir(dir)=3D0x86020
+>  errno=3D0: Success
+>=20
+> Problem solved.
+>=20
+> Cc: Florian Weimer <fw@deneb.enyo.de>
+> Cc: Peter Maydell <peter.maydell@linaro.org>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: stable@vger.kernel.org
+> Suggested-by: Theodore Ts'o <tytso@mit.edu>
+> Link: https://bugs.launchpad.net/qemu/+bug/1805913
+> Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D205957
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> fs/ext4/dir.c | 9 +++++++++
+> 1 file changed, 9 insertions(+)
+>=20
+> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> index 9aa1f75409b0..3faf9edf3e92 100644
+> --- a/fs/ext4/dir.c
+> +++ b/fs/ext4/dir.c
+> @@ -27,6 +27,7 @@
+> #include <linux/slab.h>
+> #include <linux/iversion.h>
+> #include <linux/unicode.h>
+> +#include <linux/personality.h>
+> #include "ext4.h"
+> #include "xattr.h"
+>=20
+> @@ -618,6 +619,14 @@ static int ext4_dx_readdir(struct file *file, =
+struct dir_context *ctx)
+>=20
+> static int ext4_dir_open(struct inode * inode, struct file * filp)
+> {
+> +	/*
+> +	 * If we are currently running e.g. a 32 bit emulator on
+> +	 * a 64 bit machine, the emulator will indicate that it needs
+> +	 * a 32 bit personality and thus 32 bit hashes from the file
+> +	 * system.
+> +	 */
+> +	if (personality(current->personality) =3D=3D PER_LINUX32)
+> +		filp->f_mode |=3D FMODE_32BITHASH;
+> 	if (IS_ENCRYPTED(inode))
+> 		return fscrypt_get_encryption_info(inode) ? -EACCES : 0;
+> 	return 0;
+> --
+> 2.24.1
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_6A2BBFD8-44C3-4E14-A14D-CC95C0572A09
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5xTyUACgkQcqXauRfM
+H+BC6xAAjbwtIJvDdEy/qp+tIiAxJRt5HMEaY8aVQErnLKlF3zKRTaC2bALhC47s
+1WgXIIYz4EvfMXqDyhatd4suolut6wa+mvMStIAqKqck4gxNTW19jmw+1i3LVUuu
+S/1SUX3A9y3W+SXXu2AHqKfNkOTad+/nSlsa/Ku6uABCdll7TcVGGLaVw2WVKY/v
+wsznGmTsnq3qF0lDjoQCewsa1yUeCwmiIjauXMmn0KL35EfkSMyKoDKK4r5MKbSE
+P6TV5eSOAvVJeBLeAQEuCcnUdob1M56hASvTuaS8twjQhzu29xTETGqx3Kb3g7hF
+wBRpG4e9QxLhW+Dq8XjqSF+7e7RBQMROp/rIvPd3/d80ORBWBvl/dAe67m3GMvWI
+ptyRcA23uJrZ5Dc8pKKQCcc/TREc+UbCtUfdE+S5CPKD/WK/0E8qTyzZg1EAnPEE
+2LcObvno+JoA6tAa8bjdg2uVvHHMG2HeVgxSIMrbn9wQeCLhX35vbCZ+4kY1yDh1
+1ui3ltzHUPZdAy8WYg2Bn1a42WkvEMfdz60uTSVFO35zzQXvLzaPVbmE06/rhh/5
+nxIR/5+N+/MYvHL8h7tGDUnDoQumiM2NfKWoE+eupUjXGbjEuSb2TdUnj9Siczzy
+vwRTSF9u+f7ZfDPXuenBALq47Qq4HvF8qa7weH8iXnj9UWk31D8=
+=ak2k
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_6A2BBFD8-44C3-4E14-A14D-CC95C0572A09--
