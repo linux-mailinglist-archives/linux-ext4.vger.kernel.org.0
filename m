@@ -2,73 +2,94 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04553188463
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Mar 2020 13:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80752188905
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Mar 2020 16:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgCQMiY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 17 Mar 2020 08:38:24 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:40999 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbgCQMiY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Mar 2020 08:38:24 -0400
-Received: by mail-lf1-f65.google.com with SMTP id u26so4775187lfu.8
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Mar 2020 05:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RxvspXpJnT1wLGWC1yqAwht7wPofjiDL2MZ2V4GJU0s=;
-        b=hnj4sEry8e72e+4XxcViMh2kR/clVi9rs+0bXE1Bk+1jnM9tAaTyTvgL4uYk9HGokQ
-         CS6JmX/z0c6hGZP4+/nsjdwrRToHL2MnmrEP2s5tbTN6meK7gab1DE86o95g8btZIabJ
-         X0Nb39RB/DJ0JWjBmqOkl9uU6GNs9+S6/0dZvKl3+nAxc/hPOac2EFucKTzFdRe8iZbM
-         pd2Cz/K1I/XtSdYirkd2zkc5FVQnbLpfFYWuWeR4JcwrggK69xvkfXK7qVwpyd+zrveT
-         XkUuyowMJlxJdZtfXDBqIGaPNwQ4N/hPoHdbjT/raGV9/FQs/kLHLi9N8GnTZjdSG/jt
-         rWgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RxvspXpJnT1wLGWC1yqAwht7wPofjiDL2MZ2V4GJU0s=;
-        b=MvMQrjIJD/6XoutSv/FDDH1mTHw+zEDneVrc8CYZO/JcXN+2Xd/96eDKp4QsWZ4JmD
-         hFSnwCj42qSvUhO/whP2h4k9ga5RfJnP865OSm3Bf6pywH27/rOow6nU2AP6F/AKAoUm
-         OX+MndxqJX3r1VNxX8B2/iT4Jw5o6KYgiDHld+FR5+PvSAAINyK6bsTpx17Pz/lheGsn
-         z54k4ddR4oJaSNlCoe4vvV5tIJy3A53MEr6mlqIY1kXBtAHW295u7YksRJUqun8HhdVC
-         i6VYlHci5nB5A6O6QsOmF/YTp7W+YJHU5hcaM+lWawtnxm4wCs1oR5bw8EY9qX1hIpN0
-         g6pw==
-X-Gm-Message-State: ANhLgQ033pVvRFDEAbkCoFqoV4hB1bijJRxBbXmhd82PmnHhJ6BCJUMo
-        KJTrNHlJ5IGZC0AstciFlrsNodFeSPR6KvfNa/ry5w==
-X-Google-Smtp-Source: ADFU+vtpPO/SB7g4ehk7qTFyPKse2g7Gmfi77CZPwCuVUbJVQI6d70Lf5FyUoeDifSP8iaSTW1v77WW+rDocRRRH0SY=
-X-Received: by 2002:a19:6502:: with SMTP id z2mr2694078lfb.47.1584448702419;
- Tue, 17 Mar 2020 05:38:22 -0700 (PDT)
+        id S1726891AbgCQPTy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 17 Mar 2020 11:19:54 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:51928 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgCQPTy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 17 Mar 2020 11:19:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=qF4Ay2037uPUSUMB4CI/jcU6NhGJJiHt+Bh9H6iNIEs=; b=MVUspZwlEA2YIkbP42nw6NcJtL
+        26u0hkT7viWbxDgKHBjz41sks91K1gul9ypz4w0B20aTAHORhl9XVsvAuf+pAb01suGNactdhSBHe
+        ITMWVfilrqglvQt3wOV0M70pfnTerGp3tlZMFmXpojwCZQbn5B6dU7f72QNYpZjvnY5bQnkYECs2p
+        EU8ABg0rEmHCsY8XWA8ysZ2AVV72IZlwHjCDtqy1v2Pu4q8d7rEJpj0V1vCaGtOVQaRwx0NsC7+lS
+        IATRml1c/6c83oFSKn2ud0hHYZBdLW+z/b012PQOMO9M7j0VP6OjjZVdJ/+wyJl21XZ4EnbSHUN9y
+        50tlfEFg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jEE0T-0004y7-Ef; Tue, 17 Mar 2020 15:19:49 +0000
+Subject: Re: [PATCH] ext2: fix debug reference to ext2_xattr_cache
+To:     Jan Kara <jack@suse.cz>
+Cc:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+References: <88b8bde4-8c7a-6b44-9478-3ce13ecfab3a@infradead.org>
+ <20200317114712.GH22684@quack2.suse.cz>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9b4e1fa7-b4f8-b2a9-8269-04daeb3dfaaa@infradead.org>
+Date:   Tue, 17 Mar 2020 08:19:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200317113153.7945-1-linus.walleij@linaro.org> <87lfnzdwrf.fsf@mid.deneb.enyo.de>
-In-Reply-To: <87lfnzdwrf.fsf@mid.deneb.enyo.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 17 Mar 2020 13:38:11 +0100
-Message-ID: <CACRpkdY8uLVrT5=NMpNmKhgmqu=yT_Bgc-Q9-BR6NgRFjnzjFQ@mail.gmail.com>
-Subject: Re: [PATCH] ext4: Give 32bit personalities 32bit hashes
-To:     Florian Weimer <fw@deneb.enyo.de>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, QEMU Developers <qemu-devel@nongnu.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200317114712.GH22684@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 12:53 PM Florian Weimer <fw@deneb.enyo.de> wrote:
+On 3/17/20 4:47 AM, Jan Kara wrote:
+> On Fri 13-03-20 20:42:05, Randy Dunlap wrote:
+>> From: Randy Dunlap <rdunlap@infradead.org>
+>>
+>> Fix a debug-only build error in ext2/xattr.c:
+>>
+>> When building without extra debugging, (and with another patch that uses
+>> no_printk() instead of <empty> for the ext2-xattr debug-print macros,
+>> this build error happens:
+>>
+>> ../fs/ext2/xattr.c: In function ‘ext2_xattr_cache_insert’:
+>> ../fs/ext2/xattr.c:869:18: error: ‘ext2_xattr_cache’ undeclared (first use in this function); did you mean ‘ext2_xattr_list’?
+>>      atomic_read(&ext2_xattr_cache->c_entry_count));
+>>
+>> Fix by moving struct mb_cache from fs/mbcache.c to <linux/mbcache.h>,
+>> and then using the correct struct name in the debug-print macro.
+>>
+>> This wasn't converted when ext2 xattr cache was changed to use mbcache.
+>>
+>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Jan Kara <jack@suse.com>
+>> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+>> Cc: linux-ext4@vger.kernel.org
+>> Cc: linux-fsdevel@vger.kernel.org
+> 
+> Thanks for the patch! I don't think exporting 'struct mb_cache' just for
+> this is reasonable. I've committed a patch which just removes the entry
+> count from the debug message (attached).
+> 
 
-> Just be sure: Is it possible to move the PER_LINUX32 setting into QEMU?
-> (I see why not.)
+Sure, that's good.  I have a patch like that one on my system also. :)
 
-I set it in the program explicitly, but what actually happens when
-I run it is that the binfmt handler invokes qemu-user so certainly
-that program can set the flag, any process can.
+> 
+>> ---
+>> This is ancient, from the beginning of git history.
+>>
+>> Or just kill of that print of c_entry_count...
+>>
+>>  fs/ext2/xattr.c         |    2 +-
+>>  fs/mbcache.c            |   34 ----------------------------------
+>>  include/linux/mbcache.h |   35 ++++++++++++++++++++++++++++++++++-
+>>  3 files changed, 35 insertions(+), 36 deletions(-)
 
-Yours,
-Linus Walleij
+-- 
+~Randy
+
