@@ -2,99 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFFA189BB7
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Mar 2020 13:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6D8189EFE
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Mar 2020 16:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgCRMNX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Mar 2020 08:13:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53666 "EHLO mx2.suse.de"
+        id S1726866AbgCRPHd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 18 Mar 2020 11:07:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726530AbgCRMNX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 18 Mar 2020 08:13:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 722C4AC62;
-        Wed, 18 Mar 2020 12:13:21 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B7ACA1E11A0; Wed, 18 Mar 2020 13:13:20 +0100 (CET)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>
-Subject: [PATCH] ext4: Avoid ENOSPC when avoiding to reuse recently deleted inodes
-Date:   Wed, 18 Mar 2020 13:13:17 +0100
-Message-Id: <20200318121317.31941-1-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
+        id S1726822AbgCRPHc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Mar 2020 11:07:32 -0400
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 206879] New: "extent tree corrupted" after several syscalls
+ involving EXT4_IOC_SWAP_BOOT on a sparse file
+Date:   Wed, 18 Mar 2020 15:07:32 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: anatoly.trosinenko@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version
+ cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
+ priority component assigned_to reporter cf_regression attachments.created
+Message-ID: <bug-206879-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When ext4 is running on a filesystem without a journal, it tries not to
-reuse recently deleted inodes to provide better chances for filesystem
-recovery in case of crash. However this logic forbids reuse of freed
-inodes for up to 5 minutes and especially for filesystems with smaller
-number of inodes can lead to ENOSPC errors returned when allocating new
-inodes.
+https://bugzilla.kernel.org/show_bug.cgi?id=206879
 
-Fix the problem by allowing to reuse recently deleted inode if there's
-no other inode free in the scanned range.
+            Bug ID: 206879
+           Summary: "extent tree corrupted" after several syscalls
+                    involving EXT4_IOC_SWAP_BOOT on a sparse file
+           Product: File System
+           Version: 2.5
+    Kernel Version: tytso/ext4/dev (dce8e2371)
+          Hardware: All
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: anatoly.trosinenko@gmail.com
+        Regression: No
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/ialloc.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+Created attachment 287969
+  --> https://bugzilla.kernel.org/attachment.cgi?id=287969&action=edit
+Reproducer
 
-This patch is ramping down the enforcement of recently_deleted() logic rather
-significantly. I believe it is fine since IMO it is better to reuse deleted
-inode than to disrupt allocation patterns but there's also another option to
-disable the recently_deleted() logic only if there's no free inode found in the
-whole fs. I can switch to that if people think that it is OK for
-recently_deleted() logic to push inode allocations to different group or so.
+Hello,
 
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index f95ee99091e4..74f0fe145370 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -712,21 +712,34 @@ static int recently_deleted(struct super_block *sb, ext4_group_t group, int ino)
- static int find_inode_bit(struct super_block *sb, ext4_group_t group,
- 			  struct buffer_head *bitmap, unsigned long *ino)
- {
-+	bool check_recently_deleted = EXT4_SB(sb)->s_journal == NULL;
-+	unsigned long recently_deleted_ino = EXT4_INODES_PER_GROUP(sb);
-+
- next:
- 	*ino = ext4_find_next_zero_bit((unsigned long *)
- 				       bitmap->b_data,
- 				       EXT4_INODES_PER_GROUP(sb), *ino);
- 	if (*ino >= EXT4_INODES_PER_GROUP(sb))
--		return 0;
-+		goto not_found;
- 
--	if ((EXT4_SB(sb)->s_journal == NULL) &&
--	    recently_deleted(sb, group, *ino)) {
-+	if (check_recently_deleted && recently_deleted(sb, group, *ino)) {
-+		recently_deleted_ino = *ino;
- 		*ino = *ino + 1;
- 		if (*ino < EXT4_INODES_PER_GROUP(sb))
- 			goto next;
--		return 0;
-+		goto not_found;
- 	}
--
-+	return 1;
-+not_found:
-+	if (recently_deleted_ino >= EXT4_INODES_PER_GROUP(sb))
-+		return 0;
-+	/*
-+	 * Not reusing recently deleted inodes is mostly a preference. We don't
-+ 	 * want to report ENOSPC or skew allocation patterns because of that.
-+	 * So return even recently deleted inode if we could find better in the
-+	 * given range.
-+	 */
-+	*ino = recently_deleted_ino;
- 	return 1;
- }
- 
+By fuzzing, I have found an "extent tree corrupted" message after invoking
+several syscalls on a clean ext4 file system image. Some of these are quite
+special ioctls probably mis-used by my fuzzer, still I report this just in
+case.
+
+How to reproduce (with kvm-xfstests):
+
+1) Checkout tytso/ext4 branch dev (commit dce8e2371)
+2) cp /path/to/fstests/kernel-configs/x86_64-config-5.4 .config
+3) make olddefconfig
+4) make
+5) Compile the attached reproducer:
+
+   gcc ext4-test.c -o /tmp/kvm-xfstests-USER/repro -static
+
+   In my case, the kernel was built for amd64, so reproducer is for amd64, too.
+With `-m32`, I get a ENOTTY error on EXT4_IOC_SWAP_BOOT
+6) Run `./kvm-xfstests shell`
+7) Inside the shell:
+   mke2fs -t ext4 test.img 1024M
+   mount test.img /mnt
+   /vtmp/repro /mnt/123 /mnt/abc
+8) Observe in dmesg:
+   [  114.760535] EXT4-fs error (device loop0): ext4_ext_precache:579: inode
+#12: comm repro: pblk 32897 bad header/extent: extent tree corrupted - magic
+f30a, entries 5, max 340(340), depth 0(0)
+
 -- 
-2.16.4
-
+You are receiving this mail because:
+You are watching the assignee of the bug.
