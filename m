@@ -2,142 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A03B18A02C
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Mar 2020 17:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC5A18A24E
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Mar 2020 19:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727127AbgCRQGD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 18 Mar 2020 12:06:03 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:46155 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgCRQGD (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 18 Mar 2020 12:06:03 -0400
-Received: by mail-il1-f196.google.com with SMTP id e8so24121276ilc.13
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Mar 2020 09:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q+E6phefA0/UCxZU68Ee5CkdpY/LreXqfKusKthyp5I=;
-        b=PmkHFgajk2/8VWOHdYUg8VCj1tVopeX6fqfrGgYm0sPb35e5EoxUjxowANbaw3zCwS
-         wqDhItzeSSD2F4OzNelMLAyDUKSqRDkOzITlg+Hge+tWY5LhXczVM8GuM5pTiPEM5aFa
-         ut6OlQnzTW2CXrIbgEnOI63xRs4UIkIGUhynA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q+E6phefA0/UCxZU68Ee5CkdpY/LreXqfKusKthyp5I=;
-        b=nmdb+LfVyS3D0aD55JzYj/bwUn4KMlBHapCRbNzxzzowNrGsYbDLA06/jG4aIZ2vqV
-         Po46W5eFN+244m896NHdaptdNnmL8HcMupUvGYY3Wp9svhiubCuGRopz44FgelV4MmYg
-         DVnj7QXa/2bjh/uYMDI02dSvmBwPCQBDwrivu5hTSYMfMawmPEdEVObg1myvFo+E5fdP
-         8XcfR0qBobEX5LONbkXTpTDqKnwizIYw1efGzWBDRwqPdVJbZ5+V9WbH+og/U+8vaVSe
-         otJAkghZ//wFG/Gh6bHkcMZtqBT6yMogdpP5Es0jZB/sOTo3f8v7c+HTm3Dsd09SQIpy
-         bZsg==
-X-Gm-Message-State: ANhLgQ0tXoqJARwiJ6CgrIi/9kWpJw3hfDvwyvS7bVodlFtnpx602pJb
-        eg/nsvA9GzzcNrOheZ5Ch/bF+2ehHfHZoPZVmgU3nw==
-X-Google-Smtp-Source: ADFU+vseuj9ZXYFeMbS3X+5vGmRRSiZoxImF5rzfLQFjQscZDtBKPWLdRkROYV3TZYIAEV5wBxQF2hmZ0LlipmXRNY0=
-X-Received: by 2002:a92:5d52:: with SMTP id r79mr4664957ilb.212.1584547562099;
- Wed, 18 Mar 2020 09:06:02 -0700 (PDT)
+        id S1726704AbgCRS1j (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 18 Mar 2020 14:27:39 -0400
+Received: from sandeen.net ([63.231.237.45]:43502 "EHLO sandeen.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726506AbgCRS1j (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 18 Mar 2020 14:27:39 -0400
+Received: from [10.0.0.4] (liberator [10.0.0.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by sandeen.net (Postfix) with ESMTPSA id DA6EA2A78;
+        Wed, 18 Mar 2020 13:26:41 -0500 (CDT)
+Subject: Re: [PATCH] ext4: Check for non-zero journal inum in
+ ext4_calculate_overhead
+To:     Ritesh Harjani <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, jack@suse.cz, adilger.kernel@dilger.ca,
+        linux-fsdevel@vger.kernel.org, Harish Sriram <harish@linux.ibm.com>
+References: <20200316093038.25485-1-riteshh@linux.ibm.com>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Autocrypt: addr=sandeen@sandeen.net; prefer-encrypt=mutual; keydata=
+ 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 pA==
+Message-ID: <c43090c0-ce45-0737-68a5-ffe3e362012e@sandeen.net>
+Date:   Wed, 18 Mar 2020 13:27:37 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk>
-In-Reply-To: <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 18 Mar 2020 17:05:50 +0100
-Message-ID: <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com>
-Subject: Re: [PATCH 00/13] VFS: Filesystem information [ver #19]
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux NFS list <linux-nfs@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-ext4@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Ian Kent <raven@themaw.net>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200316093038.25485-1-riteshh@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Mar 18, 2020 at 4:08 PM David Howells <dhowells@redhat.com> wrote:
+On 3/16/20 4:30 AM, Ritesh Harjani wrote:
+> While calculating overhead for internal journal, also check
+> that j_inum shouldn't be 0. Otherwise we get below error with
+> xfstests generic/050 with external journal (XXX_LOGDEV config) enabled.
+> 
+> It could be simply reproduced with loop device with an external journal
+> and marking blockdev as RO before mounting.
+> 
+> [ 3337.146838] EXT4-fs error (device pmem1p2): ext4_get_journal_inode:4634: comm mount: inode #0: comm mount: iget: illegal inode #
+> ------------[ cut here ]------------
+> generic_make_request: Trying to write to read-only block-device pmem1p2 (partno 2)
 
-> ============================
-> WHY NOT USE PROCFS OR SYSFS?
-> ============================
->
-> Why is it better to go with a new system call rather than adding more magic
-> stuff to /proc or /sysfs for each superblock object and each mount object?
->
->  (1) It can be targetted.  It makes it easy to query directly by path.
->      procfs and sysfs cannot do this easily.
->
->  (2) It's more efficient as we can return specific binary data rather than
->      making huge text dumps.  Granted, sysfs and procfs could present the
->      same data, though as lots of little files which have to be
->      individually opened, read, closed and parsed.
+I think this 2nd error comes from:
 
-Asked this a number of times, but you haven't answered yet:  what
-application would require such a high efficiency?
+static void save_error_info(struct super_block *sb, const char *func,
+                            unsigned int line)
+{
+        __save_error_info(sb, func, line);
+        ext4_commit_super(sb, 1);
+}
 
-Nobody's suggesting we move stat(2) to proc interfaces, and AFAIK
-nobody suggested we move /proc/PID/* to a binary syscall interface.
-Each one has its place, and I strongly feel that mount info belongs in
-the latter category.    Feel free to prove the opposite.
+__save_error_info() returns if bdev_read_only() but then we try to commit the super
+anyway.  Shouldn't save_error_info() return early if bdev_read_only()?
 
->  (3) We wouldn't have the overhead of open and close (even adding a
->      self-contained readfile() syscall has to do that internally
+(that'd be a separate patch, I'll send it)
 
-Busted: add f_op->readfile() and be done with all that.   For example
-DEFINE_SHOW_ATTRIBUTE() could be trivially moved to that interface.
+-Eric
 
-We could optimize existing proc, sys, etc. interfaces, but it's not
-been an issue, apparently.
-
->
->  (4) Opening a file in procfs or sysfs has a pathwalk overhead for each
->      file accessed.  We can use an integer attribute ID instead (yes, this
->      is similar to ioctl) - but could also use a string ID if that is
->      preferred.
->
->  (5) Can easily query cross-namespace if, say, a container manager process
->      is given an fs_context that hasn't yet been mounted into a namespace -
->      or hasn't even been fully created yet.
-
-Works with my patch.
-
->  (6) Don't have to create/delete a bunch of sysfs/procfs nodes each time a
->      mount happens or is removed - and since systemd makes much use of
->      mount namespaces and mount propagation, this will create a lot of
->      nodes.
-
-Not true.
-
-> The argument for doing this through procfs/sysfs/somemagicfs is that
-> someone using a shell can just query the magic files using ordinary text
-> tools, such as cat - and that has merit - but it doesn't solve the
-> query-by-pathname problem.
->
-> The suggested way around the query-by-pathname problem is to open the
-> target file O_PATH and then look in a magic directory under procfs
-> corresponding to the fd number to see a set of attribute files[*] laid out.
-> Bash, however, can't open by O_PATH or O_NOFOLLOW as things stand...
-
-Bash doesn't have fsinfo(2) either, so that's not really a good argument.
-
-Implementing a utility to show mount attribute(s) by path is trivial
-for the file based interface, while it would need to be updated for
-each extension of fsinfo(2).   Same goes for libc, language bindings,
-etc.
-
-Thanks,
-Miklos
