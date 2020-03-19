@@ -2,55 +2,171 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EDA18B2CD
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 12:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB6118B386
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 13:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgCSL5C (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Mar 2020 07:57:02 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:37120 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgCSL5B (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Mar 2020 07:57:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=zSKNJpg3bSHQZrR6eSGgkELs7AnAMsGUFTR84vG8N+Q=; b=taEbISgvSjSBP5vFWW8bUzGpnP
-        MKArSkuRIrMUVzeknqF5IG82BQ0rRpdBkhyPwGJUstzncqnKATxyqnIPY7+1YlPamettzIY62SIOe
-        NjePxFuSuYvIN1CyExl08KgCgVOKlBp6PwGzsLBofMZTKcaPyXK6XFyVMrgf7MonLR3osphoWenlX
-        sundTKrs1nNxBZQfX9U36K6/ARMpgehcUsyKFiio1oi1/7QqJNa7OAtqjBW7hTx52h5XWExEECCbA
-        ybmTAPaH80ciWSV+Cg1RcHvxXwu291GiNoqQjE6jJmuU2a2XkiCwZXJKbC6saBE1jZ5T2EQuOpNT9
-        kqks7pWQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jEtnJ-0000ue-IU; Thu, 19 Mar 2020 11:57:01 +0000
-Date:   Thu, 19 Mar 2020 04:57:01 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v8 00/25] Change readahead API
-Message-ID: <20200319115701.GJ22433@bombadil.infradead.org>
-References: <20200225214838.30017-1-willy@infradead.org>
- <20200319102038.GE3590@infradead.org>
+        id S1727166AbgCSMhN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Mar 2020 08:37:13 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:40461 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727127AbgCSMhK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Mar 2020 08:37:10 -0400
+Received: by mail-il1-f193.google.com with SMTP id p12so2040881ilm.7
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 05:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2tuVxH0JdqTpL/q4Mhu8Jwtx1AVVUn0AWeX5OBSt298=;
+        b=cMtY3qUcEmiCWPAEeCd5lhB7x3Biy4/6Het2lKK01B7wcpZG2RZMmWE3LV0gVxGIei
+         UuMBMRql9WM+pRx9p4acPSg0mo4kZ7BHmdSm48TJO0cwwlRT82C+TUnt1Ixfd5tAZfQB
+         qGlXYFxfI9xkqU5Rq8m22vi2BvEMfsNiNnE2E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2tuVxH0JdqTpL/q4Mhu8Jwtx1AVVUn0AWeX5OBSt298=;
+        b=LFIINNuA7pOPu1eZgT831ET8+zifxZz5VT5PbdrJg8HH43jqJ7LHruDhpv4I3vgxcU
+         bKQ4DtqDeCcdSW1lXD+kdxrXPplzrGluy8WL9N6p9T6ZwdQsgHtfZoYZmjwqIybQC2z2
+         S8AWqlBNB8hQ7+LsVs4mxJqZFgYNg/Y40x/TSAOKO5nQei6m5GKUVrgl0cWWhiHAlMGc
+         7adu9IoQVpszEom6qZRelgEr/mB7/q+DSBjs60q4c1qqxUImonXe0gSZSXqunmkgLpWf
+         IHKI9nFTjY6XLplXSR9pO7B4xl6ejleEMf/Q97Yv+U4+6Sck6VYj5T2fu8gUnSVs1PLx
+         /4iQ==
+X-Gm-Message-State: ANhLgQ046+gbNkBT54DorJDvTFbIxKsywLhSlganrpeq4SSYCxs800D1
+        QCJEq3tbxf2ZSildk12S9//4pM6WvbH5HYqNKkYVVw==
+X-Google-Smtp-Source: ADFU+vsTsJqo2m1ETEsSuJlFNylEmftzB1ulJzyZd8sss8uJZS7aWDqz3pxVA9Gv6H7ICK0JOZMAndoK/X55keC9JJI=
+X-Received: by 2002:a92:3b8c:: with SMTP id n12mr2899150ilh.186.1584621429946;
+ Thu, 19 Mar 2020 05:37:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200319102038.GE3590@infradead.org>
+References: <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk>
+ <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com> <3085880.1584614257@warthog.procyon.org.uk>
+In-Reply-To: <3085880.1584614257@warthog.procyon.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 19 Mar 2020 13:36:58 +0100
+Message-ID: <CAJfpegv-_ai1LiW6=D+AnkozzmmXbB8=g8QDCS15bh==Wn3yoA@mail.gmail.com>
+Subject: Re: [PATCH 00/13] VFS: Filesystem information [ver #19]
+To:     David Howells <dhowells@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux NFS list <linux-nfs@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Ian Kent <raven@themaw.net>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 03:20:38AM -0700, Christoph Hellwig wrote:
-> Any plans to resend this with the little nitpicks fixed?  I'd love to
-> get this series into 5.7..
+On Thu, Mar 19, 2020 at 11:37 AM David Howells <dhowells@redhat.com> wrote:
+>
+> Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> > >  (2) It's more efficient as we can return specific binary data rather than
+> > >      making huge text dumps.  Granted, sysfs and procfs could present the
+> > >      same data, though as lots of little files which have to be
+> > >      individually opened, read, closed and parsed.
+> >
+> > Asked this a number of times, but you haven't answered yet:  what
+> > application would require such a high efficiency?
+>
+> Low efficiency means more time doing this when that time could be spent doing
+> other things - or even putting the CPU in a powersaving state.  Using an
+> open/read/close render-to-text-and-parse interface *will* be slower and less
+> efficient as there are more things you have to do to use it.
+>
+> Then consider doing a walk over all the mounts in the case where there are
+> 10000 of them - we have issues with /proc/mounts for such.  fsinfo() will end
+> up doing a lot less work.
 
-The only nitpick I see left is the commit comment in the btrfs patch,
-and a note from Dave Sterba that he intends to review it.  I can collect
-up the additional Reviewed-by tags and repost the series.
+Current /proc/mounts problems arise from the fact that mount info can
+only be queried for the whole namespace, and hence changes related to
+a single mount will require rescanning the complete mount list.  If
+mount info can be queried for individual mounts, then the need to scan
+the complete list will be rare.  That's *the* point of this change.
 
-I'm assuming it'll go through Andrew's tree?
+> > >  (3) We wouldn't have the overhead of open and close (even adding a
+> > >      self-contained readfile() syscall has to do that internally
+> >
+> > Busted: add f_op->readfile() and be done with all that.   For example
+> > DEFINE_SHOW_ATTRIBUTE() could be trivially moved to that interface.
+>
+> Look at your example.  "f_op->".  That's "file->f_op->" I presume.
+>
+> You would have to make it "i_op->" to avoid the open and the close - and for
+> things like procfs and sysfs, that's probably entirely reasonable - but bear
+> in mind that you still have to apply all the LSM file security controls, just
+> in case the backing filesystem is, say, ext4 rather than procfs.
+>
+> > We could optimize existing proc, sys, etc. interfaces, but it's not
+> > been an issue, apparently.
+>
+> You can't get rid of or change many of the existing interfaces.  A lot of them
+> are effectively indirect system calls and are, as such, part of the fixed
+> UAPI.  You'd have to add a parallel optimised set.
+
+Sure.
+
+We already have the single_open() internal API that is basically a
+->readfile() wrapper.   Moving this up to the f_op level (no, it's not
+an i_op, and yes, we do need struct file, but it can be simply
+allocated on the stack) is a trivial optimization that would let a
+readfile(2) syscall access that level.  No new complexity in that
+case.    Same generally goes for seq_file: seq_readfile() is trivial
+to implement without messing with current implementation or any
+existing APIs.
+
+>
+> > >  (6) Don't have to create/delete a bunch of sysfs/procfs nodes each time a
+> > >      mount happens or is removed - and since systemd makes much use of
+> > >      mount namespaces and mount propagation, this will create a lot of
+> > >      nodes.
+> >
+> > Not true.
+>
+> This may not be true if you roll your own special filesystem.  It *is* true if
+> you do it in procfs or sysfs.  The files don't exist if you don't create nodes
+> or attribute tables for them.
+
+That's one of the reasons why I opted to roll my own.  But the ideas
+therein could be applied to kernfs, if found to be generally useful.
+Nothing magic about that.
+
+>
+> > > The argument for doing this through procfs/sysfs/somemagicfs is that
+> > > someone using a shell can just query the magic files using ordinary text
+> > > tools, such as cat - and that has merit - but it doesn't solve the
+> > > query-by-pathname problem.
+> > >
+> > > The suggested way around the query-by-pathname problem is to open the
+> > > target file O_PATH and then look in a magic directory under procfs
+> > > corresponding to the fd number to see a set of attribute files[*] laid out.
+> > > Bash, however, can't open by O_PATH or O_NOFOLLOW as things stand...
+> >
+> > Bash doesn't have fsinfo(2) either, so that's not really a good argument.
+>
+> I never claimed that fsinfo() could be accessed directly from the shell.  For
+> you proposal, you claimed "immediately usable from all programming languages,
+> including scripts".
+
+You are right.  Note however: only special files need the O_PATH
+handling, regular files are directories can be opened by the shell
+without side effects.
+
+In any case, I think neither of us can be convinced of the other's
+right, so I guess It's up to Al and Linus to make a decision.
+
+Thanks,
+Miklos
