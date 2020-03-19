@@ -2,60 +2,59 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 582E118BAB4
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 16:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7C618BAD0
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 16:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbgCSPNX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Mar 2020 11:13:23 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:36644 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727103AbgCSPNW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Mar 2020 11:13:22 -0400
-Received: by mail-lf1-f67.google.com with SMTP id s1so1941280lfd.3
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 08:13:21 -0700 (PDT)
+        id S1727178AbgCSPSj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Mar 2020 11:18:39 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34085 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727001AbgCSPSi (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Mar 2020 11:18:38 -0400
+Received: by mail-lj1-f196.google.com with SMTP id s13so2950191ljm.1
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 08:18:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/uotPJyrFZ0V5dJBIBxpoXcAAW/RZupCPGuZpTwdN+s=;
-        b=IObK/vTbu2r1EwtJUxcOkt/weNgwAIs+CHTDvFgznXHZYVnCuvygzfOBa4JLbHT97b
-         W9XtSA7rUSeyqs4nYmn9mTKNKjGB079S+l2sxY3DvKZFnHs93Sb1SYARR39KY1nD5L26
-         /tKgb1jIfCLitehDbmJwfWQipefcZm7L02maSR1IKYDj3oB3T83NhKnIgOSh9+KEIgNl
-         TKDSLoErLO8Nl1dNdDkofdlbfXby0LIXIuFEbQ7kA4LH+4gbAwq0FBa7ki43wI29SXcr
-         z5XGe0X6erHAQQGBtOyfxylFoG3kI/gx/XwBTVRsH+cX4Pz5xNURnZMmaTjSAEji452K
-         LLvQ==
+        bh=DaeWC4paZt+okt8puKvfMsZYLYpCKtr88Og+vqz2+d0=;
+        b=r+RbF6Wl+QIWtN5XgXv6Wy2ndXU5gukf1+a7pWlNOs5UXvn7YdvBmyG7iFWF9CF4n4
+         vgfHfWQevvjEbPyyIS4sx0LC3EN1MjUwlF0qyHp7CCv2/hQP5Z9svKAN5/BVjjc+KWDZ
+         /fzZtBSH8s8vEh6tIEXW181elPRKVfIZojEkMLhntKshIWE3NT18Zuyc7vQmkYGgA/Aa
+         vZsJo7Zq9QZizRwSmR++Fe+dLqNFtNPcglCy3LBQr8z33Amddo3q87Qy8X0WaByIzVl6
+         JsOtm8s3XVSXU2xlr7YxNgQC7oYoSlO4NDtBevbRaVGZ6HpBYe8GNq1cwZ+b3dqDWRVx
+         /CDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/uotPJyrFZ0V5dJBIBxpoXcAAW/RZupCPGuZpTwdN+s=;
-        b=Lwx4Z0Qm+LRo6B02L23zaM4K8HCqubAWmatYT5o+HBCmK2MWqiWSvzZcYUB5pfO2/W
-         d/YNgHfmO3kU5kXNNPQ65+tJh1+RYoLz+E4DSeFUlps9b2Fztj7N/mHB+vaup5I8+Mu0
-         LoH81aLbV7B4DYSquwpvqr54zJrxD2HT2F3U2hqEneTnYSAvtn2gyZvqtgBZJpKFyJ1y
-         0bAAXcgl7DVzDBocsajLBmJRtmY7pmw2zmGbTKRMQ/l+hRVkv6xX40LxwYPV9/z1TE6G
-         lXsvieHotz/giqZgXXnqFKbHrcfdVqCgtohF+5TPCceLm15zFDJ1c7TyX+Gz5kjmMG3G
-         SRBQ==
-X-Gm-Message-State: ANhLgQ2OMeyfXPD8KSfjEEv2EWo6/awO4qt+ARi6EDxJ+LNoZDyhA1ZK
-        F68WJ6q2YfCIo72tRwkFBsJMaQZvEgQQ2J2u3jf8mA==
-X-Google-Smtp-Source: ADFU+vu1xSj2mSTjDUg4SXO/2v8/tid2EhIWeZkU86OKVTq9D1e8crqiiKiOF6X8KpVKbvzB2tB2QO5h9YFRavOMQH4=
-X-Received: by 2002:ac2:4552:: with SMTP id j18mr2475295lfm.89.1584630800987;
- Thu, 19 Mar 2020 08:13:20 -0700 (PDT)
+        bh=DaeWC4paZt+okt8puKvfMsZYLYpCKtr88Og+vqz2+d0=;
+        b=Ow+mEee1ZVlgy1M+9ydFSxV1d/YbwL8gqOfWSn3oh8fdlX0moXpsCSFWoaG5hsOX5v
+         N8OX6Iao4CJRnEagwAop54UDh2aza+Tbzkz3iKaHG10w49/+Vo9Fr6VcDegzwWx8HdQt
+         1E2UtE4FfU6+zUxmRF/x1VpNeAxL9iE1FbYeuAtC7ZJhUt4qQMvQjl2LspnQRqd/wakc
+         0EWmZIX5LDFKC+IeD/ResJY99Q+VJXEGYxlljbE0JOo7PXtHdW+yLeo9iPlRqdR5Z0Z7
+         wPsJDEVys9hgMc4JUUlY5Ic1boGc0fhJlbfaur7BiBH2sYTQkj+0TEnURWizMjU88GAp
+         75OQ==
+X-Gm-Message-State: ANhLgQ3Nt0Oip0zrrPvVHyEq9R4We0DViorEz2ba1g3W9dqDsDVTQfZT
+        4mMwHVMutWuwV+CZzJUkuAZ9IjCAW+LwK9I/lqUuvg==
+X-Google-Smtp-Source: ADFU+vvPeA7ClISh6i31iBhj6nefmh3Eg2iEFzmPH9zvoxRoXYDbUZ5mYl74GCE7OJXyqnP17DOPXATaVBvt+m4FxYI=
+X-Received: by 2002:a2e:9a90:: with SMTP id p16mr2538498lji.277.1584631116087;
+ Thu, 19 Mar 2020 08:18:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200317113153.7945-1-linus.walleij@linaro.org> <CAFEAcA9mXE+gPnvM6HZ-w0+BhbpeuH=osFH-9NUzCLv=w-c7HQ@mail.gmail.com>
-In-Reply-To: <CAFEAcA9mXE+gPnvM6HZ-w0+BhbpeuH=osFH-9NUzCLv=w-c7HQ@mail.gmail.com>
+References: <20200317113153.7945-1-linus.walleij@linaro.org> <88FAA4EA-7DAF-478F-8DFE-747FAF4CF818@dilger.ca>
+In-Reply-To: <88FAA4EA-7DAF-478F-8DFE-747FAF4CF818@dilger.ca>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 19 Mar 2020 16:13:09 +0100
-Message-ID: <CACRpkdZtLNUwiZEMiJEoB0ojOBckyGcZeyFkR6MC69qv-ry9EA@mail.gmail.com>
+Date:   Thu, 19 Mar 2020 16:18:24 +0100
+Message-ID: <CACRpkdbc=7Ozf472HGUZnQgWTJjoXuopts_EWLse__Ho4PZyRw@mail.gmail.com>
 Subject: Re: [PATCH] ext4: Give 32bit personalities 32bit hashes
-To:     Peter Maydell <peter.maydell@linaro.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>
+To:     Andreas Dilger <adilger@dilger.ca>
 Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
         Linux API <linux-api@vger.kernel.org>,
         QEMU Developers <qemu-devel@nongnu.org>,
         Florian Weimer <fw@deneb.enyo.de>,
+        Peter Maydell <peter.maydell@linaro.org>,
         Andy Lutomirski <luto@kernel.org>,
         stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -64,69 +63,31 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 12:58 PM Peter Maydell <peter.maydell@linaro.org> wrote:
-> On Tue, 17 Mar 2020 at 11:31, Linus Walleij <linus.walleij@linaro.org> wrote:
-> >
-> > It was brought to my attention that this bug from 2018 was
-> > still unresolved: 32 bit emulators like QEMU were given
-> > 64 bit hashes when running 32 bit emulation on 64 bit systems.
-> >
-> > The personality(2) system call supports to let processes
-> > indicate that they are 32 bit Linux to the kernel. This
-> > was suggested by Teo in the original thread, so I just wired
-> > it up and it solves the problem.
->
-> Thanks for having a look at this. I'm not sure this is what
-> QEMU needs, though. When QEMU runs, it is not a 32-bit
-> process, it's a 64-bit process. Some of the syscalls
-> it makes are on behalf of the guest and would need 32-bit
-> semantics (including this one of wanting 32-bit hash sizes
-> in directory reads). But some syscalls it makes for itself
-> (either directly, or via libraries it's linked against
-> including glibc and glib) -- those would still want the
-> usual 64-bit semantics, I would have thought.
+On Tue, Mar 17, 2020 at 11:29 PM Andreas Dilger <adilger@dilger.ca> wrote:
 
-The "personality" thing is a largely unused facility that
-a process can use to say it has this generic behaviour.
-In this case we say we have the PER_LINUX32 personality
-so it will make the process evoke 32bit behaviours inside
-the kernel when dealing with this process.
+> That said, I'd think it would be preferable for ease of use and
+> compatibility that applications didn't have to be modified
+> (e.g. have QEMU or glibc internally set PER_LINUX32 for this
+> process before the 32-bit syscall is called, given that it knows
+> whether it is emulating a 32-bit runtime or not).
 
-Which I (loosely) appreciate that we want to achieve.
+I think the plan is that QEMU set this, either directly when
+you run qemu-user or through the binfmt handler.
+https://www.kernel.org/doc/html/latest/admin-guide/binfmt-misc.html
 
-> > Programs that need the 32 bit hash only need to issue the
-> > personality(PER_LINUX32) call and things start working.
->
-> What in particular does this personality setting affect?
-> My copy of the personality(2) manpage just says:
->
->        PER_LINUX32 (since Linux 2.2)
->               [To be documented.]
->
-> which isn't very informative.
+IIUC the binfmt handler is invoked when you try to
+execute ELF so-and-so-for-arch-so-and-so when you
+are not that arch yourself. So that can set up this
+personality.
 
-It's not a POSIX thing (not part of the Single Unix Specification)
-so as with most Linux things it has some fuzzy semantics
-defined by the community...
+Not that I know how the binfmt handler works, I am just
+assuming that thing is some program that can issue
+syscalls. It JustWorks for me after installing the QEMU
+packages...
 
-I usually just go to the source.
-
-If you grep the kernel what turns up is a bunch of
-architecture-specific behaviors on arm64, ia64, mips, parisc,
-powerpc, s390, sparc. They are very minor.
-
-On x86_64 the semantic effect is
-none so this would work for any kind of 32bit userspace
-on x86_64. It would be the first time this flag has any
-effect at all on x86_64, but arguably a useful one.
-
-I would not be surprised if running say i586 on x86_64
-has the same problem, just that noone has reported
-it yet. But what do I know. If they have the same problem
-they can use the same solution. Hm QEMU supports
-emulating i586 or even i386 ... maybe you could test?
-Or tell me how to test? We might be solving a bigger
-issue here.
+The problem still stands that userspace need to somehow
+inform kernelspace that 32bit is going on, and this was the
+best I could think of.
 
 Yours,
 Linus Walleij
