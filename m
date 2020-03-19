@@ -2,98 +2,109 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F0618B9E5
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 16:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBB218BA85
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 16:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgCSPAl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Mar 2020 11:00:41 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:40686 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727279AbgCSPAl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Mar 2020 11:00:41 -0400
-Received: by mail-qt1-f194.google.com with SMTP id i9so1395519qtw.7
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 08:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Q4/rbX35jArBajYr9qYa1uFpcN3cYffhkvjxUV9+Gy4=;
-        b=LWldlKj9X8La9GnbT5yeDgin1GXFDfgC3WROsZ6JtznllNyeE50+LUiU+Hd2jf7zj0
-         uvA6faSgGcHS41oyOXoq36YY7URRNs20pDQzZ4gnMd+919bfKGMAdzREfabLYamVDR5b
-         OXjonMdxT3+bqlddpAdUN1brK8S+JWfJaEdiRrcOsmEv4F1+RYxtL2s36rpHZeN+q6mA
-         s7ohsUeDl3Tob2UKQMYw4DxkqBT0uEEKTmgB9NXxd9H+iN52h8DBfR+1bspCy2Q1F8YU
-         jtAab+F34+DbrYCCHCfLNwuwIcl+tUM1tWsIhtGgHAr5Jr5XBqQs5PEXQwW4LTSdxqgZ
-         JnTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Q4/rbX35jArBajYr9qYa1uFpcN3cYffhkvjxUV9+Gy4=;
-        b=iQliY8XEHV9zrhPtzF94p6J8ac8cdEl3wfHfLnxs2z2nkbqJBINyCiLV0D/6sDgEVc
-         fTxwJW/KSQ+1FM5rDDPP22LM6TjKkPZw9Wfp8rvOmLaOxvBN2VQ1YRTNGOD4+Q6B3yBG
-         7OH6SI3EwX9Wootzb1joIeJG2PqlK0QCbzLc/E4S7VktW3Qev9bUWJKcbXTAved+wWgK
-         Gq9qMciIPx8n3qDZjhe7An9cw5AGex5O9OO8wCRfaqRh+vn/N/qBxZKSYoN/GSep9jTg
-         2vupTaWOhEXf1fgBAaGAjwp1UNqHrHO/a8c0bt9ShjdE7+WvL6c/JhvpqNf+6lcyF9Lz
-         4S1Q==
-X-Gm-Message-State: ANhLgQ21eq6lfjrAWpcLkitJfN2lqB6aGEjlB7Pzh7CXy8k6wZr8YYr/
-        7MQxqyvNEzhe8Fof6FvXOO7f9B4j
-X-Google-Smtp-Source: ADFU+vvPoxaTjNwOoO7o9m0JJ2p+JI3pQEz/CHIaE5asD4BYQDeH1d9LOWAb4BMkcaRHPcmBRfBf3Q==
-X-Received: by 2002:aed:3ecd:: with SMTP id o13mr3348147qtf.88.1584630039211;
-        Thu, 19 Mar 2020 08:00:39 -0700 (PDT)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id g10sm1728531qkb.9.2020.03.19.08.00.38
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Mar 2020 08:00:38 -0700 (PDT)
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
-Subject: [PATCH] ext4: disable dioread_nolock whenever delayed allocation is disabled
-Date:   Thu, 19 Mar 2020 11:00:28 -0400
-Message-Id: <20200319150028.24592-1-enwlinux@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S1727521AbgCSPIM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Mar 2020 11:08:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56254 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726912AbgCSPIM (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 19 Mar 2020 11:08:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 1085CACC2;
+        Thu, 19 Mar 2020 15:08:10 +0000 (UTC)
+Date:   Thu, 19 Mar 2020 10:08:05 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     riteshh@linux.ibm.com, linux-ext4@vger.kernel.org,
+        hch@infradead.org, darrick.wong@oracle.com, willy@infradead.org
+Subject: [PATCH v2] iomap: return partial I/O count on error in
+ iomap_dio_bio_actor
+Message-ID: <20200319150805.uaggnfue5xgaougx@fiona>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The patch "ext4: make dioread_nolock the default" (244adf6426ee) causes
-generic/422 to fail when run in kvm-xfstests' ext3conv test case.  This
-applies both the dioread_nolock and nodelalloc mount options, a
-combination not previously tested by kvm-xfstests.  The failure occurs
-because the dioread_nolock code path splits a previously fallocated
-multiblock extent into a series of single block extents when overwriting
-a portion of that extent.  That causes allocation of an extent tree leaf
-node and a reshuffling of extents.  Once writeback is completed, the
-individual extents are recombined into a single extent, the extent is
-moved again, and the leaf node is deleted.  The difference in block
-utilization before and after writeback due to the leaf node triggers the
-failure.
+Currently, I/Os that complete with an error indicate this by passing
+written == 0 to the iomap_end function.  However, btrfs needs to know how
+many bytes were written for its own accounting.  Change the convention
+to pass the number of bytes which were actually written, and change the
+only user (ext4) to check for a short write instead of a zero length
+write.
 
-The original reason for this behavior was to avoid ENOSPC when handling
-I/O completions during writeback in the dioread_nolock code paths when
-delayed allocation is disabled.  It may no longer be necessary, because
-code was added in the past to reserve extra space to solve this problem
-when delayed allocation is enabled, and this code may also apply when
-delayed allocation is disabled.  Until this can be verified, don't use
-the dioread_nolock code paths if delayed allocation is disabled.
+For filesystems that do not define ->iomap_end(), check for
+dio->error again after the iomap_apply() call to diagnose the error.
 
-Signed-off-by: Eric Whitney <enwlinux@gmail.com>
----
- fs/ext4/ext4_jbd2.h | 3 +++
- 1 file changed, 3 insertions(+)
+Changes since v1:
+ - Considerate of iov_iter rollback functions
+ - Double check errors for filesystems not implementing iomap_end()
 
-diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
-index 7ea4f6fa173b..4b9002f0e84c 100644
---- a/fs/ext4/ext4_jbd2.h
-+++ b/fs/ext4/ext4_jbd2.h
-@@ -512,6 +512,9 @@ static inline int ext4_should_dioread_nolock(struct inode *inode)
- 		return 0;
- 	if (ext4_should_journal_data(inode))
- 		return 0;
-+	/* temporary fix to prevent generic/422 test failures */
-+	if (!test_opt(inode->i_sb, DELALLOC))
-+		return 0;
- 	return 1;
- }
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index fa0ff78..d52c70f 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3475,7 +3475,7 @@ static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
+ 	 * the I/O. Any blocks that may have been allocated in preparation for
+ 	 * the direct I/O will be reused during buffered I/O.
+ 	 */
+-	if (flags & (IOMAP_WRITE | IOMAP_DIRECT) && written == 0)
++	if (flags & (IOMAP_WRITE | IOMAP_DIRECT) && written < length)
+ 		return -ENOTBLK;
  
--- 
-2.11.0
+ 	return 0;
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index 41c1e7c..b5f4d4a 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -264,7 +264,7 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
+ 		size_t n;
+ 		if (dio->error) {
+ 			iov_iter_revert(dio->submit.iter, copied);
+-			copied = ret = 0;
++			ret = dio->error;
+ 			goto out;
+ 		}
+ 
+@@ -325,8 +325,17 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
+ 			iomap_dio_zero(dio, iomap, pos, fs_block_size - pad);
+ 	}
+ out:
+-	/* Undo iter limitation to current extent */
+-	iov_iter_reexpand(dio->submit.iter, orig_count - copied);
++	/*
++	 * Undo iter limitation to current extent
++	 * If there is an error, undo the entire extent. However, return the
++	 * bytes copied so far for filesystems such as btrfs to account for
++	 * submitted I/O.
++	 */
++	if (ret < 0)
++		iov_iter_reexpand(dio->submit.iter, orig_count);
++	else
++		iov_iter_reexpand(dio->submit.iter, orig_count - copied);
++
+ 	if (copied)
+ 		return copied;
+ 	return ret;
+@@ -499,6 +508,10 @@ iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+ 	do {
+ 		ret = iomap_apply(inode, pos, count, flags, ops, dio,
+ 				iomap_dio_actor);
++
++		if (ret >= 0 && dio->error)
++			ret = dio->error;
++
+ 		if (ret <= 0) {
+ 			/* magic error code to fall back to buffered I/O */
+ 			if (ret == -ENOTBLK) {
 
+-- 
+Goldwyn
