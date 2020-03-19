@@ -2,146 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EC118B62C
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 14:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F0618B9E5
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 16:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbgCSNYn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Mar 2020 09:24:43 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29098 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730513AbgCSNYl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 19 Mar 2020 09:24:41 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02JD8cAk039575
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 09:24:40 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2yuxx1fd32-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 09:24:40 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Thu, 19 Mar 2020 13:24:38 -0000
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 19 Mar 2020 13:24:35 -0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 02JDOYWl62849232
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 19 Mar 2020 13:24:34 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B9D1CA4059;
-        Thu, 19 Mar 2020 13:24:34 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A2A88A404D;
-        Thu, 19 Mar 2020 13:24:33 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.65.63])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 19 Mar 2020 13:24:33 +0000 (GMT)
-Subject: Re: Ext4 corruption with VM images as 3 > drop_caches
-To:     linux-ext4@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>
-References: <87pndagw7s.fsf@linux.ibm.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>
-Date:   Thu, 19 Mar 2020 18:54:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <87pndagw7s.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20031913-0008-0000-0000-00000360038F
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20031913-0009-0000-0000-00004A816175
-Message-Id: <20200319132433.A2A88A404D@d06av23.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
- definitions=2020-03-19_04:2020-03-19,2020-03-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- mlxscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2003190058
+        id S1727783AbgCSPAl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Mar 2020 11:00:41 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:40686 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727279AbgCSPAl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Mar 2020 11:00:41 -0400
+Received: by mail-qt1-f194.google.com with SMTP id i9so1395519qtw.7
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 08:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Q4/rbX35jArBajYr9qYa1uFpcN3cYffhkvjxUV9+Gy4=;
+        b=LWldlKj9X8La9GnbT5yeDgin1GXFDfgC3WROsZ6JtznllNyeE50+LUiU+Hd2jf7zj0
+         uvA6faSgGcHS41oyOXoq36YY7URRNs20pDQzZ4gnMd+919bfKGMAdzREfabLYamVDR5b
+         OXjonMdxT3+bqlddpAdUN1brK8S+JWfJaEdiRrcOsmEv4F1+RYxtL2s36rpHZeN+q6mA
+         s7ohsUeDl3Tob2UKQMYw4DxkqBT0uEEKTmgB9NXxd9H+iN52h8DBfR+1bspCy2Q1F8YU
+         jtAab+F34+DbrYCCHCfLNwuwIcl+tUM1tWsIhtGgHAr5Jr5XBqQs5PEXQwW4LTSdxqgZ
+         JnTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Q4/rbX35jArBajYr9qYa1uFpcN3cYffhkvjxUV9+Gy4=;
+        b=iQliY8XEHV9zrhPtzF94p6J8ac8cdEl3wfHfLnxs2z2nkbqJBINyCiLV0D/6sDgEVc
+         fTxwJW/KSQ+1FM5rDDPP22LM6TjKkPZw9Wfp8rvOmLaOxvBN2VQ1YRTNGOD4+Q6B3yBG
+         7OH6SI3EwX9Wootzb1joIeJG2PqlK0QCbzLc/E4S7VktW3Qev9bUWJKcbXTAved+wWgK
+         Gq9qMciIPx8n3qDZjhe7An9cw5AGex5O9OO8wCRfaqRh+vn/N/qBxZKSYoN/GSep9jTg
+         2vupTaWOhEXf1fgBAaGAjwp1UNqHrHO/a8c0bt9ShjdE7+WvL6c/JhvpqNf+6lcyF9Lz
+         4S1Q==
+X-Gm-Message-State: ANhLgQ21eq6lfjrAWpcLkitJfN2lqB6aGEjlB7Pzh7CXy8k6wZr8YYr/
+        7MQxqyvNEzhe8Fof6FvXOO7f9B4j
+X-Google-Smtp-Source: ADFU+vvPoxaTjNwOoO7o9m0JJ2p+JI3pQEz/CHIaE5asD4BYQDeH1d9LOWAb4BMkcaRHPcmBRfBf3Q==
+X-Received: by 2002:aed:3ecd:: with SMTP id o13mr3348147qtf.88.1584630039211;
+        Thu, 19 Mar 2020 08:00:39 -0700 (PDT)
+Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
+        by smtp.gmail.com with ESMTPSA id g10sm1728531qkb.9.2020.03.19.08.00.38
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 19 Mar 2020 08:00:38 -0700 (PDT)
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Eric Whitney <enwlinux@gmail.com>
+Subject: [PATCH] ext4: disable dioread_nolock whenever delayed allocation is disabled
+Date:   Thu, 19 Mar 2020 11:00:28 -0400
+Message-Id: <20200319150028.24592-1-enwlinux@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+The patch "ext4: make dioread_nolock the default" (244adf6426ee) causes
+generic/422 to fail when run in kvm-xfstests' ext3conv test case.  This
+applies both the dioread_nolock and nodelalloc mount options, a
+combination not previously tested by kvm-xfstests.  The failure occurs
+because the dioread_nolock code path splits a previously fallocated
+multiblock extent into a series of single block extents when overwriting
+a portion of that extent.  That causes allocation of an extent tree leaf
+node and a reshuffling of extents.  Once writeback is completed, the
+individual extents are recombined into a single extent, the extent is
+moved again, and the leaf node is deleted.  The difference in block
+utilization before and after writeback due to the leaf node triggers the
+failure.
 
+The original reason for this behavior was to avoid ENOSPC when handling
+I/O completions during writeback in the dioread_nolock code paths when
+delayed allocation is disabled.  It may no longer be necessary, because
+code was added in the past to reserve extra space to solve this problem
+when delayed allocation is enabled, and this code may also apply when
+delayed allocation is disabled.  Until this can be verified, don't use
+the dioread_nolock code paths if delayed allocation is disabled.
 
-On 3/18/20 9:17 AM, Aneesh Kumar K.V wrote:
-> Hi,
-> 
-> With new vm install I am finding corruption with the vm image if I
-> follow up the install with echo 3 > /proc/sys/vm/drop_caches
-> 
-> The file system reports below error.
-> 
-> Begin: Running /scripts/local-bottom ... done.
-> Begin: Running /scripts/init-bottom ...
-> [    4.916017] EXT4-fs error (device vda2): ext4_lookup:1700: inode #787185: comm sh: iget: checksum invalid
-> done.
-> [    5.244312] EXT4-fs error (device vda2): ext4_lookup:1700: inode #917954: comm init: iget: checksum invalid
-> [    5.257246] EXT4-fs error (device vda2): ext4_lookup:1700: inode #917954: comm init: iget: checksum invalid
-> /sbin/init: error while loading shared libraries: libc.so.6: cannot open shared object file: Error 74
-> [    5.271207] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
-> 
-> And debugfs reports
-> 
-> debugfs:  stat <917954>
-> Inode: 917954   Type: bad type    Mode:  0000   Flags: 0x0
-> Generation: 0    Version: 0x00000000
-> User:     0   Group:     0   Size: 0
-> File ACL: 0
-> Links: 0   Blockcount: 0
-> Fragment:  Address: 0    Number: 0    Size: 0
-> ctime: 0x00000000 -- Wed Dec 31 18:00:00 1969
-> atime: 0x00000000 -- Wed Dec 31 18:00:00 1969
-> mtime: 0x00000000 -- Wed Dec 31 18:00:00 1969
-> Size of extra inode fields: 0
-> Inode checksum: 0x00000000
-> BLOCKS:
-> debugfs:
-> 
-> Bisecting this finds
-> Commit 244adf6426ee31a83f397b700d964cff12a247d3("ext4: make dioread_nolock the default")
-> as bad. If I revert the same on top of linus upstream(fb33c6510d5595144d585aa194d377cf74d31911)
-> I don't hit the corrupttion anymore.
+Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+---
+ fs/ext4/ext4_jbd2.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Tried replicating this and could easily replicate it on Power box.
-I tried to reproduce this on x86 too, but could not reproduce on x86.
-Now one difference on Power could be that pagesize is 64K and fs
-blocksize is 4K.
-
-The issue looks like the guest qemu image file is not properly written
-back, after host does echo 3 > drop_caches. (correct me if this is not
-the case).
-
-I tried replicating via below test, but it could not reproduce.
-
-Any idea what kind of unit test could be written for this?
-I am not sure how exactly qemu is writing to it's image file.
-
-
-1. Create 2 files. "mmap-file", "mmap-data".
-2. "mmap-file" is a 2GB sparse file. Then at some random offsets (tried 
-with both 64KB align and 4KB align offsets), try to write
-pagesize/blocksize amount of known data pattern.
-3. These offsets (which are pagesize/blocksize align) are recorded into
-"mmap-data" file via normal read/write calls.
-4. Then after we wrote to both files, we munmap the "mmap-file" and
-close both of these files.
-5. Then we do echo 3 > drop_caches.
-6. Then in the verify phase, using the offsets written in "mmap-data"
-file, I read the "mmap-file" to verify if it's contents are proper or
-not.
-With that could not reproduce this issue.
-
-
--ritesh
-
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index 7ea4f6fa173b..4b9002f0e84c 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -512,6 +512,9 @@ static inline int ext4_should_dioread_nolock(struct inode *inode)
+ 		return 0;
+ 	if (ext4_should_journal_data(inode))
+ 		return 0;
++	/* temporary fix to prevent generic/422 test failures */
++	if (!test_opt(inode->i_sb, DELALLOC))
++		return 0;
+ 	return 1;
+ }
+ 
+-- 
+2.11.0
 
