@@ -2,171 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB6118B386
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 13:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EC118B62C
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Mar 2020 14:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727166AbgCSMhN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Mar 2020 08:37:13 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:40461 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727127AbgCSMhK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Mar 2020 08:37:10 -0400
-Received: by mail-il1-f193.google.com with SMTP id p12so2040881ilm.7
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 05:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2tuVxH0JdqTpL/q4Mhu8Jwtx1AVVUn0AWeX5OBSt298=;
-        b=cMtY3qUcEmiCWPAEeCd5lhB7x3Biy4/6Het2lKK01B7wcpZG2RZMmWE3LV0gVxGIei
-         UuMBMRql9WM+pRx9p4acPSg0mo4kZ7BHmdSm48TJO0cwwlRT82C+TUnt1Ixfd5tAZfQB
-         qGlXYFxfI9xkqU5Rq8m22vi2BvEMfsNiNnE2E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2tuVxH0JdqTpL/q4Mhu8Jwtx1AVVUn0AWeX5OBSt298=;
-        b=LFIINNuA7pOPu1eZgT831ET8+zifxZz5VT5PbdrJg8HH43jqJ7LHruDhpv4I3vgxcU
-         bKQ4DtqDeCcdSW1lXD+kdxrXPplzrGluy8WL9N6p9T6ZwdQsgHtfZoYZmjwqIybQC2z2
-         S8AWqlBNB8hQ7+LsVs4mxJqZFgYNg/Y40x/TSAOKO5nQei6m5GKUVrgl0cWWhiHAlMGc
-         7adu9IoQVpszEom6qZRelgEr/mB7/q+DSBjs60q4c1qqxUImonXe0gSZSXqunmkgLpWf
-         IHKI9nFTjY6XLplXSR9pO7B4xl6ejleEMf/Q97Yv+U4+6Sck6VYj5T2fu8gUnSVs1PLx
-         /4iQ==
-X-Gm-Message-State: ANhLgQ046+gbNkBT54DorJDvTFbIxKsywLhSlganrpeq4SSYCxs800D1
-        QCJEq3tbxf2ZSildk12S9//4pM6WvbH5HYqNKkYVVw==
-X-Google-Smtp-Source: ADFU+vsTsJqo2m1ETEsSuJlFNylEmftzB1ulJzyZd8sss8uJZS7aWDqz3pxVA9Gv6H7ICK0JOZMAndoK/X55keC9JJI=
-X-Received: by 2002:a92:3b8c:: with SMTP id n12mr2899150ilh.186.1584621429946;
- Thu, 19 Mar 2020 05:37:09 -0700 (PDT)
+        id S1730244AbgCSNYn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Mar 2020 09:24:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:29098 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730513AbgCSNYl (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 19 Mar 2020 09:24:41 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02JD8cAk039575
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 09:24:40 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2yuxx1fd32-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Thu, 19 Mar 2020 09:24:40 -0400
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Thu, 19 Mar 2020 13:24:38 -0000
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 19 Mar 2020 13:24:35 -0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 02JDOYWl62849232
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 19 Mar 2020 13:24:34 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B9D1CA4059;
+        Thu, 19 Mar 2020 13:24:34 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A2A88A404D;
+        Thu, 19 Mar 2020 13:24:33 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.65.63])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 19 Mar 2020 13:24:33 +0000 (GMT)
+Subject: Re: Ext4 corruption with VM images as 3 > drop_caches
+To:     linux-ext4@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>
+References: <87pndagw7s.fsf@linux.ibm.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Jan Kara <jack@suse.cz>
+Date:   Thu, 19 Mar 2020 18:54:32 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk>
- <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com> <3085880.1584614257@warthog.procyon.org.uk>
-In-Reply-To: <3085880.1584614257@warthog.procyon.org.uk>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 19 Mar 2020 13:36:58 +0100
-Message-ID: <CAJfpegv-_ai1LiW6=D+AnkozzmmXbB8=g8QDCS15bh==Wn3yoA@mail.gmail.com>
-Subject: Re: [PATCH 00/13] VFS: Filesystem information [ver #19]
-To:     David Howells <dhowells@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux NFS list <linux-nfs@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-ext4@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Ian Kent <raven@themaw.net>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87pndagw7s.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20031913-0008-0000-0000-00000360038F
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20031913-0009-0000-0000-00004A816175
+Message-Id: <20200319132433.A2A88A404D@d06av23.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.645
+ definitions=2020-03-19_04:2020-03-19,2020-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ mlxscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2003190058
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 11:37 AM David Howells <dhowells@redhat.com> wrote:
->
-> Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> > >  (2) It's more efficient as we can return specific binary data rather than
-> > >      making huge text dumps.  Granted, sysfs and procfs could present the
-> > >      same data, though as lots of little files which have to be
-> > >      individually opened, read, closed and parsed.
-> >
-> > Asked this a number of times, but you haven't answered yet:  what
-> > application would require such a high efficiency?
->
-> Low efficiency means more time doing this when that time could be spent doing
-> other things - or even putting the CPU in a powersaving state.  Using an
-> open/read/close render-to-text-and-parse interface *will* be slower and less
-> efficient as there are more things you have to do to use it.
->
-> Then consider doing a walk over all the mounts in the case where there are
-> 10000 of them - we have issues with /proc/mounts for such.  fsinfo() will end
-> up doing a lot less work.
 
-Current /proc/mounts problems arise from the fact that mount info can
-only be queried for the whole namespace, and hence changes related to
-a single mount will require rescanning the complete mount list.  If
-mount info can be queried for individual mounts, then the need to scan
-the complete list will be rare.  That's *the* point of this change.
 
-> > >  (3) We wouldn't have the overhead of open and close (even adding a
-> > >      self-contained readfile() syscall has to do that internally
-> >
-> > Busted: add f_op->readfile() and be done with all that.   For example
-> > DEFINE_SHOW_ATTRIBUTE() could be trivially moved to that interface.
->
-> Look at your example.  "f_op->".  That's "file->f_op->" I presume.
->
-> You would have to make it "i_op->" to avoid the open and the close - and for
-> things like procfs and sysfs, that's probably entirely reasonable - but bear
-> in mind that you still have to apply all the LSM file security controls, just
-> in case the backing filesystem is, say, ext4 rather than procfs.
->
-> > We could optimize existing proc, sys, etc. interfaces, but it's not
-> > been an issue, apparently.
->
-> You can't get rid of or change many of the existing interfaces.  A lot of them
-> are effectively indirect system calls and are, as such, part of the fixed
-> UAPI.  You'd have to add a parallel optimised set.
+On 3/18/20 9:17 AM, Aneesh Kumar K.V wrote:
+> Hi,
+> 
+> With new vm install I am finding corruption with the vm image if I
+> follow up the install with echo 3 > /proc/sys/vm/drop_caches
+> 
+> The file system reports below error.
+> 
+> Begin: Running /scripts/local-bottom ... done.
+> Begin: Running /scripts/init-bottom ...
+> [    4.916017] EXT4-fs error (device vda2): ext4_lookup:1700: inode #787185: comm sh: iget: checksum invalid
+> done.
+> [    5.244312] EXT4-fs error (device vda2): ext4_lookup:1700: inode #917954: comm init: iget: checksum invalid
+> [    5.257246] EXT4-fs error (device vda2): ext4_lookup:1700: inode #917954: comm init: iget: checksum invalid
+> /sbin/init: error while loading shared libraries: libc.so.6: cannot open shared object file: Error 74
+> [    5.271207] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
+> 
+> And debugfs reports
+> 
+> debugfs:  stat <917954>
+> Inode: 917954   Type: bad type    Mode:  0000   Flags: 0x0
+> Generation: 0    Version: 0x00000000
+> User:     0   Group:     0   Size: 0
+> File ACL: 0
+> Links: 0   Blockcount: 0
+> Fragment:  Address: 0    Number: 0    Size: 0
+> ctime: 0x00000000 -- Wed Dec 31 18:00:00 1969
+> atime: 0x00000000 -- Wed Dec 31 18:00:00 1969
+> mtime: 0x00000000 -- Wed Dec 31 18:00:00 1969
+> Size of extra inode fields: 0
+> Inode checksum: 0x00000000
+> BLOCKS:
+> debugfs:
+> 
+> Bisecting this finds
+> Commit 244adf6426ee31a83f397b700d964cff12a247d3("ext4: make dioread_nolock the default")
+> as bad. If I revert the same on top of linus upstream(fb33c6510d5595144d585aa194d377cf74d31911)
+> I don't hit the corrupttion anymore.
 
-Sure.
+Tried replicating this and could easily replicate it on Power box.
+I tried to reproduce this on x86 too, but could not reproduce on x86.
+Now one difference on Power could be that pagesize is 64K and fs
+blocksize is 4K.
 
-We already have the single_open() internal API that is basically a
-->readfile() wrapper.   Moving this up to the f_op level (no, it's not
-an i_op, and yes, we do need struct file, but it can be simply
-allocated on the stack) is a trivial optimization that would let a
-readfile(2) syscall access that level.  No new complexity in that
-case.    Same generally goes for seq_file: seq_readfile() is trivial
-to implement without messing with current implementation or any
-existing APIs.
+The issue looks like the guest qemu image file is not properly written
+back, after host does echo 3 > drop_caches. (correct me if this is not
+the case).
 
->
-> > >  (6) Don't have to create/delete a bunch of sysfs/procfs nodes each time a
-> > >      mount happens or is removed - and since systemd makes much use of
-> > >      mount namespaces and mount propagation, this will create a lot of
-> > >      nodes.
-> >
-> > Not true.
->
-> This may not be true if you roll your own special filesystem.  It *is* true if
-> you do it in procfs or sysfs.  The files don't exist if you don't create nodes
-> or attribute tables for them.
+I tried replicating via below test, but it could not reproduce.
 
-That's one of the reasons why I opted to roll my own.  But the ideas
-therein could be applied to kernfs, if found to be generally useful.
-Nothing magic about that.
+Any idea what kind of unit test could be written for this?
+I am not sure how exactly qemu is writing to it's image file.
 
->
-> > > The argument for doing this through procfs/sysfs/somemagicfs is that
-> > > someone using a shell can just query the magic files using ordinary text
-> > > tools, such as cat - and that has merit - but it doesn't solve the
-> > > query-by-pathname problem.
-> > >
-> > > The suggested way around the query-by-pathname problem is to open the
-> > > target file O_PATH and then look in a magic directory under procfs
-> > > corresponding to the fd number to see a set of attribute files[*] laid out.
-> > > Bash, however, can't open by O_PATH or O_NOFOLLOW as things stand...
-> >
-> > Bash doesn't have fsinfo(2) either, so that's not really a good argument.
->
-> I never claimed that fsinfo() could be accessed directly from the shell.  For
-> you proposal, you claimed "immediately usable from all programming languages,
-> including scripts".
 
-You are right.  Note however: only special files need the O_PATH
-handling, regular files are directories can be opened by the shell
-without side effects.
+1. Create 2 files. "mmap-file", "mmap-data".
+2. "mmap-file" is a 2GB sparse file. Then at some random offsets (tried 
+with both 64KB align and 4KB align offsets), try to write
+pagesize/blocksize amount of known data pattern.
+3. These offsets (which are pagesize/blocksize align) are recorded into
+"mmap-data" file via normal read/write calls.
+4. Then after we wrote to both files, we munmap the "mmap-file" and
+close both of these files.
+5. Then we do echo 3 > drop_caches.
+6. Then in the verify phase, using the offsets written in "mmap-data"
+file, I read the "mmap-file" to verify if it's contents are proper or
+not.
+With that could not reproduce this issue.
 
-In any case, I think neither of us can be convinced of the other's
-right, so I guess It's up to Al and Linus to make a decision.
 
-Thanks,
-Miklos
+-ritesh
+
+
