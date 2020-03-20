@@ -2,69 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E17C18C571
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Mar 2020 03:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2CE18C581
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Mar 2020 03:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbgCTCrF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 19 Mar 2020 22:47:05 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49369 "EHLO
+        id S1726666AbgCTCxR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 19 Mar 2020 22:53:17 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50033 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725884AbgCTCrE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Mar 2020 22:47:04 -0400
+        with ESMTP id S1725856AbgCTCxR (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 19 Mar 2020 22:53:17 -0400
 Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02K2kepw014400
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02K2r1pT016072
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 19 Mar 2020 22:46:40 -0400
+        Thu, 19 Mar 2020 22:53:01 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id CDE30420EBA; Thu, 19 Mar 2020 22:46:39 -0400 (EDT)
-Date:   Thu, 19 Mar 2020 22:46:39 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Linux Filesystem Development List 
-        <linux-fsdevel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        id 068E4420EBA; Thu, 19 Mar 2020 22:53:00 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
         linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH] writeback: avoid double-writing the inode on a lazytime
- expiration
-Message-ID: <20200320024639.GH1067245@mit.edu>
-References: <20200306004555.GB225345@gmail.com>
- <20200307020043.60118-1-tytso@mit.edu>
- <20200311032009.GC46757@gmail.com>
- <20200311125749.GA7159@mit.edu>
- <20200312000716.GY10737@dread.disaster.area>
- <20200312143445.GA19160@infradead.org>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH 1/2] writeback: avoid double-writing the inode on a lazytime expiration
+Date:   Thu, 19 Mar 2020 22:52:54 -0400
+Message-Id: <20200320025255.1705972-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200320024639.GH1067245@mit.edu>
+References: <20200320024639.GH1067245@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200312143445.GA19160@infradead.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 07:34:45AM -0700, Christoph Hellwig wrote:
-> I haven't seen the original mail this replies to, but if we could
-> get the lazytime expirty by some other means (e.g. an explicit
-> callback), XFS could opt out of all the VFS inode tracking again,
-> which would simplify a few things.
+In the case that an inode has dirty timestamp for longer than the
+lazytime expiration timeout (or if all such inodes are being flushed
+out due to a sync or syncfs system call), we need to inform the file
+system that the inode is dirty so that the inode's timestamps can be
+copied out to the on-disk data structures.  That's because if the file
+system supports lazytime, it will have ignored the dirty_inode(inode,
+I_DIRTY_TIME) notification when the timestamp was modified in memory.q
 
-Part of my thinking of calling 
+Previously, this was accomplished by calling mark_inode_dirty_sync(),
+but that has the unfortunate side effect of also putting the inode the
+writeback list, and that's not necessary in this case, since we will
+immediately call write_inode() afterwards.
 
-       inode->i_sb->s_op->dirty_inode(inode, I_DIRTY_TIME_EXPIRED);
+Eric Biggers noticed that this was causing problems for fscrypt after
+the key was removed[1].
 
-So that it would be an explicit callback to XFS.  So why don't I break
-this as two patches --- one which uses I_DIRTY_SYNC, as before, and a
-second one which changes calls dirty_inode() with
-I_DIRTY_TIME_EXPIRED, and with a change to XFS so that it recognizes
-I_DIRTY_TIME_EXPIRED as if it were I_DIRTY_SYNC.  If this would then
-allow XFS to simplify how it handles VFS tracking, you could do that
-in a separate patch.
+[1] https://lore.kernel.org/r/20200306004555.GB225345@gmail.com
 
-Does that work?  I'll send out the two patches, and if you can
-review/ack the second patch, that would be great.
+Reported-by: Eric Biggers <ebiggers@kernel.org>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/fs-writeback.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-	       	      	     	  	- Ted
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 76ac9c7d32ec..867454997c9d 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -1504,8 +1504,9 @@ __writeback_single_inode(struct inode *inode, struct writeback_control *wbc)
+ 
+ 	spin_unlock(&inode->i_lock);
+ 
+-	if (dirty & I_DIRTY_TIME)
+-		mark_inode_dirty_sync(inode);
++	/* This was a lazytime expiration; we need to tell the file system */
++	if (dirty & I_DIRTY_TIME_EXPIRED && inode->i_sb->s_op->dirty_inode)
++		inode->i_sb->s_op->dirty_inode(inode, I_DIRTY_SYNC);
+ 	/* Don't write the inode if only I_DIRTY_PAGES was set */
+ 	if (dirty & ~I_DIRTY_PAGES) {
+ 		int err = write_inode(inode, wbc);
+-- 
+2.24.1
+
