@@ -2,89 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 551A3190399
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Mar 2020 03:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEFD1907C9
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Mar 2020 09:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbgCXCes (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 23 Mar 2020 22:34:48 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:33372 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726824AbgCXCer (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 23 Mar 2020 22:34:47 -0400
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02O2YVaA028612
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Mar 2020 22:34:32 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 3DEAA420EBA; Mon, 23 Mar 2020 22:34:31 -0400 (EDT)
-Date:   Mon, 23 Mar 2020 22:34:31 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Peter Maydell <peter.maydell@linaro.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
+        id S1726524AbgCXIiA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Mar 2020 04:38:00 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:33140 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726129AbgCXIiA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Mar 2020 04:38:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=w0tf+LzLJgcsDnMH9vZGmgZTed6vh6jn/5MMwqLl++w=; b=IFzRIMRL9LS1VQlsAqCfwy+lvc
+        a59rPM7MkWSfUYSOy84zBKgv1fR8cWlMLg1qWqcXZPMfObCwn/XHHNDlzD3Yiz2EICORO5Ksw2gzQ
+        ER+Q12eJvjfUp/BZsuyRrZW+Y3cJO/m0CzGzidqSucoDuWOOuUrVBGoWR900mfu43SuaFxnV1B5gF
+        RRqozVgDapH3/ealfBN7P+DO5Y1VXniV9PPFfXxQ99NjvGuZ7UgZDEc+BocOz+yIFT0e2NfwQtYFV
+        R5dX+/pCSuO0lCHde6rD9OUloG7icXWWS8HJ/ytpMJIsU6Xsps1swne+8uunIuqh++NeH16bts4iN
+        fnIeJjSg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jGf4R-00029L-74; Tue, 24 Mar 2020 08:37:59 +0000
+Date:   Tue, 24 Mar 2020 01:37:59 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@infradead.org>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH] ext4: Give 32bit personalities 32bit hashes
-Message-ID: <20200324023431.GD53396@mit.edu>
-References: <20200317113153.7945-1-linus.walleij@linaro.org>
- <CAFEAcA9mXE+gPnvM6HZ-w0+BhbpeuH=osFH-9NUzCLv=w-c7HQ@mail.gmail.com>
- <CACRpkdZtLNUwiZEMiJEoB0ojOBckyGcZeyFkR6MC69qv-ry9EA@mail.gmail.com>
- <CAFEAcA-gdwi=KSW6LqVdEJWSo9VEL5abYQs9LoHd4mKE_-h=Aw@mail.gmail.com>
- <CACRpkdYuZgZUznVxt1AHCSJa_GAXy8N0SduE5OrjDnE1s_L7Zg@mail.gmail.com>
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] writeback, xfs: call dirty_inode() with
+ I_DIRTY_TIME_EXPIRED when appropriate
+Message-ID: <20200324083759.GA32036@infradead.org>
+References: <20200320024639.GH1067245@mit.edu>
+ <20200320025255.1705972-1-tytso@mit.edu>
+ <20200320025255.1705972-2-tytso@mit.edu>
+ <20200323175838.GA7133@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACRpkdYuZgZUznVxt1AHCSJa_GAXy8N0SduE5OrjDnE1s_L7Zg@mail.gmail.com>
+In-Reply-To: <20200323175838.GA7133@mit.edu>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 11:23:33PM +0100, Linus Walleij wrote:
-> OK I guess we can at least take this opportunity to add
-> some kerneldoc to the include file.
-> 
-> > As a concrete example, should "give me 32-bit semantics
-> > via PER_LINUX32" mean "mmap should always return addresses
-> > within 4GB" ? That would seem like it would make sense --
-> 
-> Incidentally that thing in particular has its own personality
-> flag (personalities are additive, it's a bit schizophrenic)
-> so PER_LINUX_32BIT is defined as:
-> PER_LINUX_32BIT =       0x0000 | ADDR_LIMIT_32BIT,
-> and that is specifically for limiting the address space to
-> 32bit.
-> 
-> There is also PER_LINUX32_3GB for a 3GB lowmem
-> limit.
-> 
-> Since the personality is kind of additive, if
-> we want a flag *specifically* for indicating that we want
-> 32bit hashes from the file system, there are bits left so we
-> can provide that.
-> 
-> Is this what we want to do? I just think we shouldn't
-> decide on that lightly as we will be using up personality
-> bug bits, but sometimes you have to use them.
+On Mon, Mar 23, 2020 at 01:58:38PM -0400, Theodore Y. Ts'o wrote:
+> Christoph, Dave --- does this give you the notification that you were
+> looking such that XFS could get the notification desired that it was
+> the timestamps need to be written back?
 
-I've been looking at the personality bug bits more detailed, and it
-looks... messy.  Do we pick a new personality, or do we grab another
-unique flag?
-
-Another possibility, which would be messier for qemu, would be use a
-flag set via fcntl.  That would require qemu from noticing when the
-guest is calling open, openat, or openat2, and then inserting a fcntl
-system call to set the 32-bit readdir mode.  That's cleaner from the
-kernel interface complexity perspective, but it's messier for qemu.
-
-       		 	    		     	  - Ted
-
-       		 
+I need to look at it in more detail as it seems convoluted.  Also the
+order seems like you regress XFS in patch 1 and then fix it in patch 2?
