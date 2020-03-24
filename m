@@ -2,62 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FBD19195D
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Mar 2020 19:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696B3191967
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Mar 2020 19:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727662AbgCXSnt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 24 Mar 2020 14:43:49 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45309 "EHLO
+        id S1727672AbgCXSsK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 24 Mar 2020 14:48:10 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46184 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727379AbgCXSns (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Mar 2020 14:43:48 -0400
+        with ESMTP id S1727365AbgCXSsK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 24 Mar 2020 14:48:10 -0400
 Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02OIhPC4017362
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02OIlsE5019147
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Mar 2020 14:43:25 -0400
+        Tue, 24 Mar 2020 14:47:54 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 3E068420EBA; Tue, 24 Mar 2020 14:43:25 -0400 (EDT)
-Date:   Tue, 24 Mar 2020 14:43:25 -0400
+        id 2B396420EBA; Tue, 24 Mar 2020 14:47:54 -0400 (EDT)
+Date:   Tue, 24 Mar 2020 14:47:54 -0400
 From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
+To:     Peter Maydell <peter.maydell@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] writeback, xfs: call dirty_inode() with
- I_DIRTY_TIME_EXPIRED when appropriate
-Message-ID: <20200324184325.GF53396@mit.edu>
-References: <20200320024639.GH1067245@mit.edu>
- <20200320025255.1705972-1-tytso@mit.edu>
- <20200320025255.1705972-2-tytso@mit.edu>
- <20200323175838.GA7133@mit.edu>
- <20200324083759.GA32036@infradead.org>
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH] ext4: Give 32bit personalities 32bit hashes
+Message-ID: <20200324184754.GG53396@mit.edu>
+References: <20200317113153.7945-1-linus.walleij@linaro.org>
+ <CAFEAcA9mXE+gPnvM6HZ-w0+BhbpeuH=osFH-9NUzCLv=w-c7HQ@mail.gmail.com>
+ <CACRpkdZtLNUwiZEMiJEoB0ojOBckyGcZeyFkR6MC69qv-ry9EA@mail.gmail.com>
+ <CAFEAcA-gdwi=KSW6LqVdEJWSo9VEL5abYQs9LoHd4mKE_-h=Aw@mail.gmail.com>
+ <CACRpkdYuZgZUznVxt1AHCSJa_GAXy8N0SduE5OrjDnE1s_L7Zg@mail.gmail.com>
+ <20200324023431.GD53396@mit.edu>
+ <CAFEAcA_6RY1XFVNJCo5=tTkv2GQpXZRqh_Zz4dYadq-8MJZgTQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200324083759.GA32036@infradead.org>
+In-Reply-To: <CAFEAcA_6RY1XFVNJCo5=tTkv2GQpXZRqh_Zz4dYadq-8MJZgTQ@mail.gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 01:37:59AM -0700, Christoph Hellwig wrote:
-> On Mon, Mar 23, 2020 at 01:58:38PM -0400, Theodore Y. Ts'o wrote:
-> > Christoph, Dave --- does this give you the notification that you were
-> > looking such that XFS could get the notification desired that it was
-> > the timestamps need to be written back?
+On Tue, Mar 24, 2020 at 09:29:58AM +0000, Peter Maydell wrote:
 > 
-> I need to look at it in more detail as it seems convoluted.  Also the
-> order seems like you regress XFS in patch 1 and then fix it in patch 2?
+> On the contrary, that would be a much better interface for QEMU.
+> We always know when we're doing an open-syscall on behalf
+> of the guest, and it would be trivial to make the fcntl() call then.
+> That would ensure that we don't accidentally get the
+> '32-bit semantics' on file descriptors QEMU opens for its own
+> purposes, and wouldn't leave us open to the risk in future that
+> setting the PER_LINUX32 flag for all of QEMU causes
+> unexpected extra behaviour in future kernels that would be correct
+> for the guest binary but wrong/broken for QEMU's own internals.
 
-In patch one we send I_DIRTY_SYNC as we had been doing as before.  So
-I don't believe that patch #1 would regress XFS; can you confirm?
+If using a flag set by fcntl is better for qemu, then by all means
+let's go with that instead of using a personality flag/number.
 
-My thinking was to move ahead with patch 1 so that it fixed the bug
-which Eric Biffers had reported for f2fs, but only to move forward
-with patch #2 if it would be useful for XFS.
+Linus, do you have what you need to do a respin of the patch?
 
-Cheers,
-
-     	      	    	     	    - Ted
+       	         	      	   	    	 - Ted
