@@ -2,94 +2,138 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3431192D6E
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Mar 2020 16:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A52192D81
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Mar 2020 16:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727592AbgCYPwI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Mar 2020 11:52:08 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:46341 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727843AbgCYPwF (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Mar 2020 11:52:05 -0400
-Received: by mail-lj1-f193.google.com with SMTP id v16so2948187ljk.13
-        for <linux-ext4@vger.kernel.org>; Wed, 25 Mar 2020 08:52:03 -0700 (PDT)
+        id S1727960AbgCYPy4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Mar 2020 11:54:56 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:36870 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727898AbgCYPy4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Mar 2020 11:54:56 -0400
+Received: by mail-io1-f67.google.com with SMTP id q9so2747974iod.4
+        for <linux-ext4@vger.kernel.org>; Wed, 25 Mar 2020 08:54:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FFKgDeHvhTCS00AQN8L5xpmPeeM6E1oKLK7azqnWDiE=;
-        b=uicKA8wIvWFlXoj/N3LEYBm1C4A3V4P9iw9tec/gYSHrhStzUBQCHg9572Xte1kjgR
-         ThMBTvZUPKiWKz7FpDL5FpZdKIk2YCmk4xT9mv8vXzDYbG7BnewAeqmTmjbMblvWal3H
-         mWL8hgD8rxlqA3cc+cD7G6ybnkogU1aJ7AGejI0PI8JR5OHaQ8Yinse9H4h+GK2Hb1A4
-         AO25iODgSANaemv90W5sSFYFQjzOpxBoKLIe96Vf8WjB/zrqJX1NEJY7yq750pQkaqOk
-         1+9OYeGLNZxl0e6F3esYfat8n9CQbuKfwTbzDvu3Chf0eeKLqiEo59Jx1mNdOEbnZcqK
-         7RZw==
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WUvTsX9+jdPoLTOSHShSbaoohqGvLnmJWJx3goFYuLM=;
+        b=PotvV1Ev6OzVSaF6m2X5tC6JwxVWHxAGf6FLW8AjKTGJyK/QJ8dyn6xJiqfkSFaAqz
+         OCdtBX9daql7+1gX8+5dT3S5uMqemNZ36FP4ZPoQpwuOHn42a4uh+PVPR7d5d59NuA3a
+         t2/cRclIFAps/zNhsd7jyIV2vHIEY2rkQ4dM0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=FFKgDeHvhTCS00AQN8L5xpmPeeM6E1oKLK7azqnWDiE=;
-        b=Ssti0OMZ67BajJcLW/CXibRgs3SoMDqeDb3iaq/qd24zQaT/VHX+6HIgysoYGyyRD0
-         VxzAZ1FclXWrMIn6qrD2har0c6SzBShU/VXQmcTvgPt+OAyKX7Bvyyk26mH1SFFz+PwW
-         2peRLdO4J9DqiVC9b//VhXvQujBmXNTqjHvuhbDMuB/+3oTUfSwBz4mhkfxDJ0hzVh3x
-         LXe126dgQsDUY/EhZor23sfswL1vlqmVevtEPbYwlWKjDpLcrLS9NvJ6WR5S7YfZwrBO
-         4TANSTgfiDtwykiPy6K2tpicUn6lH1t6x4Z+nq/aGT8mDrh/yMDNRhLVPvJz+3L7csgY
-         E2YA==
-X-Gm-Message-State: AGi0PubzySSv9hb9pkF/fgx0L6DAmREKH3xJb67sqHNoHAza0ZhcMgnR
-        7X//SsWnYZ3mAVHGFlVCXWtOI86aVWg=
-X-Google-Smtp-Source: ADFU+vv75ZUwXg2vEi4sa3vjU/XvBmaxBeQGnk0gRxgFefclx3FSltiYeD1SYorsoysNlfqIA2nFcA==
-X-Received: by 2002:a2e:964e:: with SMTP id z14mr2510095ljh.44.1585151522265;
-        Wed, 25 Mar 2020 08:52:02 -0700 (PDT)
-Received: from wasted.cogentembedded.com ([2a00:1fa0:4678:2dac:733f:487d:7a84:7bac])
-        by smtp.gmail.com with ESMTPSA id l21sm275175lfh.63.2020.03.25.08.52.00
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 25 Mar 2020 08:52:01 -0700 (PDT)
-Subject: Re: [PATCH 1/4] ubifs: remove broken lazytime support
-To:     Christoph Hellwig <hch@lst.de>, Theodore Ts'o <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Richard Weinberger <richard@nod.at>, linux-xfs@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-References: <20200325122825.1086872-1-hch@lst.de>
- <20200325122825.1086872-2-hch@lst.de>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <3771d2fd-b563-b74d-491b-e2bab9242126@cogentembedded.com>
-Date:   Wed, 25 Mar 2020 18:51:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WUvTsX9+jdPoLTOSHShSbaoohqGvLnmJWJx3goFYuLM=;
+        b=m75ASTeGrdKZE5sD0ygH0DJqeX76jWEjX3rpeZ0sUu1QwdEWSNff9iK19wTjABM8OA
+         EUX2VSUW7PqFK4soLPbmBeyh0OgeUGxMYjnnW+BmKQI2ITV4Xn4uB1g20x/ncT7hcQ9S
+         zDarLMg035fEVkZKclAjHuRCEKb085W4RCrsCoyvhSg3LZQpLdQmoB4VZnOZNXroom2O
+         wBIZd/PTFDje4cAL0KSGtjDYoPCVCX/tYIzxIryZihTmKkFmVHSWORKfHKmt5rwLZeC1
+         V05IzcTZlIWmSkmXlm1LFf8hTl81SjHMERXHjYuzcf9Xm+Vulg8/XDbPa8pxl1rNKgzS
+         Ezdw==
+X-Gm-Message-State: ANhLgQ3OmTs+Qk2ukFigZ1jYXLLsdb0QAtBOyxBVKj5cU5fJJQiQnQYZ
+        WIugPHlmJbNVDTDqLNauvZga4CSGkegNyKdJxqYrzA==
+X-Google-Smtp-Source: ADFU+vtWPrSX9gO9pLLxpavehCkl/CaKr8w3OI8WID1sZHiGcDBmq2nlMdLwxJGUo5kQXivDvVBrGhSFup9s33zQy+o=
+X-Received: by 2002:a5d:9142:: with SMTP id y2mr3418704ioq.185.1585151694868;
+ Wed, 25 Mar 2020 08:54:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200325122825.1086872-2-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-MW
-Content-Transfer-Encoding: 7bit
+References: <20200323202259.13363-1-willy@infradead.org> <20200323202259.13363-25-willy@infradead.org>
+ <CAJfpegu7EFcWrg3bP+-2BX_kb52RrzBCo_U3QKYzUkZfe4EjDA@mail.gmail.com>
+ <20200325120254.GA22483@bombadil.infradead.org> <CAJfpegshssCJiA8PBcq2XvBj3mR8dufHb0zWRFvvKKv82VQYsw@mail.gmail.com>
+ <20200325153228.GB22483@bombadil.infradead.org>
+In-Reply-To: <20200325153228.GB22483@bombadil.infradead.org>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 25 Mar 2020 16:54:43 +0100
+Message-ID: <CAJfpegtrhGamoSqD-3Svfj3-iTdAbfD8TP44H_o+HE+g+CAnCA@mail.gmail.com>
+Subject: Re: [PATCH v10 24/25] fuse: Convert from readpages to readahead
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        ocfs2-devel@oss.oracle.com, linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        William Kucharski <william.kucharski@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello!
+On Wed, Mar 25, 2020 at 4:32 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Mar 25, 2020 at 03:43:02PM +0100, Miklos Szeredi wrote:
+> > >
+> > > -       while ((page = readahead_page(rac))) {
+> > > -               if (fuse_readpages_fill(&data, page) != 0)
+> > > +               nr_pages = min(readahead_count(rac), fc->max_pages);
+> >
+> > Missing fc->max_read clamp.
+>
+> Yeah, I realised that.  I ended up doing ...
+>
+> +       unsigned int i, max_pages, nr_pages = 0;
+> ...
+> +       max_pages = min(fc->max_pages, fc->max_read / PAGE_SIZE);
+>
+> > > +               ia = fuse_io_alloc(NULL, nr_pages);
+> > > +               if (!ia)
+> > >                         return;
+> > > +               ap = &ia->ap;
+> > > +               __readahead_batch(rac, ap->pages, nr_pages);
+> >
+> > nr_pages = __readahead_batch(...)?
+>
+> That's the other bug ... this was designed for btrfs which has a fixed-size
+> buffer.  But you want to dynamically allocate fuse_io_args(), so we need to
+> figure out the number of pages beforehand, which is a little awkward.  I've
+> settled on this for the moment:
+>
+>         for (;;) {
+>                struct fuse_io_args *ia;
+>                 struct fuse_args_pages *ap;
+>
+>                 nr_pages = readahead_count(rac) - nr_pages;
+>                 if (nr_pages > max_pages)
+>                         nr_pages = max_pages;
+>                 if (nr_pages == 0)
+>                         break;
+>                 ia = fuse_io_alloc(NULL, nr_pages);
+>                 if (!ia)
+>                         return;
+>                 ap = &ia->ap;
+>                 __readahead_batch(rac, ap->pages, nr_pages);
+>                 for (i = 0; i < nr_pages; i++) {
+>                         fuse_wait_on_page_writeback(inode,
+>                                                     readahead_index(rac) + i);
+>                         ap->descs[i].length = PAGE_SIZE;
+>                 }
+>                 ap->num_pages = nr_pages;
+>                 fuse_send_readpages(ia, rac->file);
+>         }
+>
+> but I'm not entirely happy with that either.  Pondering better options.
 
-On 03/25/2020 03:28 PM, Christoph Hellwig wrote:
+I think that's fine.   Note how the original code possibly
+over-allocates the the page array, because it doesn't know the batch
+size beforehand.  So this is already better.
 
-> When "ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs" introduces atime
-> support to ubifs, it also lazytime support, but that support is
-                           ^ includes?
+>
+> > This will give consecutive pages, right?
+>
+> readpages() was already being called with consecutive pages.  Several
+> filesystems had code to cope with the pages being non-consecutive, but
+> that wasn't how the core code worked; if there was a discontiguity it
+> would send off the pages that were consecutive and start a new batch.
+>
+> __readahead_batch() can't return fewer than nr_pages, so you don't need
+> to check for that.
 
-> terminally broken, as it causes mark_inode_dirty_sync to be called from
-> __writeback_single_inode, which will then trigger the locking assert
-> in ubifs_dirty_inode.  Just remove this broken support for now, it can
-> be readded later, especially as some infrastructure changes should
-> make that easier soon.
-> 
-> Fixes: 8c1c5f263833 ("ubifs: introduce UBIFS_ATIME_SUPPORT to ubifs")
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-[...]
+That's far from obvious.
 
-MBR, Sergei
+I'd put a WARN_ON at least to make document the fact.
+
+Thanks,
+Miklos
