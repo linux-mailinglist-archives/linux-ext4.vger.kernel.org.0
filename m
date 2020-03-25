@@ -2,25 +2,25 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA037193280
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Mar 2020 22:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC30193281
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Mar 2020 22:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727430AbgCYVTA (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 25 Mar 2020 17:19:00 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39610 "EHLO
+        id S1727452AbgCYVTD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 25 Mar 2020 17:19:03 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:39614 "EHLO
         bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727351AbgCYVTA (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Mar 2020 17:19:00 -0400
+        with ESMTP id S1727351AbgCYVTD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 25 Mar 2020 17:19:03 -0400
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: krisman)
-        with ESMTPSA id AE03A292B0F
+        with ESMTPSA id 252AA2931B6
 From:   Gabriel Krisman Bertazi <krisman@collabora.com>
 To:     tytso@mit.edu
 Cc:     linux-ext4@vger.kernel.org,
         Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH e2fsprogs 11/11] tests: f_bad_fname: Test fixes of invalid filenames and duplicates
-Date:   Wed, 25 Mar 2020 17:18:11 -0400
-Message-Id: <20200325211812.2971787-12-krisman@collabora.com>
+Subject: [PATCH e2fsprogs 11/11] tests: f_bad_fname: Validate fix of invalid  filenames and duplicates
+Date:   Wed, 25 Mar 2020 17:18:12 -0400
+Message-Id: <20200325211812.2971787-13-krisman@collabora.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200325211812.2971787-1-krisman@collabora.com>
 References: <20200325211812.2971787-1-krisman@collabora.com>
