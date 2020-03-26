@@ -2,56 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80828194141
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Mar 2020 15:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C445194218
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Mar 2020 15:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbgCZO1f (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 26 Mar 2020 10:27:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45394 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727831AbgCZO1f (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 26 Mar 2020 10:27:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 862CFAE38;
-        Thu, 26 Mar 2020 14:27:34 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 157CC1E10FD; Thu, 26 Mar 2020 15:27:34 +0100 (CET)
-Date:   Thu, 26 Mar 2020 15:27:34 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 7/7] tune2fs: Update dir checksums when clearing
- dir_index feature
-Message-ID: <20200326142734.GA16506@quack2.suse.cz>
-References: <20200213101602.29096-1-jack@suse.cz>
- <20200213101602.29096-8-jack@suse.cz>
- <20200315171520.GT225435@mit.edu>
+        id S1727793AbgCZOx1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 26 Mar 2020 10:53:27 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59240 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726267AbgCZOx1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 26 Mar 2020 10:53:27 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 02QErBfW000898
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 26 Mar 2020 10:53:11 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 14444420EBA; Thu, 26 Mar 2020 10:53:11 -0400 (EDT)
+Date:   Thu, 26 Mar 2020 10:53:11 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] ext4: Unregister sysfs path before destroying jbd2
+ journal
+Message-ID: <20200326145311.GR53396@mit.edu>
+References: <20200318061301.4320-1-riteshh@linux.ibm.com>
+ <20200318091318.GJ22684@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200315171520.GT225435@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200318091318.GJ22684@quack2.suse.cz>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun 15-03-20 13:15:20, Theodore Y. Ts'o wrote:
-> On Thu, Feb 13, 2020 at 11:16:02AM +0100, Jan Kara wrote:
-> > When clearing dir_index feature while metadata_csum is enabled, we have
-> > to rewrite checksums of all indexed directories to update checksums of
-> > internal tree nodes.
+On Wed, Mar 18, 2020 at 10:13:18AM +0100, Jan Kara wrote:
+> On Wed 18-03-20 11:43:01, Ritesh Harjani wrote:
+> > Call ext4_unregister_sysfs(), before destroying jbd2 journal,
+> > since below might cause, NULL pointer dereference issue.
+> > This got reported with LTP tests.
 > > 
-> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ext4_put_super() 		cat /sys/fs/ext4/loop2/journal_task
+> > 	| 				ext4_attr_show();
+> > ext4_jbd2_journal_destroy();  			|
+> >     	|				 journal_task_show()
+> > 	| 					|
+> > 	| 				task_pid_vnr(NULL);
+> > sbi->s_journal = NULL;
+> > 
+> > Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 > 
-> Thanks, applied.
+> Yeah, makes sence. Thanks for the patch! You can add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Hum, I'm still not seeing this series in e2fsprogs git. Did it get stuck
-somewhere?
+Applied, thanks.
 
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+					- Ted
