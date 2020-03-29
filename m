@@ -2,61 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4646A196A22
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Mar 2020 01:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8E8196A2B
+	for <lists+linux-ext4@lfdr.de>; Sun, 29 Mar 2020 01:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727401AbgC2ABM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 28 Mar 2020 20:01:12 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:45000 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726604AbgC2ABM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 28 Mar 2020 20:01:12 -0400
-Received: by mail-pl1-f194.google.com with SMTP id h11so5093749plr.11
-        for <linux-ext4@vger.kernel.org>; Sat, 28 Mar 2020 17:01:10 -0700 (PDT)
+        id S1727768AbgC2AKP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 28 Mar 2020 20:10:15 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:41591 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727452AbgC2AKP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 28 Mar 2020 20:10:15 -0400
+Received: by mail-pl1-f193.google.com with SMTP id d24so1276261pll.8
+        for <linux-ext4@vger.kernel.org>; Sat, 28 Mar 2020 17:10:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=mWXtXtL502HJHyzW4MhJ9r6dl2Z9mR2Bq5fN8vK9W3U=;
-        b=kfSOQZSecpiBSCJJgPUWZqOp0gROvwnXMoDTYpb2coCgzIzHFcwXGeYBc5XAKmMsFI
-         ix6y3SzQm4koMYxJZ0rN3MJdKrdqZfCGPjpn/n2hzjURf+qmi8tgDCjyopBQYlscQ9JH
-         NaBGLPBF5yuRHCVI07wViygeb/B86mLCxaQ0J6q24d84wj8slv6x3M8W/Wg3hdZ7TxW3
-         uEgynz+O/vWF5m0N73nV3eJlcVf+RCjHD/1OFuZ78/BO/GbQ9vGxqCGksDiKNKuM9tg3
-         lKUZprlDLDwT5DKjjOn8ZxT4txeebSMQn8p2R5aq4Wuex2w3qQx2sGGo7ltjnkYi5cKp
-         vA0A==
+        bh=vxJbPwA8dn/KP4vFKPLIlIiqHMusiErlAxUBEJjgiMo=;
+        b=mDpWYevu7fHR9ahQLIPqBxHgZaN5j8dtF+UWxYIbRXwec/MXpGlaDRKC0LNwFuDDKK
+         oEYVRZ7gouW5W8M6IT2AzBu+RB1LrK+HNQaebpQ1P3FtKAxGH69hEhEoX+vKGB5WNIY1
+         /jcQjRrD5qCowuM6C0GdO6L+YM9US2aojqRHWqtQdaA8lmYT0N6Ilxzmp07v5tpHivsb
+         SlIk6duVfRaQixfrPaADpVWNbMkeG6ZiOotxjEEJGjgOZJDsfCBgWCKRRkzHo7vEgt41
+         Vjzal9cvPqWH/u0FP3XPbHybg/UMNMKgEE+lcAwzcqkP9xivlJX/IoO7i8kZxE529kvy
+         tHRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=mWXtXtL502HJHyzW4MhJ9r6dl2Z9mR2Bq5fN8vK9W3U=;
-        b=UnvTMoRRNWP0Jyr0kHQAyw8KjLtoS2QDn4NQGqq4KAQLrX9LiIVfT6mQdlIX7IK779
-         tYKptpMRhQoYG/Agu4q9zSWh/BnjjysMPDWthrFSCFCq4/7BSfhV/BO2vtgYu5P+dsgh
-         +CwV8zMokoSydOq3VyRVZh0sXXMjIsMo1xS+Kwsk/kVk9QTzt5f6WsieJzlHAsjsP9iz
-         0syNxx9DFJUaZdmoJqwAJmxXOGRKlogl30XkgZJBpFJk+Us7UIu4jKRv1nWOnUZgJCcx
-         K75OJxwT1Z+Jga5h+zQbGfurGaLb1i3YLFN7VOeJrp3FE/rMRA+1E6bjX2dz7YkHG5K0
-         TM1g==
-X-Gm-Message-State: ANhLgQ3CJEf5B/9F1rLdWck1/KfE+Z1wQMWMlAuU9v6U0hNZNqSJXFO/
-        ZcIS23dkBT3Vh5VvYYmT4wJODg==
-X-Google-Smtp-Source: ADFU+vvb9k69zRiXVVXE5zmBEDY60uyPOW0ryyBjQYG7afbpxqUj846sX5p/uHbrHdK1vJHHl7eADg==
-X-Received: by 2002:a17:90a:1784:: with SMTP id q4mr7183910pja.174.1585440069310;
-        Sat, 28 Mar 2020 17:01:09 -0700 (PDT)
+        bh=vxJbPwA8dn/KP4vFKPLIlIiqHMusiErlAxUBEJjgiMo=;
+        b=TUdYcJfJDxcC8eRrtnA34+Qc5f+eycss235MGQDi/XhO5ETjYcwmtHnBPW7YLO4clb
+         8nUVDS6pT6zfq/WxZnxePESq7J0Wcxbl2kqtZ+WgVp8xCyiEL+jjgt6KqHbFfAT5E/P2
+         Npvsj2Lgvkbemab+hV3YNC3mtEJcCDS3a80eZqeyiWhzZHseOMmOPaZBzCTzBySzL06c
+         rLuiE0BME73Bmhhbx2g8Vex707V+1sh92RcmaE6tb0qRI6tm5dMcwX//m/DQ84GsUm1Q
+         Oe1PwuHsoxLjOROgDQ6uYSlAldqg/0BRvaHKZSSEUyF4uVD0LbSusAMzWbaYqhmSoo4b
+         u0nQ==
+X-Gm-Message-State: ANhLgQ04uLcvbJGn52cpeZs4+iawiCJHCCZ/As3BOPZrxsPGlRkCG6Pf
+        dVqTuYxS82z6Gdl9dUtjDgYCGQ==
+X-Google-Smtp-Source: ADFU+vvwkoIjRAVqjofdqaROQEZ/oY9wC5pkRltbDAAb+28mQ1hbBAvoHf4IhGmIiUwxO398uZpTdA==
+X-Received: by 2002:a17:90b:8d2:: with SMTP id ds18mr6829273pjb.186.1585440614201;
+        Sat, 28 Mar 2020 17:10:14 -0700 (PDT)
 Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id 189sm6597898pgh.58.2020.03.28.17.01.08
+        by smtp.gmail.com with ESMTPSA id q80sm4325780pfc.17.2020.03.28.17.10.12
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 28 Mar 2020 17:01:08 -0700 (PDT)
+        Sat, 28 Mar 2020 17:10:13 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <C2D84F9E-374E-4B3C-8E2E-30A7CD5A0A0C@dilger.ca>
+Message-Id: <EC88E8EB-7303-45FB-85B9-A007FBE5F5A0@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_4A375A78-71CC-44FF-B87E-660AABFACABB";
+ boundary="Apple-Mail=_98918D26-6166-4EBB-A347-3496E7D1D550";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 2/2] ext4: shrink directories on dentry delete
-Date:   Sat, 28 Mar 2020 18:01:05 -0600
-In-Reply-To: <20200325093728.204211-2-harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-References: <20200325093728.204211-1-harshadshirwadkar@gmail.com>
- <20200325093728.204211-2-harshadshirwadkar@gmail.com>
+Subject: Re: [RFC PATCH v1 08/50] fs/ext4/ialloc.c: Replace % with
+ reciprocal_scale() TO BE VERIFIED
+Date:   Sat, 28 Mar 2020 18:10:11 -0600
+In-Reply-To: <20200328231536.GA11951@SDF.ORG>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        linux-ext4 <linux-ext4@vger.kernel.org>
+To:     George Spelvin <lkml@SDF.ORG>
+References: <202003281643.02SGh9vH007105@sdf.org>
+ <9A60C390-349E-4A90-A812-F04EB5A82136@dilger.ca>
+ <20200328231536.GA11951@SDF.ORG>
 X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -64,170 +68,69 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_4A375A78-71CC-44FF-B87E-660AABFACABB
+--Apple-Mail=_98918D26-6166-4EBB-A347-3496E7D1D550
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Mar 25, 2020, at 3:37 AM, Harshad Shirwadkar =
-<harshadshirwadkar@gmail.com> wrote:
+On Mar 28, 2020, at 5:15 PM, George Spelvin <lkml@SDF.ORG> wrote:
 >=20
-> This patch adds shrinking support for htree based directories. The
-> high level algorithm is as follows:
+> On Sat, Mar 28, 2020 at 04:56:17PM -0600, Andreas Dilger wrote:
+>>=20
+>> So I think the current patch is fine.  The for-loop construct of
+>> using "++g =3D=3D ngroups && (g =3D 0)" to wrap "g" around is new to =
+me,
+>> but looks correct.
+>>=20
+>> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 >=20
-> * If after dentry removal the dirent block (let's call it B) becomes
->  empty, then remove its references in its dx parent.
-> * Swap its contents with that of the last block (L) in directory.
-> * Update L's parents to point to B instead.
-> * Remove L
-> * Repeat this for all the ancestors of B.
+> Thank you.  Standing back and looking from higher altitude, I missed
+> a second modulo at fallback_retry: which should be made consistent,
+> so I need a one re-spin.
 >=20
-> We add variants of dx_probe that allow us perform reverse lookups from
-> a logical block to its dx parents.
+> Also, we could, if desired, eliminate the i variable entirely
+> using the fact that we have a copy of the starting position cached
+> in parent_group.  I.e.
 >=20
-> Ran kvm-xfstests smoke and verified that no new failures are
-> introduced. Ran shrinking for directories with following number of
-> files and then deleted files one by one:
-> * 1000 (size before deletion 36K, after deletion 4K)
-> * 10000 (size before deletion 196K, after deletion 4K)
-> * 100000 (size before deletion 2.1M, after deletion 4K)
-> * 200000 (size before deletion 4.2M, after deletion 4K)
+> 		g =3D parent_group =3D reciprocal_scale(grp, ngroups);
+> -		for (i =3D 0; i < ngroups; i++, ++g =3D=3D ngroups && (g =
+=3D 0)) {
+> +		do {
+> 			...
+> -		}
+> +			if (++g =3D=3D ngroups)
+> +				g =3D 0;
+> +		} while (g !=3D parent_group);
 >=20
-> In all cases directory shrunk significantly. We fallback to linear
-> directories if the directory becomes empty.
+> Or perhaps the following would be simpler, replacing the modulo
+> with a conditional subtract:
 >=20
-> But note that most of the shrinking happens during last 1-2% deletions
-> in an average case. Therefore, the next step here is to merge dx nodes
-> when possible. That can be achieved by storing the fullness index in
-> htree nodes. But that's an on-disk format change. We can instead build
-> on tooling added by this patch to perform reverse lookup on a dx
-> node and then reading adjacent nodes to check their fullness.
+> -		g =3D parent_group =3D reciprocal_scale(grp, ngroups);
+> +		parent_group =3D reciprocal_scale(grp, ngroups);
+> -		for (i =3D 0; i < ngroups; i++, ++g =3D=3D ngroups && (g =
+=3D 0)) {
+> +		for (i =3D 0; i < ngroups; i++) {
+> +			g =3D parent_group + i;
+> +			if (g >=3D ngroups)
+> +				g -=3D ngroups;
 >=20
-> This patch supersedes the other directory shrinking patch sent in Aug
-> 2019 ("ext4: attempt to shrink directory on dentry removal").
+> The conditional branch starts out always false, and ends up always =
+true,
+> but except for a few bobbles when it switches, branch prediction =
+should
+> handle it very well.
 >=20
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> ---
-> fs/ext4/ext4_jbd2.h |   7 +
-> fs/ext4/namei.c     | 355 ++++++++++++++++++++++++++++++++++++++++++--
-> 2 files changed, 353 insertions(+), 9 deletions(-)
->=20
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index d567b9589875..b78c6f9a6eba 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
->=20
-> +/*
-> + * dx_probe with relaxed checks. This function is used in the =
-directory
-> + * shrinking code since we can run into intermediate states where we =
-have
-> + * internal dx nodes with count =3D 0.
-> + */
-> +static inline struct dx_frame *
-> +dx_probe_relaxed(struct ext4_filename *fname, struct inode *dir,
-> +		struct dx_hash_info *hinfo, struct dx_frame *frame_in)
-> +{
-> +	return __dx_probe(fname, dir, hinfo, frame_in, 0, false);
-> +}
-> +
-> +/*
-> + * Perform only a parttial dx_probe until we find block end_lblk.
+> Any preference?
 
-(typo) "partial"
+I was looking at whether we could use a for-loop without "i"?  Something =
+like:
 
-> +static inline struct dx_frame *
-> +dx_probe_partial(struct ext4_filename *fname, struct inode *dir,
-> +		 struct dx_hash_info *hinfo, struct dx_frame *frame_in,
-> +		 ext4_lblk_t end_lblk)
-> +{
-> +	return __dx_probe(fname, dir, hinfo, frame_in, end_lblk, false);
-> +}
-> +
-[snip]
-> +/*
-> + * This function tries to remove the entry of a dirent block (which =
-was just
-> + * emptied by the caller) from the dx frame. It does so by reducing =
-the count by
-> + * 1 and left shifting all the entries after the deleted entry.
-> + */
-> +int
-> +ext4_remove_dx_entry(handle_t *handle, struct inode *dir,
-> +		     struct dx_frame *dx_frame)
-> +{
-> +	err =3D ext4_journal_get_write_access(handle, dx_frame->bh);
-> +	if (err) {
-> +		ext4_std_error(dir->i_sb, err);
-> +		return -EINVAL;
-> +	}
-> +
-> +	for (; i < count - 1; i++)
-> +		entries[i] =3D entries[i + 1];
+	for (g =3D parent_group + 1; g !=3D parent_group; ++g >=3D =
+ngroups && (g =3D 0))
 
-It would be more efficient to do this with "memmove()" rather than =
-copying
-each entry separately.
-
-> +	/*
-> +	 * If i was 0 when we began above loop, we would have =
-overwritten count
-> +	 * and limit values since those values live in dx_entry->hash of =
-the
-> +	 * first entry. We need to update count but we should set limit =
-as well.
-> +	 */
-> +	dx_set_count(entries, count - 1);
-> +	dx_set_limit(entries, limit);
-
-How hard is it to avoid clobbering these fields in the first place?
-I'm just thinking that "clobber + fixup" is subject to race conditions
-at various times in the past, and may become an issue in the future
-(e.g. with parallel directory operations).
-
-> static inline bool is_empty_dirent_block(struct inode *dir,
-> +					 struct buffer_head *bh)
-> +{
-
-This should be combined with ext4_empty_dir() to avoid code duplication.
-
-> +	struct ext4_dir_entry_2 *de =3D (struct ext4_dir_entry_2 =
-*)bh->b_data;
-> +	int	csum_size =3D 0;
-> +
-> +	if (ext4_has_metadata_csum(dir->i_sb) && is_dx(dir))
-> +		csum_size =3D sizeof(struct ext4_dir_entry_tail);
-> +
-> +	return ext4_rec_len_from_disk(de->rec_len, =
-dir->i_sb->s_blocksize) =3D=3D
-> +			dir->i_sb->s_blocksize - csum_size && de->inode =
-=3D=3D 0;
-> +}
-
-This looks like a low cost way to determine the leaf block is empty,
-but checking this for every unlink likely has a non-zero cost.
-
-> @@ -2530,6 +2864,9 @@ static int ext4_delete_entry(handle_t *handle,
-> 	if (unlikely(err))
-> 		goto out;
->=20
-> +	if (is_dx(dir))
-> +		ext4_try_dir_shrink(handle, dir, lblk, bh);
-> +
-> 	return 0;
-
-It would be useful to run a comparison benchmark between the patched =
-ext4
-and unpatched when deleting a large number of entries that checks both =
-CPU
-usage and performance.  That will give us an idea of how much this costs
-to be checked for every entry.
-
-Also, rather than calling ext4_try_dir_shrink() and =
-is_empty_dirent_block()
-for every entry, couldn't this be returned from =
-ext4_generic_delete_entry(),
-since it has that information already.
+The initial group is parent_group + 1, to avoid special-casing when the
+initial parent_group =3D 0 (which would prevent the loop from =
+terminating).
 
 Cheers, Andreas
 
@@ -236,7 +139,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_4A375A78-71CC-44FF-B87E-660AABFACABB
+--Apple-Mail=_98918D26-6166-4EBB-A347-3496E7D1D550
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -247,19 +150,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5/5UEACgkQcqXauRfM
-H+CPcRAAs5paI4YWetY8z5M7c7JvjEkvlpAv5A9GVmzVIwUZ6NXnhyjGbC1g24mt
-sURpZucW2bUszfmjNZicR4dsMmj/iKfkxY5euh3NBTv1tvL7rV1CLmKMPoIKE7So
-3LsHzqzQZERQvwc+X5PcVwSP6U2DS0HqMqKxO4bbUnJIsS2ePuypUpyIBRyZn42J
-g82YY36/yrJbZ95gTGqNa9JJz4OFrycglqkg7+fMjXHZNEy5p7K8uDvBiv/9eaaO
-UiA7JufKf2xFwf+rEPEyPHunCGk0pbg3wH7tA8D1QHea2Pign9TTf3EFPMY0J89T
-cL4nnsKmfTw4mbChTOFWhepAuu9sJ8lQ2cHxOuWyW6EdbO2ExV8P8TkmbrbzknYl
-0t3CVzNUZ7q5Wk8GfpEmLA/ZrAq5tJPXhxhV6H4thyjbASh+42HEYb0xcnoNr1iJ
-rCcJfidw5F4WG0N2p+965ADbjchT+bC2IbABiM+2VMeSRyhyutFbKEIWPwYfkJgj
-3gAEcZjgM+0Y6rAMdm13Plone1cHX3NH/f161tLYR8Lk/FOAjGJhrsqhivOpcjas
-3CHttv/0eBkbHalRWL5BScqDsLusA4Pmd6ER5K9itQIxN2XzJ5TXkxekBT312LgN
-pM739MlP4g42ywQn9DQsSTrDoxookDknCblF5YotZWOsB7vePMo=
-=KC7q
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl5/52MACgkQcqXauRfM
+H+D/LhAAidMTHxiYEIscM4C0DDkX5We7BDxxtxI66C8RWtGjHFkEkpaQiIPpc+Ck
+wuJG92tkWRU/9ntXF+NqDPGwWZ78twhAtxDcLNztIqWhcJ53pdgrXZ4ReTL2S9m/
+81M96JMwTngpojH+CZbsrEfq64YzY0ASLZsTG67hXHl8Nb/ZXdEXYdwXegl/biHh
+e2tq4BBvmdgUztxEnOncAi4WyzUU/xVPU+YYLWhgHCTwG29HHN+130VkSibZYKTt
+j8X0/1xAtaOlt/KdKXJMm+rdaWHkYee2PqCvLhjUUwv4drUHjCZ8eo7D4ZbJZaX9
+TQHaVpEyvlqG6ZdTAafr0sONK0Ep6Xb66ZuQDj6zjlm6Nn6/rG42dLPhT+SMftWy
+/juaAu1JohzqV108Elzp5eNuEJEJWczsMKUAmVnQ5K2LaASpZRWWmLC3lrmledKH
+G0XWwc/FPV6H2pzWdi/EbHmkF9zna5uZEDCul62iDMsdsRK9h0sxmdP9H20jrrXi
+rXK9WdwKsJYngJFDAa1nRi0Iux4OJ/5lZvLUzJNGZGnAnbnGNZKYFcBu5fJr/ent
+JJZyLeWr7QiAgwqZX3Sk16/6KPBZfslrcHhFeBZY9KPVAorXRGM+XDEQy5+CwaDq
+xAaWC3KN26fDWN1BjSZTf/MjmDBmGxtLdqnotTOrrh6qJSTeHvs=
+=1bvk
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_4A375A78-71CC-44FF-B87E-660AABFACABB--
+--Apple-Mail=_98918D26-6166-4EBB-A347-3496E7D1D550--
