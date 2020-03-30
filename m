@@ -2,91 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6A9197F1A
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Mar 2020 16:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993A91981B6
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Mar 2020 18:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728864AbgC3Ozy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 30 Mar 2020 10:55:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44408 "EHLO mx2.suse.de"
+        id S1729055AbgC3QyB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 30 Mar 2020 12:54:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727874AbgC3Ozy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 30 Mar 2020 10:55:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 61A4FAC66;
-        Mon, 30 Mar 2020 14:55:53 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B72471E11AF; Mon, 30 Mar 2020 16:55:52 +0200 (CEST)
-Date:   Mon, 30 Mar 2020 16:55:52 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/2] ext2fs: Fix error checking in dx_link()
-Message-ID: <20200330145552.GG26544@quack2.suse.cz>
-References: <20200330090932.29445-1-jack@suse.cz>
- <20200330090932.29445-2-jack@suse.cz>
- <20200330132440.4kwdwhgsrsnif6ju@work>
- <20200330134853.3icodnii6knomwch@work>
+        id S1727742AbgC3QyB (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 30 Mar 2020 12:54:01 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BEF82072E;
+        Mon, 30 Mar 2020 16:54:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585587240;
+        bh=j/ppsQG0leh5vH+RTE+F7A3zvmhx3HDCWWopSVH2uDQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=M/wdnXbyHUTJv5ngtkxL30OP3/Kuj4H/2XLXZMGrhRmQHk4kBf8kUv4xIehJ2WNAi
+         RYGO4xyaxQ0k6rkp1d/w6AkdnbU3iITZGeIBWDU4aBLtglq2LUaNtRCnK+4ktYJsaH
+         Et7KNGgLmKcCwRBMlzckx0KzqoHRi1/YU5977jgo=
+Date:   Mon, 30 Mar 2020 09:53:59 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fscrypt@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [GIT PULL] fscrypt updates for 5.7
+Message-ID: <20200330165359.GA1895@sol.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200330134853.3icodnii6knomwch@work>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 30-03-20 15:48:53, Lukas Czerner wrote:
-> On Mon, Mar 30, 2020 at 03:24:40PM +0200, Lukas Czerner wrote:
-> > On Mon, Mar 30, 2020 at 11:09:31AM +0200, Jan Kara wrote:
-> > > dx_lookup() uses errcode_t return values. As such anything non-zero is
-> > > an error, not values less than zero. Fix the error checking to avoid
-> > > crashes on corrupted filesystems.
-> > 
-> > Looks good, thanks.
-> > 
-> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> 
-> of course that should be
-> 
-> Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+The following changes since commit 98d54f81e36ba3bf92172791eba5ca5bd813989b:
 
-Thanks for review!
+  Linux 5.6-rc4 (2020-03-01 16:38:46 -0600)
 
-								Honza
+are available in the Git repository at:
 
+  https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git tags/fscrypt-for-linus
 
-> 
-> -Lukas
-> 
-> 
-> > 
-> > > 
-> > > Signed-off-by: Jan Kara <jack@suse.cz>
-> > > ---
-> > >  lib/ext2fs/link.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/lib/ext2fs/link.c b/lib/ext2fs/link.c
-> > > index 6f523aee718c..7b5bb022117c 100644
-> > > --- a/lib/ext2fs/link.c
-> > > +++ b/lib/ext2fs/link.c
-> > > @@ -571,7 +571,7 @@ static errcode_t dx_link(ext2_filsys fs, ext2_ino_t dir,
-> > >  	dx_info.namelen = strlen(name);
-> > >  again:
-> > >  	retval = dx_lookup(fs, dir, diri, &dx_info);
-> > > -	if (retval < 0)
-> > > +	if (retval)
-> > >  		goto free_buf;
-> > >  
-> > >  	retval = add_dirent_to_buf(fs,
-> > > -- 
-> > > 2.16.4
-> > > 
-> > 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+for you to fetch changes up to 861261f2a9cc488c845fc214d9035f7a11094591:
+
+  ubifs: wire up FS_IOC_GET_ENCRYPTION_NONCE (2020-03-19 21:57:06 -0700)
+
+----------------------------------------------------------------
+
+Add an ioctl FS_IOC_GET_ENCRYPTION_NONCE which retrieves a file's
+encryption nonce.  This makes it easier to write automated tests which
+verify that fscrypt is doing the encryption correctly.
+
+----------------------------------------------------------------
+Eric Biggers (4):
+      fscrypt: add FS_IOC_GET_ENCRYPTION_NONCE ioctl
+      ext4: wire up FS_IOC_GET_ENCRYPTION_NONCE
+      f2fs: wire up FS_IOC_GET_ENCRYPTION_NONCE
+      ubifs: wire up FS_IOC_GET_ENCRYPTION_NONCE
+
+ Documentation/filesystems/fscrypt.rst | 11 +++++++++++
+ fs/crypto/fscrypt_private.h           | 20 ++++++++++++++++++++
+ fs/crypto/keysetup.c                  | 16 ++--------------
+ fs/crypto/policy.c                    | 21 ++++++++++++++++++++-
+ fs/ext4/ioctl.c                       |  6 ++++++
+ fs/f2fs/file.c                        | 11 +++++++++++
+ fs/ubifs/ioctl.c                      |  4 ++++
+ include/linux/fscrypt.h               |  6 ++++++
+ include/uapi/linux/fscrypt.h          |  1 +
+ 9 files changed, 81 insertions(+), 15 deletions(-)
