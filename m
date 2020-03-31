@@ -2,122 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9C6199890
-	for <lists+linux-ext4@lfdr.de>; Tue, 31 Mar 2020 16:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8251B1999C2
+	for <lists+linux-ext4@lfdr.de>; Tue, 31 Mar 2020 17:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731250AbgCaOaj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 Mar 2020 10:30:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58488 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731156AbgCaOai (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 31 Mar 2020 10:30:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0E4ABACC6;
-        Tue, 31 Mar 2020 14:30:37 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4AE9D1E1214; Tue, 31 Mar 2020 16:30:35 +0200 (CEST)
-Date:   Tue, 31 Mar 2020 16:30:35 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 2/2] ext2fs: Fix off-by-one in dx_grow_tree()
-Message-ID: <20200331143035.GB13528@quack2.suse.cz>
-References: <20200330090932.29445-1-jack@suse.cz>
- <20200330090932.29445-3-jack@suse.cz>
- <20200330132712.ckevhpof4vrsx5rw@work>
- <20200330145531.GF26544@quack2.suse.cz>
- <20200331113303.huhzo3jxdnhoupwv@work>
+        id S1730541AbgCaPe1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 31 Mar 2020 11:34:27 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:56548 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729682AbgCaPe0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Mar 2020 11:34:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:
+        Subject:From:Sender:Reply-To:Content-ID:Content-Description;
+        bh=VB7oY+kToObAeb+RWYhI8HAQY5Z0sfc+SL5ownpJMKg=; b=YeDrIxjhKmSX16ao4QoVS5GUCY
+        1pj8CQLojek0kSJHSC+KQWvQh9eO4OQTjO7hE6XVDLKeU6G+x332Lgg8rCnaAtbG4JwOZ458grgJ0
+        1TFi7/dPIgFWcGwFBwg+IVggWHhrBGqxHLMYBpzQnhV9qFsXjB95vUXexIHechY0R1laxkaf5okU1
+        /mKbu4NhR5zutADBbLql3UGxoVUcAdx3NVEtEEj8JTKqNtfYIdNZQh+5eVnycOv9iiCPo6zTTuGuV
+        BKeYuS41+IecYiMaMwKRDV+eWcB+HnZizctgF/EDx2MlHufkqIPDS768Sk/+a0KsJ3kr45jPdSrfp
+        HDvru5PQ==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jJIuH-0007Pi-Pe; Tue, 31 Mar 2020 15:34:25 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: linux-next: Tree for Mar 31 (fs/ext4)
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+References: <20200331201009.5572e93b@canb.auug.org.au>
+Message-ID: <099e56ee-138a-519e-4a68-5ea18732ff11@infradead.org>
+Date:   Tue, 31 Mar 2020 08:34:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200331113303.huhzo3jxdnhoupwv@work>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200331201009.5572e93b@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 31-03-20 13:33:03, Lukas Czerner wrote:
-> On Mon, Mar 30, 2020 at 04:55:31PM +0200, Jan Kara wrote:
-> > On Mon 30-03-20 15:27:12, Lukas Czerner wrote:
-> > > On Mon, Mar 30, 2020 at 11:09:32AM +0200, Jan Kara wrote:
-> > > > There is an off-by-one error in dx_grow_tree() when checking whether we
-> > > > can add another level to the tree. Thus we can grow tree too much
-> > > > leading to possible crashes in the library or corrupted filesystem. Fix
-> > > > the bug.
-> > > 
-> > > Looks good, thanks
-> > > 
-> > > Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-> > > 
-> > > Don't we have basically the same off-by-one in
-> > > e2fsck/pass1.c handle_htree() ?
-> > > 
-> > >        if ((root->indirect_levels > ext2_dir_htree_level(fs)) &&
-> > >            fix_problem(ctx, PR_1_HTREE_DEPTH, pctx))
-> > 
-> > I don't think so. It is indeed correct for root->indirect_levels to be
-> > equal to ext2_dir_htree_level(). However dx_grow_tree() is going to
-> > increase root->indirect_levels by 1 which is where tree would become
-> > invalid...
-> > 
-> > 								Honza
+On 3/31/20 2:10 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Hmm, are you sure ? I think the names are very confusing
+> The merge window has opened, so please do not add any material for the
+> next release into your linux-next included trees/branches until after
+> the merge window closes.
 > 
-> root->indirect_levels is zero based, while ext2_dir_htree_level()
-> returns the maximum number of levels (that is 3 by default). If I am
-> right then indirect_levels must always be smaller then
-> ext2_dir_htree_level() and that is how we use it everywhere else - the
-> palce I am pointing out is an exception and I think it's a bug.
+> Changes since 20200330:
 > 
-> Indeed it looks like the bug got introduced in
-> 3f0cf647539970474be8f607017ca7eccfc2fbbe
-> 
-> -       if ((root->indirect_levels > 1) &&
-> +       if ((root->indirect_levels > ext2_dir_htree_level(fs)) &&
-> 
-> Or am I missing something ?
 
-Ah, you're indeed right! e2fsck/pass2.c even has a correct version of the
-condition. Just the condition in pass1.c is wrong.
 
-								Honza
+on i386 or x86_64:
+when
+# CONFIG_PRINTK is not set
 
-> 
-> -Lukas
-> 
-> > 
-> > > > 
-> > > > Signed-off-by: Jan Kara <jack@suse.cz>
-> > > > ---
-> > > >  lib/ext2fs/link.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/lib/ext2fs/link.c b/lib/ext2fs/link.c
-> > > > index 7b5bb022117c..469eea8cd06d 100644
-> > > > --- a/lib/ext2fs/link.c
-> > > > +++ b/lib/ext2fs/link.c
-> > > > @@ -473,7 +473,7 @@ static errcode_t dx_grow_tree(ext2_filsys fs, ext2_ino_t dir,
-> > > >  		    ext2fs_le16_to_cpu(info->frames[i].head->limit))
-> > > >  			break;
-> > > >  	/* Need to grow tree depth? */
-> > > > -	if (i < 0 && info->levels > ext2_dir_htree_level(fs))
-> > > > +	if (i < 0 && info->levels >= ext2_dir_htree_level(fs))
-> > > >  		return EXT2_ET_DIR_NO_SPACE;
-> > > >  	lblk = size / fs->blocksize;
-> > > >  	size += fs->blocksize;
-> > > > -- 
-> > > > 2.16.4
-> > > > 
-> > > 
-> > -- 
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
-> > 
-> 
+../fs/ext4/balloc.c: In function ‘ext4_wait_block_bitmap’:
+../fs/ext4/balloc.c:519:3: error: implicit declaration of function ‘ext4_error_err’; did you mean ‘ext4_error’? [-Werror=implicit-function-declaration]
+   ext4_error_err(sb, EIO, "Cannot read block bitmap - "
+   ^~~~~~~~~~~~~~
+   ext4_error
+
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
