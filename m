@@ -2,188 +2,122 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C32E1997A5
-	for <lists+linux-ext4@lfdr.de>; Tue, 31 Mar 2020 15:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9C6199890
+	for <lists+linux-ext4@lfdr.de>; Tue, 31 Mar 2020 16:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730959AbgCaNhv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 Mar 2020 09:37:51 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:46416 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730810AbgCaNhu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Mar 2020 09:37:50 -0400
-Received: by mail-lf1-f65.google.com with SMTP id q5so17299183lfb.13
-        for <linux-ext4@vger.kernel.org>; Tue, 31 Mar 2020 06:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aU5iLCuWaH4zxyOLw8e9l2ANSFZT9vUFLRpaEbsCIeI=;
-        b=M2bf+eVpkauwEFyb4CxmjaPvpl1N7Yad7zfCQI7ftWmBLkeJPC0XXouWV2QI8hxZp0
-         SWvodVcZIL6Bb/b/rJIkQwkInHpjgZ5o+LFL4a9Pq3M4CqV+zv5VdnUEa/Y9J4upA+Im
-         9Jw34jRSN6kWPZ+k5VsdGo8jY+lJaogNfFrBKMbUo/M+wp9QThZUUdUXu+DGnXp8u5k2
-         KPhTqiN5HAQpCWvh1il9cj1mhxWhSyWq/d4wVo+nmE3Zy9I/KddzW5kBlWk/4bQIKCOR
-         Av5ZU2ntiH08RXx7Vy7fMOQlQY1fz06o4VosndadGp4GHJG5h/oOYOtMMvQhx/Kp3hXh
-         clpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aU5iLCuWaH4zxyOLw8e9l2ANSFZT9vUFLRpaEbsCIeI=;
-        b=s+u5gkhxLgjXlRZ6QIN6Da3Yu1OYJGuM+UrAnovFKItnio0O5l1cpA5A+RUFGUx0Wc
-         j90pdu+ejfjb4n7TNPUl3EPVfDaflm+cdJCHkwn91AzAptGVI1NJ5KQu5KSaQmTD6xQ2
-         QN74BQ1RUl0DwLbB0ux6EH8kRalOQ8zMeBQVuGcplDYzVt0kuj5uG+ic7yiXelc6DB11
-         ClGu351ZVEpgdCI7a98dMVreraVsEjzzZk+Q9SpYeCfx2BfysrLU7+gK/G/Rw4uUYPUb
-         snB4w0kdihkG/dxG5FcAPAd3UKTA7lR4BkTu2aHKbUjPwMpm1TkVGGbDn2oTT6MwQWv6
-         O8qQ==
-X-Gm-Message-State: AGi0PuY42ccGenWl8aUJsOZ8pgm1XQ+AHTRDNajZwMbLxOquLCUStwRr
-        ke+oM0y3fBjjPU6Aj8vz7s/ppg==
-X-Google-Smtp-Source: APiQypKT2+uqdUkMNinUZ7US4h3EuWA+Qnq8u+r/x9eYKAF8W37lj90IU1/6iLzyAQ3J8dNMc7hMJw==
-X-Received: by 2002:a19:ad43:: with SMTP id s3mr11555874lfd.63.1585661866597;
-        Tue, 31 Mar 2020 06:37:46 -0700 (PDT)
-Received: from localhost.localdomain (c-f3d7225c.014-348-6c756e10.bbcust.telenor.se. [92.34.215.243])
-        by smtp.gmail.com with ESMTPSA id x128sm9837994lff.67.2020.03.31.06.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2020 06:37:45 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org, qemu-devel@nongnu.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH] fcntl: Add 32bit filesystem mode
-Date:   Tue, 31 Mar 2020 15:35:36 +0200
-Message-Id: <20200331133536.3328-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S1731250AbgCaOaj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 31 Mar 2020 10:30:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58488 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731156AbgCaOai (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 31 Mar 2020 10:30:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0E4ABACC6;
+        Tue, 31 Mar 2020 14:30:37 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4AE9D1E1214; Tue, 31 Mar 2020 16:30:35 +0200 (CEST)
+Date:   Tue, 31 Mar 2020 16:30:35 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 2/2] ext2fs: Fix off-by-one in dx_grow_tree()
+Message-ID: <20200331143035.GB13528@quack2.suse.cz>
+References: <20200330090932.29445-1-jack@suse.cz>
+ <20200330090932.29445-3-jack@suse.cz>
+ <20200330132712.ckevhpof4vrsx5rw@work>
+ <20200330145531.GF26544@quack2.suse.cz>
+ <20200331113303.huhzo3jxdnhoupwv@work>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200331113303.huhzo3jxdnhoupwv@work>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-It was brought to my attention that this bug from 2018 was
-still unresolved: 32 bit emulators like QEMU were given
-64 bit hashes when running 32 bit emulation on 64 bit systems.
+On Tue 31-03-20 13:33:03, Lukas Czerner wrote:
+> On Mon, Mar 30, 2020 at 04:55:31PM +0200, Jan Kara wrote:
+> > On Mon 30-03-20 15:27:12, Lukas Czerner wrote:
+> > > On Mon, Mar 30, 2020 at 11:09:32AM +0200, Jan Kara wrote:
+> > > > There is an off-by-one error in dx_grow_tree() when checking whether we
+> > > > can add another level to the tree. Thus we can grow tree too much
+> > > > leading to possible crashes in the library or corrupted filesystem. Fix
+> > > > the bug.
+> > > 
+> > > Looks good, thanks
+> > > 
+> > > Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+> > > 
+> > > Don't we have basically the same off-by-one in
+> > > e2fsck/pass1.c handle_htree() ?
+> > > 
+> > >        if ((root->indirect_levels > ext2_dir_htree_level(fs)) &&
+> > >            fix_problem(ctx, PR_1_HTREE_DEPTH, pctx))
+> > 
+> > I don't think so. It is indeed correct for root->indirect_levels to be
+> > equal to ext2_dir_htree_level(). However dx_grow_tree() is going to
+> > increase root->indirect_levels by 1 which is where tree would become
+> > invalid...
+> > 
+> > 								Honza
+> 
+> Hmm, are you sure ? I think the names are very confusing
+> 
+> root->indirect_levels is zero based, while ext2_dir_htree_level()
+> returns the maximum number of levels (that is 3 by default). If I am
+> right then indirect_levels must always be smaller then
+> ext2_dir_htree_level() and that is how we use it everywhere else - the
+> palce I am pointing out is an exception and I think it's a bug.
+> 
+> Indeed it looks like the bug got introduced in
+> 3f0cf647539970474be8f607017ca7eccfc2fbbe
+> 
+> -       if ((root->indirect_levels > 1) &&
+> +       if ((root->indirect_levels > ext2_dir_htree_level(fs)) &&
+> 
+> Or am I missing something ?
 
-This adds a fcntl() operation to set the underlying filesystem
-into 32bit mode even if the file hanle was opened using 64bit
-mode without the compat syscalls.
+Ah, you're indeed right! e2fsck/pass2.c even has a correct version of the
+condition. Just the condition in pass1.c is wrong.
 
-Programs that need the 32 bit file system behavior need to
-issue a fcntl() system call such as in this example:
+								Honza
 
-  #define F_SET_FILE_32BIT_FS (1024 + 15)
-
-  int main(int argc, char** argv) {
-    DIR* dir;
-    int err;
-    int fd;
-
-    dir = opendir("/boot");
-    fd = dirfd(dir);
-    err = fcntl(fd, F_SET_FILE_32BIT_FS);
-    if (err) {
-      printf("fcntl() failed! err=%d\n", err);
-      return 1;
-    }
-    printf("dir=%p\n", dir);
-    printf("readdir(dir)=%p\n", readdir(dir));
-    printf("errno=%d: %s\n", errno, strerror(errno));
-    return 0;
-  }
-
-This can be pretty hard to test since C libraries and linux
-userspace security extensions aggressively filter the parameters
-that are passed down and allowed to commit into actual system
-calls.
-
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Cc: Peter Maydell <peter.maydell@linaro.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Suggested-by: Theodore Ts'o <tytso@mit.edu>
-Link: https://bugs.launchpad.net/qemu/+bug/1805913
-Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205957
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- fs/fcntl.c                       | 4 ++++
- include/uapi/linux/fcntl.h       | 9 +++++++++
- tools/include/uapi/linux/fcntl.h | 9 +++++++++
- tools/perf/trace/beauty/fcntl.c  | 3 ++-
- 4 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/fs/fcntl.c b/fs/fcntl.c
-index 2e4c0fa2074b..d194b1265bd4 100644
---- a/fs/fcntl.c
-+++ b/fs/fcntl.c
-@@ -426,6 +426,10 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
- 	case F_SET_FILE_RW_HINT:
- 		err = fcntl_rw_hint(filp, cmd, arg);
- 		break;
-+	case F_SET_FILE_32BIT_FS:
-+		filp->f_mode |= FMODE_32BITHASH;
-+		err = 0;
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-index ca88b7bce553..b9ad934147e8 100644
---- a/include/uapi/linux/fcntl.h
-+++ b/include/uapi/linux/fcntl.h
-@@ -73,6 +73,15 @@
-  */
- #define RWF_WRITE_LIFE_NOT_SET	RWH_WRITE_LIFE_NOT_SET
- 
-+/*
-+ * This instructs the kernel to provide 32bit semantics (such as hashes) from
-+ * the file system layer, when running a userland that depend on 32bit
-+ * semantics on a kernel that supports 64bit userland, but does not use the
-+ * compat ioctl() for e.g. open(), so that the kernel would otherwise assume
-+ * that the userland process is capable of dealing with 64bit semantics.
-+ */
-+#define F_SET_FILE_32BIT_FS	(F_LINUX_SPECIFIC_BASE + 15)
-+
- /*
-  * Types of directory notifications that may be requested.
-  */
-diff --git a/tools/include/uapi/linux/fcntl.h b/tools/include/uapi/linux/fcntl.h
-index ca88b7bce553..b9ad934147e8 100644
---- a/tools/include/uapi/linux/fcntl.h
-+++ b/tools/include/uapi/linux/fcntl.h
-@@ -73,6 +73,15 @@
-  */
- #define RWF_WRITE_LIFE_NOT_SET	RWH_WRITE_LIFE_NOT_SET
- 
-+/*
-+ * This instructs the kernel to provide 32bit semantics (such as hashes) from
-+ * the file system layer, when running a userland that depend on 32bit
-+ * semantics on a kernel that supports 64bit userland, but does not use the
-+ * compat ioctl() for e.g. open(), so that the kernel would otherwise assume
-+ * that the userland process is capable of dealing with 64bit semantics.
-+ */
-+#define F_SET_FILE_32BIT_FS	(F_LINUX_SPECIFIC_BASE + 15)
-+
- /*
-  * Types of directory notifications that may be requested.
-  */
-diff --git a/tools/perf/trace/beauty/fcntl.c b/tools/perf/trace/beauty/fcntl.c
-index 56ef83b3d130..da80264678cb 100644
---- a/tools/perf/trace/beauty/fcntl.c
-+++ b/tools/perf/trace/beauty/fcntl.c
-@@ -94,7 +94,8 @@ size_t syscall_arg__scnprintf_fcntl_arg(char *bf, size_t size, struct syscall_ar
- 	    cmd == F_OFD_SETLK || cmd == F_OFD_SETLKW || cmd == F_OFD_GETLK ||
- 	    cmd == F_GETOWN_EX || cmd == F_SETOWN_EX ||
- 	    cmd == F_GET_RW_HINT || cmd == F_SET_RW_HINT ||
--	    cmd == F_GET_FILE_RW_HINT || cmd == F_SET_FILE_RW_HINT)
-+	    cmd == F_GET_FILE_RW_HINT || cmd == F_SET_FILE_RW_HINT ||
-+	    cmd == F_SET_FILE_32BIT_FS)
- 		return syscall_arg__scnprintf_hex(bf, size, arg);
- 
- 	return syscall_arg__scnprintf_long(bf, size, arg);
+> 
+> -Lukas
+> 
+> > 
+> > > > 
+> > > > Signed-off-by: Jan Kara <jack@suse.cz>
+> > > > ---
+> > > >  lib/ext2fs/link.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/lib/ext2fs/link.c b/lib/ext2fs/link.c
+> > > > index 7b5bb022117c..469eea8cd06d 100644
+> > > > --- a/lib/ext2fs/link.c
+> > > > +++ b/lib/ext2fs/link.c
+> > > > @@ -473,7 +473,7 @@ static errcode_t dx_grow_tree(ext2_filsys fs, ext2_ino_t dir,
+> > > >  		    ext2fs_le16_to_cpu(info->frames[i].head->limit))
+> > > >  			break;
+> > > >  	/* Need to grow tree depth? */
+> > > > -	if (i < 0 && info->levels > ext2_dir_htree_level(fs))
+> > > > +	if (i < 0 && info->levels >= ext2_dir_htree_level(fs))
+> > > >  		return EXT2_ET_DIR_NO_SPACE;
+> > > >  	lblk = size / fs->blocksize;
+> > > >  	size += fs->blocksize;
+> > > > -- 
+> > > > 2.16.4
+> > > > 
+> > > 
+> > -- 
+> > Jan Kara <jack@suse.com>
+> > SUSE Labs, CR
+> > 
+> 
 -- 
-2.25.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
