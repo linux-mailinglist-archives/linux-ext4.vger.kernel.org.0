@@ -2,114 +2,188 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1590199791
-	for <lists+linux-ext4@lfdr.de>; Tue, 31 Mar 2020 15:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C32E1997A5
+	for <lists+linux-ext4@lfdr.de>; Tue, 31 Mar 2020 15:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730786AbgCaNeX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 31 Mar 2020 09:34:23 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22165 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730760AbgCaNeW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 31 Mar 2020 09:34:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585661662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+w4u402SGEnP8z667DvtdhnveqoMF1wPgR2SOZdmQmg=;
-        b=fsQLvWPDmQ0Ajq83APmjLzetplM01iwlJW6/nb37UTx2DETcEkQDVG6BaCXt0OXu4XFCuC
-        mvm2cPlXmtIo/hP64IQzdBBzahRC+8DDDdl+r7YNGT4aLZnLT9ZlHp0Y4W7hCF/Y9veUa2
-        DxWtDVUl8tsX7otFUquHsmUlRP/WaxM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-L-qIL5t2NE-uFDMLGpC3SA-1; Tue, 31 Mar 2020 09:34:17 -0400
-X-MC-Unique: L-qIL5t2NE-uFDMLGpC3SA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77087800D5C;
-        Tue, 31 Mar 2020 13:34:16 +0000 (UTC)
-Received: from work (unknown [10.40.192.188])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 073C15D9CA;
-        Tue, 31 Mar 2020 13:34:14 +0000 (UTC)
-Date:   Tue, 31 Mar 2020 15:34:10 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Dmitry Monakhov <dmonakhov@openvz.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] ext4: Do not zeroout extents beyond i_disksize
-Message-ID: <20200331133410.c7axn324ifsovkg5@work>
-References: <20200331105016.8674-1-jack@suse.cz>
+        id S1730959AbgCaNhv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 31 Mar 2020 09:37:51 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:46416 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730810AbgCaNhu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 31 Mar 2020 09:37:50 -0400
+Received: by mail-lf1-f65.google.com with SMTP id q5so17299183lfb.13
+        for <linux-ext4@vger.kernel.org>; Tue, 31 Mar 2020 06:37:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aU5iLCuWaH4zxyOLw8e9l2ANSFZT9vUFLRpaEbsCIeI=;
+        b=M2bf+eVpkauwEFyb4CxmjaPvpl1N7Yad7zfCQI7ftWmBLkeJPC0XXouWV2QI8hxZp0
+         SWvodVcZIL6Bb/b/rJIkQwkInHpjgZ5o+LFL4a9Pq3M4CqV+zv5VdnUEa/Y9J4upA+Im
+         9Jw34jRSN6kWPZ+k5VsdGo8jY+lJaogNfFrBKMbUo/M+wp9QThZUUdUXu+DGnXp8u5k2
+         KPhTqiN5HAQpCWvh1il9cj1mhxWhSyWq/d4wVo+nmE3Zy9I/KddzW5kBlWk/4bQIKCOR
+         Av5ZU2ntiH08RXx7Vy7fMOQlQY1fz06o4VosndadGp4GHJG5h/oOYOtMMvQhx/Kp3hXh
+         clpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aU5iLCuWaH4zxyOLw8e9l2ANSFZT9vUFLRpaEbsCIeI=;
+        b=s+u5gkhxLgjXlRZ6QIN6Da3Yu1OYJGuM+UrAnovFKItnio0O5l1cpA5A+RUFGUx0Wc
+         j90pdu+ejfjb4n7TNPUl3EPVfDaflm+cdJCHkwn91AzAptGVI1NJ5KQu5KSaQmTD6xQ2
+         QN74BQ1RUl0DwLbB0ux6EH8kRalOQ8zMeBQVuGcplDYzVt0kuj5uG+ic7yiXelc6DB11
+         ClGu351ZVEpgdCI7a98dMVreraVsEjzzZk+Q9SpYeCfx2BfysrLU7+gK/G/Rw4uUYPUb
+         snB4w0kdihkG/dxG5FcAPAd3UKTA7lR4BkTu2aHKbUjPwMpm1TkVGGbDn2oTT6MwQWv6
+         O8qQ==
+X-Gm-Message-State: AGi0PuY42ccGenWl8aUJsOZ8pgm1XQ+AHTRDNajZwMbLxOquLCUStwRr
+        ke+oM0y3fBjjPU6Aj8vz7s/ppg==
+X-Google-Smtp-Source: APiQypKT2+uqdUkMNinUZ7US4h3EuWA+Qnq8u+r/x9eYKAF8W37lj90IU1/6iLzyAQ3J8dNMc7hMJw==
+X-Received: by 2002:a19:ad43:: with SMTP id s3mr11555874lfd.63.1585661866597;
+        Tue, 31 Mar 2020 06:37:46 -0700 (PDT)
+Received: from localhost.localdomain (c-f3d7225c.014-348-6c756e10.bbcust.telenor.se. [92.34.215.243])
+        by smtp.gmail.com with ESMTPSA id x128sm9837994lff.67.2020.03.31.06.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 31 Mar 2020 06:37:45 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, qemu-devel@nongnu.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH] fcntl: Add 32bit filesystem mode
+Date:   Tue, 31 Mar 2020 15:35:36 +0200
+Message-Id: <20200331133536.3328-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200331105016.8674-1-jack@suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 12:50:16PM +0200, Jan Kara wrote:
-> We do not want to create initialized extents beyond end of file because
-> for e2fsck it is impossible to distinguish them from a case of corrupted
-> file size / extent tree and so it complains like:
-> 
-> Inode 12, i_size is 147456, should be 163840.  Fix? no
-> 
-> Code in ext4_ext_convert_to_initialized() and
-> ext4_split_convert_extents() try to make sure it does not create
-> initialized extents beyond inode size however they check against
-> inode->i_size which is wrong. They should instead check against
-> EXT4_I(inode)->i_disksize which is the current inode size on disk.
-> That's what e2fsck is going to see in case of crash before all dirty
-> data is written. This bug manifests as generic/456 test failure (with
-> recent enough fstests where fsx got fixed to properly pass
-> FALLOC_KEEP_SIZE_FL flags to the kernel) when run with dioread_lock
-> mount option.
+It was brought to my attention that this bug from 2018 was
+still unresolved: 32 bit emulators like QEMU were given
+64 bit hashes when running 32 bit emulation on 64 bit systems.
 
-Makes sense, thanks.
+This adds a fcntl() operation to set the underlying filesystem
+into 32bit mode even if the file hanle was opened using 64bit
+mode without the compat syscalls.
 
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+Programs that need the 32 bit file system behavior need to
+issue a fcntl() system call such as in this example:
 
--Lukas
+  #define F_SET_FILE_32BIT_FS (1024 + 15)
 
-> 
-> CC: stable@vger.kernel.org
-> Fixes: 21ca087a3891 ("ext4: Do not zero out uninitialized extents beyond i_size")
-> Signed-off-by: Jan Kara <jack@suse.cz>
-> ---
->  fs/ext4/extents.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 954013d6076b..c5e190fd4589 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3532,8 +3532,8 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->  		(unsigned long long)map->m_lblk, map_len);
->  
->  	sbi = EXT4_SB(inode->i_sb);
-> -	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
-> -		inode->i_sb->s_blocksize_bits;
-> +	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
-> +			>> inode->i_sb->s_blocksize_bits;
->  	if (eof_block < map->m_lblk + map_len)
->  		eof_block = map->m_lblk + map_len;
->  
-> @@ -3785,8 +3785,8 @@ static int ext4_split_convert_extents(handle_t *handle,
->  		  __func__, inode->i_ino,
->  		  (unsigned long long)map->m_lblk, map->m_len);
->  
-> -	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
-> -		inode->i_sb->s_blocksize_bits;
-> +	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
-> +			>> inode->i_sb->s_blocksize_bits;
->  	if (eof_block < map->m_lblk + map->m_len)
->  		eof_block = map->m_lblk + map->m_len;
->  	/*
-> -- 
-> 2.16.4
-> 
+  int main(int argc, char** argv) {
+    DIR* dir;
+    int err;
+    int fd;
+
+    dir = opendir("/boot");
+    fd = dirfd(dir);
+    err = fcntl(fd, F_SET_FILE_32BIT_FS);
+    if (err) {
+      printf("fcntl() failed! err=%d\n", err);
+      return 1;
+    }
+    printf("dir=%p\n", dir);
+    printf("readdir(dir)=%p\n", readdir(dir));
+    printf("errno=%d: %s\n", errno, strerror(errno));
+    return 0;
+  }
+
+This can be pretty hard to test since C libraries and linux
+userspace security extensions aggressively filter the parameters
+that are passed down and allowed to commit into actual system
+calls.
+
+Cc: Florian Weimer <fw@deneb.enyo.de>
+Cc: Peter Maydell <peter.maydell@linaro.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Suggested-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://bugs.launchpad.net/qemu/+bug/1805913
+Link: https://lore.kernel.org/lkml/87bm56vqg4.fsf@mid.deneb.enyo.de/
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205957
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ fs/fcntl.c                       | 4 ++++
+ include/uapi/linux/fcntl.h       | 9 +++++++++
+ tools/include/uapi/linux/fcntl.h | 9 +++++++++
+ tools/perf/trace/beauty/fcntl.c  | 3 ++-
+ 4 files changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index 2e4c0fa2074b..d194b1265bd4 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -426,6 +426,10 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
+ 	case F_SET_FILE_RW_HINT:
+ 		err = fcntl_rw_hint(filp, cmd, arg);
+ 		break;
++	case F_SET_FILE_32BIT_FS:
++		filp->f_mode |= FMODE_32BITHASH;
++		err = 0;
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
+index ca88b7bce553..b9ad934147e8 100644
+--- a/include/uapi/linux/fcntl.h
++++ b/include/uapi/linux/fcntl.h
+@@ -73,6 +73,15 @@
+  */
+ #define RWF_WRITE_LIFE_NOT_SET	RWH_WRITE_LIFE_NOT_SET
+ 
++/*
++ * This instructs the kernel to provide 32bit semantics (such as hashes) from
++ * the file system layer, when running a userland that depend on 32bit
++ * semantics on a kernel that supports 64bit userland, but does not use the
++ * compat ioctl() for e.g. open(), so that the kernel would otherwise assume
++ * that the userland process is capable of dealing with 64bit semantics.
++ */
++#define F_SET_FILE_32BIT_FS	(F_LINUX_SPECIFIC_BASE + 15)
++
+ /*
+  * Types of directory notifications that may be requested.
+  */
+diff --git a/tools/include/uapi/linux/fcntl.h b/tools/include/uapi/linux/fcntl.h
+index ca88b7bce553..b9ad934147e8 100644
+--- a/tools/include/uapi/linux/fcntl.h
++++ b/tools/include/uapi/linux/fcntl.h
+@@ -73,6 +73,15 @@
+  */
+ #define RWF_WRITE_LIFE_NOT_SET	RWH_WRITE_LIFE_NOT_SET
+ 
++/*
++ * This instructs the kernel to provide 32bit semantics (such as hashes) from
++ * the file system layer, when running a userland that depend on 32bit
++ * semantics on a kernel that supports 64bit userland, but does not use the
++ * compat ioctl() for e.g. open(), so that the kernel would otherwise assume
++ * that the userland process is capable of dealing with 64bit semantics.
++ */
++#define F_SET_FILE_32BIT_FS	(F_LINUX_SPECIFIC_BASE + 15)
++
+ /*
+  * Types of directory notifications that may be requested.
+  */
+diff --git a/tools/perf/trace/beauty/fcntl.c b/tools/perf/trace/beauty/fcntl.c
+index 56ef83b3d130..da80264678cb 100644
+--- a/tools/perf/trace/beauty/fcntl.c
++++ b/tools/perf/trace/beauty/fcntl.c
+@@ -94,7 +94,8 @@ size_t syscall_arg__scnprintf_fcntl_arg(char *bf, size_t size, struct syscall_ar
+ 	    cmd == F_OFD_SETLK || cmd == F_OFD_SETLKW || cmd == F_OFD_GETLK ||
+ 	    cmd == F_GETOWN_EX || cmd == F_SETOWN_EX ||
+ 	    cmd == F_GET_RW_HINT || cmd == F_SET_RW_HINT ||
+-	    cmd == F_GET_FILE_RW_HINT || cmd == F_SET_FILE_RW_HINT)
++	    cmd == F_GET_FILE_RW_HINT || cmd == F_SET_FILE_RW_HINT ||
++	    cmd == F_SET_FILE_32BIT_FS)
+ 		return syscall_arg__scnprintf_hex(bf, size, arg);
+ 
+ 	return syscall_arg__scnprintf_long(bf, size, arg);
+-- 
+2.25.1
 
