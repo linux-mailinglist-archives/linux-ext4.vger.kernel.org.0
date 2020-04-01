@@ -2,53 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AC919B71C
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 22:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8131419B796
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 23:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733021AbgDAUgn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Apr 2020 16:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732337AbgDAUgn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 1 Apr 2020 16:36:43 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 514BA20784;
-        Wed,  1 Apr 2020 20:36:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585773402;
-        bh=BGEIqF3YhkeU8jLK+6beLZYFBd2iXU20xNB4/tQPfxg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zze/sIJT/BdLiEH2jgJUkpRo4EwiT2RsINo5fLxZ2GNoAXCgWQXklv2l2F8Dh3Imy
-         pYqpo8QCNx7mWJKY8aRP4i1Mkn7YoBbC7e6TWXDDYTdz2aGSDioAgNvKuAS10EL7QG
-         0JqGrRUuVXC0dD4+THdTcI++EA3zk8coRKbo06IE=
-Date:   Wed, 1 Apr 2020 13:36:40 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     David Howells <dhowells@redhat.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: Re: Exporting ext4-specific information through fsinfo attributes
-Message-ID: <20200401203640.GD201933@gmail.com>
-References: <2461554.1585726747@warthog.procyon.org.uk>
- <20200401162744.GB201933@gmail.com>
- <20200401190553.GC56931@magnolia>
- <20200401192840.GC201933@gmail.com>
+        id S1733134AbgDAV3J (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Apr 2020 17:29:09 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:40657 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732527AbgDAV3J (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 17:29:09 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 031LSxHP027325
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 1 Apr 2020 17:29:00 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 5D1AB420EBA; Wed,  1 Apr 2020 17:28:59 -0400 (EDT)
+Date:   Wed, 1 Apr 2020 17:28:59 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ext4: Fix build error while CONFIG_PRINTK is n
+Message-ID: <20200401212859.GN768293@mit.edu>
+References: <20200401073038.33076-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200401192840.GC201933@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200401073038.33076-1-yuehaibing@huawei.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 12:28:40PM -0700, Eric Biggers wrote:
-> We maybe should make tune2fs -U refuse to operate on filesystems that have the
-> stable_inodes feature set.
+On Wed, Apr 01, 2020 at 03:30:38PM +0800, YueHaibing wrote:
+> fs/ext4/balloc.c: In function ‘ext4_wait_block_bitmap’:
+> fs/ext4/balloc.c:519:3: error: implicit declaration of function ‘ext4_error_err’; did you mean ‘ext4_error’? [-Werror=implicit-function-declaration]
+>    ext4_error_err(sb, EIO, "Cannot read block bitmap - "
+>    ^~~~~~~~~~~~~~
+> 
+> Add missing stub helper and fix ext4_abort.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: 2ea2fc775321 ("ext4: save all error info in save_error_info() and drop ext4_set_errno()")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-I sent patches to do this and clean up a few other things:
+Thanks; the patch isn't quite correct, though.  This is what I merged
+into my tree's version of the "save all error info..." commit.
 
-https://lkml.kernel.org/linux-ext4/20200401203239.163679-1-ebiggers@kernel.org
+     	       	       	      	    	      - Ted
 
-- Eric
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index eacd2f9cc833..91eb4381cae5 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2848,6 +2848,11 @@ do {									\
+ 	no_printk(fmt, ##__VA_ARGS__);					\
+ 	__ext4_error_inode(inode, "", 0, block, 0, " ");		\
+ } while (0)
++#define ext4_error_inode_err(inode, func, line, block, err, fmt, ...)	\
++do {									\
++	no_printk(fmt, ##__VA_ARGS__);					\
++	__ext4_error_inode(inode, "", 0, block, err, " ");		\
++} while (0)
+ #define ext4_error_file(file, func, line, block, fmt, ...)		\
+ do {									\
+ 	no_printk(fmt, ##__VA_ARGS__);					\
+@@ -2858,10 +2863,15 @@ do {									\
+ 	no_printk(fmt, ##__VA_ARGS__);					\
+ 	__ext4_error(sb, "", 0, 0, 0, " ");				\
+ } while (0)
+-#define ext4_abort(sb, fmt, ...)					\
++#define ext4_error_err(sb, err, fmt, ...)				\
++do {									\
++	no_printk(fmt, ##__VA_ARGS__);					\
++	__ext4_error(sb, "", 0, err, 0, " ");				\
++} while (0)
++#define ext4_abort(sb, err, fmt, ...)					\
+ do {									\
+ 	no_printk(fmt, ##__VA_ARGS__);					\
+-	__ext4_abort(sb, "", 0, " ");					\
++	__ext4_abort(sb, "", 0, err, " ");				\
+ } while (0)
+ #define ext4_warning(sb, fmt, ...)					\
+ do {									\
