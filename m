@@ -2,45 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE89719A745
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 10:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FC819A769
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 10:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731850AbgDAI1k (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Apr 2020 04:27:40 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46294 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726197AbgDAI1k (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 04:27:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585729658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=A6T4NzJaYrpl8sbGk+/56cI+lPm3tJ8OvumXbnFWNJs=;
-        b=WE3GrsX+tVaULntMaSkIy2VRSqX8a/4hfCWWemEUdjaH3Y+n1sgPy4c72DiCzINxw5nr77
-        W2+hxNlTVD0/9GKnml0V3R2qYo9mbGRj7tErnpBu1AbwW80hrCu5mkmsR5Cw6mFWfenosA
-        Lta1hQumAfvWZgF79KFKDxqXQDj7xFA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-LPl4n2IlPVKc88TP8mowIg-1; Wed, 01 Apr 2020 04:27:37 -0400
-X-MC-Unique: LPl4n2IlPVKc88TP8mowIg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEE58800D53;
-        Wed,  1 Apr 2020 08:27:34 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-114-243.ams2.redhat.com [10.36.114.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4BEC296B72;
-        Wed,  1 Apr 2020 08:27:30 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAJfpegvvMVoNp1QeXEZiNucCeuUeDP4tKqVfq2F4koQKzjKmvw@mail.gmail.com>
-References: <CAJfpegvvMVoNp1QeXEZiNucCeuUeDP4tKqVfq2F4koQKzjKmvw@mail.gmail.com> <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk> <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com> <50caf93782ba1d66bd6acf098fb8dcb0ecc98610.camel@themaw.net>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     dhowells@redhat.com, Ian Kent <raven@themaw.net>,
+        id S1731343AbgDAIhf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Apr 2020 04:37:35 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:35528 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726197AbgDAIhe (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 04:37:34 -0400
+Received: by mail-ed1-f68.google.com with SMTP id a20so28717902edj.2
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Apr 2020 01:37:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7Pb5WxXo01OUrPYKfuGBoAi7COZxVQpsVUvg17nkA6w=;
+        b=DCWoZP8f/dOkjW5uYoUFpfMxBGbKeZuXpLeJJK8mTpafT0iBm07aAautrwxGNxNPuH
+         kwa+oyklRAFDRmQ9G/64ndypZ3iC1AQSMWoHkTRNK/CJ98o+a+FWbDoEu0LWLRzfWA12
+         BQCicYA5Tma7uC+qkVwM5zNRNQOh9LLVhWIgE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Pb5WxXo01OUrPYKfuGBoAi7COZxVQpsVUvg17nkA6w=;
+        b=UH4H4f7xjeaK5BjWa8/zitR5NiCi0ggv0NHzu+OLEAg0fhAHZoCUJz/a66Q65gacTy
+         e8Brt3nA/l6WMwVyAet8DstjV+zFlq7s2XqJEt9Ne/5//Myk2UuYcWvXomtlG/4MSCOH
+         /P8Bgmf4irvy5kN9YrsX9FWvMp+WQzRn09Yxd03VMOSNqAEL0s6IQ/NiU0kj5uOM5m5o
+         /UBZQLd44twbOfpLm5LnECV85lum5Fo2nYdvUftGDYcFZ+bMK8wLubp+y8Ul1XU7eaX8
+         HK/r6RF5v2EYCvwxufdP8ellKkuJ5J+nx4PExCvVPB5E04DQ+NRISOPipp3FHW2rfDFH
+         2o+Q==
+X-Gm-Message-State: ANhLgQ1RvNjT1hlBln6b0+BC7EydIDQjqHBlYr22JSux8e9jgnEhLmqo
+        LeanlmHAddnKdOsGqEaDZQlN8cOZ69CteKAuGH6Jbw==
+X-Google-Smtp-Source: ADFU+vv25aObxVqudxs/b4t6TUDhdA8HhF0PuGfXX6HSZBIvhctUM+bsT6LQzuUGvDuTHabWaoYU8+dr8sw8QJ3EQ4c=
+X-Received: by 2002:a50:8326:: with SMTP id 35mr19766368edh.134.1585730253359;
+ Wed, 01 Apr 2020 01:37:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk>
+ <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com>
+ <50caf93782ba1d66bd6acf098fb8dcb0ecc98610.camel@themaw.net>
+ <CAJfpegvvMVoNp1QeXEZiNucCeuUeDP4tKqVfq2F4koQKzjKmvw@mail.gmail.com> <2465266.1585729649@warthog.procyon.org.uk>
+In-Reply-To: <2465266.1585729649@warthog.procyon.org.uk>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 1 Apr 2020 10:37:22 +0200
+Message-ID: <CAJfpegsyeJmH3zJuseaAAY06fzgavSzpOtYr-1Mw8GR0cLcQbA@mail.gmail.com>
+Subject: Re: [PATCH 00/13] VFS: Filesystem information [ver #19]
+To:     David Howells <dhowells@redhat.com>
+Cc:     Ian Kent <raven@themaw.net>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
         Linux NFS list <linux-nfs@vger.kernel.org>,
@@ -58,31 +66,46 @@ Cc:     dhowells@redhat.com, Ian Kent <raven@themaw.net>,
         linux-fsdevel@vger.kernel.org,
         LSM <linux-security-module@vger.kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] VFS: Filesystem information [ver #19]
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2465265.1585729649.1@warthog.procyon.org.uk>
-Date:   Wed, 01 Apr 2020 09:27:29 +0100
-Message-ID: <2465266.1585729649@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Miklos Szeredi <miklos@szeredi.hu> wrote:
+On Wed, Apr 1, 2020 at 10:27 AM David Howells <dhowells@redhat.com> wrote:
+>
+> Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> > According to dhowell's measurements processing 100k mounts would take
+> > about a few seconds of system time (that's the time spent by the
+> > kernel to retrieve the data,
+>
+> But the inefficiency of mountfs - at least as currently implemented - scales
+> up with the number of individual values you want to retrieve, both in terms of
+> memory usage and time taken.
 
-> According to dhowell's measurements processing 100k mounts would take
-> about a few seconds of system time (that's the time spent by the
-> kernel to retrieve the data,
+I've taken that into account when guesstimating a "few seconds per
+100k entries".  My guess is that there's probably an order of
+magnitude difference between the performance of a fs based interface
+and a binary syscall based interface.  That could be reduced somewhat
+with a readfile(2) type API.
 
-But the inefficiency of mountfs - at least as currently implemented - scales
-up with the number of individual values you want to retrieve, both in terms of
-memory usage and time taken.
+But the point is: this does not matter.  Whether it's .5s or 5s is
+completely irrelevant, as neither is going to take down the system,
+and userspace processing is probably going to take as much, if not
+more time.  And remember, we are talking about stopping and starting
+the automount daemon, which is something that happens, but it should
+not happen often by any measure.
 
-With fsinfo(), I've tried to batch values together where it makes sense - and
-there's no lingering memory overhead - no extra inodes, dentries and files
-required.
+> With fsinfo(), I've tried to batch values together where it makes sense - and
+> there's no lingering memory overhead - no extra inodes, dentries and files
+> required.
 
-David
+The dentries, inodes and files in your test are single use (except the
+root dentry) and can be made ephemeral if that turns out to be better.
+My guess is that dentries belonging to individual attributes should be
+deleted on final put, while the dentries belonging to the mount
+directory can be reclaimed normally.
 
+Thanks,
+Miklos
