@@ -2,68 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E57C119B711
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 22:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AC919B71C
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 22:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733043AbgDAUe6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Apr 2020 16:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54408 "EHLO mail.kernel.org"
+        id S1733021AbgDAUgn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Apr 2020 16:36:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733021AbgDAUe5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 1 Apr 2020 16:34:57 -0400
-Received: from ebiggers-linuxstation.mtv.corp.google.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732337AbgDAUgn (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 1 Apr 2020 16:36:43 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 916E92082F;
-        Wed,  1 Apr 2020 20:34:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 514BA20784;
+        Wed,  1 Apr 2020 20:36:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585773296;
-        bh=+1NW6Mkzb7xHuLjpEh9AxTsAlZnBD98KP1zGLJyrNp0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AqHoq1ighwkpVcshZ5YOjoAvrC09TNdJZ7b2h12P3Ev2MJuQQHm4sZgvnESK/64v/
-         WtuePhrsNA4fAHrtPvCFlLnRoQBOU0ejGI6psT4KFFpfUXBcqEiwbmEv/96fQRruWC
-         awizldlvg7/cIKcu5GJuX5G1tVWQZvXXKiMFvic8=
+        s=default; t=1585773402;
+        bh=BGEIqF3YhkeU8jLK+6beLZYFBd2iXU20xNB4/tQPfxg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zze/sIJT/BdLiEH2jgJUkpRo4EwiT2RsINo5fLxZ2GNoAXCgWQXklv2l2F8Dh3Imy
+         pYqpo8QCNx7mWJKY8aRP4i1Mkn7YoBbC7e6TWXDDYTdz2aGSDioAgNvKuAS10EL7QG
+         0JqGrRUuVXC0dD4+THdTcI++EA3zk8coRKbo06IE=
+Date:   Wed, 1 Apr 2020 13:36:40 -0700
 From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-ext4@vger.kernel.org
-Cc:     linux-fscrypt@vger.kernel.org
-Subject: [PATCH 4/4] tune2fs.8: document the stable_inodes feature
-Date:   Wed,  1 Apr 2020 13:32:39 -0700
-Message-Id: <20200401203239.163679-5-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.26.0.rc2.310.g2932bb562d-goog
-In-Reply-To: <20200401203239.163679-1-ebiggers@kernel.org>
-References: <20200401203239.163679-1-ebiggers@kernel.org>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     David Howells <dhowells@redhat.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: Re: Exporting ext4-specific information through fsinfo attributes
+Message-ID: <20200401203640.GD201933@gmail.com>
+References: <2461554.1585726747@warthog.procyon.org.uk>
+ <20200401162744.GB201933@gmail.com>
+ <20200401190553.GC56931@magnolia>
+ <20200401192840.GC201933@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200401192840.GC201933@gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+On Wed, Apr 01, 2020 at 12:28:40PM -0700, Eric Biggers wrote:
+> We maybe should make tune2fs -U refuse to operate on filesystems that have the
+> stable_inodes feature set.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- misc/tune2fs.8.in | 7 +++++++
- 1 file changed, 7 insertions(+)
+I sent patches to do this and clean up a few other things:
 
-diff --git a/misc/tune2fs.8.in b/misc/tune2fs.8.in
-index 3cf1f5ed..582d1da5 100644
---- a/misc/tune2fs.8.in
-+++ b/misc/tune2fs.8.in
-@@ -630,6 +630,13 @@ Limit the number of backup superblocks to save space on large filesystems.
- .B Tune2fs
- currently only supports setting this filesystem feature.
- .TP
-+.B stable_inodes
-+Prevent the filesystem from being shrunk or having its UUID changed, in order to
-+allow the use of specialized encryption settings that make use of the inode
-+numbers and UUID.
-+.B Tune2fs
-+currently only supports setting this filesystem feature.
-+.TP
- .B uninit_bg
- Allow the kernel to initialize bitmaps and inode tables lazily, and to
- keep a high watermark for the unused inodes in a filesystem, to reduce
--- 
-2.26.0.rc2.310.g2932bb562d-goog
+https://lkml.kernel.org/linux-ext4/20200401203239.163679-1-ebiggers@kernel.org
 
+- Eric
