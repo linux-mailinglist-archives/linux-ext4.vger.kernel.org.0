@@ -2,136 +2,210 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3045319A470
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 06:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D2719A4AE
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 07:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731737AbgDAExf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Apr 2020 00:53:35 -0400
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:14825 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbgDAExf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 00:53:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1585716814; x=1617252814;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=vGCpIxA+MU+489NaFNjwrexFb5tDoNIyp3zU+Ht7q7Q=;
-  b=bglWIXsPel5DE4yKmvS95ipwD6vg5wINYcGFmWD4f4YboqA2BXQURH4h
-   UN/Ks6hHTLYskgAK2pg4Xi0hcuaESmfzXv38iWru/endH+lp+VXzMkGNr
-   ip/Sr1k9byXkgDbCpnvnegafqNxI92InxJqxqA9/nHiaFW84GTjBHcfB0
-   Fut1VW5OjDO9JfhlS/D8Onuy3MB2wZPieR4GGjapm9OChK+DGdIrSJMGn
-   6Eq6pFKSmU+Q5ID+GTN761+wH4mCfVaPSuANX0qgcdB0l0F4eK3eBs0d3
-   op854MM3mqKTrEU0GI8lBAJlgQXMQYq0PMjZ506QNyWYDT9zZ92ydsxsw
-   Q==;
-IronPort-SDR: sit8bdFCGZYglT/O74GXb1iydqEOabAUzoiSmKcFp7qwVIeJDA16CvWJBt4saTR5Yn0l3OXkfB
- sge+pYcuwDnErnXtDhzzOJ8I4stFXgxMfFkCUih4lRK1rEvVSsL7DdYzc2MpFzYBUn9fjw4Haf
- VeDRyTeboBI2y2myxbNTnQxYDcFYFAM0VgcKII0hI4G3sgEPBjjvNNua6Ry1brXpitUJRZsZ74
- lsYhKNygB/0OW7bubl724QyT0ZfdmBz7CJl7skS++HNxo5n9+W60wrEInWqEAw/8a+mA8rj6tC
- TOI=
-X-IronPort-AV: E=Sophos;i="5.72,330,1580745600"; 
-   d="scan'208";a="134208206"
-Received: from mail-bn8nam11lp2175.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.175])
-  by ob1.hgst.iphmx.com with ESMTP; 01 Apr 2020 12:53:29 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DTR88GfyQ0ov9CrNyicsH7ta2NCiejgO55HKcK+uroL1EqbO1xTnxBwdpIkpiKd74ozuHaLqeZqHe69TjiBtGYFB+AsJB/BcbQrhwAqVPeFQKnLVSH5hkcxIpRUvwNYOdf0CBQtb+nodAswseG3Y2ah+/f7Q0KteJMYDKbzlhFPPoNcVJGbM+/2TGGwbZE9QywRKmsXQapXXeOcR68vw1/qJK3bAyaQrnHuXWad0JuOTv7RuqVJfqq6WzmhCQHOapl6kArj/tOrhymbFFZ6ry4X+YUkEVBdIj+n/Lk0ZTgHwlpMiZVdyXwJwOkVdaTLr3nz9UiojxQn2uptRD6mg5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vGCpIxA+MU+489NaFNjwrexFb5tDoNIyp3zU+Ht7q7Q=;
- b=caaRxeTNBfOWmkFoWgUKhTNZ7YAZyC+85ibhOLjmjQvrCxoEhyLRih+jIxVyc4wvs5r20fEIU6i4anWK1L/+Ub/M4Eg537DcEkumCBs2G22m7sMlPYh6Pi/db2ZSk859F8zL4BYuTA2jc/4pdvdQQQMrAd/1IQ6atz2wDbHSs/ncG+Xfflp+j/fXqKhlmAb+qqPi7qNEJlNDkmCaoMYlvrwm4s5rhM/oa0XfdDrclOu/FphL9yWv7DXQgsxgcsA8GD2mqTJJm1sLJEdimdH6u4fQUMu/xsAvaXkzCUIdmgZJ3FSpeYALYX21mgVewFWCDmvSsz7YKD1fA/XKZjYdHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vGCpIxA+MU+489NaFNjwrexFb5tDoNIyp3zU+Ht7q7Q=;
- b=n9spCt6VtnqHeN955596BT6QICHcSFD87xAzS2Ww+5nXiheFs+e4BPsJ1vM/zQlYCP5igBkFQG/RmePPdGBE8yAxSelTn6/5aCbs3b3ZkZlP0UGjpuuP8PH7Xt/GI1UfGG2EkLKIHMHqEo+2I6ze6mYSIXC4ulFqjMOBOmoe3zY=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB3863.namprd04.prod.outlook.com (2603:10b6:a02:b0::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20; Wed, 1 Apr
- 2020 04:53:28 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::d826:82b2:764f:9733]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::d826:82b2:764f:9733%7]) with mapi id 15.20.2856.019; Wed, 1 Apr 2020
- 04:53:28 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     "hch@lst.de" <hch@lst.de>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "jthumshirn@suse.de" <jthumshirn@suse.de>,
-        "minwoo.im.dev@gmail.com" <minwoo.im.dev@gmail.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "andrea.parri@amarulasolutions.com" 
-        <andrea.parri@amarulasolutions.com>,
-        "hare@suse.com" <hare@suse.com>, "tj@kernel.org" <tj@kernel.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "khlebnikov@yandex-team.ru" <khlebnikov@yandex-team.ru>,
-        Ajay Joshi <Ajay.Joshi@wdc.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "houtao1@huawei.com" <houtao1@huawei.com>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 0/4] block: Add support for REQ_OP_ASSIGN_RANGE
-Thread-Topic: [PATCH 0/4] block: Add support for REQ_OP_ASSIGN_RANGE
-Thread-Index: AQHWBfs2xrvn192370GLlrzktUGYXA==
-Date:   Wed, 1 Apr 2020 04:53:28 +0000
-Message-ID: <BYAPR04MB49658D24374293AEE6D43C2E86C90@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20200329174714.32416-1-chaitanya.kulkarni@wdc.com>
- <yq1mu7w546h.fsf@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Chaitanya.Kulkarni@wdc.com; 
-x-originating-ip: [2605:e000:3e40:3000:2c9f:112f:76b7:3770]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 05daf340-39cc-4485-43d1-08d7d5f89eb3
-x-ms-traffictypediagnostic: BYAPR04MB3863:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR04MB3863B480E03AA1E43EBED92586C90@BYAPR04MB3863.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-forefront-prvs: 03607C04F0
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(366004)(376002)(346002)(39860400002)(396003)(136003)(55016002)(66946007)(6916009)(7416002)(71200400001)(478600001)(558084003)(33656002)(7696005)(76116006)(53546011)(186003)(5660300002)(4326008)(6506007)(316002)(9686003)(66556008)(2906002)(54906003)(64756008)(81166006)(8936002)(86362001)(81156014)(66446008)(8676002)(52536014)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1Ctbo+5vXCWMxOLnbT3l/j+CW0W4jXjFO9uMcwpKxwrBicEQSrwii+UcH5u/5w14HZaisKcGwSqJSrUrYmAqnrX4UyAnn0xb4U/fBZrDWKpJx4QOaICVC64p0bDwr2KMof21dP9JG5zXw9wTE3Ix5HDCMAZj77XETZ1Bh3b3lxUqtK2l00aL7j5ewL2NgocodLR1YyJjPMII6byjxzwL2e6v69ulfHbCrkl2uXzPPa1cmK7QuwO85fVKCcZZVoeXUJZR92IXg3VJ5MIISfpPPtqMCzezhQksYYMQxo+mSArDFoP8qJ93Z6LKuF3s5rek5I6wrV3CPwZf3T2Hu+kCjaFfPtwuRb747bqycb488yLuNhO0HVca56gQZLQi6QFPM+uJlTPIxHkTTuSvft9h3uWr0/jPduPvJX4Jlu7qFs2hkGlinbFYD2lsmdcgo/jg
-x-ms-exchange-antispam-messagedata: 7pgyLvkdT7Xu+ukAR7fAguDLhWcJo1uKNaS7HZzzzSR75qhoZwZCHLs1Gc57rXrgWAkcc/eTch93suRsjUL+LKsprW9bNs8g6Hi38AIMxpelodCMI9A76hpgeo7Iumi6KQn1PMi05h7ovwy6A1rG7fC1DTiPRGMZ4kjGv2/hni9grPVOfoikvDG1xH3IT1nAdo1dY9iaZgQlhpB1fgRrWw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1731721AbgDAFWy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Apr 2020 01:22:54 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:56977 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726125AbgDAFWy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 01:22:54 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id F2F76580629;
+        Wed,  1 Apr 2020 01:22:51 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 01 Apr 2020 01:22:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm2; bh=
+        CL/q7l0x3aGF1c50Pvo/bYiApj1J1O+uucbuoLSx1xE=; b=YSE6eE459CJfuGw/
+        KbrwFfyRa0gg8orYFNDT1tkZZHqdyzQh+Y/lEOsWSpZ7WS+BlK8DfgVf43yIWwqv
+        hgKwC228P6WSTxXi7HACpyuDW6fMmIcW/tOfsi+bJCw8oL9OAaNTHWOHvg/lMgbg
+        EVbSFfd+0M1pPohK/2Cere/8HanSJh1PGBuh+ngTkptkbWx200FciPtjJXlNp3Lf
+        5LXeQ43F2bPrnmSBw1q4FiM/bFi1AYjDdHdh2EBJp7gZCzKvanxquJ/7HbIfijfL
+        ppPASbAOKgSES8AueIq1N/R13Cxu9wGgXel2VfLAziRyLXQo1PiyLjRquBUlxB2j
+        lrbv4g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=CL/q7l0x3aGF1c50Pvo/bYiApj1J1O+uucbuoLSx1
+        xE=; b=DA9BdxY1gioAg0NXnQ6GEQUwVfG930YnigMDzI32lurqK2x+HnaIRgPY2
+        b/52LdDuEc6hM13+h8g90aUPwpd+vgg89lSYHhYz76Giic6urXITmUedZUZX/yfe
+        8abynnwl9VsSBavIlWpJGKpXs8YxtRF2BhXiKGah+8p9tUk9c0bCCevVKRAw/JxF
+        GSZnVSDzzoEj1kpB64GZRUaEwq6RZTx0vN21zou4mZsV+AmOB8KwxwAq3/UhPul+
+        joY8ZJY5jGw1T3sbqDRYuDkmUNBtE6fnb41CBmXPE68f1i01fHMyUR7ijRrkCdvs
+        CznAQdpIQgw1D/Ffa5eIYeRYHkszg==
+X-ME-Sender: <xms:KSWEXs8mYEqZr-PT8YRJZeV3CgoRT2MpBIy-OwEg8sMKb7mPpeyk4w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrtddugdehjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
+    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecukfhppeduudekrddvtdelrd
+    duieeirddvfedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:KSWEXiN4FCOB8HlaGmv7_HS4bbSYTTUIxVk8aTB9DU36zVcjaB8i9w>
+    <xmx:KSWEXoVZ17upHiMJctNk3NlNtlj2GRKJj8pzmgkDmFr-rUEX1-Rjiw>
+    <xmx:KSWEXjnDqnh8Peyc6NFaUnxAOCGSYTMx4QEdR7niPqEx_aeNdOKg8w>
+    <xmx:KyWEXobvzDEnnkTqTPFREfiAa5Uu8gRTac1op0NMRSK6eWSZHRpvRA>
+Received: from mickey.themaw.net (unknown [118.209.166.232])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6F4DD306CC67;
+        Wed,  1 Apr 2020 01:22:42 -0400 (EDT)
+Message-ID: <50caf93782ba1d66bd6acf098fb8dcb0ecc98610.camel@themaw.net>
+Subject: Re: [PATCH 00/13] VFS: Filesystem information [ver #19]
+From:   Ian Kent <raven@themaw.net>
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        David Howells <dhowells@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux NFS list <linux-nfs@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 01 Apr 2020 13:22:38 +0800
+In-Reply-To: <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com>
+References: <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk>
+         <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05daf340-39cc-4485-43d1-08d7d5f89eb3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Apr 2020 04:53:28.5209
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: t1LvrvKwbWyWahJYNGl3iS5SIWVmRfRZ71duSlsNR3xWR56kFfVQc0EcFTdP/YyLn3dA0ujSPjCm1o0GcFugc8aMNC1LtfRT2mJnDZpgz74=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3863
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 3/31/20 7:31 PM, Martin K. Petersen wrote:=0A=
-> Chaitanya,=0A=
->=0A=
->> This patchset introduces REQ_OP_ASSIGN_RANGE, which is going=0A=
->> to be used for forwarding user's fallocate(0) requests into=0A=
->> block device internals.=0A=
-> s/assign_range/allocate/g=0A=
->=0A=
-Okay, will send out the V2.=0A=
-=0A=
+On Wed, 2020-03-18 at 17:05 +0100, Miklos Szeredi wrote:
+> On Wed, Mar 18, 2020 at 4:08 PM David Howells <dhowells@redhat.com>
+> wrote:
+> 
+> > ============================
+> > WHY NOT USE PROCFS OR SYSFS?
+> > ============================
+> > 
+> > Why is it better to go with a new system call rather than adding
+> > more magic
+> > stuff to /proc or /sysfs for each superblock object and each mount
+> > object?
+> > 
+> >  (1) It can be targetted.  It makes it easy to query directly by
+> > path.
+> >      procfs and sysfs cannot do this easily.
+> > 
+> >  (2) It's more efficient as we can return specific binary data
+> > rather than
+> >      making huge text dumps.  Granted, sysfs and procfs could
+> > present the
+> >      same data, though as lots of little files which have to be
+> >      individually opened, read, closed and parsed.
+> 
+> Asked this a number of times, but you haven't answered yet:  what
+> application would require such a high efficiency?
+
+Umm ... systemd and udisks2 and about 4 others.
+
+A problem I've had with autofs for years is using autofs direct mount
+maps of any appreciable size cause several key user space applications
+to consume all available CPU while autofs is starting or stopping which
+takes a fair while with a very large mount table. I saw a couple of
+applications affected purely because of the large mount table but not
+as badly as starting or stopping autofs.
+
+Maps of 5,000 to 10,000 map entries can almost be handled, not uncommon
+for heavy autofs users in spite of the problem, but much larger than
+that and you've got a serious problem.
+
+There are problems with expiration as well but that's more an autofs
+problem that I need to fix.
+
+To be clear it's not autofs that needs the improvement (I need to
+deal with this in autofs itself) it's the affect that these large
+mount tables have on the rest of the user space and that's quite
+significant.
+
+I can't even think about resolving my autofs problem until this
+problem is resolved and handling very large numbers of mounts
+as efficiently as possible must be part of that solution for me
+and I think for the OS overall too.
+
+Ian
+> 
+> Nobody's suggesting we move stat(2) to proc interfaces, and AFAIK
+> nobody suggested we move /proc/PID/* to a binary syscall interface.
+> Each one has its place, and I strongly feel that mount info belongs
+> in
+> the latter category.    Feel free to prove the opposite.
+> 
+> >  (3) We wouldn't have the overhead of open and close (even adding a
+> >      self-contained readfile() syscall has to do that internally
+> 
+> Busted: add f_op->readfile() and be done with all that.   For example
+> DEFINE_SHOW_ATTRIBUTE() could be trivially moved to that interface.
+> 
+> We could optimize existing proc, sys, etc. interfaces, but it's not
+> been an issue, apparently.
+> 
+> >  (4) Opening a file in procfs or sysfs has a pathwalk overhead for
+> > each
+> >      file accessed.  We can use an integer attribute ID instead
+> > (yes, this
+> >      is similar to ioctl) - but could also use a string ID if that
+> > is
+> >      preferred.
+> > 
+> >  (5) Can easily query cross-namespace if, say, a container manager
+> > process
+> >      is given an fs_context that hasn't yet been mounted into a
+> > namespace -
+> >      or hasn't even been fully created yet.
+> 
+> Works with my patch.
+> 
+> >  (6) Don't have to create/delete a bunch of sysfs/procfs nodes each
+> > time a
+> >      mount happens or is removed - and since systemd makes much use
+> > of
+> >      mount namespaces and mount propagation, this will create a lot
+> > of
+> >      nodes.
+> 
+> Not true.
+> 
+> > The argument for doing this through procfs/sysfs/somemagicfs is
+> > that
+> > someone using a shell can just query the magic files using ordinary
+> > text
+> > tools, such as cat - and that has merit - but it doesn't solve the
+> > query-by-pathname problem.
+> > 
+> > The suggested way around the query-by-pathname problem is to open
+> > the
+> > target file O_PATH and then look in a magic directory under procfs
+> > corresponding to the fd number to see a set of attribute files[*]
+> > laid out.
+> > Bash, however, can't open by O_PATH or O_NOFOLLOW as things
+> > stand...
+> 
+> Bash doesn't have fsinfo(2) either, so that's not really a good
+> argument.
+> 
+> Implementing a utility to show mount attribute(s) by path is trivial
+> for the file based interface, while it would need to be updated for
+> each extension of fsinfo(2).   Same goes for libc, language bindings,
+> etc.
+> 
+> Thanks,
+> Miklos
+
