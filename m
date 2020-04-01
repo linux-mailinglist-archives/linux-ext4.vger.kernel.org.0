@@ -2,100 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 406C919AEA3
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 17:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4560119AF17
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 17:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732707AbgDAPUs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Apr 2020 11:20:48 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54578 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732640AbgDAPUs (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 11:20:48 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 031FJVI4011138;
-        Wed, 1 Apr 2020 15:20:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=0wkSFGv6en52wWFSe07yb+PZwIeIvGqVaTSkYhMWwaE=;
- b=D1po6vE/SAPCIhj0HJXFNjCmnR3B0VjPZEPHaSb51H1W3fH31anBfwko9eQ6G4vdjp8c
- /vDsu+B7a01e2P6mdyqT2iXCjg3vB91NhFUfenzxMITfZlqZp73TLIH5B+KeqHVw2XiX
- AHPkpwP0Jqz2VxGr9Yw0JvmF2e1wVKcwOI1ojeQIdioP3SYTIkzPWJrjtsfTKGTRgC74
- ZuNVCBcV6ycvcEOQaqj6hGXUHU+9obnhEig8QYd8ZfMS2s3ZTKZq0abW5yj4oHV4P+LD
- J3Ewf7iN3dB+KEzcqlgHiIMLhFgaAJ1rfy2fLMeGgqREhNPjiAiLQ8LXqXKVzBFB1KXE Ew== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 303cev647b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Apr 2020 15:20:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 031FH64g042373;
-        Wed, 1 Apr 2020 15:18:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 304sjkm4fp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 01 Apr 2020 15:18:36 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 031FIZXQ026762;
-        Wed, 1 Apr 2020 15:18:36 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 01 Apr 2020 08:18:35 -0700
-Date:   Wed, 1 Apr 2020 08:18:37 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
-Subject: Re: Exporting ext4-specific information through fsinfo attributes
-Message-ID: <20200401151837.GB56931@magnolia>
-References: <2461554.1585726747@warthog.procyon.org.uk>
+        id S1733068AbgDAPv4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Apr 2020 11:51:56 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:51876 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732889AbgDAPvz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 11:51:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585756314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Hue9l1/UJQF2U4lKyhSbPFzaMnHT5K5mJD7PcBNrM4=;
+        b=c2ypOqQpiZB+D9K0IxvRsf2huk/tx7a+qg27vupMRMBFb0oSk0TFcMeyo6+LLabjXxEEkz
+        gt27cysjL68cE7KsZUYdOdTfEINfktwxA+Oq/IBQYE21ZGXqQRyIQXebJ4WTS+Xozg24FX
+        KYt7exPiHq3QvK+/3ZLn9u1gSkv5veA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-W2iZb2t4MKawS3j31oos7A-1; Wed, 01 Apr 2020 11:51:53 -0400
+X-MC-Unique: W2iZb2t4MKawS3j31oos7A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1338113F7;
+        Wed,  1 Apr 2020 15:51:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-114-243.ams2.redhat.com [10.36.114.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D631696B87;
+        Wed,  1 Apr 2020 15:51:43 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAJfpeguxACC68bMhS-mNm4m6ytrKgs1--jbF5X3tBiPf_iG1jg@mail.gmail.com>
+References: <CAJfpeguxACC68bMhS-mNm4m6ytrKgs1--jbF5X3tBiPf_iG1jg@mail.gmail.com> <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk> <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com> <50caf93782ba1d66bd6acf098fb8dcb0ecc98610.camel@themaw.net> <CAJfpegvvMVoNp1QeXEZiNucCeuUeDP4tKqVfq2F4koQKzjKmvw@mail.gmail.com> <2465266.1585729649@warthog.procyon.org.uk> <CAJfpegsyeJmH3zJuseaAAY06fzgavSzpOtYr-1Mw8GR0cLcQbA@mail.gmail.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     dhowells@redhat.com, Ian Kent <raven@themaw.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux NFS list <linux-nfs@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-ext4@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] VFS: Filesystem information [ver #19]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2461554.1585726747@warthog.procyon.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 mlxlogscore=782 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004010134
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
- clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
- suspectscore=0 mlxscore=0 impostorscore=0 mlxlogscore=844 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004010134
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2583799.1585756303.1@warthog.procyon.org.uk>
+Date:   Wed, 01 Apr 2020 16:51:43 +0100
+Message-ID: <2583800.1585756303@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 08:39:07AM +0100, David Howells wrote:
-> Hi Ted,
-> 
-> Whilst we were at Vault, I asked you if there was any live ext4 information
-> that it could be useful to export through fsinfo().  I've implemented a patch
-> that exports six superblock timestamps:
-> 
-> 	FSINFO_ATTR_EXT4_TIMESTAMPS: 
-> 		mkfs    : 2016-02-26 00:37:03
-> 		mount   : 2020-03-31 21:57:30
-> 		write   : 2020-03-31 21:57:28
-> 		fsck    : 2018-12-17 23:32:45
-> 		1st-err : -
-> 		last-err: -
-> 
-> but is there anything else that could be of interest?
+Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-The entire superblock as a binary blob? :)
+> For   30000 mounts, f=    146400us f2=    136766us p=   1406569us p2=
+>   221669us; p=9.6*f p=10.3*f2 p=6.3*p2
 
-This way we can begin moving dumpe2fs/tune2fs away from reading the raw
-disk on live filesystems.
+	f =    146400us
+	f2=    136766us
+	p =   1406569us  <--- Order of magnitude slower
+	p2=    221669us
 
-(I'd make the same noises about xfs, but less urgently since we already
-have ioctls for that purpose.)
+And more memory used because it's added a whole bunch of inodes and dentries
+to the cache.  For each mount that's a pair for each dir and a pair for each
+file within the dir.  So for the two files my test is reading, for 30000
+mounts, that's 90000 dentries and 90000 inodes in mountfs alone.
 
---D
+	(gdb) p sizeof(struct dentry)
+	$1 = 216
+	(gdb) p sizeof(struct inode)
+	$2 = 696
+	(gdb) p (216*696)*30000*3/1024/1024
+	$3 = 615
 
-> 
-> Thanks,
-> David
-> 
+so 615 MiB of RAM added to the caches in an extreme case.
+
+We're seeing customers with 10000+ mounts - that would be 205 MiB, just to
+read two values from each mount.
+
+I presume you're not going through /proc/fdinfo each time as that would add
+another d+i - for >1GiB added to the caches for 30000 mounts.
+
+David
+
