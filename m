@@ -2,88 +2,71 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 923F019A653
-	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 09:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D67A19A662
+	for <lists+linux-ext4@lfdr.de>; Wed,  1 Apr 2020 09:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731992AbgDAHfE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Apr 2020 03:35:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12595 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731870AbgDAHfD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 1 Apr 2020 03:35:03 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 818B5F262207DA92C326;
-        Wed,  1 Apr 2020 15:35:00 +0800 (CST)
-Received: from localhost (10.173.223.234) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Wed, 1 Apr 2020
- 15:34:51 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] ext4: Fix build error while CONFIG_PRINTK is n
-Date:   Wed, 1 Apr 2020 15:30:38 +0800
-Message-ID: <20200401073038.33076-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1731889AbgDAHjM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Apr 2020 03:39:12 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:30348 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731870AbgDAHjM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 03:39:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585726751;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=6DBCWg11wd9ugzi5HHdFRKDsIzVlbKlyVJ5RvLmNdUs=;
+        b=KGfthJc2nklgIwhYvVAucbzgwwwtW/vIk1vWWjZSaBYClYs80BnShPJxQwxtyNb6gNxKE8
+        XOI9R6c8Ed4Y0WP1odDsecwq5Heg5ymaRyUVIabOcD9fu+XucSgaban4jVjt/k/zQriWMW
+        KrC0efFTSwlQS7/YmxI9N9zlwWlfjng=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-pZr1316LOJeYXx6wU0cW8A-1; Wed, 01 Apr 2020 03:39:10 -0400
+X-MC-Unique: pZr1316LOJeYXx6wU0cW8A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B5B5800D5B;
+        Wed,  1 Apr 2020 07:39:09 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-114-243.ams2.redhat.com [10.36.114.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2537219C6A;
+        Wed,  1 Apr 2020 07:39:07 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     tytso@mit.edu
+cc:     dhowells@redhat.com, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org
+Subject: Exporting ext4-specific information through fsinfo attributes
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.173.223.234]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2461553.1585726747.1@warthog.procyon.org.uk>
+Date:   Wed, 01 Apr 2020 08:39:07 +0100
+Message-ID: <2461554.1585726747@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-fs/ext4/balloc.c: In function ‘ext4_wait_block_bitmap’:
-fs/ext4/balloc.c:519:3: error: implicit declaration of function ‘ext4_error_err’; did you mean ‘ext4_error’? [-Werror=implicit-function-declaration]
-   ext4_error_err(sb, EIO, "Cannot read block bitmap - "
-   ^~~~~~~~~~~~~~
+Hi Ted,
 
-Add missing stub helper and fix ext4_abort.
+Whilst we were at Vault, I asked you if there was any live ext4 information
+that it could be useful to export through fsinfo().  I've implemented a patch
+that exports six superblock timestamps:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 2ea2fc775321 ("ext4: save all error info in save_error_info() and drop ext4_set_errno()")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- fs/ext4/ext4.h | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+	FSINFO_ATTR_EXT4_TIMESTAMPS: 
+		mkfs    : 2016-02-26 00:37:03
+		mount   : 2020-03-31 21:57:30
+		write   : 2020-03-31 21:57:28
+		fsck    : 2018-12-17 23:32:45
+		1st-err : -
+		last-err: -
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index eacd2f9cc833..aa8466d28787 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2848,6 +2848,11 @@ do {									\
- 	no_printk(fmt, ##__VA_ARGS__);					\
- 	__ext4_error_inode(inode, "", 0, block, 0, " ");		\
- } while (0)
-+#define ext4_error_inode_err(inode, func, line, block, err, fmt, ...)	\
-+do {									\
-+	no_printk(fmt, ##__VA_ARGS__);					\
-+	__ext4_error_inode(inode, "", 0, block, 0, " ");		\
-+} while (0)
- #define ext4_error_file(file, func, line, block, fmt, ...)		\
- do {									\
- 	no_printk(fmt, ##__VA_ARGS__);					\
-@@ -2858,10 +2863,15 @@ do {									\
- 	no_printk(fmt, ##__VA_ARGS__);					\
- 	__ext4_error(sb, "", 0, 0, 0, " ");				\
- } while (0)
--#define ext4_abort(sb, fmt, ...)					\
-+#define ext4_error_err(sb, err, fmt, ...)				\
-+do {									\
-+	no_printk(fmt, ##__VA_ARGS__);					\
-+	__ext4_error((sb), "", 0, 0, 0, " ");				\
-+} while (0)
-+#define ext4_abort(sb, err, fmt, ...)					\
- do {									\
- 	no_printk(fmt, ##__VA_ARGS__);					\
--	__ext4_abort(sb, "", 0, " ");					\
-+	__ext4_abort(sb, "", 0, 0, " ");				\
- } while (0)
- #define ext4_warning(sb, fmt, ...)					\
- do {									\
--- 
-2.17.1
+but is there anything else that could be of interest?
 
+Thanks,
+David
 
