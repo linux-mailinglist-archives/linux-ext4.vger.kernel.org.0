@@ -2,166 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 809D319BA3C
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 04:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D81419BA4A
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 04:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732664AbgDBCTm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Apr 2020 22:19:42 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:33050 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732560AbgDBCTm (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 22:19:42 -0400
-Received: by mail-pl1-f193.google.com with SMTP id ay1so774817plb.0
-        for <linux-ext4@vger.kernel.org>; Wed, 01 Apr 2020 19:19:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=cRVGT7W3LSRRhDk/rlNVm/PGeYNXtUFpf2OpNSP8aCM=;
-        b=DqlOzrYRWebqHdkkoa2qFY3+eudf2pM6EUhuM1CofZ9vXs32ZXpsmkysBD9K7ebG9P
-         2bs+5Fbm+n4irVdwPYDmv7Iashc7AabNVnLn8jqXdYilnfi+wyhskwbvYoy2cZwq44Xz
-         iptdPKK8LwsVIPJahctTYWBLu3IeT+LrtPYoxoTGlbcw5RBwqLvKpqpDGrtcXeGI9jrF
-         o9REK3cZB56kkER8wXJ7VZ38uFG0EblqiTRj4q6CQ55WPWIzp3gc2KeMaHcrOAJqAWin
-         E93iINt3+sFzneWuRBDd7i+CwbRQ+ytR5c2aKx7FRQ2QmWfUDlYbwcFBX4MwFkag++lr
-         FS9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=cRVGT7W3LSRRhDk/rlNVm/PGeYNXtUFpf2OpNSP8aCM=;
-        b=ofAlFrue4RQt8xw2tXDRDpUOAjbeEgrk3AYkTRTGTKJu2E9vk1dZ2XeZZr8pT0coaK
-         b5WgMmh/JwG0fsN14oZ8k75ffxwZE2Ui1X2gFfsAiUTHYSkWLgvn7Po889os7o0jt16I
-         61o6E2gfKE+lLVlx/GkX63fmgb+ImghofyGeYSVu6iGfVPFqVVZUMd4Kx1vtU7PAvwjE
-         u08h+lseRwY97dnoh6jsm8mggT0UnpyJLKQ+/G26cEZfqxe7ypr4Qo5vHebtknMR8PdL
-         JqIEi1nTDBqOegjFKMbcnLSociLgUvBGR0hnwp5+jraybidkOvVoOUl5IXowWc1Ra/G5
-         ywyQ==
-X-Gm-Message-State: AGi0PubRKzUb9Rk/Kzy+7UgO2ijSx1Db3XbwW6bHFcuyYw3nh/KaBTq8
-        58ZL3ZWGHfb5Ez5Ek7CvM0Jvgw==
-X-Google-Smtp-Source: APiQypLpXkU5bSVRh2yjAef1xnXw6e4GTt7bV6enrqrtV7qe+m16wK+MIVa8o35unsuITXyBEt17Dg==
-X-Received: by 2002:a17:902:207:: with SMTP id 7mr823113plc.216.1585793981023;
-        Wed, 01 Apr 2020 19:19:41 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id b189sm2543041pfa.209.2020.04.01.19.19.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 01 Apr 2020 19:19:40 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <C0761869-5FCD-4CC7-9635-96C18744A0F8@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_3DA047BA-35EF-48C4-A8AB-ACB70041D364";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 1/4] tune2fs: prevent changing UUID of fs with
- stable_inodes feature
-Date:   Wed, 1 Apr 2020 20:19:38 -0600
-In-Reply-To: <20200401203239.163679-2-ebiggers@kernel.org>
-Cc:     linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org
-To:     Eric Biggers <ebiggers@kernel.org>
-References: <20200401203239.163679-1-ebiggers@kernel.org>
- <20200401203239.163679-2-ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3273)
+        id S1733230AbgDBC3X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Apr 2020 22:29:23 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:47118 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732462AbgDBC3X (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 1 Apr 2020 22:29:23 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 90C198785B598A99A593;
+        Thu,  2 Apr 2020 10:29:14 +0800 (CST)
+Received: from [127.0.0.1] (10.173.223.234) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 2 Apr 2020
+ 10:29:10 +0800
+Subject: Re: [PATCH -next] ext4: Fix build error while CONFIG_PRINTK is n
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+References: <20200401073038.33076-1-yuehaibing@huawei.com>
+ <20200401212859.GN768293@mit.edu>
+CC:     <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+From:   Yuehaibing <yuehaibing@huawei.com>
+Message-ID: <b9e56f54-2180-4a2c-3e0b-47e85dec221b@huawei.com>
+Date:   Thu, 2 Apr 2020 10:29:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
+MIME-Version: 1.0
+In-Reply-To: <20200401212859.GN768293@mit.edu>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.173.223.234]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On 2020/4/2 5:28, Theodore Y. Ts'o wrote:
+> On Wed, Apr 01, 2020 at 03:30:38PM +0800, YueHaibing wrote:
+>> fs/ext4/balloc.c: In function ‘ext4_wait_block_bitmap’:
+>> fs/ext4/balloc.c:519:3: error: implicit declaration of function ‘ext4_error_err’; did you mean ‘ext4_error’? [-Werror=implicit-function-declaration]
+>>    ext4_error_err(sb, EIO, "Cannot read block bitmap - "
+>>    ^~~~~~~~~~~~~~
+>>
+>> Add missing stub helper and fix ext4_abort.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Fixes: 2ea2fc775321 ("ext4: save all error info in save_error_info() and drop ext4_set_errno()")
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> 
+> Thanks; the patch isn't quite correct, though.  This is what I merged
+> into my tree's version of the "save all error info..." commit.
+> 
+>      	       	       	      	    	      - Ted
+> 
 
---Apple-Mail=_3DA047BA-35EF-48C4-A8AB-ACB70041D364
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Ok, good to know this and thansk!
 
-On Apr 1, 2020, at 2:32 PM, Eric Biggers <ebiggers@kernel.org> wrote:
->=20
-> From: Eric Biggers <ebiggers@google.com>
->=20
-> The stable_inodes feature is intended to indicate that it's safe to =
-use
-> IV_INO_LBLK_64 encryption policies, where the encryption depends on =
-the
-> inode numbers and thus filesystem shrinking is not allowed.  However
-> since inode numbers are not unique across filesystems, the encryption
-> also depends on the filesystem UUID, and I missed that there is a
-> supported way to change the filesystem UUID (tune2fs -U).
->=20
-> So, make 'tune2fs -U' report an error if stable_inodes is set.
->=20
-> We could add a separate stable_uuid feature flag, but it seems =
-unlikely
-> it would be useful enough on its own to warrant another flag.
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index eacd2f9cc833..91eb4381cae5 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -2848,6 +2848,11 @@ do {									\
+>  	no_printk(fmt, ##__VA_ARGS__);					\
+>  	__ext4_error_inode(inode, "", 0, block, 0, " ");		\
+>  } while (0)
+> +#define ext4_error_inode_err(inode, func, line, block, err, fmt, ...)	\
+> +do {									\
+> +	no_printk(fmt, ##__VA_ARGS__);					\
+> +	__ext4_error_inode(inode, "", 0, block, err, " ");		\
+> +} while (0)
+>  #define ext4_error_file(file, func, line, block, fmt, ...)		\
+>  do {									\
+>  	no_printk(fmt, ##__VA_ARGS__);					\
+> @@ -2858,10 +2863,15 @@ do {									\
+>  	no_printk(fmt, ##__VA_ARGS__);					\
+>  	__ext4_error(sb, "", 0, 0, 0, " ");				\
+>  } while (0)
+> -#define ext4_abort(sb, fmt, ...)					\
+> +#define ext4_error_err(sb, err, fmt, ...)				\
+> +do {									\
+> +	no_printk(fmt, ##__VA_ARGS__);					\
+> +	__ext4_error(sb, "", 0, err, 0, " ");				\
+> +} while (0)
+> +#define ext4_abort(sb, err, fmt, ...)					\
+>  do {									\
+>  	no_printk(fmt, ##__VA_ARGS__);					\
+> -	__ext4_abort(sb, "", 0, " ");					\
+> +	__ext4_abort(sb, "", 0, err, " ");				\
+>  } while (0)
+>  #define ext4_warning(sb, fmt, ...)					\
+>  do {									\
+> 
+> .
+> 
 
-What about having tune2fs walk the inode table checking for any inodes =
-that
-have this flag, and only refusing to clear the flag if it finds any?  =
-That
-takes some time on very large filesystems, but since inode table reading =
-is
-linear it is reasonable on most filesystems.
-
-Cheers, Andreas
-
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> misc/tune2fs.c | 7 +++++++
-> 1 file changed, 7 insertions(+)
->=20
-> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> index 314cc0d0..ca06c98b 100644
-> --- a/misc/tune2fs.c
-> +++ b/misc/tune2fs.c
-> @@ -3236,6 +3236,13 @@ _("Warning: The journal is dirty. You may wish =
-to replay the journal like:\n\n"
-> 		char buf[SUPERBLOCK_SIZE] __attribute__ ((aligned(8)));
-> 		__u8 old_uuid[UUID_SIZE];
->=20
-> +		if (ext2fs_has_feature_stable_inodes(fs->super)) {
-> +			fputs(_("Cannot change the UUID of this =
-filesystem "
-> +				"because it has the stable_inodes =
-feature "
-> +				"flag.\n"), stderr);
-> +			exit(1);
-> +		}
-> +
-> 		if (!ext2fs_has_feature_csum_seed(fs->super) &&
-> 		    (ext2fs_has_feature_metadata_csum(fs->super) ||
-> 		     ext2fs_has_feature_ea_inode(fs->super))) {
-> --
-> 2.26.0.rc2.310.g2932bb562d-goog
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_3DA047BA-35EF-48C4-A8AB-ACB70041D364
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6FS7oACgkQcqXauRfM
-H+DmSQ//TkmQb/2AkeInHenVL/Fxhl2Asosr4hz+uikYf5nJMtaE5ovIX/IaAp5m
-isDr3MqEy5+5LYkYhzq6l9HXrdP347zIJLXOocsTMCos9s27O4cso+vhcGm7g1yU
-iJoVtTh9Lzbz0WOsuSeUHwJbKs/zc2Fuys67Iox5ZwggeiMosFDd4ntqQOo/t3fp
-XswmzQGNpz4594wPSeV4wui3X/wIqb/Xja4/c2lTHl+Ixa8JLLKSobDqQnKX1ffv
-mfGkujXnlIMgZsoqWFEfgWYVS8MbMIG4K+SWe0oEFgfoXQuLSBb+8OiqKLrlhoUE
-mpxqNS8AaYm6PhMpm+vSexkaO+uk+PG1iwSqNjbkrcKHOqtfFoK9IIna+InzLV0p
-g6Ja/CD7Kn+B1eFS1olqjuvnoeHHZRwjwfl48A7RskGo3OKWLpP9wsdYFLiD6q3Y
-S4Pp4qY8azI4zaRSgO0QguPcoLRLc+alor83+O7/ZKWE2RfgNOGxrSvfYWyrDRQU
-y8svRLmchmCEgBzecLCzS6OTXicgXweWDUFpHf/CdI/4fYko3y3ueVdTTFDD9BHJ
-QrWnWTuJo2KEd55Ol7gl0s1SGo6emotjPq+NMQQMuEWuwPwtD0FOQ8zC2cSOxQ2J
-r3c2p6GoAlGqg6jgD+OGTnla4X6OYkkGdWolM943eW7CPfswscY=
-=oBpG
------END PGP SIGNATURE-----
-
---Apple-Mail=_3DA047BA-35EF-48C4-A8AB-ACB70041D364--
