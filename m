@@ -2,166 +2,148 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A200E19B9FC
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 03:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791AD19BA31
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 04:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733224AbgDBBie (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Apr 2020 21:38:34 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:46223 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726319AbgDBBid (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 21:38:33 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 3ABD45801C4;
-        Wed,  1 Apr 2020 21:38:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 01 Apr 2020 21:38:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm2; bh=
-        65E0cCQjZaasR2Q4SReMT3up4B2vZTD5YrrV+eEQPzU=; b=EhjE5WUllq7utAsj
-        QGotnYbb9Kw8jZCsD7odmyKl1n5mYNo16UGKeB+MA/N8pXr1cwCWa1jb2Qz6NnFR
-        OmkHYTPm3ClH8nYV38aHOd8+YkGAGNacEUH924J1y6HJ80OvGw1vOk420eaVRmr1
-        Wqv16Qg6Prbwz52FOwUoa9pw7JtngLbVwCiM9SbAOY4/IxfKTbu2Bj+zofmYQPAZ
-        3DbFdozqMh3qo9qJ646FaGfljfvPwyXGuJkQfmzNQxDFzQLOA6lcR1LS1OAtdFYu
-        R1qMp7IVbQ+56/KqtUyLLkVzOUUUIIJ+umm4GYxaZV/Wirk+sjBmfMOp/5UCTFtr
-        +kr2LQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=65E0cCQjZaasR2Q4SReMT3up4B2vZTD5YrrV+eEQP
-        zU=; b=ZVR+2Un1ogFAbTykJdID1KGQHIQCJlxQdHSQLt4iyc695rALIxGzJ/tZx
-        8ttNUhd77g0OaBXN5/v5Q61v4ileqM3MNUllXQT/wmZHyyTxCGxukO3drlUximUQ
-        Yn0lLHQQ4deECa6MIpgb5BJCB4VMr8RT3NfjFcB+xwsNz55sEXdbwq6kd1MQnzlK
-        Mta2qB0IOK7uVSe1r+MH6dKM/Ym1LVOlW+qAmnUOMTA0qqlWFDEPpyRtftHWjREV
-        czKId4Nepql7rXMwphjcl51Mlljv3xaYYmB6qAyPcxod1+UpKfKizo5hobnmT3m2
-        byqO5tanFiUouyIa6j4md5wueG0Pg==
-X-ME-Sender: <xms:F0KFXnxfg-I39THCyxl8TBBO4WHZ_l_tGpGYiNs6KqDi_2mdnroUvg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrtdefgdehtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
-    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecukfhppeduudekrddvtdelrd
-    duieeirddvfedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomheprhgrvhgvnhesthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:F0KFXjgFLqkZZSXP7k-wS0dX0TesDJcOZg4BLckP6jqvx7AMc3i6yw>
-    <xmx:F0KFXsV1k4K3Nk4yTG1Kpiu9GOkeb9fya0zvYG0XJ_h-ikBRchiVTg>
-    <xmx:F0KFXl0sM4s2FZ5lq6RtbJIVXDAH4v1HQranqyejd-iKBEZ1hzssSA>
-    <xmx:GEKFXpBmaOPBnPhHnGLHAp7bVvRp7u-xAXONrNwu4w2Gmy4Elbu9bg>
-Received: from mickey.themaw.net (unknown [118.209.166.232])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 69846306CD83;
-        Wed,  1 Apr 2020 21:38:24 -0400 (EDT)
-Message-ID: <459876eceda4bc68212faf4ed3d4bcb8570aa105.camel@themaw.net>
-Subject: Re: [PATCH 00/13] VFS: Filesystem information [ver #19]
-From:   Ian Kent <raven@themaw.net>
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux NFS list <linux-nfs@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-ext4@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Karel Zak <kzak@redhat.com>, Jeff Layton <jlayton@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 02 Apr 2020 09:38:20 +0800
-In-Reply-To: <CAJfpegsyeJmH3zJuseaAAY06fzgavSzpOtYr-1Mw8GR0cLcQbA@mail.gmail.com>
-References: <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk>
-         <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com>
-         <50caf93782ba1d66bd6acf098fb8dcb0ecc98610.camel@themaw.net>
-         <CAJfpegvvMVoNp1QeXEZiNucCeuUeDP4tKqVfq2F4koQKzjKmvw@mail.gmail.com>
-         <2465266.1585729649@warthog.procyon.org.uk>
-         <CAJfpegsyeJmH3zJuseaAAY06fzgavSzpOtYr-1Mw8GR0cLcQbA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S2387442AbgDBCMV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Apr 2020 22:12:21 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:44415 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387430AbgDBCMV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 22:12:21 -0400
+Received: by mail-pg1-f193.google.com with SMTP id 142so1101554pgf.11
+        for <linux-ext4@vger.kernel.org>; Wed, 01 Apr 2020 19:12:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=T6jFhmB7PSX6gMvtk5ET86aBLDFZhVq7lni3l1FpofI=;
+        b=uKfqN26wBckZlf6GLM9G9f7SHVqsK4Maj3Yc5xVDlBQg/lgN44pHfvl4KiAz4EaW8N
+         Y+ItNm7Q8nQoVWm1SIPWgn9loXp6FdWMvu5lEB4rgrUkA0lItVRSWb44CZYcZdVhpR+9
+         +5GNkhzimqnBF2SaqlvmIBlQOwAHbs7+PChBXZ6VMK4rTF4ayn0Kwitg8MA9wc1BpmT2
+         reSUxBdqp8elIU/GyjH69iOH0OIG9MVSp1fxW/XcuAXT47Fo4fa4UV8o95NrvYpOnZOf
+         9hrELfgsNIphIHFKc6RWEAqUo3GnSJ1Q2bFc8BALM2O9wRP37tBLd9RUUbuXsNKu1gaY
+         u4DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=T6jFhmB7PSX6gMvtk5ET86aBLDFZhVq7lni3l1FpofI=;
+        b=Y7DoW7bYRsW1uosW5/D0LabMTnaZ0dWIJ8FumpPliDgEMkhRP3ltE2o67pgTu7oj1D
+         byYKB72aZ9+9GdqAgcTcXSccV3pDFmZZD9rlF59Tj5nP9Z1TqIDsQxG4/i0p+JOsNSnW
+         riVUm/ry4qA2MGU4mWUOran1uSDXuKNSR+L1K58TiNzuENdYYTqiJoOJL9sDqsVDcL5G
+         V2jLPSYbJ+sAF2J0wkxkUZCQdMJCYO1mpyygQ1gj53/pMvfihmUDolp1bGAZMTAyi5VG
+         Z0PqlzisLvVtmboU3T13o5uNxGE16RsETO8EuuGqCiIKCV/WjZsaufW4iG/iagqTCVvY
+         QNjg==
+X-Gm-Message-State: AGi0PuYNSZdjdCJf1iLcp9lT1nK4stih4wMxYDfui9C86SdBqyCAUlLQ
+        oWFIv6ebMwJBIlQgSHJRV1yrXg==
+X-Google-Smtp-Source: APiQypIkvQwDS7l4QdqnPD1Ys7xN/j5G7Ee6UAWFEl7CjkZVyWgASsQzrGST7DbgwMerKHZZVAdm0Q==
+X-Received: by 2002:a63:3850:: with SMTP id h16mr1169192pgn.326.1585793538416;
+        Wed, 01 Apr 2020 19:12:18 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id y131sm2533779pfg.25.2020.04.01.19.12.17
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 01 Apr 2020 19:12:17 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <0AB7921E-98F6-430C-87BB-63D1330885CE@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_699DAD46-6FAE-4A93-8B90-96D98631EE55";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 4/4] tune2fs.8: document the stable_inodes feature
+Date:   Wed, 1 Apr 2020 20:12:14 -0600
+In-Reply-To: <20200401203239.163679-5-ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
+To:     Eric Biggers <ebiggers@kernel.org>
+References: <20200401203239.163679-1-ebiggers@kernel.org>
+ <20200401203239.163679-5-ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, 2020-04-01 at 10:37 +0200, Miklos Szeredi wrote:
-> On Wed, Apr 1, 2020 at 10:27 AM David Howells <dhowells@redhat.com>
-> wrote:
-> > Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > 
-> > > According to dhowell's measurements processing 100k mounts would
-> > > take
-> > > about a few seconds of system time (that's the time spent by the
-> > > kernel to retrieve the data,
-> > 
-> > But the inefficiency of mountfs - at least as currently implemented
-> > - scales
-> > up with the number of individual values you want to retrieve, both
-> > in terms of
-> > memory usage and time taken.
-> 
-> I've taken that into account when guesstimating a "few seconds per
-> 100k entries".  My guess is that there's probably an order of
-> magnitude difference between the performance of a fs based interface
-> and a binary syscall based interface.  That could be reduced somewhat
-> with a readfile(2) type API.
-> 
-> But the point is: this does not matter.  Whether it's .5s or 5s is
-> completely irrelevant, as neither is going to take down the system,
-> and userspace processing is probably going to take as much, if not
-> more time.  And remember, we are talking about stopping and starting
-> the automount daemon, which is something that happens, but it should
-> not happen often by any measure.
 
-Yes, but don't forget, I'm reporting what I saw when testing during
-development.
+--Apple-Mail=_699DAD46-6FAE-4A93-8B90-96D98631EE55
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-From previous discussion we know systemd (and probably the other apps
-like udisks2, et. al.) gets notified on mount and umount activity so
-its not going to be just starting and stopping autofs that's a problem
-with very large mount tables.
+On Apr 1, 2020, at 2:32 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+>=20
+> From: Eric Biggers <ebiggers@google.com>
+>=20
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-To get a feel for the real difference we'd need to make the libmount
-changes for both and then check between the two and check behaviour.
-The mount and umount lookup case that Karel (and I) talked about
-should be sufficient.
+IMHO, it would be better if the updates to the man pages were in the =
+same
+patch as the patch to misc/tune2fs.c.
 
-The biggest problem I had with fsinfo() when I was working with
-earlier series was getting fs specific options, in particular the
-need to use sb op ->fsinfo(). With this latest series David has made
-that part of the generic code and your patch also cover it.
+That said, it's better than *not* getting an update to the man page, so:
 
-So the thing that was holding me up is done so we should be getting
-on with libmount improvements, we need to settle this.
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-I prefer the system call interface and I'm not offering justification
-for that other than a general dislike (and on occasion outright
-frustration) of pretty much every proc implementation I have had to
-look at.
+> ---
+> misc/tune2fs.8.in | 7 +++++++
+> 1 file changed, 7 insertions(+)
+>=20
+> diff --git a/misc/tune2fs.8.in b/misc/tune2fs.8.in
+> index 3cf1f5ed..582d1da5 100644
+> --- a/misc/tune2fs.8.in
+> +++ b/misc/tune2fs.8.in
+> @@ -630,6 +630,13 @@ Limit the number of backup superblocks to save =
+space on large filesystems.
+> .B Tune2fs
+> currently only supports setting this filesystem feature.
+> .TP
+> +.B stable_inodes
+> +Prevent the filesystem from being shrunk or having its UUID changed, =
+in order to
+> +allow the use of specialized encryption settings that make use of the =
+inode
+> +numbers and UUID.
+> +.B Tune2fs
+> +currently only supports setting this filesystem feature.
+> +.TP
+> .B uninit_bg
+> Allow the kernel to initialize bitmaps and inode tables lazily, and to
+> keep a high watermark for the unused inodes in a filesystem, to reduce
+> --
+> 2.26.0.rc2.310.g2932bb562d-goog
+>=20
 
-> 
-> > With fsinfo(), I've tried to batch values together where it makes
-> > sense - and
-> > there's no lingering memory overhead - no extra inodes, dentries
-> > and files
-> > required.
-> 
-> The dentries, inodes and files in your test are single use (except
-> the
-> root dentry) and can be made ephemeral if that turns out to be
-> better.
-> My guess is that dentries belonging to individual attributes should
-> be
-> deleted on final put, while the dentries belonging to the mount
-> directory can be reclaimed normally.
-> 
-> Thanks,
-> Miklos
 
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_699DAD46-6FAE-4A93-8B90-96D98631EE55
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6FSf4ACgkQcqXauRfM
+H+D1DRAAmD648MSTgLDc/JqmMgyUaLLfgDuaaktQajuFRp1mdQ1awh5hp+vQam6s
+rfbxrlxwvyibEtnWS2NzcoeQY5kJ7Knj5xJBoVTxs0awD4mE57jiFf8Th0nRUtQT
+P0pmOWnr7UaXKvHLL69C5URdZX2Ppuhbnbj202ssQPU1sIorS7ngPWbDFpTo8g1v
+ZmksYgo/kxTMlG3UbNpNHEkn0G41CyKXv+y8flarYmEQSVMhNirN6bFA9BaJETcD
+fHw9UCJj8A+U+6ILpnJxMRwRbvveQoVaAmSlLcJNPKxyDTmj7QdU1AMK6T/XSBVP
+r2SVJBEbu4LL2qhu+J0f/kyzx4TPZLl6LKfRlHX2zoBrcGkU40lZYEohin+Y7ZP4
+MACqM7LoGCo+HCP1m1kyl5rfhbf+9WP5iBI+zMgGAB/ymkuAVFw5L/JMtV4TIpg8
+1dWDDdDIWUJt4nN5B2EaAzlF9DqXvVxSIsAJk1k36GnkFi2TJ1tNpwqYf8gteWFw
+S+KMUTHSTQ7BBD23NevkDBV8moPiW43Urom2q5MwNtTObjsqvNkc32ibWWOygouk
+utn2HV23xDZFpNrvvU9cWCKzblsv5Tuo79MEh/Y3K7bYxm1e/O6TIqQD5BMrsqlq
+n4C5e4LnoM+kL12AOTbOzl5hffSM0sLGbCaAFyj6ZrDZZ4sDZPs=
+=hxmQ
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_699DAD46-6FAE-4A93-8B90-96D98631EE55--
