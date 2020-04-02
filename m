@@ -2,28 +2,28 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1493B19C6BC
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 18:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B53419C6DB
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 18:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389711AbgDBQH5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Apr 2020 12:07:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56038 "EHLO mail.kernel.org"
+        id S2389738AbgDBQQC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Apr 2020 12:16:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388972AbgDBQH5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 2 Apr 2020 12:07:57 -0400
+        id S2389294AbgDBQQC (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 2 Apr 2020 12:16:02 -0400
 Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 709A02063A;
-        Thu,  2 Apr 2020 16:07:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A046206F6;
+        Thu,  2 Apr 2020 16:16:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585843676;
-        bh=pZjm/1Qvu4RLX44Z2RQzPe+xLwWY2hDAJm1DbeLQaTI=;
+        s=default; t=1585844161;
+        bh=5sJ1neYRlFfnjmBdPQnALhSYTIW7R6idfr1HV3eUbLU=;
         h=Date:From:To:Cc:Subject:From;
-        b=2ZvDib7Xqc8MpjEQFSnN/noANaOgBb3M5FQHcUGhc1oVm9XJo1+9sL684Yx2GmGyn
-         L9vhztP8mQZqVcdqm0+okJMU6RH6ohm1pVvS8quS62uglIu7NtV6V0tEEsnM4vFQQi
-         W4zklR5YMZ3GMyl9AL+WyeFqgdPsxrHGRa5+8NK4=
-Date:   Thu, 2 Apr 2020 09:07:56 -0700
+        b=YuhxEisGg+czlF11Le0CA11rrUCK7T8ASCuF1CFQHyBEUJrvTq/rCB1UujzNyDe1X
+         VjK4w+H39cMykLfIt/aFcG9POPQyRHDTTx/mRNNjdzufzincHrkhof11UNEtV2F9Om
+         HASncbRRl6laAeF0bd5jKvhXhvlj30rEOQLT8gBM=
+Date:   Thu, 2 Apr 2020 09:16:00 -0700
 From:   "Darrick J. Wong" <djwong@kernel.org>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     "Darrick J. Wong" <djwong@kernel.org>,
@@ -31,9 +31,9 @@ Cc:     "Darrick J. Wong" <djwong@kernel.org>,
         david@fromorbit.com, linux-kernel@vger.kernel.org,
         sandeen@sandeen.net, hch@lst.de,
         linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Subject: [GIT PULL] iomap: new code for 5.7
-Message-ID: <20200402160756.GA56932@magnolia>
+        Theodore Ts'o <tytso@mit.edu>, domenico.andreoli@linux.com
+Subject: [GIT PULL] vfs: bug fix for 5.7
+Message-ID: <20200402161600.GI80283@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -45,12 +45,9 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 Hi Linus,
 
-Please pull this set of new code for 5.7.  We're fixing tracepoints and
-comments in this cycle, so there shouldn't be any surprises here.  I
-performed a test merge just now and everything went smoothly.
-
-I anticipate sending a second pull request next week with a single bug
-fix for readahead, but it's still undergoing QA.
+Please pull this single vfs bug fix into 5.7 to fix a regression in
+userspace hibernation now that the vfs doesn't really allow userspace to
+write to active swap devices anymore.
 
 --D
 
@@ -60,25 +57,20 @@ The following changes since commit 98d54f81e36ba3bf92172791eba5ca5bd813989b:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.7-merge-2
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/vfs-5.7-merge-1
 
-for you to fetch changes up to d9973ce2fe5bcdc5e01bb3f49833d152b8e166ca:
+for you to fetch changes up to 56939e014a6c212b317414faa307029e2e80c3b9:
 
-  iomap: fix comments in iomap_dio_rw (2020-03-18 08:04:36 -0700)
-
-----------------------------------------------------------------
-New iomap code for 5.7:
-- Fix a broken tracepoint
-- Fix a broken comment
+  hibernate: Allow uswsusp to write to swap (2020-03-23 08:22:15 -0700)
 
 ----------------------------------------------------------------
-Matthew Wilcox (Oracle) (1):
-      iomap: Remove pgoff from tracepoints
+New code for 5.7:
+ - Fix a regression where we broke the userspace hibernation driver by
+   disallowing writes to the swap device.
 
-yangerkun (1):
-      iomap: fix comments in iomap_dio_rw
+----------------------------------------------------------------
+Domenico Andreoli (1):
+      hibernate: Allow uswsusp to write to swap
 
- fs/iomap/buffered-io.c |  7 ++++---
- fs/iomap/direct-io.c   |  4 ++--
- fs/iomap/trace.h       | 27 +++++++++++----------------
- 3 files changed, 17 insertions(+), 21 deletions(-)
+ fs/block_dev.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
