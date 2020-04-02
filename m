@@ -2,99 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D81419BA4A
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 04:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A4C19BA52
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 04:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733230AbgDBC3X (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 1 Apr 2020 22:29:23 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47118 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732462AbgDBC3X (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 1 Apr 2020 22:29:23 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 90C198785B598A99A593;
-        Thu,  2 Apr 2020 10:29:14 +0800 (CST)
-Received: from [127.0.0.1] (10.173.223.234) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 2 Apr 2020
- 10:29:10 +0800
-Subject: Re: [PATCH -next] ext4: Fix build error while CONFIG_PRINTK is n
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-References: <20200401073038.33076-1-yuehaibing@huawei.com>
- <20200401212859.GN768293@mit.edu>
-CC:     <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <b9e56f54-2180-4a2c-3e0b-47e85dec221b@huawei.com>
-Date:   Thu, 2 Apr 2020 10:29:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.2.0
+        id S1732682AbgDBCcf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 1 Apr 2020 22:32:35 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49856 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727135AbgDBCcf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 1 Apr 2020 22:32:35 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0322Sk1B106362;
+        Thu, 2 Apr 2020 02:32:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=C1sTv2mfdV+vS0lPpUAa1c5xsmzknrneWhl3ZOZXPZc=;
+ b=qvibkPg0lqK/4Wblb53/3Nf4F5BPZl1OPZt56Qcw74Xd2QeSEZWCHBP1KTAxX8meRDtq
+ 1vLjNTHdTdYORG69ou7m+izgGSK8yOmFsuQPmUrGBh6I9qZReSGVk7LMoVQeLG4hSkw/
+ /7gYvaCL1aSfARnob4BgySy11mvBPfNa0x5h4X+vLtd6kjge03+w1VyoTpNH2bDGDXXl
+ lHHAGq/v7stHC/C1PCASocPmkdfLyCOM/KhE49K2+cq8kcZ/025xZ8zaV6HHFH3gU0Zh
+ oFopk5+VtwC1SPzm6xzJI5vuBotK8604l4Us5W9GnDHgHdCqCcnB8F7DLBV3JkNfyP77 xw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 303aqhs7fr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 02:32:02 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0322S7Ix010425;
+        Thu, 2 Apr 2020 02:30:01 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 302ga1j3ad-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 02:30:01 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0322TheE011819;
+        Thu, 2 Apr 2020 02:29:43 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 01 Apr 2020 19:29:42 -0700
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>, hch@lst.de,
+        martin.petersen@oracle.com, darrick.wong@oracle.com,
+        axboe@kernel.dk, tytso@mit.edu, adilger.kernel@dilger.ca,
+        ming.lei@redhat.com, jthumshirn@suse.de, minwoo.im.dev@gmail.com,
+        damien.lemoal@wdc.com, andrea.parri@amarulasolutions.com,
+        hare@suse.com, tj@kernel.org, hannes@cmpxchg.org,
+        ajay.joshi@wdc.com, bvanassche@acm.org, arnd@arndb.de,
+        houtao1@huawei.com, asml.silence@gmail.com,
+        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/4] block: Add support for REQ_OP_ASSIGN_RANGE
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <20200329174714.32416-1-chaitanya.kulkarni@wdc.com>
+        <bb7d7604-8ee5-97d8-1563-9140cd499f15@yandex-team.ru>
+Date:   Wed, 01 Apr 2020 22:29:38 -0400
+In-Reply-To: <bb7d7604-8ee5-97d8-1563-9140cd499f15@yandex-team.ru> (Konstantin
+        Khlebnikov's message of "Wed, 1 Apr 2020 09:22:26 +0300")
+Message-ID: <yq1v9mi4o31.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20200401212859.GN768293@mit.edu>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.173.223.234]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=18 malwarescore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004020020
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 suspectscore=18
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020020
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 2020/4/2 5:28, Theodore Y. Ts'o wrote:
-> On Wed, Apr 01, 2020 at 03:30:38PM +0800, YueHaibing wrote:
->> fs/ext4/balloc.c: In function ‘ext4_wait_block_bitmap’:
->> fs/ext4/balloc.c:519:3: error: implicit declaration of function ‘ext4_error_err’; did you mean ‘ext4_error’? [-Werror=implicit-function-declaration]
->>    ext4_error_err(sb, EIO, "Cannot read block bitmap - "
->>    ^~~~~~~~~~~~~~
->>
->> Add missing stub helper and fix ext4_abort.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Fixes: 2ea2fc775321 ("ext4: save all error info in save_error_info() and drop ext4_set_errno()")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> 
-> Thanks; the patch isn't quite correct, though.  This is what I merged
-> into my tree's version of the "save all error info..." commit.
-> 
->      	       	       	      	    	      - Ted
-> 
 
-Ok, good to know this and thansk!
+Konstantin,
 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index eacd2f9cc833..91eb4381cae5 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -2848,6 +2848,11 @@ do {									\
->  	no_printk(fmt, ##__VA_ARGS__);					\
->  	__ext4_error_inode(inode, "", 0, block, 0, " ");		\
->  } while (0)
-> +#define ext4_error_inode_err(inode, func, line, block, err, fmt, ...)	\
-> +do {									\
-> +	no_printk(fmt, ##__VA_ARGS__);					\
-> +	__ext4_error_inode(inode, "", 0, block, err, " ");		\
-> +} while (0)
->  #define ext4_error_file(file, func, line, block, fmt, ...)		\
->  do {									\
->  	no_printk(fmt, ##__VA_ARGS__);					\
-> @@ -2858,10 +2863,15 @@ do {									\
->  	no_printk(fmt, ##__VA_ARGS__);					\
->  	__ext4_error(sb, "", 0, 0, 0, " ");				\
->  } while (0)
-> -#define ext4_abort(sb, fmt, ...)					\
-> +#define ext4_error_err(sb, err, fmt, ...)				\
-> +do {									\
-> +	no_printk(fmt, ##__VA_ARGS__);					\
-> +	__ext4_error(sb, "", 0, err, 0, " ");				\
-> +} while (0)
-> +#define ext4_abort(sb, err, fmt, ...)					\
->  do {									\
->  	no_printk(fmt, ##__VA_ARGS__);					\
-> -	__ext4_abort(sb, "", 0, " ");					\
-> +	__ext4_abort(sb, "", 0, err, " ");				\
->  } while (0)
->  #define ext4_warning(sb, fmt, ...)					\
->  do {									\
-> 
-> .
-> 
+>> The corresponding exported primitive is called
+>> blkdev_issue_assign_range().
+>
+> What exact semantics of that?
 
+REQ_OP_ALLOCATE will be used to compel a device to allocate a block
+range. What a given block contains after successful allocation is
+undefined (depends on the device implementation).
+
+For block allocation with deterministic zeroing, one must keep using
+REQ_OP_WRITE_ZEROES with the NOUNMAP flag set.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
