@@ -2,249 +2,114 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D5319C453
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 16:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F52F19C5A2
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 Apr 2020 17:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733032AbgDBOe7 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 2 Apr 2020 10:34:59 -0400
-Received: from mga18.intel.com ([134.134.136.126]:46230 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732263AbgDBOe7 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:34:59 -0400
-IronPort-SDR: 1F/rqr31Y6pJ8QDwzGy/7JG+hldr9Ig6NodniSyqH2s01HYJT+1r9Rmrt8n2A4Qij17q9vXDvB
- ZXU+RT9W8YrA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 07:34:58 -0700
-IronPort-SDR: aAUd4514uaj3YrN/jE4jNk2jJmH1d27UhFuYLmrSaF7op2xV7e1PQYMxgWlQR1xtxA0nTt6SDT
- RueBR7OX3OuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,335,1580803200"; 
-   d="scan'208";a="295669016"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Apr 2020 07:34:56 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jK0vn-000Gn6-Ua; Thu, 02 Apr 2020 22:34:55 +0800
-Date:   Thu, 02 Apr 2020 22:34:16 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-Subject: [ext4:dev] BUILD SUCCESS 54d3adbc29f0c7c53890da1683e629cd220d7201
-Message-ID: <5e85f7e8.sbMdMyLl3xygNmue%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S2388902AbgDBPRb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 2 Apr 2020 11:17:31 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47956 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388234AbgDBPRb (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 2 Apr 2020 11:17:31 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032F9jkN119222;
+        Thu, 2 Apr 2020 15:17:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=b7LvnNRQelJJFiZAKAezXKPCgTvSHxhEiLDieWmH8+E=;
+ b=AidubZHlYX/2Afhy8InsZ8KTKnf5BHlXBj7v+QxvyAuw+0tNRpcB/9nKONB0xTdu+wrS
+ yK3VeDG366ia0jLv0rAqwmOKZzalWV/VsN/K7ROnMorGTCI9twEViBnX0umAvza17Xvp
+ n2apCbTondHgZUanREpkeaDVd6HLij4FqjWF6WezfkrN1PcgdymMio0AtP69P1GkNOkU
+ 0QjqBsBCZE8qAbOWLfC318s78k79jTRgvF2P8DmLJ6O1BaW89EU07qKuNfB3K7OVaNuQ
+ hFIJW4Vah1SPv0tFw1yce+oPWQchbRWgnrw3QGq4DjI1YxOiXKY8uy8ibGs0+vC+9wOK zA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 303yuneq2t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 15:17:25 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032F75Rc077878;
+        Thu, 2 Apr 2020 15:17:24 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 302g2js5r0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 15:17:24 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032FHNrq027112;
+        Thu, 2 Apr 2020 15:17:23 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 02 Apr 2020 08:17:23 -0700
+Date:   Thu, 2 Apr 2020 08:17:20 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     linux-ext4@vger.kernel.org, Ted Tso <tytso@mit.edu>
+Subject: Re: [PATCH] e2scrub: Remove PATH setting from the scripts
+Message-ID: <20200402151720.GD56931@magnolia>
+References: <20200402134716.3725-1-lczerner@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200402134716.3725-1-lczerner@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=928 spamscore=0 mlxscore=0
+ adultscore=0 phishscore=0 bulkscore=0 suspectscore=29 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020131
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=993 bulkscore=0
+ suspectscore=29 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020131
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git  dev
-branch HEAD: 54d3adbc29f0c7c53890da1683e629cd220d7201  ext4: save all error info in save_error_info() and drop ext4_set_errno()
+On Thu, Apr 02, 2020 at 03:47:16PM +0200, Lukas Czerner wrote:
+> We don't want to override system setting by changing the PATH. This
+> should remain under administrator/user control.
+> 
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 
-elapsed time: 968m
+Looks ok to me,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-configs tested: 191
-configs skipped: 0
+--D
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-sparc                            allyesconfig
-riscv                    nommu_virt_defconfig
-s390                              allnoconfig
-sh                                allnoconfig
-ia64                                defconfig
-powerpc                             defconfig
-sparc64                             defconfig
-riscv                             allnoconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-parisc                            allnoconfig
-parisc                generic-64bit_defconfig
-parisc                generic-32bit_defconfig
-parisc                           allyesconfig
-x86_64               randconfig-a001-20200402
-x86_64               randconfig-a002-20200402
-x86_64               randconfig-a003-20200402
-i386                 randconfig-a001-20200402
-i386                 randconfig-a002-20200402
-i386                 randconfig-a003-20200402
-mips                 randconfig-a001-20200402
-nds32                randconfig-a001-20200402
-m68k                 randconfig-a001-20200402
-alpha                randconfig-a001-20200402
-parisc               randconfig-a001-20200402
-riscv                randconfig-a001-20200402
-c6x                  randconfig-a001-20200402
-h8300                randconfig-a001-20200402
-microblaze           randconfig-a001-20200402
-nios2                randconfig-a001-20200402
-sparc64              randconfig-a001-20200402
-c6x                  randconfig-a001-20200401
-h8300                randconfig-a001-20200401
-microblaze           randconfig-a001-20200401
-nios2                randconfig-a001-20200401
-sparc64              randconfig-a001-20200401
-csky                 randconfig-a001-20200402
-openrisc             randconfig-a001-20200402
-s390                 randconfig-a001-20200402
-sh                   randconfig-a001-20200402
-xtensa               randconfig-a001-20200402
-x86_64               randconfig-b001-20200402
-x86_64               randconfig-b002-20200402
-x86_64               randconfig-b003-20200402
-i386                 randconfig-b001-20200402
-i386                 randconfig-b002-20200402
-i386                 randconfig-b003-20200402
-x86_64               randconfig-c001-20200402
-x86_64               randconfig-c002-20200402
-x86_64               randconfig-c003-20200402
-i386                 randconfig-c001-20200402
-i386                 randconfig-c002-20200402
-i386                 randconfig-c003-20200402
-x86_64               randconfig-c001-20200401
-x86_64               randconfig-c002-20200401
-x86_64               randconfig-c003-20200401
-i386                 randconfig-c001-20200401
-i386                 randconfig-c002-20200401
-i386                 randconfig-c003-20200401
-x86_64               randconfig-d001-20200402
-x86_64               randconfig-d002-20200402
-x86_64               randconfig-d003-20200402
-i386                 randconfig-d001-20200402
-i386                 randconfig-d002-20200402
-i386                 randconfig-d003-20200402
-x86_64               randconfig-d001-20200401
-x86_64               randconfig-d002-20200401
-x86_64               randconfig-d003-20200401
-i386                 randconfig-d001-20200401
-i386                 randconfig-d002-20200401
-i386                 randconfig-d003-20200401
-x86_64               randconfig-e001-20200402
-x86_64               randconfig-e002-20200402
-x86_64               randconfig-e003-20200402
-i386                 randconfig-e001-20200402
-i386                 randconfig-e002-20200402
-i386                 randconfig-e003-20200402
-x86_64               randconfig-e001-20200401
-x86_64               randconfig-e002-20200401
-x86_64               randconfig-e003-20200401
-i386                 randconfig-e001-20200401
-i386                 randconfig-e002-20200401
-i386                 randconfig-e003-20200401
-x86_64               randconfig-f001-20200402
-x86_64               randconfig-f002-20200402
-x86_64               randconfig-f003-20200402
-i386                 randconfig-f001-20200402
-i386                 randconfig-f002-20200402
-i386                 randconfig-f003-20200402
-x86_64               randconfig-g001-20200402
-x86_64               randconfig-g002-20200402
-x86_64               randconfig-g003-20200402
-i386                 randconfig-g001-20200402
-i386                 randconfig-g002-20200402
-i386                 randconfig-g003-20200402
-x86_64               randconfig-h001-20200402
-x86_64               randconfig-h002-20200402
-x86_64               randconfig-h003-20200402
-i386                 randconfig-h001-20200402
-i386                 randconfig-h002-20200402
-i386                 randconfig-h003-20200402
-arc                  randconfig-a001-20200402
-arm                  randconfig-a001-20200402
-arm64                randconfig-a001-20200402
-ia64                 randconfig-a001-20200402
-powerpc              randconfig-a001-20200402
-sparc                randconfig-a001-20200402
-arm64                randconfig-a001-20200401
-sparc                randconfig-a001-20200401
-ia64                 randconfig-a001-20200401
-arc                  randconfig-a001-20200401
-riscv                            allmodconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                                  defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> ---
+>  scrub/e2scrub.in     | 2 --
+>  scrub/e2scrub_all.in | 2 --
+>  2 files changed, 4 deletions(-)
+> 
+> diff --git a/scrub/e2scrub.in b/scrub/e2scrub.in
+> index 30ab7cbd..7c3f46e9 100644
+> --- a/scrub/e2scrub.in
+> +++ b/scrub/e2scrub.in
+> @@ -23,8 +23,6 @@
+>  # check filesystems in VGs that have at least 256MB (or so) of
+>  # free space.
+>  
+> -PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+> -
+>  if (( $EUID != 0 )); then
+>      echo "e2scrub must be run as root"
+>      exit 1
+> diff --git a/scrub/e2scrub_all.in b/scrub/e2scrub_all.in
+> index 4288b969..b6a7d0ad 100644
+> --- a/scrub/e2scrub_all.in
+> +++ b/scrub/e2scrub_all.in
+> @@ -18,8 +18,6 @@
+>  #  along with this program; if not, write the Free Software Foundation,
+>  #  Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
+>  
+> -PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+> -
+>  if (( $EUID != 0 )); then
+>      echo "e2scrub_all must be run as root"
+>      exit 1
+> -- 
+> 2.21.1
+> 
