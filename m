@@ -2,67 +2,83 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A527119E7E2
-	for <lists+linux-ext4@lfdr.de>; Sun,  5 Apr 2020 00:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81FB19E96F
+	for <lists+linux-ext4@lfdr.de>; Sun,  5 Apr 2020 06:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgDDWNF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 4 Apr 2020 18:13:05 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:46154 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726323AbgDDWNE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sat, 4 Apr 2020 18:13:04 -0400
-Received: by mail-il1-f199.google.com with SMTP id n18so11060562ilp.13
-        for <linux-ext4@vger.kernel.org>; Sat, 04 Apr 2020 15:13:04 -0700 (PDT)
+        id S1726408AbgDEEy5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 5 Apr 2020 00:54:57 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:53245 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbgDEEy4 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Apr 2020 00:54:56 -0400
+Received: by mail-pj1-f65.google.com with SMTP id ng8so5005621pjb.2
+        for <linux-ext4@vger.kernel.org>; Sat, 04 Apr 2020 21:54:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mforney-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i8gQeGNDkB+ERKJN8tgzWDwu8rNNZn41Iteab0ATdJc=;
+        b=oJL6E5io6qalYVkcLyagDGske1YtuiLixLxFLw5B+ZlZ7TEghPvO8t7W+3I1PiOOrL
+         M+v6oYay8CLlA+/wHYtfhO0Q4GSLJNJYgbxr0DbW1KgUrU2Sfhv6eyV+FUsxV2fc7BCu
+         eZV75WnTd/lH4uMFFweNFFADMx3kgkuhPL7SKP7WQeI30ckZN0Tghawj4uygr89acg1L
+         8nDNS8G7mMMxmkp1R3i5WINZAUx2ZExYjVE2unIb2tXKHcpx0ihoTLIBiW6+dHzVrgqZ
+         xpQ/RS/RptaojnGWN6Lz4umwTquzGpwt852e+VFjIn/5OMcIa8Hy6VixE5eoXzSjsQPW
+         c1CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=bt/1x8EyTmuUIcBDvOOh7SgGrhssirnD/BYB/4tXepA=;
-        b=Z43v46tP3i1A4kJbSKAwz8QQI8ofKuegRK210KXCkQJySkh44vma1CwZy35cv/0gzp
-         15gX3Gb8cICijY02lXZoLmPATo2aOXxK6fwlWagvx3WD/b1IaVtsgjm3GsZHYvrEh1P5
-         DjXmUikLzIX4Zzr5iG5tJHGbkbqUAE4c1RsFsVWOaEVX3hUSbW+qxOC7vF2wCOwVYokw
-         OnnQa01LR169wAcAmf+b/PMo/yT4hGaP2xmdp8Ebx98iUatGNLEebTOd2FiiPxS4bCMj
-         hL311yB5RuPQRlj7iRdUY2DqKMy5rprKvCjE/dq5u1Uxwfk6w1EInoZGYnjhWYYgNSAv
-         rttQ==
-X-Gm-Message-State: AGi0PuaeZBhkWBL4/G53TyaKw/u/3NaYdaQ3Ne9rYyNMUh8xCy6OhZLw
-        IJbAC4mL67jZgU5m/kJU2JZokcPNuvH5AVXeu/jqkiMzamQe
-X-Google-Smtp-Source: APiQypKcRyVBeoiDWCvZb7tswqkam9aNeXGh+t+Ou4uEcCLuNQD/97y44iDElTiQg68XVts3nXfySRjVZo8xHnjk4aisV+oXHT50
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i8gQeGNDkB+ERKJN8tgzWDwu8rNNZn41Iteab0ATdJc=;
+        b=GFmHqt8QsihTTI3JXQJOh99crrU14PfZeqh9rYZLSxh4x4rCGfmlHKsLHraMWRHYZM
+         MuLQWVBRoNfZZFgyKMYuqH813aGuH3YTFGtAiNev1R3Bsw6sQGhq8/UumA9zTmmK7s3c
+         ugNMj/6aC2BiXfBhYkUu+q94HrYHer/vPQj5XmmTuWHSsBDOV+N6nAZynCHwmwjUQ004
+         UqBLVkANKAtfffuppZAusaZYBKSYarm43rlc/LNT7tbgvFF2OfskstEslITffB+rMcBl
+         0165bAKG0npfVcTYVVSQVGPjTYT0facFedlEbG6tqCAQDkH7Tr1Ue6YmkeUiGwNb7YBe
+         uUUA==
+X-Gm-Message-State: AGi0PuZGnf/ZwixXyuf3kZ1rAj2/8hUFgNmhGKEXnJxKtX1NpE9Na4KF
+        igi1jFc3mssKJijCGrh4QeWn44J4mGk=
+X-Google-Smtp-Source: APiQypI4XabCmy6/6FKmCXmARbE1CI7zKvob96yjR84vX5NZnxHJwcAkT+Uf9ipUmfN1jpdhWpBWBg==
+X-Received: by 2002:a17:90a:d0c3:: with SMTP id y3mr19375193pjw.128.1586062495682;
+        Sat, 04 Apr 2020 21:54:55 -0700 (PDT)
+Received: from localhost (c-73-70-188-119.hsd1.ca.comcast.net. [73.70.188.119])
+        by smtp.gmail.com with ESMTPSA id j1sm8714883pfg.64.2020.04.04.21.54.54
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 04 Apr 2020 21:54:54 -0700 (PDT)
+From:   Michael Forney <mforney@mforney.org>
+To:     linux-ext4@vger.kernel.org
+Subject: [PATCH] libext2fs: avoid pointer arithmetic on `void *`
+Date:   Sat,  4 Apr 2020 21:53:46 -0700
+Message-Id: <20200405045346.21860-1-mforney@mforney.org>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:8183:: with SMTP id q3mr14989618ilk.43.1586038384055;
- Sat, 04 Apr 2020 15:13:04 -0700 (PDT)
-Date:   Sat, 04 Apr 2020 15:13:04 -0700
-In-Reply-To: <20200404183707.GK45598@mit.edu>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007b5aea05a27e5637@google.com>
-Subject: Re: WARNING in ext4_da_update_reserve_space
-From:   syzbot <syzbot+67e4f16db666b1c8253c@syzkaller.appspotmail.com>
-To:     a@unstable.cc, adilger.kernel@dilger.ca,
-        b.a.t.m.a.n@diktynna.open-mesh.org, benh@kernel.crashing.org,
-        davem@davemloft.net, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mareklindner@neomailbox.ch, mpe@ellerman.id.au,
-        muriloo@linux.ibm.com, netdev@vger.kernel.org, paulus@samba.org,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello,
+The pointer operand to the binary `+` operator must be to a complete
+object type.
 
-syzbot has tested the proposed patch and the reproducer did not trigger crash:
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ lib/ext2fs/csum.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reported-and-tested-by: syzbot+67e4f16db666b1c8253c@syzkaller.appspotmail.com
+diff --git a/lib/ext2fs/csum.c b/lib/ext2fs/csum.c
+index 8513d1ab..c2550365 100644
+--- a/lib/ext2fs/csum.c
++++ b/lib/ext2fs/csum.c
+@@ -274,7 +274,7 @@ static errcode_t __get_dirent_tail(ext2_filsys fs,
+ 		rec_len = translate(d->rec_len);
+ 	}
+ 
+-	if ((void *)d > ((void *)dirent + fs->blocksize))
++	if ((char *)d > ((char *)dirent + fs->blocksize))
+ 			return EXT2_ET_DIR_CORRUPTED;
+ 	if (d != top)
+ 		return EXT2_ET_DIR_NO_SPACE_FOR_CSUM;
+-- 
+2.26.0
 
-Tested on:
-
-commit:         54d3adbc ext4: save all error info in save_error_info() an..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4527d1e2fb19fd5c
-dashboard link: https://syzkaller.appspot.com/bug?extid=67e4f16db666b1c8253c
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Note: testing is done by a robot and is best-effort only.
