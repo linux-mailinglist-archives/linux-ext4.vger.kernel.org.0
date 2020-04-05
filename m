@@ -2,83 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C81FB19E96F
-	for <lists+linux-ext4@lfdr.de>; Sun,  5 Apr 2020 06:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3F619E98D
+	for <lists+linux-ext4@lfdr.de>; Sun,  5 Apr 2020 08:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgDEEy5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 5 Apr 2020 00:54:57 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:53245 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbgDEEy4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 5 Apr 2020 00:54:56 -0400
-Received: by mail-pj1-f65.google.com with SMTP id ng8so5005621pjb.2
-        for <linux-ext4@vger.kernel.org>; Sat, 04 Apr 2020 21:54:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mforney-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i8gQeGNDkB+ERKJN8tgzWDwu8rNNZn41Iteab0ATdJc=;
-        b=oJL6E5io6qalYVkcLyagDGske1YtuiLixLxFLw5B+ZlZ7TEghPvO8t7W+3I1PiOOrL
-         M+v6oYay8CLlA+/wHYtfhO0Q4GSLJNJYgbxr0DbW1KgUrU2Sfhv6eyV+FUsxV2fc7BCu
-         eZV75WnTd/lH4uMFFweNFFADMx3kgkuhPL7SKP7WQeI30ckZN0Tghawj4uygr89acg1L
-         8nDNS8G7mMMxmkp1R3i5WINZAUx2ZExYjVE2unIb2tXKHcpx0ihoTLIBiW6+dHzVrgqZ
-         xpQ/RS/RptaojnGWN6Lz4umwTquzGpwt852e+VFjIn/5OMcIa8Hy6VixE5eoXzSjsQPW
-         c1CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i8gQeGNDkB+ERKJN8tgzWDwu8rNNZn41Iteab0ATdJc=;
-        b=GFmHqt8QsihTTI3JXQJOh99crrU14PfZeqh9rYZLSxh4x4rCGfmlHKsLHraMWRHYZM
-         MuLQWVBRoNfZZFgyKMYuqH813aGuH3YTFGtAiNev1R3Bsw6sQGhq8/UumA9zTmmK7s3c
-         ugNMj/6aC2BiXfBhYkUu+q94HrYHer/vPQj5XmmTuWHSsBDOV+N6nAZynCHwmwjUQ004
-         UqBLVkANKAtfffuppZAusaZYBKSYarm43rlc/LNT7tbgvFF2OfskstEslITffB+rMcBl
-         0165bAKG0npfVcTYVVSQVGPjTYT0facFedlEbG6tqCAQDkH7Tr1Ue6YmkeUiGwNb7YBe
-         uUUA==
-X-Gm-Message-State: AGi0PuZGnf/ZwixXyuf3kZ1rAj2/8hUFgNmhGKEXnJxKtX1NpE9Na4KF
-        igi1jFc3mssKJijCGrh4QeWn44J4mGk=
-X-Google-Smtp-Source: APiQypI4XabCmy6/6FKmCXmARbE1CI7zKvob96yjR84vX5NZnxHJwcAkT+Uf9ipUmfN1jpdhWpBWBg==
-X-Received: by 2002:a17:90a:d0c3:: with SMTP id y3mr19375193pjw.128.1586062495682;
-        Sat, 04 Apr 2020 21:54:55 -0700 (PDT)
-Received: from localhost (c-73-70-188-119.hsd1.ca.comcast.net. [73.70.188.119])
-        by smtp.gmail.com with ESMTPSA id j1sm8714883pfg.64.2020.04.04.21.54.54
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 04 Apr 2020 21:54:54 -0700 (PDT)
-From:   Michael Forney <mforney@mforney.org>
-To:     linux-ext4@vger.kernel.org
-Subject: [PATCH] libext2fs: avoid pointer arithmetic on `void *`
-Date:   Sat,  4 Apr 2020 21:53:46 -0700
-Message-Id: <20200405045346.21860-1-mforney@mforney.org>
-X-Mailer: git-send-email 2.26.0
+        id S1726388AbgDEGTs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 5 Apr 2020 02:19:48 -0400
+Received: from mga17.intel.com ([192.55.52.151]:48527 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbgDEGTs (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 5 Apr 2020 02:19:48 -0400
+IronPort-SDR: 0JF/wGpFCelx3CgApolLUStyJsNdNVW979B04mnerw1lWq6BEC8nlYkVqDFCp9KIufPhX6tg3h
+ hV5j6Xo/vMng==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2020 23:19:47 -0700
+IronPort-SDR: 0110s7953263huErBoTRO4j83eC8Y3EFM92Atlg5RxKrkmln04D0YozOxKZzJHYAvkykohpDAn
+ 6hdmIjIg2wtA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,346,1580803200"; 
+   d="scan'208";a="253776526"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga006.jf.intel.com with ESMTP; 04 Apr 2020 23:19:46 -0700
+Date:   Sat, 4 Apr 2020 23:19:46 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <david@fromorbit.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations V5
+Message-ID: <20200405061945.GA94792@iweiny-DESK2.sc.intel.com>
+References: <20200316095509.GA13788@lst.de>
+ <20200401040021.GC56958@magnolia>
+ <20200401102511.GC19466@quack2.suse.cz>
+ <20200402085327.GA19109@lst.de>
+ <20200402205518.GF3952565@iweiny-DESK2.sc.intel.com>
+ <20200403072731.GA24176@lst.de>
+ <20200403154828.GJ3952565@iweiny-DESK2.sc.intel.com>
+ <20200403170338.GD29920@quack2.suse.cz>
+ <20200403181843.GK3952565@iweiny-DESK2.sc.intel.com>
+ <20200403183746.GQ80283@magnolia>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200403183746.GQ80283@magnolia>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The pointer operand to the binary `+` operator must be to a complete
-object type.
+> > 
+> > In summary:
+> > 
+> >  - Applications must call statx to discover the current S_DAX state.
+> 
+> Ok.
+> 
+> >  - There exists an advisory file inode flag FS_XFLAG_DAX that is set based on
+> >    the parent directory FS_XFLAG_DAX inode flag.  (There is no way to change
+> >    this flag after file creation.)
+> > 
+> >    If FS_XFLAG_DAX is set and the fs is on pmem then it will enable S_DAX at
+> >    inode load time; if FS_XFLAG_DAX is not set, it will not enable S_DAX.
+> >    Unless overridden...
+> 
+> Ok, fine with me. :)
 
-Signed-off-by: Michael Forney <mforney@mforney.org>
----
- lib/ext2fs/csum.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+:-D
 
-diff --git a/lib/ext2fs/csum.c b/lib/ext2fs/csum.c
-index 8513d1ab..c2550365 100644
---- a/lib/ext2fs/csum.c
-+++ b/lib/ext2fs/csum.c
-@@ -274,7 +274,7 @@ static errcode_t __get_dirent_tail(ext2_filsys fs,
- 		rec_len = translate(d->rec_len);
- 	}
- 
--	if ((void *)d > ((void *)dirent + fs->blocksize))
-+	if ((char *)d > ((char *)dirent + fs->blocksize))
- 			return EXT2_ET_DIR_CORRUPTED;
- 	if (d != top)
- 		return EXT2_ET_DIR_NO_SPACE_FOR_CSUM;
--- 
-2.26.0
+> 
+> >  - There exists a dax= mount option.
+> > 
+> >    "-o dax=off" means "never set S_DAX, ignore FS_XFLAG_DAX"
+> >    	"-o nodax" means "dax=off"
+> 
+> I surveyed the three fses that support dax and found that none of the
+> filesystems actually have a 'nodax' flag.  Now would be the time not to
+> add such a thing, and make people specify dax=off instead.  It would
+> be handy if we could have a single fsparam_enum for figuring out the dax
+> mount options.
+
+yes good point.
+
+I'm working on updating the documentation patch and I think this might also
+be better as:
+
+	-o dax=never
+
+Which is the opposite of 'always'.
+
+> 
+> >    "-o dax=always" means "always set S_DAX (at least on pmem), ignore FS_XFLAG_DAX"
+> >    	"-o dax" by itself means "dax=always"
+> >    "-o dax=iflag" means "follow FS_XFLAG_DAX" and is the default
+> > 
+> >  - There exists an advisory directory inode flag FS_XFLAG_DAX that can be
+> >    changed at any time.  The flag state is copied into any files or
+> >    subdirectories when they are created within that directory.  If programs
+> >    require file access runs in S_DAX mode, they'll have to create those files
+> 
+> "...they must create..."
+
+yes
+
+> 
+> >    inside a directory with FS_XFLAG_DAX set, or mount the fs with an
+> >    appropriate dax mount option.
+> 
+> Otherwise seems ok to me.
+
+Thanks!
+Ira
 
