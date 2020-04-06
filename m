@@ -2,91 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBE319F027
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Apr 2020 07:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EAB19F322
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Apr 2020 12:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgDFFgU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Apr 2020 01:36:20 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:50274 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgDFFgU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Apr 2020 01:36:20 -0400
-Received: by mail-pj1-f66.google.com with SMTP id v13so6029913pjb.0
-        for <linux-ext4@vger.kernel.org>; Sun, 05 Apr 2020 22:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:in-reply-to:references:mime-version:content-id
-         :date:message-id;
-        bh=CU2Yugo0GP8rSA0D5+20VRTazpR4K/wfY10bxf3KXLw=;
-        b=hRQaQFHE+WlG2EzQzvmED2YHfJET0RivmAJuzcP3p79AtKyNaw2X5fE4Gd5P0WK9hx
-         xaCP8fh9TupXUJ61aOjLrjy+y2i+pjQipVZKhxRhc0Hb4jlAuCi2S0KqISu2I8WOYSO+
-         icpXXqWPcdZZhNyVhADptpk80fnWsdzOfOYqv4Bt/096sG1bnQtixR8fwS1EvJEZbTYG
-         0j00Sh6yX6B3hFPR425jajfho7PlPbKgQy6l1EV3amqOv2Rl1UO4yAfzhQItV36ykNR7
-         4JVDYL8Ix0P5yoxNao7BjmXguJjEq9l6raHQ+mqOWQrlHVCxrrPlcTr3PWiFDZwFI7pv
-         /HVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:in-reply-to:references
-         :mime-version:content-id:date:message-id;
-        bh=CU2Yugo0GP8rSA0D5+20VRTazpR4K/wfY10bxf3KXLw=;
-        b=dkNNM7AqGnkn9Deno7SNb0uXhv58HtbIeh3bQ05hwX4sYj7OEhUAKo019Yd1PnMoCg
-         l5vKnpSQS0/JHmKpbiWFNmJSfPaV9KN9pHEW6meSnJ7Vf2sECaiBu/j4KYwg+k/LJaVy
-         EZb/8vWDpobxePbqO4O7QehvYxHdMq2+OSnsjKD5eu6OuAjYXQRPmHQIEeUbJoHCpLvA
-         Wh3hI8IaHCR15VsS/IP6x1sYULaJ3XGfDIZd9UkJQvHCz4NDhGRwK0+oOWi9khx/Vpqc
-         SVWNYb7WLbbktwlWFeH5HadGGu2wtORy9nsJNm31nt+D8vmBuBOFc/9eejKOIdek7YHf
-         jytQ==
-X-Gm-Message-State: AGi0PuZI6gMZdjXELxkRQPFMGM4C8HQ7dJDhlH9KbEbYL0QGaaaQ5ua0
-        sD2AxzPeyTPLRkvAOaAT0L8=
-X-Google-Smtp-Source: APiQypJ2h3haLQQHSgmESn0aGFULJvhzmiAYcwTleY8tQ1HEJwKNswKLp+TH/OwMIza4iS9Cm6l3rw==
-X-Received: by 2002:a17:902:7896:: with SMTP id q22mr17123097pll.75.1586151378924;
-        Sun, 05 Apr 2020 22:36:18 -0700 (PDT)
-Received: from jromail.nowhere (h219-110-108-104.catv02.itscom.jp. [219.110.108.104])
-        by smtp.gmail.com with ESMTPSA id e187sm10690233pfe.50.2020.04.05.22.36.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Apr 2020 22:36:18 -0700 (PDT)
-Received: from localhost ([127.0.0.1] helo=jrobl) by jrobl id 1jLKQj-0007xb-1W ; Mon, 06 Apr 2020 14:36:17 +0900
-From:   "J. R. Okajima" <hooanon05g@gmail.com>
-Subject: Re: [PATCH v2] ext2: Silence lockdep warning about reclaim under xattr_sem
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-ext4@vger.kernel.org
-In-Reply-To: <20200225120803.7901-1-jack@suse.cz>
-References: <20200225120803.7901-1-jack@suse.cz>
+        id S1726833AbgDFKAI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Apr 2020 06:00:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36166 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726784AbgDFKAH (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:00:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7CFCCADCC;
+        Mon,  6 Apr 2020 10:00:05 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 354011E1244; Mon,  6 Apr 2020 12:00:05 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 12:00:05 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations V5
+Message-ID: <20200406100005.GB1143@quack2.suse.cz>
+References: <20200316095224.GF12783@quack2.suse.cz>
+ <20200316095509.GA13788@lst.de>
+ <20200401040021.GC56958@magnolia>
+ <20200401102511.GC19466@quack2.suse.cz>
+ <20200402085327.GA19109@lst.de>
+ <20200402205518.GF3952565@iweiny-DESK2.sc.intel.com>
+ <20200403072731.GA24176@lst.de>
+ <20200403154828.GJ3952565@iweiny-DESK2.sc.intel.com>
+ <20200403170338.GD29920@quack2.suse.cz>
+ <20200403181843.GK3952565@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <30601.1586151377.1@jrobl>
-Date:   Mon, 06 Apr 2020 14:36:17 +0900
-Message-ID: <30602.1586151377@jrobl>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200403181843.GK3952565@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Jan Kara:
-> Lockdep complains about a chain:
->   sb_internal#2 --> &ei->xattr_sem#2 --> fs_reclaim
->
-> and shrink_dentry_list -> ext2_evict_inode -> ext2_xattr_delete_inode ->
-> down_write(ei->xattr_sem) creating a locking cycle in the reclaim path.
-> This is however a false positive because when we are in
-> ext2_evict_inode() we are the only holder of the inode reference and
-> nobody else should touch xattr_sem of that inode. So we cannot ever
-> block on acquiring the xattr_sem in the reclaim path.
->
-> Silence the lockdep warning by using down_write_trylock() in
-> ext2_xattr_delete_inode() to not create false locking dependency.
+On Fri 03-04-20 11:18:43, Ira Weiny wrote:
+> Ok For 5.8 why don't we not allow FS_XFLAG_DAX to be changed on files _at_
+> _all_...
+> 
+> In summary:
+> 
+>  - Applications must call statx to discover the current S_DAX state.
+> 
+>  - There exists an advisory file inode flag FS_XFLAG_DAX that is set based on
+>    the parent directory FS_XFLAG_DAX inode flag.  (There is no way to change
+>    this flag after file creation.)
+> 
+>    If FS_XFLAG_DAX is set and the fs is on pmem then it will enable S_DAX at
+>    inode load time; if FS_XFLAG_DAX is not set, it will not enable S_DAX.
+>    Unless overridden...
 
-v5.6 is released.
-But I cannot see this patch applied.  Sad.
+OK, after considering all the options we were hashing out here, I think
+this is the best API. There isn't the confusing "S_DAX will magically
+switch on inode eviction" and although the functionality is limited, I
+think 90% of users would end up using the functionality like this anyway.
 
-Anyway I am wondering whether acquiring xattr_sem in
-ext2_xattr_delete_inode() is really necessary or not.
-It is necessary because this function refers and clears i_file_acl,
-right?
+>  - There exists a dax= mount option.
+> 
+>    "-o dax=off" means "never set S_DAX, ignore FS_XFLAG_DAX"
+>    	"-o nodax" means "dax=off"
+>    "-o dax=always" means "always set S_DAX (at least on pmem), ignore FS_XFLAG_DAX"
+>    	"-o dax" by itself means "dax=always"
+>    "-o dax=iflag" means "follow FS_XFLAG_DAX" and is the default
+> 
+>  - There exists an advisory directory inode flag FS_XFLAG_DAX that can be
+>    changed at any time.  The flag state is copied into any files or
+>    subdirectories when they are created within that directory.  If programs
+>    require file access runs in S_DAX mode, they'll have to create those files
+>    inside a directory with FS_XFLAG_DAX set, or mount the fs with an
+>    appropriate dax mount option.
 
-But this function handles the removed (nlink==0) and unused inodes only.
-If nobody else touches xattr_sem as you wrote, then it is same to
-i_file_acl, isn't it?  Can we replace xattr_sem (only here) by memory
-barrier, or remove xattr_sem from ext2_xattr_delete_inode()?
+								Honza
 
-
-J. R. Okajima
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
