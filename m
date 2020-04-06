@@ -2,151 +2,173 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F28A19FB52
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Apr 2020 19:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32261A01A9
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Apr 2020 01:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729018AbgDFRVu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Apr 2020 13:21:50 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53688 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728634AbgDFRVu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Apr 2020 13:21:50 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 036HKqKp019092;
-        Mon, 6 Apr 2020 10:20:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=gIBIaZgdtmerVDU58JBeQ83Y+T/JnjlqXqtVi45k8f4=;
- b=I8zkg3wJXVRRm4Q2CiDsI/VYyu6CqxLtTa9nu/E7oqTmdqvWUMasNqrr6l7POxw4QFRC
- b9v/G6X4/jIOhNSN2i+B1wLC9LXa5kdbS4RG9z5fCGKMSPUDduY3fYOwMELvBtpCfpAJ
- e9xhK0Yxk0UBflnelZNTC7QYtegqBQn0NSE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 307a8q3rs6-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 06 Apr 2020 10:20:55 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 6 Apr 2020 10:20:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HVL4c6F102FcNmacvideHaeiPHWhcvpKmA84qtDLjOyrPQFb4mqvj+i0HBZhrIlYbRpKMGyOOS/tzZY+LlrzVYDuc+vEMXw2XUBI4UfGS08jB3r2GlEZkVUw22MPzifU8Af+EMH5KLKKcY8P+iRuBQRILB8LS9B9PA83LR5/1LKYZ73oOWaYrhAx6F1palTcGEwT77CPiCOvLrqiowt5yyxvQej4Ws6INrx5Qhe/cjug6Epkqxo/Gn1UzQRd/awxOr0yzPeK2ZrbgGxtfb2qVG7XvxpHrzloNgbhAC/tQ1mXrVxbuchyME9Z/XKAVbwh8DLHWow27s5CW1kD0RxDHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gIBIaZgdtmerVDU58JBeQ83Y+T/JnjlqXqtVi45k8f4=;
- b=ciQLlFmNbIYOt/IJu8zGGUBOKb4u6ZmRNI7QAcSs5yUAxAvWYXKmiAwQG++ekrxia3NYj5avBcyzlP1uznqy/nOCvSrQrzFG3DDozV/TokCmePw21hr5FtU0FE5S7/XamCHxxuBXshw7LJp1yh/Bv+/7A6s0MDPzp7Nt5GBoQYoGcVZo2LdsblPU7ZvMm458JDlTTW+hnXvkKAlk+4kT/cV5JXPGDSjrWGdSJj17z0yGA7WldfsMkBAwbH4Pi1tLbtZjGyhpfkZrsVeUC1nzCR9LJ7KwFZA13ikU5x6ja0A7SLbMyHgroT9irbFqSy4oYhcsq8baYlhWXudh7rnq6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gIBIaZgdtmerVDU58JBeQ83Y+T/JnjlqXqtVi45k8f4=;
- b=kafzyQnkQx5ubfY6Cn+XX1O1z2qEc9O0XF+dW7AIytGVI25DfZuJeNTx3VDEbQuXVcT5OGGTnkC2BXAycXPZ52wMaU2plo19jKXB3lWt5J4EhaeEpEwe4A25WeIPfF031VrVfqBbqfnTtgMaOZ7Y04o8O+mATywKfx2mRnbqOl0=
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3239.namprd15.prod.outlook.com (2603:10b6:a03:10f::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16; Mon, 6 Apr
- 2020 17:20:42 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2878.018; Mon, 6 Apr 2020
- 17:20:42 +0000
-Date:   Mon, 6 Apr 2020 10:20:33 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Perepechko <andrew.perepechko@seagate.com>,
-        <adilger@dilger.ca>, Gioh Kim <gioh.kim@lge.com>,
-        Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v2] ext4: use non-movable memory for superblock readahead
-Message-ID: <20200406172033.GA336570@carbon.DHCP.thefacebook.com>
-References: <20200229001411.128010-1-guro@fb.com>
- <26E49EB9-DAD4-4BAB-A7A7-7DC6B45CD2B8@dilger.ca>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26E49EB9-DAD4-4BAB-A7A7-7DC6B45CD2B8@dilger.ca>
-X-ClientProxiedBy: CO2PR04CA0185.namprd04.prod.outlook.com
- (2603:10b6:104:5::15) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S1726310AbgDFX1I (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 6 Apr 2020 19:27:08 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:11119 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbgDFX1I (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Apr 2020 19:27:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1586215628; x=1617751628;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=X5Of+XNOiIABD5PHJhySeNSquylLNwYKPMHbC9s8oio=;
+  b=L4yf5hYttTNiAxxWzwsEXYfhr3xA5x3JF8a0Ir3k9ivQ7SA6IXF1DTq+
+   sXTLQxDXZaC0480kkXZt4nqz5NfkxD1iNu9A0tSqK++emVhtrqQN+eTdD
+   TAiQQgxufPvFB19hSmwVXRHWOsVkL7mv6upl7SoEf/mOhF5hVK6XXe/9V
+   JXI5GMMDkgI+nuRbQzzmRFpERggCF6eLkDhabXHUJFNWu7Csf84IMEYPx
+   RyrhxCCngipZKxyPYT200xCaY28UNKUklROG+LajLKmGCuvSBGxupYjx/
+   Tg6wIH5tRVOHUCHDDEUmvML72W9GJ4ThNS0syIbXgokf4lcllHo2CPEta
+   w==;
+IronPort-SDR: tj4qoymIBBq5d+oFKQmrh/xtEnw1SFHnMFHKeUYfiH/lp61vnT03EfTKiWkT84MvddaqMcLbD2
+ 0cv7TwEH8bG3zAA0oHD5O72cuoI4K50BC2St+SmZogEyccGK2ZjyZxUC6jDMFUuWHhsG6TkdAc
+ p7tDSss0bZgDaAZQ25Urk5xMdFZjd4Ip62b9xm2HDTLvKYQl+6Bxk/vCVcNt47vaZuGfKsBmZd
+ PJeXdjXth/HJUFSwj1AdAtbs4NXx4vN83G0+416kmDmEOyy73pBLGY8G9s8lQ5YR4pma5ac58C
+ lbU=
+X-IronPort-AV: E=Sophos;i="5.72,352,1580745600"; 
+   d="scan'208";a="136175313"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Apr 2020 07:27:08 +0800
+IronPort-SDR: TOdEYF0yJHJ7VDVlafhr2PV9YRRC6vsJVo7xnYQgNOdxRLcBNjf1mrQz0JXNez6eU5CXDqT68d
+ nEk1PEcA0gDQc0/0mT0yKsPbgCzX0ePO90YlADTmXBqFgVmpb9sneBtb5DR+f60xyZOSg9r7Mw
+ aHgK1yf6c/UGYtliZqyxBEuKWUtMSO3W1pt4NCxtypDjbEZsu6u4e5hGfZplHmHmJxE/cJ+YTA
+ OpE34y2tigY7Fr1HyOorDmKftqgOx8aFf5I8xiIshM+sDqy7MCFMcNnQgjtFWmsyYAs/qp+XIV
+ AWDSkUjZhZ657p7FQV3pL1tS
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2020 16:17:50 -0700
+IronPort-SDR: vrJU7kzzj1UEUyxdi9Iw6zGX1leY374TAplZqDUH+i50LaUR6LiNMl7C6Aj7/l7wvWx9xYtw6Y
+ omZd7E2//9ve2EU7lNX/R00vkIV0Vlh2iE/VHqEcmMd+zBYzHoPmk58scLmk+g82Bogth/rEgF
+ 9POgOL2O1P1aoeDGN7GV50LkCe1dHARnhtRJm6xBMPK17j3s433I+HglH8GBDRVsXdowQ/KIv8
+ h6gDv07udQiN26GqfFBbi1FPo9uRDgGdUsj7MsRTbnceIfj1QvrZ0ych4y6zIloJtUChF4NVh3
+ 2dg=
+WDCIronportException: Internal
+Received: from ioprio.labspan.wdc.com (HELO ioprio.sc.wdc.com) ([10.6.139.89])
+  by uls-op-cesaip01.wdc.com with ESMTP; 06 Apr 2020 16:27:07 -0700
+From:   Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+To:     hch@lst.de, martin.petersen@oracle.com
+Cc:     darrick.wong@oracle.com, axboe@kernel.dk, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ming.lei@redhat.com, jthumshirn@suse.de,
+        minwoo.im.dev@gmail.com, chaitanya.kulkarni@wdc.com,
+        damien.lemoal@wdc.com, andrea.parri@amarulasolutions.com,
+        hare@suse.com, tj@kernel.org, hannes@cmpxchg.org,
+        khlebnikov@yandex-team.ru, ajay.joshi@wdc.com, bvanassche@acm.org,
+        arnd@arndb.de, houtao1@huawei.com, asml.silence@gmail.com,
+        ktkhai@virtuozzo.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH V2 0/4] block: Add support for REQ_OP_ALLOCATE
+Date:   Mon,  6 Apr 2020 15:21:44 -0700
+Message-Id: <20200406222148.28365-1-chaitanya.kulkarni@wdc.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:e5af) by CO2PR04CA0185.namprd04.prod.outlook.com (2603:10b6:104:5::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16 via Frontend Transport; Mon, 6 Apr 2020 17:20:41 +0000
-X-Originating-IP: [2620:10d:c090:400::5:e5af]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4caa3b2f-d011-4856-3e9d-08d7da4ed591
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3239:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3239716167578B7E29C39AAEBEC20@BYAPR15MB3239.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-Forefront-PRVS: 0365C0E14B
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(376002)(136003)(366004)(346002)(396003)(39860400002)(478600001)(9686003)(55016002)(8676002)(81156014)(81166006)(1076003)(8936002)(16526019)(54906003)(33656002)(5660300002)(6666004)(186003)(66556008)(66476007)(2906002)(66946007)(52116002)(7696005)(4326008)(316002)(86362001)(53546011)(6506007)(6916009);DIR:OUT;SFP:1102;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2F7qk8bFCe/ina5aGqJ7cg3q6H9lDTGj0L3NpO2OMwetefzRMHkIT5d1fDqciCAD/bsK+22bYliRN5naeJAFwPAEfdhe2THporWgzS6wPLykBQlOKSbPAsx2youSmsT4afCyIh+9TcQhLlJEzn9qSQ++hIpS3FHXoPp5OzoIi8mZ2bAu9HuUaVh+8oFRtLqXxdxOYNy8CIkL3YpAqUf8Lah9qu09W+ByhjN85bWpxpxhxoSzy7Mde6zKyGiuZRl3F7Kryvi8qpfwMffBR27vq7m8rzpWg3NoG1z3PZVUwyeBup4ID7l7snv71XaXp1peS0YGfBcweuqIuD36BCk1QVoDV+qgBweMJnRtD6ggKoYj1bXlcMZwwmD2JqRUfBUWINFnIr5BfTDdQNYwXmLdawreVZFKP27h8/dW/tJZA0ZMpk2z71bceygvZXGWmihB
-X-MS-Exchange-AntiSpam-MessageData: CdKe9L0rWBdwf2JnCNUjuKrHtXRW4YS71lVt7S8cVZxIKsSM6IRLPk9QlolX+iK2W44ol6/wqnB1UUru1uZ1ftNWwOSkkFkDUfHy8xJEiuKnJhzXqh/5WOi+FH9DsN7VAjcv0JSnOBgrB1NUkTknhIieCZ2cH+6btLsH70Popz/V3k66I0tNm80gBVlVnwMF
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4caa3b2f-d011-4856-3e9d-08d7da4ed591
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2020 17:20:42.3893
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mPzOa/IIwoscrcXhVq1KziXzPWnw9wb5llFtxgfLEiLap6BgpwHpg/8YmlPOW8Mu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3239
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-06_08:2020-04-06,2020-04-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- malwarescore=0 impostorscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0
- phishscore=0 suspectscore=1 mlxlogscore=965 priorityscore=1501 mlxscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004060137
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Feb 29, 2020 at 12:49:13AM -0700, Andreas Dilger wrote:
-> On Feb 28, 2020, at 5:14 PM, Roman Gushchin <guro@fb.com> wrote:
-> > 
-> > Since commit a8ac900b8163 ("ext4: use non-movable memory for the
-> > superblock") buffers for ext4 superblock were allocated using
-> > the sb_bread_unmovable() helper which allocated buffer heads
-> > out of non-movable memory blocks. It was necessarily to not block
-> > page migrations and do not cause cma allocation failures.
-> > 
-> > However commit 85c8f176a611 ("ext4: preload block group descriptors")
-> > broke this by introducing pre-reading of the ext4 superblock.
-> > The problem is that __breadahead() is using __getblk() underneath,
-> > which allocates buffer heads out of movable memory.
-> > 
-> > It resulted in page migration failures I've seen on a machine
-> > with an ext4 partition and a preallocated cma area.
-> > 
-> > Fix this by introducing sb_breadahead_unmovable() and
-> > __breadahead_gfp() helpers which use non-movable memory for buffer
-> > head allocations and use them for the ext4 superblock readahead.
-> > 
-> > v2: found a similar issue in __ext4_get_inode_loc()
-> > 
-> > Fixes: 85c8f176a611 ("ext4: preload block group descriptors")
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> 
-> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Hi,
 
-Hello, Theodore!
+This patch-series is based on the original RFC patch series:-
+https://www.spinics.net/lists/linux-block/msg47933.html.
 
-Can you, please, pick this patch?
+I've designed a rough testcase based on the information present
+in the mailing list archive for original RFC, it may need
+some corrections from the author.
 
-We've some changes on the mm side (more actively using a cma area for movable
-allocations), which might bring a regression without this ext4 change.
+If anyone is interested, test results are at the end of this patch.
 
-Thank you!
+Following is the original cover-letter :-
 
-Roman
+Information about continuous extent placement may be useful
+for some block devices. Say, distributed network filesystems,
+which provide block device interface, may use this information
+for better blocks placement over the nodes in their cluster,
+and for better performance. Block devices, which map a file
+on another filesystem (loop), may request the same length extent
+on underlining filesystem for less fragmentation and for batching
+allocation requests. Also, hypervisors like QEMU may use this
+information for optimization of cluster allocations.
+
+This patchset introduces REQ_OP_ALLOCATE, which is going
+to be used for forwarding user's fallocate(0) requests into
+block device internals. It rather similar to existing
+REQ_OP_DISCARD, REQ_OP_WRITE_ZEROES, etc. The corresponding
+exported primitive is called blkdev_issue_allocate().
+See [1/3] for the details.
+
+Patch [2/3] teaches loop driver to handle REQ_OP_ALLOCATE
+requests by calling fallocate(0).
+
+Patch [3/3] makes ext4 to notify a block device about fallocate(0).
+
+Here is a simple test I did:
+https://gist.github.com/tkhai/5b788651cdb74c1dbff3500745878856
+
+I attached a file on ext4 to loop. Then, created ext4 partition
+on loop device and started the test in the partition. Direct-io
+is enabled on loop.
+
+The test fallocates 4G file and writes from some offset with
+given step, then it chooses another offset and repeats. After
+the test all the blocks in the file become written.
+
+The results shows that batching extents-assigning requests improves
+the performance:
+
+Before patchset: real ~ 1min 27sec
+After patchset:  real ~ 1min 16sec (18% better)
+
+Ordinary fallocate() before writes improves the performance
+by batching the requests. These results just show, the same
+is in case of forwarding extents information to underlining
+filesystem.
+
+Regards,
+Chaitanya
+
+Changes from V1:-
+
+1. Adjust series from using assign range or ASSIGN_RANGE to allocate or
+   ALLOCATE. (Martin)
+2. Add SECT_FROM_SB_BLK() and NSECTS_FROM_SB_NBLK() macros since it
+   avoids weired line breaking and duplication of the code for
+   sb_issue_discard(), sb_issue_zeroout() and sb_issue_allocate().
+   Should there be a prep patch for this ?
+
+Changes from RFC:-
+
+1. Add missing plumbing for REQ_OP_ASSIGN_RANGE similar to write-zeores.
+2. Add a prep patch to create a helper to submit payloadless bios.
+3. Design a testcases around the description present in the
+   cover-letter.
+
+Chaitanya Kulkarni (1):
+  block: create payloadless issue bio helper
+
+Kirill Tkhai (3):
+  block: Add support for REQ_OP_ALLOCATE
+  loop: Forward REQ_OP_ALLOCATE into fallocate(0)
+  ext4: Notify block device about alloc-assigned blk
+
+ block/blk-core.c          |   5 ++
+ block/blk-lib.c           | 115 +++++++++++++++++++++++++++++++-------
+ block/blk-merge.c         |  21 +++++++
+ block/blk-settings.c      |  19 +++++++
+ block/blk-zoned.c         |   1 +
+ block/bounce.c            |   1 +
+ drivers/block/loop.c      |   5 ++
+ fs/ext4/ext4.h            |   2 +
+ fs/ext4/extents.c         |  12 +++-
+ include/linux/bio.h       |   9 ++-
+ include/linux/blk_types.h |   2 +
+ include/linux/blkdev.h    |  55 ++++++++++++++----
+ 12 files changed, 210 insertions(+), 37 deletions(-)
+
+-- 
+2.22.0
+
