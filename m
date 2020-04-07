@@ -2,178 +2,184 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B991A128B
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Apr 2020 19:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BBB1A1392
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Apr 2020 20:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgDGRVH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Apr 2020 13:21:07 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:39575 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgDGRVH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Apr 2020 13:21:07 -0400
-Received: by mail-pl1-f196.google.com with SMTP id k18so1488267pll.6
-        for <linux-ext4@vger.kernel.org>; Tue, 07 Apr 2020 10:21:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=KFskH0SmggCEMwWDYLku8dqVUyaEcKQ6m089cNKv+uE=;
-        b=GbE4vWLzSKO+EeAk6rJG4I/bCtVIxRwp0+2Mxu3p+/BS0Xzs3gAL8xwyiBD2+MN89k
-         Ln1wuY2b6f0e5o1pz3pLC7+2GsRIyE0sjK4JvxryQOY2eHSLYbyrl+//AnB+v9K20OUu
-         1/pYGDWNeNIZCrFT5ZzjmyCeNbXEGcm3eLQw7Etnh6J2iGbhz8FGfuKPfhB8aycW2xF0
-         /UgN5bm6BqxiPbfWmuJvExANwQSZUFOl75nDA5rkj+pvpQSWc55kPDeRk9MIie+t0uac
-         wEu09408Vzw2Xf+KVxjKR0clbnMFsqG4/w+lf7QgezVtbVYJAw6/5CyqtaoNWSrCIPiV
-         Ik8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=KFskH0SmggCEMwWDYLku8dqVUyaEcKQ6m089cNKv+uE=;
-        b=HcIMtuTbCeaab4Wmgzj0g/Ak22N0kW2a6cTMCwfVdVqZPTjO79H6gqKAVq69rtO9JK
-         J5sjegS/0Y1rLCmeYgx8+SV4tc5mnpFoKwoWrotHy91DTGdMhsGEBrt2mHFfQ3st/ARu
-         xtebhAIHP0wHEa/t5/n0A1ni+DpGYMzjQmXyV+2PgtbXyu5dzrqcyaSdyehokKYkwm4q
-         f+wvOR2qN7JoVjOFJP3VyEVUNFqcBd1ETwHf52marsM47rHmMhC1+5qOJt/iBm4aavIN
-         hxHjkP5g1zjqxtWjxcxJIlGmf8ZZWPb/H20pO912bR06iLCo/SRBWWbfiMkkymdwIYj8
-         6kbw==
-X-Gm-Message-State: AGi0PuYwfkdAoYQljOXa7N9xYkIkcsdfiEuTsWTZr0ODiCPahAAcjdrI
-        8JnWEfHnqJT1LklmFg0lLdOZxVZLXwI=
-X-Google-Smtp-Source: APiQypInUBZrG5UYrQAasY792NZF+WREcCKNDFv3rJzAqS6abVKuwa0cEP7BR6M9uIaCbYGiS2WFpg==
-X-Received: by 2002:a17:90a:868b:: with SMTP id p11mr460123pjn.34.1586280065003;
-        Tue, 07 Apr 2020 10:21:05 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id a127sm14518948pfa.111.2020.04.07.10.21.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 07 Apr 2020 10:21:03 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <BFC2DE9E-82FA-4F76-9BD2-B505324F3557@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_0F36E968-5522-4059-B18F-A5654D9A0571";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2 3/3] ext4: reimplement ext4_empty_dir() using
- is_dirent_block_empty
-Date:   Tue, 7 Apr 2020 11:21:01 -0600
-In-Reply-To: <20200407064616.221459-3-harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Jan Kara <jack@suse.cz>
-References: <20200407064616.221459-1-harshadshirwadkar@gmail.com>
- <20200407064616.221459-3-harshadshirwadkar@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        id S1726701AbgDGSaM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Apr 2020 14:30:12 -0400
+Received: from mga14.intel.com ([192.55.52.115]:60112 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726332AbgDGSaL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 7 Apr 2020 14:30:11 -0400
+IronPort-SDR: aat543FUNqMwKniNQEWkV4Un5133hP62tEFF4hDlKtIwx+EGUj/ZaSzmvXwuzuHcHLWNWB+wRg
+ HEpHzmHXEEbw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 11:30:10 -0700
+IronPort-SDR: ZwrsoMC8FP+nMgQHxSpq0C5muJmfVAL83tMxkeXV63taXiHZ1DJeyxaq2vFmySl8XEg79EDTLa
+ 678dkWgjTJ1g==
+X-IronPort-AV: E=Sophos;i="5.72,356,1580803200"; 
+   d="scan'208";a="424844297"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 11:30:10 -0700
+From:   ira.weiny@intel.com
+To:     linux-kernel@vger.kernel.org
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jeff Moyer <jmoyer@redhat.com>
+Subject: [PATCH V6 0/8] Enable per-file/per-directory DAX operations V6
+Date:   Tue,  7 Apr 2020 11:29:50 -0700
+Message-Id: <20200407182958.568475-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Ira Weiny <ira.weiny@intel.com>
 
---Apple-Mail=_0F36E968-5522-4059-B18F-A5654D9A0571
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Changes from V5:
+	* make dax mount option a tri-state
+	* Reject changes to FS_XFLAG_DAX for regular files
+		- Allow only on directories
+	* Update documentation
 
-On Apr 7, 2020, at 12:46 AM, Harshad Shirwadkar =
-<harshadshirwadkar@gmail.com> wrote:
->=20
-> The new function added in this patchset adds an efficient way to
-> check if a dirent block is empty. Based on that, reimplement
-> ext4_empty_dir().
->=20
-> This is a new patch added in V2.
->=20
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+At LSF/MM'19 [1] [2] we discussed applications that overestimate memory
+consumption due to their inability to detect whether the kernel will
+instantiate page cache for a file, and cases where a global dax enable via a
+mount option is too coarse.
 
-Again, a very minor style change iff patch is refreshed.
+The following patch series enables the use of DAX on individual files and/or
+directories on xfs, and lays some groundwork to do so in ext4.  It further
+enhances the dax mount option to be a tri-state of 'always', 'never', or
+'iflag' (default).  Furthermore, it maintians '-o dax' to be equivalent to '-o
+dax=always'.
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+The insight at LSF/MM was to separate the per-mount or per-file "physical"
+(FS_XFLAG_DAX) capability switch from an "effective" (S_DAX) attribute for the
+file.
 
+At LSF/MM we discussed the difficulties of switching the DAX state of a file
+with active mappings / page cache.  It was thought the races could be avoided
+by limiting DAX state flips to 0-length files.
 
-While looking at this code, I noticed that ext4_empty_dir() considers a
-directory without a "." or ".." entry to be empty.  I see this was =
-changed
-in 64d4ce8923 ("ext4: fix ext4_empty_dir() for directories with holes").
-I can understand that we want to not die on corrupted leaf blocks, but =
-it
-isn't clear to me that it is a good idea to allow deleting an entire
-directory tree if the first block has an error (missing "." or ".." as =
-the
-first and second entries) but is otherwise valid.  There were definitely
-bugs in the past that made "." or ".." not be the first and second =
-entries.
+However, this turns out to not be true.[3][5] This is because address space
+operations (a_ops) may be in use at any time the inode is referenced.
 
-That isn't a problem in this patch, but seems dangerous in general.  It
-doesn't seem like the directory shrinking would trigger this case, since =
-it
-is checking for individual empty blocks rather than using =
-ext4_empty_dir().
+For this reason direct manipulation of the FS_XFLAG_DAX file is prohibited on
+files in this patch set.  File can only inherit this flag from their parent
+directory on creation.
 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> @@ -3218,34 +3219,26 @@ bool ext4_empty_dir(struct inode *inode)
-> 		brelse(bh);
-> 		return true;
-> 	}
-> +	de =3D ext4_next_entry(de, sb->s_blocksize);
-> +	if (!is_empty_dirent_block(inode, bh, de)) {
-> +		brelse(bh);
-> +		return false;
-> +	}
-> +	brelse(bh);
-> +
-> +	for (lblk =3D 1; lblk < inode->i_size >> =
-EXT4_BLOCK_SIZE_BITS(sb);
-> +			lblk++) {
+Details of when and how DAX state can be changed on a file is included in a
+documentation patch.
 
-(style) should be aligned after '(' on previous line
-
-> +		bh =3D ext4_read_dirblock(inode, lblk, EITHER);
-> +		if (bh =3D=3D NULL)
-> 			continue;
-> -		}
-> -		if (le32_to_cpu(de->inode)) {
-> +		if (IS_ERR(bh))
-> +			return true;
-> +		if (!is_empty_dirent_block(inode, bh, NULL)) {
-> 			brelse(bh);
-> 			return false;
-> 		}
-> -		offset +=3D ext4_rec_len_from_disk(de->rec_len, =
-sb->s_blocksize);
-> +		brelse(bh);
-> 	}
-> -	brelse(bh);
-> 	return true;
-> }
-
-Cheers, Andreas
+It should be noted that FS_XFLAG_DAX inheritance is not shown in this patch set
+as it was maintained from previous work on XFS.  FS_XFLAG_DAX and it's
+inheritance will need to be added to other file systems for user control. 
 
 
+[1] https://lwn.net/Articles/787973/
+[2] https://lwn.net/Articles/787233/
+[3] https://lkml.org/lkml/2019/10/20/96
+[4] https://patchwork.kernel.org/patch/11310511/
+[5] https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
 
 
+To: linux-kernel@vger.kernel.org
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
 
 
---Apple-Mail=_0F36E968-5522-4059-B18F-A5654D9A0571
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+Changes from V4:
+	* Open code the aops lock rather than add it to the xfs_ilock()
+	  subsystem (Darrick's comments were obsoleted by this change)
+	* Fix lkp build suggestions and bugs
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
+Changes from V3:
+	* Remove global locking...  :-D
+	* put back per inode locking and remove pre-mature optimizations
+	* Fix issues with Directories having IS_DAX() set
+	* Fix kernel crash issues reported by Jeff
+	* Add some clean up patches
+	* Consolidate diflags to iflags functions
+	* Update/add documentation
+	* Reorder/rename patches quite a bit
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6Mtn0ACgkQcqXauRfM
-H+Ay3BAAuf9cNqYO6j9OpQk5vuS9lmKkevgiwYH8znhwDmLyjtNkDM4pSbCsPr84
-mU8Gyflbqg3zNZbMRVi5Glr6B6ZSMQltXACksE5VGjjGW8uvzNMUtQLwJVvb20OW
-SuCJt91Z9BWSUMAcMQwYHLqQrttqcEogiYm10lHPwMUnqnVqSCdjvxtFx+lvK0HJ
-nt7N/n1nPBfHuCdH6dgyomGMD0dmIIv28P6ynHqus7MU130z/Wtj22CQn4kzGdeA
-an4Mh8pZ7tI5GO5Kf8K8vUtwepAB/ITdDyRgXLsNUqH0nE8qhCxXCeGNs2jY5ToA
-AHucg3Gj9mDfQ6wD2IH2Jp6QHoPnVvbku5/oC4pLXE9jO0aTz9VsunMbKRYnz96Z
-SNg1gMpo/txXszvcsdGYa/iehQI+qd6hYIDimZcVp6M5E3k4ixwiXjmVgWslgH1U
-6xIyNBDiZUgpuqhclhm5zmxjsY/T8+UriWoj6XUb6k8w+knRP68tQ5fLCPYG/Cc7
-XbQkJX+kpc/ARj1BjGhx4Mzy3gaez1fZDy+9tA2PCCd+lJtATP8E6CX4CIKrjZR9
-ph4xp99uLt+vFmGhiY6k3NaBmnqyT+HUXU1u97Huvbzlr6ovuIXq+dsQRJ0JhHi3
-QQ6pWkw/k9bYJA33ipE4TbHJE9HCRC7dTAA07v83qGnGEkAjnOE=
-=R+wy
------END PGP SIGNATURE-----
+Changes from V2:
 
---Apple-Mail=_0F36E968-5522-4059-B18F-A5654D9A0571--
+	* Move i_dax_sem to be a global percpu_rw_sem rather than per inode
+		Internal discussions with Dan determined this would be easier,
+		just as performant, and slightly less overhead that having it
+		in the SB as suggested by Jan
+	* Fix locking order in comments and throughout code
+	* Change "mode" to "state" throughout commits
+	* Add CONFIG_FS_DAX wrapper to disable inode_[un]lock_state() when not
+		configured
+	* Add static branch for which is activated by a device which supports
+		DAX in XFS
+	* Change "lock/unlock" to up/down read/write as appropriate
+		Previous names were over simplified
+	* Update comments/documentation
+
+	* Remove the xfs specific lock to the vfs (global) layer.
+	* Fix i_dax_sem locking order and comments
+
+	* Move 'i_mapped' count from struct inode to struct address_space and
+		rename it to mmap_count
+	* Add inode_has_mappings() call
+
+	* Fix build issues
+	* Clean up syntax spacing and minor issues
+	* Update man page text for STATX_ATTR_DAX
+	* Add reviewed-by's
+	* Rebase to 5.6
+
+	Rename patch:
+		from: fs/xfs: Add lock/unlock state to xfs
+		to: fs/xfs: Add write DAX lock to xfs layer
+	Add patch:
+		fs/xfs: Clarify lockdep dependency for xfs_isilocked()
+	Drop patch:
+		fs/xfs: Fix truncate up
+
+Ira Weiny (8):
+  fs/xfs: Remove unnecessary initialization of i_rwsem
+  fs: Remove unneeded IS_DAX() check
+  fs/stat: Define DAX statx attribute
+  fs/xfs: Make DAX mount option a tri-state
+  fs/xfs: Create function xfs_inode_enable_dax()
+  fs/xfs: Combine xfs_diflags_to_linux() and xfs_diflags_to_iflags()
+  fs/xfs: Change xfs_ioctl_setattr_dax_invalidate() to
+    xfs_ioctl_dax_check()
+  Documentation/dax: Update Usage section
+
+ Documentation/filesystems/dax.txt |  94 +++++++++++++++++++++-
+ fs/stat.c                         |   3 +
+ fs/xfs/xfs_icache.c               |   4 +-
+ fs/xfs/xfs_inode.h                |   1 +
+ fs/xfs/xfs_ioctl.c                | 124 +++---------------------------
+ fs/xfs/xfs_iops.c                 |  62 ++++++++++-----
+ fs/xfs/xfs_mount.h                |  26 ++++++-
+ fs/xfs/xfs_super.c                |  34 ++++++--
+ include/linux/fs.h                |   2 +-
+ include/uapi/linux/stat.h         |   1 +
+ 10 files changed, 206 insertions(+), 145 deletions(-)
+
+-- 
+2.25.1
+
