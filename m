@@ -2,62 +2,80 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEB11A061A
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Apr 2020 07:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A39E1A0629
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Apr 2020 07:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgDGFKq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Apr 2020 01:10:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726399AbgDGFKq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 7 Apr 2020 01:10:46 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3F1C206F7;
-        Tue,  7 Apr 2020 05:10:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586236246;
-        bh=LrP4qK/nKXJou4CrEHzskTPTyVibkrMcNhchAtVAB8s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T8MCAp4TEd0MlYgVplDrrq+E/pcMFFb8u2O54OnF0gqVxEsIqQ2FdXSX89ipHlGqL
-         RtyvWJVYkaP4vSH44kth8LGTjxwXY1lTANUaNZN0tlX7SpGYGcs0j5czUQZe6nyxUe
-         zuXYuRINreX7ufgKcMYfgkTo+VEtdMAyzIN17Jvc=
-Date:   Mon, 6 Apr 2020 22:10:44 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 4/4] tune2fs.8: document the stable_inodes feature
-Message-ID: <20200407051044.GB102437@sol.localdomain>
-References: <20200401203239.163679-1-ebiggers@kernel.org>
- <20200401203239.163679-5-ebiggers@kernel.org>
- <0AB7921E-98F6-430C-87BB-63D1330885CE@dilger.ca>
+        id S1726867AbgDGFMm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Apr 2020 01:12:42 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:43155 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726840AbgDGFMm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Apr 2020 01:12:42 -0400
+Received: by mail-ua1-f68.google.com with SMTP id g24so832804uan.10
+        for <linux-ext4@vger.kernel.org>; Mon, 06 Apr 2020 22:12:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
+        b=m9m/DCsFRus/zRmIuphflM5sHyenmkMN/TOEnECOGthbLJHVg8u2+iqtFZpNbyb2/k
+         2tLF//qwyXGtNVJKRleGUy+KbEtVjN+06Aw6FbGL98d5M/QEqB9c9SHaIsBPFlQYoUCh
+         Lj+P9EPUGdvyQRip4KeH3oSvDVhqDTV0IJcbcI66BzYP/b9Y/1y4LF++1q0teLhPl3GM
+         v15gBTxOBB8qvH4CNaCnwdm2sugBL+St8qIlm7SqBWweWj6hdsos1F0mjeWO8qJt64R9
+         xl3tya8AfljNAFdSOkZ4tC7INitomO8JQPFHHcp+JAODUsaup01At9KIYDntXEoTQZb0
+         DmdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
+        b=fgBO3u1gzaAV5QUpWj9Wr4p21vLLk+SKrJPn+jhbHLL8joCldNwWDj5GE505HO5rbF
+         30uneWlZN4V9+oarVzcj/CbXHDI7TyllGHrw+ADgIa5VwonKgah/UkPeSPAUqtS6qEaS
+         UNkTszOnA1qkAUHCb6sBQgGensbV9YVNgb/jYCZ1D7Ok2nlXrovDIvh8Y9kDp3KgrZAJ
+         I1RfSuZC1dyA/lvtV2GneJfBs/Ypm0UqITBVXdAXjP9qiNv8KFn6bM1e5aU21lPZEP4J
+         8gWDsjmfGSdyykbfDwjd4FrbLMan7T3/Q3f/wtFFbFjxGzTnW6c3rq2/ZbEXONwOKaMR
+         BwhA==
+X-Gm-Message-State: AGi0PuYbYq4IP4wTVxn9AGUMq1E3QYfWvVOh2P6L236o1UHo47G/zcPT
+        7zerbaXTEwm1Zz11SRu862IiWTi52L1FPf6WgTo=
+X-Google-Smtp-Source: APiQypIYXniGQUHEpASwiGNjKth4Cu9ElCz4yjrJ2uXbYBYunhfz0887D/TRydUbTstl7MwaeVftG8QxF1P80ST3qos=
+X-Received: by 2002:ab0:a9:: with SMTP id 38mr504317uaj.61.1586236361040; Mon,
+ 06 Apr 2020 22:12:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0AB7921E-98F6-430C-87BB-63D1330885CE@dilger.ca>
+Received: by 2002:ab0:4929:0:0:0:0:0 with HTTP; Mon, 6 Apr 2020 22:12:40 -0700 (PDT)
+From:   SANDRA DEWI <dewisandra154@gmail.com>
+Date:   Tue, 7 Apr 2020 05:12:40 +0000
+Message-ID: <CABRVPWys0xe4CWBkaU0ZXQW+4d=tjDOjyo8cKohc5-VFkWPkcA@mail.gmail.com>
+Subject: whether this is your correct email address or not
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 08:12:14PM -0600, Andreas Dilger wrote:
-> On Apr 1, 2020, at 2:32 PM, Eric Biggers <ebiggers@kernel.org> wrote:
-> > 
-> > From: Eric Biggers <ebiggers@google.com>
-> > 
-> > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> 
-> IMHO, it would be better if the updates to the man pages were in the same
-> patch as the patch to misc/tune2fs.c.
-> 
-> That said, it's better than *not* getting an update to the man page, so:
-> 
-> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-> 
+Dear ,Pastor
 
-Well, I should have included a man page update when adding '-O stable_inodes'
-originally several months ago.  But now it's just being updated, and it makes
-more sense to have separate patches for fixes and new documentation.
 
-- Eric
+
+I have a client who is an oil business man and he made a fixed deposit
+of $26 million USD in my bank, where I am the director of the branch,
+My client died with his entire family in Jordanian
+
+50% of the fund will be for the church  for the work of God,the
+balance 50% we share it in the ratio of 50/50. Meaning 50% to you and
+50% for me
+
+intervention in the Syrian Civil War 2014 leaving behind no next of
+kin. I Propose to present you as next of kin to claim the funds, if
+interested reply me for full details and how we are to
+
+
+
+proceed to close this deal.
+
+
+
+
+Mrs. Sandra Dewi
+
+
+
+Email  mrsdewi@gmx.com
