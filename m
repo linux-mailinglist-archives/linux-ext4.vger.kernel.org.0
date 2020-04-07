@@ -2,86 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 992AE1A054B
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Apr 2020 05:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEB11A061A
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Apr 2020 07:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgDGDai (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 6 Apr 2020 23:30:38 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:58844 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726329AbgDGDai (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 6 Apr 2020 23:30:38 -0400
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0373UVaZ024091
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Apr 2020 23:30:32 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 777E142013D; Mon,  6 Apr 2020 23:30:31 -0400 (EDT)
-Date:   Mon, 6 Apr 2020 23:30:31 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: Use case for EXT4_INODE_HUGE_FILE / EXT4_HUGE_FILE_FL?
-Message-ID: <20200407033031.GT45598@mit.edu>
-References: <20200406224534.GA668050@localhost>
+        id S1726736AbgDGFKq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 7 Apr 2020 01:10:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726399AbgDGFKq (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 7 Apr 2020 01:10:46 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3F1C206F7;
+        Tue,  7 Apr 2020 05:10:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586236246;
+        bh=LrP4qK/nKXJou4CrEHzskTPTyVibkrMcNhchAtVAB8s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T8MCAp4TEd0MlYgVplDrrq+E/pcMFFb8u2O54OnF0gqVxEsIqQ2FdXSX89ipHlGqL
+         RtyvWJVYkaP4vSH44kth8LGTjxwXY1lTANUaNZN0tlX7SpGYGcs0j5czUQZe6nyxUe
+         zuXYuRINreX7ufgKcMYfgkTo+VEtdMAyzIN17Jvc=
+Date:   Mon, 6 Apr 2020 22:10:44 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 4/4] tune2fs.8: document the stable_inodes feature
+Message-ID: <20200407051044.GB102437@sol.localdomain>
+References: <20200401203239.163679-1-ebiggers@kernel.org>
+ <20200401203239.163679-5-ebiggers@kernel.org>
+ <0AB7921E-98F6-430C-87BB-63D1330885CE@dilger.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200406224534.GA668050@localhost>
+In-Reply-To: <0AB7921E-98F6-430C-87BB-63D1330885CE@dilger.ca>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 03:45:34PM -0700, Josh Triplett wrote:
-> Under what circumstances can an inode ever end up with EXT4_HUGE_FILE_FL
-> set? (Other than in an artificially constructed filesystem.)
+On Wed, Apr 01, 2020 at 08:12:14PM -0600, Andreas Dilger wrote:
+> On Apr 1, 2020, at 2:32 PM, Eric Biggers <ebiggers@kernel.org> wrote:
+> > 
+> > From: Eric Biggers <ebiggers@google.com>
+> > 
+> > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > 
-> Was EXT4_HUGE_FILE_FL just added for future extensibility, in case a
-> future file storage mechanism allows storing files bigger than 2**32
-> blocks?
+> IMHO, it would be better if the updates to the man pages were in the same
+> patch as the patch to misc/tune2fs.c.
+> 
+> That said, it's better than *not* getting an update to the man page, so:
+> 
+> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+> 
 
-Yes. basically.  When we added the huge_file feature, which introduced
-the i_blocks_hi field, the thinking was to add EXT4_HUGE_FILE_FL so
-that we could painlessly upgrade a file system from ext3 (w/o the huge
-file feature) to enabling the feature without having to rewrite all of
-the inodes.  However, we also didn't want to artificially limit
-ourselves to 2**57 file sizes, so we also added the EXT4_HUGE_FILE_FL
-flag.
+Well, I should have included a man page update when adding '-O stable_inodes'
+originally several months ago.  But now it's just being updated, and it makes
+more sense to have separate patches for fixes and new documentation.
 
-It hasn't gotten a huge amount of testing in a while, but it would be
-relatively easy to add debugging code (triggered via a mount option or
-a sysfs file) which forces the use of EXT4_HUGE_FILE_FL all the time.
-
-> (Related: are there any plans or discussions regarding a future extent
-> format? Not necessarily just for that reason, but there are other limits
-> in the existing extent format, such as the limit of 32768 contiguous
-> blocks in one extent.)
-
-We've talked about it, and when I implemented the e2fsprogs support
-for extents, I deliberately implemented it so we could more easily
-support multiple extent tree formats.  Unfortunately, the kernel code
-wasn't written to do this easily.  So we would either need to fork a
-large portion of fs/ext4/extents.c, or we would have to refactor the
-code to allow supporting multiple extent formats at the same titme.
-
-A related project would be to create a more general btree library
-which understands supports journalled changes using jbd2, but which
-was general enough it could support the extent tree code, but also
-might be usable to support an tree-based extent allocation tree with
-refcounts to replace the block allocation bitmaps, to enable ext4 to
-support copy-on-write reflinks and snapshots.
-
-It just hasn't been high enough priority for any one to get their
-company to fund that kind of work --- and it's complex enough that it
-would be hard to make it fit within an intern project or a Google
-Summer of Code project.  Maybe if we assumed that the intern already
-was familiar with Kernel programming, but that's in general not a safe
-assumption that we can make.
-
-Cheers,
-
-						- Ted
-
+- Eric
