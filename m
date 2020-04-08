@@ -2,132 +2,276 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3121A1F19
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 12:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3F81A1FD1
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 13:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728330AbgDHKrM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Apr 2020 06:47:12 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:36964 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726980AbgDHKrM (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 06:47:12 -0400
-Received: by mail-pf1-f193.google.com with SMTP id u65so2232369pfb.4
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 03:47:11 -0700 (PDT)
+        id S1728470AbgDHL1O (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 07:27:14 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:42212 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728447AbgDHL1O (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 07:27:14 -0400
+Received: by mail-lf1-f68.google.com with SMTP id s13so4847136lfb.9
+        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 04:27:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/sCPK4EAfucZ4oL+FKdVtn5ycTMzZXmhQ6JEHaJ1dFc=;
-        b=ezMMIpr2Zt054mV9TP1vYQ2G77U4W6uE+IIR1EfvJ9u7CKClGGI21DVrs4MCKpvPUM
-         cjdeRcu9vLFbg+bGgQG4i8P1YxiOL3lue5nK6s/hxiKzBhJOo1uItYQDKx0FlU8qLd3q
-         NoK5pt2jDrH9zNAp118JO6gQUjY/1jHd6PrP9qC+OABPv+PV+bhFE5xQRUEupkEZt7uB
-         QusswkQWbHcb0MVLNphWBoRgdVrivF5vJiCbC4SLXxRDNHr6ZtCwUen4xkUuE3CI6plk
-         n3c9F/+5042Yr7nQMDe3Yz3SyAHlJCHKYKFDQUjEHq9XijqVEFtxJ1QuR6Q6oGhNSn1h
-         cvcw==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Q+MPRfvelLE2zQhL9YZPR4CxFVmoC7JkmE+PaaE2VG4=;
+        b=TSYt8QDsji6Ck05lkpOX8uKp0Jg3OUp5SyMCyUqgJDMuzjpDh08pEFoE7vUvgvtBvG
+         13rG7PPVfvx3d0pR/jNwOagrirsBjOPeAs01C6ii5iqogi+WxdhQwb57KyyREt131nXg
+         2yZGFJcfrqAgSMpkfDtw9TXXjaYZeDrlvjLf95cDRixwbnatV9NJB0nMiZL/nlN4wJCO
+         ZcNtdNrAC1HXr9PWujaz0hygdMBCLgc6rQlUdUQ6pbUiJ6g9xhwJdjR79NF8+ggQZfJt
+         +kipZz4Eil8yiMrao8wYm8C4jzKx9EKnWqmHel2COD956gt1c3/MqATDiXM7uJgtC0QL
+         aZrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/sCPK4EAfucZ4oL+FKdVtn5ycTMzZXmhQ6JEHaJ1dFc=;
-        b=W/vAKVtUpCWqy6zm4lOzQEBge+SkFfmSjqo2SVOfpQ8ExVqKICJZjIPuGvHNq7Czi5
-         EQaF5WYh3m0csiJZ/stKdDqbnaOfW1oBa+OegzWjYSew9S8542e29AyoDNpNJCBZktA5
-         UMhaNkNaTglhITN2m3FDeUVzX6BET/PzxXGT0fr199oNf2yN6sftmIrh25+fEzyhPt1C
-         Ezt1XcWXGzo4M5D2J+MvfCIeVk2PAFyRxsecZZ74swgivc8Vys76ATtvfGkIFtf5VfNp
-         M/xwBpsS0gX/F21zloVmc6zT68+c6AoJiKawHs/f/pqenu+VIRdR7YEQFPUMToIbBwzI
-         kPfg==
-X-Gm-Message-State: AGi0PuaBgGdUtbKGr46DpRoHLc+esmAx1wInQGZtVjdWYPL9dhBgfwY4
-        hptReCnBWSDmo7VYMZBQvY7xhtn44Tk=
-X-Google-Smtp-Source: APiQypKPbDw9Z5j/dAsB8HEokI1LeqahT/Gn1FJd7BD3CXskBGQms0/nfluFvtu1gqzLwbUGOnGF6A==
-X-Received: by 2002:a62:2c87:: with SMTP id s129mr7279655pfs.263.1586342831111;
-        Wed, 08 Apr 2020 03:47:11 -0700 (PDT)
-Received: from localhost.localdomain (ftp.datadirectnet.jp. [182.171.80.51])
-        by smtp.gmail.com with ESMTPSA id y17sm16177024pfl.104.2020.04.08.03.47.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 Apr 2020 03:47:10 -0700 (PDT)
-From:   Wang Shilong <wangshilong1991@gmail.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     lixi@ddn.com, adilger@dilger.ca, sihara@ddn.com,
-        Li Dongyang <dongyangli@ddn.com>
-Subject: [RFC PATCH 46/46] libext2fs: optimize ext2fs_convert_subcluster_bitmap()
-Date:   Wed,  8 Apr 2020 19:45:14 +0900
-Message-Id: <1586342714-12536-47-git-send-email-wangshilong1991@gmail.com>
-X-Mailer: git-send-email 1.7.1
-In-Reply-To: <1586342714-12536-1-git-send-email-wangshilong1991@gmail.com>
-References: <1586342714-12536-1-git-send-email-wangshilong1991@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Q+MPRfvelLE2zQhL9YZPR4CxFVmoC7JkmE+PaaE2VG4=;
+        b=PrYxd9jK5PzpsldIt6UXQb+VbxruF5rjUAXHuUO8JQ0IwuRRr/SZSX/dHJNG8iaCTJ
+         +re7EOBWKLx3vOAiv5NhPkEuU8Mloiv7t1s2lSnkwsGxJOjz95xyItprSzb7iQHBcdsJ
+         ft5WFmAcSPMMypxrYaRGPchbym6VxhN6esnzF3gGC3PwTNK+dxqRnAuQfwGgiIwr8NN9
+         2o4EttFJBuCJpsYjNm4pB5lOn6BTOIYS0vG4GrJYjT9QNhyfIzx9mHIxQ/MnYKWKg2wf
+         gCQb47zc7VrW0oU1p8UST7o2GUl+ZwhA+jBe5sKD+O5ZvBqcuCQP/gF7DUIjNtz7r0KH
+         /JBw==
+X-Gm-Message-State: AGi0PuZ/fkkvWB/4s39mD9+uQtNhda6IMt28MJwmJ9lqMeci1Xq8XMJC
+        D2PBbQrHjL4AMLr5/dlkIGPVIsgfkCVPIKFZDjR9dA==
+X-Google-Smtp-Source: APiQypLKp4uQIl1t4uwAYhH1qBadcB8hCNYWFQglPYy9ez5C9FO5jM6qGMIInZHZAh9WTlLm14CVqM4+fjOWuyA6OyA=
+X-Received: by 2002:a19:c64b:: with SMTP id w72mr4267711lff.82.1586345229988;
+ Wed, 08 Apr 2020 04:27:09 -0700 (PDT)
+MIME-Version: 1.0
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 8 Apr 2020 16:56:58 +0530
+Message-ID: <CA+G9fYtNOQ7Cp=u3oyS5cVmzzF+GzGmU1DTxSL5hwCH+mYT4yw@mail.gmail.com>
+Subject: zram: Unable to handle kernel NULL pointer dereference at virtual address
+To:     linux- stable <stable@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        inux-block@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Sasha Levin <sashal@kernel.org>, minchan@kernel.org,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        Jens Axboe <axboe@kernel.dk>, "Theodore Ts'o" <tytso@mit.edu>,
+        adilger.kernel@dilger.ca, linux-ext4 <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Li Dongyang <dongyangli@ddn.com>
+While running kselftest zram test case on qemu arm this kernel warning.
+This has been reported on stable rc 5.4, 5.5 and 5.6 and mainline and next.
 
-For a bigalloc filesystem, converting the block bitmap from blocks
-to chunks in ext2fs_convert_subcluster_bitmap() can take a long time
-when the device is huge, because we test the bitmap
-bit-by-bit using ext2fs_test_block_bitmap2().
-Use ext2fs_find_first_set_block_bitmap2() which is more efficient
-for mke2fs when the fs is mostly empty.
+[ 1277.176612] kselftest: Running tests in zram
+[ 1277.375891] zram: Added device: zram0
+[ 1278.505516] zram0: detected capacity change from 0 to 2097152
+[ 1278.545644] 8<--- cut here ---
+[ 1278.547036] Unable to handle kernel NULL pointer dereference at
+virtual address 00000000
+[ 1278.550494] pgd = 385dcf93
+[ 1278.551571] [00000000] *pgd=68116003, *pmd=1352f5003
+[ 1278.553632] Internal error: Oops: 207 [#1] SMP ARM
+[ 1278.555463] Modules linked in: zram act_mirred cls_u32 nf_tables
+nfnetlink sch_etf sit ip_tables x_tables cls_bpf sch_fq algif_hash
+crc32_arm_ce sha2_arm_ce sha256_arm sha1_arm_ce sha1_arm aes_arm_ce
+crypto_simd fuse [last unloaded: test_user_copy]
+[ 1278.564699] CPU: 0 PID: 11598 Comm: mkfs.ext4 Not tainted 5.4.31-rc2 #1
+[ 1278.567731] Hardware name: Generic DT based system
+[ 1278.569977] PC is at zs_map_object+0xc8/0x2ac
+[ 1278.572001] LR is at 0xe6058000
+[ 1278.573603] pc : [<c0696858>]    lr : [<e6058000>]    psr: 600d0013
+[ 1278.576602] sp : e6059a40  ip : 00000000  fp : e6059a84
+[ 1278.579066] r10: 00000000  r9 : 00000002  r8 : 00000000
+[ 1278.581600] r7 : ecff9000  r6 : ffed05e0  r5 : c20086c8  r4 : e4907000
+[ 1278.584686] r3 : ecec95e0  r2 : c2842040  r1 : 00000030  r0 : 39aca001
+[ 1278.587767] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+[ 1278.591171] Control: 30c5383d  Table: 66f8d780  DAC: fffffffd
+[ 1278.593918] Process mkfs.ext4 (pid: 11598, stack limit = 0xb0888730)
+[ 1278.596941] Stack: (0xe6059a40 to 0xe605a000)
+[ 1278.599017] 9a40: c08c1e80 efec95e0 e6059aa8 e6059a58 c04228c4
+bf1b31a7 e6059a84 e64bf400
+[ 1278.602884] 9a60: d89c2000 00000008 e544f000 e5713680 c20086c8
+e544f000 e6059adc e6059a88
+[ 1278.606739] 9a80: bf0bad70 c069679c 00000000 00000001 ed496460
+00000001 e55e8000 00017e3b
+[ 1278.610593] 9aa0: 00000001 c20086c8 00000041 bf1b31a7 00000000
+00000000 00001000 00000001
+[ 1278.614445] 9ac0: 00001000 e182d840 e64bf400 00001000 e6059b34
+e6059ae0 bf0bb56c bf0ba9a4
+[ 1278.618312] 9ae0: e182d840 c20086c8 c04cdd4c 00000000 c20086c8
+00000000 ed496460 00001000
+[ 1278.622227] 9b00: 00000000 bf1b31a7 c064f294 e55e8000 ffffe000
+e182d840 00000000 c2043828
+[ 1278.626154] 9b20: ffffffff c21db2a0 e6059b94 e6059b38 c091fc7c
+bf0bb3d8 c040f2a0 c040dca4
+[ 1278.629802] 9b40: c20086c8 00000000 c20086c8 e6059b54 c06ee318
+00000000 00000000 00000000
+[ 1278.633759] 9b60: 00000000 bf1b31a7 c04cdf38 c20086c8 e182d840
+00000801 00000800 00000008
+[ 1278.637713] 9b80: 00000000 e58dfc68 e6059c04 e6059b98 c091ffc0
+c091fb70 c05713c8 e182d840
+[ 1278.641609] 9ba0: e54dc038 00001000 00000000 c06ee318 e54dc04c
+00000000 e6059c04 e6059bc8
+[ 1278.645549] 9bc0: c06ee0b0 c04cdb0c 00000001 00000000 c06ee318
+bf1b31a7 00000000 e5a88580
+[ 1278.649501] 9be0: e182d840 00000801 00000800 00000000 00000000
+e58dfc68 e6059c2c e6059c08
+[ 1278.653423] 9c00: c06ee354 c091ff78 00000001 e5a88580 e5a88580
+e6059e58 00000800 00000000
+[ 1278.657215] 9c20: e6059ca4 e6059c30 c06ee700 c06ee1c4 e6059e58
+00000000 c06eeda0 e6059c48
+[ 1278.661069] 9c40: c040dd24 c06f248c 00001000 c06ec500 c1bb920c
+00000000 c20086c8 e6059e58
+[ 1278.664917] 9c60: 00000800 ed496460 c140993c 00000000 e6059ca4
+bf1b31a7 c05713c8 e58dfc68
+[ 1278.668758] 9c80: ed496460 600d0013 e58dfd0c c06f2564 00000001
+00000000 e6059cec e6059ca8
+[ 1278.672618] 9ca0: c06eeda0 c06ee390 c06ec500 00000000 c06f2564
+00000001 e6059e58 c06f248c
+[ 1278.676447] 9cc0: e54df048 e58dfdd8 00000002 c1b9e48c e6059d5c
+00000001 e6059e58 e58dfdd8
+[ 1278.680295] 9ce0: e6059cfc e6059cf0 c06f2564 c06eec1c e6059d14
+e6059d00 c05f9820 c06f254c
+[ 1278.684100] 9d00: ed496460 00000002 e6059dcc e6059d18 c05fd4bc
+c05f9808 00000002 00000001
+[ 1278.689217] 9d20: e6059d5c 00000000 00000001 c20086c8 c21dafe7
+00000002 00000000 ffffffff
+[ 1278.693068] 9d40: e58dfdd8 c05f97fc c20086f4 ffffe000 c21dd694
+00000010 000001f4 c06f000f
+[ 1278.696929] 9d60: ed6dcb50 ed496460 ed723590 ed6ef630 ed6e97e0
+ed728360 ed726890 ed5b03d0
+[ 1278.700775] 9d80: ed7841c0 ed451070 ed77b400 ed71fa80 ed493fd0
+ed6f5a20 ed6a4570 bf1b31a7
+[ 1278.704586] 9da0: ed723590 c20086c8 e58dfdd8 e6059e58 c1bacbec
+c20086c8 c05f97fc e58dfdd8
+[ 1278.708401] 9dc0: e6059e04 e6059dd0 c05fd8c8 c05fd28c e6059dd0
+e6059dd0 e6059dd8 e6059dd8
+[ 1278.712208] 9de0: 00000000 bf1b31a7 e58dfc68 e6059e58 e58dfdd8
+ffffffff e6059e14 e6059e08
+[ 1278.716078] 9e00: c06f2514 c05fd870 e6059e54 e6059e18 c05fe524
+c06f2508 e6059e54 e6059e28
+[ 1278.719910] 9e20: c06da1ac c1410518 c141015c bf1b31a7 c20086c8
+e58dfc68 ffffffff 7fffffff
+[ 1278.723755] 9e40: 00000000 00000000 e6059ecc e6059e58 c05f1570
+c05fe4d4 7ffffffe 00000000
+[ 1278.727581] 9e60: 00000000 00000000 ffffffff 7fffffff 00000001
+00000000 00000000 00000000
+[ 1278.731409] 9e80: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 bf1b31a7
+[ 1278.735228] 9ea0: e6059f34 ffffffff e58dfdd8 e676d7c0 7fffffff
+00000000 00000000 00000076
+[ 1278.739109] 9ec0: e6059f04 e6059ed0 c05f2cac c05f1480 ffffffff
+7fffffff 00000001 00000000
+[ 1278.742970] 9ee0: e676d7c8 ffffffff 7fffffff e58dfc68 c04011c4
+e6058000 e6059f2c e6059f08
+[ 1278.746848] 9f00: c06f1f20 c05f2c58 ffffffff 7fffffff e676d7c0
+e676d7c0 00000000 ffffffff
+[ 1278.750806] 9f20: e6059f64 e6059f30 c06e437c c06f1f00 ffffffff
+7fffffff 00000000 00000000
+[ 1278.754698] 9f40: c06c6a98 c06c59dc e676d7c0 e676d7c0 00000000
+00000076 e6059f94 e6059f68
+[ 1278.758553] 9f60: c06e4444 c06e433c ffffffff 7fffffff 00000000
+c0401100 e6059fac 0003b8f0
+[ 1278.762465] 9f80: 0003b7e8 00000000 e6059fa4 e6059f98 c06e4764
+c06e4404 00000000 e6059fa8
+[ 1278.766315] 9fa0: c0401000 c06e4754 0003b8f0 0003b7e8 00000005
+00046a80 00000064 00000000
+[ 1278.770146] 9fc0: 0003b8f0 0003b7e8 00000000 00000076 00000000
+bea318f8 bea318e8 bea318f0
+[ 1278.773976] 9fe0: b6da85ec bea31898 b6eea0d0 b6da8614 600d0010
+00000005 00000000 00000000
+[ 1278.777818] Backtrace:
+[ 1278.779056] [<c0696790>] (zs_map_object) from [<bf0bad70>]
+(zram_bvec_rw.constprop.2+0x3d8/0xa34 [zram])
+[ 1278.783562]  r10:e544f000 r9:c20086c8 r8:e5713680 r7:e544f000
+r6:00000008 r5:d89c2000
+[ 1278.787300]  r4:e64bf400
+[ 1278.788619] [<bf0ba998>] (zram_bvec_rw.constprop.2 [zram]) from
+[<bf0bb56c>] (zram_make_request+0x1a0/0x494 [zram])
+[ 1278.793537]  r10:00001000 r9:e64bf400 r8:e182d840 r7:00001000
+r6:00000001 r5:00001000
+[ 1278.797252]  r4:00000000
+[ 1278.798512] [<bf0bb3cc>] (zram_make_request [zram]) from
+[<c091fc7c>] (generic_make_request+0x118/0x408)
+[ 1278.803535]  r10:c21db2a0 r9:ffffffff r8:c2043828 r7:00000000
+r6:e182d840 r5:ffffe000
+[ 1278.807294]  r4:e55e8000
+[ 1278.808572] [<c091fb64>] (generic_make_request) from [<c091ffc0>]
+(submit_bio+0x54/0x1c4)
+[ 1278.812454]  r10:e58dfc68 r9:00000000 r8:00000008 r7:00000800
+r6:00000801 r5:e182d840
+[ 1278.816137]  r4:c20086c8
+[ 1278.817417] [<c091ff6c>] (submit_bio) from [<c06ee354>]
+(submit_bh_wbc+0x19c/0x1cc)
+[ 1278.821098]  r10:e58dfc68 r9:00000000 r8:00000000 r7:00000800
+r6:00000801 r5:e182d840
+[ 1278.824858]  r4:e5a88580
+[ 1278.826122] [<c06ee1b8>] (submit_bh_wbc) from [<c06ee700>]
+(__block_write_full_page+0x37c/0x6f0)
+[ 1278.830284]  r9:00000000 r8:00000800 r7:e6059e58 r6:e5a88580
+r5:e5a88580 r4:00000001
+[ 1278.833968] [<c06ee384>] (__block_write_full_page) from
+[<c06eeda0>] (block_write_full_page+0x190/0x198)
+[ 1278.838448]  r10:00000000 r9:00000001 r8:c06f2564 r7:e58dfd0c
+r6:600d0013 r5:ed496460
+[ 1278.842157]  r4:e58dfc68
+[ 1278.843410] [<c06eec10>] (block_write_full_page) from [<c06f2564>]
+(blkdev_writepage+0x24/0x28)
+[ 1278.847528]  r10:e58dfdd8 r9:e6059e58 r8:00000001 r7:e6059d5c
+r6:c1b9e48c r5:00000002
+[ 1278.851241]  r4:e58dfdd8
+[ 1278.852509] [<c06f2540>] (blkdev_writepage) from [<c05f9820>]
+(__writepage+0x24/0x5c)
+[ 1278.856201] [<c05f97fc>] (__writepage) from [<c05fd4bc>]
+(write_cache_pages+0x23c/0x5e4)
+[ 1278.860010]  r5:00000002 r4:ed496460
+[ 1278.861756] [<c05fd280>] (write_cache_pages) from [<c05fd8c8>]
+(generic_writepages+0x64/0x90)
+[ 1278.865824]  r10:e58dfdd8 r9:c05f97fc r8:c20086c8 r7:c1bacbec
+r6:e6059e58 r5:e58dfdd8
+[ 1278.869552]  r4:c20086c8
+[ 1278.870805] [<c05fd864>] (generic_writepages) from [<c06f2514>]
+(blkdev_writepages+0x18/0x1c)
+[ 1278.874871]  r6:ffffffff r5:e58dfdd8 r4:e6059e58
+[ 1278.877398] [<c06f24fc>] (blkdev_writepages) from [<c05fe524>]
+(do_writepages+0x5c/0x108)
+[ 1278.881292] [<c05fe4c8>] (do_writepages) from [<c05f1570>]
+(__filemap_fdatawrite_range+0xfc/0x128)
+[ 1278.885538]  r9:00000000 r8:00000000 r7:7fffffff r6:ffffffff
+r5:e58dfc68 r4:c20086c8
+[ 1278.889480] [<c05f1474>] (__filemap_fdatawrite_range) from
+[<c05f2cac>] (file_write_and_wait_range+0x60/0xb4)
+[ 1278.894166]  r10:00000076 r9:00000000 r8:00000000 r7:7fffffff
+r6:e676d7c0 r5:e58dfdd8
+[ 1278.897979]  r4:ffffffff
+[ 1278.899227] [<c05f2c4c>] (file_write_and_wait_range) from
+[<c06f1f20>] (blkdev_fsync+0x2c/0x58)
+[ 1278.903348]  r9:e6058000 r8:c04011c4 r6:e58dfc68 r5:7fffffff r4:ffffffff
+[ 1278.906618] [<c06f1ef4>] (blkdev_fsync) from [<c06e437c>]
+(vfs_fsync_range+0x4c/0x8c)
+[ 1278.910366]  r6:ffffffff r5:00000000 r4:e676d7c0
+[ 1278.912646] [<c06e4330>] (vfs_fsync_range) from [<c06e4444>]
+(do_fsync+0x4c/0x74)
+[ 1278.916241]  r7:00000076 r6:00000000 r5:e676d7c0 r4:e676d7c0
+[ 1278.918974] [<c06e43f8>] (do_fsync) from [<c06e4764>] (sys_fsync+0x1c/0x20)
+[ 1278.922350]  r6:00000000 r5:0003b7e8 r4:0003b8f0
+[ 1278.924675] [<c06e4748>] (sys_fsync) from [<c0401000>]
+(ret_fast_syscall+0x0/0x28)
+[ 1278.928344] Exception stack(0xe6059fa8 to 0xe6059ff0)
+[ 1278.930781] 9fa0:                   0003b8f0 0003b7e8 00000005
+00046a80 00000064 00000000
+[ 1278.934719] 9fc0: 0003b8f0 0003b7e8 00000000 00000076 00000000
+bea318f8 bea318e8 bea318f0
+[ 1278.938627] 9fe0: b6da85ec bea31898 b6eea0d0 b6da8614
+[ 1278.941101] Code: e5927000 e0060391 e0873006 e5938018 (e5982000)
+[ 1278.944270] ---[ end trace 2de575b2ace669f8 ]---
+[ 1278.947457] note: mkfs.ext4[11598] exited with preempt_count 2
 
-e2fsck can also benefit from this during pass1 block scanning.
+Full test log,
+https://lkft.validation.linaro.org/scheduler/job/1350791#L15827
+https://lkft.validation.linaro.org/scheduler/job/1351118#L15840
+https://lkft.validation.linaro.org/scheduler/job/1350630#L16995
 
-Time taken for "mke2fs -O bigalloc,extent -C 131072 -b 4096" on a 1PB
-device:
-
-without patch:
-real    27m49.457s
-user    21m36.474s
-sys     6m9.514s
-
-with patch:
-real    6m31.908s
-user    0m1.806s
-sys    6m29.697s
-
-Change-Id: I054ed3ae9e25b20de34f61358dfce3c4bd6f3092
-Signed-off-by: Li Dongyang <dongyangli@ddn.com>
-Signed-off-by: Li Xi <lixi@ddn.com>
----
- lib/ext2fs/gen_bitmap64.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/lib/ext2fs/gen_bitmap64.c b/lib/ext2fs/gen_bitmap64.c
-index d354cffa..299fee6e 100644
---- a/lib/ext2fs/gen_bitmap64.c
-+++ b/lib/ext2fs/gen_bitmap64.c
-@@ -856,8 +856,7 @@ errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsys fs,
- 	ext2fs_generic_bitmap_64 bmap, cmap;
- 	ext2fs_block_bitmap	gen_bmap = *bitmap, gen_cmap;
- 	errcode_t		retval;
--	blk64_t			i, b_end, c_end;
--	int			n, ratio;
-+	blk64_t			i, next, b_end, c_end;
- 
- 	bmap = (ext2fs_generic_bitmap_64) gen_bmap;
- 	if (fs->cluster_ratio_bits == ext2fs_get_bitmap_granularity(gen_bmap))
-@@ -874,18 +873,13 @@ errcode_t ext2fs_convert_subcluster_bitmap(ext2_filsys fs,
- 	bmap->end = bmap->real_end;
- 	c_end = cmap->end;
- 	cmap->end = cmap->real_end;
--	n = 0;
--	ratio = 1 << fs->cluster_ratio_bits;
- 	while (i < bmap->real_end) {
--		if (ext2fs_test_block_bitmap2(gen_bmap, i)) {
--			ext2fs_mark_block_bitmap2(gen_cmap, i);
--			i += ratio - n;
--			n = 0;
--			continue;
--		}
--		i++; n++;
--		if (n >= ratio)
--			n = 0;
-+		retval = ext2fs_find_first_set_block_bitmap2(gen_bmap,
-+						i, bmap->real_end, &next);
-+		if (retval)
-+			break;
-+		ext2fs_mark_block_bitmap2(gen_cmap, next);
-+		i = EXT2FS_C2B(fs, EXT2FS_B2C(fs, next) + 1);
- 	}
- 	bmap->end = b_end;
- 	cmap->end = c_end;
 -- 
-2.25.2
-
+Linaro LKFT
+https://lkft.linaro.org
