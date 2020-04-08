@@ -2,153 +2,124 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AAD1A2B8E
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 23:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714E41A2BB4
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Apr 2020 00:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726813AbgDHV4B (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Apr 2020 17:56:01 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:46001 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726796AbgDHV4A (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 17:56:00 -0400
-Received: by mail-pg1-f196.google.com with SMTP id 128so1337439pge.12
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 14:55:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/tbb09dhmKoGd36xgDiwMId5I/xfne1fhL5wT8HkB5g=;
-        b=F5fjFCXqUfTwvvylK/JzzRSkMbKUrj2NsFyciheiGvvL0yRo0CY4vfh1BjQ05Gv8+Z
-         bGSBNLNkQYAGFbux0YaQ8HxcITML5BaxO/nfgENanGhMNuTgaCidiyOiTczrHumRYk8j
-         /4uRxm80UuQJqAqRwMuTeJSSxPEvJ2ndU/HCDLVj40ysVOdii+iLzIXSbmFBGE/jdH0B
-         XKWel0si8ev0Iw41Z4lAn6q/rk357rg1Ucr7rrYVnE/zfaTWGIF6t2jfKubGE1at2QJI
-         karjBhhjC4kJiNSNV7qgqSMEldugn/2TB/nYiNfrtynaKzlJOXTBV+IL+vFnvhvBy/E9
-         SVfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/tbb09dhmKoGd36xgDiwMId5I/xfne1fhL5wT8HkB5g=;
-        b=SPgJrPRBjJnCWvhDIpHHG1tGQrlZ8WjpjkbMvoc24OCE/EE3XN4CgmpEyW7If1Grq+
-         pe39GALdIE4h1E1r/Y3SUmI8TW3I7lZklFQFMwugsaUYWFVDAlKT8RzZDJemHxKOIlYI
-         Y17ixGeqoSNFmulwC3O+5nxF2cp9Zx5KFxTgExBbxqYqLnYWm36dCajsyZCito0awzA7
-         R0dgS5B+1W23rOMRly77S82wYTwLnO5t5wDVCEgBec4peXYBdbYLUoe6JIGUAzRG7dgh
-         k53ZxuXvx/jSthTyDbaeG8jAMGZiK76Cmn27nYWj3oaa2imSME9N2QXpS3GMPvyJv51J
-         zWLw==
-X-Gm-Message-State: AGi0PuaKBMvYSQQ4/geaMhb31MRdDMppmmNuVYG+Vm3CNNS60gUc1zM7
-        lK8dx03JSNR3O1TXUvbetBRqiVNS
-X-Google-Smtp-Source: APiQypJRlb8AHOM86qKV3lgY6X16IQNEv3qJuFm4peL0N7LxJ/yphvqCCUrF2ublNA4X9bWD60GHSg==
-X-Received: by 2002:aa7:9e4d:: with SMTP id z13mr10056552pfq.6.1586382958444;
-        Wed, 08 Apr 2020 14:55:58 -0700 (PDT)
-Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:6271:607:aca0:b6f7])
-        by smtp.googlemail.com with ESMTPSA id z7sm450929pju.37.2020.04.08.14.55.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 14:55:58 -0700 (PDT)
-From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-X-Google-Original-From: Harshad Shirwadkar <harshads@google.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v6 20/20] ext4: add debug mount option to test fast commit replay
-Date:   Wed,  8 Apr 2020 14:55:30 -0700
-Message-Id: <20200408215530.25649-20-harshads@google.com>
-X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
-In-Reply-To: <20200408215530.25649-1-harshads@google.com>
-References: <20200408215530.25649-1-harshads@google.com>
+        id S1726504AbgDHWHh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 18:07:37 -0400
+Received: from mga09.intel.com ([134.134.136.24]:59699 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726469AbgDHWHh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 8 Apr 2020 18:07:37 -0400
+IronPort-SDR: 3KdoTt4VgvH52W/mwTz8YkQUaDPjTVsBR6HJQza2JXYI5g1puUX3Ss5Elj/wVFr4G22Kcadg+j
+ TwjRv7TfTPLA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 15:07:35 -0700
+IronPort-SDR: xpWLvKMUDOBpguasXWBlaLt37tIpZR/h2WIIcnBXMOV8v0k0hyFTK0fAuE+I+mpptJTco46//+
+ Dz/b07FIQeiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,360,1580803200"; 
+   d="scan'208";a="269882952"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga002.jf.intel.com with ESMTP; 08 Apr 2020 15:07:35 -0700
+Date:   Wed, 8 Apr 2020 15:07:35 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V6 6/8] fs/xfs: Combine xfs_diflags_to_linux() and
+ xfs_diflags_to_iflags()
+Message-ID: <20200408220734.GA664132@iweiny-DESK2.sc.intel.com>
+References: <20200407182958.568475-1-ira.weiny@intel.com>
+ <20200407182958.568475-7-ira.weiny@intel.com>
+ <20200408020827.GI24067@dread.disaster.area>
+ <20200408170923.GC569068@iweiny-DESK2.sc.intel.com>
+ <20200408210236.GK24067@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408210236.GK24067@dread.disaster.area>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+On Thu, Apr 09, 2020 at 07:02:36AM +1000, Dave Chinner wrote:
+> On Wed, Apr 08, 2020 at 10:09:23AM -0700, Ira Weiny wrote:
 
-Add a debug mount option to simulate errors while replaying. If
-fc_debug_max_replay is set, ext4 will replay only as many fast
-commit blocks as passed as an argument.
+[snip]
 
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
----
- fs/ext4/ext4.h      |  3 +++
- fs/ext4/ext4_jbd2.c |  6 ++++++
- fs/ext4/super.c     | 12 +++++++++++-
- 3 files changed, 20 insertions(+), 1 deletion(-)
+> > 
+> > This sounds good but I think we need a slight modification to make the function equivalent in functionality.
+> > 
+> > void
+> > xfs_diflags_to_iflags(
+> >         struct xfs_inode        *ip,
+> >         bool init)
+> > {
+> >         struct inode            *inode = VFS_I(ip);
+> >         unsigned int            xflags = xfs_ip2xflags(ip);
+> >         unsigned int            flags = 0;
+> > 
+> >         inode->i_flags &= ~(S_IMMUTABLE | S_APPEND | S_SYNC | S_NOATIME |
+> >                             S_DAX);
+> 
+> We don't want to clear the dax flag here, ever, if it is already
+> set. That is an externally visible change and opens us up (again) to
+> races where IS_DAX() changes half way through a fault path. IOWs, avoiding
+> clearing the DAX flag was something I did explicitly in the above
+> code fragment.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index df88e408d0bf..72e8b7078e77 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1660,6 +1660,9 @@ struct ext4_sb_info {
- 	struct list_head s_fc_dentry_q;
- 	struct ext4_fc_replay_state s_fc_replay_state;
- 	spinlock_t s_fc_lock;
-+#ifdef EXT4_FC_DEBUG
-+	int s_fc_debug_max_replay;
-+#endif
- 	struct ext4_fc_stats s_fc_stats;
- };
- 
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index 5effa1389705..f1865a97f6f8 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -1557,6 +1557,12 @@ static int ext4_journal_fc_replay_cb(journal_t *journal, struct buffer_head *bh,
- 		return sbi->s_fc_replay_state.fc_replay_error;
- 	}
- 
-+#ifdef EXT4_FC_DEBUG
-+	if (sbi->s_fc_debug_max_replay && off >= sbi->s_fc_debug_max_replay) {
-+		pr_warn("Dropping fc block %d because max_replay set\n", off);
-+		return -EINVAL;
-+	}
-+#endif
- 	sbi->s_mount_state |= EXT4_FC_REPLAY;
- 	fc_hdr = (struct ext4_fc_commit_hdr *)
- 		  ((__u8 *)bh->b_data + sizeof(journal_header_t));
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 16548b0cbe71..995c61d19327 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1539,7 +1539,7 @@ enum {
- 	Opt_dioread_nolock, Opt_dioread_lock,
- 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
- 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
--	Opt_no_fc, Opt_fc_soft_consistency
-+	Opt_no_fc, Opt_fc_soft_consistency, Opt_fc_debug_max_replay
- };
- 
- static const match_table_t tokens = {
-@@ -1625,6 +1625,9 @@ static const match_table_t tokens = {
- 	{Opt_noinit_itable, "noinit_itable"},
- 	{Opt_no_fc, "no_fc"},
- 	{Opt_fc_soft_consistency, "fc_soft_consistency"},
-+#ifdef EXT4_FC_DEBUG
-+	{Opt_fc_debug_max_replay, "fc_debug_max_replay=%u"},
-+#endif
- 	{Opt_max_dir_size_kb, "max_dir_size_kb=%u"},
- 	{Opt_test_dummy_encryption, "test_dummy_encryption"},
- 	{Opt_nombcache, "nombcache"},
-@@ -1844,6 +1847,9 @@ static const struct mount_opts {
- 	 MOPT_CLEAR | MOPT_2 | MOPT_EXT4_ONLY},
- 	{Opt_fc_soft_consistency, EXT4_MOUNT2_JOURNAL_FC_SOFT_CONSISTENCY,
- 	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
-+#ifdef EXT4_FC_DEBUG
-+	{Opt_fc_debug_max_replay, 0, MOPT_GTE0},
-+#endif
- 	{Opt_err, 0, 0}
- };
- 
-@@ -2003,6 +2009,10 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 		sbi->s_li_wait_mult = arg;
- 	} else if (token == Opt_max_dir_size_kb) {
- 		sbi->s_max_dir_size_kb = arg;
-+#ifdef EXT4_FC_DEBUG
-+	} else if (token == Opt_fc_debug_max_replay) {
-+		sbi->s_fc_debug_max_replay = arg;
-+#endif
- 	} else if (token == Opt_stripe) {
- 		sbi->s_stripe = arg;
- 	} else if (token == Opt_resuid) {
--- 
-2.26.0.110.g2183baf09c-goog
+<sigh> yes... you are correct.
 
+But I don't like depending on the caller to clear the S_DAX flag if
+xfs_inode_enable_dax() is false.  IMO this function should clear the flag in
+that case for consistency...
+
+This is part of the reason I used the if/else logic from xfs_diflags_to_linux()
+originally.  It is very explicit.
+
+> 
+> And it makes the logic clearer by pre-calculating the new flags,
+> then clearing and setting the inode flags together, rather than
+> having the spearated at the top and bottom of the function.
+
+But this will not clear the S_DAX flag even if init is true.  To me that is a
+potential for confusion down the road.
+
+> 
+> THis leads to an obvious conclusion: if we never clear the in memory
+> S_DAX flag, we can actually clear the on-disk flag safely, so that
+> next time the inode cycles into memory it won't be using DAX. IOWs,
+> admins can stop the applications, clear the DAX flag and drop
+> caches. This should result in the inode being recycled and when the
+> app is restarted it will run without DAX. No ned for deleting files,
+> copying large data sets, etc just to turn off an inode flag.
+
+We already discussed evicting the inode and it was determined to be too
+confusing.[*]
+
+Furthermore, if we did want an interface like that why not allow the on-disk
+flag to be set as well as cleared?
+
+IMO, this function should set all of the flags consistently including S_DAX.
+
+Ira
+
+[*] https://lore.kernel.org/lkml/20200403072731.GA24176@lst.de/
+
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
