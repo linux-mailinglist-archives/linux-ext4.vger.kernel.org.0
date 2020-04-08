@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E667D1A1F03
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 12:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8241A1F04
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 12:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728271AbgDHKq1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Apr 2020 06:46:27 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:43597 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728250AbgDHKq1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 06:46:27 -0400
-Received: by mail-pg1-f194.google.com with SMTP id s4so3135692pgk.10
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 03:46:27 -0700 (PDT)
+        id S1728274AbgDHKq3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 06:46:29 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:45047 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728250AbgDHKq3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 06:46:29 -0400
+Received: by mail-pg1-f195.google.com with SMTP id n13so1717829pgp.11
+        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 03:46:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Mzk7fcdLkWxvQN5L82i/kFI5nSfFfxWIleCKv+NfelE=;
-        b=Yg4sC1+1HDKuSVUqGp0INEW1RcEOtvkWWxi3LDQWlyOdracKDK7kHQx9YXQD07I/BN
-         kQZKilMUGhzNoAUrZXdP7i48UyqgdTfIovKCneoeadwdBnKOszj3HaoP/epeYm4dl8QQ
-         /0Q4HRWaLt8CActziYbrmx8x018R0zi74S6AD+kKd6Iq3MNW4qhIbVS96mk4ybP0BSPm
-         3u5Ecuk9Jug+qZZjQvbN0Aeiu6xdP8FjypH1+PHbtzHSfPHtGzD8IUfWln7rugVVKX/k
-         tSrXTks0rfwog/vgzDEqoB5p5p5/tX/1ycINx5xo00JSvmK3vdzrEjQCAXRp6zN94Xsy
-         a2xQ==
+        bh=v5Qw9EoH4P+/bTsQks+TZOohVb6qCEbjRC01KIIttQE=;
+        b=Jhj6WRjX5waZ5B1zNbrOEhzxEFOwxQdaIK0P1Hax361/V83URLo6jA90Xj/3m5im52
+         SJ/B0zXGU8wa2VEGv2Gvo2hWfh+DUI9L5d18SK5lZZ0U8EPIwzapqn6XOtW+DKCSWkiM
+         n9vyyWdq044TWfIK36Pn2XRu7WpiWKnpZQ4dJw6SYZHc7LMp+GKGNaVyk2OPkeUNcMQo
+         eZNWi/HRwCQrTrF08d6D8dgLkK1JIo95r8IHx8HzUHb5hjPInr66qG9bh8R25GfLn4dg
+         rQ2YIRl9iiHeThPLVN+AYSNlixyT2FLQJErgPq/owTAEtrNzcxC05BPAD0hd1GxeHCOu
+         HP5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Mzk7fcdLkWxvQN5L82i/kFI5nSfFfxWIleCKv+NfelE=;
-        b=OCNYmppWVEUNpTc0F6/Sz81oWgTj/+HG4fm8POgrevzKsW/033FXjQWD/3HX3pT9RI
-         pl7ZvkenpKPWdzs6DCIOmHJ16f9vROM2aZn3hign5VZu4bRRoAI59g+yMYnVnYIST+0b
-         lhDdHyPhis2fkJ1Adxy4SmT0KhybE6bJhP9Ha5fZYLDPr/0AVfaQy/p8Ir9lY0oY3wSc
-         AqiqXfJ02p8jlBB0lh3vTybKY7W/+YdvG9pSkW56DpvFB0w5cPz/Lv+W+BiF05Gg2mRa
-         89lXS2ok9XDe8+CILI9v+SOhwexyEwOpOlA/wTSXwKitngSoHbAgBXw+4+Y4633y54Gh
-         Lsyw==
-X-Gm-Message-State: AGi0PuYPPD4uAO2wTG/bX5upraoECtKaB92bBf1LtHygrE8XnJxDI2YR
-        fCNg2uVf8wApiJJ1f0hC1P7gfDBefoA=
-X-Google-Smtp-Source: APiQypJz3JxNmbG+fMKrI6JK9XoJBCPlnRTesa8DZQHkwK9YnG3V+9v8HrZX/sVt6apMYTZTQyzlaw==
-X-Received: by 2002:a62:b603:: with SMTP id j3mr5806474pff.208.1586342786403;
-        Wed, 08 Apr 2020 03:46:26 -0700 (PDT)
+        bh=v5Qw9EoH4P+/bTsQks+TZOohVb6qCEbjRC01KIIttQE=;
+        b=jk6SKSKX9VVHDzyHi9Z/7z9QgG7Hm2tNULH2KEHzccsqqnMOsZSBr9KBwEfLPGaJl6
+         8oL0x1YKjTNE37otjHSRjI0J8BUEv9IdXtlvM3f+tpTC5AoZmBdiMW3dXupMfeBRecge
+         12/UU9Qz8a+t8uvQJ0zNxNzlgcgdseK1WbbfaANO/Nl9uY+229iNU4n6361tmF25BHZB
+         Zk7Q8qzmmaenKHNE+iZeJ15t2Xvb0APEWWt+pMUPkNYe7xU3k6cLJHmL9iUph2y2kEnR
+         gzVIKF7ZrawqQ7Ej9o2vXl/seRwLQOKh7cXLY67gIOmVOIMOvKvUtOrUg3vNP+A5l4Zu
+         MIzA==
+X-Gm-Message-State: AGi0PuaXZvrrL9Pi9dQNsMfXhqsN4XSqjhotPk3/aSVdy575xYzFdJQX
+        lwjhFH1Vneie2GQJkn4OhpZR+cxeXxs=
+X-Google-Smtp-Source: APiQypLSz0RjIiSii7I1uuRkUdnJ8OzWRVEHIVPrZFCRJUdfQnqRED69qiaUcLVqwQ5mILvODrwo7g==
+X-Received: by 2002:a62:2e42:: with SMTP id u63mr7222600pfu.69.1586342788497;
+        Wed, 08 Apr 2020 03:46:28 -0700 (PDT)
 Received: from localhost.localdomain (ftp.datadirectnet.jp. [182.171.80.51])
-        by smtp.gmail.com with ESMTPSA id y17sm16177024pfl.104.2020.04.08.03.46.24
+        by smtp.gmail.com with ESMTPSA id y17sm16177024pfl.104.2020.04.08.03.46.26
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 Apr 2020 03:46:25 -0700 (PDT)
+        Wed, 08 Apr 2020 03:46:27 -0700 (PDT)
 From:   Wang Shilong <wangshilong1991@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     lixi@ddn.com, adilger@dilger.ca, sihara@ddn.com,
         Wang Shilong <wshilong@ddn.com>
-Subject: [RFC PATCH 25/46] e2fsck: merge counts when threads finish
-Date:   Wed,  8 Apr 2020 19:44:53 +0900
-Message-Id: <1586342714-12536-26-git-send-email-wangshilong1991@gmail.com>
+Subject: [RFC PATCH 26/46] e2fsck: merge fs flags when threads finish
+Date:   Wed,  8 Apr 2020 19:44:54 +0900
+Message-Id: <1586342714-12536-27-git-send-email-wangshilong1991@gmail.com>
 X-Mailer: git-send-email 1.7.1
 In-Reply-To: <1586342714-12536-1-git-send-email-wangshilong1991@gmail.com>
 References: <1586342714-12536-1-git-send-email-wangshilong1991@gmail.com>
@@ -63,73 +63,39 @@ From: Li Xi <lixi@ddn.com>
 Signed-off-by: Li Xi <lixi@ddn.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 ---
- e2fsck/pass1.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ e2fsck/pass1.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index f8115679..78924b24 100644
+index 78924b24..4bd1f8be 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2171,6 +2171,11 @@ do {									\
-     }									\
- } while (0)
+@@ -2291,6 +2291,7 @@ static int _e2fsck_pass1_merge_fs(ext2_filsys dest, ext2_filsys src)
+ 	ext2fs_block_bitmap block_map;
+ 	ext2_badblocks_list badblocks;
+ 	ext2_dblist dblist;
++	int flags;
  
-+#define PASS1_MERGE_CTX_COUNT(_dest, _src, _field)			\
-+do {									\
-+    _dest->_field = _field + _src->_field;				\
-+} while (0)
-+
- static errcode_t pass1_open_io_channel(ext2_filsys fs,
- 				       const char *io_options,
- 				       io_manager manager, int flags)
-@@ -2505,6 +2510,23 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 	ext2fs_block_bitmap inodes_to_rebuild = global_ctx->inodes_to_rebuild;
- 	ext2_icount_t inode_count = global_ctx->inode_count;
- 	ext2_icount_t inode_link_info = global_ctx->inode_link_info;
-+	__u32	fs_directory_count = global_ctx->fs_directory_count;
-+	__u32	fs_regular_count = global_ctx->fs_regular_count;
-+	__u32	fs_blockdev_count = global_ctx->fs_blockdev_count;
-+	__u32	fs_chardev_count = global_ctx->fs_chardev_count;
-+	__u32	fs_links_count = global_ctx->fs_links_count;
-+	__u32	fs_symlinks_count = global_ctx->fs_symlinks_count;
-+	__u32	fs_fast_symlinks_count = global_ctx->fs_fast_symlinks_count;
-+	__u32	fs_fifo_count = global_ctx->fs_fifo_count;
-+	__u32	fs_total_count = global_ctx->fs_total_count;
-+	__u32	fs_badblocks_count = global_ctx->fs_badblocks_count;
-+	__u32	fs_sockets_count = global_ctx->fs_sockets_count;
-+	__u32	fs_ind_count = global_ctx->fs_ind_count;
-+	__u32	fs_dind_count = global_ctx->fs_dind_count;
-+	__u32	fs_tind_count = global_ctx->fs_tind_count;
-+	__u32	fs_fragmented = global_ctx->fs_fragmented;
-+	__u32	fs_fragmented_dir = global_ctx->fs_fragmented_dir;
-+	__u32	large_files = global_ctx->large_files;
- 
- #ifdef HAVE_SETJMP_H
- 	jmp_buf		 old_jmp;
-@@ -2530,6 +2552,23 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
- 	e2fsck_pass1_merge_dir_info(global_ctx, thread_ctx);
- 	global_ctx->inode_count = inode_count;
- 	global_ctx->inode_link_info = inode_link_info;
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_directory_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_regular_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_blockdev_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_chardev_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_links_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_symlinks_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_fast_symlinks_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_fifo_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_total_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_badblocks_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_sockets_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_ind_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_dind_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_tind_count);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_fragmented);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, fs_fragmented_dir);
-+	PASS1_MERGE_CTX_COUNT(global_ctx, thread_ctx, large_files);
- 
- 	/* Keep the global singal flags*/
- 	global_ctx->flags |= (flags & E2F_FLAG_SIGNAL_MASK) |
+ 	dest_io = dest->io;
+ 	dest_image_io = dest->image_io;
+@@ -2298,6 +2299,7 @@ static int _e2fsck_pass1_merge_fs(ext2_filsys dest, ext2_filsys src)
+ 	block_map = dest->block_map;
+ 	badblocks = dest->badblocks;
+ 	dblist = dest->dblist;
++	flags = dest->flags;
+ 	memcpy(dest, src, sizeof(struct struct_ext2_filsys));
+ 	dest->io = dest_io;
+ 	dest->image_io = dest_image_io;
+@@ -2305,6 +2307,9 @@ static int _e2fsck_pass1_merge_fs(ext2_filsys dest, ext2_filsys src)
+ 	dest->block_map = block_map;
+ 	dest->badblocks = badblocks;
+ 	dest->dblist = dblist;
++	dest->flags = src->flags | flags;
++	if (!(src->flags & EXT2_FLAG_VALID) || !(flags & EXT2_FLAG_VALID))
++		ext2fs_unmark_valid(dest);
+ 	/*
+ 	 * PASS1_MERGE_FS_BITMAP might return directly from this function,
+ 	 * so please do NOT leave any garbage behind after returning.
 -- 
 2.25.2
 
