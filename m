@@ -2,276 +2,149 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 993891A1AAA
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 05:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776E91A1AC1
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 06:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgDHD5h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 7 Apr 2020 23:57:37 -0400
-Received: from mail-pj1-f74.google.com ([209.85.216.74]:35122 "EHLO
-        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726605AbgDHD5g (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 7 Apr 2020 23:57:36 -0400
-Received: by mail-pj1-f74.google.com with SMTP id nk12so1540139pjb.0
-        for <linux-ext4@vger.kernel.org>; Tue, 07 Apr 2020 20:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=7D13JogXFe1JCEV8qFRYg97/dIBd9Yj2YknwY62/3L4=;
-        b=ARgnInOvFykHikP924+1Hp9B8S2TINGZiXnz7KGkOzogNCvrPcZp0yicygd+SI5Kk8
-         PjSaQ8Re+iEqsCgD1aAQDh1+HVycmmvv9VnKSj2PIExTib+SIxLcRZpe+4BQxQcD/130
-         OUqLB6kjY+wmNgMYCcyO7BjpR0q4RX+skLrLVH7Genl1W+6NsXvNDLBwPOVf6tHS9yQC
-         WjnMdVshlRRbnC3WDev1/e5VYu/SQF8p8KvT2U7P/QWDo7hjDUG/zs/avvfGFmDWmPkQ
-         iNprRxjuoFqweuVwIslhOgMkG71xqkVck62PIS9VxGPy9Vmj4gg5hX0zQ4fv6x0zT7f5
-         wiEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=7D13JogXFe1JCEV8qFRYg97/dIBd9Yj2YknwY62/3L4=;
-        b=tVHDuNXBl2/2pMko3CRXXVEsuEKBBTXeneNTUDYRe4ONV/V1jM43QK6zbPcGKjiUdH
-         rue1uyef1sY89rb86fWAoTAgAFunzGOye5PA4/Wep8GzNf9bgdTgTd/JJ/OlNCQBU1hF
-         ehYsRNMkyG7add/HqajdPWRb4FugiTO37BuZ0Z62Na7aPTmRnVJEQ1Xj3XQTv7WjCbIw
-         hbqF28d6cajRO9EKnbf/Wh1LQn2Nyk7qKFrBCYPp1p7iX3UaHhPaXxBUT0sGTxzBSi+V
-         wSgjTLw1cjJMd/dJfSiH/pik3NcI+K447RuHYPKJaMBV9RxHdASM+EjQdTQu2XSFRXPa
-         SS7w==
-X-Gm-Message-State: AGi0PubLcFxV55IhR4cx+ftwJfc6dwFDd/xM3tnXOC5Km61dsVqehkOH
-        yI83THbaefsFfQ8Ena58sFzpN1vvbPo=
-X-Google-Smtp-Source: APiQypJx6NsRs9SY9caqTGgYqn5+wm7yGe4hGaWQCw0+1OR08cUUraxMJUL2D7/bSE59GiFYRoBSRQA5Yf0=
-X-Received: by 2002:a63:64c4:: with SMTP id y187mr5096645pgb.36.1586318255191;
- Tue, 07 Apr 2020 20:57:35 -0700 (PDT)
-Date:   Tue,  7 Apr 2020 20:56:54 -0700
-In-Reply-To: <20200408035654.247908-1-satyat@google.com>
-Message-Id: <20200408035654.247908-13-satyat@google.com>
-Mime-Version: 1.0
-References: <20200408035654.247908-1-satyat@google.com>
-X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
-Subject: [PATCH v10 12/12] ext4: add inline encryption support
-From:   Satya Tangirala <satyat@google.com>
-To:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org
-Cc:     Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Satya Tangirala <satyat@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725932AbgDHELI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 00:11:08 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:34400 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbgDHELI (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 00:11:08 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0384932Y108909;
+        Wed, 8 Apr 2020 04:10:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=D1Vpn8Y4RU/HeZhVhrJTGT9xkAMeVhXHc/+Q5lb+pTw=;
+ b=X6VqYBewwvUPKFl/JNWIByiaODrH759sM1S2Uo7c0xm71cUR+dcGxMMctC6Hyo9SIJUD
+ KAnxfl3ehcut01FComRTuFPHSwsqWlgjK+miKjLtU7e73jRthmhDaRPinPb0umIWYxhC
+ CLIIJl6cZzCM81VxKMQHiOcEET43LG5xq6fEVa/hKm7JruLTYDkSXnLfS9M6epP8+nmt
+ KEXVGJrbZcnoFGFAoSwPQmsg/0V8XllEcFLP+UaBlIepiA1rRK0NWpSzDH78pBw2+cgK
+ pegoDC193E2XgZiFDScml1t46Ts0zBVlIuHQ9oXn1KZuNZ4zE/j++U9VNx+KhhglIkFg gg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 3091mngw2r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Apr 2020 04:10:37 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03846lE6014068;
+        Wed, 8 Apr 2020 04:10:37 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 3091kgfuww-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Apr 2020 04:10:36 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0384AG4L025138;
+        Wed, 8 Apr 2020 04:10:17 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Apr 2020 21:10:16 -0700
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>, hch@lst.de,
+        darrick.wong@oracle.com, axboe@kernel.dk, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ming.lei@redhat.com, jthumshirn@suse.de,
+        minwoo.im.dev@gmail.com, damien.lemoal@wdc.com,
+        andrea.parri@amarulasolutions.com, hare@suse.com, tj@kernel.org,
+        hannes@cmpxchg.org, khlebnikov@yandex-team.ru, ajay.joshi@wdc.com,
+        bvanassche@acm.org, arnd@arndb.de, houtao1@huawei.com,
+        asml.silence@gmail.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/4] block: Add support for REQ_OP_ASSIGN_RANGE
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <20200329174714.32416-1-chaitanya.kulkarni@wdc.com>
+        <20200402224124.GK10737@dread.disaster.area>
+        <yq1imih4aj0.fsf@oracle.com>
+        <20200403025757.GL10737@dread.disaster.area>
+        <yq1a73t44h1.fsf@oracle.com>
+        <20200407022705.GA24067@dread.disaster.area>
+Date:   Wed, 08 Apr 2020 00:10:12 -0400
+In-Reply-To: <20200407022705.GA24067@dread.disaster.area> (Dave Chinner's
+        message of "Tue, 7 Apr 2020 12:27:05 +1000")
+Message-ID: <yq1sghe1uu3.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 suspectscore=0
+ spamscore=0 malwarescore=0 adultscore=0 phishscore=0 mlxlogscore=962
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004080028
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 priorityscore=1501 bulkscore=0 adultscore=0
+ impostorscore=0 phishscore=0 spamscore=0 clxscore=1015 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004080028
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
 
-Wire up ext4 to support inline encryption via the helper functions which
-fs/crypto/ now provides.  This includes:
+Hi Dave!
 
-- Adding a mount option 'inlinecrypt' which enables inline encryption
-  on encrypted files where it can be used.
+>> In the standards space, the allocation concept was mainly aimed at
+>> protecting filesystem internals against out-of-space conditions on
+>> devices that dedup identical blocks and where simply zeroing the blocks
+>> therefore is ineffective.
 
-- Setting the bio_crypt_ctx on bios that will be submitted to an
-  inline-encrypted file.
+> Um, so we're supposed to use space allocation before overwriting
+> existing metadata in the filesystem?
 
-  Note: submit_bh_wbc() in fs/buffer.c also needed to be patched for
-  this part, since ext4 sometimes uses ll_rw_block() on file data.
+Not before overwriting, no. Once you have allocated an LBA it remains
+allocated until you discard it.
 
-- Not adding logically discontiguous data to bios that will be submitted
-  to an inline-encrypted file.
+> So that the underlying storage can reserve space for it before we
+> write it? Which would mean we have to issue a space allocation before
+> we dirty the metadata, which means before we dirty any metadata in a
+> transaction. Which means we'll basically have to redesign the
+> filesystems from the ground up, yes?
 
-- Not doing filesystem-layer crypto on inline-encrypted files.
+My understanding is that this facility was aimed at filesystems that do
+not dynamically allocate metadata. The intent was that mkfs would
+preallocate the metadata LBA ranges, not the filesystem. For filesystems
+that allocate metadata dynamically, then yes, an additional step is
+required if you want to pin the LBAs.
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Co-developed-by: Satya Tangirala <satyat@google.com>
-Signed-off-by: Satya Tangirala <satyat@google.com>
----
- Documentation/admin-guide/ext4.rst |  6 ++++++
- fs/buffer.c                        |  7 ++++---
- fs/ext4/inode.c                    |  4 ++--
- fs/ext4/page-io.c                  |  6 ++++--
- fs/ext4/readpage.c                 | 11 ++++++++---
- fs/ext4/super.c                    |  9 +++++++++
- 6 files changed, 33 insertions(+), 10 deletions(-)
+> You might be talking about filesystem metadata and block devices,
+> but this patchset ends up connecting ext4's user data fallocate() to
+> the block device, thereby allowing users to reserve space directly
+> in the underlying block device and directly exposing this issue to
+> userspace.
 
-diff --git a/Documentation/admin-guide/ext4.rst b/Documentation/admin-guide/ext4.rst
-index 9443fcef18760..ed997e3766781 100644
---- a/Documentation/admin-guide/ext4.rst
-+++ b/Documentation/admin-guide/ext4.rst
-@@ -395,6 +395,12 @@ When mounting an ext4 filesystem, the following option are accepted:
-         Documentation/filesystems/dax.txt.  Note that this option is
-         incompatible with data=journal.
- 
-+  inlinecrypt
-+        Encrypt/decrypt the contents of encrypted files using the blk-crypto
-+        framework rather than filesystem-layer encryption. This allows the use
-+        of inline encryption hardware. The on-disk format is unaffected. For
-+        more details, see Documentation/block/inline-encryption.rst.
-+
- Data Mode
- =========
- There are 3 different data modes:
-diff --git a/fs/buffer.c b/fs/buffer.c
-index f73276d746bbf..8b5d7c857fa76 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -328,9 +328,8 @@ static void decrypt_bh(struct work_struct *work)
- static void end_buffer_async_read_io(struct buffer_head *bh, int uptodate)
- {
- 	/* Decrypt if needed */
--	if (uptodate && IS_ENABLED(CONFIG_FS_ENCRYPTION) &&
--	    IS_ENCRYPTED(bh->b_page->mapping->host) &&
--	    S_ISREG(bh->b_page->mapping->host->i_mode)) {
-+	if (uptodate &&
-+	    fscrypt_inode_uses_fs_layer_crypto(bh->b_page->mapping->host)) {
- 		struct decrypt_bh_ctx *ctx = kmalloc(sizeof(*ctx), GFP_ATOMIC);
- 
- 		if (ctx) {
-@@ -3036,6 +3035,8 @@ static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
- 	 */
- 	bio = bio_alloc(GFP_NOIO, 1);
- 
-+	fscrypt_set_bio_crypt_ctx_bh(bio, bh, GFP_NOIO);
-+
- 	bio->bi_iter.bi_sector = bh->b_blocknr * (bh->b_size >> 9);
- 	bio_set_dev(bio, bh->b_bdev);
- 	bio->bi_write_hint = write_hint;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index e416096fc0813..9b5ca088b9a7b 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1088,7 +1088,7 @@ static int ext4_block_write_begin(struct page *page, loff_t pos, unsigned len,
- 	}
- 	if (unlikely(err)) {
- 		page_zero_new_buffers(page, from, to);
--	} else if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode)) {
-+	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
- 		for (i = 0; i < nr_wait; i++) {
- 			int err2;
- 
-@@ -3738,7 +3738,7 @@ static int __ext4_block_zero_page_range(handle_t *handle,
- 		/* Uhhuh. Read error. Complain and punt. */
- 		if (!buffer_uptodate(bh))
- 			goto unlock;
--		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode)) {
-+		if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
- 			/* We expect the key to be set. */
- 			BUG_ON(!fscrypt_has_encryption_key(inode));
- 			err = fscrypt_decrypt_pagecache_blocks(page, blocksize,
-diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
-index de6fe969f7737..defd2e10dfd10 100644
---- a/fs/ext4/page-io.c
-+++ b/fs/ext4/page-io.c
-@@ -402,6 +402,7 @@ static void io_submit_init_bio(struct ext4_io_submit *io,
- 	 * __GFP_DIRECT_RECLAIM is set, see comments for bio_alloc_bioset().
- 	 */
- 	bio = bio_alloc(GFP_NOIO, BIO_MAX_PAGES);
-+	fscrypt_set_bio_crypt_ctx_bh(bio, bh, GFP_NOIO);
- 	bio->bi_iter.bi_sector = bh->b_blocknr * (bh->b_size >> 9);
- 	bio_set_dev(bio, bh->b_bdev);
- 	bio->bi_end_io = ext4_end_bio;
-@@ -418,7 +419,8 @@ static void io_submit_add_bh(struct ext4_io_submit *io,
- {
- 	int ret;
- 
--	if (io->io_bio && bh->b_blocknr != io->io_next_block) {
-+	if (io->io_bio && (bh->b_blocknr != io->io_next_block ||
-+			   !fscrypt_mergeable_bio_bh(io->io_bio, bh))) {
- submit_and_retry:
- 		ext4_io_submit(io);
- 	}
-@@ -506,7 +508,7 @@ int ext4_bio_write_page(struct ext4_io_submit *io,
- 	 * (e.g. holes) to be unnecessarily encrypted, but this is rare and
- 	 * can't happen in the common case of blocksize == PAGE_SIZE.
- 	 */
--	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode) && nr_to_submit) {
-+	if (fscrypt_inode_uses_fs_layer_crypto(inode) && nr_to_submit) {
- 		gfp_t gfp_flags = GFP_NOFS;
- 		unsigned int enc_bytes = round_up(len, i_blocksize(inode));
- 
-diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-index c1769afbf7995..68eac0aeffad3 100644
---- a/fs/ext4/readpage.c
-+++ b/fs/ext4/readpage.c
-@@ -195,7 +195,7 @@ static void ext4_set_bio_post_read_ctx(struct bio *bio,
- {
- 	unsigned int post_read_steps = 0;
- 
--	if (IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode))
-+	if (fscrypt_inode_uses_fs_layer_crypto(inode))
- 		post_read_steps |= 1 << STEP_DECRYPT;
- 
- 	if (ext4_need_verity(inode, first_idx))
-@@ -232,6 +232,7 @@ int ext4_mpage_readpages(struct address_space *mapping,
- 	const unsigned blkbits = inode->i_blkbits;
- 	const unsigned blocks_per_page = PAGE_SIZE >> blkbits;
- 	const unsigned blocksize = 1 << blkbits;
-+	sector_t next_block;
- 	sector_t block_in_file;
- 	sector_t last_block;
- 	sector_t last_block_in_file;
-@@ -264,7 +265,8 @@ int ext4_mpage_readpages(struct address_space *mapping,
- 		if (page_has_buffers(page))
- 			goto confused;
- 
--		block_in_file = (sector_t)page->index << (PAGE_SHIFT - blkbits);
-+		block_in_file = next_block =
-+			(sector_t)page->index << (PAGE_SHIFT - blkbits);
- 		last_block = block_in_file + nr_pages * blocks_per_page;
- 		last_block_in_file = (ext4_readpage_limit(inode) +
- 				      blocksize - 1) >> blkbits;
-@@ -364,7 +366,8 @@ int ext4_mpage_readpages(struct address_space *mapping,
- 		 * This page will go to BIO.  Do we need to send this
- 		 * BIO off first?
- 		 */
--		if (bio && (last_block_in_bio != blocks[0] - 1)) {
-+		if (bio && (last_block_in_bio != blocks[0] - 1 ||
-+			    !fscrypt_mergeable_bio(bio, inode, next_block))) {
- 		submit_and_realloc:
- 			submit_bio(bio);
- 			bio = NULL;
-@@ -376,6 +379,8 @@ int ext4_mpage_readpages(struct address_space *mapping,
- 			 */
- 			bio = bio_alloc(GFP_KERNEL,
- 				min_t(int, nr_pages, BIO_MAX_PAGES));
-+			fscrypt_set_bio_crypt_ctx(bio, inode, next_block,
-+						  GFP_KERNEL);
- 			ext4_set_bio_post_read_ctx(bio, inode, page->index);
- 			bio_set_dev(bio, bdev);
- 			bio->bi_iter.bi_sector = blocks[0] << (blkbits - 9);
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 9728e7b0e84fc..2ad28a075cdf7 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1511,6 +1511,7 @@ enum {
- 	Opt_journal_path, Opt_journal_checksum, Opt_journal_async_commit,
- 	Opt_abort, Opt_data_journal, Opt_data_ordered, Opt_data_writeback,
- 	Opt_data_err_abort, Opt_data_err_ignore, Opt_test_dummy_encryption,
-+	Opt_inlinecrypt,
- 	Opt_usrjquota, Opt_grpjquota, Opt_offusrjquota, Opt_offgrpjquota,
- 	Opt_jqfmt_vfsold, Opt_jqfmt_vfsv0, Opt_jqfmt_vfsv1, Opt_quota,
- 	Opt_noquota, Opt_barrier, Opt_nobarrier, Opt_err,
-@@ -1608,6 +1609,7 @@ static const match_table_t tokens = {
- 	{Opt_noinit_itable, "noinit_itable"},
- 	{Opt_max_dir_size_kb, "max_dir_size_kb=%u"},
- 	{Opt_test_dummy_encryption, "test_dummy_encryption"},
-+	{Opt_inlinecrypt, "inlinecrypt"},
- 	{Opt_nombcache, "nombcache"},
- 	{Opt_nombcache, "no_mbcache"},	/* for backward compatibility */
- 	{Opt_removed, "check=none"},	/* mount option from ext2/3 */
-@@ -1895,6 +1897,13 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
- 	case Opt_nolazytime:
- 		sb->s_flags &= ~SB_LAZYTIME;
- 		return 1;
-+	case Opt_inlinecrypt:
-+#ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
-+		sb->s_flags |= SB_INLINECRYPT;
-+#else
-+		ext4_msg(sb, KERN_ERR, "inline encryption not supported");
-+#endif
-+		return 1;
- 	}
- 
- 	for (m = ext4_mount_opts; m->token != Opt_err; m++)
+I missed that Chaitanya's repost of this series included the ext4 patch.
+Sorry!
+
+>> How XFS decides to enforce space allocation policy and potentially
+>> leverage this plumbing is entirely up to you.
+>
+> Do I understand this correctly? i.e. that it is the filesystem's
+> responsibility to prevent users from preallocating more space than
+> exists in an underlying storage pool that has been intentionally
+> hidden from the filesystem so it can be underprovisioned?
+
+No. But as an administrative policy it is useful to prevent runaway
+applications from writing a petabyte of random garbage to media. My
+point was that it is up to you and the other filesystem developers to
+decide how you want to leverage the low-level allocation capability and
+how you want to provide it to processes. And whether CAP_SYS_ADMIN,
+ulimit, or something else is the appropriate policy interface for this.
+
+In terms of thin provisioning and space management there are various
+thresholds that may be reported by the device. In past discussions there
+haven't been much interest in getting these exposed. It is also unclear
+to me whether it is actually beneficial to send low space warnings to
+hundreds or thousands of hosts attached to an array. In many cases the
+individual server admins are not even the right audience. The most
+common notification mechanism is a message to the storage array admin
+saying "click here to buy more disk".
+
+If you feel there is merit in having the kernel emit the threshold
+warnings you could use as a feedback mechanism, I can absolutely look
+into that.
+
 -- 
-2.26.0.110.g2183baf09c-goog
-
+Martin K. Petersen	Oracle Linux Engineering
