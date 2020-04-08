@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B72C1A1EFF
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 12:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20CE21A1F00
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 12:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgDHKqU (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Apr 2020 06:46:20 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:35630 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728250AbgDHKqU (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 06:46:20 -0400
-Received: by mail-pg1-f193.google.com with SMTP id k5so3163656pga.2
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 03:46:18 -0700 (PDT)
+        id S1728262AbgDHKqV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 06:46:21 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:51853 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728250AbgDHKqV (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 06:46:21 -0400
+Received: by mail-pj1-f66.google.com with SMTP id n4so1004559pjp.1
+        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 03:46:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NeYaeqeHKbr3ZeQnojCuWLsnAWyh32SFKAIBBhWg3Tw=;
-        b=hJ+HoF2W37XF/se/2BM2PElP1tXHxLiHYlYhonKPO2vqp5KGeHsQKuwhs4pW2ztUTt
-         U/Fee6DI0vsMiUu1Aj7bSL01qTEBDj0dBWVnJ+uIh9zXeDE18nrIhjfqHbz6UX/NJ8Nn
-         zZJnem4akHuU9LPV30PXBh4cyv/62w48+PQ+Y9CZ3yTxza3ZKkBj4Qg/AjuSFRqGGbh6
-         eiZ00AXlsZH2qMO2gxLGTs5y18I1KdIImTjRld2BSXbCumnUVfQVFNJZ3WX6bUXQEGTO
-         Z2WcBp1mtzzS0mTGhc5PRz7Dlm4eF6qSW/fMCiWw6vmDEbwpUOg8RoDjyVzFa5wr2X0a
-         ttiA==
+        bh=wKveNAyEUA5dlR6L+7rclZEcmVj1eEMaTYNtMs1Jm60=;
+        b=JHcKOGJVrjG8eW5YqhQLr9lHQ+02LEKUKb88jjc8REcOCuc4RvO6yZUcXGQsYI2+0J
+         zBLgDO8yCpBgtl0iOu8IH187UMzbigJ5GgRPI3RA0X1DUnAptcpnlKrdoJcmuCyCCW2O
+         FpyPj+u39LkZfg3HiNKSZzD50iNJdOYjXxZKf29FcL83hzRda23LN3V0MjlknOlL7TpU
+         j1fUAEdkM7rXgwMehPfV5iYDbLaqv1QBes+djWIk27cPAYZMU2e7dMOlz7m+P2c38vtH
+         VKXUk5UqIa8DNYvSJJEsAPqsdYhwxlYc/BTUUueoN2iyK5Lk5u23H25DHXDqO+YBZVC9
+         lEhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=NeYaeqeHKbr3ZeQnojCuWLsnAWyh32SFKAIBBhWg3Tw=;
-        b=KB7Rouzs17Jsp10kZc71W68V6ZVemlmlw3I41Myb7pEcOMckxEVqlWOMYLmSyFXw/N
-         vAeKaAViFwPHz7XNEDu8wMhhWiIzcwg0BhVGrCueVYLJH69lRUoP0PlCXX3JzyqrLa0z
-         PKAX7bFxZwRLpprbD0xgtWhbmzMttq0m6zhIQLEmC5gPKoLChkWaabto6gzAhWi7hOuH
-         lQczWQeuk9u1VCkECZOFXG3bKb1BOz19cSHEyyu6lsRg9tfYhpljpcyF/qzyQAQncXvS
-         t4wrrFqWfNMx0RwFoNpcg3AgLHnPfRTMml3Xzkvsq7re4ocAIkq4XMTUiGdPV51doaH7
-         A/Lg==
-X-Gm-Message-State: AGi0PuYqIWPY3k8/IE6/HurGi5nXC+L4oKh9daN3pn4uV/efgz356wrM
-        Keh/UPZUobVoZ0ufg2U1fdfA9iXBJjo=
-X-Google-Smtp-Source: APiQypIYfppn4soSmyCTuhiMihlJkBcNd3yp+B7kf8WNFvI4vw4Hjrl+GskqcWwJxqJQxNwVHu9l7g==
-X-Received: by 2002:a62:2ad0:: with SMTP id q199mr7397721pfq.48.1586342777936;
-        Wed, 08 Apr 2020 03:46:17 -0700 (PDT)
+        bh=wKveNAyEUA5dlR6L+7rclZEcmVj1eEMaTYNtMs1Jm60=;
+        b=gyEd8zqYLja6Y4ni3sQO7oii5NCtRHJQPyHwVeF5eIDRWR7lstuOuJ2Snr/cEA0KqP
+         AlxqAJqc5Rj6//jSOKqqZxwRwn80TagyC2uUjsClB3RjPGBjexI4GL2+IvegJxFgx/ZO
+         UQh7vyVEOsVAVjVxLorRdRdkr8kSSaXGoMkV7tpJB4MwiXJeTvL4Cr0dAaShb5PiCyB7
+         0kS1xHWihYiiSTZmQkBrY2UrYgVwbjXYZ4rFYnbTTfvavfyPJMmjbO+XZv9Gc6+dHoKB
+         sumCawKcpka41PEbWSXmTG3OegHHzcmyRbHQXi1YfFdiaz6QPINIoWEfhRvRo0ynHi9r
+         7bbA==
+X-Gm-Message-State: AGi0PubtkL3w0i0g2O/QJ0S8hR79JRRowcCpPVbDQRGpMxVbp70ZJiVB
+        TSAPMwlyNuSfijk9gmx+7TdxfB0dGDg=
+X-Google-Smtp-Source: APiQypI8SnIxt+s/6dzYbeqVznqvVoTtz+2s3B6oswS/BaaO91ROekF2phd2ab/BiE4P9ir7pabVuA==
+X-Received: by 2002:a17:902:b60d:: with SMTP id b13mr6852672pls.324.1586342780077;
+        Wed, 08 Apr 2020 03:46:20 -0700 (PDT)
 Received: from localhost.localdomain (ftp.datadirectnet.jp. [182.171.80.51])
-        by smtp.gmail.com with ESMTPSA id y17sm16177024pfl.104.2020.04.08.03.46.16
+        by smtp.gmail.com with ESMTPSA id y17sm16177024pfl.104.2020.04.08.03.46.18
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 Apr 2020 03:46:17 -0700 (PDT)
+        Wed, 08 Apr 2020 03:46:19 -0700 (PDT)
 From:   Wang Shilong <wangshilong1991@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     lixi@ddn.com, adilger@dilger.ca, sihara@ddn.com,
         Wang Shilong <wshilong@ddn.com>
-Subject: [RFC PATCH 21/46] e2fsck: merge badblocks after thread finishes
-Date:   Wed,  8 Apr 2020 19:44:49 +0900
-Message-Id: <1586342714-12536-22-git-send-email-wangshilong1991@gmail.com>
+Subject: [RFC PATCH 22/46] e2fsck: merge icounts after thread finishes
+Date:   Wed,  8 Apr 2020 19:44:50 +0900
+Message-Id: <1586342714-12536-23-git-send-email-wangshilong1991@gmail.com>
 X-Mailer: git-send-email 1.7.1
 In-Reply-To: <1586342714-12536-1-git-send-email-wangshilong1991@gmail.com>
 References: <1586342714-12536-1-git-send-email-wangshilong1991@gmail.com>
@@ -63,82 +63,134 @@ From: Li Xi <lixi@ddn.com>
 Signed-off-by: Li Xi <lixi@ddn.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 ---
- e2fsck/pass1.c         |  8 ++++-
- lib/ext2fs/badblocks.c | 75 ++++++++++++++++++++++++++++++++++++++----
- lib/ext2fs/ext2fs.h    |  2 ++
- lib/ext2fs/ext2fsP.h   |  1 -
- 4 files changed, 77 insertions(+), 9 deletions(-)
+ e2fsck/pass1.c      |  35 +++++++++++++++-
+ lib/ext2fs/ext2fs.h |   1 +
+ lib/ext2fs/icount.c | 100 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 135 insertions(+), 1 deletion(-)
 
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 56004c9b..79a9eddf 100644
+index 79a9eddf..3501e2f7 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2283,16 +2283,19 @@ static int _e2fsck_pass1_merge_fs(ext2_filsys dest, ext2_filsys src)
- 	io_channel dest_image_io;
- 	ext2fs_inode_bitmap inode_map;
- 	ext2fs_block_bitmap block_map;
-+	ext2_badblocks_list badblocks;
+@@ -2453,6 +2453,28 @@ static void e2fsck_pass1_merge_dir_info(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 			      global_ctx->dir_info);
+ }
  
- 	dest_io = dest->io;
- 	dest_image_io = dest->image_io;
- 	inode_map = dest->inode_map;
- 	block_map = dest->block_map;
-+	badblocks = dest->badblocks;
- 	memcpy(dest, src, sizeof(struct struct_ext2_filsys));
- 	dest->io = dest_io;
- 	dest->image_io = dest_image_io;
- 	dest->inode_map = inode_map;
- 	dest->block_map = block_map;
-+	dest->badblocks = badblocks;
++#define PASS1_MERGE_CTX_ICOUNT(_dest, _src, _field)			\
++do {									\
++    if (_src->_field) {							\
++        if (_dest->_field == NULL) {					\
++            _dest->_field = _src->_field;				\
++            _src->_field = NULL;					\
++        } else {							\
++            errcode_t _ret;						\
++            _ret = ext2fs_icount_merge(_src->_field, _dest->_field);	\
++            if (_ret)							\
++                return _ret;						\
++        }								\
++    }									\
++} while (0)
++
++static errcode_t e2fsck_pass1_merge_icounts(e2fsck_t global_ctx, e2fsck_t thread_ctx)
++{
++	PASS1_MERGE_CTX_ICOUNT(global_ctx, thread_ctx, inode_count);
++	PASS1_MERGE_CTX_ICOUNT(global_ctx, thread_ctx, inode_link_info);
++	return 0;
++}
++
+ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx)
+ {
+ 	errcode_t	 retval;
+@@ -2472,7 +2494,9 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	ext2fs_block_bitmap block_ea_map = global_ctx->block_ea_map;
+ 	ext2fs_block_bitmap block_metadata_map = global_ctx->block_metadata_map;
+ 	ext2fs_block_bitmap inodes_to_rebuild = global_ctx->inodes_to_rebuild;
+-	
++	ext2_icount_t inode_count = global_ctx->inode_count;
++	ext2_icount_t inode_link_info = global_ctx->inode_link_info;
++
+ #ifdef HAVE_SETJMP_H
+ 	jmp_buf		 old_jmp;
+ 
+@@ -2495,6 +2519,8 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	global_ctx->block_metadata_map = block_metadata_map;
+ 	global_ctx->dir_info = dir_info;
+ 	e2fsck_pass1_merge_dir_info(global_ctx, thread_ctx);
++	global_ctx->inode_count = inode_count;
++	global_ctx->inode_link_info = inode_link_info;
+ 
+ 	/* Keep the global singal flags*/
+ 	global_ctx->flags |= (flags & E2F_FLAG_SIGNAL_MASK) |
+@@ -2510,6 +2536,11 @@ static int e2fsck_pass1_thread_join_one(e2fsck_t global_ctx, e2fsck_t thread_ctx
+ 	global_ctx->logf = global_logf;
+ 	global_ctx->problem_logf = global_problem_logf;
+ 	global_ctx->global_ctx = NULL;
++	retval = e2fsck_pass1_merge_icounts(global_ctx, thread_ctx);
++	if (retval) {
++	com_err(global_ctx->program_name, 0, _("while merging icounts\n"));
++		return retval;
++	}
+ 
  	/*
- 	 * PASS1_MERGE_FS_BITMAP might return directly from this function,
- 	 * so please do NOT leave any garbage behind after returning.
-@@ -2309,7 +2312,10 @@ static int _e2fsck_pass1_merge_fs(ext2_filsys dest, ext2_filsys src)
- 	}
+ 	 * PASS1_COPY_CTX_BITMAP might return directly from this function,
+@@ -2551,6 +2582,8 @@ static int e2fsck_pass1_thread_join(e2fsck_t global_ctx, e2fsck_t thread_ctx)
+ 	PASS1_FREE_CTX_BITMAP(thread_ctx, block_dup_map);
+ 	PASS1_FREE_CTX_BITMAP(thread_ctx, block_ea_map);
+ 	PASS1_FREE_CTX_BITMAP(thread_ctx, block_metadata_map);
++	ext2fs_free_icount(thread_ctx->inode_count);
++	ext2fs_free_icount(thread_ctx->inode_link_info);
+ 	ext2fs_free_mem(&thread_ctx);
  
- 	if (src->badblocks) {
--		retval = ext2fs_badblocks_copy(src->badblocks, &dest->badblocks);
-+		if (dest->badblocks == NULL)
-+			retval = ext2fs_badblocks_copy(src->badblocks, &dest->badblocks);
-+		else
-+			retval = ext2fs_badblocks_merge(src->badblocks, dest->badblocks);
- 		if (retval)
- 			goto out_dblist;
- 	}
-diff --git a/lib/ext2fs/badblocks.c b/lib/ext2fs/badblocks.c
-index 0f23983b..568634ff 100644
---- a/lib/ext2fs/badblocks.c
-+++ b/lib/ext2fs/badblocks.c
-@@ -11,6 +11,7 @@
+ 	return retval;
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index 1404e14a..d4f6031a 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -1507,6 +1507,7 @@ extern errcode_t ext2fs_icount_decrement(ext2_icount_t icount, ext2_ino_t ino,
+ 					 __u16 *ret);
+ extern errcode_t ext2fs_icount_store(ext2_icount_t icount, ext2_ino_t ino,
+ 				     __u16 count);
++extern errcode_t ext2fs_icount_merge(ext2_icount_t src, ext2_icount_t dest);
+ extern ext2_ino_t ext2fs_get_icount_size(ext2_icount_t icount);
+ errcode_t ext2fs_icount_validate(ext2_icount_t icount, FILE *);
  
- #include "config.h"
- #include <stdio.h>
-+#include <assert.h>
- #include <string.h>
+diff --git a/lib/ext2fs/icount.c b/lib/ext2fs/icount.c
+index 888a90b2..a72b53b3 100644
+--- a/lib/ext2fs/icount.c
++++ b/lib/ext2fs/icount.c
+@@ -13,6 +13,7 @@
  #if HAVE_UNISTD_H
  #include <unistd.h>
-@@ -56,6 +57,65 @@ static errcode_t make_u32_list(int size, int num, __u32 *list,
+ #endif
++#include <assert.h>
+ #include <string.h>
+ #include <stdio.h>
+ #include <sys/stat.h>
+@@ -701,6 +702,105 @@ errcode_t ext2fs_icount_store(ext2_icount_t icount, ext2_ino_t ino,
  	return 0;
  }
  
-+/*
-+ * Merge list from src to dest
-+ */
-+static errcode_t merge_u32_list(ext2_u32_list src, ext2_u32_list dest)
++errcode_t ext2fs_icount_merge_full_map(ext2_icount_t src, ext2_icount_t dest)
 +{
-+	errcode_t	 retval;
-+	int		 src_count = src->num;
-+	int		 dest_count = dest->num;
-+	int		 size = src->size + dest->size;
-+	int		 size_entry = sizeof(blk_t);
-+	blk_t		*array;
-+	blk_t		*array_ptr;
-+	blk_t		*src_array = src->list;
-+	blk_t		*dest_array = dest->list;
-+	int		 src_index = 0;
-+	int		 dest_index = 0;
++	/* TODO: add the support for full map */
++	return EOPNOTSUPP;
++}
 +
-+	if (src->num == 0)
++errcode_t ext2fs_icount_merge_el(ext2_icount_t src, ext2_icount_t dest)
++{
++	int			 src_count = src->count;
++	int			 dest_count = dest->count;
++	int			 size = src->size + dest->size;
++	int			 size_entry = sizeof(struct ext2_icount_el);
++	struct ext2_icount_el	*array;
++	struct ext2_icount_el	*array_ptr;
++	struct ext2_icount_el	*src_array = src->list;
++	struct ext2_icount_el	*dest_array = dest->list;
++	int			 src_index = 0;
++	int			 dest_index = 0;
++	errcode_t		 retval;
++
++	if (src_count == 0)
 +		return 0;
 +
 +	retval = ext2fs_get_array(size, size_entry, &array);
@@ -162,11 +214,12 @@ index 0f23983b..568634ff 100644
 +			       (src_count - src_index) * size_entry);
 +			break;
 +		}
-+		if (src_array[src_index] < dest_array[dest_index]) {
++		if (src_array[src_index].ino < dest_array[dest_index].ino) {
 +			*array_ptr = src_array[src_index];
 +			src_index++;
 +		} else {
-+			assert(src_array[src_index] > dest_array[dest_index]);
++			assert(src_array[src_index].ino >
++			       dest_array[dest_index].ino);
 +			*array_ptr = dest_array[dest_index];
 +			dest_index++;
 +		}
@@ -175,68 +228,50 @@ index 0f23983b..568634ff 100644
 +
 +	ext2fs_free_mem(&dest->list);
 +	dest->list = array;
-+	dest->num = src_count + dest_count;
++	dest->count = src_count + dest_count;
 +	dest->size = size;
 +	return 0;
 +}
 +
- 
- /*
-  * This procedure creates an empty u32 list.
-@@ -79,13 +139,7 @@ errcode_t ext2fs_badblocks_list_create(ext2_badblocks_list *ret, int size)
-  */
- errcode_t ext2fs_u32_copy(ext2_u32_list src, ext2_u32_list *dest)
- {
--	errcode_t	retval;
--
--	retval = make_u32_list(src->size, src->num, src->list, dest);
--	if (retval)
--		return retval;
--	(*dest)->badblocks_flags = src->badblocks_flags;
--	return 0;
-+	return make_u32_list(src->size, src->num, src->list, dest);
- }
- 
- errcode_t ext2fs_badblocks_copy(ext2_badblocks_list src,
-@@ -95,6 +149,13 @@ errcode_t ext2fs_badblocks_copy(ext2_badblocks_list src,
- 			       (ext2_u32_list *) dest);
- }
- 
-+errcode_t ext2fs_badblocks_merge(ext2_badblocks_list src,
-+				 ext2_badblocks_list dest)
++errcode_t ext2fs_icount_merge(ext2_icount_t src, ext2_icount_t dest)
 +{
-+	return merge_u32_list((ext2_u32_list) src,
-+			      (ext2_u32_list) dest);
++	errcode_t	retval;
++
++	if (src->fullmap && !dest->fullmap)
++		return EINVAL;
++
++	if (!src->fullmap && dest->fullmap)
++		return EINVAL;
++
++	if (src->multiple && !dest->multiple)
++		return EINVAL;
++
++	if (!src->multiple && dest->multiple)
++		return EINVAL;
++
++	if (src->fullmap)
++		return ext2fs_icount_merge_full_map(src, dest);
++
++	retval = ext2fs_merge_bitmap(src->single, dest->single);
++	if (retval)
++		return retval;
++
++	if (src->multiple) {
++		retval = ext2fs_merge_bitmap(src->multiple, dest->multiple);
++		if (retval)
++			return retval;
++	}
++
++	retval = ext2fs_icount_merge_el(src, dest);
++	if (retval)
++		return retval;
++
++	return 0;
 +}
 +
- /*
-  * This procedure frees a badblocks list.
-  *
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index 2cc6d76e..1404e14a 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -814,6 +814,8 @@ extern int ext2fs_badblocks_list_iterate(ext2_badblocks_iterate iter,
- extern void ext2fs_badblocks_list_iterate_end(ext2_badblocks_iterate iter);
- extern errcode_t ext2fs_badblocks_copy(ext2_badblocks_list src,
- 				       ext2_badblocks_list *dest);
-+extern errcode_t ext2fs_badblocks_merge(ext2_badblocks_list src,
-+					ext2_badblocks_list dest);
- extern int ext2fs_badblocks_equal(ext2_badblocks_list bb1,
- 				  ext2_badblocks_list bb2);
- extern int ext2fs_u32_list_count(ext2_u32_list bb);
-diff --git a/lib/ext2fs/ext2fsP.h b/lib/ext2fs/ext2fsP.h
-index ad8b7d52..02df759a 100644
---- a/lib/ext2fs/ext2fsP.h
-+++ b/lib/ext2fs/ext2fsP.h
-@@ -34,7 +34,6 @@ struct ext2_struct_u32_list {
- 	int	num;
- 	int	size;
- 	__u32	*list;
--	int	badblocks_flags;
- };
- 
- struct ext2_struct_u32_iterate {
+ ext2_ino_t ext2fs_get_icount_size(ext2_icount_t icount)
+ {
+ 	if (!icount || icount->magic != EXT2_ET_MAGIC_ICOUNT)
 -- 
 2.25.2
 
