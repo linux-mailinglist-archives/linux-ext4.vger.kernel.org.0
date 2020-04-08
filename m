@@ -2,89 +2,236 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D54A1A2910
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 21:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD611A2AC1
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 23:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728556AbgDHTF4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Wed, 8 Apr 2020 15:05:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726730AbgDHTFz (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 8 Apr 2020 15:05:55 -0400
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 207165] New: Persistent ext4_search_dir: bad entry in
- directory: directory entry too close to block end
-Date:   Wed, 08 Apr 2020 19:05:55 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: el@prans.net
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version
- cf_kernel_version rep_platform op_sys cf_tree bug_status bug_severity
- priority component assigned_to reporter cf_regression
-Message-ID: <bug-207165-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1729740AbgDHVCn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 17:02:43 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:44124 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728221AbgDHVCn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 17:02:43 -0400
+Received: from dread.disaster.area (pa49-180-125-11.pa.nsw.optusnet.com.au [49.180.125.11])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 9A6A77EA644;
+        Thu,  9 Apr 2020 07:02:37 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jMHqG-0004mn-Sn; Thu, 09 Apr 2020 07:02:36 +1000
+Date:   Thu, 9 Apr 2020 07:02:36 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V6 6/8] fs/xfs: Combine xfs_diflags_to_linux() and
+ xfs_diflags_to_iflags()
+Message-ID: <20200408210236.GK24067@dread.disaster.area>
+References: <20200407182958.568475-1-ira.weiny@intel.com>
+ <20200407182958.568475-7-ira.weiny@intel.com>
+ <20200408020827.GI24067@dread.disaster.area>
+ <20200408170923.GC569068@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408170923.GC569068@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=2h+yFbpuifLtD1c++IMymA==:117 a=2h+yFbpuifLtD1c++IMymA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10
+        a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=BZUbvsNFl7CrKh3hfgsA:9
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=207165
+On Wed, Apr 08, 2020 at 10:09:23AM -0700, Ira Weiny wrote:
+> On Wed, Apr 08, 2020 at 12:08:27PM +1000, Dave Chinner wrote:
+> > On Tue, Apr 07, 2020 at 11:29:56AM -0700, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> 
+> [snip]
+> 
+> > >  
+> > > -STATIC void
+> > > -xfs_diflags_to_linux(
+> > > -	struct xfs_inode	*ip)
+> > > -{
+> > > -	struct inode		*inode = VFS_I(ip);
+> > > -	unsigned int		xflags = xfs_ip2xflags(ip);
+> > > -
+> > > -	if (xflags & FS_XFLAG_IMMUTABLE)
+> > > -		inode->i_flags |= S_IMMUTABLE;
+> > > -	else
+> > > -		inode->i_flags &= ~S_IMMUTABLE;
+> > > -	if (xflags & FS_XFLAG_APPEND)
+> > > -		inode->i_flags |= S_APPEND;
+> > > -	else
+> > > -		inode->i_flags &= ~S_APPEND;
+> > > -	if (xflags & FS_XFLAG_SYNC)
+> > > -		inode->i_flags |= S_SYNC;
+> > > -	else
+> > > -		inode->i_flags &= ~S_SYNC;
+> > > -	if (xflags & FS_XFLAG_NOATIME)
+> > > -		inode->i_flags |= S_NOATIME;
+> > > -	else
+> > > -		inode->i_flags &= ~S_NOATIME;
+> > > -#if 0	/* disabled until the flag switching races are sorted out */
+> > > -	if (xflags & FS_XFLAG_DAX)
+> > > -		inode->i_flags |= S_DAX;
+> > > -	else
+> > > -		inode->i_flags &= ~S_DAX;
+> > > -#endif
+> > 
+> > So this variant will set the flag in the inode if the disk inode
+> > flag is set, otherwise it will clear it.  It does it with if/else
+> > branches.
+> > 
+> > 
+> > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> > > index e07f7b641226..a4ac8568c8c7 100644
+> > > --- a/fs/xfs/xfs_iops.c
+> > > +++ b/fs/xfs/xfs_iops.c
+> > > @@ -1259,7 +1259,7 @@ xfs_inode_supports_dax(
+> > >  	return xfs_inode_buftarg(ip)->bt_daxdev != NULL;
+> > >  }
+> > >  
+> > > -STATIC bool
+> > > +static bool
+> > >  xfs_inode_enable_dax(
+> > >  	struct xfs_inode *ip)
+> > >  {
+> > 
+> > This belongs in the previous patch.
+> 
+> Ah yea...  Sorry.
+> 
+> Fixed in V7
+> 
+> > 
+> > > @@ -1272,26 +1272,38 @@ xfs_inode_enable_dax(
+> > >  	return false;
+> > >  }
+> > >  
+> > > -STATIC void
+> > > +void
+> > >  xfs_diflags_to_iflags(
+> > > -	struct inode		*inode,
+> > > -	struct xfs_inode	*ip)
+> > > +	struct xfs_inode	*ip,
+> > > +	bool init)
+> > >  {
+> > > -	uint16_t		flags = ip->i_d.di_flags;
+> > > -
+> > > -	inode->i_flags &= ~(S_IMMUTABLE | S_APPEND | S_SYNC |
+> > > -			    S_NOATIME | S_DAX);
+> > 
+> > And this code cleared all the flags in the inode first, then
+> > set them if the disk inode flag is set. This does not require
+> > branches, resulting in more readable code and better code
+> > generation.
+> > 
+> > > +	struct inode		*inode = VFS_I(ip);
+> > > +	uint			diflags = xfs_ip2xflags(ip);
+> > >  
+> > > -	if (flags & XFS_DIFLAG_IMMUTABLE)
+> > > +	if (diflags & FS_XFLAG_IMMUTABLE)
+> > >  		inode->i_flags |= S_IMMUTABLE;
+> > > -	if (flags & XFS_DIFLAG_APPEND)
+> > > +	else
+> > > +		inode->i_flags &= ~S_IMMUTABLE;
+> > 
+> > > +	if (diflags & FS_XFLAG_APPEND)
+> > >  		inode->i_flags |= S_APPEND;
+> > > -	if (flags & XFS_DIFLAG_SYNC)
+> > > +	else
+> > > +		inode->i_flags &= ~S_APPEND;
+> > > +	if (diflags & FS_XFLAG_SYNC)
+> > >  		inode->i_flags |= S_SYNC;
+> > > -	if (flags & XFS_DIFLAG_NOATIME)
+> > > +	else
+> > > +		inode->i_flags &= ~S_SYNC;
+> > > +	if (diflags & FS_XFLAG_NOATIME)
+> > >  		inode->i_flags |= S_NOATIME;
+> > > -	if (xfs_inode_enable_dax(ip))
+> > > -		inode->i_flags |= S_DAX;
+> > > +	else
+> > > +		inode->i_flags &= ~S_NOATIME;
+> > > +
+> > > +	/* Only toggle the dax flag when initializing */
+> > > +	if (init) {
+> > > +		if (xfs_inode_enable_dax(ip))
+> > > +			inode->i_flags |= S_DAX;
+> > > +		else
+> > > +			inode->i_flags &= ~S_DAX;
+> > > +	}
+> > >  }
+> > 
+> > IOWs, this:
+> > 
+> >         struct inode            *inode = VFS_I(ip);
+> >         unsigned int            xflags = xfs_ip2xflags(ip);
+> >         unsigned int            flags = 0;
+> > 
+> >         if (xflags & FS_XFLAG_IMMUTABLE)
+> >                 flags |= S_IMMUTABLE;
+> >         if (xflags & FS_XFLAG_APPEND)
+> >                 flags |= S_APPEND;
+> >         if (xflags & FS_XFLAG_SYNC)
+> >                 flags |= S_SYNC;
+> >         if (xflags & FS_XFLAG_NOATIME)
+> >                 flags |= S_NOATIME;
+> > 	if ((xflags & FS_XFLAG_DAX) && init)
+> > 		flags |= S_DAX;
+> > 
+> >         inode->i_flags &= ~(S_IMMUTABLE | S_APPEND | S_SYNC | S_NOATIME);
+> >         inode->i_flags |= flags;
+> > 
+> > ends up being much easier to read and results in better code
+> > generation. And we don't need to clear the S_DAX flag when "init" is
+> > set, because we are starting from an inode that has no flags set
+> > (because init!)...
+> 
+> This sounds good but I think we need a slight modification to make the function equivalent in functionality.
+> 
+> void
+> xfs_diflags_to_iflags(
+>         struct xfs_inode        *ip,
+>         bool init)
+> {
+>         struct inode            *inode = VFS_I(ip);
+>         unsigned int            xflags = xfs_ip2xflags(ip);
+>         unsigned int            flags = 0;
+> 
+>         inode->i_flags &= ~(S_IMMUTABLE | S_APPEND | S_SYNC | S_NOATIME |
+>                             S_DAX);
 
-            Bug ID: 207165
-           Summary: Persistent ext4_search_dir: bad entry in directory:
-                    directory entry too close to block end
-           Product: File System
-           Version: 2.5
-    Kernel Version: 5.5.16
-          Hardware: Intel
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: normal
-          Priority: P1
-         Component: ext4
-          Assignee: fs_ext4@kernel-bugs.osdl.org
-          Reporter: el@prans.net
-        Regression: No
+We don't want to clear the dax flag here, ever, if it is already
+set. That is an externally visible change and opens us up (again) to
+races where IS_DAX() changes half way through a fault path. IOWs, avoiding
+clearing the DAX flag was something I did explicitly in the above
+code fragment.
 
-Since 5.5 I started getting persistent hits at the check added in 109ba779d6cca
-(ext4: check for directory entries too close to block end).  It is 100%
-reproducible when running docker containers on overlayfs2.  Here's an example
-log entry:
+And it makes the logic clearer by pre-calculating the new flags,
+then clearing and setting the inode flags together, rather than
+having the spearated at the top and bottom of the function.
 
-kernel: EXT4-fs error (device dm-0): ext4_search_dir:1395: inode #28320400:
-block 113246792: comm dockerd: bad entry in directory: directory entry too
-close to block end - offset=0, inode=28320403, rec_len=32, name_len=8,
-size=4096
-dockerd[5315]: time="2020-04-08T11:03:35.148433258-07:00" level=error
-msg="Error removing mounted layer
-c520f6ce1d0b493e51aa9cdaea2240c6f65f104c3da8fb9767999dc526086f85: unlinkat
-/var/lib/docker/overlay2/01c0c02ee4841227fefe595eeef8912fee32bc2b63a2264cb513f924e6366950/diff/tmp/apt-key-gpghome.TauCtRwzyD:
-directory not empty"
+THis leads to an obvious conclusion: if we never clear the in memory
+S_DAX flag, we can actually clear the on-disk flag safely, so that
+next time the inode cycles into memory it won't be using DAX. IOWs,
+admins can stop the applications, clear the DAX flag and drop
+caches. This should result in the inode being recycled and when the
+app is restarted it will run without DAX. No ned for deleting files,
+copying large data sets, etc just to turn off an inode flag.
 
-To clarify, this error happened elsewhere as well, so this doesn't seem to be
-overlayfs2-specific.
+Cheers,
 
-At first I thought that my filesystem was borked somehow, so I went so far as
-to reformat the partition, but that didn't help.
-
+Dave.
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+Dave Chinner
+david@fromorbit.com
