@@ -2,259 +2,414 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 627481A2B14
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 23:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809B11A2B7C
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 23:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729731AbgDHV2o (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Apr 2020 17:28:44 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:36732 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729615AbgDHV2o (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 17:28:44 -0400
-Received: by mail-ed1-f67.google.com with SMTP id i7so10650343edq.3
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 14:28:42 -0700 (PDT)
+        id S1726699AbgDHVzs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 17:55:48 -0400
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:45153 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726494AbgDHVzs (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 17:55:48 -0400
+Received: by mail-pl1-f177.google.com with SMTP id t4so3017724plq.12
+        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 14:55:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gsc90LPV5vuebvWSwowSniEuuhSDnHS3fNotzCrMHhI=;
-        b=pI/Ke2eb3jkjDRXlYPpj3VkVyEJR335iPpo7DsBKOj3g+DjMNeZJvrbuvyfq267OUD
-         4I7dyDJsclQ5Slr540XjTRPHixi7zmEpnJbFNdrNPHGDhdR50DfloDptknHgyMIdpzbg
-         +WLguh/vuRJiMIUGJsbXd21ZCz0w3EwbKD2oPW2TCb/WITmelq+YNrw74a1YeDapL9IM
-         0UVEJDV/xqFxic1LVguPMWHIax948Z3G5lH3pCNHB7nyS8N+6MiW7SNMEuDx41bQqr/o
-         XwWla1TJ1Cpdx1w3dRFYLcVNTKUZee16zXqvVoociuElI8kaSzpd8d2REh/aJHXedYW1
-         1U7Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q9XrkZNYu0Yw+bWRSqI4hr5T+r4/VGdxEE6HjAdpRJY=;
+        b=X3qLn+FGVWmDWvpsgniRKA4oeHTLDHuiglDezQUin4o7qzeTqAXpMypFc1w3d2j1gs
+         LQqIQGCsIh+Dpv05Qsj6Ac+v+vuwNkzoxCn8FGHfjpxUt/QDSJH4s/N/+HPzGzFHSm8r
+         /q+VRdnrV2+HD3w/QiusEaTHCh21PEBNYYqGz8x0U2YSjd9hDUdWOLJyb+nG0/yNx8U0
+         LfIPaRnr0oRUUk0l3UMAjcElVIw/ry7rIpBjglIrsHgSDPbcc0/gjmel5KDPJw/evPNJ
+         tcDXr+5t/kxNWnF74/QOkMeaTV6qVxZlai6+fNvA9SrYQYnfoFuQHrzprgl9eMPlNKhY
+         gPHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gsc90LPV5vuebvWSwowSniEuuhSDnHS3fNotzCrMHhI=;
-        b=Mq37MGcjT8+zWgKt9NWTbYJZ8shRBqsod8BB5tORyhNvBXjQx10yNTVuKj2MWDjtQ2
-         Ld7K+e0ywowH8WI2C1iDQ2TkItfT6aJ8AytV6lABNLUiCyZ6cfbGbVcIMmgbHmGJF/bp
-         d8yylIFZ0iVlBvnFiAiFaFhh0LoggqkHeh5RORGWgDtOHsKqrr2dhVLkK+AkGzZSv9If
-         bwbahTl7kXkWt/gfFIToXSWkHHwr5sVwGGY7t2AxBtdG13ARIgfNls77brKZGa8klV+N
-         keQ3x7OzIuxDwlLUlZ63bwlYMKwT92wwBv/0K1J5w9+LXz6/PWwmAGHHB4gIjOE2m1XL
-         TE4g==
-X-Gm-Message-State: AGi0PuZYtQBJShho3XH1h8mPymal7TExPnBDkShZu3Ot7+BP+kQ2zamZ
-        1A6QBZU3dJKAwhfAQV5rZWIYd/jxTvUidPcWgVe7bA==
-X-Google-Smtp-Source: APiQypJk5ijyBzx01h6/nF0/FztOREeQcwbT2SBq1CK12n6G3N8IiyFCzIyOVWUiYtoBKEH4Kr8GDj8vGyt7ncuxacA=
-X-Received: by 2002:a17:907:1185:: with SMTP id uz5mr4432200ejb.335.1586381321924;
- Wed, 08 Apr 2020 14:28:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q9XrkZNYu0Yw+bWRSqI4hr5T+r4/VGdxEE6HjAdpRJY=;
+        b=AZe+obO1jTWJT8wUTQwiaRomnBVCsPllrh5K/rU2QQJWnFonQ7dArhe20F44r+600w
+         oV6M8z/mM/0u2NytENsqjsIK4YVR/6kIqHcuLCPx6nD7h7H1tbcExuRDriAalPVJZxZW
+         zsNLUsD15ZmHUUu5uFhtjfOgzWVcPwqbs8+/leYAZ9uDg0x2PIZPwUUQ2ynms1RNGLsa
+         YbNulNvUF7L2cTN3wetu57HRs2HFn68t7E9pPmWNZ9IT5adRcFeMjPusnB9kDt0LzWkj
+         7gHv2asv5BzGf2/12bWX+5DtsL0bbzAztzDT98yM/altWF8NiBClpXVfCEEjqhDICxGK
+         pLaA==
+X-Gm-Message-State: AGi0PuYwlug42H7wkEs0UR5wWKW4aZgYeHb0i+wmWAexYFEvDtTOQ2Pi
+        +TOqZ8kTUqXMepCnlpAP5PwC5nzZ
+X-Google-Smtp-Source: APiQypISF/SZEDT/usj+J0kRw8Xem5GfDAjE+7Y4rmzFfbDkuPf1hNpYeRBufS75q9RQe1exD6sUhw==
+X-Received: by 2002:a17:902:9a82:: with SMTP id w2mr9114359plp.117.1586382945493;
+        Wed, 08 Apr 2020 14:55:45 -0700 (PDT)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:6271:607:aca0:b6f7])
+        by smtp.googlemail.com with ESMTPSA id z7sm450929pju.37.2020.04.08.14.55.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Apr 2020 14:55:44 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+X-Google-Original-From: Harshad Shirwadkar <harshads@google.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH v6 01/20] ext4: update docs for fast commit feature
+Date:   Wed,  8 Apr 2020 14:55:11 -0700
+Message-Id: <20200408215530.25649-1-harshads@google.com>
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
 MIME-Version: 1.0
-References: <20200407182958.568475-1-ira.weiny@intel.com> <20200407182958.568475-7-ira.weiny@intel.com>
- <20200408020827.GI24067@dread.disaster.area> <20200408170923.GC569068@iweiny-DESK2.sc.intel.com>
- <20200408210236.GK24067@dread.disaster.area>
-In-Reply-To: <20200408210236.GK24067@dread.disaster.area>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 8 Apr 2020 14:28:30 -0700
-Message-ID: <CAPcyv4gLvMSA9BypvWbYtv3xsK8o4+db3kvxBozUGAjr_sDDFQ@mail.gmail.com>
-Subject: Re: [PATCH V6 6/8] fs/xfs: Combine xfs_diflags_to_linux() and xfs_diflags_to_iflags()
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 2:02 PM Dave Chinner <david@fromorbit.com> wrote:
->
-> On Wed, Apr 08, 2020 at 10:09:23AM -0700, Ira Weiny wrote:
-> > On Wed, Apr 08, 2020 at 12:08:27PM +1000, Dave Chinner wrote:
-> > > On Tue, Apr 07, 2020 at 11:29:56AM -0700, ira.weiny@intel.com wrote:
-> > > > From: Ira Weiny <ira.weiny@intel.com>
-> >
-> > [snip]
-> >
-> > > >
-> > > > -STATIC void
-> > > > -xfs_diflags_to_linux(
-> > > > - struct xfs_inode        *ip)
-> > > > -{
-> > > > - struct inode            *inode = VFS_I(ip);
-> > > > - unsigned int            xflags = xfs_ip2xflags(ip);
-> > > > -
-> > > > - if (xflags & FS_XFLAG_IMMUTABLE)
-> > > > -         inode->i_flags |= S_IMMUTABLE;
-> > > > - else
-> > > > -         inode->i_flags &= ~S_IMMUTABLE;
-> > > > - if (xflags & FS_XFLAG_APPEND)
-> > > > -         inode->i_flags |= S_APPEND;
-> > > > - else
-> > > > -         inode->i_flags &= ~S_APPEND;
-> > > > - if (xflags & FS_XFLAG_SYNC)
-> > > > -         inode->i_flags |= S_SYNC;
-> > > > - else
-> > > > -         inode->i_flags &= ~S_SYNC;
-> > > > - if (xflags & FS_XFLAG_NOATIME)
-> > > > -         inode->i_flags |= S_NOATIME;
-> > > > - else
-> > > > -         inode->i_flags &= ~S_NOATIME;
-> > > > -#if 0    /* disabled until the flag switching races are sorted out */
-> > > > - if (xflags & FS_XFLAG_DAX)
-> > > > -         inode->i_flags |= S_DAX;
-> > > > - else
-> > > > -         inode->i_flags &= ~S_DAX;
-> > > > -#endif
-> > >
-> > > So this variant will set the flag in the inode if the disk inode
-> > > flag is set, otherwise it will clear it.  It does it with if/else
-> > > branches.
-> > >
-> > >
-> > > > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > > > index e07f7b641226..a4ac8568c8c7 100644
-> > > > --- a/fs/xfs/xfs_iops.c
-> > > > +++ b/fs/xfs/xfs_iops.c
-> > > > @@ -1259,7 +1259,7 @@ xfs_inode_supports_dax(
-> > > >   return xfs_inode_buftarg(ip)->bt_daxdev != NULL;
-> > > >  }
-> > > >
-> > > > -STATIC bool
-> > > > +static bool
-> > > >  xfs_inode_enable_dax(
-> > > >   struct xfs_inode *ip)
-> > > >  {
-> > >
-> > > This belongs in the previous patch.
-> >
-> > Ah yea...  Sorry.
-> >
-> > Fixed in V7
-> >
-> > >
-> > > > @@ -1272,26 +1272,38 @@ xfs_inode_enable_dax(
-> > > >   return false;
-> > > >  }
-> > > >
-> > > > -STATIC void
-> > > > +void
-> > > >  xfs_diflags_to_iflags(
-> > > > - struct inode            *inode,
-> > > > - struct xfs_inode        *ip)
-> > > > + struct xfs_inode        *ip,
-> > > > + bool init)
-> > > >  {
-> > > > - uint16_t                flags = ip->i_d.di_flags;
-> > > > -
-> > > > - inode->i_flags &= ~(S_IMMUTABLE | S_APPEND | S_SYNC |
-> > > > -                     S_NOATIME | S_DAX);
-> > >
-> > > And this code cleared all the flags in the inode first, then
-> > > set them if the disk inode flag is set. This does not require
-> > > branches, resulting in more readable code and better code
-> > > generation.
-> > >
-> > > > + struct inode            *inode = VFS_I(ip);
-> > > > + uint                    diflags = xfs_ip2xflags(ip);
-> > > >
-> > > > - if (flags & XFS_DIFLAG_IMMUTABLE)
-> > > > + if (diflags & FS_XFLAG_IMMUTABLE)
-> > > >           inode->i_flags |= S_IMMUTABLE;
-> > > > - if (flags & XFS_DIFLAG_APPEND)
-> > > > + else
-> > > > +         inode->i_flags &= ~S_IMMUTABLE;
-> > >
-> > > > + if (diflags & FS_XFLAG_APPEND)
-> > > >           inode->i_flags |= S_APPEND;
-> > > > - if (flags & XFS_DIFLAG_SYNC)
-> > > > + else
-> > > > +         inode->i_flags &= ~S_APPEND;
-> > > > + if (diflags & FS_XFLAG_SYNC)
-> > > >           inode->i_flags |= S_SYNC;
-> > > > - if (flags & XFS_DIFLAG_NOATIME)
-> > > > + else
-> > > > +         inode->i_flags &= ~S_SYNC;
-> > > > + if (diflags & FS_XFLAG_NOATIME)
-> > > >           inode->i_flags |= S_NOATIME;
-> > > > - if (xfs_inode_enable_dax(ip))
-> > > > -         inode->i_flags |= S_DAX;
-> > > > + else
-> > > > +         inode->i_flags &= ~S_NOATIME;
-> > > > +
-> > > > + /* Only toggle the dax flag when initializing */
-> > > > + if (init) {
-> > > > +         if (xfs_inode_enable_dax(ip))
-> > > > +                 inode->i_flags |= S_DAX;
-> > > > +         else
-> > > > +                 inode->i_flags &= ~S_DAX;
-> > > > + }
-> > > >  }
-> > >
-> > > IOWs, this:
-> > >
-> > >         struct inode            *inode = VFS_I(ip);
-> > >         unsigned int            xflags = xfs_ip2xflags(ip);
-> > >         unsigned int            flags = 0;
-> > >
-> > >         if (xflags & FS_XFLAG_IMMUTABLE)
-> > >                 flags |= S_IMMUTABLE;
-> > >         if (xflags & FS_XFLAG_APPEND)
-> > >                 flags |= S_APPEND;
-> > >         if (xflags & FS_XFLAG_SYNC)
-> > >                 flags |= S_SYNC;
-> > >         if (xflags & FS_XFLAG_NOATIME)
-> > >                 flags |= S_NOATIME;
-> > >     if ((xflags & FS_XFLAG_DAX) && init)
-> > >             flags |= S_DAX;
-> > >
-> > >         inode->i_flags &= ~(S_IMMUTABLE | S_APPEND | S_SYNC | S_NOATIME);
-> > >         inode->i_flags |= flags;
-> > >
-> > > ends up being much easier to read and results in better code
-> > > generation. And we don't need to clear the S_DAX flag when "init" is
-> > > set, because we are starting from an inode that has no flags set
-> > > (because init!)...
-> >
-> > This sounds good but I think we need a slight modification to make the function equivalent in functionality.
-> >
-> > void
-> > xfs_diflags_to_iflags(
-> >         struct xfs_inode        *ip,
-> >         bool init)
-> > {
-> >         struct inode            *inode = VFS_I(ip);
-> >         unsigned int            xflags = xfs_ip2xflags(ip);
-> >         unsigned int            flags = 0;
-> >
-> >         inode->i_flags &= ~(S_IMMUTABLE | S_APPEND | S_SYNC | S_NOATIME |
-> >                             S_DAX);
->
-> We don't want to clear the dax flag here, ever, if it is already
-> set. That is an externally visible change and opens us up (again) to
-> races where IS_DAX() changes half way through a fault path. IOWs, avoiding
-> clearing the DAX flag was something I did explicitly in the above
-> code fragment.
->
-> And it makes the logic clearer by pre-calculating the new flags,
-> then clearing and setting the inode flags together, rather than
-> having the spearated at the top and bottom of the function.
->
-> THis leads to an obvious conclusion: if we never clear the in memory
-> S_DAX flag, we can actually clear the on-disk flag safely, so that
-> next time the inode cycles into memory it won't be using DAX. IOWs,
-> admins can stop the applications, clear the DAX flag and drop
-> caches. This should result in the inode being recycled and when the
-> app is restarted it will run without DAX. No ned for deleting files,
-> copying large data sets, etc just to turn off an inode flag.
+From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-Makes sense, but is that sufficient? I recall you saying there might
-be a multitude of other reasons that the inode is not evicted, not the
-least of which is races [1]. Does this need another flag, lets call it
-"dax toggle" to track the "I requested the inode to clear the flag,
-but on cache-flush + restart the inode never got evicted" case. S_DAX
-almost plays this role, but it loses the ability to audit which files
-are pending an inode eviction event. So the dax-toggle flag indicates
-to the kernel to xor the toggle value with the inode flag on inode
-instantiation and the dax inode flag is never directly manipulated by
-the ioctl path.
+This patch series adds support for fast commits which is a simplified
+version of the scheme proposed by Park and Shin, in their paper,
+"iJournaling: Fine-Grained Journaling for Improving the Latency of
+Fsync System Call"[1]. The basic idea of fast commits is to make JBD2
+give the client file system an opportunity to perform a faster
+commit. Only if the file system cannot perform such a commit
+operation, then JBD2 should fall back to traditional commits.
 
-[1]: http://lore.kernel.org/r/20191025003603.GE4614@dread.disaster.area
+Because JBD2 operates at block granularity, for every file system
+metadata update it commits all the changed blocks are written to the
+journal at commit time. This is inefficient because updates to some
+blocks that JBD2 commits are derivable from some other blocks. For
+example, if a new extent is added to an inode, then corresponding
+updates to the inode table, the block bitmap, the group descriptor and
+the superblock can be derived based on just the extent information and
+the corresponding inode information. So, if we take this relationship
+between blocks into account and replay the journalled blocks smartly,
+we could increase performance of file system commits significantly.
+
+Fast commits introduced in this patch have two main contributions:
+
+(1) Making JBD2 fast commit aware, so that clients of JBD2 can
+    implement fast commits
+
+(2) Add support in ext4 to use JBD2's new interfaces and implement
+    fast commits.
+
+Ext4 supports two modes of fast commits: 1) fast commits with hard
+consistency guarantees 2) fast commits with soft consistency guarantees
+
+When hard consistency is enabled, fast commit guarantees that all the
+updates will be committed. After a successful replay of fast commits
+blocks in hard consistency mode, the entire file system would be in
+the same state as that when fsync() returned before crash. This
+guarantee is similar to what jbd2 gives with full commits.
+
+With soft consistency, file system only guarantees consistency for the
+inode in question. In this mode, file system will try to write as less
+data to the backend as possible during the commit time. To be precise,
+file system records all the data updates for the inode in question and
+directory updates that are required for guaranteeing consistency of the
+inode in question.
+
+In our evaluations, fast commits with hard consistency performed
+better than fast commits with soft consistency. That's because with
+hard consistency, a fast commit often ends up committing other inodes
+together, while with soft consistency commits get serialized. Future
+work can look at creating hybrid approach between the two extremes
+that are there in this patchset.
+
+Testing
+-------
+
+e2fsprogs was updated to set fast commit feature flag and to ignore
+fast commit blocks during e2fsck.
+
+https://github.com/harshadjs/e2fsprogs.git
+
+After applying all the patches in this series, following runs of
+xfstests were performed:
+
+- kvm-xfstest.sh -g log -c 4k
+- kvm-xfstests.sh smoke
+
+All the log tests were successful and smoke tests didn't introduce any
+additional failures.
+
+Performance Evaluation
+----------------------
+
+Ext4 file system performance was tested with full commits, with fast
+commits with soft consistency and with fast commits with hard
+consistency. fs_mark benchmark showed that depending on the file size,
+performance improvement was seen up to 50%. Soft fast commits performed
+slightly worse than hard fast commits. But soft fast commits ended up
+writing slightly lesser number of blocks on disk.
+
+Changes since V5:
+
+- Rebased on top of v5.6
+
+Harshad Shirwadkar(20):
+ ext4: add debug mount option to test fast commit replay
+ ext4: add fast commit replay path
+ ext4: disable certain features in replay path
+ ext4: add idempotent helpers to manipulate bitmaps
+ ext4: fast commit recovery path preparation
+ jbd2: add fast commit recovery path support
+ ext4: main commit routine for fast commits
+ jbd2: add new APIs for commit path of fast commits
+ ext4: add fast commit on-disk format structs
+ ext4: add fast commit track points
+ ext4: break ext4_unlink() and ext4_link()
+ ext4: add inode tracking and ineligible marking routines
+ ext4: add directory entry tracking routines
+ ext4: add generic diff tracking routines and range tracking
+ jbd2: fast commit main commit path changes
+ jbd2: disable fast commits if journal is empty
+ jbd2: add fast commit block tracker variables
+ ext4, jbd2: add fast commit initialization routines
+ ext4: add handling for extended mount options
+ ext4: update docs for fast commit feature
+
+ Documentation/filesystems/ext4/journal.rst |  127 ++-
+ Documentation/filesystems/journalling.rst  |   18 +
+ fs/ext4/acl.c                              |    1 +
+ fs/ext4/balloc.c                           |   10 +-
+ fs/ext4/ext4.h                             |  126 +++
+ fs/ext4/ext4_jbd2.c                        | 1484 +++++++++++++++++++++++++++-
+ fs/ext4/ext4_jbd2.h                        |   71 ++
+ fs/ext4/extents.c                          |    5 +
+ fs/ext4/extents_status.c                   |   24 +
+ fs/ext4/fsync.c                            |    2 +-
+ fs/ext4/ialloc.c                           |  165 +++-
+ fs/ext4/inline.c                           |    3 +
+ fs/ext4/inode.c                            |   76 +-
+ fs/ext4/ioctl.c                            |   11 +-
+ fs/ext4/mballoc.c                          |  158 ++-
+ fs/ext4/mballoc.h                          |    2 +
+ fs/ext4/migrate.c                          |    1 +
+ fs/ext4/namei.c                            |  182 ++--
+ fs/ext4/super.c                            |   72 +-
+ fs/ext4/xattr.c                            |    6 +
+ fs/jbd2/commit.c                           |   61 ++
+ fs/jbd2/journal.c                          |  217 +++-
+ fs/jbd2/recovery.c                         |   67 +-
+ include/linux/jbd2.h                       |   83 +-
+ include/trace/events/ext4.h                |  208 +++-
+ 25 files changed, 3046 insertions(+), 134 deletions(-)ˆ
+
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+---
+ Documentation/filesystems/ext4/journal.rst | 127 ++++++++++++++++++++-
+ Documentation/filesystems/journalling.rst  |  18 +++
+ 2 files changed, 139 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/filesystems/ext4/journal.rst b/Documentation/filesystems/ext4/journal.rst
+index ea613ee701f5..f94e66f2f8c4 100644
+--- a/Documentation/filesystems/ext4/journal.rst
++++ b/Documentation/filesystems/ext4/journal.rst
+@@ -29,10 +29,10 @@ safest. If ``data=writeback``, dirty data blocks are not flushed to the
+ disk before the metadata are written to disk through the journal.
+ 
+ The journal inode is typically inode 8. The first 68 bytes of the
+-journal inode are replicated in the ext4 superblock. The journal itself
+-is normal (but hidden) file within the filesystem. The file usually
+-consumes an entire block group, though mke2fs tries to put it in the
+-middle of the disk.
++journal inode are replicated in the ext4 superblock. The journal
++itself is normal (but hidden) file within the filesystem. The file
++usually consumes an entire block group, though mke2fs tries to put it
++in the middle of the disk.
+ 
+ All fields in jbd2 are written to disk in big-endian order. This is the
+ opposite of ext4.
+@@ -42,22 +42,74 @@ NOTE: Both ext4 and ocfs2 use jbd2.
+ The maximum size of a journal embedded in an ext4 filesystem is 2^32
+ blocks. jbd2 itself does not seem to care.
+ 
++Fast Commits
++~~~~~~~~~~~~
++
++Ext4 also implements fast commits and integrates it with JBD2 journalling.
++Fast commits store metadata changes made to the file system as inode level
++diff. In other words, each fast commit block identifies updates made to
++a particular inode and collectively they represent total changes made to
++the file system.
++
++A fast commit is valid only if there is no full commit after that particular
++fast commit. Because of this feature, fast commit blocks can be reused by
++the following transactions.
++
++Each fast commit block stores updates to 1 particular inode. Updates in each
++fast commit block are one of the 2 types:
++- Data updates (add range / delete range)
++- Directory entry updates (Add / remove links)
++
++Fast commit blocks must be replayed in the order in which they appear on disk.
++That's because directory entry updates are written in fast commit blocks
++in the order in which they are applied on the file system before crash.
++Changing the order of replaying for directory entry updates may result
++in inconsistent file system. Note that only directory entry updates need
++ordering, data updates, since they apply to only one inode, do not require
++ordered replay. Also, fast commits guarantee that file system is in consistent
++state after replay of each fast commit block as long as order of replay has
++been followed.
++
++Note that directory inode updates are never directly recorded in fast commits.
++Just like other file system level metaata, updates to directories are always
++implied based on directory entry updates stored in fast commit blocks.
++
++Based on which directory entry updates are committed with an inode, fast
++commits have two modes of operation:
++
++- Hard Consistency (default)
++- Soft Consistency (can be enabled by setting mount flag "fc_soft_consistency")
++
++When hard consistency is enabled, fast commit guarantees that all the updates
++will be committed. After a successful replay of fast commits blocks
++in hard consistency mode, the entire file system would be in the same state as
++that when fsync() returned before crash. This guarantee is similar to what
++jbd2 gives.
++
++With soft consistency, file system only guarantees consistency for the
++inode in question. In this mode, file system will try to write as less data
++to the backed as possible during the commit time. To be precise, file system
++records all the data updates for the inode in question and directory updates
++that are required for guaranteeing consistency of the inode in question.
++
+ Layout
+ ~~~~~~
+ 
+ Generally speaking, the journal has this format:
+ 
+ .. list-table::
+-   :widths: 16 48 16
++   :widths: 16 48 16 18
+    :header-rows: 1
+ 
+    * - Superblock
+      - descriptor\_block (data\_blocks or revocation\_block) [more data or
+        revocations] commmit\_block
+      - [more transactions...]
++     - [Fast commits...]
+    * - 
+      - One transaction
+      -
++     -
+ 
+ Notice that a transaction begins with either a descriptor and some data,
+ or a block revocation list. A finished transaction always ends with a
+@@ -76,7 +128,7 @@ The journal superblock will be in the next full block after the
+ superblock.
+ 
+ .. list-table::
+-   :widths: 12 12 12 32 12
++   :widths: 12 12 12 32 12 12
+    :header-rows: 1
+ 
+    * - 1024 bytes of padding
+@@ -85,11 +137,13 @@ superblock.
+      - descriptor\_block (data\_blocks or revocation\_block) [more data or
+        revocations] commmit\_block
+      - [more transactions...]
++     - [Fast commits...]
+    * - 
+      -
+      -
+      - One transaction
+      -
++     -
+ 
+ Block Header
+ ~~~~~~~~~~~~
+@@ -609,3 +663,64 @@ bytes long (but uses a full block):
+      - h\_commit\_nsec
+      - Nanoseconds component of the above timestamp.
+ 
++Fast Commit Block
++~~~~~~~~~~~~~~~~~
++
++The fast commit block indicates an append to the last commit block
++that was written to the journal. One fast commit block records updates
++to one inode. So, typically you would find as many fast commit blocks
++as the number of inodes that got changed since the last commit. A fast
++commit block is valid only if there is no commit block present with
++transaction ID greater than that of the fast commit block. If such a
++block a present, then there is no need to replay the fast commit
++block.
++
++.. list-table::
++   :widths: 8 8 24 40
++   :header-rows: 1
++
++   * - Offset
++     - Type
++     - Name
++     - Descriptor
++   * - 0x0
++     - journal\_header\_s
++     - (open coded)
++     - Common block header.
++   * - 0xC
++     - \_\_le32
++     - fc\_magic
++     - Magic value which should be set to 0xE2540090. This identifies
++       that this block is a fast commit block.
++   * - 0x10
++     - \_\_u8
++     - fc\_features
++     - Features used by this fast commit block.
++   * - 0x11
++     - \_\_le16
++     - fc_num_tlvs
++     - Number of TLVs contained in this fast commit block
++   * - 0x13
++     - \_\_le32
++     - \_\_fc\_len
++     - Length of the fast commit block in terms of number of blocks
++   * - 0x17
++     - \_\_le32
++     - fc\_ino
++     - Inode number of the inode that will be recovered using this fast commit
++   * - 0x2B
++     - struct ext4\_inode
++     - inode
++     - On-disk copy of the inode at the commit time
++   * - <Variable based on inode size>
++     - struct ext4\_fc\_tl
++     - Array of struct ext4\_fc\_tl
++     - The actual delta with the last commit. Starting at this offset,
++       there is an array of TLVs that indicates which all extents
++       should be present in the corresponding inode. Currently,
++       following tags are supported: EXT4\_FC\_TAG\_EXT (extent that
++       should be present in the inode), EXT4\_FC\_TAG\_HOLE (extent
++       that should be removed from the inode), EXT4\_FC\_TAG\_ADD\_DENTRY
++       (dentry that should be linked), EXT4\_FC\_TAG\_DEL\_DENTRY
++       (dentry that should be unlinked), EXT4\_FC\_TAG\_CREATE\_DENTRY
++       (dentry that for the file that should be created for the first time).
+diff --git a/Documentation/filesystems/journalling.rst b/Documentation/filesystems/journalling.rst
+index 58ce6b395206..1cb116ab27ab 100644
+--- a/Documentation/filesystems/journalling.rst
++++ b/Documentation/filesystems/journalling.rst
+@@ -115,6 +115,24 @@ called after each transaction commit. You can also use
+ ``transaction->t_private_list`` for attaching entries to a transaction
+ that need processing when the transaction commits.
+ 
++JBD2 also allows client file systems to implement file system specific
++commits which are called as ``fast commits``. Fast commits are
++asynchronous in nature i.e. file systems can call their own commit
++functions at any time. In order to avoid the race with kjournald
++thread and other possible fast commits that may be happening in
++parallel, file systems should first call
++:c:func:`jbd2_start_async_fc()`. File system can call
++:c:func:`jbd2_map_fc_buf()` to get buffers reserved for fast
++commits. Once a fast commit is completed, file system should call
++:c:func:`jbd2_stop_async_fc()` to indicate and unblock other
++committers and the kjournald thread.  After performing either a fast
++or a full commit, JBD2 calls ``journal->j_fc_cleanup_cb`` to allow
++file systems to perform cleanups for their internal fast commit
++related data structures. At the replay time, JBD2 passes each and
++every fast commit block to the file system via
++``journal->j_fc_replay_cb``. Ext4 effectively uses this fast commit
++mechanism to improve journal commit performance.
++
+ JBD2 also provides a way to block all transaction updates via
+ :c:func:`jbd2_journal_lock_updates()` /
+ :c:func:`jbd2_journal_unlock_updates()`. Ext4 uses this when it wants a
+-- 
+2.26.0.110.g2183baf09c-goog
+
