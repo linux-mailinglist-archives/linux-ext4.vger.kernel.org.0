@@ -2,54 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC091A1F01
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 12:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E0D1A1F02
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 12:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728264AbgDHKqX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Apr 2020 06:46:23 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:45378 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728250AbgDHKqX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 06:46:23 -0400
-Received: by mail-pg1-f196.google.com with SMTP id 128so534078pge.12
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 03:46:22 -0700 (PDT)
+        id S1728268AbgDHKqZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 06:46:25 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:43482 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728250AbgDHKqZ (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 06:46:25 -0400
+Received: by mail-pl1-f194.google.com with SMTP id z6so882210plk.10
+        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 03:46:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=FMSn/bpiVdxm7dqeeMs1n0Fund38tS3pgY6V3KwE368=;
-        b=eMaOsg34OG8dAGtclbrycjkU+OK97D8Z8Dtx/FmS044SgRh5ruFDvF418CPr1Tscum
-         2hwdYPeVjVV/0bfYYxVpi+cDATPchAv2J0OpeEjn1x6wMTtrs8qhXugReludsqcwqO+U
-         +cMMWn1B97YhB+XsYQcn6Y8bK1kBw4eDj6VLs4QBGLgx3uQU8tJsBLaGUIDlNa1NJJ8g
-         xHCwOT1tb/4Qe1VedCdU4wqYkvE6ZX38PfaeEx65aN1XmO34f+t4hLUI9FUp+TBhD4bJ
-         7AJ+WJzseI81jLPdkSVCkCPOAsJrsrcL33kxLkdZIDEFj7dd5Q/neIX6cs0s7HhzdZPk
-         3t2w==
+        bh=q0g/zyyg3cWNQoMPaaZkiDSHcWfec0cZrjPhzZaKF2I=;
+        b=WEpgVESF1tELt8bIVgSAiStyuydvQd013mG9Wo6+nmpVX2omz9d+PACB+YMcKVMrts
+         7GNMHAq/d1VBRSedoEQxqHW/OQUxzSeiGI6FkXnqaQertLV56MJur7Jr2ZepQlE6JEm4
+         kj0zxjLhEohV8qtt52sVRQ+AddwOYnBDQCk1Z/4gZQdfIhcDz3YZ8EgOmmkOOILJalbY
+         60myYCs9CGoWS0bsE6BgI7fVzmbAQeHdWdCJfgj+PJHmjKlbV3v1rFCgwgoIbkmfgyLu
+         vFArI5kZPQVNOnXIOU8oQVr4jNoTSwiiSHBOHDLbepP7ZfnXZBV8PuXJ64gNJsoEBBl9
+         ONdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=FMSn/bpiVdxm7dqeeMs1n0Fund38tS3pgY6V3KwE368=;
-        b=Tb7lYqJym4wNQ9Wf/Btd6K8fgX/SW9D0hz7hUPYMeBnFFESxxecKbNIrCqki/eAC+v
-         j3b+1u7isNLjLGPc33UCZ3HgCw3GIhvkrV5Q61HP6BTqeTw9V5iziBq38t6B8oOzg56r
-         i7cb3Jl1XqPZn1wQoTNM/qTHdCDdO8juY4IQroLcH+yfANbwZBUIUCeYBS1QseEp5NGS
-         +cGY/gpHyrsR4uObqn198HrHYCpP6ad4ezHQ8H84H4X9bHSYG71/V5Go72UqdZYLtpp0
-         NL8Jmn1pjGxNWVovoS00HiB/PZ2ENvkmbmOhxZ0GGGInpBkU5Yql2Sm7YsgLPdZNBRml
-         8I6A==
-X-Gm-Message-State: AGi0PuaMpDHEaR7JWnWk6hyt5S8DThQwtF29s/+xUmULXshUHN8HE4Zf
-        z/rjTc0BP+5KGQ+KDLoEeAlG9bnolD8=
-X-Google-Smtp-Source: APiQypIasGoo2mn/UlhUjBP4KAZQBkZZmoIHGXbb3jiAibqsk4UMXfq/1mkfOdO5/xAcnxx0D25RMQ==
-X-Received: by 2002:a62:ce8a:: with SMTP id y132mr6880613pfg.163.1586342782201;
-        Wed, 08 Apr 2020 03:46:22 -0700 (PDT)
+        bh=q0g/zyyg3cWNQoMPaaZkiDSHcWfec0cZrjPhzZaKF2I=;
+        b=mPh8WKGDhJuuU+/S6H04H2ohhTOKQWIVg4lHZkeJwm/51ByFGrBgQ4OhLqvWVuqs2G
+         6kRBNzE3YrrgsvLxhPVkcnZPXD6hoobgyNx5JwS/r0yckZH9i280/XpGOzxFlvVl9FnV
+         YlQClLeTloyQ6fKQ6iLGXQ8rsQuWfLOZkJYHxvevwhcqFLcyTwKEQSFpEdOQS1f+Rngg
+         6CH21jLmDs8Xu5A71GzKPTwoQA3Tf79H0Z1e68B0bl7j4gNAayODJYdDtpGPB10CGdR9
+         NCIgzBqDSfOOn2Ba+chGA+dEXETzO7M3FMvlODUnb4kJmu0u1u1VXIZ3y91CewByjiJY
+         GQmg==
+X-Gm-Message-State: AGi0PuY1xTOv7DZa9M183NIGa+NSosimptoEye1NrsO1Kkp51xH3uKCg
+        7DFwAXcDsn7o8SA6LqYcvMI8nNVhL6Q=
+X-Google-Smtp-Source: APiQypI24txSJ5VGpbi+IijhkfEIiR428oglxXRqRo/NpXeqi6IWTJqyEV0Olzew8lOQuEuM/bw2xA==
+X-Received: by 2002:a17:90b:1901:: with SMTP id mp1mr4630395pjb.196.1586342784280;
+        Wed, 08 Apr 2020 03:46:24 -0700 (PDT)
 Received: from localhost.localdomain (ftp.datadirectnet.jp. [182.171.80.51])
-        by smtp.gmail.com with ESMTPSA id y17sm16177024pfl.104.2020.04.08.03.46.20
+        by smtp.gmail.com with ESMTPSA id y17sm16177024pfl.104.2020.04.08.03.46.22
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 Apr 2020 03:46:21 -0700 (PDT)
+        Wed, 08 Apr 2020 03:46:23 -0700 (PDT)
 From:   Wang Shilong <wangshilong1991@gmail.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     lixi@ddn.com, adilger@dilger.ca, sihara@ddn.com,
         Wang Shilong <wshilong@ddn.com>
-Subject: [RFC PATCH 23/46] e2fsck: merge dblist after thread finishes
-Date:   Wed,  8 Apr 2020 19:44:51 +0900
-Message-Id: <1586342714-12536-24-git-send-email-wangshilong1991@gmail.com>
+Subject: [RFC PATCH 24/46] e2fsck: add debug codes for multiple threds
+Date:   Wed,  8 Apr 2020 19:44:52 +0900
+Message-Id: <1586342714-12536-25-git-send-email-wangshilong1991@gmail.com>
 X-Mailer: git-send-email 1.7.1
 In-Reply-To: <1586342714-12536-1-git-send-email-wangshilong1991@gmail.com>
 References: <1586342714-12536-1-git-send-email-wangshilong1991@gmail.com>
@@ -60,121 +60,120 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Li Xi <lixi@ddn.com>
 
+These debug codes are added to run the multiple pass1 check
+thread one by one in order. If all the codes are correct,
+fsck of multiple threads should have exactly the same outcome
+with single thread.
+
 Signed-off-by: Li Xi <lixi@ddn.com>
 Signed-off-by: Wang Shilong <wshilong@ddn.com>
 ---
- e2fsck/pass1.c      | 18 +++++++++++++-----
- lib/ext2fs/dblist.c | 36 ++++++++++++++++++++++++++++++++++++
- lib/ext2fs/ext2fs.h |  1 +
- 3 files changed, 50 insertions(+), 5 deletions(-)
+ e2fsck/e2fsck.h | 14 ++++++++++++++
+ e2fsck/pass1.c  | 31 ++++++++++++++++++++++++++++++-
+ 2 files changed, 44 insertions(+), 1 deletion(-)
 
+diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
+index f8e98f73..61761684 100644
+--- a/e2fsck/e2fsck.h
++++ b/e2fsck/e2fsck.h
+@@ -451,6 +451,17 @@ struct e2fsck_struct {
+ 
+ };
+ 
++#ifdef DEBUG_THREADS
++/*
++ * Enabling DEBUG_THREADS would cause the parall fsck threads run sequentially
++ */
++struct e2fsck_thread_debug {
++	pthread_mutex_t	etd_mutex;
++	pthread_cond_t	etd_cond;
++	int		etd_finished_threads;
++};
++#endif
++
+ struct e2fsck_thread_info {
+ 	/* ID returned by pthread_create() */
+ 	pthread_t		 eti_thread_id;
+@@ -460,6 +471,9 @@ struct e2fsck_thread_info {
+ 	int			 eti_started;
+ 	/* Context used for this thread */
+ 	e2fsck_t		 eti_thread_ctx;
++#ifdef DEBUG_THREADS
++	struct e2fsck_thread_debug	*eti_debug;
++#endif
+ };
+ 
+ /* Data structures to evaluate whether an extent tree needs rebuilding. */
 diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-index 3501e2f7..1f47cbff 100644
+index 1f47cbff..f8115679 100644
 --- a/e2fsck/pass1.c
 +++ b/e2fsck/pass1.c
-@@ -2284,18 +2284,21 @@ static int _e2fsck_pass1_merge_fs(ext2_filsys dest, ext2_filsys src)
- 	ext2fs_inode_bitmap inode_map;
- 	ext2fs_block_bitmap block_map;
- 	ext2_badblocks_list badblocks;
-+	ext2_dblist dblist;
+@@ -1210,7 +1210,8 @@ void _e2fsck_pass1(e2fsck_t ctx)
+ 		ctx->readahead_kb = e2fsck_guess_readahead(ctx->fs);
+ 	pass1_readahead(ctx, &ra_group, &ino_threshold);
  
- 	dest_io = dest->io;
- 	dest_image_io = dest->image_io;
- 	inode_map = dest->inode_map;
- 	block_map = dest->block_map;
- 	badblocks = dest->badblocks;
-+	dblist = dest->dblist;
- 	memcpy(dest, src, sizeof(struct struct_ext2_filsys));
- 	dest->io = dest_io;
- 	dest->image_io = dest_image_io;
- 	dest->inode_map = inode_map;
- 	dest->block_map = block_map;
- 	dest->badblocks = badblocks;
-+	dest->dblist = dblist;
+-	if (!(ctx->options & E2F_OPT_PREEN))
++	if (!(ctx->options & E2F_OPT_PREEN) &&
++	    ((!ctx->global_ctx) || (ctx->thread_info.et_thread_index == 0)))
+ 		fix_problem(ctx, PR_1_PASS_HEADER, &pctx);
+ 
+ 	if (ext2fs_has_feature_dir_index(fs->super) &&
+@@ -2635,6 +2636,17 @@ static void *e2fsck_pass1_thread(void *arg)
+ {
+ 	struct e2fsck_thread_info	*info = arg;
+ 	e2fsck_t			 thread_ctx = info->eti_thread_ctx;
++#ifdef DEBUG_THREADS
++	struct e2fsck_thread_debug	*thread_debug = info->eti_debug;
++#endif
++
++#ifdef DEBUG_THREADS
++	pthread_mutex_lock(&thread_debug->etd_mutex);
++	while (info->eti_thread_index > thread_debug->etd_finished_threads) {
++		pthread_cond_wait(&thread_debug->etd_cond, &thread_debug->etd_mutex);
++	}
++	pthread_mutex_unlock(&thread_debug->etd_mutex);
++#endif
+ 
+ #ifdef HAVE_SETJMP_H
  	/*
- 	 * PASS1_MERGE_FS_BITMAP might return directly from this function,
- 	 * so please do NOT leave any garbage behind after returning.
-@@ -2304,11 +2307,16 @@ static int _e2fsck_pass1_merge_fs(ext2_filsys dest, ext2_filsys src)
- 	PASS1_MERGE_FS_BITMAP(dest, src, block_map);
- 
- 	if (src->dblist) {
--		retval = ext2fs_copy_dblist(src->dblist, &dest->dblist);
--		if (retval)
--			return retval;
--		/* The ext2fs_copy_dblist() uses the src->fs as the fs */
--		dest->dblist->fs = dest;
-+		if (dest->dblist) {
-+			retval = ext2fs_merge_dblist(src->dblist, dest->dblist);
-+			if (retval)
-+				return retval;
-+		} else {
-+			/* The ext2fs_copy_dblist() uses the src->fs as the fs */
-+			dest->dblist = src->dblist;
-+			dest->dblist->fs = dest;
-+			src->dblist = NULL;
-+		}
- 	}
- 
- 	if (src->badblocks) {
-diff --git a/lib/ext2fs/dblist.c b/lib/ext2fs/dblist.c
-index bbdb221d..64caf843 100644
---- a/lib/ext2fs/dblist.c
-+++ b/lib/ext2fs/dblist.c
-@@ -119,6 +119,42 @@ errcode_t ext2fs_copy_dblist(ext2_dblist src, ext2_dblist *dest)
- 	return 0;
+@@ -2659,6 +2671,14 @@ out:
+ 			thread_ctx->thread_info.et_group_start,
+ 			thread_ctx->thread_info.et_group_end,
+ 			thread_ctx->thread_info.et_inode_number);
++
++#ifdef DEBUG_THREADS
++	pthread_mutex_lock(&thread_debug->etd_mutex);
++	thread_debug->etd_finished_threads++;
++	pthread_cond_broadcast(&thread_debug->etd_cond);
++	pthread_mutex_unlock(&thread_debug->etd_mutex);
++#endif
++	 
+ 	return NULL;
  }
  
-+/*
-+ * Merge a directory block list @src to @dest
-+ */
-+errcode_t ext2fs_merge_dblist(ext2_dblist src, ext2_dblist dest)
-+{
-+	int			 src_count = src->count;
-+	int			 dest_count = dest->count;
-+	int			 size = src->size + dest->size;
-+	int			 size_entry = sizeof(struct ext2_db_entry2);
-+	struct ext2_db_entry2	*array, *array2;
-+	errcode_t		 retval;
+@@ -2672,6 +2692,12 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
+ 	struct e2fsck_thread_info	*tmp_pinfo;
+ 	int				 i;
+ 	e2fsck_t			 thread_ctx;
++#ifdef DEBUG_THREADS
++	struct e2fsck_thread_debug	 thread_debug =
++		{PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, 0};
 +
-+	if (src_count == 0)
-+		return 0;
-+
-+	if (src->sorted || dest->sorted)
-+		return EINVAL;
-+
-+	retval = ext2fs_get_array(size, size_entry, &array);
-+	if (retval)
-+		return retval;
-+
-+	array2 = array;
-+
-+	memcpy(array, src->list, src_count * size_entry);
-+	array += src_count;
-+	memcpy(array, dest->list, dest_count * size_entry);
-+	ext2fs_free_mem(&dest->list);
-+
-+	dest->list = array2;
-+	dest->count = src_count + dest_count;
-+	dest->size = size;
-+
-+	return 0;
-+}
-+
- /*
-  * Close a directory block list
-  *
-diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
-index d4f6031a..6c872ed1 100644
---- a/lib/ext2fs/ext2fs.h
-+++ b/lib/ext2fs/ext2fs.h
-@@ -1120,6 +1120,7 @@ extern errcode_t ext2fs_add_dir_block(ext2_dblist dblist, ext2_ino_t ino,
- 				      blk_t blk, int blockcnt);
- extern errcode_t ext2fs_add_dir_block2(ext2_dblist dblist, ext2_ino_t ino,
- 				       blk64_t blk, e2_blkcnt_t blockcnt);
-+extern errcode_t ext2fs_merge_dblist(ext2_dblist src, ext2_dblist dest);
- extern void ext2fs_dblist_sort(ext2_dblist dblist,
- 			       EXT2_QSORT_TYPE (*sortfunc)(const void *,
- 							   const void *));
++	thread_debug.etd_finished_threads = 0;
++#endif
+ 
+ 	retval = pthread_attr_init(&attr);
+ 	if (retval) {
+@@ -2692,6 +2718,9 @@ static int e2fsck_pass1_threads_start(struct e2fsck_thread_info **pinfo,
+ 	for (i = 0; i < num_threads; i++) {
+ 		tmp_pinfo = &infos[i];
+ 		tmp_pinfo->eti_thread_index = i;
++#ifdef DEBUG_THREADS
++		tmp_pinfo->eti_debug = &thread_debug;
++#endif
+ 		retval = e2fsck_pass1_thread_prepare(global_ctx, &thread_ctx,
+ 						     i, num_threads);
+ 		if (retval) {
 -- 
 2.25.2
 
