@@ -2,55 +2,55 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9888C1A2B7E
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 23:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6781A2B7F
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Apr 2020 23:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgDHVzt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Apr 2020 17:55:49 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:33510 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726692AbgDHVzt (ORCPT
+        id S1726706AbgDHVzu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 17:55:50 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:44642 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726701AbgDHVzt (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 17:55:49 -0400
-Received: by mail-pf1-f194.google.com with SMTP id c138so3733742pfc.0
-        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 14:55:48 -0700 (PDT)
+Received: by mail-pl1-f196.google.com with SMTP id h11so3023144plr.11
+        for <linux-ext4@vger.kernel.org>; Wed, 08 Apr 2020 14:55:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nn0lXFt10mUg8QLw79Kr79Dzre7UK9mmCWBrt3nmavU=;
-        b=r3mquR0Hdxfj8up8JzU/PxZ/4X58bl9OLg4somTtkwPkksHJIGc0e4thrmNOhroEyx
-         MlM+GU+Rec22UfjyjkYVRPx/oIAka0xxyUnySw6fZoJkXhj6/Vi8UfOIx+I9kqsJhwM6
-         w55GCZ4gKGZEaCg7xnD6SWelO6c9pMLa94JCK3YgVhyPrCGuobZ6PDsNealMv37XOEDk
-         5KeBtIezHbPNy+byr7EeUOTP7ftg2tOt9OocdUhTgBo3PyNqEtSvf2WaRFhwbXmCceYv
-         sbML0eJgbA+C8CWj0q7f6hagvlfvJwNbkVrlC8XMVQYxADXfj/u96c55Lvq9ACdcjWdv
-         H8yA==
+        bh=zp897UpkuL2UU+LkHaSYhEJOVKSoljAk865Ib3Ff/78=;
+        b=RyJSosRSQBz0v9NfmaelwsBdj9d33WWyeZdmckVnh3x/7oo5n9l5Q3NZ7Y3ghKBGmP
+         uf8JfPnvRf5K2qk+B8s1WDVBe01hSAklXaR2lJJ1zZ/MdaeqwinQzrWc8j3v3jal/WhC
+         9MlRRfjXtjFEuRmm96/DRLtrTmckuib69MD7kWTI581nd3ITxhxzUIBAOowCi3PhomKb
+         S9bXV6zQn/OuYB/p4XSzC9ONF10yVya8I7ouJi6Ibogmw8D9P4y8NCaOKBFH8B844dRT
+         cgiMa/C+HOxT2xApnVp2T/9Wq/Ptgv0JyuhgzFYJS1vCTYJ7G0xI0E1TO49vbT7GGkXb
+         +hQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nn0lXFt10mUg8QLw79Kr79Dzre7UK9mmCWBrt3nmavU=;
-        b=MaDguo83vm5MntTzqLiaB7Ze95oRoO2k4Nn8k7YcBxYqKU/NnkSRhtpMuyjwGNrPrd
-         R57WmPEkWXtTyXHWDQ7bAnSO3DnTiWSAN2xThoGZo5NXAj6XTkmNEO+O2Noats8rz4Td
-         yWpzhh5L7qpdZuOgpB+veA7lT4KWcH6uvltw5KViOZso+T2WSpafxhqceU8QWmOVBQaH
-         MWYo/bMG2EKRV6Gg3RvKkEjb6LLEKIk4bTHpBU1L6gsuPPxKeIJ6AXmSI5390MpHX7yG
-         h3vrVlNO/i4t9edV5zryyWUWwuvNE9yoz6SFnYzFF7NK8mXqUTjkz9IYyTPBv8VhsjMM
-         BIxA==
-X-Gm-Message-State: AGi0PuaWh2Bb8ogEW9sjw6wS6gmX4PW4JKjnTTDfrThrbSgvvJxpMdG5
-        Vda0pAS6A6iYRV1fczTYp7EmI8O7
-X-Google-Smtp-Source: APiQypJtgngKI3YSPR2H2KAhHTcc4aqxFcfutNGOJqa5jBThzTDScVCB7ysoA5jTGBIek9eIcn16Ww==
-X-Received: by 2002:a63:4463:: with SMTP id t35mr9024769pgk.412.1586382947456;
-        Wed, 08 Apr 2020 14:55:47 -0700 (PDT)
+        bh=zp897UpkuL2UU+LkHaSYhEJOVKSoljAk865Ib3Ff/78=;
+        b=tPituKCEXT2EU7Isjgy4IFrBhxxlK48dfM56bo9VPW+j3m6HzuJdPuH39mH93X2gpb
+         qaTXFRGkQHyLepGBMxXWwwMWfL97FFnVHJK80yfg62uYQKh/dPq9+cK05KoKNoAyZv+M
+         A43dYxyGIVZ1gIE7L0eypRvz//6JojF3vhRIPS0lsBDWENZGMQsA3+eOIqd4Ee52Pq+Y
+         +qR54/pDua1tqHia03O83LKEttYMmpgHIt/g9Nnoxz7zjmJstzowS+dxevJmPssSu7ga
+         M4VsWDdwjcdyje5QiSzRjI78GoPtksQB78WKHxow9KSLySYGq5XBUcfXRlz3t908kLL9
+         1cfA==
+X-Gm-Message-State: AGi0PuZa760T08EnDpWROLVmPatFVj4BjDH4aqGoPn0N+vSRHfR0cCWD
+        VRZXN34G+0gp5yN3e/aCjlv64yHO
+X-Google-Smtp-Source: APiQypIJaqK7Su+a2rX86UUKYBeLLZUjtLpCd9wxnfFGzX1z7B4YomW1aOFwvQJYjjtVWIANzrSu2g==
+X-Received: by 2002:a17:902:aa09:: with SMTP id be9mr7870207plb.341.1586382948457;
+        Wed, 08 Apr 2020 14:55:48 -0700 (PDT)
 Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:6271:607:aca0:b6f7])
-        by smtp.googlemail.com with ESMTPSA id z7sm450929pju.37.2020.04.08.14.55.46
+        by smtp.googlemail.com with ESMTPSA id z7sm450929pju.37.2020.04.08.14.55.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 08 Apr 2020 14:55:47 -0700 (PDT)
 From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 X-Google-Original-From: Harshad Shirwadkar <harshads@google.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     tytso@mit.edu, Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v6 04/20] jbd2: add fast commit block tracker variables
-Date:   Wed,  8 Apr 2020 14:55:14 -0700
-Message-Id: <20200408215530.25649-4-harshads@google.com>
+Subject: [PATCH v6 05/20] jbd2: disable fast commits if journal is empty
+Date:   Wed,  8 Apr 2020 14:55:15 -0700
+Message-Id: <20200408215530.25649-5-harshads@google.com>
 X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
 In-Reply-To: <20200408215530.25649-1-harshads@google.com>
 References: <20200408215530.25649-1-harshads@google.com>
@@ -63,112 +63,48 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-Add j_first_fc, j_last_fc and j_fc_offset variables to track fast commit
-area. j_first_fc and j_last_fc mark the start and the end of the area,
-while j_fc_offset points to the last used block in the region.
+If journal is empty, clear the fast commit flag from the on disk
+superblock. With this optimization, chances of running into backward
+compatibility issues are reduced.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/jbd2/journal.c    | 33 ++++++++++++++++++++++++++++-----
- include/linux/jbd2.h | 24 ++++++++++++++++++++++++
- 2 files changed, 52 insertions(+), 5 deletions(-)
+ fs/jbd2/journal.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 4e5d41d79b24..79f015f7bf54 100644
+index 79f015f7bf54..f8f55d0814ea 100644
 --- a/fs/jbd2/journal.c
 +++ b/fs/jbd2/journal.c
-@@ -1178,6 +1178,11 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 	if (!journal->j_wbuf)
- 		goto err_cleanup;
+@@ -1482,6 +1482,7 @@ int jbd2_journal_update_sb_log_tail(journal_t *journal, tid_t tail_tid,
+ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+ {
+ 	journal_superblock_t *sb = journal->j_superblock;
++	bool had_fast_commit = false;
  
-+	if (journal->j_fc_wbufsize > 0) {
-+		journal->j_wbufsize = n - journal->j_fc_wbufsize;
-+		journal->j_fc_wbuf = &journal->j_wbuf[journal->j_wbufsize];
+ 	BUG_ON(!mutex_is_locked(&journal->j_checkpoint_mutex));
+ 	lock_buffer(journal->j_sb_buffer);
+@@ -1495,9 +1496,20 @@ static void jbd2_mark_journal_empty(journal_t *journal, int write_op)
+ 
+ 	sb->s_sequence = cpu_to_be32(journal->j_tail_sequence);
+ 	sb->s_start    = cpu_to_be32(0);
++	if (jbd2_has_feature_fast_commit(journal)) {
++		/*
++		 * When journal is clean, no need to commit fast commit flag and
++		 * make file system incompatible with older kernels.
++		 */
++		jbd2_clear_feature_fast_commit(journal);
++		had_fast_commit = true;
 +	}
-+
- 	bh = getblk_unmovable(journal->j_dev, start, journal->j_blocksize);
- 	if (!bh) {
- 		pr_err("%s: Cannot get buffer for journal superblock\n",
-@@ -1321,11 +1326,20 @@ static int journal_reset(journal_t *journal)
- 	}
  
- 	journal->j_first = first;
--	journal->j_last = last;
+ 	jbd2_write_superblock(journal, write_op);
  
--	journal->j_head = first;
--	journal->j_tail = first;
--	journal->j_free = last - first;
-+	if (jbd2_has_feature_fast_commit(journal) &&
-+	    journal->j_fc_wbufsize > 0) {
-+		journal->j_last_fc = last;
-+		journal->j_last = last - journal->j_fc_wbufsize;
-+		journal->j_first_fc = journal->j_last + 1;
-+		journal->j_fc_off = 0;
-+	} else {
-+		journal->j_last = last;
-+	}
++	if (had_fast_commit)
++		jbd2_set_feature_fast_commit(journal);
 +
-+	journal->j_head = journal->j_first;
-+	journal->j_tail = journal->j_first;
-+	journal->j_free = journal->j_last - journal->j_first;
- 
- 	journal->j_tail_sequence = journal->j_transaction_sequence;
- 	journal->j_commit_sequence = journal->j_transaction_sequence - 1;
-@@ -1667,9 +1681,18 @@ static int load_superblock(journal_t *journal)
- 	journal->j_tail_sequence = be32_to_cpu(sb->s_sequence);
- 	journal->j_tail = be32_to_cpu(sb->s_start);
- 	journal->j_first = be32_to_cpu(sb->s_first);
--	journal->j_last = be32_to_cpu(sb->s_maxlen);
- 	journal->j_errno = be32_to_cpu(sb->s_errno);
- 
-+	if (jbd2_has_feature_fast_commit(journal) &&
-+	    journal->j_fc_wbufsize > 0) {
-+		journal->j_last_fc = be32_to_cpu(sb->s_maxlen);
-+		journal->j_last = journal->j_last_fc - journal->j_fc_wbufsize;
-+		journal->j_first_fc = journal->j_last + 1;
-+		journal->j_fc_off = 0;
-+	} else {
-+		journal->j_last = be32_to_cpu(sb->s_maxlen);
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 3bd1431cb222..1fc981cca479 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -910,6 +910,30 @@ struct journal_s
- 	 */
- 	unsigned long		j_last;
- 
-+	/**
-+	 * @j_first_fc:
-+	 *
-+	 * The block number of the first fast commit block in the journal
-+	 * [j_state_lock].
-+	 */
-+	unsigned long		j_first_fc;
-+
-+	/**
-+	 * @j_fc_off:
-+	 *
-+	 * Number of fast commit blocks currently allocated.
-+	 * [j_state_lock].
-+	 */
-+	unsigned long		j_fc_off;
-+
-+	/**
-+	 * @j_last_fc:
-+	 *
-+	 * The block number one beyond the last fast commit block in the journal
-+	 * [j_state_lock].
-+	 */
-+	unsigned long		j_last_fc;
-+
- 	/**
- 	 * @j_dev: Device where we store the journal.
- 	 */
+ 	/* Log is no longer empty */
+ 	write_lock(&journal->j_state_lock);
+ 	journal->j_flags |= JBD2_FLUSHED;
 -- 
 2.26.0.110.g2183baf09c-goog
 
