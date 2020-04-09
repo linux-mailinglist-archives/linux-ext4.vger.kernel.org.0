@@ -2,48 +2,26 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5351A2CDE
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Apr 2020 02:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF3D1A2D18
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Apr 2020 02:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgDIAao (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 8 Apr 2020 20:30:44 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:56744 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgDIAao (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 20:30:44 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0390IMNt174842;
-        Thu, 9 Apr 2020 00:30:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=jQG/1w0xTNT1IdsGIvukSAI4YR5qMLNQwW/1R5Bsumw=;
- b=tc/WovdJua7UyG4KKjek2PAL475AfRJSTmrgq5ez85YsEtiwKLB6x2EwRRCE3z61mw3m
- hHTTkLXlbxcP9cbgkWXDzbgZ+xL4QDCjG7WzB8LQ490bzv+Rq5DXUnr9drih2uy5Rc0V
- KAQ5lMpG0kMY0qQvwxSQ0m1NHfhqfX0FTobmSaagRjPwN78YOjFjWPPLYeQlKWaLticX
- /lTW3VTzSIy5l4oNe742VeQtFI//wDmTnMT9elmxBrgihkqbwybxYttA0D49g30eXQwT
- TZRR95UDKj1pSTCNOntqoVz/0L3oQkWRJVaSbAjqc0Do37AtAh9QtSmkkl5UwP0Zsq8g Og== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3091m3ekbn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 00:30:30 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0390Ha3L086905;
-        Thu, 9 Apr 2020 00:30:29 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3091m5u4sy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 00:30:29 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0390UNfv008886;
-        Thu, 9 Apr 2020 00:30:23 GMT
-Received: from localhost (/10.159.145.57)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 08 Apr 2020 17:30:23 -0700
-Date:   Wed, 8 Apr 2020 17:30:21 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+        id S1726597AbgDIAt3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 8 Apr 2020 20:49:29 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:47127 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726536AbgDIAt3 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 8 Apr 2020 20:49:29 -0400
+Received: from dread.disaster.area (pa49-180-167-53.pa.nsw.optusnet.com.au [49.180.167.53])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 925BD3A3A5F;
+        Thu,  9 Apr 2020 10:49:24 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jMLNh-00064c-Uo; Thu, 09 Apr 2020 10:49:21 +1000
+Date:   Thu, 9 Apr 2020 10:49:21 +1000
+From:   Dave Chinner <david@fromorbit.com>
 To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
+Cc:     linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Dan Williams <dan.j.williams@intel.com>,
         Christoph Hellwig <hch@lst.de>,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
@@ -51,7 +29,7 @@ Cc:     Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH V6 6/8] fs/xfs: Combine xfs_diflags_to_linux() and
  xfs_diflags_to_iflags()
-Message-ID: <20200409003021.GJ6742@magnolia>
+Message-ID: <20200409004921.GS24067@dread.disaster.area>
 References: <20200407182958.568475-1-ira.weiny@intel.com>
  <20200407182958.568475-7-ira.weiny@intel.com>
  <20200408020827.GI24067@dread.disaster.area>
@@ -64,18 +42,14 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20200409001206.GD664132@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- malwarescore=0 spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004090000
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004090000
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
+        a=2xmR08VVv0jSFCMMkhec0Q==:117 a=2xmR08VVv0jSFCMMkhec0Q==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10
+        a=VwQbUJbxAAAA:8 a=QyXUC8HyAAAA:8 a=7-415B0cAAAA:8 a=XzohEP87-a05f5LQuZEA:9
+        a=nMb1Ig4BaMjQqHx8:21 a=cqw_wM9ek9d8jNnC:21 a=CjuIK1q_8ugA:10
+        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
@@ -182,18 +156,38 @@ On Wed, Apr 08, 2020 at 05:12:06PM -0700, Ira Weiny wrote:
 > 	-- https://lore.kernel.org/lkml/20200403170338.GD29920@quack2.suse.cz/
 > 
 > Darrick also had similar ideas/comments.
-> 
+
+None of these consider how the admin is supposed to remove
+the flag once it is set. They all talk about issues that result
+from setting/clearing the flag inside the kernel, and don't consider
+the administration impacts of having an unclearable flag on disk
+that the kernel uses for operational policy decisions.
+
+Nobody said "hey, wait, if we don't allow the flag to be cleared
+once the flag is set, how do we actually remove it so the admin can
+stop overriding them globally with the mount option? If the kernel
+can't clear the flag, then what mechanism are we going to provide to
+let them clear it without interrupting production?"
+
 > Christoph did say:
 > 
 > 	"A reasonably smart application can try to evict itself."
 > 
 > 	-- https://lore.kernel.org/lkml/20200403072731.GA24176@lst.de/
-> 
-> Which I was unclear about???
-> 
-> Christoph does this mean you would be ok with changing the FS_XFLAG_DAX on disk
-> and letting S_DAX change later?
-> 
+
+I'd love to know how an unprivileged application can force the
+eviction of an inode from cache. If the application cannot evict
+files it is using reliably, then it's no better solution than
+drop_caches. And given that userspace has to take references to
+files to access them, by definition a file that userspace is trying
+to evict will have active references and hence cannot be evicted.
+
+However, if userspace can reliably evict inodes that it can access,
+then we have a timing attack vector that we need to address.  i.e.
+by now everyone here should know that user controlled cache eviction
+is the basic requirement for creating most OS and CPU level timing
+attacks....
+
 > > and how the
 > > tri-state mount option to "override" the on-disk flag could be done.
 > > 
@@ -203,11 +197,7 @@ On Wed, Apr 08, 2020 at 05:12:06PM -0700, Ira Weiny wrote:
 > 
 > No. This is not entirely true.  While I don't like the idea of having to copy
 > data (and I agree with your points) it is possible to do.
-
-But now that I think about it, that's really going to be a PITA, and
-probably more of a pain than if the two DAX flags are only loosely
-coupled.
-
+> 
 > > 
 > > 	1. stopping the app.
 > > 	2. stopping every other app using the filesystem
@@ -216,107 +206,18 @@ coupled.
 > 
 > I don't understand why we need to unmount and mount with dax=never?
 
-I've realized that if you can /never/ clear FS_XFLAG_DAX from a file,
-then the only way to force it off is dax=never (so the kernel ignores
-it) or move the fs to a non-pmem storage (so the kernel doesn't even
-try).
+1. IIUC your patches correctly, that's exactly how you implemented
+the dax=... mount option.
 
-> > 	5. mounting the filesystem
-> > 	6. restarting all apps.
-> > 
-> > It's a hard stop for everything using the filesystem, and it changes
-> > the runtime environment for all applications, not just the one that
-> > needs DAX turned off.  Not to mention that if it's the root
-> > filesystem that is using DAX, then it's a full system reboot needed
-> > to change the mount options.
-> > 
-> > IMO, this is a non-starter from a production point of view - testing
-> > and qualification of all applications rather than just the affected
-> > app is required to make this sort of change.  It simply does not
-> > follow the "minimal change to fix the problem" rules for managing
-> > issues in production environments.
-> > 
-> > So, pLease explain to me how this process:
-> > 
-> > 	1. stop the app
-> > 	2. remove inode flags via xfs_io
-> > 	3. run drop_caches
-> > 	4. start the app
-> > 
-> > is worse than requiring admins to unmount the filesystem to turn off
-> > DAX for an application.
-> 
-> Jan?  Christoph?
+2. If you don't unmount the filesystem and only require a remount,
+then changing the mount option has all the same "delayed effect"
+issues that changing the on-disk flag has. i.e. We can't change the
+in-memory inode state until the inode has been evicted from cache
+and a remount doesn't guarantee that cache eviction will succeed.
 
-But you're right, this thing keeps swirling around and around and around
-because we can't ever get to agreement on this.  Maybe I'll just become
-XFS BOFH MAINTAINER and make a decision like this:
+Cheers,
 
- 1 Applications must call statx to discover the current S_DAX state.
-
- 2 There exists an advisory file inode flag FS_XFLAG_DAX that is set based on
-   the parent directory FS_XFLAG_DAX inode flag.  This advisory flag can be
-   changed after file creation, but it does not immediately affect the S_DAX
-   state.
-
-   If FS_XFLAG_DAX is set and the fs is on pmem then it will enable S_DAX at
-   inode load time; if FS_XFLAG_DAX is not set, it will not enable S_DAX.
-   Unless overridden...
-
- 3 There exists a dax= mount option.
-
-   "-o dax=never" means "never set S_DAX, ignore FS_XFLAG_DAX"
-   "-o dax=always" means "always set S_DAX (at least on pmem), ignore FS_XFLAG_DAX"
-        "-o dax" by itself means "dax=always"
-   "-o dax=iflag" means "follow FS_XFLAG_DAX" and is the default
-
- 4 There exists an advisory directory inode flag FS_XFLAG_DAX that can be
-   changed at any time.  The flag state is copied into any files or
-   subdirectories when they are created within that directory.  If programs
-   require file access runs in S_DAX mode, they must create those files
-   inside a directory with FS_XFLAG_DAX set, or mount the fs with an
-   appropriate dax mount option.
-
- 5 Programs that require a specific file access mode (DAX or not DAX) must
-   do one of the following:
-
-   (a) create files in directories with the FS_XFLAG_DAX flag set as needed;
-
-   (b) have the administrator set an override via mount option;
-
-   (c) if they need to change a file's FS_XFLAG_DAX flag so that it does not
-       match the S_DAX state (as reported by statx), they must cause the
-       kernel to evict the inode from memory.  This can be done by:
-
-       i>   closing the file;
-       ii>  re-opening the file and using statx to see if the fs has
-            changed the S_DAX flag;
-       iii> if not, either unmount and remount the filesystem, or
-            closing the file and using drop_caches.
-
- 6 I no longer think it's too wild to require that users who want to
-   squeeze every last bit of performance out of the particular rough and
-   tumble bits of their storage also be exposed to the difficulties of
-   what happens when the operating system can't totally virtualize those
-   hardware capabilities.  Your high performance sports car is not a
-   Toyota minivan, as it were.
-
-I think (like Dave said) that if you set XFS_IDONTCACHE on the inode
-when you change the DAX flag, the VFS will kill the inode the instant
-the last user close()s the file.  Then 5.c.ii will actually work.
-
---D
-
-> > 
-> > > Furthermore, if we did want an interface like that why not allow
-> > > the on-disk flag to be set as well as cleared?
-> > 
-> > Well, why not - it's why I implemented the flag in the first place!
-> > The only problem we have here is how to safely change the in-memory
-> > DAX state, and that largely has nothing to do with setting/clearing
-> > the on-disk flag....
-> 
-> With the above change to xfs_diflags_to_iflags() I think we are ok here.
-> 
-> Ira
-> 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
