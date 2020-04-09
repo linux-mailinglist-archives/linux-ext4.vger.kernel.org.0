@@ -2,63 +2,113 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F7D1A3444
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Apr 2020 14:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7F81A34FB
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 Apr 2020 15:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgDIMla (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Apr 2020 08:41:30 -0400
-Received: from verein.lst.de ([213.95.11.211]:46544 "EHLO verein.lst.de"
+        id S1726875AbgDINhW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Apr 2020 09:37:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49866 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726571AbgDIMla (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 9 Apr 2020 08:41:30 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 213DF68C4E; Thu,  9 Apr 2020 14:41:28 +0200 (CEST)
-Date:   Thu, 9 Apr 2020 14:41:27 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dave Chinner <david@fromorbit.com>, Jan Kara <jack@suse.cz>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH V6 6/8] fs/xfs: Combine xfs_diflags_to_linux() and
- xfs_diflags_to_iflags()
-Message-ID: <20200409124127.GB18171@lst.de>
-References: <20200407182958.568475-1-ira.weiny@intel.com> <20200407182958.568475-7-ira.weiny@intel.com> <20200408020827.GI24067@dread.disaster.area> <20200408170923.GC569068@iweiny-DESK2.sc.intel.com> <20200408210236.GK24067@dread.disaster.area> <CAPcyv4gLvMSA9BypvWbYtv3xsK8o4+db3kvxBozUGAjr_sDDFQ@mail.gmail.com> <20200408235836.GQ24067@dread.disaster.area> <20200409002203.GE664132@iweiny-DESK2.sc.intel.com>
+        id S1726832AbgDINhW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 9 Apr 2020 09:37:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6FD8AAE30;
+        Thu,  9 Apr 2020 13:37:20 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DA5F71E124D; Thu,  9 Apr 2020 15:37:19 +0200 (CEST)
+Date:   Thu, 9 Apr 2020 15:37:19 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
+        adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        sandeen@sandeen.net
+Subject: Re: [RFC 1/1] ext4: Fix race in
+ ext4_mb_discard_group_preallocations()
+Message-ID: <20200409133719.GA18960@quack2.suse.cz>
+References: <cover.1586358980.git.riteshh@linux.ibm.com>
+ <2e231c371cc83357a6c9d55e4f7284f6c1fb1741.1586358980.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200409002203.GE664132@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <2e231c371cc83357a6c9d55e4f7284f6c1fb1741.1586358980.git.riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 05:22:03PM -0700, Ira Weiny wrote:
-> > You mean something like XFS_IDONTCACHE?
-> > 
-> > i.e. the functionality already exists in XFS to selectively evict an
-> > inode from cache when the last reference to it is dropped rather
-> > than let it go to the LRUs and hang around in memory.
-> > 
-> > That flag can be set when changing the on disk DAX flag, and we can
-> > tweak how it works so new cache hits don't clear it (as happens
-> > now). Hence the only thing that can prevent eviction are active
-> > references.
-> > 
-> > That means we'll still need to stop the application and drop_caches,
-> > because we need to close all the files and purge the dentries that
-> > hold references to the inode before it can be evicted.
-> 
-> That sounds like a great idea...
-> 
-> Jan?  Christoph?
+Hello Ritesh!
 
-Sounds ok.  Note that we could also pretty trivially lift
-XFS_IDONTCACHE to the VFS if we need to apply the same scheme to
-ext4.
+On Wed 08-04-20 22:24:10, Ritesh Harjani wrote:
+> @@ -3908,16 +3919,13 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+>  
+>  	mb_debug(1, "discard preallocation for group %u\n", group);
+>  
+> -	if (list_empty(&grp->bb_prealloc_list))
+> -		return 0;
+> -
+
+OK, so ext4_mb_discard_preallocations() is now going to lock every group
+when we try to discard preallocations. That's likely going to increase lock
+contention on the group locks if we are running out of free blocks when
+there are multiple processes trying to allocate blocks. I guess we don't
+care about the performace of this case too deeply but I'm not sure if the
+cost won't be too big - probably we should check how much the CPU usage
+with multiple allocating process trying to find free blocks grows...
+
+>  	bitmap_bh = ext4_read_block_bitmap(sb, group);
+>  	if (IS_ERR(bitmap_bh)) {
+>  		err = PTR_ERR(bitmap_bh);
+>  		ext4_set_errno(sb, -err);
+>  		ext4_error(sb, "Error %d reading block bitmap for %u",
+>  			   err, group);
+> -		return 0;
+> +		goto out_dbg;
+>  	}
+>  
+>  	err = ext4_mb_load_buddy(sb, group, &e4b);
+> @@ -3925,7 +3933,7 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+>  		ext4_warning(sb, "Error %d loading buddy information for %u",
+>  			     err, group);
+>  		put_bh(bitmap_bh);
+> -		return 0;
+> +		goto out_dbg;
+>  	}
+>  
+>  	if (needed == 0)
+> @@ -3967,9 +3975,15 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+>  		goto repeat;
+>  	}
+>  
+> -	/* found anything to free? */
+> +	/*
+> +	 * If this list is empty, then return the grp->bb_free. As someone
+> +	 * else may have freed the PAs and updated grp->bb_free.
+> +	 */
+>  	if (list_empty(&list)) {
+>  		BUG_ON(free != 0);
+> +		mb_debug(1, "Someone may have freed PA for this group %u, grp->bb_free %d\n",
+> +			 group, grp->bb_free);
+> +		free = grp->bb_free;
+>  		goto out;
+>  	}
+
+OK, but this still doesn't reliably fix the problem, does it? Because
+bb_free can be still zero and another process just has some extents to free
+in its local 'list' (e.g. because it has decided it doesn't have enough
+extents, some were busy and it decided to cond_resched()), so bb_free will
+increase from 0 only once these extents are freed.
+
+Honestly, I don't understand why ext4_mb_discard_group_preallocations()
+bothers with the local 'list'. Why doesn't it simply free the preallocation
+right away? And that would also basically fix your problem (well, it would
+still theoretically exist because there's still freeing of one extent
+potentially pending but I'm not sure if that will still be a practical
+issue).
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
