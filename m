@@ -2,82 +2,46 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB5F1A3D4E
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Apr 2020 02:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D13C1A3EA8
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Apr 2020 05:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbgDJA1n (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 9 Apr 2020 20:27:43 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:54089 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726867AbgDJA1n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Apr 2020 20:27:43 -0400
-Received: from dread.disaster.area (pa49-180-167-53.pa.nsw.optusnet.com.au [49.180.167.53])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 4E4F63A2DB2;
-        Fri, 10 Apr 2020 10:27:39 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jMhWD-00061P-Vl; Fri, 10 Apr 2020 10:27:37 +1000
-Date:   Fri, 10 Apr 2020 10:27:37 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V6 6/8] fs/xfs: Combine xfs_diflags_to_linux() and
- xfs_diflags_to_iflags()
-Message-ID: <20200410002737.GT24067@dread.disaster.area>
-References: <20200407182958.568475-1-ira.weiny@intel.com>
- <20200407182958.568475-7-ira.weiny@intel.com>
- <20200408020827.GI24067@dread.disaster.area>
- <20200408170923.GC569068@iweiny-DESK2.sc.intel.com>
- <20200408210236.GK24067@dread.disaster.area>
- <20200408220734.GA664132@iweiny-DESK2.sc.intel.com>
- <20200408232106.GO24067@dread.disaster.area>
- <20200409001206.GD664132@iweiny-DESK2.sc.intel.com>
- <20200409004921.GS24067@dread.disaster.area>
- <20200409124031.GA18171@lst.de>
+        id S1726647AbgDJDRy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 9 Apr 2020 23:17:54 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55472 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726598AbgDJDRy (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 9 Apr 2020 23:17:54 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03A3HROM029851
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 9 Apr 2020 23:17:27 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id F21C842013D; Thu,  9 Apr 2020 23:17:26 -0400 (EDT)
+Date:   Thu, 9 Apr 2020 23:17:26 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     yangerkun <yangerkun@huawei.com>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: using matching invalidatepage in ext4_writepage
+Message-ID: <20200410031726.GH45598@mit.edu>
+References: <20200226041002.13914-1-yangerkun@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200409124031.GA18171@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
-        a=2xmR08VVv0jSFCMMkhec0Q==:117 a=2xmR08VVv0jSFCMMkhec0Q==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10
-        a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8 a=QVMKFbu1P_vDNoMgm84A:9
-        a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200226041002.13914-1-yangerkun@huawei.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 02:40:31PM +0200, Christoph Hellwig wrote:
-> On Thu, Apr 09, 2020 at 10:49:21AM +1000, Dave Chinner wrote:
-> > > Christoph did say:
-> > > 
-> > > 	"A reasonably smart application can try to evict itself."
-> > > 
-> > > 	-- https://lore.kernel.org/lkml/20200403072731.GA24176@lst.de/
-> > 
-> > I'd love to know how an unprivileged application can force the
-> > eviction of an inode from cache.
+On Wed, Feb 26, 2020 at 12:10:02PM +0800, yangerkun wrote:
+> Run generic/388 with journal data mode sometimes may trigger the warning
+> in ext4_invalidatepage. Actually, we should use the matching invalidatepage
+> in ext4_writepage.
 > 
-> Where did the "unprivileged" suddenly come from?
+> Signed-off-by: yangerkun <yangerkun@huawei.com>
 
-I'm assuming that applications are being run without the root
-permissions needed to run drop_caches. i.e. the apps are
-unprivileged, and therefore can't brute force inode cache eviction.
-That's why I'm asking what mechanism these applications are using to
-evict inodes on demand without requiring elevated privileges,
-because I can't see how they'd acheive this...
+Applied, thanks.  Apologies for overlooking this patch earlier.
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+	 	  	    		    	 - Ted
