@@ -2,98 +2,54 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1B11A47C4
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Apr 2020 17:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819181A47D3
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Apr 2020 17:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726145AbgDJPMo (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 10 Apr 2020 11:12:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58340 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgDJPMo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 10 Apr 2020 11:12:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E3876AE70;
-        Fri, 10 Apr 2020 15:12:42 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 447C01E1246; Fri, 10 Apr 2020 17:12:42 +0200 (CEST)
-Date:   Fri, 10 Apr 2020 17:12:42 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org, Dmitry Monakhov <dmonakhov@openvz.org>,
-        Jan Kara <jack@suse.cz>, stable@vger.kernel.org
-Subject: Re: [PATCH] ext4: Do not zeroout extents beyond i_disksize
-Message-ID: <20200410151242.GA3922@quack2.suse.cz>
-References: <20200331105016.8674-1-jack@suse.cz>
+        id S1726145AbgDJPYS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 10 Apr 2020 11:24:18 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49040 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726049AbgDJPYS (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 10 Apr 2020 11:24:18 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03AFO7Cl032221
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Apr 2020 11:24:07 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D7A0A42013D; Fri, 10 Apr 2020 11:24:06 -0400 (EDT)
+Date:   Fri, 10 Apr 2020 11:24:06 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 0/4] e2fsprogs: fix and document the stable_inodes feature
+Message-ID: <20200410152406.GO45598@mit.edu>
+References: <20200401203239.163679-1-ebiggers@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200331105016.8674-1-jack@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200401203239.163679-1-ebiggers@kernel.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 31-03-20 12:50:16, Jan Kara wrote:
-> We do not want to create initialized extents beyond end of file because
-> for e2fsck it is impossible to distinguish them from a case of corrupted
-> file size / extent tree and so it complains like:
+On Wed, Apr 01, 2020 at 01:32:35PM -0700, Eric Biggers wrote:
+> Fix tune2fs to not allow cases where IV_INO_LBLK_64-encrypted files
+> (which can exist if the stable_inodes feature is set) could be broken:
 > 
-> Inode 12, i_size is 147456, should be 163840.  Fix? no
+> - Changing the filesystem's UUID
+> - Clearing the stable_inodes feature
 > 
-> Code in ext4_ext_convert_to_initialized() and
-> ext4_split_convert_extents() try to make sure it does not create
-> initialized extents beyond inode size however they check against
-> inode->i_size which is wrong. They should instead check against
-> EXT4_I(inode)->i_disksize which is the current inode size on disk.
-> That's what e2fsck is going to see in case of crash before all dirty
-> data is written. This bug manifests as generic/456 test failure (with
-> recent enough fstests where fsx got fixed to properly pass
-> FALLOC_KEEP_SIZE_FL flags to the kernel) when run with dioread_lock
-> mount option.
+> Also document the stable_inodes feature in the appropriate places.
 > 
-> CC: stable@vger.kernel.org
-> Fixes: 21ca087a3891 ("ext4: Do not zero out uninitialized extents beyond i_size")
-> Signed-off-by: Jan Kara <jack@suse.cz>
+> Eric Biggers (4):
+>   tune2fs: prevent changing UUID of fs with stable_inodes feature
+>   tune2fs: prevent stable_inodes feature from being cleared
+>   ext4.5: document the stable_inodes feature
+>   tune2fs.8: document the stable_inodes feature
 
-Ping Ted? Did this patch get lost?
+Thanks, I've applied this patch series.
 
-								Honza
-
-> ---
->  fs/ext4/extents.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 954013d6076b..c5e190fd4589 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3532,8 +3532,8 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->  		(unsigned long long)map->m_lblk, map_len);
->  
->  	sbi = EXT4_SB(inode->i_sb);
-> -	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
-> -		inode->i_sb->s_blocksize_bits;
-> +	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
-> +			>> inode->i_sb->s_blocksize_bits;
->  	if (eof_block < map->m_lblk + map_len)
->  		eof_block = map->m_lblk + map_len;
->  
-> @@ -3785,8 +3785,8 @@ static int ext4_split_convert_extents(handle_t *handle,
->  		  __func__, inode->i_ino,
->  		  (unsigned long long)map->m_lblk, map->m_len);
->  
-> -	eof_block = (inode->i_size + inode->i_sb->s_blocksize - 1) >>
-> -		inode->i_sb->s_blocksize_bits;
-> +	eof_block = (EXT4_I(inode)->i_disksize + inode->i_sb->s_blocksize - 1)
-> +			>> inode->i_sb->s_blocksize_bits;
->  	if (eof_block < map->m_lblk + map->m_len)
->  		eof_block = map->m_lblk + map->m_len;
->  	/*
-> -- 
-> 2.16.4
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+						- Ted
