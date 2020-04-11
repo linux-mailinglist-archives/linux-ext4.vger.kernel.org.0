@@ -2,117 +2,203 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E10E1A5671
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 Apr 2020 01:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0B41A5B9B
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 Apr 2020 01:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730866AbgDKXOp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 11 Apr 2020 19:14:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730859AbgDKXOo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:14:44 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E18AA20787;
-        Sat, 11 Apr 2020 23:14:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646884;
-        bh=r2CAjtKI/XKgDvM5JvEg5p3yRiVCI5Xx0km+oyUqumw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q8e6cATPF62TywjqSkHjgclF7WX+lq31yZKo0t35ejvwQDqIs2lWscQFgoNP0AIvz
-         m58wLZ1Mkn9/GyhN2LKf06l8KayUMkpPf9Ay+6s1++5i/uDJzVqRn7N928oRHiUJtX
-         csOCy3OZcKVVzBCwbMOGu43tgYOa7+v03hrYA6l4=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        Harish Sriram <harish@linux.ibm.com>, Jan Kara <jack@suse.cz>,
-        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 25/26] ext4: check for non-zero journal inum in ext4_calculate_overhead
-Date:   Sat, 11 Apr 2020 19:14:12 -0400
-Message-Id: <20200411231413.26911-25-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200411231413.26911-1-sashal@kernel.org>
-References: <20200411231413.26911-1-sashal@kernel.org>
+        id S1726814AbgDKX6e (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 11 Apr 2020 19:58:34 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33564 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726759AbgDKX6e (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 11 Apr 2020 19:58:34 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 44AE42A0399
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] unicode: Expose available encodings in sysfs
+Date:   Sat, 11 Apr 2020 19:58:23 -0400
+Message-Id: <20200411235823.2967193-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Ritesh Harjani <riteshh@linux.ibm.com>
+A filesystem configuration utility has no way to detect which filename
+encodings are supported by the running kernel.  This means, for
+instance, mkfs has no way to tell if the generated filesystem will be
+mountable in the current kernel or not.  Also, users have no easy way to
+know if they can update the encoding in their filesystems and still have
+something functional in the end.
 
-[ Upstream commit f1eec3b0d0a849996ebee733b053efa71803dad5 ]
+This exposes details of the encodings available in the unicode
+subsystem, to fill that gap.
 
-While calculating overhead for internal journal, also check
-that j_inum shouldn't be 0. Otherwise we get below error with
-xfstests generic/050 with external journal (XXX_LOGDEV config) enabled.
-
-It could be simply reproduced with loop device with an external journal
-and marking blockdev as RO before mounting.
-
-[ 3337.146838] EXT4-fs error (device pmem1p2): ext4_get_journal_inode:4634: comm mount: inode #0: comm mount: iget: illegal inode #
-------------[ cut here ]------------
-generic_make_request: Trying to write to read-only block-device pmem1p2 (partno 2)
-WARNING: CPU: 107 PID: 115347 at block/blk-core.c:788 generic_make_request_checks+0x6b4/0x7d0
-CPU: 107 PID: 115347 Comm: mount Tainted: G             L   --------- -t - 4.18.0-167.el8.ppc64le #1
-NIP:  c0000000006f6d44 LR: c0000000006f6d40 CTR: 0000000030041dd4
-<...>
-NIP [c0000000006f6d44] generic_make_request_checks+0x6b4/0x7d0
-LR [c0000000006f6d40] generic_make_request_checks+0x6b0/0x7d0
-<...>
-Call Trace:
-generic_make_request_checks+0x6b0/0x7d0 (unreliable)
-generic_make_request+0x3c/0x420
-submit_bio+0xd8/0x200
-submit_bh_wbc+0x1e8/0x250
-__sync_dirty_buffer+0xd0/0x210
-ext4_commit_super+0x310/0x420 [ext4]
-__ext4_error+0xa4/0x1e0 [ext4]
-__ext4_iget+0x388/0xe10 [ext4]
-ext4_get_journal_inode+0x40/0x150 [ext4]
-ext4_calculate_overhead+0x5a8/0x610 [ext4]
-ext4_fill_super+0x3188/0x3260 [ext4]
-mount_bdev+0x778/0x8f0
-ext4_mount+0x28/0x50 [ext4]
-mount_fs+0x74/0x230
-vfs_kern_mount.part.6+0x6c/0x250
-do_mount+0x2fc/0x1280
-sys_mount+0x158/0x180
-system_call+0x5c/0x70
-EXT4-fs (pmem1p2): no journal found
-EXT4-fs (pmem1p2): can't get journal size
-EXT4-fs (pmem1p2): mounted filesystem without journal. Opts: dax,norecovery
-
-Fixes: 3c816ded78bb ("ext4: use journal inode to determine journal overhead")
-Reported-by: Harish Sriram <harish@linux.ibm.com>
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20200316093038.25485-1-riteshh@linux.ibm.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 ---
- fs/ext4/super.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Documentation/ABI/testing/sysfs-fs-unicode | 13 +++++
+ fs/unicode/utf8-core.c                     | 64 ++++++++++++++++++++++
+ fs/unicode/utf8-norm.c                     | 18 ++++++
+ fs/unicode/utf8n.h                         |  5 ++
+ 4 files changed, 100 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-fs-unicode
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 75f71e52ffc77..66daa3bc40a6b 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3345,7 +3345,8 @@ int ext4_calculate_overhead(struct super_block *sb)
- 	 */
- 	if (sbi->s_journal && !sbi->journal_bdev)
- 		overhead += EXT4_NUM_B2C(sbi, sbi->s_journal->j_maxlen);
--	else if (ext4_has_feature_journal(sb) && !sbi->s_journal) {
-+	else if (ext4_has_feature_journal(sb) && !sbi->s_journal && j_inum) {
-+		/* j_inum for internal journal is non-zero */
- 		j_inode = ext4_get_journal_inode(sb, j_inum);
- 		if (j_inode) {
- 			j_blocks = j_inode->i_size >> sb->s_blocksize_bits;
+diff --git a/Documentation/ABI/testing/sysfs-fs-unicode b/Documentation/ABI/testing/sysfs-fs-unicode
+new file mode 100644
+index 000000000000..15c63367bb8e
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-fs-unicode
+@@ -0,0 +1,13 @@
++What:		/sys/fs/unicode/latest
++Date:		April 2020
++Contact:	Gabriel Krisman Bertazi <krisman@collabora.com>
++Description:
++		The latest version of the Unicode Standard supported by
++		this kernel
++
++What:		/sys/fs/unicode/encodings
++Date:		April 2020
++Contact:	Gabriel Krisman Bertazi <krisman@collabora.com>
++Description:
++		List of encodings and corresponding versions supported
++		by this kernel
+diff --git a/fs/unicode/utf8-core.c b/fs/unicode/utf8-core.c
+index 2a878b739115..7e0282707435 100644
+--- a/fs/unicode/utf8-core.c
++++ b/fs/unicode/utf8-core.c
+@@ -6,6 +6,7 @@
+ #include <linux/parser.h>
+ #include <linux/errno.h>
+ #include <linux/unicode.h>
++#include <linux/fs.h>
+ 
+ #include "utf8n.h"
+ 
+@@ -212,4 +213,67 @@ void utf8_unload(struct unicode_map *um)
+ }
+ EXPORT_SYMBOL(utf8_unload);
+ 
++static ssize_t latest_show(struct kobject *kobj,
++			   struct kobj_attribute *attr, char *buf)
++{
++	int l = utf8version_latest();
++
++	return snprintf(buf, PAGE_SIZE, "UTF-8 %d.%d.%d\n", UNICODE_AGE_MAJ(l),
++			UNICODE_AGE_MIN(l), UNICODE_AGE_REV(l));
++
++}
++static ssize_t encodings_show(struct kobject *kobj,
++			      struct kobj_attribute *attr, char *buf)
++{
++	int n;
++
++	n = snprintf(buf, PAGE_SIZE, "UTF-8:");
++	n += utf8version_list(buf + n, PAGE_SIZE - n);
++	n += snprintf(buf+n, PAGE_SIZE-n, "\n");
++
++	return n;
++}
++
++#define UCD_ATTR(x) \
++	static struct kobj_attribute x ## _attr = __ATTR_RO(x)
++
++UCD_ATTR(latest);
++UCD_ATTR(encodings);
++
++static struct attribute *ucd_attrs[] = {
++	&latest_attr.attr,
++	&encodings_attr.attr,
++	NULL,
++};
++static const struct attribute_group ucd_attr_group = {
++	.attrs = ucd_attrs,
++};
++static struct kobject *ucd_root;
++
++int __init ucd_init(void)
++{
++	int ret;
++
++	ucd_root = kobject_create_and_add("unicode", fs_kobj);
++	if (!ucd_root)
++		return -ENOMEM;
++
++	ret = sysfs_create_group(ucd_root, &ucd_attr_group);
++	if (ret) {
++		kobject_put(ucd_root);
++		ucd_root = NULL;
++		return ret;
++	}
++
++	return 0;
++}
++
++void __exit ucd_exit(void)
++{
++	kobject_put(ucd_root);
++}
++
++module_init(ucd_init);
++module_exit(ucd_exit)
++
+ MODULE_LICENSE("GPL v2");
+diff --git a/fs/unicode/utf8-norm.c b/fs/unicode/utf8-norm.c
+index 1d2d2e5b906a..f9ebba89a138 100644
+--- a/fs/unicode/utf8-norm.c
++++ b/fs/unicode/utf8-norm.c
+@@ -35,6 +35,24 @@ int utf8version_latest(void)
+ }
+ EXPORT_SYMBOL(utf8version_latest);
+ 
++int utf8version_list(char *buf, int len)
++{
++	int i = ARRAY_SIZE(utf8agetab) - 1;
++	int ret = 0;
++
++	/*
++	 * Print most relevant (latest) first.  No filesystem uses
++	 * unicode <= 12.0.0, so don't expose them to userspace.
++	 */
++	for (; utf8agetab[i] >= UNICODE_AGE(12, 0, 0); i--) {
++		ret += snprintf(buf+ret, len-ret, " %d.%d.%d",
++				UNICODE_AGE_MAJ(utf8agetab[i]),
++				UNICODE_AGE_MIN(utf8agetab[i]),
++				UNICODE_AGE_REV(utf8agetab[i]));
++	}
++	return ret;
++}
++
+ /*
+  * UTF-8 valid ranges.
+  *
+diff --git a/fs/unicode/utf8n.h b/fs/unicode/utf8n.h
+index 0acd530c2c79..5dea2c4af1f3 100644
+--- a/fs/unicode/utf8n.h
++++ b/fs/unicode/utf8n.h
+@@ -21,9 +21,14 @@
+ 	 ((unsigned int)(MIN) << UNICODE_MIN_SHIFT) |	\
+ 	 ((unsigned int)(REV)))
+ 
++#define UNICODE_AGE_MAJ(x) ((x) >> UNICODE_MAJ_SHIFT & 0xff)
++#define UNICODE_AGE_MIN(x) ((x) >> UNICODE_MIN_SHIFT & 0xff)
++#define UNICODE_AGE_REV(x) ((x) & 0xff)
++
+ /* Highest unicode version supported by the data tables. */
+ extern int utf8version_is_supported(u8 maj, u8 min, u8 rev);
+ extern int utf8version_latest(void);
++extern int utf8version_list(char *buf, int len);
+ 
+ /*
+  * Look for the correct const struct utf8data for a unicode version.
 -- 
-2.20.1
+2.26.0
 
