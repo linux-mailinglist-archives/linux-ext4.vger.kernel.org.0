@@ -2,119 +2,81 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C15B31A5DDD
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 Apr 2020 11:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0795C1A5E67
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 Apr 2020 14:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbgDLJkQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 12 Apr 2020 05:40:16 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:44265 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgDLJkQ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Sun, 12 Apr 2020 05:40:16 -0400
-Received: by mail-io1-f66.google.com with SMTP id h6so6427256iok.11;
-        Sun, 12 Apr 2020 02:40:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DudAws+5XXDrWI0GuFKZK0uggxlFAK8zrjJOHTOzHvQ=;
-        b=oLMyKEkCm7I/W/A1JgYH0WtXqiBHsTY1omrWGoWeTSLEN3CRY+SOrCzgj+j8dXbT3R
-         3V4g+VDYJ18ht3BvE76CVfsI9aLy76I2/saDHYI7TAhDY+aCf1QXeuoQj1ierGjq6yUs
-         6NQE12G79t/FQbSZxu5L7qhGKRdBhiaUilKHwcCkeiySozNDg8lYnZjgQrtJvlDnddT6
-         5lN9bG180nss/feExrMPMJyu1Zky5KVreWqzrGRNCg/KpPYRpunMIP2rzSN7Zwd+vEEv
-         jVTerEys3qTK+pzUep1SHCOz4GFY/BEi4vIKQGIetWtTLJpJKPeSuOg2/3EmE7j1Em/i
-         Z6Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DudAws+5XXDrWI0GuFKZK0uggxlFAK8zrjJOHTOzHvQ=;
-        b=CMCm94W+N1aTYLnPG2SsdfB+cYDdO1hrAU/UGJiIGIT+u8BV5EP7RvfqOdcJEXL/N7
-         tdJXZEkpIW/B1RytV4gKqBc/2BCYRfCGni9XrhgfaW3jj1863uUiQXAAvfFp+XuQ+gXC
-         EXAI/1kUVxZheQmPhQtJzF80lXHT8+HiswyAN9g80NNxlvVdbcf0+Rg54N+rkEkBRhyT
-         vJXHK7Ia8Od/O3zAEME0anGGSXgvMRH+tTNC+KgWobPCz7vMkwj6dxyjLAfQxVOHb6TC
-         1pfr2mZjpmvyPluExs8hccdvsJdYniKrXcmDL7F7L+dRL4xDuGuHKfdb4RaLjSZNY9xu
-         nzhg==
-X-Gm-Message-State: AGi0PuayF7XyUEYYFp1oD8ReCUidUjmJVD0Kbuas6kPdKhswlwjz8z2S
-        HlV/dqQfqbCUWF+cWDObkwUBcN5L00bk3bvlFCc=
-X-Google-Smtp-Source: APiQypKgib8dZi5NZWvrgJ3IJzahp49Bg5kAH7kyRnQiEqTUnZAvY9sH5N9xMqe9W2wkw6a4Vie0NTHrFFJZfCswvCI=
-X-Received: by 2002:a6b:cd4a:: with SMTP id d71mr11597681iog.5.1586684415253;
- Sun, 12 Apr 2020 02:40:15 -0700 (PDT)
+        id S1726689AbgDLMCF (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 12 Apr 2020 08:02:05 -0400
+Received: from mga04.intel.com ([192.55.52.120]:43357 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725903AbgDLMCF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 12 Apr 2020 08:02:05 -0400
+IronPort-SDR: DV8SGnOzTv5dLWq5Okw5eyA2/fNlYaEDV17mKHXXCGmgGkR/+TZF2kYxrb7uiOb8/cMXzvUoFG
+ g1iBG8Hyfxpg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2020 05:02:03 -0700
+IronPort-SDR: MjYZ86/QsXaBRn4BYskzJn7SZtC2x837CRFf5pLQWAHnD+L8vEuIA597bfzpymfK3VYAu3KPEx
+ rUYiWmvesTrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,374,1580803200"; 
+   d="scan'208";a="399363868"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 12 Apr 2020 05:02:01 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jNbJI-000Dci-Q7; Sun, 12 Apr 2020 20:02:00 +0800
+Date:   Sun, 12 Apr 2020 20:01:48 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     kbuild-all@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH] unicode: Expose available encodings in sysfs
+Message-ID: <202004121952.JzmoxRo5%lkp@intel.com>
+References: <20200411235823.2967193-1-krisman@collabora.com>
 MIME-Version: 1.0
-References: <00000000000048518b05a2fef23a@google.com> <20200411161439.GE21484@bombadil.infradead.org>
- <20200412091713.B7282A404D@d06av23.portsmouth.uk.ibm.com>
-In-Reply-To: <20200412091713.B7282A404D@d06av23.portsmouth.uk.ibm.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sun, 12 Apr 2020 12:40:04 +0300
-Message-ID: <CAOQ4uxg0Fmh58bvTKFyHDhAsmCtgbxpHr+mHYY=O9Wcuo_1JZQ@mail.gmail.com>
-Subject: Re: WARNING in iomap_apply
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     syzbot <syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Theodore Tso <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200411235823.2967193-1-krisman@collabora.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 12:17 PM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
->
->
->
-> On 4/11/20 9:44 PM, Matthew Wilcox wrote:
-> > On Sat, Apr 11, 2020 at 12:39:13AM -0700, syzbot wrote:
-> >> The bug was bisected to:
-> >>
-> >> commit d3b6f23f71670007817a5d59f3fbafab2b794e8c
-> >> Author: Ritesh Harjani <riteshh@linux.ibm.com>
-> >> Date:   Fri Feb 28 09:26:58 2020 +0000
-> >>
-> >>      ext4: move ext4_fiemap to use iomap framework
-> >>
-> >> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16c62a57e00000
-> >> final crash:    https://syzkaller.appspot.com/x/report.txt?x=15c62a57e00000
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=11c62a57e00000
-> >>
-> >> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> >> Reported-by: syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com
-> >> Fixes: d3b6f23f7167 ("ext4: move ext4_fiemap to use iomap framework")
-> >>
-> >> ------------[ cut here ]------------
-> >> WARNING: CPU: 0 PID: 7023 at fs/iomap/apply.c:51 iomap_apply+0xa0c/0xcb0 fs/iomap/apply.c:51
-> >
-> > This is:
-> >
-> >          if (WARN_ON(iomap.length == 0))
-> >                  return -EIO;
-> >
-> > and the call trace contains ext4_fiemap() so the syzbot bisection looks
-> > correct.
->
-> I think I know what could be going wrong here.
->
-> So the problem happens when we have overlayfs mounted on top of ext4.
-> Now overlayfs might be supporting max logical filesize which is more
-> than what ext4 could support (i.e. sb->s_maxbytes for overlayfs must
-> be greater than compared to ext4). So that's why the check in func
-> ioctl_fiemap -> fiemap_check_ranges() couldn't truncate to logical
-> filesize which the actual underlying filesystem supports.
->
-> @All,
-> Do you think we should make overlayfs also check for
-> fiemap_check_ranges()? Not as part of this fix, but as a later
-> addition to overlayfs? Please let me know, I could also make that patch.
->
+Hi Gabriel,
 
-Yes, I think that would be correct.
+I love your patch! Perhaps something to improve:
 
-Thanks,
-Amir.
+[auto build test WARNING on linus/master]
+[also build test WARNING on v5.6 next-20200412]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Gabriel-Krisman-Bertazi/unicode-Expose-available-encodings-in-sysfs/20200412-080010
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git b032227c62939b5481bcd45442b36dfa263f4a7c
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-188-g79f7ac98-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> fs/unicode/utf8-core.c:253:12: sparse: sparse: symbol 'ucd_init' was not declared. Should it be static?
+>> fs/unicode/utf8-core.c:271:13: sparse: sparse: symbol 'ucd_exit' was not declared. Should it be static?
+
+Please review and possibly fold the followup patch.
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
