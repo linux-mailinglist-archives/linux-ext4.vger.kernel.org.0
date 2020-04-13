@@ -1,168 +1,110 @@
 Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B7D1A63DD
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Apr 2020 09:55:04 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 94F3E1A65F0
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Apr 2020 13:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729529AbgDMHyt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Apr 2020 03:54:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:37460 "EHLO
+        id S1729146AbgDMLvX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Apr 2020 07:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbgDMHys (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Apr 2020 03:54:48 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9AEC008651;
-        Mon, 13 Apr 2020 00:54:48 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id n10so8549276iom.3;
-        Mon, 13 Apr 2020 00:54:48 -0700 (PDT)
+        with ESMTP id S1729178AbgDMLtu (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Apr 2020 07:49:50 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8DFC008620
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id t10so991602ilg.9
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fxdds2vPGS3N/102R6ExV/SBHS+w/11kI+QRFuDnruo=;
-        b=LdKv4BhmbHJcCbUnqYd7/INd7IRPACwNoGsA+AW7nLT9uuV9rGvs/8favMyv1eZwZZ
-         Wyw02zFL0pMC6j02qV9kT8QSNqmPtZ10h7PFXbT5HN15zveOABgeIRuO25KBGTEdiAT1
-         x+fL0JFJrzeYbeZskSJBRrxUz3qFqTNh86hPJVMHDz5cFc/H0OUTRTSN1i00o0YbK5wg
-         XpCljmKRIw2wEprR1kjab0mzXG0jJFavEUlRlUG4TUbxOD+R8DiHgf30ZT34el3EHw2k
-         WezgSHoiZfzKq6GQ3QX2pLsJDeZo5ptLjwoLtpAqUVAQyp/ljQwCsFR9EJAXAOz02qpj
-         AEvQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=qlKWExEze9qCqlwbpw1q4+d2Zjr4ETGVa64TcX+dTlk=;
+        b=HxOaFJZljqXQIeSLw7dw+YeTIVe76Yo57NkC3rYQjPPsruaWLZEetJYgTw7mDA7iYw
+         4KM/sQKuVdxfTyBgHy0QGrcgvhBAp/s2WR+7lhwMEms7c5U3ARzlxX4w9gHN6kyIVCTo
+         InVjjBwajQbgYMLlLr/dGAnfAOq75HLmi2bmQShdg5UrDH6ZNHdmpjirCjsFE3E+W3lI
+         4HPNdhIk9GHy3wOVy8qt79oLhQ3V0WJ+l2R8YfTk5No8OB207Mc1ssyzLdiNdU6iDIon
+         HSnId1sWR9JHq8BkscMOY+TVCS7WuDDdfTSRJRDObUGUY3pKdsd/NGq97n4qtv5szVJr
+         IEMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fxdds2vPGS3N/102R6ExV/SBHS+w/11kI+QRFuDnruo=;
-        b=mbber3RmO5vEhbxW1IBgM9Jl5yljeevnkMJFINzNL2XETtYiF3Ta9oUBu70I1whvAy
-         OstmP4E7+LWiJ4Z6o2bgOqhoiCii26I+PxjLZ0o/2gDIPWSL8xesTxmZxPTFTerAt5ws
-         qUzeY9mahyXCWod6UblpXXLKQhl24oL+QYEqVlKRW58hNIonbVkFI9KQ2cn0N4B/q8um
-         mbV9lONA8PksUgPR0sB4rU2C+Ff2jzsfYyJbJGEdihSGGBoGV1w331+Klz64l3AuhvvJ
-         3kaT4JTp2FNtwv7Pno+ya1FlbntLgo2/Z/58uC5KeM77+5gZIE3yPYwYKxeq7WJGxXEc
-         qH+g==
-X-Gm-Message-State: AGi0PuaGv8VKBDV3LNBHF9VSVWIEorJu6QTCGH9stP8Oxdz+iYm1/qz4
-        H9JPPRniiWrCUb9wBLcaYuQBzbrJeEO5wk+pPt8=
-X-Google-Smtp-Source: APiQypL5Eljk4TK/mwa+XDxgwgpIUGCujDIQ8sy3Yf0VdZARHKdYNLMpnF8pB675OD/IHE0afd4q+knrLM59ckuUgB0=
-X-Received: by 2002:a05:6602:1302:: with SMTP id h2mr15261121iov.186.1586764487632;
- Mon, 13 Apr 2020 00:54:47 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=qlKWExEze9qCqlwbpw1q4+d2Zjr4ETGVa64TcX+dTlk=;
+        b=mbC8TUQv1jpdwxSh+lxjisTfGBxB/s0i+Owi5v6wIEIqj7sz9wZo7j7SkZEupPdWiZ
+         Y5NDwboULpJIej+i9LMDxPmmaAR8HyoAINBdWDpbD1SPCdmSO6OpKhIOSTCqFL2QqZhr
+         +JqkvnkSnoyoaUqsN7zINANhuaei6V4VBZcs+vFdTvPDv12wv66e50z/raQSjEwwJ6sg
+         mKaaJK6r1zcf4hnH/1bZBZLOf5f3nAm2dXfQOyaOIxZQkA9rs5hXxDvPv4B9Kl5nWjyo
+         6k1jnBQ4TUjL42ETi6BHqRJO08nczBdh+OG28dcGWcOCjn0lR7OwaOQXpGFFLZ55tTqW
+         tchg==
+X-Gm-Message-State: AGi0PuY1WvrVGBqkE8cvgKqzKTzxEgQ5M6gMpa7GeX+sMYlETUagDLc/
+        rYtrLJx3667BmZ986xiNX6yDHKqQdMHAWVRhGQ==
+X-Google-Smtp-Source: APiQypJ8Xf5JZIaJmuakcegBHklRN/w3ObzOY1fG2hZhiF0393fUgrxf6qaSVcLD5pLEm/4TEQgoj9oGK8tQ5EeyGAU=
+X-Received: by 2002:a05:6e02:c8f:: with SMTP id b15mr14965961ile.35.1586778068198;
+ Mon, 13 Apr 2020 04:41:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200413054419.1560503-1-ira.weiny@intel.com>
-In-Reply-To: <20200413054419.1560503-1-ira.weiny@intel.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 13 Apr 2020 10:54:36 +0300
-Message-ID: <CAOQ4uxguVRysAuVEtQmPj+x=RDtDnGCtNeGvbvXNuvppwagwDg@mail.gmail.com>
-Subject: Re: [PATCH] xfs/XXX: Add xfs/XXX
-To:     ira.weiny@intel.com
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Received: by 2002:a02:5e49:0:0:0:0:0 with HTTP; Mon, 13 Apr 2020 04:41:07
+ -0700 (PDT)
+Reply-To: mgbenin903@gmail.com
+From:   Barrister Robert Richter UN-Attorney at Law Court-Benin 
+        <info.zennitbankplcnigerian@gmail.com>
+Date:   Mon, 13 Apr 2020 13:41:07 +0200
+Message-ID: <CABHzvrm3rWryg1yAooKeHwdxzrKD47PRAEfC+ay1A6i5z3Wdiw@mail.gmail.com>
+Subject: I have already sent you first payment US$5000.00 this morning through
+ MONEY Gram service.it is available to pick up in address now.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 9:06 AM <ira.weiny@intel.com> wrote:
->
-> From: Ira Weiny <ira.weiny@intel.com>
->
-> Add XXX to test per file DAX operations.
+ATTN DEAR BENEFICIARY.
 
-Please change commit title to "xfs: Add test for per file DAX operations"
-The title Add xfs/XXX is not useful even if XXX where a number.
+GOOD NEWS.
 
-But the kernel patch suggests that there is an intention to make
-this behavior also applicable to ext4??
-If that is the case I would recommend making this a generic tests
-which requires filesystem support for -o dax=XXX
+I have already sent you first payment US$5000.00 this morning through
+MONEY Gram service.it is available to pick up in address now.
 
->
-> The following is tested[*]
->
->  1. There exists an in-kernel access mode flag S_DAX that is set when
->     file accesses go directly to persistent memory, bypassing the page
->     cache.  Applications must call statx to discover the current S_DAX
->     state (STATX_ATTR_DAX).
->
->  2. There exists an advisory file inode flag FS_XFLAG_DAX that is
->     inherited from the parent directory FS_XFLAG_DAX inode flag at file
->     creation time.  This advisory flag can be set or cleared at any
->     time, but doing so does not immediately affect the S_DAX state.
->
->     Unless overridden by mount options (see (3)), if FS_XFLAG_DAX is set
->     and the fs is on pmem then it will enable S_DAX at inode load time;
->     if FS_XFLAG_DAX is not set, it will not enable S_DAX.
->
->  3. There exists a dax= mount option.
->
->     "-o dax=never"  means "never set S_DAX, ignore FS_XFLAG_DAX."
->
->     "-o dax=always" means "always set S_DAX (at least on pmem),
->                     and ignore FS_XFLAG_DAX."
->
->     "-o dax"        is an alias for "dax=always".
->
->     "-o dax=inode"  means "follow FS_XFLAG_DAX" and is the default.
->
->  4. There exists an advisory directory inode flag FS_XFLAG_DAX that can
->     be set or cleared at any time.  The flag state is copied into any
->     files or subdirectories when they are created within that directory.
->
->  5. Programs that require a specific file access mode (DAX or not DAX)
->     can do one of the following:
->
->     (a) Create files in directories that the FS_XFLAG_DAX flag set as
->         needed; or
->
->     (b) Have the administrator set an override via mount option; or
->
->     (c) Set or clear the file's FS_XFLAG_DAX flag as needed.  Programs
->         must then cause the kernel to evict the inode from memory.  This
->         can be done by:
->
->         i>  Closing the file and re-opening the file and using statx to
->             see if the fs has changed the S_DAX flag; and
->
->         ii> If the file still does not have the desired S_DAX access
->             mode, either unmount and remount the filesystem, or close
->             the file and use drop_caches.
->
->  6. It's not unreasonable that users who want to squeeze every last bit
->     of performance out of the particular rough and tumble bits of their
->     storage also be exposed to the difficulties of what happens when the
->     operating system can't totally virtualize those hardware
->     capabilities.  Your high performance sports car is not a Toyota
->     minivan, as it were.
->
-> [*] https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
->
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->
-> ---
-> Changes from v6 (kernel patch set):
->         Start versions tracking the kernel patch set.
->         Update for new requirements
->
-> Changes from V1 (xfstests patch):
->         Add test to ensure moved files preserve their flag
->         Check chattr of non-dax flags (check bug found by Darrick)
-> ---
-...
-> --- a/tests/xfs/group
-> +++ b/tests/xfs/group
-> @@ -511,3 +511,4 @@
->  511 auto quick quota
->  512 auto quick acl attr
->  513 auto mount
-> +999 auto
+So we advise you to Contact This Money Gram office to pick up your
+transfer $US5000.00 today.
 
-The test looks also 'quick'
 
-Thanks,
-Amir.
+Note that your compensation payment funds is total amount $US2.800,000
+Million Dollars.We have instructed the Money Gram Agent,Mr. James
+Gadner to keep sending the transfer to you daily, but the maximum
+amount you will be receiving everyday is US$5000.00. Contact Agent now
+to pick up your first payment $US5000.00 immediately.
+
+Contact Person, Mr. James Gadner, Dir. Money Gram Benin.
+Email: mgbenin903@gmail.com
+Telephone Numbers: +229 62819378/ +229 98477762
+
+HERE IS YOUR PAYMENT DETAILS FOR THE FIRST =C2=A3US5000.00 SENT TODAY.
+
+Track View Website link:
+https://secure.moneygram.com/track
+Sender=E2=80=99s First name: David
+Sender=E2=80=99s Last Name: Joiner
+Money Transfer Control Number (MTCN) (REFERENCE)# 26046856
+
+Contact the Mmoney Gram Urgent and reconfirm your address to the
+office before, they will allow you to pick up the transfer today.
+
+HERE IS WHAT REQUIRED OF YOU.
+
+YOUR FULL NAME---------
+ADDRESS--------------
+COUNTRY-----------------------------
+TELEPHONE NUMBERS-----------------
+
+Note, I paid the transfer fee for you, but only you are required to
+send to the office is $75 only,Been Your Payment File activation fee,
+Send once you contact the office,before you can able to pick up your
+transfer today.
+
+Let me know once you pick up first payment today.
+
+Barrister Robert Richter UN-Attorney at Law Court-Benin
