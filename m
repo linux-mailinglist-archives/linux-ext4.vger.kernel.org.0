@@ -2,29 +2,29 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31F21A6C9C
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Apr 2020 21:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9151A6CBD
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Apr 2020 21:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387965AbgDMTj3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Apr 2020 15:39:29 -0400
-Received: from mga17.intel.com ([192.55.52.151]:2346 "EHLO mga17.intel.com"
+        id S2388055AbgDMToe (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 13 Apr 2020 15:44:34 -0400
+Received: from mga14.intel.com ([192.55.52.115]:29540 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387935AbgDMTj2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 13 Apr 2020 15:39:28 -0400
-IronPort-SDR: SPlWXs2KrMSQxUnM6RnTorVE2e0tU99HnckO1Aw/31ckL/pmC1D3ttqdunzBpaQoof6rnbKwNF
- NMB6Xu8U1hNA==
+        id S2388034AbgDMToe (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 13 Apr 2020 15:44:34 -0400
+IronPort-SDR: Ae2xt0TSgl1+VtNBnJm1r1VQfZsEIvN07r3gehnhzZAmsi2zfYsfM3u8A0Ft3KGcmrI1CQJCtp
+ TBS5JqkT5Guw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 12:39:28 -0700
-IronPort-SDR: AtZlCvspS0QhHfNaeA4JpRFkstaWsTU7TlFEOda3Xn0ws7J1kIWaG8dnZOqg7oDZGJPh9Nsewu
- chVjMzIPBUww==
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 12:44:33 -0700
+IronPort-SDR: v+q6zP5bKPmHA88y6ZiO81BAf42afIm8n0sGOl7dCToUlDBSth6eGFpgqbf2PNOyTnsccQEh+U
+ NlVotKwkBJsQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,380,1580803200"; 
-   d="scan'208";a="245219538"
+   d="scan'208";a="256275264"
 Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Apr 2020 12:39:28 -0700
-Date:   Mon, 13 Apr 2020 12:39:28 -0700
+  by orsmga006.jf.intel.com with ESMTP; 13 Apr 2020 12:44:32 -0700
+Date:   Mon, 13 Apr 2020 12:44:32 -0700
 From:   Ira Weiny <ira.weiny@intel.com>
 To:     "Darrick J. Wong" <darrick.wong@oracle.com>
 Cc:     linux-kernel@vger.kernel.org,
@@ -34,142 +34,98 @@ Cc:     linux-kernel@vger.kernel.org,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V7 5/9] fs/xfs: Create function xfs_inode_enable_dax()
-Message-ID: <20200413193927.GC1649878@iweiny-DESK2.sc.intel.com>
+Subject: Re: [PATCH V7 7/9] fs: Define I_DONTCACNE in VFS layer
+Message-ID: <20200413194432.GD1649878@iweiny-DESK2.sc.intel.com>
 References: <20200413054046.1560106-1-ira.weiny@intel.com>
- <20200413054046.1560106-6-ira.weiny@intel.com>
- <20200413155251.GU6742@magnolia>
+ <20200413054046.1560106-8-ira.weiny@intel.com>
+ <20200413160929.GW6742@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413155251.GU6742@magnolia>
+In-Reply-To: <20200413160929.GW6742@magnolia>
 User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 08:52:51AM -0700, Darrick J. Wong wrote:
-> On Sun, Apr 12, 2020 at 10:40:42PM -0700, ira.weiny@intel.com wrote:
+On Mon, Apr 13, 2020 at 09:09:29AM -0700, Darrick J. Wong wrote:
+> > Subject: [PATCH V7 7/9] fs: Define I_DONTCACNE in VFS layer
+> 
+> CACNE -> CACHE.
+> 
+> On Sun, Apr 12, 2020 at 10:40:44PM -0700, ira.weiny@intel.com wrote:
 > > From: Ira Weiny <ira.weiny@intel.com>
 > > 
-> > xfs_inode_supports_dax() should reflect if the inode can support DAX not
-> > that it is enabled for DAX.
+> > DAX effective mode changes (setting of S_DAX) require inode eviction.
 > > 
-> > Change the use of xfs_inode_supports_dax() to reflect only if the inode
-> > and underlying storage support dax.
-> > 
-> > Add a new function xfs_inode_enable_dax() which reflects if the inode
-> > should be enabled for DAX.
+> > Define a flag which can be set to inform the VFS layer that inodes
+> > should not be cached.  This will expedite the eviction of those nodes
+> > requiring reload.
 > > 
 > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
 > > ---
-> > Changes from v6:
-> > 	Change enable checks to be sequential logic.
-> > 	Update for 2 bit tri-state option.
-> > 	Make 'static' consistent.
-> > 	Don't set S_DAX if !CONFIG_FS_DAX
+> >  include/linux/fs.h | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
 > > 
-> > Changes from v5:
-> > 	Update to reflect the new tri-state mount option
-> > 
-> > Changes from v3:
-> > 	Update functions and names to be more clear
-> > 	Update commit message
-> > 	Merge with
-> > 		'fs/xfs: Clean up DAX support check'
-> > 		don't allow IS_DAX() on a directory
-> > 		use STATIC macro for static
-> > 		make xfs_inode_supports_dax() static
-> > ---
-> >  fs/xfs/xfs_iops.c | 34 +++++++++++++++++++++++++++++-----
-> >  1 file changed, 29 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > index 81f2f93caec0..37bd15b55878 100644
-> > --- a/fs/xfs/xfs_iops.c
-> > +++ b/fs/xfs/xfs_iops.c
-> > @@ -1244,12 +1244,11 @@ xfs_inode_supports_dax(
-> >  	struct xfs_mount	*mp = ip->i_mount;
-> >  
-> >  	/* Only supported on non-reflinked files. */
-> > -	if (!S_ISREG(VFS_I(ip)->i_mode) || xfs_is_reflink_inode(ip))
-> > +	if (xfs_is_reflink_inode(ip))
-> >  		return false;
-> >  
-> > -	/* DAX mount option or DAX iflag must be set. */
-> > -	if (!(mp->m_flags & XFS_MOUNT_DAX) &&
-> > -	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX))
-> > +	/* Only supported on regular files. */
-> > +	if (!S_ISREG(VFS_I(ip)->i_mode))
-> >  		return false;
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index a818ced22961..e2db71d150c3 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -2151,6 +2151,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+> >   *
+> >   * I_CREATING		New object's inode in the middle of setting up.
+> >   *
+> > + * I_DONTCACHE		Do not cache the inode
 > 
-> Why separate the !S_ISREG and the is_reflink_inode checks?
+> "Do not cache" is a bit vague, how about:
 > 
-> The part about "Change the use of xfs_inode_supports_dax() to reflect
-> only if the inode and underlying storage support dax" would be a lot
-> more straightforward if this hunk only removed the DIFLAG2_DAX check.
+> "Evict the inode when the last reference is dropped.
+> Do not put it on the LRU list."
+> 
+> Also, shouldn't xfs_ioctl_setattr be setting I_DONTCACHE if someone
+> changes FS_XFLAG_DAX (and there are no mount option overrides)?  I don't
+> see any user of I_DONTCACHE in this series.
+> 
+> (Also also, please convert XFS_IDONTCACHE, since it's a straightforward
+> conversion...)
 
-Yes I could see that.  But for me the separate checks were more clear.  FWIW,
-Dave requested a similar pattern for xfs_inode_enable_dax()[*] and I think I
-agree with him.
+AFAICT XFS_IDONTCACHE is not exactly the same because it can be cleared if
+someone access' the inode before it is evicted.  Dave mentioned that we could
+probably do this but I was not 100% sure if that would change some other
+behavior.
 
-So I'm inclined to keep the checks like this.
+I'm happy to remove XFS_IDONTCACHE if we are sure that it will not regress
+something in the bulkstat code?  (I don't know exactly what bulkstat does so
+I'm not expert here...  Was just doing what seemed safest)
 
-Thanks for the reviews!
 Ira
 
-[*] https://lore.kernel.org/lkml/20200408000533.GG24067@dread.disaster.area/
-
-> 
-> The rest of the patch looks ok.
 > 
 > --D
 > 
+> > + *
+> >   * Q: What is the difference between I_WILL_FREE and I_FREEING?
+> >   */
+> >  #define I_DIRTY_SYNC		(1 << 0)
+> > @@ -2173,6 +2175,7 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+> >  #define I_WB_SWITCH		(1 << 13)
+> >  #define I_OVL_INUSE		(1 << 14)
+> >  #define I_CREATING		(1 << 15)
+> > +#define I_DONTCACHE		(1 << 16)
 > >  
-> >  	/* Block size must match page size */
-> > @@ -1260,6 +1259,31 @@ xfs_inode_supports_dax(
-> >  	return xfs_inode_buftarg(ip)->bt_daxdev != NULL;
+> >  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
+> >  #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
+> > @@ -3042,7 +3045,8 @@ extern int inode_needs_sync(struct inode *inode);
+> >  extern int generic_delete_inode(struct inode *inode);
+> >  static inline int generic_drop_inode(struct inode *inode)
+> >  {
+> > -	return !inode->i_nlink || inode_unhashed(inode);
+> > +	return !inode->i_nlink || inode_unhashed(inode) ||
+> > +		(inode->i_state & I_DONTCACHE);
 > >  }
 > >  
-> > +#ifdef CONFIG_FS_DAX
-> > +static bool
-> > +xfs_inode_enable_dax(
-> > +	struct xfs_inode *ip)
-> > +{
-> > +	if (ip->i_mount->m_flags & XFS_MOUNT_NODAX)
-> > +		return false;
-> > +	if (!xfs_inode_supports_dax(ip))
-> > +		return false;
-> > +	if (ip->i_mount->m_flags & XFS_MOUNT_DAX)
-> > +		return true;
-> > +	if (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)
-> > +		return true;
-> > +	return false;
-> > +}
-> > +#else /* !CONFIG_FS_DAX */
-> > +static bool
-> > +xfs_inode_enable_dax(
-> > +	struct xfs_inode *ip)
-> > +{
-> > +	return false;
-> > +}
-> > +#endif /* CONFIG_FS_DAX */
-> > +
-> > +
-> >  STATIC void
-> >  xfs_diflags_to_iflags(
-> >  	struct inode		*inode,
-> > @@ -1278,7 +1302,7 @@ xfs_diflags_to_iflags(
-> >  		inode->i_flags |= S_SYNC;
-> >  	if (flags & XFS_DIFLAG_NOATIME)
-> >  		inode->i_flags |= S_NOATIME;
-> > -	if (xfs_inode_supports_dax(ip))
-> > +	if (xfs_inode_enable_dax(ip))
-> >  		inode->i_flags |= S_DAX;
-> >  }
-> >  
+> >  extern struct inode *ilookup5_nowait(struct super_block *sb,
 > > -- 
 > > 2.25.1
 > > 
