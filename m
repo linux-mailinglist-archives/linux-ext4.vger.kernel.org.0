@@ -2,30 +2,41 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3B51A720E
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Apr 2020 05:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F17921A7223
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Apr 2020 06:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404967AbgDND45 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 13 Apr 2020 23:56:57 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57810 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728295AbgDND44 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 13 Apr 2020 23:56:56 -0400
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03E3uqR3027841
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Apr 2020 23:56:52 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 0758E42013D; Mon, 13 Apr 2020 23:56:52 -0400 (EDT)
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH] ext4: convert BUG_ON's to WARN_ON's in mballoc.c
-Date:   Mon, 13 Apr 2020 23:56:49 -0400
-Message-Id: <20200414035649.293164-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.24.1
+        id S1726024AbgDNEAp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Apr 2020 00:00:45 -0400
+Received: from mga09.intel.com ([134.134.136.24]:28534 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725947AbgDNEAo (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 14 Apr 2020 00:00:44 -0400
+IronPort-SDR: CfP8XdVa/CouJCM9TyOAvBdCUeYY7Qg3UsatnpdJwcrk4/TU8DLPv4PXZVurvX9Vn0gQ61ovch
+ upN7dwiL4wpQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 21:00:43 -0700
+IronPort-SDR: ac5JXNdae/2dlz5ZobRke4va6g04z64miNSjEFZk8tw3JwyRgewl6ftq6a23jBhVJldqOhhxVS
+ jhfgUcsf976A==
+X-IronPort-AV: E=Sophos;i="5.72,381,1580803200"; 
+   d="scan'208";a="253076242"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 21:00:43 -0700
+From:   ira.weiny@intel.com
+To:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: [PATCH RFC 0/8] Enable ext4 support for per-file/directory DAX operations
+Date:   Mon, 13 Apr 2020 21:00:22 -0700
+Message-Id: <20200414040030.1802884-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
@@ -33,44 +44,100 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-If the in-core buddy bitmap gets corrupted (or out of sync with the
-block bitmap), issue a WARN_ON and try to recover.  In most cases this
-involves skipping trying to allocate out of a particular block group.
-We can end up declaring the file system corrupted, which is fair,
-since the file system probably should be checked before we proceed any
-further.
+From: Ira Weiny <ira.weiny@intel.com>
 
-Google-Bug-Id: 34811296
-Google-Bug-Id: 34639169
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/mballoc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Enable the same per file DAX support to ext4 as was done for xfs.  This series
+builds and depends on the V7 series for xfs.[1]
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 87c85be4c12e..30d5d97548c4 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1943,7 +1943,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 	int free;
- 
- 	free = e4b->bd_info->bb_free;
--	BUG_ON(free <= 0);
-+	if (WARN_ON(free <= 0))
-+		return;
- 
- 	i = e4b->bd_info->bb_first_free;
- 
-@@ -1966,7 +1967,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 		}
- 
- 		mb_find_extent(e4b, i, ac->ac_g_ex.fe_len, &ex);
--		BUG_ON(ex.fe_len <= 0);
-+		if (WARN_ON(ex.fe_len <= 0))
-+			break;
- 		if (free < ex.fe_len) {
- 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
- 					"%d free clusters as per "
+To summarize:
+
+ 1. There exists an in-kernel access mode flag S_DAX that is set when
+    file accesses go directly to persistent memory, bypassing the page
+    cache.  Applications must call statx to discover the current S_DAX
+    state (STATX_ATTR_DAX).
+
+ 2. There exists an advisory file inode flag FS_XFLAG_DAX that is
+    inherited from the parent directory FS_XFLAG_DAX inode flag at file
+    creation time.  This advisory flag can be set or cleared at any
+    time, but doing so does not immediately affect the S_DAX state.
+
+    Unless overridden by mount options (see (3)), if FS_XFLAG_DAX is set
+    and the fs is on pmem then it will enable S_DAX at inode load time;
+    if FS_XFLAG_DAX is not set, it will not enable S_DAX.
+
+ 3. There exists a dax= mount option.
+
+    "-o dax=never"  means "never set S_DAX, ignore FS_XFLAG_DAX."
+
+    "-o dax=always" means "always set S_DAX (at least on pmem),
+                    and ignore FS_XFLAG_DAX."
+
+    "-o dax"        is an alias for "dax=always".
+
+    "-o dax=inode"  means "follow FS_XFLAG_DAX" and is the default.
+
+ 4. There exists an advisory directory inode flag FS_XFLAG_DAX that can
+    be set or cleared at any time.  The flag state is inherited by any files or
+    subdirectories when they are created within that directory.
+
+ 5. Programs that require a specific file access mode (DAX or not DAX)
+    can do one of the following:
+
+    (a) Create files in directories that the FS_XFLAG_DAX flag set as
+        needed; or
+
+    (b) Have the administrator set an override via mount option; or
+
+    (c) Set or clear the file's FS_XFLAG_DAX flag as needed.  Programs
+        must then cause the kernel to evict the inode from memory.  This
+        can be done by:
+
+        i>  Closing the file and re-opening the file and using statx to
+            see if the fs has changed the S_DAX flag; and
+
+        ii> If the file still does not have the desired S_DAX access
+            mode, either unmount and remount the filesystem, or close
+            the file and use drop_caches.
+
+ 6. It is expected that users who want to squeeze every last bit of performance
+    out of the particular rough and tumble bits of their storage will also be
+    exposed to the difficulties of what happens when the operating system can't
+    totally virtualize those hardware capabilities.  DAX is such a feature.
+
+
+[1] https://lore.kernel.org/lkml/20200407182958.568475-1-ira.weiny@intel.com/
+
+To: linux-kernel@vger.kernel.org
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+
+
+Ira Weiny (8):
+  fs/ext4: Narrow scope of DAX check in setflags
+  fs/ext4: Disallow verity if inode is DAX
+  fs/ext4: Disallow encryption if inode is DAX
+  fs/ext4: Introduce DAX inode flag
+  fs/ext4: Make DAX mount option a tri-state
+  fs/ext4: Update ext4_should_use_dax()
+  fs/ext4: Only change S_DAX on inode load
+  Documentation/dax: Update DAX enablement for ext4
+
+ Documentation/filesystems/dax.txt | 13 +------
+ fs/ext4/ext4.h                    | 16 ++++++---
+ fs/ext4/ialloc.c                  |  2 +-
+ fs/ext4/inode.c                   | 22 ++++++++----
+ fs/ext4/ioctl.c                   | 28 ++++++++++++---
+ fs/ext4/super.c                   | 57 +++++++++++++++++++++++--------
+ fs/ext4/verity.c                  |  5 ++-
+ 7 files changed, 99 insertions(+), 44 deletions(-)
+
 -- 
-2.24.1
+2.25.1
 
