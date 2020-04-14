@@ -2,270 +2,236 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8681A7666
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Apr 2020 10:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3121A77A5
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Apr 2020 11:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436922AbgDNIr5 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Apr 2020 04:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729391AbgDNIr4 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 14 Apr 2020 04:47:56 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F453C0A3BDC
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Apr 2020 01:47:56 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k15so5768602pfh.6
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Apr 2020 01:47:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=VuOx3h+povgTeH4hzjcBa3pdXLjO06jDS+uO2zecAT8=;
-        b=NXE556r5hrcVvQfPje3Zuw+QEqjnTuJJKjNh2c4V83lLP+g4vBe4Y4GdGsaFHdoYl5
-         9LOEFuv4OTn09BJH/qxGEFrPQl1rYOKX5sxs3iIZcJ2Xa5spmd+9EJ4DB5Ke+LqOVXwr
-         2Wp1vhSlOhjCP0xMnbWnsP2uK73s0NkddIirZZAHQ1Y6hkQLsBsSYYqLJvLBRC4kHB87
-         W8IMUmjzxVGDk9TygM+WuVQUV6t5OR9nByMsvixnypiep9AFKqoLJKskndk323zU7Q9e
-         XSsmQAZZYtfIgp7v25PkNwRkllVXHW82vMlLgnWrJldojXR3kTVk7SoATQSBzOczdDCw
-         sBrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=VuOx3h+povgTeH4hzjcBa3pdXLjO06jDS+uO2zecAT8=;
-        b=HUQDSc2X/RGqKEHIdJ8ZMk3mCgdOjtvwsP3WkbmWOLazJ0nVRJ63GPQkYGSFiqf0oE
-         h86Knp+0dkEYesgBQTiiesTLtbGxgcPrDLPQf3OKp9BH9Y2ofjcl3gHVdXM1PXWhaioX
-         KBNjg9xPCL0VGZDKCvGmMvXus2XTQN/OS+rqh38eb3JiRZmpkn5JR3+IWsObwpv15PQX
-         inZjWNRDJrOMgXkndasCCoAIFh09BgKoLuHA2TkpDHAlsvEu8KTGgm/XRd8LFubtMYp7
-         SgllSp6djHEfBqNMTco4jkNBmhWLRqXlhqx/JpYEO9fn6mEDt00+9CJStj9vClTKc2vY
-         GRXQ==
-X-Gm-Message-State: AGi0Pub/eZwuSWtWPdEuwym/SkPwR//IRkxvJhX5jlK66uCQ1sNvXrND
-        SIEPuuz2jh5hnNi4ooj6aZdstA==
-X-Google-Smtp-Source: APiQypJJRoSVE10HFP9gw+nX+qdvBoADA2l5Xh+yAiOYgXqjc24YDxdELHZnSHb8d9IeGfhfR6MQBg==
-X-Received: by 2002:aa7:818b:: with SMTP id g11mr660148pfi.85.1586854075498;
-        Tue, 14 Apr 2020 01:47:55 -0700 (PDT)
-Received: from [192.168.10.175] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id q200sm9816389pgq.68.2020.04.14.01.47.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 01:47:54 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andreas Dilger <adilger@dilger.ca>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] e2image: add option to ignore fs errors
-Date:   Tue, 14 Apr 2020 02:47:52 -0600
-Message-Id: <40B2CF84-E1EC-46FB-B788-F957638C8ED8@dilger.ca>
-References: <20200414072602.53290-1-artem.blagodarenko@hpe.com>
-Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
-        Alexey Lyashkov <alexey.lyashkov@hpe.com>
-In-Reply-To: <20200414072602.53290-1-artem.blagodarenko@hpe.com>
-To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>
-X-Mailer: iPhone Mail (17E255)
+        id S2437797AbgDNJsn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Apr 2020 05:48:43 -0400
+Received: from sender4-of-o54.zoho.com ([136.143.188.54]:21422 "EHLO
+        sender4-of-o54.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437780AbgDNJsm (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 14 Apr 2020 05:48:42 -0400
+X-Greylist: delayed 906 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Apr 2020 05:48:41 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1586856809; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=MZJmWu5+NaePmj3xKkNrelOBSAqhOmMUqlw7vbNqQj2QV4ioPCXdcVl1tosHvxGElVwo+Nf6R8ThRjSvy05uKU2DWX5w9iWmzSMk1RthlQV2/pA1s+QQmNTSvREanGPFh2XmXK5T4hfiniFR8zp0CCnDFf8Pye/Qfdos3VXWwuc=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1586856809; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=7CHfC3aii0lOzsMjiJtZ908m+rVPf0rWqs+qREDOWKk=; 
+        b=WJHQFY0drLO4+4Zc4StrC983gxDGq8F1EbBWTl9DXTGn7TlG7umJjN/nD6sQYEbi6StwAbuuvYVKrxSvTlC0Fxx/2vxnJtwbZIGDNuLC0P7Gw5jru4o8lJgQy97GrwCgLDA0OdGP7o4x5e8tyxHCOhapkMWZ8fCyPiLaw5UeUZA=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=anirudh@anirudhrb.com;
+        dmarc=pass header.from=<anirudh@anirudhrb.com> header.from=<anirudh@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586856809;
+        s=zoho; d=anirudhrb.com; i=anirudh@anirudhrb.com;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
+        bh=7CHfC3aii0lOzsMjiJtZ908m+rVPf0rWqs+qREDOWKk=;
+        b=oPYFwNXpi+zcKtg+uc+huVUIa8VoPFgN649jVOyF3Bwys/usMLb+VW6udRmKH84D
+        gK23gJCRZ9h2x8ViBb16YPSVRyCFd5WSF4/JB2226AcXzXSlBOk7VjeWmr3dwgsP6Ha
+        oWIBFdnFitFhMhkrJF2BZsZjapuQaStd4tgLhLxM=
+Received: from anirudhrb.com (106.51.106.83 [106.51.106.83]) by mx.zohomail.com
+        with SMTPS id 1586856807527506.16811547739223; Tue, 14 Apr 2020 02:33:27 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 15:03:13 +0530
+From:   Anirudh Rayabharam <anirudh@anirudhrb.com>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        kernel@collabora.com, Theodore Ts'o <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: Re: [PATCH v2] unicode: Expose available encodings in sysfs
+Message-ID: <20200414093313.GA22099@anirudhrb.com>
+References: <20200413165352.598877-1-krisman@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413165352.598877-1-krisman@collabora.com>
+X-ZohoMailClient: External
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-My suggestion would be to use a different option for this. The "-i"
-option is used for "inode ratio" for mke2fs, and also used by debugfs
-to read e2image file as input.
-
-Is it not OK to use "-f" for this also? That is normally the "force" option.=
-
-Alternately, does it make sense to start using "-E ignore_error" or
-similar extended option, so that there can be better fine-grained error
-handling added in the future?
-
-Cheers, Andreas
-
-> On Apr 14, 2020, at 01:26, Artem Blagodarenko <artem.blagodarenko@gmail.co=
-m> wrote:
->=20
-> =EF=BB=BFFrom: Alexey Lyashkov <alexey.lyashkov@hpe.com>
->=20
-> While running into RAID corruption issues e2image fails.
-> The problem is that having an e2image in this instance is really
-> helpful, no matter if there is an error so having the ability
-> to skip these errors messages to create an e2image seem warranted.
->=20
-> Add "-i" option to be more tolerant to fs errors while scanning inode
-> extents.
->=20
-> Signed-off-by: Alexey Lyashkov <alexey.lyashkov@hpe.com>
-> Signed-off-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
-> hpe-bug-id: LUS-1922
-> Change-Id: Ib79300656726839b1d3b7ee1dd0793c60679d296
+On Mon, Apr 13, 2020 at 12:53:52PM -0400, Gabriel Krisman Bertazi wrote:
+> A filesystem configuration utility has no way to detect which filename
+> encodings are supported by the running kernel.  This means, for
+> instance, mkfs has no way to tell if the generated filesystem will be
+> mountable in the current kernel or not.  Also, users have no easy way to
+> know if they can update the encoding in their filesystems and still have
+> something functional in the end.
+> 
+> This exposes details of the encodings available in the unicode
+> subsystem, to fill that gap.
+> 
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> 
 > ---
-> misc/e2image.8.in                |  3 +++
-> misc/e2image.c                   | 12 +++++++++---
-> tests/i_error_tolerance/expect.1 | 23 +++++++++++++++++++++++
-> tests/i_error_tolerance/expect.2 |  7 +++++++
-> tests/i_error_tolerance/script   | 38 ++++++++++++++++++++++++++++++++++++=
-++
-> 5 files changed, 80 insertions(+), 3 deletions(-)
-> create mode 100644 tests/i_error_tolerance/expect.1
-> create mode 100644 tests/i_error_tolerance/expect.2
-> create mode 100644 tests/i_error_tolerance/script
->=20
-> diff --git a/misc/e2image.8.in b/misc/e2image.8.in
-> index ef12486..0ac41d4 100644
-> --- a/misc/e2image.8.in
-> +++ b/misc/e2image.8.in
-> @@ -73,6 +73,9 @@ for the image file to be in a consistent state.  This re=
-quirement can be
-> overridden using the
-> .B \-f
-> option, but the resulting image file is very likely not going to be useful=
-.
-> +If you going to grab an image from a corrupted FS
-> +.B \-i
-> +option to ignore fs errors, allows to grab fs image from a corrupted fs.
-> .PP
-> If
-> .I image-file
-> diff --git a/misc/e2image.c b/misc/e2image.c
-> index 56183ad..13cc517 100644
-> --- a/misc/e2image.c
-> +++ b/misc/e2image.c
-> @@ -78,6 +78,7 @@ static char move_mode;
-> static char show_progress;
-> static char *check_buf;
-> static int skipped_blocks;
-> +static int fs_error_tolerant =3D 0;
->=20
-> static blk64_t align_offset(blk64_t offset, unsigned int n)
-> {
-> @@ -1368,7 +1369,8 @@ static void write_raw_image_file(ext2_filsys fs, int=
- fd, int type, int flags,
->                com_err(program_name, retval,
->                    _("while iterating over inode %u"),
->                    ino);
-> -                exit(1);
-> +                if (fs_error_tolerant =3D=3D 0)
-> +                    exit(1);
->            }
->        } else {
->            if ((inode.i_flags & EXT4_EXTENTS_FL) ||
-> @@ -1381,7 +1383,8 @@ static void write_raw_image_file(ext2_filsys fs, int=
- fd, int type, int flags,
->                if (retval) {
->                    com_err(program_name, retval,
->                    _("while iterating over inode %u"), ino);
-> -                    exit(1);
-> +                    if (fs_error_tolerant =3D=3D 0)
-> +                        exit(1);
->                }
->            }
->        }
-> @@ -1507,7 +1510,7 @@ int main (int argc, char ** argv)
->    if (argc && *argv)
->        program_name =3D *argv;
->    add_error_table(&et_ext2_error_table);
-> -    while ((c =3D getopt(argc, argv, "b:B:nrsIQafo:O:pc")) !=3D EOF)
-> +    while ((c =3D getopt(argc, argv, "b:B:nrsIQafo:O:pci")) !=3D EOF)
->        switch (c) {
->        case 'b':
->            superblock =3D strtoull(optarg, NULL, 0);
-> @@ -1552,6 +1555,9 @@ int main (int argc, char ** argv)
->        case 'c':
->            check =3D 1;
->            break;
-> +        case 'i':
-> +            fs_error_tolerant =3D 1;
-> +            break;
->        default:
->            usage();
->        }
-> diff --git a/tests/i_error_tolerance/expect.1 b/tests/i_error_tolerance/ex=
-pect.1
+> Changes since v1:
+>   - Make init functions static. (lkp)
+> 
+>  Documentation/ABI/testing/sysfs-fs-unicode | 13 +++++
+>  fs/unicode/utf8-core.c                     | 64 ++++++++++++++++++++++
+>  fs/unicode/utf8-norm.c                     | 18 ++++++
+>  fs/unicode/utf8n.h                         |  5 ++
+>  4 files changed, 100 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-fs-unicode
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-unicode b/Documentation/ABI/testing/sysfs-fs-unicode
 > new file mode 100644
-> index 0000000..8d5ffa2
+> index 000000000000..15c63367bb8e
 > --- /dev/null
-> +++ b/tests/i_error_tolerance/expect.1
-> @@ -0,0 +1,23 @@
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Inode 12 has illegal block(s).  Clear? yes
+> +++ b/Documentation/ABI/testing/sysfs-fs-unicode
+> @@ -0,0 +1,13 @@
+> +What:		/sys/fs/unicode/latest
+> +Date:		April 2020
+> +Contact:	Gabriel Krisman Bertazi <krisman@collabora.com>
+> +Description:
+> +		The latest version of the Unicode Standard supported by
+> +		this kernel
 > +
-> +Illegal indirect block (1000000) in inode 12.  CLEARED.
-> +Inode 12, i_blocks is 34, should be 24.  Fix? yes
+> +What:		/sys/fs/unicode/encodings
+> +Date:		April 2020
+> +Contact:	Gabriel Krisman Bertazi <krisman@collabora.com>
+> +Description:
+> +		List of encodings and corresponding versions supported
+> +		by this kernel
+> diff --git a/fs/unicode/utf8-core.c b/fs/unicode/utf8-core.c
+> index 2a878b739115..b48e13e823a5 100644
+> --- a/fs/unicode/utf8-core.c
+> +++ b/fs/unicode/utf8-core.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/parser.h>
+>  #include <linux/errno.h>
+>  #include <linux/unicode.h>
+> +#include <linux/fs.h>
+>  
+>  #include "utf8n.h"
+>  
+> @@ -212,4 +213,67 @@ void utf8_unload(struct unicode_map *um)
+>  }
+>  EXPORT_SYMBOL(utf8_unload);
+>  
+> +static ssize_t latest_show(struct kobject *kobj,
+> +			   struct kobj_attribute *attr, char *buf)
+> +{
+> +	int l = utf8version_latest();
 > +
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +Block bitmap differences:  -(31--34) -37
-> +Fix? yes
+> +	return snprintf(buf, PAGE_SIZE, "UTF-8 %d.%d.%d\n", UNICODE_AGE_MAJ(l),
+> +			UNICODE_AGE_MIN(l), UNICODE_AGE_REV(l));
 > +
-> +Free blocks count wrong for group #0 (62, counted=3D67).
-> +Fix? yes
+> +}
+> +static ssize_t encodings_show(struct kobject *kobj,
+> +			      struct kobj_attribute *attr, char *buf)
+> +{
+> +	int n;
 > +
-> +Free blocks count wrong (62, counted=3D67).
-> +Fix? yes
-> +
-> +
-> +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-> +test_filesys: 12/16 files (8.3% non-contiguous), 33/100 blocks
-> +Exit status is 1
-> diff --git a/tests/i_error_tolerance/expect.2 b/tests/i_error_tolerance/ex=
-pect.2
-> new file mode 100644
-> index 0000000..7fd4231
-> --- /dev/null
-> +++ b/tests/i_error_tolerance/expect.2
-> @@ -0,0 +1,7 @@
-> +Pass 1: Checking inodes, blocks, and sizes
-> +Pass 2: Checking directory structure
-> +Pass 3: Checking directory connectivity
-> +Pass 4: Checking reference counts
-> +Pass 5: Checking group summary information
-> +test_filesys: 12/16 files (8.3% non-contiguous), 33/100 blocks
-> +Exit status is 0
-> diff --git a/tests/i_error_tolerance/script b/tests/i_error_tolerance/scri=
-pt
-> new file mode 100644
-> index 0000000..aeb4581
-> --- /dev/null
-> +++ b/tests/i_error_tolerance/script
-> @@ -0,0 +1,38 @@
-> +if test -x $E2IMAGE_EXE; then
-> +if test -x $DEBUGFS_EXE; then
-> +
-> +SKIP_GUNZIP=3D"true"
-> +
-> +TEST_DATA=3D"$test_name.tmp"
-> +dd if=3D/dev/urandom of=3D$TEST_DATA bs=3D1k count=3D16 > /dev/null 2>&1=20=
+> +	n = snprintf(buf, PAGE_SIZE, "UTF-8:");
+> +	n += utf8version_list(buf + n, PAGE_SIZE - n);
+> +	n += snprintf(buf+n, PAGE_SIZE-n, "\n");
+
+Spaces before and after the '+' and '-' operators?
+
+	n += snprintf(buf + n, PAGE_SIZE - n, "\n");
+
+Thanks,
+Anirudh
 
 > +
-> +dd if=3D/dev/zero of=3D$TMPFILE bs=3D1k count=3D100 > /dev/null 2>&1
-> +$MKE2FS -Ft ext4 -O ^extents $TMPFILE > /dev/null 2>&1
-> +$DEBUGFS -w $TMPFILE << EOF  > /dev/null 2>&1
-> +write $TEST_DATA testfile
-> +set_inode_field testfile block[IND] 1000000
-> +q
-> +EOF
+> +	return n;
+> +}
 > +
-> +$E2IMAGE -r $TMPFILE $TMPFILE.back
+> +#define UCD_ATTR(x) \
+> +	static struct kobj_attribute x ## _attr = __ATTR_RO(x)
 > +
-> +ls -l $TMPFILE.back
+> +UCD_ATTR(latest);
+> +UCD_ATTR(encodings);
 > +
-> +$E2IMAGE -i -r $TMPFILE $TMPFILE.back
+> +static struct attribute *ucd_attrs[] = {
+> +	&latest_attr.attr,
+> +	&encodings_attr.attr,
+> +	NULL,
+> +};
+> +static const struct attribute_group ucd_attr_group = {
+> +	.attrs = ucd_attrs,
+> +};
+> +static struct kobject *ucd_root;
 > +
-> +ls -l $TMPFILE.back
+> +static int __init ucd_init(void)
+> +{
+> +	int ret;
 > +
-> +mv $TMPFILE.back $TMPFILE
+> +	ucd_root = kobject_create_and_add("unicode", fs_kobj);
+> +	if (!ucd_root)
+> +		return -ENOMEM;
 > +
-> +. $cmd_dir/run_e2fsck
+> +	ret = sysfs_create_group(ucd_root, &ucd_attr_group);
+> +	if (ret) {
+> +		kobject_put(ucd_root);
+> +		ucd_root = NULL;
+> +		return ret;
+> +	}
 > +
-> +rm -f $TEST_DATA
+> +	return 0;
+> +}
 > +
-> +unset E2FSCK_TIME TEST_DATA
+> +static void __exit ucd_exit(void)
+> +{
+> +	kobject_put(ucd_root);
+> +}
 > +
-> +else #if test -x $DEBUGFS_EXE; then
-> +    echo "$test_name: $test_description: skipped"
-> +fi
-> +else #if test -x $E2IMAGE_EXE; then
-> +    echo "$test_name: $test_description: skipped"
-> +fi
-> --=20
-> 1.8.3.1
->=20
+> +module_init(ucd_init);
+> +module_exit(ucd_exit)
+> +
+>  MODULE_LICENSE("GPL v2");
+> diff --git a/fs/unicode/utf8-norm.c b/fs/unicode/utf8-norm.c
+> index 1d2d2e5b906a..f9ebba89a138 100644
+> --- a/fs/unicode/utf8-norm.c
+> +++ b/fs/unicode/utf8-norm.c
+> @@ -35,6 +35,24 @@ int utf8version_latest(void)
+>  }
+>  EXPORT_SYMBOL(utf8version_latest);
+>  
+> +int utf8version_list(char *buf, int len)
+> +{
+> +	int i = ARRAY_SIZE(utf8agetab) - 1;
+> +	int ret = 0;
+> +
+> +	/*
+> +	 * Print most relevant (latest) first.  No filesystem uses
+> +	 * unicode <= 12.0.0, so don't expose them to userspace.
+> +	 */
+> +	for (; utf8agetab[i] >= UNICODE_AGE(12, 0, 0); i--) {
+> +		ret += snprintf(buf+ret, len-ret, " %d.%d.%d",
+> +				UNICODE_AGE_MAJ(utf8agetab[i]),
+> +				UNICODE_AGE_MIN(utf8agetab[i]),
+> +				UNICODE_AGE_REV(utf8agetab[i]));
+> +	}
+> +	return ret;
+> +}
+> +
+>  /*
+>   * UTF-8 valid ranges.
+>   *
+> diff --git a/fs/unicode/utf8n.h b/fs/unicode/utf8n.h
+> index 0acd530c2c79..5dea2c4af1f3 100644
+> --- a/fs/unicode/utf8n.h
+> +++ b/fs/unicode/utf8n.h
+> @@ -21,9 +21,14 @@
+>  	 ((unsigned int)(MIN) << UNICODE_MIN_SHIFT) |	\
+>  	 ((unsigned int)(REV)))
+>  
+> +#define UNICODE_AGE_MAJ(x) ((x) >> UNICODE_MAJ_SHIFT & 0xff)
+> +#define UNICODE_AGE_MIN(x) ((x) >> UNICODE_MIN_SHIFT & 0xff)
+> +#define UNICODE_AGE_REV(x) ((x) & 0xff)
+> +
+>  /* Highest unicode version supported by the data tables. */
+>  extern int utf8version_is_supported(u8 maj, u8 min, u8 rev);
+>  extern int utf8version_latest(void);
+> +extern int utf8version_list(char *buf, int len);
+>  
+>  /*
+>   * Look for the correct const struct utf8data for a unicode version.
+> -- 
+> 2.26.0
+> 
