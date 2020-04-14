@@ -2,62 +2,62 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6551AA92B
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 15:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBC41AA941
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 16:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2636317AbgDONzM (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Apr 2020 09:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33510 "EHLO
+        id S2636349AbgDON6L (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Apr 2020 09:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2633760AbgDONzI (ORCPT
+        by vger.kernel.org with ESMTP id S2633783AbgDON6I (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Apr 2020 09:55:08 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4632AC061A0C
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 06:55:08 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id d17so12364077wrg.11
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 06:55:08 -0700 (PDT)
+        Wed, 15 Apr 2020 09:58:08 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542B2C061A0C;
+        Wed, 15 Apr 2020 06:58:08 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id g12so11354973wmh.3;
+        Wed, 15 Apr 2020 06:58:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=IYcapwzeMColCF8KnFlRv/qYBOctw6ROjcF5rd7fgio=;
-        b=L4NZs9TE/Sq/IuYG9by7tqgcKwdDZdhyJYlHEM763vaPLeIuLZi68v7mE3GoFIO9bU
-         5y0P8Gt1FxloMsNujyLbNe3MvWXIPGFLIIpjVmzVcoeqSMGJ3XbT5JNot1Jf03jZOcxx
-         ZNyseQcX2GTac6GGMQFitlkiUD69SgsJapwfaVp5KUjdwEBt+vDfLWOm7UYm+wohOK0Q
-         J8/TULf4OVVPQjD5OWihd9J4hkyRyf4voJYnRuxmmX71XCImL5l+FFwHAdeBG0f4Urdn
-         1J7rLfs9gNjtTMhzLFO2zX+BU2KTkVlehZmvq7XCD67gmz2zDmMGXedl2DOHmBZMSWNX
-         EEuQ==
+        b=BIt+S2KEHsJrN+2c/rX9t0sOuPITtIttaQUX75Y/fkAHbIiDffpG5iIYLP9bDrlR9s
+         AzDFJkC1m9YTrni0GQjXHE1k3TgziQ8wxetjO0ToSUZoT9tFoycIkxNBL0ozicaZmGzu
+         2Mv5UG0V0MAjsPkCJrJvhiJT9oFVmThFZrmSjJ8UK8+qX5pEb2DpP0DSfAt+Hq3GKmLo
+         AR0k6NM2aodFiPLuw8X146A9Bbw4OwrmCvikA+guFD7asFNyA+Ngev6GXzorE2t1Qh6Y
+         yKVzUiO8UysDxpZi8GODv84vGgv4pZnc1Tn2r2jCT6xByTf+TeLHE8oKo6RcKCDhxXDb
+         7VOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=IYcapwzeMColCF8KnFlRv/qYBOctw6ROjcF5rd7fgio=;
-        b=aFpyfPDCcPmoypdM7yIB4Hs9H3RNRO/cCE2FxEbA2nuhSwk6QHpqtFdAVWFg63TlY7
-         lohY9AlP1m6Qefhl025pBp0rRVhcf/Q9cnlzTMK+JqoTcYG5tYbpnNIIf7YwsQx/J1NG
-         UjvjHKcpFa38ohcCaN/M7vTpRsqDuOwUpBGWLCsPMlCi/xFrnofzNvCPFBHJEQ39zdVQ
-         jGOGfUt4lamkNu1Ye0HaD5NjzfroA7dioK903lFcG8kQ4it/swKoIP++l+1W7+iB50j3
-         RMrnJ3stVckoqcdFctM1/Tu3c5lmqGwF337XOPPEnP+++eAUXpHnW5QA5vsK/iyEzPsh
-         CEEw==
-X-Gm-Message-State: AGi0PubXCyPi0Xt64aNzOcA0YyO0zSHUOVLPUfAHBfuGGah4Lnp2QJhx
-        2ALo5tVkyUdPpVHVlXpaf1k=
-X-Google-Smtp-Source: APiQypJ1G4ip7RLXdF+cSQkH/3D1z069r3IsOYYYZnDC3ADJ70r5dRymqDfitFhc+W38P4Sk4g+/VQ==
-X-Received: by 2002:adf:cc88:: with SMTP id p8mr17308861wrj.21.1586958906826;
-        Wed, 15 Apr 2020 06:55:06 -0700 (PDT)
+        b=P3De8fdfJ4H0UCmlMruj5z7WaOt9wbX9WPkyLmxeDJjFkFNchi4nb6Em7maZusszaL
+         sPxXbZktXajZ919D/ozFQRi+qa1/nVTxkwX8B8CmOjvdWUHlUNtHwAuEJEzV0OKafIfS
+         EgRc8IyNni1qJ0gzoEVdKzBt3TadjJH3NgvuXeutJNtyajkSgFzlH1o/RbO2Y0J6yzq5
+         /P6ClxEFu3Qse6UKVZtw4sK0mybK8sN1XzUq6auSf0riWa6FbxvKVN3+fz4C187obfZp
+         5SlasYxXmwKcFgntKNJ2OR5kYFfPBejeRiKMQ2ZfODZOypCoLUcOrAa6G4J7SHVY5/WC
+         I/Dw==
+X-Gm-Message-State: AGi0PuaRfFCWiuEcM1TXev7giw12VanhgN3gfqY6h0r+XWLwptejRFu3
+        NUKGYNBL7DLnGzr6+zJRm8k=
+X-Google-Smtp-Source: APiQypJhlZ6btS19pDdt1lNNHSlFGGLyu5Zv/UQ9xrb4s2/qeAcuFoN8i+UqcT8dwvZgZ+r7Le2zZg==
+X-Received: by 2002:a05:600c:210c:: with SMTP id u12mr5579723wml.135.1586959086949;
+        Wed, 15 Apr 2020 06:58:06 -0700 (PDT)
 Received: from localhost.localdomain ([31.4.236.56])
-        by smtp.gmail.com with ESMTPSA id x23sm15346676wmj.6.2020.04.15.06.55.04
+        by smtp.gmail.com with ESMTPSA id t8sm23355590wrq.88.2020.04.15.06.58.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2020 06:55:06 -0700 (PDT)
+        Wed, 15 Apr 2020 06:58:06 -0700 (PDT)
 From:   root <carlosteniswarrior@gmail.com>
 X-Google-Original-From: root <root@localhost.localdomain>
 To:     tytso@mit.edu
 Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.orfg,
+        linux-kernel@vger.kernel.org,
         =?UTF-8?q?Carlos=20Guerrero=20=C3=81lvarez?= 
         <carlosteniswarrior@gmail.com>
 Subject: [PATCH] EXT4: acl: Fix a style issue
-Date:   Wed, 15 Apr 2020 00:51:47 +0200
-Message-Id: <20200414225147.69942-1-root@localhost.localdomain>
+Date:   Wed, 15 Apr 2020 00:54:14 +0200
+Message-Id: <20200414225414.70014-1-root@localhost.localdomain>
 X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
