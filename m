@@ -2,86 +2,146 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD081A8599
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Apr 2020 18:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87A71A8A9D
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Apr 2020 21:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440256AbgDNQsK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 14 Apr 2020 12:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
+        id S2504660AbgDNTZD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 14 Apr 2020 15:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2439829AbgDNQsG (ORCPT
+        by vger.kernel.org with ESMTP id S1730052AbgDNTYp (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 14 Apr 2020 12:48:06 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E6CC061A0C
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Apr 2020 09:48:03 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id w145so305141lff.3
-        for <linux-ext4@vger.kernel.org>; Tue, 14 Apr 2020 09:48:03 -0700 (PDT)
+        Tue, 14 Apr 2020 15:24:45 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E8EC0610D5
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Apr 2020 12:05:10 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id p6so1053921edu.10
+        for <linux-ext4@vger.kernel.org>; Tue, 14 Apr 2020 12:05:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=I4stk8sV9DovzFljt6yikH9oBsBWJ7Dw5ET7aegIIAs=;
-        b=XETz8x2O0dx/C38e20PX7g/OHAAKUVPE2pDcBPnceYKfGk1wORNAO1z3y5whqcH7jL
-         DMjvSXVlDqgJA6sWpmi8iO6aDnh/uHzr0D8Jk+0XGAQAcG/SvPNRGaFtiM5BQSXycCkc
-         FMFRUOGjMpHND1yWpp585bZcg81/GrYNcD7aY=
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gF1rMGZ/eX8G89eh4/hnEQhUj+jW1CwhhogtzydCw04=;
+        b=kAbO6h8rAxnlPUj6sdwoV8am8x/5ArQ2M8OJsFa+YkS1RIfmPHFKEJY18CRNoAGtm7
+         awWWFVONlQPnHlvqkUjg6uL/MDQOGsx73UodjlQ1LEI0blS67rdDe0rfMMkhcyVx59ng
+         /XjBMPm1bEnSuvBdmJaEN8SDQVmOBc6oxlJBCWE3HubVS7g9ZrscxOtIty/JnbdfmKQ5
+         T021eyBs86pI9j73PbTEpEKqK98Liv0/ZE8EBU1YSxeJUST3sasbCURvuo+AU4INgn1d
+         Z99+Dd7JvRBaMHTq2mCVKu5owgzwgF89ly3P04mHKtUgm30djmmPXt0J2awvZLZa4rpe
+         w97w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=I4stk8sV9DovzFljt6yikH9oBsBWJ7Dw5ET7aegIIAs=;
-        b=UiJgNj9dQsUR7jDpl8wovC/kPcp+w+bjHblxXFoLfAtQzh6u0jgQVKFCfvp8CnWuvD
-         wYCwML+IQTKetlz0oZjbvNlhtjZmna29SeXsTPJqBBKRgoAd2Ws3Irm39dSMH2j3jGDf
-         LZhg6c8sGWL0L/dmkv8uPvrDvUbI+7P7WLP9oJAbt6WsF2logWebKJUrAT0KLIBr8v1J
-         cOdAHcMbdEusPeDpnyD2YhSg5BEdO4T6MpE004ZTg6HRgbWB78GYFO5S1/KwVYVRGok+
-         mDZ+yCBEitJ3xPMVLGZ2YdhLCxbesQa7qRhat7+o4fuHLGx1tVTbknj9piWbf4H6Ccrp
-         EFtg==
-X-Gm-Message-State: AGi0PuZozFHlsSb5KXiStzcdGIi+Zbx7OaoC6HteugSvjFA2uJLfnlld
-        6L5yl3o00b5fbe2xFwSvYS+EjGoRxFuTmg==
-X-Google-Smtp-Source: APiQypIoxIVz8nKkd2UTAhDf+Mndg+dmecMUf7JyK5bVbhEWfdvdbnSpG51ZSSk3v2l/sp5wZ/SJ+A==
-X-Received: by 2002:ac2:5c45:: with SMTP id s5mr459224lfp.28.1586882881850;
-        Tue, 14 Apr 2020 09:48:01 -0700 (PDT)
-Received: from [192.168.1.149] (ip-5-186-116-45.cgn.fibianet.dk. [5.186.116.45])
-        by smtp.gmail.com with ESMTPSA id q9sm11637637ljm.9.2020.04.14.09.48.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Apr 2020 09:48:01 -0700 (PDT)
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: comments on "ext4: don't assume that mmp_nodename/bdevname have NUL"
-Message-ID: <1e3f607b-a23a-dbd6-b695-cfa0fe38d7e6@rasmusvillemoes.dk>
-Date:   Tue, 14 Apr 2020 18:47:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gF1rMGZ/eX8G89eh4/hnEQhUj+jW1CwhhogtzydCw04=;
+        b=R97VL6LdsM+0Wz23CzBnNb3cZ1dzYZSqQJiNErLQVnKYFZAbjWXULfLC6BgusjncKh
+         8NJmcczTlrXntyraej5FMaFfUx+xAN4A0Ls5MoPNhdZSqYDpiiz1Gfj+m18Ue1T0ZQM1
+         DF6AyUU72SNUYEATKasZE/GxTUIkDg4yKPi9dlHQp8vac9vuyZA3mZ1y7Clc1G7+lWDC
+         LCUsYbo/WlC3C92xaFeFXfx2OwTu44VYhjEF0G7C4JKO1iyGyOJ3Jif1cE5q7mGbjFjY
+         pNaO4eul09h9vNp4mbjt3QxC5RY5LfRruSJxv1otE1VmEm2UDboKaLMj9+e2O0R1I9kN
+         Zbcw==
+X-Gm-Message-State: AGi0Pua42jTycckmKSPXc/6hlAGAZV9DRu2UpJs5uIbAHXSpGaU8emn/
+        jhtwf75CNOgzyc03q9U67vLSiFiDjEMBN0PwUb4M1A==
+X-Google-Smtp-Source: APiQypLpxLw06YROHozj/c2cmajSpvDh2ixxHgmlY2cOrNPKW8LKK+/4LBCTENrfuZLVR/Gcbmd1iginW9IYtm3lsUI=
+X-Received: by 2002:aa7:d711:: with SMTP id t17mr9242415edq.296.1586891109388;
+ Tue, 14 Apr 2020 12:05:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200413054046.1560106-1-ira.weiny@intel.com> <20200413054046.1560106-10-ira.weiny@intel.com>
+ <CAPcyv4g1gGWUuzVyOgOtkRTxzoSKOjVpAOmW-UDtmud9a3CUUA@mail.gmail.com> <20200414161509.GF6742@magnolia>
+In-Reply-To: <20200414161509.GF6742@magnolia>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 14 Apr 2020 12:04:57 -0700
+Message-ID: <CAPcyv4hr+NKbpAU4UhKcmHfvDq1+GTM+y+K28XGbkDYBP=Kaag@mail.gmail.com>
+Subject: Re: [PATCH V7 9/9] Documentation/dax: Update Usage section
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-The patch in $subject (now commit 14c9ca0583ee in mainline) says
-snprintf does not guarantee nul-termination. If that was ever the case,
-that is a bug in snprintf that needs fixing, but I don't believe that
-ever happens. If called with a non-zero (well, and sane, i.e. less than
-INT_MAX) buffer size, the kernel's snprintf is guaranteed to produce a
-nul-terminated string.
+On Tue, Apr 14, 2020 at 9:15 AM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+>
+> On Mon, Apr 13, 2020 at 10:21:26PM -0700, Dan Williams wrote:
+> > On Sun, Apr 12, 2020 at 10:41 PM <ira.weiny@intel.com> wrote:
+> > >
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > >
+> > > Update the Usage section to reflect the new individual dax selection
+> > > functionality.
+> > >
+> > > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > >
+> > > ---
+> > > Changes from V6:
+> > >         Update to allow setting FS_XFLAG_DAX any time.
+> > >         Update with list of behaviors from Darrick
+> > >         https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
+> > >
+> > > Changes from V5:
+> > >         Update to reflect the agreed upon semantics
+> > >         https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
+> > > ---
+> > >  Documentation/filesystems/dax.txt | 166 +++++++++++++++++++++++++++++-
+> > >  1 file changed, 163 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+> > > index 679729442fd2..af14c1b330a9 100644
+> > > --- a/Documentation/filesystems/dax.txt
+> > > +++ b/Documentation/filesystems/dax.txt
+> > > @@ -17,11 +17,171 @@ For file mappings, the storage device is mapped directly into userspace.
+> > >  Usage
+> > >  -----
+> > >
+> > > -If you have a block device which supports DAX, you can make a filesystem
+> > > +If you have a block device which supports DAX, you can make a file system
+> > >  on it as usual.  The DAX code currently only supports files with a block
+> > >  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
+> > > -size when creating the filesystem.  When mounting it, use the "-o dax"
+> > > -option on the command line or add 'dax' to the options in /etc/fstab.
+> > > +size when creating the file system.
+> > > +
+> > > +Currently 2 filesystems support DAX, ext4 and xfs.  Enabling DAX on them is
+> > > +different at this time.
+> > > +
+> > > +Enabling DAX on ext4
+> > > +--------------------
+> > > +
+> > > +When mounting the filesystem, use the "-o dax" option on the command line or
+> > > +add 'dax' to the options in /etc/fstab.
+> > > +
+> > > +
+> > > +Enabling DAX on xfs
+> > > +-------------------
+> > > +
+> > > +Summary
+> > > +-------
+> > > +
+> > > + 1. There exists an in-kernel access mode flag S_DAX that is set when
+> > > +    file accesses go directly to persistent memory, bypassing the page
+> > > +    cache.
+> >
+> > I had reserved some quibbling with this wording, but now that this is
+> > being proposed as documentation I'll let my quibbling fly. "dax" may
+> > imply, but does not require persistent memory nor does it necessarily
+> > "bypass page cache". For example on configurations that support dax,
+> > but turn off MAP_SYNC (like virtio-pmem), a software flush is
+> > required. Instead, if we're going to define "dax" here I'd prefer it
+> > be a #include of the man page definition that is careful (IIRC) to
+> > only talk about semantics and not backend implementation details. In
+> > other words, dax is to page-cache as direct-io is to page cache,
+> > effectively not there, but dig a bit deeper and you may find it.
+>
+> Uh, which manpage?  Are you talking about the MAP_SYNC documentation?
 
-It's true that mmp_bdevname is filled in via snprintf (via bdevname ->
-disk_name), and bdevname assumes given a buffer of size BDEVNAME_SIZE,
-so certainly the added BUILD_BUG makes sense. But perhaps the struct
-member should just be sized BDEVNAME_SIZE instead of 32 (unless that
-leads to #include madness). [If I'm reading the code right, and that's a
-big if, the bdevname() in kmmpd() is redundant as the very same
-mmp->mmp_bdevname was already filled in when the kthread was created.]
-
-However, mmp_nodename is filled via a memcpy from
-init_utsname()->nodename - the latter is actually (AFAICT from the code
-in kernel/sys.c) always nul-terminated, but we're only copying 64 of the
-65 bytes, so of course the copy may end up without a nul-terminator in
-those 64 bytes. In that sense the commit does fix a potential problem,
-but it has nothing to do with snprintf().
-
-Rasmus
+No, I was referring to the proposed wording for STATX_ATTR_DAX.
+There's no reason for this description to say anything divergent from
+that description.
