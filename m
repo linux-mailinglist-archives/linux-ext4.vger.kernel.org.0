@@ -2,84 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285201A9C16
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 13:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730B51AA35C
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 15:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896900AbgDOLWp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Apr 2020 07:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896897AbgDOLWS (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Apr 2020 07:22:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4600C061A0C;
-        Wed, 15 Apr 2020 04:22:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=p5k96MLyrJ0Kc/9UM6Xw8FfLDEnTX/dVH39aK5qAXAA=; b=ClQLKHw92puBJhU2nimC3BH8wA
-        355osRMfVxhDQVssm7Zm9jE6v3E3dRGs+Oc5jFRy3/jQbyNAsfVORzBRmGEfW7/HIf4gbDH2d4DT2
-        gL3rNu+X2XBNBJ3NpW/Bx0FlYJMdgdadGJM/y2cHwCtDUUl9b+KcgcTHyz2DkqV52KYqOQaeHmfVH
-        s2D+J2WiHScmuPaZ+HVg8gSTWAFyV0P0cKjdmyQFi/TapX8CRjBU8aFB/npLmiZAvjPQMvj6Rpgij
-        Vy0bfVHN0vosqBiQDXjyzG7mDrHdrpJGmw7wYW8mNvb2TBTAiSuOkc9Tu/G2eouAmkldMad/NLN38
-        jgC7ixKA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jOg7U-0004jU-L2; Wed, 15 Apr 2020 11:22:16 +0000
-Date:   Wed, 15 Apr 2020 04:22:16 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        ocfs2-devel@oss.oracle.com, linux-xfs@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v11 05/25] mm: Add new readahead_control API
-Message-ID: <20200415112216.GC5820@bombadil.infradead.org>
-References: <20200414150233.24495-1-willy@infradead.org>
- <20200414150233.24495-6-willy@infradead.org>
- <20200414181705.bfc4c0087092051a9475141e@linux-foundation.org>
- <20200415021808.GA5820@bombadil.infradead.org>
- <20200414215616.f665d12f8549f52606784d1e@linux-foundation.org>
+        id S2506005AbgDONHt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Apr 2020 09:07:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2897084AbgDOLfw (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 15 Apr 2020 07:35:52 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 946E520857;
+        Wed, 15 Apr 2020 11:35:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586950551;
+        bh=kcDuKp56cAY60Bhn7j2vaZmKWzvcpFyvJciuhBp9cD8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BoSH4W0QYGFsbLEUasCAo1QvgCiwCs4psQnGiPr7n7LDVTvnxbDZAAu/HUXlu4RMT
+         +7QNtlzo6GFnDfk4oqyJOnGFMHlBc7L+gjIz8ktObqao2qcq0XTHsiUFw1gRVD+t7s
+         3WP5CZCKXOmq9ks0XZeVicAveXBTKiEDbwbx64+o=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Eric Sandeen <sandeen@redhat.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.6 057/129] ext4: do not commit super on read-only bdev
+Date:   Wed, 15 Apr 2020 07:33:32 -0400
+Message-Id: <20200415113445.11881-57-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200415113445.11881-1-sashal@kernel.org>
+References: <20200415113445.11881-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200414215616.f665d12f8549f52606784d1e@linux-foundation.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 09:56:16PM -0700, Andrew Morton wrote:
-> On Tue, 14 Apr 2020 19:18:08 -0700 Matthew Wilcox <willy@infradead.org> wrote:
-> > Hmm.  They don't seem that big to me.
-> 
-> They're really big!
+From: Eric Sandeen <sandeen@redhat.com>
 
-v5.7-rc1:	11636	    636	    224	  12496	   30d0	fs/iomap/buffered-io.o
-readahead_v11:	11528	    636	    224	  12388	   3064	fs/iomap/buffered-io.o
+[ Upstream commit c96e2b8564adfb8ac14469ebc51ddc1bfecb3ae2 ]
 
-> > __readahead_batch is much bigger, but it's only used by btrfs and fuse,
-> > and it seemed unfair to make everybody pay the cost for a function only
-> > used by two filesystems.
-> 
-> Do we expect more filesystems to use these in the future?
+Under some circumstances we may encounter a filesystem error on a
+read-only block device, and if we try to save the error info to the
+superblock and commit it, we'll wind up with a noisy error and
+backtrace, i.e.:
 
-I'm honestly not sure.  I think it'd be nice to be able to fill a bvec
-from the page cache directly, but I haven't tried to write that function
-yet.  If so, then it'd be appropriate to move that functionality into
-the core.
+[ 3337.146838] EXT4-fs error (device pmem1p2): ext4_get_journal_inode:4634: comm mount: inode #0: comm mount: iget: illegal inode #
+------------[ cut here ]------------
+generic_make_request: Trying to write to read-only block-device pmem1p2 (partno 2)
+WARNING: CPU: 107 PID: 115347 at block/blk-core.c:788 generic_make_request_checks+0x6b4/0x7d0
+...
 
-> > > The code adds quite a few (inlined!) VM_BUG_ONs.  Can we plan to remove
-> > > them at some stage?  Such as, before Linus shouts at us :)
-> > 
-> > I'd be happy to remove them.  Various reviewers said things like "are you
-> > sure this can't happen?"
-> 
-> Yeah, these things tend to live for ever.  Please add a todo to remove
-> them after the code has matured?
+To avoid this, commit the error info in the superblock only if the
+block device is writable.
 
-Sure!  I'm touching this code some more in the large pages patch set, so
-I can get rid of it there.
+Reported-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Link: https://lore.kernel.org/r/4b6e774d-cc00-3469-7abb-108eb151071a@sandeen.net
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 0c7c4adb664ec..55392903bda52 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -372,7 +372,8 @@ static void save_error_info(struct super_block *sb, const char *func,
+ 			    unsigned int line)
+ {
+ 	__save_error_info(sb, func, line);
+-	ext4_commit_super(sb, 1);
++	if (!bdev_read_only(sb->s_bdev))
++		ext4_commit_super(sb, 1);
+ }
+ 
+ /*
+-- 
+2.20.1
+
