@@ -2,67 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280FF1AB065
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 20:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA621AB06C
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 20:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406638AbgDOSMs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Apr 2020 14:12:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
+        id S2411722AbgDOSPb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Apr 2020 14:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2406366AbgDOSMo (ORCPT
+        by vger.kernel.org with ESMTP id S2406366AbgDOSP3 (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:12:44 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7E7C061A0C
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 11:12:43 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id v2so301673plp.9
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 11:12:43 -0700 (PDT)
+        Wed, 15 Apr 2020 14:15:29 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66281C061A0C
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 11:15:29 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id e16so196166pjp.1
+        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 11:15:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=uc8SZkyHO7+oKEkd6D0y/6FmW2OcOEGi/HZVZSbsjao=;
-        b=dk8jxG5H8ATkLxvYMV60haNIjxuJv09oUKV0xihOfmffTD197LNaaOWnomdGaw84YU
-         8CJAnxD+vKL/I76rXh6nhBWPqVUp1L1RcqRzYTHzctym2z0LJ+JrigLA/KzUi4qZZaSI
-         rCPmdpPjZ7NebCzCwvlYEfUJCqah6d4KS2wyRFf0a/LCLmlxjonSXkBZQwBqNM5PPxpw
-         WtbxMTh0HkFdexI2g8Nly/DcxnPnCjKQVlLPM+Q6f0ywfDfqGddAnb2c5ccPYDIAznA2
-         AA+9XIjn9VadyaF40MDahoqSIJWnAgDKlybzMQjGcJATUAK2exT8cdu5Vjad1UqIzbYJ
-         UqOg==
+        bh=QUr+OeVYcB28uE2Z+pYpdhHxwXESsvjMUD23f0TqR28=;
+        b=bTwKqaDdNtIuUdbGqcjb1aHpCQszGysyIx7xZNwSqpMOXRzDQaKyboonUEr+VW5FFN
+         4hah47lxoELYZ+qEdU0p/tCaHnlt8o75a7wdYbQg0fMkJiWfWj/SEqGtUYuuQDiZEAI2
+         ubVxxlf6exmIRpYOXsOXvVKtQrAXsHfWjzG0A5VrDhIsL0Tsd9ecLlh1ziXG6938cFil
+         4fGXP/9Eo5geohl2N4ULJ1zhKUWSJ6tPZE4F2+pwCiZZmKbcdmSAqgdo60sUs749d3Jo
+         pe2TB7w/ypQ4Rr+iEkigL3Boc2N5T0JPJcOZkvnOpUEkn3WwjZa56ykgV4CofIuGRCrQ
+         eYgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=uc8SZkyHO7+oKEkd6D0y/6FmW2OcOEGi/HZVZSbsjao=;
-        b=eyAjss/Mj/Iq1MLZqhwTLMvMvRM/IQu71T68OcGEz0zlasXKAnAjCC1wmk3SEGzohf
-         Viw/Ig5o70ywGn5OTDgHVxqNPIvi77nyqtspmjxzlNb4QQUM684bXHVJITikC2Zdtq9M
-         1J2gujcOSyBNe2Lje/LrtKk5XQHrTQkqffx7lThHZgb4XpHS5ZY+VspyE/ChJHJw6/v+
-         qa6d78/JQdNJvHLbtrpq22VC6x/nq48C684S4kOL0ODUOWJim3ZMXzwe2uNnqC6m3rvZ
-         G8fOwdjatoszd86XdbRx86gVrs4srr5MgiW2yOctQmP73kOj+R9XZ7w3neWS0BWIgp9U
-         59jA==
-X-Gm-Message-State: AGi0PubKIcSWckoMdvkX9o+JvuOA+FIOF5yjBpP7rDGjD3reuVhtmIPO
-        cvOoZ/H1oWl62YTd7BEIh1UF8Q==
-X-Google-Smtp-Source: APiQypKZEMdUIj/8AClBZdkAfr7IICta8FclcaI/ATfvpPeaEXHvJXkb5A/XGxCP6GLxes7BkNkcuA==
-X-Received: by 2002:a17:90b:1953:: with SMTP id nk19mr555143pjb.16.1586974362750;
-        Wed, 15 Apr 2020 11:12:42 -0700 (PDT)
+        bh=QUr+OeVYcB28uE2Z+pYpdhHxwXESsvjMUD23f0TqR28=;
+        b=BvuM+QAkEOYrPEUG+23kSNLOaBqMhJpObbQDazKh/goGRj2MQ+s4UiG8ekNj+yDzEP
+         NlCbHo/rVH0L6x3QSBW1N+WeZ2A0d0N5E/i4BNw+JEs+78coct5PIQtPCeBB3Tt+Kr6Z
+         02AbbK7NSDkNobxiLsANJey73pdc/QlWirFVRd7GFhQqkFnzd0PzfWA4LOFqT84GyuvE
+         5Le3MZJMq+8Y/jSAF/8UlrurUsmvInMvlCtE+5zWntl2/YSkgQhA0IUU5pokyF9VhJFC
+         71HIsP9pcdQ+wN8n/IzIEvdFh8I/HU1AorF4FfMk0pFae9QJHhokCtl5WLCEQV5XSClX
+         myjQ==
+X-Gm-Message-State: AGi0PubsBa8140Tys2nmXh4m+kFy30LwfgTmkA46f8cgBeXCcEHmlxqI
+        vcdwIK0ABF8H3IVKsnqDADwJp6fcV08=
+X-Google-Smtp-Source: APiQypKbb4EOLIWOO8888FTp/EbX1mBcygefxz/KdNuSFhn9QRPLQz1Sb/LbD3skVRm6CtRl2S0V3Q==
+X-Received: by 2002:a17:90a:138c:: with SMTP id i12mr577158pja.36.1586974528607;
+        Wed, 15 Apr 2020 11:15:28 -0700 (PDT)
 Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id 22sm4954909pfb.132.2020.04.15.11.12.41
+        by smtp.gmail.com with ESMTPSA id u24sm11238493pgo.65.2020.04.15.11.15.27
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Apr 2020 11:12:41 -0700 (PDT)
+        Wed, 15 Apr 2020 11:15:27 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <A4EF2AAD-8C59-4C8B-B6BA-7544522315E8@dilger.ca>
+Message-Id: <E6C93199-73FE-46B0-9001-7D43D4FDEA26@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_2B9743FD-B5D8-4046-91B1-5B161F7E6236";
+ boundary="Apple-Mail=_A080154A-8C9A-4B39-8C4B-AC6E286C4005";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: reject mount options not supported when remounting
- in handle_mount_opt()
-Date:   Wed, 15 Apr 2020 12:12:39 -0600
-In-Reply-To: <20200415174839.461347-1-tytso@mit.edu>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        stable@kernel.org
-To:     Theodore Ts'o <tytso@mit.edu>
-References: <to=00000000000098a5d505a34d1e48@google.com>
- <20200415174839.461347-1-tytso@mit.edu>
+Subject: Re: [PATCH] ext4: remove redundant variable has_bigalloc in
+ ext4_fill_super
+Date:   Wed, 15 Apr 2020 12:15:24 -0600
+In-Reply-To: <1586935542-29588-1-git-send-email-kaixuxia@tencent.com>
+Cc:     linux-ext4 <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Kaixu Xia <kaixuxia@tencent.com>
+To:     xiakaixu1987@gmail.com
+References: <1586935542-29588-1-git-send-email-kaixuxia@tencent.com>
 X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -70,143 +69,55 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_2B9743FD-B5D8-4046-91B1-5B161F7E6236
+--Apple-Mail=_A080154A-8C9A-4B39-8C4B-AC6E286C4005
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Apr 15, 2020, at 11:48 AM, Theodore Ts'o <tytso@mit.edu> wrote:
+On Apr 15, 2020, at 1:25 AM, xiakaixu1987@gmail.com wrote:
 >=20
-> Rejecting the mount options in ext4_remount() means that some mount
-> options would be enabled for a small amount of time, and then the
-> mount option change would be reverted.  In the case of "mount -o
-> remount,dax", this can cause a race where files would temporarily
-> treated as DAX --- and then not.
+> From: Kaixu Xia <kaixuxia@tencent.com>
 >=20
-> Cc: stable@kernel.org
-> Reported-and-tested-by: =
-syzbot+bca9799bf129256190da@syzkaller.appspotmail.com
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> We can use the ext4_has_feature_bigalloc() function directly to check
+> bigalloc feature and the variable has_bigalloc is reduncant, so remove
+> it.
+>=20
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 
 Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
 > ---
-> fs/ext4/super.c | 37 +++++++++++--------------------------
-> 1 file changed, 11 insertions(+), 26 deletions(-)
+> fs/ext4/super.c | 5 ++---
+> 1 file changed, 2 insertions(+), 3 deletions(-)
 >=20
 > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index bf5fcb477f66..6fe32f9aa889 100644
+> index 855874ea4b29..60bb3991304e 100644
 > --- a/fs/ext4/super.c
 > +++ b/fs/ext4/super.c
-> @@ -1726,6 +1726,7 @@ static int clear_qf_name(struct super_block *sb, =
-int qtype)
-> #define MOPT_NO_EXT3	0x0200
-> #define MOPT_EXT4_ONLY	(MOPT_NO_EXT2 | MOPT_NO_EXT3)
-> #define MOPT_STRING	0x0400
-> +#define MOPT_NO_REMOUNT	0x0800
+> @@ -3681,7 +3681,7 @@ static int ext4_fill_super(struct super_block =
+*sb, void *data, int silent)
+> 	int blocksize, clustersize;
+> 	unsigned int db_count;
+> 	unsigned int i;
+> -	int needs_recovery, has_huge_files, has_bigalloc;
+> +	int needs_recovery, has_huge_files;
+> 	__u64 blocks_count;
+> 	int err =3D 0;
+> 	unsigned int journal_ioprio =3D DEFAULT_JOURNAL_IOPRIO;
+> @@ -4196,8 +4196,7 @@ static int ext4_fill_super(struct super_block =
+*sb, void *data, int silent)
 >=20
-> static const struct mount_opts {
-> 	int	token;
-> @@ -1775,12 +1776,12 @@ static const struct mount_opts {
-> 	{Opt_min_batch_time, 0, MOPT_GTE0},
-> 	{Opt_inode_readahead_blks, 0, MOPT_GTE0},
-> 	{Opt_init_itable, 0, MOPT_GTE0},
-> -	{Opt_dax, EXT4_MOUNT_DAX, MOPT_SET},
-> +	{Opt_dax, EXT4_MOUNT_DAX, MOPT_SET | MOPT_NO_REMOUNT},
-> 	{Opt_stripe, 0, MOPT_GTE0},
-> 	{Opt_resuid, 0, MOPT_GTE0},
-> 	{Opt_resgid, 0, MOPT_GTE0},
-> -	{Opt_journal_dev, 0, MOPT_NO_EXT2 | MOPT_GTE0},
-> -	{Opt_journal_path, 0, MOPT_NO_EXT2 | MOPT_STRING},
-> +	{Opt_journal_dev, 0, MOPT_NO_EXT2 | MOPT_GTE0 | =
-MOPT_NO_REMOUNT},
-> +	{Opt_journal_path, 0, MOPT_NO_EXT2 | MOPT_STRING | =
-MOPT_NO_REMOUNT},
-> 	{Opt_journal_ioprio, 0, MOPT_NO_EXT2 | MOPT_GTE0},
-> 	{Opt_data_journal, EXT4_MOUNT_JOURNAL_DATA, MOPT_NO_EXT2 | =
-MOPT_DATAJ},
-> 	{Opt_data_ordered, EXT4_MOUNT_ORDERED_DATA, MOPT_NO_EXT2 | =
-MOPT_DATAJ},
-> @@ -1817,7 +1818,7 @@ static const struct mount_opts {
-> 	{Opt_jqfmt_vfsv1, QFMT_VFS_V1, MOPT_QFMT},
-> 	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
-> 	{Opt_test_dummy_encryption, 0, MOPT_GTE0},
-> -	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
-> +	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET | =
-MOPT_NO_REMOUNT},
-> 	{Opt_err, 0, 0}
-> };
->=20
-> @@ -1915,6 +1916,12 @@ static int handle_mount_opt(struct super_block =
-*sb, char *opt, int token,
-> 			 "Mount option \"%s\" incompatible with ext3", =
-opt);
-> 		return -1;
-> 	}
-> +	if ((m->flags & MOPT_NO_REMOUNT) && is_remount) {
-> +		ext4_msg(sb, KERN_ERR,
-> +			 "Mount option \"%s\" not supported when =
-remounting",
-> +			 opt);
-> +		return -1;
-> +	}
->=20
-> 	if (args->from && !(m->flags & MOPT_STRING) && match_int(args, =
-&arg))
-> 		return -1;
-> @@ -1994,11 +2001,6 @@ static int handle_mount_opt(struct super_block =
-*sb, char *opt, int token,
-> 		}
-> 		sbi->s_resgid =3D gid;
-> 	} else if (token =3D=3D Opt_journal_dev) {
-> -		if (is_remount) {
-> -			ext4_msg(sb, KERN_ERR,
-> -				 "Cannot specify journal on remount");
-> -			return -1;
-> -		}
-> 		*journal_devnum =3D arg;
-> 	} else if (token =3D=3D Opt_journal_path) {
-> 		char *journal_path;
-> @@ -2006,11 +2008,6 @@ static int handle_mount_opt(struct super_block =
-*sb, char *opt, int token,
-> 		struct path path;
-> 		int error;
->=20
-> -		if (is_remount) {
-> -			ext4_msg(sb, KERN_ERR,
-> -				 "Cannot specify journal on remount");
-> -			return -1;
-> -		}
-> 		journal_path =3D match_strdup(&args[0]);
-> 		if (!journal_path) {
-> 			ext4_msg(sb, KERN_ERR, "error: could not dup "
-> @@ -5427,18 +5424,6 @@ static int ext4_remount(struct super_block *sb, =
-int *flags, char *data)
-> 		}
-> 	}
->=20
-> -	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & =
-EXT4_MOUNT_NO_MBCACHE) {
-> -		ext4_msg(sb, KERN_ERR, "can't enable nombcache during =
-remount");
-> -		err =3D -EINVAL;
-> -		goto restore_opts;
-> -	}
-> -
-> -	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX) =
-{
-> -		ext4_msg(sb, KERN_WARNING, "warning: refusing change of =
-"
-> -			"dax flag with busy inodes while remounting");
-> -		sbi->s_mount_opt ^=3D EXT4_MOUNT_DAX;
-> -	}
-> -
-> 	if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED)
-> 		ext4_abort(sb, EXT4_ERR_ESHUTDOWN, "Abort forced by =
-user");
->=20
+> 	/* Handle clustersize */
+> 	clustersize =3D BLOCK_SIZE << =
+le32_to_cpu(es->s_log_cluster_size);
+> -	has_bigalloc =3D ext4_has_feature_bigalloc(sb);
+> -	if (has_bigalloc) {
+> +	if (ext4_has_feature_bigalloc(sb)) {
+> 		if (clustersize < blocksize) {
+> 			ext4_msg(sb, KERN_ERR,
+> 				 "cluster size (%d) smaller than "
 > --
-> 2.24.1
+> 2.20.0
 >=20
 
 
@@ -217,7 +128,7 @@ Cheers, Andreas
 
 
 
---Apple-Mail=_2B9743FD-B5D8-4046-91B1-5B161F7E6236
+--Apple-Mail=_A080154A-8C9A-4B39-8C4B-AC6E286C4005
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -228,19 +139,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6XTpcACgkQcqXauRfM
-H+Cfqw/8D0819pxcoVWRoLlML0AV8YdxiTJ3wUds/sq4IBIZogD1IfEpTVuvZsZG
-8jurzdG87E+AoJXcd8wm9OcKT9OvOdAkD2SWbw0kfE79oBLHZ1p9NN+oLkJN0B+U
-lODf0cmVrSXF1kwhWuU9XkAQML8HYZQ+93v8utCQqDqf+6t5MQKHZJe2JswEe1+6
-vM9eVAP/msm5ywpX79Ctc63NgshnAK7w9Jie6zEd93KOLtr/Rtk6vt1pbt5WPTzQ
-UxABhxYcY9cPOOxhmrziMMbjwVRnBBmI9DtAvzwEQAbZEBcwF8S/4FQEqAf4SPyG
-1aLta8LgtNRx/HRuYZBqez301FUIfS8PgkE+o5e1oJpmY7v2DmhCwYrZnGM8jjbD
-7a6ZSeAi2nmAYqoNHWkFo0AED+DNiES18LpQeC7Bcq3ut7s3GHT7mcS2XgsgP0jU
-BydrI0gb7BS8jDDYCOIFQjBMJeMtP8EqYAL0GeKYV6845zQmgbkdcq+VymtOG9Xw
-XMlb55Q1+gtZkODWtoxtKKPDnmmeIFDJ8eJl7f596x4QLEoUF0FYKtwbVPOAfQja
-+gW/TsGoRofn9eRZZW5sn+mmog4Xs0pYB1hT7ar6JAWaxJnpeeUcXkgRCqu9iN20
-CD1exlY7FVlnIFBv93zqjrCL9Z+wMlJeiRaM2WGrh3hppsu6YKg=
-=0gti
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6XTz0ACgkQcqXauRfM
+H+BZHA/9FHNlLnuk4j9U5nBHaygdAd2D6374Vg8VFHr2MJkv9tDw6MTbn78PJAji
+LyaLkkGvqryk7X0B4lys/JzwIOKsGgvHabfWCJ8NLKJOpUKs/nNFEJWN+ZFUleZv
+2lBFDGmgf39ZIIXSvs5NtkIQNjKw/9PBliWaHMW242MgnGenfr+C1nt/l7RinbR/
+hm006NLNJaLfW1nJ9VCnNzu6RHFT9utZaTSQeCJM9ddqsdO/yeioCs+4l9mM4790
+u2/HtKJJf93xcrfBtBK4HKJsnBiGrMd9Oop1l1WPWw7ijK2/Eb84UfChZlNSwURB
+/6lp+G97XY8s0wYxdzLyfD8ub5kXSnFUZHBZ1NETQFuJUoFMg9a5+p6N0J5gCmCg
+gs6TlGv4parkgbb5+eK00HellQI5T/NFpv632iH6mDO3mE//fHu6SSsRA+ayED9Z
+RbwU7EPTMT6JuKSxLtBbgcxAKZmOS9Qb1J6NNEgRRk1fPgU69gZkjKR93tvUVEzI
+MmUToEK1haLuyPH4WFqZPCihtlaM5jzeUIKv0FRYHTOPh8rmY9w9zxSLTJJv5PVw
+A2mX9hSuQ3rJtpuFwl0LOsVGI1MsbDMkkXdZU4jkmsTvtKv54v03ZRSQbqhsdIRF
+c+VmdiqHJLuOB4oT0rPG/bcAnOoBJX/6S+0KfMwp0ohFRo3sBS4=
+=/ew3
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_2B9743FD-B5D8-4046-91B1-5B161F7E6236--
+--Apple-Mail=_A080154A-8C9A-4B39-8C4B-AC6E286C4005--
