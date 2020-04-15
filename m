@@ -2,123 +2,75 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF2F1AB2D2
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 22:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8142E1AB39F
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Apr 2020 00:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442088AbgDOUj1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Apr 2020 16:39:27 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5824 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438376AbgDOUj0 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Apr 2020 16:39:26 -0400
-IronPort-SDR: YXdlE5sGDTE2nXHPYp4kFm1d1ULAFC95iW/NGpKO3KD8QEyQse0Epkx0/tVgBFWUMZY0e+c20+
- 1BMw/cYLxkGg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 13:39:25 -0700
-IronPort-SDR: SCt4dNj4WEUs8M1Y/+OmMuJVAREuUDMSfkTCsNZ/iC/VnmW7zYxANvKOU14AxwPNRx9l6aKLI2
- fIpf58+6za0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
-   d="scan'208";a="245783322"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Apr 2020 13:39:25 -0700
-Date:   Wed, 15 Apr 2020 13:39:25 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 4/8] fs/ext4: Introduce DAX inode flag
-Message-ID: <20200415203924.GD2309605@iweiny-DESK2.sc.intel.com>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-5-ira.weiny@intel.com>
- <20200415120846.GG6126@quack2.suse.cz>
+        id S1730869AbgDOWId (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Apr 2020 18:08:33 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:48836 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728137AbgDOWIM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Apr 2020 18:08:12 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03FM7qjW008851
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Apr 2020 18:07:53 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 5D5F642013D; Wed, 15 Apr 2020 18:07:52 -0400 (EDT)
+Date:   Wed, 15 Apr 2020 18:07:52 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com, stable@kernel.org,
+        syzbot+bca9799bf129256190da@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: reject mount options not supported when remounting
+ in handle_mount_opt()
+Message-ID: <20200415220752.GA5187@mit.edu>
+References: <to=00000000000098a5d505a34d1e48@google.com>
+ <20200415174839.461347-1-tytso@mit.edu>
+ <20200415202537.GA2309605@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200415120846.GG6126@quack2.suse.cz>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200415202537.GA2309605@iweiny-DESK2.sc.intel.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 02:08:46PM +0200, Jan Kara wrote:
-> On Mon 13-04-20 21:00:26, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
-> > 
-> > Set the flag to be user visible and changeable.  Set the flag to be
-> > inherited.  Allow applications to change the flag at any time.
-> > 
-> > Finally, on regular files, flag the inode to not be cached to facilitate
-> > changing S_DAX on the next creation of the inode.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  fs/ext4/ext4.h  | 13 +++++++++----
-> >  fs/ext4/ioctl.c | 21 ++++++++++++++++++++-
-> >  2 files changed, 29 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> > index 61b37a052052..434021fcec88 100644
-> > --- a/fs/ext4/ext4.h
-> > +++ b/fs/ext4/ext4.h
-> > @@ -415,13 +415,16 @@ struct flex_groups {
-> >  #define EXT4_VERITY_FL			0x00100000 /* Verity protected inode */
-> >  #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for large EA */
-> >  #define EXT4_EOFBLOCKS_FL		0x00400000 /* Blocks allocated beyond EOF */
-> > +
-> > +#define EXT4_DAX_FL			0x00800000 /* Inode is DAX */
-> > +
+On Wed, Apr 15, 2020 at 01:25:37PM -0700, Ira Weiny wrote:
+> This fundamentally changes the behavior from forcing the dax mode to be the
+> same across the remount to only failing if we are going from non-dax to dax,
+> adding -o dax on the remount?
 > 
-> You seem to be using somewhat older kernel... EXT4_EOFBLOCKS_FL doesn't
-> exist anymore (but still it's good to leave it reserved for some time so
-> the value you've chosen is OK).
-
-I'm on top of 5.6 released.  Did this get removed for 5.7?  I've heard there are
-some boot issues with 5.7-rc1 so I'm holding out for rc2.
-
+> But going from -o dax to 'not -o dax' would be ok?
 > 
-> > @@ -813,6 +818,17 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
-> >  	return error;
-> >  }
-> >  
-> > +static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
-> > +{
-> > +	struct ext4_inode_info *ei = EXT4_I(inode);
-> > +
-> > +	if (S_ISDIR(inode->i_mode))
-> > +		return;
-> > +
-> > +	if ((ei->i_flags ^ flags) == EXT4_DAX_FL)
-> > +		inode->i_state |= I_DONTCACHE;
-> > +}
-> > +
-> 
-> You probably want to use the function you've introduced in the XFS series
-> here...
+> FWIW after thinking about it some I _think_ it would be ok to allow the dax
+> mode to change on a remount and let the inodes in memory stay in the mode they
+> are at.  And newly loaded inodes would get the new mode...  Unfortunately
+> without the STATX patch I have proposed the user does not have any way of
+> knowing which files are in which mode.
 
-you mean:
+We don't currently support mount -o nodax.  So the intention of the
+current code is that the dax mode can't change in either direction
+(enabling or disabling) as a remount option.
 
-flag_inode_dontcache()
-???
+The syzkaller report was because changing dax mode racing with other
+operations given the current code base, could result in a kernel OOPS.
+So we *do* need to rule it out at least for now.
 
-Yes that is done.  I sent this prior to v8 (where that was added) of the other
-series...
+I certainly don't object to allowing changing dax mode as a remount
+--- so long as we have tests to make sure that if we stress opening,
+reading, writing, mmap'ing files, etc., while another thread is
+flipping back and forth between dax=never and dax=always is mount -o
+remount --- and make sure that we don't end up crashing.
 
-Ira
+And this test needs to be in xfstests, because trying to figure out
+what triggers a syzkaller failures in file system land is a pain in
+the *ss so we really want a dedicated xfstests for this case.  Have
+you tested your patch series to make sure we don't have some potential
+races here?
 
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+    	      	     	    	      	       	   - Ted
