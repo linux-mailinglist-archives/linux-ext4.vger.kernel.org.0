@@ -2,156 +2,118 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA621AB06C
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 20:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4A91AB165
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 21:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411722AbgDOSPb (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Apr 2020 14:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2406366AbgDOSP3 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Apr 2020 14:15:29 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66281C061A0C
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 11:15:29 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id e16so196166pjp.1
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 11:15:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=QUr+OeVYcB28uE2Z+pYpdhHxwXESsvjMUD23f0TqR28=;
-        b=bTwKqaDdNtIuUdbGqcjb1aHpCQszGysyIx7xZNwSqpMOXRzDQaKyboonUEr+VW5FFN
-         4hah47lxoELYZ+qEdU0p/tCaHnlt8o75a7wdYbQg0fMkJiWfWj/SEqGtUYuuQDiZEAI2
-         ubVxxlf6exmIRpYOXsOXvVKtQrAXsHfWjzG0A5VrDhIsL0Tsd9ecLlh1ziXG6938cFil
-         4fGXP/9Eo5geohl2N4ULJ1zhKUWSJ6tPZE4F2+pwCiZZmKbcdmSAqgdo60sUs749d3Jo
-         pe2TB7w/ypQ4Rr+iEkigL3Boc2N5T0JPJcOZkvnOpUEkn3WwjZa56ykgV4CofIuGRCrQ
-         eYgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=QUr+OeVYcB28uE2Z+pYpdhHxwXESsvjMUD23f0TqR28=;
-        b=BvuM+QAkEOYrPEUG+23kSNLOaBqMhJpObbQDazKh/goGRj2MQ+s4UiG8ekNj+yDzEP
-         NlCbHo/rVH0L6x3QSBW1N+WeZ2A0d0N5E/i4BNw+JEs+78coct5PIQtPCeBB3Tt+Kr6Z
-         02AbbK7NSDkNobxiLsANJey73pdc/QlWirFVRd7GFhQqkFnzd0PzfWA4LOFqT84GyuvE
-         5Le3MZJMq+8Y/jSAF/8UlrurUsmvInMvlCtE+5zWntl2/YSkgQhA0IUU5pokyF9VhJFC
-         71HIsP9pcdQ+wN8n/IzIEvdFh8I/HU1AorF4FfMk0pFae9QJHhokCtl5WLCEQV5XSClX
-         myjQ==
-X-Gm-Message-State: AGi0PubsBa8140Tys2nmXh4m+kFy30LwfgTmkA46f8cgBeXCcEHmlxqI
-        vcdwIK0ABF8H3IVKsnqDADwJp6fcV08=
-X-Google-Smtp-Source: APiQypKbb4EOLIWOO8888FTp/EbX1mBcygefxz/KdNuSFhn9QRPLQz1Sb/LbD3skVRm6CtRl2S0V3Q==
-X-Received: by 2002:a17:90a:138c:: with SMTP id i12mr577158pja.36.1586974528607;
-        Wed, 15 Apr 2020 11:15:28 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id u24sm11238493pgo.65.2020.04.15.11.15.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Apr 2020 11:15:27 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <E6C93199-73FE-46B0-9001-7D43D4FDEA26@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_A080154A-8C9A-4B39-8C4B-AC6E286C4005";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: remove redundant variable has_bigalloc in
- ext4_fill_super
-Date:   Wed, 15 Apr 2020 12:15:24 -0600
-In-Reply-To: <1586935542-29588-1-git-send-email-kaixuxia@tencent.com>
-Cc:     linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, Kaixu Xia <kaixuxia@tencent.com>
-To:     xiakaixu1987@gmail.com
-References: <1586935542-29588-1-git-send-email-kaixuxia@tencent.com>
-X-Mailer: Apple Mail (2.3273)
+        id S2441755AbgDOTO4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Apr 2020 15:14:56 -0400
+Received: from mga17.intel.com ([192.55.52.151]:15254 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441746AbgDOTOy (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 15 Apr 2020 15:14:54 -0400
+IronPort-SDR: uNPov8B7QUKj5K6qUWagJEFWgCfzzN2VwPe3mG+Yj7kkwtHjqFPA09MxLMuqL8Ghn3jsre/6Do
+ TRsIVMabYTQA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2020 12:14:52 -0700
+IronPort-SDR: 7PTC/XR0QNy6eWAG1dmEGZdP686/BpC1G/stOZBy1TC/E3yJp34kdFRlNT/1KE0DEUGhlHDlGi
+ aPIm544g1tvg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,388,1580803200"; 
+   d="scan'208";a="455008505"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga006.fm.intel.com with ESMTP; 15 Apr 2020 12:14:52 -0700
+Date:   Wed, 15 Apr 2020 12:14:52 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-kernel@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 2/8] fs/ext4: Disallow verity if inode is DAX
+Message-ID: <20200415191451.GA2305801@iweiny-DESK2.sc.intel.com>
+References: <20200414040030.1802884-1-ira.weiny@intel.com>
+ <20200414040030.1802884-3-ira.weiny@intel.com>
+ <20200415120002.GE6126@quack2.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415120002.GE6126@quack2.suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Wed, Apr 15, 2020 at 02:00:02PM +0200, Jan Kara wrote:
+> On Mon 13-04-20 21:00:24, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > Verity and DAX are incompatible.  Changing the DAX mode due to a verity
+> > flag change is wrong without a corresponding address_space_operations
+> > update.
+> > 
+> > Make the 2 options mutually exclusive by returning an error if DAX was
+> > set first.
+> > 
+> > (Setting DAX is already disabled if Verity is set first.)
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > ---
+> >  fs/ext4/verity.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
+> > index dc5ec724d889..ce3f9a198d3b 100644
+> > --- a/fs/ext4/verity.c
+> > +++ b/fs/ext4/verity.c
+> > @@ -113,6 +113,9 @@ static int ext4_begin_enable_verity(struct file *filp)
+> >  	handle_t *handle;
+> >  	int err;
+> >  
+> > +	if (WARN_ON_ONCE(IS_DAX(inode)))
+> > +		return -EINVAL;
+> > +
+> 
+> Hum, one question, is there a reason for WARN_ON_ONCE()? If I understand
+> correctly, user could normally trigger this, couldn't he?
 
---Apple-Mail=_A080154A-8C9A-4B39-8C4B-AC6E286C4005
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Ok.  I did not think this through but I did think about this.  I was following
+the code from the encryption side which issues a warning and was thinking that
+would be a good way to alert the user they are doing something wrong...
 
-On Apr 15, 2020, at 1:25 AM, xiakaixu1987@gmail.com wrote:
->=20
-> From: Kaixu Xia <kaixuxia@tencent.com>
->=20
-> We can use the ext4_has_feature_bigalloc() function directly to check
-> bigalloc feature and the variable has_bigalloc is reduncant, so remove
-> it.
->=20
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+I think you are right about both of them but we also need to put something in
+the verity, dax, and ...  (I can't find a file in Documentation which talks
+about encryption right off) documentation files....  For verity something like.
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+<quote>
+Verity and DAX
+--------------
 
-> ---
-> fs/ext4/super.c | 5 ++---
-> 1 file changed, 2 insertions(+), 3 deletions(-)
->=20
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 855874ea4b29..60bb3991304e 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -3681,7 +3681,7 @@ static int ext4_fill_super(struct super_block =
-*sb, void *data, int silent)
-> 	int blocksize, clustersize;
-> 	unsigned int db_count;
-> 	unsigned int i;
-> -	int needs_recovery, has_huge_files, has_bigalloc;
-> +	int needs_recovery, has_huge_files;
-> 	__u64 blocks_count;
-> 	int err =3D 0;
-> 	unsigned int journal_ioprio =3D DEFAULT_JOURNAL_IOPRIO;
-> @@ -4196,8 +4196,7 @@ static int ext4_fill_super(struct super_block =
-*sb, void *data, int silent)
->=20
-> 	/* Handle clustersize */
-> 	clustersize =3D BLOCK_SIZE << =
-le32_to_cpu(es->s_log_cluster_size);
-> -	has_bigalloc =3D ext4_has_feature_bigalloc(sb);
-> -	if (has_bigalloc) {
-> +	if (ext4_has_feature_bigalloc(sb)) {
-> 		if (clustersize < blocksize) {
-> 			ext4_msg(sb, KERN_ERR,
-> 				 "cluster size (%d) smaller than "
-> --
-> 2.20.0
->=20
+Verity and DAX are not compatible and attempts to set both of these flags on a
+file will fail.
+</quote>
 
+And the same thing in the DAX doc?
 
-Cheers, Andreas
+And where would be appropriate for the encrypt doc?
 
+Ira
 
-
-
-
-
---Apple-Mail=_A080154A-8C9A-4B39-8C4B-AC6E286C4005
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6XTz0ACgkQcqXauRfM
-H+BZHA/9FHNlLnuk4j9U5nBHaygdAd2D6374Vg8VFHr2MJkv9tDw6MTbn78PJAji
-LyaLkkGvqryk7X0B4lys/JzwIOKsGgvHabfWCJ8NLKJOpUKs/nNFEJWN+ZFUleZv
-2lBFDGmgf39ZIIXSvs5NtkIQNjKw/9PBliWaHMW242MgnGenfr+C1nt/l7RinbR/
-hm006NLNJaLfW1nJ9VCnNzu6RHFT9utZaTSQeCJM9ddqsdO/yeioCs+4l9mM4790
-u2/HtKJJf93xcrfBtBK4HKJsnBiGrMd9Oop1l1WPWw7ijK2/Eb84UfChZlNSwURB
-/6lp+G97XY8s0wYxdzLyfD8ub5kXSnFUZHBZ1NETQFuJUoFMg9a5+p6N0J5gCmCg
-gs6TlGv4parkgbb5+eK00HellQI5T/NFpv632iH6mDO3mE//fHu6SSsRA+ayED9Z
-RbwU7EPTMT6JuKSxLtBbgcxAKZmOS9Qb1J6NNEgRRk1fPgU69gZkjKR93tvUVEzI
-MmUToEK1haLuyPH4WFqZPCihtlaM5jzeUIKv0FRYHTOPh8rmY9w9zxSLTJJv5PVw
-A2mX9hSuQ3rJtpuFwl0LOsVGI1MsbDMkkXdZU4jkmsTvtKv54v03ZRSQbqhsdIRF
-c+VmdiqHJLuOB4oT0rPG/bcAnOoBJX/6S+0KfMwp0ohFRo3sBS4=
-=/ew3
------END PGP SIGNATURE-----
-
---Apple-Mail=_A080154A-8C9A-4B39-8C4B-AC6E286C4005--
+> 
+> 								Honza
+> 
+> >  	if (ext4_verity_in_progress(inode))
+> >  		return -EBUSY;
+> >  
+> > -- 
+> > 2.25.1
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
