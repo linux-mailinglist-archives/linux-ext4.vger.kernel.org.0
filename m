@@ -2,107 +2,147 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E081AAFA3
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 19:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FBC1AB00E
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 19:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411032AbgDOR1w (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Apr 2020 13:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411014AbgDOR1n (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Apr 2020 13:27:43 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88DDC061A0C
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 10:27:42 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id f12so2231392edn.12
-        for <linux-ext4@vger.kernel.org>; Wed, 15 Apr 2020 10:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PQn/ANk0pwHlFuEamxgp0PrtqC/xvAZ3EDlh2VOe0m0=;
-        b=yd+J2FgA/lmkvwZA0iSAyzd7KBbCuB/XPFMuZjRayE9JGURa/42PqYHqh7VHqG6yED
-         /nIczfFJbvdoQAofGTftRvfbs5J6uDzfmUI7zWxFs+8D4fq0K2r/F4vzakBSi+Gwk7Bx
-         X0xvX3stfs4GjV5EQpXvDPsua3QTuXUI9TSVNKzn1db2Q+eV16gw9MpJQd57dpb6Sr/D
-         1E623YfOYHf9Av67Mp04BaCkBoZRhDoZNiVRCSubUb/X8dM1J+YRK975cPajYodiP5EX
-         jhAtPq7673DF9HC3HsRN0ErLQCEH1HelkhzITVfbeLqLsX5cmWmt1bDXCJmLiAloPWcj
-         YC5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PQn/ANk0pwHlFuEamxgp0PrtqC/xvAZ3EDlh2VOe0m0=;
-        b=j0/EvGSPDE61lGqT+bUs4lBer7sCLI5wii+F5jI9kjljJxwoFgdgtSMBp2I2Kjkejv
-         hAoZliGj+SoIiyTko7oK4xB7XEZmTOuPhq7RpsINoJoJ7eH0FLc7ZhMDgm2OY8QUWVHv
-         wpRhWViWgJDTcv5092aLMd1p9Hp62Z/hym1UPLEDypcB1NdyB1NdmLhYkc9UEZb9EF4J
-         Z+5ltnjmJSOCBQSBLOsMSN3u1vpAQ9kisup4Y+CmJi/4VfvY0YML1dCLMP1HJyddju76
-         qYFgSzsxtxklEFT05yvhJYZK3GPmRHU+/4SM2NbXZRRdQkFJD69yZRNTYMYVlgr1wvuY
-         5C3w==
-X-Gm-Message-State: AGi0Pua7sBUVNZYykdx75YEq+O2HgohOia4VK03K1tSKkRiR4+XAerQj
-        0ai7wm9Kh1cJxYEkENJvFTlMiKElhkH4iqrJLOB/IA==
-X-Google-Smtp-Source: APiQypJQto6RgiMwvrOJoJJZzQ2YMTpz2NolWBUDftzJdaKnsDAKa/cP6mTGhuplHbMRPC1NtLSayFuBX50THyRB8Ng=
-X-Received: by 2002:a17:906:1e42:: with SMTP id i2mr5854049ejj.317.1586971661463;
- Wed, 15 Apr 2020 10:27:41 -0700 (PDT)
+        id S2411503AbgDORtB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Apr 2020 13:49:01 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:55500 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2411490AbgDORsw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Apr 2020 13:48:52 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03FHmhwq010256
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Apr 2020 13:48:44 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9491A42013D; Wed, 15 Apr 2020 13:48:43 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc:     syzkaller-bugs@googlegroups.com, "Theodore Ts'o" <tytso@mit.edu>,
+        stable@kernel.org,
+        syzbot+bca9799bf129256190da@syzkaller.appspotmail.com
+Subject: [PATCH] ext4: reject mount options not supported when remounting in handle_mount_opt()
+Date:   Wed, 15 Apr 2020 13:48:39 -0400
+Message-Id: <20200415174839.461347-1-tytso@mit.edu>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <to=00000000000098a5d505a34d1e48@google.com>
+References: <to=00000000000098a5d505a34d1e48@google.com>
 MIME-Version: 1.0
-References: <20200414040030.1802884-1-ira.weiny@intel.com> <20200414040030.1802884-4-ira.weiny@intel.com>
- <20200415160307.GJ90651@mit.edu>
-In-Reply-To: <20200415160307.GJ90651@mit.edu>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 15 Apr 2020 10:27:30 -0700
-Message-ID: <CAPcyv4jmBRsexpW2=SxqatbMK_u2aZcGnjeF+76=XwrCHfPoXA@mail.gmail.com>
-Subject: Re: [PATCH RFC 3/8] fs/ext4: Disallow encryption if inode is DAX
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     "Weiny, Ira" <ira.weiny@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 9:03 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Mon, Apr 13, 2020 at 09:00:25PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> >
-> > Encryption and DAX are incompatible.  Changing the DAX mode due to a
-> > change in Encryption mode is wrong without a corresponding
-> > address_space_operations update.
-> >
-> > Make the 2 options mutually exclusive by returning an error if DAX was
-> > set first.
-> >
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->
-> The encryption flag is inherited from the containing directory, and
-> directories can't have the DAX flag set, so anything we do in
-> ext4_set_context() will be safety belt / sanity checking in nature.
->
-> But we *do* need to figure out what we do with mount -o dax=always
-> when the file system might have encrypted files.  My previous comments
-> about the verity flag and dax flag applies here.
->
-> Also note that encrypted files are read/write so we must never allow
-> the combination of ENCRPYT_FL and DAX_FL.  So that may be something
-> where we should teach __ext4_iget() to check for this, and declare the
-> file system as corrupted if it sees this combination.  (For VERITY_FL
-> && DAX_FL that is a combo that we might want to support in the future,
-> so that's probably a case where arguably, we should just ignore the
-> DAX_FL for now.)
+Rejecting the mount options in ext4_remount() means that some mount
+options would be enabled for a small amount of time, and then the
+mount option change would be reverted.  In the case of "mount -o
+remount,dax", this can cause a race where files would temporarily
+treated as DAX --- and then not.
 
-We also have a pending consideration for what MKTME (inline memory
-encryption with programmable hardware keys) means for file-encryption
-+ dax. Certainly kernel based software encryption is incompatible with
-dax, but one of the hallway track discussions I wanted to have at LSF
-is whether fscrypt is the right interface for managing inline memory
-encryption. For now, disallowing ENCRPYT_FL + DAX_FL seems ok if
-ENCRPYT_FL always means software encryption, but this is something to
-circle back to once we get MKTME implemented for volume encryption and
-start to look at finer grained (per-directory key) encryption.
+Cc: stable@kernel.org
+Reported-and-tested-by: syzbot+bca9799bf129256190da@syzkaller.appspotmail.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+---
+ fs/ext4/super.c | 37 +++++++++++--------------------------
+ 1 file changed, 11 insertions(+), 26 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index bf5fcb477f66..6fe32f9aa889 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1726,6 +1726,7 @@ static int clear_qf_name(struct super_block *sb, int qtype)
+ #define MOPT_NO_EXT3	0x0200
+ #define MOPT_EXT4_ONLY	(MOPT_NO_EXT2 | MOPT_NO_EXT3)
+ #define MOPT_STRING	0x0400
++#define MOPT_NO_REMOUNT	0x0800
+ 
+ static const struct mount_opts {
+ 	int	token;
+@@ -1775,12 +1776,12 @@ static const struct mount_opts {
+ 	{Opt_min_batch_time, 0, MOPT_GTE0},
+ 	{Opt_inode_readahead_blks, 0, MOPT_GTE0},
+ 	{Opt_init_itable, 0, MOPT_GTE0},
+-	{Opt_dax, EXT4_MOUNT_DAX, MOPT_SET},
++	{Opt_dax, EXT4_MOUNT_DAX, MOPT_SET | MOPT_NO_REMOUNT},
+ 	{Opt_stripe, 0, MOPT_GTE0},
+ 	{Opt_resuid, 0, MOPT_GTE0},
+ 	{Opt_resgid, 0, MOPT_GTE0},
+-	{Opt_journal_dev, 0, MOPT_NO_EXT2 | MOPT_GTE0},
+-	{Opt_journal_path, 0, MOPT_NO_EXT2 | MOPT_STRING},
++	{Opt_journal_dev, 0, MOPT_NO_EXT2 | MOPT_GTE0 | MOPT_NO_REMOUNT},
++	{Opt_journal_path, 0, MOPT_NO_EXT2 | MOPT_STRING | MOPT_NO_REMOUNT},
+ 	{Opt_journal_ioprio, 0, MOPT_NO_EXT2 | MOPT_GTE0},
+ 	{Opt_data_journal, EXT4_MOUNT_JOURNAL_DATA, MOPT_NO_EXT2 | MOPT_DATAJ},
+ 	{Opt_data_ordered, EXT4_MOUNT_ORDERED_DATA, MOPT_NO_EXT2 | MOPT_DATAJ},
+@@ -1817,7 +1818,7 @@ static const struct mount_opts {
+ 	{Opt_jqfmt_vfsv1, QFMT_VFS_V1, MOPT_QFMT},
+ 	{Opt_max_dir_size_kb, 0, MOPT_GTE0},
+ 	{Opt_test_dummy_encryption, 0, MOPT_GTE0},
+-	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
++	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET | MOPT_NO_REMOUNT},
+ 	{Opt_err, 0, 0}
+ };
+ 
+@@ -1915,6 +1916,12 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
+ 			 "Mount option \"%s\" incompatible with ext3", opt);
+ 		return -1;
+ 	}
++	if ((m->flags & MOPT_NO_REMOUNT) && is_remount) {
++		ext4_msg(sb, KERN_ERR,
++			 "Mount option \"%s\" not supported when remounting",
++			 opt);
++		return -1;
++	}
+ 
+ 	if (args->from && !(m->flags & MOPT_STRING) && match_int(args, &arg))
+ 		return -1;
+@@ -1994,11 +2001,6 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
+ 		}
+ 		sbi->s_resgid = gid;
+ 	} else if (token == Opt_journal_dev) {
+-		if (is_remount) {
+-			ext4_msg(sb, KERN_ERR,
+-				 "Cannot specify journal on remount");
+-			return -1;
+-		}
+ 		*journal_devnum = arg;
+ 	} else if (token == Opt_journal_path) {
+ 		char *journal_path;
+@@ -2006,11 +2008,6 @@ static int handle_mount_opt(struct super_block *sb, char *opt, int token,
+ 		struct path path;
+ 		int error;
+ 
+-		if (is_remount) {
+-			ext4_msg(sb, KERN_ERR,
+-				 "Cannot specify journal on remount");
+-			return -1;
+-		}
+ 		journal_path = match_strdup(&args[0]);
+ 		if (!journal_path) {
+ 			ext4_msg(sb, KERN_ERR, "error: could not dup "
+@@ -5427,18 +5424,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 		}
+ 	}
+ 
+-	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_NO_MBCACHE) {
+-		ext4_msg(sb, KERN_ERR, "can't enable nombcache during remount");
+-		err = -EINVAL;
+-		goto restore_opts;
+-	}
+-
+-	if ((sbi->s_mount_opt ^ old_opts.s_mount_opt) & EXT4_MOUNT_DAX) {
+-		ext4_msg(sb, KERN_WARNING, "warning: refusing change of "
+-			"dax flag with busy inodes while remounting");
+-		sbi->s_mount_opt ^= EXT4_MOUNT_DAX;
+-	}
+-
+ 	if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED)
+ 		ext4_abort(sb, EXT4_ERR_ESHUTDOWN, "Abort forced by user");
+ 
+-- 
+2.24.1
+
