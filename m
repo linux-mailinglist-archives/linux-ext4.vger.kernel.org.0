@@ -2,141 +2,165 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952611AAA3F
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 16:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504931AAB83
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 Apr 2020 17:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894372AbgDOOit (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 15 Apr 2020 10:38:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394080AbgDOOdD (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 15 Apr 2020 10:33:03 -0400
-Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9150121D7E;
-        Wed, 15 Apr 2020 14:32:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586961171;
-        bh=8XWaSPQEn2foEpJeuRzmwtKfRSy0jcH1jiL1DK6qlto=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AP+f0GmvQ6G0JBFmdKJqZshPjHodSus0vbl5J9sBS9owW+n7b0zrdxk8xFyNAesV5
-         h+xIAakhmIVrieT1xjBycxZzwICap5J9XK9ksadIen6XF85K70JTbLtXmKazT593He
-         r7jVCWLjqIEsinUQiPR5uZO5srTuMjowi/fCqq0A=
-Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jOj5t-006kOe-DB; Wed, 15 Apr 2020 16:32:49 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
-Subject: [PATCH 12/34] docs: filesystems: convert dax.txt to ReST
-Date:   Wed, 15 Apr 2020 16:32:25 +0200
-Message-Id: <71b1f910b2c3569a9fdaa8778378dd734f4f0091.1586960617.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <cover.1586960617.git.mchehab+huawei@kernel.org>
-References: <cover.1586960617.git.mchehab+huawei@kernel.org>
+        id S1414636AbgDOPLt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 15 Apr 2020 11:11:49 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:49366 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730901AbgDOPLn (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 15 Apr 2020 11:11:43 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03FF3gY5073535;
+        Wed, 15 Apr 2020 15:11:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=MOfRD5Cwea5AiSC2Q578nXPPlxyjV7Yye8pgBK2f8w8=;
+ b=FeKL6UhPMQbqcyY7ee3CsyLWbT39OUkh2vC+AQ4j6iStWi5nZNdQk/tF5wUs82V07zuI
+ KUjkaLMX36ovwLFQWfpVVmJasYIzugob0YYaPqJn/GY0Tm9rLKZTVX8KWlpeWk5r+toW
+ jPBsA/Oo2FtA7V5eDCS8lzF1cEdY85CJa9X9sGXQeadoJPUYxmqObu/s0lsBt/3CupEm
+ nT7PL3G+Kbh0/x663X20kuMfxp5X+tF3H/3TQZtOgYEOqGv32EsA5xtAEp613TUdTKfS
+ kasQzEo4dGDfKIgTTlt79Rn0DD30pONcmKnP2zJvxIxOk5adq4a6iG6wBacuu1smDjeL vw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 30e0aa1h95-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Apr 2020 15:11:28 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03FF7Axu112260;
+        Wed, 15 Apr 2020 15:11:27 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 30dyveyqjp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Apr 2020 15:11:27 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03FFBPIm031474;
+        Wed, 15 Apr 2020 15:11:25 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Apr 2020 08:11:24 -0700
+Date:   Wed, 15 Apr 2020 08:11:23 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V8 04/11] fs/xfs: Change XFS_MOUNT_DAX to
+ XFS_MOUNT_DAX_ALWAYS
+Message-ID: <20200415151123.GM6742@magnolia>
+References: <20200415064523.2244712-1-ira.weiny@intel.com>
+ <20200415064523.2244712-5-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200415064523.2244712-5-ira.weiny@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004150112
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9591 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
+ impostorscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
+ suspectscore=1 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004150112
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-- Add a SPDX header;
-- Adjust document title;
-- Some whitespace fixes and new line breaks;
-- Add it to filesystems/index.rst.
+On Tue, Apr 14, 2020 at 11:45:16PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> In prep for the new tri-state mount option which then introduces
+> XFS_MOUNT_DAX_NEVER.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/admin-guide/ext4.rst             | 2 +-
- Documentation/filesystems/{dax.txt => dax.rst} | 9 +++++++--
- Documentation/filesystems/ext2.rst             | 2 +-
- Documentation/filesystems/index.rst            | 1 +
- 4 files changed, 10 insertions(+), 4 deletions(-)
- rename Documentation/filesystems/{dax.txt => dax.rst} (97%)
+Looks straightforward,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-diff --git a/Documentation/admin-guide/ext4.rst b/Documentation/admin-guide/ext4.rst
-index 9443fcef1876..103bcc345bad 100644
---- a/Documentation/admin-guide/ext4.rst
-+++ b/Documentation/admin-guide/ext4.rst
-@@ -392,7 +392,7 @@ When mounting an ext4 filesystem, the following option are accepted:
- 
-   dax
-         Use direct access (no page cache).  See
--        Documentation/filesystems/dax.txt.  Note that this option is
-+        Documentation/filesystems/dax.rst.  Note that this option is
-         incompatible with data=journal.
- 
- Data Mode
-diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.rst
-similarity index 97%
-rename from Documentation/filesystems/dax.txt
-rename to Documentation/filesystems/dax.rst
-index 735f3859b19f..5838144f80f0 100644
---- a/Documentation/filesystems/dax.txt
-+++ b/Documentation/filesystems/dax.rst
-@@ -1,5 +1,8 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=======================
- Direct Access for files
-------------------------
-+=======================
- 
- Motivation
- ----------
-@@ -46,6 +49,7 @@ stall the CPU for an extended period, you should also not attempt to
- implement direct_access.
- 
- These block devices may be used for inspiration:
-+
- - brd: RAM backed block device driver
- - dcssblk: s390 dcss block device driver
- - pmem: NVDIMM persistent memory driver
-@@ -55,6 +59,7 @@ Implementation Tips for Filesystem Writers
- ------------------------------------------
- 
- Filesystem support consists of
-+
- - adding support to mark inodes as being DAX by setting the S_DAX flag in
-   i_flags
- - implementing ->read_iter and ->write_iter operations which use dax_iomap_rw()
-@@ -127,6 +132,6 @@ by adding optional struct page support for pages under the control of
- the driver (see CONFIG_NVDIMM_PFN in drivers/nvdimm for an example of
- how to do this). In the non struct page cases O_DIRECT reads/writes to
- those memory ranges from a non-DAX file will fail (note that O_DIRECT
--reads/writes _of a DAX file_ do work, it is the memory that is being
-+reads/writes _of a DAX ``file_`` do work, it is the memory that is being
- accessed that is key here).  Other things that will not work in the
- non struct page case include RDMA, sendfile() and splice().
-diff --git a/Documentation/filesystems/ext2.rst b/Documentation/filesystems/ext2.rst
-index d83dbbb162e2..fa416b7a5802 100644
---- a/Documentation/filesystems/ext2.rst
-+++ b/Documentation/filesystems/ext2.rst
-@@ -24,7 +24,7 @@ check=none, nocheck	(*)	Don't do extra checking of bitmaps on mount
- 				(check=normal and check=strict options removed)
- 
- dax				Use direct access (no page cache).  See
--				Documentation/filesystems/dax.txt.
-+				Documentation/filesystems/dax.rst.
- 
- debug				Extra debugging information is sent to the
- 				kernel syslog.  Useful for developers.
-diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index c4f95f76ba6a..8e3ccb4ed483 100644
---- a/Documentation/filesystems/index.rst
-+++ b/Documentation/filesystems/index.rst
-@@ -24,6 +24,7 @@ algorithms work.
-    splice
-    locking
-    directory-locking
-+   dax
- 
-    automount-support
- 
--- 
-2.25.2
+--D
 
+> ---
+>  fs/xfs/xfs_iops.c  | 2 +-
+>  fs/xfs/xfs_mount.h | 2 +-
+>  fs/xfs/xfs_super.c | 8 ++++----
+>  3 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 81f2f93caec0..a6e634631da8 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -1248,7 +1248,7 @@ xfs_inode_supports_dax(
+>  		return false;
+>  
+>  	/* DAX mount option or DAX iflag must be set. */
+> -	if (!(mp->m_flags & XFS_MOUNT_DAX) &&
+> +	if (!(mp->m_flags & XFS_MOUNT_DAX_ALWAYS) &&
+>  	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX))
+>  		return false;
+>  
+> diff --git a/fs/xfs/xfs_mount.h b/fs/xfs/xfs_mount.h
+> index 88ab09ed29e7..54bd74088936 100644
+> --- a/fs/xfs/xfs_mount.h
+> +++ b/fs/xfs/xfs_mount.h
+> @@ -233,7 +233,7 @@ typedef struct xfs_mount {
+>  						   allocator */
+>  #define XFS_MOUNT_NOATTR2	(1ULL << 25)	/* disable use of attr2 format */
+>  
+> -#define XFS_MOUNT_DAX		(1ULL << 62)	/* TEST ONLY! */
+> +#define XFS_MOUNT_DAX_ALWAYS	(1ULL << 62)	/* TEST ONLY! */
+>  
+>  /*
+>   * Max and min values for mount-option defined I/O
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index 2094386af8ac..3863f41757d2 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -129,7 +129,7 @@ xfs_fs_show_options(
+>  		{ XFS_MOUNT_GRPID,		",grpid" },
+>  		{ XFS_MOUNT_DISCARD,		",discard" },
+>  		{ XFS_MOUNT_LARGEIO,		",largeio" },
+> -		{ XFS_MOUNT_DAX,		",dax" },
+> +		{ XFS_MOUNT_DAX_ALWAYS,		",dax" },
+>  		{ 0, NULL }
+>  	};
+>  	struct xfs_mount	*mp = XFS_M(root->d_sb);
+> @@ -1244,7 +1244,7 @@ xfs_fc_parse_param(
+>  		return 0;
+>  #ifdef CONFIG_FS_DAX
+>  	case Opt_dax:
+> -		mp->m_flags |= XFS_MOUNT_DAX;
+> +		mp->m_flags |= XFS_MOUNT_DAX_ALWAYS;
+>  		return 0;
+>  #endif
+>  	default:
+> @@ -1437,7 +1437,7 @@ xfs_fc_fill_super(
+>  	if (XFS_SB_VERSION_NUM(&mp->m_sb) == XFS_SB_VERSION_5)
+>  		sb->s_flags |= SB_I_VERSION;
+>  
+> -	if (mp->m_flags & XFS_MOUNT_DAX) {
+> +	if (mp->m_flags & XFS_MOUNT_DAX_ALWAYS) {
+>  		bool rtdev_is_dax = false, datadev_is_dax;
+>  
+>  		xfs_warn(mp,
+> @@ -1451,7 +1451,7 @@ xfs_fc_fill_super(
+>  		if (!rtdev_is_dax && !datadev_is_dax) {
+>  			xfs_alert(mp,
+>  			"DAX unsupported by block device. Turning off DAX.");
+> -			mp->m_flags &= ~XFS_MOUNT_DAX;
+> +			mp->m_flags &= ~XFS_MOUNT_DAX_ALWAYS;
+>  		}
+>  		if (xfs_sb_version_hasreflink(&mp->m_sb)) {
+>  			xfs_alert(mp,
+> -- 
+> 2.25.1
+> 
