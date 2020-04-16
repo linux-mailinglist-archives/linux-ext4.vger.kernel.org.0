@@ -2,81 +2,77 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CED1ABDF5
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Apr 2020 12:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2841AC574
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Apr 2020 16:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504878AbgDPKc6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Apr 2020 06:32:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56282 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505042AbgDPKc3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Apr 2020 06:32:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0F955AA55;
-        Thu, 16 Apr 2020 10:32:27 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E39E41E1250; Thu, 16 Apr 2020 12:32:26 +0200 (CEST)
-Date:   Thu, 16 Apr 2020 12:32:26 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 4/8] fs/ext4: Introduce DAX inode flag
-Message-ID: <20200416103226.GE23739@quack2.suse.cz>
-References: <20200414040030.1802884-1-ira.weiny@intel.com>
- <20200414040030.1802884-5-ira.weiny@intel.com>
- <20200415120846.GG6126@quack2.suse.cz>
- <20200415203924.GD2309605@iweiny-DESK2.sc.intel.com>
+        id S2503185AbgDPOTf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Apr 2020 10:19:35 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2383 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2442450AbgDPOTY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 16 Apr 2020 10:19:24 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 13ACFF3664D218E272C3;
+        Thu, 16 Apr 2020 22:19:16 +0800 (CST)
+Received: from [127.0.0.1] (10.166.212.218) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Apr 2020
+ 22:19:06 +0800
+From:   yangerkun <yangerkun@huawei.com>
+Subject: [QUESTION] BUG_ON in ext4_mb_simple_scan_group
+To:     <tytso@mit.edu>, <jack@suse.cz>, <dmonakhov@gmail.com>,
+        <adilger@dilger.ca>, <bob.liu@oracle.com>, <wshilong@ddn.com>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
+CC:     <linux-ext4@vger.kernel.org>
+Message-ID: <9ba13e20-2946-897d-0b81-3ea7b21a4db6@huawei.com>
+Date:   Thu, 16 Apr 2020 22:19:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200415203924.GD2309605@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.212.218]
+X-CFilter-Loop: Reflected
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 15-04-20 13:39:25, Ira Weiny wrote:
-> > > @@ -813,6 +818,17 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
-> > >  	return error;
-> > >  }
-> > >  
-> > > +static void ext4_dax_dontcache(struct inode *inode, unsigned int flags)
-> > > +{
-> > > +	struct ext4_inode_info *ei = EXT4_I(inode);
-> > > +
-> > > +	if (S_ISDIR(inode->i_mode))
-> > > +		return;
-> > > +
-> > > +	if ((ei->i_flags ^ flags) == EXT4_DAX_FL)
-> > > +		inode->i_state |= I_DONTCACHE;
-> > > +}
-> > > +
-> > 
-> > You probably want to use the function you've introduced in the XFS series
-> > here...
-> 
-> you mean:
-> 
-> flag_inode_dontcache()
-> ???
+Nowadays, we trigger the a bug that has been reported before[1](trigger 
+the bug with read block bitmap error before). After search the patch,
+I found some related patch which has not been included in our kernel.
 
-Yeah, that's what I meant.
+eb5760863fc2 ext4: mark block bitmap corrupted when found instead of BUGON
+736dedbb1a7d ext4: mark block bitmap corrupted when found
+206f6d552d0c ext4: mark inode bitmap corrupted when found
+db79e6d1fb1f ext4: add new ext4_mark_group_bitmap_corrupted() helper
+0db9fdeb347c ext4: fix wrong return value in ext4_read_inode_bitmap()
 
-> Yes that is done.  I sent this prior to v8 (where that was added) of the other
-> series...
+Maybe this patch can fix the problem, but I am a little confused with
+the explain from Ted described in the mail:
 
-Yep, I thought that was the case but I wanted to mention it as a reminder.
+ > What probably happened is that the page containing actual allocation
+ > bitmap was pushed out of memory due to memory pressure.  However, the
+ > buddy bitmap was still cached in memory.  That's actually quite
+ > possible since the buddy bitmap will often be referenced more
+ > frequently than the allocation bitmap (for example, while searching
+ > for free space of a specific size, and then having that block group
+ > skipped when it's not available).
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ > Since there was an I/O error reading the allocation bitmap, the buffer
+ > is not valid.  So it's not surprising that the BUG_ON(k >= max) is
+ > getting triggered.
+
+(Our machine: x86, 4K page size, 4K block size)
+
+After check the related code, we found that once we get a IO error from 
+ext4_wait_block_bitmap, ext4_mb_init_cache will return directly with a 
+error number, so the latter ext4_mb_simple_scan_group may never been 
+called! So any other scene will trigger this BUG_ON?
+
+Thanks,
+Kun.
+
+-----
+[1] https://www.spinics.net/lists/linux-ext4/msg60329.html
+
