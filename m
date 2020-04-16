@@ -2,155 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2688B1ABA1D
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 Apr 2020 09:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC7E1ABCFF
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 Apr 2020 11:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439412AbgDPHjT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Apr 2020 03:39:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29858 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2439327AbgDPHjS (ORCPT
+        id S2503780AbgDPJix (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 16 Apr 2020 05:38:53 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:49709 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2503578AbgDPJiv (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Apr 2020 03:39:18 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03G7aUfN157946
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Apr 2020 03:39:12 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30ek46g2ma-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Apr 2020 03:39:11 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Thu, 16 Apr 2020 08:38:32 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 16 Apr 2020 08:38:28 +0100
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03G7bwF544499322
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Apr 2020 07:37:58 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8670DA405C;
-        Thu, 16 Apr 2020 07:39:04 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8A1E3A405F;
-        Thu, 16 Apr 2020 07:39:01 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.90.179])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 16 Apr 2020 07:38:59 +0000 (GMT)
-Subject: Re: [RFC 1/1] ext4: Fix overflow case for map.m_len in
- ext4_iomap_begin_*
-To:     Jan Kara <jack@suse.cz>
-Cc:     tytso@mit.edu, linux-ext4@vger.kernel.org, adilger@dilger.ca,
-        darrick.wong@oracle.com, hch@infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, willy@infradead.org,
-        linux-unionfs@vger.kernel.org,
-        syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com
-References: <00000000000048518b05a2fef23a@google.com>
- <dea98f0b07e16de219d8741c1fefc7cb476cb482.1586681010.git.riteshh@linux.ibm.com>
- <20200414155013.GF28226@quack2.suse.cz>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Thu, 16 Apr 2020 13:08:55 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 16 Apr 2020 05:38:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587029929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T+rqi3L5FDJqD7YQTOqV2EpVQXTH9nkPrZpkHOsY7JM=;
+        b=KWuBfUSWq3LQRvNHnX9dI29xs/GALxbNPFEQJblPbVi1tAX6YsCnzo4PizzqauCsjAI6t3
+        mCyIZTfWqXbHC6fF1Ox3B+J6VCGqpGtvgR9bSdwvBOV75EAOuOTQEfjplMnIWjQnGKM/Z3
+        p5GSvoQqyIEi6tRluQtef7t5SwJoufQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-uGpiPWxRNdCNHcn7i7BxBw-1; Thu, 16 Apr 2020 05:38:47 -0400
+X-MC-Unique: uGpiPWxRNdCNHcn7i7BxBw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 972E910CE787;
+        Thu, 16 Apr 2020 09:38:45 +0000 (UTC)
+Received: from work (unknown [10.40.192.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D93E0A0997;
+        Thu, 16 Apr 2020 09:38:44 +0000 (UTC)
+Date:   Thu, 16 Apr 2020 11:38:40 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] e2scrub: Remove PATH setting from the scripts
+Message-ID: <20200416093840.y5w2azeivn6mhbnu@work>
+References: <20200402134716.3725-1-lczerner@redhat.com>
+ <20200410161635.GP45598@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <20200414155013.GF28226@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20041607-0016-0000-0000-00000305759E
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041607-0017-0000-0000-000033697825
-Message-Id: <20200416073901.8A1E3A405F@b06wcsmtp001.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-16_02:2020-04-14,2020-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 phishscore=0
- adultscore=0 suspectscore=0 mlxlogscore=889 impostorscore=0 spamscore=0
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004160045
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200410161635.GP45598@mit.edu>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Fri, Apr 10, 2020 at 12:16:35PM -0400, Theodore Y. Ts'o wrote:
+> On Thu, Apr 02, 2020 at 03:47:16PM +0200, Lukas Czerner wrote:
+> > We don't want to override system setting by changing the PATH. This
+> > should remain under administrator/user control.
+> > 
+> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+> 
+> The reason why the PATH was added is because most users don't have
+> /sbin or /usr/sbin in their PATH, and if they run "sudo e2scrub",
+> finding commands like lvcreate, lvremove, et. al., wouldn't be there.
 
-Sorry Jan and others. Please ignore this patch.
-I will resend a proper one after making sure it is tested via syzbot.
+I don't understand, e2scrub should be in be in sbin as well, right ?
+Besides what if such user wants to run lvcreate, or lvremove ? This
+seems like a problem that should be fixed somewhere else.
 
-On 4/14/20 9:20 PM, Jan Kara wrote:
-> On Sun 12-04-20 14:54:35, Ritesh Harjani wrote:
->> EXT4_MAX_LOGICAL_BLOCK - map.m_lblk + 1 in case when
->> map.m_lblk (offset) is 0 could overflow an unsigned int
->> and become 0.
->>
->> Fix this.
->>
->> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
->> Reported-by: syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com
->> Fixes: d3b6f23f7167 ("ext4: move ext4_fiemap to use iomap framework")
 > 
-> The patch looks good to me. You can add:
+> I suppose we could do something like
 > 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> PATH=$PATH:/sbin:/usr/sbin
+
+that's better than replacing it.
+
+-Lukas
+
 > 
-> 								Honza
+> instead, but otherwise, users will see some unexpected failures.
 > 
->> ---
->>   fs/ext4/inode.c | 12 ++++++++++--
->>   1 file changed, 10 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index e416096fc081..d630ec7a9c8e 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -3424,6 +3424,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->>   	int ret;
->>   	struct ext4_map_blocks map;
->>   	u8 blkbits = inode->i_blkbits;
->> +	loff_t len;
->>   
->>   	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
->>   		return -EINVAL;
->> @@ -3435,8 +3436,11 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->>   	 * Calculate the first and last logical blocks respectively.
->>   	 */
->>   	map.m_lblk = offset >> blkbits;
->> -	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
->> +	len = min_t(loff_t, (offset + length - 1) >> blkbits,
->>   			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
->> +	if (len > EXT4_MAX_LOGICAL_BLOCK)
->> +		len = EXT4_MAX_LOGICAL_BLOCK;
->> +	map.m_len = len;
->>   
->>   	if (flags & IOMAP_WRITE)
->>   		ret = ext4_iomap_alloc(inode, &map, flags);
->> @@ -3524,6 +3528,7 @@ static int ext4_iomap_begin_report(struct inode *inode, loff_t offset,
->>   	bool delalloc = false;
->>   	struct ext4_map_blocks map;
->>   	u8 blkbits = inode->i_blkbits;
->> +	loff_t len
->>   
->>   	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
->>   		return -EINVAL;
->> @@ -3541,8 +3546,11 @@ static int ext4_iomap_begin_report(struct inode *inode, loff_t offset,
->>   	 * Calculate the first and last logical block respectively.
->>   	 */
->>   	map.m_lblk = offset >> blkbits;
->> -	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
->> +	len = min_t(loff_t, (offset + length - 1) >> blkbits,
->>   			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
->> +	if (len > EXT4_MAX_LOGICAL_BLOCK)
->> +		len = EXT4_MAX_LOGICAL_BLOCK;
->> +	map.m_len = len;
->>   
->>   	/*
->>   	 * Fiemap callers may call for offset beyond s_bitmap_maxbytes.
->> -- 
->> 2.21.0
->>
+> 	     		      	       	    	       - Ted
+> 
 
