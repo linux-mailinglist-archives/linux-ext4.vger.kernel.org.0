@@ -2,342 +2,229 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222031AD4D8
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 Apr 2020 05:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE881AD666
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 Apr 2020 08:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgDQD0y (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 16 Apr 2020 23:26:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10232 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726123AbgDQD0y (ORCPT
+        id S1728433AbgDQGnn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 17 Apr 2020 02:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728012AbgDQGnm (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 16 Apr 2020 23:26:54 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03H33onC040034
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Apr 2020 23:26:53 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30f46prg13-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Thu, 16 Apr 2020 23:26:53 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Fri, 17 Apr 2020 04:26:07 +0100
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 17 Apr 2020 04:26:03 +0100
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03H3Qk7C55705694
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Apr 2020 03:26:46 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E8E1A4040;
-        Fri, 17 Apr 2020 03:26:46 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75DF3A404D;
-        Fri, 17 Apr 2020 03:26:44 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.81.253])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 17 Apr 2020 03:26:44 +0000 (GMT)
-Subject: Re: [QUESTION] BUG_ON in ext4_mb_simple_scan_group
-To:     "zhangyi (F)" <yi.zhang@huawei.com>
-Cc:     yangerkun <yangerkun@huawei.com>, tytso@mit.edu, jack@suse.cz,
-        dmonakhov@gmail.com, adilger@dilger.ca, bob.liu@oracle.com,
-        wshilong@ddn.com, linux-ext4@vger.kernel.org
-References: <9ba13e20-2946-897d-0b81-3ea7b21a4db6@huawei.com>
- <20200416183309.13914A404D@d06av23.portsmouth.uk.ibm.com>
- <39040d8c-9918-d976-a25a-0ec189f1e111@huawei.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Fri, 17 Apr 2020 08:56:43 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <39040d8c-9918-d976-a25a-0ec189f1e111@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20041703-0020-0000-0000-000003C93CDC
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041703-0021-0000-0000-0000222226A7
-Message-Id: <20200417032644.75DF3A404D@d06av23.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-16_10:2020-04-14,2020-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- lowpriorityscore=0 adultscore=0 spamscore=0 impostorscore=0 malwarescore=0
- suspectscore=0 phishscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004170020
+        Fri, 17 Apr 2020 02:43:42 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D86B0C061A41
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Apr 2020 23:43:41 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a32so672819pje.5
+        for <linux-ext4@vger.kernel.org>; Thu, 16 Apr 2020 23:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=5q3WqG9SB5tYdylD2a0m5b5mUeTB2l3FK9r70pi+Ta8=;
+        b=DqK2lBOu1IjOaMaSXoWKH7Z3nE+GdH2xNBeBIFaPFIZXAMexv9v4dvdfVh2OSCXe2s
+         775s6zQRsymiZbMg2KT+TJmTFnoy0mi79qnpBAJyx2Uc+iK47AIgrSVRYkhGFlWReplI
+         XZ0rQ7ktoRxqI0voxTZKcxe/la8PNlMQFl6TZOZkuPT3TvBsBhI7amo2wyJUX7xC1dCS
+         EjPK7wAtbH1Lt4M9ATsJlW0iqf2SDhBO174r1qojZ6Q3xoNgF5TeHe0e5F4KyEFGFLLc
+         jgouEoiKD6oz5aHLizmmt1OmoijtGH0kxiuMzGp+UzFLwZnREgTxxw4R8GCGeBRPK0T3
+         B9Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=5q3WqG9SB5tYdylD2a0m5b5mUeTB2l3FK9r70pi+Ta8=;
+        b=VciXBFdEJqhxn0dQzqWdXxZjit2tBtFnT9Iv9//T8/xJ9oLn4hFsXUsJJ4Gj6xBXks
+         fsWa7TfA6IuVPg7g8dNFy6OE6jTeJUTv3XkW1iASszjIBw43HwRCPnj57dO+zZOug+Sd
+         sVqjV6pqBA8RCvcs+xU4eqo6hLRaEefwBcTRgZM9HgwL8q9Q/yLENH+hgZFeRPE6+eTB
+         uErumVqyDB4XfkM+9GNdZT4Bitc8WcpLNvasvrQUeEKnvBVZ1zhsnfzDsV0v9YxFTimW
+         Zdjjpvo2aBAVaiXr1d3GFa478jdOoo3a6udZSB967do38PKa7c3yf1wxv3QIity8xZOP
+         kHjg==
+X-Gm-Message-State: AGi0PuYdRx8mazE5mEvGBL3eInVDVn36v59myOkJvN4uzIU3yw41vgGU
+        PostH/e0eaUM/hA/Hg539lTZQw==
+X-Google-Smtp-Source: APiQypLGkzoCro0ltAdsDK4nr1W39R+Zc9W7hACqJqfvv9aDZqi6iQ5f5vF/xvLE9JvhSHCIcunKEA==
+X-Received: by 2002:a17:902:5999:: with SMTP id p25mr2141910pli.189.1587105821015;
+        Thu, 16 Apr 2020 23:43:41 -0700 (PDT)
+Received: from [192.168.10.175] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id h66sm17773686pgc.42.2020.04.16.23.43.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Apr 2020 23:43:40 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andreas Dilger <adilger@dilger.ca>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH RFC 4/8] fs/ext4: Introduce DAX inode flag
+Date:   Fri, 17 Apr 2020 00:43:39 -0600
+Message-Id: <324CEF76-20AA-40F5-A31B-6E0B1CCED736@dilger.ca>
+References: <20200417022036.GQ2309605@iweiny-DESK2.sc.intel.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+In-Reply-To: <20200417022036.GQ2309605@iweiny-DESK2.sc.intel.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Yi,
+We still need to store an on-disk DAX flag for Ext4, and at that point it
+doesn't make sense not to expose it via the standard Ext4 chattr utility.
 
-On 4/17/20 7:36 AM, zhangyi (F) wrote:
-> Hi, Ritesh
-> 
-> On 2020/4/17 2:33, Ritesh Harjani wrote:
->> Hello Kun,
->>
->> On 4/16/20 7:49 PM, yangerkun wrote:
->>> Nowadays, we trigger the a bug that has been reported before[1](trigger the bug with read block bitmap error before). After search the patch,
->>> I found some related patch which has not been included in our kernel.
->>>
->>> eb5760863fc2 ext4: mark block bitmap corrupted when found instead of BUGON
->>> 736dedbb1a7d ext4: mark block bitmap corrupted when found
->>> 206f6d552d0c ext4: mark inode bitmap corrupted when found
->>> db79e6d1fb1f ext4: add new ext4_mark_group_bitmap_corrupted() helper
->>> 0db9fdeb347c ext4: fix wrong return value in ext4_read_inode_bitmap()
->>
->> I see that you anyways have figured all these patches out.
->>
->>>
->>> Maybe this patch can fix the problem, but I am a little confused with
->>> the explain from Ted described in the mail:
->>>
->>>   > What probably happened is that the page containing actual allocation
->>>   > bitmap was pushed out of memory due to memory pressure.  However, the
->>>   > buddy bitmap was still cached in memory.  That's actually quite
->>>   > possible since the buddy bitmap will often be referenced more
->>>   > frequently than the allocation bitmap (for example, while searching
->>>   > for free space of a specific size, and then having that block group
->>>   > skipped when it's not available).
->>>
->>>   > Since there was an I/O error reading the allocation bitmap, the buffer
->>>   > is not valid.  So it's not surprising that the BUG_ON(k >= max) is
->>>   > getting triggered.
->>
->> @Others, please correct me if I am wrong here.
->>
->> So just as a small summary. Ext4 maintains an inode (we call it as
->> buddy cache inode which is sbi->s_buddy_cache) which stores the block
->> bitmap and buddy information for every block group. So we require 2
->> blocks for every block group to store both of this info in it.
->>
->> So what generally happens is whenever there is a request to block
->> allocation, this(buddy and block bitmap information is loaded from the
->> disk into the page cache.
->>
->> When someone does the block allocation these pages get loaded into the
->> page cache. And it will be there until these pages are getting heavily
->> used (that's coz of page eviction algo in mm).
->> But in case when the memory pressure is high, these pages may get
->> written out and eventually getting evicted from the page cache.
->> Now if any of this page is not present in the page cache we go and try
->> to read it from the disk. (I think that's the job of
->> ext4_mb_load_buddy_gfp()).
->>
->> So let's say while reading this page from disk we get an I/O error,
->> so this means, as Ted explained, that the buffer which was not properly
->> read and hence it is not uptodate (and so we also don't set buffer
->> verified bit).
->> And in that case we should mark that block group corrupted. So that next
->> time, ext4_mb_good_group() does not allow us to do allocation from that
->> block group. I think some of the patches which you pointed add the logic
->> into the mballoc. So that we don't hit that bug_on().
->>
->> {...
->> [Addition info - not related to your issue though]
->> So this could also be an e.g. where the grp->bb_free may not be uptodate
->> for a block group of which bitmap was not properly loaded.
->> ...}
->>
->>
->>>
->>> (Our machine: x86, 4K page size, 4K block size)
->>>
->>> After check the related code, we found that once we get a IO error from ext4_wait_block_bitmap, ext4_mb_init_cache will return directly with a error number, so the latter ext4_mb_simple_scan_group may never been called! So any other scene will trigger this BUG_ON?
->>
->> Sorry that's not what I see in latest upstream kernel.
->> I am not sure which kernel version you are checking this on.
->> Check the latest upstream kernel and compare with it.
->>
->>
-> 
-> Thanks for your reply.
-> 
-> We check the upstream kernel 5.7-rc1, on our machine which has 4K page size
-> and 4K block size, if the ext4_wait_block_bitmap() invoked from
-> ext4_mb_init_cache() return -EIO, the 'err' variable will be set and the
-> subsequent loop will be jumped out due to '!buffer_verified[group - first_group]
-> && blocks_per_page == 1', so the -EIO error number will return by
-> ext4_mb_load_buddy() and there is no chance to invoke ext4_mb_simple_scan_group()
-> and trigger BUG_ON().
-> 
-> static int ext4_mb_init_cache(struct page *page, char *incore, gfp_t gfp)
-> {
-> ...
->          /* wait for I/O completion */
->          for (i = 0, group = first_group; i < groups_per_page; i++, group++) {
-> ...
->                  err2 = ext4_wait_block_bitmap(sb, group, bh[i]);
->                  if (!err)
->                          err = err2;     <------ set -EIO here
->          }
-> 
->          first_block = page->index * blocks_per_page;
->          for (i = 0; i < blocks_per_page; i++) {
->                  group = (first_block + i) >> 1;
-> ...
->                  if (!buffer_verified(bh[group - first_group]))
->                          /* Skip faulty bitmaps */
->                          continue;<----- blocks_per_page == 1, we jump out here
->                  err = 0;  <---- never excute
-> ...
-> out:
-> ...
->          return err;
-> }
-> 
-> static noinline_for_stack int
-> ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
-> {
-> ...
->                         err = ext4_mb_load_buddy(sb, group, &e4b);
->                         if (err)
->                                 goto out;   <--- return here
-> ...
->                         if (cr == 0)
->                                 ext4_mb_simple_scan_group(ac, &e4b); <--- never invoke
-> ...
-> }
+So having EXT4_DAX_FL (=3D=3D FS_DAX_FL) is no extra effort to add.
 
-Yup, I guess what you mentioned is correct. But I noted one other thing.
-Check if below could lead to this.
+Cheers, Andreas
 
-static int ext4_mb_init_cache(struct page *page, char *incore, gfp_t gfp)
-{
-<...>
-	first_group = page->index * blocks_per_page / 2;
+> On Apr 16, 2020, at 20:20, Ira Weiny <ira.weiny@intel.com> wrote:
+>=20
+> =EF=BB=BFOn Thu, Apr 16, 2020 at 06:57:31PM -0700, Darrick J. Wong wrote:
+>>> On Thu, Apr 16, 2020 at 05:37:19PM -0700, Ira Weiny wrote:
+>>> On Thu, Apr 16, 2020 at 03:49:37PM -0700, Darrick J. Wong wrote:
+>>>> On Thu, Apr 16, 2020 at 03:33:27PM -0700, Ira Weiny wrote:
+>>>>> On Thu, Apr 16, 2020 at 09:25:04AM -0700, Darrick J. Wong wrote:
+>>>>>> On Mon, Apr 13, 2020 at 09:00:26PM -0700, ira.weiny@intel.com wrote:
+>>>>>>> From: Ira Weiny <ira.weiny@intel.com>
+>>>>>>>=20
+>>>>>>> Add a flag to preserve FS_XFLAG_DAX in the ext4 inode.
+>>>>>>>=20
+>>>>>>> Set the flag to be user visible and changeable.  Set the flag to be
+>>>>>>> inherited.  Allow applications to change the flag at any time.
+>>>>>>>=20
+>>>>>>> Finally, on regular files, flag the inode to not be cached to facili=
+tate
+>>>>>>> changing S_DAX on the next creation of the inode.
+>>>>>>>=20
+>>>>>>> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+>>>>>>> ---
+>>>>>>> fs/ext4/ext4.h  | 13 +++++++++----
+>>>>>>> fs/ext4/ioctl.c | 21 ++++++++++++++++++++-
+>>>>>>> 2 files changed, 29 insertions(+), 5 deletions(-)
+>>>>>>>=20
+>>>>>>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>>>>>>> index 61b37a052052..434021fcec88 100644
+>>>>>>> --- a/fs/ext4/ext4.h
+>>>>>>> +++ b/fs/ext4/ext4.h
+>>>>>>> @@ -415,13 +415,16 @@ struct flex_groups {
+>>>>>>> #define EXT4_VERITY_FL            0x00100000 /* Verity protected ino=
+de */
+>>>>>>> #define EXT4_EA_INODE_FL            0x00200000 /* Inode used for lar=
+ge EA */
+>>>>>>> #define EXT4_EOFBLOCKS_FL        0x00400000 /* Blocks allocated beyo=
+nd EOF */
+>>>>>>> +
+>>>>>>> +#define EXT4_DAX_FL            0x00800000 /* Inode is DAX */
+>>>>>>=20
+>>>>>> Sooo, fun fact about ext4 vs. the world--
+>>>>>>=20
+>>>>>> The GETFLAGS/SETFLAGS ioctl, since it came from ext2, shares the same=
 
-	/* read all groups the page covers into the cache */
-	for (i = 0, group = first_group; i < groups_per_page; i++, group++) {
-		if (group >= ngroups)
-			break;
+>>>>>> flag values as the ondisk inode flags in ext*.  Therefore, each of th=
+ese
+>>>>>> EXT4_[whatever]_FL values are supposed to have a FS_[whatever]_FL
+>>>>>> equivalent in include/uapi/linux/fs.h.
+>>>>>=20
+>>>>> Interesting...
+>>>>>=20
+>>>>>>=20
+>>>>>> (Note that the "[whatever]" is a straight translation since the same
+>>>>>> uapi header also defines the FS_XFLAG_[xfswhatever] flag values; igno=
+re
+>>>>>> those.)
+>>>>>>=20
+>>>>>> Evidently, FS_NOCOW_FL already took 0x800000, but ext4.h was never
+>>>>>> updated to note that the value was taken.  I think Ted might be incli=
+ned
+>>>>>> to reserve the ondisk inode bit just in case ext4 ever does support c=
+opy
+>>>>>> on write, though that's his call. :)
+>>>>>=20
+>>>>> Seems like I should change this...  And I did not realize I was inhere=
+ntly
+>>>>> changing a bit definition which was exposed to other FS's...
+>>>>=20
+>>>> <nod> This whole thing is a mess, particularly now that we have two vfs=
 
-		grinfo = ext4_get_group_info(sb, group);
-		/*
-		 * If page is uptodate then we came here after online resize
-		 * which added some new uninitialized group info structs, so
-		 * we must skip all initialized uptodate buddies on the page,
-		 * which may be currently in use by an allocating task.
-		 */
-		if (PageUptodate(page) && !EXT4_MB_GRP_NEED_INIT(grinfo)) {
-			bh[i] = NULL;
-			continue;
-		}
-		bh[i] = ext4_read_block_bitmap_nowait(sb, group);
-		if (IS_ERR(bh[i])) {
-			err = PTR_ERR(bh[i]);
-			bh[i] = NULL;
-			goto out;
-		}
-		mb_debug(1, "read bitmap for group %u\n", group);
-	}
+>>>> ioctls to set per-fs inode attributes, both of which were inherited fro=
+m
+>>>> other filesystems... :(
+>>>>=20
+>>>=20
+>>> Ok I've changed it.
+>>>=20
+>>>>=20
+>>>>>>=20
+>>>>>> Long story short - can you use 0x1000000 for this instead, and add th=
+e
+>>>>>> corresponding value to the uapi fs.h?  I guess that also means that w=
+e
+>>>>>> can change FS_XFLAG_DAX (in the form of FS_DAX_FL in FSSETFLAGS) afte=
+r
+>>>>>> that.
+>>>>>=20
+>>>>> :-/
+>>>>>=20
+>>>>> Are there any potential users of FS_XFLAG_DAX now?
+>>>>=20
+>>>> Yes, it's in the userspace ABI so we can't get rid of it.
+>>>>=20
+>>>> (FWIW there are several flags that exist in both FS_XFLAG_* and FS_*_FL=
 
-	/* wait for I/O completion */
-	for (i = 0, group = first_group; i < groups_per_page; i++, group++) {
-		int err2;
+>>>> form.)
+>>>>=20
+>>>>> =46rom what it looks like, changing FS_XFLAG_DAX to FS_DAX_FL would be=
+ pretty
+>>>>> straight forward.  Just to be sure, looks like XFS converts the FS_[xx=
+x]_FL to
+>>>>> FS_XFLAGS_[xxx] in xfs_merge_ioc_xflags()?  But it does not look like a=
+ll the
+>>>>> FS_[xxx]_FL flags are converted.  Is is that XFS does not support thos=
+e
+>>>>> options?  Or is it depending on the VFS layer for some of them?
+>>>>=20
+>>>> XFS doesn't support most of the FS_*_FL flags.
+>>>=20
+>>> If FS_XFLAG_DAX needs to continue to be user visible I think we need to k=
+eep
+>>> that flag and we should not expose the EXT4_DAX_FL flag...
+>>>=20
+>>> I think that works for XFS.
+>>>=20
+>>> But for ext4 it looks like EXT4_FL_XFLAG_VISIBLE was intended to be used=
+ for
+>>> [GET|SET]XATTR where EXT4_FL_USER_VISIBLE was intended to for [GET|SET]FL=
+AGS...
+>>> But if I don't add EXT4_DAX_FL in EXT4_FL_XFLAG_VISIBLE my test fails.
+>>>=20
+>>> I've been playing with the flags and looking at the code and I _thought_=
+ the
+>>> following patch would ensure that FS_XFLAG_DAX is the only one visible b=
+ut for
+>>> some reason FS_XFLAG_DAX can't be set with this patch.  I still need the=
 
-		if (!bh[i])
-			continue;
-		err2 = ext4_wait_block_bitmap(sb, group, bh[i]);
-		if (!err)
-			err = err2;
-	}
-
-	first_block = page->index * blocks_per_page;
-	for (i = 0; i < blocks_per_page; i++) {
-<...>
-		if (!buffer_verified(bh[group - first_group]))
-			/* Skip faulty bitmaps */
-			continue;
-		err = 0;            ====> yes this was not set I think.
-
-<...>
-	}
-	SetPageUptodate(page);       ========> But it seems we are still 
-setting uptodate bit on page.
-
-out:
-	if (bh) {
-		for (i = 0; i < groups_per_page; i++)
-			brelse(bh[i]);
-		if (bh != &bhs)
-			kfree(bh);
-	}
-	return err;
-}
-
-
-ext4_mb_load_buddy_gfp() {
-<...>
-
-
-	/* we could use find_or_create_page(), but it locks page
-	 * what we'd like to avoid in fast path ... */
-	page = find_get_page_flags(inode->i_mapping, pnum, FGP_ACCESSED);
-	if (page == NULL || !PageUptodate(page)) {  	====> next time we won't 
-go in this if condition. (since PageUptodate is already set)
-<...>
-		page = find_or_create_page(inode->i_mapping, pnum, gfp);
-		if (page) {
-			BUG_ON(page->mapping != inode->i_mapping);
-			if (!PageUptodate(page)) {
-				ret = ext4_mb_init_cache(page, NULL, gfp);
-<...>
-			}
-			unlock_page(page);
-		}
-	}
-	if (page == NULL) {
-		ret = -ENOMEM;
-		goto err;
-	}
-	if (!PageUptodate(page)) {
-		ret = -EIO;
-		goto err;
-	}
-<...>
-}
-
-
-So maybe since the PageUptodate bit was set on page previously as
-highlighted above. Next time when there will be any allocation request,
-we won't read those pages again from disk (thinking that it's uptodate.
-And hence may encounter that BUG. Thoughts?
-
-If above is true, then may be we should not call
-"SetPageUptodate(page)", in case of an error reading block bitmap?
-Thoughts?
-
-One other thing from [1]. I guess it doesn't have a full kernel log.
-So maybe there were some previous I/O errors as well and it failed
-to update the superblock buffer_head even before. So something
-may have messed up long before and it slipped through all the cracks
-until it crashed in mballoc.
-
-
--ritesh
-
-
-> 
-> We also find that ext4_group_info:bb_counters and the corresponding buddy bit map
-> are updated or initialized at the same time, so even if we encounter page miss and
-> forget to mark that block group corrupted due to IO failure, it seems that it also
-> could not trigger this inconsistency. Am I missing something ?
-> 
-> Thanks,
-> Yi.
-> 
->>> -----
->>> [1] https://www.spinics.net/lists/linux-ext4/msg60329.html
->>>
->>
->>
->> .
-> 
-
+>>> EXT4_FL_USER_VISIBLE mask altered...  Which I believe would expose EXT4_=
+DAX_FL
+>>> directly as well.
+>>>=20
+>>> Jan, Ted?  Any ideas?  Or should we expose EXT4_DAX_FL and FS_XFLAG_DAX i=
+n
+>>> ext4?
+>>=20
+>> Both flags should be exposed through their respective ioctl interfaces
+>> in both filesystems.  That way we don't have to add even more verbiage
+>> to the documentation to instruct userspace programmers on how to special
+>> case ext4 and XFS for the same piece of functionality.
+>=20
+> Wouldn't it be more confusing for the user to have 2 different flags which=
+ do
+> the same thing?
+>=20
+> I would think that using FS_XFLAG_DAX _only_ (for both ext4 and xfs) would=
+ be
+> easier without special cases?
+>=20
+> Ira
+>=20
