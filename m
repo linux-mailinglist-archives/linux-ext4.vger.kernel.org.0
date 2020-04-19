@@ -2,129 +2,170 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F98C1AFC1D
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 Apr 2020 18:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E8D1AFEB0
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Apr 2020 00:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgDSQsT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sun, 19 Apr 2020 12:48:19 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28038 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726615AbgDSQsT (ORCPT
+        id S1725947AbgDSWhC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 19 Apr 2020 18:37:02 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:51636 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725848AbgDSWhB (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sun, 19 Apr 2020 12:48:19 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03JGVVWC103536
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Apr 2020 12:48:18 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30gg25tb1a-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Sun, 19 Apr 2020 12:48:17 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Sun, 19 Apr 2020 17:47:43 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Sun, 19 Apr 2020 17:47:42 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03JGl7T943319686
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 19 Apr 2020 16:47:07 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A98ED52051;
-        Sun, 19 Apr 2020 16:48:13 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.81.253])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 909D45204F;
-        Sun, 19 Apr 2020 16:48:12 +0000 (GMT)
-Subject: Re: strange allocator behavior on a 2k block fs, skipping free blocks
-To:     Eric Sandeen <sandeen@sandeen.net>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-References: <24fd6030-28f4-b395-4d85-a13be6e2af06@sandeen.net>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     Jan Kara <jack@suse.cz>, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Date:   Sun, 19 Apr 2020 22:18:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Sun, 19 Apr 2020 18:37:01 -0400
+Received: from dread.disaster.area (pa49-180-0-232.pa.nsw.optusnet.com.au [49.180.0.232])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id DCF9E3A354F;
+        Mon, 20 Apr 2020 08:36:47 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jQIYQ-0006ON-43; Mon, 20 Apr 2020 08:36:46 +1000
+Date:   Mon, 20 Apr 2020 08:36:46 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>, hch@lst.de,
+        darrick.wong@oracle.com, axboe@kernel.dk, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ming.lei@redhat.com, jthumshirn@suse.de,
+        minwoo.im.dev@gmail.com, damien.lemoal@wdc.com,
+        andrea.parri@amarulasolutions.com, hare@suse.com, tj@kernel.org,
+        hannes@cmpxchg.org, khlebnikov@yandex-team.ru, ajay.joshi@wdc.com,
+        bvanassche@acm.org, arnd@arndb.de, houtao1@huawei.com,
+        asml.silence@gmail.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/4] block: Add support for REQ_OP_ASSIGN_RANGE
+Message-ID: <20200419223646.GB9765@dread.disaster.area>
+References: <20200329174714.32416-1-chaitanya.kulkarni@wdc.com>
+ <20200402224124.GK10737@dread.disaster.area>
+ <yq1imih4aj0.fsf@oracle.com>
+ <20200403025757.GL10737@dread.disaster.area>
+ <yq1a73t44h1.fsf@oracle.com>
+ <20200407022705.GA24067@dread.disaster.area>
+ <yq1sghe1uu3.fsf@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <24fd6030-28f4-b395-4d85-a13be6e2af06@sandeen.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20041916-0008-0000-0000-000003739063
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20041916-0009-0000-0000-00004A954FFA
-Message-Id: <20200419164812.909D45204F@d06av21.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-19_04:2020-04-17,2020-04-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- suspectscore=2 spamscore=0 priorityscore=1501 clxscore=1015 adultscore=0
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004190144
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yq1sghe1uu3.fsf@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=XYjVcjsg+1UI/cdbgX7I7g==:117 a=XYjVcjsg+1UI/cdbgX7I7g==:17
+        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=7-415B0cAAAA:8
+        a=9_JA7O5G14uhOetSDJ0A:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello All,
-
-On 4/17/20 12:46 AM, Eric Sandeen wrote:
-> This got picked up by xfstests generic/018 on a 2k block filesystem when it
-> failed to defragment a file into 1 extent as expected.
+On Wed, Apr 08, 2020 at 12:10:12AM -0400, Martin K. Petersen wrote:
 > 
-> For some reason, the allocator is skipping over free blocks when it allocates
-> the donor file.  The attached image shows this behavior - if you do:
+> Hi Dave!
 > 
-> # bunzip2 ext4.img.qcow.bz2
-> # qemu-img convert -O raw ext4.img.qcow ext4.img
-> # mkdir -p mnt
-> # mount -o loop ext4.img mnt/
-> # fallocate -l 20480 mnt/newfile
-> # filefrag -v mnt/newfile
-> Filesystem type is: ef53
-> File size of mnt/newfile is 20480 (10 blocks of 2048 bytes)
->   ext:     logical_offset:        physical_offset: length:   expected: flags:
->     0:        0..       1:      16962..     16963:      2:             unwritten
->     1:        2..       9:      16968..     16975:      8:      16964: unwritten,eof
-> mnt/newfile: 2 extents found
+> >> In the standards space, the allocation concept was mainly aimed at
+> >> protecting filesystem internals against out-of-space conditions on
+> >> devices that dedup identical blocks and where simply zeroing the blocks
+> >> therefore is ineffective.
 > 
-> it allocates 2 extents, even though the blocks in between the extents are free:
+> > Um, so we're supposed to use space allocation before overwriting
+> > existing metadata in the filesystem?
 > 
-> # dumpe2fs test.img | grep -w 16964
-> dumpe2fs 1.42.9 (28-Dec-2013)
->    Free blocks: 16964-16967, 16976-17407, 17410-17919, 17922-18431, 18434-18943, 18946-19455, 19457-19967, 19969-32767
+> Not before overwriting, no. Once you have allocated an LBA it remains
+> allocated until you discard it.
+
+That is not a consistent argument. If the data has been deduped and
+we overwrite, the storage array has to allocate new physical space
+for an overwrite to an existing LBA. i.e. deduped data has multiple
+LBAs pointing to the same physical storage. Any overwrite of an LBA
+that maps to mulitply referenced physical storage requires the
+storage array to allocate new physical space for that overwrite.
+
+i.e. allocation is not determined by whether the LBA has been
+written to, "pinned" or not - it's whether the act of writing to
+that LBA requires the storage to allocate new space to allow the
+write to proceed.
+
+That's my point here - one particular shared data overwrite case is
+being special cased by preallocation (avoiding dedupe of zero filled
+data) to prevent ENOSPC, ignoring all the other cases where we
+overwrite shared non-zero data and will also require new physical
+space for the new data. In all those cases, the storage has to take
+the same action - allocation on overwrite - and so all of them are
+susceptible to ENOSPC.
+
+> > So that the underlying storage can reserve space for it before we
+> > write it? Which would mean we have to issue a space allocation before
+> > we dirty the metadata, which means before we dirty any metadata in a
+> > transaction. Which means we'll basically have to redesign the
+> > filesystems from the ground up, yes?
 > 
+> My understanding is that this facility was aimed at filesystems that do
+> not dynamically allocate metadata. The intent was that mkfs would
+> preallocate the metadata LBA ranges, not the filesystem. For filesystems
+> that allocate metadata dynamically, then yes, an additional step is
+> required if you want to pin the LBAs.
 
-So my initial investigation on this says that below is what is
-happening. Also verified by logs.
-1. Initially when the fallocate blocks are requested with length of 10 
-blocks. (please note in fallocate path we don't set the
-EXT4_MB_HINT_TRY_GOAL).
-	-> For blocks of length 10 (since length of not order of 2
-multiple), we chose allocation criteria as 1. And go for
-ext4_mb_scan_aligned() with stripe size as 2. So in that function
-we only look for 2 blocks as needed blocks(since stripe size is 2
-blocks) and we return this 2 blocks as the allocated blocks from
-ext4_map_blocks.
-This is where we get the blocks as (16962, 16963).
+Ok, so you are confirming what I thought: it's almost completely
+useless to us.
 
-2. Now again fallocate path request for remaining length which is 8.
-At this time, since 8 is equal 2^3 request. So we go with criteria
-as 0. And try the allocation path via ext4_mb_simple_scan_group().
+i.e. this requires issuing IO to "reserve" space whilst preserving
+data before every metadata object goes from clean to dirty in
+memory.  But the problem with that is we don't know how much
+metadata we are going to dirty in any specific operation. Worse is
+that we don't know exactly *what* metadata we will modify until we
+walk structures and do lookups, which often happen after we've
+dirtied other structures. An ENOSPC from a space reservation at that
+point is fatal to the filesystem anyway, so there's no point in even
+trying to do this.  Like I said, functionality like this cannot be
+retrofitted to existing filesysetms.
 
-In 2nd iteration, buddy structures are scanned to find the right fit of 
-the block. That's why we see two extents in above results.
+IOWs, this is pretty much useless functionality for the filesystem
+layer, and if the only use is for some mythical filesystem with
+completely static metadata then the standards space really jumped
+the shark on this one....
 
-I guess if we make stripe size as 0, then I don't think we will see
-this problem.
+> > You might be talking about filesystem metadata and block devices,
+> > but this patchset ends up connecting ext4's user data fallocate() to
+> > the block device, thereby allowing users to reserve space directly
+> > in the underlying block device and directly exposing this issue to
+> > userspace.
+> 
+> I missed that Chaitanya's repost of this series included the ext4 patch.
+> Sorry!
+> 
+> >> How XFS decides to enforce space allocation policy and potentially
+> >> leverage this plumbing is entirely up to you.
+> >
+> > Do I understand this correctly? i.e. that it is the filesystem's
+> > responsibility to prevent users from preallocating more space than
+> > exists in an underlying storage pool that has been intentionally
+> > hidden from the filesystem so it can be underprovisioned?
+> 
+> No. But as an administrative policy it is useful to prevent runaway
+> applications from writing a petabyte of random garbage to media. My
+> point was that it is up to you and the other filesystem developers to
+> decide how you want to leverage the low-level allocation capability and
+> how you want to provide it to processes. And whether CAP_SYS_ADMIN,
+> ulimit, or something else is the appropriate policy interface for this.
 
-> I suppose this isn't critical, as defrag is best-effort and the allocator doesn't ever guarantee contiguous allocations, but it still seems a little odd so just thought I'd highlight it.
+My cynical translation: the storage standards space haven't given
+any thought to how it can be used and/or administered in the real
+world. Pass the buck - let the filesystem people work that out.
 
-But others can tell if this is really a problem which needs fixing in
-the long run?
+What I'm hearing is that this wasn't designed for typical filesystem
+use, it wasn't designed for typical user application use, and how to
+prevent abuse wasn't thought about at all.
 
--ritesh
+That sounds like a big fat NACK to me....
 
+> In terms of thin provisioning and space management there are various
+> thresholds that may be reported by the device. In past discussions there
+> haven't been much interest in getting these exposed. It is also unclear
+> to me whether it is actually beneficial to send low space warnings to
+> hundreds or thousands of hosts attached to an array. In many cases the
+> individual server admins are not even the right audience. The most
+> common notification mechanism is a message to the storage array admin
+> saying "click here to buy more disk".
+
+Notifications are not relevant to preallocation functionality at all.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
