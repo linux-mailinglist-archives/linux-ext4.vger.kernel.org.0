@@ -2,92 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA49B1B168B
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Apr 2020 22:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014431B1A4B
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 01:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgDTUC0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Apr 2020 16:02:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55699 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725918AbgDTUC0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Apr 2020 16:02:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587412945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=39ikxJL/ikRE9a7l20noBIeqccFXOBkwxddlrq7TrQw=;
-        b=Bmi31Yk+KY2GaC2JdgjB3G2Dr1Ib9CksWxkcIpsy5iijhIJG3gjEXYSDRYVUTxgIUNVZWI
-        YumIakIikWo9zKHLhNmmZHUG+Vyk1advHJIVJ0B9OkiqsbSFLIOtwL1fb1GO8zEzUEL2SS
-        gFUJgPPK2Ez4TE/5m6mxFnTL+J5SfX8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-91-ubeMa61nOAOymAQYbdhdgQ-1; Mon, 20 Apr 2020 16:02:22 -0400
-X-MC-Unique: ubeMa61nOAOymAQYbdhdgQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1725989AbgDTXvE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Apr 2020 19:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725550AbgDTXvD (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 20 Apr 2020 19:51:03 -0400
+X-Greylist: delayed 552 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Apr 2020 16:51:03 PDT
+Received: from trent.utfs.org (trent.utfs.org [IPv6:2a03:3680:0:3::67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A595BC061A0E
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Apr 2020 16:51:03 -0700 (PDT)
+Received: from localhost (localhost [IPv6:::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EEE291005510;
-        Mon, 20 Apr 2020 20:02:21 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CEF5910013A1;
-        Mon, 20 Apr 2020 20:02:21 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 03KK2L8G022268;
-        Mon, 20 Apr 2020 16:02:21 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 03KK2Lrl022264;
-        Mon, 20 Apr 2020 16:02:21 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Mon, 20 Apr 2020 16:02:21 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Jan Kara <jack@suse.com>
-cc:     linux-ext4@vger.kernel.org
-Subject: [PATCH] ext2: fix missing percpu_counter_inc
-Message-ID: <alpine.LRH.2.02.2004201538300.19436@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        by trent.utfs.org (Postfix) with ESMTPS id 9B65B5FC6C;
+        Tue, 21 Apr 2020 01:41:48 +0200 (CEST)
+Date:   Mon, 20 Apr 2020 16:41:48 -0700 (PDT)
+From:   Christian Kujau <lists@nerdbynature.de>
+To:     linux-ext4@vger.kernel.org
+cc:     bugzilla-daemon@bugzilla.kernel.org
+Subject: Re: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then
+ 16TB
+In-Reply-To: <bug-207367-13602-nPvVQ1Ii4D@https.bugzilla.kernel.org/>
+Message-ID: <alpine.DEB.2.22.395.2004201629150.9630@trent.utfs.org>
+References: <bug-207367-13602@https.bugzilla.kernel.org/> <bug-207367-13602-nPvVQ1Ii4D@https.bugzilla.kernel.org/>
+User-Agent: Alpine 2.22 (DEB 395 2020-01-19)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-sbi->s_freeinodes_counter is only decreased by the ext2 code, it is never
-increased. This patch fixes it.
+On Mon, 20 Apr 2020, bugzilla-daemon@bugzilla.kernel.org wrote:
+> with kernel 5.7 only volumes under 16TB can be mount.
 
-Note that sbi->s_freeinodes_counter is only used in the algorithm that
-tries to find the group for new allocations, so this bug is not easily
-visible (the only visibility is that the group finding algorithm selects
-inoptinal result).
+While this bug report is still missing details, I was able to reproduce 
+this issue. Contrary to the subject line, it is not hardware related at 
+all.
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Cc: stable@vger.kernel.org
+Linux 5.5 (Debian), creating a 17 TB sparse device (4 GB backing device):
 
----
- fs/ext2/ialloc.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-Index: linux-2.6/fs/ext2/ialloc.c
-===================================================================
---- linux-2.6.orig/fs/ext2/ialloc.c	2019-09-20 14:39:07.951999000 +0200
-+++ linux-2.6/fs/ext2/ialloc.c	2020-04-20 21:33:26.389999000 +0200
-@@ -80,6 +80,7 @@ static void ext2_release_inode(struct su
- 	if (dir)
- 		le16_add_cpu(&desc->bg_used_dirs_count, -1);
- 	spin_unlock(sb_bgl_lock(EXT2_SB(sb), group));
-+	percpu_counter_inc(&EXT2_SB(sb)->s_freeinodes_counter);
- 	if (dir)
- 		percpu_counter_dec(&EXT2_SB(sb)->s_dirs_counter);
- 	mark_buffer_dirty(bh);
-@@ -528,7 +529,7 @@ got:
- 		goto fail;
- 	}
+ $ echo "0 36507222016 zero" | dmsetup create zero0
+ $ echo "0 36507222016 snapshot /dev/mapper/zero0 /dev/vdb p 128" | \
+   dmsetup create sparse0
  
--	percpu_counter_add(&sbi->s_freeinodes_counter, -1);
-+	percpu_counter_dec(&sbi->s_freeinodes_counter);
- 	if (S_ISDIR(mode))
- 		percpu_counter_inc(&sbi->s_dirs_counter);
+ $ mkfs.ext4 -F /dev/mapper/sparse0
+ Creating filesystem with 4563402752 4k blocks and 285212672 inodes
+ Creating journal (262144 blocks): done
  
+ $ mount -t ext4 /dev/mapper/sparse0 /mnt/disk/
+ $ df -h /mnt/disk/
+ Filesystem      Size  Used Avail Use% Mounted on
+ /dev/mapper/sparse0   17T   24K   17T   1% /mnt/disk
 
+
+The same fails on 5.7-rc2 (vanilla) with:
+
+
+------------[ cut here ]------------
+would truncate bmap result
+WARNING: CPU: 0 PID: 640 at fs/iomap/fiemap.c:121 
+iomap_bmap_actor+0x3a/0x40
+Modules linked in: dm_zero 9p xhci_pci xhci_hcd virtio_balloon 
+9pnet_virtio loop fuse sunrpc
+CPU: 0 PID: 640 Comm: mount Not tainted 5.7.0-rc2 #3
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 
+?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 
+04/01/2014
+RIP: 0010:iomap_bmap_actor+0x3a/0x40
+Code: 70 08 0f b6 8f 86 00 00 00 49 03 30 48 d3 ee 48 81 fe ff ff ff 7f 77 
+06 48 89 30 31 c0 c3 48 c7 c7 fa 71 56 a9 e8 04 f7 ea ff <0f> 0b 31 c0 c3 
+cc 41 54 55 53 48 83 ec 08 48 8b 47 48 48 89 34 24
+RSP: 0018:ffffb8fd8090bb80 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffffffffa9424bb0 RCX: 0000000000000000
+RDX: ffff996abbc1ed40 RSI: ffff996abbc180c8 RDI: ffff996abbc180c8
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000277
+R10: 0000000000000774 R11: ffffb8fd8090ba35 R12: 0000000000000000
+R13: ffff996aafc6e9b8 R14: ffffb8fd8090bc70 R15: 0000000000001000
+FS:  00007efc34fafc80(0000) GS:ffff996abbc00000(0000) 
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007efc352f29a0 CR3: 000000016e074003 CR4: 0000000000360eb0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ iomap_apply+0xf4/0x1a0
+ ? iomap_fiemap_actor+0x90/0x90
+ iomap_bmap+0x70/0x90
+ ? iomap_fiemap_actor+0x90/0x90
+ bmap+0x1d/0x30
+ jbd2_journal_init_inode+0x2b/0xe0
+ ext4_fill_super+0x29c4/0x3300
+ ? mount_bdev+0x171/0x1a0
+ ? ext4_calculate_overhead+0x480/0x480
+ mount_bdev+0x171/0x1a0
+ ? ext4_calculate_overhead+0x480/0x480
+ legacy_get_tree+0x22/0x40
+ vfs_get_tree+0x1b/0x80
+ ? ns_capable_common+0x29/0x50
+ do_mount+0x713/0x9f0
+ ? memdup_user+0x49/0x90
+ __x64_sys_mount+0x89/0xc0
+ do_syscall_64+0x60/0x3b0
+ ? do_page_fault+0x243/0x4bb
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7efc351c7e1a
+Code: 48 8b 0d 79 e0 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 
+00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff 
+ff 73 01 c3 48 8b 0d 46 e0 0b 00 f7 d8 64 89 01 48
+RSP: 002b:00007ffe6e5bce18 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 000055d888f5cb00 RCX: 00007efc351c7e1a
+RDX: 000055d888f5cd10 RSI: 000055d888f5ea30 RDI: 000055d888f5cd30
+RBP: 00007efc35318204 R08: 0000000000000000 R09: 000055d888f5ee00
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 000055d888f5cd30 R15: 000055d888f5cd10
+---[ end trace 513dea1cc94aa289 ]---
+jbd2_journal_init_inode: Cannot locate journal superblock
+EXT4-fs (dm-1): Could not load journal inode
+
+
+HTH,
+Christian.
+-- 
+BOFH excuse #306:
+
+CPU-angle has to be adjusted because of vibrations coming from the nearby road
