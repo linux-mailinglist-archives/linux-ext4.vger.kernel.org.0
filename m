@@ -2,102 +2,143 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADD51B0E1B
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Apr 2020 16:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F2A1B0E8E
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Apr 2020 16:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729037AbgDTOQ1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Apr 2020 10:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725989AbgDTOQ0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Apr 2020 10:16:26 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2E2C061A0C
-        for <linux-ext4@vger.kernel.org>; Mon, 20 Apr 2020 07:16:26 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id j4so8173636otr.11
-        for <linux-ext4@vger.kernel.org>; Mon, 20 Apr 2020 07:16:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hkugNSUCGf3cfZwlCyGaI8wXlqNC6+5VcP9fYiHhc0U=;
-        b=e7niXEAbvSRqBiTADpU10S+vy4G0bJXBzYiUiFy5BWhFqfEMVtUDiCJOEnu2rpkC9S
-         LyVWdkIAW/SWnQiTC00fJFmcDe24MOWwkIhMXXqS9nuJl7u/4dloA+yiSxbfKU4VSBYa
-         9MSeXDwaJRtoxKAD5Vzul/GQiMlAFppl1Abk97ibf15Wlh5x6V8QLVzNq3c7wZgsvfvG
-         bvFopOpQItIRPZLoSmt75oyXA4x9vH3RMILgIQcCHH53mqZYXvzjVwZlytmgSJMnntKK
-         vUxcBi4plcfCLwH5OLsgPS8PDzvfYvkBL9l4D7yI+M98cCgsBNlFvz8AKqLkTE+oeoQ2
-         3/Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hkugNSUCGf3cfZwlCyGaI8wXlqNC6+5VcP9fYiHhc0U=;
-        b=XF5kDekF4oSlCEScQqkIaL7eJ0QB/8yNJJiepKq7qGTajgfpDKydSoLkSgt1ihmNKR
-         L7ii8B0PwV2oq1KmbF8L57a1Fnz+1sy0B3YJu/DhsAOYmUsF0KdD8DxK+SG/+pjK8HWK
-         IRVz2OOV44DFOxztui5+QkqwD+qs1qNL0n733bdSiae/ix4P1U9vDSRyi6bVxJVLl7mj
-         tiQu+lTFE5ZD2IGEqNt0SGTaETVYDsqgMDhamvf3De84WhDsZTEZcLO/gdMA1sQYUQyq
-         0/0Oy/pwFbSgGuFJHYyMYjpDP5hR62T3l+nUHu7aHX4KZ55JwkDTzFBLwNsSaycVdLwq
-         99lg==
-X-Gm-Message-State: AGi0PuYDj6b6c4MB9vnwLJTpOVdEu/9NW3/1aaxyxU91fXS7hERnG+1V
-        l3HSJ4BW6Rz5ZtGE5wdFaNOzTKXYrGZeo/jmKFqm9DY84x0Ytw==
-X-Google-Smtp-Source: APiQypIp1ELmzB5fG9uX2pq2H9g1KwYn5DLvW7xYOQHxUmsRNv0kKcTM1U3+9AGGZkAeL5s2GwWGOE1UtDZR/44XhdQ=
-X-Received: by 2002:a05:6830:22dc:: with SMTP id q28mr9240147otc.221.1587392185768;
- Mon, 20 Apr 2020 07:16:25 -0700 (PDT)
+        id S1729961AbgDTOiL (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Apr 2020 10:38:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60000 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729341AbgDTOiL (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 20 Apr 2020 10:38:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 5D00EABD7;
+        Mon, 20 Apr 2020 14:38:08 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id AB5561E0E4E; Mon, 20 Apr 2020 16:38:07 +0200 (CEST)
+Date:   Mon, 20 Apr 2020 16:38:07 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
+        aneesh.kumar@linux.ibm.com, sandeen@sandeen.net
+Subject: Re: [RFCv2 1/1] ext4: Fix race in ext4 mb discard group
+ preallocations
+Message-ID: <20200420143807.GE17130@quack2.suse.cz>
+References: <cover.1586954511.git.riteshh@linux.ibm.com>
+ <533ac1f5b19c520b08f8c99aec5baf8729185714.1586954511.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
-References: <20200331133536.3328-1-linus.walleij@linaro.org>
- <CAFEAcA9Gep1HN+7WJHencp9g2uUBLhagxdgjHf-16AOdP5oOjg@mail.gmail.com>
- <87v9luwgc6.fsf@mid.deneb.enyo.de> <CAFEAcA-No3Z95+UQJZWTxDesd-z_Y5XnyHs6NMpzDo3RVOHQ4w@mail.gmail.com>
-In-Reply-To: <CAFEAcA-No3Z95+UQJZWTxDesd-z_Y5XnyHs6NMpzDo3RVOHQ4w@mail.gmail.com>
-From:   Peter Maydell <peter.maydell@linaro.org>
-Date:   Mon, 20 Apr 2020 15:16:14 +0100
-Message-ID: <CAFEAcA-ExeobtFswHPh3krV0K_9HdJmS7eJ2hvtzET+Hho6ESw@mail.gmail.com>
-Subject: Re: [PATCH] fcntl: Add 32bit filesystem mode
-To:     Florian Weimer <fw@deneb.enyo.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        QEMU Developers <qemu-devel@nongnu.org>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <533ac1f5b19c520b08f8c99aec5baf8729185714.1586954511.git.riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 20 Apr 2020 at 12:38, Peter Maydell <peter.maydell@linaro.org> wrote:
-> Whoops, good point. I was testing this via lkvm, so it's
-> actually using a 9p filesystem... I'll see if I can figure
-> out how to test with an ext3 fs, which I think is the one
-> we most care about.
+On Wed 15-04-20 22:53:01, Ritesh Harjani wrote:
+> There could be a race in function ext4_mb_discard_group_preallocations()
+> where the 1st thread may iterate through group's bb_prealloc_list and
+> remove all the PAs and add to function's local list head.
+> Now if the 2nd thread comes in to discard the group preallocations,
+> it will see that the group->bb_prealloc_list is empty and will return 0.
+> 
+> Consider for a case where we have less number of groups (for e.g. just group 0),
+> this may even return an -ENOSPC error from ext4_mb_new_blocks()
+> (where we call for ext4_mb_discard_group_preallocations()).
+> But that is wrong, since 2nd thread should have waited for 1st thread to release
+> all the PAs and should have retried for allocation. Since 1st thread
+> was anyway going to discard the PAs.
+> 
+> This patch fixes this race by introducing two paths (fastpath and
+> slowpath). We first try the fastpath via
+> ext4_mb_discard_preallocations(). So if any of the group's PA list is
+> empty then instead of waiting on the group_lock we continue to discard
+> other group's PA. This could help maintain the parallelism in trying to
+> discard multiple group's PA list. So if at the end some process is
+> not able to find any freed block, then we retry freeing all of the
+> groups PA list while holding the group_lock. And in case if the PA list
+> is empty, then we try return grp->bb_free which should tell us
+> whether there are any free blocks in the given group or not to make any
+> forward progress.
+> 
+> Suggested-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-After some effort wrestling with kvmtool (which assumes that
-if you provide it a disk image then you must have wanted that
-to be your rootfs and can only be persuaded otherwise via
-some undocumented and arcane options), I did a test with ext4:
+Ritesh, do you still want to push this patch as is or do you plan to change
+it after a discussion on Thursday?
 
-bash-4.4# /qemu-no-fix /readdir-bug
-dir=0x76108
-readdir(dir)=(nil)
-errno=75: Value too large for defined data type
-bash-4.4# /qemu-fixed /readdir-bug
-dir=0x76108
-readdir(dir)=0x76128
-errno=0: Success
+> @@ -3967,9 +3986,15 @@ ext4_mb_discard_group_preallocations(struct super_block *sb,
+>  		goto repeat;
+>  	}
+>  
+> -	/* found anything to free? */
+> +	/*
+> +	 * If this list is empty, then return the grp->bb_free. As someone
+> +	 * else may have freed the PAs and updated grp->bb_free.
+> +	 */
+>  	if (list_empty(&list)) {
+>  		BUG_ON(free != 0);
+> +		mb_debug(1, "Someone may have freed PA for this group %u, grp->bb_free %d\n",
+> +			 group, grp->bb_free);
+> +		free = grp->bb_free;
+>  		goto out;
+>  	}
 
-(where the host kernel has Linus' fcntl patch, qemu-no-fix
-is a current-git-master QEMU and qemu-fixed is one with
-the patch in my previous email).
+I'm still somewhat concerned about the forward progress guarantee here...
+If you're convinced the allocation from goal is the only possibility of
+lockup and that logic can be removed, then please remove it and then write a
+good comment why lockup is not possible due to this.
 
-So for Linus' patch:
+> @@ -4464,17 +4492,39 @@ static int ext4_mb_release_context(struct ext4_allocation_context *ac)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * ext4_mb_discard_preallocations: This function loop over each group's prealloc
+> + * list and try to free it. It may so happen that more than 1 process try to
+> + * call this function in parallel. That's why we initially take a fastpath
+> + * approach in which we first check if the grp->bb_prealloc_list is empty,
+> + * that could mean that, someone else may have removed all of it's PA and added
+> + * into it's local list. So we quickly return from there and try to discard
+> + * next group's PAs. This way we try to parallelize discarding of multiple group
+> + * PAs. But in case if any of the process is unfortunate to not able to free
+> + * any of group's PA, then we retry with slow path which will gurantee that
+> + * either some PAs will be made free or we will get group->bb_free blocks
+> + * (grp->bb_free if non-zero gurantees forward progress in ext4_mb_new_blocks())
+> + */
+>  static int ext4_mb_discard_preallocations(struct super_block *sb, int needed)
+>  {
+>  	ext4_group_t i, ngroups = ext4_get_groups_count(sb);
+>  	int ret;
+>  	int freed = 0;
+> +	bool fastpath = true;
+> +	int tmp_needed;
+>  
+> -	trace_ext4_mb_discard_preallocations(sb, needed);
+> -	for (i = 0; i < ngroups && needed > 0; i++) {
+> -		ret = ext4_mb_discard_group_preallocations(sb, i, needed);
+> +repeat:
+> +	tmp_needed = needed;
+> +	trace_ext4_mb_discard_preallocations(sb, tmp_needed);
+> +	for (i = 0; i < ngroups && tmp_needed > 0; i++) {
+> +		ret = ext4_mb_discard_group_preallocations(sb, i, tmp_needed,
+> +							   fastpath);
+>  		freed += ret;
+> -		needed -= ret;
+> +		tmp_needed -= ret;
+> +	}
 
-Tested-by: Peter Maydell <peter.maydell@linaro.org>
+Why do you need 'tmp_needed'? When freed is 0, tmp_needed == needed, right?
 
-If 9pfs could be persuaded to honour the fcntl flag too
-that would be really nice.
+> +	if (!freed && fastpath) {
+> +		fastpath = false;
+> +		goto repeat;
+>  	}
 
-thanks
--- PMM
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
