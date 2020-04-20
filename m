@@ -2,63 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130191B11EE
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 Apr 2020 18:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BC91B126D
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 Apr 2020 19:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgDTQlZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 20 Apr 2020 12:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726208AbgDTQlY (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Apr 2020 12:41:24 -0400
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then 16TB
-Date:   Mon, 20 Apr 2020 16:41:24 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: lists@nerdbynature.de
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-207367-13602-B3JvUW8W7E@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-207367-13602@https.bugzilla.kernel.org/>
-References: <bug-207367-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1726450AbgDTRBr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Apr 2020 13:01:47 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:50135 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725784AbgDTRBr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 20 Apr 2020 13:01:47 -0400
+Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03KH1WTK016582
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Apr 2020 13:01:33 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id CF88242013B; Mon, 20 Apr 2020 13:01:31 -0400 (EDT)
+Date:   Mon, 20 Apr 2020 13:01:31 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Peter Maydell <peter.maydell@linaro.org>
+Cc:     Eric Blake <eblake@redhat.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH] fcntl: Add 32bit filesystem mode
+Message-ID: <20200420170131.GD1080594@mit.edu>
+References: <20200331133536.3328-1-linus.walleij@linaro.org>
+ <20200420151344.GC1080594@mit.edu>
+ <d3fb73a3-ecf6-6371-783f-24a94eb66c59@redhat.com>
+ <CAFEAcA9BQQah2vVfnwO4-3m4eHv9QtfvjvDpTdw+SmqicsDOMA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFEAcA9BQQah2vVfnwO4-3m4eHv9QtfvjvDpTdw+SmqicsDOMA@mail.gmail.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=207367
+On Mon, Apr 20, 2020 at 04:29:32PM +0100, Peter Maydell wrote:
+> On Mon, 20 Apr 2020 at 16:24, Eric Blake <eblake@redhat.com> wrote:
+> > It will be interesting to find how much code (wrongly) assumes it can
+> > use a blind assignment of fcntl(fd, F_SETFD, 1) and thereby accidentally
+> > wipes out other existing flags, when it should have instead been doing a
+> > read-modify-write to protect flags other than FD_CLOEXEC.
+> 
+> For instance, a quick grep shows 4 instances of this in QEMU :-)
 
-Christian Kujau (lists@nerdbynature.de) changed:
+Fortunately, most applications aren't going to be interested in
+forcing 32-bit mode for 64-bit applications, QEMU being the notable
+exception.  We do need to make sure that for 32-bit applications, we
+either make FD_32BIT_MODE a no-op (don't set the bit, and ignore the
+bit).  We could allow the bit to be visible for 32-bit applications,
+but we would want to disallow clearing the the bit for 32-bit
+applications if it was visible.
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |lists@nerdbynature.de
+If we did that, then blind assignments of fcntl(fd, F_SETFD, 1) should
+be mostly harmless with respect to the FD_32BIT_MODE bit.
 
---- Comment #1 from Christian Kujau (lists@nerdbynature.de) ---
-Walter, please provide way more information here: describe the setup, provide
-the exact error messages, did it work before, what changed that it doesn't work
-anymore, etc. Maybe report the bug to the ext4 mailing list before logging a
-tracking bug here. See also: [How to report Linux kernel
-bugs](https://www.kernel.org/doc/html/latest/admin-guide/reporting-bugs.html#how-to-report-linux-kernel-bugs)
-
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+   	      	 	  	       - Ted
