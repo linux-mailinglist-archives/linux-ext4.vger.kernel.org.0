@@ -2,142 +2,248 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0422E1B1A4C
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 01:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6231B1A50
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 01:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgDTXvF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 20 Apr 2020 19:51:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgDTXvF (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Apr 2020 19:51:05 -0400
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then 16TB
-Date:   Mon, 20 Apr 2020 23:51:04 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: lists@nerdbynature.de
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-207367-13602-zdl9QZH6DN@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-207367-13602@https.bugzilla.kernel.org/>
-References: <bug-207367-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
-MIME-Version: 1.0
+        id S1726569AbgDTXv6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Apr 2020 19:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725989AbgDTXv6 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 20 Apr 2020 19:51:58 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DDFC061A0F
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Apr 2020 16:51:57 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t9so606451pjw.0
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Apr 2020 16:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=kPK7FroCaPWeTbgHL3ANvERWsJ3ML8gxxkK6YSEQlD4=;
+        b=IZFCGXzFDWUSuXh6CehF1rwZ+PMBagcwTYXw0B4lm/tqcif035HOxIky9bhx04uX75
+         jKoLBR4HxVz1w67DjhC4OZ5cea3x4NvY/JBmJfD1gxCxm+Y8eiLgzIKSitXco8D3Asu4
+         ue1LBMHxbHY55IHmh4ehhD0ih+66E84RETlerJsLVxmV8GGGaIl8Z3+CP37lKy5ob5L1
+         rBypXp7MGllHsPklmOYpVhNRwl0wKegJVq9sftI4l16+/CCOkdY7uEpQT8kGYnEueJOV
+         x8Zrh8vjzCbGCMdAQ/hhCQxAqzjhm3iAzMHqReBEgkVQmTZ+DzwpoLBpJR73cGR6uioA
+         OrdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=kPK7FroCaPWeTbgHL3ANvERWsJ3ML8gxxkK6YSEQlD4=;
+        b=YqMmemkp+Bthwb+sMW197dA6Vj5nUgS6h5+1c1RaICt+1CKo7qGTZd3TxV7/fhcaYu
+         wAJ0uTVRBVHsNxEFS2u5RheXdBK1eoWcbM5GuXGyjf6jsm7q2ryU9IOrgGs2sVjpbAes
+         CLgFDjQVqsqNbssTttglWA3VPNQ0uWmhLtIM/mEoG8V33MZYeUdac+YAUmVwrYEJHQg8
+         hiFKC6R+m55g7KwhmEZOQiHUgM3LnmvGZJgiH0Gd97+rhwPRl8JfheHEfEMVTMuLvKk4
+         1KG8+s/QcbJm7Ta6VPj3yolSxfgW+T4Ahp1WyAx3qWuM71sGdOOCh/KMu0Lz+r7fQGZv
+         5y6g==
+X-Gm-Message-State: AGi0Pub4a9Kuj/nAezCRUt8eNCs6aGZYp8jZTS8AXSQf4bEqqi7b0MY/
+        O6MF+vUn2M+scShtlZaa0/4uTQ==
+X-Google-Smtp-Source: APiQypIQgZLRzCqT3IWv6EoKM+KrOr3Kiyb/dBQMsaKQcrw2hHLp64SwIeng70//CydmyJ+1g9lNlA==
+X-Received: by 2002:a17:90a:c786:: with SMTP id gn6mr2161323pjb.147.1587426717303;
+        Mon, 20 Apr 2020 16:51:57 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id 13sm620570pfv.95.2020.04.20.16.51.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 20 Apr 2020 16:51:56 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <FA73C1DA-B07F-43D5-A9A8-FBC0BAE400CA@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_64F94122-2784-458A-A3F2-F89454A55F98";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] fcntl: Add 32bit filesystem mode
+Date:   Mon, 20 Apr 2020 17:51:52 -0600
+In-Reply-To: <CAFEAcA-No3Z95+UQJZWTxDesd-z_Y5XnyHs6NMpzDo3RVOHQ4w@mail.gmail.com>
+Cc:     Florian Weimer <fw@deneb.enyo.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        Andy Lutomirski <luto@kernel.org>
+To:     Peter Maydell <peter.maydell@linaro.org>
+References: <20200331133536.3328-1-linus.walleij@linaro.org>
+ <CAFEAcA9Gep1HN+7WJHencp9g2uUBLhagxdgjHf-16AOdP5oOjg@mail.gmail.com>
+ <87v9luwgc6.fsf@mid.deneb.enyo.de>
+ <CAFEAcA-No3Z95+UQJZWTxDesd-z_Y5XnyHs6NMpzDo3RVOHQ4w@mail.gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=207367
 
---- Comment #3 from Christian Kujau (lists@nerdbynature.de) ---
-On Mon, 20 Apr 2020, bugzilla-daemon@bugzilla.kernel.org wrote:
-> with kernel 5.7 only volumes under 16TB can be mount.
-
-While this bug report is still missing details, I was able to reproduce 
-this issue. Contrary to the subject line, it is not hardware related at 
-all.
-
-Linux 5.5 (Debian), creating a 17 TB sparse device (4 GB backing device):
-
- $ echo "0 36507222016 zero" | dmsetup create zero0
- $ echo "0 36507222016 snapshot /dev/mapper/zero0 /dev/vdb p 128" | \
-   dmsetup create sparse0
-
- $ mkfs.ext4 -F /dev/mapper/sparse0
- Creating filesystem with 4563402752 4k blocks and 285212672 inodes
- Creating journal (262144 blocks): done
-
- $ mount -t ext4 /dev/mapper/sparse0 /mnt/disk/
- $ df -h /mnt/disk/
- Filesystem      Size  Used Avail Use% Mounted on
- /dev/mapper/sparse0   17T   24K   17T   1% /mnt/disk
+--Apple-Mail=_64F94122-2784-458A-A3F2-F89454A55F98
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
 
-The same fails on 5.7-rc2 (vanilla) with:
+> =46rom 73471e01733dd1d998ff3cd41edebb4c78793193 Mon Sep 17 00:00:00 =
+2001
+> From: Peter Maydell <peter.maydell@linaro.org>
+> Date: Mon, 20 Apr 2020 11:54:22 +0100
+> Subject: [RFC] linux-user: Use new F_SET_FILE_32BIT_FS fcntl for =
+32-bit guests
+>=20
+> If the guest is 32 bit then there is a potential problem if the
+> host gives us back a 64-bit sized value that we can't fit into
+> the ABI the guest requires. This is a theoretical issue for many
+> syscalls, but a real issue for directory reads where the host
+> is using ext3 or ext4. There the 'offset' values retured via
+> the getdents syscall are hashes, and on a 64-bit system they
+> will always fill the full 64 bits.
+>=20
+> Use the F_SET_FILE_32BIT_FS fcntl to tell the kernel to stick
+> to 32-bit sized hashes for fds used by the guest.
+>=20
+> Signed-off-by: Peter Maydell <peter.maydell@linaro.org>
+
+Another question I had here is whether the filesystem needs to provide
+32-bit values for other syscalls, such as stat() and statfs()?  For
+ext4, stat() is not going to return a 64-bit inode number, but other
+filesystems might (e.g. Lustre has a mode to do this).  Similarly,
+should statfs() scale up f_bsize until it can return a 32-bit f_blocks
+value?  We also had to do this ages ago for Lustre when 32-bit clients
+couldn't handle > 16TB filesystems, but that is a single disk today.
+
+Should that be added into F_SET_FILE_32BIT_FS also?
+
+Cheers, Andreas
+
+> ---
+> RFC patch because it depends on the kernel patch to provide
+> F_SET_FILE_32BIT_FS, which is still under discussion. All this
+> patch does is call the fcntl for every fd the guest opens.
+>=20
+> linux-user/syscall.c | 27 +++++++++++++++++++++++++++
+> 1 file changed, 27 insertions(+)
+>=20
+> diff --git a/linux-user/syscall.c b/linux-user/syscall.c
+> index 674f70e70a5..8966d4881bd 100644
+> --- a/linux-user/syscall.c
+> +++ b/linux-user/syscall.c
+> @@ -884,6 +884,28 @@ static inline int host_to_target_sock_type(int =
+host_type)
+>     return target_type;
+> }
+>=20
+> +/*
+> + * If the guest is using a 32 bit ABI then we should try to ask the =
+kernel
+> + * to provide 32-bit offsets in getdents syscalls, as otherwise some
+> + * filesystems will return 64-bit hash values which we can't fit into
+> + * the field sizes the guest ABI mandates.
+> + */
+> +#ifndef F_SET_FILE_32BIT_FS
+> +#define F_SET_FILE_32BIT_FS (1024 + 15)
+> +#endif
+> +
+> +static inline void request_32bit_fs(int fd)
+> +{
+> +#if HOST_LONG_BITS > TARGET_ABI_BITS
+> +    /*
+> +     * Ignore errors, which are likely due to the host kernel being =
+too
+> +     * old to support this fcntl. We'll try anyway, which might or =
+might
+> +     * not work, depending on the guest code and on the host =
+filesystem.
+> +     */
+> +    fcntl(fd, F_SET_FILE_32BIT_FS);
+> +#endif
+> +}
+> +
+> static abi_ulong target_brk;
+> static abi_ulong target_original_brk;
+> static abi_ulong brk_page;
+> @@ -7704,6 +7726,7 @@ static abi_long do_syscall1(void *cpu_env, int
+> num, abi_long arg1,
+>                                   target_to_host_bitmask(arg2,
+> fcntl_flags_tbl),
+>                                   arg3));
+>         fd_trans_unregister(ret);
+> +        request_32bit_fs(ret);
+>         unlock_user(p, arg1, 0);
+>         return ret;
+> #endif
+> @@ -7714,6 +7737,7 @@ static abi_long do_syscall1(void *cpu_env, int
+> num, abi_long arg1,
+>                                   target_to_host_bitmask(arg3,
+> fcntl_flags_tbl),
+>                                   arg4));
+>         fd_trans_unregister(ret);
+> +        request_32bit_fs(ret);
+>         unlock_user(p, arg2, 0);
+>         return ret;
+> #if defined(TARGET_NR_name_to_handle_at) && =
+defined(CONFIG_OPEN_BY_HANDLE)
+> @@ -7725,6 +7749,7 @@ static abi_long do_syscall1(void *cpu_env, int
+> num, abi_long arg1,
+>     case TARGET_NR_open_by_handle_at:
+>         ret =3D do_open_by_handle_at(arg1, arg2, arg3);
+>         fd_trans_unregister(ret);
+> +        request_32bit_fs(ret);
+>         return ret;
+> #endif
+>     case TARGET_NR_close:
+> @@ -7769,6 +7794,7 @@ static abi_long do_syscall1(void *cpu_env, int
+> num, abi_long arg1,
+>             return -TARGET_EFAULT;
+>         ret =3D get_errno(creat(p, arg2));
+>         fd_trans_unregister(ret);
+> +        request_32bit_fs(ret);
+>         unlock_user(p, arg1, 0);
+>         return ret;
+> #endif
+> @@ -12393,6 +12419,7 @@ static abi_long do_syscall1(void *cpu_env, int
+> num, abi_long arg1,
+>         }
+>         ret =3D get_errno(memfd_create(p, arg2));
+>         fd_trans_unregister(ret);
+> +        request_32bit_fs(ret);
+>         unlock_user(p, arg1, 0);
+>         return ret;
+> #endif
+> --
+> 2.20.1
 
 
-------------[ cut here ]------------
-would truncate bmap result
-WARNING: CPU: 0 PID: 640 at fs/iomap/fiemap.c:121 
-iomap_bmap_actor+0x3a/0x40
-Modules linked in: dm_zero 9p xhci_pci xhci_hcd virtio_balloon 
-9pnet_virtio loop fuse sunrpc
-CPU: 0 PID: 640 Comm: mount Not tainted 5.7.0-rc2 #3
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 
-?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 
-04/01/2014
-RIP: 0010:iomap_bmap_actor+0x3a/0x40
-Code: 70 08 0f b6 8f 86 00 00 00 49 03 30 48 d3 ee 48 81 fe ff ff ff 7f 77 
-06 48 89 30 31 c0 c3 48 c7 c7 fa 71 56 a9 e8 04 f7 ea ff <0f> 0b 31 c0 c3 
-cc 41 54 55 53 48 83 ec 08 48 8b 47 48 48 89 34 24
-RSP: 0018:ffffb8fd8090bb80 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffffffffa9424bb0 RCX: 0000000000000000
-RDX: ffff996abbc1ed40 RSI: ffff996abbc180c8 RDI: ffff996abbc180c8
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000277
-R10: 0000000000000774 R11: ffffb8fd8090ba35 R12: 0000000000000000
-R13: ffff996aafc6e9b8 R14: ffffb8fd8090bc70 R15: 0000000000001000
-FS:  00007efc34fafc80(0000) GS:ffff996abbc00000(0000) 
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007efc352f29a0 CR3: 000000016e074003 CR4: 0000000000360eb0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- iomap_apply+0xf4/0x1a0
- ? iomap_fiemap_actor+0x90/0x90
- iomap_bmap+0x70/0x90
- ? iomap_fiemap_actor+0x90/0x90
- bmap+0x1d/0x30
- jbd2_journal_init_inode+0x2b/0xe0
- ext4_fill_super+0x29c4/0x3300
- ? mount_bdev+0x171/0x1a0
- ? ext4_calculate_overhead+0x480/0x480
- mount_bdev+0x171/0x1a0
- ? ext4_calculate_overhead+0x480/0x480
- legacy_get_tree+0x22/0x40
- vfs_get_tree+0x1b/0x80
- ? ns_capable_common+0x29/0x50
- do_mount+0x713/0x9f0
- ? memdup_user+0x49/0x90
- __x64_sys_mount+0x89/0xc0
- do_syscall_64+0x60/0x3b0
- ? do_page_fault+0x243/0x4bb
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7efc351c7e1a
-Code: 48 8b 0d 79 e0 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 
-00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff 
-ff 73 01 c3 48 8b 0d 46 e0 0b 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffe6e5bce18 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 000055d888f5cb00 RCX: 00007efc351c7e1a
-RDX: 000055d888f5cd10 RSI: 000055d888f5ea30 RDI: 000055d888f5cd30
-RBP: 00007efc35318204 R08: 0000000000000000 R09: 000055d888f5ee00
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 000055d888f5cd30 R15: 000055d888f5cd10
----[ end trace 513dea1cc94aa289 ]---
-jbd2_journal_init_inode: Cannot locate journal superblock
-EXT4-fs (dm-1): Could not load journal inode
+Cheers, Andreas
 
 
-HTH,
-Christian.
 
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+
+
+
+--Apple-Mail=_64F94122-2784-458A-A3F2-F89454A55F98
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6eNZkACgkQcqXauRfM
+H+C2Rg//WIhBY2K+idPg4SqGPqUmkxjgNa5FLYv3VD4Hf9G5kUdSpkUbQG1zAZaM
++D1KAmXgMGEMJ4/T+XPB8R2zAOuHt3fdzQEu84u2OI0v/2oC9vdln89pfVe46YZP
+BPSmuIYevFo9ybJw3kMzSwj7OpJHpKY0fWZ/lfkQijHlbE1GoTqToTCIfRpunlEH
+P3lStjiDhhi3o8Zms2TRiJa5SfNojUanWJBzPvUXXzN7roqKdJfb4UpqYAri0ZCr
+VI32nNtMGYorT2Rb4KLGvbj8kgqpF2heuiCHDFJU1/7ozj/C8a6qzJzTbWvktCql
+XuyYEjela/VX1JjSxENYSwuOF/XYVQaEMSL346IkjGe4FDv3vVoNG+iMXgcsEhCx
+q+M5sbWsRqL02yZ40buAFqUfP5heGyE8FzKNqXnfCOJEkyPZ7625lsmD1xLWxQOM
+ZhfTLsaxhT1ETNdkydHUQcorsArywKABPk4i4MihzV9ADLYJuW84MtBRxNQs1mOu
+N2YesKlObHOoJjWbw6hIH7o2x5mQ5Mw7QkYZY/bll2bcdr4fd0SEfaZV4k4DvlME
+uhSgY2OvyLtMIc55aN8xpIeRdDFk8fe+wf+nFwQr+qglHSSDnd3+HyYU2BmFILo0
+FiCbO/5ZhQ8cX9b5Mo4YIhN9kMZaRK1RRemDYI+lcupBw8ApGlI=
+=iebv
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_64F94122-2784-458A-A3F2-F89454A55F98--
