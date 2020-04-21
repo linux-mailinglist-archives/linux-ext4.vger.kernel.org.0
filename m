@@ -2,81 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A631B1EFA
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 08:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4D41B1EFD
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 08:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgDUGsP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Apr 2020 02:48:15 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62508 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726052AbgDUGsO (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 Apr 2020 02:48:14 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03L6XUnF073645
-        for <linux-ext4@vger.kernel.org>; Tue, 21 Apr 2020 02:48:14 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30ggxpmvxg-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Tue, 21 Apr 2020 02:48:14 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Tue, 21 Apr 2020 07:47:26 +0100
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 21 Apr 2020 07:47:24 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03L6m8K960817714
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Apr 2020 06:48:08 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B068111C04C;
-        Tue, 21 Apr 2020 06:48:08 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A02211C05E;
-        Tue, 21 Apr 2020 06:48:07 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.79.176.252])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 21 Apr 2020 06:48:07 +0000 (GMT)
-Subject: Re: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then
- 16TB
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     bugzilla-daemon@bugzilla.kernel.org, linux-ext4@vger.kernel.org,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org
+        id S1726748AbgDUGsR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 21 Apr 2020 02:48:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726801AbgDUGsQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Apr 2020 02:48:16 -0400
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then 16TB
+Date:   Tue, 21 Apr 2020 06:48:15 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: riteshh@linux.ibm.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-207367-13602-AsNaa6FAv9@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-207367-13602@https.bugzilla.kernel.org/>
 References: <bug-207367-13602@https.bugzilla.kernel.org/>
- <bug-207367-13602-zdl9QZH6DN@https.bugzilla.kernel.org/>
- <20200421042039.BF8074C046@d06av22.portsmouth.uk.ibm.com>
- <20200421050850.GB27860@dread.disaster.area>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Tue, 21 Apr 2020 12:18:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-In-Reply-To: <20200421050850.GB27860@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20042106-0016-0000-0000-000003086D7B
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20042106-0017-0000-0000-0000336C82C3
-Message-Id: <20200421064807.4A02211C05E@d06av25.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-21_02:2020-04-20,2020-04-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 adultscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004210055
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+https://bugzilla.kernel.org/show_bug.cgi?id=207367
+
+--- Comment #7 from riteshh@linux.ibm.com ---
 Hello,
 
 On 4/21/20 10:38 AM, Dave Chinner wrote:
@@ -267,3 +237,6 @@ needs same level of coherency and atomicity guarantee?
 Thanks
 -ritesh
 
+-- 
+You are receiving this mail because:
+You are watching the assignee of the bug.
