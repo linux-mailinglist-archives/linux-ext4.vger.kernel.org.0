@@ -2,48 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 168941B2CA4
+	by mail.lfdr.de (Postfix) with ESMTP id F17EB1B2CA6
 	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 18:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgDUQ3N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Apr 2020 12:29:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36772 "EHLO mx2.suse.de"
+        id S1728371AbgDUQ3P convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 21 Apr 2020 12:29:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgDUQ3N (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 Apr 2020 12:29:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E83F7AAB2;
-        Tue, 21 Apr 2020 16:29:10 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id AF1001E0E57; Tue, 21 Apr 2020 18:29:10 +0200 (CEST)
-Date:   Tue, 21 Apr 2020 18:29:10 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        bugzilla-daemon@bugzilla.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then
- 16TB
-Message-ID: <20200421162910.GB5118@quack2.suse.cz>
+        id S1726303AbgDUQ3P (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Apr 2020 12:29:15 -0400
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then 16TB
+Date:   Tue, 21 Apr 2020 16:29:14 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: jack@suse.cz
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-207367-13602-0vg302GB4g@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-207367-13602@https.bugzilla.kernel.org/>
 References: <bug-207367-13602@https.bugzilla.kernel.org/>
- <bug-207367-13602-zdl9QZH6DN@https.bugzilla.kernel.org/>
- <20200421042039.BF8074C046@d06av22.portsmouth.uk.ibm.com>
- <20200421050850.GB27860@dread.disaster.area>
- <20200421080405.GA4149@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421080405.GA4149@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+https://bugzilla.kernel.org/show_bug.cgi?id=207367
+
+--- Comment #10 from Jan Kara (jack@suse.cz) ---
 On Tue 21-04-20 01:04:05, Christoph Hellwig wrote:
 > On Tue, Apr 21, 2020 at 03:08:50PM +1000, Dave Chinner wrote:
 > > > 4. fs/jbd2/journal.c
@@ -61,7 +64,8 @@ to passing some callback to jbd2 during journal init to map blocks anyway
 as Dave said. And then it is upto filesystem to do the mapping - usually
 directly using its internal block mapping function - so no need for iomap
 AFAICT.
-								Honza
+                                                                Honza
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+You are receiving this mail because:
+You are watching the assignee of the bug.
