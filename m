@@ -2,85 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095AB1B1D1C
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 05:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3D41B1D53
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 06:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgDUDzT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Apr 2020 23:55:19 -0400
-Received: from trent.utfs.org ([94.185.90.103]:47330 "EHLO trent.utfs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727848AbgDUDzS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Apr 2020 23:55:18 -0400
-X-Greylist: delayed 15203 seconds by postgrey-1.27 at vger.kernel.org; Mon, 20 Apr 2020 23:55:17 EDT
-Received: from localhost (localhost [IPv6:::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by trent.utfs.org (Postfix) with ESMTPS id F3B395F85C;
-        Tue, 21 Apr 2020 05:55:15 +0200 (CEST)
-Date:   Mon, 20 Apr 2020 20:55:15 -0700 (PDT)
-From:   Christian Kujau <lists@nerdbynature.de>
-To:     linux-ext4@vger.kernel.org
-cc:     Ritesh Harjani <riteshh@linux.ibm.com>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Theodore Ts'o <tytso@mit.edu>, walter.moeller@moeller-it.net
-Subject: [BISECTED] unable to mount devices larger than 16 TB (was: [Bug
- 207367] Accraid / aptec / Microsemi / ext4 / larger then 16TB)
-In-Reply-To: <alpine.DEB.2.22.395.2004201629150.9630@trent.utfs.org>
-Message-ID: <alpine.DEB.2.22.395.2004202049180.9630@trent.utfs.org>
-References: <bug-207367-13602@https.bugzilla.kernel.org/> <bug-207367-13602-nPvVQ1Ii4D@https.bugzilla.kernel.org/> <alpine.DEB.2.22.395.2004201629150.9630@trent.utfs.org>
-User-Agent: Alpine 2.22 (DEB 395 2020-01-19)
+        id S1726383AbgDUEUr (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Apr 2020 00:20:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44468 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726361AbgDUEUr (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Apr 2020 00:20:47 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03L43Klk137252
+        for <linux-ext4@vger.kernel.org>; Tue, 21 Apr 2020 00:20:46 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30ggxphp7s-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Tue, 21 Apr 2020 00:20:46 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Tue, 21 Apr 2020 05:20:21 +0100
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 21 Apr 2020 05:20:19 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03L4KfaC14942436
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Apr 2020 04:20:41 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18EF04C050;
+        Tue, 21 Apr 2020 04:20:41 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BF8074C046;
+        Tue, 21 Apr 2020 04:20:39 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.92.243])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 21 Apr 2020 04:20:39 +0000 (GMT)
+Subject: Re: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then
+ 16TB
+To:     bugzilla-daemon@bugzilla.kernel.org, linux-ext4@vger.kernel.org,
+        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>
+References: <bug-207367-13602@https.bugzilla.kernel.org/>
+ <bug-207367-13602-zdl9QZH6DN@https.bugzilla.kernel.org/>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Date:   Tue, 21 Apr 2020 09:50:38 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <bug-207367-13602-zdl9QZH6DN@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20042104-0012-0000-0000-000003A85743
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20042104-0013-0000-0000-000021E5A337
+Message-Id: <20200421042039.BF8074C046@d06av22.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-20_09:2020-04-20,2020-04-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
+ priorityscore=1501 spamscore=0 malwarescore=0 adultscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004210033
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, 20 Apr 2020, Christian Kujau wrote:
-> On Mon, 20 Apr 2020, bugzilla-daemon@bugzilla.kernel.org wrote:
-> > with kernel 5.7 only volumes under 16TB can be mount.
+Hello All,
+
+On 4/21/20 5:21 AM, bugzilla-daemon@bugzilla.kernel.org wrote:
+> https://bugzilla.kernel.org/show_bug.cgi?id=207367
 > 
-> While this bug report is still missing details, I was able to reproduce 
-> this issue. Contrary to the subject line, it is not hardware related at 
+> --- Comment #3 from Christian Kujau (lists@nerdbynature.de) ---
+> On Mon, 20 Apr 2020, bugzilla-daemon@bugzilla.kernel.org wrote:
+>> with kernel 5.7 only volumes under 16TB can be mount.
+> 
+> While this bug report is still missing details, I was able to reproduce
+> this issue. Contrary to the subject line, it is not hardware related at
 > all.
-
-A git bisect run pointed to:
-
--------------------------------------------------------------------------  
-  commit ac58e4fb03f9d111d733a4ad379d06eef3a24705
-  Author: Ritesh Harjani <riteshh@linux.ibm.com>
-  Date:   Fri Feb 28 14:56:56 2020 +0530
-
-    ext4: move ext4 bmap to use iomap infrastructure
-    
-    ext4_iomap_begin is already implemented which provides ext4_map_blocks,
-    so just move the API from generic_block_bmap to iomap_bmap for iomap
-    conversion.
---------------------------------------------------------------------------  
-
-With only this commit reverted, v5.7-rc2 is able mount (and access) large 
-ext4 filesystems again.
-
-Thanks to Walter Moeller for reporting this in the first place.
-
-HTH,
-Christian.
-
+> 
 > Linux 5.5 (Debian), creating a 17 TB sparse device (4 GB backing device):
 > 
->  $ echo "0 36507222016 zero" | dmsetup create zero0
->  $ echo "0 36507222016 snapshot /dev/mapper/zero0 /dev/vdb p 128" | \
->    dmsetup create sparse0
->  
->  $ mkfs.ext4 -F /dev/mapper/sparse0
->  Creating filesystem with 4563402752 4k blocks and 285212672 inodes
->  Creating journal (262144 blocks): done
->  
->  $ mount -t ext4 /dev/mapper/sparse0 /mnt/disk/
->  $ df -h /mnt/disk/
->  Filesystem      Size  Used Avail Use% Mounted on
->  /dev/mapper/sparse0   17T   24K   17T   1% /mnt/disk
+>   $ echo "0 36507222016 zero" | dmsetup create zero0
+>   $ echo "0 36507222016 snapshot /dev/mapper/zero0 /dev/vdb p 128" | \
+>     dmsetup create sparse0
+> 
+>   $ mkfs.ext4 -F /dev/mapper/sparse0
+>   Creating filesystem with 4563402752 4k blocks and 285212672 inodes
+>   Creating journal (262144 blocks): done
+> 
+>   $ mount -t ext4 /dev/mapper/sparse0 /mnt/disk/
+>   $ df -h /mnt/disk/
+>   Filesystem      Size  Used Avail Use% Mounted on
+>   /dev/mapper/sparse0   17T   24K   17T   1% /mnt/disk
 > 
 > 
 > The same fails on 5.7-rc2 (vanilla) with:
@@ -88,75 +108,67 @@ Christian.
 > 
 > ------------[ cut here ]------------
 > would truncate bmap result
-> WARNING: CPU: 0 PID: 640 at fs/iomap/fiemap.c:121 
+> WARNING: CPU: 0 PID: 640 at fs/iomap/fiemap.c:121
 > iomap_bmap_actor+0x3a/0x40
-> Modules linked in: dm_zero 9p xhci_pci xhci_hcd virtio_balloon 
-> 9pnet_virtio loop fuse sunrpc
-> CPU: 0 PID: 640 Comm: mount Not tainted 5.7.0-rc2 #3
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 
-> ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 
-> 04/01/2014
-> RIP: 0010:iomap_bmap_actor+0x3a/0x40
-> Code: 70 08 0f b6 8f 86 00 00 00 49 03 30 48 d3 ee 48 81 fe ff ff ff 7f 77 
-> 06 48 89 30 31 c0 c3 48 c7 c7 fa 71 56 a9 e8 04 f7 ea ff <0f> 0b 31 c0 c3 
-> cc 41 54 55 53 48 83 ec 08 48 8b 47 48 48 89 34 24
-> RSP: 0018:ffffb8fd8090bb80 EFLAGS: 00010282
-> RAX: 0000000000000000 RBX: ffffffffa9424bb0 RCX: 0000000000000000
-> RDX: ffff996abbc1ed40 RSI: ffff996abbc180c8 RDI: ffff996abbc180c8
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000277
-> R10: 0000000000000774 R11: ffffb8fd8090ba35 R12: 0000000000000000
-> R13: ffff996aafc6e9b8 R14: ffffb8fd8090bc70 R15: 0000000000001000
-> FS:  00007efc34fafc80(0000) GS:ffff996abbc00000(0000) 
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007efc352f29a0 CR3: 000000016e074003 CR4: 0000000000360eb0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  iomap_apply+0xf4/0x1a0
->  ? iomap_fiemap_actor+0x90/0x90
->  iomap_bmap+0x70/0x90
->  ? iomap_fiemap_actor+0x90/0x90
->  bmap+0x1d/0x30
->  jbd2_journal_init_inode+0x2b/0xe0
->  ext4_fill_super+0x29c4/0x3300
->  ? mount_bdev+0x171/0x1a0
->  ? ext4_calculate_overhead+0x480/0x480
->  mount_bdev+0x171/0x1a0
->  ? ext4_calculate_overhead+0x480/0x480
->  legacy_get_tree+0x22/0x40
->  vfs_get_tree+0x1b/0x80
->  ? ns_capable_common+0x29/0x50
->  do_mount+0x713/0x9f0
->  ? memdup_user+0x49/0x90
->  __x64_sys_mount+0x89/0xc0
->  do_syscall_64+0x60/0x3b0
->  ? do_page_fault+0x243/0x4bb
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x7efc351c7e1a
-> Code: 48 8b 0d 79 e0 0b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 
-> 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff 
-> ff 73 01 c3 48 8b 0d 46 e0 0b 00 f7 d8 64 89 01 48
-> RSP: 002b:00007ffe6e5bce18 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-> RAX: ffffffffffffffda RBX: 000055d888f5cb00 RCX: 00007efc351c7e1a
-> RDX: 000055d888f5cd10 RSI: 000055d888f5ea30 RDI: 000055d888f5cd30
-> RBP: 00007efc35318204 R08: 0000000000000000 R09: 000055d888f5ee00
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 0000000000000000 R14: 000055d888f5cd30 R15: 000055d888f5cd10
-> ---[ end trace 513dea1cc94aa289 ]---
-> jbd2_journal_init_inode: Cannot locate journal superblock
-> EXT4-fs (dm-1): Could not load journal inode
-> 
-> 
-> HTH,
-> Christian.
-> -- 
-> BOFH excuse #306:
-> 
-> CPU-angle has to be adjusted because of vibrations coming from the nearby road
-> 
 
--- 
-BOFH excuse #29:
+Sorry about not seeing this through in the first place.
 
-It works the way the Wang did, what's the problem
+So the problem really is that the iomap_bmap() API
+gives WARNING and does't return the physical block address in case
+if the addr is > INT_MAX. (I guess this could be mostly since
+the ioctl_fibmap() passes a user integer pointer and users of
+iomap_bmap() may mostly be coming from ioctl path till now).
+
+FYI - I do see that bmap() is also used by below APIs/subsystem.
+Not sure if any of subsystems mentioned below may still fail later
+if the underlying FS moved to iomap_bmap() interface or for
+any existing callers of iomap_bmap() :-
+
+1. mm/page-io.c (generic_swapfile_activate() func)
+2. fs/cachefiles/rdwr.c
+3. fs/ecryptfs/mmap.c
+4. fs/jbd2/journal.c
+
+
+But the changes done in ext4 to move to iomap_bmap() interface
+resulted in this issue since jbd2 tries to find the block mapping
+of on disk journal inode of ext4 and on a larger filesystem
+this may fail given the design of iomap_bmap() to not
+return addr if > INT_MAX.
+
+So as I see it there are 3 options from here. Wanted to put this
+on mailing list for discussion.
+
+1. Make changes in iomap_bmap() to return the block address mapping.
+But I still would like to mention that iomap designers may not agree
+with this here Since the direction in general is to get rid of bmap()
+interface anyways.
+
+2. Revert the patch series of "bmap & fiemap to move to iomap interface"
+(why fiemap too? - since if we decide to revert bmap anyways,
+then we better fix the performance numbers report too coming from
+fiemap. Also due to 3rd option below since if iomap_bmap() is
+not changed, then we better keep both of this interface as is until
+we get the solution like 3 below.)
+
+3. To move to a new internal API like fiemap. But we need to change
+fiemap in a way that it should also be allowed to used by internal
+kernel APIs. Since as of now fiemap_extent struct is assumed to be
+a user pointer.
+
+(But the 3rd option as I see, won't be possible given the time frame to
+fix this issue. Also note if we decide to revert the changes, then the
+long term path would be to work on making fiemap used by internal kernel
+APIs too).
+
+struct fiemap_extent_info {
+	unsigned int fi_flags;		/* Flags as passed from user */
+	unsigned int fi_extents_mapped;	/* Number of mapped extents */
+	unsigned int fi_extents_max;	/* Size of fiemap_extent array */
+	struct fiemap_extent __user *fi_extents_start; /* Start of
+							fiemap_extent array */
+};
+
+
+-ritesh
+
