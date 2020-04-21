@@ -2,145 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C99A1B1A9C
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 02:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FAE1B1C08
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 04:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbgDUAT3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 20 Apr 2020 20:19:29 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:35569 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725550AbgDUAT3 (ORCPT
+        id S1726885AbgDUCkT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 20 Apr 2020 22:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725829AbgDUCkS (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 20 Apr 2020 20:19:29 -0400
-Received: from dread.disaster.area (pa49-180-0-232.pa.nsw.optusnet.com.au [49.180.0.232])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 2C5783A43C6;
-        Tue, 21 Apr 2020 10:19:24 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jQgdH-00074C-Bj; Tue, 21 Apr 2020 10:19:23 +1000
-Date:   Tue, 21 Apr 2020 10:19:23 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V8 10/11] fs/xfs: Change
- xfs_ioctl_setattr_dax_invalidate()
-Message-ID: <20200421001923.GS9800@dread.disaster.area>
-References: <20200415064523.2244712-1-ira.weiny@intel.com>
- <20200415064523.2244712-11-ira.weiny@intel.com>
- <20200420023131.GC9800@dread.disaster.area>
- <20200420183617.GB2838440@iweiny-DESK2.sc.intel.com>
+        Mon, 20 Apr 2020 22:40:18 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F752C061A0E
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Apr 2020 19:40:18 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x3so5933929pfp.7
+        for <linux-ext4@vger.kernel.org>; Mon, 20 Apr 2020 19:40:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dq61HoLnOPSROkKBqCl4+vaegWhGe0NiAlwkg5Ornuw=;
+        b=vBc3YFotLxGzKfZMq9VF+gnB0vBE2NLLpA8wy6hVquflCWD5d1y0Li7lghaJ+7aNXF
+         NN/7sEXvJTiHatazuQgCR0JpXeVXxAoyS7nzc0jlx8KL26KT7qIZftjZPj9QRtlzZcj5
+         QXZayPqlmvbLJZNdAwU/VxzyEG//ec/aHL2zO95feTnqejiLPdYJuYJu26Y3fIsf8F/J
+         qhhRt89RVJppuAW98++L/ZGwtmBq80o81cSqPmDydqyxkw9KVpbRFEHtAxvaM0PKj/1R
+         8bxz9zwCTnBIF6ez22HNVgwcad5bi2ttM6w5lkT35XghScyWIMu0BlYkRgh8qRqPgn1s
+         sihA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dq61HoLnOPSROkKBqCl4+vaegWhGe0NiAlwkg5Ornuw=;
+        b=e5b+zTMKQ4Bvgo4Lm81DoFR3W/QcdYntW4v5zpueGx78v1LFwbbVbGngSml7quQnuw
+         GQTX+wF+Tnl/jJ26GCZIhbqc4djlJMipwgI+dmITyqvkL++K7t3P8XH/Byb6Mtwv5FNJ
+         jfBXhPH/ERngRYX2l/bkw5mfXqIYlKVG/B7w+PzWJ/jHj6PmLq9KYQoC7P3VtQw8LOZw
+         ETaDLyIlpkmGmAgeIuF8iaq/+KYg7uqRVprAaOUJz95Ddw5gYkxAqLRRH80312doCZDl
+         PQoegM0V2AIyepHWRVT4wBURl3IEG2i3bG37nfeYjc3N3Mn70j5qT2q/I5DQVg4uRbZq
+         pb2g==
+X-Gm-Message-State: AGi0PuZF9nSSp1wyhoqC8+u6lgmtF+m/UXK8crNli4anozRIjKGyi5SA
+        kle6rJQbxIulg7gVefAm+U4omNwH
+X-Google-Smtp-Source: APiQypJ9B31ywTfu3Dy7ZEV6AbExGwlv1VeeO2jBlGL9CjmcHzQtdpwd32nnfU4L5oLkw8K4UaeT8g==
+X-Received: by 2002:a63:f707:: with SMTP id x7mr20429398pgh.374.1587436816887;
+        Mon, 20 Apr 2020 19:40:16 -0700 (PDT)
+Received: from harshads-520.kir.corp.google.com ([2620:15c:17:10:6271:607:aca0:b6f7])
+        by smtp.googlemail.com with ESMTPSA id x128sm879168pfd.109.2020.04.20.19.40.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Apr 2020 19:40:16 -0700 (PDT)
+From:   Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+To:     linux-ext4@vger.kernel.org
+Cc:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: [PATCH] ext4: don't ignore return values from ext4_ext_dirty()
+Date:   Mon, 20 Apr 2020 19:39:58 -0700
+Message-Id: <20200421023959.20879-1-harshadshirwadkar@gmail.com>
+X-Mailer: git-send-email 2.26.1.301.g55bc3eb7cb9-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200420183617.GB2838440@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=XYjVcjsg+1UI/cdbgX7I7g==:117 a=XYjVcjsg+1UI/cdbgX7I7g==:17
-        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=QyXUC8HyAAAA:8 a=VwQbUJbxAAAA:8
-        a=7-415B0cAAAA:8 a=v_MXh98pven9RYxNG_0A:9 a=CjuIK1q_8ugA:10
-        a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 11:36:17AM -0700, Ira Weiny wrote:
-> On Mon, Apr 20, 2020 at 12:31:31PM +1000, Dave Chinner wrote:
-> > On Tue, Apr 14, 2020 at 11:45:22PM -0700, ira.weiny@intel.com wrote:
-> > > From: Ira Weiny <ira.weiny@intel.com>
-> > > -out_unlock:
-> > > -	xfs_iunlock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
-> > > -	return error;
-> > > +	if (mp->m_flags & XFS_MOUNT_DAX_ALWAYS ||
-> > > +	    mp->m_flags & XFS_MOUNT_DAX_NEVER)
-> > > +		return;
-> > 
-> > 	if (mp->m_flags & (XFS_MOUNT_DAX_ALWAYS | XFS_MOUNT_DAX_NEVER))
-> > 		return;
-> > > +	if (((fa->fsx_xflags & FS_XFLAG_DAX) &&
-> > > +	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)) ||
-> > > +	    (!(fa->fsx_xflags & FS_XFLAG_DAX) &&
-> > > +	     (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)))
-> > > +		flag_inode_dontcache(inode);
-> > 
-> > This doesn't set the XFS inode's "don't cache" flag, despite it
-> > having one that serves exactly the same purpose.  IOWs, if the XFS_IDONTCACHE
-> > flag is now redundant, please replace it's current usage with this new flag
-> > and get rid of the XFS inode flag. i.e.  the only place we set XFS_IDONTCACHE
-> > can be replaced with a call to this mark_inode_dontcache() call...
-> 
-> I agree, and I would have removed XFS_IDONTCACHE, except I was not convinced
-> that XFS_IDONTCACHE was redundant.
-> 
-> Currently XFS_IDONTCACHE can be cleared if the inode is found in the cache and
-> I was unable to convince myself that it would be ok to remove it.  I mentioned
-> this to Darrick in V7.
-> 
-> https://lore.kernel.org/lkml/20200413194432.GD1649878@iweiny-DESK2.sc.intel.com/
-> 
-> What am I missing with this code?
-> 
-> xfs_iget_cache_hit():
-> ...
->         if (!(flags & XFS_IGET_INCORE))
-> 		xfs_iflags_clear(ip, XFS_ISTALE | XFS_IDONTCACHE);
-> ...
-> 
-> Why is XFS_IDONTCACHE not 'sticky'?
-> And why does xfs_iget_cache_hit() clear it
+Don't ignore return values from ext4_ext_dirty, since the errors
+indicate valid failures below Ext4.  In all of the other instances of
+ext4_ext_dirty calls, the error return value is handled in some
+way. This patch makes those remaining couple of places to handle
+ext4_ext_dirty errors as well. In the longer run, we probably should
+make sure that errors from other mark_dirty routines are handled as
+well.
 
-Because it was designed to do exactly what bulkstat required, and
-nothing else.  xfs_iget() is an internal filesystem interface, not a
-VFS level interface. Hence we can make up whatever semantics we
-want. And if we get a cache hit, we have multiple references to the
-inode so we probably should cache it regardless of whether the
-original lookup said "I'm a one-shot wonder, so don't cache me".
+Ran gce-xfstests smoke tests and verified that there were no
+regressions.
 
-IOWs, it's a classic "don't cache unless a second reference comes
-along during the current life cycle" algorithm.
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+---
+ fs/ext4/extents.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-This isn't actually a frequently travelled path - bulkstat is a
-pretty rare thing to be doing - so the behaviour is "be nice to the
-cache because we can do it easily", not a hard requirement.
-
-> rather than fail when XFS_IDONTCACHE is set?
-
-Because then it would be impossible to access an inode that has
-IDONTCACHE set on it. e.g. bulkstat an inode, now you can't open()
-it because it has XFS_IDONTCACHE set and VFS pathwalk lookups fail
-trying to resolve the inode number to a struct inode....
-
-Same goes for I_DONTCACHE - this does not prevent new lookups from
-taking references to the inode while it is still referenced. i.e.
-the reference count can still go up after the flag is set. The flag
-only takes effect when the reference count goes to zero.
-
-Hence the only difference between XFS_IDONTCACHE and I_DONTCACHE is
-the behaviour when cache hits on existing XFS_IDONTCACHE inodes
-occur. It's not going to make a significant difference to cache
-residency if we leave the I_DONTCACHE flag in place, because the
-vast majority of inodes with that flag (from bulkstat) are still
-one-shot wonders and hence the reclaim decision is still the
-overwhelmingly correct decision to be making...
-
-And, realistically, we have a second layer of inode caching in XFS
-(the cluster buffers) and so it's likely if we evict and reclaim an
-inode just before it gets re-used, then we'll hit the buffer cache
-anyway. i.e. we still avoid the IO to read the inode back into
-memory, we just burn a little more CPU re-instantiating it from the
-buffer....
-
-Cheers,
-
-Dave.
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index f2b577b315a0..f62f55a16fe3 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3244,8 +3244,7 @@ static int ext4_split_extent_at(handle_t *handle,
+ 
+ fix_extent_len:
+ 	ex->ee_len = orig_ex.ee_len;
+-	ext4_ext_dirty(handle, inode, path + path->p_depth);
+-	return err;
++	return ext4_ext_dirty(handle, inode, path + path->p_depth);
+ }
+ 
+ /*
+@@ -3503,7 +3502,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
+ 	}
+ 	if (allocated) {
+ 		/* Mark the block containing both extents as dirty */
+-		ext4_ext_dirty(handle, inode, path + depth);
++		err = ext4_ext_dirty(handle, inode, path + depth);
+ 
+ 		/* Update path to point to the right extent */
+ 		path[depth].p_ext = abut_ex;
 -- 
-Dave Chinner
-david@fromorbit.com
+2.26.1.301.g55bc3eb7cb9-goog
+
