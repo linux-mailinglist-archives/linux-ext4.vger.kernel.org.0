@@ -2,241 +2,133 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4D41B1EFD
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 08:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C8B1B1FDD
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 09:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgDUGsR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 21 Apr 2020 02:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726801AbgDUGsQ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 Apr 2020 02:48:16 -0400
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     linux-ext4@vger.kernel.org
-Subject: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then 16TB
-Date:   Tue, 21 Apr 2020 06:48:15 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: riteshh@linux.ibm.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-207367-13602-AsNaa6FAv9@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-207367-13602@https.bugzilla.kernel.org/>
-References: <bug-207367-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+        id S1728042AbgDUHbI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Apr 2020 03:31:08 -0400
+Received: from sonic309-49.consmr.mail.ne1.yahoo.com ([66.163.184.175]:45319
+        "EHLO sonic309-49.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727911AbgDUHbC (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Apr 2020 03:31:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1587454261; bh=8SaBe657SUqzMIHOQXCqE8E7juFfQ/VceplMPZo+D8w=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Subject; b=KpaZLk24UVqPwIBYC2dgf14lue+EQnfVzZFTJmxMC6TsT7WKiMhtq08Fetju5nTIV7GNbh+7nSybfvPnBgN8i47khQXY2HmIZwMOVXi4SCV3ErhFWLgDWLc2qBmEGV/6gKpYAGFLOSpKngk5Fx2V55XG7FOC/CX3KhYAWpkwIEl+fBOolBaLqdW199swuNwiic9emeccaeytk3kqWy82b4F21pRQo4rUC1hG14VNbemWbF7qNmIuidaA/IETfF1jZ+UTturFaZOLzhTfNo+5e2YDhl/8PsxH+52Lu72oiczyuSUxS+PZ3ZjnFSgA0E0917mBCFV3SeEDzDu6/f1cVQ==
+X-YMail-OSG: ZLEfS2sVM1lk0I6iQYW5PaC27I6c61k7i1jV62cC4k.LmLL85pmV5Bd1SzzocJs
+ sRfj94Pu4n3wFv1H_bhWjKvopCKSTupX0RCYaDhBaUw4l2N0pSafWoYv1p7Gw8PadYcrpqeTJkmo
+ x.vFg3ICrxKeHJe5A2VjBgVUEF_eugMhyT2Kzqr946MYTvBF0X25MXIHn.W6.2gGmuFxfVNfaJbk
+ wf1cvUYnRTlz9VbmQ8jqsBWcWWybpFhhWarQb6ys_3OK4WNIHvOc4acXtDGYtFUo9mGbPDdixfii
+ .HyxC5mNMUnl7mF5dDGXJk.NzpSa9FZzkes7m9A7H764xLIzf5hXzgHq73Dw8qQTc6ZysClNsbE7
+ Cqg9zJzR_MaVhtU0.wAbKgwJzQHR1iJ55jaOcg0byMOZ0uoQBJAH6TuYXoONFmR8od58M32mpPWr
+ kURn0vEpDgo6ziJSLwNCffWjfg29YmK5biUHIxwVkaZMtJMwypJqiKONdSszFXqeKZfkZ43yMVzk
+ NPsOGpF.B8McUrusJ8bU8V5_Pw64P2MzyRG_xOqHU4PEVJ8QcHSUKutvC17bM3hlbXN2URZlENMd
+ d8Vf1DHE0kXtkkPZ4VOiSoIDBZgLuWkasmiahU4upu6la7rTzo9lzmbxZtBgCASkn1ZknrsBuanq
+ s4gwFJJjx5JRJ0M1OfPm.ljypeTz2C8k.2sDFGlFcZsVpIqoi40CLTwWZeDTLPR4EziHpb3AWhiQ
+ Wny4DBpwdRD7gPOjsiGO6w9OZAtrGiJd3daH7ELv6V9EsinNln6wYjpf.P03ZtSSeGVjLpj3gwC5
+ 4ZQ6xDPuavzeSH5cPOYSWdDTfO.IUhjmAJhRjKlmSu6B5Wa6rtLrtlScqypRMQAKGuAV8YduU5KI
+ 8eYtkpmUVzCmZgEhtfKGxS2GYC7jxikiAGdV2ElykH1jwQOXG9_6MJeHgM_S7wG.sIVzW5BvY46S
+ U3gM0PK5AVuKU8r8W4jpC5_MOIUbRM1UFWE9AR4pGtumwfhniOhER3TyiCVZI2xKHrkD432P83Gd
+ mZN3fPspYLogkNTC4Pp5BnehwQnuS7.Q1LEDG7K4yXIHWEWw5JIZ46YoZm5pXFYVnPVa0w84MN_.
+ 8ErDK4fqws8tDW_ASdgJBiWOupx35rpfu.rPF2224lydresvTjLnTIf8lFnhXN7BgaLoaBZcuELo
+ 7d7.6T.VinNDGuXqbdmE_ducuAYaeJ7cmmW3_ZpH5nIJXxXTPL1SLIUhl1cz6mcX_baEL4kuRe7G
+ QBHv3bahyaZqtCrIWnR0n7wmtRNy2FEYSnHq3oUlt19LRQgWfoZcQe_GuDMFKfNB5Pxuoy3b4KVt
+ CFMHhQXta0y6ZgvoOw5i9EEPCWKsh5_gwAwF5XcK3wkcG3LGE6p37DRvSe3ZA6rk.EbJd2mEQghM
+ kIyy4lSay2M49R9IvFN5a5UPkXOLi14eHbk.8BNbLJhtErNaT725b8ay_JaMv_czB0ue.SfOtgpY
+ XWyRQdpzwRYjzGhxb6.MNFQCTSQ--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Tue, 21 Apr 2020 07:31:01 +0000
+Received: by smtp407.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 98aed6c61d98e300b5dca39559149029;
+          Tue, 21 Apr 2020 07:28:59 +0000 (UTC)
+Date:   Tue, 21 Apr 2020 15:28:51 +0800
+From:   Gao Xiang <hsiangkao@aol.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-xfs@vger.kernel.org,
+        Gao Xiang <gaoxiang25@huawei.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v11 19/25] erofs: Convert compressed files from readpages
+ to readahead
+Message-ID: <20200421072839.GA13867@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20200414150233.24495-1-willy@infradead.org>
+ <20200414150233.24495-20-willy@infradead.org>
+ <20200420224210.dff005bc62957a4d81d58226@linux-foundation.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200420224210.dff005bc62957a4d81d58226@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mailer: WebService/1.1.15739 hermes Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=207367
+Hi Andrew,
 
---- Comment #7 from riteshh@linux.ibm.com ---
-Hello,
-
-On 4/21/20 10:38 AM, Dave Chinner wrote:
-> On Tue, Apr 21, 2020 at 09:50:38AM +0530, Ritesh Harjani wrote:
->> Hello All,
->>
->> On 4/21/20 5:21 AM, bugzilla-daemon@bugzilla.kernel.org wrote:
->>> https://bugzilla.kernel.org/show_bug.cgi?id=207367
->>>
->>> --- Comment #3 from Christian Kujau (lists@nerdbynature.de) ---
->>> On Mon, 20 Apr 2020, bugzilla-daemon@bugzilla.kernel.org wrote:
->>>> with kernel 5.7 only volumes under 16TB can be mount.
->>>
->>> While this bug report is still missing details, I was able to reproduce
->>> this issue. Contrary to the subject line, it is not hardware related at
->>> all.
->>>
->>> Linux 5.5 (Debian), creating a 17 TB sparse device (4 GB backing device):
->>>
->>>    $ echo "0 36507222016 zero" | dmsetup create zero0
->>>    $ echo "0 36507222016 snapshot /dev/mapper/zero0 /dev/vdb p 128" | \
->>>      dmsetup create sparse0
->>>
->>>    $ mkfs.ext4 -F /dev/mapper/sparse0
->>>    Creating filesystem with 4563402752 4k blocks and 285212672 inodes
->>>    Creating journal (262144 blocks): done
->>>
->>>    $ mount -t ext4 /dev/mapper/sparse0 /mnt/disk/
->>>    $ df -h /mnt/disk/
->>>    Filesystem      Size  Used Avail Use% Mounted on
->>>    /dev/mapper/sparse0   17T   24K   17T   1% /mnt/disk
->>>
->>>
->>> The same fails on 5.7-rc2 (vanilla) with:
->>>
->>>
->>> ------------[ cut here ]------------
->>> would truncate bmap result
->>> WARNING: CPU: 0 PID: 640 at fs/iomap/fiemap.c:121
->>> iomap_bmap_actor+0x3a/0x40
->>
->> Sorry about not seeing this through in the first place.
->>
->> So the problem really is that the iomap_bmap() API
->> gives WARNING and does't return the physical block address in case
->> if the addr is > INT_MAX. (I guess this could be mostly since
->> the ioctl_fibmap() passes a user integer pointer and users of
->> iomap_bmap() may mostly be coming from ioctl path till now).
+On Mon, Apr 20, 2020 at 10:42:10PM -0700, Andrew Morton wrote:
+> On Tue, 14 Apr 2020 08:02:27 -0700 Matthew Wilcox <willy@infradead.org> wrote:
 > 
-> No, it's because bmap is fundamentally broken when it comes to block
-> ranges > INT_MAX. The filesystem in question is a >16TB filesystem,
-> so the block range for that filesystem is >32bits, and hence usage
-> of bmap in the jbd2 code is broken.
+> > 
+> > Use the new readahead operation in erofs.
+> > 
+> 
+> Well this is exciting.
+> 
+> fs/erofs/data.c: In function erofs_raw_access_readahead:
+> fs/erofs/data.c:149:18: warning: last_block may be used uninitialized in this function [-Wmaybe-uninitialized]
+> 	*last_block + 1 != current_block) {
+> 
+> It seems to be a preexisting bug, which your patch prompted gcc-7.2.0
+> to notice.
+> 
+> erofs_read_raw_page() goes in and uses *last_block, but neither of its
+> callers has initialized it.  Could the erofs maintainers please take a
+> look?
 
-IIUC, what you meant is that bmap in general as a interface is broken
-because if some user tries to call this interface via an ioctl for a
-file which is placed beyond 32 bits on a filesystem, then it truncates
-the results (basically gives us wrong results). Also this means
-as a user interface this was not designed properly keeping the block
-addresses range in mind (that someday it will extent beyong 32 bits).
+simply because last_block doesn't need to be initialized at first,
+because bio == NULL in the begining anyway. I believe this is a gcc
+false warning because some gcc versions raised some before (many gccs
+don't, including my current gcc (Debian 8.3.0-6) 8.3.0).
 
+in detail,
 
-Due to above reason, we don't make iomap_bmap() API return the
-u64 addr in it's argument, even though it is capable of doing that.
-Is that the reason?
-And this is because since the overall interface from userspace side is
-broken and so we want to get rid of that.
+146         /* note that for readpage case, bio also equals to NULL */
+147         if (bio &&
+148             /* not continuous */
+149             *last_block + 1 != current_block) {
+150 submit_bio_retry:
+151                 submit_bio(bio);
+152                 bio = NULL;
+153         }
 
+bio will be NULL and will bypass the next condition at first.
+after that,
 
-So what I would still like to understand is- that bmap() internal kernel
-function can definitely handle the sector_t block addresses, right?
-Isn't the bmap() kernel function was designed for this purpose in mind,
-to help internal kernel callers to provide with u64 block addresses?
+155         if (!bio) {
 
-But for e.g. here, when jbd2 calls for bmap(), it will eventually
-call for ext4_bmap() -> iomap_bmap(). Now even though this
-chain is capable of handling u64 addresses, but it's the iomap_bmap()
-which doesn't provide this. So the question simply is why?
+...
 
-Sorry about my query here, it is to only to understand more about this
-and to not force in anyway to change iomap_bmap() to just get this working.
+221                 bio = bio_alloc(GFP_NOIO, nblocks);
 
+...
 
-> 
-> Basically, jbd2 needs fixing to be able to map blocks that are at
-> higher offsets than bmap can actually report.
-> 
->> FYI - I do see that bmap() is also used by below APIs/subsystem.
->> Not sure if any of subsystems mentioned below may still fail later
->> if the underlying FS moved to iomap_bmap() interface or for
->> any existing callers of iomap_bmap() :-
->>
->> 1. mm/page-io.c (generic_swapfile_activate() func)
-> 
-> Filesystems using iomap infrastructure should be providing
-> aops->swap_activate() to map swapfile extents via
-> iomap_swapfile_activate() (e.g. see xfs_iomap_swapfile_activate()),
-> not using generic_swapfile_activate().
-> 
->> 2. fs/cachefiles/rdwr.c
-> 
-> Known problem, work being done to stop using bmap() here
-> 
->> 3. fs/ecryptfs/mmap.c
-> 
-> Just a wrapper to pass ->bmap calls through to the lower layer.
-> 
->> 4. fs/jbd2/journal.c
-> 
-> Broken on filesystems where the journal file might be placed beyond
-> a 32 bit block number, iomap_bmap() just makes that obvious. Needs
-> fixing.
-> 
-> You also missed f2fs copy-n-waste using it for internal swapfile
-> mapping:
-> 
-> /* Copied from generic_swapfile_activate() to check any holes */
-> 
-> That needs fixing, too.
-> 
-> And you missed the MD bitmap code uses bmap() to map it's bitmap
-> storage file, which means that is broken is the bitmap file is on a
-> filesystem/block device > 16TB, too...
-> 
->> But the changes done in ext4 to move to iomap_bmap() interface
->> resulted in this issue since jbd2 tries to find the block mapping
->> of on disk journal inode of ext4 and on a larger filesystem
->> this may fail given the design of iomap_bmap() to not
->> return addr if > INT_MAX.
->>
->> So as I see it there are 3 options from here. Wanted to put this
->> on mailing list for discussion.
->>
->> 1. Make changes in iomap_bmap() to return the block address mapping.
->> But I still would like to mention that iomap designers may not agree
->> with this here Since the direction in general is to get rid of bmap()
->> interface anyways.
-> 
-> Nope. bmap() is broken. Get rid of it.
-> 
->> 2. Revert the patch series of "bmap & fiemap to move to iomap interface"
->> (why fiemap too? - since if we decide to revert bmap anyways,
->> then we better fix the performance numbers report too coming from
->> fiemap. Also due to 3rd option below since if iomap_bmap() is
->> not changed, then we better keep both of this interface as is until
->> we get the solution like 3 below.)
-> 
-> The use of bmap was broken prior to this conversion - shooting
-> the messenger doesn't fix the problem. Get rid of bmap().
-> 
->> 3. To move to a new internal API like fiemap. But we need to change
->> fiemap in a way that it should also be allowed to used by internal
->> kernel APIs. Since as of now fiemap_extent struct is assumed to be
->> a user pointer.
-> 
-> Fiemap cannot be used this way. It's a diagnostic interface that
+}
 
-Sure.
+...
 
-> provides no guarantee of coherency or atomicity, so you can't use it
-> in this way in userspace or the kernel.
+230         err = bio_add_page(bio, page, PAGE_SIZE, 0);
+231         /* out of the extent or bio is full */
+232         if (err < PAGE_SIZE)
+233                 goto submit_bio_retry;
+234
+235         *last_block = current_block;
 
-hmm. Yes, I guess even with FIEMAP_FLAG_SYNC what it mostly could
-provide is to make sure the dirty data goes and sit on disk.
-But I guess it won't provide guarantee that in case if the data
-is journalled then it is moved to it's right location on disk
-before the results are returned to user.
-So I understood the coherency part. But why do you say atomicity? How
-does bmap() interface provides atomicity() ?
+so bio != NULL, and last_block will be assigned then as well.
+
+Thanks,
+Gao Xiang
 
 
-> 
-> IMO, the correct thing to do is for the caller to supply jbd with a
-> block mapping callback. i.e. jbd2_journal_init_inode() gets called
-> from both ext4 and ocfs2 with a callback that does the block mapping
-> for that specific filesystem. Indeed, jbd2 will need to cache that
-> callback, because it needs to call it to map journal blocks when
-> committing transactions....
-
-Sure thanks for this. Somehow I feel that the callback will be
-a similar API to what a_ops->bmap() does today.
-
-So from jbd2 perspective will the new block mapping callback
-needs same level of coherency and atomicity guarantee?
-
-
-
-Thanks
--ritesh
-
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
