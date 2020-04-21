@@ -2,85 +2,60 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455791B2210
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 10:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D161B223F
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 11:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726018AbgDUIyv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Apr 2020 04:54:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41498 "EHLO mx2.suse.de"
+        id S1728131AbgDUJDz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 21 Apr 2020 05:03:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726052AbgDUIyu (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 Apr 2020 04:54:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CC380ACD0;
-        Tue, 21 Apr 2020 08:54:47 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 395121E124D; Tue, 21 Apr 2020 10:54:48 +0200 (CEST)
-From:   Jan Kara <jack@suse.cz>
-To:     Ted Tso <tytso@mit.edu>
-Cc:     <linux-ext4@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 3/3] ext4: Avoid freeing inodes on dirty list
-Date:   Tue, 21 Apr 2020 10:54:45 +0200
-Message-Id: <20200421085445.5731-4-jack@suse.cz>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20200421085445.5731-1-jack@suse.cz>
-References: <20200421085445.5731-1-jack@suse.cz>
+        id S1726013AbgDUJDz (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Apr 2020 05:03:55 -0400
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then 16TB
+Date:   Tue, 21 Apr 2020 09:03:54 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: walter.moeller@moeller-it.net
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-207367-13602-XYZRpNE3Qz@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-207367-13602@https.bugzilla.kernel.org/>
+References: <bug-207367-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
+MIME-Version: 1.0
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-When we are evicting inode with journalled data, we may race with
-transaction commit in the following way:
+https://bugzilla.kernel.org/show_bug.cgi?id=207367
 
-CPU0					CPU1
-jbd2_journal_commit_transaction()	evict(inode)
-					  inode_io_list_del()
-					  inode_wait_for_writeback()
-  process BJ_Forget list
-    __jbd2_journal_insert_checkpoint()
-    __jbd2_journal_refile_buffer()
-      __jbd2_journal_unfile_buffer()
-        if (test_clear_buffer_jbddirty(bh))
-          mark_buffer_dirty(bh)
-	    __mark_inode_dirty(inode)
-					  ext4_evict_inode(inode)
-					    frees the inode
+--- Comment #9 from walter59 (walter.moeller@moeller-it.net) ---
+hey at all,
 
-This results in use-after-free issues in the writeback code (or
-the assertion added in the previous commit triggering).
+me use it at two servers, run without on 5.6
 
-Fix the problem by removing inode from writeback lists once all the page
-cache is evicted and so inode cannot be added to writeback lists again.
+not at 5.7_rcx
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/inode.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+over 16 TB vol. --- btrfs runs on same device -- so it only can be in ext4
+subsys
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index e416096fc081..d8a9d3da678c 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -220,6 +220,16 @@ void ext4_evict_inode(struct inode *inode)
- 		ext4_begin_ordered_truncate(inode, 0);
- 	truncate_inode_pages_final(&inode->i_data);
- 
-+	/*
-+	 * For inodes with journalled data, transaction commit could have
-+	 * dirtied the inode. Flush worker is ignoring it because of I_FREEING
-+	 * flag but we still need to remove the inode from the writeback lists.
-+	 */
-+	if (!list_empty_careful(&inode->i_io_list)) {
-+		WARN_ON_ONCE(!ext4_should_journal_data(inode));
-+		inode_io_list_del(inode);
-+	}
-+
- 	/*
- 	 * Protect us against freezing - iput() caller didn't have to have any
- 	 * protection against it
 -- 
-2.16.4
-
+You are receiving this mail because:
+You are watching the assignee of the bug.
