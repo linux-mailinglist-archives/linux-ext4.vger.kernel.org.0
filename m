@@ -2,165 +2,68 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABFE1B2CB7
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 18:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223711B2D05
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 18:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgDUQbX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Apr 2020 12:31:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgDUQbX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 Apr 2020 12:31:23 -0400
-Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA765206E9;
-        Tue, 21 Apr 2020 16:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587486682;
-        bh=SCVgdX26l33hUoJQ6kp4XZf+T8BrHO9Vz5zKXmnwi4I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nItIfrKXBsg0FzDMxu9fmm/dDQn+Qz067+HVRj7sDJskNhl43qcOKmPbdp5ViiowE
-         oiaFFI/fXonW8O9hK88MvqEKajo7xvBs5ep8cypTnxP3g7Kz8Kqgn683dTDhohTWFQ
-         ZyqvWhHNItxhDeRqXgPCkmfa0UzuUg3QXtur0JcY=
-Date:   Tue, 21 Apr 2020 18:31:17 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        ira.weiny@intel.com
-Subject: Re: [PATCH 12/34] docs: filesystems: convert dax.txt to ReST
-Message-ID: <20200421183117.2bf2b716@coco.lan>
-In-Reply-To: <20200415154144.GA6733@magnolia>
-References: <cover.1586960617.git.mchehab+huawei@kernel.org>
-        <71b1f910b2c3569a9fdaa8778378dd734f4f0091.1586960617.git.mchehab+huawei@kernel.org>
-        <20200415154144.GA6733@magnolia>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1728305AbgDUQqB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 21 Apr 2020 12:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728165AbgDUQqA (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Apr 2020 12:46:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505D2C061A41;
+        Tue, 21 Apr 2020 09:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6VSSPJCcevYsGUKgN4kM18lxCeXB2g2KawPNFpxhfTw=; b=SKTLs75QLUp1ncUNRj/fn4XbLB
+        AYZZtGG0i8SAqhc8Lz5wcbe10h1cWVUvxxaAtCBMRWO+HhiVMYLsxXuT6oxbVtL2DlTJtvQ8NhiHp
+        yBsXJ8tZcPuzsogjkFQripCy2rDJEXY3AuGv2T1Ir+EuHYS65ppKC8WmBShkCkzhElAUNf2DXKGJo
+        +xp22i3wieCJvZl6bJNkfRHjQOYtXPHq9/6nIUwtJI/h4EeuOsIJpVXggI6qvQhQ0AeHnzt/n7Dhu
+        RPIS9/C8fi8K0C+4cK5+q9JTXNw8q+MoKMexFuQrsAJLFspDHP0IG1VKiZAwSsDdmBZzwp3DUawN3
+        Lpm5lS3A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jQw1y-0003am-Pt; Tue, 21 Apr 2020 16:45:54 +0000
+Date:   Tue, 21 Apr 2020 09:45:54 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        bugzilla-daemon@bugzilla.kernel.org, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then
+ 16TB
+Message-ID: <20200421164554.GA3271@infradead.org>
+References: <bug-207367-13602@https.bugzilla.kernel.org/>
+ <bug-207367-13602-zdl9QZH6DN@https.bugzilla.kernel.org/>
+ <20200421042039.BF8074C046@d06av22.portsmouth.uk.ibm.com>
+ <20200421050850.GB27860@dread.disaster.area>
+ <20200421080405.GA4149@infradead.org>
+ <20200421162910.GB5118@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200421162910.GB5118@quack2.suse.cz>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Em Wed, 15 Apr 2020 08:41:44 -0700
-"Darrick J. Wong" <darrick.wong@oracle.com> escreveu:
+On Tue, Apr 21, 2020 at 06:29:10PM +0200, Jan Kara wrote:
+> Well, there are two problems with this - firstly, ocfs2 is also using jbd2
+> and it knows nothing about iomap. So that would have to be implemented.
+> Secondly, you have to somehow pass iomap ops to jbd2 so it all boils down
+> to passing some callback to jbd2 during journal init to map blocks anyway
+> as Dave said. And then it is upto filesystem to do the mapping - usually
+> directly using its internal block mapping function - so no need for iomap
+> AFAICT.
 
-> [add ira weiny to cc]
-> 
-> On Wed, Apr 15, 2020 at 04:32:25PM +0200, Mauro Carvalho Chehab wrote:
-> > - Add a SPDX header;
-> > - Adjust document title;
-> > - Some whitespace fixes and new line breaks;
-> > - Add it to filesystems/index.rst.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  Documentation/admin-guide/ext4.rst             | 2 +-
-> >  Documentation/filesystems/{dax.txt => dax.rst} | 9 +++++++--
-> >  Documentation/filesystems/ext2.rst             | 2 +-
-> >  Documentation/filesystems/index.rst            | 1 +
-> >  4 files changed, 10 insertions(+), 4 deletions(-)
-> >  rename Documentation/filesystems/{dax.txt => dax.rst} (97%)
-> > 
-> > diff --git a/Documentation/admin-guide/ext4.rst b/Documentation/admin-guide/ext4.rst
-> > index 9443fcef1876..103bcc345bad 100644
-> > --- a/Documentation/admin-guide/ext4.rst
-> > +++ b/Documentation/admin-guide/ext4.rst
-> > @@ -392,7 +392,7 @@ When mounting an ext4 filesystem, the following option are accepted:
-> >  
-> >    dax
-> >          Use direct access (no page cache).  See
-> > -        Documentation/filesystems/dax.txt.  Note that this option is
-> > +        Documentation/filesystems/dax.rst.  Note that this option is
-> >          incompatible with data=journal.
-> >  
-> >  Data Mode
-> > diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.rst
-> > similarity index 97%
-> > rename from Documentation/filesystems/dax.txt
-> > rename to Documentation/filesystems/dax.rst
-> > index 735f3859b19f..5838144f80f0 100644
-> > --- a/Documentation/filesystems/dax.txt
-> > +++ b/Documentation/filesystems/dax.rst  
-> 
-> Err, this will collide with the work that Ira's doing on DAX for 5.8[1].
-> Can the dax.txt conversion wait?
-
-Well, I can re-schedule it to 5.9. Or, if you merge the dax changes
-at linux-next, I can rebase my patch on the top of it.
-
-> 
-> --D
-> 
-> [1] https://lore.kernel.org/linux-xfs/20200415152942.GS6742@magnolia/T/#m804562299416d865d8829caa82589a522b2080a5
-> 
-> > @@ -1,5 +1,8 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +=======================
-> >  Direct Access for files
-> > ------------------------
-> > +=======================
-> >  
-> >  Motivation
-> >  ----------
-> > @@ -46,6 +49,7 @@ stall the CPU for an extended period, you should also not attempt to
-> >  implement direct_access.
-> >  
-> >  These block devices may be used for inspiration:
-> > +
-> >  - brd: RAM backed block device driver
-> >  - dcssblk: s390 dcss block device driver
-> >  - pmem: NVDIMM persistent memory driver
-> > @@ -55,6 +59,7 @@ Implementation Tips for Filesystem Writers
-> >  ------------------------------------------
-> >  
-> >  Filesystem support consists of
-> > +
-> >  - adding support to mark inodes as being DAX by setting the S_DAX flag in
-> >    i_flags
-> >  - implementing ->read_iter and ->write_iter operations which use dax_iomap_rw()
-> > @@ -127,6 +132,6 @@ by adding optional struct page support for pages under the control of
-> >  the driver (see CONFIG_NVDIMM_PFN in drivers/nvdimm for an example of
-> >  how to do this). In the non struct page cases O_DIRECT reads/writes to
-> >  those memory ranges from a non-DAX file will fail (note that O_DIRECT
-> > -reads/writes _of a DAX file_ do work, it is the memory that is being
-> > +reads/writes _of a DAX ``file_`` do work, it is the memory that is being
-> >  accessed that is key here).  Other things that will not work in the
-> >  non struct page case include RDMA, sendfile() and splice().
-> > diff --git a/Documentation/filesystems/ext2.rst b/Documentation/filesystems/ext2.rst
-> > index d83dbbb162e2..fa416b7a5802 100644
-> > --- a/Documentation/filesystems/ext2.rst
-> > +++ b/Documentation/filesystems/ext2.rst
-> > @@ -24,7 +24,7 @@ check=none, nocheck	(*)	Don't do extra checking of bitmaps on mount
-> >  				(check=normal and check=strict options removed)
-> >  
-> >  dax				Use direct access (no page cache).  See
-> > -				Documentation/filesystems/dax.txt.
-> > +				Documentation/filesystems/dax.rst.
-> >  
-> >  debug				Extra debugging information is sent to the
-> >  				kernel syslog.  Useful for developers.
-> > diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-> > index c4f95f76ba6a..8e3ccb4ed483 100644
-> > --- a/Documentation/filesystems/index.rst
-> > +++ b/Documentation/filesystems/index.rst
-> > @@ -24,6 +24,7 @@ algorithms work.
-> >     splice
-> >     locking
-> >     directory-locking
-> > +   dax
-> >  
-> >     automount-support
-> >  
-> > -- 
-> > 2.25.2
-> >   
-
-
-
-Thanks,
-Mauro
+You'll need to describe the mapping some how.  So why not reuse an
+existing mechanism instead of creating a new ad-hoc one?
