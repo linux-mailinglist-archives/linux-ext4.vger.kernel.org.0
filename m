@@ -2,52 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11D31B1DFC
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 07:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D19F1B1DFE
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 Apr 2020 07:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgDUFI4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Apr 2020 01:08:56 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:46111 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726095AbgDUFIz (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 Apr 2020 01:08:55 -0400
-Received: from dread.disaster.area (pa49-180-0-232.pa.nsw.optusnet.com.au [49.180.0.232])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id A79433A409C;
-        Tue, 21 Apr 2020 15:08:52 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jQl9O-0000MJ-Qp; Tue, 21 Apr 2020 15:08:50 +1000
-Date:   Tue, 21 Apr 2020 15:08:50 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     bugzilla-daemon@bugzilla.kernel.org, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then
- 16TB
-Message-ID: <20200421050850.GB27860@dread.disaster.area>
+        id S1726659AbgDUFI6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Tue, 21 Apr 2020 01:08:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726095AbgDUFI5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 21 Apr 2020 01:08:57 -0400
+From:   bugzilla-daemon@bugzilla.kernel.org
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     linux-ext4@vger.kernel.org
+Subject: [Bug 207367] Accraid / aptec / Microsemi / ext4 / larger then 16TB
+Date:   Tue, 21 Apr 2020 05:08:56 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: david@fromorbit.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P1
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-207367-13602-m8pENn4AIA@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-207367-13602@https.bugzilla.kernel.org/>
 References: <bug-207367-13602@https.bugzilla.kernel.org/>
- <bug-207367-13602-zdl9QZH6DN@https.bugzilla.kernel.org/>
- <20200421042039.BF8074C046@d06av22.portsmouth.uk.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421042039.BF8074C046@d06av22.portsmouth.uk.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
-        a=XYjVcjsg+1UI/cdbgX7I7g==:117 a=XYjVcjsg+1UI/cdbgX7I7g==:17
-        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8
-        a=05s7HRgq4p9WS8DhoEsA:9 a=rzqy3RlXgc2MobW9:21 a=H846vMAQjUaMwZJ8:21
-        a=CjuIK1q_8ugA:10 a=YA3aLkiRCO0A:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+https://bugzilla.kernel.org/show_bug.cgi?id=207367
+
+--- Comment #6 from Dave Chinner (david@fromorbit.com) ---
 On Tue, Apr 21, 2020 at 09:50:38AM +0530, Ritesh Harjani wrote:
 > Hello All,
 > 
@@ -184,6 +183,7 @@ committing transactions....
 Cheers,
 
 Dave.
+
 -- 
-Dave Chinner
-david@fromorbit.com
+You are receiving this mail because:
+You are watching the assignee of the bug.
