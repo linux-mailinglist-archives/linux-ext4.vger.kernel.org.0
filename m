@@ -2,99 +2,160 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAAD1B3E90
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 12:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79841B450D
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 14:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730692AbgDVK0P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Apr 2020 06:26:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730688AbgDVK0N (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:26:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78E4920781;
-        Wed, 22 Apr 2020 10:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587551172;
-        bh=mHI9eyVLwiMuBtKcYBlu4Th72kzE+NJHQ4mxUFyM80E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yRhSN7KEWRACZHh5jbd73JnPKgyNvYrJeJ6DWM4E+n+qyHVWHNuN1JyPwrj9fThsp
-         elGPHywaHbh0P1k9o3ESF6RcMcOOhLivXAwQ/SZvIWCp1SqVqdcSth/VW3hr+bUk3m
-         ofwsA33YFFJNA+KqVBGq875l4xE+uSVzqZYApFuo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 131/166] ext2: fix empty body warnings when -Wextra is used
-Date:   Wed, 22 Apr 2020 11:57:38 +0200
-Message-Id: <20200422095102.480750890@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095047.669225321@linuxfoundation.org>
-References: <20200422095047.669225321@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1726224AbgDVM0R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 08:26:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11252 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726050AbgDVM0R (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Apr 2020 08:26:17 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MC27DQ006947
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 08:26:16 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30gf5t87vf-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 08:26:16 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Wed, 22 Apr 2020 13:25:21 +0100
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 22 Apr 2020 13:25:17 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03MCQ9bL56426552
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Apr 2020 12:26:09 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7AEA4AE05D;
+        Wed, 22 Apr 2020 12:26:09 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E552AAE045;
+        Wed, 22 Apr 2020 12:26:06 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.60.18])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 22 Apr 2020 12:26:06 +0000 (GMT)
+Subject: Re: [PATCHv2 1/1] ext4: Fix overflow case for map.m_len in
+ ext4_iomap_begin_*
+To:     linux-ext4@vger.kernel.org
+Cc:     jack@suse.cz, tytso@mit.edu, adilger@dilger.ca,
+        darrick.wong@oracle.com, hch@infradead.org,
+        linux-fsdevel@vger.kernel.org,
+        syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+References: <1a2dc8f198e1225ddd40833de76b60c7ee20d22d.1587024137.git.riteshh@linux.ibm.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Wed, 22 Apr 2020 17:56:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1a2dc8f198e1225ddd40833de76b60c7ee20d22d.1587024137.git.riteshh@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20042212-0020-0000-0000-000003CC83D6
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20042212-0021-0000-0000-000022257FC2
+Message-Id: <20200422122606.E552AAE045@d06av26.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-22_03:2020-04-22,2020-04-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 spamscore=0 priorityscore=1501 adultscore=0 malwarescore=0
+ impostorscore=0 suspectscore=1 mlxlogscore=999 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004220093
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+NACK on this patch.
 
-[ Upstream commit 44a52022e7f15cbaab957df1c14f7a4f527ef7cf ]
+Even though this fixes syzcaller reproducer, still it seems the right
+fix should be:-
+1. To make EXT4_MAX_LOGICAL_BLOCK to 0xfffffffe
+2. And also add fiemap_check_ranges() call in overlayfs.
+This is because fiemap_check_ranges() takes care of truncating the
+length parameter to max sb->s_maxbytes which underlying filesystem can
+handle. This will be similar to how VFS calls for fiemap on underlying
+FS.
 
-When EXT2_ATTR_DEBUG is not defined, modify the 2 debug macros
-to use the no_printk() macro instead of <nothing>.
-This fixes gcc warnings when -Wextra is used:
+Currently running xfstests on patches which implements above logic.
 
-../fs/ext2/xattr.c:252:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:258:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:330:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-../fs/ext2/xattr.c:872:45: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
+-ritesh
 
-I have verified that the only object code change (with gcc 7.5.0) is
-the reversal of some instructions from 'cmp a,b' to 'cmp b,a'.
-
-Link: https://lore.kernel.org/r/e18a7395-61fb-2093-18e8-ed4f8cf56248@infradead.org
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jan Kara <jack@suse.com>
-Cc: linux-ext4@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext2/xattr.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 0456bc990b5ee..b91f99d9482e9 100644
---- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -56,6 +56,7 @@
- 
- #include <linux/buffer_head.h>
- #include <linux/init.h>
-+#include <linux/printk.h>
- #include <linux/slab.h>
- #include <linux/mbcache.h>
- #include <linux/quotaops.h>
-@@ -84,8 +85,8 @@
- 		printk("\n"); \
- 	} while (0)
- #else
--# define ea_idebug(f...)
--# define ea_bdebug(f...)
-+# define ea_idebug(inode, f...)	no_printk(f)
-+# define ea_bdebug(bh, f...)	no_printk(f)
- #endif
- 
- static int ext2_xattr_set2(struct inode *, struct buffer_head *,
--- 
-2.20.1
-
-
+On 4/17/20 12:22 AM, Ritesh Harjani wrote:
+> EXT4_MAX_LOGICAL_BLOCK - map.m_lblk + 1 in case when
+> map.m_lblk (offset) is 0 could overflow an unsigned int
+> and become 0.
+> 
+> Fix this.
+> 
+> Fixes: d3b6f23f7167 ("ext4: move ext4_fiemap to use iomap framework")
+> Reported-and-tested-by: syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+> @Jan,
+> I retained your Reviewed by, since there was no logic change, but just couple
+> of minor change - missed semicolon and tab space issue.
+> 
+>   fs/ext4/inode.c | 16 ++++++++++++----
+>   1 file changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index e416096fc081..d9feaaad8ab8 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3424,6 +3424,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>   	int ret;
+>   	struct ext4_map_blocks map;
+>   	u8 blkbits = inode->i_blkbits;
+> +	loff_t len;
+>   
+>   	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
+>   		return -EINVAL;
+> @@ -3435,8 +3436,11 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+>   	 * Calculate the first and last logical blocks respectively.
+>   	 */
+>   	map.m_lblk = offset >> blkbits;
+> -	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
+> -			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
+> +	len = min_t(loff_t, (offset + length - 1) >> blkbits,
+> +		    EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
+> +	if (len > EXT4_MAX_LOGICAL_BLOCK)
+> +		len = EXT4_MAX_LOGICAL_BLOCK;
+> +	map.m_len = len;
+>   
+>   	if (flags & IOMAP_WRITE)
+>   		ret = ext4_iomap_alloc(inode, &map, flags);
+> @@ -3524,6 +3528,7 @@ static int ext4_iomap_begin_report(struct inode *inode, loff_t offset,
+>   	bool delalloc = false;
+>   	struct ext4_map_blocks map;
+>   	u8 blkbits = inode->i_blkbits;
+> +	loff_t len;
+>   
+>   	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
+>   		return -EINVAL;
+> @@ -3541,8 +3546,11 @@ static int ext4_iomap_begin_report(struct inode *inode, loff_t offset,
+>   	 * Calculate the first and last logical block respectively.
+>   	 */
+>   	map.m_lblk = offset >> blkbits;
+> -	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
+> -			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
+> +	len = min_t(loff_t, (offset + length - 1) >> blkbits,
+> +		    EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
+> +	if (len > EXT4_MAX_LOGICAL_BLOCK)
+> +		len = EXT4_MAX_LOGICAL_BLOCK;
+> +	map.m_len = len;
+>   
+>   	/*
+>   	 * Fiemap callers may call for offset beyond s_bitmap_maxbytes.
+> 
 
