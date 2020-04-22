@@ -2,158 +2,231 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D89B1B4E3A
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 22:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E221B4F0F
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 23:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgDVUPf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Apr 2020 16:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725779AbgDVUPf (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Apr 2020 16:15:35 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3103C03C1A9
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 13:15:33 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 18so1685045pfx.6
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 13:15:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=ID66N5DaQPu168etE7RPXy1RvQHMYJsyPG47BKglEgg=;
-        b=GmvhqTKlBOR9juqAC8Ia42qla91QlFU7OZCea2YuQoN2cBC0t6FVvGz9XGwjv8ecOM
-         CQhuIqJ/kVTUEKLPuPOSj4MBakp+WpDLxzF9Np4tZymLw2nzLnDAn3ibabWge7C81ED5
-         7keHuZhmq3kNPeZcazAOVZGp2oWBTRV3FfwVPzH/b7knmraOjpsjve+aXe7ie+WTQg6j
-         Z7m1jYRtwmIRMrdhMPUJcj0ubLa6KPh/kU32SWd/G9eGyncKov6rAT5IhWsdLl4iFE7T
-         21Kssxr1AcImHNec3ARaN5EdcUPLNjtdU5jV65lURhSG7ypkQLtQlzX0r6LENqKK4G5T
-         FwkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=ID66N5DaQPu168etE7RPXy1RvQHMYJsyPG47BKglEgg=;
-        b=PtEbGdRoIkIGE9RJfacaMWgPtVbJDF46eqP0HTVHYQ+5vYdf3Dq/xiV2q93ujC71fQ
-         hIwRuPGknUzdL707h6d3rAIzud+0NDmB2LwmJ8b4eWBULfXVaWFlKa6tqc90vzrZCXLs
-         cjYlOXh+8lFYUsjjmVy4y1f8aJ8zly8e3DjdK0/j3A9UueW1oyDe27doTdb5F3wNaP2R
-         SaxNvvmTJyZYkOte0hND62GQcdnTrzfxRATSshcXEmw4MP4tqiCVNvRVboEz+POy3bFP
-         cFEj04ohMIwRYJ37wNOSPusCxCNn8isWjOliAAQgdIlYVsrsFGu4uouzG7ljSx0NGgAd
-         qwGQ==
-X-Gm-Message-State: AGi0PuaLZvUXraqqezCHH+6gjXJ0FtCjrMElPUEY7sYfqSudVft2uFoK
-        jRHme3QvygFyj512CZMcueTgGy8QX4U=
-X-Google-Smtp-Source: APiQypKEPYrLeyWue+WMo3uaoROJbvM+Zbkn1V4pnvCJ0O2TqLwJaiDIQXI7qwj6Czjyj3q5IqLTlA==
-X-Received: by 2002:a63:50f:: with SMTP id 15mr709591pgf.267.1587586533378;
-        Wed, 22 Apr 2020 13:15:33 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id z7sm343747pff.47.2020.04.22.13.15.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Apr 2020 13:15:31 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <331CEA49-83E0-462C-A70D-479F17A4FAB2@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_41251E72-9075-4224-B207-F3AB9394B244";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: Inline data with 128-byte inodes?
-Date:   Wed, 22 Apr 2020 14:15:28 -0600
-In-Reply-To: <20200422160045.GC20756@quack2.suse.cz>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
-To:     Jan Kara <jack@suse.cz>, Josh Triplett <josh@joshtriplett.org>
-References: <20200414070207.GA170659@localhost>
- <20200422160045.GC20756@quack2.suse.cz>
-X-Mailer: Apple Mail (2.3273)
+        id S1726685AbgDVVVO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 17:21:14 -0400
+Received: from mga09.intel.com ([134.134.136.24]:54635 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726335AbgDVVVN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Apr 2020 17:21:13 -0400
+IronPort-SDR: W4F/DzAkp5HA+3tf09hnSLmlWRaYV5EztENc3429g0WMDJFxTUWA5dVpa7Kn08ydlWc9X5rLNg
+ U4PpaF046OMw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 14:21:12 -0700
+IronPort-SDR: 1V3aydwcj2RFc/ViuLoh/Pg4suCfr/h0jIK5zkCV7nn86S2pikVUlwWtCoNyaKdsG+vxPshR3W
+ E/Au24YAYQfQ==
+X-IronPort-AV: E=Sophos;i="5.73,304,1583222400"; 
+   d="scan'208";a="292070841"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 14:21:11 -0700
+From:   ira.weiny@intel.com
+To:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, Jeff Moyer <jmoyer@redhat.com>
+Subject: [PATCH V10 00/11] XFS - Enable per-file/per-directory DAX operations V10
+Date:   Wed, 22 Apr 2020 14:20:51 -0700
+Message-Id: <20200422212102.3757660-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+From: Ira Weiny <ira.weiny@intel.com>
 
---Apple-Mail=_41251E72-9075-4224-B207-F3AB9394B244
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+Changes from V9:
+	Slight reorder of series to put Documentation sooner
+	modify i_state under i_lock
+	Change name of xfs_ioctl_setattr_dax_invalidate() ->
+		xfs_ioctl_setattr_prepare_dax()
+	Do not report default dax=inode mount mode
+	Move XFS_IEOFBLOCKS to '9'
+	Fixup some doc typos
+	Fix xfs style indentation
+	Fix commit mispelling
 
-On Apr 22, 2020, at 10:00 AM, Jan Kara <jack@suse.cz> wrote:
-> 
-> On Tue 14-04-20 00:02:07, Josh Triplett wrote:
->> Is there a fundamental reason that ext4 *can't* or *shouldn't* support
->> inline data with 128-byte inodes?
-> 
-> Well, where would we put it on disk? ext4 on-disk inode fills 128-bytes
-> with 'osd2' union...
+At LSF/MM'19 [1] [2] we discussed applications that overestimate memory
+consumption due to their inability to detect whether the kernel will
+instantiate page cache for a file, and cases where a global dax enable via a
+mount option is too coarse.
 
-There are 60 bytes in the "i_block" field that can be used by inline_data.
+The following patch series enables the use of DAX on individual files and/or
+directories on xfs, and lays some groundwork to do so in ext4.  It further
+enhances the dax mount option to be a tri-state of 'always', 'never', or
+'iflag' (default).  Furthermore, it maintians '-o dax' to be equivalent to '-o
+dax=always'.
 
-> Or do you mean we should put inline data in an external xattr block?
+The insight at LSF/MM was to separate the per-mount or per-file "physical"
+(FS_XFLAG_DAX) capability switch from an "effective" (S_DAX) attribute for the
+file.
 
-Using an 4KB xattr block would IMHO be worse than just using a regular
-file block for such files, if they don't fit into the 60 i_block bytes.
-That makes the data handling more complex (data copies each time in/out
-of the xattr) and has performance impact (all writes essentially data
-journal because they go via the setxattr code path.
+At LSF/MM we discussed the difficulties of switching the DAX state of a file
+with active mappings / page cache.  It was thought the races could be avoided
+by limiting DAX state flips to 0-length files.
 
-The only time it _might_ be useful is if there are other xattrs that are
-shared in the external block with inline_data.  However, at that point
-I think you are better off to just create larger inodes to hold the
-xattrs to avoid the seeking needed to load the external block...
+However, this turns out to not be true.[3][5] This is because address space
+operations (a_ops) may be in use at any time the inode is referenced.
 
-Given the prevalence of xattrs today (SELinux springs to mind), I'd be
-surprised whether this combination shows any improvement in real life,
-but I don't have an _objection_ to allowing this combination (e.g. for
-ultra-compact /etc or boot filesystem images.
+For this reason direct manipulation of the FS_XFLAG_DAX is allowed but the
+operation of the file (S_DAX) is not immediately changed.
 
-Maybe there is a bigger win for small directories avoiding 4KB leaf blocks?
+Details of when and how DAX state can be changed on a file is included in a
+documentation patch.
 
-That said, I'd be happy to see some numbers to show this is a win, and
-I'm definitely not _against_ allowing this to work if there is a use for it.
-
-Cheers, Andreas
-
->> As far as I can tell, the kernel ext4 implementation only allows inline
->> data with 256-byte or larger inodes, because it requires the system.data
->> xattr to exist, even if the actual data requires 60 bytes or less. (The
->> implementation in debugfs, on the other hand, handles inline data in
->> 128-byte inodes just fine. And it seems like it'd be fairly
->> straightforward to change the kernel implementation to support it as
->> well.)
->> 
->> For filesystems that don't need to store xattrs in general, and can live
->> with the other limitations of 128-byte inodes, using a 128-byte inode
->> can save substantial space compared to a 256-byte inode (many megabytes
->> worth of inode tables, versus 4k for each file between 61-160 bytes),
->> and many small files or small directories would still fit in 60 bytes.
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+It should be noted that FS_XFLAG_DAX inheritance is not shown in this patch set
+as it was maintained from previous work on XFS.  FS_XFLAG_DAX and it's
+inheritance will need to be added to other file systems for user control. 
 
 
+[1] https://lwn.net/Articles/787973/
+[2] https://lwn.net/Articles/787233/
+[3] https://lkml.org/lkml/2019/10/20/96
+[4] https://patchwork.kernel.org/patch/11310511/
+[5] https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
 
 
+To: linux-kernel@vger.kernel.org
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-api@vger.kernel.org
 
+Changes from V8:
+	Rebase to 5.7-rc2
+	Change ALWAYS/NEVER bits to be 26/27
+	Remove XFS_IDONTCACHE -> lift to I_DONTCACHE
+		use mark_inode_dontcache() in XFS
+	create xfs_dax_mode enum
+	use xfs signature styles
+	Change xfs_inode_enabe_dax() -> xfs_inode_should_enable()
+		Based on feedback to ext4 series
+	Fix locking of DCACHE_DONTCACHE
+	Change flag_inode_dontcache() -> mark_inode_dontcache()
+	Change xfs_ioctl_setattr_dax_invalidate() -> xfs_ioctl_dax_check_set_cache()
+	Documentation cleanups
+	Clean up all commit messages
 
---Apple-Mail=_41251E72-9075-4224-B207-F3AB9394B244
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+Changes from V7:
+	Add DCACHE_DONTCACHE
+	If mount override don't worry about inode caching
+	Change mount flags to NEVER/ALWAYS
+	Clean up xfs_inode_enable_dax()
+	Clarify comments
+	Update documentation
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
+Changes from V6:
+	Incorporate feedback on patches
+	Add ability to change FS_XFLAG_DAX on files at any time.
+		Add a don't cache flag to the VFS layer
+		Preserve internal XFS IDONTCACHE behavior for bulkstat
+		operations
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6gpeAACgkQcqXauRfM
-H+Cxiw//UtPXgAlqlfQ4fWDBHFocITU/qPt1qh0JFMCWjwi57MJuBJMzTixcicts
-0zOYtjJw4HrQq6EkPeKwik45sS2KgMuHbXoqUF7R9hlaIfFcmZY3CIxyEwsLr5VG
-vxr3Fkq4SvT4qXcR95T2D1g1sEvT2N7C7mtaaepnuEUrJzllfqQdtZlBrGRSSAnQ
-fdqM4Qy4HrEVpScoTDA9VK6BgzEK6TA50b2BYSOupjbew5FiKmo7hYq+RnJlK3fY
-ODFg4VVD5mMNF0+uFvdlXZH4lnUN+pQwWUw2fK/4KnGdmCnSjS2tjQivC689gDns
-gIx2Hurj3g6r5CjiZPSfBCCDSWZCaIds5O26qpxAj5YIxIJr53xTI+TL2BsFP5qx
-AaLBXyp4hNWOQKs/Aw21FAWdHtMIdj6iAQjERURjSmMTDxZ1RxJR5D2aHbuNtTKU
-EIHKGiHD4QELdifsdz5cRqpfgTJ4FsLRMbL9rYPEv6tkAL6Iavl9yKIpj5oNdmxb
-x2TsYO3w4rUEkIsVZRCrF9LF2KkGb1BTpWSp9o2mcUOWVO7sop719tEdsB2OhXfl
-KigmaMSrPdTNeNASbsjHbZ775pol+vLEbfuHQHQc1DAGP1UZU+idJVUDpICM2/tg
-g6WwGleU7OkD8iZrO8vHK6dqltfs5Y4fFp1imGzfvfh1WUCMWy0=
-=+/UI
------END PGP SIGNATURE-----
+Changes from V5:
+	* make dax mount option a tri-state
+	* Reject changes to FS_XFLAG_DAX for regular files
+		- Allow only on directories
+	* Update documentation
 
---Apple-Mail=_41251E72-9075-4224-B207-F3AB9394B244--
+Changes from V4:
+	* Open code the aops lock rather than add it to the xfs_ilock()
+	  subsystem (Darrick's comments were obsoleted by this change)
+	* Fix lkp build suggestions and bugs
+
+Changes from V3:
+	* Remove global locking...  :-D
+	* put back per inode locking and remove pre-mature optimizations
+	* Fix issues with Directories having IS_DAX() set
+	* Fix kernel crash issues reported by Jeff
+	* Add some clean up patches
+	* Consolidate diflags to iflags functions
+	* Update/add documentation
+	* Reorder/rename patches quite a bit
+
+Changes from V2:
+
+	* Move i_dax_sem to be a global percpu_rw_sem rather than per inode
+		Internal discussions with Dan determined this would be easier,
+		just as performant, and slightly less overhead that having it
+		in the SB as suggested by Jan
+	* Fix locking order in comments and throughout code
+	* Change "mode" to "state" throughout commits
+	* Add CONFIG_FS_DAX wrapper to disable inode_[un]lock_state() when not
+		configured
+	* Add static branch for which is activated by a device which supports
+		DAX in XFS
+	* Change "lock/unlock" to up/down read/write as appropriate
+		Previous names were over simplified
+	* Update comments/documentation
+
+	* Remove the xfs specific lock to the vfs (global) layer.
+	* Fix i_dax_sem locking order and comments
+
+	* Move 'i_mapped' count from struct inode to struct address_space and
+		rename it to mmap_count
+	* Add inode_has_mappings() call
+
+	* Fix build issues
+	* Clean up syntax spacing and minor issues
+	* Update man page text for STATX_ATTR_DAX
+	* Add reviewed-by's
+	* Rebase to 5.6
+
+	Rename patch:
+		from: fs/xfs: Add lock/unlock state to xfs
+		to: fs/xfs: Add write DAX lock to xfs layer
+	Add patch:
+		fs/xfs: Clarify lockdep dependency for xfs_isilocked()
+	Drop patch:
+		fs/xfs: Fix truncate up
+
+Ira Weiny (11):
+  fs/xfs: Remove unnecessary initialization of i_rwsem
+  fs: Remove unneeded IS_DAX() check in io_is_direct()
+  fs/stat: Define DAX statx attribute
+  Documentation/dax: Update Usage section
+  fs/xfs: Change XFS_MOUNT_DAX to XFS_MOUNT_DAX_ALWAYS
+  fs/xfs: Make DAX mount option a tri-state
+  fs/xfs: Create function xfs_inode_should_enable_dax()
+  fs/xfs: Combine xfs_diflags_to_linux() and xfs_diflags_to_iflags()
+  fs: Lift XFS_IDONTCACHE to the VFS layer
+  fs: Introduce DCACHE_DONTCACHE
+  fs/xfs: Update xfs_ioctl_setattr_dax_invalidate()
+
+ Documentation/filesystems/dax.txt | 164 +++++++++++++++++++++++++++++-
+ drivers/block/loop.c              |   6 +-
+ fs/dcache.c                       |   4 +
+ fs/inode.c                        |  15 +++
+ fs/stat.c                         |   3 +
+ fs/xfs/xfs_icache.c               |   8 +-
+ fs/xfs/xfs_inode.h                |   4 +-
+ fs/xfs/xfs_ioctl.c                | 141 ++++---------------------
+ fs/xfs/xfs_iops.c                 |  72 ++++++++-----
+ fs/xfs/xfs_mount.h                |   4 +-
+ fs/xfs/xfs_super.c                |  53 ++++++++--
+ include/linux/dcache.h            |   2 +
+ include/linux/fs.h                |  14 +--
+ include/uapi/linux/stat.h         |   1 +
+ 14 files changed, 319 insertions(+), 172 deletions(-)
+
+-- 
+2.25.1
+
