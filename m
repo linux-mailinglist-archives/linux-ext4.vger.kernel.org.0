@@ -2,160 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79841B450D
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 14:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D041B474E
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 16:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726224AbgDVM0R (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Apr 2020 08:26:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11252 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726050AbgDVM0R (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Apr 2020 08:26:17 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03MC27DQ006947
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 08:26:16 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30gf5t87vf-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 08:26:16 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Wed, 22 Apr 2020 13:25:21 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 22 Apr 2020 13:25:17 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03MCQ9bL56426552
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Apr 2020 12:26:09 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7AEA4AE05D;
-        Wed, 22 Apr 2020 12:26:09 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E552AAE045;
-        Wed, 22 Apr 2020 12:26:06 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.60.18])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 22 Apr 2020 12:26:06 +0000 (GMT)
-Subject: Re: [PATCHv2 1/1] ext4: Fix overflow case for map.m_len in
- ext4_iomap_begin_*
-To:     linux-ext4@vger.kernel.org
-Cc:     jack@suse.cz, tytso@mit.edu, adilger@dilger.ca,
-        darrick.wong@oracle.com, hch@infradead.org,
-        linux-fsdevel@vger.kernel.org,
-        syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com
-References: <1a2dc8f198e1225ddd40833de76b60c7ee20d22d.1587024137.git.riteshh@linux.ibm.com>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Wed, 22 Apr 2020 17:56:05 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726918AbgDVO1P (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 10:27:15 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22656 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726419AbgDVO1P (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Apr 2020 10:27:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587565634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T++6lxdmFtFZnyG5wIW2hksMeif2QZiboHtzMhe4Tfs=;
+        b=DnwXRP8TAyoPlFBETnifExdjd1+rLcKu0g85/rM+oy1Rk3wDoglxKxoiFEUJ2RpfjV0i4s
+        bmUCW1ef9pGa+kzh2okae3CAyJ8fGJljsNzQF6OQI7X9mGOyTsr+rpj0HYkmwqDeDwvcic
+        bqxffMI9VHybWpq0x9T/trAK+ri9yNM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-Bo7f7rf5PKiZEDj4EQ4HJQ-1; Wed, 22 Apr 2020 10:27:12 -0400
+X-MC-Unique: Bo7f7rf5PKiZEDj4EQ4HJQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B89E107ACC4;
+        Wed, 22 Apr 2020 14:27:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-113-129.rdu2.redhat.com [10.10.113.129])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C381710027AB;
+        Wed, 22 Apr 2020 14:27:09 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <BFC9114B-7D3D-4B8F-A8BB-75C2770EE36D@dilger.ca>
+References: <BFC9114B-7D3D-4B8F-A8BB-75C2770EE36D@dilger.ca> <20200401151837.GB56931@magnolia> <2461554.1585726747@warthog.procyon.org.uk> <2504712.1587485842@warthog.procyon.org.uk>
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     dhowells@redhat.com, "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: Exporting ext4-specific information through fsinfo attributes
 MIME-Version: 1.0
-In-Reply-To: <1a2dc8f198e1225ddd40833de76b60c7ee20d22d.1587024137.git.riteshh@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20042212-0020-0000-0000-000003CC83D6
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20042212-0021-0000-0000-000022257FC2
-Message-Id: <20200422122606.E552AAE045@d06av26.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-22_03:2020-04-22,2020-04-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 spamscore=0 priorityscore=1501 adultscore=0 malwarescore=0
- impostorscore=0 suspectscore=1 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004220093
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2841658.1587565628.1@warthog.procyon.org.uk>
+Date:   Wed, 22 Apr 2020 15:27:08 +0100
+Message-ID: <2841659.1587565628@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-NACK on this patch.
+Andreas Dilger <adilger@dilger.ca> wrote:
 
-Even though this fixes syzcaller reproducer, still it seems the right
-fix should be:-
-1. To make EXT4_MAX_LOGICAL_BLOCK to 0xfffffffe
-2. And also add fiemap_check_ranges() call in overlayfs.
-This is because fiemap_check_ranges() takes care of truncating the
-length parameter to max sb->s_maxbytes which underlying filesystem can
-handle. This will be similar to how VFS calls for fiemap on underlying
-FS.
+> I can definitely get behind adding generic properties like the ones
+> you list below.
 
-Currently running xfstests on patches which implements above logic.
+Are there any specific properties you'd like exported through this interface?
 
--ritesh
-
-On 4/17/20 12:22 AM, Ritesh Harjani wrote:
-> EXT4_MAX_LOGICAL_BLOCK - map.m_lblk + 1 in case when
-> map.m_lblk (offset) is 0 could overflow an unsigned int
-> and become 0.
-> 
-> Fix this.
-> 
-> Fixes: d3b6f23f7167 ("ext4: move ext4_fiemap to use iomap framework")
-> Reported-and-tested-by: syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> ---
-> @Jan,
-> I retained your Reviewed by, since there was no logic change, but just couple
-> of minor change - missed semicolon and tab space issue.
-> 
->   fs/ext4/inode.c | 16 ++++++++++++----
->   1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index e416096fc081..d9feaaad8ab8 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3424,6 +3424,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->   	int ret;
->   	struct ext4_map_blocks map;
->   	u8 blkbits = inode->i_blkbits;
-> +	loff_t len;
->   
->   	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
->   		return -EINVAL;
-> @@ -3435,8 +3436,11 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
->   	 * Calculate the first and last logical blocks respectively.
->   	 */
->   	map.m_lblk = offset >> blkbits;
-> -	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
-> -			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
-> +	len = min_t(loff_t, (offset + length - 1) >> blkbits,
-> +		    EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
-> +	if (len > EXT4_MAX_LOGICAL_BLOCK)
-> +		len = EXT4_MAX_LOGICAL_BLOCK;
-> +	map.m_len = len;
->   
->   	if (flags & IOMAP_WRITE)
->   		ret = ext4_iomap_alloc(inode, &map, flags);
-> @@ -3524,6 +3528,7 @@ static int ext4_iomap_begin_report(struct inode *inode, loff_t offset,
->   	bool delalloc = false;
->   	struct ext4_map_blocks map;
->   	u8 blkbits = inode->i_blkbits;
-> +	loff_t len;
->   
->   	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
->   		return -EINVAL;
-> @@ -3541,8 +3546,11 @@ static int ext4_iomap_begin_report(struct inode *inode, loff_t offset,
->   	 * Calculate the first and last logical block respectively.
->   	 */
->   	map.m_lblk = offset >> blkbits;
-> -	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
-> -			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
-> +	len = min_t(loff_t, (offset + length - 1) >> blkbits,
-> +		    EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
-> +	if (len > EXT4_MAX_LOGICAL_BLOCK)
-> +		len = EXT4_MAX_LOGICAL_BLOCK;
-> +	map.m_len = len;
->   
->   	/*
->   	 * Fiemap callers may call for offset beyond s_bitmap_maxbytes.
-> 
+David
 
