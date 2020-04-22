@@ -2,83 +2,135 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF871B35B1
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 05:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBE01B3A3D
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 10:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbgDVDqK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 21 Apr 2020 23:46:10 -0400
-Received: from mga04.intel.com ([192.55.52.120]:52549 "EHLO mga04.intel.com"
+        id S1726077AbgDVIhY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 04:37:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42878 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbgDVDqK (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 21 Apr 2020 23:46:10 -0400
-IronPort-SDR: 6Ut0L7yFzfrB6TRQQ5x4/0IbWFB4BtN6O3EFQjNrdYJ8FMKv8+rFCoA3QIUrfyVyO8gw2I7+gB
- DI+XOCQDS56A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Apr 2020 20:46:10 -0700
-IronPort-SDR: /eKAMA4Z+MGLgmc7pg47zfyleZZfStf928BZ4SShuUGk9rZzdCpDBrU1XUAGBDYUIyMNfIvWzv
- f+akZuFVWrlQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,412,1580803200"; 
-   d="scan'208";a="402401206"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga004.jf.intel.com with ESMTP; 21 Apr 2020 20:46:09 -0700
-Date:   Tue, 21 Apr 2020 20:46:09 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
+        id S1725907AbgDVIhX (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Apr 2020 04:37:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 48B61AC6E;
+        Wed, 22 Apr 2020 08:37:21 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 042ED1E0E5A; Wed, 22 Apr 2020 10:37:21 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 10:37:20 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
         Dan Williams <dan.j.williams@intel.com>,
         Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V9 09/11] fs: Introduce DCACHE_DONTCACHE
-Message-ID: <20200422034609.GH3372712@iweiny-DESK2.sc.intel.com>
+Subject: Re: [PATCH V9 02/11] fs: Remove unneeded IS_DAX() check in
+ io_is_direct()
+Message-ID: <20200422083720.GA8775@quack2.suse.cz>
 References: <20200421191754.3372370-1-ira.weiny@intel.com>
- <20200421191754.3372370-10-ira.weiny@intel.com>
- <20200421202519.GC6742@magnolia>
- <20200422023407.GH23230@ZenIV.linux.org.uk>
+ <20200421191754.3372370-3-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200422023407.GH23230@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200421191754.3372370-3-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 03:34:07AM +0100, Al Viro wrote:
-> On Tue, Apr 21, 2020 at 01:25:19PM -0700, Darrick J. Wong wrote:
+On Tue 21-04-20 12:17:44, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> > > DCACHE_DONTCACHE indicates a dentry should not be cached on final
-> > > dput().
-> > > 
-> > > Also add a helper function to mark DCACHE_DONTCACHE on all dentries
-> > > pointing to a specific inode when that inode is being set I_DONTCACHE.
-> > > 
-> > > This facilitates dropping dentry references to inodes sooner which
-> > > require eviction to swap S_DAX mode.
+> Remove the check because DAX now has it's own read/write methods and
+> file systems which support DAX check IS_DAX() prior to IOCB_DIRECT on
+> their own.  Therefore, it does not matter if the file state is DAX when
+> the iocb flags are created.
 > 
-> Explain, please.  Questions:
+> Also remove io_is_direct() as it is just a simple flag check.
 > 
-> 1) does that ever happen to directories?
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Directories never get S_DAX set.  So the eviction only needs to happen on
-inodes.  But that can't happen without dentries also dropping their references.
+Looks good to me. You can add:
 
-> 2) how much trouble do we get if such inode is *NOT* evicted for, say, several
-> days?
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-No trouble at all.  Users understand that changing the FS_XFLAG_DAX setting
-does _not_ immediately result in S_DAX changing.
+								Honza
 
-It is intended that applications requiring a change of mode would flip the
-FS_XFLAG_DAX close the file and wait for the eviction (or force it through a
-drop cache if they have permission).
-
-Ira
-
+> 
+> ---
+> Changes from v8:
+> 	Rebase to latest Linus tree
+> 
+> Changes from v6:
+> 	remove io_is_direct() as well.
+> 	Remove Reviews since this is quite a bit different.
+> 
+> Changes from v3:
+> 	Reword commit message.
+> 	Reordered to be a 'pre-cleanup' patch
+> ---
+>  drivers/block/loop.c | 6 +++---
+>  include/linux/fs.h   | 7 +------
+>  2 files changed, 4 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index da693e6a834e..14372df0f354 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -634,8 +634,8 @@ static int do_req_filebacked(struct loop_device *lo, struct request *rq)
+>  
+>  static inline void loop_update_dio(struct loop_device *lo)
+>  {
+> -	__loop_update_dio(lo, io_is_direct(lo->lo_backing_file) |
+> -			lo->use_dio);
+> +	__loop_update_dio(lo, (lo->lo_backing_file->f_flags & O_DIRECT) |
+> +				lo->use_dio);
+>  }
+>  
+>  static void loop_reread_partitions(struct loop_device *lo,
+> @@ -1028,7 +1028,7 @@ static int loop_set_fd(struct loop_device *lo, fmode_t mode,
+>  	if (!(lo_flags & LO_FLAGS_READ_ONLY) && file->f_op->fsync)
+>  		blk_queue_write_cache(lo->lo_queue, true, false);
+>  
+> -	if (io_is_direct(lo->lo_backing_file) && inode->i_sb->s_bdev) {
+> +	if ((lo->lo_backing_file->f_flags & O_DIRECT) && inode->i_sb->s_bdev) {
+>  		/* In case of direct I/O, match underlying block size */
+>  		unsigned short bsize = bdev_logical_block_size(
+>  			inode->i_sb->s_bdev);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 4f6f59b4f22a..a87cc5845a02 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3394,11 +3394,6 @@ extern void setattr_copy(struct inode *inode, const struct iattr *attr);
+>  
+>  extern int file_update_time(struct file *file);
+>  
+> -static inline bool io_is_direct(struct file *filp)
+> -{
+> -	return (filp->f_flags & O_DIRECT) || IS_DAX(filp->f_mapping->host);
+> -}
+> -
+>  static inline bool vma_is_dax(const struct vm_area_struct *vma)
+>  {
+>  	return vma->vm_file && IS_DAX(vma->vm_file->f_mapping->host);
+> @@ -3423,7 +3418,7 @@ static inline int iocb_flags(struct file *file)
+>  	int res = 0;
+>  	if (file->f_flags & O_APPEND)
+>  		res |= IOCB_APPEND;
+> -	if (io_is_direct(file))
+> +	if (file->f_flags & O_DIRECT)
+>  		res |= IOCB_DIRECT;
+>  	if ((file->f_flags & O_DSYNC) || IS_SYNC(file->f_mapping->host))
+>  		res |= IOCB_DSYNC;
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
