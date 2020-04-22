@@ -2,39 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB621B424C
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 13:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A541B3CA7
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 12:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729549AbgDVK7q (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Apr 2020 06:59:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51624 "EHLO mail.kernel.org"
+        id S1727854AbgDVKHd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 06:07:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727003AbgDVKCc (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Apr 2020 06:02:32 -0400
+        id S1726770AbgDVKH2 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Apr 2020 06:07:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91AC420735;
-        Wed, 22 Apr 2020 10:02:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A7A120575;
+        Wed, 22 Apr 2020 10:07:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587549752;
-        bh=IR9dinZycpk9fBA76RYC0kTqq4SSMvLiFis0KZdrM3U=;
+        s=default; t=1587550047;
+        bh=9WyvV04rLgQ0yebrNVGdbfNtGMFSfW1avJLli87N90Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0xmZ/bVJZF51OOJ1QWpMdCta07PUCh1OBUZHn61RFtIIqAF3PluEKjEtxTvj0JyMn
-         JxzLGeT+bKcNg8gkF2+jC50XGLN9BUdxEOZj9zM6YMEgLa3n0QsI8wDSewjm9ynRLr
-         nMDMMqc8qAD1vPWb9t0UV/CcLt0eYeMGOA/bkb0w=
+        b=k7D/Rkn2Hh8ONzX/nJZrTwPGcNOlOke2s1IQwbwxD62YLbMs9+Hoq6RtJ2/e22Jhz
+         +heBf2FnyTE7Pvz47VOvA+acQjf0jzPeEJ8hmtHB9h4oBMfNlukDR1qxQBn31kZcKp
+         0+ddeJwoOkcmTK41aGCImvy2c4GvC6YbM4yS+BP4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
         Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
         Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 091/100] ext2: fix empty body warnings when -Wextra is used
-Date:   Wed, 22 Apr 2020 11:57:01 +0200
-Message-Id: <20200422095039.371486451@linuxfoundation.org>
+Subject: [PATCH 4.9 114/125] ext2: fix empty body warnings when -Wextra is used
+Date:   Wed, 22 Apr 2020 11:57:11 +0200
+Message-Id: <20200422095051.098698584@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200422095022.476101261@linuxfoundation.org>
-References: <20200422095022.476101261@linuxfoundation.org>
+In-Reply-To: <20200422095032.909124119@linuxfoundation.org>
+References: <20200422095032.909124119@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -71,7 +71,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 22d817dc821e9..6f6f4f89a2f0c 100644
+index babef30d440b1..a54037df2c8a8 100644
 --- a/fs/ext2/xattr.c
 +++ b/fs/ext2/xattr.c
 @@ -55,6 +55,7 @@
@@ -82,7 +82,7 @@ index 22d817dc821e9..6f6f4f89a2f0c 100644
  #include <linux/slab.h>
  #include <linux/mbcache.h>
  #include <linux/quotaops.h>
-@@ -85,8 +86,8 @@
+@@ -83,8 +84,8 @@
  		printk("\n"); \
  	} while (0)
  #else
