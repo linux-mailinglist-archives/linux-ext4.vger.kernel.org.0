@@ -2,184 +2,272 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0FC1B4CE4
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 20:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B239D1B4DE6
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 22:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgDVSvX (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Apr 2020 14:51:23 -0400
-Received: from mga09.intel.com ([134.134.136.24]:46413 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbgDVSvW (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Apr 2020 14:51:22 -0400
-IronPort-SDR: qA3ucP6gC5+IQx3Xsjgf+YjHMnYXASXGXj6l7UCQyGwuaPg3FYQqVJyb2uuzftZAqoG7yqgKRM
- 0s/PzybHF6Ag==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2020 11:51:21 -0700
-IronPort-SDR: qqIquuGL482KeAk9Fi2fpLDL6RgzKTQLdO3ZrjDmL6Yf3xRhccswmwkjvWiLXWUe5Hc3zejhOa
- XdCI2ppN3jtA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,304,1583222400"; 
-   d="scan'208";a="290931747"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Apr 2020 11:51:21 -0700
-Date:   Wed, 22 Apr 2020 11:51:21 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V9 03/11] fs/stat: Define DAX statx attribute
-Message-ID: <20200422185121.GL3372712@iweiny-DESK2.sc.intel.com>
-References: <20200421191754.3372370-1-ira.weiny@intel.com>
- <20200421191754.3372370-4-ira.weiny@intel.com>
- <20200422162951.GE6733@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422162951.GE6733@magnolia>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        id S1726081AbgDVUB0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 16:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726002AbgDVUB0 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Apr 2020 16:01:26 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D120CC03C1A9
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 13:01:25 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o185so1648732pgo.3
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 13:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=ZfCevJBXV8zFRCuL/PTN5oheG+WXuKvn3y7G1sMFlw4=;
+        b=ECO2V5id3EVxmPqwTpJPqDKhw0E7KsrBWghXc5y6a0Ka+GQ8KgfkOWnPt9TcUQ1Q4t
+         Tt5LiXr44ePCFD/9wXi+ug6orPAlfvegBqZE6CwEmM0axXZu1kmsY7+mo+UfXN2Wamrj
+         voEftCNDd0UyntBgSZCQJQZ9qAONBopI2HcD9ArVsrgUdIqybdRCYQtLD+hyiDaB9Qd9
+         s7dyRkoSKnLqMHAWENQxljHcNusm61q0jBfE4tnJXvst64Cv8uRFceQFglX2OWwoNhuz
+         4/taCTqBMg4lp0zMu//9vk1+Y4bTABTtqxWW946ydLC+pv9XpP4QTvAPr6D2ucvItkZJ
+         glSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=ZfCevJBXV8zFRCuL/PTN5oheG+WXuKvn3y7G1sMFlw4=;
+        b=igQeVuofKsVTYssXjaC1JDXoWRWWOPaX8rlZGahDHI7OmnCHNSeuhSlyOCGsjdMHCh
+         GFyWcvNQaLmO1YPx2lLtitq1cx8lp+ixBSvtCJMS2sO7czpFI6rWLDI+/wDnFVbXLHzo
+         FJURxdK2ysm5O1S0xDAUjgDMRapGd/GI1MzYagvwxqjbRh9bnQFXXVLCO88uLJoQuLpB
+         MWKC5PoHI64IPtNV2B7AzoxgowvN1g0ljpfTsX0mJCQGhXi2ZtpjKZQ1bXQM0k0f3QP1
+         cjQIT1v8hZnJyRE54I7fZd2KmnILVCvaE7A3fjnEYlFQYEFfmRNHXuMyeoeHwuBG2wHA
+         DGqg==
+X-Gm-Message-State: AGi0PuYPBh2KikQG3xYFktYZsYrPJJoq1zhBOETKE+ioovwdi6+XCHjv
+        LSGQo3OUJb3JVlTL1nMl9ZIhyHlc2HY=
+X-Google-Smtp-Source: APiQypJ9xRmle+0U36L+H/ALWbxBqHEYVLtTCJW04JGEAQnCmMRbSferf0MJmc8KJPEBc2cCMo5yFw==
+X-Received: by 2002:a63:350:: with SMTP id 77mr697335pgd.325.1587585685211;
+        Wed, 22 Apr 2020 13:01:25 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id c144sm295792pfb.172.2020.04.22.13.01.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 22 Apr 2020 13:01:22 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <FFFB9649-7F92-4857-83D8-9E26EC93EA14@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_50040CEB-A2B6-42C1-AC35-23CC9215932B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] LUS-1922 e2image: add option to ignore fs errors
+Date:   Wed, 22 Apr 2020 14:01:16 -0600
+In-Reply-To: <20200422175434.81072-1-artem.blagodarenko@hpe.com>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Alexey Lyashkov <alexey.lyashkov@hpe.com>
+To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>
+References: <20200422175434.81072-1-artem.blagodarenko@hpe.com>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 09:29:51AM -0700, Darrick J. Wong wrote:
-> On Tue, Apr 21, 2020 at 12:17:45PM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > In order for users to determine if a file is currently operating in DAX
-> > state (effective DAX).  Define a statx attribute value and set that
-> > attribute if the effective DAX flag is set.
-> > 
-> > To go along with this we propose the following addition to the statx man
-> > page:
-> > 
-> > STATX_ATTR_DAX
-> > 
-> > 	The file is in the DAX (cpu direct access) state.  DAX state
-> > 	attempts to minimize software cache effects for both I/O and
-> > 	memory mappings of this file.  It requires a file system which
-> > 	has been configured to support DAX.
-> > 
-> > 	DAX generally assumes all accesses are via cpu load / store
-> > 	instructions which can minimize overhead for small accesses, but
-> > 	may adversely affect cpu utilization for large transfers.
-> > 
-> > 	File I/O is done directly to/from user-space buffers and memory
-> > 	mapped I/O may be performed with direct memory mappings that
-> > 	bypass kernel page cache.
-> > 
-> > 	While the DAX property tends to result in data being transferred
-> > 	synchronously, it does not give the same guarantees of O_SYNC
-> > 	where data and the necessary metadata are transferred together.
-> > 
-> > 	A DAX file may support being mapped with the MAP_SYNC flag,
-> > 	which enables a program to use CPU cache flush instructions to
-> > 	persist CPU store operations without an explicit fsync(2).  See
-> > 	mmap(2) for more information.
-> 
-> One thing I hadn't noticed before -- this is a change to userspace API,
-> so please cc this series to linux-api@vger.kernel.org when you send V10.
 
-Right!  Glad you caught me on this because I was just preparing to send V10.
+--Apple-Mail=_50040CEB-A2B6-42C1-AC35-23CC9215932B
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Is there someone I could directly mail who needs to look at this?  I guess I
-thought we had the important FS people involved for this type of API change.
-:-/
+On Apr 22, 2020, at 11:54 AM, Artem Blagodarenko =
+<artem.blagodarenko@gmail.com> wrote:
+> Subject: LUS-1922 e2image: add option to ignore fs errors
 
-> 
-> Also, I've started to think about commit order sequencing for actually
-> landing this series.  Usually I try to put vfs and documentation things
-> before xfs stuff, which means I came up with:
-> 
-> vfs       xfs          I_DONTCACHE
-> 2 3 11    1 4 5 6 7    8 9 10
-> 
-> Note that I separated the DONTCACHE part because it touches VFS
-> internals, which implies a higher standard of review (aka Al) and I do
-> not wish to hold up the 2-3-11-1-4-5-6-7 patches if the dontcache part
-> becomes contentious.
-> 
-> What do you think of that ordering?
+Probably "LUS-1922" shouldn't be in the patch description, only linked
+via "Cray-bug-id: LUS-1922" below.
 
-I think 1 stands on it's own separate from this series...  so I would keep it
-first.  Moving Documentation up is easy.
+> From: Alexey Lyashkov <alexey.lyashkov@hpe.com>
+>=20
+> Add extended "-E ignore_error" option to be more tolerant
+> to fs errors while scanning inode extents.
+>=20
+> Signed-off-by: Alexey Lyashkov <alexey.lyashkov@hpe.com>
+> Signed-off-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
 
-I've changed to this order...
+Mostly OK.  I think the commit message change can be done by Ted at
+landing time, and my other comments are mostly style issues that
+Ted may have other opinions about.  So you can add:
 
-prelim   vfs       xfs        I_DONTCACHE
-1        2 3 11    4 5 6 7    8 9 10
+  Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-Which is pretty much the same now that I look at it!  ;-)
+if the patch lands as-is or if we decide to fix those issues.
 
-> 
-> (Heck, maybe I'll just put patch 1 in the queue for 5.8 right now...)
+> Cray-bug-id: LUS-1922
+> Change-Id: Ib79300656726839b1d3b7ee1dd0793c60679d296
+>=20
+> diff --git a/lib/support/mvstring.c b/lib/support/mvstring.c
+> new file mode 100644
+> index 00000000..1ed2fd67
+> --- /dev/null
+> +++ b/lib/support/mvstring.c
+> +char *string_copy(const char *s)
+> +{
+> +	char	*ret;
+> +
+> +	if (!s)
+> +		return 0;
+> +	ret =3D malloc(strlen(s)+1);
+> +	if (ret)
+> +		strcpy(ret, s);
+> +	return ret;
+> +}
 
-IMHO, I think 1 and 2 can go.
+Why not use "strdup()" for this?  It isn't really a problem with
+this patch, since it was in e2initrd_helper.c previously and just
+moved into the helper library, but seems strange.  The strdup()
+function has existed for a very long time already, so there should
+not be any compatibility issues, but Ted added a patch using this
+function only a year ago, so maybe I'm missing something?  It dates
+back to:
 
-While patch 2 is in the VFS layer it is very much a DAX thing.  Jan and
-Christoph approved it.  I think even Dave approved the version before I
-removed io_is_direct() but I don't recall now.
+  2001-01-05 Use string_copy() instead of strdup() for portability's =
+sake
 
-Dan and I also discussed it internally when I first found the issue.  So I'm
-very confident in it!  :-D
+It would probably make sense to remove the duplicate copies that
+still exist in e2fsck/util.c and misc/fsck.c, and add a comment
+why it is better than strdup()?
 
-Unfortunately, 3 and 10 are the critical pieces to the feature.  So we could
-move 3 out later after 8 and 9 are approved.  But I don't think it buys us
-much to have the tri-state go in without the rest.
+> diff --git a/misc/e2initrd_helper.c b/misc/e2initrd_helper.c
+> index 436aab8c..ab5991a4 100644
+> --- a/misc/e2initrd_helper.c
+> +++ b/misc/e2initrd_helper.c
+> @@ -151,21 +152,6 @@ static int mem_file_eof(struct mem_file *file)
+> 	return (file->ptr >=3D file->size);
+> }
+>=20
+> -/*
+> - * fstab parsing code
+> - */
+> -static char *string_copy(const char *s)
+> -{
+> -	char	*ret;
+> -
+> -	if (!s)
+> -		return 0;
+> -	ret =3D malloc(strlen(s)+1);
+> -	if (ret)
+> -		strcpy(ret, s);
+> -	return ret;
+> -}
+> -
+>=20
+> diff --git a/tests/i_error_tolerance/script =
+b/tests/i_error_tolerance/script
+> new file mode 100644
+> index 00000000..9cdec475
+> --- /dev/null
+> +++ b/tests/i_error_tolerance/script
+> @@ -0,0 +1,38 @@
+> +if test -x $E2IMAGE_EXE; then
+> +if test -x $DEBUGFS_EXE; then
 
-Ira
+Having the nested "if" blocks is confusing at the end.  I was
+wondering how "else #if test -x ..." was doing anything, or
+why there were two seemingly-duplicate "else" blocks.
 
-> 
-> --D
-> 
-> > Reviewed-by: Dave Chinner <dchinner@redhat.com>
-> > Reviewed-by: Jan Kara <jack@suse.cz>
-> > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > ---
-> > Changes from V2:
-> > 	Update man page text with comments from Darrick, Jan, Dan, and
-> > 	Dave.
-> > ---
-> >  fs/stat.c                 | 3 +++
-> >  include/uapi/linux/stat.h | 1 +
-> >  2 files changed, 4 insertions(+)
-> > 
-> > diff --git a/fs/stat.c b/fs/stat.c
-> > index 030008796479..894699c74dde 100644
-> > --- a/fs/stat.c
-> > +++ b/fs/stat.c
-> > @@ -79,6 +79,9 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
-> >  	if (IS_AUTOMOUNT(inode))
-> >  		stat->attributes |= STATX_ATTR_AUTOMOUNT;
-> >  
-> > +	if (IS_DAX(inode))
-> > +		stat->attributes |= STATX_ATTR_DAX;
-> > +
-> >  	if (inode->i_op->getattr)
-> >  		return inode->i_op->getattr(path, stat, request_mask,
-> >  					    query_flags);
-> > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> > index ad80a5c885d5..e5f9d5517f6b 100644
-> > --- a/include/uapi/linux/stat.h
-> > +++ b/include/uapi/linux/stat.h
-> > @@ -169,6 +169,7 @@ struct statx {
-> >  #define STATX_ATTR_ENCRYPTED		0x00000800 /* [I] File requires key to decrypt in fs */
-> >  #define STATX_ATTR_AUTOMOUNT		0x00001000 /* Dir: Automount trigger */
-> >  #define STATX_ATTR_VERITY		0x00100000 /* [I] Verity protected file */
-> > +#define STATX_ATTR_DAX			0x00002000 /* [I] File is DAX */
-> >  
-> >  
-> >  #endif /* _UAPI_LINUX_STAT_H */
-> > -- 
-> > 2.25.1
-> > 
+This should just check for both files at the same time, and
+exit early if they are not found, like:
+
+    if ! test -x $E2IMAGE_EXE || ! test -x $DEBUGFS_EXE; then
+        echo "$test_name: $test_description: skipped"
+        return 0
+    fi
+
+or maybe:
+
+    if ! test -x $E2IMAGE_EXE; then
+        echo "$test_name: $test_description: skipped (no e2image)"
+        return 0
+    fi
+    if ! test -x $DEBUGFS_EXE; then
+        echo "$test_name: $test_description: skipped (no debugfs)"
+        return 0
+    fi
+
+> +
+> +SKIP_GUNZIP=3D"true"
+> +
+> +TEST_DATA=3D"$test_name.tmp"
+> +dd if=3D/dev/urandom of=3D$TEST_DATA bs=3D1k count=3D16 > /dev/null =
+2>&1
+> +
+> +dd if=3D/dev/zero of=3D$TMPFILE bs=3D1k count=3D100 > /dev/null 2>&1
+> +$MKE2FS -Ft ext4 -O ^extents $TMPFILE > /dev/null 2>&1
+> +$DEBUGFS -w $TMPFILE << EOF  > /dev/null 2>&1
+> +write $TEST_DATA testfile
+> +set_inode_field testfile block[IND] 1000000
+> +q
+> +EOF
+> +
+> +$E2IMAGE -r $TMPFILE $TMPFILE.back
+> +
+> +ls -l $TMPFILE.back
+
+In this case, it isn't clear whether there should be an error
+or not (e.g. if "ignore_error" was the default), so I don't
+think it should be checked, but...
+
+> +$E2IMAGE -r -E ignore_error $TMPFILE $TMPFILE.back
+> +
+> +ls -l $TMPFILE.back
+
+... should this return an error if $TMPFILE.back doesn't exist?
+
+> +
+> +mv $TMPFILE.back $TMPFILE
+> +
+> +. $cmd_dir/run_e2fsck
+> +
+> +rm -f $TEST_DATA
+> +
+> +unset E2FSCK_TIME TEST_DATA
+> +
+> +else #if test -x $DEBUGFS_EXE; then
+> +	echo "$test_name: $test_description: skipped"
+> +fi
+> +else #if test -x $E2IMAGE_EXE; then
+> +	echo "$test_name: $test_description: skipped"
+> +fi
+> --
+> 2.21.1 (Apple Git-122.3)
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_50040CEB-A2B6-42C1-AC35-23CC9215932B
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6goowACgkQcqXauRfM
+H+DALA/+KWV+LJZlB+UhvkyH2o82vfj89FYv5AHI0w0If4oTRIXAbWvduNBOa6qn
+rfOMzW5HJv5ASbvx9+JYVPeG3kubHUNActBfkwxejcnE7vV7/jxJpTtMCSeTrKKG
+3RrnMZ1zkPHE377LnILrogx/wLJ8H2AnUF3NMiCGC07VbNFqOFSZgK94kW7rcfc4
+tCnX8PhPdBrZ0JKOV5s5v3Z4wy2ANbS7P3eO6nGATVz4X9sdTJXUwtwh7H0CWUni
+REqjKXESQPffkuNDS25u0BGJCs617ktbZNhkL6KG9lEgfq4doC2Ulc57EOY5BU5P
+1g3SKdnNvk0xTCvCTtstl0WoV0SJ4AG1c72isKbruMmRnVa38WHqH/TaUXtYiIHC
+50Q4mwQCFlNZVi9rPzujtAuiqrj9/yVgKrYtscH+AdlaxdfCEjsPSFBWX7GpJM7Z
+YMjFG1gjafiIIQo9BDg4P7OWPQEoaYNNxmtMNSlJ3C6dh4lNxg8sYKAmed94p5O1
+OJnxSW2Un5417v9JsaldJNxeYhU0mKYuC00RWyil2cx1T30QLq2G0MQkaY6tcJdg
+zBtrCa9nCYpZe0NxhqQyR6R340kayMJws1eHBKw8cmLrALOMTmANvoT8eBPDdt4G
+lgwnsrjGkN9Ze+ghqv5uP7MCGcm93/XwWRq6QD7Rjft3MdQ9Cm8=
+=skpk
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_50040CEB-A2B6-42C1-AC35-23CC9215932B--
