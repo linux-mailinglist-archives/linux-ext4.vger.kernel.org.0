@@ -2,65 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B239D1B4DE6
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 22:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D89B1B4E3A
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 22:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726081AbgDVUB0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Apr 2020 16:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726002AbgDVUB0 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Apr 2020 16:01:26 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D120CC03C1A9
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 13:01:25 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o185so1648732pgo.3
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 13:01:25 -0700 (PDT)
+        id S1726090AbgDVUPf (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 16:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgDVUPf (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Apr 2020 16:15:35 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3103C03C1A9
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 13:15:33 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 18so1685045pfx.6
+        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 13:15:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=ZfCevJBXV8zFRCuL/PTN5oheG+WXuKvn3y7G1sMFlw4=;
-        b=ECO2V5id3EVxmPqwTpJPqDKhw0E7KsrBWghXc5y6a0Ka+GQ8KgfkOWnPt9TcUQ1Q4t
-         Tt5LiXr44ePCFD/9wXi+ug6orPAlfvegBqZE6CwEmM0axXZu1kmsY7+mo+UfXN2Wamrj
-         voEftCNDd0UyntBgSZCQJQZ9qAONBopI2HcD9ArVsrgUdIqybdRCYQtLD+hyiDaB9Qd9
-         s7dyRkoSKnLqMHAWENQxljHcNusm61q0jBfE4tnJXvst64Cv8uRFceQFglX2OWwoNhuz
-         4/taCTqBMg4lp0zMu//9vk1+Y4bTABTtqxWW946ydLC+pv9XpP4QTvAPr6D2ucvItkZJ
-         glSg==
+        bh=ID66N5DaQPu168etE7RPXy1RvQHMYJsyPG47BKglEgg=;
+        b=GmvhqTKlBOR9juqAC8Ia42qla91QlFU7OZCea2YuQoN2cBC0t6FVvGz9XGwjv8ecOM
+         CQhuIqJ/kVTUEKLPuPOSj4MBakp+WpDLxzF9Np4tZymLw2nzLnDAn3ibabWge7C81ED5
+         7keHuZhmq3kNPeZcazAOVZGp2oWBTRV3FfwVPzH/b7knmraOjpsjve+aXe7ie+WTQg6j
+         Z7m1jYRtwmIRMrdhMPUJcj0ubLa6KPh/kU32SWd/G9eGyncKov6rAT5IhWsdLl4iFE7T
+         21Kssxr1AcImHNec3ARaN5EdcUPLNjtdU5jV65lURhSG7ypkQLtQlzX0r6LENqKK4G5T
+         FwkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=ZfCevJBXV8zFRCuL/PTN5oheG+WXuKvn3y7G1sMFlw4=;
-        b=igQeVuofKsVTYssXjaC1JDXoWRWWOPaX8rlZGahDHI7OmnCHNSeuhSlyOCGsjdMHCh
-         GFyWcvNQaLmO1YPx2lLtitq1cx8lp+ixBSvtCJMS2sO7czpFI6rWLDI+/wDnFVbXLHzo
-         FJURxdK2ysm5O1S0xDAUjgDMRapGd/GI1MzYagvwxqjbRh9bnQFXXVLCO88uLJoQuLpB
-         MWKC5PoHI64IPtNV2B7AzoxgowvN1g0ljpfTsX0mJCQGhXi2ZtpjKZQ1bXQM0k0f3QP1
-         cjQIT1v8hZnJyRE54I7fZd2KmnILVCvaE7A3fjnEYlFQYEFfmRNHXuMyeoeHwuBG2wHA
-         DGqg==
-X-Gm-Message-State: AGi0PuYPBh2KikQG3xYFktYZsYrPJJoq1zhBOETKE+ioovwdi6+XCHjv
-        LSGQo3OUJb3JVlTL1nMl9ZIhyHlc2HY=
-X-Google-Smtp-Source: APiQypJ9xRmle+0U36L+H/ALWbxBqHEYVLtTCJW04JGEAQnCmMRbSferf0MJmc8KJPEBc2cCMo5yFw==
-X-Received: by 2002:a63:350:: with SMTP id 77mr697335pgd.325.1587585685211;
-        Wed, 22 Apr 2020 13:01:25 -0700 (PDT)
+        bh=ID66N5DaQPu168etE7RPXy1RvQHMYJsyPG47BKglEgg=;
+        b=PtEbGdRoIkIGE9RJfacaMWgPtVbJDF46eqP0HTVHYQ+5vYdf3Dq/xiV2q93ujC71fQ
+         hIwRuPGknUzdL707h6d3rAIzud+0NDmB2LwmJ8b4eWBULfXVaWFlKa6tqc90vzrZCXLs
+         cjYlOXh+8lFYUsjjmVy4y1f8aJ8zly8e3DjdK0/j3A9UueW1oyDe27doTdb5F3wNaP2R
+         SaxNvvmTJyZYkOte0hND62GQcdnTrzfxRATSshcXEmw4MP4tqiCVNvRVboEz+POy3bFP
+         cFEj04ohMIwRYJ37wNOSPusCxCNn8isWjOliAAQgdIlYVsrsFGu4uouzG7ljSx0NGgAd
+         qwGQ==
+X-Gm-Message-State: AGi0PuaLZvUXraqqezCHH+6gjXJ0FtCjrMElPUEY7sYfqSudVft2uFoK
+        jRHme3QvygFyj512CZMcueTgGy8QX4U=
+X-Google-Smtp-Source: APiQypKEPYrLeyWue+WMo3uaoROJbvM+Zbkn1V4pnvCJ0O2TqLwJaiDIQXI7qwj6Czjyj3q5IqLTlA==
+X-Received: by 2002:a63:50f:: with SMTP id 15mr709591pgf.267.1587586533378;
+        Wed, 22 Apr 2020 13:15:33 -0700 (PDT)
 Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id c144sm295792pfb.172.2020.04.22.13.01.19
+        by smtp.gmail.com with ESMTPSA id z7sm343747pff.47.2020.04.22.13.15.30
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Apr 2020 13:01:22 -0700 (PDT)
+        Wed, 22 Apr 2020 13:15:31 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <FFFB9649-7F92-4857-83D8-9E26EC93EA14@dilger.ca>
+Message-Id: <331CEA49-83E0-462C-A70D-479F17A4FAB2@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_50040CEB-A2B6-42C1-AC35-23CC9215932B";
+ boundary="Apple-Mail=_41251E72-9075-4224-B207-F3AB9394B244";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2] LUS-1922 e2image: add option to ignore fs errors
-Date:   Wed, 22 Apr 2020 14:01:16 -0600
-In-Reply-To: <20200422175434.81072-1-artem.blagodarenko@hpe.com>
-Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Alexey Lyashkov <alexey.lyashkov@hpe.com>
-To:     Artem Blagodarenko <artem.blagodarenko@gmail.com>
-References: <20200422175434.81072-1-artem.blagodarenko@hpe.com>
+Subject: Re: Inline data with 128-byte inodes?
+Date:   Wed, 22 Apr 2020 14:15:28 -0600
+In-Reply-To: <20200422160045.GC20756@quack2.suse.cz>
+Cc:     Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     Jan Kara <jack@suse.cz>, Josh Triplett <josh@joshtriplett.org>
+References: <20200414070207.GA170659@localhost>
+ <20200422160045.GC20756@quack2.suse.cz>
 X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -68,183 +67,70 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_50040CEB-A2B6-42C1-AC35-23CC9215932B
-Content-Transfer-Encoding: quoted-printable
+--Apple-Mail=_41251E72-9075-4224-B207-F3AB9394B244
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Apr 22, 2020, at 11:54 AM, Artem Blagodarenko =
-<artem.blagodarenko@gmail.com> wrote:
-> Subject: LUS-1922 e2image: add option to ignore fs errors
+On Apr 22, 2020, at 10:00 AM, Jan Kara <jack@suse.cz> wrote:
+> 
+> On Tue 14-04-20 00:02:07, Josh Triplett wrote:
+>> Is there a fundamental reason that ext4 *can't* or *shouldn't* support
+>> inline data with 128-byte inodes?
+> 
+> Well, where would we put it on disk? ext4 on-disk inode fills 128-bytes
+> with 'osd2' union...
 
-Probably "LUS-1922" shouldn't be in the patch description, only linked
-via "Cray-bug-id: LUS-1922" below.
+There are 60 bytes in the "i_block" field that can be used by inline_data.
 
-> From: Alexey Lyashkov <alexey.lyashkov@hpe.com>
->=20
-> Add extended "-E ignore_error" option to be more tolerant
-> to fs errors while scanning inode extents.
->=20
-> Signed-off-by: Alexey Lyashkov <alexey.lyashkov@hpe.com>
-> Signed-off-by: Artem Blagodarenko <artem.blagodarenko@hpe.com>
+> Or do you mean we should put inline data in an external xattr block?
 
-Mostly OK.  I think the commit message change can be done by Ted at
-landing time, and my other comments are mostly style issues that
-Ted may have other opinions about.  So you can add:
+Using an 4KB xattr block would IMHO be worse than just using a regular
+file block for such files, if they don't fit into the 60 i_block bytes.
+That makes the data handling more complex (data copies each time in/out
+of the xattr) and has performance impact (all writes essentially data
+journal because they go via the setxattr code path.
 
-  Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+The only time it _might_ be useful is if there are other xattrs that are
+shared in the external block with inline_data.  However, at that point
+I think you are better off to just create larger inodes to hold the
+xattrs to avoid the seeking needed to load the external block...
 
-if the patch lands as-is or if we decide to fix those issues.
+Given the prevalence of xattrs today (SELinux springs to mind), I'd be
+surprised whether this combination shows any improvement in real life,
+but I don't have an _objection_ to allowing this combination (e.g. for
+ultra-compact /etc or boot filesystem images.
 
-> Cray-bug-id: LUS-1922
-> Change-Id: Ib79300656726839b1d3b7ee1dd0793c60679d296
->=20
-> diff --git a/lib/support/mvstring.c b/lib/support/mvstring.c
-> new file mode 100644
-> index 00000000..1ed2fd67
-> --- /dev/null
-> +++ b/lib/support/mvstring.c
-> +char *string_copy(const char *s)
-> +{
-> +	char	*ret;
-> +
-> +	if (!s)
-> +		return 0;
-> +	ret =3D malloc(strlen(s)+1);
-> +	if (ret)
-> +		strcpy(ret, s);
-> +	return ret;
-> +}
+Maybe there is a bigger win for small directories avoiding 4KB leaf blocks?
 
-Why not use "strdup()" for this?  It isn't really a problem with
-this patch, since it was in e2initrd_helper.c previously and just
-moved into the helper library, but seems strange.  The strdup()
-function has existed for a very long time already, so there should
-not be any compatibility issues, but Ted added a patch using this
-function only a year ago, so maybe I'm missing something?  It dates
-back to:
-
-  2001-01-05 Use string_copy() instead of strdup() for portability's =
-sake
-
-It would probably make sense to remove the duplicate copies that
-still exist in e2fsck/util.c and misc/fsck.c, and add a comment
-why it is better than strdup()?
-
-> diff --git a/misc/e2initrd_helper.c b/misc/e2initrd_helper.c
-> index 436aab8c..ab5991a4 100644
-> --- a/misc/e2initrd_helper.c
-> +++ b/misc/e2initrd_helper.c
-> @@ -151,21 +152,6 @@ static int mem_file_eof(struct mem_file *file)
-> 	return (file->ptr >=3D file->size);
-> }
->=20
-> -/*
-> - * fstab parsing code
-> - */
-> -static char *string_copy(const char *s)
-> -{
-> -	char	*ret;
-> -
-> -	if (!s)
-> -		return 0;
-> -	ret =3D malloc(strlen(s)+1);
-> -	if (ret)
-> -		strcpy(ret, s);
-> -	return ret;
-> -}
-> -
->=20
-> diff --git a/tests/i_error_tolerance/script =
-b/tests/i_error_tolerance/script
-> new file mode 100644
-> index 00000000..9cdec475
-> --- /dev/null
-> +++ b/tests/i_error_tolerance/script
-> @@ -0,0 +1,38 @@
-> +if test -x $E2IMAGE_EXE; then
-> +if test -x $DEBUGFS_EXE; then
-
-Having the nested "if" blocks is confusing at the end.  I was
-wondering how "else #if test -x ..." was doing anything, or
-why there were two seemingly-duplicate "else" blocks.
-
-This should just check for both files at the same time, and
-exit early if they are not found, like:
-
-    if ! test -x $E2IMAGE_EXE || ! test -x $DEBUGFS_EXE; then
-        echo "$test_name: $test_description: skipped"
-        return 0
-    fi
-
-or maybe:
-
-    if ! test -x $E2IMAGE_EXE; then
-        echo "$test_name: $test_description: skipped (no e2image)"
-        return 0
-    fi
-    if ! test -x $DEBUGFS_EXE; then
-        echo "$test_name: $test_description: skipped (no debugfs)"
-        return 0
-    fi
-
-> +
-> +SKIP_GUNZIP=3D"true"
-> +
-> +TEST_DATA=3D"$test_name.tmp"
-> +dd if=3D/dev/urandom of=3D$TEST_DATA bs=3D1k count=3D16 > /dev/null =
-2>&1
-> +
-> +dd if=3D/dev/zero of=3D$TMPFILE bs=3D1k count=3D100 > /dev/null 2>&1
-> +$MKE2FS -Ft ext4 -O ^extents $TMPFILE > /dev/null 2>&1
-> +$DEBUGFS -w $TMPFILE << EOF  > /dev/null 2>&1
-> +write $TEST_DATA testfile
-> +set_inode_field testfile block[IND] 1000000
-> +q
-> +EOF
-> +
-> +$E2IMAGE -r $TMPFILE $TMPFILE.back
-> +
-> +ls -l $TMPFILE.back
-
-In this case, it isn't clear whether there should be an error
-or not (e.g. if "ignore_error" was the default), so I don't
-think it should be checked, but...
-
-> +$E2IMAGE -r -E ignore_error $TMPFILE $TMPFILE.back
-> +
-> +ls -l $TMPFILE.back
-
-... should this return an error if $TMPFILE.back doesn't exist?
-
-> +
-> +mv $TMPFILE.back $TMPFILE
-> +
-> +. $cmd_dir/run_e2fsck
-> +
-> +rm -f $TEST_DATA
-> +
-> +unset E2FSCK_TIME TEST_DATA
-> +
-> +else #if test -x $DEBUGFS_EXE; then
-> +	echo "$test_name: $test_description: skipped"
-> +fi
-> +else #if test -x $E2IMAGE_EXE; then
-> +	echo "$test_name: $test_description: skipped"
-> +fi
-> --
-> 2.21.1 (Apple Git-122.3)
->=20
-
+That said, I'd be happy to see some numbers to show this is a win, and
+I'm definitely not _against_ allowing this to work if there is a use for it.
 
 Cheers, Andreas
 
+>> As far as I can tell, the kernel ext4 implementation only allows inline
+>> data with 256-byte or larger inodes, because it requires the system.data
+>> xattr to exist, even if the actual data requires 60 bytes or less. (The
+>> implementation in debugfs, on the other hand, handles inline data in
+>> 128-byte inodes just fine. And it seems like it'd be fairly
+>> straightforward to change the kernel implementation to support it as
+>> well.)
+>> 
+>> For filesystems that don't need to store xattrs in general, and can live
+>> with the other limitations of 128-byte inodes, using a 128-byte inode
+>> can save substantial space compared to a 256-byte inode (many megabytes
+>> worth of inode tables, versus 4k for each file between 61-160 bytes),
+>> and many small files or small directories would still fit in 60 bytes.
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
 
 
 
 
---Apple-Mail=_50040CEB-A2B6-42C1-AC35-23CC9215932B
+
+--Apple-Mail=_41251E72-9075-4224-B207-F3AB9394B244
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -255,19 +141,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6goowACgkQcqXauRfM
-H+DALA/+KWV+LJZlB+UhvkyH2o82vfj89FYv5AHI0w0If4oTRIXAbWvduNBOa6qn
-rfOMzW5HJv5ASbvx9+JYVPeG3kubHUNActBfkwxejcnE7vV7/jxJpTtMCSeTrKKG
-3RrnMZ1zkPHE377LnILrogx/wLJ8H2AnUF3NMiCGC07VbNFqOFSZgK94kW7rcfc4
-tCnX8PhPdBrZ0JKOV5s5v3Z4wy2ANbS7P3eO6nGATVz4X9sdTJXUwtwh7H0CWUni
-REqjKXESQPffkuNDS25u0BGJCs617ktbZNhkL6KG9lEgfq4doC2Ulc57EOY5BU5P
-1g3SKdnNvk0xTCvCTtstl0WoV0SJ4AG1c72isKbruMmRnVa38WHqH/TaUXtYiIHC
-50Q4mwQCFlNZVi9rPzujtAuiqrj9/yVgKrYtscH+AdlaxdfCEjsPSFBWX7GpJM7Z
-YMjFG1gjafiIIQo9BDg4P7OWPQEoaYNNxmtMNSlJ3C6dh4lNxg8sYKAmed94p5O1
-OJnxSW2Un5417v9JsaldJNxeYhU0mKYuC00RWyil2cx1T30QLq2G0MQkaY6tcJdg
-zBtrCa9nCYpZe0NxhqQyR6R340kayMJws1eHBKw8cmLrALOMTmANvoT8eBPDdt4G
-lgwnsrjGkN9Ze+ghqv5uP7MCGcm93/XwWRq6QD7Rjft3MdQ9Cm8=
-=skpk
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6gpeAACgkQcqXauRfM
+H+Cxiw//UtPXgAlqlfQ4fWDBHFocITU/qPt1qh0JFMCWjwi57MJuBJMzTixcicts
+0zOYtjJw4HrQq6EkPeKwik45sS2KgMuHbXoqUF7R9hlaIfFcmZY3CIxyEwsLr5VG
+vxr3Fkq4SvT4qXcR95T2D1g1sEvT2N7C7mtaaepnuEUrJzllfqQdtZlBrGRSSAnQ
+fdqM4Qy4HrEVpScoTDA9VK6BgzEK6TA50b2BYSOupjbew5FiKmo7hYq+RnJlK3fY
+ODFg4VVD5mMNF0+uFvdlXZH4lnUN+pQwWUw2fK/4KnGdmCnSjS2tjQivC689gDns
+gIx2Hurj3g6r5CjiZPSfBCCDSWZCaIds5O26qpxAj5YIxIJr53xTI+TL2BsFP5qx
+AaLBXyp4hNWOQKs/Aw21FAWdHtMIdj6iAQjERURjSmMTDxZ1RxJR5D2aHbuNtTKU
+EIHKGiHD4QELdifsdz5cRqpfgTJ4FsLRMbL9rYPEv6tkAL6Iavl9yKIpj5oNdmxb
+x2TsYO3w4rUEkIsVZRCrF9LF2KkGb1BTpWSp9o2mcUOWVO7sop719tEdsB2OhXfl
+KigmaMSrPdTNeNASbsjHbZ775pol+vLEbfuHQHQc1DAGP1UZU+idJVUDpICM2/tg
+g6WwGleU7OkD8iZrO8vHK6dqltfs5Y4fFp1imGzfvfh1WUCMWy0=
+=+/UI
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_50040CEB-A2B6-42C1-AC35-23CC9215932B--
+--Apple-Mail=_41251E72-9075-4224-B207-F3AB9394B244--
