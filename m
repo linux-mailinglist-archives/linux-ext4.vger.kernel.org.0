@@ -2,79 +2,260 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7E31B3B88
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 11:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86C21B3BAC
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 Apr 2020 11:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgDVJhc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Apr 2020 05:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725912AbgDVJhb (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Apr 2020 05:37:31 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7542C03C1A8;
-        Wed, 22 Apr 2020 02:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=G38QTqd03XPOTHFdtqcSzRlDM6JatBVOJOrQ7ob42Ow=; b=MAVw0+I/MkbE50pi9z8IP/6u8H
-        Zqt42jz5vGkjspCyFke5X6et7WjLfrLoyp9MuQcxSytUf4BuyN/n8SAymOtRAWBeoPJKKFyKpyWl2
-        6ZGdi1/8UW6T55vKFcMsQF9ygiZRP1/hOMt5yXvtcnokLgt0hGJ20zuCt/DFY8kx6nz4Ihl7hV41y
-        6152jruxoJnBvfjG8cwOqT7bTrSl1T0QEkoNsJHjYRlcPOPUVcsQG3RNiSAX2FMfGKbI52GNhg8TU
-        p9jx9Zgts1vMcy+G4v9UZ6rKlVMFLs2qrP/hu19ihTBFL9UairBjBvUzfk7ykaytxi+VUcySsEMfI
-        +bEmxnog==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRBow-0000kB-An; Wed, 22 Apr 2020 09:37:30 +0000
-Date:   Wed, 22 Apr 2020 02:37:30 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v10 05/12] block: blk-crypto-fallback for Inline
- Encryption
-Message-ID: <20200422093730.GC12290@infradead.org>
-References: <20200408035654.247908-1-satyat@google.com>
- <20200408035654.247908-6-satyat@google.com>
+        id S1726100AbgDVJrZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 05:47:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33782 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725994AbgDVJrZ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 22 Apr 2020 05:47:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 430DAABCC;
+        Wed, 22 Apr 2020 09:47:22 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D54451E0B00; Wed, 22 Apr 2020 11:47:21 +0200 (CEST)
+Date:   Wed, 22 Apr 2020 11:47:21 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V9 11/11] Documentation/dax: Update Usage section
+Message-ID: <20200422094721.GG8775@quack2.suse.cz>
+References: <20200421191754.3372370-1-ira.weiny@intel.com>
+ <20200421191754.3372370-12-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200408035654.247908-6-satyat@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200421191754.3372370-12-ira.weiny@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-> diff --git a/Documentation/block/index.rst b/Documentation/block/index.rst
-> index 3fa7a52fafa46..026addfc69bc9 100644
-> --- a/Documentation/block/index.rst
-> +++ b/Documentation/block/index.rst
-> @@ -14,6 +14,7 @@ Block
->     cmdline-partition
->     data-integrity
->     deadline-iosched
-> +   inline-encryption
->     ioprio
->     kyber-iosched
->     null_blk
+On Tue 21-04-20 12:17:53, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> Update the Usage section to reflect the new individual dax selection
+> functionality.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-> diff --git a/block/blk-crypto.c b/block/blk-crypto.c
-> index 7546363dc584e..18e1a4d64bd33 100644
-> --- a/block/blk-crypto.c
-> +++ b/block/blk-crypto.c
-> @@ -3,6 +3,10 @@
->   * Copyright 2019 Google LLC
->   */
+Looks good to me. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> 
+> ---
+> Changes from V8:
+> 	Updates from Darrick
+> 
+> Changes from V7:
+> 	Cleanups/clarifications from Darrick and Dan
+> 
+> Changes from V6:
+> 	Update to allow setting FS_XFLAG_DAX any time.
+> 	Update with list of behaviors from Darrick
+> 	https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
+> 
+> Changes from V5:
+> 	Update to reflect the agreed upon semantics
+> 	https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
+> ---
+>  Documentation/filesystems/dax.txt | 164 +++++++++++++++++++++++++++++-
+>  1 file changed, 161 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+> index 679729442fd2..8f4ab08be715 100644
+> --- a/Documentation/filesystems/dax.txt
+> +++ b/Documentation/filesystems/dax.txt
+> @@ -17,11 +17,169 @@ For file mappings, the storage device is mapped directly into userspace.
+>  Usage
+>  -----
 >  
-> +/*
-> + * Refer to Documentation/block/inline-encryption.rst for detailed explanation.
-> + */
+> -If you have a block device which supports DAX, you can make a filesystem
+> +If you have a block device which supports DAX, you can make a file system
+>  on it as usual.  The DAX code currently only supports files with a block
+>  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
+> -size when creating the filesystem.  When mounting it, use the "-o dax"
+> -option on the command line or add 'dax' to the options in /etc/fstab.
+> +size when creating the file system.
 > +
-
-These hunks should be in other patches.
+> +Currently 3 filesystems support DAX: ext2, ext4 and xfs.  Enabling DAX on them
+> +is different.
+> +
+> +Enabling DAX on ext4 and ext2
+> +-----------------------------
+> +
+> +When mounting the filesystem, use the "-o dax" option on the command line or
+> +add 'dax' to the options in /etc/fstab.  This works to enable DAX on all files
+> +within the filesystem.  It is equivalent to the '-o dax=always' behavior below.
+> +
+> +
+> +Enabling DAX on xfs
+> +-------------------
+> +
+> +Summary
+> +-------
+> +
+> + 1. There exists an in-kernel file access mode flag S_DAX that corresponds to
+> +    the statx flag STATX_ATTR_DAX.  See the manpage for statx(2) for details
+> +    about this access mode.
+> +
+> + 2. There exists an advisory file inode flag FS_XFLAG_DAX that is
+> +    inherited from the parent directory FS_XFLAG_DAX inode flag at file
+> +    creation time.  This advisory flag can be set or cleared at any
+> +    time, but doing so does not immediately affect the S_DAX state.
+> +
+> +    Unless overridden by mount options (see (3)), if FS_XFLAG_DAX is set
+> +    and the fs is on pmem then it will enable S_DAX at inode load time;
+> +    if FS_XFLAG_DAX is not set, it will not enable S_DAX.
+> +
+> + 3. There exists a dax= mount option.
+> +
+> +    "-o dax=never"  means "never set S_DAX, ignore FS_XFLAG_DAX."
+> +
+> +    "-o dax=always" means "always set S_DAX (at least on pmem),
+> +                    and ignore FS_XFLAG_DAX."
+> +
+> +    "-o dax"        is an alias for "dax=always".
+> +
+> +    "-o dax=inode"  means "follow FS_XFLAG_DAX" and is the default.
+> +
+> + 4. There exists an advisory directory inode flag FS_XFLAG_DAX that can
+> +    be set or cleared at any time.  The flag state is inherited by any files or
+> +    subdirectories when they are created within that directory.
+> +
+> + 5. Programs that require a specific file access mode (DAX or not DAX)
+> +    can do one of the following:
+> +
+> +    (a) Create files in directories that the FS_XFLAG_DAX flag set as
+> +        needed; or
+> +
+> +    (b) Have the administrator set an override via mount option; or
+> +
+> +    (c) Set or clear the file's FS_XFLAG_DAX flag as needed.  Programs
+> +        must then cause the kernel to evict the inode from memory.  This
+> +        can be done by:
+> +
+> +        i>  Closing the file and re-opening the file and using statx to
+> +            see if the fs has changed the S_DAX flag; and
+> +
+> +        ii> If the file still does not have the desired S_DAX access
+> +            mode, either unmount and remount the filesystem, or close
+> +            the file and use drop_caches.
+> +
+> + 6. It is expected that users who want to squeeze every last bit of performance
+> +    out of the particular rough and tumble bits of their storage will also be
+> +    exposed to the difficulties of what happens when the operating system can't
+> +    totally virtualize those hardware capabilities.  DAX is such a feature.
+> +
+> +
+> +Details
+> +-------
+> +
+> +There are 2 per-file dax flags.  One is a physical inode setting (FS_XFLAG_DAX)
+> +and the other a currently enabled state (S_DAX).
+> +
+> +FS_XFLAG_DAX is maintained, on disk, on individual inodes.  It is preserved
+> +within the file system.  This 'physical' config setting can be set using an
+> +ioctl and/or an application such as "xfs_io -c 'chattr [-+]x'".  Files and
+> +directories automatically inherit FS_XFLAG_DAX from their parent directory
+> +_when_ _created_.  Therefore, setting FS_XFLAG_DAX at directory creation time
+> +can be used to set a default behavior for an entire sub-tree.  (Doing so on the
+> +root directory acts to set a default for the entire file system.)
+> +
+> +To clarify inheritance here are 3 examples:
+> +
+> +Example A:
+> +
+> +mkdir -p a/b/c
+> +xfs_io 'chattr +x' a
+> +mkdir a/b/c/d
+> +mkdir a/e
+> +
+> +	dax: a,e
+> +	no dax: b,c,d
+> +
+> +Example B:
+> +
+> +mkdir a
+> +xfs_io 'chattr +x' a
+> +mkdir -p a/b/c/d
+> +
+> +	dax: a,b,c,d
+> +	no dax:
+> +
+> +Example C:
+> +
+> +mkdir -p a/b/c
+> +xfs_io 'chattr +x' c
+> +mkdir a/b/c/d
+> +
+> +	dax: c,d
+> +	no dax: a,b
+> +
+> +
+> +The current enabled state (S_DAX) is set when a file inode is _loaded_ based on
+> +the underlying media support, the value of FS_XFLAG_DAX, and the file systems
+> +dax mount option setting.  See below.
+> +
+> +statx can be used to query S_DAX.  NOTE that a directory will never have S_DAX
+> +set and therefore statx will never indicate that S_DAX is set on directories.
+> +
+> +NOTE: Setting the FS_XFLAG_DAX (specifically or through inheritance) occurs
+> +even if the underlying media does not support dax and/or the file system is
+> +overridden with a mount option.
+> +
+> +
+> +Overriding FS_XFLAG_DAX (dax= mount option)
+> +-------------------------------------------
+> +
+> +There exists a dax mount option.  Using the mount option does not change the
+> +physical configured state of individual files but overrides the S_DAX operating
+> +state when inodes are loaded.
+> +
+> +Given underlying media support, the dax mount option is a tri-state option
+> +(never, always, inode) with the following meanings:
+> +
+> +   "-o dax=never" means "never set S_DAX, ignore FS_XFLAG_DAX"
+> +   "-o dax=always" means "always set S_DAX, ignore FS_XFLAG_DAX"
+> +        "-o dax" by itself means "dax=always" to remain compatible with older
+> +	         kernels
+> +   "-o dax=inode" means "follow FS_XFLAG_DAX"
+> +
+> +The default state is 'inode'.  Given underlying media support, the following
+> +algorithm is used to determine the effective mode of the file S_DAX on a
+> +capable device.
+> +
+> +	S_DAX = FS_XFLAG_DAX;
+> +
+> +	if (dax_mount == "always")
+> +		S_DAX = true;
+> +	else if (dax_mount == "off"
+> +		S_DAX = false;
+> +
+> +To reiterate: Setting, and inheritance, continues to affect FS_XFLAG_DAX even
+> +while the file system is mounted with a dax override.  However, in-core inode
+> +state (S_DAX) will continue to be overridden until the filesystem is remounted
+> +with dax=inode and the inode is evicted."
+>  
+>  
+>  Implementation Tips for Block Driver Writers
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
