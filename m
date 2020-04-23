@@ -2,170 +2,134 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83361B575F
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 10:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CB11B576C
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 10:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgDWIk4 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Apr 2020 04:40:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44290 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgDWIk4 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 23 Apr 2020 04:40:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id EA591AFDC;
-        Thu, 23 Apr 2020 08:40:53 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id ED3521E0E61; Thu, 23 Apr 2020 10:40:51 +0200 (CEST)
-Date:   Thu, 23 Apr 2020 10:40:51 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH V10 10/11] fs: Introduce DCACHE_DONTCACHE
-Message-ID: <20200423084051.GC3737@quack2.suse.cz>
-References: <20200422212102.3757660-1-ira.weiny@intel.com>
- <20200422212102.3757660-11-ira.weiny@intel.com>
+        id S1726697AbgDWImK (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Apr 2020 04:42:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26470 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726648AbgDWImK (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 Apr 2020 04:42:10 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03N83CQr008398
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Apr 2020 04:42:09 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30k6n9220t-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Apr 2020 04:42:08 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
+        Thu, 23 Apr 2020 09:41:20 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 23 Apr 2020 09:41:17 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03N8g2no1114586
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Apr 2020 08:42:02 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A8B1B4C04E;
+        Thu, 23 Apr 2020 08:42:02 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 719DB4C040;
+        Thu, 23 Apr 2020 08:42:01 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.60.18])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 23 Apr 2020 08:42:01 +0000 (GMT)
+Subject: Re: [PATCH v2] ext4: fix error pointer dereference
+To:     Jeffle Xu <jefflexu@linux.alibaba.com>, tytso@mit.edu, jack@suse.cz
+Cc:     linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com
+References: <1587628004-95123-1-git-send-email-jefflexu@linux.alibaba.com>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Thu, 23 Apr 2020 14:12:00 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422212102.3757660-11-ira.weiny@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1587628004-95123-1-git-send-email-jefflexu@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20042308-4275-0000-0000-000003C51AA2
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20042308-4276-0000-0000-000038DAA4A7
+Message-Id: <20200423084201.719DB4C040@d06av22.portsmouth.uk.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-23_06:2020-04-22,2020-04-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 clxscore=1015 bulkscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004230061
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed 22-04-20 14:21:01, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> DCACHE_DONTCACHE indicates a dentry should not be cached on final
-> dput().
-> 
-> Also add a helper function to mark DCACHE_DONTCACHE on all dentries
-> pointing to a specific inode when that inode is being set I_DONTCACHE.
-> 
-> This facilitates dropping dentry references to inodes sooner which
-> require eviction to swap S_DAX mode.
-> 
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-The patch looks good to me. You can add:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+On 4/23/20 1:16 PM, Jeffle Xu wrote:
+> Don't pass error pointers to brelse().
 > 
+> commit 7159a986b420 ("ext4: fix some error pointer dereferences") has fixed
+> some cases, fix the remaining one case.
+> 
+> Once ext4_xattr_block_find()->ext4_sb_bread() failed, error pointer is
+> stored in @bs->bh, which will be passed to brelse() in the cleanup
+> routine of ext4_xattr_set_handle(). This will then cause a NULL panic
+> crash in __brelse().
+> 
+> BUG: unable to handle kernel NULL pointer dereference at 000000000000005b
+> RIP: 0010:__brelse+0x1b/0x50
+> Call Trace:
+>   ext4_xattr_set_handle+0x163/0x5d0
+>   ext4_xattr_set+0x95/0x110
+>   __vfs_setxattr+0x6b/0x80
+>   __vfs_setxattr_noperm+0x68/0x1b0
+>   vfs_setxattr+0xa0/0xb0
+>   setxattr+0x12c/0x1a0
+>   path_setxattr+0x8d/0xc0
+>   __x64_sys_setxattr+0x27/0x30
+>   do_syscall_64+0x60/0x250
+>   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+> In this case, @bs->bh stores '-EIO' actually.
+> 
+> Fixes: fb265c9cb49e ("ext4: add ext4_sb_bread() to disambiguate ENOMEM cases")
+> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Cc: stable@kernel.org # 2.6.19
+
+Thanks for your patch. Looks good to me.
+Feel free to add:
+
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+
 > ---
-> Changes from V9:
-> 	modify i_state under i_lock
-> 	Update comment
-> 		"Purge from memory on final dput()"
+>   fs/ext4/xattr.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> Changes from V8:
-> 	Update commit message
-> 	Use mark_inode_dontcache in XFS
-> 	Fix locking...  can't use rcu here.
-> 	Change name to mark_inode_dontcache
-> ---
->  fs/dcache.c            |  4 ++++
->  fs/inode.c             | 15 +++++++++++++++
->  fs/xfs/xfs_icache.c    |  2 +-
->  include/linux/dcache.h |  2 ++
->  include/linux/fs.h     |  1 +
->  5 files changed, 23 insertions(+), 1 deletion(-)
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index 21df43a..01ba663 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -1800,8 +1800,11 @@ struct ext4_xattr_block_find {
+>   	if (EXT4_I(inode)->i_file_acl) {
+>   		/* The inode already has an extended attribute block. */
+>   		bs->bh = ext4_sb_bread(sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
+> -		if (IS_ERR(bs->bh))
+> -			return PTR_ERR(bs->bh);
+> +		if (IS_ERR(bs->bh)) {
+> +			error = PTR_ERR(bs->bh);
+> +			bs->bh = NULL;
+> +			return error;
+> +		}
+>   		ea_bdebug(bs->bh, "b_count=%d, refcount=%d",
+>   			atomic_read(&(bs->bh->b_count)),
+>   			le32_to_cpu(BHDR(bs->bh)->h_refcount));
 > 
-> diff --git a/fs/dcache.c b/fs/dcache.c
-> index b280e07e162b..0030fabab2c4 100644
-> --- a/fs/dcache.c
-> +++ b/fs/dcache.c
-> @@ -647,6 +647,10 @@ static inline bool retain_dentry(struct dentry *dentry)
->  		if (dentry->d_op->d_delete(dentry))
->  			return false;
->  	}
-> +
-> +	if (unlikely(dentry->d_flags & DCACHE_DONTCACHE))
-> +		return false;
-> +
->  	/* retain; LRU fodder */
->  	dentry->d_lockref.count--;
->  	if (unlikely(!(dentry->d_flags & DCACHE_LRU_LIST)))
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 93d9252a00ab..316355433797 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -1526,6 +1526,21 @@ int generic_delete_inode(struct inode *inode)
->  }
->  EXPORT_SYMBOL(generic_delete_inode);
->  
-> +void mark_inode_dontcache(struct inode *inode)
-> +{
-> +	struct dentry *de;
-> +
-> +	spin_lock(&inode->i_lock);
-> +	hlist_for_each_entry(de, &inode->i_dentry, d_u.d_alias) {
-> +		spin_lock(&de->d_lock);
-> +		de->d_flags |= DCACHE_DONTCACHE;
-> +		spin_unlock(&de->d_lock);
-> +	}
-> +	inode->i_state |= I_DONTCACHE;
-> +	spin_unlock(&inode->i_lock);
-> +}
-> +EXPORT_SYMBOL(mark_inode_dontcache);
-> +
->  /*
->   * Called when we're dropping the last reference
->   * to an inode.
-> diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-> index de76f7f60695..3c8f44477804 100644
-> --- a/fs/xfs/xfs_icache.c
-> +++ b/fs/xfs/xfs_icache.c
-> @@ -559,7 +559,7 @@ xfs_iget_cache_miss(
->  	 */
->  	iflags = XFS_INEW;
->  	if (flags & XFS_IGET_DONTCACHE)
-> -		VFS_I(ip)->i_state |= I_DONTCACHE;
-> +		mark_inode_dontcache(VFS_I(ip));
->  	ip->i_udquot = NULL;
->  	ip->i_gdquot = NULL;
->  	ip->i_pdquot = NULL;
-> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-> index c1488cc84fd9..a81f0c3cf352 100644
-> --- a/include/linux/dcache.h
-> +++ b/include/linux/dcache.h
-> @@ -177,6 +177,8 @@ struct dentry_operations {
->  
->  #define DCACHE_REFERENCED		0x00000040 /* Recently used, don't discard. */
->  
-> +#define DCACHE_DONTCACHE		0x00000080 /* Purge from memory on final dput() */
-> +
->  #define DCACHE_CANT_MOUNT		0x00000100
->  #define DCACHE_GENOCIDE			0x00000200
->  #define DCACHE_SHRINK_LIST		0x00000400
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 44bd45af760f..064168ec2e0b 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3055,6 +3055,7 @@ static inline int generic_drop_inode(struct inode *inode)
->  	return !inode->i_nlink || inode_unhashed(inode) ||
->  		(inode->i_state & I_DONTCACHE);
->  }
-> +extern void mark_inode_dontcache(struct inode *inode);
->  
->  extern struct inode *ilookup5_nowait(struct super_block *sb,
->  		unsigned long hashval, int (*test)(struct inode *, void *),
-> -- 
-> 2.25.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
