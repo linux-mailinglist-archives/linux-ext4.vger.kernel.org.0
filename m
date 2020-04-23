@@ -2,84 +2,99 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116F21B5655
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 09:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44571B572A
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 10:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgDWHqq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Apr 2020 03:46:46 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:41625 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726692AbgDWHqp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 23 Apr 2020 03:46:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0TwPIgRU_1587628004;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0TwPIgRU_1587628004)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 23 Apr 2020 15:46:44 +0800
-From:   Jeffle Xu <jefflexu@linux.alibaba.com>
-To:     tytso@mit.edu, jack@suse.cz
-Cc:     linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com
-Subject: [PATCH v2] ext4: fix error pointer dereference
-Date:   Thu, 23 Apr 2020 15:46:44 +0800
-Message-Id: <1587628004-95123-1-git-send-email-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726349AbgDWIY0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Apr 2020 04:24:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60024 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725854AbgDWIYZ (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 Apr 2020 04:24:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 614CFAF79;
+        Thu, 23 Apr 2020 08:24:23 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 731811E0E61; Thu, 23 Apr 2020 10:24:22 +0200 (CEST)
+Date:   Thu, 23 Apr 2020 10:24:22 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Dave Chinner <dchinner@redhat.com>, Jan Kara <jack@suse.cz>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V9 03/11] fs/stat: Define DAX statx attribute
+Message-ID: <20200423082422.GA3737@quack2.suse.cz>
+References: <20200421191754.3372370-1-ira.weiny@intel.com>
+ <20200421191754.3372370-4-ira.weiny@intel.com>
+ <20200422162951.GE6733@magnolia>
+ <20200422185121.GL3372712@iweiny-DESK2.sc.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200422185121.GL3372712@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Don't pass error pointers to brelse().
+On Wed 22-04-20 11:51:21, Ira Weiny wrote:
+> On Wed, Apr 22, 2020 at 09:29:51AM -0700, Darrick J. Wong wrote:
+> > On Tue, Apr 21, 2020 at 12:17:45PM -0700, ira.weiny@intel.com wrote:
+> > > From: Ira Weiny <ira.weiny@intel.com>
+> > > 
+> > > In order for users to determine if a file is currently operating in DAX
+> > > state (effective DAX).  Define a statx attribute value and set that
+> > > attribute if the effective DAX flag is set.
+> > > 
+> > > To go along with this we propose the following addition to the statx man
+> > > page:
+> > > 
+> > > STATX_ATTR_DAX
+> > > 
+> > > 	The file is in the DAX (cpu direct access) state.  DAX state
+> > > 	attempts to minimize software cache effects for both I/O and
+> > > 	memory mappings of this file.  It requires a file system which
+> > > 	has been configured to support DAX.
+> > > 
+> > > 	DAX generally assumes all accesses are via cpu load / store
+> > > 	instructions which can minimize overhead for small accesses, but
+> > > 	may adversely affect cpu utilization for large transfers.
+> > > 
+> > > 	File I/O is done directly to/from user-space buffers and memory
+> > > 	mapped I/O may be performed with direct memory mappings that
+> > > 	bypass kernel page cache.
+> > > 
+> > > 	While the DAX property tends to result in data being transferred
+> > > 	synchronously, it does not give the same guarantees of O_SYNC
+> > > 	where data and the necessary metadata are transferred together.
+> > > 
+> > > 	A DAX file may support being mapped with the MAP_SYNC flag,
+> > > 	which enables a program to use CPU cache flush instructions to
+> > > 	persist CPU store operations without an explicit fsync(2).  See
+> > > 	mmap(2) for more information.
+> > 
+> > One thing I hadn't noticed before -- this is a change to userspace API,
+> > so please cc this series to linux-api@vger.kernel.org when you send V10.
+> 
+> Right!  Glad you caught me on this because I was just preparing to send V10.
+> 
+> Is there someone I could directly mail who needs to look at this?  I guess I
+> thought we had the important FS people involved for this type of API change.
+> :-/
 
-commit 7159a986b420 ("ext4: fix some error pointer dereferences") has fixed
-some cases, fix the remaining one case.
+I believe we have all the important people here. But linux-api is a general
+fallback list where people reviewing API changes linger. So when changing
+user facing API, it is good to CC this list.
 
-Once ext4_xattr_block_find()->ext4_sb_bread() failed, error pointer is
-stored in @bs->bh, which will be passed to brelse() in the cleanup
-routine of ext4_xattr_set_handle(). This will then cause a NULL panic
-crash in __brelse().
-
-BUG: unable to handle kernel NULL pointer dereference at 000000000000005b
-RIP: 0010:__brelse+0x1b/0x50
-Call Trace:
- ext4_xattr_set_handle+0x163/0x5d0
- ext4_xattr_set+0x95/0x110
- __vfs_setxattr+0x6b/0x80
- __vfs_setxattr_noperm+0x68/0x1b0
- vfs_setxattr+0xa0/0xb0
- setxattr+0x12c/0x1a0
- path_setxattr+0x8d/0xc0
- __x64_sys_setxattr+0x27/0x30
- do_syscall_64+0x60/0x250
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-In this case, @bs->bh stores '-EIO' actually.
-
-Fixes: fb265c9cb49e ("ext4: add ext4_sb_bread() to disambiguate ENOMEM cases")
-Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: stable@kernel.org # 2.6.19
----
- fs/ext4/xattr.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 21df43a..01ba663 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1800,8 +1800,11 @@ struct ext4_xattr_block_find {
- 	if (EXT4_I(inode)->i_file_acl) {
- 		/* The inode already has an extended attribute block. */
- 		bs->bh = ext4_sb_bread(sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
--		if (IS_ERR(bs->bh))
--			return PTR_ERR(bs->bh);
-+		if (IS_ERR(bs->bh)) {
-+			error = PTR_ERR(bs->bh);
-+			bs->bh = NULL;
-+			return error;
-+		}
- 		ea_bdebug(bs->bh, "b_count=%d, refcount=%d",
- 			atomic_read(&(bs->bh->b_count)),
- 			le32_to_cpu(BHDR(bs->bh)->h_refcount));
+								Honza
 -- 
-1.8.3.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
