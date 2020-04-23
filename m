@@ -2,105 +2,112 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04341B69FD
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 01:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49A31B6A03
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 01:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728243AbgDWXhi (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Apr 2020 19:37:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55853 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728136AbgDWXhi (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Apr 2020 19:37:38 -0400
-Received: from mail-qv1-f69.google.com ([209.85.219.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <mfo@canonical.com>)
-        id 1jRlPU-0003uC-5G
-        for linux-ext4@vger.kernel.org; Thu, 23 Apr 2020 23:37:36 +0000
-Received: by mail-qv1-f69.google.com with SMTP id m20so7854492qvy.13
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Apr 2020 16:37:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8AXqxfd/fjGsfc11JvhbwqPDle1t9NYcIAmYU/4G1eA=;
-        b=FRhY3o8OAc6mG8+Ptd+Vgcza3Qge+AcCDCcsGDGcb4Uo+rHJUsSCFMolmxYaetJhxi
-         aI/wI1ntDUuq6r0LaC+DnjL5iosyZ7y1c8rN7wOybjYOo3SNNH7QI5DonusjY0NHLpLw
-         lNUpn8pCk31B4deb3A64zSURFgABW1jrzVIRypbAqwkapnR2mmSixmiM1Q7brxlyCWsk
-         q5xIV4tEv6NnPByaFPM/SVMOtlgjPRjbGA0s/dBFATEF1lDypIVyk+UJ4iE++/cr3Ec5
-         a35WOlxWbc+ffUBrCgvzVolr1TqC2EMelKGZjzYPiIQTD3I6YB/TpdWzZq7yy5N3S4Oc
-         NZ2g==
-X-Gm-Message-State: AGi0Pub+NV6FOyejVwl+rpj5Lwj5VLW4nwUquw4F35hAa+Bkd/DOdlqf
-        nKxijMOEDio/Vj3nRB1UZC74zkddLYG+gAx/2/8Wdkqajh+G+eNjtMr1DejkD2SEElaL5xUSrPh
-        dF4ydRdC09vJn+MvpvFnJYwOptFP6Uyf/4463R3Q=
-X-Received: by 2002:a05:620a:15e8:: with SMTP id p8mr6250994qkm.331.1587685055171;
-        Thu, 23 Apr 2020 16:37:35 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJOZ8xMqJk9r/WiUyNd2B1OqHUqhV89X6O3xPfJKllU9W9OpD5DURM4UW7Rew2PdtS7fwGHFw==
-X-Received: by 2002:a05:620a:15e8:: with SMTP id p8mr6250986qkm.331.1587685054975;
-        Thu, 23 Apr 2020 16:37:34 -0700 (PDT)
-Received: from localhost.localdomain ([201.82.49.101])
-        by smtp.gmail.com with ESMTPSA id j14sm2529171qkk.92.2020.04.23.16.37.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 16:37:34 -0700 (PDT)
-From:   Mauricio Faria de Oliveira <mfo@canonical.com>
-To:     linux-ext4@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     dann frazier <dann.frazier@canonical.com>,
-        Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.com>
-Subject: [RFC PATCH 11/11] ext4: data=journal: prevent journalled writeback deadlock in ext4_try_to_write_inline_data()
-Date:   Thu, 23 Apr 2020 20:37:05 -0300
-Message-Id: <20200423233705.5878-12-mfo@canonical.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200423233705.5878-1-mfo@canonical.com>
-References: <20200423233705.5878-1-mfo@canonical.com>
+        id S1728244AbgDWXip (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Apr 2020 19:38:45 -0400
+Received: from mga12.intel.com ([192.55.52.136]:19223 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727065AbgDWXip (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 Apr 2020 19:38:45 -0400
+IronPort-SDR: UsBmFeQ5wYXus9/dg+eHAl5bz/ag+ZHvU5y0MHBdbt3kpLZY8fCdVbgqiy7x02WaCNj8x/9Jfz
+ xj6He1zlYZlQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2020 16:38:44 -0700
+IronPort-SDR: Ay5kz9diZ69oZHhCrNMcInn+tS8GYQ2LZFIBKiIdKXXft+yMe0sOT0D4/UiGHeVBopF7Fi7Uba
+ W1bPhGDfk8cQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,309,1583222400"; 
+   d="scan'208";a="335158850"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga001.jf.intel.com with ESMTP; 23 Apr 2020 16:38:25 -0700
+Date:   Thu, 23 Apr 2020 16:38:25 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH V10 10/11] fs: Introduce DCACHE_DONTCACHE
+Message-ID: <20200423233824.GC4088835@iweiny-DESK2.sc.intel.com>
+References: <20200422212102.3757660-1-ira.weiny@intel.com>
+ <20200422212102.3757660-11-ira.weiny@intel.com>
+ <20200423225734.GY27860@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423225734.GY27860@dread.disaster.area>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-This patch checks for and prevents the deadlock with a page in
-journalled writeback in ext4_try_to_write_inline_data().
+On Fri, Apr 24, 2020 at 08:57:34AM +1000, Dave Chinner wrote:
+> On Wed, Apr 22, 2020 at 02:21:01PM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > DCACHE_DONTCACHE indicates a dentry should not be cached on final
+> > dput().
+> > 
+> > Also add a helper function to mark DCACHE_DONTCACHE on all dentries
+> > pointing to a specific inode when that inode is being set I_DONTCACHE.
+> > 
+> > This facilitates dropping dentry references to inodes sooner which
+> > require eviction to swap S_DAX mode.
+> > 
+> > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> Code looks fine....
+> 
+> > --- a/fs/inode.c
+> > +++ b/fs/inode.c
+> > @@ -1526,6 +1526,21 @@ int generic_delete_inode(struct inode *inode)
+> >  }
+> >  EXPORT_SYMBOL(generic_delete_inode);
+> >  
+> > +void mark_inode_dontcache(struct inode *inode)
+> > +{
+> > +	struct dentry *de;
+> > +
+> > +	spin_lock(&inode->i_lock);
+> > +	hlist_for_each_entry(de, &inode->i_dentry, d_u.d_alias) {
+> > +		spin_lock(&de->d_lock);
+> > +		de->d_flags |= DCACHE_DONTCACHE;
+> > +		spin_unlock(&de->d_lock);
+> > +	}
+> > +	inode->i_state |= I_DONTCACHE;
+> > +	spin_unlock(&inode->i_lock);
+> > +}
+> > +EXPORT_SYMBOL(mark_inode_dontcache);
+> 
+> Though I suspect that this should be in fs/dcache.c and not
+> fs/inode.c. i.e. nothing in fs/inode.c does dentry list walks, but
+> there are several cases in the dcache code where inode dentry walks
+> are done under the inode lock (e.g. d_find_alias(inode)).
+> 
+> So perhaps this should be d_mark_dontcache(inode), which also marks
+> the inode as I_DONTCACHE so that everything is evicted on last
+> reference...
 
-Finally, add wait_on_page_writeback() if data=journal mode.
+That does follow an existing pattern.
 
-Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
----
- fs/ext4/inline.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Al?  Any preference?
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 3d370b04a740..c55a11f515d3 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -710,6 +710,8 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
- 		handle = NULL;
- 		goto out;
- 	}
-+	if (ext4_should_journal_data(inode))
-+		wait_on_page_writeback(page);
- 	unlock_page(page);
- 
- 	/*
-@@ -732,9 +734,18 @@ int ext4_try_to_write_inline_data(struct address_space *mapping,
- 		put_page(page);
- 		ext4_journal_stop(handle);
- 		goto retry_grab;
-+	} else if (ext4_should_journal_data(inode) &&
-+		   ext4_check_journalled_writeback(handle, page)) {
-+		unlock_page(page);
-+		put_page(page);
-+		ext4_journal_stop(handle);
-+		ext4_start_commit_datasync(inode);
-+		goto retry_grab;
- 	}
- 	/* In case writeback began while the page was unlocked */
- 	wait_for_stable_page(page);
-+	if (ext4_should_journal_data(inode))
-+		wait_on_page_writeback(page);
- 
- 	ret = ext4_prepare_inline_data(handle, inode, pos + len);
- 	if (ret) {
--- 
-2.20.1
+Ira
 
+> 
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
