@@ -2,107 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE911B50B3
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 01:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644D61B5174
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 02:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbgDVXOZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Apr 2020 19:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725839AbgDVXOZ (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 22 Apr 2020 19:14:25 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29263C03C1AB
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 16:14:25 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id m67so4383659qke.12
-        for <linux-ext4@vger.kernel.org>; Wed, 22 Apr 2020 16:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=yutIE/3Yrasa++aWOCa3PZNUoPlrlPERr3vYpXHco/M=;
-        b=roi6w8e5qBgfrEAFnX0ITcdhSDL8WSk9M0K+Pi5JsvodaNNOas+t0Q1f3de9phX1r3
-         zH9nNHarNQ5F0bPzz7BOwaRNKmtglTqtN0NM6aiRDb1o0ARGr4RLUKq2Ljipggfzmq4f
-         4lue9ey15OIgipQe2SFDgP3Zg483GPNPRk1b8P8tkH8JOTSig5IAtEHFk48/ttXK/xW3
-         HXoY6IUYmJ/pTBF9GpTUhyyw7weiMGNPNlwjMBnBqpgI6X0Q/tR6jaPPDUnk4ojUthH4
-         sJ/35wr3LbgYPfPQAvyDm9c7nFllFe/TQ0modirFmWgoD/qWXe5K3H06giTotm5Z7P3Z
-         jarQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=yutIE/3Yrasa++aWOCa3PZNUoPlrlPERr3vYpXHco/M=;
-        b=Fu8eHCqGONNovXkiJDgcgvThgRUlMF7cSZG4iUwC7MEX8hIoF2P3xIV2vxj1HNlX/a
-         bm6I5rEAkBxz9MAHhHGUHwB8pRQkwV3O+5M7ZjlqS7Qg+qY2o6e2IXvBZaV1D+0cqJCl
-         bg/IX88mdSPcwPW8pZYXQ6YXma8Ej4ZRiMDjF5KPIEyhoFR7rg2fiGjFQJlKYEQbDpva
-         fOxQsrg/wdCv5Ib+aYBvlfuOkLtH3J5h8heiScRDniYvXJIbIufXbTZKi1jLw7cf6+Bc
-         UtUCCQHjAERfbEltzc979xQWDtlmlu/E/smDWQuxF+UJLNagHQNO+VV0cmBBllHR5rvj
-         k8Qg==
-X-Gm-Message-State: AGi0PuZiSBjMUN1dZKJvhfdxVjHPQiZMgfqTIz036Q1I5Hckp9iZNZE1
-        ZHgZSz5mAysMmXaTSSY4/vcqxA==
-X-Google-Smtp-Source: APiQypKpwv318za6PvBDHu/CmZW2XLyq7lRBmFefrk1Y5QT6hBrl33XFhRuafmp5OdsdRdB+WGIptg==
-X-Received: by 2002:a37:6415:: with SMTP id y21mr792941qkb.258.1587597263810;
-        Wed, 22 Apr 2020 16:14:23 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c0a8:1102:ce0:3629:8daa:1271? ([2620:10d:c091:480::1:af35])
-        by smtp.gmail.com with ESMTPSA id q6sm534297qtd.61.2020.04.22.16.14.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Apr 2020 16:14:23 -0700 (PDT)
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
-Cc:     lsf-pc <lsf-pc@lists.linuxfoundation.org>
-From:   Josef Bacik <josef@toxicpanda.com>
-Subject: LSFMMBPF 2020 Cancellation announcement
-Message-ID: <0b6d3d6f-99de-3603-4b42-c3db5113633d@toxicpanda.com>
-Date:   Wed, 22 Apr 2020 19:14:21 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726124AbgDWAkw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 20:40:52 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43620 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgDWAkw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Apr 2020 20:40:52 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03N0eHah139827;
+        Thu, 23 Apr 2020 00:40:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=oOmHJafDHAiLr+hO/wYNXIjjzE6yoBtPTz0X9wOHrhM=;
+ b=Jfxj0m+0g/BDEijGZkMF/w4raZLYKt2CEePPz2s+LXdGZnZ1iOvlgBWsKsdh4vAaadiY
+ 0SAk/4/G5e4mqtVllIPJ9RcTklVPtjgNPAp6hgilpdx9vKV2GAMfHTdF4gUU44es1QgO
+ dFIDpVqjN8j+bjN6Baal9ZARWU5gK627WeEHD4ILA7ghtXPO21As3aZiBpyrpsP3rIE0
+ bCzkyRZA0unLVnAY/SHkCS9GHlKBFeYOeVfax9ohvzRvO4pSzVrUUAUvo6r+UM+4p0Zf
+ NZXJ+B+QNpf0KVypkTMf6iwIai7I0fyIHWii/YHxbzdhrTP72nnIZsUKATEuFyjzLEIU Pw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 30jhyc4nt3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Apr 2020 00:40:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03N0ckul015871;
+        Thu, 23 Apr 2020 00:40:16 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 30gbbjcaa5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Apr 2020 00:40:16 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03N0e62P005519;
+        Thu, 23 Apr 2020 00:40:07 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 22 Apr 2020 17:40:06 -0700
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>, hch@lst.de,
+        darrick.wong@oracle.com, axboe@kernel.dk, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ming.lei@redhat.com, jthumshirn@suse.de,
+        minwoo.im.dev@gmail.com, damien.lemoal@wdc.com,
+        andrea.parri@amarulasolutions.com, hare@suse.com, tj@kernel.org,
+        hannes@cmpxchg.org, khlebnikov@yandex-team.ru, ajay.joshi@wdc.com,
+        bvanassche@acm.org, arnd@arndb.de, houtao1@huawei.com,
+        asml.silence@gmail.com, linux-block@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/4] block: Add support for REQ_OP_ASSIGN_RANGE
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <20200329174714.32416-1-chaitanya.kulkarni@wdc.com>
+        <20200402224124.GK10737@dread.disaster.area>
+        <yq1imih4aj0.fsf@oracle.com>
+        <20200403025757.GL10737@dread.disaster.area>
+        <yq1a73t44h1.fsf@oracle.com>
+        <20200407022705.GA24067@dread.disaster.area>
+        <yq1sghe1uu3.fsf@oracle.com>
+        <20200419223646.GB9765@dread.disaster.area>
+Date:   Wed, 22 Apr 2020 20:40:01 -0400
+In-Reply-To: <20200419223646.GB9765@dread.disaster.area> (Dave Chinner's
+        message of "Mon, 20 Apr 2020 08:36:46 +1000")
+Message-ID: <yq11rofghlq.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9599 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004230001
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9599 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ clxscore=1015 suspectscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004230001
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Each year, we look forward to gathering at Linux Storage, Filesystem, Memory
-Management, and BPF Summit to share information, collaborate, and learn
-together. Due to continual assessments and growing concerns around COVID-19, we
-have made the decision to cancel Linux Storage, Filesystem, Memory Management,
-and BPF Summit this year. Next year the summit will be held in Palm Springs, on
-May 12-14, 2021 at the Riviera Palm Springs.  A new CFP and registration will be
-held again, along with a new round of invites.  The program committee will
-remain the same, and next year we will choose new members.
 
-Event Registration
+Dave,
 
-The Linux Foundation will take care of canceling all event registrations - you
-do not need to do anything.
+>> Not before overwriting, no. Once you have allocated an LBA it remains
+>> allocated until you discard it.
 
-We thank you for your patience and understanding while we work through this very
-fluid situation. A great deal of work and preparation has gone into the
-information and content planned to be delivered at LSFMMBPF and we look forward
-to sharing it all with our community next year.
+> Ok, so you are confirming what I thought: it's almost completely
+> useless to us.
+>
+> i.e. this requires issuing IO to "reserve" space whilst preserving
+> data before every metadata object goes from clean to dirty in memory.
 
-Thank you again for your support. Our sincere sympathies are with all those
-being affected and we wish for good health and safety for all.
+You can only reserve the space prior to writing a block for the first
+time. Once an LBA has been written ("Mapped" in the SCSI state machine),
+it remains allocated until it is explicitly deallocated (via a
+discard/Unmap operation).
 
-Thank you on behalf of the program committee:
+This part of the SCSI spec was written eons ago under the assumption
+that when a physical resource backing a given LBA had been established,
+you could write the block over and over without having to allocate new
+space.
 
-         Josef Bacik (Filesystems)
-         Amir Goldstein (Filesystems)
-         Martin K. Petersen (Storage)
-         Omar Sandoval (Storage)
-         Michal Hocko (MM)
-         Dan Williams (MM)
-         Alexei Starovoitov (BPF)
-         Daniel Borkmann (BPF)
+This used to be true, but obviously the introduction of de-duplication
+blew a major hole in that. I have been perusing the spec over and over
+trying to understand how block provisioning state transitions are
+defined when dedup is in the picture. However, much is left unexplained.
+
+As a result, I reached out to various folks. Including the people who
+worked on this feature in the standards way back. And the response that
+I get from them is that allocation operation got irreparably broken when
+support for de-duplication was added to the spec. Nobody attempted to
+fix the state transitions since most vendors only cared about
+deallocation. Consequently specifying the exact behavior of the
+allocation operation in the context of dedup fell by the wayside.
+
+The recommendation I got was that we should not rely on this feature
+despite it being advertised as supported by the storage. I looked at
+whether it was feasible to support it on non-dedup devices only, but it
+does not look like it's worthwhile to pursue. And as a result there is
+no need for block layer allocation operation to have parity with
+SCSI. Although we may want to keep NVMe in mind when defining the
+semantics.
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
