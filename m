@@ -2,109 +2,82 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FBD1B5A5C
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 13:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43EDA1B5AE2
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 13:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgDWLUR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Apr 2020 07:20:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55254 "EHLO mx2.suse.de"
+        id S1728200AbgDWL4h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Apr 2020 07:56:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43778 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728015AbgDWLUR (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 23 Apr 2020 07:20:17 -0400
+        id S1727111AbgDWL4g (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 Apr 2020 07:56:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7831EB0BE;
-        Thu, 23 Apr 2020 11:20:14 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id EB138AD2A;
+        Thu, 23 Apr 2020 11:56:33 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C072C1E1293; Thu, 23 Apr 2020 13:20:14 +0200 (CEST)
-Date:   Thu, 23 Apr 2020 13:20:14 +0200
+        id 1A6081E1293; Thu, 23 Apr 2020 13:56:34 +0200 (CEST)
+Date:   Thu, 23 Apr 2020 13:56:34 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, tytso@mit.edu,
-        adilger@dilger.ca, darrick.wong@oracle.com, hch@infradead.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Murphy Zhou <jencce.kernel@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH 5/5] ext4: Get rid of ext4_fiemap_check_ranges
-Message-ID: <20200423112014.GL3737@quack2.suse.cz>
-References: <cover.1587555962.git.riteshh@linux.ibm.com>
- <b2edd7710f07d94101a6055e398a5e4ed01f09bf.1587555962.git.riteshh@linux.ibm.com>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: Inline data with 128-byte inodes?
+Message-ID: <20200423115634.GN3737@quack2.suse.cz>
+References: <20200414070207.GA170659@localhost>
+ <20200422160045.GC20756@quack2.suse.cz>
+ <331CEA49-83E0-462C-A70D-479F17A4FAB2@dilger.ca>
+ <20200423004033.GA161058@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b2edd7710f07d94101a6055e398a5e4ed01f09bf.1587555962.git.riteshh@linux.ibm.com>
+In-Reply-To: <20200423004033.GA161058@localhost>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 23-04-20 16:17:57, Ritesh Harjani wrote:
-> Now that fiemap_check_ranges() is available for other filesystems
-> to use, so get rid of ext4's private version.
+On Wed 22-04-20 17:40:33, Josh Triplett wrote:
+> On Wed, Apr 22, 2020 at 02:15:28PM -0600, Andreas Dilger wrote:
+> > On Apr 22, 2020, at 10:00 AM, Jan Kara <jack@suse.cz> wrote:
+> > > On Tue 14-04-20 00:02:07, Josh Triplett wrote:
+> > >> Is there a fundamental reason that ext4 *can't* or *shouldn't* support
+> > >> inline data with 128-byte inodes?
+> > > 
+> > > Well, where would we put it on disk? ext4 on-disk inode fills 128-bytes
+> > > with 'osd2' union...
+> > 
+> > There are 60 bytes in the "i_block" field that can be used by inline_data.
 > 
-> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> Exactly. But the Linux ext4 implementation doesn't accept inline data
+> unless the system.data xattr exists, even if the file's data fits in 60
+> bytes (in which case system.data must exist and have 0 length).
 
-Nice. You can add:
+I see now I understand what you meant. Thanks for explanation.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> > Maybe there is a bigger win for small directories avoiding 4KB leaf blocks?
+> >
+> > That said, I'd be happy to see some numbers to show this is a win, and
+> > I'm definitely not _against_ allowing this to work if there is a use for it.
+> 
+> Some statistics, for ext4 with 4k blocks and 128-byte inodes, if 60-byte
+> inline data worked with 128-byte inodes:
+> 
+> A filesystem containing the source code of the Linux kernel would
+> save about 1508 disk blocks, or around 6032k.
+> 
+> A filesystem containing only my /etc directory would save about 650
+> blocks, or 2600k, a substantial fraction of the entire directory (which
+> takes up 9004k total without inline data).
+
+I guess few people care about a few megabytes these days... For really
+space sensitive applications, people don't pick ext4 as a base filesystem
+I'd guess (I'd expect squashfs, erofs, or ubifs if you need write access).
+So the benefit is relatively small, the question about the cost is - how
+complicated it gets to support inline data without xattrs?
 
 								Honza
-
-> ---
->  fs/ext4/ioctl.c | 25 +------------------------
->  1 file changed, 1 insertion(+), 24 deletions(-)
-> 
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 76a2b5200ba3..6a7d7e9027cd 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -733,29 +733,6 @@ static void ext4_fill_fsxattr(struct inode *inode, struct fsxattr *fa)
->  		fa->fsx_projid = from_kprojid(&init_user_ns, ei->i_projid);
->  }
->  
-> -/* copied from fs/ioctl.c */
-> -static int ext4_fiemap_check_ranges(struct super_block *sb,
-> -			       u64 start, u64 len, u64 *new_len)
-> -{
-> -	u64 maxbytes = (u64) sb->s_maxbytes;
-> -
-> -	*new_len = len;
-> -
-> -	if (len == 0)
-> -		return -EINVAL;
-> -
-> -	if (start > maxbytes)
-> -		return -EFBIG;
-> -
-> -	/*
-> -	 * Shrink request scope to what the fs can actually handle.
-> -	 */
-> -	if (len > maxbytes || (maxbytes - len) < start)
-> -		*new_len = maxbytes - start;
-> -
-> -	return 0;
-> -}
-> -
->  /* So that the fiemap access checks can't overflow on 32 bit machines. */
->  #define FIEMAP_MAX_EXTENTS	(UINT_MAX / sizeof(struct fiemap_extent))
->  
-> @@ -775,7 +752,7 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
->  	if (fiemap.fm_extent_count > FIEMAP_MAX_EXTENTS)
->  		return -EINVAL;
->  
-> -	error = ext4_fiemap_check_ranges(sb, fiemap.fm_start, fiemap.fm_length,
-> +	error = fiemap_check_ranges(sb, fiemap.fm_start, fiemap.fm_length,
->  				    &len);
->  	if (error)
->  		return error;
-> -- 
-> 2.21.0
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
