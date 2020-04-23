@@ -2,101 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAAF1B5FD1
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 17:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F5D1B63A4
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 20:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729205AbgDWPqm (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Apr 2020 11:46:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38048 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729176AbgDWPqm (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 23 Apr 2020 11:46:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6C4F0AD66;
-        Thu, 23 Apr 2020 15:46:40 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 90E501E0E52; Thu, 23 Apr 2020 17:46:40 +0200 (CEST)
-Date:   Thu, 23 Apr 2020 17:46:40 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: don't ignore return values from ext4_ext_dirty()
-Message-ID: <20200423154640.GB28707@quack2.suse.cz>
-References: <20200421030247.34306-1-harshadshirwadkar@gmail.com>
+        id S1730300AbgDWS1i (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Apr 2020 14:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730295AbgDWS0w (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Apr 2020 14:26:52 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E884C025492
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Apr 2020 11:26:51 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id w4so7495767ioc.6
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Apr 2020 11:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=DHzQtr3OkXyFWXbvXEU307GvVJtF7cl8Gt7nfdQPyE8=;
+        b=g40sBMuaO0eKdotmx6qgQBl63DKBmrekz5bvyEQHA4wVZtcqrxc+aFVgh/QD84O9VQ
+         7GeGJGwCstc5CQBYUut5JFB/SR9hiHRBoNucBdQ5+M/xcZE7LYnQNVriX94nlJDQQ53M
+         WWNnGuPMmJMtuCxOc6M3BOG48McWyi9pwkfv1qCbwmDhh95byI3UmcGK9ZJ59xQm/kqA
+         giNgZwxUHu+XTIAoqn/uu1orK63Ur+6hMBQW2TB101zb0oJ5HpVThkCq6id/TjpQtg27
+         HPMb1DcYsj7bM6wQaeV1UkPK6mgUhECRFNV10F5zDhvx1RXP4ikb8uuEIGMKOSNWVb51
+         vLew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=DHzQtr3OkXyFWXbvXEU307GvVJtF7cl8Gt7nfdQPyE8=;
+        b=QaDKd3xHBbOL6lXl2HzTKyd8wkZJS6IGiavW5cPPIp0vG63aD30Cw+h2r0Ufjx/B4z
+         wLkhtefTnBG+HOTbdcO9KliVyRtFTgPzmMcvY5HH8PtuksZfw+TxPytAZW4yqeIGzrW1
+         7htSaO84QtrgL8qjNBlB9eY3/7OyndlkjT4aGKm3R7wVc1hsw6clgxuu9q+b8lsfHanp
+         sp/0Vp/RkLqy93Pu7DMqOjnVldwV7uVh3bjIFgEPPcwV1Sg+kyAzIWyce9IaMldc/ri+
+         B3lCLxR4FHO+S8lMMAK1cpvnIQNlSZ5aZ78dglKS2AKmozLkdDN44dAc2WUW5hmJmMKg
+         bbeQ==
+X-Gm-Message-State: AGi0Puae4TRfTttDTfWUxdureY/GZ8dq78wzXFr8u10ch65mqmf6ZFxg
+        DpwfxwvCwinov1y26NR2SLlNkTbFlIdXzgnooQ==
+X-Google-Smtp-Source: APiQypKZ88CB7WlyCjo0k9+cU4PX0VcggKkKtzSKgRJHkcPGizF0yZXAjzEMBgo6XH4xzBXv0KAOMjPM9p1sgpp6/70=
+X-Received: by 2002:a5e:9416:: with SMTP id q22mr2547966ioj.93.1587666410194;
+ Thu, 23 Apr 2020 11:26:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421030247.34306-1-harshadshirwadkar@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a02:c845:0:0:0:0:0 with HTTP; Thu, 23 Apr 2020 11:26:49
+ -0700 (PDT)
+Reply-To: boa.benin107@yahoo.com
+From:   "Mrs. Angella Michelle" <info.zennitbankplcnigerian@gmail.com>
+Date:   Thu, 23 Apr 2020 20:26:49 +0200
+Message-ID: <CABHzvr=N78snvtMHePMOa+RLFdcZEjXLPkuhkojt4VoZGNzBsQ@mail.gmail.com>
+Subject: Contact Bank of Africa-Benin to receive your payment funds transfer
+ amount of $12.800.000,00 Million USD,approved this morning by IMF.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon 20-04-20 20:02:47, Harshad Shirwadkar wrote:
-> Don't ignore return values from ext4_ext_dirty, since the errors
-> indicate valid failures below Ext4.  In all of the other instances of
-> ext4_ext_dirty calls, the error return value is handled in some
-> way. This patch makes those remaining couple of places to handle
-> ext4_ext_dirty errors as well. In case of ext4_split_extent_at(), the
-> ignorance of return value is intentional. The reason is that we are
-> already in error path and there isn't much we can do if ext4_ext_dirty
-> returns error. This patch adds a comment for that case explaining why
-> we ignore the return value.
-> 
-> In the longer run, we probably should
-> make sure that errors from other mark_dirty routines are handled as
-> well.
-> 
-> Ran gce-xfstests smoke tests and verified that there were no
-> regressions.
-> 
-> Changes since V1:
-> Fixed incorrect return value handling in ext4_split_extent_at()
-
-The 'Changes' part should go below the '---' separator. There's no need to
-have it included in the final commit message.
-
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-
-Otherwise the patch looks good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/extents.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index f2b577b315a0..6425f4f9a197 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3244,6 +3244,10 @@ static int ext4_split_extent_at(handle_t *handle,
->  
->  fix_extent_len:
->  	ex->ee_len = orig_ex.ee_len;
-> +	/*
-> +	 * Ignore ext4_ext_dirty return value since we are already in error path
-> +	 * and err is a non-zero error code.
-> +	 */
->  	ext4_ext_dirty(handle, inode, path + path->p_depth);
->  	return err;
->  }
-> @@ -3503,7 +3507,7 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->  	}
->  	if (allocated) {
->  		/* Mark the block containing both extents as dirty */
-> -		ext4_ext_dirty(handle, inode, path + depth);
-> +		err = ext4_ext_dirty(handle, inode, path + depth);
->  
->  		/* Update path to point to the right extent */
->  		path[depth].p_ext = abut_ex;
-> -- 
-> 2.26.1.301.g55bc3eb7cb9-goog
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Attn Dear.
+Contact Bank of Africa-Benin to receive your payment funds transfer amount =
+of
+$12.800.000,00 Million USD,approved this morning by IMF.
+Happy to inform you, we have finally deposited your payment funds
+$12.8 million us dollars with the Paying Bank of Africa-Benin
+to transfer the payment amount of $12.800,000,00 Million Us Dollars to you
+Contact the bank immediately you receive this email now.
+Director Bank of Africa-Benin: Dr. Festus Obiara
+Email id:  boa.benin107@yahoo.com
+Tel/mobile, (229) 62819378
+BOA-BENIN | GROUPE BANK OF AFRICA, boa-benin
+Avenue Jean-Paul II - 08 BP 0879 - Cotonou - B=C3=A9nin
+Phone:(229) 62819378.
+2020 GROUPE BANK OF AFRICA
+Be advised to re-confirm your bank details to this bank as listed.
+Your account Holder's name----------------
+Bank Name----------------------------------------------------------
+Bank address----------------------------------------------
+Account Numbers---------------------------------------
+Rounting-----------------------------------------------------------------
+Your direct Phone Numbers----------------------------------------------
+Note,I have paid the deposit and insurance fees for you
+But the only money you are to send to this bank is $150.00 us dollars
+Been for the wire transfer fees of your funds
+Contact Him now to receive your transfer deposited this morning
+I wait for your reply upon confirmation
+Mrs. Angella Michelle
+Editor, Zenith Bank- Companies Benin
+mrsa9389@gmail.com
