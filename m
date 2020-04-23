@@ -2,76 +2,101 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6F61B5172
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 02:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05AD1B52AF
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 04:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbgDWAkl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 22 Apr 2020 20:40:41 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:59541 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbgDWAkl (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Apr 2020 20:40:41 -0400
-X-Originating-IP: 50.39.163.217
-Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 331BEFF802;
-        Thu, 23 Apr 2020 00:40:37 +0000 (UTC)
-Date:   Wed, 22 Apr 2020 17:40:33 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Jan Kara <jack@suse.cz>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: Inline data with 128-byte inodes?
-Message-ID: <20200423004033.GA161058@localhost>
-References: <20200414070207.GA170659@localhost>
- <20200422160045.GC20756@quack2.suse.cz>
- <331CEA49-83E0-462C-A70D-479F17A4FAB2@dilger.ca>
+        id S1726410AbgDWCor (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 22 Apr 2020 22:44:47 -0400
+Received: from mgwkm03.jp.fujitsu.com ([202.219.69.170]:30664 "EHLO
+        mgwkm03.jp.fujitsu.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgDWCor (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 22 Apr 2020 22:44:47 -0400
+X-Greylist: delayed 671 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Apr 2020 22:44:44 EDT
+Received: from kw-mxq.gw.nic.fujitsu.com (unknown [192.168.231.130]) by mgwkm03.jp.fujitsu.com with smtp
+         id 0abc_3579_5544f71c_4878_43bc_a3de_fa2088113603;
+        Thu, 23 Apr 2020 11:33:27 +0900
+Received: from m3050.s.css.fujitsu.com (msm.b.css.fujitsu.com [10.134.21.208])
+        by kw-mxq.gw.nic.fujitsu.com (Postfix) with ESMTP id BF869AC00FD;
+        Thu, 23 Apr 2020 11:33:26 +0900 (JST)
+Received: from [10.133.121.138] (VPC-Y08P0560080.g01.fujitsu.local [10.133.121.138])
+        by m3050.s.css.fujitsu.com (Postfix) with ESMTP id A3A30403;
+        Thu, 23 Apr 2020 11:33:26 +0900 (JST)
+Subject: Re: [PATCH V10 04/11] Documentation/dax: Update Usage section
+To:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <20200422212102.3757660-1-ira.weiny@intel.com>
+ <20200422212102.3757660-5-ira.weiny@intel.com>
+From:   Yasunori Goto <y-goto@fujitsu.com>
+Message-ID: <2282176d-60c5-0e4b-3cf9-7a7682de380d@fujitsu.com>
+Date:   Thu, 23 Apr 2020 11:33:26 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <331CEA49-83E0-462C-A70D-479F17A4FAB2@dilger.ca>
+In-Reply-To: <20200422212102.3757660-5-ira.weiny@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 02:15:28PM -0600, Andreas Dilger wrote:
-> On Apr 22, 2020, at 10:00 AM, Jan Kara <jack@suse.cz> wrote:
-> > On Tue 14-04-20 00:02:07, Josh Triplett wrote:
-> >> Is there a fundamental reason that ext4 *can't* or *shouldn't* support
-> >> inline data with 128-byte inodes?
-> > 
-> > Well, where would we put it on disk? ext4 on-disk inode fills 128-bytes
-> > with 'osd2' union...
-> 
-> There are 60 bytes in the "i_block" field that can be used by inline_data.
+Hello,
 
-Exactly. But the Linux ext4 implementation doesn't accept inline data
-unless the system.data xattr exists, even if the file's data fits in 60
-bytes (in which case system.data must exist and have 0 length).
+I'm trying use your patch now, and I have a small comment in this document.
 
-> > Or do you mean we should put inline data in an external xattr block?
+On 2020/04/23 6:20, ira.weiny@intel.com wrote:
 
-Definitely not, no. That seems much more complex to deal with.
+> +To clarify inheritance here are 3 examples:
+> +
+> +Example A:
+> +
+> +mkdir -p a/b/c
+> +xfs_io 'chattr +x' a
 
-I'm only talking about the case of files or directories <= 60 bytes
-fitting in the inode with 128-byte inodes. Effectively, this would mean
-accepting inodes with the inline data flag set, whether they have the
-system.data xattr or not.
+Probably, "-c" is necessary here.
 
-> Maybe there is a bigger win for small directories avoiding 4KB leaf blocks?
->
-> That said, I'd be happy to see some numbers to show this is a win, and
-> I'm definitely not _against_ allowing this to work if there is a use for it.
+xfs_io -c 'chattr +x' a
 
-Some statistics, for ext4 with 4k blocks and 128-byte inodes, if 60-byte
-inline data worked with 128-byte inodes:
 
-A filesystem containing the source code of the Linux kernel would
-save about 1508 disk blocks, or around 6032k.
+> +mkdir a/b/c/d
+> +mkdir a/e
+> +
+> +	dax: a,e
+> +	no dax: b,c,d
+> +
+> +Example B:
+> +
+> +mkdir a
+> +xfs_io 'chattr +x' a
+ditto
+> +mkdir -p a/b/c/d
+> +
+> +	dax: a,b,c,d
+> +	no dax:
+> +
+> +Example C:
+> +
+> +mkdir -p a/b/c
+> +xfs_io 'chattr +x' c
+ditto
+> +mkdir a/b/c/d
+> +
+> +	dax: c,d
+> +	no dax: a,b
+> +
+> +
 
-A filesystem containing only my /etc directory would save about 650
-blocks, or 2600k, a substantial fraction of the entire directory (which
-takes up 9004k total without inline data).
+---
 
-- Josh Triplett
+Yasunori Goto
+
