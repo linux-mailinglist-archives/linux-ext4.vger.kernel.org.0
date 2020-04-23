@@ -2,53 +2,53 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA3E1B69F7
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 01:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFB61B69F8
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 01:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728151AbgDWXhZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Apr 2020 19:37:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55816 "EHLO
+        id S1728156AbgDWXh1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Apr 2020 19:37:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55823 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728136AbgDWXhY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Apr 2020 19:37:24 -0400
+        with ESMTP id S1728136AbgDWXh1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 23 Apr 2020 19:37:27 -0400
 Received: from mail-qt1-f198.google.com ([209.85.160.198])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <mfo@canonical.com>)
-        id 1jRlPG-0003rR-Oj
-        for linux-ext4@vger.kernel.org; Thu, 23 Apr 2020 23:37:22 +0000
-Received: by mail-qt1-f198.google.com with SMTP id g23so8910154qto.0
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Apr 2020 16:37:22 -0700 (PDT)
+        id 1jRlPI-0003rw-Rv
+        for linux-ext4@vger.kernel.org; Thu, 23 Apr 2020 23:37:25 +0000
+Received: by mail-qt1-f198.google.com with SMTP id n22so8858727qtp.15
+        for <linux-ext4@vger.kernel.org>; Thu, 23 Apr 2020 16:37:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SSed4JUXi/HyjuJlyffDm+hQm9Ni9+VRVy9sgrrLJM8=;
-        b=p4Mty57030fwJF03ySotVbAj14OeINmPskp+BZJyimL9jA5oIjn90ZQ/XaXWkb8dYb
-         bgVqZf80gHfPQwVxphGlwgvS+r5+ujWlOiypcx1rU723Q5OzjyQahKp/v7t8f8g3mISM
-         3gfx+nTGbAQtSJYJ8lWHSISSxsNsJktMGTeafQX0FOso3Dgb/+dEyrsEpi+rwLRdTBGb
-         RMqvnD/u7JRG0Tdb1bBtAsyyVAS6yXzoEhLDNnlKTIH8qx5y27zIhTw4O1fvVHmKN2TL
-         DByFPm9EXkP8Z0REz4nkP/XHuvc2kA0+t/Wu9xyMl9+ZElYLSoHUc8rQf3rmaln/p7cZ
-         InOw==
-X-Gm-Message-State: AGi0PuZhs3jDOxyXsC6O4T7AdXv+PVQQAnamou2pkUwpx8cd+C1CYVf6
-        mNhNcz02vJLnVcQ8ehU+dMbE1+Vr8E2C2FWEnTeXYWRAdgxNA2btpmzE8oaAiqYkYut+2MFd1dH
-        hbVZVieIVXhozsxtWjRRQzSl2yH67azp3633W5Cs=
-X-Received: by 2002:a37:7202:: with SMTP id n2mr5582371qkc.427.1587685041714;
-        Thu, 23 Apr 2020 16:37:21 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJi5NA+IU6SWhMq/cJeuyOTGtxPV8ugIPNC1CotvKS1GP1xkIrvaXT+Np+DdcE0tDwzk9cvyg==
-X-Received: by 2002:a37:7202:: with SMTP id n2mr5582354qkc.427.1587685041449;
-        Thu, 23 Apr 2020 16:37:21 -0700 (PDT)
+        bh=XRIKYRyoMTAWH9jWxTyGjX0T1FPSl6M3+WcsneoeAWQ=;
+        b=an+qyuCKxsB8DP1GfIYZbkiGYsamN7LT/+kzdCCkfqnTmfL9J3SUPy54bo57V5P+Ya
+         n7dCFjgLFOiqu8A/yb63+4IV2NycGWfbA7LISE2leAe+6JmQ5QiKrRoh1EEJc+kEUkq0
+         I+oHqjfXCnGWq9nwzopSB9yiCTwtKe9huS9IoO/7T6EvbQbDAyNHOsKgzpyqtJFLCwq/
+         TZuNLCgcVgwSMLlWWfTG07iw0nJobRwvSbzHcZ+tEJE8AaNHUKfJKnYNuo8DfsMgtfCo
+         /jiUBxSVSCKUl95meVZ88d4nbTHB/tHBx9Pv59RKYv/yfF02S+EydNHFktyjjNk3WNR+
+         tXnQ==
+X-Gm-Message-State: AGi0PuaYGtiKZWpdUPGXubkrS72SQlD/CZqyHSVAd9u4Ycw2/5/JnOQN
+        urTL1fSfzH99L0SRu3iRYlSpf9hscUJtVXJgTR15Tng8E8DYl71HKILxIv+IJ3SzssP1rifqrlI
+        Md6oZJOdx4CnHB5dcO7Fi76lvZgg4L0xjKx8DFVI=
+X-Received: by 2002:ad4:50c3:: with SMTP id e3mr6398569qvq.116.1587685043890;
+        Thu, 23 Apr 2020 16:37:23 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLuJt1Hbr3wAduXuiqk/4hUZzEwVYoApgyePdBD5buPQP8tcwZSn50hggGnXptQSp3WD+xhPw==
+X-Received: by 2002:ad4:50c3:: with SMTP id e3mr6398558qvq.116.1587685043691;
+        Thu, 23 Apr 2020 16:37:23 -0700 (PDT)
 Received: from localhost.localdomain ([201.82.49.101])
-        by smtp.gmail.com with ESMTPSA id j14sm2529171qkk.92.2020.04.23.16.37.19
+        by smtp.gmail.com with ESMTPSA id j14sm2529171qkk.92.2020.04.23.16.37.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2020 16:37:21 -0700 (PDT)
+        Thu, 23 Apr 2020 16:37:23 -0700 (PDT)
 From:   Mauricio Faria de Oliveira <mfo@canonical.com>
 To:     linux-ext4@vger.kernel.org, "Theodore Y. Ts'o" <tytso@mit.edu>
 Cc:     dann frazier <dann.frazier@canonical.com>,
         Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.com>
-Subject: [RFC PATCH 05/11] ext4: data=journal: prevent journalled writeback deadlock in __ext4_journalled_writepage()
-Date:   Thu, 23 Apr 2020 20:36:59 -0300
-Message-Id: <20200423233705.5878-6-mfo@canonical.com>
+Subject: [RFC PATCH 06/11] ext4: data=journal: prevent journalled writeback deadlock in ext4_write_begin()
+Date:   Thu, 23 Apr 2020 20:37:00 -0300
+Message-Id: <20200423233705.5878-7-mfo@canonical.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200423233705.5878-1-mfo@canonical.com>
 References: <20200423233705.5878-1-mfo@canonical.com>
@@ -60,51 +60,52 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 This patch checks for and prevents the deadlock with a page in
-journalled writeback in __ext4_journalled_writepage().
+journalled writeback in ext4_write_begin().
 
-It turns out that __ext4_journalled_writepage() may race with itself
-in another task (e.g., two tasks set the same mmap'ed page dirty and
-called msync(), one after the other), so we have to check/handle it.
+Finally, add wait_on_page_writeback() if data=journal mode.
+
+Note: similar changes are not needed in ext4_da_write_begin()
+as delayed allocation is not applicable to data journalling
+(different struct address_space_operations).
 
 Signed-off-by: Mauricio Faria de Oliveira <mfo@canonical.com>
 ---
- fs/ext4/inode.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ fs/ext4/inode.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 574a062b8bcd..401313be8a5b 100644
+index 401313be8a5b..f58c426aaca1 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -1910,6 +1910,7 @@ static noinline int __ext4_journalled_writepage(struct page *page,
- 	 */
- 	ejwp = kmem_cache_alloc(ext4_journalled_wb_page_cachep,	GFP_KERNEL);
+@@ -1149,6 +1149,8 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
+ 	page = grab_cache_page_write_begin(mapping, index, flags);
+ 	if (!page)
+ 		return -ENOMEM;
++	if (ext4_should_journal_data(inode))
++		wait_on_page_writeback(page);
+ 	unlock_page(page);
  
-+retry_journal:
- 	handle = ext4_journal_start(inode, EXT4_HT_WRITE_PAGE,
- 				    ext4_writepage_trans_blocks(inode));
- 	if (IS_ERR(handle)) {
-@@ -1948,7 +1949,20 @@ static noinline int __ext4_journalled_writepage(struct page *page,
- 			goto out;
- 		}
- 
--		/* Data integrity writeback; have to wait and do it. */
-+		/*
-+		 * Data integrity writeback; have to wait and do it.
-+		 *
-+		 * Check for deadlock with page in journalled writeback
-+		 * (i.e. another task running/ran this function as well)
-+		 */
-+		if (ext4_check_journalled_writeback(handle, page)) {
-+			get_page(page);
-+			unlock_page(page);
-+			ext4_journal_stop(handle);
-+			ext4_start_commit_datasync(inode);
-+			wait_on_page_writeback(page);
-+			goto retry_journal;
-+		}
- 		wait_on_page_writeback(page);
+ retry_journal:
+@@ -1165,9 +1167,19 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
+ 		put_page(page);
+ 		ext4_journal_stop(handle);
+ 		goto retry_grab;
++	} else if (ext4_should_journal_data(inode) &&
++		   ext4_check_journalled_writeback(handle, page)) {
++		/* Or transaction may block page writeback */
++		unlock_page(page);
++		put_page(page);
++		ext4_journal_stop(handle);
++		ext4_start_commit_datasync(inode);
++		goto retry_grab;
  	}
+ 	/* In case writeback began while the page was unlocked */
+ 	wait_for_stable_page(page);
++	if (ext4_should_journal_data(inode))
++		wait_on_page_writeback(page);
  
+ #ifdef CONFIG_FS_ENCRYPTION
+ 	if (ext4_should_dioread_nolock(inode))
 -- 
 2.20.1
 
