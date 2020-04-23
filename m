@@ -2,101 +2,91 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6961B1B5A07
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 13:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3861B5A3D
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 13:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgDWLH3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Apr 2020 07:07:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47046 "EHLO mx2.suse.de"
+        id S1727911AbgDWLQj (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Apr 2020 07:16:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53384 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726805AbgDWLH3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 23 Apr 2020 07:07:29 -0400
+        id S1727077AbgDWLQj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 Apr 2020 07:16:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8C0D8B08C;
-        Thu, 23 Apr 2020 11:07:27 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id D5D67B080;
+        Thu, 23 Apr 2020 11:16:36 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 75D621E1293; Thu, 23 Apr 2020 13:07:27 +0200 (CEST)
-Date:   Thu, 23 Apr 2020 13:07:27 +0200
+        id C274F1E1293; Thu, 23 Apr 2020 13:16:36 +0200 (CEST)
+Date:   Thu, 23 Apr 2020 13:16:36 +0200
 From:   Jan Kara <jack@suse.cz>
-To:     Jeffle Xu <jefflexu@linux.alibaba.com>
-Cc:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org,
-        joseph.qi@linux.alibaba.com
-Subject: Re: [PATCH v2] ext4: fix error pointer dereference
-Message-ID: <20200423110727.GG3737@quack2.suse.cz>
-References: <1587628004-95123-1-git-send-email-jefflexu@linux.alibaba.com>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, tytso@mit.edu,
+        adilger@dilger.ca, darrick.wong@oracle.com, hch@infradead.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Murphy Zhou <jencce.kernel@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/5] ext4: Fix EXT4_MAX_LOGICAL_BLOCK macro
+Message-ID: <20200423111636.GH3737@quack2.suse.cz>
+References: <cover.1587555962.git.riteshh@linux.ibm.com>
+ <e31dbabc453d1f227371bed6e0cc2f3493b4955f.1587555962.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1587628004-95123-1-git-send-email-jefflexu@linux.alibaba.com>
+In-Reply-To: <e31dbabc453d1f227371bed6e0cc2f3493b4955f.1587555962.git.riteshh@linux.ibm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu 23-04-20 15:46:44, Jeffle Xu wrote:
-> Don't pass error pointers to brelse().
+On Thu 23-04-20 16:17:53, Ritesh Harjani wrote:
+> ext4 supports max number of logical blocks in a file to be 0xffffffff.
+> (This is since ext4_extent's ee_block is __le32).
+> This means that EXT4_MAX_LOGICAL_BLOCK should be 0xfffffffe (starting
+> from 0 logical offset). This patch fixes this.
 > 
-> commit 7159a986b420 ("ext4: fix some error pointer dereferences") has fixed
-> some cases, fix the remaining one case.
+> The issue was seen when ext4 moved to iomap_fiemap API and when
+> overlayfs was mounted on top of ext4. Since overlayfs was missing
+> filemap_check_ranges(), so it could pass a arbitrary huge length which
+> lead to overflow of map.m_len logic.
 > 
-> Once ext4_xattr_block_find()->ext4_sb_bread() failed, error pointer is
-> stored in @bs->bh, which will be passed to brelse() in the cleanup
-> routine of ext4_xattr_set_handle(). This will then cause a NULL panic
-> crash in __brelse().
+> This patch fixes that.
 > 
-> BUG: unable to handle kernel NULL pointer dereference at 000000000000005b
-> RIP: 0010:__brelse+0x1b/0x50
-> Call Trace:
->  ext4_xattr_set_handle+0x163/0x5d0
->  ext4_xattr_set+0x95/0x110
->  __vfs_setxattr+0x6b/0x80
->  __vfs_setxattr_noperm+0x68/0x1b0
->  vfs_setxattr+0xa0/0xb0
->  setxattr+0x12c/0x1a0
->  path_setxattr+0x8d/0xc0
->  __x64_sys_setxattr+0x27/0x30
->  do_syscall_64+0x60/0x250
->  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> 
-> In this case, @bs->bh stores '-EIO' actually.
-> 
-> Fixes: fb265c9cb49e ("ext4: add ext4_sb_bread() to disambiguate ENOMEM cases")
-> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-> Cc: stable@kernel.org # 2.6.19
+> Fixes: d3b6f23f7167 ("ext4: move ext4_fiemap to use iomap framework")
+> Reported-by: syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-Thanks for the patch! It looks good to me. You can add:
+The patch looks good to me. You can add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
-									Honza
+								Honza
+
 
 > ---
->  fs/ext4/xattr.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>  fs/ext4/ext4.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 21df43a..01ba663 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -1800,8 +1800,11 @@ struct ext4_xattr_block_find {
->  	if (EXT4_I(inode)->i_file_acl) {
->  		/* The inode already has an extended attribute block. */
->  		bs->bh = ext4_sb_bread(sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
-> -		if (IS_ERR(bs->bh))
-> -			return PTR_ERR(bs->bh);
-> +		if (IS_ERR(bs->bh)) {
-> +			error = PTR_ERR(bs->bh);
-> +			bs->bh = NULL;
-> +			return error;
-> +		}
->  		ea_bdebug(bs->bh, "b_count=%d, refcount=%d",
->  			atomic_read(&(bs->bh->b_count)),
->  			le32_to_cpu(BHDR(bs->bh)->h_refcount));
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 91eb4381cae5..ad2dbf6e4924 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -722,7 +722,7 @@ enum {
+>  #define EXT4_MAX_BLOCK_FILE_PHYS	0xFFFFFFFF
+>  
+>  /* Max logical block we can support */
+> -#define EXT4_MAX_LOGICAL_BLOCK		0xFFFFFFFF
+> +#define EXT4_MAX_LOGICAL_BLOCK		0xFFFFFFFE
+>  
+>  /*
+>   * Structure of an inode on the disk
 > -- 
-> 1.8.3.1
+> 2.21.0
 > 
 -- 
 Jan Kara <jack@suse.com>
