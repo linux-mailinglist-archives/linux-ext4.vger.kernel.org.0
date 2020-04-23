@@ -2,131 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED4C1B59A2
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 12:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6961B1B5A07
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 Apr 2020 13:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgDWKtE (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 23 Apr 2020 06:49:04 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44282 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727872AbgDWKtE (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 23 Apr 2020 06:49:04 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03NAYQR0101325
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Apr 2020 06:49:04 -0400
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30jtk2gbbn-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Thu, 23 Apr 2020 06:49:03 -0400
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Thu, 23 Apr 2020 11:48:36 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 23 Apr 2020 11:48:31 +0100
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03NAms6t59900112
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Apr 2020 10:48:54 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A711611C052;
-        Thu, 23 Apr 2020 10:48:54 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9370311C050;
-        Thu, 23 Apr 2020 10:48:51 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.199.60.18])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 23 Apr 2020 10:48:51 +0000 (GMT)
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-To:     linux-ext4@vger.kernel.org
-Cc:     jack@suse.cz, tytso@mit.edu, adilger@dilger.ca,
-        darrick.wong@oracle.com, hch@infradead.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Murphy Zhou <jencce.kernel@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: [PATCH 5/5] ext4: Get rid of ext4_fiemap_check_ranges
-Date:   Thu, 23 Apr 2020 16:17:57 +0530
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <cover.1587555962.git.riteshh@linux.ibm.com>
-References: <cover.1587555962.git.riteshh@linux.ibm.com>
+        id S1727883AbgDWLH3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 23 Apr 2020 07:07:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47046 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726805AbgDWLH3 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 23 Apr 2020 07:07:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 8C0D8B08C;
+        Thu, 23 Apr 2020 11:07:27 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 75D621E1293; Thu, 23 Apr 2020 13:07:27 +0200 (CEST)
+Date:   Thu, 23 Apr 2020 13:07:27 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Jeffle Xu <jefflexu@linux.alibaba.com>
+Cc:     tytso@mit.edu, jack@suse.cz, linux-ext4@vger.kernel.org,
+        joseph.qi@linux.alibaba.com
+Subject: Re: [PATCH v2] ext4: fix error pointer dereference
+Message-ID: <20200423110727.GG3737@quack2.suse.cz>
+References: <1587628004-95123-1-git-send-email-jefflexu@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20042310-0012-0000-0000-000003A9CB98
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20042310-0013-0000-0000-000021E71F88
-Message-Id: <b2edd7710f07d94101a6055e398a5e4ed01f09bf.1587555962.git.riteshh@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-23_07:2020-04-22,2020-04-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015 lowpriorityscore=0
- priorityscore=1501 suspectscore=1 impostorscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004230082
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587628004-95123-1-git-send-email-jefflexu@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Now that fiemap_check_ranges() is available for other filesystems
-to use, so get rid of ext4's private version.
+On Thu 23-04-20 15:46:44, Jeffle Xu wrote:
+> Don't pass error pointers to brelse().
+> 
+> commit 7159a986b420 ("ext4: fix some error pointer dereferences") has fixed
+> some cases, fix the remaining one case.
+> 
+> Once ext4_xattr_block_find()->ext4_sb_bread() failed, error pointer is
+> stored in @bs->bh, which will be passed to brelse() in the cleanup
+> routine of ext4_xattr_set_handle(). This will then cause a NULL panic
+> crash in __brelse().
+> 
+> BUG: unable to handle kernel NULL pointer dereference at 000000000000005b
+> RIP: 0010:__brelse+0x1b/0x50
+> Call Trace:
+>  ext4_xattr_set_handle+0x163/0x5d0
+>  ext4_xattr_set+0x95/0x110
+>  __vfs_setxattr+0x6b/0x80
+>  __vfs_setxattr_noperm+0x68/0x1b0
+>  vfs_setxattr+0xa0/0xb0
+>  setxattr+0x12c/0x1a0
+>  path_setxattr+0x8d/0xc0
+>  __x64_sys_setxattr+0x27/0x30
+>  do_syscall_64+0x60/0x250
+>  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+> In this case, @bs->bh stores '-EIO' actually.
+> 
+> Fixes: fb265c9cb49e ("ext4: add ext4_sb_bread() to disambiguate ENOMEM cases")
+> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Cc: stable@kernel.org # 2.6.19
 
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
----
- fs/ext4/ioctl.c | 25 +------------------------
- 1 file changed, 1 insertion(+), 24 deletions(-)
+Thanks for the patch! It looks good to me. You can add:
 
-diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-index 76a2b5200ba3..6a7d7e9027cd 100644
---- a/fs/ext4/ioctl.c
-+++ b/fs/ext4/ioctl.c
-@@ -733,29 +733,6 @@ static void ext4_fill_fsxattr(struct inode *inode, struct fsxattr *fa)
- 		fa->fsx_projid = from_kprojid(&init_user_ns, ei->i_projid);
- }
- 
--/* copied from fs/ioctl.c */
--static int ext4_fiemap_check_ranges(struct super_block *sb,
--			       u64 start, u64 len, u64 *new_len)
--{
--	u64 maxbytes = (u64) sb->s_maxbytes;
--
--	*new_len = len;
--
--	if (len == 0)
--		return -EINVAL;
--
--	if (start > maxbytes)
--		return -EFBIG;
--
--	/*
--	 * Shrink request scope to what the fs can actually handle.
--	 */
--	if (len > maxbytes || (maxbytes - len) < start)
--		*new_len = maxbytes - start;
--
--	return 0;
--}
--
- /* So that the fiemap access checks can't overflow on 32 bit machines. */
- #define FIEMAP_MAX_EXTENTS	(UINT_MAX / sizeof(struct fiemap_extent))
- 
-@@ -775,7 +752,7 @@ static int ext4_ioctl_get_es_cache(struct file *filp, unsigned long arg)
- 	if (fiemap.fm_extent_count > FIEMAP_MAX_EXTENTS)
- 		return -EINVAL;
- 
--	error = ext4_fiemap_check_ranges(sb, fiemap.fm_start, fiemap.fm_length,
-+	error = fiemap_check_ranges(sb, fiemap.fm_start, fiemap.fm_length,
- 				    &len);
- 	if (error)
- 		return error;
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+									Honza
+
+> ---
+>  fs/ext4/xattr.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+> index 21df43a..01ba663 100644
+> --- a/fs/ext4/xattr.c
+> +++ b/fs/ext4/xattr.c
+> @@ -1800,8 +1800,11 @@ struct ext4_xattr_block_find {
+>  	if (EXT4_I(inode)->i_file_acl) {
+>  		/* The inode already has an extended attribute block. */
+>  		bs->bh = ext4_sb_bread(sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
+> -		if (IS_ERR(bs->bh))
+> -			return PTR_ERR(bs->bh);
+> +		if (IS_ERR(bs->bh)) {
+> +			error = PTR_ERR(bs->bh);
+> +			bs->bh = NULL;
+> +			return error;
+> +		}
+>  		ea_bdebug(bs->bh, "b_count=%d, refcount=%d",
+>  			atomic_read(&(bs->bh->b_count)),
+>  			le32_to_cpu(BHDR(bs->bh)->h_refcount));
+> -- 
+> 1.8.3.1
+> 
 -- 
-2.21.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
