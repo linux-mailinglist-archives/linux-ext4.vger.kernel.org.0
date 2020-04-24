@@ -2,56 +2,61 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE041B7189
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 12:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2962E1B71A4
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 12:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbgDXKHl (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Apr 2020 06:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
+        id S1726876AbgDXKLy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Apr 2020 06:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726896AbgDXKHk (ORCPT
+        by vger.kernel.org with ESMTP id S1726867AbgDXKLy (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 24 Apr 2020 06:07:40 -0400
+        Fri, 24 Apr 2020 06:11:54 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92536C09B045;
-        Fri, 24 Apr 2020 03:07:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37205C09B045;
+        Fri, 24 Apr 2020 03:11:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=JZ246RQwd02JYzuM1b+RWAonKx
-        DRZ7L+Vv8fdC9oP+Qbe+SeM4qP3NoV8X75zGRQ3J0NeMljNN0+vSO3MjrySZvCBqkMyyFL1YVqI5F
-        IT/0+sN9MLMAANiNydE4bIQQjyEWhXag+GtBIygYO3HwAfI+2F/aSKFzoDPTtXWif5SpyS+23Eo4P
-        J4JJI9q8pQYSbswH+r7P5uIvhlrkw4izX15do9nrtNODLbb4FZKxbCQpeTIz5iKNvtQzSCNnPCmOU
-        DVZaff8p6c92yuYhXj2w4y0IYHlRDm4n2zHRCYa9Scc0DL3BfRP4fKgbyk9+27p/gGhbuR1Ww8/m5
-        CKUJDv7g==;
+        bh=63eqvaxZAp7OS4S7rYpQU2Q5xJodUR5sgvC2fkZKUPw=; b=jVQVA2UyJk8C0S+mxfYgnhUGoI
+        l5oJ0Eir3oGqzub+/rqK5r5BmgcZSlZnO3YFL1KAJIqFbBb8eNzU+skwZ1v1aIDwrLCLlAjyc7tgE
+        DEepLbdKtdxJVJL1ayv4aJd5Vwfqx9H+ca4DkZUKwQwtD0BuPvMqKtPdDP60GaqRFbSSFktpuqHSu
+        kQ4YdC/+6nJU/pzP6GSbWv77l9zcy9JBBYRB6tC5E+YwGAYw/7PIk8zQyJ07dzC2aMQMEQYJfnt9S
+        JTktIxKD+Z6LatnwXG7FOCUMWRmGbzm6REB1MHlgew3Woa9m3fKxTiYhMoZEQf+5XmIv+8GlmAtAV
+        YIhZwZ8A==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jRvFE-0000TJ-AP; Fri, 24 Apr 2020 10:07:40 +0000
-Date:   Fri, 24 Apr 2020 03:07:40 -0700
+        id 1jRvJJ-0004JM-BE; Fri, 24 Apr 2020 10:11:53 +0000
+Date:   Fri, 24 Apr 2020 03:11:53 -0700
 From:   Christoph Hellwig <hch@infradead.org>
 To:     Ritesh Harjani <riteshh@linux.ibm.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+Cc:     linux-ext4@vger.kernel.org, jack@suse.cz, tytso@mit.edu,
+        adilger@dilger.ca, darrick.wong@oracle.com, hch@infradead.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jan Kara <jack@suse.com>, tytso@mit.edu,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 2/2] iomap: bmap: Remove the WARN and return the proper
- block address
-Message-ID: <20200424100740.GB456@infradead.org>
-References: <cover.1587670914.git.riteshh@linux.ibm.com>
- <e2e09c5d840458b4ace6f9b31429ceefd9c1df01.1587670914.git.riteshh@linux.ibm.com>
+        Murphy Zhou <jencce.kernel@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH 0/5] ext4/overlayfs: fiemap related fixes
+Message-ID: <20200424101153.GC456@infradead.org>
+References: <cover.1587555962.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e2e09c5d840458b4ace6f9b31429ceefd9c1df01.1587670914.git.riteshh@linux.ibm.com>
+In-Reply-To: <cover.1587555962.git.riteshh@linux.ibm.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Looks good,
+I think the right fix is to move fiemap_check_ranges into all the ->fiemap
+instances (we only have a few actual implementation minus the wrappers
+around iomap/generic).  Then add a version if iomap_fiemap that can pass
+in maxbytes explicitly for ext4, similar to what we've done with various
+other generic helpers.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+The idea of validating input against file systems specific paramaters
+before we call into the fs is just bound to cause problems.
