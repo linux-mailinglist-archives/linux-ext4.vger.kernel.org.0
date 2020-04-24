@@ -2,37 +2,39 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8261B74F2
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 14:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5A41B74B3
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 14:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgDXM3t (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Apr 2020 08:29:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54016 "EHLO mail.kernel.org"
+        id S1728277AbgDXMYP (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Apr 2020 08:24:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgDXMXv (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:23:51 -0400
+        id S1727073AbgDXMYO (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:24:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D648F2166E;
-        Fri, 24 Apr 2020 12:23:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78E2B2166E;
+        Fri, 24 Apr 2020 12:24:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587731031;
-        bh=0u6wEzb76ncdT0z6fHVNlCKNH9+f7uchnCCQjeDtbPU=;
+        s=default; t=1587731054;
+        bh=lvMF2Kf965DlYlL/TYNqQSc35y6WcqH57P/K98qb/3c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rU5isO9FFPf4r1qRRZOFe77pNXkDWx8HVynslSS4YRG5aQAIi/tbDlwseGF3DeLwk
-         CctrzpuO2brEFgE/RvJC1t5rZn+kShca+FvxoLNKXEfQnfdYQQtUTloV0elQXzqsDJ
-         YvbSXcmOkXq0YPgksBITRaLItplHd/86azxGIfyc=
+        b=gJTUAoRlGVs9so0pNiERJOPXYy2xslEfaD2zMjYSmKp2ekkb0vd6Fv9S5wGAiLWzZ
+         6afgNWTVWDL3n5hjURh5srpbXA8js60v119GKrnXcraCUaa//7YzeD4n3FG5yxTkbm
+         KqWkVqNbOnD6FPXntAFOdGZzRHzqbvxjq7KmEJZ0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
+Cc:     yangerkun <yangerkun@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 24/26] ext4: convert BUG_ON's to WARN_ON's in mballoc.c
-Date:   Fri, 24 Apr 2020 08:23:21 -0400
-Message-Id: <20200424122323.10194-24-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 15/18] ext4: use matching invalidatepage in ext4_writepage
+Date:   Fri, 24 Apr 2020 08:23:52 -0400
+Message-Id: <20200424122355.10453-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200424122323.10194-1-sashal@kernel.org>
-References: <20200424122323.10194-1-sashal@kernel.org>
+In-Reply-To: <20200424122355.10453-1-sashal@kernel.org>
+References: <20200424122355.10453-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -42,50 +44,38 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: yangerkun <yangerkun@huawei.com>
 
-[ Upstream commit 907ea529fc4c3296701d2bfc8b831dd2a8121a34 ]
+[ Upstream commit c2a559bc0e7ed5a715ad6b947025b33cb7c05ea7 ]
 
-If the in-core buddy bitmap gets corrupted (or out of sync with the
-block bitmap), issue a WARN_ON and try to recover.  In most cases this
-involves skipping trying to allocate out of a particular block group.
-We can end up declaring the file system corrupted, which is fair,
-since the file system probably should be checked before we proceed any
-further.
+Run generic/388 with journal data mode sometimes may trigger the warning
+in ext4_invalidatepage. Actually, we should use the matching invalidatepage
+in ext4_writepage.
 
-Link: https://lore.kernel.org/r/20200414035649.293164-1-tytso@mit.edu
-Google-Bug-Id: 34811296
-Google-Bug-Id: 34639169
+Signed-off-by: yangerkun <yangerkun@huawei.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200226041002.13914-1-yangerkun@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/mballoc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/ext4/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index c76ffc259d197..e1782b2e2e2dd 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1936,7 +1936,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 	int free;
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 000fa0e392787..3b1a7597af15e 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2128,7 +2128,7 @@ static int ext4_writepage(struct page *page,
+ 	bool keep_towrite = false;
  
- 	free = e4b->bd_info->bb_free;
--	BUG_ON(free <= 0);
-+	if (WARN_ON(free <= 0))
-+		return;
- 
- 	i = e4b->bd_info->bb_first_free;
- 
-@@ -1959,7 +1960,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 		}
- 
- 		mb_find_extent(e4b, i, ac->ac_g_ex.fe_len, &ex);
--		BUG_ON(ex.fe_len <= 0);
-+		if (WARN_ON(ex.fe_len <= 0))
-+			break;
- 		if (free < ex.fe_len) {
- 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
- 					"%d free clusters as per "
+ 	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb)))) {
+-		ext4_invalidatepage(page, 0, PAGE_SIZE);
++		inode->i_mapping->a_ops->invalidatepage(page, 0, PAGE_SIZE);
+ 		unlock_page(page);
+ 		return -EIO;
+ 	}
 -- 
 2.20.1
 
