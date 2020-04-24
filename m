@@ -2,135 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61051B81B0
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 23:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B0E1B8217
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 00:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgDXVnR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Apr 2020 17:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgDXVnR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Apr 2020 17:43:17 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81716C09B049
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Apr 2020 14:43:17 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id k18so4236238pll.6
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Apr 2020 14:43:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=IkFo3nL7y/n/MNYQxUxtDVtMmA8yPYWDQky4aW4hVsY=;
-        b=OomnYWLh3KxSwN9oXSHlMLyvCrESAVo+E2DOKdLLAp5oBp2l/6+dvzO4jQEiVyi7hJ
-         ALh5XOvc9xRFyS6nSanN/kjABBNiy8kjAzc93BaP6zOPkc+2PmoHV8sDA3IB8ohEcDBW
-         gx6tS5GQ6bK6eZXZMznHvn2Fh8uzdxH7dE3Z6UnuDoRcGc8mNhEvChbw4Kq0uV2nZoYS
-         NK8ZdlBO9ZDRE0G1T+yCOf4y1tj+nQYNdLUEZMfIjVqzY7YJoRxSHabntKRM8d6rEG+4
-         ws+JnZST0ghma9z/2gECrha7wID7dLGHf/Z1bCeTUPrjSxG7iP5XGkW4DvuK0lgY98Ci
-         FmRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=IkFo3nL7y/n/MNYQxUxtDVtMmA8yPYWDQky4aW4hVsY=;
-        b=W6EPUzl2hFuBr70ST7frcEIgU8NkAo99tTEEOPPBcpTKVZV24Lxmcr/vRIDz9lLcGN
-         zbhKSGDKM3Fb/BmqGK31TlVGjkJt53zUuupeJCji0CtgeKO5CIL9cjY8NPw03OUHiFzV
-         KSGYurMWX3y5LWb7WAuC0V7rWphbevGDTte3a8PtyJhJx5xJgPNs4Sb5oLZeHftRC3K9
-         3SGsd2nIVv+VPs75h0Wkq0EsYV8TkZl+QC6L4IOm6P8sMnSM/dQzPlHgfhF54vboSdHK
-         23dfVILYJl4+lzU+wyW+r4bDkUzr4wMQBH+jy9n1vsNGwwOp7StRmOUEPgs5oT3pggSL
-         GaJA==
-X-Gm-Message-State: AGi0PubnxcXCVQDfjd5BYFpv69hL2WIapmLCaDkRIm8st/7aEybkPaIc
-        rvRYS1BTTjFkJzEL9pNZjyc0LNc+U74=
-X-Google-Smtp-Source: APiQypJeETr7tw8OmWQZdOPYbgT03biRRxArL6+k+I1hQsroByyDzepIrchmR3gwDd27MkL1g9GP2Q==
-X-Received: by 2002:a17:90a:3327:: with SMTP id m36mr8594704pjb.116.1587764596854;
-        Fri, 24 Apr 2020 14:43:16 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id f2sm5366952pju.32.2020.04.24.14.43.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Apr 2020 14:43:15 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <3F735CCE-F9A8-4743-A6BF-DC2945FBB4B2@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_5A02F767-63AB-47E2-880E-B13E3981E8D1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: Need help to understand Ext4 message in /var/log/message file
-Date:   Fri, 24 Apr 2020 15:43:11 -0600
-In-Reply-To: <CAG-6nk-Q16UBbUkWoogut0fYP9s78x0OMf946Dg-tJk1nd+kzA@mail.gmail.com>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
-To:     Alok Jain <jain.alok103@gmail.com>
-References: <CAG-6nk-Q16UBbUkWoogut0fYP9s78x0OMf946Dg-tJk1nd+kzA@mail.gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        id S1726038AbgDXWji (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Apr 2020 18:39:38 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8086 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725874AbgDXWji (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 24 Apr 2020 18:39:38 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03OMWj5i139670;
+        Fri, 24 Apr 2020 18:39:22 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30k7rnqbee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Apr 2020 18:39:21 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03OMZm80004249;
+        Fri, 24 Apr 2020 22:39:20 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 30fs659mdf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Apr 2020 22:39:19 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03OMcAPX60621138
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Apr 2020 22:38:10 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D466B4C05C;
+        Fri, 24 Apr 2020 22:39:17 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D5EB74C059;
+        Fri, 24 Apr 2020 22:39:15 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.79.185.245])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 24 Apr 2020 22:39:15 +0000 (GMT)
+Subject: Re: [PATCH 2/2] iomap: bmap: Remove the WARN and return the proper
+ block address
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jan Kara <jack@suse.com>, tytso@mit.edu,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        linux-ext4@vger.kernel.org
+References: <cover.1587670914.git.riteshh@linux.ibm.com>
+ <e2e09c5d840458b4ace6f9b31429ceefd9c1df01.1587670914.git.riteshh@linux.ibm.com>
+ <20200424174815.GF6733@magnolia>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Sat, 25 Apr 2020 04:09:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200424174815.GF6733@magnolia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200424223915.D5EB74C059@d06av22.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-24_13:2020-04-24,2020-04-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 impostorscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004240165
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_5A02F767-63AB-47E2-880E-B13E3981E8D1
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
 
-On Apr 24, 2020, at 12:56 PM, Alok Jain <jain.alok103@gmail.com> wrote:
+On 4/24/20 11:18 PM, Darrick J. Wong wrote:
+> On Fri, Apr 24, 2020 at 12:52:18PM +0530, Ritesh Harjani wrote:
+>> iomap_bmap() could be called from either of these two paths.
+>> Either when a user is calling an ioctl_fibmap() interface to get
+>> the block mapping address or by some filesystem via use of bmap()
+>> internal kernel API.
+>> bmap() kernel API is well equipped with handling of u64 addresses.
+>>
+>> WARN condition in iomap_bmap_actor() was mainly added to warn all
+>> the fibmap users. But now that in previous patch we have directly added
+>> this WARN condition for all fibmap users and also made sure to return 0
+>> as block map address in case if addr > INT_MAX.
+>> So we can now remove this logic from here.
+>>
+>> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+>> ---
+>>   fs/iomap/fiemap.c | 5 +----
+>>   1 file changed, 1 insertion(+), 4 deletions(-)
+>>
+>> diff --git a/fs/iomap/fiemap.c b/fs/iomap/fiemap.c
+>> index bccf305ea9ce..d55e8f491a5e 100644
+>> --- a/fs/iomap/fiemap.c
+>> +++ b/fs/iomap/fiemap.c
+>> @@ -117,10 +117,7 @@ iomap_bmap_actor(struct inode *inode, loff_t pos, loff_t length,
+>>   
+>>   	if (iomap->type == IOMAP_MAPPED) {
+>>   		addr = (pos - iomap->offset + iomap->addr) >> inode->i_blkbits;
+>> -		if (addr > INT_MAX)
+>> -			WARN(1, "would truncate bmap result\n");
 > 
-> Hi Guys,
+> Frankly I would've combined these two patches to make it more obvious
+> that we're hoisting a FIBMAP constraint check from iomap into the ioctl
+> handler.
+
+Sure, let me combine the two in v2.
+
+Thanks!!
+-ritesh
+
 > 
-> I need an help to understand the following messages printed in
-> /var/log/message file
+> --D
 > 
-> Apr 20 17:42:44 mylinux audispd: node=mylinux type=EXECVE
-> msg=audit(1587404564.745:5901346): argc=4 a0="mount" a1="-v"
-> a2="UUID=b1d54239-2b18-44b3-a4bf-5e0ca32b8f78" a3="/tmp/aj/m1"
-> Apr 20 17:42:45 mylinux kernel: [4633324.069180] EXT4-fs (sde1):
-> recovery complete
-> Apr 20 17:42:45 mylinux kernel: [4633324.070157] EXT4-fs (sde1):
-> mounted filesystem with ordered data mode. Opts: (null)
-> 
-> 
-> Actualy one of the iSCSI device is mounted to /tmp/aj/m1 with UUID
-> (U1) I unmounted this device and mounted new device (UUID
-> b1d54239-2b18-44b3-a4bf-5e0ca32b8f78) after mount I see the UUID of
-> newly mounted device changed to U1 and new device got corrupted. I ran
-> fsck to fix the device but UUID was changed to U1.
-
-It sounds like the iSCSI device is not flushing the block device
-cache between unmounting the old filesystem and mounting the new one?
-
-The new filesystem has a dirty journal, and when it is replayed it
-reads a stale superblock from the old filesystem and overwrites the
-new filesystem.
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_5A02F767-63AB-47E2-880E-B13E3981E8D1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6jXW8ACgkQcqXauRfM
-H+A6bA//dai5w5C4Nxsq1QuvNA7yqDhkLWEb49Iyb4KpV+81bF5fAk7F0KXM8hr7
-L0iARsHPjuFIyDTowiKNuipN5DyEIzpk7c80C9UVUMahNPTls9STnqiBIa2gIAmc
-OQu4r9oEvxvxOueEnizcn5ikt3aJIddNe1maI3N8EAoPe8cqC7J6M+RnO6ZwZGix
-PJT0xX/HDz7IWOfvv6HRGuw5U7WrYXg416lyGXh0nUslm7q66rQ0NCCyFsVBjRXE
-MxjMvPCux473puidAafp5fsmOLArVAS3a7zIh6v7P4hrSq2o4HxMsprUIajOj5F3
-fk9R4qSImp0/J/PR5M3aUHfGhmyD0BWEM8StJ0rAHyiVBfxOlqBirtkOuYsvhmNK
-RcpWGvMBqnLCFoFsaSfKDtEs0AQjefdm66hZlLMfmbRtWU/bWs9sDc58ePwa779N
-AqAhmU3aQZE+ohO/JQJTKyfPpHGRXeXR9bcaI0SRAWto0YS//44n2FXIUZPjOW0b
-SxUiJeAAdIzr5WMNV3V2vxEgWAzCfh41GWk0WxGI3lFXpljjo5loVUwFS9k05X1c
-UmbuP4sJAZiBXUD1eglxQWY8UechzifuvxJ1ubR7rP1Cbz5XWMIIS98X3155rZCN
-GuhAS44IB9QV+i+kYvSbetsyToNPzgbbj9ylshNeV4aC4QNcakM=
-=t+0T
------END PGP SIGNATURE-----
-
---Apple-Mail=_5A02F767-63AB-47E2-880E-B13E3981E8D1--
+>> -		else
+>> -			*bno = addr;
+>> +		*bno = addr;
+>>   	}
+>>   	return 0;
+>>   }
+>> -- 
+>> 2.21.0
+>>
