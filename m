@@ -2,68 +2,89 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E6A1B7102
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 11:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43991B7152
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 11:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726857AbgDXJeN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Apr 2020 05:34:13 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:58022 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726770AbgDXJeK (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 24 Apr 2020 05:34:10 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R361e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0TwVfl8I_1587720847;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0TwVfl8I_1587720847)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 24 Apr 2020 17:34:07 +0800
-From:   Jeffle Xu <jefflexu@linux.alibaba.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-ext4@vger.kernel.org, joseph.qi@linux.alibaba.com,
-        Jeffle Xu <jefflexu@linux.alibaba.com>
-Subject: [PATCH RFC 2/2] xfstests: common/rc: add cluster size support for ext4
-Date:   Fri, 24 Apr 2020 17:33:50 +0800
-Message-Id: <1587720830-11955-3-git-send-email-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1587720830-11955-1-git-send-email-jefflexu@linux.alibaba.com>
-References: <1587720830-11955-1-git-send-email-jefflexu@linux.alibaba.com>
+        id S1726707AbgDXJ5s (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Apr 2020 05:57:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34426 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726193AbgDXJ5s (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 24 Apr 2020 05:57:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 21EACACD8;
+        Fri, 24 Apr 2020 09:57:46 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 349F21E128C; Fri, 24 Apr 2020 11:57:46 +0200 (CEST)
+Date:   Fri, 24 Apr 2020 11:57:46 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jan Kara <jack@suse.com>, tytso@mit.edu,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/2] fibmap: Warn and return an error in case of block >
+ INT_MAX
+Message-ID: <20200424095746.GB13069@quack2.suse.cz>
+References: <cover.1587670914.git.riteshh@linux.ibm.com>
+ <e34d1ac05d29aeeb982713a807345a0aaafc7fe0.1587670914.git.riteshh@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e34d1ac05d29aeeb982713a807345a0aaafc7fe0.1587670914.git.riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Inserting and collapsing range on ext4 with 'bigalloc' feature will
-fail due to the offset and size should be alligned with the cluster
-size.
+On Fri 24-04-20 12:52:17, Ritesh Harjani wrote:
+> We better warn the fibmap user and not return a truncated and therefore
+> an incorrect block map address if the bmap() returned block address
+> is greater than INT_MAX (since user supplied integer pointer).
+> 
+> It's better to WARN all user of ioctl_fibmap() and return a proper error
+> code rather than silently letting a FS corruption happen if the user tries
+> to fiddle around with the returned block map address.
+> 
+> We fix this by returning an error code of -ERANGE and returning 0 as the
+> block mapping address in case if it is > INT_MAX.
+> 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-The previous patch has add support for cluster size in fsx. Detect and
-pass the cluster size parameter to fsx if the underlying filesystem
-is ext4 with bigalloc.
+The patch looks good to me. You can add:
 
-Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
----
- common/rc | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/common/rc b/common/rc
-index 2000bd9..71dde5f 100644
---- a/common/rc
-+++ b/common/rc
-@@ -3908,6 +3908,15 @@ run_fsx()
- {
- 	echo fsx $@
- 	local args=`echo $@ | sed -e "s/ BSIZE / $bsize /g" -e "s/ PSIZE / $psize /g"`
-+
-+	if [ "$FSTYP" == "ext4" ]; then
-+		local cluster_size=$(tune2fs -l $TEST_DEV | grep 'Cluster size' | awk '{print $3}')
-+		if [ -n $cluster_size ]; then
-+			echo "cluster size: $cluster_size"
-+			args="$args -u $cluster_size"
-+		fi
-+	fi
-+
- 	set -- $here/ltp/fsx $args $FSX_AVOID $TEST_DIR/junk
- 	echo "$@" >>$seqres.full
- 	rm -f $TEST_DIR/junk
+								Honza
+
+> ---
+>  fs/ioctl.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index f1d93263186c..3489f3a12c1d 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -71,6 +71,11 @@ static int ioctl_fibmap(struct file *filp, int __user *p)
+>  	block = ur_block;
+>  	error = bmap(inode, &block);
+>  
+> +	if (block > INT_MAX) {
+> +		error = -ERANGE;
+> +		WARN(1, "would truncate fibmap result\n");
+> +	}
+> +
+>  	if (error)
+>  		ur_block = 0;
+>  	else
+> -- 
+> 2.21.0
+> 
 -- 
-1.8.3.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
