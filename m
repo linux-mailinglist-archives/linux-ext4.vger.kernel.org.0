@@ -2,37 +2,37 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A28F1B7487
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 14:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7621B7459
+	for <lists+linux-ext4@lfdr.de>; Fri, 24 Apr 2020 14:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728497AbgDXMYk (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Apr 2020 08:24:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55426 "EHLO mail.kernel.org"
+        id S1728599AbgDXMZB (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 24 Apr 2020 08:25:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728441AbgDXMYj (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Fri, 24 Apr 2020 08:24:39 -0400
+        id S1728603AbgDXMZA (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 24 Apr 2020 08:25:00 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC7D320776;
-        Fri, 24 Apr 2020 12:24:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 981FF20776;
+        Fri, 24 Apr 2020 12:24:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587731079;
-        bh=+H7PFAZPvShQZdie03AT/x/QpAs3IlQg0D5YNNrV2co=;
+        s=default; t=1587731100;
+        bh=0d+S0c9RGNFepIOls681etkyqAWB3Nn4eFH348tKhX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zDAIT1E/GCIWx2AOHZe0crQyZgNF4Z1rqQV8Y0UvAZ809ls9nIhukM9Es0tc9JuLr
-         HgrDW8sa7uqTOHwK/2AcTHN6dPOzXiMBRii+LZ9pW1brcbqKwBXgAI2+MS2ssDm2Pz
-         R6pprdavhSNT7wH22qgeanfgeLYAmb37XwmwjSZw=
+        b=kk3fI48nDb2/PqdIHMga0jQ1jqXpDbnW/rxp2LE6j5pRyETnBCqFm/QZAKi6B56i3
+         FsoopTgYiA+TmLQkuLUuFuMhnd7uNXNrmIOx7xsN4JPpt0NfYmv03i/vgJbyEr4K8q
+         11tThVyQA0olQ3m2wphJXj98f+p6LMB5JTHEcu9w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Theodore Ts'o <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>,
         linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 16/21] ext4: convert BUG_ON's to WARN_ON's in mballoc.c
-Date:   Fri, 24 Apr 2020 08:24:14 -0400
-Message-Id: <20200424122419.10648-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 11/13] ext4: convert BUG_ON's to WARN_ON's in mballoc.c
+Date:   Fri, 24 Apr 2020 08:24:44 -0400
+Message-Id: <20200424122447.10882-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200424122419.10648-1-sashal@kernel.org>
-References: <20200424122419.10648-1-sashal@kernel.org>
+In-Reply-To: <20200424122447.10882-1-sashal@kernel.org>
+References: <20200424122447.10882-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -63,10 +63,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 745a89d30a57a..d7cedfaa1cc08 100644
+index c18668e3135e8..ac13de1a7e420 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -1952,7 +1952,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
+@@ -1944,7 +1944,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
  	int free;
  
  	free = e4b->bd_info->bb_free;
@@ -76,7 +76,7 @@ index 745a89d30a57a..d7cedfaa1cc08 100644
  
  	i = e4b->bd_info->bb_first_free;
  
-@@ -1973,7 +1974,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
+@@ -1965,7 +1966,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
  		}
  
  		mb_find_extent(e4b, i, ac->ac_g_ex.fe_len, &ex);
