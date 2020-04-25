@@ -2,110 +2,103 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592861B83D6
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 07:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D23A1B83F3
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 08:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgDYFja (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 25 Apr 2020 01:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725909AbgDYFja (ORCPT
+        id S1726092AbgDYGmI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 25 Apr 2020 02:42:08 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:51245 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725837AbgDYGmI (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 25 Apr 2020 01:39:30 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC1CC09B049
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Apr 2020 22:39:29 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id i2so6303553ybk.2
-        for <linux-ext4@vger.kernel.org>; Fri, 24 Apr 2020 22:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nFaqSON5dZJG9mAYSppqyaaBEL4gGnjG3LhPmhB/ZHQ=;
-        b=mRVYsPdPlXTX1IZzQSFotf1EehG9OMyfKuiR4uLqrfm8Udpq5X/6E7Hom6/NINw6IF
-         75Y9YXir2DCtunJ4rpjjyfs6CWMQUIZThHKRdEkYxOUANwrrFFTQgg1h0I79X9EJ3pAp
-         ASq4X/XmG172c6nTt0CJ5KaGqqMHLojBNjBZtZz+LMsSnnJkp1rgNO7+Ok7NlaeUJY6Y
-         0PffwG4su7RleaoLf9hEIqWpXCNxJW+5t2gKZcT78nAVQYwPzogrm6guqTVeWo5Dzm3m
-         h9R/2f9te51WSn72dJ5Uv6Q/4mFaRh0Uchs1/sl9N1eLeZUczwRsPyAE5mIDqCKB29tZ
-         mv3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nFaqSON5dZJG9mAYSppqyaaBEL4gGnjG3LhPmhB/ZHQ=;
-        b=j7dNOh4PtnYDrQAoULSLaW81A/7hNlVaom1ZX/axjJ+AeemLmrDFySBnV0wivLJhmI
-         TfO+1NxT1mkShcqdjecGEL67CVbIJa6ZkvDUv3hNLmieCQwOsysE9TVCHsY6qaAWK5gW
-         UtMWfpdj8fa16cDEpLUrUxCeGkfzVf8tYltVvp5lJiGXXKLztbr2keX9qzSQN9G5ymBZ
-         Klb4TD3ZZSnD8YXe++yLNdG1g+fi56gvQQIFw8gjCRILCU1uid5OvUQ9v2NSMKFqScyi
-         8TZZ/g3qB6YpKYGaw6D/RuSGcNl49FkERu+HtLdaBKvln0OkSfP8UoOx+UwyZ9vFxY7y
-         oKNQ==
-X-Gm-Message-State: AGi0PuZIgCFcDzOwuUs0e0LuSy6C3qgQRIZyLqCLSBOD949gZYMfiIhs
-        smw3cukCRYNdakFNzA+uhwb6PvskVlCeEFlIb8xPw3AB
-X-Google-Smtp-Source: APiQypL/BbUh0nz/mWTTzj3f3nIgNEvY2hQjP2S0fNd4CKaToFHfW0FhPvhVsU5ZWPEZRHzNgT2ZnJxHu/WvNcUzpqM=
-X-Received: by 2002:a5b:ecf:: with SMTP id a15mr21516731ybs.444.1587793168706;
- Fri, 24 Apr 2020 22:39:28 -0700 (PDT)
+        Sat, 25 Apr 2020 02:42:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=xiaoguang.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0TwaVxwH_1587796923;
+Received: from 30.5.152.35(mailfrom:xiaoguang.wang@linux.alibaba.com fp:SMTPD_---0TwaVxwH_1587796923)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 25 Apr 2020 14:42:03 +0800
+Subject: Re: [PATCH 1/3] fs: Avoid leaving freed inode on dirty list
+To:     Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
+Cc:     linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Eric Sandeen <sandeen@sandeen.net>
+References: <20200421085445.5731-1-jack@suse.cz>
+ <20200421085445.5731-2-jack@suse.cz>
+From:   Xiaoguang Wang <xiaoguang.wang@linux.alibaba.com>
+Message-ID: <7ffc64ad-4741-27ca-ba9d-3d23af0a9216@linux.alibaba.com>
+Date:   Sat, 25 Apr 2020 14:42:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <CAG-6nk-Q16UBbUkWoogut0fYP9s78x0OMf946Dg-tJk1nd+kzA@mail.gmail.com>
- <3F735CCE-F9A8-4743-A6BF-DC2945FBB4B2@dilger.ca>
-In-Reply-To: <3F735CCE-F9A8-4743-A6BF-DC2945FBB4B2@dilger.ca>
-From:   Alok Jain <jain.alok103@gmail.com>
-Date:   Sat, 25 Apr 2020 11:09:17 +0530
-Message-ID: <CAG-6nk-ntm56DANOJJKGq9cORYT+3XiL4Wjz-BnFs1XrKc5RXA@mail.gmail.com>
-Subject: Re: Need help to understand Ext4 message in /var/log/message file
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200421085445.5731-2-jack@suse.cz>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Thanks Andreas it was helpful
+hi,
 
-So looks like new device has bad journal, is there a way to find if
-device of ext4 FS has bad journal?
+> evict() can race with writeback_sb_inodes() and so
+> list_empty(&inode->i_io_list) check can race with list_move() from
+> redirty_tail() possibly resulting in list_empty() returning false and
+                                                     ^^^^^^^^^^^^^^^
+                                                     returning true?
+if (!list_empty(&inode->i_io_list))
+     inode_io_list_del(inode);
+so "!list_empty(&inode->i_io_list)" returns false, and will not remove
+inode for wb->b_dirty list.
+> thus we end up leaving freed inode in wb->b_dirty list leading to
+> use-after-free issues.
+> 
+> Fix the problem by using list_empty_careful() check and add assert that
+> inode's i_io_list is empty in clear_inode() to catch the problem earlier
+> in the future.
+ From list_empty_careful()'s comments, using list_empty_careful() without
+synchronization can only be safe if the only activity that can happen to the
+list entry is list_del_init(), but list_move() does not use list_del_init().
 
-One question If I generate new UUID on device and it got corrupted
-will it roll back to old UUID i.e. does it keeps info about previous
-metdata (superblock)?
+static inline void list_move(struct list_head *list, struct list_head *head)
+{
+	__list_del_entry(list);
+	list_add(list, head);
+}
 
-Thanks,
-Alok
+So I wonder whether list_empty(&inode->i_io_list) check in evict() can race with
+list_move() from redirty_tail()?
 
-On Sat, Apr 25, 2020 at 3:13 AM Andreas Dilger <adilger@dilger.ca> wrote:
->
-> On Apr 24, 2020, at 12:56 PM, Alok Jain <jain.alok103@gmail.com> wrote:
-> >
-> > Hi Guys,
-> >
-> > I need an help to understand the following messages printed in
-> > /var/log/message file
-> >
-> > Apr 20 17:42:44 mylinux audispd: node=mylinux type=EXECVE
-> > msg=audit(1587404564.745:5901346): argc=4 a0="mount" a1="-v"
-> > a2="UUID=b1d54239-2b18-44b3-a4bf-5e0ca32b8f78" a3="/tmp/aj/m1"
-> > Apr 20 17:42:45 mylinux kernel: [4633324.069180] EXT4-fs (sde1):
-> > recovery complete
-> > Apr 20 17:42:45 mylinux kernel: [4633324.070157] EXT4-fs (sde1):
-> > mounted filesystem with ordered data mode. Opts: (null)
-> >
-> >
-> > Actualy one of the iSCSI device is mounted to /tmp/aj/m1 with UUID
-> > (U1) I unmounted this device and mounted new device (UUID
-> > b1d54239-2b18-44b3-a4bf-5e0ca32b8f78) after mount I see the UUID of
-> > newly mounted device changed to U1 and new device got corrupted. I ran
-> > fsck to fix the device but UUID was changed to U1.
->
-> It sounds like the iSCSI device is not flushing the block device
-> cache between unmounting the old filesystem and mounting the new one?
->
-> The new filesystem has a dirty journal, and when it is replayed it
-> reads a stale superblock from the old filesystem and overwrites the
-> new filesystem.
->
-> Cheers, Andreas
->
->
->
->
->
+Regards,
+Xiaoguang Wang
+> 
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> ---
+>   fs/inode.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 93d9252a00ab..a73c8a7aa71a 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -534,6 +534,7 @@ void clear_inode(struct inode *inode)
+>   	BUG_ON(!(inode->i_state & I_FREEING));
+>   	BUG_ON(inode->i_state & I_CLEAR);
+>   	BUG_ON(!list_empty(&inode->i_wb_list));
+> +	BUG_ON(!list_empty(&inode->i_io_list));
+>   	/* don't need i_lock here, no concurrent mods to i_state */
+>   	inode->i_state = I_FREEING | I_CLEAR;
+>   }
+> @@ -559,7 +560,13 @@ static void evict(struct inode *inode)
+>   	BUG_ON(!(inode->i_state & I_FREEING));
+>   	BUG_ON(!list_empty(&inode->i_lru));
+>   
+> -	if (!list_empty(&inode->i_io_list))
+> +	/*
+> +	 * We are the only holder of the inode so it cannot be marked dirty.
+> +	 * Flusher thread won't start new writeback but there can be still e.g.
+> +	 * redirty_tail() running from writeback_sb_inodes(). So we have to be
+> +	 * careful to remove inode from dirty/io list in all the cases.
+> +	 */
+> +	if (!list_empty_careful(&inode->i_io_list))
+>   		inode_io_list_del(inode);
+>   
+>   	inode_sb_list_del(inode);
+> 
