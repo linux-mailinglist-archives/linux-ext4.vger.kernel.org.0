@@ -2,86 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC121B864D
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 13:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3DA1B8827
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 19:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726097AbgDYLto (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 25 Apr 2020 07:49:44 -0400
-Received: from smtprelay0048.hostedemail.com ([216.40.44.48]:53252 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726060AbgDYLto (ORCPT
+        id S1726360AbgDYRcs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 25 Apr 2020 13:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726162AbgDYRcr (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 25 Apr 2020 07:49:44 -0400
-X-Greylist: delayed 369 seconds by postgrey-1.27 at vger.kernel.org; Sat, 25 Apr 2020 07:49:44 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id 814AF800DDE3;
-        Sat, 25 Apr 2020 11:47:21 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 372BA18029124;
-        Sat, 25 Apr 2020 11:47:20 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2393:2559:2562:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6119:7576:7903:10004:10400:10450:10455:10848:11026:11232:11473:11658:11914:12043:12297:12438:12555:12740:12895:13069:13311:13357:13894:14181:14659:14721:19904:19999:21080:21451:21627:30012:30054:30056:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: level16_22c4775d3930b
-X-Filterd-Recvd-Size: 3038
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 25 Apr 2020 11:47:18 +0000 (UTC)
-Message-ID: <67d97b191f3e015bf6a1ef0472cc30c4f57fdaaf.camel@perches.com>
-Subject: Re: [PATCH 4.4 091/100] ext2: fix empty body warnings when -Wextra
- is used
-From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Date:   Sat, 25 Apr 2020 04:47:17 -0700
-In-Reply-To: <326458310dc7c982d2f2210e057f69d6bc0169c7.camel@perches.com>
-References: <20200422095022.476101261@linuxfoundation.org>
-         <20200422095039.371486451@linuxfoundation.org>
-         <326458310dc7c982d2f2210e057f69d6bc0169c7.camel@perches.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1-2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 25 Apr 2020 13:32:47 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DC2C09B04F
+        for <linux-ext4@vger.kernel.org>; Sat, 25 Apr 2020 10:32:46 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r4so6247090pgg.4
+        for <linux-ext4@vger.kernel.org>; Sat, 25 Apr 2020 10:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=w41+bZlNoROIAm9e5f0pSCKyQF/SBw7z23NMeLYGmzk=;
+        b=F6M4rQMIwupDNp8mlRN0m5JZlY7sYOsc/V5TEBpvrzmXH2zAajRBMadPdV6U/mLyU1
+         IWpOgEx+ckUo51ovq2gw252+2NSBkD4B3Mba/5vLnCybEEo4xysQuw2TYmkZxqVNuVha
+         M1ycfwvY5bXLI7tt2U8gsryb+So1AXn4/IJzlF3ZHZU0sNF//7M6GzfmQQ3ot3mw4zzj
+         tPwF/Dn973hix6+ggAVE+qE+VMKxb3oIkbdsh7B2QGLUjqRJdIio7B7R3VT9laa+dufy
+         Q105fL53erN2kiKFR7ngGRZv1KV3C0mXIkj6lwpNWT07IvYuxF22d1EGsGQkb/5Jfpfe
+         auDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=w41+bZlNoROIAm9e5f0pSCKyQF/SBw7z23NMeLYGmzk=;
+        b=SbAfR8f1erpS2VoCMJ/oDXqjhFEbSuXGXjeGUy5bqxCKr59uGG8ZB33vLq5NnJEgO+
+         Azgn9pSGfpDioaBCfHk/epXJy0XqEI9OVIeFlqrVcpoWg68id9SNA4X8doZCKPaX7waM
+         Kk5w6vnaEXjiq3D7QXYAUmcpBJYUDOhfxgWGMFtI9MBkQ7XL7FAx7fP7DkGY7oPRwgn9
+         TG9RAMWYug1m5KTOvsi9ZVWv3orPNL2FGq4G7z5T9HHVlu9IApihDZ1HG8fCTf4ao27/
+         T0K9zNnttksb9rEBTEUloHTSuoSpz9guvTfYQL8Jk0f2k9fIRyLB4OQkPU8kcpByLceo
+         Ke0Q==
+X-Gm-Message-State: AGi0Puavvc7NkQgUjau4JQP8lu1GyGYA8w3CH1jiOKl0OUn7Cdsrr1RV
+        OBUASPe/gEkgktgi/D2kW+hCmw==
+X-Google-Smtp-Source: APiQypIqUtzrqajXu/yR5vzclJO9bBfOiZFCTI/VTUYxq8Ohlu2jF4IVKHoWNu4x2cCMkyu+cKiOvw==
+X-Received: by 2002:aa7:943c:: with SMTP id y28mr15703323pfo.171.1587835966178;
+        Sat, 25 Apr 2020 10:32:46 -0700 (PDT)
+Received: from [192.168.10.175] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id o1sm7415521pjs.39.2020.04.25.10.32.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Apr 2020 10:32:45 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andreas Dilger <adilger@dilger.ca>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 0/5] ext4/overlayfs: fiemap related fixes
+Date:   Sat, 25 Apr 2020 10:32:44 -0700
+Message-Id: <ECEA80AE-C2E9-4D5C-8A14-E2A92C720163@dilger.ca>
+References: <20200425094350.GA11881@infradead.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Murphy Zhou <jencce.kernel@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+In-Reply-To: <20200425094350.GA11881@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+X-Mailer: iPhone Mail (17E262)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, 2020-04-25 at 04:43 -0700, Joe Perches wrote:
-> On Wed, 2020-04-22 at 11:57 +0200, Greg Kroah-Hartman wrote:
-> > From: Randy Dunlap <rdunlap@infradead.org>
-> > 
-> > [ Upstream commit 44a52022e7f15cbaab957df1c14f7a4f527ef7cf ]
-> > 
-> > When EXT2_ATTR_DEBUG is not defined, modify the 2 debug macros
-> > to use the no_printk() macro instead of <nothing>.
-> > This fixes gcc warnings when -Wextra is used:
-> > 
-> > ../fs/ext2/xattr.c:252:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> > ../fs/ext2/xattr.c:258:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> > ../fs/ext2/xattr.c:330:42: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
-> > ../fs/ext2/xattr.c:872:45: warning: suggest braces around empty body in an ‘else’ statement [-Wempty-body]
-> > 
-> > I have verified that the only object code change (with gcc 7.5.0) is
-> > the reversal of some instructions from 'cmp a,b' to 'cmp b,a'.
-> 
-> It'd be better to use the ext4 style defines:
-> 
-> fs/ext4/xattr.c:# define ea_idebug(inode, fmt, ...)                                     \
-> fs/ext4/xattr.c-        printk(KERN_DEBUG "inode %s:%lu: " fmt "\n",                    \
-> fs/ext4/xattr.c-               inode->i_sb->s_id, inode->i_ino, ##__VA_ARGS__)
-> fs/ext4/xattr.c:# define ea_bdebug(bh, fmt, ...)                                        \
-> fs/ext4/xattr.c-        printk(KERN_DEBUG "block %pg:%lu: " fmt "\n",                   \
-> fs/ext4/xattr.c-               bh->b_bdev, (unsigned long)bh->b_blocknr, ##__VA_ARGS__)
-> --
-> fs/ext4/xattr.c:# define ea_idebug(inode, fmt, ...)     no_printk(fmt, ##__VA_ARGS__)
-> fs/ext4/xattr.c:# define ea_bdebug(bh, fmt, ...)        no_printk(fmt, ##__VA_ARGS__)
-> 
-> So the output logging won't be split across multiple lines.
+On Apr 25, 2020, at 02:43, Christoph Hellwig <hch@infradead.org> wrote:
+>=20
+> =EF=BB=BFOn Sat, Apr 25, 2020 at 12:11:59PM +0300, Amir Goldstein wrote:
+>> FWIW, I agree with you.
+>> And seems like Jan does as well, since he ACKed all your patches.
+>> Current patches would be easier to backport to stable kernels.
+>=20
+> Honestly, the proper fix is pretty much trivial.  I wrote it up this
+> morning over coffee:
+>=20
+>    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/fiemap-=
+fix
+>=20
+> Still needs more testing, though.
 
-And beyond that, why is a -Wextra warning being fixed in -stable at all?
+The "maxbytes" value should be passed in from the caller, since this
+may be different per inode (for ext4 at least).
 
-
+Cheers, Andreas=
