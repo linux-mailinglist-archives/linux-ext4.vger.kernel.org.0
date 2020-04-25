@@ -2,114 +2,98 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A001B8419
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 09:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31781B84EB
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 10:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726182AbgDYHDq (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 25 Apr 2020 03:03:46 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61994 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726116AbgDYHDp (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 25 Apr 2020 03:03:45 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03P71PgF191136
-        for <linux-ext4@vger.kernel.org>; Sat, 25 Apr 2020 03:03:44 -0400
-Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30mfknryt1-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-ext4@vger.kernel.org>; Sat, 25 Apr 2020 03:03:44 -0400
-Received: from localhost
-        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-ext4@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Sat, 25 Apr 2020 08:02:51 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Sat, 25 Apr 2020 08:02:47 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03P72Uvn63373764
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 25 Apr 2020 07:02:30 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5CCAA4C04A;
-        Sat, 25 Apr 2020 07:03:38 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B43334C046;
-        Sat, 25 Apr 2020 07:03:35 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.79.185.245])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 25 Apr 2020 07:03:35 +0000 (GMT)
-Subject: Re: [PATCH 1/2] fibmap: Warn and return an error in case of block >
- INT_MAX
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jan Kara <jack@suse.com>, tytso@mit.edu,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        linux-ext4@vger.kernel.org
-References: <cover.1587670914.git.riteshh@linux.ibm.com>
- <e34d1ac05d29aeeb982713a807345a0aaafc7fe0.1587670914.git.riteshh@linux.ibm.com>
- <20200424191739.GA217280@gmail.com>
- <20200424225425.6521D4C040@d06av22.portsmouth.uk.ibm.com>
- <20200424234058.GA29705@bombadil.infradead.org>
- <20200424234647.GX6749@magnolia>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Sat, 25 Apr 2020 12:33:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726122AbgDYIyh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 25 Apr 2020 04:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgDYIyh (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Sat, 25 Apr 2020 04:54:37 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15007C09B04A;
+        Sat, 25 Apr 2020 01:54:37 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id o127so13080119iof.0;
+        Sat, 25 Apr 2020 01:54:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XpUgeIr/Sb1mNoyDa9dRYqt5Z8fi7wWrSG5Np2rqPKs=;
+        b=rSqYBD0+QgTGF1wshchySMo/sX09uAJj81nvpjgdWbL8MUM/1NUH+CpjTCDt7g/0xF
+         Qtg7w2TemG/FlXVH0Ss5kdO0YKE5l0SBV2qJjJT1XOVcKdjlLzUsgQ8tlZjQ7OTxJSgd
+         9vVbePNHtgfm775LuR0iS8q+QFfU0ARTI12mokYqqqYDkSYswJetHI8RTurWUAt7gvty
+         dd/XEB5CcTlQ8W+68pDZtAnRon3+YNx83tFL5s+XQUWCzcqxEhwGPUZc13p39sTHdB0K
+         BpGTlrylopCQZy4rqj6cwxyT6CAYjFP55PIELWhpW4XyJHlsgQPwkr4dPrmTZHukbRkb
+         KXxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XpUgeIr/Sb1mNoyDa9dRYqt5Z8fi7wWrSG5Np2rqPKs=;
+        b=kLIbJAe7jAhcgjZb5BQ/LQX+CKpneAUzQUdJlSY5PSxJWl1Qk4AavxEPWgw0q23bZV
+         VF08LAgneBBHt0fOJyYvpW/HjuILd6qZDZgfNrH5YX4xp5FZFuU3TgKSIeeZT7wuOu54
+         ywA+bbrenS3xnuh/8O27FMAGgLo/z3PsFAiOnTMbvgLNPX8pA8hQB4XiZt7oDkJMQjJE
+         M/teKo9cyfDCayH5lISghi0CWw8yDidEBMvgfH+uKe0VHZsm9N+69BYv+hqN/6XrH9YP
+         A+pmx8ZLxe2F/cjoEOnmjDFlfdG0Bt8eEOamGgKTCmpGce+4lORSr1hW5k9HmuanPac7
+         v87g==
+X-Gm-Message-State: AGi0PuZ0fQTYUtGYee7ymIUXcp7gm2EC6E0XeBylxhiyiCwkppqTsCrw
+        Q1Ts6YInE7d25dMhlcdj5yKLLHpcngsk4MBmX3I=
+X-Google-Smtp-Source: APiQypL58IIi642njWgZmKReL3wevwHQsLNJKMGmGJe80b9V3wEY9QxGzn5auiFY3Fy8fNdf/Cf7CqjRwNog5VD3dpc=
+X-Received: by 2002:a02:c9cb:: with SMTP id c11mr11389577jap.93.1587804876312;
+ Sat, 25 Apr 2020 01:54:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200424234647.GX6749@magnolia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20042507-0016-0000-0000-0000030A76BC
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20042507-0017-0000-0000-0000336EA013
-Message-Id: <20200425070335.B43334C046@d06av22.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-25_01:2020-04-24,2020-04-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 adultscore=0 lowpriorityscore=0 clxscore=1015
- bulkscore=0 mlxscore=0 suspectscore=0 phishscore=0 impostorscore=0
- mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004250054
+References: <cover.1587555962.git.riteshh@linux.ibm.com> <39b4bf94f6723831a9798237bb1b4ae14da04d98.1587555962.git.riteshh@linux.ibm.com>
+In-Reply-To: <39b4bf94f6723831a9798237bb1b4ae14da04d98.1587555962.git.riteshh@linux.ibm.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sat, 25 Apr 2020 11:54:25 +0300
+Message-ID: <CAOQ4uximFUoL3-ovymF=jX=w-xy8Kf-B9=eJvJ9TZG=0spxwnQ@mail.gmail.com>
+Subject: Re: [PATCH 4/5] overlayfs: Check for range bounds before calling i_op->fiemap()
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>,
+        Andreas Dilger <adilger@dilger.ca>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Murphy Zhou <jencce.kernel@gmail.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Thu, Apr 23, 2020 at 1:48 PM Ritesh Harjani <riteshh@linux.ibm.com> wrote:
+>
+> Underlying fs may not be able to handle the length in fiemap
+> beyond sb->s_maxbytes. So similar to how VFS ioctl does it,
+> add fiemap_check_ranges() check in ovl_fiemap() as well
+> before calling underlying fs i_op->fiemap() call.
+>
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
+> ---
+>  fs/overlayfs/inode.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+> index 79e8994e3bc1..9bcd2e96faad 100644
+> --- a/fs/overlayfs/inode.c
+> +++ b/fs/overlayfs/inode.c
+> @@ -455,16 +455,21 @@ static int ovl_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>         int err;
+>         struct inode *realinode = ovl_inode_real(inode);
+>         const struct cred *old_cred;
+> +       u64 length;
 
+To be more clear, I would call that reallen, but apart from that, you may add:
 
-On 4/25/20 5:16 AM, Darrick J. Wong wrote:
-> On Fri, Apr 24, 2020 at 04:40:58PM -0700, Matthew Wilcox wrote:
->> On Sat, Apr 25, 2020 at 04:24:24AM +0530, Ritesh Harjani wrote:
->>> Ok, I see.
->>> Let me replace WARN() with below pr_warn() line then. If no objections,
->>> then will send this in a v2 with both patches combined as Darrick
->>> suggested. - (with Reviewed-by tags of Jan & Christoph).
->>>
->>> pr_warn("fibmap: this would truncate fibmap result\n");
->>
->> We generally don't like userspace to be able to trigger kernel messages
->> on demand, so they can't swamp the logfiles.  printk_ratelimited()?
-> 
-> Or WARN_ON_ONCE...
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-So, Eric was mentioning WARN_** are mostly for kernel side of bugs.
-But this is mostly a API fault which affects user side and also to
-warn the user about the possible truncation in the block fibmap
-addr.
-Also WARN_ON_ONCE, will be shown only once and won't be printed for
-every other file for which block addr > INT_MAX.
-
-I think we could go with below. If ok, I could post this in v2.
-
-pr_warn_ratelimited("fibmap: would truncate fibmap result\n");
-
--ritesh
-
+Thanks,
+Amir.
