@@ -2,96 +2,110 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34211B8286
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 01:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 592861B83D6
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 07:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbgDXXrH (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 24 Apr 2020 19:47:07 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:36120 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgDXXrH (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 24 Apr 2020 19:47:07 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03ONgjbO143506;
-        Fri, 24 Apr 2020 23:46:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=kr0ezienOi1AcR+QZub9HSBptjuxq1qJkU9+y/9DssU=;
- b=APhXgpEycfEgLDNzW9Rm6NTTYoodaYnvz+xz+S9OifUolhv69pq/1sLxVF79AfNazlyC
- Q7dCnOkSUrxI0BP1yVXQnF/SxnG+j4ZZdj2NMp+mSy7wUQOx04GSB6YIFuU2pKK4LvnL
- bFLiXk+guXTF9S2z2+VQp+JxryYZxX9cSfVd8OlUcKpeIR/LEN51IlOhxkXNpOKdqYcx
- XMulIHVYOeSZrTBAUNyDX/Qa74Ic52jjL/uRXukGJfv3QH8LqcJE+6sf5/GqWENFCk0a
- BDLi9FkkFl9J8sbmv6e+LHecnOCpL60k9xB3/vkHj9+2ovux3Zh7L1AinH0Hu3hu2dLa Fw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30ketdpwd3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Apr 2020 23:46:52 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03ONcXpA002378;
-        Fri, 24 Apr 2020 23:46:52 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 30gb1qtksb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Apr 2020 23:46:52 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03ONknjm003732;
-        Fri, 24 Apr 2020 23:46:50 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 24 Apr 2020 16:46:49 -0700
-Date:   Fri, 24 Apr 2020 16:46:47 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jan Kara <jack@suse.com>, tytso@mit.edu,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/2] fibmap: Warn and return an error in case of block >
- INT_MAX
-Message-ID: <20200424234647.GX6749@magnolia>
-References: <cover.1587670914.git.riteshh@linux.ibm.com>
- <e34d1ac05d29aeeb982713a807345a0aaafc7fe0.1587670914.git.riteshh@linux.ibm.com>
- <20200424191739.GA217280@gmail.com>
- <20200424225425.6521D4C040@d06av22.portsmouth.uk.ibm.com>
- <20200424234058.GA29705@bombadil.infradead.org>
+        id S1726035AbgDYFja (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 25 Apr 2020 01:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725909AbgDYFja (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 25 Apr 2020 01:39:30 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC1CC09B049
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Apr 2020 22:39:29 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id i2so6303553ybk.2
+        for <linux-ext4@vger.kernel.org>; Fri, 24 Apr 2020 22:39:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nFaqSON5dZJG9mAYSppqyaaBEL4gGnjG3LhPmhB/ZHQ=;
+        b=mRVYsPdPlXTX1IZzQSFotf1EehG9OMyfKuiR4uLqrfm8Udpq5X/6E7Hom6/NINw6IF
+         75Y9YXir2DCtunJ4rpjjyfs6CWMQUIZThHKRdEkYxOUANwrrFFTQgg1h0I79X9EJ3pAp
+         ASq4X/XmG172c6nTt0CJ5KaGqqMHLojBNjBZtZz+LMsSnnJkp1rgNO7+Ok7NlaeUJY6Y
+         0PffwG4su7RleaoLf9hEIqWpXCNxJW+5t2gKZcT78nAVQYwPzogrm6guqTVeWo5Dzm3m
+         h9R/2f9te51WSn72dJ5Uv6Q/4mFaRh0Uchs1/sl9N1eLeZUczwRsPyAE5mIDqCKB29tZ
+         mv3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nFaqSON5dZJG9mAYSppqyaaBEL4gGnjG3LhPmhB/ZHQ=;
+        b=j7dNOh4PtnYDrQAoULSLaW81A/7hNlVaom1ZX/axjJ+AeemLmrDFySBnV0wivLJhmI
+         TfO+1NxT1mkShcqdjecGEL67CVbIJa6ZkvDUv3hNLmieCQwOsysE9TVCHsY6qaAWK5gW
+         UtMWfpdj8fa16cDEpLUrUxCeGkfzVf8tYltVvp5lJiGXXKLztbr2keX9qzSQN9G5ymBZ
+         Klb4TD3ZZSnD8YXe++yLNdG1g+fi56gvQQIFw8gjCRILCU1uid5OvUQ9v2NSMKFqScyi
+         8TZZ/g3qB6YpKYGaw6D/RuSGcNl49FkERu+HtLdaBKvln0OkSfP8UoOx+UwyZ9vFxY7y
+         oKNQ==
+X-Gm-Message-State: AGi0PuZIgCFcDzOwuUs0e0LuSy6C3qgQRIZyLqCLSBOD949gZYMfiIhs
+        smw3cukCRYNdakFNzA+uhwb6PvskVlCeEFlIb8xPw3AB
+X-Google-Smtp-Source: APiQypL/BbUh0nz/mWTTzj3f3nIgNEvY2hQjP2S0fNd4CKaToFHfW0FhPvhVsU5ZWPEZRHzNgT2ZnJxHu/WvNcUzpqM=
+X-Received: by 2002:a5b:ecf:: with SMTP id a15mr21516731ybs.444.1587793168706;
+ Fri, 24 Apr 2020 22:39:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200424234058.GA29705@bombadil.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004240179
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 mlxscore=0
- priorityscore=1501 clxscore=1015 suspectscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004240180
+References: <CAG-6nk-Q16UBbUkWoogut0fYP9s78x0OMf946Dg-tJk1nd+kzA@mail.gmail.com>
+ <3F735CCE-F9A8-4743-A6BF-DC2945FBB4B2@dilger.ca>
+In-Reply-To: <3F735CCE-F9A8-4743-A6BF-DC2945FBB4B2@dilger.ca>
+From:   Alok Jain <jain.alok103@gmail.com>
+Date:   Sat, 25 Apr 2020 11:09:17 +0530
+Message-ID: <CAG-6nk-ntm56DANOJJKGq9cORYT+3XiL4Wjz-BnFs1XrKc5RXA@mail.gmail.com>
+Subject: Re: Need help to understand Ext4 message in /var/log/message file
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 04:40:58PM -0700, Matthew Wilcox wrote:
-> On Sat, Apr 25, 2020 at 04:24:24AM +0530, Ritesh Harjani wrote:
-> > Ok, I see.
-> > Let me replace WARN() with below pr_warn() line then. If no objections,
-> > then will send this in a v2 with both patches combined as Darrick
-> > suggested. - (with Reviewed-by tags of Jan & Christoph).
-> > 
-> > pr_warn("fibmap: this would truncate fibmap result\n");
-> 
-> We generally don't like userspace to be able to trigger kernel messages
-> on demand, so they can't swamp the logfiles.  printk_ratelimited()?
+Thanks Andreas it was helpful
 
-Or WARN_ON_ONCE...
+So looks like new device has bad journal, is there a way to find if
+device of ext4 FS has bad journal?
 
---D
+One question If I generate new UUID on device and it got corrupted
+will it roll back to old UUID i.e. does it keeps info about previous
+metdata (superblock)?
+
+Thanks,
+Alok
+
+On Sat, Apr 25, 2020 at 3:13 AM Andreas Dilger <adilger@dilger.ca> wrote:
+>
+> On Apr 24, 2020, at 12:56 PM, Alok Jain <jain.alok103@gmail.com> wrote:
+> >
+> > Hi Guys,
+> >
+> > I need an help to understand the following messages printed in
+> > /var/log/message file
+> >
+> > Apr 20 17:42:44 mylinux audispd: node=mylinux type=EXECVE
+> > msg=audit(1587404564.745:5901346): argc=4 a0="mount" a1="-v"
+> > a2="UUID=b1d54239-2b18-44b3-a4bf-5e0ca32b8f78" a3="/tmp/aj/m1"
+> > Apr 20 17:42:45 mylinux kernel: [4633324.069180] EXT4-fs (sde1):
+> > recovery complete
+> > Apr 20 17:42:45 mylinux kernel: [4633324.070157] EXT4-fs (sde1):
+> > mounted filesystem with ordered data mode. Opts: (null)
+> >
+> >
+> > Actualy one of the iSCSI device is mounted to /tmp/aj/m1 with UUID
+> > (U1) I unmounted this device and mounted new device (UUID
+> > b1d54239-2b18-44b3-a4bf-5e0ca32b8f78) after mount I see the UUID of
+> > newly mounted device changed to U1 and new device got corrupted. I ran
+> > fsck to fix the device but UUID was changed to U1.
+>
+> It sounds like the iSCSI device is not flushing the block device
+> cache between unmounting the old filesystem and mounting the new one?
+>
+> The new filesystem has a dirty journal, and when it is replayed it
+> reads a stale superblock from the old filesystem and overwrites the
+> new filesystem.
+>
+> Cheers, Andreas
+>
+>
+>
+>
+>
