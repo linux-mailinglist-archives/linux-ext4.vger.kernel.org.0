@@ -2,77 +2,52 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CD41B9792
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Apr 2020 08:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C501BA08E
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Apr 2020 11:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgD0Gmd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Apr 2020 02:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726246AbgD0Gmd (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Apr 2020 02:42:33 -0400
+        id S1726832AbgD0J7I (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Apr 2020 05:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726434AbgD0J7G (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 27 Apr 2020 05:59:06 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C78BC061A0F;
-        Sun, 26 Apr 2020 23:42:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE4BC061BD3;
+        Mon, 27 Apr 2020 02:59:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=8XXy6DGHElkvvG3uRrBPJZZu9JuV2U/fqGOHJLpjlME=; b=fxJqCL+rgYyFO2hMnH5w4KcO0W
-        e4oSzIclMzPkRxjG8/QAk9z3YkuxqXT3VfOkdyr2OoV65OLqQa0wQ7NipthQ2FBb+KQ8sQ239GF6N
-        +6KGZZOeEoPV73F63KUN2awAD4XDdASc8P9N0euTkSQzyUyiIkgTRlXVrWzGEQeQ0Lu/x+WXRkovb
-        iuRQUCrZIaRl7oUXgSoGwWZe7KtAE8FwlCVgZV/Bo+v0Cophs30Zbl/Hd4+QwCoESGMtoPry0vO9G
-        Zf0EN+r2ZMMKpjq+GJJkJCNfypeh8QEFjUqp06l+YA4GCk9MgYqje4jhKhX3+DNd11kDajyDlKmet
-        zNBqMpjQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jSxTL-0005WD-SY; Mon, 27 Apr 2020 06:42:31 +0000
-Date:   Sun, 26 Apr 2020 23:42:31 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Murphy Zhou <jencce.kernel@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>
-Subject: Re: [PATCH 0/5] ext4/overlayfs: fiemap related fixes
-Message-ID: <20200427064231.GA19581@infradead.org>
-References: <20200425094350.GA11881@infradead.org>
- <ECEA80AE-C2E9-4D5C-8A14-E2A92C720163@dilger.ca>
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=yzeRVcY/jiMjgzie19VzRu80wjYL6T4QqSNhy7ti850=; b=MawHmgqx3ntwabmTVIFoBBdB1g
+        fLrw4cpQxf4WZXzAnPGzo8i+HRx5EZ20yTKoQHW4VSbKQwtcyGZu4x5SgndpmyAG+Zg+bEYrWBDkf
+        J9hUE6bDmPbIAJGmORKxOW25J51EFzY63o1aFUJ5Y8smbiT9opupYZ9dJ1KxQsrfoZAu6Wzc47xFS
+        FISW+qEFnva+VPCQvnNMATamtNG9lVSJED3DF+1REMJ+1NoXz3y+ghDBKS2qp1ZuD0WFGA0KcNDFD
+        GqAaSFbeDvCl8OGa7nT8ABXT4EN2uCnWnapZlvcJDFtKfZ3ZdD9dUxd/u35vnLaIRbPh8yDzHkOqa
+        eUed9dAg==;
+Received: from [2001:4bb8:193:f203:c70:4a89:bc61:2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jT0XU-0003eX-Ry; Mon, 27 Apr 2020 09:59:01 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     linux-ext4@vger.kernel.org, viro@zeniv.linux.org.uk
+Cc:     jack@suse.cz, tytso@mit.edu, adilger@dilger.ca,
+        riteshh@linux.ibm.com, amir73il@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: fix fiemap for ext4 bitmap files (+ cleanups)
+Date:   Mon, 27 Apr 2020 11:58:50 +0200
+Message-Id: <20200427095858.1440608-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ECEA80AE-C2E9-4D5C-8A14-E2A92C720163@dilger.ca>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 10:32:44AM -0700, Andreas Dilger wrote:
-> On Apr 25, 2020, at 02:43, Christoph Hellwig <hch@infradead.org> wrote:
-> > 
-> > ﻿On Sat, Apr 25, 2020 at 12:11:59PM +0300, Amir Goldstein wrote:
-> >> FWIW, I agree with you.
-> >> And seems like Jan does as well, since he ACKed all your patches.
-> >> Current patches would be easier to backport to stable kernels.
-> > 
-> > Honestly, the proper fix is pretty much trivial.  I wrote it up this
-> > morning over coffee:
-> > 
-> >    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/fiemap-fix
-> > 
-> > Still needs more testing, though.
-> 
-> The "maxbytes" value should be passed in from the caller, since this
-> may be different per inode (for ext4 at least).
+Hi all,
 
-We should handle it, but not burden everyone else who has saner limits.
+the first two patches should fix the issue where ext4 doesn't
+properly check the max file size for bitmap files in fiemap.
+
+The rest cleans up the fiemap support in ext4 and in general.
