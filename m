@@ -2,90 +2,174 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED3A1BA6CE
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 Apr 2020 16:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8EC1BAB42
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Apr 2020 19:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgD0Ops (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 27 Apr 2020 10:45:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5812 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727881AbgD0Ops (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:45:48 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03REViFL129372;
-        Mon, 27 Apr 2020 10:45:39 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30mhr5q870-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Apr 2020 10:45:38 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03REjVQU015873;
-        Mon, 27 Apr 2020 14:45:36 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 30mcu6v23d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Apr 2020 14:45:36 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03REjYpZ983396
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Apr 2020 14:45:34 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7AB4B11C050;
-        Mon, 27 Apr 2020 14:45:34 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D54B011C058;
-        Mon, 27 Apr 2020 14:45:33 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.43.36])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Apr 2020 14:45:33 +0000 (GMT)
-Subject: Re: ext4 fiemap and the inode lock
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-ext4@vger.kernel.org
-References: <20200427105032.GA27494@infradead.org>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Mon, 27 Apr 2020 20:15:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726456AbgD0R3h (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 27 Apr 2020 13:29:37 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42586 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgD0R3h (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 27 Apr 2020 13:29:37 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RHTO6M049408;
+        Mon, 27 Apr 2020 17:29:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=RTsYoAfpOkgaypobVZPWm8gy+wTNb8IqCneeyWeapFw=;
+ b=UC66wOxr2kzxF3KGb1zwTvQscun/KmczMwAvHaoypdLAofBXNGwcjVMu1YCFsGBTb0Hk
+ 9/fwSA8dSIXXLVT+Zamni1RZu4esacd2FrqX5HirZv36ubbbK3wJisUxg3Mu1VxmBSsr
+ gPDJTVWPF1sun4R7ZsYh9lrFtQ/Hy0j3j3Cd8b6eIWpxr4gCcl1ztPwKkQlEBNZDMMlg
+ u/6k6MFU5IqnXX1IlxNaO/OqGppB5/i+dwTZPp8MVQQdjdtQiYJr58mhDDn2tO2r8fzL
+ VmdX2OYqASSq9ndKMo5wS72HcIm4LMUhgs8byD+O6Wh/gPBb6dsB+dI+Y1Jmr3pNRnbn Dg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 30p2p00e65-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 17:29:33 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RHRwg6129775;
+        Mon, 27 Apr 2020 17:29:32 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 30mxrqqm8q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 17:29:31 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03RHTUTe019355;
+        Mon, 27 Apr 2020 17:29:30 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 27 Apr 2020 10:29:30 -0700
+Date:   Mon, 27 Apr 2020 10:29:29 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Jeffle Xu <jefflexu@linux.alibaba.com>
+Cc:     fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        joseph.qi@linux.alibaba.com
+Subject: Re: [PATCH RFC 1/2] xfstests: fsx: add support for cluster size
+Message-ID: <20200427172929.GL6740@magnolia>
+References: <1587720830-11955-1-git-send-email-jefflexu@linux.alibaba.com>
+ <1587720830-11955-2-git-send-email-jefflexu@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20200427105032.GA27494@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200427144533.D54B011C058@d06av25.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-27_10:2020-04-27,2020-04-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 spamscore=0 mlxscore=0 suspectscore=0 clxscore=1015
- priorityscore=1501 adultscore=0 phishscore=0 mlxlogscore=999
- impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004270119
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587720830-11955-2-git-send-email-jefflexu@linux.alibaba.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004270143
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1011
+ bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004270143
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hello Christoph,
+On Fri, Apr 24, 2020 at 05:33:49PM +0800, Jeffle Xu wrote:
+> The offset and size should be aligned with cluster size when inserting
+> or collapsing range on ext4 with 'bigalloc' feature enabled. Currently
+> I can find only ext4 with this limitation.
 
-On 4/27/20 4:20 PM, Christoph Hellwig wrote:
-> Hi Ritesh,
+ocfs2 also has this magic, um, ability.
+
+As does xfs under certain circumstance (realtime volumes).
+
+> Since fsx should have no assumption of the underlying filesystem, and
+> thus add the '-u cluster_size' option. Tests can set this option when
+> the underlying filesystem is ext4 with bigalloc enabled.
+
+Do copyrange, clonerange, or deduperange have this problem? ;)
+
+> Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+> ---
+>  ltp/fsx.c | 20 ++++++++++++++------
+>  1 file changed, 14 insertions(+), 6 deletions(-)
 > 
-> before you converted ext4 to use iomap for fiemap, the indirect block
-> case used generic_block_fiemap and thus took i_rwsem around the
-> actual fiemap operation.  Do you remember if you did an audit if it
-> was ok to drop it, or did that just slip in?
-
-So, maybe since maybe the request was only to provide the block mapping
-and since extent path didn't have it - so I may have not added it into
-the indirect block case as well. Assuming both anyways uses same
--> i_data_sem lock. But I am not sure if it was deliberately dropped,
-otherwise I would have noted that in my cover letter. So maybe it got
-missed. But I will try and search in internal dev branches too, to see
-if I could find anything related to that.
-
-Thanks for noting that.
-
--ritesh
-
-
+> diff --git a/ltp/fsx.c b/ltp/fsx.c
+> index 9d598a4..5fe5738 100644
+> --- a/ltp/fsx.c
+> +++ b/ltp/fsx.c
+> @@ -133,6 +133,7 @@ int	dirpath = 0;			/* -P flag */
+>  int	fd;				/* fd for our test file */
+>  
+>  blksize_t	block_size = 0;
+> +blksize_t	cluster_size = 0;
+>  off_t		file_size = 0;
+>  off_t		biggest = 0;
+>  long long	testcalls = 0;		/* calls to function "test" */
+> @@ -2146,8 +2147,8 @@ have_op:
+>  		break;
+>  	case OP_COLLAPSE_RANGE:
+>  		TRIM_OFF_LEN(offset, size, file_size - 1);
+> -		offset = offset & ~(block_size - 1);
+> -		size = size & ~(block_size - 1);
+> +		offset = offset & ~(cluster_size - 1);
+> +		size = size & ~(cluster_size - 1);
+>  		if (size == 0) {
+>  			log4(OP_COLLAPSE_RANGE, offset, size, FL_SKIPPED);
+>  			goto out;
+> @@ -2157,8 +2158,8 @@ have_op:
+>  	case OP_INSERT_RANGE:
+>  		TRIM_OFF(offset, file_size);
+>  		TRIM_LEN(file_size, size, maxfilelen);
+> -		offset = offset & ~(block_size - 1);
+> -		size = size & ~(block_size - 1);
+> +		offset = offset & ~(cluster_size - 1);
+> +		size = size & ~(cluster_size - 1);
+>  		if (size == 0) {
+>  			log4(OP_INSERT_RANGE, offset, size, FL_SKIPPED);
+>  			goto out;
+> @@ -2231,7 +2232,7 @@ void
+>  usage(void)
+>  {
+>  	fprintf(stdout, "usage: %s",
+> -		"fsx [-dknqxABEFJLOWZ] [-b opnum] [-c Prob] [-g filldata] [-i logdev] [-j logid] [-l flen] [-m start:end] [-o oplen] [-p progressinterval] [-r readbdy] [-s style] [-t truncbdy] [-w writebdy] [-D startingop] [-N numops] [-P dirpath] [-S seed] fname\n\
+> +		"fsx [-dknqxABEFJLOWZ] [-b opnum] [-c Prob] [-g filldata] [-i logdev] [-j logid] [-l flen] [-m start:end] [-o oplen] [-p progressinterval] [-r readbdy] [-s style] [-t truncbdy] [-u csize] [-w writebdy] [-D startingop] [-N numops] [-P dirpath] [-S seed] fname\n\
+>  	-b opnum: beginning operation number (default 1)\n\
+>  	-c P: 1 in P chance of file close+open at each op (default infinity)\n\
+>  	-d: debug output for all operations\n\
+> @@ -2249,6 +2250,7 @@ usage(void)
+>  	-r readbdy: 4096 would make reads page aligned (default 1)\n\
+>  	-s style: 1 gives smaller truncates (default 0)\n\
+>  	-t truncbdy: 4096 would make truncates page aligned (default 1)\n\
+> +	-u csize: filesystem specific cluster size that may be used for ops like insert/collapse range\n\
+>  	-w writebdy: 4096 would make writes page aligned (default 1)\n\
+>  	-x: preallocate file space before starting, XFS only (default 0)\n\
+>  	-y synchronize changes to a file\n"
+> @@ -2485,7 +2487,7 @@ main(int argc, char **argv)
+>  	setvbuf(stdout, (char *)0, _IOLBF, 0); /* line buffered stdout */
+>  
+>  	while ((ch = getopt_long(argc, argv,
+> -				 "b:c:dfg:i:j:kl:m:no:p:qr:s:t:w:xyABD:EFJKHzCILN:OP:RS:WXZ",
+> +				 "b:c:dfg:i:j:kl:m:no:p:qr:s:t:u:w:xyABD:EFJKHzCILN:OP:RS:WXZ",
+>  				 longopts, NULL)) != EOF)
+>  		switch (ch) {
+>  		case 'b':
+> @@ -2579,6 +2581,11 @@ main(int argc, char **argv)
+>  			if (truncbdy <= 0)
+>  				usage();
+>  			break;
+> +		case 'u':
+> +			cluster_size = getnum(optarg, &endp);
+> +			if (cluster_size <= 0)
+> +				usage();
+> +			break;
+>  		case 'w':
+>  			writebdy = getnum(optarg, &endp);
+>  			if (writebdy <= 0)
+> @@ -2720,6 +2727,7 @@ main(int argc, char **argv)
+>  		exit(91);
+>  	}
+>  	block_size = statbuf.st_blksize;
+> +	cluster_size = cluster_size ? : block_size;
+>  #ifdef XFS
+>  	if (prealloc) {
+>  		xfs_flock64_t	resv = { 0 };
+> -- 
+> 1.8.3.1
+> 
