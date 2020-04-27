@@ -2,96 +2,96 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3DA1B8827
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 Apr 2020 19:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B561B94D1
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 Apr 2020 03:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgDYRcs (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 25 Apr 2020 13:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726162AbgDYRcr (ORCPT
+        id S1726327AbgD0BEw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 26 Apr 2020 21:04:52 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:44681 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726227AbgD0BEw (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 25 Apr 2020 13:32:47 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DC2C09B04F
-        for <linux-ext4@vger.kernel.org>; Sat, 25 Apr 2020 10:32:46 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id r4so6247090pgg.4
-        for <linux-ext4@vger.kernel.org>; Sat, 25 Apr 2020 10:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=w41+bZlNoROIAm9e5f0pSCKyQF/SBw7z23NMeLYGmzk=;
-        b=F6M4rQMIwupDNp8mlRN0m5JZlY7sYOsc/V5TEBpvrzmXH2zAajRBMadPdV6U/mLyU1
-         IWpOgEx+ckUo51ovq2gw252+2NSBkD4B3Mba/5vLnCybEEo4xysQuw2TYmkZxqVNuVha
-         M1ycfwvY5bXLI7tt2U8gsryb+So1AXn4/IJzlF3ZHZU0sNF//7M6GzfmQQ3ot3mw4zzj
-         tPwF/Dn973hix6+ggAVE+qE+VMKxb3oIkbdsh7B2QGLUjqRJdIio7B7R3VT9laa+dufy
-         Q105fL53erN2kiKFR7ngGRZv1KV3C0mXIkj6lwpNWT07IvYuxF22d1EGsGQkb/5Jfpfe
-         auDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=w41+bZlNoROIAm9e5f0pSCKyQF/SBw7z23NMeLYGmzk=;
-        b=SbAfR8f1erpS2VoCMJ/oDXqjhFEbSuXGXjeGUy5bqxCKr59uGG8ZB33vLq5NnJEgO+
-         Azgn9pSGfpDioaBCfHk/epXJy0XqEI9OVIeFlqrVcpoWg68id9SNA4X8doZCKPaX7waM
-         Kk5w6vnaEXjiq3D7QXYAUmcpBJYUDOhfxgWGMFtI9MBkQ7XL7FAx7fP7DkGY7oPRwgn9
-         TG9RAMWYug1m5KTOvsi9ZVWv3orPNL2FGq4G7z5T9HHVlu9IApihDZ1HG8fCTf4ao27/
-         T0K9zNnttksb9rEBTEUloHTSuoSpz9guvTfYQL8Jk0f2k9fIRyLB4OQkPU8kcpByLceo
-         Ke0Q==
-X-Gm-Message-State: AGi0Puavvc7NkQgUjau4JQP8lu1GyGYA8w3CH1jiOKl0OUn7Cdsrr1RV
-        OBUASPe/gEkgktgi/D2kW+hCmw==
-X-Google-Smtp-Source: APiQypIqUtzrqajXu/yR5vzclJO9bBfOiZFCTI/VTUYxq8Ohlu2jF4IVKHoWNu4x2cCMkyu+cKiOvw==
-X-Received: by 2002:aa7:943c:: with SMTP id y28mr15703323pfo.171.1587835966178;
-        Sat, 25 Apr 2020 10:32:46 -0700 (PDT)
-Received: from [192.168.10.175] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id o1sm7415521pjs.39.2020.04.25.10.32.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Apr 2020 10:32:45 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andreas Dilger <adilger@dilger.ca>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 0/5] ext4/overlayfs: fiemap related fixes
-Date:   Sat, 25 Apr 2020 10:32:44 -0700
-Message-Id: <ECEA80AE-C2E9-4D5C-8A14-E2A92C720163@dilger.ca>
-References: <20200425094350.GA11881@infradead.org>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Sun, 26 Apr 2020 21:04:52 -0400
+Received: from dread.disaster.area (pa49-195-157-175.pa.nsw.optusnet.com.au [49.195.157.175])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 135283A48CB;
+        Mon, 27 Apr 2020 11:04:45 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jSsCS-0000xz-SL; Mon, 27 Apr 2020 11:04:44 +1000
+Date:   Mon, 27 Apr 2020 11:04:44 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jan Kara <jack@suse.com>, tytso@mit.edu,
         "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Murphy Zhou <jencce.kernel@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>
-In-Reply-To: <20200425094350.GA11881@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-X-Mailer: iPhone Mail (17E262)
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 1/2] fibmap: Warn and return an error in case of block >
+ INT_MAX
+Message-ID: <20200427010444.GF2040@dread.disaster.area>
+References: <cover.1587670914.git.riteshh@linux.ibm.com>
+ <e34d1ac05d29aeeb982713a807345a0aaafc7fe0.1587670914.git.riteshh@linux.ibm.com>
+ <20200424191739.GA217280@gmail.com>
+ <20200424225425.6521D4C040@d06av22.portsmouth.uk.ibm.com>
+ <20200424234058.GA29705@bombadil.infradead.org>
+ <20200424234647.GX6749@magnolia>
+ <20200425070335.B43334C046@d06av22.portsmouth.uk.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200425070335.B43334C046@d06av22.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
+        a=ONQRW0k9raierNYdzxQi9Q==:117 a=ONQRW0k9raierNYdzxQi9Q==:17
+        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=7-415B0cAAAA:8
+        a=XPaiuk4yifFrNG777nsA:9 a=DN0oiWT_x0Zc_wvr:21 a=PPZh3J10_SXtonLC:21
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Apr 25, 2020, at 02:43, Christoph Hellwig <hch@infradead.org> wrote:
->=20
-> =EF=BB=BFOn Sat, Apr 25, 2020 at 12:11:59PM +0300, Amir Goldstein wrote:
->> FWIW, I agree with you.
->> And seems like Jan does as well, since he ACKed all your patches.
->> Current patches would be easier to backport to stable kernels.
->=20
-> Honestly, the proper fix is pretty much trivial.  I wrote it up this
-> morning over coffee:
->=20
->    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/fiemap-=
-fix
->=20
-> Still needs more testing, though.
+On Sat, Apr 25, 2020 at 12:33:34PM +0530, Ritesh Harjani wrote:
+> 
+> 
+> On 4/25/20 5:16 AM, Darrick J. Wong wrote:
+> > On Fri, Apr 24, 2020 at 04:40:58PM -0700, Matthew Wilcox wrote:
+> > > On Sat, Apr 25, 2020 at 04:24:24AM +0530, Ritesh Harjani wrote:
+> > > > Ok, I see.
+> > > > Let me replace WARN() with below pr_warn() line then. If no objections,
+> > > > then will send this in a v2 with both patches combined as Darrick
+> > > > suggested. - (with Reviewed-by tags of Jan & Christoph).
+> > > > 
+> > > > pr_warn("fibmap: this would truncate fibmap result\n");
+> > > 
+> > > We generally don't like userspace to be able to trigger kernel messages
+> > > on demand, so they can't swamp the logfiles.  printk_ratelimited()?
+> > 
+> > Or WARN_ON_ONCE...
+> 
+> So, Eric was mentioning WARN_** are mostly for kernel side of bugs.
+> But this is mostly a API fault which affects user side and also to
+> warn the user about the possible truncation in the block fibmap
+> addr.
+> Also WARN_ON_ONCE, will be shown only once and won't be printed for
+> every other file for which block addr > INT_MAX.
+> 
+> I think we could go with below. If ok, I could post this in v2.
+> 
+> pr_warn_ratelimited("fibmap: would truncate fibmap result\n");
 
-The "maxbytes" value should be passed in from the caller, since this
-may be different per inode (for ext4 at least).
+Please include the process ID, the superblock ID and the task name
+that is triggering this warning. Otherwise the administrator will
+have no clue what is generating it and so won't be able to fix it...
 
-Cheers, Andreas=
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
