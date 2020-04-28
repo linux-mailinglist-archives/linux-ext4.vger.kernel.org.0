@@ -2,205 +2,128 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11821BC087
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 16:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0858E1BC23A
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 17:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgD1OEu (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Apr 2020 10:04:50 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42149 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727933AbgD1OEu (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 10:04:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588082688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4zvqBCg098ovR8dFjmTUuCU9Nkp7zOhIutaHG4wiHTc=;
-        b=V4pYBcZAJOPSWDV6hUGNw4n6TnlIskTCjNfkXzHtmiCmOkz1Zt3KvsTSy895o0zO/53/VF
-        WpB3Fo1ZiysPwnlxu/u1dfY0YifoEUogs9QAFYYAjZnzxeWP+WbNrJjjkW50iAInQ/wRad
-        ag96L0yhncEosoYvROineLWze3a+1lA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-288-jJvNShcYOhG0_Q-JhooAFg-1; Tue, 28 Apr 2020 10:04:44 -0400
-X-MC-Unique: jJvNShcYOhG0_Q-JhooAFg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDACD800685;
-        Tue, 28 Apr 2020 14:04:43 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-113-129.rdu2.redhat.com [10.10.113.129])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E6B995D715;
-        Tue, 28 Apr 2020 14:04:42 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     lczerner@redhat.com
-cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk,
-        linux-ext4@vger.kernel.org
-Subject: Notes on ext4 mount API parsing stuff
+        id S1728078AbgD1PHT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Apr 2020 11:07:19 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34480 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727108AbgD1PHT (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 11:07:19 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SF2oQg186150;
+        Tue, 28 Apr 2020 15:07:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=iipreQ5GV+rvEB10J9TRs1WYlt4LV7NmGOo51IIe1z8=;
+ b=IGQLThE2J+8uo+T8p65/hBXvV8tQDVe3kizQSdpP5eOHhh2MPK44njSSJP3nCRqrgmgN
+ JP1fu+1aMW3xJhqu7o5lbsFmpvPbb9eFgyYwAzTe5eqJCwyaenpV6jeXl1T6dppEuQe9
+ Rr3pIaEDZPAaaaBT6SLiQxMUwsmugd6PylYdSyfgcr+dJQy5HmRtl1/I2yMC/jRO4bV1
+ fXbeJIzo26je9oLe62J8mUJtxMAeslkgIMujyIcjnSvbJW+HJHRT1BxWooU7xqyFHNuC
+ MObcpCE3eGZJQd3eySoOxW9kJUqcHeu06v4Q3/8leq1iOcvzBzbQkWbLKs8Yaa0usaeK bQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30nucg0htr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 15:07:02 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SF3tfn153636;
+        Tue, 28 Apr 2020 15:07:02 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 30mxx006f5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 15:07:01 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03SF6vM3028406;
+        Tue, 28 Apr 2020 15:06:57 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 28 Apr 2020 08:06:57 -0700
+Date:   Tue, 28 Apr 2020 08:06:55 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-ext4@vger.kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
+        tytso@mit.edu, adilger@dilger.ca, riteshh@linux.ibm.com,
+        amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH 05/11] fs: mark __generic_block_fiemap static
+Message-ID: <20200428150655.GG6741@magnolia>
+References: <20200427181957.1606257-1-hch@lst.de>
+ <20200427181957.1606257-6-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1020557.1588082682.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 28 Apr 2020 15:04:42 +0100
-Message-ID: <1020558.1588082682@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427181957.1606257-6-hch@lst.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004280118
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004280118
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi Lukas,
+On Mon, Apr 27, 2020 at 08:19:51PM +0200, Christoph Hellwig wrote:
+> There is no caller left outside of ioctl.c.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Here are some notes on your ext4 mount API parsing stuff.
+Looks good to me,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
->static int note_qf_name(struct fs_context *fc, int qtype,
->		       struct fs_parameter *param)
->{
->...
->	qname =3D kmemdup_nul(param->string, param->size, GFP_KERNEL);
+--D
 
-No need to do this.  You're allowed to steal param->string.  Just NULL it =
-out
-afterwards.  It's guaranteed to be NUL-terminated.
-
-	ctx->s_qf_names[qtype] =3D param->string;
-	param->string =3D NULL;
-
->...
->}
-> ...
->static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *p=
-aram)
->{
->	struct ext4_fs_context *ctx =3D fc->fs_private;
->	const struct mount_opts *m;
->	struct fs_parse_result result;
->	kuid_t uid;
->	kgid_t gid;
->	int token;
->
->	token =3D fs_parse(fc, ext4_param_specs, param, &result);
->	if (token < 0)
->		return token;
->
->#ifdef CONFIG_QUOTA
->	if (token =3D=3D Opt_usrjquota) {
->		if (!*param->string)
->			return unnote_qf_name(fc, USRQUOTA);
->		else
->			return note_qf_name(fc, USRQUOTA, param);
->	} else if (token =3D=3D Opt_grpjquota) {
->		if (!*param->string)
->			return unnote_qf_name(fc, GRPQUOTA);
->		else
->			return note_qf_name(fc, GRPQUOTA, param);
->	}
->#endif
-
-Merge this into the switch-statement below?
-
->	switch (token) {
->	case Opt_noacl:
->	case Opt_nouser_xattr:
->		ext4_msg(NULL, KERN_WARNING, deprecated_msg, param->key, "3.5");
->		break;
->	case Opt_removed:
->		ext4_msg(NULL, KERN_WARNING, "Ignoring removed %s option",
->			 param->key);
->		return 0;
->	case Opt_abort:
->		set_mount_flags(ctx, EXT4_MF_FS_ABORTED);
->		return 0;
->	case Opt_i_version:
->		set_flags(ctx, SB_I_VERSION);
->		return 0;
->	case Opt_lazytime:
->		set_flags(ctx, SB_LAZYTIME);
->		return 0;
->	case Opt_nolazytime:
->		clear_flags(ctx, SB_LAZYTIME);
->		return 0;
->	case Opt_errors:
->	case Opt_data:
->	case Opt_data_err:
->	case Opt_jqfmt:
->		token =3D result.uint_32;
->	}
-
-Missing break directive?
-
->	for (m =3D ext4_mount_opts; m->token !=3D Opt_err; m++)
->		if (token =3D=3D m->token)
->			break;
-
-I guess this can't be turned into a direct array lookup given what else
-ext4_mount_opts[] is used for.
-
->	ctx->opt_flags |=3D m->flags;
->
->	if (m->token =3D=3D Opt_err) {
->		ext4_msg(NULL, KERN_ERR, "Unrecognized mount option \"%s\" "
->			 "or missing value", param->key);
->		return -EINVAL;
->	}
->
->	if (m->flags & MOPT_EXPLICIT) {
->		if (m->mount_opt & EXT4_MOUNT_DELALLOC) {
->			set_mount_opt2(ctx, EXT4_MOUNT2_EXPLICIT_DELALLOC);
->		} else if (m->mount_opt & EXT4_MOUNT_JOURNAL_CHECKSUM) {
->			set_mount_opt2(ctx,
->				       EXT4_MOUNT2_EXPLICIT_JOURNAL_CHECKSUM);
->		} else
->			return -EINVAL;
->	}
->	if (m->flags & MOPT_CLEAR_ERR)
->		clear_mount_opt(ctx, EXT4_MOUNT_ERRORS_MASK);
->
->	if (m->flags & MOPT_NOSUPPORT) {
->		ext4_msg(NULL, KERN_ERR, "%s option not supported",
->			 param->key);
->	} else if (token =3D=3D Opt_commit) {
->		if (result.uint_32 =3D=3D 0)
->			ctx->s_commit_interval =3D JBD2_DEFAULT_MAX_COMMIT_AGE;
->		else if (result.uint_32 > INT_MAX / HZ) {
->			ext4_msg(NULL, KERN_ERR,
->				 "Invalid commit interval %d, "
->				 "must be smaller than %d",
->				 result.uint_32, INT_MAX / HZ);
->			return -EINVAL;
-
-You're doing this a lot.  It might be worth making a macro something like:
-
-#define ext4_inval(fmt, ...) \
-	({ ext4_msg(NULL, KERN_ERR, ## __VA_LIST__), -EINVAL })
-
-then you can just do:
-
-	return ext4_inval("Invalid commit interval %d, must be smaller than %d",
-			  result.uint_32, INT_MAX / HZ);
-
->		}
->		ctx->s_commit_interval =3D HZ * result.uint_32;
->		ctx->spec |=3D EXT4_SPEC_s_commit_interval;
->	} else if (token =3D=3D Opt_debug_want_extra_isize) {
-
-This whole thing looks like it might be better as a switch-statement.
-
->	}
->	return 0;
->}
->
->static int parse_options(struct fs_context *fc, char *options)
->{
->}
-
-I wonder if this could be replaced with a call to generic_parse_monolithic=
-() -
-though that calls security_sb_eat_lsm_opts() which you might not want.
-
-David
-
+> ---
+>  fs/ioctl.c         | 4 +---
+>  include/linux/fs.h | 4 ----
+>  2 files changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 282d45be6f453..f55f53c7824bb 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -299,8 +299,7 @@ static inline loff_t blk_to_logical(struct inode *inode, sector_t blk)
+>   * If you use this function directly, you need to do your own locking. Use
+>   * generic_block_fiemap if you want the locking done for you.
+>   */
+> -
+> -int __generic_block_fiemap(struct inode *inode,
+> +static int __generic_block_fiemap(struct inode *inode,
+>  			   struct fiemap_extent_info *fieinfo, loff_t start,
+>  			   loff_t len, get_block_t *get_block)
+>  {
+> @@ -445,7 +444,6 @@ int __generic_block_fiemap(struct inode *inode,
+>  
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL(__generic_block_fiemap);
+>  
+>  /**
+>   * generic_block_fiemap - FIEMAP for block based inodes
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 4f6f59b4f22a8..3104c6f7527b5 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3299,10 +3299,6 @@ static inline int vfs_fstat(int fd, struct kstat *stat)
+>  extern const char *vfs_get_link(struct dentry *, struct delayed_call *);
+>  extern int vfs_readlink(struct dentry *, char __user *, int);
+>  
+> -extern int __generic_block_fiemap(struct inode *inode,
+> -				  struct fiemap_extent_info *fieinfo,
+> -				  loff_t start, loff_t len,
+> -				  get_block_t *get_block);
+>  extern int generic_block_fiemap(struct inode *inode,
+>  				struct fiemap_extent_info *fieinfo, u64 start,
+>  				u64 len, get_block_t *get_block);
+> -- 
+> 2.26.1
+> 
