@@ -2,43 +2,44 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E204E1BC597
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 18:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEBE1BC598
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 18:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728328AbgD1Qpv (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Apr 2020 12:45:51 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46946 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727957AbgD1Qpv (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 12:45:51 -0400
+        id S1728335AbgD1Qpw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Apr 2020 12:45:52 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:26900 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728290AbgD1Qpw (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 Apr 2020 12:45:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588092349;
+        s=mimecast20190719; t=1588092350;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lpuv7iWaVeNunST+tjB4wXU+WGHhdOGpYWy/euREdMo=;
-        b=DuZYmT6ZW8qBLZCKFLCprgTTnQx6CiVyxEGtTKTvDOOwriPHk72xjtyRa3StdQxIp4OTY/
-        LmKG9sg8DMfBAXwtVHCMf/QiMU2+xkHW00xKfSrt774A8vBxpFmCd5tTZ15Su+a6/0qg7F
-        RA5z+A1Y5vfRbjNPdmOF6fRFFSV/Djw=
+        bh=bTLx0/vdhdK+c66wGKagoZDOiV34AeR0PAXK1hmRwto=;
+        b=Lu+dtWF6eNTy+ZtzesXvekoAsd+Syiy5sCNJCtmkwbFDWBpjmI+cukZ0R1gI9E9kN6JDxz
+        llJJG7q+jPZU+mEIurHLrNFqKfoniby6py3xv+h7cF0RQaHpXptos9CWh2gxNA8nnCNTCI
+        68M+c4S5UYcLUylW0Wu5YRUvu5W6434=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-336-nl_lMkpMPAqqN-jKWWuPsA-1; Tue, 28 Apr 2020 12:45:47 -0400
-X-MC-Unique: nl_lMkpMPAqqN-jKWWuPsA-1
+ us-mta-266-fKZWidymNzejWz7XrJ7pYQ-1; Tue, 28 Apr 2020 12:45:48 -0400
+X-MC-Unique: fKZWidymNzejWz7XrJ7pYQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3163A53;
-        Tue, 28 Apr 2020 16:45:46 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FF9B107ACCA;
+        Tue, 28 Apr 2020 16:45:47 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.40.192.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 443541000322;
-        Tue, 28 Apr 2020 16:45:45 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 848931010403;
+        Tue, 28 Apr 2020 16:45:46 +0000 (UTC)
 From:   Lukas Czerner <lczerner@redhat.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk
-Subject: [PATCH v2 01/17] fs_parse: allow parameter value to be empty
-Date:   Tue, 28 Apr 2020 18:45:20 +0200
-Message-Id: <20200428164536.462-2-lczerner@redhat.com>
+Subject: [PATCH v2 02/17] ext4: Add fs parameter specifications for mount options
+Date:   Tue, 28 Apr 2020 18:45:21 +0200
+Message-Id: <20200428164536.462-3-lczerner@redhat.com>
 In-Reply-To: <20200428164536.462-1-lczerner@redhat.com>
 References: <20200428164536.462-1-lczerner@redhat.com>
 MIME-Version: 1.0
@@ -49,119 +50,164 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Allow parameter value to be empty by spcifying fs_param_can_be_empty
-flag.
-
 Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 ---
- fs/fs_parser.c            | 31 +++++++++++++++++++++++--------
- include/linux/fs_parser.h |  2 +-
- 2 files changed, 24 insertions(+), 9 deletions(-)
+ fs/ext4/super.c | 132 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 132 insertions(+)
 
-diff --git a/fs/fs_parser.c b/fs/fs_parser.c
-index ab53e42a874a..0d44801919f9 100644
---- a/fs/fs_parser.c
-+++ b/fs/fs_parser.c
-@@ -200,6 +200,8 @@ int fs_param_is_bool(struct p_log *log, const struct =
-fs_parameter_spec *p,
- 	int b;
- 	if (param->type !=3D fs_value_is_string)
- 		return fs_param_bad_value(log, param);
-+	if (!*param->string && (p->flags & fs_param_can_be_empty))
-+		return 0;
- 	b =3D lookup_constant(bool_names, param->string, -1);
- 	if (b =3D=3D -1)
- 		return fs_param_bad_value(log, param);
-@@ -212,8 +214,11 @@ int fs_param_is_u32(struct p_log *log, const struct =
-fs_parameter_spec *p,
- 		    struct fs_parameter *param, struct fs_parse_result *result)
- {
- 	int base =3D (unsigned long)p->data;
--	if (param->type !=3D fs_value_is_string ||
--	    kstrtouint(param->string, base, &result->uint_32) < 0)
-+	if (param->type !=3D fs_value_is_string)
-+		return fs_param_bad_value(log, param);
-+	if (!*param->string && (p->flags & fs_param_can_be_empty))
-+		return 0;
-+	if (kstrtouint(param->string, base, &result->uint_32) < 0)
- 		return fs_param_bad_value(log, param);
- 	return 0;
- }
-@@ -222,8 +227,11 @@ EXPORT_SYMBOL(fs_param_is_u32);
- int fs_param_is_s32(struct p_log *log, const struct fs_parameter_spec *p=
-,
- 		    struct fs_parameter *param, struct fs_parse_result *result)
- {
--	if (param->type !=3D fs_value_is_string ||
--	    kstrtoint(param->string, 0, &result->int_32) < 0)
-+	if (param->type !=3D fs_value_is_string)
-+		return fs_param_bad_value(log, param);
-+	if (!*param->string && (p->flags & fs_param_can_be_empty))
-+		return 0;
-+	if (kstrtoint(param->string, 0, &result->int_32) < 0)
- 		return fs_param_bad_value(log, param);
- 	return 0;
- }
-@@ -232,8 +240,11 @@ EXPORT_SYMBOL(fs_param_is_s32);
- int fs_param_is_u64(struct p_log *log, const struct fs_parameter_spec *p=
-,
- 		    struct fs_parameter *param, struct fs_parse_result *result)
- {
--	if (param->type !=3D fs_value_is_string ||
--	    kstrtoull(param->string, 0, &result->uint_64) < 0)
-+	if (param->type !=3D fs_value_is_string)
-+		return fs_param_bad_value(log, param);
-+	if (!*param->string && (p->flags & fs_param_can_be_empty))
-+		return 0;
-+	if (kstrtoull(param->string, 0, &result->uint_64) < 0)
- 		return fs_param_bad_value(log, param);
- 	return 0;
- }
-@@ -245,6 +256,8 @@ int fs_param_is_enum(struct p_log *log, const struct =
-fs_parameter_spec *p,
- 	const struct constant_table *c;
- 	if (param->type !=3D fs_value_is_string)
- 		return fs_param_bad_value(log, param);
-+	if (!*param->string && (p->flags & fs_param_can_be_empty))
-+		return 0;
- 	c =3D __lookup_constant(p->data, param->string);
- 	if (!c)
- 		return fs_param_bad_value(log, param);
-@@ -256,7 +269,8 @@ EXPORT_SYMBOL(fs_param_is_enum);
- int fs_param_is_string(struct p_log *log, const struct fs_parameter_spec=
- *p,
- 		       struct fs_parameter *param, struct fs_parse_result *result)
- {
--	if (param->type !=3D fs_value_is_string || !*param->string)
-+	if (param->type !=3D fs_value_is_string ||
-+	    (!*param->string && !(p->flags & fs_param_can_be_empty)))
- 		return fs_param_bad_value(log, param);
- 	return 0;
- }
-@@ -276,7 +290,8 @@ int fs_param_is_fd(struct p_log *log, const struct fs=
-_parameter_spec *p,
- {
- 	switch (param->type) {
- 	case fs_value_is_string:
--		if (kstrtouint(param->string, 0, &result->uint_32) < 0)
-+		if ((!*param->string && !(p->flags & fs_param_can_be_empty)) ||
-+		    kstrtouint(param->string, 0, &result->uint_32) < 0)
- 			break;
- 		if (result->uint_32 <=3D INT_MAX)
- 			return 0;
-diff --git a/include/linux/fs_parser.h b/include/linux/fs_parser.h
-index 2eab6d5f6736..1cde756ef0fd 100644
---- a/include/linux/fs_parser.h
-+++ b/include/linux/fs_parser.h
-@@ -42,7 +42,7 @@ struct fs_parameter_spec {
- 	u8			opt;	/* Option number (returned by fs_parse()) */
- 	unsigned short		flags;
- #define fs_param_neg_with_no	0x0002	/* "noxxx" is negative param */
--#define fs_param_neg_with_empty	0x0004	/* "xxx=3D" is negative param */
-+#define fs_param_can_be_empty	0x0004	/* "xxx=3D" is allowed */
- #define fs_param_deprecated	0x0008	/* The param is deprecated */
- 	const void		*data;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index bf5fcb477f66..fed2e4cafb38 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -47,6 +47,9 @@
+ #include <linux/kthread.h>
+ #include <linux/freezer.h>
+=20
++#include <linux/fs_context.h>
++#include <linux/fs_parser.h>
++
+ #include "ext4.h"
+ #include "ext4_extents.h"	/* Needed for trace points definition */
+ #include "ext4_jbd2.h"
+@@ -1521,6 +1524,135 @@ enum {
+ 	Opt_dioread_nolock, Opt_dioread_lock,
+ 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
+ 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
++	Opt_errors, Opt_data, Opt_data_err, Opt_jqfmt,
++};
++
++static const struct constant_table ext4_param_errors[] =3D {
++	{"continue",	Opt_err_cont},
++	{"panic",	Opt_err_panic},
++	{"remount-ro",	Opt_err_ro},
++	{}
++};
++
++static const struct constant_table ext4_param_data[] =3D {
++	{"journal",	Opt_data_journal},
++	{"ordered",	Opt_data_ordered},
++	{"writeback",	Opt_data_writeback},
++	{}
++};
++
++static const struct constant_table ext4_param_data_err[] =3D {
++	{"abort",	Opt_data_err_abort},
++	{"ignore",	Opt_data_err_ignore},
++	{}
++};
++
++static const struct constant_table ext4_param_jqfmt[] =3D {
++	{"vfsold",	Opt_jqfmt_vfsold},
++	{"vfsv0",	Opt_jqfmt_vfsv0},
++	{"vfsv1",	Opt_jqfmt_vfsv1},
++	{}
++};
++
++/* String parameter that allows empty argument */
++#define fsparam_string_empty(NAME, OPT) \
++	__fsparam(fs_param_is_string, NAME, OPT, fs_param_can_be_empty, NULL)
++
++/*
++ * Mount option specification
++ * We don't use fsparam_flag_no because of the way we set the
++ * options and the way we show them in _ext4_show_options(). To
++ * keep the changes to a minimum, let's keep the negative options
++ * separate for now.
++ */
++static const struct fs_parameter_spec ext4_param_specs[] =3D {
++	fsparam_flag	("bsddf",		Opt_bsd_df),
++	fsparam_flag	("minixdf",		Opt_minix_df),
++	fsparam_flag	("grpid",		Opt_grpid),
++	fsparam_flag	("bsdgroups",		Opt_grpid),
++	fsparam_flag	("nogrpid",		Opt_nogrpid),
++	fsparam_flag	("sysvgroups",		Opt_nogrpid),
++	fsparam_u32	("resgid",		Opt_resgid),
++	fsparam_u32	("resuid",		Opt_resuid),
++	fsparam_u32	("sb",			Opt_sb),
++	fsparam_enum	("errors",		Opt_errors, ext4_param_errors),
++	fsparam_flag	("nouid32",		Opt_nouid32),
++	fsparam_flag	("debug",		Opt_debug),
++	fsparam_flag	("oldalloc",		Opt_removed),
++	fsparam_flag	("orlov",		Opt_removed),
++	fsparam_flag	("user_xattr",		Opt_user_xattr),
++	fsparam_flag	("nouser_xattr",	Opt_nouser_xattr),
++	fsparam_flag	("acl",			Opt_acl),
++	fsparam_flag	("noacl",		Opt_noacl),
++	fsparam_flag	("norecovery",		Opt_noload),
++	fsparam_flag	("noload",		Opt_noload),
++	fsparam_flag	("bh",			Opt_removed),
++	fsparam_flag	("nobh",		Opt_removed),
++	fsparam_u32	("commit",		Opt_commit),
++	fsparam_u32	("min_batch_time",	Opt_min_batch_time),
++	fsparam_u32	("max_batch_time",	Opt_max_batch_time),
++	fsparam_u32	("journal_dev",		Opt_journal_dev),
++	fsparam_bdev	("journal_path",	Opt_journal_path),
++	fsparam_flag	("journal_checksum",	Opt_journal_checksum),
++	fsparam_flag	("nojournal_checksum",	Opt_nojournal_checksum),
++	fsparam_flag	("journal_async_commit",Opt_journal_async_commit),
++	fsparam_flag	("abort",		Opt_abort),
++	fsparam_enum	("data",		Opt_data, ext4_param_data),
++	fsparam_enum	("data_err",		Opt_data_err,
++						ext4_param_data_err),
++	fsparam_string_empty
++			("usrjquota",		Opt_usrjquota),
++	fsparam_string_empty
++			("grpjquota",		Opt_grpjquota),
++	fsparam_enum	("jqfmt",		Opt_jqfmt, ext4_param_jqfmt),
++	fsparam_flag	("grpquota",		Opt_grpquota),
++	fsparam_flag	("quota",		Opt_quota),
++	fsparam_flag	("noquota",		Opt_noquota),
++	fsparam_flag	("usrquota",		Opt_usrquota),
++	fsparam_flag	("prjquota",		Opt_prjquota),
++	fsparam_flag	("barrier",		Opt_barrier),
++	fsparam_u32	("barrier",		Opt_barrier),
++	fsparam_flag	("nobarrier",		Opt_nobarrier),
++	fsparam_flag	("i_version",		Opt_i_version),
++	fsparam_flag	("dax",			Opt_dax),
++	fsparam_u32	("stripe",		Opt_stripe),
++	fsparam_flag	("delalloc",		Opt_delalloc),
++	fsparam_flag	("nodelalloc",		Opt_nodelalloc),
++	fsparam_flag	("warn_on_error",	Opt_warn_on_error),
++	fsparam_flag	("nowarn_on_error",	Opt_nowarn_on_error),
++	fsparam_flag	("lazytime",		Opt_lazytime),
++	fsparam_flag	("nolazytime",		Opt_nolazytime),
++	fsparam_u32	("debug_want_extra_isize",
++						Opt_debug_want_extra_isize),
++	fsparam_flag	("mblk_io_submit",	Opt_removed),
++	fsparam_flag	("nomblk_io_submit",	Opt_removed),
++	fsparam_flag	("block_validity",	Opt_block_validity),
++	fsparam_flag	("noblock_validity",	Opt_noblock_validity),
++	fsparam_u32	("inode_readahead_blks",
++						Opt_inode_readahead_blks),
++	fsparam_u32	("journal_ioprio",	Opt_journal_ioprio),
++	fsparam_u32	("auto_da_alloc",	Opt_auto_da_alloc),
++	fsparam_flag	("auto_da_alloc",	Opt_auto_da_alloc),
++	fsparam_flag	("noauto_da_alloc",	Opt_noauto_da_alloc),
++	fsparam_flag	("dioread_nolock",	Opt_dioread_nolock),
++	fsparam_flag	("nodioread_nolock",	Opt_dioread_lock),
++	fsparam_flag	("dioread_lock",	Opt_dioread_lock),
++	fsparam_flag	("discard",		Opt_discard),
++	fsparam_flag	("nodiscard",		Opt_nodiscard),
++	fsparam_u32	("init_itable",		Opt_init_itable),
++	fsparam_flag	("init_itable",		Opt_init_itable),
++	fsparam_flag	("noinit_itable",	Opt_noinit_itable),
++	fsparam_u32	("max_dir_size_kb",	Opt_max_dir_size_kb),
++	fsparam_flag	("test_dummy_encryption",
++						Opt_test_dummy_encryption),
++	fsparam_flag	("nombcache",		Opt_nombcache),
++	fsparam_flag	("no_mbcache",		Opt_nombcache),	/* for backward compatibil=
+ity */
++	fsparam_string	("check",		Opt_removed),	/* mount option from ext2/3 */
++	fsparam_flag	("nocheck",		Opt_removed),	/* mount option from ext2/3 */
++	fsparam_flag	("reservation",		Opt_removed),	/* mount option from ext2/3=
+ */
++	fsparam_flag	("noreservation",	Opt_removed),	/* mount option from ext2/=
+3 */
++	fsparam_u32	("journal",		Opt_removed),	/* mount option from ext2/3 */
++	{}
  };
+=20
+ static const match_table_t tokens =3D {
 --=20
 2.21.1
 
