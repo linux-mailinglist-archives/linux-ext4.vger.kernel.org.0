@@ -2,158 +2,72 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FC71BC5B2
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 18:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063201BC5BC
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 18:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgD1Qs1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Apr 2020 12:48:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40552 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728106AbgD1Qs1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 28 Apr 2020 12:48:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id AE9DDACC2;
-        Tue, 28 Apr 2020 16:48:24 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D6FA71E1294; Tue, 28 Apr 2020 18:48:24 +0200 (CEST)
-Date:   Tue, 28 Apr 2020 18:48:24 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Jan Kara <jack@suse.cz>, Francois <rigault.francois@gmail.com>,
-        linux-ext4@vger.kernel.org
-Subject: Re: ext4 and project quotas bugs
-Message-ID: <20200428164824.GD6426@quack2.suse.cz>
-References: <CAMc2VtTqz5QuCfdtEBDND+-sU=7T5_8Sh9Wo-4-u6HbJs+PZdw@mail.gmail.com>
- <20200428153228.GB6426@quack2.suse.cz>
- <20200428155351.GH6733@magnolia>
+        id S1728394AbgD1Qtz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Apr 2020 12:49:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56227 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728191AbgD1Qtz (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 12:49:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588092594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=822QsyZiWnpzkjHxEegGYFu1MfdzgdVzY4swsI9HFXI=;
+        b=aVmZSuNKZqEAk4lTs3v8TFSP7Phgr8qbsmgAh7N0H1epHMhce2JeVimb65Jo1ijE8u8A8B
+        9yZXDsfM+/TsLaxQtXu44/M0R8A00QiRwXNZ2xifJ7Es/m3qMN4qKEm/FWo+Jw9l7cRYVp
+        plGzEgJEYQYFzvCqelHROnGabuYqdVE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-jhJwYZ9qM4aJkrtoPzET1g-1; Tue, 28 Apr 2020 12:49:52 -0400
+X-MC-Unique: jhJwYZ9qM4aJkrtoPzET1g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D4B118A0760;
+        Tue, 28 Apr 2020 16:49:51 +0000 (UTC)
+Received: from work (unknown [10.40.192.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 58BC9282C9;
+        Tue, 28 Apr 2020 16:49:50 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 18:49:46 +0200
+From:   Lukas Czerner <lczerner@redhat.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        viro@zeniv.linux.org.uk, linux-ext4@vger.kernel.org
+Subject: Re: Notes on ext4 mount API parsing stuff
+Message-ID: <20200428164946.hzgtypcyslb5ydui@work>
+References: <20200428152709.GG6733@magnolia>
+ <1020558.1588082682@warthog.procyon.org.uk>
+ <1073043.1588089543@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200428155351.GH6733@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1073043.1588089543@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue 28-04-20 08:53:51, Darrick J. Wong wrote:
-> On Tue, Apr 28, 2020 at 05:32:28PM +0200, Jan Kara wrote:
-> > Hello!
-> > 
-> > On Tue 28-04-20 08:41:59, Francois wrote:
-> > > hello! I was just giving ext4 project quotas a try. Definitely not the
-> > > most used ext4 feature (I was the first to answer a stackoverflow
-> > > question on it in https://stackoverflow.com/a/61465057/2852464).
-> > > Quotacheck tells me to mail you the bugs :D so I do
-> > 
-> > Sure :) Generally for ext4 issues (including project quotas) you can also
-> > ask at linux-ext4@vger.kernel.org (added to CC so that the discussion is
-> > archived for other people).
-> > 
-> > > my goal is to make some kind of ansible playbook to install project
-> > > quotas, so I am interested in using a tool like setquota, I also want
-> > > the teams behind the capped directories, to think about a clean-up
-> > > mechanism (the quota would just be a temporary annoyance for them), so
-> > > it should not be "jailbreakable" too easily.
-> > 
-> > Hum, that "not jailbreakable" part is going to be difficult unless you also
-> > confine those users also in their user namespace. Because any user is
-> > allowed to change project ID of the files he owns arbitrarily if he is
-> > running in the initial user namespace. Project quotas have been designed as
-> > an advisory feature back in Irix days... There are talks of allowing to
-> > tweak the behavior (i.e., to allow setting of project id only by sysadmin)
-> > by a mount option but so far nobody has implemented it.
-> > 
-> > > quota-4.05-3.1.x86_64
-> > > Linux localhost 5.6.2-1-default #1 SMP Thu Apr 2 06:31:32 UTC 2020
-> > > (c8170d6) x86_64 x86_64 x86_64 GNU/Linux
-> > > CPE_NAME="cpe:/o:opensuse:tumbleweed:20200413"
-> > > 
-> > > 1- quotacheck fails with quotacheck: Cannot find filesystem to check
-> > > or filesystem not mounted with quota option.
-> > > prjquota is enabled using extended mount options but quotacheck seems
-> > > to ignore this
-> > > # tune2fs -l /dev/loop0 | grep -i mount\ opt
-> > > Default mount options: user_xattr acl
-> > > Mount options: prjquota
-> > > 
-> > > (also, shouldn't these mount options be reflected in /proc/mounts?)
-> > 
-> > Yes and that's deliberate. Unlike user and group quotas, project quotas are
-> > only supported when stored in hidden system files (user and group quotas
-> > are also supported in that way when you create ext4 with 'quota' feature).
-> > So checking of quotas is handled by e2fsck and quotacheck has no way to
-> > influence them.
+On Tue, Apr 28, 2020 at 04:59:03PM +0100, David Howells wrote:
+> Darrick J. Wong <darrick.wong@oracle.com> wrote:
 > 
-> How /does/ one enable whatever the latest iteration on quota is in ext4?
-> IIRC the old VFS method (independent non-journalled quota files in the
-> root dir) is deprecated, which means that the preferred method now is:
-> 
-> # mkfs.ext4 -O quota -E quotatype=usrquota:grpquota:prjquota /dev/fd0
-> 
-> right?
-
-Yes.
-
-> > > 2- project quota are a bit too easy to escape:
-> > > dd if=/dev/zero of=someoutput oflag=append
-> > > loop0: write failed, project block limit reached.
-> > > dd: writing to 'someoutput': Disk quota exceeded
-> 
-> EDQUOT?  Hrm, XFS usually returns ENOSPC for project quotas, since we
-> also change the statfs output to make it look like the the mount size is
-> the project quota's hard limit.
-
-Yeah, we don't specialcase project quotas (just another quota type) in the
-fs/quota/ and so errors are the same for all of them...
-
-> > > 2467+0 records in
-> > > 2466+0 records out
-> > > 1262592 bytes (1.3 MB, 1.2 MiB) copied, 0.0105432 s, 120 MB/s
-> > > vagrant@localhost:/mnt/loop/abc/mydir3> chattr -p 33 someoutput
-> > > vagrant@localhost:/mnt/loop/abc/mydir3> dd if=/dev/zero of=someoutput
-> > > oflag=append
-> > > dd: writing to 'someoutput': No space left on device
-> > > 127393+0 records in
-> > > 127392+0 records out
-> > > 65224704 bytes (65 MB, 62 MiB) copied, 0.568859 s, 115 MB/s
+> > > Here are some notes on your ext4 mount API parsing stuff.
 > > 
-> > Yes and as I mentioned above this is deliberate.
-> > 
-> > > 3- project id '-1" yields fun results:
-> > > 
-> > > chattr +P -p -1 .
+> > Er... is this a response to Lukas' patchset "ext4: new mount API
+> > conversion" from 6 Nov 2019?
 > 
-> Heh, that command doesn't work on xfs.  Weird, more kernel bugs to chase...
-
-Yeah, unlike ext4 xfs refuses to set PROJINHERIT flag through SETFLAGS
-ioctl which is what makes this command fail. But I don't see anything in
-the handling of XFS_IOC_FSSETXATTR that would prevent setting of this
-invalid project id...
-
-Hum, after some debugging what I believe is failing is dquot_init() call
-which tries to initialize project quotas for a new inode, calls
-qid_has_mapping() from dqget() for this -1 project ID, gets error back
-(ultimately from map_id_up()) and so dget() fails with -EINVAL which gets
-propagated out to userspace.
- 
-> > > dd if=/dev/zero of=someoutput oflag=append
-> > > dd: failed to open 'someoutput': Invalid argument
-> > 
-> > Yes, that's a bug that should be fixed. Thanks for reporting this! -1 means
-> > 'this id is not expressible in current user namespace' and some code gets
-> > confused along the way. We should refuse to set project -1 for a file...
+> Lukas says that's out of date.
 > 
-> Awkward part: projid 4294967295 is allowed on XFS (at least by the
-> kernel), though the xfs quota tools do not permit that.
+> David
 
-Are you OK with just refusing to set projid 4294967295 for everybody? Or
-should we just not try to translate project IDs through user namespaces?
-Because XFS does not seem to translate them while ext4 does... What a mess.
+Yeah, I asked David off-list to help me track the issue I was seeing.
+But since he already replied here I went ahead and sent the new version
+of the patch set. Sorry for the confusion.
 
-								Honza
+Thanks David,
+-Lukas
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
