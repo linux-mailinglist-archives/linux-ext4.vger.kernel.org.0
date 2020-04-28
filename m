@@ -2,45 +2,45 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AE21BCD35
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 22:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8060A1BCD5F
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 22:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgD1UNz (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Apr 2020 16:13:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:56712 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726412AbgD1UNy (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 16:13:54 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SJxMU6007349;
-        Tue, 28 Apr 2020 20:13:43 GMT
+        id S1726467AbgD1U2H (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Apr 2020 16:28:07 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:52578 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726286AbgD1U2H (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 16:28:07 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SKJ5iO174071;
+        Tue, 28 Apr 2020 20:27:42 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=corp-2020-01-29;
- bh=2TxBZHfR4ngSs9Z+KsUpRbpdG5Nkk0b73CyomFb4X5c=;
- b=nKeB73lOTF78qoJXrJpezOPqwcjALaCDMTohyZrH1TEWAJ6SJW1gUllGDGNUnujQgT1s
- thZdY1NiZ2BciHl+/dg7H5CMP8EG9oGboq38jUxzTkj/Yf6xMff+W/0S/Ck8+3+AaAi/
- +9Ij4GflASbP/Ejiz6dXoEriYhr6wyMMmx3W8m4n9qlKQDuyLFHRYh5Sc7ZuJxFU9/yw
- djGS6UPlKx+SGu+egBiphH/B3gdWANs6mbp5G+bIlCvKnvEElz96opSlXawqrjDmP6sJ
- MMYnrywZZ522EnwoiQL0yZyh/sRrWt6uSVwtt6/BwDBRG+LaRxhnwI1wwfgqUH+m0kKT dg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 30p2p07jqf-1
+ bh=xxlhp2DsyJSbAKErgUJk3UA29CHBZa2hTbCSFXE7hT4=;
+ b=Vsj8vg9BiA5zfD+MQdDOBRl+UlsB8L6IzId15FDThetMn93cYy7RhZBw1KsaOFvaizc3
+ jQrvdI7jYXbqjGR5UHwE31E2z2TSsTU0GWTkZ4mdDLTi1ETL1J42rdJ76sdx9WWf9brX
+ 3D/LUrdVWu0RUny5+P+gcMKaDmpuJ7VSeQ4Mk6WiO7fPbpIOvWkuSva4a7ar5dGFwPPJ
+ OuTwWwVga/zg81Td47EJ6q7x620+TGdmXVR/X+4NTu9odEKb0VWE7K0Gq0yvPEPU4zWj
+ DvgWKhQSS45r0hxW0EPQsNTj+CfSj0xwvgog0YlDWfN4Vb/1m5qbMKkUX5Mn7KGLNrB8 TQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 30nucg2816-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 20:13:42 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SK8qie031486;
-        Tue, 28 Apr 2020 20:11:42 GMT
+        Tue, 28 Apr 2020 20:27:42 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SKR2wB118613;
+        Tue, 28 Apr 2020 20:27:42 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 30mxpgw057-1
+        by aserp3020.oracle.com with ESMTP id 30my0e9exa-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 20:11:42 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03SKBfMc023560;
-        Tue, 28 Apr 2020 20:11:41 GMT
+        Tue, 28 Apr 2020 20:27:42 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03SKReTo031311;
+        Tue, 28 Apr 2020 20:27:40 GMT
 Received: from localhost (/67.169.218.210)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 28 Apr 2020 13:11:40 -0700
-Date:   Tue, 28 Apr 2020 13:11:38 -0700
+        with ESMTP ; Tue, 28 Apr 2020 13:27:39 -0700
+Date:   Tue, 28 Apr 2020 13:27:38 -0700
 From:   "Darrick J. Wong" <darrick.wong@oracle.com>
 To:     ira.weiny@intel.com
 Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
@@ -51,260 +51,259 @@ Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-api@vger.kernel.org
-Subject: Re: [PATCH V11 11/11] fs/xfs: Update
- xfs_ioctl_setattr_dax_invalidate()
-Message-ID: <20200428201138.GD6742@magnolia>
+Subject: Re: [PATCH V11 04/11] Documentation/dax: Update Usage section
+Message-ID: <20200428202738.GE6742@magnolia>
 References: <20200428002142.404144-1-ira.weiny@intel.com>
- <20200428002142.404144-12-ira.weiny@intel.com>
+ <20200428002142.404144-5-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200428002142.404144-12-ira.weiny@intel.com>
+In-Reply-To: <20200428002142.404144-5-ira.weiny@intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 bulkscore=0 adultscore=0 phishscore=0 suspectscore=3
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004280157
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004280159
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1015
- bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- mlxscore=0 suspectscore=3 mlxlogscore=999 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004280157
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004280158
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 05:21:42PM -0700, ira.weiny@intel.com wrote:
+On Mon, Apr 27, 2020 at 05:21:35PM -0700, ira.weiny@intel.com wrote:
 > From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Because of the separation of FS_XFLAG_DAX from S_DAX and the delayed
-> setting of S_DAX, data invalidation no longer needs to happen when
-> FS_XFLAG_DAX is changed.
-> 
-> Change xfs_ioctl_setattr_dax_invalidate() to be
-> xfs_ioctl_dax_check_set_cache() and alter the code to reflect the new
+> Update the Usage section to reflect the new individual dax selection
 > functionality.
 > 
-> Furthermore, we no longer need the locking so we remove the join_flags
-> logic.
-> 
 > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
-Looks ok,
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-
---D
-
 > 
 > ---
 > Changes from V10:
-> 	adjust for renamed d_mark_dontcache() function
+> 	Clarifications from Dave
+> 	Add '-c' to xfs_io examples
 > 
 > Changes from V9:
-> 	Change name of function to xfs_ioctl_setattr_prepare_dax()
+> 	Fix missing ')'
+> 	Fix trialing '"'
 > 
 > Changes from V8:
-> 	Change name of function to xfs_ioctl_dax_check_set_cache()
-> 	Update commit message
-> 	Fix bit manipulations
+> 	Updates from Darrick
 > 
 > Changes from V7:
-> 	Use new flag_inode_dontcache()
-> 	Skip don't cache if mount over ride is active.
+> 	Cleanups/clarifications from Darrick and Dan
 > 
-> Changes from v6:
-> 	Fix completely broken implementation and update commit message.
-> 	Use the new VFS layer I_DONTCACHE to facilitate inode eviction
-> 	and S_DAX changing on drop_caches
+> Changes from V6:
+> 	Update to allow setting FS_XFLAG_DAX any time.
+> 	Update with list of behaviors from Darrick
+> 	https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
 > 
-> Changes from v5:
-> 	New patch
+> Changes from V5:
+> 	Update to reflect the agreed upon semantics
+> 	https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
 > ---
->  fs/xfs/xfs_ioctl.c | 108 +++++++++------------------------------------
->  1 file changed, 20 insertions(+), 88 deletions(-)
+>  Documentation/filesystems/dax.txt | 139 +++++++++++++++++++++++++++++-
+>  1 file changed, 136 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-> index 104495ac187c..ff474f2c9acf 100644
-> --- a/fs/xfs/xfs_ioctl.c
-> +++ b/fs/xfs/xfs_ioctl.c
-> @@ -1245,64 +1245,26 @@ xfs_ioctl_setattr_xflags(
->  	return 0;
->  }
+> diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+> index 679729442fd2..409e4e83e46a 100644
+> --- a/Documentation/filesystems/dax.txt
+> +++ b/Documentation/filesystems/dax.txt
+> @@ -17,11 +17,144 @@ For file mappings, the storage device is mapped directly into userspace.
+>  Usage
+>  -----
 >  
-> -/*
-> - * If we are changing DAX flags, we have to ensure the file is clean and any
-> - * cached objects in the address space are invalidated and removed. This
-> - * requires us to lock out other IO and page faults similar to a truncate
-> - * operation. The locks need to be held until the transaction has been committed
-> - * so that the cache invalidation is atomic with respect to the DAX flag
-> - * manipulation.
-> - */
-> -static int
-> -xfs_ioctl_setattr_dax_invalidate(
-> +static void
-> +xfs_ioctl_setattr_prepare_dax(
->  	struct xfs_inode	*ip,
-> -	struct fsxattr		*fa,
-> -	int			*join_flags)
-> +	struct fsxattr		*fa)
->  {
-> -	struct inode		*inode = VFS_I(ip);
-> -	struct super_block	*sb = inode->i_sb;
-> -	int			error;
-> -
-> -	*join_flags = 0;
-> -
-> -	/*
-> -	 * It is only valid to set the DAX flag on regular files and
-> -	 * directories on filesystems where the block size is equal to the page
-> -	 * size. On directories it serves as an inherited hint so we don't
-> -	 * have to check the device for dax support or flush pagecache.
-> -	 */
-> -	if (fa->fsx_xflags & FS_XFLAG_DAX) {
-> -		struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
-> -
-> -		if (!bdev_dax_supported(target->bt_bdev, sb->s_blocksize))
-> -			return -EINVAL;
-> -	}
-> -
-> -	/* If the DAX state is not changing, we have nothing to do here. */
-> -	if ((fa->fsx_xflags & FS_XFLAG_DAX) && IS_DAX(inode))
-> -		return 0;
-> -	if (!(fa->fsx_xflags & FS_XFLAG_DAX) && !IS_DAX(inode))
-> -		return 0;
-> +	struct xfs_mount	*mp = ip->i_mount;
-> +	struct inode            *inode = VFS_I(ip);
+> -If you have a block device which supports DAX, you can make a filesystem
+> +If you have a block device which supports DAX, you can make a file system
+>  on it as usual.  The DAX code currently only supports files with a block
+>  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
+> -size when creating the filesystem.  When mounting it, use the "-o dax"
+> -option on the command line or add 'dax' to the options in /etc/fstab.
+> +size when creating the file system.
+> +
+> +Currently 3 filesystems support DAX: ext2, ext4 and xfs.  Enabling DAX on them
+> +is different.
+> +
+> +Enabling DAX on ext4 and ext2
+> +-----------------------------
+> +
+> +When mounting the filesystem, use the "-o dax" option on the command line or
+> +add 'dax' to the options in /etc/fstab.  This works to enable DAX on all files
+> +within the filesystem.  It is equivalent to the '-o dax=always' behavior below.
+> +
+> +
+> +Enabling DAX on xfs
+> +-------------------
+> +
+> +Summary
+> +-------
+> +
+> + 1. There exists an in-kernel file access mode flag S_DAX that corresponds to
+> +    the statx flag STATX_ATTR_DAX.  See the manpage for statx(2) for details
+> +    about this access mode.
+> +
+> + 2. There exists a persistent flag FS_XFLAG_DAX that can be applied to regular
+> +    files and directories. This advisory flag can be set or cleared at any
+> +    time, but doing so does not immediately affect the S_DAX state.
+> +
+> + 3. If the persistent FS_XFLAG_DAX flag is set on a directory, this flag will
+> +    be inherited by all regular files and sub directories that are subsequently
+
+Well, I'm at the level of minor edits: "...and subdirectories that..."
+
+> +    created in this directory. Files and subdirectories that exist at the time
+> +    this flag is set or cleared on the parent directory are not modified by
+> +    this modification of the parent directory.
+> +
+> + 4. There exists dax mount options which can override FS_XFLAG_DAX in the
+> +    setting of the S_DAX flag.  Given underlying storage which supports DAX the
+> +    following hold.
+
+"hold:"
+
+> +
+> +    "-o dax=inode"  means "follow FS_XFLAG_DAX" and is the default.
+> +
+> +    "-o dax=never"  means "never set S_DAX, ignore FS_XFLAG_DAX."
+> +
+> +    "-o dax=always" means "always set S_DAX ignore FS_XFLAG_DAX."
+> +
+> +    "-o dax"        is a legacy option which is an alias for "dax=always".
+> +		    This may be removed in the future so "-o dax=always" is
+> +		    the preferred method for specifying this behavior.
+> +
+> +    NOTE: Setting and inheritance affect FS_XFLAG_DAX at all times even when
+> +    the file system is mounted with a dax option.
+
+We can also clear the flag at any time no matter the mount option state.
+Perhaps:
+
+"NOTE: Modifications to and inheritance behavior of FS_XFLAG_DAX remain
+the same even when the filesystem is mounted with a dax option."
+
+> +    However, in-core inode state
+> +    (S_DAX) will be overridden until the file system is remounted with
+> +    dax=inode and the inode is evicted from kernel memory.
+> +
+> + 5. The DAX policy can be changed via:
+
+"The S_DAX policy".  I don't want people to get confused.
+
+> +
+> +    a) Set the parent directory FS_XFLAG_DAX as needed before files are created
+> +
+> +    b) Set the appropriate dax="foo" mount option
+> +
+> +    c) Change the FS_XFLAG_DAX on existing regular files and directories. This
+> +       has runtime constraints and limitations that are described in 6) below.
+
+"Setting", and "Changing" at the front of these three bullet points?
+
+Were you to put these together as full sentences, you'd want them to
+read "The DAX policy can be changed via setting the parent directory
+FS_XFLAG_DAX..."
+
+> +
+> + 6. When changing the DAX policy via toggling the persistent FS_XFLAG_DAX flag,
+
+"When changing the S_DAX policy..."
+
+> +    the change in behaviour for existing regular files may not occur
+> +    immediately.  If the change must take effect immediately, the administrator
+> +    needs to:
+> +
+> +    a) stop the application so there are no active references to the data set
+> +       the policy change will affect
+> +
+> +    b) evict the data set from kernel caches so it will be re-instantiated when
+> +       the application is restarted. This can be acheived by:
+
+"achieved"
+
+> +
+> +       i. drop-caches
+> +       ii. a filesystem unmount and mount cycle
+> +       iii. a system reboot
+> +
+> +
+> +Details
+> +-------
+> +
+> +There are 2 per-file dax flags.  One is a persistent inode setting (FS_XFLAG_DAX)
+> +and the other is a volatile flag indicating the active state of the feature
+> +(S_DAX).
+> +
+> +FS_XFLAG_DAX is preserved within the file system.  This persistent config
+> +setting can be set, cleared and/or queried using the FS_IOC_FS[GS]ETXATTR ioctl
+> +(see ioctl_xfs_fsgetxattr(2)) or an utility such as 'xfs_io'.
+> +
+> +New files and directories automatically inherit FS_XFLAG_DAX from
+> +their parent directory _when_ _created_.  Therefore, setting FS_XFLAG_DAX at
+> +directory creation time can be used to set a default behavior for an entire
+> +sub-tree.
+> +
+> +To clarify inheritance here are 3 examples:
+
+"...inheritance, here are..."
+
+> +
+> +Example A:
+> +
+> +mkdir -p a/b/c
+> +xfs_io -c 'chattr +x' a
+> +mkdir a/b/c/d
+> +mkdir a/e
+> +
+> +	dax: a,e
+> +	no dax: b,c,d
+> +
+> +Example B:
+> +
+> +mkdir a
+> +xfs_io -c 'chattr +x' a
+> +mkdir -p a/b/c/d
+> +
+> +	dax: a,b,c,d
+> +	no dax:
+> +
+> +Example C:
+> +
+> +mkdir -p a/b/c
+> +xfs_io -c 'chattr +x' c
+> +mkdir a/b/c/d
+> +
+> +	dax: c,d
+> +	no dax: a,b
+> +
+> +
+> +The current enabled state (S_DAX) is set when a file inode is instantiated in
+> +memory by the kernel.  It is set based on the underlying media support, the
+> +value of FS_XFLAG_DAX and the file systems dax mount option setting.
+
+"...and the file system's dax mount option string."
+
+> +
+> +statx can be used to query S_DAX.  NOTE that a directory will never have S_DAX
+
+"Note that only regular files will ever have S_DAX set..."?
+
+--D
+
+> +set and therefore statx will never indicate that S_DAX is set on directories.
+> +
+> +Setting the FS_XFLAG_DAX (specifically or through inheritance) occurs even if
+> +the underlying media does not support dax and/or the file system is overridden
+> +with a mount option.
+> +
 >  
->  	if (S_ISDIR(inode->i_mode))
-> -		return 0;
-> -
-> -	/* lock, flush and invalidate mapping in preparation for flag change */
-> -	xfs_ilock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
-> -	error = filemap_write_and_wait(inode->i_mapping);
-> -	if (error)
-> -		goto out_unlock;
-> -	error = invalidate_inode_pages2(inode->i_mapping);
-> -	if (error)
-> -		goto out_unlock;
-> -
-> -	*join_flags = XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL;
-> -	return 0;
-> +		return;
 >  
-> -out_unlock:
-> -	xfs_iunlock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
-> -	return error;
-> +	if ((mp->m_flags & XFS_MOUNT_DAX_ALWAYS) ||
-> +	    (mp->m_flags & XFS_MOUNT_DAX_NEVER))
-> +		return;
->  
-> +	if (((fa->fsx_xflags & FS_XFLAG_DAX) &&
-> +	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)) ||
-> +	    (!(fa->fsx_xflags & FS_XFLAG_DAX) &&
-> +	     (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)))
-> +		d_mark_dontcache(inode);
->  }
->  
->  /*
-> @@ -1310,17 +1272,10 @@ xfs_ioctl_setattr_dax_invalidate(
->   * have permission to do so. On success, return a clean transaction and the
->   * inode locked exclusively ready for further operation specific checks. On
->   * failure, return an error without modifying or locking the inode.
-> - *
-> - * The inode might already be IO locked on call. If this is the case, it is
-> - * indicated in @join_flags and we take full responsibility for ensuring they
-> - * are unlocked from now on. Hence if we have an error here, we still have to
-> - * unlock them. Otherwise, once they are joined to the transaction, they will
-> - * be unlocked on commit/cancel.
->   */
->  static struct xfs_trans *
->  xfs_ioctl_setattr_get_trans(
-> -	struct xfs_inode	*ip,
-> -	int			join_flags)
-> +	struct xfs_inode	*ip)
->  {
->  	struct xfs_mount	*mp = ip->i_mount;
->  	struct xfs_trans	*tp;
-> @@ -1337,8 +1292,7 @@ xfs_ioctl_setattr_get_trans(
->  		goto out_unlock;
->  
->  	xfs_ilock(ip, XFS_ILOCK_EXCL);
-> -	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL | join_flags);
-> -	join_flags = 0;
-> +	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
->  
->  	/*
->  	 * CAP_FOWNER overrides the following restrictions:
-> @@ -1359,8 +1313,6 @@ xfs_ioctl_setattr_get_trans(
->  out_cancel:
->  	xfs_trans_cancel(tp);
->  out_unlock:
-> -	if (join_flags)
-> -		xfs_iunlock(ip, join_flags);
->  	return ERR_PTR(error);
->  }
->  
-> @@ -1486,7 +1438,6 @@ xfs_ioctl_setattr(
->  	struct xfs_dquot	*pdqp = NULL;
->  	struct xfs_dquot	*olddquot = NULL;
->  	int			code;
-> -	int			join_flags = 0;
->  
->  	trace_xfs_ioctl_setattr(ip);
->  
-> @@ -1510,18 +1461,9 @@ xfs_ioctl_setattr(
->  			return code;
->  	}
->  
-> -	/*
-> -	 * Changing DAX config may require inode locking for mapping
-> -	 * invalidation. These need to be held all the way to transaction commit
-> -	 * or cancel time, so need to be passed through to
-> -	 * xfs_ioctl_setattr_get_trans() so it can apply them to the join call
-> -	 * appropriately.
-> -	 */
-> -	code = xfs_ioctl_setattr_dax_invalidate(ip, fa, &join_flags);
-> -	if (code)
-> -		goto error_free_dquots;
-> +	xfs_ioctl_setattr_prepare_dax(ip, fa);
->  
-> -	tp = xfs_ioctl_setattr_get_trans(ip, join_flags);
-> +	tp = xfs_ioctl_setattr_get_trans(ip);
->  	if (IS_ERR(tp)) {
->  		code = PTR_ERR(tp);
->  		goto error_free_dquots;
-> @@ -1651,7 +1593,6 @@ xfs_ioc_setxflags(
->  	struct fsxattr		fa;
->  	struct fsxattr		old_fa;
->  	unsigned int		flags;
-> -	int			join_flags = 0;
->  	int			error;
->  
->  	if (copy_from_user(&flags, arg, sizeof(flags)))
-> @@ -1668,18 +1609,9 @@ xfs_ioc_setxflags(
->  	if (error)
->  		return error;
->  
-> -	/*
-> -	 * Changing DAX config may require inode locking for mapping
-> -	 * invalidation. These need to be held all the way to transaction commit
-> -	 * or cancel time, so need to be passed through to
-> -	 * xfs_ioctl_setattr_get_trans() so it can apply them to the join call
-> -	 * appropriately.
-> -	 */
-> -	error = xfs_ioctl_setattr_dax_invalidate(ip, &fa, &join_flags);
-> -	if (error)
-> -		goto out_drop_write;
-> +	xfs_ioctl_setattr_prepare_dax(ip, &fa);
->  
-> -	tp = xfs_ioctl_setattr_get_trans(ip, join_flags);
-> +	tp = xfs_ioctl_setattr_get_trans(ip);
->  	if (IS_ERR(tp)) {
->  		error = PTR_ERR(tp);
->  		goto out_drop_write;
+>  Implementation Tips for Block Driver Writers
 > -- 
 > 2.25.1
 > 
