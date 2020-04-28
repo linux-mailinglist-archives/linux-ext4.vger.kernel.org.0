@@ -2,56 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC7B1BC5B0
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 18:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FC71BC5B2
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 18:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728106AbgD1QsJ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Apr 2020 12:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727957AbgD1QsI (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 12:48:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C433BC03C1AB
-        for <linux-ext4@vger.kernel.org>; Tue, 28 Apr 2020 09:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mOc/rqjmnYu1udu600jsrqq/4WNi8OKKxTrPBFh4Sts=; b=J2AljRHlOc9nekrumLtoEqNil+
-        HRAfNuHC8RAArdvdGtAWPCwxv0dHfWvFq15y4vn+dg2r17Gb6z69aQGtitNTm8seyCfj3f2eaghi0
-        sLIISEg+ChQNpwx2M7NonqeMCx6EMSDg3eVp+Jh7MiWtiNp9pJc2F6N8/+KbFpPqKzXA/ys2aE182
-        csNxncniTTFJToKtxiZHRhX+iTgt6u0VaV6xnMpmft/i647+pIYZVm6Jdml5Rg76aGcHluv3mrucE
-        pz/evlF9FE2v9EEMJcWT+kCXmTpcEky8WAmlv2cCTFJDx8ENQe63neWWv1JTbcWIgK1BePk27jRKH
-        Z3oGlkeg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTTOy-0003T8-LO; Tue, 28 Apr 2020 16:48:08 +0000
-Date:   Tue, 28 Apr 2020 09:48:08 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     linux-ext4@vger.kernel.org, dhowells@redhat.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH v2 05/17] ext4: Allow sb to be NULL in ext4_msg()
-Message-ID: <20200428164808.GA3632@infradead.org>
-References: <20200428164536.462-1-lczerner@redhat.com>
- <20200428164536.462-6-lczerner@redhat.com>
+        id S1728291AbgD1Qs1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Apr 2020 12:48:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40552 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728106AbgD1Qs1 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 Apr 2020 12:48:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id AE9DDACC2;
+        Tue, 28 Apr 2020 16:48:24 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D6FA71E1294; Tue, 28 Apr 2020 18:48:24 +0200 (CEST)
+Date:   Tue, 28 Apr 2020 18:48:24 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Jan Kara <jack@suse.cz>, Francois <rigault.francois@gmail.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: ext4 and project quotas bugs
+Message-ID: <20200428164824.GD6426@quack2.suse.cz>
+References: <CAMc2VtTqz5QuCfdtEBDND+-sU=7T5_8Sh9Wo-4-u6HbJs+PZdw@mail.gmail.com>
+ <20200428153228.GB6426@quack2.suse.cz>
+ <20200428155351.GH6733@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200428164536.462-6-lczerner@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200428155351.GH6733@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 06:45:24PM +0200, Lukas Czerner wrote:
-> At the parsing phase of mount in the new mount api sb will not be
-> available so allow sb to be NULL in ext4_msg and use that in
-> handle_mount_opt().
+On Tue 28-04-20 08:53:51, Darrick J. Wong wrote:
+> On Tue, Apr 28, 2020 at 05:32:28PM +0200, Jan Kara wrote:
+> > Hello!
+> > 
+> > On Tue 28-04-20 08:41:59, Francois wrote:
+> > > hello! I was just giving ext4 project quotas a try. Definitely not the
+> > > most used ext4 feature (I was the first to answer a stackoverflow
+> > > question on it in https://stackoverflow.com/a/61465057/2852464).
+> > > Quotacheck tells me to mail you the bugs :D so I do
+> > 
+> > Sure :) Generally for ext4 issues (including project quotas) you can also
+> > ask at linux-ext4@vger.kernel.org (added to CC so that the discussion is
+> > archived for other people).
+> > 
+> > > my goal is to make some kind of ansible playbook to install project
+> > > quotas, so I am interested in using a tool like setquota, I also want
+> > > the teams behind the capped directories, to think about a clean-up
+> > > mechanism (the quota would just be a temporary annoyance for them), so
+> > > it should not be "jailbreakable" too easily.
+> > 
+> > Hum, that "not jailbreakable" part is going to be difficult unless you also
+> > confine those users also in their user namespace. Because any user is
+> > allowed to change project ID of the files he owns arbitrarily if he is
+> > running in the initial user namespace. Project quotas have been designed as
+> > an advisory feature back in Irix days... There are talks of allowing to
+> > tweak the behavior (i.e., to allow setting of project id only by sysadmin)
+> > by a mount option but so far nobody has implemented it.
+> > 
+> > > quota-4.05-3.1.x86_64
+> > > Linux localhost 5.6.2-1-default #1 SMP Thu Apr 2 06:31:32 UTC 2020
+> > > (c8170d6) x86_64 x86_64 x86_64 GNU/Linux
+> > > CPE_NAME="cpe:/o:opensuse:tumbleweed:20200413"
+> > > 
+> > > 1- quotacheck fails with quotacheck: Cannot find filesystem to check
+> > > or filesystem not mounted with quota option.
+> > > prjquota is enabled using extended mount options but quotacheck seems
+> > > to ignore this
+> > > # tune2fs -l /dev/loop0 | grep -i mount\ opt
+> > > Default mount options: user_xattr acl
+> > > Mount options: prjquota
+> > > 
+> > > (also, shouldn't these mount options be reflected in /proc/mounts?)
+> > 
+> > Yes and that's deliberate. Unlike user and group quotas, project quotas are
+> > only supported when stored in hidden system files (user and group quotas
+> > are also supported in that way when you create ext4 with 'quota' feature).
+> > So checking of quotas is handled by e2fsck and quotacheck has no way to
+> > influence them.
 > 
-> Also change return value to appropriate -EINVAL where needed.
+> How /does/ one enable whatever the latest iteration on quota is in ext4?
+> IIRC the old VFS method (independent non-journalled quota files in the
+> root dir) is deprecated, which means that the preferred method now is:
+> 
+> # mkfs.ext4 -O quota -E quotatype=usrquota:grpquota:prjquota /dev/fd0
+> 
+> right?
 
-Shouldn't mount-time messages be reported using the logfc and family
-helpers from include/linux/fs_context.h? (which btw, have really
-horrible over-generic names).
+Yes.
+
+> > > 2- project quota are a bit too easy to escape:
+> > > dd if=/dev/zero of=someoutput oflag=append
+> > > loop0: write failed, project block limit reached.
+> > > dd: writing to 'someoutput': Disk quota exceeded
+> 
+> EDQUOT?  Hrm, XFS usually returns ENOSPC for project quotas, since we
+> also change the statfs output to make it look like the the mount size is
+> the project quota's hard limit.
+
+Yeah, we don't specialcase project quotas (just another quota type) in the
+fs/quota/ and so errors are the same for all of them...
+
+> > > 2467+0 records in
+> > > 2466+0 records out
+> > > 1262592 bytes (1.3 MB, 1.2 MiB) copied, 0.0105432 s, 120 MB/s
+> > > vagrant@localhost:/mnt/loop/abc/mydir3> chattr -p 33 someoutput
+> > > vagrant@localhost:/mnt/loop/abc/mydir3> dd if=/dev/zero of=someoutput
+> > > oflag=append
+> > > dd: writing to 'someoutput': No space left on device
+> > > 127393+0 records in
+> > > 127392+0 records out
+> > > 65224704 bytes (65 MB, 62 MiB) copied, 0.568859 s, 115 MB/s
+> > 
+> > Yes and as I mentioned above this is deliberate.
+> > 
+> > > 3- project id '-1" yields fun results:
+> > > 
+> > > chattr +P -p -1 .
+> 
+> Heh, that command doesn't work on xfs.  Weird, more kernel bugs to chase...
+
+Yeah, unlike ext4 xfs refuses to set PROJINHERIT flag through SETFLAGS
+ioctl which is what makes this command fail. But I don't see anything in
+the handling of XFS_IOC_FSSETXATTR that would prevent setting of this
+invalid project id...
+
+Hum, after some debugging what I believe is failing is dquot_init() call
+which tries to initialize project quotas for a new inode, calls
+qid_has_mapping() from dqget() for this -1 project ID, gets error back
+(ultimately from map_id_up()) and so dget() fails with -EINVAL which gets
+propagated out to userspace.
+ 
+> > > dd if=/dev/zero of=someoutput oflag=append
+> > > dd: failed to open 'someoutput': Invalid argument
+> > 
+> > Yes, that's a bug that should be fixed. Thanks for reporting this! -1 means
+> > 'this id is not expressible in current user namespace' and some code gets
+> > confused along the way. We should refuse to set project -1 for a file...
+> 
+> Awkward part: projid 4294967295 is allowed on XFS (at least by the
+> kernel), though the xfs quota tools do not permit that.
+
+Are you OK with just refusing to set projid 4294967295 for everybody? Or
+should we just not try to translate project IDs through user namespaces?
+Because XFS does not seem to translate them while ext4 does... What a mess.
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
