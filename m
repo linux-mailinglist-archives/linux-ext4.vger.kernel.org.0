@@ -2,44 +2,43 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9A31BC5A0
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 18:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC861BC5A2
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 Apr 2020 18:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728352AbgD1QqD (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Apr 2020 12:46:03 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59213 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728106AbgD1QqC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 28 Apr 2020 12:46:02 -0400
+        id S1728487AbgD1QqG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Apr 2020 12:46:06 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26854 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728335AbgD1QqG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 12:46:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588092361;
+        s=mimecast20190719; t=1588092365;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6DUcBTWZBLhA4jb/shFPvP3lSnDnt9YzoZmavUdsLqw=;
-        b=Jb4GZrLb1HoZInzdLBNhOK20rXiu9ViQT7eNJbwMMRYqSYJI3L7RlV+CgN0tvx/VZbeZfB
-        qefbRUrg6OvtJGXe2cqS/DhgX8Gg7eOThwUxQrTSW0H9CD8E8eG25BD2BQtRDLrEfZdUOZ
-        48YkTYHx6on8SsCZygSEwkNztHvPrs4=
+        bh=nqFcUeESBHvk57xWRzVAWI9c7p4HOTfwGhjSrI5Yheo=;
+        b=FkyWb57kyovO6eK09A2lJvRdVh3xFwLUQkEtie6qo6ouuA5u0Ej8h1ijRtx79q1UT06lEE
+        bCJ/56elJ7dPr2hGG6Ts+g5kT+Fbe1HIyqRoAc09ojKCnzkxhbRvLdlYgAiTnUIm/9AGV8
+        DFz5gWte5/4grCu7XelvHZeT1GzDBJg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-7Xfc0J2COzGyCdvNVaZ2tw-1; Tue, 28 Apr 2020 12:46:00 -0400
-X-MC-Unique: 7Xfc0J2COzGyCdvNVaZ2tw-1
+ us-mta-135-76Qetu4xNXmgtCMc6yXb7Q-1; Tue, 28 Apr 2020 12:46:01 -0400
+X-MC-Unique: 76Qetu4xNXmgtCMc6yXb7Q-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2BCF107ACCD;
-        Tue, 28 Apr 2020 16:45:58 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CD36100A61F;
+        Tue, 28 Apr 2020 16:46:00 +0000 (UTC)
 Received: from localhost.localdomain (unknown [10.40.192.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D1631002388;
-        Tue, 28 Apr 2020 16:45:57 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4DA1C1000322;
+        Tue, 28 Apr 2020 16:45:59 +0000 (UTC)
 From:   Lukas Czerner <lczerner@redhat.com>
 To:     linux-ext4@vger.kernel.org
 Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk
-Subject: [PATCH v2 11/17] ext4: add ext4_get_tree for the new mount API
-Date:   Tue, 28 Apr 2020 18:45:30 +0200
-Message-Id: <20200428164536.462-12-lczerner@redhat.com>
+Subject: [PATCH v2 12/17] ext4: refactor ext4_remount()
+Date:   Tue, 28 Apr 2020 18:45:31 +0200
+Message-Id: <20200428164536.462-13-lczerner@redhat.com>
 In-Reply-To: <20200428164536.462-1-lczerner@redhat.com>
 References: <20200428164536.462-1-lczerner@redhat.com>
 MIME-Version: 1.0
@@ -50,81 +49,130 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Refactor ext4_remount() so that we can parse mount options separately.
+
 Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 ---
- fs/ext4/super.c | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ fs/ext4/super.c | 62 +++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 50 insertions(+), 12 deletions(-)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 81238dddc3b7..729a07c298e2 100644
+index 729a07c298e2..a340b4943544 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -93,6 +93,7 @@ static int ext4_check_opt_consistency(struct fs_context=
- *fc,
- 				      struct super_block *sb);
- static void ext4_apply_options(struct fs_context *fc, struct super_block=
- *sb);
- static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *=
-param);
-+static int ext4_get_tree(struct fs_context *fc);
-=20
- /*
-  * Lock ordering
-@@ -124,6 +125,7 @@ static int ext4_parse_param(struct fs_context *fc, st=
-ruct fs_parameter *param);
-=20
- static const struct fs_context_operations ext4_context_ops =3D {
- 	.parse_param	=3D ext4_parse_param,
-+	.get_tree	=3D ext4_get_tree,
+@@ -5926,8 +5926,10 @@ struct ext4_mount_options {
+ #endif
  };
 =20
- #if !defined(CONFIG_EXT2_FS) && !defined(CONFIG_EXT2_FS_MODULE) && defin=
-ed(CONFIG_EXT4_USE_FOR_EXT2)
-@@ -5340,6 +5342,42 @@ static int ext4_fill_super(struct super_block *sb,=
- void *data, int silent)
- 	return ret;
+-static int ext4_remount(struct super_block *sb, int *flags, char *data)
++static int __ext4_remount(struct fs_context *fc, struct super_block *sb,
++			  int *flags)
+ {
++	struct ext4_fs_context *ctx =3D fc->fs_private;
+ 	struct ext4_super_block *es;
+ 	struct ext4_sb_info *sbi =3D EXT4_SB(sb);
+ 	unsigned long old_sb_flags;
+@@ -5940,10 +5942,6 @@ static int ext4_remount(struct super_block *sb, in=
+t *flags, char *data)
+ 	int i, j;
+ 	char *to_free[EXT4_MAXQUOTAS];
+ #endif
+-	char *orig_data =3D kstrdup(data, GFP_KERNEL);
+-
+-	if (data && !orig_data)
+-		return -ENOMEM;
+=20
+ 	/* Store the original options */
+ 	old_sb_flags =3D sb->s_flags;
+@@ -5964,7 +5962,6 @@ static int ext4_remount(struct super_block *sb, int=
+ *flags, char *data)
+ 			if (!old_opts.s_qf_names[i]) {
+ 				for (j =3D 0; j < i; j++)
+ 					kfree(old_opts.s_qf_names[j]);
+-				kfree(orig_data);
+ 				return -ENOMEM;
+ 			}
+ 		} else
+@@ -5973,9 +5970,10 @@ static int ext4_remount(struct super_block *sb, in=
+t *flags, char *data)
+ 	if (sbi->s_journal && sbi->s_journal->j_task->io_context)
+ 		journal_ioprio =3D sbi->s_journal->j_task->io_context->ioprio;
+=20
+-	err =3D parse_apply_options(data, sb, NULL, &journal_ioprio, 1);
+-	if (err < 0)
+-		goto restore_opts;
++	if (ctx->spec & EXT4_SPEC_JOURNAL_IOPRIO)
++		journal_ioprio =3D ctx->journal_ioprio;
++
++	ext4_apply_options(fc, sb);
+=20
+ 	if ((old_opts.s_mount_opt & EXT4_MOUNT_JOURNAL_CHECKSUM) ^
+ 	    test_opt(sb, JOURNAL_CHECKSUM)) {
+@@ -6172,8 +6170,7 @@ static int ext4_remount(struct super_block *sb, int=
+ *flags, char *data)
+ #endif
+=20
+ 	*flags =3D (*flags & ~SB_LAZYTIME) | (sb->s_flags & SB_LAZYTIME);
+-	ext4_msg(sb, KERN_INFO, "re-mounted. Opts: %s", orig_data);
+-	kfree(orig_data);
++	ext4_msg(sb, KERN_INFO, "re-mounted.");
+ 	return 0;
+=20
+ restore_opts:
+@@ -6195,10 +6192,51 @@ static int ext4_remount(struct super_block *sb, i=
+nt *flags, char *data)
+ 	for (i =3D 0; i < EXT4_MAXQUOTAS; i++)
+ 		kfree(to_free[i]);
+ #endif
+-	kfree(orig_data);
+ 	return err;
  }
 =20
-+static int ext4_fill_super_fc(struct super_block *sb, struct fs_context =
-*fc)
++static int ext4_remount(struct super_block *sb, int *flags, char *data)
 +{
-+	struct ext4_fs_context *ctx =3D fc->fs_private;
-+	struct ext4_sb_info *sbi;
++	struct ext4_sb_info *sbi =3D EXT4_SB(sb);
++	struct ext4_fs_context ctx;
++	struct fs_context fc;
++	char *orig_data;
 +	int ret;
 +
-+	sbi =3D ext4_alloc_sbi(sb);
-+	if (!sbi)
++	orig_data =3D kstrdup(data, GFP_KERNEL);
++	if (data && !orig_data)
 +		return -ENOMEM;
 +
-+	fc->s_fs_info =3D sbi;
++	memset(&fc, 0, sizeof(fc));
++	memset(&ctx, 0, sizeof(ctx));
 +
-+	/* Cleanup superblock name */
-+	strreplace(sb->s_id, '/', '!');
++	fc.fs_private =3D &ctx;
++	fc.purpose =3D FS_CONTEXT_FOR_RECONFIGURE;
++	fc.s_fs_info =3D sbi;
 +
-+	sbi->s_sb_block =3D 1;	/* Default super block location */
-+	if (ctx->spec & EXT4_SPEC_s_sb_block)
-+		sbi->s_sb_block =3D ctx->s_sb_block;
-+
-+	ret =3D __ext4_fill_super(fc, sb, fc->sb_flags & SB_SILENT);
++	ret =3D parse_options(&fc, (char *) data);
 +	if (ret < 0)
-+		goto free_sbi;
++		goto err_out;
 +
++	ret =3D ext4_check_opt_consistency(&fc, sb);
++	if (ret < 0)
++		goto err_out;
++
++	ret =3D __ext4_remount(&fc, sb, flags);
++	if (ret < 0)
++		goto err_out;
++
++	ext4_msg(sb, KERN_INFO, "re-mounted. Opts: %s", orig_data);
++	cleanup_ctx(&ctx);
++	kfree(orig_data);
 +	return 0;
 +
-+free_sbi:
-+	ext4_free_sbi(sbi);
-+	fc->s_fs_info =3D NULL;
++err_out:
++	cleanup_ctx(&ctx);
++	kfree(orig_data);
 +	return ret;
 +}
 +
-+static int ext4_get_tree(struct fs_context *fc)
-+{
-+	return get_tree_bdev(fc, ext4_fill_super_fc);
-+}
-+
- /*
-  * Setup any per-fs journal parameters now.  We'll do this both on
-  * initial mount, once the journal has been initialised but before we've
+ #ifdef CONFIG_QUOTA
+ static int ext4_statfs_project(struct super_block *sb,
+ 			       kprojid_t projid, struct kstatfs *buf)
 --=20
 2.21.1
 
