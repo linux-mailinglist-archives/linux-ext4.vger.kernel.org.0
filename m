@@ -2,32 +2,34 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D471BDB0C
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 13:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF6D1BDB09
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 13:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbgD2LsZ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Apr 2020 07:48:25 -0400
+        id S1726968AbgD2LsV (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Apr 2020 07:48:21 -0400
 Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:20553 "EHLO
         EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726951AbgD2LsU (ORCPT
+        by vger.kernel.org with ESMTP id S1726886AbgD2LsT (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 29 Apr 2020 07:48:20 -0400
+        Wed, 29 Apr 2020 07:48:19 -0400
 Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
  EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Wed, 29 Apr 2020 04:33:11 -0700
+ 15.0.1156.6; Wed, 29 Apr 2020 04:33:14 -0700
 Received: from localhost.localdomain (ashwinh-vm-1.vmware.com [10.110.19.225])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id B3A7FB1F56;
-        Wed, 29 Apr 2020 07:33:10 -0400 (EDT)
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 196D8B1F56;
+        Wed, 29 Apr 2020 07:33:13 -0400 (EDT)
 From:   ashwin-h <ashwinh@vmware.com>
 To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
 CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <stable@kernel.org>, <srivatsab@vmware.com>,
         <srivatsa@csail.mit.edu>, <rostedt@goodmis.org>,
         <srostedt@vmware.com>, <gregkh@linuxfoundation.org>,
-        <ashwin.hiranniah@gmail.com>, Ashwin H <ashwinh@vmware.com>
-Subject: [PATCH 4/5] ext4: fix block validity checks for journal inodes using indirect blocks
-Date:   Thu, 30 Apr 2020 00:51:38 +0530
-Message-ID: <4a0508c21cf3113aea8dce2f678d8188915cf77f.1587713792.git.ashwinh@vmware.com>
+        <ashwin.hiranniah@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Ashwin H <ashwinh@vmware.com>
+Subject: [PATCH 5/5] ext4: unsigned int compared against zero
+Date:   Thu, 30 Apr 2020 00:51:39 +0530
+Message-ID: <3a2fb96b84ddc0421315de9dc4fb39df5da06376.1587713792.git.ashwinh@vmware.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1587713792.git.ashwinh@vmware.com>
 References: <cover.1587713792.git.ashwinh@vmware.com>
@@ -40,44 +42,37 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 170417c8c7bb2cbbdd949bf5c443c0c8f24a203b upstream.
+commit fbbbbd2f28aec991f3fbc248df211550fbdfd58c upstream.
 
-Commit 345c0dbf3a30 ("ext4: protect journal inode's blocks using
-block_validity") failed to add an exception for the journal inode in
-ext4_check_blockref(), which is the function used by ext4_get_branch()
-for indirect blocks.  This caused attempts to read from the ext3-style
-journals to fail with:
+There are two cases where u32 variables n and err are being checked
+for less than zero error values, the checks is always false because
+the variables are not signed. Fix this by making the variables ints.
 
-[  848.968550] EXT4-fs error (device sdb7): ext4_get_branch:171: inode #8: block 30343695: comm jbd2/sdb7-8: invalid block
-
-Fix this by adding the missing exception check.
-
+Addresses-Coverity: ("Unsigned compared against 0")
 Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using block_validity")
-Reported-by: Arthur Marsh <arthur.marsh@internode.on.net>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Ashwin H <ashwinh@vmware.com>
 ---
- fs/ext4/block_validity.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/ext4/block_validity.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index bdc8e48..9c9c639 100644
+index 9c9c639..d31d93e 100644
 --- a/fs/ext4/block_validity.c
 +++ b/fs/ext4/block_validity.c
-@@ -274,6 +274,11 @@ int ext4_check_blockref(const char *function, unsigned int line,
- 	__le32 *bref = p;
- 	unsigned int blk;
+@@ -141,7 +141,8 @@ static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
+ 	struct inode *inode;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct ext4_map_blocks map;
+-	u32 i = 0, err = 0, num, n;
++	u32 i = 0, num;
++	int err = 0, n;
  
-+	if (ext4_has_feature_journal(inode->i_sb) &&
-+	    (inode->i_ino ==
-+	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum)))
-+		return 0;
-+
- 	while (bref < p+max) {
- 		blk = le32_to_cpu(*bref++);
- 		if (blk &&
+ 	if ((ino < EXT4_ROOT_INO) ||
+ 	    (ino > le32_to_cpu(sbi->s_es->s_inodes_count)))
 -- 
 2.7.4
 
