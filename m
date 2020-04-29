@@ -2,126 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A052C1BDA39
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 13:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B761BDA5E
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 13:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726746AbgD2LCT (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Apr 2020 07:02:19 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24074 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726345AbgD2LCT (ORCPT
+        id S1726677AbgD2LJy (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Apr 2020 07:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726524AbgD2LJx (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 29 Apr 2020 07:02:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588158138;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XqC41x4PruaAPU1YcSPW9WP4aeY86SVarTK6qniLX78=;
-        b=eUgXD3mXVwZdgkfCQX+tXmmX8+NYoU5SIFkzEKtlXKEUgPda87a6C9b7BJDKxuGFBQCxv/
-        NjCrLBbY+WFrclbwSO1GSzT8Fp9pcnouG+gIFpsp7uGeSsDLrKNINStrDW7Z1K0e2XHdLL
-        fFQO6TEultH4Kmi3e8pgUaocVLyMLXo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-imo-K3UIMOuqgVGu1uhLLA-1; Wed, 29 Apr 2020 07:02:14 -0400
-X-MC-Unique: imo-K3UIMOuqgVGu1uhLLA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38768107ACCA;
-        Wed, 29 Apr 2020 11:02:13 +0000 (UTC)
-Received: from work (unknown [10.40.192.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9E24150FE2;
-        Wed, 29 Apr 2020 11:02:11 +0000 (UTC)
-Date:   Wed, 29 Apr 2020 13:02:07 +0200
-From:   Lukas Czerner <lczerner@redhat.com>
-To:     Eric Sandeen <sandeen@sandeen.net>
-Cc:     linux-ext4@vger.kernel.org, dhowells@redhat.com,
+        Wed, 29 Apr 2020 07:09:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0A0C03C1AD
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Apr 2020 04:09:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=azkwK7kCyzu9TJzT40ryl2Bq1YKytVIxT2fz6tK4FSQ=; b=iQruzPw7Gr5yYsSt+fpH0L5ei8
+        uQQrBpjQfk+OxabFAwwQ0f0jGDcfHEHpLJg8NbfsRvVK+IXQLUR8nE2jQdJsOrdKk99fmQU2u7r87
+        d/LwUrqTKS8O+VtmCZWRw7L1ciRVv6GP9cHb5V94aIaFIvr7+2qgvH2HSQQ1z+5eK+utdCu6lwJrj
+        p8lipLzrZyHt/2wzb1EQkSeC1TNTyOhZulkMYIAV/Z5KjjsivxzaPjHcnZQZHUYmeCF0wpLZV9KwR
+        YpR6tT1Ynq+tVLGAzUxx2s/GEW1BVndVL1FkHABMYS7tjhw/QUw49XvbLaKsejNE7yMOvNA8wdAYD
+        tcuVSXOw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTkb5-0002Rp-Rr; Wed, 29 Apr 2020 11:09:47 +0000
+Date:   Wed, 29 Apr 2020 04:09:47 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Lukas Czerner <lczerner@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-ext4@vger.kernel.org, dhowells@redhat.com,
         viro@zeniv.linux.org.uk
 Subject: Re: [PATCH v2 05/17] ext4: Allow sb to be NULL in ext4_msg()
-Message-ID: <20200429110207.cvvxn4szl7d36a4x@work>
+Message-ID: <20200429110947.GA6290@infradead.org>
 References: <20200428164536.462-1-lczerner@redhat.com>
  <20200428164536.462-6-lczerner@redhat.com>
- <39a487d3-bce3-0290-229a-c49a540ba7de@sandeen.net>
+ <20200428164808.GA3632@infradead.org>
+ <20200428165747.ondq7nbn4ol3j3lu@work>
+ <4f6598e12127cc6e80af7dde5149220d92b07b11.camel@themaw.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <39a487d3-bce3-0290-229a-c49a540ba7de@sandeen.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <4f6598e12127cc6e80af7dde5149220d92b07b11.camel@themaw.net>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 09:38:11PM -0500, Eric Sandeen wrote:
-> On 4/28/20 11:45 AM, Lukas Czerner wrote:
-> > At the parsing phase of mount in the new mount api sb will not be
-> > available so allow sb to be NULL in ext4_msg and use that in
-> > handle_mount_opt().
-> > 
-> > Also change return value to appropriate -EINVAL where needed.
-> > 
-> > Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-> > ---
-> >  fs/ext4/super.c | 120 +++++++++++++++++++++++++-----------------------
-> >  1 file changed, 63 insertions(+), 57 deletions(-)
-> > 
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 2c6fea451d7d..2f7e49bfbf71 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -88,7 +88,7 @@ static void ext4_unregister_li_request(struct super_block *sb);
-> >  static void ext4_clear_request_list(void);
-> >  static struct inode *ext4_get_journal_inode(struct super_block *sb,
-> >  					    unsigned int journal_inum);
-> > -static int ext4_validate_options(struct super_block *sb);
-> > +static int ext4_validate_options(struct fs_context *fc);
-> >  
-> >  /*
-> >   * Lock ordering
-> > @@ -754,13 +754,14 @@ void __ext4_msg(struct super_block *sb,
-> >  	struct va_format vaf;
-> >  	va_list args;
-> >  
-> > -	if (!___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state), "EXT4-fs"))
-> > +	if (sb &&
-> > +	    !___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state), "EXT4-fs"))
-> >  		return;
-> >  
-> >  	va_start(args, fmt);
-> >  	vaf.fmt = fmt;
-> >  	vaf.va = &args;
-> > -	printk("%sEXT4-fs (%s): %pV\n", prefix, sb->s_id, &vaf);
-> > +	printk("%sEXT4-fs (%s): %pV\n", prefix, sb ? sb->s_id : "n/a", &vaf);
+On Wed, Apr 29, 2020 at 10:53:00AM +0800, Ian Kent wrote:
+> The mount-API log macros tend to cause user confusion because they
+> often lead to unexpected log messages.
 > 
-> Tiny nitpick, I might drop "n/a" - I'm not sure that makes anything clearer:
+> We're seeing that now with bugs logged due to unexpected messages
+> resulting from the NFS mount-API conversion.
 > 
-> "EXT4-fs (n/a): message" seems confusing, but maybe that's just me.
-> 
-> FWIW xfs just removes the s_id print altogether if it's not available, i.e.:
-> 
-> static void
-> __xfs_printk(
->         const char              *level,
->         const struct xfs_mount  *mp,
->         struct va_format        *vaf)
-> {
->         if (mp && mp->m_super) {
->                 printk("%sXFS (%s): %pV\n", level, mp->m_super->s_id, vaf);
->                 return;
->         }
->         printk("%sXFS: %pV\n", level, vaf);
-> }
-> 
-> *shrug* up to personal preference I suppose.
+> I'd recommend mostly avoiding using the macros until there's been
+> time to reconsider how they should work, after all fsopen() and
+> friends will still get errno errors just not the passed string
+> description.
 
-I wanted the message to stay more-or-less uniform, but I think you're
-right. I'll drop the (n/a).
-
--Lukas
-
-> 
-> Thanks,
-> -Eric
-> 
-
+And when is that time going to be?  Should we convert existing users
+back and remove that functionality if it doesn't work properly?
