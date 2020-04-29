@@ -2,109 +2,198 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495761BD2AA
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 04:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C5E1BD2FA
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 05:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgD2CxI (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Apr 2020 22:53:08 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:48139 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726399AbgD2CxI (ORCPT
+        id S1726565AbgD2DeR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Apr 2020 23:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726551AbgD2DeQ (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 28 Apr 2020 22:53:08 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 3C7C5B63;
-        Tue, 28 Apr 2020 22:53:07 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 28 Apr 2020 22:53:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        3bGEV+/NmxpXMqUYX149kUZqfmOq8oqQ2J1PZ7VwpYE=; b=z62TChVopEO7FtOZ
-        vOUG1UAGKy5zSnnb9I0zlSzeQjQK1Dp9jLN1uvJRIxH4iO5EILOwQqkfog52qlYy
-        6A6Qo5h17sKorhVY24JRXrcYjR/Q+LPNN313KeiVgsvJcIu2wbyxDCbDA3Vbf/lK
-        WRHe0HVZjVT2qRra1Kmf714Ce1QZ1JL/9uMfJCr459d9Ua2aNDPDt2gDxirVRJaR
-        rOWeLMXKk1U6+GWjIeOh87FGCOU//suYzbrN/aEU9VOCSiGL6IweDTZMR1yk+GM3
-        hm4FoW4mgIasRiVomlPxIDWxwB12/8LfpwGNEOv1hLdhCJFDewLXFLPDLRAevm0O
-        hCmisg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=3bGEV+/NmxpXMqUYX149kUZqfmOq8oqQ2J1PZ7Vwp
-        YE=; b=hGx3XhQ26lUjQ0HOA7M1R2sUHbtIYVBuznUpuP/99HBM81koHwdtnGv4D
-        kKH5k7Og6vTLOtlJyim1oVE9S66CzUxP09RVLjB/Lyiq5Us1yYqWOeBNzCewJ7kJ
-        AaR6JkRFad4EC/aBqmFv7arnFMiC1eu+zXfTR6DEjoQolTFGbvTCx/vp6iiocXfX
-        MG7Q4D4l3TpAFlI2vlowgRq1gyfNycPwQtWhhk13ZZ3vJBTxa88hykywYDv//Pqm
-        m6HoSbeq79dDJqgjVkvRM1zYU+Ye4z59NLGGd+zv8E2zqagWg+3bbRXj8uiMarWS
-        wrCy45UKcRl22mg7sZuxqMwcDpz5w==
-X-ME-Sender: <xms:EuyoXsXm_LQ2ISgIz4nht6Czq3LmLwjErLSJTMEPQ1fDd5-u95ocJA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedriedvgdeivdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
-    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecukfhppeduudekrddvtdelrd
-    duieehrdehgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
-    ohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:EuyoXtZPTT2vfrVd9rtrorNjhOFbwQMmlqwcsng1JQNoVAUc7Eq2GA>
-    <xmx:EuyoXknHloUrOB7Q497e1iA7yyHNuxx7_PqKtC5fRc8VStynVIs-ZQ>
-    <xmx:EuyoXpfZKYrKzEuEJGuWOAxawWDmUmHY5tOS9uM64p1lzOSVS6RdWg>
-    <xmx:EuyoXohzCRaEWmb63RReG4Id9ZD2B2HUovO0kTUX6-NWRchVfLIlng>
-Received: from mickey.themaw.net (unknown [118.209.165.54])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 26A253065EDC;
-        Tue, 28 Apr 2020 22:53:03 -0400 (EDT)
-Message-ID: <4f6598e12127cc6e80af7dde5149220d92b07b11.camel@themaw.net>
-Subject: Re: [PATCH v2 05/17] ext4: Allow sb to be NULL in ext4_msg()
-From:   Ian Kent <raven@themaw.net>
-To:     Lukas Czerner <lczerner@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     linux-ext4@vger.kernel.org, dhowells@redhat.com,
-        viro@zeniv.linux.org.uk
-Date:   Wed, 29 Apr 2020 10:53:00 +0800
-In-Reply-To: <20200428165747.ondq7nbn4ol3j3lu@work>
-References: <20200428164536.462-1-lczerner@redhat.com>
-         <20200428164536.462-6-lczerner@redhat.com>
-         <20200428164808.GA3632@infradead.org>
-         <20200428165747.ondq7nbn4ol3j3lu@work>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 28 Apr 2020 23:34:16 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B597C03C1AC
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Apr 2020 20:34:16 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x2so436207pfx.7
+        for <linux-ext4@vger.kernel.org>; Tue, 28 Apr 2020 20:34:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=aIyYPW+iEnQ265kBjcNNhp/ZRHlYVKAjheGX37KyuWw=;
+        b=RTLC1rPtjO5HFxAIEkdr2aL5CWJx+uj0TG7BXgCliqoOfot61lUJ2eLlaDtWMqPv37
+         qb9wdb6OMRISjcVeCPguATO/zoYjqDPsO6QUsFHd2gm7ZjkKYak/WInvpoN6JmpVQ5Qc
+         yXVaNdHTL18TYsemCudm6MUjmcXuuyZBAafCpGM5SqhHF6w9s8/n2I0MY/2bprUNVQlB
+         qvdEvilJFN2YylavMsXLi08/bMXlVyVyd3T1MfURwUXbh7KTG3IZlruUqlckBLJTmUmC
+         MWop/2mIzJjIoMFQMDySSJ7+OEND9xy2dSP2U+1rwBSub/A4JjG6gAFc/AkjLDx6xN2i
+         cfpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=aIyYPW+iEnQ265kBjcNNhp/ZRHlYVKAjheGX37KyuWw=;
+        b=iQ9sTw1AlDRC3ro1buZVPtFZ6pO7Wm3s2P2wuD5MkYAW/gHmQZHQKDKe4CBNJUet8k
+         NLA8CBvpHIwzKYkQsNnHuY0pIVmDY4udPKzh5lyvszgal4hvfozTkyTBGZo37RbvgWpo
+         vL3N3B/QaWy7jcZVQZvrZTMWbmG+5tS19aKIQAZrKDsROFdgejPMR8QCYCvMDdC0gb/2
+         D6l+Tu259cLDCyA/Uy0KBMu57IjEPrCh4VlVwNJTGeu+kH+O9SazGysgsNbPniUrg110
+         kouEhFDk4thckxwoT+QcB+oflUf2Jt7sVhD/zPovidiXL9sUnZDqi2U5PamRojUSLJYH
+         ep1g==
+X-Gm-Message-State: AGi0PuZZdFEhsR5+ND/YbzFjOsItfMq9dF7jjhm+J3yJvroI2AHJN+6J
+        VVIyBpdJ3VsY6dCjTQwGEzTuSw==
+X-Google-Smtp-Source: APiQypJueIBzxMoy4LLxkSbFfWrQepqJF09kHuLeyNdqEw3CLmkdPFGk3o3zDGgYpg2GJbwShOMupw==
+X-Received: by 2002:a62:be0c:: with SMTP id l12mr31208824pff.95.1588131255557;
+        Tue, 28 Apr 2020 20:34:15 -0700 (PDT)
+Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
+        by smtp.gmail.com with ESMTPSA id e135sm16522556pfh.37.2020.04.28.20.34.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Apr 2020 20:34:14 -0700 (PDT)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <3FF8B32A-0CB2-4818-95AA-5E76FE494EDB@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_681417AA-B0C9-46DC-92C6-B0CCD0027FC4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: ext4 and project quotas bugs
+Date:   Tue, 28 Apr 2020 21:34:09 -0600
+In-Reply-To: <20200428153228.GB6426@quack2.suse.cz>
+Cc:     Francois <rigault.francois@gmail.com>,
+        Wang Shilong <wangshilong1991@gmail.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+To:     Jan Kara <jack@suse.cz>
+References: <CAMc2VtTqz5QuCfdtEBDND+-sU=7T5_8Sh9Wo-4-u6HbJs+PZdw@mail.gmail.com>
+ <20200428153228.GB6426@quack2.suse.cz>
+X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Tue, 2020-04-28 at 18:57 +0200, Lukas Czerner wrote:
-> On Tue, Apr 28, 2020 at 09:48:08AM -0700, Christoph Hellwig wrote:
-> > On Tue, Apr 28, 2020 at 06:45:24PM +0200, Lukas Czerner wrote:
-> > > At the parsing phase of mount in the new mount api sb will not be
-> > > available so allow sb to be NULL in ext4_msg and use that in
-> > > handle_mount_opt().
-> > > 
-> > > Also change return value to appropriate -EINVAL where needed.
-> > 
-> > Shouldn't mount-time messages be reported using the logfc and
-> > family
-> > helpers from include/linux/fs_context.h? (which btw, have really
-> > horrible over-generic names).
-> 
-> I am sure it should at some point, but I am not really sure how ready
-> it is at the moment. Last time I checked David told me not to bother
-> using it yet.
-> 
-> Is it ready yet David ? Should we be switching to it ?
 
-The mount-API log macros tend to cause user confusion because they
-often lead to unexpected log messages.
+--Apple-Mail=_681417AA-B0C9-46DC-92C6-B0CCD0027FC4
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-We're seeing that now with bugs logged due to unexpected messages
-resulting from the NFS mount-API conversion.
+On Apr 28, 2020, at 9:32 AM, Jan Kara <jack@suse.cz> wrote:
+>=20
+> Hello!
+>=20
+> On Tue 28-04-20 08:41:59, Francois wrote:
+>> my goal is to make some kind of ansible playbook to install project
+>> quotas, so I am interested in using a tool like setquota, I also want
+>> the teams behind the capped directories, to think about a clean-up
+>> mechanism (the quota would just be a temporary annoyance for them), =
+so
+>> it should not be "jailbreakable" too easily.
+>=20
+> Hum, that "not jailbreakable" part is going to be difficult unless you =
+also
+> confine those users also in their user namespace. Because any user is
+> allowed to change project ID of the files he owns arbitrarily if he is
+> running in the initial user namespace. Project quotas have been =
+designed as
+> an advisory feature back in Irix days... There are talks of allowing =
+to
+> tweak the behavior (i.e., to allow setting of project id only by =
+sysadmin)
+> by a mount option but so far nobody has implemented it.
 
-I'd recommend mostly avoiding using the macros until there's been
-time to reconsider how they should work, after all fsopen() and
-friends will still get errno errors just not the passed string
-description.
+We tried to implement this for ext4, but Dave Chinner argued that
+allowing anyone (at least in the root namespace) to set the project
+ID to anything they wanted was part of how project quotas are
+_supposed_ to work.
 
-Ian
+We ended up adding a restriction at the Lustre level, defaulting to
+only allow root (chprojid_gid=3D0, via CAP_SYS_RESOURCE), or admins in
+a specific numeric group (with chprojid_gid=3DN), to change the projid,
+and denying regular users the ability to change the projid of files.
 
+This can be changed by setting "chprojid_gid=3D-1" to allow users in
+any group to change the projid of files, returning the XFS behavior.
+The "chprojid_gid" is essentially a sysfs tunable for Lustre, but it
+could also/instead be a mount option for ext4, if that is preferred.
+I don't have a particular attachment to the parameter name, or how
+it is set by the admin, but I think something like this is needed.
+
+
+>> 2- project quota are a bit too easy to escape:
+>> dd if=3D/dev/zero of=3Dsomeoutput oflag=3Dappend
+>> loop0: write failed, project block limit reached.
+>> dd: writing to 'someoutput': Disk quota exceeded
+>> 2467+0 records in
+>> 2466+0 records out
+>> 1262592 bytes (1.3 MB, 1.2 MiB) copied, 0.0105432 s, 120 MB/s
+>> vagrant@localhost:/mnt/loop/abc/mydir3> chattr -p 33 someoutput
+>> vagrant@localhost:/mnt/loop/abc/mydir3> dd if=3D/dev/zero =
+of=3Dsomeoutput
+>> oflag=3Dappend
+>> dd: writing to 'someoutput': No space left on device
+>> 127393+0 records in
+>> 127392+0 records out
+>> 65224704 bytes (65 MB, 62 MiB) copied, 0.568859 s, 115 MB/s
+>=20
+> Yes and as I mentioned above this is deliberate.
+
+That may be the historical XFS behavior, but IMHO, it doesn't make
+this behavior *useful*.  If *anyone* can change the projid of files
+that makes them mostly useless.  They might be OK for informational
+or accounting purposes (e.g. fast "du" of a directory) in a friendly
+user environment, but they are useless for any space management (i.e.
+anyone can easily bypass project limits by "chattr -p $RANDOM <file>").
+
+I'd prefer to make the project quotas useful out of the box for ext4,
+by implementing the chprojid_gid tunable, or something equivalent.
+If there are users/sites that want identical behavior to XFS, they
+can always set chprojid_gid=3D-1 to allow anyone to change the projid.
+
+I'd be happy to understand what Dave doesn't like about this proposal,
+but the last time the enforcement of project quotas was discussed, my
+attempt to figure this out ended with silence, see thread ending at:
+
+=
+https://lore.kernel.org/linux-ext4/6B0D1F84-0718-4E43-87D4-C8AFC94C0163@di=
+lger.ca/
+
+Maybe this time we can get over the hump?  Is it just some implicit
+difference between "directory quota" and "project quota" that exists
+in XFS that I (and everyone using ext4) does not understand?
+
+Cheers, Andreas
+
+
+PS: Implementing /etc/projid support for e2fsprogs chattr/lsattr to
+allow project names would also be useful, but IMHO less important.
+That would be a relatively easy feature for someone to implement,
+since it only involves userspace and is unlikely to get objections.
+
+
+
+
+--Apple-Mail=_681417AA-B0C9-46DC-92C6-B0CCD0027FC4
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6o9bEACgkQcqXauRfM
+H+BeUg//TNuWkKcy3i231uXUXRl+8aZiL1FxT0kRHc8oXmCVFTBfsQf0M2ogg4M8
+6/aoDx1+6kX+jHAlNv0Bj50IKHtYM/2i+4kVPxuujtW9FGvlSV6qBAEJWcH3/4qJ
+f/WVPGx9LI/ewMFbBuV1OaacZjwujO+hwPPUkHbWbW3C8Q5kotiVjrwzjT9Ulp2k
+h4wmEyCrX6KamBKBpVaXCA2Wtz12I/cWhrBtVWghL5ZNUhEKiKkdtjM1C8VOkwzu
+XHRhbDxqV/8TjvVrh66kNLNvwH2DYPFB8r8Ehc666JgVDH9gkmoGKuMSCnZyZrME
+vucurwXmNXhva9LjU0FUlJeEXaBY/zAfnctvtrOBHi9gqjLMyPm3k28tFTNgpxUj
+/FgGwMLO01HaWNnuvkTftzNfv/5Zxh0x9nLJGet62J7cM4qgFJOdpJCjH7WWp235
+e83o+OJjvwEYJQwgYwDDzyOqpt0owXJp9GuF77FGOsXcBOMZ4A3uej4K+J8yGp1g
+l1sKlS2T+IWfNlTMou+/JHUuDmqdydyQtGWHU9gcpzmuAjFlxN2hoRc0hNI9LqLw
+/1IWBXHq6qQYIypG4iXtSPrUqEjT5Z3MtKVtS0qUYDidghDyUQW5xIszY3aNKJ6x
+VYPKqowMD2Qg4bE4TwyavqLQH555e12OjWeyugY/18OabtVnSgQ=
+=jfgi
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_681417AA-B0C9-46DC-92C6-B0CCD0027FC4--
