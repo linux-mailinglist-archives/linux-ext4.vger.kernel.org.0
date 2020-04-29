@@ -2,284 +2,142 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA5A1BD234
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 04:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B948E1BD24D
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 04:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgD2CVW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Apr 2020 22:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726158AbgD2CVW (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 22:21:22 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109A3C03C1AC;
-        Tue, 28 Apr 2020 19:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=cKGLOpBW4qS3y+pSSeknlOPB4GuywQqaIP5NAkI3phg=; b=TOAaZYbwlvmhe7a3bX4UBPMl8g
-        MxcFA1SBtsecnMjpu3Xk2gQq1t3UYHkPjlxkb1XBkCTLFiaSstXR0YMJ6Bt7dQo1nUEuh34Dd2Lgx
-        6BG+shZqj4pzsEgQ0yQ4AhxIsjeqHs58A08N8BmTC24Tng+tWHLnDLDIq5EN8RiL+FatAP4Y2SVAD
-        LTiuuGbqAUoHI30oREXQHNdova4wUbypSpixAb2H5dMjoxaBug59Kae1ekAY9eKHDg3+EiRFdF/5z
-        6370HWQBCKHo7Up+IGGFD4p2M15KpKerbW+SX9j+MNsfoX6aX49U+oXXwaibqIvS6caji1SBFlrEC
-        mgbkL1SQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTcLg-0002L2-Ph; Wed, 29 Apr 2020 02:21:20 +0000
-Subject: Re: [PATCH V11.1] Documentation/dax: Update Usage section
-To:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-References: <20200428002142.404144-5-ira.weiny@intel.com>
- <20200428222145.409961-1-ira.weiny@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <28f97c0b-6c7f-7496-b57d-0342a4dcc0af@infradead.org>
-Date:   Tue, 28 Apr 2020 19:21:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726422AbgD2CiO (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Apr 2020 22:38:14 -0400
+Received: from sandeen.net ([63.231.237.45]:38048 "EHLO sandeen.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726345AbgD2CiN (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Tue, 28 Apr 2020 22:38:13 -0400
+Received: from Liberator.local (liberator [10.0.0.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by sandeen.net (Postfix) with ESMTPSA id D6CAB45207D;
+        Tue, 28 Apr 2020 21:37:32 -0500 (CDT)
+Subject: Re: [PATCH v2 05/17] ext4: Allow sb to be NULL in ext4_msg()
+To:     Lukas Czerner <lczerner@redhat.com>, linux-ext4@vger.kernel.org
+Cc:     dhowells@redhat.com, viro@zeniv.linux.org.uk
+References: <20200428164536.462-1-lczerner@redhat.com>
+ <20200428164536.462-6-lczerner@redhat.com>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Autocrypt: addr=sandeen@sandeen.net; prefer-encrypt=mutual; keydata=
+ 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 pA==
+Message-ID: <39a487d3-bce3-0290-229a-c49a540ba7de@sandeen.net>
+Date:   Tue, 28 Apr 2020 21:38:11 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200428222145.409961-1-ira.weiny@intel.com>
+In-Reply-To: <20200428164536.462-6-lczerner@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On 4/28/20 3:21 PM, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On 4/28/20 11:45 AM, Lukas Czerner wrote:
+> At the parsing phase of mount in the new mount api sb will not be
+> available so allow sb to be NULL in ext4_msg and use that in
+> handle_mount_opt().
 > 
-> Update the Usage section to reflect the new individual dax selection
-> functionality.
+> Also change return value to appropriate -EINVAL where needed.
 > 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
+> Signed-off-by: Lukas Czerner <lczerner@redhat.com>
 > ---
-> Changes from V11:
-> 	Minor changes from Darrick
+>  fs/ext4/super.c | 120 +++++++++++++++++++++++++-----------------------
+>  1 file changed, 63 insertions(+), 57 deletions(-)
 > 
-> Changes from V10:
-> 	Clarifications from Dave
-> 	Add '-c' to xfs_io examples
-> 
-> Changes from V9:
-> 	Fix missing ')'
-> 	Fix trialing '"'
-
-trailing
-
-> 
-> Changes from V8:
-> 	Updates from Darrick
-> 
-> Changes from V7:
-> 	Cleanups/clarifications from Darrick and Dan
-> 
-> Changes from V6:
-> 	Update to allow setting FS_XFLAG_DAX any time.
-> 	Update with list of behaviors from Darrick
-> 	https://lore.kernel.org/lkml/20200409165927.GD6741@magnolia/
-> 
-> Changes from V5:
-> 	Update to reflect the agreed upon semantics
-> 	https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
-> ---
->  Documentation/filesystems/dax.txt | 142 +++++++++++++++++++++++++++++-
->  1 file changed, 139 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-> index 679729442fd2..dc1c1aa36cc2 100644
-> --- a/Documentation/filesystems/dax.txt
-> +++ b/Documentation/filesystems/dax.txt
-> @@ -17,11 +17,147 @@ For file mappings, the storage device is mapped directly into userspace.
->  Usage
->  -----
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 2c6fea451d7d..2f7e49bfbf71 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -88,7 +88,7 @@ static void ext4_unregister_li_request(struct super_block *sb);
+>  static void ext4_clear_request_list(void);
+>  static struct inode *ext4_get_journal_inode(struct super_block *sb,
+>  					    unsigned int journal_inum);
+> -static int ext4_validate_options(struct super_block *sb);
+> +static int ext4_validate_options(struct fs_context *fc);
 >  
-> -If you have a block device which supports DAX, you can make a filesystem
-> +If you have a block device which supports DAX, you can make a file system
->  on it as usual.  The DAX code currently only supports files with a block
->  size equal to your kernel's PAGE_SIZE, so you may need to specify a block
-> -size when creating the filesystem.  When mounting it, use the "-o dax"
-> -option on the command line or add 'dax' to the options in /etc/fstab.
-> +size when creating the file system.
-> +
-> +Currently 3 filesystems support DAX: ext2, ext4 and xfs.  Enabling DAX on them
-
-Why "file system" in the first paragraph when "filesystem" is used here and below?
-
-> +is different.
-> +
-> +Enabling DAX on ext4 and ext2
-> +-----------------------------
-> +
-> +When mounting the filesystem, use the "-o dax" option on the command line or
-> +add 'dax' to the options in /etc/fstab.  This works to enable DAX on all files
-> +within the filesystem.  It is equivalent to the '-o dax=always' behavior below.
-> +
-> +
-> +Enabling DAX on xfs
-> +-------------------
-> +
-> +Summary
-> +-------
-> +
-> + 1. There exists an in-kernel file access mode flag S_DAX that corresponds to
-> +    the statx flag STATX_ATTR_DAX.  See the manpage for statx(2) for details
-> +    about this access mode.
-> +
-> + 2. There exists a persistent flag FS_XFLAG_DAX that can be applied to regular
-> +    files and directories. This advisory flag can be set or cleared at any
-> +    time, but doing so does not immediately affect the S_DAX state.
-> +
-> + 3. If the persistent FS_XFLAG_DAX flag is set on a directory, this flag will
-> +    be inherited by all regular files and subdirectories that are subsequently
-> +    created in this directory. Files and subdirectories that exist at the time
-> +    this flag is set or cleared on the parent directory are not modified by
-> +    this modification of the parent directory.
-> +
-> + 4. There exists dax mount options which can override FS_XFLAG_DAX in the
-
-             exist
-
-> +    setting of the S_DAX flag.  Given underlying storage which supports DAX the
-> +    following hold:
-> +
-> +    "-o dax=inode"  means "follow FS_XFLAG_DAX" and is the default.
-> +
-> +    "-o dax=never"  means "never set S_DAX, ignore FS_XFLAG_DAX."
-> +
-> +    "-o dax=always" means "always set S_DAX ignore FS_XFLAG_DAX."
-> +
-> +    "-o dax"        is a legacy option which is an alias for "dax=always".
-> +		    This may be removed in the future so "-o dax=always" is
-> +		    the preferred method for specifying this behavior.
-> +
-> +    NOTE: Modifications to and the inheritance behavior of FS_XFLAG_DAX remain
-> +    the same even when the file system is mounted with a dax option.  However,
-> +    in-core inode state (S_DAX) will be overridden until the file system is
-
-                                     "file system" (2 times above)
-
-> +    remounted with dax=inode and the inode is evicted from kernel memory.
-> +
-> + 5. The S_DAX policy can be changed via:
-> +
-> +    a) Setting the parent directory FS_XFLAG_DAX as needed before files are
-> +       created
-> +
-> +    b) Setting the appropriate dax="foo" mount option
-> +
-> +    c) Changing the FS_XFLAG_DAX on existing regular files and directories.
-
-                       FS_XFLAGS_DAX flag on
-
-> +       This has runtime constraints and limitations that are described in 6)
-> +       below.
-> +
-> + 6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX flag,
-> +    the change in behaviour for existing regular files may not occur
-> +    immediately.  If the change must take effect immediately, the administrator
-> +    needs to:
-> +
-> +    a) stop the application so there are no active references to the data set
-> +       the policy change will affect
-> +
-> +    b) evict the data set from kernel caches so it will be re-instantiated when
-> +       the application is restarted. This can be achieved by:
-> +
-> +       i. drop-caches
-> +       ii. a filesystem unmount and mount cycle
-
-filesystem
-
-> +       iii. a system reboot
-> +
-> +
-> +Details
-> +-------
-> +
-> +There are 2 per-file dax flags.  One is a persistent inode setting (FS_XFLAG_DAX)
-> +and the other is a volatile flag indicating the active state of the feature
-> +(S_DAX).
-> +
-> +FS_XFLAG_DAX is preserved within the file system.  This persistent config
-
-file system
-
-> +setting can be set, cleared and/or queried using the FS_IOC_FS[GS]ETXATTR ioctl
-> +(see ioctl_xfs_fsgetxattr(2)) or an utility such as 'xfs_io'.
-> +
-> +New files and directories automatically inherit FS_XFLAG_DAX from
-> +their parent directory _when_ _created_.  Therefore, setting FS_XFLAG_DAX at
-> +directory creation time can be used to set a default behavior for an entire
-> +sub-tree.
-> +
-> +To clarify inheritance, here are 3 examples:
-> +
-> +Example A:
-> +
-> +mkdir -p a/b/c
-> +xfs_io -c 'chattr +x' a
-> +mkdir a/b/c/d
-> +mkdir a/e
-> +
-> +	dax: a,e
-> +	no dax: b,c,d
-> +
-> +Example B:
-> +
-> +mkdir a
-> +xfs_io -c 'chattr +x' a
-> +mkdir -p a/b/c/d
-> +
-> +	dax: a,b,c,d
-> +	no dax:
-> +
-> +Example C:
-> +
-> +mkdir -p a/b/c
-> +xfs_io -c 'chattr +x' c
-> +mkdir a/b/c/d
-> +
-> +	dax: c,d
-> +	no dax: a,b
-> +
-> +
-> +The current enabled state (S_DAX) is set when a file inode is instantiated in
-> +memory by the kernel.  It is set based on the underlying media support, the
-> +value of FS_XFLAG_DAX and the file system's dax mount option.
-> +
-> +statx can be used to query S_DAX.  NOTE that only regular files will ever have
-> +S_DAX set and therefore statx will never indicate that S_DAX is set on
-> +directories.
-> +
-> +Setting the FS_XFLAG_DAX (specifically or through inheritance) occurs even if
-
-           the FS_XFLAG_DAX flag
-
-> +the underlying media does not support dax and/or the file system is overridden
-
-file system
-
-Just be consistent, please.
-
-> +with a mount option.
-> +
+>  /*
+>   * Lock ordering
+> @@ -754,13 +754,14 @@ void __ext4_msg(struct super_block *sb,
+>  	struct va_format vaf;
+>  	va_list args;
 >  
+> -	if (!___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state), "EXT4-fs"))
+> +	if (sb &&
+> +	    !___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state), "EXT4-fs"))
+>  		return;
 >  
->  Implementation Tips for Block Driver Writers
-> 
+>  	va_start(args, fmt);
+>  	vaf.fmt = fmt;
+>  	vaf.va = &args;
+> -	printk("%sEXT4-fs (%s): %pV\n", prefix, sb->s_id, &vaf);
+> +	printk("%sEXT4-fs (%s): %pV\n", prefix, sb ? sb->s_id : "n/a", &vaf);
 
-thanks.
--- 
-~Randy
+Tiny nitpick, I might drop "n/a" - I'm not sure that makes anything clearer:
 
+"EXT4-fs (n/a): message" seems confusing, but maybe that's just me.
+
+FWIW xfs just removes the s_id print altogether if it's not available, i.e.:
+
+static void
+__xfs_printk(
+        const char              *level,
+        const struct xfs_mount  *mp,
+        struct va_format        *vaf)
+{
+        if (mp && mp->m_super) {
+                printk("%sXFS (%s): %pV\n", level, mp->m_super->s_id, vaf);
+                return;
+        }
+        printk("%sXFS: %pV\n", level, vaf);
+}
+
+*shrug* up to personal preference I suppose.
+
+Thanks,
+-Eric
