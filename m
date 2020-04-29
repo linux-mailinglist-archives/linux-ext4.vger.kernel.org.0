@@ -2,56 +2,86 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64BC1BE2FD
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 17:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F931BE453
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 18:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgD2PlS (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 29 Apr 2020 11:41:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgD2PlS (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:41:18 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6E6C206B8;
-        Wed, 29 Apr 2020 15:41:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588174878;
-        bh=2ZqWRbxVt4j71SLYV4KPEQCs1PbuDAjO7HUknYYbNns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R9AfLiaFJlw5JSXlCW15G3DTabSmVOQ/lANj0JENNj4+UeE02Y92/rNK/YKukolZD
-         1W1RnOWmMUpOyf8cN8cRPMrfsX6imrbanS7UnYVA6dLa1vpNwdI2un/EBsqL0bUOe5
-         XtPi1ATfXhEh3BndFU++e7RrogPF0GEBcwXuQUlg=
-Date:   Wed, 29 Apr 2020 08:41:16 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v11 00/12] Inline Encryption Support
-Message-ID: <20200429154116.GA1844@sol.localdomain>
-References: <20200429072121.50094-1-satyat@google.com>
+        id S1726839AbgD2Qt3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 29 Apr 2020 12:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726654AbgD2Qt1 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Wed, 29 Apr 2020 12:49:27 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC483C035494
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Apr 2020 09:49:26 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b2so3372072ljp.4
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Apr 2020 09:49:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D9Uuz2eH1rEC3Rsd9pWrnSIaGFJoBuGHkEpyj9FO1RU=;
+        b=fNkYlfC7XyU0na36V1nAsEErxJD6SCdd001tONSj5QzCTF5pfnhtkJHTnLvT4RbjHZ
+         Esmpn/Ja4kfMTNbK4V/ULBUaFnl8J/DehN+PSbsUTUNm9u5a0/1rtLVU7yIw59uOmHc1
+         Oz8J1e1DSH0V3mg6CW+Ys3Xe1HiKJDyaEj9z4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D9Uuz2eH1rEC3Rsd9pWrnSIaGFJoBuGHkEpyj9FO1RU=;
+        b=c+JSFyd4LmtzSPE9cyJ58/e3yTxiRPg0MDFn2vQE6dQTXG8zmwtOF7lQ2/Da35AtoL
+         Ie+lWbKqAM0K9uTptYXLvS+bs/lygKn9jq8Ashv4WkBYr0uv3O0CbENvv8DpzTzQSs+p
+         4iXxSIG55hqWM/i/ShChRKhnlZUobpWwaKOfuMyXD8ew7tKmKV+WeeqOhkbc+/lzKMjf
+         NgPQwbVdmzURb/yJ4i9P+dBtxxYUV3y3sK3DeuALqT4A8zI7IYoUItmqhMC7kfAqRViQ
+         Ggzb9U6LBKmOsHuVfEr3FkYpv/FMfyaJZYVAwXfuvJ9kfOfQ/5Qt8A1hftwUV1NVCWfZ
+         NTbQ==
+X-Gm-Message-State: AGi0PuZ3FRjpOY9Nx4obhcTLDnfh4Hudo18AgdM2bTXXS5xt5V3SZ87Z
+        +1qYEXAyB9CbAN7SYmiNmdIKEctuemw=
+X-Google-Smtp-Source: APiQypIPiTVHU3w/yqhzXT2+iMUHrT4h63G+sDjVdyWvbPOaQYIG0ebACEg3V2PB+kxcJohlft6KKw==
+X-Received: by 2002:a2e:2201:: with SMTP id i1mr21328694lji.31.1588178964469;
+        Wed, 29 Apr 2020 09:49:24 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id f15sm2930873lfh.76.2020.04.29.09.49.22
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Apr 2020 09:49:22 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id u10so2258218lfo.8
+        for <linux-ext4@vger.kernel.org>; Wed, 29 Apr 2020 09:49:22 -0700 (PDT)
+X-Received: by 2002:ac2:4466:: with SMTP id y6mr23676248lfl.125.1588178962247;
+ Wed, 29 Apr 2020 09:49:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429072121.50094-1-satyat@google.com>
+References: <158810566883.1168184.8679527126430822408.stgit@warthog.procyon.org.uk>
+ <20200429060556.zeci7z7jwazly4ga@work>
+In-Reply-To: <20200429060556.zeci7z7jwazly4ga@work>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 29 Apr 2020 09:49:04 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiHoa0onB0KTthLXeHNNBupcPOdf38OEoFFy3ok3nOeJA@mail.gmail.com>
+Message-ID: <CAHk-=wiHoa0onB0KTthLXeHNNBupcPOdf38OEoFFy3ok3nOeJA@mail.gmail.com>
+Subject: Re: [PATCH] Fix use after free in get_tree_bdev()
+To:     Lukas Czerner <lczerner@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 07:21:09AM +0000, Satya Tangirala wrote:
-> This patch series adds support for Inline Encryption to the block layer,
-> UFS, fscrypt, f2fs and ext4.
-> 
+On Tue, Apr 28, 2020 at 11:06 PM Lukas Czerner <lczerner@redhat.com> wrote:
+>
+> This fixes the problem I was seeing. Thanks David.
+>
+> Reviewed-by: Lukas Czerner <lczerner@redhat.com>
 
-This patch series can also be retrieved from
+Well, it got applied as obvious before this, so the commit log won't
+show your testing.
 
-        Repo: https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git
-        Tag: inline-encryption-v11
+Commit dd7bc8158b41 ("Fix use after free in get_tree_bdev()") in case
+anybody cares. Didn't make -rc3, but will be in -rc4.
 
-- Eric
+          Linus
