@@ -2,31 +2,34 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 762961BCFDE
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 00:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA5A1BD234
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 Apr 2020 04:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgD1WX6 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 28 Apr 2020 18:23:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:49009 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725934AbgD1WX6 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Tue, 28 Apr 2020 18:23:58 -0400
-IronPort-SDR: R5DyCQmAj6d57z5I6ZoA2qn5/mmYZDdeKml1jjstUraxcJZa+cY8ZW2aIuT2Axrsvw+yP/FG23
- Q319WLAuYCWw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 15:23:57 -0700
-IronPort-SDR: TpJ5oDYJud6HIiiRZ5fEXYolDzhC+p/LN42X0IX1xrMH0lLbyuhArh4GVnGjRjXsmv2BtBzGlU
- M4bHXNM8ezwQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
-   d="scan'208";a="247833091"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Apr 2020 15:23:56 -0700
-Date:   Tue, 28 Apr 2020 15:23:56 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        id S1726545AbgD2CVW (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 28 Apr 2020 22:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726158AbgD2CVW (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 28 Apr 2020 22:21:22 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109A3C03C1AC;
+        Tue, 28 Apr 2020 19:21:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=cKGLOpBW4qS3y+pSSeknlOPB4GuywQqaIP5NAkI3phg=; b=TOAaZYbwlvmhe7a3bX4UBPMl8g
+        MxcFA1SBtsecnMjpu3Xk2gQq1t3UYHkPjlxkb1XBkCTLFiaSstXR0YMJ6Bt7dQo1nUEuh34Dd2Lgx
+        6BG+shZqj4pzsEgQ0yQ4AhxIsjeqHs58A08N8BmTC24Tng+tWHLnDLDIq5EN8RiL+FatAP4Y2SVAD
+        LTiuuGbqAUoHI30oREXQHNdova4wUbypSpixAb2H5dMjoxaBug59Kae1ekAY9eKHDg3+EiRFdF/5z
+        6370HWQBCKHo7Up+IGGFD4p2M15KpKerbW+SX9j+MNsfoX6aX49U+oXXwaibqIvS6caji1SBFlrEC
+        mgbkL1SQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTcLg-0002L2-Ph; Wed, 29 Apr 2020 02:21:20 +0000
+Subject: Re: [PATCH V11.1] Documentation/dax: Update Usage section
+To:     ira.weiny@intel.com, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org,
         "Darrick J. Wong" <darrick.wong@oracle.com>
 Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
         Dan Williams <dan.j.williams@intel.com>,
@@ -35,27 +38,24 @@ Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
         "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
         linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-api@vger.kernel.org
-Subject: Re: [PATCH V11.1] Documentation/dax: Update Usage section
-Message-ID: <20200428222356.GD406458@iweiny-DESK2.sc.intel.com>
-References: <'20200428002142.404144-5-ira.weiny@intel.com'>
- <20200428221942.409890-1-ira.weiny@intel.com>
+References: <20200428002142.404144-5-ira.weiny@intel.com>
+ <20200428222145.409961-1-ira.weiny@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <28f97c0b-6c7f-7496-b57d-0342a4dcc0af@infradead.org>
+Date:   Tue, 28 Apr 2020 19:21:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428221942.409890-1-ira.weiny@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <20200428222145.409961-1-ira.weiny@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Sorry ignore this one...
-
-I got the 'reply to' wrong...
-
-Ira
-
-On Tue, Apr 28, 2020 at 03:19:42PM -0700, 'Ira Weiny' wrote:
+On 4/28/20 3:21 PM, ira.weiny@intel.com wrote:
 > From: Ira Weiny <ira.weiny@intel.com>
 > 
 > Update the Usage section to reflect the new individual dax selection
@@ -74,6 +74,9 @@ On Tue, Apr 28, 2020 at 03:19:42PM -0700, 'Ira Weiny' wrote:
 > Changes from V9:
 > 	Fix missing ')'
 > 	Fix trialing '"'
+
+trailing
+
 > 
 > Changes from V8:
 > 	Updates from Darrick
@@ -110,6 +113,9 @@ On Tue, Apr 28, 2020 at 03:19:42PM -0700, 'Ira Weiny' wrote:
 > +size when creating the file system.
 > +
 > +Currently 3 filesystems support DAX: ext2, ext4 and xfs.  Enabling DAX on them
+
+Why "file system" in the first paragraph when "filesystem" is used here and below?
+
 > +is different.
 > +
 > +Enabling DAX on ext4 and ext2
@@ -141,6 +147,9 @@ On Tue, Apr 28, 2020 at 03:19:42PM -0700, 'Ira Weiny' wrote:
 > +    this modification of the parent directory.
 > +
 > + 4. There exists dax mount options which can override FS_XFLAG_DAX in the
+
+             exist
+
 > +    setting of the S_DAX flag.  Given underlying storage which supports DAX the
 > +    following hold:
 > +
@@ -157,6 +166,9 @@ On Tue, Apr 28, 2020 at 03:19:42PM -0700, 'Ira Weiny' wrote:
 > +    NOTE: Modifications to and the inheritance behavior of FS_XFLAG_DAX remain
 > +    the same even when the file system is mounted with a dax option.  However,
 > +    in-core inode state (S_DAX) will be overridden until the file system is
+
+                                     "file system" (2 times above)
+
 > +    remounted with dax=inode and the inode is evicted from kernel memory.
 > +
 > + 5. The S_DAX policy can be changed via:
@@ -167,6 +179,9 @@ On Tue, Apr 28, 2020 at 03:19:42PM -0700, 'Ira Weiny' wrote:
 > +    b) Setting the appropriate dax="foo" mount option
 > +
 > +    c) Changing the FS_XFLAG_DAX on existing regular files and directories.
+
+                       FS_XFLAGS_DAX flag on
+
 > +       This has runtime constraints and limitations that are described in 6)
 > +       below.
 > +
@@ -183,6 +198,9 @@ On Tue, Apr 28, 2020 at 03:19:42PM -0700, 'Ira Weiny' wrote:
 > +
 > +       i. drop-caches
 > +       ii. a filesystem unmount and mount cycle
+
+filesystem
+
 > +       iii. a system reboot
 > +
 > +
@@ -194,6 +212,9 @@ On Tue, Apr 28, 2020 at 03:19:42PM -0700, 'Ira Weiny' wrote:
 > +(S_DAX).
 > +
 > +FS_XFLAG_DAX is preserved within the file system.  This persistent config
+
+file system
+
 > +setting can be set, cleared and/or queried using the FS_IOC_FS[GS]ETXATTR ioctl
 > +(see ioctl_xfs_fsgetxattr(2)) or an utility such as 'xfs_io'.
 > +
@@ -242,12 +263,23 @@ On Tue, Apr 28, 2020 at 03:19:42PM -0700, 'Ira Weiny' wrote:
 > +directories.
 > +
 > +Setting the FS_XFLAG_DAX (specifically or through inheritance) occurs even if
+
+           the FS_XFLAG_DAX flag
+
 > +the underlying media does not support dax and/or the file system is overridden
+
+file system
+
+Just be consistent, please.
+
 > +with a mount option.
 > +
 >  
 >  
 >  Implementation Tips for Block Driver Writers
-> -- 
-> 2.25.1
 > 
+
+thanks.
+-- 
+~Randy
+
