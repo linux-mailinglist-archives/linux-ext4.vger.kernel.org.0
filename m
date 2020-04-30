@@ -2,124 +2,115 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF571C08B7
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Apr 2020 23:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853D51C0A6D
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 May 2020 00:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgD3VE0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Apr 2020 17:04:26 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20460 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726045AbgD3VE0 (ORCPT
+        id S1727030AbgD3W2S (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Apr 2020 18:28:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51174 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726697AbgD3W2S (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:04:26 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UL4E5D011668;
-        Thu, 30 Apr 2020 17:04:22 -0400
+        Thu, 30 Apr 2020 18:28:18 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UM3Dix115905;
+        Thu, 30 Apr 2020 18:26:05 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30r5cm1esa-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mguyqwv6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Apr 2020 17:04:22 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03UL4JJ0011898;
-        Thu, 30 Apr 2020 17:04:21 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30r5cm1ehc-1
+        Thu, 30 Apr 2020 18:26:05 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03UM3Jnm116164;
+        Thu, 30 Apr 2020 18:26:05 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mguyqwug-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Apr 2020 17:04:21 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03UL0xqA002185;
-        Thu, 30 Apr 2020 21:02:14 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma05fra.de.ibm.com with ESMTP id 30mcu52yna-1
+        Thu, 30 Apr 2020 18:26:05 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03UMKGgY027434;
+        Thu, 30 Apr 2020 22:26:02 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 30mcu5uehb-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Apr 2020 21:02:14 +0000
+        Thu, 30 Apr 2020 22:26:02 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03UL2BoR34275642
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03UMQ0nw57082034
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 21:02:11 GMT
+        Thu, 30 Apr 2020 22:26:00 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CA465AE057;
-        Thu, 30 Apr 2020 21:02:11 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 46AC6AE051;
+        Thu, 30 Apr 2020 22:26:00 +0000 (GMT)
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2A2A0AE04D;
-        Thu, 30 Apr 2020 21:02:11 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 805DEAE057;
+        Thu, 30 Apr 2020 22:25:58 +0000 (GMT)
 Received: from localhost.localdomain (unknown [9.85.81.13])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 30 Apr 2020 21:02:10 +0000 (GMT)
-Subject: Re: [PATCH 1/4] ext4: remove dead GET_BLOCKS_ZERO code
-To:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org
-Cc:     tytso@mit.edu
-References: <20200430185320.23001-1-enwlinux@gmail.com>
- <20200430185320.23001-2-enwlinux@gmail.com>
+        Thu, 30 Apr 2020 22:25:58 +0000 (GMT)
+Subject: Re: [QUESTION] BUG_ON in ext4_mb_simple_scan_group
+To:     linux-ext4@vger.kernel.org
+Cc:     "zhangyi (F)" <yi.zhang@huawei.com>,
+        yangerkun <yangerkun@huawei.com>, tytso@mit.edu, jack@suse.cz,
+        dmonakhov@gmail.com, adilger@dilger.ca, bob.liu@oracle.com,
+        wshilong@ddn.com
+References: <9ba13e20-2946-897d-0b81-3ea7b21a4db6@huawei.com>
+ <20200416183309.13914A404D@d06av23.portsmouth.uk.ibm.com>
+ <39040d8c-9918-d976-a25a-0ec189f1e111@huawei.com>
+ <20200417032644.75DF3A404D@d06av23.portsmouth.uk.ibm.com>
+ <1740a49b-a10d-1bd3-a070-d76e9eb62fb2@huawei.com>
 From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Fri, 1 May 2020 02:32:10 +0530
+Date:   Fri, 1 May 2020 03:55:57 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200430185320.23001-2-enwlinux@gmail.com>
+In-Reply-To: <1740a49b-a10d-1bd3-a070-d76e9eb62fb2@huawei.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Message-Id: <20200430210211.2A2A0AE04D@d06av26.portsmouth.uk.ibm.com>
+Message-Id: <20200430222558.805DEAE057@d06av26.portsmouth.uk.ibm.com>
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-30_12:2020-04-30,2020-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- suspectscore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0
- malwarescore=0 adultscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300152
+ definitions=2020-04-30_13:2020-04-30,2020-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 suspectscore=0
+ bulkscore=0 adultscore=0 impostorscore=0 phishscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300163
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-
-On 5/1/20 12:23 AM, Eric Whitney wrote:
-> There's no call to ext4_map_blocks() in the current ext4 code with a
-> flags argument that combines EXT4_GET_BLOCKS_CONVERT and
-> EXT4_GET_BLOCKS_ZERO.  Remove the code that corresponds to this case
-> from ext4_ext_handle_unwritten_extents().
+>>
+>>> If above is true, then may be we should not call
+>>> "SetPageUptodate(page)", in case of an error reading block bitmap?
+>>> Thoughts?
+>>>
+>> Yeah, it's better to set page uptodate only if all block bitmap buffers
+>> are uptodate represent by this page.
 > 
-> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
-
-As I see it. Yes, this flag was mainly added for DAX handling at two 
-places but mostly with below purpose.
-
-Purpose:- Since DAX earlier using PRE_IO flag and then to convert
-unwritten to written, it added this extra functionality to zero out.
-Since ext4_map_blocks already implements the unwritten to written
-functionality, so PRE_IO along with below combination of flags was
-removed from DAX path.
-
-Now none of that DAX code path uses below code anyways. So your patch
-justifies killing below code snip.
-
-
-Feel free to add:
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-
-> ---
->   fs/ext4/extents.c | 8 --------
->   1 file changed, 8 deletions(-)
 > 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index f2b577b315a0..59a90492b9dd 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3826,14 +3826,6 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
->   	}
->   	/* IO end_io complete, convert the filled extent to written */
->   	if (flags & EXT4_GET_BLOCKS_CONVERT) {
-> -		if (flags & EXT4_GET_BLOCKS_ZERO) {
-> -			if (allocated > map->m_len)
-> -				allocated = map->m_len;
-> -			err = ext4_issue_zeroout(inode, map->m_lblk, newblock,
-> -						 allocated);
-> -			if (err < 0)
-> -				goto out2;
-> -		}
->   		ret = ext4_convert_unwritten_extents_endio(handle, inode, map,
->   							   ppath);
->   		if (ret >= 0)
+> So I guess the *easier* thing to do here is to abort the loop which
+> calls ext4_wait_block_bitmap() in ext4_mb_init_cache, similar to how
+> the loop above it does (which calls for ext4_read_block_bitmap_nowait())
 > 
+> Since if any of the block bitmap buffer (which belongs to that page)
+> could not be read properly, then we should not set the PageUptodate.
+> (including for blocksize < pagesize where groups_per_page > 1) and
+> no need of even setting up the in memory buddy and bitmap information
+> (since we are anyway not going to use it).
+> 
+> Others can comment, if something else needs to be done?
+> But I think over optimizing this logic for blocksize < pagesize
+> may become an overkill? (since this mostly happens during an I/O error).
+> 
+
+Ok, so as I see this bug was possibly introduced to handle blocksize < 
+pagesize case itself [1]. So it will make no sense to just optimize it
+for blocksize == pagesize again. So I guess we should look into this
+more closely rather then simply implementing above logic.
+
+[1]: https://www.spinics.net/lists/linux-ext4/msg48111.html
+
+So, I can get back to this some time later maybe.
+
+-ritesh
