@@ -2,203 +2,131 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0081BF148
-	for <lists+linux-ext4@lfdr.de>; Thu, 30 Apr 2020 09:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299031BF3DF
+	for <lists+linux-ext4@lfdr.de>; Thu, 30 Apr 2020 11:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgD3HYh (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 30 Apr 2020 03:24:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38542 "EHLO mail.kernel.org"
+        id S1726844AbgD3JNc (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 30 Apr 2020 05:13:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49608 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726411AbgD3HYh (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:24:37 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD94A20838;
-        Thu, 30 Apr 2020 07:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588231476;
-        bh=B1510mH7/QkNFP5gDC7/BK6EbcgbEzV8MhuqKtudeLQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0jSbTpTIKAp8HftBanaummT3PLxHjd7KNLv7h+rLMtW46sSj4rCYu67IuaiurcWub
-         ndocTRCyPFh7Efb03EY75Tg1wlk8hu+ayQEYKpXdfI7SxyfnlakHfBB7OpKfdPw94L
-         V7tN58WoWf9C3V0q2eTm9gEr1x9xbLPnT2nk/B90=
-Date:   Thu, 30 Apr 2020 00:24:34 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
-        Barani Muthukumaran <bmuthuku@qti.qualcomm.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Kim Boojin <boojin.kim@samsung.com>
-Subject: Re: [PATCH v11 10/12] fscrypt: add inline encryption support
-Message-ID: <20200430072434.GD16238@sol.localdomain>
-References: <20200429072121.50094-1-satyat@google.com>
- <20200429072121.50094-11-satyat@google.com>
+        id S1726453AbgD3JNb (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Thu, 30 Apr 2020 05:13:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 3943CAB7F;
+        Thu, 30 Apr 2020 09:13:29 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 7F9AD1E1295; Thu, 30 Apr 2020 11:13:29 +0200 (CEST)
+Date:   Thu, 30 Apr 2020 11:13:29 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jan Kara <jack@suse.com>, tytso@mit.edu,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCHv3 1/1] fibmap: Warn and return an error in case of block
+ > INT_MAX
+Message-ID: <20200430091329.GC12716@quack2.suse.cz>
+References: <b95aca069607600ffd1efc95803cf39c13768b4d.1588222212.git.riteshh@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200429072121.50094-11-satyat@google.com>
+In-Reply-To: <b95aca069607600ffd1efc95803cf39c13768b4d.1588222212.git.riteshh@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 07:21:19AM +0000, Satya Tangirala wrote:
-> +/**
-> + * fscrypt_inode_uses_inline_crypto - test whether an inode uses inline
-> + *				      encryption
-> + * @inode: an inode
+On Thu 30-04-20 10:25:18, Ritesh Harjani wrote:
+> We better warn the fibmap user and not return a truncated and therefore
+> an incorrect block map address if the bmap() returned block address
+> is greater than INT_MAX (since user supplied integer pointer).
+> 
+> It's better to pr_warn() all user of ioctl_fibmap() and return a proper
+> error code rather than silently letting a FS corruption happen if the
+> user tries to fiddle around with the returned block map address.
+> 
+> We fix this by returning an error code of -ERANGE and returning 0 as the
+> block mapping address in case if it is > INT_MAX.
+> 
+> Now iomap_bmap() could be called from either of these two paths.
+> Either when a user is calling an ioctl_fibmap() interface to get
+> the block mapping address or by some filesystem via use of bmap()
+> internal kernel API.
+> bmap() kernel API is well equipped with handling of u64 addresses.
+> 
+> WARN condition in iomap_bmap_actor() was mainly added to warn all
+> the fibmap users. But now that we have directly added this warning
+> for all fibmap users and also made sure to return 0 as block map address
+> in case if addr > INT_MAX.
+> So we can now remove this logic from iomap_bmap_actor().
+> 
+> Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
 
-I think this should also mention that the key must be setup, like
+Looks good to me. You can add:
 
- * @inode: an inode.  If encrypted, its key must be set up.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Likewise in fscrypt_inode_uses_fs_layer_crypto().
+								Honza
 
-> + *
-> + * Return: true if the inode requires file contents encryption and if the
-> + *	   encryption should be done in the block layer via blk-crypto rather
-> + *	   than in the filesystem layer.
-> + */
-> +bool fscrypt_inode_uses_inline_crypto(const struct inode *inode)
-> +{
-> +	return fscrypt_needs_contents_encryption(inode) &&
-> +	       inode->i_crypt_info->ci_inlinecrypt;
-> +}
-> +EXPORT_SYMBOL_GPL(fscrypt_inode_uses_inline_crypto);
+> ---
+> v2 -> v3:
+> 1. Added file path info using (%pD4)
+> 2. Dropped Reviewed-by tags for reviewing this final version.
+> 
+>  fs/ioctl.c        | 8 ++++++++
+>  fs/iomap/fiemap.c | 5 +----
+>  2 files changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index f1d93263186c..6b8629fbe0fd 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -55,6 +55,7 @@ EXPORT_SYMBOL(vfs_ioctl);
+>  static int ioctl_fibmap(struct file *filp, int __user *p)
+>  {
+>  	struct inode *inode = file_inode(filp);
+> +	struct super_block *sb = inode->i_sb;
+>  	int error, ur_block;
+>  	sector_t block;
+>  
+> @@ -71,6 +72,13 @@ static int ioctl_fibmap(struct file *filp, int __user *p)
+>  	block = ur_block;
+>  	error = bmap(inode, &block);
+>  
+> +	if (block > INT_MAX) {
+> +		error = -ERANGE;
+> +		pr_warn_ratelimited("[%s/%d] FS: %s File: %pD4 would truncate fibmap result\n",
+> +				    current->comm, task_pid_nr(current),
+> +				    sb->s_id, filp);
+> +	}
 > +
-> +/**
-> + * fscrypt_inode_uses_fs_layer_crypto - test whether an inode uses fs-layer
-> + *					encryption
-> + * @inode: an inode
-> + *
-> + * Return: true if the inode requires file contents encryption and if the
-> + *	   encryption should be done in the filesystem layer rather than in the
-> + *	   block layer via blk-crypto.
-> + */
-> +bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode)
-> +{
-> +	return fscrypt_needs_contents_encryption(inode) &&
-> +	       !inode->i_crypt_info->ci_inlinecrypt;
-> +}
-> +EXPORT_SYMBOL_GPL(fscrypt_inode_uses_fs_layer_crypto);
-
-It might also make sense to implement these as inline functions in fscrypt.h:
-
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 0676832817a74a..6d44d89087b4e5 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -178,37 +178,10 @@ void fscrypt_destroy_inline_crypt_key(struct fscrypt_prepared_key *prep_key)
- 	}
- }
- 
--/**
-- * fscrypt_inode_uses_inline_crypto - test whether an inode uses inline
-- *				      encryption
-- * @inode: an inode
-- *
-- * Return: true if the inode requires file contents encryption and if the
-- *	   encryption should be done in the block layer via blk-crypto rather
-- *	   than in the filesystem layer.
-- */
--bool fscrypt_inode_uses_inline_crypto(const struct inode *inode)
--{
--	return fscrypt_needs_contents_encryption(inode) &&
--	       inode->i_crypt_info->ci_inlinecrypt;
--}
--EXPORT_SYMBOL_GPL(fscrypt_inode_uses_inline_crypto);
--
--/**
-- * fscrypt_inode_uses_fs_layer_crypto - test whether an inode uses fs-layer
-- *					encryption
-- * @inode: an inode
-- *
-- * Return: true if the inode requires file contents encryption and if the
-- *	   encryption should be done in the filesystem layer rather than in the
-- *	   block layer via blk-crypto.
-- */
--bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode)
-+bool __fscrypt_inode_uses_inline_crypto(const struct inode *inode)
- {
--	return fscrypt_needs_contents_encryption(inode) &&
--	       !inode->i_crypt_info->ci_inlinecrypt;
-+	return inode->i_crypt_info->ci_inlinecrypt;
- }
--EXPORT_SYMBOL_GPL(fscrypt_inode_uses_fs_layer_crypto);
- 
- static void fscrypt_generate_dun(const struct fscrypt_info *ci, u64 lblk_num,
- 				 u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE])
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index e02820b8e981e1..df30d3dde6ce02 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -508,9 +508,7 @@ static inline void fscrypt_set_ops(struct super_block *sb,
- 
- /* inline_crypt.c */
- #ifdef CONFIG_FS_ENCRYPTION_INLINE_CRYPT
--extern bool fscrypt_inode_uses_inline_crypto(const struct inode *inode);
--
--extern bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode);
-+extern bool __fscrypt_inode_uses_inline_crypto(const struct inode *inode);
- 
- extern void fscrypt_set_bio_crypt_ctx(struct bio *bio,
- 				      const struct inode *inode,
-@@ -527,16 +525,11 @@ extern bool fscrypt_mergeable_bio_bh(struct bio *bio,
- 				     const struct buffer_head *next_bh);
- 
- #else /* CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
--static inline bool fscrypt_inode_uses_inline_crypto(const struct inode *inode)
-+static inline bool __fscrypt_inode_uses_inline_crypto(const struct inode *inode)
- {
- 	return false;
- }
- 
--static inline bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode)
--{
--	return fscrypt_needs_contents_encryption(inode);
--}
--
- static inline void fscrypt_set_bio_crypt_ctx(struct bio *bio,
- 					     const struct inode *inode,
- 					     u64 first_lblk, gfp_t gfp_mask) { }
-@@ -560,6 +553,36 @@ static inline bool fscrypt_mergeable_bio_bh(struct bio *bio,
- }
- #endif /* !CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
- 
-+/**
-+ * fscrypt_inode_uses_inline_crypto - test whether an inode uses inline
-+ *				      encryption
-+ * @inode: an inode.  If encrypted, its key must be set up.
-+ *
-+ * Return: true if the inode requires file contents encryption and if the
-+ *	   encryption should be done in the block layer via blk-crypto rather
-+ *	   than in the filesystem layer.
-+ */
-+static inline bool fscrypt_inode_uses_inline_crypto(const struct inode *inode)
-+{
-+	return fscrypt_needs_contents_encryption(inode) &&
-+	       __fscrypt_inode_uses_inline_crypto(inode);
-+}
-+
-+/**
-+ * fscrypt_inode_uses_fs_layer_crypto - test whether an inode uses fs-layer
-+ *					encryption
-+ * @inode: an inode.  If encrypted, its key must be set up.
-+ *
-+ * Return: true if the inode requires file contents encryption and if the
-+ *	   encryption should be done in the filesystem layer rather than in the
-+ *	   block layer via blk-crypto.
-+ */
-+static inline bool fscrypt_inode_uses_fs_layer_crypto(const struct inode *inode)
-+{
-+	return fscrypt_needs_contents_encryption(inode) &&
-+	       !__fscrypt_inode_uses_inline_crypto(inode);
-+}
-+
- /**
-  * fscrypt_require_key - require an inode's encryption key
-  * @inode: the inode we need the key for
-
+>  	if (error)
+>  		ur_block = 0;
+>  	else
+> diff --git a/fs/iomap/fiemap.c b/fs/iomap/fiemap.c
+> index bccf305ea9ce..d55e8f491a5e 100644
+> --- a/fs/iomap/fiemap.c
+> +++ b/fs/iomap/fiemap.c
+> @@ -117,10 +117,7 @@ iomap_bmap_actor(struct inode *inode, loff_t pos, loff_t length,
+>  
+>  	if (iomap->type == IOMAP_MAPPED) {
+>  		addr = (pos - iomap->offset + iomap->addr) >> inode->i_blkbits;
+> -		if (addr > INT_MAX)
+> -			WARN(1, "would truncate bmap result\n");
+> -		else
+> -			*bno = addr;
+> +		*bno = addr;
+>  	}
+>  	return 0;
+>  }
+> -- 
+> 2.21.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
