@@ -2,92 +2,92 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B4A1C1E7D
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 May 2020 22:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF4C1C1F2E
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 May 2020 23:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgEAUb1 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 May 2020 16:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726782AbgEAUbX (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 May 2020 16:31:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7C7C061A0E
-        for <linux-ext4@vger.kernel.org>; Fri,  1 May 2020 13:31:23 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t16so4011695plo.7
-        for <linux-ext4@vger.kernel.org>; Fri, 01 May 2020 13:31:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DVZsHO3B+82ZVvSvwD+6L84uL6YCwy6wqP9DD2caeKY=;
-        b=Zc3KuQRuQy2OoPJPM+d+PnQiWTvDwpVtt8Zs/O3P2xKcWz2OpXBRQHO7c7IRb3Svou
-         7tdEiY8sRnRcjQKcq5Zj+0PlJ3VLXU+3aiTRKJ5MlWhFdkPfkoa8RKmQKcnL+YtrFDPP
-         AoyAhLCPYp/Bscc03FLzyMRL/p9YsUHnOlTHVDrPdG/xFXwkBqT1eusZGZHPZcMORFnJ
-         XUnONPMgBLe3uBUsDaF4ihYyjghwSsIq+4toZYrsvYog8R/WKxPl/CIP6xrmB3iChGu+
-         IP/ZvPS61IFkPnLMCnS1V56OJBpUCNYtLWaCzdi/NkjLIM7PXCLaVmPYfH/gNTtPYD9V
-         IZCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DVZsHO3B+82ZVvSvwD+6L84uL6YCwy6wqP9DD2caeKY=;
-        b=e2ClS7ufJcmGAHwhna6nPJIWvlDe9s7inwKAhCes2f+qs5aKvbd/DOQjiQfKs2RpGV
-         JEZnRbtgQmS9/bOIaGFa0RpP7+Xi4R4hKhbenQz4em97F4EWvZJr9jw4MDt15avek/df
-         gJnosTWWuipGjhChu3ZDulCpx9hNlNMZozUgqZ4bzqDi0sUtrOYHjjh+XbKWsCYKaVQS
-         q/pJgRUmemCjf3QKVfLSEJr4htAVAUR+wLa7ezV3l5OjYt4HDvFTTfDRCUVHlo0rhOJV
-         Tz17pnQKf9K3uSgIFuqDMTwe00WX2xc85VZHhrb6aLAiOCl7gJA5qTT9vd8VAKKRf7k1
-         yCug==
-X-Gm-Message-State: AGi0PuZp5oIH/PoQWyy4QCSRB82qq22MKvtc/f5SJ6bADSW893cQ/F8B
-        BlYVIFE8WhySH+/k3YP8RiS21DI3zZ47erWnyxdTFQ==
-X-Google-Smtp-Source: APiQypJ9b4QRn/GrVn+RH4LsZdGv7V2jtr2OO/8zkSxd5QcIuJPpD3L0aOdJL8jy19OYg1HSleGSA99rMnX4I9DcZ7s=
-X-Received: by 2002:a17:902:a40e:: with SMTP id p14mr5817749plq.297.1588365082975;
- Fri, 01 May 2020 13:31:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200501083510.1413-1-anders.roxell@linaro.org>
-In-Reply-To: <20200501083510.1413-1-anders.roxell@linaro.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 1 May 2020 13:31:11 -0700
-Message-ID: <CAFd5g45C98_70Utp=QBWg_tKxaUMJ-ArQvjWbG9q6=dixfHBxw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        Marco Elver <elver@google.com>,
-        John Johansen <john.johansen@canonical.com>, jmorris@namei.org,
-        serge@hallyn.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, kasan-dev <kasan-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        linux-security-module@vger.kernel.org,
-        David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726893AbgEAU6I (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 May 2020 16:58:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726272AbgEAU6H (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Fri, 1 May 2020 16:58:07 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A53E3216FD;
+        Fri,  1 May 2020 20:58:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588366687;
+        bh=PHAeuAjto7YSPUcW9IpDpIz6jTr+6+rE49PpUYBb17o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iBbqAgH/8G5kCVKRHKmsayQJh12Ske4yDZYyRWiSbMac1qjEi90aavUHh0afBsqR2
+         9b2wMVEluTKDUehCxsaBSkmWlBZUqA3R2Tgc4CVEM8Y4zm0ooqXv/G256MzCeXWp/V
+         sn5RY0Y6djNBT/M7VKJ6c65X4E7PnY5aH0OcUQz8=
+Date:   Fri, 1 May 2020 13:58:06 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-Id: <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
+In-Reply-To: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
+References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Fri, May 1, 2020 at 1:35 AM Anders Roxell <anders.roxell@linaro.org> wrote:
->
-> Make it easier to enable all KUnit fragments.  This is needed for kernel
-> test-systems, so its easy to get all KUnit tests enabled and if new gets
-> added they will be enabled as well.  Fragments that has to be builtin
-> will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
->
-> Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
-> someone wants that even though KUNIT_RUN_ALL is enabled.
+On Fri, 1 May 2020 18:08:28 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 
-I would LOVE IT, if you could make this work! I have been trying to
-figure out the best way to run all KUnit tests for a long time now.
+> mkfs -t ext4 invoked oom-killer on i386 kernel running on x86_64 device
+> and started happening on linux -next master branch kernel tag next-20200430
+> and next-20200501. We did not bisect this problem.
 
-That being said, I am a bit skeptical that this approach will be much
-more successful than just using allyesconfig. Either way, there are
-tests coming down the pipeline that are incompatible with each other
-(the KASAN test and the KCSAN test will be incompatible). Even so,
-tests like the apparmor test require a lot of non-default
-configuration to compile. In the end, I am not sure how many tests we
-will really be able to turn on this way.
+It would be wonderful if you could do so, please.  I can't immediately see
+any MM change in this area which might cause this.
 
-Thoughts?
+> metadata
+>   git branch: master
+>   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   git commit: e4a08b64261ab411b15580c369a3b8fbed28bbc1
+>   git describe: next-20200430
+>   make_kernelversion: 5.7.0-rc3
+>   kernel-config:
+> https://builds.tuxbuild.com/1YrE_XUQ6odA52tSBM919w/kernel.config
+> 
+> Steps to reproduce: (always reproducible)
+
+Reproducibility helps!
+
+> oom-killer: gfp_mask=0x101cc0(GFP_USER|__GFP_WRITE), order=0,
+
+> [   34.793430]  pagecache_get_page+0xae/0x260
+
+> [   34.897923] active_anon:5366 inactive_anon:2172 isolated_anon:0
+> [   34.897923]  active_file:4151 inactive_file:212494 isolated_file:0
+> [   34.897923]  unevictable:0 dirty:16505 writeback:6520 unstable:0
+
+> [ 34.987678] Normal free:3948kB min:7732kB low:8640kB high:9548kB
+> reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+> active_file:1096kB inactive_file:786400kB unevictable:0kB
+> writepending:65432kB present:884728kB managed:845576kB mlocked:0kB
+> kernel_stack:1112kB pagetables:0kB bounce:0kB free_pcp:2908kB
+> local_pcp:500kB free_cma:0kB
+
+ZONE_NORMAL has a huge amount of clean pagecache stuck on the
+inactive list, not being reclaimed.
