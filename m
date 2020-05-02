@@ -2,128 +2,116 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438D31C2143
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 May 2020 01:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006441C223C
+	for <lists+linux-ext4@lfdr.de>; Sat,  2 May 2020 04:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgEAXeR (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Fri, 1 May 2020 19:34:17 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6216 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726045AbgEAXeR (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 May 2020 19:34:17 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 041NWHO2129058;
-        Fri, 1 May 2020 19:34:09 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30r84mxyv2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 May 2020 19:34:08 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 041NWPoj129257;
-        Fri, 1 May 2020 19:34:08 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30r84mxyun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 May 2020 19:34:08 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 041NU8SH012721;
-        Fri, 1 May 2020 23:34:06 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 30mcu53vsd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 May 2020 23:34:06 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 041NWt5Z52560270
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 May 2020 23:32:55 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3DE48AE053;
-        Fri,  1 May 2020 23:34:04 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5101BAE045;
-        Fri,  1 May 2020 23:34:02 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.81.13])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  1 May 2020 23:34:02 +0000 (GMT)
-Subject: Re: [PATCH 07/11] iomap: fix the iomap_fiemap prototype
-To:     Christoph Hellwig <hch@lst.de>, linux-ext4@vger.kernel.org,
-        viro@zeniv.linux.org.uk
-Cc:     jack@suse.cz, tytso@mit.edu, adilger@dilger.ca, amir73il@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
-References: <20200427181957.1606257-1-hch@lst.de>
- <20200427181957.1606257-8-hch@lst.de>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Sat, 2 May 2020 05:04:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726660AbgEBCL3 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Fri, 1 May 2020 22:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbgEBCL2 (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Fri, 1 May 2020 22:11:28 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BACC061A0E
+        for <linux-ext4@vger.kernel.org>; Fri,  1 May 2020 19:11:28 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id x4so1989264wmj.1
+        for <linux-ext4@vger.kernel.org>; Fri, 01 May 2020 19:11:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DxgeZ4dWQbsgxzC3vr4Uf0z6ga9GPtUvmnQ6rfH9mnw=;
+        b=GoAOXqYvnqNaHnqw0sl6wxaUTEEROMaaJ5wtFkTK5JBEL5n2G2yvGvhs3s05djne9u
+         Z0Nm572hdR8ZAqHgELOeTbhCxmoiHUC726/03InwwU0piYRV48UG/j+BM16uSqBf7VFT
+         3/4Bks7Dn7b3YYiGicAkJq043PppsvbGx0CWk1jV7TbiQ2eZ698CTHttNGU9GMA+gSlD
+         yy5AuwsFaLV1/DF+ulL0gMVwg0fBWYh58QliUQqii9fRHedY1IHl5AtDR8kM7dLRpvvV
+         Geu2ui5FWXP3BSoTCYRcP8EFX/JKjNL7AXTEBtblQXJ+7oX2W9r8tZjBd+6ylNmZDSNY
+         yEWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DxgeZ4dWQbsgxzC3vr4Uf0z6ga9GPtUvmnQ6rfH9mnw=;
+        b=ZRpQKheWE3uglOXPDCxigLb+uYZpPsXBjIcroG7eat/3/342KVkQBAjvHiSJv5opYn
+         vqbtelKh9Wv1hN9pFL7J8DSgXNZRUHtBLytYrzQDJyuQyHim3Fe/z9v+An5O3YgF6FXv
+         ChWxJrXPkWH0bBzR47eQayf5cT+1LCN25yxIvsuoxIsbFPlnlzjJNc7WDqBEDxySPuTG
+         YV7H3Woo8/Ob/qSOs/VOsRhYR3VQTMXVsV/A332PnShiCFJWLDPW4VaKnP98J3xKQzIt
+         p/Fm1vzM65JXZB4YpDf/3DK7TPF+5AtnhN7nnJDPfVBbR1WIWd8YgbDA8JQSsFJSh7si
+         t5aw==
+X-Gm-Message-State: AGi0Pua1esrisUUhxzDyBGjeTc4+83OqjeGH4KZjIOfh2Aa6euefKbj9
+        OIPsiLt9XRZGJ7FA3vquxj6WnqhpCKnEeKL9LfQ2YQ==
+X-Google-Smtp-Source: APiQypLDIvRbUKevZsGcEO30n6w7WQseNzEj38FrNcXYHjaeCNVPqKzvEB/q8lL2AFg/XGQTwq2/IwPCqTdYBakWPhw=
+X-Received: by 2002:a1c:dd8a:: with SMTP id u132mr2195716wmg.87.1588385486740;
+ Fri, 01 May 2020 19:11:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200427181957.1606257-8-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200501233402.5101BAE045@d06av26.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-05-01_17:2020-05-01,2020-05-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 clxscore=1015 suspectscore=0
- spamscore=0 priorityscore=1501 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005010158
+References: <20200501083510.1413-1-anders.roxell@linaro.org> <CAFd5g45C98_70Utp=QBWg_tKxaUMJ-ArQvjWbG9q6=dixfHBxw@mail.gmail.com>
+In-Reply-To: <CAFd5g45C98_70Utp=QBWg_tKxaUMJ-ArQvjWbG9q6=dixfHBxw@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 2 May 2020 10:11:15 +0800
+Message-ID: <CABVgOSkAAb7tyjhdqFZmyKyknaxz_sM_o3=bK6cL6Ld4wFxkRQ@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        Marco Elver <elver@google.com>,
+        John Johansen <john.johansen@canonical.com>, jmorris@namei.org,
+        serge@hallyn.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, kasan-dev <kasan-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+On Sat, May 2, 2020 at 4:31 AM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> On Fri, May 1, 2020 at 1:35 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+> >
+> > Make it easier to enable all KUnit fragments.  This is needed for kernel
+> > test-systems, so its easy to get all KUnit tests enabled and if new gets
+> > added they will be enabled as well.  Fragments that has to be builtin
+> > will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
+> >
+> > Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
+> > someone wants that even though KUNIT_RUN_ALL is enabled.
+>
+> I would LOVE IT, if you could make this work! I have been trying to
+> figure out the best way to run all KUnit tests for a long time now.
+>
+> That being said, I am a bit skeptical that this approach will be much
+> more successful than just using allyesconfig. Either way, there are
+> tests coming down the pipeline that are incompatible with each other
+> (the KASAN test and the KCSAN test will be incompatible). Even so,
+> tests like the apparmor test require a lot of non-default
+> configuration to compile. In the end, I am not sure how many tests we
+> will really be able to turn on this way.
+>
+> Thoughts?
 
+I think there's still some value in this which the allyesconfig option
+doesn't provide. As you point out, it's not possible to have a generic
+"run all tests" option due to potential conflicting dependencies, but
+this does provide a way to run all tests for things enabled in the
+current config. This could be really useful for downstream developers
+who want a way of running all tests relevant to their config without
+the overhead of running irrelevant tests (e.g., for drivers they don't
+build). Using allyesconfig doesn't make that distinction.
 
-On 4/27/20 11:49 PM, Christoph Hellwig wrote:
-> iomap_fiemap should take u64 start and len arguments, just like the
-> ->fiemap prototype.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Ultimately, we'll probably still want something which enables a
+broader set of tests for upstream development: whether that's based on
+this, allyesconfig, or something else entirely remains to be seen, I
+think. I suspect we're going to end up with something
+subsystem-specific (having a kunitconfig per subsystem, or a testing
+line in MAINTAINERS or similar are ideas which have been brought up in
+the past).
 
-hmm.. I guess,
-it's only ->fiemap ops in inode_operations which has
-start and len arguments as u64.
+This is a great looking tool to have in the toolbox, though.
 
-While such other ops in struct file_operations have the
-arguments of type loff_t. (e.g. ->fallocate, -->llseek etc).
-
-But sure to match the ->fiemap prototype, this patch looks ok to me.
-
-Feel free to add:
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-
-> ---
->   fs/iomap/fiemap.c     | 2 +-
->   include/linux/iomap.h | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/iomap/fiemap.c b/fs/iomap/fiemap.c
-> index fca3dfb9d964a..dd04e4added15 100644
-> --- a/fs/iomap/fiemap.c
-> +++ b/fs/iomap/fiemap.c
-> @@ -66,7 +66,7 @@ iomap_fiemap_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->   }
->   
->   int iomap_fiemap(struct inode *inode, struct fiemap_extent_info *fi,
-> -		loff_t start, loff_t len, const struct iomap_ops *ops)
-> +		u64 start, u64 len, const struct iomap_ops *ops)
->   {
->   	struct fiemap_ctx ctx;
->   	loff_t ret;
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 8b09463dae0db..63db02528b702 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -178,7 +178,7 @@ int iomap_truncate_page(struct inode *inode, loff_t pos, bool *did_zero,
->   vm_fault_t iomap_page_mkwrite(struct vm_fault *vmf,
->   			const struct iomap_ops *ops);
->   int iomap_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
-> -		loff_t start, loff_t len, const struct iomap_ops *ops);
-> +		u64 start, u64 len, const struct iomap_ops *ops);
->   loff_t iomap_seek_hole(struct inode *inode, loff_t offset,
->   		const struct iomap_ops *ops);
->   loff_t iomap_seek_data(struct inode *inode, loff_t offset,
-> 
+-- David
