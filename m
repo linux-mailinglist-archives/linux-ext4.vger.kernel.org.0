@@ -2,116 +2,108 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574631C33C4
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 May 2020 09:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B1B1C3F85
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 May 2020 18:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgEDHii (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 May 2020 03:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727088AbgEDHii (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 May 2020 03:38:38 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2BDC061A0E
-        for <linux-ext4@vger.kernel.org>; Mon,  4 May 2020 00:38:36 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h9so9327055wrt.0
-        for <linux-ext4@vger.kernel.org>; Mon, 04 May 2020 00:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jguk.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k2joa5tIJVPwICNpI03N6qHYqU7dZ+gjfpoSfovCLDc=;
-        b=M7l40f3tgf2i73KcxtnTfBzN8vCbcqScmPlx7tu8XGIsoA8srM/iVtaBiTbMf7y4BN
-         beHwMUayNrDWhFxPWorCEvZeJDhoDzTHfS5XsI0dJg/cjZIiHapf6hpuTcs2T9LFYDF2
-         1V5hCoq3PlVuM3s3PWKISWJhIRb9lwruSdrxveohiL+32BW7ph0FwyI266GrhX/IkavH
-         T0EJnemlJmfbrP0N0dcMZhudw7AAL8IMRzJME0hQTD28UJtj6ld2BnqJHOd1PUE8qBRd
-         qTAsGr6EjdGRiKOmX7mAmDfsaod2NtF3ldjnOnT0aMvfLuu8mBvqhlghVq0KElnlzBP5
-         SHTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k2joa5tIJVPwICNpI03N6qHYqU7dZ+gjfpoSfovCLDc=;
-        b=Cz6XFZmfvVjVR8SRqNGBVcTBHiJozVgHAryEVqeY7L6IQir5mI+klX+WdnvzZub1ex
-         WaSCEw0+6P52HRAbPro6Agj7fVu9cHesyfaKGpHyD3U+rSaOs5Tac6uEjvDtdWHGo8Fd
-         z4vclcZ20cPkTg/Mo4lSXZtZH7fV0ErvSSENnubZmv3F0lsRz1rwon60kjS/b4x2su5p
-         uEzpHiaNuMkA6Qp2gBIFNMMzCVx83XIQKPYiKkckBkHP0mJ6/sveO7iAf6UJCsA/3DWe
-         gq9LeH+sLTel163TMcPbmTDKZZRes5QJ1ghihS2tfATPP2fr3LMntodXntF8adgEk9PJ
-         DBDw==
-X-Gm-Message-State: AGi0PuZA+UnB40S6/4yOWyVIv8yYAgOdrNZxg1rwbOcycFWfNk0wLXss
-        xB212slp66lqUACLt4IihN0vdJPSz+M=
-X-Google-Smtp-Source: APiQypL8DBle77R1AHxQqhElhvtEwMoxRuPwJzw7oKPMcZ3BtgHX7W/AkN5nxLrkrcFV5/sUMM9uVA==
-X-Received: by 2002:adf:8401:: with SMTP id 1mr18336326wrf.241.1588577914983;
-        Mon, 04 May 2020 00:38:34 -0700 (PDT)
-Received: from [192.168.0.12] (cpc87281-slou4-2-0-cust47.17-4.cable.virginm.net. [92.236.12.48])
-        by smtp.gmail.com with ESMTPSA id 32sm15922893wrg.19.2020.05.04.00.38.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 May 2020 00:38:33 -0700 (PDT)
-Subject: Re: /fs/ext4/namei.c ext4_find_dest_de()
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     linux-ext4@vger.kernel.org
-References: <2edc7d6a-289e-57ad-baf1-477dc240474d@jguk.org>
- <20200504015122.GB404484@mit.edu>
-From:   Jonny Grant <jg@jguk.org>
-Message-ID: <b518357b-4c79-910a-94dc-b6f0125309bc@jguk.org>
-Date:   Mon, 4 May 2020 08:38:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729481AbgEDQON (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 May 2020 12:14:13 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60244 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726578AbgEDQON (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 May 2020 12:14:13 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044Fta2g150099;
+        Mon, 4 May 2020 16:13:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=Uuh1IJ8pB0K+VMTYDs8Zuh+vG5xj9hQbQ99FMw/17ys=;
+ b=neQLZziZ4rQ+6tvbTUB3Kcy+OFOZKVIq+dwiEKIRJz3K+rKIA8zXYSxUdg0v2oRfx4gt
+ 5Cr6hLdH/wM/TBnXuM2j49YZQ9HJWih61J1yaU8KJTk7fbmkM5IKh0BYf0aCSph6s2nE
+ xRQxNlkY05IhAFStfOKzpMQosS3kB7QVn95DvhlaZTtFd/cgBkQyue5rzsWr1LJwS2l1
+ GPrJfR0nU5YdgiBPI0v3KdGDoeEAIiM5nvustGd6ByNcbusoLpO6ivK/qvAFqoSRgAne
+ pPVbnA9G2jhzXnKqhHtn3YeTaZuy/JF65xtNyQdr6P9ToW051/LFZtsulYW1oA2zYdLA Sg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 30s0tm7vq9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 16:13:57 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 044G6qJR061942;
+        Mon, 4 May 2020 16:13:56 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 30sjdquymb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 May 2020 16:13:56 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 044GDskG025963;
+        Mon, 4 May 2020 16:13:54 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 May 2020 09:13:54 -0700
+Date:   Mon, 4 May 2020 09:13:52 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     ira.weiny@intel.com, Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: [ANNOUNCE] xfs-linux: vfs-for-next updated to 83d9088659e8
+Message-ID: <20200504161352.GA13783@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <20200504015122.GB404484@mit.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=2 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005040127
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9610 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=2
+ phishscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005040127
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
+Hi folks,
+
+The vfs-for-next branch of the xfs-linux repository at:
+
+	git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
+
+has just been updated.
+
+After a very, very long process of discussing how sysadmins and app
+programmers are supposed to tag files for DAX data access mode, we have
+reached an agreement about how the userspace knobs should work.  This
+first update contains the necessary documentation updates and statx mode
+flag to enable the behaviors that we have decided on.  The second part
+(hinting at inode eviction to change the DAX mode) will come later after
+everyone has had a few days to let this soak in.
+
+The new head of the vfs-for-next branch is commit:
+
+83d9088659e8 Documentation/dax: Update Usage section
+
+New Commits:
+
+Ira Weiny (3):
+      [efbe3c2493d2] fs: Remove unneeded IS_DAX() check in io_is_direct()
+      [712b2698e4c0] fs/stat: Define DAX statx attribute
+      [83d9088659e8] Documentation/dax: Update Usage section
 
 
-On 04/05/2020 02:51, Theodore Y. Ts'o wrote:
-> On Sun, May 03, 2020 at 02:00:25PM +0100, Jonny Grant wrote:
->> Hi
->>
->> I noticed that mkdir() returns EEXIST if a directory already exists.
->> strerror(EEXIST) text is "File exists"
->>
->> Can ext4_find_dest_de() be amended to return EISDIR if a directory already
->> exists? This will make the error message clearer.
-> 
-> No; this will confuse potentially a large number of existing programs.
-> Also, the current behavior is required by POSIx and the Single Unix
-> Specification standards.
-> 
-> 	https://pubs.opengroup.org/onlinepubs/009695399/
-> 
-> Regards,
-> 
-> 						- Ted
+Code Diffstat:
 
-Hi,
-
-Is it likely POSIX would introduce this change? It's a shame we're still 
-constrained by old standards (SVr4, BSD), but it's fine if they can be 
-updated.
-
-As  developer, I can see it feels more confusing for users as it is. 
-This issue shows up in various programs.
-
-$ mkdir test
-$ mkdir test
-mkdir: cannot create directory ‘test’: File exists
-
-
-I would expect it to be clear for users:
-
-$ mkdir test
-$ mkdir test
-mkdir: cannot create directory ‘test’: Is a directory
-
-
-The 'mkdir' team don't want to add a call to stat() to give a more 
-appropriate error message.
-
-Cheers, Jonny
+ Documentation/filesystems/dax.txt | 142 +++++++++++++++++++++++++++++++++++++-
+ drivers/block/loop.c              |   6 +-
+ fs/stat.c                         |   3 +
+ include/linux/fs.h                |   7 +-
+ include/uapi/linux/stat.h         |   1 +
+ 5 files changed, 147 insertions(+), 12 deletions(-)
