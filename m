@@ -2,67 +2,66 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1231C49C8
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 May 2020 00:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E51C1C49EF
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 May 2020 01:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgEDWw2 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 May 2020 18:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
+        id S1728258AbgEDXAG (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 4 May 2020 19:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726773AbgEDWw1 (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 May 2020 18:52:27 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A57C061A0E
-        for <linux-ext4@vger.kernel.org>; Mon,  4 May 2020 15:52:27 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id z6so374516plk.10
-        for <linux-ext4@vger.kernel.org>; Mon, 04 May 2020 15:52:27 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1728153AbgEDXAG (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 May 2020 19:00:06 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAC2C061A0E
+        for <linux-ext4@vger.kernel.org>; Mon,  4 May 2020 16:00:06 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id v63so6330523pfb.10
+        for <linux-ext4@vger.kernel.org>; Mon, 04 May 2020 16:00:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dilger-ca.20150623.gappssmtp.com; s=20150623;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=bi03AhfVI7mMElmuor/2J4B9GK1nAL+zpDv3NYKYj4Q=;
-        b=J+xDVUiIwx7A2b6J348Et+XNFHpihFCpmP36ZRSY9IzyO0nLo0/mcBMsorRmL2JLUD
-         l6I4Z0y+CuRSQbTeq596GKAbIek4kq4IGQ+s/wsC9afXcfecBoadRB0WZXtvZea/Xikx
-         15rlhulGCjl35WnPQUqwPI/u3KBnMWBv5RVB84XZuQ85wKPbHvjSFRcxnVqjR+4LkKrR
-         wfQB1QhiId/CTGigO5szloB8owllh/VS3Tc7JESgxdNrrQvqflwQoefx3Hn23Og2ZQL3
-         uAaEXZP3QP4+WS0Zt1rIzNI44Zf4ywwa0zcup7TH9eMesaYBqPTHpFRmy7ZuaCCz9ZfY
-         Zp5w==
+        bh=bt08R2vyRxjj23aO8o7g9yV6v7WszrAUCzY1p418un8=;
+        b=yAIhKpOofDwJ9zISLTDAUH5tB6JnlV4ICc950AvAZnRB/E3W4mEraBJZNymEidslvY
+         iPWZ1izRRbY085ywzovD80RYJBYtVOCY58P04S7n+iOCQLFspP2MzuFAXbU6EXY3HsPe
+         RY2bXw0kWowQiyxO9WdKn+GCwP7llV/NvtRymXuz54FgTgKxZ26hqNBn8J608rvYw9ql
+         O7IvZNWhcoB9QSX4JQVz3gNz+7sjZtRq/xzcPU96K/VUxBJefLGlX0eFS/cPiEyvmkSI
+         rHjjMYHDa4Ayhy599JSJdekZleTwdE+C2KEEnjShgfYZ5kIciEQnL//8J5ufoijDDJVS
+         +emQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=bi03AhfVI7mMElmuor/2J4B9GK1nAL+zpDv3NYKYj4Q=;
-        b=L8gJdriP8zEd7KjwdV21LW7DyVA03aLs8MguIoLjU6roI5xQqbh2/C5V9C/WPMoBtk
-         S/x0QbxRqMiBX4NvgK+9Wx2cq6e5+g9xdvZgsY652FLnOLM7cl6GEYBXk8QjzdHcZdL8
-         KHbAbp+Y53Sz753VU8LEttMM+c2qmXU8OQbCqApRm9M6KJrYaxwa4hUk2LVe1EERvoeU
-         Z64wtCAhZ2BkaZOSZ3cTdIH0N9a7QqcdXT2ukHj6pdzYgy94kT1S55Z0DyOkw3CTrIg3
-         QXydv4+M8tzytJbBMZzxm/9k0jFeW3tNtEJ+uu3tgE3tcilxNdptTqYHPtSFvZome76s
-         3JHQ==
-X-Gm-Message-State: AGi0PuZTf/ft4Bd6t37PG1uiAE0VwscJA+FW+XoSQ/b0k9Igm7Gi3gJC
-        JBpeE2Vj5uaZKhNVYf8zBo6zUh+FDHlQ/vON
-X-Google-Smtp-Source: APiQypL4hW2bzWD43Z07iX6f8YH5ODf7i+zLUMjl385s7rQz54Hzv6cVLYz9ou78hWWFZDnsujYSsg==
-X-Received: by 2002:a17:90a:db53:: with SMTP id u19mr86645pjx.41.1588632746128;
-        Mon, 04 May 2020 15:52:26 -0700 (PDT)
+        bh=bt08R2vyRxjj23aO8o7g9yV6v7WszrAUCzY1p418un8=;
+        b=ZUSsiJ2R1CsBGB/R4w7vijIE2QX3b/Ng3A7fzzJX8+pEjWhgSF50Qrt3yBXY5FBHOO
+         /Tu1safSYI9hlMEKZhFPMtaKZrgDnb2xart4b3wd34296vyq3rRsT2pyKECvei2QP4e4
+         4G6p+qDRTibXH8Bmhwws2taiHXbPLUaFUS7T6kgfBqldZu/ENSrd2diHPUg8Xdf5zey+
+         qrzY3n1ZRluHHFa4CDFsyh4IeSmOjppQb/3Fy6PHyUI14xbm7Q0ezB2zuGwpTAGhDLM2
+         D7O2QibcRhcEPqDhN/O9I3yLsqTYd7TbSRuzXYgpM+hew2J3pCiKDhI+eDyretICuhz8
+         SH7w==
+X-Gm-Message-State: AGi0PuZk1AwR11seir10v7OOZj+Lc84CFpRNelj1MUado8r9J6yN7tdv
+        2C7m6O+K/aaxvZav9nQto9GVOBfOkZzNeP24
+X-Google-Smtp-Source: APiQypKjF9rB0wnFAko+BPO6QzX6HP5admcSBa5aGcZUadhFGK12H2skBiWMukOA4w1z3fcy4M9QeA==
+X-Received: by 2002:a63:742:: with SMTP id 63mr481967pgh.33.1588633205582;
+        Mon, 04 May 2020 16:00:05 -0700 (PDT)
 Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id j26sm106358pgm.20.2020.05.04.15.52.25
+        by smtp.gmail.com with ESMTPSA id d2sm149864pfc.7.2020.05.04.16.00.04
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 May 2020 15:52:25 -0700 (PDT)
+        Mon, 04 May 2020 16:00:04 -0700 (PDT)
 From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <E3491268-9F7F-446D-91A9-18699B650FFA@dilger.ca>
+Message-Id: <0FC238E1-59D7-448B-BD72-C2794A3BD99E@dilger.ca>
 Content-Type: multipart/signed;
- boundary="Apple-Mail=_983BB280-0628-48F2-BD35-2BFAD107480E";
+ boundary="Apple-Mail=_276E3F35-881D-4FCA-A735-A8DEA28D9F23";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: Inline data with 128-byte inodes?
-Date:   Mon, 4 May 2020 16:52:23 -0600
-In-Reply-To: <20200423004033.GA161058@localhost>
-Cc:     Jan Kara <jack@suse.cz>,
+Subject: Re: /fs/ext4/ext4.h add a comment to ext4_dir_entry_2
+Date:   Mon, 4 May 2020 17:00:03 -0600
+In-Reply-To: <20200504223900.GA5691@magnolia>
+Cc:     Jonny Grant <jg@jguk.org>,
         Ext4 Developers List <linux-ext4@vger.kernel.org>
-To:     Josh Triplett <josh@joshtriplett.org>
-References: <20200414070207.GA170659@localhost>
- <20200422160045.GC20756@quack2.suse.cz>
- <331CEA49-83E0-462C-A70D-479F17A4FAB2@dilger.ca>
- <20200423004033.GA161058@localhost>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+References: <bf50e54f-2a0c-17a4-89c3-4afcc298daeb@jguk.org>
+ <1B91A6E6-7F4A-4C58-93E7-394217C1631C@dilger.ca>
+ <20200504223900.GA5691@magnolia>
 X-Mailer: Apple Mail (2.3273)
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
@@ -70,290 +69,107 @@ List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_983BB280-0628-48F2-BD35-2BFAD107480E
+--Apple-Mail=_276E3F35-881D-4FCA-A735-A8DEA28D9F23
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
-On Apr 22, 2020, at 6:40 PM, Josh Triplett <josh@joshtriplett.org> =
+
+> On May 4, 2020, at 4:39 PM, Darrick J. Wong <darrick.wong@oracle.com> =
 wrote:
 >=20
-> On Wed, Apr 22, 2020 at 02:15:28PM -0600, Andreas Dilger wrote:
->> On Apr 22, 2020, at 10:00 AM, Jan Kara <jack@suse.cz> wrote:
->>> On Tue 14-04-20 00:02:07, Josh Triplett wrote:
->>>> Is there a fundamental reason that ext4 *can't* or *shouldn't* =
-support
->>>> inline data with 128-byte inodes?
+> On Mon, May 04, 2020 at 04:26:35PM -0600, Andreas Dilger wrote:
+>>=20
+>>> On May 3, 2020, at 6:52 AM, Jonny Grant <jg@jguk.org> wrote:
 >>>=20
->>> Well, where would we put it on disk? ext4 on-disk inode fills =
-128-bytes
->>> with 'osd2' union...
+>>> Hello
+>>>=20
+>>> Could a comment be added to clarify 'file_type' ?
+>>>=20
+>>> struct ext4_dir_entry_2 {
+>>>   __le32    inode;            /* Inode number */
+>>>   __le16    rec_len;        /* Directory entry length */
+>>>   __u8    name_len;        /* Name length */
+>>>   __u8    file_type;
+>>>   char    name[EXT4_NAME_LEN];    /* File name */
+>>> };
+>>>=20
+>>>=20
+>>>=20
+>>> This what I am proposing to add:
+>>>=20
+>>>   __u8    file_type;        /* See directory file type macros below =
+*/
 >>=20
->> There are 60 bytes in the "i_block" field that can be used by =
-inline_data.
->=20
-> Exactly. But the Linux ext4 implementation doesn't accept inline data
-> unless the system.data xattr exists, even if the file's data fits in =
-60
-> bytes (in which case system.data must exist and have 0 length).
->=20
->>> Or do you mean we should put inline data in an external xattr block?
->=20
-> Definitely not, no. That seems much more complex to deal with.
->=20
-> I'm only talking about the case of files or directories <=3D 60 bytes
-> fitting in the inode with 128-byte inodes. Effectively, this would =
-mean
-> accepting inodes with the inline data flag set, whether they have the
-> system.data xattr or not.
->=20
->> Maybe there is a bigger win for small directories avoiding 4KB leaf =
-blocks?
+>> For this kind of structure field, it makes sense to reference the =
+macro
+>> names directly, like:
 >>=20
->> That said, I'd be happy to see some numbers to show this is a win, =
-and
->> I'm definitely not _against_ allowing this to work if there is a use =
-for it.
+>> 	__u8	file_type;	/* See EXT4_FT_* type macros below */
+>>=20
+>> since "macros below" may be ambiguous as the header changes over =
+time.
+>>=20
+>>=20
+>> Even better (IMHO) is to use a named enum for this, like:
+>>=20
+>>        enum ext4_file_type file_type:8; /* See EXT4_FT_ types below =
+*/
+>>=20
+>> /*
+>> * Ext4 directory file types.  Only the low 3 bits are used.  The
+>> * other bits are reserved for now.
+>> */
+>> enum ext4_file_type {
+>> 	EXT4_FT_UNKNOWN		=3D 0,
+>> 	EXT4_FT_REG_FILE	=3D 1,
+>> 	EXT4_FT_DIR		=3D 2,
+>> 	EXT4_FT_CHRDEV		=3D 3,
+>> 	EXT4_FT_BLKDEV		=3D 4,
+>> 	EXT4_FT_FIFO		=3D 5,
+>> 	EXT4_FT_SOCK		=3D 6,
+>> 	EXT4_FT_SYMLINK		=3D 7,
+>> 	EXT4_FT_MAX,
+>> 	EXT4_FT_DIR_CSUM	=3D 0xDE
+>> };
+>>=20
+>> so that the allowed values for this field are clear from the =
+definition.
+>> However, the use of a fixed-with bitfield (enum :8) is a GCC-ism and =
+Ted
+>> may be against that for portability reasons, since the kernel and
+>> userspace headers should be as similar as possible.
 >=20
-> Some statistics, for ext4 with 4k blocks and 128-byte inodes, if =
-60-byte
-> inline data worked with 128-byte inodes:
->=20
-> A filesystem containing the source code of the Linux kernel would
-> save about 1508 disk blocks, or around 6032k.
->=20
-> A filesystem containing only my /etc directory would save about 650
-> blocks, or 2600k, a substantial fraction of the entire directory =
-(which
-> takes up 9004k total without inline data).
+> This is an on-disk structure.  Do /not/ make this an enum because that
+> would replace a __u8 with an int, which will break directories.
 
-Hi Josh,
-I started looking into this, and got half-way through a patch before
-getting pulled into something else.  If you are interested to finish
-it off, I've included it here, but it definitely isn't ready yet.
+No, that is what the fixed bitfield declaration "enum ... :8" would do -
+declare this enum to be an 8-bit integer.  I've verified that this works
+as expected with GCC, to allow an enum with a specific size, like :8 or
+:32 or :64.  Obviously, if you specify a bitfield size that doesn't =
+align
+with the start of the next structure field, there would be padding added
+so that the next field is properly aligned, but that isn't the case =
+here.
 
-Looking at the details, it isn't just an issue of changing a single
-threshold to decide whether 128-byte inodes can handle inline data
-or not.  The code is intermingled between "have system.data xattr"
-as the defining factor and using "inline_off" (which points to the
-byte offset of the system.data contents) to determine whether there
-is inline data or not.
-
-It _should_ be possible to change to using EXT4_STATE_MAY_INLINE_DATA
-and EXT4_INLINE_DATA_FL to determine if there is any inline data in
-the inode, and use "inline_off" and i_extra_isize only to detect if
-any data is in the xattr or not.  It doesn't need to check the xattrs
-if the inode size is EXT4_GOOD_OLD_INODE_SIZE, since we *don't* want
-"inline" data in an external xattr block for sanity/efficiency reasons.
-
-Hopefully this patch is useful for you as a starting point - I suspect
-it is about 80% finished, but I wouldn't have time to work on it for a
-few weeks at least, since 128-byte inodes is not a useful case for me =
-(we
-are using 1024-byte inodes on our metadata filesystems these days).  On
-the flip side, I think inline_data is very interesting, and am happy for
-it to gain more widespread usage.  I don't think the 128-byte inode =
-support
-for inline_data increases complexity, so I wouldn't be against landing =
-it.
+Since e2fsprogs needs to be portable to other compilers/OS, I'm not sure
+if Ted would want the kernel header declaration to be different than the
+e2fsprogs header.  I've grown to like using enum for these kind of =
+"flags"
+definitions, since they are much more concrete than a bare "int flags"
+declaration, and still better than "int flags; /* see EXT4_FT_* below =
+*/"
+since the enum is a hard compiler linkage vs. just a comment, for the
+same reasons that static inline functions are better than CPP macros.
 
 Cheers, Andreas
---
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 61b37a0..ec6f51a 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3260,8 +3260,7 @@ extern int ext4_inline_data_fiemap(struct inode =
-*inode,
-
- static inline int ext4_has_inline_data(struct inode *inode)
- {
--	return ext4_test_inode_flag(inode, EXT4_INODE_INLINE_DATA) &&
--	       EXT4_I(inode)->i_inline_off;
-+	return ext4_test_inode_flag(inode, EXT4_INODE_INLINE_DATA);
- }
-
- /* namei.c */
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index fad82d0..ea9596a 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -20,7 +20,7 @@
-
- static int ext4_get_inline_size(struct inode *inode)
- {
--	if (EXT4_I(inode)->i_inline_off)
-+	if (ext4_get_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA))
- 		return EXT4_I(inode)->i_inline_size;
-
- 	return 0;
-@@ -94,7 +94,7 @@ int ext4_get_max_inline_size(struct inode *inode)
- 	struct ext4_iloc iloc;
-
- 	if (EXT4_I(inode)->i_extra_isize =3D=3D 0)
--		return 0;
-+		return EXT4_MIN_INLINE_DATA_SIZE;
-
- 	error =3D ext4_get_inode_loc(inode, &iloc);
- 	if (error) {
-@@ -133,6 +133,11 @@ int ext4_find_inline_data_nolock(struct inode =
-*inode)
- 	};
- 	int error;
-
-+	if (!ext4_has_feature_inline_data(inode))
-+		return 0;
-+
-+	ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-+	EXT4_I(inode)->i_inline_size =3D EXT4_MIN_INLINE_DATA_SIZE;
- 	if (EXT4_I(inode)->i_extra_isize =3D=3D 0)
- 		return 0;
-
-@@ -153,9 +158,8 @@ int ext4_find_inline_data_nolock(struct inode =
-*inode)
- 		}
- 		EXT4_I(inode)->i_inline_off =3D (u16)((void *)is.s.here =
--
- 					(void =
-*)ext4_raw_inode(&is.iloc));
--		EXT4_I(inode)->i_inline_size =3D =
-EXT4_MIN_INLINE_DATA_SIZE +
-+		EXT4_I(inode)->i_inline_size +=3D
- 				le32_to_cpu(is.s.here->e_value_size);
--		ext4_set_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- 	}
- out:
- 	brelse(is.iloc.bh);
-@@ -188,6 +192,7 @@ static int ext4_read_inline_data(struct inode =
-*inode, void *buffer,
- 	if (!len)
- 		goto out;
-
-+	BUG_ON(EXT4_I(inode)->i_extra_isize =3D=3D 0);
- 	header =3D IHDR(inode, raw_inode);
- 	entry =3D (struct ext4_xattr_entry *)((void *)raw_inode +
- 					    =
-EXT4_I(inode)->i_inline_off);
-@@ -219,7 +224,7 @@ static void ext4_write_inline_data(struct inode =
-*inode, struct ext4_iloc *iloc,
- 	if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
- 		return;
-
--	BUG_ON(!EXT4_I(inode)->i_inline_off);
-+	BUG_ON(!ext4_get_inode_state(inode, =
-EXT4_STATE_MAY_INLINE_DATA));
- 	BUG_ON(pos + len > EXT4_I(inode)->i_inline_size);
-
- 	raw_inode =3D ext4_raw_inode(iloc);
-@@ -238,6 +243,7 @@ static void ext4_write_inline_data(struct inode =
-*inode, struct ext4_iloc *iloc,
- 	if (!len)
- 		return;
-
-+	BUG_ON(EXT4_I(inode)->i_extra_isize =3D=3D 0);
- 	pos -=3D EXT4_MIN_INLINE_DATA_SIZE;
- 	header =3D IHDR(inode, raw_inode);
- 	entry =3D (struct ext4_xattr_entry *)((void *)raw_inode +
-@@ -269,6 +275,17 @@ static int ext4_create_inline_data(handle_t =
-*handle,
- 	if (error)
- 		goto out;
-
-+	EXT4_I(inode)->i_inline_size =3D EXT4_MIN_INLINE_DATA_SIZE;
-+	memset((void *)ext4_raw_inode(&is.iloc)->i_block,
-+		0, EXT4_MIN_INLINE_DATA_SIZE);
-+	ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
-+	ext4_set_inode_flag(inode, EXT4_INODE_INLINE_DATA);
-+
-+	if (EXT4_I(inode)->i_extra_isize =3D=3D 0) {
-+		BUG_ON(len > EXT4_MIN_INLINE_DATA_SIZE);
-+		goto out_dirty;
-+	}
-+
- 	if (len > EXT4_MIN_INLINE_DATA_SIZE) {
- 		value =3D EXT4_ZERO_XATTR_VALUE;
- 		len -=3D EXT4_MIN_INLINE_DATA_SIZE;
-@@ -295,14 +312,11 @@ static int ext4_create_inline_data(handle_t =
-*handle,
- 		goto out;
- 	}
-
--	memset((void *)ext4_raw_inode(&is.iloc)->i_block,
--		0, EXT4_MIN_INLINE_DATA_SIZE);
--
- 	EXT4_I(inode)->i_inline_off =3D (u16)((void *)is.s.here -
- 				      (void *)ext4_raw_inode(&is.iloc));
--	EXT4_I(inode)->i_inline_size =3D len + =
-EXT4_MIN_INLINE_DATA_SIZE;
--	ext4_clear_inode_flag(inode, EXT4_INODE_EXTENTS);
--	ext4_set_inode_flag(inode, EXT4_INODE_INLINE_DATA);
-+	EXT4_I(inode)->i_inline_size +=3D len;
-+
-+out_dirty:
- 	get_bh(is.iloc.bh);
- 	error =3D ext4_mark_iloc_dirty(handle, inode, &is.iloc);
-
-@@ -804,6 +818,7 @@ static int =
-ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
- 						 void **fsdata)
- {
- 	int ret =3D 0, inline_size;
-+	bool truncate =3D false;
- 	struct page *page;
-
- 	page =3D grab_cache_page_write_begin(mapping, 0, flags);
-@@ -811,10 +826,8 @@ static int =
-ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
- 		return -ENOMEM;
-
- 	down_read(&EXT4_I(inode)->xattr_sem);
--	if (!ext4_has_inline_data(inode)) {
--		ext4_clear_inode_state(inode, =
-EXT4_STATE_MAY_INLINE_DATA);
--		goto out;
--	}
-+	if (!ext4_has_inline_data(inode))
-+		goto out_clear;
-
- 	inline_size =3D ext4_get_inline_size(inode);
-
-@@ -827,23 +840,25 @@ static int =
-ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
- 	ret =3D __block_write_begin(page, 0, inline_size,
- 				  ext4_da_get_block_prep);
- 	if (ret) {
--		up_read(&EXT4_I(inode)->xattr_sem);
--		unlock_page(page);
--		put_page(page);
--		ext4_truncate_failed_write(inode);
--		return ret;
-+		truncate =3D true;
-+		goto out;
- 	}
-
- 	SetPageDirty(page);
- 	SetPageUptodate(page);
--	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- 	*fsdata =3D (void *)CONVERT_INLINE_DATA;
-
-+out_clear:
-+	ext4_clear_inode_flag(inode, EXT4_INODE_INLINE_DATA);
-+	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
- out:
- 	up_read(&EXT4_I(inode)->xattr_sem);
- 	if (page) {
-+		if (read)
- 		unlock_page(page);
- 		put_page(page);
-+		if (truncate)
-+			ext4_truncate_failed_write(inode);
- 	}
- 	return ret;
- }
 
 
---Apple-Mail=_983BB280-0628-48F2-BD35-2BFAD107480E
+
+
+
+
+--Apple-Mail=_276E3F35-881D-4FCA-A735-A8DEA28D9F23
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -364,19 +180,19 @@ Content-Description: Message signed with OpenPGP
 -----BEGIN PGP SIGNATURE-----
 Comment: GPGTools - http://gpgtools.org
 
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6wnKcACgkQcqXauRfM
-H+Cmkw//flOfdxjgUGiDD/bexm10umOZFu1WnPBo/bWKreF78niqQKeZ8jbbPx5O
-Seu3assiWYc75FHRXSISsA4hqcXOwLtlVfqGPGoDd/cLoOC3UxaCu1GT8Qnq7mfc
-U9qMtHjMEZyr4VtfkMNL5yFkOEmrO8CB2JTwFxyv8rDe8CXziBTi/0I8Jf50Nbjl
-+le6QM398tE7G2wmXM9RQINXJDjd3Kgw83ll2bM4+kh9a0lsHQo+0VigyqOhlu4l
-sDbgM7dKC4j//sWGe83UbH93kiXxFy7paw7FZ1AF2fqRPKc7mNVh4eX/+A8Pd4rb
-ONGPqRNuBZv/+oHspySGBGc7bpdklh/d50nJErnhBYSsNhmZSX1dE2KyGBrQ9KFR
-pD4H/p4zexQvhPQ5mAJ9kZFdvybnXFVSbz/SmPHhl0A8AwGGulM+INzhuWYiQyEb
-3zW9nRaFJUR5vp8M1Xo8cLe5gH2ZI3HPjt99eDrDGo24Ak/XhmD6hQ4ecITtWmSo
-ywZt2g64vWy+20V9WM+e14LHC02T9srOf/+cZpeyqOfr4CoWBPwjJJirEDDd3eZy
-7XnBbqTkIRp5cIdFtAQU0dYUNMwFSDXFXLB7qxXXcfTJ83lUYln+nQjMVR97mAek
-eUg24V09iYlzoJNUuFE03U7Jm3V2xYBYMHyi/NwjDkgUlxS/oDM=
-=/aRm
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6wnnMACgkQcqXauRfM
+H+CpsA//bLfIXPj0SYQT9WujSn1aXkCf5/mTbA4PMrGohtSEZ2ehxjcnA27Losip
+KFSV1Fpx+C40XbvLFfPTX7o3Y5VKsYxanu1JG3B6ZA2ku6JHvqzuoePvrEP8L6HV
+K9301YhfOsv5oSRkG2aHFiSC8fSo+n/F6a1Cn8FoHcF0QIKLJQK3v7PaS9UH5QBd
+kr66Esc1rdFKDhe8rtVtlL+5DO7CfXeClEPGwgNmaEztmEUiTbmgQaxE1Vz2pPC5
+rHX7PyvxZJJ2Qi63abamDxWoAGspcBIfcubSJFHj8t/w1aPcUixKMpHZ2pJyeV/1
+mnkOXZ5Zy0l8T3axsSocANiucTjIvsCKIuv1Nt1FvIZ7nFceVoBmwwJ5kPM05gH6
+ftNwYvUi00HH8lNnOB8rKfyNYIMUOjoBjkkVaKcs+cdcoBZws1VFf+M7R8xO4Uh9
+tCWvAlkzwrQspWkQi3wixjjXLAhj1gxxKxFwZn6nNR4QmXg/NGiSARLyPvtvSxIg
+tl5H8UyKKDWE9AYTviHqZYLYvUlLVHpTRfBkZPqcqjUBMTsp7gY7lWRW2jdlzq1+
+HPA4PKcendc7y73BlKHCRayFWAN0BG3fBcQEaJGfysSu4+UCOsT6aXeBgm6zXjjp
+32FEy+CLk3kfYvWCtBjg+OHA3Jy1lMQO6wxqAmOVlairSCNQl1Q=
+=O1hy
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_983BB280-0628-48F2-BD35-2BFAD107480E--
+--Apple-Mail=_276E3F35-881D-4FCA-A735-A8DEA28D9F23--
