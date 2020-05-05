@@ -2,51 +2,51 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F801C5333
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 May 2020 12:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891701C5337
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 May 2020 12:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbgEEK1N (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 May 2020 06:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
+        id S1728792AbgEEK1V (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 May 2020 06:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728720AbgEEK1L (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 May 2020 06:27:11 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B685C061A10
-        for <linux-ext4@vger.kernel.org>; Tue,  5 May 2020 03:27:10 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a21so1027364ljj.11
-        for <linux-ext4@vger.kernel.org>; Tue, 05 May 2020 03:27:10 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1728763AbgEEK1R (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 May 2020 06:27:17 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87418C061A10
+        for <linux-ext4@vger.kernel.org>; Tue,  5 May 2020 03:27:15 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b26so923943lfa.5
+        for <linux-ext4@vger.kernel.org>; Tue, 05 May 2020 03:27:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Y4r4BzjDGTO09+pq2qJQzLpsqdYp3d0bmg7xrYt7/0k=;
-        b=lxq8UsRbbA6JQHwi8YB41ue072QJ2ffr78bQkb/4GLMC458KwPgtwlcNH+7K8pq11n
-         zoraXwhw9eRsviQtxRA+U4dervHMol0BBPlIVzZx/9cforLpLbgmHwtFP+/uBqR3RGfO
-         CtucDsTaeq6V+hc8mK3P5FjYNUKYjKxOh5Z7HLpjOgkHftZDtQjx7tCwlFG1zVG1ve/+
-         0Jw7mXl/wHOdI9vIPA5gO25bE4K+IakBue0rQ1ZRHihufkCi2AzoV5zH8nZq3YFPz29Y
-         H752OVjW1oGHf4ltCmCXrQOYrGKbBDvHs8C0YNfPoKNcnoy1KeslY75+PptWpVM5voKr
-         xruw==
+        bh=jihPcHqZJxL0w4uFWCdf0HGMcvBOKxr0NZgIqhD7lxo=;
+        b=OVBthVSECWKCBn2KnlD3uQIl5WfCHuggSsbUuiKGbM3X9Ykk9Q8K/5AJ6iG1wO0nri
+         kQjdWqQgxq/JydpWOmrzUfhmVq+eU6pZEQlp6lZIZCwrUWVBJNBX4mJV25R927HluQIZ
+         71XMOkY2QloMubs3C1Ws0N0b0/dEf70e2Tf/waWzCgeOY+jAndgJFIftAxVFBSwTLcNc
+         G/szc2j4nA7/pbCFBqNW89aqlpDMbJrV8GghavXxQwz2avBk3ot0j38xwF9kRyC8ZW7J
+         WrHnHSm6DQrQsYqc4xZL7Rf8RzQSUweD+vxYnlA7GbGcT6oAg66sAty1n2WDzZPFPBfA
+         /4TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Y4r4BzjDGTO09+pq2qJQzLpsqdYp3d0bmg7xrYt7/0k=;
-        b=KW9YXYaoYfnamw7f/KX+0KMO6Y+Vs7a5HurF8bBKbhJlgT4jdMlhy7SznOU8B7OHJ3
-         hXdPHaVQYlI8OOIk0L6sinA0M5TPevUFBtdDifFRHdBHafeiq9mU8V9nK698fuiM5TL8
-         0zQOEUSRQfmByuzcgIusp8K/InBAUzLPblxZW27AiVbs9/yCoTJuxOkI2lXksEiZgbS6
-         o+4KG0ttzp8RUp/YIAjT5I7agnSseL6dGTR77cufRKbiLVEVTMDUNachy6A2zLTcKGcE
-         hd9y/Xx5Xi3XDKRxbqOg0wplB1RGUWT5xPjG4ZxUI3raQ4tNI7TrlyDRohWznsU3PVLp
-         48kQ==
-X-Gm-Message-State: AGi0Pubc5WZKB1v44apwsY3fwh6QNrpUYng5HIx7MUtZGtY/W157XYs2
-        1wNzM1p9VHph0YBkHIePT8rm2Q==
-X-Google-Smtp-Source: APiQypJnEG5pEB+WJjoe6xM1H2pstsQj428JhTG2iNFeTSyXwOzyD5BmMDWHrEub1AqznTCaupW6Lw==
-X-Received: by 2002:a2e:a58e:: with SMTP id m14mr1390091ljp.95.1588674428941;
-        Tue, 05 May 2020 03:27:08 -0700 (PDT)
+        bh=jihPcHqZJxL0w4uFWCdf0HGMcvBOKxr0NZgIqhD7lxo=;
+        b=d3JBqSoqOu/4kCnAiQSMgpQoPgzAVjDqi8ZzU3J5/2YtQfLDUan0bXLUKz7KDaQERd
+         Coe3KG4EQIIX0M15SvJQGdryCM3LrclWiP5aXpb42LKK6CfoGlza7roGOF79HcAVZdDI
+         C8Fi/bcZwHQ+6/AMUjmun1fW7Z/bmWmsL8J0RvvXoFcfHaDW5D51HnvVSW/bXrtDREcr
+         d5IsCa8KmVyPyEj715ZC7YBmmtn+Q+P0d12ec8JxQy8adNhhPtJ9eCy6StHHQHSv4p0f
+         xxPvUR4vn9a0G27St0c5AWm6vX0aMk0RHV3K4t04yQXEsgNl4K35Bzk/VGYehxS83M85
+         D1lA==
+X-Gm-Message-State: AGi0PuZ8ucdlRblX8bZe/87RM+G03tFwhItOT7SIxIgiAUFJP2uNbcGe
+        L8/WpfLRFqYvctDUCZHFZ4vW/w==
+X-Google-Smtp-Source: APiQypKpdW8hKetp8Jqgh6uRz+2gEnfGkBOL+DStJXzeg0o3+FfpgqQ+sY3l4YkxKS0l1jMXnbGmaw==
+X-Received: by 2002:a19:505c:: with SMTP id z28mr1245732lfj.174.1588674433983;
+        Tue, 05 May 2020 03:27:13 -0700 (PDT)
 Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
-        by smtp.gmail.com with ESMTPSA id j15sm1799172lji.18.2020.05.05.03.27.08
+        by smtp.gmail.com with ESMTPSA id e16sm1878000lfc.63.2020.05.05.03.27.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 03:27:08 -0700 (PDT)
+        Tue, 05 May 2020 03:27:13 -0700 (PDT)
 From:   Anders Roxell <anders.roxell@linaro.org>
 To:     brendanhiggins@google.com
 Cc:     john.johansen@canonical.com, jmorris@namei.org, serge@hallyn.com,
@@ -56,9 +56,9 @@ Cc:     john.johansen@canonical.com, jmorris@namei.org, serge@hallyn.com,
         linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-security-module@vger.kernel.org, elver@google.com,
         davidgow@google.com, Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH v2 1/6] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
-Date:   Tue,  5 May 2020 12:27:00 +0200
-Message-Id: <20200505102700.7912-1-anders.roxell@linaro.org>
+Subject: [PATCH v2 2/6] kunit: default KUNIT_* fragments to KUNIT_RUN_ALL
+Date:   Tue,  5 May 2020 12:27:09 +0200
+Message-Id: <20200505102709.7964-1-anders.roxell@linaro.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,31 +67,50 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Make it easier to enable all KUnit fragments.  This is needed for kernel
-test-systems, so its easy to get all KUnit tests enabled and if new gets
-added they will be enabled as well.  Fragments that has to be builtin
-will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
+This makes it easier to enable all KUnit fragments.
+
+Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
+someone wants that even though KUNIT_RUN_ALL is enabled.
 
 Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- lib/kunit/Kconfig | 6 ++++++
- 1 file changed, 6 insertions(+)
+ lib/kunit/Kconfig | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
-index 95d12e3d6d95..537f37bc8400 100644
+index 537f37bc8400..e6a60391fa6b 100644
 --- a/lib/kunit/Kconfig
 +++ b/lib/kunit/Kconfig
-@@ -41,4 +41,10 @@ config KUNIT_EXAMPLE_TEST
- 	  is intended for curious hackers who would like to understand how to
- 	  use KUnit for kernel development.
+@@ -15,7 +15,8 @@ menuconfig KUNIT
+ if KUNIT
  
-+config KUNIT_RUN_ALL
-+	tristate "KUnit run all test"
-+	help
-+	  Enables all KUnit tests, if they can be enabled.
-+	  That depends on if KUnit is enabled as a module or builtin.
-+
- endif # KUNIT
+ config KUNIT_DEBUGFS
+-	bool "KUnit - Enable /sys/kernel/debug/kunit debugfs representation"
++	bool "KUnit - Enable /sys/kernel/debug/kunit debugfs representation" if !KUNIT_RUN_ALL
++	default KUNIT_RUN_ALL
+ 	help
+ 	  Enable debugfs representation for kunit.  Currently this consists
+ 	  of /sys/kernel/debug/kunit/<test_suite>/results files for each
+@@ -23,7 +24,8 @@ config KUNIT_DEBUGFS
+ 	  run that occurred.
+ 
+ config KUNIT_TEST
+-	tristate "KUnit test for KUnit"
++	tristate "KUnit test for KUnit" if !KUNIT_RUN_ALL
++	default KUNIT_RUN_ALL
+ 	help
+ 	  Enables the unit tests for the KUnit test framework. These tests test
+ 	  the KUnit test framework itself; the tests are both written using
+@@ -32,7 +34,8 @@ config KUNIT_TEST
+ 	  expected.
+ 
+ config KUNIT_EXAMPLE_TEST
+-	tristate "Example test for KUnit"
++	tristate "Example test for KUnit" if !KUNIT_RUN_ALL
++	default KUNIT_RUN_ALL
+ 	help
+ 	  Enables an example unit test that illustrates some of the basic
+ 	  features of KUnit. This test only exists to help new users understand
 -- 
 2.20.1
 
