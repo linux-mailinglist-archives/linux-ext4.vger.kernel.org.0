@@ -2,158 +2,158 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A4A1C4B23
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 May 2020 02:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D8F1C4FF9
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 May 2020 10:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgEEAoC (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 4 May 2020 20:44:02 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:34931 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726550AbgEEAoC (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Mon, 4 May 2020 20:44:02 -0400
-Received: from dread.disaster.area (pa49-195-157-175.pa.nsw.optusnet.com.au [49.195.157.175])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id EA7543A3908;
-        Tue,  5 May 2020 10:43:59 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jVlgk-0000xg-LW; Tue, 05 May 2020 10:43:58 +1000
-Date:   Tue, 5 May 2020 10:43:58 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Francois <rigault.francois@gmail.com>, linux-ext4@vger.kernel.org
-Subject: Re: ext4 and project quotas bugs
-Message-ID: <20200505004358.GG2005@dread.disaster.area>
-References: <CAMc2VtTqz5QuCfdtEBDND+-sU=7T5_8Sh9Wo-4-u6HbJs+PZdw@mail.gmail.com>
- <20200428153228.GB6426@quack2.suse.cz>
- <20200428155351.GH6733@magnolia>
- <20200428164824.GD6426@quack2.suse.cz>
- <20200429024201.GE2005@dread.disaster.area>
- <20200430111436.GD12716@quack2.suse.cz>
+        id S1727784AbgEEINQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 May 2020 04:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725915AbgEEINP (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 May 2020 04:13:15 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67946C061A41
+        for <linux-ext4@vger.kernel.org>; Tue,  5 May 2020 01:13:15 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a21so640864ljj.11
+        for <linux-ext4@vger.kernel.org>; Tue, 05 May 2020 01:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cCtbnn/mPSYMTovrACT2kKrxnwGdokswItkXqrNBN20=;
+        b=Ds/TGo88InOgXEcC2Gt5/VgiFUU8yBoN4mf50voWf0ReQi8v5PKgYBXhp/82AjMhqB
+         rTJsuC5+jFz4XMfzl/6020xwtmeCq6QkJs2++a/n+/kMYDSpiRAHYh1yF8UfJO5L7UwR
+         2DAf67oLsyBJ5mLJtL91w5TAlbn6wdGv9X5gfILWFZD9RbWmIJkxZ8WXX6BiBOpJ4ZZs
+         H0UY8zhoYXsuMzNUNAukprACSGCpQMCw7tvWQYxBu6+4K9+5sgqLkPHgIEuklCZyYvqd
+         iSoCM2UNPS79xcfwFMFQgG3A2znyPS1q8ogklxD926Qj892yKoqT7ioU+9X6DS6s78N4
+         KFkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cCtbnn/mPSYMTovrACT2kKrxnwGdokswItkXqrNBN20=;
+        b=JicZEi6yTDDdO83fewzL9rvtuotzWU9sdt5zp+kHi37jdyDRXxSUpR6O3j9Qa2Zch6
+         67X1XsZhDR7PPDUmAoZGNI3Mzno2MLveLW0sFtTJkQx9DtidCuDipHVHZ8gwAsRw7+fw
+         //7Qa1kTek/MknSzGg5XO6nk1ioBF0JVZ0n6AnrESOqMI9zqLGAR1WTwz5WxFFUoyka/
+         DCvnaOO0xSdQMPk8I+w8Rf6KLmIDQHfsdDsvOWJeS56++hokunzUOy1QY/3VSAiKCJGu
+         3JyOr/KbldJj7IqBUOCxmZOXKP2CkBH9qsaznkDM/zG/hyjuELBxNElfgkEhuxdqEpkc
+         d/Zw==
+X-Gm-Message-State: AGi0PuahwpI6uSjM3G1GSSuPPyQINfqXje76x4froXIzDUAsG86p4ZLx
+        7Z//9GsDUePkyp24wNM3/hir8kSQE45e0eyr82Gh9g==
+X-Google-Smtp-Source: APiQypJUpeM7dR82Dn4AY7wcHcK7ejTccxr/K+9YNhjOMoBLs1Z8eehQdWNAzTelKtxHX1iwrzM/YGhrn32nrSdwdS8=
+X-Received: by 2002:a2e:6a08:: with SMTP id f8mr1135471ljc.8.1588666393650;
+ Tue, 05 May 2020 01:13:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430111436.GD12716@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
-        a=ONQRW0k9raierNYdzxQi9Q==:117 a=ONQRW0k9raierNYdzxQi9Q==:17
-        a=kj9zAlcOel0A:10 a=sTwFKg_x9MkA:10 a=7-415B0cAAAA:8
-        a=RKuqs710FA7j12_tIekA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <20200501083510.1413-1-anders.roxell@linaro.org>
+ <CAFd5g45C98_70Utp=QBWg_tKxaUMJ-ArQvjWbG9q6=dixfHBxw@mail.gmail.com> <CABVgOSkAAb7tyjhdqFZmyKyknaxz_sM_o3=bK6cL6Ld4wFxkRQ@mail.gmail.com>
+In-Reply-To: <CABVgOSkAAb7tyjhdqFZmyKyknaxz_sM_o3=bK6cL6Ld4wFxkRQ@mail.gmail.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Tue, 5 May 2020 10:13:02 +0200
+Message-ID: <CADYN=9+AvFYgXKCrT_xwR50b0cPihgCiBvzOypOGNkho2GsvBA@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        Marco Elver <elver@google.com>,
+        John Johansen <john.johansen@canonical.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, kasan-dev <kasan-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 01:14:36PM +0200, Jan Kara wrote:
-> On Wed 29-04-20 12:42:01, Dave Chinner wrote:
-> > On Tue, Apr 28, 2020 at 06:48:24PM +0200, Jan Kara wrote:
-> > > On Tue 28-04-20 08:53:51, Darrick J. Wong wrote:
-> > > > On Tue, Apr 28, 2020 at 05:32:28PM +0200, Jan Kara wrote:
-> > > > > > dd if=/dev/zero of=someoutput oflag=append
-> > > > > > dd: failed to open 'someoutput': Invalid argument
-> > > > > 
-> > > > > Yes, that's a bug that should be fixed. Thanks for reporting this! -1 means
-> > > > > 'this id is not expressible in current user namespace' and some code gets
-> > > > > confused along the way. We should refuse to set project -1 for a file...
-> > > > 
-> > > > Awkward part: projid 4294967295 is allowed on XFS (at least by the
-> > > > kernel), though the xfs quota tools do not permit that.
-> > > 
-> > > Are you OK with just refusing to set projid 4294967295 for everybody? Or
-> > > should we just not try to translate project IDs through user namespaces?
-> > > Because XFS does not seem to translate them while ext4 does... What a mess.
-> > 
-> > We do not translate project IDs through user names space because
-> > they are not usable as a mappable id. Project IDs are only used for
-> > customised aggregation of space accounting, unlike UIDs and GIDS
-> > that are used primarily for access control. IOWs, PRIDs are
-> > fundamentally different to UIDs and GIDs.
-> > 
-> > Project IDs were already being used in the init namespace for
-> > directory quotas to limit containers using bind mounts on a host
-> > filesystem to an amount of disk space less than the entire hosting
-> > filesystem.  And once you use PRIDs in the init namespace, they
-> > cannot be used by users in other user namespaces, regardless of
-> > whether they are mappable or not.
-> 
-> OK, understood.
-> 
-> > Essentially, the project ID mapping stuff was implemented by someone
-> > who didn't understand what project IDs were or how project IDs were
-> > being used, and then refused to listen to the people who knew these
-> > things and wanted them to drop the PRID mapping stuff.  And then
-> > Linus pulled their tree containing all the uid/gid/prid mapping code
-> > without warning and we've been stuck with this shit ever since.
-> > 
-> > Hence in XFS we simply do not allow project IDs to be manipulated
-> > outside of the init user namespace, and so mapping them is
-> > irrelevant because users in confined namespaces cannot usefully
-> > interact with them in any way.
-> 
-> So in ext4 we also don't currently allow anybody outside init user
-> namespace to change project IDs. Also as I'm now checking the projid
-> handling in ext4 more closely, we always transform project ID only to/from
-> init_user_ns (even in FSGETXATTR ioctl) so it's more or less pointless and
-> equivalent to XFS not transforming anything AFAIU.
+On Sat, 2 May 2020 at 04:11, David Gow <davidgow@google.com> wrote:
+>
+> On Sat, May 2, 2020 at 4:31 AM Brendan Higgins
+> <brendanhiggins@google.com> wrote:
+> >
+> > On Fri, May 1, 2020 at 1:35 AM Anders Roxell <anders.roxell@linaro.org> wrote:
+> > >
+> > > Make it easier to enable all KUnit fragments.  This is needed for kernel
+> > > test-systems, so its easy to get all KUnit tests enabled and if new gets
+> > > added they will be enabled as well.  Fragments that has to be builtin
+> > > will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
+> > >
+> > > Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
+> > > someone wants that even though KUNIT_RUN_ALL is enabled.
+> >
+> > I would LOVE IT, if you could make this work! I have been trying to
+> > figure out the best way to run all KUnit tests for a long time now.
+> >
+> > That being said, I am a bit skeptical that this approach will be much
+> > more successful than just using allyesconfig. Either way, there are
+> > tests coming down the pipeline that are incompatible with each other
+> > (the KASAN test and the KCSAN test will be incompatible). Even so,
+> > tests like the apparmor test require a lot of non-default
+> > configuration to compile. In the end, I am not sure how many tests we
+> > will really be able to turn on this way.
+> >
+> > Thoughts?
+>
+> I think there's still some value in this which the allyesconfig option
+> doesn't provide. As you point out, it's not possible to have a generic
+> "run all tests" option due to potential conflicting dependencies, but
+> this does provide a way to run all tests for things enabled in the
+> current config. This could be really useful for downstream developers
+> who want a way of running all tests relevant to their config without
+> the overhead of running irrelevant tests (e.g., for drivers they don't
+> build).
 
-*nod*
+It will solve that as well as for a tester doesn't have to go through all KUnit
+tests fragments to turn them on.
 
-> So the only problem is really with VFS quota code. There we do mapping of
-> passed project ID from current_user_ns() in fs/quota/quota.c before passing
-> the ID further to the core quota code. Practically, this is only relevant
-> for GETQUOTA quotactl calls because all the others are restricted to
-> init_user_ns capable CAP_SYS_ADMIN so they can get called only from
-> init_user_ns.
-> 
-> Now we also have a check like:
-> 
->         /* Filesystems outside of init_user_ns not yet supported */
->         if (sb->s_user_ns != &init_user_ns) {
->                 error = -EINVAL;
->                 goto out_fmt;
->         }
-> 
-> in dquot_load_quota_sb() which is the quota enabling function. So we don't
-> allow any quotas for filesystems outside of init_user_ns. So the
-> qid_has_mapping() checks are mostly pointless as sb->s_user_ns is always
-> init_user_ns. But this is except for id -1, which doesn't have mapping even
-> in init_user_ns...
+> Using allyesconfig doesn't make that distinction.
 
-ISTR that was done because it was supposed to be the "invalid ID"
-indicator, and so it common across everything? Kinda like the
-"nobody" UID? 
+We could also create a config fragment file in kernel/configs/kunit.config
+where we set
+------start
+CONFIG_KUNIT=y
+CONFIG_KUNIT_RUN_ALL=y
+CONFIG_SECURITY_APPARMOR=y
+------end
 
-[ Apart from the fact that older XFS filesystems only support 16 bit
-project IDs, so using 2^32-1 for anything is kinda troublesome. ]
 
-> So I'm pondering what's the best way out of this mess. Currently, the
-> mapping of project IDs in quota code has rather limited impact and we may
-> be able to get away with just removing it (i.e. without causing a
-> regression for any real user). So that's certainly one option.  But then we
-> should probably also remove the capability to specify (non-trivial) project
-> ID maps for user namespaces because having maps that are not actually
-> applied is pretty confusing.
+So, these two can only be enabled if KUNIT=y
+CONFIG_KUNIT_DRIVER_PE_TEST=y
+CONFIG_PM_QOS_KUNIT_TEST=y
 
-*nod*
+and for this one we have a pre-request of SECURITY_APPARMOR=y
+CONFIG_SECURITY_APPARMOR_KUNIT_TEST=y
 
-> Then there's a second option: Is there a reason *not* to map project IDs
-> in user namespaces? I understand it's pointless with how project ids are
-> currently used but it does not harm either AFAIU. The only real harm is
-> with id -1 not being usable. Also when people create fs mount option where
-> project ID is changeable by CAP_SYS_ADMIN (or maybe CAP_SYS_RESOURCE)
-> capable user - and there are several people asking for a functionality like
-> this - then fully mapping project IDs would IMHO make more sence.
+Other tests solves the dependencies with 'select' like
+CONFIG_EXT4_KUNIT_TESTS, that adds this row in
+fs/ext4/Kconfig, 'select EXT4_FS'
 
-I'm not opposed to doing this, however I have not had anyone at all
-ask for this functionality at all. SO perhaps it would be better to
-start with describing the use cases and user requirements so can
-get a better idea of the applications that people want to use
-mappable prids for...
+But I think we should try to minimize the number of 'select' statements,
+in order to avoid circular dependencies and unexpected behaviours.
+Maybe we should add the CONFIG_EXT4_FS=y into the kunit.config
+file instead ?
+
+
+>
+> Ultimately, we'll probably still want something which enables a
+> broader set of tests for upstream development: whether that's based on
+> this, allyesconfig, or something else entirely remains to be seen, I
+> think. I suspect we're going to end up with something
+> subsystem-specific (having a kunitconfig per subsystem, or a testing
+> line in MAINTAINERS or similar are ideas which have been brought up in
+> the past).
+>
+> This is a great looking tool to have in the toolbox, though.
+
+I agree!
+
+I'll prepare a patchset with individual patches as was suggested by Marco
+shortly.
 
 Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Anders
