@@ -2,158 +2,105 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D8F1C4FF9
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 May 2020 10:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6CC1C5323
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 May 2020 12:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgEEINQ (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 May 2020 04:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
+        id S1728672AbgEEK1D (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Tue, 5 May 2020 06:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725915AbgEEINP (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 May 2020 04:13:15 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67946C061A41
-        for <linux-ext4@vger.kernel.org>; Tue,  5 May 2020 01:13:15 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a21so640864ljj.11
-        for <linux-ext4@vger.kernel.org>; Tue, 05 May 2020 01:13:15 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1725766AbgEEK1C (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 May 2020 06:27:02 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB47DC061A0F
+        for <linux-ext4@vger.kernel.org>; Tue,  5 May 2020 03:27:01 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id f18so1022770lja.13
+        for <linux-ext4@vger.kernel.org>; Tue, 05 May 2020 03:27:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cCtbnn/mPSYMTovrACT2kKrxnwGdokswItkXqrNBN20=;
-        b=Ds/TGo88InOgXEcC2Gt5/VgiFUU8yBoN4mf50voWf0ReQi8v5PKgYBXhp/82AjMhqB
-         rTJsuC5+jFz4XMfzl/6020xwtmeCq6QkJs2++a/n+/kMYDSpiRAHYh1yF8UfJO5L7UwR
-         2DAf67oLsyBJ5mLJtL91w5TAlbn6wdGv9X5gfILWFZD9RbWmIJkxZ8WXX6BiBOpJ4ZZs
-         H0UY8zhoYXsuMzNUNAukprACSGCpQMCw7tvWQYxBu6+4K9+5sgqLkPHgIEuklCZyYvqd
-         iSoCM2UNPS79xcfwFMFQgG3A2znyPS1q8ogklxD926Qj892yKoqT7ioU+9X6DS6s78N4
-         KFkg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=blGQJMoBvAS+iUdy6OjWgWZCgbDmhcjzl5awL9j79VQ=;
+        b=jpA4029pUaIVnF4l5PbVwW0LEra4+nkabdz0qEKiJpYh8EP7TB52OoKvjTZLfRHpnc
+         xwVpZZFisR3GARWRYbIp86xNASa+7K2ZN29F8TflMofeX8A1wgcrutrRov2QmOHCftnB
+         f2Nby+IcpbDf9Ux1zkpH1exN6WAs0S3Z7rlShX2tEhTOErYgTI8gr3NgJuEUZ9iXX8CP
+         4MvayBIM7sw+gf5FwkxCYvV0D56OuYUWbruy8qGMst2KgepBJVkakOuSVqHfil4Sm2C3
+         ra9kpmz7uaVBZHrkCHzzcs9M/MCHmtuB+zqpuqS0kCk5tirZf2ktYoGqUfgvujroKJiO
+         LqTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cCtbnn/mPSYMTovrACT2kKrxnwGdokswItkXqrNBN20=;
-        b=JicZEi6yTDDdO83fewzL9rvtuotzWU9sdt5zp+kHi37jdyDRXxSUpR6O3j9Qa2Zch6
-         67X1XsZhDR7PPDUmAoZGNI3Mzno2MLveLW0sFtTJkQx9DtidCuDipHVHZ8gwAsRw7+fw
-         //7Qa1kTek/MknSzGg5XO6nk1ioBF0JVZ0n6AnrESOqMI9zqLGAR1WTwz5WxFFUoyka/
-         DCvnaOO0xSdQMPk8I+w8Rf6KLmIDQHfsdDsvOWJeS56++hokunzUOy1QY/3VSAiKCJGu
-         3JyOr/KbldJj7IqBUOCxmZOXKP2CkBH9qsaznkDM/zG/hyjuELBxNElfgkEhuxdqEpkc
-         d/Zw==
-X-Gm-Message-State: AGi0PuahwpI6uSjM3G1GSSuPPyQINfqXje76x4froXIzDUAsG86p4ZLx
-        7Z//9GsDUePkyp24wNM3/hir8kSQE45e0eyr82Gh9g==
-X-Google-Smtp-Source: APiQypJUpeM7dR82Dn4AY7wcHcK7ejTccxr/K+9YNhjOMoBLs1Z8eehQdWNAzTelKtxHX1iwrzM/YGhrn32nrSdwdS8=
-X-Received: by 2002:a2e:6a08:: with SMTP id f8mr1135471ljc.8.1588666393650;
- Tue, 05 May 2020 01:13:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200501083510.1413-1-anders.roxell@linaro.org>
- <CAFd5g45C98_70Utp=QBWg_tKxaUMJ-ArQvjWbG9q6=dixfHBxw@mail.gmail.com> <CABVgOSkAAb7tyjhdqFZmyKyknaxz_sM_o3=bK6cL6Ld4wFxkRQ@mail.gmail.com>
-In-Reply-To: <CABVgOSkAAb7tyjhdqFZmyKyknaxz_sM_o3=bK6cL6Ld4wFxkRQ@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=blGQJMoBvAS+iUdy6OjWgWZCgbDmhcjzl5awL9j79VQ=;
+        b=b67VfQyNBP6ytMumIK/hhDmqLDzTUDw3CqyG0pgGKflpso+onxlpxiJARROn4VXb1m
+         5uGC7/SPGeLY9YeY8nlKOsIURgGVtJ6/VGP/rrjksBh5y4zO6D9mJAX+vboPukwaxt/y
+         EL+r9rGddFFF/e0jGMkrHMtK1ApzF9R5nX628CeJJ2jYL9lwgQvNXYwctThWorEu5mGF
+         Z4YRWoZv2nvO9OcbVL5OY1iRPLMGpmKWnee37bzSygzesHtHE78HRk7Obnaz2vltcKoh
+         cGlBpldIoPuL4dxf+BlbuXWR59MqeB+XmFgAE/b6WCxNyFoBxaOa+5tPQFl2sNtzC2Da
+         7Shg==
+X-Gm-Message-State: AGi0PuZuD6cu/cKGkDlkuFY0ctsJmyoE/FWkfX9vvPHDiSYAn2SRYeZ3
+        G8v9oPSlkye7SB3TWXhbL66GXuRpeR6icAoq
+X-Google-Smtp-Source: APiQypKfa8VOGWn3WPZrzc/EhIZHCyr2xy8NZIclTsRKBVWbLEv8EvZCy1rPGqOMeOu9F7hKN9nnXA==
+X-Received: by 2002:a2e:3009:: with SMTP id w9mr1422695ljw.71.1588674419933;
+        Tue, 05 May 2020 03:26:59 -0700 (PDT)
+Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
+        by smtp.gmail.com with ESMTPSA id u16sm1860861ljk.9.2020.05.05.03.26.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 03:26:59 -0700 (PDT)
 From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Tue, 5 May 2020 10:13:02 +0200
-Message-ID: <CADYN=9+AvFYgXKCrT_xwR50b0cPihgCiBvzOypOGNkho2GsvBA@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        Marco Elver <elver@google.com>,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, kasan-dev <kasan-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     brendanhiggins@google.com, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, john.johansen@canonical.com,
+        jmorris@namei.org, serge@hallyn.com
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-security-module@vger.kernel.org, elver@google.com,
+        davidgow@google.com, Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH v2 0/6] Enable as many KUnit tests as possible
+Date:   Tue,  5 May 2020 12:26:47 +0200
+Message-Id: <20200505102647.7862-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Sat, 2 May 2020 at 04:11, David Gow <davidgow@google.com> wrote:
->
-> On Sat, May 2, 2020 at 4:31 AM Brendan Higgins
-> <brendanhiggins@google.com> wrote:
-> >
-> > On Fri, May 1, 2020 at 1:35 AM Anders Roxell <anders.roxell@linaro.org> wrote:
-> > >
-> > > Make it easier to enable all KUnit fragments.  This is needed for kernel
-> > > test-systems, so its easy to get all KUnit tests enabled and if new gets
-> > > added they will be enabled as well.  Fragments that has to be builtin
-> > > will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
-> > >
-> > > Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
-> > > someone wants that even though KUNIT_RUN_ALL is enabled.
-> >
-> > I would LOVE IT, if you could make this work! I have been trying to
-> > figure out the best way to run all KUnit tests for a long time now.
-> >
-> > That being said, I am a bit skeptical that this approach will be much
-> > more successful than just using allyesconfig. Either way, there are
-> > tests coming down the pipeline that are incompatible with each other
-> > (the KASAN test and the KCSAN test will be incompatible). Even so,
-> > tests like the apparmor test require a lot of non-default
-> > configuration to compile. In the end, I am not sure how many tests we
-> > will really be able to turn on this way.
-> >
-> > Thoughts?
->
-> I think there's still some value in this which the allyesconfig option
-> doesn't provide. As you point out, it's not possible to have a generic
-> "run all tests" option due to potential conflicting dependencies, but
-> this does provide a way to run all tests for things enabled in the
-> current config. This could be really useful for downstream developers
-> who want a way of running all tests relevant to their config without
-> the overhead of running irrelevant tests (e.g., for drivers they don't
-> build).
+Hi,
 
-It will solve that as well as for a tester doesn't have to go through all KUnit
-tests fragments to turn them on.
+This patchset will try to enable as many KUnit test fragments as
+possible for the current .config file.
+This will make it easier for both developers that tests their specific
+feature and also for test-systems that would like to get as much as
+possible for their current .config file.
 
-> Using allyesconfig doesn't make that distinction.
+I will send a separate KCSAN KUnit patch after this patchset since that
+isn't in mainline yet.
 
-We could also create a config fragment file in kernel/configs/kunit.config
-where we set
-------start
-CONFIG_KUNIT=y
-CONFIG_KUNIT_RUN_ALL=y
-CONFIG_SECURITY_APPARMOR=y
-------end
+Since v1:
+Marco commented to split up the patches, and change a "." to a ",".
 
-
-So, these two can only be enabled if KUNIT=y
-CONFIG_KUNIT_DRIVER_PE_TEST=y
-CONFIG_PM_QOS_KUNIT_TEST=y
-
-and for this one we have a pre-request of SECURITY_APPARMOR=y
-CONFIG_SECURITY_APPARMOR_KUNIT_TEST=y
-
-Other tests solves the dependencies with 'select' like
-CONFIG_EXT4_KUNIT_TESTS, that adds this row in
-fs/ext4/Kconfig, 'select EXT4_FS'
-
-But I think we should try to minimize the number of 'select' statements,
-in order to avoid circular dependencies and unexpected behaviours.
-Maybe we should add the CONFIG_EXT4_FS=y into the kunit.config
-file instead ?
-
-
->
-> Ultimately, we'll probably still want something which enables a
-> broader set of tests for upstream development: whether that's based on
-> this, allyesconfig, or something else entirely remains to be seen, I
-> think. I suspect we're going to end up with something
-> subsystem-specific (having a kunitconfig per subsystem, or a testing
-> line in MAINTAINERS or similar are ideas which have been brought up in
-> the past).
->
-> This is a great looking tool to have in the toolbox, though.
-
-I agree!
-
-I'll prepare a patchset with individual patches as was suggested by Marco
-shortly.
 
 Cheers,
 Anders
+
+Anders Roxell (6):
+  kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
+  kunit: default KUNIT_* fragments to KUNIT_RUN_ALL
+  lib: Kconfig.debug: default KUNIT_* fragments to KUNIT_RUN_ALL
+  drivers: base: default KUNIT_* fragments to KUNIT_RUN_ALL
+  fs: ext4: default KUNIT_* fragments to KUNIT_RUN_ALL
+  security: apparmor: default KUNIT_* fragments to KUNIT_RUN_ALL
+
+ drivers/base/Kconfig      |  3 ++-
+ drivers/base/test/Kconfig |  3 ++-
+ fs/ext4/Kconfig           |  3 ++-
+ lib/Kconfig.debug         |  6 ++++--
+ lib/kunit/Kconfig         | 15 ++++++++++++---
+ security/apparmor/Kconfig |  3 ++-
+ 6 files changed, 24 insertions(+), 9 deletions(-)
+
+-- 
+2.20.1
+
