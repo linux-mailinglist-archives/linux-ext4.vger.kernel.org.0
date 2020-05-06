@@ -2,267 +2,369 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110F91C610B
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 May 2020 21:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2408A1C66A7
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 May 2020 06:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgEETbd (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Tue, 5 May 2020 15:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727785AbgEETbc (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Tue, 5 May 2020 15:31:32 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE35C061A0F
-        for <linux-ext4@vger.kernel.org>; Tue,  5 May 2020 12:31:32 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id j21so1463878pgb.7
-        for <linux-ext4@vger.kernel.org>; Tue, 05 May 2020 12:31:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=5KdaGpmZlQc2P7Rd/J0kuNef9HUzJlJm/AbFxKhXnfU=;
-        b=Yg9wsQ9FwedbWvJgV+hyGzIoYmLIIeOLdIER0QEbGzzd6AyMnNtruHLm5bemBq6EKc
-         /DLerT7zxhZO0n1N1YbJguOiA95idifBomxvd8LqJXqlouj+B4kElAVdZxFNorbTAkcU
-         nObdTVVyMj8XGiRBIWoeEyt7k3p3PDVg7Gi7G5rhbcV1lTHQENbOUdrEy1WVfmjKFy5g
-         ldAMJfeNfR3CesdQwXRB078NI/5LbF79AJJhxTGbSJV+2DFss7RqTzUinV4uYdFD+FHm
-         vORtWyzNPECXiLtM+1jubHYeyGDSVFFVRg9A2OnxLXu/yWUfE4AMLH0UVoG0tHlw77ev
-         gugg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=5KdaGpmZlQc2P7Rd/J0kuNef9HUzJlJm/AbFxKhXnfU=;
-        b=pnES9KLCPPZ8+CyN7oW539dHvFA/SGmvUy+GZXm4tKIQmINu+eQbmp+KY5sZBTTcoi
-         /DFx62+OpweFBst6DffO37xwpwVDN05qW0poyTx3+Uw/0qbTLhLGX3doig1pbKHztrFi
-         HUXMn7oaX4lzZyc9w7KFhwiUL++Ry/uTcR8Ysh+QxQElsJumFsL7QCXc0e5sdpH1fwrt
-         DXh+iGpfAe6HUADrTR99Ppt2/JS7i/Pu7gJqEo+tnCVa+aF5/uS13yG56O1D0Mo5wE/B
-         t9TpRpM6VBJwuarON0meNti4ABg5yV7tcx6NPCC3PK3nj9E3asQeOUNj3kJ676/t7and
-         QSnw==
-X-Gm-Message-State: AGi0PubdrE7hOHvn6YM8zL0GbkhVduruH6o7J8XnCaLiwTWqI0OhZjsu
-        V7OT5vDr3WKQPFVfA0Sh889JwQ==
-X-Google-Smtp-Source: APiQypLc+r5IATRlPVMvwT/jeC0ojr1GqI2ZG6//RgF+dciCnxVufv99Zl0nqQw58EQyvEl82g7eFA==
-X-Received: by 2002:a63:bd42:: with SMTP id d2mr4019676pgp.214.1588707091780;
-        Tue, 05 May 2020 12:31:31 -0700 (PDT)
-Received: from [192.168.10.160] (S0106a84e3fe4b223.cg.shawcable.net. [70.77.216.213])
-        by smtp.gmail.com with ESMTPSA id q21sm2651248pfg.131.2020.05.05.12.31.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 May 2020 12:31:30 -0700 (PDT)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <EE2548BC-1A7B-4C9B-BE48-B6412F5BB012@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_6BF613E4-61FE-452C-B1D6-60BBB8E5E8C0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: ext4 and project quotas bugs
-Date:   Tue, 5 May 2020 13:31:28 -0600
-In-Reply-To: <20200505003222.GF2005@dread.disaster.area>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jan Kara <jack@suse.cz>, Francois <rigault.francois@gmail.com>,
-        Wang Shilong <wangshilong1991@gmail.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-References: <CAMc2VtTqz5QuCfdtEBDND+-sU=7T5_8Sh9Wo-4-u6HbJs+PZdw@mail.gmail.com>
- <20200428153228.GB6426@quack2.suse.cz>
- <3FF8B32A-0CB2-4818-95AA-5E76FE494EDB@dilger.ca>
- <20200429150132.GJ6733@magnolia> <20200505003222.GF2005@dread.disaster.area>
-X-Mailer: Apple Mail (2.3273)
+        id S1725887AbgEFERN (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 6 May 2020 00:17:13 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23870 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725300AbgEFERM (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 May 2020 00:17:12 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04641vlM049077;
+        Wed, 6 May 2020 00:17:03 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30u8syq8vh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 00:17:02 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 04643Uou052497;
+        Wed, 6 May 2020 00:17:02 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30u8syq8ty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 00:17:02 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 0464578N013654;
+        Wed, 6 May 2020 04:17:00 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 30s0g5bd7j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 May 2020 04:16:59 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0464Fl9Z66191808
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 May 2020 04:15:47 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 97A5FA404D;
+        Wed,  6 May 2020 04:16:57 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5BA32A4040;
+        Wed,  6 May 2020 04:16:54 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.89.50])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  6 May 2020 04:16:54 +0000 (GMT)
+Subject: Re: [PATCH 08/11] fs: move fiemap range validation into the file
+ systems instances
+To:     Christoph Hellwig <hch@lst.de>, linux-ext4@vger.kernel.org,
+        viro@zeniv.linux.org.uk
+Cc:     jack@suse.cz, tytso@mit.edu, adilger@dilger.ca, amir73il@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
+References: <20200505154324.3226743-1-hch@lst.de>
+ <20200505154324.3226743-9-hch@lst.de>
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
+Date:   Wed, 6 May 2020 09:46:52 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200505154324.3226743-9-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200506041654.5BA32A4040@d06av23.portsmouth.uk.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-05_11:2020-05-04,2020-05-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 clxscore=1015 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005060026
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
 
---Apple-Mail=_6BF613E4-61FE-452C-B1D6-60BBB8E5E8C0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
 
-On May 4, 2020, at 6:32 PM, Dave Chinner <david@fromorbit.com> wrote:
->=20
-> On Wed, Apr 29, 2020 at 08:01:32AM -0700, Darrick J. Wong wrote:
->> On Tue, Apr 28, 2020 at 09:34:09PM -0600, Andreas Dilger wrote:
->>>=20
->>> We tried to implement (restricted project IDs) for ext4, but
->>> Dave Chinner argued that allowing anyone (at least in the root
->>> namespace) to set the project ID to anything they wanted was
->>> part of how project quotas are _supposed_ to work.
->>>=20
->>> We ended up adding a restriction at the Lustre level, defaulting to
->>> only allow root (chprojid_gid=3D0, via CAP_SYS_RESOURCE), or admins =
-in
->>> a specific numeric group (with chprojid_gid=3DN), to change the =
-projid,
->>> and denying regular users the ability to change the projid of files.
->>>=20
->>> This can be changed by setting "chprojid_gid=3D-1" to allow users in
->>> any group to change the projid of files, returning the XFS behavior.
->>> The "chprojid_gid" is essentially a sysfs tunable for Lustre, but it
->>> could also/instead be a mount option for ext4, if that is preferred.
->>> I don't have a particular attachment to the parameter name, or how
->>> it is set by the admin, but I think something like this is needed.
->>>=20
->>>=20
->>>>> 2- project quota are a bit too easy to escape:
->>>>> dd if=3D/dev/zero of=3Dsomeoutput oflag=3Dappend
->>>>> loop0: write failed, project block limit reached.
->>>>> dd: writing to 'someoutput': Disk quota exceeded
->>>>> 2467+0 records in
->>>>> 2466+0 records out
->>>>> 1262592 bytes (1.3 MB, 1.2 MiB) copied, 0.0105432 s, 120 MB/s
->>>>> vagrant@localhost:/mnt/loop/abc/mydir3> chattr -p 33 someoutput
->>>>> vagrant@localhost:/mnt/loop/abc/mydir3> dd if=3D/dev/zero =
-of=3Dsomeoutput
->>>>> oflag=3Dappend
->>>>> dd: writing to 'someoutput': No space left on device
->>>>> 127393+0 records in
->>>>> 127392+0 records out
->>>>> 65224704 bytes (65 MB, 62 MiB) copied, 0.568859 s, 115 MB/s
->>>>=20
->>>> Yes and as I mentioned above this is deliberate.
->>>=20
->>> That may be the historical XFS behavior, but IMHO, it doesn't make
->>> this behavior *useful*.  If *anyone* can change the projid of files
->>> that makes them mostly useless.  They might be OK for informational
->>> or accounting purposes (e.g. fast "du" of a directory) in a friendly
->>> user environment, but they are useless for any space management =
-(i.e.
->>> anyone can easily bypass project limits by "chattr -p $RANDOM =
-<file>").
->>>=20
->>> I'd prefer to make the project quotas useful out of the box for =
-ext4,
->>> by implementing the chprojid_gid tunable, or something equivalent.
->>> If there are users/sites that want identical behavior to XFS, they
->>> can always set chprojid_gid=3D-1 to allow anyone to change the =
-projid.
->>>=20
->>> I'd be happy to understand what Dave doesn't like about this =
-proposal,
->>> but the last time the enforcement of project quotas was discussed, =
-my
->>> attempt to figure this out ended with silence, see thread ending at:
->>>=20
->>> =
-https://lore.kernel.org/linux-ext4/6B0D1F84-0718-4E43-87D4-C8AFC94C0163@di=
-lger.ca/
->>>=20
->>> Maybe this time we can get over the hump?  Is it just some implicit
->>> difference between "directory quota" and "project quota" that exists
->>> in XFS that I (and everyone using ext4) does not understand?
->>=20
->> I don't have any particular objection to adding an admin-controlled
->> means to restrict who can change project ids on a file, other than =
-let's
->> do this in a consistent way for the three fses that support prjquota.
->=20
-> That's my stance in a nutshell. Project quotas are not a "ext4 can
-> do whatever they like and screw everyone else" feature.
+On 5/5/20 9:13 PM, Christoph Hellwig wrote:
+> Replace fiemap_check_flags with a fiemap_prep helper that also takes the
+> inode and mapped range, and performs the sanity check and truncation
+> previously done in fiemap_check_range.  This way the validation is inside
+> the file system itself and thus properly works for the stacked overlayfs
+> case as well.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-My intent has *never* been "screw everyone else", and I don't see how
-you can read that into "I'd be happy to understand what Dave doesn't
-like about this proposal, but the last time the enforcement of project
-quotas was discussed, my attempt to figure this out ended with silence."
-
-I'm not trying to introduce gratuitous differences to project quotas,
-but you shot down the previous proposal to prevent regular users from
-arbitrarily changing project IDs as "a horrible 'designed by an engineer
-to meet a specific requirement' interface" without offering a useful
-alternative in return.  Maybe I misunderstood and you were describing
-the current XFS project ID behavior of allowing users to change the
-project ID to anything they want, your comment wasn't specific? :-)
-
-Clearly there is a need to be able to prevent users from changing the
-projid of files, as it's come up a number of times already.
-
-> New features for project quotas *must* be consistently managed and
-> provide -exactly the same semantics- across all filesystems that
-> support project quotas. That means new management features is *must*
-> be supportable by all filesystems and implemented *in the same
-> patchset* for all filesystems that support project quotas.
->=20
-> Fragmenting the functionality space because "ext4 does not play well
-> with others" is not acceptible anymore. If you implement
-> functionality that other filesystems support and then want to extend
-> it, you need to bring all the other filesystems along with ext4.
-
-The original proposal was never "let's change ext4 project quotas to
-be fundamentally different from XFS", but rather "here's an *option*
-to fix what several users have reported as an issue with project quota
-behavior (being able to change the projid arbitrarily), with the
-ability to revert to the existing project quota behavior that XFS
-has for archaic reasons, if needed".
-
->> Personally, I thought Dave was stating how we got to the current
->> prjquota implementation w/ non-entirely-intuitive Irix behavior and =
-then
->> asked for a concrete definition of new behavior + patches and was
->> waiting to see if Wang or someone would send out f2fs/ext4/xfs =
-patches...
->=20
-> Yup, that's pretty much it.
-
-The intent of the previous thread, and this one as well, is that it =
-seems
-the ext4 developers *don't understand* the Irix/XFS semantics of project
-quotas vs. directory quotas, and I was asking for clarification on what
-the difference between "project quotas" and "directory quotas" as exists
-n XFS today (if there is a difference)?
-
-Is it "directory quotas have PROJID_INHERIT", and "project quotas do =
-not",
-but this has nothing to do with quota *enforcement* (which is =
-nonexistent)?
-
-Do files created in directories with a project ID set, but *not* having
-PROJID_INHERIT, still inherit the projid, but this isn't enforced?  That
-doesn't seem to be the case.
-
-Is it that files and subdirectories in directories with PROJID_INHERIT =
-set
-can only be changed by the root user in the init namespace, but if the
-parent does not have PROJID_INHERIT set then users in the init namespace
-can change the projid of any file that they can write?  That also =
-doesn't
-seem to be the case.
-
-I ran some tests on XFS and couldn't see any way to prevent a regular
-user from changing the projid arbitrarily with chattr, so it doesn't
-*appear* to be a quirk with how project quotas is implemented by ext4.
-Is there some mechanism/option/xfs_quota magic that *prevents* users =
-from
-changing the projid that I'm missing?
-
-Cheers, Andreas
+Looks ok. Please feel free to add:
+Reviewed-by: Ritesh  Harjani <riteshh@linux.ibm.com>
 
 
-
-
-
-
---Apple-Mail=_6BF613E4-61FE-452C-B1D6-60BBB8E5E8C0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl6xvxAACgkQcqXauRfM
-H+DAdQ//RakRdxnpse5adwzdKScAc0sW9q3QquUDcQEm4V2BL278nkb7Q/+9saZf
-8TWDN9t13kHUPx0VMrF69dbBWWlL487ZIUM/dwLUPX8vP2ogMzHCpqStbuGdomo/
-C/GtFsX3Q8Mojp/9Y8eX3rRrTZ/th2HvD5HfVg2m2sDcxXH20md4jogZvIHfDFTS
-SzC2bamULSBuLAOCdT+w1oAexXWw7yoOeWWjgNZHJkd69/kVIRKlTkhE1/2ZJ1sQ
-L9OZPwf+mMhjIbps02+gqLDG8sgrpJxByxN6BYBSXfRO3e0a3BIOTj4HAQ++XJEa
-Pyh0JJZrvLymgHU412AxdVRI2tLJYMmjDpBpd/5KFhyS62anhrmdu8bq/sOW/RjG
-iOXIRzAhzNcFJtjEx3stKex2mQg6Ksft8EHqeaFrHVY8+Xfg32EGdxOEMH7BkBC+
-DR7rHDc6b78mvnK18eNayuFYEltMUnGsajgPudeyxB3LElNc4ocaxJlqnSWIoyWd
-MzGBKScJnePDaofj+0NoK4seJcf/uIWTqqdqkCp3FY7Tkc21UhkeYhDYvZyfrgLx
-Tcw4TnkGRdhUxbUwhQOBLVGzbrRUIBbMbK7mp4cHm6K/Zk4gqHqPZ07fxnmmMgyk
-1pC6XmeBybGMeYyxySj2+qEKeENsMYdWR83wct0QCvx+OkUiIgk=
-=jZcF
------END PGP SIGNATURE-----
-
---Apple-Mail=_6BF613E4-61FE-452C-B1D6-60BBB8E5E8C0--
+> ---
+>   Documentation/filesystems/fiemap.txt | 12 +++---
+>   fs/btrfs/inode.c                     |  2 +-
+>   fs/cifs/smb2ops.c                    |  6 ++-
+>   fs/ext4/extents.c                    |  5 ++-
+>   fs/f2fs/data.c                       |  3 +-
+>   fs/ioctl.c                           | 63 +++++++++++-----------------
+>   fs/iomap/fiemap.c                    |  2 +-
+>   fs/nilfs2/inode.c                    |  2 +-
+>   fs/ocfs2/extent_map.c                |  3 +-
+>   include/linux/fiemap.h               |  3 +-
+>   10 files changed, 47 insertions(+), 54 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/fiemap.txt b/Documentation/filesystems/fiemap.txt
+> index ac87e6fda842b..35c8571eccb6e 100644
+> --- a/Documentation/filesystems/fiemap.txt
+> +++ b/Documentation/filesystems/fiemap.txt
+> @@ -203,16 +203,18 @@ EINTR once fatal signal received.
+>   
+>   
+>   Flag checking should be done at the beginning of the ->fiemap callback via the
+> -fiemap_check_flags() helper:
+> +fiemap_prep() helper:
+>   
+> -int fiemap_check_flags(struct fiemap_extent_info *fieinfo, u32 fs_flags);
+> +int fiemap_prep(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> +		u64 start, u64 *len, u32 supported_flags);
+>   
+>   The struct fieinfo should be passed in as received from ioctl_fiemap(). The
+>   set of fiemap flags which the fs understands should be passed via fs_flags. If
+> -fiemap_check_flags finds invalid user flags, it will place the bad values in
+> +fiemap_prep finds invalid user flags, it will place the bad values in
+>   fieinfo->fi_flags and return -EBADR. If the file system gets -EBADR, from
+> -fiemap_check_flags(), it should immediately exit, returning that error back to
+> -ioctl_fiemap().
+> +fiemap_prep(), it should immediately exit, returning that error back to
+> +ioctl_fiemap().  Additionally the range is validate against the supported
+> +maximum file size.
+>   
+>   
+>   For each extent in the request range, the file system should call
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 320d1062068d3..1f1ec361089b3 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -8250,7 +8250,7 @@ static int btrfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>   {
+>   	int	ret;
+>   
+> -	ret = fiemap_check_flags(fieinfo, BTRFS_FIEMAP_FLAGS);
+> +	ret = fiemap_prep(inode, fieinfo, start, &len, BTRFS_FIEMAP_FLAGS);
+>   	if (ret)
+>   		return ret;
+>   
+> diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+> index 09047f1ddfb66..828e53e795c6d 100644
+> --- a/fs/cifs/smb2ops.c
+> +++ b/fs/cifs/smb2ops.c
+> @@ -3408,8 +3408,10 @@ static int smb3_fiemap(struct cifs_tcon *tcon,
+>   	int i, num, rc, flags, last_blob;
+>   	u64 next;
+>   
+> -	if (fiemap_check_flags(fei, FIEMAP_FLAG_SYNC))
+> -		return -EBADR;
+> +	rc = fiemap_prep(d_inode(cfile->dentry), fei, start, &len,
+> +			FIEMAP_FLAG_SYNC);
+> +	if (rc)
+> +		return rc;
+>   
+>   	xid = get_xid();
+>    again:
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index a41ae7c510170..41f73dea92cac 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4908,8 +4908,9 @@ int ext4_get_es_cache(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>   		fieinfo->fi_flags &= ~FIEMAP_FLAG_CACHE;
+>   	}
+>   
+> -	if (fiemap_check_flags(fieinfo, FIEMAP_FLAG_SYNC))
+> -		return -EBADR;
+> +	error = fiemap_prep(inode, fieinfo, start, &len, FIEMAP_FLAG_SYNC);
+> +	if (error)
+> +		return error;
+>   
+>   	error = ext4_fiemap_check_ranges(inode, start, &len);
+>   	if (error)
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 25abbbb65ba09..03faafc591b17 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -1825,7 +1825,8 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>   			return ret;
+>   	}
+>   
+> -	ret = fiemap_check_flags(fieinfo, FIEMAP_FLAG_SYNC | FIEMAP_FLAG_XATTR);
+> +	ret = fiemap_prep(inode, fieinfo, start, &len,
+> +			FIEMAP_FLAG_SYNC | FIEMAP_FLAG_XATTR);
+>   	if (ret)
+>   		return ret;
+>   
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 3f300cc07dee4..56bbf02209aef 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -149,61 +149,50 @@ int fiemap_fill_next_extent(struct fiemap_extent_info *fieinfo, u64 logical,
+>   EXPORT_SYMBOL(fiemap_fill_next_extent);
+>   
+>   /**
+> - * fiemap_check_flags - check validity of requested flags for fiemap
+> + * fiemap_prep - check validity of requested flags for fiemap
+> + * @inode:	Inode to operate on
+>    * @fieinfo:	Fiemap context passed into ->fiemap
+> - * @fs_flags:	Set of fiemap flags that the file system understands
+> + * @start:	Start of the mapped range
+> + * @len:	Length of the mapped range, can be truncated by this function.
+> + * @supported_flags:	Set of fiemap flags that the file system understands
+>    *
+> - * Called from file system ->fiemap callback. This will compute the
+> - * intersection of valid fiemap flags and those that the fs supports. That
+> - * value is then compared against the user supplied flags. In case of bad user
+> - * flags, the invalid values will be written into the fieinfo structure, and
+> - * -EBADR is returned, which tells ioctl_fiemap() to return those values to
+> - * userspace. For this reason, a return code of -EBADR should be preserved.
+> + * This function must be called from each ->fiemap instance to validate the
+> + * fiemap request against the file system parameters.
+>    *
+> - * Returns 0 on success, -EBADR on bad flags.
+> + * Returns 0 on success, or a negative error on failure.
+>    */
+> -int fiemap_check_flags(struct fiemap_extent_info *fieinfo, u32 fs_flags)
+> +int fiemap_prep(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> +		u64 start, u64 *len, u32 supported_flags)
+>   {
+> +	u64 maxbytes = inode->i_sb->s_maxbytes;
+>   	u32 incompat_flags;
+>   
+> -	incompat_flags = fieinfo->fi_flags & ~(FIEMAP_FLAGS_COMPAT & fs_flags);
+> -	if (incompat_flags) {
+> -		fieinfo->fi_flags = incompat_flags;
+> -		return -EBADR;
+> -	}
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL(fiemap_check_flags);
+> -
+> -static int fiemap_check_ranges(struct super_block *sb,
+> -			       u64 start, u64 len, u64 *new_len)
+> -{
+> -	u64 maxbytes = (u64) sb->s_maxbytes;
+> -
+> -	*new_len = len;
+> -
+> -	if (len == 0)
+> +	if (*len == 0)
+>   		return -EINVAL;
+> -
+>   	if (start > maxbytes)
+>   		return -EFBIG;
+>   
+>   	/*
+>   	 * Shrink request scope to what the fs can actually handle.
+>   	 */
+> -	if (len > maxbytes || (maxbytes - len) < start)
+> -		*new_len = maxbytes - start;
+> +	if (*len > maxbytes || (maxbytes - *len) < start)
+> +		*len = maxbytes - start;
+>   
+> +	supported_flags &= FIEMAP_FLAGS_COMPAT;
+> +	incompat_flags = fieinfo->fi_flags & ~supported_flags;
+> +	if (incompat_flags) {
+> +		fieinfo->fi_flags = incompat_flags;
+> +		return -EBADR;
+> +	}
+>   	return 0;
+>   }
+> +EXPORT_SYMBOL(fiemap_prep);
+>   
+>   static int ioctl_fiemap(struct file *filp, struct fiemap __user *ufiemap)
+>   {
+>   	struct fiemap fiemap;
+>   	struct fiemap_extent_info fieinfo = { 0, };
+>   	struct inode *inode = file_inode(filp);
+> -	struct super_block *sb = inode->i_sb;
+> -	u64 len;
+>   	int error;
+>   
+>   	if (!inode->i_op->fiemap)
+> @@ -215,11 +204,6 @@ static int ioctl_fiemap(struct file *filp, struct fiemap __user *ufiemap)
+>   	if (fiemap.fm_extent_count > FIEMAP_MAX_EXTENTS)
+>   		return -EINVAL;
+>   
+> -	error = fiemap_check_ranges(sb, fiemap.fm_start, fiemap.fm_length,
+> -				    &len);
+> -	if (error)
+> -		return error;
+> -
+>   	fieinfo.fi_flags = fiemap.fm_flags;
+>   	fieinfo.fi_extents_max = fiemap.fm_extent_count;
+>   	fieinfo.fi_extents_start = ufiemap->fm_extents;
+> @@ -232,7 +216,8 @@ static int ioctl_fiemap(struct file *filp, struct fiemap __user *ufiemap)
+>   	if (fieinfo.fi_flags & FIEMAP_FLAG_SYNC)
+>   		filemap_write_and_wait(inode->i_mapping);
+>   
+> -	error = inode->i_op->fiemap(inode, &fieinfo, fiemap.fm_start, len);
+> +	error = inode->i_op->fiemap(inode, &fieinfo, fiemap.fm_start,
+> +			fiemap.fm_length);
+>   	fiemap.fm_flags = fieinfo.fi_flags;
+>   	fiemap.fm_mapped_extents = fieinfo.fi_extents_mapped;
+>   	if (copy_to_user(ufiemap, &fiemap, sizeof(fiemap)))
+> @@ -320,7 +305,7 @@ static int __generic_block_fiemap(struct inode *inode,
+>   	bool past_eof = false, whole_file = false;
+>   	int ret = 0;
+>   
+> -	ret = fiemap_check_flags(fieinfo, FIEMAP_FLAG_SYNC);
+> +	ret = fiemap_prep(inode, fieinfo, start, &len, FIEMAP_FLAG_SYNC);
+>   	if (ret)
+>   		return ret;
+>   
+> diff --git a/fs/iomap/fiemap.c b/fs/iomap/fiemap.c
+> index 449705575acf9..89dca4a97e4a2 100644
+> --- a/fs/iomap/fiemap.c
+> +++ b/fs/iomap/fiemap.c
+> @@ -75,7 +75,7 @@ int iomap_fiemap(struct inode *inode, struct fiemap_extent_info *fi,
+>   	ctx.fi = fi;
+>   	ctx.prev.type = IOMAP_HOLE;
+>   
+> -	ret = fiemap_check_flags(fi, FIEMAP_FLAG_SYNC);
+> +	ret = fiemap_prep(inode, fi, start, &len, FIEMAP_FLAG_SYNC);
+>   	if (ret)
+>   		return ret;
+>   
+> diff --git a/fs/nilfs2/inode.c b/fs/nilfs2/inode.c
+> index 6e1aca38931f3..052c2da11e4d7 100644
+> --- a/fs/nilfs2/inode.c
+> +++ b/fs/nilfs2/inode.c
+> @@ -1006,7 +1006,7 @@ int nilfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>   	unsigned int blkbits = inode->i_blkbits;
+>   	int ret, n;
+>   
+> -	ret = fiemap_check_flags(fieinfo, FIEMAP_FLAG_SYNC);
+> +	ret = fiemap_prep(inode, fieinfo, start, &len, FIEMAP_FLAG_SYNC);
+>   	if (ret)
+>   		return ret;
+>   
+> diff --git a/fs/ocfs2/extent_map.c b/fs/ocfs2/extent_map.c
+> index e3e2d1b2af51a..3744179b73fa1 100644
+> --- a/fs/ocfs2/extent_map.c
+> +++ b/fs/ocfs2/extent_map.c
+> @@ -746,7 +746,8 @@ int ocfs2_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>   	struct buffer_head *di_bh = NULL;
+>   	struct ocfs2_extent_rec rec;
+>   
+> -	ret = fiemap_check_flags(fieinfo, OCFS2_FIEMAP_FLAGS);
+> +	ret = fiemap_prep(inode, fieinfo, map_start, &map_len,
+> +			OCFS2_FIEMAP_FLAGS);
+>   	if (ret)
+>   		return ret;
+>   
+> diff --git a/include/linux/fiemap.h b/include/linux/fiemap.h
+> index 240d4f7d9116a..4e624c4665837 100644
+> --- a/include/linux/fiemap.h
+> +++ b/include/linux/fiemap.h
+> @@ -13,9 +13,10 @@ struct fiemap_extent_info {
+>   							fiemap_extent array */
+>   };
+>   
+> +int fiemap_prep(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> +		u64 start, u64 *len, u32 supported_flags);
+>   int fiemap_fill_next_extent(struct fiemap_extent_info *info, u64 logical,
+>   			    u64 phys, u64 len, u32 flags);
+> -int fiemap_check_flags(struct fiemap_extent_info *fieinfo, u32 fs_flags);
+>   
+>   int generic_block_fiemap(struct inode *inode,
+>   		struct fiemap_extent_info *fieinfo, u64 start, u64 len,
+> 
