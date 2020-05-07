@@ -2,53 +2,48 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40AD1C92D8
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 May 2020 16:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A78D71C9360
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 May 2020 17:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgEGO72 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Thu, 7 May 2020 10:59:28 -0400
-Received: from verein.lst.de ([213.95.11.211]:47188 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgEGO72 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Thu, 7 May 2020 10:59:28 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id BA04A68BFE; Thu,  7 May 2020 16:59:24 +0200 (CEST)
-Date:   Thu, 7 May 2020 16:59:24 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-ext4@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, adilger@dilger.ca,
-        riteshh@linux.ibm.com, amir73il@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: fix fiemap for ext4 bitmap files (+ cleanups) v3
-Message-ID: <20200507145924.GA28854@lst.de>
-References: <20200505154324.3226743-1-hch@lst.de> <20200507062419.GA5766@lst.de> <20200507144947.GJ404484@mit.edu>
+        id S1727816AbgEGPCY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Thu, 7 May 2020 11:02:24 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44455 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726356AbgEGPCY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Thu, 7 May 2020 11:02:24 -0400
+Received: from callcc.thunk.org (pool-100-0-195-244.bstnma.fios.verizon.net [100.0.195.244])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 047F1EeC022765
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 May 2020 11:01:14 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 237DE421C7D; Thu,  7 May 2020 11:01:14 -0400 (EDT)
+Date:   Thu, 7 May 2020 11:01:14 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     xiakaixu1987@gmail.com
+Cc:     linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: Re: [PATCH] ext4: remove unnecessary test_opt for DIOREAD_NOLOCK
+Message-ID: <20200507150114.GL404484@mit.edu>
+References: <1586751862-19437-1-git-send-email-kaixuxia@tencent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200507144947.GJ404484@mit.edu>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <1586751862-19437-1-git-send-email-kaixuxia@tencent.com>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Thu, May 07, 2020 at 10:49:47AM -0400, Theodore Y. Ts'o wrote:
-> On Thu, May 07, 2020 at 08:24:19AM +0200, Christoph Hellwig wrote:
-> > On Tue, May 05, 2020 at 05:43:13PM +0200, Christoph Hellwig wrote:
-> > > Hi all,
-> > > 
-> > > the first two patches should fix the issue where ext4 doesn't
-> > > properly check the max file size for bitmap files in fiemap.
-> > > 
-> > > The rest cleans up the fiemap support in ext4 and in general.
-> > 
-> > Folks, I think the first two patches should go into 5.7 to fix the
-> > ext4 vs overlay problem.  Ted, are you going to pick this up, or Al?
+On Mon, Apr 13, 2020 at 12:24:22PM +0800, xiakaixu1987@gmail.com wrote:
+> From: Kaixu Xia <kaixuxia@tencent.com>
 > 
-> I'll pick up the two fixes, thanks.  Which tree are the rest of the
-> patches going to go through?
+> The DIOREAD_NOLOCK flag has been cleared when doing the test_opt
+> that is meaningless, so remove the unnecessary test_opt for DIOREAD_NOLOCK.
+> 
+> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 
-vfs.git would be most logic if Al agrees.  OTOH there is a fair amount
-of ext4 patches, so if you want to pick the series up I wouldn't mind
-either.
+Applied, thanks.
+
+					- Ted
