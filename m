@@ -2,70 +2,65 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B567F1C8050
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 May 2020 05:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F831C805D
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 May 2020 05:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbgEGDIY (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Wed, 6 May 2020 23:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
+        id S1728720AbgEGDL0 (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Wed, 6 May 2020 23:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728000AbgEGDIY (ORCPT
-        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 May 2020 23:08:24 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2DDFC0610D5
-        for <linux-ext4@vger.kernel.org>; Wed,  6 May 2020 20:08:23 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id j5so4520455wrq.2
-        for <linux-ext4@vger.kernel.org>; Wed, 06 May 2020 20:08:23 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1728666AbgEGDLY (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>); Wed, 6 May 2020 23:11:24 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B45C0610D5
+        for <linux-ext4@vger.kernel.org>; Wed,  6 May 2020 20:11:23 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e16so4509285wra.7
+        for <linux-ext4@vger.kernel.org>; Wed, 06 May 2020 20:11:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gsgt81MlDlEnto/Qdmhwfg0yKkYAEa0cqpBxi8rVFIU=;
-        b=SbDfHNsVlfwga5HlZsXZUndrMHRULtSgVl0BqdUggNtB1qsob5uD0JyX829hO72zkR
-         cm/8xweeLd9jJO9m8puEA2KdLib1VQ8BLx8ALUobrhsRbyeEeyjETYOtW5+bFoF5iASD
-         ZE4hLHneOrzNo6QZ0kX0rw/CbBvg4b1fGD/G/3feDX49Cpyoi5nam9lIu9+edv+nA5DJ
-         aVR9G0FQKBxNogFDiSnECeq6gY1+oJEO2TuLnmCjUul/GzJfl2sMBspUtT4Bq/q3n53X
-         TKwTLnjHEybyfrEWSfTE+5M4PQMfS4uyumllO9W/XOePZvv7yo84bDog271sy0t6z9Im
-         yJoQ==
+        bh=/M4/DuBTGflvVuChw5Y25GaHL26QwHucGpDopq+uKKM=;
+        b=EDZcbDkryNHUq+1LtvqavsxqGBJ2zTgq94L3okmprwpunnwTqR843h/HBRE9aU+gHJ
+         V4HcsR9N0EJlXs7fC0Wt4d5cyP4EvYKBZDbJQ7xDwC74mBhV6Om8NAOKru6gJ1ylLOzI
+         wE2MB+h/1AOPbbHBAdNE+XMuiBgywyQ60Mia14JbAEGLC+u7ZOLY/dhydgzotaUpF8uY
+         QwnYAynKqDtPfZzajgUJo2uvhonRZF3QPRJ1e+E9RdcEmRGMFnbFw6dAtUCuCksgLmmn
+         6JieoL6lt15z7QZ0COWZ8gB9QYLbTQg/F+92uVog9oKiv4936wfJgOmksAKdpwWjacWY
+         YYgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gsgt81MlDlEnto/Qdmhwfg0yKkYAEa0cqpBxi8rVFIU=;
-        b=EB33BpvpR11FQQMNww9HCemhEKjocrda9OKjTJ2pJzUAtGmdff7duEg/AC2guJJfvs
-         g1AyRVxjGEhUHj5kn/IZPb6BFz2twLEm77tE96g/lbsRN0Kp/f9zJAwF9ZVxXDeIkvmm
-         gbeb8Y9X+piK6W1ypEpf/MK85J0qPHL2EEJJfKpDlzbkl6im4XVaVk2R7FYWFhGTUJPA
-         vIUe8npI2eTvrGGFhuRKtuIgab7olbk4M14zaMv9IQSsQgLTLQKSKFPRAn6oRrfH3Bql
-         TDjMO2zOq/KU3laYMZ7QVXSGtI9nC6egX/i6l/+GNe5XyQZqwAyUx17Y01Colw1hg683
-         Zcqg==
-X-Gm-Message-State: AGi0PuZiZvhrmJOEQxwvROuElbnHBqGXqJrPT2b8mOAO9HkgEtxXOg5p
-        81BqW+lgFPiEOiQWWFC3KkrUpM8dbIMIb2EJAtSaTA==
-X-Google-Smtp-Source: APiQypJYBc+4MO14/l2sBXNv+eueA8YQH/AYbiQD4bmsfXP2t3f539TUHGl8HMJof9KUOufQG4S/sjUHWHRGOiOP17E=
-X-Received: by 2002:adf:fe51:: with SMTP id m17mr12501816wrs.414.1588820901909;
- Wed, 06 May 2020 20:08:21 -0700 (PDT)
+        bh=/M4/DuBTGflvVuChw5Y25GaHL26QwHucGpDopq+uKKM=;
+        b=eKqm/tVaDkXgdBabP8RPwJtrvGIB4x1LY+6dJnGhbLYCl1mjZ3wcEc9Z1JrkLbvst9
+         vs/hynArKiwO2u19fEbu+JjZsuhssVsS60WWoMzveqaCYRE9GBvqo7USpBgT9itRXnGI
+         HdZNZzo5gsqyXqWr++eTiregoYtcRCvVYjgC7GXSSSrjcOHCmqXo7kxLYEmxu+nca+i2
+         lDHpuBRNEBOZ/LCJNbLOoxNDqQtAmsNSUXoRfbMpCX5t9QulmsLt/k8FbeFADgI+1uWe
+         V+sVvyogd1jn2v2JSVRvhIzw4PGqCvWuyx/4DHujDgz3qVP/fvmvMyTrMmu/WSh+CeVl
+         tBZQ==
+X-Gm-Message-State: AGi0PuaUbuA8DlkEo2oGa4W7JYHleeSKUZW0eA3FbsvkIpU7cI/ZK3fO
+        ZJ9hmOdVqddaix9RAitr8pY6JY+Ec4yFPO+eJGVBCg==
+X-Google-Smtp-Source: APiQypLBDSZbDJjvDYDKUk2tG5mW4OE2larhjMHIL+GzojR08YDhbTwnOD8/jg18+7ituZ8OLmGHSBh19zzrRajSfq8=
+X-Received: by 2002:adf:e34d:: with SMTP id n13mr1519574wrj.249.1588821081532;
+ Wed, 06 May 2020 20:11:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200505102700.7912-1-anders.roxell@linaro.org>
- <CABVgOS=awiwi7APWr5HgU6Eht-VAygWPeQyNsCnAF09OLpR46A@mail.gmail.com> <CADYN=9Jdwd=3Rh=wyzO7eOxtyTSm+JqjF385iQjfMocpz1A3YA@mail.gmail.com>
-In-Reply-To: <CADYN=9Jdwd=3Rh=wyzO7eOxtyTSm+JqjF385iQjfMocpz1A3YA@mail.gmail.com>
+References: <20200505102714.8023-1-anders.roxell@linaro.org>
+In-Reply-To: <20200505102714.8023-1-anders.roxell@linaro.org>
 From:   David Gow <davidgow@google.com>
-Date:   Thu, 7 May 2020 11:08:10 +0800
-Message-ID: <CABVgOSndkMOd0U+p=fMy0q-KdN29XERheY=3-3+dgVoeWf9m5g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
+Date:   Thu, 7 May 2020 11:11:10 +0800
+Message-ID: <CABVgOSnxMd1ZdEQ3jHxtok1oQcMKh=UMtxZufeS9fv-q9C3-AQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] lib: Kconfig.debug: default KUNIT_* fragments to KUNIT_RUN_ALL
 To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        John Johansen <john.johansen@canonical.com>, jmorris@namei.org,
+        serge@hallyn.com, "Theodore Ts'o" <tytso@mit.edu>,
+        adilger.kernel@dilger.ca,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        =linux-kselftest@vger.kernel.org,
         KUnit Development <kunit-dev@googlegroups.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org,
-        linux-security-module <linux-security-module@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, linux-security-module@vger.kernel.org,
         Marco Elver <elver@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-ext4-owner@vger.kernel.org
@@ -73,98 +68,51 @@ Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-On Wed, May 6, 2020 at 6:33 PM Anders Roxell <anders.roxell@linaro.org> wrote:
+On Tue, May 5, 2020 at 6:27 PM Anders Roxell <anders.roxell@linaro.org> wrote:
 >
-> Hi David,
+> This makes it easier to enable all KUnit fragments.
 >
-> Thank you for the review.
+> Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
+> someone wants that even though KUNIT_RUN_ALL is enabled.
 >
-> On Wed, 6 May 2020 at 07:08, David Gow <davidgow@google.com> wrote:
-> >
-> > On Tue, May 5, 2020 at 6:27 PM Anders Roxell <anders.roxell@linaro.org> wrote:
-> > >
-> > > Make it easier to enable all KUnit fragments.  This is needed for kernel
-> > > test-systems, so its easy to get all KUnit tests enabled and if new gets
-> > > added they will be enabled as well.  Fragments that has to be builtin
-> > > will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
-> > >
-> > > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> > > ---
-> > >  lib/kunit/Kconfig | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
-> > > index 95d12e3d6d95..537f37bc8400 100644
-> > > --- a/lib/kunit/Kconfig
-> > > +++ b/lib/kunit/Kconfig
-> > > @@ -41,4 +41,10 @@ config KUNIT_EXAMPLE_TEST
-> > >           is intended for curious hackers who would like to understand how to
-> > >           use KUnit for kernel development.
-> > >
-> > > +config KUNIT_RUN_ALL
-> > > +       tristate "KUnit run all test"
-> >
-> > I'm not 100% sure about this name and description. It only actually
-> > "runs" the tests if they're builtin (as modules, they'll only run when
-> > loaded).
-> >
-> > Would KUNIT_BUILD_ALL or KUNIT_ALL_TESTS
->
-> I would like to go with KUNIT_ALL_TESTS if no one objects.
->
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 
-Personally, I'm fine with that.
+Reviewed-by: David Gow <davidgow@google.com>
 
-Brendan, thoughts?
-
-> > or similar be better?
-> >
-> > It also, as mentioned, only really runs all available (i.e., with
-> > dependencies met in the current .config) tests (as distinct from the
-> > --alltests flag to kunit.py, which builds UML with allyesconfig), it
-> > might be good to add this to the description or help.
-> >
-> > Something like "Enable all KUnit tests" or "Enable all available KUnit
-> > tests" (or even something about "all KUnit tests with satisfied
-> > dependencies") might be clearer.
->
-> I like "All KUnit tests with satisfied dependencies".
->
-> >
-> > > +       help
-> > > +         Enables all KUnit tests, if they can be enabled.
-> > > +         That depends on if KUnit is enabled as a module or builtin.
-> > > +
-> > I like the first line here, but the second one could use a bit more
-> > explanation. Maybe copy some of the boilerplate text from other tests,
-> > e.g.:
-> >
-> >           KUnit tests run during boot and output the results to the debug log
-> >          in TAP format (http://testanything.org/). Only useful for kernel devs
-> >          running the KUnit test harness, and not intended for inclusion into a
-> >          production build.
-> >
-> >          For more information on KUnit and unit tests in general please refer
-> >          to the KUnit documentation in Documentation/dev-tools/kunit/.
-> >
-> >          If unsure, say N.
->
-> Makes much more sense, thanks.
->
-> >
-> > >  endif # KUNIT
-> > > --
-> > > 2.20.1
-> > >
-> >
-> > Otherwise, this is looking good. I've done some quick testing, and it
-> > all seems to work for me. As long as it's clear what the difference
-> > between this and other ways of running "all tests" (like the
-> > --alltests kunit.py option),
->
-> Do you think it should be made clearer in some way?
->
-
-I think the changes above should do it.
-
+Thanks!
 -- David
+
+
+> ---
+>  lib/Kconfig.debug | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 21d9c5f6e7ec..d1a94ff56a87 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2064,8 +2064,9 @@ config TEST_SYSCTL
+>           If unsure, say N.
+>
+>  config SYSCTL_KUNIT_TEST
+> -       tristate "KUnit test for sysctl"
+> +       tristate "KUnit test for sysctl" if !KUNIT_RUN_ALL
+>         depends on KUNIT
+> +       default KUNIT_RUN_ALL
+>         help
+>           This builds the proc sysctl unit test, which runs on boot.
+>           Tests the API contract and implementation correctness of sysctl.
+> @@ -2075,8 +2076,9 @@ config SYSCTL_KUNIT_TEST
+>           If unsure, say N.
+>
+>  config LIST_KUNIT_TEST
+> -       tristate "KUnit Test for Kernel Linked-list structures"
+> +       tristate "KUnit Test for Kernel Linked-list structures" if !KUNIT_RUN_ALL
+>         depends on KUNIT
+> +       default KUNIT_RUN_ALL
+>         help
+>           This builds the linked list KUnit test suite.
+>           It tests that the API and basic functionality of the list_head type
+> --
+> 2.20.1
+>
