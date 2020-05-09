@@ -2,62 +2,69 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650371CBFAC
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 May 2020 11:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F01E1CC146
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 May 2020 14:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727076AbgEIJN5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Sat, 9 May 2020 05:13:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49388 "EHLO mail.kernel.org"
+        id S1728507AbgEIMaw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sat, 9 May 2020 08:30:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725989AbgEIJN5 (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 9 May 2020 05:13:57 -0400
-From:   bugzilla-daemon@bugzilla.kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+        id S1728388AbgEIMav (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Sat, 9 May 2020 08:30:51 -0400
+Received: from localhost (unknown [137.135.114.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A3B624958;
+        Sat,  9 May 2020 12:30:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589027451;
+        bh=8zHjGqPPA3gdmrfKFmgQeUooIbN2p4/RDvSS7ZJuRFk=;
+        h=Date:From:To:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:
+         From;
+        b=V/xA1murxXLh4I2F6b4ljJDJWxSiKo1m6/GFc29tucX9EeLa1PkNE6z3D3PuAnUh+
+         SSlOOUZmwMV3PxpfVOziop7i/cZt8otZcGDmOzXJ9B3lepnj7rooTglZgTY4zB1/fb
+         LDC8Mxqd9vWm8b1gilVNz2ooZ7VnOhaMpXOIim8I=
+Date:   Sat, 09 May 2020 12:30:50 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+To:     Eric Biggers <ebiggers@google.com>
 To:     linux-ext4@vger.kernel.org
-Subject: [Bug 207635] EXT4-fs error (device sda3): ext4_lookup:1701: inode
- #...: comm find: casefold flag without casefold feature; EXT4-fs (sda3):
- Remounting filesystem read-only
-Date:   Sat, 09 May 2020 09:13:57 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: blocking
-X-Bugzilla-Who: joerg.sigle@jsigle.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cf_kernel_version
-Message-ID: <bug-207635-13602-Lv4OmhEIwS@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-207635-13602@https.bugzilla.kernel.org/>
-References: <bug-207635-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
-MIME-Version: 1.0
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix race between ext4_sync_parent() and rename()
+In-Reply-To: <20200506183140.541194-1-ebiggers@kernel.org>
+References: <20200506183140.541194-1-ebiggers@kernel.org>
+Message-Id: <20200509123051.4A3B624958@mail.kernel.org>
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-https://bugzilla.kernel.org/show_bug.cgi?id=207635
+Hi
 
-Joerg M. Sigle (joerg.sigle@jsigle.com) changed:
+[This is an automated email]
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-     Kernel Version|5.5.11                      |5.5.11, 5.5.10
+This commit has been processed because it contains a "Fixes:" tag
+fixing commit: d59729f4e794 ("ext4: fix races in ext4_sync_parent()").
 
---- Comment #1 from Joerg M. Sigle (joerg.sigle@jsigle.com) ---
-N.B.: Reviewing my kernel history, I found: The problem already happened with
-5.5.10 and made me try 5.5.11 hoping it might have been fixed.
+The bot has tested the following trees: v5.6.11, v5.4.39, v4.19.121, v4.14.179, v4.9.222, v4.4.222.
+
+v5.6.11: Build OK!
+v5.4.39: Build OK!
+v4.19.121: Build OK!
+v4.14.179: Build OK!
+v4.9.222: Build OK!
+v4.4.222: Failed to apply! Possible dependencies:
+    6ae4c5a69877 ("ext4: cleanup ext4_sync_parent()")
+    78d962510796 ("ext4: respect the nobarrier mount option in nojournal mode")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
 
 -- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+Thanks
+Sasha
