@@ -2,69 +2,102 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F01E1CC146
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 May 2020 14:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6E61CC723
+	for <lists+linux-ext4@lfdr.de>; Sun, 10 May 2020 08:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728507AbgEIMaw (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Sat, 9 May 2020 08:30:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60208 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728388AbgEIMav (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Sat, 9 May 2020 08:30:51 -0400
-Received: from localhost (unknown [137.135.114.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A3B624958;
-        Sat,  9 May 2020 12:30:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589027451;
-        bh=8zHjGqPPA3gdmrfKFmgQeUooIbN2p4/RDvSS7ZJuRFk=;
-        h=Date:From:To:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:
-         From;
-        b=V/xA1murxXLh4I2F6b4ljJDJWxSiKo1m6/GFc29tucX9EeLa1PkNE6z3D3PuAnUh+
-         SSlOOUZmwMV3PxpfVOziop7i/cZt8otZcGDmOzXJ9B3lepnj7rooTglZgTY4zB1/fb
-         LDC8Mxqd9vWm8b1gilVNz2ooZ7VnOhaMpXOIim8I=
-Date:   Sat, 09 May 2020 12:30:50 +0000
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-To:     Eric Biggers <ebiggers@google.com>
+        id S1725994AbgEJGZa (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Sun, 10 May 2020 02:25:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54744 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725779AbgEJGZa (ORCPT
+        <rfc822;linux-ext4@vger.kernel.org>);
+        Sun, 10 May 2020 02:25:30 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04A62Asl074332;
+        Sun, 10 May 2020 02:25:23 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30xa4gab5j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 10 May 2020 02:25:23 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 04A6K077003362;
+        Sun, 10 May 2020 06:25:22 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 30wm55a12q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 10 May 2020 06:25:21 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 04A6PJGb61997502
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 10 May 2020 06:25:19 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EF11042042;
+        Sun, 10 May 2020 06:25:18 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6B7484203F;
+        Sun, 10 May 2020 06:25:17 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.199.61.127])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 10 May 2020 06:25:17 +0000 (GMT)
+From:   Ritesh Harjani <riteshh@linux.ibm.com>
 To:     linux-ext4@vger.kernel.org
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-fsdevel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix race between ext4_sync_parent() and rename()
-In-Reply-To: <20200506183140.541194-1-ebiggers@kernel.org>
-References: <20200506183140.541194-1-ebiggers@kernel.org>
-Message-Id: <20200509123051.4A3B624958@mail.kernel.org>
+Cc:     linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.com>,
+        tytso@mit.edu, "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>
+Subject: [RFC 00/16] ext4: mballoc/extents: Code cleanup and debug improvements
+Date:   Sun, 10 May 2020 11:54:40 +0530
+Message-Id: <cover.1589086800.git.riteshh@linux.ibm.com>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
+ definitions=2020-05-10_01:2020-05-08,2020-05-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ malwarescore=0 mlxscore=0 bulkscore=0 phishscore=0 impostorscore=0
+ spamscore=0 mlxlogscore=999 suspectscore=3 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005100050
 Sender: linux-ext4-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-ext4.vger.kernel.org>
 X-Mailing-List: linux-ext4@vger.kernel.org
 
-Hi
+Hello All,
 
-[This is an automated email]
+This series does some code refactoring/cleanups and debug logs improvements
+around mb_debug() and ext_debug(). These were found when working over
+improving mballoc ENOSPC handling in ext4.
+These should be small and stright forward patches for reviewing.
 
-This commit has been processed because it contains a "Fixes:" tag
-fixing commit: d59729f4e794 ("ext4: fix races in ext4_sync_parent()").
+Ritesh Harjani (16):
+  ext4: mballoc: Do print bb_free info even when it is 0
+  ext4: mballoc: Refactor ext4_mb_show_ac()
+  ext4: mballoc: Add more mb_debug() msgs
+  ext4: mballoc: Correct the mb_debug() format specifier for pa_len var
+  ext4: mballoc: Fix few other format specifier in mb_debug()
+  ext4: mballoc: Simplify error handling in ext4_init_mballoc()
+  ext4: mballoc: Make ext4_mb_use_preallocated() return type as bool
+  ext4: mballoc: Refactor code inside DOUBLE_CHECK into separate function
+  ext4: mballoc: Fix possible NULL ptr & remove BUG_ONs from DOUBLE_CHECK
+  ext4: balloc: Use task_pid_nr() helper
+  ext4: Use BIT() macro for BH_** state bits
+  ext4: Improve ext_debug() msg in case of block allocation failure
+  ext4: Replace EXT_DEBUG with __maybe_unused in ext4_ext_handle_unwritten_extents()
+  ext4: mballoc: Make mb_debug() implementation to use pr_debug()
+  ext4: Make ext_debug() implementation to use pr_debug()
+  ext4: Add process name and pid in ext4_msg()
 
-The bot has tested the following trees: v5.6.11, v5.4.39, v4.19.121, v4.14.179, v4.9.222, v4.4.222.
-
-v5.6.11: Build OK!
-v5.4.39: Build OK!
-v4.19.121: Build OK!
-v4.14.179: Build OK!
-v4.9.222: Build OK!
-v4.4.222: Failed to apply! Possible dependencies:
-    6ae4c5a69877 ("ext4: cleanup ext4_sync_parent()")
-    78d962510796 ("ext4: respect the nobarrier mount option in nojournal mode")
-
-
-NOTE: The patch will not be queued to stable trees until it is upstream.
-
-How should we proceed with this patch?
+ fs/ext4/Kconfig   |   3 +-
+ fs/ext4/balloc.c  |   5 +-
+ fs/ext4/ext4.h    |  26 +++--
+ fs/ext4/extents.c | 150 +++++++++++++-------------
+ fs/ext4/inode.c   |  15 +--
+ fs/ext4/mballoc.c | 265 ++++++++++++++++++++++++++--------------------
+ fs/ext4/mballoc.h |  16 ++-
+ fs/ext4/super.c   |   3 +-
+ 8 files changed, 261 insertions(+), 222 deletions(-)
 
 -- 
-Thanks
-Sasha
+2.21.0
+
