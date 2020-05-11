@@ -2,64 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DB01CDAF8
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 15:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0565D1CDAF9
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 15:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729222AbgEKNOn (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 May 2020 09:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
+        id S1730185AbgEKNOp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 May 2020 09:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728776AbgEKNOm (ORCPT
+        by vger.kernel.org with ESMTP id S1730177AbgEKNOo (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 11 May 2020 09:14:42 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78560C061A0C
-        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:39 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id j3so9400412ljg.8
-        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:39 -0700 (PDT)
+        Mon, 11 May 2020 09:14:44 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DEFC05BD09
+        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:43 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id e25so9428280ljg.5
+        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uOQlRoobz/JSTnw7jwwegH0gSDxJKtqarUsKs1ALhNM=;
-        b=O7IbKpf3NxRDO3Qz4E22XOJiODI89ShsyRIBjfFqiBxYbmyzjqlqyDUUuluKWLondb
-         zvLmdYtEfINYouhmprMb9bnYeW2ULG+ffMYDS3Hyz1jLdR29D6t24/4zBAL1Xh3W4jti
-         57sw25xbYMqSo0NWD6CftkCY5w24yKxWy6bIE4qRU3l4Y9UiMKz1Oz0GVyviY4znjJzR
-         dvF1SHdR6PDuhh59w/+680xYeLXE4uIspt4BilLfsI9Hg3T886eg9gExkPngkIkQNVzP
-         WOROjQRPgANTvGvNhKsku53v7mZiLgZ2QOJ0u2I+DZa+VkNc5AwzgG0w1M6UW63HzuDm
-         E85A==
+        bh=NUI8ReX5/Xpd2JtmMzMM9tmFtAIP0fE4oQnYr/awLr4=;
+        b=Mf4oTEHJWwSVTn10OhDNWzpklozAK40LfcyfvQ9AbRpvTcuDFjkPFSTgO5oWQGfh5G
+         +OoMFOjdEjCxi0z+ObuIxNswHw0bhXDyGkWNUTl69wkl7eYP5ORiOyP2SOSw9ZJh07J5
+         t+Oeb77OKHbJQUcoGRbrxOJ0aX4BaIrOSX6Gmx2mOf6ABEKoPNrx83Mhn4TJmXvDdFNS
+         sIhm5SpMofg5+pMCXVr1TB1bXdsDsd3Ayye8nOQNw3FhfcwSdzS7y7eDiy2IO/Q1qiJJ
+         vjVa4x33tXG/P4XoV1zIpzeIOqROR8PMYTxcAcMVSQZMne9Bl7un44l5nMcX9BxiLTyq
+         StWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=uOQlRoobz/JSTnw7jwwegH0gSDxJKtqarUsKs1ALhNM=;
-        b=fNU588DT7+lbL0cA0YAHSy3bHkwVNREhJfwzkABQwW4MLzvMwf7eg8yn1tBVPg4WBV
-         R+wMh5v4q1p2heV/TPVjZGJOG+PvsXdFUOezG80kYyGiJZiuJQm8Or3N8D/I0Yvl4rvm
-         6rC9G7AN6VV5hV9R7F1vqraRMEIJa5Drdg9nc78W7POiy2asMX+NAFVlpE0r7pwrMIss
-         p3MDj4eNUbcYLPUaEg6UMePp9Odwkd80xW6TLrnSRdwkdnHzj9jKgHL0jpK5KzUIoP5L
-         tu8YvBQoQa152u2s+jvgb2oAIojNlKb3GGWcE41PRPRWW5pvdWPAQMYfcRx6pYkNj1Sj
-         Noxg==
-X-Gm-Message-State: AOAM530TPHXxcX0CtovRVfVTjbVw8+L0HZC+8irsNfPbV8GPe3J4DhvP
-        DLkjEtr3RuGYTVNmnjz+8G4fNg==
-X-Google-Smtp-Source: ABdhPJzPQ63qDskczu5x6qrSWwXrg8R2UiUYIP4y4l+9X8DXtfBS8B2MRyrIgyTM1DH5gchXnwWtIw==
-X-Received: by 2002:a2e:9942:: with SMTP id r2mr466938ljj.283.1589202877635;
-        Mon, 11 May 2020 06:14:37 -0700 (PDT)
+        bh=NUI8ReX5/Xpd2JtmMzMM9tmFtAIP0fE4oQnYr/awLr4=;
+        b=Tv3ywj/X6nhYk6lHs5AALhPoA66OpKc4Z6qBGEbYVpjNCPKZ3SLquG7Igwmw2XS5QU
+         8sS+udXSkSvEpZQ/A7Jsb55qff2N5GCCZP+c7c/KQLUazYpMz2oegLL2OlvEIThy6FRb
+         Tq6tZBpK5HTYnQQ4k1oPa1DMXepoG1DT+5L6EmcGixyThNY7olUGeRgI7/q2v9qvYYMX
+         lmN7FL1d8j/iK3xNSqahp39HC6UepkyHd01LPJlaHBuprbp1Kvf/l2mQ9tHSDlx3G3WB
+         w3ZP2F3saGMLw3DBQwjwQnnqJ1bXojX+6X2aH630bU0lIH5wBDJIn0IuhaMQgqvFgAY/
+         SK0w==
+X-Gm-Message-State: AOAM531A+iY1Ogth/nFpynBnvZ5wE6bgRxGGp2xTCWAiY1PRq2CMc9JT
+        tUScpM/4KioEftvJhzHus0A63w==
+X-Google-Smtp-Source: ABdhPJy2dZ6Y0VUcG0irmoqyiuwPNOkxYOUJZjg40KYU72VLIUApg9pgi+sw8OwzBxDCJ0ulK7v34g==
+X-Received: by 2002:a2e:7412:: with SMTP id p18mr9935005ljc.256.1589202882058;
+        Mon, 11 May 2020 06:14:42 -0700 (PDT)
 Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
-        by smtp.gmail.com with ESMTPSA id i1sm36800lja.3.2020.05.11.06.14.37
+        by smtp.gmail.com with ESMTPSA id r2sm9984936ljm.8.2020.05.11.06.14.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 06:14:37 -0700 (PDT)
+        Mon, 11 May 2020 06:14:41 -0700 (PDT)
 From:   Anders Roxell <anders.roxell@linaro.org>
-To:     gregkh@linuxfoundation.org
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
 Cc:     john.johansen@canonical.com, jmorris@namei.org, serge@hallyn.com,
-        tytso@mit.edu, adilger.kernel@dilger.ca, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
         brendanhiggins@google.com, linux-kselftest@vger.kernel.org,
         kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-security-module@vger.kernel.org,
         elver@google.com, davidgow@google.com,
         Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH v3 4/6] drivers: base: default KUNIT_* fragments to KUNIT_ALL_TESTS
-Date:   Mon, 11 May 2020 15:14:33 +0200
-Message-Id: <20200511131433.29905-1-anders.roxell@linaro.org>
+Subject: [PATCH v3 5/6] fs: ext4: default KUNIT_* fragments to KUNIT_ALL_TESTS
+Date:   Mon, 11 May 2020 15:14:38 +0200
+Message-Id: <20200511131438.29953-1-anders.roxell@linaro.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -77,37 +77,25 @@ menuconfig.
 Reviewed-by: David Gow <davidgow@google.com>
 Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- drivers/base/Kconfig      | 3 ++-
- drivers/base/test/Kconfig | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ fs/ext4/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-index 5f0bc74d2409..8d7001712062 100644
---- a/drivers/base/Kconfig
-+++ b/drivers/base/Kconfig
-@@ -149,8 +149,9 @@ config DEBUG_TEST_DRIVER_REMOVE
- 	  test this functionality.
+diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
+index 2a592e38cdfe..bc7815158503 100644
+--- a/fs/ext4/Kconfig
++++ b/fs/ext4/Kconfig
+@@ -103,9 +103,10 @@ config EXT4_DEBUG
+ 		echo 1 > /sys/module/ext4/parameters/mballoc_debug
  
- config PM_QOS_KUNIT_TEST
--	bool "KUnit Test for PM QoS features"
-+	bool "KUnit Test for PM QoS features" if !KUNIT_ALL_TESTS
- 	depends on KUNIT=y
+ config EXT4_KUNIT_TESTS
+-	tristate "KUnit tests for ext4"
++	tristate "KUnit tests for ext4" if !KUNIT_ALL_TESTS
+ 	select EXT4_FS
+ 	depends on KUNIT
 +	default KUNIT_ALL_TESTS
+ 	help
+ 	  This builds the ext4 KUnit tests.
  
- config HMEM_REPORTING
- 	bool
-diff --git a/drivers/base/test/Kconfig b/drivers/base/test/Kconfig
-index 305c7751184a..ba225eb1b761 100644
---- a/drivers/base/test/Kconfig
-+++ b/drivers/base/test/Kconfig
-@@ -9,5 +9,6 @@ config TEST_ASYNC_DRIVER_PROBE
- 
- 	  If unsure say N.
- config KUNIT_DRIVER_PE_TEST
--	bool "KUnit Tests for property entry API"
-+	bool "KUnit Tests for property entry API" if !KUNIT_ALL_TESTS
- 	depends on KUNIT=y
-+	default KUNIT_ALL_TESTS
 -- 
 2.20.1
 
