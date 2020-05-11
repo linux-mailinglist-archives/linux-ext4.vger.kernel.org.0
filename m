@@ -2,64 +2,64 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0565D1CDAF9
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 15:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA741CDAFE
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 15:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730185AbgEKNOp (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
-        Mon, 11 May 2020 09:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        id S1729745AbgEKNOt (ORCPT <rfc822;lists+linux-ext4@lfdr.de>);
+        Mon, 11 May 2020 09:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730177AbgEKNOo (ORCPT
+        by vger.kernel.org with ESMTP id S1730195AbgEKNOs (ORCPT
         <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 11 May 2020 09:14:44 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DEFC05BD09
-        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:43 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id e25so9428280ljg.5
-        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:43 -0700 (PDT)
+        Mon, 11 May 2020 09:14:48 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F8FC061A0E
+        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:47 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id h4so9409743ljg.12
+        for <linux-ext4@vger.kernel.org>; Mon, 11 May 2020 06:14:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NUI8ReX5/Xpd2JtmMzMM9tmFtAIP0fE4oQnYr/awLr4=;
-        b=Mf4oTEHJWwSVTn10OhDNWzpklozAK40LfcyfvQ9AbRpvTcuDFjkPFSTgO5oWQGfh5G
-         +OoMFOjdEjCxi0z+ObuIxNswHw0bhXDyGkWNUTl69wkl7eYP5ORiOyP2SOSw9ZJh07J5
-         t+Oeb77OKHbJQUcoGRbrxOJ0aX4BaIrOSX6Gmx2mOf6ABEKoPNrx83Mhn4TJmXvDdFNS
-         sIhm5SpMofg5+pMCXVr1TB1bXdsDsd3Ayye8nOQNw3FhfcwSdzS7y7eDiy2IO/Q1qiJJ
-         vjVa4x33tXG/P4XoV1zIpzeIOqROR8PMYTxcAcMVSQZMne9Bl7un44l5nMcX9BxiLTyq
-         StWw==
+        bh=hd5CEiw3xAmj+Qu84GZ/dMO9hkSOA6ixaeeAM/KiNHU=;
+        b=t/q/Xu2Wsk1cQP379bqb7AKPnMVYlzvnTZ2iToF9D09oipRJWynKJ+gRR+xoVRGhom
+         6pD/9G8cClGfg/m8k9yWgDTlOIQbm9Ixb6cWlOWc6rC7qy407QUS0Rka78Hf+0F+RzNM
+         Ujd1KPanQ5orj9cBzjrZfDRy5lLAxw1jJCOqjN4grijylK/LSWTGqs2BjeJWF8qPKUAy
+         SqwMRZfnwvux94TcbbUvcFI2qJKwwB2+W0O7QQA+5+IjPMogtRBJae4RHVct7pW7Obgz
+         z3gIn0kYZs/dFBbBaETQJRSXt/eQ7otP//1WDRZgjNOexrXZffr+COFscNImDd2SZgMA
+         uJ3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=NUI8ReX5/Xpd2JtmMzMM9tmFtAIP0fE4oQnYr/awLr4=;
-        b=Tv3ywj/X6nhYk6lHs5AALhPoA66OpKc4Z6qBGEbYVpjNCPKZ3SLquG7Igwmw2XS5QU
-         8sS+udXSkSvEpZQ/A7Jsb55qff2N5GCCZP+c7c/KQLUazYpMz2oegLL2OlvEIThy6FRb
-         Tq6tZBpK5HTYnQQ4k1oPa1DMXepoG1DT+5L6EmcGixyThNY7olUGeRgI7/q2v9qvYYMX
-         lmN7FL1d8j/iK3xNSqahp39HC6UepkyHd01LPJlaHBuprbp1Kvf/l2mQ9tHSDlx3G3WB
-         w3ZP2F3saGMLw3DBQwjwQnnqJ1bXojX+6X2aH630bU0lIH5wBDJIn0IuhaMQgqvFgAY/
-         SK0w==
-X-Gm-Message-State: AOAM531A+iY1Ogth/nFpynBnvZ5wE6bgRxGGp2xTCWAiY1PRq2CMc9JT
-        tUScpM/4KioEftvJhzHus0A63w==
-X-Google-Smtp-Source: ABdhPJy2dZ6Y0VUcG0irmoqyiuwPNOkxYOUJZjg40KYU72VLIUApg9pgi+sw8OwzBxDCJ0ulK7v34g==
-X-Received: by 2002:a2e:7412:: with SMTP id p18mr9935005ljc.256.1589202882058;
-        Mon, 11 May 2020 06:14:42 -0700 (PDT)
+        bh=hd5CEiw3xAmj+Qu84GZ/dMO9hkSOA6ixaeeAM/KiNHU=;
+        b=qFDosDE0i5QJxLaGGdxd+a1/XtM++rs5fyrg3lM6ziY6M3fyWGr499R1Ka27AX5x0j
+         zP7e44WD0PrM4ykAWsp6dcTd/qWHid0rvy9mNLzLRgh/t1cVCFmebY/tiXyUlvjcQL8Z
+         ZjrZXW9tW9cXo76XlWu6KnF9bxTU/TShbNHPe2mdg0N0MQYo32vN4iC4sz8O0cyj7K7P
+         am3XNRuPacpRdjndOqPmwqW9ouQBPYI/HE/7T/q5fxEgmEnby1n/w4WajEiiEmCqdK9S
+         VQDqfaMHq4ROks+1H6qZpfNRqXmorhSMCfUn+HwE5MB1jFYm94vqQPdB7iwb+4X0mTDH
+         g/sg==
+X-Gm-Message-State: AOAM531/IWsP8oCxB2SibM8mZP5D+37jTN3XE7ImPgtUcjKETE5BKah2
+        C9a5QOIg5MtSfixtSS805EcZag==
+X-Google-Smtp-Source: ABdhPJyoLfetCr2ckH+XHqfj73a09MRKqeRqRgsIHcO5n6iFQ2egpeSzjj4Oiamdu1pt1MeA5mVJZg==
+X-Received: by 2002:a2e:920e:: with SMTP id k14mr10674436ljg.288.1589202886078;
+        Mon, 11 May 2020 06:14:46 -0700 (PDT)
 Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
-        by smtp.gmail.com with ESMTPSA id r2sm9984936ljm.8.2020.05.11.06.14.41
+        by smtp.gmail.com with ESMTPSA id h11sm10223074lfp.22.2020.05.11.06.14.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2020 06:14:41 -0700 (PDT)
+        Mon, 11 May 2020 06:14:45 -0700 (PDT)
 From:   Anders Roxell <anders.roxell@linaro.org>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     john.johansen@canonical.com, jmorris@namei.org, serge@hallyn.com,
-        gregkh@linuxfoundation.org, akpm@linux-foundation.org,
+To:     john.johansen@canonical.com, jmorris@namei.org, serge@hallyn.com
+Cc:     gregkh@linuxfoundation.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, akpm@linux-foundation.org,
         brendanhiggins@google.com, linux-kselftest@vger.kernel.org,
         kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
         linux-ext4@vger.kernel.org, linux-security-module@vger.kernel.org,
         elver@google.com, davidgow@google.com,
         Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH v3 5/6] fs: ext4: default KUNIT_* fragments to KUNIT_ALL_TESTS
-Date:   Mon, 11 May 2020 15:14:38 +0200
-Message-Id: <20200511131438.29953-1-anders.roxell@linaro.org>
+Subject: [PATCH v3 6/6] security: apparmor: default KUNIT_* fragments to KUNIT_ALL_TESTS
+Date:   Mon, 11 May 2020 15:14:42 +0200
+Message-Id: <20200511131442.30002-1-anders.roxell@linaro.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -77,24 +77,23 @@ menuconfig.
 Reviewed-by: David Gow <davidgow@google.com>
 Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- fs/ext4/Kconfig | 3 ++-
+ security/apparmor/Kconfig | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-index 2a592e38cdfe..bc7815158503 100644
---- a/fs/ext4/Kconfig
-+++ b/fs/ext4/Kconfig
-@@ -103,9 +103,10 @@ config EXT4_DEBUG
- 		echo 1 > /sys/module/ext4/parameters/mballoc_debug
+diff --git a/security/apparmor/Kconfig b/security/apparmor/Kconfig
+index 0fe336860773..03fae1bd48a6 100644
+--- a/security/apparmor/Kconfig
++++ b/security/apparmor/Kconfig
+@@ -70,8 +70,9 @@ config SECURITY_APPARMOR_DEBUG_MESSAGES
+ 	  the kernel message buffer.
  
- config EXT4_KUNIT_TESTS
--	tristate "KUnit tests for ext4"
-+	tristate "KUnit tests for ext4" if !KUNIT_ALL_TESTS
- 	select EXT4_FS
- 	depends on KUNIT
+ config SECURITY_APPARMOR_KUNIT_TEST
+-	bool "Build KUnit tests for policy_unpack.c"
++	bool "Build KUnit tests for policy_unpack.c" if !KUNIT_ALL_TESTS
+ 	depends on KUNIT=y && SECURITY_APPARMOR
 +	default KUNIT_ALL_TESTS
  	help
- 	  This builds the ext4 KUnit tests.
+ 	  This builds the AppArmor KUnit tests.
  
 -- 
 2.20.1
