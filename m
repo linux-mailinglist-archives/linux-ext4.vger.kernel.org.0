@@ -2,22 +2,22 @@ Return-Path: <linux-ext4-owner@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EB91CE07A
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 18:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B531CE10B
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 May 2020 18:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730016AbgEKQan convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 11 May 2020 12:30:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41066 "EHLO mail.kernel.org"
+        id S1730768AbgEKQ7B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-ext4@lfdr.de>); Mon, 11 May 2020 12:59:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728556AbgEKQan (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
-        Mon, 11 May 2020 12:30:43 -0400
+        id S1730756AbgEKQ7B (ORCPT <rfc822;linux-ext4@vger.kernel.org>);
+        Mon, 11 May 2020 12:59:01 -0400
 From:   bugzilla-daemon@bugzilla.kernel.org
 Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
 To:     linux-ext4@vger.kernel.org
 Subject: [Bug 207635] EXT4-fs error (device sda3): ext4_lookup:1701: inode
  #...: comm find: casefold flag without casefold feature; EXT4-fs (sda3):
  Remounting filesystem read-only
-Date:   Mon, 11 May 2020 16:30:42 +0000
+Date:   Mon, 11 May 2020 16:59:00 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -26,14 +26,14 @@ X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: blocking
-X-Bugzilla-Who: joerg.sigle@jsigle.com
+X-Bugzilla-Who: lists@nerdbynature.de
 X-Bugzilla-Status: NEW
 X-Bugzilla-Resolution: 
 X-Bugzilla-Priority: P1
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-207635-13602-q1TSX0sw9c@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-207635-13602-P7O80y9a2W@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-207635-13602@https.bugzilla.kernel.org/>
 References: <bug-207635-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -48,48 +48,26 @@ X-Mailing-List: linux-ext4@vger.kernel.org
 
 https://bugzilla.kernel.org/show_bug.cgi?id=207635
 
---- Comment #5 from Joerg M. Sigle (joerg.sigle@jsigle.com) ---
-Eric, re. your other question:
+Christian Kujau (lists@nerdbynature.de) changed:
 
->I'm not sure there's anything else to do here, unless we were to make the
->kernel ignore unexpected flags.
->Ted, have you considered that?  And it is intentional that e2fsck ignores
->unknown flags?
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |lists@nerdbynature.de
 
-Please allow me some input on this:
+--- Comment #6 from Christian Kujau (lists@nerdbynature.de) ---
+(In reply to Joerg M. Sigle from comment #5)
+> The same person might run a kernel with casefold and/or encryption disabled
+> on Tuesday. So, would it really be necessary to set their filesystem to ro -
 
-Someone might use a kernel with casefold or encryption support on Monday - and
-even use these features, causing a few of these flags to be set.
+I don't know about the inner workings of this particular issue here, but
+turning the filesystem to RO when errors are encountered - isn't this what the
+"error-behavior" flag controls?
 
-The same person might run a kernel with casefold and/or encryption disabled on
-Tuesday. So, would it really be necessary to set their filesystem to ro -
-giving them a hard time, just because they like to use different kernels? I
-think not.
+$ tune2fs -l /dev/sda1 | grep ^Err
+Errors behavior:          Remount read-only
 
-There are many reasons to use different kernels: System-Rescue CD; kernel
-building experiments etc.
-
-So IMHO, a kernel that doesn't support a certain capability should  not do
-*anything* with the bits used for that capability. It should make no
-assumptions about them, and at best not even look at them. Just leave them as
-they are.
-
-At most, it might write a warning to /var/log/messages.
-
-But it should not turn a working machine into a not working one for "reserved"
-bits being in a "surprising" state. There are other kernels out there, they
-might have some reason to set them as they are.
-
-(Saying this, I assume *and hope!* that it is generally no problem to use an fs
-that has these flags set with a kernel not supporting them - apart from the
-missing extra functionality.)
-
-This is just my naive opinion; I'm writing it however as someone who sees more
-and more complexity and unforeseen dependencies with bad side effects added to
-all areas of computing - often by people that were just a little bit too
-caring, or made too narrow assumptions on other peoples' usage scenarios.
-
-Thank you very much again, and kind regards, Joerg
+Setting this to "continue" or "panic" should have avoided that whole "RO"
+situation, I guess.
 
 -- 
 You are receiving this mail because:
